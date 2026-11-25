@@ -1,0 +1,69 @@
+{
+  "appleUIQualification": "PENDING_SEPARATE_SOURCE_FROZEN_CA7_8AA_RUN; new review section not included",
+  "controls": [
+    {
+      "logSHA256": "7b3d87b6e3e6f3b2fb3aafd47948cb4ace07430808c72f4f34d6b9fdda1980fc",
+      "name": "controls-attempt1",
+      "seconds": 16.007,
+      "status": "FAIL_COMPILATION_BEFORE_TESTS"
+    },
+    {
+      "logSHA256": "a65d0d1a5b67b8e72aca22a7695dbe9b535299238180e9972fada8923eeb6c07",
+      "name": "controls-attempt2",
+      "seconds": 23.017,
+      "status": "PASS"
+    },
+    {
+      "logSHA256": "6bbdab3889aee59db0ddbefc8768c7612d9e57c6d83831f168bcfbf58cb6ced6",
+      "name": "coordinator-controls-attempt1",
+      "seconds": 41.013,
+      "status": "PASS"
+    }
+  ],
+  "destinationAdmission": false,
+  "distinctPassingMethods": 14,
+  "existingCoordinatorMethods": 6,
+  "nativeCapturePerformedByTheseControls": false,
+  "newSchemaMethods": 8,
+  "parentCommit": "248deee1bed4aaace85bd4ff248899d1245c5ac9",
+  "protocol": "pinkha-captured-schema-component-proof-v1",
+  "rawCompilerLogsPreserved": {
+    "allProductAndControlSourceWhitespaceChecked": true,
+    "reason": "Original ANSI compiler excerpts include trailing spaces; preserving original SHA256 is required",
+    "whitespaceCheckExclusions": [
+      "controls-attempt1/original.log",
+      "controls-attempt2/original.log"
+    ]
+  },
+  "sourceFiles": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureCoordinator.swift": {
+      "bytes": 13243,
+      "sha256": "3d77b08c4d3c14c9520d116fdd382244cfad796378fa6e4b065ef5e7061c3da7"
+    },
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeSourceCaptureCoordinatorTests.swift": {
+      "bytes": 16241,
+      "sha256": "4e7b25e8e3b98ba1ac58432fdabe1d75b83ee518386a825a91210a28c3d6a01c"
+    },
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePinkhaSource.swift": {
+      "bytes": 19720,
+      "sha256": "235d4eb714cc8d577571336f265faa36dad2afde756265092020e5d717e7e2de"
+    },
+    "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/NativePinkhaSourceTests.swift": {
+      "bytes": 13616,
+      "sha256": "6203a50c4cb6ebb1c79f9d7e76f0d5a8e58351d08c9cbd60a672002836f7b7a1"
+    },
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyHeartNativeSourceReviewView.swift": {
+      "bytes": 15865,
+      "sha256": "3b5b47ea81ad5b02c6d8eb51acbcd8071c54f721e2c5d6a993bff5d41cea3215"
+    }
+  },
+  "sourceOriginal144ManifestSHA256": "2a1a02987204321aaa1c8cf9f0c7f413f4b50dbce87280d82499c4f9bc7be238",
+  "sourceReview": {
+    "result": "no concrete bypass found",
+    "reviewer": "page154_e",
+    "scope": "read-only canonical owner/reserved metadata source review; no tests executed",
+    "sourceSHA256": "235d4eb714cc8d577571336f265faa36dad2afde756265092020e5d717e7e2de"
+  },
+  "status": "PASS_COMPONENT_CONTROLS_ONLY",
+  "wholeSpaceMigration": false
+}

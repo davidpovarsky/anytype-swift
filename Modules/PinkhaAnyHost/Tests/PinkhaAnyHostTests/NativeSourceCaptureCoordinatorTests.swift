@@ -120,6 +120,9 @@ final class NativeSourceCaptureCoordinatorTests: XCTestCase {
                                                                      privateDirectory: f.parent)
         let review = try await coordinator.capture(session: f.session, requestID: f.requestID)
         XCTAssertEqual(review.bundle.objects.count, 144)
+        // The original source never contained a Pinkha schema manifest.
+        XCTAssertNil(review.pinkhaSource)
+        XCTAssertNil(review.pinkhaSourceIssue)
         XCTAssertEqual(review.definitionPlan.catalog.types.count, 19)
         XCTAssertEqual(review.definitionPlan.catalog.relations.count, 119)
         XCTAssertFalse(review.definitionPlan.issues.isEmpty)
@@ -128,6 +131,13 @@ final class NativeSourceCaptureCoordinatorTests: XCTestCase {
         XCTAssertThrowsError(try review.definitionPlan.admittedSchemaItems())
         XCTAssertFalse(review.unmappedObjects.isEmpty)
         let binding = try review.sourceBinding(semanticPlanSHA256: review.definitionPlan.catalog.contentSHA256)
+        let census = try XCTUnwrap(review.bundle.nativeStoreContext?.headCensus)
+        XCTAssertEqual(binding.sourceObjectIDs.count, review.bundle.trees.count + 2)
+        XCTAssertEqual(Set(binding.sourceObjectIDs), Set(census.sourceHeadIDs))
+        for tree in review.bundle.trees where tree.status == "space-settings-retained" {
+            XCTAssertTrue(review.unmappedObjects.contains { $0.sourceObjectID == tree.objectID })
+        }
+        XCTAssertTrue(review.unmappedObjects.contains { $0.sourceObjectID == census.nativeACLID })
         try await coordinator.revalidate(source: binding)
         XCTAssertEqual(calls.values().filter {
             if case .validate = $0 { return true }; return false
@@ -147,15 +157,16 @@ final class NativeSourceCaptureCoordinatorTests: XCTestCase {
                                                                      privateDirectory: f.parent)
         let review = try await coordinator.capture(session: f.session, requestID: f.requestID)
         let source = try review.sourceBinding(semanticPlanSHA256: review.definitionPlan.catalog.contentSHA256)
-        for field in ["account", "space", "witness", "manifest", "members", "census"] {
+        for field in ["account", "space", "witness", "manifest", "members", "census", "snapshot-only"] {
             let changed = try AnyDestinationSourceBinding(
                 accountID: field == "account" ? "another-account" : source.accountID,
                 spaceID: field == "space" ? "another-space" : source.spaceID,
                 witnessSHA256: field == "witness" ? String(repeating: "a", count: 64) : source.witnessSHA256,
                 captureManifestSHA256: field == "manifest" ? String(repeating: "b", count: 64) : source.captureManifestSHA256,
                 semanticPlanSHA256: source.semanticPlanSHA256,
-                sourceObjectIDs: field == "census" ? Array(source.sourceObjectIDs.dropLast()) : source.sourceObjectIDs,
-                definitionManifestBytes: field == "census" ? source.definitionManifestBytes : nil)
+                sourceObjectIDs: field == "census" ? Array(source.sourceObjectIDs.dropLast()) :
+                    field == "snapshot-only" ? review.bundle.objects.map(\.sourceObjectID) : source.sourceObjectIDs,
+                definitionManifestBytes: ["census", "snapshot-only"].contains(field) ? source.definitionManifestBytes : nil)
             do { try await coordinator.revalidate(source: changed); XCTFail("Changed source admitted: \(field)") }
             catch { XCTAssertEqual(error as? AnyHeartNativeSourceCaptureCoordinatorError, .sourceBinding) }
         }

@@ -64,12 +64,23 @@ public struct AnyHeartNativeSourceCaptureReview: Sendable {
     public let definitionPlan: AnyHeartNativeDefinitionPlan
     public let currentPagePlans: [AnyHeartNativePageComposition]
     public let unmappedObjects: [UnmappedObject]
+    public let pinkhaSource: AnyHeartNativePinkhaSource?
+    public let pinkhaSourceIssue: String?
     public var permitsDestinationWrites: Bool { false }
 
     fileprivate init(descriptor: AnyHeartNativeCaptureDescriptor, bundle: AnyHeartNativeSpaceBundle) throws {
         self.descriptor = descriptor; self.bundle = bundle
         let definitions = try AnyHeartNativeDefinitionPlan(catalog: .init(bundle: bundle))
         definitionPlan = definitions
+        do {
+            pinkhaSource = try AnyHeartNativePinkhaSource.discover(in: bundle)
+            pinkhaSourceIssue = nil
+        } catch {
+            // Preserve the complete capture review when a source schema is
+            // incomplete or ambiguous. No source error grants destination writes.
+            pinkhaSource = nil
+            pinkhaSourceIssue = String(describing: error)
+        }
         let candidates = bundle.objects.filter {
             $0.nativeType == 16 && $0.objectTypes.count == 1 &&
             definitions.type(sourceURL: $0.objectTypes[0])?.definition.recommendedLayout == 0
@@ -97,24 +108,33 @@ public struct AnyHeartNativeSourceCaptureReview: Sendable {
                                       reason: String(describing: error)))
             }
         }
+        let snapshotIDs = Set(bundle.objects.map { Data($0.sourceObjectID.utf8) })
+        for tree in bundle.trees where !snapshotIDs.contains(Data(tree.objectID.utf8)) {
+            unmapped.append(.init(sourceObjectID: tree.objectID, nativeType: tree.nativeType,
+                reason: tree.status + ":native-settings-history-or-tombstone-mapping-required"))
+        }
+        if let census = bundle.nativeStoreContext?.headCensus {
+            unmapped.append(.init(sourceObjectID: census.nativeACLID, nativeType: -1,
+                reason: "native-acl-original-retained:destination-permissions-mapping-required"))
+        }
         currentPagePlans = pages; unmappedObjects = unmapped
     }
 
     /// Bind a future full semantic plan to this exact original source census.
     /// This creates no destination plan and bypasses no semantic coverage gate.
     public func sourceBinding(semanticPlanSHA256: String) throws -> AnyDestinationSourceBinding {
-        try .init(bundle: bundle, semanticPlanSHA256: semanticPlanSHA256,
-                  sourceObjectIDs: bundle.objects.map(\.sourceObjectID))
+        try .init(bundle: bundle, semanticPlanSHA256: semanticPlanSHA256)
     }
 
     fileprivate func requireSameSource(_ source: AnyDestinationSourceBinding) throws {
         func exact(_ a: String, _ b: String) -> Bool { Data(a.utf8) == Data(b.utf8) }
-        guard exact(source.accountID, bundle.sourceAccountID), exact(source.spaceID, bundle.sourceSpaceID),
+        guard let census = bundle.nativeStoreContext?.headCensus,
+              exact(source.accountID, bundle.sourceAccountID), exact(source.spaceID, bundle.sourceSpaceID),
               source.captureManifestSHA256 == bundle.manifestSHA256,
               source.witnessSHA256 == bundle.sourceWitnessSHA256,
               source.definitionManifestBytes == bundle.manifestBytes,
               Set(source.sourceObjectIDs.map { Data($0.utf8) }) ==
-                Set(bundle.objects.map { Data($0.sourceObjectID.utf8) }) else {
+                Set(census.sourceHeadIDs.map { Data($0.utf8) }) else {
             throw AnyHeartNativeSourceCaptureCoordinatorError.sourceBinding
         }
     }

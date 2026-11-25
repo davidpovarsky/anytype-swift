@@ -14,6 +14,8 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleDisplayName</key>
+	<string>Pinkha</string>
 	<key>CFBundleName</key>
 	<string>$(BUNDLE_NAME)</string>
 	<key>CFBundlePackageType</key>
@@ -55,6 +57,10 @@
 		<string>hanlinminiapps</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<!-- Documents contains user exports. Imported server settings are migrated
+	     to private Application Support before the custom network is opened. -->
+	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
@@ -120,6 +126,14 @@
 	<false/>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.gloiiire.pinkha.torahSource</string>
+			<key>UTTypeDescription</key>
+			<string>Torah source transfer</string>
+			<key>UTTypeConformsTo</key>
+			<array><string>public.data</string></array>
+		</dict>
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>

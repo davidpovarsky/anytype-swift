@@ -1,0 +1,38 @@
+{
+  "argv": [
+    "swift",
+    "test",
+    "--package-path",
+    "/Users/m1/builds/pinkha-dual-main-20261125/private-settings-4d1-2/projection",
+    "--scratch-path",
+    "/Users/m1/builds/pinkha-dual-main-20261125/private-settings-4d1-2/build",
+    "--disable-sandbox",
+    "--jobs",
+    "2",
+    "--filter",
+    "PinkhaPrivateDirectoryMigrationTests"
+  ],
+  "elapsedSeconds": 109.86517190933228,
+  "exitCode": 1,
+  "expectedMethods": [
+    "testMovesExactOriginalSettingsAndFileIdentityToPrivateStorage",
+    "testRepeatedOpenKeepsTheAlreadyMovedBytesAndFilename",
+    "testConflictingDestinationPreservesBothOriginalSettingsStores",
+    "testSourceSymlinkIsRefusedWithoutMovingItsTarget",
+    "testPrivateParentSymlinkIsRefusedBeforeAnyMove",
+    "testUnexpectedNestedDirectoryKeepsOriginalTreeIntact",
+    "testNewInstallationCreatesOnlyThePrivateSettingsDirectory"
+  ],
+  "minimumFreeBytes": 112692932608,
+  "originalLogSHA256": "b23e0497af48bdb90703576ed323a46d9095e1a6c85406f2a1c68c99353973e3",
+  "passedMethods": [
+    "testPrivateParentSymlinkIsRefusedBeforeAnyMove",
+    "testSourceSymlinkIsRefusedWithoutMovingItsTarget"
+  ],
+  "scope": "actual-macOS-APFS-settings-migration-components-not-app-acceptance",
+  "skippedMethods": 0,
+  "sourceCommit": "4d136c2eaaa9e6bf32900008bbf94763a72afa86",
+  "sourceUnchanged": true,
+  "status": "FAIL",
+  "stopReason": null
+}

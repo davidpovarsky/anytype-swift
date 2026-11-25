@@ -1,0 +1,67 @@
+{
+  "devices": [
+    {
+      "architecture": "arm64",
+      "deviceId": "FA2A5EE5-718B-49D5-A394-F7BD7FD11439",
+      "deviceName": "PinkhaUnifiedD-hanlin-0971a6e7-d1b9-40d5-83b2-42a539a5930f",
+      "modelName": "iPad Pro 13-inch (M5)",
+      "osBuildNumber": "24A434",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    }
+  ],
+  "testNodes": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "name": "XCTAssertEqual failed: (\"XCTWaiterResult(rawValue: 2)\") is not equal to (\"XCTWaiterResult(rawValue: 1)\") - Expected UI state was not reached",
+                      "nodeType": "Failure Message",
+                      "sourceLocation": {
+                        "filePath": "/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-ca7-history6c-1/source/UITests/NativeLaunchTests.swift",
+                        "lineNumber": 1087
+                      }
+                    },
+                    {
+                      "name": "    AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.",
+                      "nodeType": "Runtime Warning"
+                    }
+                  ],
+                  "duration": "3m 39s",
+                  "durationInSeconds": 219.27212798595428,
+                  "name": "testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen()",
+                  "nodeIdentifier": "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen()",
+                  "nodeIdentifierURL": "test://com.apple.xcode/AnyNativeTransitionUI/PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
+                  "nodeType": "Test Case",
+                  "result": "Failed"
+                }
+              ],
+              "name": "NativeLaunchTests",
+              "nodeIdentifierURL": "test://com.apple.xcode/AnyNativeTransitionUI/PinkhaAnyNativeUITests/NativeLaunchTests",
+              "nodeType": "Test Suite",
+              "result": "Failed"
+            }
+          ],
+          "name": "PinkhaAnyNativeUITests",
+          "nodeIdentifierURL": "test://com.apple.xcode/AnyNativeTransitionUI/PinkhaAnyNativeUITests",
+          "nodeType": "UI test bundle",
+          "result": "Failed"
+        }
+      ],
+      "name": "PinkhaAnyNativeTransitionUI",
+      "nodeType": "Test Plan",
+      "result": "Failed"
+    }
+  ],
+  "testPlanConfigurations": [
+    {
+      "configurationId": "1",
+      "configurationName": "Test Scheme Action"
+    }
+  ]
+}

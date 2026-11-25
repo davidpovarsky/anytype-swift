@@ -28,7 +28,27 @@ public struct AnyHeartNativeSourceReviewView: View {
                     "Moving this space still requires mapping and verification. The captured source is retained in the app; no destination data has been written."
                 ))
                 .font(.callout).foregroundStyle(.secondary)
+                .accessibilityIdentifier("heart-source-review-pending-migration")
                 if !spaceName.isEmpty { LabeledContent(t("מרחב", "Space"), value: spaceName) }
+            }
+
+            Section(t("פרטי אימות המקור", "Source verification details")) {
+                DisclosureGroup(t("זהות המקור והצילום", "Source and capture identity")) {
+                    identity(t("חשבון", "Account"), review.descriptor.sourceAccountID, id: "account")
+                    identity(t("מרחב", "Space ID"), review.descriptor.sourceSpaceID, id: "space")
+                    identity(t("מזהה צילום", "Capture ID"), review.descriptor.requestID, id: "capture-id")
+                    identity(t("טביעת אצבע של הצילום", "Capture fingerprint"), review.descriptor.manifestSHA256, id: "fingerprint")
+                    count(t("עצים מקוריים", "Native trees"), review.descriptor.nativeTrees, id: "trees")
+                    if let census = review.bundle.nativeStoreContext?.headCensus {
+                        count(t("רשומות מקור, לרבות הגדרות והרשאות", "Source identities, including settings and permissions"),
+                              census.sourceHeadIDs.count, id: "native-heads")
+                    }
+                }
+                .accessibilityIdentifier("heart-source-review-identity")
+                Text(t(
+                    "שינוי בחשבון, במרחב או בתוכן מחייב בדיקה חוזרת של המקור לפני העברה.",
+                    "An account, space or content change requires the source to be checked again before transfer."
+                )).font(.footnote).foregroundStyle(.secondary)
             }
 
             Section(t("התוכן שנלכד", "Captured content")) {
@@ -46,23 +66,10 @@ public struct AnyHeartNativeSourceReviewView: View {
             }
 
             sourceLimits
+            pinkhaMappings
             definitions
             currentPages
             unmappedObjects
-
-            Section(t("פרטי אימות המקור", "Source verification details")) {
-                DisclosureGroup(t("זהות המקור והצילום", "Source and capture identity")) {
-                    identity(t("חשבון", "Account"), review.descriptor.sourceAccountID)
-                    identity(t("מרחב", "Space ID"), review.descriptor.sourceSpaceID)
-                    identity(t("מזהה צילום", "Capture ID"), review.descriptor.requestID)
-                    identity(t("טביעת אצבע של הצילום", "Capture fingerprint"), review.descriptor.manifestSHA256)
-                    count(t("עצים מקוריים", "Native trees"), review.descriptor.nativeTrees, id: "trees")
-                }
-                Text(t(
-                    "שינוי בחשבון, במרחב או בתוכן מחייב בדיקה חוזרת של המקור לפני העברה.",
-                    "An account, space or content change requires the source to be checked again before transfer."
-                )).font(.footnote).foregroundStyle(.secondary)
-            }
         }
         .navigationTitle(t("בדיקת מרחב Heart", "Review Heart space"))
         .accessibilityIdentifier("heart-source-review")
@@ -70,6 +77,12 @@ public struct AnyHeartNativeSourceReviewView: View {
 
     private var sourceLimits: some View {
         Section(t("השלמות נדרשות במקור", "Source requirements")) {
+            count(t("פערים בהתאמת סוגים ומאפיינים", "Type and property mapping requirements"),
+                  review.definitionPlan.issues.count, id: "definition-issues")
+            count(t("דפים עם התאמת תוכן נוכחי", "Pages with current content mapping"),
+                  review.currentPagePlans.count, id: "page-plans")
+            count(t("אובייקטים ללא התאמה מלאה", "Objects without a complete mapping"),
+                  review.unmappedObjects.count, id: "unmapped")
             if !review.bundle.sourceGaps.isEmpty {
                 count(t("פערים בצילום המקור", "Capture gaps"), review.bundle.sourceGaps.count, id: "capture-gaps")
             }
@@ -84,9 +97,16 @@ public struct AnyHeartNativeSourceReviewView: View {
                     }
                 }
             }
-            if !review.bundle.retainedOtherCollections.isEmpty {
+            let collections = review.bundle.nativeStoreContext?.unmappedCollectionNames.count ??
+                review.bundle.retainedOtherCollections.count
+            if collections > 0 {
                 count(t("אוספי מקור נוספים שדורשים התאמה", "Additional source collections requiring mapping"),
-                      review.bundle.retainedOtherCollections.count, id: "collections")
+                      collections, id: "collections")
+            }
+            if review.bundle.nativeStoreContext?.headCensus == nil {
+                Text(t("ספירת נתוני המקור המלאה טרם אומתה.", "The complete source identity census has not been verified."))
+                    .font(.footnote).foregroundStyle(.secondary)
+                    .accessibilityIdentifier("heart-source-review-incomplete-census")
             }
             ForEach(Array(review.bundle.issues.enumerated()), id: \.offset) { index, issue in
                 DisclosureGroup(t("פרט מקור שדורש בדיקה", "Source detail requiring review")) {
@@ -99,6 +119,36 @@ public struct AnyHeartNativeSourceReviewView: View {
                 "היסטוריה, הגדרות, הרשאות וכל סוג תוכן דורשים התאמה למנוע היעד ואימות פתיחה מחדש.",
                 "History, settings, permissions and every content type require a destination mapping and reopen verification."
             )).font(.footnote).foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private var pinkhaMappings: some View {
+        if let source = review.pinkhaSource {
+            Section(t("מבנה ומקורות של Pinkha", "Pinkha structure and sources")) {
+                count(t("פריטי היררכיה", "Hierarchy items"), source.hierarchy.count, id: "pinkha-hierarchy")
+                count(t("מסמכים עם שדה מקורות", "Documents with a source field"),
+                      source.canonicalDocuments.count, id: "pinkha-source-documents")
+                count(t("קישורים למקורות", "Source associations"),
+                      source.canonicalDocuments.reduce(0) { $0 + $1.records.count }, id: "pinkha-associations")
+                count(t("פרטי מבנה שדורשים התאמה", "Structure mapping requirements"),
+                      source.issues.count, id: "pinkha-issues")
+                Text(t(
+                    "המבנה זוהה לפי מזהי ההגדרות שנשמרו במקור. ההעברה ממתינה להשלמת ההתאמות והאימות.",
+                    "The structure was identified from the original stored definition IDs. Transfer still requires complete mapping and verification."
+                )).font(.footnote).foregroundStyle(.secondary)
+            }
+        } else if let issue = review.pinkhaSourceIssue {
+            Section(t("מבנה Pinkha דורש בדיקה", "Pinkha structure requires review")) {
+                Text(t(
+                    "הגדרות המבנה המקוריות אינן שלמות או אינן חד־משמעיות. הנתונים נשמרו לבדיקה.",
+                    "The original structure definitions are incomplete or ambiguous. The source data is retained for review."
+                )).font(.callout)
+                DisclosureGroup(t("פרטי הבדיקה", "Review details")) {
+                    Text(issue).font(.footnote).textSelection(.enabled)
+                }
+            }
+            .accessibilityIdentifier("heart-source-review-pinkha-schema-issue")
         }
     }
 
@@ -115,8 +165,6 @@ public struct AnyHeartNativeSourceReviewView: View {
                     }
                 }
             }
-            count(t("פערים בהתאמת סוגים ומאפיינים", "Type and property mapping requirements"),
-                  review.definitionPlan.issues.count, id: "definition-issues")
             ForEach(Array(review.definitionPlan.issues.enumerated()), id: \.offset) { index, issue in
                 DisclosureGroup {
                     identity(t("אובייקט מקור", "Source object"), issue.sourceObjectID)
@@ -135,8 +183,6 @@ public struct AnyHeartNativeSourceReviewView: View {
 
     private var currentPages: some View {
         Section(t("טיוטות התאמת דפים", "Draft page mappings")) {
-            count(t("דפים עם התאמת תוכן נוכחי", "Pages with current content mapping"),
-                  review.currentPagePlans.count, id: "page-plans")
             Text(t(
                 "הטיוטות כוללות כותרת, ערכי מאפיינים ותוכן נתמכים. הן ממתינות להשלמת כל דרישות המרחב.",
                 "These drafts include supported titles, property values and body content. They remain pending until every space requirement is met."
@@ -157,8 +203,6 @@ public struct AnyHeartNativeSourceReviewView: View {
 
     private var unmappedObjects: some View {
         Section(t("אובייקטים שעדיין דורשים התאמה", "Objects still requiring mapping")) {
-            count(t("אובייקטים ללא התאמה מלאה", "Objects without a complete mapping"),
-                  review.unmappedObjects.count, id: "unmapped")
             ForEach(Array(review.unmappedObjects.enumerated()), id: \.offset) { index, object in
                 DisclosureGroup(objectName(object.sourceObjectID)) {
                     identity(t("אובייקט מקור", "Source object"), object.sourceObjectID)
@@ -190,15 +234,22 @@ public struct AnyHeartNativeSourceReviewView: View {
 
     private func count(_ label: String, _ value: Int, id: String) -> some View {
         LabeledContent(label, value: value.formatted())
+            .accessibilityElement(children: .combine)
             .accessibilityIdentifier("heart-source-review-" + id)
             .accessibilityValue(String(value))
     }
 
-    private func identity(_ label: String, _ value: String) -> some View {
+    private func identity(_ label: String, _ value: String, id: String? = nil) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(label).font(.caption).foregroundStyle(.secondary)
-            Text(value).font(.footnote.monospaced()).textSelection(.enabled)
-                .fixedSize(horizontal: false, vertical: true)
+            if let id {
+                Text(value).font(.footnote.monospaced()).textSelection(.enabled)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("heart-source-review-" + id)
+            } else {
+                Text(value).font(.footnote.monospaced()).textSelection(.enabled)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
 

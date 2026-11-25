@@ -446,6 +446,70 @@ final class NativeDocumentPublicationTests: XCTestCase {
         }
     }
 
+    func testNativeBinRestoresExactObjectAndBodyAndRejectsRetiredPresentation() async throws {
+        try await withDocument { fixture in
+            let owner = fixture.owner
+            let library = AnyLibraryPresentation(client: owner.client, session: owner.session,
+                objects: owner.objects, blocks: owner.blocks, capabilities: owner.capabilities,
+                lifetime: fixture.lifetime, recovery: AnyNativeLibraryRecovery(workspace: owner.workspace))
+            await library.open()
+            if library.requiresSetup { await library.installWorkspace() }
+            XCTAssertTrue(library.isReady)
+            XCTAssertTrue(library.canWrite)
+            let title = "שחזור סל מחזור " + UUID().uuidString
+            await library.create(title: title, kind: .writingDocument, parentID: nil)
+            let item = try XCTUnwrap(library.hierarchy?.items.first { $0.title == title })
+            let schema = try XCTUnwrap(library.hierarchy?.schema)
+            let store = try AnyGuardedHTTPHierarchyRecordStore(client: owner.client, workspace: owner.workspace,
+                schema: schema, engineStartedAt: owner.session.engineStartedAt)
+            let block = try AnyNativeBlockCreationIntent(workspace: owner.workspace,
+                mutationID: Self.intentID(), objectID: item.objectID, type: "paragraph",
+                text: "Archive and restore — הטקסט המקורי נשמר",
+                style: .object(["nativeBinUnknown": .string("preserve")]),
+                parentID: "", position: AnyLexicographicPosition.middle)
+            let blockID = try await owner.session.perform { lease in
+                try await owner.blocks.ensureBlock(block) { try await lease.validate() }
+            }
+            let document = try library.document(item.objectID)
+            let documents = document.documents
+            let before = try await owner.session.perform { lease in
+                let row = try await store.readObject(objectID: item.objectID)
+                let read = try await documents.read(objectID: item.objectID, lease: lease)
+                return (row, read.snapshot.blocks.map(\.native))
+            }
+            XCTAssertEqual(before.1.count, 1)
+            XCTAssertEqual(before.1.first?["id"]?.string, blockID)
+            await library.remove(item)
+            await library.refreshBin()
+            XCTAssertEqual(library.binItems.map(\.id), [item.objectID])
+            XCTAssertFalse(library.hierarchy?.itemsByID.keys.contains(item.objectID) ?? true)
+            await library.restoreFromBin(objectID: item.objectID)
+            XCTAssertTrue(library.binItems.isEmpty)
+            XCTAssertEqual(library.hierarchy?.itemsByID[item.objectID]?.title, title)
+            let restored = try await owner.session.perform { lease in
+                let row = try await store.readObject(objectID: item.objectID)
+                let read = try await documents.read(objectID: item.objectID, lease: lease)
+                return (row, read.snapshot.blocks.map(\.native))
+            }
+            XCTAssertEqual(restored.0["any"]?["collections"], before.0["any"]?["collections"])
+            XCTAssertEqual(restored.0[schema.collectionID], before.0[schema.collectionID])
+            XCTAssertEqual(restored.1, before.1, "Restore must retain original native block IDs and bytes.")
+
+            await library.remove(try XCTUnwrap(library.hierarchy?.itemsByID[item.objectID]))
+            await library.refreshBin()
+            XCTAssertEqual(library.binItems.map(\.id), [item.objectID])
+            library.revoke()
+            await library.restoreFromBin(objectID: item.objectID)
+            let stillArchived = try await owner.session.perform { lease in
+                let value = try await store.readObject(objectID: item.objectID)
+                try await lease.validate(); return value
+            }
+            XCTAssertTrue(stillArchived["any"]?["collections"]?.array?.contains(.string("bin")) == true,
+                          "A retired presentation must not restore through its old UI action.")
+            await library.drain()
+        }
+    }
+
     private func withDocument(expectedBuild: AnyEmbeddedBuild = nativePublicationExpectedBuild,
         _ body: @MainActor (NativePublicationFixture) async throws -> Void) async throws {
         XCTAssertEqual(AnyEmbeddedBuild.linked, expectedBuild)
@@ -562,8 +626,11 @@ private final class NativePublicationFixture {
     }
 
     func type(_ text: String) throws {
+        let rendered = try block()
+        let display = rendered.type == "code"
+            ? AnyInlineMarkdown(literal: text).display : AnyInlineMarkdown(text).display
         try model.changeText(blockID: blockID, source: text,
-            displaySelection: .init(location: text.utf16.count, length: 0), renderedBlock: block())
+            displaySelection: .init(location: display.utf16.count, length: 0), renderedBlock: rendered)
     }
 
     func read() async throws -> AnyEditorRead {

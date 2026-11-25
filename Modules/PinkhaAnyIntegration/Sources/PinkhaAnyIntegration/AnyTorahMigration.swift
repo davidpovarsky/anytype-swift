@@ -67,12 +67,14 @@ public struct AnyTorahMigrationPlan: Sendable {
             }
             let location = TorahAssociationLocation(spaceId: workspace.spaceID, target: target)
             let remapped = try Self.remapInternalNote(source.item, objectIDMap: completeObjectMap)
+            let mappedItem = try AnyTorahSemanticAnchorMigration.remapping(remapped.item,
+                source: source.location, destination: location)
             if let referenced = remapped.referencedObjectID { referencedObjects.insert(referenced) }
-            guard semanticIdentities.insert(TorahAssociationIdentity(item: remapped.item, location: location)).inserted else {
+            guard semanticIdentities.insert(TorahAssociationIdentity(item: mappedItem, location: location)).inserted else {
                 throw TorahAssociationRepositoryError.writeConflict("Source contains duplicate association identities")
             }
             let mapped = TorahStoredAssociationRecord(
-                location: location, item: remapped.item, unknownFields: source.unknownFields)
+                location: location, item: mappedItem, unknownFields: source.unknownFields)
             let encoded = try codec.encodeCanonicalDocument(.init(
                 records: [mapped], unknownFields: payload.unknownFields))
             // Operation identity excludes payload bytes: reusing this migration
@@ -86,8 +88,8 @@ public struct AnyTorahMigrationPlan: Sendable {
             operations.append(try AnyTorahOperation(
                 operationID: operationID, spaceID: workspace.spaceID, authorID: workspace.accountID,
                 kind: .add, targetObjectID: targetObjectID, targetBlockID: target.blockId ?? "",
-                providerID: remapped.item.providerID,
-                canonicalRef: remapped.item.canonicalKey.isEmpty ? remapped.item.externalID : remapped.item.canonicalKey,
+                providerID: mappedItem.providerID,
+                canonicalRef: mappedItem.canonicalKey.isEmpty ? mappedItem.externalID : mappedItem.canonicalKey,
                 payload: encoded))
         }
         let sourceHash = AnyContentDigest.sha256(sourceBytes)
@@ -229,6 +231,14 @@ public struct AnyTorahMigrationExecutor: Sendable {
         }
         if targets.isEmpty { targets.insert(.object(objectId: plan.targetObjectID)) }
         for target in targets { try await access.validate(target, intent: .write) }
+        var semanticTargets: [String: PinkhaSemanticTextAnchor] = [:]
+        for operation in plan.operations {
+            let source = try record(operation)
+            if let semantic = try TorahSemanticAnchorAssociation.decoding(source.item, location: source.location) {
+                try await validateSemanticTarget(semantic.anchor)
+                semanticTargets[operation.claimID] = semantic.anchor
+            }
+        }
         for referencedID in plan.referencedObjectIDs {
             try await access.validate(.object(objectId: referencedID), intent: .read)
         }
@@ -253,10 +263,12 @@ public struct AnyTorahMigrationExecutor: Sendable {
                 let target: TorahAssociationTarget = operation.targetBlockID.isEmpty
                     ? .object(objectId: operation.targetObjectID)
                     : .block(objectId: operation.targetObjectID, blockId: operation.targetBlockID)
+                let semanticTarget = semanticTargets[operation.claimID]
                 try await store.append(operation) { [access] in
                     try Task.checkCancellation()
                     try await authorize()
                     try await access.validate(target, intent: .write)
+                    if let semanticTarget { try await self.validateSemanticTarget(semanticTarget) }
                     for referencedID in plan.referencedObjectIDs {
                         try await access.validate(.object(objectId: referencedID), intent: .read)
                     }
@@ -273,6 +285,7 @@ public struct AnyTorahMigrationExecutor: Sendable {
         // Sequential acknowledgements are not a global transaction. Re-read all
         // planned logical identities before issuing a complete snapshot receipt.
         do {
+            for anchor in semanticTargets.values { try await validateSemanticTarget(anchor) }
             let after = try await store.snapshot()
             let unresolved = try finalUnresolved(plan: plan, projection: after)
             guard unresolved.isEmpty else {
@@ -290,6 +303,13 @@ public struct AnyTorahMigrationExecutor: Sendable {
                      alreadyPresentClaimIDs: previous, acknowledgedClaimIDs: acknowledged,
                      pendingClaimIDs: [], failure: nil)
     }
+    private func validateSemanticTarget(_ anchor: PinkhaSemanticTextAnchor) async throws {
+        guard let semantic = access as? any AnyTorahSemanticTargetAccess else {
+            throw AnyEngineError.invalidOperation("semantic migration requires a verified native document target")
+        }
+        try await semantic.validateSemanticTarget(anchor)
+    }
+
     private struct StableRecordIdentity: Hashable {
         let location: TorahAssociationLocation
         let itemID: String

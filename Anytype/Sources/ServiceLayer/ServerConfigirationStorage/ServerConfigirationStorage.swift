@@ -1,6 +1,7 @@
 import Foundation
 import AnytypeCore
 import UniformTypeIdentifiers
+import PinkhaKit
 @preconcurrency import Combine
 
 protocol ServerConfigurationStorageProtocol: AnyObject, Sendable {
@@ -10,7 +11,7 @@ protocol ServerConfigurationStorageProtocol: AnyObject, Sendable {
     func setupCurrentConfiguration(config: NetworkServerConfig)
     func configurations() -> [NetworkServerConfig]
     func currentConfiguration() -> NetworkServerConfig
-    func currentConfigurationPath() -> URL?
+    func currentConfigurationPath() throws -> URL?
     func installedConfigurations() -> [NetworkServerConfig]
 }
 
@@ -20,6 +21,8 @@ final class ServerConfigurationStorage: ServerConfigurationStorageProtocol, Send
         case badExtension
         case accessError
         case badEncoding
+        case privateStorageUnavailable
+        case missingConfiguration
     }
     
     private let serverConfig = UserDefaultStorage<NetworkServerConfig>(key: "serverConfig", defaultValue: .anytype)
@@ -30,11 +33,25 @@ final class ServerConfigurationStorage: ServerConfigurationStorageProtocol, Send
     }
     
     private let storagePath: URL
+    private let storageFailure: ServerError?
     private let installedConfigurationsSubject = CurrentValueSubject<Void, Never>(())
     
     init() {
-        self.storagePath = URL.documentsDirectory.appendingPathComponent(Constants.configStorageFolder)
-        validateServerFile()
+        let legacy = URL.documentsDirectory.resolvingSymlinksInPath()
+            .appendingPathComponent(Constants.configStorageFolder)
+        self.storagePath = URL.applicationSupportDirectory.resolvingSymlinksInPath()
+            .appendingPathComponent("Pinkha/Network", isDirectory: true)
+            .appendingPathComponent(Constants.configStorageFolder, isDirectory: true)
+        do {
+            _ = try PinkhaPrivateDirectoryMigration.prepare(legacy: legacy, destination: storagePath)
+            self.storageFailure = nil
+            validateServerFile()
+        } catch {
+            // Preserve the selected custom network and all original files.
+            // A custom-network login reports the failure; it must never silently
+            // substitute the public network after a failed settings migration.
+            self.storageFailure = .privateStorageUnavailable
+        }
     }
     
     // MARK: - ServerConfigurationStorageProtocol
@@ -45,6 +62,7 @@ final class ServerConfigurationStorage: ServerConfigurationStorageProtocol, Send
     
     func addConfiguration(filePath: URL, setupAsCurrent: Bool) throws {
         do {
+            if let storageFailure { throw storageFailure }
             guard let type = UTType(filenameExtension: filePath.pathExtension), type == .yaml else { throw ServerError.badExtension }
             
             guard filePath.startAccessingSecurityScopedResource() else { throw ServerError.accessError }
@@ -66,6 +84,7 @@ final class ServerConfigurationStorage: ServerConfigurationStorageProtocol, Send
     
     func addConfiguration(fileBase64Content: String, setupAsCurrent: Bool) throws {
         do {
+            if let storageFailure { throw storageFailure }
             guard let yamlString = fileBase64Content.decodedBase64(), let data = yamlString.data(using: .utf8) else { throw ServerError.badEncoding }
             
             try? FileManager.default.createDirectory(at: storagePath, withIntermediateDirectories: false)
@@ -85,7 +104,7 @@ final class ServerConfigurationStorage: ServerConfigurationStorageProtocol, Send
     
     func setupCurrentConfiguration(config: NetworkServerConfig) {
         let configs = configurations()
-        if configs.contains(serverConfig.value) {
+        if configs.contains(config) {
             serverConfig.value = config
         }
     }
@@ -106,9 +125,14 @@ final class ServerConfigurationStorage: ServerConfigurationStorageProtocol, Send
         return serverConfig.value
     }
     
-    func currentConfigurationPath() -> URL? {
-        guard let items = try? FileManager.default.contentsOfDirectory(at: storagePath, includingPropertiesForKeys: nil) else { return nil }
-        return items.first { .file($0.lastPathComponent) == serverConfig.value }
+    func currentConfigurationPath() throws -> URL? {
+        guard case .file = serverConfig.value else { return nil }
+        if let storageFailure { throw storageFailure }
+        let items = try FileManager.default.contentsOfDirectory(at: storagePath, includingPropertiesForKeys: nil)
+        guard let selected = items.first(where: { .file($0.lastPathComponent) == serverConfig.value }) else {
+            throw ServerError.missingConfiguration
+        }
+        return selected
     }
     
     // MARK: - Private func

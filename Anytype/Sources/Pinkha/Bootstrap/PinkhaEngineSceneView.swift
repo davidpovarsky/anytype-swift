@@ -292,61 +292,16 @@ struct PinkhaEngineSceneView<HeartContent: View>: View {
     init(@ViewBuilder heart: () -> HeartContent) { self.heart = heart() }
 
     var body: some View {
-        ZStack {
-            // Keeping this subtree mounted preserves the original app's coordinator,
-            // navigation, editor drafts and live native account while it is hidden.
-            heart
-                .opacity(owner.engine == .heart ? 1 : 0)
-                .allowsHitTesting(owner.engine == .heart && !owner.switching)
-                .accessibilityHidden(owner.engine != .heart)
-            if owner.engine == .any {
-                if owner.anyWindow == scene, let presentation = owner.anyPresentation {
-                    PinkhaEmbeddedAnyRootView(session: presentation)
-                } else {
-                    ContentUnavailableView {
-                        Label("המרחב פתוח בחלון אחר", systemImage: "rectangle.on.rectangle")
-                    } actions: {
-                        Button("פתיחה בחלון הזה") { Task { await owner.select(.any, for: scene) } }
-                            .accessibilityIdentifier("pinkha.engine.claim-window")
-                    }
-                }
-            }
+        // A physical row keeps the shared selector outside each engine's real
+        // UIKit navigation bar. A safe-area overlay at the common ZStack root
+        // lets embedded navigation bars keep their window-top coordinates.
+        VStack(spacing: 0) {
+            engineBar
+            engineContent
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .clipped()
         }
         .disabled(owner.switching)
-        .safeAreaInset(edge: .top, spacing: 0) {
-            HStack {
-                Text("Pinkha").font(.headline)
-                Spacer()
-                if owner.switching { ProgressView() }
-                Menu {
-                    ForEach(PinkhaAppEngine.allCases) { engine in
-                        Button {
-                            Task { await owner.select(engine, for: scene) }
-                        } label: {
-                            Label(engine.name, systemImage: owner.engine == engine ? "checkmark.circle.fill" : "circle")
-                        }
-                        .accessibilityIdentifier("pinkha.engine.select." + engine.rawValue)
-                    }
-                    if owner.engine == .heart {
-                        Divider()
-                        Button("סקירת מקור להעברה", systemImage: "doc.text.magnifyingglass") {
-                            Task { await owner.captureSource(for: scene) }
-                        }
-                        .accessibilityIdentifier("pinkha.engine.migration.review-source")
-                        .disabled(owner.currentSource == nil || owner.sourceClosing)
-                    }
-                } label: {
-                    Label(owner.engine.name, systemImage: "arrow.triangle.2.circlepath")
-                }
-                .accessibilityLabel("מנוע")
-                .accessibilityValue(owner.engine.name)
-                .accessibilityIdentifier("pinkha.engine.selector")
-                .disabled(owner.switching)
-            }
-            .padding(.horizontal)
-            .frame(minHeight: 44)
-            .background(.ultraThinMaterial)
-        }
         .sheet(isPresented: Binding(
             get: { owner.sourceReviewPresented && owner.sourceWindow == scene },
             set: { showing in if !showing { Task { await owner.dismissSourceReview() } } }
@@ -393,6 +348,64 @@ struct PinkhaEngineSceneView<HeartContent: View>: View {
             let target: PinkhaAppEngine = PinkhaEmbeddedAnyMiniAppsReturnRouter.shared.receive(url) ? .any : .heart
             Task { await owner.select(target, for: scene) }
         }
+    }
+
+    private var engineContent: some View {
+        ZStack {
+            // Keeping this subtree mounted preserves the original app's coordinator,
+            // navigation, editor drafts and live native account while it is hidden.
+            heart
+                .opacity(owner.engine == .heart ? 1 : 0)
+                .allowsHitTesting(owner.engine == .heart && !owner.switching)
+                .accessibilityHidden(owner.engine != .heart)
+            if owner.engine == .any {
+                if owner.anyWindow == scene, let presentation = owner.anyPresentation {
+                    PinkhaEmbeddedAnyRootView(session: presentation)
+                } else {
+                    ContentUnavailableView {
+                        Label("המרחב פתוח בחלון אחר", systemImage: "rectangle.on.rectangle")
+                    } actions: {
+                        Button("פתיחה בחלון הזה") { Task { await owner.select(.any, for: scene) } }
+                            .accessibilityIdentifier("pinkha.engine.claim-window")
+                    }
+                }
+            }
+        }
+    }
+
+    private var engineBar: some View {
+        HStack {
+            Text("Pinkha").font(.headline)
+            Spacer()
+            if owner.switching { ProgressView() }
+            Menu {
+                ForEach(PinkhaAppEngine.allCases) { engine in
+                    Button {
+                        Task { await owner.select(engine, for: scene) }
+                    } label: {
+                        Label(engine.name, systemImage: owner.engine == engine ? "checkmark.circle.fill" : "circle")
+                    }
+                    .accessibilityIdentifier("pinkha.engine.select." + engine.rawValue)
+                }
+                if owner.engine == .heart {
+                    Divider()
+                    Button("סקירת מקור להעברה", systemImage: "doc.text.magnifyingglass") {
+                        Task { await owner.captureSource(for: scene) }
+                    }
+                    .accessibilityIdentifier("pinkha.engine.migration.review-source")
+                    .disabled(owner.currentSource == nil || owner.sourceClosing)
+                }
+            } label: {
+                Label(owner.engine.name, systemImage: "arrow.triangle.2.circlepath")
+            }
+            .accessibilityLabel("מנוע")
+            .accessibilityValue(owner.engine.name)
+            .accessibilityIdentifier("pinkha.engine.selector")
+            .disabled(owner.switching)
+        }
+        .padding(.horizontal)
+        .frame(minHeight: 44)
+        .background(.ultraThinMaterial)
     }
 }
 #endif

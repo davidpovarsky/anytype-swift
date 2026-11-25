@@ -1,5 +1,6 @@
 import Foundation
 import PinkhaKit
+import PinkhaAnyIntegration
 
 /// A scoped source-side template. The native destination object ID does not
 /// exist yet; the executor resolves it before constructing a prepared block.
@@ -40,16 +41,6 @@ public struct AnyDestinationAnchoredText: Codable, Equatable, Sendable {
 public enum AnySemanticAnchorAssociationMigration {
     public static func remapping(_ item: TorahAssociationItem, source: TorahAssociationLocation,
                                  destination: TorahAssociationLocation) throws -> TorahAssociationItem {
-        guard let semantic = try TorahSemanticAnchorAssociation.decoding(item, location: source) else {
-            return item
-        }
-        guard destination.target.blockId == nil else { throw PinkhaSemanticTextAnchorError.wrongDocument }
-        let anchor = try PinkhaSemanticTextAnchor(spaceID: destination.spaceId,
-            objectID: destination.target.objectId, id: semantic.anchor.id)
-        var result = item
-        // The old marker was strictly decoded against its original owner above.
-        // Only this versioned key is replaced; unrelated metadata stays exact.
-        result.customMetadata?.removeValue(forKey: TorahSemanticAnchorAssociation.metadataKey)
-        return try TorahSemanticAnchorAssociation(anchor: anchor).attaching(to: result, location: destination)
+        try AnyTorahSemanticAnchorMigration.remapping(item, source: source, destination: destination)
     }
 }

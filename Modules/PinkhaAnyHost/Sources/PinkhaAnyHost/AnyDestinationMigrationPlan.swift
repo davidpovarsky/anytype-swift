@@ -54,6 +54,18 @@ public struct AnyDestinationSourceBinding: Codable, Equatable, Sendable {
         } else { definitionMembers = [:] }
     }
 
+    /// Complete native-source binding. It includes every native head, not
+    /// just trees for which a current object snapshot could be decoded.
+    public init(bundle: AnyHeartNativeSpaceBundle, semanticPlanSHA256: String) throws {
+        guard let census = bundle.nativeStoreContext?.headCensus else {
+            throw AnyDestinationMigrationError.invalidPlan("complete native source head census")
+        }
+        try self.init(bundle: bundle, semanticPlanSHA256: semanticPlanSHA256,
+                      sourceObjectIDs: census.sourceHeadIDs)
+    }
+
+    /// Explicit component scope. The current native capture coordinator refuses
+    /// this binding unless its identities equal the complete native head census.
     public init(bundle: AnyHeartNativeSpaceBundle, semanticPlanSHA256: String, sourceObjectIDs: [String]) throws {
         try self.init(accountID: bundle.sourceAccountID, spaceID: bundle.sourceSpaceID,
             witnessSHA256: bundle.sourceWitnessSHA256, captureManifestSHA256: bundle.manifestSHA256,
@@ -424,10 +436,11 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
                     throw AnyDestinationMigrationError.invalidPlan("shadowed or duplicate canonical property")
                 }
             case .retainedSystem(let kind, let count, let witness):
-                guard witness == source.witnessSHA256, count >= 0,
-                      kind != .emptyNativeKeyValue || count == 0 else {
+                guard witness == source.witnessSHA256, !itemSourceIDs.contains(id) else {
                     throw AnyDestinationMigrationError.invalidPlan("system preservation")
                 }
+                try AnyDestinationSystemCoverageChecks.require(source: source, sourceID: entry.sourceObjectID,
+                                                               kind: kind, capturedRowCount: count)
             case .blocked(let reasons):
                 guard !reasons.isEmpty, reasons.count <= 128,
                       reasons.allSatisfy({ AnyPreparedMigrationPlanBinding.validOpaque($0, maximum: 4096) }) else {
