@@ -946,8 +946,14 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
             throw AnytypeOriginalEditorMiniAppsError.notMounted
         }
         var selectedIDs: [String] = []
+        switch model.blocksStateManager.editingState {
+        case .selecting(let blocks, _), .simpleTablesSelection(_, let blocks, _): selectedIDs = blocks
+        default: break
+        }
         var location: Int?, length: Int?, selectedText: String?
-        let focused = origin ?? Self.focusedMiniAppsText(in: root)
+        // The original block/table selection is authoritative even when UIKit
+        // still retains a text first responder from an earlier editing action.
+        let focused = selectedIDs.isEmpty ? (origin ?? Self.focusedMiniAppsText(in: root)) : nil
         if let focused {
             guard focused.isDescendant(of: root),
                   let blockID = Self.miniAppsBlockID(view: focused, root: root) else {
@@ -966,11 +972,6 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                 value.attributedSubstring(from: selectedRange))
             location = prefix.text.utf16.count; length = selection.text.utf16.count
             selectedText = selection.text; selectedIDs = [blockID]
-        } else {
-            switch model.blocksStateManager.editingState {
-            case .selecting(let blocks, _), .simpleTablesSelection(_, let blocks, _): selectedIDs = blocks
-            default: break
-            }
         }
         try beginMiniApps()
         defer { miniAppsBusy = false; owner.host.endMiniAppsInteraction() }
