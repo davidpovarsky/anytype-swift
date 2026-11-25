@@ -260,7 +260,32 @@ struct TorahT5UIAcceptancePreparationTests {
                 "canonical-role-readback-differs")
             let response = try await show(object.id, spaceID: spaceID)
             let value = try rootDetails(response, objectID: object.id, spaceID: spaceID)
-            try require(value.name == title, "native-title-readback-differs")
+            if role == "note" {
+                // Native Note creation intentionally moves the supplied name into
+                // the first body block. Prove exact persisted content and snippet
+                // instead of treating that absent name detail as data loss.
+                let noteBody = "T5 existing Note " + token
+                let expectedSnippet = title + "\n" + noteBody
+                try require(value.resolvedLayoutValue == .note && value.name.isEmpty,
+                    "native-note-layout-or-name-differs")
+                try require(value.snippet == expectedSnippet,
+                    "native-note-snippet-readback-differs")
+                let graph = try await T5BlockReachability.evaluate(spaceID: spaceID, rootID: object.id,
+                    nodes: response.objectView.blocks.map { .init(id: $0.id, childIDs: $0.childrenIds) })
+                for expectedText in [title, noteBody] {
+                    let matches = response.objectView.blocks.filter {
+                        guard case .text(let content) = $0.content else { return false }
+                        return content.text == expectedText
+                    }
+                    try require(graph.isVerified && matches.count == 1
+                        && matches.allSatisfy { graph.reachableBlockIDs.contains($0.id) },
+                        "native-note-title-or-body-block-differs")
+                }
+                try require(value.objectName == title + " " + noteBody,
+                    "native-note-display-title-differs")
+            } else {
+                try require(value.name == title, "native-title-readback-differs")
+            }
             let canonical = try #require(value.values[manifest.documentAssociationsPropertyKey]?.stringValue)
             if let blockID, let blockText {
                 let graph = try await T5BlockReachability.evaluate(spaceID: spaceID, rootID: object.id,
@@ -279,7 +304,7 @@ struct TorahT5UIAcceptancePreparationTests {
                 guard case .text(let content) = nativeBlock.content else { throw Failure.invariant("presentation-probe-not-text") }
                 try require(content.text == probe.text, "presentation-probe-readback-differs")
             }
-            targets.append(.init(role: role, objectID: object.id, typeKey: type.value, title: value.name, blockID: blockID,
+            targets.append(.init(role: role, objectID: object.id, typeKey: type.value, title: value.objectName, blockID: blockID,
                 blockText: blockText, firstBlockID: firstID, firstBlockText: firstText, associationID: saved.id,
                 canonicalSHA256: hash(Data(canonical.utf8)), resultID: nil))
         }
@@ -445,7 +470,7 @@ struct TorahT5UIAcceptancePreparationTests {
         snapshot: TorahRelatedDocumentsSnapshot) -> MutationObservation {
         .init(stage: stage, nativeReadStatus: "present", nativeTypeID: readback.details.type,
             nativeTypeKey: typeKey, nativeLayout: readback.details.resolvedLayout ?? readback.details.layout,
-            nativeTitle: readback.details.name,
+            nativeTitle: readback.details.objectName,
             associationID: associationID,
             canonicalSHA256: hash(Data(readback.canonical.utf8)), bodySHA256: readback.bodySHA256,
             blockReachable: true, relatedRows: mutationRows(snapshot), coverage: "indexedTargetsOnly",
