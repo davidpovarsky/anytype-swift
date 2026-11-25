@@ -1,0 +1,11 @@
+{
+  "protocol": "source-ui-readonly-qualification-failure-v1",
+  "status": "FAIL_POSTPROCESSING_ONLY",
+  "sentinelScriptID": "script_job_86eb50ed416d4506b10eea9d1f56bc32",
+  "hubRequestID": "hreq_060b80a56f3846c1",
+  "exitCode": 1,
+  "error": "AssertionError at line32; compared mutable AnyEditorRead.nativeVersion across intended text edit",
+  "nativeAndUITestsRerun": 0,
+  "originalXcresultStatus": "PASS_UNCHANGED",
+  "correction": "Compare immutable Space/object/block identities throughout; require native markdown version to change on the real text edit and remain equal through cold opens and source unlink. See AnyEditorDocumentStore.swift nativeVersion=second.version."
+}

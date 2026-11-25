@@ -1922,18 +1922,6 @@
       "validation": [
         "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
-    },
-    {
-      "kind": "refactor",
-      "from": "PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift",
-      "to": "PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift",
-      "baselineBlob": "4160938d504811ed130e53c78993f084d9815e36",
-      "reason": "Preserve the original acceptance methods and add one actual combined-host engine-switch/Heart cold-reopen method.",
-      "sharedSources": [],
-      "validation": [
-        "2026-11-25: exact removal of the one new method reconstructs the previous complete file byte-for-byte; original assertions are unchanged. This method requires real Any runtime-ready UI, preserved Heart document/block, and cold reopen. Apple execution remains pending."
-      ],
-      "replacementBlob": "cd1f35aa909f728d45782e4f490d9f8506a36ffb"
     }
   ],
   "integration": {
