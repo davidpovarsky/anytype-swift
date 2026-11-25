@@ -1,0 +1,111 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test-without-building -xctestrun /Users/m1/builds/pinkha-c-heart-source-ui-20261125/attempt5/navigation-ui-products/E-Combined-Heart-source-review.xctestrun -destination "platform=iOS Simulator,id=5E77C761-78E5-4530-B44C-7561216652A6" -parallel-testing-enabled NO -only-testing PinkhaStage1AcceptanceUITests/HeartSourceCaptureAcceptanceUITests/testActualHeartSourceReviewCloseAndRecapture -resultBundlePath /Users/m1/builds/pinkha-c-heart-source-ui-20261125/attempt5/evidence/source-review/original.xcresult -collect-test-diagnostics never
+
+Writing result bundle at path:
+	/Users/m1/builds/pinkha-c-heart-source-ui-20261125/attempt5/evidence/source-review/original.xcresult
+
+2026-11-25 14:43:07.207633+0100 PinkhaStage1AcceptanceUITests-Runner[4443:5907147] [Default] Running tests...
+2026-11-25 14:43:07.250903+0100 PinkhaStage1AcceptanceUITests-Runner[4443:5907147] [UIKit App Config] Update the Info.plist: Launch screens will soon be required.
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-11-25 14:43:11.614.
+Test Suite 'PinkhaStage1AcceptanceUITests.xctest' started at 2026-11-25 14:43:11.616.
+Test Suite 'HeartSourceCaptureAcceptanceUITests' started at 2026-11-25 14:43:11.616.
+Test Case '-[PinkhaStage1AcceptanceUITests.HeartSourceCaptureAcceptanceUITests testActualHeartSourceReviewCloseAndRecapture]' started.
+    t =     0.01s Start Test at 2026-11-25 14:43:11.623
+    t =     0.37s Set Up
+    t =     0.38s     Setting device orientation to Portrait
+    t =     0.40s         Device orientation changed to Portrait
+    t =     0.51s         Wait for com.apple.springboard to idle
+    t =     0.88s Open io.anytype.app
+    t =     0.89s     Launch io.anytype.app
+    t =     1.48s         Setting up automation session
+    t =     4.10s         Wait for io.anytype.app to idle
+objc[4443]: Class UIAccessibilityLoaderWebShared is implemented in both /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.dmYYVr/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x107378398) and /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.dmYYVr/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x10b370310). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =     6.91s Wait for io.anytype.app to become Running Foreground
+    t =     6.91s Waiting 60.0s for Any (First Match) to exist
+    t =     7.91s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =     7.91s         Checking existence of `Any (First Match)`
+    t =     8.04s Checking existence of `"Warning" Alert`
+    t =     8.14s Get number of matches for: Descendants matching type Alert
+    t =     8.17s Checking existence of `"pinkha.semanticAnchor.mounted-status" Any`
+    t =     8.23s Waiting 15.0s for Button (First Match) to exist
+    t =     9.24s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =     9.24s         Checking existence of `Button (First Match)`
+    t =     9.27s Get number of matches for: Elements matching predicate 'label == "Mounted anchor disposable Space" OR label ENDSWITH ", Mounted anchor disposable Space"'
+    t =     9.30s Waiting 15.0s for Button (First Match) to exist
+    t =    10.36s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =    10.37s         Checking existence of `Button (First Match)`
+    t =    12.07s Checking existence of `Button (First Match)`
+    t =    12.13s Find the Button (First Match)
+    t =    12.24s Find the "M, Mounted anchor disposable Space" Button
+    t =    13.10s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    13.13s Find the "M, Mounted anchor disposable Space" Button
+    t =    13.20s Find the "M, Mounted anchor disposable Space" Button
+    t =    14.07s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    14.12s Find the "M, Mounted anchor disposable Space" Button
+    t =    14.17s Find the "M, Mounted anchor disposable Space" Button
+    t =    15.14s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    15.17s Find the "M, Mounted anchor disposable Space" Button
+    t =    15.20s Find the "M, Mounted anchor disposable Space" Button
+    t =    16.12s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    16.15s Find the "M, Mounted anchor disposable Space" Button
+    t =    16.21s Find the "M, Mounted anchor disposable Space" Button
+    t =    17.15s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    17.19s Find the "M, Mounted anchor disposable Space" Button
+    t =    17.21s Find the "M, Mounted anchor disposable Space" Button
+    t =    18.14s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    18.19s Find the "M, Mounted anchor disposable Space" Button
+    t =    18.22s Find the "M, Mounted anchor disposable Space" Button
+    t =    19.14s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    19.17s Find the "M, Mounted anchor disposable Space" Button
+    t =    19.21s Find the "M, Mounted anchor disposable Space" Button
+    t =    20.13s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    20.17s Find the "M, Mounted anchor disposable Space" Button
+    t =    20.21s Find the "M, Mounted anchor disposable Space" Button
+    t =    21.14s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    21.18s Find the "M, Mounted anchor disposable Space" Button
+    t =    21.21s Find the "M, Mounted anchor disposable Space" Button
+    t =    22.15s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    22.19s Find the "M, Mounted anchor disposable Space" Button
+    t =    22.25s Find the "M, Mounted anchor disposable Space" Button
+    t =    23.08s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    23.11s Find the "M, Mounted anchor disposable Space" Button
+    t =    23.16s Find the "M, Mounted anchor disposable Space" Button
+    t =    24.19s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    24.22s Find the "M, Mounted anchor disposable Space" Button
+    t =    24.27s Find the "M, Mounted anchor disposable Space" Button
+    t =    25.09s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    25.13s Find the "M, Mounted anchor disposable Space" Button
+    t =    25.19s Find the "M, Mounted anchor disposable Space" Button
+    t =    26.07s Checking existence of `"M, Mounted anchor disposable Space" Button`
+    t =    26.12s Find the "M, Mounted anchor disposable Space" Button
+    t =    26.15s Find the "M, Mounted anchor disposable Space" Button
+    t =    26.21s Requesting snapshot of accessibility hierarchy for app with pid 4532
+    t =    26.35s Requesting snapshot of accessibility hierarchy for app with pid 4532
+    t =    26.39s Added attachment named 'heart-source-capture-failure'
+    t =    26.39s Find the Application 'io.anytype.app'
+    t =    26.65s Added attachment named 'heart-source-capture-failure'
+    t =    26.65s Added attachment named 'heart-source-capture-ui'
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/derivative-f6d3/build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:104: error: -[PinkhaStage1AcceptanceUITests.HeartSourceCaptureAcceptanceUITests testActualHeartSourceReviewCloseAndRecapture] : failed: caught error: "admission("tap-not-hittable")"
+    t =    26.99s Tear Down
+    t =    26.99s     Terminate io.anytype.app:4532
+Test Case '-[PinkhaStage1AcceptanceUITests.HeartSourceCaptureAcceptanceUITests testActualHeartSourceReviewCloseAndRecapture]' failed (28.618 seconds).
+Test Suite 'HeartSourceCaptureAcceptanceUITests' failed at 2026-11-25 14:43:40.241.
+	 Executed 1 test, with 1 failure (1 unexpected) in 28.618 (28.625) seconds
+Test Suite 'PinkhaStage1AcceptanceUITests.xctest' failed at 2026-11-25 14:43:40.241.
+	 Executed 1 test, with 1 failure (1 unexpected) in 28.618 (28.625) seconds
+Test Suite 'Selected tests' failed at 2026-11-25 14:43:40.241.
+	 Executed 1 test, with 1 failure (1 unexpected) in 28.618 (28.627) seconds
+2026-11-25 14:43:40.872 xcodebuild[4197:5905178] [MT] IDETestOperationsObserverDebug: 38.115 elapsed -- Testing started completed.
+2026-11-25 14:43:40.872 xcodebuild[4197:5905178] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-25 14:43:40.873 xcodebuild[4197:5905178] [MT] IDETestOperationsObserverDebug: 38.115 sec, +38.115 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/m1/builds/pinkha-c-heart-source-ui-20261125/attempt5/evidence/source-review/original.xcresult
+
+Failing tests:
+	HeartSourceCaptureAcceptanceUITests.testActualHeartSourceReviewCloseAndRecapture()
+
+** TEST EXECUTE FAILED **
+
+Testing started

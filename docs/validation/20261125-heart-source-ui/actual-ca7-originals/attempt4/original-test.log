@@ -1,0 +1,109 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test-without-building -xctestrun /Users/m1/builds/pinkha-c-heart-source-ui-20261125/attempt4/ui-products/E-Combined-Heart-source-review.xctestrun -destination "platform=iOS Simulator,id=5E77C761-78E5-4530-B44C-7561216652A6" -parallel-testing-enabled NO -only-testing PinkhaStage1AcceptanceUITests/HeartSourceCaptureAcceptanceUITests/testActualHeartSourceReviewCloseAndRecapture -resultBundlePath /Users/m1/builds/pinkha-c-heart-source-ui-20261125/attempt4/evidence/source-review/original.xcresult -collect-test-diagnostics never
+
+Writing result bundle at path:
+	/Users/m1/builds/pinkha-c-heart-source-ui-20261125/attempt4/evidence/source-review/original.xcresult
+
+2026-11-25 14:20:35.625137+0100 PinkhaStage1AcceptanceUITests-Runner[86764:5766237] [Default] Running tests...
+2026-11-25 14:20:35.678931+0100 PinkhaStage1AcceptanceUITests-Runner[86764:5766237] [UIKit App Config] Update the Info.plist: Launch screens will soon be required.
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-11-25 14:20:40.058.
+Test Suite 'PinkhaStage1AcceptanceUITests.xctest' started at 2026-11-25 14:20:40.059.
+Test Suite 'HeartSourceCaptureAcceptanceUITests' started at 2026-11-25 14:20:40.059.
+Test Case '-[PinkhaStage1AcceptanceUITests.HeartSourceCaptureAcceptanceUITests testActualHeartSourceReviewCloseAndRecapture]' started.
+    t =     0.00s Start Test at 2026-11-25 14:20:40.064
+    t =     0.57s Set Up
+    t =     0.57s     Setting device orientation to Portrait
+    t =     0.61s         Device orientation changed to Portrait
+    t =     0.75s         Wait for com.apple.springboard to idle
+    t =     1.15s Open io.anytype.app
+    t =     1.15s     Launch io.anytype.app
+    t =     1.58s         Setting up automation session
+objc[86764]: Class UIAccessibilityLoaderWebShared is implemented in both /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.dmYYVr/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x109fe8398) and /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.dmYYVr/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x10a550310). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =     5.09s         Wait for io.anytype.app to idle
+    t =     7.69s Wait for io.anytype.app to become Running Foreground
+    t =     7.70s Waiting 60.0s for Any (First Match) to exist
+    t =     8.71s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =     8.71s         Checking existence of `Any (First Match)`
+    t =     9.10s Checking existence of `"Warning" Alert`
+    t =     9.15s Get number of matches for: Descendants matching type Alert
+    t =     9.19s Checking existence of `"pinkha.semanticAnchor.mounted-status" Any`
+    t =     9.26s Waiting 15.0s for "pinkha.engine.selector" Any to exist
+    t =    10.30s     Checking `Expect predicate `existsNoRetry == 1` for object "pinkha.engine.selector" Any`
+    t =    10.30s         Checking existence of `"pinkha.engine.selector" Any`
+    t =    10.32s Find the "pinkha.engine.selector" Any
+    t =    10.33s Waiting 15.0s for "pinkha.engine.selector" Button to exist
+    t =    11.40s     Checking `Expect predicate `existsNoRetry == 1` for object "pinkha.engine.selector" Button`
+    t =    11.40s         Checking existence of `"pinkha.engine.selector" Button`
+    t =    12.47s Checking existence of `"pinkha.engine.selector" Button`
+    t =    12.48s Find the "pinkha.engine.selector" Button
+    t =    12.48s Find the "pinkha.engine.selector" Button
+    t =    12.55s Tap "pinkha.engine.selector" Button
+    t =    12.55s     Wait for io.anytype.app to idle
+    t =    12.55s     Find the "pinkha.engine.selector" Button
+    t =    12.56s     Check for interrupting elements affecting "pinkha.engine.selector" Button
+    t =    12.60s         Wait for com.apple.springboard to idle
+    t =    12.65s     Synthesize event
+    t =    13.11s     Wait for io.anytype.app to idle
+    t =    13.17s Waiting 15.0s for "pinkha.engine.migration.review-source" Any to exist
+    t =    14.26s     Checking `Expect predicate `existsNoRetry == 1` for object "pinkha.engine.migration.review-source" Any`
+    t =    14.26s         Checking existence of `"pinkha.engine.migration.review-source" Any`
+    t =    15.33s Checking existence of `"pinkha.engine.migration.review-source" Any`
+    t =    15.35s Find the "pinkha.engine.migration.review-source" Any
+    t =    16.35s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    16.37s Find the "pinkha.engine.migration.review-source" Button
+    t =    17.36s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    17.38s Find the "pinkha.engine.migration.review-source" Button
+    t =    18.37s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    18.40s Find the "pinkha.engine.migration.review-source" Button
+    t =    19.40s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    19.42s Find the "pinkha.engine.migration.review-source" Button
+    t =    20.31s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    20.34s Find the "pinkha.engine.migration.review-source" Button
+    t =    21.33s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    21.35s Find the "pinkha.engine.migration.review-source" Button
+    t =    22.34s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    22.36s Find the "pinkha.engine.migration.review-source" Button
+    t =    23.35s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    23.38s Find the "pinkha.engine.migration.review-source" Button
+    t =    24.37s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    24.39s Find the "pinkha.engine.migration.review-source" Button
+    t =    25.38s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    25.40s Find the "pinkha.engine.migration.review-source" Button
+    t =    26.39s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    26.41s Find the "pinkha.engine.migration.review-source" Button
+    t =    27.31s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    27.34s Find the "pinkha.engine.migration.review-source" Button
+    t =    28.34s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    28.36s Find the "pinkha.engine.migration.review-source" Button
+    t =    29.31s Checking existence of `"pinkha.engine.migration.review-source" Button`
+    t =    29.34s Find the "pinkha.engine.migration.review-source" Button
+    t =    29.38s Requesting snapshot of accessibility hierarchy for app with pid 86779
+    t =    29.57s Requesting snapshot of accessibility hierarchy for app with pid 86779
+    t =    29.61s Added attachment named 'heart-source-capture-failure'
+    t =    29.61s Find the Application 'io.anytype.app'
+    t =    29.82s Added attachment named 'heart-source-capture-failure'
+    t =    29.82s Added attachment named 'heart-source-capture-ui'
+/Users/m1/builds/pinkha-dual-main-20261125/ui-source-capture-helper-8aa603-1/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:103: error: -[PinkhaStage1AcceptanceUITests.HeartSourceCaptureAcceptanceUITests testActualHeartSourceReviewCloseAndRecapture] : failed: caught error: "admission("tap-not-hittable")"
+    t =    30.07s Tear Down
+    t =    30.07s     Terminate io.anytype.app:86779
+Test Case '-[PinkhaStage1AcceptanceUITests.HeartSourceCaptureAcceptanceUITests testActualHeartSourceReviewCloseAndRecapture]' failed (31.146 seconds).
+Test Suite 'HeartSourceCaptureAcceptanceUITests' failed at 2026-11-25 14:21:11.209.
+	 Executed 1 test, with 1 failure (1 unexpected) in 31.146 (31.150) seconds
+Test Suite 'PinkhaStage1AcceptanceUITests.xctest' failed at 2026-11-25 14:21:11.210.
+	 Executed 1 test, with 1 failure (1 unexpected) in 31.146 (31.151) seconds
+Test Suite 'Selected tests' failed at 2026-11-25 14:21:11.210.
+	 Executed 1 test, with 1 failure (1 unexpected) in 31.146 (31.152) seconds
+2026-11-25 14:21:11.677 xcodebuild[86684:5765312] [MT] IDETestOperationsObserverDebug: 37.949 elapsed -- Testing started completed.
+2026-11-25 14:21:11.677 xcodebuild[86684:5765312] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-25 14:21:11.677 xcodebuild[86684:5765312] [MT] IDETestOperationsObserverDebug: 37.949 sec, +37.949 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/m1/builds/pinkha-c-heart-source-ui-20261125/attempt4/evidence/source-review/original.xcresult
+
+Failing tests:
+	HeartSourceCaptureAcceptanceUITests.testActualHeartSourceReviewCloseAndRecapture()
+
+** TEST EXECUTE FAILED **
+
+Testing started
