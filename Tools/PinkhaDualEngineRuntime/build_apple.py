@@ -125,14 +125,98 @@ def generated_swift_entry(root):
         "  _ = version; _ = capture\n}\n")
     return generated
 
+def verify_reviewed_metadata(root, graph, original_sha):
+    """Accept only the eight originally absent, independently authenticated sums.
+
+    Versions, replacements, paths and every other module field remain exact.
+    Both original failed attempts and the fresh Go/SumDB verification survive.
+    """
+    review_path = Path(__file__).with_name("module-metadata-hydration.json")
+    review = json.loads(review_path.read_text())
+    require(original_sha == review["sourceGraphSHA256"]
+            and digest(graph) == review["hydratedGraphSHA256"],
+            "unreviewed_module_graph_hydration")
+    proof_root = root / "module-checksum-verification-2"
+    proof_path = proof_root / "receipt.json"
+    require(digest(proof_path) == review["proofReceiptSHA256"],
+            "original_checksum_verification_changed")
+    proof = json.loads(proof_path.read_text())
+    require(proof["status"] == "PASS" and len(proof["modules"]) == 8,
+            "independent_go_checksum_verification_required")
+    def parse(path):
+        text = path.read_text()
+        decoder = json.JSONDecoder()
+        rows = {}
+        while text.strip():
+            row, end = decoder.raw_decode(text.lstrip())
+            require(row["Path"] not in rows, "duplicate_graph_module")
+            rows[row["Path"]] = row
+            text = text.lstrip()[end:]
+        return rows
+    before, after = parse(root / "evidence/module-graph.log"), parse(graph)
+    expected = {row["path"]: row for row in review["modules"]}
+    require(before.keys() == after.keys() and len(before) == 760
+            and len(expected) == 8, "reviewed_module_inventory_changed")
+    actual = set()
+    for name in before:
+        if before[name] == after[name]:
+            continue
+        require(name in expected and "GoModSum" not in before[name],
+                "unexpected_graph_field_change")
+        hydrated = dict(after[name])
+        item = expected[name]
+        require(hydrated.pop("GoModSum", None) == item["goModSum"]
+                and hydrated == before[name] and hydrated["Version"] == item["version"],
+                "module_identity_or_version_changed")
+        actual.add(name)
+        require(digest(Path(after[name]["GoMod"])) == item["goModSHA256"],
+                "actual_module_metadata_bytes_changed")
+    require(actual == set(expected), "reviewed_checksum_delta_incomplete")
+    for index, item in enumerate(proof["modules"], start=1):
+        expected_item = expected[item["path"]]
+        require(item["exitCode"] == 0 and all(item[key] == value
+                for key, value in expected_item.items()), "go_checksum_proof_mismatch")
+        prefix = f"{index:02d}"
+        require(digest(proof_root / (prefix + ".stdout.json")) == item["stdoutSHA256"]
+                and digest(proof_root / (prefix + ".stderr.log")) == item["stderrSHA256"]
+                and digest(proof_root / (prefix + ".go.mod")) == item["goModSHA256"],
+                "go_checksum_original_evidence_changed")
+    prior_path = root / "evidence-resume-1/receipt.json"
+    prior = json.loads(prior_path.read_text())
+    require(prior["status"] == "FAIL"
+            and prior["failure"]["message"] == "resumed_module_graph_changed"
+            and prior["actualModuleGraphSHA256"] == digest(graph)
+            and [x["name"] for x in prior["commands"]] ==
+                ["go-version", "xcode-version", "iphoneos-version",
+                 "iphonesimulator-version", "module-graph"]
+            and all(x["exitCode"] == 0 for x in prior["commands"]),
+            "prior_metadata_only_stop_required")
+    for command in prior["commands"]:
+        require(digest(root / "evidence-resume-1" / (command["name"] + ".log"))
+                == command["logSHA256"], "metadata_attempt_original_changed")
+        try:
+            os.killpg(command["pgid"], 0)
+        except ProcessLookupError:
+            pass
+        else:
+            require(False, "metadata_attempt_group_still_exists")
+    return {"reviewSHA256": digest(review_path),
+            "proofReceiptSHA256": digest(proof_path),
+            "priorMetadataOnlyReceiptSHA256": digest(prior_path),
+            "modulesVerified": 8, "unchangedModuleIdentities": 760}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--controller-sha", required=True)
     parser.add_argument("--slice", choices=("simulator", "device"), required=True)
     parser.add_argument("--resume-disk-stop", action="store_true")
+    parser.add_argument("--resume-reviewed-metadata", action="store_true")
     args = parser.parse_args()
     root = args.root
+    require(not args.resume_reviewed_metadata or (args.resume_disk_stop and args.slice == "device"),
+            "reviewed_metadata_resume_requires_original_device_disk_stop")
     require(platform.system() == "Darwin" and platform.machine() == "arm64",
             "actual_apple_silicon_host_required")
     require(root.is_dir() and root.resolve() == root and root.parent == Path("/Users/m1/builds")
@@ -171,7 +255,8 @@ def main():
         require(not (root / "Lib.xcframework").exists()
                 and not (root / "Lib.xcframework.zip").exists(),
                 "no_existing_product_may_be_overwritten")
-    evidence = root / ("evidence-resume-1" if prior else "evidence")
+    evidence = root / ("evidence-resume-2" if args.resume_reviewed_metadata else
+                       "evidence-resume-1" if prior else "evidence")
     evidence.mkdir(mode=0o700)
     receipt = {"status": "FAIL", "executionKind": "local-mac", "executionUUID": str(uuid.uuid4()),
                "controllerCommit": args.controller_sha, "controllerSHA256": digest(__file__),
@@ -179,7 +264,7 @@ def main():
                "sourcePins": manifest["sourcePins"], "heartCaptureBridgeCommit": manifest["heartCaptureBridgeCommit"],
                "heartPage154ManifestSHA256": manifest["heartPage154ManifestSHA256"],
                "appleTestsExecuted": 0, "nativeAcceptanceTestsExecuted": 0,
-               "applicationBuilds": 0, "independentGoRuntimeCount": 1,
+               "applicationBuilds": 0, "independentGoRuntimeCount": None,
                "slicePhase": args.slice, "commands": []}
     def run(argv, name, cwd=root, environment=None, timeout=3600):
         require(not (evidence / (name + ".log")).exists(), "command_replay_forbidden")
@@ -283,7 +368,11 @@ def main():
         graph = run([GO_ROOT / "bin/go", "list", "-m", "-json", "all"], "module-graph", source, environment, 180)
         receipt["actualModuleGraphSHA256"] = digest(graph)
         if prior:
-            require(digest(graph) == prior["actualModuleGraphSHA256"], "resumed_module_graph_changed")
+            if args.resume_reviewed_metadata:
+                receipt["verifiedMetadataHydration"] = verify_reviewed_metadata(
+                    root, graph, prior["actualModuleGraphSHA256"])
+            else:
+                require(digest(graph) == prior["actualModuleGraphSHA256"], "resumed_module_graph_changed")
             for name in ("gomobile", "gobind"):
                 require((tools / name).is_file() and not (tools / name).is_symlink(),
                         "original_binding_tool_missing")
@@ -346,7 +435,8 @@ def main():
         receipt["generatedSwiftEntryCheckSHA256"] = digest(generated)
         receipt.update(status="SOURCE_VERIFIED_SINGLE_GO_RUNTIME_APPLE_SLICE_BUILT_NOT_ACCEPTED",
                        heartRuntimeVersion=heart_version, anyRuntimeVersion=any_version,
-                       slices=artifacts, nativeLibraryBuildInvocations=1, sourceUnchanged=True)
+                       slices=artifacts, nativeLibraryBuildInvocations=1, sourceUnchanged=True,
+                       independentGoRuntimeCount=1)
         framework_files = {}
         for path in sorted(output.rglob("*")):
             if path.is_file():
