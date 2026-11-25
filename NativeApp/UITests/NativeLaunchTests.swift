@@ -2308,7 +2308,7 @@ final class NativeLaunchTests: XCTestCase {
     }
     // END_NATIVE_CUSTOM_TYPE_UI_V1
 
-    func testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen() {
+    func testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen() throws {
         let scope = UUID(), suffix = String(UUID().uuidString.prefix(8))
         let app = makeApplication(scope: scope)
         let spaceName = "Bin UI Space " + suffix
@@ -2317,7 +2317,7 @@ final class NativeLaunchTests: XCTestCase {
         app.launch()
         defer { app.terminate() }
         createOwnedWorkspace(app, spaceName: spaceName)
-        createNamedItem(app, action: "any-native-new-document", title: title)
+        try createNamedItemWithObservedTransition(app, action: "any-native-new-document", title: title)
         tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
         let blocks = app.textViews.matching(NSPredicate(
             format: "identifier BEGINSWITH %@", "any-native-block-"))
