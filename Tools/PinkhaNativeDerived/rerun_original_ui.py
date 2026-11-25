@@ -38,8 +38,39 @@ def ui_only_project(app):
     if source.count(old) != 1:
         raise RuntimeError('Unexpected original UI dependency structure')
     source = source.replace(old, '')
+    # These are the original target configurations, including the separately
+    # committed owner-signing pair. Validate their exact identities before
+    # removing only the generated runner's implicit application binding.
+    reviewed_base = (
+        ('A10000000000000000000011', 'Debug'),
+        ('A10000000000000000000012', 'Release'),
+        ('A10000000000000000000015', 'Debug-Anytype'),
+        ('A10000000000000000000016', 'Release-Anytype'),
+    )
+    reviewed_owner = (
+        reviewed_base[0], reviewed_base[1], reviewed_base[2],
+        ('B94000000000000000000001', 'Debug-MiniAppsOwner'),
+        reviewed_base[3],
+        ('B95000000000000000000001', 'Release-MiniAppsOwner'),
+    )
+    configuration_list = re.search(
+        r'A1000000000000000000000B /\* Build configuration list for PBXNativeTarget '
+        r'"PinkhaStage1AcceptanceUITests" \*/ = \{.*?buildConfigurations = \((.*?)\);',
+        source, re.S)
+    if configuration_list is None:
+        raise RuntimeError('Missing original UI target configuration list')
+    configurations = tuple(re.findall(
+        r'([A-F0-9]{24}) /\* ([^*]+) \*/', configuration_list[1]))
+    if configurations not in (reviewed_base, reviewed_owner):
+        raise RuntimeError('Unexpected UI target configuration identities')
+    for identifier, name in configurations:
+        configuration = re.search(
+            r'(?ms)^\t\t' + re.escape(identifier) + r' /\* ' + re.escape(name)
+            + r' \*/ = \{.*?^\t\t\};', source)
+        if configuration is None or configuration[0].count('TEST_TARGET_NAME = Anytype;') != 1:
+            raise RuntimeError('Unexpected original UI target configuration settings')
     source, count = re.subn(r'TEST_TARGET_NAME = Anytype;', 'TEST_TARGET_NAME = "";', source)
-    if count != 4:
+    if count != len(configurations):
         raise RuntimeError('Unexpected UI configurations')
     source = source.replace('TestTargetID = 0303ECFA22D8EDAA005C552B;', '')
     # Even an unused subproject file/scheme causes SwiftPM to resolve the app's
