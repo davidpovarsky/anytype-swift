@@ -283,9 +283,15 @@ def execute(args, receipt):
     if args.derived_cache_seed:
         seed = args.derived_cache_seed.resolve()
         donor = Path(installation.get('abi_reuse', {}).get('donor_root', ''))
-        require(donor.is_absolute() and seed == donor / 'build/SDK-Work/producer-derived-preserved'
-                and seed.is_dir() and not seed.is_symlink() and not derived.exists(),
-                'Cache reuse requires the independently verified original ABI donor')
+        require(seed.is_dir() and not seed.is_symlink() and not derived.exists(),
+                'The retained cache must be real and the destination fresh')
+        if getattr(args, 'qualified_cache_seed', False):
+            from qualified_cache_seed import verify as verify_qualified_cache
+            receipt['qualified_cache_input'] = verify_qualified_cache(
+                root, seed, before, installation, evidence)
+        else:
+            require(donor.is_absolute() and seed == donor / 'build/SDK-Work/producer-derived-preserved',
+                    'Cache reuse requires the independently verified original ABI donor')
         processes = subprocess.check_output(['ps', 'axo', 'command'], text=True)
         require(not any(str(seed) in line and ('xcodebuild ' in line or 'swift-frontend ' in line)
                         for line in processes.splitlines()),
@@ -335,6 +341,9 @@ def execute(args, receipt):
         from relocate_seed_artifacts import relocate
         receipt['compiler_cache']['artifact_relocation'] = relocate(
             root, seed, derived, evidence, work)
+        if getattr(args, 'qualified_cache_seed', False):
+            from qualified_cache_seed import relocate_git
+            receipt['compiler_cache']['git_relocation'] = relocate_git(seed, derived, evidence)
     destination = 'platform=iOS Simulator,id=' + udid
     flags = ['OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)', 'ONLY_ACTIVE_ARCH=YES',
              'ARCHS=arm64', 'SWIFT_OPTIMIZATION_LEVEL=-Onone', 'CODE_SIGN_IDENTITY=-',
@@ -636,6 +645,8 @@ def main():
     parser.add_argument('--work', required=True, type=Path)
     parser.add_argument('--source-only', action='store_true')
     parser.add_argument('--derived-cache-seed', type=Path)
+    parser.add_argument('--qualified-cache-seed', action='store_true',
+                        help='Verify the separately qualified owned cache policy before cloning')
     parser.add_argument('--import-abi-receipt', type=Path)
     parser.add_argument('--import-abi-sha256')
     args = parser.parse_args()

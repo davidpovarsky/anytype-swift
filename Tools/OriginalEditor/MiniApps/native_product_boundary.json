@@ -1,0 +1,51 @@
+{
+  "actual_header_observation": {
+    "app70_exports_these_symbols_in_header": false,
+    "path": "docs/validation/20261125-miniapps-original-editor/platform-continuation/NATIVE_HEADERS.json",
+    "sdk_exports": [
+      "ServiceAnnotationImport",
+      "ServiceAnnotationImportCancel",
+      "ServiceAnnotationSchemaRegister"
+    ],
+    "sha256": "10c8ab85034320403c1409711036004ffea8e6b3fdb484d33a9daf5be4bd068b"
+  },
+  "application": {
+    "compiled_owner_source": "6db4d065e007dc6c39ae510a77053f33b7de8247",
+    "native_binary_sha256": "08f8b8dab68ed21cabec955fbde1323983f02f549dd67aa3e2e4d11c4f818bfc",
+    "native_inventory_sha256": "70fb5342f2ff31d1cf5f7ce44bed7b16f6373f6bf95eb031d165339cf0f26683",
+    "original_five_miniapps_acceptance": "NOT_RUN",
+    "source": "32e10ee41eac6cbbb85d30138cf2ce1e8912ec9c"
+  },
+  "decision": "Retain the dedicated qualified native SDK ABI and current original application ABI separately. Do not substitute or grant cross-product native/UI acceptance.",
+  "new_native_qualification_granted": false,
+  "schema": "anytype.native-product-boundary/1",
+  "sdk": {
+    "facade": "aea88bf9434fb787909a4e671f038f292e9b6a09",
+    "native_abi_source": "34b8a7c5ddb34e9287acdb5c189849eeac8cff86",
+    "native_qualification_control": "c7e9935eb36a47f73d04cf72ea45472d3f2a8a70",
+    "public_contract_members": 282,
+    "scope": "Original native annotation/import, dedicated scoped editor framework; not the dual-engine application",
+    "source": "e79192e5ad2b879ca4a45e46a3f6b504a1094155"
+  },
+  "sdk_generated_rpc_wrappers": [
+    {
+      "bytes": 75695,
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Annotation.Import.swift",
+      "present_in_composed_app": false,
+      "sdk_source_sha256": "e6bf2be194925301a01bdfae12a783498bf225282b6caa5d29358c3df1979ced"
+    },
+    {
+      "bytes": 44638,
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Annotation.Schema.swift",
+      "present_in_composed_app": false,
+      "sdk_source_sha256": "6f7b730998604982c2bf64bb88682bbe3af2c29d7389a5cf11748dcca1877908"
+    },
+    {
+      "bytes": 2119,
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Annotation.swift",
+      "present_in_composed_app": false,
+      "sdk_source_sha256": "19f2e1dd86e828f8b57d0bdd24ad15599b3c4c9fc6ce7e04d33cafcb02ff64e5"
+    }
+  ],
+  "shared_miniapps_boundary": "Both products use the reviewed original shared Bridge/Picker contract and current Hanlin implementation; native engine calls are local to their separate processes."
+}

@@ -1,0 +1,28 @@
+{
+  "baseline_fixture_diagnosis": {
+    "apple_execution": false,
+    "baseline_driver_sha256": "68558534103a397b4569d6512f5adc5c343a7f23615c5a94f913cadee200aa20",
+    "baseline_source": "51cd7a7127604d7a045b6c45dd8b4c3d60e95d26",
+    "cause": "Historical fixture lacks execution_identity used by the original driver before cache admission; unrelated to the new branch.",
+    "error": "'execution_identity'",
+    "fixture_source_keys": [
+      "head_sha",
+      "original_trees",
+      "run_attempt",
+      "run_id"
+    ],
+    "source_only_exit": 1
+  },
+  "errors": 0,
+  "failures": 0,
+  "initial_broader_controls": {
+    "errors": 2,
+    "failures": 6,
+    "other_environment_issue": "Sparse Oracle checkout does not materialize Tools/PinkhaNativeDerived/package_evidence.py; actual full Mac checkout retains it.",
+    "tests": 40
+  },
+  "log_sha256": "5c07c8b792a97b1e848f10da4d44634a91b9944acc1dcd56c5e6d8d9d78780b5",
+  "scope": "Portable metadata/ABI contract controls only; no native credit",
+  "status": "PASS",
+  "tests": 22
+}
