@@ -5,14 +5,14 @@ import json
 import subprocess
 
 BASE = "5c05a612e4054a4adfa7f812343be6a15871cc89"
-CHANGE = "75740138dd927c52f5757a77a7c4bd604fc20c6d"
+CHANGE = "719d13c258764dd6401d4e0892446b2ce6f7edfa"
 FILE = "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift"
 BEFORE = "ad442d34641371b44d9cab5ff63dcb8f9a7ba96eededac6f73b993634bdcef39"
-AFTER = "3b458e4c142fb3a4d2033c60ae331e28b854ab9be1a4f6987d4b39082dd83f63"
+AFTER = "0a56eef1eaa4a9df1bfd23d5828032792d982d3f0b12fd6719d11ceebc57a812"
 GENERATOR = "7bf69636b42875aa7dd0fa39c11393e02e6760ef502cf68ef47b740f3bd066c0"
 GENERATOR_COMMIT = "0b9c5d75fec8fa4f4e17266010f7d79a47c08b87"
 BUILDER = "bac04adb0fbd42adcbf0f7727a11b23447f65584a8b8060f6943e2dfbfeeedb9"
-PROFILE = "original-heart5c05-restored-input-preparation-757401-v1"
+PROFILE = "original-heart5c05-double-tap-focus-preparation-719d13-v1"
 STATUS = "PASS_CURRENT_UI_ONLY_RESTORED_FOCUS_NOT_ACCEPTANCE"
 
 
@@ -39,17 +39,17 @@ def admit_original_ui_copy(c, admission, producer, source):
 
 
 def source_delta(c, before, after):
-    c.require(c.sha(before) == BEFORE and c.sha(after) == AFTER,
-              "Exact original and reviewed preparation-only UI bytes required")
+    c.require(c.sha(before) == BEFORE and c.sha(after) == AFTER, "Exact original and focused diagnostic UI source required")
     original = b'        let input = semanticText("Anchor")\n        try tap(input)\n        input.typeKey(.rightArrow, modifierFlags: [])'
-    replacement = b'        let input = semanticText("Anchor")\n        // Dismissing the source sheet restores this selected editor as first responder.\n        // Tapping its existing semantic link would intentionally reopen Sources.\n        // The real keyboard arrow below must succeed on the restored input.\n        try requireHittable(input)\n        input.typeKey(.rightArrow, modifierFlags: [])'
-    c.require(before.count(original) == after.count(replacement) == 1
-              and after.replace(replacement, original) == before,
-              "Every original assertion, real keyboard action and other UI byte must remain exact")
+    replacement = b'        let input = semanticText("Anchor")\n        // A single tap on the marked link navigates to Sources. Use the native\n        // double tap to regain text focus before the original caret collapse\n        // and word selection. Every keyboard/edit assertion remains real.\n        try requireHittable(input)\n        input.doubleTap()\n        input.typeKey(.rightArrow, modifierFlags: [])'
+    diagnostic = b'    /// Preparation diagnostic only. It changes no content or association and\n    /// cannot stand in for the original link/edit/cold-open acceptance method.\n    func testDiagnoseExistingSemanticAnchorFocusAfterSourceDismissal() throws {\n        _ = try admitSemanticSourceContinuation(phase: "linked")\n        try launchSemanticSourceContinuation(expectedText: "Anchor")\n        try openSelectedSemanticSources(text: "Anchor")\n        try requireHittable(semanticSourceAssociation("Genesis 1:1"))\n        XCTAssertEqual(semanticSourceAssociations("Genesis 1:1").count, 1)\n        try dismissSemanticSourceSheet()\n        let input = semanticText("Anchor")\n        try requireHittable(input)\n        input.doubleTap()\n        let beforeKey = XCTAttachment(string: app.debugDescription)\n        beforeKey.name = "heart-semantic-focus-before-real-key-ax"\n        beforeKey.lifetime = .keepAlways; add(beforeKey)\n        attach("heart-semantic-focus-before-real-key")\n        input.typeKey(.rightArrow, modifierFlags: [])\n        input.doubleTap()\n        XCTAssertEqual(input.value as? String, "Anchor")\n        XCTAssertFalse(semanticSourceSearch.exists)\n        attach("heart-semantic-focus-after-real-reselection")\n    }\n\n'
+    c.require(before.count(original) == after.count(replacement) == after.count(diagnostic) == 1
+              and after.replace(diagnostic, b"", 1).replace(replacement, original, 1) == before,
+              "All original assertions and every other original source byte must remain exact")
     return {"beforeSHA256": BEFORE, "afterSHA256": AFTER,
-            "inverseDeltaRestoresEntireOriginalFile": True,
-            "originalAssertionsChanged": False, "appSourcesChanged": 0,
-            "realKeyboardArrowDoubleTapAndTypingUnchanged": True}
+            "inverseDeltaRestoresEntireOriginalFile": True, "originalAssertionsChanged": False,
+            "appSourcesChanged": 0, "realKeyboardArrowDoubleTapAndTypingUnchanged": True,
+            "additiveFocusDiagnosticGrantsNoAcceptance": True}
 
 
 def qualify(c, admission, original_source, original_producer):
