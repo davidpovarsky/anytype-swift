@@ -3132,6 +3132,7 @@ extension NativeLaunchTests {
             tapReady(app.buttons[spaceName].firstMatch, timeout: 60)
         }
         func roundTrip(_ text: String, cold: Bool) {
+            tapReady(app.buttons["any-native-document-options"])
             tapReady(app.buttons["any-native-miniapps"])
             let launch = app.buttons["miniapps-launch-nativeapp.textstudio"].firstMatch
             tapReady(launch)
