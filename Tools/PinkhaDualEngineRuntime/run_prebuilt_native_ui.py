@@ -290,6 +290,7 @@ def main():
         receipt.update(sourceCommit=source_head,
                        mainReceiptSHA256=digest(args.main_evidence / "receipt.json"),
                        runnerReceiptSHA256=digest(args.ui_build / "receipt.json"),
+                       historyKeyboardPreparation=ui_record.get("historyKeyboardPreparation"),
                        originalAppFileCount=len(original_app_inventory))
         _, raw = run(["xcrun", "simctl", "list", "runtimes", "--json"], out, "runtimes")
         runtimes = [x for x in json.loads(raw)["runtimes"] if

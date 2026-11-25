@@ -44,6 +44,7 @@ def main():
     parser.add_argument("--main-evidence", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--runner-source-commit")
+    parser.add_argument("--history-source-commit", choices=["6c398307682073f31f9fb59af59f34c96003d542"])
     args = parser.parse_args()
     root, evidence, output = args.main_root, args.main_evidence, args.output
     for path in (root, evidence, output):
@@ -127,6 +128,39 @@ def main():
                 and runner_launch.split(end)[1] == candidate.split(end)[1],
                 "all_original_test_methods_and_fixture_contract_must_remain_byte_identical")
         runner_launch = candidate
+    runner_history = (source / inputs[3]).read_bytes()
+    history_binding = None
+    if args.history_source_commit is not None:
+        # This is one reviewed preparation correction, not an arbitrary test
+        # overlay. The original history/result assertions are restored exactly
+        # by removing its explicit keyboard preparation and read-only witness.
+        require(hashlib.sha256(runner_history).hexdigest() ==
+                "6c4064014253837e4738b1c143f45f9af91746c53b3b665439e65f55bc837a77",
+                "exact_original_history_fixture_required")
+        subprocess.run(["git", "-C", str(source), "merge-base", "--is-ancestor",
+                        origin, args.history_source_commit], check=True, capture_output=True)
+        candidate = subprocess.run(["git", "-C", str(source), "show",
+            args.history_source_commit + ":" + inputs[3]], check=True, capture_output=True).stdout
+        require(hashlib.sha256(candidate).hexdigest() ==
+                "2772d790979de88a3b622f17453a91ca792114292016f01e31386de7f4f614ca",
+                "reviewed_keyboard_history_fixture_required")
+        review = subprocess.run(["git", "-C", str(source), "show", args.history_source_commit +
+            ":docs/validation/20261125-native-history-keyboard-preparation/source-review.json"],
+            check=True, capture_output=True).stdout
+        reviewed = json.loads(review)
+        require(reviewed["beforeSHA256"] == hashlib.sha256(runner_history).hexdigest()
+                and reviewed["afterSHA256"] == hashlib.sha256(candidate).hexdigest()
+                and reviewed["inverseDeltaRestoresCompleteOriginalFile"] is True
+                and reviewed["allHistoryVersionBodyIdentityColdReopenAssertionsUnchanged"] is True
+                and reviewed["longPressMenuAccepted"] is False,
+                "explicit_history_preparation_review_required")
+        history_binding = {"sourceCommit": args.history_source_commit,
+            "originalSHA256": hashlib.sha256(runner_history).hexdigest(),
+            "compiledSHA256": hashlib.sha256(candidate).hexdigest(),
+            "reviewSHA256": hashlib.sha256(review).hexdigest(),
+            "inputRoute": "real-keyboard-with-original-native-UIKit-range-witness",
+            "longPressMenuAccepted": False, "allOriginalHistoryAssertionsUnchanged": True}
+        runner_history = candidate
     helper = source / "Tools/AnyEnginePort/native_ui_transition_project.py"
     original_helper = subprocess.run(["git", "-C", str(source), "show",
         origin + ":Tools/AnyEnginePort/native_ui_transition_project.py"],
@@ -147,7 +181,7 @@ def main():
         "source/" + projection.PROJECT_NAME + "/xcshareddata/xcschemes/"
         + projection.SCHEME_NAME + ".xcscheme": scheme_bytes,
         "source/UITests/NativeLaunchTests.swift": runner_launch,
-        "source/UITests/NativeHistoryTests.swift": (source / inputs[3]).read_bytes(),
+        "source/UITests/NativeHistoryTests.swift": runner_history,
     }
     for name, raw in files.items():
         path = output / name
@@ -158,6 +192,7 @@ def main():
                for name, raw in files.items()}
     write(output / "projection.json", {
         "mainSourceCommit": origin, "runnerSourceCommit": runner_origin,
+        "historyKeyboardPreparation": history_binding,
         "mainReceiptSHA256": digest(evidence / "receipt.json"),
         "reviewedInputProfile": profile,
         "exactOriginalProjectAndScheme": transformation, "sourceFiles": sources,
@@ -187,6 +222,7 @@ def main():
         process = subprocess.Popen(argv, cwd=source, env=environment, stdout=stream,
                                    stderr=subprocess.STDOUT, start_new_session=True)
         record = {"sourceCommit": origin, "runnerSourceCommit": runner_origin,
+                  "historyKeyboardPreparation": history_binding,
                   "mainReceiptSHA256": digest(evidence / "receipt.json"),
                   "reviewedInputProfile": profile,
                   "argv": argv, "pid": process.pid,
