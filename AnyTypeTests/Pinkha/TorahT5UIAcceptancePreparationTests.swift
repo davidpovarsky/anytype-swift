@@ -146,6 +146,10 @@ struct TorahT5UIAcceptancePreparationTests {
             expectedVersion = T5NativeRelatedLookupCapability.correctedRuntimeVersion
         case "r15-attachment-authorized-current-read-v1":
             expectedVersion = T5NativeRelatedLookupCapability.coherentRuntimeVersion
+        #if PINKHA_DUAL_ENGINE_RUNTIME
+        case "dual-engine-runtime-v1":
+            expectedVersion = T5NativeRelatedLookupCapability.unifiedRuntimeVersion
+        #endif
         default:
             throw Failure.invariant("unknown-explicit-ui-runtime-profile")
         }
@@ -303,9 +307,14 @@ struct TorahT5UIAcceptancePreparationTests {
         // Corrected and coherent runtimes include the two remaining mutations.
         // The historical pair route and its existing five-target fixture are unchanged.
         var mutationReceipt: MutationReceipt?
-        if ["r15-attachment-v1", "r15-attachment-authorized-current-read-v1"].contains(
-            environment["PINKHA_T5_UI_RUNTIME_PROFILE"] ?? ""
-        ) {
+        let mutationProfiles: Set<String> = {
+            var profiles: Set<String> = ["r15-attachment-v1", "r15-attachment-authorized-current-read-v1"]
+            #if PINKHA_DUAL_ENGINE_RUNTIME
+            profiles.insert("dual-engine-runtime-v1")
+            #endif
+            return profiles
+        }()
+        if mutationProfiles.contains(environment["PINKHA_T5_UI_RUNTIME_PROFILE"] ?? "") {
             let result = try await verifyTypeChangeAndWholeObjectDelete(
                 service: service, associations: associations, selection: selection, baseline: snapshot,
                 spaceID: spaceID, canonicalPropertyKey: manifest.documentAssociationsPropertyKey,
