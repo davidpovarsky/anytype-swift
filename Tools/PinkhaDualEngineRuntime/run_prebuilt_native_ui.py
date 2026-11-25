@@ -32,6 +32,7 @@ STAGES = {
     "hanlin": ("NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen", 600),
     "custom-type": ("NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen", 600),
     "bin": ("NativeLaunchTests/testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen", 600),
+    "miniapps": ("NativeLaunchTests/testAnyMiniAppsTextStudioWarmAndColdReturnPersistInNativeDocument", 900),
 }
 FLOOR = 2 * 1024**3
 
@@ -120,6 +121,11 @@ def run(argv, directory, label, *, timeout=120, environment=None, allow_failure=
         group = "STILL_PRESENT"
     except ProcessLookupError:
         group = "ABSENT_ESRCH"
+    except PermissionError as exc:
+        # A denied group probe must not discard the completed command ledger.
+        # It remains a failure; no broader signal or ownership inference follows.
+        group = "PRESENT_OR_UNRESOLVED_PERMISSION_DENIED"
+        record["groupProbeError"] = {"type": type(exc).__name__, "reason": str(exc)}
     record.update(exitCode=code, elapsedSeconds=time.time() - started,
                   minimumFreeBytes=minimum, stopped=stopped, ownedProcessGroup=group,
                   logSHA256=digest(log), status="PASS" if code == 0 and not stopped and
@@ -151,6 +157,7 @@ def bind(original, products, app, selector, runtime_root):
     changed["OnlyTestIdentifiers"] = [selector]
     changed["DependentProductPaths"] = [str(app), *target["DependentProductPaths"]]
     changed["EnvironmentVariables"]["PINKHA_NATIVE_UI_UNIFIED_HOST"] = "1"
+    changed["EnvironmentVariables"]["PINKHA_SIMULATOR_UI_DISPOSABLE"] = "1"
     changed["SystemAttachmentLifetime"] = "keepAlways"
     changed["UserAttachmentLifetime"] = "keepAlways"
     injections = {}
@@ -197,6 +204,128 @@ def bind(original, products, app, selector, runtime_root):
                    "selector": TARGET + "/" + selector, "realVisibleEngineSelection": True}
 
 
+
+def admit_miniapps_runner(source, main_record, ui_build, ui_record):
+    require(main_record["sourceCommit"] == "5c05a612e4054a4adfa7f812343be6a15871cc89"
+            and ui_record["runnerSourceCommit"] == "53eec4a2289f969979bc301760ce152088ebc2f7",
+            "exact_additive_real_miniapps_runner_required")
+    expected = {
+        "sourceCommit": "53eec4a2289f969979bc301760ce152088ebc2f7",
+        "originalSHA256": "2727945d9a6745c8f11d64841649c7a5117d79b85818f9406e7ed0e35ec346be",
+        "compiledSHA256": "cc3f0e17c1c228b01a36c9e3307bcbae7a2f444f5c850614e7d843fd1e29dfc7",
+        "allOriginalMethodsByteIdentical": True,
+        "newMethods": [STAGES["miniapps"][0]],
+        "testStorageOverrides": False,
+        "actualCompanionRequired": True,
+        "ordinaryAccountSelectionAfterColdCallback": True,
+    }
+    projection = json.loads((ui_build / "projection.json").read_bytes())
+    require(ui_record.get("miniAppsCrossAppFixture") == projection.get("miniAppsCrossAppFixture") == expected
+            and projection["mainSourceCommit"] == main_record["sourceCommit"]
+            and projection["runnerSourceCommit"] == expected["sourceCommit"]
+            and projection["changedOriginalMethodAssertions"] == 0
+            and projection["applicationBuildTargets"] == 0
+            and projection["nativeLibraryBuilds"] == 0,
+            "original_methods_and_exact_source_overlay_must_remain_bound")
+    for name, row in projection["sourceFiles"].items():
+        path = ui_build / name
+        require(path.is_file() and not path.is_symlink() and ui_build in path.resolve().parents
+                and path.stat().st_size == row["bytes"] and digest(path) == row["sha256"],
+                "compiled_UI_source_changed:" + name)
+    original = source / "NativeApp/UITests/NativeLaunchTests.swift"
+    compiled = ui_build / "source/UITests/NativeLaunchTests.swift"
+    marker = b"// BEGIN_NATIVE_MINIAPPS_CROSS_APP_UI_V1\n"
+    require(digest(original) == expected["originalSHA256"]
+            and digest(compiled) == expected["compiledSHA256"]
+            and compiled.read_bytes().count(marker) == 1
+            and compiled.read_bytes().split(marker)[0].rstrip() == original.read_bytes().rstrip(),
+            "additive_method_must_preserve_every_original_UI_method")
+    return expected
+
+
+def admit_real_companion(source, manifest_path, out, app):
+    require(manifest_path is not None and manifest_path.is_absolute()
+            and manifest_path.resolve() == manifest_path and not manifest_path.is_symlink()
+            and digest(manifest_path) == "350af7b55f5e981d2029778b75d61a17ea4db1b6df670ed623f630d283afb370",
+            "actual_original_companion_manifest_required")
+    helpers = {
+        "local_producer.py": "4fca2ddd4e07af1f6b7f3856d0ee5838eb9e97cf9bd2feea9324052e4d41e518",
+        "simulator_entitlements.py": "aa1cfcd4f371dd25a637bc56ab281ef94f8bcdcc2bb415b9125dd0b0aa0b27a8",
+    }
+    helper_root = source / "Tools/MiniApps"
+    for name, pin in helpers.items():
+        require(digest(helper_root / name) == pin, "original_companion_validator_changed:" + name)
+    sys.dont_write_bytecode = True
+    sys.path.insert(0, str(helper_root))
+    entitlements = __import__("simulator_entitlements")
+    require(Path(entitlements.__file__).resolve() == helper_root / "simulator_entitlements.py",
+            "foreign_simulator_entitlement_validator")
+    producer_module = original_module(helper_root / "local_producer.py", "original_real_native_companion")
+    original_root = manifest_path.parent
+    original_inventory = producer_module.inventory(original_root)
+    copied = out / "original-companion"
+    run(["cp", "-cRp", str(original_root), str(copied)], out, "clone-original-companion", timeout=180)
+    require(producer_module.inventory(original_root) == original_inventory == producer_module.inventory(copied),
+            "original_companion_changed_during_copy")
+    copied_manifest = copied / manifest_path.name
+    pin = {"execution_origin": "local-mac", "run_id": None,
+           "revision": "70eb9c2d2cdfd920a65da59643dff7d4e7b775ff",
+           "repository": "davidpovarsky/hanlin-ai", "bundle_id": "com.itorah.hanlinminiapps",
+           "local_manifest_path": str(copied_manifest), "local_manifest_sha256": digest(manifest_path)}
+    evidence = out / "companion-evidence"
+    producer = producer_module.admit(source, out / "companion", evidence, pin)
+    info = plistlib.loads((app / "Info.plist").read_bytes())
+    actual = entitlements.read_simulator_entitlements(app / info["CFBundleExecutable"])
+    require(info["CFBundleIdentifier"] == "io.anytype.app"
+            and "group.com.itorah.shared" in actual["entitlements"].get("com.apple.security.application-groups", [])
+            and any("anytype" in value.get("CFBundleURLSchemes", []) for value in info.get("CFBundleURLTypes", [])),
+            "actual_source_shared_group_and_return_scheme_required")
+    write(out / "companion-binding.json", {
+        "originalManifestSHA256": digest(manifest_path), "originalProducerSource": pin["revision"],
+        "actualOriginalBuildVerified": True, "completeProducerInventory": original_inventory,
+        "actualSourceEntitlements": actual, "physicalSharing": "NOT_PROVEN_BY_SIMULATOR",
+        "companionBuilds": 0, "originalProducerAcceptanceClaimed": False})
+    return producer, producer_module, original_root, original_inventory
+
+
+def qualify_miniapps_report(out):
+    attachments = out / "private-original-attachments"
+    run(["xcrun", "xcresulttool", "export", "attachments", "--path", str(out / "Original.xcresult"),
+         "--output-path", str(attachments)], out, "miniapps-original-attachments", timeout=180, cleanup=True)
+    attachments.chmod(0o700)
+    reports = []
+    for path in attachments.glob("*.json"):
+        require(path.is_file() and not path.is_symlink(), "regular_original_attachment_required")
+        if path.stat().st_size > 2 * 1024**2:
+            continue
+        try:
+            value = json.loads(path.read_bytes())
+        except (ValueError, UnicodeError):
+            continue
+        if isinstance(value, dict) and value.get("schema") == "any-miniapps-real-cross-app-ui/v1":
+            reports.append((path, value))
+    require(len(reports) == 1, "one_original_real_cross_app_result_required")
+    path, value = reports[0]
+    expected = {"fixtureUsesNormalAppStorage": True, "testStorageOverrides": False,
+        "actualCompanionReturns": 2, "sourceTerminatedBeforeSecondReturn": True,
+        "manualSourceLaunchForCallback": False, "ordinaryAccountSelectionAfterColdCallback": True,
+        "manualDocumentSelectionForCallback": False,
+        "nativeReadOrigin": "original-runtime-readback-and-mounted-editor",
+        "nativeReadExtraCallsByObserver": 0, "originalBlockPreserved": True, "nativeParagraphCount": 3}
+    require(all(value.get(key) == expected_value for key, expected_value in expected.items())
+            and all(re.fullmatch(r"[0-9a-f]{64}", value.get(key, ""))
+                    for key in ("sameSpaceSHA256", "sameObjectSHA256"))
+            and type(value.get("initialProcessID")) is int and type(value.get("finalProcessID")) is int
+            and value["initialProcessID"] > 0 and value["finalProcessID"] > 0
+            and value["initialProcessID"] != value["finalProcessID"],
+            "actual_cross_app_and_cold_native_assertions_required")
+    result = {"status": "QUALIFIED_ORIGINAL_XCTEST_ATTACHMENT_NOT_INDEPENDENT_NATIVE_CALL",
+              "originalAttachmentSHA256": digest(path), "originalAttachment": path.name,
+              "assertedScope": value, "extraNativeCalls": 0}
+    write(out / "original-miniapps-result-qualified.json", result)
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--main-root", type=Path, required=True)
@@ -205,6 +334,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--stage", choices=tuple(STAGES), required=True)
     parser.add_argument("--frozen-inputs", type=Path)
+    parser.add_argument("--companion-manifest", type=Path)
     parser.add_argument("--retain-owned-simulator", action="store_true",
                         help="Keep the exact owned device Shutdown for diagnostic continuity.")
     args = parser.parse_args()
@@ -223,7 +353,8 @@ def main():
                 "owned_canonical_frozen_inputs_required")
     source = (args.frozen_inputs or args.main_root) / "source"
     receipt = {"status": "FAIL", "stage": args.stage, "applicationBuilds": 0,
-               "nativeLibraryBuilds": 0, "uiRunnerBuilds": 0, "testsExecuted": 0}
+               "nativeLibraryBuilds": 0, "uiRunnerBuilds": 0, "testsExecuted": 0,
+               "controllerSHA256": digest(Path(__file__).resolve())}
     udid = None
     fixture_config = None
     products = None
@@ -231,6 +362,7 @@ def main():
     app_original = None
     original_app_inventory = None
     copied_ui_inventory = None
+    companion_contract = None
     first_error = None
     cleanup_errors = []
     try:
@@ -244,6 +376,13 @@ def main():
                 and ui_record["testsExecuted"] == 0
                 and ui_record.get("mainReceiptSHA256") == digest(args.main_evidence / "receipt.json"),
                 "same_source_exact_main_receipt_ui_runner_build_required")
+        if ui_record.get("miniAppsCrossAppFixture") is not None:
+            receipt["miniAppsCrossAppFixture"] = admit_miniapps_runner(source, main_record, args.ui_build, ui_record)
+        if args.stage == "miniapps":
+            require(receipt.get("miniAppsCrossAppFixture") is not None and args.companion_manifest is not None,
+                    "real_companion_and_new_compiled_method_required")
+        else:
+            require(args.companion_manifest is None, "companion_is_only_needed_for_its_scoped_stage")
         if args.frozen_inputs is not None:
             frozen = json.loads((args.frozen_inputs / "receipt.json").read_bytes())
             require(frozen.get("status") == "PASS_EXACT_FROZEN_NATIVE_UI_INPUTS"
@@ -296,6 +435,10 @@ def main():
                        runnerSourceCommit=ui_record.get("runnerSourceCommit"),
                        archiveGrabberPreparation=ui_record.get("archiveGrabberPreparation"),
                        originalAppFileCount=len(original_app_inventory))
+        if args.stage == "miniapps":
+            companion_contract = admit_real_companion(source, args.companion_manifest, out, app)
+            receipt["companionManifestSHA256"] = digest(args.companion_manifest)
+            receipt["companionBuilds"] = 0
         _, raw = run(["xcrun", "simctl", "list", "runtimes", "--json"], out, "runtimes")
         runtimes = [x for x in json.loads(raw)["runtimes"] if
                     x.get("isAvailable") is True and x.get("version") == "27.0"
@@ -319,6 +462,9 @@ def main():
         runtime_root = Path(raw.decode().strip())
         require(runtime_root.is_dir(), "observed_runtime_root_required")
         run(["xcrun", "simctl", "install", udid, str(app)], out, "install-unified-app", timeout=120)
+        if companion_contract is not None:
+            run(["xcrun", "simctl", "install", udid, companion_contract[0]["app"]],
+                out, "install-real-companion", timeout=120)
         selector, allowance = STAGES[args.stage]
         original_template = plistlib.loads(templates[0].read_bytes())
         configured, binding = bind(original_template, products, app, selector, runtime_root)
@@ -359,7 +505,7 @@ def main():
         enumeration = out / "enumeration.json"
         run(plan + ["-enumerate-tests", "-test-enumeration-style", "flat",
                     "-test-enumeration-format", "json", "-test-enumeration-output-path",
-                    str(enumeration)], out, "enumerate", timeout=180,
+                    str(enumeration)], out, "enumerate", timeout=360,
                     environment=fixture_environment)
         contract = original_module(source / "Tools/AnyEnginePort/native_ui_transition_contract.py",
                                    "original_native_ui_selection")
@@ -418,6 +564,11 @@ def main():
                         "original_result_destination_mismatch")
             except BaseException as exc:
                 cleanup_errors.append({"phase": "original-results", "reason": str(exc)})
+        if args.stage == "miniapps" and not first_error and not cleanup_errors:
+            try:
+                receipt["originalCrossAppReport"] = qualify_miniapps_report(out)
+            except BaseException as exc:
+                cleanup_errors.append({"phase": "original-cross-app-result", "reason": str(exc)})
         if fixture_config is not None and fixture_config.is_file():
             try:
                 run([sys.executable, "-B", str(source / "Tools/AnyEngineValidation/"
@@ -470,6 +621,11 @@ def main():
             except BaseException as exc:
                 cleanup_errors.append({"phase": "device-absence", "reason": str(exc)})
         try:
+            if companion_contract is not None:
+                producer, producer_module, original_root, original_inventory = companion_contract
+                require(producer_module.inventory(original_root) == original_inventory
+                        and producer_module.inventory(Path(producer["app"])) == producer["manifest"]["app_files"],
+                        "actual_companion_original_or_extracted_products_changed")
             if app_original is not None and original_app_inventory is not None:
                 require(inventory(app_original) == original_app_inventory,
                         "original_main_products_changed")
