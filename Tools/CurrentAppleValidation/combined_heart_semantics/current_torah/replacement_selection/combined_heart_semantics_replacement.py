@@ -38,6 +38,7 @@ LOCK = "4453726b6b4bbd52dc3c5caa5a315a51e718139c4f96182b7a6851a0b8c82d04"
 SDK_RECEIPT = "0ae5a1476c899b1790f01a2a3b4118034e848d8ad8dcf2d97f12104f7387f798"
 OBSERVATION_HELPER = "421e4bcff91d74d126c36485e78b24596e3932f6ac44167ecea8a0d17020a724"
 REPLACEMENT_OVERRIDE_HELPER = "c2c4ab765e1b94f3386e250149ed454c6fce0602cf56608c45f60875f7018dbf"
+REPLACEMENT_SELECTION_OBSERVATION_HELPER = "460937313a94977b121a4fb85d81be0d0e9617f96796b8afe15d248a84ea3f12"
 BUNDLE = "io.anytype.app"
 RUNTIME = "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
 DEVICE = "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB"
@@ -637,6 +638,9 @@ def main():
     require(sha(raw(Path(__file__))) == admission["controllerSHA256"]
             and digest(Path(__file__).with_name("combined_heart_observations_gateway.py")) == OBSERVATION_HELPER,
             "exact reviewed controller files required")
+    selection_helper = Path(__file__).with_name("replacement_selection_observation.py")
+    require(digest(selection_helper) == REPLACEMENT_SELECTION_OBSERVATION_HELPER,
+            "Exact reviewed passive selection identity and range authority required")
     require(args.root.is_absolute() and args.root.parent.resolve() == args.root.parent and not args.root.exists(), "fresh owned execution root required")
     args.root.mkdir(mode=0o700)
     evidence, private = args.root / "evidence", args.root / "private"
@@ -737,8 +741,10 @@ def main():
                                                 STAGES[phase + "-ui"], device, maximum=65536)
             result[phase + "UIProof"] = continuation_ui(decode(ui_raw), phase, fixture, capture, capture_raw, reopen_raw)
             if phase == "linked":
-                import source_replacement_ui_override as selection_override
-                result["replacementSelectionProof"] = selection_override.qualify_selection(
+                import replacement_selection_observation as selection_observation
+                require(Path(selection_observation.__file__).resolve() == selection_helper.resolve(),
+                        "Foreign passive selection observation module")
+                result["replacementSelectionProof"] = selection_observation.qualify_selection(
                     sys.modules[__name__], policy, commands, evidence, private, device, fixture, binding)
             native_env = dict(source_env, PINKHA_SEMANTIC_SOURCE_READBACK_PHASE=phase,
                               PINKHA_SEMANTIC_SOURCE_UI_RECEIPT_JSON=ui_raw.decode(), PINKHA_SEMANTIC_SOURCE_UI_RECEIPT_SHA256=sha(ui_raw))
