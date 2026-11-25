@@ -122,7 +122,27 @@ public final class AnyHeartNativeSourceCaptureDiagnostics: @unchecked Sendable {
             ("native source checkpoint changed during capture", "native-checkpoint-changed"),
             ("native source capture descriptor unavailable", "native-descriptor"),
             ("native tree inventory required", "native-tree-inventory"),
-            ("native loaded source capture unavailable", "native-capture-unavailable")
+            ("native loaded source capture unavailable", "native-capture-unavailable"),
+            ("invalid native source capture request", "native-invalid-request"),
+            ("native source capture request already running", "native-request-running"),
+            ("native source capture capacity reached", "native-request-capacity"),
+            ("original native source capture binding required", "native-capture-binding"),
+            ("unchanged private native source manifest required", "native-private-manifest"),
+            ("current already-loaded native Space required", "native-space-not-loaded"),
+            ("native Space is loading or closing", "native-space-transition"),
+            ("current account ACL identity required", "native-acl-identity"),
+            ("explicit current local ACL read permission required", "native-acl-read-permission"),
+            ("captured native ACL head differs from held loaded ACL", "native-acl-head-changed"),
+            ("current native owned storage handle required", "native-owned-storage"),
+            ("local witness capture limit exceeded", "native-witness-limit"),
+            ("current owned Space capability required", "native-space-capability"),
+            ("native Space state/root binding incomplete", "native-root-binding"),
+            ("native collection inventory incomplete", "native-collection-inventory"),
+            ("complete captured local witness required", "native-witness-incomplete"),
+            ("unsupported or non-lossless decoded native value", "native-value-encoding"),
+            ("complete native tree identity inventory required", "native-tree-identity-inventory"),
+            ("authorized unchanged native object capture required", "native-object-capture"),
+            ("private native source bundle:", "native-private-bundle-write")
         ]
         return .init(category: category, numericCode: native.code,
                      nativeReasons: known.compactMap { message.contains($0.0) ? $0.1 : nil })

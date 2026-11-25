@@ -1,0 +1,53 @@
+{
+  "actualPassedMethods": [
+    "testConcurrentObserverHasBoundedOrderedRecordsAndRejectsPublicRoot",
+    "testFailureRedactsUnknownDomainAndTextWhileRetainingClosedNativeReason",
+    "testNativeBoundaryReasonsRemainClosedAndUnknownNativeErrorStaysUnclassified"
+  ],
+  "appBuilds": 0,
+  "argv": [
+    "/usr/local/bin/swift",
+    "test",
+    "--disable-swift-testing",
+    "--cache-path",
+    "/mnt/development/projects/evidence/migration-final-20261125/compiled-resolver/swift-common-cache",
+    "--manifest-cache",
+    "local",
+    "-Xswiftc",
+    "-module-cache-path",
+    "-Xswiftc",
+    "/mnt/development/projects/evidence/migration-final-20261125/compiled-resolver/swift-module-cache",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/tmp/pinkha-c-swift-cache-20261125",
+    "--disable-sandbox",
+    "--disable-automatic-resolution",
+    "--jobs",
+    "2",
+    "--filter",
+    "NativeSourceCaptureDiagnosticsTests"
+  ],
+  "exitCode": 0,
+  "finishedAt": 1795632148.3646305,
+  "freeBytesBefore": 5769097216,
+  "logSHA256": "06036054caf39b88bfc46fa739983bcb491c0e579aa341d61e6bc8ad52d401c2",
+  "minimumFreeBytes": 5354307584,
+  "nativeCalls": 0,
+  "pid": 1713553,
+  "priorInfrastructureFailurePreserved": true,
+  "protocol": "native-closed-reason-qualification-v1",
+  "sourceAcceptance": false,
+  "sourceHashes": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureDiagnostics.swift": "6b9fc025f4b18fd3b1441e87e752f1964b25351d0ef83118ebaa10ff21959567",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeSourceCaptureDiagnosticsTests.swift": "094f8d69e7edf503230e0e58f5bb0180369abce481f440da5cd28f5e645b900e"
+  },
+  "sourceHashesAfter": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureDiagnostics.swift": "6b9fc025f4b18fd3b1441e87e752f1964b25351d0ef83118ebaa10ff21959567",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeSourceCaptureDiagnosticsTests.swift": "094f8d69e7edf503230e0e58f5bb0180369abce481f440da5cd28f5e645b900e"
+  },
+  "startedAt": 1795631998.3129983,
+  "status": "PASS",
+  "stopReason": null,
+  "uid": 0
+}
