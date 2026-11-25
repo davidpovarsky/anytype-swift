@@ -160,8 +160,10 @@ def main():
         # CoreSimulator refuses get_app_container for a shutdown device (405).
         # Boot only the already admitted owned device before reading its live
         # container; no application or engine call is issued by this step.
-        commands.run(["xcrun", "simctl", "boot", device], "boot-original-owned-simulator", 60)
+        # A successful boot can still be followed by a command infrastructure
+        # failure. Cleanup already owns this admitted device in either case.
         owned_boot = True
+        commands.run(["xcrun", "simctl", "boot", device], "boot-original-owned-simulator", 60)
         commands.run(["xcrun", "simctl", "bootstatus", device, "-b"], "await-original-owned-boot", 180)
         retained = prior["finalPrivateSandbox"]
         c.require(retained["status"] == "PRESERVED_ORIGINAL_PRIVATE_FILES" and retained["engineCalls"] == 0
