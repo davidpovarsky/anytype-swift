@@ -356,6 +356,12 @@ def main():
         first_error = {"type": type(exc).__name__, "reason": str(exc)}
         write(out / "first-failure.json", {**first_error, "traceback": traceback.format_exc()})
     finally:
+        # Only the original xcresult may establish completed test counts.
+        # A terminated xcodebuild can leave an incomplete result bundle.
+        issued = (out / "execute.command.json").is_file()
+        receipt["testCommandIssued"] = issued
+        receipt["testsExecuted"] = None if issued else 0
+        receipt["testResultAvailability"] = "UNAVAILABLE" if issued else "NOT_STARTED"
         result_path = out / "Original.xcresult"
         if result_path.is_dir():
             try:
@@ -363,7 +369,7 @@ def main():
                 for kind in ("summary", "tests"):
                     _, raw = run(["xcrun", "xcresulttool", "get", "test-results", kind,
                                   "--path", str(result_path), "--format", "json"],
-                                 out, "original-" + kind, timeout=120)
+                                 out, "original-" + kind, timeout=120, cleanup=True)
                     values[kind] = json.loads(raw)
                     write(out / (kind + ".json"), values[kind])
                 parser_module = original_module(
@@ -373,7 +379,8 @@ def main():
                 counts = {k: values["summary"].get(k) for k in
                           ("totalTestCount", "passedTests", "failedTests", "skippedTests")}
                 receipt.update(counts=counts, actualCases=cases,
-                               testsExecuted=counts.get("totalTestCount", 0))
+                               testsExecuted=counts.get("totalTestCount"),
+                               testResultAvailability="ORIGINAL_XCRESULT")
                 selector = STAGES[args.stage][0]
                 require(counts == {"totalTestCount": 1, "passedTests": 1,
                                    "failedTests": 0, "skippedTests": 0}
