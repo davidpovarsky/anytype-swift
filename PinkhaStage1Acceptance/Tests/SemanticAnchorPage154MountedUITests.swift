@@ -435,7 +435,10 @@ extension SemanticAnchorPage154MountedUITests {
         try dismissSemanticSourceSheet()
 
         let input = semanticText("Anchor")
-        try tap(input)
+        // Dismissing the source sheet restores this selected editor as first responder.
+        // Tapping its existing semantic link would intentionally reopen Sources.
+        // The real keyboard arrow below must succeed on the restored input.
+        try requireHittable(input)
         input.typeKey(.rightArrow, modifierFlags: [])
         input.doubleTap()
         input.typeText("Changed")
