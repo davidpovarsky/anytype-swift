@@ -86,23 +86,72 @@ REVIEWED_MODULE_CHANGES = {
         None, "382c6801606f5b6f0bd8e66443a08d7e79cce3e339398011ea76142b5f724426",
         "Four original portable association controls are retained separately, not rerun by the coherent harness."),
 }
-REVIEWED_COMPOSITION_CONTROLS = {
-    "Tools/AnyEnginePort/verify_native_test_execution.py": (
-        "cc768d66aaee9081f8ff0c882b7dd15eca1625454e324e03f07a257c1ee56575",
-        "af126a59d47fec07b0d465c0077c812fb5f52cfcadf71a2da22cebb969e21b91",
-        "Adds two NativeApp profile inventories; the test_cases parser used by coherent execution is unchanged."),
-    "Tools/PinkhaNativeDerived/install_verified_heart.py": (
-        "0f3286d5c3f84c5b892234b557028eed3125935db8ba843a838cb28be641ab18",
-        "fe643439f65e1e20282607d95865c02937a5501d58125834a5cd4bef2532176a",
-        "Adds only the explicit acceptance-continuation consumer branch; original native builder and bytes are unchanged."),
-    "Tools/PinkhaNativeDerived/package_evidence.py": (
-        "0faf11a18f2c8a220fab570ef3a199e2016091340c0b261148dd7c581294c895",
-        "c67072225f7ccacb561cb8605f34dfa96d4c1c0bdf5f2291ba145990d9414963",
-        "Adds only three exact early Products archive paths to evidence packaging; no native build input changes."),
-    "Tools/PinkhaNativeDerived/test_acceptance_continuation_branch.py": (
-        None, "8e675bab3796f3fcea6c7256e5f3e4200fae3ae219dd988f9dba7d42f78f7ee7",
-        "Controller-only branch/source guards; these controls are not compiled into native or Swift products."),
-}
+REVIEWED_COMPOSITION_CONTROLS = {'Tools/AnyEnginePort/verify_native_test_execution.py': ('cc768d66aaee9081f8ff0c882b7dd15eca1625454e324e03f07a257c1ee56575',
+                                                         'af126a59d47fec07b0d465c0077c812fb5f52cfcadf71a2da22cebb969e21b91',
+                                                         'Adds two NativeApp profile inventories; the '
+                                                         'test_cases parser used by coherent execution is '
+                                                         'unchanged.'),
+ 'Tools/PinkhaNativeDerived/install_verified_heart.py': ('0f3286d5c3f84c5b892234b557028eed3125935db8ba843a838cb28be641ab18',
+                                                         'fe643439f65e1e20282607d95865c02937a5501d58125834a5cd4bef2532176a',
+                                                         'Adds only the explicit acceptance-continuation '
+                                                         'consumer branch; original native builder and '
+                                                         'bytes are unchanged.'),
+ 'Tools/PinkhaNativeDerived/package_evidence.py': ('0faf11a18f2c8a220fab570ef3a199e2016091340c0b261148dd7c581294c895',
+                                                   '8400bd4ac7bbc61871b51f1021c3dbbb1de5800094e07129417a784d24337309',
+                                                   'Adds four exact early Products archive paths, '
+                                                   'including nested SDK06 UI products, to evidence '
+                                                   'packaging; no native build input changes.'),
+ 'Tools/PinkhaNativeDerived/test_acceptance_continuation_branch.py': (None,
+                                                                      '8e675bab3796f3fcea6c7256e5f3e4200fae3ae219dd988f9dba7d42f78f7ee7',
+                                                                      'Controller-only branch/source '
+                                                                      'guards; these controls are not '
+                                                                      'compiled into native or Swift '
+                                                                      'products.'),
+ 'Tools/PinkhaNativeDerived/member_acl_transport/README.md': (None,
+                                                              '3b9b7588e59fbe4100e1a31d2036755e3d13f4caf60f88568b0c8eb936956973',
+                                                              'Documentation for the separately built '
+                                                              'Linux distinct-member ACL acceptance route; '
+                                                              'not compiled into coherent Apple '
+                                                              'libraries.'),
+ 'Tools/PinkhaNativeDerived/member_acl_transport/build.py': (None,
+                                                             '8ea19d7906f203d20ada802896f8a2583af724995234ff48a9b82501c699b8bc',
+                                                             'Standalone Linux fixture builder applies '
+                                                             'only additive test overlays and verifies the '
+                                                             'original139 production source before and '
+                                                             'after; not called by coherent Apple build or '
+                                                             'host.'),
+ 'Tools/PinkhaNativeDerived/member_acl_transport/contract.py': (None,
+                                                                '9458a2365f0f1d5584bcd1c00b4eec271e9af45073321e422728ebb66500d180',
+                                                                'Independent-member test-only result '
+                                                                'contract; imported only by that separate '
+                                                                'controller.'),
+ 'Tools/PinkhaNativeDerived/member_acl_transport/core_fixture.go': (None,
+                                                                    'd7183d066ffe1c8942afb893aa29ad200296b30b15e72be8e1191499b0b02031',
+                                                                    'Additive '
+                                                                    'pinkha_acl_transport_fixture-tagged '
+                                                                    'Go overlay, installed only by the '
+                                                                    'separate Linux test builder; absent '
+                                                                    'from the original coherent Apple bind '
+                                                                    'source.'),
+ 'Tools/PinkhaNativeDerived/member_acl_transport/native_member_test.go': (None,
+                                                                          'e9d3b6cc042212cc711ce0a958ad04eabe6efe2bcbf8a86e5b029db2ecfcc402',
+                                                                          'Go test source over separate '
+                                                                          'native processes; neither '
+                                                                          'installed nor selected by '
+                                                                          'coherent Apple production or '
+                                                                          'fixture builds.'),
+ 'Tools/PinkhaNativeDerived/member_acl_transport/run.py': (None,
+                                                           '645dd38b3b4f7184bdee8d443721b8d6e07420db2b6795ac9227db50d22f4a42',
+                                                           'Docker network/process coordinator for the '
+                                                           'independent-member test executable; not a '
+                                                           'coherent Apple build dependency.'),
+ 'Tools/PinkhaNativeDerived/member_acl_transport/source-review.json': (None,
+                                                                       'f190966110a1267aa3e0f8b6c9c2452bf30b40e972a5712865e160c755273754',
+                                                                       'Metadata for the separate '
+                                                                       'independent-member fixture '
+                                                                       'closure; does not generate or '
+                                                                       'replace coherent production '
+                                                                       'source.')}
 
 
 def origin() -> dict:

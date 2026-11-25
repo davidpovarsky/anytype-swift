@@ -12,7 +12,7 @@ import json
 from pathlib import Path, PurePosixPath
 import re
 
-EVIDENCE = "docs/validation/20261123-current-swift-composition"
+EVIDENCE = "docs/validation/20261125-current-swift-composition"
 REUSE = "Tools/PinkhaNativeDerived/coherent_apple/reuse_build.py"
 INSTALLER = "Tools/PinkhaNativeDerived/install_verified_heart.py"
 ADMISSION = "Tools/PinkhaNativeDerived/coherent_runtime_admission.py"
@@ -154,9 +154,10 @@ def qualify(control, review_sha256, report_sha256):
     for entry in entries:
         original = read(root, entry["original_path"])
         originals[entry["path"]] = restore_retained_source(read(root, entry["path"]), original, entry)
-    require(report.get("status") == "PASS_NEW_CURRENT_COMPOSITION_CONTROLS_ONLY"
+    require(report.get("status") == "PASS_AFFECTED_CURRENT_COMPOSITION_CONTROLS_ONLY"
             and report.get("passed") == 7 and report.get("failed") == report.get("skipped") == 0
-            and report.get("old_python_test_methods_executed") == 0
+            and report.get("unaffected_original_python_methods_executed") == 0
+            and report.get("affected_current_composition_methods_executed") == 7
             and report.get("old_native_go_and_xctest_methods_executed") == 0
             and report.get("frameworks_built") == 0 and report.get("apple_execution") == "NOT_RUN",
             "New composition control execution scope differs")
