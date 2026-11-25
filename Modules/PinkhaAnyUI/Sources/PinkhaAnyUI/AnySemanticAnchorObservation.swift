@@ -116,6 +116,34 @@ final class AnySemanticAnchorObservation {
                     "isFirstResponder": actual.isFirstResponder
                 ])
             }
+            // Canonical records already came from the engine adapter's
+            // verified list read. Observation adds no engine call or mutation.
+            let records = presentation.torah.associationRecords
+            guard records.count <= 64 else { result["state"] = "REFUSED_BOUNDS"; return }
+            var sources: [[String: Any]] = []
+            for record in records where TorahSemanticAnchorAssociation.hasReservedMetadata(record.item) {
+                guard record.spaceId == native.spaceID, record.objectId == native.objectID,
+                      let association = try TorahSemanticAnchorAssociation.decoding(record.item, location: record.location)
+                else { result["state"] = "INVALID_SOURCE_TARGET"; return }
+                let resolution: String
+                switch try AnySemanticAnchorDocument.resolve(association.anchor, read: read) {
+                case .resolved: resolution = "resolved"
+                case .missing: resolution = "missing"
+                case .ambiguous: resolution = "ambiguous"
+                }
+                let bytes = try TorahAssociationPayloadCodec().encodeDocument(.init(items: [record.item]))
+                sources.append([
+                    "identitySHA256": Self.hash(association.anchor.markerString),
+                    "associationSHA256": Self.hash(record.item.id),
+                    "canonicalSHA256": Self.hash(record.item.canonicalKey),
+                    "recordSHA256": SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined(),
+                    "resolution": resolution
+                ])
+            }
+            result["semanticSources"] = sources.sorted {
+                ($0["associationSHA256"] as? String ?? "") < ($1["associationSHA256"] as? String ?? "")
+            }
+            result["sourceReadOrigin"] = "TorahEditorSession.associationRecords"
             result["state"] = "MATCHED"
             result["nativeMarkCount"] = nativeCount
             result["renderedMarkCount"] = renderedCount

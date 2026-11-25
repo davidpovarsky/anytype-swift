@@ -39,6 +39,7 @@ final class TextViewWithPlaceholder: UITextView {
 
 #if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
     var pinkhaSemanticAnchorAction: ((NSRange) -> UIMenuElement?)?
+    var pinkhaSemanticAnchorOpenURL: ((URL) -> Void)?
 #endif
 
     // Where the selection is pinned while the user shift+arrows: UITextView exposes only the

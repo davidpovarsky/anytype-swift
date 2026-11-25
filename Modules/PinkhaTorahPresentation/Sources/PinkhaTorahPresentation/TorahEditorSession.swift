@@ -11,6 +11,7 @@ public struct TorahAssociationContext: Hashable, Sendable, Identifiable {
     public enum Scope: Hashable, Sendable {
         case document
         case block(String)
+        case semantic(PinkhaSemanticTextAnchor)
     }
 
     public let spaceId: String
@@ -25,6 +26,7 @@ public struct TorahAssociationContext: Hashable, Sendable, Identifiable {
         switch scope {
         case .document: "\(spaceId):\(objectId):document"
         case .block(let blockId): "\(spaceId):\(objectId):block:\(blockId)"
+        case .semantic(let anchor): "\(spaceId):\(objectId):semantic:\(anchor.markerString)"
         }
     }
 
@@ -33,9 +35,16 @@ public struct TorahAssociationContext: Hashable, Sendable, Identifiable {
         return blockId
     }
 
+    public var semanticAnchor: PinkhaSemanticTextAnchor? {
+        guard case .semantic(let anchor) = scope else { return nil }
+        return anchor
+    }
+
+    /// Semantic metadata lives in the canonical object's existing payload.
+    /// The durable target remains the marker identity, never this storage row.
     public var target: TorahAssociationTarget {
         switch scope {
-        case .document: .object(objectId: objectId)
+        case .document, .semantic: .object(objectId: objectId)
         case .block(let blockId): .block(objectId: objectId, blockId: blockId)
         }
     }
@@ -230,6 +239,7 @@ public final class TorahEditorSession {
     private var pendingSearchContext: TorahAssociationContext?
     private var isActiveDocument = true
     private var associationEditingPolicy: () -> Bool = { true }
+    private var semanticAnchorResolver: TorahSemanticAnchorResolutionHandler?
 
     public init(
         spaceId: String,
@@ -275,6 +285,35 @@ public final class TorahEditorSession {
 
     public func installAssociationEditingPolicy(_ policy: @escaping () -> Bool) {
         associationEditingPolicy = policy
+    }
+
+    public func installSemanticAnchorResolver(_ resolver: @escaping TorahSemanticAnchorResolutionHandler) {
+        semanticAnchorResolver = resolver
+    }
+
+    /// Opening sources is read-only. A later Link resolves again and performs
+    /// the repository's final dispatch authorization and canonical readback.
+    public func presentSemanticAnchorSources(_ anchor: PinkhaSemanticTextAnchor) async throws {
+        let context = TorahAssociationContext(spaceId: spaceId, objectId: objectId, scope: .semantic(anchor))
+        try await requireResolvedSemanticAnchor(for: context)
+        presentSearch(scope: context.scope)
+    }
+
+    private func requireResolvedSemanticAnchor(for context: TorahAssociationContext) async throws {
+        try validate(context: context)
+        guard let anchor = context.semanticAnchor else { return }
+        guard let resolver = semanticAnchorResolver else { throw TorahSemanticAnchorResolutionError.unavailable }
+        let epoch = documentActionEpoch
+        let resolution = try await resolver(anchor)
+        try Task.checkCancellation()
+        try validate(context: context)
+        guard epoch == documentActionEpoch else { throw SessionError.staleDocument }
+        switch resolution {
+        case .resolved(let fragments):
+            guard !fragments.isEmpty else { throw TorahSemanticAnchorResolutionError.missing }
+        case .missing: throw TorahSemanticAnchorResolutionError.missing
+        case .ambiguous: throw TorahSemanticAnchorResolutionError.ambiguous
+        }
     }
 
     public var linkedBlockIDs: Set<String> { Set(associationsByBlockId.keys) }
@@ -504,23 +543,45 @@ public final class TorahEditorSession {
 
     public func unlinkAssociation(
         _ item: TorahAssociationItem,
-        from context: TorahAssociationContext
+        from context: TorahAssociationContext,
+        isCurrentRequest: @escaping @MainActor @Sendable () -> Bool = { true }
     ) async throws -> [TorahAssociationItem] {
-        persistenceState = .waiting
+        let epoch = documentActionEpoch
+        let authorize: TorahAssociationWriteAuthorization = { [weak self] in
+            guard let self, self.documentActionEpoch == epoch, isCurrentRequest() else { throw CancellationError() }
+            try Task.checkCancellation()
+            try self.validate(context: context)
+            guard self.canEditAssociations else { throw TorahAssociationRepositoryError.permissionDenied }
+        }
         do {
-            try validate(context: context)
-            guard canEditAssociations else { throw TorahAssociationRepositoryError.permissionDenied }
+            try authorize()
+            persistenceState = .waiting
+            if let anchor = context.semanticAnchor {
+                guard try TorahSemanticAnchorAssociation.decoding(item,
+                    location: .init(spaceId: context.spaceId, target: context.target))?.anchor == anchor else {
+                    throw PinkhaSemanticTextAnchorError.wrongDocument
+                }
+            }
             persistenceState = .saving
             try await associations.removeAssociation(
                 associationId: item.id,
                 target: context.target,
-                spaceId: context.spaceId
+                spaceId: context.spaceId,
+                authorize: authorize
             )
-            try validate(context: context)
+            try authorize()
+            let values = try await associationSnapshot(for: context)
+            try authorize()
+            let location = TorahAssociationLocation(spaceId: context.spaceId, target: context.target)
+            guard !associationRecords.contains(where: { $0.location == location && $0.item.id == item.id }) else {
+                // Inspect the complete canonical records, not the semantic
+                // filter: changed metadata cannot masquerade as removal.
+                throw TorahAssociationRepositoryError.writeUncertain("Removed source remains in canonical readback")
+            }
             persistenceState = .saved
-            return try await associationSnapshot(for: context)
+            return values
         } catch {
-            recordAssociationError(error)
+            if documentActionEpoch == epoch && isActiveDocument && isCurrentRequest() { recordAssociationError(error) }
             throw error
         }
     }
@@ -534,12 +595,22 @@ public final class TorahEditorSession {
             }
             return
         }
-        associationContext = documentAssociationContext
-        currentAssociations = visible
+        let context: TorahAssociationContext
+        do {
+            let location = TorahAssociationLocation(spaceId: spaceId, target: .object(objectId: objectId))
+            if let semantic = try TorahSemanticAnchorAssociation.decoding(currentItem, location: location) {
+                context = .init(spaceId: spaceId, objectId: objectId, scope: .semantic(semantic.anchor))
+            } else { context = documentAssociationContext }
+        } catch {
+            recordAssociationError(error)
+            return
+        }
+        associationContext = context
+        currentAssociations = visibleAssociations(for: context)
         if canOpenAssociation(currentItem) {
             openAssociation(currentItem)
         } else {
-            presentSearch(scope: .document)
+            presentSearch(scope: context.scope)
         }
     }
 
@@ -776,17 +847,27 @@ public final class TorahEditorSession {
         _ result: SearchResult,
         to context: TorahAssociationContext,
         rawQuery: String,
-        isCurrentRequest: () -> Bool = { true }
+        isCurrentRequest: @escaping @MainActor @Sendable () -> Bool = { true }
     ) async throws -> [TorahAssociationItem] {
         let frozenContext = context
         let frozenResult = result
         let frozenRawQuery = rawQuery
-        persistenceState = .waiting
+        let epoch = documentActionEpoch
+        let authorize: TorahAssociationWriteAuthorization = { [weak self] in
+            guard let self, self.documentActionEpoch == epoch, isCurrentRequest() else {
+                throw CancellationError()
+            }
+            try Task.checkCancellation()
+            try self.validate(context: frozenContext)
+            guard self.canEditAssociations else { throw TorahAssociationRepositoryError.permissionDenied }
+        }
         do {
+            try authorize()
+            persistenceState = .waiting
             try validate(context: frozenContext)
             guard canEditAssociations else { throw TorahAssociationRepositoryError.permissionDenied }
             guard isCurrentRequest() else { throw CancellationError() }
-            let item = try await associationItem(
+            var item = try await associationItem(
                 for: frozenResult,
                 rawQuery: frozenRawQuery
             )
@@ -794,17 +875,40 @@ public final class TorahEditorSession {
             try validate(context: frozenContext)
             guard canEditAssociations else { throw TorahAssociationRepositoryError.permissionDenied }
             guard isCurrentRequest() else { throw CancellationError() }
+            try await requireResolvedSemanticAnchor(for: frozenContext)
+            if let anchor = frozenContext.semanticAnchor {
+                item = try TorahSemanticAnchorAssociation(anchor: anchor).attaching(to: item,
+                    location: .init(spaceId: frozenContext.spaceId, target: frozenContext.target))
+            }
+            try authorize()
             persistenceState = .saving
-            _ = try await associations.addAssociation(
+            let stored = try await associations.addAssociation(
                 item,
                 target: frozenContext.target,
-                spaceId: frozenContext.spaceId
+                spaceId: frozenContext.spaceId,
+                authorize: authorize
             )
-            try validate(context: frozenContext)
+            try authorize()
+            let values = try await associationSnapshot(for: frozenContext)
+            try authorize()
+            if let anchor = frozenContext.semanticAnchor {
+                // A successful transport reply does not prove the semantic
+                // target or canonical metadata survived the actual write.
+                let matches = values.filter { $0.id == stored.id }
+                let codec = TorahAssociationPayloadCodec()
+                guard matches.count == 1, let actual = matches.first,
+                      try codec.encodeDocument(.init(items: [actual])) == codec.encodeDocument(.init(items: [stored])),
+                      try TorahSemanticAnchorAssociation.decoding(actual,
+                        location: .init(spaceId: frozenContext.spaceId, target: frozenContext.target))?.anchor == anchor
+                else { throw TorahSemanticAnchorResolutionError.writeUnconfirmed }
+                do { try await requireResolvedSemanticAnchor(for: frozenContext) }
+                catch { throw TorahSemanticAnchorResolutionError.writeUnconfirmed }
+                try authorize()
+            }
             persistenceState = .saved
-            return try await associationSnapshot(for: frozenContext)
+            return values
         } catch {
-            recordAssociationError(error)
+            if documentActionEpoch == epoch && isActiveDocument && isCurrentRequest() { recordAssociationError(error) }
             throw error
         }
     }
@@ -1125,9 +1229,16 @@ public final class TorahEditorSession {
         let items: [TorahAssociationItem]
         switch context.scope {
         case .document:
-            items = documentAssociations
+            items = documentAssociations.filter { !TorahSemanticAnchorAssociation.hasReservedMetadata($0) }
         case .block(let blockId):
             items = associationsByBlockId[blockId] ?? []
+        case .semantic(let anchor):
+            items = associationRecords.compactMap { record in
+                guard record.blockId == nil,
+                      let semantic = try? TorahSemanticAnchorAssociation.decoding(record.item, location: record.location),
+                      semantic.anchor == anchor else { return nil }
+                return record.item
+            }
         }
         return items.filter { !Self.isNoteAssociation($0) }
     }
@@ -1163,11 +1274,18 @@ public final class TorahEditorSession {
               context.objectId == objectId else {
             throw SessionError.staleDocument
         }
+        if let anchor = context.semanticAnchor,
+           !anchor.belongsTo(spaceID: spaceId, objectID: objectId) {
+            throw PinkhaSemanticTextAnchorError.wrongDocument
+        }
     }
 
     private func recordAssociationError(_ error: Error) {
         guard !(error is CancellationError) else { return }
-        if let repositoryError = error as? TorahAssociationRepositoryError {
+        if error as? TorahSemanticAnchorResolutionError == .writeUnconfirmed {
+            persistenceState = .uncertain(error.localizedDescription)
+            message = error.localizedDescription
+        } else if let repositoryError = error as? TorahAssociationRepositoryError {
             persistenceState = persistenceState(for: repositoryError)
             message = localizedMessage(for: repositoryError)
         } else {

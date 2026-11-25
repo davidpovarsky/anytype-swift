@@ -76,6 +76,11 @@ private actor LifetimeUnusedAssociations: TorahAssociationSnapshotRepository {
     func updateAssociation(_ item: TorahAssociationItem, target: TorahAssociationTarget, spaceId: String) async throws -> TorahAssociationItem {
         throw CancellationError()
     }
+    func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String,
+                           authorize: @escaping TorahAssociationWriteAuthorization) async throws {
+        try await authorize()
+        try await removeAssociation(associationId: associationId, target: target, spaceId: spaceId)
+    }
     func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String) async throws {
         throw CancellationError()
     }

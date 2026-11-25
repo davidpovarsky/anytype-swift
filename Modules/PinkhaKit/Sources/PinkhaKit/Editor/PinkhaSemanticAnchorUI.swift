@@ -1,6 +1,7 @@
-#if canImport(UIKit)
 import Foundation
+#if canImport(UIKit)
 import UIKit
+#endif
 
 /// The confirmation and localized copy are shared by both engine adapters.
 /// This presenter owns no storage, authority, selection, or native operation.
@@ -15,6 +16,9 @@ public enum PinkhaSemanticAnchorUI {
         case created = "The selected text now has an anchor."
         case reveal = "Go to anchored text"
         case copyLink = "Copy anchor link"
+        case sources = "Sources for anchored text"
+        case linkSource = "Link to anchored text"
+        case sourceLinkUnconfirmed = "The source was saved, but its text anchor could not be confirmed. Reopen this page before linking again."
         case invalidSelection = "Choose a shorter, complete selection without existing links."
         case alreadyLinked = "This selection already contains a link or an anchor."
         case changed = "The page changed. Wait for it to save, then select the text again."
@@ -27,8 +31,32 @@ public enum PinkhaSemanticAnchorUI {
     }
 
     public static func text(_ value: Text) -> String {
+        #if canImport(Darwin)
         String(localized: String.LocalizationValue(value.rawValue),
                table: "PinkhaSemanticAnchors", bundle: .module)
+        #else
+        NSLocalizedString(value.rawValue, tableName: "PinkhaSemanticAnchors", bundle: .module, comment: "")
+        #endif
+    }
+
+    #if canImport(UIKit)
+    /// Inspect only the currently rendered selection. Opening sources still
+    /// resolves the identity against a fresh authorized native document.
+    public static func selectedAnchor(in text: NSAttributedString, range: NSRange,
+                                      spaceID: String, objectID: String) -> PinkhaSemanticTextAnchor? {
+        guard range.location != NSNotFound, range.location >= 0, range.length > 0,
+              range.location <= text.length, range.length <= text.length - range.location,
+              Range(range, in: text.string) != nil else { return nil }
+        var selected: PinkhaSemanticTextAnchor?, covered = 0, invalid = false
+        text.enumerateAttribute(.link, in: range) { value, fragment, _ in
+            let url = value as? URL ?? (value as? String).flatMap(URL.init(string:))
+            guard let url, PinkhaSemanticTextAnchor.isReservedMarkerURL(url),
+                  let anchor = try? PinkhaSemanticTextAnchor(markerURL: url),
+                  anchor.belongsTo(spaceID: spaceID, objectID: objectID),
+                  selected == nil || selected == anchor else { invalid = true; return }
+            selected = anchor; covered += fragment.length
+        }
+        return !invalid && covered == range.length ? selected : nil
     }
 
     @MainActor
@@ -61,6 +89,8 @@ public enum PinkhaSemanticAnchorUI {
         return alert
     }
 
+    #endif
+
     public static func message(for error: PinkhaSemanticTextAnchorError) -> String {
         switch error {
         case .selectionAlreadyLinked, .overlappingMarkers: text(.alreadyLinked)
@@ -71,4 +101,3 @@ public enum PinkhaSemanticAnchorUI {
         }
     }
 }
-#endif

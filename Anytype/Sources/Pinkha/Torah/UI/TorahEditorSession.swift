@@ -1,6 +1,9 @@
 import Foundation
 import PinkhaKit
 import PinkhaTorahPresentation
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+import ProtobufMessages
+#endif
 
 typealias TorahEditorSession = PinkhaTorahPresentation.TorahEditorSession
 typealias TorahAssociationContext = PinkhaTorahPresentation.TorahAssociationContext
@@ -21,5 +24,13 @@ extension PinkhaTorahPresentation.TorahEditorSession {
                   associations: associations,
                   notesService: AnytypeTorahNotesService(spaceId: spaceId, objectId: objectId,
                                                          associations: associations))
+        #if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        if let lease = try? PinkhaNativeReadLifetime.shared.lease(forOpenedSpaceID: spaceId) {
+            let anchors = AnytypeHeartSemanticAnchorService()
+            installSemanticAnchorResolver { anchor in
+                try await anchors.resolve(anchor, lease: lease)
+            }
+        }
+        #endif
     }
 }

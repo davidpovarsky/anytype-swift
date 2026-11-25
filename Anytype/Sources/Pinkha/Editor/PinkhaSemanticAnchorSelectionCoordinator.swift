@@ -26,6 +26,11 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
             guard let self, let textView else { return nil }
             return self.action(in: textView, range: range)
         }
+        textView.pinkhaSemanticAnchorOpenURL = { [weak self] url in
+            guard let self else { return }
+            do { openSources(try PinkhaSemanticTextAnchor(markerURL: url)) }
+            catch { presentMessage(PinkhaSemanticAnchorStrings.message(for: error)) }
+        }
     }
 
     func invalidate() {
@@ -49,6 +54,7 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
     }
 
     private func action(in textView: TextViewWithPlaceholder, range: NSRange) -> UIMenuElement? {
+        if let source = sourceAction(in: textView, range: range) { return source }
         guard activeID == nil, let editor, let model = editor.viewModel,
               editor.presentedViewController == nil,
               editor.viewIfLoaded?.window != nil, textView.isFirstResponder,
@@ -75,6 +81,38 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
             identifier: .init("pinkha.semanticAnchor.capture")) { [weak self] _ in
                 self?.prepare(selection)
             }
+    }
+
+    private func sourceAction(in textView: TextViewWithPlaceholder, range: NSRange) -> UIAction? {
+        guard activeID == nil, let editor, let model = editor.viewModel,
+              editor.presentedViewController == nil, editor.viewIfLoaded?.window != nil,
+              textView.window === editor.viewIfLoaded?.window, textView.isFirstResponder,
+              textView.markedTextRange == nil, model.document.isOpened,
+              model.document.mode.isHandling, model.torahSession != nil,
+              range.location != NSNotFound, range.location >= 0, range.length > 0,
+              range.location <= textView.attributedText.length,
+              range.length <= textView.attributedText.length - range.location else { return nil }
+        guard let anchor = PinkhaSemanticAnchorUI.selectedAnchor(in: textView.attributedText, range: range,
+            spaceID: model.document.spaceId, objectID: model.document.objectId) else { return nil }
+        return UIAction(title: PinkhaSemanticAnchorUI.text(.sources), image: UIImage(systemName: "books.vertical"),
+            identifier: .init("pinkha.semanticAnchor.sources")) { [weak self] _ in
+                self?.openSources(anchor)
+            }
+    }
+
+    private func openSources(_ anchor: PinkhaSemanticTextAnchor) {
+        guard activeID == nil, let editor, let model = editor.viewModel,
+              editor.presentedViewController == nil, editor.viewIfLoaded?.window != nil,
+              model.document.mode.isHandling, model.document.isOpened,
+              let session = model.torahSession else { return }
+        Task { @MainActor [weak self, weak editor] in
+            do { try await session.presentSemanticAnchorSources(anchor) }
+            catch {
+                guard let self, let editor, editor.viewModel === model,
+                      editor.viewIfLoaded?.window != nil else { return }
+                presentMessage(PinkhaSemanticAnchorStrings.message(for: error))
+            }
+        }
     }
 
     private func prepare(_ selection: Selection) {

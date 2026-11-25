@@ -2641,6 +2641,126 @@ extension NativeLaunchTests {
         add(screenshot)
     }
 
+    /// Production Sefaria search and canonical source writes through the real
+    /// selected-text menu. The observer hashes only already-read native data.
+    func testSemanticSourceLinkSurvivesEditAndColdReopen() throws {
+        executionTimeAllowance = 1_800
+        let scope = UUID(), suffix = String(UUID().uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION"] = "1"
+        let spaceName = "Source Anchor Space " + suffix
+        let documentName = "Source Anchor Document " + suffix
+        let firstText = "Anchor", editedText = "Changed", reference = "Genesis 1:1"
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+        tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+        let editor = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-")).firstMatch
+        waitForNativeEditorInput(app, editor)
+        editor.tap(); editor.typeText(firstText)
+        semanticCommit(app, editor: editor, text: firstText)
+        try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
+        tapWhenEnabled(app.buttons["pinkha.semanticAnchor.capture"])
+        let confirmation = app.alerts.firstMatch
+        waitUntilEnabled(confirmation)
+        tapWhenEnabled(confirmation.buttons.matching(NSPredicate(
+            format: "label IN %@", ["Create text anchor", "יצירת עוגן טקסט"])).firstMatch)
+        waitUntilEnabled(app.alerts.staticTexts.matching(NSPredicate(format: "label IN %@", [
+            "The selected text now has an anchor.", "נוסף עוגן לטקסט שנבחר."
+        ])).firstMatch, timeout: 60)
+        tapWhenEnabled(app.alerts.buttons.matching(NSPredicate(
+            format: "label IN %@", ["Done", "סיום"])).firstMatch)
+        let captured = try semanticObservation(app, phase: "source-target-native-anchor-created") {
+            $0.nativeMarkCount == 1 && $0.blocks.count == 1 &&
+            $0.blocks[0].nativeMarks.first?.length == firstText.utf16.count &&
+            $0.semanticSources?.isEmpty == true
+        }
+        let identity = try XCTUnwrap(captured.blocks.first?.nativeMarks.first?.identitySHA256)
+
+        try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
+        tapWhenEnabled(app.buttons["pinkha.semanticAnchor.sources"])
+        let search = app.searchFields.firstMatch
+        waitUntilEnabled(search)
+        XCTAssertTrue(app.navigationBars.matching(NSPredicate(format: "identifier IN %@ OR label IN %@", [
+            "Sources for anchored text", "מקורות לטקסט המעוגן"
+        ], ["Sources for anchored text", "מקורות לטקסט המעוגן"])).firstMatch.exists)
+        search.tap(); search.typeText(reference)
+        let result = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND value == %@",
+            "any-native-source-result-", reference)).firstMatch
+        waitUntilEnabled(result, timeout: 60)
+        let resultID = String(result.identifier.dropFirst("any-native-source-result-".count))
+        tapWhenEnabled(app.buttons["any-native-source-link-" + resultID])
+        let linked = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND value == %@",
+            "any-native-linked-source-", reference))
+        waitUntilEnabled(linked.firstMatch, timeout: 60)
+        XCTAssertEqual(linked.count, 1)
+        let linkedID = linked.firstMatch.identifier
+        tapWhenEnabled(app.buttons["any-native-source-search-done"])
+        let stored = try semanticObservation(app, phase: "source-link-canonical-native-readback") {
+            $0.sourceReadOrigin == "TorahEditorSession.associationRecords" &&
+            $0.semanticSources?.count == 1 &&
+            $0.semanticSources?.first?.identitySHA256 == identity &&
+            $0.semanticSources?.first?.canonicalSHA256 == Self.semanticHash(reference) &&
+            $0.semanticSources?.first?.resolution == "resolved"
+        }
+        let association = try XCTUnwrap(stored.semanticSources?.first)
+        XCTAssertEqual(stored.blocks[0].nativeMarks, captured.blocks[0].nativeMarks)
+
+        try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
+        editor.typeText(editedText)
+        semanticCommit(app, editor: editor, text: editedText)
+        let edited = try semanticObservation(app, phase: "source-link-follows-real-text-edit") {
+            $0.blocks.count == 1 && $0.blocks[0].textSHA256 == Self.semanticHash(editedText) &&
+            $0.blocks[0].nativeMarks.first?.identitySHA256 == identity &&
+            $0.blocks[0].nativeMarks.first?.length == editedText.utf16.count &&
+            $0.semanticSources == [association]
+        }
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
+        waitForNativeEditorInput(app, editor)
+        let reopened = try semanticObservation(app, phase: "source-link-fresh-process-native-reopen") {
+            $0.blocks.count == 1 && $0.blocks[0].textSHA256 == Self.semanticHash(editedText) &&
+            $0.semanticSources == [association]
+        }
+        XCTAssertNotEqual(reopened.pid, edited.pid)
+        XCTAssertNotEqual(reopened.generation, edited.generation)
+        XCTAssertEqual(reopened.spaceSHA256, captured.spaceSHA256)
+        XCTAssertEqual(reopened.objectSHA256, captured.objectSHA256)
+        XCTAssertEqual(reopened.blocks[0].sourceSHA256, edited.blocks[0].sourceSHA256)
+        XCTAssertEqual(reopened.blocks[0].nativeMarks, edited.blocks[0].nativeMarks)
+
+        try semanticSelectAll(app, editor: editor, length: editedText.utf16.count)
+        tapWhenEnabled(app.buttons["pinkha.semanticAnchor.sources"])
+        waitUntilEnabled(app.buttons[linkedID], timeout: 60)
+        XCTAssertEqual(app.buttons[linkedID].value as? String, reference)
+        let associationID = String(linkedID.dropFirst("any-native-linked-source-".count))
+        tapWhenEnabled(app.buttons["any-native-source-unlink-" + associationID])
+        waitFor(NSPredicate(format: "exists == false"), object: app.buttons[linkedID], timeout: 60)
+        tapWhenEnabled(app.buttons["any-native-source-search-done"])
+        let unlinked = try semanticObservation(app, phase: "source-unlink-keeps-native-text-and-marker") {
+            $0.semanticSources?.isEmpty == true && $0.nativeMarkCount == 1 &&
+            $0.blocks.count == 1 && $0.blocks[0].textSHA256 == Self.semanticHash(editedText) &&
+            $0.blocks[0].nativeMarks.first?.identitySHA256 == identity
+        }
+        XCTAssertEqual(unlinked.blocks[0].sourceSHA256, reopened.blocks[0].sourceSHA256)
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
+        let removed = try semanticObservation(app, phase: "source-unlink-fresh-process-readback") {
+            $0.semanticSources?.isEmpty == true && $0.nativeMarkCount == 1 &&
+            $0.blocks.count == 1 && $0.blocks[0].textSHA256 == Self.semanticHash(editedText) &&
+            $0.blocks[0].nativeMarks.first?.identitySHA256 == identity
+        }
+        XCTAssertNotEqual(removed.pid, unlinked.pid)
+        XCTAssertEqual(removed.blocks[0].sourceSHA256, unlinked.blocks[0].sourceSHA256)
+        let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        screenshot.name = "native-semantic-source-link-and-unlink-cold-reopen"
+        screenshot.lifetime = .keepAlways
+        add(screenshot)
+    }
+
     private func semanticCommit(_ app: XCUIApplication, editor: XCUIElement, text: String) {
         tapWhenEnabled(app.buttons["any-native-editor-done"])
         let status = app.descendants(matching: .any).matching(identifier: "any-native-save-status").firstMatch
@@ -2711,6 +2831,15 @@ extension NativeLaunchTests {
 private enum SemanticAnchorUIError: Error { case originalComparisonUnavailable }
 
 private struct SemanticAnchorUIObservation: Codable {
+    struct Source: Codable, Equatable {
+        let identitySHA256: String
+        let associationSHA256: String
+        let canonicalSHA256: String
+        let recordSHA256: String
+        let resolution: String
+    }
+    let sourceReadOrigin: String?
+    let semanticSources: [Source]?
     struct Mark: Codable, Equatable {
         let identitySHA256: String
         let location: Int

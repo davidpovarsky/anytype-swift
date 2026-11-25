@@ -469,6 +469,9 @@ public struct AnyNativeSourceSearchView: View {
                                     label: { Image(systemName: "link.badge.minus") }
                                     .disabled(!presenter.canEditAssociations)
                                     .buttonStyle(.plain)
+                                    .accessibilityIdentifier("any-native-source-unlink-\(item.id)")
+                                    .accessibilityLabel(Text(verbatim: AnyUIErrorText.text("הסרת קישור ", "Unlink ") +
+                                        TorahAssociationDisplayFormatter.label(for: item, locale: locale)))
                             }
                         }
                     }
@@ -513,7 +516,8 @@ public struct AnyNativeSourceSearchView: View {
                 }
             }
             .searchable(text: $presenter.searchQuery)
-            .navigationTitle(presenter.fixedScope ? presenter.searchScope.title : Loc.Pinkha.Torah.sources)
+            .navigationTitle(presenter.associationTargetAnchor != nil ? PinkhaSemanticAnchorUI.text(.sources) :
+                (presenter.fixedScope ? presenter.searchScope.title : Loc.Pinkha.Torah.sources))
             .toolbar {
                 if !isEmbedded {
                     ToolbarItem(placement: .confirmationAction) {
