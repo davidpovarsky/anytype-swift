@@ -94,13 +94,18 @@ enum PinkhaMiniAppsResultApplier {
                 anchor = blocks.contains(where: { $0.id == recorded }) ? recorded : anchor
                 continue
             }
-            let existing = blocks.first { $0.fields[receiptField]?.stringValue == key }
+            let matches = blocks.filter { $0.fields[receiptField]?.stringValue == key }
+            guard matches.count <= 1 else { throw PinkhaMiniAppsError.sourceChanged }
+            let existing = matches.first
             let inserted: String
             if let existing {
                 inserted = existing.id
             } else {
                 let info = try insertionBlock(item: item, request: request.id, index: index, key: key)
-                if let target = anchor, blocks.contains(where: { $0.id == target }) {
+                let target = item.kind == .file
+                    ? PinkhaMiniAppsContext.topLevelAnchor(anchor, documentID: document.objectId, blocks: blocks)
+                    : anchor
+                if let target, blocks.contains(where: { $0.id == target }) {
                     inserted = try await model.blockActionService.add(info: info,
                         targetBlockId: target, position: .bottom, setFocus: false)
                 } else {
@@ -116,11 +121,15 @@ enum PinkhaMiniAppsResultApplier {
             }
             if item.kind == .file {
                 guard let attachmentID = item.attachmentID else { throw PinkhaMiniAppsError.attachmentUnavailable }
-                if case .file(let file) = native.content, file.state == .done,
-                   !file.metadata.targetObjectId.isEmpty {
-                    // A replay can observe the already completed native upload.
-                } else {
-                    let sharedFile = try store.attachmentURL(id: attachmentID)
+                guard case .file(let beforeFile) = native.content else {
+                    // A user may have changed the marked block after a crash.
+                    // Never turn a newer text/other block back into an attachment.
+                    throw PinkhaMiniAppsError.sourceChanged
+                }
+                let sharedFile = try store.attachmentURL(id: attachmentID)
+                let expectedBytes = try await PinkhaMiniAppsContext.fileWitnesses(at: [sharedFile])[0]
+                try validateContext()
+                if beforeFile.state != .done || beforeFile.metadata.targetObjectId.isEmpty {
                     let directory = FileManager.default.temporaryDirectory
                         .appendingPathComponent("miniapps-upload-" + UUID().uuidString, isDirectory: true)
                     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -139,6 +148,30 @@ enum PinkhaMiniAppsResultApplier {
                           !file.metadata.targetObjectId.isEmpty else {
                         throw PinkhaMiniAppsError.resultNotSaved
                     }
+                }
+                // Recover a completed upload only after exact original bytes
+                // match. Native upload and this journal are separate operations.
+                let persisted = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
+                try validateContext()
+                guard let fileBlock = persisted.first(where: { $0.id == inserted }),
+                      fileBlock.fields[receiptField]?.stringValue == key,
+                      case .file(let completedFile) = fileBlock.content,
+                      completedFile.state == .done, !completedFile.metadata.targetObjectId.isEmpty else {
+                    throw PinkhaMiniAppsError.resultNotSaved
+                }
+                let (readback, _) = try await PinkhaMiniAppsContext.downloadNativeFile(completedFile)
+                defer { try? FileManager.default.removeItem(at: readback) }
+                let witnesses = try await PinkhaMiniAppsContext.fileWitnesses(at: [sharedFile, readback])
+                try validateContext()
+                guard witnesses[0] == expectedBytes, witnesses[1] == expectedBytes else {
+                    throw PinkhaMiniAppsError.resultNotSaved
+                }
+                let afterReadback = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
+                try validateContext()
+                guard let stillCurrent = afterReadback.first(where: { $0.id == inserted }),
+                      stillCurrent.fields[receiptField]?.stringValue == key,
+                      case .file(let actualFile) = stillCurrent.content, actualFile == completedFile else {
+                    throw PinkhaMiniAppsError.sourceChanged
                 }
             }
             plan.insertedBlocks[key] = inserted
