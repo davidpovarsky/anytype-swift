@@ -3054,8 +3054,11 @@ extension NativeLaunchTests {
         XCTAssertEqual(ProcessInfo.processInfo.environment["PINKHA_SIMULATOR_UI_DISPOSABLE"], "1")
         XCTAssertEqual(ProcessInfo.processInfo.environment["PINKHA_NATIVE_UI_UNIFIED_HOST"], "1")
         let app = NativeApplicationUnderTest()
-        app.launchArguments = ["-AppleLanguages", "(he,en)", "-AppleLocale", "he_IL"]
+        app.launchArguments = ["--native-ui-test-scope", UUID().uuidString,
+                               "-AppleLanguages", "(he,en)", "-AppleLocale", "he_IL"]
         app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION"] = "1"
+        app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION_NORMAL_STORAGE"] = "1"
+        app.launchEnvironment["PINKHA_SIMULATOR_UI_DISPOSABLE"] = "1"
         XCTAssertFalse(app.launchArguments.contains("--native-ui-tests"))
         let companion = XCUIApplication(bundleIdentifier: "com.itorah.hanlinminiapps")
         let suffix = String(UUID().uuidString.prefix(8))
