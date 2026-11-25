@@ -27,6 +27,7 @@ from export_products import export_built_products, product_closure
 from simulator_admission import verify_built_entitlements
 from selection import configure_tests, selector, validate_enumeration
 from consumer_runtime_boundary import inspect as inspect_runtime_boundary
+from owned_commands import run_logged
 
 def require(condition, message):
     if not condition:
@@ -163,8 +164,7 @@ def build_consumer(args, receipt):
         print(json.dumps({"phase": phase, "source": context.head}), flush=True)
     def command(argv, name, timeout=5400):
         save(name)
-        with (evidence / (name + ".log")).open("w") as output:
-            result = subprocess.run(argv, cwd=app, stdout=output, stderr=subprocess.STDOUT, timeout=timeout)
+        result = run_logged(argv, app, evidence / (name + ".log"), timeout)
         receipt.setdefault("completed_build_commands", {})[name] = {
             "arguments": argv, "return_code": result.returncode, "log_sha256": digest(evidence / (name + ".log"))}
         save(name + "-finished")
@@ -193,7 +193,8 @@ def build_consumer(args, receipt):
         require(not module_cache.exists(), "Current module cache already exists before the actual build")
         flags += ["ARCHS=arm64", "CLANG_MODULE_CACHE_PATH=" + str(module_cache),
                   "SWIFT_MODULE_CACHE_PATH=" + str(module_cache)]
-    common = ["-configuration", owner["configuration"], "-destination", "platform=iOS Simulator,id=" + context.udid,
+    scheduling = ["-jobs", "2"] if context.local else []
+    common = [*scheduling, "-configuration", owner["configuration"], "-destination", "platform=iOS Simulator,id=" + context.udid,
               "-derivedDataPath", str(derived), "-parallel-testing-enabled", "NO"]
     command(["xcodebuild", "-resolvePackageDependencies", "-project", "Anytype.xcodeproj",
              "-scheme", "Anytype", *common], "resolve-native-packages", timeout=1800)
@@ -326,8 +327,7 @@ def execute(args, receipt):
         print(json.dumps({"phase": phase, "source": head}), flush=True)
     def command(argv, name, timeout=5400):
         save(name)
-        with (evidence / (name + ".log")).open("w") as output:
-            result = subprocess.run(argv, cwd=app, stdout=output, stderr=subprocess.STDOUT, timeout=timeout)
+        result = run_logged(argv, app, evidence / (name + ".log"), timeout)
         require(result.returncode == 0, f"{name} returned {result.returncode}; see the original log")
     # Preserve the genuine build receipt even if the runtime is unavailable.
     # Readiness is still mandatory, with the original bound, before any install/test.
