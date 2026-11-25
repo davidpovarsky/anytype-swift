@@ -113,28 +113,18 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
 #endif
         // The client already validated the complete native text and grapheme range.
         let selected = (selection.text as NSString).substring(with: selection.range)
-        let preview = String(selected.prefix(240))
-        let alert = UIAlertController(title: PinkhaSemanticAnchorStrings.confirmTitle,
-            message: PinkhaSemanticAnchorStrings.confirmBody + "\n\n" + preview, preferredStyle: .alert)
-        alert.view.accessibilityIdentifier = "pinkha.semanticAnchor.confirmation"
-        alert.addAction(UIAlertAction(title: PinkhaSemanticAnchorStrings.cancel, style: .cancel) { [weak self] _ in
-            self?.confirmation = nil
-            self?.finish(id)
+        let alert = PinkhaSemanticAnchorUI.confirmation(selectedText: selected,
+            cancelled: { [weak self] in
+                self?.confirmation = nil
+                self?.finish(id)
 #if DEBUG && targetEnvironment(simulator)
-            if let editor = self?.editor { PinkhaSemanticAnchorMountedObserver.cancelled(editor: editor) }
+                if let editor = self?.editor { PinkhaSemanticAnchorMountedObserver.cancelled(editor: editor) }
 #endif
-        })
-        alert.addAction(UIAlertAction(title: PinkhaSemanticAnchorStrings.create, style: .default) {
-            [weak self, weak alert] _ in
-            guard let self else { return }
-            self.confirmation = nil
-            // Wait for this actual presentation to close before an outcome can
-            // present another alert. Ownership is checked again in the completion.
-            guard let alert else { self.finish(id); return }
-            alert.dismiss(animated: true) { [weak self] in
+            }, willConfirm: { [weak self] in
+                self?.confirmation = nil
+            }, confirmed: { [weak self] in
                 self?.apply(selection, pending: pending, id: id)
-            }
-        })
+            })
         confirmation = alert
         editor.present(alert, animated: true)
     }
@@ -198,12 +188,9 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
     private func presentMessage(_ message: String) {
         guard let editor, editor.viewIfLoaded?.window != nil,
               editor.presentedViewController == nil else { return }
-        let alert = UIAlertController(title: PinkhaSemanticAnchorStrings.title,
-            message: message, preferredStyle: .alert)
-        alert.view.accessibilityIdentifier = "pinkha.semanticAnchor.outcome"
-        alert.addAction(UIAlertAction(title: PinkhaSemanticAnchorStrings.done, style: .default) { [weak self] _ in
+        let alert = PinkhaSemanticAnchorUI.outcome(message) { [weak self] in
             self?.confirmation = nil
-        })
+        }
         confirmation = alert
         editor.present(alert, animated: true)
     }

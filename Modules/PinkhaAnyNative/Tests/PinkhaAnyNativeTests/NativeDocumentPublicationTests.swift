@@ -165,6 +165,144 @@ final class NativeDocumentPublicationTests: XCTestCase {
         }
     }
 
+    func testSemanticAnchorCancelCaptureEditsResolveAndUndoUseRealNativeStore() async throws {
+        try await withDocument { fixture in
+            let model = fixture.model, blockID = fixture.blockID
+            let original = try fixture.block()
+            let range = NSRange(location: 0, length: 4)
+            model.select(blockIDs: [blockID], focusedBlockID: blockID, range: range)
+            let cancelled = try await model.prepareSemanticAnchor(
+                blockID: blockID, range: range, visibleText: "מקור א")
+            let beforeCancel = try await fixture.read()
+            model.cancelSemanticAnchor(cancelled)
+            let afterCancel = try await fixture.read()
+            XCTAssertEqual(afterCancel.nativeVersion, beforeCancel.nativeVersion)
+            XCTAssertEqual(afterCancel.snapshot.blocks, beforeCancel.snapshot.blocks,
+                           "Preview and Cancel must not write the native document.")
+
+            let intent = try await model.prepareSemanticAnchor(
+                blockID: blockID, range: range, visibleText: "מקור א")
+            XCTAssertNotEqual(intent.anchor, cancelled.anchor)
+            let anchor = try await model.applySemanticAnchor(intent)
+            try await fixture.settleDeferredReads()
+            XCTAssertEqual(model.writeState, .saved)
+            XCTAssertFalse(model.isCreatingTextAnchor)
+            XCTAssertTrue(model.canMutate)
+            let anchored = try await fixture.read()
+            let stored = try XCTUnwrap(anchored.snapshot.blocks.first { $0.id == blockID })
+            XCTAssertEqual(stored.native["style"], original.native["style"])
+            XCTAssertEqual(stored.native["nav"], original.native["nav"])
+            XCTAssertEqual(stored.type, original.type)
+            XCTAssertEqual(AnyInlineMarkdown(stored.text).display, "מקור א")
+            guard case .resolved(let captured) = try AnySemanticAnchorDocument.resolve(anchor, read: anchored) else {
+                return XCTFail("The actual native marker must resolve.")
+            }
+            XCTAssertEqual(captured.count, 1)
+            XCTAssertEqual(captured.first?.range, range)
+            XCTAssertEqual(captured.first?.text, "מקור")
+            do { _ = try await model.applySemanticAnchor(intent); XCTFail("Consumed intent was replayed.") }
+            catch AnyHostError.changedDocument {}
+            let afterReplay = try await fixture.read()
+            XCTAssertEqual(afterReplay.nativeVersion, anchored.nativeVersion)
+
+            let prefix = "חדש "
+            let shifted = try AnyInlineMarkdown(try fixture.block().text)
+                .replacing(displayRange: .init(location: 0, length: 0), withLiteral: prefix)
+            try model.changeText(blockID: blockID, source: shifted,
+                displaySelection: .init(location: prefix.utf16.count, length: 0), renderedBlock: fixture.block())
+            await model.flush()
+            try await fixture.settleDeferredReads()
+            guard case .resolved(let moved) = try await model.revealSemanticAnchor(anchor) else {
+                return XCTFail("Native prefix editing must move the marker without an old-offset fallback.")
+            }
+            XCTAssertEqual(moved.first?.range, NSRange(location: prefix.utf16.count, length: 4))
+            XCTAssertEqual(moved.first?.text, "מקור")
+
+            let changed = try AnyInlineMarkdown(try fixture.block().text).replacing(
+                displayRange: .init(location: prefix.utf16.count + 1, length: 1), withLiteral: "X")
+            try model.changeText(blockID: blockID, source: changed,
+                displaySelection: .init(location: prefix.utf16.count + 2, length: 0), renderedBlock: fixture.block())
+            await model.flush()
+            try await fixture.settleDeferredReads()
+            guard case .resolved(let edited) = try await model.revealSemanticAnchor(anchor) else {
+                return XCTFail("The same native marker must follow edits inside the selected text.")
+            }
+            XCTAssertEqual(edited.first?.text, "מXור")
+            let currentRange = try XCTUnwrap(edited.first?.range)
+            let removed = try AnyInlineMarkdown(try fixture.block().text)
+                .replacing(displayRange: currentRange, withLiteral: "")
+            try model.changeText(blockID: blockID, source: removed,
+                displaySelection: .init(location: currentRange.location, length: 0), renderedBlock: fixture.block())
+            await model.flush()
+            try await fixture.settleDeferredReads()
+            let missing = try await model.revealSemanticAnchor(anchor)
+            XCTAssertEqual(missing, .missing)
+            await model.undoLastNativeEdit()
+            try await fixture.settleDeferredReads()
+            guard case .resolved(let restored) = try await model.revealSemanticAnchor(anchor) else {
+                return XCTFail("Native Undo must restore the actual marker, not a saved locator.")
+            }
+            XCTAssertEqual(restored.first?.text, "מXור")
+            XCTAssertEqual(try fixture.block().native["style"], original.native["style"])
+        }
+    }
+
+    func testSemanticAnchorStaleIntentAndRetiredReadbackCannotWriteOrPublishAgain() async throws {
+        try await withDocument { fixture in
+            let model = fixture.model, blockID = fixture.blockID
+            let range = NSRange(location: 0, length: 4)
+            model.select(blockIDs: [blockID], focusedBlockID: blockID, range: range)
+            let stale = try await model.prepareSemanticAnchor(
+                blockID: blockID, range: range, visibleText: "מקור א")
+            let documents = model.documents, objectID = model.objectID
+            let external = try await fixture.owner.session.perform { lease in
+                let read = try await documents.read(objectID: objectID, lease: lease)
+                let edit = try documents.prepareTextEdit(read, blockID: blockID, inlineMarkdown: "מקור ב")
+                let receipt = try await documents.apply(edit, lease: lease)
+                guard receipt.readback == .verifiedCurrent else { throw AnyHostError.writeUncertain }
+                return try await documents.read(objectID: objectID, lease: lease)
+            }
+            await model.load()
+            do { _ = try await model.applySemanticAnchor(stale); XCTFail("A stale native selection was written.") }
+            catch AnyHostError.changedDocument {}
+            let afterRefusal = try await fixture.read()
+            XCTAssertEqual(afterRefusal.nativeVersion, external.nativeVersion)
+            XCTAssertFalse(model.isCreatingTextAnchor)
+
+            await model.load()
+            model.select(blockIDs: [blockID], focusedBlockID: blockID, range: range)
+            let intent = try await model.prepareSemanticAnchor(
+                blockID: blockID, range: range, visibleText: "מקור ב")
+            let before = try XCTUnwrap(model.read?.nativeVersion)
+            let held = await fixture.gate.arm(.mutationReadback)
+            let apply = Task { @MainActor in try await model.applySemanticAnchor(intent) }
+            try await fixture.gate.waitUntilCaptured(held)
+            XCTAssertTrue(model.isCreatingTextAnchor)
+            XCTAssertFalse(model.canMutate)
+            XCTAssertThrowsError(try fixture.type("must not replace a pending anchor"))
+            model.unmount()
+            await fixture.gate.release(held)
+            do { _ = try await apply.value; XCTFail("A retired view published the native result.") }
+            catch AnyHostError.sessionClosed {}
+            XCTAssertEqual(model.read?.nativeVersion, before)
+            XCTAssertFalse(model.isCreatingTextAnchor)
+            let committed = try await fixture.read()
+            guard case .resolved(let fragments) = try AnySemanticAnchorDocument.resolve(intent.anchor, read: committed) else {
+                return XCTFail("The already accepted native write must remain recoverable.")
+            }
+            XCTAssertEqual(fragments.count, 1)
+            XCTAssertEqual(fragments.first?.text, "מקור")
+
+            model.mount(surface: fixture.surface)
+            await model.load()
+            do { _ = try await model.applySemanticAnchor(intent); XCTFail("A retired intent was retried.") }
+            catch AnyHostError.sessionClosed {}
+            catch AnyHostError.changedDocument {}
+            let afterRetiredReplay = try await fixture.read()
+            XCTAssertEqual(afterRetiredReplay.nativeVersion, committed.nativeVersion)
+        }
+    }
+
     private func withDocument(_ body: @MainActor (NativePublicationFixture) async throws -> Void) async throws {
         XCTAssertEqual(AnyEmbeddedBuild.linked, .pinkhaNativeV1)
         let directory = FileManager.default.temporaryDirectory
