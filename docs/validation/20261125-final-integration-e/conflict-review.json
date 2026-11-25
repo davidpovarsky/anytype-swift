@@ -1,0 +1,19 @@
+{
+  "incoming": "80cc1fd8febe53698707b59085cfb4009cae6f72",
+  "baseHead": "ff9c85dbb50cfd7bbf0dccd4b088f6afed9e1e62",
+  "resolutions": [
+    {
+      "path": "Anytype/Sources/Pinkha/Editor/PinkhaSemanticAnchorSelectionCoordinator.swift",
+      "resolution": "Retain all current behavior and add E bounded selected-input private call-stack observation only.",
+      "oursConflict": "        record(stage, state: [\"inputIdentity\": String(describing: ObjectIdentifier(textView)),\n            \"firstResponder\": textView.isFirstResponder, \"windowPresent\": textView.window != nil,\n            \"selectedLength\": textView.selectedRange.length, \"editable\": textView.isEditable,\n            \"longPressRecognizers\": gestures])\n",
+      "incomingConflict": "        var state: [String: Any] = [\n            \"inputIdentity\": String(describing: ObjectIdentifier(textView)),\n            \"firstResponder\": textView.isFirstResponder, \"windowPresent\": textView.window != nil,\n            \"selectedLength\": textView.selectedRange.length, \"editable\": textView.isEditable,\n            \"longPressRecognizers\": gestures\n        ]\n        if stage == \"input-resign-before\" {\n            // The public edit-menu callbacks proved that gesture preservation\n            // alone does not restore action delivery. Capture the actual caller\n            // of this selected input's resignation before changing any focus or\n            // presentation policy. This remains a bounded private observation.\n            state[\"callStackSymbols\"] = Array(Thread.callStackSymbols.prefix(24))\n        }\n        record(stage, state: state)\n"
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift",
+      "resolution": "Use E exact original real Command-A selection preparation and independent same-input full-range evidence instead of previously failed double-tap/caret preparation; all persistence and semantic assertions retained.",
+      "oursConflict": "        // A single tap on the marked link navigates to Sources. Use the native\n        // double tap to regain text focus before the original caret collapse\n        // and word selection. Every keyboard/edit assertion remains real.\n        try requireHittable(input)\n        input.doubleTap()\n        input.typeKey(.rightArrow, modifierFlags: [])\n",
+      "incomingConflict": "        try requireHittable(input)\n        let selectionStarted = ProcessInfo.processInfo.systemUptime\n"
+    }
+  ],
+  "acceptance": "NOT_RUN_FOR_MERGED_SOURCE"
+}

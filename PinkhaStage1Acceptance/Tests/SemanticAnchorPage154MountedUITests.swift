@@ -458,13 +458,32 @@ extension SemanticAnchorPage154MountedUITests {
         try dismissSemanticSourceSheet()
 
         let input = semanticText("Anchor")
-        // A single tap on the marked link navigates to Sources. Use the native
-        // double tap to regain text focus before the original caret collapse
-        // and word selection. Every keyboard/edit assertion remains real.
         try requireHittable(input)
+        let selectionStarted = ProcessInfo.processInfo.systemUptime
         input.doubleTap()
-        input.typeKey(.rightArrow, modifierFlags: [])
-        input.doubleTap()
+        // Real keyboard Select All replaces the unreliable second double tap.
+        // The independent collector requires this same input's passive native
+        // full-range observation in the bounded interval before real typing.
+        input.typeKey("a", modifierFlags: .command)
+        XCTAssertEqual(input.value as? String, "Anchor")
+        XCTAssertFalse(semanticSourceSearch.exists)
+        let hierarchy = XCTAttachment(string: app.debugDescription)
+        hierarchy.name = "heart-semantic-source-replacement-selection-ax"
+        hierarchy.lifetime = .keepAlways; add(hierarchy)
+        attach("heart-semantic-source-replacement-selection-visual")
+        let selection: [String: Any] = [
+            "protocol": "heart-semantic-source-real-replacement-selection-v1",
+            "sourceSHA": fixture.sourceSHA, "runID": fixture.runID,
+            "runAttempt": fixture.runAttempt, "nonce": fixture.nonce,
+            "selectionStartedUptime": selectionStarted,
+            "beforeTypingUptime": ProcessInfo.processInfo.systemUptime,
+            "expectedUTF16Length": 6, "expectedTextSHA256": digest(Data("Anchor".utf8)),
+            "realCommandA": true, "programmaticSelectionChanges": 0
+        ]
+        let evidence = XCTAttachment(data: try JSONSerialization.data(withJSONObject: selection, options: [.sortedKeys]),
+                                     uniformTypeIdentifier: "public.json")
+        evidence.name = "heart-semantic-source-replacement-selection"
+        evidence.lifetime = .keepAlways; add(evidence)
         input.typeText("Changed")
         try requireHittable(semanticText("Changed"))
         XCTAssertEqual(semanticText("Changed").value as? String, "Changed")

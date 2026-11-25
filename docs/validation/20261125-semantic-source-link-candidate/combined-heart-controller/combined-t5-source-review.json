@@ -1,0 +1,33 @@
+{
+  "actualNativeMethodsExecuted": 0,
+  "files": {
+    "combined_t5_freshness.py": {
+      "bytes": 8972,
+      "sha256": "9aa2779a07fd6addebe4881fefb0c4c708cfa1267549364e60b9f0d7652133ef"
+    },
+    "combined_t5_pending.py": {
+      "bytes": 5696,
+      "sha256": "b36c53482006e6dbbbcd1627bae7f707b77e0665cd11a8e2ed735161bd70fbf5"
+    },
+    "combined_t5_retry.py": {
+      "bytes": 10570,
+      "sha256": "00d2e6d9ad24f0c260cf7353e1d4142a1c78af8155dba16073159646be2ea094"
+    }
+  },
+  "freshnessFunction": {
+    "originalSHA256": "64ca6b729ed40a5fe9f4eb0074135efa9c1288f043cce8d2c66e30e0e46ce00c",
+    "predicateBytesUnchanged": true
+  },
+  "oldProfilesModified": false,
+  "preparedFunction": {
+    "originalSHA256": "a4d11c0a3827921349cbc17ad5a143d4f0d29f14b3f8c197205019faea379d10",
+    "predicateBytesUnchanged": true
+  },
+  "retryFunction": {
+    "exactInverse": true,
+    "onlyDifference": "import t5_native_account_retry_pending_evidence as pending -> import combined_t5_pending as pending",
+    "originalSHA256": "ef262cef6edb5ce1d9d62d2dc0fa619ac2a79945e9416758ec0ccba7f6e23d45"
+  },
+  "runtimeVersion": "pinkha-dual-runtime-v1-70fb5342f2ff31d1cf5f7ce44bed7b16f6373f6bf95eb031d165339cf0f26683",
+  "status": "SOURCE_FUNCTION_EQUIVALENCE_ONLY_NOT_NATIVE_ACCEPTANCE"
+}

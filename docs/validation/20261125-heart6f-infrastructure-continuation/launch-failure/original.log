@@ -1,0 +1,43 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test-without-building -xctestrun /Users/m1/builds/e-combined-current-20261125/prepared-header6f-continuation1/ui-products/E-Combined-Heart-mounted.xctestrun -destination "platform=iOS Simulator,id=A4489891-C78A-4E78-8649-6E9525A7FDB5" -parallel-testing-enabled NO -only-testing PinkhaStage1AcceptanceUITests/SemanticAnchorPage154MountedUITests/testActualTextSelectionCancelThenCreateAndColdReopen -resultBundlePath /Users/m1/builds/e-combined-current-20261125/prepared-header6f-continuation1/evidence/mounted/original.xcresult -collect-test-diagnostics never
+
+Writing result bundle at path:
+	/Users/m1/builds/e-combined-current-20261125/prepared-header6f-continuation1/evidence/mounted/original.xcresult
+
+2026-11-25 16:21:05.058400+0100 PinkhaStage1AcceptanceUITests-Runner[89697:6524414] [Default] Running tests...
+2026-11-25 16:21:05.136658+0100 PinkhaStage1AcceptanceUITests-Runner[89697:6524414] [UIKit App Config] Update the Info.plist: Launch screens will soon be required.
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-11-25 16:21:08.941.
+Test Suite 'PinkhaStage1AcceptanceUITests.xctest' started at 2026-11-25 16:21:08.942.
+Test Suite 'SemanticAnchorPage154MountedUITests' started at 2026-11-25 16:21:08.942.
+Test Case '-[PinkhaStage1AcceptanceUITests.SemanticAnchorPage154MountedUITests testActualTextSelectionCancelThenCreateAndColdReopen]' started.
+    t =     0.03s Start Test at 2026-11-25 16:21:08.974
+    t =     0.59s Set Up
+    t =     0.59s     Setting device orientation to Portrait
+    t =     0.60s         Device orientation changed to Portrait
+    t =     0.75s         Wait for com.apple.springboard to idle
+    t =     1.24s Open io.anytype.app
+    t =     1.24s     Launch io.anytype.app
+objc[89697]: Class UIAccessibilityLoaderWebShared is implemented in both /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.dmYYVr/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x105bd4398) and /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.dmYYVr/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x106124310). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+/Users/m1/builds/pinkha-dual-main-20261125/ui-source-increment-6f1194f9-1/PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift:147: error: -[PinkhaStage1AcceptanceUITests.SemanticAnchorPage154MountedUITests testActualTextSelectionCancelThenCreateAndColdReopen] : Failed to launch io.anytype.app: Timed out attempting to launch app.
+    t =    41.25s Tear Down
+Test Case '-[PinkhaStage1AcceptanceUITests.SemanticAnchorPage154MountedUITests testActualTextSelectionCancelThenCreateAndColdReopen]' failed (50.568 seconds).
+Test Suite 'SemanticAnchorPage154MountedUITests' failed at 2026-11-25 16:21:59.542.
+	 Executed 1 test, with 1 failure (0 unexpected) in 50.568 (50.600) seconds
+Test Suite 'PinkhaStage1AcceptanceUITests.xctest' failed at 2026-11-25 16:21:59.546.
+	 Executed 1 test, with 1 failure (0 unexpected) in 50.568 (50.605) seconds
+Test Suite 'Selected tests' failed at 2026-11-25 16:21:59.547.
+	 Executed 1 test, with 1 failure (0 unexpected) in 50.568 (50.606) seconds
+2026-11-25 16:22:00.053 xcodebuild[89674:6524022] [MT] IDETestOperationsObserverDebug: 60.234 elapsed -- Testing started completed.
+2026-11-25 16:22:00.053 xcodebuild[89674:6524022] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-25 16:22:00.054 xcodebuild[89674:6524022] [MT] IDETestOperationsObserverDebug: 60.234 sec, +60.234 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/m1/builds/e-combined-current-20261125/prepared-header6f-continuation1/evidence/mounted/original.xcresult
+
+Failing tests:
+	SemanticAnchorPage154MountedUITests.testActualTextSelectionCancelThenCreateAndColdReopen()
+
+** TEST EXECUTE FAILED **
+
+Testing started
