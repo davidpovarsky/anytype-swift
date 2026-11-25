@@ -2525,3 +2525,205 @@ private enum CanonicalPickerObservationError: Error {
     case onboardingOrRecoveryVisible
     case entryDidNotPresentAnotherSurface
 }
+
+
+// BEGIN_NATIVE_SEMANTIC_ANCHOR_UI_V1
+extension NativeLaunchTests {
+    /// Normal account, document, UITextView selection, confirmation, typing and
+    /// cold reopen. The opt-in observer reads native/UI values and cannot act.
+    func testActualSemanticSelectionCancelCreateEditAndColdReopen() throws {
+        executionTimeAllowance = 1_800
+        let scope = UUID(), suffix = String(UUID().uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION"] = "1"
+        let spaceName = "Anchor Space " + suffix, documentName = "Anchor Document " + suffix
+        let firstText = "Anchor", editedText = "Changed"
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+
+        let addParagraph = app.buttons["any-native-add-paragraph"]
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: addParagraph, timeout: 60)
+        addParagraph.tap()
+        let editors = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        let editor = editors.firstMatch
+        waitForNativeEditorInput(app, editor)
+        editor.tap(); editor.typeText(firstText)
+        semanticCommit(app, editor: editor, text: firstText)
+        XCTAssertEqual(editors.count, 1)
+        let blockIdentifier = editor.identifier
+        let initial = try semanticObservation(app, phase: "initial-saved") {
+            $0.nativeMarkCount == 0 && $0.blocks.count == 1 &&
+            $0.blocks[0].textSHA256 == Self.semanticHash(firstText)
+        }
+
+        try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
+        tapWhenEnabled(app.buttons["pinkha.semanticAnchor.capture"])
+        let confirmation = app.alerts.firstMatch
+        waitUntilEnabled(confirmation)
+        XCTAssertEqual(app.alerts.count, 1)
+        XCTAssertTrue(confirmation.staticTexts[firstText].exists ||
+                      confirmation.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", firstText)).firstMatch.exists)
+        tapWhenEnabled(confirmation.buttons.matching(NSPredicate(
+            format: "label IN %@", ["Cancel", "ביטול"])).firstMatch)
+        waitFor(NSPredicate(format: "exists == false"), object: confirmation, timeout: 15)
+        let cancelled = try semanticObservation(app, phase: "cancel-without-native-mutation") {
+            $0.nativeMarkCount == 0 && $0.nativeVersionSHA256 == initial.nativeVersionSHA256
+        }
+        XCTAssertEqual(cancelled.blocks[0].sourceSHA256, initial.blocks[0].sourceSHA256)
+        XCTAssertEqual(editor.value as? String, firstText)
+
+        // A fresh real selection and a new confirmation own the only capture.
+        try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
+        tapWhenEnabled(app.buttons["pinkha.semanticAnchor.capture"])
+        waitUntilEnabled(confirmation)
+        tapWhenEnabled(confirmation.buttons.matching(NSPredicate(
+            format: "label IN %@", ["Create text anchor", "יצירת עוגן טקסט"])).firstMatch)
+        let createdMessage = app.alerts.staticTexts.matching(NSPredicate(format: "label IN %@", [
+            "The selected text now has an anchor.", "נוסף עוגן לטקסט שנבחר."
+        ])).firstMatch
+        waitUntilEnabled(createdMessage, timeout: 60)
+        tapWhenEnabled(app.alerts.buttons.matching(NSPredicate(
+            format: "label IN %@", ["Done", "סיום"])).firstMatch)
+        waitFor(NSPredicate(format: "exists == false"), object: app.alerts.firstMatch, timeout: 15)
+        let captured = try semanticObservation(app, phase: "native-and-rendered-anchor-created") {
+            $0.nativeMarkCount == 1 && $0.blocks.count == 1 &&
+            $0.blocks[0].nativeMarks.count == 1 &&
+            $0.blocks[0].nativeMarks[0].location == 0 &&
+            $0.blocks[0].nativeMarks[0].length == firstText.utf16.count &&
+            $0.blocks[0].textSHA256 == Self.semanticHash(firstText)
+        }
+        XCTAssertNotEqual(captured.nativeVersionSHA256, initial.nativeVersionSHA256)
+        XCTAssertEqual(captured.blocks[0].nativeMarks, captured.blocks[0].renderedMarks)
+        let identity = captured.blocks[0].nativeMarks[0].identitySHA256
+        XCTAssertEqual(editor.value as? String, firstText)
+        XCTAssertEqual(editor.identifier, blockIdentifier)
+
+        // Replacing marked characters through ordinary typing must preserve the
+        // existing semantic identity and transform its live range/text.
+        try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
+        editor.typeText(editedText)
+        semanticCommit(app, editor: editor, text: editedText)
+        let edited = try semanticObservation(app, phase: "ordinary-ui-edit-preserved-identity") {
+            $0.nativeMarkCount == 1 && $0.blocks.count == 1 &&
+            $0.blocks[0].textSHA256 == Self.semanticHash(editedText) &&
+            $0.blocks[0].nativeMarks.first?.identitySHA256 == identity &&
+            $0.blocks[0].nativeMarks.first?.length == editedText.utf16.count
+        }
+        XCTAssertNotEqual(edited.nativeVersionSHA256, captured.nativeVersionSHA256)
+        XCTAssertEqual(edited.blocks[0].nativeMarks, edited.blocks[0].renderedMarks)
+        XCTAssertEqual(edited.blocks[0].nativeMarks[0].textSHA256, Self.semanticHash(editedText))
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
+        waitForNativeEditorInput(app, editor)
+        waitFor(NSPredicate(format: "value == %@", editedText), object: editor, timeout: 60)
+        let reopened = try semanticObservation(app, phase: "fresh-process-native-and-ui-reopen") {
+            $0.nativeMarkCount == 1 && $0.blocks.count == 1 &&
+            $0.blocks[0].textSHA256 == Self.semanticHash(editedText) &&
+            $0.blocks[0].nativeMarks.first?.identitySHA256 == identity
+        }
+        XCTAssertNotEqual(reopened.pid, edited.pid)
+        XCTAssertNotEqual(reopened.generation, edited.generation)
+        XCTAssertEqual(reopened.spaceSHA256, initial.spaceSHA256)
+        XCTAssertEqual(reopened.objectSHA256, initial.objectSHA256)
+        XCTAssertEqual(reopened.blocks[0].sourceSHA256, edited.blocks[0].sourceSHA256)
+        XCTAssertEqual(reopened.blocks[0].nativeMarks, edited.blocks[0].nativeMarks)
+        XCTAssertEqual(reopened.blocks[0].nativeMarks, reopened.blocks[0].renderedMarks)
+        XCTAssertEqual(editors.count, 1)
+        XCTAssertEqual(editor.identifier, blockIdentifier)
+        let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        screenshot.name = "native-semantic-anchor-cold-reopen-owned-document"
+        screenshot.lifetime = .keepAlways
+        add(screenshot)
+    }
+
+    private func semanticCommit(_ app: XCUIApplication, editor: XCUIElement, text: String) {
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        let status = app.descendants(matching: .any).matching(identifier: "any-native-save-status").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"), object: status, timeout: 60)
+        waitFor(NSPredicate(format: "value == %@", text), object: editor, timeout: 30)
+    }
+
+    private func semanticSelectAll(_ app: XCUIApplication, editor: XCUIElement, length: Int) throws {
+        editor.tap()
+        editor.press(forDuration: 1.2)
+        let action = app.descendants(matching: .any).matching(NSPredicate(
+            format: "label IN %@", ["Select All", "בחר הכל", "בחר הכול", "בחירת הכול"])).firstMatch
+        tapWhenEnabled(action)
+        _ = try semanticObservation(app, phase: "actual-uikit-selected-range") {
+            $0.blocks.count == 1 && $0.blocks[0].isFirstResponder &&
+            $0.blocks[0].selectionLocation == 0 && $0.blocks[0].selectionLength == length
+        }
+    }
+
+    private func semanticObservation(_ app: XCUIApplication, phase: String,
+        predicate: @escaping (SemanticAnchorUIObservation) -> Bool) throws -> SemanticAnchorUIObservation {
+        let element = app.descendants(matching: .any)
+            .matching(identifier: "any-native-semantic-anchor-observation").firstMatch
+        var matched: SemanticAnchorUIObservation?
+        let condition = NSPredicate { _, _ in
+            guard element.exists, let value = element.value as? String,
+                  let data = value.data(using: .utf8), data.count <= 24_576,
+                  let observation = try? JSONDecoder().decode(SemanticAnchorUIObservation.self, from: data),
+                  observation.state == "MATCHED", observation.mode == "read-only",
+                  observation.engineCalls == 0, observation.mutations == 0, observation.selectionChanges == 0,
+                  observation.nativeMarkCount == observation.renderedMarkCount,
+                  predicate(observation) else { return false }
+            matched = observation
+            return true
+        }
+        let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: condition, object: element)], timeout: 60)
+        XCTAssertEqual(result, .completed, "Original native/rendered comparison failed at " + phase)
+        guard result == .completed, let matched else { throw SemanticAnchorUIError.originalComparisonUnavailable }
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(matched), uniformTypeIdentifier: "public.json")
+        attachment.name = "native-semantic-anchor-" + phase
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        return matched
+    }
+
+    private static func semanticHash(_ value: String) -> String {
+        SHA256.hash(data: Data(value.utf8)).map { String(format: "%02x", $0) }.joined()
+    }
+}
+
+private enum SemanticAnchorUIError: Error { case originalComparisonUnavailable }
+
+private struct SemanticAnchorUIObservation: Codable {
+    struct Mark: Codable, Equatable {
+        let identitySHA256: String
+        let location: Int
+        let length: Int
+        let textSHA256: String
+    }
+    struct Block: Codable {
+        let blockSHA256: String
+        let textSHA256: String
+        let sourceSHA256: String
+        let utf16Length: Int
+        let nativeMarks: [Mark]
+        let renderedMarks: [Mark]
+        let selectionLocation: Int
+        let selectionLength: Int
+        let isFirstResponder: Bool
+    }
+    let schema: String
+    let state: String
+    let mode: String
+    let pid: Int
+    let generation: String
+    let spaceSHA256: String
+    let objectSHA256: String
+    let nativeVersionSHA256: String
+    let engineCalls: Int
+    let mutations: Int
+    let selectionChanges: Int
+    let nativeMarkCount: Int
+    let renderedMarkCount: Int
+    let blocks: [Block]
+}
+// END_NATIVE_SEMANTIC_ANCHOR_UI_V1

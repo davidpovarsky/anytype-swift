@@ -30,6 +30,7 @@ public struct AnyNativeEditor: UIViewControllerRepresentable {
         controller.render()
     }
     public static func dismantleUIViewController(_ controller: AnyNativeEditorController, coordinator: ()) {
+        controller.retireSemanticAnchorInteraction()
         controller.presentation.unmount()
     }
 }
@@ -50,6 +51,12 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
     private let conversationID = UUID()
     private weak var activeTextView: UITextView?
     private var compositionUndo: [ObjectIdentifier: (source: String, selection: NSRange)] = [:]
+    private var semanticAnchorInteractionID: UUID?
+    private var semanticAnchorPreparation: Task<Void, Never>?
+    private var semanticAnchorConfirmation: UIAlertController?
+    #if DEBUG
+    private let semanticAnchorObservation = AnySemanticAnchorObservation.makeIfEnabled()
+    #endif
     private var applyingSnapshot = false
     private var snapshotGeneration = UUID()
     private lazy var focus = AnyNativeFocusCoordinator(validate: { [weak self] intent in
@@ -103,6 +110,18 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
             self.configure(cell, block: block)
             return cell
         }
+        #if DEBUG
+        if let observation = semanticAnchorObservation {
+            let label = observation.label
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            NSLayoutConstraint.activate([
+                label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 2),
+                label.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+                label.heightAnchor.constraint(equalToConstant: 10)
+            ])
+        }
+        #endif
         render()
     }
 
@@ -120,6 +139,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if isMovingFromParent || isBeingDismissed || navigationController?.isBeingDismissed == true {
+            retireSemanticAnchorInteraction()
             presentation.unmount()
         }
     }
@@ -224,6 +244,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
             configure(cell, block: block)
         }
         table.beginUpdates(); table.endUpdates()
+        observeSemanticAnchors()
     }
 
     private func configure(_ cell: AnyNativeBlockCell, block: AnyEditorBlock) {
@@ -269,6 +290,19 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
             depth += 1; parent = ancestor.parentID
         }
         cell.indent.constant = CGFloat(min(depth, 12) * 16 + 12)
+    }
+
+    private func observeSemanticAnchors() {
+        #if DEBUG
+        guard let observer = semanticAnchorObservation else { return }
+        let rendered = table.visibleCells.compactMap { cell -> AnySemanticAnchorObservation.RenderedBlock? in
+            guard let cell = cell as? AnyNativeBlockCell, let id = cell.textView.blockID else { return nil }
+            return .init(id: id, text: NSAttributedString(attributedString: cell.textView.attributedText),
+                         selection: cell.textView.selectedRange,
+                         isFirstResponder: cell.textView.isFirstResponder)
+        }
+        observer.update(presentation, rendered: rendered)
+        #endif
     }
 
     private func configureComposition(_ textView: AnyNativeTextView) {
@@ -365,6 +399,190 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         return result
     }
 
+    public func textView(_ textView: UITextView, editMenuForTextIn range: NSRange,
+                         suggestedActions: [UIMenuElement]) -> UIMenu? {
+        guard let input = textView as? AnyNativeTextView,
+              let action = semanticAnchorAction(input, range: range) else { return nil }
+        return UIMenu(children: suggestedActions + [action])
+    }
+
+    @available(iOS 26.0, *)
+    public func textView(_ textView: UITextView, editMenuForTextInRanges ranges: [NSValue],
+                         suggestedActions: [UIMenuElement]) -> UIMenu? {
+        // A disjoint selection must never silently become its union.
+        guard ranges.count == 1 else { return nil }
+        return self.textView(textView, editMenuForTextIn: ranges[0].rangeValue,
+                             suggestedActions: suggestedActions)
+    }
+
+    private func semanticAnchorAction(_ input: AnyNativeTextView, range: NSRange) -> UIAction? {
+        guard presentation.canMutate, !presentation.hasPendingEdits, semanticAnchorInteractionID == nil,
+              presentedViewController == nil, input.window === viewIfLoaded?.window,
+              input.isFirstResponder, !input.isComposingMarkedText, input.markedTextRange == nil,
+              range.location != NSNotFound, range.location >= 0, range.length > 0,
+              range.location <= input.textStorage.length,
+              range.length <= input.textStorage.length - range.location,
+              let id = input.blockID, let block = blockByID[id],
+              ["paragraph", "heading", "list_item", "check_list_item", "quote"].contains(block.type),
+              presentation.projection(for: block).display.utf8.elementsEqual(input.textStorage.string.utf8) else {
+            return nil
+        }
+        return UIAction(title: PinkhaSemanticAnchorUI.text(.create), image: UIImage(systemName: "pin"),
+                        identifier: .init("pinkha.semanticAnchor.capture")) { [weak self, weak input] _ in
+            guard let self, let input else { return }
+            self.prepareSemanticAnchor(input, range: range)
+        }
+    }
+
+    private func prepareSemanticAnchor(_ input: AnyNativeTextView, range: NSRange) {
+        guard semanticAnchorInteractionID == nil, presentedViewController == nil,
+              input.isFirstResponder, input.selectedRange == range, let blockID = input.blockID else { return }
+        let interactionID = UUID(), owner = presentation.mountedOwnerID
+        let visibleText = input.textStorage.string
+        semanticAnchorInteractionID = interactionID
+        updateSelection(input)
+        semanticAnchorPreparation = Task { @MainActor [weak self, weak input] in
+            guard let self else { return }
+            do {
+                let intent = try await presentation.prepareSemanticAnchor(
+                    blockID: blockID, range: range, visibleText: visibleText)
+                guard let input, semanticAnchorInteractionID == interactionID,
+                      presentation.mountedOwnerID == owner, input.isFirstResponder,
+                      input.selectedRange == range, input.blockID == blockID,
+                      input.window === viewIfLoaded?.window,
+                      input.textStorage.string.utf8.elementsEqual(visibleText.utf8),
+                      presentedViewController == nil, !Task.isCancelled else {
+                    presentation.cancelSemanticAnchor(intent)
+                    finishSemanticAnchorInteraction(interactionID)
+                    return
+                }
+                semanticAnchorPreparation = nil
+                let alert = PinkhaSemanticAnchorUI.confirmation(selectedText: intent.selectedText,
+                    cancelled: { [weak self] in
+                        self?.presentation.cancelSemanticAnchor(intent)
+                        self?.semanticAnchorConfirmation = nil
+                        self?.finishSemanticAnchorInteraction(interactionID)
+                    }, willConfirm: { [weak self] in
+                        self?.semanticAnchorConfirmation = nil
+                    }, confirmed: { [weak self, weak input] in
+                        self?.confirmSemanticAnchor(intent, input: input, visibleText: visibleText,
+                                                    interactionID: interactionID)
+                    })
+                semanticAnchorConfirmation = alert
+                present(alert, animated: true)
+            } catch {
+                guard semanticAnchorInteractionID == interactionID else { return }
+                finishSemanticAnchorInteraction(interactionID)
+                showSemanticAnchorMessage(Self.semanticAnchorMessage(error))
+            }
+        }
+    }
+
+    private func confirmSemanticAnchor(_ intent: AnySemanticAnchorIntent, input: AnyNativeTextView?,
+                                       visibleText: String, interactionID: UUID) {
+        guard semanticAnchorInteractionID == interactionID,
+              presentation.mountedOwnerID == intent.owner, presentation.isMounted,
+              let input, input.blockID == intent.blockID, input.window === viewIfLoaded?.window,
+              input.textStorage.string.utf8.elementsEqual(visibleText.utf8) else {
+            presentation.cancelSemanticAnchor(intent)
+            finishSemanticAnchorInteraction(interactionID)
+            return
+        }
+        // This task is not the preview task. Once a confirmed native write starts
+        // it owns its receipt/readback and is never replaced by a retry.
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                _ = try await presentation.applySemanticAnchor(intent)
+                guard semanticAnchorInteractionID == interactionID,
+                      presentation.mountedOwnerID == intent.owner else { return }
+                finishSemanticAnchorInteraction(interactionID)
+                render()
+                showSemanticAnchorMessage(PinkhaSemanticAnchorUI.text(.created))
+            } catch {
+                guard semanticAnchorInteractionID == interactionID else { return }
+                finishSemanticAnchorInteraction(interactionID)
+                showSemanticAnchorMessage(Self.semanticAnchorMessage(error))
+            }
+        }
+    }
+
+    private func finishSemanticAnchorInteraction(_ id: UUID) {
+        guard semanticAnchorInteractionID == id else { return }
+        semanticAnchorInteractionID = nil
+        semanticAnchorPreparation = nil
+    }
+
+    fileprivate func retireSemanticAnchorInteraction() {
+        semanticAnchorPreparation?.cancel()
+        semanticAnchorPreparation = nil
+        semanticAnchorInteractionID = nil
+        let alert = semanticAnchorConfirmation
+        semanticAnchorConfirmation = nil
+        alert?.dismiss(animated: false)
+    }
+
+    private func showSemanticAnchorMessage(_ message: String) {
+        guard presentation.isMounted, viewIfLoaded?.window != nil, presentedViewController == nil else { return }
+        present(PinkhaSemanticAnchorUI.outcome(message), animated: true)
+    }
+
+    private static func semanticAnchorMessage(_ error: Error) -> String {
+        if let anchor = error as? PinkhaSemanticTextAnchorError { return PinkhaSemanticAnchorUI.message(for: anchor) }
+        switch error {
+        case AnyHostError.invalidSelection: return PinkhaSemanticAnchorUI.text(.invalidSelection)
+        case AnyHostError.changedDocument: return PinkhaSemanticAnchorUI.text(.changed)
+        case AnyHostError.writeUncertain, AnyEngineError.writeUncertain:
+            return PinkhaSemanticAnchorUI.text(.unconfirmed)
+        case AnyHostError.sessionClosed, AnyHostError.engineRestarted, AnyEngineError.accountChanged,
+             TorahAssociationRepositoryError.permissionDenied:
+            return PinkhaSemanticAnchorUI.text(.unavailablePage)
+        default: return PinkhaSemanticAnchorUI.text(.unavailable)
+        }
+    }
+
+    public func textView(_ textView: UITextView, primaryActionFor textItem: UITextItem,
+                         defaultAction: UIAction) -> UIAction? {
+        guard case .link(let url) = textItem.content, PinkhaSemanticTextAnchor.isReservedMarkerURL(url) else { return defaultAction }
+        return semanticAnchorNavigationAction(url)
+    }
+
+    public func textView(_ textView: UITextView, menuConfigurationFor textItem: UITextItem,
+                         defaultMenu: UIMenu) -> UITextItem.MenuConfiguration? {
+        guard case .link(let url) = textItem.content, PinkhaSemanticTextAnchor.isReservedMarkerURL(url) else {
+            return UITextItem.MenuConfiguration(menu: defaultMenu)
+        }
+        let navigate = semanticAnchorNavigationAction(url)
+        guard let anchor = try? PinkhaSemanticTextAnchor(markerURL: url),
+              anchor.belongsTo(spaceID: presentation.workspace.spaceID, objectID: presentation.objectID) else {
+            return UITextItem.MenuConfiguration(menu: UIMenu(children: [navigate]))
+        }
+        let copy = UIAction(title: PinkhaSemanticAnchorUI.text(.copyLink),
+                            image: UIImage(systemName: "link")) { _ in
+            UIPasteboard.general.url = url
+        }
+        return UITextItem.MenuConfiguration(menu: UIMenu(children: [navigate, copy]))
+    }
+
+    private func semanticAnchorNavigationAction(_ url: URL) -> UIAction {
+        UIAction(title: PinkhaSemanticAnchorUI.text(.reveal),
+                 image: UIImage(systemName: "scope")) { [weak self] _ in
+            guard let self else { return }
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                do {
+                    let anchor = try PinkhaSemanticTextAnchor(markerURL: url)
+                    let resolution = try await presentation.revealSemanticAnchor(anchor)
+                    switch resolution {
+                    case .resolved: render()
+                    case .missing: showSemanticAnchorMessage(PinkhaSemanticAnchorUI.text(.missing))
+                    case .ambiguous: showSemanticAnchorMessage(PinkhaSemanticAnchorUI.text(.ambiguous))
+                    }
+                } catch { showSemanticAnchorMessage(Self.semanticAnchorMessage(error)) }
+            }
+        }
+    }
+
     public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool { presentation.canMutate }
 
     public func textViewDidBeginEditing(_ textView: UITextView) {
@@ -396,6 +614,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
     private func updateSelection(_ textView: UITextView) {
         guard let textView = textView as? AnyNativeTextView, let id = textView.blockID else { return }
         presentation.select(blockIDs: [id], focusedBlockID: id, range: textView.selectedRange)
+        observeSemanticAnchors()
     }
 
     public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange,
@@ -462,11 +681,18 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
             self?.focus.cancel(); textView?.resignFirstResponder()
         }
         done.accessibilityIdentifier = "any-native-editor-done"
+        let anchor = item(PinkhaSemanticAnchorUI.text(.title)) { [weak self, weak textView] in
+            guard let self, let textView,
+                  self.semanticAnchorAction(textView, range: textView.selectedRange) != nil else { return }
+            self.prepareSemanticAnchor(textView, range: textView.selectedRange)
+        }
+        anchor.accessibilityIdentifier = "pinkha.semanticAnchor.capture"
         toolbar.items = [
             item("B") { [weak self, weak textView] in self?.format(.bold, textView: textView) },
             item("I") { [weak self, weak textView] in self?.format(.italic, textView: textView) },
             item("S") { [weak self, weak textView] in self?.format(.strike, textView: textView) },
             item("</>") { [weak self, weak textView] in self?.format(.code, textView: textView) },
+            anchor,
             .flexibleSpace(),
             item("↶") { [weak textView] in textView?.editHistory.undo() },
             item("↷") { [weak textView] in textView?.editHistory.redo() },
