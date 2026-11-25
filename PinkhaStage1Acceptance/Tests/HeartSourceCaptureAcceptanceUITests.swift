@@ -80,6 +80,7 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
             try require(!app.alerts["Warning"].exists && app.alerts.count == 0, "unexpected-startup-alert")
             try require(!element("pinkha.semanticAnchor.mounted-status").exists, "mounted-observer-active")
             try openOriginalFixtureSpace()
+            try dismissOriginalChannelHomeOnboardingIfPresent()
 
             let first = try captureThroughMenu(ordinal: 1)
             receipt["captures"] = [first]
@@ -121,6 +122,18 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
         try require(matches.firstMatch.waitForExistence(timeout: remaining(15)), "original-space-button")
         try require(matches.count == 1, "original-space-button-ambiguous")
         try tap(matches.firstMatch)
+    }
+
+    private func dismissOriginalChannelHomeOnboardingIfPresent() throws {
+        // The original first-space flow presents this modal above the app's
+        // engine header. Decline its optional home creation through its actual
+        // UI; the subsequent source identity and capture assertions are unchanged.
+        let prompt = app.staticTexts["Add a Channel Home?"]
+        guard prompt.waitForExistence(timeout: remaining(5)) else { return }
+        let dismiss = app.buttons["Not now"]
+        try require(dismiss.exists, "original-channel-home-decline-missing")
+        try tap(dismiss)
+        try require(prompt.waitForNonExistence(timeout: remaining(15)), "original-channel-home-remained")
     }
 
     private func captureThroughMenu(ordinal: Int) throws -> [String: Any] {
