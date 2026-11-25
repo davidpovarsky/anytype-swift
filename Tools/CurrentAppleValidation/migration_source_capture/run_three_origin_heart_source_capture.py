@@ -172,7 +172,7 @@ def original_preparation(c):
 def original_handoff(c, commands, evidence):
     execution_path = PRIOR / "evidence/execution.json"
     backup_path = PRIOR / "private/owned-account-originals/retention.json"
-    fixture_path = PRIOR / "private" / c.FIXTURE
+    fixture_path = PRIOR / "private/final-sandbox-originals" / c.FIXTURE
     c.require(c.digest(execution_path) == PRIOR_EXECUTION_SHA and c.digest(backup_path) == PRIOR_BACKUP_SHA
               and c.digest(fixture_path) == FIXTURE_SHA, "Original sealed handoff bytes changed")
     execution = c.decode(c.raw(execution_path)); backup = c.decode(c.raw(backup_path))
