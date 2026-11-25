@@ -40,6 +40,7 @@ PLANS = {
     "coherent-functional": ("editor", "return-controls", "quote-drop", "properties-set",
                             "t5-host-actions", "t5-pending-nine", "t5-remaining-freshness", "t5-native-ui"),
     "t5-only": ("t5-host-actions", "t5-pending-nine", "t5-remaining-freshness", "t5-native-ui"),
+    "t5-host-actions-only": ("t5-host-actions",),
     "remaining-editor-journeys": ("quote-drop", "properties-set"),
     "return-controls-only": ("return-controls",),
 }
@@ -92,7 +93,24 @@ def load_helpers(root):
     return modules
 
 
-def scoped_descriptor(built, app, selectors, environment):
+def invocation_selectors(selectors, host_contract=None):
+    if host_contract is None:
+        return selectors
+    # Xcode27 filters the parameterized Swift Testing method out when its full
+    # display signature is used as -only-testing. The original host controller
+    # selected this entire source-validated suite, then required all11 methods
+    # and all12 literal cases. Keep those exact pre/post execution validators.
+    require(host_contract.get("expected_methods") == 11 and host_contract.get("declared_cases") == 12
+            and len(selectors) == 11 and len(set(selectors)) == 11
+            and sorted(selectors) == host_contract.get("compiled_identifiers"),
+            "Original complete host declaration contract required")
+    suite = NATIVE + "/TorahRelatedDocumentActionTests"
+    require(all(len(value.split("/")) == 3 and value.startswith(suite + "/") for value in selectors),
+            "Only the original complete host action suite can use suite selection")
+    return [suite]
+
+
+def scoped_descriptor(built, app, selectors, environment, host_contract=None):
     require(isinstance(selectors, list) and selectors and len(selectors) == len(set(selectors))
             and len({s.split("/")[0] for s in selectors}) == 1, "Exact distinct one-target method list required")
     data, proof = shared.bind_descriptor(built, app, selectors[0], environment)
@@ -101,13 +119,14 @@ def scoped_descriptor(built, app, selectors, environment):
     target = (value["TestConfigurations"][0]["TestTargets"][0]
               if selectors[0].startswith(NATIVE + "/") else value[UI])
     original_only = target["OnlyTestIdentifiers"]
-    target["OnlyTestIdentifiers"] = [s.split("/", 1)[1] for s in selectors]
+    filters = invocation_selectors(selectors, host_contract)
+    target["OnlyTestIdentifiers"] = [s.split("/", 1)[1] for s in filters]
     inverse = copy.deepcopy(value)
     inverse_target = (inverse["TestConfigurations"][0]["TestTargets"][0]
                       if selectors[0].startswith(NATIVE + "/") else inverse[UI])
     inverse_target["OnlyTestIdentifiers"] = original_only
     require(inverse == before, "Additional selector scope changed nonselection configuration")
-    proof.update(selectors=selectors, exactMultiMethodInverse=True)
+    proof.update(selectors=selectors, invocationSelectors=filters, exactMultiMethodInverse=True)
     return plistlib.dumps(value, sort_keys=False), proof
 
 
@@ -246,7 +265,7 @@ class Consumer:
         first = None
         try:
             shared.product_integrity(built)
-            data, proof = scoped_descriptor(built, self.app, selectors, environment)
+            data, proof = scoped_descriptor(built, self.app, selectors, environment, host_contract)
             config = built["products"] / ("F-Combined-" + prefix + ".xctestrun")
             write_bytes(config, data)
             built["copies"][config.name] = {"kind": "file", "bytes": len(data), "mode": 0o600, "sha256": sha(data)}
@@ -254,7 +273,7 @@ class Consumer:
             write_bytes(path / "bound.xctestrun", data)
             base = ["xcodebuild", "test-without-building", "-xctestrun", str(config), "-destination",
                     "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO",
-                    *["-only-testing:" + s for s in selectors]]
+                    *["-only-testing:" + s for s in invocation_selectors(selectors, host_contract)]]
             listing = path / "enumeration.json"
             self.command(base + ["-enumerate-tests", "-test-enumeration-style", "flat", "-test-enumeration-format", "json",
                                 "-test-enumeration-output-path", str(listing)], prefix + "-enumerate", 180)

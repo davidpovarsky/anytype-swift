@@ -32,7 +32,7 @@ def main():
     control = (directory / "combined_host_acceptance_current.py").read_text()
     shared = types.SimpleNamespace(OS_VERSION="27.0", OS_BUILD="24A434", error=lambda e: {"type": type(e).__name__, "message": str(e)})
     namespace = {"require": require, "shared": shared, "NATIVE": "AnytypeTests"}
-    extract(control, ["exact_enumeration", "result_selection"], namespace)
+    extract(control, ["exact_enumeration", "result_selection", "invocation_selectors"], namespace)
     methods = ["PinkhaStage1AcceptanceUITests/" + n for n in (
         "testAppWideDirectionPersistenceAndInteractiveBack", "testMultiBlockEnterCreationAndTypingLifecycle",
         "testDocumentSourcesEntryOpensExistingSearch", "testUnifiedEngineSwitchRetainsHeartDocumentAndColdReopen")]
@@ -69,6 +69,25 @@ def main():
     ):
         value = copy.deepcopy(enumeration); change(value)
         reject(name, lambda value=value: namespace["exact_enumeration"](value, selectors))
+    # The original parameterized method must remain selected and validated;
+    # only Xcode invocation filtering uses the already source-validated suite.
+    host = "AnytypeTests/TorahRelatedDocumentActionTests/"
+    host_selectors = [host + str(i) + "()" for i in range(10)] + [host + "lateUnlinkFailureIsIgnoredAfterDocumentLifetimeEnds(isNote:)"]
+    contract = {"expected_methods":11, "declared_cases":12, "compiled_identifiers":sorted(host_selectors)}
+    assert namespace["invocation_selectors"](host_selectors, contract) == [host.rstrip("/")]
+    assert namespace["invocation_selectors"](selectors) == selectors
+    cases["originalCompleteHostSuiteFilter"] = "PASS_PURE_CONTROL"
+    for name, change in (
+        ("hostContractMissingMethod", lambda c:c["compiled_identifiers"].pop()),
+        ("hostContractReducedCaseCount", lambda c:c.update(declared_cases=11)),
+        ("hostContractReducedMethodCount", lambda c:c.update(expected_methods=10)),
+    ):
+        c=copy.deepcopy(contract);change(c)
+        reject(name,lambda c=c:namespace["invocation_selectors"](host_selectors,c))
+    missing_parameter = {"errors":[],"values":[{"testPlan":"AnytypeTests",
+        "enabledTests":[{"identifier":n} for n in host_selectors[:-1]],
+        "disabledTests":[{"identifier":host_selectors[-1]}]}]}
+    reject("parameterizedHostMethodStillRequired",lambda:namespace["exact_enumeration"](missing_parameter,host_selectors))
     tree = [{"nodeType": "Test Case", "nodeIdentifier": n + "()", "result": "Passed"} for n in methods]
     device = {"deviceId": "pure-control-device", "architecture": "arm64", "osVersion": "27.0",
               "osBuildNumber": "24A434", "platform": "iOS Simulator"}
