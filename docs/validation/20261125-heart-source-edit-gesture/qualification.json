@@ -1,0 +1,86 @@
+{
+  "acceptedOriginalPreparationAndMounted": {
+    "executionSHA256": "e6269f02d2c03dfbe7f1c519c812b762f1aa14a564d91583d472edd9ac732422",
+    "failed": 0,
+    "fullNativeCASAndEventValidationPreserved": true,
+    "fullSourceWorkflowAccepted": false,
+    "methods": 2,
+    "passed": 2,
+    "skipped": 0
+  },
+  "actualDoubleTapDiagnostic": {
+    "allOwnedProcessGroupsAbsent": true,
+    "controller": "56384e4fa42edf440b4939c909da099e6e70913b",
+    "diagnosticGrantsAcceptance": false,
+    "durationSeconds": 77.8903820514679,
+    "executionSHA256": "a2d86c9661d69f2d389e3018157e72404090ae3e9f4ea5d171f1ad4e094dea0b",
+    "failed": 1,
+    "fullFourScopeRetentionSHA256": "22c2da5a37d89714bd6567867387e066088c3ea7975d4c75c829fa6c755bf5b5",
+    "observed": "Same input reacquires firstResponder after close; openSources and shared session return occur again without a second menu action. The rightArrow succeeds but Sources remains open, so the original absence assertion fails.",
+    "originalLogSHA256": "ca7b7c5fcd3d2b1bf4563a248d1da2021e4a6cc99dcef4737a609e0268ce602e",
+    "ownedSimulatorDeleted": false,
+    "ownedSimulatorShutdown": true,
+    "passed": 0,
+    "privateTrace": {
+      "bytes": 17393,
+      "sha256": "1c5105a5f07a97674438120e7c7b3ff5e7251fa9653e5e7d755fc4cb32b7528e"
+    },
+    "retainedDevicePlistSHA256": "e4a4b37e0a73851cbf47bee3d040c3f40b4fa563df54a4e4eb7afc85297f0d39",
+    "root": "/Users/m1/builds/e-combined-current-20261125/focus-diagnostic5c05-attempt1",
+    "skipped": 0,
+    "source": "719d13c258764dd6401d4e0892446b2ce6f7edfa",
+    "summarySHA256": "4a839cc64d13e932ee87fb6c4b92f9bebb984ede23d44a64f1ab4bb5b7a8fce1",
+    "testTreeSHA256": "fee635fcc44de574a427f03314d8ed664f1bf720c28fcf1aa33b7e15d63a07ae"
+  },
+  "appBuildReceiptSHA256": "2ed88ba57b925a7136519374e8c687aae6a3a670dd51ba8aaddf735415a811f4",
+  "asanaMilestones": [
+    "1220910366527716",
+    "1220910303461887"
+  ],
+  "dependencyLockSHA256": "4453726b6b4bbd52dc3c5caa5a315a51e718139c4f96182b7a6851a0b8c82d04",
+  "firstPreparationCorrection": {
+    "accepted": false,
+    "executionSHA256": "1ca2434c89f8628d97fb26ed88d587df8bcb72a129338f8a445e31149b472f25",
+    "failure": "Removing tap does not by itself restore input focus after sheet dismissal.",
+    "linkedUIFailed": 1,
+    "linkedUIPassed": 0,
+    "preparationAndMountedPassed": 2,
+    "source": "75740138dd927c52f5757a77a7c4bd604fc20c6d"
+  },
+  "nativeManifestSHA256": "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72",
+  "originalAppSource": "5c05a612e4054a4adfa7f812343be6a15871cc89",
+  "originalSourceContinuation": {
+    "actualUIProgress": [
+      "original selection and explicit Sources action",
+      "real source search and result",
+      "one visible canonical source link"
+    ],
+    "executionSHA256": "4a8819b03006a4b3e383f02906209667900583aaca5f4acd193c85168fcbfe6b",
+    "failed": 1,
+    "failure": "Post-close tap reopens Sources and following real rightArrow cannot obtain keyboard focus.",
+    "nativeLinkedReadbackExecuted": false,
+    "passed": 0,
+    "privateObserverSHA256": "1768fed49536cdad560c4e6e11976b7a6e670cb129864f9f2513f4f3a99404d6",
+    "remainingUnlinkAndNativeStagesExecuted": false,
+    "root": "/Users/m1/builds/e-combined-current-20261125/sources-current5c05-continuation1",
+    "skipped": 0
+  },
+  "protocol": "pinkha-heart-source-edit-gesture-milestone-v1",
+  "rawEvidencePrivacy": "Only scoped hashes, counts and verification are tracked. Original account, keychain, native payloads and detailed UI traces remain in private retained roots.",
+  "remaining": [
+    "Qualify corrected semantic link activation while editing on actual shared App.",
+    "Complete original link/edit/cold/unlink/native readback workflow.",
+    "Run actual independent-peer anchor and canonical-association synchronization followed by a distinct offline process."
+  ],
+  "rootCauseAndPendingFix": {
+    "appleQualificationPending": true,
+    "assertionsWeakened": false,
+    "cause": "Reserved semantic URL branch invoked Sources even when the input already owned editing focus; ordinary links already guard against this in the same delegate.",
+    "change": "Use the existing ordinary-link !isFirstResponder condition for semantic default action, preserving reading navigation and the explicit selected-text Sources menu.",
+    "nativeOrACKChanges": false,
+    "path": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift",
+    "source": "871648a87726204dac2e83c0ae02a575140439df"
+  },
+  "status": "PARTIAL_PASS_WITH_PRESERVED_FAILURES",
+  "taskEComplete": false
+}
