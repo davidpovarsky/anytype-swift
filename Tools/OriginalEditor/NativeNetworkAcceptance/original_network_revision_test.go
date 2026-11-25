@@ -54,6 +54,9 @@ func TestOtzariaOriginalNetworkRevisionPeer(t *testing.T) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Minute)
 	defer cancel()
+	// A peer failure cancels only this test's own original operation context.
+	// The deferred real AccountStop still executes and its receipt is retained.
+	go originalNetworkRevisionWatchAbort(ctx, run, cancel)
 	var pointer originalNetworkPointer
 	originalNetworkWaitJSON(t, ctx, root, "source-pointer.json", &pointer)
 	repo := filepath.Join(root, phase+"-repository")
@@ -282,4 +285,21 @@ func originalNetworkRequireTextHash(t *testing.T, raw []byte, p originalNetworkP
 		return
 	}
 	t.Fatal("remote original changed text block missing")
+}
+
+func originalNetworkRevisionWatchAbort(ctx context.Context, run string, cancel context.CancelFunc) {
+	ticker := time.NewTicker(250 * time.Millisecond)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			_, err := os.Lstat(filepath.Join(run, "abort.json"))
+			if err == nil || !os.IsNotExist(err) {
+				cancel()
+				return
+			}
+		}
+	}
 }

@@ -31,3 +31,7 @@ A local `applied` receipt alone never satisfies the peer-observation check. A na
 The harness refuses a reused evidence directory instead of silently overwriting a prior run. If a trial fails, inspect its actual native state and retained evidence before adapting or resuming; do not create another account/object or blindly repeat the mutation.
 
 The final run manifest must bind the exact native product/test overlay, prior helper bytes, Go environment, binary checksum, all process exit codes and sanitized proof hashes. No runtime or C–F acceptance is established by committing this preparation.
+
+## Controller prepared for the Mac
+
+`run_revision_peers.py` accepts the exact existing native binary SHA-256 and retained source-manifest path, creates a fresh private phase directory and runs the live and cold pairs. It validates the actual process IDs, original account/Space/root, remote network mode, disabled LAN sync, complete result receipts and real AccountStop. Peer failure requests cancellation through a phase-local abort receipt; any forced termination is a failure. It checks logs against the private fixture credential in memory and refuses public-log release on a match. The controller does not compile or create native accounts/objects. Its presence does not establish runtime success.
