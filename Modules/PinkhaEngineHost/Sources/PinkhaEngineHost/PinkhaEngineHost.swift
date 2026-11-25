@@ -7,6 +7,7 @@ import PinkhaAnyHost
 public typealias PinkhaEmbeddedAnyApplication = PinkhaAnyNative.AnyNativeApplication
 public typealias PinkhaEmbeddedAnyPresentation = PinkhaAnyNative.AnyNativePresentationSession
 public typealias PinkhaEmbeddedAnyRootView = PinkhaAnyNative.AnyNativeRootView
+public typealias PinkhaEmbeddedAnyMiniAppsReturnRouter = PinkhaAnyUI.AnyMiniAppsReturnRouter
 public typealias PinkhaEmbeddedHeartSourceReview = PinkhaAnyHost.AnyHeartNativeSourceCaptureReview
 public typealias PinkhaEmbeddedHeartSourceReviewView = PinkhaAnyUI.AnyHeartNativeSourceReviewView
 #else

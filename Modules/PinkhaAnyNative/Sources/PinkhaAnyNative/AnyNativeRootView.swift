@@ -88,6 +88,7 @@ public struct AnyNativeRootView: View {
             if isActive { model.resume() }
             else { model.suspend(); await model.waitForSuspension() }
         }
+        .onOpenURL { url in _ = AnyMiniAppsReturnRouter.shared.receive(url) }
         .onChange(of: scenePhase) { _, phase in
             guard isActive else { return }
             if phase == .active { model.resume() }

@@ -29,6 +29,7 @@ final class PinkhaEngineSceneOwner {
     var problem: String?
     private var restored = false
     private var visibleScenes = Set<String>()
+    private var heartMiniAppsHold: UUID?
 
     // One source review owns one actual Full wallet session until native close
     // succeeds. A failed close retains that ownership for a visible retry.
@@ -217,6 +218,9 @@ final class PinkhaEngineSceneOwner {
                         credentialService: "io.pinkha.anynative.accounts.v1")
                     anyPresentation = PinkhaEmbeddedAnyPresentation(application: application)
                 }
+                if heartMiniAppsHold == nil {
+                    heartMiniAppsHold = try await PinkhaMiniAppsCoordinator.shared.prepareEngineAccountChange()
+                }
                 try await PinkhaHanlinAccountOwner.shared.deactivateEngine(PinkhaHanlinEngineNamespace.heart)
                 await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)
                 if engine == .any && anyWindow != scene {
@@ -247,6 +251,7 @@ final class PinkhaEngineSceneOwner {
                 try? await resumeHeartServices()
             } else {
                 try? PinkhaHanlinAccountOwner.shared.activateEngine(PinkhaHanlinEngineNamespace.any)
+                anyPresentation?.resume()
             }
         }
     }
@@ -257,6 +262,10 @@ final class PinkhaEngineSceneOwner {
             try await PinkhaSharingAccountOwner.shared.didOpen(engine: .heart, accountID: account)
         }
         try PinkhaHanlinAccountOwner.shared.activateEngine(PinkhaHanlinEngineNamespace.heart)
+        if let token = heartMiniAppsHold {
+            PinkhaMiniAppsCoordinator.shared.resumeAfterAccountChange(token)
+            heartMiniAppsHold = nil
+        }
     }
 
     func releaseWindow(_ scene: String) async {
@@ -377,10 +386,11 @@ struct PinkhaEngineSceneView<HeartContent: View>: View {
         .task { await owner.observeHeartAccount() }
         .task { await owner.observeHeartSpace() }
         .onDisappear { Task { await owner.releaseWindow(scene) } }
-        .onOpenURL { _ in
-            // Existing app links belong to the existing Heart router. Make its
-            // retained coordinator visible before a user follows the routed result.
-            Task { await owner.select(.heart, for: scene) }
+        .onOpenURL { url in
+            // An Any return is admitted only from its immutable local SDK request.
+            // Other existing links keep the original Heart routing.
+            let target: PinkhaAppEngine = PinkhaEmbeddedAnyMiniAppsReturnRouter.shared.receive(url) ? .any : .heart
+            Task { await owner.select(target, for: scene) }
         }
     }
 }

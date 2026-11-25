@@ -74,6 +74,7 @@ public final class AnyDocumentPresentation: Sendable {
     public private(set) var requiresDraftReview = false
     public private(set) var isComposing = false
     public private(set) var isCreatingTextAnchor = false
+    public private(set) var isApplyingMiniApps = false
     public var sourceDocuments: [TorahRelatedDocument] = []
     public var sourceDocumentsTitle: String?
     public private(set) var nativeProperties: AnyNativeDerivedDocumentProperties?
@@ -207,7 +208,7 @@ public final class AnyDocumentPresentation: Sendable {
     }
     public var title: String { read?.snapshot.title ?? "" }
     public var isNavigating: Bool { navigation.isPending }
-    public var canMutate: Bool { isMounted && lifetime.isActive && canWrite && !isNavigating && !requiresDraftReview && !isComposing && !isCreatingTextAnchor && surface?.isForegroundMounted == true }
+    public var canMutate: Bool { isMounted && lifetime.isActive && canWrite && !isNavigating && !requiresDraftReview && !isComposing && !isCreatingTextAnchor && !isApplyingMiniApps && surface?.isForegroundMounted == true }
     public var hasPendingEdits: Bool { !drafts.isEmpty || !unmappedDrafts.isEmpty || isComposing || saving }
     public var orderedBlocks: [AnyEditorBlock] {
         guard let snapshot = read?.snapshot else { return [] }
@@ -572,7 +573,7 @@ public final class AnyDocumentPresentation: Sendable {
     public func changeText(blockID: String, source: String, displaySelection: NSRange,
                            renderedBlock: AnyEditorBlock) throws {
         try requireMounted(epoch)
-        guard canWrite, !requiresDraftReview, !isComposing, !isCreatingTextAnchor, source.utf8.count <= 65_536,
+        guard canWrite, !requiresDraftReview, !isComposing, !isCreatingTextAnchor, !isApplyingMiniApps, source.utf8.count <= 65_536,
               let block = read?.snapshot.blocks.first(where: { $0.id == blockID }),
               read?.snapshot.depthFirstIDs.contains(blockID) == true,
               renderedBlock.id == blockID,
@@ -1244,6 +1245,49 @@ public enum AnyUIErrorText {
     }
     public static func text(_ hebrew: String, _ english: String) -> String {
         Locale.autoupdatingCurrent.language.languageCode?.identifier == "he" ? hebrew : english
+    }
+}
+#endif
+
+#if canImport(UIKit)
+extension AnyDocumentPresentation {
+    /// A MiniApps return shares the editor's real mutation owner and readback
+    /// publication. Text input cannot race its multi-block native receipts.
+    func performMiniAppsMutation<Value: Sendable>(
+        _ operation: @escaping @Sendable (
+            AnyHostLease, @escaping @Sendable () async throws -> Void
+        ) async throws -> (Value, AnyEditorRead, AnyPreparedBlockEdit?)
+    ) async throws -> Value {
+        let owner = epoch
+        await flush()
+        try requireMounted(owner)
+        guard canMutate, !hasPendingEdits else { throw AnyHostError.changedDocument }
+        let mutation = try beginNativeMutation(owner: owner)
+        isApplyingMiniApps = true
+        var completed = false
+        defer {
+            isApplyingMiniApps = false
+            finishNativeMutation(mutation, owner: owner, completed: completed)
+        }
+        let authorize: @Sendable () async throws -> Void = { [weak self] in
+            guard let self else { throw AnyHostError.sessionClosed }
+            try await self.requireMiniAppsMutation(mutation, owner: owner)
+        }
+        let result = try await nativeSession.perform { lease in
+            try await operation(lease, authorize)
+        }
+        try requireMiniAppsMutation(mutation, owner: owner)
+        acceptAcknowledged(result.1, blockID: nil, undo: result.2)
+        completed = true
+        return result.0
+    }
+
+    private func requireMiniAppsMutation(_ mutation: UUID, owner: UUID) throws {
+        try requireMounted(owner)
+        guard ownsNativeMutation(mutation, owner: owner), isApplyingMiniApps,
+              canWrite, !requiresDraftReview, !isComposing, drafts.isEmpty else {
+            throw AnyHostError.changedDocument
+        }
     }
 }
 #endif

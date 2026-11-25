@@ -72,7 +72,10 @@ public struct AnyNativeLibraryView: View {
         .task {
             model.onOpenDocument = { id, blockID in path.append(.document(id, blockID)) }
             await model.open()
+            routeMiniAppsReturn()
         }
+        .task(id: AnyMiniAppsReturnRouter.shared.requestID) { routeMiniAppsReturn() }
+        .onChange(of: model.isReady) { _, ready in if ready { routeMiniAppsReturn() } }
         .sheet(item: $nameRequest, onDismiss: submitAfterNameDismissal) { request in
             if let item = request.item {
                 AnyNativeNameSheet(title: AnyUIErrorText.text("שינוי שם", "Rename"),
@@ -129,6 +132,15 @@ public struct AnyNativeLibraryView: View {
         guard nameRequest?.id == request.id else { return }
         pendingNameSubmission = nil
         nameRequest = nil
+    }
+
+    private func routeMiniAppsReturn() {
+        guard lifetime.isActive, model.isReady,
+              let objectID = AnyMiniAppsReturnRouter.shared.pendingObject(
+                accountID: model.session.workspace.accountID, spaceID: model.session.workspace.spaceID) else { return }
+        if path.last != .document(objectID, nil) { path.append(.document(objectID, nil)) }
+        AnyMiniAppsReturnRouter.shared.didRoute(accountID: model.session.workspace.accountID,
+            spaceID: model.session.workspace.spaceID, objectID: objectID)
     }
 
     private func submitAfterNameDismissal() {
