@@ -1034,6 +1034,72 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
         }
     }
 
+    /// Uses the actual shipping scene host and both native engines in one process.
+    /// The Any account screen becomes enabled only after its real runtime starts.
+    /// No test owner replaces the account, editor, source or engine-switch path.
+    func testUnifiedEngineSwitchRetainsHeartDocumentAndColdReopen() throws {
+        launch(document: .pinkha)
+        openDocumentIfNeeded(.pinkha)
+        let body = editableBody(startNewTrailingBlock: true)
+        body.tap()
+        let marker = "Unified \(UUID().uuidString.prefix(8)) עברית English"
+        body.typeText(marker)
+        let written = editorBody(containing: marker)
+        XCTAssertTrue(written.waitForExistence(timeout: 30))
+        let blockIdentifier = written.identifier
+        XCTAssertTrue(blockIdentifier.hasPrefix("pinkha.stage1.body."))
+        assertRuntimeDirection(on: written, document: .pinkha)
+        let objectID = try XCTUnwrap(fixtureObjectIDs[.pinkha])
+        let editorIdentifier = "pinkha-ui27-editor:\(fixtureSpaceID):\(objectID)"
+        let editor = app.otherElements[editorIdentifier]
+        XCTAssertTrue(editor.exists)
+        attachScreenshot(named: "unified-heart-before-switch")
+
+        let selector = app.buttons["pinkha.engine.selector"]
+        XCTAssertTrue(selector.waitForExistence(timeout: 20), "The real combined scene host must be mounted")
+        XCTAssertEqual(app.buttons.matching(identifier: "pinkha.engine.selector").count, 1)
+        XCTAssertEqual(selector.value as? String, "Heart")
+        selector.tap()
+        let anyChoice = app.buttons["pinkha.engine.select.any"]
+        XCTAssertTrue(anyChoice.waitForExistence(timeout: 10))
+        anyChoice.tap()
+
+        let nativeAccount = app.buttons["any-native-account-create"]
+        XCTAssertTrue(nativeAccount.waitForExistence(timeout: 90), "Any must start through the actual embedded runtime")
+        expectation(for: NSPredicate(format: "enabled == true"), evaluatedWith: nativeAccount)
+        waitForExpectations(timeout: 45)
+        XCTAssertEqual(selector.value as? String, "Any")
+        XCTAssertFalse(written.isHittable, "The retained Heart editor must not accept input while Any is active")
+        attachScreenshot(named: "unified-any-runtime-ready")
+
+        selector.tap()
+        let heartChoice = app.buttons["pinkha.engine.select.heart"]
+        XCTAssertTrue(heartChoice.waitForExistence(timeout: 10))
+        heartChoice.tap()
+        expectation(for: NSPredicate(format: "value == %@ AND enabled == true", "Heart"), evaluatedWith: selector)
+        waitForExpectations(timeout: 60)
+
+        // Do not navigate or recreate the document here: switching must reveal
+        // the same mounted Heart scene, exact original document and native block.
+        XCTAssertTrue(editor.waitForExistence(timeout: 30))
+        XCTAssertTrue(editor.isHittable)
+        let retained = editorBody(containing: marker)
+        XCTAssertTrue(retained.waitForExistence(timeout: 30))
+        XCTAssertEqual(retained.identifier, blockIdentifier)
+        assertRuntimeDirection(on: retained, document: .pinkha)
+        attachScreenshot(named: "unified-heart-after-switch")
+
+        launch(document: .pinkha)
+        openDocumentIfNeeded(.pinkha)
+        let reopened = editorBody(containing: marker)
+        XCTAssertTrue(reopened.waitForExistence(timeout: 60))
+        XCTAssertEqual(reopened.identifier, blockIdentifier)
+        XCTAssertTrue(app.otherElements[editorIdentifier].isHittable)
+        XCTAssertEqual(app.buttons["pinkha.engine.selector"].value as? String, "Heart")
+        assertRuntimeDirection(on: reopened, document: .pinkha)
+        attachScreenshot(named: "unified-heart-cold-reopen")
+    }
+
     private func exerciseMultiBlockEnterLifecycle(_ kind: DocumentKind) throws {
         openDocumentIfNeeded(kind)
         var target = editableBody(startNewTrailingBlock: true)
