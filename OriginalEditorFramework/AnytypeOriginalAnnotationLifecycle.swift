@@ -632,7 +632,7 @@ fileprivate struct OriginalAnnotationLifecycleResult: Decodable, Sendable {
         case annotationTypeID = "annotation_type_id", annotationTypeUniqueKey = "annotation_type_unique_key"
         case annotationTypeHeads = "annotation_type_heads"
     }
-    init(from decoder: Decoder) throws {
+    init(from decoder: Swift.Decoder) throws {
         core = try OriginalAnnotationRevisionResult(from: decoder)
         let c = try decoder.container(keyedBy: CodingKeys.self)
         archiveObjectID = try c.decodeIfPresent(String.self, forKey: .archiveObjectID)
