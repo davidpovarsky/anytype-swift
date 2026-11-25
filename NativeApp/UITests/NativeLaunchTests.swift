@@ -2024,43 +2024,11 @@ final class NativeLaunchTests: XCTestCase {
         let peek = app.descendants(matching: .any)
             .matching(identifier: "torah-inspector-sheet-peek").firstMatch
         if peek.exists {
-            // The peek content contains Search and a segmented control; its
-            // generic swipe did not dismiss the actual native sheet. Drag its
-            // separately exposed system grabber, observed in the original AX,
-            // beyond the sheet's lower edge. This fixture always launches Hebrew.
-            let handles = app.buttons.matching(NSPredicate(
-                format: "label == %@", "ידית גרירה של הגיליון"))
-            let handle = handles.firstMatch
-            waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
-                    object: handle, timeout: 15)
-            XCTAssertEqual(handles.count, 1)
-            let handleFrame = try handle.snapshot().frame
-            let peekFrame = peek.frame
-            let windowFrame = app.frame
-            let geometry = [handleFrame.minX, handleFrame.minY, handleFrame.width, handleFrame.height,
-                            peekFrame.minX, peekFrame.minY, peekFrame.width, peekFrame.height,
-                            windowFrame.minX, windowFrame.minY, windowFrame.width, windowFrame.height]
-            guard geometry.allSatisfy(\.isFinite), handleFrame.width > 0, handleFrame.height > 0,
-                  windowFrame.contains(handleFrame), windowFrame.contains(peekFrame),
-                  handleFrame.midY < peekFrame.minY,
-                  handleFrame.midX >= peekFrame.minX, handleFrame.midX <= peekFrame.maxX,
-                  windowFrame.maxY - 4 > peekFrame.maxY else {
-                XCTFail("The native sheet grabber has no verified dismissal geometry.")
-                return
-            }
-            let observed = XCTAttachment(string:
-                "handle=\(handleFrame)\npeek=\(peekFrame)\nwindow=\(windowFrame)")
-            observed.name = "archive-native-sheet-dismissal-geometry"
-            observed.lifetime = .keepAlways; add(observed)
-            guard handles.count == 1, handle.exists, handle.isEnabled, handle.isHittable,
-                  handle.frame == handleFrame, peek.frame == peekFrame else {
-                XCTFail("The native sheet changed before its actual dismissal gesture.")
-                return
-            }
-            let target = app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(
-                dx: handleFrame.midX - windowFrame.minX, dy: windowFrame.height - 4))
-            handle.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-                .press(forDuration: 0.15, thenDragTo: target)
+            // Search and Close are independent controls in the shared inspector.
+            // Use the actual visible Close action; the original sheet-absence
+            // and archive/export/import/readback assertions remain unchanged.
+            let close = app.buttons["torah-inspector-peek-close"]
+            tapWhenEnabled(close)
             waitFor(NSPredicate(format: "exists == false"), object: peek, timeout: 15)
         }
         openCanonicalArchiveObservationEntry(app)
