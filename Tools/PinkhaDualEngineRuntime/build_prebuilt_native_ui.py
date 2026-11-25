@@ -45,6 +45,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--runner-source-commit")
     parser.add_argument("--history-source-commit", choices=["6c398307682073f31f9fb59af59f34c96003d542"])
+    parser.add_argument("--archive-source-commit", choices=["658f4af4380dffc55c65559ca9e0cc6d5ed9c931"])
     args = parser.parse_args()
     root, evidence, output = args.main_root, args.main_evidence, args.output
     for path in (root, evidence, output):
@@ -128,6 +129,43 @@ def main():
                 and runner_launch.split(end)[1] == candidate.split(end)[1],
                 "all_original_test_methods_and_fixture_contract_must_remain_byte_identical")
         runner_launch = candidate
+    archive_binding = None
+    if args.archive_source_commit is not None:
+        require(origin == "6f1194f9b8c9540dea1187826dda6a256777dbbf"
+                and runner_origin == origin, "one_exact_archive_preparation_on_original6f_required")
+        candidate = subprocess.run(["git", "-C", str(source), "show",
+            args.archive_source_commit + ":" + inputs[2]], check=True, capture_output=True).stdout
+        subprocess.run(["git", "-C", str(source), "merge-base", "--is-ancestor",
+                        origin, args.archive_source_commit], check=True, capture_output=True)
+        changed = subprocess.run(["git", "-C", str(source), "diff", "--name-only",
+            origin, args.archive_source_commit], check=True, capture_output=True, text=True).stdout.splitlines()
+        require(all(name == inputs[2] or name.startswith(("Tools/", "docs/validation/"))
+                    for name in changed), "archive_preparation_must_not_change_application_source")
+        review_root = ":docs/validation/20261125-archive-native-grabber-preparation/"
+        def reviewed_file(name):
+            return subprocess.run(["git", "-C", str(source), "show",
+                args.archive_source_commit + review_root + name],
+                check=True, capture_output=True).stdout
+        review_bytes = reviewed_file("source-review.json")
+        review = json.loads(review_bytes)
+        previous, replacement = reviewed_file("before.txt"), reviewed_file("after.txt")
+        require(digest(source / inputs[2]) == review["beforeSHA256"] ==
+                    "79a8192207b1cfa236c4ec0cdef71d3c99a81b1908aecd4bf79c7b1152080868"
+                and hashlib.sha256(candidate).hexdigest() == review["afterSHA256"] ==
+                    "cdb63944d9a7d4af1f3581415594ccf916ba6bf250698ad90bd6037ddbcb54aa",
+                "exact_reviewed_archive_preparation_required")
+        require(runner_launch.count(previous) == candidate.count(replacement) == 1
+                and candidate.replace(replacement, previous) == runner_launch
+                and review["inverseDeltaRestoresCompleteOriginalFile"] is True
+                and review["allOriginalArchiveOutcomeAssertionsUnchanged"] is True
+                and review["peekContentSwipeAccepted"] is False,
+                "all_original_archive_outcomes_and_other_methods_must_remain_byte_identical")
+        archive_binding = {"sourceCommit": args.archive_source_commit,
+            "originalSHA256": review["beforeSHA256"], "compiledSHA256": review["afterSHA256"],
+            "reviewSHA256": hashlib.sha256(review_bytes).hexdigest(),
+            "allOriginalArchiveOutcomeAssertionsUnchanged": True,
+            "peekContentSwipeAccepted": False, "inputRoute": review["inputRoute"]}
+        runner_origin, runner_launch = args.archive_source_commit, candidate
     runner_history = (source / inputs[3]).read_bytes()
     history_binding = None
     if args.history_source_commit is not None:
@@ -218,6 +256,7 @@ def main():
     write(output / "projection.json", {
         "mainSourceCommit": origin, "runnerSourceCommit": runner_origin,
         "historyKeyboardPreparation": history_binding,
+        "archiveGrabberPreparation": archive_binding,
         "mainReceiptSHA256": digest(evidence / "receipt.json"),
         "reviewedInputProfile": profile,
         "exactOriginalProjectAndScheme": transformation, "sourceFiles": sources,
@@ -248,6 +287,7 @@ def main():
                                    stderr=subprocess.STDOUT, start_new_session=True)
         record = {"sourceCommit": origin, "runnerSourceCommit": runner_origin,
                   "historyKeyboardPreparation": history_binding,
+                  "archiveGrabberPreparation": archive_binding,
                   "mainReceiptSHA256": digest(evidence / "receipt.json"),
                   "reviewedInputProfile": profile,
                   "argv": argv, "pid": process.pid,
