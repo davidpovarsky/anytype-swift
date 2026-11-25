@@ -3,6 +3,7 @@ import Foundation
 import PackageDescription
 
 let candidate = ProcessInfo.processInfo.environment["PINKHA_NATIVE_T2_AUTHORIZED_READ_V1"] == "1"
+    || ProcessInfo.processInfo.environment["PINKHA_ANY_NATIVE_ARTIFACT"] == "verified-unified-v1"
 let package = Package(
     name: "PinkhaHeartNative",
     platforms: [.iOS(.v17)],

@@ -22,9 +22,8 @@ struct TorahSourcesSearchView: View {
         @Bindable var presenter = presenter
 
         TorahSearchViewShell(
-            title: TorahSourcesSearchCopy.contextTitle(
-                blockId: presenter.associationTargetBlockID
-            ),
+            title: presenter.associationTargetAnchor != nil ? PinkhaSemanticAnchorUI.text(.sources) :
+                TorahSourcesSearchCopy.contextTitle(blockId: presenter.associationTargetBlockID),
             placeholder: Loc.Pinkha.Torah.searchPlaceholder,
             searchText: $presenter.searchQuery,
             searchFieldAccessibilityIdentifier: "torah-sources-search-field"
@@ -215,7 +214,9 @@ struct TorahSourcesSearchContentView: View {
     }
 
     private var linkTitle: String {
-        presenter.isSelectionOnly ? Loc.apply : TorahSourcesSearchCopy.linkTitle(blockId: presenter.associationTargetBlockID)
+        if presenter.isSelectionOnly { return Loc.apply }
+        if presenter.associationTargetAnchor != nil { return PinkhaSemanticAnchorUI.text(.linkSource) }
+        return TorahSourcesSearchCopy.linkTitle(blockId: presenter.associationTargetBlockID)
     }
 }
 

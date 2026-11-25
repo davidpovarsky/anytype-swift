@@ -125,6 +125,12 @@ final class AnytypeTorahAssociationRepository: AnytypeTorahAssociationSnapshotRe
         )
     }
 
+    func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String,
+                           authorize: @escaping TorahAssociationWriteAuthorization) async throws {
+        _ = try await mutate(.remove(associationId),
+            location: .init(spaceId: spaceId, target: target), authorize: authorize)
+    }
+
     private func list(location: TorahAssociationLocation) async throws -> [TorahAssociationItem] {
         let key = documentKey(for: location)
         return try await coordinator.enqueue(key: key) { [self] in

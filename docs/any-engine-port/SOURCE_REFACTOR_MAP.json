@@ -229,13 +229,14 @@
       "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAccountOwner.swift",
       "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinAccountOwner.swift",
       "baselineBlob": "78879033beca81fdb03feb272409de8253e99e33",
-      "replacementBlob": "ab218008e6b1dd12f98dce1ec322423b17b71d38",
-      "reason": "Single shared implementation for Heart and Any; public API initializers/access and portable Crypto import only. Account owner replaces concrete weak presentation type with identical lifetime protocol.",
+      "replacementBlob": "bde96d286c6db0e2c9cde9582156984eea6fcfe2",
+      "reason": "Single shared implementation for Heart and Any; public API initializers/access and portable Crypto import only. Account owner replaces concrete weak presentation type with identical lifetime protocol. Reviewed unified integration: Preserve account journal lifetime and explicit erasure, adding engine/account namespace keys, revoke-before-await and drain-before-native-account-change. Native account IDs are unchanged and one engine cannot erase the other engine metadata.",
       "sharedSources": [],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
@@ -264,15 +265,15 @@
       "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
       "baselineBlob": "810af73f1ecf45b3ea40827aa7549b12f7f3d1bc",
       "replacementBlob": "35f5857ca3de7c98c3e33358a3af2f7138364ba3",
-      "reason": "Retain Heart factory, styling and diagnostic adapter; share the original canonical session/provider/send/configure/close presentation body through one mounted owner protocol.",
+      "reason": "Retain Heart factory, styling and diagnostic adapter; share the original canonical session/provider/send/configure/close presentation body through one mounted owner protocol. Reviewed unified integration: Preserve account journal lifetime and explicit erasure, adding engine/account namespace keys, revoke-before-await and drain-before-native-account-change. Native account IDs are unchanged and one engine cannot erase the other engine metadata. Retain original presentation/session checks; use complete engine/account namespace availability for mounted presentation validation.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinAccountOwner.swift",
-          "gitBlob": "ab218008e6b1dd12f98dce1ec322423b17b71d38"
+          "gitBlob": "bde96d286c6db0e2c9cde9582156984eea6fcfe2"
         },
         {
           "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift",
-          "gitBlob": "f0cdf6a0fc4c0d04fd2a4115aac68f1faa70a4c0"
+          "gitBlob": "0a6975eb6be58fba1e47ddd53d80981d01fc4ad1"
         },
         {
           "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinPresentationHost.swift",
@@ -282,7 +283,8 @@
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
@@ -488,13 +490,14 @@
       "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePagePlan.swift",
       "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreatePagePlan.swift",
       "baselineBlob": "c9ca732c3e0760dc9f37b0bb75bf886bc035d3b7",
-      "replacementBlob": "79e4b39465e0cc6f81e84710f943cb52b6b28b96",
-      "reason": "Single shared implementation for Heart and Any; public API initializers/access and portable Crypto import only. Account owner replaces concrete weak presentation type with identical lifetime protocol.",
+      "replacementBlob": "d8186f713cfa751990c1cb5e8b38afe97f34041b",
+      "reason": "Single shared implementation for Heart and Any; public API initializers/access and portable Crypto import only. Account owner replaces concrete weak presentation type with identical lifetime protocol. Reviewed unified integration: Retain all write-identity and digest validation; admit only the two explicit Heart/Any application namespaces used by the shared host.",
       "sharedSources": [],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
@@ -544,13 +547,14 @@
       "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinWriteJournal.swift",
       "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWriteJournal.swift",
       "baselineBlob": "aca54480a6977009e1a1ac66806154964b51be29",
-      "replacementBlob": "14bfb33ab6c03564a93a224d2b0ce4dfe0ba1efd",
-      "reason": "Retain original v1 reservation/effect bytes and receipt rules; add an account-bound metadata-only known-object recovery sidecar for uncertain native creations, strict reopen validation, and same-ID committed refinement. Native failures remain uncertain and never masquerade as committed.",
+      "replacementBlob": "829c8e1a2733e06e33298506da50c83e5cba133c",
+      "reason": "Retain original v1 reservation/effect bytes and receipt rules; add an account-bound metadata-only known-object recovery sidecar for uncertain native creations, strict reopen validation, and same-ID committed refinement. Native failures remain uncertain and never masquerade as committed. Reviewed unified integration: Preserve v1 receipt bytes, ownership locks and uncertain-write recovery; account removal now matches both the exact engine namespace and native account bytes.",
       "sharedSources": [],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
@@ -614,18 +618,19 @@
       "from": "Anytype/Sources/Pinkha/Torah/Storage/AnytypeTorahAssociationRepository.swift",
       "to": "Anytype/Sources/Pinkha/Torah/Storage/AnytypeTorahAssociationRepository.swift",
       "baselineBlob": "2284761604e2b85b144576f8d7921bfb9e5c413f",
-      "replacementBlob": "8e9ce51c2954cd1987cb375d4f0e47df7633203a",
-      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state.",
+      "replacementBlob": "515fa52e613eceab1218cfeed769ecebdfca7227",
+      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state. Reviewed unified integration: Add authorized removal overload through the same real mutation coordinator, retaining canonical persistence and dispatch authorization. Add an explicit authorized remove requirement; all actual repository and original test conformers retain their old behavior and implement the new authorization boundary.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahPresentationContracts.swift",
-          "gitBlob": "45ee72ba026f1a0166ac4e9dd381d69b4e692edd"
+          "gitBlob": "5181330cf926c366e4dd458dbed5281f1b39bb8d"
         }
       ],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
@@ -634,17 +639,18 @@
       "to": "Anytype/Sources/Pinkha/Torah/Storage/TorahAssociationMutationCoordinator.swift",
       "baselineBlob": "426348a96cc36c0352bfa41cb22e4062f384bc91",
       "replacementBlob": "41d4e0bad794905ffccba81f9b9aaf44cac2f312",
-      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state.",
+      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state. Reviewed unified integration: Add an explicit authorized remove requirement; all actual repository and original test conformers retain their old behavior and implement the new authorization boundary.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahPresentationContracts.swift",
-          "gitBlob": "45ee72ba026f1a0166ac4e9dd381d69b4e692edd"
+          "gitBlob": "5181330cf926c366e4dd458dbed5281f1b39bb8d"
         }
       ],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
@@ -653,17 +659,18 @@
       "to": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
       "baselineBlob": "a468f25f991134984ae2963b23b649f0c8018f6f",
       "replacementBlob": "f720544ee832268919a3fa712ac258f7b5651d72",
-      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state.",
+      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state. Reviewed unified integration: Add an explicit authorized remove requirement; all actual repository and original test conformers retain their old behavior and implement the new authorization boundary.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahPresentationContracts.swift",
-          "gitBlob": "45ee72ba026f1a0166ac4e9dd381d69b4e692edd"
+          "gitBlob": "5181330cf926c366e4dd458dbed5281f1b39bb8d"
         }
       ],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
@@ -684,19 +691,20 @@
       "from": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
       "to": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
       "baselineBlob": "7f758686f68268e36e97f6455105f136204b8068",
-      "replacementBlob": "c62d24fce1ef49b35ec3e910f2f080e4faa3f715",
-      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state.",
+      "replacementBlob": "640bf7e0074d4db3e7a3cb6bc2c3af41a09b5ca7",
+      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state. Reviewed unified integration: Add semantic-anchor source context and fresh authorized resolver; canonical link/unlink readback, request epoch, permission and source identity must succeed before saved state. Existing document/block source flows and session deactivation remain.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift",
-          "gitBlob": "e995ba6e0879d7bcf13fd5e5c53200f9136f1af0"
+          "gitBlob": "0e9d22b56bca1176a67fa57c055cd9a5f2fb6db5"
         }
       ],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
         "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
-        "Reviewed f42/403 owner lifecycle followup: activateDocument resumes related access; deactivateDocument synchronously retires it instead of cache invalidation. Existing selection and epoch fences are unchanged. Shared lifetime1 and Kit authority/cache/state15 methods17 cases are pending actual final-pin execution; syntax and independent source review are not runtime proof."
+        "Reviewed f42/403 owner lifecycle followup: activateDocument resumes related access; deactivateDocument synchronously retires it instead of cache invalidation. Existing selection and epoch fences are unchanged. Shared lifetime1 and Kit authority/cache/state15 methods17 cases are pending actual final-pin execution; syntax and independent source review are not runtime proof.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
@@ -705,17 +713,18 @@
       "to": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchPresenter.swift",
       "baselineBlob": "78ffb0306652b260c4aa130da45e48ee436264c8",
       "replacementBlob": "744fef52142f93425f1e1f3c78e8c2f73dd0af3f",
-      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state.",
+      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state. Reviewed unified integration: Expose exact semantic anchor context and pass the active mutation request fence into unlink; retain existing selection and persistence state behavior.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahSourcesSearchPresenter.swift",
-          "gitBlob": "d43d9c558d46e53a08fc1fa882f74be9f6530550"
+          "gitBlob": "f5f1d4cacf679eb82bb6c00dfeb30a6e92be3af0"
         }
       ],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
@@ -723,10 +732,10 @@
       "from": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift",
       "to": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift",
       "baselineBlob": "6590a967d23f3bb39cac38acc37b970e45749ab8",
-      "replacementBlob": "5ca7f6d62e9fe05d5e8346809af3ea84cdcaf8e4",
+      "replacementBlob": "b8707ef289ee065ebd766227999b8a0318176551",
       "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
       "inheritedSourceBlob": "ce9565d3a46fb9c45a7e37e9da2db2312a4525c8",
-      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane. Candidate Page154 continuation: Preserve the current standard edit menu and add the Page154 anchor action only under both candidate definitions for an eligible real selection. Restore the existing empty-paragraph policy after the native selection callback, with focused/attached/non-composing/empty storage guards and a per-view reentrancy fence. Append actual MiniApps selection action together with Page154 action while preserving standard UIKit actions and F empty-RTL selection restoration.",
+      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane. Candidate Page154 continuation: Preserve the current standard edit menu and add the Page154 anchor action only under both candidate definitions for an eligible real selection. Restore the existing empty-paragraph policy after the native selection callback, with focused/attached/non-composing/empty storage guards and a per-view reentrancy fence. Append actual MiniApps selection action together with Page154 action while preserving standard UIKit actions and F empty-RTL selection restoration. Reviewed unified integration: Add reserved anchor-URL routing under both existing Page154 flags, preserving ordinary URL routing, native UIKit edit menu, MiniApps action, and root F empty-RTL selection restoration.",
       "sharedSources": [],
       "validation": [
         "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
@@ -734,7 +743,8 @@
         "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred.",
         "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json.",
         "Original recovered source406fd73 Return3 passed; prepareRealApplicationState failed three unchanged pre-insertion RTL assertions. Product candidate modifies no test body or storage/caret/focus behavior; actual Apple compilation and original preparation remain required. See docs/validation/20261125-f-native-selection-direction.",
-        "2026-11-25 final integration: reviewed additive original-source diff, shared UI extraction and exact replacement blobs. Five Swift grammar checks and original 32 owner configuration hashes pass; native app, current MiniApps five methods and genuine device profile grants remain required. Source retention does not establish UI/product parity."
+        "2026-11-25 final integration: reviewed additive original-source diff, shared UI extraction and exact replacement blobs. Five Swift grammar checks and original 32 owner configuration hashes pass; native app, current MiniApps five methods and genuine device profile grants remain required. Source retention does not establish UI/product parity.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
@@ -742,12 +752,13 @@
       "from": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/Views/TextViewWithPlaceholder.swift",
       "to": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/Views/TextViewWithPlaceholder.swift",
       "baselineBlob": "5d62468f0c9df9080d11e4b22ff20ba90c2c8c14",
-      "replacementBlob": "0808375f9e35c812200ef5516f5084958b108e7d",
-      "reason": "Add only the candidate selection-action closure used by the existing UITextView edit menu. Preserve that closure and normalize empty typing attributes through the shared RTL adapter while retaining placeholder fonts and IME/explicit-direction behavior.",
+      "replacementBlob": "ce7ff2b6face40d72379ef8818f916415382f4e8",
+      "reason": "Add only the candidate selection-action closure used by the existing UITextView edit menu. Preserve that closure and normalize empty typing attributes through the shared RTL adapter while retaining placeholder fonts and IME/explicit-direction behavior. Reviewed unified integration: Add only the flagged anchor URL callback; preserve all native text, IME, placeholder and direction behavior.",
       "sharedSources": [],
       "validation": [
         "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json.",
-        "2026-11-25 reviewed742a3821 empty-typing fix; current App build45535451242 passed. Original454563 Return3 pass remains distinct from pending corrected RTL UI acceptance."
+        "2026-11-25 reviewed742a3821 empty-typing fix; current App build45535451242 passed. Original454563 Return3 pass remains distinct from pending corrected RTL UI acceptance.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
@@ -1002,28 +1013,30 @@
       "from": "Modules/PinkhaKit/Package.swift",
       "to": "Modules/PinkhaKit/Package.swift",
       "baselineBlob": "eb19331cb8b675b0271f2252a5453463e3f50b88",
-      "replacementBlob": "89d37550451cc28118cbffe547e5c634ff0f0235",
+      "replacementBlob": "3e3334970e795b2c28e576773eec7221e78e09b5",
       "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
       "inheritedSourceBlob": "5f39dae4261c8dc93ff2832f19f7508e6d84e0e0",
-      "reason": "Preserve the retained PinkhaKit package and converge its sole TorahInspectorKit exact dependency revision to 511454e49450cb2581ddf77f644146ff3e30dbef for both active engines. No product or test source is changed by this dependency declaration.",
+      "reason": "Preserve the retained PinkhaKit package and converge its sole TorahInspectorKit exact dependency revision to 511454e49450cb2581ddf77f644146ff3e30dbef for both active engines. No product or test source is changed by this dependency declaration. Reviewed unified integration: Retain all products/dependencies/test targets and exact TorahInspectorKit511454 pin; add default localization and processed shared semantic-anchor string resources.",
       "sharedSources": [],
       "validation": [
         "The reviewed f42c1997743350993db8f3179c6b597d800d46e5 package bytes were retained from a05088b98844bba30f90b794effb8cf579e2ef08 before this one-revision convergence.",
         "An exact before/after source comparison permits only the immutable Kit revision replacement. Historical source-bound receipts and negative drift fixtures are unchanged.",
-        "Final-pin focused Kit/Any/session/R05 component acceptance is pending; manifest agreement and resolve-only success do not establish semantic acceptance."
+        "Final-pin focused Kit/Any/session/R05 component acceptance is pending; manifest agreement and resolve-only success do not establish semantic acceptance.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
       "kind": "refactor",
       "to": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift",
       "baselineBlob": "940b1dc6c1ac9b6ff8ced049e8bfdf479086214e",
-      "replacementBlob": "16becdac6e33a646f9f013ab7970a7bb63688ddf",
-      "reason": "Recognize the exact reviewed full corrected-r15 runtime only under the existing build flag. Preserve original identity and reject partial/foreign identities. Add the exact source-qualified coherent authorized/current-read identity under the existing explicit build flag; unflagged production and foreign identities remain unavailable.",
+      "replacementBlob": "41ce523419a158a7c01093a2f6e4b48037a2fb99",
+      "reason": "Recognize the exact reviewed full corrected-r15 runtime only under the existing build flag. Preserve original identity and reject partial/foreign identities. Add the exact source-qualified coherent authorized/current-read identity under the existing explicit build flag; unflagged production and foreign identities remain unavailable. Reviewed unified integration: Add only the exact source-verified 70fb unified-runtime identity while retaining the explicit host capability flag and rejection of foreign or partial identities.",
       "sharedSources": [],
       "validation": [
         "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
         "Corrected-runtime controller3 and affected existing fixture/cancellation3 controls passed. The standalone UI route remains NOT_RUN before actual dispatch; no product/full acceptance inferred.",
-        "Coherent source run45026227924 has independently audited10methods/19terminals; exact composite Apple/runtime/UI acceptance remains a separate pending gate. No unaffected prior test rerun."
+        "Coherent source run45026227924 has independently audited10methods/19terminals; exact composite Apple/runtime/UI acceptance remains a separate pending gate. No unaffected prior test rerun.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ],
       "from": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift"
     },
@@ -1056,8 +1069,8 @@
       "from": "Modules/ProtobufMessages/Package.swift",
       "to": "Modules/ProtobufMessages/Package.swift",
       "baselineBlob": "57972496dd061849f48c79d6d147c518dfa39826",
-      "replacementBlob": "1561c57d165fb767e0bff7fbba1bf4f83df993ce",
-      "reason": "Candidate-only environment definition permits the actual Heart authorized-read bridge. Default Swift 6 settings, package dependencies and linker settings are preserved. The separate iOS test host adds a setup-only generated append byte wrapper only when both candidate and fixture flags are enabled; ordinary candidate and default App builds omit that wrapper. The separate Page154 semantic factory is defined only when the existing authorized-read flag and the exact154 manifest environment agree. All default139 definitions and production resources/dependencies/linker settings remain unchanged. The test target copies only original Page fixtures; actual native/Apple/App execution is not inferred from host tests.",
+      "replacementBlob": "b688ee88408f58af27ca2183646ebd160384fe46",
+      "reason": "Candidate-only environment definition permits the actual Heart authorized-read bridge. Default Swift 6 settings, package dependencies and linker settings are preserved. The separate iOS test host adds a setup-only generated append byte wrapper only when both candidate and fixture flags are enabled; ordinary candidate and default App builds omit that wrapper. The separate Page154 semantic factory is defined only when the existing authorized-read flag and the exact154 manifest environment agree. All default139 definitions and production resources/dependencies/linker settings remain unchanged. The test target copies only original Page fixtures; actual native/Apple/App execution is not inferred from host tests. Reviewed unified integration: Enable the full authorized-read/Page154 source for the verified combined artifact, preserve all dependencies/linker settings and reject acceptance fixture flags for the shipping combined runtime. Add fresh read-only normal authorized ObjectShow with exact runtime, account/space lease, cancellation and document validation before/after suspension; original Apply/event/publication validation remains unchanged. Use exact unified Heart runtime identity only under PINKHA_DUAL_ENGINE_RUNTIME; preserve original full154 profile otherwise.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAuthorizedOperationRead.swift",
@@ -1065,7 +1078,7 @@
         },
         {
           "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorClient.swift",
-          "gitBlob": "615239952c6f490273951c052b3511deda358bdc"
+          "gitBlob": "16deb55422845ddc45ee602f02c70eeaf9272bf9"
         },
         {
           "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorJSON.swift",
@@ -1081,7 +1094,7 @@
         },
         {
           "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorWire.swift",
-          "gitBlob": "cd30d97268c7e92aa85288a59e0febe7c57033d0"
+          "gitBlob": "461b0b6c24cdf462f64738cc78d4cba9944f4714"
         },
         {
           "path": "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorPublication.swift",
@@ -1095,7 +1108,8 @@
         "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json.",
         "2026-11-24 provenance reconciliation: retain the exact bounded Page154 diagnostic client from 8bd1c361b6d32d340d69549dfdc506c6ee5845af. Three literal inverse hunks recover the previously mapped client blob 017eb00e0a1423d7b1256e0ee0acd69336f312e3; no native wire, retry, assertion or timeout changes. See docs/validation/20261124-apple-source-retention/review.json and docs/validation/20261123-page-apply-observation/source-review.json. The original mounted failure remains FAIL; diagnostic/Apple acceptance remains NOT_RUN.",
         "2026-11-25: Reviewed authoritative post-Apply ObjectShow comparison and owned diagnostic observer lifetime; strict event/CAS/mutation validation and original event publication remain required.27 current host controls pass; mounted45536229185 still running.",
-        "2026-11-25: Reviewed typed Page154 event projection and post-Apply readback provenance in781340; no fabricated ACK or validation bypass."
+        "2026-11-25: Reviewed typed Page154 event projection and post-Apply readback provenance in781340; no fabricated ACK or validation bypass.",
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     },
     {
@@ -1847,6 +1861,66 @@
       "sharedSources": [],
       "validation": [
         "2026-11-25 final integration: reviewed additive original-source diff, shared UI extraction and exact replacement blobs. Five Swift grammar checks and original 32 owner configuration hashes pass; native app, current MiniApps five methods and genuine device profile grants remain required. Source retention does not establish UI/product parity."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+      "to": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+      "baselineBlob": "c324e390f31bf794e5fdc44869481667fde5b788",
+      "replacementBlob": "fb8312a8319871bb154669439708da8002411c66",
+      "reason": "The original test methods/assertions are unchanged. Add only the new repository-protocol remove overload that executes authorize then forwards to the existing fixture method.",
+      "sharedSources": [],
+      "validation": [
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift",
+      "to": "AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift",
+      "baselineBlob": "bccd2e070e544c08b2df9b5217d5042b499885e8",
+      "replacementBlob": "f7a6fb78ec7ac1b16c74b19d8dbffa7af463b1e6",
+      "reason": "The original test methods/assertions are unchanged. Add only the new repository-protocol remove overload that executes authorize then forwards to the existing fixture method.",
+      "sharedSources": [],
+      "validation": [
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/TorahSearchLayoutTests.swift",
+      "to": "AnyTypeTests/Pinkha/TorahSearchLayoutTests.swift",
+      "baselineBlob": "e829dc99a3f3001f0c445a988178f19faf2d11c8",
+      "replacementBlob": "9092356246d6820d3ae2c965770b29da4a91899b",
+      "reason": "The original test methods/assertions are unchanged. Add only the new repository-protocol remove overload that executes authorize then forwards to the existing fixture method.",
+      "sharedSources": [],
+      "validation": [
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ApplicationLayer/AppScene.swift",
+      "to": "Anytype/Sources/ApplicationLayer/AppScene.swift",
+      "baselineBlob": "26937844f057dd4693c9beef3c053c867de72e67",
+      "replacementBlob": "28eba6cf4bd4102239fade6e5d5f6105faaa3817",
+      "reason": "Wrap the unchanged original Heart coordinator and all existing environment/URL/trait/style modifiers in the unified host only under PINKHA_DUAL_ENGINE_RUNTIME; retain the original default branch and mounted Heart subtree.",
+      "sharedSources": [],
+      "validation": [
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift",
+      "baselineBlob": "7ca51ec42fd9d77168ab0b776858910127a204f8",
+      "replacementBlob": "aa05299483402494da71e9e264b747ce80edaa06",
+      "reason": "Add semantic-anchor context title/link label through shared localized strings; original document/block labels and selection-only Apply behavior remain.",
+      "sharedSources": [],
+      "validation": [
+        "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
       ]
     }
   ],

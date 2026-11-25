@@ -56,7 +56,7 @@ public actor PinkhaHanlinWriteJournal {
     #endif
 
     private static func load(parent: URL, namespace: HanlinConversationNamespace) throws -> PinkhaHanlinWriteJournal {
-        guard namespace.app.utf8.elementsEqual("anytype".utf8) else { throw PinkhaHanlinWriteError.invalidPlan }
+        guard PinkhaHanlinEngineNamespace.supports(namespace.app) else { throw PinkhaHanlinWriteError.invalidPlan }
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         let scope = PinkhaHanlinCreatePagePlan.digest(try encoder.encode(namespace))
         let store = try PinkhaHanlinProtectedMetadataFiles(parent: parent, scope: scope)
@@ -228,13 +228,14 @@ public actor PinkhaHanlinWriteJournal {
         store.releaseOwnershipForRemoval()
     }
 
-    public static func removeAccountData(_ account: String) async throws {
+    public static func removeAccountData(_ account: String, app: String = PinkhaHanlinEngineNamespace.heart) async throws {
+        guard PinkhaHanlinEngineNamespace.supports(app) else { throw PinkhaHanlinWriteError.invalidPlan }
         #if os(iOS)
         try await Task.detached {
             let base = try FileManager.default.url(for: .applicationSupportDirectory,
                 in: .userDomainMask, appropriateFor: nil, create: false)
             try PinkhaHanlinProtectedMetadataFiles.removeAccountData(account,
-                parent: base.appendingPathComponent("Anytype", isDirectory: true))
+                parent: base.appendingPathComponent("Anytype", isDirectory: true), app: app)
         }.value
         #else
         throw PinkhaHanlinWriteError.unavailable
@@ -384,7 +385,8 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
         #endif
     }
 
-    static func removeAccountData(_ account: String, parent: URL) throws {
+    static func removeAccountData(_ account: String, parent: URL, app: String = PinkhaHanlinEngineNamespace.heart) throws {
+        guard PinkhaHanlinEngineNamespace.supports(app) else { throw PinkhaHanlinWriteError.invalidPlan }
         #if os(iOS)
         let root = parent.appendingPathComponent("HanlinHostMetadataV1", isDirectory: true)
         guard FileManager.default.fileExists(atPath: root.path) else { return }
@@ -397,12 +399,13 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
             guard info.isSymbolicLink != true, info.isDirectory == true else { throw PinkhaHanlinWriteError.corruptJournal }
             // Missing/corrupt ownership metadata is preserved and reported, never guessed or erased.
             let namespace = try readNamespace(directory.appendingPathComponent("namespace.json"))
-            guard namespace.app == "anytype" else { throw PinkhaHanlinWriteError.corruptJournal }
+            guard PinkhaHanlinEngineNamespace.supports(namespace.app) else { throw PinkhaHanlinWriteError.corruptJournal }
             let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
             guard directory.lastPathComponent == PinkhaHanlinCreatePagePlan.digest(try encoder.encode(namespace)) else {
                 throw PinkhaHanlinWriteError.corruptJournal
             }
-            guard namespace.account.utf8.elementsEqual(account.utf8) else { continue }
+            guard namespace.app.utf8.elementsEqual(app.utf8),
+                  namespace.account.utf8.elementsEqual(account.utf8) else { continue }
             let fd = Darwin.open(directory.appendingPathComponent("owner.lock").path, O_RDWR | O_NOFOLLOW | O_CLOEXEC)
             guard fd >= 0 else { throw PinkhaHanlinWriteError.unavailable }
             defer { Darwin.close(fd) }

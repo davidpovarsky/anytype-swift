@@ -26,12 +26,16 @@ public enum T5NativeRelatedLookupCapability {
         + "-pinkha-current-read-v1-" + coherentPatchSHA256
         + "-pinkha-authorized-read-v1-" + coherentPatchSHA256
 
+    /// Reviewed shipping source closure; execution is still gated by the host build.
+    public static let unifiedRuntimeVersion =
+        "pinkha-dual-runtime-v1-70fb5342f2ff31d1cf5f7ce44bed7b16f6373f6bf95eb031d165339cf0f26683"
+
     public static func resolve(
         enabledByBuild: Bool, runtimeVersion: String
     ) -> T5ExpandedRelatedTargets.Capability {
         guard enabledByBuild,
               runtimeVersion == self.runtimeVersion || runtimeVersion == correctedRuntimeVersion
-                || runtimeVersion == coherentRuntimeVersion
+                || runtimeVersion == coherentRuntimeVersion || runtimeVersion == unifiedRuntimeVersion
         else { return .unavailable }
         return .verified
     }

@@ -1,5 +1,8 @@
 // swift-tools-version: 6.2
 import PackageDescription
+import Foundation
+
+let unifiedRuntime = ProcessInfo.processInfo.environment["PINKHA_ANY_NATIVE_ARTIFACT"] == "verified-unified-v1"
 
 let package = Package(
     name: "PinkhaAnyNative",
@@ -7,6 +10,7 @@ let package = Package(
     products: [.library(name: "PinkhaAnyNative", targets: ["PinkhaAnyNative"])],
     dependencies: [
         .package(path: "../PinkhaSharing"),
+        .package(path: "../../Dependencies/Hanlin/Packages/HanlinMiniAppsBridge"),
         .package(path: "../PinkhaAnyRuntime"),
         .package(path: "../PinkhaAnyUI"),
         .package(path: "../PinkhaAnyHost"),
@@ -30,7 +34,10 @@ let package = Package(
             .product(name: "TorahInspectorCore", package: "TorahInspectorKit"),
             .product(name: "PinkhaAnyHanlin", package: "PinkhaAnyHanlin"),
             .product(name: "PinkhaHanlinCore", package: "PinkhaAnyHanlin"),
+            .product(name: "PinkhaHanlinUI", package: "PinkhaAnyHanlin"),
+            .product(name: "HanlinMiniAppsBridge", package: "HanlinMiniAppsBridge"),
             .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
-            .product(name: "HanlinPlatformContracts", package: "HanlinPlatform")])
+            .product(name: "HanlinPlatformContracts", package: "HanlinPlatform")],
+            swiftSettings: unifiedRuntime ? [.define("PINKHA_DUAL_ENGINE_RUNTIME")] : [])
     ]
 )

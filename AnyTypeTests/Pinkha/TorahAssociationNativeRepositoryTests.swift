@@ -1109,6 +1109,12 @@ private actor DelayedSessionAssociationProbe: AnytypeTorahAssociationSnapshotRep
         throw TorahAssociationRepositoryError.backendFailure("Unexpected mutation")
     }
 
+    func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String,
+                           authorize: @escaping TorahAssociationWriteAuthorization) async throws {
+        try await authorize()
+        try await removeAssociation(associationId: associationId, target: target, spaceId: spaceId)
+    }
+
     func removeAssociation(
         associationId: String,
         target: TorahAssociationTarget,

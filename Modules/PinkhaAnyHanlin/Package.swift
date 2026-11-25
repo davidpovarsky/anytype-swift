@@ -1,5 +1,8 @@
 // swift-tools-version: 6.2
 import PackageDescription
+import Foundation
+
+let combinedRuntime = ProcessInfo.processInfo.environment["PINKHA_ANY_NATIVE_ARTIFACT"] == "verified-unified-v1"
 
 let package = Package(
     name: "PinkhaAnyHanlin",
@@ -28,7 +31,7 @@ let package = Package(
             .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
             .product(name: "HanlinPlatformContracts", package: "HanlinPlatform"),
             .product(name: "Crypto", package: "swift-crypto")
-        ]),
+        ], swiftSettings: combinedRuntime ? [.define("PINKHA_DUAL_ENGINE_RUNTIME")] : []),
         .target(name: "PinkhaAnyHanlin", dependencies: [
             "PinkhaHanlinCore", "PinkhaAnyHost", "PinkhaAnyEngine", "PinkhaAnyIntegration",
             .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),

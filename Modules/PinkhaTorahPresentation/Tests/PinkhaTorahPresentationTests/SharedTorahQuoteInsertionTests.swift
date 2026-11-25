@@ -279,6 +279,11 @@ private actor QuoteInsertionRepository: TorahAssociationSnapshotRepository {
     func updateAssociation(_ item: TorahAssociationItem, target: TorahAssociationTarget, spaceId: String) async throws -> TorahAssociationItem {
         try await addAssociation(item, target: target, spaceId: spaceId)
     }
+    func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String,
+                           authorize: @escaping TorahAssociationWriteAuthorization) async throws {
+        try await authorize()
+        try await removeAssociation(associationId: associationId, target: target, spaceId: spaceId)
+    }
     func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String) async throws {
         records.removeAll { $0.spaceId == spaceId && $0.location.target == target && $0.item.id == associationId }
     }

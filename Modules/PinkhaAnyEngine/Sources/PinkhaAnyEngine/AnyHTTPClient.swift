@@ -1,5 +1,10 @@
 import Foundation
 import Crypto
+#if canImport(Darwin)
+import Darwin
+#elseif canImport(Glibc)
+import Glibc
+#endif
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -277,5 +282,245 @@ public struct AnyHTTPClient: Sendable, CustomStringConvertible, CustomDebugStrin
             }
         }
         return decoded
+    }
+}
+
+
+public struct AnyHTTPFileContentDigest: Codable, Equatable, Sendable {
+    public let byteCount: Int64
+    public let sha256: String
+}
+
+extension AnyHTTPClient {
+    /// Read the original native plaintext content in bounded HTTP ranges.
+    /// A digest proves these bytes; it does not assert cloud custody.
+    public func readFileContentDigest(
+        spaceID: String, fileID: String, size: Int64, mime: String,
+        authorize: @escaping @Sendable () async throws -> Void
+    ) async throws -> AnyHTTPFileContentDigest {
+        try await readFileContent(spaceID: spaceID, fileID: fileID, size: size,
+                                  mime: mime, output: nil, authorize: authorize)
+    }
+
+    /// Write only a newly created file in an existing private app directory.
+    /// No runtime URL or bearer capability is returned or stored. A supplied
+    /// plaintext digest must match before the output is committed.
+    public func downloadFileContent(
+        spaceID: String, fileID: String, size: Int64, mime: String, to destination: URL,
+        expectedSHA256: String? = nil,
+        authorize: @escaping @Sendable () async throws -> Void
+    ) async throws -> String {
+        if let expectedSHA256 {
+            guard expectedSHA256.utf8.count == 64,
+                  expectedSHA256.utf8.allSatisfy({ (48...57).contains($0) || (97...102).contains($0) }) else {
+                throw AnyEngineError.invalidOperation("file content digest")
+            }
+        }
+        try await checkAccount(); try await authorize(); try Task.checkCancellation()
+        let output = try AnyHTTPPrivateDownload(destination)
+        defer { output.finish() }
+        let result = try await readFileContent(spaceID: spaceID, fileID: fileID, size: size,
+                                              mime: mime, output: output.handle, authorize: authorize)
+        guard expectedSHA256.map({ $0 == result.sha256 }) ?? true else {
+            throw AnyEngineError.invalidOperation("file content digest differs")
+        }
+        try output.commit()
+        return result.sha256
+    }
+
+    private func readFileContent(
+        spaceID: String, fileID: String, size: Int64, mime: String, output: FileHandle?,
+        authorize: @escaping @Sendable () async throws -> Void
+    ) async throws -> AnyHTTPFileContentDigest {
+        guard (0...Int64(512 << 20)).contains(size), !spaceID.isEmpty, !fileID.isEmpty,
+              mime.utf8.count <= 1024, !mime.contains("\r"), !mime.contains("\n") else {
+            throw AnyEngineError.invalidOperation("file content bounds")
+        }
+        let contentType = mime.isEmpty ? "application/octet-stream" : mime
+        var offset: Int64 = 0
+        var hash = SHA256()
+        repeat {
+            try await checkAccount(); try await authorize(); try Task.checkCancellation()
+            let length = min(Int64(1 << 20), size - offset)
+            var request = try makeRequest(method: "GET",
+                path: ["v1", "spaces", spaceID, "files", fileID, "content"], body: nil)
+            request.setValue(contentType, forHTTPHeaderField: "Accept")
+            request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+            if size > 0 {
+                request.setValue("bytes=\(offset)-\(offset + length - 1)", forHTTPHeaderField: "Range")
+            }
+            let read = AnyHTTPBoundedFileRead(maximumBytes: max(Int(length), 65_536))
+            let (data, response) = try await read.read(request)
+            try await checkAccount(); try await authorize(); try Task.checkCancellation()
+            guard let http = response as? HTTPURLResponse else {
+                throw AnyEngineError.malformedResponse("file content HTTP response")
+            }
+            guard (200..<300).contains(http.statusCode) else {
+                _ = try Self.decodeResponse(status: http.statusCode, data: data)
+                throw AnyEngineError.malformedResponse("file content status")
+            }
+            guard http.url == request.url, Int64(data.count) == length,
+                  http.value(forHTTPHeaderField: "Content-Type") == contentType,
+                  http.value(forHTTPHeaderField: "Content-Encoding").map({ $0 == "identity" }) ?? true,
+                  http.statusCode == (size == 0 ? 200 : 206),
+                  size == 0 || http.value(forHTTPHeaderField: "Content-Range") ==
+                    "bytes \(offset)-\(offset + length - 1)/\(size)" else {
+                throw AnyEngineError.malformedResponse("file content range, size, MIME or identity")
+            }
+            hash.update(data: data)
+            try output?.write(contentsOf: data)
+            offset += length
+        } while offset < size
+        try await checkAccount(); try await authorize(); try Task.checkCancellation()
+        return .init(byteCount: offset, sha256: hash.finalize().map { String(format: "%02x", $0) }.joined())
+    }
+}
+
+/// This object has one lexical owner, held until the async read has finished.
+/// Its open directory descriptor fixes cleanup to the same directory even if
+/// the caller renames the directory while the read is suspended.
+private final class AnyHTTPPrivateDownload {
+    let handle: FileHandle
+    private let directory: Int32
+    private let name: String
+    private var committed = false
+    private var finished = false
+
+    init(_ destination: URL) throws {
+        guard destination.isFileURL, destination.lastPathComponent != ".",
+              destination.lastPathComponent != "..", !destination.lastPathComponent.isEmpty else {
+            throw AnyEngineError.invalidOperation("private file destination")
+        }
+        let parent = destination.deletingLastPathComponent()
+        let directory = open(parent.path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW)
+        guard directory >= 0 else { throw AnyEngineError.invalidOperation("private file directory") }
+        var attributes = stat()
+        guard fstat(directory, &attributes) == 0,
+              attributes.st_mode & mode_t(S_IFMT) == mode_t(S_IFDIR),
+              attributes.st_mode & mode_t(0o077) == 0, attributes.st_uid == geteuid() else {
+            close(directory)
+            throw AnyEngineError.invalidOperation("private file directory permissions")
+        }
+        let name = destination.lastPathComponent
+        let descriptor = openat(directory, name, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW, mode_t(0o600))
+        guard descriptor >= 0 else {
+            close(directory)
+            throw AnyEngineError.invalidOperation("private file destination already exists or is unavailable")
+        }
+        self.directory = directory; self.name = name
+        handle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
+    }
+
+    func commit() throws {
+        try handle.synchronize()
+        try handle.close()
+        committed = true
+    }
+
+    func finish() {
+        guard !finished else { return }
+        finished = true
+        try? handle.close()
+        if !committed { _ = unlinkat(directory, name, 0) }
+        _ = close(directory)
+    }
+}
+
+
+/// One request owns one serial data delegate. The lock also covers task
+/// cancellation, which can arrive off the delegate queue. Response bytes are
+/// refused before append once the fixed range/error-envelope ceiling is met.
+private final class AnyHTTPBoundedFileRead: NSObject, URLSessionDataDelegate, @unchecked Sendable {
+    private let maximumBytes: Int
+    private let lock = NSLock()
+    private var continuation: CheckedContinuation<(Data, URLResponse), any Error>?
+    private var currentSession: URLSession?
+    private var currentTask: URLSessionDataTask?
+    private var response: URLResponse?
+    private var bytes = Data()
+    private var finished = false
+
+    init(maximumBytes: Int) { self.maximumBytes = maximumBytes }
+
+    func read(_ request: URLRequest) async throws -> (Data, URLResponse) {
+        try await withTaskCancellationHandler {
+            try Task.checkCancellation()
+            return try await withCheckedThrowingContinuation { continuation in
+                let configuration = URLSessionConfiguration.ephemeral
+                configuration.httpShouldSetCookies = false
+                configuration.urlCache = nil
+                configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+                let queue = OperationQueue()
+                queue.maxConcurrentOperationCount = 1
+                let session = URLSession(configuration: configuration, delegate: self, delegateQueue: queue)
+                let task = session.dataTask(with: request)
+                lock.lock()
+                guard !finished else {
+                    lock.unlock()
+                    session.invalidateAndCancel()
+                    continuation.resume(throwing: CancellationError())
+                    return
+                }
+                self.continuation = continuation
+                currentSession = session; currentTask = task
+                lock.unlock()
+                task.resume()
+            }
+        } onCancel: {
+            self.finish(.failure(CancellationError()))
+        }
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask,
+                    willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest,
+                    completionHandler: @escaping @Sendable (URLRequest?) -> Void) {
+        completionHandler(nil)
+    }
+
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse,
+                    completionHandler: @escaping @Sendable (URLSession.ResponseDisposition) -> Void) {
+        guard response.expectedContentLength <= Int64(maximumBytes) else {
+            completionHandler(.cancel)
+            finish(.failure(AnyEngineError.readLimit))
+            return
+        }
+        lock.lock()
+        let active = !finished
+        if active { self.response = response }
+        lock.unlock()
+        completionHandler(active ? .allow : .cancel)
+    }
+
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        lock.lock()
+        guard !finished else { lock.unlock(); return }
+        guard data.count <= maximumBytes - bytes.count else {
+            lock.unlock(); finish(.failure(AnyEngineError.readLimit)); return
+        }
+        bytes.append(data)
+        lock.unlock()
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
+        lock.lock()
+        let result: Result<(Data, URLResponse), any Error>
+        if let error { result = .failure(error) }
+        else if let response { result = .success((bytes, response)) }
+        else { result = .failure(AnyEngineError.malformedResponse("file content HTTP response")) }
+        lock.unlock()
+        finish(result)
+    }
+
+    private func finish(_ result: Result<(Data, URLResponse), any Error>) {
+        lock.lock()
+        guard !finished else { lock.unlock(); return }
+        finished = true
+        let continuation = continuation, task = currentTask, session = currentSession
+        self.continuation = nil; currentTask = nil; currentSession = nil
+        bytes = Data()
+        lock.unlock()
+        task?.cancel()
+        session?.invalidateAndCancel()
+        continuation?.resume(with: result)
     }
 }

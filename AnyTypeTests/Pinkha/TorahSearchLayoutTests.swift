@@ -647,6 +647,12 @@ private actor TorahSearchLayoutRepository: AnytypeTorahAssociationSnapshotReposi
         try await upsertAssociation(item, target: target, spaceId: spaceId)
     }
 
+    func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String,
+                           authorize: @escaping TorahAssociationWriteAuthorization) async throws {
+        try await authorize()
+        try await removeAssociation(associationId: associationId, target: target, spaceId: spaceId)
+    }
+
     func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String) async throws {
         records.removeAll { $0.item.id == associationId }
     }

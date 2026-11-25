@@ -1,0 +1,29 @@
+{
+  "original_test": "TestE2E_MultipeerFileLatency",
+  "original_result": "FAIL",
+  "original_log_sha256": "b7307d3cf6f88db03d0cc792733e7ab001530f0c26ce98395401b47c6d8b59bb",
+  "production_nodeconf_sha256": "6554bc5841fbef2a1ee6ab65ac3b14a9117dbb762d8cc8d419633c8cd413b060",
+  "original_native_signal": "        2026-11-25T06:24:36.283+0100\t\u001b[34mINFO\u001b[0m\tsdk.files.status\tjob attempt failed\t{\"job\": \"durable/bafyreicwk53vibwgsen2f4m2ss5mtzn2siksnrurefnrnu4gykemtvtytu.2lskqjtd8z8bl/e59oGHj3LpA\", \"attempts\": 1, \"limited\": true, \"error\": \"filestatus: storage limit exceeded: e59oGHj3LpA\"}",
+  "interpretation": "real broker per-item ErrLimitExceeded; numeric account-versus-space allowance not observed",
+  "original_test_rerun": false,
+  "temporary_account_state_retained": false,
+  "tempdir_correction": "original Go t.TempDir cleanup ran despite ANY_E2E_KEEP=1; this new comparison retains actual private data outside Go TempDir",
+  "native_source_routes": [
+    {
+      "source_path": "/mnt/development/projects/worktrees/any-sync-sdk-prepared-collection-owner-20261124/internal/spaceimpl/files_status.go",
+      "sha256": "ae2af500cfc39c08ad91876736b6b4d7d88509b23a4906192c6615944fb051c6"
+    },
+    {
+      "source_path": "/mnt/development/projects/worktrees/any-sync-sdk-prepared-collection-owner-20261124/internal/files/upload/upload.go",
+      "sha256": "fcfa9625b854fe94c118cb8a75ff9814582c33f568d4d37a81e2dae2e643b668"
+    },
+    {
+      "source_path": "/mnt/development/projects/worktrees/any-prepared-default-runtime-20261124/internal/config/access_prod.go",
+      "sha256": "b181c04a6046cb4b8de84c63366d2382a38bc2a6f877a168320d0cd8ff842051"
+    },
+    {
+      "source_path": "/mnt/development/projects/worktrees/any-prepared-default-runtime-20261124/internal/server/handlers_access.go",
+      "sha256": "eebd06f20f4f7ae01cc63dd18fe44f20857443a7212c5ed196190d70528de97a"
+    }
+  ]
+}

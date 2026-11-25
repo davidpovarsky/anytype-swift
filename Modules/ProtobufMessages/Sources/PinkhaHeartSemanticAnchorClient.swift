@@ -124,6 +124,35 @@ public final class PinkhaHeartSemanticAnchorClient {
         return try prepare(plan, lease: lease)
     }
 
+    /// Read-only resolution uses a new normal authorized ObjectShow, fenced by
+    /// the original account/space lease before and after every suspension. No
+    /// prepared capture, event replay or publication is involved.
+    public func readCurrentDocument(spaceID: String, objectID: String,
+                                    lease: PinkhaNativeReadLease) async throws
+        -> PinkhaHeartSemanticAnchorDocument {
+        try Task.checkCancellation()
+        do { try lease.validate() }
+        catch { throw PinkhaHeartSemanticAnchorError.retiredOwner }
+        guard heartBytesEqual(spaceID, lease.spaceID) else {
+            throw PinkhaHeartSemanticAnchorError.retiredOwner
+        }
+        guard !objectID.isEmpty, objectID.utf8.count <= 1_024, !objectID.contains("\0") else {
+            throw PinkhaHeartSemanticAnchorError.invalidRequest
+        }
+        let version = try await io.runtimeVersion()
+        do { try lease.validate() }
+        catch { throw PinkhaHeartSemanticAnchorError.retiredOwner }
+        guard heartBytesEqual(version, PinkhaHeartSemanticAnchorProfile.runtimeVersion) else {
+            throw PinkhaHeartSemanticAnchorError.unsupportedRuntime
+        }
+        try Task.checkCancellation()
+        let current = try await io.read(spaceID, objectID)
+        do { try lease.validate() }
+        catch { throw PinkhaHeartSemanticAnchorError.retiredOwner }
+        try Task.checkCancellation()
+        return try .init(response: current, spaceID: spaceID, objectID: objectID)
+    }
+
     public func apply(_ pending: PinkhaHeartSemanticAnchorPending) async throws
         -> PinkhaHeartSemanticAnchorVerifiedCapture {
         pending.applyTrace.record(.checkingPreflight)
