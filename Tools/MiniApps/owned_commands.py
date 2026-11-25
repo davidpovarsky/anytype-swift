@@ -55,8 +55,16 @@ def run_logged(arguments, cwd, log, timeout):
                 raise
     finally:
         if process is not None:
-            record["owned_group_drained"] = drain(process)
-            record["returncode"] = process.poll()
+            try:
+                record["owned_group_drained"] = drain(process)
+            except OSError as error:
+                # EPERM is unresolved ownership, never evidence of absence.
+                # Keep the actual primary exit/log and a terminal failed ledger;
+                # do not retry a signal against an unverified/recycled group.
+                record["drain_error"] = {"type": type(error).__name__,
+                                         "errno": error.errno, "message": str(error)}
+            finally:
+                record["returncode"] = process.poll()
         record["finished_at"] = datetime.now(timezone.utc).isoformat()
         if log.is_file():
             with log.open("rb") as stream:
