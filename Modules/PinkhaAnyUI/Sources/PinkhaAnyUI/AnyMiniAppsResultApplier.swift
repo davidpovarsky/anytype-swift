@@ -28,6 +28,7 @@ enum AnyMiniAppsResultApplier {
             guard record.plan.requestID == request.id else { throw MiniAppBridgeError.conflictingResult }
             var current = try await documents.read(objectID: objectID, lease: lease)
             if record.plan.completed { return (record.plan.preservedNewerContent, current, nil) }
+            guard record.dispatchVersions != nil else { throw MiniAppBridgeError.selectionChanged }
 
             // Preserve newer content in full before the first write. A partially
             // applied plan never repeats its output merely to hide a conflict.
@@ -41,7 +42,8 @@ enum AnyMiniAppsResultApplier {
                 if actual != before && actual != expected { changed = true }
             }
             if changed {
-                guard record.plan.appliedBlocks.isEmpty, record.plan.insertedBlocks.isEmpty, record.files.isEmpty else {
+                guard record.plan.appliedBlocks.isEmpty, record.plan.insertedBlocks.isEmpty, record.files.isEmpty,
+                      record.dispatchVersions?.isEmpty == true else {
                     throw MiniAppBridgeError.selectionChanged
                 }
                 record.plan.mutations = []
@@ -60,6 +62,17 @@ enum AnyMiniAppsResultApplier {
                 let expected = try before.replacing(mutation)
                 let actual = AnyMiniAppsBlockMetadata(block)
                 if actual == before {
+                    if let dispatchedVersion = record.dispatchVersions?[block.id] {
+                        // If a previous dispatch lost its reply, an unchanged
+                        // block at a different native version may be a user
+                        // edit or Undo. Never repeat or append that result.
+                        guard dispatchedVersion == current.nativeVersion else {
+                            throw MiniAppBridgeError.selectionChanged
+                        }
+                    } else {
+                        record.dispatchVersions?[block.id] = current.nativeVersion
+                        try journal.save(record)
+                    }
                     let edit = try documents.prepareTextEdit(current, blockID: block.id, inlineMarkdown: expected.inlineMarkdown)
                     let receipt = try await documents.apply(edit, lease: lease, authorize: authorize)
                     guard receipt.readback == .verifiedCurrent else { throw AnyHostError.writeUncertain }

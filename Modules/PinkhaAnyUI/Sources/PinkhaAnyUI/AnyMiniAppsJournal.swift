@@ -22,6 +22,8 @@ struct AnyMiniAppsJournalRecord: Codable, Sendable {
     var blockIntents: [String: AnyNativeBlockCreationIntent] = [:]
     var files: [String: AnyMiniAppsFileReceipt] = [:]
     var nativeVersions: [String: String] = [:]
+    // Nil identifies a legacy partial receipt that cannot prove a safe retry.
+    var dispatchVersions: [String: String]? = [:]
     var nativeStoreID: String?
 }
 
