@@ -380,6 +380,124 @@ final class NativeDefinitionPlanTests: XCTestCase {
         return try relation(id, key: "description", format: 0, extra: fields)
     }
 
+
+    private func nativeIdentity(_ key: String, target: String? = nil,
+                                overrides: [String: AnyJSON] = [:]) throws -> AnyHeartNativeSnapshotView {
+        let captions = ["id": "Anytype ID", "spaceId": "Space ID", "type": "Object type"]
+        let descriptions = ["id": "Link to itself. Used in databases", "spaceId": "Space belongs to",
+                            "type": "Relation that stores the object's type"]
+        var fields: [String: AnyJSON] = [
+            "name": .string(try XCTUnwrap(captions[key])), "description": .string(try XCTUnwrap(descriptions[key])),
+            "relationMaxCount": .integer(1), "relationFormatIncludeTime": .bool(false),
+            "relationReadonlyValue": .bool(key != "id"),
+            "relationFormatObjectTypes": .array(target.map { [.string($0)] } ?? []),
+        ]
+        fields.merge(overrides) { _, value in value }
+        return try relation("native-system-property-" + key, key: key, format: 100, extra: fields)
+    }
+
+    func testCanonicalSystemIdentityDefinitionsUseOriginalNativeAddressesAndTargetEvidence() throws {
+        let objectType = try type("native-type-definition", key: "objectType")
+        let spaceType = try type("native-space-definition", key: "space")
+        let id = try nativeIdentity("id"), space = try nativeIdentity("spaceId", target: spaceType.sourceObjectID)
+        let typeRelation = try nativeIdentity("type", target: objectType.sourceObjectID)
+        let rows = [id, space, typeRelation, objectType, spaceType]
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog(rows))
+        for role in [AnyDestinationCanonicalPropertyBinding.IdentityRole.id, .spaceId, .type] {
+            let property = try XCTUnwrap(mapper.property(sourceKey: role.rawValue))
+            let canonical = try XCTUnwrap(property.canonicalBinding)
+            XCTAssertEqual(canonical.identityRole, role)
+            XCTAssertEqual(property.owner, .native("any")); XCTAssertEqual(property.record, .native(role.rawValue))
+            XCTAssertFalse(mapper.schemaItems.contains { $0.sourceObjectID == property.relation.objectID })
+            XCTAssertEqual(canonical.evidence.protobufBytes, property.relation.snapshot.protobufBytes)
+            if role == .id { XCTAssertNil(canonical.targetTypeEvidence) }
+            else {
+                XCTAssertEqual(canonical.targetTypeEvidence?.sourceObjectID,
+                               role == .spaceId ? spaceType.sourceObjectID : objectType.sourceObjectID)
+            }
+            let expected = AnyDestinationCanonicalPropertyBinding.nativeIdentityDescriptor(role)
+            XCTAssertNoThrow(try AnyDestinationDefinitionChecks.verifyNativeCanonicalProperties(
+                .object(["properties": .array([expected])]), bindings: [canonical]))
+            for field in ["id", "name", "description", "kind", "scope"] {
+                var changed = try XCTUnwrap(expected.object); changed[field] = .string("changed")
+                XCTAssertThrowsError(try AnyDestinationDefinitionChecks.verifyNativeCanonicalProperties(
+                    .object(["properties": .array([.object(changed)])]), bindings: [canonical]))
+            }
+            XCTAssertThrowsError(try AnyDestinationDefinitionChecks.verifyNativeCanonicalProperties(
+                .object(["properties": .array([expected, expected])]), bindings: [canonical]))
+        }
+        let plan = try boundPlan(rows: rows, mapper: mapper)
+        XCTAssertEqual(try AnyDestinationMigrationPlan.decode(JSONEncoder().encode(plan)).binding.planSHA256,
+                       plan.binding.planSHA256)
+        XCTAssertFalse(mapper.permitsDestinationWrites)
+    }
+
+    func testCanonicalSystemIdentityConsumesOnlyMatchingContextWithoutPropertyWrites() throws {
+        let objectType = try type("native-type-definition", key: "objectType")
+        let spaceType = try type("native-space-definition", key: "space")
+        let ownedType = try type()
+        let rows = try [nativeIdentity("id"), nativeIdentity("spaceId", target: spaceType.sourceObjectID),
+                        nativeIdentity("type", target: objectType.sourceObjectID)] + [objectType, spaceType, ownedType]
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog(rows))
+        let objects: [AnyHeartNativeDefinitionPlan.ObjectBinding] = [.init(sourceObjectID: "document", destinationSourceKey: "mapped-document")]
+        let values: [String: AnyJSON] = ["id": .string("document"), "spaceId": .array([.string("source-space")]),
+                                       "type": .array([.string(ownedType.sourceObjectID)])]
+        let document = try snapshot("document", type: 16, key: "", details: values, objectTypes: ["ot-owned"])
+        let mapped = try mapper.values(snapshot: document, relationKeys: ["id", "spaceId", "type"], objects: objects)
+        XCTAssertEqual(mapped.nativeIdentityRelationKeys, ["id", "spaceId", "type"])
+        XCTAssertTrue(mapped.initialRelationKeys.isEmpty); XCTAssertTrue(mapped.deferredRelationKeys.isEmpty)
+        XCTAssertTrue(mapped.initialGroups.isEmpty); XCTAssertTrue(mapped.deferredGroups.isEmpty)
+        XCTAssertEqual(try mapped.initialProperties.resolved(AnyDestinationPlanChecks.placeholder), .object([:]))
+        for role in ["id", "spaceId", "type"] {
+            for invalid: AnyJSON in [.null, .string("foreign"), .array([]), .array([.string("document"), .string("document")])] {
+                var changed = values; changed[role] = invalid
+                let page = try snapshot("document", type: 16, key: "", details: changed, objectTypes: ["ot-owned"])
+                XCTAssertThrowsError(try mapper.values(snapshot: page, relationKeys: [role], objects: objects))
+            }
+        }
+        XCTAssertThrowsError(try mapper.values(snapshot: document, relationKeys: ["id"], objects: []))
+        let wrongType = try snapshot("document", type: 16, key: "", details: values, objectTypes: ["ot-space"])
+        XCTAssertThrowsError(try mapper.values(snapshot: wrongType, relationKeys: ["type"], objects: objects))
+        let typeURL = try snapshot("document", type: 16, key: "", details: ["type": .string("ot-owned")], objectTypes: ["ot-owned"])
+        XCTAssertEqual(try mapper.values(snapshot: typeURL, relationKeys: ["type"], objects: objects).nativeIdentityRelationKeys, ["type"])
+        let raw: AnyJSON = .object(["objectId": .string("destination"), "record": .object([
+            "id": .string("destination"), "spaceId": .string("destination-space"), "_applySeq": .integer(1)])])
+        XCTAssertNoThrow(try AnyDestinationMigrationVerifier.objectRecord(raw, id: "destination", spaceID: "destination-space"))
+        XCTAssertThrowsError(try AnyDestinationMigrationVerifier.objectRecord(raw, id: "document", spaceID: "destination-space"))
+        XCTAssertThrowsError(try AnyDestinationMigrationVerifier.objectRecord(raw, id: "destination", spaceID: "source-space"))
+    }
+
+    func testCanonicalSystemIdentityOverridesAndForeignCapturedTargetTypeRefuse() throws {
+        let target = try type("native-type-definition", key: "objectType")
+        let relation = try nativeIdentity("type", target: target.sourceObjectID)
+        let evidence = try AnyDestinationDefinitionEvidence(snapshot: relation)
+        XCTAssertThrowsError(try AnyDestinationCanonicalPropertyBinding(evidence: evidence))
+        let wrongTarget = try type(target.sourceObjectID, key: "space")
+        XCTAssertThrowsError(try AnyDestinationCanonicalPropertyBinding(evidence: evidence,
+            targetTypeEvidence: .init(snapshot: wrongTarget)))
+        let canonical = try AnyDestinationCanonicalPropertyBinding(evidence: evidence, targetTypeEvidence: .init(snapshot: target))
+        for mutation: [String: AnyJSON] in [
+            ["name": .string("Overridden")], ["description": .string("Overridden")],
+            ["relationReadonlyValue": .bool(false)], ["relationMaxCount": .integer(2)],
+            ["relationDefaultValue": .array([])], ["relationFormatIncludeTime": .bool(true)],
+            ["futureField": .bool(true)]] {
+            let changed = try nativeIdentity("type", target: target.sourceObjectID, overrides: mutation)
+            let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog([changed, target]))
+            XCTAssertNil(mapper.property(sourceKey: "type"))
+            XCTAssertTrue(mapper.issues.contains { $0.field == "canonical-type" })
+            XCTAssertFalse(mapper.schemaItems.contains { $0.sourceObjectID == changed.sourceObjectID })
+            XCTAssertThrowsError(try mapper.admittedSchemaItems())
+        }
+        var encoded = try XCTUnwrap(JSONDecoder().decode(AnyJSON.self, from: JSONEncoder().encode(canonical)).object)
+        encoded["propertyID"] = .string("id")
+        XCTAssertThrowsError(try JSONDecoder().decode(AnyDestinationCanonicalPropertyBinding.self,
+            from: AnyDestinationDefinitionChecks.bytes(.object(encoded))))
+        let alteredTarget = try snapshot(target.sourceObjectID, type: 528, key: target.uniqueKey,
+                                         details: target.details, protobufMarker: "-changed-native-original")
+        let detached = try AnyHeartNativeDefinitionPlan(catalog: catalog([relation, alteredTarget]))
+        XCTAssertThrowsError(try boundPlan(rows: [relation, target], mapper: detached))
+    }
+
     func testCanonicalDescriptionSharesNativeNamespaceWithoutChangingTitleIdentity() throws {
         let name = try nativeName(), description = try nativeDescription()
         let sourceType = try type(extra: ["recommendedRelations": .array([.string(description.sourceObjectID), .string(name.sourceObjectID)])])
@@ -725,6 +843,16 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(custom.hiddenRelations, [try XCTUnwrap(labels["checkbox"]).objectID])
         XCTAssertEqual(try XCTUnwrap(labels["object"]).targetTypeIDs, [custom.objectID])
         let mapper = try AnyHeartNativeDefinitionPlan(catalog: c)
+        for role in [AnyDestinationCanonicalPropertyBinding.IdentityRole.id, .spaceId, .type] {
+            let property = try XCTUnwrap(mapper.property(sourceKey: role.rawValue))
+            let canonical = try XCTUnwrap(property.canonicalBinding)
+            XCTAssertEqual(canonical.identityRole, role)
+            XCTAssertEqual(property.owner, .native("any")); XCTAssertEqual(property.record, .native(role.rawValue))
+            XCTAssertFalse(mapper.schemaItems.contains { $0.sourceObjectID == property.relation.objectID })
+            let source = try AnyDestinationSourceBinding(bundle: bundle, semanticPlanSHA256: c.contentSHA256,
+                sourceObjectIDs: bundle.objects.map(\.sourceObjectID))
+            XCTAssertNoThrow(try canonical.requireSource(source, objectID: property.relation.objectID))
+        }
         let canonicalDescription = try XCTUnwrap(mapper.property(sourceKey: "description"))
         XCTAssertFalse(canonicalDescription.isCanonicalName)
         XCTAssertEqual(canonicalDescription.owner, .native("any"))

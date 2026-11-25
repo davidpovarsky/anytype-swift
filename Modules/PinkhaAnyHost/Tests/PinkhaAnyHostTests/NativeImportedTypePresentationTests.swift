@@ -176,6 +176,48 @@ final class NativeImportedTypePresentationTests: XCTestCase {
         }))
     }
 
+
+    func testCanonicalSystemIdentitiesUseNativeRootsAndRemainReadOnly() throws {
+        let roles: [AnyDestinationCanonicalPropertyBinding.IdentityRole] = [.id, .spaceId, .type]
+        let descriptor: AnyJSON = .object([
+            "contract": .string(AnyNativeImportedTypePresentation.contract), "sourceRecommendedLayout": .integer(0),
+            "featured": .array(roles.map { Self.address("any", $0.rawValue) }),
+            "recommended": .array([]), "hidden": .array([]), "files": .array([]),
+        ])
+        let sourceType = try AnyNativePropertyOwner(raw: .object([
+            "id": .string("imported-type"), "name": .string("Captured type"),
+            "layout": .object(["type": .string("page"), "config": .object(["pinkhaHeart": descriptor])]),
+        ]), documentEligible: true)
+        let workspace = try AnyTorahWorkspace(accountID: "account", spaceID: "space")
+        let catalog = try AnyNativePropertyCatalog(workspace: workspace, generation: UUID(), engineStartedAt: "run",
+            types: [sourceType], collections: [])
+        let definitions = try roles.map { try AnyNativePropertyDefinition(
+            ownerID: "any", raw: AnyDestinationCanonicalPropertyBinding.nativeIdentityDescriptor($0)) }
+        let raw: AnyJSON = .object([
+            "id": .string("target-object"), "spaceId": .string("space"), "_applySeq": .integer(3),
+            "_ver": .object(["any": .object(["type": .string("native-version")])]),
+            "any": .object(["type": .string("imported-type"), "collections": .array([])]),
+        ])
+        let policy = try AnyNativePropertyPolicy()
+        let result = try AnyNativePropertyStore.materialize(raw: raw, objectID: "target-object",
+            catalog: catalog, definitions: definitions, policy: policy)
+        XCTAssertEqual(result.rows.map(\.value), [.string("target-object"), .string("space"), .string("imported-type")])
+        XCTAssertTrue(result.rows.allSatisfy(\.isReadOnly))
+        XCTAssertTrue(result.rows.allSatisfy(\.isVisible))
+        let store = try AnyNativePropertyStore(
+            client: .init(baseURL: URL(string: "http://127.0.0.1:1")!, expectedAccountID: "account"),
+            workspace: workspace, policy: policy)
+        for row in result.rows {
+            XCTAssertThrowsError(try store.prepareSetValue(result, key: row.id, value: .string("forged-source-id")))
+        }
+        var changed = try XCTUnwrap(AnyDestinationCanonicalPropertyBinding.nativeIdentityDescriptor(.id).object)
+        changed["scope"] = .string("synced")
+        let mismatched = try AnyNativePropertyDefinition(ownerID: "any", raw: .object(changed))
+        XCTAssertThrowsError(try AnyNativePropertyStore.materialize(raw: raw, objectID: "target-object",
+            catalog: catalog, definitions: [mismatched] + Array(definitions.dropFirst()), policy: policy))
+        XCTAssertNil(raw["any"]?["id"]); XCTAssertNil(raw["any"]?["spaceId"])
+    }
+
     private func key(_ owner: String, _ property: String) throws -> AnyNativePropertyKey {
         try .init(ownerID: owner, propertyID: property)
     }

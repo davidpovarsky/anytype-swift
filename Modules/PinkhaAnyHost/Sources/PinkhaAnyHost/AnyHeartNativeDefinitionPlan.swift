@@ -63,6 +63,9 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         public let deferredGroups: [ValueGroup]
         public let initialRelationKeys: [String]
         public let deferredRelationKeys: [String]
+        /// Present source identities consumed by native object/space/type
+        /// correspondence. They never enter a property-write payload.
+        public let nativeIdentityRelationKeys: [String]
         public let originalDetailsSHA256: String
         public var initialProperties: AnyDestinationValue {
             .object(initialGroups.map { .init(key: $0.owner, value: $0.fields) })
@@ -99,7 +102,7 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         var items: [AnyDestinationMigrationItem] = [], properties: [PropertyBinding] = []
         var definitionCoverage: [AnyDestinationCoverage] = []
         func nativeCanonicalIdentity(_ relation: AnyHeartNativeDefinitionCatalog.Relation) -> Bool {
-            relation.snapshot.nativeType == 521 && ["name", "description"].contains(relation.relationKey) &&
+            relation.snapshot.nativeType == 521 && ["name", "description", "id", "spaceId", "type"].contains(relation.relationKey) &&
             Data(relation.snapshot.uniqueKey.utf8) == Data(("rel-" + relation.relationKey).utf8)
         }
         let namespaceAnchor = catalog.relations.first { !nativeCanonicalIdentity($0) }
@@ -119,12 +122,21 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         for relation in catalog.relations {
             if nativeCanonicalIdentity(relation) {
                 do {
-                    let canonical = try AnyDestinationCanonicalPropertyBinding(evidence: .init(snapshot: relation.snapshot))
+                    let targetTypeEvidence: AnyDestinationDefinitionEvidence?
+                    if ["spaceId", "type"].contains(relation.relationKey),
+                       relation.targetTypeIDs.count == 1,
+                       let target = catalog.types.first(where: {
+                           Data($0.objectID.utf8) == Data(relation.targetTypeIDs[0].utf8)
+                       }) {
+                        targetTypeEvidence = try .init(snapshot: target.snapshot)
+                    } else { targetTypeEvidence = nil }
+                    let canonical = try AnyDestinationCanonicalPropertyBinding(
+                        evidence: .init(snapshot: relation.snapshot), targetTypeEvidence: targetTypeEvidence)
                     guard catalog.relation(key: canonical.propertyID)?.objectID == relation.objectID else {
                         throw AnyHeartNativeDefinitionPlanError.missingDefinition(relation.objectID)
                     }
                     properties.append(.init(relation: relation, sourceKey: key("canonical-property", relation.objectID),
-                        kind: "string", format: canonical.propertyID == "name" ? "text" : "longtext",
+                        kind: "string", format: canonical.identityRole != nil ? "identity" : (canonical.propertyID == "name" ? "text" : "longtext"),
                         xKey: canonical.propertyID, owner: .native("any"), record: .native(canonical.propertyID),
                         canonicalBinding: canonical))
                     definitionCoverage.append(.init(sourceObjectID: relation.objectID, disposition: .canonicalProperty(canonical)))
@@ -361,7 +373,7 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         }
         var initial: [(AnyDestinationReference, [AnyDestinationField], [String])] = []
         var deferred: [(AnyDestinationReference, [AnyDestinationField], [String])] = []
-        var initialKeys: [String] = [], deferredKeys: [String] = []
+        var initialKeys: [String] = [], deferredKeys: [String] = [], nativeIdentityKeys: [String] = []
         func append(_ field: AnyDestinationField, owner: AnyDestinationReference, key: String,
                     to groups: inout [(AnyDestinationReference, [AnyDestinationField], [String])]) throws {
             let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
@@ -374,6 +386,11 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
             guard let binding = property(sourceKey: key), let value = snapshot.details[key] else {
                 throw AnyHeartNativeDefinitionPlanError.missingDefinition(key)
             }
+            if let role = binding.canonicalBinding?.identityRole {
+                try validateNativeIdentity(value, role: role, snapshot: snapshot, targets: targets)
+                nativeIdentityKeys.append(key)
+                continue
+            }
             let mapped = try map(value, property: binding, targets: targets, files: fileTargets)
             let field = AnyDestinationField(key: binding.record, value: mapped)
             if binding.relation.format == .object || binding.relation.format == .file {
@@ -383,8 +400,42 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         return .init(initialGroups: initial.map { .init(owner: $0.0, fields: .object($0.1), sourceRelationKeys: $0.2) },
             deferredGroups: deferred.map { .init(owner: $0.0, fields: .object($0.1), sourceRelationKeys: $0.2) }, initialRelationKeys: initialKeys,
-            deferredRelationKeys: deferredKeys,
+            deferredRelationKeys: deferredKeys, nativeIdentityRelationKeys: nativeIdentityKeys,
             originalDetailsSHA256: AnyContentDigest.sha256(try encoder.encode(AnyJSON.object(snapshot.details))))
+    }
+
+    /// Heart's system relation is a link to the current object, source space
+    /// or its actual captured Type. The destination verifier already compares
+    /// root id + spaceId and any.type for every migrated object; source IDs
+    /// must never be written into those native target fields.
+    private func validateNativeIdentity(_ value: AnyJSON,
+                                        role: AnyDestinationCanonicalPropertyBinding.IdentityRole,
+                                        snapshot: AnyHeartNativeSnapshotView,
+                                        targets: [Data: String]) throws {
+        func invalid(_ reason: String) -> AnyHeartNativeDefinitionPlanError {
+            .invalidValue(role.rawValue, reason)
+        }
+        guard targets[Data(snapshot.sourceObjectID.utf8)] != nil else {
+            throw invalid("native identity requires the current object mapping")
+        }
+        let sourceIdentity: String
+        if let scalar = value.string { sourceIdentity = scalar }
+        else if let rows = value.array, rows.count == 1, let scalar = rows[0].string { sourceIdentity = scalar }
+        else { throw invalid("one exact native identity required") }
+        let expected: [String]
+        switch role {
+        case .id: expected = [snapshot.sourceObjectID]
+        case .spaceId: expected = [snapshot.sourceSpaceID]
+        case .type:
+            guard snapshot.objectTypes.count == 1,
+                  let sourceType = catalog.type(url: snapshot.objectTypes[0]) else {
+                throw invalid("one captured native Type required")
+            }
+            expected = [sourceType.objectID, sourceType.typeURL]
+        }
+        guard expected.contains(where: { Data($0.utf8) == Data(sourceIdentity.utf8) }) else {
+            throw invalid("source native identity differs from the captured object context")
+        }
     }
 
     private func map(_ value: AnyJSON, property: PropertyBinding, targets: [Data: String],
