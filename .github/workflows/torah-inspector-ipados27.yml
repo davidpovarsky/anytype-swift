@@ -553,6 +553,13 @@ jobs:
             build/any-patched-evidence/hanlin-provider
           retention-days: 30
           if-no-files-found: error
+      - name: Retain the complete finished run before a later checkout
+        if: ${{ always() && steps.execute.outcome != 'skipped' }}
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B Tools/CurrentAppleValidation/retain_native_ui.py
 
   sdk06-projected-components:
     if: ${{ inputs.route == 'sdk06-projected-components' }}
