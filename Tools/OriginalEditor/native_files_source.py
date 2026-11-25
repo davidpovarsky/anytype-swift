@@ -9,7 +9,7 @@ from pathlib import Path
 import subprocess
 
 BASE = "52e73697bca9099f5926cee3fcfe447e1d70459b"
-REVIEWED = "3a6b4153b21c77d1a85a36e02dec326434966722"
+REVIEWED = "8099a027a8e216cf45207463222466ce6072dc6c"
 RELATIVE = "Tools/OriginalEditor/MiniApps/native_files_source_adoption.json"
 FILES = (
     "OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift",
