@@ -29,7 +29,93 @@ SOURCE = "6f1194f9b8c9540dea1187826dda6a256777dbbf"
 PRODUCER = "70eb9c2d2cdfd920a65da59643dff7d4e7b775ff"
 PRODUCER_MANIFEST = "350af7b55f5e981d2029778b75d61a17ea4db1b6df670ed623f630d283afb370"
 # Original control helpers are Git inputs, separate from the compiled App closure.
-ORIGINAL_HELPERS = {'Tools/AnyEnginePort/native_ui_transition_contract.py': {'bytes': 12615, 'sha256': '42d56e2193643fde5ae6f329b63a123fee89a2ef22d858e3bea8aeb94cd0d3d5', 'gitBlob': '242cfe6ecaa6302a106f0f908ca47124f47e393b'}, 'Tools/Hanlin/host_command.py': {'bytes': 4236, 'sha256': '5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807', 'gitBlob': '4fd63c36dbaf47ede3267ee40b76e1a19828c241'}, 'Tools/Hanlin/prepare_sdk.py': {'bytes': 4915, 'sha256': '234f597c629da30045392f74e2b6d204f2bbc6349b70bdccd5562dc0db491fe2', 'gitBlob': 'a9984c45773809ec552e013a1c2d3bba87df877b'}, 'Tools/Hanlin/run_host_tests.py': {'bytes': 39409, 'sha256': '106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d', 'gitBlob': '85efec75356c8fadcd13a09a7cb0c5dd722d89b0'}, 'Tools/Hanlin/shared_editor_profile.py': {'bytes': 1745, 'sha256': '77d27d083f8073ad027cd28e98f2e2986aaee1cb2e31d2931287e33a4f8497c8', 'gitBlob': 'c486549fb852eb9360fd8e07e75444fcbbf613b4'}, 'Tools/Hanlin/wave15_core_profile.py': {'bytes': 7868, 'sha256': 'f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a', 'gitBlob': 'ebf9f9a1c8fbaaf0463e44e8f4e8a0d0b5835631'}, 'Tools/MiniApps/acceptance_profile.py': {'bytes': 1930, 'sha256': 'be61a6ebbcacb906d26c3587aa9d1c9c369f2e1ca80975df7369d779b4ff8e91', 'gitBlob': '39affb5cc015aaf74a50724a87ed95ea77d6fda7'}, 'Tools/MiniApps/local_producer.py': {'bytes': 9772, 'sha256': '4fca2ddd4e07af1f6b7f3856d0ee5838eb9e97cf9bd2feea9324052e4d41e518', 'gitBlob': 'a23f4ec747dc88fe461e469bcf82c52cf444fe85'}, 'Tools/MiniApps/selection.py': {'bytes': 3706, 'sha256': 'ef45ca8ee08848bd8bbd912bf60421c41c735155ebee9443bb2fe519a668b173', 'gitBlob': '72a823511b444901a1b3984c78cddcdf9b1eb6cc'}, 'Tools/MiniApps/simulator_entitlements.py': {'bytes': 3658, 'sha256': 'aa1cfcd4f371dd25a637bc56ab281ef94f8bcdcc2bb415b9125dd0b0aa0b27a8', 'gitBlob': '252ad38403dbd7fe5bcf9c3d30c5e8ab63a3b9d0'}, 'Tools/PinkhaNativeDerived/attachment_runtime.py': {'bytes': 11989, 'sha256': '0154ae5f6b0af197d62abc7eeb6233adbe3d469723a75e15e233e7ab5e37019a', 'gitBlob': '7e25529bccec4b7e5ec5d598a6781238ad73e20f'}, 'Tools/PinkhaNativeDerived/build_custom_heart.py': {'bytes': 12945, 'sha256': '0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669', 'gitBlob': 'e32c935fedce5fc732240bf9b2ada21764b5add1'}, 'Tools/PinkhaNativeDerived/build_native_ipa.py': {'bytes': 20302, 'sha256': 'c9e35a228779ae761d36cef204a32148ffdd3a338c9ede11dde6df4ebee21055', 'gitBlob': 'cb509ecc637ffb669569bfafd7471ba924a5c851'}, 'Tools/PinkhaNativeDerived/heart_runtime_profile.py': {'bytes': 18158, 'sha256': 'd354e5ccf20bfbdbeaf9f61a0043bfcbb137400b835f8b34e910453c35995001', 'gitBlob': '71e4efb0a5b953f5428e67252545cd274479b64e'}, 'Tools/PinkhaNativeDerived/relink_verified_simulator.py': {'bytes': 8760, 'sha256': 'd2877f33e9850ee76734218c4e5d1fd2e2e1ea4da11713c35f7aa312e142df8c', 'gitBlob': '092d30401c824d239f05c19ae18ecc77fb1cf4ec'}, 'Tools/PinkhaNativeDerived/rerun_original_ui.py': {'bytes': 18707, 'sha256': '7bf69636b42875aa7dd0fa39c11393e02e6760ef502cf68ef47b740f3bd066c0', 'gitBlob': 'ce14bb27846eb06900f7827449516ea9ed1c924f'}, 'Tools/PinkhaNativeDerived/validate_wave1.py': {'bytes': 11158, 'sha256': '743ddea3e4e42640070035fe7d149d148dfff1cbdc852ef464c8c19da07253a0', 'gitBlob': 'b77dd4f92d0e6b32c94ee67528bc198747ec45ee'}}
+ORIGINAL_HELPERS = {
+    "Tools/AnyEnginePort/native_ui_transition_contract.py": {
+        "bytes": 12615,
+        "sha256": "42d56e2193643fde5ae6f329b63a123fee89a2ef22d858e3bea8aeb94cd0d3d5",
+        "gitBlob": "242cfe6ecaa6302a106f0f908ca47124f47e393b"
+    },
+    "Tools/Hanlin/host_command.py": {
+        "bytes": 4236,
+        "sha256": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807",
+        "gitBlob": "4fd63c36dbaf47ede3267ee40b76e1a19828c241"
+    },
+    "Tools/Hanlin/prepare_sdk.py": {
+        "bytes": 4915,
+        "sha256": "234f597c629da30045392f74e2b6d204f2bbc6349b70bdccd5562dc0db491fe2",
+        "gitBlob": "a9984c45773809ec552e013a1c2d3bba87df877b"
+    },
+    "Tools/Hanlin/run_host_tests.py": {
+        "bytes": 39409,
+        "sha256": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d",
+        "gitBlob": "85efec75356c8fadcd13a09a7cb0c5dd722d89b0"
+    },
+    "Tools/Hanlin/shared_editor_profile.py": {
+        "bytes": 1745,
+        "sha256": "77d27d083f8073ad027cd28e98f2e2986aaee1cb2e31d2931287e33a4f8497c8",
+        "gitBlob": "c486549fb852eb9360fd8e07e75444fcbbf613b4"
+    },
+    "Tools/Hanlin/wave15_core_profile.py": {
+        "bytes": 7868,
+        "sha256": "f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a",
+        "gitBlob": "ebf9f9a1c8fbaaf0463e44e8f4e8a0d0b5835631"
+    },
+    "Tools/MiniApps/acceptance_profile.py": {
+        "bytes": 1930,
+        "sha256": "be61a6ebbcacb906d26c3587aa9d1c9c369f2e1ca80975df7369d779b4ff8e91",
+        "gitBlob": "39affb5cc015aaf74a50724a87ed95ea77d6fda7"
+    },
+    "Tools/MiniApps/local_producer.py": {
+        "bytes": 9772,
+        "sha256": "4fca2ddd4e07af1f6b7f3856d0ee5838eb9e97cf9bd2feea9324052e4d41e518",
+        "gitBlob": "a23f4ec747dc88fe461e469bcf82c52cf444fe85"
+    },
+    "Tools/MiniApps/selection.py": {
+        "bytes": 3706,
+        "sha256": "ef45ca8ee08848bd8bbd912bf60421c41c735155ebee9443bb2fe519a668b173",
+        "gitBlob": "72a823511b444901a1b3984c78cddcdf9b1eb6cc"
+    },
+    "Tools/MiniApps/simulator_entitlements.py": {
+        "bytes": 3658,
+        "sha256": "aa1cfcd4f371dd25a637bc56ab281ef94f8bcdcc2bb415b9125dd0b0aa0b27a8",
+        "gitBlob": "252ad38403dbd7fe5bcf9c3d30c5e8ab63a3b9d0"
+    },
+    "Tools/PinkhaNativeDerived/attachment_runtime.py": {
+        "bytes": 11989,
+        "sha256": "0154ae5f6b0af197d62abc7eeb6233adbe3d469723a75e15e233e7ab5e37019a",
+        "gitBlob": "7e25529bccec4b7e5ec5d598a6781238ad73e20f"
+    },
+    "Tools/PinkhaNativeDerived/build_custom_heart.py": {
+        "bytes": 12945,
+        "sha256": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+        "gitBlob": "e32c935fedce5fc732240bf9b2ada21764b5add1"
+    },
+    "Tools/PinkhaNativeDerived/build_native_ipa.py": {
+        "bytes": 20302,
+        "sha256": "c9e35a228779ae761d36cef204a32148ffdd3a338c9ede11dde6df4ebee21055",
+        "gitBlob": "cb509ecc637ffb669569bfafd7471ba924a5c851"
+    },
+    "Tools/PinkhaNativeDerived/heart_runtime_profile.py": {
+        "bytes": 18158,
+        "sha256": "d354e5ccf20bfbdbeaf9f61a0043bfcbb137400b835f8b34e910453c35995001",
+        "gitBlob": "71e4efb0a5b953f5428e67252545cd274479b64e"
+    },
+    "Tools/PinkhaNativeDerived/relink_verified_simulator.py": {
+        "bytes": 8760,
+        "sha256": "d2877f33e9850ee76734218c4e5d1fd2e2e1ea4da11713c35f7aa312e142df8c",
+        "gitBlob": "092d30401c824d239f05c19ae18ecc77fb1cf4ec"
+    },
+    "Tools/PinkhaNativeDerived/rerun_original_ui.py": {
+        "bytes": 18707,
+        "sha256": "7bf69636b42875aa7dd0fa39c11393e02e6760ef502cf68ef47b740f3bd066c0",
+        "gitBlob": "ce14bb27846eb06900f7827449516ea9ed1c924f"
+    },
+    "Tools/PinkhaNativeDerived/validate_wave1.py": {
+        "bytes": 11158,
+        "sha256": "743ddea3e4e42640070035fe7d149d148dfff1cbdc852ef464c8c19da07253a0",
+        "gitBlob": "b77dd4f92d0e6b32c94ee67528bc198747ec45ee"
+    }
+}
 BUNDLE = "io.anytype.app"
 NATIVE_GROUP = "group.io.anytype.app.dev"
 SHARED_GROUP = "group.com.itorah.shared"
@@ -163,8 +249,16 @@ def main():
                 "actual source app's native/shared simulator groups required")
         require(any("anytype" in x.get("CFBundleURLSchemes", []) for x in app_info.get("CFBundleURLTypes", [])),
                 "actual source return URL scheme required")
-        require(app_info.get("PinkhaNativeAppGroup", NATIVE_GROUP) == NATIVE_GROUP,
-                "compiled native group override differs")
+        # This exact Debug-Anytype product has an empty owner override.
+        # Original TargetsConstants.appGroup consequently selects its existing
+        # debug group; the unmodified native preparation checks that at runtime.
+        require(app_info.get("PinkhaNativeAppGroup") == "",
+                "exact compiled Debug-Anytype empty owner override required")
+        write(evidence / "source-native-group-binding.json",
+              {"infoSHA256": core.digest(app / "Info.plist"),
+               "compiledOwnerOverride": "", "originalDebugFallback": NATIVE_GROUP,
+               "actualEmbeddedGroup": NATIVE_GROUP,
+               "runtimeAssertion": "PinkhaMiniAppsNativePreparationTests/prepareMiniAppsDocument"})
         write(evidence / "source-embedded-entitlements.json", entitlements)
 
         log, _ = commands.run(["xcrun", "simctl", "list", "runtimes", "--json"], "runtimes")
