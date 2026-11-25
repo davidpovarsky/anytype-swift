@@ -255,6 +255,9 @@ public struct AnyDestinationMigrationVerifier: Sendable {
         for (index, operation) in resolved.enumerated() {
             if case .editorBlock(let owner, let dataset, _, _, _, _, _) = operation {
                 groups[.init(owner: try Self.native(owner), dataset: dataset), default: []].append(index)
+            } else if case .immutableRecord(let object, let owner, let key, _) = operation {
+                let dataset = try AnyPreparedImmutableRecordIntent.ownedDataset(ownerTypeID: Self.native(owner), key: key)
+                groups[.init(owner: try Self.native(object), dataset: dataset), default: []].append(index)
             }
         }
         // Also inspect empty datasets declared by this plan. Otherwise a new
@@ -296,6 +299,14 @@ public struct AnyDestinationMigrationVerifier: Sendable {
             }
             for index in indexes {
                 let item = plan.items[index], mapping = progress.mappings[index]
+                if case .immutableRecord = resolved[index] {
+                    guard case .immutableRecord(let intent) = progress.verificationIntents[index] else {
+                        throw AnyDestinationContentVerificationError.invalidProgress
+                    }
+                    let row = try Self.unique(rows, id: mapping.recordIDs[0], key: "id", sourceKey: item.sourceKey)
+                    observed[Data(item.sourceKey.utf8)] = try Self.immutableRecordProjection(row, intent: intent)
+                    continue
+                }
                 guard case .editorBlock(_, _, let type, let text, let style, let parent, let position) = resolved[index] else {
                     throw AnyDestinationContentVerificationError.invalidProgress
                 }
@@ -390,6 +401,41 @@ public struct AnyDestinationMigrationVerifier: Sendable {
             retainedSourceSystemObjectIDs: plan.coverage.compactMap {
                 if case .retainedSystem = $0.disposition { return $0.sourceObjectID }; return nil
             })
+    }
+
+    /// Native source fact values and runtime stamps are compared independently.
+    /// The receipt does not substitute for this ordinary dataset readback.
+    static func immutableRecordProjection(_ row: AnyJSON, intent: AnyPreparedImmutableRecordIntent) throws -> AnyJSON {
+        guard let fields = intent.schema.declaration["properties"]?.object else {
+            throw AnyDestinationContentVerificationError.invalidProgress
+        }
+        var values: [String: AnyJSON] = [:], stamps: [String: AnyJSON] = [:]
+        for (key, field) in fields {
+            if let stamp = field["x-stamp"]?.string, stamp != "none" {
+                guard let actual = row[key] else { throw failure(intent.sourceKey, "missing native immutable stamp") }
+                switch stamp {
+                case "creator":
+                    guard let identity = actual.string, AnyEditorBlock.validID(identity), identity.utf8.count <= 256 else {
+                        throw failure(intent.sourceKey, "native immutable creator")
+                    }
+                    stamps[key] = actual
+                case "createTime":
+                    let normalized = try AnyDestinationContentProjection.propertyValue(actual, kind: "datetime")
+                    guard normalized.integer != nil else { throw failure(intent.sourceKey, "native immutable timestamp") }
+                    stamps[key] = normalized
+                default: throw AnyDestinationContentVerificationError.invalidProgress
+                }
+            } else {
+                let kind = field["type"]?.string
+                let expected = try intent.values[key].map { try AnyDestinationContentProjection.propertyValue($0, kind: kind) }
+                let actual = try row[key].map { try AnyDestinationContentProjection.propertyValue($0, kind: kind) }
+                try equal(actual, expected, intent.sourceKey, "immutable source value:" + key)
+                if let expected { values[key] = expected }
+            }
+        }
+        return .object(["objectId": .string(intent.objectID), "ownerTypeId": .string(intent.schema.ownerTypeID),
+            "dataset": .string(intent.schema.dataset), "schemaSHA256": .string(intent.schema.nativeSHA256),
+            "values": .object(values), "nativeStamps": .object(stamps)])
     }
 
     static func bytes<T: Encodable>(_ value: T) throws -> Data {

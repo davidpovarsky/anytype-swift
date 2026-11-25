@@ -452,6 +452,9 @@ private actor DestinationFixtureDriver: AnyDestinationNativeDriving {
             object = i.expectedObjectID ?? fresh
             stage = i.kind == .object ? "root-prepared" : "block-prepared"
             records = i.kind == .object ? [] : ["block-\(number)"]
+        case .immutableRecord(let i):
+            binding = i.binding; sourceKey = i.sourceKey; contract = AnyNativePreparedImmutableRecord.contract; kind = "immutableRecord"
+            object = i.objectID; stage = "immutable-record-prepared"; records = ["immutable-\(number)"]
         case .properties(let i):
             binding = i.binding; sourceKey = i.sourceKey; contract = AnyNativePreparedPropertyUpdate.contract; kind = "propertyUpdate"
             object = i.objectID; stage = "properties-prepared"; records = [object]

@@ -169,6 +169,11 @@ public enum AnyDestinationMigrationOperation: Codable, Equatable, Sendable {
     case propertyUpdate(object: AnyDestinationReference, owner: AnyDestinationReference,
                         patch: AnyDestinationValue)
 
+    /// One source fact row in a native write-once/no-delete dataset. The native
+    /// schema is read once after its owned part exists and journaled before prepare.
+    case immutableRecord(object: AnyDestinationReference, ownerType: AnyDestinationReference,
+                         datasetKey: String, values: AnyDestinationValue)
+
     var phase: Int {
         switch self {
         case .typeDefinition, .collectionDefinition, .propertyDefinition, .partDefinition: 0
@@ -176,6 +181,7 @@ public enum AnyDestinationMigrationOperation: Codable, Equatable, Sendable {
         case .editorBlock, .anchoredEditorBlock: 2
         case .file: 3
         case .propertyUpdate: 4
+        case .immutableRecord: 5
         }
     }
     var kind: String {
@@ -188,6 +194,7 @@ public enum AnyDestinationMigrationOperation: Codable, Equatable, Sendable {
         case .editorBlock, .anchoredEditorBlock: "editorBlock"
         case .file(_, _, _, let size, _): size < 4096 ? "inlineFile" : "file"
         case .propertyUpdate: "propertyUpdate"
+        case .immutableRecord: "immutableRecord"
         }
     }
 }
@@ -374,6 +381,17 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
                       Data(items[ownerIndex].sourceObjectID.utf8) == Data(item.sourceObjectID.utf8) else {
                     throw AnyDestinationMigrationError.invalidPlan("semantic anchor source owner")
                 }
+            case .immutableRecord(let object, let ownerType, let datasetKey, let values):
+                try mappedOwner(object, kinds: ["object"])
+                try mappedOwner(ownerType, kinds: ["typeDefinition"])
+                guard case .mapped(let objectKey, .objectID, .rawID) = object,
+                      let objectIndex = keys[Data(objectKey.utf8)],
+                      case .object(let actualType, _, _) = items[objectIndex].operation,
+                      actualType == ownerType else {
+                    throw AnyDestinationMigrationError.invalidPlan("immutable record object/type ownership")
+                }
+                try AnyDestinationImmutableRecordChecks.requireOwnedDeclaration(
+                    items: Array(items.prefix(index)), ownerType: ownerType, datasetKey: datasetKey, values: values)
             case .propertyUpdate(let object, let owner, let patch):
                 try mappedOwner(object, kinds: ["object"])
                 if case .native(let literal) = owner {
@@ -546,6 +564,8 @@ extension AnyDestinationMigrationOperation {
         case .file(let owner, _, _, _, _): try visit(owner)
         case .propertyUpdate(let object, let owner, let patch):
             try visit(object); try visit(owner); try patch.references(visit)
+        case .immutableRecord(let object, let owner, _, let values):
+            try visit(object); try visit(owner); try values.references(visit)
         }
     }
 
@@ -599,6 +619,13 @@ extension AnyDestinationMigrationOperation {
             }
             _ = try AnyPreparedFileIntent(binding: binding, sourceKey: sourceKey, ownerObjectID: resolve(owner),
                 name: name, mime: mime, size: max(4096, size), contentSHA256: digest)
+        case .immutableRecord(let object, let owner, let key, let values):
+            _ = try AnyPreparedImmutableRecordIntent.ownedDataset(ownerTypeID: resolve(owner), key: key)
+            guard AnyEditorBlock.validID(try resolve(object)), let fields = try values.resolved(resolve).object,
+                  !fields.isEmpty, fields.count <= AnyPreparedImmutableRecordIntent.maximumFields,
+                  fields.keys.allSatisfy(AnyPreparedImmutableRecordIntent.validField) else {
+                throw AnyDestinationMigrationError.invalidPlan("immutable record values")
+            }
         case .propertyUpdate(let object, let owner, let patch):
             guard let values = try patch.resolved(resolve).object else {
                 throw AnyDestinationMigrationError.invalidPlan("property patch")

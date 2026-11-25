@@ -16,6 +16,7 @@ struct AnyDestinationJournalEntry: Codable, Sendable {
     let resolvedOperation: Data
     let expectedApplySequence: Int64?
     let inlineContent: Data?
+    let immutableRecordSchema: AnyPreparedImmutableRecordSchema?
     let intentID: String
     let specBytes: Data
     let specSHA256: String
@@ -23,10 +24,11 @@ struct AnyDestinationJournalEntry: Codable, Sendable {
 
     init(index: Int, sourceKey: String, itemSHA256: String, resolvedOperation: Data,
          expectedApplySequence: Int64?, inlineContent: Data?, intentID: String,
-         specBytes: Data, specSHA256: String) {
+         specBytes: Data, specSHA256: String, immutableRecordSchema: AnyPreparedImmutableRecordSchema? = nil) {
         version = Self.version; self.index = index; self.sourceKey = sourceKey
         self.itemSHA256 = itemSHA256; self.resolvedOperation = resolvedOperation
         self.expectedApplySequence = expectedApplySequence; self.inlineContent = inlineContent
+        self.immutableRecordSchema = immutableRecordSchema
         self.intentID = intentID; self.specBytes = specBytes; self.specSHA256 = specSHA256
         receipts = []
     }

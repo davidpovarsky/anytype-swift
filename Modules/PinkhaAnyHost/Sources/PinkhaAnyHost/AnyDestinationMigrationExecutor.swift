@@ -111,12 +111,18 @@ public actor AnyDestinationMigrationExecutor {
                     let url = try await payloads(item.sourceKey)
                     content = try Self.inlinePayload(url, size: size, digest: digest, sourceKey: item.sourceKey)
                 } else { content = nil }
+                let immutableSchema: AnyPreparedImmutableRecordSchema?
+                if case .immutableRecord(_, .native(let owner), let key, _) = resolved {
+                    immutableSchema = try await driver.immutableSchema(ownerTypeID: owner,
+                        dataset: AnyPreparedImmutableRecordIntent.ownedDataset(ownerTypeID: owner, key: key), authorize: admit)
+                } else { immutableSchema = nil }
                 let intent = try AnyDestinationNativeIntent.make(resolved, binding: plan.binding,
-                    sourceKey: item.sourceKey, sequence: sequence, inlineContent: content)
+                    sourceKey: item.sourceKey, sequence: sequence, inlineContent: content, immutableSchema: immutableSchema)
                 entry = .init(index: index, sourceKey: item.sourceKey,
                     itemSHA256: AnyContentDigest.sha256(try AnyDestinationMigrationJournal.encoded(item)),
                     resolvedOperation: resolvedBytes, expectedApplySequence: sequence, inlineContent: content,
-                    intentID: intent.identity.id, specBytes: intent.identity.spec, specSHA256: intent.identity.sha)
+                    intentID: intent.identity.id, specBytes: intent.identity.spec, specSHA256: intent.identity.sha,
+                    immutableRecordSchema: immutableSchema)
                 // This sync completes BEFORE prepare/sign/append. A later call
                 // must not refresh a property sequence or resolve a new body.
                 try journal.save(entry)
@@ -176,7 +182,7 @@ public actor AnyDestinationMigrationExecutor {
                                plan: AnyDestinationMigrationPlan) throws -> AnyDestinationNativeIntent {
         let operation = try JSONDecoder().decode(AnyDestinationMigrationOperation.self, from: entry.resolvedOperation)
         let value = try AnyDestinationNativeIntent.make(operation, binding: plan.binding, sourceKey: entry.sourceKey,
-            sequence: entry.expectedApplySequence, inlineContent: entry.inlineContent)
+            sequence: entry.expectedApplySequence, inlineContent: entry.inlineContent, immutableSchema: entry.immutableRecordSchema)
         guard value.identity.id == entry.intentID, value.identity.spec == entry.specBytes,
               value.identity.sha == entry.specSHA256 else { throw AnyDestinationMigrationError.journalCorrupt }
         for receipt in entry.receipts { try value.validateReceipt(receipt) }
@@ -249,7 +255,7 @@ public actor AnyDestinationMigrationExecutor {
         let order: [String: Int] = ["root-prepared": 0, "root-committed": 1, "bootstrap-prepared": 2,
             "block-prepared": 0, "definition-root-prepared": 0, "definition-root-committed": 1,
             "definition-bootstrap-prepared": 2, "definition-property-prepared": 0, "definition-part-prepared": 0,
-            "properties-prepared": 0, "file-prepared": 0, "file-root-committed": 1, "file-row-committed": 2, "complete": 3]
+            "properties-prepared": 0, "immutable-record-prepared": 0, "file-prepared": 0, "file-root-committed": 1, "file-row-committed": 2, "complete": 3]
         // Preserve a terminal native outcome even when deletion projects it to
         // a pre-commit stage. It still halts immediately and cannot be revived.
         if new["outcome"]?.string == "prepared" || new["outcome"]?.string == "committed" {
