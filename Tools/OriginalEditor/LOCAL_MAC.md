@@ -89,3 +89,23 @@ a separate genuine canonical transport admission; it is rejected here without
 rewriting historical provenance. The production normal-entry UI test, including
 Save, Discard and cold relaunch in its own owned Simulator container, is separate
 from both resource/ABI acceptance and the existing Debug qualification journey.
+
+
+## Fresh original Swift execution after lost historical evidence
+
+The historical four-receipt route remains unchanged. When its original normalized
+Swift receipt is unavailable, an actually executed original Swift qualification
+may use the explicit input schema `otzaria.local-abi-input-qualifications/2` and
+produce `otzaria.original-import-local-sdk-input/3`. It retains the exact original
+three generator receipts and separately binds `fresh_changed_swift` to the real
+local UUID, unmodified original driver/pin, complete raw evidence index, actual
+compiler/input context, terminal commands and drained groups. This is new proof;
+it does not reconstruct or relabel the missing old receipt. The original aggregate
+generator FAIL remains unchanged. The ABI still requires its pinned wrapper,
+all three mobile targets, exports and the actual generated Invocation link.
+
+The current facade source requires 292 public/SPI declarations and 58 locked
+packages. Its final shared dependency adoption pins Hanlin 6f447bfc62d6bcf1043b92e12c026b321543e370
+and Swift AI SDK abf0921c6e89e6521cc2b510ff11016b45a0ef08. These are inputs,
+not evidence of framework or application acceptance. The original five Anytype
+application methods and real file round trip remain separate acceptance gates.

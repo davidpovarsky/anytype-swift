@@ -41,7 +41,8 @@ def verify(root, path, digest, source):
         from donor_abi_input import verify as verify_donor
         return verify_donor(root, path, digest, source, value)
     require(value.get('schema') in ('otzaria.original-import-local-sdk-input/1',
-                                   'otzaria.original-import-local-sdk-input/2')
+                                   'otzaria.original-import-local-sdk-input/2',
+                                   'otzaria.original-import-local-sdk-input/3')
             and value.get('status') == 'PASS' and value.get('producer_kind') == 'local-mac'
             and value.get('sdk_source_sha') == source['head_sha']
             and value.get('local_execution_sha256') == source['execution_identity']['local_execution_sha256']
@@ -51,7 +52,7 @@ def verify(root, path, digest, source):
             and value.get('full_sdk_accepted') is False and value.get('editor_ui_accepted') is False,
             'Local original ABI admission scope/source differs')
     pinned_wrapper = None
-    if value['schema'].endswith('/2'):
+    if value['schema'].endswith(('/2', '/3')):
         require(isinstance(value.get('pinned_wrapper'), dict),
                 'Pinned-wrapper ABI requires its complete actual adapter observation')
         adapter = exact_file(path.parent, value['pinned_wrapper'])
@@ -84,7 +85,13 @@ def verify(root, path, digest, source):
             'Separate original generation, changed Swift and final native receipts required')
     proofs = {name: json.loads(exact_file(path.parent, row).read_bytes())
               for name, row in value['qualification_receipts'].items()}
-    historical = history_proofs(path.parent, value['historical_receipts'], exact_file)
+    if value['schema'].endswith('/3'):
+        from fresh_swift_input import qualify
+        historical = qualify(path.parent, value['historical_receipts'],
+                             value['fresh_changed_swift'], exact_file)
+    else:
+        require('fresh_changed_swift' not in value, 'Legacy ABI cannot silently admit fresh Swift proof')
+        historical = history_proofs(path.parent, value['historical_receipts'], exact_file)
     require(all(proofs[name] == item for name, item in historical.items()),
             'Historical qualification differs from authenticated original bytes')
     require(proofs['final_native_rpc_union'] == native, 'Native qualification body differs')

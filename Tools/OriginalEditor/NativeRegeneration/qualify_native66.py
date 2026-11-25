@@ -126,7 +126,7 @@ def qualify(evidence, heart):
         counts[name] = passed(count)
     return {
         "schema": "otzaria.fresh-native-rpc-union-qualification/1", "status": "PASS",
-        "counts": counts, "native_source_tree": NATIVE_TREE,
+        "counts": counts, "source_sha": CONTROL, "native_source_tree": NATIVE_TREE,
         "source_module_link_stability": "PASS", "owned_command_groups_drained": True,
         "execution_origin": "local-mac", "github_run_id": None,
         "original_control_source": CONTROL, "execution_manifest_sha256": MANIFEST,

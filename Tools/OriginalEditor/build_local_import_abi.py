@@ -138,13 +138,21 @@ def execute(args, result):
     require(proof_index.is_file() and not proof_index.is_symlink() and sha(proof_index) == args.proof_index_sha256,
             'Frozen input qualification index differs')
     frozen = json.loads(proof_index.read_bytes())
-    require(frozen['schema'] == 'otzaria.local-abi-input-qualifications/1'
+    require(frozen['schema'] in ('otzaria.local-abi-input-qualifications/1',
+                                  'otzaria.local-abi-input-qualifications/2')
             and frozen['sdk_source_sha'] == identity['source_sha']
             and set(frozen['proofs']) == {'generation_qualification', 'changed_swift_qualification', 'final_native_rpc_union'},
             'Missing separate qualified generation, Swift and Native inputs')
     proofs = {name: json.loads(exact_file(proof_index.parent, item).read_bytes())
               for name, item in frozen['proofs'].items()}
-    historical = history_proofs(proof_index.parent, frozen['historical_receipts'], exact_file)
+    fresh_swift = frozen['schema'].endswith('/2')
+    if fresh_swift:
+        from fresh_swift_input import qualify, copy_evidence
+        historical = qualify(proof_index.parent, frozen['historical_receipts'],
+                             frozen['fresh_changed_swift'], exact_file)
+    else:
+        require('fresh_changed_swift' not in frozen, 'Legacy input cannot silently admit fresh Swift proof')
+        historical = history_proofs(proof_index.parent, frozen['historical_receipts'], exact_file)
     require(all(proofs[name] == value for name, value in historical.items()),
             'Historical evidence normalization differs from authenticated source bytes')
     native = proofs['final_native_rpc_union']
@@ -186,6 +194,12 @@ def execute(args, result):
         target.parent.mkdir(exist_ok=True)
         shutil.copyfile(exact_file(proof_index.parent, item), target)
         historical_receipts[name] = reference(target, evidence)
+    fresh_receipt = None
+    if fresh_swift:
+        fresh_receipt = copy_evidence(proof_index.parent, frozen['fresh_changed_swift'],
+                                      evidence / 'fresh-swift', exact_file, reference)
+        require(qualify(evidence, historical_receipts, fresh_receipt, exact_file) == historical,
+                'Copied fresh Swift evidence differs from its actual producer')
     result.update(phase='ORIGINAL_MOBILE_BUILD', sdk_source_sha=identity['source_sha'], native_source_tree=native_tree)
     write(evidence / 'RESULT.json', result)
     env = os.environ.copy()
@@ -357,13 +371,15 @@ def execute(args, result):
                          for name in ('gomobile_bind', 'generated_invocation_link')}
     selected_commands.update({item['platform'] + '_' + item['architecture'] + '_exports': item['command']
                               for item in exports})
-    admission = {'schema': 'otzaria.original-import-local-sdk-input/2', 'status': 'PASS',
+    admission = {'schema': ('otzaria.original-import-local-sdk-input/3' if fresh_swift
+                            else 'otzaria.original-import-local-sdk-input/2'), 'status': 'PASS',
         'producer_kind': 'local-mac', 'sdk_source_sha': identity['source_sha'],
         'local_execution_sha256': identity['local_execution_sha256'],
         'generated_files_verified': 733, 'generated_files_written': 0, 'generators_replayed': 0,
         'full_sdk_accepted': False, 'editor_ui_accepted': False, 'native_qualification': native,
         'qualification_receipts': {name: reference(evidence / (name + '.json'), evidence) for name in proofs},
         'historical_receipts': historical_receipts,
+        **({'fresh_changed_swift': fresh_receipt} if fresh_swift else {}),
         'pinned_wrapper': reference(Path(pinned_row['path']), evidence),
         'commands': selected_commands,
         'defined_exports': sorted(EXPORTS), 'verified_architectures': {'ios': ['arm64'], 'ios-simulator': ['arm64', 'x86_64']},
