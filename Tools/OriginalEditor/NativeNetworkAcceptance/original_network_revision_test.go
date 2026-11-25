@@ -4,6 +4,7 @@
 package application_test
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -11,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"sort"
 	"strings"
 	"testing"
 	"time"
@@ -254,17 +256,62 @@ func originalNetworkRequireSameBlocks(t *testing.T, first, second []byte, root, 
 	b := revisionNativeRoot(t, second, spaceID, root)
 	left := map[string]*model.Block{}
 	for _, block := range a.Snapshot.Data.Blocks {
-		left[block.Id] = block
+		if block == nil || block.Id == "" || left[block.Id] != nil {
+			t.Fatal("invalid original saved block inventory")
+		}
+		left[block.Id] = originalNetworkRevisionCanonicalBlock(t, block)
 	}
 	if len(left) != len(b.Snapshot.Data.Blocks) {
 		t.Fatal("native full block inventory differs from selected saved body")
 	}
+	seen := map[string]bool{}
 	for _, block := range b.Snapshot.Data.Blocks {
+		if block == nil || seen[block.Id] {
+			t.Fatal("invalid actual original block inventory")
+		}
+		seen[block.Id] = true
 		expected, ok := left[block.Id]
-		if !ok || !proto.Equal(expected, block) {
-			t.Fatal("original block identity/content/marks/child order differ")
+		if !ok || !proto.Equal(expected, originalNetworkRevisionCanonicalBlock(t, block)) {
+			t.Fatal("original block identity/content/complete marks/child order differ")
 		}
 	}
+}
+
+// Original Text.Diff/marksEq sorts the actual old/new mark inventories during
+// Apply. Compare only that array's order canonically by each COMPLETE protobuf
+// tuple, exactly as revision canonicalRevisionSnapshot. Preserve duplicates,
+// ranges, types, parameters, unknown fields and every other block field. The
+// genuine ZIP hashes and native locked revision token remain separate witnesses.
+func originalNetworkRevisionCanonicalBlock(t *testing.T, original *model.Block) *model.Block {
+	t.Helper()
+	if original == nil {
+		t.Fatal("nil native block")
+	}
+	block := proto.Clone(original).(*model.Block)
+	marks := block.GetText().GetMarks()
+	if marks == nil {
+		return block
+	}
+	type tuple struct {
+		mark *model.BlockContentTextMark
+		raw  []byte
+	}
+	ordered := make([]tuple, len(marks.Marks))
+	for i, mark := range marks.Marks {
+		if mark == nil {
+			t.Fatal("nil native text mark")
+		}
+		raw, err := proto.Marshal(mark)
+		if err != nil {
+			t.Fatal(err)
+		}
+		ordered[i] = tuple{mark: mark, raw: raw}
+	}
+	sort.SliceStable(ordered, func(i, j int) bool { return bytes.Compare(ordered[i].raw, ordered[j].raw) < 0 })
+	for i, item := range ordered {
+		marks.Marks[i] = item.mark
+	}
+	return block
 }
 
 func originalNetworkRequireTextHash(t *testing.T, raw []byte, p originalNetworkPointer, id, want string) {
@@ -274,7 +321,7 @@ func originalNetworkRequireTextHash(t *testing.T, raw []byte, p originalNetworkP
 		if b == nil || b.Id != id || b.GetText() == nil {
 			continue
 		}
-		body, err := proto.Marshal(b.GetText())
+		body, err := proto.Marshal(originalNetworkRevisionCanonicalBlock(t, b).GetText())
 		if err != nil {
 			t.Fatal(err)
 		}
