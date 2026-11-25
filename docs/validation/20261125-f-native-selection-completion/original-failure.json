@@ -1,0 +1,79 @@
+{
+  "schema": "pinkha.original-native-preparation-failure/1",
+  "sourceCommit": "0c5ffc51cdeb480194fdd4d5e396a602d04d5d78",
+  "status": "FAIL",
+  "testInvoked": true,
+  "failedMethods": 1,
+  "assertions": 4,
+  "skipped": 0,
+  "originalArchive": "/mnt/development/projects/evidence/pinkha-f-current-20261125/first-editor-attempt1/original-evidence.tar.gz",
+  "originalArchiveSHA256": "e92ff47ba48157bc4c52b8a27d523ef5b37667fa96d9b24017e701bfc42107fa",
+  "originalLogSHA256": "2a07c9ec735d4c4a4c56680e1b8ea898ed97cc95018b35549153ad48cdbff03f",
+  "summary": {
+    "devicesAndConfigurations": [
+      {
+        "device": {
+          "architecture": "arm64",
+          "deviceId": "0BE5174A-90BF-4042-B323-14F0E2D47159",
+          "deviceName": "F-Combined-c78c6f8ed4ba4bcf8a9b24a450194677-editor",
+          "modelName": "iPad Pro 13-inch (M5)",
+          "osBuildNumber": "24A434",
+          "osVersion": "27.0",
+          "platform": "iOS Simulator"
+        },
+        "expectedFailures": 0,
+        "failedTests": 1,
+        "passedTests": 0,
+        "skippedTests": 0,
+        "testPlanConfiguration": {
+          "configurationId": "1",
+          "configurationName": "Configuration 1"
+        }
+      }
+    ],
+    "environmentDescription": "AnytypeTests · Built with macOS 27.0",
+    "expectedFailures": 0,
+    "failedTests": 1,
+    "finishTime": 1795638904.953,
+    "passedTests": 0,
+    "result": "Failed",
+    "runtimeWarnings": [],
+    "skippedTests": 0,
+    "startTime": 1795638859.68,
+    "statistics": [],
+    "testFailures": [
+      {
+        "failureText": "Expectation failed: (textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection == .rightToLeft\n(textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection → NSWritingDirection(rawValue: 0)\n.rightToLeft → NSWritingDirection(rawValue: 1)",
+        "targetName": "AnytypeTests",
+        "testIdentifier": 1,
+        "testIdentifierString": "PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState()",
+        "testIdentifierURL": "test://com.apple.xcode/Anytype/AnytypeTests/PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState()",
+        "testName": "Creates disposable Pinkha, ordinary Note and ordinary Page documents"
+      }
+    ],
+    "title": "Test - Anytype",
+    "topInsights": [
+      {
+        "category": "Common Failures",
+        "impact": "100% of failures",
+        "text": "4 runs of 1 test failed with Expectation failed: (textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection == .rightToLeft"
+      }
+    ],
+    "totalTestCount": 1
+  },
+  "readOnlyBoundaryObservations": [
+    "PINKHA_NATIVE_EDITOR_DIRECTION_BOUNDARY schema=1 line=1 pair=F2C49EE6-5709-43D2-A242-7FA2561DF4AF phase=before-first-delegate storageLength=0 selectionLocation=0 selectionLength=0 firstResponder=true controllerFirstResponder=true sameWindow=true markedRange=false semanticAttribute=4 interfaceDirection=rtl textAlignment=2 typingDirection=1 typingAlignment=2 accepted=not-called",
+    "PINKHA_NATIVE_EDITOR_DIRECTION_BOUNDARY schema=1 line=1 pair=F2C49EE6-5709-43D2-A242-7FA2561DF4AF phase=after-first-delegate storageLength=0 selectionLocation=0 selectionLength=0 firstResponder=true controllerFirstResponder=true sameWindow=true markedRange=false semanticAttribute=4 interfaceDirection=rtl textAlignment=2 typingDirection=1 typingAlignment=2 accepted=true",
+    "PINKHA_NATIVE_EDITOR_DIRECTION_BOUNDARY schema=1 line=2 pair=0D1FA40C-C1BD-4C93-9E65-ECF47E1B02CB phase=before-first-delegate storageLength=0 selectionLocation=0 selectionLength=0 firstResponder=true controllerFirstResponder=true sameWindow=true markedRange=false semanticAttribute=4 interfaceDirection=rtl textAlignment=2 typingDirection=0 typingAlignment=2 accepted=not-called",
+    "PINKHA_NATIVE_EDITOR_DIRECTION_BOUNDARY schema=1 line=2 pair=0D1FA40C-C1BD-4C93-9E65-ECF47E1B02CB phase=after-first-delegate storageLength=0 selectionLocation=0 selectionLength=0 firstResponder=true controllerFirstResponder=true sameWindow=true markedRange=false semanticAttribute=4 interfaceDirection=rtl textAlignment=2 typingDirection=1 typingAlignment=2 accepted=true",
+    "PINKHA_NATIVE_EDITOR_DIRECTION_BOUNDARY schema=1 line=3 pair=4788FD8A-2901-40D9-948B-F3496AB885BA phase=before-first-delegate storageLength=0 selectionLocation=0 selectionLength=0 firstResponder=true controllerFirstResponder=true sameWindow=true markedRange=false semanticAttribute=4 interfaceDirection=rtl textAlignment=2 typingDirection=0 typingAlignment=2 accepted=not-called",
+    "PINKHA_NATIVE_EDITOR_DIRECTION_BOUNDARY schema=1 line=3 pair=4788FD8A-2901-40D9-948B-F3496AB885BA phase=after-first-delegate storageLength=0 selectionLocation=0 selectionLength=0 firstResponder=true controllerFirstResponder=true sameWindow=true markedRange=false semanticAttribute=4 interfaceDirection=rtl textAlignment=2 typingDirection=1 typingAlignment=2 accepted=true",
+    "PINKHA_NATIVE_EDITOR_DIRECTION_BOUNDARY schema=1 line=4 pair=2183993B-4280-455F-8D1B-B1EF0B5753DC phase=before-first-delegate storageLength=0 selectionLocation=0 selectionLength=0 firstResponder=true controllerFirstResponder=true sameWindow=true markedRange=false semanticAttribute=4 interfaceDirection=rtl textAlignment=2 typingDirection=0 typingAlignment=2 accepted=not-called",
+    "PINKHA_NATIVE_EDITOR_DIRECTION_BOUNDARY schema=1 line=4 pair=2183993B-4280-455F-8D1B-B1EF0B5753DC phase=after-first-delegate storageLength=0 selectionLocation=0 selectionLength=0 firstResponder=true controllerFirstResponder=true sameWindow=true markedRange=false semanticAttribute=4 interfaceDirection=rtl textAlignment=2 typingDirection=1 typingAlignment=2 accepted=true",
+    "PINKHA_NATIVE_EDITOR_DIRECTION_BOUNDARY schema=1 line=5 pair=43AFB78F-DD00-47F3-B6F7-30553DD442CC phase=before-first-delegate storageLength=0 selectionLocation=0 selectionLength=0 firstResponder=true controllerFirstResponder=true sameWindow=true markedRange=false semanticAttribute=4 interfaceDirection=rtl textAlignment=2 typingDirection=0 typingAlignment=2 accepted=not-called",
+    "PINKHA_NATIVE_EDITOR_DIRECTION_BOUNDARY schema=1 line=5 pair=43AFB78F-DD00-47F3-B6F7-30553DD442CC phase=after-first-delegate storageLength=0 selectionLocation=0 selectionLength=0 firstResponder=true controllerFirstResponder=true sameWindow=true markedRange=false semanticAttribute=4 interfaceDirection=rtl textAlignment=2 typingDirection=1 typingAlignment=2 accepted=true"
+  ],
+  "candidateStatus": "UNVERIFIED_PRODUCT_CHANGE",
+  "unchangedOriginalTest": "AnyTypeTests/Pinkha/PinkhaStage1AcceptancePreparationTests.swift",
+  "uiTests": "NOT_RUN"
+}

@@ -101,6 +101,25 @@ final class TextViewWithPlaceholder: UITextView {
         }
     }
     
+    override var selectedRange: NSRange {
+        get { super.selectedRange }
+        set {
+            super.selectedRange = newValue
+            // The native selection setter can clear typing attributes after its
+            // synchronous delegate callback. Restore the current empty-row policy
+            // only once UIKit has completed that write; never move the selection.
+            PinkhaTextDirectionUIKitAdapter.restoreAfterNativeSelection(in: self)
+        }
+    }
+
+    override var selectedTextRange: UITextRange? {
+        get { super.selectedTextRange }
+        set {
+            super.selectedTextRange = newValue
+            PinkhaTextDirectionUIKitAdapter.restoreAfterNativeSelection(in: self)
+        }
+    }
+
     override var canBecomeFirstResponder: Bool {
         let canBecome = super.canBecomeFirstResponder
         return isLockedForEditing ? false : canBecome
