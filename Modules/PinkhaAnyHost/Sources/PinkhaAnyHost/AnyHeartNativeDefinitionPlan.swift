@@ -304,7 +304,12 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                 "heartSnapshotSHA256": .string(definition.snapshot.snapshotSHA256),
                 "heartJSONViewSHA256": .string(definition.snapshot.viewSHA256),
                 "heartDefinitionJSON": .string(try Self.jsonString(.object(definition.snapshot.details))),
+                AnyNativeImportedTypeOrder.contractKey: .string(AnyNativeImportedTypeOrder.contract),
+                AnyNativeImportedTypeOrder.scopeKey: .string(catalog.contentSHA256),
             ]
+            if let orderID = definition.orderID {
+                metadata[AnyNativeImportedTypeOrder.valueKey] = .string(orderID)
+            }
             if let original = definition.sourceProvenance.originalAddedDate {
                 metadata["heartSourceAddedDateSeconds"] = original
                 metadata["heartSourceAddedDateContract"] = .string("pinkha-heart-source-added-date-seconds-v1")

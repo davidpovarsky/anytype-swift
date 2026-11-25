@@ -75,6 +75,44 @@ final class NativeDefinitionPlanTests: XCTestCase {
     }
 
 
+    func testTypeManualOrderRetainsAbsentEmptyAndExactRanksInPreparedMetadata() throws {
+        let ranks: [String?] = [nil, "", "A", "a\u{301}", "\u{e1}"]
+        let rows = try ranks.enumerated().map { index, rank in
+            try type("ordered-\(index)", key: "kind\(index)",
+                     extra: rank.map { ["orderId": .string($0)] } ?? [:])
+        }
+        let source = try catalog(rows)
+        let plan = try AnyHeartNativeDefinitionPlan(catalog: source)
+        XCTAssertTrue(source.issues.isEmpty)
+        XCTAssertTrue(plan.issues.isEmpty)
+        XCTAssertFalse(plan.permitsDestinationWrites)
+        for (index, rank) in ranks.enumerated() {
+            let definition = try XCTUnwrap(source.type(objectID: "ordered-\(index)"))
+            XCTAssertEqual(definition.orderID.map { Data($0.utf8) }, rank.map { Data($0.utf8) })
+            let item = try XCTUnwrap(plan.schemaItems.first {
+                $0.sourceObjectID == definition.objectID &&
+                    { if case .typeDefinition = $0.operation { return true }; return false }($0)
+            })
+            guard case .typeDefinition(let spec) = item.operation,
+                  case .literal(let metadata) = spec.meta else { return XCTFail("prepared native type metadata") }
+            XCTAssertEqual(metadata[AnyNativeImportedTypeOrder.contractKey],
+                           .string(AnyNativeImportedTypeOrder.contract))
+            XCTAssertEqual(metadata[AnyNativeImportedTypeOrder.scopeKey], .string(source.contentSHA256))
+            XCTAssertEqual(metadata[AnyNativeImportedTypeOrder.valueKey], rank.map(AnyJSON.string))
+            let captured = try JSONDecoder().decode(AnyJSON.self,
+                from: Data(XCTUnwrap(metadata["heartDefinitionJSON"]?.string).utf8))
+            XCTAssertEqual(captured["orderId"], rank.map(AnyJSON.string))
+            XCTAssertEqual(definition.snapshot.details["orderId"], rank.map(AnyJSON.string))
+        }
+    }
+
+    func testTypeManualOrderRejectsNonStringAndOverLimitNativeValues() throws {
+        for malformed in [AnyJSON.null, .bool(true), .integer(1), .number(0.25),
+                          .array([]), .object([:]), .string(String(repeating: "x", count: 65_537))] {
+            XCTAssertThrowsError(try catalog([type(extra: ["orderId": malformed])]))
+        }
+    }
+
     func testFileDefinitionsMapOnlyBoundOriginalFilesAfterNativeCommitment() throws {
         let field = try relation("file-definition", key: "attachments", format: 5)
         let c = try catalog([field, type(extra: ["recommendedFileRelations": .array([.string(field.sourceObjectID)])])])
@@ -838,11 +876,23 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(definitions.count, 7)
         let labels = Dictionary(uniqueKeysWithValues: definitions.map { (String($0.name.dropFirst("Owned source ".count)), $0) })
         let custom = try XCTUnwrap(c.types.first { $0.name == "Owned native schema — סוג" })
+        XCTAssertEqual(c.types.filter { $0.orderID != nil }.count, 1)
+        XCTAssertEqual(custom.orderID.map { Data($0.utf8) }, custom.snapshot.details["orderId"]?.string.map { Data($0.utf8) })
+        XCTAssertNotNil(custom.orderID)
+        XCTAssertFalse(c.issues.contains { $0.kind == .unknownDetailField && $0.field == "orderId" })
         XCTAssertEqual(custom.featuredRelations, try ["text", "status"].map { try XCTUnwrap(labels[$0]).objectID })
         XCTAssertEqual(custom.recommendedRelations, try ["number", "date", "object", "tag"].map { try XCTUnwrap(labels[$0]).objectID })
         XCTAssertEqual(custom.hiddenRelations, [try XCTUnwrap(labels["checkbox"]).objectID])
         XCTAssertEqual(try XCTUnwrap(labels["object"]).targetTypeIDs, [custom.objectID])
         let mapper = try AnyHeartNativeDefinitionPlan(catalog: c)
+        let orderedItem = try XCTUnwrap(mapper.schemaItems.first {
+            $0.sourceObjectID == custom.objectID &&
+                { if case .typeDefinition = $0.operation { return true }; return false }($0)
+        })
+        guard case .typeDefinition(let orderedSpec) = orderedItem.operation,
+              case .literal(let orderedMetadata) = orderedSpec.meta else { return XCTFail("original type order metadata") }
+        XCTAssertEqual(orderedMetadata[AnyNativeImportedTypeOrder.valueKey], custom.snapshot.details["orderId"])
+        XCTAssertEqual(orderedMetadata[AnyNativeImportedTypeOrder.scopeKey], .string(c.contentSHA256))
         for role in [AnyDestinationCanonicalPropertyBinding.IdentityRole.id, .spaceId, .type] {
             let property = try XCTUnwrap(mapper.property(sourceKey: role.rawValue))
             let canonical = try XCTUnwrap(property.canonicalBinding)

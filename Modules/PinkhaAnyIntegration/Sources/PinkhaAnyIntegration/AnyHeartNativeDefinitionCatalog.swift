@@ -44,6 +44,8 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
         public let name: String
         public let description: String
         public let pluralName: String?
+        /// Exact manual type rank. nil is absent; an explicit empty value is retained.
+        public let orderID: String?
         public let recommendedLayout: Int64?
         public let recommendedRelations: [String]
         public let featuredRelations: [String]
@@ -227,6 +229,7 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
                 let typeKey = try Self.key(row.uniqueKey, prefix: "ot", id: row.sourceObjectID)
                 types.append(.init(snapshot: row, sourceProvenance: provenance, typeKey: typeKey, name: name, description: description,
                     pluralName: d["pluralName"] == nil ? nil : try string("pluralName"),
+                    orderID: d["orderId"] == nil ? nil : try string("orderId"),
                     recommendedLayout: try optionalInteger("recommendedLayout"),
                     recommendedRelations: try identifiers("recommendedRelations"),
                     featuredRelations: try identifiers("recommendedFeaturedRelations"),
@@ -379,7 +382,7 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
         "isArchived", "isReadonly", "uniqueKey", "type", "id", "spaceId", "addedDate",
     ]
     private static let typeFields = commonFields.union([
-        "pluralName", "iconName", "iconOption", "recommendedLayout", "recommendedRelations",
+        "pluralName", "iconName", "iconOption", "orderId", "recommendedLayout", "recommendedRelations",
         "recommendedFeaturedRelations", "recommendedHiddenRelations", "recommendedFileRelations", "setOf", "smartblockTypes",
     ])
     private static let relationFields = commonFields.union([
