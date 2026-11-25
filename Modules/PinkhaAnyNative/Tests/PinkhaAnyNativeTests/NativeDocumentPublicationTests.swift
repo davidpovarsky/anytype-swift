@@ -7,6 +7,10 @@ import PinkhaAnyHost
 import PinkhaAnyIntegration
 import PinkhaAnyRuntime
 import PinkhaTorahPresentation
+#if PINKHA_DUAL_ENGINE_RUNTIME
+import HanlinMiniAppsBridge
+import PinkhaHanlinUI
+#endif
 @testable import PinkhaAnyUI
 @testable import PinkhaAnyNative
 
@@ -434,8 +438,9 @@ final class NativeDocumentPublicationTests: XCTestCase {
         }
     }
 
-    private func withDocument(_ body: @MainActor (NativePublicationFixture) async throws -> Void) async throws {
-        XCTAssertEqual(AnyEmbeddedBuild.linked, .pinkhaNativeV1)
+    private func withDocument(expectedBuild: AnyEmbeddedBuild = .pinkhaNativeV1,
+        _ body: @MainActor (NativePublicationFixture) async throws -> Void) async throws {
+        XCTAssertEqual(AnyEmbeddedBuild.linked, expectedBuild)
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent("native-publication-" + UUID().uuidString, isDirectory: true)
         let credentialService = "io.pinkha.native.publication.tests." + UUID().uuidString
@@ -689,4 +694,205 @@ private actor NativePublicationReadGate {
         }
     }
 }
+
+#if PINKHA_DUAL_ENGINE_RUNTIME
+extension NativeDocumentPublicationTests {
+    /// Uses the real combined Any runtime and the SDK's durable transport.
+    /// The producer callback is supplied at its public boundary; this does not
+    /// certify a companion app launch or physical UIKit selection.
+    func testMiniAppsNativeReplacementPreservesFormattingAndAcknowledgesAfterReadback() async throws {
+        try await withDocument(expectedBuild: .pinkhaUnifiedV1) { fixture in
+            try fixture.type("**מקור** א")
+            await fixture.model.flush()
+            try await fixture.settleDeferredReads()
+            let before = try await fixture.read()
+            try await withMiniApps(fixture, operation: .replaceSelection,
+                                  range: .init(location: 5, length: 1),
+                                  items: [.init(kind: .text, text: "שלום")]) { request, result, store, journal in
+                XCTAssertEqual(try store.pendingResults(sourceAppID: request.source.appID).count, 1)
+                let preserved = try await AnyMiniAppsResultApplier.apply(
+                    request: request, result: result, document: fixture.model, store: store)
+                XCTAssertFalse(preserved)
+                let native = try await fixture.read()
+                let block = try XCTUnwrap(native.snapshot.blocks.first { $0.id == fixture.blockID })
+                XCTAssertEqual(block.text, "**מקור** שלום")
+                XCTAssertEqual(block.native["style"], before.snapshot.blocks.first { $0.id == fixture.blockID }?.native["style"])
+                XCTAssertEqual(native.snapshot.depthFirstIDs, before.snapshot.depthFirstIDs)
+                let receipt = try XCTUnwrap(journal.load())
+                XCTAssertTrue(receipt.plan.completed)
+                XCTAssertEqual(receipt.plan.appliedBlocks, [fixture.blockID])
+                XCTAssertEqual(receipt.dispatchVersions?[fixture.blockID], before.nativeVersion)
+                XCTAssertTrue(try store.pendingResults(sourceAppID: request.source.appID).isEmpty)
+                _ = try await AnyMiniAppsResultApplier.apply(
+                    request: request, result: result, document: fixture.model, store: store)
+                let replayed = try await fixture.read()
+                XCTAssertEqual(replayed.nativeVersion, native.nativeVersion)
+                XCTAssertEqual(replayed.snapshot.blocks, native.snapshot.blocks)
+            }
+        }
+    }
+
+    func testMiniAppsNativeReturnPreservesNewerContentAndCreatesOneDurableResultBlock() async throws {
+        try await withDocument(expectedBuild: .pinkhaUnifiedV1) { fixture in
+            try await withMiniApps(fixture, operation: .replaceSelection,
+                                  range: .init(location: 0, length: 4),
+                                  items: [.init(kind: .text, text: "Returned result")]) { request, result, store, journal in
+                try fixture.type("תוכן חדש שנשמר")
+                await fixture.model.flush()
+                try await fixture.settleDeferredReads()
+                let preserved = try await AnyMiniAppsResultApplier.apply(
+                    request: request, result: result, document: fixture.model, store: store)
+                XCTAssertTrue(preserved)
+                let native = try await fixture.read()
+                XCTAssertEqual(native.snapshot.blocks.first { $0.id == fixture.blockID }?.text, "תוכן חדש שנשמר")
+                let additions = native.snapshot.blocks.filter { $0.text == "Returned result" }
+                XCTAssertEqual(additions.count, 1)
+                let receipt = try XCTUnwrap(journal.load())
+                XCTAssertEqual(Set(receipt.plan.insertedBlocks.values), Set(additions.map(\.id)))
+                XCTAssertTrue(receipt.plan.completed)
+                XCTAssertTrue(receipt.plan.preservedNewerContent)
+                XCTAssertTrue(try store.pendingResults(sourceAppID: request.source.appID).isEmpty)
+                _ = try await AnyMiniAppsResultApplier.apply(
+                    request: request, result: result, document: fixture.model, store: store)
+                let replayed = try await fixture.read()
+                XCTAssertEqual(replayed.nativeVersion, native.nativeVersion)
+                XCTAssertEqual(replayed.snapshot.blocks, native.snapshot.blocks)
+            }
+        }
+    }
+
+    func testMiniAppsNativeFileReturnReadsExactStoredBytesBeforeAcknowledging() async throws {
+        try await withDocument(expectedBuild: .pinkhaUnifiedV1) { fixture in
+            let payload = Data("שלום — native MiniApps attachment\n".utf8)
+            try await withMiniApps(fixture, operation: .insert, range: nil, items: [],
+                                  attachment: payload) { request, result, store, journal in
+                _ = try await AnyMiniAppsResultApplier.apply(
+                    request: request, result: result, document: fixture.model, store: store)
+                let receipt = try XCTUnwrap(journal.load())
+                XCTAssertTrue(receipt.plan.completed)
+                XCTAssertEqual(receipt.files.count, 1)
+                let file = try XCTUnwrap(receipt.files["miniapps-result-0"])
+                XCTAssertEqual(file.bytes, Int64(payload.count))
+                XCTAssertEqual(file.sha256, AnyContentDigest.sha256(payload))
+                XCTAssertEqual(file.name, "native-return.txt")
+                XCTAssertEqual(file.mime, "text/plain")
+                let client = fixture.owner.client, workspace = fixture.owner.workspace
+                let digest = try await fixture.owner.session.perform { lease in
+                    try await client.readFileContentDigest(spaceID: workspace.spaceID,
+                        fileID: file.fileID, size: file.bytes, mime: file.mime,
+                        authorize: { try await lease.validate() })
+                }
+                XCTAssertEqual(digest.byteCount, Int64(payload.count))
+                XCTAssertEqual(digest.sha256, AnyContentDigest.sha256(payload))
+                XCTAssertTrue(try store.pendingResults(sourceAppID: request.source.appID).isEmpty)
+                _ = try await AnyMiniAppsResultApplier.apply(
+                    request: request, result: result, document: fixture.model, store: store)
+                XCTAssertEqual(try journal.load()?.files["miniapps-result-0"]?.fileID, file.fileID)
+                XCTAssertEqual(try journal.load()?.files.count, 1)
+            }
+        }
+    }
+
+    func testRetiredMiniAppsDocumentCannotWriteOrAcknowledgeItsNativeReturn() async throws {
+        try await withDocument(expectedBuild: .pinkhaUnifiedV1) { fixture in
+            try await withMiniApps(fixture, operation: .replaceSelection,
+                                  range: .init(location: 0, length: 4),
+                                  items: [.init(kind: .text, text: "must remain pending")]) { request, result, store, _ in
+                let before = try await fixture.read()
+                fixture.model.unmount()
+                do {
+                    _ = try await AnyMiniAppsResultApplier.apply(
+                        request: request, result: result, document: fixture.model, store: store)
+                    XCTFail("A retired editor accepted a MiniApps mutation.")
+                } catch AnyHostError.sessionClosed {}
+                let after = try await fixture.read()
+                XCTAssertEqual(after.nativeVersion, before.nativeVersion)
+                XCTAssertEqual(after.snapshot.blocks, before.snapshot.blocks)
+                XCTAssertEqual(try store.pendingResults(sourceAppID: request.source.appID).map(\.requestID), [request.id])
+            }
+        }
+    }
+
+    func testIssuedMiniAppsNativeMutationDoesNotAppendAfterLaterUserEdit() async throws {
+        try await withDocument(expectedBuild: .pinkhaUnifiedV1) { fixture in
+            try await withMiniApps(fixture, operation: .replaceSelection,
+                                  range: .init(location: 0, length: 4),
+                                  items: [.init(kind: .text, text: "Returned")]) { request, result, store, journal in
+                let before = try await fixture.read()
+                var receipt = AnyMiniAppsJournalRecord(requestDigest: journal.requestDigest,
+                    resultDigest: journal.resultDigest,
+                    plan: try PinkhaMiniAppsEditPlanner.make(request: request, result: result))
+                receipt.dispatchVersions?[fixture.blockID] = before.nativeVersion
+                try journal.save(receipt)
+                // Reproduce the uncertain dispatch boundary with two real
+                // native saves. No final receipt or bridge ACK is fabricated.
+                try fixture.type("Returned א")
+                await fixture.model.flush()
+                try await fixture.settleDeferredReads()
+                try fixture.type("עריכת המשתמש אחרי החזרה")
+                await fixture.model.flush()
+                try await fixture.settleDeferredReads()
+                let newer = try await fixture.read()
+                do {
+                    _ = try await AnyMiniAppsResultApplier.apply(
+                        request: request, result: result, document: fixture.model, store: store)
+                    XCTFail("An uncertain prior dispatch appended a duplicate return.")
+                } catch MiniAppBridgeError.selectionChanged {}
+                let after = try await fixture.read()
+                XCTAssertEqual(after.nativeVersion, newer.nativeVersion)
+                XCTAssertEqual(after.snapshot.blocks, newer.snapshot.blocks)
+                XCTAssertFalse(try XCTUnwrap(journal.load()).plan.completed)
+                XCTAssertEqual(try store.pendingResults(sourceAppID: request.source.appID).map(\.requestID), [request.id])
+            }
+        }
+    }
+
+    private func withMiniApps(
+        _ fixture: NativePublicationFixture, operation: MiniAppOperation, range: NSRange?,
+        items: [MiniAppContent], attachment: Data? = nil,
+        body: @MainActor (MiniAppInvocation, MiniAppResult, MiniAppBridgeStore, AnyMiniAppsJournal) async throws -> Void
+    ) async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(
+            "native-miniapps-" + UUID().uuidString, isDirectory: true)
+        let store = try MiniAppBridgeStore(containerURL: root)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let read = try await fixture.read(), model = fixture.model
+        let snapshots = try read.snapshot.depthFirstIDs.map { id -> PinkhaMiniAppsBlockSnapshot in
+            let block = try XCTUnwrap(read.snapshot.blocks.first { $0.id == id })
+            return try AnyMiniAppsBlockMetadata(block).snapshot(id: id)
+        }
+        let selection: MiniAppTextSelection?
+        if let range {
+            let block = try XCTUnwrap(snapshots.first { $0.id == fixture.blockID })
+            let selected = try XCTUnwrap(Range(range, in: block.text))
+            selection = .init(location: range.location, length: range.length,
+                              text: String(block.text[selected]), blockIDs: [fixture.blockID])
+        } else { selection = nil }
+        let appID = try XCTUnwrap(AnyMiniAppsCodec.sourceAppID)
+        let source = MiniAppSourceContext(appID: appID, displayName: "Pinkha native acceptance",
+            documentID: model.objectID, revision: read.snapshot.revision, selection: selection,
+            documentText: snapshots.map(\.text).joined(separator: "\n"), metadata: [
+                PinkhaMiniAppsEngineScope.metadataKey: PinkhaMiniAppsEngineScope.any.rawValue,
+                "anytype.accountID": model.workspace.accountID,
+                "anytype.spaceID": model.workspace.spaceID,
+                "anytype.blocks": String(decoding: try AnyMiniAppsCodec.encode(snapshots), as: UTF8.self),
+                "anytype.nativeVersion": read.nativeVersion
+            ])
+        let request = MiniAppInvocation(appID: "native-publication-boundary-fixture",
+                                       source: source, operation: operation)
+        var outputs = items
+        if let attachment {
+            outputs.append(try store.writeAttachment(attachment, name: "native-return.txt",
+                                                      typeIdentifier: "public.plain-text"))
+        }
+        let result = MiniAppResult(requestID: request.id, operation: operation, items: outputs)
+        try store.enqueue(request)
+        try store.complete(result)
+        let journal = try AnyMiniAppsJournal(request: request, result: result,
+                                             workspace: model.workspace, objectID: model.objectID)
+        defer { try? FileManager.default.removeItem(at: journal.url) }
+        try await body(request, result, store, journal)
+    }
+}
+#endif
 #endif
