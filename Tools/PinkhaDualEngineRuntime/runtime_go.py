@@ -33,7 +33,7 @@ def qualify_omitted_checksum(build, name, expected, actual):
     # Admit only the eight separately reviewed metadata omissions, checking
     # the real bytes at the identical original module-cache path.
     review_path = build / "tools/module-metadata-hydration.json"
-    require(digest(review_path) == "69b2f056688a2c009becbcac53f4c546648ab415e2e32ec5545cd295cb5dc863",
+    require(digest(review_path) == "2860bd4ec7d8326a901569345969f3702a6528d65b057b98383de7525b0b091e",
             "unreviewed_generated_checksum_hydration")
     review = json.loads(review_path.read_text())
     proof = build / "module-checksum-verification-2/receipt.json"

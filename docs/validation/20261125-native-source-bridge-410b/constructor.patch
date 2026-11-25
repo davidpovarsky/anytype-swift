@@ -1,0 +1,23 @@
+diff --git a/core/pinkha_native_source_capture.go b/core/pinkha_native_source_capture.go
+index e990cf47d..4cbcb3132 100644
+--- a/core/pinkha_native_source_capture.go
++++ b/core/pinkha_native_source_capture.go
+@@ -11,6 +11,7 @@ import (
+ 	"unicode/utf8"
+ 
+ 	"github.com/anyproto/anytype-heart/core/application"
++	"github.com/anyproto/anytype-heart/core/pinkha/localstorewitness"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/capturecontrol"
+ )
+ 
+@@ -48,7 +49,9 @@ func (mw *Middleware) PinkhaCaptureLoadedAccountSource(ctx context.Context, toke
+ 	}
+ 	captured, err := mw.applicationService.CaptureLoadedAccountSpaceWitness(ctx, token,
+ 		application.LoadedAccountSpaceWitnessRequest{
+-			Source:           application.LoadedAccountWitnessRequest{AccountID: accountID, SpaceID: spaceID},
++			Source: application.LoadedAccountWitnessRequest{
++				AccountID: accountID, SpaceID: spaceID, Limits: localstorewitness.DefaultLimits(),
++			},
+ 			PrivateDirectory: privateDirectory,
+ 		})
+ 	if err != nil {

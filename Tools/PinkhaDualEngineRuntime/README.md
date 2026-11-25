@@ -7,26 +7,15 @@ not also link the standalone AnyLib framework.
 
 ## Current source closure
 
-The current source manifest is `70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72`
-with 4,855 exact files. It succeeds the actually built manifest
-`70fb5342f2ff31d1cf5f7ce44bed7b16f6373f6bf95eb031d165339cf0f26683`.
-The only native source delta is eight reviewed Heart paths from
-`a2916b27eaa16fc291f438fe620b3d09bc0a85e0` to
-`5e8f9ce4ec789c1cd775b148a6cc49d4a28f56b5`: five existing files and three additions.
-The five predecessor blobs exactly match the previous unified manifest.
-Every other source file and all Go module declarations/checksums are unchanged.
-The producer also restores Any's separate `mobile` build tag. `gomobile`
-alone does not enable the native managed-token gateway. No Heart, SDK or
-any-sync source has a `mobile` build constraint; Any selects its original
-mobile gateway, process-lock and OpenAPI variants.
-
-The donor adds the actual compiled definition registry to the existing native
-account-bound capture and its original checkpoint validation. It preserves
-absent, explicit-null and explicit default values through the original native
-marshal format. Its original Go qualification passed four methods and nine
-descriptor subcases. The actual Swift reader also accepted the real
-143-object, 144-tree, 299-member capture with six compiled descriptors.
-These source/component results do not grant full-space migration admission.
+The current candidate source manifest is `410b441e5726b4a2ff7b259e296ad2ba819a5751cd46732945f62259ace42cc9`
+with 4,855 exact files. It succeeds the actually built 70f0 manifest. The only
+production source delta is the C-qualified b745 exported capture constructor:
+`heart/core/pinkha_native_source_capture.go` now supplies the existing bounded
+default limits. The same original real-account bridge regression failed on the
+predecessor and passed on b745; lower-layer invalid limits remain rejected.
+Full Page154, compiled definitions, Any mobile gateway and all source/dependency
+versions remain unchanged. These host results do not qualify either new Apple
+slice or grant source migration admission.
 
 Original module pins remain Heart `ea796999d648e27dcb7ad23a0bbd849d35fadc5a`,
 Any `cf87c43ff0100c2dc43c3c105c82b1b070b3a7a3`, Any Sync SDK
@@ -50,12 +39,12 @@ four-module workspace. Its actual tidy output is retained. Every original
 module path, version and available checksum is compared against the fresh full
 workspace graph. Neither source modules nor the shared module cache are rewritten.
 
-For Go's eight already-observed lazy GoModSum omissions, fresh producers now
-copy the exact original authenticated Go/SumDB proof, including all eight signed
-lookup responses, with explicit provenance and all file hashes. They do not
-claim fresh authentication or reuse the previous workspace graph. An omission
-is accepted only for the same reviewed module/version/checksum and identical
-actual cached go.mod bytes. Unknown changes still fail.
+The old eight-module metadata evidence directory was lost. The new producer uses
+an explicitly new actual Go/SumDB proof for the identical eight module versions,
+checksums and cached bytes. Its original 16 commands and all signed lookup
+responses remain retained; both earlier observer failures are preserved. This
+does not reuse an old workspace graph: current source and generated bridge
+module inventories must still compare exactly. Unknown changes fail.
 
 ## Execution and acceptance
 
@@ -74,8 +63,8 @@ space and may stop only its owned process group at the 2GiB emergency floor.
 Normal keyed Go caches are shared with coordinated native jobs; mutable
 source/work/tmp roots and journals remain private.
 
-The previous 70fb simulator and device slices passed their actual build/link
-qualification. The first original combined app and complete UI bundle also
+The previous 70fb and 70f0 simulator/device slices passed actual build/link
+qualification. Current shipping App/full UI builds still use frozen 70f0. The first original combined app and complete UI bundle also
 built successfully at app source `6db4d065e007dc6c39ae510a77053f33b7de8247`.
 Those retained results remain evidence for that previous source only.
 The current native source requires its own two slice builds and affected
