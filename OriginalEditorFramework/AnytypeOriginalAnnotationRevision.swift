@@ -15,7 +15,11 @@ public final class AnytypeOriginalAnnotationRevisionToken {
     public let objectID: String
     public let nativeHeads: [String]
     public let nativeRootSHA256: String
+    fileprivate let archiveObjectID: String
+    fileprivate let archiveHeads: [String]
+    fileprivate let isArchived: Bool
     fileprivate let binding: AnytypeOriginalEditorBinding
+    fileprivate let sourceCapture: EditorDocumentWriteCapture
     private let session: AnytypeOriginalEditorAccountSession
     private let sourceLifetime: AnytypeOriginalEditorSourceLifetime
     private let sourceIsCurrent: @MainActor (AnytypeOriginalEditorBinding) -> Bool
@@ -25,7 +29,14 @@ public final class AnytypeOriginalAnnotationRevisionToken {
                      session: AnytypeOriginalEditorAccountSession,
                      binding: AnytypeOriginalEditorBinding,
                      sourceLifetime: AnytypeOriginalEditorSourceLifetime,
-                     sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorBinding) -> Bool) {
+                     sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorBinding) -> Bool) throws {
+        guard let archiveID = actual.value.archiveObjectID,
+              let archiveHeads = actual.value.archiveHeads,
+              actual.value.isArchived == false else {
+            throw AnytypeOriginalAnnotationRevisionError.invalidResponse
+        }
+        self.archiveObjectID = archiveID; self.archiveHeads = archiveHeads; isArchived = false
+        sourceCapture = try EditorDocumentWriteCapture(sourceLifetime.lifetime)
         objectID = actual.value.rootID
         nativeHeads = actual.value.heads ?? []
         nativeRootSHA256 = actual.value.rootSnapshotSHA256 ?? ""
@@ -36,6 +47,7 @@ public final class AnytypeOriginalAnnotationRevisionToken {
     fileprivate func claim(session: AnytypeOriginalEditorAccountSession,
                            source: AnytypeOriginalAnnotationImportSource) throws {
         try session.validateCurrent()
+        try sourceCapture.validate()
         guard self.session === session, !claimed, sourceLifetime.isCurrent,
               sourceIsCurrent(binding),
               source.annotationUUID == binding.annotationUUID,
@@ -123,7 +135,9 @@ public struct AnytypeOriginalAnnotationRevisionHistory: Sendable {
         conflictObserved = observed?.value.status == "conflict"
             && observed?.value.nativeApplyAttempted == false
             && observed?.value.nativeWriteObserved == false
-        if let observed, let bytes = response.0 {
+        if let observed, let bytes = response.0, !actual.cancellationWasScheduled,
+           !actual.cancellationAwaitFailed, actual.cancellationResponse == nil,
+           actual.cancellationCopyError == nil {
             verifiedNativeReceipt = try? AnytypeOriginalAnnotationRevisionReceipt(
                 actual: observed, source: source, responseBytes: bytes)
         } else { verifiedNativeReceipt = nil }
@@ -230,7 +244,8 @@ extension AnytypeOriginalEditorAccountSession {
             try Task.checkCancellation(); try validateCurrent(); try frozen.validate()
             guard drained.count == 1, let history = drained.history,
                   history.responseCopyError == nil, let response = history.response,
-                  !history.cancellationWasScheduled else {
+                  !history.cancellationWasScheduled, !history.cancellationAwaitFailed,
+                  history.cancellationResponse == nil, history.cancellationCopyError == nil else {
                 throw AnytypeOriginalAnnotationRevisionError.unobservedResponse
             }
             let observed = try OriginalAnnotationRevisionObservation(response: response,
@@ -245,7 +260,7 @@ extension AnytypeOriginalEditorAccountSession {
             }
             let capture = try observed.makeCapture(binding: binding, maximumBodyBytes: maximumBodyBytes,
                 responseBytes: copied)
-            let token = AnytypeOriginalAnnotationRevisionToken(actual: observed, session: self,
+            let token = try AnytypeOriginalAnnotationRevisionToken(actual: observed, session: self,
                 binding: binding, sourceLifetime: sourceLifetime, sourceIsCurrent: sourceIsCurrent)
             return try AnytypeOriginalAnnotationReadReceipt(actual: capture, binding: binding,
                 maximumBodyBytes: maximumBodyBytes, revisionToken: token, nativeResponseBytes: copied)
@@ -284,6 +299,7 @@ extension AnytypeOriginalEditorAccountSession {
             let frozen = try originalAnnotationImportSourceBinding(
                 lifetime: sourceLifetime.lifetime,
                 sourceIsCurrent: { sourceLifetime.isCurrent && sourceIsCurrent(source) })
+                .requiringCapturedSource(revisionToken.sourceCapture)
             let request = OriginalAnnotationRevisionRequest(replacing: revisionToken, snapshot: snapshot)
             let bytes = try OriginalAnnotationRevisionWire.encode(request)
             let delivery = OriginalAnnotationRevisionDelivery(request: request, requestBytes: bytes,
@@ -324,29 +340,38 @@ fileprivate struct OriginalAnnotationRevisionRequest: Encodable {
     let annotationUUID: UUID
     let expectedHeads: [String]?
     let expectedRootSHA256: String?
+    let expectedArchiveID: String?
+    let expectedArchiveHeads: [String]?
+    let expectedIsArchived: Bool?
     let desiredArchive: Data?
     let desiredArchiveSHA256: String?
     enum CodingKeys: String, CodingKey {
         case schema, operation
         case targetRootID = "target_root_id", annotationUUID = "annotation_uuid"
         case expectedHeads = "expected_heads", expectedRootSHA256 = "expected_root_sha256"
+        case expectedArchiveID = "expected_archive_id", expectedArchiveHeads = "expected_archive_heads"
+        case expectedIsArchived = "expected_is_archived"
         case desiredArchive = "desired_archive", desiredArchiveSHA256 = "desired_archive_sha256"
     }
     init(read binding: AnytypeOriginalEditorBinding) {
         operation = "read"; targetRootID = binding.objectID; annotationUUID = binding.annotationUUID
-        expectedHeads = nil; expectedRootSHA256 = nil; desiredArchive = nil; desiredArchiveSHA256 = nil
+        expectedHeads = nil; expectedRootSHA256 = nil
+        expectedArchiveID = nil; expectedArchiveHeads = nil; expectedIsArchived = nil
+        desiredArchive = nil; desiredArchiveSHA256 = nil
     }
     @MainActor init(replacing token: AnytypeOriginalAnnotationRevisionToken,
                     snapshot: AnytypeOriginalEditorSnapshot) {
         operation = "replace"; targetRootID = token.objectID
         annotationUUID = token.binding.annotationUUID
         expectedHeads = token.nativeHeads; expectedRootSHA256 = token.nativeRootSHA256
+        expectedArchiveID = token.archiveObjectID; expectedArchiveHeads = token.archiveHeads
+        expectedIsArchived = token.isArchived
         desiredArchive = snapshot.nativeArchiveBytes; desiredArchiveSHA256 = snapshot.nativeArchiveSHA256
     }
 }
 
-fileprivate struct OriginalAnnotationRevisionResult: Decodable {
-    struct Mapping: Decodable {
+internal struct OriginalAnnotationRevisionResult: Decodable, Sendable {
+    struct Mapping: Decodable, Sendable {
         let sourceSpaceID: String, sourceObjectID: String, objectID: String
         enum CodingKeys: String, CodingKey {
             case sourceSpaceID = "source_space_id", sourceObjectID = "source_object_id", objectID = "object_id"
@@ -358,6 +383,9 @@ fileprivate struct OriginalAnnotationRevisionResult: Decodable {
     let beforeHeads: [String]?
     let heads: [String]?
     let rootSnapshotSHA256: String?
+    let archiveObjectID: String?
+    let archiveHeads: [String]?
+    let isArchived: Bool?
     let nativeArchive: Data?
     let nativeArchiveSHA256: String?
     let sourceArchiveSHA256: String?
@@ -368,13 +396,14 @@ fileprivate struct OriginalAnnotationRevisionResult: Decodable {
         case schema, operation, status, heads, mappings
         case accountID = "account_id", spaceID = "space_id", rootID = "root_id", annotationUUID = "annotation_uuid"
         case beforeHeads = "before_heads", rootSnapshotSHA256 = "root_snapshot_sha256"
+        case archiveObjectID = "archive_object_id", archiveHeads = "archive_heads", isArchived = "is_archived"
         case nativeArchive = "native_archive", nativeArchiveSHA256 = "native_archive_sha256"
         case sourceArchiveSHA256 = "source_archive_sha256", nativeWriteObserved = "native_write_observed"
         case nativeApplyAttempted = "native_apply_attempted"
     }
 }
 
-fileprivate enum OriginalAnnotationRevisionWire {
+internal enum OriginalAnnotationRevisionWire {
     static let maximumEnvelopeBytes = 2 * 1_024 * 1_024
     static let maximumArchiveBytes = 1_024 * 1_024
     static let protocolName = "pinkha.annotation.revision.v1"
@@ -392,11 +421,15 @@ fileprivate enum OriginalAnnotationRevisionWire {
             && value.allSatisfy { identifier($0) && $0.utf8.count <= 512 }
             && zip(value, value.dropFirst()).allSatisfy { $0.0.utf8.lexicographicallyPrecedes($0.1.utf8) }
     }
-    static func encode(_ value: OriginalAnnotationRevisionRequest) throws -> Data {
+    fileprivate static func encode(_ value: OriginalAnnotationRevisionRequest) throws -> Data {
         guard identifier(value.targetRootID) else { throw AnytypeOriginalAnnotationRevisionError.invalidResponse }
         if value.operation == "replace" {
             guard let heads = value.expectedHeads, self.heads(heads),
                   let hash = value.expectedRootSHA256, digest(hash),
+                  let archiveID = value.expectedArchiveID, identifier(archiveID),
+                  !archiveID.utf8.elementsEqual(value.targetRootID.utf8),
+                  let archiveHeads = value.expectedArchiveHeads, self.heads(archiveHeads),
+                  value.expectedIsArchived == false,
                   let archive = value.desiredArchive, !archive.isEmpty, archive.count <= maximumArchiveBytes,
                   value.desiredArchiveSHA256 == sha256(archive) else {
                 throw AnytypeOriginalAnnotationRevisionError.invalidResponse
@@ -447,7 +480,10 @@ fileprivate struct OriginalAnnotationRevisionObservation {
                       !value.nativeApplyAttempted, !value.nativeWriteObserved,
                       let heads = value.heads, OriginalAnnotationRevisionWire.heads(heads),
                       value.beforeHeads == heads, let hash = value.rootSnapshotSHA256,
-                      OriginalAnnotationRevisionWire.digest(hash) else {
+                      OriginalAnnotationRevisionWire.digest(hash),
+                      let archiveID = value.archiveObjectID, OriginalAnnotationRevisionWire.identifier(archiveID),
+                      let archiveHeads = value.archiveHeads, OriginalAnnotationRevisionWire.heads(archiveHeads),
+                      value.isArchived != nil else {
                     throw AnytypeOriginalAnnotationRevisionError.invalidResponse
                 }
             }
@@ -463,14 +499,20 @@ fileprivate struct OriginalAnnotationRevisionObservation {
               let before = value.beforeHeads, OriginalAnnotationRevisionWire.heads(before),
               let hash = value.rootSnapshotSHA256, OriginalAnnotationRevisionWire.digest(hash),
               let bytes = value.nativeArchive, !bytes.isEmpty, bytes.count <= OriginalAnnotationRevisionWire.maximumArchiveBytes,
-              value.nativeArchiveSHA256 == OriginalAnnotationRevisionWire.sha256(bytes) else {
+              value.nativeArchiveSHA256 == OriginalAnnotationRevisionWire.sha256(bytes),
+              let archiveID = value.archiveObjectID, OriginalAnnotationRevisionWire.identifier(archiveID),
+              !archiveID.utf8.elementsEqual(value.rootID.utf8),
+              let archiveHeads = value.archiveHeads, OriginalAnnotationRevisionWire.heads(archiveHeads),
+              value.isArchived == false else {
             throw AnytypeOriginalAnnotationRevisionError.invalidResponse
         }
         if request.operation == "read" {
             guard value.status == "read", !value.nativeApplyAttempted, !value.nativeWriteObserved,
                   before == heads else { throw AnytypeOriginalAnnotationRevisionError.invalidResponse }
         } else {
-            guard request.operation == "replace", before == request.expectedHeads else {
+            guard request.operation == "replace", before == request.expectedHeads,
+                  archiveID == request.expectedArchiveID, archiveHeads == request.expectedArchiveHeads,
+                  request.expectedIsArchived == false else {
                 throw AnytypeOriginalAnnotationRevisionError.invalidResponse
             }
             if value.status == "applied" {

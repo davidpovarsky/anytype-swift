@@ -24,6 +24,7 @@ import (
 	"github.com/anyproto/anytype-heart/core/block"
 	"github.com/anyproto/anytype-heart/core/block/export"
 	importer "github.com/anyproto/anytype-heart/core/block/import"
+	"github.com/anyproto/anytype-heart/core/block/simple/base"
 	"github.com/anyproto/anytype-heart/core/event"
 	"github.com/anyproto/anytype-heart/metrics"
 	"github.com/anyproto/anytype-heart/pb"
@@ -280,14 +281,21 @@ func originalNetworkRequireSameBlocks(t *testing.T, first, second []byte, root, 
 // Original Text.Diff/marksEq sorts the actual old/new mark inventories during
 // Apply. Compare only that array's order canonically by each COMPLETE protobuf
 // tuple, exactly as revision canonicalRevisionSnapshot. Preserve duplicates,
-// ranges, types, parameters, unknown fields and every other block field. The
-// genuine ZIP hashes and native locked revision token remain separate witnesses.
+// ranges, types, parameters and unknown fields. The original Base.Diff additionally
+// equates absent and all-false restrictions by materializing an empty message;
+// invoke that same original helper on private comparison copies. Every nonempty
+// restriction and every other block field remain exact. The genuine ZIP hashes and native locked revision token remain separate witnesses.
 func originalNetworkRevisionCanonicalBlock(t *testing.T, original *model.Block) *model.Block {
 	t.Helper()
 	if original == nil {
 		t.Fatal("nil native block")
 	}
 	block := proto.Clone(original).(*model.Block)
+	other := proto.Clone(block).(*model.Block)
+	changes, err := base.NewBase(block).Diff("", base.NewBase(other))
+	if err != nil || len(changes) != 0 {
+		t.Fatal("original block self-comparison changed native content")
+	}
 	marks := block.GetText().GetMarks()
 	if marks == nil {
 		return block
@@ -312,6 +320,41 @@ func originalNetworkRevisionCanonicalBlock(t *testing.T, original *model.Block) 
 		marks.Marks[i] = item.mark
 	}
 	return block
+}
+
+func TestOtzariaOriginalNetworkRevisionCanonicalRestrictions(t *testing.T) {
+	original := &model.Block{Id: "exact-original-block", ChildrenIds: []string{"first", "second"}}
+	empty := proto.Clone(original).(*model.Block)
+	empty.Restrictions = &model.BlockRestrictions{}
+	if !proto.Equal(originalNetworkRevisionCanonicalBlock(t, original),
+		originalNetworkRevisionCanonicalBlock(t, empty)) {
+		t.Fatal("original Base.Diff empty restriction equivalence is missing")
+	}
+	if original.Restrictions != nil || !proto.Equal(empty.Restrictions, &model.BlockRestrictions{}) {
+		t.Fatal("comparison mutated the actual saved input")
+	}
+	for name, restriction := range map[string]*model.BlockRestrictions{
+		"read": {Read: true}, "edit": {Edit: true}, "remove": {Remove: true},
+		"drag": {Drag: true}, "drop_on": {DropOn: true},
+	} {
+		t.Run(name, func(t *testing.T) {
+			changed := proto.Clone(original).(*model.Block)
+			changed.Restrictions = restriction
+			if proto.Equal(originalNetworkRevisionCanonicalBlock(t, original),
+				originalNetworkRevisionCanonicalBlock(t, changed)) {
+				t.Fatal("a genuine nonzero native restriction was discarded")
+			}
+			if !proto.Equal(changed.Restrictions, restriction) {
+				t.Fatal("comparison modified the actual restriction")
+			}
+		})
+	}
+	changed := proto.Clone(original).(*model.Block)
+	changed.ChildrenIds[0], changed.ChildrenIds[1] = changed.ChildrenIds[1], changed.ChildrenIds[0]
+	if proto.Equal(originalNetworkRevisionCanonicalBlock(t, original),
+		originalNetworkRevisionCanonicalBlock(t, changed)) {
+		t.Fatal("ordered native child relations were discarded")
+	}
 }
 
 func originalNetworkRequireTextHash(t *testing.T, raw []byte, p originalNetworkPointer, id, want string) {

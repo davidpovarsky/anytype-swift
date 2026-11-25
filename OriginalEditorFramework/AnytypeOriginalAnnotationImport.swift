@@ -451,12 +451,12 @@ public struct AnytypeOriginalAnnotationReadReceipt: Sendable {
             sourceWitnessSHA256: binding.sourceWitnessSHA256, payloadSHA256: nil)
         // Includes original type uniqueKey/layout membership and all fixed
         // protocol/namespace/Annotation UUID/creation-destination markers.
-        let preview = try OriginalEditorLocalAnnotationNativeBody.preview(framed, source: source)
+        let text = try OriginalEditorLocalAnnotationNativeBody.textProjection(framed, source: source)
         capture = AnytypeOriginalEditorLocalAnnotationCapture(
             nativeCapture: .init(snapshot: framed,
                 retainedArchiveURL: actual.retainedArchiveURL,
                 retainedDirectoryURL: actual.retainedDirectoryURL),
-            textPreview: preview)
+            textPreview: text.textPreview, fullPlainText: text.fullPlainText)
         originHostProfileID = origin
         nativeRootLogHeads = native.rootLogHeads
         observedNativeRevisionSHA256 = revisionToken.nativeRootSHA256
