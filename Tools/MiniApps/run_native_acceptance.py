@@ -190,7 +190,12 @@ def build_consumer(args, receipt):
         # Copied PCMs retain nonrelocatable paths even when a textual donor scan is empty.
         # Use an empty owned cache without deleting the original copied evidence.
         module_cache = derived / "MiniAppsCurrentModuleCache.noindex"
-        require(not module_cache.exists(), "Current module cache already exists before the actual build")
+        cache = receipt.get("compiler_cache_input")
+        require(not module_cache.exists() or
+                (cache is not None
+                 and cache["status"] == "ADMITTED_SAME_PATH_SOURCE_IDENTICAL_OWNED_COMPILER_CACHE"
+                 and cache["module_cache"] == str(module_cache)),
+                "Existing module cache must be the exact admitted same-path completed cache")
         flags += ["ARCHS=arm64", "CLANG_MODULE_CACHE_PATH=" + str(module_cache),
                   "SWIFT_MODULE_CACHE_PATH=" + str(module_cache)]
     scheduling = ["-jobs", "2"] if context.local else []

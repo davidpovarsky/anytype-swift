@@ -105,7 +105,23 @@ def test_environment(receipt):
     return values
 
 
-def prepare(app, evidence, derived):
+def select_runtime_pairs(inventory, runtime_identifier, select_pairs):
+    selection_inventory = inventory
+    if runtime_identifier is not None:
+        require(re.fullmatch(r"com\.apple\.CoreSimulator\.SimRuntime\.iOS-27(?:-[0-9]+)+",
+                             runtime_identifier), "An explicit original OS27 runtime identifier is required")
+        selected_runtimes = [row for row in inventory["runtimes"]
+                             if row.get("identifier") == runtime_identifier]
+        require(len(selected_runtimes) == 1 and selected_runtimes[0].get("isAvailable") is True,
+                "Requested actual runtime is unavailable or ambiguous")
+        selection_inventory = {**inventory, "runtimes": selected_runtimes}
+    runtime, devices = select_pairs(selection_inventory)
+    require(runtime_identifier is None or runtime["identifier"] == runtime_identifier,
+            "Actual compatible-device selection changed the requested runtime")
+    return runtime, devices
+
+
+def prepare(app, evidence, derived, *, runtime_identifier=None):
     app, evidence, derived = map(lambda x: Path(x).resolve(), (app, evidence, derived))
     require(platform.system() == "Darwin" and platform.machine() == "arm64",
             "Genuine local Apple silicon preflight is required")
@@ -142,11 +158,12 @@ def prepare(app, evidence, derived):
     xcode = subprocess.check_output(["xcodebuild", "-version"], text=True).strip()
     require(re.match(r"Xcode 27(?:\.|\s)", xcode), "Actual Xcode27 is required")
     inventory = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "--json"]))
-    runtime, devices = select_pairs(inventory)
+    runtime, devices = select_runtime_pairs(inventory, runtime_identifier, select_pairs)
     receipt = dict(status="PREFLIGHT_RUNNING_UI_NOT_RUN", source_sha=descriptor["source_sha"],
                    run_id=descriptor["run_id"], run_attempt="1", execution_origin="local-mac",
                    local_execution_sha256=digest(evidence / "local-execution.json"),
-                   selected={}, ui_tests_executed=0, xcode=xcode, host_architecture=platform.machine())
+                   selected={}, ui_tests_executed=0, xcode=xcode, host_architecture=platform.machine(),
+                   requested_runtime_identifier=runtime_identifier)
     write(evidence / "preflight/simulator-inventory.json", inventory)
     for kind, device in devices.items():
         name = "Pinkha-UI27-" + descriptor["run_id"] + "-" + kind

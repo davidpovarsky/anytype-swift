@@ -63,6 +63,9 @@ def main():
     parser.add_argument("--derived", type=Path, required=True)
     parser.add_argument("--phase", choices=("all", "build", "test", "cleanup"), default="all")
     parser.add_argument("--execution-sha256")
+    parser.add_argument("--local-cache-snapshot", type=Path)
+    parser.add_argument("--local-cache-snapshot-sha256")
+    parser.add_argument("--runtime-identifier")
     parser.add_argument("--retain-simulators", action="store_true")
     parser.add_argument("--include-file-workshop", action="store_true")
     args = parser.parse_args()
@@ -72,7 +75,10 @@ def main():
         and args.derived.is_relative_to(PRIVATE_ROOT) and not args.derived.is_relative_to(args.app)
         and not args.derived.is_relative_to(args.evidence) and not args.evidence.is_relative_to(args.derived),
         "Unowned or overlapping original application execution roots")
-    args.local_cache_snapshot = args.local_cache_snapshot_sha256 = None
+    original.require((args.local_cache_snapshot is None) == (args.local_cache_snapshot_sha256 is None),
+                     "Both exact owned-cache snapshot inputs are required together")
+    original.require(args.runtime_identifier is None or args.phase in {"all", "build"},
+                     "A runtime may only be selected during a fresh local preflight")
     args.local_execution = args.evidence / "local-execution.json"
     args.lane, args.device, args.language = "miniapps-native", "ipad", "en"
     args.heart_source_run_id = None
@@ -94,8 +100,12 @@ def main():
     signal.signal(signal.SIGINT, stop)
     try:
         if args.phase in {"all", "build"}:
-            original.require(not args.derived.exists(), "Fresh owned products required for the original build")
-            descriptor = prepare(args.app, args.evidence, args.derived)
+            original.require(not args.derived.exists() or args.local_cache_snapshot is not None,
+                             "Existing products require an exact completed owned-cache snapshot")
+            original.require(args.derived.exists() or args.local_cache_snapshot is None,
+                             "An owned-cache snapshot cannot label a fresh cache")
+            descriptor = prepare(args.app, args.evidence, args.derived,
+                                 runtime_identifier=args.runtime_identifier)
             args.local_execution_sha256 = digest(args.local_execution)
         else:
             original.require(args.execution_sha256 is not None,
