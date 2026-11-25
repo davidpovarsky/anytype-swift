@@ -26,3 +26,40 @@ Native Heart66/ABI source closures are unchanged and historical evidence remains
 2. Produce final Debug/Release Simulator/Device SDK with the new shared Hanlin source materialized and matching host dependency owners.
 3. Exercise ordinary native edit/save/discard/cold reopen, suspend to real original account selection, explicit saved-body import, verified durable receipt, real Stop and return to the same localOnly journal. Check an active second editor rejects suspension and Stop failure keeps ownership until explicit retry.
 4. Run genuine original native network peers with a new development identity, inspect remote readback and conflicts, and keep remote ACK unaccepted until that evidence exists.
+
+
+## Genuine original-account reverse read and localOnly reopen (2026-11-25)
+
+The expanded contract is 112 public requirements plus the existing 22 Debug SPI
+requirements. `AnytypeOriginalEditorAccountSession.readOriginalAnnotation` intersects
+the captured Host source with the same actual authenticated selected Space,
+permission captures and original document Owner. It never mounts an editable remote
+controller. It returns a nonconstructible `AnytypeOriginalAnnotationReadReceipt`
+only after original export, complete archive validation and original Annotation
+protocol/type/UUID/creation-marker verification.
+
+The receipt's `capture` preserves the original native ZIP and provides its text
+preview. The Host must explicitly commit it through the same captured SQLite CAS.
+The optional `Provenance.transportOriginHostProfileID` retains the actual native
+creation profile when current Host provenance is framed for the receiving profile.
+Native creation metadata, IDs, rich blocks, relationships, attachments and archive
+bytes are never rewritten. A saved received body reopens through the original
+localOnly materializer. Existing version1 headers omit this optional property and
+continue canonical decode/encode unchanged. Full integrated runtime acceptance is
+still required; compiler success does not establish that acceptance.
+
+The receipt's native causal heads and root state digest are historical observations,
+NOT an atomic compare-and-swap token and NOT a remote/server ACK. The actual native
+export inspected during the network probe omitted logHeads, which is represented
+honestly by an empty map. Safe stable-root remote updates need the separate original
+native atomic read/update seam now owned by the SDK release/native agent. No unsafe
+pre-read then overwrite has been enabled.
+
+Actual compiler evidence: Sentinel job `job_cd0a03dac039`, exit0 in5.59seconds;
+9 changed Swift primaries checked against all2277 original source files, actual
+arm64 iOS27 Simulator SDK, original macro executables and preserved Debug dependencies.
+The complete exact input manifest and source hashes are retained here. The previous
+73291 facade compile passed in job `job_72124b51149a`; failed driver/path experiments
+remain on Mac. Synthetic public-surface admission controls passed15/15; they are
+explicitly not native/runtime evidence. No Modules, original Go engine or middleware
+ABI source changed in this product commit.

@@ -19,7 +19,8 @@ internal enum OriginalEditorLocalAnnotationNativeBody {
                                   source: AnytypeOriginalEditorLocalAnnotationSource) throws {
         let actual = try decoded(snapshot)
         let details = actual.rootSnapshot.details
-        try requireMarkers(details, source: source)
+        try requireMarkers(details, source: source,
+            transportOriginHostProfileID: snapshot.provenance.transportOriginHostProfileID)
         let archive = try Archive(data: snapshot.nativeArchiveBytes, accessMode: .read)
         guard case .listValue(let types)? = details.fields["type"]?.kind,
               types.values.count == 1,
@@ -45,14 +46,17 @@ internal enum OriginalEditorLocalAnnotationNativeBody {
     }
 
     static func requireMarkers(_ details: Google_Protobuf_Struct,
-                               source: AnytypeOriginalEditorLocalAnnotationSource) throws {
-        guard string(details, OriginalAnnotationMetadataField.schemaProtocol.rawValue)
+                               source: AnytypeOriginalEditorLocalAnnotationSource,
+                               transportOriginHostProfileID: String? = nil) throws {
+        let origin = transportOriginHostProfileID ?? source.hostProfileID
+        guard !origin.isEmpty, origin.utf8.count <= 512, !origin.utf8.contains(0),
+              string(details, OriginalAnnotationMetadataField.schemaProtocol.rawValue)
                 == OriginalAnnotationNativeMetadata.protocolValue,
               string(details, OriginalAnnotationMetadataField.classification.rawValue) == "annotation",
               string(details, OriginalAnnotationMetadataField.namespace.rawValue) == "otzaria.local.annotation",
               string(details, OriginalAnnotationMetadataField.annotationUUID.rawValue) == source.annotationUUID.uuidString,
               string(details, OriginalAnnotationMetadataField.creationDestination.rawValue)
-                == "otzaria.local.draft:" + source.hostProfileID else {
+                == "otzaria.local.draft:" + origin else {
             throw AnytypeOriginalEditorLocalAnnotationError.wrongNativeIdentity
         }
     }

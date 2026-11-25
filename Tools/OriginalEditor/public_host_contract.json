@@ -190,6 +190,29 @@
         [
           "AnytypeOriginalAnnotationImportReceipt",
           "nativeResponseBytes"
+        ],
+        [
+          "AnytypeOriginalAnnotationReadReceipt"
+        ],
+        [
+          "AnytypeOriginalAnnotationReadReceipt",
+          "capture"
+        ],
+        [
+          "AnytypeOriginalAnnotationReadReceipt",
+          "originHostProfileID"
+        ],
+        [
+          "AnytypeOriginalAnnotationReadReceipt",
+          "nativeRootLogHeads"
+        ],
+        [
+          "AnytypeOriginalAnnotationReadReceipt",
+          "observedNativeRevisionSHA256"
+        ],
+        [
+          "AnytypeOriginalEditorAccountSession",
+          "readOriginalAnnotation(binding:sourceLifetime:maximumBodyBytes:sourceIsCurrent:)"
         ]
       ],
       "roots": [
@@ -199,7 +222,8 @@
         "AnytypeOriginalAnnotationImportHistory",
         "AnytypeOriginalAnnotationImportAttempt",
         "AnytypeOriginalEditorAccountSession",
-        "AnytypeOriginalAnnotationImportReceipt"
+        "AnytypeOriginalAnnotationImportReceipt",
+        "AnytypeOriginalAnnotationReadReceipt"
       ]
     },
     "OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift": {
@@ -561,6 +585,11 @@
         [
           "AnytypeOriginalEditorHost",
           "captureNativeSnapshot(maximumBodyBytes:)"
+        ],
+        [
+          "AnytypeOriginalEditorSnapshot",
+          "Provenance",
+          "transportOriginHostProfileID"
         ]
       ],
       "roots": [
@@ -581,7 +610,8 @@
     "AnytypeOriginalAnnotationImportAttempt",
     "AnytypeOriginalEditorLocalAnnotationCapture",
     "AnytypeOriginalEditorLocalAnnotationSession",
-    "AnytypeOriginalAnnotationImportReceipt"
+    "AnytypeOriginalAnnotationImportReceipt",
+    "AnytypeOriginalAnnotationReadReceipt"
   ],
   "schema": 2,
   "status": "COMPILE_SURFACE_CONTRACT_NATIVE_EDITOR_NOT_QUALIFIED"

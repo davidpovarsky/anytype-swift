@@ -405,7 +405,7 @@ def verify_public_surface(graphs, source_root, host_contract=None):
                     'Unreviewed facade source/root requirement')
             reviewed_facades[location] = contract
             required.update((location, tuple(components)) for components in contract['required'])
-        require(len(required) == 127, 'Incomplete public Host or qualification SPI surface requirement')
+        require(len(required) == 134, 'Incomplete public Host or qualification SPI surface requirement')
     found_inspection = False
     own_symbols = []
     imported_count = 0
