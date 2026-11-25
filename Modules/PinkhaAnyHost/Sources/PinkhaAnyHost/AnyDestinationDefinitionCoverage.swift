@@ -54,23 +54,25 @@ public struct AnyDestinationDefinitionEvidence: Codable, Equatable, Sendable {
     }
 }
 
-/// This closed contract currently binds only Heart's unmodified native name
-/// relation to Any's existing synced string name. It never creates or patches
-/// the native schema. Other builtin-looking keys are ordinary source data.
+/// Exact correspondence with an existing native property. Source definitions
+/// remain bound to their original bytes; no native schema is created or patched.
 public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendable {
-    /// Existing serialized name bindings retain their original contract.
     public static let contract = "pinkha-native-any-name-v1"
     public static let descriptionContract = "pinkha-native-any-description-v1"
+    public enum IdentityRole: String, Codable, Sendable { case id, spaceId, type }
     public let evidence: AnyDestinationDefinitionEvidence
+    /// The captured target Type of a system relation, in the same source
+    /// checkpoint. Registry labels cannot substitute for this native object.
+    public let targetTypeEvidence: AnyDestinationDefinitionEvidence?
     public let ownerID: String
     public let propertyID: String
     public let nativeContract: String
     public let nativeDescriptorSHA256: String
-    /// Source visibility remains independent of the canonical content value.
     public var sourceHidden: Bool? { evidence.snapshot.details["isHidden"]?.bool }
+    public var identityRole: IdentityRole? { IdentityRole(rawValue: propertyID) }
 
-    // SDK e195f6/internal/types/any/any.go, admitted again through native HTTP
-    // before the first executor mutation. No label-only inference is used.
+    // SDK e195f6/internal/types/any/any.go. The executor admits the complete
+    // actual native HTTP descriptor again before its first mutation.
     public static let nativeDescriptor: AnyJSON = .object([
         "id": .string("name"), "name": .string("Name"), "description": .string("Display name."),
         "kind": .string("string"), "scope": .string("synced"),
@@ -81,12 +83,35 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
         "kind": .string("string"), "scope": .string("synced"),
         "xFormat": .object(["type": .string("longtext")]),
     ])
+    public static func nativeIdentityDescriptor(_ role: IdentityRole) -> AnyJSON {
+        switch role {
+        case .id: .object([
+            "id": .string("id"), "name": .string("Id"),
+            "description": .string("Object id; derived, never written."),
+            "kind": .string("string"), "scope": .string("derived"),
+        ])
+        case .spaceId: .object([
+            "id": .string("spaceId"), "name": .string("Space"),
+            "description": .string("Id of the space the object lives in; derived."),
+            "kind": .string("string"), "scope": .string("derived"),
+        ])
+        case .type: .object([
+            "id": .string("type"), "name": .string("Type"),
+            "description": .string("Id of the object's type; a definition object carries its marker here."),
+            "kind": .string("string"), "scope": .string("synced"),
+        ])
+        }
+    }
 
-    public init(evidence: AnyDestinationDefinitionEvidence) throws {
-        self.evidence = evidence; ownerID = "any"
+    public init(evidence: AnyDestinationDefinitionEvidence,
+                targetTypeEvidence: AnyDestinationDefinitionEvidence? = nil) throws {
+        self.evidence = evidence; self.targetTypeEvidence = targetTypeEvidence; ownerID = "any"
         switch Data(evidence.snapshot.uniqueKey.utf8) {
         case Data("rel-name".utf8): propertyID = "name"
         case Data("rel-description".utf8): propertyID = "description"
+        case Data("rel-id".utf8): propertyID = "id"
+        case Data("rel-spaceId".utf8): propertyID = "spaceId"
+        case Data("rel-type".utf8): propertyID = "type"
         default: throw AnyDestinationMigrationError.invalidPlan("unknown canonical property identity")
         }
         let required = try Self.specification(propertyID)
@@ -96,11 +121,30 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
     }
     var expectedNativeDescriptor: AnyJSON { get throws { try Self.specification(propertyID).descriptor } }
 
-    private static func specification(_ propertyID: String) throws ->
-        (contract: String, descriptor: AnyJSON, sourceFormat: Int64, sourceName: String, sourceDescription: String) {
+    private struct Specification {
+        let contract: String
+        let descriptor: AnyJSON
+        let sourceFormat: Int64
+        let sourceName: String
+        let sourceDescription: String
+        let sourceReadonly: Bool
+        let targetTypeUniqueKey: String?
+    }
+    private static func specification(_ propertyID: String) throws -> Specification {
         switch propertyID {
-        case "name": return (contract, nativeDescriptor, 1, "Name", "Name of the object")
-        case "description": return (descriptionContract, nativeDescriptionDescriptor, 0, "Description", "")
+        case "name": return .init(contract: contract, descriptor: nativeDescriptor, sourceFormat: 1,
+            sourceName: "Name", sourceDescription: "Name of the object", sourceReadonly: false, targetTypeUniqueKey: nil)
+        case "description": return .init(contract: descriptionContract, descriptor: nativeDescriptionDescriptor, sourceFormat: 0,
+            sourceName: "Description", sourceDescription: "", sourceReadonly: false, targetTypeUniqueKey: nil)
+        case "id": return .init(contract: "pinkha-native-any-self-identity-v1", descriptor: nativeIdentityDescriptor(.id),
+            sourceFormat: 100, sourceName: "Anytype ID", sourceDescription: "Link to itself. Used in databases",
+            sourceReadonly: false, targetTypeUniqueKey: nil)
+        case "spaceId": return .init(contract: "pinkha-native-any-space-identity-v1", descriptor: nativeIdentityDescriptor(.spaceId),
+            sourceFormat: 100, sourceName: "Space ID", sourceDescription: "Space belongs to",
+            sourceReadonly: true, targetTypeUniqueKey: "ot-space")
+        case "type": return .init(contract: "pinkha-native-any-type-membership-v1", descriptor: nativeIdentityDescriptor(.type),
+            sourceFormat: 100, sourceName: "Object type", sourceDescription: "Relation that stores the object's type",
+            sourceReadonly: true, targetTypeUniqueKey: "ot-objectType")
         default: throw AnyDestinationMigrationError.invalidPlan("unknown canonical property identity")
         }
     }
@@ -110,9 +154,8 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
               nativeDescriptorSHA256 == (try AnyDestinationDefinitionChecks.digest(required.descriptor)),
               row.nativeType == 521, Data(row.uniqueKey.utf8) == Data(("rel-" + propertyID).utf8),
               d["relationKey"] == .string(propertyID), d["relationFormat"] == .integer(required.sourceFormat),
-              d["relationMaxCount"] == .integer(1), d["relationReadonlyValue"] == .bool(false),
+              d["relationMaxCount"] == .integer(1), d["relationReadonlyValue"] == .bool(required.sourceReadonly),
               d["relationDefaultValue"] == .null, d["relationFormatIncludeTime"] == .bool(false),
-              d["relationFormatObjectTypes"] == .array([]),
               d["name"] == .string(required.sourceName), d["description"] == .string(required.sourceDescription),
               d["isArchived"] == nil || d["isArchived"] == .bool(false),
               d["isHidden"] == nil || d["isHidden"]?.bool != nil,
@@ -122,13 +165,34 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
         guard Set(d.keys).isSubset(of: AnyDestinationDefinitionChecks.nameDetailFields) else {
             throw AnyDestinationMigrationError.invalidPlan("unknown canonical native property semantics")
         }
+        if let expected = required.targetTypeUniqueKey {
+            guard let target = targetTypeEvidence,
+                  Data(target.sourceSpaceID.utf8) == Data(evidence.sourceSpaceID.utf8),
+                  target.snapshot.nativeType == 528,
+                  Data(target.snapshot.uniqueKey.utf8) == Data(expected.utf8), target.snapshot.issues.isEmpty,
+                  let values = d["relationFormatObjectTypes"]?.array, values.count == 1,
+                  values[0].string.map({ Data($0.utf8) }) == Data(target.sourceObjectID.utf8) else {
+                throw AnyDestinationMigrationError.invalidPlan("canonical system relation target Type")
+            }
+        } else {
+            guard targetTypeEvidence == nil, d["relationFormatObjectTypes"] == .array([]) else {
+                throw AnyDestinationMigrationError.invalidPlan("unexpected canonical relation target Type")
+            }
+        }
+    }
+    func requireSource(_ source: AnyDestinationSourceBinding, objectID: String) throws {
+        try evidence.requireSource(source, objectID: objectID)
+        if let targetTypeEvidence {
+            try targetTypeEvidence.requireSource(source, objectID: targetTypeEvidence.sourceObjectID)
+        }
     }
     private enum CodingKeys: String, CodingKey {
-        case evidence, ownerID, propertyID, nativeContract, nativeDescriptorSHA256
+        case evidence, targetTypeEvidence, ownerID, propertyID, nativeContract, nativeDescriptorSHA256
     }
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         evidence = try c.decode(AnyDestinationDefinitionEvidence.self, forKey: .evidence)
+        targetTypeEvidence = try c.decodeIfPresent(AnyDestinationDefinitionEvidence.self, forKey: .targetTypeEvidence)
         ownerID = try c.decode(String.self, forKey: .ownerID)
         propertyID = try c.decode(String.self, forKey: .propertyID)
         nativeContract = try c.decode(String.self, forKey: .nativeContract)

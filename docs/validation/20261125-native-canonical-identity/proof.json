@@ -1,0 +1,204 @@
+{
+  "actualCold": {
+    "coldSyncStatus": {
+      "globalPeers": 0,
+      "localPeers": 0,
+      "networkPeers": 0,
+      "p2p": "notpossible",
+      "state": "offline"
+    },
+    "executed": 1,
+    "failed": 0,
+    "nativeProcess": {
+      "exitCode": 0,
+      "forcedKill": false,
+      "name": "cold-offline-native",
+      "offline": true,
+      "pid": 25604
+    },
+    "offlinePolicy": {
+      "baselineListenerReachable": true,
+      "controls": {
+        "tcpDenied": true,
+        "tcpErrno": 1,
+        "udpDenied": true,
+        "udpErrno": 1
+      },
+      "sha256": "e210de323e5d671bb6b63b79ce1481f8314b5ac2fd65d65a180d381294ee2fa1"
+    },
+    "originalExecuteNativePID": 5276,
+    "originalLogSHA256": "fee2c84145408445fbf627c7c50a9abc6b499c4f53eaece8f791ed03e33e0f43",
+    "overallControllerStatus": "PASS",
+    "overallSwiftCommandExit": 0,
+    "passed": 1,
+    "retainedXCTestRunnerSHA256": "91f59a40e81469001e12ad7d24f0f0a1d917a8e619d32f2e889c9938dfb862c5",
+    "seconds": 37.883,
+    "skipped": 0
+  },
+  "actualExecute": {
+    "executed": 1,
+    "failed": 0,
+    "method": "AnyDestinationNativeIdentityTests.testActualCanonicalIdentityDescriptorsAndColdReopen",
+    "originalLogSHA256": "6a34d0b885140dde5c6196f21c5190b315d2b4640e0001592b5890c7ee72fe23",
+    "overallControllerStatus": "FAIL",
+    "overallSwiftCommandExit": 1,
+    "passed": 1,
+    "seconds": 59.458,
+    "separateInfrastructureFailure": "secondary Swift Testing runner spawn could not resolve recreated /tmp cache path",
+    "skipped": 0
+  },
+  "attempts": [
+    {
+      "error": "actual Swift native phase failed",
+      "errorType": "AssertionError",
+      "originalResultSHA256": "9c42be9188d7b3a57309ad58184a15ebf43f4c192693ee929cb49c3c6166153a",
+      "phases": [
+        {
+          "exitCode": 1,
+          "logSHA256": "6a34d0b885140dde5c6196f21c5190b315d2b4640e0001592b5890c7ee72fe23",
+          "nativePID": 5276,
+          "phase": "execute",
+          "result": "RUNNING",
+          "seconds": 72.071,
+          "sourceUnchanged": true,
+          "testPID": 1626852
+        }
+      ],
+      "reinterpretedAsPass": false,
+      "root": "/mnt/development/projects/evidence/migration-final-20261125/native-canonical-identity/attempt1",
+      "status": "FAIL"
+    },
+    {
+      "error": "native process controller ended before phase readiness",
+      "errorType": "RuntimeError",
+      "originalResultSHA256": "7d89075451b0e3ccddbe4ee4000e21900e686106671fe4e4ac9f45c04789eb62",
+      "phases": [
+        {
+          "phase": "reopen",
+          "result": "RUNNING"
+        }
+      ],
+      "reinterpretedAsPass": false,
+      "root": "/mnt/development/projects/evidence/migration-final-20261125/native-canonical-identity/cold-continuation1",
+      "status": "FAIL"
+    },
+    {
+      "error": "native process controller ended before phase readiness",
+      "errorType": "RuntimeError",
+      "originalResultSHA256": "fce5eb760bfd365818d97623dd1404f650c37c83ba710ac114ffc82ca06f357f",
+      "phases": [
+        {
+          "phase": "reopen",
+          "result": "RUNNING"
+        }
+      ],
+      "reinterpretedAsPass": false,
+      "root": "/mnt/development/projects/evidence/migration-final-20261125/native-canonical-identity/cold-continuation2",
+      "status": "FAIL"
+    },
+    {
+      "error": "actual Swift native phase failed",
+      "errorType": "AssertionError",
+      "originalResultSHA256": "efbf48f87995584706e602c956ed02dd5fc7daad3fd878ff2070cffa3ed776bf",
+      "phases": [
+        {
+          "exitCode": 1,
+          "logSHA256": "7e79bb2a46e2c5bc4c767e0c705fbb25b574a919f3516848c5f6fd07fa97075a",
+          "nativePID": 22384,
+          "phase": "reopen",
+          "result": "RUNNING",
+          "seconds": 15.867,
+          "sourceUnchanged": true,
+          "testPID": 1662643
+        }
+      ],
+      "reinterpretedAsPass": false,
+      "root": "/mnt/development/projects/evidence/migration-final-20261125/native-canonical-identity/cold-scoped-continuation1",
+      "status": "FAIL"
+    },
+    {
+      "error": null,
+      "errorType": null,
+      "originalResultSHA256": "dafd3eb2e1e03fc0fd5c66c5a491118e405231670d3a74b11a93d4d70b7b89f6",
+      "phases": [
+        {
+          "exitCode": 0,
+          "logSHA256": "fee2c84145408445fbf627c7c50a9abc6b499c4f53eaece8f791ed03e33e0f43",
+          "nativePID": 25604,
+          "phase": "reopen",
+          "result": "PASS",
+          "seconds": 40.879,
+          "sourceUnchanged": true,
+          "testPID": 1671415
+        }
+      ],
+      "reinterpretedAsPass": false,
+      "root": "/mnt/development/projects/evidence/migration-final-20261125/native-canonical-identity/cold-retained-continuation1",
+      "status": "PASS"
+    }
+  ],
+  "checks": [
+    "all three original canonical identity relation mappings compared with genuine target native descriptors",
+    "one explicit component type and two objects through prepared destination executor",
+    "three operation full destination verification and idempotent reconciliation",
+    "record id, spaceId and type equal actual allocated native identities",
+    "no shadow any.id or any.spaceId properties",
+    "exact query uniqueness for both created objects",
+    "same observations after new process and real OS outbound denial",
+    "same private journal and plan; no creation or write phase replay"
+  ],
+  "controls": {
+    "Tools/AnyEngineValidation/native_canonical_identity/resume_native_identity_cold_process.py": "315f652393a87c3215e52dfd547768d8cf203a96b1c4d55171cc1faa06e908a1",
+    "Tools/AnyEngineValidation/native_canonical_identity/resume_native_identity_cold_process_scoped.py": "12813f9760cba1b66ead0c6ca18e780b211900c66249062976cf99402b4dce31",
+    "Tools/AnyEngineValidation/native_canonical_identity/resume_native_identity_cold_roundtrip.py": "8ce4d7eaa273fe61ac9c25f4d23146a5edb35a10c29663119df7e8107fb57627",
+    "Tools/AnyEngineValidation/native_canonical_identity/resume_native_identity_cold_roundtrip_retained.py": "d814b0d0bb7dbc8a8c3ebbf15e76cd9d47d2891098ac61f0297845769dc021f8",
+    "Tools/AnyEngineValidation/native_canonical_identity/resume_native_identity_cold_roundtrip_scoped.py": "acafcda0ce8f43ee7df0570be9ff6f87f839041b8da2eadf3dbf75cc208f7757",
+    "Tools/AnyEngineValidation/native_canonical_identity/run_native_identity_process.py": "3bb3d4a970699a7fbb93781dc162a108d0d57ab734e5dbce64437afdf95e2199",
+    "Tools/AnyEngineValidation/native_canonical_identity/run_native_identity_roundtrip.py": "86a983c1c827731b72cd839511dbc24985be3f1a3c4da3afe8ac34d2b820e83a"
+  },
+  "fileTransportRetested": false,
+  "nativeCLI": {
+    "after": [
+      {
+        "commit": "548f5cd0430a723bd26ea724daeb99991f68b9c9",
+        "files": 874,
+        "unchanged": true
+      },
+      {
+        "commit": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953",
+        "files": 709,
+        "unchanged": true
+      }
+    ],
+    "before": [
+      {
+        "commit": "548f5cd0430a723bd26ea724daeb99991f68b9c9",
+        "files": 874,
+        "unchanged": true
+      },
+      {
+        "commit": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953",
+        "files": 709,
+        "unchanged": true
+      }
+    ],
+    "nodeconfSHA256": "6554bc5841fbef2a1ee6ab65ac3b14a9117dbb762d8cc8d419633c8cd413b060",
+    "sha256": "7f9124991e206657f21a9788b58f65de3ec57e019f425772dd4be6b677f803df",
+    "sourceManifestSHA256": "d33fa2fb166aef89af0047ac23acf5c12fa108baec49566542cccd942a28f460"
+  },
+  "original156": {
+    "canonicalIdentityDetailFieldsPresent": 0,
+    "headRows": 159,
+    "snapshots": 156,
+    "sourceAdmissionPromoted": false,
+    "sourceCaptureOriginalFailurePreserved": true,
+    "trees": 157
+  },
+  "originalPrivateNativeControllerSHA256": "b9ed193ce2f4e6d86657b7caaa06dfe25e93631f3bf66127e9701a843ce73072",
+  "protocol": "pinkha-native-canonical-identity-execute-and-cold-proof-v1",
+  "sourceAdmission": false,
+  "sourceBaseCommit": "81f3409eac03a06b3efc50e8947512df86a7feb1",
+  "status": "PASS_SCOPED_NATIVE_COMPONENT_NOT_WHOLE_SOURCE",
+  "testSourceSHA256": "7e179640bed26e2fdf77d2a37f8c4a936f09a7ecd5ededdc516340b53948f277",
+  "wholeSpaceMigration": false
+}

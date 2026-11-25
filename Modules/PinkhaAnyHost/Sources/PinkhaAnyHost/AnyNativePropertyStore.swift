@@ -116,7 +116,7 @@ public struct AnyNativePropertyCatalog: Sendable {
         // A compiled built-in may legitimately share a literal ID between the
         // type and collection catalogs; their two lists are not disjoint sets.
         self.workspace = workspace; self.generation = generation; self.engineStartedAt = engineStartedAt
-        self.types = types; self.collections = collections
+        self.types = try AnyNativeImportedTypeOrder.arranged(types); self.collections = collections
     }
 }
 

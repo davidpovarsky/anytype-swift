@@ -1,0 +1,33 @@
+{
+  "contract": "pinkha-original-native-bridge-private-retention-v1",
+  "status": "PASS_PRIVATE_SOURCE_RETENTION_ONLY",
+  "capturesAcceptedByRetention": false,
+  "cases": [
+    {
+      "phase": "baseline",
+      "originalResultSHA256": "c8229b594f08446fe1660ff283a740504bd593fe841592b885a04f4f2475d4a9",
+      "originalStatus": "BASELINE_NATIVE_BRIDGE_FAILURE_REPRODUCED",
+      "entries": 56,
+      "bytes": 3095550,
+      "inventorySHA256": "52f54e19c83c182f6ced43aeace1d16fbc6f2fe422d20b5a5222d52000e4a5a3",
+      "archive": "/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/private-source-recovery-retention/baseline-private-source-recovery.tar.gz",
+      "archiveBytes": 612860,
+      "archiveSHA256": "b4263e66cde71f227f181d8e9054e46e9dac4295067b428450b5312c5ce4d012",
+      "sourceBeforeEqualsAfter": true,
+      "allArchivedPathsModesBytesEqual": true
+    },
+    {
+      "phase": "fixed",
+      "originalResultSHA256": "95ce3a2f31d997302bdcac612673de703ce742249c4741071c459956ff9be095",
+      "originalStatus": "PASS_ACTUAL_CORE_BRIDGE_NOT_APP_UI",
+      "entries": 661,
+      "bytes": 5946693,
+      "inventorySHA256": "0d388d4b45737fbd1499114da0c04da529c1b1ce531466b7c9b02aca4a72259f",
+      "archive": "/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/private-source-recovery-retention/fixed-private-source-recovery.tar.gz",
+      "archiveBytes": 1448853,
+      "archiveSHA256": "f16458c364d14ae8c53e6adb374ade639bde6a9485589331323f5300513501ab",
+      "sourceBeforeEqualsAfter": true,
+      "allArchivedPathsModesBytesEqual": true
+    }
+  ]
+}

@@ -6,7 +6,7 @@
     "observedModeOnlyDifferences": 1275,
     "originalSourceEntries": 6307
   },
-  "controllerSHA256": "acf88cd6905b30a440c033a909dc161e9e5e0d4f5cb61807ffcd6916669dac34",
+  "controllerSHA256": "6fdccc68c3e07cc55438a1b65f44684ea2f5eed15933dc30df4cd5673956a479",
   "negativeCases": [
     "truncated",
     "trailing",
@@ -39,13 +39,20 @@
     "verifiedMembers": 313
   },
   "originalReviewedControllerSHA256": "c40e81781a1878d2baa8e974f107a072459b7727f6f9d86e57978b7428956163",
+  "previousControllerSHA256": "acf88cd6905b30a440c033a909dc161e9e5e0d4f5cb61807ffcd6916669dac34",
   "protocol": "pinkha-source-ui-independent-controller-controls-v1",
   "scope": "read-only original156 verifier and negative guards; zero XCTest/native calls",
+  "shutdownContainerAdmission": {
+    "extraAccountFactories": 0,
+    "originalFailure": "CoreSimulator405: Unable to lookup in current state: Shutdown",
+    "originalResolutionLogSHA256": "cdf11e533f2d24827b6bd2b1360e6834a1027f707a9889fff13c35b09a183f03",
+    "postboot": "actual simctl resolution must equal original sealed container",
+    "preboot": "exact original successful resolution plus full live private shutdown inventory"
+  },
   "status": "PASS",
   "unchangedQualifiedFunctionASTs": [
     "verify_bundle",
     "witness_heads",
-    "original_handoff",
     "observation",
     "source_stage"
   ]

@@ -1,0 +1,150 @@
+{
+  "actualSourceCapturePassed": false,
+  "attempts": {
+    "attempt2": {
+      "cleanupStatus": "PASS",
+      "controllerSHA256": "c40e81781a1878d2baa8e974f107a072459b7727f6f9d86e57978b7428956163",
+      "executionSHA256": "875320b7113b0ac8cb92f743eac8ad7e6d94105b29e0d7f1027a863ed43a4beb",
+      "firstFailure": {
+        "message": "APFS retained original products differ",
+        "type": "ValueError"
+      },
+      "nativeCaptureCalls": null,
+      "normalAppLaunches": null,
+      "status": "FAIL",
+      "targetExpressions": null,
+      "tests": {}
+    },
+    "attempt3": {
+      "cleanupStatus": "PASS",
+      "controllerSHA256": "acf88cd6905b30a440c033a909dc161e9e5e0d4f5cb61807ffcd6916669dac34",
+      "executionSHA256": "e9eefc3536cff20f16978d8e032a3cce617b6dc15c07cbd11ae7448615113c17",
+      "firstFailure": {
+        "message": "handoff-container failed: 149",
+        "type": "ValueError"
+      },
+      "nativeCaptureCalls": null,
+      "normalAppLaunches": null,
+      "status": "FAIL",
+      "targetExpressions": null,
+      "tests": {}
+    },
+    "attempt4": {
+      "backupSHA256": "d3700bed6a876f3b2fdc75430b0dd1aad0096e6cb1c5f32d5e1deb5a589b5cbe",
+      "backupStatus": "PASS_PRIVATE_ACCOUNT_BACKUP_NOT_NEW_ACCEPTANCE",
+      "cleanupStatus": "PASS",
+      "controllerSHA256": "6fdccc68c3e07cc55438a1b65f44684ea2f5eed15933dc30df4cd5673956a479",
+      "executionSHA256": "846d2604ed05125b1982dc86a650abf179e85287bd0b99da25f4268f38edf810",
+      "firstFailure": {
+        "message": "Original C actual UI method did not pass within the original fixture deadline",
+        "type": "ValueError"
+      },
+      "nativeCaptureCalls": null,
+      "normalAppLaunches": null,
+      "status": "FAIL",
+      "targetExpressions": null,
+      "tests": {
+        "source-review": {
+          "counts": {
+            "failedTests": 1,
+            "passedTests": 0,
+            "result": "Failed",
+            "skippedTests": 0,
+            "totalTestCount": 1
+          },
+          "originalLogBytes": 9286,
+          "originalLogSHA256": "1f25a422eecf038299a7e9d754f9b97532982bf98296a617c96feece92611204",
+          "selector": "PinkhaStage1AcceptanceUITests/HeartSourceCaptureAcceptanceUITests/testActualHeartSourceReviewCloseAndRecapture",
+          "status": "FAIL",
+          "summarySHA256": "f160472b802b1f0999e98181ca653b5641ad5825c4c9485e362524cedff6a860"
+        }
+      }
+    },
+    "attempt5": {
+      "backupSHA256": "1e2a0cff07efad347e285df8aac8f20e9d566324d14b35265c84ebd6c2809978",
+      "backupStatus": "PASS_PRIVATE_ACCOUNT_BACKUP_NOT_NEW_ACCEPTANCE",
+      "cleanupStatus": "PASS",
+      "controllerSHA256": "1eafea475365f2f6cd058d75bb19aeee9c5cf72bca5a57a0171338d2c9ee174f",
+      "executionSHA256": "c0bd2054cd57fae5ee0341b044125e871068a9118f364feffb94dfe51509256c",
+      "firstFailure": {
+        "message": "Original C actual UI method did not pass within the original fixture deadline",
+        "type": "ValueError"
+      },
+      "nativeCaptureCalls": null,
+      "normalAppLaunches": null,
+      "status": "FAIL",
+      "targetExpressions": null,
+      "tests": {
+        "source-review": {
+          "counts": {
+            "failedTests": 1,
+            "passedTests": 0,
+            "result": "Failed",
+            "skippedTests": 0,
+            "totalTestCount": 1
+          },
+          "originalLogBytes": 9363,
+          "originalLogSHA256": "53136cb72b89dfdfc3c6a3222c5dbe6726bf81059bea9ce7c187c3933910b6d3",
+          "selector": "PinkhaStage1AcceptanceUITests/HeartSourceCaptureAcceptanceUITests/testActualHeartSourceReviewCloseAndRecapture",
+          "status": "FAIL",
+          "summarySHA256": "8a141b21c9504a03b6893be2d1e59c30bef2112dc55563c7c589e79aa19f3c6f"
+        }
+      }
+    },
+    "hit-test-diagnostic1": {
+      "cleanupStatus": "FAIL",
+      "controllerSHA256": "048d7fddfc6769d4dce30523803339b9d0479aab14c9584f8360d6f5f70c4f2a",
+      "executionSHA256": "e89316a110ea9867ab48fe7da622a6c6ab88ecf07359a132bb27ba4ae3408e88",
+      "firstFailure": {
+        "message": "Delegated simulator identity or state differs",
+        "type": "ValueError"
+      },
+      "nativeCaptureCalls": 0,
+      "normalAppLaunches": 0,
+      "status": "DIAGNOSTIC_CLEANUP_FAILED_NOT_ACCEPTANCE",
+      "targetExpressions": 0,
+      "tests": {}
+    }
+  },
+  "missingOwnedDevice": {
+    "deviceRootExists": false,
+    "matchingRows": 0,
+    "noBootCommand": true,
+    "originalListSHA256": "292a9c552a2a1134f889edff2aeaa9f338d921a27be05094faf88294f43cb43e"
+  },
+  "originals": {},
+  "protocol": "pinkha-source-ui-original-results-v1",
+  "retainedBackupScopes": {
+    "application-data": {
+      "entries": 153,
+      "manifestSHA256": "927224c4464c1e8063fbd554df600adc677290874bbe5571f166146021caf7fb",
+      "regularBytes": 20095353,
+      "status": "REVERIFIED_COPY_BYTES_AND_MODES"
+    },
+    "device-preferences": {
+      "entries": 202,
+      "manifestSHA256": "8fd897cdd4a8538c095ae7ed4d7dc2d3a54c193135dbd258b296132c6671543c",
+      "regularBytes": 129780,
+      "status": "REVERIFIED_COPY_BYTES_AND_MODES"
+    },
+    "keychains": {
+      "entries": 10,
+      "manifestSHA256": "01ff65ff8101a1e9c8a696ca00bf557d88063d31e0c17940802182f7a7d9850f",
+      "regularBytes": 4949976,
+      "status": "REVERIFIED_COPY_BYTES_AND_MODES"
+    },
+    "shared-app-groups": {
+      "entries": 512,
+      "manifestSHA256": "65bf8688d058c372646ab03442de36c1805ea57a2b4a65e72185394d1f0b2f78",
+      "regularBytes": 6056967,
+      "status": "REVERIFIED_COPY_BYTES_AND_MODES"
+    }
+  },
+  "sourceOnlyQualificationExecutionSHA256": "f026139909d28ee228643ea9e3434a029bb786c7dac1fdee2fed36f2629f98cf",
+  "uiOnlyProducer": {
+    "appSourceCommit": "ca7cb16f91c3d5fc4f7c8c178369abc9276e9a07",
+    "receiptSHA256": "2f472450f34b694e87ef1250996af6bc2a2fe8474bb76dc702ffd6209442de83",
+    "sourceCommit": "f6d3c9e14a38c2c039ad15fbcc3f85941ea05e31"
+  },
+  "wholeSpaceMigration": false
+}

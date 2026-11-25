@@ -1,0 +1,808 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild build-for-testing -project /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj -scheme PinkhaPrebuiltUI -configuration Debug-Anytype -destination "generic/platform=iOS Simulator" -derivedDataPath /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived -resultBundlePath /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/evidence/UI.xcresult -jobs 2 "OTHER_SWIFT_FLAGS=$(inherited) -D DEBUG -D PINKHA_DUAL_ENGINE_RUNTIME -D PINKHA_NATIVE_DERIVED -D PINKHA_NATIVE_T5_LOOKUP_V1 -D PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 -D PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1" ENABLE_TESTABILITY=YES ONLY_ACTIVE_ARCH=YES ARCHS=arm64 SWIFT_OPTIMIZATION_LEVEL=-Onone CODE_SIGN_IDENTITY=- CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=YES PROVISIONING_PROFILE_SPECIFIER=
+
+Build settings from command line:
+    ARCHS = arm64
+    CODE_SIGN_IDENTITY = -
+    CODE_SIGNING_ALLOWED = YES
+    CODE_SIGNING_REQUIRED = YES
+    ENABLE_TESTABILITY = YES
+    ONLY_ACTIVE_ARCH = YES
+    OTHER_SWIFT_FLAGS = $(inherited) -D DEBUG -D PINKHA_DUAL_ENGINE_RUNTIME -D PINKHA_NATIVE_DERIVED -D PINKHA_NATIVE_T5_LOOKUP_V1 -D PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 -D PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+    PROVISIONING_PROFILE_SPECIFIER = 
+    SWIFT_OPTIMIZATION_LEVEL = -Onone
+
+Writing result bundle at path:
+	/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/evidence/UI.xcresult
+
+Build Preparation
+Build task concurrency set to 2 via user default IDEBuildOperationMaxNumberOfConcurrentCompileTasks
+
+note: Using codesigning identity override: -
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'PinkhaStage1AcceptanceUITests' in project 'PinkhaPrebuiltUI' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: ca05833fd92360be7ab95149a16f29ba
+Build description path: /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/XCBuildData/ca05833fd92360be7ab95149a16f29ba.xcbuilddata
+CreateBuildDirectory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/ModuleCache.noindex
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/ModuleCache.noindex
+
+CreateBuildDirectory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/CompilationCache.noindex
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/CompilationCache.noindex
+
+CreateBuildDirectory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products
+
+CreateBuildDirectory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -o /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaPrebuiltUI-220ccddc47fa397c291c1867adb8ae91-VFS-iphonesimulator/all-product-headers.yaml
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaPrebuiltUI-220ccddc47fa397c291c1867adb8ae91-VFS-iphonesimulator/all-product-headers.yaml
+
+CreateBuildDirectory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products/Debug-Anytype-iphonesimulator
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products/Debug-Anytype-iphonesimulator
+
+CreateBuildDirectory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PrecompiledHeaders
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PrecompiledHeaders
+
+CreateBuildDirectory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/ExplicitPrecompiledModules
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-Anytype-iphonesimulator
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-Anytype-iphonesimulator
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/empty-PinkhaStage1AcceptanceUITests.plist (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/empty-PinkhaStage1AcceptanceUITests.plist
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/ProductTypeInfoPlistAdditions.plist (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/ProductTypeInfoPlistAdditions.plist
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests.hmap (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests.hmap
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests.DependencyStaticMetadataFileList (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests.DependencyMetadataFileList (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-project-headers.hmap (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-project-headers.hmap
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-own-target-headers.hmap (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-generated-files.hmap (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-generated-files.hmap
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-all-target-headers.hmap (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-all-non-framework-target-headers.hmap (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests_const_extract_protocols.json (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests.SwiftFileList (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests.SwiftFileList
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests.SwiftConstValuesFileList (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests.LinkFileList (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests.LinkFileList
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests-OutputFileMap.json (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/DerivedSources/Entitlements-Simulated.plist (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    write-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/DerivedSources/Entitlements-Simulated.plist
+
+MkDir /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app/PlugIns/PinkhaStage1AcceptanceUITests.xctest (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    /bin/mkdir -p /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app/PlugIns/PinkhaStage1AcceptanceUITests.xctest
+
+ProcessProductPackaging "" /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests.xctest-Simulated.xcent (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    
+    Entitlements:
+    
+    {
+    "application-identifier" = "NA6HPWARQ2.com.gloiiire.PinkhaStage1AcceptanceUITests.xctrunner";
+    "keychain-access-groups" =     (
+        "NA6HPWARQ2.com.gloiiire.PinkhaStage1AcceptanceUITests.xctrunner"
+    );
+}
+    
+    builtin-productPackagingUtility -entitlements -format xml -o /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests.xctest-Simulated.xcent
+
+ProcessProductPackagingDER /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests.xctest-Simulated.xcent /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests.xctest-Simulated.xcent.der (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    /usr/bin/derq query -f xml -i /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests.xctest-Simulated.xcent -o /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests.xctest-Simulated.xcent.der --raw
+
+ProcessInfoPlistFile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app/PlugIns/PinkhaStage1AcceptanceUITests.xctest/Info.plist /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/empty-PinkhaStage1AcceptanceUITests.plist (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    builtin-infoPlistUtility /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/empty-PinkhaStage1AcceptanceUITests.plist -producttype com.apple.product-type.bundle.ui-testing -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/ProductTypeInfoPlistAdditions.plist -o /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app/PlugIns/PinkhaStage1AcceptanceUITests.xctest/Info.plist
+
+SwiftDriver PinkhaStage1AcceptanceUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name PinkhaStage1AcceptanceUITests -Onone @/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests.SwiftFileList -module-alias Testing\=_Testing_Unavailable -D DEBUG -D PINKHA_DUAL_ENGINE_RUNTIME -D PINKHA_NATIVE_DERIVED -D PINKHA_NATIVE_T5_LOOKUP_V1 -D PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 -D PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1 -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Index.noindex/DataStore -swift-version 6 -I /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products/Debug-Anytype-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products/Debug-Anytype-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/ModuleCache.noindex -sdk-module-cache-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-generated-files.hmap -Xcc -I/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-own-target-headers.hmap -Xcc -I/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-project-headers.hmap -Xcc -I/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products/Debug-Anytype-iphonesimulator/include -Xcc -I/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/DerivedSources-normal/arm64 -Xcc -I/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/DerivedSources/arm64 -Xcc -I/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/DerivedSources -emit-objc-header -emit-objc-header-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests-Swift.h -working-directory /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_AvailabilityInternal-F0TW5JYSJ8WH6XXWKMIJT1ENF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/DeveloperToolsSupport-59DARL1RW0SIJOIEO839Q5NDV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_Builtin_stdbool-DEVGNJA4907IE0CF7TFUXUELD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_SwiftConcurrencyShims-F3C7YJNTIEHWKZRKN49ULJWH1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_Builtin_stddef-4WGEZHHAFOIUBVG4W2FB81MQF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/SwiftShims-FDS6X4EEY0JCM3KTK6EW5BN2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/ptrcheck-DVN37FQU2KI8JO0NDA6JBX6ZY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_Builtin_stdarg-43VCXBO94TY9H4X5LWF8WV94Z.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_Builtin_float-5PYU3HCXJOM0KG0NICQS18AYC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/ptrauth-6E5UCLM9OAQYYVO7WGC35KR9F.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_DarwinFoundation1-BX6ZHA8Z5I7QNJJB08NYDJXX6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_Builtin_limits-7Y6ZL7SMRG4BSJKY4227TTEGZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_DarwinFoundation2-CONVT3QDFH4GJ497JBP48G3G6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/string_h-2X4K7IDHTAEYIO16SI9LSYEU6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_Builtin_stdint-AEQOD4HKPN7W5AJZAOTJJLM16.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/sys_types-43W3JOBPUC4EL7DGA6UI46FU2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_Builtin_intrinsics-95W39ZKCN831ZOYS0RT5N1EMJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_Builtin_tgmath-4YEFDR6LTKPFRYOPGC1BZ8IFI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_Builtin_stdatomic-APJWR7BF26ZIOJ1DYMBSGO290.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_DarwinFoundation3-6GYDU69OBPOS24DLV11QBK08B.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/simd-CT4WPDLITEO38ZVU8GRSCNEIH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_Builtin_inttypes-BVLWWNVI0IMPOI00HMSPA7V92.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/Darwin-65XX5A9Z3P53QTD4G8U421P6M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/Spatial-7M7LDXRIUJHM9UPCI88EFG3UJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/ObjectiveC-16PGT9E8YUPPN9B7UDSC3QZC9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/MachO-EYKFYUGFFIV57O7J68L455PPN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/os_object-CPQ7AUVCK49Z51WX5WWVM9A1Z.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/os_workgroup-3TDFDJXD9KTEC1DGPPW9TCTH9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/Dispatch-4K24PKI6LVVE73DL57POJR27.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/XPC-2P349HV4V8BL4LKTTNEARX86M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/CoreFoundation-9P47UXIZP6KER1DMEWN8P7IIN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/os-6EHYBV6H94OBR4MZOFIU43AFF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/CoreGraphics-72FP66P526NJ9P4VB47YT07O9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/Security-55X2LTQG9LJPM1BIAJ30G784W.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/CFNetwork-3OIOEF8KWDQETN0X41DV0ZL2Q.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/CoreText-U4INNAF9AFSVEXAI6OKRRMHS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/ImageIO-DGH3SRZ54WCPSE8IIV4OFUKRH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/Foundation-8RL9U0NRQCKW8C33NYSH608VX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/Symbols-8MNRZXLW7JGF6OVZJ99OWW0GY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/FileProvider-9L4WCQTXKVAEQTZ6EY0AEBQBQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/UniformTypeIdentifiers-5ULH4IUK8AO53NV3C8B6MKCJX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/LocalAuthentication-DCVXTZQZ19TTLZ2LV0FAZZQRQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/IOSurface-26099GIXO5UV6CPGELWDK78US.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/Accessibility-6OPXESSH198KYM55KHA1BSCVA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/OSLog-DETVPFFT2DK05V1E3ABVWLYD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/Metal-6MV08OBR0BUNY6FMAQWXFW0LY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/OpenGLES-9Y45WZFLRCNO5F5CXCFIJ7QEI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/_LocationEssentials-7BUC6GYSJ2UDQENPGUSXGJMW3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/CoreTransferable-4UBVZ5X556NH1RXNKNXJ0L47M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/CoreVideo-2B184KRKDLOQ1ZKMKYJ51Q0X5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/DataDetection-2RU8F0J14GQWVHV5AUWCQUF2V.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/CoreLocation-6GVJCCFPE9X1N9UJK45V2FP71.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/UIUtilities-E7J5MQBZ83SLI6I89VNQQ4ZHE.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/QuartzCore-AQGOGUF6M3K10UQ1SYSHG9TFG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/CoreImage-ANS4CYF8SOG92NR3WOAY381CT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/CoreMotion-8EK4H3QSHRO1VOZC0V6PF4HKE.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/SwiftUICore-4ITWOTODE9JWVTQKWAQG7VLHW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/UserNotifications-4RLGDY8LIK442UEPW8CQKXWQH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules/UIKit-5XDVE3FHU1K68RPU9QNLGNJ2Q.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCUIAutomation-6926ZKTDD6QROUX7E411SJ7L6.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCUIAutomation-3NHCBWT7B7D84.swiftmodule
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCTest-ECBXAQMBQACVTW0C71BRJXH4D.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCTest-NR2XEH4X0W1S.swiftmodule
+
+SwiftCompile normal arm64 Compiling\ AnytypeComprehensiveAcceptanceUITests.swift /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+
+SwiftCompile normal arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    builtin-SwiftPerFileCompile AnytypeComprehensiveAcceptanceUITests.swift
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift:23:9: warning: main actor-isolated property 'fixture' can not be mutated from a nonisolated context
+ 12 |     private static var readyPID: Int?
+ 13 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 14 |     private var fixture: Fixture!
+    |                 `- note: mutation of this property is only permitted within the actor
+ 15 | 
+ 16 |     override func setUpWithError() throws {
+    :
+ 21 |         }
+ 22 |         let json = try XCTUnwrap(env["PINKHA_NATIVE_UI_FIXTURE_JSON"])
+ 23 |         fixture = try JSONDecoder().decode(Fixture.self, from: Data(json.utf8))
+    |         `- warning: main actor-isolated property 'fixture' can not be mutated from a nonisolated context
+ 24 |         XCTAssertFalse(fixture.spaceId.isEmpty)
+ 25 |         XCTAssertFalse(try XCTUnwrap(fixture.universalDocuments["page"]).isEmpty)
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift:24:24: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated autoclosure
+ 12 |     private static var readyPID: Int?
+ 13 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 14 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 15 | 
+ 16 |     override func setUpWithError() throws {
+    :
+ 22 |         let json = try XCTUnwrap(env["PINKHA_NATIVE_UI_FIXTURE_JSON"])
+ 23 |         fixture = try JSONDecoder().decode(Fixture.self, from: Data(json.utf8))
+ 24 |         XCTAssertFalse(fixture.spaceId.isEmpty)
+    |                        `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated autoclosure
+ 25 |         XCTAssertFalse(try XCTUnwrap(fixture.universalDocuments["page"]).isEmpty)
+ 26 |     }
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ PinkhaStage1AcceptanceUITests (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+
+SwiftCompile normal arm64 (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    
+
+SwiftCompile normal arm64 Compiling\ HeartSourceCaptureAcceptanceUITests.swift /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:29:9: warning: main actor-isolated property 'fixture' can not be mutated from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: mutation of this property is only permitted within the actor
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 27 |               let handoff = env["PINKHA_HEART_SOURCE_CAPTURE_HANDOFF_SHA256"],
+ 28 |               Self.isDigest(handoff) else { throw Failure.admission("owned-fixture-handoff") }
+ 29 |         fixture = try JSONDecoder().decode(Fixture.self, from: Data(raw.utf8))
+    |         `- warning: main actor-isolated property 'fixture' can not be mutated from a nonisolated context
+ 30 |         fixtureSHA256 = SHA256.hash(data: Data(raw.utf8)).map { String(format: "%02x", $0) }.joined()
+ 31 |         guard fixtureSHA256 == env["PINKHA_HEART_SOURCE_CAPTURE_FIXTURE_SHA256"],
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:30:9: warning: main actor-isolated property 'fixtureSHA256' can not be mutated from a nonisolated context
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+ 12 |     private var fixtureSHA256 = ""
+    |                 `- note: mutation of this property is only permitted within the actor
+ 13 |     private var handoffSHA256 = ""
+ 14 |     private var deadline: TimeInterval = 0
+    :
+ 28 |               Self.isDigest(handoff) else { throw Failure.admission("owned-fixture-handoff") }
+ 29 |         fixture = try JSONDecoder().decode(Fixture.self, from: Data(raw.utf8))
+ 30 |         fixtureSHA256 = SHA256.hash(data: Data(raw.utf8)).map { String(format: "%02x", $0) }.joined()
+    |         `- warning: main actor-isolated property 'fixtureSHA256' can not be mutated from a nonisolated context
+ 31 |         guard fixtureSHA256 == env["PINKHA_HEART_SOURCE_CAPTURE_FIXTURE_SHA256"],
+ 32 |               fixture.sourceSHA.count == 40, fixture.preparationProcessID > 0,
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:31:15: warning: main actor-isolated property 'fixtureSHA256' can not be referenced from a nonisolated context
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+ 12 |     private var fixtureSHA256 = ""
+    |                 `- note: property declared here
+ 13 |     private var handoffSHA256 = ""
+ 14 |     private var deadline: TimeInterval = 0
+    :
+ 29 |         fixture = try JSONDecoder().decode(Fixture.self, from: Data(raw.utf8))
+ 30 |         fixtureSHA256 = SHA256.hash(data: Data(raw.utf8)).map { String(format: "%02x", $0) }.joined()
+ 31 |         guard fixtureSHA256 == env["PINKHA_HEART_SOURCE_CAPTURE_FIXTURE_SHA256"],
+    |               `- warning: main actor-isolated property 'fixtureSHA256' can not be referenced from a nonisolated context
+ 32 |               fixture.sourceSHA.count == 40, fixture.preparationProcessID > 0,
+ 33 |               fixture.text == "Anchor", fixture.excludedText == "Unselected " + fixture.nonce,
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:32:15: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 30 |         fixtureSHA256 = SHA256.hash(data: Data(raw.utf8)).map { String(format: "%02x", $0) }.joined()
+ 31 |         guard fixtureSHA256 == env["PINKHA_HEART_SOURCE_CAPTURE_FIXTURE_SHA256"],
+ 32 |               fixture.sourceSHA.count == 40, fixture.preparationProcessID > 0,
+    |               `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 33 |               fixture.text == "Anchor", fixture.excludedText == "Unselected " + fixture.nonce,
+ 34 |               fixture.blockID != fixture.excludedBlockID,
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:32:46: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 30 |         fixtureSHA256 = SHA256.hash(data: Data(raw.utf8)).map { String(format: "%02x", $0) }.joined()
+ 31 |         guard fixtureSHA256 == env["PINKHA_HEART_SOURCE_CAPTURE_FIXTURE_SHA256"],
+ 32 |               fixture.sourceSHA.count == 40, fixture.preparationProcessID > 0,
+    |                                              `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 33 |               fixture.text == "Anchor", fixture.excludedText == "Unselected " + fixture.nonce,
+ 34 |               fixture.blockID != fixture.excludedBlockID,
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:33:15: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 31 |         guard fixtureSHA256 == env["PINKHA_HEART_SOURCE_CAPTURE_FIXTURE_SHA256"],
+ 32 |               fixture.sourceSHA.count == 40, fixture.preparationProcessID > 0,
+ 33 |               fixture.text == "Anchor", fixture.excludedText == "Unselected " + fixture.nonce,
+    |               `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 34 |               fixture.blockID != fixture.excludedBlockID,
+ 35 |               [fixture.accountID, fixture.spaceID, fixture.objectID, fixture.nonce].allSatisfy({
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:33:41: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 31 |         guard fixtureSHA256 == env["PINKHA_HEART_SOURCE_CAPTURE_FIXTURE_SHA256"],
+ 32 |               fixture.sourceSHA.count == 40, fixture.preparationProcessID > 0,
+ 33 |               fixture.text == "Anchor", fixture.excludedText == "Unselected " + fixture.nonce,
+    |                                         `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 34 |               fixture.blockID != fixture.excludedBlockID,
+ 35 |               [fixture.accountID, fixture.spaceID, fixture.objectID, fixture.nonce].allSatisfy({
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:33:81: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 31 |         guard fixtureSHA256 == env["PINKHA_HEART_SOURCE_CAPTURE_FIXTURE_SHA256"],
+ 32 |               fixture.sourceSHA.count == 40, fixture.preparationProcessID > 0,
+ 33 |               fixture.text == "Anchor", fixture.excludedText == "Unselected " + fixture.nonce,
+    |                                                                                 `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 34 |               fixture.blockID != fixture.excludedBlockID,
+ 35 |               [fixture.accountID, fixture.spaceID, fixture.objectID, fixture.nonce].allSatisfy({
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:34:15: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 32 |               fixture.sourceSHA.count == 40, fixture.preparationProcessID > 0,
+ 33 |               fixture.text == "Anchor", fixture.excludedText == "Unselected " + fixture.nonce,
+ 34 |               fixture.blockID != fixture.excludedBlockID,
+    |               `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 35 |               [fixture.accountID, fixture.spaceID, fixture.objectID, fixture.nonce].allSatisfy({
+ 36 |                   !$0.isEmpty && $0.utf8.count <= 4_096 && !$0.contains("\0")
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:34:34: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 32 |               fixture.sourceSHA.count == 40, fixture.preparationProcessID > 0,
+ 33 |               fixture.text == "Anchor", fixture.excludedText == "Unselected " + fixture.nonce,
+ 34 |               fixture.blockID != fixture.excludedBlockID,
+    |                                  `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 35 |               [fixture.accountID, fixture.spaceID, fixture.objectID, fixture.nonce].allSatisfy({
+ 36 |                   !$0.isEmpty && $0.utf8.count <= 4_096 && !$0.contains("\0")
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:35:16: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 33 |               fixture.text == "Anchor", fixture.excludedText == "Unselected " + fixture.nonce,
+ 34 |               fixture.blockID != fixture.excludedBlockID,
+ 35 |               [fixture.accountID, fixture.spaceID, fixture.objectID, fixture.nonce].allSatisfy({
+    |                `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 36 |                   !$0.isEmpty && $0.utf8.count <= 4_096 && !$0.contains("\0")
+ 37 |               }) else { throw Failure.admission("fixture-binding") }
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:35:35: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 33 |               fixture.text == "Anchor", fixture.excludedText == "Unselected " + fixture.nonce,
+ 34 |               fixture.blockID != fixture.excludedBlockID,
+ 35 |               [fixture.accountID, fixture.spaceID, fixture.objectID, fixture.nonce].allSatisfy({
+    |                                   `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 36 |                   !$0.isEmpty && $0.utf8.count <= 4_096 && !$0.contains("\0")
+ 37 |               }) else { throw Failure.admission("fixture-binding") }
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:35:52: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 33 |               fixture.text == "Anchor", fixture.excludedText == "Unselected " + fixture.nonce,
+ 34 |               fixture.blockID != fixture.excludedBlockID,
+ 35 |               [fixture.accountID, fixture.spaceID, fixture.objectID, fixture.nonce].allSatisfy({
+    |                                                    `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 36 |                   !$0.isEmpty && $0.utf8.count <= 4_096 && !$0.contains("\0")
+ 37 |               }) else { throw Failure.admission("fixture-binding") }
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:35:70: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 33 |               fixture.text == "Anchor", fixture.excludedText == "Unselected " + fixture.nonce,
+ 34 |               fixture.blockID != fixture.excludedBlockID,
+ 35 |               [fixture.accountID, fixture.spaceID, fixture.objectID, fixture.nonce].allSatisfy({
+    |                                                                      `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 36 |                   !$0.isEmpty && $0.utf8.count <= 4_096 && !$0.contains("\0")
+ 37 |               }) else { throw Failure.admission("fixture-binding") }
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:38:9: warning: main actor-isolated property 'deadline' can not be mutated from a nonisolated context
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+ 14 |     private var deadline: TimeInterval = 0
+    |                 `- note: mutation of this property is only permitted within the actor
+ 15 |     private var launch: [String: String] = [:]
+ 16 | 
+    :
+ 36 |                   !$0.isEmpty && $0.utf8.count <= 4_096 && !$0.contains("\0")
+ 37 |               }) else { throw Failure.admission("fixture-binding") }
+ 38 |         deadline = expiry
+    |         `- warning: main actor-isolated property 'deadline' can not be mutated from a nonisolated context
+ 39 |         handoffSHA256 = handoff
+ 40 |         launch = [
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:39:9: warning: main actor-isolated property 'handoffSHA256' can not be mutated from a nonisolated context
+ 11 |     private var fixture: Fixture!
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    |                 `- note: mutation of this property is only permitted within the actor
+ 14 |     private var deadline: TimeInterval = 0
+ 15 |     private var launch: [String: String] = [:]
+    :
+ 37 |               }) else { throw Failure.admission("fixture-binding") }
+ 38 |         deadline = expiry
+ 39 |         handoffSHA256 = handoff
+    |         `- warning: main actor-isolated property 'handoffSHA256' can not be mutated from a nonisolated context
+ 40 |         launch = [
+ 41 |             "PINKHA_SIMULATOR_UI_DISPOSABLE": "1",
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:40:9: warning: main actor-isolated property 'launch' can not be mutated from a nonisolated context
+ 13 |     private var handoffSHA256 = ""
+ 14 |     private var deadline: TimeInterval = 0
+ 15 |     private var launch: [String: String] = [:]
+    |                 `- note: mutation of this property is only permitted within the actor
+ 16 | 
+ 17 |     override func setUpWithError() throws {
+    :
+ 38 |         deadline = expiry
+ 39 |         handoffSHA256 = handoff
+ 40 |         launch = [
+    |         `- warning: main actor-isolated property 'launch' can not be mutated from a nonisolated context
+ 41 |             "PINKHA_SIMULATOR_UI_DISPOSABLE": "1",
+ 42 |             "PINKHA_SEMANTIC_MOUNTED_UI": "0",
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:46:28: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 44 |         ]
+ 45 |         for (key, value) in [
+ 46 |             ("SOURCE_SHA", fixture.sourceSHA), ("RUN_ID", fixture.runID),
+    |                            `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 47 |             ("RUN_ATTEMPT", fixture.runAttempt), ("NONCE", fixture.nonce)
+ 48 |         ] {
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:46:59: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 44 |         ]
+ 45 |         for (key, value) in [
+ 46 |             ("SOURCE_SHA", fixture.sourceSHA), ("RUN_ID", fixture.runID),
+    |                                                           `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 47 |             ("RUN_ATTEMPT", fixture.runAttempt), ("NONCE", fixture.nonce)
+ 48 |         ] {
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:47:29: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 45 |         for (key, value) in [
+ 46 |             ("SOURCE_SHA", fixture.sourceSHA), ("RUN_ID", fixture.runID),
+ 47 |             ("RUN_ATTEMPT", fixture.runAttempt), ("NONCE", fixture.nonce)
+    |                             `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 48 |         ] {
+ 49 |             guard env["PINKHA_SEMANTIC_MOUNTED_" + key] == value else {
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:47:60: warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+  9 | final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
+ 10 |     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+ 11 |     private var fixture: Fixture!
+    |                 `- note: property declared here
+ 12 |     private var fixtureSHA256 = ""
+ 13 |     private var handoffSHA256 = ""
+    :
+ 45 |         for (key, value) in [
+ 46 |             ("SOURCE_SHA", fixture.sourceSHA), ("RUN_ID", fixture.runID),
+ 47 |             ("RUN_ATTEMPT", fixture.runAttempt), ("NONCE", fixture.nonce)
+    |                                                            `- warning: main actor-isolated property 'fixture' can not be referenced from a nonisolated context
+ 48 |         ] {
+ 49 |             guard env["PINKHA_SEMANTIC_MOUNTED_" + key] == value else {
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:52:13: warning: main actor-isolated property 'launch' can not be mutated from a nonisolated context
+ 13 |     private var handoffSHA256 = ""
+ 14 |     private var deadline: TimeInterval = 0
+ 15 |     private var launch: [String: String] = [:]
+    |                 `- note: mutation of this property is only permitted within the actor
+ 16 | 
+ 17 |     override func setUpWithError() throws {
+    :
+ 50 |                 throw Failure.admission("fixture-" + key)
+ 51 |             }
+ 52 |             launch["PINKHA_SEMANTIC_MOUNTED_" + key] = value
+    |             `- warning: main actor-isolated property 'launch' can not be mutated from a nonisolated context
+ 53 |         }
+ 54 |         app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:54:13: warning: main actor-isolated property 'launchArguments' can not be mutated from a nonisolated context
+ 52 |             launch["PINKHA_SEMANTIC_MOUNTED_" + key] = value
+ 53 |         }
+ 54 |         app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+    |             `- warning: main actor-isolated property 'launchArguments' can not be mutated from a nonisolated context
+ 55 |         XCUIDevice.shared.orientation = .portrait
+ 56 |     }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCUIAutomation.framework/Headers/XCUIApplication.h:93:51: note: mutation of this property is only permitted within the actor
+ 91 |  * is launched.
+ 92 |  */
+ 93 | @property (nonatomic, copy) NSArray <NSString *> *launchArguments;
+    |                                                   `- note: mutation of this property is only permitted within the actor
+ 94 | 
+ 95 | /*!
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:55:27: warning: main actor-isolated property 'orientation' can not be mutated from a nonisolated context
+ 53 |         }
+ 54 |         app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+ 55 |         XCUIDevice.shared.orientation = .portrait
+    |                           `- warning: main actor-isolated property 'orientation' can not be mutated from a nonisolated context
+ 56 |     }
+ 57 | 
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCUIAutomation.framework/Headers/XCUIDevice.h:55:43: note: mutation of this property is only permitted within the actor
+ 53 | #if TARGET_OS_IOS
+ 54 | /*! The orientation of the device. */
+ 55 | @property (nonatomic) UIDeviceOrientation orientation;
+    |                                           `- note: mutation of this property is only permitted within the actor
+ 56 | /*!
+ 57 |  * Provides access to an object representing the Siri interface on the device.
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:55:20: warning: main actor-isolated class property 'shared' can not be mutated from a nonisolated context
+ 53 |         }
+ 54 |         app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+ 55 |         XCUIDevice.shared.orientation = .portrait
+    |                    `- warning: main actor-isolated class property 'shared' can not be mutated from a nonisolated context
+ 56 |     }
+ 57 | 
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCUIAutomation.framework/Headers/XCUIDevice.h:42:41: note: mutation of this class property is only permitted within the actor
+ 40 | 
+ 41 | /*! The current device. */
+ 42 | @property (class, readonly) XCUIDevice *sharedDevice;
+    |                                         `- note: mutation of this class property is only permitted within the actor
+ 43 | 
+ 44 | + (instancetype)new XCUI_UNAVAILABLE("Access XCUIDevice through +sharedDevice");
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:112:16: warning: main actor-isolated property 'state' can not be referenced from a nonisolated context
+110 |         // The independently verified controller retains the entire private account
+111 |         // and captured bundles. Never log out, delete an account or erase a device.
+112 |         if app.state != .notRunning { app.terminate() }
+    |                `- warning: main actor-isolated property 'state' can not be referenced from a nonisolated context
+113 |     }
+114 | 
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCUIAutomation.framework/Headers/XCUIApplication.h:118:43: note: property declared here
+116 |  *      XCUIApplicationStateNotRunning.
+117 |  */
+118 | @property (readonly) XCUIApplicationState state;
+    |                                           `- note: property declared here
+119 | 
+120 | /*!
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:112:43: warning: call to main actor-isolated instance method 'terminate()' in a synchronous nonisolated context [#ActorIsolatedCall]
+110 |         // The independently verified controller retains the entire private account
+111 |         // and captured bundles. Never log out, delete an account or erase a device.
+112 |         if app.state != .notRunning { app.terminate() }
+    |                                           `- warning: call to main actor-isolated instance method 'terminate()' in a synchronous nonisolated context [#ActorIsolatedCall]
+113 |     }
+114 | 
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCUIAutomation.framework/Headers/XCUIApplication.h:84:1: note: calls to instance method 'terminate()' from outside of its actor context are implicitly asynchronous
+ 82 |  * is sent to the process.
+ 83 |  */
+ 84 | - (void)terminate;
+    | `- note: calls to instance method 'terminate()' from outside of its actor context are implicitly asynchronous
+ 85 | 
+ 86 | /*!
+
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:132:48: error: call can throw but is not marked with 'try'
+130 |         // UI; the subsequent source identity and capture assertions are unchanged.
+131 |         let prompt = app.staticTexts["Add a Channel Home?"]
+132 |         guard prompt.waitForExistence(timeout: remaining(5)) else { return }
+    |                                                |- error: call can throw but is not marked with 'try'
+    |                                                |- note: did you mean to use 'try'?
+    |                                                |- note: did you mean to handle error as optional value?
+    |                                                `- note: did you mean to disable error propagation?
+133 |         let dismiss = app.buttons["Not now"]
+134 |         try require(dismiss.exists, "original-channel-home-decline-missing")
+
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HanlinSelectionAcceptanceUITests.swift /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/MiniAppsNativeAcceptanceUITests.swift -primary-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift -emit-dependencies-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/HeartSourceCaptureAcceptanceUITests.d -emit-const-values-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/HeartSourceCaptureAcceptanceUITests.swiftconstvalues -emit-reference-dependencies-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/HeartSourceCaptureAcceptanceUITests.swiftdeps -serialize-diagnostics-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/HeartSourceCaptureAcceptanceUITests.dia -target arm64-apple-ios18.0-simulator -disable-cross-import-overlay-search -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests-dependencies-1.json -Xllvm -aarch64-use-tbi -enable-objc-interop -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -I /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products/Debug-Anytype-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products/Debug-Anytype-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -module-cache-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -swift-version 6 -Onone -D DEBUG -D PINKHA_DUAL_ENGINE_RUNTIME -D PINKHA_NATIVE_DERIVED -D PINKHA_NATIVE_T5_LOOKUP_V1 -D PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 -D PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1 -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -module-alias Testing\=_Testing_Unavailable -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance -enable-anonymous-context-mangled-names -file-compilation-dir /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance -Xcc -ivfsstatcache -Xcc /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -iquote -Xcc /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-generated-files.hmap -Xcc -I/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-own-target-headers.hmap -Xcc -I/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/PinkhaStage1AcceptanceUITests-project-headers.hmap -Xcc -I/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Products/Debug-Anytype-iphonesimulator/include -Xcc -I/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/DerivedSources-normal/arm64 -Xcc -I/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/DerivedSources/arm64 -Xcc -I/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/DerivedSources -no-auto-bridging-header-chaining -module-name PinkhaStage1AcceptanceUITests -const-gather-protocols-file /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests_const_extract_protocols.json -disable-clang-spi -clang-target arm64-apple-ios27.0-simulator -target-sdk-version 27.0 -target-sdk-name iphonesimulator27.0 -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -o /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/HeartSourceCaptureAcceptanceUITests.o -debug-module-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/PinkhaStage1AcceptanceUITests.swiftmodule -index-unit-output-path /PinkhaPrebuiltUI.build/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests.build/Objects-normal/arm64/HeartSourceCaptureAcceptanceUITests.o -index-store-path /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Index.noindex/DataStore -index-system-modules
+
+SwiftCompile normal arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+    cd /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance
+    builtin-SwiftPerFileCompile HeartSourceCaptureAcceptanceUITests.swift
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for PinkhaStage1AcceptanceUITests (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+
+PruneExplicitPrecompiledModules /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+
+Result bundle written to path:
+	/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/evidence/UI.xcresult
+
+** TEST BUILD FAILED **
+
+
+The following build commands failed:
+	SwiftCompile normal arm64 Compiling\ HeartSourceCaptureAcceptanceUITests.swift /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+	SwiftCompile normal arm64 /Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift (in target 'PinkhaStage1AcceptanceUITests' from project 'PinkhaPrebuiltUI')
+	Building project PinkhaPrebuiltUI for testing with scheme PinkhaPrebuiltUI
+(3 failures)

@@ -370,7 +370,34 @@ final class NativeSpaceBundleTests: XCTestCase {
         }
         XCTAssertEqual(bundle.receipt["HasNativeSourceAdmission"], .bool(false))
         XCTAssertEqual(bundle.receipt["PermitsDestinationWrites"], .bool(false))
-        XCTAssertFalse(try AnyHeartNativeDefinitionCatalog(bundle: bundle).permitsDestinationWrites)
+        let catalog = try AnyHeartNativeDefinitionCatalog(bundle: bundle)
+        XCTAssertEqual(catalog.relations.count, 119)
+        XCTAssertEqual(catalog.compiledRelations.count, 6)
+        XCTAssertFalse(catalog.permitsDestinationWrites)
+        for relation in catalog.compiledRelations {
+            XCTAssertNil(catalog.relation(objectID: "_br" + relation.relationKey))
+            XCTAssertEqual(relation.scope, 1)
+            XCTAssertEqual(relation.dataSource, 0)
+            XCTAssertTrue(relation.readonlyDefinition)
+            XCTAssertTrue(relation.hidden)
+            XCTAssertNil(relation.defaultValue)
+            XCTAssertTrue(relation.unknownFields.isEmpty)
+            guard case .compiled(let resolved)? = catalog.resolvedRelation(key: relation.relationKey) else {
+                return XCTFail("Original compiled resolver entry must not become a captured native object")
+            }
+            XCTAssertEqual(resolved.source.protobufBytes, relation.source.protobufBytes)
+            XCTAssertEqual(resolved.source.jsonViewBytes, relation.source.jsonViewBytes)
+        }
+        let homepage = try XCTUnwrap(catalog.compiledRelation(key: "homepage"))
+        XCTAssertEqual(homepage.format, .longText)
+        XCTAssertEqual(homepage.maximumCount, 1)
+        XCTAssertFalse(homepage.readonlyValue)
+        let layout = try XCTUnwrap(catalog.compiledRelation(key: "headerRelationsLayout"))
+        XCTAssertEqual(layout.format, .number)
+        XCTAssertEqual(layout.revision, 1)
+        XCTAssertTrue(try XCTUnwrap(catalog.compiledRelation(key: "analyticsSpaceId")).readonlyValue)
+        XCTAssertEqual(try XCTUnwrap(catalog.compiledRelation(key: "relationFormatIncludeTime")).format, .checkbox)
+        XCTAssertThrowsError(try AnyHeartNativeDefinitionPlan(catalog: catalog).admittedSchemaItems())
         XCTAssertEqual(try bytes("manifest.json", under: directory), manifest)
         print("ACTUAL_NATIVE_COMPILED_CAPTURE snapshots=143 trees=144 descriptors=6 original_members=299 destination_admission=false")
     }

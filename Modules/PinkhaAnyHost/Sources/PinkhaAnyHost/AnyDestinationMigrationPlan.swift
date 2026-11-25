@@ -429,7 +429,7 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
                 try AnyDestinationDefinitionChecks.embeddedOption(evidence, descriptorSHA256: descriptorSHA256,
                                                                    property: items[propertyIndex])
             case .canonicalProperty(let binding):
-                try binding.evidence.requireSource(source, objectID: entry.sourceObjectID)
+                try binding.requireSource(source, objectID: entry.sourceObjectID)
                 try binding.validate()
                 let address = AnyPreparedMigrationPlanBinding.material([binding.ownerID, binding.propertyID])
                 guard !itemSourceIDs.contains(id), canonicalAddresses.insert(address).inserted else {

@@ -49,9 +49,18 @@ public struct AnyNativeImportedTypePresentation: Sendable {
                     throw AnyNativePropertyError.invalidCatalog
                 }
                 if owner == "any" {
-                    guard ["name", "description"].contains(property), definition.kind == .string,
-                          definition.scope == "synced" else {
-                        throw AnyNativePropertyError.invalidCatalog
+                    if let role = AnyDestinationCanonicalPropertyBinding.IdentityRole(rawValue: property) {
+                        let expected = AnyDestinationCanonicalPropertyBinding.nativeIdentityDescriptor(role)
+                        guard definition.kind == .string,
+                              try AnyDestinationDefinitionChecks.bytes(definition.raw) ==
+                                  AnyDestinationDefinitionChecks.bytes(expected) else {
+                            throw AnyNativePropertyError.invalidCatalog
+                        }
+                    } else {
+                        guard ["name", "description"].contains(property), definition.kind == .string,
+                              definition.scope == "synced" else {
+                            throw AnyNativePropertyError.invalidCatalog
+                        }
                     }
                 } else {
                     guard owner == propertyOwner else { throw AnyNativePropertyError.invalidCatalog }
