@@ -1,0 +1,111 @@
+{
+  "actualCases": {
+    "NativeLaunchTests/testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen()": "Failed"
+  },
+  "applicationBuilds": 0,
+  "archiveGrabberPreparation": null,
+  "binContextPreparation": {
+    "allOriginalIdentityBodyBinRestoreColdReopenAssertionsUnchanged": true,
+    "compiledSHA256": "0b01a8f35eea248f2bbd7727e60c6a2bf95fdcd9af74674b58437d75d0b62eae",
+    "gestureDurationSeconds": 1.1,
+    "inverseDeltaRestoresCompleteOriginalFile": true,
+    "originalSHA256": "61a981863f52c18f5b2f73125209b39df8e6b7b5e9aabf6bb4cc09cfb703e687",
+    "reviewSHA256": "31b047c1fa07be8a86fbb078d1b6ae73dbcb8c7b48bb7d9457fdeee05a1606dc",
+    "sourceCommit": "36401a8e49189465ad89e395d962695e3a76e67a",
+    "timeoutSeconds": 60
+  },
+  "controllerSHA256": "4961da55064e7d639ae18ad19f9678642887969146b6a4999c8c0fd0f3547be8",
+  "counts": {
+    "failedTests": 1,
+    "passedTests": 0,
+    "skippedTests": 0,
+    "totalTestCount": 1
+  },
+  "diagnosticFailures": [
+    {
+      "phase": "original-results",
+      "reason": "exact_original_method_did_not_pass"
+    }
+  ],
+  "finished": 1795630319.248607,
+  "firstFailure": {
+    "reason": "actual_original_ui_execution_failed",
+    "type": "RuntimeError"
+  },
+  "frozenInputReceiptSHA256": "247e63f6adff914922cc013e9d28d7f0c2f87f6294d008ec58e2c15de8b3ada5",
+  "historyKeyboardPreparation": {
+    "allOriginalHistoryAssertionsUnchanged": true,
+    "compiledSHA256": "2772d790979de88a3b622f17453a91ca792114292016f01e31386de7f4f614ca",
+    "inputRoute": "real-keyboard-with-original-native-UIKit-range-witness",
+    "longPressMenuAccepted": false,
+    "originalSHA256": "6c4064014253837e4738b1c143f45f9af91746c53b3b665439e65f55bc837a77",
+    "reviewSHA256": "27925f01b2a7817435637517793c19d49db9a6814caef6e33b88dafb6beb2117",
+    "reviewedPreparationCommit": "6c398307682073f31f9fb59af59f34c96003d542",
+    "sourceAlreadyIntegrated": true,
+    "sourceCommit": "5ffff121e696044b0d1955524b7a69baf453b4b1"
+  },
+  "integratedMiniAppsFixture": {
+    "actualCompanionRequired": true,
+    "allMiniAppsMethodBytesUnchanged": true,
+    "disposableSimulatorObserverOptIn": true,
+    "methodSectionSHA256": "3a4b0995b8a37f10521a4c6355c3830a2c152ea44f56d77a787c27b534b98465",
+    "ordinaryAccountSelectionAfterColdCallback": true,
+    "originalSHA256": "61a981863f52c18f5b2f73125209b39df8e6b7b5e9aabf6bb4cc09cfb703e687",
+    "sourceAlreadyIntegrated": true,
+    "sourceCommit": "5ffff121e696044b0d1955524b7a69baf453b4b1",
+    "testStorageOverrides": false
+  },
+  "mainReceiptSHA256": "7ca1f0824e7afc2069d9c932fa9b072edf97125e0e97d1b8bbc006f109d6a8d1",
+  "nativeLibraryBuilds": 0,
+  "originalAppFileCount": 2499,
+  "ownedSimulator": "2EC80179-79CA-4291-B7A2-C0EB035D7094",
+  "ownedSimulatorRetention": "Shutdown",
+  "runnerReceiptSHA256": "18b4e08d73a6ae01898d08ca566952862e76ed32a59ba1c5d24af6d47227642a",
+  "runnerSourceCommit": "36401a8e49189465ad89e395d962695e3a76e67a",
+  "sourceCommit": "5ffff121e696044b0d1955524b7a69baf453b4b1",
+  "stage": "bin",
+  "status": "FAIL",
+  "testCommand": {
+    "argv": [
+      "xcodebuild",
+      "test-without-building",
+      "-xctestrun",
+      "/Users/m1/builds/pinkha-dual-main-20261125/native-ui-bin-5ffff-ready1/Selected.xctestrun",
+      "-destination",
+      "platform=iOS Simulator,id=2EC80179-79CA-4291-B7A2-C0EB035D7094",
+      "-parallel-testing-enabled",
+      "NO",
+      "-test-timeouts-enabled",
+      "YES",
+      "-default-test-execution-time-allowance",
+      "600",
+      "-maximum-test-execution-time-allowance",
+      "600",
+      "-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen",
+      "-collect-test-diagnostics",
+      "never",
+      "ARCHS=arm64",
+      "ONLY_ACTIVE_ARCH=YES",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGNING_REQUIRED=YES",
+      "-resultBundlePath",
+      "/Users/m1/builds/pinkha-dual-main-20261125/native-ui-bin-5ffff-ready1/Original.xcresult"
+    ],
+    "elapsedSeconds": 148.91954493522644,
+    "exitCode": 65,
+    "freeBytesBefore": 70928330752,
+    "logSHA256": "68b5a84fd7320f0881ea7f0863c4e6a4cec993d79d086ad2dc2da606899378c9",
+    "minimumFreeBytes": 68594139136,
+    "ownedProcessGroup": "ABSENT_ESRCH",
+    "pgid": 21665,
+    "pid": 21665,
+    "started": 1795629951.689804,
+    "status": "FAIL",
+    "stopped": null
+  },
+  "testCommandIssued": true,
+  "testResultAvailability": "ORIGINAL_XCRESULT",
+  "testsExecuted": 1,
+  "uiRunnerBuilds": 0
+}
