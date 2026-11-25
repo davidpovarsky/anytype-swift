@@ -716,16 +716,17 @@
       "from": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift",
       "to": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift",
       "baselineBlob": "6590a967d23f3bb39cac38acc37b970e45749ab8",
-      "replacementBlob": "1a33b924ba79094f97c46b4f4b0e448f80838efa",
+      "replacementBlob": "20f0c7e1829ae60a225d00bc70fc0ab0231ead2d",
       "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
       "inheritedSourceBlob": "ce9565d3a46fb9c45a7e37e9da2db2312a4525c8",
-      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane. Candidate Page154 continuation: Preserve the current standard edit menu and add the Page154 anchor action only under both candidate definitions for an eligible real selection.",
+      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane. Candidate Page154 continuation: Preserve the current standard edit menu and add the Page154 anchor action only under both candidate definitions for an eligible real selection. Restore the existing empty-paragraph policy after the native selection callback, with focused/attached/non-composing/empty storage guards and a per-view reentrancy fence.",
       "sharedSources": [],
       "validation": [
         "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
         "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
         "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred.",
-        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json."
+        "Reviewed candidate diffs 5316f036 and mounted observation 27deb7d; root verified 706 original copied inputs, 18 metadata inputs, 7 original evidence files, 9 preserved products and exactly 19 Client starts/passes. Eleven unchanged Wire results are retained separately (30 current distinct controls). Host controls do not compile these App consumers. Actual Apple App typecheck, native boundary XCTest and mounted/cold UI remain separate NOT_RUN gates. See docs/validation/20261123-semantic-heart-swift/root-publication-mounted-review.json.",
+        "Original recovered source406fd73 Return3 passed; prepareRealApplicationState failed three unchanged pre-insertion RTL assertions. Product candidate modifies no test body or storage/caret/focus behavior; actual Apple compilation and original preparation remain required. See docs/validation/20261125-f-native-selection-direction."
       ]
     },
     {
@@ -1714,12 +1715,13 @@
       "from": "Anytype/Sources/Pinkha/RTL/PinkhaTextDirectionUIKitAdapter.swift",
       "to": "Anytype/Sources/Pinkha/RTL/PinkhaTextDirectionUIKitAdapter.swift",
       "baselineBlob": "e87be1d0635a15cf8988b847cadcf72b7b51d78b",
-      "replacementBlob": "b512f63b1aae5d02beb621bd723e518dba879e6f",
-      "reason": "Restore only empty, unmarked, nonexplicit typing direction through the shared UIKit adapter. Preserve explicit alignment, fonts, attributes and stored content.",
+      "replacementBlob": "4556a53309c4d4cd8dc38c5c19a12d9aa274ef60",
+      "reason": "Restore only empty, unmarked, nonexplicit typing direction through the shared UIKit adapter. Preserve explicit alignment, fonts, attributes and stored content. Restore the existing empty-paragraph policy after the native selection callback, with focused/attached/non-composing/empty storage guards and a per-view reentrancy fence.",
       "sharedSources": [],
       "validation": [
         "Reviewed original source diff against the protected baseline on 2026-11-25; no capability removed. Current App/native and UI runner compiled in 45535451242 at406fd73. That run stopped in controller selection before F product tests.",
-        "Affected product acceptance remains separately tracked; source provenance is not a substitute for UI execution."
+        "Affected product acceptance remains separately tracked; source provenance is not a substitute for UI execution.",
+        "Original recovered source406fd73 Return3 passed; prepareRealApplicationState failed three unchanged pre-insertion RTL assertions. Product candidate modifies no test body or storage/caret/focus behavior; actual Apple compilation and original preparation remain required. See docs/validation/20261125-f-native-selection-direction."
       ]
     },
     {

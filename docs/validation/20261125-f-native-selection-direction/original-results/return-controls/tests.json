@@ -1,0 +1,71 @@
+{
+  "devices" : [
+    {
+      "architecture" : "arm64",
+      "deviceId" : "AC4B40DE-11F9-46AA-AF00-F9ED28483922",
+      "deviceName" : "Pinkha-UI27-45535451242-batch-0cdf89090c124d27996b6c745a88e915-release-return-controls",
+      "modelName" : "iPad Pro 13-inch (M5)",
+      "osBuildNumber" : "24A434",
+      "osVersion" : "27.0",
+      "platform" : "iOS Simulator"
+    }
+  ],
+  "testNodes" : [
+    {
+      "children" : [
+        {
+          "children" : [
+            {
+              "children" : [
+                {
+                  "duration" : "1s",
+                  "durationInSeconds" : 1.7909512519836426,
+                  "name" : "An already rendered split row keeps the request published by the real service",
+                  "nodeIdentifier" : "BlockActionServiceReturnFocusTests/renderedSubscriberKeepsSplitRequest()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/BlockActionServiceReturnFocusTests/renderedSubscriberKeepsSplitRequest()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                },
+                {
+                  "duration" : "0,62s",
+                  "durationInSeconds" : 0.624413013458252,
+                  "name" : "The actual general event can render and consume the same pending split request",
+                  "nodeIdentifier" : "BlockActionServiceReturnFocusTests/laterRenderedRowConsumesSplitRequest()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/BlockActionServiceReturnFocusTests/laterRenderedRowConsumesSplitRequest()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                },
+                {
+                  "duration" : "0,52s",
+                  "durationInSeconds" : 0.5240261554718018,
+                  "name" : "A genuinely later editor request still cancels the split row's deferred request",
+                  "nodeIdentifier" : "BlockActionServiceReturnFocusTests/laterRequestStillSupersedesSplitFocus()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/BlockActionServiceReturnFocusTests/laterRequestStillSupersedesSplitFocus()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                }
+              ],
+              "name" : "Return split preserves one focus owner",
+              "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/BlockActionServiceReturnFocusTests",
+              "nodeType" : "Test Suite",
+              "result" : "Passed"
+            }
+          ],
+          "name" : "AnytypeTests",
+          "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests",
+          "nodeType" : "Unit test bundle",
+          "result" : "Passed"
+        }
+      ],
+      "name" : "AnytypeTests",
+      "nodeType" : "Test Plan",
+      "result" : "Passed"
+    }
+  ],
+  "testPlanConfigurations" : [
+    {
+      "configurationId" : "1",
+      "configurationName" : "Configuration 1"
+    }
+  ]
+}
