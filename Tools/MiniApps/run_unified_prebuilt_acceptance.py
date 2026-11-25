@@ -18,6 +18,7 @@ import plistlib
 import re
 import shutil
 import signal
+import subprocess
 import sys
 import time
 import traceback
@@ -158,6 +159,68 @@ def module(path, name, expected=None):
     spec.loader.exec_module(value)
     return value
 
+
+def command_custody_class(core):
+    """Preserve a failed original command even if its group observation fails.
+
+    The original executor remains responsible for its own Popen and timeouts.
+    This wrapper performs no extra signal, retry, process launch or test action.
+    In particular, a post-timeout EPERM must not discard the original log and
+    started receipt or turn an infrastructure failure into an unrecorded stage.
+    """
+    class CommandCustody(core.Commands):
+        def run(self, argv, label, timeout=120, *, checked=True, capacity=True):
+            try:
+                return super().run(argv, label, timeout, checked=checked, capacity=capacity)
+            except BaseException as exc:
+                directory = self.root / label
+                started = directory / "started.json"
+                result = directory / "result.json"
+                log = directory / "original.log"
+                if started.is_file() and not result.exists() and log.is_file():
+                    original = json.loads(raw(started))
+                    require(original["argv"] == list(map(str, argv))
+                            and original["cwd"] == str(self.cwd)
+                            and original["pid"] == original["pgid"]
+                            and original["pgid"] in self.groups,
+                            "Only this executor's original started command can be retained")
+                    failure = []
+                    current = exc
+                    seen = set()
+                    while current is not None and id(current) not in seen and len(failure) < 8:
+                        seen.add(id(current))
+                        failure.append({"type": type(current).__name__, "reason": str(current)})
+                        current = current.__cause__ or current.__context__
+                    original.update(status="FAIL_COMMAND", exitCode=None, finishedAt=time.time(),
+                                    logSHA256=core.digest(log), logBytes=log.stat().st_size,
+                                    interruptionChain=failure, cleanupFailurePreserved=True,
+                                    additionalSignals=0, acceptanceReclassified=False)
+                    # Read only: never signal an unresolved numeric PGID here.
+                    # The original executor may already have reaped its Popen.
+                    try:
+                        snapshot = subprocess.check_output(
+                            ["ps", "-axo", "pid,ppid,pgid,uid,state,etime,command"],
+                            timeout=8).decode("utf-8", "replace")
+                        group = str(original["pgid"])
+                        rows = [line for line in snapshot.splitlines()[1:]
+                                if len(line.split(None, 6)) >= 4
+                                and line.split(None, 6)[2] == group]
+                        original["postFailureGroupObservation"] = {
+                            "method": "read-only ps snapshot",
+                            "at": time.time(), "matchingRows": rows[:32],
+                            "truncated": len(rows) > 32,
+                            "snapshotSHA256": sha(snapshot.encode())}
+                        original["ownedGroupPresentAfterExit"] = bool(rows)
+                        if not rows:
+                            self.absent_groups.add(original["pgid"])
+                    except BaseException as observation:
+                        original["postFailureGroupObservation"] = {
+                            "status": "UNRESOLVED", "type": type(observation).__name__,
+                            "reason": str(observation)}
+                    write(result, original)
+                raise
+    return CommandCustody
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, required=True)
@@ -180,14 +243,17 @@ def main():
     os.umask(0o022)
     evidence = root / "evidence"
     evidence.mkdir(mode=0o700)
-    commands = core.Commands(root / "commands", root)
+    commands = command_custody_class(core)(root / "commands", root)
     outcome = {"protocol": "pinkha-unified-miniapps-original-five-v1",
                "status": "FAIL", "executionOrigin": "local-mac", "builds": 0,
                "controllerSHA256": sha(raw(Path(__file__).resolve())),
                "coreSHA256": CORE_SHA, "admissionSHA256": ADMISSION_SHA,
                "companionManifestSHA256": PRODUCER_MANIFEST, "companionSourceCommit": PRODUCER,
                "sourceCommit": SOURCE, "methods": [], "testsExecuted": 0, "testCommandsInvoked": 0,
-               "physicalSharing": "NOT_PROVEN_BY_SIMULATOR", "errors": []}
+               "physicalSharing": "NOT_PROVEN_BY_SIMULATOR", "errors": [],
+               "enumerationInfrastructureBudgetSeconds": 360,
+               "testCommandBudgetSeconds": 600,
+               "priorEnumerationFailureSHA256": "ba3cb5d2d8598cdbaa531a74bc3a8ecc11d41ddca15a220b72b93b544babb70c"}
     udid = None
     built = None
     app_container = None
@@ -321,7 +387,7 @@ def main():
                         "-collect-test-diagnostics", "never"]
                 commands.run(argv + ["-enumerate-tests", "-test-enumeration-style", "flat",
                                      "-test-enumeration-format", "json", "-test-enumeration-output-path", str(listing)],
-                             label + "-enumerate", 180)
+                             label + "-enumerate", 360)
                 stage["enumeration"] = selection.validate_enumeration(json.loads(raw(listing)), target, method)
                 core.product_integrity(item)
                 require(core.digest(path) == sha(descriptor), "enumerated descriptor changed")
