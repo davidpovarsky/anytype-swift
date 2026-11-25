@@ -46,6 +46,7 @@ def main():
     parser.add_argument("--runner-source-commit")
     parser.add_argument("--history-source-commit", choices=["6c398307682073f31f9fb59af59f34c96003d542"])
     parser.add_argument("--archive-source-commit", choices=["658f4af4380dffc55c65559ca9e0cc6d5ed9c931"])
+    parser.add_argument("--miniapps-source-commit", choices=["53eec4a2289f969979bc301760ce152088ebc2f7"])
     args = parser.parse_args()
     root, evidence, output = args.main_root, args.main_evidence, args.output
     for path in (root, evidence, output):
@@ -83,6 +84,12 @@ def main():
     }
     profile = profiles.get(original["inputs"]["nativeSourceManifestSHA256"])
     require(profile is not None, "explicit_reviewed_unified_profile_required")
+    if origin == "5c05a612e4054a4adfa7f812343be6a15871cc89":
+        require(original["inputs"]["nativeSourceManifestSHA256"] ==
+                "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72",
+                "reviewed5c_native_runtime_required")
+        profile = dict(profile, name="qualified-mobile70f0-sdk30e-torah9058",
+            lockSHA256="4453726b6b4bbd52dc3c5caa5a315a51e718139c4f96182b7a6851a0b8c82d04")
     for key in ("nativeSHA256", "sdkReceiptSHA256", "lockSHA256"):
         require(original["inputs"].get(key) == profile[key],
                 "reviewed_unified_input_changed:" + key)
@@ -224,6 +231,43 @@ def main():
             "inputRoute": "real-keyboard-with-original-native-UIKit-range-witness",
             "longPressMenuAccepted": False, "allOriginalHistoryAssertionsUnchanged": True,
             "sourceAlreadyIntegrated": True}
+
+    miniapps_binding = None
+    if args.miniapps_source_commit is not None:
+        require(origin == "5c05a612e4054a4adfa7f812343be6a15871cc89"
+                and runner_origin == origin and args.archive_source_commit is None
+                and args.history_source_commit is None,
+                "one_exact_additive_miniapps_method_on_original5c_required")
+        candidate = subprocess.run(["git", "-C", str(source), "show",
+            args.miniapps_source_commit + ":" + inputs[2]],
+            check=True, capture_output=True).stdout
+        subprocess.run(["git", "-C", str(source), "merge-base", "--is-ancestor",
+                        origin, args.miniapps_source_commit], check=True, capture_output=True)
+        changed = subprocess.run(["git", "-C", str(source), "diff", "--name-only",
+            origin, args.miniapps_source_commit], check=True, capture_output=True, text=True).stdout.splitlines()
+        require(all(name == inputs[2] or name.startswith(("Tools/", "docs/validation/"))
+                    for name in changed), "miniapps_runner_must_not_change_application_source")
+        marker = b"// BEGIN_NATIVE_MINIAPPS_CROSS_APP_UI_V1\n"
+        require(runner_launch.count(marker) == 0 and candidate.count(marker) == 1
+                and candidate.split(marker)[0].rstrip() == runner_launch.rstrip()
+                and candidate.count(b"func testAnyMiniAppsTextStudioWarmAndColdReturnPersistInNativeDocument()") == 1,
+                "every_existing_method_and_helper_must_remain_byte_identical")
+        require(hashlib.sha256(runner_launch).hexdigest() ==
+                    "2727945d9a6745c8f11d64841649c7a5117d79b85818f9406e7ed0e35ec346be"
+                and hashlib.sha256(candidate).hexdigest() ==
+                    "cc3f0e17c1c228b01a36c9e3307bcbae7a2f444f5c850614e7d843fd1e29dfc7",
+                "exact_reviewed_new_miniapps_UI_source_required")
+        miniapps_binding = {
+            "sourceCommit": args.miniapps_source_commit,
+            "originalSHA256": hashlib.sha256(runner_launch).hexdigest(),
+            "compiledSHA256": hashlib.sha256(candidate).hexdigest(),
+            "allOriginalMethodsByteIdentical": True,
+            "newMethods": ["NativeLaunchTests/testAnyMiniAppsTextStudioWarmAndColdReturnPersistInNativeDocument"],
+            "testStorageOverrides": False,
+            "actualCompanionRequired": True,
+            "ordinaryAccountSelectionAfterColdCallback": True,
+        }
+        runner_origin, runner_launch = args.miniapps_source_commit, candidate
     helper = source / "Tools/AnyEnginePort/native_ui_transition_project.py"
     original_helper = subprocess.run(["git", "-C", str(source), "show",
         origin + ":Tools/AnyEnginePort/native_ui_transition_project.py"],
@@ -257,6 +301,7 @@ def main():
         "mainSourceCommit": origin, "runnerSourceCommit": runner_origin,
         "historyKeyboardPreparation": history_binding,
         "archiveGrabberPreparation": archive_binding,
+        "miniAppsCrossAppFixture": miniapps_binding,
         "mainReceiptSHA256": digest(evidence / "receipt.json"),
         "reviewedInputProfile": profile,
         "exactOriginalProjectAndScheme": transformation, "sourceFiles": sources,
@@ -288,6 +333,7 @@ def main():
         record = {"sourceCommit": origin, "runnerSourceCommit": runner_origin,
                   "historyKeyboardPreparation": history_binding,
                   "archiveGrabberPreparation": archive_binding,
+        "miniAppsCrossAppFixture": miniapps_binding,
                   "mainReceiptSHA256": digest(evidence / "receipt.json"),
                   "reviewedInputProfile": profile,
                   "argv": argv, "pid": process.pid,
