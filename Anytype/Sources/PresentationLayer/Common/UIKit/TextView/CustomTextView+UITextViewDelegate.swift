@@ -50,7 +50,11 @@ extension CustomTextView: UITextViewDelegate {
     ) -> Bool {
 #if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
         if PinkhaSemanticTextAnchor.isReservedMarkerURL(URL) {
-            if interaction == .invokeDefaultAction {
+            // Match ordinary link navigation: UIKit may also invoke a link
+            // while a double tap is acquiring editing focus. Editing the
+            // anchored text must not reopen its source sheet; the explicit
+            // selected-text menu remains available while editing.
+            if !textView.isFirstResponder && interaction == .invokeDefaultAction {
                 (textView as? TextViewWithPlaceholder)?.pinkhaSemanticAnchorOpenURL?(URL)
             }
             return false
