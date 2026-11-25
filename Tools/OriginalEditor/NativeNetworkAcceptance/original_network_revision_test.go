@@ -9,6 +9,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"slices"
@@ -38,6 +39,12 @@ type originalNetworkRevisionPointer struct {
 	RootSHA  string `json:"root_sha256"`
 	BlockID  string `json:"changed_block_id,omitempty"`
 	BlockSHA string `json:"changed_block_sha256,omitempty"`
+}
+
+type originalNetworkRevisionBaseline struct {
+	Round    int    `json:"round"`
+	RootSHA  string `json:"root_sha256"`
+	Accepted bool   `json:"accepted"`
 }
 
 func TestOtzariaOriginalNetworkRevisionPeer(t *testing.T) {
@@ -133,11 +140,16 @@ func TestOtzariaOriginalNetworkRevisionPeer(t *testing.T) {
 			"actual_fresh_process_reopen": true, "same_native_root": pointer.ObjectID,
 			"root_sha256": observed.RootSHA, "native_heads": observed.Heads,
 			"read_only": true, "pid": os.Getpid(), "remote_network_ack": false,
+			"archive_object_id": observed.ArchiveID, "archive_heads": observed.ArchiveHeads,
+			"is_archived": *observed.IsArchived,
 		})
 		return
 	}
 
-	baseline := originalNetworkAwaitRevision(t, f, pointer, "baseline", "", "")
+	// Retained repositories can start with different locally materialized revisions.
+	// Agree only through genuine fresh native reads; never copy a body or write a
+	// replacement merely to manufacture a shared baseline.
+	baseline := originalNetworkAgreeRevisionBaseline(t, f, pointer, run, phase)
 	originalNetworkJSON(t, evidence, "baseline-pointer.json", originalNetworkRevisionPointer{RootSHA: baseline.RootSHA})
 	if phase == "producer" {
 		originalNetworkJSON(t, run, "producer-baseline-pointer.json", originalNetworkRevisionPointer{RootSHA: baseline.RootSHA})
@@ -162,6 +174,8 @@ func TestOtzariaOriginalNetworkRevisionPeer(t *testing.T) {
 			"status":           "ACTUAL_OTHER_PROCESS_NATIVE_REVISION_READBACK",
 			"same_native_root": pointer.ObjectID, "root_sha256": observed.RootSHA,
 			"native_heads": observed.Heads, "pid": os.Getpid(),
+			"archive_object_id": observed.ArchiveID, "archive_heads": observed.ArchiveHeads,
+			"is_archived": *observed.IsArchived,
 			"complete_original_baseline_blocks_equal": true, "changed_peer_block_absent": true,
 			"native_local_receipt_used_as_network_ack": false,
 		}
@@ -186,13 +200,18 @@ func TestOtzariaOriginalNetworkRevisionPeer(t *testing.T) {
 			t.Fatalf("remotely invalidated native token was not refused before Apply: %v", operationErr)
 		}
 		after := originalNetworkAwaitRevision(t, f, pointer, "after-conflict", remote.RootSHA, change.BlockID)
-		if !slices.Equal(after.Heads, stale.Heads) {
-			t.Fatal("conflict changed original native heads")
+		originalNetworkRequirePresentArchiveWitness(t, f, stale)
+		if !slices.Equal(after.Heads, stale.Heads) || after.RootSHA != stale.RootSHA ||
+			after.ArchiveID != stale.ArchiveID || !slices.Equal(after.ArchiveHeads, stale.ArchiveHeads) ||
+			*after.IsArchived != *stale.IsArchived {
+			t.Fatal("conflict changed original root or Archive revision")
 		}
 		originalNetworkJSON(t, evidence, "explicit-resolution-choice.json", map[string]any{
 			"test_action":                "explicitly choose previously saved original baseline after observed conflict",
 			"desired_archive_sha256":     hex.EncodeToString(desired.Digest[:]),
 			"fresh_observed_root_sha256": after.RootSHA, "fresh_heads": after.Heads,
+			"archive_object_id": after.ArchiveID, "archive_heads": after.ArchiveHeads,
+			"is_archived":             *after.IsArchived,
 			"automatic_product_retry": false, "old_token_reused": false,
 		})
 		// This is a separate explicit conflict-resolution test action with a
@@ -201,6 +220,10 @@ func TestOtzariaOriginalNetworkRevisionPeer(t *testing.T) {
 		if operationErr != nil || applied.Status != "applied" || !applied.NativeApplyAttempted ||
 			!applied.NativeWriteObserved || applied.RootID != pointer.ObjectID {
 			t.Fatalf("actual original conditional replacement failed: %v", operationErr)
+		}
+		originalNetworkRequirePresentArchiveWitness(t, f, applied)
+		if applied.ArchiveID != after.ArchiveID || !slices.Equal(applied.ArchiveHeads, after.ArchiveHeads) {
+			t.Fatal("conditional root replacement changed the original Archive tree")
 		}
 		originalNetworkRequireSameBlocks(t, baseline.NativeArchive, applied.NativeArchive, pointer.ObjectID, pointer.SpaceID)
 		originalNetworkJSON(t, run, "consumer-applied-pointer.json", originalNetworkRevisionPointer{RootSHA: applied.RootSHA})
@@ -216,9 +239,81 @@ func TestOtzariaOriginalNetworkRevisionPeer(t *testing.T) {
 			"stale_native_compare_refused_without_apply_or_head_change": true,
 			"explicit_resolution_uses_fresh_token":                      true, "actual_conditional_original_apply": true,
 			"same_native_root": pointer.ObjectID, "root_sha256": applied.RootSHA,
+			"archive_object_id": applied.ArchiveID, "archive_heads": applied.ArchiveHeads,
+			"is_archived": *applied.IsArchived, "archive_cas_witness_bound": true,
 			"independent_peer_readback_observed": true, "pid": os.Getpid(),
 			"native_local_receipt_used_as_network_ack": false,
 		})
+	}
+}
+
+// The request/response control files carry only revision hashes and round
+// decisions. Both peers retain their OWN original archive and locked token.
+// Account recovery and real remote transport can legitimately converge retained
+// repositories after startup; a stale first export is never an eternal target.
+func originalNetworkAgreeRevisionBaseline(t *testing.T, f *ownedClosedFixture,
+	p originalNetworkPointer, run, role string) nativeRevisionWire {
+	t.Helper()
+	for round := 0; ; round++ {
+		probeName := fmt.Sprintf("baseline-probe-%03d.json", round)
+		replyName := fmt.Sprintf("baseline-reply-%03d.json", round)
+		decisionName := fmt.Sprintf("baseline-decision-%03d.json", round)
+		if role == "producer" {
+			probe := originalNetworkAwaitRevision(t, f, p, fmt.Sprintf("baseline-probe-%03d", round), "", "")
+			originalNetworkJSON(t, run, probeName, originalNetworkRevisionBaseline{Round: round, RootSHA: probe.RootSHA})
+			var reply originalNetworkRevisionBaseline
+			originalNetworkWaitJSON(t, f.ctx, run, replyName, &reply)
+			if reply.Round != round {
+				t.Fatal("original peer baseline reply round differs")
+			}
+			current := originalNetworkAwaitRevision(t, f, p, fmt.Sprintf("baseline-confirm-%03d", round), "", "")
+			accepted := probe.RootSHA == current.RootSHA && reply.RootSHA == current.RootSHA
+			originalNetworkJSON(t, run, decisionName, originalNetworkRevisionBaseline{
+				Round: round, RootSHA: current.RootSHA, Accepted: accepted,
+			})
+			if accepted {
+				return current
+			}
+		} else {
+			var probe originalNetworkRevisionBaseline
+			originalNetworkWaitJSON(t, f.ctx, run, probeName, &probe)
+			if probe.Round != round {
+				t.Fatal("original peer baseline probe round differs")
+			}
+			current := originalNetworkAwaitRevision(t, f, p, fmt.Sprintf("baseline-receiver-%03d", round), "", "")
+			originalNetworkJSON(t, run, replyName, originalNetworkRevisionBaseline{Round: round, RootSHA: current.RootSHA})
+			var decision originalNetworkRevisionBaseline
+			originalNetworkWaitJSON(t, f.ctx, run, decisionName, &decision)
+			if decision.Round != round {
+				t.Fatal("original peer baseline decision round differs")
+			}
+			if decision.Accepted {
+				if decision.RootSHA != current.RootSHA || decision.RootSHA != probe.RootSHA {
+					t.Fatal("baseline acceptance does not match both original native observations")
+				}
+				return originalNetworkAwaitRevision(t, f, p,
+					fmt.Sprintf("baseline-receiver-confirm-%03d", round), decision.RootSHA, "")
+			}
+		}
+		select {
+		case <-f.ctx.Done():
+			t.Fatal("original peers did not reach a genuine shared baseline")
+		case <-time.After(500 * time.Millisecond):
+		}
+	}
+}
+
+func originalNetworkRequirePresentArchiveWitness(t *testing.T, f *ownedClosedFixture, value nativeRevisionWire) {
+	t.Helper()
+	if value.ArchiveID != f.spc.DerivedIDs().Archive || value.ArchiveID == value.RootID ||
+		value.IsArchived == nil || *value.IsArchived || len(value.ArchiveHeads) == 0 ||
+		!slices.IsSorted(value.ArchiveHeads) {
+		t.Fatal("actual present-root Archive witness is missing or differs from the original Space")
+	}
+	for index, head := range value.ArchiveHeads {
+		if head == "" || (index > 0 && head == value.ArchiveHeads[index-1]) {
+			t.Fatal("actual Archive heads must be nonempty, sorted and unique")
+		}
 	}
 }
 
@@ -232,6 +327,10 @@ func originalNetworkAwaitRevision(t *testing.T, f *ownedClosedFixture, p origina
 			matches = originalNetworkRevisionHasBlock(t, value.NativeArchive, p, requiredBlock)
 		}
 		if matches {
+			originalNetworkRequirePresentArchiveWitness(t, f, value)
+			if value.NativeApplyAttempted || value.NativeWriteObserved {
+				t.Fatal("a native read reported a mutation")
+			}
 			return value
 		}
 		select {
