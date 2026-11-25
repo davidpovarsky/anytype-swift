@@ -80,6 +80,12 @@ public struct AnyHeartInlineConversion: Sendable {
             }
             for mark in links.sorted(by: { $0.start > $1.start }) {
                 let parsed = AnyInlineMarkdown(candidate)
+                if let url = URL(string: mark.parameter), PinkhaSemanticTextAnchor.isReservedMarkerURL(url) {
+                    // The shared capture codec can enclose multiple preserved
+                    // style containers without flattening their native markup.
+                    candidate = try parsed.capturing(PinkhaSemanticTextAnchor(markerURL: url), displayRange: mark.range)
+                    continue
+                }
                 let span = try parsed.sourceRange(for: mark.range)
                 let label = (candidate as NSString).substring(with: span)
                 candidate = (candidate as NSString).replacingCharacters(in: span, with: "[" + label + "](" + mark.parameter + ")")
