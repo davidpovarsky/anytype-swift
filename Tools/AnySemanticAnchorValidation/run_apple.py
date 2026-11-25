@@ -259,19 +259,23 @@ def main():
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--run-root", type=Path, required=True)
     parser.add_argument("--commit", required=True)
+    parser.add_argument("--controller-commit", required=True)
     parser.add_argument("--retained-d3", type=Path, required=True)
     args = parser.parse_args()
     source = args.source.resolve()
     root = args.run_root.resolve()
-    require(re.fullmatch("[0-9a-f]{40}", args.commit), "exact_commit_required")
+    require(re.fullmatch("[0-9a-f]{40}", args.commit) and
+            re.fullmatch("[0-9a-f]{40}", args.controller_commit), "exact_commits_required")
     require(source.is_dir() and not root.exists() and source != root, "fresh_owned_root_required")
     require(str(root).startswith("/Users/m1/builds/any-semantic-"), "unexpected_owned_root")
-    require(shutil.disk_usage(root.parent).free >= 7 * 1024**3, "insufficient_free_build_space")
+    require(shutil.disk_usage(root.parent).free >= 5 * 1024**3, "insufficient_free_build_space")
     root.mkdir(mode=0o700)
     evidence = root / "evidence"
     evidence.mkdir(mode=0o700)
     commands = Commands(source, evidence)
     outcome = {"schema": "any-semantic-anchor-apple/v1", "sourceCommit": args.commit,
+               "controllerCommit": args.controller_commit,
+               "controllerPath": str(Path(__file__).resolve()), "controllerSHA256": sha(Path(__file__)),
                "status": "RUNNING", "stages": {}, "acceptedOldTestsRerun": 0,
                "nativeLibraryBuilds": 0, "physicalDevice": "NOT_RUN",
                "plannedApplicationBuilds": 2, "plannedUIRunnerBuilds": 1}
@@ -340,6 +344,7 @@ def main():
                  "CODE_SIGNING_REQUIRED=YES", "CODE_SIGN_IDENTITY=-", "PROVISIONING_PROFILE_SPECIFIER="]
         destination = "platform=iOS Simulator,id=" + device
         for stage, spec in STAGES.items():
+            require(shutil.disk_usage(root).free >= 3 * 1024**3, "stage_build_capacity")
             stage_evidence = evidence / stage
             stage_evidence.mkdir()
             selectors = ["-only-testing:" + spec["target"] + "/" + method for method in spec["methods"]]
@@ -363,6 +368,7 @@ def main():
             products = inventory(derived / "Build/Products")
             write(stage_evidence / "original-products.json", products)
             result = stage_evidence / "original.xcresult"
+            require(shutil.disk_usage(root).free >= 2 * 1024**3, "stage_test_capacity")
             commands.run(["xcodebuild", "test-without-building", "-xctestrun", str(descriptor),
                 "-destination", destination, "-parallel-testing-enabled", "NO",
                 "-maximum-concurrent-test-simulator-destinations", "1",

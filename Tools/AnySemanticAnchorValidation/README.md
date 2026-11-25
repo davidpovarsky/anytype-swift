@@ -39,3 +39,16 @@ retention move. The controller now verifies the copied object databases against
 the retained originals and rewrites only the owned copies' alternate paths.
 All nine dependency HEADs must still match D3 exactly. The original D3 cache is
 untouched; attempt1's failure and successful owned-device cleanup remain retained.
+
+The copied cache consumes about 5 MiB of additional physical storage (both old
+copies were measured and removed after matching all 631 original product files);
+the retained D3 derived tree is about 1.18 GiB of logical data. With the source
+already materialized, startup requires 5 GiB free, each build requires 3 GiB,
+and an owned build is stopped below 2 GiB. This measured budget replaces the
+initial arbitrary 7 GiB admission floor; original test gates are unchanged.
+
+Controller and app source revisions are recorded separately. A controller-only
+infrastructure repair can run against the existing clean, frozen product checkout
+without duplicating that entire checkout or changing its native consumer binding.
+The launch verifies the exported controller bytes against the exact Git revision,
+and the execution receipt records the loaded controller SHA256.
