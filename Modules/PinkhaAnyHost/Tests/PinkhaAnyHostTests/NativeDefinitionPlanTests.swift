@@ -190,7 +190,7 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertTrue(plan.issues.contains { $0.field == "relationDefaultValue" })
         XCTAssertFalse(plan.issues.contains { $0.field == "option" })
         XCTAssertEqual(plan.definitionCoverage.count, 2)
-        XCTAssertTrue(plan.issues.contains { $0.field == "recommendedLayout/recommendations" })
+        XCTAssertFalse(plan.issues.contains { $0.field == "recommendedLayout/recommendations" })
         XCTAssertThrowsError(try plan.admittedSchemaItems())
         let binding = try AnyPreparedMigrationPlanBinding(workspace: .init(accountID: "destination", spaceID: "destination-space"),
             storeID: "native-store", planID: String(repeating: "c", count: 64), planSHA256: String(repeating: "d", count: 64))
