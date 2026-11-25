@@ -102,6 +102,13 @@ public struct AnytypeOriginalEditorLocalAnnotationCapture: Sendable {
 @MainActor
 public final class AnytypeOriginalEditorLocalAnnotationSession {
     public let binding: AnytypeOriginalEditorBinding
+    /// True only while this exact native source can still accept original edits.
+    /// Validation conflicts keep it true; a dispatched uncertain failure or
+    /// terminal capture retires it. No canonical SQLite receipt is implied.
+    public var canContinueEditing: Bool {
+        !miniAppsBusy && (try? owner.validateCurrent()) != nil
+            && (try? owner.host.validateCurrentSource()) != nil
+    }
     private let owner: OriginalEditorLocalAnnotationDraftOwner
     private nonisolated let sourceLifetime: AnytypeOriginalEditorLocalAnnotationSourceLifetime
     private var miniAppsBusy = false
