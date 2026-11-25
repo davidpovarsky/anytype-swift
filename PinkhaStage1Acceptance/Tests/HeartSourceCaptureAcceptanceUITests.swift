@@ -39,6 +39,7 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
         handoffSHA256 = handoff
         launch = [
             "PINKHA_SIMULATOR_UI_DISPOSABLE": "1",
+            "PINKHA_HEART_SOURCE_CAPTURE_OBSERVER": "1",
             "PINKHA_SEMANTIC_MOUNTED_UI": "0",
             "PINKHA_UI27_ROUTE_OBSERVATION": "1"
         ]
