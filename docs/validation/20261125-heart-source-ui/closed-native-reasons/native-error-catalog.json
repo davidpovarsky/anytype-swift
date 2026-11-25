@@ -1,0 +1,208 @@
+{
+  "nativeBehaviorChanged": false,
+  "nativeSourceCommit": "5e8f9ce4ec789c1cd775b148a6cc49d4a28f56b5",
+  "protocol": "native-fixed-diagnostic-catalog-v1",
+  "rows": [
+    {
+      "literal": "invalid native source capture request",
+      "reason": "native-invalid-request",
+      "source": [
+        {
+          "path": "pkg/lib/pinkha/capturecontrol/registry.go",
+          "sha256": "cd4c15a762c80cccbfa6feaa461ae12f8bfe7a20f019fb99a6a40785be800965"
+        }
+      ]
+    },
+    {
+      "literal": "native source capture request already running",
+      "reason": "native-request-running",
+      "source": [
+        {
+          "path": "pkg/lib/pinkha/capturecontrol/registry.go",
+          "sha256": "cd4c15a762c80cccbfa6feaa461ae12f8bfe7a20f019fb99a6a40785be800965"
+        }
+      ]
+    },
+    {
+      "literal": "native source capture capacity reached",
+      "reason": "native-request-capacity",
+      "source": [
+        {
+          "path": "pkg/lib/pinkha/capturecontrol/registry.go",
+          "sha256": "cd4c15a762c80cccbfa6feaa461ae12f8bfe7a20f019fb99a6a40785be800965"
+        }
+      ]
+    },
+    {
+      "literal": "original native source capture binding required",
+      "reason": "native-capture-binding",
+      "source": [
+        {
+          "path": "pkg/lib/pinkha/capturecontrol/bindings.go",
+          "sha256": "8f88b52ad2313ced5455fb5e310ea8da852f051c7610cb13eba41e9cfe24db0b"
+        }
+      ]
+    },
+    {
+      "literal": "unchanged private native source manifest required",
+      "reason": "native-private-manifest",
+      "source": [
+        {
+          "path": "pkg/lib/pinkha/capturecontrol/manifest.go",
+          "sha256": "24088011897db39090a7ea7b03e52ced01e1be3d6db6a4f5589701155697c872"
+        }
+      ]
+    },
+    {
+      "literal": "current already-loaded native Space required",
+      "reason": "native-space-not-loaded",
+      "source": [
+        {
+          "path": "space/spacecore/loaded_witness.go",
+          "sha256": "1253f334054ec7f8cac467ca13fdf0bd7c17b769bb0add6d2e7e5fab847935d6"
+        }
+      ]
+    },
+    {
+      "literal": "native Space is loading or closing",
+      "reason": "native-space-transition",
+      "source": [
+        {
+          "path": "space/spacecore/loaded_witness.go",
+          "sha256": "1253f334054ec7f8cac467ca13fdf0bd7c17b769bb0add6d2e7e5fab847935d6"
+        }
+      ]
+    },
+    {
+      "literal": "current account ACL identity required",
+      "reason": "native-acl-identity",
+      "source": [
+        {
+          "path": "space/spacecore/loaded_witness.go",
+          "sha256": "1253f334054ec7f8cac467ca13fdf0bd7c17b769bb0add6d2e7e5fab847935d6"
+        }
+      ]
+    },
+    {
+      "literal": "explicit current local ACL read permission required",
+      "reason": "native-acl-read-permission",
+      "source": [
+        {
+          "path": "space/spacecore/loaded_witness.go",
+          "sha256": "1253f334054ec7f8cac467ca13fdf0bd7c17b769bb0add6d2e7e5fab847935d6"
+        }
+      ]
+    },
+    {
+      "literal": "captured native ACL head differs from held loaded ACL",
+      "reason": "native-acl-head-changed",
+      "source": [
+        {
+          "path": "space/spacecore/loaded_witness.go",
+          "sha256": "1253f334054ec7f8cac467ca13fdf0bd7c17b769bb0add6d2e7e5fab847935d6"
+        }
+      ]
+    },
+    {
+      "literal": "current native owned storage handle required",
+      "reason": "native-owned-storage",
+      "source": [
+        {
+          "path": "space/spacecore/storage/anystorage/owned_snapshot.go",
+          "sha256": "cd450ebe0bb3523eea6516aaf2694680afcc6def087663c14b06c96bccf592f7"
+        }
+      ]
+    },
+    {
+      "literal": "local witness capture limit exceeded",
+      "reason": "native-witness-limit",
+      "source": [
+        {
+          "path": "core/pinkha/localstorewitness/capture.go",
+          "sha256": "934351f99f3468839e3c3a21495203288ece1295481f81e35e5176345c5b103c"
+        }
+      ]
+    },
+    {
+      "literal": "current owned Space capability required",
+      "reason": "native-space-capability",
+      "source": [
+        {
+          "path": "core/pinkha/localstorewitness/capture.go",
+          "sha256": "934351f99f3468839e3c3a21495203288ece1295481f81e35e5176345c5b103c"
+        }
+      ]
+    },
+    {
+      "literal": "native Space state/root binding incomplete",
+      "reason": "native-root-binding",
+      "source": [
+        {
+          "path": "core/pinkha/localstorewitness/capture.go",
+          "sha256": "934351f99f3468839e3c3a21495203288ece1295481f81e35e5176345c5b103c"
+        }
+      ]
+    },
+    {
+      "literal": "native collection inventory incomplete",
+      "reason": "native-collection-inventory",
+      "source": [
+        {
+          "path": "core/pinkha/localstorewitness/capture.go",
+          "sha256": "934351f99f3468839e3c3a21495203288ece1295481f81e35e5176345c5b103c"
+        }
+      ]
+    },
+    {
+      "literal": "complete captured local witness required",
+      "reason": "native-witness-incomplete",
+      "source": [
+        {
+          "path": "core/pinkha/localstorewitness/census.go",
+          "sha256": "6436d65fb9eaeb457c59222741d9d9429639b2c3c67fdb5af30f25b8b5676a5b"
+        }
+      ]
+    },
+    {
+      "literal": "unsupported or non-lossless decoded native value",
+      "reason": "native-value-encoding",
+      "source": [
+        {
+          "path": "core/pinkha/localstorewitness/encoding.go",
+          "sha256": "0e413617ca4d1f709ed5f9c37b3809c7710377f8cf79f9247ffbdb6eb3174f4f"
+        }
+      ]
+    },
+    {
+      "literal": "complete native tree identity inventory required",
+      "reason": "native-tree-identity-inventory",
+      "source": [
+        {
+          "path": "core/pinkha/localstorewitness/native_tree_inventory.go",
+          "sha256": "efad05f960f4130526809a3512820e46f4989698e216229bb28715992646a52b"
+        }
+      ]
+    },
+    {
+      "literal": "authorized unchanged native object capture required",
+      "reason": "native-object-capture",
+      "source": [
+        {
+          "path": "core/application/loaded_object_witness.go",
+          "sha256": "ed50bf44d97b4a31c7001df088f39d9c11e6f80604136b644d4e3bbd4d696b68"
+        }
+      ]
+    },
+    {
+      "literal": "private native source bundle:",
+      "reason": "native-private-bundle-write",
+      "source": [
+        {
+          "path": "core/application/loaded_space_witness.go",
+          "sha256": "8225e0ac9af096fd0e03e5b6658a5981fd3752979953824b2deeb514c07a88da"
+        }
+      ]
+    }
+  ],
+  "sourceAcceptance": false
+}
