@@ -317,11 +317,13 @@ internal enum OriginalEditorMiniAppsFiles {
               maximumBytes >= 0, maximumBytes <= self.maximumBytes else {
             throw AnytypeOriginalEditorMiniAppsError.attachmentUnavailable
         }
+        try Task.checkCancellation()
         let response = try await ClientCommands.objectShow(.with {
             $0.contextID = binding.objectID
             $0.objectID = file.targetObjectID
             $0.spaceID = binding.spaceID
         }).invoke()
+        try Task.checkCancellation()
         let records = response.objectView.details.filter { $0.id.utf8.elementsEqual(file.targetObjectID.utf8) }
         guard response.error.code == .null, response.hasObjectView,
               response.objectView.rootID.utf8.elementsEqual(file.targetObjectID.utf8),
@@ -341,6 +343,7 @@ internal enum OriginalEditorMiniAppsFiles {
             $0.objectID = file.targetObjectID
             $0.path = directory.path
         }).invoke()
+        try Task.checkCancellation()
         guard downloaded.error.code == .null else {
             throw AnytypeOriginalEditorMiniAppsError.attachmentUnavailable
         }
@@ -566,10 +569,12 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
         guard maximumBytes >= 0, maximumBytes <= OriginalEditorMiniAppsFiles.maximumBytes else {
             throw AnytypeOriginalEditorMiniAppsError.attachmentTooLarge
         }
+        try Task.checkCancellation()
         try beginMiniApps()
         defer { miniAppsBusy = false; owner.host.endMiniAppsInteraction() }
         try validateMiniAppsContext(context)
         let current = try await readMiniAppsNodes()
+        try Task.checkCancellation()
         let selected = try remappedSelection(context: context, current: current)
         let paths = selected.map(\.path)
         let expected = try context.nodes.filter { node in
@@ -593,9 +598,12 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
             guard try before.equivalent(to: node), case .file(let file)? = try node.native().content else {
                 throw AnytypeOriginalEditorMiniAppsError.nativeBodyChanged
             }
+            try Task.checkCancellation()
             let attachment = try await downloadMiniAppsFile(file, maximumBytes: remaining)
+            try Task.checkCancellation()
             try owner.validateCurrent()
             let observed = try await readMiniAppsNodes()
+            try Task.checkCancellation()
             guard let actual = observed.first(where: { $0.id == node.id }),
                   try node.equivalent(to: actual) else {
                 throw AnytypeOriginalEditorMiniAppsError.nativeBodyChanged
@@ -702,6 +710,7 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
         action: AnytypeOriginalEditorMiniAppsAction, text: String,
         attachments: [AnytypeOriginalEditorMiniAppsAttachment], maximumBodyBytes: Int) async throws
         -> AnytypeOriginalEditorLocalAnnotationCapture {
+        try Task.checkCancellation()
         try OriginalEditorMiniAppsFiles.validate(attachments)
         try AnytypeOriginalEditorSnapshot.validateLimit(maximumBodyBytes)
         try beginMiniApps()
@@ -712,6 +721,7 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
             throw AnytypeOriginalEditorMiniAppsError.unsupportedResult
         }
         var current = try await readMiniAppsNodes()
+        try Task.checkCancellation()
         let sameNativeObject = context.source.object == binding.objectID && context.source.space == binding.spaceID
         if !sameNativeObject {
             guard try OriginalEditorMiniAppsGraph.matching(context.nodes, current) else {
@@ -763,12 +773,14 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
         // All targets were checked before any native mutation. A later failure
         // retires this draft; the canonical row/receipt is still untouched.
         do {
+            try Task.checkCancellation()
             try owner.validateCurrent()
             mutated = true
             for (before, after) in edits {
                 try await owner.host.preparedSession.services.blockActionService.textServiceHandler.setText(
                     contextId: binding.objectID, blockId: before.id,
                     middlewareString: .init(text: after.text, marks: after.marks))
+                try Task.checkCancellation()
                 try owner.validateCurrent()
                 current = try await readMiniAppsNodes()
                 guard let observed = current.first(where: { $0.id == before.id }),
@@ -792,6 +804,7 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                 } else {
                     added = try await service.addFirstBlock(contextId: binding.objectID, info: info)
                 }
+                try Task.checkCancellation()
                 try owner.validateCurrent()
                 current = try await readMiniAppsNodes()
                 guard let observed = current.first(where: { $0.id == added }), observed.bodyText == text,
@@ -808,6 +821,7 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                 current.first(where: { $0.path == [index] })?.id
             } ?? current.last(where: { $0.path.count == 1 })?.id
             for (index, attachment) in attachments.enumerated() {
+                try Task.checkCancellation()
                 try owner.validateCurrent()
                 let directory = try OriginalEditorArchiveFiles.makeOwnedDirectory()
                 defer { try? FileManager.default.removeItem(at: directory) }
@@ -829,9 +843,11 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                 } else {
                     added = try await service.addFirstBlock(contextId: binding.objectID, info: info)
                 }
+                try Task.checkCancellation()
                 try owner.validateCurrent()
                 try await owner.host.preparedSession.services.blockActionService.fileService.uploadDataAt(
                     source: .path(upload.path), contextID: binding.objectID, blockID: added)
+                try Task.checkCancellation()
                 try owner.validateCurrent()
                 current = try await readMiniAppsNodes()
                 guard let observed = current.first(where: { $0.id == added }),
@@ -844,6 +860,7 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                     throw AnytypeOriginalEditorMiniAppsError.resultNotSaved
                 }
                 let readback = try await downloadMiniAppsFile(file, maximumBytes: attachment.data.count)
+                try Task.checkCancellation()
                 try owner.validateCurrent()
                 guard readback.data == attachment.data,
                       readback.name.utf8.elementsEqual(attachment.name.utf8) else {
@@ -852,8 +869,10 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                 importedFiles.append((file.targetObjectID, attachment.data))
                 fileAnchor = added
             }
+            try Task.checkCancellation()
             owner.host.endMiniAppsInteraction(restore: false)
             let capture = try await owner.capture(maximumBodyBytes: maximumBodyBytes)
+            try Task.checkCancellation()
             if !importedFiles.isEmpty {
                 let archive = try OriginalEditorLocalAnnotationNativeBody.decoded(capture.nativeCapture.snapshot)
                 for (objectID, expectedBytes) in importedFiles {
