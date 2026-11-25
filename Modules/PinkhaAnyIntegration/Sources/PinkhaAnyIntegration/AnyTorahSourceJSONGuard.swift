@@ -24,9 +24,9 @@ public enum AnyTorahSourceJSONGuard {
         }
     }
 
-    private static func preservingMigrationErrors(_ operation: () throws -> Void) throws {
+    static func preservingMigrationErrors<Value>(_ operation: () throws -> Value) throws -> Value {
         do {
-            try operation()
+            return try operation()
         } catch let error as TorahSourceJSONGuardError {
             switch error {
             case .numericPrecisionWouldChange(let path):
