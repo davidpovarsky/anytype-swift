@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Execute the five original real-native MiniApps cases in a frozen unified app."""
+"""Execute an explicitly registered native acceptance scope in a frozen unified app."""
 from __future__ import annotations
 import argparse, copy, hashlib, importlib.util, json, os, plistlib, re, shutil, sys, time, traceback, uuid
 from pathlib import Path
@@ -12,6 +12,13 @@ METHODS = [
     "testRetiredMiniAppsDocumentCannotWriteOrAcknowledgeItsNativeReturn",
     "testIssuedMiniAppsNativeMutationDoesNotAppendAfterLaterUserEdit",
 ]
+SCOPES = {
+    "original-miniapps-five": METHODS,
+    "failed-replacement-and-new-bin": [
+        METHODS[0],
+        "testNativeBinRestoresExactObjectAndBodyAndRejectsRetiredPresentation",
+    ],
+}
 TARGET = "AnytypeTests"
 CLASS = "NativeDocumentPublicationTests"
 
@@ -21,7 +28,10 @@ def main():
     parser.add_argument("--main-evidence",type=Path,required=True)
     parser.add_argument("--frozen-inputs",type=Path,required=True)
     parser.add_argument("--output",type=Path,required=True)
+    parser.add_argument("--scope", choices=sorted(SCOPES), default="original-miniapps-five")
     args=parser.parse_args()
+    methods=SCOPES[args.scope]
+    expected_count=len(methods)
     for path in (args.main_root,args.main_evidence,args.frozen_inputs,args.output):
         owned.require(path.is_absolute() and path.resolve()==path,"canonical_owned_path_required")
     owned.require(all(args.main_root in p.parents for p in (args.main_evidence,args.frozen_inputs,args.output)),
@@ -30,7 +40,8 @@ def main():
     out=args.output;out.mkdir(mode=0o700);os.umask(0o077)
     source=args.frozen_inputs/"source"
     receipt={"status":"FAIL","applicationBuilds":0,"nativeLibraryBuilds":0,"uiBuilds":0,
-             "testsExecuted":0,"scope":"actual_native_model_and_SDK_transport_not_companion_UI"}
+             "testsExecuted":0,"scope":"actual_native_model_and_SDK_transport_not_companion_UI",
+             "registeredSelection":args.scope,"selectedMethods":methods,"expectedTestCount":expected_count}
     udid=None;products=None;expected=None;first=None;cleanup=[]
     try:
         record=json.loads((args.main_evidence/"receipt.json").read_bytes())
@@ -80,7 +91,7 @@ def main():
         _,raw=owned.run(["xcrun","simctl","getenv",udid,"SIMULATOR_ROOT"],out,"runtime-root")
         runtime_root=Path(raw.decode().strip())
         configured=copy.deepcopy(initial)
-        selected=copy.deepcopy(target);selected["OnlyTestIdentifiers"]=[CLASS+"/"+name for name in METHODS]
+        selected=copy.deepcopy(target);selected["OnlyTestIdentifiers"]=[CLASS+"/"+name for name in methods]
         selected["SystemAttachmentLifetime"]="keepAlways";selected["UserAttachmentLifetime"]="keepAlways"
         configured["TestConfigurations"][0]["TestTargets"]=[selected]
         inverse=copy.deepcopy(configured);inverse["TestConfigurations"][0]["TestTargets"]=configuration["TestTargets"]
@@ -107,7 +118,7 @@ def main():
         descriptor.chmod(0o600)
         owned.write(out/"descriptor-binding.json",{"originalSHA256":owned.digest(template),
             "copiedSHA256":owned.digest(descriptor),"originalInverseEqual":True,
-            "selectedMethods":METHODS,"runtimeInjection":injections})
+            "selectedMethods":methods,"runtimeInjection":injections})
         receipt.update(sourceCommit=record["sourceCommit"],mainReceiptSHA256=owned.digest(args.main_evidence/"receipt.json"),
                        originalSourceSHA256=owned.digest(args.main_evidence/"source-before.json"),
                        frozenReceiptSHA256=owned.digest(args.frozen_inputs/"receipt.json"))
@@ -117,21 +128,21 @@ def main():
               "-maximum-test-execution-time-allowance","300","-collect-test-diagnostics","never",
               "ARCHS=arm64","ONLY_ACTIVE_ARCH=YES","CODE_SIGN_IDENTITY=-","CODE_SIGNING_ALLOWED=YES",
               "CODE_SIGNING_REQUIRED=YES"]
-        for method in METHODS:plan.append("-only-testing:"+TARGET+"/"+CLASS+"/"+method)
+        for method in methods:plan.append("-only-testing:"+TARGET+"/"+CLASS+"/"+method)
         enumeration=out/"enumeration.json"
         owned.run(plan+["-enumerate-tests","-test-enumeration-style","flat","-test-enumeration-format","json",
                         "-test-enumeration-output-path",str(enumeration)],out,"enumerate",timeout=180)
         contract=owned.original_module(source/"Tools/AnyEnginePort/native_ui_transition_contract.py","native_model_enumeration")
         label,enabled,disabled=contract.enumerated_identifiers(json.loads(enumeration.read_bytes()))
-        expected_names={TARGET+"/"+CLASS+"/"+x for x in METHODS}
+        expected_names={TARGET+"/"+CLASS+"/"+x for x in methods}
         normalize=lambda value: value[:-2] if value.endswith("()") else value
         owned.require(label==TARGET and {normalize(x) for x in enabled}==expected_names,
-                      "exact_five_original_methods_required")
+                      "exact_registered_original_methods_required")
         # Xcode reports the other compiled XCTest/Swift Testing methods as
         # disabled by our explicit selection. Those are not executed skips.
         # The original descriptor has no SkipTestIdentifiers; the enabled set
-        # must remain exactly the five requested methods and actual results
-        # below still require five passes and zero skips.
+        # must remain exactly the registered requested methods and actual results
+        # below require every selected method to pass with zero skips.
         owned.require(all(x.startswith(TARGET+"/") and normalize(x) not in expected_names
                           for x in disabled),"only_original_unselected_host_methods_may_be_disabled")
         owned.write(out/"selection.json",{"testPlan":label,"enabled":sorted(enabled),
@@ -158,9 +169,9 @@ def main():
                 counts={k:values["summary"].get(k) for k in ("totalTestCount","passedTests","failedTests","skippedTests")}
                 receipt.update(counts=counts,actualCases=cases,testsExecuted=counts["totalTestCount"])
                 actual={re.sub(r"\(\)$","",key.split(CLASS+"/")[-1]) for key in cases}
-                owned.require(counts=={"totalTestCount":5,"passedTests":5,"failedTests":0,"skippedTests":0}
-                              and actual==set(METHODS) and all(v=="Passed" for v in cases.values()),
-                              "five_original_native_methods_did_not_pass")
+                owned.require(counts=={"totalTestCount":expected_count,"passedTests":expected_count,"failedTests":0,"skippedTests":0}
+                              and actual==set(methods) and all(v=="Passed" for v in cases.values()),
+                              "registered_original_native_methods_did_not_pass")
                 devices=values["summary"]["devicesAndConfigurations"]
                 owned.require(len(devices)==1 and devices[0]["device"]["deviceId"].upper()==udid
                               and devices[0]["device"]["architecture"]=="arm64","actual_result_device_mismatch")
@@ -196,7 +207,7 @@ def main():
                 owned.require(owned.digest(source/name)==row["sha256"],"frozen_source_changed_after:"+name)
         except BaseException as exc:cleanup.append({"phase":"input-integrity","reason":str(exc)})
         receipt.update(firstFailure=first,diagnosticFailures=cleanup,ownedSimulator=udid,finished=time.time())
-        receipt["status"]="PASS" if first is None and not cleanup and receipt.get("counts",{}).get("passedTests")==5 else "FAIL"
+        receipt["status"]="PASS" if first is None and not cleanup and receipt.get("counts",{}).get("passedTests")==expected_count else "FAIL"
         owned.write(out/"receipt.json",receipt)
     owned.require(receipt["status"]=="PASS","actual_native_model_acceptance_failed")
 
