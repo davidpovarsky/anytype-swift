@@ -2339,6 +2339,7 @@ final class NativeApplicationUnderTest: XCUIApplication {
             XCTFail("The real combined-host engine selector did not appear.")
             return
         }
+        guard acknowledgeEmptyHeartDebugDisclosureIfPresent(selector) else { return }
         if selector.value as? String != "Any" {
             let ready = XCTNSPredicateExpectation(
                 predicate: NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
@@ -2360,6 +2361,44 @@ final class NativeApplicationUnderTest: XCUIApplication {
             object: selector)
         XCTAssertEqual(XCTWaiter.wait(for: [selected], timeout: 60), .completed,
                        "The original host did not complete the actual Any engine transition.")
+    }
+
+    /// The original Debug Heart startup disclosure is real UI. A fresh isolated
+    /// native journey has no Heart vault, so only its one-button empty-account
+    /// shape is admitted; a loaded-account or unrelated alert must fail closed.
+    private func acknowledgeEmptyHeartDebugDisclosureIfPresent(_ selector: XCUIElement) -> Bool {
+        let alert = alerts.firstMatch
+        if !selector.isHittable && !alert.exists {
+            _ = alert.waitForExistence(timeout: 15)
+        }
+        guard alert.exists else { return true }
+        let messages = [
+            "You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken.",
+            "הפעלת את האפליקציה עם תווכה (middleware) לא יציבה. אל תשתמש בכספת הייצור שלך. הכספת עלולה להיפגם."
+        ]
+        let labels = [
+            "I won't be using my production vault",
+            "לא אשתמש בכספת הייצור שלי"
+        ]
+        let text = alert.staticTexts.matching(NSPredicate(format: "label IN %@", messages))
+        let proceed = alert.buttons.matching(NSPredicate(format: "label IN %@", labels))
+        guard alerts.count == 1, text.count == 1, alert.buttons.count == 1,
+              proceed.count == 1, proceed.firstMatch.isEnabled, proceed.firstMatch.isHittable else {
+            XCTFail("An unexpected alert blocked the isolated native journey; no account action was approved.")
+            return false
+        }
+        XCTContext.runActivity(named: "Acknowledge original empty Heart Debug disclosure") { activity in
+            let original = XCTAttachment(screenshot: screenshot())
+            original.name = "unified-native-original-empty-heart-disclosure"
+            original.lifetime = .keepAlways
+            activity.add(original)
+        }
+        proceed.firstMatch.tap()
+        guard alert.waitForNonExistence(timeout: 15) else {
+            XCTFail("The original empty Heart Debug disclosure did not close after its actual button was tapped.")
+            return false
+        }
+        return true
     }
 }
 
