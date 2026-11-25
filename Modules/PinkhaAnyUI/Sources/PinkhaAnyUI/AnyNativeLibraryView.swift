@@ -188,7 +188,8 @@ public struct AnyNativeLibraryView: View {
                                 hierarchyRow(item)
                                     .moveDisabled(!editMode.isEditing || !model.canWrite)
                             }
-                                .onMove { offsets, destination in
+                                // Remove List reordering outside Edit mode so folder drops own the interaction.
+                                .onMove(perform: editMode.isEditing && model.canWrite ? { offsets, destination in
                                     guard lifetime.isActive, model.canWrite, editMode.isEditing,
                                           offsets.count == 1, let offset = offsets.first,
                                           items.indices.contains(offset) else { return }
@@ -199,7 +200,7 @@ public struct AnyNativeLibraryView: View {
                                     let before = index + 1 < reordered.count ? reordered[index + 1] : nil
                                     Task { await model.move(objectID: item.objectID, parentID: parentID,
                                                             beforeSiblingID: before) }
-                                }
+                                } : nil)
                             ForEach(model.pendingCreations.filter { $0.plan.parentID == parentID }) { pending in
                                 HStack {
                                     Label(pending.plan.title, systemImage: pending.plan.kind == .folder ? "folder" : "doc")
