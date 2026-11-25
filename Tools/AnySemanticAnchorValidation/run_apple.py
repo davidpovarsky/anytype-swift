@@ -14,6 +14,7 @@ import plistlib
 import re
 import shutil
 import signal
+import stat
 import subprocess
 import sys
 import time
@@ -187,8 +188,17 @@ def relocate_owned_alternates(original, derived, evidence):
                 "retained_object_database_missing")
         original_objects = inventory(retained)
         require(original_objects == inventory(replacement), "copied_object_database_changed")
-        path.write_text(str(replacement) + "\n")
-        records.append({"metadata": str(path.relative_to(derived)),
+        metadata = path.stat()
+        require(metadata.st_uid == os.getuid(), "alternate_copy_not_owned_by_controller")
+        mode = stat.S_IMODE(metadata.st_mode)
+        # SwiftPM makes this metadata read-only. Its verified, private COW copy
+        # is ours to relocate; preserve the original mode after the write.
+        path.chmod(mode | stat.S_IWUSR)
+        try:
+            path.write_text(str(replacement) + "\n")
+        finally:
+            path.chmod(mode)
+        records.append({"metadata": str(path.relative_to(derived)), "preservedMode": mode,
                         "original": str(previous), "replacement": str(replacement),
                         "retainedObjectFiles": len(original_objects),
                         "objectInventorySHA256": hashlib.sha256(
@@ -301,6 +311,18 @@ def main():
         os.environ["DEVELOPER_DIR"] = "/Applications/Xcode.app/Contents/Developer"
         commands.run(["xcodebuild", "-version"], "xcode-version")
         commands.run(["xcrun", "--sdk", "iphonesimulator", "--show-sdk-version"], "simulator-sdk")
+        derived = root / "derived"
+        commands.run(["/bin/cp", "-cR", str(original / "work/derived"), str(derived)], "clone-compatible-cache", 600)
+        # Original old products remain under the retained D3 root. Remove the
+        # copied descriptors so each selected scheme must produce a new original.
+        for old in (derived / "Build/Products").glob("*.xctestrun"):
+            old.unlink()
+        relocate_owned_alternates(original, derived, evidence)
+        dependencies_before = dependency_state(derived / "SourcePackages")
+        old_dependencies = json.loads((original / "evidence/actual-dependencies.json").read_text())
+        require({name: entry["commit"] for name, entry in dependencies_before.items()}
+                == old_dependencies["actualPackageCommits"], "original_dependency_pins_changed")
+        write(evidence / "dependencies-before.json", dependencies_before)
         devices = commands.json(["xcrun", "simctl", "list", "--json"], "available-simulators")
         runtimes = [r for r in devices.get("runtimes", []) if r.get("isAvailable") is True
                     and r.get("version") == "27.0" and r.get("name", "").startswith("iOS")]
@@ -314,18 +336,6 @@ def main():
               "runtime": runtimes[0], "deviceType": types[0]})
         commands.run(["xcrun", "simctl", "boot", device], "boot-owned-simulator")
         commands.run(["xcrun", "simctl", "bootstatus", device, "-b"], "wait-owned-boot", 240)
-        derived = root / "derived"
-        commands.run(["/bin/cp", "-cR", str(original / "work/derived"), str(derived)], "clone-compatible-cache", 600)
-        # Original old products remain under the retained D3 root. Remove the
-        # copied descriptors so each selected scheme must produce a new original.
-        for old in (derived / "Build/Products").glob("*.xctestrun"):
-            old.unlink()
-        relocate_owned_alternates(original, derived, evidence)
-        dependencies_before = dependency_state(derived / "SourcePackages")
-        old_dependencies = json.loads((original / "evidence/actual-dependencies.json").read_text())
-        require({name: entry["commit"] for name, entry in dependencies_before.items()}
-                == old_dependencies["actualPackageCommits"], "original_dependency_pins_changed")
-        write(evidence / "dependencies-before.json", dependencies_before)
         flags = ["ARCHS=arm64", "ONLY_ACTIVE_ARCH=YES", "CODE_SIGNING_ALLOWED=YES",
                  "CODE_SIGNING_REQUIRED=YES", "CODE_SIGN_IDENTITY=-", "PROVISIONING_PROFILE_SPECIFIER="]
         destination = "platform=iOS Simulator,id=" + device
