@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "xcodebuild",
+    "test-without-building",
+    "-xctestrun",
+    "/Users/m1/builds/pinkha-dual-main-20261125/native-miniapps-bin-ca7-1/Selected.xctestrun",
+    "-destination",
+    "platform=iOS Simulator,id=5D773E4F-6F99-4772-A3CE-01C60773DD06",
+    "-parallel-testing-enabled",
+    "NO",
+    "-test-timeouts-enabled",
+    "YES",
+    "-default-test-execution-time-allowance",
+    "300",
+    "-maximum-test-execution-time-allowance",
+    "300",
+    "-collect-test-diagnostics",
+    "never",
+    "ARCHS=arm64",
+    "ONLY_ACTIVE_ARCH=YES",
+    "CODE_SIGN_IDENTITY=-",
+    "CODE_SIGNING_ALLOWED=YES",
+    "CODE_SIGNING_REQUIRED=YES",
+    "-only-testing:AnytypeTests/NativeDocumentPublicationTests/testMiniAppsNativeReplacementPreservesFormattingAndAcknowledgesAfterReadback",
+    "-only-testing:AnytypeTests/NativeDocumentPublicationTests/testNativeBinRestoresExactObjectAndBodyAndRejectsRetiredPresentation",
+    "-resultBundlePath",
+    "/Users/m1/builds/pinkha-dual-main-20261125/native-miniapps-bin-ca7-1/Original.xcresult"
+  ],
+  "freeBytesBefore": 117432279040,
+  "pgid": 42372,
+  "pid": 42372,
+  "started": 1795610003.622699
+}
