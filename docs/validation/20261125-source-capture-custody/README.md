@@ -20,3 +20,7 @@ The two read-only retention operations independently admitted the exact original
 The first Archive retention attempt failed before copying because the expected controller directory was absent. Its original failed receipt is retained. The successor changed only the controller path to the independently found file with exactly the original 4d90f8e4... SHA; the source/protocol/result/custody checks did not change.
 
 The full safe count, command, digest and scope receipts are in the adjacent JSON files. Actual account contents remain only in their explicitly identified private retention directories.
+
+## Later D terminal accounts
+
+The two exact App5ffff/UI06a terminal accounts were independently sealed with the closed two-case controller1e370. The Any MiniApps result remains one original failure; the Archive picker method remains diagnostic-only with no Save/import/roundtrip acceptance. New private seals f3072146 and22372e7d preserve all four original scope inventories and the same Shutdown device/plist/root identities. Their public retention receipts are in d-current-terminal-retention.json. No additional boot, native API, test method, signal or acceptance claim was introduced.
