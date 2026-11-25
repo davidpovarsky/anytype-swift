@@ -6,7 +6,7 @@ import Lib
 /// Native account/Space authorization remains in each engine's existing API.
 public enum PinkhaUnifiedRuntimeProfile {
     public static let sourceManifestSHA256 =
-        "0aed35f4909e543a2b0c26f7f9f31fccf8143a8f2cb1d18c7a786c99d4a34fdf"
+        "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72"
     public static let heartVersion = "pinkha-dual-runtime-v1-" + sourceManifestSHA256
     public static let anyVersion = "v0.5.0-pinkha.dual.1-" + sourceManifestSHA256
     public static let anyRuntimeVersion = "any " + anyVersion

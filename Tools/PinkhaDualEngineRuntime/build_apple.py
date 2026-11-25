@@ -16,9 +16,10 @@ import time
 import uuid
 import zipfile
 import native_dependencies
+import native_gateway
 
-MANIFEST_SHA = "0aed35f4909e543a2b0c26f7f9f31fccf8143a8f2cb1d18c7a786c99d4a34fdf"
-ARCHIVE_SHA = "10bda802b7f6191852f98238696b2f04fd1fd82e3ac23fc444e9743b8ef05fcd"
+MANIFEST_SHA = "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72"
+ARCHIVE_SHA = "9197ea5c9f8a832430fce44b36aeeeb27099fff6e745ec6197e9a3493ffd51db"
 GO_ROOT = Path("/Users/m1/toolchains/anytapy-go1.27.4/go")
 EMERGENCY_FREE_BYTES = 2 * 1024**3
 
@@ -481,6 +482,9 @@ def main():
             run([GO_ROOT / "bin/go", "install", "golang.org/x/mobile/cmd/gomobile",
                  "golang.org/x/mobile/cmd/gobind"], "install-bind-tools", source, environment, 600)
             run([tools / "gomobile", "init"], "gomobile-init", source, environment, 300)
+        receipt["mobileGatewayQualification"] = native_gateway.qualify(
+            root, source, manifest, MANIFEST_SHA, args.slice, run, environment, GO_ROOT / "bin/go")
+        check_source(source, manifest, native_files)
         heart_version = "pinkha-dual-runtime-v1-" + MANIFEST_SHA
         any_version = "v0.5.0-pinkha.dual.1-" + MANIFEST_SHA
         flags = "-X github.com/anyproto/anytype-heart/util/vcs.GitSummary=" + heart_version

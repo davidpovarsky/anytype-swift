@@ -7,7 +7,7 @@ not also link the standalone AnyLib framework.
 
 ## Current source closure
 
-The current source manifest is `0aed35f4909e543a2b0c26f7f9f31fccf8143a8f2cb1d18c7a786c99d4a34fdf`
+The current source manifest is `70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72`
 with 4,855 exact files. It succeeds the actually built manifest
 `70fb5342f2ff31d1cf5f7ce44bed7b16f6373f6bf95eb031d165339cf0f26683`.
 The only native source delta is eight reviewed Heart paths from
@@ -15,6 +15,10 @@ The only native source delta is eight reviewed Heart paths from
 `5e8f9ce4ec789c1cd775b148a6cc49d4a28f56b5`: five existing files and three additions.
 The five predecessor blobs exactly match the previous unified manifest.
 Every other source file and all Go module declarations/checksums are unchanged.
+The producer also restores Any's separate `mobile` build tag. `gomobile`
+alone does not enable the native managed-token gateway. No Heart, SDK or
+any-sync source has a `mobile` build constraint; Any selects its original
+mobile gateway, process-lock and OpenAPI variants.
 
 The donor adds the actual compiled definition registry to the existing native
 account-bound capture and its original checkpoint validation. It preserves
@@ -74,7 +78,7 @@ The previous 70fb simulator and device slices passed their actual build/link
 qualification. The first original combined app and complete UI bundle also
 built successfully at app source `6db4d065e007dc6c39ae510a77053f33b7de8247`.
 Those retained results remain evidence for that previous source only.
-The current 0aed native source requires its own two slice builds and affected
+The current native source requires its own two slice builds and affected
 app/UI acceptance before final signing. Production shipping must retain the
 dual-engine, T2, T5 and Page154 feature definitions while excluding DEBUG-only
 launch fixtures. A successful native producer or app build alone is not
