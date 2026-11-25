@@ -288,12 +288,8 @@ public struct AnytypeOriginalEditorMiniAppsFile: Sendable {
 
 internal enum OriginalEditorMiniAppsFiles {
     static let maximumBytes = OriginalAnnotationNativeArchiveLayout.maximumExpandedBytes
-    static let maximumCount = 32
 
     static func validate(_ attachments: [AnytypeOriginalEditorMiniAppsAttachment]) throws {
-        guard attachments.count <= maximumCount else {
-            throw AnytypeOriginalEditorMiniAppsError.attachmentTooLarge
-        }
         var total = 0
         for attachment in attachments {
             guard attachment.data.count <= maximumBytes - total else {
@@ -588,8 +584,7 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
             if case .file? = try node.native().content { return included }
             return false
         }
-        guard candidates.count == expected.count,
-              candidates.count <= OriginalEditorMiniAppsFiles.maximumCount else {
+        guard candidates.count == expected.count else {
             throw AnytypeOriginalEditorMiniAppsError.nativeBodyChanged
         }
         var result: [AnytypeOriginalEditorMiniAppsFile] = []
