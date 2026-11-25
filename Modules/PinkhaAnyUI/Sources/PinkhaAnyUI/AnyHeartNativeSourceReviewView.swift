@@ -57,6 +57,10 @@ public struct AnyHeartNativeSourceReviewView: View {
                     identity(t("מזהה צילום", "Capture ID"), review.descriptor.requestID)
                     identity(t("טביעת אצבע של הצילום", "Capture fingerprint"), review.descriptor.manifestSHA256)
                     count(t("עצים מקוריים", "Native trees"), review.descriptor.nativeTrees, id: "trees")
+                    if let census = review.bundle.nativeStoreContext?.headCensus {
+                        count(t("רשומות מקור, לרבות הגדרות והרשאות", "Source identities, including settings and permissions"),
+                              census.sourceHeadIDs.count, id: "native-heads")
+                    }
                 }
                 Text(t(
                     "שינוי בחשבון, במרחב או בתוכן מחייב בדיקה חוזרת של המקור לפני העברה.",
@@ -84,9 +88,16 @@ public struct AnyHeartNativeSourceReviewView: View {
                     }
                 }
             }
-            if !review.bundle.retainedOtherCollections.isEmpty {
+            let collections = review.bundle.nativeStoreContext?.unmappedCollectionNames.count ??
+                review.bundle.retainedOtherCollections.count
+            if collections > 0 {
                 count(t("אוספי מקור נוספים שדורשים התאמה", "Additional source collections requiring mapping"),
-                      review.bundle.retainedOtherCollections.count, id: "collections")
+                      collections, id: "collections")
+            }
+            if review.bundle.nativeStoreContext?.headCensus == nil {
+                Text(t("ספירת נתוני המקור המלאה טרם אומתה.", "The complete source identity census has not been verified."))
+                    .font(.footnote).foregroundStyle(.secondary)
+                    .accessibilityIdentifier("heart-source-review-incomplete-census")
             }
             ForEach(Array(review.bundle.issues.enumerated()), id: \.offset) { index, issue in
                 DisclosureGroup(t("פרט מקור שדורש בדיקה", "Source detail requiring review")) {

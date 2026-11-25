@@ -23,6 +23,17 @@ public struct AnyHeartNativeStoreContext: Sendable {
         public let sourceRowSHA256: String?
     }
 
+    /// Exact native head identities, including retained settings/tombstones,
+    /// ACL and the separately derived default KV head. This is a census of
+    /// original source data, not semantic admission or an ACL translation.
+    public struct HeadCensus: Sendable {
+        public let sourceHeadIDs: [String]
+        public let nativeACLID: String
+        public let capturedACLRowCount: Int
+        public let defaultKeyValueID: String?
+    }
+
+    public let headCensus: HeadCensus?
     public let sourceAccountID: String
     public let sourceSpaceID: String
     public let manifestSHA256: String
@@ -98,6 +109,7 @@ public struct AnyHeartNativeStoreContext: Sendable {
         var observed: [Data: Observed] = [:]
         var previousName: Data?, languageNames = Set<String>()
         var totalRows = 0, totalBytes = 0
+        var nativeHeadIDs: [String] = [], nativeHeadStrings = Set<String>()
         for index in 0..<Int(count) {
             let rawName = try reader.bytes(maximum: 4096)
             guard let name = String(data: rawName, encoding: .utf8), !name.isEmpty,
@@ -111,6 +123,7 @@ public struct AnyHeartNativeStoreContext: Sendable {
                 throw AnyHeartNativeStoreContextError.limit
             }
             let rowCount = Int(rawCount)
+            if name == "heads", rowCount > 100_002 { throw AnyHeartNativeStoreContextError.limit }
             var previousID: Range<Int>?, byteCount = 0, firstID: Data?, firstValue: Data?
             for row in 0..<rowCount {
                 let id = try reader.field(maximum: 16 * 1024 * 1024)
@@ -121,6 +134,20 @@ public struct AnyHeartNativeStoreContext: Sendable {
                 }
                 previousID = id
                 byteCount += value.count
+                if name == "heads" {
+                    let originalID = sourceRows[id]
+                    guard originalID.count >= 3, originalID.count <= 4098,
+                          originalID.first == 3, originalID.last == 0 else {
+                        throw AnyHeartNativeStoreContextError.invalidWitness
+                    }
+                    let rawID = originalID.dropFirst().dropLast()
+                    guard !rawID.contains(0), let decoded = String(data: rawID, encoding: .utf8),
+                          !decoded.isEmpty, Data(decoded.utf8) == rawID,
+                          nativeHeadStrings.insert(decoded).inserted else {
+                        throw AnyHeartNativeStoreContextError.invalidWitness
+                    }
+                    nativeHeadIDs.append(decoded)
+                }
                 // Inspect only the one tiny closed lifecycle row. Every other
                 // payload remains an unmodified slice of the private witness.
                 if name == "_client", row == 0, id.count <= 128, value.count <= 256 {
@@ -178,6 +205,58 @@ public struct AnyHeartNativeStoreContext: Sendable {
               inventory["OtherCollectionRows"] == .integer(retainedRows) else {
             throw AnyHeartNativeStoreContextError.inconsistentInventory
         }
+        // Tiny detached classification controls may omit the tree inventory.
+        // A complete captured bundle always has Trees; its head census must
+        // join the exact original witness, never only the decoded snapshots.
+        var census: HeadCensus?
+        if let trees = manifest["Trees"]?.array {
+            let aclCollections = observed.values.filter {
+                AnyContentDigest.sha256(Data($0.name.utf8)) == aclHash
+            }
+            guard trees.count <= 100_000, aclCollections.count == 1,
+                  let acl = aclCollections.first, acl.count > 0,
+                  inventory["Version"] == .string("native-tree-identity-inventory-v2"),
+                  inventory["AllHeadRowsAccounted"] == .bool(true),
+                  receipt["AllNativeHeadRowsAccounted"] == .bool(true),
+                  inventory["Trees"] == .integer(Int64(trees.count)),
+                  let keyValueStores = inventory["KeyValueStores"]?.integer,
+                  (0...1).contains(keyValueStores),
+                  let keyValueRows = inventory["KeyValueRows"]?.integer, keyValueRows >= 0,
+                  observed[Data("heads".utf8)]?.count == nativeHeadIDs.count else {
+                throw AnyHeartNativeStoreContextError.inconsistentInventory
+            }
+            var expected = Set<Data>(), identities = Set<String>()
+            for tree in trees {
+                guard let id = tree["ObjectID"]?.string, !id.isEmpty, id.utf8.count <= 4096,
+                      !id.utf8.contains(0), expected.insert(Data(id.utf8)).inserted,
+                      identities.insert(id).inserted else {
+                    throw AnyHeartNativeStoreContextError.inconsistentInventory
+                }
+            }
+            guard expected.insert(Data(acl.name.utf8)).inserted,
+                  identities.insert(acl.name).inserted else {
+                throw AnyHeartNativeStoreContextError.inconsistentInventory
+            }
+            var keyValueID: String?
+            if keyValueStores == 1 {
+                guard let row = observed[Data(defaultKeyValueID.utf8)],
+                      row.count == keyValueRows,
+                      expected.insert(Data(defaultKeyValueID.utf8)).inserted,
+                      identities.insert(defaultKeyValueID).inserted else {
+                    throw AnyHeartNativeStoreContextError.inconsistentInventory
+                }
+                keyValueID = defaultKeyValueID
+            } else if keyValueRows != 0 || observed[Data(defaultKeyValueID.utf8)] != nil {
+                throw AnyHeartNativeStoreContextError.inconsistentInventory
+            }
+            guard expected == Set(nativeHeadIDs.map { Data($0.utf8) }),
+                  expected.count == nativeHeadIDs.count else {
+                throw AnyHeartNativeStoreContextError.inconsistentInventory
+            }
+            census = .init(sourceHeadIDs: nativeHeadIDs, nativeACLID: acl.name,
+                capturedACLRowCount: acl.count, defaultKeyValueID: keyValueID)
+        }
+        headCensus = census
         self.sourceAccountID = sourceAccountID; self.sourceSpaceID = sourceSpaceID
         self.manifestSHA256 = manifestSHA256; sourceWitnessSHA256 = digest
         classifiedCollections = classified; unmappedCollectionNames = unmapped
@@ -196,7 +275,7 @@ public struct AnyHeartNativeStoreContext: Sendable {
 
     /// Original StorageHeader{spaceId:1, storageName:2} protobuf -> SHA2-256 ->
     /// CIDv1 DAG-CBOR -> lower-case unpadded base32. No caller-selected store ID.
-    static func defaultKeyValueCollectionID(spaceID: String) throws -> String {
+    public static func defaultKeyValueCollectionID(spaceID: String) throws -> String {
         let space = Data(spaceID.utf8)
         guard !space.isEmpty, space.count <= 4096 else { throw AnyHeartNativeStoreContextError.limit }
         var protobuf = Data([0x0a])
