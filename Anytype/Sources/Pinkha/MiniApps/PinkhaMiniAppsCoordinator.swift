@@ -46,6 +46,7 @@ final class PinkhaMiniAppsCoordinator {
     /// hold while Heart is unavailable and releases it after its own transition ends.
     @discardableResult
     func prepareEngineAccountChange() async throws -> UUID {
+        observeCallback("account-change-begin")
         let token = lifetime.revoke()
         for confirmation in Array(confirmations.values) { confirmation.cancel() }
         let mounted = presentations.filter { !$0.confirmation }.compactMap(\.controller)
@@ -65,6 +66,7 @@ final class PinkhaMiniAppsCoordinator {
 
     func resumeAfterAccountChange(_ token: UUID) {
         lifetime.resume(token)
+        observeCallback("account-change-resumed")
         guard lifetime.acceptsOperations else { return }
         let accountID = Container.shared.accountManager().account.id
         registrations = registrations.filter { $0.value.editor != nil && $0.value.accountID == accountID }
@@ -72,6 +74,7 @@ final class PinkhaMiniAppsCoordinator {
     }
 
     func attach(editor: EditorPageController) {
+        observeCallback("editor-attach", editor: editor)
         let id = ObjectIdentifier(editor)
         let accountID = Container.shared.accountManager().account.id
         guard registrations[id]?.accountID != accountID else { consume(editor: editor); return }
@@ -90,6 +93,7 @@ final class PinkhaMiniAppsCoordinator {
     }
 
     func detach(editor: EditorPageController) {
+        observeCallback("editor-detach", editor: editor)
         registrations.removeValue(forKey: ObjectIdentifier(editor))
     }
 
@@ -149,17 +153,28 @@ final class PinkhaMiniAppsCoordinator {
     func routeCallback(_ url: URL) -> (handled: Bool, link: DeepLink?) {
         guard url.scheme?.lowercased() == PinkhaMiniAppsContext.callbacks.success?.scheme?.lowercased(),
               url.host == "miniapps", url.path == "/return" else { return (false, nil) }
+        observeCallback("callback-url", requestID: MiniAppBridgeStore.requestID(from: url))
         guard let id = MiniAppBridgeStore.requestID(from: url),
               let store = try? MiniAppBridgeStore(appGroupIdentifier: "group.com.itorah.shared"),
               let request = try? store.request(id: id),
               request.source.appID == PinkhaMiniAppsContext.sourceAppID,
               let objectID = request.source.documentID,
               let spaceID = request.source.metadata["anytype.spaceID"]
-        else { return (true, nil) }
+        else {
+            observeCallback("callback-request-unavailable")
+            return (true, nil)
+        }
+        observeCallback("callback-request-read", requestID: id, details: [
+            "heartEngine": String(PinkhaMiniAppsEngineScope.heart.matches(request.source)),
+            "accountMatches": String(request.source.metadata["anytype.accountID"] == Container.shared.accountManager().account.id)
+        ])
         guard PinkhaMiniAppsEngineScope.heart.matches(request.source) else { return (false, nil) }
         guard lifetime.acceptsOperations,
               request.source.metadata["anytype.accountID"] == Container.shared.accountManager().account.id
-        else { return (true, nil) }
+        else {
+            observeCallback("callback-routing-not-ready", requestID: id)
+            return (true, nil)
+        }
         let editors = registrations.values.compactMap(\.editor).filter {
             isCurrent($0) && isVisible($0) && $0.viewModel.document.objectId == objectID &&
                 $0.viewModel.document.spaceId == spaceID
@@ -168,9 +183,11 @@ final class PinkhaMiniAppsCoordinator {
             $0.viewIfLoaded?.window?.windowScene?.session.persistentIdentifier == request.source.sceneID
         } ?? editors.first
         if let original {
+            observeCallback("callback-mounted-editor", editor: original, requestID: id)
             consume(editor: original)
             return (true, nil)
         }
+        observeCallback("callback-object-navigation", requestID: id)
         return (true, .object(objectId: objectID, spaceId: spaceID))
     }
 
@@ -192,6 +209,7 @@ final class PinkhaMiniAppsCoordinator {
                   request.source.metadata["anytype.spaceID"] == document.spaceId,
                   request.source.metadata["anytype.accountID"] == Container.shared.accountManager().account.id
             else { continue }
+            observeCallback("result-apply-admitted", editor: editor, requestID: result.requestID)
             applying.insert(result.requestID)
             applyingDocuments.insert(identity)
             do {
@@ -234,8 +252,11 @@ final class PinkhaMiniAppsCoordinator {
                             try validate(lease, editor: editor)
                             if preserved { show(message: PinkhaMiniAppsStrings.sourceChanged, on: editor) }
                         }
+                        observeCallback("result-apply-returned", editor: editor, requestID: result.requestID)
                         reported.remove(result.requestID)
                     } catch {
+                        observeCallback("result-apply-error", editor: editor, requestID: result.requestID,
+                            details: ["errorType": String(reflecting: type(of: error))])
                         if lifetime.isCurrent(lease), isCurrent(editor),
                            reported.insert(result.requestID).inserted { show(error: error, on: editor) }
                     }
@@ -284,6 +305,54 @@ final class PinkhaMiniAppsCoordinator {
 
     private func isVisible(_ editor: EditorPageController) -> Bool {
         editor.viewIfLoaded?.window?.windowScene?.activationState == .foregroundActive
+    }
+
+    /// Passive, opt-in simulator evidence. No content, account identifiers or URL
+    /// strings are recorded, and observation never changes routing or persistence.
+    private func observeCallback(_ phase: String, editor: EditorPageController? = nil,
+                                 requestID: UUID? = nil, details: [String: String] = [:]) {
+        #if DEBUG && targetEnvironment(simulator)
+        guard ProcessInfo.processInfo.environment["PINKHA_UI27_ROUTE_OBSERVATION"] == "1" else { return }
+        var row: [String: Any] = [
+            "phase": phase,
+            "pid": ProcessInfo.processInfo.processIdentifier,
+            "uptime": ProcessInfo.processInfo.systemUptime,
+            "time": Date().timeIntervalSince1970,
+            "acceptsOperations": lifetime.acceptsOperations,
+            "accountPresent": !Container.shared.accountManager().account.id.isEmpty,
+            "registrations": registrations.count,
+            "scenes": UIApplication.shared.connectedScenes.map { $0.activationState.rawValue }.sorted(),
+            "details": details
+        ]
+        if let requestID { row["requestID"] = requestID.uuidString.lowercased() }
+        if let editor {
+            row["currentEditor"] = isCurrent(editor)
+            row["visibleEditor"] = isVisible(editor)
+            row["mountedEditor"] = editor.viewIfLoaded?.window != nil
+            row["documentOpened"] = editor.viewModel.document.isOpened
+            row["hasPresentation"] = editor.presentedViewController != nil
+        }
+        do {
+            let cache = try FileManager.default.url(for: .cachesDirectory, in: .userDomainMask,
+                appropriateFor: nil, create: true)
+            let directory = cache.appendingPathComponent("PinkhaMiniAppsCallback", isDirectory: true)
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true,
+                attributes: [.posixPermissions: 0o700])
+            let file = directory.appendingPathComponent("observations.jsonl")
+            if !FileManager.default.fileExists(atPath: file.path) {
+                guard FileManager.default.createFile(atPath: file.path, contents: nil,
+                    attributes: [.posixPermissions: 0o600]) else { return }
+            }
+            let handle = try FileHandle(forWritingTo: file)
+            defer { try? handle.close() }
+            guard try handle.seekToEnd() < 1_048_576 else { return }
+            var bytes = try JSONSerialization.data(withJSONObject: row, options: [.sortedKeys])
+            bytes.append(0x0a)
+            try handle.write(contentsOf: bytes)
+        } catch {
+            // Diagnostics cannot authorize, reject, acknowledge or retry a result.
+        }
+        #endif
     }
 
     private func show(error: Error, on editor: EditorPageController) {
