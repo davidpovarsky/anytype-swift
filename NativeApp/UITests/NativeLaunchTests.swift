@@ -3042,3 +3042,178 @@ private struct SemanticAnchorUIObservation: Codable {
     let blocks: [Block]
 }
 // END_NATIVE_SEMANTIC_ANCHOR_UI_V1
+
+
+// BEGIN_NATIVE_MINIAPPS_CROSS_APP_UI_V1
+extension NativeLaunchTests {
+    /// A fresh controller-owned simulator uses the ordinary app storage and
+    /// Keychain configuration so an OS callback after process termination does
+    /// not depend on test-only launch arguments.
+    func testAnyMiniAppsTextStudioWarmAndColdReturnPersistInNativeDocument() throws {
+        executionTimeAllowance = 900
+        XCTAssertEqual(ProcessInfo.processInfo.environment["PINKHA_SIMULATOR_UI_DISPOSABLE"], "1")
+        XCTAssertEqual(ProcessInfo.processInfo.environment["PINKHA_NATIVE_UI_UNIFIED_HOST"], "1")
+        let app = NativeApplicationUnderTest()
+        app.launchArguments = ["-AppleLanguages", "(he,en)", "-AppleLocale", "he_IL"]
+        app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION"] = "1"
+        XCTAssertFalse(app.launchArguments.contains("--native-ui-tests"))
+        let companion = XCUIApplication(bundleIdentifier: "com.itorah.hanlinminiapps")
+        let suffix = String(UUID().uuidString.prefix(8))
+        let spaceName = "MiniApps Space " + suffix
+        let documentName = "MiniApps native " + suffix
+        let initialText = "מקור Any " + suffix
+        let warmText = "MiniApps warm שלום " + suffix
+        let coldText = "MiniApps cold תורה " + suffix
+
+        func tapReady(_ element: XCUIElement, timeout: TimeInterval = 45) {
+            waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                    object: element, timeout: timeout)
+            element.tap()
+        }
+        func screenshot(_ name: String) {
+            let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            attachment.name = name
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
+        func expectRendered(_ texts: [String]) {
+            for text in texts {
+                let matches = app.textViews.matching(NSPredicate(
+                    format: "identifier BEGINSWITH %@ AND value == %@", "any-native-block-", text))
+                waitFor(NSPredicate(format: "exists == true AND value == %@", text),
+                        object: matches.firstMatch, timeout: 60)
+                XCTAssertEqual(matches.count, 1, "The actual editor must contain one exact returned paragraph")
+            }
+            XCTAssertEqual(app.textViews.matching(
+                NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-")).count, texts.count)
+        }
+        func openSavedAccountAndSpace() {
+            let saved = app.buttons.matching(identifier: "any-native-saved-account")
+            waitUntilEnabled(saved.firstMatch, timeout: 60)
+            XCTAssertEqual(saved.count, 1, "The fresh simulator owns exactly one real native account")
+            tapReady(saved.firstMatch)
+            tapReady(app.buttons[spaceName].firstMatch, timeout: 60)
+        }
+        func roundTrip(_ text: String, cold: Bool) {
+            tapReady(app.buttons["any-native-miniapps"])
+            let launch = app.buttons["miniapps-launch-nativeapp.textstudio"].firstMatch
+            tapReady(launch)
+            XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 45))
+            let input = companion.textViews["miniapps.textstudio.editor"].firstMatch
+            waitUntilEnabled(input, timeout: 45)
+            XCTAssertEqual(input.value as? String ?? "", "",
+                           "A toolbar insert must not send unselected native document content")
+            if cold {
+                app.terminate()
+                XCTAssertTrue(app.wait(for: .notRunning, timeout: 15))
+                XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 15))
+            }
+            tapReady(input)
+            input.typeText(text)
+            XCTAssertEqual(input.value as? String, text)
+            screenshot(cold ? "any-miniapps-real-companion-cold" : "any-miniapps-real-companion-warm")
+            tapReady(companion.buttons["miniapps.textstudio.return"])
+            // Only the companion's real callback may foreground the source.
+            // Do not call launch(), activate() or open() to aid that transition.
+            XCTAssertTrue(app.wait(for: .runningForeground, timeout: 45))
+            if cold {
+                // The native account gate still requires the user's ordinary
+                // selection after a new process; a URL cannot authenticate it.
+                // No document is selected manually: the retained request must
+                // route its exact document only after that native account opens.
+                openSavedAccountAndSpace()
+            }
+        }
+
+        companion.launch()
+        XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 45))
+        waitUntilEnabled(companion.buttons["hanlin-apps-add"].firstMatch, timeout: 45)
+        XCTAssertTrue(companion.descendants(matching: .any)
+            .matching(identifier: "hanlin-package-card-Text Studio").firstMatch.waitForExistence(timeout: 30))
+        app.launch()
+        defer { app.terminate(); companion.terminate() }
+        waitUntilEnabled(app.buttons["any-native-account-create"], timeout: 60)
+        XCTAssertEqual(app.buttons.matching(identifier: "any-native-saved-account").count, 0)
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+        tapReady(app.buttons["any-native-add-paragraph"], timeout: 60)
+        let editor = app.textViews.matching(
+            NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-")).firstMatch
+        waitForNativeEditorInput(app, editor)
+        tapReady(editor)
+        editor.typeText(initialText)
+        semanticCommit(app, editor: editor, text: initialText)
+        let initialHash = Self.semanticHash(initialText)
+        let warmHash = Self.semanticHash(warmText)
+        let coldHash = Self.semanticHash(coldText)
+        let initial = try semanticObservation(app, phase: "miniapps-original-native-before-launch") {
+            $0.blocks.count == 1 && $0.blocks[0].textSHA256 == initialHash
+        }
+        XCTAssertEqual(initial.nativeMarkCount, 0)
+        let initialBlock = initial.blocks[0].blockSHA256
+
+        roundTrip(warmText, cold: false)
+        expectRendered([initialText, warmText])
+        let warm = try semanticObservation(app, phase: "miniapps-warm-native-and-editor-readback") {
+            $0.spaceSHA256 == initial.spaceSHA256 && $0.objectSHA256 == initial.objectSHA256 &&
+            $0.blocks.count == 2 &&
+            Set($0.blocks.map(\.textSHA256)) == Set([initialHash, warmHash]) &&
+            $0.blocks.contains { $0.blockSHA256 == initialBlock && $0.textSHA256 == initialHash }
+        }
+        XCTAssertEqual(initial.pid, warm.pid)
+        XCTAssertEqual(Set(warm.blocks.map(\.blockSHA256)).count, 2)
+        XCTAssertNotEqual(initial.nativeVersionSHA256, warm.nativeVersionSHA256)
+        screenshot("any-miniapps-warm-original-native-document")
+
+        roundTrip(coldText, cold: true)
+        expectRendered([initialText, warmText, coldText])
+        screenshot("any-miniapps-cold-callback-after-normal-account-selection")
+
+        app.terminate()
+        XCTAssertTrue(app.wait(for: .notRunning, timeout: 15))
+        app.launch()
+        openSavedAccountAndSpace()
+        let row = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND label == %@", "any-native-hierarchy-row-", documentName))
+        waitUntilEnabled(row.firstMatch, timeout: 60)
+        XCTAssertEqual(row.count, 1)
+        tapReady(row.firstMatch)
+        expectRendered([initialText, warmText, coldText])
+        let reopened = try semanticObservation(app, phase: "miniapps-second-cold-native-persistence") {
+            $0.spaceSHA256 == initial.spaceSHA256 && $0.objectSHA256 == initial.objectSHA256 &&
+            $0.blocks.count == 3 &&
+            Set($0.blocks.map(\.textSHA256)) == Set([initialHash, warmHash, coldHash]) &&
+            Set(warm.blocks.map(\.blockSHA256)).isSubset(of: Set($0.blocks.map(\.blockSHA256)))
+        }
+        XCTAssertNotEqual(initial.pid, reopened.pid)
+        XCTAssertNotEqual(initial.generation, reopened.generation)
+        XCTAssertNotEqual(warm.nativeVersionSHA256, reopened.nativeVersionSHA256)
+        XCTAssertEqual(Set(reopened.blocks.map(\.blockSHA256)).count, 3)
+        XCTAssertEqual(reopened.nativeMarkCount, 0)
+        screenshot("any-miniapps-second-cold-native-and-editor-readback")
+        let report: [String: Any] = [
+            "schema": "any-miniapps-real-cross-app-ui/v1",
+            "fixtureUsesNormalAppStorage": true,
+            "testStorageOverrides": false,
+            "actualCompanionReturns": 2,
+            "sourceTerminatedBeforeSecondReturn": true,
+            "manualSourceLaunchForCallback": false,
+            "ordinaryAccountSelectionAfterColdCallback": true,
+            "manualDocumentSelectionForCallback": false,
+            "nativeReadOrigin": "original-runtime-readback-and-mounted-editor",
+            "nativeReadExtraCallsByObserver": 0,
+            "sameSpaceSHA256": initial.spaceSHA256,
+            "sameObjectSHA256": initial.objectSHA256,
+            "originalBlockPreserved": reopened.blocks.contains { $0.blockSHA256 == initialBlock && $0.textSHA256 == initialHash },
+            "nativeParagraphCount": reopened.blocks.count,
+            "initialProcessID": initial.pid,
+            "finalProcessID": reopened.pid
+        ]
+        let attachment = XCTAttachment(data: try JSONSerialization.data(withJSONObject: report, options: [.sortedKeys]),
+                                       uniformTypeIdentifier: "public.json")
+        attachment.name = "any-miniapps-real-cross-app-original-result"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+}
+// END_NATIVE_MINIAPPS_CROSS_APP_UI_V1
