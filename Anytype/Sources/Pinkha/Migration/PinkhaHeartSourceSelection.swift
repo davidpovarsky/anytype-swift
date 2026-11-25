@@ -1,5 +1,6 @@
 #if PINKHA_DUAL_ENGINE_RUNTIME
 import Foundation
+import Factory
 
 /// Identity from the original app's loaded account and explicitly active
 /// workspace. There is no default, most-recent or technical-space fallback.
