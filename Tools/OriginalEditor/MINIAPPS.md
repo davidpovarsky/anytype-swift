@@ -40,3 +40,23 @@ Swift parse/source/surface checks do not prove native operation. Validate rich
 marks, table cells, file preservation, emoji/Hebrew UTF-16, original menu/toolbar,
 warm/cold return after baseline save, newer edits, source retirement and duplicate
 callback in the real framework/Maktabah app from the final source.
+
+## Current SDK build provenance
+
+The MiniApps continuation binds exactly eight Swift changes to reviewed source
+e2582894e9141f4a136823d4c7b4a011d1edbd80 after the original revision
+continuation a91d572. Source admission verifies all original 733 generated files,
+every product tree and each changed byte; its old receipts are retained unchanged.
+The full public compiler contract now requires 198 declarations, including all
+23 new MiniApps boundaries; it preserves every original public/SPI requirement.
+
+The existing local producer can run on the explicitly owned MiniApps facade
+branch with its own real Mac execution UUID. The actual source/tree/path/branch
+and host remain bound. No fabricated Actions identity is accepted.
+
+Native ABI reuse independently revalidates its original owner, source, retained
+build, exported bytes and native/generated/wrapper/resource input trees. Only
+the exact reviewed application Swift delta can differ; application Swift is
+not a Go mobile build input. This grants no new native behavior or UI acceptance.
+The current SDK must still compile, link, preserve original resources and pass
+its real external consumer before a Host can use a new distribution.

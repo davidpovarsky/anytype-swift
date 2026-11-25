@@ -109,8 +109,29 @@ def verify(root, path, digest, source, value=None):
             "Original donor Debug qualification is not terminal actual acceptance")
     trees = policy["unchanged_git_inputs"]
     require(all(git(donor, "rev-parse", "HEAD:" + p) == expected
-                == git(root, "rev-parse", "HEAD:" + p) for p, expected in trees.items()),
-            "Current facade changed native/generated/wrapper/source input closure")
+                for p, expected in trees.items()),
+            "Original native donor source input closure changed")
+    # The original Go mobile ABI does not compile application Swift. Permit
+    # only the separately committed/reviewed Swift continuation, never changes
+    # to generated messages, native middleware, wrappers, Modules or resources.
+    from framework_profile import read_manifest
+    from generated_import_source import verify_generated_source
+    current_source = verify_generated_source(root, read_manifest())
+    require(current_source == source["generated_import_source"],
+            "Current source observation differs during native donor admission")
+    for relative, expected in trees.items():
+        actual = git(root, "rev-parse", "HEAD:" + relative)
+        if relative == "Anytype/Sources" and actual != expected:
+            continuation = current_source.get("annotation_exchange", {})
+            require(continuation.get("base_source") == DONOR
+                    and continuation.get("native_acceptance_reused_by_this_document") is False
+                    and continuation.get("sdk_compiler_and_runtime_acceptance")
+                        == "NOT_GRANTED_BY_SOURCE_OBSERVATION"
+                    and actual == continuation.get("reviewed_product_trees", {}).get(relative),
+                    "Application Swift differs from its exact reviewed continuation")
+        else:
+            require(actual == expected,
+                    "Current facade changed a native/generated/wrapper/resource input: " + relative)
     current_generated, old_generated = source["generated_import_source"], before["generated_import_source"]
     for key in ("generated_index_sha256", "source_adoption_sha256", "working_generated_files",
                 "committed_generated_blobs", "postimage_source", "preimage_source"):

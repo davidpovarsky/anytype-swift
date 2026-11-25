@@ -15,6 +15,7 @@ import uuid
 SCHEMA = 'otzaria.original-editor.local-execution/1'
 REPOSITORY = 'davidpovarsky/anytype-swift'
 LOCAL_BRANCH = 'codex/otzaria-annotation-sdk-requalification-20261125'
+LOCAL_BRANCHES = (LOCAL_BRANCH, 'codex/anytype-original-miniapps-facade-20261125')
 
 
 def require(value, message):
@@ -45,7 +46,7 @@ def validate_record(record, root, head, tree, branch, machine):
             'Local execution must have its own UUID, not a GitHub run ID')
     require(re.fullmatch(r'[0-9a-f]{40}', head) and re.fullmatch(r'[0-9a-f]{40}', tree)
             and record.get('source_sha') == head and record.get('source_tree') == tree
-            and record.get('head_branch') == branch == LOCAL_BRANCH,
+            and record.get('head_branch') == branch and branch in LOCAL_BRANCHES,
             'Local producer source or branch differs')
     require(record.get('root') == str(Path(root).resolve())
             and record.get('host') == machine
