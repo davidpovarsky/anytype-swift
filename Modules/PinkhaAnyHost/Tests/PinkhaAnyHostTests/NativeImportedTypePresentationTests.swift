@@ -128,6 +128,54 @@ final class NativeImportedTypePresentationTests: XCTestCase {
         XCTAssertNil(edit.patch["imported"])
     }
 
+    func testCanonicalDescriptionUsesItsNativeAddressAndPreservesSourceText() throws {
+        let value = try snapshot(includeCanonicalDescription: true)
+        let description = try key("any", "description")
+        let row = try XCTUnwrap(value.rows.first { $0.id == description })
+        XCTAssertEqual(row.value, .string("English · תיאור המקור"))
+        XCTAssertTrue(row.isVisible)
+        XCTAssertEqual(value.rows.filter { $0.id == description }.count, 1)
+        XCTAssertNil(value.raw["imported"]?["description"])
+        XCTAssertEqual(Array(value.rows.prefix(4).map(\.id.propertyID)), ["beta", "name", "description", "alpha"])
+        let edit = try store().prepareSetValue(value, key: description, value: .string(""))
+        XCTAssertEqual(edit.ownerID, "any")
+        XCTAssertEqual(edit.patch, ["description": .string("")])
+        XCTAssertEqual(edit.nativeVersion, value.nativeVersion)
+        XCTAssertEqual(edit.applySequence, value.applySequence)
+    }
+
+    func testCanonicalDescriptionVisibilityReopensWithoutASecondBusinessValue() throws {
+        let value = try snapshot(attached: true, includeCanonicalDescription: true, change: {
+            $0["definitionHidden"] = .array([Self.address("any", "description")])
+        })
+        let description = try key("any", "description")
+        XCTAssertFalse(try XCTUnwrap(value.rows.first { $0.id == description }).isVisible)
+        let edit = try store().prepareVisibility(value, key: .init(property: description), visible: true)
+        let hidden = try XCTUnwrap(edit.patch[AnyNativePropertyStore.hiddenPropertiesID]?.array?.compactMap(\.string))
+        let reopened = try snapshot(attached: true, storedHidden: hidden, includeCanonicalDescription: true, change: {
+            $0["definitionHidden"] = .array([Self.address("any", "description")])
+        })
+        XCTAssertTrue(try XCTUnwrap(reopened.rows.first { $0.id == description }).isVisible)
+        XCTAssertEqual(reopened.raw["any"]?["description"], value.raw["any"]?["description"])
+        XCTAssertNil(reopened.raw["imported"]?["description"])
+        let reader = try snapshot(canWrite: false, includeCanonicalDescription: true)
+        XCTAssertThrowsError(try store().prepareSetValue(reader, key: description, value: .string("forged")))
+    }
+
+    func testCanonicalDescriptionRejectsWrongNativeKindOrScopeAndUnknownBuiltin() throws {
+        let changes: [(inout [String: AnyJSON]) -> Void] = [
+            { $0["kind"] = .string("number") },
+            { $0["scope"] = .string("derived") },
+            { $0["scope"] = .string("account") }
+        ]
+        for change in changes {
+            XCTAssertThrowsError(try snapshot(includeCanonicalDescription: true, descriptionDefinitionChange: change))
+        }
+        XCTAssertThrowsError(try snapshot(includeCanonicalDescription: true, change: {
+            $0["recommended"] = .array([Self.address("any", "createdAt")])
+        }))
+    }
+
     private func key(_ owner: String, _ property: String) throws -> AnyNativePropertyKey {
         try .init(ownerID: owner, propertyID: property)
     }
@@ -144,6 +192,8 @@ final class NativeImportedTypePresentationTests: XCTestCase {
     private func snapshot(attached: Bool = false, storedHidden: [String]? = nil, canWrite: Bool = true,
                           includeForeignDefinition: Bool = false,
                           includeImportedMarker: Bool = true,
+                          includeCanonicalDescription: Bool = false,
+                          descriptionDefinitionChange: (inout [String: AnyJSON]) -> Void = { _ in },
                           change: (inout [String: AnyJSON]) -> Void = { _ in }) throws -> AnyNativePropertySnapshot {
         var descriptor: [String: AnyJSON] = [
             "contract": .string(AnyNativeImportedTypePresentation.contract),
@@ -152,6 +202,9 @@ final class NativeImportedTypePresentationTests: XCTestCase {
             "recommended": .array([Self.address("imported", "alpha"), Self.address("imported", "beta")]),
             "hidden": .array([Self.address("imported", "secret")]), "files": .array([])
         ]
+        if includeCanonicalDescription {
+            descriptor["recommended"] = .array([Self.address("any", "description"), Self.address("imported", "alpha"), Self.address("imported", "beta")])
+        }
         change(&descriptor)
         let type = try AnyNativePropertyOwner(raw: .object(["id": .string("imported-type"), "name": .string("Captured page type"),
             "layout": .object(["type": .string("page"),
@@ -170,6 +223,11 @@ final class NativeImportedTypePresentationTests: XCTestCase {
             definition("imported", "secret"), definition("imported", "flag", kind: "boolean"),
             definition("imported", "count", kind: "number"), definition("imported", "empty"),
             definition("imported", "emptyList", kind: "array")]
+        if includeCanonicalDescription {
+            var definition = try XCTUnwrap(AnyDestinationCanonicalPropertyBinding.nativeDescriptionDescriptor.object)
+            descriptionDefinitionChange(&definition)
+            definitions.append(try .init(ownerID: "any", raw: .object(definition)))
+        }
         var collections = ["imported"]
         if includeForeignDefinition {
             collections.append("unrelated")
@@ -185,6 +243,11 @@ final class NativeImportedTypePresentationTests: XCTestCase {
                 "collections": .array(collections.map(AnyJSON.string))]),
             "imported": .object(["secret": .string("kept"), "flag": .bool(false), "count": .integer(0), "empty": .string(""), "emptyList": .array([])]),
             "unrelated": .object(["source": .string("retained")])]
+        if includeCanonicalDescription {
+            var any = try XCTUnwrap(raw["any"]?.object)
+            any["description"] = .string("English · תיאור המקור")
+            raw["any"] = .object(any)
+        }
         if let storedHidden {
             raw[AnyNativePropertyStore.presentationCollectionID] = .object([
                 AnyNativePropertyStore.hiddenPropertiesID: .array(storedHidden.map(AnyJSON.string))])

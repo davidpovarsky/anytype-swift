@@ -1,0 +1,799 @@
+diff --git a/core/application/loaded_compiled_definitions_test.go b/core/application/loaded_compiled_definitions_test.go
+new file mode 100644
+index 000000000..b1e05510f
+--- /dev/null
++++ b/core/application/loaded_compiled_definitions_test.go
+@@ -0,0 +1,72 @@
++//go:build pinkha_loaded_account_witness && pinkha_loaded_account_witness_acceptance
++
++package application
++
++import (
++	"encoding/json"
++	"os"
++	"path/filepath"
++	"strings"
++	"testing"
++
++	"github.com/anyproto/anytype-heart/pkg/lib/anyblockjson/storeresolver"
++	"github.com/stretchr/testify/require"
++)
++
++// Reads the real produced private bundle and its original protobuf/JSON members.
++// A forged descriptor receipt must still be refused after a fresh native read.
++func loadedCheckpointCompiledDefinitionControl(t *testing.T, f *loadedAccountFixture,
++	captured *LoadedAccountSpaceWitness, checkpoint *LoadedAccountSourceCheckpoint) {
++	t.Helper()
++	data, err := os.ReadFile(filepath.Join(captured.PrivateBundleDirectory(), "manifest.json"))
++	require.NoError(t, err)
++	var manifest NativeSourceBundleManifest
++	require.NoError(t, json.Unmarshal(data, &manifest))
++	definitions, err := captured.resolver.BundledDefinitions()
++	require.NoError(t, err)
++	require.NotEmpty(t, definitions, "actual native fixture must exercise compiled resolver dependencies")
++	require.Len(t, manifest.BundledDefinitions, len(definitions))
++	require.Len(t, manifest.BundledDefinitionsUsed, len(definitions))
++	require.Len(t, checkpoint.bundledDefinitions, len(definitions))
++	for i, definition := range definitions {
++		member := manifest.BundledDefinitions[i]
++		identity := definition.Kind() + ":" + definition.Key()
++		require.Equal(t, identity, manifest.BundledDefinitionsUsed[i])
++		require.Equal(t, definition.Kind(), member.Kind)
++		require.Equal(t, definition.Key(), member.Key)
++		require.Equal(t, definition.ProtobufMessage(), member.ProtobufMessage)
++		require.Equal(t, definition.Receipt(), checkpoint.bundledDefinitions[i])
++		for suffix, entry := range map[string]NativeSourceMember{"pb": member.Protobuf, "json": member.JSONView} {
++			require.Equal(t, "compiled-definition-"+loadedAccountWitnessHash(identity)+"."+suffix, entry.Path)
++			path := filepath.Join(captured.PrivateBundleDirectory(), entry.Path)
++			actual, err := os.ReadFile(path)
++			require.NoError(t, err)
++			require.Equal(t, int64(len(actual)), entry.Bytes)
++			require.Equal(t, loadedFixtureHash(actual), entry.SHA256)
++			if suffix == "pb" {
++				require.Equal(t, definition.Protobuf(), actual)
++			} else {
++				require.Equal(t, definition.JSONView(), actual)
++			}
++			stat, err := os.Stat(path)
++			require.NoError(t, err)
++			require.Equal(t, os.FileMode(0400), stat.Mode().Perm())
++		}
++	}
++	changed := *checkpoint
++	changed.bundledDefinitions = append([]storeresolver.BundledDefinitionReceipt(nil), checkpoint.bundledDefinitions...)
++	changed.bundledDefinitions[0].ProtobufSHA256 = strings.Repeat("0", 64)
++	require.ErrorIs(t, f.service.RevalidateLoadedAccountSource(f.ctx, f.token, &changed),
++		ErrLoadedAccountSpaceWitnessCheckpointChanged)
++	require.NoError(t, f.service.RevalidateLoadedAccountSource(f.ctx, f.token, checkpoint))
++	f.privateNote(t, "compiled-definition-checkpoint-result", map[string]any{
++		"contract":    "pinkha-real-compiled-native-definition-observation-v1",
++		"definitions": len(definitions), "memberCount": len(definitions) * 2,
++		"originalManifestSHA256":             loadedFixtureHash(data),
++		"changedDefinitionCheckpointRefused": true, "originalCheckpointStillValid": true,
++		"accountAuthorityRechecked": true, "permitsDestinationWrites": false,
++		"wholeSpaceMigrationComplete": false,
++	})
++	t.Logf("NATIVE_COMPILED_DEFINITIONS descriptors=%d members=%d original_bytes=PASS checkpoint_change_refused=PASS destination_admission=false",
++		len(definitions), len(definitions)*2)
++}
+diff --git a/core/application/loaded_source_checkpoint.go b/core/application/loaded_source_checkpoint.go
+index 3c16df624..4a5cf7961 100644
+--- a/core/application/loaded_source_checkpoint.go
++++ b/core/application/loaded_source_checkpoint.go
+@@ -4,24 +4,28 @@ package application
+ 
+ import (
+ 	"context"
++	"errors"
+ 	"reflect"
+ 
+ 	"github.com/anyproto/anytype-heart/core/pinkha/localstorewitness"
++	"github.com/anyproto/anytype-heart/pkg/lib/anyblockjson/storeresolver"
+ )
+ 
+ // LoadedAccountSourceCheckpoint contains only immutable native receipt
+ // metadata. Only a completed real capture can construct a usable checkpoint;
+ // it is not deserialized from a caller's JSON or a retained source directory.
+ type LoadedAccountSourceCheckpoint struct {
+-	accountID string
+-	spaceID   string
+-	source    LoadedAccountWitnessReceipt
+-	inventory localstorewitness.NativeTreeInventoryReceipt
+-	complete  bool
++	accountID          string
++	spaceID            string
++	source             LoadedAccountWitnessReceipt
++	inventory          localstorewitness.NativeTreeInventoryReceipt
++	bundledDefinitions []storeresolver.BundledDefinitionReceipt
++	complete           bool
+ }
+ 
+-// SourceCheckpoint drops all source rows, snapshots and file buffers. Keeping
+-// this small value alive does not keep the captured Space in native memory.
++// SourceCheckpoint drops account rows, object snapshots and file buffers. It
++// retains only receipt metadata and a bounded (at most 16 MiB) set of compiled
++// native definitions; it never keeps the captured Space alive in native memory.
+ func (w *LoadedAccountSpaceWitness) SourceCheckpoint() (*LoadedAccountSourceCheckpoint, error) {
+ 	if w == nil || !w.complete || w.source == nil || w.inventory == nil {
+ 		return nil, ErrLoadedAccountSpaceWitness
+@@ -35,9 +39,19 @@ func (w *LoadedAccountSpaceWitness) SourceCheckpoint() (*LoadedAccountSourceChec
+ 		!receipt.AllNativeHeadRowsAccounted {
+ 		return nil, ErrLoadedAccountSpaceWitness
+ 	}
++	var definitions []storeresolver.BundledDefinitionReceipt
++	if w.resolver != nil {
++		captured, err := w.resolver.BundledDefinitions()
++		if err != nil {
++			return nil, err
++		}
++		for _, definition := range captured {
++			definitions = append(definitions, definition.Receipt())
++		}
++	}
+ 	return &LoadedAccountSourceCheckpoint{
+ 		accountID: w.source.accountID, spaceID: w.inventory.SpaceID(),
+-		source: receipt.Source, inventory: receipt.Inventory, complete: true,
++		source: receipt.Source, inventory: receipt.Inventory, bundledDefinitions: definitions, complete: true,
+ 	}, nil
+ }
+ 
+@@ -75,5 +89,8 @@ func (s *Service) RevalidateLoadedAccountSource(ctx context.Context, token strin
+ 	if !reflect.DeepEqual(expected.source, source) || !reflect.DeepEqual(expected.inventory, receipt) {
+ 		return loadedAccountSpaceWitnessCheckpointChangedError{}
+ 	}
++	if err := storeresolver.ValidateBundledDefinitionReceipts(expected.bundledDefinitions); err != nil {
++		return errors.Join(loadedAccountSpaceWitnessCheckpointChangedError{}, err)
++	}
+ 	return nil
+ }
+diff --git a/core/application/loaded_source_checkpoint_test.go b/core/application/loaded_source_checkpoint_test.go
+index a59b8eb8e..3780046f2 100644
+--- a/core/application/loaded_source_checkpoint_test.go
++++ b/core/application/loaded_source_checkpoint_test.go
+@@ -25,6 +25,7 @@ func TestLoadedAccountSourceCheckpointRequiresCurrentNativeSessionAndUnchangedRo
+ 	checkpoint, err := captured.SourceCheckpoint()
+ 	require.NoError(t, err)
+ 	require.NoError(t, f.service.RevalidateLoadedAccountSource(f.ctx, f.token, checkpoint))
++	loadedCheckpointCompiledDefinitionControl(t, f, captured, checkpoint)
+ 
+ 	require.Error(t, f.service.RevalidateLoadedAccountSource(f.ctx, f.token, nil))
+ 	require.Error(t, f.service.RevalidateLoadedAccountSource(f.ctx, f.token, new(LoadedAccountSourceCheckpoint)))
+diff --git a/core/application/loaded_space_bundle.go b/core/application/loaded_space_bundle.go
+index 90a0203f4..ee4c69af6 100644
+--- a/core/application/loaded_space_bundle.go
++++ b/core/application/loaded_space_bundle.go
+@@ -38,6 +38,12 @@ type NativeSourceFileMember struct {
+ 	FileID   string
+ 	Variants []NativeSourceFileVariantMember
+ }
++
++// These are actual compiled resolver dependencies, not invented native trees.
++type NativeSourceBundledDefinitionMember struct {
++	Kind, Key, ProtobufMessage string
++	Protobuf, JSONView         NativeSourceMember
++}
+ type NativeSourceBundleManifest struct {
+ 	Contract                 string
+ 	Receipt                  LoadedAccountSpaceWitnessReceipt
+@@ -49,6 +55,7 @@ type NativeSourceBundleManifest struct {
+ 	Gaps                     []NativeSourceGap
+ 	ResolverUnmapped         []storeresolver.UnmappedReference
+ 	BundledDefinitionsUsed   []string
++	BundledDefinitions       []NativeSourceBundledDefinitionMember
+ 	RetainedOtherCollections []localstorewitness.NativeRetainedCollection
+ }
+ 
+@@ -92,7 +99,29 @@ func (w *LoadedAccountSpaceWitness) writePrivateBundle() error {
+ 		RetainedOtherCollections: w.inventory.RetainedOtherCollections(),
+ 	}
+ 	if w.resolver != nil {
+-		manifest.BundledDefinitionsUsed = w.resolver.BundledDefinitionsUsed()
++		definitions, err := w.resolver.BundledDefinitions()
++		if err != nil {
++			return err
++		}
++		for _, definition := range definitions {
++			identity := definition.Kind() + ":" + definition.Key()
++			raw, view := definition.Protobuf(), definition.JSONView()
++			protobuf, err := nativeSourceWriteMember(w.privateDirectory, "compiled-definition-"+loadedAccountWitnessHash(identity)+".pb",
++				func(dst io.Writer) error { _, e := io.Copy(dst, bytes.NewReader(raw)); return e })
++			if err != nil {
++				return err
++			}
++			jsonView, err := nativeSourceWriteMember(w.privateDirectory, "compiled-definition-"+loadedAccountWitnessHash(identity)+".json",
++				func(dst io.Writer) error { _, e := io.Copy(dst, bytes.NewReader(view)); return e })
++			if err != nil {
++				return err
++			}
++			manifest.BundledDefinitionsUsed = append(manifest.BundledDefinitionsUsed, identity)
++			manifest.BundledDefinitions = append(manifest.BundledDefinitions, NativeSourceBundledDefinitionMember{
++				Kind: definition.Kind(), Key: definition.Key(), ProtobufMessage: definition.ProtobufMessage(),
++				Protobuf: protobuf, JSONView: jsonView,
++			})
++		}
+ 	}
+ 	manifest.SourceRows, err = nativeSourceWriteMember(w.privateDirectory, "native-source-rows.witness", w.PrivateWitness().WritePrivate)
+ 	if err != nil {
+diff --git a/core/block/export/native_raw_object.go b/core/block/export/native_raw_object.go
+index ece5893af..0e4af3be3 100644
+--- a/core/block/export/native_raw_object.go
++++ b/core/block/export/native_raw_object.go
+@@ -237,6 +237,12 @@ func (r *NativeCapturedResolver) BundledDefinitionsUsed() []string {
+ 	}
+ 	return r.resolver.BundledDefinitionsUsed()
+ }
++func (r *NativeCapturedResolver) BundledDefinitions() ([]*storeresolver.CapturedBundledDefinition, error) {
++	if r == nil || r.resolver == nil {
++		return nil, ErrNativeObjectWitness
++	}
++	return r.resolver.BundledDefinitions()
++}
+ func (r *NativeCapturedResolver) Render(ctx context.Context, objectID string, maxBytes int) ([]byte, error) {
+ 	if r == nil || r.resolver == nil || ctx == nil || maxBytes < 1 || maxBytes > 8<<20 {
+ 		return nil, ErrNativeObjectWitness
+diff --git a/pkg/lib/anyblockjson/storeresolver/captured.go b/pkg/lib/anyblockjson/storeresolver/captured.go
+index 4ed19cb45..a5802d6d8 100644
+--- a/pkg/lib/anyblockjson/storeresolver/captured.go
++++ b/pkg/lib/anyblockjson/storeresolver/captured.go
+@@ -47,7 +47,8 @@ type CapturedResolver struct {
+ 	typesByKey      map[string][]string
+ 	mu              sync.Mutex
+ 	unmapped        map[UnmappedReference]struct{}
+-	bundled         map[string]struct{}
++	bundled         map[string]*CapturedBundledDefinition
++	bundledBytes    int
+ }
+ 
+ func (c *CapturedResolver) issue(source, field, target, reason string) {
+@@ -55,11 +56,6 @@ func (c *CapturedResolver) issue(source, field, target, reason string) {
+ 	defer c.mu.Unlock()
+ 	c.unmapped[UnmappedReference{source, field, target, reason}] = struct{}{}
+ }
+-func (c *CapturedResolver) bundledDefinition(kind, key string) {
+-	c.mu.Lock()
+-	defer c.mu.Unlock()
+-	c.bundled[kind+":"+key] = struct{}{}
+-}
+ 
+ func NewCaptured(spaceID string, input []CapturedRow) (*CapturedResolver, error) {
+ 	if spaceID == "" || len(input) == 0 || len(input) > 10000 {
+@@ -68,7 +64,7 @@ func NewCaptured(spaceID string, input []CapturedRow) (*CapturedResolver, error)
+ 	c := &CapturedResolver{
+ 		spaceID: spaceID, rows: map[string]*domain.Details{}, kinds: map[string]model.SmartBlockType{},
+ 		propertiesByKey: map[string][]string{}, typesByKey: map[string][]string{},
+-		unmapped: map[UnmappedReference]struct{}{}, bundled: map[string]struct{}{},
++		unmapped: map[UnmappedReference]struct{}{}, bundled: map[string]*CapturedBundledDefinition{},
+ 	}
+ 	for _, row := range input {
+ 		if row.ID == "" || c.rows[row.ID] != nil || row.Snapshot == nil || row.Snapshot.Details == nil {
+@@ -230,8 +226,11 @@ func (c *CapturedResolver) hasTypeKey(key string) bool {
+ 		// merely because the same key is also present in the bundled table.
+ 		return c.uniqueActive(ids) != ""
+ 	}
+-	if bundle.HasObjectTypeByKey(domain.TypeKey(key)) {
+-		c.bundledDefinition("type", key)
++	if definition, err := bundle.GetType(domain.TypeKey(key)); err == nil && definition != nil {
++		if err := c.bundledDefinition("type", key, definition); err != nil {
++			c.issue("", "compiledDefinition", "type:"+key, "compiled-definition-capture-refused")
++			return false
++		}
+ 		return true
+ 	}
+ 	return false
+@@ -240,9 +239,14 @@ func (c *CapturedResolver) hasTypeID(id string) bool {
+ 	if c.kinds[id] == model.SmartBlockType_STType {
+ 		return true
+ 	}
+-	if key, err := bundle.TypeKeyFromUrl(id); err == nil && bundle.HasObjectTypeByKey(key) {
+-		c.bundledDefinition("type", string(key))
+-		return true
++	if key, err := bundle.TypeKeyFromUrl(id); err == nil {
++		if definition, err := bundle.GetType(key); err == nil && definition != nil {
++			if err := c.bundledDefinition("type", string(key), definition); err != nil {
++				c.issue("", "compiledDefinition", "type:"+string(key), "compiled-definition-capture-refused")
++				return false
++			}
++			return true
++		}
+ 	}
+ 	return false
+ }
+@@ -255,7 +259,10 @@ func (c *CapturedResolver) propertyByKey(key string) (*model.Relation, error) {
+ 		return relationutils.RelationFromDetails(c.rows[id]).Relation, nil
+ 	}
+ 	if rel, err := bundle.GetRelation(domain.RelationKey(key)); err == nil && rel != nil {
+-		c.bundledDefinition("property", key)
++		if err := c.bundledDefinition("property", key, rel); err != nil {
++			c.issue("", "compiledDefinition", "property:"+key, "compiled-definition-capture-refused")
++			return nil, err
++		}
+ 		return proto.Clone(rel).(*model.Relation), nil
+ 	}
+ 	return nil, ErrCapturedResolver
+diff --git a/pkg/lib/anyblockjson/storeresolver/captured_bundled_definitions.go b/pkg/lib/anyblockjson/storeresolver/captured_bundled_definitions.go
+new file mode 100644
+index 000000000..56ba6a3ad
+--- /dev/null
++++ b/pkg/lib/anyblockjson/storeresolver/captured_bundled_definitions.go
+@@ -0,0 +1,271 @@
++//go:build pinkha_loaded_account_witness
++
++package storeresolver
++
++import (
++	"bytes"
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"errors"
++	"sort"
++
++	"github.com/gogo/protobuf/jsonpb"
++	"github.com/gogo/protobuf/proto"
++
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++)
++
++const (
++	bundledDefinitionProtoLimit  = 1 << 20
++	bundledDefinitionJSONLimit   = 4 << 20
++	bundledDefinitionsTotalLimit = 16 << 20
++	bundledDefinitionsCountLimit = 1024
++)
++
++// CapturedBundledDefinition is an immutable copy of the actual compiled native
++// definition used for one fallback. It is not a captured tree or account
++// authority. Original protobuf fields and the generated JSON view are retained.
++type CapturedBundledDefinition struct {
++	kind, key, message string
++	raw, view          []byte
++	definition         proto.Message
++}
++
++type BundledDefinitionReceipt struct {
++	Kind, Key, ProtobufMessage, ProtobufSHA256, JSONViewSHA256 string
++	ProtobufBytes, JSONViewBytes                               int
++	// Private original buffers bind the scalar receipt to actual captured
++	// native wire data. They are never serialized as public receipt fields.
++	raw, view []byte
++}
++
++func (d *CapturedBundledDefinition) Kind() string            { return d.kind }
++func (d *CapturedBundledDefinition) Key() string             { return d.key }
++func (d *CapturedBundledDefinition) ProtobufMessage() string { return d.message }
++func (d *CapturedBundledDefinition) Protobuf() []byte        { return append([]byte(nil), d.raw...) }
++func (d *CapturedBundledDefinition) JSONView() []byte        { return append([]byte(nil), d.view...) }
++func (d *CapturedBundledDefinition) Receipt() BundledDefinitionReceipt {
++	return BundledDefinitionReceipt{Kind: d.kind, Key: d.key, ProtobufMessage: d.message,
++		ProtobufSHA256: bundledDefinitionHash(d.raw), JSONViewSHA256: bundledDefinitionHash(d.view),
++		ProtobufBytes: len(d.raw), JSONViewBytes: len(d.view),
++		raw: append([]byte(nil), d.raw...), view: append([]byte(nil), d.view...)}
++}
++
++func bundledDefinitionHash(raw []byte) string {
++	digest := sha256.Sum256(raw)
++	return hex.EncodeToString(digest[:])
++}
++
++type bundledDefinitionJSONBuffer struct{ buffer bytes.Buffer }
++
++func (b *bundledDefinitionJSONBuffer) Write(p []byte) (int, error) {
++	if len(p) > bundledDefinitionJSONLimit-b.buffer.Len() {
++		return 0, ErrCapturedResolver
++	}
++	return b.buffer.Write(p)
++}
++
++func captureBundledDefinition(kind, key string, value proto.Message) (*CapturedBundledDefinition, error) {
++	if value == nil || key == "" || len(key) > 4096 {
++		return nil, ErrCapturedResolver
++	}
++	switch kind {
++	case "property":
++		v, ok := value.(*model.Relation)
++		if !ok || v == nil || v.Key != key {
++			return nil, ErrCapturedResolver
++		}
++	case "type":
++		v, ok := value.(*model.ObjectType)
++		if !ok || v == nil || v.Key != key {
++			return nil, ErrCapturedResolver
++		}
++	default:
++		return nil, ErrCapturedResolver
++	}
++	if size := proto.Size(value); size <= 0 || size > bundledDefinitionProtoLimit {
++		return nil, ErrCapturedResolver
++	}
++	detached := proto.Clone(value)
++	// The original pinned generated gogo Marshal implementation is the native
++	// protocol authority. Its Buffer deliberately rejects deterministic mode.
++	// Retain its exact wire bytes; checkpoint identity compares full decoded
++	// messages after independently verifying those original bytes and JSON.
++	raw, err := proto.Marshal(detached)
++	if err != nil {
++		return nil, errors.Join(ErrCapturedResolver, err)
++	}
++	return describeBundledDefinition(kind, key, detached, raw)
++}
++
++func describeBundledDefinition(kind, key string, detached proto.Message, raw []byte) (*CapturedBundledDefinition, error) {
++	if key == "" || len(key) > 4096 {
++		return nil, ErrCapturedResolver
++	}
++	switch kind {
++	case "property":
++		definition, ok := detached.(*model.Relation)
++		if !ok || definition == nil || definition.Key != key {
++			return nil, ErrCapturedResolver
++		}
++	case "type":
++		definition, ok := detached.(*model.ObjectType)
++		if !ok || definition == nil || definition.Key != key {
++			return nil, ErrCapturedResolver
++		}
++	default:
++		return nil, ErrCapturedResolver
++	}
++	raw = append([]byte(nil), raw...)
++	if len(raw) == 0 || len(raw) > bundledDefinitionProtoLimit {
++		return nil, ErrCapturedResolver
++	}
++	var output bundledDefinitionJSONBuffer
++	// Omit absent protobuf fields. Emitting a nil google.protobuf.Value as
++	// JSON null turns absence into an explicit NullValue on native decode.
++	// This serializer setting preserves that original presence distinction.
++	marshaler := jsonpb.Marshaler{OrigName: true, EmitDefaults: false, EnumsAsInts: true}
++	if err := marshaler.Marshal(&output, detached); err != nil {
++		return nil, errors.Join(ErrCapturedResolver, err)
++	}
++	decoder := json.NewDecoder(bytes.NewReader(output.buffer.Bytes()))
++	decoder.UseNumber()
++	var definition any
++	if err := decoder.Decode(&definition); err != nil {
++		return nil, err
++	}
++	view, err := json.Marshal(struct {
++		Contract, Kind, Key, ProtobufMessage, ProtobufSHA256 string
++		ProtobufBytes                                        int
++		Definition                                           any
++	}{Contract: "pinkha-native-bundled-definition-json-v1", Kind: kind, Key: key,
++		ProtobufMessage: proto.MessageName(detached), ProtobufSHA256: bundledDefinitionHash(raw),
++		ProtobufBytes: len(raw), Definition: definition})
++	if err != nil || len(view) > bundledDefinitionJSONLimit {
++		return nil, errors.Join(ErrCapturedResolver, err)
++	}
++	return &CapturedBundledDefinition{kind: kind, key: key, message: proto.MessageName(detached), raw: raw, view: view, definition: detached}, nil
++}
++
++func currentBundledDefinition(kind, key string) (*CapturedBundledDefinition, error) {
++	switch kind {
++	case "property":
++		value, err := bundle.GetRelation(domain.RelationKey(key))
++		if err != nil {
++			return nil, errors.Join(ErrCapturedResolver, err)
++		}
++		return captureBundledDefinition(kind, key, value)
++	case "type":
++		value, err := bundle.GetType(domain.TypeKey(key))
++		if err != nil {
++			return nil, errors.Join(ErrCapturedResolver, err)
++		}
++		return captureBundledDefinition(kind, key, value)
++	default:
++		return nil, ErrCapturedResolver
++	}
++}
++
++// This is a pure registry comparison, not an authority check. Only the completed
++// native application checkpoint may use it after a fresh account/ACL read.
++func ValidateBundledDefinitionReceipts(expected []BundledDefinitionReceipt) error {
++	if len(expected) > bundledDefinitionsCountLimit {
++		return ErrCapturedResolver
++	}
++	previous, total := "", 0
++	for _, entry := range expected {
++		identity := entry.Kind + ":" + entry.Key
++		if identity <= previous || len(entry.raw) == 0 || len(entry.raw) > bundledDefinitionProtoLimit ||
++			len(entry.view) == 0 || len(entry.view) > bundledDefinitionJSONLimit {
++			return ErrCapturedResolver
++		}
++		previous = identity
++		total += len(entry.raw) + len(entry.view)
++		if total > bundledDefinitionsTotalLimit {
++			return ErrCapturedResolver
++		}
++		var original proto.Message
++		switch entry.Kind {
++		case "property":
++			original = new(model.Relation)
++		case "type":
++			original = new(model.ObjectType)
++		default:
++			return ErrCapturedResolver
++		}
++		if err := proto.Unmarshal(entry.raw, original); err != nil {
++			return errors.Join(ErrCapturedResolver, err)
++		}
++		rebuilt, err := describeBundledDefinition(entry.Kind, entry.Key, original, entry.raw)
++		if err != nil {
++			return err
++		}
++		actual := rebuilt.Receipt()
++		if actual.Kind != entry.Kind || actual.Key != entry.Key || actual.ProtobufMessage != entry.ProtobufMessage ||
++			actual.ProtobufSHA256 != entry.ProtobufSHA256 || actual.JSONViewSHA256 != entry.JSONViewSHA256 ||
++			actual.ProtobufBytes != entry.ProtobufBytes || actual.JSONViewBytes != entry.JSONViewBytes ||
++			!bytes.Equal(rebuilt.view, entry.view) {
++			return ErrCapturedResolver
++		}
++		current, err := currentBundledDefinition(entry.Kind, entry.Key)
++		if err != nil || !proto.Equal(original, current.definition) {
++			return errors.Join(ErrCapturedResolver, err)
++		}
++	}
++	return nil
++}
++
++func (c *CapturedResolver) bundledDefinition(kind, key string, value proto.Message) error {
++	captured, err := captureBundledDefinition(kind, key, value)
++	if err != nil {
++		return err
++	}
++	identity := kind + ":" + key
++	c.mu.Lock()
++	defer c.mu.Unlock()
++	if existing := c.bundled[identity]; existing != nil {
++		if !proto.Equal(existing.definition, captured.definition) {
++			return ErrCapturedResolver
++		}
++		return nil
++	}
++	count := c.bundledBytes + len(captured.raw) + len(captured.view)
++	if len(c.bundled) >= bundledDefinitionsCountLimit || count > bundledDefinitionsTotalLimit {
++		return ErrCapturedResolver
++	}
++	c.bundled[identity] = captured
++	c.bundledBytes = count
++	return nil
++}
++
++// BundledDefinitions returns a deterministic, detached census paired exactly
++// with BundledDefinitionsUsed. A missing or changed native registry entry fails.
++func (c *CapturedResolver) BundledDefinitions() ([]*CapturedBundledDefinition, error) {
++	if c == nil {
++		return nil, ErrCapturedResolver
++	}
++	c.mu.Lock()
++	keys := make([]string, 0, len(c.bundled))
++	for key := range c.bundled {
++		keys = append(keys, key)
++	}
++	sort.Strings(keys)
++	result := make([]*CapturedBundledDefinition, 0, len(keys))
++	receipts := make([]BundledDefinitionReceipt, 0, len(keys))
++	for _, key := range keys {
++		original := c.bundled[key]
++		copy := &CapturedBundledDefinition{kind: original.kind, key: original.key, message: original.message,
++			raw: append([]byte(nil), original.raw...), view: append([]byte(nil), original.view...),
++			definition: proto.Clone(original.definition)}
++		result = append(result, copy)
++		receipts = append(receipts, copy.Receipt())
++	}
++	c.mu.Unlock()
++	if err := ValidateBundledDefinitionReceipts(receipts); err != nil {
++		return nil, err
++	}
++	return result, nil
++}
+diff --git a/pkg/lib/anyblockjson/storeresolver/captured_bundled_definitions_test.go b/pkg/lib/anyblockjson/storeresolver/captured_bundled_definitions_test.go
+new file mode 100644
+index 000000000..03a81cac2
+--- /dev/null
++++ b/pkg/lib/anyblockjson/storeresolver/captured_bundled_definitions_test.go
+@@ -0,0 +1,204 @@
++//go:build pinkha_loaded_account_witness
++
++package storeresolver
++
++import (
++	"bytes"
++	"encoding/json"
++	"testing"
++
++	"github.com/gogo/protobuf/jsonpb"
++	"github.com/gogo/protobuf/proto"
++	"github.com/gogo/protobuf/types"
++	"github.com/stretchr/testify/require"
++
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++)
++
++func TestCapturedBundledDefinitionRetainsActualNativeDescriptorBytes(t *testing.T) {
++	for _, key := range []string{"analyticsSpaceId", "apiObjectKey", "headerRelationsLayout", "homepage",
++		"migrationObjectContext", "orderId", "relationFormatIncludeTime"} {
++		t.Run(key, func(t *testing.T) {
++			original, err := bundle.GetRelation(domain.RelationKey(key))
++			require.NoError(t, err)
++			captured, err := currentBundledDefinition("property", key)
++			require.NoError(t, err)
++			roundTrip := new(model.Relation)
++			require.NoError(t, proto.Unmarshal(captured.Protobuf(), roundTrip))
++			require.True(t, proto.Equal(original, roundTrip), "actual compiled protobuf fields changed")
++			require.Equal(t, "anytype.model.Relation", captured.ProtobufMessage())
++			require.Equal(t, "_br"+key, roundTrip.Id)
++			verifyCompiledJSONRoundTrip(t, captured, new(model.Relation), original)
++			again, err := currentBundledDefinition("property", key)
++			require.NoError(t, err)
++			require.Equal(t, captured.Receipt(), again.Receipt())
++			raw, view := captured.Protobuf(), captured.JSONView()
++			raw[0] ^= 1
++			view[0] ^= 1
++			require.NotEqual(t, raw, captured.Protobuf())
++			require.NotEqual(t, view, captured.JSONView())
++		})
++	}
++	original, err := bundle.GetType(domain.TypeKey("page"))
++	require.NoError(t, err)
++	captured, err := currentBundledDefinition("type", "page")
++	require.NoError(t, err)
++	roundTrip := new(model.ObjectType)
++	require.NoError(t, proto.Unmarshal(captured.Protobuf(), roundTrip))
++	require.True(t, proto.Equal(original, roundTrip))
++	require.Equal(t, "anytype.model.ObjectType", captured.ProtobufMessage())
++	verifyCompiledJSONRoundTrip(t, captured, new(model.ObjectType), original)
++
++	t.Run("absent-explicit-null-and-empty-default-presence", func(t *testing.T) {
++		for _, defaultValue := range []*types.Value{
++			nil,
++			{Kind: &types.Value_NullValue{NullValue: types.NullValue_NULL_VALUE}},
++			{Kind: &types.Value_StringValue{StringValue: ""}},
++		} {
++			value, err := bundle.GetRelation(bundle.RelationKeyName)
++			require.NoError(t, err)
++			value.DefaultValue = defaultValue
++			captured, err := captureBundledDefinition("property", "name", value)
++			require.NoError(t, err)
++			verifyCompiledJSONRoundTrip(t, captured, new(model.Relation), value)
++			var view struct{ Definition map[string]json.RawMessage }
++			require.NoError(t, json.Unmarshal(captured.JSONView(), &view))
++			_, present := view.Definition["defaultValue"]
++			require.Equal(t, defaultValue != nil, present, "native unset and explicit null/default must remain distinct")
++		}
++	})
++
++	t.Run("original-generated-structured-default-keeps-first-wire-and-full-values", func(t *testing.T) {
++		value, err := bundle.GetRelation(bundle.RelationKeyName)
++		require.NoError(t, err)
++		value.DefaultValue = &types.Value{Kind: &types.Value_StructValue{StructValue: &types.Struct{Fields: map[string]*types.Value{
++			"z": {Kind: &types.Value_StringValue{StringValue: "é — עברית"}},
++			"a": {Kind: &types.Value_BoolValue{BoolValue: true}},
++			"nested": {Kind: &types.Value_StructValue{StructValue: &types.Struct{Fields: map[string]*types.Value{
++				"last":  {Kind: &types.Value_NumberValue{NumberValue: 7}},
++				"first": {Kind: &types.Value_StringValue{StringValue: ""}},
++			}}}},
++		}}}}
++		page := compiledControlRow("component-page", model.SmartBlockType_Page, "page", nil)
++		resolver, err := NewCaptured("component-space", []CapturedRow{page})
++		require.NoError(t, err)
++		require.NoError(t, resolver.bundledDefinition("property", "name", value))
++		originalWire := resolver.bundled["property:name"].Protobuf()
++		for i := 0; i < 24; i++ {
++			next, err := captureBundledDefinition("property", "name", value)
++			require.NoError(t, err)
++			verifyCompiledJSONRoundTrip(t, next, new(model.Relation), value)
++			require.NoError(t, resolver.bundledDefinition("property", "name", value))
++			require.Equal(t, originalWire, resolver.bundled["property:name"].Protobuf())
++		}
++		_, err = resolver.BundledDefinitions()
++		require.ErrorIs(t, err, ErrCapturedResolver, "synthetic changed descriptor must not be admitted as the real compiled registry")
++	})
++}
++
++func verifyCompiledJSONRoundTrip(t *testing.T, captured *CapturedBundledDefinition, output, original proto.Message) {
++	t.Helper()
++	var envelope struct {
++		Contract, Kind, Key, ProtobufMessage, ProtobufSHA256 string
++		ProtobufBytes                                        int
++		Definition                                           json.RawMessage
++	}
++	require.NoError(t, json.Unmarshal(captured.JSONView(), &envelope))
++	require.Equal(t, "pinkha-native-bundled-definition-json-v1", envelope.Contract)
++	require.Equal(t, captured.Kind(), envelope.Kind)
++	require.Equal(t, captured.Key(), envelope.Key)
++	require.Equal(t, captured.ProtobufMessage(), envelope.ProtobufMessage)
++	require.Equal(t, bundledDefinitionHash(captured.Protobuf()), envelope.ProtobufSHA256)
++	require.Equal(t, len(captured.Protobuf()), envelope.ProtobufBytes)
++	require.NoError(t, jsonpb.Unmarshal(bytes.NewReader(envelope.Definition), output))
++	require.True(t, proto.Equal(original, output), "generated JSON did not preserve the actual native definition")
++}
++
++func TestCapturedBundledDefinitionReceiptsRefuseChangedOrAmbiguousIdentity(t *testing.T) {
++	original, err := currentBundledDefinition("property", "name")
++	require.NoError(t, err)
++	good := original.Receipt()
++	require.NoError(t, ValidateBundledDefinitionReceipts([]BundledDefinitionReceipt{good}))
++	for _, modify := range []func(*BundledDefinitionReceipt){
++		func(r *BundledDefinitionReceipt) { r.Kind = "object" },
++		func(r *BundledDefinitionReceipt) { r.Key = "not-a-native-bundled-definition" },
++		func(r *BundledDefinitionReceipt) { r.ProtobufMessage = "anytype.model.ObjectType" },
++		func(r *BundledDefinitionReceipt) { r.ProtobufSHA256 = "" },
++		func(r *BundledDefinitionReceipt) { r.JSONViewSHA256 = "" },
++		func(r *BundledDefinitionReceipt) { r.ProtobufBytes++ },
++		func(r *BundledDefinitionReceipt) { r.JSONViewBytes++ },
++	} {
++		changed := good
++		modify(&changed)
++		require.ErrorIs(t, ValidateBundledDefinitionReceipts([]BundledDefinitionReceipt{changed}), ErrCapturedResolver)
++	}
++	require.ErrorIs(t, ValidateBundledDefinitionReceipts([]BundledDefinitionReceipt{good, good}), ErrCapturedResolver)
++	second, err := currentBundledDefinition("property", "description")
++	require.NoError(t, err)
++	require.ErrorIs(t, ValidateBundledDefinitionReceipts([]BundledDefinitionReceipt{good, second.Receipt()}), ErrCapturedResolver)
++	require.NoError(t, ValidateBundledDefinitionReceipts([]BundledDefinitionReceipt{second.Receipt(), good}))
++	changedWire := good
++	changedWire.raw = append([]byte(nil), good.raw...)
++	changedWire.raw[0] ^= 1
++	require.ErrorIs(t, ValidateBundledDefinitionReceipts([]BundledDefinitionReceipt{changedWire}), ErrCapturedResolver)
++	changedView := good
++	changedView.view = append([]byte(nil), good.view...)
++	changedView.view[0] ^= 1
++	require.ErrorIs(t, ValidateBundledDefinitionReceipts([]BundledDefinitionReceipt{changedView}), ErrCapturedResolver)
++}
++
++func compiledControlRow(id string, kind model.SmartBlockType, key string, values map[domain.RelationKey]domain.Value) CapturedRow {
++	details := domain.NewDetails()
++	for field, value := range values {
++		details.Set(field, value)
++	}
++	return CapturedRow{ID: id, Type: kind, UniqueKey: key, Snapshot: &model.SmartBlockSnapshotBase{Details: details.ToProto()}}
++}
++
++func TestCapturedBundledDefinitionFallbackRetainsCensusAndCapturedOverridePriority(t *testing.T) {
++	page := compiledControlRow("component-page", model.SmartBlockType_Page, "page", nil)
++	page.Snapshot.ObjectTypes = []string{domain.TypeKey("page").URL()}
++	page.Snapshot.RelationLinks = []*model.RelationLink{{Key: "name", Format: model.RelationFormat_shorttext}}
++	resolver, err := NewCaptured("component-space", []CapturedRow{page})
++	require.NoError(t, err)
++	captured, err := resolver.BundledDefinitions()
++	require.NoError(t, err)
++	require.Equal(t, []string{"property:name", "type:page"}, resolver.BundledDefinitionsUsed())
++	require.Len(t, captured, 2)
++	require.Equal(t, "name", captured[0].Key())
++	captured[0].raw[0] ^= 1
++	fresh, err := resolver.BundledDefinitions()
++	require.NoError(t, err)
++	require.NotEqual(t, captured[0].Protobuf(), fresh[0].Protobuf())
++
++	actual, err := bundle.GetRelation(bundle.RelationKeyName)
++	require.NoError(t, err)
++	actual.Name = "changed native descriptor"
++	require.ErrorIs(t, resolver.bundledDefinition("property", "name", actual), ErrCapturedResolver)
++	unchanged, err := resolver.BundledDefinitions()
++	require.NoError(t, err)
++	require.Equal(t, fresh[0].Receipt(), unchanged[0].Receipt())
++
++	page.Snapshot.ObjectTypes = nil
++	override := compiledControlRow("captured-name", model.SmartBlockType_STRelation, "rel-name",
++		map[domain.RelationKey]domain.Value{bundle.RelationKeyRelationKey: domain.String("name"),
++			bundle.RelationKeyRelationFormat: domain.Int64(int64(model.RelationFormat_longtext)),
++			bundle.RelationKeyName:           domain.String("captured override")})
++	resolver, err = NewCaptured("component-space", []CapturedRow{page, override})
++	require.NoError(t, err)
++	relation, err := resolver.propertyByKey("name")
++	require.NoError(t, err)
++	require.Equal(t, "captured override", relation.Name)
++	require.Equal(t, model.RelationFormat_longtext, relation.Format)
++	require.Empty(t, resolver.BundledDefinitionsUsed())
++	duplicate := override
++	duplicate.ID = "second-captured-name"
++	resolver, err = NewCaptured("component-space", []CapturedRow{page, override, duplicate})
++	require.NoError(t, err)
++	_, err = resolver.propertyByKey("name")
++	require.ErrorIs(t, err, ErrCapturedResolver)
++	require.Empty(t, resolver.BundledDefinitionsUsed(), "ambiguous captured identity must not use the compiled fallback")
++	require.NotEmpty(t, resolver.Unmapped())
++}

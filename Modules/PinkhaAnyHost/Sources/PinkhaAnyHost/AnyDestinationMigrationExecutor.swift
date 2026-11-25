@@ -29,6 +29,9 @@ public struct AnyDestinationMigrationProgress: Sendable {
     public let mappings: [AnyDestinationMigrationMapping]
     public let totalItems: Int
     public let allItemsReconciled: Bool
+    // Retain the original typed immutable intents so content verification can
+    // re-read current native receipts without reconstructing a property revision.
+    let verificationIntents: [AnyDestinationNativeIntent]
 }
 
 public actor AnyDestinationMigrationExecutor {
@@ -165,7 +168,8 @@ public actor AnyDestinationMigrationExecutor {
         }
         try await admit()
         return .init(binding: plan.binding, source: plan.source, mappings: ordered,
-                     totalItems: plan.items.count, allItemsReconciled: true)
+                     totalItems: plan.items.count, allItemsReconciled: true,
+                     verificationIntents: try entries.map { try Self.intent($0, plan: plan) })
     }
 
     private static func intent(_ entry: AnyDestinationJournalEntry,
