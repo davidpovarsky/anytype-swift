@@ -2297,6 +2297,58 @@ final class NativeLaunchTests: XCTestCase {
     }
     // END_NATIVE_CUSTOM_TYPE_UI_V1
 
+    func testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen() {
+        let scope = UUID(), suffix = String(UUID().uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        let spaceName = "Bin UI Space " + suffix
+        let title = "מסמך לשחזור " + suffix
+        let body = "Restore preserves mixed English ועברית 864"
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: title)
+        tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+        let blocks = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        waitUntilEnabled(blocks.firstMatch)
+        blocks.firstMatch.tap(); blocks.firstMatch.typeText(body)
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        let status = app.descendants(matching: .any).matching(identifier: "any-native-save-status").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"), object: status, timeout: 45)
+        let blockID = blocks.firstMatch.identifier
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        let row = app.buttons[title].firstMatch
+        waitUntilEnabled(row, timeout: 60)
+        let rowID = row.identifier
+        XCTAssertTrue(rowID.hasPrefix("any-native-hierarchy-row-"))
+        let objectID = String(rowID.dropFirst("any-native-hierarchy-row-".count))
+        row.press(forDuration: 1.1)
+        tapWhenEnabled(app.buttons["any-native-hierarchy-archive"])
+        tapWhenEnabled(app.buttons["any-native-bin-confirm-remove"])
+        waitFor(NSPredicate(format: "exists == false"), object: app.buttons[rowID], timeout: 45)
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        XCTAssertFalse(app.buttons[rowID].exists)
+        tapWhenEnabled(app.buttons["any-native-open-bin"])
+        let archived = app.descendants(matching: .any).matching(identifier: "any-native-bin-item-" + objectID)
+        waitUntilEnabled(archived.firstMatch, timeout: 45)
+        XCTAssertEqual(archived.count, 1)
+        XCTAssertTrue(archived.firstMatch.staticTexts[title].exists)
+        tapWhenEnabled(app.buttons["any-native-bin-restore-" + objectID])
+        waitFor(NSPredicate(format: "exists == false"), object: archived.firstMatch, timeout: 45)
+        waitUntilEnabled(app.staticTexts["any-native-bin-empty"])
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        let restored = app.buttons.matching(identifier: rowID)
+        waitUntilEnabled(restored.firstMatch, timeout: 60)
+        XCTAssertEqual(restored.count, 1)
+        XCTAssertEqual(restored.firstMatch.label, title)
+        tapWhenEnabled(restored.firstMatch)
+        waitFor(NSPredicate(format: "exists == true AND value == %@", body),
+                object: app.textViews[blockID], timeout: 60)
+        XCTAssertEqual(blocks.count, 1)
+    }
+
     private func makeApplication(scope: UUID = UUID()) -> XCUIApplication {
         let app = NativeApplicationUnderTest()
         app.launchArguments = [

@@ -52,6 +52,12 @@ public struct AnyGuardedHTTPHierarchyRecordStore: AnyHierarchyObservableRecordSt
         try await requireRun(); return value
     }
 
+    public func readArchivedRows() async throws -> [AnyJSON] {
+        try await requireRun()
+        let value = try await reader.readArchivedRows()
+        try await requireRun(); return value
+    }
+
     public func readObject(objectID: String) async throws -> AnyJSON {
         try await requireRun()
         let value = try await reader.readObject(objectID: objectID)

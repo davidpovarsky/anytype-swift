@@ -60,6 +60,7 @@ public struct AnyNativeLibraryView: View {
                         AnyNativeDocumentEntry(library: model, objectID: id, blockID: blockID)
                     case .allDocuments: documents(notesOnly: false)
                     case .notes: documents(notesOnly: true)
+                    case .bin: bin
                     }
                 }
         }
@@ -99,7 +100,7 @@ public struct AnyNativeLibraryView: View {
                         AnyUIErrorText.text("העברת התוכן לתיקיית האב והסרת התיקייה", "Move contents to the parent and remove folder") :
                         AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), role: .destructive) {
                             Task { await model.remove(item) }; removeItem = nil
-                        }
+                        }.accessibilityIdentifier("any-native-bin-confirm-remove")
                 }
                 Button(AnyUIErrorText.text("ביטול", "Cancel"), role: .cancel) { removeItem = nil }
             }
@@ -196,6 +197,9 @@ public struct AnyNativeLibraryView: View {
                                 NavigationLink(value: AnyNativeLibraryDestination.notes) {
                                     Label(AnyUIErrorText.text("הערות", "Notes"), systemImage: "note.text")
                                 }
+                                NavigationLink(value: AnyNativeLibraryDestination.bin) {
+                                    Label(AnyUIErrorText.text("סל המחזור", "Bin"), systemImage: "trash")
+                                }.accessibilityIdentifier("any-native-open-bin")
                             }
                         }
                         Section {
@@ -315,6 +319,7 @@ public struct AnyNativeLibraryView: View {
                     Button(AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), systemImage: "trash", role: .destructive) {
                         removeItem = item.native
                     }.disabled(!model.canWrite)
+                        .accessibilityIdentifier("any-native-hierarchy-archive")
                 }
 
                 if model.canWrite && !editMode.isEditing {
@@ -340,6 +345,40 @@ public struct AnyNativeLibraryView: View {
             .navigationTitle(notesOnly ? AnyUIErrorText.text("הערות", "Notes") :
                                         AnyUIErrorText.text("כל המסמכים", "All documents"))
             .refreshable { await model.refresh() }
+    }
+
+    private var bin: some View {
+        List {
+            if model.isLoadingBin && model.binItems.isEmpty { ProgressView() }
+            ForEach(model.binItems) { item in
+                HStack {
+                    Label(item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
+                          systemImage: item.isFolder ? "folder" : "doc.text")
+                    Spacer()
+                    if model.pendingRestores.contains(item.id) {
+                        ProgressView()
+                    } else {
+                        Button(AnyUIErrorText.text("שחזור", "Restore")) {
+                            Task { await model.restoreFromBin(objectID: item.id) }
+                        }
+                        .buttonStyle(.borderless)
+                        .disabled(!lifetime.isActive || !model.canWrite)
+                        .accessibilityIdentifier("any-native-bin-restore-" + item.id)
+                    }
+                }
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("any-native-bin-item-" + item.id)
+            }
+            if !model.isLoadingBin && model.binItems.isEmpty {
+                Text(AnyUIErrorText.text("סל המחזור ריק", "The Bin is empty"))
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("any-native-bin-empty")
+            }
+        }
+        .navigationTitle(AnyUIErrorText.text("סל המחזור", "Bin"))
+        .accessibilityIdentifier("any-native-bin")
+        .task(id: model.isReady) { if model.isReady { await model.refreshBin() } }
+        .refreshable { await model.refreshBin() }
     }
 
     private func documentRow(_ item: AnyLibraryDocument) -> some View {
