@@ -14,6 +14,14 @@ import PinkhaHanlinUI
 @testable import PinkhaAnyUI
 @testable import PinkhaAnyNative
 
+// The same original native fixture is also compiled inside the unified host.
+// Each build mode still requires its explicit qualified runtime identity.
+#if PINKHA_DUAL_ENGINE_RUNTIME
+private let nativePublicationExpectedBuild = AnyEmbeddedBuild.pinkhaUnifiedV1
+#else
+private let nativePublicationExpectedBuild = AnyEmbeddedBuild.pinkhaNativeV1
+#endif
+
 /// Actual AnyLib reads and writes with a bounded delivery gate. The surface is
 /// synthetic; these tests certify model publication, not UIKit gestures.
 @MainActor
@@ -438,7 +446,7 @@ final class NativeDocumentPublicationTests: XCTestCase {
         }
     }
 
-    private func withDocument(expectedBuild: AnyEmbeddedBuild = .pinkhaNativeV1,
+    private func withDocument(expectedBuild: AnyEmbeddedBuild = nativePublicationExpectedBuild,
         _ body: @MainActor (NativePublicationFixture) async throws -> Void) async throws {
         XCTAssertEqual(AnyEmbeddedBuild.linked, expectedBuild)
         let directory = FileManager.default.temporaryDirectory
