@@ -161,11 +161,11 @@
     ],
     "base_lock_blob": "b011914658931c21b97dcf14355d961ab6248b8f",
     "base_source": "de63125b97cd5b91a1fa4f4b71d03738076e735f",
-    "changed_pin_count": 9,
+    "changed_pin_count": 10,
     "final_host_hanlin_alignment": "CORE_4185_PASS_HANLIN_SOURCE_EXACT_NATIVE_PENDING",
     "framework_runtime_status": "FULL_SDK_NOT_RUN",
     "pin_count": 52,
-    "reason": "Eight exact Firebase-family upward pin changes required by upstream manifests, plus root's separately source-reviewed shared Hanlin core continuation pin",
+    "reason": "Eight exact Firebase-family upward pins, the reviewed Hanlin core continuation, and the exact StreamingMarkdown revision required by the shared Hanlin presentation manifest.",
     "reviewed_exact_changes": {
       "abseil-cpp-binary": {
         "after": {
@@ -227,6 +227,14 @@
           "version": "1.65.1"
         }
       },
+      "hanlin-streaming-markdown": {
+        "after": {
+          "revision": "5cbb4b6c950051f98f02a0b0ae56756f5174a9b8"
+        },
+        "before": {
+          "revision": "6bde022876ef4af738c154b3d5c871984ef76195"
+        }
+      },
       "interop-ios-for-google-sdks": {
         "after": {
           "revision": "040d087ac2267d2ddd4cca36c757d1c6a05fdbfe",
@@ -249,7 +257,7 @@
       },
       "swift-ai-sdk": {
         "after": {
-          "revision": "07431abccbfb151ca2dab67bca6cf86fcb2bd3b8"
+          "revision": "3f38f1302764635c9991d0d00fd7b12471a5373c"
         },
         "before": {
           "revision": "e7bf34111e603ca977becd007dd4e5bb109af857"
@@ -259,7 +267,7 @@
     "strict_resolver_status": "PENDING_NATIVE_RESOLVER"
   },
   "package_pin_count": 52,
-  "package_resolved_blob": "0102eb25471920e3f562dc60971da600740e7d8e",
+  "package_resolved_blob": "3526d848e2e4e0074ade1192667063e6b5725ea2",
   "package_resolved_path": "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
   "public_host_contract_sha256": "b8a02497aeabab316d85daf2dab5045b1d94dac98a14b7ccc89a3b7c9a6509c0",
   "resource_oracles": {
@@ -355,6 +363,23 @@
     "target_product_id": "E2F113E2753F5684374CB4CE"
   },
   "source_checkpoint": "c898ba06d1f8dc682b31d96b0c1438a4347fcc3b",
+  "streaming_markdown_dependency_adoption": {
+    "base_source": "0ae997abd5184b6afb93bf41203f0559fd1e8c6a",
+    "hanlin": "5aaa4471924aec0fbf086e68feb08fa10d9f01c8",
+    "lock_after_blob": "3526d848e2e4e0074ade1192667063e6b5725ea2",
+    "lock_before_blob": "0102eb25471920e3f562dc60971da600740e7d8e",
+    "pin_count": 52,
+    "previous_revision": "6bde022876ef4af738c154b3d5c871984ef76195",
+    "prior_execution": "SDK-Evidence-4/execution.json",
+    "prior_failure": "STRICT_SHARED_PACKAGE_RESOLUTION: old StreamingMarkdown revision did not satisfy the pinned Hanlin manifest",
+    "requirement_path": "Packages/HanlinPresentationSDK/Package.swift",
+    "revision": "5cbb4b6c950051f98f02a0b0ae56756f5174a9b8",
+    "status": "SOURCE_REVIEWED_STRICT_NATIVE_RESOLVER_PENDING",
+    "transitive_requirements_unchanged": true,
+    "unchanged_other_pins": 51,
+    "upstream_manifest_blob": "c6a424823b556158c18541300121e1706e35d320",
+    "upstream_manifest_sha256": "9a6d87007499587933bbd04e3edf9aadb4bfceba91c3b1914bfc383e96f7aa8e"
+  },
   "symbol_graph_emission": {
     "configuration_id": "7B34B94A980226257449D4B8",
     "configuration_name": "Debug-Anytype",
