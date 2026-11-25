@@ -69,6 +69,20 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
 
     private func openSource() throws {
         XCTAssertTrue(source.wait(for: .runningForeground, timeout: 30))
+        // A real qualified custom middleware may present the original safety
+        // warning before Space Hub. Continue only through its ordinary button;
+        // all editor, callback, identity and cold-persistence assertions below
+        // remain unchanged.
+        let warning = source.alerts["Warning"].firstMatch
+        if warning.waitForExistence(timeout: 3) {
+            let proceed = warning.buttons["Continue with current vault"]
+            XCTAssertTrue(proceed.waitForExistence(timeout: 10))
+            XCTAssertTrue(proceed.isEnabled && proceed.isHittable)
+            screenshot("miniapps-original-middleware-warning")
+            proceed.tap()
+            expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: warning)
+            waitForExpectations(timeout: 20)
+        }
         let ready = source.descendants(matching: .any).matching(NSPredicate(
             format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@ OR identifier == %@",
             "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton", "pinkha.miniapps.open")).firstMatch
