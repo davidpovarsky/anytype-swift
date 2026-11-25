@@ -2,12 +2,60 @@ import Foundation
 import XCTest
 import PinkhaAnyEngine
 import PinkhaAnyIntegration
+import PinkhaKit
 @testable import PinkhaAnyHost
 
 /// Host orchestration/real-filesystem controls. The injected native driver is
 /// deliberately identified as a fixture; these are not native migration or
 /// whole-Space acceptance evidence.
 final class AnyDestinationMigrationExecutorTests: XCTestCase, @unchecked Sendable {
+    func testSemanticAnchorReplayRetainsOriginalAllocatedOwnerUUIDAndPreparedBytes() async throws {
+        let original = try PinkhaSemanticTextAnchor(spaceID: "source-space", objectID: "source-page",
+            id: UUID(uuidString: "cfe050d0-e511-440c-86a5-526bc1234567")!)
+        let text = try AnyDestinationAnchoredText(sourceSpaceID: original.spaceID, sourceObjectID: original.objectID,
+            inlineMarkdown: "[selected 😀](\(original.markerString))")
+        let source = try AnyDestinationSourceBinding(accountID: "source-account", spaceID: original.spaceID,
+            witnessSHA256: digest("witness"), captureManifestSHA256: digest("capture"), semanticPlanSHA256: digest("semantic"),
+            sourceObjectIDs: [original.objectID])
+        let items: [AnyDestinationMigrationItem] = [
+            .init(sourceKey: "owner", sourceObjectID: original.objectID,
+                  operation: .object(type: .native("page"), collections: [], initialProperties: .literal(.object([:])))),
+            .init(sourceKey: "body", sourceObjectID: original.objectID,
+                  operation: .anchoredEditorBlock(owner: ref("owner"), dataset: "editor_blocks", type: "paragraph",
+                    text: text, style: .literal(.object([:])), parent: nil, position: "A"))
+        ]
+        let plan = try AnyDestinationMigrationPlan(source: source,
+            workspace: .init(accountID: "destination-account", spaceID: "destination-space"),
+            storeID: "destination-store", planID: digest("semantic-anchor-replay"),
+            coverage: [.init(sourceObjectID: original.objectID, disposition: .mapped(itemSourceKeys: ["owner", "body"]))],
+            items: items)
+        let parent = try directory(), driver = DestinationFixtureDriver(failAfterPrepare: "body")
+        await expectFailure {
+            _ = try await AnyDestinationMigrationExecutor(journalDirectory: parent, driver: driver)
+                .execute(plan: plan, payloads: { _ in throw FixtureFailure.noPayload }, verifySource: { _ in }, authorize: {})
+        }
+        let first = await driver.stats()
+        let allocated = try XCTUnwrap(first.preparedObjects["owner"])
+        let specBytes = try XCTUnwrap(first.preparedSpecs["body"])
+        let spec = try JSONDecoder().decode(AnyJSON.self, from: specBytes)
+        let projected = try AnyInlineMarkdown(XCTUnwrap(spec["text"]?.string)).semanticText()
+        let marker = try XCTUnwrap(projected.marks.first?.anchor)
+        XCTAssertEqual(marker.id, original.id)
+        XCTAssertTrue(marker.belongsTo(spaceID: plan.binding.workspace.spaceID, objectID: allocated))
+        XCTAssertFalse(marker.belongsTo(spaceID: original.spaceID, objectID: original.objectID))
+        let result = try await AnyDestinationMigrationExecutor(journalDirectory: parent, driver: driver)
+            .execute(plan: plan, payloads: { _ in throw FixtureFailure.noPayload }, verifySource: { _ in }, authorize: {})
+        XCTAssertTrue(result.allItemsReconciled)
+        let reopened = try await AnyDestinationMigrationExecutor(journalDirectory: parent, driver: driver)
+            .execute(plan: plan, payloads: { _ in throw FixtureFailure.noPayload }, verifySource: { _ in }, authorize: {})
+        let final = await driver.stats()
+        XCTAssertEqual(final.preparations["owner"], 1)
+        XCTAssertEqual(final.preparations["body"], 1)
+        XCTAssertEqual(final.preparedSpecs["body"], specBytes)
+        XCTAssertEqual(result.mappings.map(\.intentID), reopened.mappings.map(\.intentID))
+        XCTAssertEqual(result.mappings.map(\.objectID), reopened.mappings.map(\.objectID))
+    }
+
     func testPartsRequireTypeOwnersWhilePropertiesAllowCollections() throws {
         let source = try AnyDestinationSourceBinding(accountID: "source-account", spaceID: "source-space",
             witnessSHA256: digest("witness"), captureManifestSHA256: digest("capture"), semanticPlanSHA256: digest("semantic"),
@@ -269,6 +317,7 @@ private actor DestinationFixtureDriver: AnyDestinationNativeDriving {
     struct Stats: Sendable {
         var preparations: [String: Int] = [:]
         var preparedObjects: [String: String] = [:]
+        var preparedSpecs: [String: Data] = [:]
         var sequenceReads: [String: Int] = [:]
         var propertyPatches: [String: AnyJSON] = [:]
         var attemptedPropertySequences: [String: [Int64]] = [:]
@@ -313,6 +362,7 @@ private actor DestinationFixtureDriver: AnyDestinationNativeDriving {
             observed.fileDigests[key] = AnyContentDigest.sha256(bytes)
         }
         if case .inlineFile(let input) = intent { observed.fileDigests[key] = input.contentSHA256 }
+        observed.preparedSpecs[key] = intent.identity.spec
         values[intent.identity.id] = .object(metadata)
         observed.preparations[key, default: 0] += 1; observed.preparedObjects[key] = metadata["objectId"]?.string
         if key == failAfterPrepare { failAfterPrepare = nil; throw AnyEngineError.writeUncertain }

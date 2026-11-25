@@ -1,0 +1,24 @@
+{
+  "source": "25ea2fe7962d8a0e0c84809f73f0e108dd0a6a78",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "env",
+    "PINKHA_NATIVE_SOURCE_FIXTURE=/mnt/development/projects/evidence/native-json-source-fixture-45472745870",
+    "PINKHA_NATIVE_CUSTOM_SOURCE_FIXTURE=/mnt/development/projects/evidence/native-custom-source-fixture-45492064232",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "2",
+    "--filter",
+    "NativeSemanticAnchorMigrationTests|NativeTextBlockPlanTests|NativePageCompositionTests|AnyDestinationMigrationExecutorTests|AnySemanticAnchorCodecTests|AnySemanticAnchorDocumentTests"
+  ],
+  "startedAt": "2026-11-25T04:50:40.662470+00:00",
+  "scope": "portable codec/plan/journal and retained real source read controls; not native destination or full-space/UI acceptance"
+}

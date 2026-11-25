@@ -1,6 +1,7 @@
 import Foundation
 import PinkhaAnyEngine
 import PinkhaAnyIntegration
+import PinkhaKit
 
 public enum AnyDestinationMigrationError: Error, Equatable, Sendable {
     case invalidPlan(String)
@@ -137,6 +138,11 @@ public enum AnyDestinationMigrationOperation: Codable, Equatable, Sendable {
                 initialProperties: AnyDestinationValue)
     case editorBlock(owner: AnyDestinationReference, dataset: String, type: String, text: String,
                      style: AnyDestinationValue, parent: AnyDestinationReference?, position: String)
+    /// Source-scoped semantic markers are resolved only after the native owner
+    /// has been allocated. Old ordinary-block encoding remains unchanged.
+    case anchoredEditorBlock(owner: AnyDestinationReference, dataset: String, type: String,
+                             text: AnyDestinationAnchoredText, style: AnyDestinationValue,
+                             parent: AnyDestinationReference?, position: String)
     /// The locator and bytes are supplied separately. The immutable plan binds
     /// byte count and plaintext digest. All variants require separate items.
     case file(owner: AnyDestinationReference, name: String, mime: String,
@@ -150,7 +156,7 @@ public enum AnyDestinationMigrationOperation: Codable, Equatable, Sendable {
         switch self {
         case .typeDefinition, .collectionDefinition, .propertyDefinition, .partDefinition: 0
         case .object: 1
-        case .editorBlock: 2
+        case .editorBlock, .anchoredEditorBlock: 2
         case .file: 3
         case .propertyUpdate: 4
         }
@@ -162,7 +168,7 @@ public enum AnyDestinationMigrationOperation: Codable, Equatable, Sendable {
         case .propertyDefinition: "propertyDefinition"
         case .partDefinition: "partDefinition"
         case .object: "object"
-        case .editorBlock: "editorBlock"
+        case .editorBlock, .anchoredEditorBlock: "editorBlock"
         case .file(_, _, _, let size, _): size < 4096 ? "inlineFile" : "file"
         case .propertyUpdate: "propertyUpdate"
         }
@@ -342,6 +348,15 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
                 try mappedOwner(owner, kinds: ["typeDefinition"])
             case .editorBlock(let owner, _, _, _, _, _, _), .file(let owner, _, _, _, _):
                 try mappedOwner(owner, kinds: ["object"])
+            case .anchoredEditorBlock(let owner, _, _, let text, _, _, _):
+                try mappedOwner(owner, kinds: ["object"])
+                guard case .mapped(let key, .objectID, .rawID) = owner,
+                      let ownerIndex = keys[Data(key.utf8)],
+                      Data(text.sourceSpaceID.utf8) == Data(source.spaceID.utf8),
+                      Data(text.sourceObjectID.utf8) == Data(item.sourceObjectID.utf8),
+                      Data(items[ownerIndex].sourceObjectID.utf8) == Data(item.sourceObjectID.utf8) else {
+                    throw AnyDestinationMigrationError.invalidPlan("semantic anchor source owner")
+                }
             case .propertyUpdate(let object, let owner, let patch):
                 try mappedOwner(object, kinds: ["object"])
                 if case .native(let literal) = owner {
@@ -498,7 +513,8 @@ extension AnyDestinationMigrationOperation {
         case .partDefinition(let owner, let draft): try visit(owner); try draft.references(visit)
         case .object(let type, let collections, let properties):
             try visit(type); for collection in collections { try visit(collection) }; try properties.references(visit)
-        case .editorBlock(let owner, _, _, _, let style, let parent, _):
+        case .editorBlock(let owner, _, _, _, let style, let parent, _),
+             .anchoredEditorBlock(let owner, _, _, _, let style, let parent, _):
             try visit(owner); if let parent { try visit(parent) }; try style.references(visit)
         case .file(let owner, _, _, _, _): try visit(owner)
         case .propertyUpdate(let object, let owner, let patch):
@@ -533,8 +549,22 @@ extension AnyDestinationMigrationOperation {
             _ = try AnyPreparedMigrationIntent.object(binding: binding, sourceKey: sourceKey,
                 typeID: resolve(type), collections: collections.map(resolve), initialProperties: properties.resolved(resolve))
         case .editorBlock(let owner, let dataset, let type, let text, let style, let parent, let position):
+            if type != "code", AnyInlineMarkdown(text).runs.contains(where: {
+                $0.link.map(PinkhaSemanticTextAnchor.isReservedMarkerURL) == true
+            }) {
+                throw AnyDestinationMigrationError.invalidPlan("semantic anchors require a scoped migration operation")
+            }
             _ = try AnyPreparedMigrationIntent.block(binding: binding, sourceKey: sourceKey, objectID: resolve(owner),
                 dataset: dataset, type: type, text: text, style: style.resolved(resolve),
+                parentID: parent.map(resolve) ?? "", position: position)
+        case .anchoredEditorBlock(let owner, let dataset, let type, let text, let style, let parent, let position):
+            guard type != "code" else {
+                throw AnyDestinationMigrationError.invalidPlan("semantic anchor in literal code")
+            }
+            let resolved = try text.resolved(destinationSpaceID: binding.workspace.spaceID,
+                                             destinationObjectID: resolve(owner))
+            _ = try AnyPreparedMigrationIntent.block(binding: binding, sourceKey: sourceKey, objectID: resolve(owner),
+                dataset: dataset, type: type, text: resolved, style: style.resolved(resolve),
                 parentID: parent.map(resolve) ?? "", position: position)
         case .file(let owner, let name, let mime, let size, let digest):
             guard (0...AnyPreparedFileIntent.maximumBytes).contains(size), AnyDestinationPlanChecks.digest(digest) else {
