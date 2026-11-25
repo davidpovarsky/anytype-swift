@@ -21,6 +21,7 @@ public struct AnyHeartNativeTextBlockPlan: Sendable {
         public let parentSourceKey: String?
         public let type: String
         public let text: String
+        public let semanticAnchors: AnyDestinationAnchoredText?
         public let style: AnyJSON
         public let position: String
         public let originalNative: AnyJSON
@@ -129,13 +130,18 @@ public struct AnyHeartNativeTextBlockPlan: Sendable {
             }
             if nativeStyle != 10 { counters[parentID] = 0 }
             let projection = try row.inlineProjection()
-            let text = try AnyHeartInlineConversion(projection).inlineMarkdown
+            let text = try AnyHeartInlineConversion(projection, sourceSpaceID: snapshot.sourceSpaceID,
+                sourceObjectID: snapshot.sourceObjectID).inlineMarkdown
+            let projected = projection.literal ? AnyInlineMarkdown(literal: text) : AnyInlineMarkdown(text)
+            let semanticAnchors = try projected.semanticText().marks.isEmpty ? nil :
+                AnyDestinationAnchoredText(sourceSpaceID: snapshot.sourceSpaceID,
+                    sourceObjectID: snapshot.sourceObjectID, inlineMarkdown: text)
             guard text.utf8.count <= 65_536 else { throw AnyHeartNativeTextBlockPlanError.limit }
             let position = try AnyLexicographicPosition.between(after: positions[parentID], before: nil)
             positions[parentID] = position
             entries.append(.init(sourceBlockID: id, sourceKey: key(id),
                 parentSourceKey: parentID == rootID ? nil : key(parent), type: type,
-                text: text, style: .object(style), position: position, originalNative: row.raw))
+                text: text, semanticAnchors: semanticAnchors, style: .object(style), position: position, originalNative: row.raw))
         }
         if let pageLayout, entries.map(\.sourceBlockID) != pageLayout.bodyBlockIDs {
             throw AnyHeartNativeTextBlockPlanError.incompleteGraph
@@ -174,11 +180,19 @@ public struct AnyHeartNativeTextBlockPlan: Sendable {
     public func destinationItems(ownerSourceKey: String, dataset: String = "editor_blocks")
         -> [AnyDestinationMigrationItem] {
         entries.map { entry in
-            .init(sourceKey: entry.sourceKey, sourceObjectID: sourceObjectID,
-                operation: .editorBlock(owner: .mapped(sourceKey: ownerSourceKey, slot: .objectID, encoding: .rawID),
-                    dataset: dataset, type: entry.type, text: entry.text, style: .literal(entry.style),
-                    parent: entry.parentSourceKey.map { .mapped(sourceKey: $0, slot: .record(index: 0), encoding: .rawID) },
-                    position: entry.position))
+            let owner = AnyDestinationReference.mapped(sourceKey: ownerSourceKey, slot: .objectID, encoding: .rawID)
+            let parent = entry.parentSourceKey.map {
+                AnyDestinationReference.mapped(sourceKey: $0, slot: .record(index: 0), encoding: .rawID)
+            }
+            let operation: AnyDestinationMigrationOperation
+            if let text = entry.semanticAnchors {
+                operation = .anchoredEditorBlock(owner: owner, dataset: dataset, type: entry.type,
+                    text: text, style: .literal(entry.style), parent: parent, position: entry.position)
+            } else {
+                operation = .editorBlock(owner: owner, dataset: dataset, type: entry.type, text: entry.text,
+                    style: .literal(entry.style), parent: parent, position: entry.position)
+            }
+            return .init(sourceKey: entry.sourceKey, sourceObjectID: sourceObjectID, operation: operation)
         }
     }
 

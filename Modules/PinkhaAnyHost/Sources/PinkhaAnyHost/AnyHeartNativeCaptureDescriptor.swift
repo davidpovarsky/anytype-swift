@@ -78,6 +78,7 @@ public struct AnyHeartNativeCaptureDescriptor: Sendable {
     /// symlinks, changed bytes and writable/exported source files are refused.
     /// Run this bounded, potentially large read off the main actor.
     public func loadBundle(under privateParent: URL) throws -> AnyHeartNativeSpaceBundle {
+        try Task.checkCancellation()
         let reader = try AnyNativePrivateBundleReader(parent: privateParent, child: privateBundleDirectory)
         let manifest = try reader.read("manifest.json", expectedBytes: nil, maximum: 16 * 1024 * 1024)
         guard !manifest.isEmpty, AnyContentDigest.sha256(manifest) == manifestSHA256 else {
@@ -85,7 +86,8 @@ public struct AnyHeartNativeCaptureDescriptor: Sendable {
         }
         let bundle = try AnyHeartNativeSpaceBundle(manifest: manifest,
             sourceAccountID: sourceAccountID, sourceSpaceID: sourceSpaceID) { member in
-            try reader.read(member.path, expectedBytes: member.byteCount, maximum: member.byteCount)
+            try Task.checkCancellation()
+            return try reader.read(member.path, expectedBytes: member.byteCount, maximum: member.byteCount)
         }
         guard bundle.manifestSHA256 == manifestSHA256, bundle.sourceRows.sha256 == sourceRowsSHA256,
               bundle.trees.count == nativeTrees, bundle.objects.count == capturedObjects,
@@ -169,6 +171,7 @@ private final class AnyNativePrivateBundleReader {
         }
         var bytes = Data()
         while bytes.count <= maximum {
+            try Task.checkCancellation()
             let remaining = maximum - bytes.count
             let count = min(64 * 1024, remaining + 1)
             guard let part = try file.read(upToCount: count), !part.isEmpty else { break }
