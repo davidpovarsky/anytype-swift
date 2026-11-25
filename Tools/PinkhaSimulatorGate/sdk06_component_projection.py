@@ -1,12 +1,16 @@
 """Pure source/project/descriptor projection for the pending SDK06 components.
 
-The original App and tests remain immutable. Only seven @Test attributes are
-blanked in a generated source copy; all declarations, arguments and bodies stay.
+The original App and source inputs remain immutable. Generated copies blank seven
+@Test attributes, add one SwiftProtobuf import, and replace two fixture convenience
+constructors with the same concrete Error.init() and field assignments. Declarations,
+assertion expressions, and argument values are preserved.
 """
 from __future__ import annotations
 import copy
 import hashlib
 import json
+import os
+import stat
 from pathlib import Path
 import plistlib
 import re
@@ -15,13 +19,14 @@ import xml.etree.ElementTree as ET
 import sdk06_compile_support as support
 
 CONTRACT = "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json"
-CONTRACT_SHA = "90b20a136785a90609881790f8fcc6bd7bd6c6a8a23b7015c778d64cfa0e111a"
+CONTRACT_SHA = "da40c6f62fd40f11c8cd29ff05a9c1458eda136a6d82c7ab58ea630a06cbb704"
 SOURCE = "75bd6d7af18dfd511e85582ce7f994d2801b7703"
 PRODUCT = "SDK06PendingTests.xctest"
 SCHEME = "SDK06PendingComponents"
 TARGET = "AnytypeTests"
 MODE = "CURRENT_COMPONENT_TEST_BUNDLE_WITH_ORIGINAL_APP"
 EDITOR = "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift"
+AUTHORITY = "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift"
 
 
 def require(value, message):
@@ -54,6 +59,35 @@ def projected_sources(inputs, fixed):
         require(type(raw) is bytes and len(raw) == row["bytes"]
                 and digest(raw) == row["sha256"], "An original Swift input changed: " + name)
         changed = bytearray(raw)
+        if name == AUTHORITY:
+            patch = fixed["authority_import_patch"]
+            before, after = patch["before"].encode(), patch["after"].encode()
+            require(patch["path"] == name and before == b"import ProtobufMessages\n"
+                    and after == before + b"import SwiftProtobuf\n"
+                    and raw.count(before) == 1 and b"import SwiftProtobuf" not in raw,
+                    "Only the exact missing SwiftProtobuf import may be added")
+            changed = bytearray(raw.replace(before, after, 1))
+            require(digest(changed) == patch["projected_sha256"]
+                    and bytes(changed).replace(after, before, 1) == raw,
+                    "The authority import projection or complete inverse differs")
+            imported = bytes(changed)
+            fixture = fixed["authority_error_construction"]
+            require(fixture["path"] == name and len(fixture["patches"]) == 2
+                    and digest(imported) == fixture["input_sha256"],
+                    "The exact two authority fixture constructions are required")
+            for replacement in fixture["patches"]:
+                old, new = replacement["before"].encode(), replacement["after"].encode()
+                require(old != new and changed.count(old) == 1,
+                        "An exact authority fixture constructor changed")
+                changed = bytearray(changed.replace(old, new, 1))
+            inverse = bytes(changed)
+            for replacement in reversed(fixture["patches"]):
+                old, new = replacement["before"].encode(), replacement["after"].encode()
+                require(inverse.count(new) == 1,
+                        "The authority fixture constructor inverse is ambiguous")
+                inverse = inverse.replace(new, old, 1)
+            require(digest(changed) == fixture["projected_sha256"] and inverse == imported,
+                    "The complete authority fixture construction inverse differs")
         if name == EDITOR:
             last = 0
             for patch in fixed["attribute_patches"]:
@@ -75,7 +109,10 @@ def projected_sources(inputs, fixed):
             require(bytes(inverse) == raw, "The complete original Swift inverse differs")
         result[row["basename"]] = bytes(changed)
         observed[name] = {"original_sha256": digest(raw), "projected_sha256": digest(changed),
-                          "bytes": len(raw), "function_bodies_and_arguments_unchanged": True}
+                          "bytes": len(raw), "projected_bytes": len(changed),
+                          "function_bodies_and_arguments_unchanged": name != AUTHORITY,
+                          "fixture_constructor_replacements": 2 if name == AUTHORITY else 0,
+                          "declarations_assertions_and_argument_values_unchanged": True}
     require(sum(raw.count(b"@Test(") for raw in result.values()) == 23,
             "The generated sources must register exactly the pending23 tests")
     return result, observed
@@ -98,7 +135,102 @@ def object_id(value):
     return hashlib.sha256(value.encode()).hexdigest()[:24].upper()
 
 
-def project_value(source_names, staged_app, original_products, fixed, *, compile_support=None):
+RETAINED_FRAMEWORK_PRODUCTS = (
+    "ProtobufMessages", "Services", "AnytypeCore",
+    "SwiftProtobuf_7CEE9AB92C12BC6B_PackageProduct",
+)
+
+
+def retained_framework_rows(fixed):
+    binding = fixed["retained_framework_links"]
+    require(type(binding) is dict and set(binding) == {"protocol", "source_sha", "native_archive_sha256",
+                            "original_test_link_command_sha256", "frameworks"}
+            and binding["protocol"] == "sdk06-retained-framework-links-v1"
+            and binding["source_sha"] == SOURCE
+            and binding["native_archive_sha256"] ==
+                "478d17c0517a983830410d80b1f9630e42fb09e2293a2360d91ebf887a7ed18a"
+            and binding["original_test_link_command_sha256"] ==
+                "2ed656a9e9ef04b24570724066927c6a509a8896c4ffc011d5d2c1512d495830",
+            "The exact original framework-link lineage is required")
+    rows = binding["frameworks"]
+    require(type(rows) is list and len(rows) == 4 and all(type(row) is dict for row in rows)
+            and tuple(row.get("product") for row in rows) == RETAINED_FRAMEWORK_PRODUCTS,
+            "Only the four original package framework inputs are admitted")
+    for row in rows:
+        name = row["product"]
+        suffix = name + ".framework/" + name
+        require(set(row) == {"product", "link_relative", "runtime_relative", "install_name",
+                             "link_identity", "runtime_identity"}
+                and row["link_relative"] == "PackageFrameworks/" + suffix
+                and row["runtime_relative"] == "Frameworks/" + suffix
+                and row["install_name"] == "@rpath/" + suffix,
+                "An original framework path or install name changed")
+        for role in ("link_identity", "runtime_identity"):
+            value = row[role]
+            require(type(value) is dict and set(value) == {"bytes", "mode", "sha256"}
+                    and type(value["bytes"]) is int and 0 < value["bytes"] <= 256 * 1024 * 1024
+                    and type(value["mode"]) is int and value["mode"] == 0o755
+                    and type(value["sha256"]) is str
+                    and re.fullmatch(r"[0-9a-f]{64}", value["sha256"]),
+                    "A fixed original framework identity is malformed")
+    return rows
+
+
+def verify_retained_framework_links(original_products, staged_app, fixed):
+    roots = {"link": Path(original_products), "runtime": Path(staged_app)}
+    require(all(root.is_absolute() and root.resolve(strict=True) == root
+                and root.is_dir() and not root.is_symlink()
+                for root in roots.values())
+            and roots["runtime"].name == "Anytype.app"
+            and not roots["runtime"].is_relative_to(roots["link"]),
+            "Disjoint regular original-link and staged-runtime roots are required")
+    observed = []
+    def identity(info):
+        return (info.st_dev, info.st_ino, info.st_mode, info.st_size,
+                info.st_mtime_ns, info.st_ctime_ns, info.st_nlink)
+    for row in retained_framework_rows(fixed):
+        result = {"product": row["product"], "install_name": row["install_name"]}
+        for role, root in roots.items():
+            relative = Path(row[role + "_relative"])
+            path = root / relative
+            parent = root
+            for part in relative.parts[:-1]:
+                parent = parent / part
+                require(stat.S_ISDIR(parent.lstat().st_mode),
+                        "A retained framework parent is not a regular directory")
+            before = path.lstat()
+            expected = row[role + "_identity"]
+            require(stat.S_ISREG(before.st_mode) and before.st_nlink == 1
+                    and before.st_size == expected["bytes"]
+                    and stat.S_IMODE(before.st_mode) == expected["mode"],
+                    "An original framework file type, mode or length changed")
+            handle = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+            with os.fdopen(handle, "rb") as source:
+                require(identity(os.fstat(source.fileno())) == identity(before),
+                        "An original framework changed while opening")
+                remaining, hashed = expected["bytes"], hashlib.sha256()
+                while remaining:
+                    chunk = source.read(min(1024 * 1024, remaining))
+                    require(bool(chunk), "An original framework ended early")
+                    hashed.update(chunk)
+                    remaining -= len(chunk)
+                require(source.read(1) == b"" and hashed.hexdigest() == expected["sha256"],
+                        "An original framework byte hash changed")
+                require(identity(os.fstat(source.fileno())) == identity(before)
+                        and identity(path.lstat()) == identity(before),
+                        "An original framework changed during verification")
+            result[role] = {"relative": relative.as_posix(), **expected,
+                            "device": str(before.st_dev), "inode": str(before.st_ino),
+                            "mtime_ns": str(before.st_mtime_ns), "ctime_ns": str(before.st_ctime_ns)}
+        result["link_runtime_byte_equal"] = result["link"]["sha256"] == result["runtime"]["sha256"]
+        observed.append(result)
+    return {"protocol": "sdk06-retained-framework-byte-bindings-v1", "source_sha": SOURCE,
+            "frameworks": observed, "symbol_exports_inspected": False,
+            "runtime_load_succeeded": False, "app_native_or_package_builds": 0}
+
+
+def project_value(source_names, staged_app, original_products, fixed, *, compile_support=None,
+                  with_retained_frameworks=False):
     require(sorted(source_names) == sorted(row["basename"] for row in fixed["source_files"].values()),
             "An unreviewed source entered the isolated target")
     require(all(re.fullmatch(r"[A-Za-z0-9_]+\.swift", name) for name in source_names),
@@ -155,6 +287,10 @@ def project_value(source_names, staged_app, original_products, fixed, *, compile
         "LD_RUNPATH_SEARCH_PATHS": ["@executable_path/Frameworks", "@loader_path/Frameworks"],
         **fixed["original_swift_features"],
     }
+    require(type(with_retained_frameworks) is bool, "The retained-framework opt-in must be boolean")
+    if with_retained_frameworks:
+        settings["OTHER_LDFLAGS"] += [str(original_products / row["link_relative"])
+                                    for row in retained_framework_rows(fixed)]
     if compile_support is not None:
         require(type(compile_support) is support.FixedCompileSupport,
                 "Only the concrete fixed compile-support packet is admitted")
@@ -270,7 +406,8 @@ def descriptor_value(original, original_products_root, staged_app, test_bundle):
     return value
 
 
-def write_project(control, app, destination, staged_app, original_products, *, with_compile_support=False):
+def write_project(control, app, destination, staged_app, original_products, *, with_compile_support=False,
+                  with_retained_frameworks=False):
     require(type(with_compile_support) is bool, "The fixed compile-support opt-in must be boolean")
     fixed = contract(control)
     require(not destination.exists() and not destination.is_symlink(),
@@ -281,9 +418,13 @@ def write_project(control, app, destination, staged_app, original_products, *, w
         require(path.is_file() and not path.is_symlink(), "Original Swift source is absent")
         inputs[name] = path.read_bytes()
     sources, receipt = projected_sources(inputs, fixed)
+    require(type(with_retained_frameworks) is bool, "The retained-framework opt-in must be boolean")
+    framework_binding = verify_retained_framework_links(original_products, staged_app, fixed) \
+        if with_retained_frameworks else None
     compile_support = support.materialize(control, destination) if with_compile_support else None
     value, ids = project_value(list(sources), staged_app, original_products, fixed,
-                              compile_support=compile_support)
+                              compile_support=compile_support,
+                              with_retained_frameworks=with_retained_frameworks)
     project = destination / "SDK06PendingComponents.xcodeproj"
     (destination / "Sources").mkdir(parents=True)
     (project / "xcshareddata/xcschemes").mkdir(parents=True)
@@ -310,8 +451,11 @@ def write_project(control, app, destination, staged_app, original_products, *, w
                      "contract_sha256": CONTRACT_SHA, "inputs": receipt, "generated_files": files,
                      "removed_test_registrations": fixed["selection"]["excluded"],
                      "required_compiled_registrations": fixed["selection"]["selected"],
-                     "function_bodies_and_arguments_unchanged": True,
+                     "function_bodies_and_arguments_unchanged": False,
+                     "fixture_constructor_replacements": 2,
+                     "declarations_assertions_and_argument_values_unchanged": True,
                      "original_source_modified": False, "app_build_targets": 0,
                      "native_library_build_targets": 0, "component_test_bundle_targets": 1,
                      "package_build_targets": 0, "implicit_dependencies": False,
-                     **({"compile_support": compile_support.receipt()} if compile_support is not None else {})}
+                     **({"compile_support": compile_support.receipt()} if compile_support is not None else {}),
+                     **({"retained_framework_links": framework_binding} if framework_binding is not None else {})}

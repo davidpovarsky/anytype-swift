@@ -1,0 +1,49 @@
+(lldb) command source -s 0 '/Users/m1/builds/_diagnostics/sdk-ui-launch-guard-bdyenma9/observe.lldb'
+Executing commands in '/Users/m1/builds/_diagnostics/sdk-ui-launch-guard-bdyenma9/observe.lldb'.
+(lldb) target create /Users/m1/builds/_retained-anytype/45423982997-1/build/sdk06-original-native-derived-45423982997-1/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Anytype
+Current executable set to '/Users/m1/builds/_retained-anytype/45423982997-1/build/sdk06-original-native-derived-45423982997-1/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Anytype' (arm64).
+(lldb) process attach --pid 3889
+Process 3889 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGSTOP
+       frame #0: 0x0000000104f7cb5c libsystem_kernel.dylib`mach_msg2_trap + 8
+libsystem_kernel.dylib`mach_msg2_trap:
+->  0x104f7cb5c <+8>: ret    
+
+libsystem_kernel.dylib`macx_swapon:
+    0x104f7cb60 <+0>: mov    x16, #-0x30               ; =-48 
+    0x104f7cb64 <+4>: svc    #0x80
+    0x104f7cb68 <+8>: ret    
+Target 0: (Anytype) stopped.
+(lldb) script import lldb, json; t=lldb.debugger.GetSelectedTarget(); symbols=t.FindSymbols('$s7Anytype20PinkhaHanlinLauncher33_96E161B22774096C48BB981B20A68D5DLLC4open10routeOwneryAA28SpaceHubCoordinatorViewModelC_tF', lldb.eSymbolTypeCode); assert symbols.GetSize()==1, symbols.GetSize(); address=symbols.GetContextAtIndex(0).GetSymbol().GetStartAddress(); assert address.GetFileAddress()==0x1e5f70; launch_start=address.GetLoadAddress(t); assert launch_start!=lldb.LLDB_INVALID_ADDRESS
+(lldb) script guard_paths={264:'anchor_nil',396:'anchor_view_not_loaded',488:'anchor_window_nil',2120:'window_scene_nil',2100:'scene_not_foreground_active',868:'window_root_nil',2064:'root_already_presenting',1144:'all_entry_guards_passed'}; guard_breakpoints=[t.BreakpointCreateByAddress(launch_start+offset) for offset in guard_paths]; assert all(b.GetNumLocations()==1 for b in guard_breakpoints)
+(lldb) continue
+Process 3889 resuming
+Process 3889 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 8.1
+       frame #0: 0x000000010c3723e8 Anytype.debug.dylib`PinkhaHanlinLauncher.open(routeOwner:) + 1144
+Anytype.debug.dylib`open:
+->  0x10c3723e8 <+1144>: ldr    x20, [x19, #0x198]
+    0x10c3723ec <+1148>: ldr    x1, [x19, #0x140]
+    0x10c3723f0 <+1152>: ldr    x0, [x19, #0xe0]
+    0x10c3723f4 <+1156>: bl     0x10c373720               ; Anytype.PinkhaHanlinLauncher.mountedEditors(in: __C.UIViewController, window: __C.UIWindow) -> Swift.Array<Anytype.EditorPageController>
+Target 0: (Anytype) stopped.
+(lldb) script p=t.GetProcess(); thread=p.GetSelectedThread(); frame=thread.GetFrameAtIndex(0); offset=frame.GetPC()-launch_start; print('PINKHA_LAUNCH_GUARD '+json.dumps({'branch':guard_paths.get(offset),'offset':offset,'breakpointStop':thread.GetStopReason()==lldb.eStopReasonBreakpoint,'threadID':thread.GetThreadID(),'processID':p.GetProcessID()}))
+PINKHA_LAUNCH_GUARD {"branch": "all_entry_guards_passed", "offset": 1144, "breakpointStop": true, "threadID": 700210, "processID": 3889}
+(lldb) register read pc x0 x8 x9 x19 x20 x29
+      pc = 0x000000010c3723e8  Anytype.debug.dylib`Anytype.PinkhaHanlinLauncher.open(routeOwner: Anytype.SpaceHubCoordinatorViewModel) -> () + 1144
+      x0 = 0x000000016ba64dc0
+      x8 = 0x0000000000000001
+      x9 = 0x0000000104829f20  dyld`_main_thread + 224
+     x19 = 0x000000016ba64b20
+     x20 = 0x000000010f433540  Anytype.debug.dylib`full type metadata for __C.UISceneActivationState + 16
+      fp = 0x000000016ba64ec0
+(lldb) bt 5
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 8.1
+   * frame #0: 0x000000010c3723e8 Anytype.debug.dylib`PinkhaHanlinLauncher.open(routeOwner:) + 1144
+     frame #1: 0x000000010c371cb8 Anytype.debug.dylib`closure #1 in PinkhaHanlinLaunchButton.body.getter + 72
+     frame #2: 0x00000001c9ccf5e8 SwiftUI`partial apply for closure #1 in closure #2 in ContextMenuBridge.contextMenuInteraction(_:willPerformPreviewActionForMenuWith:animator:) + 24
+     frame #3: 0x00000001ca437da0 SwiftUI`specialized static MainActor.assumeIsolated(_:file:line:) + 132
+     frame #4: 0x00000001ca3fce2c SwiftUI`ButtonAction.callAsFunction() + 308
+(lldb) process detach
+Process 3889 detached
+(lldb) quit

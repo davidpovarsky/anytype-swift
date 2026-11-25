@@ -9,10 +9,10 @@ permissions:
 
 jobs:
   current-native-ui-failed:
-    runs-on: xcode-27
-    timeout-minutes: 150
+    runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
+    timeout-minutes: 196
     env:
-      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
       PYTHONDONTWRITEBYTECODE: '1'
       GIT_OPTIONAL_LOCKS: '0'
       GH_TOKEN: ${{ github.token }}
@@ -38,32 +38,33 @@ jobs:
             test "$current_branch" = "$GITHUB_REF_NAME"
           fi
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-      - name: Select native ARM64 Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          architecture: arm64
+      - name: Select installed native ARM64 Python 3.12
+        shell: bash
+        run: |
+          pinkha_python_bin=/opt/homebrew/opt/python@3.12/libexec/bin
+          "$pinkha_python_bin/python3" -I -c 'import platform, sys; assert sys.version_info[:2] == (3, 12), sys.version; assert platform.machine() == "arm64", platform.machine(); assert platform.system() == "Darwin", platform.system(); print(sys.version.split()[0], platform.machine(), sys.executable)'
+          printf '%s\n' "$pinkha_python_bin" >> "$GITHUB_PATH"
       - name: Checkout the exact public canonical Hanlin source
         uses: actions/checkout@v4
         with:
           repository: davidpovarsky/hanlin-ai
-          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          ref: 6bd6036dbca16c969689a5722550a54bebc1e851
           path: .ci/hanlin-source
           persist-credentials: false
       - name: Build the current App once and execute only this fixed unresolved scope
         id: execute
-        timeout-minutes: 130
+        timeout-minutes: 176
         shell: bash
         run: |
           set -euo pipefail
-          python3 -B Tools/CurrentAppleValidation/native_ui_failed.py execute --expected-source "$GITHUB_SHA"
+          python3 -B Tools/CurrentAppleValidation/native_ui_failed.py execute --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
       - name: Finalize only journaled current-run resources even after an early failure
         if: ${{ always() && steps.execute.outcome != 'skipped' }}
         timeout-minutes: 8
         shell: bash
         run: |
           set -euo pipefail
-          python3 -B Tools/CurrentAppleValidation/native_ui_failed.py cleanup --expected-source "$GITHUB_SHA"
+          python3 -B Tools/CurrentAppleValidation/native_ui_failed.py cleanup --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
       - name: Preserve original Products, commands, results and cleanup without filtering raw streams
         if: always()
         uses: actions/upload-artifact@v4

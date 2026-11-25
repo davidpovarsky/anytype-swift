@@ -126,6 +126,18 @@ class ProtocolControls(unittest.TestCase):
         value["messages"].insert(0, {"role": "system", "content": SCENARIO["unselectedText"]})
         self.refuses(prepared(2), value, "unselected_source_disclosed")
 
+    def test_missing_or_foreign_schema_dialect_is_refused(self):
+        for index in (0, 1):
+            for dialect in (None, "http://json-schema.org/draft-07/schema#", True):
+                with self.subTest(tool=index, dialect=dialect):
+                    value = rounds()[1]
+                    parameters = value["tools"][index]["function"]["parameters"]
+                    if dialect is None:
+                        del parameters["$schema"]
+                    else:
+                        parameters["$schema"] = dialect
+                    self.refuses(prepared(1), value, "tool_schema")
+
     def test_schema_boolean_is_not_integer_one(self):
         value = rounds()[1]
         value["tools"][0]["function"]["parameters"]["properties"]["title"]["minLength"] = True

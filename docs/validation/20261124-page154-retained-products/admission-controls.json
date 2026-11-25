@@ -1,0 +1,45 @@
+{
+  "scope": "SOURCE_ADMISSION_ONLY",
+  "appleBuilds": 0,
+  "UIExecutions": 0,
+  "results": [
+    {
+      "control": "actual_19_entries_plus_exact_4_empty_dirs",
+      "status": "PASS"
+    },
+    {
+      "control": "changed_original_source_file",
+      "status": "PASS",
+      "rejected": "page_generated_delta_is_not_exact_four_empty_directories"
+    },
+    {
+      "control": "additional_fifth_directory",
+      "status": "PASS",
+      "rejected": "page_generated_delta_is_not_exact_four_empty_directories"
+    },
+    {
+      "control": "unexpected_directory_mode",
+      "status": "PASS",
+      "rejected": "page_generated_delta_is_not_exact_four_empty_directories"
+    },
+    {
+      "control": "compiled_tree_change",
+      "status": "PASS",
+      "rejected": "retained_page_compiled_sources_changed"
+    },
+    {
+      "control": "unreviewed_helper_change",
+      "status": "PASS",
+      "rejected": "unreviewed_retained_page_helper_delta:Tools/unknown-helper.py"
+    },
+    {
+      "control": "predeclare_exact_empty_workspace_directories",
+      "status": "PASS"
+    },
+    {
+      "control": "predeclare_existing_workspace",
+      "status": "PASS",
+      "rejected": "fresh_generated_workspace_directory_required"
+    }
+  ]
+}

@@ -25,6 +25,7 @@ from acceptance_profile import PREPARE, VERIFY, ADAPTER, UI_RETURN, UI_REPLAY, r
 from resolved_dependencies import ACTIVATION_ARGUMENTS, record_resolution, verify_recorded_resolution
 from export_products import export_built_products, product_closure
 from simulator_admission import verify_built_entitlements
+from selection import configure_tests, selector, validate_enumeration
 
 def require(condition, message):
     if not condition:
@@ -44,26 +45,6 @@ def digest(path):
 
 def git(app, *args):
     return subprocess.check_output(["git", "-C", str(app), *args], text=True).strip()
-
-def configure_tests(original, destination, environment):
-    data = plistlib.loads(original.read_bytes())
-    count = 0
-    def visit(value):
-        nonlocal count
-        if isinstance(value, dict):
-            if "TestBundlePath" in value:
-                value.setdefault("EnvironmentVariables", {}).update(environment)
-                count += 1
-            return {key: visit(item) for key, item in value.items()}
-        if isinstance(value, list):
-            return [visit(item) for item in value]
-        if isinstance(value, str):
-            return value.replace("__TESTROOT__", str(original.parent))
-        return value
-    data = visit(data)
-    require(count > 0, "Actual xctestrun contains no test target")
-    destination.write_bytes(plistlib.dumps(data))
-    return destination
 
 def source_context(args, receipt, *, use_recorded_resolution=False):
     from types import SimpleNamespace
@@ -325,12 +306,20 @@ def execute(args, receipt):
 
     def test(configuration, target, method, name, additions=None):
         env = {**environment, **(additions or {})}
-        configured = configure_tests(configuration, evidence / (name + ".xctestrun"), env)
+        configured = configure_tests(configuration, evidence / (name + ".xctestrun"), env, target, method)
         result_path = evidence / (name + ".xcresult")
-        try:
-            command(["xcodebuild", "test-without-building", "-xctestrun", str(configured),
+        arguments = ["xcodebuild", "test-without-building", "-xctestrun", str(configured),
                      "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO",
-                     "-only-testing:" + target + "/" + method, "-resultBundlePath", str(result_path)], name, timeout=600)
+                     "-only-testing:" + target + "/" + selector(target, method)]
+        enumeration_path = evidence / (name + "-enumeration.json")
+        command([*arguments, "-enumerate-tests", "-test-enumeration-style", "flat",
+                 "-test-enumeration-format", "json", "-test-enumeration-output-path", str(enumeration_path)],
+                name + "-enumeration", timeout=120)
+        receipt[name + "_selection"] = validate_enumeration(
+            json.loads(enumeration_path.read_text()), target, method)
+        save(name + "-selection-verified")
+        try:
+            command([*arguments, "-resultBundlePath", str(result_path)], name, timeout=600)
         finally:
             if result_path.exists():
                 for mode in ("summary", "tests"):

@@ -68,6 +68,11 @@ def download(app_source, work, evidence):
     pin = json.loads((app_source / "Tools/MiniApps/producer.json").read_text())
     sdk = json.loads((app_source / "Tools/Hanlin/source.json").read_text())
     require(pin["revision"] == sdk["revision"], "Companion and consumer bridge pins differ")
+    if pin.get("execution_origin") == "local-mac":
+        from local_producer import admit
+        return admit(app_source, work, evidence, pin)
+    require(pin.get("execution_origin", "github-actions") == "github-actions",
+            "Unknown companion execution origin")
     work.mkdir(parents=True, exist_ok=False)
     evidence.mkdir(parents=True, exist_ok=True)
     repository, run_id = pin["repository"], pin["run_id"]

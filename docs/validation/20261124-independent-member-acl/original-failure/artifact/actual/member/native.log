@@ -1,0 +1,186 @@
+mw lib: build on 0001-01-01 00:00:00 +0000 UTC at #d98420b1113536afd08cde6de9a5816f6d27ffff
+=== RUN   TestIndependentMemberACLTransport
+2026-11-24T15:39:43.638Z	[34mINFO[0m	client.space.localdiscovery	local discovery: no native discovery proxy installed, using zeroconf
+2026-11-24T15:39:43.638Z	[34mINFO[0m	anytype-app	starting app	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-native-t5-lookup-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-torah-attachment-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-current-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-authorized-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00", "appVersion": "ios:0.51.0/middle:v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-native-t5-lookup-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-torah-attachment-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-current-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-authorized-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00/any-sync:"}
+2026-11-24T15:39:43.639Z	[33mWARN[0m	anytype-config	using sqlite storage
+### lenient true
+2026-11-24T15:39:43.678Z	[33mWARN[0m	common.nodeconf	periodic call error	{"error": "unable to connect"}
+2026/11/24 15:39:43 failed to sufficiently increase receive buffer size (was: 1024 kiB, wanted: 7168 kiB, got: 2048 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+2026-11-24T15:39:43.679Z	[34mINFO[0m	client.space.localdiscovery	net interfaces configuration changed	{"ifaces": ["eth0"]}
+2026-11-24T15:39:43.680Z	[34mINFO[0m	client.space.localdiscovery	own lan addresses	{"addrs": ["eth0 172.18.0.3/16 advertised"]}
+2026-11-24T15:39:43.680Z	[34mINFO[0m	client.space.localdiscovery	starting mdns server	{"ips": ["172.18.0.3"], "port": 45713, "peerId": "12D3KooWBYHSuo8dEDQByaR5REKSutzjhirgFBsjWKjMDFTXYh2r", "linkLocalIfaces": []}
+2026-11-24T15:39:43.731Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreicfivvdokwg43jtwker6uz5kuusuehe7yateburyxoqof4q6eny4q.2lx0dpz2zot09", "spaceId": "bafyreicfivvdokwg43jtwker6uz5kuusuehe7yateburyxoqof4q6eny4q.2lx0dpz2zot09", "accountStatus": "Unknown"}
+2026-11-24T15:39:43.732Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreicfivvdokwg43jtwker6uz5kuusuehe7yateburyxoqof4q6eny4q.2lx0dpz2zot09"}
+2026-11-24T15:39:44.528Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-24T15:39:44.528Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-24T15:39:44.528Z	[33mWARN[0m	anytype-mw-configfetcher	periodic call error	{"error": "unable to connect"}
+2026-11-24T15:39:44.537Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-24T15:39:44.538Z	[31mERROR[0m	nameservice.nameserviceclient	no ns peers configured. Maybe you're on a custom network. Node config ID: 
+2026-11-24T15:39:44.538Z	[31mERROR[0m	anytype-identity	error fetching global name of our own identity from Naming Service	{"error": "no namingNode peers configured. Maybe you're on a custom network. Node config ID: "}
+2026-11-24T15:39:44.538Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T15:39:44.538Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T15:39:44.538Z	[31mERROR[0m	heart.inboxclient	inbox: fetchMessages batch error	{"error": "unable to connect"}
+2026-11-24T15:39:45.538Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "1s"}
+2026-11-24T15:39:45.538Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T15:39:45.538Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T15:39:45.783Z	[31mERROR[0m	common.commonspace.spacestorage	failed to open spacestore	{"spaceId": "bafyreifojmbjlvyfbhxalei4p2wdhycfzu7qnbsmsadks5x4kw3ywylbxu.217gcnfvtzgjd", "isCorrupted": false, "code": "SQLITE_ERROR", "error": "space storage missing"}
+2026-11-24T15:39:45.984Z	[34mINFO[0m	common.commonspace.headsync	sync done:	{"spaceId": "bafyreifojmbjlvyfbhxalei4p2wdhycfzu7qnbsmsadks5x4kw3ywylbxu.217gcnfvtzgjd", "newIds": 144, "changedIds": 1, "removedIds": 0, "already deleted ids": 1, "peerId": "12D3KooWRh23CkZpFsDqRg2WBFvqYuA8bjPSy5wwd1GPVX2noz3W"}
+2026-11-24T15:39:47.539Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "2s"}
+2026-11-24T15:39:47.539Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T15:39:47.539Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T15:39:50.540Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "3s"}
+2026-11-24T15:39:50.540Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T15:39:50.540Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T15:39:54.540Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "4s"}
+2026-11-24T15:39:54.540Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T15:39:54.540Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T15:39:54.554Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-24T15:39:59.540Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "5s"}
+2026-11-24T15:39:59.540Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T15:39:59.540Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T15:40:00.959Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreifojmbjlvyfbhxalei4p2wdhycfzu7qnbsmsadks5x4kw3ywylbxu.217gcnfvtzgjd", "spaceId": "bafyreifojmbjlvyfbhxalei4p2wdhycfzu7qnbsmsadks5x4kw3ywylbxu.217gcnfvtzgjd", "accountStatus": "Active", "aclHeadId": "bafyreibzp22ekqw2urejdzyuvgzpsjjstoya7suqmngyt53h6lr7v67cya"}
+2026-11-24T15:40:00.960Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreifojmbjlvyfbhxalei4p2wdhycfzu7qnbsmsadks5x4kw3ywylbxu.217gcnfvtzgjd"}
+2026-11-24T15:40:00.961Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-24T15:40:00.974Z	[31mERROR[0m	nameservice.nameserviceclient	no ns peers configured. Maybe you're on a custom network. Node config ID: 
+2026-11-24T15:40:00.974Z	[31mERROR[0m	anytype-identity	error fetching global names of guest identities from Naming Service	{"error": "no namingNode peers configured. Maybe you're on a custom network. Node config ID: "}
+2026-11-24T15:40:00.975Z	[31mERROR[0m	common.components.aclobjectmanager	process(): error processing acl	{"error": "invalid key"}
+2026-11-24T15:40:01.195Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.196Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.196Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.197Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.198Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.198Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.199Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.199Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.200Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.201Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.201Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.201Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.202Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.202Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.203Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.203Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.203Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.204Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.204Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.205Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.205Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.207Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.207Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.207Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.208Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.209Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.210Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.211Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.212Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.213Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.213Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.220Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.221Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.222Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.222Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.223Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.223Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.223Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.223Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.224Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.224Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.225Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.227Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.228Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.229Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.230Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.231Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.232Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.233Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.233Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.234Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.234Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.235Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.236Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.237Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.238Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.239Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.239Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.240Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.241Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.242Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.244Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.244Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.245Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.245Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.246Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.246Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.247Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.248Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.248Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.248Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.297Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.298Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.302Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.303Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.303Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.304Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.305Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.306Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.310Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.310Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.311Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.312Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.314Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.315Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.315Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.316Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.317Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.318Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.318Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.319Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.320Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.320Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.320Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.321Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.321Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.322Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.322Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.323Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.323Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.324Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.327Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.328Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.329Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.330Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.331Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.334Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.336Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.345Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.345Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.347Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.397Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.398Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.399Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.401Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.401Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.407Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.407Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.408Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.409Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.410Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.411Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.411Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.412Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.414Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.415Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.415Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.416Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.420Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.424Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T15:40:01.426Z	[33mWARN[0m	client.space	load bundled objects	{"duration": "457.971118ms"}
+2026-11-24T15:40:04.554Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-24T15:40:05.540Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "6s"}
+2026-11-24T15:40:05.540Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T15:40:05.540Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T15:40:05.974Z	[31mERROR[0m	common.acl.syncacl	broadcast acl message error	{"error": "mb: overflowed"}
+2026-11-24T15:40:05.976Z	[31mERROR[0m	common.components.aclobjectmanager	UpdateAcl: error processing acl	{"error": "invalid key"}
+2026-11-24T15:40:05.987Z	[34mINFO[0m	common.commonspace.headsync	sync done:	{"spaceId": "bafyreifojmbjlvyfbhxalei4p2wdhycfzu7qnbsmsadks5x4kw3ywylbxu.217gcnfvtzgjd", "newIds": 0, "changedIds": 30, "removedIds": 0, "already deleted ids": 0, "peerId": "12D3KooWRh23CkZpFsDqRg2WBFvqYuA8bjPSy5wwd1GPVX2noz3W"}
+2026-11-24T15:40:06.224Z	[34mINFO[0m	client.space.localdiscovery	net interfaces configuration changed	{"ifaces": []}
+2026-11-24T15:40:06.225Z	[33mWARN[0m	common.commonspace.peermanager	failed to get local from net pool	{"peerId": "12D3KooWRh23CkZpFsDqRg2WBFvqYuA8bjPSy5wwd1GPVX2noz3W", "error": "get local peer: dial tcp 172.18.0.2:38921: connect: network is unreachable"}

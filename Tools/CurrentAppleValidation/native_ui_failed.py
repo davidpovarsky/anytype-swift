@@ -1,4 +1,4 @@
-"""Current NativeApp build for four unresolved UI scopes, excluding all retained passes."""
+"""One current NativeApp build: four unresolved UI scopes, then Type and history."""
 from __future__ import annotations
 import importlib
 import os

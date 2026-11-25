@@ -1,0 +1,50 @@
+{
+  "candidateSHA256": "b38c1f4ee4b3f9b090295d97ee20cd1315d3308328838dd263ef98a5e2b28d04",
+  "executed": false,
+  "originSHA256": "0110db52825c8e20f33ac9637c49c992fb91dc62b596a8fdb7945d8d972b8afa",
+  "ownedStopAndFirstErrorBodiesChanged": false,
+  "schema": "qualified-launcher-adaptation-v1",
+  "substitutions": [
+    {
+      "after": "/run/anytapy-wave15-source-overlay-20261123/owned-inventory-recovery",
+      "before": "/run/anytapy-wave15-source-overlay-20261123/sdk-typed-error-construction",
+      "count": 1
+    },
+    {
+      "after": "/run/anytapy-wave15-source-overlay-20261123/owned-inventory-recovery-control-attempt1",
+      "before": "/run/anytapy-wave15-source-overlay-20261123/sdk-typed-error-current-control-attempt1",
+      "count": 1
+    },
+    {
+      "after": "docs/validation/20261124-owned-inventory-recovery/",
+      "before": "docs/validation/20261123-sdk06-typed-error-construction/current-control/",
+      "count": 2
+    },
+    {
+      "after": "3bce683f7f57a96d84ce1039972891c15c837f2e7e7352f08be1cd760b0e463f",
+      "before": "33a6939038ad3001598d824a081b0c219c36560f140077c6462c379c0ef83f93",
+      "count": 1
+    },
+    {
+      "after": "entries<=512",
+      "before": "entries<=256",
+      "count": 1
+    },
+    {
+      "after": "4*1024**2-64*1024",
+      "before": "2*1024**2-64*1024",
+      "count": 2
+    },
+    {
+      "after": "\"newPolicyControlMethodsRequested\":1",
+      "before": "\"correctedExistingMethodsRequested\":1",
+      "count": 1
+    },
+    {
+      "after": "owned-inventory-policy-ram-4mib-v1",
+      "before": "fixed-current-projection-ram-2mib-v1",
+      "count": 1
+    }
+  ],
+  "wholeFileInverse": true
+}

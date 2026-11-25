@@ -1,0 +1,56 @@
+{
+  "controllerBase": "96fadb1945a33e8c7bfa6153cae1cd6124604fdd",
+  "controllerSHA256": "4db3dbf17c147ad92d5d7d9d85588acdc3c86c9abcc21fc4a836b5342580902b",
+  "deltaSHA256": "fbe48e39819ee99c31336e74d78cb3a5953143f6c934c2006437f8fd190fd8c4",
+  "expectedNativeExecutions": 4,
+  "format": "pinkha-native-peer-census-controller-review-v1",
+  "metadataBoundaryControls": [
+    "unknown-field-refused",
+    "duplicate-native-id-refused",
+    "settings-type-refused",
+    "changed-census-digest-refused"
+  ],
+  "nativeRuntime": "NOT_RUN",
+  "retainedScheduling": {
+    "controller_sha": "bfd73d7d2d05a3dc115f6fddf2fb938844b17280",
+    "heart_sha": "65caee9bfc386c2f9182564d6ad1eb2f02cfadd1",
+    "method": "TestLoadedAccountCaptureRetryBoundary",
+    "native_source_capture_proof": false,
+    "original_failed_scopes": [
+      {
+        "error": "native_custom_schema_method_exit",
+        "error_type": "RuntimeError",
+        "scope": "custom-schema"
+      },
+      {
+        "error": "native_peer_exited_before_member_received",
+        "error_type": "RuntimeError",
+        "scope": "remote-file-peers"
+      }
+    ],
+    "producer_overall_status": "FAIL",
+    "producer_result_sha256": "10dcb731241232985f626fcb8d084ec8a138c9e0aeffa46190f417d2da05c157",
+    "recipient_readback_sha256": "afc6663622d8ff47c09c08baa8b2f2909d0268269241b45f0833b2c51b79fc4d",
+    "rerun": false,
+    "run_attempt": "1",
+    "run_id": "45492064232",
+    "source_sha256": {
+      "core/application/loaded_capture_retry_test.go": "eef0bd39d617f78680a0a2fd7b4ad5e32621f1858047462db309684807003a9f",
+      "core/application/loaded_space_witness.go": "8225e0ac9af096fd0e03e5b6658a5981fd3752979953824b2deeb514c07a88da"
+    },
+    "status": "RETAINED_ORIGINAL_SCOPE_PASS",
+    "stdout_sha256": "381189dc7d2866391913bdf26e453bb026a0b17418399c71dfaa96ef49673000",
+    "subtests": 8
+  },
+  "scope": "Exact source delta, retained original scheduling admission and metadata-only controller boundaries; no native runtime or transport claim.",
+  "selectedSourceMethods": [
+    "TestLoadedAccountCustomSchemaSource",
+    "TestLoadedAccountRemoteFilePeer"
+  ],
+  "sourceBase": "65caee9bfc386c2f9182564d6ad1eb2f02cfadd1",
+  "sourceCandidate": "ea796999d648e27dcb7ad23a0bbd849d35fadc5a",
+  "sourceDeltaAdmissionFiles": 4,
+  "sourceIndependentReview": "Migration native owner: bounded four-file source review; no concrete blocker; runtime not qualified.",
+  "status": "PASS",
+  "wholeSpaceMigrationComplete": false
+}

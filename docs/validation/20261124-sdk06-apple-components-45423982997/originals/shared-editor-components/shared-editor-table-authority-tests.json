@@ -1,0 +1,488 @@
+{
+  "devices" : [
+    {
+      "architecture" : "arm64",
+      "deviceId" : "18F05D2E-3B4F-4CE5-A126-F295C837C493",
+      "deviceName" : "Pinkha-UI27-45423982997-ipad",
+      "modelName" : "iPad Pro 13-inch (M5)",
+      "osBuildNumber" : "24A434",
+      "osVersion" : "27.0",
+      "platform" : "iOS Simulator"
+    }
+  ],
+  "testNodes" : [
+    {
+      "children" : [
+        {
+          "children" : [
+            {
+              "children" : [
+                {
+                  "duration" : "0,093s",
+                  "durationInSeconds" : 0.09302115440368652,
+                  "name" : "A table delegate freezes text before its view is reused",
+                  "nodeIdentifier" : "SimpleTableTextPersistenceTests/acceptedSnapshotSurvivesViewReuse()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/acceptedSnapshotSurvivesViewReuse()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,0072s",
+                  "durationInSeconds" : 0.007225990295410156,
+                  "name" : "Later table drafts coalesce behind the in-flight native acknowledgement",
+                  "nodeIdentifier" : "SimpleTableTextPersistenceTests/laterDraftKeepsTheLatestAcceptedSnapshot()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/laterDraftKeepsTheLatestAcceptedSnapshot()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,00055s",
+                  "durationInSeconds" : 0.0005469322204589844,
+                  "name" : "Native rejection retains the table draft until an actual retry succeeds",
+                  "nodeIdentifier" : "SimpleTableTextPersistenceTests/nativeRejectionKeepsTheTableDirty()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/nativeRejectionKeepsTheTableDirty()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,0024s",
+                  "durationInSeconds" : 0.002382993698120117,
+                  "name" : "Ending a search-owned table edit commits the captured local buffer",
+                  "nodeIdentifier" : "SimpleTableTextPersistenceTests/defocusCommitsTheDeferredSearchBuffer()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/defocusCommitsTheDeferredSearchBuffer()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,0016s",
+                  "durationInSeconds" : 0.0015630722045898438,
+                  "name" : "Rebinding a nonforking table handler retires the previous row draft",
+                  "nodeIdentifier" : "SimpleTableTextPersistenceTests/rowRebindCannotWriteIntoTheNewOwner()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/rowRebindCannotWriteIntoTheNewOwner()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,0015s",
+                  "durationInSeconds" : 0.0014939308166503906,
+                  "name" : "A table structural key waits for the pending text acknowledgement",
+                  "nodeIdentifier" : "SimpleTableTextPersistenceTests/structuralKeyWaitsForAcceptedText()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/structuralKeyWaitsForAcceptedText()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "children" : [
+                    {
+                      "duration" : "0,00047s",
+                      "durationInSeconds" : 0.00046706199645996094,
+                      "name" : "false",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)?args=fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    },
+                    {
+                      "duration" : "0,00042s",
+                      "durationInSeconds" : 0.00041794776916503906,
+                      "name" : "true",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)?args=b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    }
+                  ],
+                  "duration" : "0,00044s",
+                  "durationInSeconds" : 0.0004425048828125,
+                  "name" : "Explicit replacements claim dirty ownership before publishing their live value",
+                  "nodeIdentifier" : "SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,0028s",
+                  "durationInSeconds" : 0.0027980804443359375,
+                  "name" : "Markdown styling publishes synchronously and joins the same native writer",
+                  "nodeIdentifier" : "SimpleTableTextPersistenceTests/markdownStyleWaitsForEarlierNativeWrite()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/markdownStyleWaitsForEarlierNativeWrite()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "children" : [
+                    {
+                      "duration" : "0,0031s",
+                      "durationInSeconds" : 0.003119945526123047,
+                      "name" : "false",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)?args=fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    },
+                    {
+                      "duration" : "0,0071s",
+                      "durationInSeconds" : 0.007070064544677734,
+                      "name" : "true",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)?args=b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    }
+                  ],
+                  "duration" : "0,0051s",
+                  "durationInSeconds" : 0.005095005035400391,
+                  "name" : "Markdown structural commands keep their captured text before subsequent typing",
+                  "nodeIdentifier" : "SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "children" : [
+                    {
+                      "duration" : "0,0019s",
+                      "durationInSeconds" : 0.0019199848175048828,
+                      "name" : "false",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)?args=fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    },
+                    {
+                      "duration" : "0,0015s",
+                      "durationInSeconds" : 0.0015101432800292969,
+                      "name" : "true",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)?args=b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    }
+                  ],
+                  "duration" : "0,0017s",
+                  "durationInSeconds" : 0.0017150640487670898,
+                  "name" : "An in-flight markdown add cannot continue after row ownership changes, even if the ID returns",
+                  "nodeIdentifier" : "SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,0017s",
+                  "durationInSeconds" : 0.0017039775848388672,
+                  "name" : "A queued markdown type change is retired before it can touch a newly bound row",
+                  "nodeIdentifier" : "SimpleTableTextPersistenceTests/queuedMarkdownCommandIsRetiredWhenRowChanges()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests/queuedMarkdownCommandIsRetiredWhenRowChanges()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                }
+              ],
+              "name" : "Table text shared persistence",
+              "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/SimpleTableTextPersistenceTests",
+              "nodeType" : "Test Suite",
+              "result" : "Passed"
+            },
+            {
+              "children" : [
+                {
+                  "children" : [
+                    {
+                      "duration" : "1s",
+                      "durationInSeconds" : 1.2615339756011963,
+                      "name" : "false",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)?args=fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    },
+                    {
+                      "duration" : "0,26s",
+                      "durationInSeconds" : 0.2589590549468994,
+                      "name" : "true",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)?args=b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    }
+                  ],
+                  "duration" : "0,76s",
+                  "durationInSeconds" : 0.7602465152740479,
+                  "name" : "A reused row must render a different pending owner, including its old marked buffer",
+                  "nodeIdentifier" : "TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,16s",
+                  "durationInSeconds" : 0.16409683227539062,
+                  "name" : "A handler keeps input through its block fork; only an explicit replacement ends composition",
+                  "nodeIdentifier" : "TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,15s",
+                  "durationInSeconds" : 0.14586997032165527,
+                  "name" : "An unacknowledged local word survives stale and empty native row configurations",
+                  "nodeIdentifier" : "TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,19s",
+                  "durationInSeconds" : 0.19137883186340332,
+                  "name" : "A completed local write accepts subsequent remote and undo replacements",
+                  "nodeIdentifier" : "TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "children" : [
+                    {
+                      "duration" : "0,17s",
+                      "durationInSeconds" : 0.16930007934570312,
+                      "name" : "false",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)?args=fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    },
+                    {
+                      "duration" : "0,16s",
+                      "durationInSeconds" : 0.1563878059387207,
+                      "name" : "true",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)?args=b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    }
+                  ],
+                  "duration" : "0,16s",
+                  "durationInSeconds" : 0.16284394264221191,
+                  "name" : "A newly inserted row uses its collection's actual editing state for initial focus",
+                  "nodeIdentifier" : "TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "children" : [
+                    {
+                      "duration" : "0,28s",
+                      "durationInSeconds" : 0.27588796615600586,
+                      "name" : "false",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)?args=fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    },
+                    {
+                      "duration" : "0,026s",
+                      "durationInSeconds" : 0.02556896209716797,
+                      "name" : "true",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)?args=b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    }
+                  ],
+                  "duration" : "0,15s",
+                  "durationInSeconds" : 0.15072846412658691,
+                  "name" : "A reused collection cell applies the new owner's lock before its one-shot focus",
+                  "nodeIdentifier" : "TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,15s",
+                  "durationInSeconds" : 0.14667034149169922,
+                  "name" : "An initial request survives detached configuration and a same-row echo",
+                  "nodeIdentifier" : "TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,16s",
+                  "durationInSeconds" : 0.1586458683013916,
+                  "name" : "A synchronous Enter handoff supersedes the deferred caret request",
+                  "nodeIdentifier" : "TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "children" : [
+                    {
+                      "duration" : "0,25s",
+                      "durationInSeconds" : 0.24939298629760742,
+                      "name" : "\"detach\"",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)?args=e5bdbdba9613b46ae07252b405851903d390e560f523c001e9b3e10c41031ec7",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    },
+                    {
+                      "duration" : "0,28s",
+                      "durationInSeconds" : 0.27959179878234863,
+                      "name" : "\"editorContext\"",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)?args=ff15e7338f23cc5819b321287dc7bf7146aa162f1dce6ef2aa5bec6dbd15d7dd",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    },
+                    {
+                      "duration" : "0,29s",
+                      "durationInSeconds" : 0.2895541191101074,
+                      "name" : "\"rebind\"",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)?args=5af7a92da15ba4f764ec247ac3922e6e50215960129809ec60942913c7470ca7",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    }
+                  ],
+                  "duration" : "0,27s",
+                  "durationInSeconds" : 0.2728463013966878,
+                  "name" : "Rebind, detach and editor replacement invalidate the queued request",
+                  "nodeIdentifier" : "TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,27s",
+                  "durationInSeconds" : 0.2733438014984131,
+                  "name" : "Equal row content still delivers a new request, while a plain echo does not",
+                  "nodeIdentifier" : "TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                }
+              ],
+              "name" : "Native text block focus lifetime",
+              "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TextBlockFocusLifecycleTests",
+              "nodeType" : "Test Suite",
+              "result" : "Passed"
+            },
+            {
+              "children" : [
+                {
+                  "children" : [
+                    {
+                      "duration" : "0,0055s",
+                      "durationInSeconds" : 0.0054547786712646484,
+                      "name" : "false",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)?args=fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    },
+                    {
+                      "duration" : "0,0056s",
+                      "durationInSeconds" : 0.005597114562988281,
+                      "name" : "true",
+                      "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)?args=b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+                      "nodeType" : "Arguments",
+                      "result" : "Passed"
+                    }
+                  ],
+                  "duration" : "0,0055s",
+                  "durationInSeconds" : 0.005525946617126465,
+                  "name" : "nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)",
+                  "nodeIdentifier" : "TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                },
+                {
+                  "duration" : "0,0055s",
+                  "durationInSeconds" : 0.0054781436920166016,
+                  "name" : "providerAndTransportDescriptionsCannotForgeNativeAuthority()",
+                  "nodeIdentifier" : "TorahRelatedReadAuthorityMappingTests/providerAndTransportDescriptionsCannotForgeNativeAuthority()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TorahRelatedReadAuthorityMappingTests/providerAndTransportDescriptionsCannotForgeNativeAuthority()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed",
+                  "tags" : [
+                    "pinkhaSDK06Pending23"
+                  ]
+                }
+              ],
+              "name" : "Heart related-read current authority mapping",
+              "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/TorahRelatedReadAuthorityMappingTests",
+              "nodeType" : "Test Suite",
+              "result" : "Passed"
+            }
+          ],
+          "name" : "AnytypeTests",
+          "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests",
+          "nodeType" : "Unit test bundle",
+          "result" : "Passed"
+        }
+      ],
+      "name" : "AnytypeTests",
+      "nodeType" : "Test Plan",
+      "result" : "Passed"
+    }
+  ],
+  "testPlanConfigurations" : [
+    {
+      "configurationId" : "1",
+      "configurationName" : "Configuration 1"
+    }
+  ]
+}

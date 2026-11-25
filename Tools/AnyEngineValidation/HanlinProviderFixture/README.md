@@ -151,7 +151,8 @@ assertions happened. The final mounted named test supplies that evidence.
 
 ## Canonical provenance and validation
 
-Canonical Hanlin commit: `116cc6be0654a5d11bc56ba00e0310031107ee36`.
+Current canonical Hanlin commit: `6bd6036dbca16c969689a5722550a54bebc1e851`.
+The fixture source below is byte-identical to the originally qualified `116cc6be0654a5d11bc56ba00e0310031107ee36` source; historical receipts retain that original revision.
 Canonical Swift AI SDK commit: `e7bf34111e603ca977becd007dd4e5bb109af857`.
 
 The SSE translation is tied to `ProviderResponseFixtures.openAIChatTextChunks`,

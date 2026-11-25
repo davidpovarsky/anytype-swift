@@ -1,0 +1,120 @@
+{
+  "status": "PASS",
+  "selected": [
+    "PinkhaNativeTextAcknowledgementTests/unchangedNativeSnapshotDoesNotWrite",
+    "PinkhaNativeTextAcknowledgementTests/optimisticFailureRequiresNativeRetry",
+    "PinkhaNativeTextAcknowledgementTests/canonicallyEquivalentUTF8RequiresNativeWrite",
+    "PinkhaNativeTextAcknowledgementTests/identicalInFlightCallbackWaitsForTheNativeResult",
+    "PinkhaNativeTextAcknowledgementTests/laterTextIsSerializedAfterFailedNativeWrite",
+    "PinkhaNativeTextAcknowledgementTests/queuedReversalPreservesTheFinalAcceptedText",
+    "PinkhaNativeTextAcknowledgementTests/failedPayloadDoesNotRewriteANewRemoteValue"
+  ],
+  "phase": "EXECUTION",
+  "prefix": "text-native-ack",
+  "command_exit_code": 0,
+  "time_budget": {
+    "default_seconds": 300,
+    "maximum_seconds": 300,
+    "method_seconds": {
+      "PinkhaNativeTextAcknowledgementTests/unchangedNativeSnapshotDoesNotWrite": 300,
+      "PinkhaNativeTextAcknowledgementTests/optimisticFailureRequiresNativeRetry": 300,
+      "PinkhaNativeTextAcknowledgementTests/canonicallyEquivalentUTF8RequiresNativeWrite": 300,
+      "PinkhaNativeTextAcknowledgementTests/identicalInFlightCallbackWaitsForTheNativeResult": 300,
+      "PinkhaNativeTextAcknowledgementTests/laterTextIsSerializedAfterFailedNativeWrite": 300,
+      "PinkhaNativeTextAcknowledgementTests/queuedReversalPreservesTheFinalAcceptedText": 300,
+      "PinkhaNativeTextAcknowledgementTests/failedPayloadDoesNotRewriteANewRemoteValue": 300
+    },
+    "total_method_seconds": 2100
+  },
+  "actual_devices": [
+    {
+      "architecture": "arm64",
+      "deviceId": "18F05D2E-3B4F-4CE5-A126-F295C837C493",
+      "deviceName": "Pinkha-UI27-45423982997-ipad",
+      "modelName": "iPad Pro 13-inch (M5)",
+      "osBuildNumber": "24A434",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    }
+  ],
+  "passed": 7,
+  "failed": 0,
+  "skipped": 0,
+  "actual_methods": {
+    "PinkhaNativeTextAcknowledgementTests/unchangedNativeSnapshotDoesNotWrite()": "Passed",
+    "PinkhaNativeTextAcknowledgementTests/optimisticFailureRequiresNativeRetry()": "Passed",
+    "PinkhaNativeTextAcknowledgementTests/canonicallyEquivalentUTF8RequiresNativeWrite()": "Passed",
+    "PinkhaNativeTextAcknowledgementTests/identicalInFlightCallbackWaitsForTheNativeResult()": "Passed",
+    "PinkhaNativeTextAcknowledgementTests/laterTextIsSerializedAfterFailedNativeWrite()": "Passed",
+    "PinkhaNativeTextAcknowledgementTests/queuedReversalPreservesTheFinalAcceptedText()": "Passed",
+    "PinkhaNativeTextAcknowledgementTests/failedPayloadDoesNotRewriteANewRemoteValue()": "Passed"
+  },
+  "public_diagnostics": {
+    "schema": 1,
+    "kind": "SELECTION",
+    "diagnostic_only": true,
+    "reported_status": "PASS",
+    "phase": "EXECUTION",
+    "expected_count": 7,
+    "command_exit_code": 0,
+    "error_category": "NOT_RECORDED",
+    "reported_counts": {
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0
+    },
+    "summary_counts": {
+      "total": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0
+    },
+    "selector_results": [
+      {
+        "selector_index": 0,
+        "result": "Passed"
+      },
+      {
+        "selector_index": 1,
+        "result": "Passed"
+      },
+      {
+        "selector_index": 2,
+        "result": "Passed"
+      },
+      {
+        "selector_index": 3,
+        "result": "Passed"
+      },
+      {
+        "selector_index": 4,
+        "result": "Passed"
+      },
+      {
+        "selector_index": 5,
+        "result": "Passed"
+      },
+      {
+        "selector_index": 6,
+        "result": "Passed"
+      }
+    ],
+    "unexpected_method_count": 0,
+    "failures": [],
+    "omitted_failure_count": 0
+  },
+  "original_native_origin": {
+    "mode": "ORIGINAL_NATIVE_PRODUCTS_EXACT_RESTORATION",
+    "original_source_sha": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+    "original_run_id": "45139431216",
+    "original_run_attempt": "1",
+    "original_artifact_id": 14803859457,
+    "original_artifact_sha256": "af9ae3c1736b7eea395160c5cebabfe394bc11cfe083cc62df682ce870dea81b",
+    "original_native_archive_sha256": "478d17c0517a983830410d80b1f9630e42fb09e2293a2360d91ebf887a7ed18a",
+    "original_descriptor_sha256": "4a2868235a870acf7567dfed7e00bd95079189cc9cc757c07cc28498265bedc2",
+    "original_workflow_conclusion": "failure",
+    "original_product_tests_executed": 0
+  },
+  "controller_source_sha": "95cd30c9e0d70fec368a1605a21b155a652a7afd",
+  "build_mode": "ORIGINAL_NATIVE_PRODUCTS_EXACT_RESTORATION"
+}

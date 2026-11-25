@@ -1,0 +1,163 @@
+{
+  "centralDataOnly": true,
+  "commonCoreNotModified": true,
+  "controlsRun": 0,
+  "pageDefaultProductTreesUnchanged": true,
+  "pageInputRowChanges": [
+    {
+      "after": {
+        "gitBlob": "5c1139e95ea43b310c7f0409f6f097b7e7a5bf85",
+        "gitMode": "100644",
+        "sha256": "6ddef3ba967bd86214bedd1549734cd74c077fccaa50209fbbf9f3e986ee7721"
+      },
+      "before": {
+        "gitBlob": "3688c7311789d791f35017ad1a5328f8c4985548",
+        "gitMode": "100644",
+        "sha256": "419f942971e900de94a17b86b97abbc675885003174180b1440bd200f60f65ce"
+      },
+      "path": ".github/workflows/pinkha-current-page154-mounted.yml"
+    },
+    {
+      "after": {
+        "gitBlob": "bf81c3ca7bb6647dc92a41286d9b0ee92ea926e6",
+        "gitMode": "100644",
+        "sha256": "f60b005dd750143b0bf2fce84826a74b51e40de10a2e5292b4e36b0a03b5b6fa"
+      },
+      "before": {
+        "gitBlob": "aa81d797bcd646d03eaea3333da127cfb0518005",
+        "gitMode": "100644",
+        "sha256": "eafc05a212751bb644a96a0ad73bff139f8eff26cdcc59e1057bbf569f374593"
+      },
+      "path": "Tools/CurrentAppleValidation/current_execution.py"
+    },
+    {
+      "after": {
+        "gitBlob": "77da49aecf68d6dac8a0ec2436e96ffb25934a9a",
+        "gitMode": "100644",
+        "sha256": "b3ec82786ed6235381dd2aad5f70b659c8717f7b28ec46c9d13453a7c6ffdd8a"
+      },
+      "before": {
+        "gitBlob": "6239a45dec16b16cc48c5eb52d99f78a3bbbc3fb",
+        "gitMode": "100644",
+        "sha256": "a7384bc9ec75d44ce809ced7215e365973975dd924cdf51e318ef3091873effc"
+      },
+      "path": "Tools/CurrentAppleValidation/page154_current.py"
+    },
+    {
+      "after": {
+        "gitBlob": "c9b9d19072de927b932b7378b587f9b8c40765e9",
+        "gitMode": "100644",
+        "sha256": "ed67ea9a785dbfcea82eba5146d98970cda2a84567d899a5fd0af20cdf3a61c5"
+      },
+      "before": {
+        "gitBlob": "6856016b1556eb6d501795b8e9ab6d8f75218ebc",
+        "gitMode": "100644",
+        "sha256": "b26a0355f040b8a582df7d48c9f22bb7c47cbe33d23760d4e520a569b63d6191"
+      },
+      "path": "Tools/CurrentAppleValidation/source-inputs.json"
+    }
+  ],
+  "pageNewHelperInput": {
+    "gitBlob": "8946b82f02e93ab7fae3257ea90bfd77465e7fa9",
+    "gitMode": "100644",
+    "sha256": "ece048eee69c4866dd5bd6037e635077e804cfaaf0135764b54777dd3541a2ee"
+  },
+  "pageSelectorsNativeFlagsLimitsProjectionOriginsUnchanged": true,
+  "pageSubstitutions": [
+    {
+      "after": "def admit(expected, inventory_policy=None):\n",
+      "before": "def admit(expected):\n",
+      "reason": "Explicit Page opt-in; absence retains original profile."
+    },
+    {
+      "after": "    recovery = current.inventory_spec(current.read(current.MANIFEST), inventory_policy)\n    product_trees = fixed[\"productTrees\"]\n    if recovery is not None:\n        page_recovery = fixed[\"inventoryRecovery\"]\n        c.require(page_recovery[\"policy\"] == current.INVENTORY_POLICY\n                  and page_recovery[\"sourceCommit\"] == recovery[\"sourceCommit\"]\n                  and page_recovery[\"productTrees\"] == recovery[\"productTrees\"][\"release-return-rtl\"],\n                  \"page_inventory_recovery_source_changed\")\n        current.git(\"merge-base\", \"--is-ancestor\", page_recovery[\"sourceCommit\"], expected)\n        product_trees = page_recovery[\"productTrees\"]\n    trees = {**product_trees, **fixed[\"helperTrees\"]}\n",
+      "before": "    trees = {**fixed[\"productTrees\"], **fixed[\"helperTrees\"]}\n",
+      "reason": "Bind Page independently to actual8dc compiled trees under the same named policy."
+    },
+    {
+      "after": "              \"files\": files, \"gitInputs\": origins, \"compiledTrees\": product_trees,\n",
+      "before": "              \"files\": files, \"gitInputs\": origins, \"compiledTrees\": fixed[\"productTrees\"],\n",
+      "reason": "Record selected compiled trees without claiming an old App binary."
+    },
+    {
+      "after": "    if recovery is not None:\n        source[\"inventoryRecoveryPolicy\"] = inventory_policy\n        source[\"compiledSourceTreeOrigin\"] = recovery[\"sourceCommit\"]\n    return context, source\n",
+      "before": "    return context, source\n",
+      "reason": "Durably bind the opt-in in Page source-before."
+    },
+    {
+      "after": "def configure_inventory_recovery(commands, source):\n    current.configure_inventory_recovery(commands, source)\n    policy = getattr(commands, \"inventory_recovery\", None)\n    if policy is not None:\n        # The Page lane additionally binds its own required-module origins and manifest.\n        policy.recheck_source = lambda: recheck(source)\n        recheck(source)\n\n\nclass Commands(current.Commands):\n",
+      "before": "class Commands(current.Commands):\n",
+      "reason": "Recovery rechecks the full Page origin boundary, including its independent ledger."
+    },
+    {
+      "after": "def execute(expected, inventory_policy=None):\n",
+      "before": "def execute(expected):\n",
+      "reason": "Explicit execute option."
+    },
+    {
+      "after": "        context, source = admit(expected, inventory_policy)\n",
+      "before": "        context, source = admit(expected)\n",
+      "reason": "Use selected source admission."
+    },
+    {
+      "after": "                      \"selectors\": list(policy.SELECTORS), \"freshSetupAcceptanceCredit\": 0,\n                      **({\"inventoryRecoveryPolicy\": inventory_policy} if inventory_policy is not None else {})})\n",
+      "before": "                      \"selectors\": list(policy.SELECTORS), \"freshSetupAcceptanceCredit\": 0})\n",
+      "reason": "Retain setup0credit and bind cleanup to the same policy."
+    },
+    {
+      "after": "        commands = Commands(evidence, context, modules)\n        configure_inventory_recovery(commands, source)\n",
+      "before": "        commands = Commands(evidence, context, modules)\n",
+      "reason": "Enable only the admitted opt-in before original readiness commands."
+    },
+    {
+      "after": "        recovery = current.inventory_recovery_result(commands)\n        if recovery is not None:\n            receipt[\"inventoryRecovery\"] = recovery\n        receipt[\"cancelled\"] = current._CANCELLED\n",
+      "before": "        receipt[\"cancelled\"] = current._CANCELLED\n",
+      "reason": "Expose original inventory failures and recovery disposition in Page execution receipt."
+    },
+    {
+      "after": "def cleanup(expected, inventory_policy=None):\n",
+      "before": "def cleanup(expected):\n",
+      "reason": "Explicit cleanup option."
+    },
+    {
+      "after": "            source = current.read(evidence / \"source-before.json\")\n            c.require(intent.get(\"inventoryRecoveryPolicy\") == inventory_policy\n                      and source.get(\"inventoryRecoveryPolicy\") == inventory_policy, \"page_cleanup_inventory_policy_changed\")\n            recheck(source)\n            commands = Commands(evidence, context, helpers(source))\n            configure_inventory_recovery(commands, source)\n",
+      "before": "            source = current.read(evidence / \"source-before.json\")\n            recheck(source)\n            commands = Commands(evidence, context, helpers(source))\n",
+      "reason": "No widening the separately invoked cleanup policy after a failure."
+    },
+    {
+      "after": "            recovery = current.inventory_recovery_result(commands)\n            if recovery is not None:\n                result[\"inventoryRecovery\"] = recovery\n            if primary:\n                raise primary\n            result[\"status\"] = \"PASS\"\n",
+      "before": "            if primary:\n                raise primary\n            result[\"status\"] = \"PASS\"\n",
+      "reason": "Retain disposition before existing first-error propagation."
+    },
+    {
+      "after": "    parser.add_argument(\"--expected-source\", required=True)\n    parser.add_argument(\"--inventory-recovery\", dest=\"inventory_policy\", choices=(current.INVENTORY_POLICY,))\n",
+      "before": "    parser.add_argument(\"--expected-source\", required=True)\n",
+      "reason": "CLI opt-in is a fixed literal, never an arbitrary timeout."
+    },
+    {
+      "after": "    result = (execute(args.expected_source, args.inventory_policy) if args.action == \"execute\"\n              else cleanup(args.expected_source, args.inventory_policy))\n",
+      "before": "    result = execute(args.expected_source) if args.action == \"execute\" else cleanup(args.expected_source)\n",
+      "reason": "Forward the exact option to either action."
+    }
+  ],
+  "pageWholeFileInverse": true,
+  "runtimeTestsRun": 0,
+  "schema": "three-job-inventory-recovery-activation-v1",
+  "standaloneWorkflows": [
+    {
+      "oldParsedJobRestored": true,
+      "onlyTwoLiteralOptionsAdded": true,
+      "path": ".github/workflows/pinkha-current-release-return-rtl.yml"
+    },
+    {
+      "oldParsedJobRestored": true,
+      "onlyTwoLiteralOptionsAdded": true,
+      "path": ".github/workflows/pinkha-current-native-ui-failed.yml"
+    },
+    {
+      "oldParsedJobRestored": true,
+      "onlyTwoLiteralOptionsAdded": true,
+      "path": ".github/workflows/pinkha-current-page154-mounted.yml"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+From 256d3fd6cb4c2b0df67f67e01edfd8f9b76726f4 Mon Sep 17 00:00:00 2001
+From: ChatGPT <chatgpt@openai.com>
+Date: Tue, 24 Nov 2026 15:30:56 +0000
+Subject: [PATCH] Fix native witness lease test context argument
+
+---
+ core/application/loaded_witness_test.go | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/application/loaded_witness_test.go b/core/application/loaded_witness_test.go
+index e4c4f419b..7e28e4984 100644
+--- a/core/application/loaded_witness_test.go
++++ b/core/application/loaded_witness_test.go
+@@ -282,7 +282,7 @@ func TestLoadedAccountWitnessACLAndSessionCancellationReleaseActualLocks(t *test
+ 	case <-time.After(5 * time.Second):
+ 		t.Fatal("normal session close remained blocked")
+ 	}
+-	if err = nativeLease.CheckCurrent(); err != nil {
++	if err = nativeLease.CheckCurrent(f.ctx); err != nil {
+ 		t.Fatal("canceled waiter affected held native lease:", err)
+ 	}
+ 	if err = nativeLease.Close(); err != nil {
+-- 
+2.43.0
+

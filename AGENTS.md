@@ -33,3 +33,9 @@ Preserve technical contracts, existing work and evidence requirements. For execu
 ## Upstream integrity and evidence
 
 Read `docs/architecture/UPSTREAM_INTEGRITY_POLICY.md` for architectural context. Prefer isolated Pinkha adapters, wrappers, protocols and packages, and preserve the canonical Hanlin engine. Make only source changes required by the requested task and record their exact provenance. The standing owner authorization above replaces older per-file and Git approval requirements. Successful compilation alone does not prove functional parity. Asana updates for the current wave are explicitly authorized and required.
+
+## Apple builds on the dedicated Mac — 2026-11-24
+
+Use the dedicated Scaleway Mac for Apple builds, simulator tests, archives and authorized TestFlight uploads. Read `build-runner-router` and `hybrid-workspace-bridge` for current connections. Source edits and canonical Git remain on Oracle; sync an exact reviewed SHA to Mac.
+
+For validation controllers that require GitHub Actions identity, use the real repository runner labeled `pinkha-scaleway-mac` (`self-hosted`, `macOS`, `ARM64`). Do not fabricate CI run variables for a direct shell run. One owner schedules heavy Mac jobs and preserves reusable Products before checkout cleanup. Linux ARM64 native validation remains on the appropriate Linux runner. Reuse valid focused evidence, retain original failures, and report physical-device acceptance only after a real device run.

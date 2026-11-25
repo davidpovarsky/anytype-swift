@@ -23,6 +23,8 @@ UI_THREE = (
     "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
 )
 ARCHIVE = ("NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",)
+CUSTOM_TYPE = ("NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen",)
+HISTORY = ("NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen",)
 PROFILES = {
     "release-return-rtl": {
         "project": "Anytype.xcodeproj", "scheme": "Anytype", "configuration": "Release-Anytype",
@@ -40,8 +42,9 @@ PROFILES = {
         "target": "PinkhaAnyNativeUITests", "app": "PinkhaAnyNative.app", "bundle": "io.pinkha.anynative.dev",
         "format": 1, "testPlan": None,
         "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-2", "version": "27.2", "build": "24B8117",
-        "device": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A20-Pro",
-        "stages": {"native-ui-three": (UI_THREE, 360), "archive-roundtrip": (ARCHIVE, 1800)},
+        "device": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro",
+        "stages": {"native-ui-three": (UI_THREE, 360), "archive-roundtrip": (ARCHIVE, 1800),
+                   "custom-type": (CUSTOM_TYPE, 360), "native-history": (HISTORY, 1800)},
         "flags": [], "nativeBuilds": 0, "applicationBuilds": 1, "uiRunnerBuilds": 1,
     },
 }
@@ -64,7 +67,7 @@ ANY = {
     "manifest": "15906eb27afea68cc7ec99242bffd6a8ea69517edb608a4421cce90c9a99a070",
     "version": "v0.5.0-pinkha.1",
 }
-HANLIN = "116cc6be0654a5d11bc56ba00e0310031107ee36"
+HANLIN = "6bd6036dbca16c969689a5722550a54bebc1e851"
 
 def require(value, reason):
     if not value:
@@ -96,13 +99,20 @@ def read(path, limit=8 * 1024**2):
 
 def methods(profile):
     value = tuple(method for names, _ in PROFILES[profile]["stages"].values() for method in names)
-    require(len(value) == len(set(value)) == 4 and SOURCE_DRAG not in value, "fixed_four_selection_changed")
+    count = {"release-return-rtl": 4, "native-ui-failed": 6}[profile]
+    require(len(value) == len(set(value)) == count and SOURCE_DRAG not in value, "fixed_named_selection_changed")
     return value
 
-def selectors(profile, stage=None):
+def selected_identifiers(profile, stage=None):
     spec = PROFILES[profile]
     names = methods(profile) if stage is None else spec["stages"][stage][0]
-    return ["-only-testing:" + spec["target"] + "/" + method for method in names]
+    # Swift Testing's compiled identifiers include the empty argument list.
+    # The retained F inventory proved that unsuffixed filters select zero tests.
+    return [name + "()" if profile == "release-return-rtl" else name for name in names]
+
+def selectors(profile, stage=None):
+    return ["-only-testing:" + PROFILES[profile]["target"] + "/" + name
+            for name in selected_identifiers(profile, stage)]
 
 def product_path(raw, products, host=None):
     require(isinstance(raw, str) and raw and "\\" not in raw and "\0" not in raw, "product_path_required")
@@ -147,8 +157,9 @@ def scope_descriptor(raw, profile, stage, products):
                 "unnamed_single_ui_descriptor_required")
     require(target.get("IsEnabled", True) is True, "selected_target_disabled")
     existing = target.get("OnlyTestIdentifiers", [])
+    allowed_original_selections = [set(methods(profile)), set(selected_identifiers(profile))]
     require(isinstance(existing, list) and (not existing or
-            len(existing) == len(methods(profile)) and set(existing) == set(methods(profile))),
+            len(existing) == len(methods(profile)) and set(existing) in allowed_original_selections),
             "original_descriptor_has_unreviewed_selection")
     host = product_path(target.get("TestHostPath"), products)
     bundle = product_path(target.get("TestBundlePath"), products, host)
@@ -165,7 +176,7 @@ def scope_descriptor(raw, profile, stage, products):
         require(product_path(target.get("UITargetAppPath"), products) == application
                 and target.get("UITargetAppBundleIdentifier", spec["bundle"]) == spec["bundle"],
                 "ui_application_target_differs_from_current_build")
-    copied["OnlyTestIdentifiers"] = list(spec["stages"][stage][0])
+    copied["OnlyTestIdentifiers"] = selected_identifiers(profile, stage)
     # Only selection changes. App, runner, language, locale, environment, MTC and skip filters stay exact.
     inverse = copy.deepcopy(result)
     if spec["format"] == 2:
@@ -178,7 +189,7 @@ def scope_descriptor(raw, profile, stage, products):
     return plistlib.dumps(result, sort_keys=False), {
         "originalSHA256": sha(raw), "format": spec["format"], "target": spec["target"],
         "applicationPath": str(application), "testHostPath": str(host), "testBundlePath": str(bundle),
-        "selection": list(spec["stages"][stage][0]), "exactInverse": True,
+        "selection": selected_identifiers(profile, stage), "exactInverse": True,
         "language": target.get("TestLanguage"), "region": target.get("TestRegion"),
         "skipTestIdentifiers": target.get("SkipTestIdentifiers", []),
     }

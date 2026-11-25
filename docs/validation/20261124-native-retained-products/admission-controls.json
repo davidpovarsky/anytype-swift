@@ -1,0 +1,81 @@
+{
+  "actualUIExecutions": 0,
+  "applicationBuilds": 0,
+  "controls": [
+    {
+      "case": "original_and_current_compiled_trees_plus_reviewed_helper_delta",
+      "changedPaths": [
+        "Tools/AnyEngineValidation/HanlinProviderFixture/fixture.py",
+        "Tools/CurrentAppleValidation/current_execution.py",
+        "Tools/CurrentAppleValidation/native-ui-retained-inputs.json",
+        "Tools/CurrentAppleValidation/native_ui_retained.py",
+        "Tools/CurrentAppleValidation/page154-inputs.json",
+        "Tools/CurrentAppleValidation/source-inputs.json",
+        "Tools/PinkhaNativeDerived/member_acl_transport/README.md",
+        "Tools/PinkhaNativeDerived/member_acl_transport/build.py",
+        "Tools/PinkhaNativeDerived/member_acl_transport/contract.py",
+        "Tools/PinkhaNativeDerived/member_acl_transport/core_fixture.go",
+        "Tools/PinkhaNativeDerived/member_acl_transport/native_member_test.go",
+        "Tools/PinkhaNativeDerived/member_acl_transport/run.py",
+        "Tools/PinkhaNativeDerived/member_acl_transport/source-review.json"
+      ],
+      "status": "PASS"
+    },
+    {
+      "case": "changed_compiled_tree",
+      "reason": "retained_compiled_sources_changed",
+      "status": "PASS_REJECTED"
+    },
+    {
+      "case": "changed_original_test_contract",
+      "reason": "unreviewed_retained_helper_delta:Tools/CurrentAppleValidation/contracts.py",
+      "status": "PASS_REJECTED"
+    },
+    {
+      "case": "unqualified_tls_helper",
+      "reason": "qualified_tls_fixture_required",
+      "status": "PASS_REJECTED"
+    },
+    {
+      "case": "exact_original_run_build_inventory_receipts",
+      "status": "PASS"
+    },
+    {
+      "case": "mutated_original_source_receipt",
+      "reason": "retained_original_receipt_changed:source-before.json",
+      "status": "PASS_REJECTED"
+    }
+  ],
+  "finalNarrowing": {
+    "allowedPaths": 13,
+    "changedPaths": [
+      "Tools/AnyEngineValidation/HanlinProviderFixture/fixture.py",
+      "Tools/CurrentAppleValidation/current_execution.py",
+      "Tools/CurrentAppleValidation/native-ui-retained-inputs.json",
+      "Tools/CurrentAppleValidation/native_ui_retained.py",
+      "Tools/CurrentAppleValidation/page154-inputs.json",
+      "Tools/CurrentAppleValidation/source-inputs.json",
+      "Tools/PinkhaNativeDerived/member_acl_transport/README.md",
+      "Tools/PinkhaNativeDerived/member_acl_transport/build.py",
+      "Tools/PinkhaNativeDerived/member_acl_transport/contract.py",
+      "Tools/PinkhaNativeDerived/member_acl_transport/core_fixture.go",
+      "Tools/PinkhaNativeDerived/member_acl_transport/native_member_test.go",
+      "Tools/PinkhaNativeDerived/member_acl_transport/run.py",
+      "Tools/PinkhaNativeDerived/member_acl_transport/source-review.json"
+    ],
+    "inputsSHA256": "411759ad1141fe6a0712ad32e6d9c5d65ddeaae728a338ec4d6a1c6da99e3f69",
+    "sourceTree": "33cccd0f5879b502fc0956cc4c4d743bdc8346b8",
+    "status": "PASS"
+  },
+  "originalRun": {
+    "profile": "native-ui-failed",
+    "repository": "davidpovarsky/anytype-swift",
+    "runAttempt": "1",
+    "runID": "45425747246",
+    "sourceCommit": "95cd30c9e0d70fec368a1605a21b155a652a7afd"
+  },
+  "scope": "pure_retained_products_admission_not_Apple_tests",
+  "sourceTree": "5f4462076d436829130b52382a6abfd667d0b66f",
+  "status": "PASS",
+  "uiRunnerBuilds": 0
+}

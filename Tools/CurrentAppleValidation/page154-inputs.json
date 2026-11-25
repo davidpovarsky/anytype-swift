@@ -1,20 +1,38 @@
 {
   "base": "c0c2ddb31e5488435b0bd1c7ede5666b03dae5ea",
-  "commonManifestSHA256": "b26a0355f040b8a582df7d48c9f22bb7c47cbe33d23760d4e520a569b63d6191",
+  "commonManifestSHA256": "1c7048b0d14af4b22396431413c99cb63f9f037e11022aa9083265a6d87b7e1a",
+  "currentProductRevision": {
+    "productTrees": {
+      "AnyTypeTests": "67d86e2e3199fe63f258f060089c62acb4b689a5",
+      "Anytype": "da6d1f8eacbc885f71845c6f3f0bea5ccc12e085",
+      "Anytype.xcodeproj": "64541afaba0ae0596d00b3b6be8df3a6152c5dda",
+      "AnytypeNotificationServiceExtension": "56fa06e3f5fcfa06cc819dbc08c9b7c4307ccc8d",
+      "AnytypeShareExtension": "0a6e9c4a43fa602a1bb695b7c87efbcf2b149eb0",
+      "AnytypeTests": "a87703f6f46f4e2b3dba7532986ddf977e3bd697",
+      "AnytypeWidget": "1108084a01a1bb3127a40c9f8a148ccfaf97f48c",
+      "Distribution": "f5c1c8cf91690251977a9e027c5f61d268549d97",
+      "Modules": "14dcdaa23e19126b8ffdd5c96048b3833fa66ce3",
+      "PinkhaStage1Acceptance": "4b14aa3bb6043355c035cfae98671d1d9cc6e21c",
+      "Scripts": "37fde5ac7e90e5bb82b247bf835911b85477830b",
+      "scripts": "7c1c4d6e9e6025ef745e0390cebcbb9ddd534be5"
+    },
+    "schemaVersion": 1,
+    "sourceCommit": "06d16e1974c8b9693ad2bd49e57b0e12f5add230"
+  },
   "excludedFactory": "AnytypeTests/SemanticAnchorPage154NativeAcceptanceTests/testActualPage154FactoryPublishesNativeAnchorIntoOpenedDocument",
   "freshSetupAcceptanceCredit": 0,
   "helperTrees": {
-    "Tools/AnyEngineValidation/HanlinProviderFixture": "5ba0833e6ef3c82c006a6de1cae7bf5f45d689b1",
-    "Tools/Hanlin": "0d359c6fd85c9a5ea7fe9849023eacba2dc443cf",
-    "Tools/PinkhaNativeDerived": "f9e685655d30cf24322079ba5be9ba281ec8f420",
+    "Tools/AnyEngineValidation/HanlinProviderFixture": "f2f08fa8d65b915ad58d305cb13b3dcc2bbc8d9e",
+    "Tools/Hanlin": "974d4505b4d9811d9d84ce74070c1021108d57b3",
+    "Tools/PinkhaNativeDerived": "20f66136e1c623905575d62fc018d2b95642ac93",
     "Tools/PinkhaSemanticAnchorWire": "4ae012916ffa05eb17b4a947be1436cac4fea3f6",
     "docs/validation/20261123-semantic-page-native/attempt6-page-pass": "3108ff1c69abe042c7e284012660937c2a11c6b9"
   },
   "inputs": {
     ".github/workflows/pinkha-current-page154-mounted.yml": {
-      "gitBlob": "3688c7311789d791f35017ad1a5328f8c4985548",
+      "gitBlob": "3ce561c69916f5317b7a701d7dd72f6d4204eca1",
       "gitMode": "100644",
-      "sha256": "419f942971e900de94a17b86b97abbc675885003174180b1440bd200f60f65ce"
+      "sha256": "84fe1dfee001dc4c1d8ca63c9e1ade4fe9750607ef53dac67ed65dc1904609a6"
     },
     "Tools/AnyEnginePort/continue_native_acceptance.py": {
       "gitBlob": "c1ba64b0a2a72e059a9b0abf5eac9ffd3d0968d8",
@@ -66,6 +84,11 @@
       "gitMode": "100644",
       "sha256": "5573eefcbf9eae9eea905210d15726ce7684f5529766531d4926eda39c7e2f29"
     },
+    "Tools/AnyEnginePort/verify_custom_type.py": {
+      "gitBlob": "7676373fcd864a47b57a4ac9ff9b44991c1ade9f",
+      "gitMode": "100644",
+      "sha256": "6322e8f63d7c5864359c2a10f7b4f30773c96855c461840c5238f87211ddc864"
+    },
     "Tools/AnyEnginePort/verify_focus_handoff_execution.py": {
       "gitBlob": "d0d9cab5ed03c74cc04b25d61a13c2fb319cd510",
       "gitMode": "100644",
@@ -102,29 +125,54 @@
       "sha256": "d4b6b6df0df5c94b4aeeabef0c6716d097be27fd2a6739298f9d186092bea291"
     },
     "Tools/CurrentAppleValidation/contracts.py": {
-      "gitBlob": "e76a15daf0c87326e35399c46a5332a68744b4dc",
+      "gitBlob": "242d5a18402f5df7d5caea229fb5d007b116ffe3",
       "gitMode": "100644",
-      "sha256": "46ec90e911ad622646bdf8fe3fdf67351ac7b576a66af7abb07e5a0e06051ab3"
+      "sha256": "4db940e116afe48baae08cf9784999ba8a170d9cfd90087edd2bc5d94d60d26e"
     },
     "Tools/CurrentAppleValidation/current_execution.py": {
-      "gitBlob": "aa81d797bcd646d03eaea3333da127cfb0518005",
+      "gitBlob": "97c93db7a063a504bb8770688d4940328e4725f6",
       "gitMode": "100644",
-      "sha256": "eafc05a212751bb644a96a0ad73bff139f8eff26cdcc59e1057bbf569f374593"
+      "sha256": "d4e59f58d3e020326bf97d7a4a1cb7f2d5a9c4328f5491e8be467a48d478a3b1"
     },
     "Tools/CurrentAppleValidation/native_ui_failed.py": {
-      "gitBlob": "7ddb774a228e5b54261f51322676c6db838b90cd",
+      "gitBlob": "e98be32e0af97f5048b9e63a261822b94b73f129",
       "gitMode": "100644",
-      "sha256": "1c3a00a7cbf7af8553e942decf1cb7f7ead137dd3f38b2e859fc09ae281cf327"
+      "sha256": "2a9e38e3beffcc72075c91d190ac5c126ac8bff939ae238f28ce61420cdd93a0"
+    },
+    "Tools/CurrentAppleValidation/native_ui_retained.py": {
+      "gitBlob": "31358e3eb72bf476181ec1ad8e73de8b8f49f325",
+      "gitMode": "100644",
+      "sha256": "b4568ee519efdab78df2d204360a6c5f8d4b77cadd582e034891fc856986cadb"
+    },
+    "Tools/CurrentAppleValidation/owned_inventory_recovery.py": {
+      "gitBlob": "8946b82f02e93ab7fae3257ea90bfd77465e7fa9",
+      "gitMode": "100644",
+      "sha256": "ece048eee69c4866dd5bd6037e635077e804cfaaf0135764b54777dd3541a2ee"
+    },
+    "Tools/CurrentAppleValidation/page154-retained-inputs.json": {
+      "gitBlob": "52ef49452a39ee6c221b26b7ad9565c933fd6223",
+      "gitMode": "100644",
+      "sha256": "33356c5c4e95cedf1f94bd663b9ec289c060abfb4fba515393472ad39c3c6038"
+    },
+    "Tools/CurrentAppleValidation/page154-retained-ui-products.json": {
+      "gitBlob": "c1183eafe3e5bbad77799cd30da8f8ec0d9513b7",
+      "gitMode": "100644",
+      "sha256": "987070d95d55b12ad1e820b9b0c86044540218991cadad83cb2be6af44dc8431"
     },
     "Tools/CurrentAppleValidation/page154_contract.py": {
-      "gitBlob": "33ee328735bd30ebdccebd7f899187476d1a72c2",
+      "gitBlob": "31c694af260ccf7ada86f3532faf2fec6d9dd08e",
       "gitMode": "100644",
-      "sha256": "0b6d2cf343ae802c27426c1f2ca4bf14cac995090d8abe08646f72fdf2650eaa"
+      "sha256": "596a1761882c3efe2068b4af61b463eee0e063e7a2a43957e7c7f321c946dd00"
     },
     "Tools/CurrentAppleValidation/page154_current.py": {
-      "gitBlob": "6239a45dec16b16cc48c5eb52d99f78a3bbbc3fb",
+      "gitBlob": "c1d3f0f7afb7041e41031519628d8dc8ae07dc45",
       "gitMode": "100644",
-      "sha256": "a7384bc9ec75d44ce809ced7215e365973975dd924cdf51e318ef3091873effc"
+      "sha256": "b4971aee1ef059ccd1a81f0d7ad586b81e4c5cc465f843cc6aac2d9af426af18"
+    },
+    "Tools/CurrentAppleValidation/page154_retained.py": {
+      "gitBlob": "4b786e96a1774f22116a942f994d80b6552c28eb",
+      "gitMode": "100644",
+      "sha256": "95baf4c65049d56164260c9054b8dec87d71507d5034e8427b7b7e534f75e670"
     },
     "Tools/CurrentAppleValidation/release_return_rtl.py": {
       "gitBlob": "08eadf71f2070ee504bfbd029f62d0da5e8e4b30",
@@ -132,9 +180,9 @@
       "sha256": "85cc937924b99bd6cab2c9afa0e0186cd02af0d4879126e123bc8f73e6ebd8b0"
     },
     "Tools/CurrentAppleValidation/source-inputs.json": {
-      "gitBlob": "6856016b1556eb6d501795b8e9ab6d8f75218ebc",
+      "gitBlob": "9050ae6a68d53cc920f13db2e09800d6bfb79c87",
       "gitMode": "100644",
-      "sha256": "b26a0355f040b8a582df7d48c9f22bb7c47cbe33d23760d4e520a569b63d6191"
+      "sha256": "1c7048b0d14af4b22396431413c99cb63f9f037e11022aa9083265a6d87b7e1a"
     },
     "Tools/PinkhaSemanticAnchor/native/core/block/editor/pinkha_semantic_anchor.go": {
       "gitBlob": "906178f33777c2a401ec8d8e4ed46fd857042035",
@@ -227,9 +275,9 @@
       "sha256": "5d976901b73b5bc5e519ead3a89952220d8149e710561d92acc9f36e46247414"
     },
     "Tools/PinkhaSimulatorGate/run_ui27.py": {
-      "gitBlob": "70cb99bbe99043be334b0e475139753b2fae550d",
+      "gitBlob": "ffb31c7599aedde83f8d03c21b9e699424ec4aae",
       "gitMode": "100644",
-      "sha256": "9222c3ea0258ce5002f72e2b60b58c64f27857c15f653a49ff2a0edacc8cf5de"
+      "sha256": "87e0972ee6852d1fdb34d82afa5dde346baf836afaa8419203b647e7d3e21ca7"
     },
     "Tools/PinkhaSimulatorGate/simulator_identity.py": {
       "gitBlob": "18c2fa41e094ccc1778b70c4e08dff135a3566d3",
@@ -252,9 +300,9 @@
       "sha256": "2b4162be85c3164a4d75869f67b3bfe9e58fac033a581d6f6f57d38e639961e0"
     },
     "Tools/PinkhaSimulatorGate/wave15_batch.py": {
-      "gitBlob": "6761d3f972c407cd98cd5035447d015286b4719e",
+      "gitBlob": "4003e74bf7624f31029bf05cafb9a8206dc94ceb",
       "gitMode": "100644",
-      "sha256": "75e923d8c9718553d80c6aa3fd5338f06e2622e275ba10bc5537d03c4ba03193"
+      "sha256": "6015b878eabc5688f253552c8b5c647922ee25c4fdd885d296ab0dfdee967936"
     },
     "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": {
       "gitBlob": "29a70c1728ef0088c1516284f2fd828225da2193",
@@ -267,13 +315,31 @@
       "sha256": "2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00"
     }
   },
+  "inventoryRecovery": {
+    "policy": "owned-inventory-timeout-v1",
+    "productTrees": {
+      "AnyTypeTests": "67d86e2e3199fe63f258f060089c62acb4b689a5",
+      "Anytype": "078147cfbfc8c8b839c7058bdf90d7744c61e3d8",
+      "Anytype.xcodeproj": "64541afaba0ae0596d00b3b6be8df3a6152c5dda",
+      "AnytypeNotificationServiceExtension": "56fa06e3f5fcfa06cc819dbc08c9b7c4307ccc8d",
+      "AnytypeShareExtension": "0a6e9c4a43fa602a1bb695b7c87efbcf2b149eb0",
+      "AnytypeTests": "a87703f6f46f4e2b3dba7532986ddf977e3bd697",
+      "AnytypeWidget": "1108084a01a1bb3127a40c9f8a148ccfaf97f48c",
+      "Distribution": "f5c1c8cf91690251977a9e027c5f61d268549d97",
+      "Modules": "0867b93e1a96a9da8a285463094f7b61b5363774",
+      "PinkhaStage1Acceptance": "4b14aa3bb6043355c035cfae98671d1d9cc6e21c",
+      "Scripts": "37fde5ac7e90e5bb82b247bf835911b85477830b",
+      "scripts": "7c1c4d6e9e6025ef745e0390cebcbb9ddd534be5"
+    },
+    "sourceCommit": "8dc5ee02db71517a5eb08535a6b266da62adfe30"
+  },
   "limits": {
     "centralWorkflow": "Root-owned inline-job composition, outside this fixed source manifest",
     "currentAppSourceRequired": true,
     "diagnosticPackageTests": 0,
-    "existingFourMethodPoliciesChanged": false,
     "factoryTests": 0,
     "freshSetupNewCredit": 0,
+    "pagePolicyChangesCommonTestSelection": false,
     "productBuildsExecutedDuringAuthoring": 0,
     "runtimeAppBuildsMaximum": 1,
     "runtimeNativeBuilds": 0,
@@ -298,9 +364,11 @@
     "mounted_contract": "Tools/PinkhaSemanticAnchorWire/apple_mounted/mounted_contract.py",
     "native_continuation_sources": "Tools/AnyEnginePort/native_continuation_sources.py",
     "native_ui_failed": "Tools/CurrentAppleValidation/native_ui_failed.py",
+    "native_ui_retained": "Tools/CurrentAppleValidation/native_ui_retained.py",
     "native_ui_transition_contract": "Tools/AnyEnginePort/native_ui_transition_contract.py",
     "page154_contract": "Tools/CurrentAppleValidation/page154_contract.py",
     "page154_current": "Tools/CurrentAppleValidation/page154_current.py",
+    "page154_retained": "Tools/CurrentAppleValidation/page154_retained.py",
     "release_return_rtl": "Tools/CurrentAppleValidation/release_return_rtl.py",
     "rerun_original_ui": "Tools/PinkhaNativeDerived/rerun_original_ui.py",
     "reuse_uikit_execution": "Tools/AnyEnginePort/reuse_uikit_execution.py",
@@ -313,6 +381,7 @@
     "validate_release": "Tools/PinkhaSimulatorGate/validate_release.py",
     "validate_wave1": "Tools/PinkhaNativeDerived/validate_wave1.py",
     "verify_archive_roundtrip": "Tools/AnyEnginePort/verify_archive_roundtrip.py",
+    "verify_custom_type": "Tools/AnyEnginePort/verify_custom_type.py",
     "verify_focus_handoff_execution": "Tools/AnyEnginePort/verify_focus_handoff_execution.py",
     "verify_native_test_execution": "Tools/AnyEnginePort/verify_native_test_execution.py",
     "warning_profile": "Tools/PinkhaSemanticAnchorWire/apple_mounted/warning_profile.py",

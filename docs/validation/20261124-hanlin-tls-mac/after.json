@@ -1,0 +1,50 @@
+{
+  "controls": {
+    "errors": 0,
+    "failures": 0,
+    "passed": true,
+    "skipped": 0,
+    "tests": 2
+  },
+  "defaultVerifyFlags": 32768,
+  "firstFailurePreserved": "/Users/m1/builds/_diagnostics/hanlin-tls-20261124-oevltsiz/diagnostic.json",
+  "hostTrustChanged": false,
+  "privateMaterialRemoved": true,
+  "python": "3.12.16 (main, Oct 25 2026, 18:24:37) [Clang 21.0.0 (clang-2100.3.34.2)]",
+  "scope": "actual-Mac-fixture-TLS-only-no-product-credit",
+  "simulatorUsed": false,
+  "sourceHashes": {
+    "fixture.py": "d0ca3d250d2dba3555b8cc65c48d0ffc8d95ae9b015b9da30e094f3bbb1e0d81",
+    "protocol.py": "1945dc16f92391dc6cbeaba7098849a10c7d22d878b8c3abcc216de92c10ac6c",
+    "test_fixture.py": "225727ce77fbb34e32e512c662265ba82c665dd894843bf13b6e33f42f427760"
+  },
+  "ssl": "OpenSSL 3.5.9 29 Sep 2026",
+  "start": {
+    "exitCode": 0,
+    "result": {
+      "explicitTemporaryCATLSVerified": true,
+      "rootCAFingerprintSHA256": "ca30b22cc51c7bda58443913d23b7bbd3234c510bf3272b2fabe734a9a066581",
+      "runID": "2fc58d7f-ba3f-4214-a9eb-9c3c4207db15",
+      "schema": 1,
+      "status": "FIXTURE_READY"
+    }
+  },
+  "status": "PASS",
+  "stop": {
+    "exitCode": 0,
+    "result": {
+      "listenerObservation": "posix_connect_refused",
+      "ownedChildExited": true,
+      "ownedListenerClosed": true,
+      "privateMaterialRemoved": false,
+      "runID": "2fc58d7f-ba3f-4214-a9eb-9c3c4207db15",
+      "schema": 1,
+      "simulatorTrustRemoved": false,
+      "status": "FIXTURE_STOPPED"
+    }
+  },
+  "tests": [
+    "test_default_untrusted_root_is_rejected_then_explicit_ca_succeeds",
+    "test_certificate_hostname_mismatch_is_not_bypassed"
+  ]
+}

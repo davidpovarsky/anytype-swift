@@ -1,0 +1,56 @@
+name: Pinkha loaded-account ARM64 native acceptance
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        type: string
+        required: true
+    secrets:
+      PINKHA_NATIVE_COMPILER_URL:
+        required: true
+      PINKHA_NATIVE_SOURCE_URL:
+        required: true
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pinkha-loaded-account-native-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  native:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 80
+    steps:
+      - name: Checkout the exact native consumer and original auditor
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Tools/AnyEngineValidation/loaded_account_witness/portable/run_native.py
+            /Tools/AnyEngineValidation/loaded_account_witness/portable/source-delta-v2.json
+            /Tools/AnyEngineValidation/loaded_account_witness/portable/loaded-witness-context.patch
+            /Tools/AnyEngineValidation/loaded_account_witness/portable/custody-recipient.pem
+            /Tools/AnyEngineValidation/loaded_account_witness/native_audit.py
+      - name: Execute one build and the four pending native methods
+        env:
+          EXPECTED_SOURCE_SHA: ${{ inputs.source_sha || github.sha }}
+          PINKHA_NATIVE_COMPILER_URL: ${{ secrets.PINKHA_NATIVE_COMPILER_URL }}
+          PINKHA_NATIVE_SOURCE_URL: ${{ secrets.PINKHA_NATIVE_SOURCE_URL }}
+        run: python3 -B Tools/AnyEngineValidation/loaded_account_witness/portable/run_native.py
+      - name: Preserve safe receipts and encrypted original evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Pinkha-Loaded-Account-Native-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pinkha-loaded-account-native/public
+          include-hidden-files: true
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 30

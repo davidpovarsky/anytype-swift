@@ -1,0 +1,67 @@
+{
+  "status": "FAIL_ACTUAL_UI_RUNTIME_NOT_BOUND",
+  "error_type": "RuntimeError",
+  "extra_app_launches": 0,
+  "every_launch_verified": false,
+  "diagnostics": {
+    "diagnostic_only": true,
+    "stage_duration_scope": "ENTIRE_NAMED_OPERATION_NOT_INDIVIDUAL_SUBPROCESS",
+    "stages": [
+      {
+        "stage": "prepare_data_container",
+        "attempts": 1,
+        "status": "RETURNED",
+        "started_at": 1795533824.348584,
+        "stage_elapsed_seconds": 0.13229787499949452,
+        "finished_at": 1795533824.480891
+      },
+      {
+        "stage": "prepare_installed_source",
+        "attempts": 1,
+        "status": "RETURNED",
+        "started_at": 1795533824.481011,
+        "stage_elapsed_seconds": 1.634596791001968,
+        "finished_at": 1795533826.115605
+      },
+      {
+        "stage": "poll_data_container",
+        "attempts": 120,
+        "status": "RETURNED",
+        "started_at": 1795533876.489629,
+        "stage_elapsed_seconds": 0.13360795799962943,
+        "finished_at": 1795533876.623243
+      },
+      {
+        "stage": "read_native_phase_before",
+        "attempts": 120,
+        "status": "TRANSIENT_READ",
+        "started_at": 1795533876.623259,
+        "stage_elapsed_seconds": 0.00023949999740580097,
+        "finished_at": 1795533876.623496
+      },
+      {
+        "stage": "export_final_data_container",
+        "attempts": 1,
+        "status": "RETURNED",
+        "started_at": 1795533877.933215,
+        "stage_elapsed_seconds": 0.16918099999747938,
+        "finished_at": 1795533878.102375
+      },
+      {
+        "stage": "export_final_native_result",
+        "attempts": 1,
+        "status": "FAILED",
+        "started_at": 1795533878.102394,
+        "stage_elapsed_seconds": 6.29579990345519e-05,
+        "finished_at": 1795533878.102455
+      }
+    ],
+    "first_failure": {
+      "stage": "export_final_native_result",
+      "error_type": "FileNotFoundError",
+      "stage_elapsed_seconds": 6.29579990345519e-05
+    },
+    "poll_timeout_retries": 0,
+    "partial_observations": {}
+  }
+}

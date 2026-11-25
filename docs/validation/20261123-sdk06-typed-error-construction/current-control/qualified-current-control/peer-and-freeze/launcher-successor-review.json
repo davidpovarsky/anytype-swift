@@ -1,0 +1,90 @@
+{
+  "baseSource": "40a51a0f8b4d8dd0aa2f1de9b34830d09ee8c798",
+  "compilerInvocations": 0,
+  "connectedHostCalls": 0,
+  "controls": 0,
+  "inverse": {
+    "allDefinitionsUnchanged": [
+      "absent",
+      "capacity",
+      "child_limits",
+      "output_usage",
+      "permitted_fixture_link",
+      "save",
+      "sha",
+      "stamp"
+    ],
+    "diffSHA256": "ee72bfa2fc27de0a535c7165756e7b46bc0da69f17cc8a08b7df90251f1c2285",
+    "exactWholeFile": true,
+    "literalBlocks": 1,
+    "ownedStopBodyUnchanged": true,
+    "ownerReviewSHA256": "4eb5e75b3e4094797e3ad9a84123e5166ee3dbdf8d644715670b9b60c790c85b"
+  },
+  "limits": [
+    "These are source-control-flow findings, not executed failure injections.",
+    "Successor bytes reviewed from owner local cache with full hash agreement; successor Git/manifest binding is still pending the SDK freeze.",
+    "The inherited 40a peer independently bound seven physical/Git files; remaining declared input closure was reviewed logically, not reread here.",
+    "If persistence itself fails after partial write, retained stdout/exit are required to interpret the raw receipt; source review does not guarantee successful storage."
+  ],
+  "newOuter": {
+    "bytes": 8032,
+    "sha256": "0110db52825c8e20f33ac9637c49c992fb91dc62b596a8fdb7945d8d972b8afa"
+  },
+  "oldOuter": {
+    "bytes": 7191,
+    "sha256": "944ce01194ff43367847b678702ed84784a2280b55fb2f8f63fe7d8fc29fce73"
+  },
+  "priorPeer": {
+    "path": "/dev/shm/editor-sdk40a-peer/review.json",
+    "sha256": "fc2bd1c7b693ffcf09ad331180a14b09b25da0e0902f5fb482c2f10cf2893efe",
+    "status": "CONFINED_OUTER_FINALIZATION_BLOCKER"
+  },
+  "repositoryImports": 0,
+  "schema": "sdk06-current-projection-launcher-successor-independent-peer-v1",
+  "sourceInspectedFailurePaths": [
+    {
+      "case": "execution capacity output guard repeats in final capacity and final usage",
+      "finding": "Original primary retained; cleanup error retained; final usage error separately retained and value null; absence probe independently attempted; aggregate FAIL."
+    },
+    {
+      "case": "owned-group probe fails in cleanup and again in final observation",
+      "finding": "Cleanup error retained; final group observation error separately retained; absence null and aggregate FAIL; no fabricated ESRCH."
+    },
+    {
+      "case": "both independent final observations throw",
+      "finding": "Ordered separate observation failures retained; both values null; original primary and cleanup fields untouched; aggregate FAIL."
+    },
+    {
+      "case": "first failure occurs in a final observation",
+      "finding": "Existing primary remains null honestly; finalObservationFailures supplies the actual failure; aggregate FAIL."
+    },
+    {
+      "case": "cleanup failed but later absence probe returns true",
+      "finding": "The earlier cleanup failure still forces FAIL; later observation does not erase it."
+    },
+    {
+      "case": "no owned child established",
+      "finding": "Final absence cannot be True; aggregate cannot PASS."
+    },
+    {
+      "case": "final receipt write throws",
+      "finding": "Existing primary, cleanup and observation records remain in memory; finalReceiptFailure added; stdout carries failure and process exits1. Any partial receipt is not normalized or replaced."
+    },
+    {
+      "case": "all execution, cleanup and final observations succeed",
+      "finding": "PASS remains conditional on no prior failures and actual final absence exactly True."
+    }
+  ],
+  "status": "SOURCE_REVIEW_PASS",
+  "successorCommitBinding": "PENDING_SDK_FREEZE",
+  "unchanged": {
+    "cleanupSeconds": 10,
+    "executionSeconds": 60,
+    "innerWrapperSHA256": "33a6939038ad3001598d824a081b0c219c36560f140077c6462c379c0ef83f93",
+    "outputBudgetBytes": 2097152,
+    "outputEntries": 256,
+    "outputFileCapBytes": 262144,
+    "productCredit": 0,
+    "testSHA256": "b73d72cb1808aa173f677408a05835540ae40803b9756d80d2a3c7f08eff293c"
+  }
+}

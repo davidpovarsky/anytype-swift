@@ -31,6 +31,9 @@ final class ApplicationCoordinatorViewModel {
 
     @ObservationIgnored
     private var dismissAllPresented: DismissAllPresented?
+
+    @ObservationIgnored
+    private var notificationRegistrationTask: Task<Void, Never>?
     
     // MARK: - State
     
@@ -96,6 +99,10 @@ final class ApplicationCoordinatorViewModel {
     }
     
     private func handleApplicationState(_ applicationState: ApplicationState) async {
+        if applicationState != .home {
+            notificationRegistrationTask?.cancel()
+            notificationRegistrationTask = nil
+        }
         await dismissAllPresented?(animated: false)
         withAnimation(self.applicationState == .launch ? .default : .none) {
             self.applicationState = applicationState
@@ -159,9 +166,10 @@ final class ApplicationCoordinatorViewModel {
             }
             observeUI27Startup("select-state-assigned")
             
-            observeUI27Startup("notification-registration-begin")
-            await pushNotificationsPermissionService.registerForRemoteNotificationsIfNeeded()
-            observeUI27Startup("notification-registration-returned")
+            // The state consumer is still handling .launch here. Awaiting the
+            // system notification-settings query would prevent it from consuming
+            // the .home state already published above.
+            scheduleNotificationRegistration()
         } catch is CancellationError {
             observeUI27Startup("select-cancellation")
             // Ignore cancellations
@@ -177,6 +185,18 @@ final class ApplicationCoordinatorViewModel {
             observeUI27Startup("select-error", error: error)
             applicationStateService.state = .auth
             observeUI27Startup("select-auth-assigned")
+        }
+    }
+
+    private func scheduleNotificationRegistration() {
+        notificationRegistrationTask?.cancel()
+        let permissionService = pushNotificationsPermissionService
+        notificationRegistrationTask = Task { [weak self] in
+            guard !Task.isCancelled else { return }
+            self?.observeUI27Startup("notification-registration-begin")
+            await permissionService.registerForRemoteNotificationsIfNeeded()
+            self?.observeUI27Startup(Task.isCancelled
+                ? "notification-registration-cancelled" : "notification-registration-returned")
         }
     }
 

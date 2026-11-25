@@ -91,9 +91,11 @@ def build_selection(args, app, binding):
     batch.write(args.evidence.resolve() / "coherent-build-selection.json", dict(
         profile=PROFILE, runtime_profile=RUNTIME_PROFILE, host_actions=host,
         retained_pagination=retained, remaining_freshness_source=quote_source, planned_t5_counts=COUNTS,
+        planned_focus_counts={"return_methods": 3, "rtl_preparation_methods": 1, "additional_app_builds": 0},
         build_flags=batch.profile_flags(PROFILE), configuration=batch.CONFIGURATION,
         shipping_default_build=False, release_accepted=False, full_matrix_accepted=False))
-    return ([native_ui.evidence.PREPARATION.split("/")[0], host_actions.SUITE,
+    from coherent_release_focus import RETURN_SUITE
+    return ([RETURN_SUITE, native_ui.evidence.PREPARATION.split("/")[0], host_actions.SUITE,
              pending.METHOD.split("/")[0], freshness.SUITE],
             [*native_ui.evidence.METHODS.values(), native_ui.r08.METHOD])
 
@@ -214,6 +216,9 @@ def execute(args, context, preflight, receipt, intent):
     proof.mkdir(parents=True)
     build = make_build(args, context, receipt, ui, pair)
     original_products = original_products_context(context)
+    if not original_products:
+        from coherent_test_diagnostics import Pair
+        pair = Pair(pair)
     batch.write(proof / ("original-products-build.json" if original_products else "same-job-build.json"), build)
     source, run_id = context.source["source_sha"], intent["run_id"]
     selection = preflight["selected"]["ipad"]
@@ -419,7 +424,11 @@ def nested_cleanup(args, *, origin=None):
     """Recheck exact original groups while retaining any earlier command failure."""
     from coherent_release_cleanup import audit_nested_receipts
     evidence, work = args.evidence.resolve(), private_work(args)
-    roots = [work, evidence / "coherent-t5",
+    focus_roots = []
+    if origin is None:
+        from coherent_release_focus import KEYS as focus_keys
+        focus_roots = [evidence / "lanes" / key for key in focus_keys]
+    roots = [work, evidence / "coherent-t5", *focus_roots,
              *[evidence / "lanes" / name / "owned-readiness" for name in batch.profile_spec(PROFILE).lanes]]
     result = dict(status="RUNNING", original_owned_commands=[], groups_checked=0,
                   evidence_scope="CLEANUP_ONLY_ORIGINAL_COMMAND_AND_PRODUCT_STATUS_UNCHANGED")

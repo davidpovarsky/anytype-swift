@@ -144,7 +144,7 @@ class BatchControls(unittest.TestCase):
             self.assertEqual(frozen_source["package_locks"]["Project/Package.resolved"], original)
             args = argparse.Namespace(app=root, evidence=root / "evidence", derived=root / "build/derived",
                                       deadline=time.monotonic() + batch.WORKER_SECONDS - 1,
-                                  runtime_profile=runtime_profile, heart_source_run_id="9991")
+                                      runtime_profile="r14", heart_source_run_id="9991")
             lane = types.SimpleNamespace(plan=selection, execute=Mock())
             with patch.object(batch, "build_once", side_effect=raised.exception):
                 code = batch.worker(args, lane, {"parent_pid": os.getppid()})
@@ -823,10 +823,10 @@ class BatchControls(unittest.TestCase):
                     cleanup_finished = True
                     return {"status": "PASS"}
 
-                def publish_diagnostics(*values):
+                def publish_diagnostics(*values, **kwargs):
                     if phase == "diagnostics":
                         raise KeyboardInterrupt()
-                    return original_diagnostics(*values)
+                    return original_diagnostics(*values, **kwargs)
 
                 previous = {number: signal.getsignal(number) for number in (signal.SIGTERM, signal.SIGINT)}
                 with patch.object(batch.sys, "platform", "darwin"), \

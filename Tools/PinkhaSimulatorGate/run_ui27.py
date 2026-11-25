@@ -105,9 +105,13 @@ def inject(value, blueprint, environment, app_path=None):
             inject(child, blueprint, environment, app_path)
 
 
-def run_selection(app, configuration, blueprint, udid, selections, environment, evidence, prefix, app_path=None):
+def run_selection(app, configuration, blueprint, udid, selections, environment, evidence, prefix, app_path=None,
+                  *, collect_test_diagnostics=None):
     if evidence.exists() and any(evidence.iterdir()):
         raise RuntimeError('Refuse stale selection evidence; use a fresh attempt directory')
+    if collect_test_diagnostics not in (None, 'never'):
+        raise ValueError('Unreviewed current-run test diagnostic policy')
+    diagnostic_flags = ['-collect-test-diagnostics', 'never'] if collect_test_diagnostics == 'never' else []
     time_budget = selection_time_budget(blueprint, selections)
     evidence.mkdir(parents=True, exist_ok=True)
     result = dict(status='FAIL', selected=selections, phase='EXECUTION', prefix=prefix, command_exit_code=None,
@@ -137,7 +141,7 @@ def run_selection(app, configuration, blueprint, udid, selections, environment, 
                     '-default-test-execution-time-allowance', str(time_budget['default_seconds']),
                     '-maximum-test-execution-time-allowance', str(time_budget['maximum_seconds']),
                     *['-only-testing:' + blueprint + '/' + name for name in filters],
-                    '-resultBundlePath', str(bundle)], app, evidence, bundle, prefix)
+                    '-resultBundlePath', str(bundle), *diagnostic_flags], app, evidence, bundle, prefix)
         result['command_exit_code'] = 0
         summary = json.loads((evidence / (prefix + '-summary.json')).read_text())
         devices = [row['device'] for row in summary.get('devicesAndConfigurations', [])]

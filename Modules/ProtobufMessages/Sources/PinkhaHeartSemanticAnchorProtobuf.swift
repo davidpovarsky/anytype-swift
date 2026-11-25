@@ -42,15 +42,26 @@ public struct PinkhaHeartSemanticAnchorPlan: Sendable {
         }
     }
 
-    func validatedEvent(_ reply: PinkhaHeartSemanticAnchorAppliedReply) throws -> Anytype_ResponseEvent {
+    func validatedEvent(_ reply: PinkhaHeartSemanticAnchorAppliedReply,
+                        preflight: Anytype_Rpc.Object.Show.Response? = nil) throws -> Anytype_ResponseEvent {
         try reply.receipt.validate(for: request)
         let event: Anytype_ResponseEvent
         do { event = try .init(serializedBytes: reply.responseEvent) }
         catch { throw PinkhaHeartSemanticAnchorError.invalidReply }
         guard heartBytesEqual(event.contextID, request.objectID), event.unknownFields.data.isEmpty,
-              event.messages.count == 1, let message = event.messages.first,
-              heartBytesEqual(message.spaceID, request.spaceID), message.unknownFields.data.isEmpty,
-              case .blockSetText(let update)? = message.value,
+              (1...2).contains(event.messages.count),
+              event.messages.allSatisfy({
+                  heartBytesEqual($0.spaceID, request.spaceID) && $0.unknownFields.data.isEmpty
+              }), let message = event.messages.last else {
+            throw PinkhaHeartSemanticAnchorError.invalidReply
+        }
+        if event.messages.count == 2 {
+            guard case .objectDetailsAmend(let amendment)? = event.messages[0].value else {
+                throw PinkhaHeartSemanticAnchorError.invalidReply
+            }
+            try validateTorahProjection(amendment, preflight: preflight)
+        }
+        guard case .blockSetText(let update)? = message.value,
               heartBytesEqual(update.id, request.blockID), update.unknownFields.data.isEmpty,
               !update.hasText, !update.hasStyle, !update.hasChecked, !update.hasColor,
               !update.hasIconEmoji, !update.hasIconImage,
@@ -68,6 +79,99 @@ public struct PinkhaHeartSemanticAnchorPlan: Sendable {
             throw PinkhaHeartSemanticAnchorError.invalidReply
         }
         return event
+    }
+
+
+    private func validateTorahProjection(
+        _ amendment: Anytype_Event.Object.Details.Amend,
+        preflight: Anytype_Rpc.Object.Show.Response?
+    ) throws {
+        guard let preflight else { throw PinkhaHeartSemanticAnchorError.invalidReply }
+        try verifyCurrent(preflight)
+        let rows = preflight.objectView.details.filter { heartBytesEqual($0.id, request.objectID) }
+        guard rows.count == 1, let row = rows.first, row.hasDetails, row.subIds.isEmpty,
+              row.unknownFields.data.isEmpty, row.details.unknownFields.data.isEmpty,
+              heartBytesEqual(amendment.id, request.objectID), amendment.subIds.isEmpty,
+              amendment.unknownFields.data.isEmpty,
+              amendment.details.count == Self.torahProjectionKeys.count else {
+            throw PinkhaHeartSemanticAnchorError.invalidReply
+        }
+        var seen = Set<String>()
+        var options = BinaryEncodingOptions()
+        options.useDeterministicOrdering = true
+        for item in amendment.details {
+            guard Self.torahProjectionKeys.contains(item.key), seen.insert(item.key).inserted,
+                  item.hasValue, item.unknownFields.data.isEmpty,
+                  let original = row.details.fields[item.key] else {
+                throw PinkhaHeartSemanticAnchorError.invalidReply
+            }
+            try Self.validateProjectionValue(item.value, key: item.key)
+            try Self.validateProjectionValue(original, key: item.key)
+            // Native page154 capture changes only block marks. Its rebuildable
+            // Torah projection is already exposed by this same object's
+            // ObjectShow. A hash-shaped string alone is not content authority.
+            guard try item.value.serializedData(options: options)
+                == original.serializedData(options: options) else {
+                throw PinkhaHeartSemanticAnchorError.invalidReply
+            }
+        }
+        guard seen == Self.torahProjectionKeys else {
+            throw PinkhaHeartSemanticAnchorError.invalidReply
+        }
+    }
+
+    private static let torahProjectionKeys: Set<String> = [
+        "_pinkhaTorahState", "_pinkhaTorahCanonicalHash", "_pinkhaTorahProjectionVersion",
+        "_pinkhaTorahCacheIntegrity", "_pinkhaTorahCanonicalPropertyKey", "_pinkhaTorahRelatedVersion",
+        "_pinkhaTorahReady", "_pinkhaTorahAttachedProperties", "_pinkhaTorahLabels"
+    ]
+
+    private static func validateProjectionValue(_ value: Google_Protobuf_Value, key: String) throws {
+        guard value.unknownFields.data.isEmpty else { throw PinkhaHeartSemanticAnchorError.invalidReply }
+        switch (key, value.kind) {
+        case ("_pinkhaTorahState", .stringValue(let state)?):
+            guard heartBytesEqual(state, "READY") else { throw PinkhaHeartSemanticAnchorError.invalidReply }
+        case ("_pinkhaTorahReady", .boolValue(let ready)?):
+            guard ready else { throw PinkhaHeartSemanticAnchorError.invalidReply }
+        case ("_pinkhaTorahProjectionVersion", .numberValue(let version)?),
+             ("_pinkhaTorahRelatedVersion", .numberValue(let version)?):
+            guard version == 1 else { throw PinkhaHeartSemanticAnchorError.invalidReply }
+        case ("_pinkhaTorahCanonicalHash", .stringValue(let hash)?),
+             ("_pinkhaTorahCacheIntegrity", .stringValue(let hash)?):
+            guard hash.utf8.count == 64,
+                  hash.utf8.allSatisfy({ (48...57).contains($0) || (97...102).contains($0) }) else {
+                throw PinkhaHeartSemanticAnchorError.invalidReply
+            }
+        case ("_pinkhaTorahCanonicalPropertyKey", .stringValue(let property)?):
+            guard !property.isEmpty else { throw PinkhaHeartSemanticAnchorError.invalidReply }
+        case ("_pinkhaTorahAttachedProperties", .listValue(let properties)?):
+            let allowed: Set<String> = ["pinkhaTorahSources", "pinkhaTorahTopics", "pinkhaTorahWords"]
+            guard properties.unknownFields.data.isEmpty, properties.values.count <= allowed.count else {
+                throw PinkhaHeartSemanticAnchorError.invalidReply
+            }
+            var seen = Set<String>()
+            for item in properties.values {
+                guard item.unknownFields.data.isEmpty, case .stringValue(let property)? = item.kind,
+                      allowed.contains(property), seen.insert(property).inserted else {
+                    throw PinkhaHeartSemanticAnchorError.invalidReply
+                }
+            }
+        case ("_pinkhaTorahLabels", .stringValue(let labels)?):
+            let data = Data(labels.utf8)
+            try HeartSemanticJSON.validate(data, maximumBytes: 2 * 1_024 * 1_024)
+            guard let values = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                throw PinkhaHeartSemanticAnchorError.invalidReply
+            }
+            for (identity, raw) in values {
+                guard !identity.isEmpty, let label = raw as? [String: Any],
+                      label["he"] is String, Set(label.keys).isSubset(of: ["he", "en"]),
+                      label["en"] == nil || label["en"] is String else {
+                    throw PinkhaHeartSemanticAnchorError.invalidReply
+                }
+            }
+        default:
+            throw PinkhaHeartSemanticAnchorError.invalidReply
+        }
     }
 
     func verifyReadback(_ response: Anytype_Rpc.Object.Show.Response,

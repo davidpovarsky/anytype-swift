@@ -7,6 +7,25 @@
     "parentModules": "Exact canonical eager closure plus the provider and new scoped modules; actual loaded closure separately emitted",
     "product": "Complete immutable Git trees plus physical file/type/mode/blob admission"
   },
+  "currentNativeProductRevision": {
+    "productTrees": {
+      "Modules": "14dcdaa23e19126b8ffdd5c96048b3833fa66ce3",
+      "NativeApp": "dbc7320e406031445ed97059dfd01311d44ee5d8"
+    },
+    "profile": "native-ui-failed",
+    "schemaVersion": 1,
+    "sourceCommit": "06d16e1974c8b9693ad2bd49e57b0e12f5add230"
+  },
+  "currentNativeSelection": {
+    "followOnFreshOwnedSimulator": true,
+    "followOnMethods": 2,
+    "followOnRequiresInitialFourAndProviderPass": true,
+    "initialMethods": 4,
+    "maximumApplicationBuilds": 1,
+    "maximumNativeBuilds": 0,
+    "maximumUIRunnerBuilds": 1,
+    "policy": "native-ui-six-current-products-v1"
+  },
   "helperInputs": {
     "Tools/AnyEnginePort/continue_native_acceptance.py": {
       "gitBlob": "c1ba64b0a2a72e059a9b0abf5eac9ffd3d0968d8",
@@ -58,6 +77,11 @@
       "gitMode": "100644",
       "sha256": "5573eefcbf9eae9eea905210d15726ce7684f5529766531d4926eda39c7e2f29"
     },
+    "Tools/AnyEnginePort/verify_custom_type.py": {
+      "gitBlob": "7676373fcd864a47b57a4ac9ff9b44991c1ade9f",
+      "gitMode": "100644",
+      "sha256": "6322e8f63d7c5864359c2a10f7b4f30773c96855c461840c5238f87211ddc864"
+    },
     "Tools/AnyEnginePort/verify_focus_handoff_execution.py": {
       "gitBlob": "d0d9cab5ed03c74cc04b25d61a13c2fb319cd510",
       "gitMode": "100644",
@@ -99,9 +123,9 @@
       "sha256": "5d976901b73b5bc5e519ead3a89952220d8149e710561d92acc9f36e46247414"
     },
     "Tools/PinkhaSimulatorGate/run_ui27.py": {
-      "gitBlob": "70cb99bbe99043be334b0e475139753b2fae550d",
+      "gitBlob": "ffb31c7599aedde83f8d03c21b9e699424ec4aae",
       "gitMode": "100644",
-      "sha256": "9222c3ea0258ce5002f72e2b60b58c64f27857c15f653a49ff2a0edacc8cf5de"
+      "sha256": "87e0972ee6852d1fdb34d82afa5dde346baf836afaa8419203b647e7d3e21ca7"
     },
     "Tools/PinkhaSimulatorGate/simulator_selection.py": {
       "gitBlob": "e5c2e67bee1ca2c445651c5da4711f6f8e5dba6f",
@@ -114,9 +138,9 @@
       "sha256": "602a91987a6995f0218840744af0d88c2ea5c65d34c4edba7f030808c5007b44"
     },
     "Tools/PinkhaSimulatorGate/wave15_batch.py": {
-      "gitBlob": "6761d3f972c407cd98cd5035447d015286b4719e",
+      "gitBlob": "4003e74bf7624f31029bf05cafb9a8206dc94ceb",
       "gitMode": "100644",
-      "sha256": "75e923d8c9718553d80c6aa3fd5338f06e2622e275ba10bc5537d03c4ba03193"
+      "sha256": "6015b878eabc5688f253552c8b5c647922ee25c4fdd885d296ab0dfdee967936"
     },
     "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": {
       "gitBlob": "29a70c1728ef0088c1516284f2fd828225da2193",
@@ -125,9 +149,37 @@
     }
   },
   "helperTrees": {
-    "Tools/AnyEngineValidation/HanlinProviderFixture": "5ba0833e6ef3c82c006a6de1cae7bf5f45d689b1",
-    "Tools/Hanlin": "0d359c6fd85c9a5ea7fe9849023eacba2dc443cf",
-    "Tools/PinkhaNativeDerived": "f9e685655d30cf24322079ba5be9ba281ec8f420"
+    "Tools/AnyEngineValidation/HanlinProviderFixture": "f2f08fa8d65b915ad58d305cb13b3dcc2bbc8d9e",
+    "Tools/Hanlin": "974d4505b4d9811d9d84ce74070c1021108d57b3",
+    "Tools/PinkhaNativeDerived": "20f66136e1c623905575d62fc018d2b95642ac93"
+  },
+  "inventoryRecovery": {
+    "budgets": {
+      "postboot": 120,
+      "pre-cleanup": 90
+    },
+    "policy": "owned-inventory-timeout-v1",
+    "productTrees": {
+      "native-ui-failed": {
+        "Modules": "0867b93e1a96a9da8a285463094f7b61b5363774",
+        "NativeApp": "dbc7320e406031445ed97059dfd01311d44ee5d8"
+      },
+      "release-return-rtl": {
+        "AnyTypeTests": "67d86e2e3199fe63f258f060089c62acb4b689a5",
+        "Anytype": "078147cfbfc8c8b839c7058bdf90d7744c61e3d8",
+        "Anytype.xcodeproj": "64541afaba0ae0596d00b3b6be8df3a6152c5dda",
+        "AnytypeNotificationServiceExtension": "56fa06e3f5fcfa06cc819dbc08c9b7c4307ccc8d",
+        "AnytypeShareExtension": "0a6e9c4a43fa602a1bb695b7c87efbcf2b149eb0",
+        "AnytypeTests": "a87703f6f46f4e2b3dba7532986ddf977e3bd697",
+        "AnytypeWidget": "1108084a01a1bb3127a40c9f8a148ccfaf97f48c",
+        "Distribution": "f5c1c8cf91690251977a9e027c5f61d268549d97",
+        "Modules": "0867b93e1a96a9da8a285463094f7b61b5363774",
+        "PinkhaStage1Acceptance": "4b14aa3bb6043355c035cfae98671d1d9cc6e21c",
+        "Scripts": "37fde5ac7e90e5bb82b247bf835911b85477830b",
+        "scripts": "7c1c4d6e9e6025ef745e0390cebcbb9ddd534be5"
+      }
+    },
+    "sourceCommit": "8dc5ee02db71517a5eb08535a6b266da62adfe30"
   },
   "moduleOrigins": {
     "cleanup_policy": "Tools/CurrentAppleValidation/cleanup_policy.py",
@@ -146,6 +198,7 @@
     "simulator_selection": "Tools/PinkhaSimulatorGate/simulator_selection.py",
     "type_preservation": "Tools/PinkhaSimulatorGate/type_preservation.py",
     "verify_archive_roundtrip": "Tools/AnyEnginePort/verify_archive_roundtrip.py",
+    "verify_custom_type": "Tools/AnyEnginePort/verify_custom_type.py",
     "verify_focus_handoff_execution": "Tools/AnyEnginePort/verify_focus_handoff_execution.py",
     "verify_native_test_execution": "Tools/AnyEnginePort/verify_native_test_execution.py",
     "wave15_batch": "Tools/PinkhaSimulatorGate/wave15_batch.py",
@@ -174,7 +227,7 @@
   },
   "oldAssertions": {
     "cLoadedAccountWitnessIncluded": false,
-    "customTypeAndHistorySelected": false,
+    "customTypeAndHistorySelected": true,
     "nativeLibraryBuilds": 0,
     "retained22Selected": false,
     "sourceDragSelected": false

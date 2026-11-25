@@ -1,0 +1,85 @@
+{
+  "functions": [
+    {
+      "bytes": 1665,
+      "change": "BYTE_EXACT_COPY",
+      "function": "_sdk06_kernel_group_observation",
+      "function_sha256": "d581843c94632933612d54d46036eb777ac15b154c13088cce90a0e7fced325a",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/PinkhaSimulatorGate/run_owned_single_lane.py",
+      "whole_file_sha256": "5d976901b73b5bc5e519ead3a89952220d8149e710561d92acc9f36e46247414"
+    },
+    {
+      "bytes": 88,
+      "change": "BYTE_EXACT_COPY",
+      "function": "_require",
+      "function_sha256": "2a6c889a65d24aa3bb08bfb0be9aa29de5208cd1cb27b52d51e10fa7e5826111",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/PinkhaSimulatorGate/simulator_selection.py",
+      "whole_file_sha256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f"
+    },
+    {
+      "bytes": 476,
+      "change": "BYTE_EXACT_COPY",
+      "function": "_version",
+      "function_sha256": "ae7d7d3ae904a13a3ffd12965572976df6fbedf957631c73fb06cb66e7b8e07a",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/PinkhaSimulatorGate/simulator_selection.py",
+      "whole_file_sha256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f"
+    },
+    {
+      "bytes": 470,
+      "change": "BYTE_EXACT_COPY",
+      "function": "_unique",
+      "function_sha256": "0accd29ac10ab9b9a7619a25c5f42dc876c579f638dac337dc100dfff88dee3a",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/PinkhaSimulatorGate/simulator_selection.py",
+      "whole_file_sha256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f"
+    },
+    {
+      "bytes": 3184,
+      "change": "BYTE_EXACT_COPY",
+      "function": "choose_pair",
+      "function_sha256": "1007cdb896e59eeed14bb00f53898a5ddfeb1b9ef2d02bafb5bdf00730aa7f7f",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/PinkhaSimulatorGate/simulator_selection.py",
+      "whole_file_sha256": "2309bb55b3752774bffc588a7c489392daa7ceb3b7279f6a9ec870899a1f1d5f"
+    },
+    {
+      "bytes": 3795,
+      "change": "BYTE_EXACT_COPY",
+      "function": "cleanup_owned_simulator",
+      "function_sha256": "776043fdb9864a01b6f249e0b5660da27ec98db6fd228e4b7ab2bc659705df99",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/CurrentAppleValidation/cleanup_policy.py",
+      "whole_file_sha256": "d4b6b6df0df5c94b4aeeabef0c6716d097be27fd2a6739298f9d186092bea291"
+    },
+    {
+      "change": "ONLY_SIGNAL_RESULT_OBSERVATION_SIGNATURE_AND_TWO_CALLS",
+      "function": "terminate_owned",
+      "inverse": [
+        {
+          "count": 1,
+          "from": "def terminate_owned(process, signals):",
+          "to": "def terminate_owned(process):"
+        },
+        {
+          "count": 1,
+          "from": "record_signal(process.pid, signal.SIGTERM, signals)",
+          "to": "os.killpg(process.pid, signal.SIGTERM)"
+        },
+        {
+          "count": 1,
+          "from": "record_signal(process.pid, signal.SIGKILL, signals)",
+          "to": "os.killpg(process.pid, signal.SIGKILL)"
+        }
+      ],
+      "new_function_sha256": "5d507f893ec3c1202c922998f7eadd25a4fa79ee294b9a8e4e974ee89a3cd5fc",
+      "original_function_sha256": "0b0476c4250710b8aa2734f0d370429f3db769fc6b291246f9a907aaa6399762",
+      "source_commit": "56b4caafae1c0898b483717abed495f2e3b9281b",
+      "source_path": "Tools/PinkhaSimulatorGate/wave15_batch.py",
+      "whole_file_sha256": "75e923d8c9718553d80c6aa3fd5338f06e2622e275ba10bc5537d03c4ba03193"
+    }
+  ],
+  "schema": "qualified-diagnostic-function-inverses-v1"
+}

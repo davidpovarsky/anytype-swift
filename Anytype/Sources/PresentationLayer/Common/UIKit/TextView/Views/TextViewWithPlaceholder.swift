@@ -83,7 +83,14 @@ final class TextViewWithPlaceholder: UITextView {
     }
     
     override var typingAttributes: [NSAttributedString.Key : Any] {
-        didSet {
+        get { super.typingAttributes }
+        set {
+            // The keyboard can restore this after becomeFirstResponder and the
+            // selection delegate have returned. Keep empty automatic defaults at
+            // this final write boundary, without a delayed focus/style replay.
+            super.typingAttributes = PinkhaTextDirectionUIKitAdapter.restoringEmptyTypingDirection(
+                newValue, in: self
+            )
             if let font = super.typingAttributes[.font] as? UIFont {
                 placeholderLabel.font = font
             }

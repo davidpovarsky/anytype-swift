@@ -1,0 +1,57 @@
+{
+  "action": "cleanup",
+  "attempted_creations": 2,
+  "cleanup_admitted_intent_sha256": "67243d6e71e07de0aaaaad2a2d6451575bd13aa5297aece2aa9086346890920e",
+  "fallback_cleanup": {
+    "devices": [
+      {
+        "delete_exit_code": 0,
+        "name": "Pinkha-UI27-45272408838-iphone",
+        "status": "DELETED_OWNED_SIMULATOR",
+        "udid": "208AA9A8-D74F-4927-B530-1A281EF9D85A"
+      },
+      {
+        "delete_exit_code": 0,
+        "name": "Pinkha-UI27-45272408838-ipad",
+        "shutdown_exit_code": 0,
+        "status": "DELETED_OWNED_SIMULATOR",
+        "udid": "85ACC24C-8839-451D-8379-DE24E0ACDBE5"
+      }
+    ],
+    "finished_at": "2026-11-23T22:14:43.465764+00:00",
+    "inventory_queries": [
+      {
+        "elapsed_seconds": 8.263088,
+        "selector": "208AA9A8-D74F-4927-B530-1A281EF9D85A",
+        "selector_kind": "OWNED_UDID",
+        "status": "RETURNED_VALID_SCOPED_INVENTORY",
+        "timeout_seconds": 120
+      },
+      {
+        "elapsed_seconds": 0.439624,
+        "selector": "85ACC24C-8839-451D-8379-DE24E0ACDBE5",
+        "selector_kind": "OWNED_UDID",
+        "status": "RETURNED_VALID_SCOPED_INVENTORY",
+        "timeout_seconds": 120
+      }
+    ],
+    "started_at": "2026-11-23T22:14:19.638230+00:00",
+    "status": "PASS"
+  },
+  "fallback_cleanup_sha256": "43e2f87367b0b12f3146496b39974ae2436841a6da1af317dedc2c4e98d54aad",
+  "finished_at": "2026-11-23T22:14:43.499543+00:00",
+  "intent_sha256": "67243d6e71e07de0aaaaad2a2d6451575bd13aa5297aece2aa9086346890920e",
+  "known_owned_udids": [
+    "208AA9A8-D74F-4927-B530-1A281EF9D85A",
+    "85ACC24C-8839-451D-8379-DE24E0ACDBE5"
+  ],
+  "prior_batch_cleanup_admission": {
+    "status": "SDK_PROFILE_REQUIRES_ITS_OWN_JOURNAL_CLEANUP"
+  },
+  "protocol": "pinkha-sdk06-qualified-preflight-v1",
+  "run_attempt": "1",
+  "run_id": "45272408838",
+  "source_sha": "fcbaadb5cbe305e345b5cb2d8298b60d8e47f415",
+  "started_at": "2026-11-23T22:14:19.549031+00:00",
+  "status": "PASS"
+}

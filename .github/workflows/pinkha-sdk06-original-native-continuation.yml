@@ -20,10 +20,10 @@ permissions:
 
 jobs:
   original-native-sdk06:
-    runs-on: xcode-27
+    runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
     timeout-minutes: 150
     env:
-      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
       PYTHONDONTWRITEBYTECODE: '1'
       GH_TOKEN: ${{ github.token }}
       SDK_WORK: build/sdk06-original-native-work-${{ github.run_id }}-${{ github.run_attempt }}
@@ -42,11 +42,12 @@ jobs:
           path: build/sdk06-original-app
           fetch-depth: 1
           persist-credentials: false
-      - name: Select native ARM64 Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          architecture: arm64
+      - name: Select installed native ARM64 Python 3.12
+        shell: bash
+        run: |
+          pinkha_python_bin=/opt/homebrew/opt/python@3.12/libexec/bin
+          "$pinkha_python_bin/python3" -I -c 'import platform, sys; assert sys.version_info[:2] == (3, 12), sys.version; assert platform.machine() == "arm64", platform.machine(); assert platform.system() == "Darwin", platform.system(); print(sys.version.split()[0], platform.machine(), sys.executable)'
+          printf '%s\n' "$pinkha_python_bin" >> "$GITHUB_PATH"
       - name: Restore only the exact failed-run native archive and its original source
         run: |
           python3 -B Tools/PinkhaSimulatorGate/sdk06_original_native_continuation.py admit \

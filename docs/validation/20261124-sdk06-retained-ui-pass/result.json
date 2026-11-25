@@ -1,0 +1,107 @@
+{
+  "mode": "LOCAL_APPLE_TEST_RUN",
+  "localRunID": "1795540112572397000",
+  "controllerCommit": "98ab5877c57b3dc156d6d7a9cfb71fc17b514114",
+  "controllerInputs": {
+    "Tools/PinkhaSimulatorGate/diagnostics/owned_hanlin_ui_continuation.py": {
+      "gitBlob": "d156fa0913b09129a6ddf7ca0a70031e0f53ead0",
+      "sha256": "b515b94d43cee1f6cf1396f2d80e6429185be267da3e68cf9869a06fac4146a5"
+    },
+    "Tools/PinkhaSimulatorGate/diagnostics/owned_hanlin_launch_guard.py": {
+      "gitBlob": "7bd22ef398047c6f16915ce3225bffb36f1b0e8f",
+      "sha256": "4b762ba9a32c01c2f4990a7cba0e4d92e21e768e0167e5145223414677d775e4"
+    },
+    "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py": {
+      "gitBlob": "1b9f19fcfc5a1eb79211d7fcfe2dea163c8f1ea4",
+      "sha256": "8552b94f2034d4a1ddfcd363ca02526ff7c843030d65790ceb048efcde2056e4"
+    }
+  },
+  "originalAppSource": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+  "originalUIRun": "45423982997",
+  "originalWorkflowConclusion": "failure",
+  "appBuilds": 0,
+  "uiRunnerBuilds": 0,
+  "nativeBuilds": 0,
+  "sdk23Replayed": false,
+  "ack7Replayed": false,
+  "sdk06CompositeAccepted": false,
+  "productReleaseAccepted": false,
+  "originalProductEntries": {
+    "application": 2667,
+    "uiRunner": 21
+  },
+  "originalReceipts": {
+    "original-native/sdk06-early-products/manifest.json": "331ad15a50b7c0d815fde3b2597b63d24f4de48b206f005aecbf0316f5fe5707",
+    "sdk06-ui/sdk06-early-products/manifest.json": "fcdfadc7f6ff3d001dbafc98bd5b46ab2206bdf7872e299f37a6d21a75ff302d",
+    "first-ui-only-build-result.json": "f8fade357429951a1321c7fedd233835e0e7f0f15714510548a6e677065ce7bf"
+  },
+  "work": "/Users/m1/builds/_diagnostics/sdk-ui-continuation-cpyerqgt",
+  "stages": {
+    "preparation": {
+      "counts": {
+        "passedTests": 1,
+        "failedTests": 0,
+        "skippedTests": 0,
+        "totalTestCount": 1
+      },
+      "methods": {
+        "HanlinNativeAcceptancePreparationTests/prepareRealHostFixture": "Passed"
+      },
+      "devices": [
+        {
+          "architecture": "arm64",
+          "deviceId": "58FA7BE3-CA97-4C74-9276-7D34A57FAEE0",
+          "deviceName": "Anytype Hanlin retained UI c29c8a70-e1d5-4ccb-827d-5335adc58d38",
+          "modelName": "iPad Pro 13-inch (M5)",
+          "osBuildNumber": "24A434",
+          "osVersion": "27.0",
+          "platform": "iOS Simulator"
+        }
+      ]
+    },
+    "ui": {
+      "counts": {
+        "passedTests": 1,
+        "failedTests": 0,
+        "skippedTests": 0,
+        "totalTestCount": 1
+      },
+      "methods": {
+        "HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation": "Passed"
+      },
+      "devices": [
+        {
+          "architecture": "arm64",
+          "deviceId": "58FA7BE3-CA97-4C74-9276-7D34A57FAEE0",
+          "deviceName": "Anytype Hanlin retained UI c29c8a70-e1d5-4ccb-827d-5335adc58d38",
+          "modelName": "iPad Pro 13-inch (M5)",
+          "osBuildNumber": "24A434",
+          "osVersion": "27.0",
+          "platform": "iOS Simulator"
+        }
+      ]
+    }
+  },
+  "status": "RETAINED_NATIVE_UI_AND_22_CHECKS_PASS",
+  "ownedSimulator": {
+    "name": "Anytype Hanlin retained UI c29c8a70-e1d5-4ccb-827d-5335adc58d38",
+    "udid": "58FA7BE3-CA97-4C74-9276-7D34A57FAEE0",
+    "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
+  },
+  "nativeReceipt": {
+    "status": "NATIVE_RECEIPT_VERIFIED_XCTEST_REQUIRED_SEPARATELY",
+    "required_checks": 22,
+    "process_id": 19267,
+    "presentation_count": 4,
+    "provider_configured": false,
+    "source_sha": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+    "run_id": "1795540112572397000",
+    "run_attempt": "1"
+  },
+  "nativeResultSHA256": "8ef50c1f42692af66df6117773078470e7d7641f75c20f0ab12ab385b63ff569",
+  "shutdownExit": 0,
+  "deleteExit": 0,
+  "originalInputsUnchanged": true,
+  "controllerInputsUnchanged": true,
+  "finishedAt": "2026-11-24T17:11:48.991954+00:00"
+}

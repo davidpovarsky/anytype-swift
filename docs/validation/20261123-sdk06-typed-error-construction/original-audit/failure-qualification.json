@@ -1,0 +1,253 @@
+{
+  "actual_counts": {
+    "actual_argument_cases": 0,
+    "actual_compiled_enumerations": 0,
+    "application_builds": 0,
+    "component_bundle_build_attempts": 1,
+    "native_library_builds": 0,
+    "old_passed_methods_replayed": 0,
+    "product_methods_executed": 0,
+    "ui_runner_builds": 0
+  },
+  "archive": {
+    "bytes": 4931101,
+    "download_result_sha256": "ce7e2f803b088f4ffe9b57492b60fe30ff90b0fdffdbd182ac4d12f0dbb0e6b4",
+    "downloads": 1,
+    "new_api_indices": 0,
+    "sha256": "335ecf7329048ffe61d2be5b0cc2008866bd74017d6ced9ef96eb07ac5e1c222"
+  },
+  "artifact_id": 14868587021,
+  "attempt": 1,
+  "audit_reader_failures_preserved": [
+    "source-git-auditor-failed-v1.json",
+    "source-audit-transport-correction.json"
+  ],
+  "cleanup": {
+    "build_group": "ABSENT_ESRCH",
+    "build_pgid": 10252,
+    "devices": [
+      {
+        "delete_exit_code": 0,
+        "name": "Pinkha-UI27-45272408838-iphone",
+        "status": "DELETED_OWNED_SIMULATOR",
+        "udid": "208AA9A8-D74F-4927-B530-1A281EF9D85A"
+      },
+      {
+        "delete_exit_code": 0,
+        "name": "Pinkha-UI27-45272408838-ipad",
+        "shutdown_exit_code": 0,
+        "status": "DELETED_OWNED_SIMULATOR",
+        "udid": "85ACC24C-8839-451D-8379-DE24E0ACDBE5"
+      }
+    ],
+    "fresh_post_delete_inventory_claimed": false,
+    "runtime_status": "PASS",
+    "worker_group": "ABSENT_ESRCH",
+    "worker_pgid": 5209
+  },
+  "controller_source": "fcbaadb5cbe305e345b5cb2d8298b60d8e47f415",
+  "first_error": {
+    "actual_generated_sha256": "74fdde3fbe33df92d19d1afa57cfeebe07c69d977645ab111ed31386f8124f01",
+    "command": {
+      "argv": [
+        "xcodebuild",
+        "build-for-testing",
+        "-project",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-original-native-work-45272408838-1/current-component-projection/project/SDK06PendingComponents.xcodeproj",
+        "-scheme",
+        "SDK06PendingComponents",
+        "-configuration",
+        "Debug-Anytype",
+        "-destination",
+        "platform=iOS Simulator,id=85ACC24C-8839-451D-8379-DE24E0ACDBE5",
+        "-parallel-testing-enabled",
+        "NO",
+        "-derivedDataPath",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-original-native-work-45272408838-1/current-component-projection/derived",
+        "-disableAutomaticPackageResolution"
+      ],
+      "finished_at": "2026-11-23T22:12:24.590176+00:00",
+      "name": "projected-component-build",
+      "output_path": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-original-native-evidence-45272408838-1/shared-editor-components/projected-component-build.log",
+      "output_sha256": "d4e6e5357e0469652a104ddd924c0266ff6b41f2015fe5b693206f0e13c05100",
+      "owned_group_cleanup": "TERM_THEN_KILL",
+      "owned_group_quiescence": {
+        "absence_source": "KERNEL_ESRCH",
+        "budget_seconds": 10,
+        "kernel_group_observation": {
+          "after_monotonic": 957.367805916,
+          "before_monotonic": 957.366940166,
+          "deadline_monotonic": 967.366908083,
+          "errno": 3,
+          "error_type": "ProcessLookupError",
+          "operation": "os.killpg",
+          "outcome": "ABSENT_ESRCH",
+          "pgid": 10252,
+          "signal": 0
+        },
+        "live_members": 0,
+        "observations": 0,
+        "pgid": 10252,
+        "status": "PASS",
+        "timeout_observations": []
+      },
+      "return_code": 65,
+      "started_at": "2026-11-23T22:07:30.873920+00:00",
+      "status": "WORKER_FAILED",
+      "timeout_seconds": 900,
+      "worker_pid": 10252
+    },
+    "diagnostics": [
+      "type Anytype_Rpc.Object.Show.Response.Error has no member with",
+      "type Anytype_Rpc.Object.Search.Response.Error has no member with"
+    ],
+    "file": "Sources/TorahRelatedReadAuthorityMappingTests.swift",
+    "lines": [
+      15,
+      20
+    ],
+    "log_lines": [
+      447,
+      455
+    ],
+    "return_code": 65,
+    "scope": "CURRENT_COMPONENT_TEST_BUNDLE",
+    "swiftprotobuf_import_present": true
+  },
+  "integrity": {
+    "current_controller_and_original_products_unchanged_reported": true,
+    "current_source_git": {
+      "bytes": 35650,
+      "path": "audit1\\source-git-audit-canonical.json",
+      "sha256": "037f76107741903f80563f4bc8a84505710d8a9020333046d63ed3d26fbbc721"
+    },
+    "eight_projected_swift_inverse_bound": true,
+    "generated_files_verified": 129,
+    "independently_checked_tar_entries": 208,
+    "original_native_5011_tuple_restore_reported": true,
+    "original_native_binary_bytes_rehashed_by_this_audit": false,
+    "runtime_final": {
+      "completed_new_products_bound": false,
+      "descriptor_bound": false,
+      "enumeration_bound": false,
+      "errors": [],
+      "generated_source_bound": true,
+      "original_failure_preserved": true,
+      "source_products_archive_bound": true,
+      "staged_original_app_bound": true,
+      "status": "PASS"
+    },
+    "strict_recorded_tar_set_equal": true
+  },
+  "job_id": 138035377949,
+  "new_ci_or_product_actions": 0,
+  "oracle_writes": 0,
+  "original_member_audit": {
+    "all_crc_sha_and_selected_copies_verified": true,
+    "expanded_bytes": 33248302,
+    "inner_entries": 75,
+    "outer_entries": 2,
+    "receipt_sha256": "c93e0157e554ef54560d20c101bc480aa2f754169e8ac8cfec5e60b89d4e44e4",
+    "tar_entries": 208
+  },
+  "partial_products": {
+    "Build_Products_entries": 3,
+    "archive": {
+      "bytes": 113352,
+      "compressed_bytes": 113308,
+      "crc32": "999740a2",
+      "layer": "outer",
+      "mode": 33188,
+      "name": "shared-editor-components/SDK06PendingProducts.tar.gz",
+      "sha256": "2086611c52afe8b1a6d74a9a6fbe98c123f875a155b779bb135a436bad66590d"
+    },
+    "complete_bundle_admitted": false,
+    "only_product_file": "Debug-Anytype-iphonesimulator/SDK06PendingTests.xctest/Info.plist",
+    "reusable_for_product_execution": false
+  },
+  "pending": {
+    "declared_cases": 32,
+    "methods": 23,
+    "methods_started": false,
+    "old_exclusions": 7,
+    "registration_admitted": false,
+    "text_acknowledgement": "NOT_RUN",
+    "ui": "NOT_RUN"
+  },
+  "primary_and_aggregate_distinction": {
+    "cleanup": "PASS",
+    "final_integrity": "PASS",
+    "primary": "xcodebuild exit65 with two concrete Error.with lookup diagnostics",
+    "supervisor": "Original lane has not passed",
+    "worker": "Owned command failed: projected-component-build"
+  },
+  "protocol": "sdk06-protobuf-import-actual-failure-qualification-v1",
+  "references": {
+    "execution.json": {
+      "bytes": 1174916,
+      "sha256": "76554519738ce7609a239b09fc22f55296076385983a1823ad4a6ad7b8f438a1"
+    },
+    "original-native-admission.json": {
+      "bytes": 6923199,
+      "sha256": "27db45d05dac3ac66440db25a9e6fd43df417e79a4df4fb9f1fe41170c279a3e"
+    },
+    "original-native-restoration.json": {
+      "bytes": 6486437,
+      "sha256": "7831d3c64d1f639f53bcd4b4648ad74f53390af08e6ff6f677f4d89bf7f65b88"
+    },
+    "preflight/lifecycle-cleanup.json": {
+      "bytes": 1965,
+      "sha256": "17419bb04987570c66bbc87fda6817e1352dd93a216138f942d98b3880124b5f"
+    },
+    "shared-editor-components/current-component-products.json": {
+      "bytes": 132246,
+      "sha256": "4bc8dca67e11c4eeb2cbbe1be585ad1889e0aca3203e48aca89811b84da9e8c1"
+    },
+    "shared-editor-components/execution.json": {
+      "bytes": 150810,
+      "sha256": "1bcce135b5606d9bf62f0b75e439a64423758d0b5c409239db4e6e00740237fb"
+    },
+    "shared-editor-components/projected-component-build.command.json": {
+      "bytes": 921,
+      "sha256": "855c4a20236afb1578f543732c17ebc156c7814a3a156b58f9e882edd675053c"
+    },
+    "shared-editor-components/projected-component-build.log": {
+      "bytes": 123419,
+      "sha256": "d4e6e5357e0469652a104ddd924c0266ff6b41f2015fe5b693206f0e13c05100"
+    },
+    "shared-editor-components/receipt.json": {
+      "bytes": 12694,
+      "sha256": "1e8c114dca3842e4fb89c90885a66089cba9f661695565931c25b56804277a0f"
+    },
+    "shared-editor-components/source-projection.json": {
+      "bytes": 80076,
+      "sha256": "03fc1412419123061642bf6be411be623e510625a0cfe3904c404ed18a4c291c"
+    },
+    "single-lane-supervisor.json": {
+      "bytes": 4468,
+      "sha256": "612864328232c27cbfce1bebbf28d68390a119118a445db3f79649111b1b5023"
+    },
+    "single-lane-worker.command.json": {
+      "bytes": 1038,
+      "sha256": "b3569d741629f504390050fa3f959352074f3cd98603b0e963e9abe1dd3d7ba0"
+    },
+    "single-lane-worker.log": {
+      "bytes": 1613,
+      "sha256": "8fde7e86e36c1a9b615c21cb5574042bd9afc0c4aa05693b78fa2e75e5571c66"
+    }
+  },
+  "repair_proposal": {
+    "bytes": 1516,
+    "path": "audit1\\repair-proposal.json",
+    "sha256": "13bbae6224440e46698b3364c577e2af3db54360ad2137bc34a3a4f7345008b1"
+  },
+  "run_id": 45272408838,
+  "runner_id": 1000025052,
+  "sealed_at": "2026-11-23T22:44:05.289308+00:00",
+  "source_evidence": {
+    "bytes": 2384,
+    "path": "audit1\\concrete-error-declaration-evidence.json",
+    "sha256": "4499447f8ce76fac9edf1a4692144b2e177fdc89ff01a867ca7d34dce75ae0dc"
+  },
+  "status": "QUALIFIED_ACTUAL_COMPONENT_COMPILE_FAILURE"
+}

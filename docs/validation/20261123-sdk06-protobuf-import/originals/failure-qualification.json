@@ -1,0 +1,78 @@
+{
+  "status": "QUALIFIED_ORIGINAL_FAILURE_NO_PRODUCT_ACCEPTANCE",
+  "run_id": 45262248686,
+  "attempt": 1,
+  "source": "56b4caafae1c0898b483717abed495f2e3b9281b",
+  "artifact_id": 14863182566,
+  "artifact_bytes": 5034936,
+  "artifact_sha256": "5eb1723489babdf8f58f206ed83bae66c214c09ec09e34747578bb6152faa2f6",
+  "archive_inventory_sha256": "5932e2eca0c81263de13e9e50088ad5c2a1a9bdb97f0754d115e2689334771a8",
+  "original_source_git_sha": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+  "actual_controller_git_inputs": 86,
+  "actual_loaded_repository_sources": 68,
+  "all_controller_hashes_and_git_modes_match_immutable_source": true,
+  "original_swift_inputs": 8,
+  "generated_source_files_bound": 129,
+  "actual_test_source_sha256": "364902afbdbe451bbe80cb8959be8fc74edb6db274f0ccf071db70de4d8f8d68",
+  "first_errors": [
+    "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-original-native-work-45262248686-1/current-component-projection/project/Sources/TorahRelatedReadAuthorityMappingTests.swift:14:63: error: type 'Anytype_Rpc.Object.Show.Response.Error' has no member 'with'",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-original-native-work-45262248686-1/current-component-projection/project/Sources/TorahRelatedReadAuthorityMappingTests.swift:19:61: error: type 'Anytype_Rpc.Object.Search.Response.Error' has no member 'with'"
+  ],
+  "original_build_log_sha256": "cbe4f44bc89d2a90e3837ef10d099243e5a4945ff6d95a00b71f0db8b9d0a2ac",
+  "component_build_exit_code": 65,
+  "component_bundle_builds": 1,
+  "new_app_builds": 0,
+  "new_native_builds": 0,
+  "ui_builds": 0,
+  "product_tests": 0,
+  "historical_tests_replayed": 0,
+  "selection_not_enumerated": true,
+  "expected_pending_selection": {
+    "methods": 23,
+    "argument_cases": 32
+  },
+  "incomplete_component_outputs_eligible_for_reuse": false,
+  "worker_and_build_groups_absent": true,
+  "owned_simulators_deleted": 2,
+  "original_app_and_current_controller_unchanged": true,
+  "original_swiftprotobuf_compiled_carriers": {
+    "Build/Products/Debug-Anytype-iphonesimulator/SwiftProtobuf.o": {
+      "bytes": 5915728,
+      "device": "16777231",
+      "inode": "2057196",
+      "mode": 420,
+      "mtime_ns": "1795467478173475041"
+    },
+    "Build/Products/Debug-Anytype-iphonesimulator/SwiftProtobuf.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo": {
+      "bytes": 877220,
+      "device": "16777231",
+      "inode": "2057199",
+      "mode": 420,
+      "mtime_ns": "1795467478187200541"
+    },
+    "Build/Products/Debug-Anytype-iphonesimulator/SwiftProtobuf.swiftmodule/arm64-apple-ios-simulator.abi.json": {
+      "bytes": 149,
+      "device": "16777231",
+      "inode": "2057200",
+      "mode": 420,
+      "mtime_ns": "1795467478190880624"
+    },
+    "Build/Products/Debug-Anytype-iphonesimulator/SwiftProtobuf.swiftmodule/arm64-apple-ios-simulator.swiftdoc": {
+      "bytes": 456224,
+      "device": "16777231",
+      "inode": "2057201",
+      "mode": 420,
+      "mtime_ns": "1795467478193045416"
+    },
+    "Build/Products/Debug-Anytype-iphonesimulator/SwiftProtobuf.swiftmodule/arm64-apple-ios-simulator.swiftmodule": {
+      "bytes": 2738124,
+      "device": "16777231",
+      "inode": "2057202",
+      "mode": 420,
+      "mtime_ns": "1795467478201651874"
+    }
+  },
+  "diagnosis": "Original projected authority test omits SwiftProtobuf import; both protocol-extension .with lookups fail. Module carriers are present in the retained original configuration. Source repair must preserve all method bodies/assertions and immutable original source.",
+  "read_only_audit_no_product_execution": true,
+  "at": "2026-11-23T21:29:17.982190+00:00"
+}

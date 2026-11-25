@@ -1,0 +1,28 @@
+{
+  "cause_scope": "Missing explicit original dynamic-framework link inputs in the new projected test-bundle project",
+  "change": "Add exactly the four original PackageFrameworks binaries as explicit linker inputs, with fixed original relative paths/bytes/SHA and separate staged runtime identities. Preserve build-only TEST_HOST, bundle_loader, original debug dylib, descriptors and strict runtime/source/selection gates.",
+  "evidence": {
+    "bytes": 38391,
+    "path": "audit2/original-framework-link-comparison.json",
+    "sha256": "468a1b0b21f9a67293511fabef71c7d50c942139ebd646b29dbc1037fae3f5ef"
+  },
+  "new_test_bundle_build_required": true,
+  "no_app_native_or_package_build": true,
+  "no_original_host_mutation": true,
+  "not_claimed": [
+    "All binary exports inspected",
+    "Successful linking or runtime loading",
+    "Product methods or native persistence accepted",
+    "Existing partial Products reusable as a completed bundle"
+  ],
+  "preserved_scopes": [
+    "8 immutable original Swift inputs and exact current projection inverses",
+    "23 selected methods,7excluded registrations,32declared cases",
+    "App/native Products5011 restoration and full source/final integrity",
+    "original host shim/debug dylib and current source/build receipts"
+  ],
+  "proposed_new_control": "One focused pure exact-link-input/identity refusal control only, if needed; no prior control replay.",
+  "protocol": "sdk453007-retained-framework-link-proposal-v1",
+  "runtime_loader_plan": "Retain actual original hosted descriptor and staged App Frameworks; preserve original @rpath install names. The SwiftProtobuf embedded original is a separately bound original binary, not byte-equal to its link product. Require actual new link/execution evidence before acceptance.",
+  "status": "SOURCE_PROPOSAL_NOT_IMPLEMENTED_NOT_COMPILED"
+}

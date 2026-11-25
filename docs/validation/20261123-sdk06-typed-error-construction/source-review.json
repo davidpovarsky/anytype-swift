@@ -1,0 +1,129 @@
+{
+  "actual_failure": {
+    "artifact": 14868587021,
+    "attempt": 1,
+    "original_log_sha256": "d4e6e5357e0469652a104ddd924c0266ff6b41f2015fe5b693206f0e13c05100",
+    "qualification_sha256": "6ff26039fb147d26e8a0a79e6084a2f1350fd5cb5cc8fb836422b0861677cab4",
+    "run": 45272408838,
+    "seal_sha256": "a5be7dbbba805ae5495f9e284fd05bf9a8c5b9a9aaf1373aad2e85bb66f4e429"
+  },
+  "approval": "Root explicitly authorized these exact constructor/field/return changes and source-pin preparation; source freeze only.",
+  "audit_stage_story": "1220831427081124",
+  "base": "d99e79697c679476d511b59319ad0505e7e99ddd",
+  "branch": "codex/ram-sdk-typed-error-construction-20261123",
+  "metadata_truth": {
+    "authority_function_body_changed": true,
+    "declarations_assertions_argument_values_unchanged": true,
+    "historical_control_not_replayed": "test_sdk06_component_projection remains byte-exact and was not imported or run",
+    "old_body_unchanged_boolean_now_false_for_authority_and_aggregate": true,
+    "other_seven_source_bodies_unchanged": true
+  },
+  "original_evidence": [
+    {
+      "bytes": 2384,
+      "original_windows_relative": "audit1/concrete-error-declaration-evidence.json",
+      "path": "docs/validation/20261123-sdk06-typed-error-construction/original-audit/concrete-error-declaration-evidence.json",
+      "sha256": "4499447f8ce76fac9edf1a4692144b2e177fdc89ff01a867ca7d34dce75ae0dc"
+    },
+    {
+      "bytes": 9070,
+      "original_windows_relative": "audit1/failure-qualification.json",
+      "path": "docs/validation/20261123-sdk06-typed-error-construction/original-audit/failure-qualification.json",
+      "sha256": "6ff26039fb147d26e8a0a79e6084a2f1350fd5cb5cc8fb836422b0861677cab4"
+    },
+    {
+      "bytes": 1965,
+      "original_windows_relative": "audit1/originals/preflight/lifecycle-cleanup.json",
+      "path": "docs/validation/20261123-sdk06-typed-error-construction/original-audit/originals/preflight/lifecycle-cleanup.json",
+      "sha256": "17419bb04987570c66bbc87fda6817e1352dd93a216138f942d98b3880124b5f"
+    },
+    {
+      "bytes": 123419,
+      "original_windows_relative": "audit1/originals/shared-editor-components/projected-component-build.log",
+      "path": "docs/validation/20261123-sdk06-typed-error-construction/original-audit/originals/shared-editor-components/projected-component-build.log",
+      "sha256": "d4e6e5357e0469652a104ddd924c0266ff6b41f2015fe5b693206f0e13c05100"
+    },
+    {
+      "bytes": 12694,
+      "original_windows_relative": "audit1/originals/shared-editor-components/receipt.json",
+      "path": "docs/validation/20261123-sdk06-typed-error-construction/original-audit/originals/shared-editor-components/receipt.json",
+      "sha256": "1e8c114dca3842e4fb89c90885a66089cba9f661695565931c25b56804277a0f"
+    },
+    {
+      "bytes": 1516,
+      "original_windows_relative": "audit1/repair-proposal.json",
+      "path": "docs/validation/20261123-sdk06-typed-error-construction/original-audit/repair-proposal.json",
+      "sha256": "13bbae6224440e46698b3364c577e2af3db54360ad2137bc34a3a4f7345008b1"
+    },
+    {
+      "bytes": 461,
+      "original_windows_relative": "audit1/source-audit-transport-correction.json",
+      "path": "docs/validation/20261123-sdk06-typed-error-construction/original-audit/source-audit-transport-correction.json",
+      "sha256": "0a27a07190dbe068ea31ab3138c546ec8fb4e6d9f67314d146800c546fdda310"
+    },
+    {
+      "bytes": 35650,
+      "original_windows_relative": "audit1/source-git-audit-canonical.json",
+      "path": "docs/validation/20261123-sdk06-typed-error-construction/original-audit/source-git-audit-canonical.json",
+      "sha256": "037f76107741903f80563f4bc8a84505710d8a9020333046d63ed3d26fbbc721"
+    }
+  ],
+  "preserved_donors": {
+    "sdk": {
+      "head": "226934b0d3b324056116fb71495a0a60d9d6a6d7",
+      "status": ""
+    },
+    "simulator-diagnostic": {
+      "head": "fa5651b96beab2148a3e928bfdc8620a9c24c1a5",
+      "status": ""
+    }
+  },
+  "protocol": "sdk06-typed-error-source-review-v1",
+  "resource_profile": {
+    "max_allocated_bytes": 8388608,
+    "min_MemAvailable_bytes": 2147483648,
+    "new_ci_or_downloads": 0,
+    "oracle_disk_writes": 0,
+    "ram_writer_only": true
+  },
+  "scope": {
+    "app_native_ui_builds": 0,
+    "assertion_selector_parameter_changes": 0,
+    "changed_runtime_paths": [
+      "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift",
+      "Tools/PinkhaSimulatorGate/sdk06_component_projection.py",
+      "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json",
+      "Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json"
+    ],
+    "classification": "DOWNSTREAM_TEST_FIXTURE_AND_PROJECTION_CONTROLLER",
+    "fixture_constructor_replacements": 2,
+    "generated_protocol_source_modified": false,
+    "module_or_preload_changes": 0,
+    "original_app_modified": false,
+    "runtime_pin_rows_changed": [
+      "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json",
+      "Tools/PinkhaSimulatorGate/sdk06_component_projection.py"
+    ]
+  },
+  "source_checks": {
+    "actual_enumeration": false,
+    "actual_product_execution": false,
+    "canonical_and_generated_authority_equal": true,
+    "changed_generator_functions": [
+      "projected_sources",
+      "write_project"
+    ],
+    "complete_original75bd_authority_inverse": true,
+    "controls": 0,
+    "old_registrations_excluded": 7,
+    "preserved_generator_function_bodies": 9,
+    "python_ast_parse": true,
+    "repository_imports": 0,
+    "selected_argument_cases_declared": 32,
+    "selected_static_registrations": 23,
+    "swift_compile": false,
+    "whole_file_inverses": 4
+  },
+  "status": "STATIC_SOURCE_CHECKS_PASS_RUNTIME_NOT_RUN",
+  "task": "1220769818981326"
+}

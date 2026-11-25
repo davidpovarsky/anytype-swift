@@ -1,0 +1,119 @@
+{
+  "base": "8dc5ee02db71517a5eb08535a6b266da62adfe30",
+  "changes": [
+    {
+      "after": "MANIFEST = HERE / \"source-inputs.json\"\nINVENTORY_POLICY = \"owned-inventory-timeout-v1\"\nINVENTORY_SOURCE = \"8dc5ee02db71517a5eb08535a6b266da62adfe30\"\n",
+      "before": "MANIFEST = HERE / \"source-inputs.json\"\n",
+      "reason": "Literal opt-in identity; default remains None."
+    },
+    {
+      "after": "def admit(profile, expected, inventory_policy=None):\n",
+      "before": "def admit(profile, expected):\n",
+      "reason": "Explicit optional admission argument."
+    },
+    {
+      "after": "    recovery = inventory_spec(fixed, inventory_policy)\n    origin = recovery[\"sourceCommit\"] if recovery is not None else c.BASE\n    if recovery is not None:\n        git(\"merge-base\", \"--is-ancestor\", origin, expected)\n    trees = (recovery[\"productTrees\"] if recovery is not None else fixed[\"productTrees\"])[profile]\n",
+      "before": "    trees = fixed[\"productTrees\"][profile]\n",
+      "reason": "Only the explicit opt-in admits exact current8dc compiled trees; defaults keep old tree pins."
+    },
+    {
+      "after": "    source = {\"manifestSHA256\": digest(MANIFEST), \"files\": files, \"gitInputs\": origins,\n              \"compiledTrees\": trees, \"compiledOrigin\": origin}\n    if recovery is not None:\n        source[\"inventoryRecoveryPolicy\"] = inventory_policy\n    return context, source\n",
+      "before": "    return context, {\"manifestSHA256\": digest(MANIFEST), \"files\": files, \"gitInputs\": origins,\n                     \"compiledTrees\": trees, \"compiledOrigin\": c.BASE}\n",
+      "reason": "Truthful compiled origin and durable opt-in in current source admission."
+    },
+    {
+      "after": "    for name, path in module_origins(fixed, source).items():\n",
+      "before": "    for name, path in fixed[\"moduleOrigins\"].items():\n",
+      "reason": "Bind the new helper only when the source admission opted in."
+    },
+    {
+      "after": "    for name, relative in module_origins(read(MANIFEST), source).items():\n",
+      "before": "    for name, relative in read(MANIFEST)[\"moduleOrigins\"].items():\n",
+      "reason": "Pre-resolve the new helper through the existing canonical-origin gate."
+    },
+    {
+      "after": "def inventory_spec(fixed, policy):\n    if policy is None:\n        return None\n    c.require(policy == INVENTORY_POLICY, \"unreviewed_inventory_policy\")\n    spec = fixed[\"inventoryRecovery\"]\n    c.require(spec[\"policy\"] == INVENTORY_POLICY and spec[\"sourceCommit\"] == INVENTORY_SOURCE\n              and spec[\"budgets\"] == {\"postboot\": 120, \"pre-cleanup\": 90}\n              and set(spec[\"productTrees\"]) == set(c.PROFILES), \"inventory_policy_profile_changed\")\n    return spec\n\ndef module_origins(fixed, source):\n    origins = dict(fixed[\"moduleOrigins\"])\n    if inventory_spec(fixed, source.get(\"inventoryRecoveryPolicy\")) is not None:\n        c.require(\"owned_inventory_recovery\" not in origins, \"inventory_module_origin_collision\")\n        origins[\"owned_inventory_recovery\"] = \"Tools/CurrentAppleValidation/owned_inventory_recovery.py\"\n    return origins\n\ndef configure_inventory_recovery(commands, source):\n    if source.get(\"inventoryRecoveryPolicy\") is not None:\n        inventory_spec(read(MANIFEST), source[\"inventoryRecoveryPolicy\"])\n        module = importlib.import_module(\"owned_inventory_recovery\")\n        recheck(source)\n        c.require(module.POLICY == INVENTORY_POLICY and module.BUDGETS == {\"postboot\": 120, \"pre-cleanup\": 90},\n                  \"inventory_policy_implementation_changed\")\n        commands.inventory_recovery = module.Policy(commands, cwd=str(ROOT),\n            recheck_source=lambda: recheck(source), write_json=write)\n\ndef verify_owned_inventory(commands, item, name, states=None, *, phase):\n    policy = getattr(commands, \"inventory_recovery\", None)\n    if policy is None:\n        return verify_device(commands, item, name, states)\n    return policy.verify(verify_device, item, name, states, phase)\n\ndef inventory_recovery_result(commands):\n    policy = getattr(commands, \"inventory_recovery\", None)\n    return None if policy is None else policy.summary()\n\nclass Commands:\n",
+      "before": "class Commands:\n",
+      "reason": "Bounded helper wiring; unchanged identity verifier and default path."
+    },
+    {
+      "after": "            except BaseException as failure:\n                if primary is not None and failure is not primary:\n                    record.setdefault(\"secondaryFailures\", []).append(\n                        {\"stage\": \"command_body\", **error(failure)})\n                primary = primary or failure\n            finally:\n",
+      "before": "            except BaseException as failure:\n                primary = primary or failure\n            finally:\n",
+      "reason": "Record any post-wait body error hidden behind an earlier timeout; never change first error."
+    },
+    {
+      "after": "    verify_owned_inventory(commands, item, \"booted-\" + str(index), {\"Booted\"}, phase=\"postboot\")\n",
+      "before": "    verify_device(commands, item, \"booted-\" + str(index), {\"Booted\"})\n",
+      "reason": "Only postboot identity may opt into one separately named observation."
+    },
+    {
+      "after": "            verify_owned_inventory(commands, item, \"pre-cleanup-\" + str(index), phase=\"pre-cleanup\")\n",
+      "before": "            verify_device(commands, item, \"pre-cleanup-\" + str(index))\n",
+      "reason": "Only pre-cleanup observation may opt in; strict identity still precedes unchanged TOTAL60 cleanup."
+    },
+    {
+      "after": "        recovery = inventory_recovery_result(commands)\n        if recovery is not None:\n            receipt[\"inventoryRecovery\"] = recovery\n        write(path, receipt)\n        results.append(receipt)\n",
+      "before": "        write(path, receipt)\n        results.append(receipt)\n",
+      "reason": "Preserve original timeout and recovery disposition with actual cleanup receipt."
+    },
+    {
+      "after": "def execute(profile, expected, prepare_library, provider, inventory_policy=None):\n",
+      "before": "def execute(profile, expected, prepare_library, provider):\n",
+      "reason": "Opt-in execution entrypoint; default remains strict."
+    },
+    {
+      "after": "        context, source = admit(profile, expected, inventory_policy)\n",
+      "before": "        context, source = admit(profile, expected)\n",
+      "reason": "Bind selected source provenance before helper loading or commands."
+    },
+    {
+      "after": "              \"sourceDragExcluded\": c.SOURCE_DRAG, \"sourceAdmissionSHA256\": digest(evidence / \"source-before.json\"),\n              **({\"inventoryRecoveryPolicy\": inventory_policy} if inventory_policy is not None else {})})\n",
+      "before": "              \"sourceDragExcluded\": c.SOURCE_DRAG, \"sourceAdmissionSHA256\": digest(evidence / \"source-before.json\")})\n",
+      "reason": "Cleanup must use the same opt-in as the original execution intent."
+    },
+    {
+      "after": "        commands = Commands(evidence, context, modules)\n        configure_inventory_recovery(commands, source)\n",
+      "before": "        commands = Commands(evidence, context, modules)\n",
+      "reason": "Enable recovery only from the admitted opt-in source snapshot."
+    },
+    {
+      "after": "        recovery = inventory_recovery_result(commands)\n        if recovery is not None:\n            outcome[\"inventoryRecovery\"] = recovery\n        write(evidence / \"execution.json\", outcome)\n",
+      "before": "        write(evidence / \"execution.json\", outcome)\n",
+      "reason": "Report original failures and all recovery dispositions separately from product result."
+    },
+    {
+      "after": "def cleanup_only(profile, expected, provider, inventory_policy=None):\n",
+      "before": "def cleanup_only(profile, expected, provider):\n",
+      "reason": "Explicit same-policy cleanup entrypoint."
+    },
+    {
+      "after": "        source = read(evidence / \"source-before.json\")\n        c.require(intent.get(\"inventoryRecoveryPolicy\") == inventory_policy\n                  and source.get(\"inventoryRecoveryPolicy\") == inventory_policy, \"cleanup_inventory_policy_changed\")\n        recheck(source)\n        commands = Commands(evidence, context, helpers(source))\n        configure_inventory_recovery(commands, source)\n",
+      "before": "        source = read(evidence / \"source-before.json\")\n        recheck(source)\n        commands = Commands(evidence, context, helpers(source))\n",
+      "reason": "Refuse changing the recovery policy during separately invoked cleanup."
+    },
+    {
+      "after": "        recovery = inventory_recovery_result(commands)\n        if recovery is not None:\n            outcome[\"inventoryRecovery\"] = recovery\n        if primary:\n            raise primary\n        outcome[\"status\"] = \"PASS\"\n",
+      "before": "        if primary:\n            raise primary\n        outcome[\"status\"] = \"PASS\"\n",
+      "reason": "Retain cleanup disposition before rethrowing its unchanged first failure."
+    },
+    {
+      "after": "    parser.add_argument(\"--expected-source\", required=True)\n    parser.add_argument(\"--inventory-recovery\", dest=\"inventory_policy\", choices=(INVENTORY_POLICY,))\n",
+      "before": "    parser.add_argument(\"--expected-source\", required=True)\n",
+      "reason": "Explicit finite named policy; absent CLI option means original behavior."
+    },
+    {
+      "after": "        result = (execute(profile, args.expected_source, prepare_library, provider, args.inventory_policy)\n                  if args.operation == \"execute\" else\n                  cleanup_only(profile, args.expected_source, provider, args.inventory_policy))\n",
+      "before": "        result = (execute(profile, args.expected_source, prepare_library, provider) if args.operation == \"execute\"\n                  else cleanup_only(profile, args.expected_source, provider))\n",
+      "reason": "Carry the same explicit opt-in through execute or cleanup without changing operations."
+    }
+  ],
+  "cleanupPolicySHA256": "d4b6b6df0df5c94b4aeeabef0c6716d097be27fd2a6739298f9d186092bea291",
+  "commonAfter": "f60b005dd750143b0bf2fce84826a74b51e40de10a2e5292b4e36b0a03b5b6fa",
+  "commonBefore": "eafc05a212751bb644a96a0ad73bff139f8eff26cdcc59e1057bbf569f374593",
+  "helperGitRowsCurrentExact": 23,
+  "nativeOrProductTestsRun": 0,
+  "newControlStatus": "NOT_RUN",
+  "oldProductAndHelperAndSelectionFieldsRetained": true,
+  "schema": "owned-inventory-recovery-core-source-v1",
+  "wholeFileInverse": true
+}

@@ -1,0 +1,30 @@
+{
+  "allEightHelperBodiesUnchanged": [
+    "absent",
+    "capacity",
+    "child_limits",
+    "output_usage",
+    "permitted_fixture_link",
+    "save",
+    "sha",
+    "stamp"
+  ],
+  "allOther25DeclaredRowsUnchanged": true,
+  "base": "40a51a0f8b4d8dd0aa2f1de9b34830d09ee8c798",
+  "controlInvocationCount": 0,
+  "execution": "NOT_RUN",
+  "inverse": {
+    "after": " final_usage=None;final_absence=None;final_observation_errors=[]\n for phase,observe in (\n     (\"final_output_usage\",output_usage),\n     (\"final_owned_group_absence\",lambda: owned is not None and absent(owned))):\n  try:\n   value=observe()\n   if phase==\"final_output_usage\":final_usage=value\n   else:final_absence=value\n  except BaseException as error:\n   final_observation_errors.append({\"phase\":phase,\"type\":type(error).__name__,\n       \"message\":str(error),\"traceback\":traceback.format_exc()})\n result={\"status\":\"PASS\" if primary is None and cleanup_error is None\n         and not final_observation_errors and final_absence is True else \"FAIL\",\n   \"source\":SOURCE,\"wrapperSHA256\":WRAPPER_SHA,\"pid\":None if proc is None else proc.pid,\"pgid\":owned,\n   \"returncode\":rc,\"primaryFailure\":primary,\"cleanupFailure\":cleanup_error,\n   \"ownedGroupAbsent\":final_absence,\"cleanupObservations\":observations,\n   \"finalObservationFailures\":final_observation_errors,\"finalReceiptFailure\":None,\n   \"elapsed\":time.monotonic()-started,\"startResources\":start_free,\"finalResources\":final_free,\n   \"correctedExistingMethodsRequested\":1,\"unaffectedOldMethodsRequested\":0,\"newUniqueAcceptanceCredit\":0,\"buildsRequested\":0,\"productMethodsRequested\":0,\n   \"resourceProfile\":\"fixed-current-projection-ram-2mib-v1\",\"observedOutputPeak\":dict(OBSERVED_PEAK),\"finalOutputUsageBeforeReceipt\":final_usage}\n try:\n  save(BASE/\"launch-result.json\",result)\n except BaseException as error:\n  result[\"status\"]=\"FAIL\"\n  result[\"finalReceiptFailure\"]={\"phase\":\"final_receipt_write\",\"type\":type(error).__name__,\n      \"message\":str(error),\"traceback\":traceback.format_exc()}\n print(json.dumps(result,sort_keys=True))\n",
+    "before": " result={\"status\":\"PASS\" if primary is None and cleanup_error is None else \"FAIL\",\n   \"source\":SOURCE,\"wrapperSHA256\":WRAPPER_SHA,\"pid\":None if proc is None else proc.pid,\"pgid\":owned,\n   \"returncode\":rc,\"primaryFailure\":primary,\"cleanupFailure\":cleanup_error,\n   \"ownedGroupAbsent\":owned is not None and absent(owned),\"cleanupObservations\":observations,\n   \"elapsed\":time.monotonic()-started,\"startResources\":start_free,\"finalResources\":final_free,\n   \"correctedExistingMethodsRequested\":1,\"unaffectedOldMethodsRequested\":0,\"newUniqueAcceptanceCredit\":0,\"buildsRequested\":0,\"productMethodsRequested\":0,\n   \"resourceProfile\":\"fixed-current-projection-ram-2mib-v1\",\"observedOutputPeak\":dict(OBSERVED_PEAK),\"finalOutputUsageBeforeReceipt\":output_usage()}\n save(BASE/\"launch-result.json\",result)\n print(json.dumps(result,sort_keys=True))\n"
+  },
+  "new_bytes": 8032,
+  "new_sha256": "0110db52825c8e20f33ac9637c49c992fb91dc62b596a8fdb7945d8d972b8afa",
+  "note": "Editor independently reviewed exact corrected outer 0110db; final physical/Git binding is emitted by freeze.",
+  "old_sha256": "944ce01194ff43367847b678702ed84784a2280b55fb2f8f63fe7d8fc29fce73",
+  "owned_stop_body_sha256": "fb7dbddf73983998a967bb82cd0f2ff7b5b5db07233d09efcec38d7be6b1ebdb",
+  "owned_stop_body_unchanged": true,
+  "path": "docs/validation/20261123-sdk06-typed-error-construction/current-control/launch-control.py",
+  "remote_application": "FROZEN_SOURCE_ONLY",
+  "runtimeFourAnd85InputManifestUnchanged": true,
+  "scope": "Only final observations and final receipt write are caught; primary/cleanup failures and exact actual stop body are preserved. Unknown group/usage remains null and never admits PASS."
+}

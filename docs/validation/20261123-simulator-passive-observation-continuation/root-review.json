@@ -1,0 +1,72 @@
+{
+  "added_definitions": [
+    "Commands._defer_passive_failures",
+    "Commands._unavailable_passive_snapshot",
+    "Commands.initial_process_snapshot"
+  ],
+  "app_native_ui_builds": 0,
+  "at": "2026-11-23T23:11:45.188478+00:00",
+  "changed_definitions": [
+    "Commands.__init__",
+    "Commands.run",
+    "diagnostic",
+    "main"
+  ],
+  "controls": 0,
+  "diagnostic_policy_limits_changed": false,
+  "donor": "223ad4fafebdef67febb3c466848b1e6591db708",
+  "inverse_proof": {
+    "Tools/SimulatorBootInventoryDiagnostic/run.py": {
+      "after_sha256": "557e81dc09503f50a6c0c9e2677697e13c2e61d761a6f039ab5eebfd44e0c469",
+      "before_sha256": "68f39cb8671b0d7dfa7aaffe586e1c5ac088a5375c26ba07aab93fba8a90cef7",
+      "hunks": 8,
+      "whole_file_inverse": true
+    },
+    "Tools/SimulatorBootInventoryDiagnostic/source-inputs.json": {
+      "after_sha256": "81504ddea26c86f72508c680a8602cb815ebcde0913bc34e1d36df1e50168ca1",
+      "before_sha256": "af7a643643a757b5f51c880910ed663909df74f79e741fc380c61ec722e9cc3d",
+      "hunks": 2,
+      "whole_file_inverse": true
+    }
+  },
+  "original30_conditional120_exact": true,
+  "prior_original_custody": "85eb644057a43385f7d812196c0f2e6f40973f3bc95ca2a1400d28cc8d6773de",
+  "prior_original_qualification": "0d1dab440b042e2777a45cfd2d7f8a5170fcd5a45cc973361b6aa5e517e8f511",
+  "product_gate_changes": 0,
+  "product_methods": 0,
+  "protocol": "root-passive-simulator-source-peer-v1",
+  "repository_imports": 0,
+  "reviewed_boundaries": [
+    "Exact PS argv/5s timeout or nonzero outcome only; exception and final receipt must match, no chained persistence error, and no secondary PS command errors.",
+    "Initial or sampled unavailable PS metadata produces explicit UNAVAILABLE without fabricated process rows.",
+    "Sampled parent may continue only with exit0, group ESRCH and no non-PS error; parent and PS command receipts retain FAIL.",
+    "Earliest deferred PS exception becomes final primary; a later operational failure is retained separately.",
+    "Parsing, identity, source, resource, evidence, signal and owned-group failures stop; cleanup and original30/conditional120 code stay exact."
+  ],
+  "root_before": "d99e79697c679476d511b59319ad0505e7e99ddd",
+  "runtime_donor": "567b4a88c6cde9396b86f5320841e40ef93c8f01",
+  "simulator_commands": 0,
+  "source_base": "fa5651b96beab2148a3e928bfdc8620a9c24c1a5",
+  "source_rows": [
+    {
+      "bytes": 3939,
+      "git_mode": "100644",
+      "path": ".github/workflows/pinkha-owned-simulator-inventory-diagnostic.yml",
+      "sha256": "d30fe8e4011225763cab8dc72906f717dc38c85a97a4118f0eafb0754aace405"
+    },
+    {
+      "bytes": 1009,
+      "git_mode": "100644",
+      "path": "Tools/SimulatorBootInventoryDiagnostic/profile.json",
+      "sha256": "dc4f757611e7f620ba2fecccd3d870508036d2dcfcfabe93f0a1a294e98b03d4"
+    },
+    {
+      "bytes": 56660,
+      "git_mode": "100644",
+      "path": "Tools/SimulatorBootInventoryDiagnostic/run.py",
+      "sha256": "557e81dc09503f50a6c0c9e2677697e13c2e61d761a6f039ab5eebfd44e0c469"
+    }
+  ],
+  "status": "PASS_SOURCE_ONLY_FOR_ONE_DIAGNOSTIC",
+  "unchanged_definitions": 33
+}

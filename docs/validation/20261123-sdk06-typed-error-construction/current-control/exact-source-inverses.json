@@ -1,0 +1,1418 @@
+{
+  "base": "2cf5ff34c55b9a8a7099f9a19d6d7f73b0e52119",
+  "files": {
+    "Tools/PinkhaSimulatorGate/test_sdk06_component_projection.py": {
+      "after_sha256": "b73d72cb1808aa173f677408a05835540ae40803b9756d80d2a3c7f08eff293c",
+      "before_sha256": "1c8cf4ac69fab15bcf175af8a9a19cf2812826dc02c05397bcfd70f2f6d0a695",
+      "edits": [
+        {
+          "after": "corr",
+          "after_offset": 30,
+          "before": "n",
+          "before_offset": 30
+        },
+        {
+          "after": "cted",
+          "after_offset": 35,
+          "before": "w",
+          "before_offset": 32
+        },
+        {
+          "after": "typed-error-",
+          "after_offset": 607,
+          "before": "",
+          "before_offset": 601
+        },
+        {
+          "after": "",
+          "after_offset": 621,
+          "before": "mpo",
+          "before_offset": 603
+        },
+        {
+          "after": "s",
+          "after_offset": 622,
+          "before": "en",
+          "before_offset": 607
+        },
+        {
+          "after": "",
+          "after_offset": 624,
+          "before": "-p",
+          "before_offset": 610
+        },
+        {
+          "after": "u",
+          "after_offset": 625,
+          "before": "oje",
+          "before_offset": 613
+        },
+        {
+          "after": "/current-control",
+          "after_offset": 631,
+          "before": "",
+          "before_offset": 621
+        },
+        {
+          "after": "",
+          "after_offset": 1418,
+          "before": "s",
+          "before_offset": 1392
+        },
+        {
+          "after": "ight",
+          "after_offset": 1419,
+          "before": "ven",
+          "before_offset": 1394
+        },
+        {
+          "after": "8",
+          "after_offset": 1512,
+          "before": "7",
+          "before_offset": 1486
+        },
+        {
+          "after": "exact_",
+          "after_offset": 2575,
+          "before": "",
+          "before_offset": 2549
+        },
+        {
+          "after": "ourc",
+          "after_offset": 2582,
+          "before": "",
+          "before_offset": 2550
+        },
+        {
+          "after": "_tra",
+          "after_offset": 2587,
+          "before": "ve",
+          "before_offset": 2551
+        },
+        {
+          "after": "sfor",
+          "after_offset": 2592,
+          "before": "_",
+          "before_offset": 2554
+        },
+        {
+          "after": "",
+          "after_offset": 2597,
+          "before": "etadata_only_patche",
+          "before_offset": 2556
+        },
+        {
+          "after": "8",
+          "after_offset": 2678,
+          "before": "7",
+          "before_offset": 2656
+        },
+        {
+          "after": "== projection.AUTHORITY:\n                    authority = fixed[\"authority_error_construction\"]\n                    self.assertEqual(authority[\"path\"], name)\n                    self.assertEqual(len(authority[\"patches\"]), 2)\n                    authority_after = projected[basename]\n                    self.assertEqual(authority_after, (ROOT / name).read_bytes())\n                    self.assertEqual(hashlib.sha256(authority_after).hexdigest(),\n                                     authority[\"projected_sha256\"])\n                    for kind in (\"Show\", \"Search\"):\n                        self.assertEqual(authority_after.count(\n                            (\"Anytype_Rpc.Object.\" + kind + \".Response.Error()\").encode()), 1)\n                    authority_inverse = authority_after\n                    for patch in reversed(authority[\"patches\"]):\n                        before, after = patch[\"before\"].encode(), patch[\"after\"].encode()\n                        self.assertEqual(authority_inverse.count(after), 1)\n                        authority_inverse = authority_inverse.replace(after, before, 1)\n                    self.assertEqual(hashlib.sha256(authority_inverse).hexdigest(),\n                                     authority[\"input_sha256\"])\n                    imported = fixed[\"authority_import_patch\"]\n                    self.assertEqual(hashlib.sha256(authority_inverse).hexdigest(),\n                                     imported[\"projected_sha256\"])\n                    self.assertEqual(authority_inverse.count(imported[\"after\"].encode()), 1)\n                    authority_inverse = authority_inverse.replace(\n                        imported[\"after\"].encode(), imported[\"before\"].encode(), 1)\n                    self.assertEqual(authority_inverse, original)\n                elif name ",
+          "after_offset": 4364,
+          "before": "",
+          "before_offset": 4342
+        },
+        {
+          "after": "))\n        bad_constructor = copy.deepcopy(fixed)\n        bad_constructor[\"authority_error_construction\"][\"patches\"][0][\"before\"] += \" \"\n        corruptions.append((\"changed_constructor_preimage\", source, bad_constructor))\n        bad_constructor_result = copy.deepcopy(fixed)\n        bad_constructor_result[\"authority_error_construction\"][\"patches\"][0][\"after\"] += \" \"\n        corruptions.append((\"changed_constructor_postimage\", source, bad_constructor_result))\n        bad_authority_identity = copy.deepcopy(fixed)\n        bad_authority_identity[\"authority_error_construction\"][\"projected_sha256\"] = \"0\" * 64\n        corruptions.append((\"changed_authority_projected_identity\", source, bad_authority_identity",
+          "after_offset": 7305,
+          "before": "",
+          "before_offset": 5485
+        },
+        {
+          "after": "root.chmod(0o700)\n            ",
+          "after_offset": 10468,
+          "before": "",
+          "before_offset": 7938
+        },
+        {
+          "after": "\"\")\n                self.assertEqual(settings[\"BUNDLE_LOADER\"], ",
+          "after_offset": 12512,
+          "before": "",
+          "before_offset": 9952
+        },
+        {
+          "after": "OTH",
+          "after_offset": 12648,
+          "before": "BUNDL",
+          "before_offset": 10024
+        },
+        {
+          "after": "R",
+          "after_offset": 12652,
+          "before": "",
+          "before_offset": 10030
+        },
+        {
+          "after": "DFL",
+          "after_offset": 12655,
+          "before": "O",
+          "before_offset": 10032
+        },
+        {
+          "after": "GS",
+          "after_offset": 12659,
+          "before": "DER",
+          "before_offset": 10034
+        },
+        {
+          "after": "[str(staged_app / ",
+          "after_offset": 12665,
+          "before": "",
+          "before_offset": 10041
+        },
+        {
+          "after": "Anytype.debug.dylib\"",
+          "after_offset": 12684,
+          "before": "$(TEST_HOST",
+          "before_offset": 10042
+        },
+        {
+          "after": "]",
+          "after_offset": 12705,
+          "before": "\"",
+          "before_offset": 10054
+        },
+        {
+          "after": "8",
+          "after_offset": 13677,
+          "before": "7",
+          "before_offset": 11026
+        },
+        {
+          "after": "    self.assertFalse(generated[\"function_bodies_and_arguments_unchanged\"])\n                self.assertEqual(generated[\"fixture_constructor_replacements\"], 2)\n                self.assertTrue(generated[\"declarations_assertions_and_argument_values_unchanged\"])\n                self.assertNotIn(\"compile_support\", generated)\n            ",
+          "after_offset": 14425,
+          "before": "",
+          "before_offset": 11774
+        },
+        {
+          "after": "expected_generated = {\"Sources/\" + name for name in projected} | {\n                    \"SDK06PendingComponents.xcodeproj/project.pbxproj\",\n                    \"SDK06PendingComponents.xcodeproj/xcshareddata/xcschemes/SDK06PendingComponents.xcscheme\",\n                    \"SDK06PendingComponents.xcodeproj/project.xcworkspace/contents.xcworkspacedata\",\n                }\n                ",
+          "after_offset": 15157,
+          "before": "",
+          "before_offset": 12173
+        },
+        {
+          "after": "expected_generated), 11)\n                self.assertEqual(set(",
+          "after_offset": 15563,
+          "before": "",
+          "before_offset": 12194
+        },
+        {
+          "after": "expected_generated)\n                expected_directories = {\n                    \"Sources\", \"SDK",
+          "after_offset": 15644,
+          "before": "1",
+          "before_offset": 12213
+        },
+        {
+          "after": "6PendingComponents.xcodeproj\",\n                    \"SDK06PendingComponents.xcodeproj/xcshareddata\",\n                    \"SDK06PendingComponents.xcodeproj/xcshareddata/xcschemes\",\n                    \"SDK06PendingComponents.xcodeproj/project.xcworkspace\",\n                    \"SDK06PendingComponents.xcodeproj/project.xcworkspace/xcshareddata\",\n                    \"SDK06PendingComponents.xcodeproj/project.xcworkspace/xcshareddata/swiftpm\",\n                    \"SDK06PendingComponents.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/configuration\",\n                }\n                self.assertEqual({p.relative_to(destination).as_posix()\n                                  for p in destination.rglob(\"*\") if p.is_dir()}, expected_directories)\n                for relative in (\"xcshareddata\", \"xcshareddata/swiftpm\",\n                                 \"xcshareddata/swiftpm/configuration\"):\n                    directory = project / \"project.xcworkspace\" / relative\n                    self.assertFalse(directory.is_symlink())\n                    self.assertEqual(directory.stat().st_mode & 0o7777, 0o777",
+          "after_offset": 15741,
+          "before": "",
+          "before_offset": 12215
+        }
+      ]
+    },
+    "docs/validation/20261123-sdk06-typed-error-construction/current-control/launch-control.py": {
+      "after_sha256": "944ce01194ff43367847b678702ed84784a2280b55fb2f8f63fe7d8fc29fce73",
+      "before_sha256": "29121cb24979708315ab16cb7aa66f493fa36f2129409fbee94b8bd401fd91ed",
+      "edits": [
+        {
+          "after": "ru",
+          "after_offset": 168,
+          "before": "m",
+          "before_offset": 168
+        },
+        {
+          "after": "",
+          "after_offset": 171,
+          "before": "t/development/projects/worktrees",
+          "before_offset": 170
+        },
+        {
+          "after": "ap",
+          "after_offset": 176,
+          "before": "",
+          "before_offset": 207
+        },
+        {
+          "after": "",
+          "after_offset": 179,
+          "before": "pe",
+          "before_offset": 208
+        },
+        {
+          "after": "our",
+          "after_offset": 188,
+          "before": "dk-",
+          "before_offset": 219
+        },
+        {
+          "after": "",
+          "after_offset": 192,
+          "before": "ompil",
+          "before_offset": 223
+        },
+        {
+          "after": "",
+          "after_offset": 194,
+          "before": "supp",
+          "before_offset": 230
+        },
+        {
+          "after": "ve",
+          "after_offset": 195,
+          "before": "",
+          "before_offset": 235
+        },
+        {
+          "after": "lay",
+          "after_offset": 198,
+          "before": "t",
+          "before_offset": 236
+        },
+        {
+          "after": "/sdk-typed-error-construction",
+          "after_offset": 210,
+          "before": "",
+          "before_offset": 246
+        },
+        {
+          "after": "ru",
+          "after_offset": 254,
+          "before": "m",
+          "before_offset": 261
+        },
+        {
+          "after": "/any",
+          "after_offset": 257,
+          "before": "",
+          "before_offset": 263
+        },
+        {
+          "after": "apy-wa",
+          "after_offset": 262,
+          "before": "/de",
+          "before_offset": 264
+        },
+        {
+          "after": "15-s",
+          "after_offset": 270,
+          "before": "l",
+          "before_offset": 269
+        },
+        {
+          "after": "u",
+          "after_offset": 275,
+          "before": "pment/p",
+          "before_offset": 271
+        },
+        {
+          "after": "",
+          "after_offset": 277,
+          "before": "oje",
+          "before_offset": 279
+        },
+        {
+          "after": "",
+          "after_offset": 278,
+          "before": "ts/diagnostics/sdk06-compil",
+          "before_offset": 283
+        },
+        {
+          "after": "",
+          "after_offset": 280,
+          "before": "supp",
+          "before_offset": 312
+        },
+        {
+          "after": "ve",
+          "after_offset": 281,
+          "before": "",
+          "before_offset": 317
+        },
+        {
+          "after": "",
+          "after_offset": 284,
+          "before": "t-contro",
+          "before_offset": 318
+        },
+        {
+          "after": "ay",
+          "after_offset": 285,
+          "before": "s",
+          "before_offset": 327
+        },
+        {
+          "after": "sdk-typed-error-current-control-",
+          "after_offset": 297,
+          "before": "",
+          "before_offset": 338
+        },
+        {
+          "after": "",
+          "after_offset": 337,
+          "before": "-controller",
+          "before_offset": 346
+        },
+        {
+          "after": "typed-error-",
+          "after_offset": 595,
+          "before": "",
+          "before_offset": 615
+        },
+        {
+          "after": "nstruct",
+          "after_offset": 609,
+          "before": "mp",
+          "before_offset": 617
+        },
+        {
+          "after": "on/current-contro",
+          "after_offset": 617,
+          "before": "",
+          "before_offset": 620
+        },
+        {
+          "after": "",
+          "after_offset": 635,
+          "before": "e-support",
+          "before_offset": 621
+        },
+        {
+          "after": "33a6",
+          "after_offset": 665,
+          "before": "",
+          "before_offset": 660
+        },
+        {
+          "after": "",
+          "after_offset": 670,
+          "before": "d11f",
+          "before_offset": 661
+        },
+        {
+          "after": "038ad3001",
+          "after_offset": 672,
+          "before": "",
+          "before_offset": 667
+        },
+        {
+          "after": "9",
+          "after_offset": 682,
+          "before": "",
+          "before_offset": 668
+        },
+        {
+          "after": "d824a081b0c21",
+          "after_offset": 684,
+          "before": "",
+          "before_offset": 669
+        },
+        {
+          "after": "c36560",
+          "after_offset": 698,
+          "before": "a",
+          "before_offset": 670
+        },
+        {
+          "after": "1",
+          "after_offset": 705,
+          "before": "e",
+          "before_offset": 672
+        },
+        {
+          "after": "0077c6462c379c0",
+          "after_offset": 707,
+          "before": "ba",
+          "before_offset": 674
+        },
+        {
+          "after": "8",
+          "after_offset": 724,
+          "before": "",
+          "before_offset": 678
+        },
+        {
+          "after": "f",
+          "after_offset": 726,
+          "before": "",
+          "before_offset": 679
+        },
+        {
+          "after": "",
+          "after_offset": 728,
+          "before": "55819d",
+          "before_offset": 680
+        },
+        {
+          "after": "",
+          "after_offset": 729,
+          "before": "befb40b7cee48722b1b6642c70ae3e1f27827",
+          "before_offset": 687
+        },
+        {
+          "after": "No li",
+          "after_offset": 942,
+          "before": "O",
+          "before_offset": 937
+        },
+        {
+          "after": "k fixtures be",
+          "after_offset": 948,
+          "before": "",
+          "before_offset": 939
+        },
+        {
+          "after": "ong",
+          "after_offset": 962,
+          "before": "y",
+          "before_offset": 940
+        },
+        {
+          "after": "",
+          "after_offset": 967,
+          "before": "w",
+          "before_offset": 943
+        },
+        {
+          "after": "this curre",
+          "after_offset": 969,
+          "before": "",
+          "before_offset": 946
+        },
+        {
+          "after": "t proj",
+          "after_offset": 980,
+          "before": "",
+          "before_offset": 947
+        },
+        {
+          "after": "c",
+          "after_offset": 987,
+          "before": "ga",
+          "before_offset": 948
+        },
+        {
+          "after": "on ",
+          "after_offset": 990,
+          "before": "ve-",
+          "before_offset": 952
+        },
+        {
+          "after": "",
+          "after_offset": 1000,
+          "before": " links; inspect the link itself, never follow it",
+          "before_offset": 962
+        },
+        {
+          "after": "",
+          "after_offset": 1005,
+          "before": "    parts = path.relative_to(output).parts\n    if parts and parts[0] == \"attempt1\":\n        parts = parts[1:]\n    if len(parts) < 3 or parts[0] != \"temporary-controls\" or not parts[1].startswith(\"sdk06-compile-support-control-\"):\n    ",
+          "before_offset": 1015
+        },
+        {
+          "after": "",
+          "after_offset": 1021,
+          "before": "\n    return parts[2:] in {\n        (\"linked-project\",),\n        (\"support-project\", \"CompileSupport\", \"GeneratedModuleMaps-iphonesimulator\",\n         \"GoogleUtilities-UserDefaults.modulemap\"),\n    }",
+          "before_offset": 1265
+        },
+        {
+          "after": "assert not stat.S_ISREG(info.st_mode) or info.st_size<=256*1024,\"control_output_file_cap\"\n  ",
+          "after_offset": 1461,
+          "before": "",
+          "before_offset": 1903
+        },
+        {
+          "after": "\n assert entries<=256,\"finite_control_output_entries\"",
+          "after_offset": 1615,
+          "before": "",
+          "before_offset": 1965
+        },
+        {
+          "after": "mount=Path(\"/run/anytapy-wave15-source-overlay-20261123\")\n assert ROOT.parent==mount and BASE.parent==mount,\"fixed_RAM_parent_required\"\n lines=[x for x in Path(\"/proc/self/mountinfo\").read_text().splitlines() if x.split()[4]==str(mount)]\n assert len(lines)==1 and \" - tmpfs \" in lines[0],\"dedicated_source_tmpfs_required\"\n available=[int(x.split()[1])*1024 for x in Path(\"/proc/meminfo\").read_text().splitlines() if x.startswith(\"MemAvailable:\")]\n assert len(available)==1 and available[0]>=2*1024**3,\"RAM_memory_reserve\"\n ",
+          "after_offset": 1806,
+          "before": "",
+          "before_offset": 2103
+        },
+        {
+          "after": "(8*",
+          "after_offset": 2377,
+          "before": "",
+          "before_offset": 2151
+        },
+        {
+          "after": "",
+          "after_offset": 2382,
+          "before": "737418",
+          "before_offset": 2153
+        },
+        {
+          "after": "**2 if start else 4*1024**2)",
+          "after_offset": 2384,
+          "before": "",
+          "before_offset": 2161
+        },
+        {
+          "after": "RAM_volu",
+          "after_offset": 2415,
+          "before": "",
+          "before_offset": 2164
+        },
+        {
+          "after": "_",
+          "after_offset": 2425,
+          "before": "asu",
+          "before_offset": 2166
+        },
+        {
+          "after": "se",
+          "after_offset": 2428,
+          "before": "d_capacity_gua",
+          "before_offset": 2171
+        },
+        {
+          "after": "ve",
+          "after_offset": 2431,
+          "before": "d",
+          "before_offset": 2186
+        },
+        {
+          "after": "2",
+          "after_offset": 2494,
+          "before": "8",
+          "before_offset": 2248
+        },
+        {
+          "after": "2",
+          "after_offset": 2541,
+          "before": "8",
+          "before_offset": 2295
+        },
+        {
+          "after": "{\"ramFreeBytes\":",
+          "after_offset": 2672,
+          "before": "",
+          "before_offset": 2426
+        },
+        {
+          "after": ",\"memAvailableBytes\":available[0]}",
+          "after_offset": 2692,
+          "before": "",
+          "before_offset": 2430
+        },
+        {
+          "after": " and not BASE.is_symlink()",
+          "after_offset": 3046,
+          "before": "",
+          "before_offset": 2750
+        },
+        {
+          "after": "c\",\"core.packedGitWindowSize=16m\",\"-c\",\"core.packedGitLimit=64m\",\"-",
+          "after_offset": 3142,
+          "before": "",
+          "before_offset": 2820
+        },
+        {
+          "after": "typed-error-",
+          "after_offset": 3269,
+          "before": "",
+          "before_offset": 2880
+        },
+        {
+          "after": "nstruct",
+          "after_offset": 3283,
+          "before": "mp",
+          "before_offset": 2882
+        },
+        {
+          "after": "on/current-contro",
+          "after_offset": 3291,
+          "before": "",
+          "before_offset": 2885
+        },
+        {
+          "after": "",
+          "after_offset": 3309,
+          "before": "e-support",
+          "before_offset": 2886
+        },
+        {
+          "after": "c\",\"core.packedGitWindowSize=16m\",\"-c\",\"core.packedGitLimit=64m\",\"-",
+          "after_offset": 3478,
+          "before": "",
+          "before_offset": 3064
+        },
+        {
+          "after": "c\",\"core.packedGitWindowSize=16m\",\"-c\",\"core.packedGitLimit=64m\",\"-",
+          "after_offset": 3637,
+          "before": "",
+          "before_offset": 3156
+        },
+        {
+          "after": "0o700)\nBASE.chmod(",
+          "after_offset": 3790,
+          "before": "",
+          "before_offset": 3242
+        },
+        {
+          "after": "Resou",
+          "after_offset": 4816,
+          "before": "F",
+          "before_offset": 4250
+        },
+        {
+          "after": "c",
+          "after_offset": 4822,
+          "before": "",
+          "before_offset": 4252
+        },
+        {
+          "after": "s",
+          "after_offset": 4824,
+          "before": "e",
+          "before_offset": 4253
+        },
+        {
+          "after": "{\"re",
+          "after_offset": 6273,
+          "before": "",
+          "before_offset": 5702
+        },
+        {
+          "after": "o",
+          "after_offset": 6278,
+          "before": "h",
+          "before_offset": 5703
+        },
+        {
+          "after": "rceObserva",
+          "after_offset": 6280,
+          "before": "",
+          "before_offset": 5705
+        },
+        {
+          "after": "onFai",
+          "after_offset": 6292,
+          "before": "",
+          "before_offset": 5707
+        },
+        {
+          "after": "e",
+          "after_offset": 6298,
+          "before": ".",
+          "before_offset": 5708
+        },
+        {
+          "after": "\":Tr",
+          "after_offset": 6300,
+          "before": "isk_",
+          "before_offset": 5710
+        },
+        {
+          "after": "",
+          "after_offset": 6305,
+          "before": "sag",
+          "before_offset": 5715
+        },
+        {
+          "after": "}",
+          "after_offset": 6306,
+          "before": "(ROOT).free",
+          "before_offset": 5719
+        },
+        {
+          "after": "Resou",
+          "after_offset": 6707,
+          "before": "F",
+          "before_offset": 6130
+        },
+        {
+          "after": "c",
+          "after_offset": 6713,
+          "before": "",
+          "before_offset": 6132
+        },
+        {
+          "after": "s",
+          "after_offset": 6715,
+          "before": "e",
+          "before_offset": 6133
+        },
+        {
+          "after": "Resou",
+          "after_offset": 6735,
+          "before": "F",
+          "before_offset": 6153
+        },
+        {
+          "after": "c",
+          "after_offset": 6741,
+          "before": "",
+          "before_offset": 6155
+        },
+        {
+          "after": "s",
+          "after_offset": 6743,
+          "before": "e",
+          "before_offset": 6156
+        },
+        {
+          "after": "correctedExisti",
+          "after_offset": 6762,
+          "before": "",
+          "before_offset": 6175
+        },
+        {
+          "after": "g",
+          "after_offset": 6778,
+          "before": "ew",
+          "before_offset": 6176
+        },
+        {
+          "after": "unaffectedO",
+          "after_offset": 6800,
+          "before": "o",
+          "before_offset": 6199
+        },
+        {
+          "after": "\":0,\"newUniqueAcceptanceCredit",
+          "after_offset": 6829,
+          "before": "",
+          "before_offset": 6218
+        },
+        {
+          "after": "c",
+          "after_offset": 6940,
+          "before": "p",
+          "before_offset": 6299
+        },
+        {
+          "after": "r",
+          "after_offset": 6943,
+          "before": "",
+          "before_offset": 6302
+        },
+        {
+          "after": "n",
+          "after_offset": 6945,
+          "before": "-compile-suppor",
+          "before_offset": 6303
+        },
+        {
+          "after": "project",
+          "after_offset": 6948,
+          "before": "1g",
+          "before_offset": 6320
+        },
+        {
+          "after": "on",
+          "after_offset": 6956,
+          "before": "b",
+          "before_offset": 6323
+        },
+        {
+          "after": "ram-2",
+          "after_offset": 6959,
+          "before": "8",
+          "before_offset": 6325
+        }
+      ],
+      "old_path": "docs/validation/20261123-sdk06-compile-support/launch-control.py"
+    },
+    "docs/validation/20261123-sdk06-typed-error-construction/current-control/run-control.py": {
+      "after_sha256": "33a6939038ad3001598d824a081b0c219c36560f140077c6462c379c0ef83f93",
+      "before_sha256": "9d11f39589afe4baef3955819d3befb40b7cee48722b1b6642c70ae3e1f27827",
+      "edits": [
+        {
+          "after": "correct",
+          "after_offset": 30,
+          "before": "fix",
+          "before_offset": 30
+        },
+        {
+          "after": "urrent pr",
+          "after_offset": 41,
+          "before": "",
+          "before_offset": 37
+        },
+        {
+          "after": "ject",
+          "after_offset": 51,
+          "before": "mp",
+          "before_offset": 38
+        },
+        {
+          "after": "",
+          "after_offset": 56,
+          "before": "le-supp",
+          "before_offset": 41
+        },
+        {
+          "after": "n",
+          "after_offset": 57,
+          "before": "rt",
+          "before_offset": 49
+        },
+        {
+          "after": "urrent-pr",
+          "after_offset": 429,
+          "before": "",
+          "before_offset": 422
+        },
+        {
+          "after": "ject",
+          "after_offset": 439,
+          "before": "mp",
+          "before_offset": 423
+        },
+        {
+          "after": "",
+          "after_offset": 444,
+          "before": "le-supp",
+          "before_offset": 426
+        },
+        {
+          "after": "n",
+          "after_offset": 445,
+          "before": "rt",
+          "before_offset": 434
+        },
+        {
+          "after": "typed-error-",
+          "after_offset": 503,
+          "before": "",
+          "before_offset": 493
+        },
+        {
+          "after": "nstruct",
+          "after_offset": 517,
+          "before": "mp",
+          "before_offset": 495
+        },
+        {
+          "after": "on/current-contro",
+          "after_offset": 525,
+          "before": "",
+          "before_offset": 498
+        },
+        {
+          "after": "",
+          "after_offset": 543,
+          "before": "e-support",
+          "before_offset": 499
+        },
+        {
+          "after": "onent_project",
+          "after_offset": 692,
+          "before": "",
+          "before_offset": 657
+        },
+        {
+          "after": "",
+          "after_offset": 706,
+          "before": "le_supp",
+          "before_offset": 658
+        },
+        {
+          "after": "n",
+          "after_offset": 707,
+          "before": "rt",
+          "before_offset": 666
+        },
+        {
+          "after": "onent_project",
+          "after_offset": 743,
+          "before": "",
+          "before_offset": 703
+        },
+        {
+          "after": "",
+          "after_offset": 757,
+          "before": "le_supp",
+          "before_offset": 704
+        },
+        {
+          "after": "n",
+          "after_offset": 758,
+          "before": "rt",
+          "before_offset": 712
+        },
+        {
+          "after": "s",
+          "after_offset": 785,
+          "before": "packet_cl",
+          "before_offset": 740
+        },
+        {
+          "after": "",
+          "after_offset": 787,
+          "before": "s",
+          "before_offset": 750
+        },
+        {
+          "after": "c",
+          "after_offset": 789,
+          "before": "",
+          "before_offset": 753
+        },
+        {
+          "after": "",
+          "after_offset": 791,
+          "before": "_map_flags_and",
+          "before_offset": 754
+        },
+        {
+          "after": "ion_unit",
+          "after_offset": 799,
+          "before": "",
+          "before_offset": 776
+        },
+        {
+          "after": "nly_graph_descri",
+          "after_offset": 809,
+          "before": "",
+          "before_offset": 778
+        },
+        {
+          "after": "or",
+          "after_offset": 827,
+          "before": "",
+          "before_offset": 780
+        },
+        {
+          "after": "and_reg",
+          "after_offset": 830,
+          "before": "",
+          "before_offset": 781
+        },
+        {
+          "after": "stratio",
+          "after_offset": 838,
+          "before": "",
+          "before_offset": 782
+        },
+        {
+          "after": "MEMO",
+          "after_offset": 854,
+          "before": "F",
+          "before_offset": 791
+        },
+        {
+          "after": "Y",
+          "after_offset": 859,
+          "before": "EE",
+          "before_offset": 793
+        },
+        {
+          "after": " 2 *",
+          "after_offset": 862,
+          "before": "",
+          "before_offset": 797
+        },
+        {
+          "after": "RAM_",
+          "after_offset": 881,
+          "before": "",
+          "before_offset": 812
+        },
+        {
+          "after": "8 * ",
+          "after_offset": 892,
+          "before": "",
+          "before_offset": 819
+        },
+        {
+          "after": "2\nMIN_RAM_FREE = 4 * 1024**2",
+          "after_offset": 902,
+          "before": "3",
+          "before_offset": 825
+        },
+        {
+          "after": "2",
+          "after_offset": 946,
+          "before": "8",
+          "before_offset": 842
+        },
+        {
+          "after": "No li",
+          "after_offset": 2115,
+          "before": "O",
+          "before_offset": 2011
+        },
+        {
+          "after": "k fixtures be",
+          "after_offset": 2121,
+          "before": "",
+          "before_offset": 2013
+        },
+        {
+          "after": "ong",
+          "after_offset": 2135,
+          "before": "y",
+          "before_offset": 2014
+        },
+        {
+          "after": "",
+          "after_offset": 2140,
+          "before": "w",
+          "before_offset": 2017
+        },
+        {
+          "after": "this curre",
+          "after_offset": 2142,
+          "before": "",
+          "before_offset": 2020
+        },
+        {
+          "after": "t proj",
+          "after_offset": 2153,
+          "before": "",
+          "before_offset": 2021
+        },
+        {
+          "after": "c",
+          "after_offset": 2160,
+          "before": "ga",
+          "before_offset": 2022
+        },
+        {
+          "after": "on ",
+          "after_offset": 2163,
+          "before": "ve-",
+          "before_offset": 2026
+        },
+        {
+          "after": "",
+          "after_offset": 2173,
+          "before": " links; inspect the link itself, never follow it",
+          "before_offset": 2036
+        },
+        {
+          "after": "",
+          "after_offset": 2178,
+          "before": "    parts = path.relative_to(output).parts\n    if parts and parts[0] == \"attempt1\":\n        parts = parts[1:]\n    if len(parts) < 3 or parts[0] != \"temporary-controls\" or not parts[1].startswith(\"sdk06-compile-support-control-\"):\n    ",
+          "before_offset": 2089
+        },
+        {
+          "after": "",
+          "after_offset": 2194,
+          "before": "\n    return parts[2:] in {\n        (\"linked-project\",),\n        (\"support-project\", \"CompileSupport\", \"GeneratedModuleMaps-iphonesimulator\",\n         \"GoogleUtilities-UserDefaults.modulemap\"),\n    }",
+          "before_offset": 2339
+        },
+        {
+          "after": "require(not stat.S_ISREG(info.st_mode) or info.st_size <= 256 * 1024,\n                \"control_output_file_cap_exceeded\")\n        ",
+          "after_offset": 2670,
+          "before": "",
+          "before_offset": 3013
+        },
+        {
+          "after": "\n    require(entries <= 256, \"finite_control_output_entry_cap_exceeded\")",
+          "after_offset": 2886,
+          "before": "",
+          "before_offset": 3099
+        },
+        {
+          "after": "mount = Path(\"/run/anytapy-wave15-source-overlay-20261123\")\n    require(root.parent == mount, \"fixed_RAM_source_parent_required\")\n    lines = [line for line in Path(\"/proc/self/mountinfo\").read_text().splitlines()\n             if line.split()[4] == str(mount)]\n    require(len(lines) == 1 and \" - tmpfs \" in lines[0], \"dedicated_source_tmpfs_required\")\n    available = [int(line.split()[1]) * 1024\n                 for line in Path(\"/proc/meminfo\").read_text().splitlines()\n                 if line.startswith(\"MemAvailable:\")]\n    require(len(available) == 1 and available[0] >= MIN_MEMORY, \"RAM_memory_reserve_not_available\")\n    ",
+          "after_offset": 3159,
+          "before": "",
+          "before_offset": 3300
+        },
+        {
+          "after": "RAM_",
+          "after_offset": 3854,
+          "before": "",
+          "before_offset": 3363
+        },
+        {
+          "after": "RAM_",
+          "after_offset": 3881,
+          "before": "",
+          "before_offset": 3386
+        },
+        {
+          "after": "RAM_volume",
+          "after_offset": 3893,
+          "before": "capacity",
+          "before_offset": 3394
+        },
+        {
+          "after": "ramF",
+          "after_offset": 4368,
+          "before": "f",
+          "before_offset": 3867
+        },
+        {
+          "after": "memAvailableByt",
+          "after_offset": 4390,
+          "before": "r",
+          "before_offset": 3886
+        },
+        {
+          "after": "\": availabl",
+          "after_offset": 4407,
+          "before": "",
+          "before_offset": 3889
+        },
+        {
+          "after": "[0],\n            \"minimumMemA",
+          "after_offset": 4419,
+          "before": "r",
+          "before_offset": 3890
+        },
+        {
+          "after": "ailabl",
+          "after_offset": 4449,
+          "before": "",
+          "before_offset": 3892
+        },
+        {
+          "after": "_MEMORY, \"minimumRamFreeBytes\": MIN_RAM",
+          "after_offset": 4467,
+          "before": "",
+          "before_offset": 3904
+        },
+        {
+          "after": "c",
+          "after_offset": 4551,
+          "before": "p",
+          "before_offset": 3949
+        },
+        {
+          "after": "r",
+          "after_offset": 4554,
+          "before": "",
+          "before_offset": 3952
+        },
+        {
+          "after": "n",
+          "after_offset": 4556,
+          "before": "-compile-suppor",
+          "before_offset": 3953
+        },
+        {
+          "after": "project",
+          "after_offset": 4559,
+          "before": "1g",
+          "before_offset": 3970
+        },
+        {
+          "after": "on",
+          "after_offset": 4567,
+          "before": "b",
+          "before_offset": 3973
+        },
+        {
+          "after": "ram-2",
+          "after_offset": 4570,
+          "before": "8",
+          "before_offset": 3975
+        },
+        {
+          "after": "c\", \"core.packedGitWindowSize=16m\",\n                                    \"-c\", \"core.packedGitLimit=64m\", \"-",
+          "after_offset": 4811,
+          "before": "",
+          "before_offset": 4212
+        },
+        {
+          "after": "\n                                  ",
+          "after_offset": 4940,
+          "before": "",
+          "before_offset": 4234
+        },
+        {
+          "after": "root == Path(\"/run/anytapy-wave15-source-overlay-20261123/sdk-typed-error-construction\"),\n            \"fixed_current_control_writer_required\")\n    require(",
+          "after_offset": 11494,
+          "before": "",
+          "before_offset": 10753
+        },
+        {
+          "after": "unaffectedO",
+          "after_offset": 12384,
+          "before": "o",
+          "before_offset": 11488
+        },
+        {
+          "after": "\"] == 0\n            and manifest[\"correctedExistingMethodsToExecute\"] == 1\n            and manifest[\"newUniqueAcceptanceCredit",
+          "after_offset": 12413,
+          "before": "",
+          "before_offset": 11507
+        },
+        {
+          "after": "manifest = {**manifest, \"inputs\": [*manifest[\"inputs\"], {\n        \"path\": MANIFEST_REL, \"bytes\": len(manifest_raw), \"sha256\": sha(manifest_raw),\n        \"physicalMode\": stat.S_IMODE((root / MANIFEST_REL).lstat().st_mode), \"gitMode\": \"100644\"}]}\n    ",
+          "after_offset": 12889,
+          "before": "",
+          "before_offset": 11857
+        },
+        {
+          "after": "0o700)\n    output.chmod(",
+          "after_offset": 13210,
+          "before": "",
+          "before_offset": 11929
+        },
+        {
+          "after": "unaffectedO",
+          "after_offset": 13586,
+          "before": "o",
+          "before_offset": 12281
+        },
+        {
+          "after": "\": 0, \"correctedExistingMethods\": 1, \"newUniqueAcceptanceCredit",
+          "after_offset": 13606,
+          "before": "",
+          "before_offset": 12291
+        },
+        {
+          "after": "set(before_loaded) == set(manifest[\"preloadedRepositoryModules\"])\n                and ",
+          "after_offset": 14673,
+          "before": "",
+          "before_offset": 13295
+        },
+        {
+          "after": "fix",
+          "after_offset": 14794,
+          "before": "new_test_load",
+          "before_offset": 13330
+        },
+        {
+          "after": "m",
+          "after_offset": 14800,
+          "before": "bef",
+          "before_offset": 13346
+        },
+        {
+          "after": "dul",
+          "after_offset": 14802,
+          "before": "r",
+          "before_offset": 13350
+        },
+        {
+          "after": "_changed",
+          "after_offset": 14815,
+          "before": "",
+          "before_offset": 13361
+        },
+        {
+          "after": "onentProject",
+          "after_offset": 15084,
+          "before": "",
+          "before_offset": 13622
+        },
+        {
+          "after": "",
+          "after_offset": 15097,
+          "before": "leSupp",
+          "before_offset": 13623
+        },
+        {
+          "after": "n",
+          "after_offset": 15098,
+          "before": "rt",
+          "before_offset": 13630
+        },
+        {
+          "after": "onentProject",
+          "after_offset": 15262,
+          "before": "",
+          "before_offset": 13795
+        },
+        {
+          "after": "",
+          "after_offset": 15275,
+          "before": "leSupp",
+          "before_offset": 13796
+        },
+        {
+          "after": "n",
+          "after_offset": 15276,
+          "before": "rt",
+          "before_offset": 13803
+        },
+        {
+          "after": "corr",
+          "after_offset": 15877,
+          "before": "n",
+          "before_offset": 14405
+        },
+        {
+          "after": "cted",
+          "after_offset": 15882,
+          "before": "w",
+          "before_offset": 14407
+        },
+        {
+          "after": "",
+          "after_offset": 15894,
+          "before": "s",
+          "before_offset": 14416
+        },
+        {
+          "after": "",
+          "after_offset": 15898,
+          "before": "_all",
+          "before_offset": 14421
+        },
+        {
+          "after": "unaffectedO",
+          "after_offset": 19032,
+          "before": "o",
+          "before_offset": 17559
+        },
+        {
+          "after": "\": 0, \"correctedExistingMethods\": 1, \"newUniqueAcceptanceCredit",
+          "after_offset": 19052,
+          "before": "",
+          "before_offset": 17569
+        },
+        {
+          "after": "",
+          "after_offset": 19179,
+          "before": "new ",
+          "before_offset": 17633
+        },
+        {
+          "after": "rrected existing ",
+          "after_offset": 19181,
+          "before": "m",
+          "before_offset": 17639
+        },
+        {
+          "after": "roject",
+          "after_offset": 19199,
+          "before": "",
+          "before_offset": 17641
+        },
+        {
+          "after": "",
+          "after_offset": 19206,
+          "before": "le-supp",
+          "before_offset": 17642
+        },
+        {
+          "after": "n",
+          "after_offset": 19207,
+          "before": "rt",
+          "before_offset": 17650
+        },
+        {
+          "after": "",
+          "after_offset": 19221,
+          "before": " only",
+          "before_offset": 17665
+        },
+        {
+          "after": "zero ",
+          "after_offset": 19223,
+          "before": "",
+          "before_offset": 17672
+        },
+        {
+          "after": "ew unique acceptance credit,",
+          "after_offset": 19229,
+          "before": "o",
+          "before_offset": 17673
+        }
+      ],
+      "old_path": "docs/validation/20261123-sdk06-compile-support/run-control.py"
+    }
+  },
+  "protocol": "sdk06-current-control-exact-inverses-v1"
+}

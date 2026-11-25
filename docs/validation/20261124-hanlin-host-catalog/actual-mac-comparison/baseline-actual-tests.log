@@ -1,0 +1,43 @@
+◇ Test run started.
+↳ Swift Standard Library Version: 6.4
+↳ Swift Compiler Version: 6.4
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+↳ OS Version: 27.0 (26A428)
+◇ Suite "Transient host tool catalog continuation" (aka 'HanlinTransientToolCatalogTests') started.
+◇ Test "A catalog restored after the stop decision still delivers the original empty tool result" (aka 'restoredCatalogContinuesTheOriginalEmptyToolResult()') started.
+✘ Test "A catalog restored after the stop decision still delivers the original empty tool result" (aka 'restoredCatalogContinuesTheOriginalEmptyToolResult()') recorded an issue at HanlinTransientToolCatalogTests.swift:73:9: Expectation failed: observations.requests == 2
+↳ observations.requests == 2: Swift.Bool → false
+↳   observations.requests: Swift.Int → 1
+↳   2: Swift.Int → 2
+✘ Test "A catalog restored after the stop decision still delivers the original empty tool result" (aka 'restoredCatalogContinuesTheOriginalEmptyToolResult()') recorded an issue at HanlinTransientToolCatalogTests.swift:76:9: Expectation failed: observations.originalIdentity
+↳ observations.originalIdentity: Swift.Bool → false
+↳   observations: (requests: Swift.Int, executions: Swift.Int, catalogReads: Swift.Int, originalIdentity: Swift.Bool, emptyResult: Swift.Bool) → (requests: 1, executions: 1, catalogReads: 2, originalIdentity: false, emptyResult: false)
+↳     requests: Swift.Int → 1
+↳     executions: Swift.Int → 1
+↳     catalogReads: Swift.Int → 2
+↳     originalIdentity: Swift.Bool → false
+↳     emptyResult: Swift.Bool → false
+↳   originalIdentity: Swift.Bool → false
+✘ Test "A catalog restored after the stop decision still delivers the original empty tool result" (aka 'restoredCatalogContinuesTheOriginalEmptyToolResult()') recorded an issue at HanlinTransientToolCatalogTests.swift:77:9: Expectation failed: observations.emptyResult
+↳ observations.emptyResult: Swift.Bool → false
+↳   observations: (requests: Swift.Int, executions: Swift.Int, catalogReads: Swift.Int, originalIdentity: Swift.Bool, emptyResult: Swift.Bool) → (requests: 1, executions: 1, catalogReads: 2, originalIdentity: false, emptyResult: false)
+↳     requests: Swift.Int → 1
+↳     executions: Swift.Int → 1
+↳     catalogReads: Swift.Int → 2
+↳     originalIdentity: Swift.Bool → false
+↳     emptyResult: Swift.Bool → false
+↳   emptyResult: Swift.Bool → false
+✘ Test "A catalog restored after the stop decision still delivers the original empty tool result" (aka 'restoredCatalogContinuesTheOriginalEmptyToolResult()') recorded an issue at HanlinTransientToolCatalogTests.swift:79:9: Expectation failed: stepIndices == [0, 1]
+↳ stepIndices == [0, 1]: Swift.Bool → false
+↳   stepIndices: Swift.Array<Swift.Int> → [0]
+↳   [0, 1]: Swift.Array<Swift.Int> → [0, 1]
+✘ Test "A catalog restored after the stop decision still delivers the original empty tool result" (aka 'restoredCatalogContinuesTheOriginalEmptyToolResult()') recorded an issue at HanlinTransientToolCatalogTests.swift:80:9: Expectation failed: answer == "ORIGINAL_EMPTY_RESULT_CONTINUED"
+↳ answer == "ORIGINAL_EMPTY_RESULT_CONTINUED": Swift.Bool → false
+↳   answer: Swift.String → ""
+↳   "ORIGINAL_EMPTY_RESULT_CONTINUED": Swift.String → "ORIGINAL_EMPTY_RESULT_CONTINUED"
+✘ Test "A catalog restored after the stop decision still delivers the original empty tool result" (aka 'restoredCatalogContinuesTheOriginalEmptyToolResult()') failed after 0.022 seconds with 5 issues.
+✘ Suite "Transient host tool catalog continuation" (aka 'HanlinTransientToolCatalogTests') failed after 0.022 seconds with 5 issues.
+✘ Test run with 1 test in 1 suite failed after 0.023 seconds with 5 issues.
+Note: Some test targets reported failures:
+  - HanlinChatCoreTests (Swift Testing)

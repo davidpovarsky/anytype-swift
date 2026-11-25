@@ -1,0 +1,101 @@
+--- a/AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift
++++ b/AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift
+@@ -1,6 +1,7 @@
+ import Foundation
+ import Testing
+ import ProtobufMessages
++import SwiftProtobuf
+ import TorahInspectorCore
+ @testable import Anytype
+ 
+--- a/Tools/PinkhaSimulatorGate/sdk06_component_projection.py
++++ b/Tools/PinkhaSimulatorGate/sdk06_component_projection.py
+@@ -1,7 +1,8 @@
+ """Pure source/project/descriptor projection for the pending SDK06 components.
+ 
+-The original App and tests remain immutable. Only seven @Test attributes are
+-blanked in a generated source copy; all declarations, arguments and bodies stay.
++The original App and tests remain immutable. Seven @Test attributes are blanked
++and one SwiftProtobuf import is added in generated copies; declarations, arguments
++and function bodies remain unchanged.
+ """
+ from __future__ import annotations
+ import copy
+@@ -15,13 +16,14 @@
+ import sdk06_compile_support as support
+ 
+ CONTRACT = "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json"
+-CONTRACT_SHA = "90b20a136785a90609881790f8fcc6bd7bd6c6a8a23b7015c778d64cfa0e111a"
++CONTRACT_SHA = "1a7b1c84ee761c707ca7796facc80f72eb9922d9ef14264801e7f651c22d3f8b"
+ SOURCE = "75bd6d7af18dfd511e85582ce7f994d2801b7703"
+ PRODUCT = "SDK06PendingTests.xctest"
+ SCHEME = "SDK06PendingComponents"
+ TARGET = "AnytypeTests"
+ MODE = "CURRENT_COMPONENT_TEST_BUNDLE_WITH_ORIGINAL_APP"
+ EDITOR = "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift"
++AUTHORITY = "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift"
+ 
+ 
+ def require(value, message):
+@@ -54,6 +56,17 @@
+         require(type(raw) is bytes and len(raw) == row["bytes"]
+                 and digest(raw) == row["sha256"], "An original Swift input changed: " + name)
+         changed = bytearray(raw)
++        if name == AUTHORITY:
++            patch = fixed["authority_import_patch"]
++            before, after = patch["before"].encode(), patch["after"].encode()
++            require(patch["path"] == name and before == b"import ProtobufMessages\n"
++                    and after == before + b"import SwiftProtobuf\n"
++                    and raw.count(before) == 1 and b"import SwiftProtobuf" not in raw,
++                    "Only the exact missing SwiftProtobuf import may be added")
++            changed = bytearray(raw.replace(before, after, 1))
++            require(digest(changed) == patch["projected_sha256"]
++                    and bytes(changed).replace(after, before, 1) == raw,
++                    "The authority import projection or complete inverse differs")
+         if name == EDITOR:
+             last = 0
+             for patch in fixed["attribute_patches"]:
+--- a/Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json
++++ b/Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json
+@@ -43,6 +43,12 @@
+       "offset": 26094
+     }
+   ],
++  "authority_import_patch": {
++    "after": "import ProtobufMessages\nimport SwiftProtobuf\n",
++    "before": "import ProtobufMessages\n",
++    "path": "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift",
++    "projected_sha256": "74fdde3fbe33df92d19d1afa57cfeebe07c69d977645ab111ed31386f8124f01"
++  },
+   "new_app_or_native_builds": 0,
+   "original_source_modified": false,
+   "original_swift_features": {
+@@ -62,7 +68,7 @@
+     "SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION": "YES"
+   },
+   "projected_editor_sha256": "12da168c20f9f820fc84485e204967d4c5595bd7688bd1aeb3086ccf9bbf5136",
+-  "projection_kind": "REMOVE_ONLY_SEVEN_PREVIOUSLY_PASSED_TEST_ATTRIBUTES_FROM_GENERATED_COPY",
++  "projection_kind": "SEVEN_PREVIOUSLY_PASSED_TEST_ATTRIBUTES_BLANKED_AND_ONE_SWIFTPROTOBUF_IMPORT_ADDED",
+   "protocol": "sdk06-component-projection-source-v1",
+   "required_argument_cases": 32,
+   "selection": {
+--- a/Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json
++++ b/Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json
+@@ -194,7 +194,7 @@
+     },
+     "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json": {
+       "git_mode": "100644",
+-      "sha256": "90b20a136785a90609881790f8fcc6bd7bd6c6a8a23b7015c778d64cfa0e111a"
++      "sha256": "1a7b1c84ee761c707ca7796facc80f72eb9922d9ef14264801e7f651c22d3f8b"
+     },
+     "Tools/PinkhaSimulatorGate/sdk06-original-native-45139431216-1.json": {
+       "git_mode": "100644",
+@@ -222,7 +222,7 @@
+     },
+     "Tools/PinkhaSimulatorGate/sdk06_component_projection.py": {
+       "git_mode": "100644",
+-      "sha256": "d8ac49cf7fa8b9baa3f80525c053dd3bc38450674aaaf38de2a28fd95ec66725"
++      "sha256": "857f525341ad5e789bd6dd0d85c7ceeea65d7a58dce80a72734dc73c62096c74"
+     },
+     "Tools/PinkhaSimulatorGate/sdk06_enumeration_probe.py": {
+       "git_mode": "100644",

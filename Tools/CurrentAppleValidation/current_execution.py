@@ -22,6 +22,8 @@ import contracts as c
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 MANIFEST = HERE / "source-inputs.json"
+INVENTORY_POLICY = "owned-inventory-timeout-v1"
+INVENTORY_SOURCE = "8dc5ee02db71517a5eb08535a6b266da62adfe30"
 _FINALIZING = False
 _CANCELLED = False
 
@@ -70,7 +72,30 @@ def metadata(path):
         return {"kind": "symlink", "mode": stat.S_IMODE(st.st_mode), "target": os.readlink(path)}
     raise ValueError("unsupported_source_type")
 
-def admit(profile, expected):
+def native_product_revision(fixed, profile, expected):
+    if profile != "native-ui-failed":
+        return None
+    revision = fixed.get("currentNativeProductRevision")
+    if revision is None:
+        return None
+    c.require(isinstance(revision, dict)
+              and set(revision) == {"schemaVersion", "profile", "sourceCommit", "productTrees"}
+              and type(revision["schemaVersion"]) is int and revision["schemaVersion"] == 1
+              and revision["profile"] == profile
+              and isinstance(revision["sourceCommit"], str)
+              and re.fullmatch("[0-9a-f]{40}", revision["sourceCommit"])
+              and isinstance(revision["productTrees"], dict)
+              and set(revision["productTrees"]) == {"Modules", "NativeApp"}
+              and set(revision["productTrees"]) == set(fixed["productTrees"][profile]),
+              "current_native_product_revision_invalid")
+    git("merge-base", "--is-ancestor", revision["sourceCommit"], expected)
+    for name, oid in revision["productTrees"].items():
+        c.require(git("rev-parse", revision["sourceCommit"] + ":" + name).decode().strip() == oid,
+                  "current_native_product_revision_origin_changed:" + name)
+    return revision
+
+
+def admit(profile, expected, inventory_policy=None):
     c.require(platform.system() == "Darwin" and platform.machine() == "arm64"
               and os.environ.get("GITHUB_ACTIONS") == "true"
               and os.environ.get("GITHUB_REPOSITORY") == c.REPOSITORY, "owned_apple_ci_required")
@@ -85,7 +110,14 @@ def admit(profile, expected):
     c.require(len(fixed["retainedMethods"]) == 22
               and not set(c.methods(profile)).intersection(fixed["retainedMethods"])
               and c.SOURCE_DRAG not in c.methods(profile), "historical_pass_selected")
-    trees = fixed["productTrees"][profile]
+    recovery = inventory_spec(fixed, inventory_policy)
+    origin = recovery["sourceCommit"] if recovery is not None else c.BASE
+    if recovery is not None:
+        git("merge-base", "--is-ancestor", origin, expected)
+    trees = (recovery["productTrees"] if recovery is not None else fixed["productTrees"])[profile]
+    revision = native_product_revision(fixed, profile, expected)
+    if revision is not None:
+        trees, origin = revision["productTrees"], revision["sourceCommit"]
     all_trees = {**trees, **fixed["helperTrees"]}
     for name, oid in all_trees.items():
         c.require(git("rev-parse", "HEAD:" + name).decode().strip() == oid, "compiled_source_tree_changed:" + name)
@@ -118,8 +150,14 @@ def admit(profile, expected):
     c.require(set(fixed["helperInputs"]).issubset(files), "missing_helper_input")
     context = {"profile": profile, "sourceCommit": expected, "runID": os.environ["GITHUB_RUN_ID"],
                "runAttempt": os.environ["GITHUB_RUN_ATTEMPT"], "repository": c.REPOSITORY}
-    return context, {"manifestSHA256": digest(MANIFEST), "files": files, "gitInputs": origins,
-                     "compiledTrees": trees, "compiledOrigin": c.BASE}
+    source = {"manifestSHA256": digest(MANIFEST), "files": files, "gitInputs": origins,
+              "compiledTrees": trees, "compiledOrigin": origin}
+    if revision is not None:
+        source["currentNativeProductRevision"] = revision
+    if recovery is not None:
+        source["inventoryRecoveryPolicy"] = inventory_policy
+        source["inventoryRecoverySourceOrigin"] = recovery["sourceCommit"]
+    return context, source
 
 def recheck(source):
     c.require(digest(MANIFEST) == source["manifestSHA256"]
@@ -127,7 +165,7 @@ def recheck(source):
               "admitted_source_changed")
     observed = {}
     fixed = read(MANIFEST)
-    for name, path in fixed["moduleOrigins"].items():
+    for name, path in module_origins(fixed, source).items():
         if name in sys.modules:
             c.require(Path(sys.modules[name].__file__).resolve() == ROOT / path, "foreign_module_origin:" + name)
     for module in tuple(sys.modules.values()):
@@ -147,7 +185,7 @@ def helpers(source):
     for path in reversed(("Tools/PinkhaSimulatorGate", "Tools/AnyEnginePort", "Tools/Hanlin",
                           "Tools/PinkhaNativeDerived")):
         sys.path.insert(0, str(ROOT / path))
-    for name, relative in read(MANIFEST)["moduleOrigins"].items():
+    for name, relative in module_origins(read(MANIFEST), source).items():
         specification = importlib.util.find_spec(name)
         c.require(specification is not None and specification.origin is not None
                   and Path(specification.origin).resolve() == ROOT / relative,
@@ -156,7 +194,7 @@ def helpers(source):
     names = {"wave15_batch": "Tools/PinkhaSimulatorGate", "run_owned_single_lane": "Tools/PinkhaSimulatorGate",
              "simulator_selection": "Tools/PinkhaSimulatorGate", "native_ui_transition_contract": "Tools/AnyEnginePort",
              "verify_native_test_execution": "Tools/AnyEnginePort", "verify_archive_roundtrip": "Tools/AnyEnginePort",
-             "continue_native_acceptance": "Tools/AnyEnginePort"}
+             "continue_native_acceptance": "Tools/AnyEnginePort", "verify_custom_type": "Tools/AnyEnginePort"}
     for name, directory in names.items():
         result[name] = importlib.import_module(name)
         c.require(Path(result[name].__file__).resolve() == ROOT / directory / (name + ".py"),
@@ -164,12 +202,51 @@ def helpers(source):
     recheck(source)
     return result
 
+def inventory_spec(fixed, policy):
+    if policy is None:
+        return None
+    c.require(policy == INVENTORY_POLICY, "unreviewed_inventory_policy")
+    spec = fixed["inventoryRecovery"]
+    c.require(spec["policy"] == INVENTORY_POLICY and spec["sourceCommit"] == INVENTORY_SOURCE
+              and spec["budgets"] == {"postboot": 120, "pre-cleanup": 90}
+              and set(spec["productTrees"]) == set(c.PROFILES), "inventory_policy_profile_changed")
+    return spec
+
+def module_origins(fixed, source):
+    origins = dict(fixed["moduleOrigins"])
+    if inventory_spec(fixed, source.get("inventoryRecoveryPolicy")) is not None:
+        c.require("owned_inventory_recovery" not in origins, "inventory_module_origin_collision")
+        origins["owned_inventory_recovery"] = "Tools/CurrentAppleValidation/owned_inventory_recovery.py"
+    return origins
+
+def configure_inventory_recovery(commands, source):
+    if source.get("inventoryRecoveryPolicy") is not None:
+        inventory_spec(read(MANIFEST), source["inventoryRecoveryPolicy"])
+        module = importlib.import_module("owned_inventory_recovery")
+        recheck(source)
+        c.require(module.POLICY == INVENTORY_POLICY and module.BUDGETS == {"postboot": 120, "pre-cleanup": 90},
+                  "inventory_policy_implementation_changed")
+        commands.inventory_recovery = module.Policy(commands, cwd=str(ROOT),
+            recheck_source=lambda: recheck(source), write_json=write)
+
+def verify_owned_inventory(commands, item, name, states=None, *, phase):
+    policy = getattr(commands, "inventory_recovery", None)
+    if policy is None:
+        return verify_device(commands, item, name, states)
+    return policy.verify(verify_device, item, name, states, phase)
+
+def inventory_recovery_result(commands):
+    policy = getattr(commands, "inventory_recovery", None)
+    return None if policy is None else policy.summary()
+
 class Commands:
     def __init__(self, evidence, context, modules):
         self.root = evidence / "commands"
         self.root.mkdir(parents=True, exist_ok=True)
         self.context, self.helpers = context, modules
-        self.deadline = time.monotonic() + 7200
+        # Two new single-method stages add their unchanged 360/1800s budgets plus
+        # the existing 300s per-stage command overhead; other profiles stay exact.
+        self.deadline = time.monotonic() + (9960 if context["profile"] == "native-ui-failed" else 7200)
         self.cleanup_mode = False
 
     def run(self, argv, name, timeout, observe=None):
@@ -204,6 +281,9 @@ class Commands:
                         record["observationFailure"] = error(failure)
                         primary = primary or failure
             except BaseException as failure:
+                if primary is not None and failure is not primary:
+                    record.setdefault("secondaryFailures", []).append(
+                        {"stage": "command_body", **error(failure)})
                 primary = primary or failure
             finally:
                 if process:
@@ -318,7 +398,7 @@ def create_device(commands, pair, name, evidence, owned):
     verify_device(commands, item, "created-" + str(index), {"Shutdown"})
     commands.run(["xcrun", "simctl", "boot", item["udid"]], "boot-" + str(index), 120)
     commands.run(["xcrun", "simctl", "bootstatus", item["udid"], "-b"], "bootstatus-" + str(index), 180)
-    verify_device(commands, item, "booted-" + str(index), {"Booted"})
+    verify_owned_inventory(commands, item, "booted-" + str(index), {"Booted"}, phase="postboot")
     return item
 
 def inventory(root):
@@ -549,6 +629,7 @@ def execute_stage(commands, profile, stage, device, built, source, evidence, cop
         binding.update(copiedPath=str(descriptor), copiedSHA256=c.sha(raw), context=commands.context)
         write(directory / "descriptor-binding.json", binding)
         plan = c.test_command(profile, stage, descriptor, device["udid"], directory / "original.xcresult")
+        plan += ["-collect-test-diagnostics", "never"]
         enum = c.enumeration_command(plan, directory / "enumeration.json")
         write(directory / "plan.json", {"context": commands.context, "command": plan, "enumerationCommand": enum,
                                         "sourceDragSelected": False, "retainedTestsSelected": 0})
@@ -608,6 +689,13 @@ def execute_stage(commands, profile, stage, device, built, source, evidence, cop
                 c.PROFILES[profile]["bundle"], stage)
             if stage == "archive-roundtrip":
                 outcome["archive"] = archive_semantics(commands, device, directory)
+            elif stage == "custom-type":
+                validator = commands.helpers["verify_custom_type"]
+                receipt, receipt_raw = validator.original_receipt(directory / "private-attachments")
+                outcome["customType"] = {"proof": validator.validate_receipt(receipt),
+                    "originalReceiptSHA256": c.sha(receipt_raw),
+                    "validatorSHA256": digest(Path(validator.__file__)),
+                    "sameCurrentProducts": True, "newApplicationBuilds": 0}
             outcome.update(status="PASS", completeStageAcceptance=True)
     except BaseException as failure:
         outcome["errors"].append({"phase": "qualification", **error(failure)})
@@ -635,13 +723,16 @@ def cleanup_devices(commands, evidence, owned):
         receipt = {"context": commands.context, "owned_simulator": {"udid": item["udid"]},
                    "createReceiptSHA256": digest(directory / "created.json")}
         try:
-            verify_device(commands, item, "pre-cleanup-" + str(index))
+            verify_owned_inventory(commands, item, "pre-cleanup-" + str(index), phase="pre-cleanup")
             def run(argv, name, timeout):
                 return commands.run(argv, "device-" + str(index) + "-" + name, timeout)
             cleanup_policy.cleanup_owned_simulator(run, receipt, item["udid"])
         except BaseException as failure:
             receipt["firstFailure"] = error(failure)
             receipt["owned_simulator_cleanup_status"] = "INCOMPLETE"
+        recovery = inventory_recovery_result(commands)
+        if recovery is not None:
+            receipt["inventoryRecovery"] = recovery
         write(path, receipt)
         results.append(receipt)
     return results
@@ -731,7 +822,7 @@ def final_integrity(evidence, source, built, copies, native):
     write(evidence / "loaded-after.json", result["loadedAfter"])
     return result
 
-def execute(profile, expected, prepare_library, provider):
+def execute(profile, expected, prepare_library, provider, inventory_policy=None, restore_products=None):
     global _FINALIZING
     root = evidence_root(profile)
     c.require(not root.exists() and root.parent.resolve() == root.parent, "fresh_owned_execution_root_required")
@@ -746,13 +837,15 @@ def execute(profile, expected, prepare_library, provider):
     owned, copies = [], {}
     first = None
     try:
-        context, source = admit(profile, expected)
+        context, source = admit(profile, expected, inventory_policy)
         outcome["context"] = context
         write(evidence / "source-before.json", source)
         write(evidence / "execution-intent.json", {"context": context, "selected": c.methods(profile),
-              "sourceDragExcluded": c.SOURCE_DRAG, "sourceAdmissionSHA256": digest(evidence / "source-before.json")})
+              "sourceDragExcluded": c.SOURCE_DRAG, "sourceAdmissionSHA256": digest(evidence / "source-before.json"),
+              **({"inventoryRecoveryPolicy": inventory_policy} if inventory_policy is not None else {})})
         modules = helpers(source)
         commands = Commands(evidence, context, modules)
+        configure_inventory_recovery(commands, source)
         write(evidence / "loaded-before.json", recheck(source))
         version = commands.run(["xcodebuild", "-version"], "xcode-version", 30)
         c.require(c.read(version, 1024).decode().startswith("Xcode 27"), "xcode_27_required")
@@ -766,8 +859,12 @@ def execute(profile, expected, prepare_library, provider):
         name = ("AnyNativePort-" + context["runID"] if profile == "native-ui-failed" else
                 "CurrentReturn-" + context["runID"] + "-" + context["runAttempt"])
         device = create_device(commands, pair, name, evidence, owned)
-        built = build(commands, profile, device, work, evidence, source)
-        outcome["applicationBuilds"], outcome["uiRunnerBuilds"] = 1, c.PROFILES[profile]["uiRunnerBuilds"]
+        if restore_products is None:
+            built = build(commands, profile, device, work, evidence, source)
+            outcome["applicationBuilds"], outcome["uiRunnerBuilds"] = 1, c.PROFILES[profile]["uiRunnerBuilds"]
+        else:
+            built = restore_products(commands, profile, device, work, evidence, source)
+            outcome["retainedProducts"] = read(evidence / "retained-products.json")
         if profile == "release-return-rtl":
             outcome["stages"]["return-controls"] = execute_stage(commands, profile, "return-controls", device,
                                                                   built, source, evidence, copies)
@@ -790,6 +887,20 @@ def execute(profile, expected, prepare_library, provider):
             check_products(built[0] / "Build/Products", built[1], copies)
             outcome["stages"]["archive-roundtrip"] = execute_stage(commands, profile, "archive-roundtrip", device,
                                                                     built, source, evidence, copies)
+            # The first four results keep their original stage receipts. The two
+            # never-run journeys reuse this one build only after those and the
+            # finite provider/archive postflight pass.
+            initial = ("native-ui-three", "archive-roundtrip")
+            outcome["initialFourPassed"] = first is None and all(
+                outcome["stages"][name]["status"] == "PASS" for name in initial)
+            if outcome["initialFourPassed"]:
+                follow_on = create_device(commands, pair,
+                    "CurrentNativeTypeHistory-" + context["runID"] + "-" + context["runAttempt"], evidence, owned)
+                for stage in ("custom-type", "native-history"):
+                    outcome["stages"][stage] = execute_stage(commands, profile, stage, follow_on,
+                                                              built, source, evidence, copies)
+            else:
+                outcome["followOnAdmission"] = "NOT_RUN_INITIAL_FOUR_OR_PROVIDER_NOT_PASSED"
     except BaseException as failure:
         first = first or failure
         outcome["errors"].append({"phase": "execute", **error(failure)})
@@ -831,10 +942,13 @@ def execute(profile, expected, prepare_library, provider):
         if commands is not None and (commands.root / "build-for-testing.started.json").exists():
             outcome["applicationBuilds"] = 1
             outcome["uiRunnerBuilds"] = c.PROFILES[profile]["uiRunnerBuilds"]
+        recovery = inventory_recovery_result(commands)
+        if recovery is not None:
+            outcome["inventoryRecovery"] = recovery
         write(evidence / "execution.json", outcome)
     return outcome
 
-def cleanup_only(profile, expected, provider):
+def cleanup_only(profile, expected, provider, inventory_policy=None):
     global _FINALIZING
     _FINALIZING = True
     root = evidence_root(profile)
@@ -864,8 +978,11 @@ def cleanup_only(profile, expected, provider):
         c.require(intent["context"] == context and intent["sourceAdmissionSHA256"] ==
                   digest(evidence / "source-before.json"), "cleanup_source_admission_not_current")
         source = read(evidence / "source-before.json")
+        c.require(intent.get("inventoryRecoveryPolicy") == inventory_policy
+                  and source.get("inventoryRecoveryPolicy") == inventory_policy, "cleanup_inventory_policy_changed")
         recheck(source)
         commands = Commands(evidence, context, helpers(source))
+        configure_inventory_recovery(commands, source)
         commands.cleanup_mode = True
         outcome["groups"] = unfinished_groups(commands)
         primary = None
@@ -887,6 +1004,9 @@ def cleanup_only(profile, expected, provider):
         except BaseException as failure:
             outcome["loadedFailure"] = error(failure)
             primary = primary or failure
+        recovery = inventory_recovery_result(commands)
+        if recovery is not None:
+            outcome["inventoryRecovery"] = recovery
         if primary:
             raise primary
         outcome["status"] = "PASS"
@@ -895,18 +1015,20 @@ def cleanup_only(profile, expected, provider):
     write(path, outcome)
     return outcome
 
-def main(profile, prepare_library, provider):
+def main(profile, prepare_library, provider, restore_products=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("operation", choices=("execute", "cleanup"))
     parser.add_argument("--expected-source", required=True)
+    parser.add_argument("--inventory-recovery", dest="inventory_policy", choices=(INVENTORY_POLICY,))
     args = parser.parse_args()
     os.umask(0o077)
     previous = {number: signal.getsignal(number) for number in (signal.SIGINT, signal.SIGTERM)}
     for number in previous:
         signal.signal(number, cancel)
     try:
-        result = (execute(profile, args.expected_source, prepare_library, provider) if args.operation == "execute"
-                  else cleanup_only(profile, args.expected_source, provider))
+        result = (execute(profile, args.expected_source, prepare_library, provider, args.inventory_policy, restore_products)
+                  if args.operation == "execute" else
+                  cleanup_only(profile, args.expected_source, provider, args.inventory_policy))
     finally:
         for number, handler in previous.items():
             signal.signal(number, handler)

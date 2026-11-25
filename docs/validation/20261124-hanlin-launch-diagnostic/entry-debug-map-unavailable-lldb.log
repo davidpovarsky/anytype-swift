@@ -1,0 +1,35 @@
+(lldb) command source -s 0 '/Users/m1/builds/_diagnostics/sdk-ui-launch-guard-sh1basc_/observe.lldb'
+Executing commands in '/Users/m1/builds/_diagnostics/sdk-ui-launch-guard-sh1basc_/observe.lldb'.
+(lldb) target create /Users/m1/builds/_retained-anytype/45423982997-1/build/sdk06-original-native-derived-45423982997-1/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Anytype
+Current executable set to '/Users/m1/builds/_retained-anytype/45423982997-1/build/sdk06-original-native-derived-45423982997-1/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Anytype' (arm64).
+(lldb) breakpoint set --name $s7Anytype20PinkhaHanlinLauncher33_96E161B22774096C48BB981B20A68D5DLLC4open10routeOwneryAA28SpaceHubCoordinatorViewModelC_tF
+Breakpoint 1: where = Anytype.debug.dylib`PinkhaHanlinLauncher.open(routeOwner:), address = 0x00000000001e5f70
+(lldb) process attach --pid 1581
+Process 1581 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGSTOP
+       frame #0: 0x0000000100dfcb5c libsystem_kernel.dylib`mach_msg2_trap + 8
+libsystem_kernel.dylib`mach_msg2_trap:
+->  0x100dfcb5c <+8>: ret    
+
+libsystem_kernel.dylib`macx_swapon:
+    0x100dfcb60 <+0>: mov    x16, #-0x30               ; =-48 
+    0x100dfcb64 <+4>: svc    #0x80
+    0x100dfcb68 <+8>: ret    
+Target 0: (Anytype) stopped.
+(lldb) continue
+Process 1581 resuming
+Process 1581 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+       frame #0: 0x0000000108005f70 Anytype.debug.dylib`PinkhaHanlinLauncher.open(routeOwner:)
+Anytype.debug.dylib`open:
+->  0x108005f70 <+0>:  stp    x22, x21, [sp, #-0x30]!
+    0x108005f74 <+4>:  stp    x20, x19, [sp, #0x10]
+    0x108005f78 <+8>:  stp    x29, x30, [sp, #0x20]
+    0x108005f7c <+12>: add    x29, sp, #0x20
+Target 0: (Anytype) stopped.
+(lldb) frame info
+frame #0: 0x0000000108005f70 Anytype.debug.dylib`PinkhaHanlinLauncher.open(routeOwner:)
+(lldb) frame variable --show-types self
+                      ˄˜˜˜
+                      ╰─ error: use of undeclared identifier 'self'
+error: debug map object file "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/Anytype.build/Objects-normal/arm64/PinkhaHanlinLaunchButton.o" containing debug info does not exist, debug info will not be loaded

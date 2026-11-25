@@ -402,7 +402,8 @@ class FrozenBuild:
         original = self.native_configuration if blueprint == "AnytypeTests" else self.ui_configuration
         require(configuration == original, "Selection is not from this job's original build")
         selected = explicit_selection(configuration, blueprint, selections, environment, self.shared, app_path)
-        result = self.shared.run_selection(app, selected, blueprint, udid, selections, environment, evidence, prefix, app_path)
+        result = self.shared.run_selection(app, selected, blueprint, udid, selections, environment, evidence, prefix, app_path,
+            **({"collect_test_diagnostics": "never"} if self.profile == COHERENT_HEART_PROFILE else {}))
         if result["status"] == "PASS":
             summary = json.loads((evidence / (prefix + "-summary.json")).read_text())
             methods = self.shared.method_results(json.loads((evidence / (prefix + "-tests.json")).read_text()))
@@ -709,6 +710,14 @@ def worker(args, lane, intent, *, origin=None):
     try:
         frozen, preflight = (build_once(args, lane, selections, receipt) if origin is None
                              else origin.restore(args, lane, receipt))
+        if spec.name == COHERENT_HEART_PROFILE and origin is None:
+            import coherent_release_focus as focus
+            receipt.update(phase="COHERENT_RETURN_RTL", current_lane=None)
+            write(evidence / "batch-worker.json", receipt)
+            receipt["coherent_focus"] = focus.execute(args, frozen, receipt, intent)
+            receipt["coherent_focus_receipt"] = {"path": "coherent-focus/result.json",
+                "sha256": digest(evidence / "coherent-focus/result.json")}
+            write(evidence / "batch-worker.json", receipt)
         for selection, ownership in zip(selections, intent["lane_devices"], strict=True):
             name = selection["lane"]
             receipt.update(phase="SHARED_INPUTS_BEFORE_LANE", current_lane=name)
@@ -794,6 +803,8 @@ def worker(args, lane, intent, *, origin=None):
                 origin.verify_control()
             receipt.update(status="BATCH_PASS_ACCEPTANCE_REVIEW_PENDING" if all(
                 status == "LANE_PASS_ACCEPTANCE_REVIEW_PENDING" for status in receipt["lane_statuses"].values())
+                and (spec.name != COHERENT_HEART_PROFILE or origin is not None
+                     or receipt.get("coherent_focus", {}).get("status") == focus.PASS)
                 else "BATCH_FAILED_OBSERVED_TESTS", phase="COMPLETE")
     except BaseException as error:
         receipt.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else "BATCH_ABORTED_SETUP_OR_IDENTITY",
@@ -978,7 +989,8 @@ def cleanup_owned(intent, evidence):
     deadline = time.monotonic() + CLEANUP_SECONDS
     report = {"status": "PASS", "devices": [], "inventory_queries": [], "started_at": now()}
     try:
-        for ownership in [*intent["preflight_devices"], *intent["lane_devices"], *intent.get("extra_devices", [])]:
+        for ownership in [*intent["preflight_devices"], *intent["lane_devices"], *intent.get("extra_devices", []),
+                          *intent.get("focus_devices", [])]:
             remaining = deadline - time.monotonic()
             require(remaining > 0, "Owned cleanup budget exhausted")
             directory = evidence / "lanes" / ownership.get("lane", "preflight")
@@ -1125,6 +1137,9 @@ def validate_worker_conclusion(receipt, intent, evidence, lane, *, origin=None):
                      if origin is None else build.get("protocol") == origin.protocol),
                 "Passing coherent batch lacks its original one-build T5/cleanup evidence")
         coherent.validate_results(evidence, intent, receipt, lane.shared, origin=origin)
+        if origin is None:
+            import coherent_release_focus as focus
+            focus.validate_saved(evidence, intent, receipt)
 
 
 def publish_batch_observations(evidence, result, *, origin=None):
@@ -1245,7 +1260,11 @@ def run(args, lane, *, origin=None):
         require(getattr(args, "runtime_profile", None) == coherent.RUNTIME_PROFILE,
                 "The coherent batch cannot select a different runtime profile")
         intent["extra_devices"] = coherent.extra_devices(template, token, intent["run_id"])
-    require(not any(item.get("name") in {device["name"] for device in [*intent["lane_devices"], *intent.get("extra_devices", [])]}
+        if origin is None:
+            import coherent_release_focus as focus
+            inventory = json.loads((evidence / "preflight/simulator-inventory.json").read_bytes())
+            intent["focus_devices"] = focus.planned_devices(inventory, token, intent["run_id"])
+    require(not any(item.get("name") in {device["name"] for device in [*intent["lane_devices"], *intent.get("extra_devices", []), *intent.get("focus_devices", [])]}
                     for items in baseline["devices"].values() for item in items), "Planned simulator name already exists")
     (evidence / "batch-simulator-baseline.json").write_bytes(baseline_raw)
     write(evidence / "batch-intent.json", intent)

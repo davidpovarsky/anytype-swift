@@ -1,0 +1,45 @@
+{
+  "argv": [
+    "xcrun",
+    "simctl",
+    "list",
+    "devices",
+    "FCBD70E2-F535-4B73-96D6-A5B65019EFFA",
+    "--json"
+  ],
+  "context": {
+    "profile": "release-return-rtl",
+    "repository": "davidpovarsky/anytype-swift",
+    "runAttempt": "2",
+    "runID": "45262256273",
+    "sourceCommit": "56b4caafae1c0898b483717abed495f2e3b9281b"
+  },
+  "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+  "environmentValuesRecorded": false,
+  "finished": 1795481584.9042518,
+  "firstFailure": {
+    "message": "Command '['xcrun', 'simctl', 'list', 'devices', 'FCBD70E2-F535-4B73-96D6-A5B65019EFFA', '--json']' timed out after 30 seconds",
+    "type": "TimeoutExpired"
+  },
+  "kernelObservation": {
+    "after_monotonic": 584.713658666,
+    "before_monotonic": 584.713201833,
+    "deadline_monotonic": 594.713185291,
+    "errno": 3,
+    "error_type": "ProcessLookupError",
+    "operation": "os.killpg",
+    "outcome": "ABSENT_ESRCH",
+    "pgid": 8280,
+    "signal": 0
+  },
+  "logBytes": 0,
+  "logMetadataStatus": "AVAILABLE",
+  "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "ownedGroupCleanup": "TERM_THEN_KILL",
+  "pgid": 8280,
+  "pid": 8280,
+  "returnCode": -15,
+  "started": 1795481549.873945,
+  "status": "FAIL",
+  "timeoutSeconds": 30
+}

@@ -1,0 +1,38 @@
+--- a/launch-control.py
++++ b/launch-control.py
+@@ -110,13 +110,31 @@
+  except BaseException as error:
+   cleanup_error={"type":type(error).__name__,"message":str(error),"traceback":traceback.format_exc()}
+   final_free={"resourceObservationFailed":True}
+- result={"status":"PASS" if primary is None and cleanup_error is None else "FAIL",
++ final_usage=None;final_absence=None;final_observation_errors=[]
++ for phase,observe in (
++     ("final_output_usage",output_usage),
++     ("final_owned_group_absence",lambda: owned is not None and absent(owned))):
++  try:
++   value=observe()
++   if phase=="final_output_usage":final_usage=value
++   else:final_absence=value
++  except BaseException as error:
++   final_observation_errors.append({"phase":phase,"type":type(error).__name__,
++       "message":str(error),"traceback":traceback.format_exc()})
++ result={"status":"PASS" if primary is None and cleanup_error is None
++         and not final_observation_errors and final_absence is True else "FAIL",
+    "source":SOURCE,"wrapperSHA256":WRAPPER_SHA,"pid":None if proc is None else proc.pid,"pgid":owned,
+    "returncode":rc,"primaryFailure":primary,"cleanupFailure":cleanup_error,
+-   "ownedGroupAbsent":owned is not None and absent(owned),"cleanupObservations":observations,
++   "ownedGroupAbsent":final_absence,"cleanupObservations":observations,
++   "finalObservationFailures":final_observation_errors,"finalReceiptFailure":None,
+    "elapsed":time.monotonic()-started,"startResources":start_free,"finalResources":final_free,
+    "correctedExistingMethodsRequested":1,"unaffectedOldMethodsRequested":0,"newUniqueAcceptanceCredit":0,"buildsRequested":0,"productMethodsRequested":0,
+-   "resourceProfile":"fixed-current-projection-ram-2mib-v1","observedOutputPeak":dict(OBSERVED_PEAK),"finalOutputUsageBeforeReceipt":output_usage()}
+- save(BASE/"launch-result.json",result)
++   "resourceProfile":"fixed-current-projection-ram-2mib-v1","observedOutputPeak":dict(OBSERVED_PEAK),"finalOutputUsageBeforeReceipt":final_usage}
++ try:
++  save(BASE/"launch-result.json",result)
++ except BaseException as error:
++  result["status"]="FAIL"
++  result["finalReceiptFailure"]={"phase":"final_receipt_write","type":type(error).__name__,
++      "message":str(error),"traceback":traceback.format_exc()}
+  print(json.dumps(result,sort_keys=True))
+ if result["status"]!="PASS":raise SystemExit(1)

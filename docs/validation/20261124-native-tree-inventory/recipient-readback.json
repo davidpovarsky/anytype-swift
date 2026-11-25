@@ -1,0 +1,110 @@
+{
+  "attempt": 1,
+  "audited_at": "2026-11-24T16:36:01.954121+00:00",
+  "builds": 1,
+  "compiled_source_unchanged": true,
+  "controller_sha": "35cc64f92d527a5e99d48cb4ec7652dbcb0ea3ab",
+  "filePayloadCompleteness": false,
+  "hasNativeSourceAdmission": false,
+  "heart_sha": "d8e609b9faf2ea7307178676ebecfcd6da524159",
+  "old_methods_executed": 0,
+  "original_artifact": {
+    "bytes": 25369623,
+    "id": 14943255052,
+    "sha256": "3fadf1a8c4412f0a1ee1b449d39fae41d2da161ee0735bf2b68225ae62669b0d"
+  },
+  "original_private_file_checks": {
+    "commands.json": {
+      "bytes": 41357,
+      "sha256": "8947218504e36466eb03304bd2ce5bfb658b8239ad3fd3a92d62eedfa99fcf27"
+    },
+    "commands/binary-buildinfo-inspect.stdout": {
+      "bytes": 20141,
+      "sha256": "dd035594d3757da4092b45ca926dcad42ce53bd5ae75926562d9f21d9486949b"
+    },
+    "commands/binary-buildinfo.stdout": {
+      "bytes": 723,
+      "sha256": "a7f91cb31bed59e6ae0b80f39f20470a705f8f64e2ddc60d8069164df00ced5b"
+    },
+    "commands/binary-method-list-inspect.stdout": {
+      "bytes": 19937,
+      "sha256": "66b85f52837d1e1ac7850e0b835530d8071e38699aaa7e52cac845e44f4a9b8e"
+    },
+    "commands/binary-method-list.stdout": {
+      "bytes": 153,
+      "sha256": "cae99ad229710b371062bbb9bbdc5b7dac0193388c0488f4de160bc56c0e1da7"
+    },
+    "commands/build-inspect.stdout": {
+      "bytes": 21154,
+      "sha256": "2ba44b1593c2508b0556c131f7ef9d764bc48446b1732a40096ff97b174acff1"
+    },
+    "commands/inventory-method-1-inspect.stdout": {
+      "bytes": 20487,
+      "sha256": "b66de4fd39f7df43bef05e0e3206fd05c045ad1f3cc9adadbbcbd29741ce08f9"
+    },
+    "commands/inventory-method-1.stdout": {
+      "bytes": 1905,
+      "sha256": "739ea7daaa3945b57c9c92fd1d18bf190f6caf96e97459f4294de946dbf5485e"
+    },
+    "commands/inventory-method-2-inspect.stdout": {
+      "bytes": 20493,
+      "sha256": "3a4435a64eb0484e69216b81a292ecf8e92f025d45880de3755522a6eb290bc9"
+    },
+    "commands/inventory-method-2.stdout": {
+      "bytes": 805,
+      "sha256": "d3e6092b1b2cbdaa2ecce1e1afb6dedea53ddf8e113182899c33e27db632701f"
+    },
+    "commands/inventory-method-3-inspect.stdout": {
+      "bytes": 20498,
+      "sha256": "04693ffff8eebb3307f777a029ffafba5350e2d36de76029307f079beb20658d"
+    },
+    "commands/inventory-method-3.stdout": {
+      "bytes": 141,
+      "sha256": "f54806411f0cf201b36647fff421b75516d6fa07249d41e59b4975ea35211bcc"
+    },
+    "generated-test-main.go": {
+      "bytes": 2993,
+      "sha256": "24a3f307f285c78fc289d89ac64d52c0791514bf8cf7ae36a82e1148ec0f4191"
+    },
+    "products/native-tree-inventory.test": {
+      "bytes": 49055559,
+      "sha256": "4218b6b9f56da8d200540bd666881b7e4887ddec081284041ced3986814afa92"
+    },
+    "result.json": {
+      "bytes": 7077,
+      "sha256": "5481e1b5b172394b1ef6fdb038d58aa27f6175bbf0e5bc0954dc3891a28fe3eb"
+    },
+    "source-metadata/derived-source-v2.json": {
+      "bytes": 734,
+      "sha256": "c21305e311a1eb6cb310aa29e37f551ec398be1e8b629260c956cb66df54bb05"
+    },
+    "source-metadata/manifest.json": {
+      "bytes": 22617055,
+      "sha256": "2a0a8807ffaae25b3596a387e47f42e5893d9a83ee64d161d029712d0acaced9"
+    },
+    "source-metadata/native-inventory-source-delta-v1.json": {
+      "bytes": 792,
+      "sha256": "0d791ace3ccbc1e566fe51b94ca3cf89e6ce9d77a8443cb2bfd68f63b63d8d2b"
+    }
+  },
+  "owned_container_checks": 6,
+  "permitsDestinationWrites": false,
+  "private_custody": {
+    "ciphertext_bytes": 25358806,
+    "ciphertext_sha256": "ad89932d69765127bdf955c4471a6dfb806a1507d1fa7fea4aceab8c6dc3001a",
+    "plaintext_bytes": 25358165,
+    "plaintext_sha256": "563358dac6487b5dc7565db7e809e2ef259028becf5b483df923e5ca43d76f6e",
+    "private_key_remained_on_windows": true
+  },
+  "run_id": 45437316090,
+  "schema": "native-inventory-private-recipient-audit-v1",
+  "selected_methods": [
+    "TestNativeTreeInventoryBindsDetachedNativeHeads",
+    "TestNativeTreeInventoryRefusesMalformedNativeHeads",
+    "TestNativeTreeInventoryRefusesUnownedOrCorruptCapture"
+  ],
+  "semanticCompleteness": false,
+  "status": "PASS",
+  "subtest_passes": 10,
+  "top_level_passes": 3
+}

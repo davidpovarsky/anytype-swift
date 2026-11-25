@@ -135,11 +135,12 @@ public final class PinkhaHeartSemanticAnchorClient {
         // This is deliberately an owned, unstructured task. Cancelling the
         // caller after dispatch must not cancel normal ObjectShow readback.
         return try await Task { @MainActor in
-            try await self.finishQueuedCapture(pending)
+            try await self.finishQueuedCapture(pending, preflight: current)
         }.value
     }
 
-    private func finishQueuedCapture(_ pending: PinkhaHeartSemanticAnchorPending) async throws
+    private func finishQueuedCapture(_ pending: PinkhaHeartSemanticAnchorPending,
+                                     preflight: Anytype_Rpc.Object.Show.Response) async throws
         -> PinkhaHeartSemanticAnchorVerifiedCapture {
         do {
             pending.applyTrace.record(.checkingQueuedOwner)
@@ -153,7 +154,7 @@ public final class PinkhaHeartSemanticAnchorClient {
             let reply = try PinkhaHeartSemanticAnchorAppliedReply.decode(raw, request: pending.plan.request)
             pending.applyTrace.recordDecodedReply(eventBytes: reply.responseEvent.count)
             pending.applyTrace.record(.validatingEvent)
-            let event = try pending.plan.validatedEvent(reply)
+            let event = try pending.plan.validatedEvent(reply, preflight: preflight)
             pending.applyTrace.record(.checkingEventOwner)
             try pending.validateOwner()
             // Publish the unchanged returned native event through the original

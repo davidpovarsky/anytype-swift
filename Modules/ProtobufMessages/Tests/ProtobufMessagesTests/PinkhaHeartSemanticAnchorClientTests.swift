@@ -112,6 +112,29 @@ private final class HeartCaptureProbe {
 
 @MainActor
 final class PinkhaHeartSemanticAnchorClientTests: XCTestCase {
+
+    func testProjectionAndMarksPublishTheOriginalNativeEventWithNoAdditionalRead() async throws {
+        let probe = try HeartCaptureProbe()
+        let values = HeartCaptureFixture.projectionValues()
+        probe.before = try HeartCaptureFixture.withProjection(probe.before, values: values)
+        probe.after = try HeartCaptureFixture.withProjection(probe.after, values: values)
+        probe.reply = try HeartCaptureFixture.projectionReply(values: values)
+        let expected = try PinkhaHeartSemanticAnchorAppliedReply.decode(probe.reply, request: probe.plan.request)
+        let client = probe.client()
+        let verified = try await client.apply(client.prepare(probe.plan, lease: probe.lease))
+        XCTAssertEqual(verified.receipt.marker, probe.plan.request.marker)
+        XCTAssertEqual(probe.calls, ["version", "read-before", "capture", "publish", "read-after"])
+        XCTAssertEqual(probe.requests.count, 1)
+        XCTAssertEqual(probe.published.count, 1)
+        XCTAssertEqual(probe.stateDeliveries, 1)
+        let event = try XCTUnwrap(probe.published.first)
+        XCTAssertEqual(event.messages.count, 2)
+        XCTAssertEqual(try event.serializedData(), expected.responseEvent)
+        XCTAssertTrue(try XCTUnwrap(probe.publicationFence).matches(event: event))
+        XCTAssertNil(PinkhaHeartSemanticAnchorPublication.current)
+    }
+
+
     func testVerifiedFixturePublishesReturnedEventBeforeReadbackOnce() async throws {
         let probe = try HeartCaptureProbe()
         let handler = HeartCaptureInvocationHandler()

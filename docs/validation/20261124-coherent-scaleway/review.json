@@ -1,0 +1,34 @@
+{
+  "base": "56b671af49e01fa1c6d03df457886b8146648cc7",
+  "buildsExecuted": 0,
+  "changedFields": [
+    "jobs.actual-native-and-ui.runs-on",
+    "jobs.actual-native-and-ui.env.DEVELOPER_DIR"
+  ],
+  "condition": "inputs.acceptance_lane == coherent-heart-release",
+  "developerDir": "/Applications/Xcode.app/Contents/Developer",
+  "dispatch": {
+    "acceptance_device": "ipad",
+    "acceptance_lane": "coherent-heart-release",
+    "acceptance_language": "en",
+    "route": "wave15-acceptance",
+    "runtime_profile": "r15-attachment-authorized-current-read-v1",
+    "source_run_id": "45091223011"
+  },
+  "executionPrerequisite": "Use source containing verified Return/RTL fixes. Current Return-only build is not acceptance of this full one-App/one-UI union.",
+  "existingAssertionsSelectorsBudgetsAndControlsUnchanged": true,
+  "fullAcceptance": false,
+  "otherLaneRoutesUnchanged": true,
+  "otherWorkflowFieldsUnchanged": true,
+  "productTestsExecuted": 0,
+  "runnerLabels": [
+    "self-hosted",
+    "macOS",
+    "ARM64",
+    "pinkha-scaleway-mac"
+  ],
+  "schemaVersion": 1,
+  "status": "ROUTING_SOURCE_READY_RUNTIME_NOT_RUN",
+  "wholeFileLiteralInverse": true,
+  "workflow": ".github/workflows/pinkha-simulator-ui27.yml"
+}

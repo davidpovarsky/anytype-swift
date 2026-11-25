@@ -1,0 +1,259 @@
+mw lib: build on 0001-01-01 00:00:00 +0000 UTC at #d98420b1113536afd08cde6de9a5816f6d27ffff
+=== RUN   TestIndependentMemberACLTransport
+2026-11-24T16:01:48.510Z	[34mINFO[0m	client.space.localdiscovery	local discovery: no native discovery proxy installed, using zeroconf
+2026-11-24T16:01:48.510Z	[34mINFO[0m	anytype-app	starting app	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-native-t5-lookup-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-torah-attachment-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-current-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-authorized-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00", "appVersion": "ios:0.51.0/middle:v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-native-t5-lookup-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-torah-attachment-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-current-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-authorized-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00/any-sync:"}
+2026-11-24T16:01:48.511Z	[33mWARN[0m	anytype-config	using sqlite storage
+### lenient true
+2026-11-24T16:01:48.546Z	[33mWARN[0m	common.nodeconf	periodic call error	{"error": "unable to connect"}
+2026-11-24T16:01:48.546Z	[34mINFO[0m	client.space.localdiscovery	net interfaces configuration changed	{"ifaces": ["eth0"]}
+2026-11-24T16:01:48.546Z	[34mINFO[0m	client.space.localdiscovery	own lan addresses	{"addrs": ["eth0 172.18.0.3/16 advertised"]}
+2026-11-24T16:01:48.546Z	[34mINFO[0m	client.space.localdiscovery	starting mdns server	{"ips": ["172.18.0.3"], "port": 44855, "peerId": "12D3KooWKM2GXSR1zmdT6SYKVpGd1XiVDMeqryCow41foVkxDnxG", "linkLocalIfaces": []}
+2026-11-24T16:01:48.570Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreihsnwaewyhvv6zfopl6qvy6qu7eohrs2g7cl2mf7mvsds4z4s2tvi.hbyuymguiw0a", "spaceId": "bafyreihsnwaewyhvv6zfopl6qvy6qu7eohrs2g7cl2mf7mvsds4z4s2tvi.hbyuymguiw0a", "accountStatus": "Unknown"}
+2026-11-24T16:01:48.571Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreihsnwaewyhvv6zfopl6qvy6qu7eohrs2g7cl2mf7mvsds4z4s2tvi.hbyuymguiw0a"}
+2026-11-24T16:01:49.105Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-24T16:01:49.105Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-24T16:01:49.106Z	[33mWARN[0m	anytype-mw-configfetcher	periodic call error	{"error": "unable to connect"}
+2026-11-24T16:01:49.112Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-24T16:01:49.112Z	[31mERROR[0m	nameservice.nameserviceclient	no ns peers configured. Maybe you're on a custom network. Node config ID: 
+2026-11-24T16:01:49.112Z	[31mERROR[0m	anytype-identity	error fetching global name of our own identity from Naming Service	{"error": "no namingNode peers configured. Maybe you're on a custom network. Node config ID: "}
+2026-11-24T16:01:49.112Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T16:01:49.112Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T16:01:49.113Z	[31mERROR[0m	heart.inboxclient	inbox: fetchMessages batch error	{"error": "unable to connect"}
+2026-11-24T16:01:49.950Z	[31mERROR[0m	common.commonspace.spacestorage	failed to open spacestore	{"spaceId": "bafyreiag4hsoi4fnphwjqhasgp7rkmdqdtvjtoffq66yx7bpquknyn6ywa.hf8jbxcbeyci", "isCorrupted": false, "code": "SQLITE_ERROR", "error": "space storage missing"}
+2026-11-24T16:01:50.113Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "1s"}
+2026-11-24T16:01:50.113Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T16:01:50.113Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T16:01:50.161Z	[34mINFO[0m	common.commonspace.headsync	sync done:	{"spaceId": "bafyreiag4hsoi4fnphwjqhasgp7rkmdqdtvjtoffq66yx7bpquknyn6ywa.hf8jbxcbeyci", "newIds": 144, "changedIds": 1, "removedIds": 0, "already deleted ids": 1, "peerId": "12D3KooWR1kqfcwuCY431APFg6NCU34DSY458u5atWFbfh1fBeKU"}
+2026-11-24T16:01:52.113Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "2s"}
+2026-11-24T16:01:52.113Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T16:01:52.113Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T16:01:55.114Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "3s"}
+2026-11-24T16:01:55.114Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T16:01:55.114Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T16:01:59.114Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "4s"}
+2026-11-24T16:01:59.114Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T16:01:59.114Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T16:01:59.143Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-24T16:02:04.115Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "5s"}
+2026-11-24T16:02:04.115Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T16:02:04.115Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T16:02:05.147Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreiag4hsoi4fnphwjqhasgp7rkmdqdtvjtoffq66yx7bpquknyn6ywa.hf8jbxcbeyci", "spaceId": "bafyreiag4hsoi4fnphwjqhasgp7rkmdqdtvjtoffq66yx7bpquknyn6ywa.hf8jbxcbeyci", "accountStatus": "Active", "aclHeadId": "bafyreifuggldf4rm37v3xeuhoszpiiucgfw6j4wiec7ms3pyrga5lt4z7q"}
+2026-11-24T16:02:05.148Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreiag4hsoi4fnphwjqhasgp7rkmdqdtvjtoffq66yx7bpquknyn6ywa.hf8jbxcbeyci"}
+2026-11-24T16:02:05.148Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-24T16:02:05.158Z	[33mWARN[0m	common.object.treemanager	can't load missing tree	{"treeId": "bafyreie476lpurwv5yyh5eagbpuvzcxqhxf3zea2pmprxrkrjysbyndgey", "error": "build tree: tree does not exist"}
+2026-11-24T16:02:05.159Z	[33mWARN[0m	common.object.treemanager	can't load missing tree	{"treeId": "bafyreiby2e2etanhideesnoix62v45glwronbgy4jp7dgdlemtykwpz2j4", "error": "build tree: tree does not exist"}
+2026-11-24T16:02:05.159Z	[33mWARN[0m	common.object.treemanager	can't load missing tree	{"treeId": "bafyreifciex6oqmzzw6qunioe6ewbgj6akcxelxhkkbgeerjejgn5vp4oq", "error": "build tree: tree does not exist"}
+2026-11-24T16:02:05.159Z	[33mWARN[0m	common.object.treemanager	can't load missing tree	{"treeId": "bafyreigjpgh6cxytzoykvmywify7h2bppz7zpw2mokhxyd7qi6gk73gcp4", "error": "build tree: tree does not exist"}
+2026-11-24T16:02:05.159Z	[33mWARN[0m	common.object.treemanager	can't load missing tree	{"treeId": "bafyreicwc6km3ax34dnmm7mspxy7srqa43cet3g6mcl3enzokqtooq2lh4", "error": "build tree: tree does not exist"}
+2026-11-24T16:02:05.159Z	[33mWARN[0m	common.object.treemanager	can't load missing tree	{"treeId": "bafyreiauhcgwzzkngi7g7cam4iduyg3kjivfmnl7e5s4cwqpnr5gjzjbvu", "error": "build tree: tree does not exist"}
+2026-11-24T16:02:05.160Z	[31mERROR[0m	nameservice.nameserviceclient	no ns peers configured. Maybe you're on a custom network. Node config ID: 
+2026-11-24T16:02:05.160Z	[31mERROR[0m	anytype-identity	error fetching global names of guest identities from Naming Service	{"error": "no namingNode peers configured. Maybe you're on a custom network. Node config ID: "}
+2026-11-24T16:02:05.160Z	[33mWARN[0m	common.object.treemanager	can't load missing tree	{"treeId": "bafyreidzd736kmvtagv3mgerutp4xmwyi4lhiwzsa7bkmnthw6s3nsxknq", "error": "build tree: tree does not exist"}
+2026-11-24T16:02:05.160Z	[31mERROR[0m	common.components.aclobjectmanager	process(): error processing acl	{"error": "invalid key"}
+2026-11-24T16:02:05.179Z	[33mWARN[0m	common.object.treemanager	can't load missing tree	{"treeId": "bafyreifikhav637iv32qeao6pfpm7qhe56svu4pi7lmyvl6rmz6xzrrnhq", "error": "build tree: tree does not exist"}
+2026-11-24T16:02:05.349Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.349Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.349Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.350Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.350Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.350Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.351Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.351Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.351Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.351Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.352Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.352Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.352Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.352Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.353Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.354Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.355Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.355Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.355Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.355Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.356Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.356Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.358Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.360Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.360Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.361Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.362Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.363Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.363Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.364Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.364Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.365Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.365Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.366Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.366Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.367Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.367Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.368Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.368Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.368Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.370Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.371Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.371Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.372Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.372Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.372Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.372Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.373Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.373Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.373Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.374Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.374Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.374Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.374Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.374Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.375Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.375Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.376Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.377Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.377Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.378Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.378Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.378Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.379Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.379Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.379Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.379Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.380Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.384Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.384Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.385Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.385Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.386Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.386Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.387Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.387Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.389Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.389Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.390Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.390Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.392Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.392Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.393Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.394Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.394Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.395Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.395Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.395Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.395Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.396Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.396Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.397Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.397Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.398Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.452Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.452Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.453Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.453Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.453Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.454Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.455Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.455Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.456Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.456Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.456Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.457Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.457Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.457Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.458Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.458Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.458Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.459Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.459Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.460Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.460Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.460Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.461Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.462Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.465Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.465Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.466Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.467Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.468Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.470Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.470Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.471Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.471Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.472Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.472Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:05.474Z	[33mWARN[0m	client.space	load bundled objects	{"duration": "318.025084ms"}
+2026-11-24T16:02:05.474Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:09.144Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-24T16:02:10.115Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "6s"}
+2026-11-24T16:02:10.116Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-24T16:02:10.116Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-24T16:02:10.158Z	[31mERROR[0m	common.acl.syncacl	broadcast acl message error	{"error": "mb: overflowed"}
+2026-11-24T16:02:10.163Z	[31mERROR[0m	common.components.aclobjectmanager	UpdateAcl: error processing acl	{"error": "invalid key"}
+2026-11-24T16:02:10.163Z	[34mINFO[0m	common.commonspace.headsync	sync done:	{"spaceId": "bafyreiag4hsoi4fnphwjqhasgp7rkmdqdtvjtoffq66yx7bpquknyn6ywa.hf8jbxcbeyci", "newIds": 0, "changedIds": 115, "removedIds": 0, "already deleted ids": 0, "peerId": "12D3KooWR1kqfcwuCY431APFg6NCU34DSY458u5atWFbfh1fBeKU"}
+2026-11-24T16:02:10.598Z	[34mINFO[0m	client.space.localdiscovery	net interfaces configuration changed	{"ifaces": []}
+2026-11-24T16:02:10.599Z	[33mWARN[0m	common.commonspace.peermanager	failed to get local from net pool	{"peerId": "12D3KooWR1kqfcwuCY431APFg6NCU34DSY458u5atWFbfh1fBeKU", "error": "get local peer: dial tcp 172.18.0.2:37311: connect: network is unreachable"}
+2026-11-24T16:02:11.405Z	[34mINFO[0m	client.space.localdiscovery	net interfaces configuration changed	{"ifaces": ["eth0"]}
+2026-11-24T16:02:11.405Z	[34mINFO[0m	client.space.localdiscovery	own lan addresses	{"addrs": ["eth0 172.18.0.3/16 advertised"]}
+2026-11-24T16:02:11.405Z	[34mINFO[0m	client.space.localdiscovery	starting mdns server	{"ips": ["172.18.0.3"], "port": 44855, "peerId": "12D3KooWKM2GXSR1zmdT6SYKVpGd1XiVDMeqryCow41foVkxDnxG", "linkLocalIfaces": []}
+2026-11-24T16:02:11.407Z	[31mERROR[0m	common.acl.syncacl	broadcast acl message error	{"error": "mb: overflowed"}
+2026-11-24T16:02:11.408Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreiag4hsoi4fnphwjqhasgp7rkmdqdtvjtoffq66yx7bpquknyn6ywa.hf8jbxcbeyci", "spaceId": "bafyreiag4hsoi4fnphwjqhasgp7rkmdqdtvjtoffq66yx7bpquknyn6ywa.hf8jbxcbeyci", "accountStatus": "Deleted"}
+2026-11-24T16:02:11.408Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-24T16:02:11.809Z	[34mINFO[0m	anytype-core-account	closing app: initiated	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-native-t5-lookup-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-torah-attachment-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-current-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-authorized-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00"}
+2026-11-24T16:02:11.860Z	[31mERROR[0m	deviceService	failed to get device object: failed to derive device object: put tree: context canceled
+2026-11-24T16:02:11.860Z	[31mERROR[0m	notifications	failed to derive notification object: put tree: context canceled
+2026-11-24T16:02:11.860Z	[31mERROR[0m	acl-notifications	failed to send notifications: failed to update notification object: object not found
+2026-11-24T16:02:11.863Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-24T16:02:11.910Z	[31mERROR[0m	common.acl.aclservice	wait message	{"error": "context canceled"}
+2026-11-24T16:02:11.910Z	[31mERROR[0m	fileobject	index loop: wait for index request: context canceled
+2026-11-24T16:02:11.910Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreihsnwaewyhvv6zfopl6qvy6qu7eohrs2g7cl2mf7mvsds4z4s2tvi.hbyuymguiw0a", "error": "context canceled"}
+2026-11-24T16:02:11.935Z	[31mERROR[0m	anytype-mw-smartblock	index object bafyreicj5xueayjx3zcgzdl2sqovcqkihkxhf27ampxnqri7qgphwbo4pa error: context canceled
+2026-11-24T16:02:11.936Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreib2a4sviqhri25ejmpwjxxgq7ve7ktlcywl3l7yvdrxwbn63fidry.hbyuymguiw0a", "error": "context canceled"}
+2026-11-24T16:02:11.936Z	[33mWARN[0m	common.commonspace	call space.Close on closed space	{"id": "bafyreib2a4sviqhri25ejmpwjxxgq7ve7ktlcywl3l7yvdrxwbn63fidry.hbyuymguiw0a"}
+2026-11-24T16:02:11.936Z	[31mERROR[0m	net.transport.quic	listener closed with error	{"localAddr": "[::]:44855", "error": "context canceled"}
+2026-11-24T16:02:11.936Z	[31mERROR[0m	net.transport.yamux	listener closed with error	{"localAddr": "[::]:44855", "error": "accept tcp [::]:44855: use of closed network connection"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreih6jndt2xp6hnppw4t3mkqkouy2lnoakarexqqz26idzbjj3llsey", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreig3stjrsgwcvqo7wcp2oytywfxmonr7i7rfty6rcpykacmbp33s6q", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibm7yfcileodrslhwukdmhwaev7dpcemw4kepf7invs5ocud6g3da", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiagfshwv2doeh5tjp54wwrmt2zn7jgbkimufk4p7znheskbj5gz4y", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreig3kpc3qv7a5uuxl33jcowzn2zss6sehiswxnxnrr4t4hkydrum6m", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreih3zv236w7jlc3gfxmpzmcymgyfd7iqhrfnaqujshdzcv7m5x67bm", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiawv7xekrc2g46posyciqhtz2bsnsgn4tvlekrwqkc6744jurb4e4", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiejefmicfqvvki4sl6jmh7qrrft6ymumibrrg6armbyxui2ecwcsm", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidllbkhke6esdnsye4sr4yypadzzevfdsi3s5jhvkd5lgcuitgqq4", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidll257aybuepikler5rrjtgwipfvtjcx7lmapxf5qgnla5brjjmm", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreick5hzm4qazgln7mebandgus2rse2gdjqoywk2xhp36wvmmxz6lqe", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreihsky7gmelgrfm4ph5qgpycmtiam2j47mg3v6rer4mmclwhf2gnrq", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigzo4m27zid5xpj4gdxjddm3ocbpouxs46myaqcvqfv2nol4kfenu", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidg4wb2s7o7if4yjgotp6u35vw5viy6p2iiqajziueoexgdzfrmtu", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigjpgh6cxytzoykvmywify7h2bppz7zpw2mokhxyd7qi6gk73gcp4", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreier4yru567bea6gzm6yskll4py3inwdxiqvhg3pufspow5xpigdda", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreia575tlqmknpie2booyndvshxxrc3tupox3covc6ps32wulm7wa7a", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreie3q3pksabycb45m5abx2pcawfyick342x5bh5jmnki7mnjxbbxb4", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreif2g7lbrzsoejduxjfvdlsfyflbfxleveel3usnzthfxq462jwrxe", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiaaxb2hyfk6otyvfkmw5ml6kqc4jcb5xhcixrrxslzplyg4vcijui", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidjbp5o6orcjh6deiow2zamocfo3wkfp4bzbycrrfzbuehbyyxyai", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigqjw35m4krushe4hzy4nv5tqxyg3tgszyzn5zhb42jjf3pllngde", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigurqzfnxcvy7dxpidoefyntkdvoehzhbaqxivoka3wutisrbsqrm", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreianhlb45vgik2q5wbjbc4gzuat6hluwuodpu6px625kauucbdly3m", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreib4fatldekly4sgl6bhga3neloxi2pssz3dr3tka4j7lemdfnc24y", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreia7lekuzuguqkpibmrbkolctlgw6pffre3giud2topjjswy62kgk4", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiaptyxngqtwigdbemrhvj75ciwwlqrp3z4cubq4jldj65wougkzom", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreihug6kgm2ibc5xpqtgkod7pmxu5mhtszwnd7qav5rjmc3xx2gl7ny", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidclcb6n7kqvcqhqfj3mwxzbds46rn6bu2dinyoqejsxpntfucu4y", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicfwou2h6xwk25aqrcr72kairsherfx62fzfaz6wn6sot2db6o2um", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifciex6oqmzzw6qunioe6ewbgj6akcxelxhkkbgeerjejgn5vp4oq", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigiay5or2be6ynawwyxkmhavp66qed3kt7z3lubwx7sam6vpnqfya", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifzohkqa6adbufiutakn3oqkicwthzkbqh6wzxt5ty2kov6nem24u", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiaa3jh7ledvqzkr3taf5nap4eytxno5vwixz2wsbvwjqcglbse24q", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiby2e2etanhideesnoix62v45glwronbgy4jp7dgdlemtykwpz2j4", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreianewa7udmkufk3llq7qvrxsuqyekn74o44rtbsqz5vj2m5dpdmzi", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreie476lpurwv5yyh5eagbpuvzcxqhxf3zea2pmprxrkrjysbyndgey", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifbq55a6aolc5k64jyfeqrw55e3ubalq2iqijlio7k43fm3emlowm", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibeyvgia3u6khytzzqhwuj5trm3okwm2e3joocwufklyht3nodima", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifikhav637iv32qeao6pfpm7qhe56svu4pi7lmyvl6rmz6xzrrnhq", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigpgigxf2w7uwb3cfaohqttwwy4gtiediyubzthbni6ocpweyomqi", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiawkagqvhq7q356nd6wyk7agrcdxdemszbla6qtdobo6l3afhgsjy", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.937Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibtextfff3eftfmpokqf36encbm273y42rgbzmwkjikwyff7zfz3a", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-24T16:02:11.943Z	[34mINFO[0m	anytype-core-account	closing app: finished	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-native-t5-lookup-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-torah-attachment-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-current-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-authorized-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00", "tookMs": 83}
+[anytype-heart] Shutdown: graceful shutdown finished
+--- PASS: TestIndependentMemberACLTransport (23.44s)
+PASS

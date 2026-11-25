@@ -1,0 +1,107 @@
+{
+  "devices" : [
+    {
+      "architecture" : "arm64",
+      "deviceId" : "18F05D2E-3B4F-4CE5-A126-F295C837C493",
+      "deviceName" : "Pinkha-UI27-45423982997-ipad",
+      "modelName" : "iPad Pro 13-inch (M5)",
+      "osBuildNumber" : "24A434",
+      "osVersion" : "27.0",
+      "platform" : "iOS Simulator"
+    }
+  ],
+  "testNodes" : [
+    {
+      "children" : [
+        {
+          "children" : [
+            {
+              "children" : [
+                {
+                  "duration" : "0,045s",
+                  "durationInSeconds" : 0.044587135314941406,
+                  "name" : "An unchanged acknowledged model never emits a whole-value native write",
+                  "nodeIdentifier" : "PinkhaNativeTextAcknowledgementTests/unchangedNativeSnapshotDoesNotWrite()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/PinkhaNativeTextAcknowledgementTests/unchangedNativeSnapshotDoesNotWrite()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                },
+                {
+                  "duration" : "0,0025s",
+                  "durationInSeconds" : 0.0024738311767578125,
+                  "name" : "A failed native write remains retryable even when the optimistic model matches",
+                  "nodeIdentifier" : "PinkhaNativeTextAcknowledgementTests/optimisticFailureRequiresNativeRetry()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/PinkhaNativeTextAcknowledgementTests/optimisticFailureRequiresNativeRetry()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                },
+                {
+                  "duration" : "0,0057s",
+                  "durationInSeconds" : 0.005739927291870117,
+                  "name" : "Canonically equal strings with different UTF-8 still persist the accepted bytes",
+                  "nodeIdentifier" : "PinkhaNativeTextAcknowledgementTests/canonicallyEquivalentUTF8RequiresNativeWrite()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/PinkhaNativeTextAcknowledgementTests/canonicallyEquivalentUTF8RequiresNativeWrite()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                },
+                {
+                  "duration" : "0,00037s",
+                  "durationInSeconds" : 0.00036907196044921875,
+                  "name" : "An identical in-flight callback receives the native failure instead of false success",
+                  "nodeIdentifier" : "PinkhaNativeTextAcknowledgementTests/identicalInFlightCallbackWaitsForTheNativeResult()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/PinkhaNativeTextAcknowledgementTests/identicalInFlightCallbackWaitsForTheNativeResult()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                },
+                {
+                  "duration" : "0,00083s",
+                  "durationInSeconds" : 0.0008296966552734375,
+                  "name" : "A later accepted edit waits for the older write and survives that write failing",
+                  "nodeIdentifier" : "PinkhaNativeTextAcknowledgementTests/laterTextIsSerializedAfterFailedNativeWrite()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/PinkhaNativeTextAcknowledgementTests/laterTextIsSerializedAfterFailedNativeWrite()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                },
+                {
+                  "duration" : "0,00079s",
+                  "durationInSeconds" : 0.0007898807525634766,
+                  "name" : "A queued A to B to A reversal is not mistaken for an unchanged model",
+                  "nodeIdentifier" : "PinkhaNativeTextAcknowledgementTests/queuedReversalPreservesTheFinalAcceptedText()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/PinkhaNativeTextAcknowledgementTests/queuedReversalPreservesTheFinalAcceptedText()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                },
+                {
+                  "duration" : "0,00018s",
+                  "durationInSeconds" : 0.00017714500427246094,
+                  "name" : "A failed local payload does not turn an unchanged peer value into a new LWW write",
+                  "nodeIdentifier" : "PinkhaNativeTextAcknowledgementTests/failedPayloadDoesNotRewriteANewRemoteValue()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/PinkhaNativeTextAcknowledgementTests/failedPayloadDoesNotRewriteANewRemoteValue()",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                }
+              ],
+              "name" : "Native acknowledgement of optimistic text",
+              "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests/PinkhaNativeTextAcknowledgementTests",
+              "nodeType" : "Test Suite",
+              "result" : "Passed"
+            }
+          ],
+          "name" : "AnytypeTests",
+          "nodeIdentifierURL" : "test://com.apple.xcode/Anytype/AnytypeTests",
+          "nodeType" : "Unit test bundle",
+          "result" : "Passed"
+        }
+      ],
+      "name" : "AnytypeTests",
+      "nodeType" : "Test Plan",
+      "result" : "Passed"
+    }
+  ],
+  "testPlanConfigurations" : [
+    {
+      "configurationId" : "1",
+      "configurationName" : "Configuration 1"
+    }
+  ]
+}

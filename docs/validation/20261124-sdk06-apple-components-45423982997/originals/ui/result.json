@@ -1,0 +1,78 @@
+{
+  "status": "FAIL",
+  "selected": [
+    "HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation"
+  ],
+  "phase": "EXECUTION",
+  "prefix": "wave15-hanlin-native",
+  "command_exit_code": 65,
+  "time_budget": {
+    "default_seconds": 300,
+    "maximum_seconds": 300,
+    "method_seconds": {
+      "HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation": 300
+    },
+    "total_method_seconds": 300
+  },
+  "ui_scope": "WAVE15_ACCEPTANCE",
+  "expected_selected_methods": 1,
+  "release_accepted": false,
+  "full_matrix_accepted": false,
+  "error_type": "CalledProcessError",
+  "error": "Command '['xcodebuild', 'test-without-building', '-xctestrun', '/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/sdk06-original-native-derived-45423982997-1-ui/Build/Products/UI27-wave15-hanlin-native.xctestrun', '-destination', 'platform=iOS Simulator,id=18F05D2E-3B4F-4CE5-A126-F295C837C493', '-parallel-testing-enabled', 'NO', '-test-timeouts-enabled', 'YES', '-default-test-execution-time-allowance', '300', '-maximum-test-execution-time-allowance', '300', '-only-testing:PinkhaStage1AcceptanceUITests/HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation', '-resultBundlePath', '/Users/m1/builds/actions-anytype/anytype-swift/anytype-swift/build/sdk06-original-native-evidence-45423982997-1/ui/wave15-hanlin-native.xcresult']' returned non-zero exit status 65.",
+  "passed": 0,
+  "failed": 1,
+  "skipped": 0,
+  "actual_methods": {
+    "HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation()": "Failed"
+  },
+  "public_diagnostics": {
+    "schema": 1,
+    "kind": "SELECTION",
+    "diagnostic_only": true,
+    "reported_status": "FAIL",
+    "phase": "EXECUTION",
+    "expected_count": 1,
+    "command_exit_code": 65,
+    "error_category": "COMMAND_EXIT",
+    "reported_counts": {
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0
+    },
+    "summary_counts": {
+      "total": 1,
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0
+    },
+    "selector_results": [
+      {
+        "selector_index": 0,
+        "result": "Failed"
+      }
+    ],
+    "unexpected_method_count": 0,
+    "failures": [
+      {
+        "selector_index": 0,
+        "category": "ASSERTION"
+      }
+    ],
+    "omitted_failure_count": 0
+  },
+  "original_native_origin": {
+    "mode": "ORIGINAL_NATIVE_PRODUCTS_EXACT_RESTORATION",
+    "original_source_sha": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+    "original_run_id": "45139431216",
+    "original_run_attempt": "1",
+    "original_artifact_id": 14803859457,
+    "original_artifact_sha256": "af9ae3c1736b7eea395160c5cebabfe394bc11cfe083cc62df682ce870dea81b",
+    "original_native_archive_sha256": "478d17c0517a983830410d80b1f9630e42fb09e2293a2360d91ebf887a7ed18a",
+    "original_descriptor_sha256": "4a2868235a870acf7567dfed7e00bd95079189cc9cc757c07cc28498265bedc2",
+    "original_workflow_conclusion": "failure",
+    "original_product_tests_executed": 0
+  },
+  "controller_source_sha": "95cd30c9e0d70fec368a1605a21b155a652a7afd",
+  "build_mode": "FIRST_CURRENT_UI_ONLY_BUILD"
+}

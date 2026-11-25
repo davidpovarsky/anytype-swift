@@ -1,0 +1,1367 @@
+{
+  "actual_fail": 0,
+  "actual_named_pass": 2,
+  "actual_native_processes": 2,
+  "actual_skip": 0,
+  "app_capability": "OFF",
+  "app_sha": "a7ff33c7128ff706a0ed25bd4a777e7cc62269bb",
+  "binary_sha256": "48952ff60bded34b6683318ecfc29a23c31d0f42f1272fd4d6bfb576e0851ddb",
+  "build_receipt_sha256": "065ec97ebbbfb078efcea2678dc483514e05820bb4b2fce30c341a16e3b2cc25",
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8"
+      ],
+      "finished_at": "2026-11-24T16:01:47.594387+00:00",
+      "name": "inspect-native-image",
+      "output_sha256": "802603c1312de2be94ca2cb9cc2336f75ab0dc3ac39563929ed5995a6e503c04",
+      "pid": 16345,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "create",
+        "--driver",
+        "bridge",
+        "--internal",
+        "--label",
+        "pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "pinkha-t2-854376191b6541a7"
+      ],
+      "finished_at": "2026-11-24T16:01:47.627289+00:00",
+      "name": "create-owned-lan",
+      "output_sha256": "8d12c6d72f6f97f2455a0a2f735c115588b02c2bc772ebf649b9ac86986a62d0",
+      "pid": 16353,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^pinkha-t2-854376191b6541a7$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:01:47.643857+00:00",
+      "name": "find-owned",
+      "output_sha256": "5b80b3aaa94a6d38b5f61a322e531461664dc1b5ddbe42052bc7836517c4da5f",
+      "pid": 16379,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "8dc64d82d761"
+      ],
+      "finished_at": "2026-11-24T16:01:47.660401+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "3e699fe4dff8a35348cc56c8580fc9a8aef71f8ed9a0f0ad7e17276b28f061cf",
+      "pid": 16387,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "create",
+        "--name",
+        "pinkha-t2-854376191b6541a7-member-acl-owner",
+        "--label",
+        "pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--platform",
+        "linux/amd64",
+        "--network",
+        "pinkha-t2-854376191b6541a7",
+        "--read-only",
+        "--init=false",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--user",
+        "1001:1001",
+        "--cpus",
+        "1",
+        "--memory",
+        "2g",
+        "--pids-limit",
+        "256",
+        "--workdir",
+        "/private",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,size=128m,mode=1777",
+        "--mount",
+        "type=bind,src=/home/runner/work/anytype-swift/anytype-swift/member-acl-private/owner,dst=/private",
+        "--mount",
+        "type=bind,src=/home/runner/work/anytype-swift/anytype-swift/native-work/build/client-runtime/native.test,dst=/fixture/native.test,readonly",
+        "-e",
+        "PINKHA_MEMBER_ACL_ROLE=owner",
+        "-e",
+        "PINKHA_T2_CLIENT_NONCE=854376191b6541a7987502d98200b404",
+        "-e",
+        "PINKHA_T2_CLIENT_FIXTURE_SHA=bc3ac46b2cf4797fe1b9bdafcd9629599f5a518569a6d54e387900b99b924f37",
+        "-e",
+        "PINKHA_COHERENT_PEER_PHASE=independent-member",
+        "-e",
+        "PINKHA_COHERENT_RUNTIME_VERSION=v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-native-t5-lookup-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-torah-attachment-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-current-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-authorized-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00",
+        "-e",
+        "GOMAXPROCS=2",
+        "-e",
+        "GOMEMLIMIT=768MiB",
+        "golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8",
+        "/fixture/native.test",
+        "-test.run",
+        "^TestIndependentMemberACLTransport$",
+        "-test.count=1",
+        "-test.v",
+        "-test.timeout=1200s"
+      ],
+      "finished_at": "2026-11-24T16:01:47.693570+00:00",
+      "name": "create-member-owner",
+      "output_sha256": "753af09b25e46d5313db60dbb6044bf9cbb56345c9dc02b51c5947b552a4d6b5",
+      "pid": 16395,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "start",
+        "4e887d391c8dd338894ebdc41fc0345382fec99c1bbc2bfeefedbfd4fc0bfd21"
+      ],
+      "finished_at": "2026-11-24T16:01:47.809065+00:00",
+      "name": "start-member-owner",
+      "output_sha256": "753af09b25e46d5313db60dbb6044bf9cbb56345c9dc02b51c5947b552a4d6b5",
+      "pid": 16403,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "create",
+        "--name",
+        "pinkha-t2-854376191b6541a7-member-acl-member",
+        "--label",
+        "pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--platform",
+        "linux/amd64",
+        "--network",
+        "pinkha-t2-854376191b6541a7",
+        "--read-only",
+        "--init=false",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--user",
+        "1001:1001",
+        "--cpus",
+        "1",
+        "--memory",
+        "2g",
+        "--pids-limit",
+        "256",
+        "--workdir",
+        "/private",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,size=128m,mode=1777",
+        "--mount",
+        "type=bind,src=/home/runner/work/anytype-swift/anytype-swift/member-acl-private/member,dst=/private",
+        "--mount",
+        "type=bind,src=/home/runner/work/anytype-swift/anytype-swift/native-work/build/client-runtime/native.test,dst=/fixture/native.test,readonly",
+        "-e",
+        "PINKHA_MEMBER_ACL_ROLE=member",
+        "-e",
+        "PINKHA_T2_CLIENT_NONCE=854376191b6541a7987502d98200b404",
+        "-e",
+        "PINKHA_T2_CLIENT_FIXTURE_SHA=bc3ac46b2cf4797fe1b9bdafcd9629599f5a518569a6d54e387900b99b924f37",
+        "-e",
+        "PINKHA_COHERENT_PEER_PHASE=independent-member",
+        "-e",
+        "PINKHA_COHERENT_RUNTIME_VERSION=v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-native-t5-lookup-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-torah-attachment-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-current-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00-pinkha-authorized-read-v1-2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00",
+        "-e",
+        "GOMAXPROCS=2",
+        "-e",
+        "GOMEMLIMIT=768MiB",
+        "golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8",
+        "/fixture/native.test",
+        "-test.run",
+        "^TestIndependentMemberACLTransport$",
+        "-test.count=1",
+        "-test.v",
+        "-test.timeout=1200s"
+      ],
+      "finished_at": "2026-11-24T16:01:47.842509+00:00",
+      "name": "create-member-member",
+      "output_sha256": "76ac59236f9266cff88a94618981c5e5c2c88b1f57593fec3aa757d5f95f1ced",
+      "pid": 16489,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "start",
+        "95d84d37d5c405a208fc70b5a89ba458fb44dc1fea0ec2d8b0227e80426d9d3a"
+      ],
+      "finished_at": "2026-11-24T16:01:47.957563+00:00",
+      "name": "start-member-member",
+      "output_sha256": "76ac59236f9266cff88a94618981c5e5c2c88b1f57593fec3aa757d5f95f1ced",
+      "pid": 16497,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-owner$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:01:47.974268+00:00",
+      "name": "find-owned",
+      "output_sha256": "58127ca7ce521e15da195aee46ca7d23f6099c7c80b30c5290a2c396b0c769a4",
+      "pid": 16572,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "4e887d391c8d"
+      ],
+      "finished_at": "2026-11-24T16:01:47.991103+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "5f5fb2a9d9802feba303f55eb5b64f77c5cf54682a2cfcdbd53ac16c1214bf48",
+      "pid": 16580,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-owner$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:01:49.809732+00:00",
+      "name": "find-owned",
+      "output_sha256": "58127ca7ce521e15da195aee46ca7d23f6099c7c80b30c5290a2c396b0c769a4",
+      "pid": 16612,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "4e887d391c8d"
+      ],
+      "finished_at": "2026-11-24T16:01:49.826718+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "5f5fb2a9d9802feba303f55eb5b64f77c5cf54682a2cfcdbd53ac16c1214bf48",
+      "pid": 16622,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:01:49.843871+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 16630,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:01:49.860818+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "67a7b56a49bfd70a7e336414e8176801c1256ddb66f9debadfc4859abf92f526",
+      "pid": 16638,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^pinkha-t2-854376191b6541a7$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:01:49.877908+00:00",
+      "name": "find-owned",
+      "output_sha256": "5b80b3aaa94a6d38b5f61a322e531461664dc1b5ddbe42052bc7836517c4da5f",
+      "pid": 16647,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "8dc64d82d761"
+      ],
+      "finished_at": "2026-11-24T16:01:49.894772+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "264bc2be360dccb4da9b953472edc083115eb1375641da3e43f14e1c643616db",
+      "pid": 16655,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-owner$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:01:49.912234+00:00",
+      "name": "find-owned",
+      "output_sha256": "58127ca7ce521e15da195aee46ca7d23f6099c7c80b30c5290a2c396b0c769a4",
+      "pid": 16663,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "4e887d391c8d"
+      ],
+      "finished_at": "2026-11-24T16:01:49.929159+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "5f5fb2a9d9802feba303f55eb5b64f77c5cf54682a2cfcdbd53ac16c1214bf48",
+      "pid": 16671,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:01:50.147735+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 16679,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:01:50.164753+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "67a7b56a49bfd70a7e336414e8176801c1256ddb66f9debadfc4859abf92f526",
+      "pid": 16687,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:01:55.185832+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 16697,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:01:55.203108+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "104ff6da033a18032e5c9e8ba255e85dac4ed5c01c87e4acfb7ecdb1c3ea6b53",
+      "pid": 16705,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:00.224718+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 16716,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:02:00.242156+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "67a7b56a49bfd70a7e336414e8176801c1256ddb66f9debadfc4859abf92f526",
+      "pid": 16725,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:05.283391+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 16734,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:02:05.303236+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "67a7b56a49bfd70a7e336414e8176801c1256ddb66f9debadfc4859abf92f526",
+      "pid": 16742,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-owner$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:05.522265+00:00",
+      "name": "find-owned",
+      "output_sha256": "58127ca7ce521e15da195aee46ca7d23f6099c7c80b30c5290a2c396b0c769a4",
+      "pid": 16751,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "4e887d391c8d"
+      ],
+      "finished_at": "2026-11-24T16:02:05.539360+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "5f5fb2a9d9802feba303f55eb5b64f77c5cf54682a2cfcdbd53ac16c1214bf48",
+      "pid": 16759,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:05.758195+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 16768,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:02:05.775347+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "67a7b56a49bfd70a7e336414e8176801c1256ddb66f9debadfc4859abf92f526",
+      "pid": 16777,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "disconnect",
+        "8dc64d82d761e1ab7f1cb4549f86d264f9ed5ae7a91b6fead573dddd08231eea",
+        "95d84d37d5c405a208fc70b5a89ba458fb44dc1fea0ec2d8b0227e80426d9d3a"
+      ],
+      "finished_at": "2026-11-24T16:02:10.415705+00:00",
+      "name": "detach-independent-member",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 16788,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:10.433645+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 16806,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:02:10.450694+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "bc09cf09b84f0ef475ae4ffdec1cb5e0726f93d6d19b47c7af1f50d13a4a6d33",
+      "pid": 16818,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^pinkha-t2-854376191b6541a7$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:10.467856+00:00",
+      "name": "find-owned",
+      "output_sha256": "5b80b3aaa94a6d38b5f61a322e531461664dc1b5ddbe42052bc7836517c4da5f",
+      "pid": 16827,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "8dc64d82d761"
+      ],
+      "finished_at": "2026-11-24T16:02:10.484922+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "03da1128ebe9648fb87c690a83c1d84b7c50216f22862ac3ac76e6c55d8b5db5",
+      "pid": 16835,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:10.502499+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 16843,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:02:10.519595+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "bc09cf09b84f0ef475ae4ffdec1cb5e0726f93d6d19b47c7af1f50d13a4a6d33",
+      "pid": 16851,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-owner$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:10.738419+00:00",
+      "name": "find-owned",
+      "output_sha256": "58127ca7ce521e15da195aee46ca7d23f6099c7c80b30c5290a2c396b0c769a4",
+      "pid": 16859,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "4e887d391c8d"
+      ],
+      "finished_at": "2026-11-24T16:02:10.755715+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "5f5fb2a9d9802feba303f55eb5b64f77c5cf54682a2cfcdbd53ac16c1214bf48",
+      "pid": 16868,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:10.973993+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 16877,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:02:10.991224+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "bc09cf09b84f0ef475ae4ffdec1cb5e0726f93d6d19b47c7af1f50d13a4a6d33",
+      "pid": 16886,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:11.008835+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 16894,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:02:11.026014+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "bc09cf09b84f0ef475ae4ffdec1cb5e0726f93d6d19b47c7af1f50d13a4a6d33",
+      "pid": 16902,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "connect",
+        "8dc64d82d761e1ab7f1cb4549f86d264f9ed5ae7a91b6fead573dddd08231eea",
+        "95d84d37d5c405a208fc70b5a89ba458fb44dc1fea0ec2d8b0227e80426d9d3a"
+      ],
+      "finished_at": "2026-11-24T16:02:11.260877+00:00",
+      "name": "reconnect-independent-member",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 16910,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:11.278374+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 16930,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:02:11.295731+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "111e96b6836b85323368d15ca6e1a7b5e184ef4e93ab608d4fab4c0b09529f31",
+      "pid": 16938,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^pinkha-t2-854376191b6541a7$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:11.313203+00:00",
+      "name": "find-owned",
+      "output_sha256": "5b80b3aaa94a6d38b5f61a322e531461664dc1b5ddbe42052bc7836517c4da5f",
+      "pid": 16946,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "8dc64d82d761"
+      ],
+      "finished_at": "2026-11-24T16:02:11.330428+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "81a0d7f251acc093ddf3b1d074bc7183c364d4c4a6b0c9d5e50893c362f8580a",
+      "pid": 16954,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:11.348219+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 16962,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:02:11.365451+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "111e96b6836b85323368d15ca6e1a7b5e184ef4e93ab608d4fab4c0b09529f31",
+      "pid": 16970,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-owner$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:11.785033+00:00",
+      "name": "find-owned",
+      "output_sha256": "58127ca7ce521e15da195aee46ca7d23f6099c7c80b30c5290a2c396b0c769a4",
+      "pid": 16978,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "4e887d391c8d"
+      ],
+      "finished_at": "2026-11-24T16:02:11.803017+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "5f5fb2a9d9802feba303f55eb5b64f77c5cf54682a2cfcdbd53ac16c1214bf48",
+      "pid": 16986,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "wait",
+        "4e887d391c8dd338894ebdc41fc0345382fec99c1bbc2bfeefedbfd4fc0bfd21"
+      ],
+      "finished_at": "2026-11-24T16:02:12.020979+00:00",
+      "name": "wait-native-owner",
+      "output_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "pid": 17058,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-owner$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:12.038346+00:00",
+      "name": "find-owned",
+      "output_sha256": "58127ca7ce521e15da195aee46ca7d23f6099c7c80b30c5290a2c396b0c769a4",
+      "pid": 17066,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "4e887d391c8d"
+      ],
+      "finished_at": "2026-11-24T16:02:12.055635+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "7b540c1d9df0df2ebad24ad48c422032b1ebd1f8c4f686ff0105d7d572068ea7",
+      "pid": 17074,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "logs",
+        "4e887d391c8dd338894ebdc41fc0345382fec99c1bbc2bfeefedbfd4fc0bfd21"
+      ],
+      "finished_at": "2026-11-24T16:02:12.073069+00:00",
+      "name": "native-log-owner",
+      "output_sha256": "934d463a766a1cc61e3ab20eac8c3ee55ee03326e6900c9494e143be3ee2c12e",
+      "pid": 17082,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "wait",
+        "95d84d37d5c405a208fc70b5a89ba458fb44dc1fea0ec2d8b0227e80426d9d3a"
+      ],
+      "finished_at": "2026-11-24T16:02:12.091846+00:00",
+      "name": "wait-native-member",
+      "output_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "pid": 17090,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:12.109320+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 17099,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:02:12.126696+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "01401a026bed37516a9dd06772a6607c7a0d6553285ce1054840ae75b0045df1",
+      "pid": 17107,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "logs",
+        "95d84d37d5c405a208fc70b5a89ba458fb44dc1fea0ec2d8b0227e80426d9d3a"
+      ],
+      "finished_at": "2026-11-24T16:02:12.144311+00:00",
+      "name": "native-log-member",
+      "output_sha256": "a134c3662b861cdd40d9df704be6ce2587d4f241109a75952c47373bd90eea29",
+      "pid": 17115,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:12.305387+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 17125,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:02:12.323018+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "01401a026bed37516a9dd06772a6607c7a0d6553285ce1054840ae75b0045df1",
+      "pid": 17133,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-member$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:12.340573+00:00",
+      "name": "find-owned",
+      "output_sha256": "df7e8b0d0555b3883fbd6a918dadab871db50142e931619e715e9be6ef222974",
+      "pid": 17142,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "95d84d37d5c4"
+      ],
+      "finished_at": "2026-11-24T16:02:12.358150+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "01401a026bed37516a9dd06772a6607c7a0d6553285ce1054840ae75b0045df1",
+      "pid": 17151,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "rm",
+        "--force",
+        "95d84d37d5c405a208fc70b5a89ba458fb44dc1fea0ec2d8b0227e80426d9d3a"
+      ],
+      "finished_at": "2026-11-24T16:02:12.375988+00:00",
+      "name": "remove-owned",
+      "output_sha256": "76ac59236f9266cff88a94618981c5e5c2c88b1f57593fec3aa757d5f95f1ced",
+      "pid": 17160,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-owner$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:12.393672+00:00",
+      "name": "find-owned",
+      "output_sha256": "58127ca7ce521e15da195aee46ca7d23f6099c7c80b30c5290a2c396b0c769a4",
+      "pid": 17168,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "4e887d391c8d"
+      ],
+      "finished_at": "2026-11-24T16:02:12.411219+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "9f5efa5e902e27a27b94d98a96e6ab3a5b3117d6e862f03a4ce79deebf913652",
+      "pid": 17176,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "ls",
+        "--all",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^/pinkha-t2-854376191b6541a7-member-acl-owner$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:12.428924+00:00",
+      "name": "find-owned",
+      "output_sha256": "58127ca7ce521e15da195aee46ca7d23f6099c7c80b30c5290a2c396b0c769a4",
+      "pid": 17184,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "inspect",
+        "4e887d391c8d"
+      ],
+      "finished_at": "2026-11-24T16:02:12.446765+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "9f5efa5e902e27a27b94d98a96e6ab3a5b3117d6e862f03a4ce79deebf913652",
+      "pid": 17192,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "container",
+        "rm",
+        "--force",
+        "4e887d391c8dd338894ebdc41fc0345382fec99c1bbc2bfeefedbfd4fc0bfd21"
+      ],
+      "finished_at": "2026-11-24T16:02:12.464468+00:00",
+      "name": "remove-owned",
+      "output_sha256": "753af09b25e46d5313db60dbb6044bf9cbb56345c9dc02b51c5947b552a4d6b5",
+      "pid": 17200,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "ls",
+        "--filter",
+        "label=pinkha.t2.native-clients.owner=854376191b6541a7987502d98200b404",
+        "--filter",
+        "name=^pinkha-t2-854376191b6541a7$",
+        "--format",
+        "{{.ID}}"
+      ],
+      "finished_at": "2026-11-24T16:02:12.482185+00:00",
+      "name": "find-owned",
+      "output_sha256": "5b80b3aaa94a6d38b5f61a322e531461664dc1b5ddbe42052bc7836517c4da5f",
+      "pid": 17208,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "inspect",
+        "8dc64d82d761"
+      ],
+      "finished_at": "2026-11-24T16:02:12.500010+00:00",
+      "name": "inspect-owned",
+      "output_sha256": "3e699fe4dff8a35348cc56c8580fc9a8aef71f8ed9a0f0ad7e17276b28f061cf",
+      "pid": 17216,
+      "status": "PASS_EXIT_0"
+    },
+    {
+      "argv": [
+        "docker",
+        "network",
+        "rm",
+        "8dc64d82d761e1ab7f1cb4549f86d264f9ed5ae7a91b6fead573dddd08231eea"
+      ],
+      "finished_at": "2026-11-24T16:02:12.565683+00:00",
+      "name": "remove-owned-lan",
+      "output_sha256": "8d12c6d72f6f97f2455a0a2f735c115588b02c2bc772ebf649b9ac86986a62d0",
+      "pid": 17226,
+      "status": "PASS_EXIT_0"
+    }
+  ],
+  "coordinator_invite_acceptance": "NOT_RUN",
+  "discovery_bootstrap": "STATIC_OWNED_PEER_ROUTE",
+  "distinct_database_inodes": true,
+  "evidence_export": {
+    "files": {
+      "member/final.json": "d4eb8749d74dc8f910fe856458c80fe02a0ec72a5c7d8d94dc6494ebc8dba4ac",
+      "member/final.pb": "5a92d40139dd6f1d4acef8cc4e50c24d6b1d7a04cc46a361f151c9bf61584ee3",
+      "member/grant.json": "7af231706fa6151355e13b9d4fd8eaec4cdff18d6e0ae2666b8441b2d5f8cc4f",
+      "member/grant.pb": "3a4b597715c60d27136daee56212749040ff5f3dd605d0ceb41913b706302ed3",
+      "member/identity.json": "5cc777a869683850f534b33e56bd6cb3429ee968f8007a1c6312191c6ba1be8d",
+      "member/native.log": "a134c3662b861cdd40d9df704be6ce2587d4f241109a75952c47373bd90eea29",
+      "member/offline.json": "af740126fef0e7100c830fb03370a9ae32f072270ea875d29590f7928af97c07",
+      "member/offline.pb": "aa37aacd90f3f4a182d7be91aa749a99f5e276ad85badf9c7f4fc4bf8fe57ebf",
+      "member/publication-fence.json": "59ac3e5918da7047685386a537bffa607a3d614eb5451bdf974a8b42409e5bb9",
+      "member/publication-fence.pb": "c1e21cc2a02f193ceb78d7217ee112353e9e8ab43d5df1f7aa612776db7f79e4",
+      "member/reader.json": "be2698cac3ff8ec6593d06ffc86d2887e96e9f37be29b6926a3c894638184d30",
+      "member/reader.pb": "aa37aacd90f3f4a182d7be91aa749a99f5e276ad85badf9c7f4fc4bf8fe57ebf",
+      "member/revoked.json": "9a4de457fdf049da4c1f3dfd5c3fca2669859b83a44ed08fdb54ef280d910d9b",
+      "member/revoked.pb": "c1e21cc2a02f193ceb78d7217ee112353e9e8ab43d5df1f7aa612776db7f79e4",
+      "member/unknown-revocation.json": "3823fdcca88aa88ec4f4a939dcc8219689f34460fba0884300e68aab5203eae0",
+      "member/unknown-revocation.pb": "aa37aacd90f3f4a182d7be91aa749a99f5e276ad85badf9c7f4fc4bf8fe57ebf",
+      "owner/final.json": "c8f410049c4d9b9e7358f1c4ec3a8cf2d2a1bb8668a4426ea4e382c6ee059e22",
+      "owner/final.pb": "5a92d40139dd6f1d4acef8cc4e50c24d6b1d7a04cc46a361f151c9bf61584ee3",
+      "owner/grant.json": "4dc339844f33c80baf3bf5e3b2796ed3e76297cceb5c04be9d5df479f9b281b1",
+      "owner/grant.pb": "3b979a9d05c3b4b6255870cb52e931d965005e869a609e1fcedb5b8da2f58ee3",
+      "owner/identity.json": "eb42c9f0ccde9abd1ab8f61f33695b3d44c94bc7dbec7bfa4fe64734545f3e17",
+      "owner/native.log": "934d463a766a1cc61e3ab20eac8c3ee55ee03326e6900c9494e143be3ee2c12e",
+      "owner/reader.json": "026d8d3b7082030d2707608d9f6bab94fc53034da16da9b2f0be5ee55413df8e",
+      "owner/reader.pb": "64e0746cd0d973b57e553eee1803ce414edd14c8b9c3a333e6b45822d81b61a5",
+      "owner/revoke.json": "d7bdc225df1d2aadb76c5d40e5b4bd8bd43a123d4774a5894c739154a113a79d"
+    },
+    "status": "PASS_TWO_DISTINCT_WALLET_SECRET_SCAN"
+  },
+  "finished_at": "2026-11-24T16:02:12.571893+00:00",
+  "fixture_sha256": "bc3ac46b2cf4797fe1b9bdafcd9629599f5a518569a6d54e387900b99b924f37",
+  "full_t2_acceptance": "NOT_RUN",
+  "independent_wallets": true,
+  "inventory_sha256": "05ee31723508599e228d28e132ce5b89af886f5095c908362b2348d07c80d0f0",
+  "ios_acceptance": "NOT_RUN",
+  "mixed_versions": "NOT_RUN",
+  "native_peers": {
+    "member": {
+      "container_id": "95d84d37d5c405a208fc70b5a89ba458fb44dc1fea0ec2d8b0227e80426d9d3a",
+      "host_pid": 16536,
+      "namespace": "net:[4026532830]",
+      "peer_id": "12D3KooWKM2GXSR1zmdT6SYKVpGd1XiVDMeqryCow41foVkxDnxG",
+      "sandbox_id": "5a5bd48cd016628ff9b98220b150fc27957bb75b382217a8f31864e825efa8a0"
+    },
+    "owner": {
+      "container_id": "4e887d391c8dd338894ebdc41fc0345382fec99c1bbc2bfeefedbfd4fc0bfd21",
+      "host_pid": 16444,
+      "namespace": "net:[4026532757]",
+      "peer_id": "12D3KooWR1kqfcwuCY431APFg6NCU34DSY458u5atWFbfh1fBeKU",
+      "sandbox_id": "5579ef1acd7a60e7cdae851f09514d167c96d049ac1ee5225383bd443f257b67"
+    }
+  },
+  "native_results": {
+    "member": {
+      "failed": 0,
+      "log_sha256": "a134c3662b861cdd40d9df704be6ce2587d4f241109a75952c47373bd90eea29",
+      "method": "TestIndependentMemberACLTransport",
+      "passed": 1,
+      "skipped": 0
+    },
+    "owner": {
+      "failed": 0,
+      "log_sha256": "934d463a766a1cc61e3ab20eac8c3ee55ee03326e6900c9494e143be3ee2c12e",
+      "method": "TestIndependentMemberACLTransport",
+      "passed": 1,
+      "skipped": 0
+    }
+  },
+  "native_source_run": "45026227924",
+  "network_acl_transport": "PASS_DISTINCT_MEMBERS_SIGNED_GRANT_ROLE_REVOKE",
+  "network_detach": {
+    "offline_receipt_sha256": "af740126fef0e7100c830fb03370a9ae32f072270ea875d29590f7928af97c07",
+    "status": "PASS_DAEMON_DETACH_AND_NATIVE_NO_INTERFACE"
+  },
+  "network_reconnect": {
+    "address_assignment": "DOCKER_IPAM",
+    "assigned_ipv4": "172.18.0.3",
+    "exact_revocation_head": "bafyreiar6j67oxuakqihfaeepuwdla3qx7w2t25eempzh4wh6dwq234uqy",
+    "original_ipv4": "172.18.0.3",
+    "status": "PASS_SAME_NATIVE_PROCESS_RECONNECTED"
+  },
+  "observed_revocation_publication_fence": "PASS_REAL_PREPARE_THEN_REMOTE_REVOKE_THEN_NATIVE_FINALIZE",
+  "offline_unknown_revocation": "LAST_KNOWN_AUTHORITY_NOT_GLOBAL_FRESHNESS",
+  "old_test_methods_executed": 0,
+  "owned_cleanup": {
+    "errors": [],
+    "status": "PASS"
+  },
+  "owned_data_cleanup": "PASS",
+  "owned_resources": [
+    {
+      "id": "8dc64d82d761e1ab7f1cb4549f86d264f9ed5ae7a91b6fead573dddd08231eea",
+      "kind": "network",
+      "name": "pinkha-t2-854376191b6541a7"
+    },
+    {
+      "id": "4e887d391c8dd338894ebdc41fc0345382fec99c1bbc2bfeefedbfd4fc0bfd21",
+      "kind": "container",
+      "log": "native.log",
+      "name": "pinkha-t2-854376191b6541a7-member-acl-owner",
+      "private": "/home/runner/work/anytype-swift/anytype-swift/member-acl-private/owner",
+      "role": "owner"
+    },
+    {
+      "id": "95d84d37d5c405a208fc70b5a89ba458fb44dc1fea0ec2d8b0227e80426d9d3a",
+      "kind": "container",
+      "log": "native.log",
+      "name": "pinkha-t2-854376191b6541a7-member-acl-member",
+      "private": "/home/runner/work/anytype-swift/anytype-swift/member-acl-private/member",
+      "role": "member"
+    }
+  ],
+  "owner_nonce": "854376191b6541a7987502d98200b404",
+  "patch_sha256": "2e898ac9aac29c0f53dd777492be6b47f14784949313364ff47439de93cd3c00",
+  "protocol": "pinkha-independent-member-acl-transport-v1",
+  "run_attempt": "1",
+  "run_id": "45430971070",
+  "seed_fields": [
+    "public_account_and_peer_identity",
+    "public_operation_identity_and_hashes",
+    "acl_head_id"
+  ],
+  "seeded_private_key_files": 0,
+  "status": "PASS_INDEPENDENT_MEMBER_NATIVE_ACL_TRANSPORT_AND_OBSERVED_REVOCATION_FENCE"
+}

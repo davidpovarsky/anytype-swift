@@ -1,0 +1,21 @@
+{
+  "scope": "owned-host-TLS-readiness-diagnostic-no-simulator-no-product-credit",
+  "status": "REFUSED:fixture_start_deadline",
+  "cleanup": "OWNED_STOP_AND_PRIVATE_REMOVAL_CONFIRMED",
+  "python": "3.12.16 (main, Oct 25 2026, 18:24:37) [Clang 21.0.0 (clang-2100.3.34.2)]",
+  "openssl_library": "OpenSSL 3.5.9 29 Sep 2026",
+  "openssl_cli": "/opt/homebrew/bin/openssl",
+  "verify_flags": 32768,
+  "source": {
+    "fixture.py": "cb9906df0ac181fdb16b940cbdaa208afa2212fc285689a198d69a1cca7bf787",
+    "protocol.py": "1945dc16f92391dc6cbeaba7098849a10c7d22d878b8c3abcc216de92c10ac6c"
+  },
+  "observations": [
+    {
+      "class": "SSLCertVerificationError",
+      "reason": "CERTIFICATE_VERIFY_FAILED",
+      "verify_code": 18,
+      "verify_message": "self-signed certificate"
+    }
+  ]
+}

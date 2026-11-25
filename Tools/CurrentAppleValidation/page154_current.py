@@ -32,7 +32,7 @@ HERE = Path(__file__).resolve().parent
 INPUTS = HERE / "page154-inputs.json"
 
 
-def admit(expected):
+def admit(expected, inventory_policy=None):
     c.require(platform.system() == "Darwin" and platform.machine() == "arm64"
               and os.environ.get("GITHUB_ACTIONS") == "true"
               and os.environ.get("GITHUB_REPOSITORY") == c.REPOSITORY, "current_page_owned_apple_ci_required")
@@ -48,7 +48,29 @@ def admit(expected):
               and fixed["freshSetupAcceptanceCredit"] == 0
               and current.digest(current.MANIFEST) == fixed["commonManifestSHA256"],
               "current_page_fixed_policy_changed")
-    trees = {**fixed["productTrees"], **fixed["helperTrees"]}
+    recovery = current.inventory_spec(current.read(current.MANIFEST), inventory_policy)
+    product_trees = fixed["productTrees"]
+    if recovery is not None:
+        page_recovery = fixed["inventoryRecovery"]
+        c.require(page_recovery["policy"] == current.INVENTORY_POLICY
+                  and page_recovery["sourceCommit"] == recovery["sourceCommit"]
+                  and page_recovery["productTrees"] == recovery["productTrees"]["release-return-rtl"],
+                  "page_inventory_recovery_source_changed")
+        current.git("merge-base", "--is-ancestor", page_recovery["sourceCommit"], expected)
+        product_trees = page_recovery["productTrees"]
+    revision = fixed.get("currentProductRevision")
+    if revision is not None:
+        c.require(set(revision) == {"schemaVersion", "sourceCommit", "productTrees"}
+                  and revision["schemaVersion"] == 1
+                  and re.fullmatch("[0-9a-f]{40}", revision["sourceCommit"])
+                  and set(revision["productTrees"]) == set(fixed["productTrees"]),
+                  "current_page_product_revision_invalid")
+        current.git("merge-base", "--is-ancestor", revision["sourceCommit"], expected)
+        for name, oid in revision["productTrees"].items():
+            c.require(current.git("rev-parse", revision["sourceCommit"] + ":" + name).decode().strip() == oid,
+                      "current_page_product_revision_origin_changed:" + name)
+        product_trees = revision["productTrees"]
+    trees = {**product_trees, **fixed["helperTrees"]}
     for name, oid in trees.items():
         c.require(current.git("rev-parse", "HEAD:" + name).decode().strip() == oid,
                   "current_page_source_tree_changed:" + name)
@@ -80,8 +102,15 @@ def admit(expected):
     context = {"profile": policy.PROFILE, "sourceCommit": expected, "runID": os.environ["GITHUB_RUN_ID"],
                "runAttempt": os.environ["GITHUB_RUN_ATTEMPT"], "repository": c.REPOSITORY}
     source = {"manifestSHA256": current.digest(current.MANIFEST), "pageManifestSHA256": current.digest(INPUTS),
-              "files": files, "gitInputs": origins, "compiledTrees": fixed["productTrees"],
-              "compiledOrigin": expected, "projectionOrigins": fixed["projectionOrigins"]}
+              "files": files, "gitInputs": origins, "compiledTrees": product_trees,
+              "compiledOrigin": revision["sourceCommit"] if revision is not None else expected,
+              "projectionOrigins": fixed["projectionOrigins"]}
+    if revision is not None:
+        source["currentProductRevision"] = revision
+    if recovery is not None:
+        source["inventoryRecoveryPolicy"] = inventory_policy
+        source["inventoryRecoverySourceOrigin"] = recovery["sourceCommit"]
+        source["compiledSourceTreeOrigin"] = revision["sourceCommit"] if revision is not None else recovery["sourceCommit"]
     return context, source
 
 
@@ -128,6 +157,15 @@ def helpers(source):
               "original_page_helper_policy_changed")
     recheck(source)
     return result
+
+
+def configure_inventory_recovery(commands, source):
+    current.configure_inventory_recovery(commands, source)
+    policy = getattr(commands, "inventory_recovery", None)
+    if policy is not None:
+        # The Page lane additionally binds its own required-module origins and manifest.
+        policy.recheck_source = lambda: recheck(source)
+        recheck(source)
 
 
 class Commands(current.Commands):
@@ -237,6 +275,27 @@ def preserve_products(commands, derived, directory, source, argv, *, generated=N
     return receipt
 
 
+# Xcode 27 creates these exact empty workspace directories for this package-free
+# generated project. Declare them before the source inventory is frozen.
+GENERATED_WORKSPACE_DIRECTORIES = (
+    "project.xcworkspace",
+    "project.xcworkspace/xcshareddata",
+    "project.xcworkspace/xcshareddata/swiftpm",
+    "project.xcworkspace/xcshareddata/swiftpm/configuration",
+)
+
+
+def predeclare_generated_workspace(project):
+    c.require(project.name == "PinkhaPrebuiltUI.xcodeproj" and project.resolve() == project,
+              "fixed_generated_ui_project_required")
+    for relative in GENERATED_WORKSPACE_DIRECTORIES:
+        path = project / relative
+        c.require(not path.exists() and path.parent.resolve() == path.parent,
+                  "fresh_generated_workspace_directory_required")
+        path.mkdir(mode=0o777)
+        path.chmod(0o777)
+
+
 def build_once(commands, kind, device, work, evidence, source):
     c.require(kind in ("app", "ui"), "exact_page_build_kind")
     directory = evidence / (kind + "-build")
@@ -264,6 +323,7 @@ def build_once(commands, kind, device, work, evidence, source):
                   == ROOT / "Tools/PinkhaNativeDerived/rerun_original_ui.py", "page_ui_generator_origin")
         project = generator(ui_source)
         checked = commands.helpers["warning_profile"].generated_project(ui_source, project, plan)
+        predeclare_generated_workspace(project)
         generated = {"root": str(ui_source), "files": current.inventory(ui_source), "validatedInputs": checked}
         scheme, selector = policy.UI_SCHEME, policy.JOURNEY
         source_archive = directory / "generated-ui-inputs.tar.gz"
@@ -379,6 +439,9 @@ def run_stage(commands, stage, device, built, application, binding, source, evid
         listing = directory / "enumeration.json"
         enumeration = mounted.xctest_command(descriptor, device["udid"], selector, enumeration=listing)
         command = mounted.xctest_command(descriptor, device["udid"], selector, result=directory / "original.xcresult")
+        # Installed Xcode27 policy, verified by the retained zero-build failure:
+        # preserve XCTest/keepAlways evidence without post-failure sysdiagnose.
+        command += ["-collect-test-diagnostics", "never"]
         c.require(policy.EXCLUDED_FACTORY not in enumeration + command
                   and enumeration.count(selector) == command.count(selector) == 1, "page_exact_one_selection_required")
         current.write(directory / "plan.json", {"context": commands.context, "binding": binding,
@@ -499,7 +562,7 @@ def root_path():
     return ROOT / "build" / ("current-page154-" + run + "-" + attempt)
 
 
-def execute(expected):
+def execute(expected, inventory_policy=None, restore_build=None):
     root = root_path()
     c.require(not root.exists() and root.parent.resolve() == root.parent, "fresh_page_work_root_required")
     evidence, work = root / "evidence", root / "work"
@@ -513,16 +576,18 @@ def execute(expected):
     source = commands = native = app_built = ui_built = device = None
     owned, primary = [], None
     try:
-        context, source = admit(expected)
+        context, source = admit(expected, inventory_policy)
         binding = {"sourceSHA": expected, "runID": context["runID"], "runAttempt": context["runAttempt"],
                    "nonce": uuid.uuid4().hex}
         current.write(evidence / "source-before.json", source)
         current.write(evidence / "execution-intent.json", {"context": context, "binding": binding,
                       "sourceAdmissionSHA256": current.digest(evidence / "source-before.json"),
-                      "selectors": list(policy.SELECTORS), "freshSetupAcceptanceCredit": 0})
+                      "selectors": list(policy.SELECTORS), "freshSetupAcceptanceCredit": 0,
+                      **({"inventoryRecoveryPolicy": inventory_policy} if inventory_policy is not None else {})})
         modules = helpers(source)
         modules["consumer_contract"].binding(binding)
         commands = Commands(evidence, context, modules)
+        configure_inventory_recovery(commands, source)
         current.write(evidence / "loaded-before.json", recheck(source))
         receipt["context"], receipt["binding"] = context, binding
         native = native_runtime(commands, work, evidence)
@@ -538,8 +603,11 @@ def execute(expected):
         current.write(evidence / "simulator-pair.json", pair)
         device = current.create_device(commands, pair, "CurrentPage154-" + binding["nonce"], evidence, owned)
         receipt["ownedSimulator"] = device
-        app_built = build_once(commands, "app", device, work, evidence, source)
-        ui_built = build_once(commands, "ui", device, work, evidence, source)
+        builder = build_once if restore_build is None else restore_build
+        app_built = builder(commands, "app", device, work, evidence, source)
+        ui_built = builder(commands, "ui", device, work, evidence, source)
+        if restore_build is not None:
+            receipt["retainedBuildAdmission"] = current.read(evidence / "retained-build-admission.json")
         modules["consumer_contract"].framework_unchanged(Path(native["path"]), native["frameworkFiles"])
         receipt["stages"]["preparation"] = run_stage(
             commands, "preparation", device, app_built, app_built["app"], binding, source, evidence)
@@ -617,12 +685,15 @@ def execute(expected):
         if commands is not None:
             receipt["appBuildsStarted"] = int((commands.root / "page-build-app.started.json").is_file())
             receipt["uiBuildsStarted"] = int((commands.root / "page-build-ui.started.json").is_file())
+        recovery = current.inventory_recovery_result(commands)
+        if recovery is not None:
+            receipt["inventoryRecovery"] = recovery
         receipt["cancelled"] = current._CANCELLED
         persist_final(evidence / "execution.json", receipt, primary)
     return receipt
 
 
-def cleanup(expected):
+def cleanup(expected, inventory_policy=None):
     current._FINALIZING = True
     root = root_path()
     if not root.exists():
@@ -653,8 +724,11 @@ def cleanup(expected):
                       and intent["sourceAdmissionSHA256"] == current.digest(evidence / "source-before.json"),
                       "page_cleanup_current_source_intent_required")
             source = current.read(evidence / "source-before.json")
+            c.require(intent.get("inventoryRecoveryPolicy") == inventory_policy
+                      and source.get("inventoryRecoveryPolicy") == inventory_policy, "page_cleanup_inventory_policy_changed")
             recheck(source)
             commands = Commands(evidence, context, helpers(source))
+            configure_inventory_recovery(commands, source)
             commands.cleanup_mode = True
             for name, action in (
                 ("ownedGroups", lambda: current.unfinished_groups(commands)),
@@ -670,6 +744,9 @@ def cleanup(expected):
                 except BaseException as failure:
                     result.setdefault("failures", []).append({"phase": name, **current.error(failure)})
                     primary = primary or failure
+            recovery = current.inventory_recovery_result(commands)
+            if recovery is not None:
+                result["inventoryRecovery"] = recovery
             if primary:
                 raise primary
             result["status"] = "PASS"
@@ -682,15 +759,17 @@ def cleanup(expected):
     return result
 
 
-def main():
+def main(restore_build=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("action", choices=("execute", "cleanup"))
     parser.add_argument("--expected-source", required=True)
+    parser.add_argument("--inventory-recovery", dest="inventory_policy", choices=(current.INVENTORY_POLICY,))
     args = parser.parse_args()
     os.umask(0o077)
     for sig in (signal.SIGINT, signal.SIGTERM):
         signal.signal(sig, current.cancel)
-    result = execute(args.expected_source) if args.action == "execute" else cleanup(args.expected_source)
+    result = (execute(args.expected_source, args.inventory_policy, restore_build) if args.action == "execute"
+              else cleanup(args.expected_source, args.inventory_policy))
     print(json.dumps({"status": result["status"], "profile": policy.PROFILE,
                       "evidence": str(root_path() / "evidence")}, sort_keys=True))
     return 0 if result["status"] in ("PASS", "NO_CURRENT_CREATION_INTENT") else 1

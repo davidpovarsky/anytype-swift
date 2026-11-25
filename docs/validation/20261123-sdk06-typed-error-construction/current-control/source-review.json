@@ -1,0 +1,206 @@
+{
+  "base": "2cf5ff34c55b9a8a7099f9a19d6d7f73b0e52119",
+  "compile_support_opt_in_exercised": false,
+  "compiler": 0,
+  "controls": 0,
+  "current_test_changes": [
+    {
+      "after": "\"\"\"One corrected composed control using actual original SDK Swift/descriptor bytes.",
+      "before": "\"\"\"One new composed control using actual original SDK Swift/descriptor bytes.",
+      "reason": "Describe the affected current-control continuation without claiming new unique acceptance."
+    },
+    {
+      "after": "FIXTURES = ROOT / \"docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data\"",
+      "before": "FIXTURES = ROOT / \"docs/validation/20261123-sdk06-component-projection/control-data\"",
+      "reason": "Use a fresh complete fixture namespace; preserve the historical fixtures and manifest byte-exact."
+    },
+    {
+      "after": "scope=\"actual_eight_original_git_blobs_and_exact_pending_scope\"",
+      "before": "scope=\"actual_seven_original_git_blobs_and_exact_pending_scope\"",
+      "reason": "Label all eight immutable original source inputs accurately."
+    },
+    {
+      "after": "self.assertEqual(len(source), 8)",
+      "before": "self.assertEqual(len(source), 7)",
+      "reason": "Require the real eighth mock added to the declared source closure."
+    },
+    {
+      "after": "scope=\"exact_source_transforms_with_complete_original_inverse\"",
+      "before": "scope=\"seven_metadata_only_patches_with_complete_original_inverse\"",
+      "reason": "Distinguish seven metadata-only exclusions from the retained import and two typed constructors."
+    },
+    {
+      "after": "self.assertEqual(len(projected), 8)",
+      "before": "self.assertEqual(len(projected), 7)",
+      "reason": "Require every current original source to have a projected result."
+    },
+    {
+      "after": "                if name == projection.AUTHORITY:\n                    authority = fixed[\"authority_error_construction\"]\n                    self.assertEqual(authority[\"path\"], name)\n                    self.assertEqual(len(authority[\"patches\"]), 2)\n                    authority_after = projected[basename]\n                    self.assertEqual(authority_after, (ROOT / name).read_bytes())\n                    self.assertEqual(hashlib.sha256(authority_after).hexdigest(),\n                                     authority[\"projected_sha256\"])\n                    for kind in (\"Show\", \"Search\"):\n                        self.assertEqual(authority_after.count(\n                            (\"Anytype_Rpc.Object.\" + kind + \".Response.Error()\").encode()), 1)\n                    authority_inverse = authority_after\n                    for patch in reversed(authority[\"patches\"]):\n                        before, after = patch[\"before\"].encode(), patch[\"after\"].encode()\n                        self.assertEqual(authority_inverse.count(after), 1)\n                        authority_inverse = authority_inverse.replace(after, before, 1)\n                    self.assertEqual(hashlib.sha256(authority_inverse).hexdigest(),\n                                     authority[\"input_sha256\"])\n                    imported = fixed[\"authority_import_patch\"]\n                    self.assertEqual(hashlib.sha256(authority_inverse).hexdigest(),\n                                     imported[\"projected_sha256\"])\n                    self.assertEqual(authority_inverse.count(imported[\"after\"].encode()), 1)\n                    authority_inverse = authority_inverse.replace(\n                        imported[\"after\"].encode(), imported[\"before\"].encode(), 1)\n                    self.assertEqual(authority_inverse, original)\n                elif name != projection.EDITOR:\n                    self.assertEqual(projected[basename], original)\n",
+      "before": "                if name != projection.EDITOR:\n                    self.assertEqual(projected[basename], original)\n",
+      "reason": "Verify the actual authority output equals the canonical current fixture, then invert both constructors and the retained import to exact original75bd bytes."
+    },
+    {
+      "after": "        corruptions.append((\"changed_projected_identity\", source, bad_projection))\n        bad_constructor = copy.deepcopy(fixed)\n        bad_constructor[\"authority_error_construction\"][\"patches\"][0][\"before\"] += \" \"\n        corruptions.append((\"changed_constructor_preimage\", source, bad_constructor))\n        bad_constructor_result = copy.deepcopy(fixed)\n        bad_constructor_result[\"authority_error_construction\"][\"patches\"][0][\"after\"] += \" \"\n        corruptions.append((\"changed_constructor_postimage\", source, bad_constructor_result))\n        bad_authority_identity = copy.deepcopy(fixed)\n        bad_authority_identity[\"authority_error_construction\"][\"projected_sha256\"] = \"0\" * 64\n        corruptions.append((\"changed_authority_projected_identity\", source, bad_authority_identity))\n",
+      "before": "        corruptions.append((\"changed_projected_identity\", source, bad_projection))\n",
+      "reason": "Add only refusals for the newly changed exact constructor transformation boundary."
+    },
+    {
+      "after": "            root = Path(temporary).resolve()\n            root.chmod(0o700)\n",
+      "before": "            root = Path(temporary).resolve()\n",
+      "reason": "Make only the fresh temporary fixture root private and clear any inherited setgid, as demonstrated in prior pure-control originals."
+    },
+    {
+      "after": "                self.assertEqual(settings[\"TEST_HOST\"], \"\")\n                self.assertEqual(settings[\"BUNDLE_LOADER\"], str(staged_app / \"Anytype\"))\n                self.assertEqual(settings[\"OTHER_LDFLAGS\"], [str(staged_app / \"Anytype.debug.dylib\")])\n",
+      "before": "                self.assertEqual(settings[\"TEST_HOST\"], str(staged_app / \"Anytype\"))\n                self.assertEqual(settings[\"BUNDLE_LOADER\"], \"$(TEST_HOST)\")\n",
+      "reason": "Match the already-qualified build-only external-host graph while retaining hosted runtime descriptor checks unchanged."
+    },
+    {
+      "after": "self.assertEqual(len(phases[0][\"files\"]), 8)",
+      "before": "self.assertEqual(len(phases[0][\"files\"]), 7)",
+      "reason": "Bind all eight actual Swift inputs in the only unit-test source phase."
+    },
+    {
+      "after": "                self.assertFalse(generated[\"original_source_modified\"])\n                self.assertFalse(generated[\"function_bodies_and_arguments_unchanged\"])\n                self.assertEqual(generated[\"fixture_constructor_replacements\"], 2)\n                self.assertTrue(generated[\"declarations_assertions_and_argument_values_unchanged\"])\n                self.assertNotIn(\"compile_support\", generated)\n",
+      "before": "                self.assertFalse(generated[\"original_source_modified\"])\n",
+      "reason": "Check truthful aggregate constructor metadata and keep this pure default-graph control distinct from the separately qualified compile-support opt-in."
+    },
+    {
+      "after": "                expected_generated = {\"Sources/\" + name for name in projected} | {\n                    \"SDK06PendingComponents.xcodeproj/project.pbxproj\",\n                    \"SDK06PendingComponents.xcodeproj/xcshareddata/xcschemes/SDK06PendingComponents.xcscheme\",\n                    \"SDK06PendingComponents.xcodeproj/project.xcworkspace/contents.xcworkspacedata\",\n                }\n                self.assertEqual(len(expected_generated), 11)\n                self.assertEqual(set(actual_generated), expected_generated)\n                expected_directories = {\n                    \"Sources\", \"SDK06PendingComponents.xcodeproj\",\n                    \"SDK06PendingComponents.xcodeproj/xcshareddata\",\n                    \"SDK06PendingComponents.xcodeproj/xcshareddata/xcschemes\",\n                    \"SDK06PendingComponents.xcodeproj/project.xcworkspace\",\n                    \"SDK06PendingComponents.xcodeproj/project.xcworkspace/xcshareddata\",\n                    \"SDK06PendingComponents.xcodeproj/project.xcworkspace/xcshareddata/swiftpm\",\n                    \"SDK06PendingComponents.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/configuration\",\n                }\n                self.assertEqual({p.relative_to(destination).as_posix()\n                                  for p in destination.rglob(\"*\") if p.is_dir()}, expected_directories)\n                for relative in (\"xcshareddata\", \"xcshareddata/swiftpm\",\n                                 \"xcshareddata/swiftpm/configuration\"):\n                    directory = project / \"project.xcworkspace\" / relative\n                    self.assertFalse(directory.is_symlink())\n                    self.assertEqual(directory.stat().st_mode & 0o7777, 0o777)\n",
+      "before": "                self.assertEqual(len(actual_generated), 10)\n",
+      "reason": "Require the exact current eleven-file generated set and only the three observed precreated workspace directories, without weakening whole-tree expectations."
+    }
+  ],
+  "data_reads": {
+    "generator": [
+      "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json"
+    ],
+    "test": [
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/fixture-origins.json",
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/BlockActionServiceMock.swift",
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/BlockMarkupChangerMock.swift",
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/InfoContainerMock.swift",
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/MockBaseDocument.swift",
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/SDK06PendingSelectionTag.swift",
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/SimpleTableTextPersistenceTests.swift",
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/TextBlockFocusLifecycleTests.swift",
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/TorahRelatedReadAuthorityMappingTests.swift",
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/descriptor-chain.json",
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/descriptor-origin.json",
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/normalized-native.xctestrun",
+      "docs/validation/20261123-sdk06-typed-error-construction/current-control/control-data/original-native.xctestrun",
+      "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift"
+    ]
+  },
+  "execution_seconds": 60,
+  "fixed_runtime_input_records_changed": 0,
+  "historical_fixture_manifest_sha256": "29b0512e654e28a5cbe2159f5f262fa30e345cd18d7359958043fe36c6da1bb2",
+  "historical_fixture_rows_unchanged": [
+    {
+      "bytes": 5655,
+      "path": "docs/validation/20261123-sdk06-component-projection/control-data/BlockActionServiceMock.swift",
+      "sha256": "3fa0ed72e6adc3bf950bc7913c7fd9caaba96201356508874eed5d626123645f"
+    },
+    {
+      "bytes": 1714,
+      "path": "docs/validation/20261123-sdk06-component-projection/control-data/InfoContainerMock.swift",
+      "sha256": "54d68bcce20ea748af0a7524caed6204125f555827d3e9f7188d9a1c134c68c3"
+    },
+    {
+      "bytes": 3314,
+      "path": "docs/validation/20261123-sdk06-component-projection/control-data/MockBaseDocument.swift",
+      "sha256": "75fd381db7b276bbfaec20f00a359ddd21f2525f2cf3c69faa08647fbb6a743a"
+    },
+    {
+      "bytes": 150,
+      "path": "docs/validation/20261123-sdk06-component-projection/control-data/SDK06PendingSelectionTag.swift",
+      "sha256": "5b502161edd891510322238fc0005cbbbf6d4b7ac5611fb97e16b1cdf8193fc4"
+    },
+    {
+      "bytes": 22822,
+      "path": "docs/validation/20261123-sdk06-component-projection/control-data/SimpleTableTextPersistenceTests.swift",
+      "sha256": "21bc18b894e25d6bb2ccff0ad0ec62f161fe1bf2abbdcf8f7f9473f124feb0dc"
+    },
+    {
+      "bytes": 35851,
+      "path": "docs/validation/20261123-sdk06-component-projection/control-data/TextBlockFocusLifecycleTests.swift",
+      "sha256": "3b6487fd6c8f65e7282e9261fe1ce2054b40727bdc1978023ae44d24584055e4"
+    },
+    {
+      "bytes": 2165,
+      "path": "docs/validation/20261123-sdk06-component-projection/control-data/TorahRelatedReadAuthorityMappingTests.swift",
+      "sha256": "364902afbdbe451bbe80cb8959be8fc74edb6db274f0ccf071db70de4d8f8d68"
+    },
+    {
+      "bytes": 45073,
+      "path": "docs/validation/20261123-sdk06-component-projection/control-data/descriptor-chain.json",
+      "sha256": "7cc1484cf07e7474323e5801ef6dab84899abf68427e9d912140ad32494f3ed8"
+    },
+    {
+      "bytes": 1590,
+      "path": "docs/validation/20261123-sdk06-component-projection/control-data/descriptor-origin.json",
+      "sha256": "87122f56238c124f1fcb3be03c4090a9e0f00791d6d9f2cb70747c8ad624a86e"
+    },
+    {
+      "bytes": 15641,
+      "path": "docs/validation/20261123-sdk06-component-projection/control-data/normalized-native.xctestrun",
+      "sha256": "27e2036992196ba8a7f7b27a838feaab1dd8698c08203509633e7a5e3f2d7ac6"
+    },
+    {
+      "bytes": 15617,
+      "path": "docs/validation/20261123-sdk06-component-projection/control-data/original-native.xctestrun",
+      "sha256": "4a2868235a870acf7567dfed7e00bd95079189cc9cc757c07cc28498265bedc2"
+    }
+  ],
+  "immutable_swift_inputs": 8,
+  "module_closure": {
+    "sdk06_compile_support": [],
+    "sdk06_component_projection": [
+      "Tools/PinkhaSimulatorGate/sdk06_compile_support.py"
+    ],
+    "test_sdk06_component_projection": [
+      "Tools/PinkhaSimulatorGate/sdk06_component_projection.py"
+    ]
+  },
+  "module_preload_records_changed": 0,
+  "newUniqueAcceptanceCredit": 0,
+  "new_mock_origin": {
+    "bytes": 1430,
+    "gitBlob": "f57396ea7d25adb32eccbaa5baaa090a1ccfd193",
+    "originKind": "immutable_git_blob",
+    "originalSource": "75bd6d7af18dfd511e85582ce7f994d2801b7703",
+    "physical_original_claimed": false,
+    "repositoryPath": "AnytypeTests/Markdown/Mocks/BlockMarkupChangerMock.swift",
+    "sha256": "3648c5cda4541c0b5297cce33835132a0ebea72f521a66917360cc0bf9dc48cc"
+  },
+  "original_descriptor_related_inputs": 4,
+  "original_fixture_count": 12,
+  "owned_cleanup_seconds": 10,
+  "owned_stop_body_byte_exact": true,
+  "owned_stop_body_sha256": "fb7dbddf73983998a967bb82cd0f2ff7b5b5db07233d09efcec38d7be6b1ebdb",
+  "product_tests": 0,
+  "protocol": "sdk06-current-control-source-review-v1",
+  "reason_for_execution_proposal": "Current pure-control assumptions demonstrably drifted from admitted source. One corrected existing method can check this source composition without any compiler/product invocation.",
+  "repository_imports": 0,
+  "runtime_base": "e1aa58f26a2eb9a553aa39cbd51e8fe21ed23a94",
+  "runtime_files_unchanged": {
+    "AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift": "7ea462a83891972b94783a05f1a36f8618917cf4713334c9c37463b94a85046b",
+    "Tools/PinkhaSimulatorGate/sdk06-component-projection-source.json": "2a46533f00fe61c69ee9b4022031d342642dc0569c43779c4732723382fdd9fd",
+    "Tools/PinkhaSimulatorGate/sdk06-original-native-controller-source.json": "b5774ddb06e240fa71dc5504247837b61d338c87ecbb1fd613fc31a9adb33fa0",
+    "Tools/PinkhaSimulatorGate/sdk06_component_projection.py": "1530c5a938e5458a78aaba48c75bc3be0d81fe5ad8ce76e96b3a85a510bc254f"
+  },
+  "static_AST_only": true,
+  "status": "FROZEN_SOURCE_ONLY_NOT_RUN",
+  "unchanged_inner_functions": [
+    "require",
+    "sha",
+    "stamp",
+    "raw_file",
+    "write",
+    "write_json",
+    "source_rows",
+    "loaded_sources",
+    "method_guard"
+  ],
+  "whole_test_inverse": true,
+  "wrapper_complete_inverses": true
+}
