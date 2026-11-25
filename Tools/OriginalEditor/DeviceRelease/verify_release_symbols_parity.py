@@ -14,6 +14,9 @@ def main():
     p = argparse.ArgumentParser(__doc__)
     p.add_argument('--root', type=Path, required=True)
     p.add_argument('--evidence', type=Path, required=True)
+    p.add_argument('--cases', nargs='+', choices=['SDK-Release-Simulator/AnytypeOriginalEditor',
+        'SDK-Release-Simulator/OriginalEditorSharedFirebase', 'SDK-Release-Simulator/AnytypeCore',
+        'SDK/ProtobufMessages'])
     args = p.parse_args()
     require(args.root.resolve() == args.root and args.evidence.resolve() == args.evidence
             and args.evidence.is_relative_to(args.root / 'build') and not args.evidence.exists(),
@@ -23,8 +26,10 @@ def main():
     receipt = {'status':'FAIL', 'started_at':timestamp(), 'checks':rows}
     try:
         cases = [('SDK-Release-Simulator', name) for name in
-                 ['AnytypeOriginalEditor','OriginalEditorSharedFirebase','AmplitudeCore']]
+                 ['AnytypeOriginalEditor','OriginalEditorSharedFirebase','AnytypeCore']]
         cases.append(('SDK','ProtobufMessages'))
+        if args.cases:
+            cases = [tuple(item.split('/')) for item in args.cases]
         for kind, name in cases:
             old = args.root / ('build/' + kind + '-Evidence')
             work = args.root / ('build/' + kind + '-Work')
