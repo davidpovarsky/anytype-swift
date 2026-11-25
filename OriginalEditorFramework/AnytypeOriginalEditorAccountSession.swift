@@ -5,6 +5,8 @@ import Observation
 import AnytypeCore
 import ProtobufMessages
 import Services
+import PinkhaKit
+import SwiftProtobuf
 
 /// A closed original account/selected-Space session. Identity is display data;
 /// no public initializer accepts an account, Space, capture, seed or native path.
@@ -307,6 +309,144 @@ private final class OriginalEditorAccountSchemaOperation {
     }
 }
 
+
+/// An immutable readback of the ORIGINAL bootstrap operation and native types.
+/// This is initial account readiness only; every later native mutation still
+/// obtains its own current root/Archive/manifest/type observation and CAS.
+private struct OriginalEditorAccountBootstrapReadiness: Sendable {
+    let accountID: String
+    let spaceID: String
+    let manifest: PinkhaSpaceManifest
+    let manifestResponse: Anytype_Rpc.Object.Show.Response
+    let confirmedManifestResponse: Anytype_Rpc.Object.Show.Response
+    let typeResponses: [String: Anytype_Rpc.Object.Show.Response]
+
+    static let roles = [
+        PinkhaSchemaRoles.chiddushKey, PinkhaSchemaRoles.articleKey,
+        PinkhaSchemaRoles.researchKey
+    ]
+
+    static func observe(
+        accountID: String, spaceID: String, expected: PinkhaSpaceManifest,
+        store: PinkhaSpaceManifestStore
+    ) async throws -> Self {
+        // Discovery and decoding remain in the actual original manifest store.
+        // The caller admits ONLY ObjectSearch/ObjectShow under frozen sources.
+        guard let manifest = try await store.loadOriginalEditorManifest(spaceId: spaceID),
+              manifest == expected, manifest.schemaVersion == PinkhaSpaceManifest.currentSchemaVersion,
+              manifest.spaceId.utf8.elementsEqual(spaceID.utf8), manifest.isFullyProvisioned,
+              let manifestID = manifest.manifestObjectId,
+              OriginalAnnotationRevisionWire.identifier(manifestID),
+              [manifest.parentPropertyId, manifest.parentPropertyKey,
+               manifest.orderPropertyId, manifest.orderPropertyKey,
+               manifest.documentAssociationsPropertyId, manifest.documentAssociationsPropertyKey,
+               manifest.folderTypeId, manifest.bookFolderTypeId]
+                .allSatisfy(OriginalAnnotationRevisionWire.identifier) else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+        }
+        let ids = roles.compactMap { manifest.registeredDocumentTypes[$0] }
+        guard ids.count == roles.count,
+              ids.allSatisfy(OriginalAnnotationRevisionWire.identifier),
+              Set(ids.map { Data($0.utf8) }).count == roles.count,
+              !ids.contains(where: { $0.utf8.elementsEqual(manifestID.utf8) }),
+              roles.allSatisfy({
+                  manifest.defaultTemplateIds[$0].map(OriginalAnnotationRevisionWire.identifier) ?? false
+              }) else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+        }
+        let manifestResponse = try await show(id: manifestID, spaceID: spaceID)
+        let originalJSON = try manifestJSON(manifestResponse, expected: manifest)
+        var types: [String: Anytype_Rpc.Object.Show.Response] = [:]
+        var keys = Set<Data>()
+        for role in roles {
+            try Task.checkCancellation()
+            guard let id = manifest.registeredDocumentTypes[role] else {
+                throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+            }
+            let response = try await show(id: id, spaceID: spaceID)
+            let details = try details(response, id: id, spaceID: spaceID)
+            guard case .numberValue(let layout)? = details.fields[BundledPropertyKey.layout.rawValue]?.kind,
+                  layout == Double(Anytype_Model_ObjectType.Layout.objectType.rawValue),
+                  let key = OriginalEditorLocalAnnotationNativeBody.string(details, BundledPropertyKey.uniqueKey.rawValue),
+                  OriginalAnnotationRevisionWire.identifier(key), key.hasPrefix("ot-"),
+                  !key.utf8.elementsEqual(OriginalAnnotationNativeMetadata.originalTypeUniqueKey.utf8),
+                  keys.insert(Data(key.utf8)).inserted else {
+                throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+            }
+            types[role] = response
+        }
+        // A type-read interval cannot silently accept a different manifest.
+        // Keep both genuine native responses; do not rewrite or synthesize it.
+        let confirmed = try await show(id: manifestID, spaceID: spaceID)
+        let confirmedJSON = try manifestJSON(confirmed, expected: manifest)
+        guard confirmedJSON.utf8.elementsEqual(originalJSON.utf8),
+              let rediscovered = try await store.loadOriginalEditorManifest(spaceId: spaceID),
+              rediscovered == manifest else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+        }
+        return .init(accountID: accountID, spaceID: spaceID, manifest: manifest,
+                     manifestResponse: manifestResponse, confirmedManifestResponse: confirmed,
+                     typeResponses: types)
+    }
+
+    private static func show(id: String, spaceID: String) async throws -> Anytype_Rpc.Object.Show.Response {
+        try Task.checkCancellation()
+        let response = try await ClientCommands.objectShow(.with {
+            $0.contextID = id
+            $0.objectID = id
+            $0.spaceID = spaceID
+        }).invoke(qos: .userInitiated)
+        guard response.error.code == .null,
+              try response.serializedData().count <= 1_048_576 else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+        }
+        return response
+    }
+
+    private static func details(
+        _ response: Anytype_Rpc.Object.Show.Response, id: String, spaceID: String
+    ) throws -> Google_Protobuf_Struct {
+        let matches = response.objectView.details.filter { $0.id.utf8.elementsEqual(id.utf8) }
+        guard matches.count == 1 else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+        }
+        let details = matches[0].details
+        guard OriginalEditorLocalAnnotationNativeBody.string(details, BundledPropertyKey.id.rawValue)?.utf8.elementsEqual(id.utf8) == true,
+              OriginalEditorLocalAnnotationNativeBody.string(details, BundledPropertyKey.spaceId.rawValue)?.utf8.elementsEqual(spaceID.utf8) == true else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+        }
+        for key in [BundledPropertyKey.isArchived.rawValue, BundledPropertyKey.isDeleted.rawValue, "isUninstalled"] {
+            guard let value = details.fields[key] else { continue }
+            guard case .boolValue(false)? = value.kind else {
+                throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+            }
+        }
+        return details
+    }
+
+    private static func manifestJSON(
+        _ response: Anytype_Rpc.Object.Show.Response, expected: PinkhaSpaceManifest
+    ) throws -> String {
+        guard let id = expected.manifestObjectId else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+        }
+        let details = try details(response, id: id, spaceID: expected.spaceId)
+        guard let raw = OriginalEditorLocalAnnotationNativeBody.string(details, BundledPropertyKey.description.rawValue),
+              !raw.isEmpty, raw.utf8.count <= 131_072 else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+        }
+        var actual = try PinkhaSpaceManifest.fromJSONString(raw)
+        guard actual.manifestObjectId == nil || actual.manifestObjectId?.utf8.elementsEqual(id.utf8) == true else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+        }
+        actual.manifestObjectId = id
+        guard actual == expected else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.unobservedSchemaCompletion
+        }
+        return raw
+    }
+}
+
 /// Owns presentation/consumer tasks, not an alternative authentication engine.
 /// Every authentication operation belongs to the one frozen original caller.
 /// The local Lifetime only retires this facade and its pending UI continuations.
@@ -346,6 +486,7 @@ internal final class OriginalEditorAccountRuntimeAttempt {
     @ObservationIgnored private var selectionRetirements: [EditorDocumentWriteLifetime.Observation] = []
     @ObservationIgnored private var selectionRestrictions: [EditorDocumentWriteCapture] = []
     @ObservationIgnored private var schemaResponse: Anytype_Rpc.Annotation.Schema.Register.Response?
+    @ObservationIgnored private var bootstrapReadiness: OriginalEditorAccountBootstrapReadiness?
     @ObservationIgnored private var selectionStarted = false
     @ObservationIgnored private weak var controller: UIViewController?
     @ObservationIgnored private var onReady: (@MainActor (AnytypeOriginalEditorAccountSession) -> Void)?
@@ -568,6 +709,7 @@ internal final class OriginalEditorAccountRuntimeAttempt {
         schemaResponse = response
         try validateStartup(requireDemand: true)
         try selected.validate()
+        try await awaitOriginalBootstrapReadiness(selected)
         try validateReadySelection(selected)
 
         let session = try AnytypeOriginalEditorAccountSession(owner: self, selection: selected)
@@ -579,10 +721,60 @@ internal final class OriginalEditorAccountRuntimeAttempt {
         deliver?(session)
     }
 
+
+    private func awaitOriginalBootstrapReadiness(_ selection: OriginalActiveSpaceSelection) async throws {
+        try validateStartup(requireDemand: true)
+        try selection.validate()
+        guard PinkhaRuntime.enabled,
+              let store = Container.shared.pinkhaSpaceManifestStore() as? PinkhaSpaceManifestStore,
+              selectionRestrictions.count == 4,
+              let originalAccount = selectionRestrictions.first,
+              let actualAccount = Container.shared.accountManager().editorWriteLifetime,
+              actualAccount === originalAccount.source else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.originalServiceUnavailable
+        }
+        // setActiveSpace already started the canonical Hook. Observe that SAME
+        // operation; do not call bootstrap again, mutate a manifest, or use its
+        // cached readiness as native proof. Cancellation/failure closes through
+        // the actual auth service, whose Stop drains its bootstrap operations.
+        let expected = try await Container.shared.pinkhaBootstrapStateManager().awaitReadiness(
+            spaceId: selection.accountInfo.accountSpaceId, timeoutSeconds: 120
+        )
+        try validateStartup(requireDemand: true)
+        try selection.validate()
+        let frozen = [capture] + selectionRestrictions
+        for item in frozen { try item.validate() }
+        var binding = try EditorDocumentWriteSourceBinding(
+            lifetime: lifetime, accountLifetime: actualAccount,
+            isCurrent: { [weak self, selection] in
+                guard let self,
+                      (try? self.validateStartup(requireDemand: true)) != nil,
+                      (try? selection.validate()) != nil else { return false }
+                return !self.isClosing && !self.isClosed
+            }
+        )
+        for item in frozen { binding = try binding.requiringCapturedSource(item) }
+        let accountID = selection.accountID
+        let spaceID = selection.accountInfo.accountSpaceId
+        let observed = try await binding.performRead(rpcNames: ["ObjectSearch", "ObjectShow"]) {
+            try await OriginalEditorAccountBootstrapReadiness.observe(
+                accountID: accountID, spaceID: spaceID, expected: expected, store: store
+            )
+        }
+        try binding.validate()
+        try validateStartup(requireDemand: true)
+        try selection.validate()
+        bootstrapReadiness = observed
+    }
+
     fileprivate func validateReadySelection(_ selection: OriginalActiveSpaceSelection) throws {
         try validateStartup(requireDemand: true)
         try selection.validate()
-        guard let operation = schemaOperation, let response = schemaResponse,
+        guard let bootstrap = bootstrapReadiness,
+              bootstrap.accountID.utf8.elementsEqual(selection.accountID.utf8),
+              bootstrap.spaceID.utf8.elementsEqual(selection.accountInfo.accountSpaceId.utf8),
+              bootstrap.typeResponses.count == OriginalEditorAccountBootstrapReadiness.roles.count,
+              let operation = schemaOperation, let response = schemaResponse,
               operation.deliveryCount == 1,
               let history = operation.history, history.copyError == nil,
               let observed = history.response, observed == response,
