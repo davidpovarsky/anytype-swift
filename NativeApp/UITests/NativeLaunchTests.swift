@@ -2741,7 +2741,11 @@ extension NativeLaunchTests {
         waitUntilEnabled(app.buttons[linkedID], timeout: 60)
         XCTAssertEqual(app.buttons[linkedID].value as? String, reference)
         let associationID = String(linkedID.dropFirst("any-native-linked-source-".count))
-        tapWhenEnabled(app.buttons["any-native-source-unlink-" + associationID])
+        let unlink = app.buttons["any-native-source-unlink-" + associationID]
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"), object: unlink, timeout: 30)
+        XCTAssertGreaterThanOrEqual(unlink.frame.width, 44)
+        XCTAssertGreaterThanOrEqual(unlink.frame.height, 44)
+        tapWhenEnabled(unlink)
         waitFor(NSPredicate(format: "exists == false"), object: app.buttons[linkedID], timeout: 60)
         tapWhenEnabled(app.buttons["any-native-source-search-done"])
         let unlinked = try semanticObservation(app, phase: "source-unlink-keeps-native-text-and-marker") {

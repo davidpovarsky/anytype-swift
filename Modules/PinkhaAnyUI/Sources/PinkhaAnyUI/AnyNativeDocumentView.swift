@@ -515,7 +515,11 @@ public struct AnyNativeSourceSearchView: View {
                                     .accessibilityValue(Text(verbatim: item.canonicalKey))
                                 Spacer()
                                 Button(role: .destructive) { Task { await presenter.unlinkAssociation(item) } }
-                                    label: { Image(systemName: "link.badge.minus") }
+                                    label: {
+                                        Image(systemName: "minus.circle")
+                                            .frame(width: 44, height: 44)
+                                            .contentShape(Rectangle())
+                                    }
                                     .disabled(!presenter.canEditAssociations)
                                     .buttonStyle(.plain)
                                     .accessibilityIdentifier("any-native-source-unlink-\(item.id)")
