@@ -161,6 +161,31 @@ def main():
             "inputRoute": "real-keyboard-with-original-native-UIKit-range-witness",
             "longPressMenuAccepted": False, "allOriginalHistoryAssertionsUnchanged": True}
         runner_history = candidate
+    elif hashlib.sha256(runner_history).hexdigest() == (
+            "2772d790979de88a3b622f17453a91ca792114292016f01e31386de7f4f614ca"):
+        # The same reviewed preparation may already be integrated into the App
+        # source revision. Record that exact route without applying an overlay
+        # or pretending that the former long-press interaction was accepted.
+        reviewed_commit = "6c398307682073f31f9fb59af59f34c96003d542"
+        subprocess.run(["git", "-C", str(source), "merge-base", "--is-ancestor",
+                        reviewed_commit, origin], check=True, capture_output=True)
+        review = (source / "docs/validation/20261125-native-history-keyboard-preparation/source-review.json").read_bytes()
+        require(hashlib.sha256(review).hexdigest() ==
+                "27925f01b2a7817435637517793c19d49db9a6814caef6e33b88dafb6beb2117",
+                "integrated_exact_history_preparation_review_required")
+        reviewed = json.loads(review)
+        require(reviewed["afterSHA256"] == hashlib.sha256(runner_history).hexdigest()
+                and reviewed["inverseDeltaRestoresCompleteOriginalFile"] is True
+                and reviewed["allHistoryVersionBodyIdentityColdReopenAssertionsUnchanged"] is True
+                and reviewed["longPressMenuAccepted"] is False,
+                "integrated_history_outcome_assertions_must_remain_original")
+        history_binding = {"sourceCommit": origin, "reviewedPreparationCommit": reviewed_commit,
+            "originalSHA256": reviewed["beforeSHA256"],
+            "compiledSHA256": hashlib.sha256(runner_history).hexdigest(),
+            "reviewSHA256": hashlib.sha256(review).hexdigest(),
+            "inputRoute": "real-keyboard-with-original-native-UIKit-range-witness",
+            "longPressMenuAccepted": False, "allOriginalHistoryAssertionsUnchanged": True,
+            "sourceAlreadyIntegrated": True}
     helper = source / "Tools/AnyEnginePort/native_ui_transition_project.py"
     original_helper = subprocess.run(["git", "-C", str(source), "show",
         origin + ":Tools/AnyEnginePort/native_ui_transition_project.py"],
