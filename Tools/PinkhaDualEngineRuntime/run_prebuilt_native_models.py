@@ -125,8 +125,18 @@ def main():
         label,enabled,disabled=contract.enumerated_identifiers(json.loads(enumeration.read_bytes()))
         expected_names={TARGET+"/"+CLASS+"/"+x for x in METHODS}
         normalize=lambda value: value[:-2] if value.endswith("()") else value
-        owned.require({normalize(x) for x in enabled}==expected_names and not disabled,"exact_five_original_methods_required")
-        owned.write(out/"selection.json",{"testPlan":label,"enabled":sorted(enabled),"disabled":[]})
+        owned.require(label==TARGET and {normalize(x) for x in enabled}==expected_names,
+                      "exact_five_original_methods_required")
+        # Xcode reports the other compiled XCTest/Swift Testing methods as
+        # disabled by our explicit selection. Those are not executed skips.
+        # The original descriptor has no SkipTestIdentifiers; the enabled set
+        # must remain exactly the five requested methods and actual results
+        # below still require five passes and zero skips.
+        owned.require(all(x.startswith(TARGET+"/") and normalize(x) not in expected_names
+                          for x in disabled),"only_original_unselected_host_methods_may_be_disabled")
+        owned.write(out/"selection.json",{"testPlan":label,"enabled":sorted(enabled),
+                    "disabledUnselectedOriginalMethods":sorted(disabled),
+                    "executedSkipAllowance":0})
         owned.run(plan+["-resultBundlePath",str(out/"Original.xcresult")],out,"execute",timeout=1800,allow_failure=True)
     except BaseException as exc:
         first={"type":type(exc).__name__,"reason":str(exc)}
