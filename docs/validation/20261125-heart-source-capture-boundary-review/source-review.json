@@ -1,0 +1,90 @@
+{
+  "builds": 0,
+  "finding": {
+    "bridge": "core/pinkha_native_source_capture.go:49-53",
+    "conclusion": "The exported mobile bridge leaves all six Limits fields zero. Neither application layer supplies defaults. If preceding account/session/space authority succeeds, CaptureNativeOwned rejects zero limits with ErrOwnership before acquiring the local snapshot lease.",
+    "finalForwarding": "core/application/loaded_space_witness.go:468",
+    "initialForwarding": "core/application/loaded_witness.go:162",
+    "kind": "missing-approved-local-store-capture-limits",
+    "lowerFixtureSuppliesDefaults": "core/application/loaded_witness_fixture_test.go:132-135",
+    "nativeForwarding": "space/spacecore/loaded_witness.go:193",
+    "normalizer": "core/application/loaded_space_witness.go:226-260",
+    "omittedField": "LoadedAccountSpaceWitnessRequest.Source.Limits",
+    "refusal": "core/pinkha/localstorewitness/native_capture.go:18-20",
+    "strictBounds": "core/pinkha/localstorewitness/capture.go:69-80"
+  },
+  "nativeCalls": 0,
+  "observedFailureAttribution": "Original application observation remains Go NSError1. This review does not establish that no earlier runtime gate failed, and does not claim the failure fixed.",
+  "otherRequestFields": {
+    "boundedDefaultsPresent": [
+      "MaxObjects",
+      "MaxObjectBytes",
+      "MaxSnapshotBytes",
+      "MaxFiles",
+      "MaxFileBytes",
+      "FileLimits"
+    ],
+    "otherMissingRequiredNonzeroFieldsFound": [],
+    "supplied": [
+      "Source.AccountID",
+      "Source.SpaceID",
+      "PrivateDirectory"
+    ]
+  },
+  "requiredNextQualification": [
+    "Narrow bridge sets approved bounded limits without changing strict lower-layer validation.",
+    "Regression exercises the actual exported bridge request construction rather than only the lower fixture supplying explicit defaults.",
+    "Affected source-bound native and actual application capture must execute successfully."
+  ],
+  "reviewMode": "read-only Git objects",
+  "reviewedAt": "2026-11-25T19:10:46.377696+00:00",
+  "schema": "pinkha-heart-capture-boundary-source-review-v1",
+  "sourceCommit": "5e8f9ce4ec789c1cd775b148a6cc49d4a28f56b5",
+  "sourceFiles": [
+    {
+      "bytes": 2990,
+      "path": "clientlibrary/service/pinkha_native_source_capture.go",
+      "sha256": "9140f3c9c524bd6f414db65ce181139930864d4644a578980969cd27d7b87f48"
+    },
+    {
+      "bytes": 4793,
+      "path": "core/pinkha_native_source_capture.go",
+      "sha256": "a13cda8ffbb5cbf5fe994bbfda1403b26e33f27ec50c2d52e8f4bb915d21985e"
+    },
+    {
+      "bytes": 19568,
+      "path": "core/application/loaded_space_witness.go",
+      "sha256": "8225e0ac9af096fd0e03e5b6658a5981fd3752979953824b2deeb514c07a88da"
+    },
+    {
+      "bytes": 7868,
+      "path": "core/application/loaded_witness.go",
+      "sha256": "686bf3e761601cc33d83c4da5ef08620a6ef258bf3e17883cbd94a9878f07420"
+    },
+    {
+      "bytes": 8434,
+      "path": "space/spacecore/loaded_witness.go",
+      "sha256": "1253f334054ec7f8cac467ca13fdf0bd7c17b769bb0add6d2e7e5fab847935d6"
+    },
+    {
+      "bytes": 14062,
+      "path": "core/pinkha/localstorewitness/capture.go",
+      "sha256": "934351f99f3468839e3c3a21495203288ece1295481f81e35e5176345c5b103c"
+    },
+    {
+      "bytes": 1800,
+      "path": "core/pinkha/localstorewitness/native_capture.go",
+      "sha256": "d8442d3b76ae93be580be27ea060925b9a7bca17bdfe7f9a89c91f99b2fe912f"
+    },
+    {
+      "bytes": 11404,
+      "path": "core/application/loaded_witness_fixture_test.go",
+      "sha256": "e5b2d28c5fab378925303cf46526e4cbd9f6b2683d70984f946acda5cc46dd3d"
+    }
+  ],
+  "sourceMutations": 0,
+  "status": "CONCRETE_SOURCE_DEFECT_NOT_RUNTIME_ACCEPTANCE",
+  "testsExecuted": 0,
+  "wholeTaskCComplete": false,
+  "wholeTaskEComplete": false
+}
