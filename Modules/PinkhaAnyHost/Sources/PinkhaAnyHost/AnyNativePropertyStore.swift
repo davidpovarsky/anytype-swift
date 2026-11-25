@@ -130,6 +130,7 @@ public struct AnyNativePropertyDefinition: Equatable, Sendable {
     public let xFormat: AnyJSON?
     public let raw: AnyJSON
     public let importedDefaultMetadata: AnyNativeImportedDefaultMetadata?
+    public let fileFormat: AnyNativeFilePropertyFormat?
     public var isSyncedWritableKind: Bool { scope == "synced" && kind != nil }
     init(ownerID: String, raw: AnyJSON) throws {
         guard let id = raw["id"]?.string, let kind = raw["kind"]?.string,
@@ -145,10 +146,12 @@ public struct AnyNativePropertyDefinition: Equatable, Sendable {
         self.scope = raw["scope"]?.string ?? "synced"
         self.xFormat = raw["xFormat"]; self.raw = raw
         self.importedDefaultMetadata = try AnyNativeImportedDefaultMetadata(property: raw)
+        self.fileFormat = try AnyNativeFilePropertyFormat(property: raw)
     }
     func accepts(_ value: AnyJSON) -> Bool {
         // Null is the native unset request; it is never a whole-record replace.
         if value == .null { return true }
+        if let fileFormat { return (try? fileFormat.references(in: value)) != nil }
         switch kind {
         case .string: return value.string != nil
         case .number: return value.integer != nil || { if case .number(let n) = value { return n.isFinite }; return false }()

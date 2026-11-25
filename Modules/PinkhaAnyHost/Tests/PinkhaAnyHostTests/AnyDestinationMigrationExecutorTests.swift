@@ -56,6 +56,56 @@ final class AnyDestinationMigrationExecutorTests: XCTestCase, @unchecked Sendabl
         XCTAssertEqual(result.mappings.map(\.objectID), reopened.mappings.map(\.objectID))
     }
 
+    func testFileReferenceCommitsNativeFileNamespaceAndReplaysTheSamePrivateFile() async throws {
+        let bytes = Data("explicit file reference component bytes".utf8)
+        let original = try fixturePlan(files: [("file", bytes)])
+        let items = original.items.filter { $0.sourceKey != "b-links" }.map { item -> AnyDestinationMigrationItem in
+            switch item.sourceKey {
+            case "relation":
+                return .init(sourceKey: item.sourceKey, sourceObjectID: item.sourceObjectID,
+                    operation: .propertyDefinition(owner: ref("type"), kind: "array", name: "Files", xKey: "files",
+                        description: "Typed native file references", scope: "synced",
+                        xFormat: .literal(.object(["type": .string("pinkha-file"), "links": .string("links")])), index: nil))
+            case "a-links":
+                return .init(sourceKey: item.sourceKey, sourceObjectID: item.sourceObjectID,
+                    operation: .propertyUpdate(object: ref("a"), owner: ref("type"),
+                        patch: .object([.init(key: ref("relation", .record(index: 0)),
+                            value: .array([.reference(ref("file", .fileID, .fileURI))]))])))
+            default: return item
+            }
+        }
+        let coverage = original.source.sourceObjectIDs.map { id in
+            AnyDestinationCoverage(sourceObjectID: id, disposition: .mapped(itemSourceKeys: items.filter { $0.sourceObjectID == id }.map(\.sourceKey)))
+        }
+        let plan = try AnyDestinationMigrationPlan(source: original.source, workspace: original.binding.workspace,
+            storeID: original.binding.storeID, planID: digest("file-reference-control"), coverage: coverage, items: items)
+        XCTAssertEqual(try AnyDestinationMigrationPlan.decode(AnyDestinationMigrationJournal.encoded(plan)).canonicalBytes, plan.canonicalBytes)
+        let parent = try directory(), payload = try directory().appendingPathComponent("original")
+        try bytes.write(to: payload)
+        let driver = DestinationFixtureDriver(failAfterPrepare: "a-links")
+        await expectFailure {
+            _ = try await AnyDestinationMigrationExecutor(journalDirectory: parent, driver: driver)
+                .execute(plan: plan, payloads: { _ in payload }, verifySource: { _ in }, authorize: {})
+        }
+        try FileManager.default.removeItem(at: payload)
+        let progress = try await AnyDestinationMigrationExecutor(journalDirectory: parent, driver: driver)
+            .execute(plan: plan, payloads: { _ in throw FixtureFailure.noPayload }, verifySource: { _ in }, authorize: {})
+        let file = try XCTUnwrap(progress.mappings.first { $0.sourceKey == "file" })
+        let fileID = try XCTUnwrap(file.fileID)
+        let state = await driver.stats()
+        XCTAssertEqual(state.propertyPatches["a-links"]?.object?.values.first,
+            .array([.string("any://f/destination-space/" + fileID)]))
+        XCTAssertEqual(state.preparations["file"], 1)
+        XCTAssertEqual(state.preparations["a-links"], 1)
+        let resumed = try await AnyDestinationMigrationExecutor(journalDirectory: parent, driver: driver)
+            .execute(plan: plan, payloads: { _ in throw FixtureFailure.noPayload }, verifySource: { _ in }, authorize: {})
+        XCTAssertEqual(resumed.mappings.map(\.intentID), progress.mappings.map(\.intentID))
+        XCTAssertEqual(resumed.mappings.first { $0.sourceKey == "file" }?.fileID, fileID)
+        let again = await driver.stats()
+        XCTAssertEqual(again.preparedSpecs["a-links"], state.preparedSpecs["a-links"])
+        XCTAssertEqual(again.preparations, state.preparations)
+    }
+
     func testPartsRequireTypeOwnersWhilePropertiesAllowCollections() throws {
         let source = try AnyDestinationSourceBinding(accountID: "source-account", spaceID: "source-space",
             witnessSHA256: digest("witness"), captureManifestSHA256: digest("capture"), semanticPlanSHA256: digest("semantic"),

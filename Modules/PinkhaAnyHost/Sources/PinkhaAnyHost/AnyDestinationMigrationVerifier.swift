@@ -104,7 +104,7 @@ public struct AnyDestinationMigrationVerifier: Sendable {
         let immutableMappings = mappings
         let resolved = try plan.items.map { item in
             try item.operation.resolved(destinationSpaceID: plan.binding.workspace.spaceID) { reference in
-                try Self.resolve(reference, in: immutableMappings)
+                try Self.resolve(reference, in: immutableMappings, destinationSpaceID: plan.binding.workspace.spaceID)
             }
         }
         var roots: [Data: String] = [:]
@@ -424,7 +424,7 @@ public struct AnyDestinationMigrationVerifier: Sendable {
         return record
     }
     static func resolve(_ reference: AnyDestinationReference,
-                        in mappings: [Data: AnyDestinationMigrationMapping]) throws -> String {
+                        in mappings: [Data: AnyDestinationMigrationMapping], destinationSpaceID: String) throws -> String {
         guard case .mapped(let key, let slot, let encoding) = reference else { return try native(reference) }
         guard let mapping = mappings[Data(key.utf8)] else { throw AnyDestinationContentVerificationError.invalidProgress }
         let result: String
@@ -436,6 +436,10 @@ public struct AnyDestinationMigrationVerifier: Sendable {
         case .fileID:
             guard let id = mapping.fileID else { throw AnyDestinationContentVerificationError.invalidProgress }; result = id
         }
-        return encoding == .anyURI ? "any://" + result : result
+        switch encoding {
+        case .rawID: return result
+        case .anyURI: return "any://" + result
+        case .fileURI: return try AnyNativeFileReference(spaceID: destinationSpaceID, fileID: result).uri
+        }
     }
 }

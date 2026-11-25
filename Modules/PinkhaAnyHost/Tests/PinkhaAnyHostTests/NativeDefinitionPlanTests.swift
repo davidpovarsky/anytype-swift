@@ -75,6 +75,62 @@ final class NativeDefinitionPlanTests: XCTestCase {
     }
 
 
+    func testFileDefinitionsMapOnlyBoundOriginalFilesAfterNativeCommitment() throws {
+        let field = try relation("file-definition", key: "attachments", format: 5)
+        let c = try catalog([field, type(extra: ["recommendedFileRelations": .array([.string(field.sourceObjectID)])])])
+        let plan = try AnyHeartNativeDefinitionPlan(catalog: c)
+        XCTAssertTrue(plan.issues.isEmpty)
+        let property = try XCTUnwrap(plan.property(sourceKey: "attachments"))
+        let raw = try defaultProperty(plan, binding: property)
+        let descriptor = try XCTUnwrap(AnyNativePropertyDefinition(ownerID: "allocated-owner", raw: raw).fileFormat)
+        XCTAssertTrue(descriptor.multiple)
+        XCTAssertEqual(raw["xFormat"]?["links"], .string("links"))
+        XCTAssertNil(raw["xFormat"]?["relation"])
+        let a = fileBinding(catalog: c, id: "file-a"), b = fileBinding(catalog: c, id: "file-b")
+        let page = try snapshot("page", type: 16, key: "", details: ["attachments": .array([.string(b.fileID), .string(a.fileID), .string(b.fileID)])])
+        let values = try plan.values(snapshot: page, relationKeys: ["attachments"], objects: [], files: [a, b])
+        XCTAssertTrue(values.initialGroups.isEmpty)
+        XCTAssertEqual(values.deferredRelationKeys, ["attachments"])
+        guard case .object(let fields) = try XCTUnwrap(values.deferredGroups.first).fields else { return XCTFail("Expected deferred files") }
+        XCTAssertEqual(fields.first?.value, .array([.reference(b.reference), .reference(a.reference), .reference(b.reference)]))
+        let item = try a.destinationItem(ownerSourceKey: "page")
+        XCTAssertEqual(item.sourceObjectID, a.fileID)
+        guard case .file(let owner, let name, let mime, let size, let digest) = item.operation else { return XCTFail("Expected a bound file operation") }
+        XCTAssertEqual(owner, .mapped(sourceKey: "page", slot: .objectID, encoding: .rawID))
+        XCTAssertEqual(name, a.name); XCTAssertEqual(mime, a.mimeType)
+        XCTAssertEqual(size, a.size); XCTAssertEqual(digest, a.payloadSHA256)
+        XCTAssertFalse(a.permitsDestinationWrites); XCTAssertFalse(plan.permitsDestinationWrites)
+    }
+
+    func testFileValuesRefuseMissingForeignDuplicateAndUnqualifiedRestrictions() throws {
+        let field = try relation("file-definition", key: "attachments", format: 5,
+            extra: ["relationMaxCount": .integer(1)])
+        let c = try catalog([field, type()]), plan = try AnyHeartNativeDefinitionPlan(catalog: c)
+        let file = fileBinding(catalog: c, id: "file")
+        let page = try snapshot("page", type: 16, key: "", details: ["attachments": .array([.string(file.fileID)])])
+        XCTAssertThrowsError(try plan.values(snapshot: page, relationKeys: ["attachments"], objects: []))
+        XCTAssertThrowsError(try plan.values(snapshot: page, relationKeys: ["attachments"], objects: [], files: [file, file]))
+        let foreign = fileBinding(catalog: c, id: "file", witness: String(repeating: "d", count: 64))
+        XCTAssertThrowsError(try plan.values(snapshot: page, relationKeys: ["attachments"], objects: [], files: [foreign]))
+        let tooMany = try snapshot("page", type: 16, key: "", details: ["attachments": .array([.string("file"), .string("file")])])
+        XCTAssertThrowsError(try plan.values(snapshot: tooMany, relationKeys: ["attachments"], objects: [], files: [file]))
+        let empty = try snapshot("page", type: 16, key: "", details: ["attachments": .array([])])
+        XCTAssertNoThrow(try plan.values(snapshot: empty, relationKeys: ["attachments"], objects: []))
+        let restricted = try relation("restricted", key: "images", format: 5,
+            extra: ["relationFormatObjectTypes": .array([.string("native-type")])])
+        let preview = try AnyHeartNativeDefinitionPlan(catalog: catalog([restricted, type()]))
+        XCTAssertTrue(preview.issues.contains { $0.reason == "native-file-type-restriction-not-qualified" })
+        XCTAssertThrowsError(try preview.admittedSchemaItems())
+    }
+
+    private func fileBinding(catalog: AnyHeartNativeDefinitionCatalog, id: String, witness: String? = nil) -> AnyHeartNativeFileBinding {
+        // Deliberately detached component input, never native capture authority.
+        .init(sourceAccountID: catalog.sourceAccountID, sourceSpaceID: catalog.sourceSpaceID,
+            captureManifestSHA256: catalog.captureManifestSHA256, sourceWitnessSHA256: witness ?? catalog.sourceWitnessSHA256,
+            fileID: id, variantPath: "original", payloadPath: "private-component-file", payloadSHA256: String(repeating: "c", count: 64),
+            size: 4_097, name: "original.bin", mimeType: "application/octet-stream")
+    }
+
     func testQualifiedDefaultMetadataPreservesAbsentEmptyAndExplicitCurrentValues() throws {
         let original = "native default e\u{301} — ברירת מחדל"
         let field = try relation("defaultText", key: "defaultText", format: 0,
