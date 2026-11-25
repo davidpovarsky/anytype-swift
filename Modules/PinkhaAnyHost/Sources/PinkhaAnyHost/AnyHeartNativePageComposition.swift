@@ -61,7 +61,9 @@ public struct AnyHeartNativePageComposition: Sendable {
         if !bundle.sourceGaps.isEmpty { sourceIssues.append("source-gaps") }
         if !bundle.resolverUnmapped.isEmpty { sourceIssues.append("resolver-unmapped") }
         if !bundle.bundledDefinitionsUsed.isEmpty { sourceIssues.append("bundled-definition-fallback") }
-        if !bundle.retainedOtherCollections.isEmpty { sourceIssues.append("unmapped-native-collections") }
+        if !bundle.retainedOtherCollections.isEmpty, bundle.nativeStoreContext?.unmappedCollectionNames.isEmpty != true {
+            sourceIssues.append("unmapped-native-collections")
+        }
         try self.init(snapshot: snapshot, definitions: definitions, objects: objects,
                       files: files, sourceIssues: sourceIssues)
     }

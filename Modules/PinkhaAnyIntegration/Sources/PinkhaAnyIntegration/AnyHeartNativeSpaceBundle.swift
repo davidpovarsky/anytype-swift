@@ -56,6 +56,7 @@ public struct AnyHeartNativeSpaceBundle: Sendable {
     public let bundledDefinitionsUsed: [String]
     public let bundledDefinitions: [AnyHeartNativeBundledDefinition]
     public let retainedOtherCollections: [AnyJSON]
+    public let nativeStoreContext: AnyHeartNativeStoreContext?
     public let issues: [Issue]
 
     /// The provider reads the exact named member from the captured private
@@ -137,7 +138,7 @@ public struct AnyHeartNativeSpaceBundle: Sendable {
             totalVerifiedBytes += bytes.count; members.append(member)
             return (member, bytes)
         }
-        let rows = try verify(root["SourceRows"], expectedPath: "native-source-rows.witness", maximum: 512 * 1024 * 1024).0
+        let (rows, sourceRowBytes) = try verify(root["SourceRows"], expectedPath: "native-source-rows.witness", maximum: 512 * 1024 * 1024)
         let rawTrees = try Self.array(root["Trees"], maximum: 100_000)
         var treeIDs = Set<Data>(), treeStrings = Set<String>()
         let trees = try rawTrees.map { value -> Tree in
@@ -303,6 +304,11 @@ public struct AnyHeartNativeSpaceBundle: Sendable {
               receipt["CurrentFilePayloadCompleteness"]?.bool == allFiles else {
             throw AnyHeartNativeSpaceBundleError.inconsistentInventory
         }
+        // Unknown or malformed retained store state remains blocked. Only a
+        // fully bound original witness can close the two native context cases.
+        let storeContext = try? AnyHeartNativeStoreContext(sourceAccountID: sourceAccountID,
+            sourceSpaceID: sourceSpaceID, manifest: root, manifestSHA256: AnyContentDigest.sha256(manifest),
+            sourceRows: sourceRowBytes)
         var otherNames = Set<Data>(), otherStrings = Set<String>(), otherRows: Int64 = 0
         for row in others {
             guard let name = row["Name"]?.string, Self.validID(name),
@@ -312,7 +318,7 @@ public struct AnyHeartNativeSpaceBundle: Sendable {
                 throw AnyHeartNativeSpaceBundleError.invalidManifest
             }
             otherRows += rows
-            if rows > 0 {
+            if rows > 0, storeContext?.classification(named: name) == nil {
                 issues.append(.init(code: "retained-collection-requires-semantic-mapping", sourceID: name, field: "RetainedOtherCollections"))
             }
         }
@@ -332,6 +338,7 @@ public struct AnyHeartNativeSpaceBundle: Sendable {
         verifiedMembers = members; fileReferences = references; sourceGaps = gaps
         resolverUnmapped = unmapped; bundledDefinitionsUsed = definitions
         bundledDefinitions = compiledDefinitions; retainedOtherCollections = others
+        nativeStoreContext = storeContext
         self.issues = issues
     }
 
