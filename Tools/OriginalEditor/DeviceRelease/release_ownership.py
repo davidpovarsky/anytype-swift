@@ -81,6 +81,16 @@ def verify_ownership(root, evidence, work, qualification, source, before, platfo
             and pins['swift-ai-sdk']['revision'] == expected_hanlin['swiftAISDKRevision'],
             'Compiled shared Hanlin closure does not match the current producer source contract')
     write(evidence / 'shared-provider-selected-definitions.json', definitions)
+    checkouts = work / 'producer-derived-preserved/SourcePackages/checkouts'
+    original_checkouts = original_derived / 'SourcePackages/checkouts'
+    mapping = None
+    if roots is not None:
+        from release_quarantine_mapping import dependency_inventory
+        shared_sources, mapping = dependency_inventory(
+            root, checkouts, contract, original_checkouts, distribution, collection, source)
+    else:
+        shared_sources = dependency_source_inventory(
+            checkouts, contract, original_checkouts=original_checkouts)
     receipt.update(
         status='PASS_OBSERVED_SINGLE_SHARED_IMPLEMENTATIONS',
         producer={'source_sha': source['head_sha'], 'run_id': source['run_id'],
@@ -96,14 +106,13 @@ def verify_ownership(root, evidence, work, qualification, source, before, platfo
         hanlin_source_revision=hanlin['revision'], hanlin_snapshot_sha256=sha256(hanlin_path),
         hanlin_package_files=hanlin['files'],
         resolved_package_states=pins,
-        shared_dependency_sources=dependency_source_inventory(
-            work / 'producer-derived-preserved/SourcePackages/checkouts', contract,
-            original_checkouts=original_derived / 'SourcePackages/checkouts'),
+        shared_dependency_sources=shared_sources,
         shared_swift_ai_sdk_revision=pins['swift-ai-sdk']['revision'],
         host_semantic_equality_required=True, stageb_qualified=False,
     )
     if roots is not None:
         receipt['compiler_root_continuation'] = roots
+        receipt['retained_git_mapping_continuation'] = mapping
     require(source_observation(root) == before, 'Source changed during Release shared ownership verification')
     write(evidence / 'shared-runtime-ownership.json', receipt)
     return receipt
