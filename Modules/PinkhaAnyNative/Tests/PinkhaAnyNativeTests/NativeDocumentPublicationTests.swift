@@ -626,8 +626,11 @@ private final class NativePublicationFixture {
     }
 
     func type(_ text: String) throws {
+        let rendered = try block()
+        let display = rendered.type == "code"
+            ? AnyInlineMarkdown(literal: text).display : AnyInlineMarkdown(text).display
         try model.changeText(blockID: blockID, source: text,
-            displaySelection: .init(location: text.utf16.count, length: 0), renderedBlock: block())
+            displaySelection: .init(location: display.utf16.count, length: 0), renderedBlock: rendered)
     }
 
     func read() async throws -> AnyEditorRead {
