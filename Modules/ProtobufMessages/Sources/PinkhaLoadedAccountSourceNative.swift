@@ -4,6 +4,7 @@ import Lib
 
 public enum PinkhaLoadedAccountSourceNativeError: Error, Sendable {
     case missingNativeDescriptor
+    case nativeValidationFailed
 }
 
 /// The sole Lib owner exposes a small synchronous boundary. The original app
@@ -12,8 +13,10 @@ public enum PinkhaLoadedAccountSourceNativeError: Error, Sendable {
 public enum PinkhaLoadedAccountSourceNative {
     public static func capture(sessionToken: String, accountID: String, spaceID: String,
                                privateDirectory: String, requestID: String) throws -> Data {
-        let bytes: Data? = try Lib.ServicePinkhaCaptureLoadedAccountSource(
-            sessionToken, accountID, spaceID, privateDirectory, requestID)
+        var nativeError: NSError?
+        let bytes: Data? = Lib.ServicePinkhaCaptureLoadedAccountSource(
+            sessionToken, accountID, spaceID, privateDirectory, requestID, &nativeError)
+        if let nativeError { throw nativeError }
         guard let bytes, !bytes.isEmpty else {
             throw PinkhaLoadedAccountSourceNativeError.missingNativeDescriptor
         }
@@ -21,7 +24,11 @@ public enum PinkhaLoadedAccountSourceNative {
     }
 
     public static func validate(sessionToken: String, requestID: String, manifestSHA256: String) throws {
-        _ = try Lib.ServicePinkhaValidateLoadedAccountSourceCapture(sessionToken, requestID, manifestSHA256)
+        var nativeError: NSError?
+        let valid = Lib.ServicePinkhaValidateLoadedAccountSourceCapture(
+            sessionToken, requestID, manifestSHA256, &nativeError)
+        if let nativeError { throw nativeError }
+        guard valid else { throw PinkhaLoadedAccountSourceNativeError.nativeValidationFailed }
     }
 
     public static func cancel(sessionToken: String, requestID: String) -> Bool {

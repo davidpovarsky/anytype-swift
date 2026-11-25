@@ -108,6 +108,23 @@ def extract(archive, target, manifest):
     require(seen == set(manifest["files"]) | {"source-manifest.json"}, "source_archive_incomplete")
     check_source(target, manifest)
 
+def generated_swift_entry(root):
+    generated = root / "generated-entry.swift"
+    generated.write_text("import Foundation\nimport Lib\n"
+        "func checkGeneratedEntries() throws {\n"
+        "  let version: String = Lib.MobileVersion()\n"
+        "  let result = Lib.MobileStartWithResult(\"\", \"\", \"\", \"\", \"\", \"\", \"\")\n"
+        "  if let result { let _: Int32 = result.code; let _: String = result.address; let _: String = result.message }\n"
+        "  var nativeError: NSError?\n  let _: Bool = Lib.MobileStop(&nativeError)\n  Lib.MobileStopNow()\n"
+        "  let capture: Data? = Lib.ServicePinkhaCaptureLoadedAccountSource(\"\", \"\", \"\", \"\", \"\", &nativeError)\n"
+        "  let _: Bool = Lib.ServicePinkhaCancelLoadedAccountSourceCapture(\"\", \"\")\n"
+        "  let _: Bool = Lib.ServicePinkhaValidateLoadedAccountSourceCapture(\"\", \"\", \"\", &nativeError)\n"
+        "  let _: Bool = Lib.ServicePinkhaReleaseLoadedAccountSourceCapture(\"\", \"\")\n"
+        "  let _ = Lib.ServicePinkhaTorahAuthorizedOperationRead\n"
+        "  let _ = Lib.ServicePinkhaSemanticAnchorCapture\n"
+        "  _ = version; _ = capture\n}\n")
+    return generated
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, required=True)
@@ -256,20 +273,7 @@ def main():
             artifacts[library["LibraryIdentifier"]] = {
                 "rawGoArchiveSHA256": raw_sha, "binarySHA256": digest(binary),
                 "binaryBytes": binary.stat().st_size, "tantivyPlatform": tantivy_platform}
-        generated = root / "generated-entry.swift"
-        generated.write_text("import Foundation\nimport Lib\n"
-            "func checkGeneratedEntries() throws {\n"
-            "  let version: String = Lib.MobileVersion()\n"
-            "  let result = Lib.MobileStartWithResult(\"\", \"\", \"\", \"\", \"\", \"\", \"\")\n"
-            "  if let result { let _: Int32 = result.code; let _: String = result.address; let _: String = result.message }\n"
-            "  try Lib.MobileStop()\n  Lib.MobileStopNow()\n"
-            "  let capture: Data? = try Lib.ServicePinkhaCaptureLoadedAccountSource(\"\", \"\", \"\", \"\", \"\")\n"
-            "  let _: Bool = Lib.ServicePinkhaCancelLoadedAccountSourceCapture(\"\", \"\")\n"
-            "  _ = try Lib.ServicePinkhaValidateLoadedAccountSourceCapture(\"\", \"\", \"\")\n"
-            "  let _: Bool = Lib.ServicePinkhaReleaseLoadedAccountSourceCapture(\"\", \"\")\n"
-            "  let _ = Lib.ServicePinkhaTorahAuthorizedOperationRead\n"
-            "  let _ = Lib.ServicePinkhaSemanticAnchorCapture\n"
-            "  _ = version; _ = capture\n}\n")
+        generated = generated_swift_entry(root)
         sdk_name = "iphonesimulator" if args.slice == "simulator" else "iphoneos"
         swift_target = "arm64-apple-ios27.0" + ("-simulator" if args.slice == "simulator" else "")
         sdk = run(["xcrun", "--sdk", sdk_name, "--show-sdk-path"], "slice-sdk-path", timeout=30).read_text().strip()

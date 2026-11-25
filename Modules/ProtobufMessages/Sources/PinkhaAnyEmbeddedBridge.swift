@@ -32,7 +32,7 @@ public enum PinkhaAnyEmbeddedBridge {
 
     /// The original mobile bridge calls embedded.Stop(true), waits for the drain,
     /// and returns nil. This has the same contract as the prior void C shim.
-    public static func stop() { try? Lib.MobileStop() }
+    public static func stop() { _ = Lib.MobileStop(nil) }
     public static func stopNow() { Lib.MobileStopNow() }
 }
 #endif
