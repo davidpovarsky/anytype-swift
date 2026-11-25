@@ -1,0 +1,33 @@
+// swift-tools-version: 6.2
+import PackageDescription
+let package = Package(name: "HanlinMergedSourceProof", platforms: [.macOS(.v26), .iOS("27.0")], dependencies: [.package(path: "External/SwiftyJSON"), .package(path: "External/ZIPFoundation")], targets: [
+        .target(name: "AISDKJSONSchema", dependencies: ["AISDKProviderUtils", "AISDKZodAdapter"], path: "Sources/AISDKJSONSchema"),
+        .target(name: "AISDKProvider", dependencies: [], path: "Sources/AISDKProvider"),
+        .target(name: "AISDKProviderUtils", dependencies: ["AISDKProvider", "AISDKZodAdapter", "EventSourceParser"], path: "Sources/AISDKProviderUtils"),
+        .target(name: "AISDKZodAdapter", dependencies: ["AISDKProvider"], path: "Sources/AISDKZodAdapter"),
+        .target(name: "AnthropicProvider", dependencies: ["AISDKProvider", "AISDKProviderUtils", "EventSourceParser"], path: "Sources/AnthropicProvider"),
+        .target(name: "EventSourceParser", dependencies: [], path: "Sources/EventSourceParser"),
+        .target(name: "GatewayProvider", dependencies: ["AISDKProvider", "AISDKProviderUtils"], path: "Sources/GatewayProvider"),
+        .target(name: "GoogleProvider", dependencies: ["AISDKProvider", "AISDKProviderUtils", "EventSourceParser"], path: "Sources/GoogleProvider"),
+        .target(name: "HanlinChatCore", dependencies: ["HanlinPlatformContracts", "SwiftAISDK", "AISDKProvider", "AISDKProviderUtils", "OpenAIProvider", "AnthropicProvider", "GoogleProvider", "OpenAICompatibleProvider"], path: "Sources/HanlinChatCore"),
+        .testTarget(name: "HanlinChatCoreTests", dependencies: ["HanlinChatCore", "SwiftAISDK", "AISDKProvider", "AISDKProviderUtils", "OpenAIProvider", "AnthropicProvider", "GoogleProvider", "OpenAICompatibleProvider"], path: "Sources/HanlinChatCoreTests"),
+        .target(name: "HanlinHostContracts", dependencies: ["HanlinPlatformContracts"], path: "Sources/HanlinHostContracts"),
+        .target(name: "HanlinMiniAppCore", dependencies: ["HanlinPlatformContracts"], path: "Sources/HanlinMiniAppCore"),
+        .target(name: "HanlinPersistenceAdapters", dependencies: ["HanlinHostContracts"], path: "Sources/HanlinPersistenceAdapters"),
+        .testTarget(name: "HanlinPersistenceAdaptersTests", dependencies: ["HanlinPersistenceAdapters"], path: "Sources/HanlinPersistenceAdaptersTests"),
+        .target(name: "HanlinPlatformContracts", dependencies: [], path: "Sources/HanlinPlatformContracts", resources: [.process("Resources")], swiftSettings: [.unsafeFlags(["-application-extension"], .when(platforms: [.iOS]))], linkerSettings: [.unsafeFlags(["-Xlinker", "-application_extension"], .when(platforms: [.iOS]))]),
+        .target(name: "HanlinScriptContracts", dependencies: ["HanlinPlatformContracts"], path: "Sources/HanlinScriptContracts", resources: [.process("Resources")]),
+        .target(name: "HanlinScriptStore", dependencies: ["HanlinPlatformContracts", "HanlinScriptContracts", "HanlinMiniAppCore"], path: "Sources/HanlinScriptStore"),
+        .testTarget(name: "HanlinScriptStoreTests", dependencies: ["HanlinScriptStore", "HanlinMiniAppCore"], path: "Sources/HanlinScriptStoreTests"),
+        .target(name: "OpenAICompatibleProvider", dependencies: ["AISDKProvider", "AISDKProviderUtils"], path: "Sources/OpenAICompatibleProvider"),
+        .target(name: "OpenAIProvider", dependencies: ["AISDKProvider", "AISDKProviderUtils", "EventSourceParser"], path: "Sources/OpenAIProvider"),
+        .target(name: "SwiftAISDK", dependencies: ["AISDKProvider", "AISDKProviderUtils", "AISDKJSONSchema", "EventSourceParser", "GatewayProvider"], path: "Sources/SwiftAISDK"),
+        .target(name: "HanlinExtensionContracts", dependencies: [], path: "Sources/HanlinExtensionContracts"),
+        .target(name: "HanlinLegacyWidgetStoreFixture", dependencies: ["HanlinPlatformContracts", "HanlinScriptUI"], path: "Sources/HanlinLegacyWidgetStoreFixture", exclude: ["PROVENANCE.txt"]),
+        .target(name: "HanlinScriptCompiler", dependencies: ["HanlinWidgetCompiler", "HanlinPlatformContracts", "HanlinScriptContracts", .product(name: "ZIPFoundation", package: "ZIPFoundation")], path: "Sources/HanlinScriptCompiler", resources: [.process("Resources")]),
+        .target(name: "HanlinScriptExtensions", dependencies: ["HanlinScriptWidgetOriginal", "HanlinExtensionContracts", .product(name: "SwiftyJSON", package: "SwiftyJSON"), "HanlinPlatformContracts", "HanlinScriptContracts", "HanlinScriptStore", "HanlinScriptUI", "HanlinChatCore"], path: "Sources/HanlinScriptExtensions", exclude: ["ScriptWidget/Original/MIT-previous.txt", "ScriptWidget/Original/LICENSE.txt", "ScriptWidget/Original/NOTICE.txt", "ScriptWidget/Original/Component/Attributes/Animation/ClockHandKit-LICENSE.txt"], resources: [.copy("Resources/support.bundle"), .copy("Resources/ExpoWidgets.bundle")], linkerSettings: [.linkedFramework("JavaScriptCore")]),
+        .testTarget(name: "HanlinScriptExtensionsTests", dependencies: ["HanlinScriptExtensions", "HanlinChatCore", "HanlinScriptCompiler", "HanlinScriptStore", "HanlinLegacyWidgetStoreFixture"], path: "Sources/HanlinScriptExtensionsTests"),
+        .target(name: "HanlinScriptUI", dependencies: ["HanlinPlatformContracts", "HanlinScriptContracts", "HanlinChatCore"], path: "Sources/HanlinScriptUI", resources: [.process("Resources")]),
+        .target(name: "HanlinScriptWidgetOriginal", dependencies: ["HanlinExtensionContracts", .product(name: "ZIPFoundation", package: "ZIPFoundation")], path: "Sources/HanlinScriptWidgetOriginal", exclude: ["Original/LICENSE.txt", "Original/NOTICE.txt"], resources: [.copy("Resources/support.bundle")], swiftSettings: [.swiftLanguageMode(.v5)], linkerSettings: [.linkedFramework("JavaScriptCore")]),
+        .target(name: "HanlinWidgetCompiler", dependencies: ["HanlinPlatformContracts", "HanlinScriptContracts", "HanlinScriptWidgetOriginal"], path: "Sources/HanlinWidgetCompiler", resources: [.copy("Resources/core.js"), .copy("Resources/prepare-widget.js")], linkerSettings: [.linkedFramework("JavaScriptCore", .when(platforms: [.ios, .macos]))])
+], swiftLanguageModes: [.v6])
