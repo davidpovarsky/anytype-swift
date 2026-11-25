@@ -112,6 +112,10 @@ def main():
         require(free >= 23_000_000_000, "Actual phase growth/concurrency capacity unavailable")
         command("clone-isolated-git", ["git", "clone", "--no-hardlinks", "--no-checkout", str(args.original_git), str(source)], args.root, 180)
         command("checkout-original", ["git", "-c", "advice.detachedHead=false", "checkout", "--detach", SOURCE], source, 60)
+        # The retained preparation diff uses eight-digit Git object abbreviations.
+        # Pin presentation in this new clone so the original driver emits the
+        # same exact diff bytes; no source content or comparison is relaxed.
+        command("pin-original-diff-width", ["git", "config", "--local", "core.abbrev", "8"], source, 20)
         command("apply-exact-original-preparation", ["git", "apply", "--binary", str(args.prepared_diff)], source, 60)
         shutil.copy2(config, source / "Config.xcconfig")
         for target in (source / "AI_HLY/RuntimeHostResources.zip", source / "build/runtime-host/RuntimeHostResources.zip"):
