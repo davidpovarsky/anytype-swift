@@ -4,6 +4,7 @@ import CryptoKit
 import Services
 import ProtobufMessages
 import SwiftProtobuf
+import UniformTypeIdentifiers
 
 /// The captured canonical Otzaria row. These values are data, not permission to
 /// select an account, create a remote object, or acknowledge an exchange.
@@ -254,6 +255,104 @@ public enum AnytypeOriginalEditorMiniAppsAction: String, Codable, Sendable {
 public enum AnytypeOriginalEditorMiniAppsError: Error, Sendable, Equatable {
     case invalidContext, missingSelection, sourceChanged, nativeBodyChanged
     case invalidRange, notMounted, unsupportedResult, resultNotSaved, operationInProgress
+    case invalidAttachment, attachmentUnavailable, attachmentTooLarge
+}
+
+
+/// Bytes from, or intended for, an original native file block. No private URL
+/// crosses the process boundary. The caller imports/exports the bytes using its
+/// shared Bridge and keeps the original archive size limit for the final save.
+public struct AnytypeOriginalEditorMiniAppsAttachment: Sendable {
+    public let data: Data
+    public let name: String
+    public let typeIdentifier: String
+
+    public init(data: Data, name: String, typeIdentifier: String) throws {
+        guard data.count <= OriginalEditorMiniAppsFiles.maximumBytes,
+              !name.isEmpty, name.utf8.count <= 255,
+              name != ".", name != "..", !name.contains("/"), !name.contains("\\"),
+              !name.utf8.contains(0), !typeIdentifier.isEmpty,
+              typeIdentifier.utf8.count <= 256, !typeIdentifier.utf8.contains(0) else {
+            throw AnytypeOriginalEditorMiniAppsError.invalidAttachment
+        }
+        self.data = data
+        self.name = name
+        self.typeIdentifier = typeIdentifier
+    }
+}
+
+public struct AnytypeOriginalEditorMiniAppsFile: Sendable {
+    public let blockID: String
+    public let attachment: AnytypeOriginalEditorMiniAppsAttachment
+}
+
+internal enum OriginalEditorMiniAppsFiles {
+    static let maximumBytes = OriginalAnnotationNativeArchiveLayout.maximumExpandedBytes
+    static let maximumCount = 32
+
+    static func validate(_ attachments: [AnytypeOriginalEditorMiniAppsAttachment]) throws {
+        guard attachments.count <= maximumCount else {
+            throw AnytypeOriginalEditorMiniAppsError.attachmentTooLarge
+        }
+        var total = 0
+        for attachment in attachments {
+            guard attachment.data.count <= maximumBytes - total else {
+                throw AnytypeOriginalEditorMiniAppsError.attachmentTooLarge
+            }
+            total += attachment.data.count
+        }
+    }
+
+    static func kind(_ identifier: String) -> FileContentType {
+        let type = UTType(identifier)
+        return type?.conforms(to: .image) == true ? .image
+            : type?.conforms(to: .video) == true ? .video
+            : type?.conforms(to: .audio) == true ? .audio : .file
+    }
+
+    static func download(file: Anytype_Model_Block.Content.File,
+                         binding: AnytypeOriginalEditorBinding, maximumBytes: Int) async throws
+        -> AnytypeOriginalEditorMiniAppsAttachment {
+        guard file.state == .done, !file.targetObjectID.isEmpty,
+              maximumBytes >= 0, maximumBytes <= self.maximumBytes else {
+            throw AnytypeOriginalEditorMiniAppsError.attachmentUnavailable
+        }
+        let response = try await ClientCommands.objectShow(.with {
+            $0.contextID = binding.objectID
+            $0.objectID = file.targetObjectID
+            $0.spaceID = binding.spaceID
+        }).invoke()
+        let records = response.objectView.details.filter { $0.id.utf8.elementsEqual(file.targetObjectID.utf8) }
+        guard response.error.code == .null, response.hasObjectView,
+              response.objectView.rootID.utf8.elementsEqual(file.targetObjectID.utf8),
+              records.count == 1 else {
+            throw AnytypeOriginalEditorMiniAppsError.attachmentUnavailable
+        }
+        let original = ObjectDetails(id: records[0].id, values: records[0].details.fields)
+        let details = FileDetails(objectDetails: original)
+        guard details.spaceId.utf8.elementsEqual(binding.spaceID.utf8),
+              let declaredBytes = original.sizeInBytes, declaredBytes >= 0,
+              declaredBytes <= maximumBytes else {
+            throw AnytypeOriginalEditorMiniAppsError.attachmentTooLarge
+        }
+        let directory = try OriginalEditorArchiveFiles.makeOwnedDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let downloaded = try await ClientCommands.fileDownload(.with {
+            $0.objectID = file.targetObjectID
+            $0.path = directory.path
+        }).invoke()
+        guard downloaded.error.code == .null else {
+            throw AnytypeOriginalEditorMiniAppsError.attachmentUnavailable
+        }
+        let data = try OriginalEditorArchiveFiles.readMiniAppsAttachment(
+            URL(fileURLWithPath: downloaded.localPath), in: directory, maximumBytes: maximumBytes)
+        guard data.count == declaredBytes else {
+            throw AnytypeOriginalEditorMiniAppsError.attachmentUnavailable
+        }
+        let type = UTType(mimeType: details.fileMimeType)
+            ?? UTType(filenameExtension: (details.fileName as NSString).pathExtension) ?? .data
+        return try .init(data: data, name: details.fileName, typeIdentifier: type.identifier)
+    }
 }
 
 /// Durable data from one original source. Decoding this value never grants
@@ -457,6 +556,67 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
         try await captureMiniAppsContext(origin: nil, range: nil)
     }
 
+
+    /// Reads the selected original file blocks, including descendants of selected
+    /// block containers. With no selection it reads the captured document's file
+    /// blocks. The caller transfers bytes through its Bridge before terminal save.
+    /// Every native file and the current source are checked again after download.
+    public func exportMiniAppsFiles(context: AnytypeOriginalEditorMiniAppsContext,
+        maximumBytes: Int) async throws -> [AnytypeOriginalEditorMiniAppsFile] {
+        guard maximumBytes >= 0, maximumBytes <= OriginalEditorMiniAppsFiles.maximumBytes else {
+            throw AnytypeOriginalEditorMiniAppsError.attachmentTooLarge
+        }
+        try beginMiniApps()
+        defer { miniAppsBusy = false; owner.host.endMiniAppsInteraction() }
+        try validateMiniAppsContext(context)
+        let current = try await readMiniAppsNodes()
+        let selected = try remappedSelection(context: context, current: current)
+        let paths = selected.map(\.path)
+        let expected = try context.nodes.filter { node in
+            let included = context.selectedPaths.isEmpty
+                || context.selectedPaths.contains { node.path.starts(with: $0) }
+            if case .file? = try node.native().content { return included }
+            return false
+        }
+        let candidates = try current.filter { node in
+            let included = paths.isEmpty || paths.contains { node.path.starts(with: $0) }
+            if case .file? = try node.native().content { return included }
+            return false
+        }
+        guard candidates.count == expected.count,
+              candidates.count <= OriginalEditorMiniAppsFiles.maximumCount else {
+            throw AnytypeOriginalEditorMiniAppsError.nativeBodyChanged
+        }
+        var result: [AnytypeOriginalEditorMiniAppsFile] = []
+        var remaining = maximumBytes
+        for (before, node) in zip(expected, candidates) {
+            guard try before.equivalent(to: node), case .file(let file)? = try node.native().content else {
+                throw AnytypeOriginalEditorMiniAppsError.nativeBodyChanged
+            }
+            let attachment = try await downloadMiniAppsFile(file, maximumBytes: remaining)
+            try owner.validateCurrent()
+            let observed = try await readMiniAppsNodes()
+            guard let actual = observed.first(where: { $0.id == node.id }),
+                  try node.equivalent(to: actual) else {
+                throw AnytypeOriginalEditorMiniAppsError.nativeBodyChanged
+            }
+            remaining -= attachment.data.count
+            result.append(.init(blockID: node.id, attachment: attachment))
+        }
+        try owner.validateCurrent()
+        return result
+    }
+
+    private func downloadMiniAppsFile(_ file: Anytype_Model_Block.Content.File,
+        maximumBytes: Int) async throws -> AnytypeOriginalEditorMiniAppsAttachment {
+        let captured = binding
+        return try await owner.host.preparedSession.owner.withExclusiveRead(
+            contextId: captured.objectID, spaceId: captured.spaceID,
+            rpcNames: ["ObjectShow", "FileDownload"]
+        ) { try await OriginalEditorMiniAppsFiles.download(file: file, binding: captured,
+                                                          maximumBytes: maximumBytes) }
+    }
+
     /// Terminal launch baseline. The Host must durably save capture before it
     /// dispatches a request, then call restore on the reopened canonical row.
     public func captureMiniAppsLaunch(context: AnytypeOriginalEditorMiniAppsContext,
@@ -532,6 +692,17 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
     public func applyMiniAppsResult(requestID: UUID, context: AnytypeOriginalEditorMiniAppsContext,
         action: AnytypeOriginalEditorMiniAppsAction, text: String, maximumBodyBytes: Int) async throws
         -> AnytypeOriginalEditorLocalAnnotationCapture {
+        try await applyMiniAppsResult(requestID: requestID, context: context, action: action,
+                                      text: text, attachments: [], maximumBodyBytes: maximumBodyBytes)
+    }
+
+    /// Adds original native attachments and verifies both native download bytes
+    /// and the complete returned export before the Host's canonical save/ACK.
+    public func applyMiniAppsResult(requestID: UUID, context: AnytypeOriginalEditorMiniAppsContext,
+        action: AnytypeOriginalEditorMiniAppsAction, text: String,
+        attachments: [AnytypeOriginalEditorMiniAppsAttachment], maximumBodyBytes: Int) async throws
+        -> AnytypeOriginalEditorLocalAnnotationCapture {
+        try OriginalEditorMiniAppsFiles.validate(attachments)
         try AnytypeOriginalEditorSnapshot.validateLimit(maximumBodyBytes)
         try beginMiniApps()
         var mutated = false
@@ -605,7 +776,7 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                     throw AnytypeOriginalEditorMiniAppsError.resultNotSaved
                 }
             }
-            if edits.isEmpty {
+            if edits.isEmpty && (!text.isEmpty || attachments.isEmpty) {
                 let raw = BlockInformation.empty(id: "miniapp-\(requestID.uuidString.lowercased())",
                     content: .text(.plain(text, contentType: .text)))
                 let info = BlockInformation(id: raw.id, content: raw.content,
@@ -629,8 +800,70 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                     throw AnytypeOriginalEditorMiniAppsError.resultNotSaved
                 }
             }
+
+            // File blocks are original native objects. Their data is never
+            // rendered as an app-private URL or substituted with a text block.
+            var importedFiles: [(String, Data)] = []
+            var fileAnchor = selected.last?.path.first.flatMap { index in
+                current.first(where: { $0.path == [index] })?.id
+            } ?? current.last(where: { $0.path.count == 1 })?.id
+            for (index, attachment) in attachments.enumerated() {
+                try owner.validateCurrent()
+                let directory = try OriginalEditorArchiveFiles.makeOwnedDirectory()
+                defer { try? FileManager.default.removeItem(at: directory) }
+                let upload = directory.appendingPathComponent(attachment.name, isDirectory: false)
+                try attachment.data.write(to: upload, options: .withoutOverwriting)
+                let raw = BlockInformation.empty(
+                    id: "miniapp-\(requestID.uuidString.lowercased())-file-\(index)",
+                    content: .file(.empty(contentType: OriginalEditorMiniAppsFiles.kind(attachment.typeIdentifier))))
+                let info = BlockInformation(id: raw.id, content: raw.content,
+                    backgroundColor: raw.backgroundColor, horizontalAlignment: raw.horizontalAlignment,
+                    childrenIds: raw.childrenIds, configurationData: raw.configurationData,
+                    fields: ["otzariaMiniAppsRequest": .with { $0.stringValue = requestID.uuidString.lowercased() },
+                             "otzariaMiniAppsFileIndex": .with { $0.stringValue = String(index) }])
+                let service = owner.host.preparedSession.services.blockActionService.blockService
+                let added: String
+                if let fileAnchor {
+                    added = try await service.add(contextId: binding.objectID, targetId: fileAnchor,
+                                                  info: info, position: .bottom)
+                } else {
+                    added = try await service.addFirstBlock(contextId: binding.objectID, info: info)
+                }
+                try owner.validateCurrent()
+                try await owner.host.preparedSession.services.blockActionService.fileService.uploadDataAt(
+                    source: .path(upload.path), contextID: binding.objectID, blockID: added)
+                try owner.validateCurrent()
+                current = try await readMiniAppsNodes()
+                guard let observed = current.first(where: { $0.id == added }),
+                      case .file(let file)? = try observed.native().content,
+                      file.state == .done, !file.targetObjectID.isEmpty,
+                      try observed.native().fields.fields["otzariaMiniAppsRequest"]?.stringValue
+                        == requestID.uuidString.lowercased(),
+                      try observed.native().fields.fields["otzariaMiniAppsFileIndex"]?.stringValue
+                        == String(index) else {
+                    throw AnytypeOriginalEditorMiniAppsError.resultNotSaved
+                }
+                let readback = try await downloadMiniAppsFile(file, maximumBytes: attachment.data.count)
+                try owner.validateCurrent()
+                guard readback.data == attachment.data,
+                      readback.name.utf8.elementsEqual(attachment.name.utf8) else {
+                    throw AnytypeOriginalEditorMiniAppsError.resultNotSaved
+                }
+                importedFiles.append((file.targetObjectID, attachment.data))
+                fileAnchor = added
+            }
             owner.host.endMiniAppsInteraction(restore: false)
-            return try await owner.capture(maximumBodyBytes: maximumBodyBytes)
+            let capture = try await owner.capture(maximumBodyBytes: maximumBodyBytes)
+            if !importedFiles.isEmpty {
+                let archive = try OriginalEditorLocalAnnotationNativeBody.decoded(capture.nativeCapture.snapshot)
+                for (objectID, expectedBytes) in importedFiles {
+                    guard try archive.fileData(objectID: objectID) == expectedBytes else {
+                        throw AnytypeOriginalEditorMiniAppsError.resultNotSaved
+                    }
+                }
+            }
+            return capture
+
         } catch { owner.retire(); throw error }
     }
 

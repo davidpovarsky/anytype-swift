@@ -351,6 +351,22 @@ internal enum OriginalEditorArchiveFiles {
                                  allowedMaximumBytes: 65_536)
     }
 
+    /// The MiniApps file path uses the same owned no-follow reader, bounded by
+    /// the original native archive's expanded limit. Existing qualification and
+    /// archive entry points retain their original, smaller limits.
+    static func readMiniAppsAttachment(_ file: URL, in directory: URL, maximumBytes: Int) throws -> Data {
+        guard maximumBytes >= 0,
+              maximumBytes <= OriginalAnnotationNativeArchiveLayout.maximumExpandedBytes else {
+            throw AnytypeOriginalEditorSnapshotError.invalidLimit
+        }
+        let bytes = try readOwnedRegularFile(file, in: directory, maximumBytes: max(1, maximumBytes),
+            allowedMaximumBytes: OriginalAnnotationNativeArchiveLayout.maximumExpandedBytes)
+        guard bytes.count <= maximumBytes else {
+            throw AnytypeOriginalEditorSnapshotError.bodyTooLarge
+        }
+        return bytes
+    }
+
     private static func readOwnedRegularFile(
         _ archive: URL, in directory: URL, maximumBytes: Int, allowedMaximumBytes: Int
     ) throws -> Data {

@@ -46,6 +46,18 @@ internal struct OriginalAnnotationNativeArchiveComparison: Sendable {
     private let objects: [String: Data]
     private let files: [Data: Data]
 
+
+    /// Exact bytes already validated in this original export. The ID comes from
+    /// the native file block written/read back by the owning draft session.
+    func fileData(objectID: String) throws -> Data {
+        guard let bytes = objects[objectID] else { throw Failure.missingFileBytes }
+        let wire = try OriginalAnnotationNativeSnapshotWire(serializedBytes: bytes)
+        guard wire.sbType == .fileObject, let body = wire.snapshot?.data,
+              let path = Self.string(body.details, "source"),
+              let data = files[Data(path.utf8)] else { throw Failure.missingFileBytes }
+        return data
+    }
+
     init(archiveBytes: Data, rootID: String, spaceID: String,
          formatVersion: Int64, reportedObjectCount: Int32) throws {
         guard formatVersion == 1 else { throw Failure.unsupportedVersion }
