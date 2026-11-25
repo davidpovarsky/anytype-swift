@@ -283,24 +283,39 @@ def admit_current_runner(source, main_record, ui_build, ui_record):
         require(compiled == original and ui_record["runnerSourceCommit"] == main_record["sourceCommit"],
                 "same_source_current_runner_required")
     else:
-        wanted = {"sourceCommit": "36401a8e49189465ad89e395d962695e3a76e67a",
+        require(binding.get("sourceCommit") in {"36401a8e49189465ad89e395d962695e3a76e67a",
+                                                "06a3d5b83caf656f2b9a28618cd186c6794ab27e"},
+                "explicit_Bin_preparation_revision_required")
+        observed_creation = binding["sourceCommit"] == "06a3d5b83caf656f2b9a28618cd186c6794ab27e"
+        wanted = {"sourceCommit": binding["sourceCommit"],
             "originalSHA256": expected["originalSHA256"],
             "compiledSHA256": "0b01a8f35eea248f2bbd7727e60c6a2bf95fdcd9af74674b58437d75d0b62eae",
             "reviewSHA256": "31b047c1fa07be8a86fbb078d1b6ae73dbcb8c7b48bb7d9457fdeee05a1606dc",
             "inverseDeltaRestoresCompleteOriginalFile": True,
             "allOriginalIdentityBodyBinRestoreColdReopenAssertionsUnchanged": True,
             "timeoutSeconds": 60, "gestureDurationSeconds": 1.1}
+        if observed_creation:
+            wanted.update(compiledSHA256="989af328bd04926cbef2f7e3fc529e13012b784d1c72fd90ac47a37c444254b3",
+                          reviewSHA256="7619c15a8557736acdeb712b957d8405dd14fd4c0abb03f2297f3d6bdfd8babe",
+                          creationPreparation="existing-createNamedItemWithObservedTransition")
         require(binding == wanted and ui_record["runnerSourceCommit"] == wanted["sourceCommit"]
                 and hashlib.sha256(compiled).hexdigest() == wanted["compiledSHA256"]
                 and digest(ui_build / "bin-preparation-source-review.json") == wanted["reviewSHA256"],
                 "exact_reviewed_Bin_preparation_required")
-        method = b"    func testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen() {\n"
+        method = b"    func testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen()"
         start = b"        let row = app.buttons[title].firstMatch\n"
         end = b"        let rowID = row.identifier\n"
         a = original.index(start, original.index(method)); b = original.index(end, a)
         c = compiled.index(start, compiled.index(method)); d = compiled.index(end, c)
-        require(compiled[:c] + original[a:b] + compiled[d:] == original,
-                "Bin_inverse_must_restore_complete_original_file")
+        restored = compiled[:c] + original[a:b] + compiled[d:]
+        if observed_creation:
+            m = restored.index(method); n = restored.index(b"    private func makeApplication(", m)
+            section = restored[m:n]
+            section = section.replace(method + b" throws {", method + b" {", 1)
+            section = section.replace(b'        try createNamedItemWithObservedTransition(app, action: "any-native-new-document", title: title)',
+                                      b'        createNamedItem(app, action: "any-native-new-document", title: title)', 1)
+            restored = restored[:m] + section + restored[n:]
+        require(restored == original, "Bin_inverse_must_restore_complete_original_file")
     return {"integratedMiniAppsFixture": expected, "binContextPreparation": binding}
 
 

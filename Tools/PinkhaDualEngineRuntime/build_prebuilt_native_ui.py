@@ -47,7 +47,7 @@ def main():
     parser.add_argument("--history-source-commit", choices=["6c398307682073f31f9fb59af59f34c96003d542"])
     parser.add_argument("--archive-source-commit", choices=["658f4af4380dffc55c65559ca9e0cc6d5ed9c931"])
     parser.add_argument("--miniapps-source-commit", choices=["53eec4a2289f969979bc301760ce152088ebc2f7"])
-    parser.add_argument("--bin-source-commit", choices=["36401a8e49189465ad89e395d962695e3a76e67a"])
+    parser.add_argument("--bin-source-commit", choices=["36401a8e49189465ad89e395d962695e3a76e67a", "06a3d5b83caf656f2b9a28618cd186c6794ab27e"])
     args = parser.parse_args()
     root, evidence, output = args.main_root, args.main_evidence, args.output
     for path in (root, evidence, output):
@@ -306,23 +306,32 @@ def main():
                     for name in changed), "Bin_preparation_must_not_change_application_source")
         candidate = subprocess.run(["git", "-C", str(source), "show",
             args.bin_source_commit + ":" + inputs[2]], check=True, capture_output=True).stdout
+        observed_creation = args.bin_source_commit == "06a3d5b83caf656f2b9a28618cd186c6794ab27e"
+        review_directory = "20261125-native-bin-observed-create" if observed_creation else "20261125-native-bin-row-readiness"
+        expected_review = "7619c15a8557736acdeb712b957d8405dd14fd4c0abb03f2297f3d6bdfd8babe" if observed_creation else "31b047c1fa07be8a86fbb078d1b6ae73dbcb8c7b48bb7d9457fdeee05a1606dc"
+        expected_compiled = "989af328bd04926cbef2f7e3fc529e13012b784d1c72fd90ac47a37c444254b3" if observed_creation else "0b01a8f35eea248f2bbd7727e60c6a2bf95fdcd9af74674b58437d75d0b62eae"
         bin_review = subprocess.run(["git", "-C", str(source), "show", args.bin_source_commit +
-            ":docs/validation/20261125-native-bin-row-readiness/source-review.json"],
+            ":docs/validation/" + review_directory + "/source-review.json"],
             check=True, capture_output=True).stdout
-        require(hashlib.sha256(bin_review).hexdigest() ==
-                    "31b047c1fa07be8a86fbb078d1b6ae73dbcb8c7b48bb7d9457fdeee05a1606dc"
-                and hashlib.sha256(candidate).hexdigest() ==
-                    "0b01a8f35eea248f2bbd7727e60c6a2bf95fdcd9af74674b58437d75d0b62eae",
+        require(hashlib.sha256(bin_review).hexdigest() == expected_review
+                and hashlib.sha256(candidate).hexdigest() == expected_compiled,
                 "exact_reviewed_Bin_context_preparation_required")
-        method = b"    func testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen() {\n"
+        method = b"    func testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen()"
         start = b"        let row = app.buttons[title].firstMatch\n"
         end = b"        let rowID = row.identifier\n"
         a = runner_launch.index(start, runner_launch.index(method))
         b = runner_launch.index(end, a)
         c = candidate.index(start, candidate.index(method))
         d = candidate.index(end, c)
-        require(candidate[:c] + runner_launch[a:b] + candidate[d:] == runner_launch,
-                "Bin_inverse_must_restore_complete_original_UI_file")
+        restored = candidate[:c] + runner_launch[a:b] + candidate[d:]
+        if observed_creation:
+            m = restored.index(method); n = restored.index(b"    private func makeApplication(", m)
+            section = restored[m:n]
+            section = section.replace(method + b" throws {", method + b" {", 1)
+            section = section.replace(b'        try createNamedItemWithObservedTransition(app, action: "any-native-new-document", title: title)',
+                                      b'        createNamedItem(app, action: "any-native-new-document", title: title)', 1)
+            restored = restored[:m] + section + restored[n:]
+        require(restored == runner_launch, "Bin_inverse_must_restore_complete_original_UI_file")
         require(candidate.split(marker)[1] == runner_launch.split(marker)[1],
                 "MiniApps_method_must_be_byte_identical_after_Bin_preparation")
         reviewed = json.loads(bin_review)
@@ -338,6 +347,12 @@ def main():
             "inverseDeltaRestoresCompleteOriginalFile": True,
             "allOriginalIdentityBodyBinRestoreColdReopenAssertionsUnchanged": True,
             "timeoutSeconds": 60, "gestureDurationSeconds": 1.1}
+        if observed_creation:
+            require(reviewed["creationPreparation"] == "existing-createNamedItemWithObservedTransition"
+                    and reviewed["creationNativeCallsAdded"] == 0
+                    and reviewed["originalCreateFieldBudgetSeconds"] == reviewed["newCreateFieldBudgetSeconds"] == 30,
+                    "existing_typed_field_preparation_must_retain_original_UI_budget")
+            bin_binding["creationPreparation"] = "existing-createNamedItemWithObservedTransition"
         runner_origin, runner_launch = args.bin_source_commit, candidate
     helper = source / "Tools/AnyEnginePort/native_ui_transition_project.py"
     original_helper = subprocess.run(["git", "-C", str(source), "show",
