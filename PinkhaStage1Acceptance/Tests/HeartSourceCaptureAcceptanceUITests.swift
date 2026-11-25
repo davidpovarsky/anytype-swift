@@ -79,6 +79,7 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
             // method. An unexpected warning is a new failure, never auto-dismissed.
             try require(!app.alerts["Warning"].exists && app.alerts.count == 0, "unexpected-startup-alert")
             try require(!element("pinkha.semanticAnchor.mounted-status").exists, "mounted-observer-active")
+            try openOriginalFixtureSpace()
 
             let first = try captureThroughMenu(ordinal: 1)
             receipt["captures"] = [first]
@@ -108,6 +109,18 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
         // The independently verified controller retains the entire private account
         // and captured bundles. Never log out, delete an account or erase a device.
         if app.state != .notRunning { app.terminate() }
+    }
+
+    private func openOriginalFixtureSpace() throws {
+        // The real source action is deliberately disabled at SpaceHub until a
+        // workspace is open. Use the exact original preparation's visible space
+        // button; the subsequent native review must still prove both IDs.
+        let name = "Mounted anchor disposable Space"
+        let matches = app.buttons.matching(NSPredicate(
+            format: "label == %@ OR label ENDSWITH %@", name, ", " + name))
+        try require(matches.firstMatch.waitForExistence(timeout: remaining(15)), "original-space-button")
+        try require(matches.count == 1, "original-space-button-ambiguous")
+        try tap(matches.firstMatch)
     }
 
     private func captureThroughMenu(ordinal: Int) throws -> [String: Any] {
