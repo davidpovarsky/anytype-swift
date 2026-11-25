@@ -51,7 +51,8 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
                           try XCTUnwrap(environment["PINKHA_MINIAPPS_COLD_REQUEST_ID"])]
         source.launch()
         try openSource()
-        // Public XCUIApplication.open(_:) targets this exact installed source app.
+        // Deliver warm replay through the OS without XCTest launch semantics.
+        let originalProcess = try sourceProcessIdentity()
         for requestID in requestIDs {
             var callback = URLComponents()
             callback.scheme = try XCTUnwrap(environment["PINKHA_MINIAPPS_SOURCE_SCHEME"])
@@ -59,8 +60,12 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
             callback.path = "/return"
             callback.queryItems = [URLQueryItem(name: "request", value: requestID)]
             let url = try XCTUnwrap(callback.url)
-            source.open(url)
-            source.open(url)
+            for _ in 0..<2 {
+                XCUIDevice.shared.system.open(url)
+                XCTAssertTrue(source.wait(for: .runningForeground, timeout: 30))
+                XCTAssertEqual(try sourceProcessIdentity(), originalProcess,
+                    "Warm duplicate callbacks must not relaunch the source process")
+            }
         }
         try expectNativeText()
         screenshot("miniapps-duplicate-callback")
@@ -78,11 +83,12 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
         route.host = "object"
         route.queryItems = [URLQueryItem(name: "objectId", value: try XCTUnwrap(fixture["objectID"])),
                             URLQueryItem(name: "spaceId", value: try XCTUnwrap(fixture["spaceID"]))]
-        source.open(try XCTUnwrap(route.url))
+        XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
         XCTAssertTrue(source.buttons["pinkha.miniapps.open"].firstMatch.waitForExistence(timeout: 30))
     }
 
     private func returnThroughTextStudio(text: String, terminateSource: Bool) throws {
+        let warmProcess = terminateSource ? nil : try sourceProcessIdentity()
         let grid = source.buttons["pinkha.miniapps.open"].firstMatch
         XCTAssertTrue(grid.waitForExistence(timeout: 30))
         XCTAssertTrue(grid.isHittable)
@@ -109,6 +115,19 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
         returnText.tap()
         // The cold case intentionally receives no manual source.launch/openSource aid.
         XCTAssertTrue(source.wait(for: .runningForeground, timeout: 45))
+        if let warmProcess {
+            XCTAssertEqual(try sourceProcessIdentity(), warmProcess,
+                "Warm MiniApps completion must return to the existing source process")
+        }
+    }
+
+    private func sourceProcessIdentity() throws -> String {
+        let entry = source.buttons["pinkha.miniapps.open"].firstMatch
+        XCTAssertTrue(entry.waitForExistence(timeout: 30))
+        let value = try XCTUnwrap(entry.value as? String)
+        XCTAssertTrue(value.hasPrefix("pid:"))
+        XCTAssertNotEqual(value, "pid:0")
+        return value
     }
 
     private func expectNativeText(keys: [String] = ["originalText", "returnedText", "coldReturnedText"]) throws {

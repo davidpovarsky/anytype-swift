@@ -9,6 +9,11 @@ enum PinkhaMiniAppsEntry {
         let button = UIButton(configuration: configuration)
         button.accessibilityLabel = PinkhaMiniAppsStrings.title
         button.accessibilityIdentifier = "pinkha.miniapps.open"
+        #if DEBUG
+        if ProcessInfo.processInfo.environment["PINKHA_UI27_ROUTE_OBSERVATION"] == "1" {
+            button.accessibilityValue = "pid:\(ProcessInfo.processInfo.processIdentifier)"
+        }
+        #endif
         button.addAction(UIAction { _ in action() }, for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
