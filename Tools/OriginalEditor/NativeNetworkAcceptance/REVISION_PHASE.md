@@ -35,3 +35,17 @@ The final run manifest must bind the exact native product/test overlay, prior he
 ## Controller prepared for the Mac
 
 `run_revision_peers.py` accepts the exact existing native binary SHA-256 and retained source-manifest path, creates a fresh private phase directory and runs the live and cold pairs. It validates the actual process IDs, original account/Space/root, remote network mode, disabled LAN sync, complete result receipts and real AccountStop. Peer failure requests cancellation through a phase-local abort receipt; any forced termination is a failure. It checks logs against the private fixture credential in memory and refuses public-log release on a match. The controller does not compile or create native accounts/objects. Its presence does not establish runtime success.
+
+## Original mark-order normalization
+
+The existing original engine's core/block/simple/text/utils.go marksEq sorts
+both mark arrays during Text.Diff / Apply. The new revision comparator
+therefore canonicalizes only the mark inventory by complete protobuf tuple
+bytes. The remote block witness now uses the same narrowly defined comparison:
+range, type, parameter, duplicate multiplicity, unknown protobuf fields, all
+other block content, and child order remain exact. Actual native ZIP hashes and
+nonempty native revision heads remain independent evidence. The historical
+completed original network roundtrip helper and its receipts are unchanged.
+
+This is a test-source adjustment before its first CAS-network execution. It is
+not a newly passed native or network result.

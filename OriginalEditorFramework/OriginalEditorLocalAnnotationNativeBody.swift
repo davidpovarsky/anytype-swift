@@ -74,10 +74,27 @@ internal enum OriginalEditorLocalAnnotationNativeBody {
         return value
     }
 
+    struct TextProjection: Sendable {
+        let fullPlainText: String
+        let textPreview: String
+    }
+
     static func preview(_ snapshot: AnytypeOriginalEditorSnapshot,
                         source: AnytypeOriginalEditorLocalAnnotationSource) throws -> String {
+        try textProjection(snapshot, source: source).textPreview
+    }
+
+    static func textProjection(_ snapshot: AnytypeOriginalEditorSnapshot,
+                               source: AnytypeOriginalEditorLocalAnnotationSource) throws -> TextProjection {
         try requireAnnotation(snapshot, source: source)
-        let body = try decoded(snapshot).rootSnapshot
+        return try textProjection(root: decoded(snapshot).rootSnapshot,
+                                  rootID: snapshot.provenance.objectID)
+    }
+
+    /// Only callers that have independently validated the actual native
+    /// Annotation or manifest-bound Document may project its immutable text.
+    static func textProjection(root body: Anytype_Model_SmartBlockSnapshotBase,
+                               rootID: String) throws -> TextProjection {
         // Native IDs are exact UTF-8 bytes. Swift String equality normalizes
         // Unicode, which could otherwise turn two byte-distinct parsed IDs into
         // a Dictionary precondition failure instead of a bounded refusal.
@@ -88,7 +105,7 @@ internal enum OriginalEditorLocalAnnotationNativeBody {
                 throw AnytypeOriginalEditorLocalAnnotationError.invalidPreview
             }
         }
-        guard let root = blocks[Data(snapshot.provenance.objectID.utf8)] else {
+        guard let root = blocks[Data(rootID.utf8)] else {
             throw AnytypeOriginalEditorLocalAnnotationError.invalidPreview
         }
         var seen = Set<Data>()
@@ -115,6 +132,6 @@ internal enum OriginalEditorLocalAnnotationNativeBody {
             result.unicodeScalars.append(scalar)
             bytes += count
         }
-        return result
+        return .init(fullPlainText: text, textPreview: result)
     }
 }

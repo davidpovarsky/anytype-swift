@@ -394,7 +394,7 @@ def verify_public_surface(graphs, source_root, host_contract=None):
     facade = source_root / 'OriginalEditorFramework/AnytypeOriginalEditorModule.swift'
     reviewed_facades, required = {}, set()
     if host_contract is not None:
-        require(host_contract.get('schema') == 2 and len(host_contract.get('facades', {})) == 8,
+        require(host_contract.get('schema') == 2 and len(host_contract.get('facades', {})) == 10,
                 'Malformed reviewed Host surface contract')
         for path, contract in host_contract['facades'].items():
             location = (source_root / path).resolve()
@@ -405,7 +405,7 @@ def verify_public_surface(graphs, source_root, host_contract=None):
                     'Unreviewed facade source/root requirement')
             reviewed_facades[location] = contract
             required.update((location, tuple(components)) for components in contract['required'])
-        require(len(required) == 175, 'Incomplete public Host or qualification SPI surface requirement')
+        require(len(required) == 259, 'Incomplete public Host or qualification SPI surface requirement')
     found_inspection = False
     own_symbols = []
     imported_count = 0

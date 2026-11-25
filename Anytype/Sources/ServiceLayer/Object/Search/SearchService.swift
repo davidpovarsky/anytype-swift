@@ -80,6 +80,7 @@ final class SearchService: SearchServiceProtocol, Sendable {
         let filters: [DataviewFilter] = .builder {
             SearchHelper.excludedIdsFilter(excludedObjectIds)
             if typeIds.isEmpty {
+                OriginalAnnotationSearchVisibility.filters()
                 SearchFiltersBuilder.build(isArchived: false, layouts: DetailsLayout.visibleLayouts(spaceType: spaceType), spaceType: spaceType)
             } else {
                 SearchFiltersBuilder.build(isArchived: false)
@@ -108,6 +109,7 @@ final class SearchService: SearchServiceProtocol, Sendable {
 
         let spaceType = spaceViewsStorage.spaceView(spaceId: spaceId)?.spaceType
         let filters: [DataviewFilter] = .builder {
+            OriginalAnnotationSearchVisibility.filters()
             SearchFiltersBuilder.build(isArchived: false, layouts: DetailsLayout.visibleLayoutsWithFiles(spaceType: spaceType), spaceType: spaceType)
             SearchHelper.excludedIdsFilter(excludedObjectIds)
             SearchHelper.excludedLayoutFilter(excludedLayouts)
@@ -198,6 +200,7 @@ final class SearchService: SearchServiceProtocol, Sendable {
 
         let spaceType = spaceViewsStorage.spaceView(spaceId: spaceId)?.spaceType
         let filters: [DataviewFilter] = .builder {
+            OriginalAnnotationSearchVisibility.filters()
             SearchFiltersBuilder.build(isArchived: false, layouts: layouts, spaceType: spaceType)
             SearchHelper.excludedIdsFilter(excludedIds)
         }
@@ -206,7 +209,10 @@ final class SearchService: SearchServiceProtocol, Sendable {
     }
     
     func searchAll(text: String, spaceId: String) async throws -> [ObjectDetails] {
-        let filters = SearchFiltersBuilder.build(isArchived: false)
+        let filters: [DataviewFilter] = .builder {
+            SearchFiltersBuilder.build(isArchived: false)
+            OriginalAnnotationSearchVisibility.filters()
+        }
         return try await searchMiddleService.search(spaceId: spaceId, filters: filters, fullText: text)
     }
 }

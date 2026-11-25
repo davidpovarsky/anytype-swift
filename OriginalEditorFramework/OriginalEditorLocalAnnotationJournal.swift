@@ -17,6 +17,20 @@ internal actor OriginalEditorLocalAnnotationJournal {
         var preferredSpaceID: String?
     }
 
+    /// Historical creation facts only. The runtime never reopens a batch from
+    /// this file; a new explicit run obtains a new original private Space.
+    struct Batch: Codable, Sendable {
+        let schema: String
+        let owner: UUID
+        let attempt: UUID
+        let process: Int32
+        let profile: String
+        let batchID: UUID
+        var phase: String
+        var spaceID: String?
+        var spaceViewID: String?
+    }
+
     struct Draft: Codable, Sendable {
         let schema: String
         let owner: UUID
@@ -34,6 +48,7 @@ internal actor OriginalEditorLocalAnnotationJournal {
         var objectID: String?
         var captureSHA256: String?
         var captureArchiveSHA256: String?
+        var batchAttempt: UUID?
     }
 
     private let root: URL
@@ -43,6 +58,7 @@ internal actor OriginalEditorLocalAnnotationJournal {
     private var account: Account
     private var accountBytes: Data
     private var draftBytes: [UUID: Data] = [:]
+    private var batchBytes: [UUID: Data] = [:]
 
     private init(root: URL, account: Account, bytes: Data) {
         self.root = root
@@ -200,17 +216,85 @@ internal actor OriginalEditorLocalAnnotationJournal {
         return value
     }
 
-    func beginDraft(source: AnytypeOriginalEditorLocalAnnotationSource, canonicalSHA256: String) throws -> Draft {
+    func beginBatch(source: AnytypeOriginalEditorLocalAnnotationBatchSource) throws -> Batch {
+        _ = try accountObservation()
+        guard account.phase == "ready" else {
+            throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
+        }
+        let directory = root.appendingPathComponent("OriginalEditorLocalAnnotationBatches", isDirectory: true)
+        var info = stat()
+        if Darwin.lstat(directory.path, &info) != 0 {
+            guard errno == ENOENT, Darwin.mkdir(directory.path, 0o700) == 0 else {
+                throw AnytypeOriginalEditorLocalAnnotationError.storageFailure(errno)
+            }
+        }
+        try Self.requireDirectory(directory)
+        let value = Batch(schema: "otzaria.original-local-annotation-batch/1", owner: account.owner,
+            attempt: UUID(), process: ProcessInfo.processInfo.processIdentifier,
+            profile: source.hostProfileID, batchID: source.batchID, phase: "prepared")
+        let bytes = try Self.encode(value)
+        try Self.write(bytes, path: batchURL(value.attempt), replacing: nil)
+        batchBytes[value.attempt] = bytes
+        return value
+    }
+
+    func transitionBatch(_ previous: Batch, to phase: String,
+                         spaceID: String? = nil, spaceViewID: String? = nil) throws -> Batch {
+        let allowed: [String: Set<String>] = [
+            "prepared": ["space_may_have_dispatched"],
+            "space_may_have_dispatched": ["space_observed"],
+            "space_observed": ["ready"]
+        ]
+        try requireBatch(previous)
+        guard allowed[previous.phase]?.contains(phase) == true else {
+            throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
+        }
+        var value = previous
+        value.phase = phase
+        if let spaceID { value.spaceID = spaceID }
+        if let spaceViewID { value.spaceViewID = spaceViewID }
+        if ["space_observed", "ready"].contains(phase) {
+            guard let space = value.spaceID, !space.isEmpty, space.utf8.count <= 16_384,
+                  !space.utf8.contains(0), let view = value.spaceViewID,
+                  !view.isEmpty, view.utf8.count <= 16_384, !view.utf8.contains(0) else {
+                throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
+            }
+        }
+        let bytes = try Self.encode(value)
+        try Self.write(bytes, path: batchURL(value.attempt), replacing: batchBytes[previous.attempt])
+        batchBytes[value.attempt] = bytes
+        return value
+    }
+
+    private func requireBatch(_ value: Batch) throws {
+        _ = try accountObservation()
+        guard account.phase == "ready", value.owner == account.owner,
+              value.process == ProcessInfo.processInfo.processIdentifier,
+              let bytes = batchBytes[value.attempt],
+              try Self.encode(value) == bytes,
+              try Self.read(batchURL(value.attempt), maximum: 32_768) == bytes else {
+            throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
+        }
+    }
+
+    func beginDraft(source: AnytypeOriginalEditorLocalAnnotationSource, canonicalSHA256: String,
+                    batch: Batch? = nil) throws -> Draft {
         _ = try accountObservation()
         guard account.phase == "ready", OriginalEditorLocalAnnotationValidation.digest(canonicalSHA256) else {
             throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
+        }
+        if let batch {
+            try requireBatch(batch)
+            guard batch.phase == "ready", batch.profile.utf8.elementsEqual(source.hostProfileID.utf8) else {
+                throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
+            }
         }
         let value = Draft(schema: "otzaria.original-local-annotation-draft/1", owner: account.owner,
             attempt: UUID(), process: ProcessInfo.processInfo.processIdentifier,
             profile: source.hostProfileID, annotationUUID: source.annotationUUID,
             revision: source.expectedRevision, sourceSHA256: source.sourceWitnessSHA256,
             payloadSHA256: source.payloadSHA256, canonicalSHA256: canonicalSHA256,
-            phase: "prepared")
+            phase: "prepared", batchAttempt: batch?.attempt)
         let bytes = try Self.encode(value)
         try Self.write(bytes, path: draftURL(value.attempt), replacing: nil)
         draftBytes[value.attempt] = bytes
@@ -221,9 +305,10 @@ internal actor OriginalEditorLocalAnnotationJournal {
                     spaceViewID: String? = nil, objectID: String? = nil,
                     captureSHA256: String? = nil, archiveSHA256: String? = nil) throws -> Draft {
         let allowed: [String: Set<String>] = [
-            "prepared": ["space_may_have_dispatched"],
+            "prepared": ["space_may_have_dispatched", "batch_space_observed"],
             "space_may_have_dispatched": ["space_observed"],
             "space_observed": ["materialization_may_have_dispatched"],
+            "batch_space_observed": ["materialization_may_have_dispatched"],
             "materialization_may_have_dispatched": ["object_observed"],
             "object_observed": ["opened"],
             "opened": ["capture_started"],
@@ -234,6 +319,21 @@ internal actor OriginalEditorLocalAnnotationJournal {
               try Self.read(draftURL(previous.attempt), maximum: 32_768) == old,
               allowed[previous.phase]?.contains(phase) == true else {
             throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
+        }
+        if phase == "batch_space_observed" {
+            guard let attempt = previous.batchAttempt, let bytes = batchBytes[attempt] else {
+                throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
+            }
+            let batch = try JSONDecoder().decode(Batch.self, from: bytes)
+            try requireBatch(batch)
+            guard batch.phase == "ready", batch.profile.utf8.elementsEqual(previous.profile.utf8),
+                  spaceID == batch.spaceID, spaceViewID == batch.spaceViewID else {
+                throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
+            }
+        } else if phase == "space_may_have_dispatched" {
+            guard previous.batchAttempt == nil else {
+                throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
+            }
         }
         var value = previous
         value.phase = phase
@@ -255,6 +355,10 @@ internal actor OriginalEditorLocalAnnotationJournal {
     }
 
     private func draftURL(_ id: UUID) -> URL { drafts.appendingPathComponent(id.uuidString + ".json") }
+    private func batchURL(_ id: UUID) -> URL {
+        root.appendingPathComponent("OriginalEditorLocalAnnotationBatches", isDirectory: true)
+            .appendingPathComponent(id.uuidString + ".json")
+    }
     private func updateAccount(phase: String) throws {
         var value = account
         value.phase = phase

@@ -47,6 +47,7 @@ final class RecentSubscriptionService: RecentSubscriptionServiceProtocol {
         let spaceType = workspaceStorage.spaceView(spaceId: spaceId)?.spaceType
         let filters: [DataviewFilter] = .builder {
             SearchHelper.notHiddenFilters()
+            OriginalAnnotationSearchVisibility.filters()
             SearchHelper.layoutFilter(DetailsLayout.visibleLayoutsWithFiles(spaceType: spaceType))
             SearchHelper.templateScheme(include: false)
             makeDateFilter(type: type, spaceId: spaceId)

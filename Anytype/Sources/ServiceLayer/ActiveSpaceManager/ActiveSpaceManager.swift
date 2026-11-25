@@ -85,7 +85,9 @@ fileprivate final class OriginalActiveSpaceSelectionAttempt: Sendable {
     let accountCapture: EditorDocumentWriteCapture?
     let capture: EditorDocumentWriteCapture
     let spaceViewCapture: EditorDocumentWriteCapture?
+    let retainedCaptures: [EditorDocumentWriteCapture]
 
+    private let retainedRetirement: [EditorDocumentWriteLifetime.Observation]
     private let spaceView: OriginalSpaceViewPermission?
     private let accountRetirement: EditorDocumentWriteLifetime.Observation?
     private let viewRetirement: EditorDocumentWriteLifetime.Observation?
@@ -93,11 +95,17 @@ fileprivate final class OriginalActiveSpaceSelectionAttempt: Sendable {
     init(
         spaceId: String?,
         accountManager: any AccountManagerProtocol,
-        workspaceStorage: any SpaceViewsStorageProtocol
+        workspaceStorage: any SpaceViewsStorageProtocol,
+        retaining retainedCaptures: [EditorDocumentWriteCapture] = []
     ) throws {
         let lifetime = EditorDocumentWriteLifetime()
         requestedSpaceID = spaceId
         capture = try EditorDocumentWriteCapture(lifetime)
+        self.retainedCaptures = retainedCaptures
+        for captured in retainedCaptures { try captured.validate() }
+        retainedRetirement = retainedCaptures.map { captured in
+            captured.source.observe(captured.token) { lifetime.markUnavailable() }
+        }
         if let spaceId {
             guard !spaceId.isEmpty,
                   accountManager is AccountManager,
@@ -141,6 +149,13 @@ fileprivate final class OriginalActiveSpaceSelectionAttempt: Sendable {
         try capture.validate()
         try accountCapture?.validate()
         try spaceViewCapture?.validate()
+        for captured in retainedCaptures { try captured.validate() }
+    }
+
+    func retainsExactly(_ expected: [EditorDocumentWriteCapture]) -> Bool {
+        retainedCaptures.count == expected.count && zip(retainedCaptures, expected).allSatisfy { pair in
+            pair.0.source === pair.1.source && pair.0.token == pair.1.token
+        }
     }
 
     func validateReturnedInfo(_ info: AccountInfo) throws {
@@ -165,14 +180,14 @@ fileprivate final class OriginalActiveSpaceSelectionAttempt: Sendable {
         guard let accountCapture, requestedSpaceID != nil else {
             throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
         }
-        let additional = spaceViewCapture.map { [$0.source] } ?? []
+        let additional = (spaceViewCapture.map { [$0.source] } ?? []) + retainedCaptures.map(\.source)
         let binding = try EditorDocumentWriteSourceBinding(
             lifetime: capture.source,
             accountLifetime: accountCapture.source,
             additionalLifetimes: additional,
             isCurrent: { (try? self.validate()) != nil }
         )
-        let expected = [capture] + (spaceViewCapture.map { [$0] } ?? []) + [accountCapture]
+        let expected = [capture] + (spaceViewCapture.map { [$0] } ?? []) + retainedCaptures + [accountCapture]
         guard binding.captures.count == expected.count,
               zip(binding.captures, expected).allSatisfy({ pair in
                   pair.0.source === pair.1.source && pair.0.token == pair.1.token
@@ -188,6 +203,7 @@ fileprivate final class OriginalActiveSpaceSelectionAttempt: Sendable {
         capture.source.markUnavailable()
         accountRetirement?.cancel()
         viewRetirement?.cancel()
+        for observation in retainedRetirement { observation.cancel() }
     }
 
     deinit {
@@ -254,12 +270,29 @@ actor ActiveSpaceManager: ActiveSpaceManagerProtocol, Sendable {
     
     @discardableResult
     func setActiveSpace(spaceId: String?) async throws -> AccountInfo? {
+        try await selectActiveSpace(spaceId: spaceId, retaining: [])
+    }
+
+    /// Internal original localOnly batch composition. These already captured
+    /// sources remain in WorkspaceOpen and subsequent schema GCD admissions.
+    /// Ordinary app selection does not acquire this additional ownership.
+    func setActiveSpaceForLocalAnnotationBatch(
+        spaceId: String, retaining captures: [EditorDocumentWriteCapture]
+    ) async throws -> AccountInfo? {
+        guard !captures.isEmpty else { throw EditorDocumentWriteError.rejected(.unqualifiedDispatch) }
+        return try await selectActiveSpace(spaceId: spaceId, retaining: captures)
+    }
+
+    private func selectActiveSpace(spaceId: String?,
+                                   retaining captures: [EditorDocumentWriteCapture]) async throws -> AccountInfo? {
         try Task.checkCancellation()
+        for captured in captures { try captured.validate() }
         guard stopOperation == nil, InvocationDispatchContext.binding == nil else {
             throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
         }
         if activeSpaceId == spaceId,
            let selectionAttempt,
+           selectionAttempt.retainsExactly(captures),
            (try? selectionAttempt.validate()) != nil,
            let setActiveSpaceTask {
             let value = try await setActiveSpaceTask.value
@@ -269,7 +302,8 @@ actor ActiveSpaceManager: ActiveSpaceManagerProtocol, Sendable {
         }
 
         let attempt = try OriginalActiveSpaceSelectionAttempt(
-            spaceId: spaceId, accountManager: accountManager, workspaceStorage: workspaceStorage
+            spaceId: spaceId, accountManager: accountManager, workspaceStorage: workspaceStorage,
+            retaining: captures
         )
         let previous = setActiveSpaceTask
         selectionAttempt?.retire()

@@ -4,6 +4,7 @@
 package application_test
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -11,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"sort"
 	"strings"
 	"testing"
 	"time"
@@ -22,6 +24,7 @@ import (
 	"github.com/anyproto/anytype-heart/core/block"
 	"github.com/anyproto/anytype-heart/core/block/export"
 	importer "github.com/anyproto/anytype-heart/core/block/import"
+	"github.com/anyproto/anytype-heart/core/block/simple/base"
 	"github.com/anyproto/anytype-heart/core/event"
 	"github.com/anyproto/anytype-heart/metrics"
 	"github.com/anyproto/anytype-heart/pb"
@@ -254,16 +257,103 @@ func originalNetworkRequireSameBlocks(t *testing.T, first, second []byte, root, 
 	b := revisionNativeRoot(t, second, spaceID, root)
 	left := map[string]*model.Block{}
 	for _, block := range a.Snapshot.Data.Blocks {
-		left[block.Id] = block
+		if block == nil || block.Id == "" || left[block.Id] != nil {
+			t.Fatal("invalid original saved block inventory")
+		}
+		left[block.Id] = originalNetworkRevisionCanonicalBlock(t, block)
 	}
 	if len(left) != len(b.Snapshot.Data.Blocks) {
 		t.Fatal("native full block inventory differs from selected saved body")
 	}
+	seen := map[string]bool{}
 	for _, block := range b.Snapshot.Data.Blocks {
-		expected, ok := left[block.Id]
-		if !ok || !proto.Equal(expected, block) {
-			t.Fatal("original block identity/content/marks/child order differ")
+		if block == nil || seen[block.Id] {
+			t.Fatal("invalid actual original block inventory")
 		}
+		seen[block.Id] = true
+		expected, ok := left[block.Id]
+		if !ok || !proto.Equal(expected, originalNetworkRevisionCanonicalBlock(t, block)) {
+			t.Fatal("original block identity/content/complete marks/child order differ")
+		}
+	}
+}
+
+// Original Text.Diff/marksEq sorts the actual old/new mark inventories during
+// Apply. Compare only that array's order canonically by each COMPLETE protobuf
+// tuple, exactly as revision canonicalRevisionSnapshot. Preserve duplicates,
+// ranges, types, parameters and unknown fields. The original Base.Diff additionally
+// equates absent and all-false restrictions by materializing an empty message;
+// invoke that same original helper on private comparison copies. Every nonempty
+// restriction and every other block field remain exact. The genuine ZIP hashes and native locked revision token remain separate witnesses.
+func originalNetworkRevisionCanonicalBlock(t *testing.T, original *model.Block) *model.Block {
+	t.Helper()
+	if original == nil {
+		t.Fatal("nil native block")
+	}
+	block := proto.Clone(original).(*model.Block)
+	other := proto.Clone(block).(*model.Block)
+	changes, err := base.NewBase(block).Diff("", base.NewBase(other))
+	if err != nil || len(changes) != 0 {
+		t.Fatal("original block self-comparison changed native content")
+	}
+	marks := block.GetText().GetMarks()
+	if marks == nil {
+		return block
+	}
+	type tuple struct {
+		mark *model.BlockContentTextMark
+		raw  []byte
+	}
+	ordered := make([]tuple, len(marks.Marks))
+	for i, mark := range marks.Marks {
+		if mark == nil {
+			t.Fatal("nil native text mark")
+		}
+		raw, err := proto.Marshal(mark)
+		if err != nil {
+			t.Fatal(err)
+		}
+		ordered[i] = tuple{mark: mark, raw: raw}
+	}
+	sort.SliceStable(ordered, func(i, j int) bool { return bytes.Compare(ordered[i].raw, ordered[j].raw) < 0 })
+	for i, item := range ordered {
+		marks.Marks[i] = item.mark
+	}
+	return block
+}
+
+func TestOtzariaOriginalNetworkRevisionCanonicalRestrictions(t *testing.T) {
+	original := &model.Block{Id: "exact-original-block", ChildrenIds: []string{"first", "second"}}
+	empty := proto.Clone(original).(*model.Block)
+	empty.Restrictions = &model.BlockRestrictions{}
+	if !proto.Equal(originalNetworkRevisionCanonicalBlock(t, original),
+		originalNetworkRevisionCanonicalBlock(t, empty)) {
+		t.Fatal("original Base.Diff empty restriction equivalence is missing")
+	}
+	if original.Restrictions != nil || !proto.Equal(empty.Restrictions, &model.BlockRestrictions{}) {
+		t.Fatal("comparison mutated the actual saved input")
+	}
+	for name, restriction := range map[string]*model.BlockRestrictions{
+		"read": {Read: true}, "edit": {Edit: true}, "remove": {Remove: true},
+		"drag": {Drag: true}, "drop_on": {DropOn: true},
+	} {
+		t.Run(name, func(t *testing.T) {
+			changed := proto.Clone(original).(*model.Block)
+			changed.Restrictions = restriction
+			if proto.Equal(originalNetworkRevisionCanonicalBlock(t, original),
+				originalNetworkRevisionCanonicalBlock(t, changed)) {
+				t.Fatal("a genuine nonzero native restriction was discarded")
+			}
+			if !proto.Equal(changed.Restrictions, restriction) {
+				t.Fatal("comparison modified the actual restriction")
+			}
+		})
+	}
+	changed := proto.Clone(original).(*model.Block)
+	changed.ChildrenIds[0], changed.ChildrenIds[1] = changed.ChildrenIds[1], changed.ChildrenIds[0]
+	if proto.Equal(originalNetworkRevisionCanonicalBlock(t, original),
+		originalNetworkRevisionCanonicalBlock(t, changed)) {
+		t.Fatal("ordered native child relations were discarded")
 	}
 }
 
@@ -274,7 +364,7 @@ func originalNetworkRequireTextHash(t *testing.T, raw []byte, p originalNetworkP
 		if b == nil || b.Id != id || b.GetText() == nil {
 			continue
 		}
-		body, err := proto.Marshal(b.GetText())
+		body, err := proto.Marshal(originalNetworkRevisionCanonicalBlock(t, b).GetText())
 		if err != nil {
 			t.Fatal(err)
 		}
