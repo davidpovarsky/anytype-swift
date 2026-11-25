@@ -65,11 +65,33 @@ def main():
     clean = subprocess.run(["git", "-C", str(source), "status", "--porcelain"],
                            check=True, capture_output=True, text=True).stdout
     require(current == origin and clean == "", "frozen_main_checkout_required")
-    require(original["inputs"]["nativeSHA256"] ==
-            "08f8b8dab68ed21cabec955fbde1323983f02f549dd67aa3e2e4d11c4f818bfc"
-            and original["inputs"]["nativeSourceManifestSHA256"] ==
-            "70fb5342f2ff31d1cf5f7ce44bed7b16f6373f6bf95eb031d165339cf0f26683",
-            "reviewed_unified_native_input_required")
+    profiles = {
+        "70fb5342f2ff31d1cf5f7ce44bed7b16f6373f6bf95eb031d165339cf0f26683": {
+            "name": "original-unified70fb-sdk44",
+            "nativeSHA256": "08f8b8dab68ed21cabec955fbde1323983f02f549dd67aa3e2e4d11c4f818bfc",
+            "sdkReceiptSHA256": "67edd8f955524044428bf583b51f2357ca290e5ded0aacd8def0dff92f6b1521",
+            "lockSHA256": "bb5582d3f0b9bc17b909ade4751904fd7b2fee2d066fea50b7a1ef913a8fe513",
+        },
+        "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72": {
+            "name": "qualified-mobile70f0-sdk30e",
+            "nativeSHA256": "c3374a58dffb64658fe6840ee9bd2711a4b1bf8c449c32da5bd51ede4901cece",
+            "sdkReceiptSHA256": "0ae5a1476c899b1790f01a2a3b4118034e848d8ad8dcf2d97f12104f7387f798",
+            "lockSHA256": "ffc47556534ee279d01bb771c6d49637766e8828bd872cce739e541d8ce4f124",
+        },
+    }
+    profile = profiles.get(original["inputs"]["nativeSourceManifestSHA256"])
+    require(profile is not None, "explicit_reviewed_unified_profile_required")
+    for key in ("nativeSHA256", "sdkReceiptSHA256", "lockSHA256"):
+        require(original["inputs"].get(key) == profile[key],
+                "reviewed_unified_input_changed:" + key)
+    require(digest(source / "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved")
+            == profile["lockSHA256"], "reviewed_package_lock_changed")
+    for phase in ("app", "ui"):
+        require(original[phase]["exitCode"] == 0
+                and original[phase]["status"] == "PASS_BUILD_EXIT_0",
+                "both_original_build_phases_must_have_completed")
+        require(digest(evidence / phase / "original.log") == original[phase]["logSHA256"],
+                "original_build_log_changed:" + phase)
     native = source / "Dependencies/Middleware/Lib.xcframework/ios-arm64-simulator/Lib.framework/Lib"
     require(digest(native) == original["inputs"]["nativeSHA256"], "native_input_changed")
     require(digest(source / "Dependencies/Hanlin/.pinkha-source.json") ==
@@ -137,6 +159,7 @@ def main():
     write(output / "projection.json", {
         "mainSourceCommit": origin, "runnerSourceCommit": runner_origin,
         "mainReceiptSHA256": digest(evidence / "receipt.json"),
+        "reviewedInputProfile": profile,
         "exactOriginalProjectAndScheme": transformation, "sourceFiles": sources,
         "applicationBuildTargets": 0, "nativeLibraryBuilds": 0,
         "allOriginalNativeUITestMethodsCompiled": True,
@@ -164,6 +187,8 @@ def main():
         process = subprocess.Popen(argv, cwd=source, env=environment, stdout=stream,
                                    stderr=subprocess.STDOUT, start_new_session=True)
         record = {"sourceCommit": origin, "runnerSourceCommit": runner_origin,
+                  "mainReceiptSHA256": digest(evidence / "receipt.json"),
+                  "reviewedInputProfile": profile,
                   "argv": argv, "pid": process.pid,
                   "pgid": process.pid, "started": started, "freeBytesBefore": free}
         write(output / "launch.json", record)

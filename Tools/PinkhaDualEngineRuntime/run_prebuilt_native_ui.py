@@ -30,6 +30,8 @@ STAGES = {
     "archive": ("NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies", 1800),
     "history": ("NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen", 600),
     "hanlin": ("NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen", 600),
+    "custom-type": ("NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen", 600),
+    "bin": ("NativeLaunchTests/testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen", 600),
 }
 FLOOR = 2 * 1024**3
 
@@ -231,7 +233,9 @@ def main():
                 "complete_original_main_build_required")
         require(ui_record["status"] == "PASS_UI_RUNNER_BUILD_NOT_ACCEPTANCE"
                 and ui_record["sourceCommit"] == main_record["sourceCommit"]
-                and ui_record["testsExecuted"] == 0, "same_source_ui_runner_build_required")
+                and ui_record["testsExecuted"] == 0
+                and ui_record.get("mainReceiptSHA256") == digest(args.main_evidence / "receipt.json"),
+                "same_source_exact_main_receipt_ui_runner_build_required")
         before = json.loads((args.main_evidence / "source-before.json").read_bytes())
         require(before == json.loads((args.main_evidence / "source-after.json").read_bytes()),
                 "unchanged_built_source_required")
