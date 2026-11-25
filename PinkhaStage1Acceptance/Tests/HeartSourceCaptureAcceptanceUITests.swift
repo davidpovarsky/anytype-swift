@@ -129,7 +129,7 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
         // engine header. Decline its optional home creation through its actual
         // UI; the subsequent source identity and capture assertions are unchanged.
         let prompt = app.staticTexts["Add a Channel Home?"]
-        guard prompt.waitForExistence(timeout: remaining(5)) else { return }
+        guard prompt.waitForExistence(timeout: try remaining(5)) else { return }
         let dismiss = app.buttons["Not now"]
         try require(dismiss.exists, "original-channel-home-decline-missing")
         try tap(dismiss)
