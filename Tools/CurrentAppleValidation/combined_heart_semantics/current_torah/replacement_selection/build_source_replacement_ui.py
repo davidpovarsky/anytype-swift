@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the complete original UI with one real Select All preparation correction."""
+"""Build the complete original UI with reviewed selection and existing-link navigation."""
 import argparse
 import copy
 import importlib.util
@@ -49,7 +49,7 @@ def main():
                "generatorSHA256": profile.GENERATOR, "generatorCommit": profile.GENERATOR_COMMIT,
                "builderSHA256": c.digest(Path(__file__)), "profileSHA256": c.digest(Path(profile.__file__)),
                "sourceDelta": delta, "uiSourceRoot": str(source), "originalUICopy": original_copy,
-               "sameCommitForAppAndUITests": False, "uiSourceComposition": "original12files-plus-exact-one-selection-preparation-delta", "uiBuilds": 0, "appBuilds": 0, "nativeBuilds": 0, "testsExecuted": 0}
+               "sameCommitForAppAndUITests": False, "uiSourceComposition": "original12files-plus-exact-selection-and-existing-link-preparation-deltas", "uiBuilds": 0, "appBuilds": 0, "nativeBuilds": 0, "testsExecuted": 0}
     try:
         names = subprocess.check_output(["git", "-C", str(args.app_source), "ls-files", "-z", "PinkhaStage1Acceptance"], timeout=30).decode().split("\0")
         names = sorted(n for n in names if n)

@@ -5,15 +5,15 @@ import json
 import subprocess
 
 BASE = "0c5ffc51cdeb480194fdd4d5e396a602d04d5d78"
-CHANGE = "5fcc6d9b996166028ccf844ef95a5a873b3c9028"
+CHANGE = "14a25f9a1fb0d6a96bc355848db38aaf4f1773b9"
 FILE = "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift"
 BEFORE = "0a56eef1eaa4a9df1bfd23d5828032792d982d3f0b12fd6719d11ceebc57a812"
-AFTER = "062b9d76498da7e5d49d0dbd05442d84f5aa7e7353234fe4d27eb88645b203bd"
+AFTER = "089ac381f0f394671d3990cd1b519bbdb2ac46668baa701ca0d4a7bbe46cb1e9"
 GENERATOR = "7bf69636b42875aa7dd0fa39c11393e02e6760ef502cf68ef47b740f3bd066c0"
 GENERATOR_COMMIT = "0b9c5d75fec8fa4f4e17266010f7d79a47c08b87"
-BUILDER = "e3e45f29d5fb408adcc8361110af933886238482874e6bbbed5c14c2f3796c2d"
-PROFILE = "original-heart0c5-command-a-replacement-preparation-5fcc6d-v1"
-STATUS = "PASS_CURRENT_UI_ONLY_REAL_SELECT_ALL_NOT_ACCEPTANCE"
+BUILDER = "df3e648cca0c8a7fdaae0f7d6fcbedf481bef234c533c55a69985a495a7f4d26"
+PROFILE = "original-heart0c5-command-a-and-existing-link-14a25-v1"
+STATUS = "PASS_CURRENT_UI_ONLY_SELECTION_AND_EXISTING_LINK_PREPARATION_NOT_ACCEPTANCE"
 
 
 PRODUCER = "3375dd50d6855d3e75b95975ec78966ae0e5de5fb64a525fee4c0fae345fe0dc"
@@ -39,21 +39,41 @@ def admit_original_ui_copy(c, admission, producer, source):
 
 
 def source_delta(c, before, after):
-    c.require(c.sha(before) == BEFORE and c.sha(after) == AFTER, "Exact original/replacement UI source required")
-    path = Path(__file__).with_name("replacement-ui-source-identity.json")
-    raw = c.raw(path)
+    c.require(c.sha(before) == BEFORE and c.sha(after) == AFTER, "Exact original/reviewed UI source required")
+    link_raw = c.raw(Path(__file__).with_name("existing-link-ui-source-identity.json"))
+    c.require(c.sha(link_raw) == "821db4ba7b7197583c70eef02e4962b40a46ed8e05062705268471ac4c897627",
+              "Reviewed real existing-link navigation delta changed")
+    link = c.decode(link_raw)
+    c.require(link["schema"] == "pinkha-existing-semantic-link-navigation-source-v1"
+              and link["file"] == FILE and link["afterSHA256"] == AFTER
+              and link["beforeSHA256"] == "062b9d76498da7e5d49d0dbd05442d84f5aa7e7353234fe4d27eb88645b203bd"
+              and link["parentUIChangeCommit"] == "5fcc6d9b996166028ccf844ef95a5a873b3c9028"
+              and len(link["operations"]) == 3 and link["originalOutcomeAssertionsChanged"] is False
+              and link["firstOriginalMenuRoutePreserved"] is True
+              and link["appChanges"] == link["nativeChanges"] == 0,
+              "Exact navigation-only inverse identity required")
+    intermediate = after
+    for row in reversed(link["operations"]):
+        old, new = row["before"].encode(), row["after"].encode()
+        c.require(type(row["count"]) is int and row["count"] in (1, 4)
+                  and intermediate.count(new) == row["count"], "Navigation inverse delta count differs")
+        intermediate = intermediate.replace(new, old)
+    c.require(c.sha(intermediate) == link["beforeSHA256"], "Navigation inverse does not restore exact accepted preparation")
+    raw = c.raw(Path(__file__).with_name("replacement-ui-source-identity.json"))
     c.require(c.sha(raw) == "f69225dbb1b9b2cfc66db9a6f8cd0714b8975145c05b607b1d86ec183b1b9fbe",
-              "Reviewed exact inverse delta identity required")
+              "Original reviewed real-selection delta identity required")
     identity = c.decode(raw)
     old, new = identity["removedBytes"].encode(), identity["addedBytes"].encode()
     c.require(identity["baseAppCommit"] == BASE and identity["file"] == FILE
-              and identity["beforeSHA256"] == BEFORE and identity["afterSHA256"] == AFTER
-              and before.count(old) == after.count(new) == 1 and after.replace(new, old, 1) == before,
-              "Every original byte outside the real selection preparation must remain exact")
+              and identity["beforeSHA256"] == BEFORE and identity["afterSHA256"] == link["beforeSHA256"]
+              and before.count(old) == intermediate.count(new) == 1
+              and intermediate.replace(new, old, 1) == before,
+              "Every original byte outside both reviewed preparations must remain exact")
     return {"beforeSHA256": BEFORE, "afterSHA256": AFTER, "inverseDeltaRestoresEntireOriginalFile": True,
             "originalOutcomeAssertionsChanged": False, "appSourcesChanged": 0,
             "realCommandARequired": True, "passiveNativeFullRangeRequiredBeforeActualTyping": True,
-            "programmaticSelectionChanges": 0, "identitySHA256": c.sha(raw)}
+            "firstOriginalMenuRoutePreserved": True, "laterRealSemanticLinkOpeningsRequired": True,
+            "programmaticSelectionChanges": 0, "identitySHA256": c.sha(raw), "linkIdentitySHA256": c.sha(link_raw)}
 
 
 def qualify(c, admission, original_source, original_producer):
@@ -71,7 +91,7 @@ def qualify(c, admission, original_source, original_producer):
               "Actual reviewed independent complete UI build receipt required")
     c.require(receipt.get("profileSHA256") == c.digest(Path(__file__))
               and receipt.get("sameCommitForAppAndUITests") is False
-              and receipt.get("uiSourceComposition") == "original12files-plus-exact-one-selection-preparation-delta",
+              and receipt.get("uiSourceComposition") == "original12files-plus-exact-selection-and-existing-link-preparation-deltas",
               "Explicit original-App/changed-UI composition must remain exact")
     c.require(receipt.get("originalUICopy") == admit_original_ui_copy(c, admission, original_producer, original_source),
               "Original successful complete UI source-copy provenance differs")
