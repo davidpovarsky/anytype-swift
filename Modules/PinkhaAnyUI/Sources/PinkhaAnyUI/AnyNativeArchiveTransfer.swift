@@ -312,8 +312,7 @@ final class AnyNativeArchivePresentation {
 public struct AnyNativeArchiveTransferView: View {
     @State private var model: AnyNativeArchivePresentation
     private let document: AnyDocumentPresentation
-    @State private var export: AnyCanonicalAssociationFile?
-    @State private var showsExporter = false
+    @State private var exportSource: PinkhaDocumentExportSource?
     @State private var showsImporter = false
     @State private var exportedFileName: String?
     @State private var exportedFolderName: String?
@@ -437,33 +436,40 @@ public struct AnyNativeArchiveTransferView: View {
         }
     }
 
-    // Each real system dialog belongs to its initiating button. Both presenters
-    // are first constructed with the validated directory, never an initial nil.
+    // Each system dialog is initialized from the validated directory. Its
+    // delegate URL, never a predicted path, is the export/import receipt.
     private func exportArchiveButton(in directory: URL) -> some View {
         Button(AnyUIErrorText.text("ייצוא קישורי המקורות", "Export source associations"),
                systemImage: "square.and.arrow.up") {
+            guard exportSource == nil else { return }
             Task {
-                if let file = await model.exportFile() { export = file; showsExporter = true }
+                guard let file = await model.exportFile(), document.showsArchiveTransfer else { return }
+                do {
+                    exportSource = try PinkhaDocumentExportSource(
+                        data: file.data, filename: "source-associations.json")
+                } catch { model.message = AnyUIErrorText.describe(error) }
             }
         }
         .disabled(model.isBusy)
         .accessibilityIdentifier("any-native-archive-export")
-        .fileExporter(isPresented: $showsExporter, document: export, contentType: .json,
-                      defaultFilename: "source-associations") { result in
-            switch result {
-            case .success(let url):
-                exportedFileName = url.lastPathComponent
-                let folder = url.deletingLastPathComponent()
-                let name = (try? folder.resourceValues(forKeys: [.localizedNameKey]))?.localizedName
-                    ?? folder.lastPathComponent
-                // Display the returned destination's human name, never a
-                // private container path or an internal provider UUID.
-                exportedFolderName = !name.isEmpty && UUID(uuidString: name) == nil
-                    ? name : AnyUIErrorText.text("התיקייה שנבחרה", "Selected folder")
-            case .failure(let error): model.message = AnyUIErrorText.describe(error)
+        .sheet(item: $exportSource) { source in
+            PinkhaDocumentTransferPicker(operation: .export(source.fileURL), initialDirectory: directory) { result in
+                guard exportSource?.id == source.id else { return }
+                defer { exportSource = nil }
+                guard document.showsArchiveTransfer else { return }
+                switch result {
+                case .success(let selected):
+                    guard let url = selected else { return }
+                    exportedFileName = url.lastPathComponent
+                    let folder = url.deletingLastPathComponent()
+                    let name = (try? folder.resourceValues(forKeys: [.localizedNameKey]))?.localizedName
+                        ?? folder.lastPathComponent
+                    exportedFolderName = !name.isEmpty && UUID(uuidString: name) == nil
+                        ? name : AnyUIErrorText.text("התיקייה שנבחרה", "Selected folder")
+                case .failure(let error): model.message = AnyUIErrorText.describe(error)
+                }
             }
         }
-        .fileDialogDefaultDirectory(directory)
     }
 
     private func importArchiveButton(in directory: URL) -> some View {
@@ -471,13 +477,18 @@ public struct AnyNativeArchiveTransferView: View {
                systemImage: "square.and.arrow.down") { showsImporter = true }
             .disabled(!model.canChangeMapping)
             .accessibilityIdentifier("any-native-archive-import")
-            .fileImporter(isPresented: $showsImporter, allowedContentTypes: [.json]) { result in
-                switch result {
-                case .success(let url): Task { await model.loadFile(url) }
-                case .failure(let error): model.message = AnyUIErrorText.describe(error)
+            .sheet(isPresented: $showsImporter) {
+                PinkhaDocumentTransferPicker(operation: .open([.json]), initialDirectory: directory) { result in
+                    guard showsImporter else { return }
+                    showsImporter = false
+                    guard document.showsArchiveTransfer else { return }
+                    switch result {
+                    case .success(let selected):
+                        if let url = selected { Task { await model.loadFile(url) } }
+                    case .failure(let error): model.message = AnyUIErrorText.describe(error)
+                    }
                 }
             }
-            .fileDialogDefaultDirectory(directory)
     }
 
     /// Documents is intentionally user-visible in Files. Native storage and
