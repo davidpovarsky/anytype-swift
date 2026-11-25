@@ -59,6 +59,9 @@ final class SearchWithMetaService: SearchWithMetaServiceProtocol, Sendable {
 
         let spaceType = spaceViewsStorage.spaceView(spaceId: spaceId)?.spaceType
         let filters: [DataviewFilter] = .builder {
+            OriginalAnnotationSearchVisibility.filters(
+                includeAnnotations: OriginalAnnotationSearchVisibility.includesExplicitAnnotationType(typeUniqueKey)
+            )
             SearchFiltersBuilder.build(isArchived: false, layouts: layouts, spaceType: spaceType)
             SearchHelper.excludedIdsFilter(excludedObjectIds)
             if excludedLayouts.isNotEmpty {

@@ -55,6 +55,9 @@ final class CrossSpaceSearchService: CrossSpaceSearchServiceProtocol, Sendable {
     ) async throws -> CrossSpaceSearchResult {
 
         let filters: [DataviewFilter] = .builder {
+            OriginalAnnotationSearchVisibility.filters(
+                includeAnnotations: OriginalAnnotationSearchVisibility.includesExplicitAnnotationType(typeUniqueKey)
+            )
             SearchFiltersBuilder.build(isArchived: false)
             SearchHelper.templateScheme(include: false)
             SearchHelper.filterOutParticipantType()

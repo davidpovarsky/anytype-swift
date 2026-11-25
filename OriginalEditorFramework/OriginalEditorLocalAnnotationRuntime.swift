@@ -30,6 +30,7 @@ internal final class OriginalEditorLocalAnnotationRuntime {
     private var opening = false
     private var accountID = ""
     private var currentOwner: OriginalEditorLocalAnnotationDraftOwner?
+    private var currentBatch: OriginalEditorLocalAnnotationBatchOwner?
 
     private init(appGroup: String, journal: OriginalEditorLocalAnnotationJournal,
                  accountManager: any AccountManagerProtocol,
@@ -198,6 +199,7 @@ internal final class OriginalEditorLocalAnnotationRuntime {
 
     private func failClosed() {
         phase = .failed
+        currentBatch?.sourceLifetime.retire()
         lifetime.markUnavailable()
         // Retain handler/account/native admissions and original repository.
         // Retirement is not evidence of rollback or completion of a native call.
@@ -222,8 +224,9 @@ internal final class OriginalEditorLocalAnnotationRuntime {
             try await stopTask.value
             return
         }
-        guard !opening, currentOwner?.isCurrent != true else {
-            // Do not discard a draft held by another ordinary editor/window.
+        retireExpiredBatchIfNeeded()
+        guard !opening, currentOwner?.isCurrent != true, currentBatch?.isCurrent != true else {
+            // Do not discard a draft or conversion run held by another owner.
             throw AnytypeOriginalEditorLocalAnnotationError.overlappingSession
         }
         if phase == .stopFailed && !retrying {
@@ -263,6 +266,7 @@ internal final class OriginalEditorLocalAnnotationRuntime {
                 // account with networkMode.localOnly from its original journal.
                 try process.releaseLocalAccount(processLease)
                 currentOwner = nil
+                currentBatch = nil
                 accountCapture = nil
                 runtimeBinding = nil
                 phase = .stopped
@@ -282,11 +286,13 @@ internal final class OriginalEditorLocalAnnotationRuntime {
         try await task.value
     }
 
-    private func createPrivateSpace(name: String) async throws -> AccountInfo {
+    private func createPrivateSpace(name: String,
+                                    creationBinding: EditorDocumentWriteSourceBinding? = nil) async throws -> AccountInfo {
         try validate()
         guard let runtimeBinding else { throw AnytypeOriginalEditorLocalAnnotationError.unavailableAccount }
         let service = Container.shared.workspaceService()
-        let opened = try await runtimeBinding.performOperation(rpcNames: ["WorkspaceCreate", "WorkspaceOpen"]) {
+        let operationBinding = creationBinding ?? runtimeBinding
+        let opened = try await operationBinding.performOperation(rpcNames: ["WorkspaceCreate", "WorkspaceOpen"]) {
             let created = try await service.createSpace(name: name, iconOption: 0, accessType: .private,
                 useCase: .none, withChat: false, spaceType: .regular)
             guard !created.spaceID.isEmpty else { throw AnytypeOriginalEditorLocalAnnotationError.unavailableSpace }
@@ -299,97 +305,271 @@ internal final class OriginalEditorLocalAnnotationRuntime {
         try validate()
         Container.shared.spaceViewsStorage().addSpaceInfo(spaceId: opened.accountSpaceId, info: opened)
         guard let capture = accountCapture else { throw AnytypeOriginalEditorLocalAnnotationError.unavailableAccount }
-        try await InvocationDispatchContext.$binding.withValue(capture.accountDispatchBinding()) {
+        let preparationBinding: InvocationDispatchBinding
+        if let creationBinding {
+            try creationBinding.validate()
+            let captures = creationBinding.captures
+            preparationBinding = InvocationDispatchBinding { _ in
+                for captured in captures { try captured.validate() }
+                return InvocationDispatchPermit {
+                    let admissions = try EditorDocumentWriteCapture.acquireAll(captures)
+                    return InvocationDispatchCompletion { for admission in admissions { admission.cancel() } }
+                }
+            }
+        } else {
+            preparationBinding = capture.accountDispatchBinding()
+        }
+        try await InvocationDispatchContext.$binding.withValue(preparationBinding) {
             await Container.shared.objectTypeProvider().prepareData(spaceId: opened.accountSpaceId)
             await Container.shared.propertyDetailsStorage().prepareData(spaceId: opened.accountSpaceId)
         }
+        try creationBinding?.validate()
         return opened
+    }
+
+    internal func openBatch(
+        sourceLifetime: AnytypeOriginalEditorLocalAnnotationBatchSourceLifetime,
+        sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorLocalAnnotationBatchSource) -> Bool
+    ) async throws -> OriginalEditorLocalAnnotationBatchOwner {
+        try validate()
+        retireExpiredBatchIfNeeded()
+        guard !opening, currentOwner?.isCurrent != true, currentBatch?.isCurrent != true else {
+            throw AnytypeOriginalEditorLocalAnnotationError.overlappingSession
+        }
+        opening = true
+        defer { opening = false }
+        let captured = try EditorDocumentWriteCapture(sourceLifetime.lifetime)
+        let check: @MainActor () throws -> Void = { [self] in
+            try validate(); try captured.validate()
+            guard sourceLifetime.isCurrent, sourceIsCurrent(sourceLifetime.source) else {
+                throw AnytypeOriginalEditorLocalAnnotationError.retiredSource
+            }
+        }
+        try check()
+        var record = try await journal.beginBatch(source: sourceLifetime.source)
+        do {
+            try check()
+            guard let runtimeBinding else {
+                throw AnytypeOriginalEditorLocalAnnotationError.unavailableAccount
+            }
+            try runtimeBinding.validate()
+            let originalCaptures = runtimeBinding.captures + [captured]
+            let binding = try EditorDocumentWriteSourceBinding(
+                lifetime: sourceLifetime.lifetime, accountLifetime: accountLifetime,
+                additionalLifetimes: originalCaptures.map(\.source),
+                isCurrent: { sourceLifetime.isCurrent && sourceIsCurrent(sourceLifetime.source) })
+            try Self.requireInheritedCaptures(originalCaptures, in: binding)
+            record = try await journal.transitionBatch(record, to: "space_may_have_dispatched")
+            try check()
+            let space = try await createPrivateSpace(name: "Local annotation batch " + record.attempt.uuidString,
+                creationBinding: binding)
+            record = try await journal.transitionBatch(record, to: "space_observed",
+                spaceID: space.accountSpaceId, spaceViewID: space.spaceViewId)
+            try check()
+            let selected = try await prepareSelectedSpace(space.accountSpaceId,
+                retaining: binding.captures)
+            try check()
+            record = try await journal.transitionBatch(record, to: "ready")
+            try check()
+            let owner = OriginalEditorLocalAnnotationBatchOwner(
+                sourceLifetime: sourceLifetime, runtime: self, journalRecord: record,
+                selected: selected.selection, annotationTypeID: selected.typeID,
+                capture: captured, sourceIsCurrent: sourceIsCurrent)
+            currentBatch = owner
+            return owner
+        } catch {
+            sourceLifetime.retire()
+            failClosed()
+            throw error
+        }
+    }
+
+    internal func retireBatch(_ batch: OriginalEditorLocalAnnotationBatchOwner) {
+        guard currentBatch === batch else { return }
+        // Admission retires first. A running native body still keeps its original
+        // leases and must drain through the unchanged real AccountStop path.
+        if currentOwner?.batchAttemptID == batch.journalRecord.attempt { currentOwner?.retire() }
+    }
+
+    private func retireExpiredBatchIfNeeded() {
+        if let batch = currentBatch, !batch.isCurrent { retireBatch(batch) }
     }
 
     internal func open(sourceLifetime: AnytypeOriginalEditorLocalAnnotationSourceLifetime,
                        canonical: OriginalEditorLocalAnnotationCanonical,
                        sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorLocalAnnotationSource) -> Bool)
         async throws -> OriginalEditorLocalAnnotationDraftOwner {
+        guard currentBatch?.isCurrent != true else {
+            throw AnytypeOriginalEditorLocalAnnotationError.overlappingSession
+        }
+        retireExpiredBatchIfNeeded()
+        return try await openDraft(sourceLifetime: sourceLifetime, canonical: canonical,
+            batch: nil, sourceIsCurrent: sourceIsCurrent)
+    }
+
+    internal func openBatchAnnotation(batch: OriginalEditorLocalAnnotationBatchOwner,
+                                     sourceLifetime: AnytypeOriginalEditorLocalAnnotationSourceLifetime,
+                                     canonical: OriginalEditorLocalAnnotationCanonical,
+                                     sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorLocalAnnotationSource) -> Bool)
+        async throws -> OriginalEditorLocalAnnotationDraftOwner {
+        try batch.validate()
+        guard currentBatch === batch, case .plainText = canonical.body else {
+            throw AnytypeOriginalEditorLocalAnnotationError.invalidSource
+        }
+        return try await openDraft(sourceLifetime: sourceLifetime, canonical: canonical,
+            batch: batch, sourceIsCurrent: sourceIsCurrent)
+    }
+
+    private func openDraft(sourceLifetime: AnytypeOriginalEditorLocalAnnotationSourceLifetime,
+                           canonical: OriginalEditorLocalAnnotationCanonical,
+                           batch: OriginalEditorLocalAnnotationBatchOwner?,
+                           sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorLocalAnnotationSource) -> Bool)
+        async throws -> OriginalEditorLocalAnnotationDraftOwner {
         try validate()
         guard !opening, currentOwner?.isCurrent != true else {
             throw AnytypeOriginalEditorLocalAnnotationError.overlappingSession
         }
+        let source = sourceLifetime.source
+        try batch?.reserve(source)
         opening = true
         defer { opening = false }
-        let source = sourceLifetime.source
+        let stillCurrent: @MainActor (AnytypeOriginalEditorLocalAnnotationSource) -> Bool = { candidate in
+            sourceIsCurrent(candidate) && (batch?.isCurrent ?? true)
+        }
         let check: @MainActor () throws -> Void = { [self] in
-            try validate()
-            guard sourceLifetime.isCurrent, sourceIsCurrent(source) else {
+            try validate(); try batch?.validate()
+            guard sourceLifetime.isCurrent, stillCurrent(source) else {
                 throw AnytypeOriginalEditorLocalAnnotationError.retiredSource
             }
         }
         try check()
-        var draft = try await journal.beginDraft(source: source, canonicalSHA256: canonical.digest)
+        var draft = try await journal.beginDraft(source: source, canonicalSHA256: canonical.digest,
+                                                batch: batch?.journalRecord)
         do {
-            draft = try await journal.transition(draft, to: "space_may_have_dispatched")
-            try check()
-            let space = try await createPrivateSpace(name: "Local annotation " + draft.attempt.uuidString)
-            draft = try await journal.transition(draft, to: "space_observed",
-                spaceID: space.accountSpaceId, spaceViewID: space.spaceViewId)
-            try check()
-            let selected = try await prepareSelectedSpace(space.accountSpaceId)
+            let selected: (selection: OriginalActiveSpaceSelection, typeID: String)
+            let spaceID: String
+            if let batch {
+                try batch.validate()
+                guard let observedSpace = batch.journalRecord.spaceID,
+                      let observedView = batch.journalRecord.spaceViewID else {
+                    throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
+                }
+                spaceID = observedSpace
+                draft = try await journal.transition(draft, to: "batch_space_observed",
+                    spaceID: observedSpace, spaceViewID: observedView)
+                try check()
+                // This is the LIVE selection from this run's actual creation and
+                // schema readback. No persisted ID can reselect or revive it.
+                selected = (batch.selected, batch.annotationTypeID)
+            } else {
+                draft = try await journal.transition(draft, to: "space_may_have_dispatched")
+                try check()
+                let space = try await createPrivateSpace(name: "Local annotation " + draft.attempt.uuidString)
+                draft = try await journal.transition(draft, to: "space_observed",
+                    spaceID: space.accountSpaceId, spaceViewID: space.spaceViewId)
+                try check()
+                selected = try await prepareSelectedSpace(space.accountSpaceId)
+                spaceID = space.accountSpaceId
+            }
             try check()
             let prepared = try sourceBinding(sourceLifetime, selection: selected.selection,
-                                            sourceIsCurrent: sourceIsCurrent)
+                additionalCaptures: batch.map { [$0.capture] } ?? [], sourceIsCurrent: stillCurrent)
             draft = try await journal.transition(draft, to: "materialization_may_have_dispatched")
             try check()
             let materialized = try await OriginalEditorLocalAnnotationMaterialization.materialize(
                 canonical: canonical, source: source, draft: draft, accountID: accountID,
                 selection: selected.selection, annotationTypeID: selected.typeID,
                 binding: prepared, sourceIsCurrent: check)
-            // The materializer requires actual typed drain and fresh ObjectShow.
-            // Neither ObjectCreate's returned ID nor an empty index is a mapping.
+            // Actual typed drain and fresh ObjectShow precede every observation.
             draft = try await journal.transition(draft, to: "object_observed", objectID: materialized)
             try check()
             let editorBinding = try AnytypeOriginalEditorBinding(accountID: accountID,
-                spaceID: space.accountSpaceId, objectID: materialized, hostProfileID: source.hostProfileID,
+                spaceID: spaceID, objectID: materialized, hostProfileID: source.hostProfileID,
                 annotationUUID: source.annotationUUID, expectedRevision: source.expectedRevision,
                 sourceWitnessSHA256: source.sourceWitnessSHA256)
             let originalSource = AnytypeOriginalEditorSourceLifetime(binding: editorBinding)
             let retirement = sourceLifetime.lifetime.observe(try EditorDocumentWriteCapture(sourceLifetime.lifetime).token) {
                 originalSource.retire()
             }
-            let host = try await AnytypeOriginalEditorModule.openExistingEditor(
-                binding: editorBinding, sourceLifetime: originalSource
-            ) { candidate in
-                candidate == editorBinding && sourceLifetime.isCurrent && sourceIsCurrent(source)
+            let host: AnytypeOriginalEditorHost
+            if batch != nil {
+                // Include the exact run/row/permission generations at the REAL
+                // original writer's GCD admission, not only a Swift UI callback.
+                try originalSource.claim(for: editorBinding)
+                do {
+                    let originalCaptures = prepared.captures
+                    let hostBinding = try EditorDocumentWriteSourceBinding(
+                        lifetime: originalSource.lifetime, accountLifetime: accountLifetime,
+                        additionalLifetimes: originalCaptures.map(\.source),
+                        isCurrent: {
+                            originalSource.isCurrent && sourceLifetime.isCurrent && stillCurrent(source)
+                        })
+                    try Self.requireInheritedCaptures(originalCaptures, in: hostBinding)
+                    host = try await AnytypeOriginalEditorModule.makeHost(binding: editorBinding,
+                        sourceLifetime: originalSource, sourceBinding: hostBinding,
+                        accountManager: accountManager)
+                } catch {
+                    originalSource.retire()
+                    throw error
+                }
+            } else {
+                host = try await AnytypeOriginalEditorModule.openExistingEditor(
+                    binding: editorBinding, sourceLifetime: originalSource
+                ) { candidate in
+                    candidate == editorBinding && sourceLifetime.isCurrent && stillCurrent(source)
+                }
             }
             try check()
             host.snapshotTransportOriginHostProfileID = canonical.transportOriginHostProfileID
             draft = try await journal.transition(draft, to: "opened")
             let owner = OriginalEditorLocalAnnotationDraftOwner(host: host, sourceLifetime: sourceLifetime,
                 journal: journal, draft: draft, retirement: retirement,
-                sourceIsCurrent: sourceIsCurrent, runtime: self)
+                sourceIsCurrent: stillCurrent, runtime: self)
             currentOwner = owner
             return owner
         } catch {
-            // Unknown native effects are retained. A new process may reconstruct
-            // canonical bytes in a fresh private Space; this process never retries
-            // or treats the failed attempt as absent/rolled back.
+            // Unknown effects are retained. No fresh import or duplicate UUID is
+            // inferred from failure/cancellation; only real Stop can release us.
+            batch?.sourceLifetime.retire()
             failClosed()
             throw error
         }
     }
 
-    private func prepareSelectedSpace(_ spaceID: String) async throws
+    private static func requireInheritedCaptures(_ captures: [EditorDocumentWriteCapture],
+                                                 in binding: EditorDocumentWriteSourceBinding) throws {
+        for capture in captures {
+            try capture.validate()
+            guard binding.captures.contains(where: { $0.source === capture.source && $0.token == capture.token }) else {
+                throw AnytypeOriginalEditorLocalAnnotationError.retiredSource
+            }
+        }
+        try binding.validate()
+    }
+
+    private func prepareSelectedSpace(_ spaceID: String,
+                                      retaining captures: [EditorDocumentWriteCapture] = []) async throws
         -> (selection: OriginalActiveSpaceSelection, typeID: String) {
         try validate()
         let clock = ContinuousClock()
         let deadline = clock.now.advanced(by: .seconds(20))
+        for captured in captures { try captured.validate() }
         while !Container.shared.participantsStorage().canEdit(spaceId: spaceID) {
             try validate()
+            for captured in captures { try captured.validate() }
             guard clock.now < deadline else { throw AnytypeOriginalEditorLocalAnnotationError.unavailableSpace }
             try await clock.sleep(for: .milliseconds(50))
         }
         guard let manager = Container.shared.activeSpaceManager() as? ActiveSpaceManager else {
             throw AnytypeOriginalEditorLocalAnnotationError.originalServiceUnavailable
         }
-        _ = try await manager.setActiveSpace(spaceId: spaceID)
+        for captured in captures { try captured.validate() }
+        if captures.isEmpty {
+            _ = try await manager.setActiveSpace(spaceId: spaceID)
+        } else {
+            _ = try await manager.setActiveSpaceForLocalAnnotationBatch(spaceId: spaceID, retaining: captures)
+        }
+        for captured in captures { try captured.validate() }
         let selection = try manager.currentOriginalActiveSpaceSelection()
         try selection.validate()
         guard selection.accountID == accountID, selection.accountInfo.accountSpaceId == spaceID else {
@@ -425,6 +605,7 @@ internal final class OriginalEditorLocalAnnotationRuntime {
 
     private func sourceBinding(_ source: AnytypeOriginalEditorLocalAnnotationSourceLifetime,
                                selection: OriginalActiveSpaceSelection,
+                               additionalCaptures: [EditorDocumentWriteCapture] = [],
                                sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorLocalAnnotationSource) -> Bool)
         throws -> EditorDocumentWriteSourceBinding {
         try validate()
@@ -440,7 +621,7 @@ internal final class OriginalEditorLocalAnnotationRuntime {
             try selection.capture(matching: accountCapture, spaceId: spaceID),
             try participant.capture(matching: accountCapture, spaceId: spaceID),
             try space.capture(matching: accountCapture, spaceId: spaceID),
-            try EditorDocumentWriteCapture(lifetime)]
+            try EditorDocumentWriteCapture(lifetime)] + additionalCaptures
         let binding = try EditorDocumentWriteSourceBinding(lifetime: source.lifetime,
             accountLifetime: accountLifetime, additionalLifetimes: captures.map(\.source), isCurrent: { [weak self] in
                 self?.identityIsCurrent() == true && source.isCurrent && sourceIsCurrent(source.source)
@@ -485,10 +666,22 @@ internal final class OriginalEditorLocalAnnotationDraftOwner {
 
     var isCurrent: Bool { source.isCurrent }
     var canonicalBodySHA256: String { draft.canonicalSHA256 }
+    var batchAttemptID: UUID? { draft.batchAttempt }
     func validateCurrent() throws {
         try runtime.validate()
         guard source.isCurrent, sourceIsCurrent(source.source) else {
             throw AnytypeOriginalEditorLocalAnnotationError.retiredSource
+        }
+    }
+
+    func validateCapturedSource(_ capture: AnytypeOriginalEditorLocalAnnotationCapture) throws {
+        try validateCurrent()
+        guard captureAttempted, draft.phase == "captured",
+              capture.nativeCapture.snapshot.provenance.matchesCaptureBinding(host.binding),
+              draft.captureSHA256 == OriginalEditorLocalAnnotationValidation.sha256(
+                capture.nativeCapture.snapshot.bodyBytes),
+              draft.captureArchiveSHA256 == capture.nativeCapture.snapshot.nativeArchiveSHA256 else {
+            throw AnytypeOriginalEditorLocalAnnotationError.canonicalBodyMismatch
         }
     }
 
@@ -502,14 +695,14 @@ internal final class OriginalEditorLocalAnnotationDraftOwner {
         guard native.snapshot.provenance.matchesCaptureBinding(host.binding) else {
             throw AnytypeOriginalEditorLocalAnnotationError.wrongNativeIdentity
         }
-        let preview = try OriginalEditorLocalAnnotationNativeBody.preview(native.snapshot, source: source.source)
+        let text = try OriginalEditorLocalAnnotationNativeBody.textProjection(native.snapshot, source: source.source)
         draft = try await journal.transition(draft, to: "captured",
             captureSHA256: OriginalEditorLocalAnnotationValidation.sha256(native.snapshot.bodyBytes),
             archiveSHA256: native.snapshot.nativeArchiveSHA256)
         // Capture terminally retired the separate native editor. The Host source
         // remains current through its original SQLite CAS and is retired by that
         // owner afterwards. This history is neither a saved-row commit nor ACK.
-        return .init(nativeCapture: native, textPreview: preview)
+        return .init(nativeCapture: native, textPreview: text.textPreview, fullPlainText: text.fullPlainText)
     }
 
     func retire() {

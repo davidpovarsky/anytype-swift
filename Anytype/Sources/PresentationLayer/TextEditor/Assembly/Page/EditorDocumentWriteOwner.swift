@@ -282,6 +282,17 @@ struct EditorDocumentWriteSourceBinding {
         isCurrent = original.isCurrent
     }
 
+    /// Retain an already captured source generation in the SAME original
+    /// writer admission. Preparing a later command cannot replace this token
+    /// with a newly matching source or drop it before the GCD/native boundary.
+    func requiringCapturedSource(_ captured: EditorDocumentWriteCapture) throws -> Self {
+        try validate()
+        try captured.validate()
+        let restricted = Self(restricting: self, additionalCaptures: [captured])
+        try restricted.validate()
+        return restricted
+    }
+
     /// Narrow the same host/account source to the original selected attempt.
     /// Equal Space IDs or a later account generation cannot replace its capture.
     func requiringOriginalSelectedSpace(_ selection: OriginalActiveSpaceSelection) throws -> Self {

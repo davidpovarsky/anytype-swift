@@ -90,10 +90,16 @@ public final class AnytypeOriginalEditorLocalAnnotationSourceLifetime {
 public struct AnytypeOriginalEditorLocalAnnotationCapture: Sendable {
     public let nativeCapture: AnytypeOriginalEditorSnapshotCapture
     public let textPreview: String
+    /// Complete text projection of the SAME verified flushed native root. The
+    /// bounded preview remains secondary; migration must compare these exact
+    /// UTF-8 bytes with the captured original saved note before preserving it.
+    public let fullPlainText: String
 
-    internal init(nativeCapture: AnytypeOriginalEditorSnapshotCapture, textPreview: String) {
+    internal init(nativeCapture: AnytypeOriginalEditorSnapshotCapture, textPreview: String,
+                  fullPlainText: String) {
         self.nativeCapture = nativeCapture
         self.textPreview = textPreview
+        self.fullPlainText = fullPlainText
     }
 }
 
@@ -128,6 +134,13 @@ public final class AnytypeOriginalEditorLocalAnnotationSession {
         -> AnytypeOriginalEditorLocalAnnotationCapture {
         guard !miniAppsBusy else { throw AnytypeOriginalEditorMiniAppsError.operationInProgress }
         return try await owner.capture(maximumBodyBytes: maximumBodyBytes)
+    }
+
+    /// Validate this Session's actual completed capture against its still-live
+    /// Host source. The native editor intentionally retired at capture; that
+    /// does not retire the original saved-row source before the Host's Save CAS.
+    public func validateCapturedSource(_ capture: AnytypeOriginalEditorLocalAnnotationCapture) throws {
+        try owner.validateCapturedSource(capture)
     }
 
     public func retire() { owner.retire() }
