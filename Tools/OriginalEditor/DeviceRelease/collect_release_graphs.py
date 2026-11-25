@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import shlex
 import stat
+import uuid
 
 from framework_profile import TARGET, sha256, source_observation
 from pbx_source import require
@@ -65,7 +66,7 @@ def timestamp(value):
     return parsed.timestamp()
 
 
-def collect(root, derived, evidence, sdk, output_dir, platform_name, context):
+def collect(root, derived, evidence, sdk, output_dir, platform_name, context, *, compiler_evidence=None):
     require(platform_name in {'iphoneos', 'iphonesimulator'}, 'Unreviewed Release platform')
     target = 'arm64-apple-ios27.0' + ('-simulator' if platform_name == 'iphonesimulator' else '')
     root = Path(root).resolve(strict=True)
@@ -81,16 +82,57 @@ def collect(root, derived, evidence, sdk, output_dir, platform_name, context):
     collection_path = evidence / 'compiler-symbolgraph-collection.json'
     require(not os.path.lexists(collection_path), 'Refusing stale symbol graph collection receipt')
 
-    input_paths = [evidence / name for name in
+    # A postbuild continuation owns only new collection outputs. The actual
+    # successful compiler descriptor, interval, command and log remain in their
+    # original evidence directory, with their original absolute paths and UUID.
+    compiler_evidence = evidence if compiler_evidence is None else Path(compiler_evidence)
+    owned_path(compiler_evidence, root / 'build', directory=True)
+    continuation = None
+    retained_inputs = {}
+    if compiler_evidence != evidence:
+        require(not compiler_evidence.is_relative_to(evidence)
+                and not evidence.is_relative_to(compiler_evidence)
+                and not compiler_evidence.is_relative_to(derived)
+                and not derived.is_relative_to(compiler_evidence),
+                'Original compiler evidence must be disjoint from continuation outputs')
+        continuation_path = owned_path(evidence / 'continuation.json', evidence, directory=False)
+        continuation_raw, _ = regular_bytes(continuation_path)
+        continuation = json.loads(continuation_raw)
+        require(continuation.get('schema') == 'otzaria.original-editor.release-postbuild-continuation/1'
+                and continuation.get('previous_evidence') == str(compiler_evidence)
+                and continuation.get('evidence_root') == str(evidence)
+                and continuation.get('compiler_executions') == 0,
+                'Unreviewed or relabelled compiler-evidence continuation')
+        retained_inputs[continuation_path] = continuation_raw
+    input_paths = [compiler_evidence / name for name in
                    ['source-before.json', 'framework-build.command.json', 'framework-build.stdout.log']]
     for path in input_paths:
-        owned_path(path, evidence, directory=False)
+        owned_path(path, compiler_evidence, directory=False)
     before_raw, _ = regular_bytes(input_paths[0])
     before = json.loads(before_raw)
     require(before == source_observation(root), 'Source differs from original ABI-owner observation')
     from release_contract import current_build_context
-    descriptor = evidence / 'release-execution.json'
-    execution = json.loads(descriptor.read_text())
+    descriptor = owned_path(compiler_evidence / 'release-execution.json',
+                            compiler_evidence, directory=False)
+    descriptor_raw, _ = regular_bytes(descriptor)
+    execution = json.loads(descriptor_raw)
+    retained_inputs[descriptor] = descriptor_raw
+    if continuation is not None:
+        original_terminal = owned_path(compiler_evidence / 'execution.json',
+                                       compiler_evidence, directory=False)
+        terminal_raw, _ = regular_bytes(original_terminal)
+        retained_inputs[original_terminal] = terminal_raw
+        continuation_id = continuation.get('execution_id', '')
+        require(continuation_id.startswith('local-')
+                and str(uuid.UUID(continuation_id[6:])) == continuation_id[6:]
+                and continuation_id != execution['execution_id']
+                and continuation.get('source_sha') == execution['source_sha'] == before['head_sha']
+                and continuation.get('build_run_id') == execution['execution_id']
+                and continuation.get('previous_descriptor_sha256') == record(descriptor_raw)['sha256']
+                and continuation.get('previous_execution_sha256') == record(terminal_raw)['sha256']
+                and execution.get('evidence_root') == str(compiler_evidence)
+                and execution.get('root') == str(root),
+                'Continuation does not bind the exact original compiler identity and receipts')
     require(context == current_build_context(before, execution, descriptor)
             and execution['platform'] == platform_name,
             'Release compiler context differs from its real controller execution')
@@ -108,7 +150,7 @@ def collect(root, derived, evidence, sdk, output_dir, platform_name, context):
             and option_values(build_arguments, '-scheme') == [TARGET]
             and option_values(build_arguments, '-configuration') == ['Release-Anytype']
             and option_values(build_arguments, '-derivedDataPath') == [str(derived)]
-            and option_values(build_arguments, '-resultBundlePath') == [str(evidence / 'framework-build.xcresult')],
+            and option_values(build_arguments, '-resultBundlePath') == [str(compiler_evidence / 'framework-build.xcresult')],
             'Original framework build identity or owned derived directory differs')
     started, finished = timestamp(build['started_at']), timestamp(build['finished_at'])
     require(started < finished, 'Invalid original framework build interval')
@@ -195,6 +237,8 @@ def collect(root, derived, evidence, sdk, output_dir, platform_name, context):
             and regular_bytes(input_paths[1])[0] == command_raw
             and regular_bytes(input_paths[2])[0] == log_raw
             and source_observation(root) == before, 'Original source/build evidence changed during collection')
+    require(all(regular_bytes(path)[0] == raw for path, raw in retained_inputs.items()),
+            'Original descriptor or continuation provenance changed during collection')
     receipt = {'schema': 1, 'status': 'ACTUAL_COMPILER_FULL_GRAPHS_COLLECTED_SURFACE_NOT_YET_VERIFIED',
                'source_sha': before['head_sha'], 'run_id': context['run_id'], 'run_attempt': context['run_attempt'],
                'source_admission': record(before_raw), 'framework_build_command': record(command_raw),
@@ -206,6 +250,15 @@ def collect(root, derived, evidence, sdk, output_dir, platform_name, context):
                'graphs': graphs, 'all_emitted_graphs_copied_without_filtering': True,
                'standalone_extractor_invocations': 0, 'native_editor_ui_tests': 0,
                'build_started_at': build['started_at'], 'build_finished_at': build['finished_at']}
+    if continuation is not None:
+        receipt['collection_continuation'] = {
+            'execution_id': continuation['execution_id'],
+            'continuation_sha256': record(continuation_raw)['sha256'],
+            'compiler_evidence_root': str(compiler_evidence),
+            'compiler_descriptor_path': str(descriptor),
+            'compiler_descriptor_sha256': record(descriptor_raw)['sha256'],
+            'original_compiler_execution_id': execution['execution_id'],
+            'compiler_executions': 0, 'original_evidence_rewritten': False}
     with collection_path.open('x') as stream:
         json.dump(receipt, stream, indent=2, sort_keys=True)
         stream.write('\n')

@@ -28,7 +28,7 @@ from release_process import GROUPS, group_alive
 SOURCE = '8ae85a6490c4fb763fcd01d5f93345f7e071db92'
 ORIGINAL_CONTROL = 'bd41da08b26aac66bbbee96ab753ebab624f2f2c'
 ORIGINAL_COMPILER_DRIVER_SHA256 = '4c15b5e8c8bfb2a32540fd3bb2166bbc3388bc3096dcef693a96bb916eae435b'
-REVIEWED_POSTBUILD_DRIVER_SHA256 = '9e5f74b4c5cb039747bdbc98712961403fafe10a62e34f7991c20aff49d667fd'
+REVIEWED_POSTBUILD_DRIVER_SHA256 = '1a910605d825db99073832f91df159e987994b9d4a0c304adcb232b6901afc54'
 FAILURE = 'Unreviewed Release build platform command'
 REQUIRED_COMMANDS = {'actual-sdk', 'actual-sdk-path', 'actual-swift', 'actual-xcode',
     'exact-package-resolution', 'framework-build', 'framework-header-0',
@@ -197,7 +197,7 @@ def main():
             argv = [*argv[:2], '-jobs', '2', *argv[2:]]
         return original_command(argv, *args, **kwargs)
     driver.command = scheduled_command
-    args = argparse.Namespace(root=root, evidence=evidence, work=work, platform='iphoneos',
+    args = argparse.Namespace(root=root, evidence=evidence, work=work, platform='iphoneos', compiler_evidence=old,
         control_root=options.control_root, sdk_source=SOURCE,
         abi_execution=Path(values['--abi-execution']), abi_execution_sha256=values['--abi-execution-sha256'],
         abi_source_before=Path(values['--abi-source-before']), abi_receipt=Path(values['--abi-receipt']),

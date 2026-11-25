@@ -222,7 +222,8 @@ def execute(args, receipt, execution, descriptor, control):
     receipt['owned_export_signing'] = {'status': 'OWNED_ADHOC_PREREQUISITE_ONLY', 'count': len(seals),
                                       'receipt_sha256': digest(evidence / 'owned-export-signing.json')}
     graph_dir = evidence / 'actual-public-symbol-graphs'
-    collection = collect(root, derived, evidence, checked['sdk_path'], graph_dir, args.platform, context)
+    collection = collect(root, derived, evidence, checked['sdk_path'], graph_dir, args.platform, context,
+                         compiler_evidence=getattr(args, 'compiler_evidence', None))
     graphs = [json.loads(p.read_text()) for p in sorted(graph_dir.glob('*.symbols.json'))]
     contract = json.loads((root / 'Tools/OriginalEditor/public_host_contract.json').read_text())
     receipt['actual_public_surface'] = verify_public_surface(graphs, root, contract)

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "<string>", line 34, in <module>
+  File "/Users/m1/builds/anytype-miniapps-sdk-collections13-20261125/build/Device292-GraphCollection-Validation-01/collect_release_graphs.py", line 113, in collect
+    require(before == source_observation(root), 'Source differs from original ABI-owner observation')
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/m1/builds/anytype-miniapps-sdk-collections13-20261125/Tools/OriginalEditor/framework_profile.py", line 213, in source_observation
+    require(environment.get('GITHUB_REPOSITORY') == REPOSITORY
+  File "/Users/m1/builds/anytype-miniapps-sdk-collections13-20261125/Tools/OriginalEditor/pbx_source.py", line 12, in require
+    raise ValueError(message)
+ValueError: Framework qualification requires the exact reviewed owned push/ref/run/head
