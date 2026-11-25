@@ -20,6 +20,9 @@ extension CustomTextView: UITextViewDelegate {
         (textView as? TextViewWithPlaceholder)?.trackSelectionAnchor()
         if textView.isFirstResponder {
             delegate?.changeCaretPosition(textView.selectedRange)
+            // The caret callback can restore host styling; resolve empty defaults
+            // after it, at UIKit's documented typing-attribute reset boundary.
+            PinkhaTextDirectionUIKitAdapter.restoreAfterNativeSelection(in: textView)
         }
     }
 

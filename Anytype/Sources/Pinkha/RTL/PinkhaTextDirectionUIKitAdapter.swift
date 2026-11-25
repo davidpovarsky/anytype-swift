@@ -223,6 +223,32 @@ enum PinkhaTextDirectionUIKitAdapter {
         return restored
     }
 
+    /// UIKit clears typingAttributes when the selection changes. That native
+    /// reset can bypass the subclass setter used for application-originated
+    /// attribute writes. Finish the actual selection callback with the current
+    /// empty paragraph policy, without replaying focus or changing storage.
+    static func restoreAfterNativeSelection(in textView: UITextView) {
+        guard textView.isFirstResponder, textView.window != nil,
+              textView.textStorage.length == 0, textView.markedTextRange == nil,
+              let box = writingContexts.object(forKey: textView),
+              !box.isRestoringSelectionDefaults else { return }
+        let current = textView.typingAttributes
+        let restored = restoringEmptyTypingDirection(current, in: textView)
+        let before = current[.paragraphStyle] as? NSParagraphStyle
+        let after = restored[.paragraphStyle] as? NSParagraphStyle
+        guard let after, before?.isEqual(after) != true else { return }
+        box.isRestoringSelectionDefaults = true
+        defer { box.isRestoringSelectionDefaults = false }
+        textView.typingAttributes = restored
+        if PinkhaStage1AcceptanceState.isEnabled {
+            let observed = textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle
+            print("PINKHA_NATIVE_SELECTION_DIRECTION restored=true storageLength=\(textView.textStorage.length) "
+                  + "selectionLocation=\(textView.selectedRange.location) selectionLength=\(textView.selectedRange.length) "
+                  + "before=\(before?.baseWritingDirection.rawValue ?? -99) "
+                  + "after=\(observed?.baseWritingDirection.rawValue ?? -99)")
+        }
+    }
+
     static func prepareForEditing(in textView: UITextView) {
         guard let context = writingContexts.object(forKey: textView)?.context else { return }
         if textView.textStorage.length == 0 {
@@ -319,6 +345,7 @@ enum PinkhaTextDirectionUIKitAdapter {
 
 private final class PinkhaWritingContextBox {
     let context: PinkhaTextBlockWritingContext
+    var isRestoringSelectionDefaults = false
     private var diagnosticObservers = [NSObjectProtocol]()
 
     @MainActor

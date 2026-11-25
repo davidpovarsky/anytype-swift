@@ -1,0 +1,112 @@
+{
+  "additional_app_builds": 0,
+  "additional_ui_runner_builds": 0,
+  "build_receipt_sha256": "aa8381ee48ca491be0c7ea9ef803752a8d719c314aa2f59307a54d00e1c419a6",
+  "build_run_id": "45535451242",
+  "build_source_sha": "406fd73ae137f4a6966bc85b3d4567f0bf99db25",
+  "control_source_sha": "19156d1b2ca1fd26437c56ea24bef050f219cdf3",
+  "current_shared_app_accepted": false,
+  "execution_kind": "ORIGINAL_PRODUCTS_TARGETED_CONTINUATION",
+  "finished_at": 1795579323.70176,
+  "physical_device_accepted": false,
+  "recovery_receipt_sha256": "4ab2c4d69c46300bee565ebff3bb1f7e97ba9eab7a447269b1f38b365123f235",
+  "release_accepted": false,
+  "stages": {
+    "preparation": {
+      "commandExitCode": 65,
+      "enumeration": {
+        "disabledCount": 901,
+        "enabled": [
+          "AnytypeTests/PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState()"
+        ],
+        "observedTestPlan": "AnytypeTests"
+      },
+      "finished_at": 1795579323.700638,
+      "namedCases": {
+        "PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState()": "Failed"
+      },
+      "observedSummary": {
+        "failedTests": 1,
+        "passedTests": 0,
+        "skippedTests": 0,
+        "totalTestCount": 1
+      },
+      "originalProductsUnchanged": true,
+      "ownedDeviceShutdown": true,
+      "selected": [
+        "PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState()"
+      ],
+      "status": "FAILED_OBSERVED_TEST",
+      "testCommandInvoked": true
+    },
+    "return-controls": {
+      "actual": {
+        "actualCases": {
+          "BlockActionServiceReturnFocusTests/laterRenderedRowConsumesSplitRequest()": "Passed",
+          "BlockActionServiceReturnFocusTests/laterRequestStillSupersedesSplitFocus()": "Passed",
+          "BlockActionServiceReturnFocusTests/renderedSubscriberKeepsSplitRequest()": "Passed"
+        },
+        "counts": {
+          "failedTests": 0,
+          "passedTests": 3,
+          "skippedTests": 0,
+          "totalTestCount": 3
+        },
+        "device": {
+          "architecture": "arm64",
+          "deviceId": "AC4B40DE-11F9-46AA-AF00-F9ED28483922",
+          "deviceName": "Pinkha-UI27-45535451242-batch-0cdf89090c124d27996b6c745a88e915-release-return-controls",
+          "modelName": "iPad Pro 13-inch (M5)",
+          "osBuildNumber": "24A434",
+          "osVersion": "27.0",
+          "platform": "iOS Simulator"
+        },
+        "methods": [
+          "BlockActionServiceReturnFocusTests/laterRenderedRowConsumesSplitRequest",
+          "BlockActionServiceReturnFocusTests/laterRequestStillSupersedesSplitFocus",
+          "BlockActionServiceReturnFocusTests/renderedSubscriberKeepsSplitRequest"
+        ]
+      },
+      "commandExitCode": 0,
+      "enumeration": {
+        "disabledCount": 899,
+        "enabled": [
+          "AnytypeTests/BlockActionServiceReturnFocusTests/laterRenderedRowConsumesSplitRequest()",
+          "AnytypeTests/BlockActionServiceReturnFocusTests/laterRequestStillSupersedesSplitFocus()",
+          "AnytypeTests/BlockActionServiceReturnFocusTests/renderedSubscriberKeepsSplitRequest()"
+        ],
+        "observedTestPlan": "AnytypeTests"
+      },
+      "finished_at": 1795579204.6698968,
+      "namedCases": {
+        "BlockActionServiceReturnFocusTests/laterRenderedRowConsumesSplitRequest()": "Passed",
+        "BlockActionServiceReturnFocusTests/laterRequestStillSupersedesSplitFocus()": "Passed",
+        "BlockActionServiceReturnFocusTests/renderedSubscriberKeepsSplitRequest()": "Passed"
+      },
+      "observedSummary": {
+        "failedTests": 0,
+        "passedTests": 3,
+        "skippedTests": 0,
+        "totalTestCount": 3
+      },
+      "originalProductsUnchanged": true,
+      "ownedDeviceShutdown": true,
+      "rawNamed": {
+        "parser": "explicit_new_swift_testing_titles",
+        "titles": [
+          "A genuinely later editor request still cancels the split row's deferred request",
+          "An already rendered split row keeps the request published by the real service",
+          "The actual general event can render and consume the same pending split request"
+        ]
+      },
+      "selected": [
+        "BlockActionServiceReturnFocusTests/renderedSubscriberKeepsSplitRequest()",
+        "BlockActionServiceReturnFocusTests/laterRenderedRowConsumesSplitRequest()",
+        "BlockActionServiceReturnFocusTests/laterRequestStillSupersedesSplitFocus()"
+      ],
+      "status": "PASS",
+      "testCommandInvoked": true
+    }
+  },
+  "status": "INCOMPLETE_OR_FAILED"
+}
