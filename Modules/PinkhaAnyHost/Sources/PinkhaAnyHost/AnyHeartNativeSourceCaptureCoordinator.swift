@@ -138,6 +138,7 @@ public actor AnyHeartNativeSourceCaptureCoordinator {
     private var session: AnyHeartNativeSourceSession?
     private var requestID: String?
     private var review: AnyHeartNativeSourceCaptureReview?
+    private var pendingRead: Task<AnyHeartNativeSourceCaptureReview, Error>?
 
     public init(bridge: AnyHeartNativeSourceBridge, privateDirectory: URL) throws {
         guard privateDirectory.isFileURL, privateDirectory.path.hasPrefix("/"),
@@ -168,13 +169,16 @@ public actor AnyHeartNativeSourceCaptureCoordinator {
                 let bundle = try descriptor.loadBundle(under: parent)
                 return try AnyHeartNativeSourceCaptureReview(descriptor: descriptor, bundle: bundle)
             }
+            pendingRead = read
             let result = try await withTaskCancellationHandler { try await read.value }
                 onCancel: { read.cancel(); _ = bridge.cancel(session.token, requestID) }
+            pendingRead = nil
             try Task.checkCancellation()
             guard state == .capturing else { throw AnyHeartNativeSourceCaptureCoordinatorError.inactiveCapture }
             review = result; state = .ready
             return result
         } catch {
+            pendingRead?.cancel(); pendingRead = nil
             _ = bridge.release(session.token, requestID)
             if state == .capturing {
                 state = error is CancellationError ? .invalidated(.userCancelled) : .failed
@@ -216,6 +220,7 @@ public actor AnyHeartNativeSourceCaptureCoordinator {
     /// files are retained for review and recovery; no source account is closed.
     public func invalidate(_ reason: InvalidationReason) {
         state = .invalidated(reason)
+        pendingRead?.cancel(); pendingRead = nil
         if let session, let requestID {
             _ = bridge.cancel(session.token, requestID)
             _ = bridge.release(session.token, requestID)
