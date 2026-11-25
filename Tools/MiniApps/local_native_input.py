@@ -31,7 +31,7 @@ def exact_files(root, expected):
 
 
 def validate_receipts(policy, native, stopped, union, wrapper):
-    require(policy.get("schema") == "miniapps.original-local-native/2"
+    require(policy.get("schema") in {"miniapps.original-local-native/2", "miniapps.original-local-native/3"}
             and policy.get("source_manifest_sha256") == MANIFEST,
             "Unreviewed actual unified native source")
     require(native.get("status") == "SOURCE_VERIFIED_SINGLE_GO_RUNTIME_APPLE_SLICE_BUILT_NOT_ACCEPTED"
@@ -94,6 +94,13 @@ def validate_receipts(policy, native, stopped, union, wrapper):
 def admit(app, evidence, policy, policy_sha256):
     app, evidence = Path(app), Path(evidence)
     root, assembly = Path(policy["root"]), Path(policy["assembly_root"])
+    recovery = None
+    if policy.get("schema") == "miniapps.original-local-native/3":
+        from local_native_recovery import admit as admit_recovery
+        recovery = admit_recovery(app, policy)
+        root = Path(recovery["recovered_roots"]["simulator"])
+    else:
+        require("recovered_input" not in policy, "Historical native input cannot silently use recovery")
     require(root.is_absolute() and root.resolve() == root
             and assembly.is_absolute() and assembly.resolve() == assembly,
             "Original native producer roots are aliased")
@@ -106,7 +113,7 @@ def admit(app, evidence, policy, policy_sha256):
     manifest_path = root / "source/source-manifest.json"
     require(digest(manifest_path) == MANIFEST
             and digest(root / "native-source.tar.gz") == policy["source_archive_sha256"]
-            and digest(root / "Lib.xcframework.zip") == policy["archive_sha256"],
+            and (recovery is not None or digest(root / "Lib.xcframework.zip") == policy["archive_sha256"]),
             "Original native source/archive bytes changed")
     source = json.loads(manifest_path.read_text())
     require(len(source["files"]) == native["sourceFilesVerified"]
@@ -130,6 +137,9 @@ def admit(app, evidence, policy, policy_sha256):
             == {"ios-arm64", "ios-arm64-simulator"}, "Original native slice union changed")
     for slice_name, original in union["slices"].items():
         path = Path(original["producerReceipt"])
+        if recovery is not None:
+            from local_native_recovery import recovered_receipt
+            path = recovered_receipt(path, recovery)
         require(path.resolve() == path and digest(path) == original["producerReceiptSHA256"],
                 "An original native slice receipt changed")
         receipt = json.loads(path.read_text())
@@ -165,6 +175,8 @@ def admit(app, evidence, policy, policy_sha256):
         "assembly_receipt_sha256": policy["assembly_receipt"]["sha256"],
         "native_framework_files": actual, "original_native_acceptance_tests": 0,
         "current_native_tests_executed": 0, "original_editor_sdk_abi_reused": False}
+    if recovery is not None:
+        installation["original_transport_recovery"] = recovery
     binding = {"runtime_profile": policy["runtime_profile"],
                "native_marker": "pinkha-dual-runtime-v1-" + MANIFEST,
                "native_source_manifest_sha256": MANIFEST, "native_binary_sha256": policy["binary_sha256"],
