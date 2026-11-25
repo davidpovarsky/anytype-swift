@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Recheck the unchanged UI test after the isolated block-menu ownership fix.
-The original native 2/2 model scope is byte-identical; no native test is relabeled.
-The app product stays at 4b87; only real caret-collapse/reselection setup changes.
-Preserve original failed UI Products before rebuilding only the changed UI source.
+"""Recheck the unchanged UI test after continuous semantic typing is repaired.
+The original native 2/2 model paths are byte-identical and do not use the new
+additive shared input policy; five separate source-bound controls cover that
+policy. Preserve original failed UI Products before rebuilding affected modules.
 """
 import argparse
 import hashlib
@@ -18,8 +18,8 @@ import sys
 import uuid
 
 NATIVE_SOURCE = "fbb7b19c3b6c7cbdff8343b0397693a762bc1da2"
-PRIOR_SOURCE = "d5ed7221a3df349d37834631fd79bd9179c78520"
-SOURCE = "1a772ed78ce2adbebabd867168307eedaa882740"
+PRIOR_SOURCE = "1a772ed78ce2adbebabd867168307eedaa882740"
+SOURCE = "4e1b9baebf00a4e2d6b2de8177989f04539a010e"
 BASE_CONTROLLER = "ad9db960f9db5440be19774c95e89cbbc3deac67"
 BASE_CONTROLLER_SHA = "341f28c617c1ada9d30b77cc682f652fe2207fff630e6f0ad1ec95685594e59d"
 
@@ -41,7 +41,7 @@ def main():
     spec.loader.exec_module(base)
     require, write = base.require, base.write
     require(str(original) == "/Users/m1/builds/any-semantic-20261125/attempt3"
-            and str(prior_ui) == "/Users/m1/builds/any-semantic-20261125/ui-reselect1"
+            and str(prior_ui) == "/Users/m1/builds/any-semantic-20261125/ui-reselect2"
             and str(root).startswith("/Users/m1/builds/any-semantic-20261125/")
             and not root.exists(), "exact_original_and_fresh_owned_root_required")
     require(shutil.disk_usage(root.parent).free >= 4 * 1024**3, "incremental_ui_capacity")
@@ -83,14 +83,14 @@ def main():
         native_before = json.loads((original / "evidence/source-before.json").read_text())
         prior_before = base.source_state(source, PRIOR_SOURCE)
         require(base.sha(prior_ui / "evidence/source-after.json") ==
-                "566c76104527b024c72b0bf2787f1edac5aee4f38f2ffcfba38de7e91f8c58bf",
+                "64a30e5254c0d5cbea76ccec47d33b0df644e54a627542a822cebf103a3e8663",
                 "prior_ui_source_receipt_changed")
         require(base.sha(prior_ui / "evidence/execution.json") ==
-                "25685c092d3a10607f07016aa584823a0a320d07168bfcbd1abc3ee6c57a0d33"
+                "cf0c1a28e9ffe8e03918ab1610d834f2c17d78c1f8aec026db1a0f85d4f87d5b"
                 and base.sha(prior_ui / "evidence/summary.json") ==
-                "b70b63962f9e415d1ce14e189eb9c5fb6c98f88d7bd10fd000ac598f1b16c7c4"
+                "22fe77c2bfefe44d96d2923b689ffa52cb19fd3d200b442535745820bdbb0d7c"
                 and base.sha(prior_ui / "evidence/cleanup.json") ==
-                "b192fb322376f4454f51abd4b4273c90d698ebd6a481a6ef49af1894d4bf255c",
+                "889e06ffbe6773dbfcbbef5be824e76829e26ad3117951fa5bd68f20cc13884b",
                 "original_failed_ui_identity_changed")
         require(prior_before == json.loads((prior_ui / "evidence/source-after.json").read_text()),
                 "original_ui_source_not_exact")
@@ -134,11 +134,20 @@ def main():
         old_source = prior_ui / "evidence/source" / changed_path
         old_source.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source / changed_path, old_source)
-        # This delta changes only real UIKit selection setup and standalone
-        # controller records. All product files and all original acceptance
-        # outcome assertions are unchanged from the prior UI run.
+        # The original UI method and all its assertions are byte-identical.
+        # Only the native UIKit adapter calls the new additive shared policy.
+        product_changes = {
+            "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+            "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTypingContinuation.swift"}
+        component_controls = {
+            "Modules/PinkhaKit/Tests/PinkhaKitTests/Editor/PinkhaSemanticTypingContinuationTests.swift",
+            "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnySemanticTypingContinuationTests.swift"}
+        proof_changes = {
+            "docs/validation/20261125-any-semantic-typing/README.md",
+            "docs/validation/20261125-any-semantic-typing/component-and-original-ui-receipt.json"}
         changes = set(base.git(source, "diff", "--name-only", PRIOR_SOURCE, SOURCE).splitlines())
-        allowed_changes = {changed_path, "Tools/AnySemanticAnchorValidation/recheck_ui.py"}
+        allowed_changes = product_changes | component_controls | proof_changes | {
+            "Tools/AnySemanticAnchorValidation/README.md", "Tools/AnySemanticAnchorValidation/recheck_ui.py"}
         require(changes == allowed_changes, "unexpected_changes_since_native_acceptance")
         commands.run(["git", "checkout", "--detach", SOURCE], "checkout-reviewed-ui-fix")
         before = base.source_state(source, SOURCE)
@@ -150,16 +159,25 @@ def main():
         native_scope_changes = {name for name in set(before["files"]) | set(native_before["files"])
                                 if before["files"].get(name) != native_before["files"].get(name)
                                 and not name.startswith("Tools/AnySemanticAnchorValidation/")
-                                and name not in {changed_path,
-                                    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift"}}
+                                and name not in ({changed_path} | product_changes | component_controls | proof_changes)}
         require(not native_scope_changes, "qualified_native_model_scope_changed")
+        require(before["files"][changed_path] == prior_before["files"][changed_path],
+                "original_ui_assertions_changed")
+        helper = "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTypingContinuation.swift"
+        require(helper not in native_before["files"], "shared_typing_policy_not_additive")
+        component = json.loads((source / "docs/validation/20261125-any-semantic-typing/component-and-original-ui-receipt.json").read_text())
+        require(component["componentPassed"] == 5 and component["componentFailed"] == 0
+                and component["componentSkipped"] == 0, "typing_controls_not_qualified")
+        for name, receipt in component["componentSources"].items():
+            require(base.sha(source / name) == receipt["sha256"], "typing_control_source_changed:" + name)
         write(evidence / "affected-source-scope.json", {
             "originalNativeSourceCommit": NATIVE_SOURCE, "currentSourceCommit": SOURCE,
             "changedFiles": {name: {"before": prior_before["files"].get(name),
                                   "after": before["files"].get(name)} for name in sorted(file_changes)},
             "unchangedNativeModelControlsReused": prior["stages"]["native"],
             "originalUITestWithDocumentedRealSelectionSetup": base.STAGES["ui"]["methods"],
-            "priorUISourceCommit": PRIOR_SOURCE, "productFilesChangedSincePriorUI": [],
+            "priorUISourceCommit": PRIOR_SOURCE, "productFilesChangedSincePriorUI": sorted(product_changes),
+            "sourceBoundTypingControls": component,
             "originalFailedUIResultPreserved": True})
         originals = Path("/Users/m1/builds/_retained-anytype/45539471031-1/build/"
                          "current-apple-native-ui-failed-45539471031-1/work/native-originals")
