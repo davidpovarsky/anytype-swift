@@ -1,0 +1,622 @@
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 675]
+[Planning deferred tasks]
+[171 / 369]
+[176 / 369]
+[179 / 372] AISDKProvider
+[183 / 421]
+[185 / 421]
+[190 / 433]
+[194 / 433]
+[196 / 433]
+[198 / 433]
+[202 / 433]
+[205 / 433]
+[210 / 433]
+[213 / 433]
+[214 / 433]
+[217 / 433] AISDKProvider
+[238 / 433] HanlinPlatformContracts
+[239 / 433] HanlinScriptContracts
+[240 / 433] HanlinScriptContracts
+[242 / 433] HanlinPlatformContracts
+[243 / 433] HanlinPlatformContracts
+[244 / 433] HanlinPlatformContracts
+[245 / 433] HanlinPlatformContracts
+[245 / 433] HanlinMiniAppCore
+[246 / 433] HanlinMiniAppCore
+[248 / 433] EventSourceParser
+[249 / 433] EventSourceParser
+[253 / 433] AISDKProvider
+[254 / 433] AISDKProvider
+[255 / 433] AISDKZodAdapter
+[256 / 433] AISDKZodAdapter
+[258 / 433] AISDKProvider
+[259 / 433] AISDKProvider
+[260 / 433]
+[263 / 434]
+[266 / 435]
+[268 / 448] HanlinHostContracts
+[270 / 455] HanlinHostContracts
+[271 / 495]
+[275 / 506] HanlinHostContracts
+[281 / 506]
+[293 / 506]
+[297 / 506]
+[301 / 506]
+[304 / 506]
+[307 / 506] HanlinScriptContracts
+[315 / 506]
+[318 / 506]
+[322 / 506]
+[324 / 506] HanlinScriptContracts
+[327 / 506] HanlinMiniAppCore
+[329 / 506] HanlinScriptContracts
+[332 / 506] HanlinMiniAppCore
+[337 / 506] HanlinMiniAppCore
+[339 / 506] HanlinScriptStore
+[343 / 506] HanlinMiniAppCore
+[345 / 506] HanlinMiniAppCore
+[347 / 506] HanlinHostContracts
+[348 / 506] HanlinHostContracts
+[352 / 506] HanlinHostContracts
+[354 / 506] AISDKZodAdapter
+[355 / 506] AISDKZodAdapter
+[359 / 506] AISDKZodAdapter
+[361 / 506] AISDKZodAdapter
+[364 / 506] AISDKZodAdapter
+[364 / 506] AISDKProviderUtils
+[365 / 507] AISDKZodAdapter
+[370 / 508] HanlinScriptContracts
+[372 / 515] HanlinScriptStore
+[373 / 518] HanlinPersistenceAdapters
+[387 / 518] HanlinScriptStore
+[388 / 518] HanlinScriptStore
+[389 / 518] HanlinScriptStoreTests-product
+[391 / 518] HanlinPersistenceAdapters
+[392 / 518] HanlinPersistenceAdaptersTests-product
+[398 / 519]
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/AISDKProviderUtils/ConvertAsyncIteratorToReadableStream.swift:40:21: [1;33mwarning: [1;39mconformance of 'Iterator' to protocol 'AsyncIteratorProtocol' may be isolated and cannot be passed to actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/isolated-conformances\IsolatedConformances]8;;\]
+[0;36m38 |[0;0m     init<Iterator: AsyncIteratorProtocol>(_ iterator: Iterator) where Iterator.Element == Element {
+[0;36m39 |[0;0m         let storage = UncheckedSendableBox(value: iterator)
+[0;36m40 |[0;0m         let actor = AsyncIteratorActor(storage: storage)
+   [0;36m|[0;0m                     `- [1;33mwarning: [1;39mconformance of 'Iterator' to protocol 'AsyncIteratorProtocol' may be isolated and cannot be passed to actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/isolated-conformances\IsolatedConformances]8;;\]
+[0;36m41 |[0;0m         self.nextClosure = {
+[0;36m42 |[0;0m             try await actor.next()
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/AISDKProviderUtils/ConvertAsyncIteratorToReadableStream.swift:42:29: [1;33mwarning: [1;39mconformance of 'Iterator' to protocol 'AsyncIteratorProtocol' may be isolated and cannot be passed to actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/isolated-conformances\IsolatedConformances]8;;\]
+[0;36m40 |[0;0m         let actor = AsyncIteratorActor(storage: storage)
+[0;36m41 |[0;0m         self.nextClosure = {
+[0;36m42 |[0;0m             try await actor.next()
+   [0;36m|[0;0m                             `- [1;33mwarning: [1;39mconformance of 'Iterator' to protocol 'AsyncIteratorProtocol' may be isolated and cannot be passed to actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/isolated-conformances\IsolatedConformances]8;;\]
+[0;36m43 |[0;0m         }
+[0;36m44 |[0;0m     }
+
+[#IsolatedConformances]: <https://docs.swift.org/compiler/documentation/diagnostics/isolated-conformances>
+[400 / 530] AISDKProviderUtils
+[409 / 530] AISDKProviderUtils
+[410 / 530] OpenAIProvider
+[411 / 530] OpenAIProvider
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/AISDKProviderUtils/SplitDataUrl.swift:43:7: [1;33mwarning: [1;39m'catch' block is unreachable because no errors are thrown in 'do' block[0;0m
+[0;36m41 |[0;0m         let mediaType = String(dataParts[1])
+[0;36m42 |[0;0m         return (mediaType, base64Content)
+[0;36m43 |[0;0m     } catch {
+   [0;36m|[0;0m       `- [1;33mwarning: [1;39m'catch' block is unreachable because no errors are thrown in 'do' block[0;0m
+[0;36m44 |[0;0m         return (nil, nil)
+[0;36m45 |[0;0m     }
+[413 / 530] AISDKProviderUtils
+[414 / 530] AISDKProviderUtils
+[415 / 530] AISDKProviderUtils
+[416 / 530] AISDKProviderUtils
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/AISDKProviderUtils/ConvertAsyncIteratorToReadableStream.swift:40:21: [1;33mwarning: [1;39mconformance of 'Iterator' to protocol 'AsyncIteratorProtocol' may be isolated and cannot be passed to actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/isolated-conformances\IsolatedConformances]8;;\]
+[0;36m38 |[0;0m     init<Iterator: AsyncIteratorProtocol>(_ iterator: Iterator) where Iterator.Element == Element {
+[0;36m39 |[0;0m         let storage = UncheckedSendableBox(value: iterator)
+[0;36m40 |[0;0m         let actor = AsyncIteratorActor(storage: storage)
+   [0;36m|[0;0m                     `- [1;33mwarning: [1;39mconformance of 'Iterator' to protocol 'AsyncIteratorProtocol' may be isolated and cannot be passed to actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/isolated-conformances\IsolatedConformances]8;;\]
+[0;36m41 |[0;0m         self.nextClosure = {
+[0;36m42 |[0;0m             try await actor.next()
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/AISDKProviderUtils/ConvertAsyncIteratorToReadableStream.swift:42:29: [1;33mwarning: [1;39mconformance of 'Iterator' to protocol 'AsyncIteratorProtocol' may be isolated and cannot be passed to actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/isolated-conformances\IsolatedConformances]8;;\]
+[0;36m40 |[0;0m         let actor = AsyncIteratorActor(storage: storage)
+[0;36m41 |[0;0m         self.nextClosure = {
+[0;36m42 |[0;0m             try await actor.next()
+   [0;36m|[0;0m                             `- [1;33mwarning: [1;39mconformance of 'Iterator' to protocol 'AsyncIteratorProtocol' may be isolated and cannot be passed to actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/isolated-conformances\IsolatedConformances]8;;\]
+[0;36m43 |[0;0m         }
+[0;36m44 |[0;0m     }
+
+[#IsolatedConformances]: <https://docs.swift.org/compiler/documentation/diagnostics/isolated-conformances>
+[417 / 530] AISDKProviderUtils
+[417 / 530] AISDKJSONSchema
+[419 / 532] OpenAIProvider
+[423 / 554] OpenAICompatibleProvider
+[425 / 554] OpenAIProvider
+[438 / 554] OpenAIProvider
+[439 / 554] OpenAIProvider
+[440 / 554] OpenAIProvider
+[441 / 554] OpenAIProvider
+[442 / 554] OpenAIProvider
+[444 / 554] OpenAIProvider
+[445 / 554] OpenAICompatibleProvider
+[446 / 554] OpenAICompatibleProvider
+[447 / 554] OpenAICompatibleProvider
+[448 / 554] OpenAICompatibleProvider
+[449 / 554] OpenAICompatibleProvider
+[452 / 554] OpenAICompatibleProvider
+[455 / 554] OpenAICompatibleProvider
+[457 / 554]
+[460 / 556] HanlinPersistenceAdapters
+[463 / 579] GatewayProvider
+[465 / 579] GoogleProvider
+[468 / 590] GoogleProvider
+[479 / 590] HanlinScriptStoreTests-product
+[480 / 590] GoogleProvider
+[482 / 590] GoogleProvider
+[483 / 590] AnthropicProvider
+[484 / 590] GoogleProvider
+[486 / 590] GoogleProvider
+[493 / 590] GoogleProvider
+[495 / 590] GatewayProvider
+[496 / 590] GatewayProvider
+[498 / 590] GatewayProvider
+[501 / 590] GatewayProvider
+[502 / 590] GatewayProvider
+[504 / 590] GatewayProvider
+[506 / 590] AnthropicProvider
+[509 / 590] AnthropicProvider
+[510 / 590] AnthropicProvider
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/AnthropicProvider/ConvertToAnthropicMessagesPrompt.swift:692:25: [1;33mwarning: [1;39mvariable 'payload' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+ [0;36m690 |[0;0m                         context: CacheControlContext(type: "thinking block", canCache: false)
+ [0;36m691 |[0;0m                     )
+ [0;36m692 |[0;0m                     var payload: [String: JSONValue] = [
+     [0;36m|[0;0m                         `- [1;33mwarning: [1;39mvariable 'payload' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+ [0;36m693 |[0;0m                         "type": .string("thinking"),
+ [0;36m694 |[0;0m                         "thinking": .string(reasoningPart.text),
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/AnthropicProvider/ConvertToAnthropicMessagesPrompt.swift:704:25: [1;33mwarning: [1;39mvariable 'payload' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+ [0;36m702 |[0;0m                         context: CacheControlContext(type: "redacted thinking block", canCache: false)
+ [0;36m703 |[0;0m                     )
+ [0;36m704 |[0;0m                     var payload: [String: JSONValue] = [
+     [0;36m|[0;0m                         `- [1;33mwarning: [1;39mvariable 'payload' was never mutated; consider changing to 'let' constant[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated\VariableNeverMutated]8;;\]
+ [0;36m705 |[0;0m                         "type": .string("redacted_thinking"),
+ [0;36m706 |[0;0m                         "data": .string(redacted)
+
+[#VariableNeverMutated]: <https://docs.swift.org/compiler/documentation/diagnostics/variable-never-mutated>
+[511 / 590] AnthropicProvider
+[512 / 590] AnthropicProvider
+[514 / 590] AnthropicProvider
+[515 / 590] AnthropicProvider
+[515 / 590]
+[516 / 591] AISDKZodAdapter
+[518 / 596] HanlinScriptStoreTests-product
+[519 / 596] AISDKJSONSchema
+[527 / 604] HanlinScriptStoreTests-product
+[532 / 604] HanlinScriptStoreTests-product
+[534 / 604] HanlinScriptStoreTests-product
+[539 / 604] HanlinScriptStoreTests-product
+[540 / 604] HanlinScriptStoreTests-product
+[543 / 604] AISDKJSONSchema
+[544 / 604] SwiftAISDK
+[548 / 605] HanlinPersistenceAdaptersTests-product
+[555 / 617] SwiftAISDK
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/Streams/AsyncStreamBroadcaster.swift:30:30: [1;33mwarning: [1;39m'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/implicit-strong-capture\ImplicitStrongCapture]8;;\]
+[0;36m27 |[0;0m             }
+[0;36m28 |[0;0m 
+[0;36m29 |[0;0m             continuation.onTermination = { _ in
+   [0;36m|[0;0m                                          |- [1;39mnote: [1;39m'self' implicitly strongly captured here[0;0m
+   [0;36m|[0;0m                                          `- [1;39mnote: [1;39madd 'self' as a capture list item to silence[0;0m
+[0;36m30 |[0;0m                 Task { [weak self] in
+   [0;36m|[0;0m                              |- [1;33mwarning: [1;39m'weak' ownership of capture 'self' differs from implicitly-captured strong reference in outer scope[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/implicit-strong-capture\ImplicitStrongCapture]8;;\]
+   [0;36m|[0;0m                              `- [1;39mnote: [1;39mexplicitly assign the capture list item to silence[0;0m
+[0;36m31 |[0;0m                     await self?.removeContinuation(id: identifier)
+[0;36m32 |[0;0m                 }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/Streams/PipeTextStreamToResponse.swift:36:5: [1;33mwarning: [1;39munstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-use-throwing-unstructured-task\NoUseUnstructuredThrowingTask]8;;\]
+[0;36m34 |[0;0m     )
+[0;36m35 |[0;0m 
+[0;36m36 |[0;0m     Task {
+   [0;36m|[0;0m     |- [1;33mwarning: [1;39munstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-use-throwing-unstructured-task\NoUseUnstructuredThrowingTask]8;;\]
+   [0;36m|[0;0m     `- [1;39mnote: [1;39mto silence this warning, handle the error inside the task, or store/discard the task value explicitly[0;0m
+[0;36m37 |[0;0m         defer {
+[0;36m38 |[0;0m             response.end()
+
+[#ImplicitStrongCapture]: <https://docs.swift.org/compiler/documentation/diagnostics/implicit-strong-capture>
+[#NoUseUnstructuredThrowingTask]: <https://docs.swift.org/compiler/documentation/diagnostics/no-use-throwing-unstructured-task>
+[556 / 621] HanlinPersistenceAdaptersTests-product
+[557 / 621] HanlinPersistenceAdaptersTests-product
+[569 / 621] SwiftAISDK
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/Types/Usage.swift:97:14: [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m95 |[0;0m         self.totalTokens = totalTokens
+ [0;36m96 |[0;0m         self.raw = raw
+ [0;36m97 |[0;0m         self.reasoningTokens = reasoningTokens
+    [0;36m|[0;0m              `- [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m98 |[0;0m         self.cachedInputTokens = cachedInputTokens
+ [0;36m99 |[0;0m     }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/Types/Usage.swift:98:14: [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m96 |[0;0m         self.raw = raw
+ [0;36m97 |[0;0m         self.reasoningTokens = reasoningTokens
+ [0;36m98 |[0;0m         self.cachedInputTokens = cachedInputTokens
+    [0;36m|[0;0m              `- [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m99 |[0;0m     }
+[0;36m100 |[0;0m }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/Types/Usage.swift:215:48: [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m213 |[0;0m         totalTokens: addTokenCounts(usage1.totalTokens, usage2.totalTokens),
+[0;36m214 |[0;0m         raw: nil,
+[0;36m215 |[0;0m         reasoningTokens: addTokenCounts(usage1.reasoningTokens, usage2.reasoningTokens),
+    [0;36m|[0;0m                                                `- [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m216 |[0;0m         cachedInputTokens: addTokenCounts(usage1.cachedInputTokens, usage2.cachedInputTokens)
+[0;36m217 |[0;0m     )
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/Types/Usage.swift:215:72: [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m213 |[0;0m         totalTokens: addTokenCounts(usage1.totalTokens, usage2.totalTokens),
+[0;36m214 |[0;0m         raw: nil,
+[0;36m215 |[0;0m         reasoningTokens: addTokenCounts(usage1.reasoningTokens, usage2.reasoningTokens),
+    [0;36m|[0;0m                                                                        `- [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m216 |[0;0m         cachedInputTokens: addTokenCounts(usage1.cachedInputTokens, usage2.cachedInputTokens)
+[0;36m217 |[0;0m     )
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/Types/Usage.swift:216:50: [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m214 |[0;0m         raw: nil,
+[0;36m215 |[0;0m         reasoningTokens: addTokenCounts(usage1.reasoningTokens, usage2.reasoningTokens),
+[0;36m216 |[0;0m         cachedInputTokens: addTokenCounts(usage1.cachedInputTokens, usage2.cachedInputTokens)
+    [0;36m|[0;0m                                                  `- [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m217 |[0;0m     )
+[0;36m218 |[0;0m }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/Types/Usage.swift:216:76: [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m214 |[0;0m         raw: nil,
+[0;36m215 |[0;0m         reasoningTokens: addTokenCounts(usage1.reasoningTokens, usage2.reasoningTokens),
+[0;36m216 |[0;0m         cachedInputTokens: addTokenCounts(usage1.cachedInputTokens, usage2.cachedInputTokens)
+    [0;36m|[0;0m                                                                            `- [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m217 |[0;0m     )
+[0;36m218 |[0;0m }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[571 / 621] SwiftAISDK
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/Tool/MCP/MCPTypes.swift:400:20: [1;33mwarning: [1;39mimmutable property will not be decoded because it is declared with an initial value which cannot be overwritten[0;0m
+[0;36m398 |[0;0m 
+[0;36m399 |[0;0m     public struct TextContent: Codable, Sendable {
+[0;36m400 |[0;0m         public let type: String = "text"
+    [0;36m|[0;0m                    |- [1;33mwarning: [1;39mimmutable property will not be decoded because it is declared with an initial value which cannot be overwritten[0;0m
+    [0;36m|[0;0m                    |- [1;39mnote: [1;39mset the initial value via the initializer or explicitly define a CodingKeys enum including a 'type' case to silence this warning[0;0m
+    [0;36m|[0;0m                    `- [1;39mnote: [1;39mmake the property mutable instead[0;0m
+[0;36m401 |[0;0m         public let text: String
+[0;36m402 |[0;0m 
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/Tool/MCP/MCPTypes.swift:409:20: [1;33mwarning: [1;39mimmutable property will not be decoded because it is declared with an initial value which cannot be overwritten[0;0m
+[0;36m407 |[0;0m 
+[0;36m408 |[0;0m     public struct ImageContent: Codable, Sendable {
+[0;36m409 |[0;0m         public let type: String = "image"
+    [0;36m|[0;0m                    |- [1;33mwarning: [1;39mimmutable property will not be decoded because it is declared with an initial value which cannot be overwritten[0;0m
+    [0;36m|[0;0m                    |- [1;39mnote: [1;39mset the initial value via the initializer or explicitly define a CodingKeys enum including a 'type' case to silence this warning[0;0m
+    [0;36m|[0;0m                    `- [1;39mnote: [1;39mmake the property mutable instead[0;0m
+[0;36m410 |[0;0m         public let data: String // base64
+[0;36m411 |[0;0m         public let mimeType: String
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/Tool/MCP/MCPTypes.swift:420:20: [1;33mwarning: [1;39mimmutable property will not be decoded because it is declared with an initial value which cannot be overwritten[0;0m
+[0;36m418 |[0;0m 
+[0;36m419 |[0;0m     public struct EmbeddedResource: Codable, Sendable {
+[0;36m420 |[0;0m         public let type: String = "resource"
+    [0;36m|[0;0m                    |- [1;33mwarning: [1;39mimmutable property will not be decoded because it is declared with an initial value which cannot be overwritten[0;0m
+    [0;36m|[0;0m                    |- [1;39mnote: [1;39mset the initial value via the initializer or explicitly define a CodingKeys enum including a 'type' case to silence this warning[0;0m
+    [0;36m|[0;0m                    `- [1;39mnote: [1;39mmake the property mutable instead[0;0m
+[0;36m421 |[0;0m         public let resource: ResourceContents
+[0;36m422 |[0;0m 
+[572 / 621] SwiftAISDK
+[573 / 621] SwiftAISDK
+[574 / 621] SwiftAISDK
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateText/StreamText.swift:2011:41: [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2009 |[0;0m         attributes["ai.usage.totalTokens"] = .value(.int(totalTokens))
+[0;36m2010 |[0;0m     }
+[0;36m2011 |[0;0m     if let reasoningTokens = totalUsage.reasoningTokens {
+     [0;36m|[0;0m                                         `- [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2012 |[0;0m         attributes["ai.usage.reasoningTokens"] = .value(.int(reasoningTokens))
+[0;36m2013 |[0;0m     }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateText/StreamText.swift:2014:43: [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2012 |[0;0m         attributes["ai.usage.reasoningTokens"] = .value(.int(reasoningTokens))
+[0;36m2013 |[0;0m     }
+[0;36m2014 |[0;0m     if let cachedInputTokens = totalUsage.cachedInputTokens {
+     [0;36m|[0;0m                                           `- [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2015 |[0;0m         attributes["ai.usage.cachedInputTokens"] = .value(.int(cachedInputTokens))
+[0;36m2016 |[0;0m     }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateText/StreamTextLogging.swift:250:16: [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m248 |[0;0m         if let outputTokens { parts.append("output=\(outputTokens)") }
+[0;36m249 |[0;0m         if let totalTokens { parts.append("total=\(totalTokens)") }
+[0;36m250 |[0;0m         if let reasoningTokens { parts.append("reasoning=\(reasoningTokens)") }
+    [0;36m|[0;0m                `- [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m251 |[0;0m         if let cachedInputTokens { parts.append("cached=\(cachedInputTokens)") }
+[0;36m252 |[0;0m         return parts.isEmpty ? "" : parts.joined(separator: " ")
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateText/StreamTextLogging.swift:251:16: [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m249 |[0;0m         if let totalTokens { parts.append("total=\(totalTokens)") }
+[0;36m250 |[0;0m         if let reasoningTokens { parts.append("reasoning=\(reasoningTokens)") }
+[0;36m251 |[0;0m         if let cachedInputTokens { parts.append("cached=\(cachedInputTokens)") }
+    [0;36m|[0;0m                `- [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m252 |[0;0m         return parts.isEmpty ? "" : parts.joined(separator: " ")
+[0;36m253 |[0;0m     }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateText/StreamTextSSE.swift:306:34: [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m304 |[0;0m         if let output = usage.outputTokens { dict["outputTokens"] = output }
+[0;36m305 |[0;0m         if let total = usage.totalTokens { dict["totalTokens"] = total }
+[0;36m306 |[0;0m         if let reasoning = usage.reasoningTokens { dict["reasoningTokens"] = reasoning }
+    [0;36m|[0;0m                                  `- [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m307 |[0;0m         if let cached = usage.cachedInputTokens { dict["cachedInputTokens"] = cached }
+[0;36m308 |[0;0m         return dict
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateText/StreamTextSSE.swift:307:31: [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m305 |[0;0m         if let total = usage.totalTokens { dict["totalTokens"] = total }
+[0;36m306 |[0;0m         if let reasoning = usage.reasoningTokens { dict["reasoningTokens"] = reasoning }
+[0;36m307 |[0;0m         if let cached = usage.cachedInputTokens { dict["cachedInputTokens"] = cached }
+    [0;36m|[0;0m                               `- [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m308 |[0;0m         return dict
+[0;36m309 |[0;0m     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[575 / 621] SwiftAISDK
+[576 / 621] SwiftAISDK
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateText/GenerateTextResult+Encodable.swift:509:50: [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m507 |[0;0m             "outputTokens": optionalInt(usage.outputTokens),
+[0;36m508 |[0;0m             "totalTokens": optionalInt(usage.totalTokens),
+[0;36m509 |[0;0m             "reasoningTokens": optionalInt(usage.reasoningTokens),
+    [0;36m|[0;0m                                                  `- [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m510 |[0;0m             "cachedInputTokens": optionalInt(usage.cachedInputTokens)
+[0;36m511 |[0;0m         ])
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateText/GenerateTextResult+Encodable.swift:510:52: [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m508 |[0;0m             "totalTokens": optionalInt(usage.totalTokens),
+[0;36m509 |[0;0m             "reasoningTokens": optionalInt(usage.reasoningTokens),
+[0;36m510 |[0;0m             "cachedInputTokens": optionalInt(usage.cachedInputTokens)
+    [0;36m|[0;0m                                                    `- [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m511 |[0;0m         ])
+[0;36m512 |[0;0m     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[577 / 621] HanlinPersistenceAdaptersTests-product
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateObject/GenerateObjectResult+Encodable.swift:56:38: [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m54 |[0;0m             "outputTokens": usage.outputTokens.map { .number(Double($0)) } ?? .null,
+ [0;36m55 |[0;0m             "totalTokens": usage.totalTokens.map { .number(Double($0)) } ?? .null,
+ [0;36m56 |[0;0m             "reasoningTokens": usage.reasoningTokens.map { .number(Double($0)) } ?? .null,
+    [0;36m|[0;0m                                      `- [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m57 |[0;0m             "cachedInputTokens": usage.cachedInputTokens.map { .number(Double($0)) } ?? .null
+ [0;36m58 |[0;0m         ])
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateObject/GenerateObjectResult+Encodable.swift:57:40: [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m55 |[0;0m             "totalTokens": usage.totalTokens.map { .number(Double($0)) } ?? .null,
+ [0;36m56 |[0;0m             "reasoningTokens": usage.reasoningTokens.map { .number(Double($0)) } ?? .null,
+ [0;36m57 |[0;0m             "cachedInputTokens": usage.cachedInputTokens.map { .number(Double($0)) } ?? .null
+    [0;36m|[0;0m                                        `- [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m58 |[0;0m         ])
+ [0;36m59 |[0;0m     }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateObject/GenerateObjectTelemetry.swift:144:36: [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m142 |[0;0m     }
+[0;36m143 |[0;0m 
+[0;36m144 |[0;0m     if let reasoningTokens = usage.reasoningTokens {
+    [0;36m|[0;0m                                    `- [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m145 |[0;0m         attributes["gen_ai.usage.reasoning_tokens"] = .value(.int(reasoningTokens))
+[0;36m146 |[0;0m     }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateObject/GenerateObjectTelemetry.swift:148:33: [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m146 |[0;0m     }
+[0;36m147 |[0;0m 
+[0;36m148 |[0;0m     if let cachedTokens = usage.cachedInputTokens {
+    [0;36m|[0;0m                                 `- [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m149 |[0;0m         attributes["gen_ai.usage.cached_input_tokens"] = .value(.int(cachedTokens))
+[0;36m150 |[0;0m     }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateObject/GenerateObjectTelemetry.swift:195:36: [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m193 |[0;0m     }
+[0;36m194 |[0;0m 
+[0;36m195 |[0;0m     if let reasoningTokens = usage.reasoningTokens {
+    [0;36m|[0;0m                                    `- [1;33mwarning: [1;39m'reasoningTokens' is deprecated: Use outputTokenDetails.reasoningTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m196 |[0;0m         attributes["ai.usage.reasoningTokens"] = .value(.int(reasoningTokens))
+[0;36m197 |[0;0m     }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateObject/GenerateObjectTelemetry.swift:199:33: [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m197 |[0;0m     }
+[0;36m198 |[0;0m 
+[0;36m199 |[0;0m     if let cachedTokens = usage.cachedInputTokens {
+    [0;36m|[0;0m                                 `- [1;33mwarning: [1;39m'cachedInputTokens' is deprecated: Use inputTokenDetails.cacheReadTokens instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m200 |[0;0m         attributes["ai.usage.cachedInputTokens"] = .value(.int(cachedTokens))
+[0;36m201 |[0;0m     }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/SwiftAISDK/GenerateObject/OutputStrategy.swift:197:35: [1;33mwarning: [1;39mimmutable value 'error' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m195 |[0;0m                 case .success(let element, _):
+[0;36m196 |[0;0m                     parsed.append(element)
+[0;36m197 |[0;0m                 case .failure(let error, _) where index == elementsJSON.count - 1 && !isFinalDelta:
+    [0;36m|[0;0m                                   `- [1;33mwarning: [1;39mimmutable value 'error' was never used; consider replacing with '_' or removing it[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m198 |[0;0m                     continue
+[0;36m199 |[0;0m                 case .failure(let error, _):
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[580 / 621] HanlinPersistenceAdaptersTests-product
+[585 / 622] HanlinPersistenceAdaptersTests-product
+[589 / 633] HanlinChatCore
+[589 / 633] HanlinPersistenceAdaptersTests-product
+[594 / 633] HanlinChatCore
+[599 / 633] HanlinChatCore
+[600 / 633] HanlinChatCoreTests-product
+[603 / 633] HanlinChatCore
+[604 / 633]
+[611 / 633] AnthropicProvider
+[619 / 633] HanlinChatCore
+[623 / 634] HanlinChatCoreTests-product
+[626 / 645] HanlinChatCoreTests-product
+[627 / 645] HanlinChatCoreTests-product
+[628 / 645] HanlinChatCoreTests-product
+[630 / 645] HanlinChatCoreTests-product
+[635 / 645] HanlinChatCoreTests-product
+[637 / 645] HanlinChatCoreTests-product
+[638 / 645] HanlinChatCoreTests-product
+[639 / 645] HanlinChatCoreTests-product
+[639 / 645] AllIncludingTests
+[639 / 645] HanlinChatCoreTests-product
+[641 / 645] HanlinChatCoreTests-product
+Build complete! (62,54 secs)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Canonical projection of installed package entrypoints" started.
+◇ Suite "Script Mini App registration and discovery" started.
+◇ Test "Stored Expo package keeps every action while equivalent exposures share a canonical descriptor" started.
+◇ Test "Prepared action identifiers preserve export case, round trip, and reject malformed values" started.
+◇ Test "Package entrypoint kinds bridge bidirectionally to canonical kinds" started.
+◇ Test "Legacy-format NativeScript package with hanlinRuntime manifest field resolves to .nativeScript" started.
+◇ Test "Action identity preserves JavaScript case through Codable without changing other identifiers" started.
+◇ Test "Different App Intent handlers, runtimes and context sets remain conflicting canonical routes" started.
+◇ Test "Prepared action handlers resolve to the installed bundle without a second source prefix" started.
+◇ Test "Legacy descriptor JSON without supportedExposures decodes seamlessly with default derivation" started.
+◇ Test "Stored package snapshot conforms to HanlinMiniAppRegistration and validates" started.
+◇ Test "HanlinScriptPackageDiscovery discovers registrations and builds catalog snapshot" started.
+◇ Test "Identical foreground entries still violate the canonical unique-kind contract" started.
+◇ Test "Manifest declared supportedExposures (translation_ui, widget, app_intent) are exposed in appDescriptor" started.
+◇ Test "Unknown and future exposure raw values survive Codable round-trip" started.
+◇ Test "NativeScript package preserves nativeScript implementation, runtimeProfile, and exposures" started.
+◇ Test "Normal legacy foreground script package gets expected app/index.tsx behavior" started.
+◇ Test "Conflicting canonical exposures remain validation errors" started.
+◇ Test "Prepared action exports retain their identities behind one canonical App Intent bridge" started.
+◇ Test "Exposure-only package does not get fake .app entrypoint and retains declared exposures in catalog snapshot" started.
+◇ Test case passing 1 argument field → "runtime" to "Conflicting canonical exposures remain validation errors" started.
+◇ Test case passing 1 argument field → "handler" to "Conflicting canonical exposures remain validation errors" started.
+◇ Test case passing 1 argument field → "contexts" to "Conflicting canonical exposures remain validation errors" started.
+✔ Test "Package entrypoint kinds bridge bidirectionally to canonical kinds" passed after 0.003 seconds.
+✔ Test "Action identity preserves JavaScript case through Codable without changing other identifiers" passed after 0.003 seconds.
+✔ Test "Manifest declared supportedExposures (translation_ui, widget, app_intent) are exposed in appDescriptor" passed after 0.003 seconds.
+✔ Test "Legacy-format NativeScript package with hanlinRuntime manifest field resolves to .nativeScript" passed after 0.003 seconds.
+✔ Test "Stored package snapshot conforms to HanlinMiniAppRegistration and validates" passed after 0.003 seconds.
+✔ Test "Unknown and future exposure raw values survive Codable round-trip" passed after 0.003 seconds.
+✔ Test "Normal legacy foreground script package gets expected app/index.tsx behavior" passed after 0.003 seconds.
+✔ Test "NativeScript package preserves nativeScript implementation, runtimeProfile, and exposures" passed after 0.003 seconds.
+✔ Test "Legacy descriptor JSON without supportedExposures decodes seamlessly with default derivation" passed after 0.003 seconds.
+✔ Test "Stored Expo package keeps every action while equivalent exposures share a canonical descriptor" passed after 0.003 seconds.
+✔ Test "Prepared action handlers resolve to the installed bundle without a second source prefix" passed after 0.003 seconds.
+✔ Test "Exposure-only package does not get fake .app entrypoint and retains declared exposures in catalog snapshot" passed after 0.003 seconds.
+✔ Test "Identical foreground entries still violate the canonical unique-kind contract" passed after 0.003 seconds.
+✔ Test "HanlinScriptPackageDiscovery discovers registrations and builds catalog snapshot" passed after 0.003 seconds.
+✔ Test "Different App Intent handlers, runtimes and context sets remain conflicting canonical routes" passed after 0.003 seconds.
+✔ Test "Prepared action exports retain their identities behind one canonical App Intent bridge" passed after 0.003 seconds.
+✔ Test "Conflicting canonical exposures remain validation errors" with 3 test cases passed after 0.004 seconds.
+✔ Suite "Canonical projection of installed package entrypoints" passed after 0.005 seconds.
+✔ Test "Prepared action identifiers preserve export case, round trip, and reject malformed values" passed after 0.008 seconds.
+✔ Suite "Script Mini App registration and discovery" passed after 0.008 seconds.
+✔ Test run with 18 tests in 2 suites passed after 0.009 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite StoreSystemPathTests started.
+◇ Suite StoreTests started.
+◇ Test privateSymlinksRemainRejected(position:) started.
+◇ Test versionOneCheckpointCanBeRestoredWithoutDestructiveMigration() started.
+◇ Test systemAliasReadsExistingVersionOneWithoutRewriting() started.
+◇ Test systemAliasCreatesReloadsUpdatesAndDeletesSameConversation() started.
+◇ Test case passing 1 argument position → "record" to privateSymlinksRemainRejected(position:) started.
+◇ Test case passing 1 argument position → "ancestor" to privateSymlinksRemainRejected(position:) started.
+◇ Test case passing 1 argument position → "namespace" to privateSymlinksRemainRejected(position:) started.
+◇ Test case passing 1 argument position → "root" to privateSymlinksRemainRejected(position:) started.
+◇ Test case passing 1 argument position → "dangling-root" to privateSymlinksRemainRejected(position:) started.
+CHECKPOINT_FILE_STANDARDIZATION_CHANGED_ROOT=false
+CHECKPOINT_STAGE=save_v1
+CHECKPOINT_STAGE=checkpoint
+CHECKPOINT_STAGE=save_v2
+CHECKPOINT_STAGE=restore
+CHECKPOINT_STAGE=load_restored
+CHECKPOINT_STAGE=reject_symlink
+✔ Test systemAliasReadsExistingVersionOneWithoutRewriting() passed after 0.016 seconds.
+✔ Test versionOneCheckpointCanBeRestoredWithoutDestructiveMigration() passed after 0.016 seconds.
+✔ Suite StoreTests passed after 0.016 seconds.
+✔ Test privateSymlinksRemainRejected(position:) with 5 test cases passed after 0.017 seconds.
+✔ Test systemAliasCreatesReloadsUpdatesAndDeletesSameConversation() passed after 0.020 seconds.
+✔ Suite StoreSystemPathTests passed after 0.020 seconds.
+✔ Test run with 4 tests in 2 suites passed after 0.020 seconds.
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Transient host tool catalog continuation" started.
+◇ Suite "Apple native input provenance at the original engine boundary" started.
+◇ Suite HanlinChatGPTPlanTests started.
+◇ Suite HanlinNativeStructuredResponseTests started.
+◇ Suite HanlinInjectedProviderTests started.
+◇ Test "Native reserialized input never becomes acceptedOriginal" started.
+◇ Suite "Original engine continuation after a completed tool labeled stop" started.
+◇ Test "A catalog restored after the stop decision still delivers the original empty tool result" started.
+◇ Suite "Cancellation at a host catalog reload" started.
+◇ Suite "Offline captured SSE replay" started.
+◇ Test namespacesToolsAndPreservesFullStatelessHistory() started.
+◇ Test fragmentedUTF8StreamMustReachCompletion() started.
+◇ Test quotaFailureAndIncompleteAreSurfaced() started.
+◇ Test "Cloud accepted original numeric JSON remains unchanged" started.
+◇ Test "Native numeric leaves fail before approval or host effect" started.
+◇ Test partialTextAndDoneWithoutCompletedAreNotSuccess() started.
+◇ Test mismatchedToolNamespaceIsRejectedBeforeDispatch() started.
+◇ Test unsupportedModelsFailBeforeAnyHTTPRequest() started.
+◇ Test realResponsesAdapterRequestsStrictSchemaAndPublishesOnlyCanonicalParts() started.
+◇ Test officialValidationFailureIsAtomic() started.
+◇ Test nativeSchemaKeepsTheExistingToolContinuationAndExactlyOneEffect() started.
+◇ Test canonicalAgentExecutesNamespacedToolAndContinuesExactlyOnce() started.
+◇ Test malformedRepairedAndTruncatedResponsesPublishNoParts() started.
+◇ Test nativeNonTextRejectedBeforeProviderCapabilityOrDownloadPath() started.
+◇ Test case passing 1 argument requiresApproval → false to "Native reserialized input never becomes acceptedOriginal" started.
+◇ Test case passing 1 argument requiresApproval → true to "Cloud accepted original numeric JSON remains unchanged" started.
+◇ Test duplicateDefinitionsThrowBeforeDictionaryConstruction() started.
+◇ Test case passing 1 argument requiresApproval → true to "Native reserialized input never becomes acceptedOriginal" started.
+◇ Test case passing 1 argument requiresApproval → false to "Cloud accepted original numeric JSON remains unchanged" started.
+◇ Test nativeDescriptorNeverSelectsNetworkProvider() started.
+◇ Test case passing 2 arguments input → "{"number":0}", requiresApproval → false to "Native numeric leaves fail before approval or host effect" started.
+◇ Test case passing 2 arguments input → "{"number":0}", requiresApproval → true to "Native numeric leaves fail before approval or host effect" started.
+◇ Test case passing 2 arguments input → "{"nested":[{"number":1.25}]}", requiresApproval → false to "Native numeric leaves fail before approval or host effect" started.
+◇ Test "Cancellation during final catalog lookup cannot start another provider step" started.
+◇ Test case passing 2 arguments input → "{"nested":[{"number":1.25}]}", requiresApproval → true to "Native numeric leaves fail before approval or host effect" started.
+◇ Test "Denied stop-labeled tool continues with a correlated denial and no host effect" started.
+◇ Test "An authorized tool without an additional approval prompt continues after stop with its canonical output" started.
+◇ Test "Rejected native numeric stop-labeled tool cannot reach approval, effect or another provider request" started.
+◇ Test incompleteAndMalformedSourceRemainVisibleAsFailures() started.
+◇ Test toolCallsRemainDataWithNoRegisteredExecutorOrSecondStep() started.
+◇ Test case passing 2 arguments input → "{"number":9007199254740993}", requiresApproval → false to "Native numeric leaves fail before approval or host effect" started.
+◇ Test invalidTimelineAndCancellationRejectBeforeReplay() started.
+◇ Test case passing 2 arguments input → "{"number":9007199254740993}", requiresApproval → true to "Native numeric leaves fail before approval or host effect" started.
+◇ Test byteSplitsReplayThroughBothActualParsersWithoutMutation() started.
+◇ Test reasoningOnlyCaptureCannotSilentlyReplayTheSameAttemptTwice() started.
+◇ Test case passing 2 arguments input → "{"nested":{"number":1e100}}", requiresApproval → false to "Native numeric leaves fail before approval or host effect" started.
+◇ Test case passing 2 arguments input → "{"nested":{"number":1e100}}", requiresApproval → true to "Native numeric leaves fail before approval or host effect" started.
+✔ Test mismatchedToolNamespaceIsRejectedBeforeDispatch() passed after 0.003 seconds.
+✔ Test partialTextAndDoneWithoutCompletedAreNotSuccess() passed after 0.003 seconds.
+✔ Test fragmentedUTF8StreamMustReachCompletion() passed after 0.003 seconds.
+✔ Test unsupportedModelsFailBeforeAnyHTTPRequest() passed after 0.003 seconds.
+✔ Test quotaFailureAndIncompleteAreSurfaced() passed after 0.003 seconds.
+✔ Test nativeNonTextRejectedBeforeProviderCapabilityOrDownloadPath() passed after 0.003 seconds.
+✔ Test duplicateDefinitionsThrowBeforeDictionaryConstruction() passed after 0.003 seconds.
+✔ Test nativeDescriptorNeverSelectsNetworkProvider() passed after 0.003 seconds.
+✔ Suite HanlinInjectedProviderTests passed after 0.004 seconds.
+✔ Test invalidTimelineAndCancellationRejectBeforeReplay() passed after 0.005 seconds.
+✔ Test namespacesToolsAndPreservesFullStatelessHistory() passed after 0.006 seconds.
+✔ Test "Native numeric leaves fail before approval or host effect" with 8 test cases passed after 0.013 seconds.
+✔ Test "Rejected native numeric stop-labeled tool cannot reach approval, effect or another provider request" passed after 0.012 seconds.
+✔ Test incompleteAndMalformedSourceRemainVisibleAsFailures() passed after 0.012 seconds.
+✔ Test byteSplitsReplayThroughBothActualParsersWithoutMutation() passed after 0.012 seconds.
+✔ Test toolCallsRemainDataWithNoRegisteredExecutorOrSecondStep() passed after 0.013 seconds.
+✔ Test "Cancellation during final catalog lookup cannot start another provider step" passed after 0.013 seconds.
+✔ Suite "Cancellation at a host catalog reload" passed after 0.014 seconds.
+✔ Test "An authorized tool without an additional approval prompt continues after stop with its canonical output" passed after 0.014 seconds.
+✔ Test "Denied stop-labeled tool continues with a correlated denial and no host effect" passed after 0.014 seconds.
+✔ Suite "Original engine continuation after a completed tool labeled stop" passed after 0.015 seconds.
+✔ Test "Native reserialized input never becomes acceptedOriginal" with 2 test cases passed after 0.014 seconds.
+✔ Test "Cloud accepted original numeric JSON remains unchanged" with 2 test cases passed after 0.015 seconds.
+✔ Suite "Apple native input provenance at the original engine boundary" passed after 0.015 seconds.
+✔ Test officialValidationFailureIsAtomic() passed after 0.015 seconds.
+✔ Test "A catalog restored after the stop decision still delivers the original empty tool result" passed after 0.015 seconds.
+✔ Suite "Transient host tool catalog continuation" passed after 0.016 seconds.
+✔ Test realResponsesAdapterRequestsStrictSchemaAndPublishesOnlyCanonicalParts() passed after 0.015 seconds.
+✔ Test canonicalAgentExecutesNamespacedToolAndContinuesExactlyOnce() passed after 0.016 seconds.
+✔ Suite HanlinChatGPTPlanTests passed after 0.017 seconds.
+✔ Test nativeSchemaKeepsTheExistingToolContinuationAndExactlyOneEffect() passed after 0.016 seconds.
+✔ Test malformedRepairedAndTruncatedResponsesPublishNoParts() passed after 0.017 seconds.
+✔ Suite HanlinNativeStructuredResponseTests passed after 0.017 seconds.
+streamText error: Error Domain=NSURLErrorDomain Code=-1008 "(null)"
+✔ Test reasoningOnlyCaptureCannotSilentlyReplayTheSameAttemptTwice() passed after 0.023 seconds.
+✔ Suite "Offline captured SSE replay" passed after 0.024 seconds.
+✔ Test run with 27 tests in 8 suites passed after 0.025 seconds.
