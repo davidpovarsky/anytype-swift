@@ -25,7 +25,7 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
               let expiry = env["PINKHA_HEART_SOURCE_CAPTURE_DEADLINE_EPOCH"].flatMap(Double.init),
               expiry.isFinite, expiry > Date().timeIntervalSince1970,
               let handoff = env["PINKHA_HEART_SOURCE_CAPTURE_HANDOFF_SHA256"],
-              isDigest(handoff) else { throw Failure.admission("owned-fixture-handoff") }
+              Self.isDigest(handoff) else { throw Failure.admission("owned-fixture-handoff") }
         fixture = try JSONDecoder().decode(Fixture.self, from: Data(raw.utf8))
         fixtureSHA256 = SHA256.hash(data: Data(raw.utf8)).map { String(format: "%02x", $0) }.joined()
         guard fixtureSHA256 == env["PINKHA_HEART_SOURCE_CAPTURE_FIXTURE_SHA256"],
@@ -130,7 +130,7 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
         try require(account.utf8.elementsEqual(fixture.accountID.utf8), "wrong-captured-account")
         try require(space.utf8.elementsEqual(fixture.spaceID.utf8), "wrong-captured-space")
         try require(!capture.isEmpty && capture.utf8.count <= 4_096, "invalid-capture-identity")
-        try require(isDigest(fingerprint), "invalid-native-fingerprint")
+        try require(Self.isDigest(fingerprint), "invalid-native-fingerprint")
         let trees = try count("trees")
         let heads = try count("native-heads")
         var counts: [String: Int] = ["trees": trees, "nativeHeads": heads]
@@ -210,7 +210,7 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
         guard try condition() else { throw Failure.admission(message) }
     }
 
-    private func isDigest(_ value: String) -> Bool {
+    private nonisolated static func isDigest(_ value: String) -> Bool {
         value.utf8.count == 64 && value.utf8.allSatisfy { (48...57).contains($0) || (97...102).contains($0) }
     }
 
