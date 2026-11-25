@@ -375,10 +375,16 @@ enum PinkhaSemanticSourceEntryDiagnostics {
         return binding
     }()
     private static var events: [[String: Any]] = []
+    private static weak var selectedInput: UITextView?
     static var isEnabled: Bool { context != nil }
 
     static func recordInput(_ stage: String, textView: UITextView) {
         guard isEnabled else { return }
+        if stage == "source-menu-input" {
+            selectedInput = textView
+        } else {
+            guard selectedInput === textView else { return }
+        }
         let gestures = (textView.gestureRecognizers ?? []).compactMap { recognizer -> [String: Any]? in
             guard recognizer is UILongPressGestureRecognizer else { return nil }
             return ["type": String(reflecting: type(of: recognizer)), "enabled": recognizer.isEnabled,
