@@ -156,7 +156,7 @@ final class AnyDestinationNativeFileReferenceTests: XCTestCase, @unchecked Senda
         let row = try componentRow(id: "component-file-definition", nativeType: 521, uniqueKey: "rel-componentFiles", details: details)
         let digest = AnyContentDigest.sha256(row.jsonViewBytes)
         let catalog = try AnyHeartNativeDefinitionCatalog(sourceAccountID: "explicit-component-input",
-            sourceSpaceID: "component-space", captureManifestSHA256: digest, sourceWitnessSHA256: digest, snapshots: [row])
+            sourceSpaceID: "component-file-property-source-space-v1", captureManifestSHA256: digest, sourceWitnessSHA256: digest, snapshots: [row])
         let definition = try AnyHeartNativeDefinitionPlan(catalog: catalog)
         XCTAssertTrue(definition.issues.isEmpty); XCTAssertFalse(definition.permitsDestinationWrites)
         _ = try definition.admittedSchemaItems()
@@ -175,12 +175,12 @@ final class AnyDestinationNativeFileReferenceTests: XCTestCase, @unchecked Senda
                                       details: AnyJSON) throws -> AnyHeartNativeSnapshotView {
         let marker = Data(("explicit-synthetic-wire-control-not-native-authority:" + id).utf8)
         let view: AnyJSON = .object(["Contract": .string("pinkha-native-snapshot-json-v1"),
-            "SpaceID": .string("component-space"), "ObjectID": .string(id), "NativeType": .integer(nativeType),
+            "SpaceID": .string("component-file-property-source-space-v1"), "ObjectID": .string(id), "NativeType": .integer(nativeType),
             "UniqueKey": .string(uniqueKey), "SnapshotSHA256": .string(AnyContentDigest.sha256(marker)),
             "SnapshotBytes": .integer(Int64(marker.count)),
             "Snapshot": .object(["blocks": .array([]), "details": details, "objectTypes": .array([]), "relationLinks": .array([])])])
         return try .init(jsonView: JSONEncoder().encode(view), snapshotBytes: marker,
-                         sourceSpaceID: "component-space", sourceObjectID: id)
+                         sourceSpaceID: "component-file-property-source-space-v1", sourceObjectID: id)
     }
 }
 private enum NativeFileReferenceControlFailure: Error { case unauthorized, unexpectedPayload, nativeFileIndexMissing }
