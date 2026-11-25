@@ -1,0 +1,475 @@
+{
+  "status": "FAIL",
+  "app_sha": "0bba1974a464af739e439a51039924f99256b96b",
+  "execution_uuid": "76fb2036-1f76-4c3a-92a2-6a3bf2a67926",
+  "execution_kind": "local-mac",
+  "commands": [
+    {
+      "name": "xcode-version",
+      "argv": [
+        "xcodebuild",
+        "-version"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 30,
+      "started_at": "2026-11-24T19:32:16.442734+00:00",
+      "pid": 24601,
+      "finished_at": "2026-11-24T19:32:16.532349+00:00",
+      "elapsed_seconds": 0.089615,
+      "log": "xcode-version.log",
+      "log_bytes": 33,
+      "log_sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77"
+    },
+    {
+      "name": "schemes",
+      "argv": [
+        "xcodebuild",
+        "-list",
+        "-json",
+        "-clonedSourcePackagesDirPath",
+        "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-work/SourcePackages",
+        "-onlyUsePackageVersionsFromResolvedFile"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 300,
+      "started_at": "2026-11-24T19:32:16.532901+00:00",
+      "pid": 24602,
+      "finished_at": "2026-11-24T19:32:20.725131+00:00",
+      "elapsed_seconds": 4.19223,
+      "log": "schemes.log",
+      "log_bytes": 253,
+      "log_sha256": "53c5644a175450cf8482a8c6bfb8bbbab49f36c951d844298092ea83459f23cb"
+    },
+    {
+      "name": "resolve-packages",
+      "argv": [
+        "xcodebuild",
+        "-resolvePackageDependencies",
+        "-scheme",
+        "PinkhaAnyRuntime",
+        "-clonedSourcePackagesDirPath",
+        "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-work/SourcePackages",
+        "-onlyUsePackageVersionsFromResolvedFile"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 600,
+      "started_at": "2026-11-24T19:32:20.726134+00:00",
+      "pid": 24702,
+      "finished_at": "2026-11-24T19:32:21.657594+00:00",
+      "elapsed_seconds": 0.93146,
+      "log": "resolve-packages.log",
+      "log_bytes": 1414,
+      "log_sha256": "f3f5efd43ffa61268b1507601b40e93f2a430485ff26d387226ce76c24288dcf"
+    },
+    {
+      "name": "runtimes",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "runtimes",
+        "-j"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 30,
+      "started_at": "2026-11-24T19:32:21.740441+00:00",
+      "pid": 24712,
+      "finished_at": "2026-11-24T19:32:21.891344+00:00",
+      "elapsed_seconds": 0.150903,
+      "log": "runtimes.log",
+      "log_bytes": 46099,
+      "log_sha256": "3d7fbdfbb295b3cc4d56b48468331b16cd76d7c2686892922b12a6e3ee32d385"
+    },
+    {
+      "name": "device-types",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devicetypes",
+        "-j"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 30,
+      "started_at": "2026-11-24T19:32:21.892481+00:00",
+      "pid": 24721,
+      "finished_at": "2026-11-24T19:32:22.042259+00:00",
+      "elapsed_seconds": 0.149778,
+      "log": "device-types.log",
+      "log_bytes": 64328,
+      "log_sha256": "96d335258081671854ac94ea0afb6ae77b8b7efc5892942fc8856d1e6f31be0f"
+    },
+    {
+      "name": "create-owned-simulator",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "create",
+        "PreparedComponents-02a81ceb41e2437d8c9dcc83638503c9",
+        "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M4",
+        "com.apple.CoreSimulator.SimRuntime.iOS-27-2"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 60,
+      "started_at": "2026-11-24T19:32:22.045023+00:00",
+      "pid": 24730,
+      "finished_at": "2026-11-24T19:32:22.315626+00:00",
+      "elapsed_seconds": 0.270603,
+      "log": "create-owned-simulator.log",
+      "log_bytes": 37,
+      "log_sha256": "02e07cbff85a16f56e0b57db6c0ef1dcf1990332ec2a3766407d2c09da640a66"
+    },
+    {
+      "name": "boot-owned-simulator",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "boot",
+        "470A5FB9-1479-414F-9884-82B1C40C344D"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 90,
+      "started_at": "2026-11-24T19:32:22.319005+00:00",
+      "pid": 24739,
+      "finished_at": "2026-11-24T19:32:22.999262+00:00",
+      "elapsed_seconds": 0.680257,
+      "log": "boot-owned-simulator.log",
+      "log_bytes": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "ios-build-for-testing",
+      "argv": [
+        "xcodebuild",
+        "build-for-testing",
+        "-scheme",
+        "PinkhaAnyRuntime",
+        "-configuration",
+        "Debug",
+        "-destination",
+        "platform=iOS Simulator,id=470A5FB9-1479-414F-9884-82B1C40C344D",
+        "-derivedDataPath",
+        "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-work/DerivedData",
+        "-clonedSourcePackagesDirPath",
+        "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-work/SourcePackages",
+        "-onlyUsePackageVersionsFromResolvedFile",
+        "-disableAutomaticPackageResolution",
+        "-parallel-testing-enabled",
+        "NO",
+        "-jobs",
+        "2",
+        "-test-timeouts-enabled",
+        "YES",
+        "-default-test-execution-time-allowance",
+        "900",
+        "-maximum-test-execution-time-allowance",
+        "900",
+        "-resultBundlePath",
+        "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-evidence/prepared-components-build.xcresult",
+        "-only-testing:PinkhaAnyRuntimeTests/AnyPreparedComponentsRuntimeTests/testManagedDefinitionsBlocksAndFullFilesSurviveReopen"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 1800,
+      "started_at": "2026-11-24T19:32:23.001111+00:00",
+      "pid": 24795,
+      "finished_at": "2026-11-24T19:33:08.822613+00:00",
+      "elapsed_seconds": 45.821502,
+      "log": "ios-build-for-testing.log",
+      "log_bytes": 454949,
+      "log_sha256": "e251c8221eae39dfdab99cef232b877ed633debe4efd20fae06718b8f51a420e"
+    },
+    {
+      "name": "wait-owned-simulator",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "470A5FB9-1479-414F-9884-82B1C40C344D",
+        "-b"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 180,
+      "started_at": "2026-11-24T19:33:08.935824+00:00",
+      "pid": 25261,
+      "finished_at": "2026-11-24T19:33:09.301104+00:00",
+      "elapsed_seconds": 0.36528,
+      "log": "wait-owned-simulator.log",
+      "log_bytes": 158,
+      "log_sha256": "056650f8a834ebcd4064c75ccf9f7780f02221ea1dda7c7b54851e1124dbf415"
+    },
+    {
+      "name": "ios-test-without-building",
+      "argv": [
+        "xcodebuild",
+        "test-without-building",
+        "-xctestrun",
+        "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-work/DerivedData/Build/Products/prepared-components-bound-6a578ea2e20443d0aa4a7cfa591917ce.xctestrun",
+        "-destination",
+        "platform=iOS Simulator,id=470A5FB9-1479-414F-9884-82B1C40C344D",
+        "-parallel-testing-enabled",
+        "NO",
+        "-jobs",
+        "2",
+        "-test-timeouts-enabled",
+        "YES",
+        "-default-test-execution-time-allowance",
+        "900",
+        "-maximum-test-execution-time-allowance",
+        "900",
+        "-resultBundlePath",
+        "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-evidence/prepared-components.xcresult",
+        "-only-testing:PinkhaAnyRuntimeTests/AnyPreparedComponentsRuntimeTests/testManagedDefinitionsBlocksAndFullFilesSurviveReopen"
+      ],
+      "status": "FAIL",
+      "timeout_seconds": 1500,
+      "started_at": "2026-11-24T19:33:09.302038+00:00",
+      "error_type": "ValueError",
+      "error": "Native command failed: ios-test-without-building.log",
+      "finished_at": "2026-11-24T19:39:17.192992+00:00",
+      "elapsed_seconds": 367.890954,
+      "log": "ios-test-without-building.log",
+      "log_bytes": 100198,
+      "log_sha256": "7c2b5ccde5da012081e76b5a7032c3696b0ffb0e608c5333b8dedd9212466ec0"
+    },
+    {
+      "name": "xcresult-summary",
+      "argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "summary",
+        "--path",
+        "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-evidence/prepared-components.xcresult"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 90,
+      "started_at": "2026-11-24T19:39:17.195393+00:00",
+      "pid": 28471,
+      "finished_at": "2026-11-24T19:39:17.286623+00:00",
+      "elapsed_seconds": 0.09123,
+      "log": "xcresult-summary.log",
+      "log_bytes": 1623,
+      "log_sha256": "bb7fbe60c2ff76010cdbcd36906e9da79bddb9f143d3dc907da795524eeed1e6"
+    },
+    {
+      "name": "xcresult-tests",
+      "argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "tests",
+        "--path",
+        "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-evidence/prepared-components.xcresult"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 90,
+      "started_at": "2026-11-24T19:39:17.287576+00:00",
+      "pid": 28472,
+      "finished_at": "2026-11-24T19:39:17.336632+00:00",
+      "elapsed_seconds": 0.049056,
+      "log": "xcresult-tests.log",
+      "log_bytes": 2433,
+      "log_sha256": "c6b2aea209d277ba31cfb59628bc9b9b6fa41144dded46cba1582c995c0653dc"
+    },
+    {
+      "name": "xcresult-attachments",
+      "argv": [
+        "xcrun",
+        "xcresulttool",
+        "export",
+        "attachments",
+        "--path",
+        "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-evidence/prepared-components.xcresult",
+        "--output-path",
+        "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-evidence/attachments"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 90,
+      "started_at": "2026-11-24T19:39:17.337810+00:00",
+      "pid": 28473,
+      "finished_at": "2026-11-24T19:39:17.387239+00:00",
+      "elapsed_seconds": 0.049429,
+      "log": "xcresult-attachments.log",
+      "log_bytes": 418,
+      "log_sha256": "70b3b16bf4f527526b6008478ac6a4c88a51d2246eb941a68dfc22f14befd866"
+    },
+    {
+      "name": "owned-simulator-failure-state",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devices",
+        "-j"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 15,
+      "started_at": "2026-11-24T19:39:17.388153+00:00",
+      "pid": 28474,
+      "finished_at": "2026-11-24T19:39:17.539176+00:00",
+      "elapsed_seconds": 0.151023,
+      "log": "owned-simulator-failure-state.log",
+      "log_bytes": 18844,
+      "log_sha256": "a8d194e84d040ff5a768443b7010a03d72dff534195d5a0c826fc9c55c3b8307"
+    },
+    {
+      "name": "owned-simulator-failure-system-log",
+      "argv": [
+        "/usr/bin/log",
+        "show",
+        "--last",
+        "5m",
+        "--style",
+        "compact",
+        "--predicate",
+        "subsystem BEGINSWITH \"com.apple.CoreSimulator\" AND eventMessage CONTAINS \"470A5FB9-1479-414F-9884-82B1C40C344D\""
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 20,
+      "started_at": "2026-11-24T19:39:17.540292+00:00",
+      "pid": 28483,
+      "finished_at": "2026-11-24T19:39:18.769347+00:00",
+      "elapsed_seconds": 1.229055,
+      "log": "owned-simulator-failure-system-log.log",
+      "log_bytes": 44,
+      "log_sha256": "9f56fca152030dba9e8ee76dee4fc8967ab667507b5878f0f9ab819d55b6b9a6"
+    },
+    {
+      "name": "cleanup-owned-simulator-shutdown",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "shutdown",
+        "470A5FB9-1479-414F-9884-82B1C40C344D"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 30.0,
+      "started_at": "2026-11-24T19:39:18.860361+00:00",
+      "pid": 28489,
+      "finished_at": "2026-11-24T19:39:22.116447+00:00",
+      "elapsed_seconds": 3.256086,
+      "log": "cleanup-owned-simulator-shutdown.log",
+      "log_bytes": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "cleanup-owned-simulator-delete",
+      "argv": [
+        "xcrun",
+        "simctl",
+        "delete",
+        "470A5FB9-1479-414F-9884-82B1C40C344D"
+      ],
+      "status": "PASS_EXIT_0",
+      "timeout_seconds": 30.0,
+      "started_at": "2026-11-24T19:39:22.118806+00:00",
+      "pid": 28515,
+      "finished_at": "2026-11-24T19:39:22.324779+00:00",
+      "elapsed_seconds": 0.205973,
+      "log": "cleanup-owned-simulator-delete.log",
+      "log_bytes": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "started_at": "2026-11-24T19:32:15.456593+00:00",
+  "selected_source": {
+    "Modules/PinkhaAnyRuntime/Tests/PinkhaAnyRuntimeTests/AnyPreparedComponentsRuntimeTests.swift": "51fb39f3458cd9e148b44e0f6cb7d6032817bb6ca29db3cd31ce6e3dcfd22aac"
+  },
+  "acceptance_binding": {
+    "sourceSHA": "0bba1974a464af739e439a51039924f99256b96b",
+    "executionUUID": "76fb2036-1f76-4c3a-92a2-6a3bf2a67926",
+    "nonce": "6a578ea2e20443d0aa4a7cfa591917ce"
+  },
+  "producer": {
+    "execution_kind": "local-mac",
+    "execution_uuid": "a95a2a03-f344-48c1-8201-76ba04194271",
+    "source_sha": "44cb86a86d5eddb481fc09f1eadf07b838c5c794"
+  },
+  "native_artifact_receipt_sha256": "aeca9325e8adac323a808402ef489a7329054d712301199a7ebe619e80d52640",
+  "archive_sha256": "328ae6ec8516eaeb4fd94bd10668330d0006fa929f979e04629958bdc1bcbd0a",
+  "manifest_sha256": "1f66de41a97a3dba34846f69379ea321fe6999ba065fd5a7caeb482c2e960994",
+  "version": "v0.5.0-pinkha.prepared.components.1",
+  "native_tests_executed": 0,
+  "retained_swift_tests_executed": 0,
+  "seeded_dependency_resolution": {
+    "source": "Tools/AnyEngineValidation/prepared_components_apple/pinned-package-resolution.json",
+    "sha256": "49515b5c5ebe089b7b5d601b04eb59dd116d4d756f5a0412031dede6b625483a"
+  },
+  "resolved_packages": {
+    "Package.resolved": "49515b5c5ebe089b7b5d601b04eb59dd116d4d756f5a0412031dede6b625483a"
+  },
+  "actual_dependency_sources": {
+    "torahinspectorkit": {
+      "revision": "511454e49450cb2581ddf77f644146ff3e30dbef",
+      "tree": "5f4001b015795179b973e10cb9700dcc14e42df5"
+    },
+    "swift-crypto": {
+      "revision": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+      "tree": "a7f04f6f742d32ab075c8435ce140c13fc3eab87"
+    },
+    "swift-asn1": {
+      "revision": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+      "tree": "e66cabf366880e5314973dd47f8b793b5ea7bfe8"
+    }
+  },
+  "simulator_selection": {
+    "runtimeIdentifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-2",
+    "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M4",
+    "runtimeVersion": "27.2",
+    "runtimeBuild": "24B8117",
+    "productFamily": "iPad",
+    "architecture": "arm64",
+    "compatibilityEvidence": "runtime.supportedDeviceTypes AND installed type version bounds"
+  },
+  "owned_simulator": {
+    "udid": "470A5FB9-1479-414F-9884-82B1C40C344D",
+    "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-2",
+    "type": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M4"
+  },
+  "harness_build": {
+    "status": "BUILT_CURRENT_PACKAGE_NOT_EXECUTED",
+    "tests_executed": 0
+  },
+  "owned_descriptor": {
+    "source_descriptor": "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-work/DerivedData/Build/Products/PinkhaAnyRuntime_PinkhaAnyRuntime_iphonesimulator27.0-arm64.xctestrun",
+    "source_descriptor_sha256": "4d6453ca0896c5bd32dc54464ccef41735362de8f8c96a559d23ffa825297b9d",
+    "bound_descriptor": "/Users/m1/builds/anytapy-prepared-components-0bba1974/consumer-work/DerivedData/Build/Products/prepared-components-bound-6a578ea2e20443d0aa4a7cfa591917ce.xctestrun",
+    "bound_descriptor_sha256": "244529a2346e7d36dce8c3bc0a9b7592f9d99ba84cc8bb1a9ebfb16645acdd61",
+    "selected_target": "PinkhaAnyRuntimeTests",
+    "selected_method": "AnyPreparedComponentsRuntimeTests/testManagedDefinitionsBlocksAndFullFilesSurviveReopen",
+    "environment_variables": {
+      "PINKHA_PREPARED_COMPONENTS_APPLE_SOURCE_SHA": "0bba1974a464af739e439a51039924f99256b96b",
+      "PINKHA_PREPARED_COMPONENTS_APPLE_EXECUTION_UUID": "76fb2036-1f76-4c3a-92a2-6a3bf2a67926",
+      "PINKHA_PREPARED_COMPONENTS_APPLE_NONCE": "6a578ea2e20443d0aa4a7cfa591917ce"
+    },
+    "original_descriptor_unchanged": true,
+    "same_product_directory": true,
+    "original_injection_preserved": true
+  },
+  "primary_failure": {
+    "error_type": "ValueError",
+    "error": "Native command failed: ios-test-without-building.log"
+  },
+  "result_bundle_present": true,
+  "compiled_products_unchanged": true,
+  "owned_simulator_cleanup": {
+    "shutdown": {
+      "status": "PASS_EXIT_0"
+    },
+    "delete": {
+      "status": "PASS_EXIT_0"
+    }
+  },
+  "owned_simulator_cleanup_budget": {
+    "total_seconds": 60.0,
+    "elapsed_seconds": 3.465460749999977,
+    "within_budget": true
+  },
+  "owned_simulator_cleanup_status": "COMPLETE",
+  "source_unchanged": true,
+  "error_type": "ValueError",
+  "error": "Native command failed: ios-test-without-building.log",
+  "finished_at": "2026-11-24T19:39:22.493424+00:00"
+}

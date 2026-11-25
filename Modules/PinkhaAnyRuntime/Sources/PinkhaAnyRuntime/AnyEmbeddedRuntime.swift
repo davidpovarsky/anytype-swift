@@ -25,9 +25,18 @@ public enum AnyEmbeddedBuild: String, Sendable, Codable {
     case pinkhaNativeV1
     case pinkhaPreparedMigrationCandidateV1
     case pinkhaPreparedInlineMigrationCandidateV1
+    case pinkhaPreparedFileMigrationCandidateV1
+    case pinkhaPreparedComponentsCandidateV1
+    case pinkhaPreparedComponentsCandidateV2
 
     public static var linked: Self {
-        #if PINKHA_PREPARED_INLINE_MIGRATION_RUNTIME
+        #if PINKHA_PREPARED_COMPONENTS_V2_RUNTIME
+        return .pinkhaPreparedComponentsCandidateV2
+        #elseif PINKHA_PREPARED_COMPONENTS_RUNTIME
+        return .pinkhaPreparedComponentsCandidateV1
+        #elseif PINKHA_PREPARED_FILE_MIGRATION_RUNTIME
+        return .pinkhaPreparedFileMigrationCandidateV1
+        #elseif PINKHA_PREPARED_INLINE_MIGRATION_RUNTIME
         return .pinkhaPreparedInlineMigrationCandidateV1
         #elseif PINKHA_PREPARED_MIGRATION_RUNTIME
         return .pinkhaPreparedMigrationCandidateV1
@@ -44,6 +53,9 @@ public enum AnyEmbeddedBuild: String, Sendable, Codable {
         case .pinkhaNativeV1: return "any v0.5.0-pinkha.1 "
         case .pinkhaPreparedMigrationCandidateV1: return "any v0.5.0-pinkha.prepared.1 "
         case .pinkhaPreparedInlineMigrationCandidateV1: return "any v0.5.0-pinkha.prepared.inline.1 "
+        case .pinkhaPreparedFileMigrationCandidateV1: return "any v0.5.0-pinkha.prepared.file.1 "
+        case .pinkhaPreparedComponentsCandidateV1: return "any v0.5.0-pinkha.prepared.components.1 "
+        case .pinkhaPreparedComponentsCandidateV2: return "any v0.5.0-pinkha.prepared.components.2 "
         }
     }
 }

@@ -1,0 +1,186 @@
+{
+  "actualSIGKILLProcesses": 2,
+  "anyBase": "1b17da42fccc2f092cbedd48e0991a203584bc85",
+  "anyCommit": "8592894d444fda0d7dfedb5519b1a7b70230feb5",
+  "contract": "pinkha-native-prepared-property-update-v1",
+  "date": "2026-11-24",
+  "existingRegressionMethodsPassed": 1,
+  "http": {
+    "command": [
+      "/mnt/development/toolchains/go1.27.4/go/bin/go",
+      "test",
+      "-count=1",
+      "-v",
+      "-p=1",
+      "-timeout=240s",
+      "./internal/server",
+      "-run",
+      "^(TestPreparedPropertyUpdateHTTPNativeCycleAndLockedDescriptorRefusals)$"
+    ],
+    "environment": {
+      "GOCACHE": "/mnt/development/projects/evidence/prepared-file-20261124/go-build-127",
+      "GOFLAGS": "-p=1",
+      "GOMAXPROCS": "1",
+      "GOMEMLIMIT": "1500MiB",
+      "GOMODCACHE": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod",
+      "GOTOOLCHAIN": "local",
+      "GOWORK": "off"
+    },
+    "exit": 0,
+    "finishedUTC": "2026-11-24T18:26:50.830947+00:00",
+    "freeAfter": 1714470912,
+    "logBytes": 12872,
+    "logSHA256": "e3f82cea75594c238e77defef1d5a86de842749690871830a9149da28723f9bf",
+    "seconds": 37.162,
+    "selected": [
+      "TestPreparedPropertyUpdateHTTPNativeCycleAndLockedDescriptorRefusals"
+    ],
+    "sourceStable": true
+  },
+  "native": {
+    "command": [
+      "/mnt/development/toolchains/go1.27.4/go/bin/go",
+      "test",
+      "-count=1",
+      "-v",
+      "-p=1",
+      "-timeout=240s",
+      "./internal/pinkha/migrationnative",
+      "-run",
+      "^(TestPreparedPropertyUpdateNativeCyclesRestartAndUnrelatedFields|TestPreparedPropertyUpdateNativeScopeRevisionAndImmutableIntentRefusals|TestPreparedPropertyUpdateNativeModifiedAndDeletedAreTerminal|TestPreparedPropertyUpdateActualCrashBeforeAppendAndAfterLostACK)$"
+    ],
+    "environment": {
+      "GOCACHE": "/mnt/development/projects/evidence/prepared-file-20261124/go-build-127",
+      "GOFLAGS": "-p=1",
+      "GOMAXPROCS": "1",
+      "GOMEMLIMIT": "1500MiB",
+      "GOMODCACHE": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod",
+      "GOTOOLCHAIN": "local",
+      "GOWORK": "off"
+    },
+    "exit": 0,
+    "finishedUTC": "2026-11-24T18:22:33.747970+00:00",
+    "freeAfter": 2287042560,
+    "logBytes": 180419,
+    "logSHA256": "e4bfe31d66d08c9e6ff0781296f514e17ec89529493d1f77946275bc0ad1bcda",
+    "seconds": 15.862,
+    "selected": [
+      "TestPreparedPropertyUpdateNativeCyclesRestartAndUnrelatedFields",
+      "TestPreparedPropertyUpdateNativeScopeRevisionAndImmutableIntentRefusals",
+      "TestPreparedPropertyUpdateNativeModifiedAndDeletedAreTerminal",
+      "TestPreparedPropertyUpdateActualCrashBeforeAppendAndAfterLostACK"
+    ],
+    "sourceStable": true
+  },
+  "newTopLevelMethodsPassed": 5,
+  "preservedFailedAttempts": [
+    {
+      "exit": 1,
+      "finishedUTC": "2026-11-24T18:17:18.518994+00:00",
+      "logBytes": 329,
+      "logSHA256": "ce74fa64b30b54cc02d65ad7c8799870aaaf570ebfabcfe8cce43632a39a1479",
+      "newMethods": 4,
+      "regressionMethods": 1,
+      "seconds": 21.342,
+      "selected": [
+        "TestPreparedPropertyUpdateNativeCyclesRestartAndUnrelatedFields",
+        "TestPreparedPropertyUpdateNativeScopeRevisionAndImmutableIntentRefusals",
+        "TestPreparedPropertyUpdateNativeModifiedAndDeletedAreTerminal",
+        "TestPreparedPropertyUpdateActualCrashBeforeAppendAndAfterLostACK",
+        "TestPreparedMigrationProductionSDKRestartAndReadback"
+      ],
+      "sourceStable": true
+    },
+    {
+      "command": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-count=1",
+        "-v",
+        "-p=1",
+        "-timeout=240s",
+        "./internal/pinkha/migrationnative",
+        "-run",
+        "^(TestPreparedPropertyUpdateNativeCyclesRestartAndUnrelatedFields|TestPreparedPropertyUpdateNativeScopeRevisionAndImmutableIntentRefusals|TestPreparedPropertyUpdateNativeModifiedAndDeletedAreTerminal|TestPreparedPropertyUpdateActualCrashBeforeAppendAndAfterLostACK|TestPreparedMigrationProductionSDKRestartAndReadback)$"
+      ],
+      "environment": {
+        "GOCACHE": "/mnt/development/projects/evidence/prepared-file-20261124/go-build-127",
+        "GOFLAGS": "-p=1",
+        "GOMAXPROCS": "1",
+        "GOMEMLIMIT": "1500MiB",
+        "GOMODCACHE": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod",
+        "GOTOOLCHAIN": "local",
+        "GOWORK": "off"
+      },
+      "exit": 1,
+      "finishedUTC": "2026-11-24T18:20:42.429033+00:00",
+      "freeAfter": 2309414912,
+      "logBytes": 227096,
+      "logSHA256": "6f0fce15b32d903889c8fdb38e24425758580d669216b50e087b451dd324b981",
+      "seconds": 141.095,
+      "selected": [
+        "TestPreparedPropertyUpdateNativeCyclesRestartAndUnrelatedFields",
+        "TestPreparedPropertyUpdateNativeScopeRevisionAndImmutableIntentRefusals",
+        "TestPreparedPropertyUpdateNativeModifiedAndDeletedAreTerminal",
+        "TestPreparedPropertyUpdateActualCrashBeforeAppendAndAfterLostACK",
+        "TestPreparedMigrationProductionSDKRestartAndReadback"
+      ],
+      "sourceStable": true
+    },
+    {
+      "command": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-count=1",
+        "-v",
+        "-p=1",
+        "-timeout=240s",
+        "./internal/server",
+        "-run",
+        "^(TestPreparedPropertyUpdateHTTPNativeCycleAndLockedDescriptorRefusals)$"
+      ],
+      "environment": {
+        "GOCACHE": "/mnt/development/projects/evidence/prepared-file-20261124/go-build-127",
+        "GOFLAGS": "-p=1",
+        "GOMAXPROCS": "1",
+        "GOMEMLIMIT": "1500MiB",
+        "GOMODCACHE": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod",
+        "GOTOOLCHAIN": "local",
+        "GOWORK": "off"
+      },
+      "exit": 1,
+      "finishedUTC": "2026-11-24T18:24:44.073531+00:00",
+      "freeAfter": 1884516352,
+      "logBytes": 9608,
+      "logSHA256": "f1e4d9c60bd7965eec3aa1b1a4c680402f01dde331bd4023b55cdee31b8d2d2d",
+      "seconds": 61.016,
+      "selected": [
+        "TestPreparedPropertyUpdateHTTPNativeCycleAndLockedDescriptorRefusals"
+      ],
+      "sourceStable": true
+    }
+  ],
+  "scope": {
+    "appleBinary": false,
+    "fullSpaceMigrationComplete": false,
+    "nativeSDKAndHTTP": true,
+    "networkVerified": false,
+    "physicalDevice": false,
+    "swiftConsumer": false
+  },
+  "sdkBase": "ef63bcaed93064c8de24ed656842f3e56ed34008",
+  "sdkCommit": "98f6b0363202164f53a7bdd7512515b0f2855172",
+  "sourceSHA256": {
+    "any/internal/pinkha/migrationnative/property_update_crash_test.go": "259ca77719018e6c2773dee7497f07d3b93abf59931379e6b08536f1bcabf64e",
+    "any/internal/pinkha/migrationnative/property_update_test.go": "d4d1305981e3cf11f356e002021d267d43ac0eb702fcd5c36c6037a1c676e2c8",
+    "any/internal/server/handlers_pinkha_migration.go": "91bdc46132c501d295809643a98271740712f69a0f2fb4f0f8903e04bd2d88fe",
+    "any/internal/server/handlers_pinkha_migration_property_update.go": "fa8ad5e439d07b8e7705cfe04c019854dfe65835ed1c116a75650368489a5511",
+    "any/internal/server/handlers_pinkha_migration_property_update_test.go": "39f46774b759a96d200e61d540a156c1110cfbc3f9df8a8fb9b0238dac5ceb4a",
+    "sdk/internal/migrationintent/property_update.go": "987a645f0694fe1181ade0258283f4fcfca2493db686e2f8430ed13f7b9d57e3",
+    "sdk/internal/object/migration_prepared.go": "baa68164c5d25b0795d5d9d5fe9313c409cf8b9979853dabae7d7e5c0e9d0f5a",
+    "sdk/internal/object/migration_property_update.go": "88f30224023d9146bc325b4010e3558338adad5e6674f70c8527d3e1e53a5ec9",
+    "sdk/internal/object/object.go": "eef8857406a3bff8d16f08050e6f1fba42123386ba116113ae8b37db369700df",
+    "sdk/internal/spaceimpl/migration_property_update.go": "a90d26a4d5807e01d81612b2c5759fb78d594308a10a1911af04800b17f7b87d",
+    "sdk/space/migration_property_update.go": "289baa5e0051117ab4579b1e8cba3be6df7b3b132b2388f39450d80d9a83dd4d"
+  }
+}

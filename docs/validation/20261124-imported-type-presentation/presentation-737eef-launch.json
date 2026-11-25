@@ -1,0 +1,33 @@
+{
+  "sourceCommit": "737eef856c5e484b4762af49930101634057dad0",
+  "sourceFiles": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedTypePresentation.swift": "8b24b000c89446f40238ac1d7a673e5473025df82aff5e94de1df1a86927dc4f",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift": "1a9daf2192fade2b89941098b68a2842cefc07257462b18316db27326e082088",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeImportedTypePresentationTests.swift": "d60b3aad1346a5ac4f06e8ee2d9cc0b2116b8ea45acbe065d97a8f996ce70f5a"
+  },
+  "host": "host_299cf75f6b338ecd",
+  "startedAt": "2026-11-24T21:41:52.449030+00:00",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-imported-type-presentation-20261124/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "1",
+    "--skip-update",
+    "--filter",
+    "NativeImportedTypePresentationTests/testImportedTypeOrderAndDefaultsPreserveCanonicalTitleAndPresentEmptyValues|NativeImportedTypePresentationTests/testFirstVisibilityWriteMaterializesDefaultsAndAnExplicitShowSurvivesReopen|NativeImportedTypePresentationTests/testExplicitEmptyPreferencesAndFutureKeysOverrideDefaultsWithoutChangingPolicy|NativeImportedTypePresentationTests/testUnsupportedLayoutsAmbiguousPairsAndForeignOwnersCannotChangePresentation|NativeImportedTypePresentationTests/testDefinitionHiddenPreservesCanonicalTitleAndExplicitPreferencesAcrossReopen|NativeImportedTypePresentationTests/testPresentationDefaultsGrantNoWriteAuthorityAndPreserveTheNativeFence|NativePropertyStoreTests/testRawUnknownNamespacesAndNativeDerivedMetadataSurviveProjection|NativePropertyStoreTests/testVisibilityPreservesFutureKeysAndChangesOnlyPreferenceNamespace|NativePropertyStoreTests/testReaderSnapshotCannotPrepareAnyMutation"
+  ],
+  "expectedTestMethods": 9,
+  "scope": "six imported-presentation controls and three affected existing property-store controls",
+  "approvedOverlap": "separate-cache Page protobuf compilation job_adbbcd5fd21c; one job per process; no performance comparison",
+  "minimumMemoryGuardBytes": 1073741824,
+  "memoryGuardSustainedSeconds": 15,
+  "timeoutSeconds": 570
+}

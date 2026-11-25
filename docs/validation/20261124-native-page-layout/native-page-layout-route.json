@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/mnt/development/tooling/agent-skills/build-runner-router/scripts/route_probe.py",
+    "--kind",
+    "quick",
+    "--urgency",
+    "normal"
+  ],
+  "exitCode": 0,
+  "stderr": "",
+  "stdout": "{\n  \"timestamp\": \"2026-11-24T21:00:03.728586+00:00\",\n  \"read_only\": true,\n  \"kind\": \"quick\",\n  \"urgency\": \"normal\",\n  \"server\": {\n    \"host\": \"torah-social\",\n    \"online\": true,\n    \"logical_cpus\": 2,\n    \"ram_total_gb\": 11.65,\n    \"ram_available_gb\": 5.4,\n    \"free_disk_gb\": 33.0,\n    \"build_disk\": \"/mnt/development\"\n  },\n  \"windows\": {\n    \"host\": \"david-win\",\n    \"online\": false,\n    \"reason\": \"ssh: Could not resolve hostname david-win: Temporary failure in name resolution\"\n  },\n  \"mac\": {\n    \"host\": \"scaleway-mac\",\n    \"online\": true,\n    \"macos_version\": \"27.0\",\n    \"xcode_version\": \"Xcode 27.0\",\n    \"xcode_build\": \"Build version 27A266a\",\n    \"logical_cpus\": 10,\n    \"ram_total_gb\": 16.0,\n    \"free_disk_gb\": 135.79,\n    \"build_root\": \"~/builds\"\n  },\n  \"github\": {\n    \"status\": \"not_checked\",\n    \"reason\": \"pass --repo OWNER/REPO\"\n  },\n  \"recommendation\": \"SERVER_LOCAL\",\n  \"note\": \"Agent must verify exact SHA/workflow, valid evidence, free Actions minutes, remaining build disk and ownership before dispatch. No job has been started.\"\n}\n",
+  "timeUTC": "2026-11-24T21:00:03.736784+00:00"
+}

@@ -1,0 +1,1780 @@
+From ccb0339d8640a1c890ddf6e224a839d702ec6a3c Mon Sep 17 00:00:00 2001
+From: ChatGPT <chatgpt@openai.com>
+Date: Tue, 24 Nov 2026 16:00:57 +0000
+Subject: [PATCH] Add durable prepared full-tier file migration with exact
+ native identity
+
+---
+ internal/commitguard/guard.go                 |  25 +-
+ internal/commitguard/prepared_file.go         | 157 +++++++++++
+ .../files/store/migration_prepared_pin.go     | 182 +++++++++++++
+ internal/files/store/store.go                 |  12 +-
+ internal/files/upload/migration_prepared.go   | 193 ++++++++++++++
+ .../files/upload/migration_prepared_test.go   | 159 +++++++++++
+ internal/migrationintent/file.go              | 248 ++++++++++++++++++
+ internal/migrationintent/file_payload.go      |  36 +++
+ internal/object/migration_file.go             | 192 ++++++++++++++
+ internal/spaceimpl/migration_file.go          | 181 +++++++++++++
+ internal/spaceobjects/migration_file.go       | 193 ++++++++++++++
+ space/migration_file.go                       |  42 +++
+ 12 files changed, 1617 insertions(+), 3 deletions(-)
+ create mode 100644 internal/commitguard/prepared_file.go
+ create mode 100644 internal/files/store/migration_prepared_pin.go
+ create mode 100644 internal/files/upload/migration_prepared.go
+ create mode 100644 internal/files/upload/migration_prepared_test.go
+ create mode 100644 internal/migrationintent/file.go
+ create mode 100644 internal/migrationintent/file_payload.go
+ create mode 100644 internal/object/migration_file.go
+ create mode 100644 internal/spaceimpl/migration_file.go
+ create mode 100644 internal/spaceobjects/migration_file.go
+ create mode 100644 space/migration_file.go
+
+diff --git a/internal/commitguard/guard.go b/internal/commitguard/guard.go
+index d8811f7..d446c7a 100644
+--- a/internal/commitguard/guard.go
++++ b/internal/commitguard/guard.go
+@@ -50,6 +50,9 @@ type Guard struct {
+ 	// Only the private original-inline-file route may carry node-readable
+ 	// payloads bytes. Existing encrypted and incoming modes remain separate.
+ 	inlineFile *InlineFileEnvelope
++	// Full-tier migration is an independent strict mode, never an extension
++	// of the original-inline-file parser or the ordinary encrypted mode.
++	file *FileEnvelope
+ }
+ 
+ func boundNativeCommitStorage(tree objecttree.ObjectTree) (*nativeCommitStorage, error) {
+@@ -188,17 +191,27 @@ func (s *nativeCommitStorage) AddAll(ctx context.Context, changes []objecttree.S
+ 	if change.Identity == nil || !change.Identity.Equals(guard.author) || change.IsSnapshot {
+ 		return ErrNativeCommitGuard
+ 	}
+-	if guard.inlineFile == nil {
++	if guard.inlineFile != nil && guard.file != nil {
++		return ErrNativeCommitGuard
++	}
++	if guard.inlineFile == nil && guard.file == nil {
+ 		if change.ReadKeyId == "" {
+ 			return ErrNativeCommitGuard
+ 		}
+-	} else {
++	} else if guard.inlineFile != nil {
+ 		if guard.preparedRaw == nil {
+ 			return ErrNativeCommitGuard
+ 		}
+ 		if _, err = inlineEnvelope(s.header, actual.RawTreeChangeWithId(), guard.author, *guard.inlineFile); err != nil {
+ 			return err
+ 		}
++	} else {
++		if guard.preparedRaw == nil {
++			return ErrNativeCommitGuard
++		}
++		if _, err = inlineEnvelope(s.header, actual.RawTreeChangeWithId(), guard.author, guard.file.InlineFileEnvelope); err != nil {
++			return err
++		}
+ 	}
+ 
+ 	// prepareBuilderContent and validateTree have released their own ACL locks.
+@@ -220,6 +233,9 @@ func (s *nativeCommitStorage) AddAll(ctx context.Context, changes []objecttree.S
+ 	if guard.inlineFile != nil {
+ 		readKeyID = guard.inlineFile.ReadKeyID
+ 	}
++	if guard.file != nil {
++		readKeyID = guard.file.ReadKeyID
++	}
+ 	if guard.preparedRaw != nil && readKeyID != s.acl.AclState().CurrentReadKeyId() {
+ 		return ErrNativeACLChanged
+ 	}
+@@ -228,6 +244,11 @@ func (s *nativeCommitStorage) AddAll(ctx context.Context, changes []objecttree.S
+ 			return err
+ 		}
+ 	}
++	if guard.file != nil {
++		if _, err = filePayloadLocked(s.acl, *guard.file); err != nil {
++			return err
++		}
++	}
+ 	if err = s.Storage.AddAll(ctx, changes, heads, snapshot); err != nil {
+ 		return err
+ 	}
+diff --git a/internal/commitguard/prepared_file.go b/internal/commitguard/prepared_file.go
+new file mode 100644
+index 0000000..b21a5a3
+--- /dev/null
++++ b/internal/commitguard/prepared_file.go
+@@ -0,0 +1,157 @@
++package commitguard
++
++import (
++	"bytes"
++	"context"
++	"encoding/hex"
++	"github.com/ipfs/go-cid"
++	"math"
++
++	"github.com/anyproto/any-store/v2/anyenc"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++	"github.com/anyproto/any-sync-sdk/internal/payloads"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
++	"github.com/anyproto/any-sync/commonspace/spacestorage"
++	"github.com/anyproto/any-sync/util/crypto"
++)
++
++// FileEnvelope is private SDK preparation metadata. It is never an
++// HTTP input. The exact payload bytes come from the native immutable ledger.
++type FileEnvelope struct {
++	InlineFileEnvelope
++	RootCID, ContentSHA256 string
++	Key                    []byte
++	Size                   int64
++}
++
++// This strict full-tier parser admits one original payload row with one
++// immutable staged content root and sealed key/hash. Inline/variant/network
++// fields cannot enter the initial prepared append through this boundary.
++// The caller holds the ACL lock through this check and the final native tx.
++func filePayloadLocked(acl list.AclList, proof FileEnvelope) (payloads.EncPayload, error) {
++	bad := func() (payloads.EncPayload, error) { return payloads.EncPayload{}, ErrNativeCommitGuard }
++	v, err := anyenc.Parse(proof.Payload)
++	if err != nil || !exactInlineFields(v, "d", "v", "r") || v.GetString("d") != payloads.Dataset || v.GetString("v") != payloads.HandlerVersion {
++		return bad()
++	}
++	records := v.GetArray("r")
++	if len(records) != 1 || !exactInlineFields(records[0], "u", "o") || !records[0].GetBool("u") {
++		return bad()
++	}
++	ops := records[0].GetArray("o")
++	if len(ops) != 1 || !exactInlineFields(ops[0], "t", "v") || ops[0].GetString("t") != string(crdt.OpSet) {
++		return bad()
++	}
++	row := ops[0].Get("v")
++	if !exactInlineFields(row, payloads.FieldSize, payloads.FieldObjectId, payloads.FieldEnc, payloads.FieldRootCid) || row.GetString(payloads.FieldObjectId) != proof.OwnerID {
++		return bad()
++	}
++	size := row.Get(payloads.FieldSize)
++	if size.Type() != anyenc.TypeNumber || size.GetFloat64() < payloads.InlineMaxSize || size.GetFloat64() > 512<<20 || int64(size.GetFloat64()) != proof.Size || math.Trunc(size.GetFloat64()) != size.GetFloat64() {
++		return bad()
++	}
++	root, rootErr := cid.Decode(row.GetString(payloads.FieldRootCid))
++	if rootErr != nil || !root.Defined() || root.String() != proof.RootCID || row.GetString(payloads.FieldRootCid) != proof.RootCID || len(proof.Key) != 32 {
++		return bad()
++	}
++	enc := row.Get(payloads.FieldEnc)
++	if !exactInlineFields(enc, payloads.EncKeyId, payloads.EncKeyCiphertext) || enc.GetString(payloads.EncKeyId) != proof.ReadKeyID || enc.Get(payloads.EncKeyCiphertext).Type() != anyenc.TypeBinary {
++		return bad()
++	}
++	keys, ok := acl.AclState().Keys()[proof.ReadKeyID]
++	if !ok || keys.ReadKey == nil {
++		return payloads.EncPayload{}, list.ErrNoReadKey
++	}
++	key, err := payloads.DeriveEncKey(keys.ReadKey)
++	if err != nil {
++		return payloads.EncPayload{}, err
++	}
++	plain, err := payloads.UnsealEnc(key, enc.GetBytes(payloads.EncKeyCiphertext))
++	if err != nil {
++		return payloads.EncPayload{}, err
++	}
++	if len(plain.Key) != 32 || !bytes.Equal(plain.Key, proof.Key) || plain.Variant != "" || plain.VariantOf != "" || len(plain.Inline) != 0 ||
++		len(plain.SHA256) != 32 || hex.EncodeToString(plain.SHA256) != proof.ContentSHA256 {
++		return bad()
++	}
++	return plain, nil
++}
++
++// CheckPreparedFile checks the signed envelope against reserved bytes
++// and the native sealed member-only content. Current authority is always
++// required. Only an already committed known CID may use a historical key.
++func CheckPreparedFile(ctx context.Context, acl list.AclList, author crypto.PubKey, root, raw *treechangeproto.RawTreeChangeWithId, proof FileEnvelope, current bool) (payloads.EncPayload, error) {
++	if ctx == nil || acl == nil {
++		return payloads.EncPayload{}, ErrNativeCommitGuard
++	}
++	ch, err := inlineEnvelope(root, raw, author, proof.InlineFileEnvelope)
++	if err != nil {
++		return payloads.EncPayload{}, err
++	}
++	acl.RLock()
++	defer acl.RUnlock()
++	if err = ctx.Err(); err != nil {
++		return payloads.EncPayload{}, err
++	}
++	if !acl.AclState().Permissions(author).CanWrite() {
++		return payloads.EncPayload{}, list.ErrInsufficientPermissions
++	}
++	if current && (acl.Head() == nil || ch.AclHeadId != acl.Head().Id || proof.ReadKeyID != acl.AclState().CurrentReadKeyId()) {
++		return payloads.EncPayload{}, ErrNativeACLChanged
++	}
++	return filePayloadLocked(acl, proof)
++}
++
++func PreparedFileContext(ctx context.Context, tree objecttree.ObjectTree, author crypto.PubKey, raw *treechangeproto.RawTreeChangeWithId, proof FileEnvelope) (context.Context, *Guard, error) {
++	appendCtx, guard, err := Context(ctx, tree, author)
++	if err != nil {
++		return nil, nil, err
++	}
++	if _, err = CheckPreparedFile(ctx, tree.AclList(), author, tree.Header(), raw, proof, true); err != nil {
++		return nil, nil, err
++	}
++	ch, err := inlineEnvelope(tree.Header(), raw, author, proof.InlineFileEnvelope)
++	if err != nil {
++		return nil, nil, err
++	}
++	if !sameHeads(ch.PreviousIds, tree.Heads()) {
++		return nil, nil, ErrNativeCommitGuard
++	}
++	proof.Payload = bytes.Clone(proof.Payload)
++	proof.Key = bytes.Clone(proof.Key)
++	guard.file = &proof
++	guard.preparedRaw = &treechangeproto.RawTreeChangeWithId{Id: raw.Id, RawChange: bytes.Clone(raw.RawChange)}
++	return appendCtx, guard, nil
++}
++
++// StorePreparedFileRoot only registers the already reserved deterministic
++// payloads root. Its owner must be locked/live by the native Store caller.
++// ACL/key validity is held through the real root storage transaction.
++func StorePreparedFileRoot(ctx context.Context, storage spacestorage.SpaceStorage, acl list.AclList, author crypto.PubKey, root, raw *treechangeproto.RawTreeChangeWithId, proof FileEnvelope) error {
++	if ctx == nil || storage == nil || acl == nil || storage.Id() != proof.SpaceID {
++		return ErrNativeCommitGuard
++	}
++	ch, err := inlineEnvelope(root, raw, author, proof.InlineFileEnvelope)
++	if err != nil {
++		return err
++	}
++	acl.RLock()
++	defer acl.RUnlock()
++	if err = ctx.Err(); err != nil {
++		return err
++	}
++	if !acl.AclState().Permissions(author).CanWrite() {
++		return list.ErrInsufficientPermissions
++	}
++	if acl.Head() == nil || ch.AclHeadId != acl.Head().Id || proof.ReadKeyID != acl.AclState().CurrentReadKeyId() {
++		return ErrNativeACLChanged
++	}
++	if _, err = filePayloadLocked(acl, proof); err != nil {
++		return err
++	}
++	_, err = storage.CreateTreeStorage(ctx, treestorage.TreeStorageCreatePayload{RootRawChange: root, Changes: []*treechangeproto.RawTreeChangeWithId{root}, Heads: []string{root.Id}})
++	return err
++}
+diff --git a/internal/files/store/migration_prepared_pin.go b/internal/files/store/migration_prepared_pin.go
+new file mode 100644
+index 0000000..0e71d95
+--- /dev/null
++++ b/internal/files/store/migration_prepared_pin.go
+@@ -0,0 +1,182 @@
++package store
++
++import (
++	"context"
++	"encoding/hex"
++	"errors"
++	"os"
++	"path/filepath"
++	"strings"
++
++	anystore "github.com/anyproto/any-store/v2"
++	"github.com/ipfs/go-cid"
++)
++
++// ErrPreparedPayloadPinned protects the only local copy of an uncommitted
++// migration payload. These pins have no age-based expiry: unlike ordinary
++// attach markers, a prepared operation may legitimately wait for a commit.
++var ErrPreparedPayloadPinned = errors.New("filestore: prepared migration payload is pinned")
++
++func preparedPinPrefix(spaceID string) string     { return "migration-prepared/" + spaceID + "/" }
++func preparedAdoptedPrefix(spaceID string) string { return "migration-adopted/" + spaceID + "/" }
++
++func preparedPinKey(spaceID string, root cid.Cid) string {
++	return preparedPinPrefix(spaceID) + root.String()
++}
++
++func (s *Store) PreparedPayloadAdopted(ctx context.Context, spaceID string, root cid.Cid, fileID, intentID, fingerprint string) (bool, error) {
++	want, err := preparedPinValue(intentID, fingerprint)
++	if err != nil || fileID == "" {
++		return false, ErrPreparedPayloadPinned
++	}
++	got, found, err := s.GetKV(ctx, preparedAdoptedPrefix(spaceID)+root.String()+"/"+fileID)
++	if err != nil || !found {
++		return false, err
++	}
++	if got != want {
++		return false, ErrPreparedPayloadPinned
++	}
++	pinned, err := s.PreparedPayloadPinned(ctx, spaceID, root)
++	return !pinned, err
++}
++
++// All callers first establish refs, content metadata and the queue job in the
++// same local database. Checkpoint those writes before releasing the only-copy
++// pin, then checkpoint the release before acknowledging local completion.
++func (s *Store) CompletePreparedPayloadAdoption(ctx context.Context, spaceID string, root cid.Cid, fileID, intentID, fingerprint string) error {
++	want, err := preparedPinValue(intentID, fingerprint)
++	if err != nil || fileID == "" {
++		return ErrPreparedPayloadPinned
++	}
++	if err = s.SetKV(ctx, preparedAdoptedPrefix(spaceID)+root.String()+"/"+fileID, want); err != nil {
++		return err
++	}
++	if err = s.FlushPreparedPayload(ctx, spaceID, root, intentID, fingerprint); err != nil {
++		return err
++	}
++	if err = s.ReleasePreparedPayload(ctx, spaceID, root, intentID, fingerprint); err != nil {
++		return err
++	}
++	return s.db.Flush(ctx, 0, anystore.FlushModeCheckpointFull)
++}
++
++func preparedPinValue(intentID, fingerprint string) (string, error) {
++	for _, v := range []string{intentID, fingerprint} {
++		b, err := hex.DecodeString(v)
++		if err != nil || len(b) != 32 || hex.EncodeToString(b) != v {
++			return "", ErrPreparedPayloadPinned
++		}
++	}
++	return intentID + ":" + fingerprint, nil
++}
++
++// PinPreparedPayload is called before finalizing the new CAR. The same row
++// lock fences Offload/Delete, so neither GC nor an explicit cache eviction
++// can pass a no-pin check concurrently with preparation.
++func (s *Store) PinPreparedPayload(ctx context.Context, spaceID string, root cid.Cid, intentID, fingerprint string) error {
++	want, err := preparedPinValue(intentID, fingerprint)
++	if err != nil || !root.Defined() || spaceID == "" || spaceID == "." || spaceID == ".." || strings.ContainsAny(spaceID, "/\\\x00") {
++		return ErrPreparedPayloadPinned
++	}
++	return s.withRow(rowId(spaceID, root), func(_ *rowState) error {
++		tx, err := s.db.WriteTx(ctx)
++		if err != nil {
++			return err
++		}
++		defer tx.Rollback()
++		tc := tx.Context()
++		old, found, err := s.GetKV(tc, preparedPinKey(spaceID, root))
++		if err != nil {
++			return err
++		}
++		if found && old != want {
++			return ErrPreparedPayloadPinned
++		}
++		if err = s.SetKV(tc, preparedPinKey(spaceID, root), want); err != nil {
++			return err
++		}
++		return tx.Commit()
++	})
++}
++
++func (s *Store) PreparedPayloadPinned(ctx context.Context, spaceID string, root cid.Cid) (bool, error) {
++	_, found, err := s.GetKV(ctx, preparedPinKey(spaceID, root))
++	return found, err
++}
++
++// Release is scoped to the exact original intent and normalized fingerprint.
++// A caller cannot release another migration's reservation, even for one root.
++func (s *Store) ReleasePreparedPayload(ctx context.Context, spaceID string, root cid.Cid, intentID, fingerprint string) error {
++	want, err := preparedPinValue(intentID, fingerprint)
++	if err != nil {
++		return err
++	}
++	return s.withRow(rowId(spaceID, root), func(_ *rowState) error {
++		old, found, err := s.GetKV(ctx, preparedPinKey(spaceID, root))
++		if err != nil {
++			return err
++		}
++		if !found {
++			return nil
++		}
++		if old != want {
++			return ErrPreparedPayloadPinned
++		}
++		return s.DeleteKV(ctx, preparedPinKey(spaceID, root))
++	})
++}
++
++// FlushPreparedPayload persists the CAR, its directory chain and the pin/row
++// database before a prepared native row may acknowledge this payload.
++func (s *Store) FlushPreparedPayload(ctx context.Context, spaceID string, root cid.Cid, intentID, fingerprint string) error {
++	want, err := preparedPinValue(intentID, fingerprint)
++	if err != nil {
++		return err
++	}
++	return s.withRow(rowId(spaceID, root), func(_ *rowState) error {
++		old, found, err := s.GetKV(ctx, preparedPinKey(spaceID, root))
++		if err != nil {
++			return err
++		}
++		if !found || old != want {
++			return ErrPreparedPayloadPinned
++		}
++		if err = ctx.Err(); err != nil {
++			return err
++		}
++		path := s.carPath(spaceID, root)
++		f, err := os.OpenFile(path, os.O_RDWR, 0)
++		if err != nil {
++			return err
++		}
++		err = errors.Join(f.Sync(), f.Close())
++		if err != nil {
++			return err
++		}
++		stop, err := filepath.Abs(s.root)
++		if err != nil {
++			return err
++		}
++		for dir := filepath.Dir(path); ; dir = filepath.Dir(dir) {
++			absolute, err := filepath.Abs(dir)
++			if err != nil {
++				return err
++			}
++			if absolute != stop && !strings.HasPrefix(absolute, stop+string(os.PathSeparator)) {
++				return ErrPreparedPayloadPinned
++			}
++			d, err := os.Open(dir)
++			if err != nil {
++				return err
++			}
++			err = errors.Join(d.Sync(), d.Close())
++			if err != nil {
++				return err
++			}
++			if absolute == stop {
++				break
++			}
++		}
++		return s.db.Flush(ctx, 0, anystore.FlushModeCheckpointFull)
++	})
++}
+diff --git a/internal/files/store/store.go b/internal/files/store/store.go
+index 3cf0b7b..ad25fd0 100644
+--- a/internal/files/store/store.go
++++ b/internal/files/store/store.go
+@@ -317,6 +317,11 @@ func (s *Store) RemoveRef(ctx context.Context, spaceId string, root cid.Cid, fil
+ func (s *Store) Offload(ctx context.Context, spaceId string, root cid.Cid) error {
+ 	id := rowId(spaceId, root)
+ 	return s.withRow(id, func(rs *rowState) error {
++		if pinned, err := s.PreparedPayloadPinned(ctx, spaceId, root); err != nil {
++			return err
++		} else if pinned {
++			return ErrPreparedPayloadPinned
++		}
+ 		if err := removeCar(s.carPath(spaceId, root)); err != nil {
+ 			return err
+ 		}
+@@ -339,6 +344,11 @@ func (s *Store) Offload(ctx context.Context, spaceId string, root cid.Cid) error
+ func (s *Store) Delete(ctx context.Context, spaceId string, root cid.Cid) error {
+ 	id := rowId(spaceId, root)
+ 	return s.withRow(id, func(rs *rowState) error {
++		if pinned, err := s.PreparedPayloadPinned(ctx, spaceId, root); err != nil {
++			return err
++		} else if pinned {
++			return ErrPreparedPayloadPinned
++		}
+ 		if err := removeCar(s.carPath(spaceId, root)); err != nil {
+ 			return err
+ 		}
+@@ -393,7 +403,7 @@ func (s *Store) DeleteSpace(ctx context.Context, spaceId string) error {
+ 		}
+ 	}
+ 	// The space's KV entries: the file index and attach-intent markers.
+-	for _, prefix := range []string{fileIndexPrefix(spaceId), intentPrefix(spaceId)} {
++	for _, prefix := range []string{fileIndexPrefix(spaceId), intentPrefix(spaceId), preparedPinPrefix(spaceId), preparedAdoptedPrefix(spaceId)} {
+ 		if err := s.DeleteKVPrefix(ctx, prefix); err != nil {
+ 			return err
+ 		}
+diff --git a/internal/files/upload/migration_prepared.go b/internal/files/upload/migration_prepared.go
+new file mode 100644
+index 0000000..ab3b84b
+--- /dev/null
++++ b/internal/files/upload/migration_prepared.go
+@@ -0,0 +1,193 @@
++package upload
++
++import (
++	"bytes"
++	"context"
++	"crypto/rand"
++	"crypto/sha256"
++	"encoding/hex"
++	"errors"
++	"io"
++
++	"github.com/anyproto/any-sync-sdk/internal/files/crypt"
++	"github.com/anyproto/any-sync-sdk/internal/files/fetch"
++	"github.com/anyproto/any-sync-sdk/internal/files/store"
++	"github.com/anyproto/any-sync-sdk/internal/migrationintent"
++	"github.com/anyproto/any-sync-sdk/internal/payloads"
++	"github.com/anyproto/any-sync/commonfile/fileservice"
++	"github.com/ipfs/go-cid"
++)
++
++const PreparedFileMaximumBytes = migrationintent.FileMaximumBytes
++
++var ErrPreparedFileContent = migrationintent.ErrFileContent
++
++// PreparedFile is private native staging state. File keys never appear in an
++// HTTP receipt. No payload row, content-dedup entry, retry job or network call
++// is created by StageMigrationFile.
++type PreparedFile = migrationintent.FilePayload
++
++type preparedContextReader struct {
++	ctx    context.Context
++	reader io.Reader
++}
++
++func (r preparedContextReader) Read(p []byte) (int, error) {
++	if err := r.ctx.Err(); err != nil {
++		return 0, err
++	}
++	return r.reader.Read(p)
++}
++
++// StageMigrationFile bounds bytes before ingestion, validates the complete
++// plaintext hash, builds the ordinary encrypted UnixFS/CAR representation,
++// pins it against eviction and proves a complete local decrypt/readback.
++func (s *Service) StageMigrationFile(ctx context.Context, spaceID, intentID, fingerprint string, size int64, digest string, input io.Reader) (result PreparedFile, err error) {
++	return s.stageMigrationFile(ctx, spaceID, intentID, fingerprint, size, digest, input, nil)
++}
++
++// StageReservedMigrationFile receives the original random key from the native
++// write-ahead draft. Repeating an interrupted prepare regenerates the SAME
++// encrypted bytes/root and may complete its own still-unpublished CAR.
++func (s *Service) StageReservedMigrationFile(ctx context.Context, spaceID, intentID, fingerprint string, size int64, digest string, input io.Reader, key []byte) (PreparedFile, error) {
++	if len(key) != fileKeySize {
++		return PreparedFile{}, ErrPreparedFileContent
++	}
++	return s.stageMigrationFile(ctx, spaceID, intentID, fingerprint, size, digest, input, bytes.Clone(key))
++}
++
++func (s *Service) stageMigrationFile(ctx context.Context, spaceID, intentID, fingerprint string, size int64, digest string, input io.Reader, key []byte) (result PreparedFile, err error) {
++	if ctx == nil || input == nil || size < payloads.InlineMaxSize || size > PreparedFileMaximumBytes {
++		return result, ErrPreparedFileContent
++	}
++	for _, value := range []string{digest, intentID, fingerprint} {
++		decoded, e := hex.DecodeString(value)
++		if e != nil || len(decoded) != 32 || hex.EncodeToString(decoded) != value {
++			return result, ErrPreparedFileContent
++		}
++	}
++	if err = ctx.Err(); err != nil {
++		return result, err
++	}
++	sp, err := fillSpool(s.store.TmpDir(), s.memSpool, io.LimitReader(preparedContextReader{ctx, input}, size+1))
++	if err != nil {
++		return result, err
++	}
++	defer sp.Close()
++	if sp.Size() != size || hex.EncodeToString(sp.SHA256()) != digest {
++		return result, ErrPreparedFileContent
++	}
++	if key == nil {
++		key = make([]byte, fileKeySize)
++		if _, err = rand.Read(key); err != nil {
++			return result, err
++		}
++	}
++	build, err := s.store.NewBuild(ctx, spaceID)
++	if err != nil {
++		return result, err
++	}
++	defer build.Discard()
++	ct, err := crypt.NewEncryptReader(key, sp.Reader())
++	if err != nil {
++		return result, err
++	}
++	node, err := fileservice.NewFileHandler(build.Blockstore()).AddFile(ctx, ct)
++	if err != nil {
++		return result, err
++	}
++	root := node.Cid()
++	// The reserved key can encounter its own interrupted preparation. Never
++	// borrow a published root or overwrite an unrelated root/pin.
++	info, e := s.store.Info(ctx, spaceID, root)
++	if e != nil && !errors.Is(e, store.ErrNotFound) {
++		return result, e
++	}
++	if e == nil && len(info.Refs) != 0 {
++		return result, ErrPreparedFileContent
++	}
++	if err = s.store.PinPreparedPayload(ctx, spaceID, root, intentID, fingerprint); err != nil {
++		return result, err
++	}
++	// Keep this exact pin on interruption. The already durable native draft
++	// retains the key/spec needed to retry without another content identity.
++	if _, err = build.Finalize(ctx, root); err != nil {
++		return result, err
++	}
++	result = PreparedFile{RootCID: root.String(), Key: key, Size: size, SHA256: digest, IntentID: intentID, Fingerprint: fingerprint}
++	if err = s.VerifyMigrationFile(ctx, spaceID, result); err != nil {
++		return PreparedFile{}, err
++	}
++	if err = s.store.FlushPreparedPayload(ctx, spaceID, root, intentID, fingerprint); err != nil {
++		return PreparedFile{}, err
++	}
++	return result, nil
++}
++
++// VerifyMigrationFile has no remote fallback. Every encrypted CAR block and
++// the full plaintext stream must be present and match before native commit.
++func (s *Service) VerifyMigrationFile(ctx context.Context, spaceID string, p PreparedFile) error {
++	if err := p.Validate(); err != nil {
++		return err
++	}
++	root, _ := cid.Decode(p.RootCID)
++	info, err := s.store.Info(ctx, spaceID, root)
++	if err != nil {
++		return err
++	}
++	if info.State != store.StateComplete || info.Sections == 0 || info.Present != info.Sections {
++		return store.ErrNoBytes
++	}
++	f, err := fetch.New(s.store, nil).Open(ctx, spaceID, root, p.Key, false, "")
++	if err != nil {
++		return err
++	}
++	defer f.Close()
++	h := sha256.New()
++	n, err := io.Copy(h, io.LimitReader(preparedContextReader{ctx, f}, p.Size+1))
++	if err != nil {
++		return err
++	}
++	if n != p.Size || hex.EncodeToString(h.Sum(nil)) != p.SHA256 {
++		return ErrPreparedFileContent
++	}
++	return nil
++}
++
++// AdoptMigrationFile is called only after the exact prepared native row has
++// been read back. The pin remains until local refs, dedup and the durable job
++// have all been established; any failure can repeat this same adoption.
++func (s *Service) AdoptMigrationFile(ctx context.Context, spaceID, ownerID, fileID string, p PreparedFile) error {
++	if ownerID == "" || fileID == "" {
++		return ErrPreparedFileContent
++	}
++	if err := s.VerifyMigrationFile(ctx, spaceID, p); err != nil {
++		return err
++	}
++	root, _ := cid.Decode(p.RootCID)
++	complete, err := s.store.PreparedPayloadAdopted(ctx, spaceID, root, fileID, p.IntentID, p.Fingerprint)
++	if err != nil || complete {
++		return err
++	}
++	if err := s.store.AddRefs(ctx, spaceID, root, fileID); err != nil {
++		return err
++	}
++	digest, _ := hex.DecodeString(p.SHA256)
++	if err := s.store.RecordContent(ctx, spaceID, digest, root, fileID, ownerID); err != nil {
++		return err
++	}
++	if s.queue != nil {
++		if err := s.queue.Enqueue(ctx, KindDurable, spaceID, fileID); err != nil {
++			return err
++		}
++	}
++	return s.store.CompletePreparedPayloadAdoption(ctx, spaceID, root, fileID, p.IntentID, p.Fingerprint)
++}
++
++func (s *Service) MigrationFileAdopted(ctx context.Context, spaceID, fileID string, p PreparedFile) (bool, error) {
++	if err := s.VerifyMigrationFile(ctx, spaceID, p); err != nil {
++		return false, err
++	}
++	root, _ := cid.Decode(p.RootCID)
++	return s.store.PreparedPayloadAdopted(ctx, spaceID, root, fileID, p.IntentID, p.Fingerprint)
++}
+diff --git a/internal/files/upload/migration_prepared_test.go b/internal/files/upload/migration_prepared_test.go
+new file mode 100644
+index 0000000..b1a336d
+--- /dev/null
++++ b/internal/files/upload/migration_prepared_test.go
+@@ -0,0 +1,159 @@
++package upload
++
++import (
++	"bytes"
++	"context"
++	"crypto/sha256"
++	"encoding/hex"
++	"errors"
++	"io"
++	"path/filepath"
++	"strings"
++	"testing"
++
++	anystore "github.com/anyproto/any-store/v2"
++	"github.com/anyproto/any-sync-sdk/internal/files/store"
++	"github.com/ipfs/go-cid"
++	"github.com/stretchr/testify/require"
++)
++
++func preparedDigest(content []byte) string {
++	h := sha256.Sum256(content)
++	return hex.EncodeToString(h[:])
++}
++
++func TestMigrationPreparedFileStagesActualCARWithoutPublishingAndPinsBytes(t *testing.T) {
++	ctx := context.Background()
++	broker := &fakeBroker{}
++	s, st := newService(t, broker)
++	s.memSpool = 64 // Force the streaming spill path with a real multi-block CAR.
++	content := testContent(2 << 20)
++	prepared, err := s.StageMigrationFile(ctx, spaceId, strings.Repeat("1", 64), strings.Repeat("2", 64), int64(len(content)), preparedDigest(content), bytes.NewReader(content))
++	require.NoError(t, err)
++	require.NoError(t, s.VerifyMigrationFile(ctx, spaceId, prepared))
++	root, err := cid.Decode(prepared.RootCID)
++	require.NoError(t, err)
++	info, err := st.Info(ctx, spaceId, root)
++	require.NoError(t, err)
++	require.Greater(t, info.Sections, 1)
++	require.Empty(t, info.Refs, "no native file identity has been published")
++	_, dedup, err := st.LookupContent(ctx, spaceId, sha256Bytes(content))
++	require.NoError(t, err)
++	require.False(t, dedup)
++	require.Zero(t, broker.uploads)
++	require.Zero(t, broker.signs)
++	require.ErrorIs(t, st.Offload(ctx, spaceId, root), store.ErrPreparedPayloadPinned)
++	require.ErrorIs(t, st.Delete(ctx, spaceId, root), store.ErrPreparedPayloadPinned)
++	require.ErrorIs(t, st.ReleasePreparedPayload(ctx, spaceId, root, strings.Repeat("3", 64), prepared.Fingerprint), store.ErrPreparedPayloadPinned)
++	require.NoError(t, s.VerifyMigrationFile(ctx, spaceId, prepared))
++	changed := prepared
++	changed.Key = bytes.Clone(prepared.Key)
++	changed.Key[0] ^= 1
++	require.Error(t, s.VerifyMigrationFile(ctx, spaceId, changed))
++	require.Error(t, s.VerifyMigrationFile(ctx, "other-space", prepared))
++}
++
++func sha256Bytes(b []byte) []byte { h := sha256.Sum256(b); return h[:] }
++
++type readCounter struct {
++	reader io.Reader
++	bytes  int
++	calls  int
++}
++
++func (r *readCounter) Read(b []byte) (int, error) {
++	r.calls++
++	n, err := r.reader.Read(b)
++	r.bytes += n
++	return n, err
++}
++
++func TestMigrationPreparedFileRejectsBoundsHashAndCancellationBeforePublication(t *testing.T) {
++	ctx := context.Background()
++	s, st := newService(t, &fakeBroker{})
++	content := testContent(4096)
++	for _, size := range []int64{-1, 4095, PreparedFileMaximumBytes + 1} {
++		reader := &readCounter{reader: bytes.NewReader(content)}
++		_, err := s.StageMigrationFile(ctx, spaceId, strings.Repeat("1", 64), strings.Repeat("2", 64), size, preparedDigest(content), reader)
++		require.ErrorIs(t, err, ErrPreparedFileContent)
++		require.Zero(t, reader.calls)
++	}
++	for _, bad := range [][]byte{content[:4095], append(bytes.Clone(content), 7), testContent(4097)[:4096]} {
++		_, err := s.StageMigrationFile(ctx, spaceId, strings.Repeat("1", 64), strings.Repeat("2", 64), 4096, preparedDigest(content), bytes.NewReader(bad))
++		require.ErrorIs(t, err, ErrPreparedFileContent)
++	}
++	canceled, cancel := context.WithCancel(ctx)
++	cancel()
++	reader := &readCounter{reader: bytes.NewReader(content)}
++	_, err := s.StageMigrationFile(canceled, spaceId, strings.Repeat("1", 64), strings.Repeat("2", 64), 4096, preparedDigest(content), reader)
++	require.ErrorIs(t, err, context.Canceled)
++	require.Zero(t, reader.calls)
++	info, err := st.ListSpace(ctx, spaceId)
++	require.NoError(t, err)
++	require.Empty(t, info)
++}
++
++func TestMigrationPreparedFileSurvivesActualStoreCloseAndReopen(t *testing.T) {
++	ctx := context.Background()
++	dir := t.TempDir()
++	dbPath, filesPath := filepath.Join(dir, "metadata.db"), filepath.Join(dir, "files")
++	db, err := anystore.Open(ctx, dbPath, nil)
++	require.NoError(t, err)
++	st, err := store.New(ctx, filesPath, db)
++	require.NoError(t, err)
++	s := New(st, nil)
++	content := testContent(4096)
++	prepared, err := s.StageMigrationFile(ctx, spaceId, strings.Repeat("a", 64), strings.Repeat("b", 64), 4096, preparedDigest(content), bytes.NewReader(content))
++	require.NoError(t, err)
++	require.NoError(t, db.Close())
++	db2, err := anystore.Open(ctx, dbPath, nil)
++	require.NoError(t, err)
++	defer db2.Close()
++	st2, err := store.New(ctx, filesPath, db2)
++	require.NoError(t, err)
++	s2 := New(st2, nil)
++	require.NoError(t, s2.VerifyMigrationFile(ctx, spaceId, prepared))
++	root, _ := cid.Decode(prepared.RootCID)
++	require.ErrorIs(t, st2.Delete(ctx, spaceId, root), store.ErrPreparedPayloadPinned)
++	require.NoError(t, st2.ReleasePreparedPayload(ctx, spaceId, root, prepared.IntentID, prepared.Fingerprint))
++	require.NoError(t, st2.Delete(ctx, spaceId, root))
++	require.Error(t, s2.VerifyMigrationFile(ctx, spaceId, prepared))
++}
++
++type preparedQueue struct {
++	fail  bool
++	calls int
++}
++
++func (q *preparedQueue) Enqueue(context.Context, string, string, string) error {
++	q.calls++
++	if q.fail {
++		return errors.New("queue unavailable")
++	}
++	return nil
++}
++
++func TestMigrationPreparedFileKeepsPinThroughFailedAdoptionAndRetriesSameRoot(t *testing.T) {
++	ctx := context.Background()
++	s, st := newService(t, &fakeBroker{})
++	content := testContent(16384)
++	prepared, err := s.StageMigrationFile(ctx, spaceId, strings.Repeat("a", 64), strings.Repeat("b", 64), int64(len(content)), preparedDigest(content), bytes.NewReader(content))
++	require.NoError(t, err)
++	queue := &preparedQueue{fail: true}
++	s.SetQueue(queue)
++	root, _ := cid.Decode(prepared.RootCID)
++	require.Error(t, s.AdoptMigrationFile(ctx, spaceId, "owner", "reserved-file-id", prepared))
++	require.ErrorIs(t, st.Offload(ctx, spaceId, root), store.ErrPreparedPayloadPinned)
++	queue.fail = false
++	require.NoError(t, s.AdoptMigrationFile(ctx, spaceId, "owner", "reserved-file-id", prepared))
++	require.NoError(t, s.AdoptMigrationFile(ctx, spaceId, "owner", "reserved-file-id", prepared))
++	info, err := st.Info(ctx, spaceId, root)
++	require.NoError(t, err)
++	require.Equal(t, []string{"reserved-file-id"}, info.Refs)
++	infos, err := st.ListSpace(ctx, spaceId)
++	require.NoError(t, err)
++	require.Len(t, infos, 1)
++	pinned, err := st.PreparedPayloadPinned(ctx, spaceId, root)
++	require.NoError(t, err)
++	require.False(t, pinned)
++}
+diff --git a/internal/migrationintent/file.go b/internal/migrationintent/file.go
+new file mode 100644
+index 0000000..a3c57b5
+--- /dev/null
++++ b/internal/migrationintent/file.go
+@@ -0,0 +1,248 @@
++package migrationintent
++
++import (
++	"bytes"
++	"context"
++	"crypto/rand"
++	"crypto/sha256"
++	"encoding/binary"
++	"encoding/hex"
++	"encoding/json"
++	"errors"
++	"fmt"
++	"strings"
++	"unicode/utf8"
++
++	anystore "github.com/anyproto/any-store/v2"
++	"github.com/anyproto/any-sync-sdk/internal/payloads"
++)
++
++// The random file key is reserved before the first body read. A crash during
++// staging therefore reuses the same key, verified plaintext and content root,
++// rather than orphaning a succession of unrelated encrypted copies.
++type FileDraft struct {
++	Prepared
++	Key []byte `json:"key"`
++}
++
++func (s *Store) validateFileDraft(d *FileDraft) error {
++	if d == nil || d.Kind != FileKind || d.Stage != "file-draft" || len(d.Key) != 32 {
++		return ErrCorrupt
++	}
++	fp, err := s.FileFingerprint(d.Binding, d.Spec, d.SourceSpec)
++	if err != nil || fp != d.Fingerprint || d.SpecSHA256 != Digest(d.SourceSpec) {
++		return ErrCorrupt
++	}
++	return nil
++}
++
++func (s *Store) LoadFileDraft(ctx context.Context, intentID string) (*FileDraft, error) {
++	if !validHex(intentID) {
++		return nil, ErrScope
++	}
++	var d FileDraft
++	if err := s.read(ctx, "intent/"+intentID+"/file-draft", &d); err != nil {
++		return nil, err
++	}
++	if d.Binding.IntentID != intentID {
++		return nil, ErrCorrupt
++	}
++	if err := s.validateFileDraft(&d); err != nil {
++		return nil, err
++	}
++	if err := s.checkBindings(ctx, &d.Prepared); err != nil {
++		return nil, err
++	}
++	return &d, nil
++}
++
++func (s *Store) ReserveFileDraft(ctx context.Context, input Prepared) (*FileDraft, error) {
++	input.Kind, input.Stage = FileKind, "file-draft"
++	d := &FileDraft{Prepared: input, Key: make([]byte, 32)}
++	if _, err := rand.Read(d.Key); err != nil {
++		return nil, err
++	}
++	if err := s.validateFileDraft(d); err != nil {
++		return nil, err
++	}
++	tx, err := s.db.WriteTx(ctx)
++	if err != nil {
++		return nil, err
++	}
++	defer tx.Rollback()
++	tc := tx.Context()
++	if err = s.bindPlan(tc, d.Binding); err != nil {
++		return nil, err
++	}
++	if err = s.bindIntent(tc, &d.Prepared); err != nil {
++		return nil, err
++	}
++	if err = s.insert(tc, "intent/"+d.Binding.IntentID+"/file-draft", d); err != nil && !errors.Is(err, anystore.ErrDocExists) {
++		return nil, err
++	}
++	stored, err := s.LoadFileDraft(tc, d.Binding.IntentID)
++	if err != nil {
++		return nil, err
++	}
++	if stored.Binding != d.Binding || stored.Fingerprint != d.Fingerprint {
++		return nil, ErrCollision
++	}
++	if err = tx.Commit(); err != nil {
++		return nil, err
++	}
++	if err = s.EnsureDurable(ctx); err != nil {
++		return nil, err
++	}
++	return stored, nil
++}
++
++const FileKind = "file"
++const fileStage = "file"
++
++// FileSpec describes one ordinary full-tier original. The separately streamed
++// body must match this size and digest before any native file row is reserved.
++type FileSpec struct {
++	OwnerObjectID string `json:"ownerObjectId"`
++	Name          string `json:"name"`
++	Mime          string `json:"mime"`
++	Size          int64  `json:"size"`
++	ContentSHA256 string `json:"contentSHA256"`
++}
++
++func (s FileSpec) Validate() error {
++	if s.OwnerObjectID == "" || len(s.OwnerObjectID) > 256 ||
++		!utf8.ValidString(s.Name) || !utf8.ValidString(s.Mime) ||
++		len(s.Name) > 1024 || len(s.Mime) > 255 || strings.ContainsRune(s.Name, 0) || strings.ContainsRune(s.Mime, 0) ||
++		s.Size < payloads.InlineMaxSize || s.Size > FileMaximumBytes || !validHex(s.ContentSHA256) {
++		return ErrScope
++	}
++	return nil
++}
++
++// File reserves the exact deterministic native derived root AND its
++// first signed file row atomically. Neither root registration nor row append
++// is allowed before this immutable entry and its checkpoint succeed.
++type File struct {
++	Prepared
++	RootRaw       []byte      `json:"rootRaw"`
++	OwnerObjectID string      `json:"ownerObjectId"`
++	ReadKeyID     string      `json:"readKeyId"`
++	ACLHeadID     string      `json:"aclHeadId"`
++	ContentSHA256 string      `json:"contentSHA256"`
++	Size          int64       `json:"size"`
++	Staged        FilePayload `json:"staged"`
++}
++
++func (s *Store) FileFingerprint(binding Binding, spec, sourceSpec []byte) (string, error) {
++	if err := s.Check(binding); err != nil {
++		return "", err
++	}
++	var input FileSpec
++	if len(spec) == 0 || len(spec) > 32<<10 || json.Unmarshal(spec, &input) != nil || input.Validate() != nil ||
++		len(sourceSpec) == 0 || len(sourceSpec) > 1<<20 || !json.Valid(sourceSpec) || ValidateNumbers(sourceSpec) != nil {
++		return "", ErrCorrupt
++	}
++	h := sha256.New()
++	for _, v := range []string{Contract, binding.AccountID, binding.SpaceID, binding.StoreID, binding.PlanID, binding.PlanSHA256, binding.IntentID, binding.SourceKey, FileKind, Digest(spec), Digest(sourceSpec)} {
++		var n [8]byte
++		binary.BigEndian.PutUint64(n[:], uint64(len(v)))
++		h.Write(n[:])
++		h.Write([]byte(v))
++	}
++	return hex.EncodeToString(h.Sum(nil)), nil
++}
++
++func fileKey(intentID string) (string, error) {
++	if !validHex(intentID) {
++		return "", ErrScope
++	}
++	// Distinct from root/bootstrap/block; the shared intent identity still
++	// rejects reuse of this same intent ID by any other kind in either order.
++	return "intent/" + intentID + "/" + fileStage, nil
++}
++
++func (s *Store) validateFile(e *File) error {
++	if e == nil || s.Check(e.Binding) != nil || e.Kind != FileKind || e.Stage != fileStage ||
++		len(e.RootRaw) == 0 || len(e.RootRaw) > 16<<10 || len(e.Raw) == 0 || len(e.Raw) > 32<<10 ||
++		len(e.Payload) == 0 || len(e.Payload) > 24<<10 || e.ObjectID == "" || e.ChangeID == "" ||
++		e.OwnerObjectID == "" || e.ReadKeyID == "" || e.ACLHeadID == "" || e.Timestamp <= 0 ||
++		len(e.RecordIDs) != 1 || e.RecordIDs[0] == "" || len(e.Dependencies) != 2 ||
++		len(e.Dependencies[e.OwnerObjectID]) == 0 || len(e.Dependencies[e.ObjectID]) == 0 {
++		return ErrCorrupt
++	}
++	var spec FileSpec
++	if json.Unmarshal(e.Spec, &spec) != nil || spec.Validate() != nil || spec.OwnerObjectID != e.OwnerObjectID ||
++		spec.ContentSHA256 != e.ContentSHA256 || spec.Size != e.Size || e.Staged.Validate() != nil || e.Staged.Size != e.Size || e.Staged.SHA256 != e.ContentSHA256 || e.Staged.IntentID != e.Binding.IntentID || e.Staged.Fingerprint != e.Fingerprint {
++		return ErrCorrupt
++	}
++	fp, err := s.FileFingerprint(e.Binding, e.Spec, e.SourceSpec)
++	if err != nil || fp != e.Fingerprint || e.SpecSHA256 != Digest(e.SourceSpec) {
++		return ErrCorrupt
++	}
++	return nil
++}
++
++func (s *Store) LoadFile(ctx context.Context, intentID string) (*File, error) {
++	key, err := fileKey(intentID)
++	if err != nil {
++		return nil, err
++	}
++	var e File
++	if err = s.read(ctx, key, &e); err != nil {
++		return nil, err
++	}
++	if e.Binding.IntentID != intentID {
++		return nil, ErrCorrupt
++	}
++	if err = s.validateFile(&e); err != nil {
++		return nil, err
++	}
++	if err = s.checkBindings(ctx, &e.Prepared); err != nil {
++		return nil, err
++	}
++	return &e, nil
++}
++
++func (s *Store) ReserveFile(ctx context.Context, proposed *File) (*File, error) {
++	if err := s.validateFile(proposed); err != nil {
++		return nil, err
++	}
++	draft, err := s.LoadFileDraft(ctx, proposed.Binding.IntentID)
++	if err != nil {
++		return nil, err
++	}
++	if draft.Binding != proposed.Binding || draft.Fingerprint != proposed.Fingerprint || !bytes.Equal(draft.Key, proposed.Staged.Key) {
++		return nil, ErrCollision
++	}
++	tx, err := s.db.WriteTx(ctx)
++	if err != nil {
++		return nil, err
++	}
++	defer tx.Rollback()
++	txCtx := tx.Context()
++	if err = s.bindPlan(txCtx, proposed.Binding); err != nil {
++		return nil, err
++	}
++	if err = s.bindIntent(txCtx, &proposed.Prepared); err != nil {
++		return nil, err
++	}
++	key, _ := fileKey(proposed.Binding.IntentID)
++	if err = s.insert(txCtx, key, proposed); err != nil && !errors.Is(err, anystore.ErrDocExists) {
++		return nil, err
++	}
++	stored, err := s.LoadFile(txCtx, proposed.Binding.IntentID)
++	if err != nil {
++		return nil, err
++	}
++	if stored.Binding != proposed.Binding || stored.Fingerprint != proposed.Fingerprint ||
++		!bytes.Equal(stored.Spec, proposed.Spec) || !bytes.Equal(stored.SourceSpec, proposed.SourceSpec) {
++		return nil, ErrCollision
++	}
++	if err = tx.Commit(); err != nil {
++		return nil, err
++	}
++	if err = s.EnsureDurable(ctx); err != nil {
++		return nil, fmt.Errorf("file prepared durability: %w", err)
++	}
++	return stored, nil
++}
+diff --git a/internal/migrationintent/file_payload.go b/internal/migrationintent/file_payload.go
+new file mode 100644
+index 0000000..da0cfaa
+--- /dev/null
++++ b/internal/migrationintent/file_payload.go
+@@ -0,0 +1,36 @@
++package migrationintent
++
++import (
++	"encoding/hex"
++	"errors"
++	"github.com/anyproto/any-sync-sdk/internal/payloads"
++	"github.com/ipfs/go-cid"
++)
++
++const FileMaximumBytes int64 = 512 << 20
++
++var ErrFileContent = errors.New("fileupload: prepared file content differs from its specification")
++
++type FilePayload struct {
++	RootCID     string `json:"rootCid"`
++	Key         []byte `json:"key"`
++	Size        int64  `json:"size"`
++	SHA256      string `json:"sha256"`
++	IntentID    string `json:"intentId"`
++	Fingerprint string `json:"fingerprint"`
++}
++
++func (p FilePayload) Validate() error {
++	root, err := cid.Decode(p.RootCID)
++	if err != nil || !root.Defined() || root.String() != p.RootCID || len(p.Key) != 32 ||
++		p.Size < payloads.InlineMaxSize || p.Size > FileMaximumBytes {
++		return ErrFileContent
++	}
++	for _, value := range []string{p.SHA256, p.IntentID, p.Fingerprint} {
++		raw, err := hex.DecodeString(value)
++		if err != nil || len(raw) != 32 || hex.EncodeToString(raw) != value {
++			return ErrFileContent
++		}
++	}
++	return nil
++}
+diff --git a/internal/object/migration_file.go b/internal/object/migration_file.go
+new file mode 100644
+index 0000000..93e3e52
+--- /dev/null
++++ b/internal/object/migration_file.go
+@@ -0,0 +1,192 @@
++package object
++
++import (
++	"bytes"
++	"context"
++	"encoding/hex"
++	"encoding/json"
++	"errors"
++	"slices"
++
++	"github.com/anyproto/any-store/v2/anyenc"
++	"github.com/anyproto/any-sync-sdk/internal/commitguard"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++	"github.com/anyproto/any-sync-sdk/internal/migrationintent"
++
++	"github.com/anyproto/any-sync-sdk/internal/payloads"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
++	"github.com/anyproto/any-sync/util/crypto"
++)
++
++// BuildMigrationFilePayload uses the ordinary full-tier payloads seal/handler
++// and native wire codec, without creating a tree or publishing a row.
++func BuildMigrationFilePayload(spec migrationintent.FileSpec, staged migrationintent.FilePayload, kid string, key crypto.SymKey) ([]byte, error) {
++	if err := spec.Validate(); err != nil {
++		return nil, err
++	}
++	if kid == "" || key == nil {
++		return nil, commitguard.ErrNativeCommitGuard
++	}
++	hash, err := hex.DecodeString(spec.ContentSHA256)
++	if err != nil {
++		return nil, err
++	}
++	sealed, err := payloads.SealEnc(key, payloads.EncPayload{Name: spec.Name, Mime: spec.Mime, SHA256: hash, Key: staged.Key})
++	if err != nil {
++		return nil, err
++	}
++	a := &anyenc.Arena{}
++	enc := a.NewObject()
++	enc.Set(payloads.EncKeyId, a.NewString(kid))
++	enc.Set(payloads.EncKeyCiphertext, a.NewBinary(sealed))
++	row := a.NewObject()
++	row.Set(payloads.FieldSize, a.NewNumberFloat64(float64(spec.Size)))
++	row.Set(payloads.FieldObjectId, a.NewString(spec.OwnerObjectID))
++	row.Set(payloads.FieldRootCid, a.NewString(staged.RootCID))
++	row.Set(payloads.FieldEnc, enc)
++	ch := crdt.Change{Dataset: payloads.Dataset, DataVersion: payloads.HandlerVersion, Records: []crdt.RecordChange{{Upsert: true, Ops: []crdt.Op{{Type: crdt.OpSet, Payload: row}}}}}
++	if err = (payloads.Handler{}).PreValidateMulti(&ch, nil); err != nil {
++		return nil, err
++	}
++	return NewCodec().Encode(&ch)
++}
++
++func MigrationFileProof(e *migrationintent.File) commitguard.FileEnvelope {
++	return commitguard.FileEnvelope{InlineFileEnvelope: commitguard.InlineFileEnvelope{SpaceID: e.Binding.SpaceID, OwnerID: e.OwnerObjectID, ReadKeyID: e.ReadKeyID, Payload: e.Payload, Timestamp: e.Timestamp}, RootCID: e.Staged.RootCID, ContentSHA256: e.ContentSHA256, Key: bytes.Clone(e.Staged.Key), Size: e.Size}
++}
++
++// CheckMigrationFile binds actual sealed content, exact raw native CID
++// and exact native record ID back to the immutable normalized operation.
++func CheckMigrationFile(ctx context.Context, acl list.AclList, author crypto.PubKey, e *migrationintent.File, current bool) (crdt.Change, error) {
++	if e == nil {
++		return crdt.Change{}, migrationintent.ErrCorrupt
++	}
++	var spec migrationintent.FileSpec
++	if json.Unmarshal(e.Spec, &spec) != nil || spec.Validate() != nil || spec.OwnerObjectID != e.OwnerObjectID ||
++		spec.ContentSHA256 != e.ContentSHA256 || spec.Size != e.Size || e.Staged.Validate() != nil || e.Staged.Size != e.Size || e.Staged.SHA256 != e.ContentSHA256 {
++		return crdt.Change{}, migrationintent.ErrCorrupt
++	}
++	root := &treechangeproto.RawTreeChangeWithId{Id: e.ObjectID, RawChange: e.RootRaw}
++	raw := &treechangeproto.RawTreeChangeWithId{Id: e.ChangeID, RawChange: e.Raw}
++	plain, err := commitguard.CheckPreparedFile(ctx, acl, author, root, raw, MigrationFileProof(e), current)
++	if err != nil {
++		return crdt.Change{}, err
++	}
++	envelope, err := objecttree.NewChangeBuilder(crypto.NewKeyStorage(), root).Unmarshall(raw, true)
++	if err != nil {
++		return crdt.Change{}, err
++	}
++	if envelope.AclHeadId != e.ACLHeadID || !sameDependencyHeads(map[string][]string{e.ObjectID: envelope.PreviousIds}, map[string][]string{e.ObjectID: e.Dependencies[e.ObjectID]}) {
++		return crdt.Change{}, migrationintent.ErrCorrupt
++	}
++	if plain.Name != spec.Name || plain.Mime != spec.Mime || len(plain.Inline) != 0 || !bytes.Equal(plain.Key, e.Staged.Key) || hex.EncodeToString(plain.SHA256) != spec.ContentSHA256 {
++		return crdt.Change{}, migrationintent.ErrCorrupt
++	}
++	ch, err := NewCodec().Decode(e.Payload)
++	if err != nil {
++		return crdt.Change{}, err
++	}
++	ch.ChangeId, ch.Timestamp = e.ChangeID, e.Timestamp
++	ids, err := crdt.ResolveRecordIds(ch)
++	if err != nil || len(ids) != 1 || !slices.Equal(ids, e.RecordIDs) {
++		return crdt.Change{}, migrationintent.ErrCorrupt
++	}
++	return ch, nil
++}
++
++// MigrationFileLocked requires the Store's stable owner/carrier native
++// locks. The ordinary encrypted prepared route and its replay are untouched.
++func (o *Object) MigrationFileLocked(ctx context.Context, e *migrationintent.File, commit bool) (string, error) {
++	if e == nil || o.tree == nil || o.tree.Id() != e.ObjectID || o.signKey == nil {
++		return "", migrationintent.ErrScope
++	}
++	if o.writeGate != nil {
++		if err := o.writeGate(); err != nil {
++			return "", err
++		}
++	}
++	if err := o.GuardReadyLocked(ctx); err != nil {
++		return "", err
++	}
++	if o.tree.Header().Id != e.ObjectID || !bytes.Equal(o.tree.Header().RawChange, e.RootRaw) {
++		return "", migrationintent.ErrCollision
++	}
++	if o.plaintextSpecFor(o.tree) == nil || checkPlaintextDataset(o.plaintextSpecFor(o.tree), payloads.Dataset) != nil {
++		return "", commitguard.ErrNativeCommitGuard
++	}
++	found, err := o.tree.Storage().Has(ctx, e.ChangeID)
++	if err != nil {
++		return "", err
++	}
++	ch, err := CheckMigrationFile(ctx, o.tree.AclList(), o.signKey.GetPublic(), e, !found)
++	if errors.Is(err, commitguard.ErrNativeACLChanged) {
++		return "obsolete", nil
++	}
++	if err != nil {
++		return "", err
++	}
++	if found {
++		stored, err := o.tree.Storage().Get(ctx, e.ChangeID)
++		if err != nil {
++			return "", err
++		}
++		if stored.Id != e.ChangeID || !bytes.Equal(stored.RawChange, e.Raw) || stored.AddSeq == 0 {
++			return "", migrationintent.ErrCorrupt
++		}
++		row, err := o.ctrl.GuardLookup(ctx, payloads.Dataset, e.RecordIDs[0])
++		if err != nil {
++			return "", err
++		}
++		if row == nil || row.Get(crdt.DeletedAtField) != nil {
++			return "committed_deleted", nil
++		}
++		if !preparedSetsMatch(row, ch.Records[0].Ops) || crdt.GetRecordVersion(row, "id") != crdt.VersionId(stored.OrderId) ||
++			row.GetInt(crdt.AddSeqField) <= 0 || row.GetString(payloads.FieldAuthor) != o.signKey.GetPublic().Account() {
++			return "committed_modified", nil
++		}
++		// The durability worker may append only networkSign. Core field origins
++		// must still be this reserved create; equal-value rewrites are mutations.
++		for _, field := range []string{payloads.FieldRootCid, payloads.FieldSize, payloads.FieldObjectId, payloads.FieldEnc} {
++			if crdt.GetRecordVersion(row, field) != crdt.VersionId(stored.OrderId) {
++				return "committed_modified", nil
++			}
++		}
++		return "committed", nil
++	}
++	if !sameDependencyHeads(map[string][]string{e.ObjectID: o.tree.Heads()}, map[string][]string{e.ObjectID: e.Dependencies[e.ObjectID]}) {
++		return "obsolete", nil
++	}
++	if err = o.ctrl.ValidateChange(ch); err != nil {
++		return "", err
++	}
++	if err = o.ctrl.PreValidateLocal(ctx, &ch); err != nil {
++		return "", err
++	}
++	row, err := o.ctrl.GuardLookup(ctx, payloads.Dataset, e.RecordIDs[0])
++	if err != nil {
++		return "", err
++	}
++	if row != nil {
++		return "", migrationintent.ErrCollision
++	}
++	if !commit {
++		return "prepared", nil
++	}
++	raw := &treechangeproto.RawTreeChangeWithId{Id: e.ChangeID, RawChange: bytes.Clone(e.Raw)}
++	appendCtx, _, err := commitguard.PreparedFileContext(ctx, o.tree, o.signKey.GetPublic(), raw, MigrationFileProof(e))
++	if err != nil {
++		return "", err
++	}
++	_, err = o.tree.AddRawChanges(appendCtx, objecttree.RawChangesPayload{NewHeads: []string{raw.Id}, RawChanges: []*treechangeproto.RawTreeChangeWithId{raw}})
++	if err != nil {
++		o.setApplyGap(true)
++		return "", err
++	}
++	if err = o.replayLocked(context.WithoutCancel(ctx), o.tree); err != nil {
++		o.setApplyGap(true)
++		return "", err
++	}
++	return o.MigrationFileLocked(ctx, e, false)
++}
+diff --git a/internal/spaceimpl/migration_file.go b/internal/spaceimpl/migration_file.go
+new file mode 100644
+index 0000000..bce10e4
+--- /dev/null
++++ b/internal/spaceimpl/migration_file.go
+@@ -0,0 +1,181 @@
++package spaceimpl
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"io"
++	"slices"
++
++	"github.com/anyproto/any-sync-sdk/internal/migrationintent"
++	"github.com/anyproto/any-sync-sdk/space"
++)
++
++var _ space.PreparedFileService = (*filesAPI)(nil)
++
++func fullFileReceipt(e *migrationintent.File, stage, outcome string) space.MigrationFileReceipt {
++	return space.MigrationFileReceipt{MigrationReceipt: receipt(&e.Prepared, stage, outcome),
++		OwnerObjectID: e.OwnerObjectID, FileID: e.RecordIDs[0], ContentSHA256: e.ContentSHA256,
++		Size: e.Size, RootCID: e.Staged.RootCID, LocalFileComplete: stage == "complete" && outcome == "committed"}
++}
++
++func (f *filesAPI) preparedFileResult(ctx context.Context, e *migrationintent.File, stage, outcome string) (space.MigrationFileReceipt, error) {
++	if outcome == "committed" {
++		complete, err := f.s.parent.files.MigrationFileAdopted(ctx, f.s.id, e.RecordIDs[0], e.Staged)
++		if err != nil {
++			return fullFileReceipt(e, stage, outcome), err
++		}
++		if complete {
++			stage = "complete"
++		}
++	}
++	return fullFileReceipt(e, stage, outcome), nil
++}
++
++func (f *filesAPI) PrepareMigrationFile(ctx context.Context, input space.MigrationInput, requested space.MigrationFileSpec, body io.Reader) (space.MigrationFileReceipt, error) {
++	spec := migrationintent.FileSpec{OwnerObjectID: requested.OwnerObjectID, Name: requested.Name,
++		Mime: requested.Mime, Size: requested.Size, ContentSHA256: requested.ContentSHA256}
++	if err := spec.Validate(); err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	if input.Contract != migrationintent.Contract || input.SpecSHA256 != migrationintent.Digest(input.SourceSpec) {
++		return space.MigrationFileReceipt{}, migrationintent.ErrScope
++	}
++	files := f.s.parent.files
++	if files == nil {
++		return space.MigrationFileReceipt{}, errors.New("prepared file: files not configured")
++	}
++	// Refuse a foreign/stopped account, revoked writer or deleted owner before
++	// reading any caller bytes. Native preparation repeats the same fences.
++	if err := f.s.writeGate(ctx); err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	if err := f.s.store.CheckMigrationWriter(ctx); err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	owner, err := f.s.store.TreeEntry(ctx, spec.OwnerObjectID)
++	if err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	if !owner.Present || owner.Deleted || owner.Derived {
++		return space.MigrationFileReceipt{}, migrationintent.ErrObsolete
++	}
++	unlock := f.s.store.LockMigration()
++	defer unlock()
++	journal, err := f.s.store.MigrationJournal(ctx)
++	if err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	id := journal.Identity()
++	binding := migrationintent.Binding{StoreID: input.StoreID, AccountID: id.AccountID, SpaceID: id.SpaceID,
++		PlanID: input.PlanID, PlanSHA256: input.PlanSHA256, IntentID: input.IntentID, SourceKey: input.SourceKey}
++	nativeSpec, err := json.Marshal(spec)
++	if err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	fp, err := journal.FileFingerprint(binding, nativeSpec, input.SourceSpec)
++	if err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	if old, err := journal.LoadFile(ctx, input.IntentID); err == nil {
++		if old.Binding != binding || old.Fingerprint != fp {
++			return space.MigrationFileReceipt{}, migrationintent.ErrCollision
++		}
++		stage, outcome, err := f.s.store.MigrationFileState(ctx, old, false)
++		if err != nil {
++			return fullFileReceipt(old, stage, outcome), err
++		}
++		return f.preparedFileResult(ctx, old, stage, outcome)
++	} else if !errors.Is(err, migrationintent.ErrNotFound) {
++		return space.MigrationFileReceipt{}, err
++	}
++	draft, err := journal.ReserveFileDraft(ctx, migrationintent.Prepared{Binding: binding, Fingerprint: fp,
++		Spec: nativeSpec, SourceSpec: slices.Clone(input.SourceSpec), SpecSHA256: input.SpecSHA256})
++	if err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	staged, err := files.StageReservedMigrationFile(ctx, f.s.id, binding.IntentID, fp, spec.Size, spec.ContentSHA256, body, draft.Key)
++	if err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	e := &migrationintent.File{Prepared: draft.Prepared, Staged: staged}
++	e.Stage = "file"
++	e, err = f.s.store.PrepareMigrationFile(ctx, journal, e, spec)
++	if err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	stage, outcome, err := f.s.store.MigrationFileState(ctx, e, false)
++	if err != nil {
++		return fullFileReceipt(e, stage, outcome), err
++	}
++	return f.preparedFileResult(ctx, e, stage, outcome)
++}
++
++func (f *filesAPI) MigrationFileStatus(ctx context.Context, intentID string) (space.MigrationFileReceipt, error) {
++	if f.s.parent.files == nil {
++		return space.MigrationFileReceipt{}, errors.New("prepared file: files not configured")
++	}
++	unlock := f.s.store.LockMigration()
++	defer unlock()
++	journal, err := f.s.store.MigrationJournal(ctx)
++	if err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	e, err := journal.LoadFile(ctx, intentID)
++	if err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	stage, outcome, err := f.s.store.MigrationFileState(ctx, e, false)
++	if err != nil {
++		return fullFileReceipt(e, stage, outcome), err
++	}
++	return f.preparedFileResult(ctx, e, stage, outcome)
++}
++
++func (f *filesAPI) CommitMigrationFile(ctx context.Context, input space.MigrationCommit) (space.MigrationFileReceipt, error) {
++	files := f.s.parent.files
++	if files == nil {
++		return space.MigrationFileReceipt{}, errors.New("prepared file: files not configured")
++	}
++	unlock := f.s.store.LockMigration()
++	defer unlock()
++	journal, err := f.s.store.MigrationJournal(ctx)
++	if err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	e, err := journal.LoadFile(ctx, input.IntentID)
++	if err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	if input.Contract != migrationintent.Contract || input.StoreID != e.Binding.StoreID || input.PlanID != e.Binding.PlanID || input.PlanSHA256 != e.Binding.PlanSHA256 || input.Fingerprint != e.Fingerprint {
++		return space.MigrationFileReceipt{}, migrationintent.ErrCollision
++	}
++	previousStage, previousOutcome, err := f.s.store.MigrationFileState(ctx, e, false)
++	if err != nil {
++		return fullFileReceipt(e, previousStage, previousOutcome), err
++	}
++	// A deleted/modified original row stays terminal even if its old bytes
++	// have been purged. Reconciliation must never recreate those bytes/rows.
++	if previousOutcome != "prepared" && previousOutcome != "committed" {
++		return fullFileReceipt(e, previousStage, previousOutcome), nil
++	}
++	if err = journal.EnsureDurable(ctx); err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	if err = files.VerifyMigrationFile(ctx, f.s.id, e.Staged); err != nil {
++		return space.MigrationFileReceipt{}, err
++	}
++	stage, outcome, err := f.s.store.MigrationFileState(ctx, e, true)
++	if err != nil {
++		return fullFileReceipt(e, stage, outcome), err
++	}
++	if outcome == "committed" {
++		err = f.s.store.AdoptMigrationFile(ctx, e, func() error {
++			return files.AdoptMigrationFile(ctx, f.s.id, e.OwnerObjectID, e.RecordIDs[0], e.Staged)
++		})
++		if err != nil {
++			return fullFileReceipt(e, stage, outcome), err
++		}
++	}
++	return f.preparedFileResult(ctx, e, stage, outcome)
++}
+diff --git a/internal/spaceobjects/migration_file.go b/internal/spaceobjects/migration_file.go
+new file mode 100644
+index 0000000..8fb6659
+--- /dev/null
++++ b/internal/spaceobjects/migration_file.go
+@@ -0,0 +1,193 @@
++package spaceobjects
++
++import (
++	"bytes"
++	"context"
++	"errors"
++	"slices"
++	"time"
++
++	"github.com/anyproto/any-sync-sdk/internal/commitguard"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++	"github.com/anyproto/any-sync-sdk/internal/migrationintent"
++	"github.com/anyproto/any-sync-sdk/internal/object"
++	"github.com/anyproto/any-sync-sdk/internal/payloads"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
++	"github.com/anyproto/any-sync/util/crypto"
++)
++
++func (s *Store) PrepareMigrationFile(ctx context.Context, journal *migrationintent.Store, proposed *migrationintent.File, spec migrationintent.FileSpec) (*migrationintent.File, error) {
++	if journal == nil || proposed == nil || spec.Validate() != nil {
++		return nil, migrationintent.ErrScope
++	}
++	root, err := commitguard.InlineFileRoot(s.spaceId, spec.OwnerObjectID)
++	if err != nil {
++		return nil, err
++	}
++	var result *migrationintent.File
++	err = s.withInlineFileObjects(ctx, spec.OwnerObjectID, root.Id, func(owner, carrier *object.Object) error {
++		heads := []string{root.Id}
++		if carrier != nil {
++			if !bytes.Equal(carrier.Tree().Header().RawChange, root.RawChange) {
++				return migrationintent.ErrCollision
++			}
++			heads = slices.Clone(carrier.Tree().Heads())
++		}
++		acl := owner.Tree().AclList()
++		var raw *treechangeproto.RawTreeChangeWithId
++		entry := *proposed
++		entry.ObjectID, entry.RootRaw, entry.OwnerObjectID = root.Id, bytes.Clone(root.RawChange), spec.OwnerObjectID
++		entry.ContentSHA256, entry.Size, entry.Timestamp = spec.ContentSHA256, spec.Size, time.Now().Unix()
++		// No registration, append, watcher or publish callback is invoked here.
++		err := func() error {
++			acl.RLock()
++			defer acl.RUnlock()
++			if err := ctx.Err(); err != nil {
++				return err
++			}
++			if !acl.AclState().Permissions(s.signKey.GetPublic()).CanWrite() {
++				return list.ErrInsufficientPermissions
++			}
++			if acl.Head() == nil {
++				return commitguard.ErrNativeCommitGuard
++			}
++			entry.ReadKeyID, entry.ACLHeadID = acl.AclState().CurrentReadKeyId(), acl.Head().Id
++			readKey, err := acl.AclState().CurrentReadKey()
++			if err != nil {
++				return err
++			}
++			key, err := payloads.DeriveEncKey(readKey)
++			if err != nil {
++				return err
++			}
++			entry.Payload, err = object.BuildMigrationFilePayload(spec, entry.Staged, entry.ReadKeyID, key)
++			if err != nil {
++				return err
++			}
++			_, raw, err = objecttree.NewChangeBuilder(crypto.NewKeyStorage(), root).Build(objecttree.BuilderContent{
++				TreeHeadIds: heads, AclHeadId: entry.ACLHeadID, SnapshotBaseId: root.Id,
++				Unencrypted: true, PrivKey: s.signKey, Content: entry.Payload, Timestamp: entry.Timestamp, DataType: payloads.Dataset,
++			})
++			return err
++		}()
++		if err != nil {
++			return err
++		}
++		entry.ChangeID, entry.Raw = raw.Id, bytes.Clone(raw.RawChange)
++		ch, err := object.NewCodec().Decode(entry.Payload)
++		if err != nil {
++			return err
++		}
++		ch.ChangeId = entry.ChangeID
++		entry.RecordIDs, err = crdt.ResolveRecordIds(ch)
++		if err != nil {
++			return err
++		}
++		entry.Dependencies = map[string][]string{spec.OwnerObjectID: slices.Clone(owner.Tree().Heads()), root.Id: heads}
++		if _, err = object.CheckMigrationFile(ctx, acl, s.signKey.GetPublic(), &entry, true); err != nil {
++			return err
++		}
++		if carrier != nil {
++			row, err := carrier.Controller().GuardLookup(ctx, payloads.Dataset, entry.RecordIDs[0])
++			if err != nil {
++				return err
++			}
++			if row != nil {
++				return migrationintent.ErrCollision
++			}
++		}
++		result, err = journal.ReserveFile(ctx, &entry)
++		return err
++	})
++	return result, err
++}
++
++// MigrationFileState advances at most one native durable stage. Native
++// CID/history and materialized row determine recovery; a host receipt does not.
++func (s *Store) MigrationFileState(ctx context.Context, e *migrationintent.File, commit bool) (stage, outcome string, err error) {
++	if e == nil {
++		return "", "", migrationintent.ErrCorrupt
++	}
++	stage, outcome = "file-prepared", "prepared"
++	err = s.withInlineFileObjects(ctx, e.OwnerObjectID, e.ObjectID, func(owner, carrier *object.Object) error {
++		if carrier != nil {
++			stage = "file-root-committed"
++			var err error
++			outcome, err = carrier.MigrationFileLocked(ctx, e, false)
++			if err != nil {
++				return err
++			}
++			if outcome != "prepared" {
++				if outcome == "committed" || outcome == "committed_deleted" || outcome == "committed_modified" {
++					stage = "file-row-committed"
++				}
++				return nil
++			}
++		} else {
++			if _, err := object.CheckMigrationFile(ctx, owner.Tree().AclList(), s.signKey.GetPublic(), e, true); err != nil {
++				return err
++			}
++		}
++		if !inlineSameHeads(owner.Tree().Heads(), e.Dependencies[e.OwnerObjectID]) {
++			return migrationintent.ErrObsolete
++		}
++		if !commit {
++			return nil
++		}
++		if carrier != nil {
++			outcome, err = carrier.MigrationFileLocked(ctx, e, true)
++			if err == nil && outcome != "obsolete" {
++				stage = "file-row-committed"
++			}
++			return err
++		}
++		if !inlineSameHeads(e.Dependencies[e.ObjectID], []string{e.ObjectID}) {
++			return migrationintent.ErrObsolete
++		}
++		if _, err := s.CheckDeriveParent(ctx, e.ObjectID, e.OwnerObjectID); err != nil {
++			return err
++		}
++		handle, err := s.app.GetSpace(ctx, s.spaceId)
++		if err != nil {
++			return err
++		}
++		err = commitguard.StorePreparedFileRoot(ctx, handle.Inner().Storage(), owner.Tree().AclList(), s.signKey.GetPublic(),
++			&treechangeproto.RawTreeChangeWithId{Id: e.ObjectID, RawChange: e.RootRaw}, &treechangeproto.RawTreeChangeWithId{Id: e.ChangeID, RawChange: e.Raw}, object.MigrationFileProof(e))
++		if errors.Is(err, treestorage.ErrTreeExists) {
++			return migrationintent.ErrObsolete
++		}
++		if err != nil {
++			return err
++		}
++		stage = "file-root-committed"
++		return nil
++	})
++	if errors.Is(err, migrationintent.ErrObsolete) || errors.Is(err, commitguard.ErrNativeACLChanged) {
++		return stage, "obsolete", nil
++	}
++	return stage, outcome, err
++}
++
++// Adoption runs while the same live owner/carrier native locks still protect
++// the exact original row. Queue wake-up is asynchronous and appends no row here.
++func (s *Store) AdoptMigrationFile(ctx context.Context, e *migrationintent.File, adopt func() error) error {
++	if e == nil || adopt == nil {
++		return migrationintent.ErrScope
++	}
++	return s.withInlineFileObjects(ctx, e.OwnerObjectID, e.ObjectID, func(owner, carrier *object.Object) error {
++		if carrier == nil {
++			return migrationintent.ErrObsolete
++		}
++		state, err := carrier.MigrationFileLocked(ctx, e, false)
++		if err != nil {
++			return err
++		}
++		if state != "committed" {
++			return migrationintent.ErrObsolete
++		}
++		return adopt()
++	})
++}
+diff --git a/space/migration_file.go b/space/migration_file.go
+new file mode 100644
+index 0000000..dae3eec
+--- /dev/null
++++ b/space/migration_file.go
+@@ -0,0 +1,42 @@
++package space
++
++import (
++	"context"
++	"github.com/anyproto/any-sync-sdk/internal/migrationintent"
++	"io"
++)
++
++var ErrMigrationFileContent = migrationintent.ErrFileContent
++
++// PreparedFileService is an experimental, native-only Files() surface.
++// It is separate from the original-inline-file contract. It stages bounded
++// encrypted CAR bytes and reserves exactly one signed full-tier payload row.
++// Completion proves local bytes; NetworkVerified remains separate.
++type PreparedFileService interface {
++	PrepareMigrationFile(context.Context, MigrationInput, MigrationFileSpec, io.Reader) (MigrationFileReceipt, error)
++	MigrationFileStatus(context.Context, string) (MigrationFileReceipt, error)
++	CommitMigrationFile(context.Context, MigrationCommit) (MigrationFileReceipt, error)
++}
++
++type MigrationFileSpec struct {
++	OwnerObjectID string `json:"ownerObjectId"`
++	Name          string `json:"name"`
++	Mime          string `json:"mime"`
++	Size          int64  `json:"size"`
++	ContentSHA256 string `json:"contentSHA256"`
++}
++
++// Both native identities are reserved before the first commit. ChangeID is
++// always the signed row CID; ObjectID is the deterministic payloads root.
++// One commit advances file-prepared -> file-root-committed, the second
++// advances to complete. Existing roots start at file-root-committed.
++type MigrationFileReceipt struct {
++	MigrationReceipt
++	OwnerObjectID     string `json:"ownerObjectId"`
++	FileID            string `json:"fileId"`
++	ContentSHA256     string `json:"contentSHA256"`
++	Size              int64  `json:"size"`
++	RootCID           string `json:"rootCid"`
++	LocalFileComplete bool   `json:"localFileComplete"`
++	NetworkVerified   bool   `json:"networkVerified"`
++}
+-- 
+2.43.0
+

@@ -1,0 +1,649 @@
+{
+  "actual_named_methods_sha256": "ca55cc565bac760e02d00b8ea83ee6a7001b6a1efa50daef240ff5276ed6d49f",
+  "any_sync_sha": "c005bd6cde8d8f8a6007c35f06894f3d89f9f07c",
+  "base_heart_sha": "24dc6393b30e6d1d80ec28ff624060af9bb4327a",
+  "binary": {
+    "bytes": 166482464,
+    "sha256": "f203b8b36557c0c282e7bd33238729b245ffd6ec14febe96ecbb955d1c6d5a2a"
+  },
+  "builds": 1,
+  "command_count": 34,
+  "compiled_source_unchanged": true,
+  "compiler_image": "sha256:a65540a5628f185087f6c567ca5ea465f76d79026dc1919239c55409c6c9a1f7",
+  "container_cleanup": [
+    {
+      "name": "pinkha-loaded-native-45501479246-1-build",
+      "returncode": 0
+    },
+    {
+      "name": "pinkha-loaded-native-45501479246-1-binary-buildinfo",
+      "returncode": 0
+    },
+    {
+      "name": "pinkha-loaded-native-45501479246-1-binary-selected-list",
+      "returncode": 0
+    },
+    {
+      "name": "pinkha-loaded-native-45501479246-1-native-custom-schema",
+      "returncode": 0
+    }
+  ],
+  "context_heart_sha": "256d3fd6cb4c2b0df67f67e01edfd8f9b76726f4",
+  "controller_sha": "c0482eefb372ecd2cf6ccc91b6a2d5083b75a1c7",
+  "error": "native_peer_running",
+  "error_type": "RuntimeError",
+  "executions": [
+    {
+      "exit_code": 0,
+      "method": "TestLoadedAccountCustomSchemaSource",
+      "named_method_pass": true,
+      "role": "new actual native definitions and current values",
+      "status": "PASS",
+      "stdout_sha256": "3daa75a84eecef9dcc485a72a4344e97d7adaf10dff4bc2f9bf265cfad2929b9"
+    },
+    {
+      "exit_code": 0,
+      "method": "TestLoadedAccountRemoteFilePeer",
+      "named_method_pass": true,
+      "phase": "online",
+      "role": "member",
+      "status": "PASS",
+      "stdout_sha256": "4aa8a305cf4d5a56f2aed0fbd5029e7dad14d0c697b78c8812a7f1bb496b6290"
+    },
+    {
+      "exit_code": 0,
+      "method": "TestLoadedAccountRemoteFilePeer",
+      "named_method_pass": true,
+      "phase": "online",
+      "role": "owner",
+      "status": "PASS",
+      "stdout_sha256": "55fd1cf45e09e372981aeb386d152926bab2d0bc3e062e066be350359b605346"
+    }
+  ],
+  "fullSpaceMigrationComplete": false,
+  "generated_main": {
+    "bytes": 4410,
+    "new_registration": [
+      "TestLoadedAccountCustomSchemaSource",
+      "TestLoadedAccountRemoteFilePeer"
+    ],
+    "origin": "actual -work build",
+    "sha256": "38889c4ebc1002ad19bffd0e194735b7af32761576aaa1ca41f136da656cca0f"
+  },
+  "hasNativeSourceAdmission": false,
+  "heart_sha": "ea796999d648e27dcb7ad23a0bbd849d35fadc5a",
+  "historySemanticsValidated": false,
+  "initial_file_peer_heart_sha": "d2696b36d169f57f1bcb03c055384e5ec944d930",
+  "input_sha256": {
+    "compiler": "9804f35c068e01cc90e9eca1edc08820dda9892b1d7f8db10e18d2724f57ef94",
+    "source": "bf746ea6bd965927d0e17b0d59772a55bc7542ab80629d97d4dd8ae8193c2f04"
+  },
+  "nativeCustomSchema": {
+    "capture_attempts": [
+      {
+        "attempt": 1,
+        "outcome": "capture-returned",
+        "sha256": "61073f0a25bf8b2b34e4a5049f495037f0e55ad739d4ab66620b0f09731930a6"
+      }
+    ],
+    "captured_objects": 156,
+    "closed_resolver_unmapped": 0,
+    "custom_types": 1,
+    "distinct_custom_identities": 14,
+    "empty_default_current_values_verified": true,
+    "manifest_sha256": "994cbeafa2a8f1ceeedaef24a316597ecf5c3ff420ba09f0c69f9a50794751cb",
+    "method": "TestLoadedAccountCustomSchemaSource",
+    "options": 4,
+    "ordered_identities_verified": true,
+    "original_declared_source_members": 313,
+    "properties": 7,
+    "receipt_sha256": "cc9cd95681b220f7a0a5a20bfa0c9565e4f6863b14f2920978fd33b36f66ea22",
+    "source_rows_sha256": "bfc0b0bb3da23fb93d2ee5eb1dabc28dd1ec8b27878bc56814d33ae5f6a0eb99",
+    "source_semantic_migration_complete": false,
+    "status": "PASS",
+    "typed_documents": 2
+  },
+  "networkPayloadVerified": false,
+  "network_cleanup": {
+    "name": "pinkha-file-peer-45501479246-1",
+    "returncode": 0
+  },
+  "offlineFreshProcessVerified": false,
+  "peer_container_cleanup": [
+    {
+      "name": "pinkha-file-peer-45501479246-1-owner-online",
+      "returncode": 0
+    },
+    {
+      "name": "pinkha-file-peer-45501479246-1-member-online",
+      "returncode": 0
+    },
+    {
+      "name": "pinkha-file-peer-45501479246-1-member-reopen",
+      "returncode": 0
+    }
+  ],
+  "permitsDestinationWrites": false,
+  "private_custody": {
+    "ciphertext_bytes": 100103668,
+    "ciphertext_sha256": "eeba61fd4c16e477af422c3833a3eb9b0afef753830adb3b75715726d0cc86f4",
+    "encryption": "CMS AES-256-GCM RSA-OAEP-SHA256",
+    "plaintext_bytes": 100103027,
+    "plaintext_sha256": "7abc98e29dec7055d8d8aa75b5265db3002632944aa7a46d3df709c8845f644e",
+    "recipient_readback": "PENDING_PRIVATE_RECIPIENT",
+    "recipient_sha256": "72c9c26bee89a9a454be14664820854d96d37a57d45d8d7d067058044db66d16"
+  },
+  "profile": {
+    "build_seconds": 1800,
+    "compiler_network": "none",
+    "container_cpus": 1,
+    "container_memory_bytes": 4294967296,
+    "copied_warm_cache": false,
+    "fresh_disk_cache": true,
+    "independent_online_wallets": 2,
+    "new_source_methods": [
+      "TestLoadedAccountCustomSchemaSource",
+      "TestLoadedAccountRemoteFilePeer"
+    ],
+    "peer_network": "owned internal Docker bridge",
+    "peer_online_seconds": 1080,
+    "reopen_seconds": 240
+  },
+  "qualified_helper_sha256": "cf3b927951ddfdfcfe9e51d724cce1753b03d92c147224dba23c5cda8b868fdc",
+  "qualified_whole_helper_sha256": "6cd5829e0fae7398ecbb712b5a1a322f15a0b6d1be73d5fc8fd4998f3405f7c5",
+  "resources_before": {
+    "available_memory": 15494467584,
+    "free_disk": 113804197888
+  },
+  "retainedCapturedTypeNamespace": {
+    "captured_objects": 143,
+    "closed_resolver_unmapped": 0,
+    "controller_sha": "5f28ece7bc62615f0954c64861f756baf6f4115e",
+    "heart_sha": "efd0d2d44e871966bf3c8edcc18db73a00ec699c",
+    "method": "TestLoadedAccountCapturedTypeNamespaces",
+    "native_namespace_receipt_sha256": "75240b3cde2e9df20b090852c56d800636c64f20b7af9c0e424e65691683dad0",
+    "original_declared_source_members": 287,
+    "producer_overall_status": "FAIL",
+    "producer_result_sha256": "1c23d4596849ea7d66da10557d686273dd5eeb29c59aaa8f52bbf9142f280742",
+    "recipient_readback_sha256": "0b36936e7a56bb33fe65a0e7a1db3ad6cc75987fb2fb16e48a92f117e375aa62",
+    "rerun": false,
+    "run_attempt": "1",
+    "run_id": "45480331496",
+    "status": "RETAINED_ORIGINAL_SCOPE_PASS",
+    "stdout_sha256": "145c0063a455e95276731ab10f273ed1fee9eea5e349187a4a4ec11d62f3b037",
+    "subtests": 8
+  },
+  "retainedFixtureScheduling": {
+    "controller_sha": "bfd73d7d2d05a3dc115f6fddf2fb938844b17280",
+    "heart_sha": "65caee9bfc386c2f9182564d6ad1eb2f02cfadd1",
+    "method": "TestLoadedAccountCaptureRetryBoundary",
+    "native_source_capture_proof": false,
+    "original_failed_scopes": [
+      {
+        "error": "native_custom_schema_method_exit",
+        "error_type": "RuntimeError",
+        "scope": "custom-schema"
+      },
+      {
+        "error": "native_peer_exited_before_member_received",
+        "error_type": "RuntimeError",
+        "scope": "remote-file-peers"
+      }
+    ],
+    "producer_overall_status": "FAIL",
+    "producer_result_sha256": "10dcb731241232985f626fcb8d084ec8a138c9e0aeffa46190f417d2da05c157",
+    "recipient_readback_sha256": "afc6663622d8ff47c09c08baa8b2f2909d0268269241b45f0833b2c51b79fc4d",
+    "rerun": false,
+    "run_attempt": "1",
+    "run_id": "45492064232",
+    "source_sha256": {
+      "core/application/loaded_capture_retry_test.go": "eef0bd39d617f78680a0a2fd7b4ad5e32621f1858047462db309684807003a9f",
+      "core/application/loaded_space_witness.go": "8225e0ac9af096fd0e03e5b6658a5981fd3752979953824b2deeb514c07a88da"
+    },
+    "status": "RETAINED_ORIGINAL_SCOPE_PASS",
+    "stdout_sha256": "381189dc7d2866391913bdf26e453bb026a0b17418399c71dfaa96ef49673000",
+    "subtests": 8
+  },
+  "retainedNativeJSONView": {
+    "captured_objects": 144,
+    "controller_sha": "fb5b40a5e91c68520d0f2921600a9f04b1e25439",
+    "heart_sha": "d2696b36d169f57f1bcb03c055384e5ec944d930",
+    "method": "TestLoadedAccountNativeSnapshotJSONView",
+    "native_json_receipt_sha256": "b3c5f92d6884a6f571223a639c23d3f933b886d67b2b80500518d9506f9e1753",
+    "original_declared_source_members": 291,
+    "producer_overall_status": "FAIL",
+    "producer_result_sha256": "6db5baf8714b7e16fae0239849b7ff375fb838c4cf60b20573eedf01d257fc14",
+    "recipient_readback_sha256": "ee7f5d50455e34069045d8bcf641143e42afcc76925b2535804bc5bf780bb64f",
+    "rerun": false,
+    "run_attempt": "1",
+    "run_id": "45472745870",
+    "status": "RETAINED_ORIGINAL_SCOPE_PASS",
+    "stdout_sha256": "a51e4c1fb9057844dfa2e4a229636509938cacc1c8ee4e5f99e01197f2c0b9d3"
+  },
+  "retained_namespace_heart_sha": "efd0d2d44e871966bf3c8edcc18db73a00ec699c",
+  "retained_scheduling_heart_sha": "65caee9bfc386c2f9182564d6ad1eb2f02cfadd1",
+  "run_attempt": "1",
+  "run_id": "45501479246",
+  "schema": "native-file-peer-portable-v4",
+  "scopeFailures": [
+    {
+      "error": "native_peer_running",
+      "error_type": "RuntimeError",
+      "scope": "remote-file-peers"
+    }
+  ],
+  "selected_methods": [
+    "TestLoadedAccountCustomSchemaSource",
+    "TestLoadedAccountRemoteFilePeer"
+  ],
+  "semanticCompleteness": false,
+  "source": {
+    "context_derivation": {
+      "after_bytes": 16163,
+      "after_sha256": "5667d08d984e0b49014b9a4b29e2ef73a9cd7bc3c046f2fedb158bc8db21c5a3",
+      "base_heart_commit": "24dc6393b30e6d1d80ec28ff624060af9bb4327a",
+      "before_bytes": 16158,
+      "before_sha256": "9b8379ce38da540a6d59a2a7c8c04ba3dad22e83d20f737348e6005267c57e90",
+      "derived_heart_commit": "256d3fd6cb4c2b0df67f67e01edfd8f9b76726f4",
+      "original_failure_artifact": 14936811171,
+      "original_failure_run": 45423965043,
+      "patch_sha256": "49c5878c94195ed69cb98f62263a29c8aa971d7371777966ecc75cd45c7f20bb",
+      "path": "core/application/loaded_witness_test.go",
+      "replace_after": "nativeLease.CheckCurrent(f.ctx)",
+      "replace_before": "nativeLease.CheckCurrent()",
+      "schema": "loaded-account-source-delta-v2"
+    },
+    "custom_schema_checkpoint_continuation": {
+      "additions": 2,
+      "base_heart_commit": "efd0d2d44e871966bf3c8edcc18db73a00ec699c",
+      "derived_heart_commit": "65caee9bfc386c2f9182564d6ad1eb2f02cfadd1",
+      "existing_changes": 2,
+      "files": [
+        {
+          "bytes": 6720,
+          "git_blob_sha1": "e838c81048a792692cc3482bc2b7adaaed3e30cc",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_capture_retry_test.go",
+          "sha256": "eef0bd39d617f78680a0a2fd7b4ad5e32621f1858047462db309684807003a9f"
+        },
+        {
+          "bytes": 15728,
+          "git_blob_sha1": "1d9b5a5062fb4014fb1d2378acbf0fee438470cd",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_custom_schema_source_test.go",
+          "sha256": "699fe5e97942360e53b0ac364105dbf11350e81b33f042337b49995e32edac79"
+        },
+        {
+          "before_bytes": 15366,
+          "before_git_blob_sha1": "75bf243221f65eca22fe86dd528c7a2c06fabee6",
+          "before_sha256": "b2a667972706ff0b4628e5d0a92b044baa8ad7b4c02c9c827bddbf084035d0b0",
+          "bytes": 15975,
+          "git_blob_sha1": "c1a1198ce4213acb7cb898cae05229ae678dddb3",
+          "mode": 420,
+          "operation": "M",
+          "path": "core/application/loaded_file_peer_test.go",
+          "sha256": "c88193dc1fed89c24e27388daf65d5e69a14fd9dc7bd07e6f0ebf0825859b5f8"
+        },
+        {
+          "before_bytes": 18641,
+          "before_git_blob_sha1": "2e3043f35096a57c5e43d903e9386ed11f89f669",
+          "before_sha256": "3d114497030308928a3286c076c30cc30b2bba237010f59112c264c0096799dc",
+          "bytes": 19568,
+          "git_blob_sha1": "00d832070651332b4207e724156f2164d6b0fe4c",
+          "mode": 420,
+          "operation": "M",
+          "path": "core/application/loaded_space_witness.go",
+          "sha256": "8225e0ac9af096fd0e03e5b6658a5981fd3752979953824b2deeb514c07a88da"
+        }
+      ],
+      "fixture_capture_attempt_cap": 3,
+      "intermediate_custom_schema_commit": "8b7fa694c92d42d558a82fb709f16d17f7a9ddab",
+      "original_deadline_preserved": true,
+      "production_capture_attempts": 1,
+      "retained_json_run_id": "45472745870",
+      "retained_namespace_run_id": "45480331496",
+      "retained_successful_scopes_rerun": false,
+      "schema": "native-custom-schema-checkpoint-delta-v1"
+    },
+    "file_peer_derivation": {
+      "additions": 6,
+      "base_heart_commit": "117bb74ece968cac02abb81c5cc49a418a98a60a",
+      "derived_heart_commit": "d2696b36d169f57f1bcb03c055384e5ec944d930",
+      "existing_changes": 1,
+      "files": [
+        {
+          "bytes": 10785,
+          "git_blob_sha1": "a0a5ebfa78625a5ee248cc7ec6ae2d43df443514",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_file_peer_fixture_test.go",
+          "sha256": "786cdfb6ec5ffd21fbd486304ce23d412c5078ea32e35998ae916109129fab3c"
+        },
+        {
+          "bytes": 15085,
+          "git_blob_sha1": "2ea4b96a48372e5b93155b89de2e742006e6bdab",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_file_peer_test.go",
+          "sha256": "c71b823135a130efd7e34991dedb1296ff6365bb146fbe840a8bf1805eec21f1"
+        },
+        {
+          "bytes": 5859,
+          "git_blob_sha1": "7f0793c47038df1d9af23441402166ab18633890",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_snapshot_json_test.go",
+          "sha256": "b3d9586de97c86c2e9e7c60416d834b9da9ee0e1b449db75d12ee679fbc655e8"
+        },
+        {
+          "before_bytes": 5577,
+          "before_git_blob_sha1": "258b6a5daf5b82ac0c6ff54246e42a203657bae9",
+          "before_sha256": "2ec9cd20783a4a9bc6ec77e74430e92a700d1b712024cfdcd074206a893c884a",
+          "bytes": 6106,
+          "git_blob_sha1": "90a0203f417555526c5430317fd89fb4ab607089",
+          "mode": 420,
+          "operation": "M",
+          "path": "core/application/loaded_space_bundle.go",
+          "sha256": "faf46bfc4ddd4a61ae0fa22c141c515b623ddcb2cc06b9bad632050f819dcfa5"
+        },
+        {
+          "bytes": 7333,
+          "git_blob_sha1": "044138b768322033a2701ef5cfe8d287a6b79c4c",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_space_prefetch.go",
+          "sha256": "6f47a85fb8872a94a6a37d0b0fba926e89ec99e282129aafd343e13f1d9336f3"
+        },
+        {
+          "bytes": 2466,
+          "git_blob_sha1": "eb2398eb2cec8f1554ff3eb9f03c5ff40d7d3c79",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/block/export/native_raw_json.go",
+          "sha256": "7b5da760718a2a84db91b65267a4fedef99c6669a39bd61a7337c018945fbc0f"
+        },
+        {
+          "bytes": 4095,
+          "git_blob_sha1": "e975d4e991b49354af9be82d744bfc2a24a6be93",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/files/native_prefetch.go",
+          "sha256": "c66e720c7e810fc963970f24add99f669ac5f8d438d5d063126fc9b7e6e5548c"
+        }
+      ],
+      "schema": "native-file-peer-source-delta-v1",
+      "unchanged_original_capture_authority": true
+    },
+    "files": 59826,
+    "logical_bytes": 1204807504,
+    "manifest_sha256": "2a0a8807ffaae25b3596a387e47f42e5893d9a83ee64d161d029712d0acaced9",
+    "member_census_continuation": {
+      "additions": 0,
+      "base_heart_commit": "65caee9bfc386c2f9182564d6ad1eb2f02cfadd1",
+      "custom_page_key_fix_commit": "24be2e2bbda542a65e0c63acd120d6bb4a5072a9",
+      "derived_heart_commit": "ea796999d648e27dcb7ad23a0bbd849d35fadc5a",
+      "existing_changes": 4,
+      "files": [
+        {
+          "before_bytes": 15728,
+          "before_git_blob_sha1": "1d9b5a5062fb4014fb1d2378acbf0fee438470cd",
+          "before_sha256": "699fe5e97942360e53b0ac364105dbf11350e81b33f042337b49995e32edac79",
+          "bytes": 16137,
+          "git_blob_sha1": "98cfe9164c1caa00a2a223f079398f7f16be28de",
+          "mode": 420,
+          "operation": "M",
+          "path": "core/application/loaded_custom_schema_source_test.go",
+          "sha256": "ffe4be583f3aa015e292803d025fcede51ac94ae19a5e12bf871da0f17d835b9"
+        },
+        {
+          "before_bytes": 10785,
+          "before_git_blob_sha1": "a0a5ebfa78625a5ee248cc7ec6ae2d43df443514",
+          "before_sha256": "786cdfb6ec5ffd21fbd486304ce23d412c5078ea32e35998ae916109129fab3c",
+          "bytes": 11094,
+          "git_blob_sha1": "efbfc9564195fb6e57705c2a4e561043a76e4f9f",
+          "mode": 420,
+          "operation": "M",
+          "path": "core/application/loaded_file_peer_fixture_test.go",
+          "sha256": "dff4ef22455c4a47bb4a8a0651d12e67000b309fa3f5f374730f3594ce2e1540"
+        },
+        {
+          "before_bytes": 15975,
+          "before_git_blob_sha1": "c1a1198ce4213acb7cb898cae05229ae678dddb3",
+          "before_sha256": "c88193dc1fed89c24e27388daf65d5e69a14fd9dc7bd07e6f0ebf0825859b5f8",
+          "bytes": 21672,
+          "git_blob_sha1": "e51cfe6c902d19c71cb1a9c601240f4be89ea275",
+          "mode": 420,
+          "operation": "M",
+          "path": "core/application/loaded_file_peer_test.go",
+          "sha256": "24a8166415ae2872d6faf9acf9699f89faa6fca008e41e5ac2c2e96b74c47747"
+        },
+        {
+          "before_bytes": 7333,
+          "before_git_blob_sha1": "044138b768322033a2701ef5cfe8d287a6b79c4c",
+          "before_sha256": "6f47a85fb8872a94a6a37d0b0fba926e89ec99e282129aafd343e13f1d9336f3",
+          "bytes": 8509,
+          "git_blob_sha1": "536fe97a09f8ec338278887c5bcfb52a8090e326",
+          "mode": 420,
+          "operation": "M",
+          "path": "core/application/loaded_space_prefetch.go",
+          "sha256": "fdb5d1322be76a0d56f056fe97e5427d1f6dab0bd3202dbb262f3d4e180ed647"
+        }
+      ],
+      "original_deadlines_preserved": true,
+      "production_capture_attempts": 1,
+      "production_prefetch_attempts": 1,
+      "retained_scheduling_run_id": "45492064232",
+      "retained_successful_scopes_rerun": false,
+      "schema": "native-peer-census-continuation-delta-v1",
+      "source_census_transfer": "identifiers, native type, status, root/head SHA256 and head count only",
+      "transport_payloads_or_keys_copied": false
+    },
+    "namespace_peer_continuation": {
+      "additions": 1,
+      "base_heart_commit": "d2696b36d169f57f1bcb03c055384e5ec944d930",
+      "derived_heart_commit": "efd0d2d44e871966bf3c8edcc18db73a00ec699c",
+      "existing_changes": 2,
+      "files": [
+        {
+          "before_bytes": 15085,
+          "before_git_blob_sha1": "2ea4b96a48372e5b93155b89de2e742006e6bdab",
+          "before_sha256": "c71b823135a130efd7e34991dedb1296ff6365bb146fbe840a8bf1805eec21f1",
+          "bytes": 15366,
+          "git_blob_sha1": "75bf243221f65eca22fe86dd528c7a2c06fabee6",
+          "mode": 420,
+          "operation": "M",
+          "path": "core/application/loaded_file_peer_test.go",
+          "sha256": "b2a667972706ff0b4628e5d0a92b044baa8ad7b4c02c9c827bddbf084035d0b0"
+        },
+        {
+          "bytes": 6662,
+          "git_blob_sha1": "307b205b6b41e28df856bea66373b3f149074853",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_type_namespace_test.go",
+          "sha256": "9396daf191d54864db7499510ead1507cf47a89c327150820a584ebd23bd50d1"
+        },
+        {
+          "before_bytes": 14630,
+          "before_git_blob_sha1": "675f7e7a4f8f5f9ce0e04fb1ea9678446d1f27e4",
+          "before_sha256": "b5d8c44f628861b66ca913ae0e6bbaaf20e7564eacb44f1c0ed5959cfe34d947",
+          "bytes": 15893,
+          "git_blob_sha1": "4ed19cb451a755ad742e13b42c7d7ba51025672e",
+          "mode": 420,
+          "operation": "M",
+          "path": "pkg/lib/anyblockjson/storeresolver/captured.go",
+          "sha256": "4c70d8fe63e77e427d555c0ba2fbd9ec31488a5bd55d4540a2d30bd65ed91f9a"
+        }
+      ],
+      "previous_successful_methods_rerun": false,
+      "retained_json_run_id": "45472745870",
+      "schema": "native-type-namespace-peer-continuation-v1",
+      "unchanged_original_capture_authority": true
+    },
+    "original_physical_identity_reused": false,
+    "retained_graph_files": 11626,
+    "whole_source_derivation": {
+      "additions": 17,
+      "base_heart_commit": "256d3fd6cb4c2b0df67f67e01edfd8f9b76726f4",
+      "derived_heart_commit": "117bb74ece968cac02abb81c5cc49a418a98a60a",
+      "existing_changes": 1,
+      "files": [
+        {
+          "bytes": 8849,
+          "git_blob_sha1": "adfc6162dc9a01a372b1a73533ec3ec6f87b9eec",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_object_witness.go",
+          "sha256": "ed50bf44d97b4a31c7001df088f39d9c11e6f80604136b644d4e3bbd4d696b68"
+        },
+        {
+          "bytes": 9270,
+          "git_blob_sha1": "c6a7e21368d6182edd90d0e4add116d634c38749",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_object_witness_test.go",
+          "sha256": "4e5842dbd620d2db9ac2a97db572ab426594ec72b19e4b7fb3faabb9c5c63adc"
+        },
+        {
+          "bytes": 5577,
+          "git_blob_sha1": "258b6a5daf5b82ac0c6ff54246e42a203657bae9",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_space_bundle.go",
+          "sha256": "2ec9cd20783a4a9bc6ec77e74430e92a700d1b712024cfdcd074206a893c884a"
+        },
+        {
+          "bytes": 4079,
+          "git_blob_sha1": "502383faf5ab660afdf234acc265d4fac2767bde",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_space_keyvalue_test.go",
+          "sha256": "014bdfc5c962483caa9d4d0fa12a015b84fb58196e3dbad6ced693a13b67c74c"
+        },
+        {
+          "bytes": 18641,
+          "git_blob_sha1": "2e3043f35096a57c5e43d903e9386ed11f89f669",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_space_witness.go",
+          "sha256": "3d114497030308928a3286c076c30cc30b2bba237010f59112c264c0096799dc"
+        },
+        {
+          "bytes": 16337,
+          "git_blob_sha1": "a604d0befcf65b5704602fad26088c2ef0c6fe0d",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/application/loaded_space_witness_test.go",
+          "sha256": "df071288e93f163dde55a749aea042313a37f5f742a4dfbab74d81f77972d096"
+        },
+        {
+          "bytes": 5675,
+          "git_blob_sha1": "802c8c9270bf0e1eaa11c5729119e527efe60bee",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/block/export/native_file_references.go",
+          "sha256": "f966230a46fa0b7b6ee0cb05f6c73f134061e103ba8877f603d6991a2f657409"
+        },
+        {
+          "bytes": 9375,
+          "git_blob_sha1": "e507fbda09e97c8dec7bfe98f55a8e56dc0d2e7b",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/block/export/native_object_witness.go",
+          "sha256": "9c28929890ff9727313f46a0d281a89ede72ded1b151faba18470a9ec1a84e99"
+        },
+        {
+          "bytes": 9964,
+          "git_blob_sha1": "ece5893af11f3420c6472aeab4a342dc513fe903",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/block/export/native_raw_object.go",
+          "sha256": "464a248e994c59d1820680985e9e286822e5c56d86412ae8dbd5bfeb481308e8"
+        },
+        {
+          "bytes": 615,
+          "git_blob_sha1": "d4857df88aabde3dd2e41d63d1d0303b6e0301e3",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/files/filestorage/native_snapshot.go",
+          "sha256": "3ceb93b2b1dbc6070e991187266e46d022c9869f74be5ad78ecdd03c377fdc6c"
+        },
+        {
+          "bytes": 16148,
+          "git_blob_sha1": "c17a4deb6705246a93755d7a5c618aa9d0077f8e",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/files/native_capture.go",
+          "sha256": "f80985eef11d427fb460b0a2801a392c902f026430fad761c795b31002d31165"
+        },
+        {
+          "bytes": 998,
+          "git_blob_sha1": "85f82bb07982ce8705fed1d12c1419905b9e2626",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/pinkha/localstorewitness/native_inventory_collections.go",
+          "sha256": "bb783548287efec24187a712be452fdaad1714df8251ba5fba2a30be553eaf72"
+        },
+        {
+          "bytes": 3021,
+          "git_blob_sha1": "9f3b026de1ba68e850a9780678722f5a03b5a1a1",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/pinkha/localstorewitness/native_keyvalue_inventory.go",
+          "sha256": "c22ddce4628a194a8df5ae64ff7bde66889df65ce4d398abee396da2349caf14"
+        },
+        {
+          "bytes": 14320,
+          "git_blob_sha1": "544649cbe01a16f2c01a6f5e4c54f0025b650d73",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/pinkha/localstorewitness/native_tree_inventory.go",
+          "sha256": "efad05f960f4130526809a3512820e46f4989698e216229bb28715992646a52b"
+        },
+        {
+          "bytes": 7510,
+          "git_blob_sha1": "72ef87fa288e6f3c379b9a68f6409e75b4027c84",
+          "mode": 420,
+          "operation": "A",
+          "path": "core/pinkha/localstorewitness/native_tree_inventory_test.go",
+          "sha256": "cf32dd11d1b030f6a257ae8b57a1050439580fc3a4311987077b440a93011c85"
+        },
+        {
+          "bytes": 14630,
+          "git_blob_sha1": "675f7e7a4f8f5f9ce0e04fb1ea9678446d1f27e4",
+          "mode": 420,
+          "operation": "A",
+          "path": "pkg/lib/anyblockjson/storeresolver/captured.go",
+          "sha256": "b5d8c44f628861b66ca913ae0e6bbaaf20e7564eacb44f1c0ed5959cfe34d947"
+        },
+        {
+          "bytes": 779,
+          "git_blob_sha1": "cc2892009d5c54e9f872729f55a8303e292a0964",
+          "mode": 420,
+          "operation": "A",
+          "path": "pkg/lib/anyblockjson/storeresolver/read_index.go",
+          "sha256": "ea3ea3007c8dc1d72838937a99d585066ce8c01fa0ee7e1566ff5ff000b07c7b"
+        },
+        {
+          "before_bytes": 12304,
+          "before_git_blob_sha1": "2cdb63b7a0c0bd2a22285a1029d34620a38f9868",
+          "before_sha256": "5e61c9ff2f3416b0a532ccbe150a4271d549a3636a9ac514c3f5bf530fd66af9",
+          "bytes": 12297,
+          "git_blob_sha1": "f6796e5c58e985996e46a0b4a25c1ca64fbd7731",
+          "mode": 420,
+          "operation": "M",
+          "path": "pkg/lib/anyblockjson/storeresolver/storeresolver.go",
+          "replace_after": "index      readIndex",
+          "replace_before": "index      spaceindex.Store",
+          "sha256": "f245a096278f4ebd1e191d2ffa0efc15dd06a25916eb45acc51921a7100c2fa8"
+        }
+      ],
+      "schema": "native-whole-source-delta-v1",
+      "unchanged_original_capture_contract": true
+    }
+  },
+  "status": "FAIL",
+  "whole_source_heart_sha": "117bb74ece968cac02abb81c5cc49a418a98a60a"
+}

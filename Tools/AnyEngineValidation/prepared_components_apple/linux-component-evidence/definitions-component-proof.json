@@ -1,0 +1,46 @@
+{
+  "schema": "prepared-definition-native-component-v1",
+  "status": "PASS",
+  "new_top_level_controls": 6,
+  "regression_controls": 1,
+  "network_verified": false,
+  "whole_space_accepted": false,
+  "sdk_commit": "a76efdbda1ae21583e52c859f519d17c930928fc",
+  "any_commit": "8c836883f1a0540d25c7e1799b29c1bec349e60a",
+  "accepted_logs": [
+    "native-attempt1.log",
+    "native-crash-attempt1.log",
+    "http-attempt2.log",
+    "root-authority.log",
+    "ordinary-regression.log"
+  ],
+  "preserved_setup_failures": {
+    "http-attempt1.log": "isolated new checkout lacked staging.yml; refused before native execution; exact already-pinned local fixture installed before attempt2"
+  },
+  "logs": {
+    "http-attempt1.log": {
+      "bytes": 899,
+      "sha256": "3609316ac4314241544801ca0a58a0d08d74d88efdb160532f337bda929b2807"
+    },
+    "http-attempt2.log": {
+      "bytes": 13181,
+      "sha256": "72c9af3b51c625ddf88a6935fb09201cb477f4447d40eb149b3776091e2f213c"
+    },
+    "native-attempt1.log": {
+      "bytes": 165815,
+      "sha256": "10ea1e762ee91d5c898dd70494053d3c44875ce8dc9bfc0e950d5e5f9db2221f"
+    },
+    "native-crash-attempt1.log": {
+      "bytes": 22396,
+      "sha256": "27f7004028c0eea969eb607db5e7738c690fdc23907e16948125f241bc151e46"
+    },
+    "ordinary-regression.log": {
+      "bytes": 131503,
+      "sha256": "3a8c50d6ccf18870e94793722bba9b8a25b0b15c691aa760d21183f1b6a033a2"
+    },
+    "root-authority.log": {
+      "bytes": 3035,
+      "sha256": "20ad97bda3ad265807e6027d8136ef998fcfaa64d6bd9eb983d51e1d37f457f0"
+    }
+  }
+}

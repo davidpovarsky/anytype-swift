@@ -1,0 +1,33 @@
+{
+  "sourceCommit": "e8e8252db0412d793d235cadd5a5258633aa49b9",
+  "sourceTrees": {
+    "Modules/PinkhaAnyHost": "ae51763c39a61cda83ed19eb5c2cef1edde64338",
+    "Modules/PinkhaAnyEngine": "c093b71f098da91aadcfae1010bb47af0a0d1add",
+    "Modules/PinkhaAnyIntegration": "3dfd9c0b395f1435a98ccd4eb6858c148a464047",
+    "Modules/PinkhaKit": "af9356ff6f6420d0521a80d80f323b1db8c72275"
+  },
+  "startedAt": "2026-11-25T02:21:24.064408+00:00",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "2",
+    "--skip-update",
+    "--filter",
+    "NativeDefinitionPlanTests|NativePageCompositionTests|AnyDestinationMigrationExecutorTests"
+  ],
+  "environment": {
+    "PINKHA_NATIVE_SOURCE_FIXTURE": "/mnt/development/projects/evidence/native-json-source-fixture-45472745870",
+    "PINKHA_NATIVE_CUSTOM_SOURCE_FIXTURE": "/mnt/development/projects/evidence/native-custom-source-fixture-45492064232"
+  },
+  "scope": "Affected cross-component integration of original captured definition/page/presentation mappings with destination orchestration. Host controls and source parsing; no native destination write or whole-space acceptance claimed.",
+  "expectedMethods": 23
+}

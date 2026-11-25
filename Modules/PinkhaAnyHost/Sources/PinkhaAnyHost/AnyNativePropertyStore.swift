@@ -182,8 +182,9 @@ public struct AnyNativePropertySnapshot: Sendable {
     public var nativeVersion: AnyJSON { fence.nativeVersion }
     public let catalog: AnyNativePropertyCatalog
     public let rows: [AnyNativePropertyRow]
-    /// All persisted keys, including unknown future keys. A hide/show mutation
-    /// composes from this set and carries the complete native version.
+    /// Effective hidden keys: persisted keys (including unknown future keys),
+    /// or explicit imported-Type defaults until preferences are first stored.
+    /// A hide/show mutation composes from this set and carries the native version.
     public let hiddenPropertyKeys: Set<String>
     public let presentationAttached: Bool
     public let canWrite: Bool
@@ -707,6 +708,9 @@ public struct AnyNativePropertyStore: Sendable {
         _ = try AnyHostCanonical.bytes(raw, maximumBytes: 4_194_304)
         let fence = try AnyConditionalPropertyFence(record: raw, engineStartedAt: catalog.engineStartedAt)
         let membership = try membership(raw)
+        let imported = try AnyNativeImportedTypePresentation(
+            type: catalog.types.first { $0.id == membership.typeID }, catalog: catalog,
+            collectionIDs: membership.collections, definitions: definitions, raw: raw)
         var hidden: [String] = []
         if let value = raw[Self.presentationCollectionID]?[Self.hiddenPropertiesID] {
             guard let values = value.array, values.allSatisfy({ $0.string != nil }) else {
@@ -714,13 +718,19 @@ public struct AnyNativePropertyStore: Sendable {
             }
             hidden = values.compactMap(\.string)
             try validateHiddenKeys(hidden)
+        } else if let imported {
+            // An attached presentation collection can still lack its first
+            // preference value. Keep defaults until the explicit array is stored;
+            // an explicit empty array then persistently means "show all".
+            hidden = Array(imported.defaultHiddenKeys)
         }
         let hiddenSet = Set(hidden)
         let rootMetadata: Set<String> = ["id", "author", "spaceId", "createdAt", "modifiedAt", "modifiedBy"]
-        let rows = definitions.sorted {
+        let orderedDefinitions = imported?.ordered(definitions) ?? definitions.sorted {
             $0.key.ownerID == $1.key.ownerID ?
                 utf8Less($0.key.propertyID, $1.key.propertyID) : utf8Less($0.key.ownerID, $1.key.ownerID)
-        }.map { definition in
+        }
+        let rows = orderedDefinitions.map { definition in
             let key = definition.key
             let value = key.ownerID == "any" && definition.scope == "derived" && rootMetadata.contains(key.propertyID) ?
                 raw[key.propertyID] : raw[key.ownerID]?[key.propertyID]

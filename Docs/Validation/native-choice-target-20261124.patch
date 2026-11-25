@@ -1,0 +1,203 @@
+diff --git a/internal/server/handlers_pinkha_migration_choice_test.go b/internal/server/handlers_pinkha_migration_choice_test.go
+new file mode 100644
+index 0000000..58c0266
+--- /dev/null
++++ b/internal/server/handlers_pinkha_migration_choice_test.go
+@@ -0,0 +1,197 @@
++package server
++
++import (
++	"context"
++	"encoding/json"
++	"net/http"
++	"testing"
++
++	"github.com/anyproto/any-sync-sdk/space"
++	"github.com/anyproto/any/internal/api"
++	"github.com/stretchr/testify/require"
++)
++
++// Target component acceptance on actual native stores. These option descriptors
++// are owned fixture data, not a claim of source Heart capture or UI acceptance.
++func TestPreparedChoiceHTTPNativeValuesAndCanonicalNameSurviveReopen(t *testing.T) {
++	d, router, sp, _, cap := inlineHTTPFixture(t)
++	ctx := context.Background()
++	base := "/v1/spaces/" + sp.Id()
++	intents := base + "/pinkha/migration/intents/"
++	assertNativeName := func() {
++		response := doJSON(t, router, http.MethodGet, base+"/types/any/properties", "")
++		require.Equal(t, http.StatusOK, response.Code, response.Body.String())
++		var defs api.PropertiesListResponse
++		require.NoError(t, json.Unmarshal(response.Body.Bytes(), &defs))
++		var names []api.PropertyDef
++		for _, def := range defs.Properties {
++			if def.Id == "name" {
++				names = append(names, def)
++			}
++		}
++		require.Len(t, names, 1)
++		actual, err := json.Marshal(names[0])
++		require.NoError(t, err)
++		require.JSONEq(t, `{"id":"name","name":"Name","description":"Display name.","kind":"string","scope":"synced","xFormat":{"type":"text"}}`, string(actual))
++	}
++	assertNativeName()
++	migrate := func(source, kind string, spec any) (space.MigrationReceipt, string) {
++		if kind == "definition" {
++			cap.Contract = space.PreparedDefinitionContract
++		} else {
++			cap.Contract = space.PreparedMigrationContract
++		}
++		raw, err := json.Marshal(spec)
++		require.NoError(t, err)
++		id, body := inlineHTTPRequest(t, cap, source, raw)
++		response := doJSON(t, router, http.MethodPut, intents+id+"/"+kind+"/prepare", body)
++		require.Equal(t, http.StatusOK, response.Code, response.Body.String())
++		var receipt space.MigrationReceipt
++		require.NoError(t, json.Unmarshal(response.Body.Bytes(), &receipt))
++		commitPath := intents + id
++		if kind == "definition" {
++			commitPath += "/definition"
++		}
++		for step := 0; receipt.Stage != "complete" && step < 3; step++ {
++			receipt = preparedCollectionCommit(t, router, commitPath, receipt)
++		}
++		require.Equal(t, "complete", receipt.Stage)
++		require.Equal(t, "committed", receipt.Outcome)
++		return receipt, commitPath
++	}
++	owner, _ := migrate("choice/native-owner", "definition", map[string]any{
++		"kind": "collectionDefinition", "collection": map[string]any{"name": "Captured choice namespace", "xKey": "captured-choice-namespace"},
++	})
++	makeFormat := func(multiple bool) json.RawMessage {
++		value := map[string]any{"type": "choice", "config": map[string]any{"multiple": multiple},
++			"options": map[string]any{
++				"sourceOptionAlpha": map[string]any{"name": "בחירה — a\u0301", "color": "blue", "pos": "z-actual",
++					"meta": map[string]string{"sourceID": "sourceOptionAlpha", "fixture": "owned target component"}},
++				"sourceOptionBeta": map[string]any{"name": "Second", "color": "red", "pos": "a-actual",
++					"meta": map[string]string{"sourceID": "sourceOptionBeta", "fixture": "owned target component"}},
++			}}
++		raw, err := json.Marshal(value)
++		require.NoError(t, err)
++		return raw
++	}
++	formats := map[string]json.RawMessage{"status": makeFormat(false), "tags": makeFormat(true)}
++	ids := map[string]string{}
++	for _, key := range []string{"status", "tags"} {
++		receipt, _ := migrate("choice/property/"+key, "definition", api.MigrationDefinitionSpec{
++			Kind: space.MigrationPropertyDefinition, OwnerObjectID: owner.ObjectID,
++			Property: &api.AddPropertyRequest{Name: key, Kind: "array", XKey: "captured-" + key, Scope: "synced", XFormat: formats[key]},
++		})
++		require.Len(t, receipt.RecordIDs, 1)
++		ids[key] = receipt.RecordIDs[0]
++	}
++	address := func(owner, property string) map[string]any {
++		return map[string]any{"ownerId": owner, "propertyId": property}
++	}
++	layout := map[string]any{"type": "page", "config": map[string]any{"pinkhaHeart": map[string]any{
++		"contract": "pinkha-heart-native-type-presentation-v2", "sourceRecommendedLayout": 0, "propertyOwnerId": owner.ObjectID,
++		"recommended": []any{address("any", "name"), address(owner.ObjectID, ids["tags"])},
++		"featured":    []any{address(owner.ObjectID, ids["status"])}, "hidden": []any{}, "files": []any{},
++		"definitionHidden": []any{address("any", "name")},
++	}}}
++	typ, _ := migrate("choice/type", "definition", map[string]any{"kind": "typeDefinition",
++		"type": map[string]any{"name": "Captured custom page", "xKey": "captured_custom_type", "layout": layout}})
++	part, _ := migrate("choice/editor-part", "definition", map[string]any{"kind": "partDefinition", "ownerObjectId": typ.ObjectID,
++		"part": map[string]any{"key": "content", "name": "Content", "ui": map[string]any{"type": "document"},
++			"datasets": []any{map[string]any{"module": "editor", "key": "editor_blocks"}}}})
++	require.Len(t, part.RecordIDs, 2)
++	empty, _ := migrate("choice/empty-values", "object", api.MigrationObjectSpec{Type: typ.ObjectID, Collections: []string{owner.ObjectID},
++		InitialProperties: map[string]map[string]any{"any": {"name": ""}, owner.ObjectID: {ids["status"]: []any{}, ids["tags"]: []any{}}},
++	})
++	const title = "כותרת מקור — a\u0301"
++	selected, _ := migrate("choice/selected-values", "object", api.MigrationObjectSpec{Type: typ.ObjectID, Collections: []string{owner.ObjectID},
++		InitialProperties: map[string]map[string]any{"any": {"name": title}},
++	})
++	row, err := sp.Properties().Get(ctx, selected.ObjectID)
++	require.NoError(t, err)
++	sequence := uint64(row.GetInt("_applySeq"))
++	require.Positive(t, sequence)
++	cap.Contract = space.PreparedPropertyUpdateContract
++	for _, bad := range []struct {
++		source string
++		patch  map[string]any
++	}{
++		{"too-many-status", map[string]any{ids["status"]: []any{"sourceOptionAlpha", "sourceOptionBeta"}}},
++		{"not-an-array", map[string]any{ids["tags"]: "sourceOptionAlpha"}},
++		{"empty-option-key", map[string]any{ids["tags"]: []any{""}}},
++	} {
++		raw, err := json.Marshal(space.MigrationPropertyUpdateSpec{ObjectID: selected.ObjectID, OwnerID: owner.ObjectID,
++			Patch: bad.patch, ExpectedApplySeq: sequence})
++		require.NoError(t, err)
++		id, body := inlineHTTPRequest(t, cap, "choice/refusal/"+bad.source, raw)
++		path := intents + id + "/property-update"
++		response := doJSON(t, router, http.MethodPut, path+"/prepare", body)
++		require.Equal(t, http.StatusBadRequest, response.Code, response.Body.String())
++		response = doJSON(t, router, http.MethodGet, path, "")
++		require.Equal(t, http.StatusNotFound, response.Code, response.Body.String())
++	}
++	patch := map[string]any{ids["status"]: []any{"sourceOptionBeta"}, ids["tags"]: []any{"sourceOptionAlpha", "sourceOptionBeta"}}
++	raw, err := json.Marshal(space.MigrationPropertyUpdateSpec{ObjectID: selected.ObjectID, OwnerID: owner.ObjectID,
++		Patch: patch, ExpectedApplySeq: sequence})
++	require.NoError(t, err)
++	id, body := inlineHTTPRequest(t, cap, "choice/original-values", raw)
++	path := intents + id + "/property-update"
++	response := doJSON(t, router, http.MethodPut, path+"/prepare", body)
++	require.Equal(t, http.StatusOK, response.Code, response.Body.String())
++	var prepared space.MigrationReceipt
++	require.NoError(t, json.Unmarshal(response.Body.Bytes(), &prepared))
++	complete := preparedCollectionCommit(t, router, path, prepared)
++	require.Equal(t, "committed", complete.Outcome)
++	require.Equal(t, prepared.ChangeID, complete.ChangeID)
++
++	router, sp = preparedCollectionReopen(t, d, sp.Id())
++	assertNativeName()
++	recoveredType, err := sp.Types().Get(ctx, typ.ObjectID)
++	require.NoError(t, err)
++	expectedLayout, err := json.Marshal(layout)
++	require.NoError(t, err)
++	actualLayout, err := json.Marshal(recoveredType.Layout)
++	require.NoError(t, err)
++	require.JSONEq(t, string(expectedLayout), string(actualLayout))
++	response = doJSON(t, router, http.MethodGet, base+"/collections/"+owner.ObjectID+"/properties", "")
++	require.Equal(t, http.StatusOK, response.Code, response.Body.String())
++	var defs api.PropertiesListResponse
++	require.NoError(t, json.Unmarshal(response.Body.Bytes(), &defs))
++	require.Len(t, defs.Properties, 2)
++	for _, definition := range defs.Properties {
++		key := "status"
++		if definition.Id == ids["tags"] {
++			key = "tags"
++		}
++		require.Equal(t, ids[key], definition.Id)
++		require.Equal(t, "captured-"+key, definition.XKey)
++		require.JSONEq(t, string(formats[key]), string(definition.XFormat))
++	}
++	for _, object := range []struct {
++		receipt      space.MigrationReceipt
++		title        string
++		status, tags []string
++	}{
++		{empty, "", []string{}, []string{}}, {selected, title, []string{"sourceOptionBeta"}, []string{"sourceOptionAlpha", "sourceOptionBeta"}},
++	} {
++		row, err := sp.Properties().Get(ctx, object.receipt.ObjectID)
++		require.NoError(t, err)
++		require.Equal(t, object.title, string(row.GetStringBytes("any", "name")))
++		for key, expected := range map[string][]string{"status": object.status, "tags": object.tags} {
++			value := row.Get(owner.ObjectID, ids[key])
++			require.NotNil(t, value, "empty and absent are distinct")
++			array, err := value.Array()
++			require.NoError(t, err)
++			actual := make([]string, len(array))
++			for i, value := range array {
++				actual[i] = string(value.GetStringBytes())
++			}
++			require.Equal(t, expected, actual)
++		}
++	}
++	response = doJSON(t, router, http.MethodGet, path, "")
++	require.Equal(t, http.StatusOK, response.Code, response.Body.String())
++	var recovered space.MigrationReceipt
++	require.NoError(t, json.Unmarshal(response.Body.Bytes(), &recovered))
++	require.Equal(t, complete, recovered)
++	t.Log("native_choice_target prepared_definition=true exact_options_metadata_order=true original_source_keys=true empty_values_distinct=true cardinality_and_shape_refused_before_reservation=true canonical_name_contract_and_value=true original_v2_presentation_and_definition_hidden=true orderly_reopen=true ui_acceptance=false")
++}
