@@ -1490,9 +1490,16 @@ final class NativeLaunchTests: XCTestCase {
                     return false
                 }
                 let element = query.element(boundBy: 0)
-                let frame = element.frame
-                guard element.exists, element.isEnabled, element.isHittable,
-                      labels.map({ $0.contains(element.label) }) ?? true,
+                // Read the related attributes from one real accessibility
+                // snapshot. Independent cross-process property reads can consume
+                // this unchanged readiness budget before a second stable sample.
+                guard element.exists, let snapshot = try? element.snapshot() else {
+                    previousFrame = nil; firstMatchingSample = nil
+                    return false
+                }
+                let frame = snapshot.frame
+                guard snapshot.isEnabled, element.isHittable,
+                      labels.map({ $0.contains(snapshot.label) }) ?? true,
                       !frame.isNull, !frame.isInfinite, frame.width > 0, frame.height > 0 else {
                     previousFrame = nil; firstMatchingSample = nil
                     return false
