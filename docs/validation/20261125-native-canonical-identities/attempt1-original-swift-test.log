@@ -1,0 +1,62 @@
+Building for debugging...
+[Computing dependencies]
+[Provisioning 15 / 19]
+[Using on-disk description]
+[1 / 4] PinkhaAnyHost
+[2 / 5] PinkhaAnyHost
+[8 / 11] PinkhaAnyHost
+[10 / 14] PinkhaAnyHost
+[12 / 16] CCryptoBoringSSL
+[13 / 14] PinkhaAnyHost
+[14 / 18] pinkha-any-host-probe-product
+[17 / 17] pinkha-any-host-probe-product
+[20 / 25] PinkhaAnyHost-product
+[23 / 28] PinkhaAnyHostTests-product
+[24 / 28] PinkhaAnyHostTests-product
+[26 / 32] PinkhaAnyHostTests-product
+[29 / 34] PinkhaAnyHostTests-product
+[30 / 34] PinkhaAnyHostTests-product
+[32 / 39] PinkhaAnyHostTests-test-runner
+[34 / 41] PinkhaAnyHostTests-test-runner
+[36 / 39] PinkhaAnyHostTests-test-runner
+[40 / 40] PinkhaAnyHostTests-test-runner
+Build complete! (32.50 secs)
+Test Suite 'Selected tests' started at 2026-11-25 16:01:57.124
+Test Suite 'NativeDefinitionPlanTests' started at 2026-11-25 16:01:57.135
+Test Case 'NativeDefinitionPlanTests.testCanonicalDescriptionRefusesOverridesAndRequiresExactLiveDescriptor' started at 2026-11-25 16:01:57.135
+Test Case 'NativeDefinitionPlanTests.testCanonicalDescriptionRefusesOverridesAndRequiresExactLiveDescriptor' passed (0.052 seconds)
+Test Case 'NativeDefinitionPlanTests.testCanonicalDescriptionSharesNativeNamespaceWithoutChangingTitleIdentity' started at 2026-11-25 16:01:57.187
+Test Case 'NativeDefinitionPlanTests.testCanonicalDescriptionSharesNativeNamespaceWithoutChangingTitleIdentity' passed (0.15 seconds)
+Test Case 'NativeDefinitionPlanTests.testCanonicalNameHasOneNativeAddressAndMixedOwnerValuesPreserveAbsence' started at 2026-11-25 16:01:57.337
+Test Case 'NativeDefinitionPlanTests.testCanonicalNameHasOneNativeAddressAndMixedOwnerValuesPreserveAbsence' passed (0.057 seconds)
+Test Case 'NativeDefinitionPlanTests.testCanonicalNameOverridesShadowingAndChangedNativeContractsRefuse' started at 2026-11-25 16:01:57.394
+Test Case 'NativeDefinitionPlanTests.testCanonicalNameOverridesShadowingAndChangedNativeContractsRefuse' passed (0.139 seconds)
+Test Case 'NativeDefinitionPlanTests.testCanonicalSystemIdentityConsumesOnlyMatchingContextWithoutPropertyWrites' started at 2026-11-25 16:01:57.533
+<EXPR>:0: error: NativeDefinitionPlanTests.testCanonicalSystemIdentityConsumesOnlyMatchingContextWithoutPropertyWrites : threw error "duplicateObjectID("native-type")"
+Test Case 'NativeDefinitionPlanTests.testCanonicalSystemIdentityConsumesOnlyMatchingContextWithoutPropertyWrites' failed (0.008 seconds)
+Test Case 'NativeDefinitionPlanTests.testCanonicalSystemIdentityDefinitionsUseOriginalNativeAddressesAndTargetEvidence' started at 2026-11-25 16:01:57.541
+Test Case 'NativeDefinitionPlanTests.testCanonicalSystemIdentityDefinitionsUseOriginalNativeAddressesAndTargetEvidence' passed (0.075 seconds)
+Test Case 'NativeDefinitionPlanTests.testCanonicalSystemIdentityOverridesAndForeignCapturedTargetTypeRefuse' started at 2026-11-25 16:01:57.616
+Test Case 'NativeDefinitionPlanTests.testCanonicalSystemIdentityOverridesAndForeignCapturedTargetTypeRefuse' passed (0.046 seconds)
+Test Case 'NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance' started at 2026-11-25 16:01:57.662
+NATIVE_CUSTOM_CAPTURE_DIAGNOSTIC snapshots=156 types=20 relations=126 options=4 source_method=FAIL destination_writes=false originals_unchanged=true
+Test Case 'NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance' passed (2.436 seconds)
+Test Suite 'NativeDefinitionPlanTests' failed at 2026-11-25 16:02:00.098
+	 Executed 8 tests, with 1 failure (1 unexpected) in 2.963 (2.963) seconds
+Test Suite 'NativeImportedTypePresentationTests' started at 2026-11-25 16:02:00.098
+Test Case 'NativeImportedTypePresentationTests.testCanonicalDescriptionRejectsWrongNativeKindOrScopeAndUnknownBuiltin' started at 2026-11-25 16:02:00.098
+Test Case 'NativeImportedTypePresentationTests.testCanonicalDescriptionRejectsWrongNativeKindOrScopeAndUnknownBuiltin' passed (0.104 seconds)
+Test Case 'NativeImportedTypePresentationTests.testCanonicalDescriptionUsesItsNativeAddressAndPreservesSourceText' started at 2026-11-25 16:02:00.202
+Test Case 'NativeImportedTypePresentationTests.testCanonicalDescriptionUsesItsNativeAddressAndPreservesSourceText' passed (0.006 seconds)
+Test Case 'NativeImportedTypePresentationTests.testCanonicalDescriptionVisibilityReopensWithoutASecondBusinessValue' started at 2026-11-25 16:02:00.209
+Test Case 'NativeImportedTypePresentationTests.testCanonicalDescriptionVisibilityReopensWithoutASecondBusinessValue' passed (0.003 seconds)
+Test Case 'NativeImportedTypePresentationTests.testCanonicalSystemIdentitiesUseNativeRootsAndRemainReadOnly' started at 2026-11-25 16:02:00.211
+Test Case 'NativeImportedTypePresentationTests.testCanonicalSystemIdentitiesUseNativeRootsAndRemainReadOnly' passed (0.001 seconds)
+Test Case 'NativeImportedTypePresentationTests.testUnsupportedLayoutsAmbiguousPairsAndForeignOwnersCannotChangePresentation' started at 2026-11-25 16:02:00.212
+Test Case 'NativeImportedTypePresentationTests.testUnsupportedLayoutsAmbiguousPairsAndForeignOwnersCannotChangePresentation' passed (0.005 seconds)
+Test Suite 'NativeImportedTypePresentationTests' passed at 2026-11-25 16:02:00.217
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.118 (0.118) seconds
+Test Suite 'Selected tests' failed at 2026-11-25 16:02:00.217
+	 Executed 13 tests, with 1 failure (1 unexpected) in 3.081 (3.081) seconds
+Note: Some test targets reported failures:
+  - PinkhaAnyHostTests (XCTest)
