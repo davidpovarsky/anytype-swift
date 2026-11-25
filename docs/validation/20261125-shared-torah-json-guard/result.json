@@ -1,0 +1,31 @@
+{
+  "appBuilds": 0,
+  "baseCommit": "643c7d8b7091f010b5b5a00bab050e54b123648b",
+  "cleanup": [],
+  "command": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/evidence/page154-final-validation-20261125/shared-json-guard-components/attempt1/package",
+    "--scratch-path",
+    "/mnt/development/projects/evidence/page154-final-validation-20261125/shared-json-guard-components/attempt1/build",
+    "--jobs",
+    "2",
+    "--xunit-output",
+    "/mnt/development/projects/evidence/page154-final-validation-20261125/shared-json-guard-components/attempt1/original.xml",
+    "--filter",
+    "TorahSourceJSONGuardTests|AnyOriginalSourceJSONGuardControls"
+  ],
+  "elapsed": 23.243234559893608,
+  "error": "FileNotFoundError(2, 'No such file or directory')",
+  "exitCode": 0,
+  "nativeCalls": 0,
+  "ownedGroupAbsent": true,
+  "pgid": 2250686,
+  "pid": 2250686,
+  "scope": "Shared PinkhaKit JSON guard and Any compatibility surface; not full Any integration or Apple acceptance",
+  "started": 1795645272.4250033,
+  "status": "FAIL",
+  "torahCoreCommit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "traceback": "Traceback (most recent call last):\n  File \"/mnt/development/projects/worktrees/page154-final-event-20261125/Tools/TorahNativeOperations/heart_association_repository/qualify_json_guard.py\", line 133, in main\n    tree=ET.parse(a.root/\"original.xml\")\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/xml/etree/ElementTree.py\", line 1204, in parse\n    tree.parse(source, parser)\n  File \"/usr/lib/python3.12/xml/etree/ElementTree.py\", line 558, in parse\n    source = open(source, \"rb\")\n             ^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/mnt/development/projects/evidence/page154-final-validation-20261125/shared-json-guard-components/attempt1/original.xml'\n"
+}
