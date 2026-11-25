@@ -877,6 +877,12 @@ extension TorahT5NativePaginationTests {
             expectedVersion = T5NativeRelatedLookupCapability.coherentRuntimeVersion
             try require(environment["PINKHA_T5_ACCOUNT_RETRY_RUNTIME_VERSION"] == expectedVersion,
                 "coherent-pending-runtime-binding-required")
+        #if PINKHA_DUAL_ENGINE_RUNTIME
+        case "dual-engine-runtime-v1":
+            expectedVersion = T5NativeRelatedLookupCapability.unifiedRuntimeVersion
+            try require(environment["PINKHA_T5_ACCOUNT_RETRY_RUNTIME_VERSION"] == expectedVersion,
+                "combined-pending-runtime-binding-required")
+        #endif
         default:
             throw T5PaginationFailure.invariant("unknown-pending-runtime-profile")
         }
