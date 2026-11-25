@@ -1,0 +1,34 @@
+{
+  "started": "2026-11-24T17:10:03.868818+00:00",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-migration-coordinator-20261124/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "1",
+    "--filter",
+    "NativePreparedDefinitionMigrationTests"
+  ],
+  "version": "Swift version 6.4.3 (swift-6.4.3-RELEASE)\nTarget: aarch64-unknown-linux-gnu",
+  "sourceBefore": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedDefinitionMigration.swift": "cc811c39b34c8d2630c95bd6e9afb079d8a96fc6d4c2651d025d33bd302af38b",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePreparedDefinitionMigrationTests.swift": "7aae1c4235028ac9896b112d998d64b071402c4cc5244fdd7855cf6cdeb4a825"
+  },
+  "pid": 3622190,
+  "exitCode": 0,
+  "finished": "2026-11-24T17:11:34.717455+00:00",
+  "sourceAfter": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedDefinitionMigration.swift": "cc811c39b34c8d2630c95bd6e9afb079d8a96fc6d4c2651d025d33bd302af38b",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePreparedDefinitionMigrationTests.swift": "7aae1c4235028ac9896b112d998d64b071402c4cc5244fdd7855cf6cdeb4a825"
+  },
+  "sourceStable": true,
+  "logSHA256": "dace13d89fa214147a4a1db0096646d996e94e82a33f50bc3c2b56ac12342853",
+  "tail": "[38\u2009/\u200971] Crypto\n[38\u2009/\u200972] Crypto\n[42\u2009/\u200977] CryptoBoringWrapper\n[45\u2009/\u200977] Crypto\n[47\u2009/\u200977] Crypto\n[49\u2009/\u200980] PinkhaAnyEngine\n[52\u2009/\u200984] PinkhaAnyEngine\n[53\u2009/\u200984] PinkhaAnyEngine\n[54\u2009/\u200984] PinkhaAnyEngine\n[61\u2009/\u200987] PinkhaAnyEngine\n[64\u2009/\u200990] PinkhaAnyIntegration\n[65\u2009/\u200993] PinkhaAnyIntegration\n[67\u2009/\u200993] PinkhaAnyIntegration\n[69\u2009/\u200993] PinkhaAnyIntegration\n[71\u2009/\u200994] PinkhaAnyIntegration\n[75\u2009/\u200996] PinkhaAnyHost\n[77\u2009/\u200999] PinkhaAnyHost\n[80\u2009/\u200998] PinkhaAnyHost\n[86\u2009/\u2009102] PinkhaAnyHostTests-product\n[88\u2009/\u2009108] PinkhaAnyHostTests-product\n[92\u2009/\u2009107] PinkhaAnyHostTests-product\n[95\u2009/\u2009107] PinkhaAnyHostTests-product\n[96\u2009/\u2009108] pinkha-any-host-probe-product\n[98\u2009/\u2009110] pinkha-any-host-probe-product\n[100\u2009/\u2009112] pinkha-any-host-probe-product\n[104\u2009/\u2009112] PinkhaAnyHostTests-product\n[106\u2009/\u2009112] PinkhaAnyHost-product\n[106\u2009/\u2009112] pinkha-any-host-probe-product\n[107\u2009/\u2009112] pinkha-any-host-probe-product\n[111\u2009/\u2009118] PinkhaAnyHostTests-test-runner\n[114\u2009/\u2009118] PinkhaAnyHostTests-test-runner\n[118\u2009/\u2009118] AllIncludingTests\nBuild complete! (87.89 secs)\nTest Suite 'Selected tests' started at 2026-11-24 17:11:34.585\nTest Suite 'NativePreparedDefinitionMigrationTests' started at 2026-11-24 17:11:34.597\nTest Case 'NativePreparedDefinitionMigrationTests.testChangedStoreOrMissingPartCapabilityStopsBeforeMutation' started at 2026-11-24 17:11:34.597\nTest Case 'NativePreparedDefinitionMigrationTests.testChangedStoreOrMissingPartCapabilityStopsBeforeMutation' passed (0.014 seconds)\nTest Case 'NativePreparedDefinitionMigrationTests.testLogicalIdentityAndExactSpecificationRemainSeparate' started at 2026-11-24 17:11:34.612\nTest Case 'NativePreparedDefinitionMigrationTests.testLogicalIdentityAndExactSpecificationRemainSeparate' passed (0.003 seconds)\nTest Case 'NativePreparedDefinitionMigrationTests.testPropertyAndAtomicPartReuseCompleteOrderedRecordIDs' started at 2026-11-24 17:11:34.615\nTest Case 'NativePreparedDefinitionMigrationTests.testPropertyAndAtomicPartReuseCompleteOrderedRecordIDs' passed (0.002 seconds)\nTest Case 'NativePreparedDefinitionMigrationTests.testReceiptBindsEveryIdentityAndNativeStage' started at 2026-11-24 17:11:34.617\nTest Case 'NativePreparedDefinitionMigrationTests.testReceiptBindsEveryIdentityAndNativeStage' passed (0.002 seconds)\nTest Case 'NativePreparedDefinitionMigrationTests.testRevokedOwnerAfterDispatchCannotPublishReceipt' started at 2026-11-24 17:11:34.618\nTest Case 'NativePreparedDefinitionMigrationTests.testRevokedOwnerAfterDispatchCannotPublishReceipt' passed (0.002 seconds)\nTest Case 'NativePreparedDefinitionMigrationTests.testSeedsRefuseUnboundedOrForeignCreationFields' started at 2026-11-24 17:11:34.620\nTest Case 'NativePreparedDefinitionMigrationTests.testSeedsRefuseUnboundedOrForeignCreationFields' passed (0.01 seconds)\nTest Case 'NativePreparedDefinitionMigrationTests.testTerminalOutcomesAndChangedBatchCannotRecreateDefinitions' started at 2026-11-24 17:11:34.630\nTest Case 'NativePreparedDefinitionMigrationTests.testTerminalOutcomesAndChangedBatchCannotRecreateDefinitions' passed (0.004 seconds)\nTest Case 'NativePreparedDefinitionMigrationTests.testThreeRootStagesAndLostAcknowledgementKeepOriginalIDs' started at 2026-11-24 17:11:34.634\nTest Case 'NativePreparedDefinitionMigrationTests.testThreeRootStagesAndLostAcknowledgementKeepOriginalIDs' passed (0.001 seconds)\nTest Suite 'NativePreparedDefinitionMigrationTests' passed at 2026-11-24 17:11:34.635\n\t Executed 8 tests, with 0 failures (0 unexpected) in 0.038 (0.038) seconds\nTest Suite 'Selected tests' passed at 2026-11-24 17:11:34.635\n\t Executed 8 tests, with 0 failures (0 unexpected) in 0.038 (0.038) seconds"
+}

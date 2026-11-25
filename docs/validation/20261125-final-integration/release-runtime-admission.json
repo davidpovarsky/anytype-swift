@@ -1,0 +1,31 @@
+{
+  "schema": "pinkha.release-runtime-requalification.v1",
+  "date": "2026-11-25",
+  "source_base": "8da18fce1b59a10a9bd46f0dc3becd810d45dc80",
+  "original_consumer_run": "45526400875",
+  "original_consumer_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45526400875",
+  "original_status": "FAIL",
+  "phase": "install-verified-runtime",
+  "error": "Consumer shared modules differ from those actually executed in the admitted Apple proof",
+  "completed_controller_tests": 27,
+  "app_builds": 0,
+  "ui_builds": 0,
+  "product_tests": 0,
+  "previous_apple_producer": "45046643716",
+  "unchanged_native_framework_producer": "45035194823",
+  "required_action": "Execute the existing real Apple authority fixture against the current shared Swift modules, retaining original native framework bytes and lineage.",
+  "modified_product_files": [
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift"
+  ],
+  "new_product_files": [
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahSemanticAnchorAssociation.swift",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTextAnchor.swift"
+  ],
+  "new_control_files": [
+    "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahSemanticAnchorAssociationTests.swift",
+    "Modules/PinkhaKit/Tests/PinkhaKitTests/Editor/PinkhaSemanticTextAnchorTests.swift"
+  ],
+  "admission_policy": "Keep all existing native/source/module equality, original failure, and real Apple execution requirements.",
+  "new_apple_execution": "NOT_RUN",
+  "release_acceptance": "INCOMPLETE"
+}

@@ -23,7 +23,7 @@ public enum AnyEmbeddedRuntimeError: Error, Equatable, Sendable {
 }
 
 /// Selects the native code contract, independently of which network is used.
-/// A native application must explicitly request pinkhaNativeV1.
+/// A native application explicitly requests its linked, qualified application build.
 public enum AnyEmbeddedBuild: String, Sendable, Codable {
     case upstreamV050
     case pinkhaNativeV1
@@ -32,10 +32,19 @@ public enum AnyEmbeddedBuild: String, Sendable, Codable {
     #endif
     case pinkhaPreparedMigrationCandidateV1
     case pinkhaPreparedInlineMigrationCandidateV1
+    case pinkhaPreparedFileMigrationCandidateV1
+    case pinkhaPreparedComponentsCandidateV1
+    case pinkhaPreparedComponentsCandidateV2
 
     public static var linked: Self {
         #if PINKHA_DUAL_ENGINE_RUNTIME
         return .pinkhaUnifiedV1
+        #elseif PINKHA_PREPARED_COMPONENTS_V2_RUNTIME
+        return .pinkhaPreparedComponentsCandidateV2
+        #elseif PINKHA_PREPARED_COMPONENTS_RUNTIME
+        return .pinkhaPreparedComponentsCandidateV1
+        #elseif PINKHA_PREPARED_FILE_MIGRATION_RUNTIME
+        return .pinkhaPreparedFileMigrationCandidateV1
         #elseif PINKHA_PREPARED_INLINE_MIGRATION_RUNTIME
         return .pinkhaPreparedInlineMigrationCandidateV1
         #elseif PINKHA_PREPARED_MIGRATION_RUNTIME
@@ -66,6 +75,9 @@ public enum AnyEmbeddedBuild: String, Sendable, Codable {
         #endif
         case .pinkhaPreparedMigrationCandidateV1: return "any v0.5.0-pinkha.prepared.1 "
         case .pinkhaPreparedInlineMigrationCandidateV1: return "any v0.5.0-pinkha.prepared.inline.1 "
+        case .pinkhaPreparedFileMigrationCandidateV1: return "any v0.5.0-pinkha.prepared.file.1 "
+        case .pinkhaPreparedComponentsCandidateV1: return "any v0.5.0-pinkha.prepared.components.1 "
+        case .pinkhaPreparedComponentsCandidateV2: return "any v0.5.0-pinkha.prepared.components.2 "
         }
     }
 }

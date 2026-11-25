@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "e8e8252db0412d793d235cadd5a5258633aa49b9",
+  "binary": "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build/out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner",
+  "binarySHA256": "9d39b2570b5cf21f2d8dd8fbc3a542d05a0fb47638c00c1b04a8af5e1a40fd04",
+  "startedAt": "2026-11-25T02:25:52.425943+00:00",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--skip-build",
+    "--filter",
+    "NativeDefinitionPlanTests/testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance|NativeDefinitionPlanTests/testOriginalNativeCaptureProvidesAllCurrentDefinitionRowsWithoutBundledSubstitution"
+  ],
+  "environment": {
+    "PINKHA_NATIVE_CAPTURE_FIXTURE": "/mnt/development/projects/evidence/native-json-source-fixture-45472745870",
+    "PINKHA_NATIVE_CUSTOM_CAPTURE_FIXTURE": "/mnt/development/projects/evidence/native-custom-source-fixture-45492064232"
+  },
+  "scope": "Only two skipped actual source tests; corrected fixture variable names; no code change, no rebuild."
+}

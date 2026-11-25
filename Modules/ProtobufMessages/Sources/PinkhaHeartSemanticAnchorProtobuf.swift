@@ -43,7 +43,8 @@ public struct PinkhaHeartSemanticAnchorPlan: Sendable {
     }
 
     func validatedEvent(_ reply: PinkhaHeartSemanticAnchorAppliedReply,
-                        preflight: Anytype_Rpc.Object.Show.Response? = nil) throws -> Anytype_ResponseEvent {
+                        preflight: Anytype_Rpc.Object.Show.Response? = nil,
+                        readback: Anytype_Rpc.Object.Show.Response? = nil) throws -> Anytype_ResponseEvent {
         try reply.receipt.validate(for: request)
         let event: Anytype_ResponseEvent
         do { event = try .init(serializedBytes: reply.responseEvent) }
@@ -59,7 +60,13 @@ public struct PinkhaHeartSemanticAnchorPlan: Sendable {
             guard case .objectDetailsAmend(let amendment)? = event.messages[0].value else {
                 throw PinkhaHeartSemanticAnchorError.invalidReply
             }
-            try validateTorahProjection(amendment, preflight: preflight)
+            guard let preflight, let readback else {
+                throw PinkhaHeartSemanticAnchorError.invalidReply
+            }
+            try verifyCurrent(preflight)
+            _ = try projectionDetails(in: preflight)
+            try verifyReadback(readback, receipt: reply.receipt)
+            try validateTorahProjection(amendment, readback: readback)
         }
         guard case .blockSetText(let update)? = message.value,
               heartBytesEqual(update.id, request.blockID), update.unknownFields.data.isEmpty,
@@ -84,14 +91,10 @@ public struct PinkhaHeartSemanticAnchorPlan: Sendable {
 
     private func validateTorahProjection(
         _ amendment: Anytype_Event.Object.Details.Amend,
-        preflight: Anytype_Rpc.Object.Show.Response?
+        readback: Anytype_Rpc.Object.Show.Response
     ) throws {
-        guard let preflight else { throw PinkhaHeartSemanticAnchorError.invalidReply }
-        try verifyCurrent(preflight)
-        let rows = preflight.objectView.details.filter { heartBytesEqual($0.id, request.objectID) }
-        guard rows.count == 1, let row = rows.first, row.hasDetails, row.subIds.isEmpty,
-              row.unknownFields.data.isEmpty, row.details.unknownFields.data.isEmpty,
-              heartBytesEqual(amendment.id, request.objectID), amendment.subIds.isEmpty,
+        let details = try projectionDetails(in: readback)
+        guard heartBytesEqual(amendment.id, request.objectID), amendment.subIds.isEmpty,
               amendment.unknownFields.data.isEmpty,
               amendment.details.count == Self.torahProjectionKeys.count else {
             throw PinkhaHeartSemanticAnchorError.invalidReply
@@ -102,22 +105,34 @@ public struct PinkhaHeartSemanticAnchorPlan: Sendable {
         for item in amendment.details {
             guard Self.torahProjectionKeys.contains(item.key), seen.insert(item.key).inserted,
                   item.hasValue, item.unknownFields.data.isEmpty,
-                  let original = row.details.fields[item.key] else {
+                  let authoritative = details.fields[item.key] else {
                 throw PinkhaHeartSemanticAnchorError.invalidReply
             }
             try Self.validateProjectionValue(item.value, key: item.key)
-            try Self.validateProjectionValue(original, key: item.key)
-            // Native page154 capture changes only block marks. Its rebuildable
-            // Torah projection is already exposed by this same object's
-            // ObjectShow. A hash-shaped string alone is not content authority.
+            try Self.validateProjectionValue(authoritative, key: item.key)
+            // Native Apply may materialize the local Torah projection after
+            // the preflight was read. Compare every original event value with
+            // the same object's independently read post-Apply state, after the
+            // complete block/marks readback has been verified. Neither a
+            // hash-shaped string nor the event itself is content authority.
             guard try item.value.serializedData(options: options)
-                == original.serializedData(options: options) else {
+                == authoritative.serializedData(options: options) else {
                 throw PinkhaHeartSemanticAnchorError.invalidReply
             }
         }
         guard seen == Self.torahProjectionKeys else {
             throw PinkhaHeartSemanticAnchorError.invalidReply
         }
+    }
+
+    private func projectionDetails(in response: Anytype_Rpc.Object.Show.Response) throws
+        -> Google_Protobuf_Struct {
+        let rows = response.objectView.details.filter { heartBytesEqual($0.id, request.objectID) }
+        guard rows.count == 1, let row = rows.first, row.hasDetails, row.subIds.isEmpty,
+              row.unknownFields.data.isEmpty, row.details.unknownFields.data.isEmpty else {
+            throw PinkhaHeartSemanticAnchorError.invalidReply
+        }
+        return row.details
     }
 
     private static let torahProjectionKeys: Set<String> = [

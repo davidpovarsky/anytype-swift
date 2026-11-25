@@ -1,0 +1,17 @@
+# Native prepared choices and canonical title
+
+One actual native HTTP/store method passed at 2026-11-24 22:15:22 UTC: `TestPreparedChoiceHTTPNativeValuesAndCanonicalNameSurviveReopen`. Test source is `c862cc89ff65ded84eb9cf4c271a2a37475aa199`; the Any production tree remains `cf87c43ff0100c2dc43c3c105c82b1b070b3a7a3` and SDK `e195f6c07a053c6588e39ffe72ee4fc44cf3d953`. The source delta contains only the new native test. The 873 Any and 709 SDK tracked files matched the admitted source census before and after execution.
+
+The method uses a new owned native wallet/store and the existing exact isolated node configuration. It prepares and commits one collection property namespace, two choice properties, one custom Page type and its two-record editor part, then two ordinary documents. The original native `any/name` descriptor is checked before writes and after an orderly SDK/store reopen.
+
+Native readback after reopen preserves choice option names, colours, persisted positions, descriptor metadata and original owned fixture keys; empty arrays remain present and distinct from absent properties. The selected values retain their array order. The type's exact v2 presentation descriptor, including separately declared definitionHidden, is read back unchanged. The canonical title retains its exact empty or Hebrew/combining-text value. The durable prepared property-update receipt is read back with the original signed identity and terminal outcome.
+
+Three invalid property updates are rejected before intent reservation: two values in a single-choice field, a scalar in an array field, and an empty option key. Each returns HTTP 400 and its subsequent status lookup is HTTP 404. These are cardinality and shape controls. The native choice implementation deliberately permits dangling option keys; source option ownership/membership must still be checked by the separately qualified source mapper.
+
+## Retained unsuccessful attempts and environment admission
+
+The first attempt used an unavailable old module cache with network access disabled and failed before compilation or test execution. A new owned cache restored only the 161 already pinned module versions through Go's normal checksum-verified proxy; all four Any/SDK go.mod and go.sum hashes remained unchanged. The first extra `go mod verify` read budget expired after 20 seconds; its exception is retained. The verification-only continuation returned `all modules verified` in 29.117 seconds.
+
+The next attempt compiled the method successfully, then its explicit fixture guard failed because the new isolated checkout lacked ignored staging.yml. The required bytes were copied from the tracked isolated testdata/local.yml, checked against the prior qualified fixture, and hash-bound as `a3fe3c21144c2c82afa03b58014752c6bca6e5a9f3e69a1bc1b2b38415434756`. Neither the product source nor assertions were changed. The final continuation passed the one method in 0.5 seconds; total command time was 26.005 seconds, with no skipped tests. Its original log SHA256 is `392ecbeaf856245e2bd6c6fafaed18937f9a8a14fd1800b1e3a8694fdcea64d0`.
+
+This is target-native component acceptance with owned fixture descriptors. It does not claim source Heart option capture, UI editing, peer transport, abrupt OS crash recovery, physical-device execution or complete Space migration. The previously qualified Apple V2 artifact uses the same production source and is not rebuilt or relabelled by this test-only continuation.

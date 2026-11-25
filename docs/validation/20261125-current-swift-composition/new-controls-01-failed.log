@@ -1,0 +1,88 @@
+test_admission_reconstructs_original_bytes_but_returns_current_executed_modules (__main__.CurrentCompositionControls.test_admission_reconstructs_original_bytes_but_returns_current_executed_modules) ... ERROR
+test_changed_native_harness_module_or_controller_bytes_are_rejected (__main__.CurrentCompositionControls.test_changed_native_harness_module_or_controller_bytes_are_rejected) ... ok
+test_current_host_requires_the_exact_new_source_snapshot (__main__.CurrentCompositionControls.test_current_host_requires_the_exact_new_source_snapshot) ... ERROR
+test_exact_composition_requires_new_swift_proof_with_unchanged_native_origin (__main__.CurrentCompositionControls.test_exact_composition_requires_new_swift_proof_with_unchanged_native_origin) ... ERROR
+test_record_rejects_relabelled_build_and_old_or_unreviewed_current_modules (__main__.CurrentCompositionControls.test_record_rejects_relabelled_build_and_old_or_unreviewed_current_modules) ... ERROR
+test_retention_rejects_tampered_new_branch_helper_and_legacy_constant_even_with_new_file_hash (__main__.CurrentCompositionControls.test_retention_rejects_tampered_new_branch_helper_and_legacy_constant_even_with_new_file_hash) ... ok
+test_retention_restores_only_exact_original_tested_ast_and_constants (__main__.CurrentCompositionControls.test_retention_restores_only_exact_original_tested_ast_and_constants) ... ok
+
+======================================================================
+ERROR: test_admission_reconstructs_original_bytes_but_returns_current_executed_modules (__main__.CurrentCompositionControls.test_admission_reconstructs_original_bytes_but_returns_current_executed_modules)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/test_current_composition.py", line 132, in test_admission_reconstructs_original_bytes_but_returns_current_executed_modules
+    record = self.record()
+             ^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/test_current_composition.py", line 52, in record
+    unchanged, controls, composition = reuse.verify_source_lineage(self.before, self.current)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/reuse_build.py", line 255, in verify_source_lineage
+    return verify_current_composition(before, after)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/reuse_build.py", line 240, in verify_current_composition
+    require(differences <= permitted,
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/heart_runtime_profile.py", line 51, in require
+    raise RuntimeError(reason)
+RuntimeError: Compiled native, assertion, harness or unreviewed dependency changed: Tools/PinkhaNativeDerived/member_acl_transport/README.md, Tools/PinkhaNativeDerived/member_acl_transport/build.py, Tools/PinkhaNativeDerived/member_acl_transport/contract.py, Tools/PinkhaNativeDerived/member_acl_transport/core_fixture.go, Tools/PinkhaNativeDerived/member_acl_transport/native_member_test.go, Tools/PinkhaNativeDerived/member_acl_transport/run.py, Tools/PinkhaNativeDerived/member_acl_transport/source-review.json
+
+======================================================================
+ERROR: test_current_host_requires_the_exact_new_source_snapshot (__main__.CurrentCompositionControls.test_current_host_requires_the_exact_new_source_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/test_current_composition.py", line 157, in test_current_host_requires_the_exact_new_source_snapshot
+    build.write_bytes(self.build_raw); record.write_bytes(encoded(self.record()))
+                                                                  ^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/test_current_composition.py", line 52, in record
+    unchanged, controls, composition = reuse.verify_source_lineage(self.before, self.current)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/reuse_build.py", line 255, in verify_source_lineage
+    return verify_current_composition(before, after)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/reuse_build.py", line 240, in verify_current_composition
+    require(differences <= permitted,
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/heart_runtime_profile.py", line 51, in require
+    raise RuntimeError(reason)
+RuntimeError: Compiled native, assertion, harness or unreviewed dependency changed: Tools/PinkhaNativeDerived/member_acl_transport/README.md, Tools/PinkhaNativeDerived/member_acl_transport/build.py, Tools/PinkhaNativeDerived/member_acl_transport/contract.py, Tools/PinkhaNativeDerived/member_acl_transport/core_fixture.go, Tools/PinkhaNativeDerived/member_acl_transport/native_member_test.go, Tools/PinkhaNativeDerived/member_acl_transport/run.py, Tools/PinkhaNativeDerived/member_acl_transport/source-review.json
+
+======================================================================
+ERROR: test_exact_composition_requires_new_swift_proof_with_unchanged_native_origin (__main__.CurrentCompositionControls.test_exact_composition_requires_new_swift_proof_with_unchanged_native_origin)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/test_current_composition.py", line 65, in test_exact_composition_requires_new_swift_proof_with_unchanged_native_origin
+    record = self.record()
+             ^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/test_current_composition.py", line 52, in record
+    unchanged, controls, composition = reuse.verify_source_lineage(self.before, self.current)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/reuse_build.py", line 255, in verify_source_lineage
+    return verify_current_composition(before, after)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/reuse_build.py", line 240, in verify_current_composition
+    require(differences <= permitted,
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/heart_runtime_profile.py", line 51, in require
+    raise RuntimeError(reason)
+RuntimeError: Compiled native, assertion, harness or unreviewed dependency changed: Tools/PinkhaNativeDerived/member_acl_transport/README.md, Tools/PinkhaNativeDerived/member_acl_transport/build.py, Tools/PinkhaNativeDerived/member_acl_transport/contract.py, Tools/PinkhaNativeDerived/member_acl_transport/core_fixture.go, Tools/PinkhaNativeDerived/member_acl_transport/native_member_test.go, Tools/PinkhaNativeDerived/member_acl_transport/run.py, Tools/PinkhaNativeDerived/member_acl_transport/source-review.json
+
+======================================================================
+ERROR: test_record_rejects_relabelled_build_and_old_or_unreviewed_current_modules (__main__.CurrentCompositionControls.test_record_rejects_relabelled_build_and_old_or_unreviewed_current_modules)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/test_current_composition.py", line 117, in test_record_rejects_relabelled_build_and_old_or_unreviewed_current_modules
+    value = deepcopy(self.record()); mutate(value)
+                     ^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/test_current_composition.py", line 52, in record
+    unchanged, controls, composition = reuse.verify_source_lineage(self.before, self.current)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/reuse_build.py", line 255, in verify_source_lineage
+    return verify_current_composition(before, after)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/coherent_apple/reuse_build.py", line 240, in verify_current_composition
+    require(differences <= permitted,
+  File "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaNativeDerived/heart_runtime_profile.py", line 51, in require
+    raise RuntimeError(reason)
+RuntimeError: Compiled native, assertion, harness or unreviewed dependency changed: Tools/PinkhaNativeDerived/member_acl_transport/README.md, Tools/PinkhaNativeDerived/member_acl_transport/build.py, Tools/PinkhaNativeDerived/member_acl_transport/contract.py, Tools/PinkhaNativeDerived/member_acl_transport/core_fixture.go, Tools/PinkhaNativeDerived/member_acl_transport/native_member_test.go, Tools/PinkhaNativeDerived/member_acl_transport/run.py, Tools/PinkhaNativeDerived/member_acl_transport/source-review.json
+
+----------------------------------------------------------------------
+Ran 7 tests in 1.123s
+
+FAILED (errors=4)

@@ -1,4 +1,5 @@
 import PinkhaHanlinCore
+import PinkhaSharing
 import Foundation
 import Factory
 import Services
@@ -16,25 +17,30 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
 
     func createWallet() async throws -> String {
         try beginAccountChange(); defer { changingAccount = false }
+        await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)
         return try await base.createWallet()
     }
     func walletRecovery(mnemonic: String) async throws {
         try beginAccountChange(); defer { changingAccount = false }
+        await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)
         try await base.walletRecovery(mnemonic: mnemonic)
     }
     func accountRecover() async throws {
         try beginAccountChange(); defer { changingAccount = false }
+        await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)
         try await base.accountRecover()
     }
     func mnemonicByEntropy(_ entropy: String) async throws -> String { try await base.mnemonicByEntropy(entropy) }
 
     func createAccount(name: String, iconOption: Int, imagePath: String) async throws -> AccountData {
         try beginAccountChange(); defer { changingAccount = false }
+        await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)
         try await PinkhaHanlinAccountOwner.shared.closeAccount(accounts.account.id, removeData: false)
         await bootstrap.quiesceAccountOperations()
         let account = try await base.createAccount(name: name, iconOption: iconOption, imagePath: imagePath)
         try await bootstrap.resumeAccountOperations()
         try await PinkhaHanlinAccountOwner.shared.accountDidOpen(account.id)
+        try await PinkhaSharingAccountOwner.shared.didOpen(engine: .heart, accountID: account.id)
         return account
     }
 
@@ -43,16 +49,19 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
         #if PINKHA_NATIVE_DERIVED && targetEnvironment(simulator)
         try PinkhaTypePreservationLaunchProof.captureBeforeAccountSelect(accountID: id)
         #endif
+        await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)
         try await PinkhaHanlinAccountOwner.shared.closeAccount(accounts.account.id, removeData: false)
         await bootstrap.quiesceAccountOperations()
         let account = try await base.selectAccount(id: id, preferredSpaceId: preferredSpaceId)
         try await bootstrap.resumeAccountOperations()
         try await PinkhaHanlinAccountOwner.shared.accountDidOpen(account.id)
+        try await PinkhaSharingAccountOwner.shared.didOpen(engine: .heart, accountID: account.id)
         return account
     }
 
     func logout(removeData: Bool) async throws {
         try beginAccountChange(); defer { changingAccount = false }
+        await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)
         try await PinkhaHanlinAccountOwner.shared.closeAccount(accounts.account.id, removeData: removeData)
         await bootstrap.quiesceAccountOperations()
         try await base.logout(removeData: removeData)
@@ -60,6 +69,7 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
 
     func deleteAccount() async throws -> AccountStatus {
         try beginAccountChange(); defer { changingAccount = false }
+        await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)
         try await PinkhaHanlinAccountOwner.shared.closeAccount(accounts.account.id, removeData: false)
         return try await base.deleteAccount()
     }
@@ -68,6 +78,7 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
         try beginAccountChange(); defer { changingAccount = false }
         let status = try await base.restoreAccount()
         try await PinkhaHanlinAccountOwner.shared.accountDidOpen(accounts.account.id)
+        try await PinkhaSharingAccountOwner.shared.didOpen(engine: .heart, accountID: accounts.account.id)
         return status
     }
 

@@ -1,0 +1,98 @@
+{
+  "contract": "pinkha-native-definition-source-timestamp-proof-v1",
+  "productionSource": "ec6422464feb7ed1b535ab9faf55c155544ed698",
+  "fixtureCorrection": "78c69638a8b91b066516d503ed6835b0e0fbd53b",
+  "qualifiedDistinctMethods": 2,
+  "exactFinalHeadTwoMethodRun": false,
+  "attempts": [
+    {
+      "source": "ec6422464feb7ed1b535ab9faf55c155544ed698",
+      "started": "2026-11-24T22:17:40.554193+00:00",
+      "ended": "2026-11-24T22:18:08.559603+00:00",
+      "seconds": 28.005,
+      "returncode": 1,
+      "stopReason": null,
+      "minimumMemAvailableBytes": 5355368448,
+      "selected": [
+        "testDefinitionAddedDateIsExactSourceProvenanceAndMalformedValuesRefuse",
+        "testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance"
+      ],
+      "passed": [
+        "NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance"
+      ],
+      "failed": [
+        "NativeDefinitionPlanTests.testDefinitionAddedDateIsExactSourceProvenanceAndMalformedValuesRefuse"
+      ],
+      "skipped": [],
+      "logSHA256": "614e5eec21167d7d3b7a8939e7398d529c16392ab48edddc768c5695cc3b1409",
+      "sourceHashes": {
+        "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift": "e67b6c5552bf9abcb9a1126532877abf886b57f7c0a2332b65631738701903ff",
+        "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationDefinitionCoverage.swift": "0d98f12e4bce3d1699a5aec754fc005f683ce530fd18d7f4b4218289c403cd10",
+        "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeDefinitionPlan.swift": "c7556eabcde1e8bfba6b38f15d9689ae5ceb687e15ac6334f13d43c3c5fdf666",
+        "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeDefinitionPlanTests.swift": "d3dd11b759da07889b596780b3ed67f212daf4f8229e9246345a5cb64e17106b",
+        "Modules/PinkhaAnyHost/Package.swift": "facde1a3bc37f9423d6df572e9a52ed8176ddd779a7472604d2b12cc78380991",
+        "Modules/PinkhaAnyHost/Package.resolved": "f48b0b206974638a7be677e155ac2a7735ff2308b8c449ef2493f928151dbcc8"
+      },
+      "sourceUnchanged": true,
+      "buildComplete": [
+        "Build complete! (20.17 secs)"
+      ],
+      "compilerErrors": [
+        "/mnt/development/projects/worktrees/anytype-native-definitions-map-20261124/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeDefinitionPlanTests.swift:437: error: NativeDefinitionPlanTests.testDefinitionAddedDateIsExactSourceProvenanceAndMalformedValuesRefuse : failed - native property operation"
+      ]
+    },
+    {
+      "source": "78c69638a8b91b066516d503ed6835b0e0fbd53b",
+      "started": "2026-11-24T22:20:59.170363+00:00",
+      "ended": "2026-11-24T22:21:09.172893+00:00",
+      "seconds": 10.003,
+      "returncode": 0,
+      "stopReason": null,
+      "minimumMemAvailableBytes": 5855522816,
+      "selected": [
+        "testDefinitionAddedDateIsExactSourceProvenanceAndMalformedValuesRefuse"
+      ],
+      "passed": [
+        "NativeDefinitionPlanTests.testDefinitionAddedDateIsExactSourceProvenanceAndMalformedValuesRefuse"
+      ],
+      "failed": [],
+      "skipped": [],
+      "logSHA256": "e83f9f745e4b86f122e25663083402cbddaf245a6de1b3d7be09b8d40b73a325",
+      "sourceHashes": {
+        "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift": "e67b6c5552bf9abcb9a1126532877abf886b57f7c0a2332b65631738701903ff",
+        "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationDefinitionCoverage.swift": "0d98f12e4bce3d1699a5aec754fc005f683ce530fd18d7f4b4218289c403cd10",
+        "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeDefinitionPlan.swift": "c7556eabcde1e8bfba6b38f15d9689ae5ceb687e15ac6334f13d43c3c5fdf666",
+        "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeDefinitionPlanTests.swift": "eb688bd852c01a7989d9f9e32628fd48a24f495e1de1dd33cd1deef406796e2d",
+        "Modules/PinkhaAnyHost/Package.swift": "facde1a3bc37f9423d6df572e9a52ed8176ddd779a7472604d2b12cc78380991",
+        "Modules/PinkhaAnyHost/Package.resolved": "f48b0b206974638a7be677e155ac2a7735ff2308b8c449ef2493f928151dbcc8"
+      },
+      "sourceUnchanged": true,
+      "buildComplete": [
+        "Build complete! (7.03 secs)"
+      ],
+      "compilerErrors": []
+    }
+  ],
+  "originalCapture": {
+    "run": 45492064232,
+    "nativeSource": "65caee9bfc386c2f9182564d6ad1eb2f02cfadd1",
+    "contextSHA256": "bb03b5a06a77d8b3e85cd46bc9cedc8a497c2bb06bbcd3e47b834e13d83b934a",
+    "manifestSHA256": "cbfb3aa1fd89707138adeccbce7389c40dc0a993f2285f6e517120e4e4239ed4",
+    "nativeMethodStatus": "FAIL",
+    "sourceAdmissionPromoted": false,
+    "snapshots": 156,
+    "types": 20,
+    "relations": 126,
+    "options": 4,
+    "typedPages": 2
+  },
+  "semantics": {
+    "originalAddedDateRetained": true,
+    "integerSecondsOnly": true,
+    "noTargetCreatedAtSubstitution": true,
+    "unknownOptionStateStillRefuses": true,
+    "actualOptionOrderRetained": true,
+    "destinationWrites": false,
+    "wholeSpaceMigration": false
+  }
+}

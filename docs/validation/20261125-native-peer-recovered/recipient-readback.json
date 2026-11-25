@@ -1,0 +1,111 @@
+{
+  "artifactID": 14972345626,
+  "auditedAtUTC": "2026-11-25T01:37:45.893775+00:00",
+  "auditorSHA256": "78e0c11cfd81a3baf5155c804fba37904bb67f7f91138ef4f0b8681008374212",
+  "controllerSHA": "c0482eefb372ecd2cf6ccc91b6a2d5083b75a1c7",
+  "destinationMigrationValidated": false,
+  "format": "pinkha-retained-native-peer-audit-v1",
+  "historySemanticsValidated": false,
+  "nativeOnlineAccounts": 2,
+  "nativePayloadBytes": 2097152,
+  "nativePeerExecutions": 3,
+  "nativePeerTreeCensusSHA256": "54a3454cc41633323a4dfd01013b559d0d2453a8a9a9b0513097865649835402",
+  "nativePeerTreeRows": 145,
+  "nativeReopenReceiptSHA256": "95c534fed4a5b78d83846721ce42b60ed0b2414fdf91f00347d00d9851ab4ddc",
+  "nativeReopenStdoutSHA256": "f200fd02cae47fe4c6fe1f99d783f7fc14326fc695631a6bec85de1d9777717e",
+  "nativeSchema": {
+    "capture_attempts": [
+      {
+        "attempt": 1,
+        "outcome": "capture-returned",
+        "sha256": "61073f0a25bf8b2b34e4a5049f495037f0e55ad739d4ab66620b0f09731930a6"
+      }
+    ],
+    "captured_objects": 156,
+    "closed_resolver_unmapped": 0,
+    "custom_types": 1,
+    "distinct_custom_identities": 14,
+    "empty_default_current_values_verified": true,
+    "manifest_sha256": "994cbeafa2a8f1ceeedaef24a316597ecf5c3ff420ba09f0c69f9a50794751cb",
+    "method": "TestLoadedAccountCustomSchemaSource",
+    "options": 4,
+    "ordered_identities_verified": true,
+    "original_declared_source_members": 313,
+    "properties": 7,
+    "receipt_sha256": "cc9cd95681b220f7a0a5a20bfa0c9565e4f6863b14f2920978fd33b36f66ea22",
+    "source_rows_sha256": "bfc0b0bb3da23fb93d2ee5eb1dabc28dd1ec8b27878bc56814d33ae5f6a0eb99",
+    "source_semantic_migration_complete": false,
+    "status": "PASS",
+    "typed_documents": 2
+  },
+  "nativeSourceSHA": "ea796999d648e27dcb7ad23a0bbd849d35fadc5a",
+  "networkPayloadVerified": true,
+  "offlineFreshProcessVerified": true,
+  "originalArchiveSHA256": "3dece544572620b0feb8761d0120258c3344f78b470021d763f329162e54a10c",
+  "originalCommandStreams": 68,
+  "originalControllerSHA256": "4db3dbf17c147ad92d5d7d9d85588acdc3c86c9abcc21fc4a836b5342580902b",
+  "originalDeclaredObjectMembers": 1156,
+  "originalNamespacePredicateWouldFail": true,
+  "originalPeerManifests": [
+    {
+      "objects": 144,
+      "sha256": "810befc16156bd7b3e9082997b3468f3364092e4cb281487f028e233d35d6f4b"
+    },
+    {
+      "objects": 144,
+      "sha256": "2bc865a0c5be533c67d5a8c9b6ca93c770774ff3dba8298904a316d5b3e86488"
+    },
+    {
+      "objects": 144,
+      "sha256": "64cb2a9dc3a433375dfd748575313b1251deff1b45028385a805bb053547586e"
+    },
+    {
+      "objects": 144,
+      "sha256": "9ffce7c6506b0436cd13ab5d2fbfb4aab898b88ad120a6df01264f3be7fd7240"
+    }
+  ],
+  "originalRegularFiles": 1717,
+  "originalReopenDockerInspectSHA256": "eb1ac4129a97fab42b7806067ef28643ca2f694c88292bbb9e53e8871284b6ef",
+  "peerCaptureAttempts": {
+    "member-cold": [
+      {
+        "attempt": 1,
+        "outcome": "capture-returned",
+        "sha256": "5857e0bfdff526a931c9074bfc5dd53b5dbea5eb7a30e0fe4caed7c76868254d"
+      }
+    ],
+    "member-offline-reopen": [
+      {
+        "attempt": 1,
+        "outcome": "capture-returned",
+        "sha256": "44575fc085abb2c860f86692d925a783a98ca6f0933248085db9fb3a054985df"
+      }
+    ],
+    "member-prefetched": [
+      {
+        "attempt": 1,
+        "outcome": "capture-returned",
+        "sha256": "a8bc42738b69232fda9cd081d11effd56f273f60b9402d3dd307eacb0fd37f64"
+      }
+    ],
+    "owner-initial": [
+      {
+        "attempt": 1,
+        "outcome": "capture-returned",
+        "sha256": "afbe98c1fc6cd57349779e9daaa2ee1c7a681112bed1c72938c343222e78c6c5"
+      }
+    ]
+  },
+  "processIdentityProof": "distinct immutable Docker IDs; original native receipts; start time after both prior containers exited",
+  "producerError": "native_peer_running",
+  "producerResultSHA256": "e959cbb0aa00e9b2d33e73ba920e5fcd24996b5896dc773d0b6bc7904ebc4133",
+  "producerStatus": "FAIL",
+  "productBuilds": 0,
+  "productTestsRerun": 0,
+  "rootCause": "offline reopen exited successfully before State.Running inspection; old namespace inode was reused after prior process termination",
+  "runAttempt": "1",
+  "runId": "45501479246",
+  "selectedOriginalsVerified": 99,
+  "status": "PASS",
+  "wholeSpaceMigrationComplete": false
+}

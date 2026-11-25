@@ -17,6 +17,7 @@ private final class HeartCaptureProbe {
     var useInvocationHandler = false
     var retireInCapture = false
     var retireInReadback = false
+    var failInReadback = false
     var retireInBeforeRead = false
     var retireInPublication = false
     private(set) var publicationFence: PinkhaHeartSemanticAnchorPublicationFence?
@@ -82,6 +83,7 @@ private final class HeartCaptureProbe {
                 }
                 self.calls.append("read-after")
                 if self.retireInReadback { self.retire() }
+                if self.failInReadback { throw NSError(domain: "OwnedReadbackFailure", code: 1) }
                 return self.after
             },
             capture: { request in
@@ -123,7 +125,7 @@ final class PinkhaHeartSemanticAnchorClientTests: XCTestCase {
         let client = probe.client()
         let verified = try await client.apply(client.prepare(probe.plan, lease: probe.lease))
         XCTAssertEqual(verified.receipt.marker, probe.plan.request.marker)
-        XCTAssertEqual(probe.calls, ["version", "read-before", "capture", "publish", "read-after"])
+        XCTAssertEqual(probe.calls, ["version", "read-before", "capture", "read-after", "publish"])
         XCTAssertEqual(probe.requests.count, 1)
         XCTAssertEqual(probe.published.count, 1)
         XCTAssertEqual(probe.stateDeliveries, 1)
@@ -135,7 +137,53 @@ final class PinkhaHeartSemanticAnchorClientTests: XCTestCase {
     }
 
 
-    func testVerifiedFixturePublishesReturnedEventBeforeReadbackOnce() async throws {
+    func testNewlyMaterializedProjectionIsReadBeforeSingleOriginalPublication() async throws {
+        let probe = try HeartCaptureProbe()
+        let values = HeartCaptureFixture.projectionValues()
+        let row = try XCTUnwrap(probe.before.objectView.details.firstIndex { $0.id == probe.plan.request.objectID })
+        for key in values.keys { probe.before.objectView.details[row].details.fields.removeValue(forKey: key) }
+        probe.after = try HeartCaptureFixture.withProjection(probe.after, values: values)
+        probe.reply = try HeartCaptureFixture.projectionReply(values: values)
+        let expected = try PinkhaHeartSemanticAnchorAppliedReply.decode(probe.reply, request: probe.plan.request)
+        let client = probe.client()
+        let capture = try await client.apply(client.prepare(probe.plan, lease: probe.lease))
+        XCTAssertEqual(capture.receipt.marker, probe.plan.request.marker)
+        XCTAssertEqual(probe.calls, ["version", "read-before", "capture", "read-after", "publish"])
+        XCTAssertEqual(probe.requests.count, 1)
+        XCTAssertEqual(probe.published.count, 1)
+        XCTAssertEqual(probe.stateDeliveries, 1)
+        XCTAssertEqual(try XCTUnwrap(probe.published.first).serializedData(), expected.responseEvent)
+    }
+
+    func testProjectionReadbackFailuresPreventPublicationAndRetry() async throws {
+        for variant in ["missing-field", "changed-projection", "foreign-root", "foreign-space", "changed-block", "read-error"] {
+            let probe = try HeartCaptureProbe()
+            let values = HeartCaptureFixture.projectionValues()
+            probe.after = try HeartCaptureFixture.withProjection(probe.after, values: values)
+            probe.reply = try HeartCaptureFixture.projectionReply(values: values)
+            let row = try XCTUnwrap(probe.after.objectView.details.firstIndex { $0.id == probe.plan.request.objectID })
+            switch variant {
+            case "missing-field": probe.after.objectView.details[row].details.fields.removeValue(forKey: "_pinkhaTorahReady")
+            case "changed-projection": probe.after.objectView.details[row].details.fields["_pinkhaTorahCacheIntegrity"]?.stringValue = String(repeating: "c", count: 64)
+            case "foreign-root": probe.after.objectView.rootID += "-foreign"
+            case "foreign-space": probe.after.objectView.details[row].details.fields["spaceId"]?.stringValue += "-foreign"
+            case "changed-block": probe.after = try HeartCaptureFixture.alterTarget(probe.after) { $0.backgroundColor = "changed" }
+            default: probe.failInReadback = true
+            }
+            let client = probe.client()
+            let pending = try client.prepare(probe.plan, lease: probe.lease)
+            do { _ = try await client.apply(pending); XCTFail("Invalid post-Apply state accepted: " + variant) }
+            catch { XCTAssertEqual(error as? PinkhaHeartSemanticAnchorError, .uncertain, variant) }
+            XCTAssertEqual(probe.calls, ["version", "read-before", "capture", "read-after"], variant)
+            XCTAssertEqual(probe.requests.count, 1)
+            XCTAssertTrue(probe.published.isEmpty, variant)
+            do { _ = try await client.apply(pending); XCTFail("Uncertain capture retried: " + variant) }
+            catch { XCTAssertEqual(error as? PinkhaHeartSemanticAnchorError, .invalidRequest, variant) }
+            XCTAssertEqual(probe.requests.count, 1)
+        }
+    }
+
+    func testVerifiedFixturePublishesReturnedEventAfterReadbackOnce() async throws {
         let probe = try HeartCaptureProbe()
         let handler = HeartCaptureInvocationHandler()
         let previous = InvocationSettings.handler
@@ -147,7 +195,7 @@ final class PinkhaHeartSemanticAnchorClientTests: XCTestCase {
         let result = try await client.apply(pending)
         XCTAssertEqual(result.generation, probe.lease.generation)
         XCTAssertEqual(result.receipt.marker, probe.plan.request.marker)
-        XCTAssertEqual(probe.calls, ["version", "read-before", "capture", "publish", "read-after"])
+        XCTAssertEqual(probe.calls, ["version", "read-before", "capture", "read-after", "publish"])
         XCTAssertEqual(probe.requests.count, 1)
         XCTAssertEqual(probe.published.count, 1)
         let event = try Anytype_ResponseEvent(serializedBytes: HeartCaptureFixture.data("capture-response-event.pb"))
@@ -222,7 +270,7 @@ final class PinkhaHeartSemanticAnchorClientTests: XCTestCase {
         let result = try await task.value
         XCTAssertTrue(task.isCancelled)
         XCTAssertEqual(result.receipt.marker, probe.plan.request.marker)
-        XCTAssertEqual(probe.calls, ["version", "read-before", "capture", "publish", "read-after"])
+        XCTAssertEqual(probe.calls, ["version", "read-before", "capture", "read-after", "publish"])
         XCTAssertEqual(probe.readCancellationStates, [false, false])
         XCTAssertEqual(probe.requests.count, 1)
         XCTAssertEqual(probe.published.count, 1)
@@ -238,7 +286,7 @@ final class PinkhaHeartSemanticAnchorClientTests: XCTestCase {
             do { _ = try await client.apply(pending); XCTFail("Unverified readback was accepted") }
             catch { XCTAssertEqual(error as? PinkhaHeartSemanticAnchorError, .uncertain) }
             XCTAssertEqual(probe.requests.count, 1)
-            XCTAssertEqual(probe.published.count, 1)
+            XCTAssertEqual(probe.published.count, 0)
             XCTAssertEqual(probe.calls.last, "read-after")
         }
     }
@@ -315,7 +363,7 @@ final class PinkhaHeartSemanticAnchorClientTests: XCTestCase {
         _ = try await client.apply(pending)
         XCTAssertEqual(probe.requests.count, 1)
         XCTAssertEqual(probe.calls, ["version", "read-before", "version", "read-before",
-            "capture", "publish", "read-after"])
+            "capture", "read-after", "publish"])
     }
 
     func testVisiblePreparationRejectsChangedMissingForeignAndRetiredOwners() async throws {

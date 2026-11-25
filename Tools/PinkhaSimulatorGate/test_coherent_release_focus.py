@@ -78,6 +78,54 @@ class CoherentFocusControls(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.scoped()
 
+    def original_build_receipt(self):
+        return dict(status="SAME_JOB_SUCCESSFUL_BUILD_WITH_FROZEN_PRODUCTS",
+                    profile=focus.batch.COHERENT_HEART_PROFILE,
+                    native_preparation_suites_built=sorted(focus.UNION)[:-1],
+                    native_postflight_suites_built=sorted(focus.UNION)[-1:],
+                    build_flags=focus.batch.profile_flags(focus.batch.COHERENT_HEART_PROFILE),
+                    app_builds=1, ui_runner_builds=1)
+
+    def test_xcode27_three_targets_with_omitted_filter_use_original_build_receipt(self):
+        original_target = focus.target(self.value)
+        del original_target["OnlyTestIdentifiers"]
+        self.value["TestConfigurations"][0]["TestTargets"] = [
+            dict(BlueprintName="DeepLinksTests", EnvironmentVariables={"unchanged": "one"}),
+            dict(BlueprintName="AnytypeCoreTests", CommandLineArguments=["unchanged"]),
+            original_target]
+        original = copy.deepcopy(self.value)
+        for stage in focus.STAGES:
+            with self.subTest(stage=stage):
+                raw, proof = focus.scope_descriptor(plistlib.dumps(original), stage, self.products,
+                                                     build_receipt=self.original_build_receipt())
+                result = plistlib.loads(raw)
+                self.assertEqual(len(result["TestConfigurations"][0]["TestTargets"]), 1)
+                selected = focus.target(result)
+                self.assertEqual(selected.pop("OnlyTestIdentifiers"),
+                                 focus.c.selected_identifiers(focus.PROFILE, stage))
+                self.assertEqual(selected, original_target)
+                self.assertEqual(self.value, original)
+                self.assertEqual(proof["originalTargetCount"], 3)
+                self.assertFalse(proof["originalSelectionPresent"])
+                self.assertEqual(proof["unionAuthority"], "frozen_build_receipt")
+                self.assertTrue(proof["exactInverse"])
+
+    def test_omitted_filter_requires_successful_exact_build_without_skip(self):
+        del focus.target(self.value)["OnlyTestIdentifiers"]
+        receipt = self.original_build_receipt()
+        for changed in (None, {}, dict(receipt, status="FAILED"),
+                        dict(receipt, native_preparation_suites_built=[]),
+                        dict(receipt, ui_runner_builds=2),
+                        dict(receipt, build_flags=["foreign"])):
+            with self.subTest(receipt=changed):
+                with self.assertRaises(ValueError):
+                    focus.scope_descriptor(plistlib.dumps(self.value), "return-controls",
+                                           self.products, build_receipt=changed)
+        focus.target(self.value)["SkipTestIdentifiers"] = [focus.c.RETURN[0]]
+        with self.assertRaises(ValueError):
+            focus.scope_descriptor(plistlib.dumps(self.value), "return-controls",
+                                   self.products, build_receipt=receipt)
+
     def test_original_f_selectors_remain_suffixed_and_exact(self):
         raw, _ = self.scoped()
         self.assertEqual(len(focus.target(plistlib.loads(raw))["OnlyTestIdentifiers"]), 3)

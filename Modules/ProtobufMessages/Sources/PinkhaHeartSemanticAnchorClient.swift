@@ -1,5 +1,6 @@
 #if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1
 import Foundation
+import SwiftProtobuf
 
 /// Internal injection is for focused controls. Product construction is available
 /// only through the separately gated native page154 factory.
@@ -23,6 +24,20 @@ public final class PinkhaHeartSemanticAnchorPending {
 
     public var marker: String { plan.request.marker }
     public var applyObservation: PinkhaHeartSemanticAnchorApplyObservation { applyTrace }
+
+    #if DEBUG && targetEnvironment(simulator)
+    /// Read-only bytes from the actual calls of the owned mounted diagnostic.
+    /// These are never used as authority, a reply, or an alternate I/O path.
+    public private(set) var mountedDiagnosticSnapshots: [String: Data] = [:]
+
+    fileprivate func observeMountedBoundary(_ name: String, data: @autoclosure () throws -> Data) {
+        guard ProcessInfo.processInfo.environment["PINKHA_SEMANTIC_MOUNTED_UI"] == "1",
+              ["preflight", "nativeReply", "readback"].contains(name),
+              mountedDiagnosticSnapshots[name] == nil,
+              let bytes = try? data(), !bytes.isEmpty, bytes.count <= 4 * 1_024 * 1_024 else { return }
+        mountedDiagnosticSnapshots[name] = bytes
+    }
+    #endif
 
     fileprivate init(plan: PinkhaHeartSemanticAnchorPlan, lease: PinkhaNativeReadLease) {
         self.plan = plan; self.lease = lease
@@ -128,6 +143,9 @@ public final class PinkhaHeartSemanticAnchorClient {
         pending.applyTrace.record(.checkingCurrent)
         try pending.validateOwner()
         try pending.plan.verifyCurrent(current)
+        #if DEBUG && targetEnvironment(simulator)
+        pending.observeMountedBoundary("preflight", data: try current.serializedData())
+        #endif
         try Task.checkCancellation()
         guard io.canPublish() else { throw PinkhaHeartSemanticAnchorError.unavailablePublication }
         try pending.consume()
@@ -147,14 +165,29 @@ public final class PinkhaHeartSemanticAnchorClient {
             try pending.validateOwner()
             pending.applyTrace.record(.invokingNative)
             let raw = try await io.capture(pending.plan.request.encodedRequest())
+            #if DEBUG && targetEnvironment(simulator)
+            pending.observeMountedBoundary("nativeReply", data: raw)
+            #endif
             pending.applyTrace.recordNativeReply(bytes: raw.count)
             pending.applyTrace.record(.checkingCapturedOwner)
             try pending.validateOwner()
             pending.applyTrace.record(.decodingReply)
             let reply = try PinkhaHeartSemanticAnchorAppliedReply.decode(raw, request: pending.plan.request)
             pending.applyTrace.recordDecodedReply(eventBytes: reply.responseEvent.count)
+            // Apply may create local derived metadata that did not exist in
+            // preflight. The already-required native readback is authority for
+            // that projection and must pass before publishing the native event.
+            pending.applyTrace.record(.readingReadback)
+            let readback = try await io.read(pending.plan.request.spaceID, pending.plan.request.objectID)
+            #if DEBUG && targetEnvironment(simulator)
+            pending.observeMountedBoundary("readback", data: try readback.serializedData())
+            #endif
+            pending.applyTrace.record(.checkingReadbackOwner)
+            try pending.validateOwner()
+            pending.applyTrace.record(.validatingReadback)
+            try pending.plan.verifyReadback(readback, receipt: reply.receipt)
             pending.applyTrace.record(.validatingEvent)
-            let event = try pending.plan.validatedEvent(reply, preflight: preflight)
+            let event = try pending.plan.validatedEvent(reply, preflight: preflight, readback: readback)
             pending.applyTrace.record(.checkingEventOwner)
             try pending.validateOwner()
             // Publish the unchanged returned native event through the original
@@ -170,12 +203,6 @@ public final class PinkhaHeartSemanticAnchorClient {
             guard published else { throw PinkhaHeartSemanticAnchorError.uncertain }
             pending.applyTrace.record(.checkingPublishedOwner)
             try pending.validateOwner()
-            pending.applyTrace.record(.readingReadback)
-            let readback = try await io.read(pending.plan.request.spaceID, pending.plan.request.objectID)
-            pending.applyTrace.record(.checkingReadbackOwner)
-            try pending.validateOwner()
-            pending.applyTrace.record(.validatingReadback)
-            try pending.plan.verifyReadback(readback, receipt: reply.receipt)
             pending.applyTrace.record(.verified)
             return .init(receipt: reply.receipt, generation: pending.generation)
         } catch let error as PinkhaHeartSemanticAnchorError {

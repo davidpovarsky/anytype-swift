@@ -1,0 +1,545 @@
+diff --git a/clientlibrary/service/pinkha_native_source_capture.go b/clientlibrary/service/pinkha_native_source_capture.go
+new file mode 100644
+index 000000000..ac53d3283
+--- /dev/null
++++ b/clientlibrary/service/pinkha_native_source_capture.go
+@@ -0,0 +1,33 @@
++//go:build pinkha_loaded_account_witness
++
++package service
++
++import (
++	"context"
++
++	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/capturecontrol"
++)
++
++var nativeSourceCaptures = capturecontrol.New(4)
++
++// PinkhaCaptureLoadedAccountSource is the gomobile source-capture entry point.
++// Call off the UI thread. The existing application must already hold the exact
++// account and Space; sessionToken must be a current full unassociated native
++// session. privateDirectory must already be canonical, non-symlink and 0700.
++// The private bundle contains plaintext source/history/encryption metadata and
++// must remain in private application storage. Its descriptor grants no writes.
++// The context timeout is cooperative; it does not promise hard native IO expiry.
++func PinkhaCaptureLoadedAccountSource(sessionToken, accountID, spaceID, privateDirectory, requestID string) ([]byte, error) {
++	ctx, finish, err := nativeSourceCaptures.Begin(context.Background(), sessionToken, requestID, capturecontrol.MaximumDuration)
++	if err != nil {
++		return nil, err
++	}
++	defer finish()
++	return mw.PinkhaCaptureLoadedAccountSource(ctx, sessionToken, accountID, spaceID, privateDirectory, requestID)
++}
++
++// PinkhaCancelLoadedAccountSourceCapture cancels only an active call created
++// with this same native session token. Its slot remains owned until completion.
++func PinkhaCancelLoadedAccountSourceCapture(sessionToken, requestID string) bool {
++	return nativeSourceCaptures.Cancel(sessionToken, requestID)
++}
+diff --git a/core/pinkha_native_source_capture.go b/core/pinkha_native_source_capture.go
+new file mode 100644
+index 000000000..6930c8744
+--- /dev/null
++++ b/core/pinkha_native_source_capture.go
+@@ -0,0 +1,97 @@
++//go:build pinkha_loaded_account_witness
++
++package core
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"reflect"
++	"strings"
++	"unicode/utf8"
++
++	"github.com/anyproto/anytype-heart/core/application"
++	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/capturecontrol"
++)
++
++var ErrPinkhaNativeSourceCapture = errors.New("native source capture descriptor unavailable")
++
++type pinkhaNativeSourceCaptureDescriptor struct {
++	Contract                           string `json:"contract"`
++	RequestID                          string `json:"requestID"`
++	SourceAccountID                    string `json:"sourceAccountID"`
++	SourceSpaceID                      string `json:"sourceSpaceID"`
++	PrivateBundleDirectory             string `json:"privateBundleDirectory"`
++	ManifestSHA256                     string `json:"manifestSHA256"`
++	SourceRowsSHA256                   string `json:"sourceRowsSHA256"`
++	NativeTrees                        int    `json:"nativeTrees"`
++	CapturedObjects                    int    `json:"capturedObjects"`
++	CapturedFiles                      int    `json:"capturedFiles"`
++	AccountSessionAuthorizedAtCapture  bool   `json:"accountSessionAuthorizedAtCapture"`
++	CapturedSnapshotsBoundToCheckpoint bool   `json:"capturedSnapshotsBoundToCheckpoint"`
++	CurrentFilePayloadCompleteness     bool   `json:"currentFilePayloadCompleteness"`
++	OriginalNativeHistoryRowsRetained  bool   `json:"originalNativeHistoryRowsRetained"`
++	PermitsDestinationWrites           bool   `json:"permitsDestinationWrites"`
++}
++
++// PinkhaCaptureLoadedAccountSource uses only the current real application.
++// The result describes the native immutable capture, not a reusable session or
++// semantic migration admission. No raw source contents or token enter the reply.
++func (mw *Middleware) PinkhaCaptureLoadedAccountSource(ctx context.Context, token, accountID, spaceID, privateDirectory, requestID string) ([]byte, error) {
++	validIdentity := func(value string) bool {
++		return len(value) > 0 && len(value) <= 4096 && utf8.ValidString(value) && !strings.ContainsRune(value, 0)
++	}
++	if mw == nil || mw.applicationService == nil || ctx == nil ||
++		len(token) == 0 || len(token) > 16<<10 || !validIdentity(accountID) ||
++		!validIdentity(spaceID) || !validIdentity(privateDirectory) || !capturecontrol.ValidRequestID(requestID) {
++		return nil, capturecontrol.ErrInvalidRequest
++	}
++	captured, err := mw.applicationService.CaptureLoadedAccountSpaceWitness(ctx, token,
++		application.LoadedAccountSpaceWitnessRequest{
++			Source:           application.LoadedAccountWitnessRequest{AccountID: accountID, SpaceID: spaceID},
++			PrivateDirectory: privateDirectory,
++		})
++	if err != nil {
++		return nil, err
++	}
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	receipt, err := captured.Receipt()
++	if err != nil {
++		return nil, err
++	}
++	directory := captured.PrivateBundleDirectory()
++	raw, digest, err := capturecontrol.ReadPrivateManifest(directory)
++	if err != nil {
++		return nil, err
++	}
++	var manifest application.NativeSourceBundleManifest
++	if err := json.Unmarshal(raw, &manifest); err != nil {
++		return nil, errors.Join(ErrPinkhaNativeSourceCapture, err)
++	}
++	// Compare against the in-memory result owned by the real native capture;
++	// filesystem JSON cannot substitute its own authorization receipt.
++	if manifest.Contract != "pinkha-native-whole-source-bundle-v1" ||
++		!reflect.DeepEqual(manifest.Receipt, receipt) ||
++		!receipt.AccountSessionAuthorizedAtFinalCapture ||
++		!receipt.CapturedSnapshotsBoundToUnchangedCheckpoint {
++		return nil, ErrPinkhaNativeSourceCapture
++	}
++	if err := ctx.Err(); err != nil {
++		return nil, err
++	}
++	return json.Marshal(pinkhaNativeSourceCaptureDescriptor{
++		Contract: "pinkha-native-source-capture-v1", RequestID: requestID,
++		SourceAccountID: accountID, SourceSpaceID: spaceID,
++		PrivateBundleDirectory: directory, ManifestSHA256: digest,
++		SourceRowsSHA256: manifest.SourceRows.SHA256,
++		NativeTrees:      receipt.NativeTrees, CapturedObjects: receipt.CapturedObjects,
++		CapturedFiles:                      receipt.CapturedFiles,
++		AccountSessionAuthorizedAtCapture:  receipt.AccountSessionAuthorizedAtFinalCapture,
++		CapturedSnapshotsBoundToCheckpoint: receipt.CapturedSnapshotsBoundToUnchangedCheckpoint,
++		CurrentFilePayloadCompleteness:     receipt.CurrentFilePayloadCompleteness,
++		OriginalNativeHistoryRowsRetained:  receipt.OriginalNativeHistoryRowsRetained,
++		PermitsDestinationWrites:           false,
++	})
++}
+diff --git a/pkg/lib/pinkha/capturecontrol/manifest.go b/pkg/lib/pinkha/capturecontrol/manifest.go
+new file mode 100644
+index 000000000..e4e2bf266
+--- /dev/null
++++ b/pkg/lib/pinkha/capturecontrol/manifest.go
+@@ -0,0 +1,60 @@
++package capturecontrol
++
++import (
++	"crypto/sha256"
++	"encoding/hex"
++	"errors"
++	"io"
++	"os"
++	"path/filepath"
++)
++
++var ErrPrivateManifest = errors.New("unchanged private native source manifest required")
++
++const MaximumManifestBytes = 64 << 20
++
++// ReadPrivateManifest reads only the immutable file written by the native
++// capture. The caller supplies the capture's returned directory, never a member
++// path from transported JSON. It does not grant source or destination authority.
++func ReadPrivateManifest(directory string) ([]byte, string, error) {
++	if !filepath.IsAbs(directory) || filepath.Clean(directory) != directory {
++		return nil, "", ErrPrivateManifest
++	}
++	canonical, err := filepath.EvalSymlinks(directory)
++	if err != nil || canonical != directory {
++		return nil, "", errors.Join(ErrPrivateManifest, err)
++	}
++	info, err := os.Lstat(directory)
++	if err != nil || !info.IsDir() || info.Mode().Perm() != 0700 {
++		return nil, "", errors.Join(ErrPrivateManifest, err)
++	}
++	path := filepath.Join(directory, "manifest.json")
++	before, err := os.Lstat(path)
++	if err != nil || !before.Mode().IsRegular() || before.Mode().Perm() != 0400 ||
++		before.Size() < 1 || before.Size() > MaximumManifestBytes {
++		return nil, "", errors.Join(ErrPrivateManifest, err)
++	}
++	file, err := os.Open(path)
++	if err != nil {
++		return nil, "", errors.Join(ErrPrivateManifest, err)
++	}
++	opened, statErr := file.Stat()
++	if statErr != nil || !os.SameFile(before, opened) {
++		_ = file.Close()
++		return nil, "", errors.Join(ErrPrivateManifest, statErr)
++	}
++	raw, readErr := io.ReadAll(io.LimitReader(file, MaximumManifestBytes+1))
++	after, afterErr := file.Stat()
++	closeErr := file.Close()
++	current, currentErr := os.Lstat(path)
++	if readErr != nil || afterErr != nil || closeErr != nil || currentErr != nil ||
++		int64(len(raw)) != before.Size() || len(raw) > MaximumManifestBytes ||
++		!os.SameFile(before, after) || !os.SameFile(before, current) ||
++		before.Size() != after.Size() || before.Mode() != after.Mode() ||
++		!before.ModTime().Equal(after.ModTime()) || !current.Mode().IsRegular() ||
++		current.Mode().Perm() != 0400 {
++		return nil, "", errors.Join(ErrPrivateManifest, readErr, afterErr, closeErr, currentErr)
++	}
++	digest := sha256.Sum256(raw)
++	return raw, hex.EncodeToString(digest[:]), nil
++}
+diff --git a/pkg/lib/pinkha/capturecontrol/manifest_test.go b/pkg/lib/pinkha/capturecontrol/manifest_test.go
+new file mode 100644
+index 000000000..08a7572dc
+--- /dev/null
++++ b/pkg/lib/pinkha/capturecontrol/manifest_test.go
+@@ -0,0 +1,98 @@
++package capturecontrol
++
++import (
++	"crypto/sha256"
++	"encoding/hex"
++	"errors"
++	"os"
++	"path/filepath"
++	"testing"
++)
++
++func privateFixture(t *testing.T) (string, []byte) {
++	t.Helper()
++	root, err := filepath.EvalSymlinks(t.TempDir())
++	if err != nil {
++		t.Fatal(err)
++	}
++	if err := os.Chmod(root, 0700); err != nil {
++		t.Fatal(err)
++	}
++	data := []byte("{\"Contract\":\"actual native test fixture\"}\n")
++	if err := os.WriteFile(filepath.Join(root, "manifest.json"), data, 0400); err != nil {
++		t.Fatal(err)
++	}
++	return root, data
++}
++
++func TestExactImmutableManifestRead(t *testing.T) {
++	root, original := privateFixture(t)
++	raw, digest, err := ReadPrivateManifest(root)
++	if err != nil {
++		t.Fatal(err)
++	}
++	expected := sha256.Sum256(original)
++	if string(raw) != string(original) || digest != hex.EncodeToString(expected[:]) {
++		t.Fatal("native bytes changed")
++	}
++}
++
++func TestWritableSymlinkNonPrivateAndOversizedManifestRefused(t *testing.T) {
++	t.Run("writable", func(t *testing.T) {
++		root, _ := privateFixture(t)
++		if err := os.Chmod(filepath.Join(root, "manifest.json"), 0600); err != nil {
++			t.Fatal(err)
++		}
++		if _, _, err := ReadPrivateManifest(root); !errors.Is(err, ErrPrivateManifest) {
++			t.Fatal(err)
++		}
++	})
++	t.Run("directory permissions", func(t *testing.T) {
++		root, _ := privateFixture(t)
++		if err := os.Chmod(root, 0755); err != nil {
++			t.Fatal(err)
++		}
++		if _, _, err := ReadPrivateManifest(root); !errors.Is(err, ErrPrivateManifest) {
++			t.Fatal(err)
++		}
++	})
++	t.Run("file symlink", func(t *testing.T) {
++		root, _ := privateFixture(t)
++		path := filepath.Join(root, "manifest.json")
++		if err := os.Rename(path, path+".original"); err != nil {
++			t.Fatal(err)
++		}
++		if err := os.Symlink(path+".original", path); err != nil {
++			t.Fatal(err)
++		}
++		if _, _, err := ReadPrivateManifest(root); !errors.Is(err, ErrPrivateManifest) {
++			t.Fatal(err)
++		}
++	})
++	t.Run("directory symlink", func(t *testing.T) {
++		root, _ := privateFixture(t)
++		link := filepath.Join(t.TempDir(), "linked")
++		if err := os.Symlink(root, link); err != nil {
++			t.Fatal(err)
++		}
++		if _, _, err := ReadPrivateManifest(link); !errors.Is(err, ErrPrivateManifest) {
++			t.Fatal(err)
++		}
++	})
++	t.Run("size before reading", func(t *testing.T) {
++		root, _ := privateFixture(t)
++		path := filepath.Join(root, "manifest.json")
++		if err := os.Chmod(path, 0600); err != nil {
++			t.Fatal(err)
++		}
++		if err := os.Truncate(path, MaximumManifestBytes+1); err != nil {
++			t.Fatal(err)
++		}
++		if err := os.Chmod(path, 0400); err != nil {
++			t.Fatal(err)
++		}
++		if _, _, err := ReadPrivateManifest(root); !errors.Is(err, ErrPrivateManifest) {
++			t.Fatal(err)
++		}
++	})
++}
+diff --git a/pkg/lib/pinkha/capturecontrol/registry.go b/pkg/lib/pinkha/capturecontrol/registry.go
+new file mode 100644
+index 000000000..a080ddae9
+--- /dev/null
++++ b/pkg/lib/pinkha/capturecontrol/registry.go
+@@ -0,0 +1,106 @@
++// Package capturecontrol bounds and cancels native source capture calls.
++// It supplies no account authority; the actual application capture validates
++// the native session, account lease, loaded Space and unchanged source heads.
++package capturecontrol
++
++import (
++	"context"
++	"crypto/sha256"
++	"crypto/subtle"
++	"errors"
++	"sync"
++	"time"
++)
++
++var (
++	ErrInvalidRequest = errors.New("invalid native source capture request")
++	ErrAlreadyRunning = errors.New("native source capture request already running")
++	ErrCapacity       = errors.New("native source capture capacity reached")
++)
++
++const MaximumDuration = 10 * time.Minute
++
++type call struct {
++	token  [32]byte
++	cancel context.CancelFunc
++}
++
++type Registry struct {
++	mu    sync.Mutex
++	limit int
++	calls map[string]*call
++}
++
++func New(limit int) *Registry {
++	if limit < 1 || limit > 4 {
++		panic("native source capture registry limit must be between one and four")
++	}
++	return &Registry{limit: limit, calls: make(map[string]*call)}
++}
++
++func ValidRequestID(id string) bool {
++	if len(id) < 1 || len(id) > 128 {
++		return false
++	}
++	for _, b := range []byte(id) {
++		if !(b >= 'a' && b <= 'z' || b >= 'A' && b <= 'Z' ||
++			b >= '0' && b <= '9' || b == '-' || b == '_') {
++			return false
++		}
++	}
++	return true
++}
++
++// Begin keeps a cancelled call reserved until its native operation returns.
++// A second call cannot replace the first call's cancellation or release slot.
++func (r *Registry) Begin(parent context.Context, token, id string, duration time.Duration) (context.Context, func(), error) {
++	if parent == nil || len(token) == 0 || len(token) > 16<<10 ||
++		!ValidRequestID(id) || duration <= 0 || duration > MaximumDuration {
++		return nil, nil, ErrInvalidRequest
++	}
++	if err := parent.Err(); err != nil {
++		return nil, nil, err
++	}
++	r.mu.Lock()
++	defer r.mu.Unlock()
++	if _, exists := r.calls[id]; exists {
++		return nil, nil, ErrAlreadyRunning
++	}
++	if len(r.calls) >= r.limit {
++		return nil, nil, ErrCapacity
++	}
++	ctx, cancel := context.WithTimeout(parent, duration)
++	c := &call{token: sha256.Sum256([]byte(token)), cancel: cancel}
++	r.calls[id] = c
++	var once sync.Once
++	finish := func() {
++		once.Do(func() {
++			r.mu.Lock()
++			if r.calls[id] == c {
++				delete(r.calls, id)
++			}
++			r.mu.Unlock()
++			cancel()
++		})
++	}
++	return ctx, finish, nil
++}
++
++// Cancel accepts only the token that began this in-process call. The token is
++// hashed immediately and is never placed in a receipt or persisted registry.
++func (r *Registry) Cancel(token, id string) bool {
++	if len(token) == 0 || len(token) > 16<<10 || !ValidRequestID(id) {
++		return false
++	}
++	hash := sha256.Sum256([]byte(token))
++	r.mu.Lock()
++	c, exists := r.calls[id]
++	if !exists || subtle.ConstantTimeCompare(hash[:], c.token[:]) != 1 {
++		r.mu.Unlock()
++		return false
++	}
++	cancel := c.cancel
++	r.mu.Unlock()
++	cancel()
++	return true
++}
+diff --git a/pkg/lib/pinkha/capturecontrol/registry_test.go b/pkg/lib/pinkha/capturecontrol/registry_test.go
+new file mode 100644
+index 000000000..0d43541e9
+--- /dev/null
++++ b/pkg/lib/pinkha/capturecontrol/registry_test.go
+@@ -0,0 +1,115 @@
++package capturecontrol
++
++import (
++	"context"
++	"errors"
++	"strings"
++	"sync"
++	"testing"
++	"time"
++)
++
++func TestCancellationIsBoundToOriginalTokenAndReservesSlotUntilFinish(t *testing.T) {
++	r := New(1)
++	ctx, finish, err := r.Begin(context.Background(), "owner-token", "capture-1", time.Second)
++	if err != nil {
++		t.Fatal(err)
++	}
++	defer finish()
++	if r.Cancel("another-token", "capture-1") {
++		t.Fatal("foreign token cancelled call")
++	}
++	if ctx.Err() != nil {
++		t.Fatal("foreign cancellation affected context")
++	}
++	if !r.Cancel("owner-token", "capture-1") {
++		t.Fatal("original cancellation not observed")
++	}
++	if !errors.Is(ctx.Err(), context.Canceled) {
++		t.Fatalf("context: %v", ctx.Err())
++	}
++	if _, _, err := r.Begin(context.Background(), "owner-token", "capture-1", time.Second); !errors.Is(err, ErrAlreadyRunning) {
++		t.Fatalf("cancelled call was replaced: %v", err)
++	}
++	if _, _, err := r.Begin(context.Background(), "owner-token", "capture-2", time.Second); !errors.Is(err, ErrCapacity) {
++		t.Fatalf("cancelled call released capacity early: %v", err)
++	}
++	finish()
++	next, finishNext, err := r.Begin(context.Background(), "next-token", "capture-1", time.Second)
++	if err != nil {
++		t.Fatal(err)
++	}
++	defer finishNext()
++	finish()
++	if next.Err() != nil {
++		t.Fatal("old completion cancelled the reused request ID")
++	}
++	if r.Cancel("owner-token", "capture-1") {
++		t.Fatal("old token cancelled new call")
++	}
++	if !r.Cancel("next-token", "capture-1") {
++		t.Fatal("new token lost its call")
++	}
++}
++
++func TestInvalidInputAndAlreadyCancelledParentNeverReserveCapacity(t *testing.T) {
++	r := New(1)
++	for _, id := range []string{"", "with space", "../capture", "טקסט", strings.Repeat("a", 129)} {
++		if _, _, err := r.Begin(context.Background(), "token", id, time.Second); !errors.Is(err, ErrInvalidRequest) {
++			t.Fatalf("%q: %v", id, err)
++		}
++	}
++	for _, token := range []string{"", strings.Repeat("t", (16<<10)+1)} {
++		if _, _, err := r.Begin(context.Background(), token, "id", time.Second); !errors.Is(err, ErrInvalidRequest) {
++			t.Fatal(err)
++		}
++	}
++	for _, duration := range []time.Duration{0, -1, MaximumDuration + 1} {
++		if _, _, err := r.Begin(context.Background(), "token", "id", duration); !errors.Is(err, ErrInvalidRequest) {
++			t.Fatal(err)
++		}
++	}
++	if _, _, err := r.Begin(nil, "token", "id", time.Second); !errors.Is(err, ErrInvalidRequest) {
++		t.Fatal(err)
++	}
++	parent, cancel := context.WithCancel(context.Background())
++	cancel()
++	if _, _, err := r.Begin(parent, "token", "id", time.Second); !errors.Is(err, context.Canceled) {
++		t.Fatal(err)
++	}
++	_, finish, err := r.Begin(context.Background(), "token", "id", time.Second)
++	if err != nil {
++		t.Fatal("invalid input consumed capacity", err)
++	}
++	finish()
++}
++
++func TestDeadlineAndConcurrentCancellationDoNotReplaceCall(t *testing.T) {
++	r := New(1)
++	ctx, finish, err := r.Begin(context.Background(), "token", "id", 5*time.Millisecond)
++	if err != nil {
++		t.Fatal(err)
++	}
++	<-ctx.Done()
++	if !errors.Is(ctx.Err(), context.DeadlineExceeded) {
++		t.Fatal(ctx.Err())
++	}
++	var workers sync.WaitGroup
++	for i := 0; i < 32; i++ {
++		workers.Add(1)
++		go func() {
++			defer workers.Done()
++			r.Cancel("token", "id")
++			finish()
++		}()
++	}
++	workers.Wait()
++	if r.Cancel("token", "id") {
++		t.Fatal("completed call remained registered")
++	}
++	_, finishNext, err := r.Begin(context.Background(), "token", "id", time.Second)
++	if err != nil {
++		t.Fatal(err)
++	}
++	finishNext()
++}
