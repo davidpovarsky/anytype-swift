@@ -547,7 +547,21 @@ def preserve_final_sandbox(commands, udid, directory, *, application_invoked=Fal
         write_bytes(directory / name, value)
         require(digest(source) == sha(value), "final private evidence changed during capture")
         rows[name] = {"status": "COPIED_ORIGINAL", "bytes": len(value), "sha256": sha(value)}
-    return {"status": "PRESERVED_ORIGINAL_PRIVATE_FILES", "files": rows, "engineCalls": 0, "rawPayloadsUploaded": False}
+    # Preserve diagnostics as separate originals. Their presence is never an
+    # acceptance predicate and their content is not emitted in public receipts.
+    observer_rows = {}
+    observer_files = sorted((container / "Library/Application Support").glob("pinkha-semantic-source-entry-*.json"))
+    require(len(observer_files) <= 64, "bounded private source-entry observations required")
+    for source in observer_files:
+        require(re.fullmatch(r"pinkha-semantic-source-entry-[1-9][0-9]{0,9}\.json", source.name)
+                and source.resolve() == source and source.stat().st_nlink == 1,
+                "private source-entry observation filename or alias differs")
+        value = raw(source, 65536)
+        write_bytes(directory / source.name, value)
+        require(digest(source) == sha(value), "source-entry observation changed during capture")
+        observer_rows[source.name] = {"status": "COPIED_ORIGINAL", "bytes": len(value), "sha256": sha(value)}
+    return {"status": "PRESERVED_ORIGINAL_PRIVATE_FILES", "files": rows, "sourceEntryObservers": observer_rows,
+            "engineCalls": 0, "rawPayloadsUploaded": False}
 
 
 def admit_and_clone_products(admission, root, evidence, commands):
@@ -609,6 +623,8 @@ def main():
     parser.add_argument("--admission", type=Path, required=True)
     parser.add_argument("--admission-sha256", required=True)
     parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--keep-owned-simulator", action="store_true",
+                        help="Retain the shutdown account for a separately verified private backup.")
     args = parser.parse_args()
     require(platform.system() == "Darwin" and platform.machine() == "arm64", "actual Apple Silicon host required")
     admission_raw = raw(args.admission)
@@ -774,7 +790,8 @@ def main():
             complete = (retained.get("status") == "PRESERVED_ORIGINAL_PRIVATE_FILES"
                         and retained.get("files")
                         and all(row.get("status") == "COPIED_ORIGINAL" for row in retained["files"].values()))
-            if result["status"] == "PASS_SIX_ACTUAL_COMBINED_HEART_METHODS" and cleanup["status"] == "PASS" and complete:
+            if (result["status"] == "PASS_SIX_ACTUAL_COMBINED_HEART_METHODS" and cleanup["status"] == "PASS"
+                    and complete and not args.keep_owned_simulator):
                 try:
                     _, row = commands.run(["xcrun", "simctl", "delete", device], "cleanup-delete", 60, checked=False, capacity=False)
                     require(row["exitCode"] == 0, "owned simulator deletion failed")
