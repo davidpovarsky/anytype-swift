@@ -5,6 +5,7 @@ import PinkhaAnyIntegration
 import PinkhaAnyRuntime
 import PinkhaAnyUI
 import PinkhaHanlinCore
+import PinkhaSharing
 
 public enum AnyNativeApplicationError: Error, Equatable, Sendable {
     case busy
@@ -280,6 +281,34 @@ public actor AnyNativeApplication {
                 throw AnyNativeApplicationError.malformedResponse
             }
             return id
+        }
+    }
+
+    /// Joining uses the native coordinator protocol; a pending HTTP 202 never
+    /// becomes an active-space receipt just because its body says "active".
+    public func joinSpace(invitation: String) async throws -> PinkhaSharingJoinResult {
+        let token = invitation.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !token.isEmpty, token.utf8.count <= 16_384, !token.utf8.contains(0) else {
+            throw AnyNativeApplicationError.invalidConfiguration
+        }
+        return try await transition {
+            let client = try await self.accountClient(requireBackup: true)
+            let result = try await client.requestJSONResponse(method: "POST", path: ["v1", "spaces", "join"],
+                body: .object(["inviteToken": .string(token)]), maximumResponseBytes: 128 * 1024)
+            guard let id = result.body["id"]?.string, AnyEditorBlock.validID(id),
+                  let status = result.body["status"]?.string else {
+                throw AnyNativeApplicationError.malformedResponse
+            }
+            switch result.statusCode {
+            case 201:
+                guard status == "active" else { throw AnyNativeApplicationError.malformedResponse }
+                return try PinkhaSharingJoinResult(spaceID: id, status: .active)
+            case 202:
+                return try PinkhaSharingJoinResult(spaceID: id,
+                    status: status == "joining" ? .awaitingApproval : .loading)
+            default:
+                throw AnyNativeApplicationError.malformedResponse
+            }
         }
     }
 

@@ -243,12 +243,12 @@
       "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
       "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
       "baselineBlob": "d3820631ef1b344babf116ca8766e7c0dcf853df",
-      "replacementBlob": "4c2d03b7c988402de5f860a3263f4c1a138b305a",
-      "reason": "Retain the extracted shared Hanlin import and add a read-only simulator acceptance hook immediately before AccountSelect. The hook is compiled only with PINKHA_NATIVE_DERIVED on simulator and is inactive without the exact postflight flag.",
+      "replacementBlob": "a6a3374f2af5643c0bce5d408d9cc9005f191c4c",
+      "reason": "Retain the original Hanlin account decorator and simulator postflight hook. Add independent Heart sharing owner drain before account transitions and reopen only after the original account operation succeeds. The Any engine has a separate existing workspace lease; no Heart logout is used to switch engines.",
       "sharedSources": [],
       "validation": [
-        "Reviewed the retained source and bounded integration changes, with exact current replacement blob pinned.",
-        "Focused controller/component evidence is retained separately; source preservation does not imply native runtime, mounted UI or physical-device acceptance."
+        "Original implementation and additive adapter/lifetime changes reviewed; source map is not a semantic or UI acceptance proof.",
+        "See docs/validation/20261125-t2-shared-permissions for 4 shared controls, 3 actual HTTP controls, the actual Apple SwiftUI package compile, and explicit remaining adapter/native/UI acceptance."
       ]
     },
     {
@@ -1746,6 +1746,32 @@
       "validation": [
         "Reviewed original source diff against the protected baseline on 2026-11-25; no capability removed. Current App/native and UI runner compiled in 45535451242 at406fd73. That run stopped in controller selection before F product tests.",
         "For the Hanlin pin, preserve the two original race/cancellation controls and actual new-engine UI pass in45531686517. This source map does not claim full release or physical-device acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/Modules/SpceMembers/SpaceMembersView.swift",
+      "to": "Anytype/Sources/PresentationLayer/Modules/SpceMembers/SpaceMembersView.swift",
+      "baselineBlob": "d0a5af658e32db0cc04e979770f8e4e1ba88cdb0",
+      "replacementBlob": "134e7b74740bb47d98eb086cbd32f90d09e2920a",
+      "reason": "Retain the original member rows, profile presentation, subscriptions and analytics. Add an entry point to the common membership/invitation view without replacing existing member behavior.",
+      "sharedSources": [],
+      "validation": [
+        "Original implementation and additive adapter/lifetime changes reviewed; source map is not a semantic or UI acceptance proof.",
+        "See docs/validation/20261125-t2-shared-permissions for 4 shared controls, 3 actual HTTP controls, the actual Apple SwiftUI package compile, and explicit remaining adapter/native/UI acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/Modules/SpceMembers/SpaceMembersViewModel.swift",
+      "to": "Anytype/Sources/PresentationLayer/Modules/SpceMembers/SpaceMembersViewModel.swift",
+      "baselineBlob": "3b7816ce8b3344f965ceb5e12f5438020ab1c3ac",
+      "replacementBlob": "8dbc18916f5e56f27c644bbd822036e4062fa9ac",
+      "reason": "Retain the original participant/permission subscriptions and filtering. Keep their observed space snapshot and construct an account/space-scoped Heart adapter for the shared permissions view.",
+      "sharedSources": [],
+      "validation": [
+        "Original implementation and additive adapter/lifetime changes reviewed; source map is not a semantic or UI acceptance proof.",
+        "See docs/validation/20261125-t2-shared-permissions for 4 shared controls, 3 actual HTTP controls, the actual Apple SwiftUI package compile, and explicit remaining adapter/native/UI acceptance."
       ]
     }
   ],

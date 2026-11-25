@@ -1,5 +1,6 @@
 import Foundation
 import Services
+import PinkhaSharing
 
 struct SpaceMembersData: Identifiable, Hashable {
     let spaceId: String
@@ -33,6 +34,20 @@ final class SpaceMembersViewModel {
     private var isOwner = false
     @ObservationIgnored
     private var participants: [Participant] = []
+    @ObservationIgnored
+    private var currentSpace: ParticipantSpaceViewData?
+
+    func makeSharingService() throws -> HeartSpaceSharingService {
+        let scope = try PinkhaSharingScope(engine: .heart, accountID: accountManager.account.id,
+                                           spaceID: data.spaceId)
+        return try HeartSpaceSharingService(scope: scope) { [weak self] in
+            guard let self, let space = self.currentSpace,
+                  self.accountManager.account.id == scope.accountID else {
+                throw PinkhaSharingError.staleContext
+            }
+            return (self.participants, space)
+        }
+    }
     
     init(data: SpaceMembersData) {
         self.data = data
@@ -47,6 +62,7 @@ final class SpaceMembersViewModel {
 
     func startSpacePermissionsTask() async {
         for await participantSpaceView in participantSpacesStorage.participantSpaceViewPublisher(spaceId: data.spaceId).values {
+            currentSpace = participantSpaceView
             isOwner = participantSpaceView.isOwner
             updateParticipant()
         }
