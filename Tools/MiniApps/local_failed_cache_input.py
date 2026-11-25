@@ -40,7 +40,7 @@ REVIEWED_CHANGES = {
 CONTROL_ONLY_PATHS = completed.CONTROL_ONLY_PATHS | {
     "Tools/MiniApps/local_failed_cache_input.py",
     "Tools/MiniApps/test_local_failed_cache_input.py",
-    "Tools/MiniApps/producer-preparation-2c56739e.json",
+    "Tools/MiniApps/producer-preparation-86a6dde3.json",
     "docs/miniapps-cross-app/evidence/20261125-native-core-link/APPLE_PROJECT_GRAPH.json",
     "docs/miniapps-cross-app/evidence/20261125-native-core-link/PROJECT_REVIEW.json",
     "docs/miniapps-cross-app/evidence/20261125-failed-cache-continuation/CONTRACT.json",
