@@ -9,44 +9,77 @@ import ProtobufMessages
 /// mnemonic, session token nor returned app token is persisted or presented.
 actor PinkhaHeartSourceCaptureController {
     private let controller: AnyHeartNativeSourceAccountController
+    private let observation: AnyHeartNativeSourceCaptureDiagnostics?
 
     init(privateDirectory: URL,
          obtainSeed: @escaping @MainActor @Sendable () throws -> String) throws {
-        let authority = AnyHeartNativeSourceSessionAuthority(create: { _ in
-            try await Self.requireQualifiedRuntime()
+#if DEBUG
+        let env = ProcessInfo.processInfo.environment
+        let observation = env["PINKHA_HEART_SOURCE_CAPTURE_OBSERVER"] == "1" &&
+            env["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1"
+            ? try? AnyHeartNativeSourceCaptureDiagnostics(privateDirectory: privateDirectory) : nil
+#else
+        let observation: AnyHeartNativeSourceCaptureDiagnostics? = nil
+#endif
+        self.observation = observation
+        let authority = AnyHeartNativeSourceSessionAuthority(create: { expectedAccountID in
+            try await Self.observed(.runtimeCheck, by: observation) {
+                try await Self.requireQualifiedRuntime()
+            }
             var request = Anytype_Rpc.Wallet.CreateSession.Request()
-            request.mnemonic = try await obtainSeed()
-            let response = try await ClientCommands.walletCreateSession(request).invoke(
-                requestMask: { $0 = .init() },
-                responseMask: { $0.token = ""; $0.appToken = "" }
-            )
+            request.mnemonic = try await Self.observed(.seedRead, by: observation) {
+                try await obtainSeed()
+            }
+            let sessionRequest = request
+            let response = try await Self.observed(.sessionCreate, by: observation) {
+                try await ClientCommands.walletCreateSession(sessionRequest).invoke(
+                    requestMask: { $0 = .init() },
+                    responseMask: { $0.token = ""; $0.appToken = "" }
+                )
+            }
+            let appAssociated = !response.appHash.isEmpty || !response.appName.isEmpty ||
+                response.hasGrant || response.appExpireAt != 0 || response.appCreatedAt != 0
+            // Only observe the returned booleans. The existing account controller
+            // independently validates the actual grant and owns/cleans the token.
+            observation?.record(.sessionGrant, .observed, authority: .init(
+                accountMatches: response.accountID.utf8.elementsEqual(expectedAccountID.utf8),
+                full: response.accountScope == .full, appAssociated: appAssociated,
+                tokenPresent: !response.token.isEmpty
+            ))
             return AnyHeartNativeSourceSessionGrant(
                 sessionToken: response.token, accountID: response.accountID,
-                isFull: response.accountScope == .full,
-                isAppAssociated: !response.appHash.isEmpty || !response.appName.isEmpty ||
-                    response.hasGrant || response.appExpireAt != 0 || response.appCreatedAt != 0
+                isFull: response.accountScope == .full, isAppAssociated: appAssociated
             )
         }, close: { token in
             var request = Anytype_Rpc.Wallet.CloseSession.Request()
             request.token = token
-            _ = try await ClientCommands.walletCloseSession(request).invoke(
-                requestMask: { $0 = .init() }
-            )
+            let closeRequest = request
+            _ = try await Self.observed(.sessionClose, by: observation) {
+                try await ClientCommands.walletCloseSession(closeRequest).invoke(
+                    requestMask: { $0 = .init() }
+                )
+            }
         })
         let bridge = AnyHeartNativeSourceBridge(capture: { token, account, space, directory, request in
-            try await Task.detached(priority: .userInitiated) {
-                try PinkhaLoadedAccountSourceNative.capture(
-                    sessionToken: token, accountID: account, spaceID: space,
-                    privateDirectory: directory, requestID: request
-                )
-            }.value
+            try await Self.observed(.nativeCapture, by: observation) {
+                try await Task.detached(priority: .userInitiated) {
+                    try PinkhaLoadedAccountSourceNative.capture(
+                        sessionToken: token, accountID: account, spaceID: space,
+                        privateDirectory: directory, requestID: request
+                    )
+                }.value
+            }
         }, validate: { token, request, manifest in
-            try await Self.requireQualifiedRuntime()
-            try await Task.detached(priority: .userInitiated) {
-                try PinkhaLoadedAccountSourceNative.validate(
-                    sessionToken: token, requestID: request, manifestSHA256: manifest
-                )
-            }.value
+            try await Self.observed(.runtimeCheck, by: observation) {
+                try await Self.requireQualifiedRuntime()
+            }
+            try await Self.observed(.nativeValidate, by: observation) {
+                try await Task.detached(priority: .userInitiated) {
+                    try PinkhaLoadedAccountSourceNative.validate(
+                        sessionToken: token, requestID: request, manifestSHA256: manifest
+                    )
+                }.value
+            }
         }, cancel: { token, request in
             PinkhaLoadedAccountSourceNative.cancel(sessionToken: token, requestID: request)
         }, release: { token, request in
@@ -76,8 +109,29 @@ actor PinkhaHeartSourceCaptureController {
         }
     }
 
+    /// Observation never catches-and-continues, changes a return value or retries
+    /// native work. Re-throw the same original failure after closed diagnostics.
+    private static func observed<Result: Sendable>(
+        _ phase: AnyHeartNativeSourceCaptureDiagnostics.Phase,
+        by observation: AnyHeartNativeSourceCaptureDiagnostics?,
+        operation: @Sendable () async throws -> Result
+    ) async throws -> Result {
+        observation?.record(phase, .started)
+        do {
+            let result = try await operation()
+            observation?.record(phase, .succeeded)
+            return result
+        } catch {
+            observation?.record(phase, .failed, error: error)
+            throw error
+        }
+    }
+
     func capture(accountID: String, spaceID: String) async throws -> AnyHeartNativeSourceCaptureReview {
-        try await controller.capture(accountID: accountID, spaceID: spaceID)
+        let controller = self.controller
+        return try await Self.observed(.sourceReview, by: observation) {
+            try await controller.capture(accountID: accountID, spaceID: spaceID)
+        }
     }
 
     func revalidate(source: AnyDestinationSourceBinding) async throws {

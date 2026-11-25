@@ -1,0 +1,73 @@
+{
+  "appleTypecheck": false,
+  "argv": [
+    "/usr/local/bin/swift",
+    "test",
+    "--cache-path",
+    "/mnt/development/projects/evidence/migration-final-20261125/compiled-resolver/swift-common-cache",
+    "--manifest-cache",
+    "local",
+    "-Xswiftc",
+    "-module-cache-path",
+    "-Xswiftc",
+    "/mnt/development/projects/evidence/migration-final-20261125/compiled-resolver/swift-module-cache",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/tmp/pinkha-c-swift-cache-20261125",
+    "--disable-sandbox",
+    "--disable-automatic-resolution",
+    "--jobs",
+    "2",
+    "--filter",
+    "NativeSourceCaptureDiagnosticsTests"
+  ],
+  "exitCode": 1,
+  "expectedTests": 2,
+  "finishedAt": 1795626531.4167686,
+  "logSHA256": "df811ac9d5d621736efa3844d691d4d3d1ceb77cdecb28bd271193c059d715ee",
+  "parseExitCode": 0,
+  "parseLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "protocol": "pinkha-source-capture-observer-qualification-v1",
+  "resourceRationale": {
+    "estimatedWarmBuildGrowthBytes": 536870912,
+    "projectEmergencyBytes": 1073741824,
+    "rootWrites": "bounded process metadata only; all compiler output and tmp are on project volume"
+  },
+  "samples": [
+    {
+      "at": 1795626521.4144447,
+      "freeProjectBytes": 9340891136
+    },
+    {
+      "at": 1795626523.4146101,
+      "freeProjectBytes": 9368903680
+    },
+    {
+      "at": 1795626525.4147685,
+      "freeProjectBytes": 9340796928
+    },
+    {
+      "at": 1795626527.41497,
+      "freeProjectBytes": 9340772352
+    },
+    {
+      "at": 1795626529.4151096,
+      "freeProjectBytes": 9368829952
+    }
+  ],
+  "sourceAcceptance": false,
+  "sourceHashes": {
+    "Anytype/Sources/Pinkha/Migration/PinkhaHeartSourceCaptureController.swift": "adf72a3a142559bf3fd49f99e7d17e3b4294494e8ea43938a8d9bd7bd36a7771",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureDiagnostics.swift": "a1fe42b05fb61491f12d73ea74feae97ff030fe0af4c495cd335019c7d9e929e",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeSourceCaptureDiagnosticsTests.swift": "49f8438b35b9014bf962b9d9a39ad0f78dc9b3287c2f8747be2a8c7bcb8ea1d0",
+    "PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift": "272dd5ce3620eafc4a1411f51f38d799041a0f535a46cafc97f6972c26407727"
+  },
+  "sourceHashesAfter": {
+    "Anytype/Sources/Pinkha/Migration/PinkhaHeartSourceCaptureController.swift": "adf72a3a142559bf3fd49f99e7d17e3b4294494e8ea43938a8d9bd7bd36a7771",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourceCaptureDiagnostics.swift": "a1fe42b05fb61491f12d73ea74feae97ff030fe0af4c495cd335019c7d9e929e",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeSourceCaptureDiagnosticsTests.swift": "49f8438b35b9014bf962b9d9a39ad0f78dc9b3287c2f8747be2a8c7bcb8ea1d0",
+    "PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift": "272dd5ce3620eafc4a1411f51f38d799041a0f535a46cafc97f6972c26407727"
+  },
+  "startedAt": 1795626521.4094436
+}
