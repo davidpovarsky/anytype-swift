@@ -1,5 +1,6 @@
 import Foundation
 import CryptoKit
+import Darwin
 import HanlinMiniAppsBridge
 import PinkhaHanlinUI
 import Services
@@ -58,7 +59,7 @@ struct PinkhaMiniAppsContext {
             }
         }
         try validateSource()
-        let selectedIDs: [String]
+        var selectedIDs: [String]
         if selection != nil {
             selectedIDs = []
         } else {
@@ -72,7 +73,7 @@ struct PinkhaMiniAppsContext {
         // Simple-table text handlers do not update EditorPageController's cached responder.
         // Selection menus supply their actual view; the toolbar searches UIKit's live responder.
         let origin = try selection.map { try $0.resolve(editor: editor) }
-            ?? focusedTextView(in: editor.viewIfLoaded)
+            ?? (selectedIDs.isEmpty ? focusedTextView(in: editor.viewIfLoaded) : nil)
         if let textView = origin, let blockID = blockID(containing: textView, editor: editor) {
             focusID = blockID
             let attributed = textView.attributedText ?? NSAttributedString(string: textView.text ?? "")
@@ -99,6 +100,7 @@ struct PinkhaMiniAppsContext {
         try validateSource()
         let blocks = try await nativeBlocks(document: document)
         try validateSource()
+        selectedIDs = try expandedSelection(selectedIDs, blocks: blocks)
         let snapshots = try blocks.compactMap { info -> PinkhaMiniAppsBlockSnapshot? in
             guard case .text(let text) = info.content,
                   text.contentType != .title, text.contentType != .description else { return nil }
@@ -121,25 +123,26 @@ struct PinkhaMiniAppsContext {
         if let anchor = blocks.last(where: { selectedIDs.contains($0.id) })?.id ?? focusID ?? snapshots.last?.id {
             metadata["anytype.insertionAnchor"] = anchor
         }
-        let source = MiniAppSourceContext(appID: sourceAppID, displayName: "Anytype",
-            documentID: document.objectId, documentTitle: document.details?.title,
-            revision: revision, selection: textSelection, documentText: documentText,
-            kind: "editor", locator: document.objectId,
-            sceneID: editor.viewIfLoaded?.window?.windowScene?.session.persistentIdentifier,
-            metadata: metadata)
         var inputs: [MiniAppContent] = []
         // Empty input at a caret is intentional; full document context is separate.
         let text = textSelection?.text ?? ""
         inputs.append(.init(kind: .text, text: text, typeIdentifier: "public.plain-text"))
-        for info in blocks where selectedIDs.contains(info.id) {
+        // An explicit native/text selection retains its original scope. Only a
+        // genuinely unselected toolbar document exports its native file blocks.
+        let attachmentIDs = selectedIDs.isEmpty && textSelection == nil
+            ? Set(blocks.map(\.id)) : Set(selectedIDs)
+        var nativeFileMap: [String: String] = [:]
+        for info in blocks where attachmentIDs.contains(info.id) {
             switch info.content {
             case .file(let file):
-                guard let url = ContentUrlBuilder.fileUrl(fileId: file.metadata.targetObjectId) else { continue }
-                let (local, response) = try await URLSession.shared.download(from: url)
+                let (local, response) = try await downloadNativeFile(file)
                 defer { try? FileManager.default.removeItem(at: local) }
                 try validateSource()
-                if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
-                    throw PinkhaMiniAppsError.attachmentUnavailable
+                let refreshed = try await nativeBlocks(document: document)
+                try validateSource()
+                guard let current = refreshed.first(where: { $0.id == info.id }),
+                      case .file(let currentFile) = current.content, currentFile == file else {
+                    throw PinkhaMiniAppsError.sourceChanged
                 }
                 let mimeType = response.mimeType.flatMap { UTType(mimeType: $0) }
                 let fileType = response.suggestedFilename.flatMap { UTType(filenameExtension: ($0 as NSString).pathExtension) }
@@ -151,6 +154,10 @@ struct PinkhaMiniAppsContext {
                     try store.importAttachment(at: local, name: name, typeIdentifier: typeIdentifier)
                 }.value
                 try validateSource()
+                guard let attachmentID = attachment.attachmentID else {
+                    throw PinkhaMiniAppsError.attachmentUnavailable
+                }
+                nativeFileMap[attachmentID.uuidString.lowercased()] = info.id
                 inputs.append(attachment)
             case .bookmark(let bookmark):
                 if let url = bookmark.source?.url {
@@ -160,7 +167,124 @@ struct PinkhaMiniAppsContext {
             }
         }
         try validateSource()
+        if !nativeFileMap.isEmpty {
+            metadata["anytype.files.v1"] = String(decoding:
+                try JSONEncoder().encode(nativeFileMap), as: UTF8.self)
+        }
+        let source = MiniAppSourceContext(appID: sourceAppID, displayName: "Anytype",
+            documentID: document.objectId, documentTitle: document.details?.title,
+            revision: revision, selection: textSelection, documentText: documentText,
+            kind: "editor", locator: document.objectId,
+            sceneID: editor.viewIfLoaded?.window?.windowScene?.session.persistentIdentifier,
+            metadata: metadata)
         return .init(source: source, inputs: inputs)
+    }
+
+
+    /// Keep original file identity through an asynchronous native download.
+    /// The caller rechecks its document/account lease and the exact file block.
+    @MainActor
+    static func downloadNativeFile(_ file: BlockFile) async throws -> (URL, URLResponse) {
+        try Task.checkCancellation()
+        guard file.state == .done, !file.metadata.targetObjectId.isEmpty,
+              let url = ContentUrlBuilder.fileUrl(fileId: file.metadata.targetObjectId) else {
+            throw PinkhaMiniAppsError.attachmentUnavailable
+        }
+        let (local, response) = try await URLSession.shared.download(from: url)
+        do {
+            try Task.checkCancellation()
+            if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+                throw PinkhaMiniAppsError.attachmentUnavailable
+            }
+            return (local, response)
+        } catch {
+            try? FileManager.default.removeItem(at: local)
+            throw error
+        }
+    }
+
+    struct FileWitness: Equatable, Sendable {
+        let count: Int64
+        let sha256: Data
+    }
+
+    /// Stream original bytes without introducing a file-size or file-count cap.
+    /// A no-follow descriptor and before/after identity reject replacement/growth.
+    static func fileWitness(at url: URL) throws -> FileWitness {
+        try Task.checkCancellation()
+        guard url.isFileURL else { throw PinkhaMiniAppsError.attachmentUnavailable }
+        let fd = Darwin.open(url.path, O_RDONLY | O_NOFOLLOW | O_CLOEXEC)
+        guard fd >= 0 else { throw PinkhaMiniAppsError.attachmentUnavailable }
+        let handle = FileHandle(fileDescriptor: fd, closeOnDealloc: true)
+        defer { try? handle.close() }
+        var before = stat()
+        guard Darwin.fstat(fd, &before) == 0,
+              before.st_mode & mode_t(S_IFMT) == mode_t(S_IFREG), before.st_size >= 0 else {
+            throw PinkhaMiniAppsError.attachmentUnavailable
+        }
+        var hash = SHA256(), count: Int64 = 0
+        while let bytes = try handle.read(upToCount: 65_536), !bytes.isEmpty {
+            try Task.checkCancellation()
+            hash.update(data: bytes)
+            count += Int64(bytes.count)
+        }
+        try Task.checkCancellation()
+        var after = stat()
+        guard Darwin.fstat(fd, &after) == 0,
+              before.st_dev == after.st_dev, before.st_ino == after.st_ino,
+              before.st_size == after.st_size, count == after.st_size,
+              before.st_mtimespec.tv_sec == after.st_mtimespec.tv_sec,
+              before.st_mtimespec.tv_nsec == after.st_mtimespec.tv_nsec,
+              before.st_ctimespec.tv_sec == after.st_ctimespec.tv_sec,
+              before.st_ctimespec.tv_nsec == after.st_ctimespec.tv_nsec else {
+            throw PinkhaMiniAppsError.sourceChanged
+        }
+        return .init(count: count, sha256: Data(hash.finalize()))
+    }
+
+    static func fileWitnesses(at urls: [URL]) async throws -> [FileWitness] {
+        try Task.checkCancellation()
+        let worker = Task.detached(priority: .utility) {
+            try urls.map { try fileWitness(at: $0) }
+        }
+        return try await withTaskCancellationHandler {
+            try await worker.value
+        } onCancel: {
+            worker.cancel()
+        }
+    }
+
+    static func expandedSelection(_ selected: [String], blocks: [BlockInformation]) throws -> [String] {
+        guard Set(blocks.map(\.id)).count == blocks.count else {
+            throw PinkhaMiniAppsError.sourceChanged
+        }
+        let indexed = Dictionary(uniqueKeysWithValues: blocks.map { ($0.id, $0) })
+        var pending = selected, included = Set<String>()
+        while let id = pending.popLast() {
+            guard let block = indexed[id] else {
+                // A stale selection must never become the whole-document fallback.
+                throw PinkhaMiniAppsError.sourceChanged
+            }
+            guard included.insert(id).inserted else { continue }
+            pending.append(contentsOf: block.childrenIds)
+        }
+        return blocks.filter { included.contains($0.id) }.map(\.id)
+    }
+
+    static func topLevelAnchor(_ id: String?, documentID: String,
+                               blocks: [BlockInformation]) -> String? {
+        guard var candidate = id, candidate != documentID else { return nil }
+        var parents: [String: String] = [:]
+        for block in blocks {
+            for child in block.childrenIds { parents[child] = block.id }
+        }
+        var seen = Set<String>()
+        while seen.insert(candidate).inserted {
+            guard let parent = parents[candidate] else { return nil }
+            if parent == documentID { return candidate }
+            candidate = parent
+        }
+        return nil
     }
 
     static var sourceAppID: String { Bundle.main.bundleIdentifier ?? "io.anytype.app" }

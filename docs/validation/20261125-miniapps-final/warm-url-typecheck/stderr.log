@@ -1,0 +1,559 @@
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:13:9: error: cannot find 'XCTAssertEqual' in scope
+ 11 |         continueAfterFailure = false
+ 12 |         let environment = ProcessInfo.processInfo.environment
+ 13 |         XCTAssertEqual(environment["PINKHA_SIMULATOR_UI_DISPOSABLE"], "1")
+    |         `- error: cannot find 'XCTAssertEqual' in scope
+ 14 |         fixture = try JSONDecoder().decode([String: String].self,
+ 15 |             from: Data(try XCTUnwrap(environment["PINKHA_MINIAPPS_FIXTURE_JSON"]).utf8))
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:120:9: note: macro 'XCTAssertEqual' unavailable: function like macros not supported
+118 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+119 | */
+120 | #define XCTAssertEqual(expression1, expression2, ...) \
+    |         `- note: macro 'XCTAssertEqual' unavailable: function like macros not supported
+121 |     _XCTPrimitiveAssertEqual(nil, expression1, @#expression1, expression2, @#expression2, __VA_ARGS__)
+122 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:15:28: error: cannot find 'XCTUnwrap' in scope
+ 13 |         XCTAssertEqual(environment["PINKHA_SIMULATOR_UI_DISPOSABLE"], "1")
+ 14 |         fixture = try JSONDecoder().decode([String: String].self,
+ 15 |             from: Data(try XCTUnwrap(environment["PINKHA_MINIAPPS_FIXTURE_JSON"]).utf8))
+    |                            `- error: cannot find 'XCTUnwrap' in scope
+ 16 |         XCTAssertEqual(fixture["sourceSHA"], environment["GITHUB_SHA"])
+ 17 |         source = XCUIApplication(bundleIdentifier: try XCTUnwrap(environment["PINKHA_MINIAPPS_SOURCE_BUNDLE"]))
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:16:9: error: cannot find 'XCTAssertEqual' in scope
+ 14 |         fixture = try JSONDecoder().decode([String: String].self,
+ 15 |             from: Data(try XCTUnwrap(environment["PINKHA_MINIAPPS_FIXTURE_JSON"]).utf8))
+ 16 |         XCTAssertEqual(fixture["sourceSHA"], environment["GITHUB_SHA"])
+    |         `- error: cannot find 'XCTAssertEqual' in scope
+ 17 |         source = XCUIApplication(bundleIdentifier: try XCTUnwrap(environment["PINKHA_MINIAPPS_SOURCE_BUNDLE"]))
+ 18 |         source.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:120:9: note: macro 'XCTAssertEqual' unavailable: function like macros not supported
+118 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+119 | */
+120 | #define XCTAssertEqual(expression1, expression2, ...) \
+    |         `- note: macro 'XCTAssertEqual' unavailable: function like macros not supported
+121 |     _XCTPrimitiveAssertEqual(nil, expression1, @#expression1, expression2, @#expression2, __VA_ARGS__)
+122 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:17:56: error: cannot find 'XCTUnwrap' in scope
+ 15 |             from: Data(try XCTUnwrap(environment["PINKHA_MINIAPPS_FIXTURE_JSON"]).utf8))
+ 16 |         XCTAssertEqual(fixture["sourceSHA"], environment["GITHUB_SHA"])
+ 17 |         source = XCUIApplication(bundleIdentifier: try XCTUnwrap(environment["PINKHA_MINIAPPS_SOURCE_BUNDLE"]))
+    |                                                        `- error: cannot find 'XCTUnwrap' in scope
+ 18 |         source.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+ 19 |         source.launchEnvironment["PINKHA_UI27_ROUTE_OBSERVATION"] = "1"
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:26:9: error: cannot find 'XCTAssertTrue' in scope
+ 24 |         executionTimeAllowance = 360
+ 25 |         companion.launch()
+ 26 |         XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 30))
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+ 27 |         XCTAssertTrue(companion.buttons["hanlin-apps-add"].firstMatch.waitForExistence(timeout: 30),
+ 28 |             "The producer must finish publishing the shared catalog before the source picker opens")
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:27:9: error: cannot find 'XCTAssertTrue' in scope
+ 25 |         companion.launch()
+ 26 |         XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 30))
+ 27 |         XCTAssertTrue(companion.buttons["hanlin-apps-add"].firstMatch.waitForExistence(timeout: 30),
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+ 28 |             "The producer must finish publishing the shared catalog before the source picker opens")
+ 29 |         XCTAssertTrue(companion.descendants(matching: .any)["hanlin-package-card-Text Studio"].firstMatch
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:29:9: error: cannot find 'XCTAssertTrue' in scope
+ 27 |         XCTAssertTrue(companion.buttons["hanlin-apps-add"].firstMatch.waitForExistence(timeout: 30),
+ 28 |             "The producer must finish publishing the shared catalog before the source picker opens")
+ 29 |         XCTAssertTrue(companion.descendants(matching: .any)["hanlin-package-card-Text Studio"].firstMatch
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+ 30 |             .waitForExistence(timeout: 15))
+ 31 |         source.launch()
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:33:43: error: cannot find 'XCTUnwrap' in scope
+ 31 |         source.launch()
+ 32 |         try openSource()
+ 33 |         try returnThroughTextStudio(text: XCTUnwrap(fixture["returnedText"]), terminateSource: false)
+    |                                           `- error: cannot find 'XCTUnwrap' in scope
+ 34 |         try expectNativeText(keys: ["originalText", "returnedText"])
+ 35 |         screenshot("miniapps-original-editor-warm-return")
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:36:43: error: cannot find 'XCTUnwrap' in scope
+ 34 |         try expectNativeText(keys: ["originalText", "returnedText"])
+ 35 |         screenshot("miniapps-original-editor-warm-return")
+ 36 |         try returnThroughTextStudio(text: XCTUnwrap(fixture["coldReturnedText"]), terminateSource: true)
+    |                                           `- error: cannot find 'XCTUnwrap' in scope
+ 37 |         try expectNativeText()
+ 38 |         screenshot("miniapps-original-editor-cold-callback")
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:40:9: error: cannot find 'XCTAssertTrue' in scope
+ 38 |         screenshot("miniapps-original-editor-cold-callback")
+ 39 |         source.terminate()
+ 40 |         XCTAssertTrue(source.wait(for: .notRunning, timeout: 15))
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+ 41 |         source.launch()
+ 42 |         try openSource()
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:40:9: error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)
+ 38 |         screenshot("miniapps-original-editor-cold-callback")
+ 39 |         source.terminate()
+ 40 |         XCTAssertTrue(source.wait(for: .notRunning, timeout: 15))
+    |         `- error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)
+ 41 |         source.launch()
+ 42 |         try openSource()
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:50:31: error: cannot find 'XCTUnwrap' in scope
+ 48 |     func testDuplicateCallbackDoesNotInsertAgain() throws {
+ 49 |         let environment = ProcessInfo.processInfo.environment
+ 50 |         let requestIDs = [try XCTUnwrap(environment["PINKHA_MINIAPPS_REQUEST_ID"]),
+    |                               `- error: cannot find 'XCTUnwrap' in scope
+ 51 |                           try XCTUnwrap(environment["PINKHA_MINIAPPS_COLD_REQUEST_ID"])]
+ 52 |         source.launch()
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:51:31: error: cannot find 'XCTUnwrap' in scope
+ 49 |         let environment = ProcessInfo.processInfo.environment
+ 50 |         let requestIDs = [try XCTUnwrap(environment["PINKHA_MINIAPPS_REQUEST_ID"]),
+ 51 |                           try XCTUnwrap(environment["PINKHA_MINIAPPS_COLD_REQUEST_ID"])]
+    |                               `- error: cannot find 'XCTUnwrap' in scope
+ 52 |         source.launch()
+ 53 |         try openSource()
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:58:35: error: cannot find 'XCTUnwrap' in scope
+ 56 |         for requestID in requestIDs {
+ 57 |             var callback = URLComponents()
+ 58 |             callback.scheme = try XCTUnwrap(environment["PINKHA_MINIAPPS_SOURCE_SCHEME"])
+    |                                   `- error: cannot find 'XCTUnwrap' in scope
+ 59 |             callback.host = "miniapps"
+ 60 |             callback.path = "/return"
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:62:27: error: cannot find 'XCTUnwrap' in scope
+ 60 |             callback.path = "/return"
+ 61 |             callback.queryItems = [URLQueryItem(name: "request", value: requestID)]
+ 62 |             let url = try XCTUnwrap(callback.url)
+    |                           `- error: cannot find 'XCTUnwrap' in scope
+ 63 |             for _ in 0..<2 {
+ 64 |                 XCUIDevice.shared.system.open(url)
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:65:17: error: cannot find 'XCTAssertTrue' in scope
+ 63 |             for _ in 0..<2 {
+ 64 |                 XCUIDevice.shared.system.open(url)
+ 65 |                 XCTAssertTrue(source.wait(for: .runningForeground, timeout: 30))
+    |                 `- error: cannot find 'XCTAssertTrue' in scope
+ 66 |                 XCTAssertEqual(try sourceProcessIdentity(), originalProcess,
+ 67 |                     "Warm duplicate callbacks must not relaunch the source process")
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:65:17: error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)
+ 63 |             for _ in 0..<2 {
+ 64 |                 XCUIDevice.shared.system.open(url)
+ 65 |                 XCTAssertTrue(source.wait(for: .runningForeground, timeout: 30))
+    |                 `- error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)
+ 66 |                 XCTAssertEqual(try sourceProcessIdentity(), originalProcess,
+ 67 |                     "Warm duplicate callbacks must not relaunch the source process")
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:66:17: error: cannot find 'XCTAssertEqual' in scope
+ 64 |                 XCUIDevice.shared.system.open(url)
+ 65 |                 XCTAssertTrue(source.wait(for: .runningForeground, timeout: 30))
+ 66 |                 XCTAssertEqual(try sourceProcessIdentity(), originalProcess,
+    |                 `- error: cannot find 'XCTAssertEqual' in scope
+ 67 |                     "Warm duplicate callbacks must not relaunch the source process")
+ 68 |             }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:120:9: note: macro 'XCTAssertEqual' unavailable: function like macros not supported
+118 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+119 | */
+120 | #define XCTAssertEqual(expression1, expression2, ...) \
+    |         `- note: macro 'XCTAssertEqual' unavailable: function like macros not supported
+121 |     _XCTPrimitiveAssertEqual(nil, expression1, @#expression1, expression2, @#expression2, __VA_ARGS__)
+122 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:76:9: error: cannot find 'XCTAssertTrue' in scope
+ 74 | 
+ 75 |     private func openSource() throws {
+ 76 |         XCTAssertTrue(source.wait(for: .runningForeground, timeout: 30))
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+ 77 |         let ready = source.descendants(matching: .any).matching(NSPredicate(
+ 78 |             format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@ OR identifier == %@",
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:76:9: error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)
+ 74 | 
+ 75 |     private func openSource() throws {
+ 76 |         XCTAssertTrue(source.wait(for: .runningForeground, timeout: 30))
+    |         `- error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)
+ 77 |         let ready = source.descendants(matching: .any).matching(NSPredicate(
+ 78 |             format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@ OR identifier == %@",
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:80:9: error: cannot find 'XCTAssertTrue' in scope
+ 78 |             format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@ OR identifier == %@",
+ 79 |             "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton", "pinkha.miniapps.open")).firstMatch
+ 80 |         XCTAssertTrue(ready.waitForExistence(timeout: 60))
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+ 81 |         var route = URLComponents()
+ 82 |         route.scheme = "anytype"
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:84:71: error: cannot find 'XCTUnwrap' in scope
+ 82 |         route.scheme = "anytype"
+ 83 |         route.host = "object"
+ 84 |         route.queryItems = [URLQueryItem(name: "objectId", value: try XCTUnwrap(fixture["objectID"])),
+    |                                                                       `- error: cannot find 'XCTUnwrap' in scope
+ 85 |                             URLQueryItem(name: "spaceId", value: try XCTUnwrap(fixture["spaceID"]))]
+ 86 |         XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:85:70: error: cannot find 'XCTUnwrap' in scope
+ 83 |         route.host = "object"
+ 84 |         route.queryItems = [URLQueryItem(name: "objectId", value: try XCTUnwrap(fixture["objectID"])),
+ 85 |                             URLQueryItem(name: "spaceId", value: try XCTUnwrap(fixture["spaceID"]))]
+    |                                                                      `- error: cannot find 'XCTUnwrap' in scope
+ 86 |         XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
+ 87 |         XCTAssertTrue(source.buttons["pinkha.miniapps.open"].firstMatch.waitForExistence(timeout: 30))
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:86:43: error: cannot find 'XCTUnwrap' in scope
+ 84 |         route.queryItems = [URLQueryItem(name: "objectId", value: try XCTUnwrap(fixture["objectID"])),
+ 85 |                             URLQueryItem(name: "spaceId", value: try XCTUnwrap(fixture["spaceID"]))]
+ 86 |         XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
+    |                                           `- error: cannot find 'XCTUnwrap' in scope
+ 87 |         XCTAssertTrue(source.buttons["pinkha.miniapps.open"].firstMatch.waitForExistence(timeout: 30))
+ 88 |     }
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:87:9: error: cannot find 'XCTAssertTrue' in scope
+ 85 |                             URLQueryItem(name: "spaceId", value: try XCTUnwrap(fixture["spaceID"]))]
+ 86 |         XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
+ 87 |         XCTAssertTrue(source.buttons["pinkha.miniapps.open"].firstMatch.waitForExistence(timeout: 30))
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+ 88 |     }
+ 89 | 
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:93:9: error: cannot find 'XCTAssertTrue' in scope
+ 91 |         let warmProcess = terminateSource ? nil : try sourceProcessIdentity()
+ 92 |         let grid = source.buttons["pinkha.miniapps.open"].firstMatch
+ 93 |         XCTAssertTrue(grid.waitForExistence(timeout: 30))
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+ 94 |         XCTAssertTrue(grid.isHittable)
+ 95 |         grid.tap()
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:94:9: error: cannot find 'XCTAssertTrue' in scope
+ 92 |         let grid = source.buttons["pinkha.miniapps.open"].firstMatch
+ 93 |         XCTAssertTrue(grid.waitForExistence(timeout: 30))
+ 94 |         XCTAssertTrue(grid.isHittable)
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+ 95 |         grid.tap()
+ 96 |         let textStudio = source.buttons["miniapps-launch-nativeapp.textstudio"].firstMatch
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:97:9: error: cannot find 'XCTAssertTrue' in scope
+ 95 |         grid.tap()
+ 96 |         let textStudio = source.buttons["miniapps-launch-nativeapp.textstudio"].firstMatch
+ 97 |         XCTAssertTrue(textStudio.waitForExistence(timeout: 30),
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+ 98 |             "The producer must publish its catalog into the actual common App Group")
+ 99 |         screenshot(terminateSource ? "miniapps-cold-shared-picker" : "miniapps-warm-shared-picker")
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:101:9: error: cannot find 'XCTAssertTrue' in scope
+ 99 |         screenshot(terminateSource ? "miniapps-cold-shared-picker" : "miniapps-warm-shared-picker")
+100 |         textStudio.tap()
+101 |         XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 30))
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+102 |         let input = companion.textViews["miniapps.textstudio.editor"].firstMatch
+103 |         XCTAssertTrue(input.waitForExistence(timeout: 30))
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:103:9: error: cannot find 'XCTAssertTrue' in scope
+101 |         XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 30))
+102 |         let input = companion.textViews["miniapps.textstudio.editor"].firstMatch
+103 |         XCTAssertTrue(input.waitForExistence(timeout: 30))
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+104 |         XCTAssertEqual(input.value as? String ?? "", "", "Each toolbar insertion starts with independent empty input")
+105 |         if terminateSource {
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:104:9: error: cannot find 'XCTAssertEqual' in scope
+102 |         let input = companion.textViews["miniapps.textstudio.editor"].firstMatch
+103 |         XCTAssertTrue(input.waitForExistence(timeout: 30))
+104 |         XCTAssertEqual(input.value as? String ?? "", "", "Each toolbar insertion starts with independent empty input")
+    |         `- error: cannot find 'XCTAssertEqual' in scope
+105 |         if terminateSource {
+106 |             source.terminate()
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:120:9: note: macro 'XCTAssertEqual' unavailable: function like macros not supported
+118 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+119 | */
+120 | #define XCTAssertEqual(expression1, expression2, ...) \
+    |         `- note: macro 'XCTAssertEqual' unavailable: function like macros not supported
+121 |     _XCTPrimitiveAssertEqual(nil, expression1, @#expression1, expression2, @#expression2, __VA_ARGS__)
+122 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:107:13: error: cannot find 'XCTAssertTrue' in scope
+105 |         if terminateSource {
+106 |             source.terminate()
+107 |             XCTAssertTrue(source.wait(for: .notRunning, timeout: 15))
+    |             `- error: cannot find 'XCTAssertTrue' in scope
+108 |             XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 15))
+109 |         }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:107:13: error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)
+105 |         if terminateSource {
+106 |             source.terminate()
+107 |             XCTAssertTrue(source.wait(for: .notRunning, timeout: 15))
+    |             `- error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)
+108 |             XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 15))
+109 |         }
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:108:13: error: cannot find 'XCTAssertTrue' in scope
+106 |             source.terminate()
+107 |             XCTAssertTrue(source.wait(for: .notRunning, timeout: 15))
+108 |             XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 15))
+    |             `- error: cannot find 'XCTAssertTrue' in scope
+109 |         }
+110 |         input.tap()
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:114:9: error: cannot find 'XCTAssertTrue' in scope
+112 |         screenshot(terminateSource ? "miniapps-cold-external-textstudio" : "miniapps-warm-external-textstudio")
+113 |         let returnText = companion.buttons["miniapps.textstudio.return"]
+114 |         XCTAssertTrue(returnText.waitForExistence(timeout: 15))
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+115 |         returnText.tap()
+116 |         // The cold case intentionally receives no manual source.launch/openSource aid.
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:117:9: error: cannot find 'XCTAssertTrue' in scope
+115 |         returnText.tap()
+116 |         // The cold case intentionally receives no manual source.launch/openSource aid.
+117 |         XCTAssertTrue(source.wait(for: .runningForeground, timeout: 45))
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+118 |         if let warmProcess {
+119 |             XCTAssertEqual(try sourceProcessIdentity(), warmProcess,
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:117:9: error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)
+115 |         returnText.tap()
+116 |         // The cold case intentionally receives no manual source.launch/openSource aid.
+117 |         XCTAssertTrue(source.wait(for: .runningForeground, timeout: 45))
+    |         `- error: failed to produce diagnostic for expression; please submit a bug report (https://swift.org/contributing/#reporting-bugs)
+118 |         if let warmProcess {
+119 |             XCTAssertEqual(try sourceProcessIdentity(), warmProcess,
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:119:13: error: cannot find 'XCTAssertEqual' in scope
+117 |         XCTAssertTrue(source.wait(for: .runningForeground, timeout: 45))
+118 |         if let warmProcess {
+119 |             XCTAssertEqual(try sourceProcessIdentity(), warmProcess,
+    |             `- error: cannot find 'XCTAssertEqual' in scope
+120 |                 "Warm MiniApps completion must return to the existing source process")
+121 |         }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:120:9: note: macro 'XCTAssertEqual' unavailable: function like macros not supported
+118 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+119 | */
+120 | #define XCTAssertEqual(expression1, expression2, ...) \
+    |         `- note: macro 'XCTAssertEqual' unavailable: function like macros not supported
+121 |     _XCTPrimitiveAssertEqual(nil, expression1, @#expression1, expression2, @#expression2, __VA_ARGS__)
+122 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:126:9: error: cannot find 'XCTAssertTrue' in scope
+124 |     private func sourceProcessIdentity() throws -> String {
+125 |         let entry = source.buttons["pinkha.miniapps.open"].firstMatch
+126 |         XCTAssertTrue(entry.waitForExistence(timeout: 30))
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+127 |         let value = try XCTUnwrap(entry.value as? String)
+128 |         XCTAssertTrue(value.hasPrefix("pid:"))
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:127:25: error: cannot find 'XCTUnwrap' in scope
+125 |         let entry = source.buttons["pinkha.miniapps.open"].firstMatch
+126 |         XCTAssertTrue(entry.waitForExistence(timeout: 30))
+127 |         let value = try XCTUnwrap(entry.value as? String)
+    |                         `- error: cannot find 'XCTUnwrap' in scope
+128 |         XCTAssertTrue(value.hasPrefix("pid:"))
+129 |         XCTAssertNotEqual(value, "pid:0")
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:128:9: error: cannot find 'XCTAssertTrue' in scope
+126 |         XCTAssertTrue(entry.waitForExistence(timeout: 30))
+127 |         let value = try XCTUnwrap(entry.value as? String)
+128 |         XCTAssertTrue(value.hasPrefix("pid:"))
+    |         `- error: cannot find 'XCTAssertTrue' in scope
+129 |         XCTAssertNotEqual(value, "pid:0")
+130 |         return value
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:129:9: error: cannot find 'XCTAssertNotEqual' in scope
+127 |         let value = try XCTUnwrap(entry.value as? String)
+128 |         XCTAssertTrue(value.hasPrefix("pid:"))
+129 |         XCTAssertNotEqual(value, "pid:0")
+    |         `- error: cannot find 'XCTAssertNotEqual' in scope
+130 |         return value
+131 |     }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:130:9: note: macro 'XCTAssertNotEqual' unavailable: function like macros not supported
+128 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+129 | */
+130 | #define XCTAssertNotEqual(expression1, expression2, ...) \
+    |         `- note: macro 'XCTAssertNotEqual' unavailable: function like macros not supported
+131 |     _XCTPrimitiveAssertNotEqual(nil, expression1, @#expression1, expression2, @#expression2, __VA_ARGS__)
+132 | 
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:135:28: error: cannot find 'XCTUnwrap' in scope
+133 |     private func expectNativeText(keys: [String] = ["originalText", "returnedText", "coldReturnedText"]) throws {
+134 |         for key in keys {
+135 |             let text = try XCTUnwrap(fixture[key])
+    |                            `- error: cannot find 'XCTUnwrap' in scope
+136 |             let visible = source.descendants(matching: .any).matching(
+137 |                 NSPredicate(format: "value == %@ OR label == %@", text, text)).firstMatch
+
+/Users/m1/builds/_preflight/anytype-miniapps-warm-url-20261125/MiniAppsNativeAcceptanceUITests.swift:138:13: error: cannot find 'XCTAssertTrue' in scope
+136 |             let visible = source.descendants(matching: .any).matching(
+137 |                 NSPredicate(format: "value == %@ OR label == %@", text, text)).firstMatch
+138 |             XCTAssertTrue(visible.waitForExistence(timeout: 45), "The original editor must render " + key)
+    |             `- error: cannot find 'XCTAssertTrue' in scope
+139 |         }
+140 |     }
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestAssertions.h:81:9: note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 79 |  * @param ... An optional supplementary description of the failure. A literal NSString, optionally with string format specifiers. This parameter can be completely omitted.
+ 80 | */
+ 81 | #define XCTAssertTrue(expression, ...) \
+    |         `- note: macro 'XCTAssertTrue' unavailable: function like macros not supported
+ 82 |     _XCTPrimitiveAssertTrue(nil, expression, @#expression, __VA_ARGS__)
+ 83 | 

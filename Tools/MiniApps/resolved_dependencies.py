@@ -70,9 +70,11 @@ def verify_macro(derived, pins):
             "manifest_sha256": manifests}
 
 
-def record_resolution(app, evidence, derived, source_sha, run_id, run_attempt, stage):
+def record_resolution(app, evidence, derived, source_sha, run_id, run_attempt, stage, *, activation_arguments=None):
     app, evidence = Path(app), Path(evidence)
     require(stage in ("native", "ui"), "Unknown resolution stage")
+    activation_arguments = ACTIVATION_ARGUMENTS if activation_arguments is None else activation_arguments
+    require(activation_arguments in ([], ACTIVATION_ARGUMENTS), "Unreviewed macro activation")
     require(git(app, "rev-parse", "HEAD").decode().strip() == source_sha, "Resolution source changed")
     changes = changed_paths(app)
     require(set(changes) <= set(LOCKS), "Resolution changed application source outside declared lock files")
@@ -118,7 +120,7 @@ def record_resolution(app, evidence, derived, source_sha, run_id, run_attempt, s
         "status": "PINNED_MACRO_AND_RESOLUTION_RECORDED", "stage": stage,
         "source_sha": source_sha, "run_id": str(run_id), "run_attempt": str(run_attempt),
         "generated_tracked_deltas": changes, "locks": locks, "macro": macro,
-        "activation_arguments": ACTIVATION_ARGUMENTS,
+        "activation_arguments": activation_arguments,
         "source_integrity": "TRACKED_RESOLUTION_DELTA_RECORDED" if changes else "TRACKED_SOURCE_CLEAN",
     }
     (folder / "tracked-resolution.patch").write_bytes(git(app, "diff", "HEAD", "--", *LOCKS))
@@ -128,8 +130,10 @@ def record_resolution(app, evidence, derived, source_sha, run_id, run_attempt, s
     return proof
 
 
-def verify_recorded_resolution(app, evidence, derived, source_sha, run_id, run_attempt):
+def verify_recorded_resolution(app, evidence, derived, source_sha, run_id, run_attempt, *, activation_arguments=None):
     app, evidence = Path(app), Path(evidence)
+    activation_arguments = ACTIVATION_ARGUMENTS if activation_arguments is None else activation_arguments
+    require(activation_arguments in ([], ACTIVATION_ARGUMENTS), "Unreviewed macro activation")
     proof = json.loads((evidence / "dependency-resolution.json").read_text())
     require(proof["status"] == "PINNED_MACRO_AND_RESOLUTION_RECORDED"
             and proof["source_sha"] == source_sha and proof["run_id"] == str(run_id)
@@ -153,6 +157,6 @@ def verify_recorded_resolution(app, evidence, derived, source_sha, run_id, run_a
                     "Recorded original dependency lock differs from source")
         pins.update(lock_pins(actual))
     require(verify_macro(derived, pins) == proof["macro"]
-            and proof["activation_arguments"] == ACTIVATION_ARGUMENTS,
+            and proof["activation_arguments"] == activation_arguments,
             "Approved macro source/activation changed after build")
     return proof
