@@ -356,6 +356,44 @@ def admit_current_menu_runner(source, main_record, ui_build, ui_record):
     return expected
 
 
+def admit_410b_runner(source, main_record, ui_build, ui_record):
+    expected = {'sourceCommit': 'e540cd7e01b497f1b3173ae2e68b43ade0b00b6f', 'originalSHA256': '6fbcd0173351597af99dd6d79e7869ac72077c0b9ad2ff464d9c02e60d096d02', 'compiledSHA256': '6fbcd0173351597af99dd6d79e7869ac72077c0b9ad2ff464d9c02e60d096d02', 'miniAppsMethodSectionSHA256': 'cef7734232b8f12ff432a97b435a5c6e0801d2cd77a30ce097e83f5e1cf40a63', 'sourceAlreadyIntegrated': True, 'allOriginalMethodAssertionsUnchanged': True, 'testStorageOverrides': False, 'actualCompanionRequired': True, 'ordinaryAccountSelectionAfterColdCallback': True, 'binPreparation': 'real-accessible-native-row-menu', 'nativeSourceManifestSHA256': '410b441e5726b4a2ff7b259e296ad2ba819a5751cd46732945f62259ace42cc9'}
+    require(main_record["sourceCommit"] == expected["sourceCommit"]
+            and ui_record["runnerSourceCommit"] == expected["sourceCommit"]
+            and main_record["inputs"]["nativeSourceManifestSHA256"] == expected["nativeSourceManifestSHA256"]
+            and main_record.get("assemblyReceiptSHA256") ==
+                "8556b47a6a7e523bd5ad4c58ae292501acda1038b0d1f827e268cef15a542797",
+            "exact_current410b_source_and_assembly_required")
+    pins = {
+        "nativeSHA256": "48905b7312d7228fe88a60517ec90c1c23d73f2ada762877c05ace9752103342",
+        "sdkReceiptSHA256": "bad0afa285da6bd023235b15f82329f9d7b32ec50bf9194d63b9ee96730324a5",
+        "lockSHA256": "e22368e522ac795253935b0a31e39d1b36bd9043ef2ed1014845927914527ccd",
+    }
+    for key, value in pins.items():
+        require(main_record["inputs"].get(key) == value
+                and ui_record.get("reviewedInputProfile", {}).get(key) == value,
+                "exact_current410b_dependency_required:" + key)
+    projection = json.loads((ui_build / "projection.json").read_bytes())
+    require(ui_record.get("current410bFixture") == projection.get("current410bFixture") == expected
+            and projection["mainSourceCommit"] == projection["runnerSourceCommit"] == expected["sourceCommit"]
+            and projection["changedOriginalMethodAssertions"] == 0
+            and projection["applicationBuildTargets"] == projection["nativeLibraryBuilds"] == 0,
+            "complete_original_current410b_UI_required")
+    for name, row in projection["sourceFiles"].items():
+        path = ui_build / name
+        require(path.is_file() and not path.is_symlink() and ui_build in path.resolve().parents
+                and path.stat().st_size == row["bytes"] and digest(path) == row["sha256"],
+                "compiled_current410b_UI_source_changed:" + name)
+    original = (source / "NativeApp/UITests/NativeLaunchTests.swift").read_bytes()
+    compiled = (ui_build / "source/UITests/NativeLaunchTests.swift").read_bytes()
+    marker = b"// BEGIN_NATIVE_MINIAPPS_CROSS_APP_UI_V1\n"
+    require(original == compiled and hashlib.sha256(original).hexdigest() == expected["originalSHA256"]
+            and original.count(marker) == 1
+            and hashlib.sha256(original.split(marker)[1]).hexdigest() == expected["miniAppsMethodSectionSHA256"],
+            "every_original_current410b_native_UI_byte_required")
+    return expected
+
+
 def admit_real_companion(source, manifest_path, out, app):
     require(manifest_path is not None and manifest_path.is_absolute()
             and manifest_path.resolve() == manifest_path and not manifest_path.is_symlink()
@@ -495,6 +533,11 @@ def main():
             receipt.update(admit_current_runner(source, main_record, args.ui_build, ui_record))
         if ui_record.get("currentMiniAppsMenuFixture") is not None:
             receipt["currentMiniAppsMenuFixture"] = admit_current_menu_runner(source, main_record, args.ui_build, ui_record)
+        if ui_record.get("current410bFixture") is not None:
+            receipt["current410bFixture"] = admit_410b_runner(source, main_record, args.ui_build, ui_record)
+        require(main_record["sourceCommit"] != "e540cd7e01b497f1b3173ae2e68b43ade0b00b6f"
+                or receipt.get("current410bFixture") is not None,
+                "current410b_fixture_binding_cannot_be_omitted")
         if args.stage == "archive-picker-observe":
             require(main_record["sourceCommit"] == "5ffff121e696044b0d1955524b7a69baf453b4b1",
                     "exact_observation_app_source_required")
@@ -520,7 +563,8 @@ def main():
         if args.stage == "miniapps":
             require((receipt.get("miniAppsCrossAppFixture") is not None
                      or receipt.get("integratedMiniAppsFixture") is not None
-                     or receipt.get("currentMiniAppsMenuFixture") is not None)
+                     or receipt.get("currentMiniAppsMenuFixture") is not None
+                      or receipt.get("current410bFixture") is not None)
                     and args.companion_manifest is not None,
                     "real_companion_and_new_compiled_method_required")
         else:
