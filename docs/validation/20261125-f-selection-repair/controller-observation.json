@@ -1,0 +1,39 @@
+{
+  "command": "sudo -n -u ubuntu python3 -B -m unittest -v test_coherent_release_focus.CoherentFocusControls.test_exact_union_scopes_only_original_three_and_one test_coherent_release_focus.CoherentFocusControls.test_missing_extra_empty_and_duplicate_unions_are_rejected test_coherent_release_focus.CoherentFocusControls.test_extra_native_target_and_disabled_target_are_rejected test_coherent_release_focus.CoherentFocusControls.test_skip_filters_and_outside_host_cannot_hide_a_missing_case test_coherent_release_focus.CoherentFocusControls.test_original_f_selectors_remain_suffixed_and_exact test_coherent_release_focus.CoherentFocusControls.test_xcode27_three_targets_with_omitted_filter_use_original_build_receipt test_coherent_release_focus.CoherentFocusControls.test_omitted_filter_requires_successful_exact_build_without_skip",
+  "execution_evidence": "Root observed original SentinelX synchronous command result; this file records that tool response and does not represent a second execution.",
+  "failed": 0,
+  "methods": [
+    "test_exact_union_scopes_only_original_three_and_one",
+    "test_missing_extra_empty_and_duplicate_unions_are_rejected",
+    "test_extra_native_target_and_disabled_target_are_rejected",
+    "test_skip_filters_and_outside_host_cannot_hide_a_missing_case",
+    "test_original_f_selectors_remain_suffixed_and_exact",
+    "test_xcode27_three_targets_with_omitted_filter_use_original_build_receipt",
+    "test_omitted_filter_requires_successful_exact_build_without_skip"
+  ],
+  "original_duration_seconds": 0.03,
+  "original_run": {
+    "app_builds": 1,
+    "artifact_id": 14987446860,
+    "artifact_sha256": "ac77feb37d40cf46829956ec54f2f09cc14d5c8a31a4cee7461381eaa43ab1ad",
+    "conclusion": "failure",
+    "failure": "focus_exact_native_target",
+    "id": "45535451242",
+    "product_test_command_invoked": false,
+    "source": "406fd73ae137f4a6966bc85b3d4567f0bf99db25",
+    "ui_runner_builds": 1
+  },
+  "original_terminal": "Ran 7 tests in 0.030s; OK",
+  "product_acceptance": false,
+  "scope": "CONTROLLER_ADMISSION_ONLY",
+  "skipped": 0,
+  "sources": {
+    ".github/workflows/pinkha-simulator-ui27.yml": "20bca5d018e181e78f2d0c0dc982c74a2e50f640ae8f9ba82d353108d7d613e1",
+    "Tools/PinkhaSimulatorGate/coherent_release_focus.py": "4b9d091719304aa4695e87f58c928413931ae6b020215b66547b50c0a33adcff",
+    "Tools/PinkhaSimulatorGate/retain_completed_products.py": "63ce52b303a4b390b9505d252522217dbc1d85e54c9042cdba798429296b6519",
+    "Tools/PinkhaSimulatorGate/test_coherent_release_focus.py": "21a77271e638cc9737c175e3d1ad978747465d552ed6de67626d10c2de81a2a6"
+  },
+  "status": "PASS",
+  "test_count": 7,
+  "working_directory": "/mnt/development/projects/worktrees/anytype-final-integration-20261125/Tools/PinkhaSimulatorGate"
+}

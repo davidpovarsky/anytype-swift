@@ -5,6 +5,7 @@ let package = Package(
     platforms: [.iOS("27.0"), .macOS(.v26)],
     products: [.library(name: "PinkhaAnyUI", targets: ["PinkhaAnyUI"])],
     dependencies: [
+        .package(path: "../PinkhaSharing"),
         .package(path: "../PinkhaTorahPresentation"),
         .package(path: "../PinkhaAnyHost"),
         .package(path: "../PinkhaAnyEngine"),
@@ -17,6 +18,7 @@ let package = Package(
     ],
     targets: [
         .target(name: "PinkhaAnyUI", dependencies: [
+            "PinkhaSharing",
             "PinkhaTorahPresentation", "PinkhaAnyHost", "PinkhaAnyHanlin",
             "PinkhaAnyEngine", "PinkhaAnyIntegration", "PinkhaKit",
             .product(name: "PinkhaHanlinUI", package: "PinkhaAnyHanlin", condition: .when(platforms: [.iOS])),

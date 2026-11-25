@@ -34,8 +34,8 @@ BOOT_REPORT_SHA = "bc6d1ca46ef7715ecefba5f67bca3e88fa24c4b75d4ed3b342e66006cfc6c
 BOOT_SOURCE_PATHS = frozenset({"Tools/PinkhaNativeDerived/coherent_apple/run_host.py",
                              "Tools/PinkhaNativeDerived/coherent_runtime_admission.py"})
 BOOT_CONTROL = "Tools/PinkhaSimulatorGate/test_coherent_boot_orchestration.py"
-COMPOSITION_REVIEW_SHA = "939a9aa2105b9485b200dcdc7a4ea544bfad94424b439f1ab5ec50dbf7d378a6"
-COMPOSITION_REPORT_SHA = "45719d04e85d3490e19c3b9cc38f315552de9f2af6db6f4bd799ef0fba23ec19"
+COMPOSITION_REVIEW_SHA = "98cc4d863e1b848252996bd4d87c54e5c09f1d3954efec98261653296552c24d"
+COMPOSITION_REPORT_SHA = "fd1ff896624fe88e3775d1bba09642d19699205d8dc88d5e5050427509dfa932"
 
 
 def require(value, reason):

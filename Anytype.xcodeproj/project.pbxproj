@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA9502012F112500006805CC /* PinkhaSharing in Frameworks */ = {isa = PBXBuildFile; productRef = FA9501012F112500006805CC /* PinkhaSharing */; };
+		FA9502022F112500006805CC /* PinkhaSharing in Frameworks */ = {isa = PBXBuildFile; productRef = FA9501022F112500006805CC /* PinkhaSharing */; };
 		FA9102012F112100006805CC /* PinkhaKit in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101012F112100006805CC /* PinkhaKit */; };
 		FA9102022F112100006805CC /* Loc in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101022F112100006805CC /* Loc */; };
 		FA9102032F112100006805CC /* TorahInspectorUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101032F112100006805CC /* TorahInspectorUI */; };
@@ -289,6 +291,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA8300012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
+				FA9502012F112500006805CC /* PinkhaSharing in Frameworks */,
 				FA7500012F111900006805CC /* PinkhaHanlinUI in Frameworks */,
 				FA7300012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
 				FA6300012F111800006805CC /* HanlinHostContracts in Frameworks */,
@@ -349,6 +352,7 @@
 				FA9102022F112100006805CC /* Loc in Frameworks */,
 				FA9102032F112100006805CC /* TorahInspectorUI in Frameworks */,
 				FA8301012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
+				FA9502022F112500006805CC /* PinkhaSharing in Frameworks */,
 				FA7501012F111900006805CC /* PinkhaHanlinUI in Frameworks */,
 				FA7301012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
 				FA6301012F111800006805CC /* HanlinHostContracts in Frameworks */,
@@ -523,6 +527,7 @@
 			name = Anytype;
 			packageProductDependencies = (
 				FA8200012F111900006805CC /* PinkhaTorahPresentation */,
+				FA9501012F112500006805CC /* PinkhaSharing */,
 				FA7400012F111900006805CC /* PinkhaHanlinUI */,
 				FA7200012F111900006805CC /* PinkhaHanlinCore */,
 				FA6200012F111800006805CC /* HanlinHostContracts */,
@@ -597,6 +602,7 @@
 				FA9101022F112100006805CC /* Loc */,
 				FA9101032F112100006805CC /* TorahInspectorUI */,
 				FA8201012F111900006805CC /* PinkhaTorahPresentation */,
+				FA9501022F112500006805CC /* PinkhaSharing */,
 				FA7401012F111900006805CC /* PinkhaHanlinUI */,
 				FA7201012F111900006805CC /* PinkhaHanlinCore */,
 				FA6201012F111800006805CC /* HanlinHostContracts */,
@@ -734,6 +740,7 @@
 			);
 			mainGroup = 0303ECF222D8EDAA005C552B;
 			packageReferences = (
+				FA9500012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaSharing" */,
 				FA8100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaTorahPresentation" */,
 				FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */,
 				FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */,
@@ -2130,6 +2137,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Modules/PinkhaTorahPresentation;
 		};
+		FA9500012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaSharing" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Modules/PinkhaSharing;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -2625,6 +2636,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */;
 			productName = PinkhaHanlinUI;
+		};
+		FA9501012F112500006805CC /* PinkhaSharing */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA9500012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaSharing" */;
+			productName = PinkhaSharing;
+		};
+		FA9501022F112500006805CC /* PinkhaSharing */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA9500012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaSharing" */;
+			productName = PinkhaSharing;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

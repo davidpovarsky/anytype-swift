@@ -18,6 +18,11 @@ public struct AnyHTTPAuthorization: Sendable, CustomStringConvertible, CustomDeb
     public var debugDescription: String { description }
 }
 
+public struct AnyHTTPJSONResponse: Sendable {
+    public let statusCode: Int
+    public let body: AnyJSON
+}
+
 public struct AnyHTTPClient: Sendable, CustomStringConvertible, CustomDebugStringConvertible {
     public let baseURL: URL
     public let expectedAccountID: String
@@ -66,18 +71,29 @@ public struct AnyHTTPClient: Sendable, CustomStringConvertible, CustomDebugStrin
         query: [String: String] = [:], maximumResponseBytes: Int? = nil,
         authorize: @escaping @Sendable () async throws -> Void = {}
     ) async throws -> AnyJSON {
+        try await requestJSONResponse(method: method, path: path, body: body, query: query,
+                                      maximumResponseBytes: maximumResponseBytes, authorize: authorize).body
+    }
+
+    /// Preserve HTTP 202 versus 201 for native asynchronous operations such as joining.
+    /// The account, cancellation, authorization and uncertain-write fences are identical.
+    public func requestJSONResponse(
+        method: String, path: [String], body: AnyJSON? = nil,
+        query: [String: String] = [:], maximumResponseBytes: Int? = nil,
+        authorize: @escaping @Sendable () async throws -> Void = {}
+    ) async throws -> AnyHTTPJSONResponse {
         try await checkAccount()
         try Task.checkCancellation()
         try await authorize()
         try Task.checkCancellation()
-        let result = try await raw(method: method, path: path, body: body,
-                                   query: query, maximumResponseBytes: maximumResponseBytes)
+        let result = try await rawResponse(method: method, path: path, body: body,
+                                           query: query, maximumResponseBytes: maximumResponseBytes)
         // A switch can occur while the HTTP request is in flight. The caller
         // must reconcile mutations against this account before claiming success.
         do { try await checkAccount() }
         catch {
             if method == "GET" { throw error }
-            if let recovery = AnyObjectCreationUncertain.lostConfirmation(method: method, path: path, response: result) {
+            if let recovery = AnyObjectCreationUncertain.lostConfirmation(method: method, path: path, response: result.body) {
                 throw recovery
             }
             throw AnyEngineError.writeUncertain
@@ -205,6 +221,13 @@ public struct AnyHTTPClient: Sendable, CustomStringConvertible, CustomDebugStrin
 
     private func raw(method: String, path: [String], body: AnyJSON?,
                      query: [String: String] = [:], maximumResponseBytes: Int? = nil) async throws -> AnyJSON {
+        try await rawResponse(method: method, path: path, body: body, query: query,
+                              maximumResponseBytes: maximumResponseBytes).body
+    }
+
+    private func rawResponse(method: String, path: [String], body: AnyJSON?,
+                             query: [String: String] = [:],
+                             maximumResponseBytes: Int? = nil) async throws -> AnyHTTPJSONResponse {
         if let bound = maximumResponseBytes {
             guard (1...64 * 1024 * 1024).contains(bound) else { throw AnyEngineError.readLimit }
         }
@@ -217,7 +240,8 @@ public struct AnyHTTPClient: Sendable, CustomStringConvertible, CustomDebugStrin
             throw AnyEngineError.malformedResponse("HTTP response")
         }
         if let maximumResponseBytes, data.count > maximumResponseBytes { throw AnyEngineError.readLimit }
-        return try Self.decodeResponse(status: http.statusCode, data: data)
+        return AnyHTTPJSONResponse(statusCode: http.statusCode,
+                                   body: try Self.decodeResponse(status: http.statusCode, data: data))
     }
 
     static func decodeResponse(status: Int, data: Data) throws -> AnyJSON {
