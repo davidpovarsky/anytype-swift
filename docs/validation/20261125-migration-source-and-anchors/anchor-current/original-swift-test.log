@@ -1,0 +1,59 @@
+Building for debugging...
+[Computing dependencies]
+[Provisioning 15 / 19]
+[Using on-disk description]
+[1 / 6] PinkhaAnyHost
+[2 / 7] PinkhaAnyHost
+[5 / 11] PinkhaAnyHost
+[8 / 12] PinkhaAnyHost
+[9 / 12] PinkhaAnyHostTests-product
+[13 / 15] PinkhaAnyHostTests-test-runner
+[16 / 16] PinkhaAnyHostTests-test-runner
+[19 / 20] PinkhaAnyHostTests-test-runner
+[20 / 20] pinkha-any-host-probe-product
+Build complete! (6.19 secs)
+Test Suite 'Selected tests' started at 2026-11-25 04:52:50.218
+Test Suite 'AnyDestinationMigrationExecutorTests' started at 2026-11-25 04:52:50.220
+Test Case 'AnyDestinationMigrationExecutorTests.testSemanticAnchorReplayRetainsOriginalAllocatedOwnerUUIDAndPreparedBytes' started at 2026-11-25 04:52:50.220
+Test Case 'AnyDestinationMigrationExecutorTests.testSemanticAnchorReplayRetainsOriginalAllocatedOwnerUUIDAndPreparedBytes' passed (0.091 seconds)
+Test Suite 'AnyDestinationMigrationExecutorTests' passed at 2026-11-25 04:52:50.311
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.091 (0.091) seconds
+Test Suite 'NativePageCompositionTests' started at 2026-11-25 04:52:50.311
+Test Case 'NativePageCompositionTests.testOriginalCapturedPageComposesCurrentStateAndRetainsSourceBlockers' started at 2026-11-25 04:52:50.311
+NATIVE_PAGE_COMPOSITION originalPages=1 objects=144 currentItems=2 originalSchemaAndSourceBlockersRetained=true destinationWrites=false digest=4567380f79ef09f8ebb269249db3dd455f6b2cb95c357295e9db79fcefee0488
+Test Case 'NativePageCompositionTests.testOriginalCapturedPageComposesCurrentStateAndRetainsSourceBlockers' passed (1.362 seconds)
+Test Case 'NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities' started at 2026-11-25 04:52:51.673
+NATIVE_CUSTOM_PAGE_COMPOSITION pages=2 details=16 bodyBlocks=2 distinctObjectIdentities=true completeCaptureObjects=156 originalCustomAcceptanceFailureRetained=true destinationWrites=false
+Test Case 'NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities' passed (1.465 seconds)
+Test Case 'NativePageCompositionTests.testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles' started at 2026-11-25 04:52:53.138
+Test Case 'NativePageCompositionTests.testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles' passed (0.04 seconds)
+Test Case 'NativePageCompositionTests.testUnaccountedDetailsSourceMetadataAndAmbiguousIdentitiesAreRefused' started at 2026-11-25 04:52:53.178
+Test Case 'NativePageCompositionTests.testUnaccountedDetailsSourceMetadataAndAmbiguousIdentitiesAreRefused' passed (0.19 seconds)
+Test Suite 'NativePageCompositionTests' passed at 2026-11-25 04:52:53.367
+	 Executed 4 tests, with 0 failures (0 unexpected) in 3.057 (3.057) seconds
+Test Suite 'NativeSemanticAnchorMigrationTests' started at 2026-11-25 04:52:53.367
+Test Case 'NativeSemanticAnchorMigrationTests.testAssociationRemapsSameUUIDAndPreservesEveryOtherMetadataAndPayloadField' started at 2026-11-25 04:52:53.367
+Test Case 'NativeSemanticAnchorMigrationTests.testAssociationRemapsSameUUIDAndPreservesEveryOtherMetadataAndPayloadField' passed (0.002 seconds)
+Test Case 'NativeSemanticAnchorMigrationTests.testDestinationPlanResolvesOnlyActualMappedOwnerAndPreservesCanonicalJournalBytes' started at 2026-11-25 04:52:53.369
+Test Case 'NativeSemanticAnchorMigrationTests.testDestinationPlanResolvesOnlyActualMappedOwnerAndPreservesCanonicalJournalBytes' passed (0.024 seconds)
+Test Case 'NativeSemanticAnchorMigrationTests.testDuplicateFragmentsRemainAmbiguousAndOldMarkerCannotResolveInNewDocument' started at 2026-11-25 04:52:53.394
+Test Case 'NativeSemanticAnchorMigrationTests.testDuplicateFragmentsRemainAmbiguousAndOldMarkerCannotResolveInNewDocument' passed (0.004 seconds)
+Test Case 'NativeSemanticAnchorMigrationTests.testForeignMalformedFutureAndCanonicallyDifferentSourceIdentitiesRemainRefused' started at 2026-11-25 04:52:53.398
+Test Case 'NativeSemanticAnchorMigrationTests.testForeignMalformedFutureAndCanonicallyDifferentSourceIdentitiesRemainRefused' passed (0.108 seconds)
+Test Case 'NativeSemanticAnchorMigrationTests.testHeartNativeMarksProduceScopedTemplateAndKeepOriginalSnapshotBytes' started at 2026-11-25 04:52:53.507
+Test Case 'NativeSemanticAnchorMigrationTests.testHeartNativeMarksProduceScopedTemplateAndKeepOriginalSnapshotBytes' passed (0.015 seconds)
+Test Case 'NativeSemanticAnchorMigrationTests.testParserOwnedRemapPreservesExactUnicodeStylesLinksAndLiteralMarkerText' started at 2026-11-25 04:52:53.521
+Test Case 'NativeSemanticAnchorMigrationTests.testParserOwnedRemapPreservesExactUnicodeStylesLinksAndLiteralMarkerText' passed (0.02 seconds)
+Test Suite 'NativeSemanticAnchorMigrationTests' passed at 2026-11-25 04:52:53.541
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.173 (0.173) seconds
+Test Suite 'NativeTextBlockPlanTests' started at 2026-11-25 04:52:53.541
+Test Case 'NativeTextBlockPlanTests.testNativeGraphOrderAndMappedParentReferencesSurviveTheDestinationPlan' started at 2026-11-25 04:52:53.541
+Test Case 'NativeTextBlockPlanTests.testNativeGraphOrderAndMappedParentReferencesSurviveTheDestinationPlan' passed (0.023 seconds)
+Test Case 'NativeTextBlockPlanTests.testNineNativeTextStylesAndOriginalMetadataArePreservedInTheMappedPlan' started at 2026-11-25 04:52:53.563
+Test Case 'NativeTextBlockPlanTests.testNineNativeTextStylesAndOriginalMetadataArePreservedInTheMappedPlan' passed (0.024 seconds)
+Test Case 'NativeTextBlockPlanTests.testUnknownContentMetadataAndDisconnectedBlocksCannotDisappear' started at 2026-11-25 04:52:53.588
+Test Case 'NativeTextBlockPlanTests.testUnknownContentMetadataAndDisconnectedBlocksCannotDisappear' passed (0.019 seconds)
+Test Suite 'NativeTextBlockPlanTests' passed at 2026-11-25 04:52:53.607
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.066 (0.066) seconds
+Test Suite 'Selected tests' passed at 2026-11-25 04:52:53.607
+	 Executed 14 tests, with 0 failures (0 unexpected) in 3.387 (3.387) seconds

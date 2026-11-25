@@ -1,0 +1,30 @@
+{
+  "helperSHA256": "7b398498217ed6c25060892b9fe06e8e6baea507572a97e8666fc7c688f2488b",
+  "originalSHA256": "506128732fae00d9b66ea11262b9e99bf5376a3ae4eaafae2a54770362d680fa",
+  "derivedSHA256": "30c4bc974615e03575c2d1f796ff594f2d0a0f7dd21e5b97ffbd836c99c31788",
+  "actualTransformPreservesNativeSemantics": true,
+  "negativeControls": [
+    {
+      "control": "machine_code_changed",
+      "refused": true,
+      "reason": "native semantic inventory differs"
+    },
+    {
+      "control": "native_symbol_changed",
+      "refused": true,
+      "reason": "native semantic inventory differs"
+    },
+    {
+      "control": "relocation_target_changed",
+      "refused": true,
+      "reason": "native semantic inventory differs"
+    },
+    {
+      "control": "raw_llvm_only_member",
+      "refused": true,
+      "reason": "Non-native Mach-O member tantivy_go-8c38fa6419619222.tantivy_go.3d9db9ec247efeac-cgu.00.rcgu.o"
+    }
+  ],
+  "originalUnchanged": true,
+  "modifiedLibrariesUsedForBuild": false
+}

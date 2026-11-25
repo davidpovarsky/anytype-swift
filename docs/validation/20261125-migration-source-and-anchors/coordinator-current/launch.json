@@ -1,0 +1,23 @@
+{
+  "source": "a8f8e687147d5d3b0564481d6bc1f086c01dacde",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "env",
+    "PINKHA_NATIVE_SOURCE_FIXTURE=/mnt/development/projects/evidence/native-json-source-fixture-45472745870",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "2",
+    "--filter",
+    "NativeSourceCaptureCoordinatorTests"
+  ],
+  "startedAt": "2026-11-25T04:27:24.117637+00:00",
+  "scope": "Six lifecycle controls after root integration and pending-read cancellation; earlier five reader controls retained by unchanged reader tree"
+}
