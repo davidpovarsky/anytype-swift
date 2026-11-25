@@ -45,7 +45,7 @@ def main():
     native_log = forward_log = None
     known_absent = set()
     result = {"protocol": "pinkha-native-immutable-record-roundtrip-v1",
-        "scope": "three actual original type ranks; six native prepared operations, replay and cold-offline catalog",
+        "scope": "four actual native prepared operations; signed immutable source facts, lost reply and cold-offline reopen",
         "sourceCommit": "0382be0078cebdaacc68926c2b2e437ad0c22caf",
         "sourceAdmissionPromoted": False, "wholeSpaceMigration": False,
         "result": "RUNNING", "phases": [], "macOutput": args.mac_output, "errors": []}
@@ -107,7 +107,7 @@ def main():
     write(args.output / "command.json", command)
     try:
         result["inputsBefore"] = verify_inputs(); save()
-        source = WORKTREE / "Tools/AnyEngineValidation/native_type_order/run_native_type_order_process.py"
+        source = WORKTREE / "Tools/AnyEngineValidation/native_immutable_record/run_native_immutable_record_process.py"
         assert sha(source) == MAC_SHA
         staged = remote("from pathlib import Path\nimport hashlib,os,json\np=Path(" + repr(MAC_SCRIPT) +
             ")\np.parent.mkdir(mode=0o700,exist_ok=True)\ns=" + repr(source.read_text()) +
