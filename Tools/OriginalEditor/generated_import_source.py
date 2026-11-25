@@ -197,7 +197,7 @@ def verify_generated_source(root, profile):
     require(trees == admitted_trees, "Reviewed local annotation product tree differs")
     original = {path: git(root, "rev-parse", COMPLETE + ":" + path).decode().strip()
                 for path in profile["original_trees"]}
-    require(profile["original_trees"] == original
+    require(profile["original_trees"] == {path: historical_trees[path] for path in profile["original_trees"]}
             and trees["Anytype/Resources"] == original["Anytype/Resources"]
             and (additive_facade is not None or trees["Anytype/Sources"] == original["Anytype/Sources"])
             and trees["Dependencies/Middleware"] == generated_trees["Dependencies/Middleware"],
