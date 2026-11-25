@@ -1,0 +1,312 @@
+{
+  "binary_bytes": 173788002,
+  "binary_sha256": "90b2aca95feb936573a63bdde1043bc923f7c773665fb058116adcfd60d3508f",
+  "canonical_restriction_controls_passed": 6,
+  "donor_after": {
+    "canonical_union_tree": "4b1ce2b7629974eb2bff91155f66b03122548aa6",
+    "composition_files_checked": 112,
+    "composition_manifest_sha256": "35a5aac39e3c544e922b1f019362d3d8e66dfb3663ddee26c5d8088639831446",
+    "git_head_is_not_the_composed_tree": true,
+    "native_approved_manifest_sha256": "dd46d22c98fe95cee0e7727aaabe1a0be2f669c71ec73ce1f392173139158c93",
+    "overlay_preimages_checked": 14,
+    "upstream_git_head": "d98420b1113536afd08cde6de9a5816f6d27ffff"
+  },
+  "donor_before": {
+    "canonical_union_tree": "4b1ce2b7629974eb2bff91155f66b03122548aa6",
+    "composition_files_checked": 112,
+    "composition_manifest_sha256": "35a5aac39e3c544e922b1f019362d3d8e66dfb3663ddee26c5d8088639831446",
+    "git_head_is_not_the_composed_tree": true,
+    "native_approved_manifest_sha256": "dd46d22c98fe95cee0e7727aaabe1a0be2f669c71ec73ce1f392173139158c93",
+    "overlay_preimages_checked": 14,
+    "upstream_git_head": "d98420b1113536afd08cde6de9a5816f6d27ffff"
+  },
+  "donor_required_unchanged": true,
+  "fixture_bytes_after": 16668460,
+  "fixture_bytes_before": 28073301,
+  "free_after": 15126765568,
+  "free_before": 15609671680,
+  "historical_failed_attempt": {
+    "job_id": "job_09fe7fb07354",
+    "old_comparator_failed": true,
+    "old_native_contract": "878f1cbd82d0e0ded5739acfeb2832e61b96952d",
+    "old_reverse_and_cold_not_qualified": true
+  },
+  "max_child_rss_bytes": 1953808384,
+  "owned_attempt_bytes": 190214969,
+  "peer_result": {
+    "annotation_uuid": "1f451e78-b081-46c7-a162-2628d21b61dc",
+    "binary": "/Users/m1/builds/anytype-original-network-acceptance-20261125/revision-cas-50426b50-d4360923/attempt-1/work/original-network-revision.test",
+    "binary_sha256": "90b2aca95feb936573a63bdde1043bc923f7c773665fb058116adcfd60d3508f",
+    "binary_unchanged": true,
+    "children": [
+      {
+        "accepted": {
+          "archive_heads": [
+            "bafyreifudd5dz2rkzsiac7cco5zmxvap5hwjuik7cmlplrchzw5szxhrzm"
+          ],
+          "archive_object_id": "bafyreigdft5uohenzeqdob2v77ihk2wcmroofbbl4moksjftuocfx5wlbi",
+          "changed_peer_block_absent": true,
+          "complete_original_baseline_blocks_equal": true,
+          "is_archived": false,
+          "native_heads": [
+            "bafyreie5siqkzmudgxef5morkx2rz32q42zwiuta4r2xuafishc332m2ki"
+          ],
+          "native_local_receipt_used_as_network_ack": false,
+          "pid": 53575,
+          "root_sha256": "68a3aeaf9d700d6501750b6fe14ef03904b9d8b463ce056c89e893d71ef45fdc",
+          "same_native_root": "bafyreiarjeh5gi2eb6cespoglsvraum4ku226iainadbhfkncyvsavgadm",
+          "status": "ACTUAL_OTHER_PROCESS_NATIVE_REVISION_READBACK"
+        },
+        "accepted_sha256": "ce729a74da06340e28c5011ff9ae4346ef5901f5edeedf0336071ad7582b23fd",
+        "command": [
+          "/Users/m1/builds/anytype-original-network-acceptance-20261125/revision-cas-50426b50-d4360923/attempt-1/work/original-network-revision.test",
+          "-test.run=^TestOtzariaOriginalNetworkRevisionPeer$",
+          "-test.v",
+          "-test.timeout=10m"
+        ],
+        "exit_code": 0,
+        "forced_kill": false,
+        "forced_termination": false,
+        "log_sha256": "bbc898e04f36bf5a1b518840ab683e7df4c9518f6308c23c3def3d0762fd10e9",
+        "pair_seconds": 36.03712525,
+        "pid": 53575,
+        "process": {
+          "existing_repository_recovered": true,
+          "lan_sync_disabled": true,
+          "network_mode": 0,
+          "new_account_created": false,
+          "pid": 53575,
+          "repository": "/Users/m1/builds/anytype-original-network-acceptance-20261125/run-1-private/producer-repository",
+          "role": "producer",
+          "same_account": "AA5y2wipdZPPGiMoK3hckf6DUJQHHehNPt6BgyenPamSnfQm",
+          "same_object": "bafyreiarjeh5gi2eb6cespoglsvraum4ku226iainadbhfkncyvsavgadm",
+          "same_space": "bafyreigdy7rjfil42wczgnam5njdwy5e2pcio23p2jls4ycgtzmp3usdqa.2xu9o61hnno0b"
+        },
+        "process_sha256": "2436a8ad696c710e1acf265a5f6c465ba16e8ffb2611b4885c00c36bd86b4fc4",
+        "role": "producer",
+        "stop": {
+          "application_absent": true,
+          "returned": true
+        },
+        "stop_sha256": "3cb76d7b57cfded1dbc936f52e4d05d5e72554bb9a4fa204c083020469712285"
+      },
+      {
+        "accepted": {
+          "actual_conditional_original_apply": true,
+          "actual_remote_change_observed_before_stale_compare": true,
+          "archive_cas_witness_bound": true,
+          "archive_heads": [
+            "bafyreifudd5dz2rkzsiac7cco5zmxvap5hwjuik7cmlplrchzw5szxhrzm"
+          ],
+          "archive_object_id": "bafyreigdft5uohenzeqdob2v77ihk2wcmroofbbl4moksjftuocfx5wlbi",
+          "explicit_resolution_uses_fresh_token": true,
+          "independent_peer_readback_observed": true,
+          "is_archived": false,
+          "native_local_receipt_used_as_network_ack": false,
+          "pid": 53576,
+          "root_sha256": "68a3aeaf9d700d6501750b6fe14ef03904b9d8b463ce056c89e893d71ef45fdc",
+          "same_native_root": "bafyreiarjeh5gi2eb6cespoglsvraum4ku226iainadbhfkncyvsavgadm",
+          "stale_native_compare_refused_without_apply_or_head_change": true
+        },
+        "accepted_sha256": "a5d8c6c661bb364e9dd3e7de17f06ba693f8876945ddc468d03c0948d224a829",
+        "command": [
+          "/Users/m1/builds/anytype-original-network-acceptance-20261125/revision-cas-50426b50-d4360923/attempt-1/work/original-network-revision.test",
+          "-test.run=^TestOtzariaOriginalNetworkRevisionPeer$",
+          "-test.v",
+          "-test.timeout=10m"
+        ],
+        "exit_code": 0,
+        "forced_kill": false,
+        "forced_termination": false,
+        "log_sha256": "1a25465fecf9041d4f1fd97b93d0c4b6e4a73f5e9618b70016b13c555db32ea2",
+        "pair_seconds": 36.03712525,
+        "pid": 53576,
+        "process": {
+          "existing_repository_recovered": true,
+          "lan_sync_disabled": true,
+          "network_mode": 0,
+          "new_account_created": false,
+          "pid": 53576,
+          "repository": "/Users/m1/builds/anytype-original-network-acceptance-20261125/run-1-private/consumer-repository",
+          "role": "consumer",
+          "same_account": "AA5y2wipdZPPGiMoK3hckf6DUJQHHehNPt6BgyenPamSnfQm",
+          "same_object": "bafyreiarjeh5gi2eb6cespoglsvraum4ku226iainadbhfkncyvsavgadm",
+          "same_space": "bafyreigdy7rjfil42wczgnam5njdwy5e2pcio23p2jls4ycgtzmp3usdqa.2xu9o61hnno0b"
+        },
+        "process_sha256": "7176b5acf117585ec057da7b597a98f5c4be0ac72e5147e6492e6b361eb3c8c1",
+        "role": "consumer",
+        "stop": {
+          "application_absent": true,
+          "returned": true
+        },
+        "stop_sha256": "3cb76d7b57cfded1dbc936f52e4d05d5e72554bb9a4fa204c083020469712285"
+      },
+      {
+        "accepted": {
+          "actual_fresh_process_reopen": true,
+          "archive_heads": [
+            "bafyreifudd5dz2rkzsiac7cco5zmxvap5hwjuik7cmlplrchzw5szxhrzm"
+          ],
+          "archive_object_id": "bafyreigdft5uohenzeqdob2v77ihk2wcmroofbbl4moksjftuocfx5wlbi",
+          "is_archived": false,
+          "native_heads": [
+            "bafyreie5siqkzmudgxef5morkx2rz32q42zwiuta4r2xuafishc332m2ki"
+          ],
+          "pid": 53665,
+          "read_only": true,
+          "remote_network_ack": false,
+          "root_sha256": "68a3aeaf9d700d6501750b6fe14ef03904b9d8b463ce056c89e893d71ef45fdc",
+          "same_native_root": "bafyreiarjeh5gi2eb6cespoglsvraum4ku226iainadbhfkncyvsavgadm"
+        },
+        "accepted_sha256": "3ce9f246fbdf3cbbb2f8a538ca90b83010b335d9ce7e51f91b4a892fc2bcdc05",
+        "command": [
+          "/Users/m1/builds/anytype-original-network-acceptance-20261125/revision-cas-50426b50-d4360923/attempt-1/work/original-network-revision.test",
+          "-test.run=^TestOtzariaOriginalNetworkRevisionPeer$",
+          "-test.v",
+          "-test.timeout=10m"
+        ],
+        "exit_code": 0,
+        "forced_kill": false,
+        "forced_termination": false,
+        "log_sha256": "09d1a0c0cd99fe20e460e8755855724703a080f8954e17eeec27445090a76414",
+        "pair_seconds": 0.5228743329999972,
+        "pid": 53665,
+        "process": {
+          "existing_repository_recovered": true,
+          "lan_sync_disabled": true,
+          "network_mode": 0,
+          "new_account_created": false,
+          "pid": 53665,
+          "repository": "/Users/m1/builds/anytype-original-network-acceptance-20261125/run-1-private/producer-repository",
+          "role": "producer-reopen",
+          "same_account": "AA5y2wipdZPPGiMoK3hckf6DUJQHHehNPt6BgyenPamSnfQm",
+          "same_object": "bafyreiarjeh5gi2eb6cespoglsvraum4ku226iainadbhfkncyvsavgadm",
+          "same_space": "bafyreigdy7rjfil42wczgnam5njdwy5e2pcio23p2jls4ycgtzmp3usdqa.2xu9o61hnno0b"
+        },
+        "process_sha256": "3f8137f197e6345b3fdf5c00e7668f7ce4469bc36a486207361f5a053cac2618",
+        "role": "producer-reopen",
+        "stop": {
+          "application_absent": true,
+          "returned": true
+        },
+        "stop_sha256": "3cb76d7b57cfded1dbc936f52e4d05d5e72554bb9a4fa204c083020469712285"
+      },
+      {
+        "accepted": {
+          "actual_fresh_process_reopen": true,
+          "archive_heads": [
+            "bafyreifudd5dz2rkzsiac7cco5zmxvap5hwjuik7cmlplrchzw5szxhrzm"
+          ],
+          "archive_object_id": "bafyreigdft5uohenzeqdob2v77ihk2wcmroofbbl4moksjftuocfx5wlbi",
+          "is_archived": false,
+          "native_heads": [
+            "bafyreie5siqkzmudgxef5morkx2rz32q42zwiuta4r2xuafishc332m2ki"
+          ],
+          "pid": 53666,
+          "read_only": true,
+          "remote_network_ack": false,
+          "root_sha256": "68a3aeaf9d700d6501750b6fe14ef03904b9d8b463ce056c89e893d71ef45fdc",
+          "same_native_root": "bafyreiarjeh5gi2eb6cespoglsvraum4ku226iainadbhfkncyvsavgadm"
+        },
+        "accepted_sha256": "5c887e13564e5e3dc64f437a042ea8cf3e42a4f4c2d9a7fdb3696144735dce97",
+        "command": [
+          "/Users/m1/builds/anytype-original-network-acceptance-20261125/revision-cas-50426b50-d4360923/attempt-1/work/original-network-revision.test",
+          "-test.run=^TestOtzariaOriginalNetworkRevisionPeer$",
+          "-test.v",
+          "-test.timeout=10m"
+        ],
+        "exit_code": 0,
+        "forced_kill": false,
+        "forced_termination": false,
+        "log_sha256": "f71a9449ef46d4aa16ab990c28d5cba5edf348f29a2c1ff169f90f4059cdbe91",
+        "pair_seconds": 0.5228743329999972,
+        "pid": 53666,
+        "process": {
+          "existing_repository_recovered": true,
+          "lan_sync_disabled": true,
+          "network_mode": 0,
+          "new_account_created": false,
+          "pid": 53666,
+          "repository": "/Users/m1/builds/anytype-original-network-acceptance-20261125/run-1-private/consumer-repository",
+          "role": "consumer-reopen",
+          "same_account": "AA5y2wipdZPPGiMoK3hckf6DUJQHHehNPt6BgyenPamSnfQm",
+          "same_object": "bafyreiarjeh5gi2eb6cespoglsvraum4ku226iainadbhfkncyvsavgadm",
+          "same_space": "bafyreigdy7rjfil42wczgnam5njdwy5e2pcio23p2jls4ycgtzmp3usdqa.2xu9o61hnno0b"
+        },
+        "process_sha256": "27fdd8647d20f24c6787aba8c273ab1d7f6428c5637cb3059d6afb3628f9a185",
+        "role": "consumer-reopen",
+        "stop": {
+          "application_absent": true,
+          "returned": true
+        },
+        "stop_sha256": "3cb76d7b57cfded1dbc936f52e4d05d5e72554bb9a4fa204c083020469712285"
+      }
+    ],
+    "compile_performed_by_controller": false,
+    "elapsed_seconds": 36.567100584,
+    "final_root_sha256": "68a3aeaf9d700d6501750b6fe14ef03904b9d8b463ce056c89e893d71ef45fdc",
+    "fixture": "/Users/m1/builds/anytype-original-network-acceptance-20261125/run-1-private",
+    "logs_with_credential_match": [],
+    "max_child_rss_platform_units": 234815488,
+    "native_local_receipt_used_as_network_ack": false,
+    "new_account_created_by_controller": false,
+    "phase": "/Users/m1/builds/anytype-original-network-acceptance-20261125/revision-cas-50426b50-d4360923/attempt-1/peers",
+    "phase_bytes": 10184065,
+    "public_log_release_allowed": true,
+    "same_account_id": "AA5y2wipdZPPGiMoK3hckf6DUJQHHehNPt6BgyenPamSnfQm",
+    "same_object_id": "bafyreiarjeh5gi2eb6cespoglsvraum4ku226iainadbhfkncyvsavgadm",
+    "same_space_id": "bafyreigdy7rjfil42wczgnam5njdwy5e2pcio23p2jls4ycgtzmp3usdqa.2xu9o61hnno0b",
+    "schema": "otzaria.original.native-network-revision-run.v1",
+    "source_manifest": "/Users/m1/builds/anytype-original-network-acceptance-20261125/revision-cas-50426b50-d4360923/transfer/SOURCE_INPUTS.json",
+    "source_manifest_sha256": "6c2efa18821e47a342c9e0720d8060bd05dfd773993ed84bc8b59e36dc119b38",
+    "source_manifest_unchanged": true,
+    "status": "PASS"
+  },
+  "phase_budget": {
+    "external_growth_bytes": 2147483648,
+    "os_margin_bytes": 2147483648,
+    "other_native_growth_bytes": 0,
+    "owned_growth_bytes": 805306368,
+    "required_before_compile": 5100273664
+  },
+  "raw_peer_artifacts_private": true,
+  "records": [
+    {
+      "elapsed_seconds": 18.143,
+      "exit": 0,
+      "forced_termination": false,
+      "free_after": 15264174080,
+      "label": "compile",
+      "log_sha256": "316a463b2b30d8fc37ef93b5e75663ddcdb739b0eb859c8613916323cc2e08d4",
+      "minimum_sampled_global_free_bytes": 14797393920,
+      "pid": 53256,
+      "stop_reason": ""
+    },
+    {
+      "elapsed_seconds": 3.034,
+      "exit": 0,
+      "forced_termination": false,
+      "free_after": 15228456960,
+      "label": "canonical-restrictions-control",
+      "log_sha256": "456d2b0dc8560c04982abefca0ccad5636d454974765d50fdc9aaca19618d782",
+      "minimum_sampled_global_free_bytes": 15234936832,
+      "pid": 53557,
+      "stop_reason": ""
+    },
+    {
+      "elapsed_seconds": 37.255,
+      "exit": 0,
+      "forced_termination": false,
+      "free_after": 15126773760,
+      "label": "original-remote-cas",
+      "log_sha256": "781174b6f5915994b20bf27cd6c758c3bada1b54c569f68a56f749b4e8ae4bc3",
+      "minimum_sampled_global_free_bytes": 15094665216,
+      "pid": 53574,
+      "stop_reason": ""
+    }
+  ],
+  "source_change": "Current native504 Archive CAS +d436 genuine read baseline and original Base.Diff restrictions controls",
+  "source_manifest_sha256": "6c2efa18821e47a342c9e0720d8060bd05dfd773993ed84bc8b59e36dc119b38",
+  "source_unchanged": true,
+  "status": "PASS_ACTUAL_REMOTE_CAS"
+}
