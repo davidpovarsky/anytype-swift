@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "scope": "THREE_NEW_OR_IMPACTED_FILESYSTEM_PRODUCT_CLOSURE_CONTROLS_NO_APPLE_EXECUTION",
+  "checks": 3,
+  "new_check": 1,
+  "impacted_checks_repeated": 2,
+  "reason": "Peer review found direct xctestrun symlink reference could omit the lexical alias",
+  "native_methods_executed": 0,
+  "retained_unchanged_admission_controls": 2,
+  "retained_proof": "postbuild-checks.json",
+  "retained_proof_sha256": "2c8736ee613ed9fba74334daece249e974031736c90ebf0b7549ff35860c1913",
+  "files": {
+    "Tools/MiniApps/export_products.py": "1789450578fb2c876d435158d7466dd468730bac320ecf27e631a94abacfebe4",
+    "Tools/MiniApps/run_native_acceptance.py": "ae2a101c36534b217f6a55a2d67534905cb7d8bb0e2ad37588ceb9233e2868a4",
+    "scripts/validation/test_miniapps_postbuild.py": "b98497ec6ca07af28a91b6ea1a35103af5fd79efbf7878ba667ffe107d185589"
+  },
+  "log_sha256": "b4f44598f326be839af80f7b72f776b7efab7b7681941e57917b7fc8462f82aa",
+  "recorded_at": "2026-11-24T03:23:03.675867+00:00"
+}

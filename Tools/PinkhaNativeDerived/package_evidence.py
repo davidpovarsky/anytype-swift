@@ -27,6 +27,8 @@ with zipfile.ZipFile(destination, 'w', compression=zipfile.ZIP_DEFLATED) as arch
             ('sdk06-ui', 'sdk06-early-products', 'BuildProducts.tar.gz'),
             ('coherent-native-early-products', 'BuildProducts.tar.gz'),
             ('coherent-ui-early-products', 'BuildProducts.tar.gz'),
+            ('miniapps-native-early-products', 'BuildProducts.tar.gz'),
+            ('miniapps-complete-early-products', 'BuildProducts.tar.gz'),
         }
         if (early_products or path.suffix in {'.log', '.json', '.png', '.txt'}
                 or any(part.endswith(('.xcresult', '-attachments')) for part in parts)):

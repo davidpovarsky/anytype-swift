@@ -103,7 +103,20 @@ def execute(args):
     args.evidence.mkdir(parents=True, exist_ok=True)
     if profile.name == profiles.COHERENT:
         from coherent_runtime_admission import execute as install_coherent
-        return install_coherent(args, profile, command)
+        installed = install_coherent(args, profile, command)
+        if os.environ.get("UI27_ACCEPTANCE_LANE") in {"hanlin-selection", "miniapps-native"}:
+            import sys
+            sys.path.insert(0, str(args.app_source / "Tools/MiniApps"))
+            from acceptance_profile import resolve_profile
+            requested_lane = os.environ["UI27_ACCEPTANCE_LANE"]
+            branch = subprocess.check_output(["git", "-C", str(args.app_source),
+                                              "branch", "--show-current"], text=True).strip()
+            if resolve_profile(args.app_source, requested_lane, branch) is not None:
+                from run_native_acceptance import prepare_authenticated_dependencies
+                prepare_authenticated_dependencies(args.app_source, args.evidence.parent,
+                    args.work / "miniapps-producer", requested_lane,
+                    args.runtime_profile, args.source_run_id)
+        return installed
     if profile.name == "r14":
         # Preserve the existing original r14 route, filename and approval inputs.
         command(["gh", "run", "download", args.source_run_id, "--repo", args.repository,
