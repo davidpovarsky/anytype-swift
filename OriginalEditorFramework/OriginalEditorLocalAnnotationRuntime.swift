@@ -360,6 +360,7 @@ internal final class OriginalEditorLocalAnnotationRuntime {
                 candidate == editorBinding && sourceLifetime.isCurrent && sourceIsCurrent(source)
             }
             try check()
+            host.snapshotTransportOriginHostProfileID = canonical.transportOriginHostProfileID
             draft = try await journal.transition(draft, to: "opened")
             let owner = OriginalEditorLocalAnnotationDraftOwner(host: host, sourceLifetime: sourceLifetime,
                 journal: journal, draft: draft, retirement: retirement,

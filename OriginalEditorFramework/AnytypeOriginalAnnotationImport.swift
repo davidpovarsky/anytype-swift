@@ -103,7 +103,7 @@ public final class AnytypeOriginalAnnotationImportSourceLifetime {
         Task { @MainActor in deliver() }
     }
 
-    fileprivate func claim() throws {
+    internal func claim() throws {
         guard isCurrent else { throw AnytypeOriginalAnnotationImportError.retiredSource }
         guard !claimed else { throw AnytypeOriginalAnnotationImportError.sourceAlreadyUsed }
         claimed = true
@@ -222,7 +222,7 @@ public struct AnytypeOriginalAnnotationImportHistory: Sendable {
         }
     }
 
-    private static func copy<MessageType: Message & Sendable>(
+    internal static func copy<MessageType: Message & Sendable>(
         _ message: MessageType?,
         failure: OriginalAnnotationImportHistoryError?
     ) -> (Data?, CopyError?) {
@@ -397,5 +397,71 @@ extension AnytypeOriginalEditorAccountSession {
             sourceLifetime.retire()
             throw error
         }
+    }
+}
+
+
+/// A read of an existing Annotation through the SAME authenticated original
+/// account/Space and original document Owner. This cannot be constructed or
+/// decoded by the Host. Exported log-heads remain historical observations;
+/// the separate closed revision token comes from the actual locked native read.
+/// Neither is a server/device acknowledgement. The Host must still commit using its own
+/// captured SQLite source/revision, and explicitly stage conflicting changes.
+public struct AnytypeOriginalAnnotationReadReceipt: Sendable {
+    public let capture: AnytypeOriginalEditorLocalAnnotationCapture
+    public let originHostProfileID: String
+    public let nativeRootLogHeads: [String: String]
+    public let observedNativeRevisionSHA256: String
+    public let revisionToken: AnytypeOriginalAnnotationRevisionToken
+    public let nativeResponseBytes: Data
+    public let nativeResponseSHA256: String
+
+    @MainActor
+    internal init(actual: AnytypeOriginalEditorSnapshotCapture,
+                  binding: AnytypeOriginalEditorBinding,
+                  maximumBodyBytes: Int,
+                  revisionToken: AnytypeOriginalAnnotationRevisionToken,
+                  nativeResponseBytes: Data) throws {
+        guard actual.snapshot.provenance.matchesCaptureBinding(binding) else {
+            throw AnytypeOriginalAnnotationImportError.savedBodyMismatch
+        }
+        let native = try OriginalEditorLocalAnnotationNativeBody.decoded(actual.snapshot)
+        let prefix = "otzaria.local.draft:"
+        guard let destination = OriginalEditorLocalAnnotationNativeBody.string(
+            native.rootSnapshot.details, OriginalAnnotationMetadataField.creationDestination.rawValue),
+              destination.utf8.starts(with: prefix.utf8) else {
+            throw AnytypeOriginalEditorLocalAnnotationError.wrongNativeIdentity
+        }
+        let origin = String(destination.dropFirst(prefix.count))
+        guard !origin.isEmpty, origin.utf8.count <= 512, !origin.utf8.contains(0) else {
+            throw AnytypeOriginalEditorLocalAnnotationError.wrongNativeIdentity
+        }
+        // A new Host frame keeps the actual account/Space/object and its exact
+        // native ZIP. Only current Host provenance is framed; original native
+        // creation metadata is retained and independently verified below.
+        let framed = try AnytypeOriginalEditorSnapshot.frame(
+            archive: actual.snapshot.nativeArchiveBytes,
+            reportBytes: actual.snapshot.nativeExportReportBytes,
+            responseCount: actual.snapshot.exportedObjectCount,
+            binding: binding, maximumBodyBytes: maximumBodyBytes,
+            transportOriginHostProfileID: origin)
+        let source = try AnytypeOriginalEditorLocalAnnotationSource(
+            hostProfileID: binding.hostProfileID, annotationUUID: binding.annotationUUID,
+            expectedRevision: binding.expectedRevision,
+            sourceWitnessSHA256: binding.sourceWitnessSHA256, payloadSHA256: nil)
+        // Includes original type uniqueKey/layout membership and all fixed
+        // protocol/namespace/Annotation UUID/creation-destination markers.
+        let preview = try OriginalEditorLocalAnnotationNativeBody.preview(framed, source: source)
+        capture = AnytypeOriginalEditorLocalAnnotationCapture(
+            nativeCapture: .init(snapshot: framed,
+                retainedArchiveURL: actual.retainedArchiveURL,
+                retainedDirectoryURL: actual.retainedDirectoryURL),
+            textPreview: preview)
+        originHostProfileID = origin
+        nativeRootLogHeads = native.rootLogHeads
+        observedNativeRevisionSHA256 = revisionToken.nativeRootSHA256
+        self.revisionToken = revisionToken
+        self.nativeResponseBytes = nativeResponseBytes
+        nativeResponseSHA256 = OriginalEditorLocalAnnotationValidation.sha256(nativeResponseBytes)
     }
 }

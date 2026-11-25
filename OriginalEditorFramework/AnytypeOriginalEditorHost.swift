@@ -103,6 +103,9 @@ public final class AnytypeOriginalEditorHost {
     private let sourceLifetime: AnytypeOriginalEditorSourceLifetime
     private var accountObservation: AnyCancellable?
     private var mountedViewController: UIViewController?
+    // Internal only: assigned from canonical native provenance by the localOnly
+    // materializer. A caller cannot use historical provenance as remote authority.
+    internal var snapshotTransportOriginHostProfileID: String?
     private var snapshotCaptureInProgress = false
     private struct CapturedInteraction {
         weak var view: UIView?

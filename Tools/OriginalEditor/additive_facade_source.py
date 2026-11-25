@@ -1,4 +1,4 @@
-"""Admit only the separately reviewed five-file production facade continuation.
+"""Admit only the separately reviewed eleven-file production revision continuation.
 
 Historical generated/native qualification remains unchanged. This observation is
 source provenance; the current SDK still needs real compiler/runtime acceptance.
@@ -9,17 +9,12 @@ from pathlib import Path
 import subprocess
 
 BASE = "34b8a7c5ddb34e9287acdb5c189849eeac8cff86"
-REVIEWED = "73291acd232ead88a3d25dd75848e7fe5bac05f3"
+REVIEWED = "a91d572cb2df2b05c7d93520732eecd7380294fd"
 RELATIVE = "Tools/OriginalEditor/AnnotationExchange/source_adoption.json"
 PRODUCTS = ("Anytype/Sources", "Anytype/Resources", "Modules",
             "OriginalEditorFramework", "Dependencies/Middleware")
-FILES = tuple(sorted([
-    "OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift",
-    "OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift",
-    "OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift",
-    "OriginalEditorFramework/OriginalEditorLocalAnnotationMaterialization.swift",
-    "OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift",
-]))
+ADDED = "OriginalEditorFramework/AnytypeOriginalAnnotationRevision.swift"
+FILES = tuple(sorted(['Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationImport.swift', 'OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift', 'OriginalEditorFramework/AnytypeOriginalAnnotationRevision.swift', 'OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift', 'OriginalEditorFramework/AnytypeOriginalEditorHost.swift', 'OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift', 'OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift', 'OriginalEditorFramework/OriginalAnnotationNativeArchiveComparison.swift', 'OriginalEditorFramework/OriginalEditorLocalAnnotationMaterialization.swift', 'OriginalEditorFramework/OriginalEditorLocalAnnotationNativeBody.swift', 'OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift']))
 
 
 def require(value, message):
@@ -32,7 +27,7 @@ def git(root, *args):
 
 
 def validate_document(value, binding):
-    require(value.get("schema") == "otzaria.annotation-exchange-source-adoption/1"
+    require(value.get("schema") == "otzaria.annotation-exchange-source-adoption/2"
             and value.get("base_source") == BASE and value.get("reviewed_source") == REVIEWED
             and binding.get("path") == RELATIVE
             and binding.get("reviewed_source") == REVIEWED,
@@ -70,10 +65,10 @@ def observe(root, profile, historical_trees):
     require(base == historical_trees == value.get("base_product_trees"),
             "Historical facade/native source identity differs")
     require(reviewed == value.get("reviewed_product_trees")
-            and all(reviewed[p] == base[p] for p in PRODUCTS if p != "OriginalEditorFramework"),
-            "Facade continuation changed generated/native/UI/resource inputs")
+            and all(reviewed[p] == base[p] for p in PRODUCTS if p not in ("OriginalEditorFramework", "Anytype/Sources")),
+            "Revision continuation changed generated/native/resource inputs")
     delta = git(root, "diff", "--name-status", BASE, REVIEWED, "--", *PRODUCTS).splitlines()
-    require(delta == ["M\t" + p for p in FILES], "Unreviewed product change in facade continuation")
+    require(delta == [("A\t" if p == ADDED else "M\t") + p for p in FILES], "Unreviewed product change in facade continuation")
     require({p: git(root, "rev-parse", "HEAD:" + p) for p in PRODUCTS} == reviewed,
             "Current product source differs from reviewed facade continuation")
     for row in rows:
@@ -81,7 +76,7 @@ def observe(root, profile, historical_trees):
         require(p.is_file() and not p.is_symlink() and p.resolve() == p,
                 "Missing/aliased reviewed facade source")
         data = p.read_bytes()
-        require(row["before_blob"] == git(root, "rev-parse", BASE + ":" + row["path"])
+        require(row["before_blob"] == (None if row["path"] == ADDED else git(root, "rev-parse", BASE + ":" + row["path"]))
                 and row["after_blob"] == git(root, "rev-parse", REVIEWED + ":" + row["path"])
                 and git(root, "hash-object", "--", row["path"]) == row["after_blob"]
                 and len(data) == row["bytes"] and hashlib.sha256(data).hexdigest() == row["sha256"],

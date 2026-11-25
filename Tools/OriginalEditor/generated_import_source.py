@@ -197,9 +197,9 @@ def verify_generated_source(root, profile):
     require(trees == admitted_trees, "Reviewed local annotation product tree differs")
     original = {path: git(root, "rev-parse", COMPLETE + ":" + path).decode().strip()
                 for path in profile["original_trees"]}
-    require(profile["original_trees"] == {path: trees[path] for path in profile["original_trees"]}
-            and all(trees[path] == git(root, "rev-parse", COMPLETE + ":" + path).decode().strip()
-                    for path in ("Anytype/Sources", "Anytype/Resources"))
+    require(profile["original_trees"] == original
+            and trees["Anytype/Resources"] == original["Anytype/Resources"]
+            and (additive_facade is not None or trees["Anytype/Sources"] == original["Anytype/Sources"])
             and trees["Dependencies/Middleware"] == generated_trees["Dependencies/Middleware"],
             "Local lifecycle changed original UI, resources or native middleware")
     subprocess.run(["git", "-C", str(root), "diff", "--quiet", "HEAD", "--", *PRODUCTS],

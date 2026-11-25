@@ -16,7 +16,7 @@ class FacadeAdoptionControls(unittest.TestCase):
         self.binding = {"path": RELATIVE, "reviewed_source": REVIEWED}
 
     def test_actual_reviewed_membership_is_source_only(self):
-        self.assertEqual(len(validate_document(self.doc, self.binding)), 5)
+        self.assertEqual(len(validate_document(self.doc, self.binding)), 11)
 
     def test_missing_or_additional_product_file_rejected(self):
         for edit in ("missing", "native", "duplicate"):

@@ -250,13 +250,38 @@ extension EditorDocumentWriteSourceBinding {
         archive: Data,
         onDrained: @escaping @MainActor @Sendable (OriginalAnnotationImportCallHistory) -> Void
     ) throws -> OriginalAnnotationImportAttempt {
+        try prepareOriginalAnnotationRequest(selection: selection,
+            sourceSpaceID: sourceSpaceID, sourceRootID: sourceRootID,
+            archive: archive, importProtocol: "pinkha.annotation.import.v1",
+            maximumArchiveBytes: 1_024 * 1_024, onDrained: onDrained)
+    }
+
+    /// Separate closed revision protocol; the original Import/Cancel owner,
+    /// current account/Space permissions and actual drain remain shared.
+    func prepareOriginalAnnotationRevision(
+        selection: OriginalActiveSpaceSelection, sourceSpaceID: String,
+        sourceRootID: String, envelope: Data,
+        onDrained: @escaping @MainActor @Sendable (OriginalAnnotationImportCallHistory) -> Void
+    ) throws -> OriginalAnnotationImportAttempt {
+        try prepareOriginalAnnotationRequest(selection: selection,
+            sourceSpaceID: sourceSpaceID, sourceRootID: sourceRootID,
+            archive: envelope, importProtocol: "pinkha.annotation.revision.v1",
+            maximumArchiveBytes: 2 * 1_024 * 1_024, onDrained: onDrained)
+    }
+
+    private func prepareOriginalAnnotationRequest(
+        selection: OriginalActiveSpaceSelection, sourceSpaceID: String,
+        sourceRootID: String, archive: Data, importProtocol: String,
+        maximumArchiveBytes: Int,
+        onDrained: @escaping @MainActor @Sendable (OriginalAnnotationImportCallHistory) -> Void
+    ) throws -> OriginalAnnotationImportAttempt {
         try validate()
         try selection.validate()
         let targetSpaceID = selection.accountInfo.accountSpaceId
         let identities = [selection.accountID, sourceSpaceID, sourceRootID, targetSpaceID]
         guard identities.allSatisfy({
             !$0.isEmpty && $0.utf8.count <= 16_384 && !$0.utf8.contains(0)
-        }), !archive.isEmpty, archive.count <= 1_024 * 1_024 else {
+        }), !archive.isEmpty, archive.count <= maximumArchiveBytes else {
             throw OriginalAnnotationImportAttemptError.invalidInput
         }
         guard let participants = Container.shared.participantsStorage() as? ParticipantsStorage,
@@ -281,7 +306,7 @@ extension EditorDocumentWriteSourceBinding {
             throw OriginalAnnotationImportAttemptError.randomSourceUnavailable
         }
         var request = Anytype_Rpc.Annotation.Import.Request()
-        request.importProtocol = "pinkha.annotation.import.v1"
+        request.importProtocol = importProtocol
         request.expectedAccountID = selection.accountID
         request.sourceSpaceID = sourceSpaceID
         request.sourceRootID = sourceRootID
