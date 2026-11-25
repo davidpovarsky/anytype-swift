@@ -1,0 +1,31 @@
+{
+  "head": "df27030ddde039bab09af955ae8713398b763a10",
+  "start": "2026-11-24T19:56:56.535655+00:00",
+  "finish": "2026-11-24T19:58:47.952994+00:00",
+  "exit": 0,
+  "sourceSHA256": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeTextBlockPlan.swift": "4cb3462c5168ad53467b0b3e95113d91e422d93ea467a961e36ad7b578e4e4b2",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeTextBlockPlanTests.swift": "9530e27c7619835a32f54ab905e69296d40946c827aa926476572d35ea29c55c"
+  },
+  "sourcesUnchanged": true,
+  "logSHA256": "419b53852848bea7f0288225c422b89d7e9a02c5aaedab40af87a78ed33bd66c",
+  "scope": "ONE_AFFECTED_NATIVE_TEXT_PLAN_JOIN_CONTROL",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-native-semantic-map-20261124/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "1",
+    "--skip-update",
+    "--filter",
+    "NativeTextBlockPlanTests.testNativeGraphOrderAndMappedParentReferencesSurviveTheDestinationPlan"
+  ],
+  "freeBytes": 1448226816
+}

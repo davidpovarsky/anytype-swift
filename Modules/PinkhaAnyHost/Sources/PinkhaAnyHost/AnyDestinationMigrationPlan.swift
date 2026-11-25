@@ -26,10 +26,15 @@ public struct AnyDestinationSourceBinding: Codable, Equatable, Sendable {
     public let captureManifestSHA256: String
     public let semanticPlanSHA256: String
     public let sourceObjectIDs: [String]
+    /// Exact original whole-source manifest, required when a source definition
+    /// is represented by canonical or embedded coverage. Omitted on legacy
+    /// plans, preserving their canonical bytes and original journal identity.
+    public let definitionManifestBytes: Data?
+    let definitionMembers: [Data: AnyDestinationDefinitionMember]
 
     public init(accountID: String, spaceID: String, witnessSHA256: String,
                 captureManifestSHA256: String, semanticPlanSHA256: String,
-                sourceObjectIDs: [String]) throws {
+                sourceObjectIDs: [String], definitionManifestBytes: Data? = nil) throws {
         guard AnyDestinationPlanChecks.identity(accountID), AnyDestinationPlanChecks.identity(spaceID),
               [witnessSHA256, captureManifestSHA256, semanticPlanSHA256].allSatisfy(AnyDestinationPlanChecks.digest),
               !sourceObjectIDs.isEmpty, sourceObjectIDs.count <= AnyDestinationMigrationPlan.maximumItems,
@@ -40,10 +45,23 @@ public struct AnyDestinationSourceBinding: Codable, Equatable, Sendable {
         self.accountID = accountID; self.spaceID = spaceID; self.witnessSHA256 = witnessSHA256
         self.captureManifestSHA256 = captureManifestSHA256; self.semanticPlanSHA256 = semanticPlanSHA256
         self.sourceObjectIDs = sourceObjectIDs
+        self.definitionManifestBytes = definitionManifestBytes
+        if let definitionManifestBytes {
+            definitionMembers = try AnyDestinationDefinitionChecks.members(manifest: definitionManifestBytes,
+                accountID: accountID, spaceID: spaceID, witnessSHA256: witnessSHA256,
+                manifestSHA256: captureManifestSHA256)
+        } else { definitionMembers = [:] }
+    }
+
+    public init(bundle: AnyHeartNativeSpaceBundle, semanticPlanSHA256: String, sourceObjectIDs: [String]) throws {
+        try self.init(accountID: bundle.sourceAccountID, spaceID: bundle.sourceSpaceID,
+            witnessSHA256: bundle.sourceWitnessSHA256, captureManifestSHA256: bundle.manifestSHA256,
+            semanticPlanSHA256: semanticPlanSHA256, sourceObjectIDs: sourceObjectIDs,
+            definitionManifestBytes: bundle.manifestBytes)
     }
 
     private enum CodingKeys: String, CodingKey {
-        case accountID, spaceID, witnessSHA256, captureManifestSHA256, semanticPlanSHA256, sourceObjectIDs
+        case accountID, spaceID, witnessSHA256, captureManifestSHA256, semanticPlanSHA256, sourceObjectIDs, definitionManifestBytes
     }
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -52,7 +70,8 @@ public struct AnyDestinationSourceBinding: Codable, Equatable, Sendable {
                       witnessSHA256: c.decode(String.self, forKey: .witnessSHA256),
                       captureManifestSHA256: c.decode(String.self, forKey: .captureManifestSHA256),
                       semanticPlanSHA256: c.decode(String.self, forKey: .semanticPlanSHA256),
-                      sourceObjectIDs: c.decode([String].self, forKey: .sourceObjectIDs))
+                      sourceObjectIDs: c.decode([String].self, forKey: .sourceObjectIDs),
+                      definitionManifestBytes: c.decodeIfPresent(Data.self, forKey: .definitionManifestBytes))
     }
 }
 
@@ -169,6 +188,13 @@ public struct AnyDestinationCoverage: Codable, Equatable, Sendable {
     public enum SystemKind: String, Codable, Sendable { case nativeACL, emptyNativeKeyValue }
     public enum Disposition: Codable, Equatable, Sendable {
         case mapped(itemSourceKeys: [String])
+        /// The fixed path is the source option's exact UTF-8 ID under the
+        /// named property's xFormat.options, never an arbitrary JSON path.
+        case embeddedOption(propertySourceKey: String, evidence: AnyDestinationDefinitionEvidence,
+                            descriptorSHA256: String)
+        /// A captured definition binds an existing closed native contract;
+        /// there is deliberately no schema mutation or replacement object.
+        case canonicalProperty(AnyDestinationCanonicalPropertyBinding)
         case retainedSystem(kind: SystemKind, capturedRowCount: Int, witnessSHA256: String)
         case blocked(reasons: [String])
     }
@@ -346,7 +372,8 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
             }
             keys[Data(item.sourceKey.utf8)] = index; lastPhase = item.operation.phase
         }
-        var covered = Set<Data>(), represented = Set<Data>()
+        var covered = Set<Data>(), represented = Set<Data>(), canonicalAddresses = Set<Data>()
+        let itemSourceIDs = Set(items.map { Data($0.sourceObjectID.utf8) })
         for entry in coverage {
             let id = Data(entry.sourceObjectID.utf8)
             guard sourceIDs.contains(id), covered.insert(id).inserted else {
@@ -361,6 +388,20 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
                           Data(items[index].sourceObjectID.utf8) == id else {
                         throw AnyDestinationMigrationError.invalidPlan("coverage mapping")
                     }
+                }
+            case .embeddedOption(let propertyKey, let evidence, let descriptorSHA256):
+                try evidence.requireSource(source, objectID: entry.sourceObjectID)
+                guard !itemSourceIDs.contains(id), let propertyIndex = keys[Data(propertyKey.utf8)] else {
+                    throw AnyDestinationMigrationError.invalidPlan("shadowed or absent embedded option")
+                }
+                try AnyDestinationDefinitionChecks.embeddedOption(evidence, descriptorSHA256: descriptorSHA256,
+                                                                   property: items[propertyIndex])
+            case .canonicalProperty(let binding):
+                try binding.evidence.requireSource(source, objectID: entry.sourceObjectID)
+                try binding.validate()
+                let address = AnyPreparedMigrationPlanBinding.material([binding.ownerID, binding.propertyID])
+                guard !itemSourceIDs.contains(id), canonicalAddresses.insert(address).inserted else {
+                    throw AnyDestinationMigrationError.invalidPlan("shadowed or duplicate canonical property")
                 }
             case .retainedSystem(let kind, let count, let witness):
                 guard witness == source.witnessSHA256, count >= 0,

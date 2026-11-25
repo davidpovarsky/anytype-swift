@@ -1,0 +1,25 @@
+{
+  "format": "pinkha-native-text-plan-component-qualification-v1",
+  "sourceCommit": "df27030ddde039bab09af955ae8713398b763a10",
+  "productionSourceSHA256": "4cb3462c5168ad53467b0b3e95113d91e422d93ea467a961e36ad7b578e4e4b2",
+  "distinctMethodsQualified": 3,
+  "originalRun": {
+    "exit": 1,
+    "passed": 2,
+    "failed": 1,
+    "logSHA256": "ed1f1477f027a52a18db8bf718c6b50a9bc2700b1fb243bb15aa4c59b8e7f1f8",
+    "cause": "Test fixture supplied a non-SHA256 destination planID; existing production admission correctly refused it."
+  },
+  "affectedContinuation": {
+    "exit": 0,
+    "passed": 1,
+    "failed": 0,
+    "logSHA256": "419b53852848bea7f0288225c422b89d7e9a02c5aaedab40af87a78ed33bd66c",
+    "change": "Fixture only: derive planID with SHA256. Production mapper unchanged."
+  },
+  "runtime": "Swift 6.4.3 arm64 Linux",
+  "fixtureOnly": true,
+  "nativeCrossLanguageFixture": false,
+  "wholeSpaceMigration": false,
+  "permitsDestinationWrites": false
+}
