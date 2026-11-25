@@ -14,24 +14,9 @@ struct AnyNativeApp: App {
 
     init() {
         do {
-            let directory: URL
-            let service: String
-            #if DEBUG
-            if ProcessInfo.processInfo.arguments.contains("--native-ui-tests") {
-                let args = ProcessInfo.processInfo.arguments
-                let position = args.firstIndex(of: "--native-ui-test-scope")
-                let candidate = position.flatMap { $0 + 1 < args.count ? UUID(uuidString: args[$0 + 1]) : nil }
-                let scope = (candidate ?? UUID()).uuidString
-                directory = FileManager.default.temporaryDirectory.appendingPathComponent("native-ui-" + scope)
-                service = "io.pinkha.anynative.uitests." + scope
-            } else {
-                directory = try AnyNativeApplication.defaultDataDirectory()
-                service = "io.pinkha.anynative.accounts.v1"
-            }
-            #else
-            directory = try AnyNativeApplication.defaultDataDirectory()
-            service = "io.pinkha.anynative.accounts.v1"
-            #endif
+            let configuration = try AnyNativeLaunchConfiguration.current()
+            let directory = configuration.dataDirectory
+            let service = configuration.credentialService
             let prepared = try AnyNativeApplication(dataDirectory: directory, credentialService: service)
             #if DEBUG
             let fixture = try NativeCustomTypeFixture.configured(arguments: ProcessInfo.processInfo.arguments,

@@ -213,9 +213,10 @@ final class PinkhaEngineSceneOwner {
                 try await endSourceReview(.engineChanged)
                 // Construct the private account store before changing the active UI.
                 if anyPresentation == nil {
+                    let configuration = try PinkhaEmbeddedAnyLaunchConfiguration.current()
                     let application = try PinkhaEmbeddedAnyApplication(
-                        dataDirectory: PinkhaEmbeddedAnyApplication.defaultDataDirectory(),
-                        credentialService: "io.pinkha.anynative.accounts.v1")
+                        dataDirectory: configuration.dataDirectory,
+                        credentialService: configuration.credentialService)
                     anyPresentation = PinkhaEmbeddedAnyPresentation(application: application)
                 }
                 if heartMiniAppsHold == nil {
