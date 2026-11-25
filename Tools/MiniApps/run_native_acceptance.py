@@ -27,6 +27,7 @@ from export_products import export_built_products, product_closure
 from simulator_admission import verify_built_entitlements
 from selection import configure_tests, selector, validate_enumeration
 from consumer_runtime_boundary import inspect as inspect_runtime_boundary
+from owned_commands import run_logged
 
 def require(condition, message):
     if not condition:
@@ -56,36 +57,61 @@ def source_context(args, receipt, *, use_recorded_resolution=False):
     require(owner["configuration"] == "Debug-MiniAppsOwner", "Unexpected owner configuration")
     head = git(app, "rev-parse", "HEAD")
     branch = git(app, "branch", "--show-current")
-    require(head == os.environ["GITHUB_SHA"] and branch == pin["consumer_branch"],
-            "Unreviewed MiniApps consumer source")
-    derived = app / "build" / ("miniapps-derived-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"])
+    local = getattr(args, "local_execution", None)
+    execution_origin = "local-mac" if local else "github-actions"
+    if local:
+        from local_execution import identity
+        execution = identity(app, local, args.local_execution_sha256)
+        run_id, run_attempt = execution["run_id"], execution["run_attempt"]
+        derived = Path(execution["derived"]).resolve()
+        require(str(evidence) == execution["evidence"] and args.derived.resolve() == derived,
+                "Local evidence or DerivedData differs from the immutable execution")
+    else:
+        require(head == os.environ["GITHUB_SHA"] and branch == pin["consumer_branch"],
+                "Unreviewed MiniApps consumer source")
+        run_id, run_attempt = os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"]
+        execution = None
+        derived = app / "build" / ("miniapps-derived-" + run_id + "-" + run_attempt)
     if use_recorded_resolution:
         receipt["dependency_resolution"] = verify_recorded_resolution(
-            app, evidence, derived, head, os.environ["GITHUB_RUN_ID"], os.environ["GITHUB_RUN_ATTEMPT"])
+            app, evidence, derived, head, run_id, run_attempt,
+            activation_arguments=[] if local else None)
     else:
         require(not git(app, "diff", "--name-only", "HEAD"), "Tracked source differs before native build")
-    profile = resolve_profile(app, args.lane, branch)
+    profile = resolve_profile(app, args.lane, branch, local_execution=bool(local))
     require(profile is not None, "The explicit MiniApps source profile was not selected")
     receipt.update(profile)
-    require(args.runtime_profile == pin["runtime_profile"] and args.heart_source_run_id == pin["heart_source_run_id"],
-            "Only the retained original Heart is selected")
+    if not local:
+        require(args.runtime_profile == pin["runtime_profile"] and args.heart_source_run_id == pin["heart_source_run_id"],
+                "Only the retained original Heart is selected")
     require(args.device == "ipad" and args.language == "en", "This focused UI selection requires its declared iPad/English fixture")
     sdk = verify_sdk(app / "Dependencies/Hanlin")
     require(sdk["revision"] == pin["revision"], "Actual bridge snapshot differs")
     preflight = json.loads((evidence / "preflight/preflight.json").read_text())
     require(preflight["status"] == "PREFLIGHT_PASS_UI_NOT_RUN" and preflight["source_sha"] == head
-            and preflight["run_id"] == os.environ["GITHUB_RUN_ID"]
-            and preflight["run_attempt"] == os.environ["GITHUB_RUN_ATTEMPT"], "Disposable simulator source differs")
+            and preflight["run_id"] == run_id
+            and preflight["run_attempt"] == run_attempt, "Disposable simulator source differs")
     udid = preflight["selected"]["ipad"]["udid"]
-    installation = json.loads((evidence / "heart/heart-installation.json").read_text())
-    binding = heart_runtime_profile.installed_binding(app, installation, head, args.runtime_profile, args.heart_source_run_id)
-    receipt.update(source_sha=head, run_id=os.environ["GITHUB_RUN_ID"], run_attempt=os.environ["GITHUB_RUN_ATTEMPT"],
+    if local:
+        from local_execution import native_input
+        require(preflight["execution_origin"] == "local-mac"
+                and preflight["local_execution_sha256"] == args.local_execution_sha256,
+                "Local preflight lost its actual execution binding")
+        installation, binding = native_input(app, evidence)
+        require(args.runtime_profile == binding["runtime_profile"]
+                and args.heart_source_run_id is None, "Local native input cannot be labelled as an old GitHub artifact")
+    else:
+        installation = json.loads((evidence / "heart/heart-installation.json").read_text())
+        binding = heart_runtime_profile.installed_binding(app, installation, head, args.runtime_profile, args.heart_source_run_id)
+    receipt.update(source_sha=head, run_id=run_id, run_attempt=run_attempt,
+                   execution_origin=execution_origin, local_execution=execution,
+                   local_execution_sha256=args.local_execution_sha256 if local else None,
                    producer_pin=pin, heart=installation, native_binding=binding, device=udid,
                    configuration=owner["configuration"], owner_signing=owner, apple_profile_grants=owner["status"],
                    release_accepted=False, physical_sharing="NOT_PROVEN_BY_SIMULATOR",
                    original_preflight=preflight, original_preflight_sha256=digest(evidence / "preflight/preflight.json"))
     return SimpleNamespace(app=app, evidence=evidence, pin=pin, owner=owner, head=head,
-                           udid=udid, binding=binding, derived=derived)
+                           udid=udid, binding=binding, derived=derived, local=bool(local))
 
 
 def product_inventory(native_configuration, ui_configuration):
@@ -126,15 +152,24 @@ def product_inventory(native_configuration, ui_configuration):
 def build_consumer(args, receipt):
     context = source_context(args, receipt)
     app, evidence, owner, derived = context.app, context.evidence, context.owner, context.derived
-    require(not derived.exists(), "This focused build requires fresh products")
+    if context.local and derived.exists():
+        if getattr(args, "local_failed_cache_snapshot", None) is not None:
+            from local_failed_cache_input import admit
+            receipt["compiler_cache_input"] = admit(app, derived, evidence,
+                args.local_failed_cache_snapshot, args.local_failed_cache_snapshot_sha256)
+        else:
+            from local_cache_input import admit
+            receipt["compiler_cache_input"] = admit(app, derived, evidence, args.local_cache_snapshot,
+                                                    args.local_cache_snapshot_sha256)
+    else:
+        require(not derived.exists(), "This focused build requires fresh products")
     def save(phase):
         receipt["phase"] = phase
         write(evidence / "miniapps-build.json", receipt)
         print(json.dumps({"phase": phase, "source": context.head}), flush=True)
     def command(argv, name, timeout=5400):
         save(name)
-        with (evidence / (name + ".log")).open("w") as output:
-            result = subprocess.run(argv, cwd=app, stdout=output, stderr=subprocess.STDOUT, timeout=timeout)
+        result = run_logged(argv, app, evidence / (name + ".log"), timeout)
         receipt.setdefault("completed_build_commands", {})[name] = {
             "arguments": argv, "return_code": result.returncode, "log_sha256": digest(evidence / (name + ".log"))}
         save(name + "-finished")
@@ -145,17 +180,43 @@ def build_consumer(args, receipt):
     receipt["simulator_boot_requested"] = True
     receipt["simulator_readiness"] = "NOT_CHECKED_UNTIL_EXECUTION"
     prepare_source_cache(app, derived)
-    flags = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED -D DEBUG", "ENABLE_TESTABILITY=YES",
+    activation_arguments = [] if context.local else ACTIVATION_ARGUMENTS
+    swift_flags = "OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED -D DEBUG"
+    if context.local:
+        from local_execution import POLICY
+        local_policy = json.loads(POLICY.read_text())
+        swift_flags = "OTHER_SWIFT_FLAGS=$(inherited) " + " ".join("-D " + value for value in local_policy["swift_defines"])
+        for key, value in local_policy["build_environment"].items():
+            require(os.environ.get(key) == value, "Original combined native build environment differs: " + key)
+    flags = [swift_flags, "ENABLE_TESTABILITY=YES",
              "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-",
              "CODE_SIGNING_ALLOWED=YES", "CODE_SIGNING_REQUIRED=YES", "PROVISIONING_PROFILE_SPECIFIER="]
-    common = ["-configuration", owner["configuration"], "-destination", "platform=iOS Simulator,id=" + context.udid,
+    if context.local:
+        # Copied PCMs retain nonrelocatable paths even when a textual donor scan is empty.
+        # Use an empty owned cache without deleting the original copied evidence.
+        module_cache = derived / "MiniAppsCurrentModuleCache.noindex"
+        cache = receipt.get("compiler_cache_input")
+        require(not module_cache.exists() or
+                (cache is not None
+                 and cache["status"] in {
+                     "ADMITTED_SAME_PATH_SOURCE_IDENTICAL_OWNED_COMPILER_CACHE",
+                     "ADMITTED_FAILED_OWN_CACHE_FOR_ACTUAL_REBUILD_ONLY"}
+                 and cache["module_cache"] == str(module_cache)
+                 and cache.get("new_native_or_ui_credit") == 0
+                 and cache.get("both_actual_compiler_commands_and_postgates_required") is True),
+                "Existing module cache must be the exact admitted same-path cache with actual rebuild gates")
+        flags += ["ARCHS=arm64", "CLANG_MODULE_CACHE_PATH=" + str(module_cache),
+                  "SWIFT_MODULE_CACHE_PATH=" + str(module_cache)]
+    scheduling = ["-jobs", "2"] if context.local else []
+    common = [*scheduling, "-configuration", owner["configuration"], "-destination", "platform=iOS Simulator,id=" + context.udid,
               "-derivedDataPath", str(derived), "-parallel-testing-enabled", "NO"]
     command(["xcodebuild", "-resolvePackageDependencies", "-project", "Anytype.xcodeproj",
              "-scheme", "Anytype", *common], "resolve-native-packages", timeout=1800)
     receipt["dependency_resolution"] = record_resolution(
-        app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"], "native")
+        app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"], "native",
+        activation_arguments=activation_arguments)
     command(["xcodebuild", "build-for-testing", "-project", "Anytype.xcodeproj", "-scheme", "Anytype",
-             *common, "-disableAutomaticPackageResolution", *ACTIVATION_ARGUMENTS,
+             *common, "-disableAutomaticPackageResolution", *activation_arguments,
              "-only-testing:AnytypeTests/PinkhaMiniAppsNativePreparationTests", *flags], "build-native")
     receipt.update(native_build_succeeded=True, ui_build_succeeded=False, actual_test_methods=0,
                    status="NATIVE_BUILD_PASS_UI_NOT_BUILT")
@@ -178,14 +239,16 @@ def build_consumer(args, receipt):
     verify_runtime_copies(built, context.binding["native_marker"].encode(), evidence)
     receipt.update(source_bundle=source_bundle, source_scheme=source_scheme, native_build_succeeded=True)
     verify_sdk(app / "Dependencies/Hanlin")
-    verify_recorded_resolution(app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"])
+    verify_recorded_resolution(app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"],
+                               activation_arguments=[] if context.local else None)
     command(["xcodebuild", "-resolvePackageDependencies", "-workspace",
              "PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace",
              "-scheme", "PinkhaStage1Acceptance", *common], "resolve-ui-packages", timeout=1800)
     receipt["dependency_resolution"] = record_resolution(
-        app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"], "ui")
+        app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"], "ui",
+        activation_arguments=activation_arguments)
     command(["xcodebuild", "build-for-testing", "-workspace", "PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace",
-             "-scheme", "PinkhaStage1Acceptance", *common, "-disableAutomaticPackageResolution", *ACTIVATION_ARGUMENTS,
+             "-scheme", "PinkhaStage1Acceptance", *common, "-disableAutomaticPackageResolution", *activation_arguments,
              "-only-testing:PinkhaStage1AcceptanceUITests/MiniAppsNativeAcceptanceUITests", *flags], "build-ui")
     receipt.update(ui_build_succeeded=True, status="NATIVE_AND_UI_BUILD_PASS_VALIDATION_PENDING")
     save("UI_BUILD_COMPLETE_POSTBUILD_VALIDATION_PENDING")
@@ -193,7 +256,8 @@ def build_consumer(args, receipt):
     receipt["complete_early_products"] = export_built_products(derived / "Build/Products",
         [native_configuration, ui_configuration], evidence / "miniapps-complete-early-products", receipt)
     save("COMPLETE_PRODUCTS_EXPORTED")
-    verify_recorded_resolution(app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"])
+    verify_recorded_resolution(app, evidence, derived, context.head, receipt["run_id"], receipt["run_attempt"],
+                               activation_arguments=[] if context.local else None)
     receipt["final_entitlement_admission"] = verify_built_entitlements(
         app, built, app_executable, owner, evidence, "built-final")
     receipt["standalone_runtime_boundary"] = inspect_runtime_boundary(app, built, evidence)
@@ -248,7 +312,8 @@ def execute(args, receipt):
     require(build["status"] == "BUILD_PASS_TESTS_NOT_RUN", "The consumer must have actually compiled before producer waiting")
     for key in ("source_sha", "run_id", "run_attempt", "requested_lane", "effective_lane", "source_profile_sha256",
                 "selected_methods", "configuration", "owner_signing", "producer_pin", "device", "heart", "native_binding",
-                "dependency_resolution", "original_preflight", "original_preflight_sha256"):
+                "dependency_resolution", "original_preflight", "original_preflight_sha256",
+                "execution_origin", "local_execution", "local_execution_sha256"):
         require(build[key] == receipt[key], "Prepared consumer build identity differs: " + key)
     native_configuration = test_configuration(context.derived / "Build/Products", "AnytypeTests")
     ui_configuration = test_configuration(context.derived / "Build/Products", "PinkhaStage1AcceptanceUITests")
@@ -276,8 +341,7 @@ def execute(args, receipt):
         print(json.dumps({"phase": phase, "source": head}), flush=True)
     def command(argv, name, timeout=5400):
         save(name)
-        with (evidence / (name + ".log")).open("w") as output:
-            result = subprocess.run(argv, cwd=app, stdout=output, stderr=subprocess.STDOUT, timeout=timeout)
+        result = run_logged(argv, app, evidence / (name + ".log"), timeout)
         require(result.returncode == 0, f"{name} returned {result.returncode}; see the original log")
     # Preserve the genuine build receipt even if the runtime is unavailable.
     # Readiness is still mandatory, with the original bound, before any install/test.
@@ -300,11 +364,10 @@ def execute(args, receipt):
             write(evidence / "simulator-readiness-state.json",
                   dict(device=udid, diagnostic_error=str(diagnostic_error)))
     command(["xcrun", "simctl", "install", udid, str(companion)], "install-companion", timeout=120)
+    from local_execution import test_environment
     environment = dict(PINKHA_SIMULATOR_UI_DISPOSABLE="1", PINKHA_MINIAPPS_NATIVE_TESTING="1",
-                       GITHUB_SHA=head, GITHUB_RUN_ID=os.environ["GITHUB_RUN_ID"],
-                       GITHUB_RUN_ATTEMPT=os.environ["GITHUB_RUN_ATTEMPT"],
                        PINKHA_MINIAPPS_NATIVE_GROUP=owner["native_app_group"],
-                       PINKHA_MINIAPPS_SOURCE_BUNDLE=source_bundle)
+                       PINKHA_MINIAPPS_SOURCE_BUNDLE=source_bundle, **test_environment(receipt))
 
     def test(configuration, target, method, name, additions=None):
         env = {**environment, **(additions or {})}
@@ -342,7 +405,7 @@ def execute(args, receipt):
     test(native_configuration, "AnytypeTests", PREPARE, "prepare")
     fixture_path = data_container() / "Library/Application Support/miniapps-native-fixture.json"
     fixture = json.loads(fixture_path.read_text())
-    require(fixture["sourceSHA"] == head and fixture["runID"] == os.environ["GITHUB_RUN_ID"], "Prepared native fixture differs")
+    require(fixture["sourceSHA"] == head and fixture["runID"] == receipt["run_id"], "Prepared native fixture differs")
     write(evidence / "fixture.json", fixture)
     ui_env = dict(PINKHA_MINIAPPS_FIXTURE_JSON=json.dumps(fixture, ensure_ascii=False),
                   PINKHA_MINIAPPS_SOURCE_BUNDLE=source_bundle, PINKHA_MINIAPPS_SOURCE_SCHEME=source_scheme)
@@ -375,7 +438,7 @@ def execute(args, receipt):
     test(native_configuration, "AnytypeTests", ADAPTER, "native-adapter")
     adapter = json.loads((data_container() / "Library/Application Support/miniapps-native-adapter-readback.json").read_text())
     require(adapter["status"] == "NATIVE_MINIAPPS_ADAPTER_PASS" and adapter["sourceSHA"] == head
-            and adapter["runID"] == os.environ["GITHUB_RUN_ID"] and adapter["producerRoundTrips"] == 0
+            and adapter["runID"] == receipt["run_id"] and adapter["producerRoundTrips"] == 0
             and adapter["preservedOutputCount"] == 1 and adapter["nativeAttachmentCount"] == 1,
             "Native selected-text/file adapter receipt differs")
     for key in ("replacementPreservedBlockID", "replacementPreservedTree", "nativeMarksPreserved",
@@ -384,8 +447,24 @@ def execute(args, receipt):
                 "nestedTableReplacementPersisted", "expiredSelectionDidNotFallback"):
         require(adapter[key] is True, "Native adapter did not prove " + key)
     write(evidence / "native-adapter-readback.json", adapter)
+    if getattr(args, "include_file_workshop", False):
+        require(context.local, "The additional real-file lane requires its actual local identity")
+        import file_acceptance
+        staged = file_acceptance.stage(app, udid, source_bundle, evidence, receipt["run_id"])
+        file_environment = dict(ui_env,
+            PINKHA_MINIAPPS_SHARED_BRIDGE=staged["bridge"],
+            PINKHA_MINIAPPS_FILE_ARCHIVE=staged["archive"],
+            PINKHA_MINIAPPS_FILE_ARCHIVE_SHA256=staged["archive_sha256"],
+            PINKHA_MINIAPPS_FILE_REPORT_NAME=staged["report_name"])
+        test(ui_configuration, "PinkhaStage1AcceptanceUITests",
+             file_acceptance.METHOD, "native-file-ui", file_environment)
+        file_proof = file_acceptance.verify(staged, data_container(), fixture, source_bundle, evidence)
+        receipt.update(additional_file_ui_methods=1, actual_file_companion_invocations=4,
+                       native_file_roundtrip_status=file_proof["status"],
+                       original_five_methods_passed=True)
     require(git(app, "rev-parse", "HEAD") == head, "Source changed during native acceptance")
-    verify_recorded_resolution(app, evidence, context.derived, head, receipt["run_id"], receipt["run_attempt"])
+    verify_recorded_resolution(app, evidence, context.derived, head, receipt["run_id"], receipt["run_attempt"],
+                               activation_arguments=[] if context.local else None)
     verify_sdk(app / "Dependencies/Hanlin")
     receipt.update(status="MINIAPPS_TWO_APP_NATIVE_PASS", phase="COMPLETE",
                    actual_native_preparation=1, actual_ui_methods=2, actual_native_readback=1, actual_native_adapter=1,

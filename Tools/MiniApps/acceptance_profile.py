@@ -16,8 +16,9 @@ UI_RETURN = "MiniAppsNativeAcceptanceUITests/testNativeEditorPickerTextStudioRet
 UI_REPLAY = "MiniAppsNativeAcceptanceUITests/testDuplicateCallbackDoesNotInsertAgain"
 METHODS = [PREPARE, UI_RETURN, UI_REPLAY, VERIFY, ADAPTER]
 
-def resolve_profile(app, requested_lane, branch):
-    if branch != BRANCH or requested_lane not in {"hanlin-selection", "miniapps-native"}:
+def resolve_profile(app, requested_lane, branch, *, local_execution=False):
+    branches = {BRANCH, "codex/anytype-miniapps-final-20261125"} if local_execution else {BRANCH}
+    if branch not in branches or requested_lane not in {"hanlin-selection", "miniapps-native"}:
         return None
     relative = "Tools/MiniApps/native-profile.json"
     raw = (Path(app) / relative).read_bytes()
