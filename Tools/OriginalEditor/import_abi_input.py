@@ -37,6 +37,9 @@ def verify(root, path, digest, source):
             and re.fullmatch(r'[0-9a-f]{64}', digest or '') and sha(path) == digest,
             'Exact owned Import ABI receipt is required')
     value = json.loads(path.read_bytes())
+    if value.get('schema') == 'otzaria.original-import-donor-sdk-input/1':
+        from donor_abi_input import verify as verify_donor
+        return verify_donor(root, path, digest, source, value)
     require(value.get('schema') in ('otzaria.original-import-local-sdk-input/1',
                                    'otzaria.original-import-local-sdk-input/2')
             and value.get('status') == 'PASS' and value.get('producer_kind') == 'local-mac'

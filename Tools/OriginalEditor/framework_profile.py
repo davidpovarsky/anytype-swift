@@ -262,7 +262,7 @@ def source_observation(root, environment=None):
     continuation = verify_complete_source(profile, complete)
     require(source_files == continuation['source_files'], 'Complete reviewed original source membership differs')
     require(git(root, 'rev-parse', 'HEAD:OriginalEditorFramework')
-            == continuation['reviewed_product_trees']['OriginalEditorFramework'],
+            == generated_source['composed_product_trees']['OriginalEditorFramework'],
             'Complete reviewed facade source bytes differ')
     main_files = [p for p in source_files if re.search(r'(?m)^\s*@main\b', (root / p).read_text())]
     require(main_files == ['Anytype/Sources/ApplicationLayer/AppScene.swift'], 'Unexpected application entrypoints')
