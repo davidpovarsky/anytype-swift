@@ -1,0 +1,90 @@
+{
+  "binarySHA256": "7f9124991e206657f21a9788b58f65de3ec57e019f425772dd4be6b677f803df",
+  "cloud_custody_accepted": false,
+  "coldSyncStatus": {
+    "globalPeers": 0,
+    "localPeers": 0,
+    "networkPeers": 0,
+    "p2p": "notpossible",
+    "state": "offline"
+  },
+  "initializationExitCode": 0,
+  "initializationGroupPositivelyAbsent": true,
+  "initializationPID": 47962,
+  "minimumFreeBytes": 178818998272,
+  "network": "original shipped production nodeconf",
+  "nodeconfSHA256": "6554bc5841fbef2a1ee6ab65ac3b14a9117dbb762d8cc8d419633c8cd413b060",
+  "offlinePolicy": {
+    "baselineListenerReachable": true,
+    "controls": {
+      "tcpDenied": true,
+      "tcpErrno": 1,
+      "udpDenied": true,
+      "udpErrno": 1
+    },
+    "sha256": "e210de323e5d671bb6b63b79ce1481f8314b5ac2fd65d65a180d381294ee2fa1"
+  },
+  "phases": [
+    {
+      "received": "execute-complete",
+      "seconds": 121.308
+    },
+    {
+      "received": "finish",
+      "seconds": 207.076
+    }
+  ],
+  "processes": [
+    {
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "name": "initial-native",
+      "offline": false,
+      "pid": 47966
+    },
+    {
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "name": "cold-offline-native",
+      "offline": true,
+      "pid": 48749
+    }
+  ],
+  "protocol": "pinkha-native-type-order-process-v1",
+  "resourcePolicy": {
+    "emergencyFreeBytes": 2147483648,
+    "estimatedNewBytes": 268435456,
+    "reason": "Reused exact 80.9MB CLI; one fresh generated account, one Space, six prepared type/editor operations, no file payloads or compilation/dependency download. Budget 256MiB for private native stores and logs."
+  },
+  "result": "PROCESS_LIFECYCLE_PASS",
+  "scope": "three original type ranks, six prepared native operations and a new cold-offline process",
+  "seconds": 207.4,
+  "sourceManifestSHA256": "d33fa2fb166aef89af0047ac23acf5c12fa108baec49566542cccd942a28f460",
+  "sourcesAfter": [
+    {
+      "commit": "548f5cd0430a723bd26ea724daeb99991f68b9c9",
+      "files": 874,
+      "unchanged": true
+    },
+    {
+      "commit": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953",
+      "files": 709,
+      "unchanged": true
+    }
+  ],
+  "sourcesBefore": [
+    {
+      "commit": "548f5cd0430a723bd26ea724daeb99991f68b9c9",
+      "files": 874,
+      "unchanged": true
+    },
+    {
+      "commit": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953",
+      "files": 709,
+      "unchanged": true
+    }
+  ],
+  "whole_space_migration_accepted": false
+}
