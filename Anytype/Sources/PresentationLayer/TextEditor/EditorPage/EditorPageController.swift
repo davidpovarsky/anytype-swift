@@ -327,7 +327,14 @@ final class EditorPageController: UIViewController {
     }
 
     override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
-        view.endEditing(true)
+        // UIKit also presents an expanded edit menu through this controller.
+        // Ending editing during that handoff resigns its source input before
+        // the selected action can run. Preserve only this editor's live menu;
+        // ordinary app presentations keep the existing keyboard behavior.
+        let input = firstResponderView as? TextViewWithPlaceholder
+        if input?.ownsActiveEditMenu(in: view) != true {
+            view.endEditing(true)
+        }
 
         super.present(viewControllerToPresent, animated: flag, completion: completion)
     }

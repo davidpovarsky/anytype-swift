@@ -143,6 +143,13 @@ final class TextViewWithPlaceholder: UITextView {
         reloadGestures()
     }
 
+    /// The presentation must belong to the currently focused input in this
+    /// editor. Detached/reused inputs and a completed menu cannot retain focus.
+    func ownsActiveEditMenu(in container: UIView) -> Bool {
+        editMenuLifetime != nil && isFirstResponder && window != nil
+            && window === container.window && isDescendant(of: container)
+    }
+
     func editMenuWillPresent() {
         editMenuLifetime = UUID()
 #if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
