@@ -74,3 +74,34 @@ never native compiler, simulator, device or product acceptance.
 Run only after the previous owner releases the shared Mac build slot. The
 controller starts no external coding agents and never reruns the accepted
 Native66, generated protobuf or original ABI compilation.
+
+## Ownership timeout continuation (2026-11-25)
+
+`resume_release_ownership.py` resumes only a drained timeout at the final
+ownership phase after the original actual framework, consumer, API and EN/HE
+resource gates passed. The exact previous terminal receipt is hash-pinned.
+Historical failure/evidence, source, ABI, Debug qualification, consumer,
+quarantined producer path and dependency Git alternates remain unchanged.
+A separate continuation UUID/controller identifies the new ownership check;
+the original build UUID/controller remain the actual compiler provenance.
+Only a completed unchanged ownership decision permits final packaging.
+
+The 154 MB Release ProtobufMessages image has
+`NLIST_OUTOFSYNC_WITH_DYLDINFO`; the exact `nm -gjU` was observed to time out at
+60 seconds and again at 600 seconds. A native stack sample locates its work
+in `addDyldSymbolsFromMachO`. Merely extending the deadline is insufficient.
+For this named image, the verifier now unions **all** externally defined nlist
+symbols from `nm -gjU --no-dyldinfo` with **all** exports from Apple's
+`dyld_info -exports`. Weak and per-thread definitions are retained. Unknown
+formats or re-export closures fail closed. No dyld export is omitted and the
+existing single-provider assertions/source/dependency checks are unchanged.
+
+LLVM documents default nm behavior as adding dyld symbols absent from the
+symbol table: https://www.llvm.org/docs/CommandGuide/llvm-nm.html . Its
+21.1.0 implementation illustrates linear reconciliation per export:
+https://github.com/llvm/llvm-project/blob/llvmorg-21.1.0/llvm/tools/llvm-nm/llvm-nm.cpp .
+The installed Apple tool's exact behavior is qualified from actual binaries,
+not inferred solely from upstream source. `verify_release_symbols_parity.py`
+compares the complete union against preserved successful default-nm output
+for the Debug Protobuf and three Release dependency/editor images. Synthetic
+parser/admission tests remain control tests, separate from this native proof.

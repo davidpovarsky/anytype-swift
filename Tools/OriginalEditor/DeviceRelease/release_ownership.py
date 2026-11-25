@@ -8,6 +8,7 @@ from framework_profile import source_observation, sha256
 from pbx_source import require
 from release_contract import write
 from release_process import command
+from release_symbols import complete_definitions
 from verify_framework_ownership import (RUNTIME, EDITOR, HOST_PRODUCTS, verify_definitions,
     dependency_source_inventory)
 
@@ -23,7 +24,7 @@ def verify_ownership(root, evidence, work, qualification, source, before, platfo
     for identity, expected in contract['dependencies'].items():
         require(pins.get(identity) == {'revision': expected['revision'], 'version': expected['version']},
                 'Shared runtime source differs from Host dependency contract: ' + identity)
-    binaries, symbols = {}, {}
+    binaries, symbols, extractions = {}, {}, {}
     for framework in sorted((distribution / 'Frameworks').glob('*.framework')):
         info = plistlib.loads((framework / 'Info.plist').read_bytes())
         name = info['CFBundleExecutable']
@@ -35,9 +36,14 @@ def verify_ownership(root, evidence, work, qualification, source, before, platfo
             continue
         require(name not in binaries and binary.is_file() and not binary.is_symlink(), 'Aliased or duplicate framework')
         binaries[name] = {'path': str(binary.relative_to(distribution)), 'sha256': sha256(binary)}
-        raw = command(['xcrun', 'nm', '-gjU', str(binary)], root, evidence,
-                      'shared-provider-definitions-' + name, 600)
-        symbols[name] = set(raw.splitlines())
+        if name == 'ProtobufMessages' and 'NLIST_OUTOFSYNC_WITH_DYLDINFO' in header:
+            require('NO_REEXPORTED_DYLIBS' in header, 'Unreviewed Protobuf re-export closure')
+            symbols[name], extractions[name] = complete_definitions(
+                binary, root, evidence, 'shared-provider-definitions-' + name)
+        else:
+            raw = command(['xcrun', 'nm', '-gjU', str(binary)], root, evidence,
+                          'shared-provider-definitions-' + name, 600)
+            symbols[name] = set(raw.splitlines())
     consumer = work / ('consumer-derived/Build/Products/Release-' + platform_name + '/OriginalEditorConsumer.app')
     require(consumer.is_dir(), 'Actual independently built original consumer is missing')
     info = plistlib.loads((consumer / 'Info.plist').read_bytes())
@@ -76,7 +82,8 @@ def verify_ownership(root, evidence, work, qualification, source, before, platfo
         original_qualification_sha256=hashlib.sha256(original_bytes).hexdigest(),
         dependency_contract_sha256=sha256(contract_path), original_package_lock_sha256=sha256(lock_path),
         root_dependency_revisions={k: pins[k] for k in contract['dependencies']},
-        binary_identity=binaries, shared_host_products=HOST_PRODUCTS, shared_module_declarations=modules,
+        binary_identity=binaries, complete_symbol_extractions=extractions,
+        shared_host_products=HOST_PRODUCTS, shared_module_declarations=modules,
         definition_count=definitions['selected_definition_count'],
         selected_definitions_sha256=sha256(evidence / 'shared-provider-selected-definitions.json'),
         host_module_definition_counts=definitions['host_module_definition_counts'],

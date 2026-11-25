@@ -205,6 +205,12 @@ def main():
             preserved_original_distribution=True, owned_groups_drained=True)
     except BaseException as error:
         outcome.update(error_type=type(error).__name__, error=str(error))
+        receipt.update(status='FAIL', error_type=type(error).__name__, error=str(error))
+        write(evidence / 'execution.json', receipt)
+        # Packaging is part of acceptance: an incomplete archive cannot leave
+        # a successful qualification for a later Host to consume.
+        if (exported / 'QUALIFICATION.json').exists():
+            write(exported / 'QUALIFICATION.json', receipt)
         raise
     finally:
         outcome['finished_at'] = timestamp()
