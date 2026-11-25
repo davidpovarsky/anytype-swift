@@ -16,8 +16,8 @@ import time
 import uuid
 import zipfile
 
-MANIFEST_SHA = "24a2cd5c557c6309e8db8a738e9e7bc72fdfccad340c9128f9b8cba082345599"
-ARCHIVE_SHA = "3474e39ab3f0990293148a73ab7f0721094a7fb8027397bf2ce40d560da43471"
+MANIFEST_SHA = "26d53623e1344fc07711229b3a72fc5e3adc38b5b7682461d16072e20a80c264"
+ARCHIVE_SHA = "bf3c6bd86e6abd78e05fde81411ec5919bad402330206d482a6aa7468be62826"
 GO_ROOT = Path("/Users/m1/toolchains/anytapy-go1.27.4/go")
 
 def require(value, why):
@@ -138,8 +138,17 @@ def main():
             receipt[sdk] = run(["xcrun", "--sdk", sdk, "--show-sdk-version"], sdk + "-version", timeout=30).read_text().strip()
         tools = root / "tools"
         tools.mkdir(mode=0o700)
+        (root / "tmp").mkdir(mode=0o700)
+        shutil.copyfile(Path(__file__).with_name("runtime_go.py"), tools / "go")
+        (tools / "go").chmod(0o755)
+        receipt["generatedModuleLauncherSHA256"] = digest(tools / "go")
         environment = {**os.environ, "GOROOT": str(GO_ROOT), "GOTOOLCHAIN": "local",
                        "GOWORK": str(source / "go.work"), "GOBIN": str(tools),
+                       "TMPDIR": str(root / "tmp"), "GOTMPDIR": str(root / "tmp"),
+                       "PINKHA_DUAL_REAL_GO": str(GO_ROOT / "bin/go"),
+                       "PINKHA_DUAL_SOURCE": str(source), "PINKHA_DUAL_BUILD": str(root),
+                       "PINKHA_DUAL_MANIFEST": MANIFEST_SHA,
+                       "PINKHA_DUAL_GRAPH": str(evidence / "module-graph.log"),
                        "GOPATH": str(root / "go-state"), "GOCACHE": "/Users/m1/caches/anytapy-go1.27.4-build",
                        "GOMODCACHE": "/Users/m1/caches/anytapy-go-mod", "GOFLAGS": "-mod=readonly -p=4",
                        "GOMAXPROCS": "4", "GOMEMLIMIT": "6GiB", "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
