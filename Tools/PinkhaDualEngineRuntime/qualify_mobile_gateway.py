@@ -18,6 +18,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--controller-sha", required=True)
+    parser.add_argument("--resume-disk-stop", action="store_true")
     args = parser.parse_args()
     root = args.root
     apple.require(platform.system() == "Darwin" and platform.machine() == "arm64",
@@ -33,7 +34,38 @@ def main():
     apple.require(apple.digest(manifest_path) == apple.MANIFEST_SHA,
                   "exact_gateway_source_manifest_required")
     manifest = json.loads(manifest_path.read_text())
-    evidence = root / "evidence"
+    prior = None
+    if args.resume_disk_stop:
+        original_receipt = root / "evidence/receipt.json"
+        prior = json.loads(original_receipt.read_text())
+        commands = prior["commands"]
+        apple.require(prior["status"] == "FAIL"
+                      and prior["sourceManifestSHA256"] == apple.MANIFEST_SHA
+                      and [x["name"] for x in commands] ==
+                          ["go-version", "module-graph", "mobile-gateway-build"]
+                      and all(x["exitCode"] == 0 for x in commands[:-1])
+                      and commands[-1]["exitCode"] == -signal.SIGTERM
+                      and commands[-1]["stopReason"] == "time_or_disk_limit"
+                      and commands[-1]["minimumFreeBytes"] < apple.EMERGENCY_FREE_BYTES
+                      and commands[-1]["elapsedSeconds"] < commands[-1]["timeoutSeconds"],
+                      "only_original_gateway_compilation_disk_stop_may_resume")
+        for item in commands:
+            apple.require(apple.digest(root / "evidence" / (item["name"] + ".log")) == item["logSHA256"],
+                          "original_gateway_failure_evidence_changed")
+            try:
+                os.killpg(item["pgid"], 0)
+            except ProcessLookupError:
+                pass
+            else:
+                apple.require(False, "original_gateway_group_still_exists")
+        apple.require(not (root / "mobile-gateway.test").exists()
+                      and not (root / "mobile-gateway-receipt.json").exists()
+                      and not (root / "qualified-gateway.json").exists()
+                      and (root / "tmp").resolve() == root / "tmp"
+                      and not any((root / "tmp").iterdir()),
+                      "original_gateway_never_executed_and_private_tmp_retired_required")
+        apple.check_source(root / "source", manifest)
+    evidence = root / ("evidence-resume-1" if prior else "evidence")
     evidence.mkdir(mode=0o700)
     receipt = {"status": "FAIL", "executionKind": "local-mac",
                "executionUUID": str(uuid.uuid4()), "controllerCommit": args.controller_sha,
@@ -41,13 +73,15 @@ def main():
                "sourceManifestSHA256": apple.MANIFEST_SHA, "sourceArchiveSHA256": apple.ARCHIVE_SHA,
                "sourcePins": manifest["sourcePins"], "tags": manifest["tags"], "commands": [],
                "appleBuilds": 0, "appleTestsExecuted": 0,
-               "applicationAcceptanceClaimed": False, "testsExecuted": None}
+               "applicationAcceptanceClaimed": False, "testsExecuted": 0}
     def run(argv, name, cwd=root, environment=None, timeout=900):
         log = evidence / (name + ".log")
         apple.require(not log.exists(), "command_replay_forbidden")
         item = {"name": name, "argv": [str(x) for x in argv], "cwd": str(cwd),
                 "started": time.time(), "timeoutSeconds": timeout, "status": "FAIL"}
         receipt["commands"].append(item)
+        if name == "mobile-gateway-original-json":
+            receipt["testsExecuted"] = None
         with log.open("xb") as stream:
             os.chmod(log, 0o600)
             process = subprocess.Popen(argv, cwd=cwd, env=environment, stdout=stream,
@@ -86,6 +120,15 @@ def main():
                       "incrementalCacheAllowanceBytes": 2 * native_bytes,
                       "compilerTemporaryAllowanceBytes": 2 * native_bytes,
                       "workspaceEvidenceAllowanceBytes": 16 * 1024**2}
+        if prior:
+            observed_global_drop = prior["freeBytesBefore"] - prior["commands"][-1]["minimumFreeBytes"]
+            apple.require(observed_global_drop > 0, "original_resource_drop_required")
+            components = {"reusedSourceBytes": 0,
+                          "previousObservedGlobalPeakDropAllowanceBytes": observed_global_drop,
+                          "remainingHostLinkOutputAllowanceBytes": native_bytes}
+            receipt["originalDiskStopReceiptSHA256"] = apple.digest(root / "evidence/receipt.json")
+            receipt["resourceEstimateLimitation"] = (
+                "The prior global peak drop includes concurrent host activity; it is not attributed entirely to this job.")
         receipt["phaseSpaceEstimate"] = {
             "phase": "original-mobile-gateway-host-components", "components": components,
             "referencePath": str(reference), "referenceBytes": native_bytes,
@@ -97,15 +140,25 @@ def main():
         apple.require(receipt["freeBytesBefore"] > sum(components.values()) + apple.EMERGENCY_FREE_BYTES,
                       "measured_gateway_phase_space_unavailable")
         source = root / "source"
-        apple.extract(root / "native-source.tar.gz", source, manifest)
+        if prior:
+            apple.require(apple.digest(root / "native-source.tar.gz") == apple.ARCHIVE_SHA,
+                          "original_gateway_source_archive_changed")
+        else:
+            apple.extract(root / "native-source.tar.gz", source, manifest)
         workspace = root / "workspace"
-        workspace.mkdir(mode=0o700)
-        (root / "tmp").mkdir(mode=0o700)
+        if not prior:
+            workspace.mkdir(mode=0o700)
+            (root / "tmp").mkdir(mode=0o700)
         native_roots = [source / name for name in
                         ("sync", "heart", "any", "any/.runtime-artifacts/sdk-source")]
-        (workspace / "go.work").write_text(
-            "go 1.27.4\n\nuse (\n" + "".join("\t" + str(p) + "\n" for p in native_roots) + ")\n")
-        shutil.copyfile(source / "go.work.sum", workspace / "go.work.sum")
+        expected_workspace = "go 1.27.4\n\nuse (\n" + "".join("\t" + str(p) + "\n" for p in native_roots) + ")\n"
+        if prior:
+            apple.require((workspace / "go.work").read_text() == expected_workspace
+                          and apple.digest(workspace / "go.work") == prior["effectiveWorkspaceSHA256"],
+                          "original_gateway_workspace_changed")
+        else:
+            (workspace / "go.work").write_text(expected_workspace)
+            shutil.copyfile(source / "go.work.sum", workspace / "go.work.sum")
         receipt["effectiveWorkspaceSHA256"] = apple.digest(workspace / "go.work")
         environment = {**os.environ, "GOROOT": str(apple.GO_ROOT), "GOTOOLCHAIN": "local",
                        "CGO_ENABLED": "1", "GOWORK": str(workspace / "go.work"),
@@ -123,7 +176,7 @@ def main():
         graph = run([go, "list", "-m", "-json", "all"], "module-graph", source, environment, 180)
         receipt["actualModuleGraphSHA256"] = apple.digest(graph)
         receipt["mobileGatewayQualification"] = native_gateway.qualify(
-            root, source, manifest, apple.MANIFEST_SHA, "simulator", run, environment, go)
+            root, source, manifest, apple.MANIFEST_SHA, "simulator", run, environment, go, reuse_fixture=prior is not None)
         apple.check_source(source, manifest)
         receipt.update(status=STATUS, testsExecuted=3, skippedTests=0,
                        sourceFilesVerified=len(manifest["files"]), sourceUnchanged=True,
@@ -134,6 +187,11 @@ def main():
     finally:
         receipt["freeBytesAfter"] = shutil.disk_usage("/System/Volumes/Data").free
         apple.write(evidence / "receipt.json", receipt)
+        if receipt["status"] == STATUS:
+            apple.write(root / "qualified-gateway.json", {
+                "sourceManifestSHA256": apple.MANIFEST_SHA,
+                "originalReceipt": str((evidence / "receipt.json").relative_to(root)),
+                "originalReceiptSHA256": apple.digest(evidence / "receipt.json")})
         print(json.dumps({k: receipt.get(k) for k in
                           ("status", "sourceManifestSHA256", "testsExecuted", "failure")}))
 

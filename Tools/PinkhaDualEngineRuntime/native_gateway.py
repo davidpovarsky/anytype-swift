@@ -36,7 +36,7 @@ def write(path, value):
         output.write("\n")
 
 
-def qualify(root, source, manifest, manifest_sha, phase, run, environment, go):
+def qualify(root, source, manifest, manifest_sha, phase, run, environment, go, reuse_fixture=False):
     require("mobile" in manifest["tags"] and "gomobile" in manifest["tags"],
             "original_any_mobile_gateway_tag_required")
     if phase == "device":
@@ -61,16 +61,27 @@ def qualify(root, source, manifest, manifest_sha, phase, run, environment, go):
     require(phase == "simulator", "known_mobile_gateway_phase_required")
     fixture = root / "mobile-gateway-fixture"
     cwd = fixture / "internal/server"
-    require(not fixture.exists(), "fresh_private_mobile_gateway_fixture_required")
-    cwd.mkdir(mode=0o700, parents=True)
+    if reuse_fixture:
+        require(fixture.resolve() == fixture and cwd.resolve() == cwd and cwd.is_dir(),
+                "original_private_gateway_fixture_required")
+        require({str(p.relative_to(fixture)) for p in fixture.rglob("*")
+                 if p.is_file() or p.is_symlink()} == {"staging.yml"},
+                "unexecuted_gateway_fixture_inventory_changed")
+    else:
+        require(not fixture.exists(), "fresh_private_mobile_gateway_fixture_required")
+        cwd.mkdir(mode=0o700, parents=True)
     fixture_source = source / "any/internal/pinkha/migrationnative/testdata/local.yml"
     expected = manifest["files"][str(fixture_source.relative_to(source))]
     require(fixture_source.is_file() and fixture_source.resolve() == fixture_source
             and digest(fixture_source) == expected["sha256"]
             and fixture_source.stat().st_size == expected["bytes"],
             "original_local_native_fixture_changed")
-    shutil.copyfile(fixture_source, fixture / "staging.yml")
-    (fixture / "staging.yml").chmod(0o600)
+    if reuse_fixture:
+        require(digest(fixture / "staging.yml") == expected["sha256"],
+                "original_gateway_fixture_bytes_changed")
+    else:
+        shutil.copyfile(fixture_source, fixture / "staging.yml")
+        (fixture / "staging.yml").chmod(0o600)
     binary = root / "mobile-gateway.test"
     require(not binary.exists(), "refuse_existing_gateway_test_binary")
     selection = "^(" + "|".join(sorted(CASES)) + ")$"
@@ -94,6 +105,7 @@ def qualify(root, source, manifest, manifest_sha, phase, run, environment, go):
               "tags": manifest["tags"], "cases": cases, "testsExecuted": 3,
               "skippedTests": 0, "testBinarySHA256": digest(binary),
               "originalLogSHA256": digest(original),
+              "originalLogPath": str(original.relative_to(root)),
               "localNativeFixture": str(fixture_source.relative_to(source)),
               "localNativeFixtureSHA256": digest(fixture / "staging.yml"),
               "sourceFilesModified": False, "applicationAcceptanceClaimed": False}
@@ -108,7 +120,16 @@ def reuse_standalone(proof_root, source, manifest, manifest_sha, current_graph):
             and proof_root.parent == Path("/Users/m1/builds")
             and proof_root.name == "pinkha-dual-native-v1-" + manifest_sha[:12] + "-gateway",
             "exact_owned_gateway_proof_root_required")
-    receipt_path = proof_root / "evidence/receipt.json"
+    pointer = json.loads((proof_root / "qualified-gateway.json").read_text())
+    relative = Path(pointer["originalReceipt"])
+    require(pointer["sourceManifestSHA256"] == manifest_sha
+            and relative.parts in (("evidence", "receipt.json"), ("evidence-resume-1", "receipt.json")),
+            "qualified_original_gateway_receipt_path_required")
+    receipt_path = proof_root / relative
+    require(receipt_path.resolve() == receipt_path
+            and digest(receipt_path) == pointer["originalReceiptSHA256"],
+            "qualified_original_gateway_receipt_changed")
+    evidence = receipt_path.parent
     outer = json.loads(receipt_path.read_text())
     require(outer["status"] == "PASS_STANDALONE_ORIGINAL_GATEWAY_COMPONENTS_ONLY"
             and outer["sourceManifestSHA256"] == manifest_sha
@@ -124,7 +145,7 @@ def reuse_standalone(proof_root, source, manifest, manifest_sha, current_graph):
             and all(x["exitCode"] == 0 for x in outer["commands"]),
             "complete_original_gateway_commands_required")
     for item in outer["commands"]:
-        log = proof_root / "evidence" / (item["name"] + ".log")
+        log = evidence / (item["name"] + ".log")
         require(log.resolve() == log and log.is_file()
                 and digest(log) == item["logSHA256"], "gateway_original_command_changed")
         try:
@@ -155,8 +176,9 @@ def reuse_standalone(proof_root, source, manifest, manifest_sha, current_graph):
             and proof["testsExecuted"] == 3 and proof["skippedTests"] == 0
             and digest(proof_root / "mobile-gateway.test") == proof["testBinarySHA256"],
             "original_gateway_execution_changed")
-    log = proof_root / "evidence/mobile-gateway-original-json.log"
-    require(digest(log) == proof["originalLogSHA256"], "original_gateway_log_changed")
+    log = evidence / "mobile-gateway-original-json.log"
+    require(proof["originalLogPath"] == str(log.relative_to(proof_root))
+            and digest(log) == proof["originalLogSHA256"], "original_gateway_log_changed")
     events = [json.loads(line) for line in log.read_text().splitlines() if line.strip()]
     cases = {x["Test"]: x["Action"] for x in events
              if "Test" in x and x.get("Action") in ("pass", "fail", "skip")}
@@ -183,7 +205,7 @@ def reuse_standalone(proof_root, source, manifest, manifest_sha, current_graph):
             raw = raw.lstrip()[end:]
         require(len(rows) == 760, "complete_original_module_graph_required")
         return rows
-    original_graph = proof_root / "evidence/module-graph.log"
+    original_graph = evidence / "module-graph.log"
     require(digest(original_graph) == outer["actualModuleGraphSHA256"],
             "gateway_original_module_graph_changed")
     before = normalized_graph(original_graph, original_source)
