@@ -356,6 +356,16 @@ def admit_current_menu_runner(source, main_record, ui_build, ui_record):
     return expected
 
 
+def bin_confirmation_module():
+    path = Path(__file__).resolve().with_name("bin_confirmation_preparation.py")
+    require(digest(path) == "69ba49f600e6a8e24127907604503d694de283c0f30a5c1e61b9f9a238795d0f", "exact_Bin_confirmation_source_validator_required")
+    sys.dont_write_bytecode = True
+    spec = importlib.util.spec_from_file_location("qualified_bin_confirmation", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def admit_410b_runner(source, main_record, ui_build, ui_record):
     expected = {'sourceCommit': 'e540cd7e01b497f1b3173ae2e68b43ade0b00b6f', 'originalSHA256': '6fbcd0173351597af99dd6d79e7869ac72077c0b9ad2ff464d9c02e60d096d02', 'compiledSHA256': '6fbcd0173351597af99dd6d79e7869ac72077c0b9ad2ff464d9c02e60d096d02', 'miniAppsMethodSectionSHA256': 'cef7734232b8f12ff432a97b435a5c6e0801d2cd77a30ce097e83f5e1cf40a63', 'sourceAlreadyIntegrated': True, 'allOriginalMethodAssertionsUnchanged': True, 'testStorageOverrides': False, 'actualCompanionRequired': True, 'ordinaryAccountSelectionAfterColdCallback': True, 'binPreparation': 'real-accessible-native-row-menu', 'nativeSourceManifestSHA256': '410b441e5726b4a2ff7b259e296ad2ba819a5751cd46732945f62259ace42cc9'}
     require(main_record["sourceCommit"] == expected["sourceCommit"]
@@ -535,8 +545,14 @@ def main():
             receipt["currentMiniAppsMenuFixture"] = admit_current_menu_runner(source, main_record, args.ui_build, ui_record)
         if ui_record.get("current410bFixture") is not None:
             receipt["current410bFixture"] = admit_410b_runner(source, main_record, args.ui_build, ui_record)
+        if ui_record.get("current410bBinConfirmationFixture") is not None:
+            require(args.stage == "bin" and ui_record.get("current410bFixture") is None,
+                    "Bin_confirmation_derivative_has_one_explicit_original_stage")
+            receipt["current410bBinConfirmationFixture"] = bin_confirmation_module().admit(
+                source, main_record, args.ui_build, ui_record)
         require(main_record["sourceCommit"] != "e540cd7e01b497f1b3173ae2e68b43ade0b00b6f"
-                or receipt.get("current410bFixture") is not None,
+                or receipt.get("current410bFixture") is not None
+                or receipt.get("current410bBinConfirmationFixture") is not None,
                 "current410b_fixture_binding_cannot_be_omitted")
         if args.stage == "archive-picker-observe":
             require(main_record["sourceCommit"] == "5ffff121e696044b0d1955524b7a69baf453b4b1",
