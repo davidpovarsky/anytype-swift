@@ -433,6 +433,21 @@ def execute(args, receipt):
                 "nestedTableReplacementPersisted", "expiredSelectionDidNotFallback"):
         require(adapter[key] is True, "Native adapter did not prove " + key)
     write(evidence / "native-adapter-readback.json", adapter)
+    if getattr(args, "include_file_workshop", False):
+        require(context.local, "The additional real-file lane requires its actual local identity")
+        import file_acceptance
+        staged = file_acceptance.stage(app, udid, source_bundle, evidence, receipt["run_id"])
+        file_environment = dict(ui_env,
+            PINKHA_MINIAPPS_SHARED_BRIDGE=staged["bridge"],
+            PINKHA_MINIAPPS_FILE_ARCHIVE=staged["archive"],
+            PINKHA_MINIAPPS_FILE_ARCHIVE_SHA256=staged["archive_sha256"],
+            PINKHA_MINIAPPS_FILE_REPORT_NAME=staged["report_name"])
+        test(ui_configuration, "PinkhaStage1AcceptanceUITests",
+             file_acceptance.METHOD, "native-file-ui", file_environment)
+        file_proof = file_acceptance.verify(staged, data_container(), fixture, source_bundle, evidence)
+        receipt.update(additional_file_ui_methods=1, actual_file_companion_invocations=4,
+                       native_file_roundtrip_status=file_proof["status"],
+                       original_five_methods_passed=True)
     require(git(app, "rev-parse", "HEAD") == head, "Source changed during native acceptance")
     verify_recorded_resolution(app, evidence, context.derived, head, receipt["run_id"], receipt["run_attempt"],
                                activation_arguments=[] if context.local else None)

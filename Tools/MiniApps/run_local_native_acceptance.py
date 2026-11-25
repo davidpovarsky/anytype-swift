@@ -64,6 +64,7 @@ def main():
     parser.add_argument("--phase", choices=("all", "build", "test", "cleanup"), default="all")
     parser.add_argument("--execution-sha256")
     parser.add_argument("--retain-simulators", action="store_true")
+    parser.add_argument("--include-file-workshop", action="store_true")
     args = parser.parse_args()
     args.app, args.evidence, args.derived = map(Path.resolve, (args.app, args.evidence, args.derived))
     original.require(args.app == PRIVATE_ROOT / "source"
@@ -121,7 +122,8 @@ def main():
         original.execute(args, receipt)
         original.require(receipt["status"] == "MINIAPPS_TWO_APP_NATIVE_PASS",
                          "The original five application objectives did not pass")
-        receipt["actual_test_methods"] = 5
+        receipt["actual_original_methods"] = 5
+        receipt["actual_test_methods"] = 5 + receipt.get("additional_file_ui_methods", 0)
         return 0
     except BaseException as error:
         receipt.update(status="FAIL", error_type=type(error).__name__, error=str(error))

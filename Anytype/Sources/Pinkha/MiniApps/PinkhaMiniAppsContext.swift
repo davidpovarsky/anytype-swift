@@ -123,17 +123,16 @@ struct PinkhaMiniAppsContext {
         if let anchor = blocks.last(where: { selectedIDs.contains($0.id) })?.id ?? focusID ?? snapshots.last?.id {
             metadata["anytype.insertionAnchor"] = anchor
         }
-        let source = MiniAppSourceContext(appID: sourceAppID, displayName: "Anytype",
-            documentID: document.objectId, documentTitle: document.details?.title,
-            revision: revision, selection: textSelection, documentText: documentText,
-            kind: "editor", locator: document.objectId,
-            sceneID: editor.viewIfLoaded?.window?.windowScene?.session.persistentIdentifier,
-            metadata: metadata)
         var inputs: [MiniAppContent] = []
         // Empty input at a caret is intentional; full document context is separate.
         let text = textSelection?.text ?? ""
         inputs.append(.init(kind: .text, text: text, typeIdentifier: "public.plain-text"))
-        for info in blocks where selectedIDs.contains(info.id) {
+        // An explicit native/text selection retains its original scope. Only a
+        // genuinely unselected toolbar document exports its native file blocks.
+        let attachmentIDs = selectedIDs.isEmpty && textSelection == nil
+            ? Set(blocks.map(\.id)) : Set(selectedIDs)
+        var nativeFileMap: [String: String] = [:]
+        for info in blocks where attachmentIDs.contains(info.id) {
             switch info.content {
             case .file(let file):
                 let (local, response) = try await downloadNativeFile(file)
@@ -155,6 +154,10 @@ struct PinkhaMiniAppsContext {
                     try store.importAttachment(at: local, name: name, typeIdentifier: typeIdentifier)
                 }.value
                 try validateSource()
+                guard let attachmentID = attachment.attachmentID else {
+                    throw PinkhaMiniAppsError.attachmentUnavailable
+                }
+                nativeFileMap[attachmentID.uuidString.lowercased()] = info.id
                 inputs.append(attachment)
             case .bookmark(let bookmark):
                 if let url = bookmark.source?.url {
@@ -164,6 +167,16 @@ struct PinkhaMiniAppsContext {
             }
         }
         try validateSource()
+        if !nativeFileMap.isEmpty {
+            metadata["anytype.files.v1"] = String(decoding:
+                try JSONEncoder().encode(nativeFileMap), as: UTF8.self)
+        }
+        let source = MiniAppSourceContext(appID: sourceAppID, displayName: "Anytype",
+            documentID: document.objectId, documentTitle: document.details?.title,
+            revision: revision, selection: textSelection, documentText: documentText,
+            kind: "editor", locator: document.objectId,
+            sceneID: editor.viewIfLoaded?.window?.windowScene?.session.persistentIdentifier,
+            metadata: metadata)
         return .init(source: source, inputs: inputs)
     }
 
