@@ -17,9 +17,43 @@ import uuid
 import zipfile
 import native_dependencies
 
-MANIFEST_SHA = "3a8c9db276aa039b281c6fbcb10cd23f78fbaf38fef453874d0d9e128bf597c1"
-ARCHIVE_SHA = "465b0ff08519f88d1c35f2f9de23d29ed0fb376897f84ff8df92368dc7a2de13"
+MANIFEST_SHA = "70fb5342f2ff31d1cf5f7ce44bed7b16f6373f6bf95eb031d165339cf0f26683"
+ARCHIVE_SHA = "376edcd9e784ae0ff4127c891893d57adb1d42555fe3e75beb82b0b839f1f3f4"
 GO_ROOT = Path("/Users/m1/toolchains/anytapy-go1.27.4/go")
+EMERGENCY_FREE_BYTES = 2 * 1024**3
+
+def phase_space_estimate(root, manifest, phase):
+    """A bounded working estimate from original native archive sizes.
+
+    Cache/temp allowances are estimates, not claims about eventual disk use.
+    Every command samples actual free space and terminates its own process
+    group at the emergency floor. No other project's files are removed.
+    """
+    heart = Path("/Users/m1/builds/_retained-anytype/45456314424-1/build/"
+                 "current-apple-release-return-rtl-45456314424-1/work/"
+                 "heart-originals/verified-production/Lib.xcframework/"
+                 "ios-arm64-simulator/Lib.framework/Lib")
+    any_library = Path("/Users/m1/builds/anytapy-prepared-components-v2-3fb2ab37/"
+                       "any/any.xcframework") / ("ios-arm64-simulator" if phase == "simulator"
+                                               else "ios-arm64") / "anylib.a"
+    references = [heart, any_library]
+    for path in references:
+        require(path.is_file() and not path.is_symlink(), "original_native_size_reference_missing")
+    measured = [{"path": str(path), "bytes": path.stat().st_size,
+                 "sha256": digest(path)} for path in references]
+    native_bytes = sum(row["bytes"] for row in measured)
+    components = {
+        "sourceBytes": sum(item["bytes"] for item in manifest["files"].values()),
+        "dependencyExtractionCopiesAllowanceBytes": 6 * (root / "native-dependencies.tar.gz").stat().st_size,
+        "bindingToolsAllowanceBytes": 128 * 1024**2,
+        "incrementalGoCacheAllowanceBytes": 4 * native_bytes,
+        "compilerTemporaryAllowanceBytes": 4 * native_bytes,
+        "outputRepackZipAllowanceBytes": 3 * native_bytes,
+    }
+    return {"phase": phase, "originalArchiveMeasurements": measured,
+            "heartReferencePlatform": "simulator", "components": components,
+            "estimatedAdditionalBytes": sum(components.values()),
+            "emergencyFreeBytes": EMERGENCY_FREE_BYTES}
 
 def require(value, why):
     if not value:
@@ -78,12 +112,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--controller-sha", required=True)
+    parser.add_argument("--slice", choices=("simulator", "device"), required=True)
     args = parser.parse_args()
     root = args.root
     require(platform.system() == "Darwin" and platform.machine() == "arm64",
             "actual_apple_silicon_host_required")
     require(root.is_dir() and root.resolve() == root and root.parent == Path("/Users/m1/builds")
-            and root.name == "pinkha-dual-native-v1-" + MANIFEST_SHA[:12], "fixed_owned_build_root_required")
+            and root.name == "pinkha-dual-native-v1-" + MANIFEST_SHA[:12] + "-" + args.slice,
+            "fixed_owned_build_root_required")
     require(len(args.controller_sha) == 40 and all(c in "0123456789abcdef" for c in args.controller_sha),
             "controller_commit_required")
     manifest_path = Path(__file__).with_name("source-manifest.json")
@@ -97,7 +133,8 @@ def main():
                "sourcePins": manifest["sourcePins"], "heartCaptureBridgeCommit": manifest["heartCaptureBridgeCommit"],
                "heartPage154ManifestSHA256": manifest["heartPage154ManifestSHA256"],
                "appleTestsExecuted": 0, "nativeAcceptanceTestsExecuted": 0,
-               "applicationBuilds": 0, "independentGoRuntimeCount": 1, "commands": []}
+               "applicationBuilds": 0, "independentGoRuntimeCount": 1,
+               "slicePhase": args.slice, "commands": []}
     def run(argv, name, cwd=root, environment=None, timeout=3600):
         require(not (evidence / (name + ".log")).exists(), "command_replay_forbidden")
         item = {"name": name, "argv": [str(a) for a in argv], "cwd": str(cwd),
@@ -110,7 +147,9 @@ def main():
             write(evidence / (name + ".started.json"), item)
             deadline = time.monotonic() + timeout
             while process.poll() is None:
-                if time.monotonic() > deadline or shutil.disk_usage("/System/Volumes/Data").free < 2 * 1024**3:
+                free = shutil.disk_usage("/System/Volumes/Data").free
+                item["minimumFreeBytes"] = min(item.get("minimumFreeBytes", free), free)
+                if time.monotonic() > deadline or free < EMERGENCY_FREE_BYTES:
                     item["stopReason"] = "time_or_disk_limit"
                     os.killpg(process.pid, signal.SIGTERM)
                     try:
@@ -128,9 +167,10 @@ def main():
         return evidence / (name + ".log")
     try:
         receipt["freeBytesBefore"] = shutil.disk_usage("/System/Volumes/Data").free
-        # Current measured headroom and reusable Go caches make this bounded
-        # source/native phase fit; it does not allocate Xcode DerivedData.
-        require(receipt["freeBytesBefore"] > 8 * 1024**3, "native_phase_incremental_space_unavailable")
+        receipt["phaseSpaceEstimate"] = phase_space_estimate(root, manifest, args.slice)
+        write(evidence / "phase-space-estimate.json", receipt["phaseSpaceEstimate"])
+        require(receipt["freeBytesBefore"] > receipt["phaseSpaceEstimate"]["estimatedAdditionalBytes"]
+                + EMERGENCY_FREE_BYTES, "native_slice_estimated_space_unavailable")
         source = root / "source"
         extract(root / "native-source.tar.gz", source, manifest)
         receipt["sourceFilesVerified"] = len(manifest["files"])
@@ -162,8 +202,8 @@ def main():
                        "PINKHA_DUAL_MANIFEST": MANIFEST_SHA,
                        "PINKHA_DUAL_GRAPH": str(evidence / "module-graph.log"),
                        "GOPATH": str(root / "go-state"), "GOCACHE": "/Users/m1/caches/anytapy-go1.27.4-build",
-                       "GOMODCACHE": "/Users/m1/caches/anytapy-go-mod", "GOFLAGS": "-mod=readonly -p=4",
-                       "GOMAXPROCS": "4", "GOMEMLIMIT": "6GiB", "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+                       "GOMODCACHE": "/Users/m1/caches/anytapy-go-mod", "GOFLAGS": "-mod=readonly -p=2",
+                       "GOMAXPROCS": "2", "GOMEMLIMIT": "3GiB", "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
                        "PATH": str(tools) + ":" + str(GO_ROOT / "bin") + ":" + os.environ.get("PATH", "")}
         native_files, receipt["nativeDependencies"] = native_dependencies.prepare(root, source, run, environment)
         check_source(source, manifest, native_files)
@@ -181,26 +221,27 @@ def main():
         flags += " -X github.com/anyproto/any/internal/version.BuildDate=2026-11-25"
         output = root / "Lib.xcframework"
         run([tools / "gomobile", "bind", "-tags", " ".join(manifest["tags"]), "-ldflags", flags,
-             "-target=ios/arm64,iossimulator/arm64", "-iosversion=" + manifest["deploymentTarget"],
+             "-target=" + ("iossimulator/arm64" if args.slice == "simulator" else "ios/arm64"),
+             "-iosversion=" + manifest["deploymentTarget"],
              "-o", output, *manifest["packages"]], "combined-gomobile-bind", source, environment, 3600)
         check_source(source, manifest, native_files)
         info = plistlib.loads((output / "Info.plist").read_bytes())
         libraries = info["AvailableLibraries"]
-        require(len(libraries) == 2 and all(x["SupportedArchitectures"] == ["arm64"]
+        require(len(libraries) == 1 and all(x["SupportedArchitectures"] == ["arm64"]
                 and x["SupportedPlatform"] == "ios" for x in libraries)
-                and {x.get("SupportedPlatformVariant", "device") for x in libraries} == {"device", "simulator"},
-                "device_and_simulator_arm64_slices_required")
+                and {x.get("SupportedPlatformVariant", "device") for x in libraries} == {args.slice},
+                "exact_requested_arm64_slice_required")
         artifacts = {}
         for library in libraries:
             directory = output / library["LibraryIdentifier"] / library["LibraryPath"]
             binary = directory / "Lib"
             require(binary.is_file(), "combined_binary_missing")
             raw_sha = digest(binary)
-            platform = "ios-arm64-sim" if library.get("SupportedPlatformVariant") == "simulator" else "ios-arm64"
-            packed = root / ("Lib-with-tantivy-" + platform + ".a")
+            tantivy_platform = "ios-arm64-sim" if library.get("SupportedPlatformVariant") == "simulator" else "ios-arm64"
+            packed = root / ("Lib-with-tantivy-" + tantivy_platform + ".a")
             run(["xcrun", "libtool", "-static", "-o", packed, binary,
-                 source / "heart/deps/libs" / platform / "libtantivy_go.a"],
-                "tantivy-repack-" + platform, environment=environment, timeout=180)
+                 source / "heart/deps/libs" / tantivy_platform / "libtantivy_go.a"],
+                "tantivy-repack-" + tantivy_platform, environment=environment, timeout=180)
             shutil.copyfile(packed, binary)
             symbols = run(["xcrun", "nm", "--no-llvm-bc", "-gU", binary], "symbols-" + library["LibraryIdentifier"], timeout=120).read_text()
             for required in ("ServicePinkhaCaptureLoadedAccountSource", "ServicePinkhaCancelLoadedAccountSourceCapture",
@@ -214,7 +255,7 @@ def main():
                 require(len(matches) == 1, "combined_go_runtime_symbol_count:" + symbol)
             artifacts[library["LibraryIdentifier"]] = {
                 "rawGoArchiveSHA256": raw_sha, "binarySHA256": digest(binary),
-                "binaryBytes": binary.stat().st_size, "tantivyPlatform": platform}
+                "binaryBytes": binary.stat().st_size, "tantivyPlatform": tantivy_platform}
         generated = root / "generated-entry.swift"
         generated.write_text("import Foundation\nimport Lib\n"
             "func checkGeneratedEntries() throws {\n"
@@ -222,21 +263,22 @@ def main():
             "  let result = Lib.MobileStartWithResult(\"\", \"\", \"\", \"\", \"\", \"\", \"\")\n"
             "  if let result { let _: Int32 = result.code; let _: String = result.address; let _: String = result.message }\n"
             "  try Lib.MobileStop()\n  Lib.MobileStopNow()\n"
-            "  let _ = Lib.ServicePinkhaCaptureLoadedAccountSource\n"
-            "  let _ = Lib.ServicePinkhaCancelLoadedAccountSourceCapture\n"
-            "  let _ = Lib.ServicePinkhaValidateLoadedAccountSourceCapture\n"
-            "  let _ = Lib.ServicePinkhaReleaseLoadedAccountSourceCapture\n"
+            "  let capture: Data? = try Lib.ServicePinkhaCaptureLoadedAccountSource(\"\", \"\", \"\", \"\", \"\")\n"
+            "  let _: Bool = Lib.ServicePinkhaCancelLoadedAccountSourceCapture(\"\", \"\")\n"
+            "  _ = try Lib.ServicePinkhaValidateLoadedAccountSourceCapture(\"\", \"\", \"\")\n"
+            "  let _: Bool = Lib.ServicePinkhaReleaseLoadedAccountSourceCapture(\"\", \"\")\n"
             "  let _ = Lib.ServicePinkhaTorahAuthorizedOperationRead\n"
             "  let _ = Lib.ServicePinkhaSemanticAnchorCapture\n"
-            "  _ = version\n}\n")
-        simulator = next(item for item in libraries if item.get("SupportedPlatformVariant") == "simulator")
-        sdk = run(["xcrun", "--sdk", "iphonesimulator", "--show-sdk-path"], "simulator-sdk-path", timeout=30).read_text().strip()
-        run(["xcrun", "swiftc", "-typecheck", "-target", "arm64-apple-ios27.0-simulator",
-             "-sdk", sdk, "-F", output / simulator["LibraryIdentifier"],
+            "  _ = version; _ = capture\n}\n")
+        sdk_name = "iphonesimulator" if args.slice == "simulator" else "iphoneos"
+        swift_target = "arm64-apple-ios27.0" + ("-simulator" if args.slice == "simulator" else "")
+        sdk = run(["xcrun", "--sdk", sdk_name, "--show-sdk-path"], "slice-sdk-path", timeout=30).read_text().strip()
+        run(["xcrun", "swiftc", "-typecheck", "-target", swift_target,
+             "-sdk", sdk, "-F", output / libraries[0]["LibraryIdentifier"],
              "-module-cache-path", root / "swift-module-cache", generated],
             "generated-actual-swift-entry-typecheck", environment=environment, timeout=180)
         receipt["generatedSwiftEntryCheckSHA256"] = digest(generated)
-        receipt.update(status="SOURCE_VERIFIED_SINGLE_GO_RUNTIME_APPLE_LIBRARY_BUILT_NOT_ACCEPTED",
+        receipt.update(status="SOURCE_VERIFIED_SINGLE_GO_RUNTIME_APPLE_SLICE_BUILT_NOT_ACCEPTED",
                        heartRuntimeVersion=heart_version, anyRuntimeVersion=any_version,
                        slices=artifacts, nativeLibraryBuildInvocations=1, sourceUnchanged=True)
         framework_files = {}

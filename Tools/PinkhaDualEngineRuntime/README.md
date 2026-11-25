@@ -1,7 +1,7 @@
 # One native runtime for the shipping app
 
 This producer builds Heart service/core and Any's original mobile bridge in one
-gomobile invocation. The generated Lib framework owns one Go runtime; the Swift
+gomobile invocation per platform slice. The generated Lib framework owns one Go runtime; the Swift
 shipping host reaches both engines through ProtobufMessages. It must not link the
 standalone AnyLib framework as well.
 
@@ -38,18 +38,25 @@ Run `build_apple.py` only on the Apple Silicon Mac, with a fresh fixed source-ha
 root containing the exact source archive, dependency archive and committed
 controller files. The producer records its real local-Mac execution kind,
 controller commit, command logs, owned process groups, source/module/dependency
-identities and both device and simulator slices. It verifies all exported
+identities and the exact requested device or simulator slice. The two slices use the same
+source identity and are assembled only after their independent build receipts
+pass. It verifies all exported
 Heart/Any/capture/semantic/authorized-read entries, the single Go runtime symbol
 set, and the actual Swift import surface. Source files are checked again after
 compilation. Pinned Tantivy machine code is repacked into the two static slices.
 
-The 8GiB initial admission and 2GiB emergency stop apply only to this measured
-native phase. Go's normal keyed cache may be shared with the coordinated C lane;
+Each slice records an initial space estimate from the measured original Heart
+and Any static libraries, exact source bytes, dependency extraction and explicit
+compiler/cache/output allowances. The estimate is checked against current free
+space; every command monitors actual free space and stops only its own process
+group at a 2GiB emergency floor. Simulator compilation can therefore proceed
+independently of device packaging. Go's normal keyed cache may be shared with the coordinated C lane;
 source/work/tmp roots and command journals are private.
 
 A generated framework is **not app or migration acceptance**. The producer
 receipt explicitly reports zero app builds and zero acceptance tests. The new C
-bridge still requires actual authorized capture/revalidation execution; semantic
+bridge core/checkpoint passed its actual native test at a2916b27; the generated
+iOS bridge and in-app authorized capture still require execution. Semantic
 migration admission stays closed until its real coverage is proved. The shipping
 app must separately compile and exercise both engines, switching, existing
 features and affected adapters before signing.
