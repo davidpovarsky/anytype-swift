@@ -1,0 +1,172 @@
+{
+  "base": "2f7ad2ce4b5b9b048d8fb5184aa2872c70c7d304",
+  "currentPins": {
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahAssociationRepository.swift": "6b261cf6748118a743162234ab8d7cc2b7fdf8ad2a58b58280de87fa77c1aebb",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahPreparedMutation.swift": "0ead560345400729b0e320a73df4bac99df3673aa164a18d570c06bcbb8b74a1",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift": "a40e49f4d3424e5625498e1a95baad171e22391a786d16c3f3e0c4c1ea926541"
+  },
+  "originalTests": [
+    {
+      "methods": [
+        "originalContextPolicyDeduplicatesNFCAndPreservesStableID",
+        "quoteInstancesStayDistinctAndExactRetryDoesNotAppend",
+        "documentAndBlockLocationsRemainIndependent",
+        "wrongSpaceRejectedBeforeStoreMutation",
+        "mismatchedWorkspaceCannotConstructRepository",
+        "staleWholeSnapshotReplacementStillRefused",
+        "revokedPermissionPreventsWrites",
+        "authorityIsRecheckedAtAppendAfterInitialRead",
+        "missingTargetPreventsWrites",
+        "updateRequiresExistingStableID",
+        "concurrentLocalMutationsDoNotReplaceUnrelatedItems",
+        "concurrentSuccessorsAreVisibleConflictsNotSilentLWW",
+        "oldV1FixtureMigratesWithoutInventedMetadata",
+        "v2MigrationAndLaterEditRetainEnvelopeRecordAndItemUnknownFields",
+        "migrationRejectsMissingBlockMappingAndUnsupportedVersionBeforeWrites",
+        "migrationPartialFailureHasResumableReceipt",
+        "reusedMigrationIdentityWithChangedPayloadFailsBeforeWrite",
+        "workspaceDecoderCannotBypassValidation",
+        "emptyMigrationPlanIdentityIncludesDestinationAndMigrationKey",
+        "preparedMutationReplaysExactObservedSetAfterInterveningEdit",
+        "authoritativeMemberRoleAndIdentityFailClosed",
+        "targetObjectCannotResolveAliasForeignSpaceOrBin",
+        "blockTargetMustBeReachableNotMerelyPresent",
+        "migrationRefusesNumbersTheOriginalDomainCannotPreserve",
+        "exactDecimalGuardAcceptsEquivalentNotationAndIgnoresNumericStrings",
+        "ambiguousDuplicateJSONKeysCannotBeImported",
+        "migrationKnownSemanticCollisionFailsBeforeAnyWrite",
+        "migrationCannotReportCompleteAfterConcurrentSemanticCollision",
+        "migrationCannotReportCompleteAfterConcurrentObservedRemove",
+        "migrationCannotReportCompleteAfterConcurrentLogicalCollision",
+        "internalNoteLinksRequireExplicitDestinationMapping",
+        "internalNoteMappingRewritesOnlyKnownNativeReferenceFields",
+        "malformedInternalNoteLinkCannotBeGuessed",
+        "mappedNoteMustExistInDestinationWorkspaceBeforeImport",
+        "incomingPeerUnknownNumbersCannotSilentlyRoundDuringOrdinaryEdit",
+        "incomingPeerDuplicateUnknownKeysCannotBeSilentlyCollapsed",
+        "restoredPreparedMutationCannotBypassIncomingNumberPreservation"
+      ],
+      "sha256": "7347f966f366eb0779a4c8310f9722bfd8df92a9cb822a3627689de0cab7c708",
+      "suite": "AssociationBridgeTests"
+    },
+    {
+      "methods": [
+        "atomicInitialSnapshotUsesActualDomainRecordsAndOwnership",
+        "deltaCannotStandInForAtomicInitialSnapshot",
+        "foreignGenerationIsRejectedBeforePublication",
+        "readabilityIsRecheckedForEverySnapshot",
+        "invalidationDuringTargetReadCancelsItWithoutPublishing",
+        "anotherWorkspaceCannotAppearAsAnEmptySnapshot",
+        "secondInitialRequiresNewSubscriptionInsteadOfSilentReset"
+      ],
+      "sha256": "5e66843e0b26c3214b5b4b9b346b017118c205dda377292821c50dcafa306b11",
+      "suite": "AssociationObservationTests"
+    },
+    {
+      "methods": [
+        "wholeDocumentUsesOneObjectReadAndNativeReachabilityWithoutPerBlockGraphReads",
+        "ordinaryTargetReadsPreferObjectClosureAndOrphanHistoryIsIneligible",
+        "firstAssociationOnFreshReachableBlockDoesNotRequireHistoryMembership",
+        "foreignCollisionIsQuarantinedBeforePayloadDecodeWithoutLeakingForeignItems",
+        "pendingObservedPredecessorIsExplicitConflictForCanonicalMutation",
+        "liveObjectPublicationRechecksCurrentReadability",
+        "objectStreamRejectsMissingAtomicInitialSnapshot"
+      ],
+      "sha256": "b0311de7555a495bb5f08379b872fe734c0291ff3e6838041e68aae0250f08e2",
+      "suite": "AnyTorahObjectScopeTests"
+    },
+    {
+      "methods": [
+        "planRoundTripKeepsEntireIntentAndPhaseIdentities",
+        "failedSourceLineRetriesEveryPhaseWithoutDuplicatePageOrLinks",
+        "repeatingCompletedPlanIsIdempotent",
+        "existingSourceAssociationAndUserMetadataAreNotOverwritten",
+        "retryCannotResurrectSourceLinkRemovedAfterCompletion",
+        "unlinkKeepsTheNativeNoteAndUnrelatedSourceOrQuote",
+        "revokedOriginPreventsAnyNoteCreation",
+        "removeRechecksCallerAuthorityAtAppend"
+      ],
+      "sha256": "59a48e9cbd0647e6974066f42457cdf8b160e82ebaaad0a32e22b6a5e013b568",
+      "suite": "AnyTorahNotesTests"
+    },
+    {
+      "methods": [
+        "documentContextsExcludeBlockQuotesAndOtherKinds",
+        "removedContextDoesNotBecomeAStaleLiveMatch",
+        "logicalConflictAcrossObjectsIsQuarantinedBeforeRelatedResults",
+        "currentReadRevocationOmitsCandidateAndReportsCoverage",
+        "originalCandidateBoundRemainsExplicit",
+        "unlinkRemovesOnlyCurrentDocumentContextAndKeepsQuoteBlockAndOtherSource",
+        "readonlyMetadataNeverAuthorizesUnlink",
+        "internalNoteReferenceIsNotAnExternalRelatedSource"
+      ],
+      "sha256": "7f07a731ae842dc4b5fd7bb7170c4d3697294df77fd499018e8d91525266a3e0",
+      "suite": "AnyTorahRelatedDocumentsTests"
+    },
+    {
+      "methods": [
+        "opaquePayloadBytesAndUnknownNumbersRoundTripWithoutLocalFields",
+        "explicitMappingPreservesEachEnvelopeAndOriginalArchiveForAudit",
+        "removedHistoryIsArchivedWithoutResurrectingItsAssociation",
+        "foreignCollisionRemainsAuditableButCannotBeImportedAsSuccess",
+        "missingObservedHistoryCannotProduceACompleteImportPlan",
+        "unreachableBlockHistoryIsPreservedAndRequiresExplicitResolution",
+        "unknownEnvelopeFieldsAndDuplicateKeysAreRejectedWithoutDroppingBytes",
+        "duplicateLiveAssociationIdentityAcrossPayloadsFailsBeforeAnyWrites",
+        "wholeImportPreflightAndRetryDoNotDuplicateAcceptedClaims",
+        "reviewExposesExactBlockAndInternalNoteMappings",
+        "contradictoryInternalNoteMetadataIsNeverSuggestedAsAValidMapping",
+        "payloadLocationCannotDisagreeWithItsArchivedOperation",
+        "scopedReadDoesNotExportLateDataAfterOwnerRevocation"
+      ],
+      "sha256": "8151e95fad8546e16e3b2d66542eaa6eb6086a04a7fd609210480284cf52498b",
+      "suite": "AnyTorahArchiveTests"
+    }
+  ],
+  "priorOriginalSourceArchiveSHA256": "30f0abea0cd28b8ccc909e646c00a326b2404244f6a23624e930f17d672cdd17",
+  "priorOriginals": {
+    "admission.json": "105024463fed9557086dfc7b56d3b7e58e001977c456afd3ae528f2ccaf83cc3",
+    "original.log": "fd08df6d5c27a0b15fc8024b43b31258daf078922e42c73cc35d84a679da8c8a",
+    "result.json": "28c753631a6219ffb288fdf5f1122be810d9ef71c744377f0b629a54f6dd1cc7",
+    "source-after.json": "a3e05a083760b33847471b623abefc8b3484ec0fc9770d5d5ddf76f7040c36e6",
+    "source-before.json": "a3e05a083760b33847471b623abefc8b3484ec0fc9770d5d5ddf76f7040c36e6"
+  },
+  "reusedOwnCache": "/mnt/development/projects/evidence/page154-final-validation-20261125/any-shared-policy-components/attempt1/build",
+  "sourceDelta": {
+    "after": "6b261cf6748118a743162234ab8d7cc2b7fdf8ad2a58b58280de87fa77c1aebb",
+    "before": "b86c5c2f95aa262bd873f9c847728232d10c0b3c9a941fdc9dfec1fa9c542063",
+    "path": "Sources/PinkhaAnyIntegration/AnyTorahAssociationRepository.swift"
+  },
+  "unchangedAuthoritySections": [
+    {
+      "bytes": 3147,
+      "name": "watch",
+      "sha256": "de14102aa073a63792183c3d52c01fcdf985af33d0fe579f6e0f6a7b89991a5f"
+    },
+    {
+      "bytes": 2820,
+      "name": "object-watch",
+      "sha256": "5a735dadece3164d128e6db45c0a0854b254b15e78c9785885c397966356c92d"
+    },
+    {
+      "bytes": 975,
+      "name": "native-object-authority",
+      "sha256": "cc71cc91007ce79c3d86b2900940865dbd3e1dedb8ef3a609678e47a876f7b2f"
+    },
+    {
+      "bytes": 1185,
+      "name": "frozen-retry",
+      "sha256": "515438a70ac28ad52b0f8b17a1b728a9a1be4868bb5a3f4cb509519dad12ca1b"
+    },
+    {
+      "bytes": 773,
+      "name": "append-authorization",
+      "sha256": "624c29806bb544e3574f15bef8495b3a4ff1e36b3c6ba3cdd9b5e58857b94e88"
+    },
+    {
+      "bytes": 678,
+      "name": "space-and-serialization",
+      "sha256": "dc721cf222ed08245516624346e83ac28dc29117a10f983a0297f5a9e380b52c"
+    }
+  ]
+}

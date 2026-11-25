@@ -17,14 +17,10 @@ public struct AnyTorahPreparedMutation: Codable, Sendable {
                 ? .object(objectId: operation.targetObjectID)
                 : .block(objectId: operation.targetObjectID, blockId: operation.targetBlockID)
             let location = TorahAssociationLocation(spaceId: workspace.spaceID, target: target)
-            let decoded = try TorahAssociationPayloadCodec().decodeCanonicalDocument(
-                operation.payload, legacyLocation: location)
-            try AnyTorahSourceJSONGuard.validateCanonicalPayload(operation.payload, decoded: decoded)
-            guard decoded.records.count == 1, let record = decoded.records.first,
-                  record.location == location, !record.item.id.isEmpty,
-                  record.item.providerID == operation.providerID,
-                  (record.item.canonicalKey.isEmpty ? record.item.externalID : record.item.canonicalKey) == operation.canonicalRef else {
-                throw TorahAssociationRepositoryError.malformedCanonicalData
+            _ = try AnyTorahSourceJSONGuard.preservingMigrationErrors {
+                try TorahImmutableAssociationContent(
+                    payload: operation.payload, location: location,
+                    providerID: operation.providerID, canonicalRef: operation.canonicalRef)
             }
         }
         self.workspace = workspace
