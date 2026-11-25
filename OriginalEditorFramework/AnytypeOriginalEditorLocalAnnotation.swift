@@ -459,6 +459,16 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
         defer { miniAppsBusy = false; owner.host.endMiniAppsInteraction() }
         try validateMiniAppsStructure(context)
         let source = context.source
+        if source.matches(binding),
+           source.object == binding.objectID, source.space == binding.spaceID {
+            // The same retained native draft may contain newer edits outside
+            // the original selection. Keep the captured baseline intact:
+            // applyMiniAppsResult checks its actual targets before writing,
+            // while replaceDocument still requires the complete graph.
+            try validateMiniAppsContext(context)
+            try owner.validateCurrent()
+            return context
+        }
         let successor = source.revision.addingReportingOverflow(1)
         let savedBaseline = !successor.overflow
             && binding.expectedRevision == successor.partialValue

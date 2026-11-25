@@ -18,6 +18,10 @@ ObjectShow/protobuf export remain authoritative. No engine or Picker is embedded
    private native IDs by the complete ordered protobuf graph, never text alone.
 6. Persist the restored context before dispatch. Cold return checks the exact
    canonical source and full native mapping. A mismatch preserves the result.
+7. Restoring into the same retained native object preserves the original context
+   even when unrelated blocks changed. Return validates the affected targets;
+   replaceDocument still compares the complete graph. Restoration never advances
+   the baseline to silently accept edits inside the original target.
 
 ## Return
 
