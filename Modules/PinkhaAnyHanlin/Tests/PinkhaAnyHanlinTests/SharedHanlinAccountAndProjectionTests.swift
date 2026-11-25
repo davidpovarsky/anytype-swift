@@ -10,8 +10,8 @@ final class SharedHanlinAccountAndProjectionTests: XCTestCase {
     private final class Presentation: PinkhaHanlinOwnedPresentation {
         let session: HanlinHostSession
         var invalidations = 0
-        init(account: String) throws {
-            let scope = try HanlinConversationNamespace(app: "anytype", account: account,
+        init(account: String, app: String = "anytype") throws {
+            let scope = try HanlinConversationNamespace(app: app, account: account,
                                                        workspace: "native-space", space: "native-space")
             session = .init(conversationID: UUID(), context: .init(namespace: scope,
                 sceneID: UUID(), generation: UUID()))
@@ -35,6 +35,39 @@ final class SharedHanlinAccountAndProjectionTests: XCTestCase {
         XCTAssertTrue(owner.isAvailable(account: second.session.context.namespace.account))
         try owner.accountDidOpen(first.session.context.namespace.account)
         XCTAssertTrue(owner.isAvailable(account: first.session.context.namespace.account))
+    }
+
+    @MainActor
+    func testSameNativeAccountInOtherEngineKeepsItsPresentationAndAvailability() async throws {
+        let account = "shared-native-account-" + UUID().uuidString
+        let heart = try Presentation(account: account, app: "anytype")
+        let any = try Presentation(account: account, app: "anytype-any")
+        let owner = PinkhaHanlinAccountOwner.shared
+        try owner.register(heart); try owner.register(any)
+        defer { owner.unregister(heart.session.id); owner.unregister(any.session.id) }
+        try await owner.closeAccount(account, removeData: false, app: "anytype-any")
+        XCTAssertEqual(any.invalidations, 1)
+        XCTAssertEqual(heart.invalidations, 0)
+        XCTAssertFalse(owner.isAvailable(namespace: any.session.context.namespace))
+        XCTAssertTrue(owner.isAvailable(namespace: heart.session.context.namespace))
+        XCTAssertThrowsError(try owner.register(any))
+        try owner.accountDidOpen(account, app: "anytype-any")
+        XCTAssertTrue(owner.isAvailable(namespace: any.session.context.namespace))
+        try await owner.closeAccount(account, removeData: false)
+        XCTAssertEqual(heart.invalidations, 1)
+        XCTAssertEqual(any.invalidations, 1)
+        XCTAssertTrue(owner.isAvailable(namespace: any.session.context.namespace))
+        try owner.accountDidOpen(account)
+    }
+
+    @MainActor
+    func testForeignEngineNamespaceCannotOpenOrRegisterAccount() throws {
+        let account = "foreign-host-" + UUID().uuidString
+        let owner = PinkhaHanlinAccountOwner.shared
+        let foreign = try Presentation(account: account, app: "unrelated")
+        XCTAssertFalse(owner.isAvailable(account: account, app: "unrelated"))
+        XCTAssertThrowsError(try owner.accountDidOpen(account, app: "unrelated"))
+        XCTAssertThrowsError(try owner.register(foreign))
     }
 
     @MainActor

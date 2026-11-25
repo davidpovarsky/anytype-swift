@@ -135,7 +135,7 @@ private final class AnyHanlinUIKitOwner: AnyHanlinCreationPresentationOwner {
         guard installedSession == session, let presentation, let controller, let scene,
               controller.presentation === presentation, presentation.session == session,
               PinkhaHanlinAccountOwner.shared.owns(presentation),
-              PinkhaHanlinAccountOwner.shared.isAvailable(account: session.context.namespace.account),
+              PinkhaHanlinAccountOwner.shared.isAvailable(namespace: session.context.namespace),
               controller.presentingViewController != nil,
               controller.viewIfLoaded?.window?.windowScene === scene,
               !controller.isBeingDismissed else { throw HanlinHostError.staleContext }

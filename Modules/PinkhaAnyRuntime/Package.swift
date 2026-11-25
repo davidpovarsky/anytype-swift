@@ -4,42 +4,46 @@ import Foundation
 
 let nativeMode = ProcessInfo.processInfo.environment["PINKHA_ANY_NATIVE_ARTIFACT"]
 precondition(nativeMode == nil || nativeMode == "verified-v1" || nativeMode == "verified-prepared-v1" ||
-             nativeMode == "verified-prepared-inline-v1", "Unknown native artifact selection")
+             nativeMode == "verified-prepared-inline-v1" || nativeMode == "verified-unified-v1", "Unknown native artifact selection")
+let isUnified = nativeMode == "verified-unified-v1"
 let isPreparedCandidate = nativeMode == "verified-prepared-v1"
 let isPreparedInlineCandidate = nativeMode == "verified-prepared-inline-v1"
-let isNative = nativeMode == "verified-v1" || isPreparedCandidate || isPreparedInlineCandidate
+let isNative = nativeMode == "verified-v1" || isPreparedCandidate || isPreparedInlineCandidate || isUnified
 // This acceptance-only host is never added to the retained runtime test lane.
 let readAcceptance = ProcessInfo.processInfo.environment["PINKHA_ANY_AUTHORIZED_READ_ACCEPTANCE"]
 precondition(readAcceptance == nil || readAcceptance == "candidate-v10", "Unknown authorized read acceptance selection")
 let isReadCandidate = readAcceptance == "candidate-v10"
 precondition(!isReadCandidate || isNative, "Authorized read acceptance requires an explicitly installed candidate binary")
-precondition(!isReadCandidate || !(isPreparedCandidate || isPreparedInlineCandidate), "Acceptance candidates require separate explicit selections")
+precondition(!isReadCandidate || !(isPreparedCandidate || isPreparedInlineCandidate || isUnified), "Acceptance candidates require separate explicit selections")
 let isHostAcceptance = isReadCandidate || isPreparedCandidate || isPreparedInlineCandidate
-let binary: Target = isNative
+let binaries: [Target] = isUnified ? [] : [isNative
     ? .binaryTarget(name: "AnyLib", path: "Vendor/any.xcframework")
     : .binaryTarget(
         name: "AnyLib",
         url: "https://github.com/anyproto/any/releases/download/v0.5.0/any.xcframework.zip",
         checksum: "68e0de076baba94770c3367cebca08459620445e21a6aec2c05b1a54800d1812"
-    )
+    )]
+let runtimeDependencies: [Target.Dependency] = ["PinkhaAnyEngine"] + (isUnified
+    ? [.product(name: "ProtobufMessages", package: "ProtobufMessages")]
+    : ["AnyLib"])
 
 let package = Package(
     name: "PinkhaAnyRuntime",
     platforms: [.iOS("18.4")],
     products: [.library(name: "PinkhaAnyRuntime", targets: ["PinkhaAnyRuntime"])],
-    dependencies: [.package(path: "../PinkhaAnyEngine")] + (isHostAcceptance ? [
+    dependencies: [.package(path: "../PinkhaAnyEngine")] + (isUnified ? [.package(path: "../ProtobufMessages")] : []) + (isHostAcceptance ? [
         .package(path: "../PinkhaAnyIntegration"),
         .package(path: "../PinkhaAnyHost"),
         .package(path: "../PinkhaKit")
     ] : []),
-    targets: [
-        binary,
+    targets: binaries + [
         .target(
             name: "PinkhaAnyRuntime",
-            dependencies: ["AnyLib", "PinkhaAnyEngine"],
+            dependencies: runtimeDependencies,
             swiftSettings: (isNative ? [.define("PINKHA_NATIVE_RUNTIME")] : []) +
                 (isPreparedCandidate ? [.define("PINKHA_PREPARED_MIGRATION_RUNTIME")] : []) +
-                (isPreparedInlineCandidate ? [.define("PINKHA_PREPARED_INLINE_MIGRATION_RUNTIME")] : []),
+                (isPreparedInlineCandidate ? [.define("PINKHA_PREPARED_INLINE_MIGRATION_RUNTIME")] : []) +
+                (isUnified ? [.define("PINKHA_DUAL_ENGINE_RUNTIME")] : []),
             linkerSettings: [.linkedFramework("Security"), .linkedFramework("SystemConfiguration"), .linkedLibrary("resolv")]
         ),
         .testTarget(

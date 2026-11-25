@@ -1,6 +1,22 @@
 import Foundation
 import HanlinHostContracts
 
+/// Persistence ownership uses the engine host namespace without altering a native account ID.
+public enum PinkhaHanlinEngineNamespace {
+    public static let heart = "anytype"
+    public static var any: String {
+        #if PINKHA_DUAL_ENGINE_RUNTIME
+        return "anytype-any"
+        #else
+        // Preserve the separate NativeApp's existing private metadata namespace.
+        return "anytype"
+        #endif
+    }
+    public static func supports(_ app: String) -> Bool {
+        app.utf8.elementsEqual(heart.utf8) || app.utf8.elementsEqual("anytype-any".utf8)
+    }
+}
+
 /// Minimal real presentation lifetime contract shared by Heart and Any hosts.
 @MainActor
 public protocol PinkhaHanlinOwnedPresentation: AnyObject, Sendable {
@@ -8,35 +24,49 @@ public protocol PinkhaHanlinOwnedPresentation: AnyObject, Sendable {
     func invalidate()
 }
 
-/// The application owns journal opening, presentation revocation and explicit account erasure.
-/// Keeping journal actors across ordinary dismissals preserves late original-scope receipts and
-/// prevents competing windows from opening separate writers for the same account/Space.
+/// One implementation owns journals and revocation for both engines. A native account may
+/// exist in both engines; closing one host must not revoke or erase the other's metadata.
 @MainActor
 public final class PinkhaHanlinAccountOwner {
     public static let shared = PinkhaHanlinAccountOwner()
 
+    private struct AccountKey: Hashable {
+        let app: Data
+        let account: Data
+        init(app: String, account: String) {
+            self.app = Data(app.utf8); self.account = Data(account.utf8)
+        }
+        init(_ namespace: HanlinConversationNamespace) {
+            self.init(app: namespace.app, account: namespace.account)
+        }
+    }
     private struct Presentation {
         weak var value: (any PinkhaHanlinOwnedPresentation)?
-        let account: Data
+        let account: AccountKey
     }
     private struct Opening {
-        let account: Data
+        let account: AccountKey
         let task: Task<PinkhaHanlinWriteJournal, Error>
     }
     private var presentations: [UUID: Presentation] = [:]
     private var journals: [String: Opening] = [:]
-    private var closedAccounts = Set<Data>()
-    private var removingAccounts = Set<Data>()
+    private var closedAccounts = Set<AccountKey>()
+    private var removingAccounts = Set<AccountKey>()
 
-    public func isAvailable(account: String) -> Bool {
-        !closedAccounts.contains(Data(account.utf8))
+    public func isAvailable(account: String, app: String = PinkhaHanlinEngineNamespace.heart) -> Bool {
+        PinkhaHanlinEngineNamespace.supports(app) &&
+            !closedAccounts.contains(AccountKey(app: app, account: account))
+    }
+
+    public func isAvailable(namespace: HanlinConversationNamespace) -> Bool {
+        isAvailable(account: namespace.account, app: namespace.app)
     }
 
     public func register(_ presentation: any PinkhaHanlinOwnedPresentation) throws {
-        let account = presentation.session.context.namespace.account
-        guard isAvailable(account: account) else { throw HanlinHostError.staleContext }
+        let namespace = presentation.session.context.namespace
+        guard isAvailable(namespace: namespace) else { throw HanlinHostError.staleContext }
         presentations = presentations.filter { $0.value.value != nil }
-        presentations[presentation.session.id] = .init(value: presentation, account: Data(account.utf8))
+        presentations[presentation.session.id] = .init(value: presentation, account: AccountKey(namespace))
     }
 
     public func unregister(_ id: UUID) { presentations[id] = nil }
@@ -46,7 +76,7 @@ public final class PinkhaHanlinAccountOwner {
     }
 
     public func journal(for namespace: HanlinConversationNamespace) async throws -> PinkhaHanlinWriteJournal {
-        guard isAvailable(account: namespace.account) else { throw HanlinHostError.staleContext }
+        guard isAvailable(namespace: namespace) else { throw HanlinHostError.staleContext }
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         let key = PinkhaHanlinCreatePagePlan.digest(try encoder.encode(namespace))
         let opening: Opening
@@ -54,25 +84,28 @@ public final class PinkhaHanlinAccountOwner {
             opening = existing
         } else {
             let task = Task { try await PinkhaHanlinWriteJournal.open(namespace: namespace) }
-            opening = .init(account: Data(namespace.account.utf8), task: task)
+            opening = .init(account: AccountKey(namespace), task: task)
             journals[key] = opening
         }
         let journal = try await opening.task.value
-        guard isAvailable(account: namespace.account) else { throw HanlinHostError.staleContext }
+        guard isAvailable(namespace: namespace) else { throw HanlinHostError.staleContext }
         return journal
     }
 
-    public func accountDidOpen(_ account: String) throws {
-        let key = Data(account.utf8)
-        guard !removingAccounts.contains(key) else { throw HanlinHostError.staleContext }
+    public func accountDidOpen(_ account: String, app: String = PinkhaHanlinEngineNamespace.heart) throws {
+        let key = AccountKey(app: app, account: account)
+        guard PinkhaHanlinEngineNamespace.supports(app), !removingAccounts.contains(key) else {
+            throw HanlinHostError.staleContext
+        }
         closedAccounts.remove(key)
     }
 
-    /// A native logout/delete operation calls this BEFORE its first suspension. Ordinary logout
-    /// preserves metadata; removeData explicitly poisons every opening/loaded writer before erasure.
-    public func closeAccount(_ account: String, removeData: Bool) async throws {
+    /// Called before native logout/delete first suspends. Ordinary logout preserves all metadata.
+    public func closeAccount(_ account: String, removeData: Bool,
+                             app: String = PinkhaHanlinEngineNamespace.heart) async throws {
         guard !account.isEmpty else { return }
-        let key = Data(account.utf8)
+        guard PinkhaHanlinEngineNamespace.supports(app) else { throw HanlinHostError.staleContext }
+        let key = AccountKey(app: app, account: account)
         closedAccounts.insert(key)
         let owned = presentations.values.filter { $0.account == key }.compactMap(\.value)
         for presentation in owned { presentation.invalidate() }
@@ -80,11 +113,11 @@ public final class PinkhaHanlinAccountOwner {
         guard removingAccounts.insert(key).inserted else { throw HanlinHostError.staleContext }
         defer { removingAccounts.remove(key) }
         let openings = journals.filter { $0.value.account == key }
-        // Do not cancel opening tasks: a suspended open must finish and be poisoned before unlink.
+        // A suspended open must finish and be poisoned before the matching namespace is unlinked.
         for (_, opening) in openings {
             if let journal = try? await opening.task.value { await journal.revokeForDataRemoval() }
         }
-        try await PinkhaHanlinWriteJournal.removeAccountData(account)
+        try await PinkhaHanlinWriteJournal.removeAccountData(account, app: app)
         for (id, _) in openings { journals[id] = nil }
     }
 }

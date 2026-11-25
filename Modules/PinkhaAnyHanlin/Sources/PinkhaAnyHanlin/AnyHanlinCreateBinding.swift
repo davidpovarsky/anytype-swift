@@ -60,7 +60,7 @@ final class AnyHanlinCreateBinding: PinkhaHanlinWriteBinding {
               let owner, (try? owner.validateSDKPresentation(for: access.session)) != nil else {
             return PinkhaHanlinWriteInstallationRequirement.missing
         }
-        guard PinkhaHanlinAccountOwner.shared.isAvailable(account: access.session.context.namespace.account) else {
+        guard PinkhaHanlinAccountOwner.shared.isAvailable(namespace: access.session.context.namespace) else {
             return [.accountRemovalAndMetadataRetentionHook]
         }
         return []

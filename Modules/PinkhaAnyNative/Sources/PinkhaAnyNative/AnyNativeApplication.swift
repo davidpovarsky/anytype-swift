@@ -110,7 +110,10 @@ public actor AnyNativeApplication {
         try Task.checkCancellation()
         try FileManager.default.createDirectory(at: dataDirectory, withIntermediateDirectories: true,
             attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
-        let session = try await runtime.start(dataDirectory: dataDirectory, network: network, build: .pinkhaNativeV1)
+        guard AnyEmbeddedBuild.linked.supportsNativeApplication else {
+            throw AnyEmbeddedRuntimeError.unexpectedVersion
+        }
+        let session = try await runtime.start(dataDirectory: dataDirectory, network: network, build: .linked)
         embedded = session
         lastNetwork = network
     }
@@ -182,7 +185,7 @@ public actor AnyNativeApplication {
             }
             try Task.checkCancellation()
             guard !closing else { throw AnyNativeApplicationError.closed }
-            try await PinkhaHanlinAccountOwner.shared.accountDidOpen(id)
+            try await PinkhaHanlinAccountOwner.shared.accountDidOpen(id, app: PinkhaHanlinEngineNamespace.any)
             try Task.checkCancellation()
             guard !closing else { throw AnyNativeApplicationError.closed }
             account = credential.metadata
@@ -417,7 +420,7 @@ public actor AnyNativeApplication {
         guard let accountID, !accountID.isEmpty else { return }
         // The retained removeData:false path first revokes synchronously on
         // MainActor and performs no fallible filesystem removal.
-        try? await PinkhaHanlinAccountOwner.shared.closeAccount(accountID, removeData: false)
+        try? await PinkhaHanlinAccountOwner.shared.closeAccount(accountID, removeData: false, app: PinkhaHanlinEngineNamespace.any)
     }
 
     private func transition<Value: Sendable>(
