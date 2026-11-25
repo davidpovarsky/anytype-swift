@@ -69,20 +69,29 @@ def observe(root, profile, historical_trees):
             "Revision continuation changed generated/native/resource inputs")
     delta = git(root, "diff", "--name-status", BASE, REVIEWED, "--", *PRODUCTS).splitlines()
     require(delta == [("A\t" if p == ADDED else "M\t") + p for p in FILES], "Unreviewed product change in facade continuation")
-    require({p: git(root, "rev-parse", "HEAD:" + p) for p in PRODUCTS} == reviewed,
+    from miniapps_facade_source import observe as observe_miniapps
+    miniapps = observe_miniapps(root, profile, reviewed)
+    current = miniapps["reviewed_product_trees"] if miniapps else reviewed
+    changed_miniapps = {row["path"] for row in miniapps["changed_files"]} if miniapps else set()
+    require({p: git(root, "rev-parse", "HEAD:" + p) for p in PRODUCTS} == current,
             "Current product source differs from reviewed facade continuation")
     for row in rows:
         p = root / row["path"]
         require(p.is_file() and not p.is_symlink() and p.resolve() == p,
                 "Missing/aliased reviewed facade source")
-        data = p.read_bytes()
+        data = (subprocess.check_output(["git", "-C", str(root), "show", REVIEWED + ":" + row["path"]])
+                if row["path"] in changed_miniapps else p.read_bytes())
+        observed_blob = (git(root, "rev-parse", REVIEWED + ":" + row["path"])
+                         if row["path"] in changed_miniapps else git(root, "hash-object", "--", row["path"]))
         require(row["before_blob"] == (None if row["path"] == ADDED else git(root, "rev-parse", BASE + ":" + row["path"]))
                 and row["after_blob"] == git(root, "rev-parse", REVIEWED + ":" + row["path"])
-                and git(root, "hash-object", "--", row["path"]) == row["after_blob"]
+                and observed_blob == row["after_blob"]
                 and len(data) == row["bytes"] and hashlib.sha256(data).hexdigest() == row["sha256"],
                 "Reviewed facade source bytes differ: " + row["path"])
     return {"schema": value["schema"], "status": "EXACT_ADDITIVE_FACADE_SOURCE_OBSERVED",
             "base_source": BASE, "reviewed_source": REVIEWED,
-            "adoption_sha256": binding["sha256"], "reviewed_product_trees": reviewed,
+            "adoption_sha256": binding["sha256"], "reviewed_product_trees": current,
+            "historical_revision_product_trees": reviewed,
+            **({"miniapps": miniapps} if miniapps else {}),
             "changed_files": rows, "native_acceptance_reused_by_this_document": False,
             "sdk_compiler_and_runtime_acceptance": "NOT_GRANTED_BY_SOURCE_OBSERVATION"}

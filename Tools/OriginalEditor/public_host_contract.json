@@ -612,6 +612,94 @@
         [
           "AnytypeOriginalEditorModule",
           "retrySuspendLocalAnnotationRuntime(appGroup:)"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsAction"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsAction",
+          "insert"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsAction",
+          "replaceSelection"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsAction",
+          "replaceDocument"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsError"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsContext"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsContext",
+          "documentText"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsContext",
+          "selectedText"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsContext",
+          "selectionLocation"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsContext",
+          "selectionLength"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsContext",
+          "blockIDs"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsContext",
+          "sceneID"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsContext",
+          "documentSelectionLocation"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsContext",
+          "selectedBlockText"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsLaunch"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsLaunch",
+          "context"
+        ],
+        [
+          "AnytypeOriginalEditorMiniAppsLaunch",
+          "capture"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSession",
+          "canContinueEditing"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSession",
+          "setMiniAppsAction(title:handler:)"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSession",
+          "captureMiniAppsContext()"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSession",
+          "captureMiniAppsLaunch(context:maximumBodyBytes:)"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSession",
+          "restoreMiniAppsContext(_:)"
+        ],
+        [
+          "AnytypeOriginalEditorLocalAnnotationSession",
+          "applyMiniAppsResult(requestID:context:action:text:maximumBodyBytes:)"
         ]
       ],
       "roots": [
@@ -621,7 +709,11 @@
         "AnytypeOriginalEditorLocalAnnotationSourceLifetime",
         "AnytypeOriginalEditorLocalAnnotationCapture",
         "AnytypeOriginalEditorLocalAnnotationSession",
-        "AnytypeOriginalEditorModule"
+        "AnytypeOriginalEditorModule",
+        "AnytypeOriginalEditorMiniAppsAction",
+        "AnytypeOriginalEditorMiniAppsError",
+        "AnytypeOriginalEditorMiniAppsContext",
+        "AnytypeOriginalEditorMiniAppsLaunch"
       ],
       "scope": "PUBLIC"
     },
@@ -787,7 +879,8 @@
     "AnytypeOriginalAnnotationRevisionToken",
     "AnytypeOriginalAnnotationRevisionReceipt",
     "AnytypeOriginalAnnotationRevisionHistory",
-    "AnytypeOriginalAnnotationRevisionAttempt"
+    "AnytypeOriginalAnnotationRevisionAttempt",
+    "AnytypeOriginalEditorMiniAppsLaunch"
   ],
   "schema": 2,
   "status": "COMPILE_SURFACE_CONTRACT_NATIVE_EDITOR_NOT_QUALIFIED"
