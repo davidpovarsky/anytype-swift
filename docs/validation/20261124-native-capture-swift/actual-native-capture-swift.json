@@ -1,0 +1,41 @@
+{
+  "head": "7d5e317dd82c92bf5b6091c2a30a9da32ec6bc62",
+  "start": "2026-11-24T20:18:04.121020+00:00",
+  "finish": "2026-11-24T20:18:17.233201+00:00",
+  "exit": 1,
+  "timedOut": false,
+  "scope": "ONE_ACTUAL_ORIGINAL_NATIVE_GO_CAPTURE_TO_SWIFT_CONSUMER",
+  "originalNativeRun": "45472745870",
+  "originalNativeJSONMethod": "PASS",
+  "originalNativePeerRun": "FAIL",
+  "fixtureContextSHA256": "5357d52f5e76b604a40d7a5f2b1bc002e19bc864c419a45f90128bfa965d5850",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "env",
+    "PINKHA_NATIVE_CAPTURE_FIXTURE=/mnt/development/projects/evidence/native-json-source-fixture-45472745870",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-native-semantic-map-20261124/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "1",
+    "--skip-update",
+    "--filter",
+    "NativeCapturedSpaceBundleTests.testOriginalNativeCapturedSpaceAndJSONViewsCrossTheSwiftBoundary"
+  ],
+  "sourceSHA256": {
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeSpaceBundle.swift": "074a802ec1894ae1044f63cf6440a501c84af3c6b5c34ded0bc7aeb17c748af9",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeSnapshotView.swift": "8128c8e00ff10f4904ea1bf1638741a0de1d68565b8a2e30f9a8b5c97ebfc0d0",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartInlineProjection.swift": "ecd9e751715263ab6c592be9d2cf22129d5e295c5b7510595ff5886d630529fe",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCapturedSpaceBundleTests.swift": "312851807eb9058b0426c293220b347adc997ae4ffe0cb7219bee9df41977124"
+  },
+  "sourcesUnchanged": true,
+  "logSHA256": "2b6c1656994b9148566ffd6ec070ae738a74de63bfbe9adca8f68f26cd83360c",
+  "contextUnchanged": true,
+  "freeBytes": 2058510336
+}

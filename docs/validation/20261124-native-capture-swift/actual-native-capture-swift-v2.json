@@ -1,0 +1,42 @@
+{
+  "head": "e0dd2793c4f281d5954e49c98afa1177ec2ca628",
+  "start": "2026-11-24T20:24:40.628411+00:00",
+  "finish": "2026-11-24T20:25:04.849968+00:00",
+  "exit": 0,
+  "timedOut": false,
+  "scope": "ACTUAL_NATIVE_CAPTURE_CONTINUATION_AND_ONE_NEGATIVE_SENTINEL_CONTROL",
+  "originalNativeRun": "45472745870",
+  "originalNativeJSONMethod": "PASS",
+  "originalNativePeerRun": "FAIL",
+  "fixtureContextSHA256": "5357d52f5e76b604a40d7a5f2b1bc002e19bc864c419a45f90128bfa965d5850",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "env",
+    "PINKHA_NATIVE_CAPTURE_FIXTURE=/mnt/development/projects/evidence/native-json-source-fixture-45472745870",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-native-semantic-map-20261124/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "1",
+    "--skip-update",
+    "--filter",
+    "NativeCapturedSpaceBundleTests.testOriginalNativeCapturedSpaceAndJSONViewsCrossTheSwiftBoundary|NativeSpaceBundleTests.testNativeUnknownTypeSentinelIsLimitedToExplicitRetainedTreeStates"
+  ],
+  "sourceSHA256": {
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeSpaceBundle.swift": "72409f176992b0906f9aaa3e46c085d5116163bfea608b8299fd6084491a00fc",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeSnapshotView.swift": "8128c8e00ff10f4904ea1bf1638741a0de1d68565b8a2e30f9a8b5c97ebfc0d0",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartInlineProjection.swift": "ecd9e751715263ab6c592be9d2cf22129d5e295c5b7510595ff5886d630529fe",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCapturedSpaceBundleTests.swift": "312851807eb9058b0426c293220b347adc997ae4ffe0cb7219bee9df41977124",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeSpaceBundleTests.swift": "0908d637c955581bffd42770b902e161d27d039769df29c82408049c91de83ef"
+  },
+  "sourcesUnchanged": true,
+  "logSHA256": "0444aa42ef414f0d4b2074b64e520841b9c4de38e770cdde8d338503905184db",
+  "contextUnchanged": true,
+  "freeBytes": 1999024128
+}

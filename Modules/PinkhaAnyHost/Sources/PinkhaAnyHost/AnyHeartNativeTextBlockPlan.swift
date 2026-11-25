@@ -32,13 +32,35 @@ public struct AnyHeartNativeTextBlockPlan: Sendable {
     public let viewSHA256: String
     public let contentSHA256: String
     public let entries: [Entry]
+    public let pageLayout: AnyHeartNativePageLayout?
     public var permitsDestinationWrites: Bool { false }
 
     public init(snapshot: AnyHeartNativeSnapshotView) throws {
+        try self.init(snapshot: snapshot, projectedPageLayout: nil)
+    }
+
+    /// Projects only the body of the exactly classified native Page. The
+    /// accompanying header/property bindings remain mandatory input to the
+    /// enclosing document migration, and grant no destination write authority.
+    public init(snapshot: AnyHeartNativeSnapshotView, pageLayout: AnyHeartNativePageLayout) throws {
+        try self.init(snapshot: snapshot, projectedPageLayout: pageLayout)
+    }
+
+    private init(snapshot: AnyHeartNativeSnapshotView,
+                 projectedPageLayout pageLayout: AnyHeartNativePageLayout?) throws {
         guard snapshot.issues.isEmpty,
               snapshot.depthFirstIDs.count == snapshot.blocks.count else {
             throw AnyHeartNativeTextBlockPlanError.incompleteGraph
         }
+        if let pageLayout {
+            guard Data(pageLayout.sourceSpaceID.utf8) == Data(snapshot.sourceSpaceID.utf8),
+                  Data(pageLayout.sourceObjectID.utf8) == Data(snapshot.sourceObjectID.utf8),
+                  pageLayout.snapshotSHA256 == snapshot.snapshotSHA256,
+                  pageLayout.viewSHA256 == snapshot.viewSHA256 else {
+                throw AnyHeartNativeTextBlockPlanError.incompleteGraph
+            }
+        }
+        let structural = Set((pageLayout?.structuralBlockIDs ?? []).map { Data($0.utf8) })
         let rows = Dictionary(uniqueKeysWithValues: snapshot.blocks.map { (Data($0.id.utf8), $0) })
         let rootID = Data(snapshot.sourceObjectID.utf8)
         guard let root = rows[rootID], root.parentID == nil,
@@ -58,6 +80,7 @@ public struct AnyHeartNativeTextBlockPlan: Sendable {
         var positions: [Data: String] = [:]
         var counters: [Data: Int64] = [:]
         for id in snapshot.depthFirstIDs.dropFirst() {
+            if structural.contains(Data(id.utf8)) { continue }
             guard let row = rows[Data(id.utf8)], let parent = row.parentID,
                   visited.contains(Data(parent.utf8)), visited.insert(Data(id.utf8)).inserted else {
                 throw AnyHeartNativeTextBlockPlanError.incompleteGraph
@@ -114,7 +137,10 @@ public struct AnyHeartNativeTextBlockPlan: Sendable {
                 parentSourceKey: parentID == rootID ? nil : key(parent), type: type,
                 text: text, style: .object(style), position: position, originalNative: row.raw))
         }
-        let material: AnyJSON = .object([
+        if let pageLayout, entries.map(\.sourceBlockID) != pageLayout.bodyBlockIDs {
+            throw AnyHeartNativeTextBlockPlanError.incompleteGraph
+        }
+        var materialFields: [String: AnyJSON] = [
             "contract": .string("pinkha-heart-native-text-block-plan-v1"),
             "space": .string(snapshot.sourceSpaceID), "object": .string(snapshot.sourceObjectID),
             "snapshotSHA256": .string(snapshot.snapshotSHA256), "viewSHA256": .string(snapshot.viewSHA256),
@@ -124,7 +150,12 @@ public struct AnyHeartNativeTextBlockPlan: Sendable {
                 "type": .string(entry.type), "text": .string(entry.text), "style": entry.style,
                 "position": .string(entry.position), "originalNative": entry.originalNative
             ]) })
-        ])
+        ]
+        if let pageLayout {
+            materialFields["contract"] = .string("pinkha-heart-native-text-block-plan-v2")
+            materialFields["pageLayoutSHA256"] = .string(pageLayout.contentSHA256)
+        }
+        let material: AnyJSON = .object(materialFields)
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         let bytes = try encoder.encode(material)
         guard bytes.count <= AnyDestinationMigrationPlan.maximumPlanBytes else {
@@ -134,6 +165,7 @@ public struct AnyHeartNativeTextBlockPlan: Sendable {
         sourceSpaceID = snapshot.sourceSpaceID; sourceObjectID = snapshot.sourceObjectID
         snapshotSHA256 = snapshot.snapshotSHA256; viewSHA256 = snapshot.viewSHA256
         contentSHA256 = AnyContentDigest.sha256(bytes); self.entries = entries
+        self.pageLayout = pageLayout
     }
 
     /// The owner must be an earlier ordinary object item in the enclosing
