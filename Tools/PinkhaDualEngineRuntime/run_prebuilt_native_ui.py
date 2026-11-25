@@ -33,6 +33,7 @@ STAGES = {
     "custom-type": ("NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen", 600),
     "bin": ("NativeLaunchTests/testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen", 600),
     "miniapps": ("NativeLaunchTests/testAnyMiniAppsTextStudioWarmAndColdReturnPersistInNativeDocument", 900),
+    "archive-picker-observe": ("NativeLaunchTests/testObserveCanonicalArchiveSystemPickers", 600),
 }
 FLOOR = 2 * 1024**3
 
@@ -456,6 +457,28 @@ def main():
             receipt["miniAppsCrossAppFixture"] = admit_miniapps_runner(source, main_record, args.ui_build, ui_record)
         if ui_record.get("integratedMiniAppsFixture") is not None:
             receipt.update(admit_current_runner(source, main_record, args.ui_build, ui_record))
+        if args.stage == "archive-picker-observe":
+            require(main_record["sourceCommit"] == "5ffff121e696044b0d1955524b7a69baf453b4b1",
+                    "exact_observation_app_source_required")
+            method_start = "    func testObserveCanonicalArchiveSystemPickers() throws {"
+            method_end = "    private func openCanonicalArchiveObservationEntry"
+            method_hashes = []
+            for path in (source / "NativeApp/UITests/NativeLaunchTests.swift",
+                         args.ui_build / "source/UITests/NativeLaunchTests.swift"):
+                text = path.read_text()
+                require(text.count(method_start) == 1 and text.count(method_end) == 1,
+                        "one_original_picker_observation_method_required")
+                body = method_start + text.split(method_start, 1)[1].split(method_end, 1)[0]
+                method_hashes.append(hashlib.sha256(body.encode()).hexdigest())
+            require(method_hashes == ["49e9472a160dcb7f4cb6824e6e11369120a6d5cb6ee6f592ade19c3f66d00ded", "49e9472a160dcb7f4cb6824e6e11369120a6d5cb6ee6f592ade19c3f66d00ded"],
+                    "original_picker_observation_method_changed")
+            receipt["observationScope"] = {
+                "methodSHA256": method_hashes[0],
+                "purpose": "observe_original_system_picker_presentation_after_actual_blank_exporter",
+                "acceptance": False, "exportSaveInvoked": False,
+                "importFileSelected": False, "archiveRoundtripAccepted": False,
+                "originalArchiveFailureReceiptSHA256":
+                    "733b210f79f5b31cb07772e104f6dfd43285d0e11dd818346fa28eb537131d94"}
         if args.stage == "miniapps":
             require((receipt.get("miniAppsCrossAppFixture") is not None
                      or receipt.get("integratedMiniAppsFixture") is not None)
@@ -727,8 +750,12 @@ def main():
                        finished=time.time())
         receipt["status"] = "PASS" if first_error is None and not cleanup_errors and \
             receipt.get("counts", {}).get("passedTests") == 1 else "FAIL"
+        if args.stage == "archive-picker-observe" and receipt["status"] == "PASS":
+            receipt["status"] = "PASS_DIAGNOSTIC_ONLY_NOT_ARCHIVE_ACCEPTANCE"
         write(out / "receipt.json", receipt)
-    require(receipt["status"] == "PASS", "scoped_unified_native_ui_acceptance_failed")
+    expected_status = ("PASS_DIAGNOSTIC_ONLY_NOT_ARCHIVE_ACCEPTANCE"
+                       if args.stage == "archive-picker-observe" else "PASS")
+    require(receipt["status"] == expected_status, "scoped_unified_native_ui_execution_failed")
 
 
 if __name__ == "__main__":
