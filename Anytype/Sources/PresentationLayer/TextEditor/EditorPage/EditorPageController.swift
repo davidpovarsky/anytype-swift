@@ -73,6 +73,21 @@ final class EditorPageController: UIViewController {
 
     private var preparedSettingsSession: PreparedEditorPageSession?
 
+    func originalExternalMiniAppsAction(textView: UITextView, range: NSRange) -> UIMenuElement? {
+        guard let session = preparedSettingsSession, let root = viewIfLoaded,
+              textView.isDescendant(of: root),
+              let title = session.externalMiniAppsActionTitle,
+              session.externalMiniAppsTextAction != nil,
+              (try? session.owner.validateOwnership()) != nil else { return nil }
+        return UIAction(title: title, image: UIImage(systemName: "square.stack.3d.up")) {
+            [weak self, weak textView, weak session] _ in
+            guard let self, let textView, let session, self.preparedSettingsSession === session,
+                  let root = self.viewIfLoaded, textView.isDescendant(of: root),
+                  (try? session.owner.validateOwnership()) != nil else { return }
+            session.externalMiniAppsTextAction?(textView, range)
+        }
+    }
+
     /// The native menu is built lazily with this controller's original view.
     /// A prepared source must be installed before that first view load.
     func bindPreparedSettingsSession(_ session: PreparedEditorPageSession) throws {

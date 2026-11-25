@@ -35,6 +35,7 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     private var focusSubscription: AnyCancellable?
     private var resetSubscription: AnyCancellable?
     private var configuredBlockId: String?
+    var pinkhaMiniAppsBlockID: String? { configuredBlockId }
     private var focusContext: EditorCursorManager?
     private var pendingFocus: (id: UUID, position: BlockFocusPosition, requestId: UUID?)?
     private var focusLifetimeId = UUID()

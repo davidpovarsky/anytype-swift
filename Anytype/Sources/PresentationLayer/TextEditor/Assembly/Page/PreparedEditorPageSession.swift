@@ -1,5 +1,6 @@
 import Foundation
 import Services
+import UIKit
 
 /// One prepared document, one assembly and one mounted host. Text/block/table/local-event
 /// operations share its owner; other injected services retain their existing
@@ -17,6 +18,12 @@ final class PreparedEditorPageSession {
     private var hostClaimed = false
     private var controllerBound = false
     private weak var boundController: AnyObject?
+
+    /// A host can add an action to this exact prepared editor's original text menu.
+    /// This callback grants no document authority; every operation retains Owner checks.
+    var externalMiniAppsActionTitle: String?
+    var externalMiniAppsTextAction: (@MainActor (UITextView, NSRange) -> Void)?
+    var mountedEditorController: EditorPageController? { boundController as? EditorPageController }
 
     init(
         data: EditorPageObject,
