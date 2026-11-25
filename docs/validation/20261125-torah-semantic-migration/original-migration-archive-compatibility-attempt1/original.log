@@ -1,0 +1,115 @@
+warning: '--skip-update' option is deprecated and will be removed in a future release
+Building for debugging...
+[Computing dependencies]
+[Constructing description]
+[Pre-planning 1 / 362]
+[Planning 265 / 362]
+[Planning deferred tasks]
+[Constructing 301 / 1127]
+[Starting]
+[9 / 34] PinkhaAnyIntegrationTests-product
+[19 / 42] PinkhaAnyIntegrationTests-product
+[20 / 42] pinkha-any-integration-probe-product
+[20 / 42] PinkhaAnyIntegrationTests-product
+[26 / 42] PinkhaAnyIntegrationTests-product
+[27 / 42] PinkhaAnyIntegrationTests-test-runner
+[29 / 43] pinkha-any-integration-probe-product
+[31 / 43] pinkha-any-integration-probe-product
+[32 / 43]
+[32 / 43] PinkhaAnyIntegrationTests-product
+macro expansion #expect:2:34: [1;33mwarning: [1;39m'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+`- /mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AssociationBridgeTests.swift:120:10: [1;39mnote: [1;39mexpanded code originates here[0;0m
+[0;36m116 |[0;0m     @Test func staleWholeSnapshotReplacementStillRefused() async throws {
+[0;36m117 |[0;0m         let (_, _, _, repository) = try fixture()
+[0;36m118 |[0;0m         await [4;39m#expect(throws: TorahAssociationRepositoryError.unsafeSnapshotReplacement) {[0;0m
+    [0;36m|[0;0m               `- [1;39mnote: [1;39min expansion of macro 'expect' here[0;0m
+[0;36m119 |[0;0m             try await repository.setDocumentAssociations(objectId: "new-document", items: [item()], spaceId: "new-space")
+[0;36m120 |[0;0m         }
+[0;36m    +--- [0;0mmacro expansion #expect [0;36m---------------------------------------[0;0m
+[0;36m    |[0;0m[0;36m1 |[0;0m Testing.__checkClosureCall(throws: TorahAssociationRepositoryError.unsafeSnapshotReplacement,performing: {
+[0;36m    |[0;0m[0;36m2 |[0;0m             try await repository.setDocumentAssociations(objectId: "new-document", items: [item()], spaceId: "new-space")
+[0;36m    |[0;0m  [0;36m|[0;0m                                  `- [1;33mwarning: [1;39m'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m    |[0;0m[0;36m3 |[0;0m         },expression: .__fromSyntaxNode("TorahAssociationRepositoryError.unsafeSnapshotReplacement"),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+[0;36m    +----------------------------[0;0m[0;36m---------------------------------------[0;0m
+[0;36m121 |[0;0m     }
+[0;36m122 |[0;0m 
+
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AssociationBridgeTests.swift:119:34: [1;33mwarning: [1;39m'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m117 |[0;0m         let (_, _, _, repository) = try fixture()
+[0;36m118 |[0;0m         await #expect(throws: TorahAssociationRepositoryError.unsafeSnapshotReplacement) {
+[0;36m119 |[0;0m             try await repository.setDocumentAssociations(objectId: "new-document", items: [item()], spaceId: "new-space")
+    [0;36m|[0;0m                                  `- [1;33mwarning: [1;39m'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m120 |[0;0m         }
+[0;36m121 |[0;0m     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[36 / 44] PinkhaAnyIntegrationTests-product
+[40 / 47] PinkhaAnyIntegrationTests-test-runner
+[44 / 47] PinkhaAnyIntegrationTests-test-runner
+[47 / 48] PinkhaAnyIntegrationTests-test-runner
+[48 / 48] PinkhaAnyIntegrationTests-test-runner
+Build complete! (46.49 secs)
+◇ Test run started.
+↳ Testing Library Version: 6.4.3 (ba0861fb203553c)
+↳ Target Platform: aarch64-unknown-linux-gnu
+◇ Suite "Canonical native archive transport" started.
+◇ Suite "Actual PinkhaKit domain on the Any operation bridge" started.
+◇ Test v2MigrationAndLaterEditRetainEnvelopeRecordAndItemUnknownFields() started.
+◇ Test migrationPartialFailureHasResumableReceipt() started.
+◇ Test reusedMigrationIdentityWithChangedPayloadFailsBeforeWrite() started.
+◇ Test mappedNoteMustExistInDestinationWorkspaceBeforeImport() started.
+◇ Test oldV1FixtureMigratesWithoutInventedMetadata() started.
+◇ Test emptyMigrationPlanIdentityIncludesDestinationAndMigrationKey() started.
+◇ Test internalNoteLinksRequireExplicitDestinationMapping() started.
+◇ Test migrationKnownSemanticCollisionFailsBeforeAnyWrite() started.
+◇ Test migrationCannotReportCompleteAfterConcurrentSemanticCollision() started.
+◇ Test malformedInternalNoteLinkCannotBeGuessed() started.
+◇ Test migrationRefusesNumbersTheOriginalDomainCannotPreserve() started.
+◇ Test ambiguousDuplicateJSONKeysCannotBeImported() started.
+◇ Test migrationCannotReportCompleteAfterConcurrentObservedRemove() started.
+◇ Test migrationCannotReportCompleteAfterConcurrentLogicalCollision() started.
+◇ Test migrationRejectsMissingBlockMappingAndUnsupportedVersionBeforeWrites() started.
+◇ Test internalNoteMappingRewritesOnlyKnownNativeReferenceFields() started.
+◇ Test contradictoryInternalNoteMetadataIsNeverSuggestedAsAValidMapping() started.
+◇ Test wholeImportPreflightAndRetryDoNotDuplicateAcceptedClaims() started.
+◇ Test duplicateLiveAssociationIdentityAcrossPayloadsFailsBeforeAnyWrites() started.
+◇ Test foreignCollisionRemainsAuditableButCannotBeImportedAsSuccess() started.
+◇ Test reviewExposesExactBlockAndInternalNoteMappings() started.
+◇ Test opaquePayloadBytesAndUnknownNumbersRoundTripWithoutLocalFields() started.
+◇ Test payloadLocationCannotDisagreeWithItsArchivedOperation() started.
+◇ Test unreachableBlockHistoryIsPreservedAndRequiresExplicitResolution() started.
+◇ Test unknownEnvelopeFieldsAndDuplicateKeysAreRejectedWithoutDroppingBytes() started.
+◇ Test removedHistoryIsArchivedWithoutResurrectingItsAssociation() started.
+◇ Test explicitMappingPreservesEachEnvelopeAndOriginalArchiveForAudit() started.
+◇ Test missingObservedHistoryCannotProduceACompleteImportPlan() started.
+✔ Test reusedMigrationIdentityWithChangedPayloadFailsBeforeWrite() passed after 0.124 seconds.
+✔ Test migrationPartialFailureHasResumableReceipt() passed after 0.124 seconds.
+✔ Test mappedNoteMustExistInDestinationWorkspaceBeforeImport() passed after 0.124 seconds.
+✔ Test emptyMigrationPlanIdentityIncludesDestinationAndMigrationKey() passed after 0.124 seconds.
+✔ Test oldV1FixtureMigratesWithoutInventedMetadata() passed after 0.124 seconds.
+✔ Test internalNoteLinksRequireExplicitDestinationMapping() passed after 0.124 seconds.
+✔ Test malformedInternalNoteLinkCannotBeGuessed() passed after 0.124 seconds.
+✔ Test migrationRefusesNumbersTheOriginalDomainCannotPreserve() passed after 0.124 seconds.
+✔ Test ambiguousDuplicateJSONKeysCannotBeImported() passed after 0.124 seconds.
+✔ Test migrationCannotReportCompleteAfterConcurrentSemanticCollision() passed after 0.124 seconds.
+✔ Test migrationRejectsMissingBlockMappingAndUnsupportedVersionBeforeWrites() passed after 0.124 seconds.
+✔ Test migrationCannotReportCompleteAfterConcurrentLogicalCollision() passed after 0.124 seconds.
+✔ Test internalNoteMappingRewritesOnlyKnownNativeReferenceFields() passed after 0.257 seconds.
+✔ Test migrationCannotReportCompleteAfterConcurrentObservedRemove() passed after 0.257 seconds.
+✔ Test contradictoryInternalNoteMetadataIsNeverSuggestedAsAValidMapping() passed after 0.155 seconds.
+✔ Test duplicateLiveAssociationIdentityAcrossPayloadsFailsBeforeAnyWrites() passed after 0.157 seconds.
+✔ Test foreignCollisionRemainsAuditableButCannotBeImportedAsSuccess() passed after 0.156 seconds.
+✔ Test wholeImportPreflightAndRetryDoNotDuplicateAcceptedClaims() passed after 0.157 seconds.
+✔ Test opaquePayloadBytesAndUnknownNumbersRoundTripWithoutLocalFields() passed after 0.156 seconds.
+✔ Test reviewExposesExactBlockAndInternalNoteMappings() passed after 0.156 seconds.
+✔ Test payloadLocationCannotDisagreeWithItsArchivedOperation() passed after 0.156 seconds.
+✔ Test unreachableBlockHistoryIsPreservedAndRequiresExplicitResolution() passed after 0.156 seconds.
+✔ Test unknownEnvelopeFieldsAndDuplicateKeysAreRejectedWithoutDroppingBytes() passed after 0.156 seconds.
+✔ Test removedHistoryIsArchivedWithoutResurrectingItsAssociation() passed after 0.156 seconds.
+✔ Test missingObservedHistoryCannotProduceACompleteImportPlan() passed after 0.154 seconds.
+✔ Test migrationKnownSemanticCollisionFailsBeforeAnyWrite() passed after 0.273 seconds.
+✔ Test v2MigrationAndLaterEditRetainEnvelopeRecordAndItemUnknownFields() passed after 0.273 seconds.
+✔ Suite "Actual PinkhaKit domain on the Any operation bridge" passed after 0.274 seconds.
+✔ Test explicitMappingPreservesEachEnvelopeAndOriginalArchiveForAudit() passed after 0.162 seconds.
+✔ Suite "Canonical native archive transport" passed after 0.278 seconds.
+✔ Test run with 28 tests in 2 suites passed after 0.278 seconds.
