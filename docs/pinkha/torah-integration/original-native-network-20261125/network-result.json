@@ -1,0 +1,51 @@
+{
+  "status": "PASSED_ACTUAL_ORIGINAL_TWO_PROCESS_ROUNDTRIP",
+  "attempt": 2,
+  "exits": {
+    "producer": 0,
+    "consumer": 0
+  },
+  "elapsed_seconds": 8.68,
+  "stop_reason": null,
+  "peak_fixture_bytes": 204624402,
+  "free_before": 44483850240,
+  "free_after": 44734103552,
+  "receipts": {
+    "consumer-readback.json": {
+      "body_sha256": "ee3700cdc8849ed001a80b2d7a92cb031b16cc409e95c8a063cc431df01c6364",
+      "lan_sync_disabled": true,
+      "network_mode": 0,
+      "phase": "consumer",
+      "pid": 51604,
+      "repository": "/Users/m1/builds/anytype-original-network-acceptance-20261125/run-1-private/consumer-repository",
+      "same_account": "AA5y2wipdZPPGiMoK3hckf6DUJQHHehNPt6BgyenPamSnfQm",
+      "same_object": "bafyreiarjeh5gi2eb6cespoglsvraum4ku226iainadbhfkncyvsavgadm",
+      "same_space": "bafyreigdy7rjfil42wczgnam5njdwy5e2pcio23p2jls4ycgtzmp3usdqa.2xu9o61hnno0b",
+      "status": "ACTUAL_ORIGINAL_REMOTE_BODY_READBACK"
+    },
+    "producer-readback.json": {
+      "body_sha256": "2b557da6c46a15637b2c348beff15504a16a91832693c3b2edd7aafe49642094",
+      "lan_sync_disabled": true,
+      "network_mode": 0,
+      "phase": "producer",
+      "pid": 51603,
+      "repository": "/Users/m1/builds/anytype-original-network-acceptance-20261125/run-1-private/producer-repository",
+      "same_account": "AA5y2wipdZPPGiMoK3hckf6DUJQHHehNPt6BgyenPamSnfQm",
+      "same_object": "bafyreiarjeh5gi2eb6cespoglsvraum4ku226iainadbhfkncyvsavgadm",
+      "same_space": "bafyreigdy7rjfil42wczgnam5njdwy5e2pcio23p2jls4ycgtzmp3usdqa.2xu9o61hnno0b",
+      "status": "ACTUAL_ORIGINAL_REMOTE_BODY_READBACK"
+    }
+  },
+  "actual_account_stop": {
+    "producer": {
+      "application_absent": true,
+      "returned": true
+    },
+    "consumer": {
+      "application_absent": true,
+      "returned": true
+    }
+  },
+  "original_source": "c7e9935eb36a47f73d04cf72ea45472d3f2a8a70",
+  "claim_scope": "actual original default remote network between independent processes/repositories with LAN disabled; not integrated app UI or physical device"
+}

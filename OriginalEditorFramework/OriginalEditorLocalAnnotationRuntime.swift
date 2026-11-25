@@ -10,17 +10,19 @@ import SwiftProtobuf
 /// account/handler, installs a replacement engine, or makes a remote Space.
 @MainActor
 internal final class OriginalEditorLocalAnnotationRuntime {
-    private enum Phase { case starting, ready, failed }
+    private enum Phase { case starting, ready, stopping, stopped, failed, stopFailed }
     private static var claimed = false
     private static var retained: OriginalEditorLocalAnnotationRuntime?
     private let appGroup: String
     private let journal: OriginalEditorLocalAnnotationJournal
     private let accountManager: any AccountManagerProtocol
     private let userInfo: any BasicUserInfoStorageProtocol
+    private let authMiddleService: any AuthMiddleServiceProtocol
     private let accountLifetime: EditorDocumentWriteLifetime
     private let lifetime = EditorDocumentWriteLifetime()
-    private let listener = MiddlewareEventsListener()
-    private let handler = InvocationMesagesHandler()
+    private let process: OriginalEditorEmbeddedAccountProcess
+    private let processLease: OriginalEditorLocalAccountLease
+    private var stopTask: Task<Void, Error>?
     private var accountCapture: EditorDocumentWriteCapture?
     private var accountReservation: EditorDocumentWriteLifetime.Observation?
     private var runtimeBinding: EditorDocumentWriteSourceBinding?
@@ -32,12 +34,17 @@ internal final class OriginalEditorLocalAnnotationRuntime {
     private init(appGroup: String, journal: OriginalEditorLocalAnnotationJournal,
                  accountManager: any AccountManagerProtocol,
                  userInfo: any BasicUserInfoStorageProtocol,
-                 accountLifetime: EditorDocumentWriteLifetime) {
+                 accountLifetime: EditorDocumentWriteLifetime,
+                 process: OriginalEditorEmbeddedAccountProcess,
+                 processLease: OriginalEditorLocalAccountLease) {
         self.appGroup = appGroup
         self.journal = journal
         self.accountManager = accountManager
         self.userInfo = userInfo
+        authMiddleService = Container.shared.authMiddleService()
         self.accountLifetime = accountLifetime
+        self.process = process
+        self.processLease = processLease
     }
 
     static func acquire(appGroup: String) async throws -> OriginalEditorLocalAnnotationRuntime {
@@ -48,30 +55,34 @@ internal final class OriginalEditorLocalAnnotationRuntime {
             try retained.validate()
             return retained
         }
-        guard !claimed, InvocationSettings.handler == nil, InvocationDispatchContext.binding == nil else {
+        guard !claimed, InvocationDispatchContext.binding == nil else {
             throw AnytypeOriginalEditorLocalAnnotationError.runtimeAlreadyOwned
         }
-        _ = try AnytypeOriginalEditorModule.inspectResources()
-        #if DEBUG || RELEASE_NIGHTLY
-        try OriginalRuntimeEnvironment.configureEmbedded(appGroup: appGroup, expectedTarget: .debug)
-        #elseif RELEASE_ANYTYPE
-        try OriginalRuntimeEnvironment.configureEmbedded(appGroup: appGroup, expectedTarget: .releaseAnytype)
-        #else
-        throw AnytypeOriginalEditorLocalAnnotationError.incompatibleDeployment
-        #endif
-        // Claim before any await. A cancelled bootstrap never opens a second
-        // account in this process; the original native call may still be running.
+        let process = try OriginalEditorEmbeddedAccountProcess.acquire(appGroup: appGroup)
+        let lease = try process.claimLocalAccount()
+        // Reserve the original process before the first await. The original
+        // account presentation and localOnly editor can never overlap.
         claimed = true
-        let journal = try await Task.detached {
-            try OriginalEditorLocalAnnotationJournal.open(appGroup: appGroup)
-        }.value
+        let journal: OriginalEditorLocalAnnotationJournal
+        do {
+            journal = try await Task.detached {
+                try OriginalEditorLocalAnnotationJournal.open(appGroup: appGroup)
+            }.value
+        } catch {
+            // Journal opening dispatched no native account operation. This
+            // unused reservation can be released without an AccountStop.
+            try process.releaseLocalAccount(lease)
+            claimed = false
+            throw error
+        }
         let manager = Container.shared.accountManager()
         let info = Container.shared.basicUserInfoStorage()
         guard let accountLifetime = manager.editorWriteLifetime else {
             throw AnytypeOriginalEditorLocalAnnotationError.originalServiceUnavailable
         }
         let runtime = OriginalEditorLocalAnnotationRuntime(appGroup: appGroup, journal: journal,
-            accountManager: manager, userInfo: info, accountLifetime: accountLifetime)
+            accountManager: manager, userInfo: info, accountLifetime: accountLifetime,
+            process: process, processLease: lease)
         retained = runtime
         do {
             try await runtime.bootstrap()
@@ -100,8 +111,7 @@ internal final class OriginalEditorLocalAnnotationRuntime {
         let transition = EditorAccountWriteTransition(lifetime: accountLifetime,
             rpcNames: recovering ? ["WalletRecover", "AccountSelect"] : ["WalletCreate", "AccountCreate"])
         defer { transition.finish() }
-        InvocationSettings.handler = handler
-        let auth = Container.shared.authMiddleService()
+        let auth = authMiddleService
         let account: AccountData
         if recovering {
             guard let id = observation.accountID else {
@@ -162,7 +172,6 @@ internal final class OriginalEditorLocalAnnotationRuntime {
         let spaces = Container.shared.spaceViewsStorage()
         let participants = Container.shared.participantsStorage()
         try await InvocationDispatchContext.$binding.withValue(capture.accountDispatchBinding()) {
-            listener.startListening()
             await spaces.startSubscription()
             await participants.startSubscription()
             try Task.checkCancellation()
@@ -174,10 +183,10 @@ internal final class OriginalEditorLocalAnnotationRuntime {
     }
 
     private func identityIsCurrent() -> Bool {
-        phase != .failed && !accountID.isEmpty
+        (phase == .starting || phase == .ready) && !accountID.isEmpty
             && accountManager.account.id.utf8.elementsEqual(accountID.utf8)
             && userInfo.usersId.utf8.elementsEqual(accountID.utf8)
-            && InvocationSettings.handler === handler
+            && (try? process.validateLocalAccount(processLease)) != nil
     }
 
     internal func validate() throws {
@@ -192,6 +201,85 @@ internal final class OriginalEditorLocalAnnotationRuntime {
         lifetime.markUnavailable()
         // Retain handler/account/native admissions and original repository.
         // Retirement is not evidence of rollback or completion of a native call.
+    }
+
+    /// A normal account presentation may start only after the private localOnly
+    /// editor was explicitly closed and the REAL original account has stopped.
+    /// The stop task outlives cancellation of any awaiting sheet or window.
+    static func suspend(appGroup: String, retrying: Bool) async throws {
+        guard let runtime = retained else {
+            guard !claimed else { throw AnytypeOriginalEditorLocalAnnotationError.runtimeAlreadyOwned }
+            return
+        }
+        guard runtime.appGroup.utf8.elementsEqual(appGroup.utf8) else {
+            throw AnytypeOriginalEditorLocalAnnotationError.incompatibleDeployment
+        }
+        try await runtime.stop(retrying: retrying)
+    }
+
+    private func stop(retrying: Bool) async throws {
+        if let stopTask, phase == .stopping || !retrying {
+            try await stopTask.value
+            return
+        }
+        guard !opening, currentOwner?.isCurrent != true else {
+            // Do not discard a draft held by another ordinary editor/window.
+            throw AnytypeOriginalEditorLocalAnnotationError.overlappingSession
+        }
+        if phase == .stopFailed && !retrying {
+            throw AnytypeOriginalEditorLocalAnnotationError.closeRequiresExplicitRetry
+        }
+        guard phase == .ready || phase == .failed || phase == .stopFailed else {
+            throw AnytypeOriginalEditorLocalAnnotationError.runtimeAlreadyOwned
+        }
+        try process.validateLocalAccount(processLease)
+        guard InvocationDispatchContext.binding == nil else {
+            throw AnytypeOriginalEditorLocalAnnotationError.runtimeAlreadyOwned
+        }
+        phase = .stopping
+        lifetime.markUnavailable()
+        currentOwner?.retire()
+        // This reservation protected the selected local account between calls.
+        // Retired source operations keep THEIR original admissions until their
+        // actual native callbacks drain; AccountStop waits on those admissions.
+        accountReservation?.cancel()
+        accountReservation = nil
+        let task = Task { @MainActor [self] in
+            let transition = EditorAccountWriteTransition(
+                lifetime: accountLifetime, rpcNames: ["AccountStop"])
+            do {
+                try await InvocationDispatchContext.$binding.withValue(transition.binding) {
+                    try await authMiddleService.logout(removeData: false)
+                }
+                await transition.finishAndWaitForRelease()
+                try await ServiceMessageHandlerAdapter.shared.waitForPendingEventDelivery()
+                await Container.shared.spaceViewsStorage().stopSubscription()
+                await Container.shared.participantsStorage().stopSubscription()
+                await Container.shared.loginStateService().cleanStateAfterLogout()
+                try await ServiceMessageHandlerAdapter.shared.waitForPendingEventDelivery()
+                accountManager.account = .empty
+                // No handler is replaced and no local repository/credential is
+                // deleted. A subsequent local session selects the SAME private
+                // account with networkMode.localOnly from its original journal.
+                try process.releaseLocalAccount(processLease)
+                currentOwner = nil
+                accountCapture = nil
+                runtimeBinding = nil
+                phase = .stopped
+                if Self.retained === self {
+                    Self.retained = nil
+                    Self.claimed = false
+                }
+            } catch {
+                await transition.finishAndWaitForRelease()
+                phase = .stopFailed
+                // A failed Stop retains the sole owner and exact original
+                // repository. Explicit retry is the only in-process release.
+                throw error
+            }
+        }
+        stopTask = task
+        try await task.value
     }
 
     private func createPrivateSpace(name: String) async throws -> AccountInfo {
@@ -272,6 +360,7 @@ internal final class OriginalEditorLocalAnnotationRuntime {
                 candidate == editorBinding && sourceLifetime.isCurrent && sourceIsCurrent(source)
             }
             try check()
+            host.snapshotTransportOriginHostProfileID = canonical.transportOriginHostProfileID
             draft = try await journal.transition(draft, to: "opened")
             let owner = OriginalEditorLocalAnnotationDraftOwner(host: host, sourceLifetime: sourceLifetime,
                 journal: journal, draft: draft, retirement: retirement,

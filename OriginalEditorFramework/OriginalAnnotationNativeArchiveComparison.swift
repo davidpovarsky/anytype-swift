@@ -37,6 +37,10 @@ internal struct OriginalAnnotationNativeArchiveComparison: Sendable {
     let spaceID: String
     let formatVersion: Int64
     let rootSnapshot: Anytype_Model_SmartBlockSnapshotBase
+    /// Actual exported causal heads and canonical root bytes are observations;
+    /// they are not a compare-and-swap token for an unrelated later native RPC.
+    let rootLogHeads: [String: String]
+    let canonicalRootBytes: Data
     let objectIDs: [String]
     let filePaths: [String]
     private let objects: [String: Data]
@@ -52,6 +56,7 @@ internal struct OriginalAnnotationNativeArchiveComparison: Sendable {
         var visited = Set<Data>()
         var objectBytes: [String: Data] = [:]
         var nativeObjects: [String: Anytype_Model_SmartBlockSnapshotBase] = [:]
+        var nativeHeads: [String: [String: String]] = [:]
         var binaryFiles: [Data: Data] = [:]
         var binaryNames: [String] = []
         var requiredFiles = Set<Data>()
@@ -106,6 +111,7 @@ internal struct OriginalAnnotationNativeArchiveComparison: Sendable {
             }
             // Preserve original decoded data for strict metadata inspection.
             nativeObjects[id] = body
+            nativeHeads[id] = snapshot.logHeads
             var blockIDs = Set<Data>()
             for block in body.blocks {
                 guard !block.id.isEmpty, blockIDs.insert(Data(block.id.utf8)).inserted else {
@@ -133,11 +139,13 @@ internal struct OriginalAnnotationNativeArchiveComparison: Sendable {
               visited == Set(indexed.keys), reportedObjectCount > 0,
               Int(reportedObjectCount) == objectBytes.count else { throw Failure.incompleteInventory }
         guard requiredFiles == Set(binaryFiles.keys) else { throw Failure.missingFileBytes }
-        guard let root = nativeObjects[rootID] else { throw Failure.wrongRoot }
+        guard let root = nativeObjects[rootID], let rootBytes = objectBytes[rootID] else { throw Failure.wrongRoot }
         self.rootID = rootID
         self.spaceID = spaceID
         self.formatVersion = formatVersion
         rootSnapshot = root
+        rootLogHeads = nativeHeads[rootID] ?? [:]
+        canonicalRootBytes = rootBytes
         objectIDs = objectBytes.keys.sorted()
         filePaths = binaryNames.sorted { Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8)) }
         objects = objectBytes

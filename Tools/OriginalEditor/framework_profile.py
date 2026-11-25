@@ -39,8 +39,8 @@ def read_manifest():
         '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC',
         '2E63D9B52D56520C008A733A'},
         'Unreviewed shared runtime dependency object set')
-    require(len(value.get('framework_facade_sources', [])) == 20
-            and len(set(value['framework_facade_sources'])) == 20,
+    require(len(value.get('framework_facade_sources', [])) == 21
+            and len(set(value['framework_facade_sources'])) == 21,
             'Incomplete reviewed Host facade source closure')
     require(sha256(HERE / 'public_host_contract.json') == value.get('public_host_contract_sha256'),
             'Reviewed public Host and qualification SPI contract differs')
@@ -72,7 +72,8 @@ def verify_complete_source(profile, continuation):
             and len(sources) == profile['original_swift_sources'] == 2256
             and all(p.startswith('Anytype/Sources/') and p.endswith('.swift') for p in sources),
             'Complete original Swift source inventory differs')
-    require(facades == profile['framework_facade_sources'] and facades == sorted(set(facades))
+    require(profile['framework_facade_sources'] == sorted(facades + ['OriginalEditorFramework/AnytypeOriginalAnnotationRevision.swift'])
+            and facades == sorted(set(facades))
             and len(facades) == 20
             and {'OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift',
                  'OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift',
@@ -142,7 +143,7 @@ def verify_project(raw, baseline, profile):
                               if old[key]['isa'] == 'PBXSourcesBuildPhase']
     require(len(original_source_phases) == 1, 'Ambiguous original explicit compiler source phase')
     original_source_refs = [old[key]['fileRef'] for key in original_source_phases[0]['files']]
-    require(len(child_ids) == len(set(child_ids)) == 20
+    require(len(child_ids) == len(set(child_ids)) == 21
             and len(original_source_refs) == len(set(original_source_refs))
             and not set(original_source_refs) & set(child_ids)
             and len(source_ids) == len(set(source_ids)) == len(child_ids) + len(original_source_refs),
@@ -262,7 +263,7 @@ def source_observation(root, environment=None):
     continuation = verify_complete_source(profile, complete)
     require(source_files == continuation['source_files'], 'Complete reviewed original source membership differs')
     require(git(root, 'rev-parse', 'HEAD:OriginalEditorFramework')
-            == continuation['reviewed_product_trees']['OriginalEditorFramework'],
+            == generated_source['composed_product_trees']['OriginalEditorFramework'],
             'Complete reviewed facade source bytes differ')
     main_files = [p for p in source_files if re.search(r'(?m)^\s*@main\b', (root / p).read_text())]
     require(main_files == ['Anytype/Sources/ApplicationLayer/AppScene.swift'], 'Unexpected application entrypoints')

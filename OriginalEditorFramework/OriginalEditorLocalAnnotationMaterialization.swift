@@ -86,7 +86,8 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
         try sourceIsCurrent()
         try selection.validate()
         try requireIdentity(view, objectID: objectID, spaceID: spaceID,
-                            annotationTypeID: annotationTypeID, source: source)
+                            annotationTypeID: annotationTypeID, source: source,
+                            transportOriginHostProfileID: canonical.transportOriginHostProfileID)
         return objectID
     }
 
@@ -170,7 +171,7 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
         }
     }
 
-    private static func observedImport(_ response: Anytype_Rpc.Annotation.Import.Response,
+    internal static func observedImport(_ response: Anytype_Rpc.Annotation.Import.Response,
                                        snapshot: AnytypeOriginalEditorSnapshot,
                                        accountID: String, targetSpaceID: String,
                                        source: AnytypeOriginalEditorLocalAnnotationSource) throws -> String {
@@ -214,7 +215,8 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
             archiveBytes: readback.nativeArchive, rootID: readback.rootID,
             spaceID: targetSpaceID, formatVersion: AnytypeOriginalEditorSnapshot.formatVersion,
             reportedObjectCount: readback.exportReport.succeed)
-        try OriginalEditorLocalAnnotationNativeBody.requireMarkers(archive.rootSnapshot.details, source: source)
+        try OriginalEditorLocalAnnotationNativeBody.requireMarkers(archive.rootSnapshot.details, source: source,
+            transportOriginHostProfileID: snapshot.provenance.transportOriginHostProfileID)
         return readback.rootID
     }
 
@@ -230,7 +232,8 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
 
     private static func requireIdentity(_ view: Anytype_Model_ObjectView, objectID: String,
                                         spaceID: String, annotationTypeID: String,
-                                        source: AnytypeOriginalEditorLocalAnnotationSource) throws {
+                                        source: AnytypeOriginalEditorLocalAnnotationSource,
+                                        transportOriginHostProfileID: String? = nil) throws {
         let details = view.details.filter { $0.id == objectID }
         let blockIDs = view.blocks.map(\.id)
         guard view.rootID == objectID, details.count == 1, let detail = details.first,
@@ -243,7 +246,8 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
               case .stringValue(let type)? = types.values.first?.kind, type == annotationTypeID else {
             throw AnytypeOriginalEditorLocalAnnotationError.wrongNativeIdentity
         }
-        try OriginalEditorLocalAnnotationNativeBody.requireMarkers(detail.details, source: source)
+        try OriginalEditorLocalAnnotationNativeBody.requireMarkers(detail.details, source: source,
+            transportOriginHostProfileID: transportOriginHostProfileID)
         for key in ["isArchived", "isDeleted"] {
             guard let field = detail.details.fields[key] else { continue }
             guard case .boolValue(false)? = field.kind else {

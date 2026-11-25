@@ -20,8 +20,13 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
         /// Historical pre-save revision, never authority for a later reopen.
         public let capturedAgainstRevision: Int64
         public let sourceWitnessSHA256: String
+        /// Original native creation profile retained after a genuine selected-account
+        /// read is framed for a different current Host. This is history, never
+        /// account authority or permission to write to the original object.
+        public let transportOriginHostProfileID: String?
 
-        fileprivate init(binding: AnytypeOriginalEditorBinding) {
+        fileprivate init(binding: AnytypeOriginalEditorBinding,
+                         transportOriginHostProfileID: String? = nil) {
             accountID = binding.accountID
             spaceID = binding.spaceID
             objectID = binding.objectID
@@ -29,6 +34,7 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
             annotationUUID = binding.annotationUUID
             capturedAgainstRevision = binding.expectedRevision
             sourceWitnessSHA256 = binding.sourceWitnessSHA256
+            self.transportOriginHostProfileID = transportOriginHostProfileID
         }
 
         /// Exact identity comparison for the host's captured pre-save context.
@@ -108,6 +114,11 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
             expectedRevision: header.provenance.capturedAgainstRevision,
             sourceWitnessSHA256: header.provenance.sourceWitnessSHA256
         )
+        if let origin = header.provenance.transportOriginHostProfileID {
+            guard !origin.isEmpty, origin.utf8.count <= 512, !origin.utf8.contains(0) else {
+                throw AnytypeOriginalEditorSnapshotError.invalidFrame
+            }
+        }
         guard OriginalAnnotationPayloadBudget.acceptsArchiveBytes(
             bytes.count - boundary, maximumBodyBytes: maximumBodyBytes
         ) else { throw AnytypeOriginalEditorSnapshotError.bodyTooLarge }
@@ -133,7 +144,8 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
     /// supply new capture data; public decoding is never an import operation.
     internal static func frame(
         archive: Data, reportBytes: Data, responseCount: Int32,
-        binding: AnytypeOriginalEditorBinding, maximumBodyBytes: Int
+        binding: AnytypeOriginalEditorBinding, maximumBodyBytes: Int,
+        transportOriginHostProfileID: String? = nil
     ) throws -> Self {
         try validateLimit(maximumBodyBytes)
         guard OriginalAnnotationPayloadBudget.acceptsArchiveBytes(
@@ -145,7 +157,7 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
         try validateReport(report, responseCount: responseCount)
         let header = Header(
             archiveFormat: "anytype.protobuf.zip",
-            provenance: Provenance(binding: binding),
+            provenance: Provenance(binding: binding, transportOriginHostProfileID: transportOriginHostProfileID),
             archiveByteCount: archive.count,
             archiveSHA256: digest(archive),
             exportedObjectCount: responseCount,
@@ -237,6 +249,7 @@ extension AnytypeOriginalEditorHost {
         try validateCurrentSource()
         try AnytypeOriginalEditorSnapshot.validateLimit(maximumBodyBytes)
         let capturedBinding = binding
+        let capturedTransportOriginHostProfileID = snapshotTransportOriginHostProfileID
         let directory = try OriginalEditorArchiveFiles.makeOwnedDirectory()
         var beganCapture = false
         do {
@@ -276,7 +289,8 @@ extension AnytypeOriginalEditorHost {
                 )
                 let snapshot = try AnytypeOriginalEditorSnapshot.frame(
                     archive: archive, reportBytes: reportBytes, responseCount: response.succeed,
-                    binding: capturedBinding, maximumBodyBytes: maximumBodyBytes
+                    binding: capturedBinding, maximumBodyBytes: maximumBodyBytes,
+                    transportOriginHostProfileID: capturedTransportOriginHostProfileID
                 )
                 return AnytypeOriginalEditorSnapshotCapture(
                     snapshot: snapshot, retainedArchiveURL: archiveURL,

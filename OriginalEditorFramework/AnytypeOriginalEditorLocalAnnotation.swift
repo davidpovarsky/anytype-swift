@@ -40,10 +40,10 @@ public struct AnytypeOriginalEditorLocalAnnotationSource: Sendable, Equatable {
 
 /// A plain saved note is seeded through original native block commands. A rich
 /// body is the original opaque snapshot decoded from the canonical SQLite row.
-/// This local lifecycle supports a body's original Host profile and increasing
-/// local row revisions. Cross-profile/device transport with rebased revisions
-/// requires a separate canonical transport admission and is rejected here;
-/// historical native provenance and creation markers are never relabelled.
+/// The current Host profile/revision must match its captured row. A genuine
+/// selected-account read may retain a different native creation profile as
+/// explicit transport history. Native archive bytes and creation markers are
+/// never relabelled; all reconstructed draft writes remain localOnly.
 public enum AnytypeOriginalEditorLocalAnnotationBody: Sendable {
     case plainText(String)
     case nativeSnapshot(AnytypeOriginalEditorSnapshot)
@@ -56,7 +56,7 @@ public enum AnytypeOriginalEditorLocalAnnotationError: Error, Sendable, Equatabl
     case missingCredential, uncertainNativeOperation, unavailableAccount
     case unavailableSpace, unobservedSchema, wrongNativeIdentity
     case invalidNativeImport, overlappingSession, alreadyMounted, captureAlreadyAttempted
-    case invalidPreview, storageFailure(Int32)
+    case invalidPreview, storageFailure(Int32), closeRequiresExplicitRetry
 }
 
 /// Bind this one-use token to the original Host DB/session/presentation lifetimes
@@ -135,11 +135,26 @@ public final class AnytypeOriginalEditorLocalAnnotationSession {
 }
 
 extension AnytypeOriginalEditorModule {
+    /// Close every mounted local editor first. This joins the genuine native
+    /// AccountStop and event/subscription drain before releasing the process to
+    /// an explicit original account presentation. Private drafts remain localOnly.
+    @MainActor
+    public static func suspendLocalAnnotationRuntime(appGroup: String) async throws {
+        try await OriginalEditorLocalAnnotationRuntime.suspend(appGroup: appGroup, retrying: false)
+    }
+
+    /// Retry only the retained failed Stop; never recreate or replace its owner.
+    @MainActor
+    public static func retrySuspendLocalAnnotationRuntime(appGroup: String) async throws {
+        try await OriginalEditorLocalAnnotationRuntime.suspend(appGroup: appGroup, retrying: true)
+    }
+
     /// Opens only an app-owned localOnly draft, reconstructed from the captured
     /// canonical row. No caller-selected account, Space, object or path is accepted.
     /// This is local editing only: it creates neither a remote destination nor
-    /// an exchange acknowledgement. It deliberately rejects transported rich
-    /// bodies whose historical profile/revision has no admitted local lineage.
+    /// an exchange acknowledgement. Transported bytes must have been explicitly
+    /// committed to this Host's canonical row with its own increasing revision;
+    /// the original native creation profile remains separate historical data.
     @MainActor
     public static func openLocalAnnotation(
         appGroup: String,
@@ -184,6 +199,10 @@ internal enum OriginalEditorLocalAnnotationValidation {
 internal struct OriginalEditorLocalAnnotationCanonical: Sendable {
     let body: AnytypeOriginalEditorLocalAnnotationBody
     let digest: String
+    var transportOriginHostProfileID: String? {
+        guard case .nativeSnapshot(let snapshot) = body else { return nil }
+        return snapshot.provenance.transportOriginHostProfileID
+    }
 
     init(source: AnytypeOriginalEditorLocalAnnotationSource,
          body: AnytypeOriginalEditorLocalAnnotationBody) throws {

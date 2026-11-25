@@ -123,7 +123,7 @@ public final class AnytypeOriginalEditorAccountSession {
 /// It retains the registered original services; no Factory registration changes,
 /// app delegate, standalone AppConfigurator or qualification runtime is used.
 @MainActor
-fileprivate final class OriginalEditorEmbeddedAccountProcess {
+internal final class OriginalEditorEmbeddedAccountProcess {
     private static var installed: OriginalEditorEmbeddedAccountProcess?
     private static var installationStarted = false
 
@@ -140,6 +140,7 @@ fileprivate final class OriginalEditorEmbeddedAccountProcess {
     private let listener: MiddlewareEventsListener
     private let invocation: any InvocationMesagesHandlerProtocol
     private var activeAttempt: OriginalEditorAccountRuntimeAttempt?
+    private var localAccountLease: OriginalEditorLocalAccountLease?
 
     private init(
         appGroup: String,
@@ -238,7 +239,7 @@ fileprivate final class OriginalEditorEmbeddedAccountProcess {
         onFailure: @escaping @MainActor (any Error) -> Void
     ) throws -> OriginalEditorAccountRuntimeAttempt {
         try validateInstallation()
-        guard activeAttempt == nil, InvocationDispatchContext.binding == nil else {
+        guard activeAttempt == nil, localAccountLease == nil, InvocationDispatchContext.binding == nil else {
             throw AnytypeOriginalEditorAccountSession.SessionError.runtimeAlreadyOwned
         }
         let attempt = try OriginalEditorAccountRuntimeAttempt(
@@ -257,8 +258,42 @@ fileprivate final class OriginalEditorEmbeddedAccountProcess {
 
     func release(_ attempt: OriginalEditorAccountRuntimeAttempt) throws {
         try validateOwner(attempt)
+        // The caller reaches release only after its genuine Stop receipt,
+        // original task drain, FIFO fence and subscription cleanup. Retire the
+        // old in-memory account too; display IDs must not seed a local session.
+        Container.shared.accountManager().account = .empty
         activeAttempt = nil
     }
+
+    func claimLocalAccount() throws -> OriginalEditorLocalAccountLease {
+        try validateInstallation()
+        guard activeAttempt == nil, localAccountLease == nil,
+              InvocationDispatchContext.binding == nil else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.runtimeAlreadyOwned
+        }
+        let lease = OriginalEditorLocalAccountLease()
+        localAccountLease = lease
+        return lease
+    }
+
+    func validateLocalAccount(_ lease: OriginalEditorLocalAccountLease) throws {
+        try validateInstallation()
+        guard localAccountLease === lease, activeAttempt == nil else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.retired
+        }
+    }
+
+    func releaseLocalAccount(_ lease: OriginalEditorLocalAccountLease) throws {
+        try validateLocalAccount(lease)
+        localAccountLease = nil
+    }
+}
+
+/// Internal reference identity only. Neither persisted data nor a public
+/// account/Space ID can acquire or replace the shared installation's owner.
+@MainActor
+internal final class OriginalEditorLocalAccountLease {
+    fileprivate init() {}
 }
 
 @MainActor
