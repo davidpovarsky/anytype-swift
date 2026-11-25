@@ -2406,10 +2406,15 @@ final class NativeLaunchTests: XCTestCase {
         let titles = app.staticTexts.matching(NSPredicate(format: "label IN %@", labels))
         let actions = app.buttons.matching(NSPredicate(format: "label IN %@", labels))
         let menuAction = app.buttons["any-native-hierarchy-archive"]
+        func usableFrame(_ frame: CGRect) -> Bool {
+            frame.minX.isFinite && frame.minY.isFinite && frame.width.isFinite && frame.height.isFinite
+                && frame.width > 0 && frame.height > 0
+        }
         let ready = NSPredicate { _, _ in
             guard !menuAction.exists, titles.count == 1, actions.count == 1 else { return false }
             let action = actions.firstMatch
-            return action.isEnabled && action.isHittable && !action.frame.isEmpty
+            let frame = action.frame
+            return action.isEnabled && action.isHittable && usableFrame(frame)
         }
         let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)],
                                    timeout: 30)
@@ -2435,10 +2440,18 @@ final class NativeLaunchTests: XCTestCase {
         }
         XCTAssertEqual(result, .completed, "The unique native Bin confirmation was not ready.",
                        file: file, line: line)
-        guard result == .completed, !menuAction.exists, titles.count == 1, actions.count == 1,
-              actions.firstMatch.isEnabled, actions.firstMatch.isHittable,
-              !actions.firstMatch.frame.isEmpty else { return }
-        actions.firstMatch.tap()
+        guard result == .completed else { return }
+        guard !menuAction.exists, titles.count == 1, actions.count == 1 else {
+            XCTFail("The native Bin confirmation changed before the real tap.", file: file, line: line)
+            return
+        }
+        let action = actions.firstMatch
+        let frame = action.frame
+        guard action.isEnabled, action.isHittable, usableFrame(frame) else {
+            XCTFail("The native Bin confirmation action lost its actual hit frame.", file: file, line: line)
+            return
+        }
+        action.tap()
     }
     // END_NATIVE_BIN_CONFIRMATION_AX_PREPARATION_V1
 
