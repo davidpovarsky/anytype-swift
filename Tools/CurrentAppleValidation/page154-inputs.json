@@ -4,27 +4,27 @@
   "currentProductRevision": {
     "productTrees": {
       "AnyTypeTests": "67d86e2e3199fe63f258f060089c62acb4b689a5",
-      "Anytype": "da6d1f8eacbc885f71845c6f3f0bea5ccc12e085",
+      "Anytype": "68a1c5d4386f6af28dd41744b2e8158b06e17b6a",
       "Anytype.xcodeproj": "64541afaba0ae0596d00b3b6be8df3a6152c5dda",
       "AnytypeNotificationServiceExtension": "56fa06e3f5fcfa06cc819dbc08c9b7c4307ccc8d",
       "AnytypeShareExtension": "0a6e9c4a43fa602a1bb695b7c87efbcf2b149eb0",
       "AnytypeTests": "a87703f6f46f4e2b3dba7532986ddf977e3bd697",
       "AnytypeWidget": "1108084a01a1bb3127a40c9f8a148ccfaf97f48c",
       "Distribution": "f5c1c8cf91690251977a9e027c5f61d268549d97",
-      "Modules": "14dcdaa23e19126b8ffdd5c96048b3833fa66ce3",
+      "Modules": "e032a72a0e8a5870411786fc4b2734e898cf8965",
       "PinkhaStage1Acceptance": "4b14aa3bb6043355c035cfae98671d1d9cc6e21c",
       "Scripts": "37fde5ac7e90e5bb82b247bf835911b85477830b",
       "scripts": "7c1c4d6e9e6025ef745e0390cebcbb9ddd534be5"
     },
     "schemaVersion": 1,
-    "sourceCommit": "06d16e1974c8b9693ad2bd49e57b0e12f5add230"
+    "sourceCommit": "52a8b46fc01398687f25531f63612ffd89442126"
   },
   "excludedFactory": "AnytypeTests/SemanticAnchorPage154NativeAcceptanceTests/testActualPage154FactoryPublishesNativeAnchorIntoOpenedDocument",
   "freshSetupAcceptanceCredit": 0,
   "helperTrees": {
     "Tools/AnyEngineValidation/HanlinProviderFixture": "f2f08fa8d65b915ad58d305cb13b3dcc2bbc8d9e",
     "Tools/Hanlin": "974d4505b4d9811d9d84ce74070c1021108d57b3",
-    "Tools/PinkhaNativeDerived": "20f66136e1c623905575d62fc018d2b95642ac93",
+    "Tools/PinkhaNativeDerived": "c99417312e4d6ff803e61f2e80e3eda953e538ce",
     "Tools/PinkhaSemanticAnchorWire": "4ae012916ffa05eb17b4a947be1436cac4fea3f6",
     "docs/validation/20261123-semantic-page-native/attempt6-page-pass": "3108ff1c69abe042c7e284012660937c2a11c6b9"
   },
@@ -159,15 +159,20 @@
       "gitMode": "100644",
       "sha256": "987070d95d55b12ad1e820b9b0c86044540218991cadad83cb2be6af44dc8431"
     },
+    "Tools/CurrentAppleValidation/page154_boundary.py": {
+      "gitBlob": "79a09c3858a0f091ff4e877f17a41bf7f4bb7de9",
+      "gitMode": "100644",
+      "sha256": "76b40b54270610ede431b751432796e82e58e8a0c4ca8ef3df4e2e405f7b372c"
+    },
     "Tools/CurrentAppleValidation/page154_contract.py": {
       "gitBlob": "31c694af260ccf7ada86f3532faf2fec6d9dd08e",
       "gitMode": "100644",
       "sha256": "596a1761882c3efe2068b4af61b463eee0e063e7a2a43957e7c7f321c946dd00"
     },
     "Tools/CurrentAppleValidation/page154_current.py": {
-      "gitBlob": "c1d3f0f7afb7041e41031519628d8dc8ae07dc45",
+      "gitBlob": "e010e40c9f9b591c773c0b35451e8c76dcd31ba4",
       "gitMode": "100644",
-      "sha256": "b4971aee1ef059ccd1a81f0d7ad586b81e4c5cc465f843cc6aac2d9af426af18"
+      "sha256": "af814e83f0089ee620ca3cfdad0406affc9ca4b46bafc0ebb24c56fcb5faa440"
     },
     "Tools/CurrentAppleValidation/page154_retained.py": {
       "gitBlob": "4b786e96a1774f22116a942f994d80b6552c28eb",
@@ -183,6 +188,11 @@
       "gitBlob": "9050ae6a68d53cc920f13db2e09800d6bfb79c87",
       "gitMode": "100644",
       "sha256": "1c7048b0d14af4b22396431413c99cb63f9f037e11022aa9083265a6d87b7e1a"
+    },
+    "Tools/CurrentAppleValidation/test_page154_boundary.py": {
+      "gitBlob": "56f1bdf70fbe78418c9eb52e0582c391b68ec5f2",
+      "gitMode": "100644",
+      "sha256": "c5b9487b6fa638e628f058ac0bcb44fa2e688290896726a2c68e4c99188a66c2"
     },
     "Tools/PinkhaSemanticAnchor/native/core/block/editor/pinkha_semantic_anchor.go": {
       "gitBlob": "906178f33777c2a401ec8d8e4ed46fd857042035",
@@ -366,6 +376,7 @@
     "native_ui_failed": "Tools/CurrentAppleValidation/native_ui_failed.py",
     "native_ui_retained": "Tools/CurrentAppleValidation/native_ui_retained.py",
     "native_ui_transition_contract": "Tools/AnyEnginePort/native_ui_transition_contract.py",
+    "page154_boundary": "Tools/CurrentAppleValidation/page154_boundary.py",
     "page154_contract": "Tools/CurrentAppleValidation/page154_contract.py",
     "page154_current": "Tools/CurrentAppleValidation/page154_current.py",
     "page154_retained": "Tools/CurrentAppleValidation/page154_retained.py",
@@ -403,6 +414,18 @@
     "sourceCount": 154,
     "sourceManifestSHA256": "2f76212f9fcd749aeb9e806b941e0fd0b54eba17e5cc842adb81c7eb3bae0f38"
   },
+  "nativeBoundaryEvidence": {
+    "extraNativeCalls": 0,
+    "files": {
+      "nativeReply": "pinkha-semantic-page154-native-reply.json",
+      "preflight": "pinkha-semantic-page154-preflight.pb",
+      "readback": "pinkha-semantic-page154-readback.pb"
+    },
+    "originalUIJourneySHA256": "711cfe8660bdb315a2b40d85e67a41ba79d846303a93d2a7460c77d8e0cd99a1",
+    "rawPayloads": "private-retained-work-root-only",
+    "source": "actual-client-call-results",
+    "uploadedEvidence": "hashes-counts-and-independent-comparison"
+  },
   "productTrees": {
     "AnyTypeTests": "6847d4f05b94705733577626216a07c52ef8515a",
     "Anytype": "078147cfbfc8c8b839c7058bdf90d7744c61e3d8",
@@ -420,12 +443,28 @@
   "profile": "current-page154-mounted",
   "projectionOrigins": {
     "Anytype/Sources/Pinkha/Diagnostics/PinkhaSemanticAnchorMountedObserver.swift": {
-      "baseSHA256": "2e648acc0db9d564fa07b787a915750d74f0d0cc9962e0f6e727bd919645fd7e",
-      "bytes": 25096,
-      "gitBlob": "8db2eb534431922918bf4cda81b52527060e20ad",
+      "baseSHA256": "9a66dddddeca21d352e7578a112bd2b1225444e5e76d7da88a1cc71bb11070a2",
+      "bytes": 27011,
+      "gitBlob": "43a2c407d95e52e6d2a934dcbe795c3728829a77",
       "gitMode": "100644",
-      "originCommit": "2c9e5152966cdd185b3ceb454bb3a879f244ddf6",
-      "sha256": "2ee9939c9c965fbed09e838b6b69eff083902534a74576e21760b578af676d29"
+      "originCommit": "52a8b46fc01398687f25531f63612ffd89442126",
+      "previousOrigin": {
+        "baseSHA256": "2ee9939c9c965fbed09e838b6b69eff083902534a74576e21760b578af676d29",
+        "bytes": 26924,
+        "gitBlob": "3553d062621eefefeed99603c71e1ec8acb990d3",
+        "gitMode": "100644",
+        "originCommit": "fed5a8d709e9e42dbf25f4717f2d92afb926cf3d",
+        "previousOrigin": {
+          "baseSHA256": "2e648acc0db9d564fa07b787a915750d74f0d0cc9962e0f6e727bd919645fd7e",
+          "bytes": 25096,
+          "gitBlob": "8db2eb534431922918bf4cda81b52527060e20ad",
+          "gitMode": "100644",
+          "originCommit": "2c9e5152966cdd185b3ceb454bb3a879f244ddf6",
+          "sha256": "2ee9939c9c965fbed09e838b6b69eff083902534a74576e21760b578af676d29"
+        },
+        "sha256": "9a66dddddeca21d352e7578a112bd2b1225444e5e76d7da88a1cc71bb11070a2"
+      },
+      "sha256": "99b878856ea75bbb293347b3f2c5315bb0f9a398a6a8380bb8518dbdcfc26da5"
     },
     "Anytype/Sources/Pinkha/Editor/PinkhaSemanticAnchorSelectionCoordinator.swift": {
       "baseSHA256": "159eb6d0bf94a9e2e970625d1d37d4854f521c5d5d75468459fd4cf5eb3bb5fd",
@@ -444,23 +483,63 @@
       "sha256": "5d9bc8cad1c6097d73f0aa0b558126ed3782f9c30981bec3b097c6eff10532a9"
     },
     "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorClient.swift": {
-      "baseSHA256": "8fb4c3da5552bb08ca4273b5845b12607a377556d903f775a8c675f56b599f58",
-      "bytes": 9595,
-      "gitBlob": "c85a6b510f5e0f317abdb310df0bac258c332016",
+      "baseSHA256": "9f03ba8844ba2d3e0cc4a00e30948cef50c27c30455364b34e7019d59cfd7212",
+      "bytes": 11224,
+      "gitBlob": "615239952c6f490273951c052b3511deda358bdc",
       "gitMode": "100644",
-      "originCommit": "2c9e5152966cdd185b3ceb454bb3a879f244ddf6",
-      "sha256": "d0df6073ac0aecaebc421f90ee791c464f0e8cdceded6d7bc27bb8ed279c209d"
+      "originCommit": "fed5a8d709e9e42dbf25f4717f2d92afb926cf3d",
+      "previousOrigin": {
+        "baseSHA256": "8fb4c3da5552bb08ca4273b5845b12607a377556d903f775a8c675f56b599f58",
+        "bytes": 9595,
+        "gitBlob": "c85a6b510f5e0f317abdb310df0bac258c332016",
+        "gitMode": "100644",
+        "originCommit": "2c9e5152966cdd185b3ceb454bb3a879f244ddf6",
+        "sha256": "d0df6073ac0aecaebc421f90ee791c464f0e8cdceded6d7bc27bb8ed279c209d"
+      },
+      "sha256": "9b88fc2fb3909c86441588feb9bb0d7f152a601a75d2bb8f9bcf705b2723b069"
+    },
+    "Modules/ProtobufMessages/Sources/PinkhaHeartSemanticAnchorProtobuf.swift": {
+      "baseSHA256": "3c21c52057e1d1c294fc7f6a4f99d70f687f0559fbcddaf649bddbd85421762d",
+      "bytes": 13210,
+      "gitBlob": "2801f8f7b0d2270cbdf153c8a516bdfdc3740463",
+      "gitMode": "100644",
+      "originCommit": "fed5a8d709e9e42dbf25f4717f2d92afb926cf3d",
+      "sha256": "9574e64aad81b339a1f985ca41f0e06c45f0b4f04ed1571cf53bb2b090384de4"
+    },
+    "Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorClientTests.swift": {
+      "baseSHA256": "29da5d023e330bd4d9f3a79931d8cd961b5acecbf09b8db6c134d9974cfd6a7b",
+      "bytes": 29294,
+      "gitBlob": "a8acb0bc648ce285785c292db2f5a230129cb91d",
+      "gitMode": "100644",
+      "originCommit": "fed5a8d709e9e42dbf25f4717f2d92afb926cf3d",
+      "sha256": "273500e2ea1139dee4a385d09913430b6862bff3f433636183bad0073b5ecd3c"
     },
     "Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorObservationTests.swift": {
-      "baseSHA256": null,
-      "bytes": 11311,
-      "donorSHA256": "d4b9d62737e1fa5c0eedf64f9ec5c1fed4fba6271a4854ba619791d51cd2abcf",
-      "fixtureMethodExecuted": false,
-      "gitBlob": "d56f3d98633da4433e6654f9d30493808c87a678",
+      "baseSHA256": "12582a1736660f75d0a62820920bfc3095cf2ad8b60ac24412004703bacdd412",
+      "bytes": 11313,
+      "gitBlob": "bb545bbb6bfb692329639b26c9c09844662064f3",
       "gitMode": "100644",
-      "originCommit": "2c9e5152966cdd185b3ceb454bb3a879f244ddf6",
-      "reviewedInitializerPatchSHA256": "6c2bd2ba35346d6606cab6189a815ad87c5a53bffe7c995c9dd55a14f18ea9cb",
-      "sha256": "12582a1736660f75d0a62820920bfc3095cf2ad8b60ac24412004703bacdd412"
+      "originCommit": "fed5a8d709e9e42dbf25f4717f2d92afb926cf3d",
+      "previousOrigin": {
+        "baseSHA256": null,
+        "bytes": 11311,
+        "donorSHA256": "d4b9d62737e1fa5c0eedf64f9ec5c1fed4fba6271a4854ba619791d51cd2abcf",
+        "fixtureMethodExecuted": false,
+        "gitBlob": "d56f3d98633da4433e6654f9d30493808c87a678",
+        "gitMode": "100644",
+        "originCommit": "2c9e5152966cdd185b3ceb454bb3a879f244ddf6",
+        "reviewedInitializerPatchSHA256": "6c2bd2ba35346d6606cab6189a815ad87c5a53bffe7c995c9dd55a14f18ea9cb",
+        "sha256": "12582a1736660f75d0a62820920bfc3095cf2ad8b60ac24412004703bacdd412"
+      },
+      "sha256": "73130721e454a6b4c9a6165687e67f40e5ca555fb9cc86f9a82d66522253d7d6"
+    },
+    "Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartSemanticAnchorWireTests.swift": {
+      "baseSHA256": "0cbb5f8c1d7a51db1a327b20ce434ef73b469c629712e315e4ab3615c3abdb20",
+      "bytes": 32111,
+      "gitBlob": "588009bc1e1bd36046d7f0350bc4efa7a11ae434",
+      "gitMode": "100644",
+      "originCommit": "fed5a8d709e9e42dbf25f4717f2d92afb926cf3d",
+      "sha256": "3384836feb50bf9db8de5aaf35d7994097d5d42b1c212253cf45992d36045fae"
     }
   },
   "schemaVersion": 1,
