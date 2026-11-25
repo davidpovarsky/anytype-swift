@@ -13,9 +13,10 @@ actor PinkhaHeartSourceCaptureController {
     init(privateDirectory: URL,
          obtainSeed: @escaping @MainActor @Sendable () throws -> String) throws {
         let authority = AnyHeartNativeSourceSessionAuthority(create: { _ in
+            try await Self.requireQualifiedRuntime()
             var request = Anytype_Rpc.Wallet.CreateSession.Request()
             request.mnemonic = try await obtainSeed()
-            let response = try await Invocation.walletCreateSession(request).invoke(
+            let response = try await ClientCommands.walletCreateSession(request).invoke(
                 requestMask: { $0 = .init() },
                 responseMask: { $0.token = ""; $0.appToken = "" }
             )
@@ -28,7 +29,7 @@ actor PinkhaHeartSourceCaptureController {
         }, close: { token in
             var request = Anytype_Rpc.Wallet.CloseSession.Request()
             request.token = token
-            _ = try await Invocation.walletCloseSession(request).invoke(
+            _ = try await ClientCommands.walletCloseSession(request).invoke(
                 requestMask: { $0 = .init() }
             )
         })
@@ -40,6 +41,7 @@ actor PinkhaHeartSourceCaptureController {
                 )
             }.value
         }, validate: { token, request, manifest in
+            try await Self.requireQualifiedRuntime()
             try await Task.detached(priority: .userInitiated) {
                 try PinkhaLoadedAccountSourceNative.validate(
                     sessionToken: token, requestID: request, manifestSHA256: manifest
@@ -53,6 +55,25 @@ actor PinkhaHeartSourceCaptureController {
         controller = try AnyHeartNativeSourceAccountController(
             authority: authority, bridge: bridge, privateDirectory: privateDirectory
         )
+    }
+
+    private enum RuntimeFailure: LocalizedError {
+        case unqualifiedNativeRuntime
+
+        var errorDescription: String? {
+            NSLocalizedString("The loaded engine does not match this app's migration source profile.",
+                              comment: "Source capture refuses a different native runtime")
+        }
+    }
+
+    /// Check the actual linked native runtime before obtaining the seed or
+    /// minting a session. The generated producer profile binds the complete
+    /// Heart/Any/SDK source closure; symbol presence is insufficient.
+    private static func requireQualifiedRuntime() async throws {
+        let actual = try await ClientCommands.appGetVersion().invoke(qos: .userInitiated).version
+        guard actual.utf8.elementsEqual(PinkhaUnifiedRuntimeProfile.heartVersion.utf8) else {
+            throw RuntimeFailure.unqualifiedNativeRuntime
+        }
     }
 
     func capture(accountID: String, spaceID: String) async throws -> AnyHeartNativeSourceCaptureReview {
