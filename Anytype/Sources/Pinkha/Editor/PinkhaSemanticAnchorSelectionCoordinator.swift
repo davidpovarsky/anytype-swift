@@ -98,6 +98,7 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
         guard let anchor = PinkhaSemanticAnchorUI.selectedAnchor(in: textView.attributedText, range: range,
             spaceID: model.document.spaceId, objectID: model.document.objectId) else { return nil }
 #if DEBUG && targetEnvironment(simulator)
+        PinkhaSemanticSourceEntryDiagnostics.recordInput("source-menu-input", textView: textView)
         observeSourceEntry("source-menu-built")
 #endif
         return UIAction(title: PinkhaSemanticAnchorUI.text(.sources), image: UIImage(systemName: "books.vertical"),
@@ -355,7 +356,7 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
 /// Private diagnostics only. The original mounted observer remains disabled in
 /// this continuation, and no original fixture/capture/readback file is touched.
 @MainActor
-private enum PinkhaSemanticSourceEntryDiagnostics {
+enum PinkhaSemanticSourceEntryDiagnostics {
     private static let context: [String: String]? = {
         let env = ProcessInfo.processInfo.environment
         guard env["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1",
@@ -375,6 +376,19 @@ private enum PinkhaSemanticSourceEntryDiagnostics {
     }()
     private static var events: [[String: Any]] = []
     static var isEnabled: Bool { context != nil }
+
+    static func recordInput(_ stage: String, textView: UITextView) {
+        guard isEnabled else { return }
+        let gestures = (textView.gestureRecognizers ?? []).compactMap { recognizer -> [String: Any]? in
+            guard recognizer is UILongPressGestureRecognizer else { return nil }
+            return ["type": String(reflecting: type(of: recognizer)), "enabled": recognizer.isEnabled,
+                    "state": recognizer.state.rawValue]
+        }
+        record(stage, state: ["inputIdentity": String(describing: ObjectIdentifier(textView)),
+            "firstResponder": textView.isFirstResponder, "windowPresent": textView.window != nil,
+            "selectedLength": textView.selectedRange.length, "editable": textView.isEditable,
+            "longPressRecognizers": gestures])
+    }
 
     static func record(_ stage: String, state: [String: Any]) {
         guard let context, events.count < 64 else { return }

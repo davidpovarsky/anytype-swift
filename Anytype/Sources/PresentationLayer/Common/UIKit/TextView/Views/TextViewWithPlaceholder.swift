@@ -119,7 +119,13 @@ final class TextViewWithPlaceholder: UITextView {
     }
     //
     override func resignFirstResponder() -> Bool {
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        PinkhaSemanticSourceEntryDiagnostics.recordInput("input-resign-before", textView: self)
+#endif
         let value = super.resignFirstResponder()
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        PinkhaSemanticSourceEntryDiagnostics.recordInput("input-resign-after-super", textView: self)
+#endif
         
         reloadGestures()
         return value
@@ -335,11 +341,17 @@ extension TextViewWithPlaceholder {
     }
     
     func reloadGestures() {
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        PinkhaSemanticSourceEntryDiagnostics.recordInput("input-gesture-policy-before", textView: self)
+#endif
         gestureRecognizers?.forEach {
             if $0.isKind(of: UILongPressGestureRecognizer.self) {
                 $0.isEnabled = isFirstResponder
             }
         }
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        PinkhaSemanticSourceEntryDiagnostics.recordInput("input-gesture-policy-after", textView: self)
+#endif
     }
     
 }
@@ -356,4 +368,3 @@ extension TextViewWithPlaceholder {
         syncPlaceholder()
     }
 }
-
