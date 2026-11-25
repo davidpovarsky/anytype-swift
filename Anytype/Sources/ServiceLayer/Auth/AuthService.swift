@@ -39,7 +39,7 @@ actor AuthService: AuthServiceProtocol, Sendable {
             iconOption: iconOption,
             networkMode: serverConfigurationStorage.currentConfiguration().middlewareNetworkMode,
             joinStreamUrl: "",
-            configPath: serverConfigurationStorage.currentConfigurationPath()?.path ?? ""
+            configPath: try serverConfigurationStorage.currentConfigurationPath()?.path ?? ""
         )
 
         let middleTime = Int(((CFAbsoluteTimeGetCurrent() - start) * 1_000)) // milliseconds
@@ -77,7 +77,7 @@ actor AuthService: AuthServiceProtocol, Sendable {
             rootPath: rootPath,
             networkMode: serverConfigurationStorage.currentConfiguration().middlewareNetworkMode,
             joinStreamUrl: "",
-            configPath: serverConfigurationStorage.currentConfigurationPath()?.path ?? "",
+            configPath: try serverConfigurationStorage.currentConfigurationPath()?.path ?? "",
             preferredSpaceId: preferredSpaceId
         )
         
