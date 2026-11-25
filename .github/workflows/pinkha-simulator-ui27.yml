@@ -30,10 +30,10 @@ permissions:
 
 jobs:
   actual-native-and-ui:
-    runs-on: ${{ fromJSON(inputs.acceptance_lane == 'coherent-heart-release' && '["self-hosted", "macOS", "ARM64", "pinkha-scaleway-mac"]' || '["xcode-27"]') }}
+    runs-on: ${{ fromJSON((inputs.acceptance_lane == 'coherent-heart-release' || (inputs.acceptance_lane == 'hanlin-selection' && github.ref_name == 'codex/anytype-miniapps-bridge-20261123')) && '["self-hosted", "macOS", "ARM64", "pinkha-scaleway-mac"]' || '["xcode-27"]') }}
     timeout-minutes: 150
     env:
-      DEVELOPER_DIR: ${{ inputs.acceptance_lane == 'coherent-heart-release' && '/Applications/Xcode.app/Contents/Developer' || '/Applications/Xcode_27.app/Contents/Developer' }}
+      DEVELOPER_DIR: ${{ (inputs.acceptance_lane == 'coherent-heart-release' || (inputs.acceptance_lane == 'hanlin-selection' && github.ref_name == 'codex/anytype-miniapps-bridge-20261123')) && '/Applications/Xcode.app/Contents/Developer' || '/Applications/Xcode_27.app/Contents/Developer' }}
       UI27_SCOPE: ${{ inputs.ui_scope }}
       UI27_ACCEPTANCE_LANE: ${{ inputs.acceptance_lane }}
       UI27_DEVICE_FAMILY: ${{ inputs.acceptance_device }}
@@ -46,23 +46,42 @@ jobs:
       - name: Checkout exact integration source
         uses: actions/checkout@v4
       - name: Select installed native ARM64 Python 3.12 for the dedicated Mac
-        if: ${{ inputs.acceptance_lane == 'coherent-heart-release' }}
+        if: ${{ (inputs.acceptance_lane == 'coherent-heart-release' || (inputs.acceptance_lane == 'hanlin-selection' && github.ref_name == 'codex/anytype-miniapps-bridge-20261123')) }}
         shell: bash
         run: |
           pinkha_python_bin=/opt/homebrew/opt/python@3.12/libexec/bin
           "$pinkha_python_bin/python3" -I -c 'import platform, sys; assert sys.version_info[:2] == (3, 12), sys.version; assert platform.machine() == "arm64", platform.machine(); assert platform.system() == "Darwin", platform.system(); print(sys.version.split()[0], platform.machine(), sys.executable)'
           printf '%s\n' "$pinkha_python_bin" >> "$GITHUB_PATH"
       - name: Select compatible native ARM64 Python for other lanes
-        if: ${{ inputs.acceptance_lane != 'coherent-heart-release' }}
+        if: ${{ !(inputs.acceptance_lane == 'coherent-heart-release' || (inputs.acceptance_lane == 'hanlin-selection' && github.ref_name == 'codex/anytype-miniapps-bridge-20261123')) }}
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           architecture: arm64
+      - name: Bind the standalone MiniApps companion to the committed shared source
+        if: ${{ (inputs.acceptance_lane == 'hanlin-selection' && github.ref_name == 'codex/anytype-miniapps-bridge-20261123') }}
+        id: miniapps-source
+        shell: bash
+        run: |
+          python3 -B - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          pin = json.loads(Path("Tools/Hanlin/source.json").read_text())
+          producer = json.loads(Path("Tools/MiniApps/producer.json").read_text())
+          revision = pin["revision"]
+          assert re.fullmatch(r"[0-9a-f]{40}", revision), "Invalid immutable shared source"
+          assert producer["revision"] == revision, "Consumer bridge and companion source differ"
+          assert producer["consumer_branch"] == os.environ["GITHUB_REF_NAME"], "Unreviewed consumer branch"
+          assert producer["execution_origin"] == "local-mac" and producer["run_id"] is None, "Wrong companion origin"
+          assert producer["local_manifest_path"] and re.fullmatch(r"[0-9a-f]{64}", producer["local_manifest_sha256"]), "Unqualified companion"
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write("revision=" + revision + "\n")
+          PY
       - name: Checkout the immutable canonical Hanlin source
         uses: actions/checkout@v4
         with:
           repository: davidpovarsky/hanlin-ai
-          ref: 6bd6036dbca16c969689a5722550a54bebc1e851
+          ref: ${{ steps.miniapps-source.outputs.revision || '6bd6036dbca16c969689a5722550a54bebc1e851' }}
           path: .ci/hanlin-source
           persist-credentials: false
       - name: Prepare the exact SDK before resolving the integrated application
@@ -102,6 +121,7 @@ jobs:
             --work "build/ui27-heart-${{ github.run_id }}-${{ github.run_attempt }}" \
             --evidence build/ui27-evidence/heart
       - name: Restore compatible compilation cache without indexing state
+        if: ${{ !(inputs.acceptance_lane == 'hanlin-selection' && github.ref_name == 'codex/anytype-miniapps-bridge-20261123') }}
         id: ui27-cache
         uses: actions/cache/restore@v4
         with:
@@ -120,7 +140,7 @@ jobs:
             ${{ env.UI27_CACHE_NAMESPACE }}-arm64-xcode27.0-${{ env.UI27_CACHE_CONFIGURATION }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
             pinkha-ui27-compiled-v2-arm64-xcode27.0-${{ env.UI27_CACHE_CONFIGURATION }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
       - name: Reuse the preceding cache layout only when no v2 cache matched
-        if: ${{ steps.ui27-cache.outputs.cache-matched-key == '' }}
+        if: ${{ !(inputs.acceptance_lane == 'hanlin-selection' && github.ref_name == 'codex/anytype-miniapps-bridge-20261123') && steps.ui27-cache.outputs.cache-matched-key == '' }}
         id: ui27-cache-legacy
         uses: actions/cache/restore@v4
         with:
@@ -170,7 +190,7 @@ jobs:
           fi
           python3 -B "$controller" --check-cache-ready build/ui27-evidence
       - name: Preserve compatible compilation cache after success or failed tests
-        if: ${{ always() && (steps.actual-execution.outcome != 'skipped' || steps.wave15-execution.outcome != 'skipped') && ((inputs.acceptance_lane != 'hanlin-native-shared-editor' && inputs.acceptance_lane != 'coherent-heart-release') || steps.ui27-cache-readiness.outcome == 'success') && steps.ui27-cache.outputs.cache-hit != 'true' && hashFiles('build/ui27-derived/Build/PinkhaSourceInputs.json') != '' }}
+        if: ${{ always() && !(inputs.acceptance_lane == 'hanlin-selection' && github.ref_name == 'codex/anytype-miniapps-bridge-20261123') && (steps.actual-execution.outcome != 'skipped' || steps.wave15-execution.outcome != 'skipped') && ((inputs.acceptance_lane != 'hanlin-native-shared-editor' && inputs.acceptance_lane != 'coherent-heart-release') || steps.ui27-cache-readiness.outcome == 'success') && steps.ui27-cache.outputs.cache-hit != 'true' && hashFiles('build/ui27-derived/Build/PinkhaSourceInputs.json') != '' }}
         uses: actions/cache/save@v4
         with:
           path: |

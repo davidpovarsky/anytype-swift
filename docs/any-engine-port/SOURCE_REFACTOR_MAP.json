@@ -243,13 +243,19 @@
       "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
       "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
       "baselineBlob": "d3820631ef1b344babf116ca8766e7c0dcf853df",
-      "replacementBlob": "5e4c168647f4d5180b651ba371ed17ee0d6c28ee",
-      "reason": "Retain the original Hanlin account decorator and simulator postflight hook. Add independent Heart sharing owner drain before account transitions and reopen only after the original account operation succeeds. The Any engine has a separate existing workspace lease; no Heart logout is used to switch engines. Add the unified host pre-native account-change drain in all eight mutating auth entry points. Preserve original account serialization, sharing/Hanlin ownership and native auth; a capture close failure prevents transfer.",
-      "sharedSources": [],
+      "replacementBlob": "10bfbd82afdd6986da3d1940915bc6c8995a8cdc",
+      "reason": "Retain the original Hanlin account decorator and simulator postflight hook. Add independent Heart sharing owner drain before account transitions and reopen only after the original account operation succeeds. The Any engine has a separate existing workspace lease; no Heart logout is used to switch engines. Add the unified host pre-native account-change drain in all eight mutating auth entry points. Preserve original account serialization, sharing/Hanlin ownership and native auth; a capture close failure prevents transfer. Acquire and drain an independently owned shared MiniApps admission hold before native auth; retain native outcome, original serialization and replay journal, then release only that transition hold. Revoked callbacks and result ACK are refused.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaMiniAppsLifetime.swift",
+          "gitBlob": "3999b9edb63eef26264cc643f41686b8c76540c9"
+        }
+      ],
       "validation": [
         "Original implementation and additive adapter/lifetime changes reviewed; source map is not a semantic or UI acceptance proof.",
         "See docs/validation/20261125-t2-shared-permissions for 4 shared controls, 3 actual HTTP controls, the actual Apple SwiftUI package compile, and explicit remaining adapter/native/UI acceptance.",
-        "2026-11-25 final integration: reviewed additive original-source diff, shared UI extraction and exact replacement blobs. Five Swift grammar checks and original 32 owner configuration hashes pass; native app, current MiniApps five methods and genuine device profile grants remain required. Source retention does not establish UI/product parity."
+        "2026-11-25 final integration: reviewed additive original-source diff, shared UI extraction and exact replacement blobs. Five Swift grammar checks and original 32 owner configuration hashes pass; native app, current MiniApps five methods and genuine device profile grants remain required. Source retention does not establish UI/product parity.",
+        "Four actual Mac Swift6 ownership controls pass; Heart native adapter, account transition UI and final shared app acceptance remain required. See docs/validation/20261125-miniapps-operation-lifetime."
       ]
     },
     {
