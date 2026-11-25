@@ -120,6 +120,9 @@ final class NativeSourceCaptureCoordinatorTests: XCTestCase {
                                                                      privateDirectory: f.parent)
         let review = try await coordinator.capture(session: f.session, requestID: f.requestID)
         XCTAssertEqual(review.bundle.objects.count, 144)
+        // The original source never contained a Pinkha schema manifest.
+        XCTAssertNil(review.pinkhaSource)
+        XCTAssertNil(review.pinkhaSourceIssue)
         XCTAssertEqual(review.definitionPlan.catalog.types.count, 19)
         XCTAssertEqual(review.definitionPlan.catalog.relations.count, 119)
         XCTAssertFalse(review.definitionPlan.issues.isEmpty)

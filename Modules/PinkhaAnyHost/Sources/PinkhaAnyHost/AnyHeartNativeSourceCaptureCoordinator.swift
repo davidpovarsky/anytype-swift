@@ -64,12 +64,23 @@ public struct AnyHeartNativeSourceCaptureReview: Sendable {
     public let definitionPlan: AnyHeartNativeDefinitionPlan
     public let currentPagePlans: [AnyHeartNativePageComposition]
     public let unmappedObjects: [UnmappedObject]
+    public let pinkhaSource: AnyHeartNativePinkhaSource?
+    public let pinkhaSourceIssue: String?
     public var permitsDestinationWrites: Bool { false }
 
     fileprivate init(descriptor: AnyHeartNativeCaptureDescriptor, bundle: AnyHeartNativeSpaceBundle) throws {
         self.descriptor = descriptor; self.bundle = bundle
         let definitions = try AnyHeartNativeDefinitionPlan(catalog: .init(bundle: bundle))
         definitionPlan = definitions
+        do {
+            pinkhaSource = try AnyHeartNativePinkhaSource.discover(in: bundle)
+            pinkhaSourceIssue = nil
+        } catch {
+            // Preserve the complete capture review when a source schema is
+            // incomplete or ambiguous. No source error grants destination writes.
+            pinkhaSource = nil
+            pinkhaSourceIssue = String(describing: error)
+        }
         let candidates = bundle.objects.filter {
             $0.nativeType == 16 && $0.objectTypes.count == 1 &&
             definitions.type(sourceURL: $0.objectTypes[0])?.definition.recommendedLayout == 0
