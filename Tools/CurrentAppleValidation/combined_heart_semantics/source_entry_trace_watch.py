@@ -7,29 +7,38 @@ import sys
 import time
 
 
+def owned_app_pids(device):
+    # Query only this simulator's launchd services. A host-wide process scan can
+    # block on unrelated diagnostic processes and is unnecessary for ownership.
+    rows = subprocess.check_output(["xcrun", "simctl", "spawn", device, "launchctl", "list"],
+                                   text=True, timeout=20).splitlines()
+    result = []
+    for row in rows:
+        fields = row.split(None, 2)
+        if (len(fields) == 3 and fields[0].isdecimal() and int(fields[0]) > 0
+                and fields[2].startswith("UIKitApplication:io.anytype.app[")):
+            result.append(int(fields[0]))
+    if len(result) > 1:
+        raise ValueError("Ambiguous owned app launchd service")
+    return result
+
+
 def main():
     path = Path(sys.argv[1])
     config = json.loads(path.read_bytes())
     observer = Path(config["observer"])
     if hashlib.sha256(observer.read_bytes()).hexdigest() != config["observerSHA256"]:
         raise ValueError("Frozen LLDB observer differs")
-    prefix = str(Path.home() / "Library/Developer/CoreSimulator/Devices" / config["device"]) + "/"
+    owner = Path.home() / "Library/Developer/CoreSimulator/Devices" / config["device"]
     deadline = time.monotonic() + 90
     while time.monotonic() < deadline and not Path(config["stopFile"]).exists():
-        rows = subprocess.check_output(["ps", "-axo", "pid=,comm="], text=True, timeout=10).splitlines()
-        matches = []
-        for row in rows:
-            fields = row.strip().split(None, 1)
-            if len(fields) != 2:
-                continue
-            pid, executable = fields
-            if (pid.isdecimal() and int(pid) not in config["excludePIDs"]
-                    and executable.startswith(prefix) and executable.endswith("/Anytype.app/Anytype")):
-                matches.append((int(pid), executable))
-        if len(matches) > 1:
-            raise ValueError("Ambiguous owned app process")
+        matches = [pid for pid in owned_app_pids(config["device"]) if pid not in config["excludePIDs"]]
         if matches:
-            config["pid"], config["executable"] = matches[0]
+            app = Path(subprocess.check_output(["xcrun", "simctl", "get_app_container", config["device"],
+                                               "io.anytype.app", "app"], text=True, timeout=20).strip())
+            if not app.is_relative_to(owner) or app.resolve() != app or app.name != "Anytype.app":
+                raise ValueError("Owned installed app path differs")
+            config["pid"], config["executable"] = matches[0], str(app / "Anytype")
             actual = path.with_name("lldb-attached-config.json")
             actual.write_text(json.dumps(config, sort_keys=True, indent=2) + "\n")
             actual.chmod(0o600)

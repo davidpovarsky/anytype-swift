@@ -113,8 +113,9 @@ def main():
                   and result["nativeBoundaryComparison"] == prior["nativeBoundaryComparison"], "Original acceptance proof differs")
         observer, watcher = Path(observation["observerSource"]["path"]), Path(observation["watcherSource"]["path"])
         c.pinned(observation["observerSource"]); c.pinned(observation["watcherSource"])
-        rows = subprocess.check_output(["ps", "-axo", "pid=,comm="], text=True, timeout=10).splitlines()
-        old = [int(v.split(None, 1)[0]) for v in rows if device in v and v.endswith("/Anytype.app/Anytype")]
+        watcher_module = importlib.import_module("source_entry_trace_watch")
+        c.require(Path(watcher_module.__file__) == watcher, "Frozen owned-process helper differs")
+        old = watcher_module.owned_app_pids(device)
         trace = private / "original-entry-observation.json"
         config = {"device": device, "binding": binding, "excludePIDs": old, "output": str(trace),
                   "stopFile": str(stop), "observer": str(observer), "observerSHA256": c.digest(observer)}
