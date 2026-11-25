@@ -1,0 +1,24 @@
+warning: '--skip-update' option is deprecated and will be removed in a future release
+Building for debugging...
+[Computing dependencies]
+[Using on-disk description]
+[1 / 6] PinkhaAnyHostTests-product
+[2 / 7] PinkhaAnyHostTests-product
+[5 / 9] PinkhaAnyHostTests-product
+[7 / 14] PinkhaAnyEngine
+[9 / 12] PinkhaAnyHostTests-product
+[11 / 13] PinkhaAnyHostTests-test-runner
+[13 / 15] PinkhaAnyHostTests-test-runner
+[16 / 16] PinkhaAnyHostTests-test-runner
+Build complete! (6.82 secs)
+Test Suite 'Selected tests' started at 2026-11-25 10:38:14.362
+Test Suite 'AnyDestinationNativeFileReferenceTests' started at 2026-11-25 10:38:14.364
+Test Case 'AnyDestinationNativeFileReferenceTests.testActualNativeFilePropertyLinksAndColdReadback' started at 2026-11-25 10:38:14.364
+<EXPR>:0: error: AnyDestinationNativeFileReferenceTests.testActualNativeFilePropertyLinksAndColdReadback : threw error "Error Domain=NSURLErrorDomain Code=-1005 "(null)"UserInfo={NSUnderlyingError=Error Domain=NSURLErrorDomain Code=-1005 "(null)"UserInfo={NSLocalizedDescription=Recv failure: Connection reset by peer}, NSLocalizedDescription=Recv failure: Connection reset by peer, NSErrorFailingURLKey=http://127.0.0.1:55923/v1/auth, NSErrorFailingURLStringKey=http://127.0.0.1:55923/v1/auth}"
+Test Case 'AnyDestinationNativeFileReferenceTests.testActualNativeFilePropertyLinksAndColdReadback' failed (0.078 seconds)
+Test Suite 'AnyDestinationNativeFileReferenceTests' failed at 2026-11-25 10:38:14.442
+	 Executed 1 test, with 1 failure (1 unexpected) in 0.078 (0.078) seconds
+Test Suite 'Selected tests' failed at 2026-11-25 10:38:14.442
+	 Executed 1 test, with 1 failure (1 unexpected) in 0.078 (0.078) seconds
+Note: Some test targets reported failures:
+  - PinkhaAnyHostTests (XCTest)
