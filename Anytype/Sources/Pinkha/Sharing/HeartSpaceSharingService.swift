@@ -1,5 +1,6 @@
 import Foundation
 import Services
+import ProtobufMessages
 import DeepLinks
 import PinkhaSharing
 
