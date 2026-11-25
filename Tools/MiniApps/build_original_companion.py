@@ -42,8 +42,15 @@ common = subprocess.check_output(["git", "rev-parse", "--git-common-dir"], cwd=R
 assert (ROOT / common).resolve() == (ROOT / ".git").resolve()
 assert not (ROOT / ".git/objects/info/alternates").exists()
 preparation = json.loads((PREPARATION / "RESULT.json").read_bytes())
-assert preparation["status"] == "EXACT_SOURCE_AND_ORIGINAL_DEPENDENCIES_PREPARED_BUILD_NOT_RUN"
-assert preparation["source"] == SOURCE and preparation["existingCheckoutUnchanged"] is True
+finalization = json.loads((PREPARATION / "FINALIZATION.json").read_bytes())
+assert finalization["status"] == "EXACT_SOURCE_AND_ORIGINAL_DEPENDENCIES_PREPARED_BUILD_NOT_RUN"
+assert finalization["helperSHA256"] == digest(CONTROLS / "finalize_original_companion.py") == "d0e943f9c3d350752cf184b3c5b166779eefc6a60cd0579490a1eb6ab8d924ed"
+assert finalization["originalPreparationSHA256"] == digest(PREPARATION / "RESULT.json")
+assert finalization["originalFailurePreserved"] is True and preparation["status"] == "FAILED"
+assert finalization["configurationSHA256"] == CONFIG_SHA and finalization["runtimeHostSHA256"] == HOST_SHA
+assert finalization["trackedFilesVerified"] == 7693 and finalization["actualOriginalDependencyCommandsPassed"] == 5
+assert finalization["allOriginalCommandsPassed"] == 9 and finalization["appBuilds"] == finalization["testsExecuted"] == 0
+assert preparation["source"] == finalization["source"] == SOURCE and preparation["existingCheckoutUnchanged"] is True
 assert preparation["appBuilds"] == preparation["nativeTests"] == 0
 assert len(preparation["steps"]) == 9 and all(step["returncode"] == 0 for step in preparation["steps"])
 assert digest(ROOT / "build/runtime-host/RuntimeHostResources.zip") == HOST_SHA
@@ -56,6 +63,7 @@ assert all(digest(ROOT / name) == sha for name, sha in expected_source["tracked_
 assert digest(CONTROLS / "source-preparation.diff") == "863bf97e4b83fe9824be5345a7fcb2453f403a50d16ce3fdbc0c1c978b5482ab"
 assert subprocess.check_output(["git", "diff", "--binary", "HEAD"], cwd=ROOT, timeout=20) == (CONTROLS / "source-preparation.diff").read_bytes()
 shutil.copy2(PREPARATION / "RESULT.json", EVIDENCE / "host-preparation.json")
+shutil.copy2(PREPARATION / "FINALIZATION.json", EVIDENCE / "host-preparation-finalization.json")
 free = shutil.disk_usage(ROOT).free
 capacity = {"utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "free_bytes": free, "cold_compile_packages_and_export_bytes": 25000000000,
