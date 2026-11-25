@@ -60,3 +60,9 @@ the exact reviewed application Swift delta can differ; application Swift is
 not a Go mobile build input. This grants no new native behavior or UI acceptance.
 The current SDK must still compile, link, preserve original resources and pass
 its real external consumer before a Host can use a new distribution.
+
+The optional --derived-cache-seed accepts only the independently verified
+original ABI donor's inactive retained compiler cache. APFS clones isolate all
+writes. It reuses dependency/compiler caches only: the current Xcode build,
+complete source and dependency checks, symbols, original resources/signatures
+and external consumer remain mandatory. No cached test result grants acceptance.
