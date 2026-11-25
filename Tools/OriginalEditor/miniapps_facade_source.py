@@ -69,20 +69,29 @@ def observe(root, profile, historical_trees):
     require(git(root, "diff", "--name-status", BASE, REVIEWED, "--", *products).splitlines()
             == ["M	" + name for name in FILES],
             "Unreviewed MiniApps source delta")
-    require({key: git(root, "rev-parse", "HEAD:" + key) for key in products} == reviewed,
+    from lifecycle_batch_source import observe as observe_lifecycle_batch
+    lifecycle = observe_lifecycle_batch(root, profile, reviewed)
+    current = lifecycle["reviewed_product_trees"] if lifecycle else reviewed
+    changed_lifecycle = {row["path"] for row in lifecycle["changed_files"]} if lifecycle else set()
+    require({key: git(root, "rev-parse", "HEAD:" + key) for key in products} == current,
             "Current product source differs from the reviewed MiniApps continuation")
     for row in rows:
         source = root / row["path"]
         require(source.is_file() and not source.is_symlink() and source.resolve() == source,
                 "Missing or aliased MiniApps source")
-        data = source.read_bytes()
+        data = (subprocess.check_output(["git", "-C", str(root), "show", REVIEWED + ":" + row["path"]])
+                if row["path"] in changed_lifecycle else source.read_bytes())
+        observed_blob = (git(root, "rev-parse", REVIEWED + ":" + row["path"])
+                         if row["path"] in changed_lifecycle else git(root, "hash-object", "--", row["path"]))
         require(row["before_blob"] == git(root, "rev-parse", BASE + ":" + row["path"])
                 and row["after_blob"] == git(root, "rev-parse", REVIEWED + ":" + row["path"])
-                and git(root, "hash-object", "--", row["path"]) == row["after_blob"]
+                and observed_blob == row["after_blob"]
                 and len(data) == row["bytes"] and hashlib.sha256(data).hexdigest() == row["sha256"],
                 "Current MiniApps source bytes differ: " + row["path"])
     return {"schema": value["schema"], "status": "EXACT_MINIAPPS_SWIFT_SOURCE_OBSERVED",
             "base_source": BASE, "reviewed_source": REVIEWED,
-            "adoption_sha256": binding["sha256"], "reviewed_product_trees": reviewed,
+            "adoption_sha256": binding["sha256"], "reviewed_product_trees": current,
+            "historical_miniapps_product_trees": reviewed,
+            **({"lifecycle_batch": lifecycle} if lifecycle else {}),
             "changed_files": rows, "native_acceptance_reused_by_this_document": False,
             "sdk_compiler_and_runtime_acceptance": "NOT_GRANTED_BY_SOURCE_OBSERVATION"}

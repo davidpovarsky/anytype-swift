@@ -73,6 +73,8 @@ def observe(root, profile, historical_trees):
     miniapps = observe_miniapps(root, profile, reviewed)
     current = miniapps["reviewed_product_trees"] if miniapps else reviewed
     changed_miniapps = {row["path"] for row in miniapps["changed_files"]} if miniapps else set()
+    if miniapps:
+        changed_miniapps.update(row["path"] for row in miniapps.get("lifecycle_batch", {}).get("changed_files", []))
     require({p: git(root, "rev-parse", "HEAD:" + p) for p in PRODUCTS} == current,
             "Current product source differs from reviewed facade continuation")
     for row in rows:
