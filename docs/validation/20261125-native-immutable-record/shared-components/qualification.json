@@ -1,0 +1,63 @@
+{
+  "actualAppCapture": "PENDING",
+  "actualSwiftNativeExecutor": "PENDING",
+  "affectedUnchangedMethods": 15,
+  "failures": 0,
+  "infraOnlyAttempts": [
+    "components1 commit actor mismatch, no compiler/test",
+    "components2 existing scratch ownership mismatch,0tests",
+    "components3/4 zero-byte SwiftPM locks created by components2,0tests"
+  ],
+  "methodNames": [
+    "AnyDestinationContentVerificationTests.testContentComparisonPreservesExactUnicodeBytes",
+    "AnyDestinationContentVerificationTests.testDateWireComparisonUsesExactMillisecondsWithoutChangingOrdinaryJSON",
+    "AnyDestinationContentVerificationTests.testNativeCompiledDeclarationOrderPreservesAllocatedRecordIdentities",
+    "AnyDestinationContentVerificationTests.testNativeVariantMetadataCannotBeAcceptedAsAnOriginalFile",
+    "AnyDestinationContentVerificationTests.testUnknownSchemaAndChangedPinnedFieldCannotDisappearInProjection",
+    "AnyDestinationContentVerificationTests.testWholeSourceBlockerPrecedesAnyNativeReadOrAuthorityCallback",
+    "AnyDestinationMigrationExecutorTests.testCoverageValidatedDecodeExactUTF8AndOwnedMutationTargets",
+    "AnyDestinationMigrationExecutorTests.testFileReferenceCommitsNativeFileNamespaceAndReplaysTheSamePrivateFile",
+    "AnyDestinationMigrationExecutorTests.testInlineAndFullFileResumeWithoutOriginalPayloadPaths",
+    "AnyDestinationMigrationExecutorTests.testJournalOwnershipNamespaceIntegrityAndSourceWithdrawal",
+    "AnyDestinationMigrationExecutorTests.testLostPreparationReplyResumesOriginalIDsAndCyclicReferences",
+    "AnyDestinationMigrationExecutorTests.testNativeTerminalAndChangedPlanNeverCreateReplacementIDs",
+    "AnyDestinationMigrationExecutorTests.testPartsRequireTypeOwnersWhilePropertiesAllowCollections",
+    "AnyDestinationMigrationExecutorTests.testPropertyRevisionCheckpointPrecedesDispatchAndIsNeverRefreshed",
+    "AnyDestinationMigrationExecutorTests.testSemanticAnchorReplayRetainsOriginalAllocatedOwnerUUIDAndPreparedBytes",
+    "NativePreparedImmutableRecordTests.testChangedSchemaStoreAndSignedIdentityRefuseBeforeAnotherMutation",
+    "NativePreparedImmutableRecordTests.testCheckpointPreservesFullNativeSchemaAndOldNilEncoding",
+    "NativePreparedImmutableRecordTests.testExactSchemaSourceAndValuesBindOneIntentAndRejectForgedInput",
+    "NativePreparedImmutableRecordTests.testLostAcknowledgementReconcilesExactRecordWithoutSecondAppend",
+    "NativePreparedImmutableRecordTests.testNativeSchemaRefusesMutableDeleteDynamicForeignAndCallerStampDeclarations",
+    "NativePreparedImmutableRecordTests.testPlanRequiresOwnedImmutableDeclarationAndMatchingObjectType",
+    "NativePreparedImmutableRecordTests.testReadbackComparesSourceFactsAndRequiresActualDerivedStamps"
+  ],
+  "nativeAnyCommit": "41c07bd32e95a54824a3d3c5d592accf5074ab68",
+  "nativeQualificationCommit": "49dc01a1ad875d354499d55e2652c89c51875b01",
+  "nativeSDKCommit": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9",
+  "newMethods": 7,
+  "original156CaptureReplacement": false,
+  "originalResult": {
+    "childReaped": true,
+    "durationSeconds": 46.03675937652588,
+    "error": null,
+    "exit": 0,
+    "freeAfter": 4724072448,
+    "logBytes": 10548,
+    "logSHA256": "ffaf17b677638aa44df992d6c955d3534f6a9a9a6d6730b2f8a97256059a3bfd",
+    "sameSource": true,
+    "source": "39a854d804b8af9a69fb6d41e41c0a4aeb72fa32",
+    "sourceFiles": 329
+  },
+  "protocol": "pinkha-shared-immutable-record-components-v1",
+  "safeLockRetirementReceipts": {
+    "failed-component-lock-retirement.json": "ecf53aa5d9b69efd9f51ffe4b99f30893325b233261fcb1381616485d3ba675a",
+    "failed-component-nested-lock-retirement.json": "324228fe4565b394329287a1fbddc85d55d96db6a45477154be2cc2391262ed7"
+  },
+  "skips": 0,
+  "sourceAdmitted": false,
+  "sourceCensusSHA256": "c45727d664e133260fa5926e087d9eac8993e63774974b27647759b013e7618e",
+  "sourceCommit": "39a854d804b8af9a69fb6d41e41c0a4aeb72fa32",
+  "status": "PASS_22_COMPONENT_METHODS_NOT_NATIVE_EXECUTOR_OR_FULL_SPACE",
+  "wholeSpaceMigration": false
+}
