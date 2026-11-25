@@ -70,11 +70,16 @@ def validate_inputs(phase):
     result['nativeLibrarySHA256'] = LIBRARY_SHA
     return result
 
+PROVED_ABSENT_GROUPS = {}
+
 def group_present(group):
+    if group in PROVED_ABSENT_GROUPS:
+        return False
     try:
         os.killpg(group, 0)
         return True
     except ProcessLookupError:
+        PROVED_ABSENT_GROUPS[group] = datetime.datetime.now(datetime.timezone.utc).isoformat()
         return False
 
 def stop_owned(process, errors):
@@ -184,6 +189,10 @@ def main():
             result['stopReason'] = reason
             stop_owned(process, errors)
         result['returncode'] = process.wait(timeout=20)
+        # Establish ownership release before slower source/log verification.
+        # Once absence is proved, this historical PGID is never probed or
+        # signalled again, even if the operating system later recycles it.
+        group_present(process.pid)
         log.close()
         log = None
         terminal = []
@@ -264,6 +273,7 @@ def main():
                 result['logBytes'] = p.stat().st_size
         except BaseException as error:
             errors.append({'phase': 'final-log-retention', 'error': type(error).__name__})
+        result['provedAbsentGroups'] = dict(PROVED_ABSENT_GROUPS)
         result['cleanupErrors'] = errors
         if errors:
             result['statusBeforeCleanupFailure'] = result['status']
