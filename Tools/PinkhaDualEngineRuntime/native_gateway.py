@@ -85,7 +85,7 @@ def qualify(root, source, manifest, manifest_sha, phase, run, environment, go, r
     binary = root / "mobile-gateway.test"
     require(not binary.exists(), "refuse_existing_gateway_test_binary")
     selection = "^(" + "|".join(sorted(CASES)) + ")$"
-    run([go, "test", "-mod=readonly", "-p=2", "-tags", " ".join(manifest["tags"]),
+    run([go, "test", "-mod=readonly", "-tags", " ".join(manifest["tags"]),
          "-c", "-o", binary, "./internal/server"],
         "mobile-gateway-build", source / "any", environment, 900)
     require(binary.is_file() and not binary.is_symlink(), "actual_gateway_test_binary_required")

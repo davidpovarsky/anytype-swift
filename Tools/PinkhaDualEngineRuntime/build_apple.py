@@ -18,8 +18,8 @@ import zipfile
 import native_dependencies
 import native_gateway
 
-MANIFEST_SHA = "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72"
-ARCHIVE_SHA = "9197ea5c9f8a832430fce44b36aeeeb27099fff6e745ec6197e9a3493ffd51db"
+MANIFEST_SHA = "410b441e5726b4a2ff7b259e296ad2ba819a5751cd46732945f62259ace42cc9"
+ARCHIVE_SHA = "eba6a0354006c9cfc363c4769bd08951d3b4be4ef3fa8a65eb0cde9b6376e008"
 GO_ROOT = Path("/Users/m1/toolchains/anytapy-go1.27.4/go")
 EMERGENCY_FREE_BYTES = 2 * 1024**3
 
@@ -30,19 +30,20 @@ def phase_space_estimate(root, manifest, phase):
     Every command samples actual free space and terminates its own process
     group at the emergency floor. No other project's files are removed.
     """
-    heart = Path("/Users/m1/builds/_retained-anytype/45456314424-1/build/"
-                 "current-apple-release-return-rtl-45456314424-1/work/"
-                 "heart-originals/verified-production/Lib.xcframework/"
-                 "ios-arm64-simulator/Lib.framework/Lib")
-    any_library = Path("/Users/m1/builds/anytapy-prepared-components-v2-3fb2ab37/"
-                       "any/any.xcframework") / ("ios-arm64-simulator" if phase == "simulator"
-                                               else "ios-arm64") / "anylib.a"
-    references = [heart, any_library]
-    for path in references:
-        require(path.is_file() and not path.is_symlink(), "original_native_size_reference_missing")
-    measured = [{"path": str(path), "bytes": path.stat().st_size,
-                 "sha256": digest(path)} for path in references]
-    native_bytes = sum(row["bytes"] for row in measured)
+    reference = Path("/Users/m1/builds/pinkha-dual-main-20261125/"
+                     "frozen-native-ui-0c5-miniapps-menu1/source/Dependencies/Middleware/Lib.xcframework")
+    platform_name, expected_bytes, expected_sha = {
+        "simulator": ("ios-arm64-simulator", 349572728,
+                      "c3374a58dffb64658fe6840ee9bd2711a4b1bf8c449c32da5bd51ede4901cece"),
+        "device": ("ios-arm64", 349502456,
+                   "258b1bd1d67e40b24c22a427ba176880b74692cc0c5b0d0285cd4dda811729a2"),
+    }[phase]
+    reference = reference / platform_name / "Lib.framework/Lib"
+    require(reference.resolve() == reference and reference.is_file()
+            and not reference.is_symlink() and reference.stat().st_size == expected_bytes
+            and digest(reference) == expected_sha, "original_unified_native_size_reference_changed")
+    measured = [{"path": str(reference), "bytes": expected_bytes, "sha256": expected_sha}]
+    native_bytes = expected_bytes
     components = {
         "sourceBytes": sum(item["bytes"] for item in manifest["files"].values()),
         "dependencyExtractionCopiesAllowanceBytes": 6 * (root / "native-dependencies.tar.gz").stat().st_size,
@@ -52,7 +53,8 @@ def phase_space_estimate(root, manifest, phase):
         "outputRepackZipAllowanceBytes": 3 * native_bytes,
     }
     return {"phase": phase, "originalArchiveMeasurements": measured,
-            "heartReferencePlatform": "simulator", "components": components,
+            "referenceProfile": "unified70f0", "nativeReferencePlatform": phase,
+            "components": components,
             "estimatedAdditionalBytes": sum(components.values()),
             "emergencyFreeBytes": EMERGENCY_FREE_BYTES}
 
@@ -127,20 +129,19 @@ def generated_swift_entry(root):
     return generated
 
 def stage_authenticated_checksum_metadata(root, tools):
-    """Reuse the original authenticated Go/SumDB metadata proof explicitly.
+    """Copy the new authenticated Go/SumDB recovery proof explicitly.
 
     This does not reuse a source graph. The new workspace and generated bridge
     must still produce and compare their complete original module inventories.
-    Only the same eight checksum omissions already verified in the original
-    producer may be qualified, against the current module-cache bytes.
+    Only the same eight module identities and bytes verified in the original
+    producer and fresh recovery may qualify against the current module cache.
     """
     review_path = Path(__file__).with_name("module-metadata-hydration.json")
     require(digest(review_path) ==
-            "69b2f056688a2c009becbcac53f4c546648ab415e2e32ec5545cd295cb5dc863",
+            "2860bd4ec7d8326a901569345969f3702a6528d65b057b98383de7525b0b091e",
             "reviewed_checksum_metadata_changed")
     review = json.loads(review_path.read_text())
-    original = Path("/Users/m1/builds/pinkha-dual-native-v1-70fb5342f2ff-device/"
-                    "module-checksum-verification-2")
+    original = Path("/Users/m1/builds/pinkha-native-metadata-reverification-3-20261125")
     proof_path = original / "receipt.json"
     require(original.resolve() == original and original.is_dir()
             and proof_path.is_file() and not proof_path.is_symlink()
@@ -198,7 +199,7 @@ def hydrate_private_workspace_checksums(root, workspace, evidence):
     """
     review_path = root / "tools/module-metadata-hydration.json"
     require(digest(review_path) ==
-            "69b2f056688a2c009becbcac53f4c546648ab415e2e32ec5545cd295cb5dc863",
+            "2860bd4ec7d8326a901569345969f3702a6528d65b057b98383de7525b0b091e",
             "reviewed_workspace_checksums_required")
     review = json.loads(review_path.read_text())
     proof_root = root / "module-checksum-verification-2"
@@ -385,12 +386,14 @@ def main():
     parser.add_argument("--controller-sha", required=True)
     parser.add_argument("--slice", choices=("simulator", "device"), required=True)
     parser.add_argument("--gateway-proof-root", type=Path)
+    parser.add_argument("--go-jobs", type=int, default=os.cpu_count() or 1)
     parser.add_argument("--resume-disk-stop", action="store_true")
     parser.add_argument("--resume-gateway-metadata", action="store_true")
     parser.add_argument("--resume-reviewed-metadata", action="store_true")
     parser.add_argument("--resume-generated-metadata", action="store_true")
     args = parser.parse_args()
     root = args.root
+    require(1 <= args.go_jobs <= (os.cpu_count() or 1), "measured_host_go_parallelism_required")
     require(not args.resume_gateway_metadata or
             (args.slice == "simulator" and not args.resume_disk_stop
              and not args.resume_reviewed_metadata and not args.resume_generated_metadata
@@ -480,7 +483,9 @@ def main():
                "heartPage154ManifestSHA256": manifest["heartPage154ManifestSHA256"],
                "appleTestsExecuted": 0, "nativeAcceptanceTestsExecuted": 0,
                "applicationBuilds": 0, "independentGoRuntimeCount": None,
-               "slicePhase": args.slice, "commands": []}
+               "slicePhase": args.slice, "commands": [],
+               "goConcurrency": {"compilePackageJobs": args.go_jobs,
+                   "runtimeProcessors": os.cpu_count() or 1, "softMemoryLimitPerGoProcess": "2GiB"}}
     def run(argv, name, cwd=root, environment=None, timeout=3600):
         require(not (evidence / (name + ".log")).exists(), "command_replay_forbidden")
         item = {"name": name, "argv": [str(a) for a in argv], "cwd": str(cwd),
@@ -585,8 +590,9 @@ def main():
                        "PINKHA_DUAL_GRAPH": str(evidence / "module-graph.log"),
                        "PINKHA_DUAL_GENERATED_AUDIT": str(evidence / "generated-modules"),
                        "GOPATH": str(root / "go-state"), "GOCACHE": "/Users/m1/caches/anytapy-go1.27.4-build",
-                       "GOMODCACHE": "/Users/m1/caches/anytapy-go-mod", "GOFLAGS": "-mod=readonly -p=2",
-                       "GOMAXPROCS": "2", "GOMEMLIMIT": "3GiB", "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+                       "GOMODCACHE": "/Users/m1/caches/anytapy-go-mod",
+                       "GOFLAGS": "-mod=readonly -p=" + str(args.go_jobs),
+                       "GOMAXPROCS": str(os.cpu_count() or 1), "GOMEMLIMIT": "2GiB", "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
                        "PATH": str(tools) + ":" + str(GO_ROOT / "bin") + ":" + os.environ.get("PATH", "")}
         if prior:
             receipt["nativeDependencies"] = prior["nativeDependencies"]
