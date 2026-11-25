@@ -24,7 +24,7 @@ final class PinkhaSemanticAnchorMountedObserver {
     private var documentPublications = 0
     private var marker: String?
     private var cancelledMarker: String?
-    private weak var pendingApply: PinkhaHeartSemanticAnchorPending?
+    private var pendingApply: PinkhaHeartSemanticAnchorPending?
     private var receipt: [String: Any]
     private var task: Task<Void, Never>?
 
@@ -109,6 +109,7 @@ final class PinkhaSemanticAnchorMountedObserver {
         guard let active, active.editor === editor, active.pendingApply === pending,
               active.applyAttempts == 1,
               ["APPLY_QUEUED", "MOUNTED_FAIL"].contains(active.phase) else { return }
+        defer { active.pendingApply = nil }
         try? active.saveBoundaryEvidence(requireComplete: false)
         let observation = pending.applyObservation
         var values: [String: Any] = [
@@ -165,6 +166,7 @@ final class PinkhaSemanticAnchorMountedObserver {
             try Fixture.require(active.phase == "APPLY_QUEUED" && active.applyAttempts == 1
                 && capture.generation == active.lease?.generation && capture.receipt.marker == active.marker,
                 "verified-ui-capture-differs")
+            defer { active.pendingApply = nil }
             try active.saveBoundaryEvidence(requireComplete: true)
             active.task = Task { await active.verifyCapture(capture) }
         }
