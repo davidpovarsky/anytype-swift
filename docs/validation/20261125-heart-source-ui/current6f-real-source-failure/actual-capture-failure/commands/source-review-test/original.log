@@ -1,0 +1,490 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test-without-building -xctestrun /Users/m1/builds/pinkha-c-heart-source-ui-20261125/current6f-onboarding-attempt1/navigation-ui-products/E-Combined-Heart-source-review.xctestrun -destination "platform=iOS Simulator,id=A4489891-C78A-4E78-8649-6E9525A7FDB5" -parallel-testing-enabled NO -only-testing PinkhaStage1AcceptanceUITests/HeartSourceCaptureAcceptanceUITests/testActualHeartSourceReviewCloseAndRecapture -resultBundlePath /Users/m1/builds/pinkha-c-heart-source-ui-20261125/current6f-onboarding-attempt1/evidence/source-review/original.xcresult -collect-test-diagnostics never
+
+Writing result bundle at path:
+	/Users/m1/builds/pinkha-c-heart-source-ui-20261125/current6f-onboarding-attempt1/evidence/source-review/original.xcresult
+
+2026-11-25 17:45:41.499199+0100 PinkhaStage1AcceptanceUITests-Runner[71343:7068355] [Default] Running tests...
+2026-11-25 17:45:41.551115+0100 PinkhaStage1AcceptanceUITests-Runner[71343:7068355] [UIKit App Config] Update the Info.plist: Launch screens will soon be required.
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-11-25 17:45:44.301.
+Test Suite 'PinkhaStage1AcceptanceUITests.xctest' started at 2026-11-25 17:45:44.302.
+Test Suite 'HeartSourceCaptureAcceptanceUITests' started at 2026-11-25 17:45:44.302.
+Test Case '-[PinkhaStage1AcceptanceUITests.HeartSourceCaptureAcceptanceUITests testActualHeartSourceReviewCloseAndRecapture]' started.
+    t =     0.01s Start Test at 2026-11-25 17:45:44.307
+    t =     0.33s Set Up
+    t =     0.33s     Setting device orientation to Portrait
+    t =     0.36s         Device orientation changed to Portrait
+    t =     0.39s         Wait for com.apple.springboard to idle
+    t =     0.44s Open io.anytype.app
+    t =     0.44s     Launch io.anytype.app
+    t =     0.53s         Setting up automation session
+objc[71343]: Class UIAccessibilityLoaderWebShared is implemented in both /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.dmYYVr/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x106404398) and /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.dmYYVr/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x10a354310). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =     3.71s         Wait for io.anytype.app to idle
+    t =     6.13s Wait for io.anytype.app to become Running Foreground
+    t =     6.13s Waiting 60.0s for Any (First Match) to exist
+    t =     7.19s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =     7.19s         Checking existence of `Any (First Match)`
+    t =     7.25s Checking existence of `"Warning" Alert`
+    t =     7.33s Get number of matches for: Descendants matching type Alert
+    t =     7.35s Checking existence of `"pinkha.semanticAnchor.mounted-status" Any`
+    t =     7.39s Waiting 15.0s for Button (First Match) to exist
+    t =     8.40s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =     8.40s         Checking existence of `Button (First Match)`
+    t =     8.42s Get number of matches for: Elements matching predicate 'label == "Mounted anchor disposable Space" OR label ENDSWITH ", Mounted anchor disposable Space"'
+    t =     8.44s Waiting 15.0s for Button (First Match) to exist
+    t =     9.50s     Checking `Expect predicate `existsNoRetry == 1` for object Button (First Match)`
+    t =     9.50s         Checking existence of `Button (First Match)`
+    t =    10.57s Checking existence of `Button (First Match)`
+    t =    10.59s Find the Button (First Match)
+    t =    10.61s Find the "M, Mounted anchor disposable Space" Button
+    t =    10.69s Tap "M, Mounted anchor disposable Space" Button
+    t =    10.69s     Wait for io.anytype.app to idle
+    t =    10.69s     Find the "M, Mounted anchor disposable Space" Button
+    t =    10.71s     Check for interrupting elements affecting "M, Mounted anchor disposable Space" Button
+    t =    10.75s         Wait for com.apple.springboard to idle
+    t =    10.78s     Synthesize event
+    t =    11.21s     Wait for io.anytype.app to idle
+    t =    12.15s Waiting 5.0s for "Add a Channel Home?" StaticText to exist
+    t =    13.20s     Checking `Expect predicate `existsNoRetry == 1` for object "Add a Channel Home?" StaticText`
+    t =    13.20s         Checking existence of `"Add a Channel Home?" StaticText`
+    t =    13.25s Checking existence of `"Not now" Button`
+    t =    13.27s Waiting 15.0s for "Not now" Button to exist
+    t =    14.33s     Checking `Expect predicate `existsNoRetry == 1` for object "Not now" Button`
+    t =    14.33s         Checking existence of `"Not now" Button`
+    t =    15.42s Checking existence of `"Not now" Button`
+    t =    15.45s Find the "Not now" Button
+    t =    15.47s Find the "Not now" Button
+    t =    15.50s Tap "Not now" Button
+    t =    15.50s     Wait for io.anytype.app to idle
+    t =    15.50s     Find the "Not now" Button
+    t =    15.52s     Check for interrupting elements affecting "Not now" Button
+    t =    15.54s         Wait for com.apple.springboard to idle
+    t =    15.56s     Synthesize event
+    t =    16.68s     Wait for io.anytype.app to idle
+    t =    16.85s Waiting 15.0s for "Add a Channel Home?" StaticText to not exist
+    t =    17.89s     Checking `Expect predicate `existsNoRetry == 0` for object "Add a Channel Home?" StaticText`
+    t =    17.89s         Checking existence of `"Add a Channel Home?" StaticText`
+    t =    17.94s Waiting 15.0s for "pinkha.engine.selector" Any to exist
+    t =    19.00s     Checking `Expect predicate `existsNoRetry == 1` for object "pinkha.engine.selector" Any`
+    t =    19.00s         Checking existence of `"pinkha.engine.selector" Any`
+    t =    19.01s Find the "pinkha.engine.selector" Any
+    t =    19.02s Waiting 15.0s for "pinkha.engine.selector" Button to exist
+    t =    20.05s     Checking `Expect predicate `existsNoRetry == 1` for object "pinkha.engine.selector" Button`
+    t =    20.05s         Checking existence of `"pinkha.engine.selector" Button`
+    t =    21.11s Checking existence of `"pinkha.engine.selector" Button`
+    t =    21.12s Find the "pinkha.engine.selector" Button
+    t =    21.13s Find the "pinkha.engine.selector" Button
+    t =    21.17s Tap "pinkha.engine.selector" Button
+    t =    21.18s     Wait for io.anytype.app to idle
+    t =    21.18s     Find the "pinkha.engine.selector" Button
+    t =    21.18s     Check for interrupting elements affecting "pinkha.engine.selector" Button
+    t =    21.25s         Wait for com.apple.springboard to idle
+    t =    21.29s     Synthesize event
+    t =    21.59s     Wait for io.anytype.app to idle
+    t =    21.74s Waiting 15.0s for "pinkha.engine.migration.review-source" Any to exist
+    t =    22.79s     Checking `Expect predicate `existsNoRetry == 1` for object "pinkha.engine.migration.review-source" Any`
+    t =    22.79s         Checking existence of `"pinkha.engine.migration.review-source" Any`
+    t =    23.89s Checking existence of `"pinkha.engine.migration.review-source" Any`
+    t =    23.92s Find the "pinkha.engine.migration.review-source" Any
+    t =    23.95s Find the "pinkha.engine.migration.review-source" Button
+    t =    23.98s Tap "pinkha.engine.migration.review-source" Button
+    t =    23.98s     Wait for io.anytype.app to idle
+    t =    23.98s     Find the "pinkha.engine.migration.review-source" Button
+    t =    24.01s     Check for interrupting elements affecting "pinkha.engine.migration.review-source" Button
+    t =    24.04s         Wait for com.apple.springboard to idle
+    t =    24.06s     Synthesize event
+    t =    24.35s     Wait for io.anytype.app to idle
+    t =    25.79s Waiting 120.0s for "heart-source-review-status" Any to exist
+    t =    26.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    26.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    26.87s         Capturing element debug description
+    t =    27.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    27.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    27.87s         Capturing element debug description
+    t =    28.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    28.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    28.87s         Capturing element debug description
+    t =    29.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    29.82s         Checking existence of `"heart-source-review-status" Any`
+    t =    29.88s         Capturing element debug description
+    t =    30.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    30.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    30.86s         Capturing element debug description
+    t =    31.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    31.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    31.85s         Capturing element debug description
+    t =    32.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    32.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    32.85s         Capturing element debug description
+    t =    33.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    33.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    33.86s         Capturing element debug description
+    t =    34.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    34.82s         Checking existence of `"heart-source-review-status" Any`
+    t =    34.88s         Capturing element debug description
+    t =    35.81s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    35.81s         Checking existence of `"heart-source-review-status" Any`
+    t =    35.87s         Capturing element debug description
+    t =    36.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    36.82s         Checking existence of `"heart-source-review-status" Any`
+    t =    36.88s         Capturing element debug description
+    t =    37.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    37.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    37.86s         Capturing element debug description
+    t =    38.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    38.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    38.85s         Capturing element debug description
+    t =    39.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    39.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    39.85s         Capturing element debug description
+    t =    40.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    40.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    40.86s         Capturing element debug description
+    t =    41.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    41.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    41.84s         Capturing element debug description
+    t =    42.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    42.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    42.85s         Capturing element debug description
+    t =    43.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    43.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    43.85s         Capturing element debug description
+    t =    44.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    44.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    44.86s         Capturing element debug description
+    t =    45.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    45.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    45.85s         Capturing element debug description
+    t =    46.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    46.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    46.86s         Capturing element debug description
+    t =    47.81s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    47.81s         Checking existence of `"heart-source-review-status" Any`
+    t =    47.86s         Capturing element debug description
+    t =    48.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    48.82s         Checking existence of `"heart-source-review-status" Any`
+    t =    48.88s         Capturing element debug description
+    t =    49.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    49.82s         Checking existence of `"heart-source-review-status" Any`
+    t =    49.88s         Capturing element debug description
+    t =    50.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    50.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    50.86s         Capturing element debug description
+    t =    51.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    51.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    51.85s         Capturing element debug description
+    t =    52.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    52.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    52.87s         Capturing element debug description
+    t =    53.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    53.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    53.86s         Capturing element debug description
+    t =    54.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    54.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    54.85s         Capturing element debug description
+    t =    55.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    55.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    55.87s         Capturing element debug description
+    t =    56.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    56.82s         Checking existence of `"heart-source-review-status" Any`
+    t =    56.88s         Capturing element debug description
+    t =    57.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    57.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    57.85s         Capturing element debug description
+    t =    58.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    58.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    58.86s         Capturing element debug description
+    t =    59.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    59.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    59.86s         Capturing element debug description
+    t =    60.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    60.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    60.85s         Capturing element debug description
+    t =    61.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    61.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    61.85s         Capturing element debug description
+    t =    62.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    62.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    62.85s         Capturing element debug description
+    t =    63.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    63.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    63.85s         Capturing element debug description
+    t =    64.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    64.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    64.85s         Capturing element debug description
+    t =    65.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    65.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    65.85s         Capturing element debug description
+    t =    66.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    66.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    66.85s         Capturing element debug description
+    t =    67.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    67.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    67.84s         Capturing element debug description
+    t =    68.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    68.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    68.85s         Capturing element debug description
+    t =    69.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    69.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    69.84s         Capturing element debug description
+    t =    70.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    70.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    70.86s         Capturing element debug description
+    t =    71.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    71.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    71.85s         Capturing element debug description
+    t =    72.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    72.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    72.85s         Capturing element debug description
+    t =    73.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    73.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    73.84s         Capturing element debug description
+    t =    74.87s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    74.87s         Checking existence of `"heart-source-review-status" Any`
+    t =    74.93s         Capturing element debug description
+    t =    75.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    75.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    75.86s         Capturing element debug description
+    t =    76.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    76.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    76.86s         Capturing element debug description
+    t =    77.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    77.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    77.85s         Capturing element debug description
+    t =    78.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    78.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    78.85s         Capturing element debug description
+    t =    79.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    79.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    79.84s         Capturing element debug description
+    t =    80.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    80.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    80.85s         Capturing element debug description
+    t =    81.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    81.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    81.84s         Capturing element debug description
+    t =    82.87s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    82.87s         Checking existence of `"heart-source-review-status" Any`
+    t =    82.93s         Capturing element debug description
+    t =    83.85s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    83.85s         Checking existence of `"heart-source-review-status" Any`
+    t =    83.92s         Capturing element debug description
+    t =    84.85s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    84.85s         Checking existence of `"heart-source-review-status" Any`
+    t =    84.92s         Capturing element debug description
+    t =    85.85s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    85.85s         Checking existence of `"heart-source-review-status" Any`
+    t =    85.92s         Capturing element debug description
+    t =    86.85s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    86.85s         Checking existence of `"heart-source-review-status" Any`
+    t =    86.92s         Capturing element debug description
+    t =    87.85s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    87.85s         Checking existence of `"heart-source-review-status" Any`
+    t =    87.91s         Capturing element debug description
+    t =    88.84s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    88.84s         Checking existence of `"heart-source-review-status" Any`
+    t =    88.89s         Capturing element debug description
+    t =    89.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    89.82s         Checking existence of `"heart-source-review-status" Any`
+    t =    89.88s         Capturing element debug description
+    t =    90.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    90.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    90.87s         Capturing element debug description
+    t =    91.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    91.82s         Checking existence of `"heart-source-review-status" Any`
+    t =    91.88s         Capturing element debug description
+    t =    92.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    92.82s         Checking existence of `"heart-source-review-status" Any`
+    t =    92.88s         Capturing element debug description
+    t =    93.81s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    93.81s         Checking existence of `"heart-source-review-status" Any`
+    t =    93.88s         Capturing element debug description
+    t =    94.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    94.82s         Checking existence of `"heart-source-review-status" Any`
+    t =    94.88s         Capturing element debug description
+    t =    95.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    95.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    95.86s         Capturing element debug description
+    t =    96.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    96.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    96.86s         Capturing element debug description
+    t =    97.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    97.80s         Checking existence of `"heart-source-review-status" Any`
+    t =    97.86s         Capturing element debug description
+    t =    98.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    98.81s         Checking existence of `"heart-source-review-status" Any`
+    t =    98.86s         Capturing element debug description
+    t =    99.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =    99.79s         Checking existence of `"heart-source-review-status" Any`
+    t =    99.85s         Capturing element debug description
+    t =   100.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   100.79s         Checking existence of `"heart-source-review-status" Any`
+    t =   100.85s         Capturing element debug description
+    t =   101.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   101.79s         Checking existence of `"heart-source-review-status" Any`
+    t =   101.85s         Capturing element debug description
+    t =   102.84s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   102.84s         Checking existence of `"heart-source-review-status" Any`
+    t =   102.89s         Capturing element debug description
+    t =   103.84s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   103.84s         Checking existence of `"heart-source-review-status" Any`
+    t =   103.91s         Capturing element debug description
+    t =   104.83s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   104.83s         Checking existence of `"heart-source-review-status" Any`
+    t =   104.89s         Capturing element debug description
+    t =   105.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   105.82s         Checking existence of `"heart-source-review-status" Any`
+    t =   105.88s         Capturing element debug description
+    t =   106.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   106.80s         Checking existence of `"heart-source-review-status" Any`
+    t =   106.86s         Capturing element debug description
+    t =   107.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   107.80s         Checking existence of `"heart-source-review-status" Any`
+    t =   107.86s         Capturing element debug description
+    t =   108.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   108.79s         Checking existence of `"heart-source-review-status" Any`
+    t =   108.85s         Capturing element debug description
+    t =   109.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   109.79s         Checking existence of `"heart-source-review-status" Any`
+    t =   109.84s         Capturing element debug description
+    t =   110.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   110.79s         Checking existence of `"heart-source-review-status" Any`
+    t =   110.85s         Capturing element debug description
+    t =   111.85s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   111.85s         Checking existence of `"heart-source-review-status" Any`
+    t =   111.92s         Capturing element debug description
+    t =   112.86s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   112.86s         Checking existence of `"heart-source-review-status" Any`
+    t =   112.91s         Capturing element debug description
+    t =   113.84s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   113.84s         Checking existence of `"heart-source-review-status" Any`
+    t =   113.90s         Capturing element debug description
+    t =   114.84s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   114.84s         Checking existence of `"heart-source-review-status" Any`
+    t =   114.91s         Capturing element debug description
+    t =   115.85s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   115.85s         Checking existence of `"heart-source-review-status" Any`
+    t =   115.92s         Capturing element debug description
+    t =   116.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   116.80s         Checking existence of `"heart-source-review-status" Any`
+    t =   116.86s         Capturing element debug description
+    t =   117.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   117.80s         Checking existence of `"heart-source-review-status" Any`
+    t =   117.86s         Capturing element debug description
+    t =   118.87s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   118.87s         Checking existence of `"heart-source-review-status" Any`
+    t =   118.93s         Capturing element debug description
+    t =   119.87s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   119.87s         Checking existence of `"heart-source-review-status" Any`
+    t =   119.94s         Capturing element debug description
+    t =   120.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   120.79s         Checking existence of `"heart-source-review-status" Any`
+    t =   120.84s         Capturing element debug description
+    t =   121.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   121.79s         Checking existence of `"heart-source-review-status" Any`
+    t =   121.85s         Capturing element debug description
+    t =   122.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   122.80s         Checking existence of `"heart-source-review-status" Any`
+    t =   122.86s         Capturing element debug description
+    t =   123.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   123.82s         Checking existence of `"heart-source-review-status" Any`
+    t =   123.88s         Capturing element debug description
+    t =   124.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   124.80s         Checking existence of `"heart-source-review-status" Any`
+    t =   124.87s         Capturing element debug description
+    t =   125.80s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   125.80s         Checking existence of `"heart-source-review-status" Any`
+    t =   125.86s         Capturing element debug description
+    t =   126.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   126.79s         Checking existence of `"heart-source-review-status" Any`
+    t =   126.85s         Capturing element debug description
+    t =   127.83s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   127.83s         Checking existence of `"heart-source-review-status" Any`
+    t =   127.89s         Capturing element debug description
+    t =   128.84s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   128.84s         Checking existence of `"heart-source-review-status" Any`
+    t =   128.91s         Capturing element debug description
+    t =   129.84s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   129.84s         Checking existence of `"heart-source-review-status" Any`
+    t =   129.90s         Capturing element debug description
+    t =   130.84s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   130.84s         Checking existence of `"heart-source-review-status" Any`
+    t =   130.89s         Capturing element debug description
+    t =   131.84s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   131.84s         Checking existence of `"heart-source-review-status" Any`
+    t =   131.90s         Capturing element debug description
+    t =   132.82s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   132.82s         Checking existence of `"heart-source-review-status" Any`
+    t =   132.89s         Capturing element debug description
+    t =   133.83s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   133.83s         Checking existence of `"heart-source-review-status" Any`
+    t =   133.90s         Capturing element debug description
+    t =   134.85s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   134.85s         Checking existence of `"heart-source-review-status" Any`
+    t =   134.92s         Capturing element debug description
+    t =   135.85s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   135.85s         Checking existence of `"heart-source-review-status" Any`
+    t =   135.91s         Capturing element debug description
+    t =   136.87s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   136.87s         Checking existence of `"heart-source-review-status" Any`
+    t =   136.93s         Capturing element debug description
+    t =   137.87s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   137.87s         Checking existence of `"heart-source-review-status" Any`
+    t =   137.93s         Capturing element debug description
+    t =   138.87s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   138.87s         Checking existence of `"heart-source-review-status" Any`
+    t =   138.93s         Capturing element debug description
+    t =   139.87s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   139.87s         Checking existence of `"heart-source-review-status" Any`
+    t =   139.92s         Capturing element debug description
+    t =   140.87s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   140.87s         Checking existence of `"heart-source-review-status" Any`
+    t =   140.93s         Capturing element debug description
+    t =   141.87s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   141.87s         Checking existence of `"heart-source-review-status" Any`
+    t =   141.95s         Capturing element debug description
+    t =   142.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   142.79s         Checking existence of `"heart-source-review-status" Any`
+    t =   142.85s         Capturing element debug description
+    t =   143.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   143.79s         Checking existence of `"heart-source-review-status" Any`
+    t =   143.85s         Capturing element debug description
+    t =   144.79s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   144.79s         Checking existence of `"heart-source-review-status" Any`
+    t =   144.86s         Capturing element debug description
+    t =   145.81s     Checking `Expect predicate `existsNoRetry == 1` for object "heart-source-review-status" Any`
+    t =   145.81s         Checking existence of `"heart-source-review-status" Any`
+    t =   145.87s         Capturing element debug description
+    t =   145.87s     Checking existence of `"heart-source-review-status" Any`
+    t =   145.93s Collecting debug information to assist test failure triage
+    t =   145.93s     Requesting snapshot of accessibility hierarchy for app with pid 71397
+    t =   145.99s Requesting snapshot of accessibility hierarchy for app with pid 71397
+    t =   146.14s Requesting snapshot of accessibility hierarchy for app with pid 71397
+    t =   146.18s Added attachment named 'heart-source-capture-failure'
+    t =   146.18s Find the Application 'io.anytype.app'
+    t =   146.41s Added attachment named 'heart-source-capture-failure'
+    t =   146.41s Added attachment named 'heart-source-capture-ui'
+/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-3396-build1/ui-source/PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift:105: error: -[PinkhaStage1AcceptanceUITests.HeartSourceCaptureAcceptanceUITests testActualHeartSourceReviewCloseAndRecapture] : failed: caught error: "admission("real-source-review-missing")"
+    t =   146.70s Tear Down
+    t =   146.70s     Terminate io.anytype.app:71397
+Test Case '-[PinkhaStage1AcceptanceUITests.HeartSourceCaptureAcceptanceUITests testActualHeartSourceReviewCloseAndRecapture]' failed (148.057 seconds).
+Test Suite 'HeartSourceCaptureAcceptanceUITests' failed at 2026-11-25 17:48:12.365.
+	 Executed 1 test, with 1 failure (1 unexpected) in 148.057 (148.063) seconds
+Test Suite 'PinkhaStage1AcceptanceUITests.xctest' failed at 2026-11-25 17:48:12.365.
+	 Executed 1 test, with 1 failure (1 unexpected) in 148.057 (148.064) seconds
+Test Suite 'Selected tests' failed at 2026-11-25 17:48:12.366.
+	 Executed 1 test, with 1 failure (1 unexpected) in 148.057 (148.065) seconds
+2026-11-25 17:48:12.694 xcodebuild[71325:7068136] [MT] IDETestOperationsObserverDebug: 152.642 elapsed -- Testing started completed.
+2026-11-25 17:48:12.694 xcodebuild[71325:7068136] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-25 17:48:12.694 xcodebuild[71325:7068136] [MT] IDETestOperationsObserverDebug: 152.642 sec, +152.642 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/m1/builds/pinkha-c-heart-source-ui-20261125/current6f-onboarding-attempt1/evidence/source-review/original.xcresult
+
+Failing tests:
+	HeartSourceCaptureAcceptanceUITests.testActualHeartSourceReviewCloseAndRecapture()
+
+** TEST EXECUTE FAILED **
+
+Testing started
