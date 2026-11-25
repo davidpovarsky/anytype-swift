@@ -9,7 +9,7 @@ import sys
 import time
 
 sys.dont_write_bytecode = True
-CONTROLLER_SHA256 = "7adb3118bbf584d6475f1bffc483c2055994ce50ac3031471226762df23dc501"
+CONTROLLER_SHA256 = "21998d3f410871cb5833e0de1a1b80ef06f17c2a688d43eead239b60ee373ddf"
 RETENTION_SHA256 = "c562f0b2297902efd62b3a92fdef68e658fb688bbd002d15db24609d47602f3b"
 
 
@@ -38,7 +38,7 @@ def main():
     parser.add_argument("--supervisor-root", type=Path, required=True)
     args = parser.parse_args()
     own = Path(__file__).resolve().parent
-    controller = own / "combined_heart_semantics_gateway.py"
+    controller = own / "combined_heart_semantics_gateway_derivative.py"
     retention = own / "retain_owned_heart_account.py"
     require(digest(controller) == CONTROLLER_SHA256 and digest(retention) == RETENTION_SHA256,
             "Reviewed current controller and private retention helper required")
