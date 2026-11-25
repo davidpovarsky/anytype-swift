@@ -156,6 +156,13 @@ def main():
         c.require(len(matched) == 1 and matched[0].get("state") == "Shutdown" and matched[0].get("isAvailable") is True
                   and matched[0].get("deviceTypeIdentifier") == c.DEVICE
                   and matched[0].get("name") == "E-Combined-Heart-" + binding["nonce"], "Original owned shutdown simulator differs")
+        c.mounted.fixture(c.decode(c.raw(prior_root / "private/final-sandbox-originals" / c.FIXTURE)), binding)
+        # CoreSimulator refuses get_app_container for a shutdown device (405).
+        # Boot only the already admitted owned device before reading its live
+        # container; no application or engine call is issued by this step.
+        commands.run(["xcrun", "simctl", "boot", device], "boot-original-owned-simulator", 60)
+        owned_boot = True
+        commands.run(["xcrun", "simctl", "bootstatus", device, "-b"], "await-original-owned-boot", 180)
         retained = prior["finalPrivateSandbox"]
         c.require(retained["status"] == "PRESERVED_ORIGINAL_PRIVATE_FILES" and retained["engineCalls"] == 0
                   and retained["rawPayloadsUploaded"] is False, "Original private retention required")
@@ -185,9 +192,6 @@ def main():
                                                                fixture, capture, c.native, c.mounted)
         c.require(result["nativeBoundaryComparison"] == prior["nativeBoundaryComparison"]
                   and result["nativeBoundaryComparison"]["projectionFieldCount"] == 9, "Original full native boundary differs")
-        commands.run(["xcrun", "simctl", "boot", device], "boot-original-owned-simulator", 60)
-        owned_boot = True
-        commands.run(["xcrun", "simctl", "bootstatus", device, "-b"], "await-original-owned-boot", 180)
         base = {"PINKHA_SIMULATOR_UI_DISPOSABLE": "1"}
         for key, suffix in (("sourceSHA", "SOURCE_SHA"), ("runID", "RUN_ID"), ("runAttempt", "RUN_ATTEMPT"), ("nonce", "NONCE")):
             base["PINKHA_SEMANTIC_MOUNTED_" + suffix] = binding[key]
