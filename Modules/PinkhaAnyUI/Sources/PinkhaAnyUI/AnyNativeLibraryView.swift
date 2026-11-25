@@ -257,72 +257,61 @@ public struct AnyNativeLibraryView: View {
     }
 
     private func hierarchyRow(_ item: AnyHierarchyPresentationItem) -> some View {
-        HStack(spacing: 8) {
-            Button {
-                path.append(item.kind == .folder ? .folder(item.objectID) : .document(item.objectID, nil))
-            } label: {
-                HStack {
-                    Label(item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
-                          systemImage: item.kind == .folder ? "folder" : "doc.text")
-                        .foregroundStyle(.primary)
-                    Spacer()
-                    if item.isPending || model.pendingMoves.contains(item.objectID) { ProgressView() }
-                    if item.kind == .folder { Image(systemName: "chevron.forward").foregroundStyle(.secondary) }
-                }
-                .contentShape(Rectangle())
+        AnyNativeHierarchyDropRow(session: model.session, canDrop: { sourceID in
+            canDropHierarchy(sourceID, onto: item.objectID)
+        }, performDrop: { sourceID in
+            Task { @MainActor in
+                guard canDropHierarchy(sourceID, onto: item.objectID),
+                      let destination = model.hierarchy?.itemsByID[item.objectID] else { return }
+                await model.move(objectID: sourceID,
+                    parentID: destination.kind == .folder ? destination.objectID : destination.parentID,
+                    beforeSiblingID: destination.kind == .folder ? nil : destination.objectID)
             }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("any-native-hierarchy-row-\(item.objectID)")
-            .contextMenu {
-                Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
-                    beginNaming(.init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false))
-                }.disabled(!model.canWrite)
-                Button(AnyUIErrorText.text("העברה", "Move"), systemImage: "folder") { moveItem = item.native }
-                    .disabled(!model.canWrite)
-                    .accessibilityIdentifier("any-native-hierarchy-move")
-                Button(AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), systemImage: "trash", role: .destructive) {
-                    removeItem = item.native
-                }.disabled(!model.canWrite)
-            }
-
-            if model.canWrite && !editMode.isEditing {
-                Image(systemName: "line.3.horizontal")
-                    .foregroundStyle(.secondary)
-                    .frame(width: 44, height: 44)
+        }) {
+            HStack(spacing: 8) {
+                Button {
+                    path.append(item.kind == .folder ? .folder(item.objectID) : .document(item.objectID, nil))
+                } label: {
+                    HStack {
+                        Label(item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
+                              systemImage: item.kind == .folder ? "folder" : "doc.text")
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        if item.isPending || model.pendingMoves.contains(item.objectID) { ProgressView() }
+                        if item.kind == .folder { Image(systemName: "chevron.forward").foregroundStyle(.secondary) }
+                    }
                     .contentShape(Rectangle())
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(Text(AnyUIErrorText.text("גרירה של ", "Drag ") +
-                        (item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title)))
-                    .accessibilityHint(Text(AnyUIErrorText.text("גרירה לתיקייה כדי להעביר את הפריט.",
-                                                              "Drag into a folder to move this item.")))
-                    .accessibilityIdentifier("any-native-hierarchy-drag-\(item.objectID)")
-                    .draggable("pinkha-any-node|\(model.session.workspace.spaceID)|\(item.objectID)")
-            }
-        }
-        .accessibilityElement(children: .contain)
-        // Start loading in the List drop callback while the provider is available.
-        // Revalidate the mounted workspace when asynchronous loading completes.
-        .onDrop(of: [.utf8PlainText], isTargeted: nil) { providers in
-            guard lifetime.isActive, model.canWrite, !editMode.isEditing,
-                  providers.count == 1, let provider = providers.first,
-                  provider.canLoadObject(ofClass: NSString.self) else { return false }
-            _ = provider.loadObject(ofClass: NSString.self) { value, error in
-                guard error == nil, let payload = value as? String else { return }
-                Task { @MainActor in
-                    guard lifetime.isActive, model.canWrite, !editMode.isEditing,
-                          payload.utf8.count <= 1024 else { return }
-                    let parts = payload.split(separator: "|", omittingEmptySubsequences: false).map(String.init)
-                    guard parts.count == 3, parts[0] == "pinkha-any-node",
-                          parts[1] == model.session.workspace.spaceID,
-                          model.hierarchy?.itemsByID[parts[2]] != nil,
-                          let destination = model.hierarchy?.itemsByID[item.objectID] else { return }
-                    await model.move(objectID: parts[2],
-                                     parentID: destination.kind == .folder ? destination.objectID : destination.parentID,
-                                     beforeSiblingID: destination.kind == .folder ? nil : destination.objectID)
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("any-native-hierarchy-row-\(item.objectID)")
+                .contextMenu {
+                    Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
+                        beginNaming(.init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false))
+                    }.disabled(!model.canWrite)
+                    Button(AnyUIErrorText.text("העברה", "Move"), systemImage: "folder") { moveItem = item.native }
+                        .disabled(!model.canWrite)
+                        .accessibilityIdentifier("any-native-hierarchy-move")
+                    Button(AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), systemImage: "trash", role: .destructive) {
+                        removeItem = item.native
+                    }.disabled(!model.canWrite)
+                }
+
+                if model.canWrite && !editMode.isEditing {
+                    AnyNativeHierarchyDragHandle(session: model.session, objectID: item.objectID,
+                        title: item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
+                        canDrag: { lifetime.isActive && model.canWrite && !editMode.isEditing
+                            && !model.pendingMoves.contains(item.objectID) })
+                        .frame(width: 44, height: 44)
                 }
             }
-            return true
         }
+    }
+
+    private func canDropHierarchy(_ sourceID: String, onto destinationID: String) -> Bool {
+        lifetime.isActive && model.canWrite && !editMode.isEditing && sourceID != destinationID
+            && !model.pendingMoves.contains(sourceID)
+            && model.hierarchy?.itemsByID[sourceID] != nil
+            && model.hierarchy?.itemsByID[destinationID] != nil
     }
 
     private func documents(notesOnly: Bool) -> some View {
