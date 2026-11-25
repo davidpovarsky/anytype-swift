@@ -10,6 +10,7 @@ final class SharedHanlinAccountAndProjectionTests: XCTestCase {
     private final class Presentation: PinkhaHanlinOwnedPresentation {
         let session: HanlinHostSession
         var invalidations = 0
+        var drain: (@MainActor () async -> Void)?
         init(account: String, app: String = "anytype") throws {
             let scope = try HanlinConversationNamespace(app: app, account: account,
                                                        workspace: "native-space", space: "native-space")
@@ -17,6 +18,7 @@ final class SharedHanlinAccountAndProjectionTests: XCTestCase {
                 sceneID: UUID(), generation: UUID()))
         }
         func invalidate() { invalidations += 1 }
+        func revokeAndDrain() async { await drain?() }
     }
 
     @MainActor
@@ -58,6 +60,77 @@ final class SharedHanlinAccountAndProjectionTests: XCTestCase {
         XCTAssertEqual(any.invalidations, 1)
         XCTAssertTrue(owner.isAvailable(namespace: any.session.context.namespace))
         try owner.accountDidOpen(account)
+    }
+
+    @MainActor
+    func testEngineSwitchWaitsForActualDrainAndKeepsOtherEngineAvailable() async throws {
+        let owner = PinkhaHanlinAccountOwner()
+        let heart = try Presentation(account: "source", app: "anytype")
+        let any = try Presentation(account: "source", app: "anytype-any")
+        var release: CheckedContinuation<Void, Never>?
+        var finished = false
+        heart.drain = { await withCheckedContinuation { release = $0 } }
+        try owner.register(heart); try owner.register(any)
+        let closing = Task { @MainActor in
+            try await owner.deactivateEngine("anytype")
+            finished = true
+        }
+        for _ in 0..<1_000 {
+            if release != nil { break }
+            await Task.yield()
+        }
+        guard let release else {
+            closing.cancel()
+            XCTFail("Engine close did not reach the real presentation drain")
+            return
+        }
+        XCTAssertFalse(finished)
+        XCTAssertEqual(heart.invalidations, 1)
+        XCTAssertEqual(any.invalidations, 0)
+        XCTAssertFalse(owner.isAvailable(namespace: heart.session.context.namespace))
+        XCTAssertTrue(owner.isAvailable(namespace: any.session.context.namespace))
+        // A native account callback racing engine selection cannot reopen AI work.
+        try owner.accountDidOpen("new-source", app: "anytype")
+        XCTAssertFalse(owner.isAvailable(account: "new-source", app: "anytype"))
+        XCTAssertThrowsError(try owner.activateEngine("anytype"))
+        XCTAssertThrowsError(try owner.register(heart))
+        release.resume()
+        try await closing.value
+        XCTAssertTrue(finished)
+        XCTAssertFalse(owner.isAvailable(account: "new-source", app: "anytype"))
+        try owner.activateEngine("anytype")
+        XCTAssertTrue(owner.isAvailable(account: "new-source", app: "anytype"))
+        XCTAssertTrue(owner.isAvailable(namespace: any.session.context.namespace))
+    }
+
+    @MainActor
+    func testAccountCannotReopenUntilItsOwnedPresentationDrains() async throws {
+        let owner = PinkhaHanlinAccountOwner()
+        let account = "closing-account"
+        let presentation = try Presentation(account: account)
+        var release: CheckedContinuation<Void, Never>?
+        presentation.drain = { await withCheckedContinuation { release = $0 } }
+        try owner.register(presentation)
+        let closing = Task { @MainActor in
+            try await owner.closeAccount(account, removeData: false)
+        }
+        for _ in 0..<1_000 {
+            if release != nil { break }
+            await Task.yield()
+        }
+        guard let release else {
+            closing.cancel()
+            XCTFail("Account close did not reach the actual presentation drain")
+            return
+        }
+        XCTAssertFalse(owner.isAvailable(account: account))
+        XCTAssertThrowsError(try owner.accountDidOpen(account))
+        XCTAssertThrowsError(try owner.register(presentation))
+        release.resume()
+        try await closing.value
+        XCTAssertFalse(owner.isAvailable(account: account))
+        try owner.accountDidOpen(account)
+        XCTAssertTrue(owner.isAvailable(account: account))
     }
 
     @MainActor

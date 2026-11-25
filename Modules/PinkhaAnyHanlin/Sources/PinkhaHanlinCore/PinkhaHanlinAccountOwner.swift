@@ -22,6 +22,7 @@ public enum PinkhaHanlinEngineNamespace {
 public protocol PinkhaHanlinOwnedPresentation: AnyObject, Sendable {
     var session: HanlinHostSession { get }
     func invalidate()
+    func revokeAndDrain() async
 }
 
 /// One implementation owns journals and revocation for both engines. A native account may
@@ -52,9 +53,12 @@ public final class PinkhaHanlinAccountOwner {
     private var journals: [String: Opening] = [:]
     private var closedAccounts = Set<AccountKey>()
     private var removingAccounts = Set<AccountKey>()
+    private var drainingAccounts = Set<AccountKey>()
+    private var inactiveEngines = Set<Data>()
+    private var drainingEngines = Set<Data>()
 
     public func isAvailable(account: String, app: String = PinkhaHanlinEngineNamespace.heart) -> Bool {
-        PinkhaHanlinEngineNamespace.supports(app) &&
+        PinkhaHanlinEngineNamespace.supports(app) && !inactiveEngines.contains(Data(app.utf8)) &&
             !closedAccounts.contains(AccountKey(app: app, account: account))
     }
 
@@ -92,9 +96,31 @@ public final class PinkhaHanlinAccountOwner {
         return journal
     }
 
+    /// A hidden engine cannot admit a new AI presentation even if native
+    /// authentication completes while the app is showing the other engine.
+    public func deactivateEngine(_ app: String) async throws {
+        guard PinkhaHanlinEngineNamespace.supports(app) else { throw HanlinHostError.staleContext }
+        let key = Data(app.utf8)
+        guard drainingEngines.insert(key).inserted else { throw HanlinHostError.staleContext }
+        defer { drainingEngines.remove(key) }
+        inactiveEngines.insert(key)
+        let owned = presentations.values.filter { $0.account.app == key }.compactMap(\.value)
+        for presentation in owned { presentation.invalidate() }
+        for presentation in owned { await presentation.revokeAndDrain() }
+    }
+
+    public func activateEngine(_ app: String) throws {
+        let key = Data(app.utf8)
+        guard PinkhaHanlinEngineNamespace.supports(app), !drainingEngines.contains(key) else {
+            throw HanlinHostError.staleContext
+        }
+        inactiveEngines.remove(key)
+    }
+
     public func accountDidOpen(_ account: String, app: String = PinkhaHanlinEngineNamespace.heart) throws {
         let key = AccountKey(app: app, account: account)
-        guard PinkhaHanlinEngineNamespace.supports(app), !removingAccounts.contains(key) else {
+        guard PinkhaHanlinEngineNamespace.supports(app), !removingAccounts.contains(key),
+              !drainingAccounts.contains(key) else {
             throw HanlinHostError.staleContext
         }
         closedAccounts.remove(key)
@@ -106,9 +132,14 @@ public final class PinkhaHanlinAccountOwner {
         guard !account.isEmpty else { return }
         guard PinkhaHanlinEngineNamespace.supports(app) else { throw HanlinHostError.staleContext }
         let key = AccountKey(app: app, account: account)
+        guard drainingAccounts.insert(key).inserted else { throw HanlinHostError.staleContext }
+        defer { drainingAccounts.remove(key) }
         closedAccounts.insert(key)
         let owned = presentations.values.filter { $0.account == key }.compactMap(\.value)
+        // Revoke all presentations before the first suspension, then await each
+        // concrete SDK/native owner before an engine or account may be replaced.
         for presentation in owned { presentation.invalidate() }
+        for presentation in owned { await presentation.revokeAndDrain() }
         guard removeData else { return }
         guard removingAccounts.insert(key).inserted else { throw HanlinHostError.staleContext }
         defer { removingAccounts.remove(key) }

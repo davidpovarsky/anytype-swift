@@ -35,16 +35,19 @@ public struct AnyNativeLibraryView: View {
     @State private var removeItem: AnyHierarchyItem?
     private let onRequestClose: @MainActor () async -> Void
     private let lifetime: AnyUIPresentationLifetime
+    private let onManageMembers: (@MainActor () -> Void)?
 
     public init(client: AnyHTTPClient, session: AnyApplicationSession,
                 objects: AnyNativeObjectCreator, blocks: AnyNativeBlockCreator,
                 capabilities: AnyUIFoundationCapabilities,
                 onRequestClose: @escaping @MainActor () async -> Void,
-                lifetime: AnyUIPresentationLifetime, recovery: AnyNativeLibraryRecovery) {
+                lifetime: AnyUIPresentationLifetime, recovery: AnyNativeLibraryRecovery,
+                onManageMembers: (@MainActor () -> Void)? = nil) {
         _model = State(initialValue: AnyLibraryPresentation(client: client, session: session,
             objects: objects, blocks: blocks, capabilities: capabilities, lifetime: lifetime, recovery: recovery))
         _path = State(initialValue: recovery.workspace == session.workspace ? recovery.navigation : [])
         self.onRequestClose = onRequestClose; self.lifetime = lifetime
+        self.onManageMembers = onManageMembers
     }
 
     public var body: some View {
@@ -242,6 +245,12 @@ public struct AnyNativeLibraryView: View {
                 }
             }
             ToolbarItemGroup(placement: .topBarTrailing) {
+                if let onManageMembers {
+                    Button(action: onManageMembers) { Image(systemName: "person.2") }
+                        .accessibilityLabel(Text(AnyUIErrorText.text("הרשאות והזמנות", "Members and invitations")))
+                        .accessibilityIdentifier("any-native-members")
+                        .disabled(!lifetime.isActive)
+                }
                 if model.hierarchy != nil {
                     EditButton().disabled(!model.canWrite)
                     Button {

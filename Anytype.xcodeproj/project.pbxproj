@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		FA9502012F112500006805CC /* PinkhaSharing in Frameworks */ = {isa = PBXBuildFile; productRef = FA9501012F112500006805CC /* PinkhaSharing */; };
+		FA9602012F112500006805CC /* PinkhaEngineHost in Frameworks */ = {isa = PBXBuildFile; productRef = FA9601012F112500006805CC /* PinkhaEngineHost */; };
 		FA9502022F112500006805CC /* PinkhaSharing in Frameworks */ = {isa = PBXBuildFile; productRef = FA9501022F112500006805CC /* PinkhaSharing */; };
+		FA9602022F112500006805CC /* PinkhaEngineHost in Frameworks */ = {isa = PBXBuildFile; productRef = FA9601022F112500006805CC /* PinkhaEngineHost */; };
 		FA9102012F112100006805CC /* PinkhaKit in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101012F112100006805CC /* PinkhaKit */; };
 		FA9102022F112100006805CC /* Loc in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101022F112100006805CC /* Loc */; };
 		FA9102032F112100006805CC /* TorahInspectorUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101032F112100006805CC /* TorahInspectorUI */; };
@@ -292,6 +294,7 @@
 			files = (
 				FA8300012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
 				FA9502012F112500006805CC /* PinkhaSharing in Frameworks */,
+				FA9602012F112500006805CC /* PinkhaEngineHost in Frameworks */,
 				FA7500012F111900006805CC /* PinkhaHanlinUI in Frameworks */,
 				FA7300012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
 				FA6300012F111800006805CC /* HanlinHostContracts in Frameworks */,
@@ -353,6 +356,7 @@
 				FA9102032F112100006805CC /* TorahInspectorUI in Frameworks */,
 				FA8301012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
 				FA9502022F112500006805CC /* PinkhaSharing in Frameworks */,
+				FA9602022F112500006805CC /* PinkhaEngineHost in Frameworks */,
 				FA7501012F111900006805CC /* PinkhaHanlinUI in Frameworks */,
 				FA7301012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
 				FA6301012F111800006805CC /* HanlinHostContracts in Frameworks */,
@@ -528,6 +532,7 @@
 			packageProductDependencies = (
 				FA8200012F111900006805CC /* PinkhaTorahPresentation */,
 				FA9501012F112500006805CC /* PinkhaSharing */,
+				FA9601012F112500006805CC /* PinkhaEngineHost */,
 				FA7400012F111900006805CC /* PinkhaHanlinUI */,
 				FA7200012F111900006805CC /* PinkhaHanlinCore */,
 				FA6200012F111800006805CC /* HanlinHostContracts */,
@@ -603,6 +608,7 @@
 				FA9101032F112100006805CC /* TorahInspectorUI */,
 				FA8201012F111900006805CC /* PinkhaTorahPresentation */,
 				FA9501022F112500006805CC /* PinkhaSharing */,
+				FA9601022F112500006805CC /* PinkhaEngineHost */,
 				FA7401012F111900006805CC /* PinkhaHanlinUI */,
 				FA7201012F111900006805CC /* PinkhaHanlinCore */,
 				FA6201012F111800006805CC /* HanlinHostContracts */,
@@ -741,6 +747,7 @@
 			mainGroup = 0303ECF222D8EDAA005C552B;
 			packageReferences = (
 				FA9500012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaSharing" */,
+				FA9600012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaEngineHost" */,
 				FA8100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaTorahPresentation" */,
 				FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */,
 				FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */,
@@ -1190,6 +1197,7 @@
 				SWIFT_USE_INTEGRATED_DRIVER = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) PINKHA_DUAL_ENGINE_RUNTIME PINKHA_NATIVE_DERIVED PINKHA_NATIVE_T5_LOOKUP_V1 PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1";
 			};
 			name = "Release-Anytype";
 		};
@@ -1359,6 +1367,7 @@
 				SWIFT_USE_INTEGRATED_DRIVER = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) PINKHA_DUAL_ENGINE_RUNTIME PINKHA_NATIVE_DERIVED PINKHA_NATIVE_T5_LOOKUP_V1 PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1";
 			};
 			name = "Release-Nightly";
 		};
@@ -2141,6 +2150,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Modules/PinkhaSharing;
 		};
+		FA9600012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaEngineHost" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Modules/PinkhaEngineHost;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -2642,10 +2655,20 @@
 			package = FA9500012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaSharing" */;
 			productName = PinkhaSharing;
 		};
+		FA9601012F112500006805CC /* PinkhaEngineHost */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA9600012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaEngineHost" */;
+			productName = PinkhaEngineHost;
+		};
 		FA9501022F112500006805CC /* PinkhaSharing */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = FA9500012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaSharing" */;
 			productName = PinkhaSharing;
+		};
+		FA9601022F112500006805CC /* PinkhaEngineHost */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA9600012F112500006805CC /* XCLocalSwiftPackageReference "PinkhaEngineHost" */;
+			productName = PinkhaEngineHost;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

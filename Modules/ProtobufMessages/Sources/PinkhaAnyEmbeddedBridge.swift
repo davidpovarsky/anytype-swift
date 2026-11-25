@@ -9,6 +9,8 @@ public enum PinkhaUnifiedRuntimeProfile {
         "70fb5342f2ff31d1cf5f7ce44bed7b16f6373f6bf95eb031d165339cf0f26683"
     public static let heartVersion = "pinkha-dual-runtime-v1-" + sourceManifestSHA256
     public static let anyVersion = "v0.5.0-pinkha.dual.1-" + sourceManifestSHA256
+    public static let anyRuntimeVersion = "any " + anyVersion
+        + " (commit cf87c43ff0100c2dc43c3c105c82b1b070b3a7a3, built 2026-11-25)"
 }
 
 public enum PinkhaAnyEmbeddedBridge {

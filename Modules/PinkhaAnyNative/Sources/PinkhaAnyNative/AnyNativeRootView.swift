@@ -5,14 +5,40 @@ import PinkhaAnyRuntime
 import PinkhaAnyUI
 import PinkhaAnyHost
 import PinkhaAnyEngine
+import PinkhaSharing
+
+/// A scene keeps this owner while switching engines. Suspension waits for real
+/// document/AI work and native shutdown before another scene can use the engine.
+@MainActor
+public final class AnyNativePresentationSession {
+    fileprivate let model: AnyNativeRootModel
+
+    public init(application: AnyNativeApplication, network: AnyEmbeddedNetwork = .official) {
+        model = AnyNativeRootModel(application: application, network: network)
+    }
+
+    public func resume() { model.resume() }
+
+    public func suspendAndWait() async {
+        model.suspend()
+        await model.waitForSuspension()
+    }
+}
 
 @MainActor
 public struct AnyNativeRootView: View {
     @State private var model: AnyNativeRootModel
     @Environment(\.scenePhase) private var scenePhase
+    private let isActive: Bool
 
     public init(application: AnyNativeApplication, network: AnyEmbeddedNetwork = .official) {
         _model = State(initialValue: AnyNativeRootModel(application: application, network: network))
+        isActive = true
+    }
+
+    public init(session: AnyNativePresentationSession, isActive: Bool = true) {
+        _model = State(initialValue: session.model)
+        self.isActive = isActive
     }
 
     public var body: some View {
@@ -32,7 +58,8 @@ public struct AnyNativeRootView: View {
                     AnyNativeLibraryView(client: owner.client, session: owner.session,
                         objects: owner.objects, blocks: owner.blocks, capabilities: owner.capabilities,
                         onRequestClose: { await model.closeWorkspace(expectedSession: owner.session) },
-                        lifetime: lifetime, recovery: recovery)
+                        lifetime: lifetime, recovery: recovery,
+                        onManageMembers: { model.showMembers() })
                 } else {
                     ProgressView()
                 }
@@ -45,8 +72,24 @@ public struct AnyNativeRootView: View {
         )) {
             Button("סגור", role: .cancel) { model.errorMessage = nil }
         } message: { Text(model.errorMessage ?? "") }
-        .task { model.resume() }
+        .sheet(isPresented: Binding(get: { model.showingMembers },
+                                   set: { model.showingMembers = $0 })) {
+            if let service = model.sharingService {
+                PinkhaSpaceMembersView(service: service)
+            }
+        }
+        .sheet(isPresented: Binding(get: { model.showingJoin },
+                                   set: { model.showingJoin = $0 })) {
+            PinkhaJoinSpaceView(join: { invitation in
+                try await model.joinSpace(invitation: invitation)
+            })
+        }
+        .task(id: isActive) {
+            if isActive { model.resume() }
+            else { model.suspend(); await model.waitForSuspension() }
+        }
         .onChange(of: scenePhase) { _, phase in
+            guard isActive else { return }
             if phase == .active { model.resume() }
             if phase == .background { model.suspend() }
         }
@@ -153,6 +196,8 @@ public struct AnyNativeRootView: View {
                         .disabled(model.newSpaceName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
                 Section {
+                    Button("הצטרפות למרחב", systemImage: "person.crop.circle.badge.plus") { model.showingJoin = true }
+                        .accessibilityIdentifier("any-native-space-join")
                     Button("רענון מרחבים", systemImage: "arrow.clockwise") { model.refreshSpaces() }
                     Button("יציאה מהחשבון", role: .destructive) { model.signOut() }
                         .accessibilityIdentifier("any-native-account-sign-out")
@@ -165,7 +210,7 @@ public struct AnyNativeRootView: View {
 
 @Observable
 @MainActor
-private final class AnyNativeRootModel {
+fileprivate final class AnyNativeRootModel {
     enum Page: Equatable { case starting, accounts, backup, spaces, workspace }
     let application: AnyNativeApplication
     let network: AnyEmbeddedNetwork
@@ -176,6 +221,9 @@ private final class AnyNativeRootModel {
     var account: AnyNativeAccount?
     var spaces: [AnyNativeSpace] = []
     var workspace: AnyNativeWorkspaceOwner?
+    var sharingService: AnyNativeSharingService?
+    var showingMembers = false
+    var showingJoin = false
     var presentationLifetime: AnyUIPresentationLifetime?
     var libraryRecovery: AnyNativeLibraryRecovery?
     private struct RecoveryKey: Hashable {
@@ -190,6 +238,7 @@ private final class AnyNativeRootModel {
     var newSpaceName = ""
     private var operation: Task<Void, Never>?
     private var suspension: Task<Void, Never>?
+    private var joining: Task<PinkhaSharingJoinResult, Error>?
     private var wantsForeground = true
     private var started = false
     var runtimeReady: Bool { started }
@@ -307,6 +356,34 @@ private final class AnyNativeRootModel {
 
     func refreshSpaces() { execute { try await self.loadSpaces() } }
 
+    func showMembers() {
+        guard page == .workspace, let workspace, presentationLifetime?.isActive == true else { return }
+        do {
+            sharingService = try AnyNativeSharingService(owner: workspace)
+            showingMembers = true
+        } catch { report(error) }
+    }
+
+    func joinSpace(invitation: String) async throws -> PinkhaSharingJoinResult {
+        guard page == .spaces, started, account != nil,
+              operation == nil, suspension == nil, joining == nil else {
+            throw AnyNativeApplicationError.busy
+        }
+        let ticket = epoch
+        let work = Task { @MainActor in
+            let result = try await application.joinSpace(invitation: invitation)
+            try Task.checkCancellation()
+            guard ticket == epoch, wantsForeground else { throw CancellationError() }
+            try await loadSpaces()
+            return result
+        }
+        joining = work
+        defer { joining = nil }
+        return try await withTaskCancellationHandler {
+            try await work.value
+        } onCancel: { work.cancel() }
+    }
+
     func createSpace() {
         let name = newSpaceName
         execute {
@@ -338,6 +415,8 @@ private final class AnyNativeRootModel {
         guard workspace?.session === expectedSession else { return }
         let task = execute {
             guard self.workspace?.session === expectedSession else { return }
+            self.showingMembers = false
+            self.sharingService = nil
             let lifetime = self.presentationLifetime
             lifetime?.revoke()
             await lifetime?.drain()
@@ -353,6 +432,9 @@ private final class AnyNativeRootModel {
 
     func signOut() {
         execute {
+            self.showingMembers = false
+            self.showingJoin = false
+            self.sharingService = nil
             self.presentationLifetime?.revoke()
             await self.presentationLifetime?.drain()
             try await self.application.signOut()
@@ -371,11 +453,17 @@ private final class AnyNativeRootModel {
         wantsForeground = false
         recoveryText = ""
         restorePhrase = ""
+        showingMembers = false
+        showingJoin = false
+        sharingService = nil
         presentationLifetime?.revoke()
         guard suspension == nil else { return }
+        guard started || operation != nil || joining != nil || workspace != nil || emergency != nil else { return }
         epoch = UUID()
         let pending = operation
         pending?.cancel()
+        let pendingJoin = joining
+        pendingJoin?.cancel()
         let lifetime = presentationLifetime
         let stopSignal = emergency
         page = .starting
@@ -385,6 +473,7 @@ private final class AnyNativeRootModel {
         }
         suspension = Task {
             await pending?.value
+            _ = try? await pendingJoin?.value
             await lifetime?.drain()
             await application.stop()
             workspace = nil
@@ -399,6 +488,8 @@ private final class AnyNativeRootModel {
         }
     }
 
+    func waitForSuspension() async { await suspension?.value }
+
     private func endBackgroundTask() {
         guard backgroundTask != .invalid else { return }
         UIApplication.shared.endBackgroundTask(backgroundTask)
@@ -407,7 +498,7 @@ private final class AnyNativeRootModel {
 
     @discardableResult
     private func execute(_ action: @escaping @MainActor () async throws -> Void) -> Task<Void, Never>? {
-        guard operation == nil, suspension == nil else { return nil }
+        guard operation == nil, suspension == nil, joining == nil else { return nil }
         busy = true
         let ticket = epoch
         let task = Task {

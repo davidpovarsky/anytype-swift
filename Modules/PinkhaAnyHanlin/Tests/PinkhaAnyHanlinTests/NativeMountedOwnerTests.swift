@@ -34,6 +34,7 @@ final class NativeMountedOwnerTests: XCTestCase {
         var revoked = false
         init(session: HanlinHostSession) { self.session = session }
         func invalidate() { revoked = true }
+        func revokeAndDrain() async { }
     }
 
     @MainActor

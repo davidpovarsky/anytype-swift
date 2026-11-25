@@ -31,7 +31,8 @@ public final class AnyHanlinHost: HanlinHostIntegration, PinkhaHanlinOwnedPresen
     public init(native: AnyApplicationSession, documents: AnyEditorDocumentStore,
                 owner: any AnyHanlinPresentationOwner, conversationID: UUID,
                 locale: Locale = .current, creation: AnyHanlinCreationServices? = nil) throws {
-        guard PinkhaHanlinAccountOwner.shared.isAvailable(account: native.workspace.accountID) else {
+        guard PinkhaHanlinAccountOwner.shared.isAvailable(account: native.workspace.accountID,
+            app: PinkhaHanlinEngineNamespace.any) else {
             throw HanlinHostError.staleContext
         }
         let access = try AnyHanlinNativeAccess(native: native, documents: documents, owner: owner,
@@ -115,6 +116,8 @@ public final class AnyHanlinHost: HanlinHostIntegration, PinkhaHanlinOwnedPresen
         invalidation?()
         Task { @MainActor [router] in await router.invalidate() }
     }
+
+    public func revokeAndDrain() async { await close() }
 
     public func close() async {
         invalidate()

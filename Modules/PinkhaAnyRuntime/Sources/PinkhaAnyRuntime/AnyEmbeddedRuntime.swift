@@ -213,7 +213,13 @@ public actor AnyEmbeddedRuntime {
         guard let versionPointer = AnyLibVersion() else { throw AnyEmbeddedRuntimeError.unexpectedVersion }
         let version = String(cString: versionPointer)
         #endif
+        #if PINKHA_DUAL_ENGINE_RUNTIME
+        guard build == .linked, version == PinkhaUnifiedRuntimeProfile.anyRuntimeVersion else {
+            throw AnyEmbeddedRuntimeError.unexpectedVersion
+        }
+        #else
         guard build == .linked, version.hasPrefix(build.versionPrefix) else { throw AnyEmbeddedRuntimeError.unexpectedVersion }
+        #endif
         var random = [UInt8](repeating: 0, count: 32)
         let status = SecRandomCopyBytes(kSecRandomDefault, random.count, &random)
         guard status == errSecSuccess else {

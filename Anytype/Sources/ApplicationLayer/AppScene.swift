@@ -8,12 +8,21 @@ struct AnytypeApp: App {
     
     var body: some Scene {
         WindowGroup {
+            #if PINKHA_DUAL_ENGINE_RUNTIME
+            PinkhaEngineSceneView {
+                ApplicationCoordinatorView()
+                    .setupGlobalEnv()
+                    .setupAppSceneUrlHandler()
+                    .setupTraitCollectionNotifier()
+                    .foregroundStyle(Color.Text.primary)
+            }
+            #else
             ApplicationCoordinatorView()
                 .setupGlobalEnv()
                 .setupAppSceneUrlHandler()
                 .setupTraitCollectionNotifier()
-            
                 .foregroundStyle(Color.Text.primary)
+            #endif
         }
     }
 }
