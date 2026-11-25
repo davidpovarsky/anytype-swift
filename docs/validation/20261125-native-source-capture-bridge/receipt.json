@@ -1,0 +1,143 @@
+{
+  "contract": "pinkha-native-source-capture-bridge-review-v1",
+  "swiftSourceCommit": "68aa9c7aa05ffe132d1a175e1f30f952202678b3",
+  "swiftHostTree": "e6d0c3abf4daa78b64657b642dcceab29dc2c55f",
+  "nativeBaseCommit": "ea796999d648e27dcb7ad23a0bbd849d35fadc5a",
+  "nativeBridgeCommit": "7796b2a4c8e7d80aae82606ca0bcb83acf84506d",
+  "requiredNativeBuildTag": "pinkha_loaded_account_witness",
+  "nativeFiles": [
+    {
+      "path": "clientlibrary/service/pinkha_native_source_capture.go",
+      "bytes": 1485,
+      "sha256": "c696c465e555269b2af73ee16b4fe7daa865463318f8c849b493a671fc9626df",
+      "gitBlob": "ac53d32838e46f0752f2799280ccf57beead075d"
+    },
+    {
+      "path": "core/pinkha_native_source_capture.go",
+      "bytes": 4412,
+      "sha256": "471970c43579a5808a806bf83c5e263c01ee8436544490fc3aa0d7338ef0bba8",
+      "gitBlob": "6930c87444fd35b9e7841ddcbf9e27b06d4514df"
+    },
+    {
+      "path": "pkg/lib/pinkha/capturecontrol/manifest.go",
+      "bytes": 2263,
+      "sha256": "24088011897db39090a7ea7b03e52ced01e1be3d6db6a4f5589701155697c872",
+      "gitBlob": "e4e2bf266d7068f761e626a2c94db1a472b7b299"
+    },
+    {
+      "path": "pkg/lib/pinkha/capturecontrol/manifest_test.go",
+      "bytes": 2618,
+      "sha256": "156c0870a9c8e559965df2537476df48a65ef462aa5a53131b419317fc7e6133",
+      "gitBlob": "08a7572dcd4c0379ec8116c0130736728b1ae875"
+    },
+    {
+      "path": "pkg/lib/pinkha/capturecontrol/registry.go",
+      "bytes": 2798,
+      "sha256": "cd4c15a762c80cccbfa6feaa461ae12f8bfe7a20f019fb99a6a40785be800965",
+      "gitBlob": "a080ddae9a22d6cfb3d679499927edcea61ae9fe"
+    },
+    {
+      "path": "pkg/lib/pinkha/capturecontrol/registry_test.go",
+      "bytes": 3389,
+      "sha256": "8eace3fb744b6f59c5ada7dd034eb653b2c78220f4472d9f8e4c6467e9c08a22",
+      "gitBlob": "0d43541e909203a28cad72b616226288905dc30e"
+    }
+  ],
+  "evidenceMembers": [
+    {
+      "path": "go-race/go-test.jsonl",
+      "bytes": 11333,
+      "sha256": "587995a75aec498362607ffa9360d437ca3a70eeb06dcd7c30790d08433f9a97"
+    },
+    {
+      "path": "go-race/launch.json",
+      "bytes": 1175,
+      "sha256": "4818b57b8e624577f5fd8417cd5efe2b843d2d2821713ecbc5b8af4c75beb8e5"
+    },
+    {
+      "path": "go-race/result.json",
+      "bytes": 1831,
+      "sha256": "b7f47464c7d19272fac3e5318ddb22a5ad9e5ed7829d66f130e5a4add9d447ec"
+    },
+    {
+      "path": "swift-precompile-failure/launch.json",
+      "bytes": 940,
+      "sha256": "8f242a3e15e15fc94e74a4550b316c080036bfd9eeab73691cc00adec01b47ec"
+    },
+    {
+      "path": "swift-precompile-failure/result.json",
+      "bytes": 326,
+      "sha256": "7c942d513220d979d1203f77c989fec6059dd3a8635b3c5d44461228e61a2794"
+    },
+    {
+      "path": "swift-precompile-failure/swift-test.log",
+      "bytes": 136,
+      "sha256": "056e3d5ddbb934e7125136499eca3490c6c9a70fac0486e431191e59507022b9"
+    },
+    {
+      "path": "swift-owner-continuation/launch.json",
+      "bytes": 1147,
+      "sha256": "a2c60be0f25c2d7a48d3bcf999f43ea8909566c104e3ef8f14e47a60f503d3e7"
+    },
+    {
+      "path": "swift-owner-continuation/result.json",
+      "bytes": 327,
+      "sha256": "956601100d72b80610640c2027cdbb8e12b165aad6ccfd0d4d4c7008d9ac839b"
+    },
+    {
+      "path": "swift-owner-continuation/swift-test.log",
+      "bytes": 3253,
+      "sha256": "0216dbe5e0e114e857c8f677aefaac9f4eeccda8a3fc0917c199a221a20d4d00"
+    },
+    {
+      "path": "native-source-capture-bridge.patch",
+      "bytes": 18883,
+      "sha256": "62f748d9add4494e8de3f996b86136b8f0c9d8427584ad1e51eed7ec91d89188"
+    }
+  ],
+  "goControls": {
+    "topLevelMethods": 5,
+    "nestedNegativeCases": 5,
+    "raceDetector": true,
+    "passed": true,
+    "logSHA256": "587995a75aec498362607ffa9360d437ca3a70eeb06dcd7c30790d08433f9a97",
+    "coreAndServiceCompiled": false,
+    "nativeCaptureExecuted": false
+  },
+  "swiftControls": {
+    "methods": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "sourceUnchanged": true,
+    "platform": "Linux aarch64 Swift6.4.3",
+    "logSHA256": "0216dbe5e0e114e857c8f677aefaac9f4eeccda8a3fc0917c199a221a20d4d00",
+    "originalNativeCaptures": [
+      {
+        "objects": 144,
+        "verifiedMembers": 291,
+        "manifestSHA256": "2a1a02987204321aaa1c8cf9f0c7f413f4b50dbce87280d82499c4f9bc7be238"
+      },
+      {
+        "objects": 156,
+        "verifiedMembers": 313,
+        "manifestSHA256": "cbfb3aa1fd89707138adeccbce7389c40dc0a993f2285f6e517120e4e4239ed4"
+      }
+    ]
+  },
+  "correction": {
+    "previousProseNonBasicTypeInstances": 16,
+    "actualNonBasicTypeInstances": 17,
+    "uniqueNonBasicLayouts": 15,
+    "types": 20,
+    "basicTypeInstances": 3,
+    "sourceManifestUnchanged": true
+  },
+  "admission": {
+    "currentSourceSessionRevalidation": false,
+    "wholeSpaceSemanticMappingComplete": false,
+    "destinationWriteAdmission": false,
+    "fullSourceDestinationReopenComparison": false,
+    "appleCaptureBridgeExecution": false
+  }
+}

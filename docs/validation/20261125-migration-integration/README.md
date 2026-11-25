@@ -35,7 +35,7 @@ The separate recovered 45501479246 peer proof is documented under ../20261125-na
 
 ## Remaining actual product gaps
 
-The captured custom Space includes 126 property definitions, including 64 readonly or derived definitions, 20 types (16 non-Basic layouts), four options, two Pages, and native home/archive/workspace/widget objects. Seven bundled definition resolutions and two other native collections are explicit. One custom property has a non-null retained default. These current source facts are not discarded.
+The captured custom Space includes 126 property definitions, including 64 readonly or derived definitions, 20 types (17 non-Basic type instances; 15 distinct non-Basic layout values), four options, two Pages, and native home/archive/workspace/widget objects. Seven bundled definition resolutions and two other native collections are explicit. One custom property has a non-null retained default. These current source facts are not discarded.
 
 - AnyHeartNativeDefinitionPlan retains and refuses unqualified defaults, derived fields and non-Basic layout behavior.
 - AnyHeartNativePageComposition refuses unaccounted source semantics and does not grant complete source admission.
