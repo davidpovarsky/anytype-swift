@@ -162,6 +162,14 @@ def run(debugger, config_path):
                         stop_rows.append({"threadID": thread.GetThreadID(), "reason": reason,
                                           "ownedBreakpointIDs": ids if reason == lldb.eStopReasonBreakpoint else []})
                     STATE.setdefault("stopNotifications", []).append({"at": time.time(), "threads": stop_rows})
+                    if not reasons:
+                        # This is the observed auto-continue transition: LLDB
+                        # publishes eStateStopped while every thread already
+                        # has no stop reason. There is no target stop to resume.
+                        # Consume the following state event without inventing
+                        # an exception or detaching before the requested action.
+                        STATE["transientAutomaticContinuations"] = STATE.get("transientAutomaticContinuations", 0) + 1
+                        continue
                     if reasons and all(reasons):
                         error = process.Continue()
                         if error.Fail() and process.GetState() != lldb.eStateRunning:
