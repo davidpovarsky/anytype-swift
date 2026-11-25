@@ -17,7 +17,7 @@ from release_contract import current_build_context, write
 from release_signing import preserve_thin
 from release_surface import verify_public_surface
 
-CONTRACT = json.loads((HERE.parent / 'public_host_contract.json').read_text())
+CONTRACT = json.loads((HERE / 'reviewed_host_contract_292.json').read_text())
 ROOT = HERE.parents[2]
 
 
@@ -36,14 +36,14 @@ class ProductionSurfaceControls(unittest.TestCase):
     def verify(self, graph):
         return verify_public_surface([graph], ROOT, CONTRACT)
 
-    def test_all89_production_and22_debug_absences_are_required(self):
+    def test_all270_production_and22_debug_absences_are_required(self):
         value = self.verify(self.graph())
-        self.assertEqual(value['reviewed_host_and_spi_requirements_observed'], 89)
+        self.assertEqual(value['reviewed_host_and_spi_requirements_observed'], 270)
         self.assertEqual(value['debug_qualification_requirements_absent'], 22)
         self.assertTrue(all(v['spi'] is False for v in value['own_public_symbols']))
 
     def test_every_missing_production_requirement_is_refused(self):
-        for index in range(89):
+        for index in range(270):
             with self.subTest(index=index):
                 graph = self.graph()
                 graph['symbols'].pop(index)

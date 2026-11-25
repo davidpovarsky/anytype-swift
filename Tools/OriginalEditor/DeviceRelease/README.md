@@ -105,3 +105,20 @@ not inferred solely from upstream source. `verify_release_symbols_parity.py`
 compares the complete union against preserved successful default-nm output
 for the Debug Protobuf and three Release dependency/editor images. Synthetic
 parser/admission tests remain control tests, separate from this native proof.
+
+## Current complete292 contract continuation
+
+This isolated controller now requires the exact current ten-facade contract:
+270 production declarations and the absence of all22 Debug Simulator SPI
+declarations. Its original unsafe-constructor/editor-writer checks are unchanged.
+The separate external binary consumer also compiles the original MiniApps file
+export/import overloads and complete-text capture field; those functions remain
+uninvoked by the EN/HE resource probe. A device build earns only actual device
+compile/link/platform/API proof, never a physical runtime result.
+
+The historical111-member controller and its device evidence remain retained in
+Git and in their original output directories. The current helper provenance
+records both original34b hashes and the reviewed unchanged-semantic1f helper
+updates: APFS product copies, complete292 surface and the optional original
+build-evidence argument. No original native66 or three-target ABI job is rerun
+by this controller; current actual ABI admission stays with the qualified SDK.

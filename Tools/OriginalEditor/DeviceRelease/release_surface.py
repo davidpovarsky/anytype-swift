@@ -1,4 +1,4 @@
-"""Inspect all real Release compiler graphs: public API89 and absent Debug SPI22."""
+"""Inspect all real Release compiler graphs: public API270 and absent Debug SPI22."""
 from pathlib import Path
 import json
 from urllib.parse import urlparse, unquote
@@ -14,7 +14,7 @@ def verify_public_surface(graphs, source_root, host_contract):
     reviewed_facades, required, debug_required = {}, set(), set()
     debug_locations = set()
     if host_contract is not None:
-        require(host_contract.get('schema') == 2 and len(host_contract.get('facades', {})) == 7,
+        require(host_contract.get('schema') == 2 and len(host_contract.get('facades', {})) == 10,
                 'Malformed reviewed Host surface contract')
         for path, contract in host_contract['facades'].items():
             location = (source_root / path).resolve()
@@ -29,7 +29,7 @@ def verify_public_surface(graphs, source_root, host_contract):
             else:
                 reviewed_facades[location] = contract
                 required.update((location, tuple(components)) for components in contract['required'])
-        require(len(required) == 89 and len(debug_required) == 22 and len(reviewed_facades) == 6
+        require(len(required) == 270 and len(debug_required) == 22 and len(reviewed_facades) == 9
                 and len(debug_locations) == 1, 'Incomplete production/Debug absence surface contract')
     debug_paths = {components for _, components in debug_required}
     production_roots = {name for value in reviewed_facades.values() for name in value['roots']}
