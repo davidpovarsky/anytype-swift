@@ -22,6 +22,8 @@ public enum PinkhaPrivateDirectoryMigration {
               destination.resolvingSymlinksInPath().path == destination.path else {
             throw Failure.invalidPath
         }
+        try requireNoSymlinkAncestors(legacy)
+        try requireNoSymlinkAncestors(destination)
         let sourceExists = manager.fileExists(atPath: legacy.path)
         let destinationExists = manager.fileExists(atPath: destination.path)
         // No silent merge or preference between two different settings stores.
@@ -51,6 +53,25 @@ public enum PinkhaPrivateDirectoryMigration {
         try manager.createDirectory(at: destination, withIntermediateDirectories: false,
                                     attributes: [.posixPermissions: 0o700])
         return .init(moved: false, fileCount: 0)
+    }
+
+    private static func requireNoSymlinkAncestors(_ url: URL) throws {
+        // Foundation may leave a nonexistent suffix unresolved. Inspect each
+        // existing ancestor before creating any directory through that suffix.
+        var cursor = url
+        while cursor.path != "/" {
+            do {
+                let attributes = try FileManager.default.attributesOfItem(atPath: cursor.path)
+                guard attributes[.type] as? FileAttributeType != .typeSymbolicLink else {
+                    throw Failure.invalidPath
+                }
+            } catch let error as NSError where error.domain == NSCocoaErrorDomain &&
+                [NSFileNoSuchFileError, NSFileReadNoSuchFileError].contains(error.code) {
+                // This descendant will be created only after all its existing
+                // parents have been checked. Other filesystem errors propagate.
+            }
+            cursor.deleteLastPathComponent()
+        }
     }
 
     private struct FileIdentity: Equatable {
