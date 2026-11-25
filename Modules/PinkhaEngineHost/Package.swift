@@ -9,10 +9,13 @@ let package = Package(
     name: "PinkhaEngineHost",
     platforms: [.iOS("27.0")],
     products: [.library(name: "PinkhaEngineHost", targets: ["PinkhaEngineHost"])],
-    dependencies: unified ? [.package(path: "../PinkhaAnyNative")] : [],
+    dependencies: unified ? [.package(path: "../PinkhaAnyNative"), .package(path: "../PinkhaAnyUI"),
+                             .package(path: "../PinkhaAnyHost")] : [],
     targets: [
         .target(name: "PinkhaEngineHost",
-            dependencies: unified ? [.product(name: "PinkhaAnyNative", package: "PinkhaAnyNative")] : [],
+            dependencies: unified ? [.product(name: "PinkhaAnyNative", package: "PinkhaAnyNative"),
+                                     .product(name: "PinkhaAnyUI", package: "PinkhaAnyUI"),
+                                     .product(name: "PinkhaAnyHost", package: "PinkhaAnyHost")] : [],
             swiftSettings: unified ? [.define("PINKHA_DUAL_ENGINE_RUNTIME")] : [])
     ]
 )

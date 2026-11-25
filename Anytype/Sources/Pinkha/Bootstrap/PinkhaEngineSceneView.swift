@@ -3,6 +3,7 @@ import Foundation
 import SwiftUI
 import UIKit
 import Observation
+import Combine
 import Factory
 import PinkhaEngineHost
 import PinkhaHanlinCore
@@ -29,8 +30,168 @@ final class PinkhaEngineSceneOwner {
     private var restored = false
     private var visibleScenes = Set<String>()
 
+    // One source review owns one actual Full wallet session until native close
+    // succeeds. A failed close retains that ownership for a visible retry.
+    private(set) var currentSource: PinkhaHeartSourceSelection?
+    private(set) var sourceReview: PinkhaEmbeddedHeartSourceReview?
+    private(set) var sourceReviewPresented = false
+    private(set) var sourceWindow: String?
+    private(set) var sourceCapturing = false
+    private(set) var sourceClosing = false
+    private(set) var sourceProblem: String?
+    private var sourceBinding: PinkhaHeartSourceSelection?
+    @ObservationIgnored private var sourceController: PinkhaHeartSourceCaptureController?
+    @ObservationIgnored private var sourceCaptureTask: Task<PinkhaEmbeddedHeartSourceReview, Error>?
+    @ObservationIgnored private var sourceCleanup: Task<Void, Error>?
+    @ObservationIgnored private var sourceTicket: UUID?
+
+    var sourceSpaceName: String { sourceBinding?.spaceName ?? "" }
+
+    func captureSource(for scene: String) async {
+        guard engine == .heart, !switching, !sourceClosing, visibleScenes.contains(scene) else { return }
+        if sourceBinding != nil {
+            sourceWindow = scene
+            sourceReviewPresented = true
+            return
+        }
+        guard let selected = PinkhaHeartSourceSelection.current() else {
+            problem = "יש לפתוח מרחב בחשבון Heart לפני בדיקת המקור להעברה."
+            return
+        }
+        do {
+            if sourceController == nil {
+                sourceController = try PinkhaHeartSourceCaptureController(
+                    privateDirectory: PinkhaHeartSourceSelection.privateDirectory(),
+                    obtainSeed: { try Container.shared.seedService().obtainSeed() })
+            }
+            guard let controller = sourceController else { return }
+            let ticket = UUID()
+            sourceTicket = ticket
+            sourceBinding = selected
+            sourceWindow = scene
+            sourceProblem = nil
+            sourceReview = nil
+            sourceReviewPresented = true
+            sourceCapturing = true
+            let task = Task { try await controller.capture(accountID: selected.accountID, spaceID: selected.spaceID) }
+            sourceCaptureTask = task
+            do {
+                let review = try await task.value
+                guard sourceTicket == ticket, engine == .heart,
+                      Self.sameSource(selected, PinkhaHeartSourceSelection.current()) else {
+                    if sourceTicket == ticket { try await endSourceReview(.accountChanged) }
+                    return
+                }
+                sourceReview = review
+            } catch {
+                guard sourceTicket == ticket else { return }
+                sourceProblem = "לא ניתן להשלים את בדיקת המקור. הנתונים המקוריים נשמרו. סגור את הבדיקה ונסה שוב."
+            }
+            if sourceTicket == ticket {
+                sourceCaptureTask = nil
+                sourceCapturing = false
+            }
+        } catch {
+            sourceProblem = "לא ניתן לפתוח את בדיקת המקור כעת."
+            problem = sourceProblem
+        }
+    }
+
+    private enum SourceEnd { case accountChanged, engineChanged, cancel, release }
+
+    private func endSourceReview(_ reason: SourceEnd) async throws {
+        if let cleanup = sourceCleanup {
+            try await cleanup.value
+            return
+        }
+        guard let controller = sourceController, sourceBinding != nil else {
+            sourceReviewPresented = false
+            sourceWindow = nil
+            return
+        }
+        sourceTicket = nil
+        sourceClosing = true
+        let pending = sourceCaptureTask
+        let task = Task {
+            do {
+                switch reason {
+                case .accountChanged: try await controller.invalidate(reason: .accountChanged)
+                case .engineChanged: try await controller.invalidate(reason: .engineChanged)
+                case .cancel: try await controller.cancel()
+                case .release: try await controller.release()
+                }
+            } catch {
+                _ = try? await pending?.value
+                throw error
+            }
+            _ = try? await pending?.value
+        }
+        sourceCleanup = task
+        defer {
+            sourceCleanup = nil
+            sourceClosing = false
+            sourceCapturing = false
+            sourceCaptureTask = nil
+        }
+        do {
+            try await task.value
+            sourceReview = nil
+            sourceBinding = nil
+            sourceProblem = nil
+            sourceReviewPresented = false
+            sourceWindow = nil
+        } catch {
+            sourceReview = nil
+            sourceProblem = "לא ניתן לסגור כעת את הרשאת המקור. הפעולה נשמרה לסגירה חוזרת; לא בוצעה העברה למנוע האחר."
+            throw error
+        }
+    }
+
+    func dismissSourceReview() async {
+        do { try await endSourceReview(sourceCapturing ? .cancel : .release) }
+        catch { problem = sourceProblem }
+    }
+
+    // Called by the original authentication decorator before its native account
+    // mutation. Stream observation below also invalidates externally changed UI.
+    func prepareHeartAccountChange() async throws {
+        try await endSourceReview(.accountChanged)
+    }
+
+    private static func sameSource(_ first: PinkhaHeartSourceSelection,
+                                   _ second: PinkhaHeartSourceSelection?) -> Bool {
+        guard let second else { return false }
+        return Data(first.accountID.utf8) == Data(second.accountID.utf8)
+            && Data(first.spaceID.utf8) == Data(second.spaceID.utf8)
+    }
+
+    func refreshSourceSelection() async {
+        let current = PinkhaHeartSourceSelection.current()
+        currentSource = current
+        guard let bound = sourceBinding, !Self.sameSource(bound, current) else { return }
+        do { try await endSourceReview(.accountChanged) }
+        catch { problem = sourceProblem }
+    }
+
+    func observeHeartAccount() async {
+        await refreshSourceSelection()
+        for await _ in Container.shared.accountManager().accountPublisher.values {
+            if Task.isCancelled { return }
+            await refreshSourceSelection()
+        }
+    }
+
+    func observeHeartSpace() async {
+        await refreshSourceSelection()
+        for await _ in Container.shared.activeSpaceManager().workspaceInfoStream {
+            if Task.isCancelled { return }
+            await refreshSourceSelection()
+        }
+    }
+
     func restore(for scene: String) async {
         visibleScenes.insert(scene)
+        await refreshSourceSelection()
         guard !restored else { return }
         restored = true
         if UserDefaults.standard.string(forKey: Self.preferenceKey) == PinkhaAppEngine.any.rawValue {
@@ -48,6 +209,7 @@ final class PinkhaEngineSceneOwner {
         do {
             switch selected {
             case .any:
+                try await endSourceReview(.engineChanged)
                 // Construct the private account store before changing the active UI.
                 if anyPresentation == nil {
                     let application = try PinkhaEmbeddedAnyApplication(
@@ -99,6 +261,10 @@ final class PinkhaEngineSceneOwner {
 
     func releaseWindow(_ scene: String) async {
         visibleScenes.remove(scene)
+        if sourceWindow == scene {
+            do { try await endSourceReview(.cancel) }
+            catch { sourceWindow = nil; problem = sourceProblem }
+        }
         guard anyWindow == scene, !switching else { return }
         switching = true
         defer { switching = false }
@@ -151,6 +317,14 @@ struct PinkhaEngineSceneView<HeartContent: View>: View {
                         }
                         .accessibilityIdentifier("pinkha.engine.select." + engine.rawValue)
                     }
+                    if owner.engine == .heart {
+                        Divider()
+                        Button("סקירת מקור להעברה", systemImage: "doc.text.magnifyingglass") {
+                            Task { await owner.captureSource(for: scene) }
+                        }
+                        .accessibilityIdentifier("pinkha.engine.migration.review-source")
+                        .disabled(owner.currentSource == nil || owner.sourceClosing)
+                    }
                 } label: {
                     Label(owner.engine.name, systemImage: "arrow.triangle.2.circlepath")
                 }
@@ -163,12 +337,45 @@ struct PinkhaEngineSceneView<HeartContent: View>: View {
             .frame(minHeight: 44)
             .background(.ultraThinMaterial)
         }
-        .alert("החלפת מנוע", isPresented: Binding(
+        .sheet(isPresented: Binding(
+            get: { owner.sourceReviewPresented && owner.sourceWindow == scene },
+            set: { showing in if !showing { Task { await owner.dismissSourceReview() } } }
+        )) {
+            NavigationStack {
+                Group {
+                    if let review = owner.sourceReview {
+                        PinkhaEmbeddedHeartSourceReviewView(review: review, spaceName: owner.sourceSpaceName)
+                    } else {
+                        VStack(spacing: 16) {
+                            if owner.sourceCapturing || owner.sourceClosing { ProgressView() }
+                            Text(owner.sourceSpaceName).font(.headline)
+                            Text(owner.sourceProblem ?? "נקראים נתוני המקור וההרשאות המקוריות. לא מתבצעת כתיבה ליעד.")
+                                .multilineTextAlignment(.center)
+                        }
+                        .padding()
+                    }
+                }
+                .navigationTitle("בדיקת מקור Heart")
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(owner.sourceCapturing ? "ביטול" : "סגירה") {
+                            Task { await owner.dismissSourceReview() }
+                        }
+                        .disabled(owner.sourceClosing)
+                        .accessibilityIdentifier("pinkha.engine.migration.close-review")
+                    }
+                }
+            }
+            .interactiveDismissDisabled(true)
+        }
+        .alert("Pinkha", isPresented: Binding(
             get: { owner.problem != nil }, set: { if !$0 { owner.problem = nil } }
         )) {
             Button("סגור", role: .cancel) { owner.problem = nil }
         } message: { Text(owner.problem ?? "") }
         .task { await owner.restore(for: scene) }
+        .task { await owner.observeHeartAccount() }
+        .task { await owner.observeHeartSpace() }
         .onDisappear { Task { await owner.releaseWindow(scene) } }
         .onOpenURL { _ in
             // Existing app links belong to the existing Heart router. Make its
