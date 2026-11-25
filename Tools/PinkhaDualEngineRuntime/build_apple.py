@@ -17,8 +17,8 @@ import uuid
 import zipfile
 import native_dependencies
 
-MANIFEST_SHA = "70fb5342f2ff31d1cf5f7ce44bed7b16f6373f6bf95eb031d165339cf0f26683"
-ARCHIVE_SHA = "376edcd9e784ae0ff4127c891893d57adb1d42555fe3e75beb82b0b839f1f3f4"
+MANIFEST_SHA = "0aed35f4909e543a2b0c26f7f9f31fccf8143a8f2cb1d18c7a786c99d4a34fdf"
+ARCHIVE_SHA = "10bda802b7f6191852f98238696b2f04fd1fd82e3ac23fc444e9743b8ef05fcd"
 GO_ROOT = Path("/Users/m1/toolchains/anytapy-go1.27.4/go")
 EMERGENCY_FREE_BYTES = 2 * 1024**3
 
@@ -124,6 +124,68 @@ def generated_swift_entry(root):
         "  let _ = Lib.ServicePinkhaSemanticAnchorCapture\n"
         "  _ = version; _ = capture\n}\n")
     return generated
+
+def stage_authenticated_checksum_metadata(root, tools):
+    """Reuse the original authenticated Go/SumDB metadata proof explicitly.
+
+    This does not reuse a source graph. The new workspace and generated bridge
+    must still produce and compare their complete original module inventories.
+    Only the same eight checksum omissions already verified in the original
+    producer may be qualified, against the current module-cache bytes.
+    """
+    review_path = Path(__file__).with_name("module-metadata-hydration.json")
+    require(digest(review_path) ==
+            "69b2f056688a2c009becbcac53f4c546648ab415e2e32ec5545cd295cb5dc863",
+            "reviewed_checksum_metadata_changed")
+    review = json.loads(review_path.read_text())
+    original = Path("/Users/m1/builds/pinkha-dual-native-v1-70fb5342f2ff-device/"
+                    "module-checksum-verification-2")
+    proof_path = original / "receipt.json"
+    require(original.resolve() == original and original.is_dir()
+            and proof_path.is_file() and not proof_path.is_symlink()
+            and digest(proof_path) == review["proofReceiptSHA256"],
+            "original_authenticated_checksum_receipt_changed")
+    proof = json.loads(proof_path.read_text())
+    require(proof["status"] == "PASS" and len(proof["modules"]) == 8,
+            "original_eight_authenticated_checksums_required")
+    expected = {item["path"]: item for item in review["modules"]}
+    require(len(expected) == 8 and
+            {item["path"] for item in proof["modules"]} == set(expected),
+            "authenticated_checksum_module_inventory_changed")
+    files = {"receipt.json": review["proofReceiptSHA256"]}
+    for index, item in enumerate(proof["modules"], start=1):
+        require(item["exitCode"] == 0 and all(item[key] == value
+                for key, value in expected[item["path"]].items()),
+                "authenticated_checksum_identity_changed")
+        prefix = f"{index:02d}"
+        files[prefix + ".stdout.json"] = item["stdoutSHA256"]
+        files[prefix + ".stderr.log"] = item["stderrSHA256"]
+        files[prefix + ".go.mod"] = item["goModSHA256"]
+        lookup = ("module-cache/cache/download/sumdb/sum.golang.org/lookup/"
+                  + item["path"] + "@" + item["version"])
+        files[lookup] = item["authenticatedLookupSHA256"]
+    destination = root / "module-checksum-verification-2"
+    require(not destination.exists(), "authenticated_metadata_copy_already_exists")
+    # Validate every original before creating this producer's evidence copy.
+    for name, expected_sha in files.items():
+        path = original / name
+        require(path.resolve() == path and path.is_file()
+                and not path.is_symlink() and digest(path) == expected_sha,
+                "authenticated_metadata_original_changed:" + name)
+    destination.mkdir(mode=0o700)
+    for name, expected_sha in files.items():
+        path = destination / name
+        path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        with path.open("xb") as outgoing:
+            os.chmod(path, 0o600)
+            outgoing.write((original / name).read_bytes())
+        require(digest(path) == expected_sha, "authenticated_metadata_copy_changed")
+    shutil.copyfile(review_path, tools / "module-metadata-hydration.json")
+    return {"reusedOriginalRoot": str(original),
+            "originalProofReceiptSHA256": review["proofReceiptSHA256"],
+            "reviewSHA256": digest(review_path), "originalFilesVerified": files,
+            "newModuleGraphReused": False, "newAuthenticationClaimed": False}
+
 
 def verify_reviewed_metadata(root, graph, original_sha):
     """Accept only the eight originally absent, independently authenticated sums.
@@ -366,6 +428,7 @@ def main():
             (root / "tmp").mkdir(mode=0o700)
             shutil.copyfile(Path(__file__).with_name("runtime_go.py"), tools / "go")
             (tools / "go").chmod(0o755)
+            receipt["authenticatedMetadataProvenance"] = stage_authenticated_checksum_metadata(root, tools)
         receipt["generatedModuleLauncherSHA256"] = digest(tools / "go")
         workspace = root / "workspace"
         if not prior: workspace.mkdir(mode=0o700)
