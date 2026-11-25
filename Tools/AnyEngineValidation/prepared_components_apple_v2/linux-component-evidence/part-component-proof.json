@@ -1,0 +1,158 @@
+{
+  "schema": "pinkha-prepared-atomic-part-component-proof/v1",
+  "capturedUTC": "2026-11-24T17:19:29.602209+00:00",
+  "status": "FOUR_NEW_METHODS_AND_ONE_AFFECTED_REGRESSION_PASS",
+  "sdkCommit": "ef63bcaed93064c8de24ed656842f3e56ed34008",
+  "anyCommit": "1b17da42fccc2f092cbedd48e0991a203584bc85",
+  "nativeContract": "pinkha-native-prepared-definitions-v1",
+  "kind": "partDefinition",
+  "stage": "definition-part-prepared",
+  "maximumRecordIDs": 2048,
+  "maximumNativePayloadBytes": 262144,
+  "networkVerified": false,
+  "wholeSpaceVerified": false,
+  "appleArtifact402InputsChanged": false,
+  "logs": [
+    {
+      "file": "part-native-attempt1.log",
+      "bytes": 90309,
+      "sha256": "cf1c188f26738e20255b47cdf33a45508b494f1d033e0a5e0923657e8a392384",
+      "results": [
+        "=== RUN   TestPreparedPartNativeAtomicRestartAndEditorUse",
+        "--- PASS: TestPreparedPartNativeAtomicRestartAndEditorUse (0.27s)",
+        "=== RUN   TestPreparedPartNativeRefusesObsoleteInvalidAndReservedDefinitions",
+        "--- PASS: TestPreparedPartNativeRefusesObsoleteInvalidAndReservedDefinitions (0.14s)",
+        "PASS",
+        "ok  \tgithub.com/anyproto/any/internal/pinkha/migrationnative\t0.526s"
+      ]
+    },
+    {
+      "file": "part-crash-attempt1.log",
+      "bytes": 20027,
+      "sha256": "5254dea7a4b2d2ac7b855dbb2b08e24be890ddb348b051da4cb2545a1a6f7865",
+      "results": [
+        "=== RUN   TestPreparedPartActualProcessCrashKeepsEntireAtomicBatch",
+        "--- PASS: TestPreparedPartActualProcessCrashKeepsEntireAtomicBatch (0.29s)",
+        "PASS",
+        "ok  \tgithub.com/anyproto/any/internal/pinkha/migrationnative\t0.420s"
+      ]
+    },
+    {
+      "file": "part-http-attempt1.log",
+      "bytes": 23640,
+      "sha256": "ba362da9da1c5ea532e59aab61780d0035f8763383ccc46c9260d65c7b96d6a4",
+      "results": [
+        "=== RUN   TestPreparedDefinitionHTTPNativeTypePropertyAndStrictRefusal",
+        "--- PASS: TestPreparedDefinitionHTTPNativeTypePropertyAndStrictRefusal (0.27s)",
+        "=== RUN   TestPreparedPartHTTPNativeAtomicDefinitionAndNestedFieldRefusal",
+        "--- PASS: TestPreparedPartHTTPNativeAtomicDefinitionAndNestedFieldRefusal (0.27s)",
+        "PASS",
+        "ok  \tgithub.com/anyproto/any/internal/server\t0.672s"
+      ]
+    }
+  ],
+  "sourceFiles": [
+    {
+      "repo": "sdk",
+      "path": "internal/migrationintent/definition.go",
+      "bytes": 6093,
+      "sha256": "87112c1c3371466acdcb525b341e78237a337a37c0a199a6d82dcc026faa41fb"
+    },
+    {
+      "repo": "sdk",
+      "path": "internal/object/migration_definition.go",
+      "bytes": 1997,
+      "sha256": "c10e1859934ef6cbaed816a8a0fa3f3ef18df4efa33522948bdd7cc4e5b8d9d0"
+    },
+    {
+      "repo": "sdk",
+      "path": "internal/object/migration_prepared.go",
+      "bytes": 12893,
+      "sha256": "ab0c845a4b8542159b05bb4ff23b52beed0021143cece85e9f53b0e306e252da"
+    },
+    {
+      "repo": "sdk",
+      "path": "internal/object/object.go",
+      "bytes": 50626,
+      "sha256": "4eaab37593692b318617d7ca1aa3056a6cab6d0e29517b6e9a8a29a0776ac090"
+    },
+    {
+      "repo": "sdk",
+      "path": "internal/spaceimpl/migration_definition.go",
+      "bytes": 13488,
+      "sha256": "5d0a6ff98e91ad025ca4c998d47ada9b497e2031373f220324ba1cdd87236d12"
+    },
+    {
+      "repo": "sdk",
+      "path": "internal/spaceobjects/native_definition_policy.go",
+      "bytes": 3033,
+      "sha256": "fb5e3b50d9ecd7286d1f91e590cd5da6446e2ae25d8363fca0b5143efed6af7c"
+    },
+    {
+      "repo": "sdk",
+      "path": "space/migration_definition.go",
+      "bytes": 2022,
+      "sha256": "3ebfba3323ba710618709b9bdc75be857dca472b91bde0e1fd50807785b6d539"
+    },
+    {
+      "repo": "sdk",
+      "path": "internal/object/migration_definition_part.go",
+      "bytes": 6250,
+      "sha256": "f04dc04490f8371583a90609cf31141f4eede1010bd7d649c73cf0435592271d"
+    },
+    {
+      "repo": "sdk",
+      "path": "internal/spaceimpl/migration_definition_part.go",
+      "bytes": 2867,
+      "sha256": "6092e3e138fc88b76422b17bcd4d18d7230b27bc29ba522d2d18e2eba764a2bf"
+    },
+    {
+      "repo": "sdk",
+      "path": "internal/spaceobjects/native_part_policy.go",
+      "bytes": 1447,
+      "sha256": "c6f8bb9654a911ed5d70cc7ade01d9082d03e3d92e52dced5bbb9e28a73b121f"
+    },
+    {
+      "repo": "any",
+      "path": "internal/api/pinkha_migration_definition.go",
+      "bytes": 610,
+      "sha256": "344b62263a351638eecd1a12d0a620d20b862ffa49fbecd0485ccb3dec8062e3"
+    },
+    {
+      "repo": "any",
+      "path": "internal/server/handlers_pinkha_migration.go",
+      "bytes": 10577,
+      "sha256": "34e79f611a98bc8db12e79ef3f8a67b9ef01e01380afec9e876d491244b54a0d"
+    },
+    {
+      "repo": "any",
+      "path": "internal/server/handlers_pinkha_migration_definition.go",
+      "bytes": 7840,
+      "sha256": "ee3fbe16e6af0ac154585237eaea3bdc4fdce9b9fe323e96e6180e6acd825be6"
+    },
+    {
+      "repo": "any",
+      "path": "internal/pinkha/migrationnative/part_crash_test.go",
+      "bytes": 4180,
+      "sha256": "a6b93fec7399d48c72cb97c64be11246196025de1f07417172dba6445ad5ef0f"
+    },
+    {
+      "repo": "any",
+      "path": "internal/pinkha/migrationnative/part_test.go",
+      "bytes": 8712,
+      "sha256": "f95bba368efdde339bf6c39e6fd4198ac53b7fee06f9aded910481f7e9634b9b"
+    },
+    {
+      "repo": "any",
+      "path": "internal/server/handlers_pinkha_migration_part_test.go",
+      "bytes": 3692,
+      "sha256": "d1c0fffa6af20f9da8e598c7e4ea253d38fa86f409077869319271b1edaac7bc"
+    },
+    {
+      "repo": "any",
+      "path": "docs/pinkha-prepared-definitions.md",
+      "bytes": 6981,
+      "sha256": "c1e698a2950c49a59918e85dc5990a683281edcb9d1825f8ec16c41d78efd214"
+    }
+  ]
+}
