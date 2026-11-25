@@ -20,7 +20,7 @@ HERE = Path(__file__).resolve().parent
 POLICY = HERE / "local_native_policy.json"
 BRANCHES = {"codex/anytype-miniapps-final-20261125",
             "codex/anytype-miniapps-bridge-20261123"}
-PRIVATE_ROOT = Path("/Users/m1/builds/anytype-miniapps-original-final-20261125")
+PRIVATE_ROOT = Path("/Users/m1/builds/anytype-miniapps-original-recovery-20261125")
 
 
 def require(value, message):
