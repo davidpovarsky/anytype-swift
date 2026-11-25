@@ -1,0 +1,43 @@
+{
+  "base_sdk_qualification_sha256": "bcc14c232f4b62dd2202d537bbdc6cf3a2722c629e6127943217074f5529b1eb",
+  "base_sdk_source": "1f90175b006be0a19a4e1804f858caaf59d6c174",
+  "baseline_original_project_unchanged": true,
+  "comparison_receipt_sha256": "56da7c3ce295f888635b9a0e20ca7219ade41d4a2896baeac064eaf14f61ed5a",
+  "dependency_after": {
+    "identity": "swift-collections",
+    "kind": "remoteSourceControl",
+    "location": "https://github.com/apple/swift-collections.git",
+    "state": {
+      "revision": "7b847a3b7008b2dc2f47ca3110d8c782fb2e5c7e",
+      "version": "1.3.0"
+    }
+  },
+  "dependency_before": {
+    "identity": "swift-collections",
+    "kind": "remoteSourceControl",
+    "location": "https://github.com/apple/swift-collections.git",
+    "state": {
+      "revision": "671108c96644956dddcd89dd59c203dcdb36cec7",
+      "version": "1.1.4"
+    }
+  },
+  "framework_runtime_acceptance": "NOT_RUN_AFTER_DEPENDENCY_CHANGE",
+  "heart_go_protobuf_sources_changed": false,
+  "lock_after_blob": "fc128519eb1028c5384c75016aff83eed68565e2",
+  "lock_before_blob": "2fbd40926c2947e0bd8142d89290dcb27bdff1b6",
+  "native_abi_requalified": false,
+  "original_consumer_source": "e27babfcc0824e614d78258746c57650aa8cf03d",
+  "original_consumer_ui_acceptance": "NOT_RUN",
+  "other_runtime_versions_mismatched": 0,
+  "pin_count": 58,
+  "reason": "The original Maktabah runtime OrderedJSON transitively imports OrderedCollections. Align the real framework dependency to the original consumer1.3.0 pin; preserve all original sources, native ABI and other pins.",
+  "reviewed_shared_runtime_pairs": 20,
+  "reviewed_upstream_anytype_head": "d857b23ea540be33d6faab4f7a7a1a260ab578c1",
+  "schema": "miniapps.shared-collections-adoption/1",
+  "separate_existing_build_tool_pair": "SwiftSyntax603.0.2/600.0.1",
+  "timestamp": "2026-11-25T14:22:44.717011+00:00",
+  "unchanged_other_pins": 57,
+  "upstream_collections_repository": "https://github.com/apple/swift-collections.git",
+  "upstream_collections_tag": "1.3.0",
+  "upstream_tag_revision": "7b847a3b7008b2dc2f47ca3110d8c782fb2e5c7e"
+}

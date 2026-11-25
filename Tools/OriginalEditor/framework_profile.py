@@ -37,7 +37,7 @@ def read_manifest():
             and value.get('package_pin_count') == 58, 'Unreviewed framework profile')
     require(set(value.get('reviewed_shared_dependency_objects', {})) == {
         '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC',
-        '2E63D9B52D56520C008A733A'},
+        '2E63D9B52D56520C008A733A', '538ABD4C284F9F88000D3CCC'},
         'Unreviewed shared runtime dependency object set')
     require(len(value.get('framework_facade_sources', [])) == 23
             and len(set(value['framework_facade_sources'])) == 23,
@@ -180,7 +180,7 @@ def verify_project(raw, baseline, profile):
     emitters = [key for key, value in new.items() if value.get('isa') == 'XCBuildConfiguration'
                 and emission['setting'] in value.get('buildSettings', {})]
     require(emitters == [emission['configuration_id']], 'A dependency or original app emits the Host graph')
-    # Restore only the four additive structural objects and the four exact
+    # Restore only the four additive structural objects and the five exact
     # reviewed shared package requirements. All original products stay intact.
     inverse = raw.decode()
     for key in sorted(added):

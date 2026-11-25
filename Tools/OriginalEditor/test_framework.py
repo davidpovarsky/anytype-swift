@@ -44,6 +44,14 @@ class OriginalProjectPreservation(unittest.TestCase):
         self.assertEqual(proof['original_package_products'], 44)
         self.assertTrue(proof['whole_project_inverse_exact'])
 
+    def test_shared_collections_change_stays_exact_after_reviewed_adoption(self):
+        identifier = '538ABD4C284F9F88000D3CCC'
+        for requirement in ({'kind': 'exactVersion', 'version': '1.1.4'},
+                            {'kind': 'upToNextMajorVersion', 'minimumVersion': '1.3.0'}):
+            with self.subTest(requirement=requirement):
+                self.denied(identifier, lambda value: value.update(requirement=requirement))
+        self.denied(identifier, lambda value: value.update(repositoryURL='https://example.invalid/collections'))
+
     def test_original_project_does_not_already_claim_the_new_framework(self):
         old = loads(BASELINE.decode())['objects']
         self.assertFalse(any(value.get('name') == TARGET for value in old.values()))
