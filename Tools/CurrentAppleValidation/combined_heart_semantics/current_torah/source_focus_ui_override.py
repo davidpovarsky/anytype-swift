@@ -11,9 +11,31 @@ BEFORE = "ad442d34641371b44d9cab5ff63dcb8f9a7ba96eededac6f73b993634bdcef39"
 AFTER = "3b458e4c142fb3a4d2033c60ae331e28b854ab9be1a4f6987d4b39082dd83f63"
 GENERATOR = "7bf69636b42875aa7dd0fa39c11393e02e6760ef502cf68ef47b740f3bd066c0"
 GENERATOR_COMMIT = "0b9c5d75fec8fa4f4e17266010f7d79a47c08b87"
-BUILDER = "df043dc4250d91b8d52e9c83a4e3c687703d6cd229d56850cd466890e81263fa"
+BUILDER = "bac04adb0fbd42adcbf0f7727a11b23447f65584a8b8060f6943e2dfbfeeedb9"
 PROFILE = "original-heart5c05-restored-input-preparation-757401-v1"
 STATUS = "PASS_CURRENT_UI_ONLY_RESTORED_FOCUS_NOT_ACCEPTANCE"
+
+
+PRODUCER = "2ed88ba57b925a7136519374e8c687aae6a3a670dd51ba8aaddf735415a811f4"
+ORIGINAL_UI_COPY = "77dbb85844c3fe95945f45011cc87754f19b2eba29f82a91f14a583f3744e239"
+
+
+def admit_original_ui_copy(c, admission, producer, source):
+    c.require(admission["producerReceipt"]["sha256"] == PRODUCER,
+              "Exact original build10 receipt required")
+    copy_path = Path(admission["producerReceipt"]["path"]).parent / "original-ui-copy.json"
+    c.require(c.digest(copy_path) == ORIGINAL_UI_COPY, "Original complete UI source-copy receipt changed")
+    copied = c.decode(c.raw(copy_path))
+    argv = producer["ui"]["argv"]
+    c.require(copied["generatorSHA256"] == GENERATOR and argv.count("-project") == 1
+              and argv[argv.index("-project") + 1] == copied["generatedProject"],
+              "The actual UI build did not use the original generated project")
+    names = sorted(n for n in subprocess.check_output(["git", "-C", str(source), "ls-files", "-z", "PinkhaStage1Acceptance"], timeout=30).decode().split("\0") if n)
+    c.require(len(names) == 12 and copied["copiedFiles"] ==
+              [{"path": n, "sha256": c.digest(source / n)} for n in names],
+              "All twelve actual copied UI inputs must equal the frozen original source")
+    return {"receiptSHA256": ORIGINAL_UI_COPY, "generatorSHA256": GENERATOR,
+            "trackedOriginalUIFiles": 12, "originalProjectCommandBound": True}
 
 
 def source_delta(c, before, after):
@@ -47,8 +69,8 @@ def qualify(c, admission, original_source, original_producer):
               and receipt.get("sameCommitForAppAndUITests") is False
               and receipt.get("uiSourceComposition") == "original12files-plus-exact-one-preparation-delta",
               "Explicit original-App/changed-UI composition must remain exact")
-    c.require(original_producer.get("reviewedUIGeneratorCommit") == GENERATOR_COMMIT,
-              "Original successful complete UI generator provenance differs")
+    c.require(receipt.get("originalUICopy") == admit_original_ui_copy(c, admission, original_producer, original_source),
+              "Original successful complete UI source-copy provenance differs")
     builder = c.pinned(row["builderSource"])
     c.require(c.sha(builder) == BUILDER == receipt.get("builderSHA256"),
               "Actual reviewed UI-only builder source differs")

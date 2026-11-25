@@ -31,12 +31,12 @@ def main():
     admission = c.decode(a); original = c.decode(c.pinned(admission["producerReceipt"]))
     c.require(admission["sourceCommit"] == original["sourceCommit"] == profile.BASE
               and original["status"] == "PASS_COMBINED_MAIN_AND_COMPLETE_UI_BUILD_NOT_ACCEPTANCE"
-              and original["sourceUnchanged"] is True and original["testsExecuted"] == 0
-              and original["reviewedUIGeneratorCommit"] == profile.GENERATOR_COMMIT,
+              and original["sourceUnchanged"] is True and original["testsExecuted"] == 0,
               "Actual original app plus complete UI producer required")
     c.require(subprocess.check_output(["git", "-C", str(args.app_source), "rev-parse", "HEAD"], timeout=30).decode().strip() == profile.BASE
               and not subprocess.check_output(["git", "-C", str(args.app_source), "status", "--porcelain"], timeout=30).strip(),
               "Immutable actual app source must remain clean exact5c05")
+    original_copy = profile.admit_original_ui_copy(c, admission, original, args.app_source)
     candidate = c.raw(args.candidate)
     delta = profile.source_delta(c, c.raw(args.app_source / profile.FILE), candidate)
     generator = c.raw(args.generator)
@@ -48,7 +48,7 @@ def main():
                "originalProducerReceiptSHA256": admission["producerReceipt"]["sha256"],
                "generatorSHA256": profile.GENERATOR, "generatorCommit": profile.GENERATOR_COMMIT,
                "builderSHA256": c.digest(Path(__file__)), "profileSHA256": c.digest(Path(profile.__file__)),
-               "sourceDelta": delta, "uiSourceRoot": str(source),
+               "sourceDelta": delta, "uiSourceRoot": str(source), "originalUICopy": original_copy,
                "sameCommitForAppAndUITests": False, "uiSourceComposition": "original12files-plus-exact-one-preparation-delta", "uiBuilds": 0, "appBuilds": 0, "nativeBuilds": 0, "testsExecuted": 0}
     try:
         names = subprocess.check_output(["git", "-C", str(args.app_source), "ls-files", "-z", "PinkhaStage1Acceptance"], timeout=30).decode().split("\0")
