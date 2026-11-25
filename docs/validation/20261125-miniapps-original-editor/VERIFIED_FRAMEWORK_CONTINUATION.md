@@ -59,3 +59,15 @@ command receives its own stdout, stderr, xcresult, exit code and interval, and
 the collector binds to this new real build. The same complete source,
 dependency, public/SPI, distribution, binary-only consumer and runtime gates
 follow. No full-build or runtime result is presumed from this preparation.
+
+## Independently admitted storage phases
+
+The first full refresh continuation was rejected by its capacity check before
+creating evidence, moving graphs or launching a compiler. A bounded refresh
+can now stop after the actual native incremental build, retaining the complete
+product inventory and source-before/source-after equality. This result is
+explicitly POSTBUILD_GATES_NOT_RUN. A later continuation verifies its committed
+control, original E7 binding, exact successful command/log hashes and unchanged
+current product inventory before reusing it. This separates measured compiler
+growth from export and external consumer growth without executing either phase
+twice or promoting the bounded result to complete SDK acceptance.

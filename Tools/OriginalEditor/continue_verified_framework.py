@@ -49,6 +49,8 @@ def main():
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--control-commit", required=True)
     parser.add_argument("--refresh-compiler-graphs", action="store_true")
+    parser.add_argument("--stop-after-compiler-refresh", action="store_true")
+    parser.add_argument("--reuse-compiler-refresh-evidence", type=Path)
     parser.add_argument("--incremental-budget-bytes", type=int, required=True)
     parser.add_argument("--concurrent-budget-bytes", type=int, required=True)
     args = parser.parse_args()
@@ -96,6 +98,42 @@ def main():
             and original["strict_dependency_resolution"] == "PASS_EXACT_COMMITTED_LOCK_UNCHANGED"
             and "SourcePackages/checkouts/abseil-cpp-binary" in original.get("error", "")
             and "actual_source_closure" in original, "Unreviewed original failure boundary")
+    refresh_input = None
+    if args.reuse_compiler_refresh_evidence is not None:
+        require(not args.refresh_compiler_graphs and not args.stop_after_compiler_refresh,
+                "Refresh reuse cannot launch a second compiler refresh")
+        refresh_input = args.reuse_compiler_refresh_evidence.resolve(strict=True)
+        require(refresh_input.is_relative_to(root / "build")
+                and refresh_input not in (prior, evidence, work),
+                "Unowned or overlapping compiler refresh evidence")
+        refreshed = json.loads((refresh_input / "execution.json").read_bytes())
+        control = refreshed["continuation"]
+        require(refreshed["status"] == "ACTUAL_COMPILER_REFRESH_PASS_POSTBUILD_GATES_NOT_RUN"
+                and refreshed["source_sha"] == SOURCE
+                and control["compiled_source_sha"] == SOURCE
+                and control["original_evidence"] == str(prior)
+                and control["incremental_graph_refresh"]["status"] == "ACTUAL_INCREMENTAL_FRAMEWORK_BUILD_PASS"
+                and control["incremental_graph_refresh"]["source_bytes_changed"] is False
+                and control["incremental_graph_refresh"]["source_original_mtime_restored"] is True,
+                "The source-identical native refresh did not finish successfully")
+        require(hashlib.sha256(git(root, "show", control["control_commit"] + ":" + CONTROL_PATH)).hexdigest()
+                == control["control_sha256"], "Refresh control provenance differs")
+        require(json.loads((refresh_input / "source-before.json").read_bytes()) == before
+                == json.loads((refresh_input / "source-after.json").read_bytes()),
+                "Original source changed during compiler refresh")
+        refreshed_command = json.loads((refresh_input / "framework-build.command.json").read_bytes())
+        require(refreshed_command["returncode"] == 0 and not refreshed_command["timed_out"]
+                and refreshed_command["cwd"] == str(root)
+                and refreshed_command["command"][refreshed_command["command"].index("-derivedDataPath") + 1]
+                    == str(prior_work / "producer-derived")
+                and refreshed_command["command"][refreshed_command["command"].index("-resultBundlePath") + 1]
+                    == str(refresh_input / "framework-build.xcresult"),
+                "Actual successful refresh command differs")
+        for stream in ("stdout", "stderr"):
+            require(sha(refresh_input / ("framework-build." + stream + ".log"))
+                    == refreshed_command[stream + "_sha256"], "Native refresh output changed")
+    require(not args.stop_after_compiler_refresh or args.refresh_compiler_graphs,
+            "A bounded stop requires an actual native compiler refresh")
     record = json.loads((prior / "framework-build.command.json").read_bytes())
     require(record["returncode"] == 0 and not record["timed_out"]
             and record["cwd"] == str(root), "Original framework command did not pass")
@@ -134,11 +172,17 @@ def main():
             original_commands = evidence / "original-compiler"
             original_commands.mkdir(exist_ok=True)
             destination = original_commands / name
-        shutil.copy2(prior / name, destination)
+        copy_source = prior / name
+        if refresh_input is not None and name.startswith("framework-build."):
+            copy_source = refresh_input / name
+        shutil.copy2(copy_source, destination)
     shutil.copy2(prior / "execution.json", evidence / "original-failed-execution.json")
     shutil.copy2(repair_path, evidence / "verified-git-metadata-repair.json")
     product_files = driver.inventory(derived / "Build/Products/Debug-Anytype-iphonesimulator")
     write(evidence / "retained-original-products.json", product_files)
+    if refresh_input is not None:
+        require(product_files == json.loads((refresh_input / "refreshed-products.json").read_bytes()),
+                "Native compiler products changed after the completed refresh")
     receipt = dict(original)
     receipt.pop("error", None)
     receipt.pop("error_type", None)
@@ -154,6 +198,12 @@ def main():
         "framework_build_reexecuted": False,
         "started_at": datetime.now(timezone.utc).isoformat(),
     }
+    if refresh_input is not None:
+        receipt["continuation"]["reused_compiler_refresh_evidence"] = str(refresh_input)
+        receipt["continuation"]["reused_compiler_refresh_execution_sha256"] = sha(
+            refresh_input / "execution.json")
+        receipt["continuation"]["reused_compiler_refresh_build_sha256"] = sha(
+            refresh_input / "framework-build.command.json")
     write(evidence / "execution.json", receipt)
     preflight = None
     try:
@@ -193,7 +243,7 @@ def main():
         hanlin_before = verify_hanlin(root / "Dependencies/Hanlin")
         require(hanlin_before == json.loads((prior / "original-hanlin-snapshot.json").read_bytes()),
                 "Original shared package input changed")
-        build_evidence = prior
+        build_evidence = refresh_input or prior
         if args.refresh_compiler_graphs:
             graph_root = derived / (
                 "Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/"
@@ -245,6 +295,14 @@ def main():
                 refresh["source_original_mtime_restored"] = True
                 write(evidence / "incremental-compiler-graph-refresh.json", refresh)
                 write(evidence / "execution.json", receipt)
+        if args.stop_after_compiler_refresh:
+            write(evidence / "refreshed-products.json",
+                  driver.inventory(derived / "Build/Products/Debug-Anytype-iphonesimulator"))
+            receipt["status"] = "ACTUAL_COMPILER_REFRESH_PASS_POSTBUILD_GATES_NOT_RUN"
+            receipt["phase"] = "BOUNDED_INCREMENTAL_COMPILER_REFRESH"
+            receipt["continuation"]["refreshed_product_inventory_sha256"] = sha(
+                evidence / "refreshed-products.json")
+            return 0
         tree = ast.parse(driver_path.read_text(), filename=str(driver_path))
         functions = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "execute"]
         require(len(functions) == 1, "Original gate function is ambiguous")
