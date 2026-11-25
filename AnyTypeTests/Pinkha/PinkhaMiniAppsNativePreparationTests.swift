@@ -60,8 +60,8 @@ struct PinkhaMiniAppsNativePreparationTests {
         try #require(native.blocks.contains { $0.id == blockID && $0.text.text == original })
         try await document.close()
         let fixture: [String: Any] = [
-            "sourceSHA": try #require(environment["GITHUB_SHA"]),
-            "runID": try #require(environment["GITHUB_RUN_ID"]),
+            "sourceSHA": try #require(environment["PINKHA_MINIAPPS_SOURCE_SHA"]),
+            "runID": try #require(environment["PINKHA_MINIAPPS_EXECUTION_ID"]),
             "accountID": account.id, "spaceID": space.spaceID, "objectID": object.id,
             "blockID": blockID, "originalText": original, "returnedText": returned,
             "coldReturnedText": "חזרה לאפליקציה שנסגרה 🙂 " + nonce
@@ -108,8 +108,8 @@ struct PinkhaMiniAppsNativePreparationTests {
         try #require(try store.pendingResults(sourceAppID: PinkhaMiniAppsContext.sourceAppID)
             .allSatisfy { ![requestID, coldRequestID].contains($0.requestID.uuidString.lowercased()) })
         let proof: [String: Any] = ["status": "NATIVE_HEART_READBACK_PASS",
-            "sourceSHA": try #require(environment["GITHUB_SHA"]),
-            "runID": try #require(environment["GITHUB_RUN_ID"]), "requestIDs": [requestID, coldRequestID],
+            "sourceSHA": try #require(environment["PINKHA_MINIAPPS_SOURCE_SHA"]),
+            "runID": try #require(environment["PINKHA_MINIAPPS_EXECUTION_ID"]), "requestIDs": [requestID, coldRequestID],
             "objectID": objectID, "originalBlockID": originals[0].id, "returnedBlockID": results[0].id,
             "coldReturnedBlockID": coldResults[0].id,
             "originalCount": originals.count, "returnedCount": results.count, "coldReturnedCount": coldResults.count]
@@ -123,7 +123,7 @@ struct PinkhaMiniAppsNativePreparationTests {
         let environment = ProcessInfo.processInfo.environment
         try #require(environment["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1")
         let fixture = try JSONDecoder().decode([String: String].self, from: Data(contentsOf: fixtureURL()))
-        try #require(fixture["sourceSHA"] == environment["GITHUB_SHA"] && fixture["runID"] == environment["GITHUB_RUN_ID"])
+        try #require(fixture["sourceSHA"] == environment["PINKHA_MINIAPPS_SOURCE_SHA"] && fixture["runID"] == environment["PINKHA_MINIAPPS_EXECUTION_ID"])
         let accountID = try #require(fixture["accountID"])
         let spaceID = try #require(fixture["spaceID"])
         let clock = ContinuousClock(), deadline = clock.now.advanced(by: .seconds(45))
@@ -281,8 +281,8 @@ struct PinkhaMiniAppsNativePreparationTests {
             let selectionProof = try await verifyNestedTableSelection(editor: state.viewController,
                 store: store, previousBlockID: siblingID, previousText: "Unchanged sibling")
             var proof: [String: Any] = ["status": "NATIVE_MINIAPPS_ADAPTER_PASS",
-                "sourceSHA": try #require(environment["GITHUB_SHA"]),
-                "runID": try #require(environment["GITHUB_RUN_ID"]), "objectID": object.id,
+                "sourceSHA": try #require(environment["PINKHA_MINIAPPS_SOURCE_SHA"]),
+                "runID": try #require(environment["PINKHA_MINIAPPS_EXECUTION_ID"]), "objectID": object.id,
                 "blockID": blockID, "childID": childID, "siblingID": siblingID,
                 "requestIDs": [request.id.uuidString.lowercased(), conflictRequest.id.uuidString.lowercased(),
                                fileRequest.id.uuidString.lowercased()],

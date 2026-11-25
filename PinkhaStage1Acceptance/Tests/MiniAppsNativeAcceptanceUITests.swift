@@ -13,7 +13,7 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
         XCTAssertEqual(environment["PINKHA_SIMULATOR_UI_DISPOSABLE"], "1")
         fixture = try JSONDecoder().decode([String: String].self,
             from: Data(try XCTUnwrap(environment["PINKHA_MINIAPPS_FIXTURE_JSON"]).utf8))
-        XCTAssertEqual(fixture["sourceSHA"], environment["GITHUB_SHA"])
+        XCTAssertEqual(fixture["sourceSHA"], environment["PINKHA_MINIAPPS_SOURCE_SHA"])
         source = XCUIApplication(bundleIdentifier: try XCTUnwrap(environment["PINKHA_MINIAPPS_SOURCE_BUNDLE"]))
         source.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         source.launchEnvironment["PINKHA_UI27_ROUTE_OBSERVATION"] = "1"
