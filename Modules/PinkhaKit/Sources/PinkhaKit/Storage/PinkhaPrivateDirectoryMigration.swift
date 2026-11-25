@@ -22,8 +22,9 @@ public enum PinkhaPrivateDirectoryMigration {
               destination.resolvingSymlinksInPath().path == destination.path else {
             throw Failure.invalidPath
         }
-        try requireNoSymlinkAncestors(legacy)
-        try requireNoSymlinkAncestors(destination)
+        let container = try commonContainer(legacy, destination)
+        try requireNoSymlinkAncestors(legacy, through: container)
+        try requireNoSymlinkAncestors(destination, through: container)
         let sourceExists = manager.fileExists(atPath: legacy.path)
         let destinationExists = manager.fileExists(atPath: destination.path)
         // No silent merge or preference between two different settings stores.
@@ -55,11 +56,30 @@ public enum PinkhaPrivateDirectoryMigration {
         return .init(moved: false, fileCount: 0)
     }
 
-    private static func requireNoSymlinkAncestors(_ url: URL) throws {
+    private static func commonContainer(_ first: URL, _ second: URL) throws -> URL {
+        let firstParts = first.pathComponents
+        let secondParts = second.pathComponents
+        let count = zip(firstParts, secondParts).prefix { $0 == $1 }.count
+        guard count > 1 else { throw Failure.invalidPath }
+        let common = URL(fileURLWithPath: NSString.path(withComponents: Array(firstParts.prefix(count))),
+                         isDirectory: true)
+        // Both inputs belong to one existing app container. Foundation keeps
+        // system aliases such as /var canonical on Darwin, while resolving
+        // ordinary symlinks inside that container. Validate this existing root
+        // before inspecting every descendant, including nonexistent suffixes.
+        let attributes = try FileManager.default.attributesOfItem(atPath: common.path)
+        guard attributes[.type] as? FileAttributeType == .typeDirectory,
+              common.resolvingSymlinksInPath().path == common.path else {
+            throw Failure.invalidPath
+        }
+        return common
+    }
+
+    private static func requireNoSymlinkAncestors(_ url: URL, through container: URL) throws {
         // Foundation may leave a nonexistent suffix unresolved. Inspect each
-        // existing ancestor before creating any directory through that suffix.
+        // component below the already verified app container before creating it.
         var cursor = url
-        while cursor.path != "/" {
+        while true {
             do {
                 let attributes = try FileManager.default.attributesOfItem(atPath: cursor.path)
                 guard attributes[.type] as? FileAttributeType != .typeSymbolicLink else {
@@ -70,6 +90,8 @@ public enum PinkhaPrivateDirectoryMigration {
                 // This descendant will be created only after all its existing
                 // parents have been checked. Other filesystem errors propagate.
             }
+            if cursor.path == container.path { break }
+            guard cursor.path != "/" else { throw Failure.invalidPath }
             cursor.deleteLastPathComponent()
         }
     }
