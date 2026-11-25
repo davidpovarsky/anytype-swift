@@ -1,0 +1,40 @@
+Building for debugging...
+[Computing dependencies]
+[Provisioning 15 / 19]
+[Pre-planning 1 / 392]
+[Planning 304 / 392]
+[Planning deferred tasks]
+[Constructing 401 / 1199]
+[1 / 7] PinkhaAnyHost
+[1 / 21] CCryptoBoringSSL
+[1 / 22] Crypto
+[3 / 16] PinkhaAnyIntegration
+[4 / 14] PinkhaAnyHostTests-product
+[6 / 16] PinkhaAnyHostTests-product
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeIdentityTests.swift:146:30: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m144 |[0;0m                 "spaceID": .string(space), "typeID": .string(type), "exactNativeQueryCount": .integer(1)]))
+[0;36m145 |[0;0m         }
+[0;36m146 |[0;0m         let descriptorRows = try bindings.map { binding -> AnyJSON in
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m147 |[0;0m             .object(["propertyID": .string(binding.propertyID), "nativeContract": .string(binding.nativeContract),
+[0;36m148 |[0;0m                      "nativeDescriptorSHA256": .string(binding.nativeDescriptorSHA256),
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[13 / 17] PinkhaAnyHostTests-product
+[14 / 17] PinkhaAnyHostTests-product
+[15 / 17] PinkhaAnyHostTests-test-runner
+[18 / 20] PinkhaAnyHostTests-test-runner
+[22 / 22] PinkhaAnyHostTests-test-runner
+Build complete! (8.57 secs)
+error: posix_spawn error: No such file or directory (2), `["/tmp/pinkha-c-swift-cache-20261125/out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner", "--cache-path", "/mnt/development/projects/evidence/migration-final-20261125/compiled-resolver/swift-common-cache", "--manifest-cache", "local", "-Xswiftc", "-module-cache-path", "-Xswiftc", "/mnt/development/projects/evidence/migration-final-20261125/compiled-resolver/swift-module-cache", "--package-path", "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost", "--scratch-path", "/tmp/pinkha-c-swift-cache-20261125", "--disable-sandbox", "--disable-automatic-resolution", "--jobs", "2", "--filter", "AnyDestinationNativeIdentityTests.testActualCanonicalIdentityDescriptorsAndColdReopen", "--testing-library", "swift-testing"]`
+Test Suite 'Selected tests' started at 2026-11-25 17:39:38.339
+Test Suite 'AnyDestinationNativeIdentityTests' started at 2026-11-25 17:39:38.350
+Test Case 'AnyDestinationNativeIdentityTests.testActualCanonicalIdentityDescriptorsAndColdReopen' started at 2026-11-25 17:39:38.350
+NATIVE_IDENTITY_COMPONENT descriptors=3 target_types=1 target_objects=2 exact_query_count=2 source_admission=false whole_space_migration=false phase=execute
+Test Case 'AnyDestinationNativeIdentityTests.testActualCanonicalIdentityDescriptorsAndColdReopen' passed (59.458 seconds)
+Test Suite 'AnyDestinationNativeIdentityTests' passed at 2026-11-25 17:40:37.808
+	 Executed 1 test, with 0 failures (0 unexpected) in 59.458 (59.458) seconds
+Test Suite 'Selected tests' passed at 2026-11-25 17:40:37.808
+	 Executed 1 test, with 0 failures (0 unexpected) in 59.458 (59.458) seconds
+Note: Some test targets reported failures:
+  - PinkhaAnyHostTests (Swift Testing)

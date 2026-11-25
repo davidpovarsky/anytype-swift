@@ -1,0 +1,282 @@
+#!/usr/bin/env python3
+"""Retain a genuine Any CLI and restart it in a new OS-offline process.
+
+The external Swift test owns destination execution/readback. This controller
+certifies process/source identity and lifecycle, not whole-space migration.
+"""
+import argparse
+import ctypes
+import errno
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import signal
+import socket
+import subprocess
+import time
+import urllib.request
+
+BINARY_SHA = "7f9124991e206657f21a9788b58f65de3ec57e019f425772dd4be6b677f803df"
+CONFIG_SHA = "6554bc5841fbef2a1ee6ab65ac3b14a9117dbb762d8cc8d419633c8cd413b060"
+SOURCE_MANIFEST_SHA = "d33fa2fb166aef89af0047ac23acf5c12fa108baec49566542cccd942a28f460"
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    os.umask(0o077)
+    args.output.mkdir(mode=0o700, parents=True, exist_ok=False)
+    binary = Path("/Users/m1/builds/pinkha-c-recovered-native-cli-20261125/any548")
+    source = binary.parent / "source"
+    nodeconf = source / "any/internal/config/nodeconf-prod.yml"
+    manifest_path = source / "source-manifest.json"
+    receipt = json.loads(manifest_path.read_bytes())
+    sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+    assert sha(binary) == BINARY_SHA and sha(nodeconf) == CONFIG_SHA
+    assert sha(manifest_path) == SOURCE_MANIFEST_SHA
+    assert receipt["protocol"] == "pinkha-recovered-exact-native-cli-source-v1"
+    prior = Path("/Users/m1/builds/pinkha-c-native-canonical-identity-20261125/attempt1")
+    assert sha(prior / "controller-result.json") == "177b748d2ed51c5f7a4077b28b22d34e1dbfc09a44ed05ca581b73d38c56fc74"
+    assert sha(prior / "runtime.json") == "06c965057e18eed81f7c5525ba2ab05c87c382eecd251b95dd35d960aac59700"
+    previous = json.loads((prior / "controller-result.json").read_bytes())
+    original_runtime = json.loads((prior / "runtime.json").read_bytes())
+    assert previous["result"] == "FAIL" and previous["error"] == "external qualification stopped"
+    assert previous["phases"] == [] and len(previous["processes"]) == 1
+    assert previous["processes"][0]["exitCode"] == 0 and not previous["processes"][0]["forcedKill"]
+    assert original_runtime["processID"] == previous["processes"][0]["pid"]
+    assert original_runtime["binarySHA256"] == BINARY_SHA and original_runtime["sourceManifestSHA256"] == SOURCE_MANIFEST_SHA
+    data = prior / "private-account"
+    assert data.is_dir() and data.resolve() == data
+    logs = args.output / "private-logs"
+    logs.mkdir(mode=0o700)
+    config = data / "config.yaml"
+    assert config.read_text() == ("network:\n  nodeconfPath: " + str(nodeconf) +
+                      "\nindex:\n  embedder: none\np2p:\n  enabled: false\n")
+    # Darwin's broad ps process walk timed out twice before any native launch.
+    # Enumerate actual executable paths through libproc, then inspect only exact
+    # matching binaries. ESRCH means that entry has already exited (including a
+    # zombie); every other inaccessible path fails admission.
+    libproc = ctypes.CDLL("/usr/lib/libproc.dylib", use_errno=True)
+    libproc.proc_listallpids.argtypes = [ctypes.c_void_p, ctypes.c_int]
+    libproc.proc_listallpids.restype = ctypes.c_int
+    libproc.proc_pidpath.argtypes = [ctypes.c_int, ctypes.c_void_p, ctypes.c_uint32]
+    libproc.proc_pidpath.restype = ctypes.c_int
+    count = libproc.proc_listallpids(None, 0)
+    assert 0 < count < 100_000, "bounded complete native process inventory required"
+    buffer = (ctypes.c_int * (count + 1024))()
+    actual_count = libproc.proc_listallpids(buffer, ctypes.sizeof(buffer))
+    assert 0 < actual_count < len(buffer), "native process inventory was truncated"
+    matching, exited = [], 0
+    for pid in list(buffer)[:actual_count]:
+        if pid <= 0: continue
+        path_buffer = ctypes.create_string_buffer(4096)
+        ctypes.set_errno(0)
+        length = libproc.proc_pidpath(pid, path_buffer, len(path_buffer))
+        if length <= 0:
+            assert ctypes.get_errno() == errno.ESRCH, "unresolved executable identity in native owner inventory"
+            exited += 1
+            continue
+        executable = path_buffer.value.decode("utf-8")
+        if Path(executable).resolve() != binary: continue
+        exact = subprocess.run(["/bin/ps", "-p", str(pid), "-o", "command="],
+                               capture_output=True, text=True, timeout=10)
+        if exact.returncode == 1 and not exact.stdout.strip():
+            ctypes.set_errno(0)
+            assert libproc.proc_pidpath(pid, path_buffer, len(path_buffer)) <= 0 and ctypes.get_errno() == errno.ESRCH
+            exited += 1
+            continue
+        assert exact.returncode == 0, "exact native process command unavailable"
+        assert "--data-dir " + str(data) not in exact.stdout, "original account has a live native owner"
+        matching.append(pid)
+    owner_inventory = {"protocol":"darwin-libproc-complete-executable-owner-inventory-v1",
+        "enumeratedPIDs":actual_count,"exitedDuringRead":exited,
+        "otherQualifiedNativeProcessIDs":matching,"originalDataOwnerAbsent":True,
+        "allUnresolvedPathsRejected":True,"signalsSent":0}
+    (args.output / "original-account-process-admission.json").write_text(json.dumps(owner_inventory,indent=2)+"\n")
+    started = time.monotonic()
+    result = {"protocol": "pinkha-native-canonical-identity-cold-continuation-v1",
+              "scope": "three native identity descriptors and target component process/cold-offline control",
+              "whole_space_migration_accepted": False, "cloud_custody_accepted": False,
+              "binarySHA256": BINARY_SHA, "nodeconfSHA256": CONFIG_SHA,
+              "sourceManifestSHA256": SOURCE_MANIFEST_SHA, "network": "original shipped production nodeconf",
+              "result": "RUNNING", "processes": [], "phases": [],
+              "priorOriginalControllerSHA256": "177b748d2ed51c5f7a4077b28b22d34e1dbfc09a44ed05ca581b73d38c56fc74",
+              "priorOriginalFailurePreserved": True, "newAccounts": 0, "newSpaces": 0,
+              "originalAccountProcessAdmission": owner_inventory,
+              "resourcePolicy": {"estimatedNewBytes": 64 * 1024**2,
+                                 "emergencyFreeBytes": 2 * 1024**3,
+                                 "reason": "Reused exact 80.9MB CLI; one fresh generated account, one Space, three prepared operations, no file payloads or compilation/dependency download. Retained original account; 64MiB continuation budget for additional logs and index reconciliation."}}
+    minimum_free = shutil.disk_usage(args.output).free
+    assert minimum_free > 2 * 1024**3 + 64 * 1024**2
+    process = None
+    output = None
+    phase = "source verification"
+    def interrupted(signum, frame):
+        raise RuntimeError("owned controller interrupted")
+    signal.signal(signal.SIGTERM, interrupted)
+    signal.signal(signal.SIGINT, interrupted)
+
+    def save():
+        result["seconds"] = round(time.monotonic() - started, 3)
+        result["minimumFreeBytes"] = minimum_free
+        (args.output / "controller-result.json").write_text(json.dumps(result, indent=2) + "\n")
+
+    def verify_sources():
+        assert not binary.is_symlink() and sha(binary) == BINARY_SHA
+        assert not manifest_path.is_symlink() and sha(manifest_path) == SOURCE_MANIFEST_SHA
+        expected = {"any": ("548f5cd0430a723bd26ea724daeb99991f68b9c9", 874),
+                    "any/.runtime-artifacts/sdk-source": ("e195f6c07a053c6588e39ffe72ee4fc44cf3d953", 709)}
+        assert {x["prefix"] for x in receipt["sources"]} == set(expected)
+        observations = []
+        for entry in receipt["sources"]:
+            prefix = entry["prefix"]
+            commit, count = expected[prefix]
+            assert entry["commit"] == commit and entry["files"] == count and len(entry["inventory"]) == count
+            root = source / prefix
+            for relative, item in entry["inventory"].items():
+                path = root / relative
+                assert not Path(relative).is_absolute() and ".." not in Path(relative).parts
+                assert path.is_file() and not path.is_symlink() and path.resolve().is_relative_to(root.resolve())
+                assert path.stat().st_size == item["bytes"] and sha(path) == item["sha256"], "native source changed"
+            observations.append({"commit": commit, "files": count, "unchanged": True})
+        assert sum(x["files"] for x in observations) == 1583
+        return observations
+
+    def guard():
+        nonlocal minimum_free
+        minimum_free = min(minimum_free, shutil.disk_usage(args.output).free)
+        assert minimum_free >= 2 * 1024**3, "runtime disk emergency"
+        assert time.monotonic() - started < 1200, "bounded native controller timeout"
+        assert not (args.output / "abort").exists(), "external qualification stopped"
+
+    with socket.socket() as listener:
+        listener.bind(("127.0.0.1", 0))
+        port = listener.getsockname()[1]
+    base = "http://127.0.0.1:" + str(port)
+
+    def request(method, path, body=None, timeout=15):
+        headers = {}
+        if body is not None:
+            body = json.dumps(body).encode()
+            headers["Content-Type"] = "application/json"
+        req = urllib.request.Request(base + path, method=method, data=body, headers=headers)
+        with urllib.request.urlopen(req, timeout=timeout) as reply:
+            raw = reply.read(1 << 20)
+            return reply.status, json.loads(raw) if raw else None
+
+    def stop():
+        nonlocal process, output
+        if process is None:
+            return
+        if process.poll() is None:
+            os.killpg(process.pid, signal.SIGTERM)
+            try:
+                process.wait(timeout=20)
+            except subprocess.TimeoutExpired:
+                os.killpg(process.pid, signal.SIGKILL)
+                process.wait(timeout=5)
+                result["processes"][-1]["forcedKill"] = True
+        result["processes"][-1]["exitCode"] = process.returncode
+        output.close()
+        stopped = process.returncode == 0 and not result["processes"][-1]["forcedKill"]
+        process = None
+        save()
+        assert stopped, "native process did not exit cleanly"
+
+    def start(name, profile=None):
+        nonlocal process, output
+        env = {k: v for k, v in os.environ.items() if not k.startswith("ANY_")}
+        env.update(ANY_DATA_DIR=str(data), GOMAXPROCS="2", GOMEMLIMIT="2GiB")
+        command = [str(binary), "run", "--config", str(config), "--data-dir", str(data),
+                   "--addr", "127.0.0.1:" + str(port)]
+        if profile:
+            command = ["/usr/bin/sandbox-exec", "-f", str(profile)] + command
+        output = (logs / (name + ".log")).open("wb")
+        process = subprocess.Popen(command, env=env, stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
+        result["processes"].append({"name": name, "pid": process.pid, "offline": bool(profile), "forcedKill": False})
+        deadline = time.monotonic() + 60
+        while True:
+            guard()
+            assert process.poll() is None, "native process ended before health"
+            try:
+                if request("GET", "/v1/health", timeout=1)[0] == 200:
+                    break
+            except OSError:
+                pass
+            assert time.monotonic() < deadline, "native readiness timeout"
+            time.sleep(0.25)
+        save()
+
+    def await_signal(name):
+        path = args.output / name
+        while not path.exists():
+            guard()
+            assert process is not None and process.poll() is None, "native process stopped unexpectedly"
+            time.sleep(0.5)
+        result["phases"].append({"received": name, "seconds": round(time.monotonic() - started, 3)})
+        save()
+
+    try:
+        result["sourcesBefore"] = verify_sources()
+        runtime = dict(original_runtime)
+        account = runtime["accountID"]
+        space_id = runtime["spaceID"]
+        runtime["baseURL"] = base
+        result["accountID"] = account
+        result["spaceID"] = space_id
+        phase = "prove OS outbound denial for fresh retained native process"
+        profile = args.output / "offline.sb"
+        profile.write_text("(version 1)\n(allow default)\n(deny network-outbound)\n")
+        with socket.socket() as listener:
+            listener.bind(("127.0.0.1", 0)); listener.listen()
+            probe_port = listener.getsockname()[1]
+            socket.create_connection(("127.0.0.1", probe_port), timeout=2).close()
+            code = (
+                "import socket,json,errno\nresult={}\n"
+                "try:\n socket.create_connection(('127.0.0.1'," + str(probe_port) + "),timeout=2);result['tcpDenied']=False\n"
+                "except OSError as e:result['tcpDenied']=e.errno in (errno.EPERM,errno.EACCES);result['tcpErrno']=e.errno\n"
+                "s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)\n"
+                "try:\n s.sendto(b'private-offline-probe',('127.0.0.1'," + str(probe_port) + "));result['udpDenied']=False\n"
+                "except OSError as e:result['udpDenied']=e.errno in (errno.EPERM,errno.EACCES);result['udpErrno']=e.errno\n"
+                "finally:s.close()\nprint(json.dumps(result))\n"
+            )
+            checked = subprocess.run(["/usr/bin/sandbox-exec", "-f", str(profile), "/opt/homebrew/bin/python3.12", "-c", code],
+                                     capture_output=True, text=True, timeout=10)
+            assert checked.returncode == 0
+            controls = json.loads(checked.stdout)
+            assert controls["tcpDenied"] and controls["udpDenied"]
+        result["offlinePolicy"] = {"sha256": sha(profile), "baselineListenerReachable": True, "controls": controls}
+        phase = "fresh native process under OS outbound denial"
+        start("cold-offline-native", profile)
+        assert request("GET", "/v1/account")[1]["id"] == account
+        sync = request("GET", "/v1/spaces/" + space_id + "/sync-status")[1]
+        result["coldSyncStatus"] = {k: sync.get(k) for k in ("state", "networkPeers", "localPeers", "globalPeers", "p2p")}
+        assert sync["networkPeers"] == 0 and sync["localPeers"] == 0 and sync["globalPeers"] == 0
+        runtime.update(phase="cold-offline", processID=process.pid, outboundDeniedByOS=True, networkPeerCount=0)
+        (args.output / "runtime.json").write_text(json.dumps(runtime, indent=2) + "\n")
+        phase = "external cold canonical identity readback"
+        await_signal("finish")
+        stop()
+        result["sourcesAfter"] = verify_sources()
+        result["result"] = "COLD_PROCESS_CONTINUATION_PASS"
+    except Exception as error:
+        result.update(result="FAIL", failedPhase=phase, errorType=type(error).__name__, error=str(error))
+    finally:
+        if process is not None:
+            try: stop()
+            except Exception as error:
+                result["cleanupFailure"] = type(error).__name__
+                result["result"] = "FAIL"
+        result["privateLogReceipts"] = [
+            {"name": p.name, "bytes": p.stat().st_size, "sha256": sha(p)}
+            for p in logs.iterdir() if p.is_file()
+        ]
+        save()
+    print(json.dumps({k: result[k] for k in ("result", "scope", "seconds", "minimumFreeBytes",
+                                             "whole_space_migration_accepted", "cloud_custody_accepted")}))
+    return 0 if result["result"] == "COLD_PROCESS_CONTINUATION_PASS" else 1
+
+if __name__ == "__main__":
+    raise SystemExit(main())
