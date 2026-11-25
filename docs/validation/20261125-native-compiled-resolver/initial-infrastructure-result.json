@@ -1,0 +1,50 @@
+{
+  "argv": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/tmp/pinkha-c-swift-cache-20261125",
+    "--disable-sandbox",
+    "--disable-automatic-resolution",
+    "--jobs",
+    "2",
+    "--filter",
+    "CompiledRelationResolverTests|NativeSpaceBundleTests.testActualNativeCompiledRegistryCaptureRetainsCompleteOriginalMembers"
+  ],
+  "exitCode": 1,
+  "expectedSkips": 0,
+  "expectedTests": 6,
+  "finishedAt": 1795618820.3617287,
+  "guardStop": null,
+  "logSHA256": "09b6836ce5abf689789eda6d3d369d5c711c38c684b506b4b6d48bb917a24a75",
+  "notNativeExecution": true,
+  "samples": [
+    {
+      "at": 1795618816.360984,
+      "freeProjectBytes": 24249749504,
+      "freeRootBytes": 2287177728
+    },
+    {
+      "at": 1795618818.3611834,
+      "freeProjectBytes": 24249724928,
+      "freeRootBytes": 2281365504
+    }
+  ],
+  "scope": "5 synthetic semantic controls +1 exact retained native5e8 descriptor-reader control",
+  "sourceBase": "96244e7df4337e043bb1264c3e3ac3439e62f438",
+  "sourceHashes": {
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/CompiledRelationResolverTests.swift": "5133e618afd8871dab5b4e9edd3b2de3d1e65611f3adf0c2d8cf82c671332736",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeSpaceBundleTests.swift": "0bf465b64db0d064e89af9231fe8920efd17240cd434cc68a9dd8987664923f1",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeCompiledRelation.swift": "abce8533e20f169fc431bd1d851d0c56fde878974d6eadef8a42fc1035de4096",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift": "84708225b08ccc6d1f4a4f9dc3fefa98f82216c150d8ab422fb9b4a69991acc5"
+  },
+  "sourceHashesAfter": {
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/CompiledRelationResolverTests.swift": "5133e618afd8871dab5b4e9edd3b2de3d1e65611f3adf0c2d8cf82c671332736",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeSpaceBundleTests.swift": "0bf465b64db0d064e89af9231fe8920efd17240cd434cc68a9dd8987664923f1",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeCompiledRelation.swift": "abce8533e20f169fc431bd1d851d0c56fde878974d6eadef8a42fc1035de4096",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift": "84708225b08ccc6d1f4a4f9dc3fefa98f82216c150d8ab422fb9b4a69991acc5"
+  },
+  "startedAt": 1795618816.3556576
+}

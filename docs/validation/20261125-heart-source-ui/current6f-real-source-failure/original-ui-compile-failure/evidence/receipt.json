@@ -1,0 +1,85 @@
+{
+  "appBuilds": 0,
+  "appSourceCommit": "6f1194f9b8c9540dea1187826dda6a256777dbbf",
+  "controllerSHA256": "4634cc3d14fb9a84df91b517227b1a6240f730e43c7d864b0b03c8b30a752f37",
+  "firstFailure": {
+    "message": "Actual complete UI build did not pass",
+    "type": "ValueError"
+  },
+  "nativeBuilds": 0,
+  "originalProductAdmission": {
+    "commit": "6f1194f9b8c9540dea1187826dda6a256777dbbf",
+    "helpers": {
+      "Tools/CurrentAppleValidation/contracts.py": "aa724f9236058081e92d1c6fedbc57f6d8864d8403ab522e2d9d4de917cd8316",
+      "Tools/CurrentAppleValidation/page154_boundary.py": "76b40b54270610ede431b751432796e82e58e8a0c4ca8ef3df4e2e405f7b372c",
+      "Tools/CurrentAppleValidation/page154_contract.py": "596a1761882c3efe2068b4af61b463eee0e063e7a2a43957e7c7f321c946dd00",
+      "Tools/PinkhaSemanticAnchorWire/apple_consumer/consumer_contract.py": "235eae83ac85a8c280a10cf570e6675b87d11f6059c2ed46a2a12fda7c2df894",
+      "Tools/PinkhaSemanticAnchorWire/apple_mounted/mounted_contract.py": "0fa1af7e7b3f45d0eec8f1aa4c2d4a4ef97d5ca1c4e94f8838ba69e3eeab28ff",
+      "Tools/PinkhaSemanticAnchorWire/apple_mounted/warning_profile.py": "fa561fa2823047cd92177920779dbebc0ced35d3fce9869773b05a374932adbf"
+    },
+    "sourceStateSHA256": "81472bdf86f4432c9686f1d15199141745f3969a29025b31ba4e3eccab9f6be8",
+    "tree": "1b1a7cc68af165e9ba9040a2b602b5308d064e11",
+    "verifiedSourceFiles": 4463
+  },
+  "originalUISourceCommit": "6f1194f9b8c9540dea1187826dda6a256777dbbf",
+  "ownedGroups": [
+    {
+      "absentAtOriginalExit": true,
+      "pgid": 65075
+    },
+    {
+      "absentAtOriginalExit": true,
+      "pgid": 65082
+    },
+    {
+      "absentAtOriginalExit": true,
+      "pgid": 65083
+    }
+  ],
+  "protocol": "pinkha-c-source-onboarding-ui-producer-v1",
+  "status": "FAIL",
+  "testsExecuted": 0,
+  "uiCommand": {
+    "argv": [
+      "xcodebuild",
+      "build-for-testing",
+      "-project",
+      "/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/ui-source/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj",
+      "-scheme",
+      "PinkhaPrebuiltUI",
+      "-configuration",
+      "Debug-Anytype",
+      "-destination",
+      "generic/platform=iOS Simulator",
+      "-derivedDataPath",
+      "/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/derived",
+      "-resultBundlePath",
+      "/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1/evidence/UI.xcresult",
+      "-jobs",
+      "2",
+      "OTHER_SWIFT_FLAGS=$(inherited) -D DEBUG -D PINKHA_DUAL_ENGINE_RUNTIME -D PINKHA_NATIVE_DERIVED -D PINKHA_NATIVE_T5_LOOKUP_V1 -D PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 -D PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1",
+      "ENABLE_TESTABILITY=YES",
+      "ONLY_ACTIVE_ARCH=YES",
+      "ARCHS=arm64",
+      "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGNING_REQUIRED=YES",
+      "PROVISIONING_PROFILE_SPECIFIER="
+    ],
+    "cwd": "/Users/m1/builds/pinkha-c-heart-source-ui-20261125/ui-onboarding-e486-build1",
+    "exitCode": 65,
+    "finishedAt": 1795624669.154481,
+    "freeBytesBefore": 15120236544,
+    "logBytes": 91785,
+    "logSHA256": "b66bad58cd4903f316f445b591ab321634ecac042b8a00cd3f2fcf94cc8a4c7a",
+    "minimumFreeBytes": 14954340352,
+    "ownedGroupPresentAfterExit": false,
+    "pgid": 65083,
+    "pid": 65083,
+    "startedAt": 1795624654.049973,
+    "status": "FAIL_COMMAND",
+    "timeoutSeconds": 600
+  },
+  "uiSourceCommit": "e4869c1a20967448b8d5d6e691dcc84a7bc3c2ed"
+}

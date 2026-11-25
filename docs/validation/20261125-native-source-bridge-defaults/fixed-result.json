@@ -1,0 +1,141 @@
+{
+  "protocol": "pinkha-actual-core-source-bridge-regression-v1",
+  "phase": "fixed",
+  "source": "b7454dca344db7d32f0dc7b7eb5aff575b6a2535",
+  "method": "TestPinkhaSourceCaptureBridgeActualBoundedDefaults",
+  "status": "PASS_ACTUAL_CORE_BRIDGE_NOT_APP_UI",
+  "wholeSpaceMigrationComplete": false,
+  "appleUIAccepted": false,
+  "newNativeSliceProduced": false,
+  "sourceBefore": {
+    "heart": {
+      "files": 2580,
+      "source": "b7454dca344db7d32f0dc7b7eb5aff575b6a2535",
+      "censusSHA256": "dc6c1b78ab0a44465f462861810e2b08b4a4682e3174071dcfda21ba03008a40"
+    },
+    "anySync": {
+      "files": 580,
+      "source": "c005bd6cde8d8f8a6007c35f06894f3d89f9f07c",
+      "censusSHA256": "55ef3a70df4e37a8055d7635b5db0368e521d464132b174a8a75b9f0fc7c8b8f"
+    },
+    "originalGoModSHA256": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+    "moduleSHA256": "c93667d23d292a33178d7e9d1b9c857f5cb0b8fb7038820504190bc29133dc4a",
+    "sumSHA256": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d",
+    "nativeLibrarySHA256": "30c4bc974615e03575c2d1f796ff594f2d0a0f7dd21e5b97ffbd836c99c31788"
+  },
+  "command": [
+    "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+    "test",
+    "-mod=readonly",
+    "-count=1",
+    "-p=2",
+    "-timeout=480s",
+    "-json",
+    "-run",
+    "^TestPinkhaSourceCaptureBridgeActualBoundedDefaults$",
+    "-tags",
+    "pinkha_loaded_account_witness,pinkha_loaded_account_witness_acceptance",
+    "-modfile=/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/fixed.mod",
+    "./core"
+  ],
+  "cwd": "/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/source/fixed",
+  "environment": {
+    "GOWORK": "off",
+    "GOTOOLCHAIN": "local",
+    "GOCACHE": "/Users/m1/caches/anytapy-go1.27.4-build",
+    "GOMODCACHE": "/Users/m1/caches/anytapy-go-mod",
+    "GOPROXY": "file:///Users/m1/caches/go-mod/cache/download,https://proxy.golang.org,direct",
+    "GOSUMDB": "sum.golang.org",
+    "GOMAXPROCS": "2",
+    "GOMEMLIMIT": "2GiB",
+    "CGO_ENABLED": "1",
+    "GOFLAGS": "",
+    "GOEXPERIMENT": "",
+    "CGO_LDFLAGS": "-L/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/native-libs -framework CoreFoundation -framework Security",
+    "TMPDIR": "/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/fixed-attempt1/temporary",
+    "GOTMPDIR": "/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/fixed-attempt1/temporary",
+    "PINKHA_LOADED_ACCOUNT_PRIVATE_ROOT": "/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/fixed-attempt1/private"
+  },
+  "resourceAdmission": {
+    "initialFreeBytes": 11006955520,
+    "estimatedIncrementalBytes": 1610612736,
+    "emergencyFreeBytes": 2147483648,
+    "parallelism": 2,
+    "nativeProducerOverlap": false,
+    "globalProcessWalk": false
+  },
+  "returncode": 0,
+  "events": [
+    {
+      "Action": "pass",
+      "Package": "github.com/anyproto/anytype-heart/core",
+      "Test": "TestPinkhaSourceCaptureBridgeActualBoundedDefaults",
+      "Elapsed": 2.95
+    },
+    {
+      "Action": "pass",
+      "Package": "github.com/anyproto/anytype-heart/core",
+      "Elapsed": 4.3629999999999995
+    }
+  ],
+  "logSHA256": "564b20f575965a97b006e01a3983ea2a9193a3fcac1dd3fcaf3f20416369aaae",
+  "logBytes": 1996649,
+  "sourceAfter": {
+    "heart": {
+      "files": 2580,
+      "source": "b7454dca344db7d32f0dc7b7eb5aff575b6a2535",
+      "censusSHA256": "dc6c1b78ab0a44465f462861810e2b08b4a4682e3174071dcfda21ba03008a40"
+    },
+    "anySync": {
+      "files": 580,
+      "source": "c005bd6cde8d8f8a6007c35f06894f3d89f9f07c",
+      "censusSHA256": "55ef3a70df4e37a8055d7635b5db0368e521d464132b174a8a75b9f0fc7c8b8f"
+    },
+    "originalGoModSHA256": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+    "moduleSHA256": "c93667d23d292a33178d7e9d1b9c857f5cb0b8fb7038820504190bc29133dc4a",
+    "sumSHA256": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d",
+    "nativeLibrarySHA256": "30c4bc974615e03575c2d1f796ff594f2d0a0f7dd21e5b97ffbd836c99c31788"
+  },
+  "actualBridgeProof": {
+    "actualCoreBridgeCaptures": 2,
+    "actualNativeSessionGrants": 2,
+    "appleUIAccepted": false,
+    "capturedObjects": [
+      142,
+      142
+    ],
+    "closedSessionRefused": true,
+    "contract": "pinkha-actual-source-bridge-default-limits-v1",
+    "invalidLowerNativeLimitCasesRefused": 3,
+    "manifestSHA256": [
+      "37af9428ca01e02d6643daa5596fdd4736d1e0a7a6d1040b5e3ef3ae9f88c133",
+      "ba7d382efc29d83282ca8eed0475b596a01f4bcfc16b158bb00f9d5ad5cb521f"
+    ],
+    "nativeTrees": [
+      143,
+      143
+    ],
+    "permitsDestinationWrites": false,
+    "privateSourceRecoveryRetained": true,
+    "releasedBindingRefused": true,
+    "sourceRowsSHA256": [
+      "018e9a5607d25453b401c59f620defeadacaebc87d7c0873ed69310cfa2675b9",
+      "018e9a5607d25453b401c59f620defeadacaebc87d7c0873ed69310cfa2675b9"
+    ],
+    "wholeSpaceMigrationComplete": false
+  },
+  "actualBridgeProofSHA256": "1217ac3797e4b846360b1821524ddccf225ce7ffcad29ac66262521ebe81035f",
+  "testAcceptance": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0
+  },
+  "ownedProcessGroupAbsent": true,
+  "provedAbsentGroups": {
+    "97792": "2026-11-25T19:40:09.867262+00:00"
+  },
+  "cleanupErrors": [],
+  "seconds": 77.705,
+  "minimumFreeBytes": 7850483712,
+  "finishedAt": "2026-11-25T19:40:10.562031+00:00"
+}

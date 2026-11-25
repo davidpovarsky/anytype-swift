@@ -44,6 +44,8 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
         public let name: String
         public let description: String
         public let pluralName: String?
+        /// Exact manual type rank. nil is absent; an explicit empty value is retained.
+        public let orderID: String?
         public let recommendedLayout: Int64?
         public let recommendedRelations: [String]
         public let featuredRelations: [String]
@@ -85,11 +87,16 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
         public enum Kind: String, Sendable {
             case duplicateUniqueKey, duplicateRelationKey, relationKeyMismatch
             case unknownDetailField, unresolvedRecommendation, unresolvedTargetType
-            case unresolvedOptionRelation, nativeSnapshotIssue
+            case unresolvedOptionRelation, nativeSnapshotIssue, compiledDescriptorIssue, compiledTypeNotMapped
         }
         public let kind: Kind
         public let sourceObjectID: String
         public let field: String
+    }
+
+    public enum ResolvedRelation: Sendable {
+        case captured(Relation)
+        case compiled(AnyHeartNativeCompiledRelation)
     }
 
     public let sourceAccountID: String
@@ -100,6 +107,8 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
     public let types: [TypeDefinition]
     public let relations: [Relation]
     public let options: [Option]
+    /// Registry vocabulary captured by the native resolver; never object rows.
+    public let compiledRelations: [AnyHeartNativeCompiledRelation]
     public let issues: [Issue]
     public var permitsDestinationWrites: Bool { false }
 
@@ -108,22 +117,27 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
     private let relationIDs: [Data: Int]
     private let relationKeys: [Data: Int]
     private let optionIDs: [Data: Int]
+    private let compiledRelationKeys: [Data: Int]
+    private let capturedRelationKeys: Set<Data>
 
     public init(bundle: AnyHeartNativeSpaceBundle) throws {
         try self.init(sourceAccountID: bundle.sourceAccountID, sourceSpaceID: bundle.sourceSpaceID,
             captureManifestSHA256: bundle.manifestSHA256, sourceWitnessSHA256: bundle.sourceWitnessSHA256,
-            snapshots: bundle.objects)
+            snapshots: bundle.objects, compiledDefinitions: bundle.bundledDefinitions)
     }
 
     /// Internal fixture boundary. Production callers supply the admitted outer
     /// bundle; detached JSON views alone never establish account authority.
     init(sourceAccountID: String, sourceSpaceID: String, captureManifestSHA256: String,
-         sourceWitnessSHA256: String, snapshots: [AnyHeartNativeSnapshotView]) throws {
+         sourceWitnessSHA256: String, snapshots: [AnyHeartNativeSnapshotView],
+         compiledDefinitions: [AnyHeartNativeBundledDefinition] = []) throws {
         guard Self.identifier(sourceAccountID), Self.identifier(sourceSpaceID),
               Self.digest(captureManifestSHA256), Self.digest(sourceWitnessSHA256) else {
             throw AnyHeartNativeDefinitionCatalogError.invalidBinding
         }
-        guard snapshots.count <= 100_000 else { throw AnyHeartNativeDefinitionCatalogError.limit }
+        guard snapshots.count <= 100_000, compiledDefinitions.count <= 1024 else {
+            throw AnyHeartNativeDefinitionCatalogError.limit
+        }
         var allIDs = Set<Data>(), languageIDs = Set<String>()
         let rows = try snapshots.sorted { Data($0.sourceObjectID.utf8).lexicographicallyPrecedes(Data($1.sourceObjectID.utf8)) }
             .map { row -> AnyHeartNativeSnapshotView in
@@ -138,6 +152,28 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
             }
         var types: [TypeDefinition] = [], relations: [Relation] = [], options: [Option] = []
         var issues: [Issue] = []
+        var compiledIDs = Set<Data>(), compiledNames = Set<String>()
+        let compiled = try compiledDefinitions.sorted {
+            Data($0.identity.utf8).lexicographicallyPrecedes(Data($1.identity.utf8))
+        }.map { source -> AnyHeartNativeBundledDefinition in
+            guard compiledIDs.insert(Data(source.identity.utf8)).inserted,
+                  compiledNames.insert(source.identity).inserted else {
+                throw AnyHeartNativeDefinitionCatalogError.invalidDefinition(source.identity, "duplicate-compiled-identity")
+            }
+            return source
+        }
+        let compiledRelations = try compiled.filter { $0.kind == .property }
+            .map { try AnyHeartNativeCompiledRelation(source: $0) }
+        for row in compiledRelations {
+            for field in row.unknownFields {
+                issues.append(.init(kind: .compiledDescriptorIssue,
+                                    sourceObjectID: row.sourceIdentity, field: field))
+            }
+        }
+        for row in compiled where row.kind == .type {
+            issues.append(.init(kind: .compiledTypeNotMapped,
+                                sourceObjectID: row.identity, field: "compiled-type-descriptor"))
+        }
         var uniqueOwners: [Data: [String]] = [:]
 
         for row in rows where [521, 528, 529].contains(row.nativeType) {
@@ -193,6 +229,7 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
                 let typeKey = try Self.key(row.uniqueKey, prefix: "ot", id: row.sourceObjectID)
                 types.append(.init(snapshot: row, sourceProvenance: provenance, typeKey: typeKey, name: name, description: description,
                     pluralName: d["pluralName"] == nil ? nil : try string("pluralName"),
+                    orderID: d["orderId"] == nil ? nil : try string("orderId"),
                     recommendedLayout: try optionalInteger("recommendedLayout"),
                     recommendedRelations: try identifiers("recommendedRelations"),
                     featuredRelations: try identifiers("recommendedFeaturedRelations"),
@@ -273,19 +310,29 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
                 continue
             }
         }
-        let bound: AnyJSON = .object([
-            "contract": .string("pinkha-captured-definition-catalog-v1"),
+        var boundFields: [String: AnyJSON] = [
+            "contract": .string(compiled.isEmpty
+                ? "pinkha-captured-definition-catalog-v1" : "pinkha-captured-definition-catalog-v2"),
             "account": .string(sourceAccountID), "space": .string(sourceSpaceID),
             "manifest": .string(captureManifestSHA256), "witness": .string(sourceWitnessSHA256),
             "definitions": .array(rows.filter { [521, 528, 529].contains($0.nativeType) }.map {
                 .object(["id": .string($0.sourceObjectID), "pb": .string($0.snapshotSHA256), "json": .string($0.viewSHA256)])
             })
-        ])
+        ]
+        if !compiled.isEmpty {
+            boundFields["compiledDefinitions"] = .array(compiled.map {
+                .object(["identity": .string($0.identity), "pb": .string($0.protobufSHA256),
+                         "json": .string($0.jsonViewSHA256)])
+            })
+        }
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
-        contentSHA256 = AnyContentDigest.sha256(try encoder.encode(bound))
+        contentSHA256 = AnyContentDigest.sha256(try encoder.encode(AnyJSON.object(boundFields)))
         self.sourceAccountID = sourceAccountID; self.sourceSpaceID = sourceSpaceID
         self.captureManifestSHA256 = captureManifestSHA256; self.sourceWitnessSHA256 = sourceWitnessSHA256
         self.types = types; self.relations = relations; self.options = options; self.issues = issues
+        self.compiledRelations = compiledRelations
+        self.compiledRelationKeys = unambiguous(compiledRelations.enumerated().map { ($0.element.relationKey, $0.offset) })
+        self.capturedRelationKeys = Set(relations.map { Data($0.relationKey.utf8) })
         self.typeIDs = typeIDs; self.typeKeys = typeKeys
         self.relationIDs = relationIDs; self.relationKeys = relationKeys
         self.optionIDs = unambiguous(options.enumerated().map { ($0.element.objectID, $0.offset) })
@@ -299,6 +346,17 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
     }
     public func relation(objectID: String) -> Relation? { relationIDs[Data(objectID.utf8)].map { relations[$0] } }
     public func relation(key: String) -> Relation? { relationKeys[Data(key.utf8)].map { relations[$0] } }
+    public func compiledRelation(key: String) -> AnyHeartNativeCompiledRelation? {
+        compiledRelationKeys[Data(key.utf8)].map { compiledRelations[$0] }
+    }
+    /// Native captured overrides take precedence. An ambiguous captured key
+    /// refuses resolution instead of silently reverting to the compiled entry.
+    public func resolvedRelation(key: String) -> ResolvedRelation? {
+        if capturedRelationKeys.contains(Data(key.utf8)) {
+            return relation(key: key).map(ResolvedRelation.captured)
+        }
+        return compiledRelation(key: key).map(ResolvedRelation.compiled)
+    }
     public func option(objectID: String) -> Option? { optionIDs[Data(objectID.utf8)].map { options[$0] } }
     public func options(relationKey: String) -> [Option] {
         options.filter { Data($0.relationKey.utf8) == Data(relationKey.utf8) }
@@ -324,7 +382,7 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
         "isArchived", "isReadonly", "uniqueKey", "type", "id", "spaceId", "addedDate",
     ]
     private static let typeFields = commonFields.union([
-        "pluralName", "iconName", "iconOption", "recommendedLayout", "recommendedRelations",
+        "pluralName", "iconName", "iconOption", "orderId", "recommendedLayout", "recommendedRelations",
         "recommendedFeaturedRelations", "recommendedHiddenRelations", "recommendedFileRelations", "setOf", "smartblockTypes",
     ])
     private static let relationFields = commonFields.union([

@@ -390,10 +390,20 @@ enum PinkhaSemanticSourceEntryDiagnostics {
             return ["type": String(reflecting: type(of: recognizer)), "enabled": recognizer.isEnabled,
                     "state": recognizer.state.rawValue]
         }
-        record(stage, state: ["inputIdentity": String(describing: ObjectIdentifier(textView)),
+        var state: [String: Any] = [
+            "inputIdentity": String(describing: ObjectIdentifier(textView)),
             "firstResponder": textView.isFirstResponder, "windowPresent": textView.window != nil,
             "selectedLength": textView.selectedRange.length, "editable": textView.isEditable,
-            "longPressRecognizers": gestures])
+            "longPressRecognizers": gestures
+        ]
+        if stage == "input-resign-before" {
+            // The public edit-menu callbacks proved that gesture preservation
+            // alone does not restore action delivery. Capture the actual caller
+            // of this selected input's resignation before changing any focus or
+            // presentation policy. This remains a bounded private observation.
+            state["callStackSymbols"] = Array(Thread.callStackSymbols.prefix(24))
+        }
+        record(stage, state: state)
     }
 
     static func record(_ stage: String, state: [String: Any]) {

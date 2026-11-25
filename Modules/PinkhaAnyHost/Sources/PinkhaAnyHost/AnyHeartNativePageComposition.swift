@@ -132,7 +132,7 @@ public struct AnyHeartNativePageComposition: Sendable {
         let detailKeys = snapshot.details.keys.sorted { Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8)) }
         // Every present detail is consumed; there is no caller-selected subset.
         let values = try definitions.values(snapshot: snapshot, relationKeys: detailKeys, objects: objects, files: files)
-        guard Set(values.initialRelationKeys + values.deferredRelationKeys) == Set(detailKeys) else {
+        guard Set(values.initialRelationKeys + values.deferredRelationKeys + values.nativeIdentityRelationKeys) == Set(detailKeys) else {
             throw AnyHeartNativePageCompositionError.sourceBinding
         }
         var items = [AnyDestinationMigrationItem(sourceKey: sourceKey, sourceObjectID: snapshot.sourceObjectID,

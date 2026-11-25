@@ -1,0 +1,77 @@
+Building for debugging...
+[Computing dependencies]
+[Provisioning 15 / 19]
+[Pre-planning 1 / 392]
+[Planning 1 / 392]
+[Planning 356 / 392]
+[Planning deferred tasks]
+[Constructing 300 / 1199]
+[Starting]
+[10 / 40] CryptoBoringWrapper
+[17 / 43] CryptoBoringWrapper
+[18 / 45] CryptoBoringWrapper
+[24 / 50] PinkhaKit
+[27 / 53] PinkhaKit
+[30 / 53] PinkhaAnyEngine
+[33 / 55] PinkhaAnyEngine
+[35 / 58] PinkhaAnyEngine
+[36 / 58] PinkhaAnyIntegration
+[38 / 61] PinkhaAnyIntegration
+[41 / 62] PinkhaAnyHost
+[43 / 65] PinkhaAnyHost
+[44 / 65] PinkhaAnyIntegration
+[49 / 64] PinkhaAnyHost
+[50 / 64] PinkhaAnyHost
+[52 / 65] PinkhaAnyHostTests-product
+[52 / 65]
+[53 / 68] PinkhaAnyIntegration
+[55 / 68] PinkhaAnyHostTests-product
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeIdentityTests.swift:146:30: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m144 |[0;0m                 "spaceID": .string(space), "typeID": .string(type), "exactNativeQueryCount": .integer(1)]))
+[0;36m145 |[0;0m         }
+[0;36m146 |[0;0m         let descriptorRows = try bindings.map { binding -> AnyJSON in
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m147 |[0;0m             .object(["propertyID": .string(binding.propertyID), "nativeContract": .string(binding.nativeContract),
+[0;36m148 |[0;0m                      "nativeDescriptorSHA256": .string(binding.nativeDescriptorSHA256),
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[57 / 68] PinkhaAnyHostTests-product
+[59 / 68] PinkhaAnyHostTests-product
+[61 / 68] PinkhaAnyHost
+[61 / 68] PinkhaAnyHostTests-product
+[64 / 69] PinkhaAnyHostTests-product
+[65 / 69] PinkhaAnyHostTests-product
+[66 / 69] PinkhaAnyHostTests-test-runner
+[67 / 70] PinkhaAnyHostTests-test-runner
+[69 / 72] PinkhaAnyHostTests-test-runner
+[73 / 73] PinkhaAnyHostTests-test-runner
+[75 / 80] pinkha-any-host-probe-product
+[78 / 83] pinkha-any-host-probe-product
+[79 / 83] pinkha-any-host-probe-product
+[81 / 84] pinkha-any-host-probe-product
+[84 / 84] pinkha-any-host-probe-product
+Build complete! (48.38 secs)
+Test Suite 'Selected tests' started at 2026-11-25 20:16:01.714
+Test Suite 'NativeDefinitionPlanTests' started at 2026-11-25 20:16:01.725
+Test Case 'NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance' started at 2026-11-25 20:16:01.725
+NATIVE_CUSTOM_CAPTURE_DIAGNOSTIC snapshots=156 types=20 relations=126 options=4 source_method=FAIL destination_writes=false originals_unchanged=true
+Test Case 'NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance' passed (2.543 seconds)
+Test Case 'NativeDefinitionPlanTests.testTypeManualOrderRejectsNonStringAndOverLimitNativeValues' started at 2026-11-25 20:16:04.268
+Test Case 'NativeDefinitionPlanTests.testTypeManualOrderRejectsNonStringAndOverLimitNativeValues' passed (0.021 seconds)
+Test Case 'NativeDefinitionPlanTests.testTypeManualOrderRetainsAbsentEmptyAndExactRanksInPreparedMetadata' started at 2026-11-25 20:16:04.289
+Test Case 'NativeDefinitionPlanTests.testTypeManualOrderRetainsAbsentEmptyAndExactRanksInPreparedMetadata' passed (0.008 seconds)
+Test Suite 'NativeDefinitionPlanTests' passed at 2026-11-25 20:16:04.297
+	 Executed 3 tests, with 0 failures (0 unexpected) in 2.572 (2.572) seconds
+Test Suite 'NativeImportedTypeOrderTests' started at 2026-11-25 20:16:04.297
+Test Case 'NativeImportedTypeOrderTests.testAbsentAndEmptyRanksStayDistinctAndBothSortAfterExplicitRanks' started at 2026-11-25 20:16:04.297
+Test Case 'NativeImportedTypeOrderTests.testAbsentAndEmptyRanksStayDistinctAndBothSortAfterExplicitRanks' passed (0.001 seconds)
+Test Case 'NativeImportedTypeOrderTests.testCatalogOrderingDoesNotGrantDocumentEligibilityOrReorderCollections' started at 2026-11-25 20:16:04.298
+Test Case 'NativeImportedTypeOrderTests.testCatalogOrderingDoesNotGrantDocumentEligibilityOrReorderCollections' passed (0.001 seconds)
+Test Case 'NativeImportedTypeOrderTests.testMalformedClaimsAndBuiltinOrDuplicateSourceOwnershipAreRefused' started at 2026-11-25 20:16:04.299
+Test Case 'NativeImportedTypeOrderTests.testMalformedClaimsAndBuiltinOrDuplicateSourceOwnershipAreRefused' passed (0.103 seconds)
+Test Case 'NativeImportedTypeOrderTests.testSourceGroupsSortOnlyTheirSlotsAndPreserveOwnersAndStableTies' started at 2026-11-25 20:16:04.402
+Test Case 'NativeImportedTypeOrderTests.testSourceGroupsSortOnlyTheirSlotsAndPreserveOwnersAndStableTies' passed (0.001 seconds)
+Test Suite 'NativeImportedTypeOrderTests' passed at 2026-11-25 20:16:04.403
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.106 (0.106) seconds
+Test Suite 'Selected tests' passed at 2026-11-25 20:16:04.403
+	 Executed 7 tests, with 0 failures (0 unexpected) in 2.678 (2.678) seconds

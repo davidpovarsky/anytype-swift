@@ -37,6 +37,7 @@ NATIVE_BINARY = "08f8b8dab68ed21cabec955fbde1323983f02f549dd67aa3e2e4d11c4f818bf
 LOCK = "bb5582d3f0b9bc17b909ade4751904fd7b2fee2d066fea50b7a1ef913a8fe513"
 SDK_RECEIPT = "67edd8f955524044428bf583b51f2357ca290e5ded0aacd8def0dff92f6b1521"
 OBSERVATION_HELPER = "5fdb87695e37226833503a3f8e6ab3347b689859cb8f241493a876a054e3611d"
+MENU_OVERRIDE_HELPER = "05c86ac0ce8871e353e4269f5c834fc6b2d4bacdcc8e93cdacad3440d24b57c7"
 BUNDLE = "io.anytype.app"
 RUNTIME = "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
 DEVICE = "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB"
@@ -521,12 +522,13 @@ def continuation_native(value, attached, original_raw, phase, fixture, capture, 
     return dict(sanitized, privateReadbackSHA256=sha(original_raw), independentRawComparison="PASS")
 
 
-def preserve_final_sandbox(commands, udid, directory):
+def preserve_final_sandbox(commands, udid, directory, *, application_invoked=False):
     """Retain originals on failure too, before any owned simulator deletion."""
     directory.mkdir(mode=0o700)
     log, result = commands.run(["xcrun", "simctl", "get_app_container", udid, BUNDLE, "data"],
                                "final-private-sandbox-container", 30, checked=False, capacity=False)
     if result["exitCode"] != 0:
+        require(not application_invoked, "application ran but its original private sandbox is unavailable")
         return {"status": "NO_APPLICATION_CONTAINER", "commandExitCode": result["exitCode"]}
     container = Path(raw(log, 4096).decode().strip())
     owner = Path.home() / "Library/Developer/CoreSimulator/Devices" / udid
@@ -545,7 +547,75 @@ def preserve_final_sandbox(commands, udid, directory):
         write_bytes(directory / name, value)
         require(digest(source) == sha(value), "final private evidence changed during capture")
         rows[name] = {"status": "COPIED_ORIGINAL", "bytes": len(value), "sha256": sha(value)}
-    return {"status": "PRESERVED_ORIGINAL_PRIVATE_FILES", "files": rows, "engineCalls": 0, "rawPayloadsUploaded": False}
+    # Preserve diagnostics as separate originals. Their presence is never an
+    # acceptance predicate and their content is not emitted in public receipts.
+    observer_rows = {}
+    observer_files = sorted((container / "Library/Application Support").glob("pinkha-semantic-source-entry-*.json"))
+    require(len(observer_files) <= 64, "bounded private source-entry observations required")
+    for source in observer_files:
+        require(re.fullmatch(r"pinkha-semantic-source-entry-[1-9][0-9]{0,9}\.json", source.name)
+                and source.resolve() == source and source.stat().st_nlink == 1,
+                "private source-entry observation filename or alias differs")
+        value = raw(source, 65536)
+        write_bytes(directory / source.name, value)
+        require(digest(source) == sha(value), "source-entry observation changed during capture")
+        observer_rows[source.name] = {"status": "COPIED_ORIGINAL", "bytes": len(value), "sha256": sha(value)}
+    return {"status": "PRESERVED_ORIGINAL_PRIVATE_FILES", "files": rows, "sourceEntryObservers": observer_rows,
+            "engineCalls": 0, "rawPayloadsUploaded": False}
+
+
+def admit_and_clone_products(admission, root, evidence, commands):
+    """Shared E/F product admission. Never installs, launches, tests or builds."""
+    original_source = Path(admission["sourceRoot"])
+    built = {}
+    build_receipt = decode(pinned(admission["producerReceipt"]))
+    require(build_receipt.get("status") == "PASS_COMBINED_MAIN_AND_COMPLETE_UI_BUILD_NOT_ACCEPTANCE"
+            and build_receipt.get("sourceCommit") == admission["sourceCommit"] and build_receipt.get("sourceUnchanged") is True
+            and build_receipt.get("testsExecuted") == 0, "successful source-bound original combined build required")
+    inputs = build_receipt["inputs"]
+    require(inputs["nativeSourceManifestSHA256"] == MANIFEST and inputs["nativeSHA256"] == NATIVE_BINARY
+            and inputs["lockSHA256"] == LOCK and inputs["sdkReceiptSHA256"] == SDK_RECEIPT, "compiled native/SDK dependency identity differs")
+    for kind in ("app", "ui"):
+        step = build_receipt[kind]
+        require(step["status"] == "PASS_BUILD_EXIT_0" and step["exitCode"] == 0
+                and step["sourceCommit"] == admission["sourceCommit"] and step["ownedProcessGroup"] == "ABSENT_ESRCH"
+                and "build-for-testing" in step["argv"] and all(any("-D " + flag in token for token in step["argv"]) for flag in FLAGS),
+                "actual combined build flags/outcome differ")
+        log = pinned(admission["producerLogs"][kind])
+        require(sha(log) == step["logSHA256"] and len(log) == step["logBytes"] and b"** TEST BUILD SUCCEEDED **" in log,
+                "original successful build stdout required")
+    before_raw, after_raw = pinned(admission["sourceBefore"]), pinned(admission["sourceAfter"])
+    require(decode(before_raw) == decode(after_raw), "producer source changed during build")
+    write_bytes(evidence / "producer-source-before.json", before_raw)
+    write_bytes(evidence / "producer-source-after.json", after_raw)
+    source_proof = source_admission(original_source, admission["sourceCommit"], decode(before_raw), root / "helpers")
+    require(digest(original_source / "Tools/PinkhaDualEngineRuntime/source-manifest.json") == MANIFEST, "combined original source manifest differs")
+    require(digest(original_source / "Dependencies/Middleware/Lib.xcframework/ios-arm64-simulator/Lib.framework/Lib") == NATIVE_BINARY,
+            "materialized native bytes differ from producer")
+    if "menuPagingUIOverride" in admission:
+        helper = Path(__file__).with_name("semantic_source_menu_override.py")
+        require(digest(helper) == MENU_OVERRIDE_HELPER, "Exact reviewed UI-only pairing authority required")
+        import semantic_source_menu_override as menu_override
+        require(Path(menu_override.__file__).resolve() == helper.resolve(), "Foreign UI-only pairing authority")
+        proof = menu_override.qualify(sys.modules[__name__], admission, original_source, build_receipt)
+        write(evidence / "ui-only-menu-override-admission.json", proof)
+        source_proof["uiTestOverride"] = proof
+    for kind in ("app", "ui"):
+        row = admission["products"][kind]
+        original = Path(row["root"])
+        manifest = decode(pinned(row["manifest"]))
+        require(inventory(original) == manifest, "original producer products changed")
+        destination = root / (kind + "-products")
+        commands.run(["cp", "-cR", str(original), str(destination)], "clone-" + kind + "-products", 180)
+        require(inventory(destination) == manifest, "APFS retained original products differ")
+        desc = destination / row["descriptorRelativePath"]
+        require(desc.parent == destination and desc.suffix == ".xctestrun" and digest(desc) == row["descriptorSHA256"], "original descriptor pin differs")
+        built[kind] = {"products": destination, "inventory": manifest, "copies": {}, "descriptor": desc,
+                       "originalSelection": row["originalSelection"]}
+        write(evidence / (kind + "-original-products.json"), manifest)
+    app = built["app"]["products"] / "Debug-Anytype-iphonesimulator/Anytype.app"
+    require(plistlib.loads(raw(app / "Info.plist"))["CFBundleIdentifier"] == BUNDLE, "actual app bundle differs")
+    return source_proof, built, app
 
 
 def main():
@@ -553,6 +623,8 @@ def main():
     parser.add_argument("--admission", type=Path, required=True)
     parser.add_argument("--admission-sha256", required=True)
     parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--keep-owned-simulator", action="store_true",
+                        help="Retain the shutdown account for a separately verified private backup.")
     args = parser.parse_args()
     require(platform.system() == "Darwin" and platform.machine() == "arm64", "actual Apple Silicon host required")
     admission_raw = raw(args.admission)
@@ -582,30 +654,8 @@ def main():
     result["binding"] = binding
     result["bindingIdentityKind"] = "unique local microsecond receipt identity, not a GitHub Actions run ID"
     try:
-        build_receipt = decode(pinned(admission["producerReceipt"]))
-        require(build_receipt.get("status") == "PASS_COMBINED_MAIN_AND_COMPLETE_UI_BUILD_NOT_ACCEPTANCE"
-                and build_receipt.get("sourceCommit") == binding["sourceSHA"] and build_receipt.get("sourceUnchanged") is True
-                and build_receipt.get("testsExecuted") == 0, "successful source-bound original combined build required")
-        inputs = build_receipt["inputs"]
-        require(inputs["nativeSourceManifestSHA256"] == MANIFEST and inputs["nativeSHA256"] == NATIVE_BINARY
-                and inputs["lockSHA256"] == LOCK and inputs["sdkReceiptSHA256"] == SDK_RECEIPT, "compiled native/SDK dependency identity differs")
-        for kind in ("app", "ui"):
-            step = build_receipt[kind]
-            require(step["status"] == "PASS_BUILD_EXIT_0" and step["exitCode"] == 0
-                    and step["sourceCommit"] == binding["sourceSHA"] and step["ownedProcessGroup"] == "ABSENT_ESRCH"
-                    and "build-for-testing" in step["argv"] and all(any("-D " + flag in token for token in step["argv"]) for flag in FLAGS),
-                    "actual combined build flags/outcome differ")
-            log = pinned(admission["producerLogs"][kind])
-            require(sha(log) == step["logSHA256"] and len(log) == step["logBytes"] and b"** TEST BUILD SUCCEEDED **" in log,
-                    "original successful build stdout required")
-        before_raw, after_raw = pinned(admission["sourceBefore"]), pinned(admission["sourceAfter"])
-        require(decode(before_raw) == decode(after_raw), "producer source changed during build")
-        write_bytes(evidence / "producer-source-before.json", before_raw)
-        write_bytes(evidence / "producer-source-after.json", after_raw)
-        result["sourceAdmission"] = source_admission(original_source, binding["sourceSHA"], decode(before_raw), args.root / "helpers")
-        require(digest(original_source / "Tools/PinkhaDualEngineRuntime/source-manifest.json") == MANIFEST, "combined original source manifest differs")
-        require(digest(original_source / "Dependencies/Middleware/Lib.xcframework/ios-arm64-simulator/Lib.framework/Lib") == NATIVE_BINARY,
-                "materialized native bytes differ from producer")
+        source_proof, built, app = admit_and_clone_products(admission, args.root, evidence, commands)
+        result["sourceAdmission"] = source_proof
         for name in ("Tools/CurrentAppleValidation", "Tools/PinkhaSemanticAnchorWire/apple_consumer", "Tools/PinkhaSemanticAnchorWire/apple_mounted"):
             sys.path.insert(0, str(args.root / "helpers" / name))
         global common, native, mounted, boundary
@@ -619,21 +669,6 @@ def main():
         require(specialized.COMBINED_VERSION == VERSION and specialized.ORIGINAL_OVERLAY == OVERLAY, "combined observation profile differs")
         native.binding(binding)
         write(evidence / "execution-intent.json", {"binding": binding, "selectors": STAGES, "builds": 0, "purpose": "combined runtime requalification and new Heart source continuations"})
-        for kind in ("app", "ui"):
-            row = admission["products"][kind]
-            original = Path(row["root"])
-            manifest = decode(pinned(row["manifest"]))
-            require(inventory(original) == manifest, "original producer products changed")
-            destination = args.root / (kind + "-products")
-            commands.run(["cp", "-cR", str(original), str(destination)], "clone-" + kind + "-products", 180)
-            require(inventory(destination) == manifest, "APFS retained original products differ")
-            desc = destination / row["descriptorRelativePath"]
-            require(desc.parent == destination and desc.suffix == ".xctestrun" and digest(desc) == row["descriptorSHA256"], "original descriptor pin differs")
-            built[kind] = {"products": destination, "inventory": manifest, "copies": {}, "descriptor": desc,
-                           "originalSelection": row["originalSelection"]}
-            write(evidence / (kind + "-original-products.json"), manifest)
-        app = built["app"]["products"] / "Debug-Anytype-iphonesimulator/Anytype.app"
-        require(plistlib.loads(raw(app / "Info.plist"))["CFBundleIdentifier"] == BUNDLE, "actual app bundle differs")
         log, _ = commands.run(["xcodebuild", "-version"], "xcode-version", 30)
         require(raw(log).decode().startswith("Xcode 27."), "Xcode 27 required")
         help_log, _ = commands.run(["xcodebuild", "-help"], "xcode-help", 30)
@@ -714,7 +749,8 @@ def main():
         cleanup = {"status": "PASS", "groups": [], "device": device, "errors": []}
         if device:
             try:
-                result["finalPrivateSandbox"] = preserve_final_sandbox(commands, device, private / "final-sandbox-originals")
+                result["finalPrivateSandbox"] = preserve_final_sandbox(commands, device, private / "final-sandbox-originals",
+                    application_invoked=any(value.get("testInvoked") is True for value in result["stages"].values()))
             except BaseException as exc:
                 cleanup["status"] = "FAIL"
                 cleanup["errors"].append({"phase": "private-evidence-retention", **error(exc)})
@@ -731,7 +767,7 @@ def main():
                 cleanup["status"] = "FAIL"
                 cleanup["errors"].append({"ownedGroupStillPresent": group})
         if device:
-            for action in ("shutdown", "delete"):
+            for action in ("shutdown",):
                 try:
                     log, row = commands.run(["xcrun", "simctl", action, device], "cleanup-" + action, 60, checked=False, capacity=False)
                     require(row["exitCode"] == 0, "owned simulator cleanup failed: " + action)
@@ -746,6 +782,30 @@ def main():
         except BaseException as exc:
             cleanup["status"] = "FAIL"
             cleanup["errors"].append(error(exc))
+        # Keep a failed continuation's original account and any uncopied private
+        # evidence available for recovery. Only a fully accepted six-stage run
+        # with complete final retention may delete its own simulator.
+        if device:
+            retained = result.get("finalPrivateSandbox", {})
+            complete = (retained.get("status") == "PRESERVED_ORIGINAL_PRIVATE_FILES"
+                        and retained.get("files")
+                        and all(row.get("status") == "COPIED_ORIGINAL" for row in retained["files"].values()))
+            if (result["status"] == "PASS_SIX_ACTUAL_COMBINED_HEART_METHODS" and cleanup["status"] == "PASS"
+                    and complete and not args.keep_owned_simulator):
+                try:
+                    _, row = commands.run(["xcrun", "simctl", "delete", device], "cleanup-delete", 60, checked=False, capacity=False)
+                    require(row["exitCode"] == 0, "owned simulator deletion failed")
+                    cleanup["ownedSimulatorDeleted"] = True
+                except BaseException as exc:
+                    cleanup["status"] = "FAIL"
+                    cleanup["errors"].append(error(exc))
+            else:
+                cleanup["ownedSimulatorDeleted"] = False
+                cleanup["ownedSimulatorRetainedForRecovery"] = device
+                cleanup["retentionComplete"] = bool(complete)
+                if result["status"] == "PASS_SIX_ACTUAL_COMBINED_HEART_METHODS" and not complete:
+                    cleanup["status"] = "FAIL"
+                    cleanup["errors"].append({"phase": "private-evidence-retention", "message": "complete original final witnesses required"})
         if cleanup["status"] != "PASS":
             result["status"] = "FAIL"
         result["cleanup"] = cleanup

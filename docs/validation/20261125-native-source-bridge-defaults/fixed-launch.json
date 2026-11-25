@@ -1,0 +1,67 @@
+{
+  "protocol": "pinkha-actual-core-source-bridge-regression-v1",
+  "phase": "fixed",
+  "source": "b7454dca344db7d32f0dc7b7eb5aff575b6a2535",
+  "method": "TestPinkhaSourceCaptureBridgeActualBoundedDefaults",
+  "status": "FAIL",
+  "wholeSpaceMigrationComplete": false,
+  "appleUIAccepted": false,
+  "newNativeSliceProduced": false,
+  "sourceBefore": {
+    "heart": {
+      "files": 2580,
+      "source": "b7454dca344db7d32f0dc7b7eb5aff575b6a2535",
+      "censusSHA256": "dc6c1b78ab0a44465f462861810e2b08b4a4682e3174071dcfda21ba03008a40"
+    },
+    "anySync": {
+      "files": 580,
+      "source": "c005bd6cde8d8f8a6007c35f06894f3d89f9f07c",
+      "censusSHA256": "55ef3a70df4e37a8055d7635b5db0368e521d464132b174a8a75b9f0fc7c8b8f"
+    },
+    "originalGoModSHA256": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+    "moduleSHA256": "c93667d23d292a33178d7e9d1b9c857f5cb0b8fb7038820504190bc29133dc4a",
+    "sumSHA256": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d",
+    "nativeLibrarySHA256": "30c4bc974615e03575c2d1f796ff594f2d0a0f7dd21e5b97ffbd836c99c31788"
+  },
+  "command": [
+    "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+    "test",
+    "-mod=readonly",
+    "-count=1",
+    "-p=2",
+    "-timeout=480s",
+    "-json",
+    "-run",
+    "^TestPinkhaSourceCaptureBridgeActualBoundedDefaults$",
+    "-tags",
+    "pinkha_loaded_account_witness,pinkha_loaded_account_witness_acceptance",
+    "-modfile=/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/fixed.mod",
+    "./core"
+  ],
+  "cwd": "/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/source/fixed",
+  "environment": {
+    "GOWORK": "off",
+    "GOTOOLCHAIN": "local",
+    "GOCACHE": "/Users/m1/caches/anytapy-go1.27.4-build",
+    "GOMODCACHE": "/Users/m1/caches/anytapy-go-mod",
+    "GOPROXY": "file:///Users/m1/caches/go-mod/cache/download,https://proxy.golang.org,direct",
+    "GOSUMDB": "sum.golang.org",
+    "GOMAXPROCS": "2",
+    "GOMEMLIMIT": "2GiB",
+    "CGO_ENABLED": "1",
+    "GOFLAGS": "",
+    "GOEXPERIMENT": "",
+    "CGO_LDFLAGS": "-L/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/native-libs -framework CoreFoundation -framework Security",
+    "TMPDIR": "/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/fixed-attempt1/temporary",
+    "GOTMPDIR": "/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/fixed-attempt1/temporary",
+    "PINKHA_LOADED_ACCOUNT_PRIVATE_ROOT": "/Users/m1/builds/pinkha-c-source-bridge-limits-20261125/fixed-attempt1/private"
+  },
+  "resourceAdmission": {
+    "initialFreeBytes": 11006955520,
+    "estimatedIncrementalBytes": 1610612736,
+    "emergencyFreeBytes": 2147483648,
+    "parallelism": 2,
+    "nativeProducerOverlap": false,
+    "globalProcessWalk": false
+  }
+}
