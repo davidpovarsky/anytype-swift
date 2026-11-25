@@ -597,8 +597,9 @@ extension SemanticAnchorPage154MountedUITests {
                 if let selected = sources.first { action = selected; break }
                 // MiniApps and standard editing actions can occupy the first
                 // native menu page. Use the real accessible UIKit next-page
-                // control; do not invoke an app action or alter the selection.
-                let next = visible(["Show more items", "Show more", "More", "Next"])
+                // control, observed as "Next Page" in the original AX witness.
+                // The document toolbar's "More" is unrelated to menu paging.
+                let next = visible(["Next Page"])
                 guard next.count <= 1 else { throw MenuFailure.admission("next-page-ambiguous") }
                 if let button = next.first {
                     guard pages < 3 else { throw MenuFailure.admission("source-action-not-found-in-menu") }
@@ -610,7 +611,7 @@ extension SemanticAnchorPage154MountedUITests {
                 } else {
                     let ready = NSPredicate { _, _ in
                         !visible(["Sources for anchored text"]).isEmpty
-                            || !visible(["Show more items", "Show more", "More", "Next"]).isEmpty
+                            || !visible(["Next Page"]).isEmpty
                     }
                     let wait = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)],
                                              timeout: try remaining())
