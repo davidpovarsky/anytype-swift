@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "status": "WIRE_NAMES_FROZEN_IMPLEMENTATION_NOT_YET_QUALIFIED",
+  "protocol": "pinkha.annotation.revision.v1",
+  "outer_readback_stage": 4,
+  "source_tuple": "For every lifecycle operation outer SourceRootID=target_root_id and SourceSpaceID=target Space. Hash outer SourceArchiveSha256 over exact request JSON; source_archive_sha256 inside lifecycle response is empty.",
+  "operations": {
+    "read_lifecycle": {
+      "required": [
+        "schema",
+        "operation",
+        "target_root_id",
+        "annotation_uuid"
+      ],
+      "optional": [
+        "promotion_role"
+      ]
+    },
+    "read_promoted": {
+      "required": [
+        "schema",
+        "operation",
+        "target_root_id",
+        "annotation_uuid",
+        "document_role"
+      ],
+      "optional": []
+    },
+    "archive": {
+      "required": [
+        "schema",
+        "operation",
+        "target_root_id",
+        "annotation_uuid",
+        "expected_heads",
+        "expected_root_sha256",
+        "expected_archive_id",
+        "expected_archive_heads",
+        "expected_is_archived"
+      ],
+      "optional": [
+        "document_role"
+      ]
+    },
+    "restore": {
+      "required": [
+        "schema",
+        "operation",
+        "target_root_id",
+        "annotation_uuid",
+        "expected_heads",
+        "expected_root_sha256",
+        "expected_archive_id",
+        "expected_archive_heads",
+        "expected_is_archived"
+      ],
+      "optional": [
+        "document_role"
+      ]
+    },
+    "promote": {
+      "required": [
+        "schema",
+        "operation",
+        "target_root_id",
+        "annotation_uuid",
+        "expected_heads",
+        "expected_root_sha256",
+        "expected_archive_id",
+        "expected_archive_heads",
+        "expected_is_archived",
+        "expected_manifest_id",
+        "expected_manifest_sha256",
+        "expected_manifest_heads",
+        "expected_destination_type_id",
+        "expected_destination_type_unique_key",
+        "expected_destination_type_heads",
+        "promotion_role"
+      ],
+      "optional": []
+    }
+  },
+  "roles": [
+    "chiddush",
+    "article",
+    "research"
+  ],
+  "statuses": [
+    "read_lifecycle",
+    "read_promoted",
+    "archived",
+    "restored",
+    "promoted",
+    "unchanged",
+    "conflict",
+    "applied_unconfirmed",
+    "refused"
+  ],
+  "archive_witness": "Actual Archive tree identity, nonempty sorted heads and membership are captured with Archive-before-root locks; archive/restore require all three exact witnesses in addition to root token. Any Archive tree change causes no-effects conflict.",
+  "promotion_witness": "Actual one complete native Torah manifest JSON+SHA+heads and native destination type ID+unique key+heads; no arbitrary caller destination type. Normal SetObjectTypesInState(false) and Apply.",
+  "classification": "Receipt annotation or promoted_document. Root native metadata remains annotation/legacy original value until explicit promotion, then exact role chiddush/article/research.",
+  "bounds": "JSON request max2MiB; original exported ZIP max1MiB; original response max2MiB without truncation.",
+  "response_fields": [
+    "schema",
+    "operation",
+    "status",
+    "account_id",
+    "space_id",
+    "root_id",
+    "annotation_uuid",
+    "before_heads",
+    "heads",
+    "root_snapshot_sha256",
+    "native_archive",
+    "native_archive_sha256",
+    "source_archive_sha256",
+    "mappings",
+    "native_write_observed",
+    "native_apply_attempted",
+    "archive_object_id",
+    "archive_heads",
+    "is_archived",
+    "mutation_object_id",
+    "before_mutation_heads",
+    "mutation_heads",
+    "classification",
+    "document_role",
+    "document_type_id",
+    "document_type_unique_key",
+    "manifest_object_id",
+    "manifest_sha256",
+    "manifest_json",
+    "manifest_heads",
+    "promotion_role",
+    "promotion_type_id",
+    "promotion_type_unique_key",
+    "promotion_type_heads"
+  ],
+  "accepted_receipt_requires": [
+    "Actual registered one-use Import request, copied complete typed response, original Account/Space owner, actual operation Done/Cancel/drain; no caller-completion flags.",
+    "Accepted status only for requested operation; no success receipt for conflict/refused/applied_unconfirmed or pending disposal.",
+    "Genuine original ZIP, exact native_archive_sha256, positive original ExportReport and complete identity mapping of every exported snapshot. Outer NativeArchiveSha256 hashes the response JSON.",
+    "Root heads/root_snapshot_sha256 remain independent from Archive or promoted-root mutation_object_id/before_mutation_heads/mutation_heads. NativeApplyAttempted and NativeWriteObserved are actual effects, never remote ACK.",
+    "Archive state and native index projection are read back; original root body preserved. Promotion compares full rich payload, links, anchors, identities and exact manifest-bound destination type.",
+    "Separate current-lifetime lifecycle token is nonconstructible and binds exact Host source UUID/revision/witness. Durable Host intent/request witness precedes one-use dispatch. Historical serialized result is not live authority."
+  ],
+  "read_statuses": {
+    "read_lifecycle": "read_lifecycle",
+    "read_promoted": "read_promoted"
+  },
+  "post_promotion": "The ordinary Annotation-only read/replace validator stays unchanged. read_promoted requires document_role and a separate native manifest/type/marker verifier; archive/restore of a promoted object declare the same document_role."
+}

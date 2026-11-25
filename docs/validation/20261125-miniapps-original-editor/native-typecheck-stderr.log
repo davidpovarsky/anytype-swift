@@ -1,0 +1,35 @@
+/Users/m1/builds/anytype-miniapps-facade-e2582894e914/source/Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift:46:22: warning: 'UITextItemInteraction' was deprecated in iOS 17.0: UITextItemInteraction has been replaced by text item methods on UITextViewDelegate [#DeprecatedDeclaration]
+44 |         shouldInteractWith URL: URL,
+45 |         in characterRange: NSRange,
+46 |         interaction: UITextItemInteraction
+   |                      `- warning: 'UITextItemInteraction' was deprecated in iOS 17.0: UITextItemInteraction has been replaced by text item methods on UITextViewDelegate [#DeprecatedDeclaration]
+47 |     ) -> Bool {
+48 |         if !textView.isFirstResponder && interaction == .invokeDefaultAction {
+
+/Users/m1/builds/anytype-miniapps-facade-e2582894e914/source/OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift:425:85: warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+423 |     /// The Host uses its shared Picker; the framework embeds no runtime or picker.
+424 |     public func setMiniAppsAction(title: String,
+425 |         handler: @escaping @MainActor (Result<AnytypeOriginalEditorMiniAppsContext, Error>) -> Void) throws {
+    |                                                                                     `- warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+426 |         try owner.validateCurrent()
+427 |         guard !title.isEmpty, title.utf8.count <= 256 else {
+
+/Users/m1/builds/anytype-miniapps-facade-e2582894e914/source/OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift:25:38: warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+ 23 |     private let process: OriginalEditorEmbeddedAccountProcess
+ 24 |     private let processLease: OriginalEditorLocalAccountLease
+ 25 |     private var stopTask: Task<Void, Error>?
+    |                                      `- warning: use of protocol 'Error' as a type must be written 'any Error'; this will be an error in a future Swift language mode [#ExistentialAny]
+ 26 |     private var accountCapture: EditorDocumentWriteCapture?
+ 27 |     private var accountReservation: EditorDocumentWriteLifetime.Observation?
+
+/Users/m1/builds/anytype-miniapps-facade-e2582894e914/source/OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift:302:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+300 |         Container.shared.spaceViewsStorage().addSpaceInfo(spaceId: opened.accountSpaceId, info: opened)
+301 |         guard let capture = accountCapture else { throw AnytypeOriginalEditorLocalAnnotationError.unavailableAccount }
+302 |         try await InvocationDispatchContext.$binding.withValue(capture.accountDispatchBinding()) {
+    |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+303 |             await Container.shared.objectTypeProvider().prepareData(spaceId: opened.accountSpaceId)
+304 |             await Container.shared.propertyDetailsStorage().prepareData(spaceId: opened.accountSpaceId)
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[#ExistentialAny]: <https://docs.swift.org/compiler/documentation/diagnostics/existential-any>
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>

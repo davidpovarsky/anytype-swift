@@ -18,6 +18,28 @@ from pbx_source import render, require
 from product_inventory import inventory
 
 
+def copy_product_file(source, target):
+    """Materialize a distinct owned product; APFS clones share only immutable extents."""
+    if sys.platform != 'darwin':
+        return shutil.copy2(source, target)
+    import ctypes
+    import errno
+    clone = getattr(ctypes.CDLL(None, use_errno=True), "clonefile", None)
+    if clone is None:
+        return shutil.copy2(source, target)
+    clone.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int]
+    clone.restype = ctypes.c_int
+    # copy_product already proves the resolved input stays in the owned producer.
+    # Resolve source aliases, matching the existing materializing copy2 behavior.
+    if clone(os.fsencode(Path(source).resolve()), os.fsencode(target), 0) == 0:
+        shutil.copystat(source, target)
+        return str(target)
+    error = ctypes.get_errno()
+    if error in {errno.EXDEV, errno.ENOTSUP, errno.EOPNOTSUPP}:
+        return shutil.copy2(source, target)
+    raise OSError(error, os.strerror(error), str(target))
+
+
 def copy_product(source, target, producer_root):
     source, target, producer_root = Path(source), Path(target), Path(producer_root).resolve()
     require(source.resolve().is_relative_to(producer_root), 'Product source escapes the owned producer')
@@ -29,9 +51,9 @@ def copy_product(source, target, producer_root):
     if source.is_dir():
         # iOS framework/module aliases are materialized from authenticated owned
         # build output, so an exported fallback cannot point back into DerivedData.
-        shutil.copytree(source, target, symlinks=False)
+        shutil.copytree(source, target, symlinks=False, copy_function=copy_product_file)
     else:
-        shutil.copy2(source, target)
+        copy_product_file(source, target)
 
 
 def framework_extended_attributes(path, follow):
@@ -405,7 +427,7 @@ def verify_public_surface(graphs, source_root, host_contract=None):
                     'Unreviewed facade source/root requirement')
             reviewed_facades[location] = contract
             required.update((location, tuple(components)) for components in contract['required'])
-        require(len(required) == 259, 'Incomplete public Host or qualification SPI surface requirement')
+        require(len(required) == 282, 'Incomplete public Host or qualification SPI surface requirement')
     found_inspection = False
     own_symbols = []
     imported_count = 0

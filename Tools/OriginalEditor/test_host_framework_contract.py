@@ -29,9 +29,9 @@ class HostFrameworkContractControls(unittest.TestCase):
 
     def test_all_reviewed_public_and_spi_paths_are_required_without_ui_credit(self):
         result = self.verify(self.graph())
-        self.assertEqual(result['reviewed_host_and_spi_requirements_observed'], 259)
+        self.assertEqual(result['reviewed_host_and_spi_requirements_observed'], 282)
         self.assertEqual(result['editable_mount_api'], 'EXPOSED_COMPILED_NATIVE_EDITOR_NOT_RUN')
-        self.assertEqual(len(result['own_public_symbols']), 259)
+        self.assertEqual(len(result['own_public_symbols']), 282)
         self.assertTrue(result['qualification_spi_scope_verified'])
         self.assertTrue(result['public_host_scope_verified'])
         self.assertEqual(sum(symbol['spi'] for symbol in result['own_public_symbols']), 22)

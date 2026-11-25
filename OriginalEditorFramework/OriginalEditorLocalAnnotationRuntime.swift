@@ -665,6 +665,7 @@ internal final class OriginalEditorLocalAnnotationDraftOwner {
     }
 
     var isCurrent: Bool { source.isCurrent }
+    var canonicalBodySHA256: String { draft.canonicalSHA256 }
     var batchAttemptID: UUID? { draft.batchAttempt }
     func validateCurrent() throws {
         try runtime.validate()

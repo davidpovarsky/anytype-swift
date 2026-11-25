@@ -189,13 +189,17 @@ def verify_generated_source(root, profile):
     subprocess.run(["git", "-C", str(root), "merge-base", "--is-ancestor", LOCAL_ANNOTATION_SOURCE, "HEAD"],
                    check=True, timeout=60)
     trees = {path: git(root, "rev-parse", "HEAD:" + path).decode().strip() for path in PRODUCTS}
-    require(trees == {path: git(root, "rev-parse", LOCAL_ANNOTATION_SOURCE + ":" + path).decode().strip()
-                      for path in PRODUCTS}, "Reviewed local annotation product tree differs")
+    historical_trees = {path: git(root, "rev-parse", LOCAL_ANNOTATION_SOURCE + ":" + path).decode().strip()
+                        for path in PRODUCTS}
+    from additive_facade_source import observe as observe_additive_facade
+    additive_facade = observe_additive_facade(root, profile, historical_trees)
+    admitted_trees = additive_facade["reviewed_product_trees"] if additive_facade else historical_trees
+    require(trees == admitted_trees, "Reviewed local annotation product tree differs")
     original = {path: git(root, "rev-parse", COMPLETE + ":" + path).decode().strip()
                 for path in profile["original_trees"]}
-    require(profile["original_trees"] == {path: trees[path] for path in profile["original_trees"]}
-            and all(trees[path] == git(root, "rev-parse", COMPLETE + ":" + path).decode().strip()
-                    for path in ("Anytype/Sources", "Anytype/Resources"))
+    require(profile["original_trees"] == {path: historical_trees[path] for path in profile["original_trees"]}
+            and trees["Anytype/Resources"] == original["Anytype/Resources"]
+            and (additive_facade is not None or trees["Anytype/Sources"] == original["Anytype/Sources"])
             and trees["Dependencies/Middleware"] == generated_trees["Dependencies/Middleware"],
             "Local lifecycle changed original UI, resources or native middleware")
     subprocess.run(["git", "-C", str(root), "diff", "--quiet", "HEAD", "--", *PRODUCTS],
@@ -212,4 +216,5 @@ def verify_generated_source(root, profile):
             "changed_source_paths": len(changes), "generation_run": 45261979047,
             "generation_aggregate_result": "FAIL; original missing-SDK Swift failure preserved",
             "native_or_swift_qualification_granted": False,
-            "lib_abi_qualification": "NOT_ASSESSED_BY_SOURCE_OBSERVATION"}
+            "lib_abi_qualification": "NOT_ASSESSED_BY_SOURCE_OBSERVATION",
+            **({"annotation_exchange": additive_facade} if additive_facade else {})}

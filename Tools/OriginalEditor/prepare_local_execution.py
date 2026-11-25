@@ -16,7 +16,7 @@ import subprocess
 import sys
 import uuid
 
-from local_execution import (LOCAL_BRANCH, REPOSITORY, SCHEMA, git,
+from local_execution import (LOCAL_BRANCHES, REPOSITORY, SCHEMA, git,
                              machine_identity, require, sha)
 
 
@@ -36,7 +36,8 @@ def prepare(root, evidence, work):
             and sys.version_info >= (3, 12), 'Actual Apple silicon and Python 3.12+ are required')
     require(not any(os.environ.get(k) for k in ('GITHUB_SHA', 'GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT')),
             'Do not use synthetic Actions metadata for local execution')
-    require(git(root, 'branch', '--show-current') == LOCAL_BRANCH
+    branch = git(root, 'branch', '--show-current')
+    require(branch in LOCAL_BRANCHES
             and not git(root, 'diff', '--name-only', 'HEAD'), 'Exact clean owned branch required')
     head, tree = git(root, 'rev-parse', 'HEAD'), git(root, 'rev-parse', 'HEAD^{tree}')
     xcode = subprocess.check_output(['xcodebuild', '-version'], text=True).strip()
@@ -44,8 +45,9 @@ def prepare(root, evidence, work):
     execution_id = 'local-' + str(uuid.uuid4())
     evidence.mkdir(parents=True)
     record = {'schema': SCHEMA, 'repository': REPOSITORY, 'execution_id': execution_id,
-              'source_sha': head, 'source_tree': tree, 'head_branch': LOCAL_BRANCH,
-              'root': str(root), 'host': host, 'owner': 'ChatGPT/native_import',
+              'source_sha': head, 'source_tree': tree, 'head_branch': branch,
+              'root': str(root), 'host': host, 'owner': ('ChatGPT/anytype_resume' if branch == 'codex/anytype-original-miniapps-facade-20261125'
+                                                  else 'ChatGPT/native_import'),
               'started_at': datetime.now(timezone.utc).isoformat(),
               'evidence_root': str(evidence), 'work_root': str(work),
               'runner_sha256': sha(root / 'Tools/OriginalEditor/run_framework_acceptance.py'),

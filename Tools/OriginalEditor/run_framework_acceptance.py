@@ -280,6 +280,58 @@ def execute(args, receipt):
                    original_app_runtime='NOT_RUN', editable_mount='API_DECLARED_NATIVE_UI_NOT_RUN', native_editor_ui_tests=0)
     udid = preflight['selected']['ipad']['udid']
     derived = work / 'producer-derived'
+    if args.derived_cache_seed:
+        seed = args.derived_cache_seed.resolve()
+        donor = Path(installation.get('abi_reuse', {}).get('donor_root', ''))
+        require(donor.is_absolute() and seed == donor / 'build/SDK-Work/producer-derived-preserved'
+                and seed.is_dir() and not seed.is_symlink() and not derived.exists(),
+                'Cache reuse requires the independently verified original ABI donor')
+        processes = subprocess.check_output(['ps', 'axo', 'command'], text=True)
+        require(not any(str(seed) in line and ('xcodebuild ' in line or 'swift-frontend ' in line)
+                        for line in processes.splitlines()),
+                'The retained original compiler cache is in active use')
+        # APFS clones are independent writable files, not hard links. This seeds
+        # compiler/dependency cache only; the normal current-source build,
+        # source closure, binary, symbol graph and consumer gates all still run.
+        command(['cp', '-cR', str(seed), str(derived)], root, evidence,
+                'clone-retained-compiler-cache', 600)
+        receipt['compiler_cache'] = {'origin': str(seed), 'owned_clone': str(derived),
+                                    'grants_product_acceptance': False}
+        # An actual current-source Swift invocation rejected a copied SwiftShims
+        # PCM because Clang embeds the old module-cache absolute path. Preserve
+        # complete owned cache directories, including compressed metadata, and
+        # let Xcode create current-path modules. Never mutate the retained donor.
+        retired = work / 'retained-seed-clang-caches'
+        retired.mkdir()
+        cache_rows = []
+        for relative in ('ModuleCache.noindex', 'SDKExplicitPrecompiledModules',
+                         'Build/Intermediates.noindex/ExplicitPrecompiledModules'):
+            source = derived / relative
+            if not source.exists():
+                continue
+            require(source.is_dir() and not source.is_symlink()
+                    and source.resolve().is_relative_to(derived.resolve()),
+                    'Inherited Clang cache escapes the owned clone')
+            members = []
+            for item in sorted(source.rglob('*')):
+                if item.is_symlink():
+                    members.append({'path': str(item.relative_to(source)),
+                                    'kind': 'symlink', 'target': os.readlink(item)})
+                elif item.is_file():
+                    members.append({'path': str(item.relative_to(source)), 'kind': 'file',
+                                    'bytes': item.stat().st_size, 'sha256': sha256(item)})
+                else:
+                    require(item.is_dir(), 'Special file in inherited Clang cache')
+            target = retired / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            require(not target.exists(), 'Refusing to overwrite retained cache evidence')
+            os.rename(source, target)
+            cache_rows.append({'source_relative_path': relative, 'retained_path': str(target),
+                               'members': members})
+        write(evidence / 'inherited-clang-cache-retirement.json', {
+            'reason': 'ACTUAL_NONRELOCATABLE_CLANG_CACHE_PATH_FAILURE',
+            'source_donor_unchanged': True, 'owned_clone_only': str(derived),
+            'grants_product_acceptance': False, 'caches': cache_rows})
     destination = 'platform=iOS Simulator,id=' + udid
     flags = ['OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)', 'ONLY_ACTIVE_ARCH=YES',
              'ARCHS=arm64', 'SWIFT_OPTIMIZATION_LEVEL=-Onone', 'CODE_SIGN_IDENTITY=-',
@@ -577,6 +629,7 @@ def main():
     parser.add_argument('--evidence', required=True, type=Path)
     parser.add_argument('--work', required=True, type=Path)
     parser.add_argument('--source-only', action='store_true')
+    parser.add_argument('--derived-cache-seed', type=Path)
     parser.add_argument('--import-abi-receipt', type=Path)
     parser.add_argument('--import-abi-sha256')
     args = parser.parse_args()

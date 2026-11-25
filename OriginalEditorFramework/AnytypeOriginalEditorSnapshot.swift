@@ -178,7 +178,7 @@ public struct AnytypeOriginalEditorSnapshot: Sendable {
         return try Self(bodyBytes: framed, maximumBodyBytes: maximumBodyBytes)
     }
 
-    fileprivate static func validateLimit(_ maximum: Int) throws {
+    internal static func validateLimit(_ maximum: Int) throws {
         guard maximum > prefixByteCount, maximum <= absoluteMaximumBodyBytes else {
             throw AnytypeOriginalEditorSnapshotError.invalidLimit
         }

@@ -107,6 +107,7 @@ public final class AnytypeOriginalEditorHost {
     // materializer. A caller cannot use historical provenance as remote authority.
     internal var snapshotTransportOriginHostProfileID: String?
     private var snapshotCaptureInProgress = false
+    private var miniAppsInteraction: [CapturedInteraction]?
     private struct CapturedInteraction {
         weak var view: UIView?
         let wasEnabled: Bool
@@ -152,6 +153,7 @@ public final class AnytypeOriginalEditorHost {
         preparedSession.retire()
         for view in ownedPresentedViews() { view.isUserInteractionEnabled = false }
         snapshotCaptureInProgress = false
+        miniAppsInteraction = nil
         interactionBeforeCapture = []
         accountObservation = nil
     }
@@ -169,12 +171,35 @@ public final class AnytypeOriginalEditorHost {
         return result
     }
 
+    /// The original callbacks reserve pending writes before the Owner drain.
+    /// Only this retained Host's views are frozen. It is not a storage transaction.
+    internal func beginMiniAppsInteraction() throws {
+        try validateCurrentSource()
+        guard miniAppsInteraction == nil, !snapshotCaptureInProgress else {
+            throw AnytypeOriginalEditorHostError.snapshotCaptureInProgress
+        }
+        let views = ownedPresentedViews()
+        miniAppsInteraction = views.map {
+            CapturedInteraction(view: $0, wasEnabled: $0.isUserInteractionEnabled)
+        }
+        for view in views.reversed() { view.endEditing(true) }
+        for view in views { view.isUserInteractionEnabled = false }
+    }
+
+    internal func endMiniAppsInteraction(restore: Bool = true) {
+        let previous = miniAppsInteraction
+        miniAppsInteraction = nil
+        guard restore, let previous, (try? validateCurrentSource()) != nil,
+              !preparedSession.owner.isCapturing else { return }
+        for item in previous { item.view?.isUserInteractionEnabled = item.wasEnabled }
+    }
+
     /// Original end-editing callbacks synchronously register their pending UI
     /// jobs before the exclusive Owner barrier starts. Freezing interaction is
     /// only admission control; it never substitutes for the real RPC drain.
     internal func beginSnapshotCapture() throws {
         try validateCurrentSource()
-        guard !snapshotCaptureInProgress else {
+        guard !snapshotCaptureInProgress, miniAppsInteraction == nil else {
             throw AnytypeOriginalEditorHostError.snapshotCaptureInProgress
         }
         snapshotCaptureInProgress = true
