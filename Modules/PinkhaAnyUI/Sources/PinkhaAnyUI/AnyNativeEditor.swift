@@ -264,6 +264,8 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         cell.textView.isEditable = supported && projection.isEditable && presentation.canMutate
         cell.textView.isSelectable = true
         cell.textView.inputAccessoryView = toolbar(for: cell.textView)
+        cell.blockMenuButton.menu = blockMenu(for: block.id)
+        cell.blockMenuButton.accessibilityIdentifier = "any-native-block-menu-" + block.id
         let label = presentation.torah.linkedAssociationLabel(blockId: block.id)
         cell.sourceButton.isHidden = label == nil
         cell.sourceButton.accessibilityIdentifier = "any-native-block-sources-" + block.id
@@ -716,28 +718,27 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         } catch { presentation.message = AnyUIErrorText.describe(error) }
     }
 
-    public func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath,
-                          point: CGPoint) -> UIContextMenuConfiguration? {
-        guard let id = dataSource.itemIdentifier(for: indexPath) else { return nil }
-        return UIContextMenuConfiguration(identifier: id as NSString, previewProvider: nil) { [weak self] _ in
-            guard let self else { return UIMenu() }
-            return UIMenu(children: [
-                UIAction(title: AnyUIErrorText.text("מקורות לבלוק", "Block sources"), image: UIImage(systemName: "books.vertical")) { [weak presentation] _ in
-                    presentation?.torah.presentSearch(scope: .block(id))
-                },
-                UIAction(title: AnyUIErrorText.text("בחירת בלוק", "Select block"), image: UIImage(systemName: "checkmark.circle")) { [weak presentation] _ in
-                    guard let presentation else { return }
-                    var selection = presentation.selectedBlockIDs
-                    if selection.contains(id) { selection.removeAll { $0 == id } } else { selection.append(id) }
-                    let order = presentation.read?.snapshot.depthFirstIDs ?? []
-                    selection.sort { (order.firstIndex(of: $0) ?? 0) < (order.firstIndex(of: $1) ?? 0) }
-                    presentation.select(blockIDs: selection, focusedBlockID: nil, range: .init(location: 0, length: 0))
-                },
-                UIAction(title: AnyUIErrorText.text("הוספת פסקה לפני", "Add paragraph before"), image: UIImage(systemName: "plus")) { [weak presentation] _ in
-                    Task { await presentation?.addParagraph(before: id) }
-                }
-            ])
-        }
+    // Row-level context menus also recognize a long press inside UITextView.
+    // That competing interaction covers the native selection menu and consumes
+    // the next toolbar tap. Block actions belong to their explicit menu button;
+    // the text view keeps sole ownership of text selection and edit menus.
+    private func blockMenu(for id: String) -> UIMenu {
+        UIMenu(children: [
+            UIAction(title: AnyUIErrorText.text("מקורות לבלוק", "Block sources"), image: UIImage(systemName: "books.vertical")) { [weak presentation] _ in
+                presentation?.torah.presentSearch(scope: .block(id))
+            },
+            UIAction(title: AnyUIErrorText.text("בחירת בלוק", "Select block"), image: UIImage(systemName: "checkmark.circle")) { [weak presentation] _ in
+                guard let presentation else { return }
+                var selection = presentation.selectedBlockIDs
+                if selection.contains(id) { selection.removeAll { $0 == id } } else { selection.append(id) }
+                let order = presentation.read?.snapshot.depthFirstIDs ?? []
+                selection.sort { (order.firstIndex(of: $0) ?? 0) < (order.firstIndex(of: $1) ?? 0) }
+                presentation.select(blockIDs: selection, focusedBlockID: nil, range: .init(location: 0, length: 0))
+            },
+            UIAction(title: AnyUIErrorText.text("הוספת פסקה לפני", "Add paragraph before"), image: UIImage(systemName: "plus")) { [weak presentation] _ in
+                Task { await presentation?.addParagraph(before: id) }
+            }
+        ])
     }
 
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { focus.cancel() }
@@ -938,6 +939,7 @@ private final class AnyNativeBlockCell: UITableViewCell {
     let textView = AnyNativeTextView()
     let marker = UILabel()
     let sourceButton = UIButton(type: .system)
+    let blockMenuButton = UIButton(type: .system)
     let stateLabel = UILabel()
     var sourceAction: (() -> Void)?
     var renderedSource: String?
@@ -961,7 +963,15 @@ private final class AnyNativeBlockCell: UITableViewCell {
         sourceButton.addAction(UIAction { [weak self] _ in self?.sourceAction?() }, for: .touchUpInside)
         stateLabel.font = .preferredFont(forTextStyle: .caption2)
         stateLabel.textColor = .secondaryLabel; stateLabel.numberOfLines = 0
-        let row = UIStackView(arrangedSubviews: [marker, textView])
+        blockMenuButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        blockMenuButton.accessibilityLabel = AnyUIErrorText.text("פעולות בלוק", "Block actions")
+        blockMenuButton.showsMenuAsPrimaryAction = true
+        blockMenuButton.setContentHuggingPriority(.required, for: .horizontal)
+        NSLayoutConstraint.activate([
+            blockMenuButton.widthAnchor.constraint(equalToConstant: 44),
+            blockMenuButton.heightAnchor.constraint(equalToConstant: 44)
+        ])
+        let row = UIStackView(arrangedSubviews: [marker, textView, blockMenuButton])
         row.axis = .horizontal; row.spacing = 8; row.alignment = .top
         let stack = UIStackView(arrangedSubviews: [row, sourceButton, stateLabel])
         stack.axis = .vertical; stack.spacing = 2; stack.translatesAutoresizingMaskIntoConstraints = false
@@ -977,6 +987,8 @@ private final class AnyNativeBlockCell: UITableViewCell {
         super.prepareForReuse()
         textView.editHistory.removeAllActions()
         textView.onAttachmentReadiness = nil
+        blockMenuButton.menu = nil
+        blockMenuButton.accessibilityIdentifier = nil
         textView.blockID = nil; renderedSource = nil; renderedHistoryEpoch = nil; renderedNativeStyle = nil; sourceAction = nil
     }
 }
