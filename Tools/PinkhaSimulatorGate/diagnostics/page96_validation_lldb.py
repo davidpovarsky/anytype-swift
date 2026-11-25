@@ -108,19 +108,34 @@ def observe_preflight(frame, location, _):
         options.SetUnwindOnError(True)
         options.SetTryAllThreads(False)
         options.SetStopOthers(True)
-        expression = ("import Foundation\nimport SwiftProtobuf\nimport ProtobufMessages\n"
-            "try UnsafePointer<ProtobufMessages.Anytype_Rpc.Object.Show.Response?>"
-            "(bitPattern: UInt(" + str(pointer) + "))!.pointee!.serializedData().base64EncodedString()")
+        # The retained debug image omits a usable imported Swift module for the
+        # nested generated response. Resolve its already-loaded runtime type and
+        # read the exact Optional value; no native method or product write runs.
+        # SwiftProtobuf.Message debugDescription is its complete text-format
+        # serialization in this retained Debug image (including unknown fields).
+        expression = ("import Foundation\n"
+            "({ () -> String in\n"
+            "let name = \"16ProtobufMessages11Anytype_RpcV6ObjectV4ShowV8ResponseV\"\n"
+            "guard let resolved = _typeByName(name) else { return \"E_TYPE_MISSING\" }\n"
+            "func read<T>(_ type: T.Type) -> String {\n"
+            "guard let existing = UnsafePointer<T?>(bitPattern: UInt(" + str(pointer) +
+            "))!.pointee else { return \"E_PREFLIGHT_NIL\" }\n"
+            "return String(reflecting: existing)\n}\n"
+            "return _openExistential(resolved, do: read)\n})()")
         value = frame.EvaluateExpression(expression, options)
         require(value.GetError().Success(), "preflight_read:" + str(value.GetError())[:1200])
-        encoded = json.loads(value.GetSummary())
-        raw = base64.b64decode(encoded, validate=True)
-        require(0 < len(raw) <= 4_194_304, "bounded_preflight_required")
-        path = Path(context["work"]) / "private-original-preflight.pb"
+        text = json.loads(value.GetSummary())
+        require(isinstance(text, str) and text.startswith(
+            "ProtobufMessages.Anytype_Rpc.Object.Show.Response:\n")
+            and "objectView {" in text and len(text.encode()) <= 4_194_304,
+            "bounded_original_preflight_text_serialization_required")
+        raw = text.encode()
+        path = Path(context["work"]) / "private-original-preflight.textproto"
         with path.open("xb") as stream:
             stream.write(raw)
         context["preflightObservation"] = {"status": "CAPTURED", "bytes": len(raw),
-            "sha256": hashlib.sha256(raw).hexdigest(), "readOnlySerialization": True}
+            "sha256": hashlib.sha256(raw).hexdigest(), "readOnlySerialization": True,
+            "format": "original-SwiftProtobuf-Debug-textFormatString"}
     except BaseException as error:
         context["preflightObservation"] = {"status": "READ_FAILED",
             "type": type(error).__name__, "message": str(error)[:1400]}
