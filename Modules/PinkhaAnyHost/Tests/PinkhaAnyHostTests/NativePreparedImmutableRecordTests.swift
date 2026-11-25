@@ -96,18 +96,61 @@ final class NativePreparedImmutableRecordTests: XCTestCase, @unchecked Sendable 
         let oldJSON = try JSONDecoder().decode(AnyJSON.self, from: AnyDestinationMigrationJournal.encoded(old))
         XCTAssertNil(oldJSON["immutableRecordSchema"])
     }
+    private func history() -> AnyJSON {
+        .object(["version": .string("signed"), "author": .string("account"),
+            "timestamp": .integer(1795642400), "dataset": .string("owner_facts"), "groupSize": .integer(1),
+            "touched": .array([.object(["dataset": .string("owner_facts"), "recordId": .string("record")])])])
+    }
+    private func nativeRow() -> AnyJSON {
+        .object(["id": .string("record"), "value": .string("מקור"), "by": .string("account"),
+                 "at": .object(["$date": .integer(1795642400000)])])
+    }
+    private func snapshot(_ row: AnyJSON) -> AnyJSON {
+        .object(["version": .string("signed"), "dataset": .string("owner_facts"),
+            "recordId": .string("record"), "exists": .bool(true), "record": row])
+    }
+    private func authority(_ original: AnyPreparedImmutableRecordIntent,
+                           change: AnyJSON? = nil, snapshot cut: AnyJSON? = nil) throws -> AnyDestinationImmutableRecordAuthority {
+        try .init(change: change ?? history(), snapshot: cut ?? snapshot(nativeRow()), intent: original,
+                  recordID: "record", expectedChangeID: "signed")
+    }
     func testReadbackComparesSourceFactsAndRequiresActualDerivedStamps() throws {
-        let original = try intent()
-        let row: AnyJSON = .object(["id": .string("record"), "value": .string("מקור"),
-            "by": .string("native-signer"), "at": .object(["$date": .integer(1795642400000)])])
-        let projection = try AnyDestinationMigrationVerifier.immutableRecordProjection(row, intent: original)
+        let original = try intent(), row = nativeRow(), proof = try authority(intent())
+        let projection = try AnyDestinationMigrationVerifier.immutableRecordProjection(row, intent: original, authority: proof)
         XCTAssertEqual(projection["values"]?["value"], .string("מקור"))
+        XCTAssertEqual(projection["signedCreation"]?["authorClockTimestampSeconds"], .integer(1795642400))
         for key in ["value", "by", "at"] {
             var bad = row.object!; bad[key] = nil
-            XCTAssertThrowsError(try AnyDestinationMigrationVerifier.immutableRecordProjection(.object(bad), intent: original), key)
+            XCTAssertThrowsError(try AnyDestinationMigrationVerifier.immutableRecordProjection(.object(bad), intent: original, authority: proof), key)
         }
-        var bad = row.object!; bad["value"] = .string("changed")
-        XCTAssertThrowsError(try AnyDestinationMigrationVerifier.immutableRecordProjection(.object(bad), intent: original))
+        for (key, value) in [("value", AnyJSON.string("changed")), ("by", .string("another-signer")),
+                             ("at", .object(["$date": .integer(1795642400001)]))] {
+            var bad = row.object!; bad[key] = value
+            XCTAssertThrowsError(try AnyDestinationMigrationVerifier.immutableRecordProjection(.object(bad), intent: original, authority: proof), key)
+        }
+        XCTAssertThrowsError(try AnyDestinationMigrationVerifier.immutableRecordProjection(row, intent: intent(source: "different"), authority: proof))
+    }
+    func testSignedCreationHistoryRejectsForeignIdentityCoalescingAndOverflow() throws {
+        let original = try intent()
+        for (key, value) in [("version", AnyJSON.string("other")), ("author", .string("other")),
+            ("dataset", .string("other_facts")), ("groupSize", .integer(2)),
+            ("timestamp", .integer(Int64.max)), ("truncated", .bool(true)), ("touched", .array([])),
+            ("touched", .array([.object(["dataset": .string("owner_facts"), "recordId": .string("other")])]))] {
+            var bad = history().object!; bad[key] = value
+            XCTAssertThrowsError(try authority(original, change: .object(bad)), key)
+        }
+    }
+    func testRecordAtRequiresExactCausalCutIdentityAndOriginalSourceValues() throws {
+        let original = try intent()
+        for (key, value) in [("version", AnyJSON.string("other")), ("dataset", .string("other_facts")),
+            ("recordId", .string("other")), ("exists", .bool(false)), ("deleted", .bool(true)),
+            ("record", .object(["id": .string("other")]))] {
+            var bad = snapshot(nativeRow()).object!; bad[key] = value
+            XCTAssertThrowsError(try authority(original, snapshot: .object(bad)), key)
+        }
+        var row = nativeRow().object!; row["value"] = .string("different historical value")
+        let proof = try authority(original, snapshot: snapshot(.object(row)))
+        XCTAssertThrowsError(try AnyDestinationMigrationVerifier.immutableRecordProjection(proof.recordAtChange, intent: original, authority: proof))
     }
     func testPlanRequiresOwnedImmutableDeclarationAndMatchingObjectType() throws {
         func plan(dynamic: Bool = false, wrongType: Bool = false) throws -> AnyDestinationMigrationPlan {
@@ -193,3 +236,4 @@ private actor ImmutableRecordWire {
         ])
     }
 }
+

@@ -304,7 +304,49 @@ public struct AnyDestinationMigrationVerifier: Sendable {
                         throw AnyDestinationContentVerificationError.invalidProgress
                     }
                     let row = try Self.unique(rows, id: mapping.recordIDs[0], key: "id", sourceKey: item.sourceKey)
-                    observed[Data(item.sourceKey.utf8)] = try Self.immutableRecordProjection(row, intent: intent)
+                    guard mapping.signedChangeIDs.count == 1 else {
+                        throw Self.failure(item.sourceKey, "one signed immutable creation")
+                    }
+                    let changeID = mapping.signedChangeIDs[0]
+                    var selected: AnyJSON?, cursor: String?
+                    var cursors = Set<Data>(), versions = Set<Data>()
+                    for page in 0..<64 {
+                        var query = ["dataset": intent.schema.dataset, "recordId": mapping.recordIDs[0],
+                                     "coalesce": "false", "limit": "200"]
+                        if let cursor { query["cursor"] = cursor }
+                        let history = try await read(["objects", intent.objectID, "history"], query: query)
+                        guard let changes = history["changes"]?.array, changes.count <= 200,
+                              history["cursor"] == nil || history["cursor"]?.string != nil else {
+                            throw Self.failure(item.sourceKey, "native immutable history page")
+                        }
+                        for value in changes {
+                            let change = try AnyNativeHistoryChange(native: value)
+                            guard versions.insert(Data(change.version.utf8)).inserted else {
+                                throw Self.failure(item.sourceKey, "duplicate native history version")
+                            }
+                            if Data(change.version.utf8) == Data(changeID.utf8) { selected = value }
+                        }
+                        let next = history["cursor"]?.string ?? ""
+                        guard next.utf8.count <= 8192, !next.utf8.contains(0),
+                              next.isEmpty || (!changes.isEmpty && cursors.insert(Data(next.utf8)).inserted) else {
+                            throw Self.failure(item.sourceKey, "native immutable history cursor")
+                        }
+                        if selected != nil || next.isEmpty { break }
+                        guard page < 63 else { throw Self.failure(item.sourceKey, "bounded native creation history") }
+                        cursor = next
+                    }
+                    guard let selected else { throw Self.failure(item.sourceKey, "signed creation absent from native history") }
+                    // Every identifier is a separate encoded path component,
+                    // including native record IDs that contain a slash.
+                    let snapshot = try await read(["objects", intent.objectID, "history", changeID,
+                        "datasets", intent.schema.dataset, "records", mapping.recordIDs[0]])
+                    let authority = try AnyDestinationImmutableRecordAuthority(change: selected, snapshot: snapshot,
+                        intent: intent, recordID: mapping.recordIDs[0], expectedChangeID: changeID)
+                    let projection = try Self.immutableRecordProjection(row, intent: intent, authority: authority)
+                    try Self.equal(projection,
+                        Self.immutableRecordProjection(authority.recordAtChange, intent: intent, authority: authority),
+                        item.sourceKey, "current immutable record versus signed creation causal cut")
+                    observed[Data(item.sourceKey.utf8)] = projection
                     continue
                 }
                 guard case .editorBlock(_, _, let type, let text, let style, let parent, let position) = resolved[index] else {
@@ -405,8 +447,11 @@ public struct AnyDestinationMigrationVerifier: Sendable {
 
     /// Native source fact values and runtime stamps are compared independently.
     /// The receipt does not substitute for this ordinary dataset readback.
-    static func immutableRecordProjection(_ row: AnyJSON, intent: AnyPreparedImmutableRecordIntent) throws -> AnyJSON {
-        guard let fields = intent.schema.declaration["properties"]?.object else {
+    static func immutableRecordProjection(_ row: AnyJSON, intent: AnyPreparedImmutableRecordIntent,
+                                          authority: AnyDestinationImmutableRecordAuthority) throws -> AnyJSON {
+        guard authority.intentID == intent.intentID, authority.specSHA256 == intent.specSHA256,
+              row["id"]?.string.map({ Data($0.utf8) }) == Data(authority.recordID.utf8),
+              let fields = intent.schema.declaration["properties"]?.object else {
             throw AnyDestinationContentVerificationError.invalidProgress
         }
         var values: [String: AnyJSON] = [:], stamps: [String: AnyJSON] = [:]
@@ -415,13 +460,16 @@ public struct AnyDestinationMigrationVerifier: Sendable {
                 guard let actual = row[key] else { throw failure(intent.sourceKey, "missing native immutable stamp") }
                 switch stamp {
                 case "creator":
-                    guard let identity = actual.string, AnyEditorBlock.validID(identity), identity.utf8.count <= 256 else {
+                    guard let identity = actual.string, AnyEditorBlock.validID(identity), identity.utf8.count <= 256,
+                          Data(identity.utf8) == Data(authority.author.utf8) else {
                         throw failure(intent.sourceKey, "native immutable creator")
                     }
                     stamps[key] = actual
                 case "createTime":
                     let normalized = try AnyDestinationContentProjection.propertyValue(actual, kind: "datetime")
-                    guard normalized.integer != nil else { throw failure(intent.sourceKey, "native immutable timestamp") }
+                    guard normalized.integer == authority.timestampMilliseconds else {
+                        throw failure(intent.sourceKey, "native immutable timestamp differs from signed creation")
+                    }
                     stamps[key] = normalized
                 default: throw AnyDestinationContentVerificationError.invalidProgress
                 }
@@ -435,7 +483,9 @@ public struct AnyDestinationMigrationVerifier: Sendable {
         }
         return .object(["objectId": .string(intent.objectID), "ownerTypeId": .string(intent.schema.ownerTypeID),
             "dataset": .string(intent.schema.dataset), "schemaSHA256": .string(intent.schema.nativeSHA256),
-            "values": .object(values), "nativeStamps": .object(stamps)])
+            "values": .object(values), "nativeStamps": .object(stamps),
+            "signedCreation": .object(["changeId": .string(authority.changeID), "author": .string(authority.author),
+                "authorClockTimestampSeconds": .integer(authority.timestampSeconds)])])
     }
 
     static func bytes<T: Encodable>(_ value: T) throws -> Data {
@@ -489,3 +539,4 @@ public struct AnyDestinationMigrationVerifier: Sendable {
         }
     }
 }
+
