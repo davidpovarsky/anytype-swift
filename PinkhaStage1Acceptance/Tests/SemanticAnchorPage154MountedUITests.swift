@@ -596,11 +596,24 @@ extension SemanticAnchorPage154MountedUITests {
     }
     private func openSelectedSemanticSources(text: String, viaExistingLink: Bool = false) throws {
         let input = semanticText(text)
-        try tap(input)
         if viaExistingLink {
+            // The text view can include blank space outside its actual link.
+            // Target the unique accessible semantic Link, including after a
+            // cold launch; tapping the container is not a link activation.
+            let links = input.links.matching(NSPredicate(format: "label == %@", text))
+            guard links.count == 1 else { throw Failure.invalidFixture }
+            let link = links.firstMatch
+            try requireHittable(link)
+            guard link.exists, link.isHittable, link.elementType == .link,
+                  link.label == text else { throw Failure.invalidFixture }
+            let target = XCTAttachment(string: link.debugDescription)
+            target.name = "semantic-source-existing-link-target-ax"
+            target.lifetime = .keepAlways; add(target)
+            link.tap()
             try admitExistingSemanticLinkOpening()
             return
         }
+        try tap(input)
         input.typeKey(.rightArrow, modifierFlags: [])
         input.doubleTap()
         let started = ProcessInfo.processInfo.systemUptime
