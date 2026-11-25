@@ -37,6 +37,7 @@ NATIVE_BINARY = "08f8b8dab68ed21cabec955fbde1323983f02f549dd67aa3e2e4d11c4f818bf
 LOCK = "bb5582d3f0b9bc17b909ade4751904fd7b2fee2d066fea50b7a1ef913a8fe513"
 SDK_RECEIPT = "67edd8f955524044428bf583b51f2357ca290e5ded0aacd8def0dff92f6b1521"
 OBSERVATION_HELPER = "5fdb87695e37226833503a3f8e6ab3347b689859cb8f241493a876a054e3611d"
+MENU_OVERRIDE_HELPER = "cc05b1f85e04c4987c7a7aabad2aa4483d35573654df652c6f8982a22933b898"
 BUNDLE = "io.anytype.app"
 RUNTIME = "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
 DEVICE = "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB"
@@ -577,6 +578,14 @@ def admit_and_clone_products(admission, root, evidence, commands):
     require(digest(original_source / "Tools/PinkhaDualEngineRuntime/source-manifest.json") == MANIFEST, "combined original source manifest differs")
     require(digest(original_source / "Dependencies/Middleware/Lib.xcframework/ios-arm64-simulator/Lib.framework/Lib") == NATIVE_BINARY,
             "materialized native bytes differ from producer")
+    if "menuPagingUIOverride" in admission:
+        helper = Path(__file__).with_name("semantic_source_menu_override.py")
+        require(digest(helper) == MENU_OVERRIDE_HELPER, "Exact reviewed UI-only pairing authority required")
+        import semantic_source_menu_override as menu_override
+        require(Path(menu_override.__file__).resolve() == helper.resolve(), "Foreign UI-only pairing authority")
+        proof = menu_override.qualify(sys.modules[__name__], admission, original_source, build_receipt)
+        write(evidence / "ui-only-menu-override-admission.json", proof)
+        source_proof["uiTestOverride"] = proof
     for kind in ("app", "ui"):
         row = admission["products"][kind]
         original = Path(row["root"])
