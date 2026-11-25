@@ -2329,7 +2329,41 @@ final class NativeLaunchTests: XCTestCase {
         let blockID = blocks.firstMatch.identifier
         reopenOwnedWorkspace(app, spaceName: spaceName)
         let row = app.buttons[title].firstMatch
-        waitUntilEnabled(row, timeout: 60)
+        // The cold-open navigation must expose the actual Library before this
+        // context gesture. An enabled row in a retained navigation view is not
+        // evidence that it can receive this real long press.
+        let libraryToolbar = app.buttons["any-native-create-menu"]
+        var binRowFrame: CGRect?
+        var binRowReadySince: TimeInterval?
+        let binRowReady = NSPredicate { _, _ in
+            guard app.buttons.matching(NSPredicate(format: "label == %@", title)).count == 1,
+                  row.exists, row.isEnabled, row.isHittable,
+                  libraryToolbar.exists, libraryToolbar.isEnabled, libraryToolbar.isHittable,
+                  let snapshot = try? row.snapshot() else {
+                binRowFrame = nil; binRowReadySince = nil
+                return false
+            }
+            let frame = snapshot.frame
+            guard !frame.isNull, !frame.isInfinite, frame.width > 0, frame.height > 0 else {
+                binRowFrame = nil; binRowReadySince = nil
+                return false
+            }
+            let now = ProcessInfo.processInfo.systemUptime
+            if binRowFrame == frame, let binRowReadySince, now - binRowReadySince >= 0.15 {
+                return true
+            }
+            if binRowFrame != frame || binRowReadySince == nil {
+                binRowFrame = frame; binRowReadySince = now
+            }
+            return false
+        }
+        guard XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: binRowReady, object: app)],
+                            timeout: 60) == .completed else {
+            recordNativeCreateTransition(app, phase: "bin_library_row_not_hittable")
+            XCTFail("The original Bin row and Library toolbar must be stably hittable before the context gesture")
+            return
+        }
+        recordNativeCreateTransition(app, phase: "bin_library_row_hittable")
         let rowID = row.identifier
         XCTAssertTrue(rowID.hasPrefix("any-native-hierarchy-row-"))
         let objectID = String(rowID.dropFirst("any-native-hierarchy-row-".count))
