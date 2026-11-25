@@ -218,7 +218,7 @@ def retained_hierarchy_move(expected):
             "scope": "Context-menu hierarchy move/body/type/property visibility and cold reopen"}
 
 def retained_d5_passes(expected):
-    """Retain two exact, unaffected original UI results; never relabel this run."""
+    """Retain exact original UI results and explicitly flag the changed entry."""
     fixed = read(MANIFEST)["retainedNativeD5Passes"]
     c.require(fixed["sourceCommit"] == "dc29b540e76222bf89c5ac863916f66793acfda6"
               and fixed["runID"] == "45531686517"
@@ -226,6 +226,8 @@ def retained_d5_passes(expected):
                   "hanlin-selection-consent": c.UI_THREE[2], "custom-type": c.CUSTOM_TYPE[0]},
               "retained_d5_origin_changed")
     git("merge-base", "--is-ancestor", fixed["sourceCommit"], expected)
+    c.require(fixed.get("currentRequalificationRequired") == ["hanlin-selection-consent"],
+              "changed_hanlin_menu_requires_current_acceptance")
     paths = ("Modules", "NativeApp")
     changed = set(git("diff", "--name-only", fixed["sourceCommit"], expected, "--", *paths).decode().splitlines())
     c.require(changed == set(fixed["reviewedChangedProductFiles"])
@@ -271,7 +273,8 @@ def retained_d5_passes(expected):
         c.require(len(nodes) == 1 and nodes[0].get("nodeIdentifier") == method + "()"
                   and nodes[0].get("result") == "Passed", "retained_d5_named_result_changed")
         retained[stage] = {"status": "HISTORICAL_PASS_RETAINED", "method": method,
-                           "currentTestExecutions": 0, "currentResultRelabeled": False}
+                           "currentTestExecutions": 0, "currentResultRelabeled": False,
+                           "requiresCurrentRequalification": stage in fixed["currentRequalificationRequired"]}
     return {**fixed, "status": "HISTORICAL_PASSES_RETAINED", "methods": fixed["stages"],
             "stages": retained, "originalRunStillFailed": True, "originalOtherFailures": 3}
 
