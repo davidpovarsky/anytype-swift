@@ -82,7 +82,9 @@ public actor AnyDestinationMigrationExecutor {
         var creationProperties: [Data: AnyJSON] = [:]
         for (index, item) in plan.items.enumerated() {
             try await admit()
-            let resolved = try item.operation.resolved { try Self.resolve($0, mappings: mappings) }
+            let resolved = try item.operation.resolved(destinationSpaceID: plan.binding.workspace.spaceID) {
+                try Self.resolve($0, mappings: mappings)
+            }
             let resolvedBytes = try AnyDestinationMigrationJournal.encoded(resolved)
             if case .propertyUpdate(let object, let owner, let patch) = resolved {
                 let group = try AnyDestinationMigrationJournal.encoded([object, owner])

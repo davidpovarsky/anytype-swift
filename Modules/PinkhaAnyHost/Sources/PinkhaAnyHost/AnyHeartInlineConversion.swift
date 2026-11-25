@@ -1,5 +1,6 @@
 import Foundation
 import PinkhaAnyIntegration
+import PinkhaKit
 
 public enum AnyHeartInlineConversionError: Error, Equatable, Sendable {
     case unsupportedMark(String), unsupportedLink, overlappingLinks, unrepresentableFormatting
@@ -14,6 +15,16 @@ public struct AnyHeartInlineConversion: Sendable {
     public let visibleText: String
 
     public init(_ source: AnyHeartInlineProjection) throws {
+        try self.init(source, semanticScope: nil)
+    }
+
+    /// The enclosing native snapshot supplies the exact original document.
+    /// Semantic markers are admitted only with that explicit source scope.
+    init(_ source: AnyHeartInlineProjection, sourceSpaceID: String, sourceObjectID: String) throws {
+        try self.init(source, semanticScope: (sourceSpaceID, sourceObjectID))
+    }
+
+    private init(_ source: AnyHeartInlineProjection, semanticScope: (spaceID: String, objectID: String)?) throws {
         sourceSHA256 = source.sourceSHA256; visibleText = source.text
         if source.literal { inlineMarkdown = source.text; return }
         struct Style: Equatable { var traits: AnyInlineTraits = []; var link: String? }
@@ -27,10 +38,19 @@ public struct AnyHeartInlineConversion: Sendable {
                 guard mark.parameter.isEmpty else { throw AnyHeartInlineConversionError.unrepresentableFormatting }
                 for i in mark.start..<mark.end { expected[i].traits.insert(value) }
             } else if mark.kind == .link {
-                guard let url = URL(string: mark.parameter), ["http", "https"].contains(url.scheme?.lowercased() ?? ""),
+                guard let url = URL(string: mark.parameter),
                       !mark.parameter.contains("("), !mark.parameter.contains(")"),
                       !mark.parameter.contains(" "), !mark.parameter.contains("\\"),
                       mark.parameter.unicodeScalars.allSatisfy({ !CharacterSet.controlCharacters.contains($0) }) else {
+                    throw AnyHeartInlineConversionError.unsupportedLink
+                }
+                if PinkhaSemanticTextAnchor.isReservedMarkerURL(url) {
+                    guard let semanticScope else { throw AnyHeartInlineConversionError.unsupportedLink }
+                    let anchor = try PinkhaSemanticTextAnchor(markerURL: url)
+                    guard anchor.belongsTo(spaceID: semanticScope.spaceID, objectID: semanticScope.objectID) else {
+                        throw PinkhaSemanticTextAnchorError.wrongDocument
+                    }
+                } else if !["http", "https"].contains(url.scheme?.lowercased() ?? "") {
                     throw AnyHeartInlineConversionError.unsupportedLink
                 }
                 for i in mark.start..<mark.end {
@@ -39,7 +59,7 @@ public struct AnyHeartInlineConversion: Sendable {
                 }
                 links.append(mark)
             } else {
-                // Object/mention/anchor links require a complete scoped native
+                // Object/mention links require a complete scoped native
                 // identity map; underline/colors need a destination renderer.
                 throw AnyHeartInlineConversionError.unsupportedMark(mark.kind.rawValue)
             }

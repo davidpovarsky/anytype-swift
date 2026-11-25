@@ -69,6 +69,8 @@ enum AnyDestinationNativeIntent: Sendable {
         case .editorBlock(let owner, let dataset, let type, let text, let style, let parent, let position):
             return .object(try .block(binding: binding, sourceKey: sourceKey, objectID: id(owner), dataset: dataset,
                 type: type, text: text, style: json(style), parentID: parent.map(id) ?? "", position: position))
+        case .anchoredEditorBlock:
+            throw AnyDestinationMigrationError.invalidPlan("unresolved semantic anchors")
         case .file(let owner, let name, let mime, let size, let digest):
             if size < 4096 {
                 guard let data = inlineContent, Int64(data.count) == size,
@@ -256,7 +258,8 @@ struct AnyDestinationNativeClients: AnyDestinationNativeDriving {
 }
 
 extension AnyDestinationMigrationOperation {
-    func resolved(_ resolve: (AnyDestinationReference) throws -> String) throws -> Self {
+    func resolved(destinationSpaceID: String? = nil,
+                  _ resolve: (AnyDestinationReference) throws -> String) throws -> Self {
         func id(_ r: AnyDestinationReference) throws -> AnyDestinationReference { .native(try resolve(r)) }
         func json(_ v: AnyDestinationValue) throws -> AnyDestinationValue { .literal(try v.resolved(resolve)) }
         func seed(_ v: AnyDestinationRootDefinition) throws -> AnyDestinationRootDefinition {
@@ -275,6 +278,14 @@ extension AnyDestinationMigrationOperation {
         case .editorBlock(let owner, let dataset, let type, let text, let style, let parent, let position):
             return .editorBlock(owner: try id(owner), dataset: dataset, type: type, text: text,
                                 style: try json(style), parent: try parent.map(id), position: position)
+        case .anchoredEditorBlock(let owner, let dataset, let type, let text, let style, let parent, let position):
+            guard let destinationSpaceID else {
+                throw AnyDestinationMigrationError.invalidPlan("semantic anchor destination scope")
+            }
+            let objectID = try resolve(owner)
+            return .editorBlock(owner: .native(objectID), dataset: dataset, type: type,
+                text: try text.resolved(destinationSpaceID: destinationSpaceID, destinationObjectID: objectID),
+                style: try json(style), parent: try parent.map(id), position: position)
         case .file(let owner, let name, let mime, let size, let digest):
             return .file(owner: try id(owner), name: name, mime: mime, size: size, contentSHA256: digest)
         case .propertyUpdate(let object, let owner, let patch):

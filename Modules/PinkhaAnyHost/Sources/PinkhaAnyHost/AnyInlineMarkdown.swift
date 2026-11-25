@@ -28,10 +28,12 @@ public struct AnyInlineMarkdown: Sendable, Equatable {
         let trait: AnyInlineTraits?
         let marker: String?
         let bodyRange: NSRange?
+        let linkDestinationRange: NSRange?
         init(displayRange: NSRange, sourceRange: NSRange, trait: AnyInlineTraits? = nil,
-             marker: String? = nil, bodyRange: NSRange? = nil) {
+             marker: String? = nil, bodyRange: NSRange? = nil, linkDestinationRange: NSRange? = nil) {
             self.displayRange = displayRange; self.sourceRange = sourceRange
             self.trait = trait; self.marker = marker; self.bodyRange = bodyRange
+            self.linkDestinationRange = linkDestinationRange
         }
     }
     private let containers: [Container]
@@ -169,6 +171,58 @@ public struct AnyInlineMarkdown: Sendable, Equatable {
             if compatible { return result }
         }
         throw AnyInlineTextError.selectionCrossesMarkup
+    }
+
+    /// Migration changes only parser-owned semantic link destinations. The
+    /// shared marker codec validates the original owner and emits the exact
+    /// destination identity; literal text and ordinary links are untouched.
+    public func remappingSemanticAnchors(sourceSpaceID: String, sourceObjectID: String,
+                                         destinationSpaceID: String, destinationObjectID: String) throws -> String {
+        guard isEditable else { throw AnyInlineTextError.unsupportedMarkup }
+        if literal { return source }
+        let original = try semanticText()
+        func remap(_ anchor: PinkhaSemanticTextAnchor) throws -> PinkhaSemanticTextAnchor {
+            guard anchor.belongsTo(spaceID: sourceSpaceID, objectID: sourceObjectID) else {
+                throw PinkhaSemanticTextAnchorError.wrongDocument
+            }
+            return try .init(spaceID: destinationSpaceID, objectID: destinationObjectID, id: anchor.id)
+        }
+        var replacements: [(NSRange, String)] = []
+        for container in containers {
+            guard let range = container.linkDestinationRange else { continue }
+            let raw = (source as NSString).substring(with: range)
+            guard let url = URL(string: raw) else { throw PinkhaSemanticTextAnchorError.invalidMarker }
+            if PinkhaSemanticTextAnchor.isReservedMarkerURL(url) {
+                let anchor = try PinkhaSemanticTextAnchor(markerURL: url)
+                replacements.append((range, try remap(anchor).markerString))
+            }
+        }
+        if replacements.isEmpty {
+            guard original.marks.isEmpty else { throw AnyInlineTextError.unsupportedMarkup }
+            return source
+        }
+        let expected = try PinkhaSemanticText(text: original.text, marks: original.marks.map {
+            .init(anchor: try remap($0.anchor), range: $0.range)
+        })
+        var result = source
+        for (range, marker) in replacements.sorted(by: { $0.0.location > $1.0.location }) {
+            result = (result as NSString).replacingCharacters(in: range, with: marker)
+        }
+        let projected = AnyInlineMarkdown(result)
+        guard projected.isEditable, projected.display.utf8.elementsEqual(display.utf8),
+              try projected.semanticText() == expected else {
+            throw AnyInlineTextError.unsupportedFormattingChange
+        }
+        let expectedStyles = try styleMap().map { style -> DisplayStyle in
+            var value = style
+            if let raw = value.link, let url = URL(string: raw),
+               PinkhaSemanticTextAnchor.isReservedMarkerURL(url) {
+                value.link = try remap(PinkhaSemanticTextAnchor(markerURL: url)).markerString
+            }
+            return value
+        }
+        guard projected.styleMap() == expectedStyles else { throw AnyInlineTextError.unsupportedFormattingChange }
+        return result
     }
 
     private func validateSemanticReplacement(_ projected: Self, range: NSRange, text: String) throws {
@@ -615,7 +669,8 @@ public struct AnyInlineMarkdown: Sendable, Equatable {
                               context: context + "/link\(i)", depth: depth + 1)
                         containers.append(.init(displayRange: .init(location: displayStart, length: display.utf16.count - displayStart),
                                                 sourceRange: .init(location: i, length: urlEnd + 1 - i),
-                                                bodyRange: .init(location: i + 1, length: labelEnd - i - 1)))
+                                                bodyRange: .init(location: i + 1, length: labelEnd - i - 1),
+                                                linkDestinationRange: .init(location: labelEnd + 2, length: urlEnd - labelEnd - 2)))
                         i = urlEnd + 1; continue
                     }
                     unsupported = "unsupportedLinkMarkup"
