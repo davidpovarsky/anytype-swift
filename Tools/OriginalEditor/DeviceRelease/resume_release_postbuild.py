@@ -28,7 +28,7 @@ from release_process import GROUPS, group_alive
 SOURCE = '8ae85a6490c4fb763fcd01d5f93345f7e071db92'
 ORIGINAL_CONTROL = 'bd41da08b26aac66bbbee96ab753ebab624f2f2c'
 ORIGINAL_COMPILER_DRIVER_SHA256 = '4c15b5e8c8bfb2a32540fd3bb2166bbc3388bc3096dcef693a96bb916eae435b'
-REVIEWED_POSTBUILD_DRIVER_SHA256 = '1a910605d825db99073832f91df159e987994b9d4a0c304adcb232b6901afc54'
+REVIEWED_POSTBUILD_DRIVER_SHA256 = 'd36ec2c8e6bf949fdcd3d468632d052f8eef0a8103734dd3cb5496cbd9822eef'
 FAILURE = 'Unreviewed Release build platform command'
 REQUIRED_COMMANDS = {'actual-sdk', 'actual-sdk-path', 'actual-swift', 'actual-xcode',
     'exact-package-resolution', 'framework-build', 'framework-header-0',

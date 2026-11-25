@@ -13,9 +13,15 @@ from verify_framework_ownership import (RUNTIME, EDITOR, HOST_PRODUCTS, verify_d
     dependency_source_inventory)
 
 
-def verify_ownership(root, evidence, work, qualification, source, before, platform_name):
+def verify_ownership(root, evidence, work, qualification, source, before, platform_name, *, original_derived=None):
     receipt = {'schema': 1, 'status': 'FAIL', 'stageb_qualified': False}
     distribution = work / 'distribution'
+    original_derived = work / 'producer-derived' if original_derived is None else Path(original_derived)
+    roots = None
+    if original_derived.parent != work:
+        from release_continuation_roots import admit_roots
+        collection = json.loads((evidence / 'compiler-symbolgraph-collection.json').read_text())
+        roots = admit_roots(original_derived, distribution, collection, source, quarantined=True)
     original_bytes = (json.dumps(qualification, indent=2, sort_keys=True) + '\n').encode()
     contract_path = root / 'Tools/OriginalEditor/SharedRuntime/dependencies.json'
     contract = json.loads(contract_path.read_text())
@@ -92,10 +98,12 @@ def verify_ownership(root, evidence, work, qualification, source, before, platfo
         resolved_package_states=pins,
         shared_dependency_sources=dependency_source_inventory(
             work / 'producer-derived-preserved/SourcePackages/checkouts', contract,
-            original_checkouts=work / 'producer-derived/SourcePackages/checkouts'),
+            original_checkouts=original_derived / 'SourcePackages/checkouts'),
         shared_swift_ai_sdk_revision=pins['swift-ai-sdk']['revision'],
         host_semantic_equality_required=True, stageb_qualified=False,
     )
+    if roots is not None:
+        receipt['compiler_root_continuation'] = roots
     require(source_observation(root) == before, 'Source changed during Release shared ownership verification')
     write(evidence / 'shared-runtime-ownership.json', receipt)
     return receipt

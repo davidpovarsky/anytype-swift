@@ -276,7 +276,8 @@ def execute(args, receipt, execution, descriptor, control):
         require(len(receipt['verified_runtime_observations']) == 2, 'Incomplete actual Release EN/HE resource execution')
     receipt['phase'] = 'ACTUAL_RELEASE_SHARED_IMPLEMENTATION_OWNERSHIP'
     write(evidence / 'execution.json', receipt)
-    receipt['shared_runtime_ownership'] = verify_ownership(root, evidence, work, receipt, context, before, args.platform)
+    receipt['shared_runtime_ownership'] = verify_ownership(root, evidence, work, receipt, context, before, args.platform,
+                                                            original_derived=derived)
     require(source_observation(root) == before, 'Original source changed during Release execution')
     require(verify_hanlin(root / 'Dependencies/Hanlin') == hanlin, 'Canonical Hanlin changed during Release execution')
     after_abi = verify_abi(root, args.abi_receipt, args.abi_sha256, before)

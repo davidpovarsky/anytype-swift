@@ -9,6 +9,7 @@ import os
 from pathlib import Path, PurePosixPath
 from framework_profile import TARGET
 from pbx_source import require
+from release_continuation_roots import admit_roots
 from clang_product_closure import (MANIFEST, clang_arguments, unaliased, stable_bytes,
     relative_path, Package, modulemap_declarations, write_new, relocate_modulemap,
     declaration_inventory)
@@ -20,8 +21,7 @@ def export_clang_declarations(derived, exported, collection, source, lock_path, 
     require(not derived.is_symlink() and not exported.is_symlink(),
             'Producer or exported Clang root is an alias')
     derived, exported = derived.resolve(strict=True), exported.resolve(strict=True)
-    require(derived.name == 'producer-derived' and exported.name == 'distribution'
-            and derived.parent == exported.parent, 'Unowned Clang declaration export root')
+    roots = admit_roots(derived, exported, collection, source)
     require(collection.get('status') == 'ACTUAL_COMPILER_FULL_GRAPHS_COLLECTED_SURFACE_NOT_YET_VERIFIED'
             and collection.get('module') == TARGET
             and collection.get('target') == target
@@ -162,6 +162,8 @@ def export_clang_declarations(derived, exported, collection, source, lock_path, 
                   for path in absent_product_includes],
               'files': files, 'implementation_translation_units_exported_or_added': False,
               'consumer_or_native_qualification': False}
+    if roots is not None:
+        result['compiler_root_continuation'] = roots
     if source.get('execution_identity', {}).get('producer_kind') == 'local-mac':
         result.update(producer_kind='local-mac',
                       local_execution_sha256=source['execution_identity']['local_execution_sha256'])
