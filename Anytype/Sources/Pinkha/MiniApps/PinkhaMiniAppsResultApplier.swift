@@ -14,12 +14,18 @@ enum PinkhaMiniAppsResultApplier {
     static let receiptField = "pinkhaMiniAppsRequest"
 
     static func apply(request: MiniAppInvocation, result: MiniAppResult,
-                      editor: EditorPageController, store: MiniAppBridgeStore) async throws -> Bool {
+                      editor: EditorPageController, store: MiniAppBridgeStore,
+                      authorize: @MainActor () throws -> Void = {}) async throws -> Bool {
         guard let model = editor.viewModel as? EditorPageViewModel else {
             throw PinkhaMiniAppsError.documentUnavailable
         }
         let document = model.document
-        try validate(request: request, document: document)
+        func validateContext() throws {
+            try Task.checkCancellation()
+            try authorize()
+            try validate(request: request, document: document)
+        }
+        try validateContext()
         let journal = try PinkhaMiniAppsJournal(request: request)
         var plan = try journal.load() ?? PinkhaMiniAppsEditPlanner.make(request: request, result: result)
         if plan.completed {
@@ -28,7 +34,7 @@ enum PinkhaMiniAppsResultApplier {
         }
         try journal.save(plan)
         var blocks = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
-        try validate(request: request, document: document)
+        try validateContext()
 
         // Preflight the complete mutation set before its first write.
         for mutation in plan.mutations {
@@ -44,12 +50,12 @@ enum PinkhaMiniAppsResultApplier {
         }
 
         for mutation in plan.mutations {
-            try validate(request: request, document: document)
+            try validateContext()
             let marks = try resultingMarks(mutation)
             let marksData = try marks.serializedData()
             // Refresh before each independent native write; never replay over a newer edit.
             blocks = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
-            try validate(request: request, document: document)
+            try validateContext()
             switch PinkhaMiniAppsEditPlanner.replayDecision(mutation: mutation,
                 current: try snapshot(id: mutation.before.id, blocks: blocks),
                 alreadyRecorded: plan.appliedBlocks.contains(mutation.before.id), expectedMarks: marksData) {
@@ -66,7 +72,7 @@ enum PinkhaMiniAppsResultApplier {
                 try await model.blockActionService.setText(contextId: document.objectId,
                     blockId: mutation.before.id, middlewareString: .init(text: text, marks: marks))
                 let persisted = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
-                try validate(request: request, document: document)
+                try validateContext()
                 guard let actual = try snapshot(id: mutation.before.id, blocks: persisted),
                       actual.text == text, actual.marks == marksData else {
                     throw PinkhaMiniAppsError.resultNotSaved
@@ -79,10 +85,10 @@ enum PinkhaMiniAppsResultApplier {
 
         var anchor = request.source.metadata["anytype.insertionAnchor"]
         for (index, item) in plan.additions.enumerated() {
-            try validate(request: request, document: document)
+            try validateContext()
             let key = "\(request.id.uuidString.lowercased()):\(index)"
             blocks = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
-            try validate(request: request, document: document)
+            try validateContext()
             if let recorded = plan.insertedBlocks[key] {
                 // A later user edit or deletion of this block must not replay the insertion.
                 anchor = blocks.contains(where: { $0.id == recorded }) ? recorded : anchor
@@ -103,7 +109,7 @@ enum PinkhaMiniAppsResultApplier {
                 }
             }
             blocks = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
-            try validate(request: request, document: document)
+            try validateContext()
             guard let native = blocks.first(where: { $0.id == inserted }),
                   native.fields[receiptField]?.stringValue == key else {
                 throw PinkhaMiniAppsError.resultNotSaved
@@ -127,7 +133,7 @@ enum PinkhaMiniAppsResultApplier {
                     try FileManager.default.copyItem(at: sharedFile, to: upload)
                     try await model.blockActionService.upload(blockId: inserted, filePath: upload.path)
                     let uploaded = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
-                    try validate(request: request, document: document)
+                    try validateContext()
                     guard let verified = uploaded.first(where: { $0.id == inserted }),
                           case .file(let file) = verified.content, file.state == .done,
                           !file.metadata.targetObjectId.isEmpty else {
@@ -139,6 +145,7 @@ enum PinkhaMiniAppsResultApplier {
             try journal.save(plan)
             anchor = inserted
         }
+        try validateContext()
         plan.completed = true
         try journal.save(plan)
         _ = try store.acknowledgeResult(id: request.id, sourceAppID: request.source.appID)

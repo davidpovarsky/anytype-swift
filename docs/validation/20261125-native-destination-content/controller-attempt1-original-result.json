@@ -1,0 +1,24 @@
+{
+  "id": "job_cc24b88d667e",
+  "type": "job_result",
+  "source": "script_run@host_4b47bdb65d00e49d",
+  "severity": "warning",
+  "tool": "script_run",
+  "host": "host_4b47bdb65d00e49d",
+  "status": "failed",
+  "exit_code": 1,
+  "created_at": 1795591321.2519913,
+  "started_at": "2026-11-25T07:22:01.309378+00:00",
+  "finished_at": "2026-11-25T07:22:01.529671+00:00",
+  "duration_s": 0.22,
+  "error": null,
+  "output_truncated": false,
+  "timeout_s": 1900,
+  "read": false,
+  "notified": {
+    "telegram": null,
+    "resend": null
+  },
+  "notify_spec": {},
+  "output": "Traceback (most recent call last):\n  File \"/Users/m1/builds/pinkha-c-destination-content-20261125/run_retained_native.py\", line 214, in <module>\n    raise SystemExit(main())\n  File \"/Users/m1/builds/pinkha-c-destination-content-20261125/run_retained_native.py\", line 31, in main\n    receipt = json.loads((source / \"source-receipt.json\").read_text())\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py\", line 1256, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py\", line 1242, in open\n    return io.open(self, mode, buffering, encoding, errors, newline,\n  File \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/pathlib.py\", line 1110, in _opener\n    return self._accessor.open(self, flags, mode)\nFileNotFoundError: [Errno 2] No such file or directory: '/Users/m1/builds/pinkha-t2-network-20261125/source-any548-sdk195/source-receipt.json'"
+}

@@ -24,7 +24,7 @@ final class PinkhaSemanticAnchorMountedObserver {
     private var documentPublications = 0
     private var marker: String?
     private var cancelledMarker: String?
-    private weak var pendingApply: PinkhaHeartSemanticAnchorPending?
+    private var pendingApply: PinkhaHeartSemanticAnchorPending?
     private var receipt: [String: Any]
     private var task: Task<Void, Never>?
 
@@ -109,6 +109,8 @@ final class PinkhaSemanticAnchorMountedObserver {
         guard let active, active.editor === editor, active.pendingApply === pending,
               active.applyAttempts == 1,
               ["APPLY_QUEUED", "MOUNTED_FAIL"].contains(active.phase) else { return }
+        defer { active.pendingApply = nil }
+        try? active.saveBoundaryEvidence(requireComplete: false)
         let observation = pending.applyObservation
         var values: [String: Any] = [
             "protocolVersion": 1,
@@ -164,8 +166,40 @@ final class PinkhaSemanticAnchorMountedObserver {
             try Fixture.require(active.phase == "APPLY_QUEUED" && active.applyAttempts == 1
                 && capture.generation == active.lease?.generation && capture.receipt.marker == active.marker,
                 "verified-ui-capture-differs")
+            defer { active.pendingApply = nil }
+            try active.saveBoundaryEvidence(requireComplete: true)
             active.task = Task { await active.verifyCapture(capture) }
         }
+    }
+
+    /// Copy only bytes already observed by the pending client. No native read,
+    /// mutation, authority decision, event publication, or retry occurs here.
+    private func saveBoundaryEvidence(requireComplete: Bool) throws {
+        guard let pendingApply else {
+            try Fixture.require(!requireComplete, "native-boundary-pending-missing")
+            return
+        }
+        let observed = pendingApply.mountedDiagnosticSnapshots
+        let names = ["preflight": "pinkha-semantic-page154-preflight.pb",
+                     "nativeReply": "pinkha-semantic-page154-native-reply.json",
+                     "readback": "pinkha-semantic-page154-readback.pb"]
+        if requireComplete {
+            try Fixture.require(Set(observed.keys) == Set(names.keys), "native-boundary-evidence-incomplete")
+        }
+        var files: [String: Any] = [:]
+        for role in names.keys.sorted() {
+            guard let bytes = observed[role], let name = names[role] else { continue }
+            let path = try Fixture.fileURL(name)
+            if FileManager.default.fileExists(atPath: path.path) {
+                try Fixture.require(try Data(contentsOf: path) == bytes, "native-boundary-original-bytes-changed")
+            } else {
+                try bytes.write(to: path, options: .atomic)
+                try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: path.path)
+            }
+            files[role] = ["filename": name, "bytes": bytes.count, "sha256": Fixture.digest(bytes)]
+        }
+        receipt["nativeBoundaryEvidence"] = ["protocolVersion": 1, "files": files,
+            "source": "actual-client-call-results", "extraNativeCalls": 0]
     }
 
     private init(fixture: Fixture, editor: EditorPageController, mode: String) throws {

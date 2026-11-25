@@ -26,6 +26,7 @@ sys.dont_write_bytecode = True
 import contracts as c
 import current_execution as current
 import page154_contract as policy
+import page154_boundary as boundary
 
 ROOT = current.ROOT
 HERE = Path(__file__).resolve().parent
@@ -556,6 +557,54 @@ def copy_application_receipts(commands, device, evidence, names, *, required):
     return copied
 
 
+def copy_native_boundary(commands, device, work, evidence, capture, *, required):
+    metadata = capture.get("nativeBoundaryEvidence")
+    if metadata is None:
+        c.require(not required, "required_original_native_boundary_missing")
+        return {"status": "NOT_OBSERVED", "files": {}}
+    c.require(isinstance(metadata, dict) and set(metadata) == {
+        "protocolVersion", "files", "source", "extraNativeCalls"}
+        and metadata["protocolVersion"] == 1 and metadata["extraNativeCalls"] == 0
+        and metadata["source"] == "actual-client-call-results"
+        and isinstance(metadata["files"], dict)
+        and set(metadata["files"]).issubset(boundary.FILES), "native_boundary_receipt_shape_changed")
+    if required:
+        c.require(set(metadata["files"]) == set(boundary.FILES), "incomplete_original_native_boundary")
+    log = commands.run(["xcrun", "simctl", "get_app_container", device["udid"], policy.BUNDLE, "data"],
+                       "page-boundary-data-container", 30)
+    container = Path(c.read(log, 4096).decode().strip())
+    owned_root = Path.home() / "Library/Developer/CoreSimulator/Devices" / device["udid"]
+    c.require(container.is_absolute() and container.resolve() == container and container.is_dir()
+              and container.is_relative_to(owned_root), "page_boundary_owned_container_required")
+    # Raw object data stays in the private retained work root. The uploaded
+    # evidence contains only hashes/counts and the comparison result below.
+    private = work / "private-native-boundary"
+    private.mkdir(mode=0o700)
+    copied = {}
+    for role, row in sorted(metadata["files"].items()):
+        c.require(isinstance(row, dict) and set(row) == {"filename", "bytes", "sha256"}
+                  and row["filename"] == boundary.FILES[role]
+                  and type(row["bytes"]) is int and 0 < row["bytes"] <= boundary.MAXIMUM
+                  and isinstance(row["sha256"], str) and re.fullmatch("[0-9a-f]{64}", row["sha256"]),
+                  "native_boundary_file_binding_invalid")
+        source = container / "Library/Application Support" / row["filename"]
+        c.require(source.resolve() == source and source.is_file() and source.stat().st_nlink == 1,
+                  "native_boundary_original_file_invalid")
+        raw = c.read(source, boundary.MAXIMUM)
+        c.require(len(raw) == row["bytes"] and c.sha(raw) == row["sha256"], "native_boundary_original_bytes_differ")
+        destination = private / row["filename"]
+        with destination.open("xb") as stream:
+            stream.write(raw); stream.flush(); os.fsync(stream.fileno())
+        destination.chmod(0o600)
+        c.require(current.digest(source) == row["sha256"] and current.digest(destination) == row["sha256"],
+                  "native_boundary_changed_during_preservation")
+        copied[role] = {**row, "path": str(destination), "status": "COPIED_ORIGINAL"}
+    result = {"status": "COPIED_ORIGINAL", "files": copied, "extraNativeCalls": 0,
+              "rawPayloadsUploaded": False}
+    current.write(evidence / "copied-native-boundary.json", result)
+    return result
+
+
 def root_path():
     run, attempt = os.environ.get("GITHUB_RUN_ID", ""), os.environ.get("GITHUB_RUN_ATTEMPT", "")
     c.require(re.fullmatch("[1-9][0-9]*", run) and re.fullmatch("[1-9][0-9]*", attempt), "page_current_run_required")
@@ -628,6 +677,11 @@ def execute(expected, inventory_policy=None, restore_build=None):
             copied = copy_application_receipts(commands, device, evidence,
                                                 (policy.CAPTURE, policy.REOPEN), required=ui["status"] == "PASS")
             receipt["actualApplicationReceipts"] = copied
+            capture_copy = copied.get(policy.CAPTURE, {})
+            if capture_copy.get("status") == "COPIED_ORIGINAL":
+                receipt["nativeBoundaryFiles"] = copy_native_boundary(
+                    commands, device, work, evidence,
+                    current.read(Path(capture_copy["path"]), 65536), required=ui["status"] == "PASS")
         except BaseException as failure:
             receipt["applicationReceiptFailure"] = current.error(failure)
             if ui["status"] == "PASS":
@@ -639,6 +693,11 @@ def execute(expected, inventory_policy=None, restore_build=None):
         capture, reopen = current.read(capture_path, 65536), current.read(reopen_path, 65536)
         receipt["mountedProof"] = modules["mounted_contract"].observations(
             fixture, capture, reopen, c.read(capture_path, 65536), binding)
+        boundary_files = receipt["nativeBoundaryFiles"]["files"]
+        receipt["nativeBoundaryComparison"] = boundary.verify(
+            {role: c.read(Path(row["path"]), boundary.MAXIMUM) for role, row in boundary_files.items()},
+            fixture, capture, modules["consumer_contract"], modules["mounted_contract"])
+        current.write(evidence / "native-boundary-comparison.json", receipt["nativeBoundaryComparison"])
         receipt["startupAndMountedAttachments"] = policy.mounted_attachments(
             evidence / "ui/private-attachments", device["udid"], capture, reopen, binding, modules["warning_profile"])
         receipt["newUIAcceptance"] = "PASS_ACTUAL_CURRENT_APP_MOUNTED_CANCEL_CREATE_AND_COLD_REOPEN"

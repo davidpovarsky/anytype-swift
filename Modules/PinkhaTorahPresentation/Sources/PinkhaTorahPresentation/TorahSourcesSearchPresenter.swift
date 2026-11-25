@@ -55,6 +55,7 @@ public final class TorahSourcesSearchPresenter {
     }
 
     public var associationTargetBlockID: String? { context.blockId }
+    public var associationTargetAnchor: PinkhaSemanticTextAnchor? { context.semanticAnchor }
 
     public var canEditAssociations: Bool { isSelectionOnly || session.canEditAssociations }
 
@@ -208,7 +209,9 @@ public final class TorahSourcesSearchPresenter {
         persistenceState = .waiting
         do {
             persistenceState = .saving
-            let values = try await session.unlinkAssociation(item, from: context)
+            let values = try await session.unlinkAssociation(item, from: context) { [weak self] in
+                self?.mutationRequestID == requestID
+            }
             guard mutationRequestID == requestID else { return }
             associations = values
             persistenceState = .saved

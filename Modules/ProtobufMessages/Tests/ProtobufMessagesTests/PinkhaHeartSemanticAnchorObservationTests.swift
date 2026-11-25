@@ -14,9 +14,9 @@ final class PinkhaHeartSemanticAnchorObservationTests: XCTestCase {
             .checkingPreflight, .readingRuntime, .checkingRuntime,
             .readingCurrent, .checkingCurrent, .consumed, .checkingQueuedOwner,
             .invokingNative, .checkingCapturedOwner, .decodingReply,
+            .readingReadback, .checkingReadbackOwner, .validatingReadback,
             .validatingEvent, .checkingEventOwner, .creatingPublicationFence,
-            .publishing, .checkingPublishedOwner, .readingReadback,
-            .checkingReadbackOwner, .validatingReadback, .verified
+            .publishing, .checkingPublishedOwner, .verified
         ]
         for scenario in ObservationFixture.Scenario.allCases {
             let probe = try ObservationFixture(scenario: scenario)
@@ -90,9 +90,9 @@ final class PinkhaHeartSemanticAnchorObservationTests: XCTestCase {
             XCTAssertEqual(value.nativeReceiptDecoded, decodedApplied)
             XCTAssertEqual(probe.captureCalls, scenario == .preflightRetired ? 0 : 1)
             XCTAssertEqual(value.nativeReplyBytes, scenario == .preflightRetired ? nil : probe.reply.count)
-            let publishReached = [ObservationFixture.Scenario.publicationDeclined, .readbackError, .readbackMismatch, .verified].contains(scenario)
+            let publishReached = [ObservationFixture.Scenario.publicationDeclined, .verified].contains(scenario)
             XCTAssertEqual(probe.publishCalls, publishReached ? 1 : 0)
-            let readbackReached = [ObservationFixture.Scenario.readbackError, .readbackMismatch, .verified].contains(scenario)
+            let readbackReached = [ObservationFixture.Scenario.invalidEvent, .publicationDeclined, .readbackError, .readbackMismatch, .verified].contains(scenario)
             XCTAssertEqual(probe.readCalls, scenario == .preflightRetired ? 0 : (readbackReached ? 2 : 1))
             XCTAssertEqual(value.publicationReturned, publishReached ? (scenario != .publicationDeclined) : nil)
             if expectedOriginalFailure != nil {

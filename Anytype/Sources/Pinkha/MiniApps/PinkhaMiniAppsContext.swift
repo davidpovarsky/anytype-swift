@@ -1,6 +1,7 @@
 import Foundation
 import CryptoKit
 import HanlinMiniAppsBridge
+import PinkhaHanlinUI
 import Services
 import SwiftProtobuf
 import UIKit
@@ -39,7 +40,8 @@ struct PinkhaMiniAppsContext {
 
     @MainActor
     static func capture(editor: EditorPageController, store: MiniAppBridgeStore,
-                        selection: PinkhaMiniAppsTextSelection? = nil) async throws -> Self {
+                        selection: PinkhaMiniAppsTextSelection? = nil,
+                        authorize: @MainActor () throws -> Void = {}) async throws -> Self {
         guard let model = editor.viewModel as? EditorPageViewModel,
               model.document.isOpened else { throw PinkhaMiniAppsError.documentUnavailable }
         let document = model.document
@@ -47,6 +49,8 @@ struct PinkhaMiniAppsContext {
         let objectID = document.objectId
         let spaceID = document.spaceId
         func validateSource() throws {
+            try Task.checkCancellation()
+            try authorize()
             guard !accountID.isEmpty, Container.shared.accountManager().account.id == accountID,
                   editor.viewModel.document.objectId == objectID,
                   editor.viewModel.document.spaceId == spaceID, document.isOpened else {
@@ -109,6 +113,7 @@ struct PinkhaMiniAppsContext {
         let revision = SHA256.hash(data: snapshotData).map { String(format: "%02x", $0) }.joined()
         let documentText = snapshots.map(\.text).joined(separator: "\n")
         var metadata = [
+            PinkhaMiniAppsEngineScope.metadataKey: PinkhaMiniAppsEngineScope.heart.rawValue,
             "anytype.accountID": accountID,
             "anytype.spaceID": document.spaceId,
             "anytype.blocks": String(decoding: snapshotData, as: UTF8.self)

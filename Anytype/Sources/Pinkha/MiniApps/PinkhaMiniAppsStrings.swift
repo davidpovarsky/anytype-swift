@@ -1,8 +1,23 @@
 import Foundation
+import HanlinMiniAppsBridge
 
 enum PinkhaMiniAppsStrings {
     private static var hebrew: Bool { Locale.current.language.languageCode?.identifier == "he" }
     static var title: String { hebrew ? "מיני־אפליקציות" : "MiniApps" }
+    static var operationChangeTitle: String { hebrew ? "אישור שינוי הפעולה" : "Confirm changed action" }
+    static var apply: String { hebrew ? "החלת התוצאה" : "Apply result" }
+    static var cancel: String { hebrew ? "ביטול" : "Cancel" }
+    static func operationChangeMessage(_ operation: MiniAppOperation) -> String {
+        let action: String
+        switch operation {
+        case .replaceDocument: action = hebrew ? "להחליף את תוכן המסמך" : "replace the document content"
+        case .replaceSelection: action = hebrew ? "להחליף את הטקסט שנבחר" : "replace the selected text"
+        default: action = hebrew ? "להוסיף תוכן למסמך" : "add content to the document"
+        }
+        return hebrew
+            ? "המיני־אפליקציה מבקשת \(action), בשונה מהפעולה שנבחרה. להחיל את התוצאה?"
+            : "The MiniApp asks to \(action), which differs from the action you selected. Apply this result?"
+    }
     static var attachment: String { hebrew ? "קובץ מצורף" : "Attachment" }
     static var close: String { hebrew ? "סיום" : "Done" }
     static var documentUnavailable: String { hebrew ? "המסמך המקורי עדיין לא זמין. התוצאה נשמרה ותחזור כשהמסמך ייפתח." : "The original document is not ready. The result is saved and will return when it opens." }

@@ -26,6 +26,11 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
             guard let self, let textView else { return nil }
             return self.action(in: textView, range: range)
         }
+        textView.pinkhaSemanticAnchorOpenURL = { [weak self] url in
+            guard let self else { return }
+            do { openSources(try PinkhaSemanticTextAnchor(markerURL: url)) }
+            catch { presentMessage(PinkhaSemanticAnchorStrings.message(for: error)) }
+        }
     }
 
     func invalidate() {
@@ -49,6 +54,7 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
     }
 
     private func action(in textView: TextViewWithPlaceholder, range: NSRange) -> UIMenuElement? {
+        if let source = sourceAction(in: textView, range: range) { return source }
         guard activeID == nil, let editor, let model = editor.viewModel,
               editor.presentedViewController == nil,
               editor.viewIfLoaded?.window != nil, textView.isFirstResponder,
@@ -75,6 +81,38 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
             identifier: .init("pinkha.semanticAnchor.capture")) { [weak self] _ in
                 self?.prepare(selection)
             }
+    }
+
+    private func sourceAction(in textView: TextViewWithPlaceholder, range: NSRange) -> UIAction? {
+        guard activeID == nil, let editor, let model = editor.viewModel,
+              editor.presentedViewController == nil, editor.viewIfLoaded?.window != nil,
+              textView.window === editor.viewIfLoaded?.window, textView.isFirstResponder,
+              textView.markedTextRange == nil, model.document.isOpened,
+              model.document.mode.isHandling, model.torahSession != nil,
+              range.location != NSNotFound, range.location >= 0, range.length > 0,
+              range.location <= textView.attributedText.length,
+              range.length <= textView.attributedText.length - range.location else { return nil }
+        guard let anchor = PinkhaSemanticAnchorUI.selectedAnchor(in: textView.attributedText, range: range,
+            spaceID: model.document.spaceId, objectID: model.document.objectId) else { return nil }
+        return UIAction(title: PinkhaSemanticAnchorUI.text(.sources), image: UIImage(systemName: "books.vertical"),
+            identifier: .init("pinkha.semanticAnchor.sources")) { [weak self] _ in
+                self?.openSources(anchor)
+            }
+    }
+
+    private func openSources(_ anchor: PinkhaSemanticTextAnchor) {
+        guard activeID == nil, let editor, let model = editor.viewModel,
+              editor.presentedViewController == nil, editor.viewIfLoaded?.window != nil,
+              model.document.mode.isHandling, model.document.isOpened,
+              let session = model.torahSession else { return }
+        Task { @MainActor [weak self, weak editor] in
+            do { try await session.presentSemanticAnchorSources(anchor) }
+            catch {
+                guard let self, let editor, editor.viewModel === model,
+                      editor.viewIfLoaded?.window != nil else { return }
+                presentMessage(PinkhaSemanticAnchorStrings.message(for: error))
+            }
+        }
     }
 
     private func prepare(_ selection: Selection) {
@@ -113,28 +151,18 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
 #endif
         // The client already validated the complete native text and grapheme range.
         let selected = (selection.text as NSString).substring(with: selection.range)
-        let preview = String(selected.prefix(240))
-        let alert = UIAlertController(title: PinkhaSemanticAnchorStrings.confirmTitle,
-            message: PinkhaSemanticAnchorStrings.confirmBody + "\n\n" + preview, preferredStyle: .alert)
-        alert.view.accessibilityIdentifier = "pinkha.semanticAnchor.confirmation"
-        alert.addAction(UIAlertAction(title: PinkhaSemanticAnchorStrings.cancel, style: .cancel) { [weak self] _ in
-            self?.confirmation = nil
-            self?.finish(id)
+        let alert = PinkhaSemanticAnchorUI.confirmation(selectedText: selected,
+            cancelled: { [weak self] in
+                self?.confirmation = nil
+                self?.finish(id)
 #if DEBUG && targetEnvironment(simulator)
-            if let editor = self?.editor { PinkhaSemanticAnchorMountedObserver.cancelled(editor: editor) }
+                if let editor = self?.editor { PinkhaSemanticAnchorMountedObserver.cancelled(editor: editor) }
 #endif
-        })
-        alert.addAction(UIAlertAction(title: PinkhaSemanticAnchorStrings.create, style: .default) {
-            [weak self, weak alert] _ in
-            guard let self else { return }
-            self.confirmation = nil
-            // Wait for this actual presentation to close before an outcome can
-            // present another alert. Ownership is checked again in the completion.
-            guard let alert else { self.finish(id); return }
-            alert.dismiss(animated: true) { [weak self] in
+            }, willConfirm: { [weak self] in
+                self?.confirmation = nil
+            }, confirmed: { [weak self] in
                 self?.apply(selection, pending: pending, id: id)
-            }
-        })
+            })
         confirmation = alert
         editor.present(alert, animated: true)
     }
@@ -198,12 +226,9 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
     private func presentMessage(_ message: String) {
         guard let editor, editor.viewIfLoaded?.window != nil,
               editor.presentedViewController == nil else { return }
-        let alert = UIAlertController(title: PinkhaSemanticAnchorStrings.title,
-            message: message, preferredStyle: .alert)
-        alert.view.accessibilityIdentifier = "pinkha.semanticAnchor.outcome"
-        alert.addAction(UIAlertAction(title: PinkhaSemanticAnchorStrings.done, style: .default) { [weak self] _ in
+        let alert = PinkhaSemanticAnchorUI.outcome(message) { [weak self] in
             self?.confirmation = nil
-        })
+        }
         confirmation = alert
         editor.present(alert, animated: true)
     }

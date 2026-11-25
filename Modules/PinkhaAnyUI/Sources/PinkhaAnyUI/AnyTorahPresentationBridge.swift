@@ -118,11 +118,19 @@ public struct AnySessionTorahAssociationRepository: TorahAssociationSnapshotRepo
     }
 
     public func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String) async throws {
+        try await removeAssociation(associationId: associationId, target: target, spaceId: spaceId, authorize: {})
+    }
+
+    public func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String,
+                                  authorize: @escaping TorahAssociationWriteAuthorization) async throws {
         try check(spaceId)
         let repository = repository
         try await session.perform { lease in
             try await repository.removeAssociation(associationId: associationId, target: target,
-                                                     spaceId: spaceId, authorize: { try await lease.validate() })
+                spaceId: spaceId, authorize: {
+                    try await lease.validate()
+                    try await authorize()
+                })
         }
     }
 

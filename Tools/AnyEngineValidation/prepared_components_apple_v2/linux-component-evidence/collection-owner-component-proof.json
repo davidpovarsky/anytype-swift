@@ -1,0 +1,132 @@
+{
+  "contract": "pinkha-prepared-collection-owner-component-proof-v1",
+  "qualifiedAtUTC": "2026-11-24T20:01:20Z",
+  "actualNativeHTTPMethods": [
+    "TestPreparedCollectionPropertyHTTPNativeOwnerReopenAndCollision",
+    "TestPreparedCollectionPropertyUpdateHTTPNativeDescriptorsMembershipAndReopen"
+  ],
+  "failedOriginalMethods": [
+    "TestPreparedCollectionPropertyHTTPNativeOwnerReopenAndCollision",
+    "TestPreparedCollectionPropertyUpdateHTTPNativeDescriptorsMembershipAndReopen"
+  ],
+  "source": {
+    "any": "cf87c43ff0100c2dc43c3c105c82b1b070b3a7a3",
+    "sdk": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953"
+  },
+  "sourceStable": true,
+  "actualAppleAcceptance": false,
+  "networkDeliveryAcceptance": false,
+  "wholeSpaceMigrationAcceptance": false,
+  "knownOriginalFailure": {
+    "source": "92ae36f416b24d2453f2b80a2841cb5f6c6dd8bf",
+    "sdk": "98f6b0363202164f53a7bdd7512515b0f2855172",
+    "ordinaryOwnerHTTP": "500 internal instead of typed404",
+    "currentCollectionMembership": "committed status survived native detach"
+  },
+  "corrections": [
+    "Generic property-definition route admits exact native collection marker; parts remain type-only",
+    "Typed owner-not-found lookup preserved",
+    "Prepared property reconciliation checks exact current owner membership in the locked local read view; original field/version checks and current-writer fence retained",
+    "Terminal status and known commit cannot revive after native membership restoration"
+  ],
+  "receipts": {
+    "attempt1.json": {
+      "sha256": "445d5f0f7cb435aae1d19150e58459c995e80d8f966b38feeedc1b4bfe392122",
+      "content": {
+        "status": "FAIL",
+        "source": "92ae36f416b24d2453f2b80a2841cb5f6c6dd8bf",
+        "sdk": "98f6b0363202164f53a7bdd7512515b0f2855172",
+        "command": [
+          "/mnt/development/toolchains/go1.27.4/go/bin/go",
+          "test",
+          "-json",
+          "-count=1",
+          "-p",
+          "1",
+          "-timeout",
+          "180s",
+          "-run",
+          "^TestPreparedCollectionProperty(HTTPNativeOwnerReopenAndCollision|UpdateHTTPNativeDescriptorsMembershipAndReopen)$",
+          "./internal/server"
+        ],
+        "environment": {
+          "GOCACHE": "/mnt/development/projects/evidence/prepared-file-20261124/go-build-127",
+          "GOMODCACHE": "/mnt/development/projects/evidence/semantic-page-20261123-arm64/cache/go-mod",
+          "GOTOOLCHAIN": "local",
+          "GOMAXPROCS": "1",
+          "GOMEMLIMIT": "2GiB",
+          "CGO_ENABLED": "1",
+          "GOFLAGS": "-mod=readonly",
+          "GOPROXY": "off",
+          "GOSUMDB": "off"
+        },
+        "exit": 1,
+        "seconds": 78.065,
+        "interruption": null,
+        "passed": [],
+        "failed": [
+          "TestPreparedCollectionPropertyHTTPNativeOwnerReopenAndCollision",
+          "TestPreparedCollectionPropertyUpdateHTTPNativeDescriptorsMembershipAndReopen"
+        ],
+        "skipped": [],
+        "sources": {
+          "internal/server/handlers_pinkha_migration_definition.go": "047f452ccd7ca1ebf80a97777fabf171f292d5f1d4b297af3ecd6f0ebc545e88",
+          "internal/server/handlers_pinkha_migration_collection_owner_test.go": "f7e329b170e7ccaaf810389c359ec383abdd79df3506c989551c291a448a7724"
+        },
+        "sourceStable": true,
+        "cacheBeforeBytes": 1818431344,
+        "cacheAfterBytes": 1983242372,
+        "cacheGrowthBytes": 164811028,
+        "freeBeforeBytes": 1643266048,
+        "freeAfterBytes": 1476186112,
+        "logSHA256": "286a64e9b2c11177f2f88d69c27578b751176ea7ea8845eb747f3deea574fe71",
+        "nativeNetworkProven": false,
+        "actualAppleProven": false
+      }
+    },
+    "attempt2.json": {
+      "sha256": "95c5b23105cff075609cd34879c00809ad58678ff6741ac8ed83a4f33be06a46",
+      "content": {
+        "status": "PASS_TWO_NATIVE_HTTP_CONTROLS",
+        "source": "cf87c43ff0100c2dc43c3c105c82b1b070b3a7a3",
+        "sdk": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953",
+        "command": [
+          "/mnt/development/toolchains/go1.27.4/go/bin/go",
+          "test",
+          "-json",
+          "-count=1",
+          "-p",
+          "1",
+          "-timeout",
+          "180s",
+          "-run",
+          "^TestPreparedCollectionProperty(HTTPNativeOwnerReopenAndCollision|UpdateHTTPNativeDescriptorsMembershipAndReopen)$",
+          "./internal/server"
+        ],
+        "exit": 0,
+        "seconds": 76.729,
+        "interruption": null,
+        "passed": [
+          "TestPreparedCollectionPropertyHTTPNativeOwnerReopenAndCollision",
+          "TestPreparedCollectionPropertyUpdateHTTPNativeDescriptorsMembershipAndReopen"
+        ],
+        "failed": [],
+        "skipped": [],
+        "sources": {
+          "/mnt/development/projects/worktrees/any-prepared-collection-owner-20261124/internal/server/handlers_pinkha_migration_definition.go": "567503a5599beadf66f721872e5cc87fea8cddb6521efa747e90114461e2cf98",
+          "/mnt/development/projects/worktrees/any-prepared-collection-owner-20261124/internal/server/handlers_pinkha_migration_collection_owner_test.go": "6db3b4c34792307fc6ae75fc623721769565db839da4c769e35d5db2f2255556",
+          "/mnt/development/projects/worktrees/any-sync-sdk-prepared-collection-owner-20261124/internal/object/migration_property_update.go": "104c232fb394c80987380923520918471d1a93f85a8c349daac967bfc3311f39"
+        },
+        "sourceStable": true,
+        "cacheBeforeBytes": 1983242372,
+        "cacheAfterBytes": 2101740266,
+        "totalCacheGrowthBytes": 283308922,
+        "freeBeforeBytes": 1448001536,
+        "freeAfterBytes": 1328889856,
+        "logSHA256": "b5a20715ccca75f016bc5899095f230eff5dcdea26dacb49597caf47c0f170dd",
+        "nativeNetworkProven": false,
+        "actualAppleProven": false
+      }
+    }
+  }
+}

@@ -1,0 +1,177 @@
+{
+  "sourceCommit": "d34f0dbd859b264ae930cdceacb4940f7e8b9ea4",
+  "sourceFiles": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativePageComposition.swift": "cb650be1b0163d41a03f785dee5046aaded05e8b737989bb8a477fba287e74ff",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeDefinitionPlan.swift": "566974f83ee0838ec3253ea9c59e8210fd82979b1a3023ad049edf7f05e30027",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationPlan.swift": "db0a6b6a5788db6acc9c9d435a17c5f2033f181deaf9a118ead731b4c0e0f735",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationDefinitionCoverage.swift": "0d98f12e4bce3d1699a5aec754fc005f683ce530fd18d7f4b4218289c403cd10",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift": "e67b6c5552bf9abcb9a1126532877abf886b57f7c0a2332b65631738701903ff",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePageCompositionTests.swift": "1d5989955c34a94d34dab8b2e6021ce2546d5b8dba02063815f9aae6a0517f88",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeDefinitionPlanTests.swift": "e2e5924086b5f7018fb28030c6b852af8ca41a58701d19701ff72d5492436036",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationMigrationExecutorTests.swift": "214f3441124ca1154bd3dc1bff5deccc2523842822df5482a2aadc5d23447066"
+  },
+  "sourceTrees": {
+    "Modules/PinkhaAnyHost": "15c5b9ab3a2786454b090719b3d91e593aebd87f",
+    "Modules/PinkhaAnyIntegration": "3dfd9c0b395f1435a98ccd4eb6858c148a464047",
+    "Modules/PinkhaAnyEngine": "c093b71f098da91aadcfae1010bb47af0a0d1add"
+  },
+  "host": "host_299cf75f6b338ecd",
+  "startedAt": "2026-11-24T22:29:49.726208+00:00",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-native-page-composition-20261124/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "1",
+    "--skip-update",
+    "--filter",
+    "NativePageCompositionTests/testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles|NativePageCompositionTests/testUnaccountedDetailsSourceMetadataAndAmbiguousIdentitiesAreRefused|NativePageCompositionTests/testOriginalCapturedPageComposesCurrentStateAndRetainsSourceBlockers|NativePageCompositionTests/testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities|NativeDefinitionPlanTests/testDefinitionDraftsBindOwnersOptionsTypeHandlesAndExplicitSemanticGaps|AnyDestinationMigrationExecutorTests/testPartsRequireTypeOwnersWhilePropertiesAllowCollections"
+  ],
+  "expectedTestMethods": 6,
+  "scope": "four new bundle-bound Page composition methods plus affected Basic-layout and part-owner admission controls",
+  "fixtures": {
+    "/mnt/development/projects/evidence/native-json-source-fixture-45472745870/fixture-context.json": "5357d52f5e76b604a40d7a5f2b1bc002e19bc864c419a45f90128bfa965d5850",
+    "/mnt/development/projects/evidence/native-json-source-fixture-45472745870/source-bundle/manifest.json": "2a1a02987204321aaa1c8cf9f0c7f413f4b50dbce87280d82499c4f9bc7be238",
+    "/mnt/development/projects/evidence/native-custom-source-fixture-45492064232/fixture-context.json": "bb03b5a06a77d8b3e85cd46bc9cedc8a497c2bb06bbcd3e47b834e13d83b934a",
+    "/mnt/development/projects/evidence/native-custom-source-fixture-45492064232/bundle/manifest.json": "cbfb3aa1fd89707138adeccbce7389c40dc0a993f2285f6e517120e4e4239ed4"
+  },
+  "fixtureAcceptancePromoted": false,
+  "currentSourceAuthorizationClaimed": false,
+  "compilerJobs": 1,
+  "minimumMemoryGuardBytes": 1073741824,
+  "memoryGuardSustainedSeconds": 15,
+  "timeoutSeconds": 570,
+  "finishedAt": "2026-11-24T22:31:59.784680+00:00",
+  "durationSeconds": 130.06,
+  "returnCode": 1,
+  "stopReason": null,
+  "status": "FAIL",
+  "passedMethods": [
+    "AnyDestinationMigrationExecutorTests.testPartsRequireTypeOwnersWhilePropertiesAllowCollections",
+    "NativeDefinitionPlanTests.testDefinitionDraftsBindOwnersOptionsTypeHandlesAndExplicitSemanticGaps",
+    "NativePageCompositionTests.testOriginalCapturedPageComposesCurrentStateAndRetainsSourceBlockers",
+    "NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities",
+    "NativePageCompositionTests.testUnaccountedDetailsSourceMetadataAndAmbiguousIdentitiesAreRefused"
+  ],
+  "failedMethods": [
+    "NativePageCompositionTests.testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles"
+  ],
+  "sourcesUnchanged": true,
+  "fixtureBindingsUnchanged": true,
+  "logSHA256": "196ab368dc8910dd8687bd7c3382211493415371d8bbbac7e541630d2c9c7a08",
+  "logBytes": 5850,
+  "minimumMemAvailableBytes": 5399474176,
+  "samples": [
+    {
+      "elapsedSeconds": 0.01,
+      "memAvailableBytes": 5860974592
+    },
+    {
+      "elapsedSeconds": 5.01,
+      "memAvailableBytes": 5735743488
+    },
+    {
+      "elapsedSeconds": 10.01,
+      "memAvailableBytes": 5659074560
+    },
+    {
+      "elapsedSeconds": 15.01,
+      "memAvailableBytes": 5591838720
+    },
+    {
+      "elapsedSeconds": 20.01,
+      "memAvailableBytes": 5774413824
+    },
+    {
+      "elapsedSeconds": 25.01,
+      "memAvailableBytes": 5866762240
+    },
+    {
+      "elapsedSeconds": 30.01,
+      "memAvailableBytes": 5632520192
+    },
+    {
+      "elapsedSeconds": 35.01,
+      "memAvailableBytes": 5461229568
+    },
+    {
+      "elapsedSeconds": 40.01,
+      "memAvailableBytes": 5781843968
+    },
+    {
+      "elapsedSeconds": 45.01,
+      "memAvailableBytes": 5636280320
+    },
+    {
+      "elapsedSeconds": 50.01,
+      "memAvailableBytes": 5533401088
+    },
+    {
+      "elapsedSeconds": 55.01,
+      "memAvailableBytes": 5553446912
+    },
+    {
+      "elapsedSeconds": 60.01,
+      "memAvailableBytes": 5638340608
+    },
+    {
+      "elapsedSeconds": 65.01,
+      "memAvailableBytes": 5523509248
+    },
+    {
+      "elapsedSeconds": 70.01,
+      "memAvailableBytes": 5604507648
+    },
+    {
+      "elapsedSeconds": 75.01,
+      "memAvailableBytes": 5503307776
+    },
+    {
+      "elapsedSeconds": 80.01,
+      "memAvailableBytes": 5622054912
+    },
+    {
+      "elapsedSeconds": 85.01,
+      "memAvailableBytes": 5558579200
+    },
+    {
+      "elapsedSeconds": 90.01,
+      "memAvailableBytes": 5677363200
+    },
+    {
+      "elapsedSeconds": 95.01,
+      "memAvailableBytes": 5511131136
+    },
+    {
+      "elapsedSeconds": 100.02,
+      "memAvailableBytes": 5501927424
+    },
+    {
+      "elapsedSeconds": 105.02,
+      "memAvailableBytes": 5523099648
+    },
+    {
+      "elapsedSeconds": 110.02,
+      "memAvailableBytes": 5640114176
+    },
+    {
+      "elapsedSeconds": 115.02,
+      "memAvailableBytes": 5463867392
+    },
+    {
+      "elapsedSeconds": 120.02,
+      "memAvailableBytes": 5640073216
+    },
+    {
+      "elapsedSeconds": 125.02,
+      "memAvailableBytes": 5399474176
+    }
+  ]
+}

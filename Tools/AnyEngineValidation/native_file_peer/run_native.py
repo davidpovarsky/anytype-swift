@@ -8,6 +8,7 @@ from pathlib import Path
 import platform
 import re
 import secrets
+import shlex
 import shutil
 import signal
 import subprocess
@@ -486,6 +487,24 @@ def audit_one(stdout, method):
     return {"method": method, "named_method_pass": True, "stdout_sha256": sha(stdout)}
 
 
+
+def peer_start_barrier(marker):
+    """Keep the container alive until its actual PID/identity has been inspected."""
+    return "while [ ! -f " + shlex.quote(str(marker)) + " ]; do sleep 0.05; done; "
+
+
+def require_fresh_reopen(reopen, owner, member):
+    """Namespace inode numbers and host PIDs can be reused after process exit."""
+    identities = [row.get("containerID") for row in (reopen, owner, member)]
+    require(all(isinstance(v, str) and re.fullmatch(r"[0-9a-f]{64}", v) for v in identities)
+            and len(set(identities)) == 3, "distinct_original_peer_container_ids")
+    started = reopen.get("startedAt")
+    stops = [row.get("finishedAt") for row in (owner, member)]
+    require(isinstance(started, str) and started.startswith("20") and
+            all(isinstance(v, str) and v.startswith("20") and v < started for v in stops),
+            "reopen_started_after_both_original_processes_exited")
+
+
 class RemoteFileRunner(native.Runner):
     def __init__(self):
         os.umask(0o077)
@@ -828,7 +847,10 @@ class RemoteFileRunner(native.Runner):
         name = "pinkha-file-peer-" + os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"] + "-" + key
         self.names.append(name)
         self.peer_names.append(name)
-        wrapper = ("/products/native-file-peer.test -test.v -test.run=^" + PEER_METHOD +
+        start_label = "start-" + phase
+        require(not (root / (start_label + ".command.json")).exists(), "fresh_launch_barrier")
+        wrapper = (peer_start_barrier("/private/" + start_label + ".command.json") +
+                   "/products/native-file-peer.test -test.v -test.run=^" + PEER_METHOD +
                    "$ -test.count=1 -test.timeout=" + ("1050s" if phase == "online" else "210s") +
                    " > /private/native-" + phase + ".stdout 2> /private/native-" + phase + ".stderr; "
                    "status=$?; printf '%s\\n' \"$status\" > /private/" + phase + ".exit.tmp; "
@@ -853,10 +875,13 @@ class RemoteFileRunner(native.Runner):
         }.items()):
             argv += ["--env", key_env + "=" + value]
         argv += [native.IMAGE, "-c", wrapper]
-        self.command("start-" + key, argv, 30)
+        _, launched, _ = self.command("start-" + key, argv, 30)
         info = self.inspect(name, "inspect-" + key, network, root)
+        require(info["Id"] == launched.read_text().strip(), "actual_launched_peer_identity")
         self.roles[key] = {"name": name, "root": root, "network": network,
-                           "hostPID": info["State"]["Pid"], "phase": phase, "role": role}
+                           "hostPID": info["State"]["Pid"], "containerID": info["Id"],
+                           "startedAt": info["State"]["StartedAt"], "phase": phase, "role": role}
+        self.command_phase(self.roles[key], start_label)
         return self.roles[key]
 
     def wait_phase(self, owned, label, seconds):
@@ -908,8 +933,11 @@ class RemoteFileRunner(native.Runner):
         rc, stopped, _ = self.command("wait-" + owned["role"] + "-" + owned["phase"],
             ["sudo", "-n", "docker", "wait", owned["name"]], 60)
         require(rc == 0 and stopped.read_text().strip() == "0", "native_peer_actual_stopped_exit")
-        self.inspect(owned["name"], "finished-" + owned["role"] + "-" + owned["phase"],
-                     owned["network"], owned["root"], finished=True)
+        info = self.inspect(owned["name"], "finished-" + owned["role"] + "-" + owned["phase"],
+                            owned["network"], owned["root"], finished=True)
+        require(info["Id"] == owned["containerID"] and
+                info["State"]["StartedAt"] == owned["startedAt"], "finished_original_peer_identity")
+        owned["finishedAt"] = info["State"]["FinishedAt"]
         audit = audit_one(owned["root"] / ("native-" + owned["phase"] + ".stdout"), PEER_METHOD)
         self.result["executions"].append({**audit, "role": owned["role"], "phase": owned["phase"],
                                           "status": "PASS", "exit_code": 0})
@@ -1005,11 +1033,10 @@ class RemoteFileRunner(native.Runner):
                 final_owner["accountStopped"] and final_owner["testPassed"], "native_accounts_stopped")
         reopen = self.launch("member", "reopen", "none")
         reopened = self.wait_phase(reopen, "reopen-final", 210)
+        require_fresh_reopen(reopen, owner, member)
         require_tree_census_receipt(reopened, census_rows, census_sha)
         require(reopened["identity"]["AccountID"] == b["AccountID"] and
                 reopened["identity"]["PeerID"] == b["PeerID"] and
-                reopened["identity"]["Namespace"] not in (a["Namespace"], b["Namespace"]) and
-                reopen["hostPID"] not in (owner["hostPID"], member["hostPID"]) and
                 reopened["actualIPv4"] in (None, []) and
                 reopened["offlineFreshProcess"] and reopened["testPassed"] and reopened["accountStopped"] and
                 reopened["sourceSpaceID"] == source["SpaceID"] and
@@ -1038,6 +1065,7 @@ class RemoteFileRunner(native.Runner):
             "exact_metadata_sha256": variant["MetadataSHA256"],
             "exact_metadata_bytes": variant["MetadataBytes"],
             "offline_fresh_process_reopen": True,
+            "fresh_process_proof": "distinct Docker IDs, original start/finish order and offline native receipt",
             "private_phase_receipts": {
                 role + "/" + label: sha(self.private / "peers" / role / (label + ".json"))
                 for role, labels in (("owner", ("identity", "grant", "rerouted", "final")),

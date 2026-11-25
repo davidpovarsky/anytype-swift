@@ -5,6 +5,7 @@ import PinkhaAnyIntegration
 import PinkhaAnyRuntime
 import PinkhaAnyUI
 import PinkhaHanlinCore
+import PinkhaSharing
 
 public enum AnyNativeApplicationError: Error, Equatable, Sendable {
     case busy
@@ -110,7 +111,10 @@ public actor AnyNativeApplication {
         try Task.checkCancellation()
         try FileManager.default.createDirectory(at: dataDirectory, withIntermediateDirectories: true,
             attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
-        let session = try await runtime.start(dataDirectory: dataDirectory, network: network, build: .pinkhaNativeV1)
+        guard AnyEmbeddedBuild.linked.supportsNativeApplication else {
+            throw AnyEmbeddedRuntimeError.unexpectedVersion
+        }
+        let session = try await runtime.start(dataDirectory: dataDirectory, network: network, build: .linked)
         embedded = session
         lastNetwork = network
     }
@@ -182,7 +186,7 @@ public actor AnyNativeApplication {
             }
             try Task.checkCancellation()
             guard !closing else { throw AnyNativeApplicationError.closed }
-            try await PinkhaHanlinAccountOwner.shared.accountDidOpen(id)
+            try await PinkhaHanlinAccountOwner.shared.accountDidOpen(id, app: PinkhaHanlinEngineNamespace.any)
             try Task.checkCancellation()
             guard !closing else { throw AnyNativeApplicationError.closed }
             account = credential.metadata
@@ -280,6 +284,34 @@ public actor AnyNativeApplication {
                 throw AnyNativeApplicationError.malformedResponse
             }
             return id
+        }
+    }
+
+    /// Joining uses the native coordinator protocol; a pending HTTP 202 never
+    /// becomes an active-space receipt just because its body says "active".
+    public func joinSpace(invitation: String) async throws -> PinkhaSharingJoinResult {
+        let token = invitation.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !token.isEmpty, token.utf8.count <= 16_384, !token.utf8.contains(0) else {
+            throw AnyNativeApplicationError.invalidConfiguration
+        }
+        return try await transition {
+            let client = try await self.accountClient(requireBackup: true)
+            let result = try await client.requestJSONResponse(method: "POST", path: ["v1", "spaces", "join"],
+                body: .object(["inviteToken": .string(token)]), maximumResponseBytes: 128 * 1024)
+            guard let id = result.body["id"]?.string, AnyEditorBlock.validID(id),
+                  let status = result.body["status"]?.string else {
+                throw AnyNativeApplicationError.malformedResponse
+            }
+            switch result.statusCode {
+            case 201:
+                guard status == "active" else { throw AnyNativeApplicationError.malformedResponse }
+                return try PinkhaSharingJoinResult(spaceID: id, status: .active)
+            case 202:
+                return try PinkhaSharingJoinResult(spaceID: id,
+                    status: status == "joining" ? .awaitingApproval : .loading)
+            default:
+                throw AnyNativeApplicationError.malformedResponse
+            }
         }
     }
 
@@ -417,7 +449,7 @@ public actor AnyNativeApplication {
         guard let accountID, !accountID.isEmpty else { return }
         // The retained removeData:false path first revokes synchronously on
         // MainActor and performs no fallible filesystem removal.
-        try? await PinkhaHanlinAccountOwner.shared.closeAccount(accountID, removeData: false)
+        try? await PinkhaHanlinAccountOwner.shared.closeAccount(accountID, removeData: false, app: PinkhaHanlinEngineNamespace.any)
     }
 
     private func transition<Value: Sendable>(

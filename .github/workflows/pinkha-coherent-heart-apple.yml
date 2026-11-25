@@ -15,10 +15,10 @@ permissions:
 
 jobs:
   coherent-apple-authority:
-    runs-on: xcode-27
+    runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
     timeout-minutes: 150
     env:
-      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
       ATTEMPT: build/coherent-heart-apple-${{ github.run_id }}-${{ github.run_attempt }}
       PYTHONDONTWRITEBYTECODE: '1'
       GH_TOKEN: ${{ github.token }}
@@ -46,11 +46,12 @@ jobs:
           run-id: 45026227924
           github-token: ${{ github.token }}
           path: build/coherent-heart-apple-${{ github.run_id }}-${{ github.run_attempt }}/native-proof
-      - name: Select native ARM64 Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          architecture: arm64
+      - name: Select installed native ARM64 Python 3.12 for the dedicated Mac
+        shell: bash
+        run: |
+          pinkha_python_bin=/opt/homebrew/opt/python@3.12/libexec/bin
+          "$pinkha_python_bin/python3" -I -c 'import platform, sys; assert sys.version_info[:2] == (3, 12), sys.version; assert platform.machine() == "arm64", platform.machine(); assert platform.system() == "Darwin", platform.system(); print(sys.version.split()[0], platform.machine(), sys.executable)'
+          printf '%s\n' "$pinkha_python_bin" >> "$GITHUB_PATH"
       - name: Select the exact Go compiler
         if: inputs.source_run_id == ''
         uses: actions/setup-go@v5

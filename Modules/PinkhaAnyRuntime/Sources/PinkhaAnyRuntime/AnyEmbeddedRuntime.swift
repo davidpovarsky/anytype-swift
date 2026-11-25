@@ -1,7 +1,11 @@
 import Foundation
 import Security
 import Darwin
+#if PINKHA_DUAL_ENGINE_RUNTIME
+import ProtobufMessages
+#else
 import AnyLib
+#endif
 import PinkhaAnyEngine
 
 public enum AnyEmbeddedRuntimeError: Error, Equatable, Sendable {
@@ -19,15 +23,29 @@ public enum AnyEmbeddedRuntimeError: Error, Equatable, Sendable {
 }
 
 /// Selects the native code contract, independently of which network is used.
-/// A native application must explicitly request pinkhaNativeV1.
+/// A native application explicitly requests its linked, qualified application build.
 public enum AnyEmbeddedBuild: String, Sendable, Codable {
     case upstreamV050
     case pinkhaNativeV1
+    #if PINKHA_DUAL_ENGINE_RUNTIME
+    case pinkhaUnifiedV1
+    #endif
     case pinkhaPreparedMigrationCandidateV1
     case pinkhaPreparedInlineMigrationCandidateV1
+    case pinkhaPreparedFileMigrationCandidateV1
+    case pinkhaPreparedComponentsCandidateV1
+    case pinkhaPreparedComponentsCandidateV2
 
     public static var linked: Self {
-        #if PINKHA_PREPARED_INLINE_MIGRATION_RUNTIME
+        #if PINKHA_DUAL_ENGINE_RUNTIME
+        return .pinkhaUnifiedV1
+        #elseif PINKHA_PREPARED_COMPONENTS_V2_RUNTIME
+        return .pinkhaPreparedComponentsCandidateV2
+        #elseif PINKHA_PREPARED_COMPONENTS_RUNTIME
+        return .pinkhaPreparedComponentsCandidateV1
+        #elseif PINKHA_PREPARED_FILE_MIGRATION_RUNTIME
+        return .pinkhaPreparedFileMigrationCandidateV1
+        #elseif PINKHA_PREPARED_INLINE_MIGRATION_RUNTIME
         return .pinkhaPreparedInlineMigrationCandidateV1
         #elseif PINKHA_PREPARED_MIGRATION_RUNTIME
         return .pinkhaPreparedMigrationCandidateV1
@@ -38,12 +56,28 @@ public enum AnyEmbeddedBuild: String, Sendable, Codable {
         #endif
     }
 
+    public var supportsNativeApplication: Bool {
+        switch self {
+        case .pinkhaNativeV1: return true
+        #if PINKHA_DUAL_ENGINE_RUNTIME
+        case .pinkhaUnifiedV1: return true
+        #endif
+        default: return false
+        }
+    }
+
     public var versionPrefix: String {
         switch self {
         case .upstreamV050: return "any v0.5.0 "
         case .pinkhaNativeV1: return "any v0.5.0-pinkha.1 "
+        #if PINKHA_DUAL_ENGINE_RUNTIME
+        case .pinkhaUnifiedV1: return "any " + PinkhaUnifiedRuntimeProfile.anyVersion + " "
+        #endif
         case .pinkhaPreparedMigrationCandidateV1: return "any v0.5.0-pinkha.prepared.1 "
         case .pinkhaPreparedInlineMigrationCandidateV1: return "any v0.5.0-pinkha.prepared.inline.1 "
+        case .pinkhaPreparedFileMigrationCandidateV1: return "any v0.5.0-pinkha.prepared.file.1 "
+        case .pinkhaPreparedComponentsCandidateV1: return "any v0.5.0-pinkha.prepared.components.1 "
+        case .pinkhaPreparedComponentsCandidateV2: return "any v0.5.0-pinkha.prepared.components.2 "
         }
     }
 }
@@ -93,7 +127,7 @@ private final class AnyRuntimeEmergencyRegistry: @unchecked Sendable {
         guard generation == value else { return }
         // Native StopNow is the upstream synchronous, non-draining signal.
         // Holding this lock prevents an old signal crossing a later boot.
-        AnyLibStopNow()
+        anyNativeStopNow()
     }
 }
 
@@ -173,9 +207,19 @@ public actor AnyEmbeddedRuntime {
             throw AnyEmbeddedRuntimeError.invalidConfiguration
         }
         let (nodeconf, pushPeer, pushAddresses) = try network.arguments
+        #if PINKHA_DUAL_ENGINE_RUNTIME
+        let version = PinkhaAnyEmbeddedBridge.version()
+        #else
         guard let versionPointer = AnyLibVersion() else { throw AnyEmbeddedRuntimeError.unexpectedVersion }
         let version = String(cString: versionPointer)
+        #endif
+        #if PINKHA_DUAL_ENGINE_RUNTIME
+        guard build == .linked, version == PinkhaUnifiedRuntimeProfile.anyRuntimeVersion else {
+            throw AnyEmbeddedRuntimeError.unexpectedVersion
+        }
+        #else
         guard build == .linked, version.hasPrefix(build.versionPrefix) else { throw AnyEmbeddedRuntimeError.unexpectedVersion }
+        #endif
         var random = [UInt8](repeating: 0, count: 32)
         let status = SecRandomCopyBytes(kSecRandomDefault, random.count, &random)
         guard status == errSecSuccess else {
@@ -186,6 +230,17 @@ public actor AnyEmbeddedRuntime {
         guard strings.allSatisfy({ !$0.utf8.contains(0) }) else {
             throw AnyEmbeddedRuntimeError.invalidConfiguration
         }
+        #if PINKHA_DUAL_ENGINE_RUNTIME
+        guard let result = PinkhaAnyEmbeddedBridge.start(dataDirectory: strings[0],
+            listenAddress: strings[1], nodeConfiguration: strings[2], pushPeerID: strings[3],
+            pushAddresses: strings[4], mode: strings[5], controlToken: strings[6]) else {
+            throw AnyEmbeddedRuntimeError.allocationFailed
+        }
+        guard result.code == 0 else {
+            throw AnyEmbeddedRuntimeError.startFailed(code: result.code, message: result.message)
+        }
+        let address = result.address
+        #else
         let pointers = strings.map { strdup($0) }
         defer { pointers.forEach { free($0) } }
         guard pointers.allSatisfy({ $0 != nil }) else {
@@ -199,10 +254,11 @@ public actor AnyEmbeddedRuntime {
             throw AnyEmbeddedRuntimeError.startFailed(code: result.code, message: Self.read(&result.message))
         }
         let address = Self.read(&result.address)
+        #endif
         guard let url = URL(string: "http://" + address),
               url.host == "127.0.0.1", let port = url.port, port > 0,
               url.path.isEmpty else {
-            AnyLibStop()
+            anyNativeStop()
             throw AnyEmbeddedRuntimeError.invalidBoundAddress
         }
         let session = AnyEmbeddedSession(baseURL: url, engineVersion: version, controlToken: token)
@@ -248,7 +304,7 @@ public actor AnyEmbeddedRuntime {
         guard let active else { return }
         if let expectedGeneration, active.generation != expectedGeneration { return }
         AnyRuntimeEmergencyRegistry.shared.clear(active.generation)
-        AnyLibStop()
+        anyNativeStop()
         self.active = nil
     }
 
@@ -258,7 +314,7 @@ public actor AnyEmbeddedRuntime {
         guard let active else { return }
         if let expectedGeneration, active.generation != expectedGeneration { return }
         AnyRuntimeEmergencyRegistry.shared.clear(active.generation)
-        AnyLibStopNow()
+        anyNativeStopNow()
         self.active = nil
     }
 
@@ -281,4 +337,21 @@ private final class AnyControlRedirectRefusal: NSObject, URLSessionTaskDelegate,
     ) {
         completionHandler(nil)
     }
+}
+
+/// Calls only the library selected by this package; the unified target has no AnyLib binary dependency.
+private func anyNativeStop() {
+    #if PINKHA_DUAL_ENGINE_RUNTIME
+    PinkhaAnyEmbeddedBridge.stop()
+    #else
+    AnyLibStop()
+    #endif
+}
+
+private func anyNativeStopNow() {
+    #if PINKHA_DUAL_ENGINE_RUNTIME
+    PinkhaAnyEmbeddedBridge.stopNow()
+    #else
+    AnyLibStopNow()
+    #endif
 }

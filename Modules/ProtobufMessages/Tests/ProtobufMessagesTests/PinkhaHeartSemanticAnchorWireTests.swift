@@ -127,18 +127,41 @@ extension HeartCaptureFixture {
 
 final class PinkhaHeartSemanticAnchorWireTests: XCTestCase {
 
-    func testCapturedProjectionAndMarksRequireTheExactSameObjectPreflight() throws {
+    func testCapturedProjectionAndMarksRequireExactPreflightAndReadback() throws {
         let plan = try HeartCaptureFixture.plan()
         for populated in [false, true] {
             let values = HeartCaptureFixture.projectionValues(populated: populated)
             let before = try HeartCaptureFixture.withProjection(HeartCaptureFixture.before(), values: values)
             let reply = try PinkhaHeartSemanticAnchorAppliedReply.decode(
                 HeartCaptureFixture.projectionReply(values: values), request: plan.request)
-            let event = try plan.validatedEvent(reply, preflight: before)
+            let after = try HeartCaptureFixture.withProjection(HeartCaptureFixture.after(), values: values)
+            let event = try plan.validatedEvent(reply, preflight: before, readback: after)
             XCTAssertEqual(event.messages.count, 2)
             XCTAssertEqual(try event.serializedData(), reply.responseEvent)
             try plan.verifyReadback(HeartCaptureFixture.after(), receipt: reply.receipt)
-            XCTAssertThrowsError(try plan.validatedEvent(reply), "Projection needs the actual preflight")
+            XCTAssertThrowsError(try plan.validatedEvent(reply), "Projection needs both actual snapshots")
+            XCTAssertThrowsError(try plan.validatedEvent(reply, preflight: before), "Preflight alone is not post-Apply authority")
+            XCTAssertThrowsError(try plan.validatedEvent(reply, readback: after), "Readback does not replace preflight CAS")
+        }
+    }
+
+    func testNewProjectionMaterializationRequiresIndependentPostApplyAuthority() throws {
+        let plan = try HeartCaptureFixture.plan()
+        let values = HeartCaptureFixture.projectionValues(populated: true)
+        let reply = try PinkhaHeartSemanticAnchorAppliedReply.decode(
+            HeartCaptureFixture.projectionReply(values: values), request: plan.request)
+        let after = try HeartCaptureFixture.withProjection(HeartCaptureFixture.after(), values: values)
+        for presentCount in [0, 4, 9] {
+            var before = try HeartCaptureFixture.before()
+            let index = try XCTUnwrap(before.objectView.details.firstIndex { $0.id == plan.request.objectID })
+            for key in values.keys { before.objectView.details[index].details.fields.removeValue(forKey: key) }
+            for key in values.keys.sorted().prefix(presentCount) {
+                before.objectView.details[index].details.fields[key] = values[key]
+            }
+            try plan.verifyCurrent(before)
+            let event = try plan.validatedEvent(reply, preflight: before, readback: after)
+            XCTAssertEqual(try event.serializedData(), reply.responseEvent)
+            XCTAssertThrowsError(try plan.validatedEvent(reply, preflight: before))
         }
     }
 
@@ -146,11 +169,13 @@ final class PinkhaHeartSemanticAnchorWireTests: XCTestCase {
         let plan = try HeartCaptureFixture.plan()
         let values = HeartCaptureFixture.projectionValues()
         let before = try HeartCaptureFixture.withProjection(HeartCaptureFixture.before(), values: values)
+        let after = try HeartCaptureFixture.withProjection(HeartCaptureFixture.after(), values: values)
         let raw = try HeartCaptureFixture.projectionReply(values: values)
         let reply = try PinkhaHeartSemanticAnchorAppliedReply.decode(raw, request: plan.request)
-        func rejects(_ bytes: Data, preflight: Anytype_Rpc.Object.Show.Response, label: String) throws {
+        func rejects(_ bytes: Data, preflight: Anytype_Rpc.Object.Show.Response,
+                     readback: Anytype_Rpc.Object.Show.Response? = nil, label: String) throws {
             let candidate = try PinkhaHeartSemanticAnchorAppliedReply.decode(bytes, request: plan.request)
-            XCTAssertThrowsError(try plan.validatedEvent(candidate, preflight: preflight), label)
+            XCTAssertThrowsError(try plan.validatedEvent(candidate, preflight: preflight, readback: readback ?? after), label)
         }
 
         let eventMutations: [(String, (inout Anytype_ResponseEvent) throws -> Void)] = [
@@ -185,9 +210,10 @@ final class PinkhaHeartSemanticAnchorWireTests: XCTestCase {
 
         let rowIndex = try XCTUnwrap(before.objectView.details.firstIndex { $0.id == plan.request.objectID })
         for key in values.keys.sorted() {
-            var missing = before
-            missing.objectView.details[rowIndex].details.fields.removeValue(forKey: key)
-            XCTAssertThrowsError(try plan.validatedEvent(reply, preflight: missing), "Missing preflight: " + key)
+            var missing = after
+            let afterIndex = try XCTUnwrap(missing.objectView.details.firstIndex { $0.id == plan.request.objectID })
+            missing.objectView.details[afterIndex].details.fields.removeValue(forKey: key)
+            XCTAssertThrowsError(try plan.validatedEvent(reply, preflight: before, readback: missing), "Missing readback: " + key)
         }
         for variant in ["missing-row", "duplicate-row", "sub-ids", "unknown-row", "unknown-details", "foreign-root", "changed-block"] {
             var candidate = before
@@ -200,18 +226,18 @@ final class PinkhaHeartSemanticAnchorWireTests: XCTestCase {
             case "foreign-root": candidate.objectView.rootID += "-foreign"
             default: candidate = try HeartCaptureFixture.alterTarget(candidate) { $0.backgroundColor = "changed" }
             }
-            XCTAssertThrowsError(try plan.validatedEvent(reply, preflight: candidate), variant)
+            XCTAssertThrowsError(try plan.validatedEvent(reply, preflight: candidate, readback: after), variant)
         }
 
-        var stale = before
+        var stale = after
         stale.objectView.details[rowIndex].details.fields["_pinkhaTorahCacheIntegrity"]?.stringValue = String(repeating: "c", count: 64)
-        XCTAssertThrowsError(try plan.validatedEvent(reply, preflight: stale), "Valid-shaped stale cache proof")
-        stale = before
+        XCTAssertThrowsError(try plan.validatedEvent(reply, preflight: before, readback: stale), "Valid-shaped stale cache proof")
+        stale = after
         stale.objectView.details[rowIndex].details.fields["_pinkhaTorahCanonicalHash"]?.stringValue = String(repeating: "d", count: 64)
-        XCTAssertThrowsError(try plan.validatedEvent(reply, preflight: stale), "Valid-shaped different canonical content")
-        stale = before
+        XCTAssertThrowsError(try plan.validatedEvent(reply, preflight: before, readback: stale), "Valid-shaped different canonical content")
+        stale = after
         stale.objectView.details[rowIndex].details.fields["_pinkhaTorahCanonicalPropertyKey"]?.stringValue += "-foreign"
-        XCTAssertThrowsError(try plan.validatedEvent(reply, preflight: stale), "Opaque canonical key mismatch")
+        XCTAssertThrowsError(try plan.validatedEvent(reply, preflight: before, readback: stale), "Opaque canonical key mismatch")
 
         let invalidValues: [(String, Google_Protobuf_Value)] = [
             ("_pinkhaTorahState", .with { $0.stringValue = "MALFORMED" }),
@@ -243,14 +269,16 @@ final class PinkhaHeartSemanticAnchorWireTests: XCTestCase {
             var invalid = values
             invalid[key] = value
             try rejects(HeartCaptureFixture.projectionReply(values: invalid),
-                        preflight: HeartCaptureFixture.withProjection(HeartCaptureFixture.before(), values: invalid),
-                        label: "Even equal preflight/event must satisfy native projection schema: " + key)
+                        preflight: before,
+                        readback: HeartCaptureFixture.withProjection(HeartCaptureFixture.after(), values: invalid),
+                        label: "Even equal readback/event must satisfy native projection schema: " + key)
         }
         for key in values.keys.sorted() {
             var invalid = values
             invalid[key] = try HeartCaptureFixture.withUnknown(values[key]!)
             try rejects(HeartCaptureFixture.projectionReply(values: invalid),
-                        preflight: HeartCaptureFixture.withProjection(HeartCaptureFixture.before(), values: invalid),
+                        preflight: before,
+                        readback: HeartCaptureFixture.withProjection(HeartCaptureFixture.after(), values: invalid),
                         label: "Unknown projection value field: " + key)
         }
         for nested in ["list", "element"] {
@@ -260,7 +288,8 @@ final class PinkhaHeartSemanticAnchorWireTests: XCTestCase {
             else { list.values[0] = try HeartCaptureFixture.withUnknown(list.values[0]) }
             invalid["_pinkhaTorahAttachedProperties"] = .with { $0.listValue = list }
             try rejects(HeartCaptureFixture.projectionReply(values: invalid),
-                        preflight: HeartCaptureFixture.withProjection(HeartCaptureFixture.before(), values: invalid),
+                        preflight: before,
+                        readback: HeartCaptureFixture.withProjection(HeartCaptureFixture.after(), values: invalid),
                         label: "Unknown nested list field")
         }
         var composed = values
@@ -268,7 +297,8 @@ final class PinkhaHeartSemanticAnchorWireTests: XCTestCase {
         var decomposed = composed
         decomposed["_pinkhaTorahCanonicalPropertyKey"] = .with { $0.stringValue = "e\u{0301}" }
         try rejects(HeartCaptureFixture.projectionReply(values: composed),
-                    preflight: HeartCaptureFixture.withProjection(HeartCaptureFixture.before(), values: decomposed),
+                    preflight: before,
+                    readback: HeartCaptureFixture.withProjection(HeartCaptureFixture.after(), values: decomposed),
                     label: "Canonically equivalent opaque keys must retain byte identity")
     }
 

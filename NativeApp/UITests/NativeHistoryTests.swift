@@ -249,7 +249,7 @@ final class NativeHistoryTests: XCTestCase {
     }
 
     private func makeApplication(scope: UUID) -> XCUIApplication {
-        let app = XCUIApplication()
+        let app = NativeApplicationUnderTest()
         app.launchArguments = ["--native-ui-tests", "--native-ui-test-scope", scope.uuidString,
                                "-AppleLanguages", "(he,en)", "-AppleLocale", "he_IL"]
         return app

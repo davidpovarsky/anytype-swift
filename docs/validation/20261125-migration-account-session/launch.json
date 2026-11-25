@@ -1,0 +1,23 @@
+{
+  "source": "62d3682addd71bb664d64b96fde91e0d6379584e",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "env",
+    "PINKHA_NATIVE_SOURCE_FIXTURE=/mnt/development/projects/evidence/native-json-source-fixture-45472745870",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "2",
+    "--filter",
+    "NativeSourceAccountControllerTests"
+  ],
+  "startedAt": "2026-11-25T05:20:33.087587+00:00",
+  "scope": "Eight session ownership controls using original source bytes and injected native callbacks; not actual app native bridge acceptance."
+}

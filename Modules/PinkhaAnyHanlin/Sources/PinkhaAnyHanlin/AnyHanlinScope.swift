@@ -1,6 +1,7 @@
 import Foundation
 import HanlinHostContracts
 import PinkhaAnyHost
+import PinkhaHanlinCore
 
 /// Validated scope values only. Live native and mounted presentation checks
 /// remain necessary at every read/confirmation/dispatch boundary.
@@ -25,7 +26,7 @@ enum AnyHanlinScope {
             guard selection.isEmpty else { throw HanlinHostError.invalidContext }
         }
         let namespace = try HanlinConversationNamespace(
-            app: "anytype", account: accountID, workspace: spaceID, space: spaceID)
+            app: PinkhaHanlinEngineNamespace.any, account: accountID, workspace: spaceID, space: spaceID)
         return HanlinHostSession(conversationID: conversationID, context: .init(
             namespace: namespace, sceneID: sceneID, generation: UUID(),
             objectReference: snapshot?.objectID, selectionReferences: selection,

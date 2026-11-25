@@ -1,0 +1,92 @@
+warning: '--skip-update' option is deprecated and will be removed in a future release
+Building for debugging...
+[Computing dependencies]
+[Provisioning 1 / 19]
+[Pre-planning 1 / 392]
+[Planning 246 / 392]
+[Planning 386 / 392]
+[Planning deferred tasks]
+[Constructing 106 / 1199]
+[Constructing 615 / 1199]
+[Starting]
+[1 / 7] PinkhaAnyHostTests-product
+[1 / 17] CCryptoBoringSSL
+[4 / 67] CryptoBoringWrapper
+[10 / 57] PinkhaAnyEngine
+[11 / 60] TorahInspectorCore
+[16 / 60] TorahInspectorCore
+[18 / 61] PinkhaKit
+[20 / 66] PinkhaKit
+[21 / 66] TorahInspectorCore
+[23 / 66] PinkhaKit
+[24 / 66] PinkhaKit
+[24 / 66] PinkhaAnyIntegration
+[26 / 64] PinkhaAnyIntegration
+[33 / 64] PinkhaKit
+[34 / 69] Crypto
+[38 / 70] PinkhaKit
+[41 / 71] CryptoBoringWrapper
+[43 / 71] CryptoBoringWrapper
+[44 / 71] Crypto
+[46 / 74] PinkhaAnyEngine
+[48 / 78] PinkhaAnyEngine
+[49 / 78] PinkhaAnyEngine
+[52 / 78] PinkhaAnyEngine
+[57 / 80] PinkhaAnyEngine
+[60 / 82] PinkhaKit
+[63 / 85] Crypto
+[64 / 88] PinkhaAnyIntegration
+[65 / 88] PinkhaAnyIntegration
+[66 / 88] PinkhaAnyIntegration
+[68 / 88] PinkhaAnyIntegration
+[74 / 92] PinkhaAnyHost
+[76 / 95] PinkhaAnyHost
+[79 / 94] PinkhaAnyHost
+[83 / 95] PinkhaAnyHost
+[84 / 96] PinkhaAnyIntegration
+[86 / 99] PinkhaAnyIntegration
+[89 / 99] PinkhaAnyHostTests-product
+[92 / 99] PinkhaAnyHostTests-product
+[96 / 100] PinkhaAnyHostTests-product
+[97 / 100] PinkhaAnyHostTests-product
+[99 / 101] PinkhaAnyHostTests-test-runner
+[101 / 103] PinkhaAnyHostTests-test-runner
+[102 / 104] PinkhaAnyHostTests-test-runner
+[105 / 105] PinkhaAnyHostTests-test-runner
+[110 / 113] pinkha-any-host-probe-product
+[110 / 114] PinkhaAnyHostTests-test-runner
+[112 / 117] pinkha-any-host-probe-product
+[114 / 117] pinkha-any-host-probe-product
+[120 / 120] pinkha-any-host-probe-product
+Build complete! (120.39 secs)
+Test Suite 'Selected tests' started at 2026-11-24 22:31:53.236
+Test Suite 'AnyDestinationMigrationExecutorTests' started at 2026-11-24 22:31:53.237
+Test Case 'AnyDestinationMigrationExecutorTests.testPartsRequireTypeOwnersWhilePropertiesAllowCollections' started at 2026-11-24 22:31:53.237
+Test Case 'AnyDestinationMigrationExecutorTests.testPartsRequireTypeOwnersWhilePropertiesAllowCollections' passed (0.025 seconds)
+Test Suite 'AnyDestinationMigrationExecutorTests' passed at 2026-11-24 22:31:53.262
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.025 (0.025) seconds
+Test Suite 'NativeDefinitionPlanTests' started at 2026-11-24 22:31:53.262
+Test Case 'NativeDefinitionPlanTests.testDefinitionDraftsBindOwnersOptionsTypeHandlesAndExplicitSemanticGaps' started at 2026-11-24 22:31:53.262
+Test Case 'NativeDefinitionPlanTests.testDefinitionDraftsBindOwnersOptionsTypeHandlesAndExplicitSemanticGaps' passed (0.019 seconds)
+Test Suite 'NativeDefinitionPlanTests' passed at 2026-11-24 22:31:53.281
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.019 (0.019) seconds
+Test Suite 'NativePageCompositionTests' started at 2026-11-24 22:31:53.281
+Test Case 'NativePageCompositionTests.testOriginalCapturedPageComposesCurrentStateAndRetainsSourceBlockers' started at 2026-11-24 22:31:53.281
+NATIVE_PAGE_COMPOSITION originalPages=1 objects=144 currentItems=2 originalSchemaAndSourceBlockersRetained=true destinationWrites=false digest=4567380f79ef09f8ebb269249db3dd455f6b2cb95c357295e9db79fcefee0488
+Test Case 'NativePageCompositionTests.testOriginalCapturedPageComposesCurrentStateAndRetainsSourceBlockers' passed (1.54 seconds)
+Test Case 'NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities' started at 2026-11-24 22:31:54.821
+NATIVE_CUSTOM_PAGE_COMPOSITION pages=2 details=16 bodyBlocks=2 distinctObjectIdentities=true completeCaptureObjects=156 originalCustomAcceptanceFailureRetained=true destinationWrites=false
+Test Case 'NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities' passed (1.661 seconds)
+Test Case 'NativePageCompositionTests.testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles' started at 2026-11-24 22:31:56.482
+/mnt/development/projects/worktrees/anytype-native-page-composition-20261124/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePageCompositionTests.swift:10: error: NativePageCompositionTests.testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles : XCTAssertTrue failed - 
+/mnt/development/projects/worktrees/anytype-native-page-composition-20261124/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePageCompositionTests.swift:11: error: NativePageCompositionTests.testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles : XCTAssertFalse threw error "unsupported("relation-name", "canonical-name:captured-name-definition-does-not-match-qualified-native-contract")" - 
+<EXPR>:0: error: NativePageCompositionTests.testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles : threw error "titleBinding"
+Test Case 'NativePageCompositionTests.testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles' failed (0.022 seconds)
+Test Case 'NativePageCompositionTests.testUnaccountedDetailsSourceMetadataAndAmbiguousIdentitiesAreRefused' started at 2026-11-24 22:31:56.504
+Test Case 'NativePageCompositionTests.testUnaccountedDetailsSourceMetadataAndAmbiguousIdentitiesAreRefused' passed (0.088 seconds)
+Test Suite 'NativePageCompositionTests' failed at 2026-11-24 22:31:56.592
+	 Executed 4 tests, with 3 failures (2 unexpected) in 3.311 (3.311) seconds
+Test Suite 'Selected tests' failed at 2026-11-24 22:31:56.592
+	 Executed 6 tests, with 3 failures (2 unexpected) in 3.354 (3.354) seconds
+Note: Some test targets reported failures:
+  - PinkhaAnyHostTests (XCTest)

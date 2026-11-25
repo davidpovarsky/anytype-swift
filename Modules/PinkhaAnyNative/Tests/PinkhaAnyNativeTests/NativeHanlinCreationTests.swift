@@ -244,6 +244,7 @@ private final class SyntheticHanlinOwnedChat: PinkhaHanlinOwnedPresentation {
     private(set) var invalidated = false
     init(host: AnyHanlinHost) { self.host = host; self.session = host.session }
     func invalidate() { invalidated = true; host?.invalidate() }
+    func revokeAndDrain() async { await host?.close() }
 }
 
 @MainActor

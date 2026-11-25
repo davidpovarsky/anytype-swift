@@ -204,3 +204,6 @@ jobs:
             build/ui27-derived-ui/Build
             build/ui27-derived-ui/ModuleCache.noindex
           key: ${{ steps.ui27-cache.outputs.cache-primary-key }}
+      - name: Keep original completed Products outside the next checkout
+        if: ${{ always() && inputs.acceptance_lane == 'coherent-heart-release' && steps.ui27-cache-readiness.outcome == 'success' }}
+        run: python3 -B Tools/PinkhaSimulatorGate/retain_completed_products.py

@@ -4,7 +4,8 @@ import SwiftUI
 import UIKit
 import DeepLinks
 import HanlinMiniAppsBridge
-import HanlinMiniAppsPicker
+import PinkhaHanlinCore
+import PinkhaHanlinUI
 
 @MainActor
 final class PinkhaMiniAppsCoordinator {
@@ -12,9 +13,24 @@ final class PinkhaMiniAppsCoordinator {
 
     private final class Registration {
         weak var editor: EditorPageController?
+        let accountID: String
         var subscriptions: Set<AnyCancellable> = []
-        init(editor: EditorPageController) { self.editor = editor }
+        init(editor: EditorPageController, accountID: String) {
+            self.editor = editor
+            self.accountID = accountID
+        }
     }
+    private final class Presentation {
+        weak var controller: UIViewController?
+        let confirmation: Bool
+        init(_ controller: UIViewController, confirmation: Bool) {
+            self.controller = controller
+            self.confirmation = confirmation
+        }
+    }
+    private let lifetime = PinkhaMiniAppsLifetime()
+    private var presentations: [Presentation] = []
+    private var confirmations: [UUID: PinkhaMiniAppsConfirmation] = [:]
     private var registrations: [ObjectIdentifier: Registration] = [:]
     private var preparing = Set<ObjectIdentifier>()
     private var applying = Set<UUID>()
@@ -26,10 +42,40 @@ final class PinkhaMiniAppsCoordinator {
     private var applyingDocuments = Set<DocumentIdentity>()
     private var reported = Set<UUID>()
 
+    /// Returns only after all issued native work has returned. The caller keeps its
+    /// hold while Heart is unavailable and releases it after its own transition ends.
+    @discardableResult
+    func prepareEngineAccountChange() async throws -> UUID {
+        let token = lifetime.revoke()
+        for confirmation in Array(confirmations.values) { confirmation.cancel() }
+        let mounted = presentations.filter { !$0.confirmation }.compactMap(\.controller)
+        presentations.removeAll()
+        for controller in mounted where controller.presentingViewController != nil {
+            await withCheckedContinuation { continuation in
+                controller.dismiss(animated: false) { continuation.resume() }
+            }
+        }
+        await lifetime.drain()
+        // A task revoked before it started never entered the adapter's defer block.
+        preparing.removeAll()
+        applying.removeAll()
+        applyingDocuments.removeAll()
+        return token
+    }
+
+    func resumeAfterAccountChange(_ token: UUID) {
+        lifetime.resume(token)
+        guard lifetime.acceptsOperations else { return }
+        let accountID = Container.shared.accountManager().account.id
+        registrations = registrations.filter { $0.value.editor != nil && $0.value.accountID == accountID }
+        for editor in registrations.values.compactMap(\.editor) { consume(editor: editor) }
+    }
+
     func attach(editor: EditorPageController) {
         let id = ObjectIdentifier(editor)
-        guard registrations[id] == nil else { consume(editor: editor); return }
-        let registration = Registration(editor: editor)
+        let accountID = Container.shared.accountManager().account.id
+        guard registrations[id]?.accountID != accountID else { consume(editor: editor); return }
+        let registration = Registration(editor: editor, accountID: accountID)
         registrations[id] = registration
         editor.viewModel.document.syncPublisher.receive(on: DispatchQueue.main).sink { [weak self, weak editor] _ in
             guard let editor else { return }
@@ -49,45 +95,53 @@ final class PinkhaMiniAppsCoordinator {
 
     func present(editor: EditorPageController, selection: PinkhaMiniAppsTextSelection? = nil) {
         let id = ObjectIdentifier(editor)
-        guard isVisible(editor), editor.presentedViewController == nil,
-              preparing.insert(id).inserted else { return }
-        Task { [weak self, weak editor] in
-            guard let self, let editor else { return }
-            defer { preparing.remove(id) }
-            do {
-                let store = try MiniAppBridgeStore(appGroupIdentifier: "group.com.itorah.shared")
-                let context = try await PinkhaMiniAppsContext.capture(editor: editor, store: store, selection: selection)
-                guard isVisible(editor),
-                      context.source.documentID == editor.viewModel.document.objectId,
-                      context.source.metadata["anytype.accountID"] == Container.shared.accountManager().account.id
-                else { throw PinkhaMiniAppsError.documentUnavailable }
-                let picker = MiniAppPicker(store: store, source: context.source,
-                    inputs: context.inputs,
-                    operation: context.source.selection?.text.isEmpty == false ? .replaceSelection : .insert,
-                    callbacks: PinkhaMiniAppsContext.callbacks,
-                    onOpen: { [weak self, weak editor] url in
-                        guard let self, let editor else { return }
-                        // The shared picker already initiates its own dismissal.
-                        UIApplication.shared.open(url, options: [:]) { opened in
-                            guard !opened else { return }
-                            Task { @MainActor in
-                                if let presentation = editor.presentedViewController {
-                                    presentation.dismiss(animated: true) {
+        guard lifetime.acceptsOperations, isCurrent(editor), isVisible(editor),
+              editor.presentedViewController == nil, preparing.insert(id).inserted else { return }
+        do {
+            try lifetime.submit { [weak self, weak editor] lease in
+                guard let self else { return }
+                defer { preparing.remove(id) }
+                guard let editor else { return }
+                do {
+                    try validate(lease, editor: editor)
+                    let store = try MiniAppBridgeStore(appGroupIdentifier: "group.com.itorah.shared")
+                    let context = try await PinkhaMiniAppsContext.capture(
+                        editor: editor, store: store, selection: selection,
+                        authorize: { try self.validate(lease, editor: editor) })
+                    try validate(lease, editor: editor)
+                    guard isVisible(editor),
+                          context.source.documentID == editor.viewModel.document.objectId,
+                          context.source.metadata["anytype.accountID"] == Container.shared.accountManager().account.id
+                    else { throw PinkhaMiniAppsError.documentUnavailable }
+                    let controller = PinkhaMiniAppsPresentation.makePicker(store: store, source: context.source,
+                        inputs: context.inputs,
+                        operation: context.source.selection?.text.isEmpty == false ? .replaceSelection : .insert,
+                        callbacks: PinkhaMiniAppsContext.callbacks,
+                        onOpen: { [weak self, weak editor] url in
+                            guard let self, let editor, (try? self.validate(lease, editor: editor)) != nil else { return }
+                            // The shared picker already initiates its own dismissal.
+                            UIApplication.shared.open(url, options: [:]) { opened in
+                                guard !opened else { return }
+                                Task { @MainActor in
+                                    guard (try? self.validate(lease, editor: editor)) != nil else { return }
+                                    if let presentation = editor.presentedViewController {
+                                        presentation.dismiss(animated: true) {
+                                            guard (try? self.validate(lease, editor: editor)) != nil else { return }
+                                            self.show(error: PinkhaMiniAppsError.companionMissing, on: editor)
+                                        }
+                                    } else {
                                         self.show(error: PinkhaMiniAppsError.companionMissing, on: editor)
                                     }
-                                } else {
-                                    self.show(error: PinkhaMiniAppsError.companionMissing, on: editor)
                                 }
                             }
-                        }
-                    })
-                let controller = UIHostingController(rootView: picker)
-                controller.modalPresentationStyle = .pageSheet
-                controller.sheetPresentationController?.detents = [.medium(), .large()]
-                controller.sheetPresentationController?.prefersGrabberVisible = true
-                editor.present(controller, animated: true)
-            } catch { show(error: error, on: editor) }
-        }
+                        })
+                    track(controller)
+                    editor.present(controller, animated: true)
+                } catch {
+                    if lifetime.isCurrent(lease), isCurrent(editor) { show(error: error, on: editor) }
+                }
+            }
+        } catch { preparing.remove(id) }
     }
 
     /// Uses the existing queued object route for cold starts and an exact mounted
@@ -102,8 +156,12 @@ final class PinkhaMiniAppsCoordinator {
               let objectID = request.source.documentID,
               let spaceID = request.source.metadata["anytype.spaceID"]
         else { return (true, nil) }
+        guard PinkhaMiniAppsEngineScope.heart.matches(request.source) else { return (false, nil) }
+        guard lifetime.acceptsOperations,
+              request.source.metadata["anytype.accountID"] == Container.shared.accountManager().account.id
+        else { return (true, nil) }
         let editors = registrations.values.compactMap(\.editor).filter {
-            isVisible($0) && $0.viewModel.document.objectId == objectID &&
+            isCurrent($0) && isVisible($0) && $0.viewModel.document.objectId == objectID &&
                 $0.viewModel.document.spaceId == spaceID
         }
         let original = editors.first {
@@ -117,8 +175,8 @@ final class PinkhaMiniAppsCoordinator {
     }
 
     func consume(editor: EditorPageController, skipping: Set<UUID> = []) {
-        guard isVisible(editor), editor.viewModel.document.isOpened,
-              editor.presentedViewController == nil,
+        guard lifetime.acceptsOperations, isCurrent(editor), isVisible(editor),
+              editor.viewModel.document.isOpened, editor.presentedViewController == nil,
               let store = try? MiniAppBridgeStore(appGroupIdentifier: "group.com.itorah.shared"),
               let results = try? store.pendingResults(sourceAppID: PinkhaMiniAppsContext.sourceAppID)
         else { return }
@@ -129,37 +187,62 @@ final class PinkhaMiniAppsCoordinator {
         for result in results {
             guard !skipping.contains(result.requestID), !applying.contains(result.requestID),
                   let request = try? store.request(id: result.requestID),
+                  PinkhaMiniAppsEngineScope.heart.matches(request.source),
                   request.source.documentID == document.objectId,
                   request.source.metadata["anytype.spaceID"] == document.spaceId,
                   request.source.metadata["anytype.accountID"] == Container.shared.accountManager().account.id
             else { continue }
             applying.insert(result.requestID)
             applyingDocuments.insert(identity)
-            Task { [weak self, weak editor] in
-                guard let self else { return }
-                defer {
-                    applying.remove(result.requestID)
-                    applyingDocuments.remove(identity)
-                    if let editor { consume(editor: editor, skipping: skipping.union([result.requestID])) }
-                }
-                guard let editor, isVisible(editor) else { return }
-                do {
-                    if result.status == .cancelled {
-                        _ = try store.acknowledgeResult(id: result.requestID, sourceAppID: request.source.appID)
-                    } else if result.status == .error || result.operation == .display || result.operation == .custom {
-                        presentResult(result, request: request, store: store, editor: editor)
-                    } else {
-                        // End native editing before applying the return to avoid an old
-                        // first-responder buffer subsequently writing over its saved result.
-                        editor.view.endEditing(true)
-                        let preserved = try await PinkhaMiniAppsResultApplier.apply(
-                            request: request, result: result, editor: editor, store: store)
-                        if preserved { show(message: PinkhaMiniAppsStrings.sourceChanged, on: editor) }
+            do {
+                try lifetime.submit { [weak self, weak editor] lease in
+                    guard let self else { return }
+                    defer {
+                        applying.remove(result.requestID)
+                        applyingDocuments.remove(identity)
+                        if let editor { consume(editor: editor, skipping: skipping.union([result.requestID])) }
                     }
-                    reported.remove(result.requestID)
-                } catch {
-                    if reported.insert(result.requestID).inserted { show(error: error, on: editor) }
+                    guard let editor, isVisible(editor) else { return }
+                    do {
+                        try validate(lease, editor: editor)
+                        if result.status == .cancelled {
+                            _ = try store.acknowledgeResult(id: result.requestID, sourceAppID: request.source.appID)
+                        } else if result.status == .error || result.operation == .display || result.operation == .custom {
+                            presentResult(result, request: request, store: store, editor: editor, lease: lease)
+                        } else {
+                            if result.operation != request.operation {
+                                let confirmation = PinkhaMiniAppsConfirmation()
+                                confirmations[result.requestID] = confirmation
+                                defer { confirmations.removeValue(forKey: result.requestID) }
+                                let accepted = await confirmation.request(from: editor,
+                                    title: PinkhaMiniAppsStrings.operationChangeTitle,
+                                    message: PinkhaMiniAppsStrings.operationChangeMessage(result.operation),
+                                    applyTitle: PinkhaMiniAppsStrings.apply,
+                                    cancelTitle: PinkhaMiniAppsStrings.cancel,
+                                    register: { [weak self] in self?.track($0, confirmation: true) },
+                                    unregister: { [weak self] controller in
+                                        self?.presentations.removeAll { $0.controller === controller }
+                                    })
+                                try validate(lease, editor: editor)
+                                guard accepted else { return }
+                            }
+                            // Preserve the native editor flush before applying the returned result.
+                            editor.view.endEditing(true)
+                            let preserved = try await PinkhaMiniAppsResultApplier.apply(
+                                request: request, result: result, editor: editor, store: store,
+                                authorize: { try self.validate(lease, editor: editor) })
+                            try validate(lease, editor: editor)
+                            if preserved { show(message: PinkhaMiniAppsStrings.sourceChanged, on: editor) }
+                        }
+                        reported.remove(result.requestID)
+                    } catch {
+                        if lifetime.isCurrent(lease), isCurrent(editor),
+                           reported.insert(result.requestID).inserted { show(error: error, on: editor) }
+                    }
                 }
+            } catch {
+                applying.remove(result.requestID)
+                applyingDocuments.remove(identity)
             }
             // Serialize mutations for one editor, including separate invocations.
             break
@@ -167,21 +250,36 @@ final class PinkhaMiniAppsCoordinator {
     }
 
     private func presentResult(_ result: MiniAppResult, request: MiniAppInvocation,
-                               store: MiniAppBridgeStore, editor: EditorPageController) {
+                               store: MiniAppBridgeStore, editor: EditorPageController,
+                               lease: PinkhaMiniAppsLifetime.Lease) {
         guard editor.presentedViewController == nil else { return }
-        let controller = PinkhaMiniAppsResultController(result: result, store: store) { [weak self, weak editor] in
+        let controller = PinkhaMiniAppsPresentation.makeResult(result: result, store: store,
+            title: PinkhaMiniAppsStrings.title, attachmentTitle: PinkhaMiniAppsStrings.attachment,
+            closeTitle: PinkhaMiniAppsStrings.close) { [weak self, weak editor] in
+            guard let self, let editor, (try? validate(lease, editor: editor)) != nil else { return }
             do {
                 _ = try store.acknowledgeResult(id: result.requestID, sourceAppID: request.source.appID)
-                if let editor { self?.consume(editor: editor) }
-            } catch {
-                if let editor { self?.show(error: error, on: editor) }
-            }
+                consume(editor: editor)
+            } catch { show(error: error, on: editor) }
         }
-        controller.modalPresentationStyle = .pageSheet
-        controller.sheetPresentationController?.detents = [.medium(), .large()]
-        controller.sheetPresentationController?.prefersGrabberVisible = true
-        controller.presentationController?.delegate = controller
+        track(controller)
         editor.present(controller, animated: true)
+    }
+
+    private func track(_ controller: UIViewController, confirmation: Bool = false) {
+        presentations.removeAll { $0.controller == nil }
+        presentations.append(Presentation(controller, confirmation: confirmation))
+    }
+
+    private func validate(_ lease: PinkhaMiniAppsLifetime.Lease, editor: EditorPageController) throws {
+        try lifetime.validate(lease)
+        guard isCurrent(editor) else { throw PinkhaMiniAppsError.documentUnavailable }
+    }
+
+    private func isCurrent(_ editor: EditorPageController) -> Bool {
+        let registration = registrations[ObjectIdentifier(editor)]
+        return registration?.editor === editor &&
+            registration?.accountID == Container.shared.accountManager().account.id
     }
 
     private func isVisible(_ editor: EditorPageController) -> Bool {
@@ -193,77 +291,15 @@ final class PinkhaMiniAppsCoordinator {
     }
 
     private func show(message: String, on editor: EditorPageController) {
-        guard isVisible(editor), editor.presentedViewController == nil else { return }
+        guard lifetime.acceptsOperations, isCurrent(editor), isVisible(editor),
+              editor.presentedViewController == nil else { return }
         let alert = UIAlertController(title: PinkhaMiniAppsStrings.title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: PinkhaMiniAppsStrings.close, style: .cancel) { [weak self, weak editor, weak alert] _ in
             alert?.dismiss(animated: true) {
                 if let editor { self?.consume(editor: editor) }
             }
         })
+        track(alert)
         editor.present(alert, animated: true)
-    }
-}
-
-@MainActor
-private final class PinkhaMiniAppsResultController: UIHostingController<PinkhaMiniAppsResultView>, UIAdaptivePresentationControllerDelegate {
-    private let onClosed: () -> Void
-    private var finished = false
-
-    init(result: MiniAppResult, store: MiniAppBridgeStore, onClosed: @escaping () -> Void) {
-        self.onClosed = onClosed
-        super.init(rootView: PinkhaMiniAppsResultView(result: result, store: store, onDone: {}))
-        rootView = PinkhaMiniAppsResultView(result: result, store: store) { [weak self] in
-            guard let self else { return }
-            dismiss(animated: true) { self.finish() }
-        }
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError("unavailable initializer") }
-
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        finish()
-    }
-
-    private func finish() {
-        guard !finished else { return }
-        finished = true
-        onClosed()
-    }
-}
-
-private struct PinkhaMiniAppsResultView: View {
-    let result: MiniAppResult
-    let store: MiniAppBridgeStore
-    let onDone: () -> Void
-
-    var body: some View {
-        NavigationStack {
-            List {
-                if let message = result.message, !message.isEmpty {
-                    Text(message).textSelection(.enabled)
-                }
-                ForEach(Array(result.items.enumerated()), id: \.offset) { _, item in
-                    switch item.kind {
-                    case .text, .json:
-                        Text(item.text ?? "").textSelection(.enabled)
-                    case .url:
-                        if let url = item.url { Link(item.name ?? url.absoluteString, destination: url) }
-                    case .file:
-                        if let id = item.attachmentID, let url = try? store.attachmentURL(id: id) {
-                            ShareLink(item: url) {
-                                Label(item.name ?? PinkhaMiniAppsStrings.attachment, systemImage: "doc")
-                            }
-                        }
-                    }
-                }
-            }
-            .navigationTitle(PinkhaMiniAppsStrings.title)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(PinkhaMiniAppsStrings.close, action: onDone)
-                }
-            }
-        }
     }
 }

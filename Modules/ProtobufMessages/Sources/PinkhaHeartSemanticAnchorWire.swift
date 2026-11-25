@@ -27,8 +27,12 @@ public enum PinkhaHeartSemanticAnchorOutcome: String, Decodable, Sendable {
 
 public enum PinkhaHeartSemanticAnchorProfile {
     public static let sourceManifestSHA256 = "2f76212f9fcd749aeb9e806b941e0fd0b54eba17e5cc842adb81c7eb3bae0f38"
+    #if PINKHA_DUAL_ENGINE_RUNTIME
+    public static let runtimeVersion = PinkhaUnifiedRuntimeProfile.heartVersion
+    #else
     public static let runtimeVersion =
         "pinkha-semantic-anchor-native-page-candidate-v1-" + sourceManifestSHA256
+    #endif
     public static let maximumWireBytes = 4 * 1_024 * 1_024
     public static let maximumEventBytes = 2 * 1_024 * 1_024
 }

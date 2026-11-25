@@ -1,0 +1,58 @@
+{
+  "observed_at": "2026-11-25T02:34:52.143240+00:00",
+  "execution": "existing pinned SSH under normal m1 account",
+  "hostname": "109bcd84-6a7a-475f-9c53-0cf427912d04",
+  "uid": 501,
+  "steps": [
+    {
+      "argv": [
+        "security",
+        "find-identity",
+        "-v",
+        "-p",
+        "codesigning"
+      ],
+      "exit": 0,
+      "out": "  1) 644940FCF25D1730DBD1BF7596AEBA7229E2B8FD \"Apple Distribution: David Povarsky (NA6HPWARQ2)\"\n     1 valid identities found\n",
+      "err": ""
+    },
+    {
+      "argv": [
+        "codesign",
+        "--force",
+        "--sign",
+        "644940FCF25D1730DBD1BF7596AEBA7229E2B8FD",
+        "--keychain",
+        "/Users/m1/Library/Keychains/apple-signing.keychain-db",
+        "/Users/m1/builds/_preflight/pinkha-signing-20261125/probe"
+      ],
+      "exit": 0,
+      "out": "",
+      "err": "/Users/m1/builds/_preflight/pinkha-signing-20261125/probe: replacing existing signature\n"
+    },
+    {
+      "argv": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "-R=anchor apple generic and certificate leaf[subject.OU] = \"NA6HPWARQ2\"",
+        "/Users/m1/builds/_preflight/pinkha-signing-20261125/probe"
+      ],
+      "exit": 0,
+      "out": "",
+      "err": ""
+    },
+    {
+      "argv": [
+        "codesign",
+        "-d",
+        "--verbose=4",
+        "/Users/m1/builds/_preflight/pinkha-signing-20261125/probe"
+      ],
+      "exit": 0,
+      "out": "",
+      "err": "Executable=/Users/m1/builds/_preflight/pinkha-signing-20261125/probe\nIdentifier=probe\nFormat=Mach-O thin (arm64)\nCodeDirectory v=20400 size=233 flags=0x0(none) hashes=2+2 location=embedded\nVersionPlatform=1\nVersionMin=1769472\nVersionSDK=1769472\nHash type=sha256 size=32\nCandidateCDHash sha256=4aef40a535360d3aa079aa06dbc9a5c5e3e45357\nCandidateCDHashFull sha256=4aef40a535360d3aa079aa06dbc9a5c5e3e4535701a7df8660a8ff5959ed7b22\nHash choices=sha256\nCMSDigest=4aef40a535360d3aa079aa06dbc9a5c5e3e4535701a7df8660a8ff5959ed7b22\nCMSDigestType=2\nExecutable Segment base=0\nExecutable Segment limit=16384\nExecutable Segment flags=0x1\nPage size=16384\nCDHash=4aef40a535360d3aa079aa06dbc9a5c5e3e45357\nSignature size=4786\nAuthority=Apple Distribution: David Povarsky (NA6HPWARQ2)\nAuthority=Apple Worldwide Developer Relations Certification Authority\nAuthority=Apple Root CA\nSigned Time=25 Nov 2026 at 03:34:52\nInfo.plist=not bound\nTeamIdentifier=NA6HPWARQ2\nSealed Resources=none\nInternal requirements count=1 size=172\nTotal signatures=1\nChosen signature=1\n"
+    }
+  ],
+  "actual_distribution_signature": true
+}

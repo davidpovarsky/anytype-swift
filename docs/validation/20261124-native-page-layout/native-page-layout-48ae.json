@@ -1,0 +1,68 @@
+{
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "--",
+    "env",
+    "PINKHA_NATIVE_CAPTURE_FIXTURE=/mnt/development/projects/evidence/native-json-source-fixture-45472745870",
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-native-semantic-map-20261124/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/mnt/development/projects/worktrees/anytype-semantic-migration-20261124/Modules/PinkhaAnyHost/.build",
+    "--jobs",
+    "1",
+    "--skip-update",
+    "--filter",
+    "NativePageLayoutTests|NativeTextBlockPlanTests"
+  ],
+  "contextUnchanged": true,
+  "exitCode": 0,
+  "finishedUTC": "2026-11-24T21:02:33.924604+00:00",
+  "fixtureContextSHA256": "5357d52f5e76b604a40d7a5f2b1bc002e19bc864c419a45f90128bfa965d5850",
+  "format": "native-page-layout-swift-v1",
+  "freeDiskAfter": 33004793856,
+  "freeDiskBefore": 33002967040,
+  "logBytes": 4260,
+  "logSHA256": "bcbe9c0b736b037e8863585e46179b44f8006accc0d051df1e5a2916c0d9484f",
+  "ownedProcessGroup": 3721513,
+  "selection": "3 new Page layout methods including original native sample; 3 affected existing native text methods",
+  "sourceCommit": "48ae37da3c39d648e09377faa4e0c35d13be2767",
+  "sourceInputs": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeTextBlockPlan.swift": "65323f5e85ccb9f54e3c181bf38c7c0e9440e8dcc7a1846bf19c276c58a2cbf5",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePageLayoutTests.swift": "86207c3b0e6e95dd1cf32ea6c813ee5311ed3652b1ac71350bd077beea329fe4",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePageLayout.swift": "be3ac5f21dfa71fc61be05d910bdc37a8832d252acb1d48ac2c03b88959f5e10"
+  },
+  "sourceUnchanged": true,
+  "startedUTC": "2026-11-24T21:00:43.449247+00:00",
+  "status": "PASS",
+  "testResults": [
+    {
+      "status": "passed",
+      "test": "NativePageLayoutTests.testBoundHeaderPreservesTitlePropertiesAndTheOrderedBodyGraph"
+    },
+    {
+      "status": "passed",
+      "test": "NativePageLayoutTests.testMissingPropertiesAndUnsupportedHeaderSemanticsStayExplicit"
+    },
+    {
+      "status": "passed",
+      "test": "NativePageLayoutTests.testOriginalNativePageProjectsItsBoundTitleAndBodyWithoutRewritingTheSnapshot"
+    },
+    {
+      "status": "passed",
+      "test": "NativeTextBlockPlanTests.testNativeGraphOrderAndMappedParentReferencesSurviveTheDestinationPlan"
+    },
+    {
+      "status": "passed",
+      "test": "NativeTextBlockPlanTests.testNineNativeTextStylesAndOriginalMetadataArePreservedInTheMappedPlan"
+    },
+    {
+      "status": "passed",
+      "test": "NativeTextBlockPlanTests.testUnknownContentMetadataAndDisconnectedBlocksCannotDisappear"
+    }
+  ],
+  "timedOut": false
+}

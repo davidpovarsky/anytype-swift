@@ -1,0 +1,47 @@
+/Users/m1/builds/pinkha-dual-native-v1-70fb5342f2ff-simulator/generated-entry.swift:7:22: error: missing argument for parameter #1 in call
+ 5 |   let result = Lib.MobileStartWithResult("", "", "", "", "", "", "")
+ 6 |   if let result { let _: Int32 = result.code; let _: String = result.address; let _: String = result.message }
+ 7 |   try Lib.MobileStop()
+   |                      `- error: missing argument for parameter #1 in call
+ 8 |   Lib.MobileStopNow()
+ 9 |   let capture: Data? = try Lib.ServicePinkhaCaptureLoadedAccountSource("", "", "", "", "")
+
+/Users/m1/builds/pinkha-dual-native-v1-70fb5342f2ff-simulator/Lib.xcframework/ios-arm64-simulator/Lib.framework/Headers/Mobile.objc.h:92:24: note: 'MobileStop' declared here
+ 90 | Safe to call when the server is not running.
+ 91 |  */
+ 92 | FOUNDATION_EXPORT BOOL MobileStop(NSError* _Nullable* _Nullable error);
+    |                        `- note: 'MobileStop' declared here
+ 93 | 
+ 94 | /**
+
+/Users/m1/builds/pinkha-dual-native-v1-70fb5342f2ff-simulator/generated-entry.swift:9:90: error: missing argument for parameter #6 in call
+ 7 |   try Lib.MobileStop()
+ 8 |   Lib.MobileStopNow()
+ 9 |   let capture: Data? = try Lib.ServicePinkhaCaptureLoadedAccountSource("", "", "", "", "")
+   |                                                                                          `- error: missing argument for parameter #6 in call
+10 |   let _: Bool = Lib.ServicePinkhaCancelLoadedAccountSourceCapture("", "")
+11 |   _ = try Lib.ServicePinkhaValidateLoadedAccountSourceCapture("", "", "")
+
+/Users/m1/builds/pinkha-dual-native-v1-70fb5342f2ff-simulator/Lib.xcframework/ios-arm64-simulator/Lib.framework/Headers/Service.objc.h:2056:37: note: 'ServicePinkhaCaptureLoadedAccountSource' declared here
+2054 | The context timeout is cooperative; it does not promise hard native IO expiry.
+2055 |  */
+2056 | FOUNDATION_EXPORT NSData* _Nullable ServicePinkhaCaptureLoadedAccountSource(NSString* _Nullable sessionToken, NSString* _Nullable accountID, NSString* _Nullable spaceID, NSString* _Nullable privateDirectory, NSString* _Nullable requestID, NSError* _Nullable* _Nullable error);
+     |                                     `- note: 'ServicePinkhaCaptureLoadedAccountSource' declared here
+2057 | 
+2058 | /**
+
+/Users/m1/builds/pinkha-dual-native-v1-70fb5342f2ff-simulator/generated-entry.swift:11:73: error: missing argument for parameter #4 in call
+ 9 |   let capture: Data? = try Lib.ServicePinkhaCaptureLoadedAccountSource("", "", "", "", "")
+10 |   let _: Bool = Lib.ServicePinkhaCancelLoadedAccountSourceCapture("", "")
+11 |   _ = try Lib.ServicePinkhaValidateLoadedAccountSourceCapture("", "", "")
+   |                                                                         `- error: missing argument for parameter #4 in call
+12 |   let _: Bool = Lib.ServicePinkhaReleaseLoadedAccountSourceCapture("", "")
+13 |   let _ = Lib.ServicePinkhaTorahAuthorizedOperationRead
+
+/Users/m1/builds/pinkha-dual-native-v1-70fb5342f2ff-simulator/Lib.xcframework/ios-arm64-simulator/Lib.framework/Headers/Service.objc.h:2083:24: note: 'ServicePinkhaValidateLoadedAccountSourceCapture' declared here
+2081 | return is not semantic migration admission or a destination write permit.
+2082 |  */
+2083 | FOUNDATION_EXPORT BOOL ServicePinkhaValidateLoadedAccountSourceCapture(NSString* _Nullable sessionToken, NSString* _Nullable requestID, NSString* _Nullable manifestSHA256, NSError* _Nullable* _Nullable error);
+     |                        `- note: 'ServicePinkhaValidateLoadedAccountSourceCapture' declared here
+2084 | 
+2085 | FOUNDATION_EXPORT NSData* _Nullable ServiceProcessCancel(NSData* _Nullable b);

@@ -1,0 +1,294 @@
+{
+  "scope": "native non-inline file bytes across distinct accounts/processes and cold destination read under OS-denied outbound networking",
+  "binary_sha256": "bc73441d05a502e3e77df479f54279540489869b00ca1aecf4e1e9f681fa0f49",
+  "nodeconf_sha256": "08b54369643aede09a12ce2710abb0a11375f265bb85c5c3363f0526a4b766f9",
+  "sources_before": [
+    {
+      "commit": "548f5cd0430a723bd26ea724daeb99991f68b9c9",
+      "files": 874,
+      "unchanged": true
+    },
+    {
+      "commit": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953",
+      "files": 709,
+      "unchanged": true
+    }
+  ],
+  "cloud_custody_accepted": false,
+  "whole_space_migration_accepted": false,
+  "fixtures_retained": true,
+  "result": "PASS",
+  "phases": [
+    {
+      "name": "distinct native accounts and processes",
+      "seconds": 2.87
+    },
+    {
+      "name": "native invite accepted",
+      "seconds": 9.793,
+      "recipient_status": "active"
+    },
+    {
+      "name": "genuine mDNS connected",
+      "seconds": 9.798
+    },
+    {
+      "name": "byte equality and native range",
+      "seconds": 10.497,
+      "size": 8192,
+      "sha256": "5eb8cafc97b2b4b6c1e5b47940b6f0f89d06eb198dbbbc6c39948a3715a470f3"
+    },
+    {
+      "name": "byte equality and native range",
+      "seconds": 10.547,
+      "size": 1048576,
+      "sha256": "f5c858b64acc27d1a9a71b6844cc11687272695d4f0ae44d5ae68b0828d505b9"
+    },
+    {
+      "name": "byte equality and native range",
+      "seconds": 10.691,
+      "size": 10485760,
+      "sha256": "720b2d564a4bfa8c040b87db378a18a2a654916f1db7b7f1102efcc0287339e3"
+    },
+    {
+      "name": "both original native processes exited cleanly",
+      "seconds": 12.486
+    },
+    {
+      "name": "OS denied TCP connects and UDP sends",
+      "seconds": 12.563
+    },
+    {
+      "name": "fresh offline native process retained all original bytes",
+      "seconds": 13.315
+    }
+  ],
+  "files": [
+    {
+      "file_id": "TqxUFpP1Wdy",
+      "object_id": "bafyreigkcdnhwcoz5ovyittohrvdkc7nl343gllcjeoqunfqrdrglnniqy",
+      "root_cid": "bafybeifvffqchpie3enysswefbqzka2hrjznbspce2omtrvqw5b763v7ta",
+      "plaintext_bytes": 8192,
+      "source_sha256": "5eb8cafc97b2b4b6c1e5b47940b6f0f89d06eb198dbbbc6c39948a3715a470f3",
+      "destination_sha256": "5eb8cafc97b2b4b6c1e5b47940b6f0f89d06eb198dbbbc6c39948a3715a470f3",
+      "recipient_cached_before": false,
+      "recipient_cached_after": true,
+      "inline": false,
+      "durable": false,
+      "range_offset": 2730,
+      "range_bytes": 5462,
+      "range_equal": true,
+      "download_seconds": 0.02,
+      "source_status": {
+        "fileId": "TqxUFpP1Wdy",
+        "objectId": "bafyreigkcdnhwcoz5ovyittohrvdkc7nl343gllcjeoqunfqrdrglnniqy",
+        "state": "inflight",
+        "cached": true,
+        "lastErr": "filestatus: no file nodes in the network"
+      },
+      "recipient_status": {
+        "fileId": "TqxUFpP1Wdy",
+        "objectId": "bafyreigkcdnhwcoz5ovyittohrvdkc7nl343gllcjeoqunfqrdrglnniqy",
+        "state": "inflight",
+        "cached": true
+      },
+      "cold_offline_sha256": "5eb8cafc97b2b4b6c1e5b47940b6f0f89d06eb198dbbbc6c39948a3715a470f3",
+      "cold_offline_equal": true
+    },
+    {
+      "file_id": "D9gLm7gCo4T",
+      "object_id": "bafyreigkcdnhwcoz5ovyittohrvdkc7nl343gllcjeoqunfqrdrglnniqy",
+      "root_cid": "bafybeia7hlq6i3xrvbs46vy7pxh6gvg5tzzb4nar6zqvraruk65g6cy5te",
+      "plaintext_bytes": 1048576,
+      "source_sha256": "f5c858b64acc27d1a9a71b6844cc11687272695d4f0ae44d5ae68b0828d505b9",
+      "destination_sha256": "f5c858b64acc27d1a9a71b6844cc11687272695d4f0ae44d5ae68b0828d505b9",
+      "recipient_cached_before": false,
+      "recipient_cached_after": true,
+      "inline": false,
+      "durable": false,
+      "range_offset": 200000,
+      "range_bytes": 32768,
+      "range_equal": true,
+      "download_seconds": 0.02,
+      "source_status": {
+        "fileId": "D9gLm7gCo4T",
+        "objectId": "bafyreigkcdnhwcoz5ovyittohrvdkc7nl343gllcjeoqunfqrdrglnniqy",
+        "state": "inflight",
+        "cached": true,
+        "lastErr": "filestatus: no file nodes in the network"
+      },
+      "recipient_status": {
+        "fileId": "D9gLm7gCo4T",
+        "objectId": "bafyreigkcdnhwcoz5ovyittohrvdkc7nl343gllcjeoqunfqrdrglnniqy",
+        "state": "inflight",
+        "cached": true
+      },
+      "cold_offline_sha256": "f5c858b64acc27d1a9a71b6844cc11687272695d4f0ae44d5ae68b0828d505b9",
+      "cold_offline_equal": true
+    },
+    {
+      "file_id": "gjMVbZj6aec",
+      "object_id": "bafyreigkcdnhwcoz5ovyittohrvdkc7nl343gllcjeoqunfqrdrglnniqy",
+      "root_cid": "bafybeib4qj7tqu426xefqnr6v5ypx3zwkgy3boto4yg4rsqgf7hzwwjmfe",
+      "plaintext_bytes": 10485760,
+      "source_sha256": "720b2d564a4bfa8c040b87db378a18a2a654916f1db7b7f1102efcc0287339e3",
+      "destination_sha256": "720b2d564a4bfa8c040b87db378a18a2a654916f1db7b7f1102efcc0287339e3",
+      "recipient_cached_before": false,
+      "recipient_cached_after": true,
+      "inline": false,
+      "durable": false,
+      "range_offset": 200000,
+      "range_bytes": 32768,
+      "range_equal": true,
+      "download_seconds": 0.054,
+      "source_status": {
+        "fileId": "gjMVbZj6aec",
+        "objectId": "bafyreigkcdnhwcoz5ovyittohrvdkc7nl343gllcjeoqunfqrdrglnniqy",
+        "state": "inflight",
+        "cached": true,
+        "lastErr": "filestatus: no file nodes in the network"
+      },
+      "recipient_status": {
+        "fileId": "gjMVbZj6aec",
+        "objectId": "bafyreigkcdnhwcoz5ovyittohrvdkc7nl343gllcjeoqunfqrdrglnniqy",
+        "state": "inflight",
+        "cached": true
+      },
+      "cold_offline_sha256": "720b2d564a4bfa8c040b87db378a18a2a654916f1db7b7f1102efcc0287339e3",
+      "cold_offline_equal": true
+    }
+  ],
+  "processes": [
+    {
+      "name": "alice",
+      "pid": 7828,
+      "data_dir": "/Users/m1/builds/pinkha-c-native-file-peer-20261125/attempt1/alice",
+      "port": 57713,
+      "sandboxed": false,
+      "started_seconds": 1.439,
+      "exit_code": 0,
+      "forced_kill": false
+    },
+    {
+      "name": "bob",
+      "pid": 7830,
+      "data_dir": "/Users/m1/builds/pinkha-c-native-file-peer-20261125/attempt1/bob",
+      "port": 57723,
+      "sandboxed": false,
+      "started_seconds": 2.21,
+      "exit_code": 0,
+      "forced_kill": false
+    },
+    {
+      "name": "bob-cold-offline",
+      "pid": 7845,
+      "data_dir": "/Users/m1/builds/pinkha-c-native-file-peer-20261125/attempt1/bob",
+      "port": 57781,
+      "sandboxed": true,
+      "started_seconds": 12.566,
+      "exit_code": 0,
+      "forced_kill": false
+    }
+  ],
+  "resource_policy": {
+    "estimated_new_disk_bytes": 268435456,
+    "emergency_free_bytes": 2147483648,
+    "rationale": "No compile/download; 11MiB+8KiB deterministic payloads, two complete encrypted native stores plus indexes/logs. A256MiB phase allowance and active-work2GiB emergency floor bound the small runtime phase."
+  },
+  "seconds": 13.369,
+  "minimum_free_bytes": 8836435968,
+  "accounts": {
+    "alice": "AAmHYNAgqqFADR6Un7HdL1s4CoXGTqHMDn26WELtQZu2QL3g",
+    "bob": "ABPZd12uQvbtYSVwzUaHRcaH3S3CKJ4LHrxRQECuVxbYBjLT"
+  },
+  "space_id": "bafyreifiyrtnyg642jqmldzb5hzxug44pec5lcyferlqutormwwerunfsm.16hhqj4pwu7di",
+  "object_id": "bafyreigkcdnhwcoz5ovyittohrvdkc7nl343gllcjeoqunfqrdrglnniqy",
+  "recipient_role": "reader",
+  "discovery": {
+    "alice": {
+      "peerId": "12D3KooWE7CC1Hp5Y2tLsEfWdQSJYoMy9yX2ZzGHuq8ZqZ7Khdfb",
+      "matching_connected_peers": [
+        {
+          "peerId": "12D3KooWMp9VqXVAHGG2BQa6RckgW2RHCfDof5UqHEYmDNsfBDj2",
+          "connected": true,
+          "sources": [
+            "lan"
+          ],
+          "shared_space": true
+        }
+      ]
+    },
+    "bob": {
+      "peerId": "12D3KooWMp9VqXVAHGG2BQa6RckgW2RHCfDof5UqHEYmDNsfBDj2",
+      "matching_connected_peers": [
+        {
+          "peerId": "12D3KooWE7CC1Hp5Y2tLsEfWdQSJYoMy9yX2ZzGHuq8ZqZ7Khdfb",
+          "connected": true,
+          "sources": [
+            "lan"
+          ],
+          "shared_space": true
+        }
+      ]
+    },
+    "driver": "original native mDNS",
+    "fake_driver": false
+  },
+  "offline_policy": {
+    "profile_sha256": "e210de323e5d671bb6b63b79ce1481f8314b5ac2fd65d65a180d381294ee2fa1",
+    "probe": {
+      "tcp_connect_denied": true,
+      "tcp_errno": 1,
+      "udp_send_denied": true,
+      "udp_errno": 1
+    },
+    "baseline_listener_reachable": true
+  },
+  "cold_sync_status": {
+    "networkPeers": 0,
+    "localPeers": 0,
+    "globalPeers": 0,
+    "p2p": "notconnected",
+    "state": "offline"
+  },
+  "sources_after": [
+    {
+      "commit": "548f5cd0430a723bd26ea724daeb99991f68b9c9",
+      "files": 874,
+      "unchanged": true
+    },
+    {
+      "commit": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953",
+      "files": 709,
+      "unchanged": true
+    }
+  ],
+  "all_scoped_checks_passed": true,
+  "private_log_receipts": [
+    {
+      "name": "alice-init.log",
+      "bytes": 527,
+      "sha256": "a08780df10aecaf3366bee0249b36fc763d5eeb615ecd795c2803092572965b8"
+    },
+    {
+      "name": "alice-server.log",
+      "bytes": 15144,
+      "sha256": "ca41cf2c3f2e8402b462f8b15f6ce23f83162166ad578e51fd3dc4aed3f123be"
+    },
+    {
+      "name": "bob-cold-offline-server.log",
+      "bytes": 28693,
+      "sha256": "c41448b5d14cd172ae0c817c4beef8eb0581bfab49116c7e6fa1aecb440ebbfa"
+    },
+    {
+      "name": "bob-init.log",
+      "bytes": 516,
+      "sha256": "3cccb5aa15e3f2668c6a6d67bcb68c48efb682b07fb9747efef7f268356cf274"
+    },
+    {
+      "name": "bob-server.log",
+      "bytes": 16021,
+      "sha256": "8cfc920b05e00cb9c8623b8a0445ae5e4696fe79dd82fb88ee51f93dab674ffd"
+    }
+  ]
+}

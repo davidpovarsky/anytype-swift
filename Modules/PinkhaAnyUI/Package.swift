@@ -5,6 +5,8 @@ let package = Package(
     platforms: [.iOS("27.0"), .macOS(.v26)],
     products: [.library(name: "PinkhaAnyUI", targets: ["PinkhaAnyUI"])],
     dependencies: [
+        .package(path: "../../Dependencies/Hanlin/Packages/HanlinMiniAppsBridge"),
+        .package(path: "../PinkhaSharing"),
         .package(path: "../PinkhaTorahPresentation"),
         .package(path: "../PinkhaAnyHost"),
         .package(path: "../PinkhaAnyEngine"),
@@ -17,6 +19,8 @@ let package = Package(
     ],
     targets: [
         .target(name: "PinkhaAnyUI", dependencies: [
+            .product(name: "HanlinMiniAppsBridge", package: "HanlinMiniAppsBridge", condition: .when(platforms: [.iOS])),
+            "PinkhaSharing",
             "PinkhaTorahPresentation", "PinkhaAnyHost", "PinkhaAnyHanlin",
             "PinkhaAnyEngine", "PinkhaAnyIntegration", "PinkhaKit",
             .product(name: "PinkhaHanlinUI", package: "PinkhaAnyHanlin", condition: .when(platforms: [.iOS])),

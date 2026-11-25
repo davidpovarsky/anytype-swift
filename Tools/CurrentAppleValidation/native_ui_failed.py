@@ -1,4 +1,4 @@
-"""One current NativeApp build: four unresolved UI scopes, then Type and history."""
+"""One current NativeApp build: three remaining independent UI journeys."""
 from __future__ import annotations
 import importlib
 import os
