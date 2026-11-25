@@ -4,15 +4,15 @@ import json
 from pathlib import Path
 
 MAIN = "e540cd7e01b497f1b3173ae2e68b43ade0b00b6f"
-SOURCE = "aa26166f27773b9122c00c9716c0b57a5fe3408c"
+SOURCE = "d9acff333db5a2df0cfa373524a9c17e53410ffe"
 REVIEW_PATH = "docs/validation/20261125-native-bin-confirmation-preparation/source-review.json"
 EXPECTED = {
     "protocol": "native-bin-confirmation-ax-preparation-v1",
     "mainSourceCommit": MAIN, "sourceCommit": SOURCE,
     "originalSHA256": "6fbcd0173351597af99dd6d79e7869ac72077c0b9ad2ff464d9c02e60d096d02",
-    "compiledSHA256": "62691fb184de1d8b572bd0c9561f4668a5f296e42e276e4fce68648cb41fe7b3",
-    "helperSHA256": "d017e9fd5d1988af07b7274203e516fb085aa4e06e1f44e1bee18bad914e3543",
-    "reviewSHA256": "1a07cbefddb9075219a6194cc31b1c6cc0de2bd8d8e2ba9a468d5314ae998b43",
+    "compiledSHA256": "f7056f6f64144dffb9bca8420f543cf7ec78b2cc1b502e40b6c56abdc9dc0e95",
+    "helperSHA256": "7d346a46819183d5a3c8256afaf0bddbd409e4131dd3fb0b0aa572c7d4e98b12",
+    "reviewSHA256": "dae2c53b9ed8b1fee68caf015ee47e08231a39ed1e5d2a27fae22f3ccc78467e",
     "inverseDeltaRestoresCompleteOriginalFile": True,
     "allOriginalIdentityBodyBinRestoreColdAssertionsUnchanged": True,
     "timeoutSeconds": 30, "productChanges": 0, "nativeCallsAdded": 0,

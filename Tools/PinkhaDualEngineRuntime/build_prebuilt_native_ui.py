@@ -40,7 +40,7 @@ def write(path, value):
 
 def bin_confirmation_module():
     path = Path(__file__).resolve().with_name("bin_confirmation_preparation.py")
-    require(digest(path) == "69ba49f600e6a8e24127907604503d694de283c0f30a5c1e61b9f9a238795d0f", "exact_Bin_confirmation_source_validator_required")
+    require(digest(path) == "6f30156103912fdebe67bedc530e57f159ece79d640cde38b1c05b51e67341a4", "exact_Bin_confirmation_source_validator_required")
     sys.dont_write_bytecode = True
     spec = importlib.util.spec_from_file_location("qualified_bin_confirmation", path)
     module = importlib.util.module_from_spec(spec)
@@ -59,7 +59,7 @@ def main():
     parser.add_argument("--miniapps-source-commit", choices=["53eec4a2289f969979bc301760ce152088ebc2f7"])
     parser.add_argument("--bin-source-commit", choices=["36401a8e49189465ad89e395d962695e3a76e67a", "06a3d5b83caf656f2b9a28618cd186c6794ab27e"])
     parser.add_argument("--miniapps-menu-source-commit", choices=["9b7f0df07ad4b9f81829ee834ac30c5c4c8588fd"])
-    parser.add_argument("--bin-confirmation-source-commit", choices=["aa26166f27773b9122c00c9716c0b57a5fe3408c"])
+    parser.add_argument("--bin-confirmation-source-commit", choices=["d9acff333db5a2df0cfa373524a9c17e53410ffe"])
     args = parser.parse_args()
     root, evidence, output = args.main_root, args.main_evidence, args.output
     for path in (root, evidence, output):

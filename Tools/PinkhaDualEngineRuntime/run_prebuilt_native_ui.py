@@ -358,7 +358,7 @@ def admit_current_menu_runner(source, main_record, ui_build, ui_record):
 
 def bin_confirmation_module():
     path = Path(__file__).resolve().with_name("bin_confirmation_preparation.py")
-    require(digest(path) == "69ba49f600e6a8e24127907604503d694de283c0f30a5c1e61b9f9a238795d0f", "exact_Bin_confirmation_source_validator_required")
+    require(digest(path) == "6f30156103912fdebe67bedc530e57f159ece79d640cde38b1c05b51e67341a4", "exact_Bin_confirmation_source_validator_required")
     sys.dont_write_bytecode = True
     spec = importlib.util.spec_from_file_location("qualified_bin_confirmation", path)
     module = importlib.util.module_from_spec(spec)
