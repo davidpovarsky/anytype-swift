@@ -15,6 +15,7 @@ from pathlib import Path
 import shutil
 import signal
 import subprocess
+import sys
 import time
 
 
@@ -86,6 +87,8 @@ def main():
         origin + ":Tools/AnyEnginePort/native_ui_transition_project.py"],
         check=True, capture_output=True).stdout
     require(helper.read_bytes() == original_helper, "original_ui_projection_changed")
+    # Loading the original helper must not write bytecode into frozen source.
+    sys.dont_write_bytecode = True
     spec = importlib.util.spec_from_file_location("qualified_native_ui_projection", helper)
     projection = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(projection)
