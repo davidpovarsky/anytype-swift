@@ -205,6 +205,8 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--stage", choices=tuple(STAGES), required=True)
     parser.add_argument("--frozen-inputs", type=Path)
+    parser.add_argument("--retain-owned-simulator", action="store_true",
+                        help="Keep the exact owned device Shutdown for diagnostic continuity.")
     args = parser.parse_args()
     for path in (args.main_root, args.main_evidence, args.ui_build, args.output):
         require(path.is_absolute() and path.resolve() == path, "canonical_absolute_path_required")
@@ -446,7 +448,9 @@ def main():
                            "sourceSimulator": udid, "containsPrivateNativeAccountData": True})
             except BaseException as exc:
                 cleanup_errors.append({"phase": "native-sandbox-retention", "reason": str(exc)})
-            for label, command in (("delete-simulator", ["xcrun", "simctl", "delete", udid]),):
+            deletion_commands = () if args.retain_owned_simulator else (
+                ("delete-simulator", ["xcrun", "simctl", "delete", udid]),)
+            for label, command in deletion_commands:
                 try:
                     run(command, out, label, timeout=60, cleanup=True)
                 except BaseException as exc:
@@ -454,9 +458,13 @@ def main():
             try:
                 _, raw = run(["xcrun", "simctl", "list", "devices", "--json"],
                              out, "final-devices", cleanup=True)
-                require(not any(d["udid"].upper() == udid for group in
-                        json.loads(raw)["devices"].values() for d in group),
-                        "owned_simulator_still_exists")
+                owned = [d for group in json.loads(raw)["devices"].values()
+                         for d in group if d["udid"].upper() == udid]
+                if args.retain_owned_simulator:
+                    require(len(owned) == 1 and owned[0]["state"] == "Shutdown",
+                            "retained_owned_simulator_must_be_shutdown")
+                else:
+                    require(not owned, "owned_simulator_still_exists")
             except BaseException as exc:
                 cleanup_errors.append({"phase": "device-absence", "reason": str(exc)})
         try:
@@ -475,7 +483,10 @@ def main():
         except BaseException as exc:
             cleanup_errors.append({"phase": "product-integrity", "reason": str(exc)})
         receipt.update(firstFailure=first_error, diagnosticFailures=cleanup_errors,
-                       ownedSimulator=udid, finished=time.time())
+                       ownedSimulator=udid,
+                       ownedSimulatorRetention=("Shutdown" if args.retain_owned_simulator
+                                                else "Deleted"),
+                       finished=time.time())
         receipt["status"] = "PASS" if first_error is None and not cleanup_errors and \
             receipt.get("counts", {}).get("passedTests") == 1 else "FAIL"
         write(out / "receipt.json", receipt)
