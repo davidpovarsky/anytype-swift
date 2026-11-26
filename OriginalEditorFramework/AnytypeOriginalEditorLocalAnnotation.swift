@@ -859,7 +859,7 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                     try await ClientCommands.blockFileSetTargetObjectId(.with {
                         $0.contextID = contextID
                         $0.blockID = added
-                        $0.targetObjectID = saved.id
+                        $0.objectID = saved.id
                     }).invoke()
                 }
                 try Task.checkCancellation()
