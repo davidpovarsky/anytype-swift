@@ -143,6 +143,7 @@ internal final class OriginalEditorEmbeddedAccountProcess {
     private let invocation: any InvocationMesagesHandlerProtocol
     private var activeAttempt: OriginalEditorAccountRuntimeAttempt?
     private var localAccountLease: OriginalEditorLocalAccountLease?
+    private var middlewareInitialization: Task<Void, Error>?
 
     private init(
         appGroup: String,
@@ -234,6 +235,33 @@ internal final class OriginalEditorEmbeddedAccountProcess {
               (Container.shared.authService() as? PinkhaHanlinAuthService) === auth else {
             throw AnytypeOriginalEditorAccountSession.SessionError.originalServiceUnavailable
         }
+    }
+
+    /// The full Anytype app configures these original middleware parameters at launch.
+    /// Embedded consumers must finish the same call before native account commands.
+    func initializeMiddleware() async throws {
+        try validateInstallation()
+        guard InvocationDispatchContext.binding == nil else {
+            throw AnytypeOriginalEditorAccountSession.SessionError.runtimeAlreadyOwned
+        }
+        let initialization: Task<Void, Error>
+        if let previous = middlewareInitialization {
+            initialization = previous
+        } else {
+            let appVersion = MetadataProvider.appVersion ?? ""
+            let buildNumber = MetadataProvider.buildNumber ?? ""
+            let environment = CoreEnvironment.targetType.isDebug ? "-dev" : ""
+            let version = appVersion + "(\(buildNumber))" + environment
+            let workdir = Container.shared.localRepoService().middlewareRepoURL.deletingLastPathComponent().path
+            let metrics = Container.shared.metricsService()
+            initialization = Task {
+                try await metrics.setInitialParameters(platform: "iOS", version: version, workdir: workdir)
+            }
+            middlewareInitialization = initialization
+        }
+        try await initialization.value
+        try validateInstallation()
+        try Task.checkCancellation()
     }
 
     func makeAttempt(
@@ -552,6 +580,9 @@ internal final class OriginalEditorAccountRuntimeAttempt {
     }
 
     private func prepareOriginalConsumers() async throws {
+        try process.validateOwner(self)
+        try capture.validate()
+        try await process.initializeMiddleware()
         try process.validateOwner(self)
         try capture.validate()
         let caller = try await process.auth.makeOriginalEditorCaller()

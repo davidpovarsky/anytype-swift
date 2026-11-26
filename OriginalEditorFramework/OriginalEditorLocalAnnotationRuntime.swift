@@ -60,6 +60,7 @@ internal final class OriginalEditorLocalAnnotationRuntime {
             throw AnytypeOriginalEditorLocalAnnotationError.runtimeAlreadyOwned
         }
         let process = try OriginalEditorEmbeddedAccountProcess.acquire(appGroup: appGroup)
+        try await process.initializeMiddleware()
         let lease = try process.claimLocalAccount()
         // Reserve the original process before the first await. The original
         // account presentation and localOnly editor can never overlap.
