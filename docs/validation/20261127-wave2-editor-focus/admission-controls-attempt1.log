@@ -1,0 +1,25 @@
+test_compiled_selection_is_exact (__main__.FocusProfileControls.test_compiled_selection_is_exact) ... ok
+test_distinct_methods_and_literal_cases_are_both_required (__main__.FocusProfileControls.test_distinct_methods_and_literal_cases_are_both_required) ... ERROR
+test_each_added_acquisition_and_supersession_case_cannot_be_lost (__main__.FocusProfileControls.test_each_added_acquisition_and_supersession_case_cannot_be_lost) ... ok
+test_exact_current_source_and_old_profile_rejection (__main__.FocusProfileControls.test_exact_current_source_and_old_profile_rejection) ... ok
+
+======================================================================
+ERROR: test_distinct_methods_and_literal_cases_are_both_required (__main__.FocusProfileControls.test_distinct_methods_and_literal_cases_are_both_required)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/development/projects/worktrees/anytype-wave2-editor-20261127/Tools/CurrentAppleValidation/combined_heart_semantics/build16/test_focus_lifecycle_profile.py", line 60, in test_distinct_methods_and_literal_cases_are_both_required
+    result = focus.validate_results(
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave2-editor-20261127/Tools/CurrentAppleValidation/combined_heart_semantics/build16/focus_lifecycle_profile.py", line 42, in validate_results
+    actual = host.validate_results(summary, tree, expected, udid)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/development/projects/worktrees/anytype-wave2-editor-20261127/Tools/Hanlin/run_host_tests.py", line 238, in validate_results
+    require(device.get("deviceId") == udid and device.get("osVersion", "").split(".")[0] == "27"
+  File "/mnt/development/projects/worktrees/anytype-wave2-editor-20261127/Tools/Hanlin/run_host_tests.py", line 131, in require
+    raise ValueError(reason)
+ValueError: Raw xcresult device differs from disposable OS27 iPad
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.014s
+
+FAILED (errors=1)
