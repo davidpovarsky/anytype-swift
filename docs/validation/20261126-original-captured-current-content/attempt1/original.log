@@ -1,0 +1,96 @@
+Building for debugging...
+[Computing dependencies]
+[Constructing description]
+[Pre-planning 1 / 392]
+[Planning 1 / 392]
+[Planning 196 / 392]
+[Planning 338 / 392]
+[Planning deferred tasks]
+[Constructing 112 / 1199]
+[Constructing 618 / 1199]
+[Starting]
+[3 / 10] PinkhaAnyHost
+[4 / 11] PinkhaAnyHost
+[9 / 14] PinkhaAnyHostTests-product
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeIdentityTests.swift:146:30: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m144 |[0;0m                 "spaceID": .string(space), "typeID": .string(type), "exactNativeQueryCount": .integer(1)]))
+[0;36m145 |[0;0m         }
+[0;36m146 |[0;0m         let descriptorRows = try bindings.map { binding -> AnyJSON in
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m147 |[0;0m             .object(["propertyID": .string(binding.propertyID), "nativeContract": .string(binding.nativeContract),
+[0;36m148 |[0;0m                      "nativeDescriptorSHA256": .string(binding.nativeDescriptorSHA256),
+
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeTypeOrderTests.swift:104:24: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m102 |[0;0m         }
+[0;36m103 |[0;0m         try require(plan.binding.workspace == workspace && plan.items.count == 6)
+[0;36m104 |[0;0m         let executor = try AnyDestinationMigrationExecutor(client: client, journalDirectory: journal)
+    [0;36m|[0;0m                        `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m105 |[0;0m         let progress = try await executor.execute(plan: plan,
+[0;36m106 |[0;0m             payloads: { _ in throw TypeOrderNativeFailure.unexpectedPayload },
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[12 / 17] PinkhaAnyHostTests-product
+[12 / 18] PinkhaAnyHostTests-product
+[13 / 18] PinkhaAnyHostTests-product
+[14 / 22] CCryptoBoringSSL
+[17 / 24] PinkhaAnyHostTests-product
+[18 / 24] PinkhaAnyHost
+[20 / 27] PinkhaAnyHost
+[23 / 27] PinkhaAnyHost
+[24 / 27] PinkhaAnyHostTests-product
+[28 / 30] PinkhaAnyHostTests-test-runner
+[29 / 31] PinkhaAnyHostTests-test-runner
+[31 / 33] PinkhaAnyHostTests-test-runner
+[34 / 35] PinkhaAnyHostTests-test-runner
+[35 / 35] PinkhaAnyHostTests-test-runner
+[38 / 43] PinkhaAnyHost-product
+[39 / 41] PinkhaAnyHostTests-test-runner
+[41 / 44] pinkha-any-host-probe-product
+[42 / 44] pinkha-any-host-probe-product
+[42 / 44] PinkhaAnyHostTests-test-runner
+[44 / 47] pinkha-any-host-probe-product
+[46 / 46] pinkha-any-host-probe-product
+Build complete! (130.35 secs)
+Test Suite 'Selected tests' started at 2026-11-26 01:03:16.712
+Test Suite 'NativeDefinitionPlanTests' started at 2026-11-26 01:03:16.726
+Test Case 'NativeDefinitionPlanTests.testCanonicalDescriptionRefusesOverridesAndRequiresExactLiveDescriptor' started at 2026-11-26 01:03:16.726
+Test Case 'NativeDefinitionPlanTests.testCanonicalDescriptionRefusesOverridesAndRequiresExactLiveDescriptor' passed (0.193 seconds)
+Test Case 'NativeDefinitionPlanTests.testCanonicalDescriptionSharesNativeNamespaceWithoutChangingTitleIdentity' started at 2026-11-26 01:03:16.919
+Test Case 'NativeDefinitionPlanTests.testCanonicalDescriptionSharesNativeNamespaceWithoutChangingTitleIdentity' passed (0.119 seconds)
+Test Case 'NativeDefinitionPlanTests.testCanonicalNameHasOneNativeAddressAndMixedOwnerValuesPreserveAbsence' started at 2026-11-26 01:03:17.037
+Test Case 'NativeDefinitionPlanTests.testCanonicalNameHasOneNativeAddressAndMixedOwnerValuesPreserveAbsence' passed (0.147 seconds)
+Test Case 'NativeDefinitionPlanTests.testCanonicalNameOverridesShadowingAndChangedNativeContractsRefuse' started at 2026-11-26 01:03:17.185
+Test Case 'NativeDefinitionPlanTests.testCanonicalNameOverridesShadowingAndChangedNativeContractsRefuse' passed (0.134 seconds)
+Test Case 'NativeDefinitionPlanTests.testCanonicalSystemIdentityConsumesOnlyMatchingContextWithoutPropertyWrites' started at 2026-11-26 01:03:17.319
+Test Case 'NativeDefinitionPlanTests.testCanonicalSystemIdentityConsumesOnlyMatchingContextWithoutPropertyWrites' passed (0.069 seconds)
+Test Case 'NativeDefinitionPlanTests.testCanonicalSystemIdentityDefinitionsUseOriginalNativeAddressesAndTargetEvidence' started at 2026-11-26 01:03:17.388
+Test Case 'NativeDefinitionPlanTests.testCanonicalSystemIdentityDefinitionsUseOriginalNativeAddressesAndTargetEvidence' passed (0.404 seconds)
+Test Case 'NativeDefinitionPlanTests.testCanonicalSystemIdentityOverridesAndForeignCapturedTargetTypeRefuse' started at 2026-11-26 01:03:17.792
+Test Case 'NativeDefinitionPlanTests.testCanonicalSystemIdentityOverridesAndForeignCapturedTargetTypeRefuse' passed (0.265 seconds)
+Test Case 'NativeDefinitionPlanTests.testChangedDerivedDefinitionAndParticipantTypeCannotAcquireCanonicalCoverage' started at 2026-11-26 01:03:18.057
+Test Case 'NativeDefinitionPlanTests.testChangedDerivedDefinitionAndParticipantTypeCannotAcquireCanonicalCoverage' passed (0.081 seconds)
+Test Case 'NativeDefinitionPlanTests.testHistoricalDerivedValuesAreBoundToConcreteImmutableFactsWithoutSupplyingNativeStamps' started at 2026-11-26 01:03:18.138
+Test Case 'NativeDefinitionPlanTests.testHistoricalDerivedValuesAreBoundToConcreteImmutableFactsWithoutSupplyingNativeStamps' passed (0.076 seconds)
+Test Case 'NativeDefinitionPlanTests.testNativeDerivedDefinitionsBindActualNativeFieldsWithoutMutableShadows' started at 2026-11-26 01:03:18.214
+Test Case 'NativeDefinitionPlanTests.testNativeDerivedDefinitionsBindActualNativeFieldsWithoutMutableShadows' passed (0.11 seconds)
+Test Case 'NativeDefinitionPlanTests.testNativeDerivedSourceClocksAndParticipantsRemainHistoricalFacts' started at 2026-11-26 01:03:18.323
+Test Case 'NativeDefinitionPlanTests.testNativeDerivedSourceClocksAndParticipantsRemainHistoricalFacts' passed (0.024 seconds)
+Test Case 'NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance' started at 2026-11-26 01:03:18.348
+<EXPR>:0: error: NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance : threw error "unsupportedType("bafyreicpmvlpam65svrzrabrriba5oppft226yictgcxx67o5uvv3vde7y")"
+Test Case 'NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance' failed (6.464 seconds)
+Test Suite 'NativeDefinitionPlanTests' failed at 2026-11-26 01:03:24.812
+	 Executed 12 tests, with 1 failure (1 unexpected) in 8.086 (8.086) seconds
+Test Suite 'NativePageCompositionTests' started at 2026-11-26 01:03:24.812
+Test Case 'NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities' started at 2026-11-26 01:03:24.812
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePageCompositionTests.swift:222: NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities : Test skipped - Explicit immutable original capture required
+Test Case 'NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities' skipped (0.001 seconds)
+Test Case 'NativePageCompositionTests.testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles' started at 2026-11-26 01:03:24.813
+Test Case 'NativePageCompositionTests.testPageCompositionKeepsOneTitleAndDefersExactReferenceCycles' passed (0.044 seconds)
+Test Case 'NativePageCompositionTests.testUnaccountedDetailsSourceMetadataAndAmbiguousIdentitiesAreRefused' started at 2026-11-26 01:03:24.857
+Test Case 'NativePageCompositionTests.testUnaccountedDetailsSourceMetadataAndAmbiguousIdentitiesAreRefused' passed (0.155 seconds)
+Test Suite 'NativePageCompositionTests' passed at 2026-11-26 01:03:25.012
+	 Executed 3 tests, with 1 test skipped and 0 failures (0 unexpected) in 0.199 (0.199) seconds
+Test Suite 'Selected tests' failed at 2026-11-26 01:03:25.012
+	 Executed 15 tests, with 1 test skipped and 1 failure (1 unexpected) in 8.285 (8.285) seconds
+Note: Some test targets reported failures:
+  - PinkhaAnyHostTests (XCTest)

@@ -1,0 +1,95 @@
+{
+  "originalFinalReceiptSHA256": "fd591c322be353f0a6e973a156f931e75cef09bd0b5c136c8723d267b9bbed14",
+  "projection": {
+    "binarySHA256": "6ff900f1354f11044d8619e3ce1c0a20673d0608fd4bd3b50ff0bd4bb850f9ba",
+    "cloud_custody_accepted": false,
+    "coldSyncStatus": {
+      "globalPeers": 0,
+      "localPeers": 0,
+      "networkPeers": 0,
+      "p2p": "notpossible",
+      "state": "offline"
+    },
+    "initializationExitCode": 0,
+    "initializationGroupPositivelyAbsent": true,
+    "initializationPID": 14853,
+    "minimumFreeBytes": 29626621952,
+    "network": "original shipped production nodeconf",
+    "nodeconfSHA256": "6554bc5841fbef2a1ee6ab65ac3b14a9117dbb762d8cc8d419633c8cd413b060",
+    "offlinePolicy": {
+      "baselineListenerReachable": true,
+      "controls": {
+        "tcpDenied": true,
+        "tcpErrno": 1,
+        "udpDenied": true,
+        "udpErrno": 1
+      },
+      "sha256": "e210de323e5d671bb6b63b79ce1481f8314b5ac2fd65d65a180d381294ee2fa1"
+    },
+    "privateLogReceipts": [
+      {
+        "bytes": 520,
+        "name": "account-init.log",
+        "sha256": "0e4eacaf2b12b899f4dee7332f17e79ea50ae3c29a29c0e006fcc493ab43a816"
+      },
+      {
+        "bytes": 993072,
+        "name": "initial-native.log",
+        "sha256": "57824630de38d4b8ab1eb80a20146060c70b21bfb8073d55eab7a682ca8049bb"
+      },
+      {
+        "bytes": 1407312,
+        "name": "cold-offline-native.log",
+        "sha256": "633e91de0292fceba10624d8f6fb2641e353bb64515c87076e86e568da03b329"
+      }
+    ],
+    "processes": [
+      {
+        "exitCode": 0,
+        "forcedKill": false,
+        "groupPositivelyAbsent": true,
+        "name": "initial-native",
+        "offline": false,
+        "pid": 14854
+      },
+      {
+        "exitCode": 0,
+        "forcedKill": false,
+        "groupPositivelyAbsent": true,
+        "name": "cold-offline-native",
+        "offline": true,
+        "pid": 23588
+      }
+    ],
+    "protocol": "pinkha-native-captured-content-process-v1",
+    "resourcePolicy": {
+      "emergencyFreeBytes": 2147483648,
+      "estimatedNewBytes": 268435456,
+      "reason": "Reused exact 80.9MB CLI; one fresh generated account, one Space, nineteen prepared current-content operations, no file payloads or compilation/dependency download. Budget 256MiB for private native stores and logs."
+    },
+    "result": "PROCESS_LIFECYCLE_PASS",
+    "seconds": 899.936,
+    "sourceManifestSHA256": "39f4ee580af8f2897b2f794f872327b7391828a3a57355cf0235dae7d1626e72",
+    "sourcesAfter": {
+      "commits": {
+        "any": "41c07bd32e95a54824a3d3c5d592accf5074ab68",
+        "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+      },
+      "files": 1588,
+      "unchanged": true
+    },
+    "sourcesBefore": {
+      "commits": {
+        "any": "41c07bd32e95a54824a3d3c5d592accf5074ab68",
+        "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+      },
+      "files": 1588,
+      "unchanged": true
+    },
+    "whole_space_migration_accepted": false
+  },
+  "projectionExcludes": [
+    "accountID",
+    "spaceID"
+  ]
+}
