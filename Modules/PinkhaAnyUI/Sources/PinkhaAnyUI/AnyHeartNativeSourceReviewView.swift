@@ -33,7 +33,7 @@ public struct AnyHeartNativeSourceReviewView: View {
             }
 
             Section(t("פרטי אימות המקור", "Source verification details")) {
-                DisclosureGroup(t("זהות המקור והצילום", "Source and capture identity")) {
+                DisclosureGroup {
                     identity(t("חשבון", "Account"), review.descriptor.sourceAccountID, id: "account")
                     identity(t("מרחב", "Space ID"), review.descriptor.sourceSpaceID, id: "space")
                     identity(t("מזהה צילום", "Capture ID"), review.descriptor.requestID, id: "capture-id")
@@ -43,8 +43,10 @@ public struct AnyHeartNativeSourceReviewView: View {
                         count(t("רשומות מקור, לרבות הגדרות והרשאות", "Source identities, including settings and permissions"),
                               census.sourceHeadIDs.count, id: "native-heads")
                     }
+                } label: {
+                    Text(t("זהות המקור והצילום", "Source and capture identity"))
+                        .accessibilityIdentifier("heart-source-review-identity")
                 }
-                .accessibilityIdentifier("heart-source-review-identity")
                 Text(t(
                     "שינוי בחשבון, במרחב או בתוכן מחייב בדיקה חוזרת של המקור לפני העברה.",
                     "An account, space or content change requires the source to be checked again before transfer."
@@ -239,20 +241,24 @@ public struct AnyHeartNativeSourceReviewView: View {
             .accessibilityValue(String(value))
     }
 
+    @ViewBuilder
     private func identity(_ label: String, _ value: String, id: String? = nil) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+        let row = VStack(alignment: .leading, spacing: 4) {
             Text(label).font(.caption).foregroundStyle(.secondary)
-            if let id {
-                Text(value).font(.footnote.monospaced()).textSelection(.enabled)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityIdentifier("heart-source-review-" + id)
-            } else {
-                Text(value).font(.footnote.monospaced()).textSelection(.enabled)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+            Text(value).font(.footnote.monospaced()).textSelection(.enabled)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        if let id {
+            row.accessibilityElement(children: .combine)
+                .accessibilityLabel(Text(label))
+                .accessibilityValue(Text(value))
+                .accessibilityIdentifier("heart-source-review-" + id)
+        } else {
+            row
         }
     }
 
     private func t(_ hebrew: String, _ english: String) -> String { AnyUIErrorText.text(hebrew, english) }
 }
 #endif
+

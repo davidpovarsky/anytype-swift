@@ -13,10 +13,12 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
     private var handoffSHA256 = ""
     private var deadline: TimeInterval = 0
     private var launch: [String: String] = [:]
+    private var freshStartup = false
 
     override func setUpWithError() throws {
         continueAfterFailure = false
         let env = ProcessInfo.processInfo.environment
+        freshStartup = env["PINKHA_HEART_SOURCE_CAPTURE_FRESH_STARTUP"] == "1"
         guard env["PINKHA_HEART_SOURCE_CAPTURE_TESTING"] == "1",
               env["PINKHA_SEMANTIC_MOUNTED_TESTING"] == "1",
               env["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1",
@@ -64,6 +66,7 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
             "runID": fixture.runID, "runAttempt": fixture.runAttempt,
             "nonce": fixture.nonce, "deadlineEpoch": deadline,
             "captures": [], "closeCompletions": 0,
+            "freshStartupNavigationRequested": freshStartup,
             "scope": "actual-source-capture-review-close-recapture-only"
         ]
         defer { attachJSON(receipt, name: "heart-source-capture-ui") }
@@ -72,12 +75,16 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
             app.launchEnvironment = launch
             app.launch()
             try require(app.wait(for: .runningForeground, timeout: remaining(30)), "app-foreground")
+            if freshStartup {
+                try acceptOriginalDisposableAccountWarning()
+                receipt["freshStartupNavigationCompleted"] = true
+            }
             let home = app.descendants(matching: .any).matching(NSPredicate(
                 format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@",
                 "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton")).firstMatch
             try require(home.waitForExistence(timeout: remaining(60)), "original-home")
-            // E has already accepted the exact middleware warning in its original
-            // method. An unexpected warning is a new failure, never auto-dismissed.
+            // The exact original warning is accepted only for an explicitly new
+            // disposable setup. All unexpected alerts remain admission failures.
             try require(!app.alerts["Warning"].exists && app.alerts.count == 0, "unexpected-startup-alert")
             try require(!element("pinkha.semanticAnchor.mounted-status").exists, "mounted-observer-active")
             try openOriginalFixtureSpace()
@@ -111,6 +118,27 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
         // The independently verified controller retains the entire private account
         // and captured bundles. Never log out, delete an account or erase a device.
         if app.state != .notRunning { app.terminate() }
+    }
+
+    private func acceptOriginalDisposableAccountWarning() throws {
+        // The preparation creates a new disposable native account. Accept the
+        // original startup warning through its exact normal action; no account
+        // setting, native hook or source capture runs from this helper.
+        let alerts = app.alerts.matching(NSPredicate(format: "label == %@", "Warning"))
+        let warning = alerts.firstMatch
+        try require(warning.waitForExistence(timeout: remaining(60)), "fresh-native-warning-missing")
+        try require(alerts.count == 1 && app.alerts.count == 1, "fresh-native-warning-not-unique")
+        let message = "You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken."
+        let messages = warning.staticTexts.matching(NSPredicate(format: "label == %@", message))
+        let proceed = warning.buttons.matching(NSPredicate(format: "label == %@", "Continue with current vault"))
+        let logout = warning.buttons.matching(NSPredicate(format: "label == %@", "Logout from current vault"))
+        try require(messages.count == 1 && messages.firstMatch.exists, "fresh-native-warning-message-differs")
+        try require(warning.buttons.count == 2 && proceed.count == 1 && logout.count == 1,
+                    "fresh-native-warning-actions-differ")
+        attachHierarchy("heart-source-fresh-startup-warning")
+        screenshot("heart-source-fresh-startup-warning")
+        try tap(proceed.firstMatch)
+        try require(warning.waitForNonExistence(timeout: remaining(20)), "fresh-native-warning-remained")
     }
 
     private func openOriginalFixtureSpace() throws {
@@ -198,8 +226,9 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
 
     private func identity(_ suffix: String) throws -> String {
         let row = try reveal("heart-source-review-" + suffix)
-        let value = row.label
-        try require(!value.isEmpty, "empty-identity-" + suffix)
+        guard let value = row.value as? String, !value.isEmpty else {
+            throw Failure.admission("empty-identity-" + suffix)
+        }
         return value
     }
 
@@ -266,3 +295,4 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
         let text: String; let excludedText: String
     }
 }
+

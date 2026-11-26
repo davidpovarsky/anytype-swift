@@ -1,0 +1,103 @@
+{
+  "accountIDSHA256": "454269e2ba3222460c1d49b59d6f64b7ac0957157b93eaaa8d764e5525f43c5a",
+  "binarySHA256": "6ff900f1354f11044d8619e3ce1c0a20673d0608fd4bd3b50ff0bd4bb850f9ba",
+  "cloud_custody_accepted": false,
+  "coldSyncStatus": {
+    "globalPeers": 0,
+    "localPeers": 0,
+    "networkPeers": 0,
+    "p2p": "notpossible",
+    "state": "offline"
+  },
+  "initializationExitCode": 0,
+  "initializationGroupPositivelyAbsent": true,
+  "initializationPID": 44374,
+  "minimumFreeBytes": 159591927808,
+  "network": "original shipped production nodeconf",
+  "nodeconfSHA256": "6554bc5841fbef2a1ee6ab65ac3b14a9117dbb762d8cc8d419633c8cd413b060",
+  "offlinePolicy": {
+    "baselineListenerReachable": true,
+    "controls": {
+      "tcpDenied": true,
+      "tcpErrno": 1,
+      "udpDenied": true,
+      "udpErrno": 1
+    },
+    "sha256": "e210de323e5d671bb6b63b79ce1481f8314b5ac2fd65d65a180d381294ee2fa1"
+  },
+  "oracleOriginalJSONReceiptSHA256": "2b8a9eaf41b462c488f755ae1b0287de6eefa8c32f5befe0c7e64205cc440ddd",
+  "phases": [
+    {
+      "received": "execute-complete",
+      "seconds": 300.152
+    },
+    {
+      "received": "finish",
+      "seconds": 710.794
+    }
+  ],
+  "privateLogReceipts": [
+    {
+      "bytes": 526,
+      "name": "account-init.log",
+      "sha256": "697b6a18d38a9efcfa4ca62b84123d006cfcbf0dc9846503a26409007955e786"
+    },
+    {
+      "bytes": 126845,
+      "name": "initial-native.log",
+      "sha256": "fb70d9ec76bdfe238b25d635e70ebf43b0c57348cae6d0d864b7e8f70b987b14"
+    },
+    {
+      "bytes": 1275864,
+      "name": "cold-offline-native.log",
+      "sha256": "d99b4861a4fcaaa819929046d84d962121f9e11c9fa3a4e715fe66b34e9dc974"
+    }
+  ],
+  "privateOriginalSHA256": "23d340909195fa16981d74d0412c34453f3a1123a42f1bd64edaebc5cdec17dd",
+  "processes": [
+    {
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "name": "initial-native",
+      "offline": false,
+      "pid": 44381
+    },
+    {
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "name": "cold-offline-native",
+      "offline": true,
+      "pid": 46313
+    }
+  ],
+  "protocol": "pinkha-native-immutable-record-process-v1",
+  "resourcePolicy": {
+    "emergencyFreeBytes": 2147483648,
+    "estimatedNewBytes": 268435456,
+    "reason": "Reused exact 80.9MB CLI; one fresh generated account, one Space, four prepared immutable provenance operations, no file payloads or compilation/dependency download. Budget 256MiB for private native stores and logs."
+  },
+  "result": "PROCESS_LIFECYCLE_PASS",
+  "scope": "original captured facts, four prepared operations, actual lost reply, signed history and a new cold-offline process",
+  "seconds": 711.409,
+  "sourceManifestSHA256": "39f4ee580af8f2897b2f794f872327b7391828a3a57355cf0235dae7d1626e72",
+  "sourcesAfter": {
+    "commits": {
+      "any": "41c07bd32e95a54824a3d3c5d592accf5074ab68",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "files": 1588,
+    "unchanged": true
+  },
+  "sourcesBefore": {
+    "commits": {
+      "any": "41c07bd32e95a54824a3d3c5d592accf5074ab68",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "files": 1588,
+    "unchanged": true
+  },
+  "spaceIDSHA256": "9cd1f920256ee1dd476473a838973990759275a5f4b3d1bbbe01b131e31779b2",
+  "whole_space_migration_accepted": false
+}

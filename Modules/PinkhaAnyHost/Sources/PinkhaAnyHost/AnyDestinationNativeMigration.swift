@@ -10,6 +10,7 @@ enum AnyDestinationNativeIntent: Sendable {
     case inlineFile(AnyPreparedInlineFileIntent)
     case file(AnyPreparedFileIntent)
     case properties(AnyPreparedPropertyUpdateIntent)
+    case immutableRecord(AnyPreparedImmutableRecordIntent)
 
     var identity: (id: String, spec: Data, sha: String) {
         switch self {
@@ -18,6 +19,7 @@ enum AnyDestinationNativeIntent: Sendable {
         case .inlineFile(let i): (i.intentID, i.specBytes, i.specSHA256)
         case .file(let i): (i.intentID, i.specBytes, i.specSHA256)
         case .properties(let i): (i.intentID, i.specBytes, i.specSHA256)
+        case .immutableRecord(let i): (i.intentID, i.specBytes, i.specSHA256)
         }
     }
 
@@ -28,11 +30,13 @@ enum AnyDestinationNativeIntent: Sendable {
         case .inlineFile(let i): _ = try AnyPreparedInlineFileReceipt(value, intent: i)
         case .file(let i): _ = try AnyPreparedFileReceipt(value, intent: i)
         case .properties(let i): _ = try AnyPreparedPropertyUpdateReceipt(value, intent: i)
+        case .immutableRecord(let i): _ = try AnyPreparedImmutableRecordReceipt(value, intent: i)
         }
     }
 
     static func make(_ operation: AnyDestinationMigrationOperation, binding: AnyPreparedMigrationPlanBinding,
-                     sourceKey: String, sequence: Int64?, inlineContent: Data?) throws -> Self {
+                     sourceKey: String, sequence: Int64?, inlineContent: Data?,
+                     immutableSchema: AnyPreparedImmutableRecordSchema? = nil) throws -> Self {
         func id(_ reference: AnyDestinationReference) throws -> String {
             guard case .native(let value) = reference else { throw AnyDestinationMigrationError.journalCorrupt }
             return value
@@ -42,7 +46,8 @@ enum AnyDestinationNativeIntent: Sendable {
             return value
         }
         guard (operation.kind == "propertyUpdate") == (sequence != nil),
-              (operation.kind == "inlineFile") == (inlineContent != nil) else {
+              (operation.kind == "inlineFile") == (inlineContent != nil),
+              (operation.kind == "immutableRecord") == (immutableSchema != nil) else {
             throw AnyDestinationMigrationError.journalCorrupt
         }
         switch operation {
@@ -80,6 +85,15 @@ enum AnyDestinationNativeIntent: Sendable {
             }
             return .file(try .init(binding: binding, sourceKey: sourceKey, ownerObjectID: id(owner),
                 name: name, mime: mime, size: size, contentSHA256: digest))
+        case .immutableRecord(let object, let owner, let key, let value):
+            guard let schema = immutableSchema, let values = try json(value).object,
+                  Data(schema.ownerTypeID.utf8) == Data(try id(owner).utf8),
+                  Data(schema.dataset.utf8) == Data(try AnyPreparedImmutableRecordIntent.ownedDataset(
+                    ownerTypeID: id(owner), key: key).utf8) else {
+                throw AnyDestinationMigrationError.journalCorrupt
+            }
+            return .immutableRecord(try .init(binding: binding, sourceKey: sourceKey,
+                objectID: id(object), schema: schema, values: values))
         case .propertyUpdate(let object, let owner, let patch):
             guard let values = try json(patch).object, let sequence else {
                 throw AnyDestinationMigrationError.journalCorrupt
@@ -95,6 +109,15 @@ protocol AnyDestinationNativeDriving: Sendable {
     func prepare(_ intent: AnyDestinationNativeIntent, payload: URL?, authorize: @escaping AnyDestinationAuthorization) async throws -> AnyJSON
     func commit(_ intent: AnyDestinationNativeIntent, receipt: AnyJSON, authorize: @escaping AnyDestinationAuthorization) async throws -> AnyJSON
     func applySequence(objectID: String, authorize: @escaping AnyDestinationAuthorization) async throws -> Int64
+    func immutableSchema(ownerTypeID: String, dataset: String,
+                         authorize: @escaping AnyDestinationAuthorization) async throws -> AnyPreparedImmutableRecordSchema
+}
+
+extension AnyDestinationNativeDriving {
+    func immutableSchema(ownerTypeID: String, dataset: String,
+                         authorize: @escaping AnyDestinationAuthorization) async throws -> AnyPreparedImmutableRecordSchema {
+        throw AnyDestinationMigrationError.unsupportedCapability("immutableRecord")
+    }
 }
 
 /// Production adaptation uses the existing typed native clients. It does not
@@ -107,6 +130,7 @@ struct AnyDestinationNativeClients: AnyDestinationNativeDriving {
     let inlineFiles: AnyNativePreparedInlineFileMigration?
     let files: AnyNativePreparedFileMigration?
     let properties: AnyNativePreparedPropertyUpdate?
+    let immutableRecords: AnyNativePreparedImmutableRecord?
 
     static func open(client: AnyHTTPClient, plan: AnyDestinationMigrationPlan,
                      authorize: @escaping AnyDestinationAuthorization) async throws -> Self {
@@ -118,6 +142,7 @@ struct AnyDestinationNativeClients: AnyDestinationNativeDriving {
         var inlineFiles: AnyNativePreparedInlineFileMigration?
         var files: AnyNativePreparedFileMigration?
         var properties: AnyNativePreparedPropertyUpdate?
+        var immutableRecords: AnyNativePreparedImmutableRecord?
         func store(_ value: String) throws {
             guard Data(value.utf8) == Data(binding.storeID.utf8) else { throw AnyPreparedMigrationError.changedStore }
         }
@@ -145,10 +170,14 @@ struct AnyDestinationNativeClients: AnyDestinationNativeDriving {
             let value = try await AnyNativePreparedPropertyUpdate.open(client: client, workspace: workspace, authorize: authorize)
             try store(value.capabilities.storeID); properties = value
         }
+        if kinds.contains("immutableRecord") {
+            let value = try await AnyNativePreparedImmutableRecord.open(client: client, workspace: workspace, authorize: authorize)
+            try store(value.capabilities.storeID); immutableRecords = value
+        }
         try await AnyDestinationDefinitionChecks.admitCanonicalProperties(plan.coverage, client: client,
             workspace: workspace, authorize: authorize)
         return .init(client: client, workspace: workspace, definitions: definitions, objects: objects,
-                     inlineFiles: inlineFiles, files: files, properties: properties)
+                     inlineFiles: inlineFiles, files: files, properties: properties, immutableRecords: immutableRecords)
     }
 
     private func require<T>(_ value: T?) throws -> T {
@@ -162,6 +191,7 @@ struct AnyDestinationNativeClients: AnyDestinationNativeDriving {
         case .inlineFile(let i): return Self.wire(try await require(inlineFiles).status(i, authorize: authorize))
         case .file(let i): return Self.wire(try await require(files).status(i, authorize: authorize))
         case .properties(let i): return Self.wire(try await require(properties).status(i, authorize: authorize))
+        case .immutableRecord(let i): return Self.wire(try await require(immutableRecords).status(i, authorize: authorize))
         }
     }
     func prepare(_ intent: AnyDestinationNativeIntent, payload: URL?, authorize: @escaping AnyDestinationAuthorization) async throws -> AnyJSON {
@@ -173,6 +203,7 @@ struct AnyDestinationNativeClients: AnyDestinationNativeDriving {
             guard let payload else { throw AnyDestinationMigrationError.payloadMismatch(i.sourceKey) }
             return Self.wire(try await require(files).prepare(i, fileURL: payload, authorize: authorize))
         case .properties(let i): return Self.wire(try await require(properties).prepare(i, authorize: authorize))
+        case .immutableRecord(let i): return Self.wire(try await require(immutableRecords).prepare(i, authorize: authorize))
         }
     }
     func commit(_ intent: AnyDestinationNativeIntent, receipt: AnyJSON,
@@ -183,7 +214,12 @@ struct AnyDestinationNativeClients: AnyDestinationNativeDriving {
         case .inlineFile(let i): return Self.wire(try await require(inlineFiles).commit(.init(receipt, intent: i), authorize: authorize))
         case .file(let i): return Self.wire(try await require(files).commit(.init(receipt, intent: i), authorize: authorize))
         case .properties(let i): return Self.wire(try await require(properties).commit(.init(receipt, intent: i), authorize: authorize))
+        case .immutableRecord(let i): return Self.wire(try await require(immutableRecords).commit(.init(receipt, intent: i), authorize: authorize))
         }
+    }
+    func immutableSchema(ownerTypeID: String, dataset: String,
+                         authorize: @escaping AnyDestinationAuthorization) async throws -> AnyPreparedImmutableRecordSchema {
+        try await require(immutableRecords).schema(ownerTypeID: ownerTypeID, dataset: dataset, authorize: authorize)
     }
     func applySequence(objectID: String, authorize: @escaping AnyDestinationAuthorization) async throws -> Int64 {
         let value = try await client.requestJSON(method: "GET", path: ["v1", "spaces", workspace.spaceID, "objects", objectID],
@@ -223,6 +259,13 @@ struct AnyDestinationNativeClients: AnyDestinationNativeDriving {
         let i = r.intent
         return .object(base(contract: AnyNativePreparedMigration.contract, binding: i.binding,
             sourceKey: i.sourceKey, kind: i.kind.rawValue, intentID: i.intentID, specSHA256: i.specSHA256,
+            fingerprint: r.fingerprint, stage: r.stage.rawValue, outcome: r.outcome.rawValue,
+            objectID: r.objectID, changeID: r.changeID, recordIDs: r.recordIDs))
+    }
+    static func wire(_ r: AnyPreparedImmutableRecordReceipt) -> AnyJSON {
+        let i = r.intent
+        return .object(base(contract: AnyNativePreparedImmutableRecord.contract, binding: i.binding,
+            sourceKey: i.sourceKey, kind: "immutableRecord", intentID: i.intentID, specSHA256: i.specSHA256,
             fingerprint: r.fingerprint, stage: r.stage.rawValue, outcome: r.outcome.rawValue,
             objectID: r.objectID, changeID: r.changeID, recordIDs: r.recordIDs))
     }
@@ -290,6 +333,8 @@ extension AnyDestinationMigrationOperation {
             return .file(owner: try id(owner), name: name, mime: mime, size: size, contentSHA256: digest)
         case .propertyUpdate(let object, let owner, let patch):
             return .propertyUpdate(object: try id(object), owner: try id(owner), patch: try json(patch))
+        case .immutableRecord(let object, let owner, let key, let values):
+            return .immutableRecord(object: try id(object), ownerType: try id(owner), datasetKey: key, values: try json(values))
         }
     }
 }

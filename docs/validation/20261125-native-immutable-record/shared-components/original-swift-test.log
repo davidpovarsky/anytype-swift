@@ -1,0 +1,105 @@
+Building for debugging...
+[Computing dependencies]
+[Constructing description]
+[Pre-planning 1 / 392]
+[Planning 260 / 392]
+[Planning deferred tasks]
+[Constructing 300 / 1199]
+[1 / 7]
+[1 / 23] CCryptoBoringSSL
+[7 / 24] PinkhaAnyHost
+[10 / 27] PinkhaAnyHost
+[11 / 27] PinkhaAnyHost
+[13 / 28] PinkhaAnyHost
+[17 / 29] PinkhaAnyHostTests-product
+[17 / 29]
+[19 / 32] PinkhaAnyHostTests-product
+[20 / 34] PinkhaAnyHostTests-product
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeIdentityTests.swift:146:30: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m144 |[0;0m                 "spaceID": .string(space), "typeID": .string(type), "exactNativeQueryCount": .integer(1)]))
+[0;36m145 |[0;0m         }
+[0;36m146 |[0;0m         let descriptorRows = try bindings.map { binding -> AnyJSON in
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m147 |[0;0m             .object(["propertyID": .string(binding.propertyID), "nativeContract": .string(binding.nativeContract),
+[0;36m148 |[0;0m                      "nativeDescriptorSHA256": .string(binding.nativeDescriptorSHA256),
+
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeTypeOrderTests.swift:104:24: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m102 |[0;0m         }
+[0;36m103 |[0;0m         try require(plan.binding.workspace == workspace && plan.items.count == 6)
+[0;36m104 |[0;0m         let executor = try AnyDestinationMigrationExecutor(client: client, journalDirectory: journal)
+    [0;36m|[0;0m                        `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m105 |[0;0m         let progress = try await executor.execute(plan: plan,
+[0;36m106 |[0;0m             payloads: { _ in throw TypeOrderNativeFailure.unexpectedPayload },
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[21 / 34] PinkhaAnyHostTests-product
+[23 / 33] PinkhaAnyHostTests-product
+[27 / 33] PinkhaAnyHost
+[27 / 33] PinkhaAnyHostTests-product
+[30 / 34] PinkhaAnyHostTests-product
+[31 / 34] PinkhaAnyHostTests-product
+[33 / 35] PinkhaAnyHostTests-test-runner
+[35 / 37] PinkhaAnyHostTests-test-runner
+[39 / 39] PinkhaAnyHostTests-test-runner
+[42 / 46] PinkhaAnyHostTests-test-runner
+[44 / 49] pinkha-any-host-probe-product
+[45 / 49] pinkha-any-host-probe-product
+[46 / 49] pinkha-any-host-probe-product
+[50 / 50] pinkha-any-host-probe-product
+Build complete! (41.34 secs)
+Test Suite 'Selected tests' started at 2026-11-25 22:05:13.807
+Test Suite 'AnyDestinationContentVerificationTests' started at 2026-11-25 22:05:13.817
+Test Case 'AnyDestinationContentVerificationTests.testContentComparisonPreservesExactUnicodeBytes' started at 2026-11-25 22:05:13.817
+Test Case 'AnyDestinationContentVerificationTests.testContentComparisonPreservesExactUnicodeBytes' passed (0.002 seconds)
+Test Case 'AnyDestinationContentVerificationTests.testDateWireComparisonUsesExactMillisecondsWithoutChangingOrdinaryJSON' started at 2026-11-25 22:05:13.820
+Test Case 'AnyDestinationContentVerificationTests.testDateWireComparisonUsesExactMillisecondsWithoutChangingOrdinaryJSON' passed (0.016 seconds)
+Test Case 'AnyDestinationContentVerificationTests.testNativeCompiledDeclarationOrderPreservesAllocatedRecordIdentities' started at 2026-11-25 22:05:13.836
+Test Case 'AnyDestinationContentVerificationTests.testNativeCompiledDeclarationOrderPreservesAllocatedRecordIdentities' passed (0.003 seconds)
+Test Case 'AnyDestinationContentVerificationTests.testNativeVariantMetadataCannotBeAcceptedAsAnOriginalFile' started at 2026-11-25 22:05:13.839
+Test Case 'AnyDestinationContentVerificationTests.testNativeVariantMetadataCannotBeAcceptedAsAnOriginalFile' passed (0.0 seconds)
+Test Case 'AnyDestinationContentVerificationTests.testUnknownSchemaAndChangedPinnedFieldCannotDisappearInProjection' started at 2026-11-25 22:05:13.840
+Test Case 'AnyDestinationContentVerificationTests.testUnknownSchemaAndChangedPinnedFieldCannotDisappearInProjection' passed (0.0 seconds)
+Test Case 'AnyDestinationContentVerificationTests.testWholeSourceBlockerPrecedesAnyNativeReadOrAuthorityCallback' started at 2026-11-25 22:05:13.840
+Test Case 'AnyDestinationContentVerificationTests.testWholeSourceBlockerPrecedesAnyNativeReadOrAuthorityCallback' passed (0.022 seconds)
+Test Suite 'AnyDestinationContentVerificationTests' passed at 2026-11-25 22:05:13.861
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.044 (0.044) seconds
+Test Suite 'AnyDestinationMigrationExecutorTests' started at 2026-11-25 22:05:13.861
+Test Case 'AnyDestinationMigrationExecutorTests.testCoverageValidatedDecodeExactUTF8AndOwnedMutationTargets' started at 2026-11-25 22:05:13.861
+Test Case 'AnyDestinationMigrationExecutorTests.testCoverageValidatedDecodeExactUTF8AndOwnedMutationTargets' passed (0.121 seconds)
+Test Case 'AnyDestinationMigrationExecutorTests.testFileReferenceCommitsNativeFileNamespaceAndReplaysTheSamePrivateFile' started at 2026-11-25 22:05:13.983
+Test Case 'AnyDestinationMigrationExecutorTests.testFileReferenceCommitsNativeFileNamespaceAndReplaysTheSamePrivateFile' passed (0.17 seconds)
+Test Case 'AnyDestinationMigrationExecutorTests.testInlineAndFullFileResumeWithoutOriginalPayloadPaths' started at 2026-11-25 22:05:14.153
+Test Case 'AnyDestinationMigrationExecutorTests.testInlineAndFullFileResumeWithoutOriginalPayloadPaths' passed (0.616 seconds)
+Test Case 'AnyDestinationMigrationExecutorTests.testJournalOwnershipNamespaceIntegrityAndSourceWithdrawal' started at 2026-11-25 22:05:14.769
+Test Case 'AnyDestinationMigrationExecutorTests.testJournalOwnershipNamespaceIntegrityAndSourceWithdrawal' passed (0.131 seconds)
+Test Case 'AnyDestinationMigrationExecutorTests.testLostPreparationReplyResumesOriginalIDsAndCyclicReferences' started at 2026-11-25 22:05:14.900
+Test Case 'AnyDestinationMigrationExecutorTests.testLostPreparationReplyResumesOriginalIDsAndCyclicReferences' passed (0.154 seconds)
+Test Case 'AnyDestinationMigrationExecutorTests.testNativeTerminalAndChangedPlanNeverCreateReplacementIDs' started at 2026-11-25 22:05:15.054
+Test Case 'AnyDestinationMigrationExecutorTests.testNativeTerminalAndChangedPlanNeverCreateReplacementIDs' passed (0.145 seconds)
+Test Case 'AnyDestinationMigrationExecutorTests.testPartsRequireTypeOwnersWhilePropertiesAllowCollections' started at 2026-11-25 22:05:15.199
+Test Case 'AnyDestinationMigrationExecutorTests.testPartsRequireTypeOwnersWhilePropertiesAllowCollections' passed (0.01 seconds)
+Test Case 'AnyDestinationMigrationExecutorTests.testPropertyRevisionCheckpointPrecedesDispatchAndIsNeverRefreshed' started at 2026-11-25 22:05:15.209
+Test Case 'AnyDestinationMigrationExecutorTests.testPropertyRevisionCheckpointPrecedesDispatchAndIsNeverRefreshed' passed (0.094 seconds)
+Test Case 'AnyDestinationMigrationExecutorTests.testSemanticAnchorReplayRetainsOriginalAllocatedOwnerUUIDAndPreparedBytes' started at 2026-11-25 22:05:15.303
+Test Case 'AnyDestinationMigrationExecutorTests.testSemanticAnchorReplayRetainsOriginalAllocatedOwnerUUIDAndPreparedBytes' passed (0.063 seconds)
+Test Suite 'AnyDestinationMigrationExecutorTests' passed at 2026-11-25 22:05:15.366
+	 Executed 9 tests, with 0 failures (0 unexpected) in 1.505 (1.505) seconds
+Test Suite 'NativePreparedImmutableRecordTests' started at 2026-11-25 22:05:15.366
+Test Case 'NativePreparedImmutableRecordTests.testChangedSchemaStoreAndSignedIdentityRefuseBeforeAnotherMutation' started at 2026-11-25 22:05:15.366
+Test Case 'NativePreparedImmutableRecordTests.testChangedSchemaStoreAndSignedIdentityRefuseBeforeAnotherMutation' passed (0.007 seconds)
+Test Case 'NativePreparedImmutableRecordTests.testCheckpointPreservesFullNativeSchemaAndOldNilEncoding' started at 2026-11-25 22:05:15.373
+Test Case 'NativePreparedImmutableRecordTests.testCheckpointPreservesFullNativeSchemaAndOldNilEncoding' passed (0.001 seconds)
+Test Case 'NativePreparedImmutableRecordTests.testExactSchemaSourceAndValuesBindOneIntentAndRejectForgedInput' started at 2026-11-25 22:05:15.374
+Test Case 'NativePreparedImmutableRecordTests.testExactSchemaSourceAndValuesBindOneIntentAndRejectForgedInput' passed (0.003 seconds)
+Test Case 'NativePreparedImmutableRecordTests.testLostAcknowledgementReconcilesExactRecordWithoutSecondAppend' started at 2026-11-25 22:05:15.377
+Test Case 'NativePreparedImmutableRecordTests.testLostAcknowledgementReconcilesExactRecordWithoutSecondAppend' passed (0.002 seconds)
+Test Case 'NativePreparedImmutableRecordTests.testNativeSchemaRefusesMutableDeleteDynamicForeignAndCallerStampDeclarations' started at 2026-11-25 22:05:15.379
+Test Case 'NativePreparedImmutableRecordTests.testNativeSchemaRefusesMutableDeleteDynamicForeignAndCallerStampDeclarations' passed (0.001 seconds)
+Test Case 'NativePreparedImmutableRecordTests.testPlanRequiresOwnedImmutableDeclarationAndMatchingObjectType' started at 2026-11-25 22:05:15.379
+Test Case 'NativePreparedImmutableRecordTests.testPlanRequiresOwnedImmutableDeclarationAndMatchingObjectType' passed (0.016 seconds)
+Test Case 'NativePreparedImmutableRecordTests.testReadbackComparesSourceFactsAndRequiresActualDerivedStamps' started at 2026-11-25 22:05:15.396
+Test Case 'NativePreparedImmutableRecordTests.testReadbackComparesSourceFactsAndRequiresActualDerivedStamps' passed (0.001 seconds)
+Test Suite 'NativePreparedImmutableRecordTests' passed at 2026-11-25 22:05:15.397
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.03 (0.03) seconds
+Test Suite 'Selected tests' passed at 2026-11-25 22:05:15.397
+	 Executed 22 tests, with 0 failures (0 unexpected) in 1.579 (1.579) seconds
