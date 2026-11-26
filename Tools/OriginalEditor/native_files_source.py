@@ -54,7 +54,7 @@ def validate_document(value, binding):
     return rows
 
 
-def observe_saved_body_focus(root, binding, historical_trees):
+def observe_saved_body_focus(root, binding, historical_trees, wave1=None):
     relative = "Tools/OriginalEditor/MiniApps/saved_body_focus_source_adoption.json"
     base = "b10eee2845859c03c534eed41e8682ad8cd5bff6"
     reviewed = "e973cc7432419778f0342624a3b7052055fd270d"
@@ -95,10 +95,11 @@ def observe_saved_body_focus(root, binding, historical_trees):
         path = root / name
         require(path.is_file() and not path.is_symlink() and path.resolve() == path,
                 "Missing or aliased original saved-body focus source")
-        data = path.read_bytes()
+        from wave1_source import historical_bytes
+        data, observed_blob = historical_bytes(root, name, reviewed, wave1)
         require(row["before_blob"] == git(root, "rev-parse", base + ":" + name)
                 and row["after_blob"] == git(root, "rev-parse", reviewed + ":" + name)
-                and git(root, "hash-object", "--", name) == row["after_blob"]
+                and observed_blob == row["after_blob"]
                 and len(data) == row["bytes"] and hashlib.sha256(data).hexdigest() == row["sha256"],
                 "Current original saved-body focus bytes differ: " + name)
     return {"schema": value["schema"], "base_source": base, "reviewed_source": reviewed,
@@ -106,7 +107,7 @@ def observe_saved_body_focus(root, binding, historical_trees):
             "all_changed_paths": names, "native_acceptance_reused_by_this_document": False}
 
 
-def observe_current_runtime(root, binding, historical_trees, focus_binding=None):
+def observe_current_runtime(root, binding, historical_trees, focus_binding=None, wave1=None):
     products = tuple(historical_trees)
     document = root / CURRENT_RELATIVE
     require(document.is_file() and not document.is_symlink() and document.resolve() == document,
@@ -134,7 +135,7 @@ def observe_current_runtime(root, binding, historical_trees, focus_binding=None)
     require(git(root, "diff", "--name-status", REVIEWED, CURRENT_SOURCE, "--", *products).splitlines()
             == ["M\t" + name for name in CURRENT_FILES],
             "Original annotation runtime source delta differs")
-    focus = observe_saved_body_focus(root, focus_binding, reviewed) if focus_binding else None
+    focus = observe_saved_body_focus(root, focus_binding, reviewed, wave1) if focus_binding else None
     focus_paths = set(focus["all_changed_paths"]) if focus else set()
     rows = value.get("files", [])
     require([item.get("path") for item in rows] == list(CURRENT_FILES)
@@ -146,7 +147,7 @@ def observe_current_runtime(root, binding, historical_trees, focus_binding=None)
         require(source.is_file() and not source.is_symlink() and source.resolve() == source,
                 "Missing or aliased original annotation runtime source")
         verified_blob = git(root, "rev-parse", CURRENT_SOURCE + ":" + name)
-        if name in focus_paths:
+        if name in focus_paths or (wave1 and name in wave1["all_changed_paths"]):
             data = subprocess.check_output(["git", "-C", str(root), "cat-file", "blob", verified_blob], timeout=60)
             observed_blob = verified_blob
         else:
@@ -196,19 +197,25 @@ def observe(root, profile, historical_trees):
     runtime_binding = profile.get("current_annotation_runtime_source_adoption")
     focus_binding = profile.get("saved_body_focus_source_adoption")
     require(runtime_binding or not focus_binding, "Saved-body focus requires the original annotation runtime")
-    runtime = (observe_current_runtime(root, runtime_binding, reviewed, focus_binding)
+    from wave1_source import observe as observe_wave1, historical_bytes
+    wave1 = observe_wave1(root, profile.get("wave1_product_source_adoption"))
+    runtime = (observe_current_runtime(root, runtime_binding, reviewed, focus_binding, wave1)
                if runtime_binding else None)
     current = runtime["reviewed_product_trees"] if runtime else reviewed
+    if wave1:
+        require(current == wave1["base_product_trees"],
+                "Wave 1 continuation does not follow the admitted original product")
+        current = wave1["reviewed_product_trees"]
     require({key: git(root, "rev-parse", "HEAD:" + key) for key in products} == current,
             "Current product source differs from reviewed native-file facade")
     for row in rows:
         source = root / row["path"]
         require(source.is_file() and not source.is_symlink() and source.resolve() == source,
                 "Missing or aliased original native-file source")
-        data = source.read_bytes()
+        data, observed_blob = historical_bytes(root, row["path"], REVIEWED, wave1)
         require(row["before_blob"] == git(root, "rev-parse", BASE + ":" + row["path"])
                 and row["after_blob"] == git(root, "rev-parse", REVIEWED + ":" + row["path"])
-                and git(root, "hash-object", "--", row["path"]) == row["after_blob"]
+                and observed_blob == row["after_blob"]
                 and len(data) == row["bytes"] and hashlib.sha256(data).hexdigest() == row["sha256"],
                 "Current native-file facade bytes differ: " + row["path"])
     return {"schema": value["schema"], "status": "EXACT_ORIGINAL_NATIVE_FILES_SWIFT_SOURCE_OBSERVED",
@@ -217,6 +224,9 @@ def observe(root, profile, historical_trees):
             "historical_native_file_product_trees": reviewed,
             **({"current_annotation_runtime": runtime} if runtime else {}),
             "changed_files": rows,
-            "all_changed_paths": sorted(set(FILES) | (set(runtime["all_changed_paths"]) if runtime else set())),
+            "all_changed_paths": sorted(set(FILES)
+                | (set(runtime["all_changed_paths"]) if runtime else set())
+                | (set(wave1["all_changed_paths"]) if wave1 else set())),
+            **({"wave1_product": wave1} if wave1 else {}),
             "native_acceptance_reused_by_this_document": False,
             "sdk_compiler_and_runtime_acceptance": "NOT_GRANTED_BY_SOURCE_OBSERVATION"}
