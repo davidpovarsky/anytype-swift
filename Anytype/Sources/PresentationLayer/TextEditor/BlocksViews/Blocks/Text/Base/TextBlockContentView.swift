@@ -54,7 +54,6 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     private var pendingFocus: (id: UUID, position: BlockFocusPosition, requestId: UUID?)?
     private var focusLifetimeId = UUID()
     private var scheduledFocusId: UUID?
-    private var pendingInputWasVisible: Bool?
     private var pendingFocusReachedNativeResponder = false
     private var focusReadinessSubscriptions = [AnyCancellable]()
     private var torahAccessoryAction: (() -> Void)?
@@ -95,14 +94,10 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        guard pendingFocus != nil else { return }
-        let visible = inputIsVisible
-        let becameVisible = visible && pendingInputWasVisible != true
-        pendingInputWasVisible = visible
-        // An inserted row can join an already-key window while its cell is still
-        // hidden. Resume its current request after the real presentation changes.
-        // Unchanged layout after a native delegate refusal must not start a loop.
-        if becameVisible { schedulePendingFocus() }
+        // UIKit may lay out the nested input after this callback returns. Queue
+        // the existing request now; delivery checks the completed input geometry.
+        // A request that already reached UIKit is never retried by layout.
+        resumePendingFocusAfterDisplay()
     }
 
     private var inputIsVisible: Bool {
@@ -232,7 +227,6 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         let pendingId = UUID()
         focusLifetimeId = pendingId
         pendingFocus = (pendingId, position, requestId)
-        pendingInputWasVisible = nil
         pendingFocusReachedNativeResponder = false
         recordFocus(.retained, requestId: requestId)
         observeFocusReadiness()
@@ -264,19 +258,20 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         focusLifetimeId = UUID()
         pendingFocus = nil
         scheduledFocusId = nil
-        pendingInputWasVisible = nil
         pendingFocusReachedNativeResponder = false
         focusReadinessSubscriptions.removeAll()
     }
 
-    /// A collection insertion can finish making an ancestor cell visible after
-    /// this row's own layout callback. Resume only its existing unattempted request;
-    /// this lifecycle event cannot create focus, repeat a native refusal or steal
-    /// the cursor from a newer request. The queued delivery rechecks ownership.
+    /// A collection insertion can finish laying out the input or revealing an
+    /// ancestor after this callback. Only queue the existing unattempted request;
+    /// delivery rechecks its owner, window and final visibility after layout.
+    /// This lifecycle event cannot create focus or repeat a native refusal.
     func resumePendingFocusAfterDisplay() {
         guard let pendingFocus, !pendingFocusReachedNativeResponder,
-              pendingFocus.id == focusLifetimeId, inputIsVisible else { return }
-        recordFocus(.presentationReady, requestId: pendingFocus.requestId)
+              pendingFocus.id == focusLifetimeId else { return }
+        if inputIsVisible {
+            recordFocus(.presentationReady, requestId: pendingFocus.requestId)
+        }
         schedulePendingFocus()
     }
 
@@ -309,7 +304,6 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
             return
         }
         let visible = inputIsVisible
-        pendingInputWasVisible = visible
         guard visible else {
             recordFocus(.waitingPresentation, requestId: pendingFocus.requestId)
             return

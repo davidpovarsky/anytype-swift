@@ -39,8 +39,15 @@ class EditorCollectionView: UICollectionView {
         }
     }
 
-    /// The diffable completion is the point at which inserted ancestors have
-    /// their final presentation, even when a child did not receive another layout.
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // A cell's presentation can finish without another descendant layout.
+        // Deliver only requests already owned by visible configured text rows.
+        resumePendingTextFocusAfterDisplay()
+    }
+
+    /// Both collection layout and diffable completion are presentation events.
+    /// Text rows defer delivery until UIKit has completed their input geometry.
     func resumePendingTextFocusAfterDisplay() {
         for cell in visibleCells {
             (cell as? EditorViewListCell)?.resumePendingTextFocusAfterDisplay()

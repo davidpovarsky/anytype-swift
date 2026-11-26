@@ -408,6 +408,48 @@ struct TextBlockFocusLifecycleTests {
         }
     }
 
+    @Test("UIKit collection layout resumes an empty row without a direct focus repair",
+          arguments: [false, true])
+    func collectionLayoutResumesOnlyCurrentUnattemptedFocus(superseded: Bool) async throws {
+        let fixture = try TextBlockFocusWindow()
+        defer { fixture.close() }
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let keeper = TextBlockContentView(frame: .zero)
+        keeper.update(with: configuration("layout-keeper", cursor: cursor, subjects: subjects))
+        fixture.attach(keeper, y: 80)
+        var empty = configuration("layout-empty", cursor: cursor, subjects: subjects, initial: .beginning)
+        empty.content = .plain("", contentType: .text)
+        empty.attributedString = NSAttributedString(string: "")
+        let collection = TextBlockFocusCellCollection(configuration: cellConfiguration(empty), locked: false)
+        collection.view.alpha = 0
+        fixture.attach(collection.view, y: 240)
+        await collection.display()
+        await finishMainQueueTurn()
+        let row = try #require(collection.row)
+        try #require(row.textView.textView.text.isEmpty && !row.textView.textView.isFirstResponder)
+        if superseded {
+            keeper.takeFocus(at: .end)
+            try #require(keeper.textView.textView.isFirstResponder)
+        }
+
+        // Only the ancestor changes visibility and receives a normal UIKit
+        // layout. Do not call the row's layout, focus or presentation helper.
+        collection.view.alpha = 1
+        collection.view.setNeedsLayout()
+        fixture.controller.view.layoutIfNeeded()
+        await finishMainQueueTurn()
+        #expect(row.textView.textView.isFirstResponder == !superseded)
+        if superseded {
+            #expect(keeper.textView.textView.isFirstResponder)
+        } else {
+            try #require(row.textView.textView.isFirstResponder)
+            #expect(row.textView.textView.selectedRange == NSRange(location: 0, length: 0))
+            row.textView.textView.insertText("שלום abc")
+            #expect(row.textView.textView.text == "שלום abc")
+        }
+    }
+
     @Test("Collection presentation cannot repeat a native delegate refusal")
     func collectionPresentationDoesNotReplayNativeRefusal() async throws {
         let fixture = try TextBlockFocusWindow()
