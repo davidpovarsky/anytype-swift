@@ -17,6 +17,13 @@ public struct AnyHeartNativeContentSelection: Sendable {
         public let jsonViewSHA256: String
         public let typeObjectID: String
     }
+    public struct AbsentDeclaration: Codable, Equatable, Sendable {
+        public let sourceObjectID: String
+        public let jsonViewSHA256: String
+        public let relationObjectID: String
+        public let relationKey: String
+        public let nativeFormat: Int64
+    }
 
     public let sourceAccountID: String
     public let sourceSpaceID: String
@@ -27,6 +34,11 @@ public struct AnyHeartNativeContentSelection: Sendable {
     public let typeObjectIDs: [String]
     public let relationObjectIDs: [String]
     public let optionObjectIDs: [String]
+    /// A native relationLinks row declares an available field; it is not a
+    /// present property value. Unused declarations remain explicitly bound to
+    /// the exact source JSON/PB in the immutable facts record, not installed as
+    /// invented writable values or removed from the full-source obligations.
+    public let retainedAbsentDeclarations: [AbsentDeclaration]
     public let remainingDefinitionObjectIDs: [String]
     /// Includes native heads without a current decoded object. It remains a
     /// separate full-source obligation even when every current Page qualifies.
@@ -49,7 +61,7 @@ public struct AnyHeartNativeContentSelection: Sendable {
         let typeByID = Dictionary(uniqueKeysWithValues: catalog.types.map { (Data($0.objectID.utf8), $0) })
         let propertyByID = Dictionary(uniqueKeysWithValues: catalog.relations.map { (Data($0.objectID.utf8), $0) })
         var requiredTypes = Set<Data>(), requiredProperties = Set<Data>()
-        var objects: [Object] = []
+        var objects: [Object] = [], absentDeclarations: [AbsentDeclaration] = []
         for page in pages {
             guard page.objectTypes.count == 1, let type = catalog.type(url: page.objectTypes[0]) else {
                 throw AnyHeartNativeContentSelectionError.unknownType(page.sourceObjectID)
@@ -61,15 +73,22 @@ public struct AnyHeartNativeContentSelection: Sendable {
                 }
                 requiredProperties.insert(Data(property.objectID.utf8))
             }
-            // relationLinks carry native format identity even if no current
-            // value is present. They are not discarded as display metadata.
+            // Validate every declaration, including native format identity.
+            // Present values and actual Type roles supply execution dependency
+            // edges. Absent global field declarations remain original facts.
+            var linkBytes = Set<Data>(), linkNames = Set<String>()
             for link in page.relationLinks {
                 guard let fields = link.object, Set(fields.keys) == ["key", "format"],
                       let key = fields["key"]?.string, let format = fields["format"]?.integer,
+                      linkBytes.insert(Data(key.utf8)).inserted, linkNames.insert(key).inserted,
                       let property = catalog.relation(key: key), property.rawFormat == format else {
                     throw AnyHeartNativeContentSelectionError.unknownProperty(page.sourceObjectID)
                 }
-                requiredProperties.insert(Data(property.objectID.utf8))
+                if page.details[key] == nil {
+                    absentDeclarations.append(.init(sourceObjectID: page.sourceObjectID,
+                        jsonViewSHA256: page.viewSHA256, relationObjectID: property.objectID,
+                        relationKey: key, nativeFormat: format))
+                }
             }
             objects.append(.init(sourceObjectID: page.sourceObjectID, snapshotSHA256: page.snapshotSHA256,
                 jsonViewSHA256: page.viewSHA256, typeObjectID: type.objectID))
@@ -127,6 +146,7 @@ public struct AnyHeartNativeContentSelection: Sendable {
         captureManifestSHA256 = bundle.manifestSHA256; sourceWitnessSHA256 = bundle.sourceWitnessSHA256
         catalogSHA256 = catalog.contentSHA256; self.objects = objects
         typeObjectIDs = types; relationObjectIDs = relations; optionObjectIDs = options
+        retainedAbsentDeclarations = absentDeclarations.filter { !requiredProperties.contains(Data($0.relationObjectID.utf8)) }
         remainingDefinitionObjectIDs = allDefinitions.filter { !selectedDefinitions.contains(Data($0.utf8)) }
         remainingSourceObjectIDs = headCensus.sourceHeadIDs.filter { !executed.contains(Data($0.utf8)) }
     }

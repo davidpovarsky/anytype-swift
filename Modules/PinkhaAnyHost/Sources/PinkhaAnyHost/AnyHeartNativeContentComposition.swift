@@ -54,6 +54,7 @@ public struct AnyHeartNativeContentComposition: Sendable {
             let catalogSHA256: String
             let selectedSourceObjectIDs: [String]
             let remainingSourceObjectIDs: [String]
+            let retainedAbsentDeclarations: [AnyHeartNativeContentSelection.AbsentDeclaration]
             let pageSHA256: [String]
             let items: [AnyDestinationMigrationItem]
             let coverage: [AnyDestinationCoverage]
@@ -62,7 +63,8 @@ public struct AnyHeartNativeContentComposition: Sendable {
         let bytes = try encoder.encode(Material(contract: "pinkha-heart-current-content-composition-v1",
             sourceManifestSHA256: bundle.manifestSHA256, sourceWitnessSHA256: bundle.sourceWitnessSHA256,
             catalogSHA256: catalog.contentSHA256, selectedSourceObjectIDs: selection.executedSourceObjectIDs,
-            remainingSourceObjectIDs: selection.remainingSourceObjectIDs, pageSHA256: pages.map(\.contentSHA256),
+            remainingSourceObjectIDs: selection.remainingSourceObjectIDs,
+            retainedAbsentDeclarations: selection.retainedAbsentDeclarations, pageSHA256: pages.map(\.contentSHA256),
             items: items, coverage: coverage))
         try AnyTorahSourceJSONGuard.validateRoundTrip(original: bytes, encoded: bytes)
         self.bundle = bundle; self.selection = selection; self.definitions = definitions

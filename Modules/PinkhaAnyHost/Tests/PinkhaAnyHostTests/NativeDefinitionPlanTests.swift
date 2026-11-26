@@ -1113,6 +1113,14 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(current.selection.typeObjectIDs, [custom.objectID])
         XCTAssertEqual(current.selection.relationObjectIDs.count, 8)
         XCTAssertEqual(current.selection.optionObjectIDs.count, 4)
+        XCTAssertEqual(current.selection.retainedAbsentDeclarations.count, 58)
+        for declaration in current.selection.retainedAbsentDeclarations {
+            let page = try XCTUnwrap(docs.first { $0.sourceObjectID == declaration.sourceObjectID })
+            XCTAssertNil(page.details[declaration.relationKey])
+            XCTAssertEqual(declaration.jsonViewSHA256, page.viewSHA256)
+            XCTAssertTrue(page.relationLinks.contains { $0["key"] == .string(declaration.relationKey) && $0["format"] == .integer(declaration.nativeFormat) })
+            XCTAssertNil(current.definitions.property(sourceKey: declaration.relationKey))
+        }
         XCTAssertEqual(current.selection.remainingDefinitionObjectIDs.count, 137)
         XCTAssertEqual(current.selection.remainingSourceObjectIDs.count, 144)
         XCTAssertEqual(current.selection.executedSourceObjectIDs.count, 15)
