@@ -1,0 +1,127 @@
+{
+  "actualAppPropertyLease": false,
+  "affectedOriginalMethods": [],
+  "appBuilds": 0,
+  "appRegistry": false,
+  "binarySHA256": "ebde8ce74b1f988d11b94026d31b9e89980fd058ff99058717fb5c185a619dc6",
+  "candidateSHA256": "7c420c110e9603459030320ab4fce32a61dc50babd931f554d68895f01683a91",
+  "cleanupFailures": [],
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-o",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-source-lease/attempt4/cutover-native-source-lease.test",
+        "authorized_operation.go",
+        "cutover_source_lease.go",
+        "object.go",
+        "operation_target_lease.go",
+        "semantic_anchor_lease.go",
+        "target_lease.go",
+        "target_lease_test.go",
+        "semantic_anchor_lease_test.go",
+        "cutover_source_lease_test.go"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-source-lease/attempt4/source/heart/core/block/editor/torahopsobject",
+      "durationSeconds": 255.54433841630816,
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ownedProcessGroupRemaining": [],
+      "pgid": 3140866,
+      "pid": 3140866,
+      "startedUTC": "2026-11-26T04:02:55.080312+00:00"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "version",
+        "-m",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-source-lease/attempt4/cutover-native-source-lease.test"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-source-lease/attempt4/source/heart/core/block/editor/torahopsobject",
+      "durationSeconds": 0.03351403679698706,
+      "exitCode": 0,
+      "logSHA256": "89238f627d8e1ba4ce712f2b4e073c2d34327af193ba6d2deff57d899025f8d7",
+      "ownedProcessGroupRemaining": [],
+      "pgid": 3153026,
+      "pid": 3153026,
+      "startedUTC": "2026-11-26T04:07:10.696312+00:00"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "cutover-native-source-lease",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-source-lease/attempt4/cutover-native-source-lease.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=240s",
+        "-test.run=^(TestCutoverSourceLeasePreservesExactNativePropertyAndOneBorrow|TestCutoverSourceLeaseRefusesNonStringNativeProperties|TestCutoverSourceLeaseRechecksHeldAccountDocumentAndExactSource|TestCutoverSourceLeaseRefusesForeignACLAndBorrowScope)$"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-source-lease/attempt4/source/heart/core/block/editor/torahopsobject",
+      "durationSeconds": 1.851930900476873,
+      "exitCode": 0,
+      "logSHA256": "8ece01f22f60ae0767ef389d269f0d6e1006f0acdf63f5c29d0800cc23bef13a",
+      "ownedProcessGroupRemaining": [],
+      "pgid": 3153030,
+      "pid": 3153030,
+      "startedUTC": "2026-11-26T04:07:10.730255+00:00"
+    }
+  ],
+  "failures": 0,
+  "logSHA256": "8ece01f22f60ae0767ef389d269f0d6e1006f0acdf63f5c29d0800cc23bef13a",
+  "methods": [
+    "TestCutoverSourceLeasePreservesExactNativePropertyAndOneBorrow",
+    "TestCutoverSourceLeaseRefusesNonStringNativeProperties",
+    "TestCutoverSourceLeaseRechecksHeldAccountDocumentAndExactSource",
+    "TestCutoverSourceLeaseRefusesForeignACLAndBorrowScope"
+  ],
+  "nativeSourceLeaseMethods": 4,
+  "newMethods": [
+    "TestCutoverSourceLeasePreservesExactNativePropertyAndOneBorrow",
+    "TestCutoverSourceLeaseRefusesNonStringNativeProperties",
+    "TestCutoverSourceLeaseRechecksHeldAccountDocumentAndExactSource",
+    "TestCutoverSourceLeaseRefusesForeignACLAndBorrowScope"
+  ],
+  "originalAffectedMethods": 0,
+  "passedRecords": [
+    "TestCutoverSourceLeasePreservesExactNativePropertyAndOneBorrow/missing",
+    "TestCutoverSourceLeasePreservesExactNativePropertyAndOneBorrow/present-empty",
+    "TestCutoverSourceLeasePreservesExactNativePropertyAndOneBorrow/exact-unicode-bytes",
+    "TestCutoverSourceLeasePreservesExactNativePropertyAndOneBorrow",
+    "TestCutoverSourceLeaseRefusesNonStringNativeProperties",
+    "TestCutoverSourceLeaseRechecksHeldAccountDocumentAndExactSource/account-retired",
+    "TestCutoverSourceLeaseRechecksHeldAccountDocumentAndExactSource/cache-retired",
+    "TestCutoverSourceLeaseRechecksHeldAccountDocumentAndExactSource/native-property-changed",
+    "TestCutoverSourceLeaseRechecksHeldAccountDocumentAndExactSource/native-head-changed",
+    "TestCutoverSourceLeaseRechecksHeldAccountDocumentAndExactSource/cancelled",
+    "TestCutoverSourceLeaseRechecksHeldAccountDocumentAndExactSource/orphan-target",
+    "TestCutoverSourceLeaseRechecksHeldAccountDocumentAndExactSource",
+    "TestCutoverSourceLeaseRefusesForeignACLAndBorrowScope"
+  ],
+  "peerTransport": false,
+  "retainedOriginalAffectedMethods": {
+    "logSHA256": "d38243f21e028d8f669f9ef4bbc67581e2fa84170168aa05a0a3fb559f5f5247",
+    "methods": [
+      "TestPinkhaNativeTargetLeaseHoldsBothLocksAndReleasesOnce",
+      "TestPinkhaNativeTargetLeaseCanBeBorrowedOnce"
+    ],
+    "originalStatus": "FAIL",
+    "receiptSHA256": "301e2f85376fc70b4799d71fa49f229d85e6b0141e85e7d837b215f1adbe45c6",
+    "replayed": 0
+  },
+  "scope": "real native document/settings locks and signed tree/ACL binding; controlled loaded cache and application scope",
+  "sharedCodecBinarySHA256": "6d7003d580ef253c5666b14c4bef9b9e712cafa9349ba9830ed1e5faa9b0d2a7",
+  "skips": 0,
+  "sourceSHA256": "16dd0d26ff5153c4ee2f39ecb20490bd93b2ce3ce6af01282abc25fe7341f857",
+  "sourceUnchanged": true,
+  "status": "PASS_NATIVE_SOURCE_LEASE_COMPONENT_NOT_APP_OR_PEER_ACCEPTANCE"
+}

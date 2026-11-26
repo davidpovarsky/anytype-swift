@@ -1,0 +1,9 @@
+# Native cutover source lease component
+
+Actual result: 4 affected methods passed, with 13 passing method/subtest records, zero failures and zero skips. The native document and settings locks, signed-tree ACL identity, exact property presence/bytes, current cache and account callbacks, and single-borrow lifetime were exercised. The loaded cache and application scope are controlled test boundaries; this is not a real application-registry, RPC, peer or Apple acceptance claim.
+
+The first producer remains FAIL. It separately passed both original target-lease methods, then exposed a real compatibility defect: the native Details map may be nil for a valid empty document. The corrected reader uses the existing nil-safe native TryGet behavior. A missing property remains absent; a present null or non-string value still refuses. Only the four affected new methods were rerun. Their original target-lease pass records remain retained and were not replayed.
+
+The successful producer compiled the exact source closure with the recovered original Linux arm64 Tantivy archive, then ran the actual native component binary. All source bytes matched before and after, and every owned process group was observed absent. The original producer receipts are retained verbatim beside this document. Private fixture contents and raw artifacts remain in protected task evidence.
+
+The source lease extends the existing target/settings lock scope without treating it as a distributed lock. Each use rechecks the current account, native object/cache identity, signed tree/ACL identity, exact legacy property bytes and native heads. This checkpoint remains inactive until separate native registry and core entry points, generated RPC capability, Swift adapter, crash/retry and peer qualification complete. Existing v1 claims and the legacy property remain untouched.
