@@ -50,6 +50,97 @@ final class NativeDefinitionPlanTests: XCTestCase {
             captureManifestSHA256: AnyContentDigest.sha256(try wireManifest(rows)),
             sourceWitnessSHA256: String(repeating: "b", count: 64), snapshots: rows)
     }
+
+    private func nativeDerived(_ role: AnyDestinationCanonicalPropertyBinding.DerivedRole,
+                               participantID: String = "source-participant-type",
+                               overrides: [String: AnyJSON] = [:]) throws -> AnyHeartNativeSnapshotView {
+        let name: String, description: String
+        switch role {
+        case .author: name = "Created by"; description = "Human which created this object"
+        case .createdAt: name = "Creation date"; description = "Date when the object was initially created"
+        case .modifiedAt: name = "Last modified date"; description = "Date when the object was modified last time"
+        case .modifiedBy: name = "Last modified by"; description = "Human who updated the object last time"
+        }
+        var fields: [String: AnyJSON] = ["name": .string(name), "description": .string(description),
+            "relationMaxCount": .integer(1), "relationReadonlyValue": .bool(true),
+            "relationFormatIncludeTime": .bool(role.isTimestamp),
+            "relationFormatObjectTypes": .array(role.isTimestamp ? [] : [.string(participantID)])]
+        fields.merge(overrides) { _, changed in changed }
+        return try relation("derived-" + role.rawValue, key: role.sourceKey,
+                            format: role.isTimestamp ? 4 : 100, extra: fields)
+    }
+
+    func testNativeDerivedDefinitionsBindActualNativeFieldsWithoutMutableShadows() throws {
+        let roles: [AnyDestinationCanonicalPropertyBinding.DerivedRole] = [.author, .createdAt, .modifiedAt, .modifiedBy]
+        let participant = try type("source-participant-type", key: "participant")
+        let rows = try roles.map { try nativeDerived($0) } + [participant]
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog(rows))
+        XCTAssertTrue(mapper.issues.isEmpty)
+        for role in roles {
+            let property = try XCTUnwrap(mapper.property(sourceKey: role.sourceKey))
+            let binding = try XCTUnwrap(property.canonicalBinding)
+            XCTAssertEqual(binding.derivedRole, role)
+            XCTAssertNil(binding.identityRole)
+            XCTAssertEqual(binding.ownerID, "any")
+            XCTAssertEqual(binding.propertyID, role.rawValue)
+            XCTAssertEqual(property.record, .native(role.rawValue))
+            XCTAssertEqual(property.kind, role.isTimestamp ? "datetime" : "string")
+            XCTAssertFalse(mapper.schemaItems.contains { $0.sourceObjectID == property.relation.objectID })
+            XCTAssertNoThrow(try AnyDestinationDefinitionChecks.verifyNativeCanonicalProperties(
+                .object(["properties": .array([AnyDestinationCanonicalPropertyBinding.nativeDerivedDescriptor(role)])]),
+                bindings: [binding]))
+            var changed = try XCTUnwrap(AnyDestinationCanonicalPropertyBinding.nativeDerivedDescriptor(role).object)
+            changed["scope"] = .string("synced")
+            XCTAssertThrowsError(try AnyDestinationDefinitionChecks.verifyNativeCanonicalProperties(
+                .object(["properties": .array([.object(changed)])]), bindings: [binding]))
+        }
+        XCTAssertNoThrow(try boundPlan(rows: rows, mapper: mapper))
+    }
+
+    func testNativeDerivedSourceClocksAndParticipantsRemainHistoricalFacts() throws {
+        let roles: [AnyDestinationCanonicalPropertyBinding.DerivedRole] = [.author, .createdAt, .modifiedAt, .modifiedBy]
+        let participant = try type("source-participant-type", key: "participant")
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog(roles.map { try nativeDerived($0) } + [participant]))
+        let originals: [String: AnyJSON] = ["creator": .array([.string("original-participant-א")]),
+            "createdDate": .integer(-7), "lastModifiedDate": .integer(Int64.max), "lastModifiedBy": .array([])]
+        let row = try snapshot("source-document", type: 16, key: "page", details: originals)
+        let mapped = try mapper.values(snapshot: row, relationKeys: roles.map(\.sourceKey), objects: [])
+        XCTAssertTrue(mapped.initialGroups.isEmpty)
+        XCTAssertTrue(mapped.deferredGroups.isEmpty)
+        XCTAssertTrue(mapped.nativeIdentityRelationKeys.isEmpty)
+        XCTAssertEqual(mapped.nativeDerivedSourceValues.count, 4)
+        for fact in mapped.nativeDerivedSourceValues {
+            XCTAssertEqual(fact.originalValue, originals[fact.sourceRelationKey])
+            XCTAssertEqual(fact.sourceObjectID, row.sourceObjectID)
+            XCTAssertEqual(fact.snapshotSHA256, row.snapshotSHA256)
+            XCTAssertEqual(fact.jsonViewSHA256, row.viewSHA256)
+        }
+        for bad in [AnyJSON.bool(false), .null, .array([.string("a"), .string("b")]), .array([.integer(2)])] {
+            let invalid = try snapshot("source-document", type: 16, key: "page", details: ["creator": bad])
+            XCTAssertThrowsError(try mapper.values(snapshot: invalid, relationKeys: ["creator"], objects: []))
+        }
+    }
+
+    func testChangedDerivedDefinitionAndParticipantTypeCannotAcquireCanonicalCoverage() throws {
+        let participant = try type("source-participant-type", key: "participant")
+        let mutations: [[String: AnyJSON]] = [
+            ["relationReadonlyValue": .bool(false)], ["relationFormatIncludeTime": .bool(true)],
+            ["relationMaxCount": .integer(0)], ["relationFormatObjectTypes": .array([])],
+            ["relationDefaultValue": .string("another-author")], ["description": .string("overridden")],
+            ["unknownDerivedSemantics": .bool(true)]
+        ]
+        for overrides in mutations {
+            let source = try nativeDerived(.author, overrides: overrides)
+            let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog([source, participant]))
+            XCTAssertNil(mapper.property(sourceKey: "creator"))
+            XCTAssertFalse(mapper.schemaItems.contains { $0.sourceObjectID == source.sourceObjectID })
+            XCTAssertThrowsError(try mapper.admittedSchemaItems())
+        }
+        let wrong = try type("source-participant-type", key: "page")
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog([nativeDerived(.author), wrong]))
+        XCTAssertNil(mapper.property(sourceKey: "creator"))
+        XCTAssertThrowsError(try mapper.admittedSchemaItems())
+    }
     /// Deliberately synthetic declaration-only envelopes for closed coverage
     /// controls. They are not full native bundle or current authority proofs.
     private func wireManifest(_ rows: [AnyHeartNativeSnapshotView]) throws -> Data {
@@ -885,6 +976,11 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(custom.hiddenRelations, [try XCTUnwrap(labels["checkbox"]).objectID])
         XCTAssertEqual(try XCTUnwrap(labels["object"]).targetTypeIDs, [custom.objectID])
         let mapper = try AnyHeartNativeDefinitionPlan(catalog: c)
+        for role in [AnyDestinationCanonicalPropertyBinding.DerivedRole.author, .createdAt, .modifiedAt, .modifiedBy] {
+            let property = try XCTUnwrap(mapper.property(sourceKey: role.sourceKey))
+            XCTAssertEqual(property.canonicalBinding?.derivedRole, role)
+            XCTAssertFalse(mapper.schemaItems.contains { $0.sourceObjectID == property.relation.objectID })
+        }
         let orderedItem = try XCTUnwrap(mapper.schemaItems.first {
             $0.sourceObjectID == custom.objectID &&
                 { if case .typeDefinition = $0.operation { return true }; return false }($0)

@@ -66,10 +66,23 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         /// Present source identities consumed by native object/space/type
         /// correspondence. They never enter a property-write payload.
         public let nativeIdentityRelationKeys: [String]
+        /// Captured historical facts that must be represented separately by
+        /// the enclosing immutable source-fact operation. They are deliberately
+        /// absent from initial/deferred writes to the current native object.
+        public let nativeDerivedSourceValues: [DerivedSourceValue]
         public let originalDetailsSHA256: String
         public var initialProperties: AnyDestinationValue {
             .object(initialGroups.map { .init(key: $0.owner, value: $0.fields) })
         }
+    }
+
+    public struct DerivedSourceValue: Sendable {
+        public let sourceObjectID: String
+        public let sourceRelationKey: String
+        public let destinationPropertyID: String
+        public let originalValue: AnyJSON
+        public let snapshotSHA256: String
+        public let jsonViewSHA256: String
     }
 
     public let catalog: AnyHeartNativeDefinitionCatalog
@@ -102,7 +115,8 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         var items: [AnyDestinationMigrationItem] = [], properties: [PropertyBinding] = []
         var definitionCoverage: [AnyDestinationCoverage] = []
         func nativeCanonicalIdentity(_ relation: AnyHeartNativeDefinitionCatalog.Relation) -> Bool {
-            relation.snapshot.nativeType == 521 && ["name", "description", "id", "spaceId", "type"].contains(relation.relationKey) &&
+            relation.snapshot.nativeType == 521 && ["name", "description", "id", "spaceId", "type",
+                "creator", "createdDate", "lastModifiedDate", "lastModifiedBy"].contains(relation.relationKey) &&
             Data(relation.snapshot.uniqueKey.utf8) == Data(("rel-" + relation.relationKey).utf8)
         }
         let namespaceAnchor = catalog.relations.first { !nativeCanonicalIdentity($0) }
@@ -123,7 +137,7 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
             if nativeCanonicalIdentity(relation) {
                 do {
                     let targetTypeEvidence: AnyDestinationDefinitionEvidence?
-                    if ["spaceId", "type"].contains(relation.relationKey),
+                    if ["spaceId", "type", "creator", "lastModifiedBy"].contains(relation.relationKey),
                        relation.targetTypeIDs.count == 1,
                        let target = catalog.types.first(where: {
                            Data($0.objectID.utf8) == Data(relation.targetTypeIDs[0].utf8)
@@ -132,11 +146,13 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                     } else { targetTypeEvidence = nil }
                     let canonical = try AnyDestinationCanonicalPropertyBinding(
                         evidence: .init(snapshot: relation.snapshot), targetTypeEvidence: targetTypeEvidence)
-                    guard catalog.relation(key: canonical.propertyID)?.objectID == relation.objectID else {
+                    guard catalog.relation(key: canonical.sourceRelationKey)?.objectID == relation.objectID else {
                         throw AnyHeartNativeDefinitionPlanError.missingDefinition(relation.objectID)
                     }
                     properties.append(.init(relation: relation, sourceKey: key("canonical-property", relation.objectID),
-                        kind: "string", format: canonical.identityRole != nil ? "identity" : (canonical.propertyID == "name" ? "text" : "longtext"),
+                        kind: canonical.derivedRole?.isTimestamp == true ? "datetime" : "string",
+                        format: canonical.derivedRole.map { $0.isTimestamp ? "datetime" : "identity" } ??
+                            (canonical.identityRole != nil ? "identity" : (canonical.propertyID == "name" ? "text" : "longtext")),
                         xKey: canonical.propertyID, owner: .native("any"), record: .native(canonical.propertyID),
                         canonicalBinding: canonical))
                     definitionCoverage.append(.init(sourceObjectID: relation.objectID, disposition: .canonicalProperty(canonical)))
@@ -379,6 +395,7 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         var initial: [(AnyDestinationReference, [AnyDestinationField], [String])] = []
         var deferred: [(AnyDestinationReference, [AnyDestinationField], [String])] = []
         var initialKeys: [String] = [], deferredKeys: [String] = [], nativeIdentityKeys: [String] = []
+        var nativeDerivedSourceValues: [DerivedSourceValue] = []
         func append(_ field: AnyDestinationField, owner: AnyDestinationReference, key: String,
                     to groups: inout [(AnyDestinationReference, [AnyDestinationField], [String])]) throws {
             let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
@@ -396,6 +413,28 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                 nativeIdentityKeys.append(key)
                 continue
             }
+            if let role = binding.canonicalBinding?.derivedRole {
+                // Any's author is the destination signing account, whereas a
+                // Heart creator may name a captured Participant object. The
+                // identities and clocks are not interchangeable. Retain the
+                // exact source value and require a separate immutable fact.
+                if role.isTimestamp {
+                    guard value.integer != nil else {
+                        throw AnyHeartNativeDefinitionPlanError.invalidValue(key, "historical integer epoch seconds required")
+                    }
+                } else {
+                    let identities = value.string.map { [$0] } ?? value.array?.compactMap(\.string)
+                    guard let identities, identities.count <= 1,
+                          value.array == nil || identities.count == value.array?.count,
+                          identities.allSatisfy({ AnyDestinationPlanChecks.identity($0) }) else {
+                        throw AnyHeartNativeDefinitionPlanError.invalidValue(key, "historical singular participant identity required")
+                    }
+                }
+                nativeDerivedSourceValues.append(.init(sourceObjectID: snapshot.sourceObjectID,
+                    sourceRelationKey: key, destinationPropertyID: role.rawValue, originalValue: value,
+                    snapshotSHA256: snapshot.snapshotSHA256, jsonViewSHA256: snapshot.viewSHA256))
+                continue
+            }
             let mapped = try map(value, property: binding, targets: targets, files: fileTargets)
             let field = AnyDestinationField(key: binding.record, value: mapped)
             if binding.relation.format == .object || binding.relation.format == .file {
@@ -406,6 +445,7 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         return .init(initialGroups: initial.map { .init(owner: $0.0, fields: .object($0.1), sourceRelationKeys: $0.2) },
             deferredGroups: deferred.map { .init(owner: $0.0, fields: .object($0.1), sourceRelationKeys: $0.2) }, initialRelationKeys: initialKeys,
             deferredRelationKeys: deferredKeys, nativeIdentityRelationKeys: nativeIdentityKeys,
+            nativeDerivedSourceValues: nativeDerivedSourceValues,
             originalDetailsSHA256: AnyContentDigest.sha256(try encoder.encode(AnyJSON.object(snapshot.details))))
     }
 
