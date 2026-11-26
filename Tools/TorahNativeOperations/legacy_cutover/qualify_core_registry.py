@@ -6,6 +6,7 @@ BASE=Path("/mnt/development/projects/evidence/page154-final-validation-20261125/
 BASE_SHA="32a701c389455d78d9a9271224921e3cc5772005481e3a7eac83312d2436c171"
 CANDIDATE_SHA="db2018871482d911b15fce3002d3e15d25fd17d50ca0ae7f64c72725de18bb58"
 HELPER_SHA="64b4310f7b1db57df0236074d4c7a9058041f6c06e6667797ceafe0099360a21"
+METADATA_HELPER_SHA="a7ae9732da45d5e1235030ad061e7c3008ed6119b7ea84bcb5fba95028279dd5"
 FIXTURE_RECEIPT=Path("/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/shared-fixture-qualification1/receipt.json")
 FIXTURE_RECEIPT_SHA="db5b5a4682a474730a78c2a2637fbd38f1ee8a3079ec5bd5a6a56a444571809c"
 FIXTURE_BINARY_SHA="6d7003d580ef253c5666b14c4bef9b9e712cafa9349ba9830ed1e5faa9b0d2a7"
@@ -65,6 +66,17 @@ def main():
         if c.digest(lib)!=DEPENDENCY_SHA:raise ValueError("exact Linux native dependency")
         dest=source/"heart/deps/libs/linux-arm64-musl/libtantivy_go.a";dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(lib,dest)
         expected[str(dest.relative_to(source))]={"bytes":dest.stat().st_size,"sha256":DEPENDENCY_SHA}
+        metadataHelper=directory/"core_workspace_metadata.py"
+        if metadataHelper.resolve()!=metadataHelper or c.digest(metadataHelper)!=METADATA_HELPER_SHA:raise ValueError("exact metadata admission helper")
+        mspec=importlib.util.spec_from_file_location("core_checksum_admission",metadataHelper)
+        metadata=importlib.util.module_from_spec(mspec);mspec.loader.exec_module(metadata)
+        checksumBytes,metadataProof,moduleProofs=metadata.admit()
+        checksumPath=source/"go.work.sum"
+        if expected["go.work.sum"]!=metadata.BEFORE or c.digest(checksumPath)!=metadata.BEFORE["sha256"]:raise ValueError("original candidate checksum")
+        checksumPath.write_bytes(checksumBytes);expected["go.work.sum"]=dict(metadata.AFTER)
+        c.save(root/"module-metadata-admission.json",metadataProof)
+        metadataRoot=root/"module-metadata-originals";metadataRoot.mkdir(mode=0o700)
+        for i,row in enumerate(moduleProofs): (metadataRoot/(str(i+1)+".mod")).write_bytes(row["raw"])
         before=inventory()
         if before!=expected:raise ValueError("complete source mismatch")
         c.save(root/"source-before.json",before);c.save(root/"candidate.json",candidate)
@@ -120,6 +132,7 @@ def main():
                 c.save(root/"private-inventory.json",privateFiles)
             except Exception as error:result.update(status="FAIL",retentionError=str(error))
         if hashlib.sha256(helper.read_bytes()).hexdigest()!=HELPER_SHA:result.update(status="FAIL",controlError="owned helper changed")
+        if c.digest(directory/"core_workspace_metadata.py")!=METADATA_HELPER_SHA:result.update(status="FAIL",metadataControlError="metadata helper changed")
         if result.get("goToolSHA256") and c.digest(Path(GO))!=result["goToolSHA256"]:result.update(status="FAIL",toolError="Go toolchain changed")
         c.save(root/"receipt.json",result)
     print(json.dumps(result));return 0 if result["status"].startswith("PASS_") else 1
