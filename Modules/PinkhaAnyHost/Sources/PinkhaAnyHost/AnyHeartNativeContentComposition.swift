@@ -28,16 +28,15 @@ public struct AnyHeartNativeContentComposition: Sendable {
             try AnyHeartNativePageComposition(bundle: bundle, sourceObjectID: $0.sourceObjectID,
                                                definitions: definitions, objects: objects)
         }
-        // All actual objects must exist before deferred references, including
-        // references to a later source object and genuine cycles. Body order
-        // within each page remains the original parser-owned hierarchy order.
-        let currentItems = pages.flatMap(\.items)
-        let creates = currentItems.filter { if case .object = $0.operation { return true }; return false }
-        let updates = currentItems.filter { if case .propertyUpdate = $0.operation { return true }; return false }
-        let bodies = currentItems.filter {
-            switch $0.operation { case .object, .propertyUpdate: false; default: true }
-        }
-        let items = definitions.schemaItems + creates + bodies + updates
+        // Keep the existing native plan phases: all identities before bodies,
+        // then files/references, then immutable source facts. Stable ordering
+        // within a phase retains schema dependencies and parser-owned body
+        // hierarchy. The plan still rejects every unresolved earlier owner.
+        let unsorted = definitions.schemaItems + pages.flatMap(\.items)
+        let items = unsorted.enumerated().sorted {
+            let lhs = $0.element.operation.phase, rhs = $1.element.operation.phase
+            return lhs == rhs ? $0.offset < $1.offset : lhs < rhs
+        }.map(\.element)
         let fixedCoverage = Dictionary(uniqueKeysWithValues:
             definitions.definitionCoverage.map { (Data($0.sourceObjectID.utf8), $0) })
         var coverage: [AnyDestinationCoverage] = []
