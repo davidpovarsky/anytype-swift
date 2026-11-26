@@ -1,0 +1,65 @@
+{
+  "buildsExecuted": 0,
+  "candidateSHA256": "e993303f60619afb05bb65449ea73253365e9e0e446339a9f7b0ba586742866a",
+  "inverseRestoresOriginalBytes": true,
+  "nativeGatewayHelperChanged": false,
+  "nativeSourceChanged": false,
+  "newFunctions": [
+    "qualify_gateway_invocation_refusal"
+  ],
+  "originalControllerSHA256": "cb9477dc383ada4ab5d2361ca5105ff9c7c18f1d1db6d861f034b91f48337077",
+  "originalDeviceRefusalSHA256": "c33de905244e6f77d94f9491d4930e8aa4b1445547b5c8b9c73ebb812e61f9dc",
+  "protocol": "pinkha8ac-device-invocation-continuation-source-v1",
+  "substitutions": [
+    {
+      "after": "    parser.add_argument(\"--resume-generated-metadata\", action=\"store_true\")\n    parser.add_argument(\"--resume-gateway-invocation\", action=\"store_true\")\n",
+      "before": "    parser.add_argument(\"--resume-generated-metadata\", action=\"store_true\")\n"
+    },
+    {
+      "after": "    root = args.root\n    require(args.resume_gateway_invocation and args.slice == \"device\"\n            and args.gateway_proof_root is None\n            and not any((args.resume_disk_stop, args.resume_gateway_metadata,\n                         args.resume_reviewed_metadata, args.resume_generated_metadata)),\n            \"only_exact_device_gateway_invocation_continuation_allowed\")\n",
+      "before": "    root = args.root\n"
+    },
+    {
+      "after": "    if args.resume_disk_stop or args.resume_gateway_metadata or args.resume_gateway_invocation:\n",
+      "before": "    if args.resume_disk_stop or args.resume_gateway_metadata:\n"
+    },
+    {
+      "after": "        prior = qualify_gateway_invocation_refusal(original.read_bytes())\n",
+      "before": "        prior = json.loads(original.read_text())\n"
+    },
+    {
+      "after": "        if args.resume_gateway_invocation:\n            pass  # The exact original refusal and every completed command were qualified above.\n        elif args.resume_gateway_metadata:\n            require(prior[\"failure\"][\"message\"]",
+      "before": "        if args.resume_gateway_metadata:\n            require(prior[\"failure\"][\"message\"]"
+    },
+    {
+      "after": "    evidence = root / (\"evidence-gateway-invocation-resume-1\" if args.resume_gateway_invocation else\n                       \"evidence-gateway-resume-1\" if args.resume_gateway_metadata else\n",
+      "before": "    evidence = root / (\"evidence-gateway-resume-1\" if args.resume_gateway_metadata else\n"
+    },
+    {
+      "after": "            receipt[\"originalGatewayInvocationRefusalSHA256\" if args.resume_gateway_invocation else\n                    \"originalPreparationStopReceiptSHA256\" if args.resume_gateway_metadata\n",
+      "before": "            receipt[\"originalPreparationStopReceiptSHA256\" if args.resume_gateway_metadata\n"
+    },
+    {
+      "after": "            receipt[\"reusedPreparationCommands\"] = (prior[\"commands\"] if (args.resume_gateway_metadata or args.resume_gateway_invocation)\n",
+      "before": "            receipt[\"reusedPreparationCommands\"] = (prior[\"commands\"] if args.resume_gateway_metadata\n"
+    },
+    {
+      "after": "def qualify_gateway_invocation_refusal(raw):\n    require(hashlib.sha256(raw).hexdigest() ==\n            \"c33de905244e6f77d94f9491d4930e8aa4b1445547b5c8b9c73ebb812e61f9dc\",\n            \"exact_original_device_gateway_invocation_refusal_required\")\n    prior = json.loads(raw)\n    require(prior[\"status\"] == \"FAIL\"\n            and prior[\"failure\"] == {\"type\": \"ValueError\",\n                                    \"message\": \"exact_owned_gateway_proof_root_required\"}\n            and prior[\"slicePhase\"] == \"device\"\n            and prior[\"sourceManifestSHA256\"] == MANIFEST_SHA\n            and prior[\"controllerCommit\"] == \"e185fd77f691c08b9e59ad3a4fbb8ab2a4e703f9\"\n            and prior[\"controllerSHA256\"] ==\n                \"cb9477dc383ada4ab5d2361ca5105ff9c7c18f1d1db6d861f034b91f48337077\"\n            and prior[\"sourceFilesVerified\"] == 4868\n            and prior[\"applicationBuilds\"] == prior[\"appleTestsExecuted\"] ==\n                prior[\"nativeAcceptanceTestsExecuted\"] == 0\n            and not prior.get(\"slices\")\n            and prior.get(\"nativeLibraryBuildInvocations\", 0) == 0,\n            \"original_refusal_scope_changed\")\n    require([item[\"name\"] for item in prior[\"commands\"]] == [\n                \"go-version\", \"xcode-version\", \"iphoneos-version\", \"iphonesimulator-version\",\n                \"tantivy-ios-arm64-original-symbols\", \"tantivy-ios-arm64-native-symbols\",\n                \"tantivy-ios-arm64-sim-original-symbols\", \"tantivy-ios-arm64-sim-native-symbols\",\n                \"module-graph\", \"install-bind-tools\", \"gomobile-init\"]\n            and all(item.get(\"exitCode\") == 0 and item[\"status\"] == \"PASS_EXIT_0\"\n                    for item in prior[\"commands\"]),\n            \"only_successful_prebind_preparation_may_be_reused\")\n    return prior\n\n\ndef main():\n",
+      "before": "def main():\n"
+    }
+  ],
+  "testsExecuted": 0,
+  "unchangedFunctionASTs": [
+    "check_source",
+    "digest",
+    "extract",
+    "generated_swift_entry",
+    "hydrate_private_workspace_checksums",
+    "phase_space_estimate",
+    "require",
+    "stage_authenticated_checksum_metadata",
+    "verify_gateway_graph_hydration",
+    "verify_reviewed_metadata",
+    "write"
+  ]
+}
