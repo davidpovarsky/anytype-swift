@@ -1,0 +1,108 @@
+{
+  "appBuilds": 0,
+  "appleUI": false,
+  "cleanupFailures": [],
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "version"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt2/source/heart",
+      "exitCode": 0,
+      "groupState": "ABSENT_ESRCH",
+      "logSHA256": "9da111d509234fc14ad21a2b2e16353665c0614e7d3e8495c01f8cfa3398670e",
+      "pgid": 3367925,
+      "pid": 3367925,
+      "seconds": 0.03693253826349974,
+      "startedUTC": "2026-11-26T05:31:31.648735+00:00",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "env",
+        "-json",
+        "GOVERSION",
+        "GOROOT",
+        "GOTOOLDIR",
+        "GOOS",
+        "GOARCH",
+        "CGO_ENABLED",
+        "CC",
+        "CXX",
+        "GOMODCACHE",
+        "GOCACHE",
+        "GOWORK"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt2/source/heart",
+      "exitCode": 0,
+      "groupState": "ABSENT_ESRCH",
+      "logSHA256": "bbf68a8cbaaf0bd52962aec6773a9f5605102add2965da48cefe874f6e4793ed",
+      "pgid": 3367929,
+      "pid": 3367929,
+      "seconds": 0.008333408273756504,
+      "startedUTC": "2026-11-26T05:31:31.687902+00:00",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "list",
+        "-m",
+        "-json",
+        "all"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt2/source/heart",
+      "exitCode": 0,
+      "groupState": "ABSENT_ESRCH",
+      "logSHA256": "b39d3d6e28e33f01417d0f704ed7b9ea935c621aef18257bca1262b6f7b28f2c",
+      "pgid": 3367933,
+      "pid": 3367933,
+      "seconds": 1.8245754847303033,
+      "startedUTC": "2026-11-26T05:31:31.698293+00:00",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-tags=pinkha_loaded_account_witness,pinkha_cutover_acceptance",
+        "-o",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt2/cutover-real-core.test",
+        "./core"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt2/source/heart",
+      "exitCode": 1,
+      "groupState": "ABSENT_ESRCH",
+      "logSHA256": "74559c1f3e3403ec4b826728dc5daf3a092ba3d4cad01e3c8661dcc4dc223a69",
+      "pgid": 3368012,
+      "pid": 3368012,
+      "seconds": 291.15621223766357,
+      "startedUTC": "2026-11-26T05:31:34.377912+00:00",
+      "status": "FAIL"
+    }
+  ],
+  "error": "RuntimeError: owned command failed: build",
+  "generatedRPC": false,
+  "goToolSHA256": "59c65090beeda377c09007eb8fae1c6aadf0a7b551e65ee13d461092d29e8005",
+  "nativeSliceBuilds": 0,
+  "peerTransport": false,
+  "requestedMethods": [
+    "TestPinkhaTorahCutoverActualCoreRegistryAndReopen"
+  ],
+  "resourceAdmission": {
+    "emergencyFreeBytes": 2147483648,
+    "estimatedIncrementalBytes": 2147483648,
+    "initialFreeBytes": 4583133184,
+    "parallelism": 1
+  },
+  "scope": "actual LocalOnly core/account/private registry/native property and signed host qualification",
+  "sourceSHA256": "e58408f9f9b1e9edd8e079788815f376bd628a4a8689b5c4dd7fe16e9f9ad174",
+  "sourceUnchanged": true,
+  "status": "FAIL"
+}

@@ -7,6 +7,7 @@ BASE_SHA="32a701c389455d78d9a9271224921e3cc5772005481e3a7eac83312d2436c171"
 CANDIDATE_SHA="db2018871482d911b15fce3002d3e15d25fd17d50ca0ae7f64c72725de18bb58"
 HELPER_SHA="64b4310f7b1db57df0236074d4c7a9058041f6c06e6667797ceafe0099360a21"
 METADATA_HELPER_SHA="a7ae9732da45d5e1235030ad061e7c3008ed6119b7ea84bcb5fba95028279dd5"
+DEPENDENCY_HELPER_SHA="b69dc246d6b38fc396a55e20437fb86399249bc02efaee5d6e314e35d1ead9a1"
 FIXTURE_RECEIPT=Path("/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/shared-fixture-qualification1/receipt.json")
 FIXTURE_RECEIPT_SHA="db5b5a4682a474730a78c2a2637fbd38f1ee8a3079ec5bd5a6a56a444571809c"
 FIXTURE_BINARY_SHA="6d7003d580ef253c5666b14c4bef9b9e712cafa9349ba9830ed1e5faa9b0d2a7"
@@ -39,8 +40,15 @@ def main():
         fixture=json.loads(FIXTURE_RECEIPT.read_text());binary=Path(fixture["binary"])
         if fixture["status"]!="PASS_RETAINED_SHARED_SWIFT_GENERATOR_NOT_NATIVE_ACCEPTANCE" or c.digest(binary)!=FIXTURE_BINARY_SHA or binary.resolve()!=binary:raise ValueError("actual shared-codec binary")
         initial=shutil.disk_usage(root).free
-        if initial<4<<30:raise ValueError("measured core build allowance plus emergency floor")
-        result["resourceAdmission"]={"initialFreeBytes":initial,"estimatedIncrementalBytes":2<<30,"emergencyFreeBytes":2<<30,"parallelism":1}
+        prior=Path("/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt2/receipt.json")
+        if c.digest(prior)!="5e2fa6f4d6b02f7a0991123cf0d95079dd785a7fd1d53a72ca88623fadb8f836":raise ValueError("actual prior warm compile receipt")
+        prior_result=json.loads(prior.read_bytes())
+        if prior_result["status"]!="FAIL" or prior_result["sourceUnchanged"] is not True or prior_result["cleanupFailures"]!=[]:raise ValueError("prior warm compile scope")
+        estimated=5*(1<<28)
+        if initial<(2<<30)+estimated:raise ValueError("warm compile estimate plus original emergency floor")
+        result["resourceAdmission"]={"initialFreeBytes":initial,"estimatedIncrementalBytes":estimated,"emergencyFreeBytes":2<<30,"parallelism":1,
+            "warmCache":str(BASE/"cache"),"priorFailedBuildReceiptSHA256":c.digest(prior),
+            "estimateBasis":"Prior 291-second compile populated this existing cache and stopped at the excluded-LLVM dependency check. Estimate covers isolated source/library, changed local package compilation, temporary link output and actual test binary; it is not an observed peak."}
         originals=json.loads((BASE/"source-after.json").read_text())
         candidate=json.loads((directory/"native-core-registry-candidate.json").read_text())
         if len(originals)!=4859 or candidate["baseManifestSHA256"]!=BASE_SHA or candidate["method"]!=METHOD:raise ValueError("closed source census")
@@ -64,8 +72,14 @@ def main():
         if len(rows)!=1 or rows[0][2]!="pinned_tantivy_archive" or rows[0][4]!=DEPENDENCY_SHA or int(rows[0][3][6])!=59821546:raise ValueError("original pinned library row")
         lib=DEPENDENCY_ROOT/DEPENDENCY_NAME.lstrip("/")
         if c.digest(lib)!=DEPENDENCY_SHA:raise ValueError("exact Linux native dependency")
-        dest=source/"heart/deps/libs/linux-arm64-musl/libtantivy_go.a";dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(lib,dest)
-        expected[str(dest.relative_to(source))]={"bytes":dest.stat().st_size,"sha256":DEPENDENCY_SHA}
+        dependencyHelper=directory/"linux_core_dependency.py"
+        if dependencyHelper.resolve()!=dependencyHelper or c.digest(dependencyHelper)!=DEPENDENCY_HELPER_SHA:raise ValueError("exact native dependency admission")
+        dspec=importlib.util.spec_from_file_location("core_native_dependency",dependencyHelper)
+        dependency=importlib.util.module_from_spec(dspec);dspec.loader.exec_module(dependency)
+        nativeLibrary,dependencyProof=dependency.admit(lib)
+        c.save(root/"native-dependency-admission.json",dependencyProof)
+        dest=source/"heart/deps/libs/linux-arm64-musl/libtantivy_go.a";dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(nativeLibrary,dest)
+        expected[str(dest.relative_to(source))]={"bytes":dest.stat().st_size,"sha256":dependency.NATIVE_SHA}
         metadataHelper=directory/"core_workspace_metadata.py"
         if metadataHelper.resolve()!=metadataHelper or c.digest(metadataHelper)!=METADATA_HELPER_SHA:raise ValueError("exact metadata admission helper")
         mspec=importlib.util.spec_from_file_location("core_checksum_admission",metadataHelper)
