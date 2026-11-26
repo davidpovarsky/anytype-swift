@@ -1,0 +1,82 @@
+{
+  "appBuilds": 0,
+  "binaries": {
+    "current": {
+      "buildReceiptSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+      "bytes": 78072016,
+      "commits": {
+        "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+        "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+      },
+      "path": "/var/lib/pinkha-root-t2-linux-20261126/build1/current/any",
+      "sha256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636"
+    },
+    "legacy": {
+      "buildReceiptSHA256": "22e2a1c7b921b8f7fcb2c8295039ce35bdd810c79a945495c6992095de23826d",
+      "bytes": 77992092,
+      "commits": {
+        "any": "9a190eb8236f18da75e5d85c3d1db31cd558d098",
+        "sdk": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953"
+      },
+      "path": "/var/lib/pinkha-root-t2-linux-20261126/build1/legacy/any",
+      "sha256": "29fb9c39bd5b18d1dfc52a116f5b1635ac636400a850ce2cfadb5db20afc2481"
+    }
+  },
+  "command": [
+    "/usr/local/bin/go",
+    "test",
+    "-json",
+    "-count=1",
+    "-run",
+    "^TestPinkhaMixed(OldOwnerNewMember|NewOwnerOldMember)_P2PColdRestore$",
+    "-timeout",
+    "8m",
+    "./internal/e2e"
+  ],
+  "controllerSHA256": "9aeb837322f56374861c52df79e61c589c3ddefe8dd35ef22d1c9330fca13242",
+  "cwd": "/var/lib/pinkha-root-t2-linux-20261126/p2p-cold-originals1/source",
+  "exitCode": 0,
+  "expectedMethods": [
+    "TestPinkhaMixedOldOwnerNewMember_P2PColdRestore",
+    "TestPinkhaMixedNewOwnerOldMember_P2PColdRestore"
+  ],
+  "failed": 0,
+  "finishedAtEpoch": 1795670466.742004,
+  "forcedNativeStops": 0,
+  "logSHA256": "55eb7f90b4c7214b645c5583c45218ac55ab9074853a86a0c1056575b0c607dd",
+  "originalWrapperPreserved": true,
+  "ownedGroupAbsent": true,
+  "packageResults": [
+    {
+      "Action": "pass",
+      "Elapsed": 72.253,
+      "Package": "github.com/anyproto/any/internal/e2e"
+    }
+  ],
+  "passed": 2,
+  "pgid": 3338555,
+  "pid": 3338555,
+  "processObservationsSHA256": "b815bcc6b35817b4c53c72cf536dcf20428387b35951a702bbe8aaeb228236ed",
+  "qualificationSHA256": "6ed8f71ba7a44a44e9a7fc48a1d4f714b913063a23abfed34368585bf49afb57",
+  "scope": "Original two mixed-version independent native CLI cold restores over real local multicast discovery with zero network peers; Linux platform",
+  "scopeLimits": [
+    "No Apple UI, Heart/Any compatibility or full T2 acceptance claimed",
+    "Original Mac P2P failures remain failed",
+    "The source versions include the explicitly tested generic ACL mapper backports"
+  ],
+  "skipped": 0,
+  "sourceAfterVerified": true,
+  "startedAtEpoch": 1795670366.9533432,
+  "status": "PASS_TWO_REAL_MIXED_VERSION_NATIVE_P2P_COLD_RESTORES_LINUX",
+  "tests": {
+    "TestPinkhaMixedNewOwnerOldMember_P2PColdRestore": {
+      "elapsed": 65.25,
+      "status": "pass"
+    },
+    "TestPinkhaMixedOldOwnerNewMember_P2PColdRestore": {
+      "elapsed": 6.98,
+      "status": "pass"
+    }
+  },
+  "unparsedLogLines": 0
+}
