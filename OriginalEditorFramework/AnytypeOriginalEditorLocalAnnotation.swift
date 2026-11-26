@@ -840,14 +840,34 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                 }
                 try Task.checkCancellation()
                 try owner.validateCurrent()
-                try await owner.host.preparedSession.services.blockActionService.fileService.uploadDataAt(
-                    source: .path(upload.path), contextID: binding.objectID, blockID: added)
+                let prepared = owner.host.preparedSession
+                let files = prepared.services.blockActionService.fileService
+                // The original block-upload operation schedules a background
+                // update. Use the original file-object upload and link only
+                // after that native operation has returned its saved object.
+                let data = try await files.createFileData(source: .path(upload.path))
+                let saved = try await files.uploadFileObject(spaceId: binding.spaceID, data: data,
+                    origin: .none, createdInContext: binding.objectID, createdInContextRef: added)
+                try Task.checkCancellation()
+                try owner.validateCurrent()
+                guard !saved.id.isEmpty, saved.spaceId == binding.spaceID,
+                      saved.sizeInBytes == attachment.data.count else {
+                    throw AnytypeOriginalEditorMiniAppsError.resultNotSaved
+                }
+                let contextID = binding.objectID
+                try await prepared.owner.performMutation(contextId: contextID) {
+                    try await ClientCommands.blockFileSetTargetObjectId(.with {
+                        $0.contextID = contextID
+                        $0.blockID = added
+                        $0.targetObjectID = saved.id
+                    }).invoke()
+                }
                 try Task.checkCancellation()
                 try owner.validateCurrent()
                 current = try await readMiniAppsNodes()
                 guard let observed = current.first(where: { $0.id == added }),
                       case .file(let file)? = try observed.native().content,
-                      file.state == .done, !file.targetObjectID.isEmpty,
+                      file.state == .done, file.targetObjectID == saved.id,
                       try observed.native().fields.fields["otzariaMiniAppsRequest"]?.stringValue
                         == requestID.uuidString.lowercased(),
                       try observed.native().fields.fields["otzariaMiniAppsFileIndex"]?.stringValue
