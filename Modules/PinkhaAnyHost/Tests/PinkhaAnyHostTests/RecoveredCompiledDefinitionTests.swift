@@ -2,7 +2,7 @@
 import Foundation
 import XCTest
 import PinkhaAnyEngine
-import PinkhaAnyHost
+@testable import PinkhaAnyHost
 @testable import PinkhaAnyIntegration
 
 /// Actual historical source and independently qualified recovered registry bytes.
@@ -186,6 +186,78 @@ final class RecoveredCompiledDefinitionTests: XCTestCase, @unchecked Sendable {
             at: ["OriginalCapturedMembersReplaced"], with: .bool(true))))
     }
 
+
+    func testProduceRecoveredFullSourceCensusWithoutDestinationCalls() throws {
+        let e = try evidence()
+        let recovered = try e.recovered()
+        let catalog = try AnyHeartNativeDefinitionCatalog(bundle: e.bundle, recoveredDefinitions: recovered)
+        let plan = try AnyHeartNativeDefinitionPlan(catalog: catalog)
+        let types: [AnyJSON] = catalog.types.map { type in
+            .object(["sourceObjectID": .string(type.objectID), "typeKey": .string(type.typeKey),
+                "recommendedLayout": type.recommendedLayout.map(AnyJSON.integer) ?? .null,
+                "recommendedRelations": .array(type.recommendedRelations.map(AnyJSON.string)),
+                "featuredRelations": .array(type.featuredRelations.map(AnyJSON.string)),
+                "hiddenRelations": .array(type.hiddenRelations.map(AnyJSON.string)),
+                "fileRelations": .array(type.fileRelations.map(AnyJSON.string)),
+                "presentFields": .array(type.snapshot.details.keys.sorted().map(AnyJSON.string))])
+        }
+        let relations: [AnyJSON] = catalog.relations.map { relation in
+            .object(["sourceObjectID": .string(relation.objectID), "relationKey": .string(relation.relationKey),
+                "rawFormat": .integer(relation.rawFormat), "readonlyValue": relation.readonlyValue.map(AnyJSON.bool) ?? .null,
+                "maximumCount": relation.maximumCount.map(AnyJSON.integer) ?? .null,
+                "isReadonly": relation.snapshot.details["isReadonly"] ?? .null,
+                "isArchived": relation.snapshot.details["isArchived"] ?? .null,
+                "targetTypeKeys": .array(relation.targetTypeIDs.map { id in
+                    .string(catalog.types.first { $0.objectID == id }?.typeKey ?? "UNRESOLVED:" + id)
+                }),
+                "presentFields": .array(relation.snapshot.details.keys.sorted().map(AnyJSON.string))])
+        }
+        let schemaIssues: [AnyJSON] = plan.issues.map {
+            .object(["sourceObjectID": .string($0.sourceObjectID), "field": .string($0.field), "reason": .string($0.reason)])
+        }
+        let catalogIssues: [AnyJSON] = catalog.issues.map {
+            .object(["sourceObjectID": .string($0.sourceObjectID), "field": .string($0.field), "kind": .string($0.kind.rawValue)])
+        }
+        let bundleIssues: [AnyJSON] = e.bundle.issues.map {
+            .object(["sourceObjectID": $0.sourceID.map(AnyJSON.string) ?? .null, "field": .string($0.field), "code": .string($0.code)])
+        }
+        let objects: [AnyJSON] = e.bundle.objects.map {
+            .object(["sourceObjectID": .string($0.sourceObjectID), "nativeType": .integer($0.nativeType),
+                "uniqueKey": .string($0.uniqueKey), "objectTypes": .array($0.objectTypes.map(AnyJSON.string)),
+                "presentDetailKeys": .array($0.details.keys.sorted().map(AnyJSON.string)),
+                "blockKinds": .array($0.blocks.map { $0.contentKind.map(AnyJSON.string) ?? .null }),
+                "snapshotIssueCount": .integer(Int64($0.issues.count))])
+        }
+        let value: AnyJSON = .object([
+            "contract": .string("pinkha-historical156-recovered-full-census-v1"),
+            "sourceManifestSHA256": .string(e.bundle.manifestSHA256),
+            "recoveredManifestSHA256": .string(recovered.manifestSHA256),
+            "catalogSHA256": .string(catalog.contentSHA256),
+            "objects": .array(objects), "types": .array(types), "relations": .array(relations),
+            "catalogIssues": .array(catalogIssues), "schemaIssues": .array(schemaIssues),
+            "originalBundleIssues": .array(bundleIssues), "resolverUnmapped": .array(e.bundle.resolverUnmapped),
+            "sourceGaps": .array(e.bundle.sourceGaps), "retainedOtherCollections": .array(e.bundle.retainedOtherCollections),
+            "unmappedNativeCollections": .array((e.bundle.nativeStoreContext?.unmappedCollectionNames ?? []).map(AnyJSON.string)),
+            "schemaItemCount": .integer(Int64(plan.schemaItems.count)),
+            "definitionCoverageCount": .integer(Int64(plan.definitionCoverage.count)),
+            "nativeCalls": .integer(0), "wholeSourceAdmission": .bool(false), "destinationWrites": .bool(false),
+        ])
+        guard let output = ProcessInfo.processInfo.environment["PINKHA_RECOVERED_DEFINITION_CENSUS"] else {
+            throw Refusal.invalidFixture
+        }
+        let url = URL(fileURLWithPath: output)
+        guard url.deletingLastPathComponent().resolvingSymlinksInPath().path == url.deletingLastPathComponent().path else {
+            throw Refusal.invalidFixture
+        }
+        try encode(value).write(to: url, options: .withoutOverwriting)
+        XCTAssertEqual(e.bundle.objects.count, 156)
+        XCTAssertEqual(e.bundle.trees.count, 157)
+        XCTAssertEqual(recovered.definitions.count, 7)
+        XCTAssertFalse(catalog.permitsDestinationWrites)
+        XCTAssertFalse(plan.permitsDestinationWrites)
+        XCTAssertThrowsError(try plan.admittedSchemaItems())
+    }
+
     private func rebinding(_ e: Evidence, exported: Data) throws -> (Data, Data) {
         let value = try decode(exported)
         var recovery = try XCTUnwrap(try decode(e.recovery).object)
@@ -196,6 +268,224 @@ final class RecoveredCompiledDefinitionTests: XCTestCase, @unchecked Sendable {
         binding["RegistryExportSHA256"] = .string(AnyContentDigest.sha256(exported))
         binding["RecoveryReceiptSHA256"] = .string(AnyContentDigest.sha256(recoveryBytes))
         return (try encode(.object(binding)), recoveryBytes)
+    }
+
+
+    func testPreservationArchiveRestoresEveryOriginalMemberAndRecoveredDescriptor() throws {
+        let f = try preservationInput()
+        let restored = try AnyHeartNativePreservationArchive.restore(f.archive.bytes, expected: f.archive.binding)
+        XCTAssertEqual(restored.bundle.manifestBytes, f.evidence.bundle.manifestBytes)
+        XCTAssertEqual(restored.bundle.objects.count, 156)
+        XCTAssertEqual(restored.bundle.trees.count, 157)
+        XCTAssertEqual(restored.bundle.nativeStoreContext?.headCensus?.sourceHeadIDs.count, 159)
+        XCTAssertEqual(restored.originalMemberCount, f.evidence.bundle.verifiedMembers.count + 1)
+        XCTAssertEqual(restored.recoveredMemberCount, 18)
+        XCTAssertFalse(restored.grantsSourceSession)
+        XCTAssertFalse(restored.restoresAnAccount)
+        XCTAssertFalse(f.archive.permitsDestinationWrites)
+        for member in f.evidence.bundle.verifiedMembers {
+            XCTAssertEqual(try restored.capturedMemberData(member), try bytes(member.path, under: f.bundleRoot), member.path)
+        }
+        for member in f.recovered.verifiedMembers {
+            XCTAssertEqual(try restored.recoveredMemberData(member), f.evidence.members[member.path], member.path)
+        }
+        XCTAssertEqual(restored.recoveredDefinitions.originalProducerBytes, f.evidence.producer)
+        XCTAssertEqual(try decode(restored.recoveredDefinitions.originalProducerBytes)["status"], .string("FAIL"))
+        XCTAssertTrue(restored.bundle.bundledDefinitions.isEmpty)
+        XCTAssertEqual(restored.recoveredDefinitions.definitions.count, 7)
+        XCTAssertEqual(f.archive.sha256, AnyContentDigest.sha256(f.archive.bytes))
+    }
+
+    func testPreservationArchiveRefusesCorruptionTraversalBindingAndTrailingBytes() throws {
+        let f = try preservationInput(), original = f.archive.bytes
+        var corrupt = original; corrupt[corrupt.count - 1] ^= 1
+        XCTAssertThrowsError(try AnyHeartNativePreservationArchive.restore(corrupt, expected: f.archive.binding))
+        XCTAssertThrowsError(try AnyHeartNativePreservationArchive.restore(original.dropLast(), expected: f.archive.binding))
+        XCTAssertThrowsError(try AnyHeartNativePreservationArchive.restore(original + Data([0]), expected: f.archive.binding))
+        for field in ["accountID", "spaceID", "captureManifestSHA256", "sourceWitnessSHA256", "recoveredManifestSHA256"] {
+            let altered = try preservationHeader(original) {
+                try replacing($0, at: [field], with: .string("different"))
+            }
+            XCTAssertThrowsError(try AnyHeartNativePreservationArchive.restore(altered, expected: f.archive.binding), field)
+        }
+        let duplicate = try preservationHeader(original) {
+            Data(#"{"contract":"duplicate","#.utf8) + $0.dropFirst()
+        }
+        XCTAssertThrowsError(try AnyHeartNativePreservationArchive.restore(duplicate, expected: f.archive.binding))
+        for path in ["../escape", "capture/foreign-member", "capture//empty", "/absolute"] {
+            let altered = try preservationHeader(original) { bytes in
+                var header = try XCTUnwrap(decode(bytes).object)
+                var members = try XCTUnwrap(header["members"]?.array)
+                var first = try XCTUnwrap(members[0].object)
+                first["path"] = .string(path); members[0] = .object(first); header["members"] = .array(members)
+                return try encode(.object(header))
+            }
+            XCTAssertThrowsError(try AnyHeartNativePreservationArchive.restore(altered, expected: f.archive.binding), path)
+        }
+        var oversizeHeader = original
+        let start = Data("PINKHA-HEART-SOURCE-1\u{0}".utf8).count
+        oversizeHeader.replaceSubrange(start..<(start + 8), with: Data(repeating: 255, count: 8))
+        XCTAssertThrowsError(try AnyHeartNativePreservationArchive.restore(oversizeHeader, expected: f.archive.binding))
+    }
+
+    func testPreservationArchiveRefusesChangedCapturedOrRecoveredMemberBytes() throws {
+        let f = try preservationInput()
+        XCTAssertThrowsError(try AnyHeartNativePreservationArchive(bundle: f.evidence.bundle, recovered: f.recovered,
+            memberData: { try self.bytes($0.path, under: f.bundleRoot) + Data([0]) },
+            recoveredMemberData: { try XCTUnwrap(f.evidence.members[$0.path]) }))
+        XCTAssertThrowsError(try AnyHeartNativePreservationArchive(bundle: f.evidence.bundle, recovered: f.recovered,
+            memberData: { try self.bytes($0.path, under: f.bundleRoot) },
+            recoveredMemberData: { try XCTUnwrap(f.evidence.members[$0.path]) + Data([0]) }))
+    }
+
+    func testPreservationFull159HeadPlanKeepsNativeContentAndAllInactiveOriginals() throws {
+        let f = try preservationInput()
+        let composed = try AnyHeartNativeSourcePreservation(bundle: f.evidence.bundle,
+            recoveredDefinitions: f.recovered, archive: f.archive)
+        let workspace = try AnyTorahWorkspace(accountID: "preservation-component-account", spaceID: "preservation-component-space")
+        let plan = try composed.preservationPlan(workspace: workspace, storeID: "preservation-component-store",
+                                                 planID: String(repeating: "a", count: 64))
+        XCTAssertEqual(composed.currentContent.pages.count, 2)
+        XCTAssertEqual(composed.currentContent.items.count, 19)
+        XCTAssertEqual(plan.items.count, 182)
+        XCTAssertEqual(plan.coverage.count, 159)
+        XCTAssertEqual(plan.source.sourceObjectIDs.count, 159)
+        XCTAssertEqual(composed.records.count, 159)
+        XCTAssertEqual(composed.uninstantiatedDefinitionIDs.count, 137)
+        XCTAssertEqual(composed.preservedContextIDs.count, 4)
+        XCTAssertFalse(composed.allImportedTypesUsable)
+        XCTAssertFalse(composed.permitsWholeSourceAdmission)
+        XCTAssertFalse(composed.changesDestinationACL)
+        XCTAssertFalse(composed.sourceHistoryBecameTargetHistory)
+        XCTAssertEqual(Set(composed.records.map { Data($0.sourceHeadID.utf8) }),
+                       Set(try XCTUnwrap(f.evidence.bundle.nativeStoreContext?.headCensus).sourceHeadIDs.map { Data($0.utf8) }))
+        let native = Dictionary(uniqueKeysWithValues: plan.items.map { ($0.sourceKey, $0) })
+        for item in composed.currentContent.items { XCTAssertEqual(native[item.sourceKey], item) }
+        let actual = Dictionary(uniqueKeysWithValues: plan.coverage.map { ($0.sourceObjectID, $0.disposition) })
+        var canonical = 0, embedded = 0
+        for entry in composed.currentContent.coverage {
+            switch entry.disposition {
+            case .canonicalProperty(let original):
+                guard case .preservedCanonicalProperty(let retained, let keys) = actual[entry.sourceObjectID] else {
+                    return XCTFail("Canonical native admission was replaced by a provenance-only row")
+                }
+                XCTAssertEqual(original, retained); XCTAssertEqual(keys.count, 1); canonical += 1
+            case .embeddedOption(let property, let evidence, let hash):
+                guard case .preservedEmbeddedOption(let keptProperty, let keptEvidence, let keptHash, let keys) = actual[entry.sourceObjectID] else {
+                    return XCTFail("Embedded native option admission was replaced by a provenance-only row")
+                }
+                XCTAssertEqual(property, keptProperty); XCTAssertEqual(evidence, keptEvidence)
+                XCTAssertEqual(hash, keptHash); XCTAssertEqual(keys.count, 1); embedded += 1
+            default: break
+            }
+        }
+        XCTAssertGreaterThan(canonical, 0)
+        XCTAssertGreaterThan(embedded, 0)
+        let catalog = try AnyHeartNativeDefinitionCatalog(bundle: f.evidence.bundle, recoveredDefinitions: f.recovered)
+        XCTAssertThrowsError(try AnyHeartNativeDefinitionPlan(catalog: catalog).admittedSchemaItems())
+        let restoredPlan = try AnyDestinationMigrationPlan.decode(encodePlan(plan))
+        XCTAssertEqual(restoredPlan.canonicalBytes, plan.canonicalBytes)
+        let roleCounts = Dictionary(grouping: composed.records, by: \.role).mapValues(\.count)
+        XCTAssertEqual(roleCounts["active-current-content"], 2)
+        XCTAssertEqual(roleCounts["source-context"], 4)
+        XCTAssertEqual(roleCounts["original-space-settings"], 1)
+        XCTAssertEqual(roleCounts["original-native-acl"], 1)
+        XCTAssertEqual(roleCounts["original-empty-native-kv"], 1)
+        if let output = ProcessInfo.processInfo.environment["PINKHA_PRESERVATION_PLAN_OUTPUT"] {
+            let root = URL(fileURLWithPath: output, isDirectory: true)
+            try f.archive.bytes.write(to: root.appendingPathComponent("source-preservation-file.pinkha-heart-source"),
+                                      options: .withoutOverwriting)
+            let proof: AnyJSON = .object([
+                "contract": .string(AnyHeartNativeSourcePreservation.contract),
+                "sourceManifestSHA256": .string(f.evidence.bundle.manifestSHA256),
+                "recoveredManifestSHA256": .string(f.recovered.manifestSHA256),
+                "archiveSHA256": .string(f.archive.sha256), "archiveBytes": .integer(Int64(f.archive.bytes.count)),
+                "originalMemberCount": .integer(Int64(f.archive.originalMemberCount)),
+                "recoveredMemberCount": .integer(Int64(f.archive.recoveredMemberCount)),
+                "nativeHeads": .integer(159), "snapshotObjects": .integer(156),
+                "operations": .integer(182), "currentContentOperations": .integer(19),
+                "canonicalPropertiesRetained": .integer(Int64(canonical)),
+                "embeddedOptionsRetained": .integer(Int64(embedded)),
+                "allImportedTypesUsable": .bool(false), "sourceAdmission": .bool(false),
+                "nativeCalls": .integer(0), "destinationWrites": .bool(false),
+            ])
+            try encode(proof).write(to: root.appendingPathComponent("source-preservation-component.json"),
+                                    options: .withoutOverwriting)
+        }
+    }
+
+    func testPreservationCoverageRejectsWritableShadowsDroppedRecordsAndChangedSourceOwnership() throws {
+        let f = try preservationInput()
+        let composed = try AnyHeartNativeSourcePreservation(bundle: f.evidence.bundle,
+            recoveredDefinitions: f.recovered, archive: f.archive)
+        let workspace = try AnyTorahWorkspace(accountID: "preservation-component-account", spaceID: "preservation-component-space")
+        let plan = try composed.preservationPlan(workspace: workspace, storeID: "preservation-component-store",
+                                                 planID: String(repeating: "b", count: 64))
+        for entry in plan.coverage {
+            let keys: [String]
+            switch entry.disposition {
+            case .preservedCanonicalProperty(_, let found), .preservedEmbeddedOption(_, _, _, let found): keys = found
+            default: continue
+            }
+            let key = try XCTUnwrap(keys.first)
+            let index = try XCTUnwrap(plan.items.firstIndex { $0.sourceKey == key })
+            let old = plan.items[index]
+            var writable = plan.items
+            writable[index] = .init(sourceKey: old.sourceKey, sourceObjectID: old.sourceObjectID,
+                operation: .propertyUpdate(
+                    object: .mapped(sourceKey: composed.catalogObjectSourceKey, slot: .objectID, encoding: .rawID),
+                    owner: .native("any"), patch: .literal(.object(["description": .string("forbidden shadow")]))))
+            writable = writable.enumerated().sorted {
+                $0.element.operation.phase == $1.element.operation.phase ? $0.offset < $1.offset :
+                    $0.element.operation.phase < $1.element.operation.phase
+            }.map(\.element)
+            XCTAssertThrowsError(try AnyDestinationMigrationPlan(source: plan.source, workspace: workspace,
+                storeID: plan.binding.storeID, planID: plan.binding.planID, coverage: plan.coverage, items: writable)) {
+                XCTAssertEqual($0 as? AnyDestinationMigrationError,
+                               .invalidPlan("preserved definition requires immutable records"))
+            }
+            var foreign = plan.items
+            foreign[index] = .init(sourceKey: old.sourceKey, sourceObjectID: composed.currentContent.selection.objects[0].sourceObjectID,
+                                   operation: old.operation)
+            XCTAssertThrowsError(try AnyDestinationMigrationPlan(source: plan.source, workspace: workspace,
+                storeID: plan.binding.storeID, planID: plan.binding.planID, coverage: plan.coverage, items: foreign))
+            XCTAssertThrowsError(try AnyDestinationMigrationPlan(source: plan.source, workspace: workspace,
+                storeID: plan.binding.storeID, planID: plan.binding.planID, coverage: plan.coverage,
+                items: plan.items.filter { $0.sourceKey != key }))
+        }
+    }
+
+    private struct PreservationInput {
+        let evidence: Evidence
+        let recovered: AnyHeartNativeRecoveredDefinitions
+        let archive: AnyHeartNativePreservationArchive
+        let bundleRoot: URL
+    }
+    private func preservationInput() throws -> PreservationInput {
+        let e = try evidence(), recovered = try e.recovered()
+        let root = URL(fileURLWithPath: try XCTUnwrap(ProcessInfo.processInfo.environment["PINKHA_NATIVE_CUSTOM_CAPTURE_FIXTURE"]),
+                       isDirectory: true).appendingPathComponent("bundle", isDirectory: true)
+        let archive = try AnyHeartNativePreservationArchive(bundle: e.bundle, recovered: recovered,
+            memberData: { try self.bytes($0.path, under: root) },
+            recoveredMemberData: { try XCTUnwrap(e.members[$0.path]) })
+        return .init(evidence: e, recovered: recovered, archive: archive, bundleRoot: root)
+    }
+    private func preservationHeader(_ data: Data, replace: (Data) throws -> Data) throws -> Data {
+        let magic = Data("PINKHA-HEART-SOURCE-1\u{0}".utf8)
+        var length: UInt64 = 0
+        for value in data[magic.count..<(magic.count + 8)] { length = (length << 8) | UInt64(value) }
+        let start = magic.count + 8, end = start + Int(length)
+        let header = try replace(data.subdata(in: start..<end))
+        var output = magic
+        for shift in stride(from: 56, through: 0, by: -8) {
+            output.append(UInt8((UInt64(header.count) >> UInt64(shift)) & 255))
+        }
+        output.append(header); output.append(data.subdata(in: end..<data.count))
+        return output
+    }
+    private func encodePlan(_ value: AnyDestinationMigrationPlan) throws -> Data {
+        let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+        return try encoder.encode(value)
     }
 
     private func evidence() throws -> Evidence {

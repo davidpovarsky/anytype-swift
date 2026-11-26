@@ -225,6 +225,12 @@ public struct AnyDestinationCoverage: Codable, Equatable, Sendable {
         /// A captured definition binds an existing closed native contract;
         /// there is deliberately no schema mutation or replacement object.
         case canonicalProperty(AnyDestinationCanonicalPropertyBinding)
+        /// A separate immutable provenance record may retain a canonical
+        /// definition's original bytes. It cannot create a writable schema
+        /// shadow or replace the existing native canonical admission.
+        case preservedCanonicalProperty(AnyDestinationCanonicalPropertyBinding, immutableItemSourceKeys: [String])
+        case preservedEmbeddedOption(propertySourceKey: String, evidence: AnyDestinationDefinitionEvidence,
+                                     descriptorSHA256: String, immutableItemSourceKeys: [String])
         case retainedSystem(kind: SystemKind, capturedRowCount: Int, witnessSHA256: String)
         case blocked(reasons: [String])
     }
@@ -424,6 +430,21 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
         }
         var covered = Set<Data>(), represented = Set<Data>(), canonicalAddresses = Set<Data>()
         let itemSourceIDs = Set(items.map { Data($0.sourceObjectID.utf8) })
+        func preserveImmutable(_ itemKeys: [String], sourceID: Data) throws {
+            guard !itemKeys.isEmpty else {
+                throw AnyDestinationMigrationError.invalidPlan("preserved definition record coverage")
+            }
+            for key in itemKeys {
+                let raw = Data(key.utf8)
+                guard let index = keys[raw], represented.insert(raw).inserted,
+                      Data(items[index].sourceObjectID.utf8) == sourceID else {
+                    throw AnyDestinationMigrationError.invalidPlan("preserved definition record coverage")
+                }
+                guard case .immutableRecord = items[index].operation else {
+                    throw AnyDestinationMigrationError.invalidPlan("preserved definition requires immutable records")
+                }
+            }
+        }
         for entry in coverage {
             let id = Data(entry.sourceObjectID.utf8)
             guard sourceIDs.contains(id), covered.insert(id).inserted else {
@@ -453,6 +474,22 @@ public struct AnyDestinationMigrationPlan: Codable, Sendable {
                 guard !itemSourceIDs.contains(id), canonicalAddresses.insert(address).inserted else {
                     throw AnyDestinationMigrationError.invalidPlan("shadowed or duplicate canonical property")
                 }
+            case .preservedCanonicalProperty(let binding, let itemKeys):
+                try binding.requireSource(source, objectID: entry.sourceObjectID)
+                try binding.validate()
+                let address = AnyPreparedMigrationPlanBinding.material([binding.ownerID, binding.propertyID])
+                guard canonicalAddresses.insert(address).inserted else {
+                    throw AnyDestinationMigrationError.invalidPlan("duplicate preserved canonical property")
+                }
+                try preserveImmutable(itemKeys, sourceID: id)
+            case .preservedEmbeddedOption(let propertyKey, let evidence, let descriptorSHA256, let itemKeys):
+                try evidence.requireSource(source, objectID: entry.sourceObjectID)
+                guard let propertyIndex = keys[Data(propertyKey.utf8)] else {
+                    throw AnyDestinationMigrationError.invalidPlan("absent preserved embedded option")
+                }
+                try AnyDestinationDefinitionChecks.embeddedOption(evidence, descriptorSHA256: descriptorSHA256,
+                                                                   property: items[propertyIndex])
+                try preserveImmutable(itemKeys, sourceID: id)
             case .retainedSystem(let kind, let count, let witness):
                 guard witness == source.witnessSHA256, !itemSourceIDs.contains(id) else {
                     throw AnyDestinationMigrationError.invalidPlan("system preservation")
