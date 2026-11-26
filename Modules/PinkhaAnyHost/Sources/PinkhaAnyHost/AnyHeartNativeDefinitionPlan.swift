@@ -287,13 +287,16 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
         let propertiesByID = Dictionary(uniqueKeysWithValues: properties.map { (Data($0.relation.objectID.utf8), $0) })
         for type in types {
             let definition = type.definition
+            let isBookmark = definition.recommendedLayout == 11
             var recommendations: [AnyDestinationField] = []
             if let ownerKey {
                 recommendations.append(.init(key: .native("propertyOwnerId"),
                     value: .reference(.mapped(sourceKey: ownerKey, slot: .objectID, encoding: .rawID))))
             }
             recommendations.append(.init(key: .native("contract"),
-                value: .literal(.string(AnyNativeImportedTypePresentation.contract))))
+                value: .literal(.string(isBookmark
+                    ? AnyNativeImportedTypePresentation.bookmarkContract
+                    : AnyNativeImportedTypePresentation.contract))))
             recommendations.append(.init(key: .native("sourceRecommendedLayout"),
                 value: .literal(definition.recommendedLayout.map(AnyJSON.integer) ?? .null)))
             // Source relation visibility is independent of a type's ordered
@@ -312,8 +315,28 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                 }
                 recommendations.append(.init(key: .native(field), value: .array(references)))
             }
+            if isBookmark {
+                // This is the captured Bookmark's ordinary URL relation, not
+                // the immutable sourceObject provenance relation. Both sides
+                // of the native address come from the same definition plan.
+                let candidates = properties.filter {
+                    Data($0.relation.relationKey.utf8) == Data("source".utf8) &&
+                    Data($0.relation.snapshot.uniqueKey.utf8) == Data("rel-source".utf8)
+                }
+                let visible = Set((definition.recommendedRelations + definition.featuredRelations).map { Data($0.utf8) })
+                if let ownerKey, candidates.count == 1, let source = candidates.first,
+                   source.relation.format == .url, source.kind == "string", source.format == "url",
+                   source.canonicalBinding == nil, source.relation.readonlyValue != true,
+                   source.owner == .mapped(sourceKey: ownerKey, slot: .objectID, encoding: .rawID),
+                   visible.contains(Data(source.relation.objectID.utf8)) {
+                    recommendations.append(.init(key: .native("sourceURL"), value: source.address))
+                } else {
+                    issues.append(.init(sourceObjectID: definition.objectID, field: "sourceURL",
+                        reason: "bookmark-requires-exact-mapped-visible-source-url-definition"))
+                }
+            }
             let layout = AnyDestinationValue.object([
-                .init(key: .native("type"), value: .literal(.string("page"))),
+                .init(key: .native("type"), value: .literal(.string(isBookmark ? "bookmark" : "page"))),
                 .init(key: .native("config"), value: .object([
                     .init(key: .native("pinkhaHeart"), value: .object(recommendations)),
                 ])),
@@ -321,9 +344,9 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
             // Preserve the exact ordered identities in an explicit descriptor.
             // A page layout alone does not implement every Heart layout or
             // recommendation's application behavior.
-            // Basic0 is implemented by the same module's closed v2 imported
-            // presentation adapter. All other native layouts stay explicit gaps.
-            if definition.recommendedLayout != 0 {
+            // Basic0 and Bookmark11 use their distinct closed presentation
+            // contracts. Other native layouts retain their existing gaps.
+            if definition.recommendedLayout != 0 && !isBookmark {
                 issues.append(.init(sourceObjectID: definition.objectID, field: "recommendedLayout/recommendations",
                     reason: "native-layout-not-qualified:\(definition.recommendedLayout.map(String.init) ?? "absent")"))
             }
