@@ -60,7 +60,6 @@ internal final class OriginalEditorLocalAnnotationRuntime {
             throw AnytypeOriginalEditorLocalAnnotationError.runtimeAlreadyOwned
         }
         let process = try OriginalEditorEmbeddedAccountProcess.acquire(appGroup: appGroup)
-        try await process.initializeMiddleware()
         let lease = try process.claimLocalAccount()
         // Reserve the original process before the first await. The original
         // account presentation and localOnly editor can never overlap.
@@ -70,8 +69,12 @@ internal final class OriginalEditorLocalAnnotationRuntime {
             journal = try await Task.detached {
                 try OriginalEditorLocalAnnotationJournal.open(appGroup: appGroup)
             }.value
+            // The original repository path resolver creates Application
+            // Support/Anytype. Claim the journal first so a new directory
+            // cannot look like an existing, unowned original repository.
+            try await process.initializeMiddleware()
         } catch {
-            // Journal opening dispatched no native account operation. This
+            // Neither operation has dispatched an account command, so this
             // unused reservation can be released without an AccountStop.
             try process.releaseLocalAccount(lease)
             claimed = false
