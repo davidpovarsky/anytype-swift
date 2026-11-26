@@ -9,7 +9,7 @@ import sys
 import time
 
 sys.dont_write_bytecode = True
-CONTROLLER_SHA256 = "3fdce7fe5a60012147d9c7736cea064f4af7fa3bf01705bd11fcfe7e2e6c3794"
+CONTROLLER_SHA256 = "6c1dea1ef571059291dc9d21c86d1558913a0153a67d719723b601ddcd2ac63c"
 RETENTION_SHA256 = "c562f0b2297902efd62b3a92fdef68e658fb688bbd002d15db24609d47602f3b"
 
 

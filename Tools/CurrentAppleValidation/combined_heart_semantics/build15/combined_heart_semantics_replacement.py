@@ -157,7 +157,7 @@ def qualified_shared_controller():
     import combined_heart_semantics_current as shared
     helper = Path(__file__).with_name("combined_heart_semantics_current.py")
     require(Path(shared.__file__).resolve() == helper.resolve()
-            and digest(helper) == "f31cf1b3ae3f7b03618165db5f61cef1fa813ffe047d268a8050ea040a626221",
+            and digest(helper) == "1dcd02a4413b26c201e8a38772484eff48e448ae4398af2fd4ee1fc6a5675736",
             "Exact shared App15 admission and owned command outcomes required")
     return shared
 
@@ -505,7 +505,7 @@ def preserve_final_sandbox(commands, udid, directory, *, application_invoked=Fal
 def admit_and_clone_products(admission, root, evidence, commands):
     shared = qualified_shared_controller()
     original = pinned(admission["sharedAdmission"])
-    require(sha(original) == "7bc72cfffcd1e21abf572162fc2844dce30cefe6e58635e07199b0edbb42202a",
+    require(sha(original) == "87c47c356e591ee7f51e6c3fa21a4fe0cd903821cceec357ed11cfbfc582a366",
             "Exact canonical App15 shared admission required")
     expected = decode(original)
     expected["controllerSHA256"] = digest(Path(__file__))
