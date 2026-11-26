@@ -157,7 +157,9 @@ def admit_interrupted_journal(destination):
     work_before,work_ids=retained_files(work)
     assert destination.parent.resolve()==destination.parent and not destination.exists()
     shutil.copytree(work,destination,copy_function=shutil.copy2)
-    assert retained_files(destination)[0]==work_before
+    copied,copied_ids=retained_files(destination)
+    assert copied==work_before and set(copied_ids)==set(work_ids)
+    assert all(copied_ids[name][2]==work_ids[name][2] for name in work_ids)
     assert retained_files(work)==(work_before,work_ids)
     assert retained_files(PRIOR)==(before,identities)
     return {"originalResult":"FAIL","originalReceiptSHA256":hashlib.sha256(raw).hexdigest(),
