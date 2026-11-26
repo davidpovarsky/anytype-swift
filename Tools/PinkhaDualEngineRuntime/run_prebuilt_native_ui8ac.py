@@ -26,6 +26,7 @@ import uuid
 
 TARGET = "PinkhaAnyNativeUITests"
 STAGES = {
+    "sharing-owner": ("NativeLaunchTests/testNativeSharingInvitationConfirmationCancellationAndColdReopen", 900),
     "drag": ("NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen", 600),
     "archive": ("NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies", 1800),
     "history": ("NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen", 600),

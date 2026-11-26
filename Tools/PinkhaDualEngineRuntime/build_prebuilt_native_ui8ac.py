@@ -178,7 +178,9 @@ def main():
         require(original[phase]["exitCode"] == 0
                 and original[phase]["status"] == "PASS_BUILD_EXIT_0",
                 "both_original_build_phases_must_have_completed")
-        require(digest(evidence / phase / "original.log") == original[phase]["logSHA256"],
+        phase_evidence = (current8ac.ORIGINAL_EVIDENCE
+                          if current8ac is not None and phase == "app" else evidence)
+        require(digest(phase_evidence / phase / "original.log") == original[phase]["logSHA256"],
                 "original_build_log_changed:" + phase)
     native = source / "Dependencies/Middleware/Lib.xcframework/ios-arm64-simulator/Lib.framework/Lib"
     require(digest(native) == original["inputs"]["nativeSHA256"], "native_input_changed")
