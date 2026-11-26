@@ -1,0 +1,16 @@
+{
+  "AppBuilds": 0,
+  "allExistingNonMainFunctionsASTIdentical": true,
+  "baselineSHA256": "1a8d8ad120f3873b54fe8dd02898f66e1da37a2d962f632573393804df9ae2c7",
+  "companionProfileSHA256": "75f441f073f8e85ac18c0eb110dac0c8847c1d955f0f025bd305cfc11e045f78",
+  "controllerSHA256": "44d78ead1e0fc37e444187360844a77c079e552f80fa1c47a9e8f14a259d7fde",
+  "exactWholeFileInverse": true,
+  "inverseReplacement": {
+    "addedFunction": "def companion86_module():\n    path = Path(__file__).with_name(\"companion86_profile.py\")\n    require(digest(path) == \"75f441f073f8e85ac18c0eb110dac0c8847c1d955f0f025bd305cfc11e045f78\",\n            \"exact_App14_original_companion86_profile_required\")\n    return original_module(path, \"qualified_App14_companion86\")\n\n\n",
+    "after": "            if receipt.get(\"current11619Fixture\") is not None:\n                companion_contract = companion86_module().admit(\n                    source, args.companion_manifest, out, app,\n                    lambda argv, label, timeout: run(argv, out, label, timeout=timeout))\n            else:\n                companion_contract = admit_real_companion(source, args.companion_manifest, out, app)\n",
+    "before": "            companion_contract = admit_real_companion(source, args.companion_manifest, out, app)\n"
+  },
+  "old70ebAdmissionUnchanged": true,
+  "protocol": "App14-original-Any-MiniApps86-controller-source-review-v1",
+  "tests": 0
+}

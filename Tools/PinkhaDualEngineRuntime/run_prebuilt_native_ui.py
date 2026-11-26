@@ -414,6 +414,13 @@ def admit_410b_runner(source, main_record, ui_build, ui_record):
     return expected
 
 
+def companion86_module():
+    path = Path(__file__).with_name("companion86_profile.py")
+    require(digest(path) == "75f441f073f8e85ac18c0eb110dac0c8847c1d955f0f025bd305cfc11e045f78",
+            "exact_App14_original_companion86_profile_required")
+    return original_module(path, "qualified_App14_companion86")
+
+
 def admit_real_companion(source, manifest_path, out, app):
     require(manifest_path is not None and manifest_path.is_absolute()
             and manifest_path.resolve() == manifest_path and not manifest_path.is_symlink()
@@ -655,7 +662,12 @@ def main():
                        archiveGrabberPreparation=ui_record.get("archiveGrabberPreparation"),
                        originalAppFileCount=len(original_app_inventory))
         if args.stage == "miniapps":
-            companion_contract = admit_real_companion(source, args.companion_manifest, out, app)
+            if receipt.get("current11619Fixture") is not None:
+                companion_contract = companion86_module().admit(
+                    source, args.companion_manifest, out, app,
+                    lambda argv, label, timeout: run(argv, out, label, timeout=timeout))
+            else:
+                companion_contract = admit_real_companion(source, args.companion_manifest, out, app)
             receipt["companionManifestSHA256"] = digest(args.companion_manifest)
             receipt["companionBuilds"] = 0
         _, raw = run(["xcrun", "simctl", "list", "runtimes", "--json"], out, "runtimes")
