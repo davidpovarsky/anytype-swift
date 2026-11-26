@@ -1,0 +1,239 @@
+diff --git a/core/block/cache/cache.go b/core/block/cache/cache.go
+index 83cc692770550b120df2704b52f64c50a6067a47..0fb687bd6858778b88b48b9078188ba464cb0e3c 100644
+--- a/core/block/cache/cache.go
++++ b/core/block/cache/cache.go
+@@ -5,6 +5,7 @@ import (
+ 	"fmt"
+ 
+ 	"github.com/anyproto/any-sync/app"
++	"github.com/anyproto/any-sync/app/ocache"
+ 
+ 	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/state"
+@@ -134,12 +135,34 @@ func DoState2[t1, t2 any](s ObjectGetter, ctx session.Context, firstID, secondID
+ 	})
+ }
+ 
+-func DoState[t any](p ObjectGetter, id string, apply func(s *state.State, sb t) error, flags ...smartblock.ApplyFlag) error {
++// lockObjectForState closes the gap between obtaining an object from the
++// cache and locking it. Garbage collection can select that same instance for
++// close while the caller is waiting to acquire the object's lock.
++func lockObjectForState(p ObjectGetter, id string) (smartblock.SmartBlock, error) {
+ 	ctx := context.Background()
+-	sb, err := p.GetObject(ctx, id)
++	for attempt := 0; attempt < 2; attempt++ {
++		sb, err := p.GetObject(ctx, id)
++		if err != nil {
++			return nil, err
++		}
++
++		sb.Lock()
++		if !sb.IsClosing() {
++			return sb, nil
++		}
++		// The cache waits for the closing instance to leave before returning
++		// a replacement. Reacquire before building state or invoking an edit.
++		sb.Unlock()
++	}
++	return nil, fmt.Errorf("object %s closed before state acquisition: %w", id, ocache.ErrClosed)
++}
++
++func DoState[t any](p ObjectGetter, id string, apply func(s *state.State, sb t) error, flags ...smartblock.ApplyFlag) error {
++	sb, err := lockObjectForState(p, id)
+ 	if err != nil {
+ 		return err
+ 	}
++	defer sb.Unlock()
+ 
+ 	bb, ok := sb.(t)
+ 	if !ok {
+@@ -147,9 +170,6 @@ func DoState[t any](p ObjectGetter, id string, apply func(s *state.State, sb t)
+ 		return fmt.Errorf("the interface %T is not implemented in %T", dummy, sb)
+ 	}
+ 
+-	sb.Lock()
+-	defer sb.Unlock()
+-
+ 	st := sb.NewState()
+ 	err = apply(st, bb)
+ 	if err != nil {
+@@ -161,10 +181,11 @@ func DoState[t any](p ObjectGetter, id string, apply func(s *state.State, sb t)
+ 
+ // TODO rename to something more meaningful
+ func DoStateCtx[t any](p ObjectGetter, ctx session.Context, id string, apply func(s *state.State, sb t) error, flags ...smartblock.ApplyFlag) error {
+-	sb, err := p.GetObject(context.Background(), id)
++	sb, err := lockObjectForState(p, id)
+ 	if err != nil {
+ 		return err
+ 	}
++	defer sb.Unlock()
+ 
+ 	bb, ok := sb.(t)
+ 	if !ok {
+@@ -172,9 +193,6 @@ func DoStateCtx[t any](p ObjectGetter, ctx session.Context, id string, apply fun
+ 		return fmt.Errorf("the interface %T is not implemented in %T", dummy, sb)
+ 	}
+ 
+-	sb.Lock()
+-	defer sb.Unlock()
+-
+ 	st := sb.NewStateCtx(ctx)
+ 	err = apply(st, bb)
+ 	if err != nil {
+diff --git a/core/block/cache/state_lifetime_test.go b/core/block/cache/state_lifetime_test.go
+new file mode 100644
+index 0000000000000000000000000000000000000000..b97e01941022b56c7b751d43716d8642f6915867
+--- /dev/null
++++ b/core/block/cache/state_lifetime_test.go
+@@ -0,0 +1,103 @@
++package cache_test
++
++import (
++	"context"
++	"errors"
++	"sync"
++	"testing"
++
++	"github.com/anyproto/any-sync/app/ocache"
++	"github.com/stretchr/testify/require"
++
++	"github.com/anyproto/anytype-heart/core/block/cache"
++	"github.com/anyproto/anytype-heart/core/block/editor"
++	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
++	"github.com/anyproto/anytype-heart/core/block/editor/state"
++	"github.com/anyproto/anytype-heart/core/session"
++)
++
++type stateLifetimeObject struct {
++	smartblock.SmartBlock
++	mutex     sync.Mutex
++	closing   bool
++	mutations int
++}
++
++func (s *stateLifetimeObject) Lock()                                    { s.mutex.Lock() }
++func (s *stateLifetimeObject) Unlock()                                  { s.mutex.Unlock() }
++func (s *stateLifetimeObject) IsClosing() bool                          { return s.closing }
++func (s *stateLifetimeObject) NewStateCtx(session.Context) *state.State { return &state.State{} }
++func (s *stateLifetimeObject) Apply(*state.State, ...smartblock.ApplyFlag) error {
++	s.mutations++
++	return nil
++}
++
++type stateLifetimeGetter struct {
++	cache.ObjectGetter
++	objects  []smartblock.SmartBlock
++	getCalls int
++	missing  error
++}
++
++func (g *stateLifetimeGetter) GetObject(context.Context, string) (smartblock.SmartBlock, error) {
++	g.getCalls++
++	if len(g.objects) == 0 {
++		return nil, g.missing
++	}
++	obj := g.objects[0]
++	g.objects = g.objects[1:]
++	return obj, nil
++}
++
++func TestDoStateCtxSkipsClosingCacheInstanceBeforeApplyingEdit(t *testing.T) {
++	closing := &stateLifetimeObject{closing: true}
++	current := &stateLifetimeObject{}
++	closingPage := &editor.Page{SmartBlock: closing}
++	currentPage := &editor.Page{SmartBlock: current}
++	getter := &stateLifetimeGetter{objects: []smartblock.SmartBlock{closingPage, currentPage}}
++	callbackCalls := 0
++
++	err := cache.DoStateCtx(getter, nil, "original-annotation", func(_ *state.State, object *editor.Page) error {
++		callbackCalls++
++		require.Same(t, currentPage, object)
++		return nil
++	})
++
++	require.NoError(t, err)
++	require.Equal(t, 2, getter.getCalls)
++	require.Equal(t, 1, callbackCalls)
++	require.Zero(t, closing.mutations)
++	require.Equal(t, 1, current.mutations)
++	require.True(t, closing.mutex.TryLock(), "the retired instance must be released")
++	closing.mutex.Unlock()
++}
++
++func TestDoStateCtxDoesNotReplayEditAfterApplyCallbackFails(t *testing.T) {
++	current := &stateLifetimeObject{}
++	getter := &stateLifetimeGetter{objects: []smartblock.SmartBlock{current}}
++	failure := errors.New("write closure failed")
++
++	err := cache.DoStateCtx(getter, nil, "original-annotation", func(_ *state.State, _ *stateLifetimeObject) error {
++		return failure
++	})
++
++	require.ErrorIs(t, err, failure)
++	require.Equal(t, 1, getter.getCalls)
++	require.Zero(t, current.mutations)
++}
++
++func TestDoStateCtxStopsAfterSecondClosingInstance(t *testing.T) {
++	closing := &stateLifetimeObject{closing: true}
++	next := &stateLifetimeObject{closing: true}
++	getter := &stateLifetimeGetter{objects: []smartblock.SmartBlock{closing, next}}
++
++	err := cache.DoStateCtx(getter, nil, "original-annotation", func(_ *state.State, _ *stateLifetimeObject) error {
++		t.Fatal("closing instance reached the edit")
++		return nil
++	})
++
++	require.ErrorIs(t, err, ocache.ErrClosed)
++	require.Equal(t, 2, getter.getCalls)
++	require.Zero(t, closing.mutations)
++	require.Zero(t, next.mutations)
++}
+diff --git a/core/block/editor/smartblock/smartblock.go b/core/block/editor/smartblock/smartblock.go
+index 3b945508fd94edae60ca90c2e42a5a5838198e5d..534c072db9d84c70f617f07c34f04f349947bc73 100644
+--- a/core/block/editor/smartblock/smartblock.go
++++ b/core/block/editor/smartblock/smartblock.go
+@@ -172,6 +172,8 @@ type SmartBlock interface {
+ 	SetIsDeleted()
+ 	IsDeleted() bool
+ 	IsLocked() bool
++	// IsClosing is read while holding the object's lock.
++	IsClosing() bool
+ 
+ 	SendEvent(msgs []*pb.EventMessage)
+ 	ResetToVersion(s *state.State) (err error)
+@@ -266,6 +268,7 @@ type smartBlock struct {
+ 	treeCreatorOnce      sync.Once
+ 	treeCreatorId        string
+ 	isDeleted            bool
++	isClosing            bool
+ 	enableLayouts        bool
+ 
+ 	includeRelationObjectsAsDependents bool // used by some clients
+@@ -1292,7 +1295,13 @@ func (sb *smartBlock) Close() (err error) {
+ 	return sb.closeLocked()
+ }
+ 
++// IsClosing reports whether this cached object has started closing. The caller holds its lock.
++func (sb *smartBlock) IsClosing() bool {
++	return sb.isClosing
++}
++
+ func (sb *smartBlock) closeLocked() (err error) {
++	sb.isClosing = true
+ 	sb.execHooks(HookOnClose, ApplyInfo{State: sb.Doc.(*state.State)})
+ 	if sb.closeRecordsSub != nil {
+ 		sb.closeRecordsSub()
+diff --git a/core/block/editor/smartblock/smarttest/smarttest.go b/core/block/editor/smartblock/smarttest/smarttest.go
+index dcb5d02f62ed620f5c72c7cef2c28f3137a14744..80f992df64735897e22b68e54e27467b8ef986a9 100644
+--- a/core/block/editor/smartblock/smarttest/smarttest.go
++++ b/core/block/editor/smartblock/smarttest/smarttest.go
+@@ -168,6 +168,8 @@ func (st *SmartTest) ConvertLayoutBlocks(s *state.State) bool {
+ 	return false
+ }
+ 
++func (st *SmartTest) IsClosing() bool { return false }
++
+ func (st *SmartTest) IsLocked() bool {
+ 	return false
+ }
