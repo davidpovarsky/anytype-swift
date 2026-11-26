@@ -613,9 +613,26 @@ extension SemanticAnchorPage154MountedUITests {
             try admitExistingSemanticLinkOpening()
             return
         }
-        try tap(input)
-        input.typeKey(.rightArrow, modifierFlags: [])
-        input.doubleTap()
+        // The production link-selection interaction accepts only a real glyph
+        // hit. Use its unique accessible Link, not the wide text view or row.
+        // The original native menu action and every outcome remain required.
+        try requireHittable(input)
+        let selectionLinks = input.links.matching(NSPredicate(format: "label == %@", text))
+        guard selectionLinks.count == 1 else { throw Failure.invalidFixture }
+        let selectionLink = selectionLinks.firstMatch
+        try requireHittable(selectionLink)
+        let inputFrame = input.frame
+        let linkFrame = selectionLink.frame
+        guard selectionLink.exists, selectionLink.isEnabled, selectionLink.isHittable,
+              selectionLink.elementType == .link, selectionLink.label == text,
+              [inputFrame, linkFrame].allSatisfy({ frame in
+                  frame.minX.isFinite && frame.minY.isFinite && frame.width.isFinite && frame.height.isFinite
+                      && frame.width > 0 && frame.height > 0
+              }), inputFrame.contains(linkFrame) else { throw Failure.invalidFixture }
+        let selectionTarget = XCTAttachment(string: selectionLink.debugDescription)
+        selectionTarget.name = "semantic-source-native-link-selection-target-ax"
+        selectionTarget.lifetime = .keepAlways; add(selectionTarget)
+        selectionLink.doubleTap()
         let started = ProcessInfo.processInfo.systemUptime
         let deadline = started + 20
         enum MenuFailure: Error { case admission(String) }
