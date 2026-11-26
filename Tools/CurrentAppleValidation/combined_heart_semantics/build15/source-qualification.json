@@ -17,6 +17,71 @@
     "qualify_external_producer",
     "admit_and_clone_products"
   ],
+  "completeSymbolTableChecks": {
+    "combined_heart_observations_gateway.py": {
+      "allScopesChecked": true,
+      "explicitNestedGlobalAssignments": [],
+      "moduleDefinitions": 18,
+      "scopeCount": 7,
+      "sha256": "425783c76858b542cb908e5d4c606e3d27b54d6e5bbc1e28a163cc18f13cf4de",
+      "undefinedGlobalReferences": []
+    },
+    "combined_heart_semantics_current.py": {
+      "allScopesChecked": true,
+      "explicitNestedGlobalAssignments": [
+        {
+          "name": "common",
+          "scope": "main"
+        },
+        {
+          "name": "native",
+          "scope": "main"
+        },
+        {
+          "name": "mounted",
+          "scope": "main"
+        },
+        {
+          "name": "boundary",
+          "scope": "main"
+        }
+      ],
+      "moduleDefinitions": 74,
+      "scopeCount": 60,
+      "sha256": "f31cf1b3ae3f7b03618165db5f61cef1fa813ffe047d268a8050ea040a626221",
+      "undefinedGlobalReferences": []
+    },
+    "freeze_build15_heart_inputs.py": {
+      "allScopesChecked": true,
+      "explicitNestedGlobalAssignments": [],
+      "moduleDefinitions": 16,
+      "scopeCount": 5,
+      "sha256": "39e8bd10609aae492e8d27281c07cc8eb4a232ed06c0d583b7f60f89f0b9baa1",
+      "undefinedGlobalReferences": []
+    }
+  },
+  "interruptedProjectWrite": {
+    "bytes": 81920,
+    "committedOriginalSHA256": "faa65b9dbb0c3976f173fe8878a0bb0a166d414db6ba813163da25c624d8d074",
+    "error": "ENOSPC during corrected control write",
+    "noNativeTestsOrBuilds": true,
+    "path": "/mnt/development/projects/worktrees/page154-final-event-20261125/Tools/CurrentAppleValidation/combined_heart_semantics/build15/combined_heart_semantics_current.py",
+    "sha256": "fae02bf8e364aedd39125e2cfe833435da7fdc7d6ee8b7d30d69fe90890f8b0d"
+  },
+  "missingConstantNegativeControl": {
+    "deliberatelyRemoved": "APP15_CONTINUATION",
+    "missingReferences": [
+      {
+        "name": "APP15_CONTINUATION",
+        "scope": "qualify_external_producer"
+      },
+      {
+        "name": "APP15_CONTINUATION",
+        "scope": "qualify_app15_continuation"
+      }
+    ],
+    "status": "PASS_REFUSED_UNDEFINED_NAME"
+  },
   "newFunctions": [
     "qualify_app15_continuation",
     "qualify_app15_runtime"
@@ -24,6 +89,16 @@
   "originalOwnedOutcomesSHA256": "73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a",
   "originalUIBodySHA256": "c96486bc3b969c863fc150f8e7b7b662d3d7852cdd55587fca538b1060d32a4b",
   "originalUIStatementCount": 26,
+  "priorFreezeFailure": {
+    "engineCalls": 0,
+    "error": "NameError: APP15_CONTINUATION",
+    "receiptSHA256": "ea9d6ca26ef1d7912007c0e35a99c93b05e7f2c3b32a586823a6b9b03b8b3392",
+    "simulatorOperations": 0,
+    "sourceRootPreserved": "/Users/m1/development/anytype-e-active-20261125/main15/frozen-original",
+    "status": "FAIL",
+    "successorRoot": "/Users/m1/development/anytype-e-active-20261125/main15/frozen-original2",
+    "testsExecuted": 0
+  },
   "priorSourceQualificationFailure": {
     "actualNativeCalls": 0,
     "error": "import ast was placed before future annotations; corrected ordering before any remote intake or build",
@@ -31,8 +106,8 @@
   },
   "sourcePins": {
     "combined_heart_observations_gateway.py": "425783c76858b542cb908e5d4c606e3d27b54d6e5bbc1e28a163cc18f13cf4de",
-    "combined_heart_semantics_current.py": "faa65b9dbb0c3976f173fe8878a0bb0a166d414db6ba813163da25c624d8d074",
-    "freeze_build15_heart_inputs.py": "1d059191eebc0272d49cf7c03224d06b1e1f800122aae28e1cc3cd395d756a2a"
+    "combined_heart_semantics_current.py": "f31cf1b3ae3f7b03618165db5f61cef1fa813ffe047d268a8050ea040a626221",
+    "freeze_build15_heart_inputs.py": "39e8bd10609aae492e8d27281c07cc8eb4a232ed06c0d583b7f60f89f0b9baa1"
   },
   "status": "PASS_SOURCE_AND_MISSING_TERMINAL_REFUSAL_CONTROLS_NOT_APP_ACCEPTANCE",
   "tests": 0,

@@ -12,9 +12,9 @@ import time
 
 sys.dont_write_bytecode = True
 SOURCE = "379ca3568f247d2fc218ed63df24796d461713c0"
-CORE = 'faa65b9dbb0c3976f173fe8878a0bb0a166d414db6ba813163da25c624d8d074'  # Exact original App and separately completed UI proof.
+CORE = 'f31cf1b3ae3f7b03618165db5f61cef1fa813ffe047d268a8050ea040a626221'  # Exact original App and separately completed UI proof.
 BASE = Path("/Users/m1/development/anytype-d-active-20261125/main15")
-DESTINATION = Path("/Users/m1/development/anytype-e-active-20261125/main15/frozen-original")
+DESTINATION = Path("/Users/m1/development/anytype-e-active-20261125/main15/frozen-original2")
 
 
 def main():

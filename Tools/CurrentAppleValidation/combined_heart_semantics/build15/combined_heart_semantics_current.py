@@ -34,7 +34,26 @@ import uuid
 sys.dont_write_bytecode = True
 MANIFEST = "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b"
 APP15_SOURCE = "379ca3568f247d2fc218ed63df24796d461713c0"
-BUILD15_PROOF = {'receipt': '0f0a1241dc76b6585a42866f5d129ea8f5aaa722addc74873245ebe71a09b735', 'source': 'b4fd4069ed3846797bde854caef134c4c7343e475ade555f8daffc34e8a3dc38', 'products': 'd4846f9c640dcb03e56626425ec0ec5649496de885ed464d5258cdfb9431424b', 'uiCopy': 'de23ccb4a8af6580a9348891ccbbd21289c75dc1e83addeb3d0ed5f045015fec', 'runtimeIdentity': '571f3148422dff2cf589060647e98981e337ef906d1c3a79ad8bd86de8872fa8'}  # Refuses execution until the actual terminal producer is pinned.
+BUILD15_PROOF = {'receipt': '0f0a1241dc76b6585a42866f5d129ea8f5aaa722addc74873245ebe71a09b735', 'source': 'b4fd4069ed3846797bde854caef134c4c7343e475ade555f8daffc34e8a3dc38', 'products': 'd4846f9c640dcb03e56626425ec0ec5649496de885ed464d5258cdfb9431424b', 'uiCopy': 'de23ccb4a8af6580a9348891ccbbd21289c75dc1e83addeb3d0ed5f045015fec', 'runtimeIdentity': '571f3148422dff2cf589060647e98981e337ef906d1c3a79ad8bd86de8872fa8'}  # Actual original App and separately completed full UI proof.
+
+APP15_ORIGINAL_PINS = {'app/original.log': '52b8378d6e766d42360f4f9639a4f0dcd5b6da714e86475e9a19a9df21c53154',
+ 'app/process-exit.json': '800c49403f2a4c21f59c6b3de1a36a0518336f95994b3a70a87cbd5d5ff68aad',
+ 'app/result.json': '698889d0e24a775860dafd0d886b335ea047047e6eacb28ed5f83bd8a74dc167',
+ 'dependencies-before.json': '5f1d52ee49a8605c257614912e96f3fb928349b209d659ec602a07989769eb67',
+ 'failure.json': '75479a16a539d47da9844817f9de802203003a4448cf4e359cc89f9b1d9db8e2',
+ 'input-and-resource-admission.json': 'd185d8b2b08da4eb88fd4db011b051a42caa8641f70efca2c426e3904e100486',
+ 'runtime-identity-before.json': '571f3148422dff2cf589060647e98981e337ef906d1c3a79ad8bd86de8872fa8',
+ 'sdk-before.log': 'bf4d876cf1c1a9fd8c665135b731c4d8e42af37bb68d669220fecc509f1612e0',
+ 'source-after.json': 'b4fd4069ed3846797bde854caef134c4c7343e475ade555f8daffc34e8a3dc38',
+ 'source-before.json': 'b4fd4069ed3846797bde854caef134c4c7343e475ade555f8daffc34e8a3dc38'}
+APP15_UIKIT_INPUTS = {'TextBlockFocusLifecycleTests.swift': '74f09e8baa94bc8ab33668ceb72b9f59790d5a1b5e5a6d624b286844651190b3',
+ 'TextViewLinkGestureArbitrationTests.swift': '75a75277870bedb564a5015e1c1f33b17369f179db1802620016b63c563dd1fd'}
+APP15_CONTINUATION = {'bundleSHA256': 'ff34b9466d41af197505ed7cf03068d975991f65a442395907c6e91bfab3085e',
+ 'commit': 'fb23d3f9eec9722726fdc032995b77df7da02183',
+ 'controllerSHA256': '0c956241229e4e73aec2ca8a136906aedce44335a6d53d9ead4b2e419a3418f5',
+ 'fileList': '/Users/m1/development/anytype-d-active-20261125/main14/app-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeTests.build/Objects-normal/arm64/AnytypeTests.SwiftFileList',
+ 'fileListSHA256': 'fb4016eb5c58578cbdc64abbf51be59ec59ef9e474df203150ba0bd1c799e227'}
+
 OVERLAY = "2f76212f9fcd749aeb9e806b941e0fd0b54eba17e5cc842adb81c7eb3bae0f38"
 VERSION = "pinkha-dual-runtime-v1-" + MANIFEST
 NATIVE_BINARY = "f94079de9eeb9e2e869f02bd1dda93fcd272e3191b2417ca4b4657cae5dc6763"
