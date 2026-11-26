@@ -1,0 +1,75 @@
+warning: '--skip-update' option is deprecated and will be removed in a future release
+warning: 'pinkhaanyengine': found 1 file(s) which are unhandled; explicitly declare them as resources or exclude from the target
+    /mnt/development/projects/worktrees/anytype-engine-contracts-20261127/Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPAuthorizationFenceTests.swift.bak.20261126-233505-524972
+Building for debugging...
+[Computing dependencies]
+[Using on-disk description]
+[1 / 5] PinkhaAnyEngine
+[2 / 6] PinkhaAnyEngine
+[6 / 9] PinkhaAnyEngineProbe-product
+[7 / 9] PinkhaAnyEngineProbe-product
+[7 / 10] PinkhaAnyEngineProbe-product
+[10 / 12] PinkhaAnyEngineProbe-product
+[11 / 13] PinkhaAnyEngineProbe-product
+[12 / 13] CCryptoBoringSSL
+[12 / 14] CCryptoBoringSSLShims
+[14 / 17] PinkhaAnyEngineProbe-product
+[14 / 17] PinkhaAnyEngine
+[16 / 20] PinkhaAnyEngine
+[17 / 20] PinkhaAnyEngine
+[19 / 20] PinkhaAnyEngine
+[20 / 20] PinkhaAnyEngineProbe-product
+[20 / 21]
+[20 / 24] PinkhaAnyEngineTests-test-runner
+[20 / 29] PinkhaAnyEngineTests-product
+[23 / 31] PinkhaAnyEngineProbe-product
+[23 / 31] PinkhaAnyEngine-product
+[23 / 31] PinkhaAnyEngineTests-product
+[26 / 34] PinkhaAnyEngineTests-product
+[29 / 37] PinkhaAnyEngineTests-product
+[30 / 38] PinkhaAnyEngineTests-product
+[33 / 38] PinkhaAnyEngineTests-product
+[35 / 42] PinkhaAnyEngineTests-test-runner
+[37 / 44] PinkhaAnyEngineTests-test-runner
+[39 / 42] PinkhaAnyEngineTests-test-runner
+[42 / 43] PinkhaAnyEngineTests-test-runner
+[43 / 43] PinkhaAnyEngineTests-test-runner
+Build complete! (44.03 secs)
+Test Suite 'Selected tests' started at 2026-11-26 23:36:16.913
+Test Suite 'AnyHTTPAuthorizationFenceTests' started at 2026-11-26 23:36:16.928
+Test Case 'AnyHTTPAuthorizationFenceTests.testAuthorizedStatusAndLegacyBodyBothRetainTheirSemantics' started at 2026-11-26 23:36:16.928
+Test Case 'AnyHTTPAuthorizationFenceTests.testAuthorizedStatusAndLegacyBodyBothRetainTheirSemantics' passed (0.516 seconds)
+Test Case 'AnyHTTPAuthorizationFenceTests.testOneShotWriteDispatchApprovalIsNotConsumedAgain' started at 2026-11-26 23:36:17.444
+Test Case 'AnyHTTPAuthorizationFenceTests.testOneShotWriteDispatchApprovalIsNotConsumedAgain' passed (0.392 seconds)
+Test Case 'AnyHTTPAuthorizationFenceTests.testReadRevokedDuringHTTPDoesNotDeliverPayloadFromSameAccount' started at 2026-11-26 23:36:17.835
+Test Case 'AnyHTTPAuthorizationFenceTests.testReadRevokedDuringHTTPDoesNotDeliverPayloadFromSameAccount' passed (0.386 seconds)
+Test Case 'AnyHTTPAuthorizationFenceTests.testRevokedAfterCommittedWriteReportsUncertainWithoutRetry' started at 2026-11-26 23:36:18.221
+Test Case 'AnyHTTPAuthorizationFenceTests.testRevokedAfterCommittedWriteReportsUncertainWithoutRetry' passed (0.358 seconds)
+Test Case 'AnyHTTPAuthorizationFenceTests.testRevokedBeforeDispatchSendsNoMutation' started at 2026-11-26 23:36:18.580
+Test Case 'AnyHTTPAuthorizationFenceTests.testRevokedBeforeDispatchSendsNoMutation' passed (0.343 seconds)
+Test Case 'AnyHTTPAuthorizationFenceTests.testRevokedCreateRetainsOnlyOriginalScopeRecoveryIdentity' started at 2026-11-26 23:36:18.923
+Test Case 'AnyHTTPAuthorizationFenceTests.testRevokedCreateRetainsOnlyOriginalScopeRecoveryIdentity' passed (0.376 seconds)
+Test Case 'AnyHTTPAuthorizationFenceTests.testSeparateReadResponseFencePreservesOneShotDispatchApproval' started at 2026-11-26 23:36:19.298
+Test Case 'AnyHTTPAuthorizationFenceTests.testSeparateReadResponseFencePreservesOneShotDispatchApproval' passed (0.36 seconds)
+Test Suite 'AnyHTTPAuthorizationFenceTests' passed at 2026-11-26 23:36:19.658
+	 Executed 7 tests, with 0 failures (0 unexpected) in 2.73 (2.73) seconds
+Test Suite 'AnyHTTPResponseTests' started at 2026-11-26 23:36:19.658
+Test Case 'AnyHTTPResponseTests.testAcceptedHTTPStatusCannotHideNativePartialRejection' started at 2026-11-26 23:36:19.658
+Test Case 'AnyHTTPResponseTests.testAcceptedHTTPStatusCannotHideNativePartialRejection' passed (0.357 seconds)
+Test Case 'AnyHTTPResponseTests.testAccountSwitchAfterActualJoinResponseRemainsWriteUncertain' started at 2026-11-26 23:36:20.016
+Test Case 'AnyHTTPResponseTests.testAccountSwitchAfterActualJoinResponseRemainsWriteUncertain' passed (0.346 seconds)
+Test Case 'AnyHTTPResponseTests.testPendingAndCreatedStatusesSurviveActualHTTPAndLegacyBodyAPI' started at 2026-11-26 23:36:20.362
+Test Case 'AnyHTTPResponseTests.testPendingAndCreatedStatusesSurviveActualHTTPAndLegacyBodyAPI' passed (0.349 seconds)
+Test Suite 'AnyHTTPResponseTests' passed at 2026-11-26 23:36:20.711
+	 Executed 3 tests, with 0 failures (0 unexpected) in 1.052 (1.052) seconds
+Test Suite 'ObjectCreationRecoveryTests' started at 2026-11-26 23:36:20.711
+Test Case 'ObjectCreationRecoveryTests.testExactNativePartialFailureCarriesOnlyValidatedRecoveryMetadata' started at 2026-11-26 23:36:20.711
+Test Case 'ObjectCreationRecoveryTests.testExactNativePartialFailureCarriesOnlyValidatedRecoveryMetadata' passed (0.0 seconds)
+Test Case 'ObjectCreationRecoveryTests.testLateAccountSwitchRetainsIDOnlyForDedicatedOriginalSpaceCreateRoute' started at 2026-11-26 23:36:20.711
+Test Case 'ObjectCreationRecoveryTests.testLateAccountSwitchRetainsIDOnlyForDedicatedOriginalSpaceCreateRoute' passed (0.002 seconds)
+Test Case 'ObjectCreationRecoveryTests.testMalformedOrDifferentFailureCannotInventRecoverableObjectIdentity' started at 2026-11-26 23:36:20.713
+Test Case 'ObjectCreationRecoveryTests.testMalformedOrDifferentFailureCannotInventRecoverableObjectIdentity' passed (0.002 seconds)
+Test Suite 'ObjectCreationRecoveryTests' passed at 2026-11-26 23:36:20.715
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.004 (0.004) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 23:36:20.717
+	 Executed 13 tests, with 0 failures (0 unexpected) in 3.787 (3.787) seconds
