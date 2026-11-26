@@ -1,0 +1,209 @@
+{
+  "builder": {
+    "bytes": 44582,
+    "candidate": "build_prebuilt_native_ui8ac.py",
+    "candidateSHA256": "13820e365314ef2221d513e8ce0a862f06ff14bfb25ca313de93e2d4820c87d9",
+    "changedFunctions": [
+      "main"
+    ],
+    "changes": [
+      {
+        "new": "import time\n\nLIFECYCLE = None\n",
+        "old": "import time\n",
+        "position": 445
+      },
+      {
+        "new": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native8ac_profile.py\")\n    require(digest(path) == \"6cfb95a83fb6b7156d9af9ddde1cdd953a191a91e6946dd4869b951659595ec2\",\n            \"exact_App15_NativeUI_profile_required\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() ==\n            \"6cfb95a83fb6b7156d9af9ddde1cdd953a191a91e6946dd4869b951659595ec2\",\n            \"App15_profile_changed_during_admission\")\n    module = type(sys)(\"qualified_native8ac\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    return module\n\n\ndef native11619_module():",
+        "old": "def native11619_module():",
+        "position": 967
+      },
+      {
+        "new": "def main():\n    global LIFECYCLE\n",
+        "old": "def main():\n",
+        "position": 2572
+      },
+      {
+        "new": "    parser.add_argument(\"--main-evidence\", type=Path, required=True)\n    parser.add_argument(\"--source-root\", type=Path)\n",
+        "old": "    parser.add_argument(\"--main-evidence\", type=Path, required=True)\n",
+        "position": 2728
+      },
+      {
+        "new": "    source = args.source_root or root / \"source\"\n",
+        "old": "    source = root / \"source\"\n",
+        "position": 4067
+      },
+      {
+        "new": "    current8ac = None\n    runtime_binding = None\n    if (origin == \"379ca3568f247d2fc218ed63df24796d461713c0\"\n            or original[\"inputs\"][\"nativeSourceManifestSHA256\"] ==\n                \"8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b\"):\n        current8ac = native8ac_module()\n        current8ac.qualify_main(original)\n        runtime_binding = current8ac.qualify_runtime_inputs(source, evidence, original)\n        profiles[current8ac.NATIVE] = dict(current8ac.PROFILE)\n    require(args.source_root is None or current8ac is not None,\n            \"explicit_source_root_is_only_for_closed_App15_warm_layout\")\n    profile = profiles.get(original[\"inputs\"][\"nativeSourceManifestSHA256\"])\n",
+        "old": "    profile = profiles.get(original[\"inputs\"][\"nativeSourceManifestSHA256\"])\n",
+        "position": 7275
+      },
+      {
+        "new": "    current8ac_binding = None\n    if current8ac is not None:\n        current8ac_binding = current8ac.bind_source(\n            source, original, runner_origin, runner_launch, runner_history, vars(args))\n    bin_confirmation_binding = None\n",
+        "old": "    bin_confirmation_binding = None\n",
+        "position": 33400
+      },
+      {
+        "new": "    output.mkdir(mode=0o700)\n    if current8ac is not None:\n        LIFECYCLE = current8ac.owned_lifecycle(source, source, output / \"owned-builder-lifecycle\")\n",
+        "old": "    output.mkdir(mode=0o700)\n",
+        "position": 35847
+      },
+      {
+        "new": "        \"current11619Fixture\": current11619_binding,\n        \"current8acFixture\": current8ac_binding,\n        \"current8acRuntimeIdentity\": runtime_binding,\n",
+        "old": "        \"current11619Fixture\": current11619_binding,\n",
+        "position": 39675
+      },
+      {
+        "new": "        \"current11619Fixture\": current11619_binding,\n        \"current8acFixture\": current8ac_binding,\n        \"current8acRuntimeIdentity\": runtime_binding,\n",
+        "old": "        \"current11619Fixture\": current11619_binding,\n",
+        "position": 37582
+      },
+      {
+        "new": "    require(free >= floor, \"owned_process_disk_floor\")\n    if current8ac is not None:\n        require(free >= floor + 512 * 1024**2 + 512 * 1024**2,\n                \"NativeUI_phase_allowance_and_concurrent_growth_unavailable\")\n",
+        "old": "    require(free >= floor, \"owned_process_disk_floor\")\n",
+        "position": 38824
+      },
+      {
+        "new": "        if LIFECYCLE is not None:\n            record.update(cleanupErrors=[], termination=[], lifecycleSHA256=current8ac.OWNED_OUTCOMES_SHA,\n                          phaseGrowthAllowanceBytes=512 * 1024**2,\n                          concurrentGrowthAllowanceBytes=512 * 1024**2)\n        write(output / \"launch.json\", record)\n",
+        "old": "        write(output / \"launch.json\", record)\n",
+        "position": 40438
+      },
+      {
+        "new": "                if LIFECYCLE is not None:\n                    LIFECYCLE._terminate_owned_process(process, record)\n                else:\n                    try:\n                        os.killpg(process.pid, signal.SIGTERM)\n                    except ProcessLookupError:\n                        pass\n                    try:\n                        process.wait(timeout=15)\n                    except subprocess.TimeoutExpired:\n                        os.killpg(process.pid, signal.SIGKILL)\n                        process.wait()\n",
+        "old": "                try:\n                    os.killpg(process.pid, signal.SIGTERM)\n                except ProcessLookupError:\n                    pass\n                try:\n                    process.wait(timeout=15)\n                except subprocess.TimeoutExpired:\n                    os.killpg(process.pid, signal.SIGKILL)\n                    process.wait()\n",
+        "position": 41121
+      },
+      {
+        "new": "        if LIFECYCLE is not None:\n            try:\n                code = process.wait(timeout=1)\n            except BaseException as exc:\n                code = None\n                record[\"cleanupErrors\"].append({\"phase\": \"final-owned-wait\",\n                    \"type\": type(exc).__name__, \"reason\": str(exc)})\n        else:\n            code = process.wait()\n",
+        "old": "        code = process.wait()\n",
+        "position": 41877
+      },
+      {
+        "new": "    if LIFECYCLE is not None:\n        record.update(exitCode=code, stopped=stopped, elapsedSeconds=time.time() - started,\n                      minimumFreeBytes=minimum, logSHA256=digest(log),\n                      status=\"EXIT_RECORDED_PENDING_GROUP_OBSERVATION\")\n        write(output / \"process-exit.json\", record)\n        observation = LIFECYCLE._observe_exited_group(process.pid)\n        record[\"ownedProcessGroup\"] = observation[\"status\"]\n        record[\"ownedGroupObservations\"] = observation[\"observations\"]\n        record[\"processExitReceiptSHA256\"] = digest(output / \"process-exit.json\")\n        if observation[\"status\"] != \"ABSENT_ESRCH\" or record[\"cleanupErrors\"]:\n            stopped = stopped or \"OWNED_PROCESS_LIFECYCLE_UNRESOLVED\"\n        write(output / \"owned-process-outcome.json\", record)\n    require(all(digest(output / name) == row[\"sha256\"] for name, row in sources.items()),\n",
+        "old": "    require(all(digest(output / name) == row[\"sha256\"] for name, row in sources.items()),\n",
+        "position": 42238
+      },
+      {
+        "new": "    if current8ac is not None:\n        require(current8ac.qualify_runtime_inputs(source, evidence, original) == runtime_binding,\n                \"App15_original_runtime_inputs_changed_during_NativeUI_build\")\n    products = output / \"derived/Build/Products\"\n",
+        "old": "    products = output / \"derived/Build/Products\"\n",
+        "position": 43188
+      }
+    ],
+    "inverseRestoresEveryOriginalByte": true,
+    "newFunctions": [
+      "native8ac_module"
+    ],
+    "original": "build_prebuilt_native_ui.py",
+    "originalSHA256": "73e5fbe4d1d79bf2d3b366bc8802b63e91bbbbf739dee2cef6dd53655e21def2",
+    "unchangedFunctions": [
+      "require",
+      "digest",
+      "write",
+      "native11619_module",
+      "bin_confirmation_module"
+    ]
+  },
+  "runner": {
+    "bytes": 60128,
+    "candidate": "run_prebuilt_native_ui8ac.py",
+    "candidateSHA256": "b5ccaf7ccba7893cd35cac15c5230bbee027da1bbef482a3988b872592a5c6e8",
+    "changedFunctions": [
+      "run",
+      "main"
+    ],
+    "changes": [
+      {
+        "new": "FLOOR = 2 * 1024**3\nLIFECYCLE = None\n",
+        "old": "FLOOR = 2 * 1024**3\n",
+        "position": 1511
+      },
+      {
+        "new": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native8ac_profile.py\")\n    require(digest(path) == \"6cfb95a83fb6b7156d9af9ddde1cdd953a191a91e6946dd4869b951659595ec2\",\n            \"exact_App15_NativeUI_profile_required\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() ==\n            \"6cfb95a83fb6b7156d9af9ddde1cdd953a191a91e6946dd4869b951659595ec2\",\n            \"App15_profile_changed_during_admission\")\n    module = type(sys)(\"qualified_native8ac\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    return module\n\n\ndef native11619_module():",
+        "old": "def native11619_module():",
+        "position": 20448
+      },
+      {
+        "new": "def main():\n    global LIFECYCLE\n",
+        "old": "def main():\n",
+        "position": 30935
+      },
+      {
+        "new": "    parser.add_argument(\"--main-evidence\", type=Path, required=True)\n    parser.add_argument(\"--source-root\", type=Path)\n",
+        "old": "    parser.add_argument(\"--main-evidence\", type=Path, required=True)\n",
+        "position": 31091
+      },
+      {
+        "new": "    require(args.source_root is None or args.frozen_inputs is None,\n            \"explicit_current_source_cannot_mix_with_historical_frozen_inputs\")\n    source = args.source_root or (args.frozen_inputs or args.main_root) / \"source\"\n",
+        "old": "    source = (args.frozen_inputs or args.main_root) / \"source\"\n",
+        "position": 32486
+      },
+      {
+        "new": "        if (main_record[\"sourceCommit\"] == \"379ca3568f247d2fc218ed63df24796d461713c0\"\n                or main_record.get(\"inputs\", {}).get(\"nativeSourceManifestSHA256\") ==\n                    \"8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b\"\n                or ui_record.get(\"current8acFixture\") is not None):\n            current8ac = native8ac_module()\n            runtime_binding = current8ac.qualify_runtime_inputs(source, args.main_evidence, main_record)\n            projection = json.loads((args.ui_build / \"projection.json\").read_bytes())\n            require(ui_record.get(\"current8acRuntimeIdentity\") ==\n                    projection.get(\"current8acRuntimeIdentity\") == runtime_binding,\n                    \"exact_App15_original_runtime_proofs_required\")\n            receipt[\"current8acFixture\"] = current8ac.admit(\n                source, main_record, args.ui_build, ui_record)\n            receipt[\"current8acRuntimeIdentity\"] = runtime_binding\n            LIFECYCLE = current8ac.owned_lifecycle(source, out, out / \"owned-command-lifecycle\")\n        require(args.source_root is None or receipt.get(\"current8acFixture\") is not None,\n                \"explicit_source_root_is_only_for_closed_App15_warm_layout\")\n        if ui_record.get(\"current410bFixture\") is not None:\n",
+        "old": "        if ui_record.get(\"current410bFixture\") is not None:\n",
+        "position": 35003
+      },
+      {
+        "new": "                      or receipt.get(\"current11619Fixture\") is not None\n                      or receipt.get(\"current8acFixture\") is not None)\n",
+        "old": "                      or receipt.get(\"current11619Fixture\") is not None)\n",
+        "position": 39117
+      },
+      {
+        "new": "            if (receipt.get(\"current11619Fixture\") is not None\n                    or receipt.get(\"current8acFixture\") is not None):\n",
+        "old": "            if receipt.get(\"current11619Fixture\") is not None:\n",
+        "position": 43360
+      },
+      {
+        "new": "        if LIFECYCLE is not None:\n            record.update(cleanupErrors=[], termination=[],\n                          lifecycleSHA256=\"73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a\")\n        write(directory / (label + \".command.json\"), record)\n",
+        "old": "        write(directory / (label + \".command.json\"), record)\n",
+        "position": 3620
+      },
+      {
+        "new": "                if LIFECYCLE is not None:\n                    LIFECYCLE._terminate_owned_process(process, record)\n                else:\n                    try:\n                        os.killpg(process.pid, signal.SIGTERM)\n                    except ProcessLookupError:\n                        pass\n                    try:\n                        process.wait(timeout=15)\n                    except subprocess.TimeoutExpired:\n                        try:\n                            os.killpg(process.pid, signal.SIGKILL)\n                        except ProcessLookupError:\n                            pass\n                        process.wait()\n",
+        "old": "                try:\n                    os.killpg(process.pid, signal.SIGTERM)\n                except ProcessLookupError:\n                    pass\n                try:\n                    process.wait(timeout=15)\n                except subprocess.TimeoutExpired:\n                    try:\n                        os.killpg(process.pid, signal.SIGKILL)\n                    except ProcessLookupError:\n                        pass\n                    process.wait()\n",
+        "position": 4243
+      },
+      {
+        "new": "        if LIFECYCLE is not None:\n            try:\n                code = process.wait(timeout=1)\n            except BaseException as exc:\n                code = None\n                record[\"cleanupErrors\"].append({\"phase\": \"final-owned-wait\",\n                    \"type\": type(exc).__name__, \"reason\": str(exc)})\n        else:\n            code = process.wait()\n",
+        "old": "        code = process.wait()\n",
+        "position": 4938
+      },
+      {
+        "new": "    if LIFECYCLE is not None:\n        record.update(exitCode=code, elapsedSeconds=time.time() - started,\n                      minimumFreeBytes=minimum, stopped=stopped, logSHA256=digest(log),\n                      status=\"EXIT_RECORDED_PENDING_GROUP_OBSERVATION\")\n        write(directory / (label + \".process-exit.json\"), record)\n        observation = LIFECYCLE._observe_exited_group(process.pid)\n        group = observation[\"status\"]\n        record[\"ownedGroupObservations\"] = observation[\"observations\"]\n        record[\"processExitReceiptSHA256\"] = digest(directory / (label + \".process-exit.json\"))\n    else:\n        try:\n            os.killpg(process.pid, 0)\n            group = \"STILL_PRESENT\"\n        except ProcessLookupError:\n            group = \"ABSENT_ESRCH\"\n        except PermissionError as exc:\n            # A denied group probe must not discard the completed command ledger.\n            # It remains a failure; no broader signal or ownership inference follows.\n            group = \"PRESENT_OR_UNRESOLVED_PERMISSION_DENIED\"\n            record[\"groupProbeError\"] = {\"type\": type(exc).__name__, \"reason\": str(exc)}\n",
+        "old": "    try:\n        os.killpg(process.pid, 0)\n        group = \"STILL_PRESENT\"\n    except ProcessLookupError:\n        group = \"ABSENT_ESRCH\"\n    except PermissionError as exc:\n        # A denied group probe must not discard the completed command ledger.\n        # It remains a failure; no broader signal or ownership inference follows.\n        group = \"PRESENT_OR_UNRESOLVED_PERMISSION_DENIED\"\n        record[\"groupProbeError\"] = {\"type\": type(exc).__name__, \"reason\": str(exc)}\n",
+        "position": 5299
+      },
+      {
+        "new": "                  group == \"ABSENT_ESRCH\" and not record.get(\"cleanupErrors\") else \"FAIL\")\n",
+        "old": "                  group == \"ABSENT_ESRCH\" else \"FAIL\")\n",
+        "position": 6672
+      },
+      {
+        "new": "        try:\n            if receipt.get(\"current8acFixture\") is not None:\n                require(native8ac_module().qualify_runtime_inputs(\n                    source, args.main_evidence, main_record) == receipt[\"current8acRuntimeIdentity\"],\n                    \"original_App15_runtime_inputs_changed_during_UI_execution\")\n            if companion_contract is not None:\n",
+        "old": "        try:\n            if companion_contract is not None:\n",
+        "position": 57400
+      }
+    ],
+    "inverseRestoresEveryOriginalByte": true,
+    "newFunctions": [
+      "native8ac_module"
+    ],
+    "original": "run_prebuilt_native_ui.py",
+    "originalSHA256": "44d78ead1e0fc37e444187360844a77c079e552f80fa1c47a9e8f14a259d7fde",
+    "unchangedFunctions": [
+      "require",
+      "digest",
+      "write",
+      "inventory",
+      "original_module",
+      "bind",
+      "admit_miniapps_runner",
+      "admit_current_runner",
+      "admit_current_menu_runner",
+      "native11619_module",
+      "bin_confirmation_module",
+      "admit_410b_runner",
+      "companion86_module",
+      "admit_real_companion",
+      "qualify_miniapps_report"
+    ]
+  }
+}

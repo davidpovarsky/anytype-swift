@@ -1,0 +1,57 @@
+{
+  "candidateSHA256": "6cfb95a83fb6b7156d9af9ddde1cdd953a191a91e6946dd4869b951659595ec2",
+  "inverseRestoresEveryOriginalByte": true,
+  "originalSHA256": "58643d32057cf6f692b39e15eb53d50925170d26ccbe12304c55a62f73fa5e41",
+  "substitutions": [
+    {
+      "count": 16,
+      "new": "App15",
+      "old": "App14"
+    },
+    {
+      "count": 2,
+      "new": "379ca3568f247d2fc218ed63df24796d461713c0",
+      "old": "76f59f1e838991d1bbc7a07ecd08c6a2f15915c7"
+    },
+    {
+      "count": 1,
+      "new": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+      "old": "11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b"
+    },
+    {
+      "count": 1,
+      "new": "c9c90e3a12868bcedf5f0a4f116c4dc1c388bdcddd0e9f0170c047684c500231",
+      "old": "a27b5f2f955d85b31157d7aedf7733e7d32e0acdac59920c0bd142ed304484bd"
+    },
+    {
+      "count": 1,
+      "new": "qualified-mobile8ac-sdk9565-torah9058",
+      "old": "qualified-mobile11619-sdk9565-torah9058"
+    },
+    {
+      "count": 1,
+      "new": "f94079de9eeb9e2e869f02bd1dda93fcd272e3191b2417ca4b4657cae5dc6763",
+      "old": "9f64b4469e221cd27b04c0f46b7479cf1fb079b36fce8a26c0fd8b0521ecaf5e"
+    },
+    {
+      "count": 1,
+      "new": "    \"current410bFixture\", \"current410bBinConfirmationFixture\", \"current11619Fixture\",\n",
+      "old": "    \"current410bFixture\", \"current410bBinConfirmationFixture\",\n"
+    },
+    {
+      "count": 1,
+      "new": "\"current8acFixture\") ==\n            projection.get(\"current8acFixture\")",
+      "old": "\"current11619Fixture\") ==\n            projection.get(\"current11619Fixture\")"
+    },
+    {
+      "count": 1,
+      "new": "    require(record.get(\"controllerSHA256\") == PRODUCER_SHA\n            and record.get(\"inputs\", {}).get(\"stagingReceiptSHA256\") == STAGING_SHA,\n            \"exact_App15_original_producer_and_staging_required\")\n    for key, value in PROFILE.items():",
+      "old": "    for key, value in PROFILE.items():"
+    },
+    {
+      "append": true,
+      "new": "\n# The original producer deliberately reused the unchanged physical compiler path.\n# This closed resolver admits that exact recorded layout; it is not a path alias.\nWORKSPACE = Path(\"/Users/m1/development/anytype-d-active-20261125\")\nWARM_SOURCE = WORKSPACE / \"main14/source\"\nMAIN_EVIDENCE = WORKSPACE / \"main15/build15\"\nPRODUCER_SHA = \"617b163951a9692909bef38a4991ded8c53e8c21ad9278a9564222fce1a57a68\"\nSTAGING_SHA = \"dc0617be03813129b76a09a347c15f835611e6520f4f261825abacab16a71781\"\nRUNTIME_HELPER_SHA = \"306c0cabcf39c6de55470d642cf5b9e6e9176d73351966330b90cf333b9359b0\"\nOWNED_OUTCOMES_SHA = \"73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a\"\n\n\ndef file_sha(path):\n    result = hashlib.sha256()\n    with path.open(\"rb\") as stream:\n        for raw in iter(lambda: stream.read(1024 * 1024), b\"\"):\n            result.update(raw)\n    return result.hexdigest()\n\n\ndef qualify_runtime_inputs(source, evidence, record):\n    \"\"\"Independently requalify the original producer's inputs; zero engine calls.\"\"\"\n    qualify_main(record)\n    require(source == WARM_SOURCE and evidence == MAIN_EVIDENCE\n            and source.is_absolute() and source.resolve() == source\n            and evidence.resolve() == evidence\n            and record[\"inputs\"].get(\"sourceRoot\") == str(source)\n            and record[\"inputs\"].get(\"appDerived\") ==\n                str(WORKSPACE / \"main14/app-derived\"),\n            \"exact_recorded_App15_warm_source_and_evidence_required\")\n    stage_path = evidence.parent / \"source-staging1/receipt.json\"\n    stage_raw = stage_path.read_bytes()\n    require(sha(stage_raw) == STAGING_SHA, \"original_App15_staging_receipt_changed\")\n    stage = json.loads(stage_raw)\n    require(stage.get(\"status\") ==\n                \"PASS_EXACT_APP15_SOURCE_AND_NATIVE_MATERIALIZED_ORIGINALS_RETAINED\"\n            and stage.get(\"sourceCommit\") == SOURCE\n            and stage.get(\"sourceRoot\") == str(source)\n            and stage.get(\"appDerived\") == record[\"inputs\"][\"appDerived\"],\n            \"exact_original_App15_staging_identity_required\")\n    helper = source / \"Tools/PinkhaDualEngineRuntime/runtime_identity.py\"\n    helper_raw = helper.read_bytes()\n    require(sha(helper_raw) == RUNTIME_HELPER_SHA, \"original_runtime_identity_helper_changed\")\n    module = type(sys)(\"App15_NativeUI_runtime_identity\")\n    module.__file__ = str(helper)\n    exec(compile(helper_raw, str(helper), \"exec\"), module.__dict__)\n    manifest = (source / \"Tools/PinkhaDualEngineRuntime/source-permission-manifest.json\").read_bytes()\n    require(sha(manifest) == NATIVE, \"actual_permission_manifest_changed\")\n    retained = evidence.parent / \"native-materialization-8ac\"\n    pins = {\n        \"simulator\": (\"946fe141ee4fa1c1fa8ceafc9060d9d9eedb0d546360140eadaf5ecf1f264f9b\",\n                      \"efb1df9248d52f4ff69eb08e9a1ce9eeaed58b3b746960d86907fe7fc85fd903\"),\n        \"device\": (\"c5237b26fe0a1ab7fe3c373aed50a34a0a6f65c306ed47918b4e4b54a9245208\",\n                   \"fc251187ea1be539d41501da7b4e00ae2a249662684c1a5c6069235dacaee546\"),\n    }\n    inputs = {}\n    for kind, (receipt_sha, command_sha) in pins.items():\n        values = {key: (retained / kind / name).read_bytes()\n                  for key, name in ((\"receipt\", \"receipt.json\"),\n                                    (\"command\", \"combined-gomobile-bind.command.json\"),\n                                    (\"log\", \"combined-gomobile-bind.log\"))}\n        receipt = json.loads(values[\"receipt\"])\n        command = json.loads(values[\"command\"])\n        require([row for row in receipt[\"commands\"]\n                 if row[\"name\"] == \"combined-gomobile-bind\"] == [command],\n                \"original_unique_native_bind_command_required:\" + kind)\n        inputs[kind] = dict(values, expectedReceiptSHA256=receipt_sha,\n                           expectedCommandSHA256=command_sha)\n    result = module.qualify_application(\n        manifest, \"2026-11-26\",\n        (source / \"Modules/ProtobufMessages/Sources/PinkhaAnyEmbeddedBridge.swift\").read_bytes(),\n        inputs)\n    assembly_raw = (retained / \"receipt.json\").read_bytes()\n    require(sha(assembly_raw) == ASSEMBLY, \"actual_8ac_assembly_changed\")\n    assembly = json.loads(assembly_raw)\n    require(assembly[\"status\"] == \"PASS_ASSEMBLED_TWO_QUALIFIED_SLICES_NOT_APP_ACCEPTANCE\"\n            and result[\"identity\"] == assembly[\"runtimeIdentity\"],\n            \"actual_native_and_consumer_identity_must_agree\")\n    for kind, identifier in ((\"simulator\", \"ios-arm64-simulator\"), (\"device\", \"ios-arm64\")):\n        binary = source / \"Dependencies/Middleware/Lib.xcframework\" / identifier / \"Lib.framework/Lib\"\n        require(file_sha(binary) == result[\"slices\"][kind][\"binarySHA256\"] ==\n                    assembly[\"inputs\"][kind][\"binarySHA256\"]\n                and binary.stat().st_size == result[\"slices\"][kind][\"binaryBytes\"] ==\n                    assembly[\"inputs\"][kind][\"binaryBytes\"],\n                \"actual_original_native_framework_changed:\" + kind)\n    proofs = {}\n    for stage in (\"before\", \"after-app\", \"after-ui\"):\n        raw = (evidence / (\"runtime-identity-\" + stage + \".json\")).read_bytes()\n        require(json.loads(raw) == result, \"original_runtime_proof_differs:\" + stage)\n        proofs[stage] = {\"bytes\": len(raw), \"sha256\": sha(raw)}\n    return {\"nativeSourceManifestSHA256\": NATIVE, \"assemblyReceiptSHA256\": ASSEMBLY,\n            \"stagingReceiptSHA256\": STAGING_SHA, \"producerSHA256\": PRODUCER_SHA,\n            \"runtimeHelperSHA256\": RUNTIME_HELPER_SHA,\n            \"runtimeIdentity\": result[\"identity\"], \"originalRuntimeProofs\": proofs}\n\n\ndef owned_lifecycle(source, root, directory):\n    path = source / (\"Tools/CurrentAppleValidation/combined_heart_semantics/build14/\"\n                     \"combined_heart_semantics_owned_outcomes.py\")\n    original = path.read_bytes()\n    require(sha(original) == OWNED_OUTCOMES_SHA, \"exact_owned_outcomes_73bb_required\")\n    module = type(sys)(\"App15_NativeUI_owned_outcomes\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    return module.Commands(directory, root)\n",
+      "old": ""
+    }
+  ]
+}

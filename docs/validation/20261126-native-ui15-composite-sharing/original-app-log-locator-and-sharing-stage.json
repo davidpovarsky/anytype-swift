@@ -1,0 +1,34 @@
+{
+  "allOtherBytesUnchanged": true,
+  "baseCommit": "1534131f22744ad536aa029a6648bb60b359a50c",
+  "builds": 0,
+  "changes": [
+    {
+      "after": "        phase_evidence = (current8ac.ORIGINAL_EVIDENCE\n                          if current8ac is not None and phase == \"app\" else evidence)\n        require(digest(phase_evidence / phase / \"original.log\") == original[phase][\"logSHA256\"],\n                \"original_build_log_changed:\" + phase)",
+      "afterSHA256": "e6c4c506cf893b2dc495fdc4b76c686f09a108c9980e05d19590d92acab804f9",
+      "before": "        require(digest(evidence / phase / \"original.log\") == original[phase][\"logSHA256\"],\n                \"original_build_log_changed:\" + phase)",
+      "beforeSHA256": "61eda1969a1b738adcc2a6db3e09af09c69c9daa3bf3ee50913b098bd3e81ae0",
+      "changedFunctions": [
+        "main"
+      ],
+      "file": "build_prebuilt_native_ui8ac.py",
+      "inverseRestoresEveryByte": true
+    },
+    {
+      "after": "    \"sharing-owner\": (\"NativeLaunchTests/testNativeSharingInvitationConfirmationCancellationAndColdReopen\", 900),\n    \"drag\": (\"NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen\", 600),",
+      "afterSHA256": "18c7cc5722a856782d454a11db11ea172c9d718cecd17cd6dc54ffcc2a256d2b",
+      "before": "    \"drag\": (\"NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen\", 600),",
+      "beforeSHA256": "4236d0418645314ed289a19a2a168d50a8d107a17a78a5c9ef014de975c017d9",
+      "changedFunctions": [],
+      "file": "run_prebuilt_native_ui8ac.py",
+      "inverseRestoresEveryByte": true
+    }
+  ],
+  "observedOriginalAppLog": "/Users/m1/development/anytype-d-active-20261125/main15/build15/app/original.log",
+  "originalAdmissionSHA256": "3568072e23513c2e0307755d0adc13b96c5ca024d901a9842b8330d826eb4543",
+  "originalAppLogSHA256": "52b8378d6e766d42360f4f9639a4f0dcd5b6da714e86475e9a19a9df21c53154",
+  "profileSHA256": "ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332",
+  "protocol": "native-ui15-original-app-log-and-sharing-selector-v1",
+  "sourceCommit": "379ca3568f247d2fc218ed63df24796d461713c0",
+  "tests": 0
+}

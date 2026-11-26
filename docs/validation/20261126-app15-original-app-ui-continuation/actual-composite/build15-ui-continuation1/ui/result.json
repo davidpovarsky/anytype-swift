@@ -1,0 +1,61 @@
+{
+  "argv": [
+    "xcodebuild",
+    "build-for-testing",
+    "-project",
+    "/Users/m1/development/anytype-d-active-20261125/main15/ui-source-build15/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj",
+    "-scheme",
+    "PinkhaPrebuiltUI",
+    "-configuration",
+    "Debug-Anytype",
+    "-destination",
+    "generic/platform=iOS Simulator",
+    "-derivedDataPath",
+    "/Users/m1/development/anytype-d-active-20261125/main15/ui-derived",
+    "-resultBundlePath",
+    "/Users/m1/development/anytype-d-active-20261125/main15/build15-ui-continuation1/UI.xcresult",
+    "-jobs",
+    "4",
+    "OTHER_SWIFT_FLAGS=$(inherited) -D DEBUG -D PINKHA_DUAL_ENGINE_RUNTIME -D PINKHA_NATIVE_DERIVED -D PINKHA_NATIVE_T5_LOOKUP_V1 -D PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 -D PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1",
+    "ENABLE_TESTABILITY=YES",
+    "ONLY_ACTIVE_ARCH=YES",
+    "ARCHS=arm64",
+    "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+    "CODE_SIGN_IDENTITY=-",
+    "CODE_SIGNING_ALLOWED=YES",
+    "CODE_SIGNING_REQUIRED=YES",
+    "PROVISIONING_PROFILE_SPECIFIER="
+  ],
+  "cleanupErrors": [],
+  "cwd": "/Users/m1/development/anytype-d-active-20261125/main14/source",
+  "elapsedSeconds": 26.10577917098999,
+  "environment": {
+    "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+    "PINKHA_ANY_NATIVE_ARTIFACT": "verified-unified-v1",
+    "PINKHA_NATIVE_T2_AUTHORIZED_READ_V1": "1"
+  },
+  "exitCode": 0,
+  "finished": 1795676777.654541,
+  "freeBytesAfter": 5089181696,
+  "freeBytesBefore": 5471494144,
+  "jobs": 4,
+  "logBytes": 279478,
+  "logSHA256": "50b055c7275bde4a1abdc74b1e3e85de1397f203dfced95676bcfa35a5805b90",
+  "minimumFreeBytes": 5144629248,
+  "ownedGroupObservations": [
+    {
+      "at": 1795676777.6560798,
+      "status": "ABSENT_ESRCH"
+    }
+  ],
+  "ownedProcessGroup": "ABSENT_ESRCH",
+  "pgid": 69555,
+  "phase": "ui",
+  "pid": 69555,
+  "processExitReceiptSHA256": "8cdd71ab2122502baa903e9778227cc29f6b996b6a44fb8141951023ee27e438",
+  "sourceCommit": "379ca3568f247d2fc218ed63df24796d461713c0",
+  "started": 1795676751.5487628,
+  "status": "PASS_BUILD_EXIT_0",
+  "termination": [],
+  "timeoutSeconds": 7200
+}
