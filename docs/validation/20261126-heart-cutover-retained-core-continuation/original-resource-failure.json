@@ -1,0 +1,113 @@
+{
+  "appBuilds": 0,
+  "appleUI": false,
+  "cleanupFailures": [],
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "version"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt3/source/heart",
+      "exitCode": 0,
+      "groupState": "ABSENT_ESRCH",
+      "logSHA256": "9da111d509234fc14ad21a2b2e16353665c0614e7d3e8495c01f8cfa3398670e",
+      "pgid": 3467770,
+      "pid": 3467770,
+      "seconds": 0.07347207516431808,
+      "startedUTC": "2026-11-26T06:08:54.701714+00:00",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "env",
+        "-json",
+        "GOVERSION",
+        "GOROOT",
+        "GOTOOLDIR",
+        "GOOS",
+        "GOARCH",
+        "CGO_ENABLED",
+        "CC",
+        "CXX",
+        "GOMODCACHE",
+        "GOCACHE",
+        "GOWORK"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt3/source/heart",
+      "exitCode": 0,
+      "groupState": "ABSENT_ESRCH",
+      "logSHA256": "20a64a0f26bbcaa359341f0be10d58bb6748187f27d5bfcf88c1bfadb09b2d58",
+      "pgid": 3467774,
+      "pid": 3467774,
+      "seconds": 0.01123194582760334,
+      "startedUTC": "2026-11-26T06:08:54.778104+00:00",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "list",
+        "-m",
+        "-json",
+        "all"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt3/source/heart",
+      "exitCode": 0,
+      "groupState": "ABSENT_ESRCH",
+      "logSHA256": "56b7348cdf3b3104ac24c507f43aa5686ae225f9e8d8ca1c7a04b52020c96518",
+      "pgid": 3467778,
+      "pid": 3467778,
+      "seconds": 1.9291778802871704,
+      "startedUTC": "2026-11-26T06:08:54.792347+00:00",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-tags=pinkha_loaded_account_witness,pinkha_cutover_acceptance",
+        "-o",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt3/cutover-real-core.test",
+        "./core"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt3/source/heart",
+      "exitCode": -15,
+      "groupState": "ABSENT_ESRCH",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pgid": 3467844,
+      "pid": 3467844,
+      "resourceFloor": true,
+      "seconds": 320.0862020980567,
+      "startedUTC": "2026-11-26T06:08:57.857508+00:00",
+      "status": "FAIL",
+      "timedOut": false
+    }
+  ],
+  "error": "RuntimeError: owned command failed: build",
+  "generatedRPC": false,
+  "goToolSHA256": "59c65090beeda377c09007eb8fae1c6aadf0a7b551e65ee13d461092d29e8005",
+  "nativeSliceBuilds": 0,
+  "peerTransport": false,
+  "requestedMethods": [
+    "TestPinkhaTorahCutoverActualCoreRegistryAndReopen"
+  ],
+  "resourceAdmission": {
+    "emergencyFreeBytes": 2147483648,
+    "estimateBasis": "Prior 291-second compile populated this existing cache and stopped at the excluded-LLVM dependency check. Estimate covers isolated source/library, changed local package compilation, temporary link output and actual test binary; it is not an observed peak.",
+    "estimatedIncrementalBytes": 1342177280,
+    "initialFreeBytes": 3933573120,
+    "parallelism": 1,
+    "priorFailedBuildReceiptSHA256": "5e2fa6f4d6b02f7a0991123cf0d95079dd785a7fd1d53a72ca88623fadb8f836",
+    "warmCache": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-store/attempt1/cache"
+  },
+  "scope": "actual LocalOnly core/account/private registry/native property and signed host qualification",
+  "sourceSHA256": "40dd49f7d75c1d11ba56e578bed1bd39946fa530d5a17c19647fd860b67dcb2f",
+  "sourceUnchanged": true,
+  "status": "FAIL"
+}
