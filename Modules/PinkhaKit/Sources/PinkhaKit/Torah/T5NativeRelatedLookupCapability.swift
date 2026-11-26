@@ -28,7 +28,7 @@ public enum T5NativeRelatedLookupCapability {
 
     /// Reviewed shipping source closure; execution is still gated by the host build.
     public static let unifiedRuntimeVersion =
-        "pinkha-dual-runtime-v1-11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b"
+        "pinkha-dual-runtime-v1-8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b"
 
     public static func resolve(
         enabledByBuild: Bool, runtimeVersion: String

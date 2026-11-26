@@ -1,0 +1,67 @@
+{
+  "applicationBuilds": 0,
+  "candidateSHA256": "009fd34c3fa9f1d4b3d11c8a656e088220fe1260d57a20f01ee3e1de2cd2cf05",
+  "fullInverseExact": true,
+  "nativeBuilds": 0,
+  "originalSHA256": "f9249a0238b32680f4f4d7ca58b9ab04da4de1c7ad30f4e4200214ab0b7e8aa2",
+  "protocol": "pinkha-permission-producer-source-delta-v1",
+  "status": "CANDIDATE_BLOCKED_ON_ORIGINAL_MIXED_PEER_RECEIPT",
+  "substitutions": [
+    {
+      "after": "\"\"\"Build the reviewed permission-boundary unified runtime with full version identity.\"\"\"",
+      "before": "\"\"\"Build the qualified immutable-record unified runtime for one Apple slice.\"\"\""
+    },
+    {
+      "after": "import native_gateway\nimport runtime_identity\n\nRUNTIME_IDENTITY_SHA = \"306c0cabcf39c6de55470d642cf5b9e6e9176d73351966330b90cf333b9359b0\"\n# Deliberately non-runnable until the original mixed-peer result is qualified.\nNATIVE_HTTP_QUALIFICATION_SHA = None\n",
+      "before": "import native_gateway\n"
+    },
+    {
+      "after": "MANIFEST_SHA = \"8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b\"",
+      "before": "MANIFEST_SHA = \"11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b\""
+    },
+    {
+      "after": "ARCHIVE_SHA = \"c70592e4ae160cbb5cb8eda3cb1caed08f727476a5c9fac7c207593cd9315830\"",
+      "before": "ARCHIVE_SHA = \"4e7a090e17b489536c7f7f72633010d8131b0f185d069b5ed3d05520eb13bb13\""
+    },
+    {
+      "after": "reference = Path(\"/Users/m1/development/anytype-d-active-20261125/native-immutable-retry1\")",
+      "before": "reference = Path(\"/Users/m1/development/anytype-d-active-20261125/native410b\")"
+    },
+    {
+      "after": "\"simulator\": (\"ios-arm64-simulator\", 350450240,\n                      \"9f64b4469e221cd27b04c0f46b7479cf1fb079b36fce8a26c0fd8b0521ecaf5e\"),\n        \"device\": (\"ios-arm64\", 350363584,\n                   \"539a8d5e1b888dddb423261002011db39b7ca7c15718ff4aaa7658ec18aaedaf\"),",
+      "before": "\"simulator\": (\"ios-arm64-simulator\", 349572792,\n                      \"48905b7312d7228fe88a60517ec90c1c23d73f2ada762877c05ace9752103342\"),\n        \"device\": (\"ios-arm64\", 349502520,\n                   \"cb22fa4733aa2021214f2fc84699ac137cf12cd37c63de0e02585ccd8308925f\"),"
+    },
+    {
+      "after": "reference = reference / (\"pinkha-dual-native-v1-11619a9928d6-\" + phase) / \"Lib.xcframework\" / platform_name / \"Lib.framework/Lib\"",
+      "before": "reference = reference / phase / \"Lib.xcframework\" / platform_name / \"Lib.framework/Lib\""
+    },
+    {
+      "after": "\"referenceProfile\": \"unified11619\"",
+      "before": "\"referenceProfile\": \"unified410b\""
+    },
+    {
+      "after": "and root.parent == Path(\"/Users/m1/development/anytype-d-active-20261125/native-permission8ac\")",
+      "before": "and root.parent == Path(\"/Users/m1/development/anytype-d-active-20261125/native-immutable-retry1\")"
+    },
+    {
+      "after": "manifest_path = Path(__file__).with_name(\"source-permission-manifest.json\")",
+      "before": "manifest_path = Path(__file__).with_name(\"source-immutable-manifest.json\")"
+    },
+    {
+      "after": "    manifest_bytes = manifest_path.read_bytes()\n    manifest = json.loads(manifest_bytes)\n    require(hashlib.sha256(manifest_bytes).hexdigest() == MANIFEST_SHA,\n            \"single_read_native_manifest_differs\")\n    require(digest(Path(runtime_identity.__file__)) == RUNTIME_IDENTITY_SHA,\n            \"reviewed_full_identity_helper_changed\")\n    runtime_contract = runtime_identity.identity(manifest_bytes, manifest[\"runtimeBuildDate\"])\n    require(isinstance(NATIVE_HTTP_QUALIFICATION_SHA, str)\n            and len(NATIVE_HTTP_QUALIFICATION_SHA) == 64,\n            \"actual_mixed_peer_result_not_yet_qualified\")\n    qualification_path = root / \"native-http-qualification.json\"\n    require(digest(qualification_path) == NATIVE_HTTP_QUALIFICATION_SHA,\n            \"original_native_http_qualification_changed\")\n    prior = None",
+      "before": "    manifest = json.loads(manifest_path.read_text())\n    prior = None"
+    },
+    {
+      "after": "\"slicePhase\": args.slice, \"commands\": [],\n               \"runtimeIdentity\": runtime_contract,\n               \"runtimeIdentityHelperSHA256\": RUNTIME_IDENTITY_SHA,\n               \"fullAnyRuntimeVersion\": runtime_contract[\"anyRuntimeVersion\"],\n               \"nativeHTTPQualificationSHA256\": NATIVE_HTTP_QUALIFICATION_SHA,",
+      "before": "\"slicePhase\": args.slice, \"commands\": [],"
+    },
+    {
+      "after": "        heart_version = runtime_contract[\"heartVersion\"]\n        any_version = runtime_contract[\"anyVersion\"]\n        flags = runtime_identity.linker_flags(runtime_contract)",
+      "before": "        heart_version = \"pinkha-dual-runtime-v1-\" + MANIFEST_SHA\n        any_version = \"v0.5.0-pinkha.dual.1-\" + MANIFEST_SHA\n        flags = \"-X github.com/anyproto/anytype-heart/util/vcs.GitSummary=\" + heart_version\n        flags += \" -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=\" + manifest[\"sourcePins\"][\"heart\"]\n        flags += \" -X github.com/anyproto/any/internal/version.Version=\" + any_version\n        flags += \" -X github.com/anyproto/any/internal/version.Commit=\" + manifest[\"sourcePins\"][\"any\"]\n        flags += \" -X github.com/anyproto/any/internal/version.BuildDate=2026-11-26\""
+    },
+    {
+      "after": "             \"-o\", output, *manifest[\"packages\"]], \"combined-gomobile-bind\", source, environment, 3600)\n        receipt[\"actualBindRuntimeIdentity\"] = runtime_identity.qualify_bind_command(\n            (evidence / \"combined-gomobile-bind.command.json\").read_bytes(),\n            manifest_bytes, runtime_contract, args.slice)\n        check_source(source, manifest, native_files)",
+      "before": "             \"-o\", output, *manifest[\"packages\"]], \"combined-gomobile-bind\", source, environment, 3600)\n        check_source(source, manifest, native_files)"
+    }
+  ]
+}
