@@ -3218,9 +3218,20 @@ extension NativeLaunchTests {
             let screen = app.descendants(matching: .any)
                 .matching(identifier: "pinkha.sharing.members").firstMatch
             waitUntilEnabled(screen, timeout: 30)
-            waitUntilEnabled(app.navigationBars.matching(labels([
+            // SwiftUI renders the navigation title as a static-text descendant;
+            // the enclosing navigation bar need not carry that title as its label.
+            let titles = app.navigationBars.staticTexts.matching(labels([
                 "חברים והזמנות", "Members and invitations"
-            ])).firstMatch, timeout: 30)
+            ]))
+            waitFor(NSPredicate { _, _ in
+                let visible = titles.allElementsBoundByIndex.filter {
+                    $0.exists && $0.isEnabled && $0.isHittable
+                }
+                return visible.count == 1
+            }, object: app, timeout: 30)
+            XCTAssertEqual(titles.allElementsBoundByIndex.filter {
+                $0.exists && $0.isEnabled && $0.isHittable
+            }.count, 1, "One visible localized members-and-invitations title is required.")
             assertOwner()
         }
         func assertInvitation(_ present: Bool) {
