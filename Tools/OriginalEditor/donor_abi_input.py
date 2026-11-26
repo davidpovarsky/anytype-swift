@@ -17,6 +17,8 @@ POLICY = "Tools/OriginalEditor/AnnotationExchange/abi_donor_policy.json"
 DONOR = "34b8a7c5ddb34e9287acdb5c189849eeac8cff86"
 FRESH_DONOR = "1f90175b006be0a19a4e1804f858caaf59d6c174"
 FRESH_POLICY = "Tools/OriginalEditor/MiniApps/abi_donor_1f90175b.json"
+WAVE1_DONOR = "75a98ba98d6455eefc2c98113fa744b0f3c2e7bf"
+WAVE1_POLICY = "Tools/OriginalEditor/Wave1/abi_donor_75a98ba.json"
 CLOSURE = ("Anytype/Sources", "Anytype/Resources", "Modules", "Dependencies/Middleware",
            "Tools/OriginalEditor/ABIPinnedWrapper", "Tools/OriginalEditor/GeneratedImport",
            "Tools/PinkhaNativeDerived",
@@ -26,6 +28,14 @@ FRESH_CLOSURE = CLOSURE + (
     "OriginalEditorFramework", "Tools/OriginalEditor/ImportRPC",
     "Tools/OriginalEditor/NativeRegeneration", "Tools/OriginalEditor/fresh_swift_input.py",
     "Tools/OriginalEditor/reused_abi_history.py", "Tools/OriginalEditor/import_abi_input.py",
+)
+
+# The Wave 1 facade changes application Swift only. Preserve exact original
+# native/generated/wrapper inputs and require a new complete SDK compilation.
+WAVE1_CLOSURE = CLOSURE + (
+    "Tools/OriginalEditor/ImportRPC", "Tools/OriginalEditor/NativeRegeneration",
+    "Tools/OriginalEditor/fresh_swift_input.py", "Tools/OriginalEditor/reused_abi_history.py",
+    "Tools/OriginalEditor/import_abi_input.py",
 )
 
 # A fresh interpreter imports only the original owner's unchanged verifiers.
@@ -52,14 +62,18 @@ def validate_policy(policy, binding):
     expected = {
         (POLICY, DONOR): ("otzaria.native-abi-donor-policy/1", CLOSURE),
         (FRESH_POLICY, FRESH_DONOR): ("otzaria.native-abi-donor-policy/2", FRESH_CLOSURE),
+        (WAVE1_POLICY, WAVE1_DONOR): ("otzaria.native-abi-donor-policy/3", WAVE1_CLOSURE),
     }
     key = (binding.get("path"), binding.get("source_sha"))
     require(key in expected, "Unreviewed exact native donor policy identity")
     schema, closure = expected[key]
+    receipt_roles = {"execution", "source_before", "abi", "debug_qualification"}
+    if key == (WAVE1_POLICY, WAVE1_DONOR):
+        receipt_roles.add("shared_runtime_ownership")
     require(policy.get("schema") == schema
             and policy.get("source_sha") == key[1]
             and set(policy.get("unchanged_git_inputs", {})) == set(closure)
-            and set(policy.get("receipts", {})) == {"execution", "source_before", "abi", "debug_qualification"}
+            and set(policy.get("receipts", {})) == receipt_roles
             and policy.get("native_tests_rerun") is False
             and policy.get("new_sdk_acceptance_granted") is False,
             "Unreviewed native ABI donor scope")
@@ -71,7 +85,7 @@ def read_policy(root):
     binding = profile.get("native_abi_donor", {})
     require(isinstance(binding, dict) and
             (binding.get("path"), binding.get("source_sha")) in {
-                (POLICY, DONOR), (FRESH_POLICY, FRESH_DONOR)},
+                (POLICY, DONOR), (FRESH_POLICY, FRESH_DONOR), (WAVE1_POLICY, WAVE1_DONOR)},
             "Unreviewed exact native donor policy binding")
     relative = binding["path"]
     path = root / relative
@@ -141,6 +155,18 @@ def verify(root, path, digest, source, value=None):
                     == {"en", "he"}
                 and len(qualification.get("verified_runtime_observations", [])) == 2,
                 "The fresh native ABI donor lost its exact schema3/compiler/runtime owner")
+    if donor_sha == WAVE1_DONOR:
+        ownership = json.loads((donor / policy["receipts"]["shared_runtime_ownership"]["path"]).read_bytes())
+        require(installation.get("schema") == "otzaria.original-saved-body-retained-abi/1"
+                and qualification.get("execution_identity") == before["execution_identity"]
+                and qualification.get("heart") == installation
+                and {row.get("language") for row in qualification.get("verified_runtime_observations", [])}
+                    == {"en", "he"}
+                and len(qualification.get("verified_runtime_observations", [])) == 2
+                and ownership.get("status") == "PASS_OBSERVED_SINGLE_SHARED_IMPLEMENTATIONS"
+                and ownership.get("original_qualification_sha256")
+                    == policy["receipts"]["debug_qualification"]["sha256"],
+                "Wave 1 ABI donor lost its original source, runtime or shared ownership proof")
     trees = policy["unchanged_git_inputs"]
     require(all(git(donor, "rev-parse", "HEAD:" + p) == expected
                 for p, expected in trees.items()),
@@ -153,6 +179,13 @@ def verify(root, path, digest, source, value=None):
     current_source = verify_generated_source(root, read_manifest())
     require(current_source == source["generated_import_source"],
             "Current source observation differs during native donor admission")
+    if donor_sha == WAVE1_DONOR:
+        wave1 = current_source["annotation_exchange"]["miniapps"]["lifecycle_batch"]["native_files"].get("wave1_product")
+        require(wave1 is not None and wave1.get("base_source") == WAVE1_DONOR
+                and wave1.get("native_acceptance_reused_by_this_document") is False
+                and wave1.get("sdk_compiler_and_runtime_acceptance")
+                    == "NOT_GRANTED_BY_SOURCE_OBSERVATION",
+                "Wave 1 native reuse requires exact separately admitted current product source")
     for relative, expected in trees.items():
         actual = git(root, "rev-parse", "HEAD:" + relative)
         if relative == "Anytype/Sources" and actual != expected:

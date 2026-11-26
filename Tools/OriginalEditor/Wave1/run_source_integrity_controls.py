@@ -51,6 +51,13 @@ def main():
     with tempfile.TemporaryDirectory(prefix="anytype-wave1-source-controls-") as temp:
         fixture = Path(temp) / "source"
         run("git", "-c", "gc.auto=0", "clone", "--shared", "--no-checkout", str(ROOT), str(fixture))
+        # A shared local clone retains original object bytes but Git may omit
+        # the producer's shallow boundary; preserve that exact metadata as well.
+        shallow = Path(run("git", "-C", str(ROOT), "rev-parse", "--git-path", "shallow"))
+        if not shallow.is_absolute():
+            shallow = ROOT / shallow
+        if shallow.exists():
+            (fixture / ".git/shallow").write_bytes(shallow.read_bytes())
         run("git", "sparse-checkout", "init", "--cone", cwd=fixture)
         run("git", "sparse-checkout", "set", "OriginalEditorFramework", "Tools/OriginalEditor", cwd=fixture)
         run("git", "checkout", cwd=fixture)
