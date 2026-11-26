@@ -1,0 +1,70 @@
+{
+  "at": "2026-11-26T23:19:17.358208+00:00",
+  "sourceSHA": "a089ff29a5c0a7e415aac800844505f099a5561d",
+  "review": [
+    {
+      "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+      "mappedBeforeBlob": "b77954bdc0f0b613fb3d7827d8fcd31fef8b305c",
+      "reviewedBlob": "90c9efb6b0d13604305115057486b66d60a602e5",
+      "lastSourceCommit": "2fbc3e1a4a0e4dfa2f20e49f5c649900632bf764",
+      "reason": "Retain the original focus methods and three additive presentation/layout/refusal methods. Current requirement is22 methods/34 parameter cases; prior21/32 source-bound pass does not qualify the final layout fix."
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Diagnostics/PinkhaStage1AcceptanceState.swift",
+      "mappedBeforeBlob": "4af9af99df35f9589f1e7235599650e3bc992d8b",
+      "reviewedBlob": "3bab6829c720cbb28a4cb26b7cd9936f5848d72d",
+      "lastSourceCommit": "4a8a6fbf3f8548849765094108974d20eca4661b",
+      "reason": "Passive scheduled/window/presentation counters and readiness description; no mutation or acceptance assertion weakened."
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Base/EditorViewListCell.swift",
+      "mappedBeforeBlob": "93678c2418fc43be33fba005124ae5e65e6e2968",
+      "reviewedBlob": "37bef812d5dd02c8eaf73a56956e373f4ef690fe",
+      "lastSourceCommit": "4a8a6fbf3f8548849765094108974d20eca4661b",
+      "reason": "Forward real collection display events only to configured descendant text rows sharing their owning collection/window and valid index path."
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift",
+      "mappedBeforeBlob": "59d2f357afb73c9623846aa52ff459e2ef381b16",
+      "reviewedBlob": "69fba4c0e3c08a5a5648daeda094ddbd53f41de3",
+      "lastSourceCommit": "2fbc3e1a4a0e4dfa2f20e49f5c649900632bf764",
+      "reason": "Deliver the existing current request after UIKit layout, retaining lifetime/cursor/window/visibility/editability checks. Mark native attempt once, forbid layout-driven native-refusal replay, retain original diagnostics."
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift",
+      "mappedBeforeBlob": "11e072c0af6ef3ab374722a35aff91eaaf08fb72",
+      "reviewedBlob": "9efd2f80d55832889bdc9e09c8b44368dba183e5",
+      "lastSourceCommit": "4a8a6fbf3f8548849765094108974d20eca4661b",
+      "reason": "Resume retained focus at original diffable completion before invoking unchanged completion; all original editor/MiniApps/Hanlin/semantic callbacks retained."
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift",
+      "mappedBeforeBlob": "cef465df7a93f8c29b23a0442a392e68cb7cf6a7",
+      "reviewedBlob": "0c6a5ff04ab075e4cd13793885e793e70cade516",
+      "lastSourceCommit": "fc007aadc15e8c215380521a8890c6bb73a37efc",
+      "reason": "Only11619 to exact source-qualified8ac native runtime identity changed; explicit host flag and foreign-runtime refusal unchanged."
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController+UICollectionViewDelegate.swift",
+      "mappedBeforeBlob": "cc44031ae130842fd5dbb5ee3c5b23577e5c28fb",
+      "reviewedBlob": "e5a02ebd4b1553196269512d61af47da7c78f16e",
+      "lastSourceCommit": "4a8a6fbf3f8548849765094108974d20eca4661b",
+      "reason": "Forward willDisplay to retained-focus handler in every build; keep semantic-anchor configuration under its original explicit build flags."
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/Interactions/TextViewAttributeSelectionInteraction.swift",
+      "mappedBeforeBlob": "a37551fe33ebd8025681faff4b02471877e78dd8",
+      "reviewedBlob": "4aeecbc42733ad469167efc7fbe6fed0f31ff5a4",
+      "lastSourceCommit": "a80f83ed2ae8cc3bc1100ab3c3bd741a1f3df331",
+      "reason": "Keep recognizer ownership across UIInteraction attach/detach, restrict first-touch participation to actual attributed rectangles, and order the link double tap before the same input public text/single-tap gestures. Original unlinked editing and parent scrolling remain outside this dependency."
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorCollectionView.swift",
+      "mappedBeforeBlob": "08da10f1ae8757bb72043bd51cef0402d732e6e4",
+      "reviewedBlob": "aaa5e75f959dcd8990859f23c9d2ec6c79932551",
+      "lastSourceCommit": "2fbc3e1a4a0e4dfa2f20e49f5c649900632bf764",
+      "reason": "Forward real layout and presentation events to visible configured cells only; row retains cursor ownership and asynchronously rechecks final geometry. Original collection behavior preserved."
+    }
+  ],
+  "status": "SOURCE_REVIEW_ONLY_NOT_RUNTIME_ACCEPTANCE"
+}
