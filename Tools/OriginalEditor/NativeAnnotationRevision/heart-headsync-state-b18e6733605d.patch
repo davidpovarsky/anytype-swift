@@ -1,0 +1,246 @@
+diff --git a/core/application/owned_annotation_import_native_test.go b/core/application/owned_annotation_import_native_test.go
+index 1c0a283..fb18686 100644
+--- a/core/application/owned_annotation_import_native_test.go
++++ b/core/application/owned_annotation_import_native_test.go
+@@ -1805,3 +1805,32 @@ func (f *ownedClosedFixture) actualCreatorCollision(t *testing.T, source *ownedC
+ 		t.Fatal("actual native creator collision was converted to existing-object success or mutation")
+ 	}
+ }
++
++func TestOtzariaOriginalInstalledAnnotationSchemaReadbackIsReadOnly(t *testing.T) {
++	f := newOwnedClosedFixture(t)
++	before, err := annotationschema.Observe(f.ctx, f.service, f.spc.Id())
++	ownedClosedNoError(t, err)
++	if before.Disposition != annotationschema.MatchingObserved {
++		t.Fatal("the original native schema was not ready")
++	}
++
++	actual, err := annotationschema.Register(f.ctx, f.service, f.accountID, f.spc.Id())
++	ownedClosedNoError(t, err)
++	if !actual.AppAdmitted || actual.Observation.Disposition != annotationschema.MatchingObserved ||
++		actual.TypeApplyInvoked || actual.TypeApplyReturned || len(actual.Creations) != 0 {
++		t.Fatal("observing the already installed original schema must not recreate or apply it")
++	}
++	if len(actual.Observation.Definitions) != len(before.Definitions) {
++		t.Fatal("readback did not retain every original definition")
++	}
++	for idx, expected := range before.Definitions {
++		got := actual.Observation.Definitions[idx]
++		if got.Native.ObjectID != expected.Native.ObjectID || got.Native.ACLID != expected.Native.ACLID ||
++			got.Native.ACLHead != expected.Native.ACLHead || got.Native.ArchiveID != expected.Native.ArchiveID ||
++			!slices.Equal(got.Native.ArchiveHeads, expected.Native.ArchiveHeads) ||
++			!slices.Equal(got.Native.PersistedHeads, expected.Native.PersistedHeads) ||
++			got.Index != annotationschema.IndexMatch {
++			t.Fatal("readback changed an original schema, archive, ACL or index")
++		}
++	}
++}
+diff --git a/core/block/object/objectcreator/fixed_schema_heads_sync_test.go b/core/block/object/objectcreator/fixed_schema_heads_sync_test.go
+new file mode 100644
+index 0000000..0068011
+--- /dev/null
++++ b/core/block/object/objectcreator/fixed_schema_heads_sync_test.go
+@@ -0,0 +1,56 @@
++package objectcreator
++
++import (
++	"context"
++	"path/filepath"
++	"testing"
++
++	anystore "github.com/anyproto/any-store"
++	"github.com/anyproto/any-store/anyenc"
++	"github.com/anyproto/any-sync/commonspace/headsync/statestorage"
++	"github.com/stretchr/testify/require"
++)
++
++func TestOriginalHeadsSyncHashCannotChangeFixedSchemaAuthority(t *testing.T) {
++	ctx := context.Background()
++	store, err := anystore.Open(ctx, filepath.Join(t.TempDir(), "space.db"), nil)
++	require.NoError(t, err)
++	t.Cleanup(func() { require.NoError(t, store.Close()) })
++	input := statestorage.State{
++		SpaceId: "space", AclId: "acl", SettingsId: "settings", SpaceHeader: []byte("original-header"),
++	}
++	native, err := statestorage.Create(ctx, input, store)
++	require.NoError(t, err)
++	states, err := store.OpenCollection(ctx, "state")
++	require.NoError(t, err)
++	snapshot := func() fixedSchemaStoredSpace {
++		doc, err := states.FindId(ctx, input.SpaceId)
++		require.NoError(t, err)
++		return fixedSchemaStoredSpace{stateBytes: doc.Value().MarshalTo(nil), settingsRootBytes: []byte("retained-settings-root")}
++	}
++
++	before := snapshot()
++	require.NoError(t, native.SetHash(ctx, "original-sync-head-one"))
++	first := snapshot()
++	require.NotEqual(t, before.stateBytes, first.stateBytes)
++	require.True(t, before.same(first), "the real initial hash write changes only original headsync metadata")
++	require.NoError(t, native.SetHash(ctx, "original-sync-head-two"))
++	last := snapshot()
++	require.NotEqual(t, first.stateBytes, last.stateBytes)
++	require.True(t, first.same(last), "the real hash refresh preserves every scope and persisted document field")
++
++	for _, key := range []string{"a", "s", "id", "e", "h", "unexpected", "oh"} {
++		t.Run(key, func(t *testing.T) {
++			var parser anyenc.Parser
++			value, err := parser.Parse(last.stateBytes)
++			require.NoError(t, err)
++			var arena anyenc.Arena
++			value.Set(key, arena.NewString("changed"))
++			changed := last
++			changed.stateBytes = value.MarshalTo(nil)
++			require.False(t, first.same(changed))
++		})
++	}
++	last.settingsRootBytes = []byte("changed-settings-root")
++	require.False(t, first.same(last))
++}
+diff --git a/core/block/object/objectcreator/fixed_schema_observer.go b/core/block/object/objectcreator/fixed_schema_observer.go
+index 29ede36..76dc1e0 100644
+--- a/core/block/object/objectcreator/fixed_schema_observer.go
++++ b/core/block/object/objectcreator/fixed_schema_observer.go
+@@ -164,9 +164,17 @@ func (s *service) ObserveFixedSchema(ctx context.Context, spc clientspace.Space,
+ 	if err != nil {
+ 		return result, fmt.Errorf("recheck original native scope: %w", err)
+ 	}
+-	if !scope.same(current) || !first.same(last) {
+-		result.Disposition = FixedSchemaChangedWhileReading
+-		return result, ErrFixedSchemaChanged
++	switch {
++	case !scope.same(current):
++		return result, fmt.Errorf("native schema scope changed: %w", ErrFixedSchemaChanged)
++	case !first.space.same(last.space):
++		return result, fmt.Errorf("native schema Space state changed: %w", ErrFixedSchemaChanged)
++	case !first.schema.same(last.schema):
++		return result, fmt.Errorf("native schema definition changed: %w", ErrFixedSchemaChanged)
++	case !first.archive.same(last.archive):
++		return result, fmt.Errorf("native schema archive snapshot changed: %w", ErrFixedSchemaChanged)
++	case !first.acl.same(last.acl):
++		return result, fmt.Errorf("native schema ACL snapshot changed: %w", ErrFixedSchemaChanged)
+ 	}
+ 	if err = ctx.Err(); err != nil {
+ 		return result, err
+diff --git a/core/block/object/objectcreator/fixed_schema_snapshot.go b/core/block/object/objectcreator/fixed_schema_snapshot.go
+index fc144b1..237ec79 100644
+--- a/core/block/object/objectcreator/fixed_schema_snapshot.go
++++ b/core/block/object/objectcreator/fixed_schema_snapshot.go
+@@ -73,8 +73,55 @@ type fixedSchemaStoredSpace struct {
+ }
+ 
+ func (s fixedSchemaStoredSpace) same(other fixedSchemaStoredSpace) bool {
+-	return bytes.Equal(s.stateBytes, other.stateBytes) &&
+-		bytes.Equal(s.settingsRootBytes, other.settingsRootBytes)
++	if !bytes.Equal(s.settingsRootBytes, other.settingsRootBytes) {
++		return false
++	}
++	return bytes.Equal(s.stateBytes, other.stateBytes) || sameSpaceStateAfterHeadSync(s.stateBytes, other.stateBytes)
++}
++
++// The original StateStorage.SetHash updates nh and its compatibility mirror oh
++// during headsync. These counters carry no Space, settings, ACL or schema
++// identity. Admit only that exact atomic update, retaining byte equality of
++// the entire remaining state row, including fields this reader does not know.
++func sameSpaceStateAfterHeadSync(before, after []byte) bool {
++	var beforeParser, afterParser anyenc.Parser
++	first, err := beforeParser.Parse(before)
++	if err != nil || first.Type() != anyenc.TypeObject {
++		return false
++	}
++	last, err := afterParser.Parse(after)
++	if err != nil || last.Type() != anyenc.TypeObject {
++		return false
++	}
++	previousHash, previousValid := mirroredHeadSyncHash(first)
++	currentHash, currentValid := mirroredHeadSyncHash(last)
++	if !previousValid || !currentValid || currentHash == "" || currentHash == previousHash {
++		return false
++	}
++	first.Del("nh")
++	first.Del("oh")
++	last.Del("nh")
++	last.Del("oh")
++	return bytes.Equal(first.MarshalTo(nil), last.MarshalTo(nil))
++}
++
++func mirroredHeadSyncHash(row *anyenc.Value) (string, bool) {
++	var fields int
++	row.GetObject().Visit(func(key []byte, _ *anyenc.Value) {
++		if string(key) == "nh" || string(key) == "oh" {
++			fields++
++		}
++	})
++	if fields == 0 {
++		// The original CreateTx initially writes neither hash key.
++		return "", true
++	}
++	current, mirror := row.Get("nh"), row.Get("oh")
++	if fields != 2 || current.Type() != anyenc.TypeString || mirror.Type() != anyenc.TypeString ||
++		row.GetString("nh") != row.GetString("oh") {
++		return "", false
++	}
++	return row.GetString("nh"), true
+ }
+ 
+ func (s *fixedSchemaSnapshot) readSpace() (result fixedSchemaStoredSpace, err error) {
+diff --git a/core/pinkha/annotationschema/observe.go b/core/pinkha/annotationschema/observe.go
+index 5b1bc8d..9aafe15 100644
+--- a/core/pinkha/annotationschema/observe.go
++++ b/core/pinkha/annotationschema/observe.go
+@@ -161,10 +161,9 @@ func Observe(ctx context.Context, runtime *application.Service, spaceID string)
+ 		if first == nil {
+ 			copy := native
+ 			first = &copy
+-		} else if native.ACLID != first.ACLID || native.ACLHead != first.ACLHead ||
+-			native.ArchiveID != first.ArchiveID || !sameHeads(native.ArchiveHeads, first.ArchiveHeads) {
++		} else if err = checkSharedSchemaObservation(*first, native); err != nil {
+ 			result.Disposition = Changed
+-			return result, objectcreator.ErrFixedSchemaChanged
++			return result, err
+ 		}
+ 		switch native.Disposition {
+ 		case objectcreator.FixedSchemaPersistedMatch:
+@@ -279,3 +278,13 @@ func sameHeads(a, b []string) bool {
+ 	slices.Sort(b)
+ 	return len(a) != 0 && slices.Equal(a, b)
+ }
++
++func checkSharedSchemaObservation(first, current objectcreator.FixedSchemaObservation) error {
++	if first.ACLID != current.ACLID || first.ACLHead != current.ACLHead {
++		return fmt.Errorf("annotation schema ACL changed between definitions: %w", objectcreator.ErrFixedSchemaChanged)
++	}
++	if first.ArchiveID != current.ArchiveID || !sameHeads(first.ArchiveHeads, current.ArchiveHeads) {
++		return fmt.Errorf("annotation schema archive changed between definitions: %w", objectcreator.ErrFixedSchemaChanged)
++	}
++	return nil
++}
+diff --git a/core/pinkha/annotationschema/register.go b/core/pinkha/annotationschema/register.go
+index 6e67b23..a9fe802 100644
+--- a/core/pinkha/annotationschema/register.go
++++ b/core/pinkha/annotationschema/register.go
+@@ -64,6 +64,11 @@ func Register(ctx context.Context, runtime *application.Service, expectedAccount
+ 		if err = registrationPreflight(result.Observation); err != nil {
+ 			return err
+ 		}
++		// The unchanged path already verified both native snapshots for each
++		// definition and performs no mutation between observations.
++		if result.Observation.Disposition == MatchingObserved {
++			return session.current()
++		}
+ 		// Install properties before the type. Every create still performs its
+ 		// own fresh native missing-root and current write-permission checks.
+ 		for step := 0; step < len(session.definitions); step++ {
+@@ -255,10 +260,9 @@ func (s *registrationSession) readbackOnce() (result Observation, err error) {
+ 		if first == nil {
+ 			copy := native
+ 			first = &copy
+-		} else if native.ACLID != first.ACLID || native.ACLHead != first.ACLHead || native.ArchiveID != first.ArchiveID ||
+-			!sameHeads(native.ArchiveHeads, first.ArchiveHeads) {
++		} else if err = checkSharedSchemaObservation(*first, native); err != nil {
+ 			result.Disposition = Changed
+-			return result, objectcreator.ErrFixedSchemaChanged
++			return result, err
+ 		}
+ 		index, indexErr := observeIndex(s.store, result.SpaceID, definition, native.ObjectID)
+ 		result.Definitions[position].Index = index
