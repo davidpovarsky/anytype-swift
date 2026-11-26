@@ -5,7 +5,8 @@ public enum AnyHeartNativeBundledDefinitionError: Error, Equatable, Sendable {
     case invalidBinding, invalidDescriptor, limit
 }
 
-/// The actual compiled native resolver entry captured alongside source objects.
+/// The actual compiled native resolver entry. Its containing capture or explicit
+/// recovered-source envelope supplies provenance; this value alone does not.
 /// This value is neither a native object/tree nor account/session authority.
 /// Raw protobuf and its generated JSON view remain separately hash-bound.
 public struct AnyHeartNativeBundledDefinition: Sendable {
