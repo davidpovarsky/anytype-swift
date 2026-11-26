@@ -345,10 +345,10 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                 metadata["heartSourceAddedDateContract"] = .string("pinkha-heart-source-added-date-seconds-v1")
             }
             if contentSelection != nil {
-                metadata["heartSourceFacts"] = .object([
-                    "contract": .string(AnyHeartNativeSourceFacts.contract),
-                    "dataset": .string(AnyHeartNativeSourceFacts.datasetKey),
-                ])
+                // Native definition metadata is a scalar map. The actual
+                // immutable Records declaration remains in the owned part.
+                metadata["heartSourceFactsContract"] = .string(AnyHeartNativeSourceFacts.contract)
+                metadata["heartSourceFactsDataset"] = .string(AnyHeartNativeSourceFacts.datasetKey)
             }
             items.append(.init(sourceKey: type.sourceKey, sourceObjectID: definition.objectID,
                 operation: .typeDefinition(.init(xKey: type.xKey, name: definition.name,
