@@ -239,6 +239,50 @@ public struct AnytypeOriginalEditorSnapshotCaptureFailure: Error {
     public let underlyingError: any Error
 }
 
+extension AnytypeOriginalEditorSnapshotCapture {
+    /// Callers must hold the original document's exclusive read admission.
+    static func exportNativeArchive(binding: AnytypeOriginalEditorBinding, transportOriginHostProfileID: String?,
+                                    directory: URL, maximumBodyBytes: Int) async throws -> Self {
+        let response = try await ClientCommands.objectListExport(.with {
+            $0.spaceID = binding.spaceID
+            $0.objectIds = [binding.objectID]
+            $0.path = directory.path
+            $0.format = .protobuf
+            $0.zip = true
+            $0.isJson = false
+            $0.includeFiles = true
+            $0.includeNested = true
+            $0.includeArchived = true
+            $0.includeBacklinks = false
+            $0.includeSpace = false
+            $0.noProgress = true
+            // No state filters or removeBlocks: original native closure.
+        }).invoke()
+        guard response.hasReport else {
+            throw AnytypeOriginalEditorSnapshotError.missingExportReport
+        }
+        let reportBytes = try response.report.serializedData()
+        try reportBytes.write(
+            to: directory.appendingPathComponent("native-export-report.pb"),
+            options: .withoutOverwriting
+        )
+        let archiveURL = URL(fileURLWithPath: response.path)
+        let archive = try OriginalEditorArchiveFiles.readArchive(
+            archiveURL, in: directory,
+            maximumBytes: min(maximumBodyBytes, OriginalAnnotationPayloadBudget.maximumArchiveBytes)
+        )
+        let snapshot = try AnytypeOriginalEditorSnapshot.frame(
+            archive: archive, reportBytes: reportBytes, responseCount: response.succeed,
+            binding: binding, maximumBodyBytes: maximumBodyBytes,
+            transportOriginHostProfileID: transportOriginHostProfileID
+        )
+        return AnytypeOriginalEditorSnapshotCapture(
+            snapshot: snapshot, retainedArchiveURL: archiveURL,
+            retainedDirectoryURL: directory
+        )
+    }
+}
+
 extension AnytypeOriginalEditorHost {
     /// Drain edits registered by the original UI, then capture while the same
     /// document Owner excludes new mutations. Success terminally retires this
@@ -259,43 +303,9 @@ extension AnytypeOriginalEditorHost {
                 contextId: capturedBinding.objectID, spaceId: capturedBinding.spaceID,
                 rpcNames: ["ObjectListExport"], retireOnSuccess: true
             ) {
-                let response = try await ClientCommands.objectListExport(.with {
-                    $0.spaceID = capturedBinding.spaceID
-                    $0.objectIds = [capturedBinding.objectID]
-                    $0.path = directory.path
-                    $0.format = .protobuf
-                    $0.zip = true
-                    $0.isJson = false
-                    $0.includeFiles = true
-                    $0.includeNested = true
-                    $0.includeArchived = true
-                    $0.includeBacklinks = false
-                    $0.includeSpace = false
-                    $0.noProgress = true
-                    // No state filters or removeBlocks: original native closure.
-                }).invoke()
-                guard response.hasReport else {
-                    throw AnytypeOriginalEditorSnapshotError.missingExportReport
-                }
-                let reportBytes = try response.report.serializedData()
-                try reportBytes.write(
-                    to: directory.appendingPathComponent("native-export-report.pb"),
-                    options: .withoutOverwriting
-                )
-                let archiveURL = URL(fileURLWithPath: response.path)
-                let archive = try OriginalEditorArchiveFiles.readArchive(
-                    archiveURL, in: directory,
-                    maximumBytes: min(maximumBodyBytes, OriginalAnnotationPayloadBudget.maximumArchiveBytes)
-                )
-                let snapshot = try AnytypeOriginalEditorSnapshot.frame(
-                    archive: archive, reportBytes: reportBytes, responseCount: response.succeed,
-                    binding: capturedBinding, maximumBodyBytes: maximumBodyBytes,
-                    transportOriginHostProfileID: capturedTransportOriginHostProfileID
-                )
-                return AnytypeOriginalEditorSnapshotCapture(
-                    snapshot: snapshot, retainedArchiveURL: archiveURL,
-                    retainedDirectoryURL: directory
-                )
+                try await AnytypeOriginalEditorSnapshotCapture.exportNativeArchive(
+                    binding: capturedBinding, transportOriginHostProfileID: capturedTransportOriginHostProfileID,
+                    directory: directory, maximumBodyBytes: maximumBodyBytes)
             }
             // Exclusive completion validated the result and retired this Owner
             // before releasing its barrier. Complete the terminal Host cleanup

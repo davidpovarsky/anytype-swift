@@ -50,12 +50,16 @@ internal struct OriginalAnnotationNativeArchiveComparison: Sendable {
     /// Exact bytes already validated in this original export. The ID comes from
     /// the native file block written/read back by the owning draft session.
     func fileData(objectID: String) throws -> Data {
+        try fileContent(objectID: objectID).data
+    }
+
+    func fileContent(objectID: String) throws -> (details: Google_Protobuf_Struct, data: Data) {
         guard let bytes = objects[objectID] else { throw Failure.missingFileBytes }
         let wire = try OriginalAnnotationNativeSnapshotWire(serializedBytes: bytes)
         guard wire.sbType == .fileObject, let body = wire.snapshot?.data,
               let path = Self.string(body.details, "source"),
               let data = files[Data(path.utf8)] else { throw Failure.missingFileBytes }
-        return data
+        return (body.details, data)
     }
 
     init(archiveBytes: Data, rootID: String, spaceID: String,
