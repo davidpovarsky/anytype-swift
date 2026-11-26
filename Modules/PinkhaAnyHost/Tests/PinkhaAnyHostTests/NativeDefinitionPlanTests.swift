@@ -1196,7 +1196,7 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertThrowsError(try mapper.admittedSchemaItems())
         XCTAssertEqual(AnyContentDigest.sha256(try bytes("manifest.json", under: directory)), bundle.manifestSHA256)
         } catch {
-            print("CURRENT_CONTENT_COMPONENT_FAILURE stage=\(currentContentStage) errorType=\(String(reflecting: type(of: error))) error=\(error)")
+            print("CURRENT_CONTENT_COMPONENT_FAILURE stage=\(currentContentStage) errorType=\(String(reflecting: Swift.type(of: error))) error=\(error)")
             throw error
         }
         print("NATIVE_CUSTOM_CAPTURE_DIAGNOSTIC snapshots=156 types=20 relations=126 options=4 source_method=FAIL destination_writes=false originals_unchanged=true")
