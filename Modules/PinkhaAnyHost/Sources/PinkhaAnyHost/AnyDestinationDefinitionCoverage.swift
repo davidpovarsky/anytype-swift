@@ -399,7 +399,10 @@ enum AnyDestinationDefinitionChecks {
                                          workspace: AnyTorahWorkspace,
                                          authorize: @escaping AnyDestinationAuthorization) async throws {
         let bindings = coverage.compactMap { item -> AnyDestinationCanonicalPropertyBinding? in
-            if case .canonicalProperty(let binding) = item.disposition { return binding }; return nil
+            switch item.disposition {
+            case .canonicalProperty(let binding), .preservedCanonicalProperty(let binding, _): return binding
+            default: return nil
+            }
         }
         guard !bindings.isEmpty else { return }
         for binding in bindings { try binding.validate() }
