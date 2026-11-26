@@ -6,6 +6,8 @@ import PinkhaAnyEngine
 /// never makes a field writable and never authorizes a native mutation.
 public struct AnyNativeImportedTypePresentation: Sendable {
     public static let contract = "pinkha-heart-native-type-presentation-v2"
+    public static let bookmarkContract = "pinkha-heart-native-bookmark-presentation-v1"
+    public let sourceURLKey: AnyNativePropertyKey?
     public let orderedKeys: [AnyNativePropertyKey]
     public let defaultHiddenKeys: Set<String>
 
@@ -13,12 +15,17 @@ public struct AnyNativeImportedTypePresentation: Sendable {
                  collectionIDs: [String], definitions: [AnyNativePropertyDefinition],
                  raw: AnyJSON) throws {
         guard let type, let descriptor = type.raw["layout"]?["config"]?["pinkhaHeart"] else { return nil }
-        guard descriptor["contract"]?.string == Self.contract, type.documentEligible, !type.builtIn,
-              type.raw["layout"]?["type"] == .string("page"),
-              descriptor["sourceRecommendedLayout"] == .integer(0),
+        let isBasic = descriptor["contract"]?.string == Self.contract
+        let isBookmark = descriptor["contract"]?.string == Self.bookmarkContract
+        let commonFields: Set<String> = ["contract", "sourceRecommendedLayout", "propertyOwnerId",
+                                         "recommended", "featured", "hidden", "files", "definitionHidden"]
+        guard type.documentEligible, !type.builtIn,
+              (isBasic && type.raw["layout"]?["type"] == .string("page") &&
+                  descriptor["sourceRecommendedLayout"] == .integer(0)) ||
+              (isBookmark && type.raw["layout"]?["type"] == .string("bookmark") &&
+                  descriptor["sourceRecommendedLayout"] == .integer(11)),
               let fields = descriptor.object,
-              Set(fields.keys).isSubset(of: ["contract", "sourceRecommendedLayout", "propertyOwnerId",
-                                             "recommended", "featured", "hidden", "files", "definitionHidden"]),
+              Set(fields.keys).isSubset(of: commonFields.union(isBookmark ? ["sourceURL"] : [])),
               definitions.count <= 4096,
               Set(definitions.map(\.key)).count == definitions.count else {
             throw AnyNativePropertyError.invalidCatalog
@@ -72,6 +79,21 @@ public struct AnyNativeImportedTypePresentation: Sendable {
         let featured = try addresses("featured"), recommended = try addresses("recommended")
         let hidden = try addresses("hidden"), files = try addresses("files")
         let definitionHidden = try addresses("definitionHidden", optional: true)
+        if isBookmark {
+            guard let propertyOwner, let pair = descriptor["sourceURL"]?.object,
+                  Set(pair.keys) == ["ownerId", "propertyId"],
+                  pair["ownerId"]?.string == propertyOwner,
+                  let property = pair["propertyId"]?.string,
+                  let key = try? AnyNativePropertyKey(ownerID: propertyOwner, propertyID: property),
+                  Set(featured + recommended).contains(key),
+                  let definition = byKey[key], definition.kind == .string,
+                  definition.scope == "synced", definition.xFormat?["type"] == .string("url") else {
+                throw AnyNativePropertyError.invalidCatalog
+            }
+            sourceURLKey = key
+        } else {
+            sourceURLKey = nil
+        }
         var seen = Set<AnyNativePropertyKey>(), ordered: [AnyNativePropertyKey] = []
         for key in featured + recommended + files + hidden where seen.insert(key).inserted { ordered.append(key) }
         let shownByType = Set(featured + recommended + files)
