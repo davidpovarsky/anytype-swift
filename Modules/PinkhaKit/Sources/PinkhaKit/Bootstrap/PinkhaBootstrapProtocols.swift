@@ -1,6 +1,6 @@
 import Foundation
 
-public enum PinkhaBootstrapError: Error, Equatable, Sendable {
+public enum PinkhaBootstrapError: Error, Equatable, Sendable, LocalizedError {
     case disabled
     case propertyCreationFailed(String)
     case typeCreationFailed(String)
@@ -8,6 +8,19 @@ public enum PinkhaBootstrapError: Error, Equatable, Sendable {
     case manifestStoreError(String)
     case migrationError(PinkhaSchemaMigrationError)
     case invalidManifest(String)
+
+    public var errorDescription: String? {
+        switch self {
+        case .disabled:
+            return "Pinkha bootstrap is disabled."
+        case .propertyCreationFailed(let reason), .typeCreationFailed(let reason),
+             .templateCreationFailed(let reason), .manifestStoreError(let reason),
+             .invalidManifest(let reason):
+            return reason
+        case .migrationError(let error):
+            return error.localizedDescription
+        }
+    }
 }
 
 public enum PinkhaSpaceBootstrapState: Equatable, Sendable {
@@ -17,9 +30,18 @@ public enum PinkhaSpaceBootstrapState: Equatable, Sendable {
     case failed(String)
 }
 
-public enum PinkhaSchemaMigrationError: Error, Equatable, Sendable {
+public enum PinkhaSchemaMigrationError: Error, Equatable, Sendable, LocalizedError {
     case unsupportedVersion(Int)
     case migrationFailed(String)
+
+    public var errorDescription: String? {
+        switch self {
+        case .unsupportedVersion(let version):
+            return "Unsupported Pinkha schema version: \(version)."
+        case .migrationFailed(let reason):
+            return reason
+        }
+    }
 }
 
 public protocol PinkhaSpaceManifestStoreProtocol: Sendable {

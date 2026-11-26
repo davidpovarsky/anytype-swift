@@ -87,6 +87,7 @@ public final class PinkhaSpaceBootstrapEngine: PinkhaSpaceBootstrapEngineProtoco
         do {
             loadedManifest = try await store.loadManifest(spaceId: spaceId)
         } catch {
+            NSLog("OriginalAnytypeBootstrapFailure stage=loadManifest error=%@", String(reflecting: error))
             throw PinkhaBootstrapError.manifestStoreError("Failed to load manifest: \(error.localizedDescription)")
         }
 

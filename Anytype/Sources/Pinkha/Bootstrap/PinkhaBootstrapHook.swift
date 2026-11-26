@@ -16,6 +16,7 @@ public enum PinkhaBootstrapHook {
             } catch PinkhaBootstrapAdmissionError.accountClosed {
                 stateManager.setState(.uninitialized, for: spaceId, claim: claim)
             } catch {
+                NSLog("OriginalAnytypeBootstrapFailure stage=activation error=%@", String(reflecting: error))
                 stateManager.setState(.failed(error.localizedDescription), for: spaceId, claim: claim)
             }
         }
