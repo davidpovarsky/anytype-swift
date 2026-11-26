@@ -19,7 +19,12 @@ final class AnyDestinationNativeSourcePreservationTests: XCTestCase, @unchecked 
             throw XCTSkip("Requires the pinned native preservation controller and original historical source.")
         }
         let fixture = try JSONDecoder().decode(AnyJSON.self, from: Data(contentsOf: URL(fileURLWithPath: fixturePath)))
-        try require(fixture["binarySHA256"] == .string("8df7897ee6f45cdcef28c42fe025ad6f69062f15db779a660660cdc4016b00f7"))
+        if fixture["nativePlatform"] == .string("linux-arm64") {
+            try require(fixture["binarySHA256"] == .string("1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636"))
+        } else {
+            try require(fixture["nativePlatform"] == nil)
+            try require(fixture["binarySHA256"] == .string("8df7897ee6f45cdcef28c42fe025ad6f69062f15db779a660660cdc4016b00f7"))
+        }
         try require(fixture["sourceManifestSHA256"] == .string("12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c"))
         try require(fixture["phase"] == .string(phase == "execute" ? "execute" : "cold-offline"))
         let account = try XCTUnwrap(fixture["accountID"]?.string), space = try XCTUnwrap(fixture["spaceID"]?.string)
