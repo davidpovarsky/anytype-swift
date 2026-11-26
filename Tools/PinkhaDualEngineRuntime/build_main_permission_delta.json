@@ -1,0 +1,245 @@
+{
+  "actualStagingReceiptSHA256": "dc0617be03813129b76a09a347c15f835611e6520f4f261825abacab16a71781",
+  "builds": 0,
+  "candidateSHA256": "617b163951a9692909bef38a4991ded8c53e8c21ad9278a9564222fce1a57a68",
+  "changes": [
+    {
+      "count": 1,
+      "new": "import pathlib,os,subprocess,json,time,hashlib,signal,shutil,traceback,ast,re,sys,importlib.util,xml.etree.ElementTree as ET",
+      "newPositions": [
+        0
+      ],
+      "old": "import pathlib,os,subprocess,json,time,hashlib,signal,shutil,traceback,ast,re,sys,xml.etree.ElementTree as ET"
+    },
+    {
+      "count": 1,
+      "new": "ROOT=pathlib.Path(\"/Users/m1/development/anytype-d-active-20261125/main15\")\nSOURCE=ROOT.parent/\"main14/source\"\nAPP_DERIVED=ROOT.parent/\"main14/app-derived\"\nEVIDENCE=ROOT/\"build15\"",
+      "newPositions": [
+        125
+      ],
+      "old": "ROOT=pathlib.Path(\"/Users/m1/development/anytype-d-active-20261125/main14\")\nSOURCE=ROOT/\"source\"\nEVIDENCE=ROOT/\"build14\""
+    },
+    {
+      "count": 1,
+      "new": "assert EXPECTED==\"379ca3568f247d2fc218ed63df24796d461713c0\"",
+      "newPositions": [
+        326
+      ],
+      "old": "assert re.fullmatch(r\"[0-9a-f]{40}\",EXPECTED)"
+    },
+    {
+      "count": 1,
+      "new": "PHASE_GROWTH={\"app\":int(3*1024**3),\"ui\":int(1*1024**3)}\nCONCURRENT_GROWTH=512*1024**2\nLIFECYCLE=None",
+      "newPositions": [
+        402
+      ],
+      "old": "PHASE_GROWTH={\"app\":int(24*1024**3),\"ui\":int(1*1024**3)}"
+    },
+    {
+      "count": 1,
+      "new": " if minfree<FLOOR+PHASE_GROWTH[name]+CONCURRENT_GROWTH:raise RuntimeError(\"Warm phase allowance, concurrent growth and 2 GiB emergency floor are unavailable\")",
+      "newPositions": [
+        2015
+      ],
+      "old": " if minfree<FLOOR+PHASE_GROWTH[name]:raise RuntimeError(\"Measured phase growth allowance plus 2 GiB emergency floor is unavailable\")"
+    },
+    {
+      "count": 1,
+      "new": "\"jobs\":4,\"cleanupErrors\":[],\"termination\":[],\"environment\":",
+      "newPositions": [
+        2519
+      ],
+      "old": "\"jobs\":4,\"environment\":"
+    },
+    {
+      "count": 1,
+      "new": "    LIFECYCLE._terminate_owned_process(p,result)",
+      "newPositions": [
+        2999
+      ],
+      "old": "    try:os.killpg(p.pid,signal.SIGTERM)\n    except ProcessLookupError:pass\n    try:p.wait(timeout=15)\n    except subprocess.TimeoutExpired:\n     try:os.killpg(p.pid,signal.SIGKILL)\n     except ProcessLookupError:pass\n     p.wait()"
+    },
+    {
+      "count": 1,
+      "new": "  try:code=p.wait(timeout=1)\n  except BaseException as exc:code=None;result[\"cleanupErrors\"].append({\"phase\":\"final-owned-wait\",\"type\":type(exc).__name__,\"reason\":str(exc)})",
+      "newPositions": [
+        3214
+      ],
+      "old": "  code=p.wait()"
+    },
+    {
+      "count": 1,
+      "new": " # Original exit and log evidence is persisted before bounded read-only observation.\n write(d/\"process-exit.json\",result)\n observed=LIFECYCLE._observe_exited_group(p.pid)\n result[\"ownedProcessGroup\"]=observed[\"status\"]\n result[\"ownedGroupObservations\"]=observed[\"observations\"]\n result[\"processExitReceiptSHA256\"]=sha(d/\"process-exit.json\")",
+      "newPositions": [
+        3654
+      ],
+      "old": " try:os.killpg(p.pid,0);result[\"ownedProcessGroup\"]=\"STILL_PRESENT\"\n except ProcessLookupError:result[\"ownedProcessGroup\"]=\"ABSENT_ESRCH\"\n except PermissionError as exc:result[\"ownedProcessGroup\"]=\"UNRESOLVED_PERMISSION_DENIED\";result[\"groupObservationError\"]={\"type\":type(exc).__name__,\"reason\":str(exc)}"
+    },
+    {
+      "count": 1,
+      "new": " if code!=0 or stop or result[\"cleanupErrors\"]:raise RuntimeError(name+\" \"+result[\"status\"])",
+      "newPositions": [
+        4063
+      ],
+      "old": " if code or stop:raise RuntimeError(name+\" \"+result[\"status\"])"
+    },
+    {
+      "count": 1,
+      "new": "\ndef verify_runtime_identity(stage):\n helper=SOURCE/\"Tools/PinkhaDualEngineRuntime/runtime_identity.py\"\n assert sha(helper)==\"306c0cabcf39c6de55470d642cf5b9e6e9176d73351966330b90cf333b9359b0\"\n spec=importlib.util.spec_from_file_location(\"app15_exact_runtime_identity\",helper)\n runtime=importlib.util.module_from_spec(spec);spec.loader.exec_module(runtime)\n manifest=(SOURCE/\"Tools/PinkhaDualEngineRuntime/source-permission-manifest.json\").read_bytes()\n assert hashlib.sha256(manifest).hexdigest()==\"8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b\"\n inputs={}\n pins={\n  \"simulator\":(\"946fe141ee4fa1c1fa8ceafc9060d9d9eedb0d546360140eadaf5ecf1f264f9b\",\"efb1df9248d52f4ff69eb08e9a1ce9eeaed58b3b746960d86907fe7fc85fd903\"),\n  \"device\":(\"c5237b26fe0a1ab7fe3c373aed50a34a0a6f65c306ed47918b4e4b54a9245208\",\"fc251187ea1be539d41501da7b4e00ae2a249662684c1a5c6069235dacaee546\")}\n for kind,(receipt_sha,command_sha) in pins.items():\n  base=ROOT/\"native-materialization-8ac\"/kind\n  values={key:(base/name).read_bytes() for key,name in ((\"receipt\",\"receipt.json\"),(\"command\",\"combined-gomobile-bind.command.json\"),(\"log\",\"combined-gomobile-bind.log\"))}\n  receipt=json.loads(values[\"receipt\"]);command=json.loads(values[\"command\"])\n  assert [row for row in receipt[\"commands\"] if row[\"name\"]==\"combined-gomobile-bind\"]==[command]\n  inputs[kind]=dict(values,expectedReceiptSHA256=receipt_sha,expectedCommandSHA256=command_sha)\n result=runtime.qualify_application(manifest,\"2026-11-26\",(SOURCE/\"Modules/ProtobufMessages/Sources/PinkhaAnyEmbeddedBridge.swift\").read_bytes(),inputs)\n assembly=ROOT/\"native-materialization-8ac/receipt.json\"\n assert sha(assembly)==\"c9c90e3a12868bcedf5f0a4f116c4dc1c388bdcddd0e9f0170c047684c500231\"\n original=json.loads(assembly.read_bytes())\n assert original[\"status\"]==\"PASS_ASSEMBLED_TWO_QUALIFIED_SLICES_NOT_APP_ACCEPTANCE\" and result[\"identity\"]==original[\"runtimeIdentity\"]\n for kind,identifier in ((\"simulator\",\"ios-arm64-simulator\"),(\"device\",\"ios-arm64\")):\n  binary=SOURCE/\"Dependencies/Middleware/Lib.xcframework\"/identifier/\"Lib.framework/Lib\"\n  assert sha(binary)==result[\"slices\"][kind][\"binarySHA256\"]==original[\"inputs\"][kind][\"binarySHA256\"]\n  assert binary.stat().st_size==result[\"slices\"][kind][\"binaryBytes\"]==original[\"inputs\"][kind][\"binaryBytes\"]\n write(EVIDENCE/(\"runtime-identity-\"+stage+\".json\"),result)\n return result\n\ndef verify_new_test_compiler_inputs():\n required=[SOURCE/\"AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift\",\n           SOURCE/\"AnyTypeTests/Pinkha/TextViewLinkGestureArbitrationTests.swift\"]\n lists=[p for p in (APP_DERIVED/\"Build/Intermediates.noindex\").rglob(\"*SwiftFileList\")\n        if \"AnytypeTests.build\" in p.parts and p.is_file()]\n matched=[]\n for path in lists:\n  data=path.read_text()\n  if all(str(item) in data for item in required):\n   matched.append({\"path\":str(path),\"sha256\":sha(path)})\n assert matched,\"The actual AnytypeTests compiler input list must contain both new UIKit test sources\"\n write(EVIDENCE/\"new-uikit-compiler-inputs.json\",{\"status\":\"PASS_ACTUAL_COMPILED_TEST_SOURCE_INPUTS_NOT_TEST_EXECUTION\",\n       \"sourceFiles\":[{\"path\":str(p.relative_to(SOURCE)),\"sha256\":sha(p)} for p in required],\n       \"actualCompilerFileLists\":matched,\"testsExecuted\":0})\n\ndef verify_dependencies(stage):",
+      "newPositions": [
+        4286
+      ],
+      "old": "\ndef verify_dependencies(stage):"
+    },
+    {
+      "count": 1,
+      "new": "ROOT/\"native-materialization-8ac/framework-files.json\"",
+      "newPositions": [
+        7594
+      ],
+      "old": "ROOT/\"native-materialization-11619/framework-files.json\""
+    },
+    {
+      "count": 1,
+      "new": "\"fa999a27c00bfb572cf91ddd65b30e1b7618827c75631f0ee0546748c83f7dbf\"",
+      "newPositions": [
+        7678
+      ],
+      "old": "\"c745a177f7d4239d31484a1a287db3debe016ec2e6064b78c5b13d8ae280817b\""
+    },
+    {
+      "count": 1,
+      "new": " assert actual==expected,\"Native framework bytes changed\"\n verify_runtime_identity(stage)",
+      "newPositions": [
+        8074
+      ],
+      "old": " assert actual==expected,\"Native framework bytes changed\""
+    },
+    {
+      "count": 1,
+      "new": " EVIDENCE.mkdir(exist_ok=False)\n core_path=ROOT/\"source-inputs379/combined_heart_semantics_owned_outcomes.py\"\n assert sha(core_path)==\"73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a\"\n core_spec=importlib.util.spec_from_file_location(\"app15_original_owned_outcomes\",core_path)\n core=importlib.util.module_from_spec(core_spec);core_spec.loader.exec_module(core)\n LIFECYCLE=core.Commands(EVIDENCE/\"owned-builder-lifecycle\",SOURCE)\n staging=json.loads((ROOT/\"source-staging1/receipt.json\").read_bytes())\n assert staging[\"status\"]==\"PASS_EXACT_APP15_SOURCE_AND_NATIVE_MATERIALIZED_ORIGINALS_RETAINED\" and staging[\"sourceCommit\"]==EXPECTED\n assert staging[\"sourceRoot\"]==str(SOURCE) and staging[\"appDerived\"]==str(APP_DERIVED)\n before=source_state()",
+      "newPositions": [
+        8760
+      ],
+      "old": " EVIDENCE.mkdir(exist_ok=False)\n before=source_state()"
+    },
+    {
+      "count": 1,
+      "new": "ROOT/\"native-materialization-8ac/receipt.json\"",
+      "newPositions": [
+        9685
+      ],
+      "old": "ROOT/\"native-materialization-11619/receipt.json\""
+    },
+    {
+      "count": 1,
+      "new": "\"c9c90e3a12868bcedf5f0a4f116c4dc1c388bdcddd0e9f0170c047684c500231\"",
+      "newPositions": [
+        9755
+      ],
+      "old": "\"a27b5f2f955d85b31157d7aedf7733e7d32e0acdac59920c0bd142ed304484bd\""
+    },
+    {
+      "count": 1,
+      "new": "\"f94079de9eeb9e2e869f02bd1dda93fcd272e3191b2417ca4b4657cae5dc6763\"",
+      "newPositions": [
+        10363
+      ],
+      "old": "\"9f64b4469e221cd27b04c0f46b7479cf1fb079b36fce8a26c0fd8b0521ecaf5e\""
+    },
+    {
+      "count": 1,
+      "new": "APP_DERIVED/\"Build/Products\"",
+      "newPositions": [
+        10794
+      ],
+      "old": "ROOT/\"app-derived/Build/Products\""
+    },
+    {
+      "count": 1,
+      "new": "APP_DERIVED/\"Build/Intermediates.noindex\"",
+      "newPositions": [
+        10828
+      ],
+      "old": "ROOT/\"app-derived/Build/Intermediates.noindex\""
+    },
+    {
+      "count": 1,
+      "new": "\"Measured 16 GiB/10 CPU host. This is the sole Pinkha main compiler, reusing the released existing physical source, DerivedData, SourcePackages and module-cache paths. Original App14 source and complete Products were separately preserved byte/mode/link exactly before update. Four jobs retain the prior qualified scheduling; measured phase admission and a live 2 GiB own-process floor remain explicit.\"",
+      "newPositions": [
+        10927
+      ],
+      "old": "\"Measured 16 GiB/10 CPU host; actual free bytes and phase growth admission are recorded in this receipt. This is the sole Pinkha main compiler; other owners use isolated sources. Four jobs use an isolated APFS clone of retained Products and SDK precompiled modules. Original Intermediates and SourcePackages are absent, so source dependencies and intermediates must be recreated. A 2 GiB owned-process emergency floor and original process/memory samples are retained.\""
+    },
+    {
+      "count": 1,
+      "new": "\"Previous global samples include unrelated activity. Actual main14 retains the complete warm physical compiler and package paths. The 3 GiB App allowance covers changed local-module intermediates and relinked products; it is an estimate, not an observed peak. UI has 1 GiB, concurrent unrelated growth has 512 MiB, and the original live emergency floor remains 2 GiB. Current original-workspace preservation receipt is separately pinned in the staging input.\"",
+      "newPositions": [
+        11484
+      ],
+      "old": "\"Previous global samples include unrelated activity. Actual main13 inventory has no Intermediates or SourcePackages. The 24 GiB App allowance budgets source dependency materialization, cold compiler intermediates, products, and margin; this is an estimate, not an observed peak. UI has a separate 1 GiB allowance; the live emergency floor remains 2 GiB.\""
+    },
+    {
+      "count": 1,
+      "new": "\"nativeSourceManifestSHA256\":\"8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b\",\"stagingReceiptSHA256\":sha(ROOT/\"source-staging1/receipt.json\"),\"sourceRoot\":str(SOURCE),\"appDerived\":str(APP_DERIVED),\"concurrentGrowthAllowanceBytes\":CONCURRENT_GROWTH",
+      "newPositions": [
+        12023
+      ],
+      "old": "\"nativeSourceManifestSHA256\":\"11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b\""
+    },
+    {
+      "count": 1,
+      "new": "str(APP_DERIVED),\"-clonedSourcePackagesDirPath\",str(APP_DERIVED/\"SourcePackages\")",
+      "newPositions": [
+        12801
+      ],
+      "old": "str(ROOT/\"app-derived\"),\"-clonedSourcePackagesDirPath\",str(ROOT/\"app-derived/SourcePackages\")"
+    },
+    {
+      "count": 1,
+      "new": " appresult=run_phase(\"app\",app)\n verify_new_test_compiler_inputs()",
+      "newPositions": [
+        13033
+      ],
+      "old": " appresult=run_phase(\"app\",app)"
+    },
+    {
+      "count": 1,
+      "new": " ui_source=ROOT/\"ui-source-build15\";ui_source.mkdir()",
+      "newPositions": [
+        13309
+      ],
+      "old": " ui_source=ROOT/\"ui-source-build14\";ui_source.mkdir()"
+    },
+    {
+      "count": 1,
+      "new": " helper=SOURCE/\"Tools/PinkhaNativeDerived/rerun_original_ui.py\"\n assert sha(helper)==\"7bf69636b42875aa7dd0fa39c11393e02e6760ef502cf68ef47b740f3bd066c0\"\n assert sha(SOURCE/\"PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift\")==\"8834541f5a47da80b460ecb96b20c930813b743d94f285fc1efba8a93f65ee4d\"",
+      "newPositions": [
+        13652
+      ],
+      "old": " helper=SOURCE/\"Tools/PinkhaNativeDerived/rerun_original_ui.py\""
+    },
+    {
+      "count": 2,
+      "new": "  base=(APP_DERIVED if kind==\"app-derived\" else ROOT/kind)/\"Build/Products\"",
+      "newPositions": [
+        14984,
+        15452
+      ],
+      "old": "  base=ROOT/kind/\"Build/Products\""
+    },
+    {
+      "count": 1,
+      "new": " assert sha(ROOT/\"source-staging1/receipt.json\")==\"dc0617be03813129b76a09a347c15f835611e6520f4f261825abacab16a71781\"\n staging=json.loads((ROOT/\"source-staging1/receipt.json\").read_bytes())",
+      "newPositions": [
+        9206
+      ],
+      "old": " staging=json.loads((ROOT/\"source-staging1/receipt.json\").read_bytes())"
+    }
+  ],
+  "inverseRestoresEveryOriginalByte": true,
+  "originalSHA256": "850de05de95f4ddeeef5349781f4ea7c4b72f85a42186b0e448c769e8afd43db",
+  "priorMetadataQualification": "job_7cf6f677cd15 failed before source write or compiler: duplicate new-token occurrence; exact position-bound inverse now required",
+  "protocol": "App15-original-main-builder-byte-inverse-v1",
+  "tests": 0
+}
