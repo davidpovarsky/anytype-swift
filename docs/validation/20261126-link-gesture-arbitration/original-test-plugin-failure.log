@@ -1,0 +1,811 @@
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:7:8: error: external macro implementation type 'TestingMacros.SuiteDeclarationMacro' could not be found for macro 'Suite'; plugin for module 'TestingMacros' not found
+  5 | @Suite("Native link selection gesture ownership", .serialized)
+  6 | @MainActor
+  7 | struct TextViewLinkGestureArbitrationTests {
+    |        `- error: external macro implementation type 'TestingMacros.SuiteDeclarationMacro' could not be found for macro 'Suite'; plugin for module 'TestingMacros' not found
+  8 |     @Test("The exact input single tap waits for link double-tap selection")
+  9 |     func sameInputSingleTapDefersToLinkSelection() throws {
+
+Testing.Suite:1:30: note: 'Suite' declared here
+1 | @attached(peer) public macro Suite(_ displayName: _const String? = nil, _ traits: any SuiteTrait...) = #externalMacro(module: "TestingMacros", type: "SuiteDeclarationMacro")
+  |                              `- note: 'Suite' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:9:10: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+  7 | struct TextViewLinkGestureArbitrationTests {
+  8 |     @Test("The exact input single tap waits for link double-tap selection")
+  9 |     func sameInputSingleTapDefersToLinkSelection() throws {
+    |          `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 10 |         let fixture = try LinkGestureFixture()
+ 11 |         let single = UITapGestureRecognizer()
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:20:10: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 18 | 
+ 19 |     @Test("Other inputs, parent scrolling and unrelated gestures keep their own policy")
+ 20 |     func foreignAndUnrelatedGesturesRemainIndependent() throws {
+    |          `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 21 |         let fixture = try LinkGestureFixture()
+ 22 |         let parent = UIView()
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:47:10: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 45 | 
+ 46 |     @Test("Native text-interaction failure requirements belong only to the same text input")
+ 47 |     func nativeTextInteractionUsesPublicOwnership() throws {
+    |          `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 48 |         let fixture = try LinkGestureFixture()
+ 49 |         let native = UITextInteraction(for: .nonEditable)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:65:10: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 63 | 
+ 64 |     @Test("Removing and reattaching the interaction retires its exact old recognizer")
+ 65 |     func removalAndReattachmentRetirePriorRecognizer() throws {
+    |          `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 66 |         let fixture = try LinkGestureFixture()
+ 67 |         let single = UITapGestureRecognizer()
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:82:10: error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 80 | 
+ 81 |     @Test("Mention and object single-tap interactions do not acquire link-selection priority")
+ 82 |     func singleTapAttributeHandlersRemainIndependent() throws {
+    |          `- error: external macro implementation type 'TestingMacros.TestDeclarationMacro' could not be found for macro 'Test'; plugin for module 'TestingMacros' not found
+ 83 |         for key in [NSAttributedString.Key("mention"), .init("linkToObject"), .link] {
+ 84 |             let fixture = try LinkGestureFixture(attribute: key, taps: 1)
+
+Testing.Test:1:30: note: 'Test' declared here
+1 | @attached(peer) public macro Test(_ displayName: _const String? = nil, _ traits: any TestTrait...) = #externalMacro(module: "TestingMacros", type: "TestDeclarationMacro")
+  |                              `- note: 'Test' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:13:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 11 |         let single = UITapGestureRecognizer()
+ 12 |         fixture.input.addGestureRecognizer(single)
+ 13 |         #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 14 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRequireFailureOf: single))
+ 15 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRecognizeSimultaneouslyWith: single))
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:14:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 12 |         fixture.input.addGestureRecognizer(single)
+ 13 |         #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 14 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRequireFailureOf: single))
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 15 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRecognizeSimultaneouslyWith: single))
+ 16 |         #expect(fixture.handler.selections == 0)
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:15:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 13 |         #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 14 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRequireFailureOf: single))
+ 15 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRecognizeSimultaneouslyWith: single))
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 16 |         #expect(fixture.handler.selections == 0)
+ 17 |     }
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:16:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 14 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRequireFailureOf: single))
+ 15 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRecognizeSimultaneouslyWith: single))
+ 16 |         #expect(fixture.handler.selections == 0)
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 17 |     }
+ 18 | 
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:13:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:13:16: note: expanded code originates here
+ 11 |         let single = UITapGestureRecognizer()
+ 12 |         fixture.input.addGestureRecognizer(single)
+ 13 |         #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |11 | 
+    |12 | 
+    |13 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 14 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRequireFailureOf: single))
+ 15 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRecognizeSimultaneouslyWith: single))
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:14:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:14:16: note: expanded code originates here
+ 12 |         fixture.input.addGestureRecognizer(single)
+ 13 |         #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 14 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRequireFailureOf: single))
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |12 | 
+    |13 | 
+    |14 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 15 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRecognizeSimultaneouslyWith: single))
+ 16 |         #expect(fixture.handler.selections == 0)
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:15:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:15:16: note: expanded code originates here
+ 13 |         #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 14 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRequireFailureOf: single))
+ 15 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRecognizeSimultaneouslyWith: single))
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |13 | 
+    |14 | 
+    |15 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 16 |         #expect(fixture.handler.selections == 0)
+ 17 |     }
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:16:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:16:16: note: expanded code originates here
+ 14 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRequireFailureOf: single))
+ 15 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldRecognizeSimultaneouslyWith: single))
+ 16 |         #expect(fixture.handler.selections == 0)
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |14 | 
+    |15 | 
+    |16 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 17 |     }
+ 18 | 
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:40:13: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 38 |         }
+ 39 |         for recognizer in [parentTap, foreignTap, pan, longPress, doubleTap, multiTouch, fixture.selection] as [UIGestureRecognizer] {
+ 40 |             #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: recognizer))
+    |             `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 41 |         }
+ 42 |         #expect(!fixture.interaction.gestureRecognizer(foreignTap, shouldBeRequiredToFailBy: parentTap))
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:42:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 40 |             #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: recognizer))
+ 41 |         }
+ 42 |         #expect(!fixture.interaction.gestureRecognizer(foreignTap, shouldBeRequiredToFailBy: parentTap))
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 43 |         #expect(fixture.handler.selections == 0)
+ 44 |     }
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:43:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 41 |         }
+ 42 |         #expect(!fixture.interaction.gestureRecognizer(foreignTap, shouldBeRequiredToFailBy: parentTap))
+ 43 |         #expect(fixture.handler.selections == 0)
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 44 |     }
+ 45 | 
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:40:20: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:40:20: note: expanded code originates here
+ 38 |         }
+ 39 |         for recognizer in [parentTap, foreignTap, pan, longPress, doubleTap, multiTouch, fixture.selection] as [UIGestureRecognizer] {
+ 40 |             #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: recognizer))
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |38 | 
+    |39 | 
+    |40 |                    #_sourceLocation
+    |   |                    `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 41 |         }
+ 42 |         #expect(!fixture.interaction.gestureRecognizer(foreignTap, shouldBeRequiredToFailBy: parentTap))
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:42:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:42:16: note: expanded code originates here
+ 40 |             #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: recognizer))
+ 41 |         }
+ 42 |         #expect(!fixture.interaction.gestureRecognizer(foreignTap, shouldBeRequiredToFailBy: parentTap))
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |40 | 
+    |41 | 
+    |42 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 43 |         #expect(fixture.handler.selections == 0)
+ 44 |     }
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:43:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:43:16: note: expanded code originates here
+ 41 |         }
+ 42 |         #expect(!fixture.interaction.gestureRecognizer(foreignTap, shouldBeRequiredToFailBy: parentTap))
+ 43 |         #expect(fixture.handler.selections == 0)
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |41 | 
+    |42 | 
+    |43 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 44 |     }
+ 45 | 
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:57:13: error: external macro implementation type 'TestingMacros.RequireMacro' could not be found for macro 'require(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 55 |             return view === fixture.input || view.isDescendant(of: fixture.input)
+ 56 |         }
+ 57 |         try #require(!nativeGestures.isEmpty)
+    |             `- error: external macro implementation type 'TestingMacros.RequireMacro' could not be found for macro 'require(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 58 |         for recognizer in nativeGestures {
+ 59 |             #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: recognizer))
+
+Testing.require:1:40: note: 'require(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro require(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "RequireMacro")
+  |                                        `- note: 'require(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:59:13: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 57 |         try #require(!nativeGestures.isEmpty)
+ 58 |         for recognizer in nativeGestures {
+ 59 |             #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: recognizer))
+    |             `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 60 |         }
+ 61 |         #expect(fixture.handler.selections == 0)
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:61:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 59 |             #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: recognizer))
+ 60 |         }
+ 61 |         #expect(fixture.handler.selections == 0)
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 62 |     }
+ 63 | 
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:57:21: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:57:21: note: expanded code originates here
+ 55 |             return view === fixture.input || view.isDescendant(of: fixture.input)
+ 56 |         }
+ 57 |         try #require(!nativeGestures.isEmpty)
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |55 | 
+    |56 | 
+    |57 |                     #_sourceLocation
+    |   |                     `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 58 |         for recognizer in nativeGestures {
+ 59 |             #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: recognizer))
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:59:20: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:59:20: note: expanded code originates here
+ 57 |         try #require(!nativeGestures.isEmpty)
+ 58 |         for recognizer in nativeGestures {
+ 59 |             #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: recognizer))
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |57 | 
+    |58 | 
+    |59 |                    #_sourceLocation
+    |   |                    `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 60 |         }
+ 61 |         #expect(fixture.handler.selections == 0)
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:61:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:61:16: note: expanded code originates here
+ 59 |             #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: recognizer))
+ 60 |         }
+ 61 |         #expect(fixture.handler.selections == 0)
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |59 | 
+    |60 | 
+    |61 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 62 |     }
+ 63 | 
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:57:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+ 55 |             return view === fixture.input || view.isDescendant(of: fixture.input)
+ 56 |         }
+ 57 |         try #require(!nativeGestures.isEmpty)
+    |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+ 58 |         for recognizer in nativeGestures {
+ 59 |             #expect(fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: recognizer))
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:70:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 68 |         fixture.input.addGestureRecognizer(single)
+ 69 |         fixture.input.removeInteraction(fixture.interaction)
+ 70 |         #expect(fixture.selection.view == nil)
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 71 |         #expect(fixture.interaction.view == nil)
+ 72 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:71:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 69 |         fixture.input.removeInteraction(fixture.interaction)
+ 70 |         #expect(fixture.selection.view == nil)
+ 71 |         #expect(fixture.interaction.view == nil)
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 72 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 73 |         fixture.input.addInteraction(fixture.interaction)
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:72:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 70 |         #expect(fixture.selection.view == nil)
+ 71 |         #expect(fixture.interaction.view == nil)
+ 72 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 73 |         fixture.input.addInteraction(fixture.interaction)
+ 74 |         let current = try #require(fixture.input.gestureRecognizers?.filter { $0.delegate === fixture.interaction })
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:74:27: error: external macro implementation type 'TestingMacros.RequireMacro' could not be found for macro 'require(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 72 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 73 |         fixture.input.addInteraction(fixture.interaction)
+ 74 |         let current = try #require(fixture.input.gestureRecognizers?.filter { $0.delegate === fixture.interaction })
+    |                           `- error: external macro implementation type 'TestingMacros.RequireMacro' could not be found for macro 'require(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 75 |         try #require(current.count == 1)
+ 76 |         #expect(current[0] !== fixture.selection)
+
+Testing.require:1:40: note: 'require(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro require<T>(_ optionalValue: T?, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) -> T = #externalMacro(module: "TestingMacros", type: "RequireMacro")
+  |                                        `- note: 'require(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:75:13: error: external macro implementation type 'TestingMacros.RequireMacro' could not be found for macro 'require(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 73 |         fixture.input.addInteraction(fixture.interaction)
+ 74 |         let current = try #require(fixture.input.gestureRecognizers?.filter { $0.delegate === fixture.interaction })
+ 75 |         try #require(current.count == 1)
+    |             `- error: external macro implementation type 'TestingMacros.RequireMacro' could not be found for macro 'require(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 76 |         #expect(current[0] !== fixture.selection)
+ 77 |         #expect(fixture.interaction.gestureRecognizer(current[0], shouldBeRequiredToFailBy: single))
+
+Testing.require:1:40: note: 'require(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro require(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "RequireMacro")
+  |                                        `- note: 'require(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:76:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 74 |         let current = try #require(fixture.input.gestureRecognizers?.filter { $0.delegate === fixture.interaction })
+ 75 |         try #require(current.count == 1)
+ 76 |         #expect(current[0] !== fixture.selection)
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 77 |         #expect(fixture.interaction.gestureRecognizer(current[0], shouldBeRequiredToFailBy: single))
+ 78 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:77:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 75 |         try #require(current.count == 1)
+ 76 |         #expect(current[0] !== fixture.selection)
+ 77 |         #expect(fixture.interaction.gestureRecognizer(current[0], shouldBeRequiredToFailBy: single))
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 78 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 79 |     }
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:78:9: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 76 |         #expect(current[0] !== fixture.selection)
+ 77 |         #expect(fixture.interaction.gestureRecognizer(current[0], shouldBeRequiredToFailBy: single))
+ 78 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+    |         `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 79 |     }
+ 80 | 
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:70:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:70:16: note: expanded code originates here
+ 68 |         fixture.input.addGestureRecognizer(single)
+ 69 |         fixture.input.removeInteraction(fixture.interaction)
+ 70 |         #expect(fixture.selection.view == nil)
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |68 | 
+    |69 | 
+    |70 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 71 |         #expect(fixture.interaction.view == nil)
+ 72 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:71:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:71:16: note: expanded code originates here
+ 69 |         fixture.input.removeInteraction(fixture.interaction)
+ 70 |         #expect(fixture.selection.view == nil)
+ 71 |         #expect(fixture.interaction.view == nil)
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |69 | 
+    |70 | 
+    |71 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 72 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 73 |         fixture.input.addInteraction(fixture.interaction)
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:72:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:72:16: note: expanded code originates here
+ 70 |         #expect(fixture.selection.view == nil)
+ 71 |         #expect(fixture.interaction.view == nil)
+ 72 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |70 | 
+    |71 | 
+    |72 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 73 |         fixture.input.addInteraction(fixture.interaction)
+ 74 |         let current = try #require(fixture.input.gestureRecognizers?.filter { $0.delegate === fixture.interaction })
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:74:35: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:74:35: note: expanded code originates here
+ 72 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 73 |         fixture.input.addInteraction(fixture.interaction)
+ 74 |         let current = try #require(fixture.input.gestureRecognizers?.filter { $0.delegate === fixture.interaction })
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |72 | 
+    |73 | 
+    |74 |                                   #_sourceLocation
+    |   |                                   `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 75 |         try #require(current.count == 1)
+ 76 |         #expect(current[0] !== fixture.selection)
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:75:21: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:75:21: note: expanded code originates here
+ 73 |         fixture.input.addInteraction(fixture.interaction)
+ 74 |         let current = try #require(fixture.input.gestureRecognizers?.filter { $0.delegate === fixture.interaction })
+ 75 |         try #require(current.count == 1)
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |73 | 
+    |74 | 
+    |75 |                     #_sourceLocation
+    |   |                     `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 76 |         #expect(current[0] !== fixture.selection)
+ 77 |         #expect(fixture.interaction.gestureRecognizer(current[0], shouldBeRequiredToFailBy: single))
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:76:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:76:16: note: expanded code originates here
+ 74 |         let current = try #require(fixture.input.gestureRecognizers?.filter { $0.delegate === fixture.interaction })
+ 75 |         try #require(current.count == 1)
+ 76 |         #expect(current[0] !== fixture.selection)
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |74 | 
+    |75 | 
+    |76 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 77 |         #expect(fixture.interaction.gestureRecognizer(current[0], shouldBeRequiredToFailBy: single))
+ 78 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:77:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:77:16: note: expanded code originates here
+ 75 |         try #require(current.count == 1)
+ 76 |         #expect(current[0] !== fixture.selection)
+ 77 |         #expect(fixture.interaction.gestureRecognizer(current[0], shouldBeRequiredToFailBy: single))
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |75 | 
+    |76 | 
+    |77 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 78 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 79 |     }
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:78:16: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:78:16: note: expanded code originates here
+ 76 |         #expect(current[0] !== fixture.selection)
+ 77 |         #expect(fixture.interaction.gestureRecognizer(current[0], shouldBeRequiredToFailBy: single))
+ 78 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |76 | 
+    |77 | 
+    |78 |                #_sourceLocation
+    |   |                `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 79 |     }
+ 80 | 
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:74:23: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+ 72 |         #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 73 |         fixture.input.addInteraction(fixture.interaction)
+ 74 |         let current = try #require(fixture.input.gestureRecognizers?.filter { $0.delegate === fixture.interaction })
+    |                       `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+ 75 |         try #require(current.count == 1)
+ 76 |         #expect(current[0] !== fixture.selection)
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:75:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+ 73 |         fixture.input.addInteraction(fixture.interaction)
+ 74 |         let current = try #require(fixture.input.gestureRecognizers?.filter { $0.delegate === fixture.interaction })
+ 75 |         try #require(current.count == 1)
+    |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+ 76 |         #expect(current[0] !== fixture.selection)
+ 77 |         #expect(fixture.interaction.gestureRecognizer(current[0], shouldBeRequiredToFailBy: single))
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:87:13: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 85 |             let single = UITapGestureRecognizer()
+ 86 |             fixture.input.addGestureRecognizer(single)
+ 87 |             #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+    |             `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 88 |             #expect(fixture.handler.selections == 0)
+ 89 |         }
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:88:13: error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 86 |             fixture.input.addGestureRecognizer(single)
+ 87 |             #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 88 |             #expect(fixture.handler.selections == 0)
+    |             `- error: external macro implementation type 'TestingMacros.ExpectMacro' could not be found for macro 'expect(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+ 89 |         }
+ 90 |     }
+
+Testing.expect:1:40: note: 'expect(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro expect(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "ExpectMacro")
+  |                                        `- note: 'expect(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:87:20: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:87:20: note: expanded code originates here
+ 85 |             let single = UITapGestureRecognizer()
+ 86 |             fixture.input.addGestureRecognizer(single)
+ 87 |             #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |85 | 
+    |86 | 
+    |87 |                    #_sourceLocation
+    |   |                    `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 88 |             #expect(fixture.handler.selections == 0)
+ 89 |         }
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:88:20: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:88:20: note: expanded code originates here
+ 86 |             fixture.input.addGestureRecognizer(single)
+ 87 |             #expect(!fixture.interaction.gestureRecognizer(fixture.selection, shouldBeRequiredToFailBy: single))
+ 88 |             #expect(fixture.handler.selections == 0)
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |86 | 
+    |87 | 
+    |88 |                    #_sourceLocation
+    |   |                    `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+ 89 |         }
+ 90 |     }
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:107:25: error: external macro implementation type 'TestingMacros.RequireMacro' could not be found for macro 'require(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+105 |             numberOfTapsRequired: taps, tapHandler: handler)
+106 |         input.addInteraction(interaction)
+107 |         let owned = try #require(input.gestureRecognizers?.filter { $0.delegate === interaction })
+    |                         `- error: external macro implementation type 'TestingMacros.RequireMacro' could not be found for macro 'require(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+108 |         try #require(owned.count == 1)
+109 |         self.input = input
+
+Testing.require:1:40: note: 'require(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro require<T>(_ optionalValue: T?, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) -> T = #externalMacro(module: "TestingMacros", type: "RequireMacro")
+  |                                        `- note: 'require(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:108:13: error: external macro implementation type 'TestingMacros.RequireMacro' could not be found for macro 'require(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+106 |         input.addInteraction(interaction)
+107 |         let owned = try #require(input.gestureRecognizers?.filter { $0.delegate === interaction })
+108 |         try #require(owned.count == 1)
+    |             `- error: external macro implementation type 'TestingMacros.RequireMacro' could not be found for macro 'require(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+109 |         self.input = input
+110 |         self.handler = handler
+
+Testing.require:1:40: note: 'require(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro require(_ condition: Bool, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) = #externalMacro(module: "TestingMacros", type: "RequireMacro")
+  |                                        `- note: 'require(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:112:25: error: external macro implementation type 'TestingMacros.RequireMacro' could not be found for macro 'require(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+110 |         self.handler = handler
+111 |         self.interaction = interaction
+112 |         selection = try #require(owned[0] as? UITapGestureRecognizer)
+    |                         `- error: external macro implementation type 'TestingMacros.RequireMacro' could not be found for macro 'require(_:_:sourceLocation:)'; plugin for module 'TestingMacros' not found
+113 |     }
+114 | }
+
+Testing.require:1:40: note: 'require(_:_:sourceLocation:)' declared here
+1 | @freestanding(expression) public macro require<T>(_ optionalValue: T?, _ comment: @autoclosure () -> Comment? = nil, sourceLocation: SourceLocation = #_sourceLocation) -> T = #externalMacro(module: "TestingMacros", type: "RequireMacro")
+  |                                        `- note: 'require(_:_:sourceLocation:)' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:107:33: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:107:33: note: expanded code originates here
+105 |             numberOfTapsRequired: taps, tapHandler: handler)
+106 |         input.addInteraction(interaction)
+107 |         let owned = try #require(input.gestureRecognizers?.filter { $0.delegate === interaction })
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |105 | 
+    |106 | 
+    |107 |                                 #_sourceLocation
+    |    |                                 `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+108 |         try #require(owned.count == 1)
+109 |         self.input = input
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:108:21: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:108:21: note: expanded code originates here
+106 |         input.addInteraction(interaction)
+107 |         let owned = try #require(input.gestureRecognizers?.filter { $0.delegate === interaction })
+108 |         try #require(owned.count == 1)
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |106 | 
+    |107 | 
+    |108 |                     #_sourceLocation
+    |    |                     `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+109 |         self.input = input
+110 |         self.handler = handler
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:112:33: error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+`- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:112:33: note: expanded code originates here
+110 |         self.handler = handler
+111 |         self.interaction = interaction
+112 |         selection = try #require(owned[0] as? UITapGestureRecognizer)
+    +--- /Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift 
+    |110 | 
+    |111 | 
+    |112 |                                 #_sourceLocation
+    |    |                                 `- error: external macro implementation type 'TestingMacros.SourceLocationMacro' could not be found for macro '_sourceLocation()'; plugin for module 'TestingMacros' not found
+    +---------------------------------------------------------------------------------------------------------------------------------------
+113 |     }
+114 | }
+
+Testing._sourceLocation:1:40: note: '_sourceLocation()' declared here
+1 | @freestanding(expression) public macro _sourceLocation() -> SourceLocation = #externalMacro(module: "TestingMacros", type: "SourceLocationMacro")
+  |                                        `- note: '_sourceLocation()' declared here
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:107:21: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+105 |             numberOfTapsRequired: taps, tapHandler: handler)
+106 |         input.addInteraction(interaction)
+107 |         let owned = try #require(input.gestureRecognizers?.filter { $0.delegate === interaction })
+    |                     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+108 |         try #require(owned.count == 1)
+109 |         self.input = input
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:108:9: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+106 |         input.addInteraction(interaction)
+107 |         let owned = try #require(input.gestureRecognizers?.filter { $0.delegate === interaction })
+108 |         try #require(owned.count == 1)
+    |         `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+109 |         self.input = input
+110 |         self.handler = handler
+
+/Users/m1/development/anytype-e-active-20261125/link-gesture-component-20261126/attempt1/TextViewLinkGestureArbitrationTests.swift:112:21: warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+110 |         self.handler = handler
+111 |         self.interaction = interaction
+112 |         selection = try #require(owned[0] as? UITapGestureRecognizer)
+    |                     `- warning: no calls to throwing functions occur within 'try' expression [#UnnecessaryEffectMarker]
+113 |     }
+114 | }
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
