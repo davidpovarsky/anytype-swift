@@ -1,0 +1,28 @@
+--- original410b/native_host.go
++++ cutover/native_host.go
+@@ -251,6 +251,13 @@
+ 	if _, err = h.recoverLocked(ctx, h.tree); err != nil {
+ 		return NativeAppendResult{}, err
+ 	}
++	return h.appendLocked(ctx, op, claim, wire, release, nil)
++}
++
++// appendLocked is shared by unchanged v1 Append and the explicit cutover gate.
++// Caller owns the current target lease and this exact tree lock. The existing
++// native storage guard still authorizes the durable write, including retries.
++func (h *NativeHost) appendLocked(ctx context.Context, op Operation, claim Claim, wire []byte, release func(), beforeApply func() error) (NativeAppendResult, error) {
+ 	tx, err := h.store.state.NewTx(ctx)
+ 	if err != nil {
+ 		return NativeAppendResult{}, err
+@@ -279,6 +286,11 @@
+ 	added, err := h.tree.AddContentWithValidator(appendCtx, objecttree.SignableChangeContent{
+ 		Data: data, DataType: dataType, Key: h.key, ShouldBeEncrypted: true, Timestamp: time.Now().Unix(),
+ 	}, func(raw objecttree.StorageChange) error {
++		if beforeApply != nil {
++			if validationErr := beforeApply(); validationErr != nil {
++				return validationErr
++			}
++		}
+ 		// Read creator and captured ACL head from the signed bytes produced by
+ 		// the native tree. Never substitute the current head or RPC author.
+ 		ch, err := objecttree.NewChangeBuilder(crypto.NewKeyStorage(), h.tree.Header()).Unmarshall(raw.RawTreeChangeWithId(), true)
