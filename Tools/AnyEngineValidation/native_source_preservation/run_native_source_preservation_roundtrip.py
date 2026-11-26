@@ -10,7 +10,7 @@ BUILD = Path("/mnt/development/projects/evidence/migration-final-20261125/full-s
 CACHE = Path("/tmp/pinkha-c-swift-cache-20261125")
 ORIGINAL = Path("/mnt/development/projects/evidence/migration-final-20261125/native-head-census/original-source-recovery/original156")
 MAC_SCRIPT = "/Users/m1/development/anytype-c-active-20261125/native-source-preservation/control/run_native_source_preservation_process.py"
-MAC_SHA = "a377976508ec48782becdf5c9592219dcf4ac5ac23e2cb79fd08d84f99de15d4"
+MAC_SHA = "b34beaf4056233a73c580f95614add20ed2d5ebb041c1bad28fbc0d62319d89d"
 TEST = "AnyDestinationNativeSourcePreservationTests.testAllOriginalHeadsAndFileSurviveColdNativeReopen"
 TEST_PATH = "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeSourcePreservationTests.swift"
 TEST_SHA = "bb3f62826b2df0c39ffe24d123cff038ca72d5b6391922f5b9abf4e295ce83a6"
@@ -169,7 +169,7 @@ def main():
     write(args.output / "command.json", command)
     try:
         assert shutil.disk_usage(args.output).free >= 128*1024**2, "bounded private evidence headroom"
-        result["resourcePolicy"]={"maximumPhaseSeconds":1800,"estimatedPrivateOutputBytes":64*1024**2,
+        result["resourcePolicy"]={"maximumPhaseSeconds":1500,"estimatedPrivateOutputBytes":64*1024**2,
                                   "minimumOutputFreeBytes":64*1024**2,"nativeBuilds":0}
         result["inputsBefore"] = verify_inputs(); save()
         source = WORKTREE / "Tools/AnyEngineValidation/native_source_preservation/run_native_source_preservation_process.py"
@@ -232,7 +232,7 @@ def main():
             with (args.output / (phase + ".log")).open("wb") as log:
                 current_test = subprocess.Popen(command, env=env, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
                 item.update(testPID=current_test.pid, nativePID=runtime["processID"]); save()
-                phase_deadline=time.monotonic()+1800
+                phase_deadline=time.monotonic()+1500
                 while current_test.poll() is None:
                     assert time.monotonic()<phase_deadline,"bounded full-preservation phase"
                     assert shutil.disk_usage(args.output).free>=64*1024**2,"owned qualification output emergency floor"

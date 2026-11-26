@@ -30,7 +30,9 @@ def main():
     source = Path("/Users/m1/development/anytype-root-active-20261125/t2-fixed-permission-20261126/build-attempt3/current/source")
     nodeconf = source / "internal/config/nodeconf-prod.yml"
     manifest_path = source.parent / "source-manifest.json"
-    receipt = json.loads(manifest_path.read_bytes())
+    manifest_bytes = manifest_path.read_bytes()
+    assert hashlib.sha256(manifest_bytes).hexdigest() == SOURCE_MANIFEST_SHA
+    receipt = json.loads(manifest_bytes)
     sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
     assert sha(binary) == BINARY_SHA and sha(nodeconf) == CONFIG_SHA
     assert sha(manifest_path) == SOURCE_MANIFEST_SHA
@@ -71,7 +73,9 @@ def main():
 
     def verify_sources():
         assert not binary.is_symlink() and sha(binary) == BINARY_SHA
-        assert not manifest_path.is_symlink() and sha(manifest_path) == SOURCE_MANIFEST_SHA
+        current_manifest_bytes = manifest_path.read_bytes()
+        assert not manifest_path.is_symlink() and current_manifest_bytes == manifest_bytes
+        assert hashlib.sha256(current_manifest_bytes).hexdigest() == SOURCE_MANIFEST_SHA
         expected_commits = {"any":"8fbd1e819fb132ac0e0a848d2ddf5c5714189b81", "sdk":"c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"}
         assert receipt["schema"] == "pinkha-t2-permission-native-source-v1"
         assert receipt["commits"] == expected_commits and len(receipt["files"]) == 1594
@@ -86,8 +90,11 @@ def main():
         assert build["command"] == ["/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go","build","-p","2","-o",str(binary),"./cmd/any"]
         before = source.parent / "source-before.json"
         after = source.parent / "source-after.json"
-        assert sha(before) == sha(after) == "7101539ffeb0d039afd5ba6eca4827f6389b2ce0a1311ee493331e2f6db31138"
-        original = json.loads(before.read_bytes())
+        before_bytes = before.read_bytes(); after_bytes = after.read_bytes()
+        assert not before.is_symlink() and not after.is_symlink()
+        assert before_bytes == after_bytes
+        assert hashlib.sha256(before_bytes).hexdigest() == "7101539ffeb0d039afd5ba6eca4827f6389b2ce0a1311ee493331e2f6db31138"
+        original = json.loads(before_bytes)
         assert set(original) == set(receipt["files"])
         found = set()
         for p in source.rglob("*"):
@@ -103,6 +110,8 @@ def main():
             assert current.st_size == item["bytes"] and current.st_mode & 0o777 == item["mode"]
             assert sha(path) == item["sha256"], "native source changed"
         assert sha(build_path) == hashlib.sha256(build_bytes).hexdigest()
+        assert manifest_path.read_bytes() == manifest_bytes
+        assert before.read_bytes() == before_bytes and after.read_bytes() == after_bytes
         return {"commits":receipt["commits"],"files":len(receipt["files"]),"unchanged":True,
                 "buildReceiptSHA256":hashlib.sha256(build_bytes).hexdigest(),
                 "sourceInventorySHA256":sha(before)}
@@ -111,7 +120,7 @@ def main():
         nonlocal minimum_free
         minimum_free = min(minimum_free, shutil.disk_usage(args.output).free)
         assert minimum_free >= 2 * 1024**3, "runtime disk emergency"
-        assert time.monotonic() - started < 3900, "bounded native controller timeout"
+        assert time.monotonic() - started < 3300, "bounded native controller timeout"
         assert not (args.output / "abort").exists(), "external qualification stopped"
 
     with socket.socket() as listener:
