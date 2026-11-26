@@ -1,0 +1,218 @@
+{
+  "claims": {
+    "all159HistoricalHeadsPreservedAsImmutableProvenance": true,
+    "all182OperationsNativeVerified": true,
+    "allImportedTypesUsable": false,
+    "appleUITestsInvoked": 0,
+    "destinationACLChanged": false,
+    "exactLinksReadBack": true,
+    "freshProcessOfflineReadBack": true,
+    "historicalAuthorIsDestinationSigner": false,
+    "independentPeerFilesV2Qualified": false,
+    "nativeFileRoundTripBytesVerified": true,
+    "newNativeBuilds": 0,
+    "originalHistoryRetainedAsSourceProvenance": true,
+    "sameInterruptedMacAccountReopenedOnLinux": true,
+    "signedHistoryAndRecordAtDerivedFieldsVerified": true,
+    "sourceAdmissionPromoted": false,
+    "sourceHistoryBecameTargetHistory": false,
+    "twoOriginalCurrentPagesMigrated": true,
+    "wholeSpaceSemanticMigration": false
+  },
+  "coldSyncStatus": {
+    "globalPeers": 0,
+    "localPeers": 0,
+    "networkPeers": 0,
+    "p2p": "notpossible",
+    "state": "offline"
+  },
+  "comparison": {
+    "archiveBytes": 1634696,
+    "archiveSHA256": "5d72e36849884da3da3fe9ddde0a01f49a03cde3b417f49456e3558bea8db463",
+    "bytes": 1249187,
+    "capturedMembersRestored": 314,
+    "nativeHeads": 159,
+    "preparedOperations": 182,
+    "preservationContentSHA256": "e1060c0b376ddf2573510701f5b43133b43729c5e9cba6f574b36fedc4ce9179",
+    "recoveredMembersRestored": 18,
+    "recoveryManifestSHA256": "3434ad74ec339f1d08818e2cb0bac069ec479c8e2f55e411754c63b31c6964b4",
+    "sha256": "7c39a72aec3e9c87cef67ffabbe982cd76501f195d36aafd354bea13e5a71ac5",
+    "snapshotObjects": 156,
+    "sourceManifestSHA256": "cbfb3aa1fd89707138adeccbce7389c40dc0a993f2285f6e517120e4e4239ed4",
+    "warmAndColdByteEqual": true
+  },
+  "compiledSharedCommit": "d3f03d2a1e9b1bd31cfe82d4d3aa895df78c72ea",
+  "controllers": {
+    "Tools/AnyEngineValidation/native_source_preservation/build_native_shared_linux.py": "853fef526f6cfd9de5944720279dcb7d084a6b8d98706f19ff9747f4242b4155",
+    "Tools/AnyEngineValidation/native_source_preservation/linux_outbound_denial.py": "6eaca8b9602f9c1c7fce4b8a176759ad1a10577c0ee74eddb3264992976e86b1",
+    "Tools/AnyEngineValidation/native_source_preservation/resume_native_source_preservation_linux_process.py": "349726aa8a85787af8524c9f0f02a8141cfe622592c7ef9f9929bf74e9603e59",
+    "Tools/AnyEngineValidation/native_source_preservation/resume_native_source_preservation_linux_roundtrip.py": "f88007827782be5eecd713c073747012efccc89abf8409c0fc480dff0816a86f"
+  },
+  "executedControllerCommit": "ddbba7b5b968c836cda5834ff6e432de7a3d8a4b",
+  "nativeLifecycleSHA256": "5925bd5a08c972e3dbe7666b77f9e230fe340b36b46289c870384e66c516a899",
+  "nativeMinimumFreeBytes": 3182395392,
+  "nativeSource": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildReceiptSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "files": 1594,
+    "manifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceInventorySHA256": "7101539ffeb0d039afd5ba6eca4827f6389b2ce0a1311ee493331e2f6db31138",
+    "unchanged": true
+  },
+  "offlinePolicy": {
+    "baselineListenerReachable": true,
+    "baselineUDPSendReceived": true,
+    "controls": {
+      "deniedSyscalls": [
+        "connect",
+        "sendto",
+        "sendmsg",
+        "sendmmsg",
+        "io_uring_setup",
+        "io_uring_enter",
+        "io_uring_register"
+      ],
+      "librarySHA256": "3d128123b494ca9e88f3c237b0912397145af1754e86ea99f460af6857441f19",
+      "noNewPrivileges": true,
+      "seccompFilterActive": true,
+      "tcpDenied": true,
+      "tcpErrno": 1,
+      "udpDenied": true,
+      "udpErrno": 1
+    },
+    "scope": "only the new child process and its descendants; no global network mutation",
+    "sha256": "6eaca8b9602f9c1c7fce4b8a176759ad1a10577c0ee74eddb3264992976e86b1"
+  },
+  "originalResultSHA256": "f7f4a5b34465907c3285229a266a488229a92eb1c3a7c04c5b4cdd162ed1b32b",
+  "originalRunRoot": "/var/lib/pinkha-c-native-preservation-20261126/linux-resume-attempt1",
+  "ownedGroupsPositivelyAbsent": [
+    3666931,
+    3667022,
+    3669725
+  ],
+  "ownedProcesses": [
+    {
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "name": "resumed-native",
+      "offline": false,
+      "pid": 3666985
+    },
+    {
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "name": "cold-offline-native",
+      "offline": true,
+      "pid": 3669693
+    }
+  ],
+  "phases": [
+    {
+      "actualTestSeconds": 75.413,
+      "failed": 0,
+      "marker": "NATIVE_FULL_SOURCE_PRESERVATION prepared_operations=182 original_pages=2 native_heads=159 snapshot_objects=156 restored_members=332 source_admission=false all_imported_types_usable=false phase=execute",
+      "nativePID": 3666985,
+      "originalLogSHA256": "9c1fa75f99525fa0b137a573cb6d62ae8ef6197147194fb918b755b1fe4a0a9b",
+      "ownedTestGroupAbsent": true,
+      "passed": 1,
+      "phase": "execute",
+      "phaseSeconds": 78.549,
+      "skipped": 0,
+      "swiftPID": 3667022
+    },
+    {
+      "actualTestSeconds": 57.681,
+      "failed": 0,
+      "marker": "NATIVE_FULL_SOURCE_PRESERVATION prepared_operations=182 original_pages=2 native_heads=159 snapshot_objects=156 restored_members=332 source_admission=false all_imported_types_usable=false phase=reopen",
+      "nativePID": 3669693,
+      "originalLogSHA256": "517a3fc8ee8707883074c0afd8a6a893809ff79acf805c0cff36f392a4311e25",
+      "ownedTestGroupAbsent": true,
+      "passed": 1,
+      "phase": "reopen",
+      "phaseSeconds": 60.532,
+      "skipped": 0,
+      "swiftPID": 3669725
+    }
+  ],
+  "priorCustody": {
+    "accountInitialized": false,
+    "copiedAccountBytesAndModesEqual": true,
+    "custodyReceiptSHA256": "8645070719620e263ab99cde5fc7232527b1a3caa20d1bafb5e759ed5e894d08",
+    "historicalGroupsProbed": 0,
+    "interruptedPlanSHA256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930",
+    "offhostReceiptSHA256": "ab149dc3ba2a64e774ac75bc6dcc362ec661e20e3b78c1f5725bf67538196b72",
+    "originalAccountEntries": 26,
+    "originalAccountUnchanged": true,
+    "platformChange": "darwin-arm64 to linux-arm64",
+    "priorControllerReceiptSHA256": "98367e76d7ea0f8ce8988d7e1443b9e3b8caaeb07dbd880e2cb04b3be10ce85d",
+    "priorResult": "FAIL",
+    "sameNativeAccount": true,
+    "spaceCreated": false
+  },
+  "priorFiveComponentControlsSHA256": "6e293c000b42672f9509b28c580c8d7f324ed076379b2f37780b8b30f9102a37",
+  "priorInterruption": {
+    "copiedJournalFilesEqual": true,
+    "historicalGroupsProbed": 0,
+    "initialCheckpointEntries": 63,
+    "initialEntriesWithTwoReceipts": 62,
+    "interruptedPlanSHA256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930",
+    "latestMacAccountUsed": true,
+    "nativeAccountAndJournalBackedUpOffhost": true,
+    "newAccountOrSpaceCreated": false,
+    "originalFilesUnchanged": true,
+    "originalNativeResourceFailure": true,
+    "originalReceiptSHA256": "ea2bc4b7df3988953dfe4b507fa7232809d00862c7c83a41766d4d9e3fe565a4",
+    "originalResult": "FAIL"
+  },
+  "privateRowsOrAccountContentsIncluded": false,
+  "productionCommit": "1e715c3afa3e42611fb454112fba1b8efde17d40",
+  "productionFiles": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationDefinitionCoverage.swift": "e2095c83e1fe238184db7adf0220db40a5521ee9dca31302a810af203d59fbd4",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyDestinationMigrationPlan.swift": "cb1f3d9be09caa0c19f1242a1c6917a6cbf6fc60d000c1d2044a85b20efba13f",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHeartNativeSourcePreservation.swift": "ff103d4110e17fbb9ed6375ba0dc59968cf59fbb5bc77d8740dc53a40ce1cf98",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHeartNativePreservationArchive.swift": "83c8f527b576184dfbaf3537c9b17fd53fa78c422deed203e68007c34a261ea0"
+  },
+  "protocol": "pinkha-full-source-native-preservation-qualification-v1",
+  "qualifiedAtUTC": "2026-11-26T07:53:58Z",
+  "remainingAcceptance": [
+    "Usable mappings for every required imported type/property/layout; retain unsupported instance refusal.",
+    "Distinct-account real FilesV2 transfer, variants and recovery with cold OS-offline byte comparison.",
+    "Affected integrated shared/App scope remains separate."
+  ],
+  "seconds": 143.783,
+  "sharedSource": {
+    "buildReceiptSHA256": "c98bf8875f16b9cf07d0663609a936e8fade42c2e2477472c9252544d8374562",
+    "compiledProducts": {
+      "PinkhaAnyHostTests-test-runner": "28c2cd2c4935bd59a8de614539115d1d5f54c573abf1dac5f9df43c4db426083",
+      "PinkhaAnyHostTests.so": "2c86b12a7d9eff7b2f2011f6a1117b25ecfb9a19eb78b3196b8fe698e704578a"
+    },
+    "dependenciesSHA256": "25ac8fdff3cc6d56dee3cc021decd29048fb84d0f147bae5eade1e70801c911e",
+    "originalCapture": {
+      "indexSHA256": "30420980bd3261a9e7284f7427ab47d8dc98f44e342549ea4d8c39a80073712b",
+      "originalBytes": 1600701,
+      "originalMemberCount": 320,
+      "unchanged": true
+    },
+    "recovery": {
+      "bindingSHA256": "3434ad74ec339f1d08818e2cb0bac069ec479c8e2f55e411754c63b31c6964b4",
+      "capturedMembersReplaced": false,
+      "descriptorFiles": 14,
+      "originalProducerFAILUnchanged": true
+    },
+    "sourceFileCount": 291,
+    "sourceManifestSHA256": "bde84f2a7066242cc5abf9461b232dc22067ff92dcb448b36c9d9356400d7358"
+  },
+  "status": "PASS_WITH_EXPLICIT_SEMANTIC_LIMITS",
+  "storageCompatibilityObservation": "Actual unchanged interrupted account reopened on Linux; original account and owner/Space identity admitted, original plan reconciled and all182 operations compared. No general storage-format compatibility claim.",
+  "supportingProofs": {
+    "linux-authority-qualification1/receipt.json": "fe0a3cc22b46b36098285cbaed033fbd516407b6b8d708f1c7e5acdaf2780d7f",
+    "linux-offline-policy-qualification1/receipt.json": "5bedae3c4d6f47492ee96bd1988180732ffb9cfbcd9c6b1c65e674bafe7621b0",
+    "native-shared-build-linux1/result.json": "c98bf8875f16b9cf07d0663609a936e8fade42c2e2477472c9252544d8374562"
+  }
+}
