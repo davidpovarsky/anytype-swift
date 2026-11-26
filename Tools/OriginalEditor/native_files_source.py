@@ -18,6 +18,18 @@ FILES = (
 )
 
 
+CURRENT_SOURCE = "9a870f9d38ec587474f7a73a31e227be1fb007c7"
+CURRENT_RELATIVE = "Tools/OriginalEditor/MiniApps/current_native_annotation_source_adoption.json"
+CURRENT_FILES = (
+    "OriginalEditorFramework/AnytypeOriginalAnnotationLifecycle.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorAccountSession.swift",
+    "OriginalEditorFramework/AnytypeOriginalEditorQualificationRuntime.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationMaterialization.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationNativeBody.swift",
+    "OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift",
+)
+
+
 def require(value, message):
     if not value:
         raise ValueError(message)
@@ -40,6 +52,56 @@ def validate_document(value, binding):
             and value.get("native_acceptance_reused_by_this_document") is False,
             "Original native-file source provenance cannot grant acceptance")
     return rows
+
+
+def observe_current_runtime(root, binding, historical_trees):
+    products = tuple(historical_trees)
+    document = root / CURRENT_RELATIVE
+    require(document.is_file() and not document.is_symlink() and document.resolve() == document,
+            "Missing or aliased original annotation runtime source adoption")
+    raw = document.read_bytes()
+    require(binding.get("path") == CURRENT_RELATIVE and binding.get("reviewed_source") == CURRENT_SOURCE
+            and hashlib.sha256(raw).hexdigest() == binding.get("sha256")
+            and git(root, "hash-object", "--", CURRENT_RELATIVE) == git(root, "rev-parse", "HEAD:" + CURRENT_RELATIVE),
+            "Committed original annotation runtime source adoption differs")
+    value = json.loads(raw)
+    require(value.get("schema") == "anytype.original-annotation-runtime-source-adoption/1"
+            and value.get("base_source") == REVIEWED and value.get("reviewed_source") == CURRENT_SOURCE
+            and value.get("scope") == "SOURCE_ONLY_CURRENT_SDK_QUALIFICATION_REQUIRED"
+            and value.get("native_acceptance_reused_by_this_document") is False,
+            "Unreviewed annotation runtime source identity or scope")
+    for older, newer in ((REVIEWED, CURRENT_SOURCE), (CURRENT_SOURCE, "HEAD")):
+        subprocess.run(["git", "-C", str(root), "merge-base", "--is-ancestor", older, newer],
+                       check=True, timeout=60)
+    base = {key: git(root, "rev-parse", REVIEWED + ":" + key) for key in products}
+    reviewed = {key: git(root, "rev-parse", CURRENT_SOURCE + ":" + key) for key in products}
+    require(base == historical_trees == value.get("base_product_trees")
+            and reviewed == value.get("reviewed_product_trees")
+            and all(reviewed[key] == base[key] for key in products if key != "OriginalEditorFramework"),
+            "Embedded annotation runtime changed generated, resource or middleware source")
+    require(git(root, "diff", "--name-status", REVIEWED, CURRENT_SOURCE, "--", *products).splitlines()
+            == ["M\t" + name for name in CURRENT_FILES],
+            "Original annotation runtime source delta differs")
+    rows = value.get("files", [])
+    require([item.get("path") for item in rows] == list(CURRENT_FILES)
+            and all(set(item) == {"path", "before_blob", "after_blob", "bytes", "sha256"} for item in rows),
+            "Original annotation runtime file inventory differs")
+    for row in rows:
+        name = row["path"]
+        source = root / name
+        require(source.is_file() and not source.is_symlink() and source.resolve() == source,
+                "Missing or aliased original annotation runtime source")
+        data = source.read_bytes()
+        require(row["before_blob"] == git(root, "rev-parse", REVIEWED + ":" + name)
+                and row["after_blob"] == git(root, "rev-parse", CURRENT_SOURCE + ":" + name)
+                and git(root, "hash-object", "--", name) == row["after_blob"]
+                and len(data) == row["bytes"] and hashlib.sha256(data).hexdigest() == row["sha256"],
+                "Current original annotation runtime source bytes differ: " + name)
+    return {"schema": value["schema"], "status": "EXACT_ORIGINAL_ANNOTATION_RUNTIME_SOURCE_OBSERVED",
+            "base_source": REVIEWED, "reviewed_source": CURRENT_SOURCE, "reviewed_product_trees": reviewed,
+            "adoption_sha256": binding["sha256"], "changed_files": rows, "all_changed_paths": list(CURRENT_FILES),
+            "native_acceptance_reused_by_this_document": False,
+            "sdk_compiler_and_runtime_acceptance": "NOT_GRANTED_BY_SOURCE_OBSERVATION"}
 
 
 def observe(root, profile, historical_trees):
@@ -68,7 +130,10 @@ def observe(root, profile, historical_trees):
             "Native-file facade changed original native/generated/resource/application inputs")
     require(git(root, "diff", "--name-status", BASE, REVIEWED, "--", *products).splitlines()
             == ["M\t" + name for name in FILES], "Unreviewed native-file facade change")
-    require({key: git(root, "rev-parse", "HEAD:" + key) for key in products} == reviewed,
+    runtime_binding = profile.get("current_annotation_runtime_source_adoption")
+    runtime = observe_current_runtime(root, runtime_binding, reviewed) if runtime_binding else None
+    current = runtime["reviewed_product_trees"] if runtime else reviewed
+    require({key: git(root, "rev-parse", "HEAD:" + key) for key in products} == current,
             "Current product source differs from reviewed native-file facade")
     for row in rows:
         source = root / row["path"]
@@ -82,7 +147,10 @@ def observe(root, profile, historical_trees):
                 "Current native-file facade bytes differ: " + row["path"])
     return {"schema": value["schema"], "status": "EXACT_ORIGINAL_NATIVE_FILES_SWIFT_SOURCE_OBSERVED",
             "base_source": BASE, "reviewed_source": REVIEWED,
-            "adoption_sha256": binding["sha256"], "reviewed_product_trees": reviewed,
-            "changed_files": rows, "all_changed_paths": list(FILES),
+            "adoption_sha256": binding["sha256"], "reviewed_product_trees": current,
+            "historical_native_file_product_trees": reviewed,
+            **({"current_annotation_runtime": runtime} if runtime else {}),
+            "changed_files": rows,
+            "all_changed_paths": sorted(set(FILES) | (set(runtime["all_changed_paths"]) if runtime else set())),
             "native_acceptance_reused_by_this_document": False,
             "sdk_compiler_and_runtime_acceptance": "NOT_GRANTED_BY_SOURCE_OBSERVATION"}
