@@ -1,0 +1,55 @@
+{
+  "AppBuilds": 0,
+  "UIBuilds": 0,
+  "controllerChanges": {
+    "Tools/PinkhaDualEngineRuntime/build_prebuilt_native_ui.py": {
+      "afterSHA256": "cff78522ad8349873d61459e97cb07617cc8021d278ceb7959e629e3b25854a3",
+      "beforeSHA256": "8b679999a75f28fd6d0b4e8e1444fc6402dc652e85c1da1b570338b1bf5c70e4",
+      "changes": [
+        {
+          "after": "def native11619_module():\n    path = Path(__file__).resolve().with_name(\"native11619_profile.py\")\n    require(digest(path) == \"ee3a32a7f468aa9d4eab2eb2ebe11cda5ea2dcbf0347eace98f57a2fd79e6e70\", \"exact_App14_NativeUI_profile_required\")\n    sys.dont_write_bytecode = True\n    spec = importlib.util.spec_from_file_location(\"qualified_native11619\", path)\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    return module\n\n\ndef bin_confirmation_module():",
+          "before": "def bin_confirmation_module():"
+        },
+        {
+          "after": "    current11619 = None\n    if (origin == \"76f59f1e838991d1bbc7a07ecd08c6a2f15915c7\"\n            or original[\"inputs\"][\"nativeSourceManifestSHA256\"] ==\n                \"11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b\"):\n        current11619 = native11619_module()\n        current11619.qualify_main(original)\n        profiles[current11619.NATIVE] = dict(current11619.PROFILE)\n    profile = profiles.get(original[\"inputs\"][\"nativeSourceManifestSHA256\"])\n",
+          "before": "    profile = profiles.get(original[\"inputs\"][\"nativeSourceManifestSHA256\"])\n"
+        },
+        {
+          "after": "    current11619_binding = None\n    if current11619 is not None:\n        current11619_binding = current11619.bind_source(\n            source, original, runner_origin, runner_launch, runner_history, vars(args))\n    bin_confirmation_binding = None\n",
+          "before": "    bin_confirmation_binding = None\n"
+        },
+        {
+          "after": "        \"current410bFixture\": current410b_binding,\n        \"current11619Fixture\": current11619_binding,\n",
+          "before": "        \"current410bFixture\": current410b_binding,\n"
+        }
+      ],
+      "wholeFileInverseRestoresOriginal": true
+    },
+    "Tools/PinkhaDualEngineRuntime/run_prebuilt_native_ui.py": {
+      "afterSHA256": "1ade0940add53bd3877c0a01dd291280aebeb97e677362ab81a8c17226439c43",
+      "beforeSHA256": "af5c5205047657e008d185055745186f2f09da58ce68a5f121f892f5c76dcc00",
+      "changes": [
+        {
+          "after": "def native11619_module():\n    path = Path(__file__).resolve().with_name(\"native11619_profile.py\")\n    require(digest(path) == \"ee3a32a7f468aa9d4eab2eb2ebe11cda5ea2dcbf0347eace98f57a2fd79e6e70\", \"exact_App14_NativeUI_profile_required\")\n    sys.dont_write_bytecode = True\n    spec = importlib.util.spec_from_file_location(\"qualified_native11619\", path)\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    return module\n\n\ndef bin_confirmation_module():",
+          "before": "def bin_confirmation_module():"
+        },
+        {
+          "after": "        if (main_record[\"sourceCommit\"] == \"76f59f1e838991d1bbc7a07ecd08c6a2f15915c7\"\n                or main_record.get(\"inputs\", {}).get(\"nativeSourceManifestSHA256\") ==\n                    \"11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b\"\n                or ui_record.get(\"current11619Fixture\") is not None):\n            receipt[\"current11619Fixture\"] = native11619_module().admit(\n                source, main_record, args.ui_build, ui_record)\n        if ui_record.get(\"current410bFixture\") is not None:\n",
+          "before": "        if ui_record.get(\"current410bFixture\") is not None:\n"
+        },
+        {
+          "after": "                      or receipt.get(\"current410bFixture\") is not None\n                      or receipt.get(\"current11619Fixture\") is not None)\n",
+          "before": "                      or receipt.get(\"current410bFixture\") is not None)\n"
+        }
+      ],
+      "wholeFileInverseRestoresOriginal": true
+    }
+  },
+  "nativeManifest": "11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b",
+  "oldProfileFilesUnchangedExceptAdditiveBranch": true,
+  "profileSHA256": "ee3a32a7f468aa9d4eab2eb2ebe11cda5ea2dcbf0347eace98f57a2fd79e6e70",
+  "protocol": "native11619-NativeUI-closed-source-profile-v1",
+  "sourceCommit": "76f59f1e838991d1bbc7a07ecd08c6a2f15915c7",
+  "status": "SOURCE_READY_NOT_APP_OR_UI_ACCEPTANCE",
+  "tests": 0
+}

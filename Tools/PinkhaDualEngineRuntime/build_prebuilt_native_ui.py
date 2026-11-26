@@ -38,6 +38,16 @@ def write(path, value):
     temporary.replace(path)
 
 
+def native11619_module():
+    path = Path(__file__).resolve().with_name("native11619_profile.py")
+    require(digest(path) == "ee3a32a7f468aa9d4eab2eb2ebe11cda5ea2dcbf0347eace98f57a2fd79e6e70", "exact_App14_NativeUI_profile_required")
+    sys.dont_write_bytecode = True
+    spec = importlib.util.spec_from_file_location("qualified_native11619", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def bin_confirmation_module():
     path = Path(__file__).resolve().with_name("bin_confirmation_preparation.py")
     require(digest(path) == "6f30156103912fdebe67bedc530e57f159ece79d640cde38b1c05b51e67341a4", "exact_Bin_confirmation_source_validator_required")
@@ -106,6 +116,13 @@ def main():
                 and original.get("assemblyReceiptSHA256") ==
                     "8556b47a6a7e523bd5ad4c58ae292501acda1038b0d1f827e268cef15a542797",
                 "exact_reviewed_build13_source_and_original_assembly_required")
+    current11619 = None
+    if (origin == "76f59f1e838991d1bbc7a07ecd08c6a2f15915c7"
+            or original["inputs"]["nativeSourceManifestSHA256"] ==
+                "11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b"):
+        current11619 = native11619_module()
+        current11619.qualify_main(original)
+        profiles[current11619.NATIVE] = dict(current11619.PROFILE)
     profile = profiles.get(original["inputs"]["nativeSourceManifestSHA256"])
     require(profile is not None, "explicit_reviewed_unified_profile_required")
     if origin in {"5c05a612e4054a4adfa7f812343be6a15871cc89",
@@ -429,6 +446,10 @@ def main():
                 and hashlib.sha256(runner_launch.split(marker)[1]).hexdigest() ==
                     current410b_binding["miniAppsMethodSectionSHA256"],
                 "exact_integrated_document_menu_Bin_and_original_assertions_required")
+    current11619_binding = None
+    if current11619 is not None:
+        current11619_binding = current11619.bind_source(
+            source, original, runner_origin, runner_launch, runner_history, vars(args))
     bin_confirmation_binding = None
     bin_confirmation_review = None
     if args.bin_confirmation_source_commit is not None:
@@ -491,6 +512,7 @@ def main():
         "binContextPreparation": bin_binding,
         "currentMiniAppsMenuFixture": current_menu_binding,
         "current410bFixture": current410b_binding,
+        "current11619Fixture": current11619_binding,
         "current410bBinConfirmationFixture": bin_confirmation_binding,
         "mainReceiptSHA256": digest(evidence / "receipt.json"),
         "reviewedInputProfile": profile,
@@ -528,6 +550,7 @@ def main():
         "binContextPreparation": bin_binding,
         "currentMiniAppsMenuFixture": current_menu_binding,
         "current410bFixture": current410b_binding,
+        "current11619Fixture": current11619_binding,
         "current410bBinConfirmationFixture": bin_confirmation_binding,
                   "mainReceiptSHA256": digest(evidence / "receipt.json"),
                   "reviewedInputProfile": profile,
