@@ -26,7 +26,7 @@ final class NativeBookmarkPresentationTests: XCTestCase {
             { $0["sourceURL"] = .object(["ownerId": .string("any"), "propertyId": .string("name")]) },
             { $0["sourceURL"] = .object(["ownerId": .string("mapped-property-owner"), "propertyId": .string("missing")]) },
             { $0["sourceURL"] = .object(["ownerId": .string("mapped-property-owner"), "propertyId": .string("mapped-source-url"), "fallback": .bool(true)]) },
-            { $0.removeValue(forKey: "sourceURL") },
+            { _ = $0.removeValue(forKey: "sourceURL") },
             { $0["featured"] = .array([]); $0["recommended"] = .array([]) },
             { $0["sourceRecommendedLayout"] = .integer(0) },
             { $0["unrecognizedRule"] = .bool(true) },
@@ -107,7 +107,7 @@ final class NativeBookmarkPresentationTests: XCTestCase {
         let basic = try snapshot(layout: "page", descriptorChange: {
             $0["contract"] = .string(AnyNativeImportedTypePresentation.contract)
             $0["sourceRecommendedLayout"] = .integer(0)
-            $0.removeValue(forKey: "sourceURL")
+            _ = $0.removeValue(forKey: "sourceURL")
         })
         XCTAssertNil(basic.importedPresentation?.sourceURLKey)
         XCTAssertNil(basic.bookmarkSourceRow)

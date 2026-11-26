@@ -53,20 +53,15 @@ public struct AnyNativePropertiesView: View {
                         .accessibilityIdentifier("any-native-property-type")
                         .accessibilityValue(Text(snapshot.catalog.types.first(where: { $0.id == snapshot.currentTypeID })?.name ?? snapshot.currentTypeID))
                     }
-                    if let source = snapshot.bookmarkSourceRow {
+                    if let source = snapshot.bookmarkSourceRow, let url = snapshot.bookmarkSourceURL {
                         Section(AnyUIErrorText.text("סימנייה", "Bookmark")) {
-                            if let url = snapshot.bookmarkSourceURL {
-                                Link(destination: url) {
-                                    Label(AnyUIErrorText.text("פתיחת האתר", "Open website"),
-                                          systemImage: "arrow.up.right.square")
-                                }
-                                .disabled(!presentation.isMounted || !canPresentPropertyChild || model.needsReview)
-                                .accessibilityIdentifier("any-native-bookmark-open-source")
-                                .accessibilityValue(Text(source.value?.string ?? ""))
-                            } else if source.value == nil || source.value == .string("") {
-                                Text(AnyUIErrorText.text("ללא כתובת אתר", "No website address"))
-                                    .foregroundStyle(.secondary)
+                            Link(destination: url) {
+                                Label(AnyUIErrorText.text("פתיחת האתר", "Open website"),
+                                      systemImage: "arrow.up.right.square")
                             }
+                            .disabled(!presentation.isMounted || !canPresentPropertyChild || model.needsReview)
+                            .accessibilityIdentifier("any-native-bookmark-open-source")
+                            .accessibilityValue(Text(source.value?.string ?? ""))
                         }
                     }
                     if !model.visibleRows.isEmpty {
