@@ -18,10 +18,11 @@ import zipfile
 import native_dependencies
 import native_gateway
 import runtime_identity
+import native_http_qualification
 
 RUNTIME_IDENTITY_SHA = "306c0cabcf39c6de55470d642cf5b9e6e9176d73351966330b90cf333b9359b0"
-# Deliberately non-runnable until the original mixed-peer result is qualified.
-NATIVE_HTTP_QUALIFICATION_SHA = None
+NATIVE_HTTP_QUALIFICATION_SHA = "b8694dbd2ac3facce43771bdb7f206461d1b95924a5ccb1248114185a394ce1d"
+NATIVE_HTTP_HELPER_SHA = "a986b28899cacdd8b2868b1bf2e1cc80ef1b92ce15940acb6389f4723a279751"
 
 MANIFEST_SHA = "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b"
 ARCHIVE_SHA = "c70592e4ae160cbb5cb8eda3cb1caed08f727476a5c9fac7c207593cd9315830"
@@ -424,11 +425,10 @@ def main():
     require(digest(Path(runtime_identity.__file__)) == RUNTIME_IDENTITY_SHA,
             "reviewed_full_identity_helper_changed")
     runtime_contract = runtime_identity.identity(manifest_bytes, manifest["runtimeBuildDate"])
-    require(isinstance(NATIVE_HTTP_QUALIFICATION_SHA, str)
-            and len(NATIVE_HTTP_QUALIFICATION_SHA) == 64,
-            "actual_mixed_peer_result_not_yet_qualified")
-    qualification_path = root / "native-http-qualification.json"
-    require(digest(qualification_path) == NATIVE_HTTP_QUALIFICATION_SHA,
+    require(digest(Path(native_http_qualification.__file__)) == NATIVE_HTTP_HELPER_SHA,
+            "reviewed_native_http_qualifier_changed")
+    native_http_proof = native_http_qualification.qualify(root / "native-http-originals", manifest)
+    require(native_http_proof["resultSHA256"] == NATIVE_HTTP_QUALIFICATION_SHA,
             "original_native_http_qualification_changed")
     prior = None
     if args.resume_disk_stop or args.resume_gateway_metadata:
@@ -505,6 +505,8 @@ def main():
                "runtimeIdentityHelperSHA256": RUNTIME_IDENTITY_SHA,
                "fullAnyRuntimeVersion": runtime_contract["anyRuntimeVersion"],
                "nativeHTTPQualificationSHA256": NATIVE_HTTP_QUALIFICATION_SHA,
+               "nativeHTTPQualification": native_http_proof,
+               "nativeHTTPQualifierSHA256": NATIVE_HTTP_HELPER_SHA,
                "goConcurrency": {"compilePackageJobs": args.go_jobs,
                    "runtimeProcessors": os.cpu_count() or 1, "softMemoryLimitPerGoProcess": "2GiB"}}
     def run(argv, name, cwd=root, environment=None, timeout=3600):

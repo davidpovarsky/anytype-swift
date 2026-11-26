@@ -1,0 +1,7 @@
+# Actual native HTTP permission qualification admitted before Apple production
+
+The pending producer gate is now bound to original RESULT b8694dbd2ac3facce43771bdb7f206461d1b95924a5ccb1248114185a394ce1d and source qualification d50faf7ce50c6c418b8cc55dd7e46d86aa1a9d5783819b0b943e74c3ddb09da0. The original two real mixed-version methods passed with zero failures, skips or forced stops. Current source is Any8fbd/c1fd; the explicit minimum legacy source is9a190/e195, including its narrow ACL-mapping backport. Original unpatched legacy failures are not reclassified.
+
+The source-only gate checks ten exact original files, re-parses the actual Go method census, binds both binaries to their original builds and source commits, requires identical original source-before/after bytes, and verifies the actual process exit and positive ESRCH. On Mac it also rehashes both retained original binaries. Raw native logs remain in private retained evidence; only their exact digest is public here.
+
+Original-proof admission plus five refusal controls passed on Oracle: old current Any, old current SDK, changed result, changed log and changed source-after all refused. No native test was rerun and no Apple compile occurred in that qualification. Root independently reviewed helper a986 and producer cb947 against the exact009fd predecessor and reported no blocker. Each actual Apple slice still has to pass its own source, graph, version, original linker, runtime, symbol and Swift checks.
