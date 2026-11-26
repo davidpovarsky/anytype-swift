@@ -1,0 +1,791 @@
+{
+  "AppSourceCommit": "379ca3568f247d2fc218ed63df24796d461713c0",
+  "UIOnlyDonorCommit": "dec2ecbb19ff6dab720866ef5a973058c47c7e91",
+  "controls": {
+    "AppBuilds": 0,
+    "UIBuilds": 0,
+    "XCTestMethods": 0,
+    "errors": 0,
+    "failures": 0,
+    "methods": 18,
+    "nativeCalls": 0,
+    "scope": "PURE_ADMISSION_BOUNDARY_CONTROLS_ONLY",
+    "skips": 0,
+    "status": "PASS"
+  },
+  "current": {
+    "build_prebuilt_native_ui8ac.py": {
+      "bytes": 45259,
+      "sha256": "61eda1969a1b738adcc2a6db3e09af09c69c9daa3bf3ee50913b098bd3e81ae0"
+    },
+    "native8ac_profile.py": {
+      "bytes": 22072,
+      "sha256": "ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332"
+    },
+    "native8ac_sharing_source.py": {
+      "bytes": 5316,
+      "sha256": "90147e613739bf32c9ea7e02ab31bd374818b6b56d9b6164e18186884387c3ff"
+    },
+    "run_prebuilt_native_ui8ac.py": {
+      "bytes": 60454,
+      "sha256": "4236d0418645314ed289a19a2a168d50a8d107a17a78a5c9ef014de975c017d9"
+    },
+    "test_native8ac_profile.py": {
+      "bytes": 11339,
+      "sha256": "e810ee6b983b806276046489b0919aa52c78bd049b1301283d07748f3280e630"
+    }
+  },
+  "inverse": {
+    "build_prebuilt_native_ui8ac.py": {
+      "currentSHA256": "61eda1969a1b738adcc2a6db3e09af09c69c9daa3bf3ee50913b098bd3e81ae0",
+      "hunks": [
+        {
+          "current": "ebc1a0584195be30cab9",
+          "offset": 1090,
+          "prior": ""
+        },
+        {
+          "current": "8185d13e1b791c4475b",
+          "offset": 1112,
+          "prior": ""
+        },
+        {
+          "current": "ca",
+          "offset": 1132,
+          "prior": "b"
+        },
+        {
+          "current": "d92",
+          "offset": 1135,
+          "prior": "5"
+        },
+        {
+          "current": "a",
+          "offset": 1139,
+          "prior": "83f"
+        },
+        {
+          "current": "fe",
+          "offset": 1142,
+          "prior": "b7156d"
+        },
+        {
+          "current": "c282",
+          "offset": 1145,
+          "prior": "af9ddde1"
+        },
+        {
+          "current": "",
+          "offset": 1151,
+          "prior": "d95"
+        },
+        {
+          "current": "3",
+          "offset": 1152,
+          "prior": "a191a91e6946dd4869b951659595ec"
+        },
+        {
+          "current": "ebc1a0584195be30cab9",
+          "offset": 1343,
+          "prior": ""
+        },
+        {
+          "current": "8185d13e1b791c4475b",
+          "offset": 1365,
+          "prior": ""
+        },
+        {
+          "current": "ca",
+          "offset": 1385,
+          "prior": "b"
+        },
+        {
+          "current": "d92",
+          "offset": 1388,
+          "prior": "5"
+        },
+        {
+          "current": "a",
+          "offset": 1392,
+          "prior": "83f"
+        },
+        {
+          "current": "fe",
+          "offset": 1395,
+          "prior": "b7156d"
+        },
+        {
+          "current": "c282",
+          "offset": 1398,
+          "prior": "af9ddde1"
+        },
+        {
+          "current": "",
+          "offset": 1404,
+          "prior": "d95"
+        },
+        {
+          "current": "3",
+          "offset": 1405,
+          "prior": "a191a91e6946dd4869b951659595ec"
+        },
+        {
+          "current": "native-sharing-source-commit\", choices=[\"dec2ecbb19ff6dab720866ef5a973058c47c7e91\"])\n    parser.add_argument(\"--",
+          "offset": 2988,
+          "prior": ""
+        },
+        {
+          "current": "(",
+          "offset": 4308,
+          "prior": ""
+        },
+        {
+          "current": "\n             or (original.get(\"sourceCommit\") == \"379ca3568f247d2fc218ed63df24796d461713c0\"\n                 and original.get(\"status\") == \"PASS_ORIGINAL_APP_AND_CONTINUED_COMPLETE_UI_BUILD_NOT_ACCEPTANCE\"\n                 and original.get(\"protocol\") == \"pinkha-app15-original-app-ui-continuation-v1\"))",
+          "offset": 4392,
+          "prior": ""
+        },
+        {
+          "current": "require(args.native_sharing_source_commit is None or current8ac is not None,\n            \"sharing_donor_is_only_for_exact_App15\")\n    ",
+          "offset": 8328,
+          "prior": ""
+        },
+        {
+          "current": "if current8ac is not None:\n        runner_origin, runner_launch = current8ac.compile_sharing_source(source, vars(args))\n    el",
+          "offset": 10959,
+          "prior": ""
+        }
+      ],
+      "priorSHA256": "13820e365314ef2221d513e8ce0a862f06ff14bfb25ca313de93e2d4820c87d9",
+      "restoresEveryOriginalByte": true
+    },
+    "native8ac_profile.py": {
+      "currentSHA256": "ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332",
+      "hunks": [
+        {
+          "current": "App15 composite product and additive owner-sharing ",
+          "offset": 10,
+          "prior": ""
+        },
+        {
+          "current": "",
+          "offset": 70,
+          "prior": "source/product "
+        },
+        {
+          "current": "",
+          "offset": 77,
+          "prior": " for the original App15 build"
+        },
+        {
+          "current": "",
+          "offset": 1741,
+          "prior": "SOURCE_FILES["
+        },
+        {
+          "current": "0b4cbd0663162801ed09f146fd531cc225539c7",
+          "offset": 1742,
+          "prior": "N"
+        },
+        {
+          "current": "6886317",
+          "offset": 1782,
+          "prior": "tiveApp/UITests/NativeLaunchTests.swi"
+        },
+        {
+          "current": "4d9021fbff345b00",
+          "offset": 1790,
+          "prior": "t"
+        },
+        {
+          "current": "",
+          "offset": 1807,
+          "prior": "]"
+        },
+        {
+          "current": "False,\n    \"originalDPreparationAlreadyIntegrated\": ",
+          "offset": 2032,
+          "prior": ""
+        },
+        {
+          "current": ",\n    \"runnerSourceCommit\": \"dec2ecbb19ff6dab720866ef5a973058c47c7e91\",\n    \"sharingUIAddition\": {\"donorCommit\": \"dec2ecbb19ff6dab720866ef5a973058c47c7e91\", \"appSourceCommit\": \"379ca3568f247d2fc218ed63df24796d461713c0\", \"originalSHA256\": \"f7056f6f64144dffb9bca8420f543cf7ec78b2cc1b502e40b6c56abdc9dc0e95\", \"compiledSHA256\": \"0b4cbd0663162801ed09f146fd531cc225539c7a6886317f4d9021fbff345b00\", \"additionSHA256\": \"918a91cf02250a1fdaa8b91ca570ebb64406f154988dffed0fcb90552292ad81\", \"gitPathProofSHA256\": \"1eb9cf9ff92fac74596a1c377c7b03969df38f140d649e3cdbe04cc8fe523843\", \"sourceProofSHA256\": \"d5af4e645339ff3ba924e6676c9ccff43aa558ac427882d3e9cec51e2cce3273\", \"additionOffset\": 182918, \"additionBytes\": 7433, \"applicationSourceChanges\": 0, \"originalMethodBytesUnchanged\": True, \"scope\": \"owner-invitation-confirm-cancel-revoke-cold-ui-only\"}",
+          "offset": 2088,
+          "prior": ""
+        },
+        {
+          "current": "",
+          "offset": 4546,
+          "prior": "C"
+        },
+        {
+          "current": "RIG",
+          "offset": 4547,
+          "prior": "MB"
+        },
+        {
+          "current": "AL",
+          "offset": 4552,
+          "prior": "ED"
+        },
+        {
+          "current": "",
+          "offset": 4555,
+          "prior": "M"
+        },
+        {
+          "current": "PP",
+          "offset": 4556,
+          "prior": "IN"
+        },
+        {
+          "current": "D_CONTINUE",
+          "offset": 4561,
+          "prior": ""
+        },
+        {
+          "current": "\"\n            and record.get(\"protocol\") == \"pinkha-app15-original-app-ui-continuation-v1",
+          "offset": 4605,
+          "prior": ""
+        },
+        {
+          "current": "_required\")\n    require(record.get(\"originalFailedProducerOutcomeSHA256\") == ORIGINAL_PINS[\"failure.json\"]\n            and record.get(\"originalAppResultSHA256\") == ORIGINAL_PINS[\"app/result.json\"]\n            and record.get(\"originalAppLogSHA256\") == ORIGINAL_PINS[\"app/original.log\"]\n            and record.get(\"originalProcessExitSHA256\") == ORIGINAL_PINS[\"app/process-exit.json\"]\n            and record.get(\"originalProducer\") == ORIGINAL_PRODUCER\n            and record.get(\"originalAppProductsPreserved\") is True\n            and record.get(\"appBuildsThisInvocation\") == record.get(\"nativeBuildsThisInvocation\") == 0\n            and record.get(\"uiBuildsThisInvocation\") == 1,\n            \"explicit_original_failed_producer_and_separate_UI_continuation",
+          "offset": 5302,
+          "prior": ""
+        },
+        {
+          "current": "HARING_D",
+          "offset": 6909,
+          "prior": ""
+        },
+        {
+          "current": "NO",
+          "offset": 6918,
+          "prior": "U"
+        },
+        {
+          "current": "\n            and arguments.get(\"native_sharing_source_commit\") == SHARING_DONOR\n            and arguments.get(\"runner_source_commit\") is None",
+          "offset": 6921,
+          "prior": "CE"
+        },
+        {
+          "current": "exa",
+          "offset": 7169,
+          "prior": ""
+        },
+        {
+          "current": "",
+          "offset": 7173,
+          "prior": "omple"
+        },
+        {
+          "current": "",
+          "offset": 7174,
+          "prior": "e"
+        },
+        {
+          "current": "h",
+          "offset": 7176,
+          "prior": ""
+        },
+        {
+          "current": "ring",
+          "offset": 7178,
+          "prior": "me"
+        },
+        {
+          "current": "",
+          "offset": 7183,
+          "prior": "source_N"
+        },
+        {
+          "current": "ddi",
+          "offset": 7184,
+          "prior": ""
+        },
+        {
+          "current": "on",
+          "offset": 7189,
+          "prior": "veUI"
+        },
+        {
+          "current": "candidate, sharing = sharing_source(source)\n    require(sharing == FIXTURE[\"sharingUIAddition\"], \"exact_sharing_donor_provenance_required\")\n    ",
+          "offset": 7240,
+          "prior": ""
+        },
+        {
+          "current": "",
+          "offset": 7402,
+          "prior": "(sour"
+        },
+        {
+          "current": "andid",
+          "offset": 7403,
+          "prior": "e / \"N"
+        },
+        {
+          "current": "",
+          "offset": 7410,
+          "prior": "iv"
+        },
+        {
+          "current": "",
+          "offset": 7411,
+          "prior": "App/UITests/NativeLaunchTests.swift\").read_bytes()"
+        },
+        {
+          "current": "SOURCE and ",
+          "offset": 7907,
+          "prior": ""
+        },
+        {
+          "current": "HARING_D",
+          "offset": 7958,
+          "prior": ""
+        },
+        {
+          "current": "NO",
+          "offset": 7967,
+          "prior": "U"
+        },
+        {
+          "current": "",
+          "offset": 7970,
+          "prior": "CE"
+        },
+        {
+          "current": "SOURCE and ",
+          "offset": 8482,
+          "prior": ""
+        },
+        {
+          "current": "HARING_D",
+          "offset": 8534,
+          "prior": ""
+        },
+        {
+          "current": "NO",
+          "offset": 8543,
+          "prior": "U"
+        },
+        {
+          "current": "",
+          "offset": 8546,
+          "prior": "CE"
+        },
+        {
+          "current": "candidate, sharing = sharing_source(source)\n    require(sharing == FIXTURE[\"sharingUIAddition\"], \"exact_sharing_donor_provenance_required\")\n    ",
+          "offset": 9920,
+          "prior": ""
+        },
+        {
+          "current": "",
+          "offset": 10329,
+          "prior": "\n"
+        },
+        {
+          "current": "",
+          "offset": 10330,
+          "prior": "           (sour"
+        },
+        {
+          "current": "andid",
+          "offset": 10331,
+          "prior": "e / \"N"
+        },
+        {
+          "current": "",
+          "offset": 10338,
+          "prior": "iv"
+        },
+        {
+          "current": "",
+          "offset": 10339,
+          "prior": "App/UITests/NativeLaunchTests.swift\").read_bytes()"
+        },
+        {
+          "current": "-ui-continuation1",
+          "offset": 11427,
+          "prior": ""
+        },
+        {
+          "current": "",
+          "offset": 11462,
+          "prior": "617b163951a96929"
+        },
+        {
+          "current": "",
+          "offset": 11463,
+          "prior": "9bef38a4991ded8"
+        },
+        {
+          "current": "",
+          "offset": 11464,
+          "prior": "53e8c21ad9278a"
+        },
+        {
+          "current": "2",
+          "offset": 11467,
+          "prior": ""
+        },
+        {
+          "current": "1",
+          "offset": 11469,
+          "prior": ""
+        },
+        {
+          "current": "9e4e73aec",
+          "offset": 11472,
+          "prior": ""
+        },
+        {
+          "current": "ca8a136906aed",
+          "offset": 11482,
+          "prior": "f"
+        },
+        {
+          "current": "4433",
+          "offset": 11497,
+          "prior": "1a"
+        },
+        {
+          "current": "",
+          "offset": 11502,
+          "prior": "7"
+        },
+        {
+          "current": "d53d9ead4b2e419a341",
+          "offset": 11504,
+          "prior": ""
+        },
+        {
+          "current": "f5",
+          "offset": 11524,
+          "prior": ""
+        },
+        {
+          "current": "\n\nSHARING_DONOR = \"dec2ecbb19ff6dab720866ef5a973058c47c7e91\"\nSHARING_HELPER_SHA = \"90147e613739bf32c9ea7e02ab31bd374818b6b56d9b6164e18186884387c3ff\"\nORIGINAL_EVIDENCE = WORKSPACE / \"main15/build15\"\nORIGINAL_PRODUCER = {\"gitCommit\": \"08ed46041a4d45164e000212eb26fd1c98fee966\",\n    \"path\": str(WORKSPACE / \"main15/control-main617/build_main_permission.py\"),\n    \"sha256\": \"617b163951a9692909bef38a4991ded8c53e8c21ad9278a9564222fce1a57a68\"}\nORIGINAL_PINS = {\n    \"failure.json\": \"75479a16a539d47da9844817f9de802203003a4448cf4e359cc89f9b1d9db8e2\",\n    \"app/result.json\": \"698889d0e24a775860dafd0d886b335ea047047e6eacb28ed5f83bd8a74dc167\",\n    \"app/process-exit.json\": \"800c49403f2a4c21f59c6b3de1a36a0518336f95994b3a70a87cbd5d5ff68aad\",\n    \"app/original.log\": \"52b8378d6e766d42360f4f9639a4f0dcd5b6da714e86475e9a19a9df21c53154\",\n}\nCOMPOSITE_PINS = {\n    \"receipt.json\": \"0f0a1241dc76b6585a42866f5d129ea8f5aaa722addc74873245ebe71a09b735\",\n    \"source-before.json\": \"b4fd4069ed3846797bde854caef134c4c7343e475ade555f8daffc34e8a3dc38\",\n    \"source-after.json\": \"b4fd4069ed3846797bde854caef134c4c7343e475ade555f8daffc34e8a3dc38\",\n    \"ui/result.json\": \"8a7ae7c7a84c28eed3515b4dcbecab8e1b280fec446bc5e3f2c08239d56ff873\",\n    \"ui/original.log\": \"50b055c7275bde4a1abdc74b1e3e85de1397f203dfced95676bcfa35a5805b90\",\n    \"original-ui-copy.json\": \"de23ccb4a8af6580a9348891ccbbd21289c75dc1e83addeb3d0ed5f045015fec\",\n    \"admission.json\": \"2e647ee19f2c8f9a1f0fe47b81394d3ab1893181a53fb66fcebc6020266ddd5d\",\n    \"new-uikit-compiler-inputs.json\": \"ef673b53e6093b1f8552b2f64aa9db5d9a410bfe3dd25a119c18a592ecd00462\",\n    \"original-app-products-before.json\": \"6f2ad6f4ee8d4ef48bcb3a87a21adf451bef54f9481b38ac116e207fb00be057\",\n    \"original-app-products-after.json\": \"6f2ad6f4ee8d4ef48bcb3a87a21adf451bef54f9481b38ac116e207fb00be057\",\n}\n\ndef sharing_source(source):\n    path = Path(__file__).resolve().with_name(\"native8ac_sharing_source.py\")\n    raw = path.read_bytes()\n    require(sha(raw) == SHARING_HELPER_SHA, \"exact_additive_sharing_source_helper_required\")\n    module = type(sys)(\"App15_exact_additive_sharing_source\")\n    module.__file__ = str(path)\n    exec(compile(raw, str(path), \"exec\"), module.__dict__)\n    return module.load_source(source)\n\ndef compile_sharing_source(source, arguments):\n    require(arguments.get(\"native_sharing_source_commit\") == SHARING_DONOR\n            and arguments.get(\"runner_source_commit\") is None\n            and all(arguments.get(key) is None for key in OVERLAY_ARGUMENTS),\n            \"exact_additive_sharing_argument_required\")\n    raw, binding = sharing_source(source)\n    require(binding[\"donorCommit\"] == SHARING_DONOR\n            and binding[\"compiledSHA256\"] == FIXTURE[\"compiledSHA256\"], \"sharing_donor_binding_changed\")\n    return SHARING_DONOR, raw\n\ndef qualify_composite_files(evidence, record):\n    require(evidence == MAIN_EVIDENCE, \"closed_App15_composite_evidence_required\")\n    current = {name: (evidence/name).read_bytes() for name in COMPOSITE_PINS}\n    original = {name: (ORIGINAL_EVIDENCE/name).read_bytes() for name in ORIGINAL_PINS}\n    require(all(sha(current[name]) == value for name, value in COMPOSITE_PINS.items())\n            and all(sha(original[name]) == value for name, value in ORIGINAL_PINS.items()),\n            \"actual_original_and_composite_receipts_required\")\n    require(json.loads(current[\"receipt.json\"]) == record\n            and json.loads(original[\"app/result.json\"]) == record[\"app\"]\n            and json.loads(current[\"ui/result.json\"]) == record[\"ui\"]\n            and json.loads(original[\"failure.json\"])[\"status\"] == \"FAIL\",\n            \"original_App_success_and_original_controller_failure_must_both_remain\")\n    require(current[\"original-app-products-before.json\"] == current[\"original-app-products-after.json\"]\n            and current[\"source-before.json\"] == current[\"source-after.json\"],\n            \"complete_original_App_Products_and_sources_preserved\")\n    require(file_sha(Path(ORIGINAL_PRODUCER[\"path\"])) == ORIGINAL_PRODUCER[\"sha256\"]\n            and file_sha(WORKSPACE/\"main15/control-ui0c956/resume_main_permission_ui.py\") == PRODUCER_SHA,\n            \"both_exact_producer_sources_required\")\n    original_app = record[\"app\"]\n    require(original_app[\"ownedProcessGroup\"] == record[\"ui\"][\"ownedProcessGroup\"] == \"ABSENT_ESRCH\"\n            and original_app[\"cleanupErrors\"] == record[\"ui\"][\"cleanupErrors\"] == [],\n            \"both_actual_original_build_processes_must_be_absent\")\n    return {\"compositeReceiptSHA256\": COMPOSITE_PINS[\"receipt.json\"],\n            \"originalAppResultSHA256\": ORIGINAL_PINS[\"app/result.json\"],\n            \"originalFailedProducerOutcomeSHA256\": ORIGINAL_PINS[\"failure.json\"],\n            \"uiContinuationResultSHA256\": COMPOSITE_PINS[\"ui/result.json\"]}",
+          "offset": 11784,
+          "prior": ""
+        },
+        {
+          "current": ")\n    composite = qualify_composite_files(evidence, record",
+          "offset": 17345,
+          "prior": ""
+        },
+        {
+          "current": ",\n            \"compositeOriginalAppAndUI\": composite",
+          "offset": 21501,
+          "prior": ""
+        }
+      ],
+      "priorSHA256": "6cfb95a83fb6b7156d9af9ddde1cdd953a191a91e6946dd4869b951659595ec2",
+      "restoresEveryOriginalByte": true
+    },
+    "run_prebuilt_native_ui8ac.py": {
+      "currentSHA256": "4236d0418645314ed289a19a2a168d50a8d107a17a78a5c9ef014de975c017d9",
+      "hunks": [
+        {
+          "current": "ebc1a0584195be30cab9",
+          "offset": 21979,
+          "prior": ""
+        },
+        {
+          "current": "8185d13e1b791c4475b",
+          "offset": 22001,
+          "prior": ""
+        },
+        {
+          "current": "ca",
+          "offset": 22021,
+          "prior": "b"
+        },
+        {
+          "current": "d92",
+          "offset": 22024,
+          "prior": "5"
+        },
+        {
+          "current": "a",
+          "offset": 22028,
+          "prior": "83f"
+        },
+        {
+          "current": "fe",
+          "offset": 22031,
+          "prior": "b7156d"
+        },
+        {
+          "current": "c282",
+          "offset": 22034,
+          "prior": "af9ddde1"
+        },
+        {
+          "current": "",
+          "offset": 22040,
+          "prior": "d95"
+        },
+        {
+          "current": "3",
+          "offset": 22041,
+          "prior": "a191a91e6946dd4869b951659595ec"
+        },
+        {
+          "current": "ebc1a0584195be30cab9",
+          "offset": 22232,
+          "prior": ""
+        },
+        {
+          "current": "8185d13e1b791c4475b",
+          "offset": 22254,
+          "prior": ""
+        },
+        {
+          "current": "ca",
+          "offset": 22274,
+          "prior": "b"
+        },
+        {
+          "current": "d92",
+          "offset": 22277,
+          "prior": "5"
+        },
+        {
+          "current": "a",
+          "offset": 22281,
+          "prior": "83f"
+        },
+        {
+          "current": "fe",
+          "offset": 22284,
+          "prior": "b7156d"
+        },
+        {
+          "current": "c282",
+          "offset": 22287,
+          "prior": "af9ddde1"
+        },
+        {
+          "current": "",
+          "offset": 22293,
+          "prior": "d95"
+        },
+        {
+          "current": "3",
+          "offset": 22294,
+          "prior": "a191a91e6946dd4869b951659595ec"
+        },
+        {
+          "current": "(",
+          "offset": 34785,
+          "prior": ""
+        },
+        {
+          "current": "\n                 or (main_record.get(\"sourceCommit\") == \"379ca3568f247d2fc218ed63df24796d461713c0\"\n                     and main_record.get(\"status\") == \"PASS_ORIGINAL_APP_AND_CONTINUED_COMPLETE_UI_BUILD_NOT_ACCEPTANCE\"\n                     and main_record.get(\"protocol\") == \"pinkha-app15-original-app-ui-continuation-v1\"))",
+          "offset": 34868,
+          "prior": ""
+        }
+      ],
+      "priorSHA256": "b5ccaf7ccba7893cd35cac15c5230bbee027da1bbef482a3988b872592a5c6e8",
+      "restoresEveryOriginalByte": true
+    },
+    "test_native8ac_profile.py": {
+      "currentSHA256": "e810ee6b983b806276046489b0919aa52c78bd049b1301283d07748f3280e630",
+      "hunks": [
+        {
+          "current": "",
+          "offset": 781,
+          "prior": "C"
+        },
+        {
+          "current": "RIG",
+          "offset": 782,
+          "prior": "MB"
+        },
+        {
+          "current": "AL",
+          "offset": 787,
+          "prior": "ED"
+        },
+        {
+          "current": "",
+          "offset": 790,
+          "prior": "M"
+        },
+        {
+          "current": "PP",
+          "offset": 791,
+          "prior": "IN"
+        },
+        {
+          "current": "D_CONTINUE",
+          "offset": 796,
+          "prior": ""
+        },
+        {
+          "current": ",\n        \"protocol\": \"pinkha-app15-original-app-ui-continuation-v1\",\n        \"originalFailedProducerOutcomeSHA256\": p.ORIGINAL_PINS[\"failure.json\"],\n        \"originalAppResultSHA256\": p.ORIGINAL_PINS[\"app/result.json\"],\n        \"originalAppLogSHA256\": p.ORIGINAL_PINS[\"app/original.log\"],\n        \"originalProcessExitSHA256\": p.ORIGINAL_PINS[\"app/process-exit.json\"],\n        \"originalProducer\": dict(p.ORIGINAL_PRODUCER), \"originalAppProductsPreserved\": True,\n        \"appBuildsThisInvocation\": 0, \"nativeBuildsThisInvocation\": 0, \"uiBuildsThisInvocation\": 1",
+          "offset": 841,
+          "prior": ""
+        },
+        {
+          "current": "p.sharing_source",
+          "offset": 2897,
+          "prior": ""
+        },
+        {
+          "current": "",
+          "offset": 2918,
+          "prior": " / \"NativeApp/UITests/NativeLaunchTests.swift\""
+        },
+        {
+          "current": "[0]",
+          "offset": 2919,
+          "prior": ".read_bytes()"
+        },
+        {
+          "current": "HARING_D",
+          "offset": 3342,
+          "prior": ""
+        },
+        {
+          "current": "NO",
+          "offset": 3351,
+          "prior": "U"
+        },
+        {
+          "current": "",
+          "offset": 3354,
+          "prior": "CE"
+        },
+        {
+          "current": "HARING_D",
+          "offset": 3986,
+          "prior": ""
+        },
+        {
+          "current": "NO",
+          "offset": 3995,
+          "prior": "U"
+        },
+        {
+          "current": "",
+          "offset": 3998,
+          "prior": "CE"
+        },
+        {
+          "current": "p.sharing_source",
+          "offset": 4534,
+          "prior": ""
+        },
+        {
+          "current": "",
+          "offset": 4555,
+          "prior": " / \"NativeApp/UITests/NativeLaunchTests.swift\""
+        },
+        {
+          "current": "[0]",
+          "offset": 4556,
+          "prior": ".read_bytes()"
+        },
+        {
+          "current": "HARING_D",
+          "offset": 4704,
+          "prior": ""
+        },
+        {
+          "current": "NO",
+          "offset": 4713,
+          "prior": "U"
+        },
+        {
+          "current": "",
+          "offset": 4716,
+          "prior": "CE"
+        },
+        {
+          "current": "\"native_sharing_source_commit\": p.SHARING_DONOR",
+          "offset": 4736,
+          "prior": ""
+        },
+        {
+          "current": "p.sharing_source",
+          "offset": 5533,
+          "prior": ""
+        },
+        {
+          "current": "",
+          "offset": 5554,
+          "prior": " / \"NativeApp/UITests/NativeLaunchTests.swift\""
+        },
+        {
+          "current": "[0]",
+          "offset": 5555,
+          "prior": ".read_bytes()"
+        },
+        {
+          "current": "HARING_D",
+          "offset": 5872,
+          "prior": ""
+        },
+        {
+          "current": "NO",
+          "offset": 5881,
+          "prior": "U"
+        },
+        {
+          "current": "",
+          "offset": 5884,
+          "prior": "CE"
+        },
+        {
+          "current": ", \"native_sharing_source_commit\": p.SHARING_DONOR",
+          "offset": 5956,
+          "prior": ""
+        },
+        {
+          "current": "p.sharing_source",
+          "offset": 6079,
+          "prior": ""
+        },
+        {
+          "current": "",
+          "offset": 6100,
+          "prior": " / \"NativeApp/UITests/NativeLaunchTests.swift\""
+        },
+        {
+          "current": "[0]",
+          "offset": 6101,
+          "prior": ".read_bytes()"
+        },
+        {
+          "current": "HARING_D",
+          "offset": 6333,
+          "prior": ""
+        },
+        {
+          "current": "NO",
+          "offset": 6342,
+          "prior": "U"
+        },
+        {
+          "current": "",
+          "offset": 6345,
+          "prior": "CE"
+        },
+        {
+          "current": "\"native_sharing_source_commit\": p.SHARING_DONOR",
+          "offset": 6373,
+          "prior": ""
+        },
+        {
+          "current": "    def test_missing_original_failed_outcome_is_refused(self):\n        self.main.pop(\"originalFailedProducerOutcomeSHA256\")\n        with self.assertRaisesRegex(RuntimeError, \"explicit_original_failed_producer\"):\n            p.admit(ROOT, self.main, self.directory, self.ui)\n\n    def test_old_complete_build_status_cannot_replace_composite(self):\n        self.main[\"status\"] = \"PASS_COMBINED_MAIN_AND_COMPLETE_UI_BUILD_NOT_ACCEPTANCE\"\n        with self.assertRaisesRegex(RuntimeError, \"original_App15_complete_build_required\"):\n            p.admit(ROOT, self.main, self.directory, self.ui)\n\n    def test_other_sharing_donor_is_refused(self):\n        launch = p.sharing_source(ROOT)[0]\n        history = (ROOT / \"NativeApp/UITests/NativeHistoryTests.swift\").read_bytes()\n        with self.assertRaisesRegex(RuntimeError, \"without_overlays\"):\n            p.bind_source(ROOT, self.main, p.SHARING_DONOR, launch, history,\n                          {\"native_sharing_source_commit\": p.SOURCE})\n\n\n",
+          "offset": 9647,
+          "prior": ""
+        }
+      ],
+      "priorSHA256": "e2ad9dee8c889881e4100ff9dd131522e7304f0bc443eb4782469b002a73e38a",
+      "restoresEveryOriginalByte": true
+    }
+  },
+  "logSHA256": "aa00fc19ee350bcf56137448440956da77f22f076da9ce557c832d34738c6979",
+  "originalSourceOnlyProfileSHA256": "6cfb95a83fb6b7156d9af9ddde1cdd953a191a91e6946dd4869b951659595ec2",
+  "status": "PASS_SOURCE_AND_18_PURE_CONTROLS_NOT_UI_BUILD"
+}
