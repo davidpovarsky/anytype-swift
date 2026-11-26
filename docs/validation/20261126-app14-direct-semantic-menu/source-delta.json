@@ -1,0 +1,15 @@
+{
+  "actualTests": 0,
+  "appBuilds": 0,
+  "appSourceCommit": "76f59f1e838991d1bbc7a07ecd08c6a2f15915c7",
+  "candidateSHA256": "716c198e087c64723c006844df66f897d9a502b25cbafb342340f33087614fd6",
+  "onlyChangedPath": "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift",
+  "originalSHA256": "935d722957539a1499816295cac97d369618a77fe33e27b9f9e42d90fbb8cff8",
+  "originalSequence": "        try tap(input)\n        input.typeKey(.rightArrow, modifierFlags: [])\n        input.doubleTap()\n        let started = ProcessInfo.processInfo.systemUptime\n",
+  "path": "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift",
+  "replacementSequence": "        // A persisted semantic Link can open its Sources sheet on a single\n        // tap after cold launch. Acquire native text selection directly; the\n        // original Sources edit-menu action below must still be exercised.\n        try requireHittable(input)\n        input.doubleTap()\n        let started = ProcessInfo.processInfo.systemUptime\n",
+  "uiBuilds": 0,
+  "uiSourceBranch": "refs/heads/codex/chatgpt-page154-app14-direct-menu-20261126",
+  "uiSourceCommit": "813f4f03edf2d965b4167cab5966fa6d3857f97e",
+  "wholeFileInverse": true
+}
