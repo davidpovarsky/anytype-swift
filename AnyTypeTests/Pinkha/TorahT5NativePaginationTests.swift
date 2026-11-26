@@ -74,6 +74,9 @@ private struct T5PaginationReadback: Codable {
     let spaceID: String
     let rootID: String
     let title: String
+    let nativeLayout: Int
+    let nativeSnippet: String
+    let displayTitle: String
     let typeID: String
     let isArchived: Bool
     let isDeleted: Bool
@@ -385,6 +388,7 @@ struct TorahT5NativePaginationTests {
         let raw = try #require(value.values[canonicalKey]?.stringValue)
         let restrictions = MiddlewareObjectRestrictionsConverter.convertObjectRestrictions(middlewareRestrictions: response.objectView.restrictions).objectRestriction
         return .init(objectID: objectID, spaceID: value.spaceId, rootID: response.objectView.rootID, title: value.name,
+            nativeLayout: value.resolvedLayoutValue.rawValue, nativeSnippet: value.snippet, displayTitle: value.objectName,
             typeID: value.type, isArchived: value.isArchived, isDeleted: value.isDeleted, isReadonly: value.isReadonly,
             detailsRestricted: restrictions.contains(.details),
             projectionReady: value.values[TorahNativePropertyDefinition.readinessKey]?.boolValue == true,
@@ -877,6 +881,12 @@ extension TorahT5NativePaginationTests {
             expectedVersion = T5NativeRelatedLookupCapability.coherentRuntimeVersion
             try require(environment["PINKHA_T5_ACCOUNT_RETRY_RUNTIME_VERSION"] == expectedVersion,
                 "coherent-pending-runtime-binding-required")
+        #if PINKHA_DUAL_ENGINE_RUNTIME
+        case "dual-engine-runtime-v1":
+            expectedVersion = T5NativeRelatedLookupCapability.unifiedRuntimeVersion
+            try require(environment["PINKHA_T5_ACCOUNT_RETRY_RUNTIME_VERSION"] == expectedVersion,
+                "combined-pending-runtime-binding-required")
+        #endif
         default:
             throw T5PaginationFailure.invariant("unknown-pending-runtime-profile")
         }

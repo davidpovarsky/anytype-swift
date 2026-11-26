@@ -55,13 +55,12 @@ struct AnyNativeHistoryView: View {
             .navigationTitle(AnyUIErrorText.text("היסטוריית גרסאות", "Version history"))
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: String.self) { version in
-                AnyNativeHistoryVersionView(presentation: presentation, version: version)
+                AnyNativeHistoryVersionView(presentation: presentation, version: version, closeHistory: closeHistory)
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(AnyUIErrorText.text("סגירה", "Close")) {
-                        presentation.revoke(); dismiss()
-                    }.accessibilityIdentifier("any-native-history-close")
+                    Button(AnyUIErrorText.text("סגירה", "Close"), action: closeHistory)
+                        .accessibilityIdentifier("any-native-history-close")
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button(AnyUIErrorText.text("רענון", "Refresh"), systemImage: "arrow.clockwise") {
@@ -83,11 +82,17 @@ struct AnyNativeHistoryView: View {
             Task { await presentation.drain() }
         }
     }
+
+    private func closeHistory() {
+        presentation.revoke()
+        dismiss()
+    }
 }
 
 private struct AnyNativeHistoryVersionView: View {
     @Bindable var presentation: AnyNativeHistoryPresentation
     let version: String
+    let closeHistory: @MainActor () -> Void
 
     var body: some View {
         List {
@@ -140,6 +145,12 @@ private struct AnyNativeHistoryVersionView: View {
         .accessibilityIdentifier("any-native-history-preview")
         .navigationTitle(AnyUIErrorText.text("גרסה שמורה", "Saved version"))
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(AnyUIErrorText.text("סגירה", "Close"), action: closeHistory)
+                    .accessibilityIdentifier("any-native-history-close")
+            }
+        }
         .task(id: version) { await presentation.showVersion(version) }
         .onDisappear { presentation.closeVersion(version) }
     }

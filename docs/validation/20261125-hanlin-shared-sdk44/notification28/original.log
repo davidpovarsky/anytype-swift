@@ -1,0 +1,272 @@
+warning: 'zipfoundation': /Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/External/ZIPFoundation/Package@swift-5.9.swift:23:61: warning: 'v4' is deprecated: watchOS 9.0 is the oldest supported version [#DeprecatedDeclaration]
+21 |     name: "ZIPFoundation",
+22 |     platforms: [
+23 |         .macOS(.v10_13), .iOS(.v12), .tvOS(.v12), .watchOS(.v4), .visionOS(.v1)
+   |                                                             `- warning: 'v4' is deprecated: watchOS 9.0 is the oldest supported version [#DeprecatedDeclaration]
+24 |     ],
+25 |     products: [
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+Building for debugging...
+[Computing dependencies]
+[Pre-planning 1 / 1141]
+[Planning deferred tasks]
+[Starting]
+[85 / 301] HanlinMergedSourceProof_HanlinScriptContracts
+[128 / 299]
+[145 / 299]
+[147 / 299]
+[150 / 255] HanlinExtensionContracts
+[154 / 304]
+[157 / 304]
+[160 / 306]
+[168 / 307] HanlinExtensionContracts
+[176 / 307]
+[182 / 308]
+[186 / 308] HanlinChatCoreTests-product
+[191 / 307]
+[194 / 307]
+[195 / 307]
+[197 / 307]
+[201 / 318] HanlinExtensionContracts
+[205 / 318]
+[207 / 318]
+[210 / 318] HanlinScriptUI
+[213 / 318]
+[220 / 318] HanlinScriptUI
+[222 / 318] SwiftyJSON
+[237 / 318] ZIPFoundation
+[239 / 318] ZIPFoundation-product
+[240 / 318] ZIPFoundation-product
+[241 / 318] ZIPFoundation
+[243 / 318] ZIPFoundation
+[244 / 318] ZIPFoundation
+[245 / 318] SwiftyJSON
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/External/SwiftyJSON/Source/SwiftyJSON/SwiftyJSON.swift:239:18: [1;33mwarning: [1;39mtype 'Any' is not optional, value can never be nil; this is an error in the Swift 6 language mode[0;0m
+ [0;36m237 |[0;0m             case _ as NSNull:
+ [0;36m238 |[0;0m                 type = .null
+ [0;36m239 |[0;0m             case nil:
+     [0;36m|[0;0m                  `- [1;33mwarning: [1;39mtype 'Any' is not optional, value can never be nil; this is an error in the Swift 6 language mode[0;0m
+ [0;36m240 |[0;0m                 type = .null
+ [0;36m241 |[0;0m             case let array as [Any]:
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/External/SwiftyJSON/Source/SwiftyJSON/SwiftyJSON.swift:225:20: [1;33mwarning: [1;39mwill never be executed[0;0m
+ [0;36m223 |[0;0m         set {
+ [0;36m224 |[0;0m             error = nil
+ [0;36m225 |[0;0m             switch unwrap(newValue) {
+     [0;36m|[0;0m                    |- [1;33mwarning: [1;39mwill never be executed[0;0m
+     [0;36m|[0;0m                    `- [1;39mnote: [1;39mcondition always evaluates to false[0;0m
+ [0;36m226 |[0;0m             case let number as NSNumber:
+ [0;36m227 |[0;0m                 if number.isBool {
+[246 / 318] SwiftyJSON
+[250 / 318] SwiftyJSON-product
+[251 / 318] HanlinLegacyWidgetStoreFixture
+[254 / 319]
+[257 / 391]
+[257 / 391] HanlinScriptUI
+[261 / 391]
+[266 / 391]
+[270 / 391]
+[273 / 391]
+[277 / 391]
+[282 / 391]
+[286 / 391]
+[288 / 391]
+[292 / 391]
+[295 / 391]
+[297 / 391]
+[302 / 391]
+[303 / 391]
+[306 / 391]
+[310 / 391]
+[313 / 391]
+[315 / 391] HanlinScriptUI
+[316 / 392]
+[318 / 392]
+[321 / 395] HanlinLegacyWidgetStoreFixture
+[324 / 395] HanlinScriptWidgetOriginal
+[335 / 395] HanlinScriptWidgetOriginal
+[336 / 395] HanlinWidgetCompiler
+[337 / 395] HanlinScriptWidgetOriginal
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/HanlinScriptWidgetOriginal/Original/Widget/API/ScriptWidgetRuntimeMaps.swift:75:28: [1;33mwarning: [1;39m'CLGeocoder' was deprecated in macOS 26.0: Use MapKit[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m73 |[0;0m                 return
+ [0;36m74 |[0;0m             }
+ [0;36m75 |[0;0m             let geocoder = CLGeocoder()
+    [0;36m|[0;0m                            `- [1;33mwarning: [1;39m'CLGeocoder' was deprecated in macOS 26.0: Use MapKit[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m76 |[0;0m             let cancellation = ScriptWidgetQueryCancellation(session: context.state.executionSession)
+ [0;36m77 |[0;0m             guard cancellation.install({ geocoder.cancelGeocode() }) else { throw ScriptWidgetSystemServiceError.unavailable }
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/HanlinScriptWidgetOriginal/Original/Widget/API/ScriptWidgetRuntimeMaps.swift:77:51: [1;33mwarning: [1;39m'cancelGeocode()' was deprecated in macOS 26.0: Use MKGeocodingRequest[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m75 |[0;0m             let geocoder = CLGeocoder()
+ [0;36m76 |[0;0m             let cancellation = ScriptWidgetQueryCancellation(session: context.state.executionSession)
+ [0;36m77 |[0;0m             guard cancellation.install({ geocoder.cancelGeocode() }) else { throw ScriptWidgetSystemServiceError.unavailable }
+    [0;36m|[0;0m                                                   `- [1;33mwarning: [1;39m'cancelGeocode()' was deprecated in macOS 26.0: Use MKGeocodingRequest[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m78 |[0;0m             geocoder.reverseGeocodeLocation(CLLocation(latitude: value.coordinate.latitude, longitude: value.coordinate.longitude)) { places, error in
+ [0;36m79 |[0;0m                 cancellation.complete()
+
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/HanlinScriptWidgetOriginal/Original/Widget/API/ScriptWidgetRuntimeMaps.swift:78:22: [1;33mwarning: [1;39m'reverseGeocodeLocation(_:completionHandler:)' was deprecated in macOS 26.0: Use MKReverseGeocodingRequest[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m76 |[0;0m             let cancellation = ScriptWidgetQueryCancellation(session: context.state.executionSession)
+ [0;36m77 |[0;0m             guard cancellation.install({ geocoder.cancelGeocode() }) else { throw ScriptWidgetSystemServiceError.unavailable }
+ [0;36m78 |[0;0m             geocoder.reverseGeocodeLocation(CLLocation(latitude: value.coordinate.latitude, longitude: value.coordinate.longitude)) { places, error in
+    [0;36m|[0;0m                      `- [1;33mwarning: [1;39m'reverseGeocodeLocation(_:completionHandler:)' was deprecated in macOS 26.0: Use MKReverseGeocodingRequest[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m79 |[0;0m                 cancellation.complete()
+ [0;36m80 |[0;0m                 guard error == nil else { finish(.failure(ScriptWidgetSystemServiceError.unavailable)); return }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[339 / 395] HanlinScriptWidgetOriginal
+[340 / 395] HanlinScriptWidgetOriginal
+[341 / 395] HanlinScriptWidgetOriginal
+[342 / 395] HanlinScriptWidgetOriginal
+[342 / 395] HanlinScriptExtensions
+[343 / 395] HanlinScriptExtensions
+[344 / 395]
+[350 / 397]
+[353 / 427] HanlinScriptExtensions
+[356 / 438]
+[359 / 438]
+[363 / 438]
+[367 / 438]
+[371 / 438]
+[373 / 438]
+[375 / 438]
+[376 / 438]
+[380 / 438] HanlinWidgetCompiler
+[382 / 438] HanlinWidgetCompiler
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/HanlinScriptExtensions/ScriptWidget/Original/Component/Attributes/Animation/ClockHandRotationEffect.swift:31:24: [1;33mwarning: [1;39mstatic property 'effectType' is not concurrency-safe because non-'Sendable' type '(any Decodable.Type)?' may have shared mutable state[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable\MutableGlobalVariable]8;;\]
+ [0;36m29 |[0;0m     /// True in the widget extension, where WidgetKit draws the elements.
+ [0;36m30 |[0;0m     static let isWidgetExtension = Bundle.main.bundleURL.pathExtension == "appex"
+ [0;36m31 |[0;0m     private static let effectType: (any Decodable.Type)? = {
+    [0;36m|[0;0m                        |- [1;33mwarning: [1;39mstatic property 'effectType' is not concurrency-safe because non-'Sendable' type '(any Decodable.Type)?' may have shared mutable state[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable\MutableGlobalVariable]8;;\]
+    [0;36m|[0;0m                        |- [1;39mnote: [1;39madd '@MainActor' to make static property 'effectType' part of global actor 'MainActor'[0;0m
+    [0;36m|[0;0m                        `- [1;39mnote: [1;39mdisable concurrency-safety checks if accesses are protected by an external synchronization mechanism[0;0m
+ [0;36m32 |[0;0m         guard isWidgetExtension else { return nil }
+ [0;36m33 |[0;0m         guard let type = _typeByName("9WidgetKit24_ClockHandRotationEffectV") as? any Decodable.Type else {
+
+[#MutableGlobalVariable]: <https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable>
+[390 / 438] HanlinScriptExtensions
+[392 / 438] HanlinScriptExtensions
+[399 / 438] HanlinScriptExtensions
+[400 / 438] HanlinScriptExtensions
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/HanlinScriptExtensions/ScriptWidget/Original/Component/Attributes/Animation/ClockHandRotationEffect.swift:31:24: [1;33mwarning: [1;39mstatic property 'effectType' is not concurrency-safe because non-'Sendable' type '(any Decodable.Type)?' may have shared mutable state[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable\MutableGlobalVariable]8;;\]
+ [0;36m29 |[0;0m     /// True in the widget extension, where WidgetKit draws the elements.
+ [0;36m30 |[0;0m     static let isWidgetExtension = Bundle.main.bundleURL.pathExtension == "appex"
+ [0;36m31 |[0;0m     private static let effectType: (any Decodable.Type)? = {
+    [0;36m|[0;0m                        |- [1;33mwarning: [1;39mstatic property 'effectType' is not concurrency-safe because non-'Sendable' type '(any Decodable.Type)?' may have shared mutable state[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable\MutableGlobalVariable]8;;\]
+    [0;36m|[0;0m                        |- [1;39mnote: [1;39madd '@MainActor' to make static property 'effectType' part of global actor 'MainActor'[0;0m
+    [0;36m|[0;0m                        `- [1;39mnote: [1;39mdisable concurrency-safety checks if accesses are protected by an external synchronization mechanism[0;0m
+ [0;36m32 |[0;0m         guard isWidgetExtension else { return nil }
+ [0;36m33 |[0;0m         guard let type = _typeByName("9WidgetKit24_ClockHandRotationEffectV") as? any Decodable.Type else {
+
+[#MutableGlobalVariable]: <https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable>
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/HanlinScriptExtensions/HanlinScriptExtensionStore.swift:226:16: [1;33mwarning: [1;39mvalue 'commit' was defined but never used; consider replacing with boolean test[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m224 |[0;0m         var summary = "Storage consistency verified."
+ [0;36m225 |[0;0m 
+ [0;36m226 |[0;0m         if let commit {
+     [0;36m|[0;0m                `- [1;33mwarning: [1;39mvalue 'commit' was defined but never used; consider replacing with boolean test[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m227 |[0;0m             if let actual = actualRevPrefix, let expected = commitSnapPrefix, actual != expected {
+ [0;36m228 |[0;0m                 failingStage = "checkedRevision"
+
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[402 / 438] HanlinScriptExtensions
+[403 / 438] HanlinScriptExtensions
+[404 / 438] HanlinScriptExtensions
+[406 / 439]
+[408 / 449] HanlinScriptCompiler
+[408 / 449] HanlinScriptExtensions
+[417 / 449] HanlinScriptCompiler
+[419 / 449] HanlinScriptExtensions
+[420 / 449] HanlinScriptCompiler
+[422 / 449] HanlinScriptExtensionsTests-product
+[424 / 449] HanlinScriptCompiler
+[424 / 449]
+[434 / 450] HanlinScriptExtensionsTests-product
+[439 / 450] HanlinScriptExtensionsTests-product
+[442 / 463]
+[445 / 463] HanlinScriptExtensionsTests-product
+[447 / 463] HanlinScriptExtensionsTests-product
+[453 / 463] HanlinScriptExtensionsTests-product
+[455 / 463] HanlinScriptExtensionsTests-product
+[456 / 463] HanlinScriptExtensionsTests-product
+[457 / 463] HanlinScriptExtensionsTests-product
+[457 / 463] AllIncludingTests
+/Users/m1/builds/pinkha-hanlin-sdk97ffa-20261125/source/Sources/HanlinScriptExtensionsTests/HanlinDualWidgetEnginesTests.swift:1150:25: [1;33mwarning: [1;39m'#require(_:_:)' is redundant because 'NSBitmapImageRep(cgImage: image).representation(using: .png, properties: [:])' never equals 'nil' (from macro 'require')[0;0m
+[0;36m1148 |[0;0m     let image = try #require(renderer.cgImage)
+[0;36m1149 |[0;0m     #expect(image.width == 360 && image.height == 320)
+[0;36m1150 |[0;0m     return try #require([4;39mNSBitmapImageRep(cgImage: image).representation(using: .png, properties: [:])[0;0m)
+     [0;36m|[0;0m                         `- [1;33mwarning: [1;39m'#require(_:_:)' is redundant because 'NSBitmapImageRep(cgImage: image).representation(using: .png, properties: [:])' never equals 'nil' (from macro 'require')[0;0m
+[0;36m1151 |[0;0m }
+[0;36m1152 |[0;0m #endif
+[457 / 463] HanlinScriptExtensionsTests-product
+[459 / 463] HanlinScriptExtensionsTests-product
+[461 / 463] HanlinScriptExtensionsTests-product
+Build complete! (42,15 secs)
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Durable invocation delivery" started.
+◇ Suite "MiniApps native surface routing" started.
+◇ Suite "Owned Share delivery on the canonical queue" started.
+◇ Suite "Notification ingress on the canonical durable queue" started.
+◇ Test "App and extensions address the same product, without an AI receipt alias" started.
+◇ Test concurrentClaimsAcrossStoreInstancesHaveOnlyOneOwner() started.
+◇ Test "Translation action parameters preserve literal selected text through nested payloads" started.
+◇ Test malformedAndPoisonedRecordsFailWithoutReadingOutsideTheStore() started.
+◇ Test "A first-launch MiniApps share is read by its app without entering the AI inbox" started.
+◇ Test expiredOrCancelledIngressCannotInvokeTheHandler() started.
+◇ Test runningCancellationIsARequestUntilTheActualExecutorReturns() started.
+◇ Test registeredIdempotentRecoveryFencesOutTheOriginalOwner() started.
+◇ Test largeInputsUseOneStableQueueIdentityAndReturnTheActualResultAfterReopen() started.
+◇ Test wrongBatchReferencesAndChangedOwnedBytesFailBeforeDispatch() started.
+◇ Test unreadableRecordsCannotBlockAdmissionAndRetainTheirOriginalBytes() started.
+◇ Test foregroundAdmissionLeavesUnstartedWorkQueuedWithoutConsumingAnAttempt() started.
+◇ Test actualAsyncHandlerIsCancelledBeforeItsTerminalReceipt() started.
+◇ Test legacyEnvelopeAndBinaryValuesRoundTripThroughTheSameQueue() started.
+◇ Test malformedTaggedEventsAndUnknownVersionsDoNotBecomeCommands() started.
+◇ Test expiredQueuedAndCancelledQueuedCommandsNeverStart() started.
+◇ Test cachedCatalogCannotOverrideLiveInstallationOrItsFailureReceipt() started.
+◇ Test busyAdmissionCanQueueAgainOnlyBeforeActionExecutionAndWithoutConsumingAnAttempt() started.
+◇ Test missingCatalogStillDurablyRetainsTheEventForLiveHostValidation() started.
+◇ Test typedEventExecutesOnceAndKeepsItsActualResultAfterReopen(_:) started.
+◇ Test identicalEventIDsStayInsideTheirProductNamespace() started.
+◇ Test twoPackagesReceiveTheirOwnDurableResultsAndFailures() started.
+◇ Test cancellationExpiryAndActionErrorsRemainDistinct() started.
+◇ Test damagedItemsDoNotBlockHealthyDeliveryOrEraseTheirOriginalBytes() started.
+◇ Test unstartedReleaseRetainsCancellationExpiryAndFencesOldLeases() started.
+◇ Test duplicateDeliveryNeverOverwritesACompletedReceiptOrPayload() started.
+◇ Test changedInstallationsAndUndeclaredTargetsProduceRealFailureReceipts() started.
+◇ Test interruptedNonIdempotentWorkIsDeferredWithoutReplay() started.
+◇ Test case passing 1 argument runtime → .hanlinExpo to typedEventExecutesOnceAndKeepsItsActualResultAfterReopen(_:) started.
+◇ Test case passing 1 argument runtime → .hanlinNativeScript to typedEventExecutesOnceAndKeepsItsActualResultAfterReopen(_:) started.
+✔ Test "Translation action parameters preserve literal selected text through nested payloads" passed after 0.036 seconds.
+✔ Test "A first-launch MiniApps share is read by its app without entering the AI inbox" passed after 0.050 seconds.
+✔ Test malformedAndPoisonedRecordsFailWithoutReadingOutsideTheStore() passed after 0.050 seconds.
+✔ Test runningCancellationIsARequestUntilTheActualExecutorReturns() passed after 0.051 seconds.
+✔ Test wrongBatchReferencesAndChangedOwnedBytesFailBeforeDispatch() passed after 0.051 seconds.
+✔ Test malformedTaggedEventsAndUnknownVersionsDoNotBecomeCommands() passed after 0.051 seconds.
+✔ Test registeredIdempotentRecoveryFencesOutTheOriginalOwner() passed after 0.051 seconds.
+✔ Test legacyEnvelopeAndBinaryValuesRoundTripThroughTheSameQueue() passed after 0.051 seconds.
+✔ Test "App and extensions address the same product, without an AI receipt alias" passed after 0.051 seconds.
+✔ Test expiredQueuedAndCancelledQueuedCommandsNeverStart() passed after 0.051 seconds.
+✔ Test expiredOrCancelledIngressCannotInvokeTheHandler() passed after 0.051 seconds.
+✔ Test duplicateDeliveryNeverOverwritesACompletedReceiptOrPayload() passed after 0.051 seconds.
+✔ Test interruptedNonIdempotentWorkIsDeferredWithoutReplay() passed after 0.051 seconds.
+✔ Test unstartedReleaseRetainsCancellationExpiryAndFencesOldLeases() passed after 0.051 seconds.
+✔ Test identicalEventIDsStayInsideTheirProductNamespace() passed after 0.051 seconds.
+✔ Suite "MiniApps native surface routing" passed after 0.053 seconds.
+✔ Test missingCatalogStillDurablyRetainsTheEventForLiveHostValidation() passed after 0.060 seconds.
+✔ Test damagedItemsDoNotBlockHealthyDeliveryOrEraseTheirOriginalBytes() passed after 0.064 seconds.
+✔ Test cancellationExpiryAndActionErrorsRemainDistinct() passed after 0.068 seconds.
+✔ Test twoPackagesReceiveTheirOwnDurableResultsAndFailures() passed after 0.069 seconds.
+✔ Test typedEventExecutesOnceAndKeepsItsActualResultAfterReopen(_:) with 2 test cases passed after 0.070 seconds.
+✔ Test busyAdmissionCanQueueAgainOnlyBeforeActionExecutionAndWithoutConsumingAnAttempt() passed after 0.071 seconds.
+✔ Test foregroundAdmissionLeavesUnstartedWorkQueuedWithoutConsumingAnAttempt() passed after 0.072 seconds.
+✔ Test cachedCatalogCannotOverrideLiveInstallationOrItsFailureReceipt() passed after 0.072 seconds.
+✔ Test largeInputsUseOneStableQueueIdentityAndReturnTheActualResultAfterReopen() passed after 0.088 seconds.
+✔ Suite "Owned Share delivery on the canonical queue" passed after 0.088 seconds.
+✔ Test concurrentClaimsAcrossStoreInstancesHaveOnlyOneOwner() passed after 0.089 seconds.
+✔ Test unreadableRecordsCannotBlockAdmissionAndRetainTheirOriginalBytes() passed after 0.092 seconds.
+✔ Test changedInstallationsAndUndeclaredTargetsProduceRealFailureReceipts() passed after 0.110 seconds.
+✔ Suite "Notification ingress on the canonical durable queue" passed after 0.111 seconds.
+✔ Test actualAsyncHandlerIsCancelledBeforeItsTerminalReceipt() passed after 1.067 seconds.
+✔ Suite "Durable invocation delivery" passed after 1.068 seconds.
+✔ Test run with 28 tests in 4 suites passed after 1.068 seconds.

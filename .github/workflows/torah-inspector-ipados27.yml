@@ -505,7 +505,10 @@ jobs:
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$GITHUB_REF" = "refs/heads/$GITHUB_REF_NAME"
-          test "$GITHUB_REF_NAME" = "codex/chatgpt-wave15-shared-20261121"
+          case "$GITHUB_REF_NAME" in
+            codex/chatgpt-wave15-shared-20261121|codex/chatgpt-wave15-native-d-completion-20261125) ;;
+            *) exit 1 ;;
+          esac
           current_branch="$(git branch --show-current)"
           if [ -z "$current_branch" ]; then
             git switch -c "$GITHUB_REF_NAME"

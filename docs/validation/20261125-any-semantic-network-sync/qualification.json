@@ -1,0 +1,174 @@
+{
+  "actualDistinctAccountCount": 2,
+  "actualNetworkTransport": {
+    "alice": {
+      "globalPeers": 0,
+      "localDiscovery": false,
+      "localPeers": 0,
+      "networkPeers": 3,
+      "p2pEnabled": false,
+      "state": "synced"
+    },
+    "bob": {
+      "globalPeers": 0,
+      "localDiscovery": false,
+      "localPeers": 0,
+      "networkPeers": 1,
+      "p2pEnabled": false,
+      "state": "synced"
+    }
+  },
+  "actualRecipientRole": "writer",
+  "all10OwnedGroupsAbsent": true,
+  "appBuilds": 0,
+  "coldNativeProcess": {
+    "cleanExit": true,
+    "counts": {
+      "globalPeers": 0,
+      "localPeers": 0,
+      "networkPeers": 0
+    },
+    "distinctPID": true
+  },
+  "coldOSPolicy": {
+    "baseline_listener_reachable": true,
+    "probe": {
+      "tcp_connect_denied": true,
+      "tcp_errno": 1,
+      "udp_errno": 1,
+      "udp_send_denied": true
+    },
+    "profile_sha256": "e210de323e5d671bb6b63b79ce1481f8314b5ac2fd65d65a180d381294ee2fa1"
+  },
+  "controllerCommit": "64fd4970e37f0783b65da87102b77f124e7f09e8",
+  "controllerSHA256": "f7d9fcedbd94eebd0e0a65174f8747340df60c4be22dd5c3fe74a65929943c8e",
+  "exactSources": {
+    "nativeFiles": 1583,
+    "nativeSourcesUnchanged": true,
+    "sharedSourcesAndDependenciesUnchanged": true,
+    "sharedSwiftFiles": 327
+  },
+  "fixtureHashes": {
+    "bytes": 4641,
+    "linkedCanonicalSHA256": "d5b2ca4c2c1fce4b5ebf4004347119df0abd253e6610c4f7e8d7822c47a4f731",
+    "sha256": "2103428a0bac1645b612936bde7b13ba6e707ad9e172059f44a618b941cd3e1f",
+    "unlinkedCanonicalSHA256": "75e335659df5db8055dafd55111cd4902b460536b428ef25d6ad2ccda51ae59a"
+  },
+  "fullEAcceptance": false,
+  "heartSynchronizationAcceptance": false,
+  "lanAcceptance": false,
+  "nativeBinarySHA256": "7f9124991e206657f21a9788b58f65de3ec57e019f425772dd4be6b677f803df",
+  "nativeBuilds": 0,
+  "newAccountsInThisContinuation": 0,
+  "originalLANFailure": {
+    "cleanup": "PASS",
+    "path": "/Users/m1/builds/e-semantic-peer-native-20261125/peer-attempt1/result.json",
+    "phase": "genuine local discovery",
+    "result": "FAIL",
+    "seconds": 102.839,
+    "semanticProbeCalls": 0,
+    "sha256": "7ecfbdee6744d793320c623c632100b9fbe548eb46a7638d457db6dd6f3996c7"
+  },
+  "originalResult": {
+    "bytes": 11456,
+    "path": "/Users/m1/builds/e-semantic-peer-native-20261125/network-attempt1/result.json",
+    "sha256": "99d4550fe0c855080019bec9879550d8da3ea172765513622e0455a5f70188b3"
+  },
+  "physicalDeviceAcceptance": false,
+  "privatePayloadsUploaded": false,
+  "privateRetentionRoots": [
+    "/Users/m1/builds/e-semantic-peer-native-20261125/peer-attempt1",
+    "/Users/m1/builds/e-semantic-peer-native-20261125/network-attempt1"
+  ],
+  "probeCount": 7,
+  "probeOriginals": [
+    {
+      "checks": [
+        "actual_guarded_native_marker_and_signed_canonical_claims",
+        "authoritative_native_body_marker_and_canonical_payload_equality",
+        "native_application_lease_drained"
+      ],
+      "exitCode": 0,
+      "mode": "prepare",
+      "privateOriginalLogBytes": 395,
+      "privateOriginalLogSHA256": "7b173f306fd7cc5ed9f162a632134d6ce6aee88ca5cb7cc65e0efaa4f6e70aef",
+      "writes": true
+    },
+    {
+      "checks": [
+        "authoritative_native_body_marker_and_canonical_payload_equality",
+        "native_application_lease_drained"
+      ],
+      "exitCode": 0,
+      "mode": "read-linked",
+      "privateOriginalLogBytes": 340,
+      "privateOriginalLogSHA256": "9767f00d23b34510a1eb63584dd9b8d64516c3ce56e8a3d85b7e9deb517d6908",
+      "writes": false
+    },
+    {
+      "checks": [
+        "distinct_invited_account_real_conditional_edit_preserves_marker",
+        "authoritative_native_body_marker_and_canonical_payload_equality",
+        "native_application_lease_drained"
+      ],
+      "exitCode": 0,
+      "mode": "edit",
+      "privateOriginalLogBytes": 399,
+      "privateOriginalLogSHA256": "9b395fbd2fa0ce4f0b8434d807a219e07100dc3179c378c4d757505a7524623c",
+      "writes": true
+    },
+    {
+      "checks": [
+        "authoritative_native_body_marker_and_canonical_payload_equality",
+        "native_application_lease_drained"
+      ],
+      "exitCode": 0,
+      "mode": "read-edited",
+      "privateOriginalLogBytes": 340,
+      "privateOriginalLogSHA256": "4283bc27d3709031a2921e1252d7ea301ab9522c057eeaa9e9e6e1a7adc1d724",
+      "writes": false
+    },
+    {
+      "checks": [
+        "original_owner_removes_only_exact_semantic_association",
+        "authoritative_native_body_marker_and_canonical_payload_equality",
+        "native_application_lease_drained"
+      ],
+      "exitCode": 0,
+      "mode": "unlink",
+      "privateOriginalLogBytes": 392,
+      "privateOriginalLogSHA256": "1c043271bf706f205f0bdff484d35f88a20b221f9c7878faab041e7e2b89862c",
+      "writes": true
+    },
+    {
+      "checks": [
+        "authoritative_native_body_marker_and_canonical_payload_equality",
+        "native_application_lease_drained"
+      ],
+      "exitCode": 0,
+      "mode": "read-unlinked",
+      "privateOriginalLogBytes": 342,
+      "privateOriginalLogSHA256": "ba8c54b1966c3907d6596388cd5e15caf5ee53c096e23003a35f684441d10958",
+      "writes": false
+    },
+    {
+      "checks": [
+        "authoritative_native_body_marker_and_canonical_payload_equality",
+        "native_application_lease_drained"
+      ],
+      "exitCode": 0,
+      "mode": "read-unlinked",
+      "privateOriginalLogBytes": 342,
+      "privateOriginalLogSHA256": "7fc366351b6ae33637f405d2f6eb89283010f4ee8d423dbd57a50d3b546664fe",
+      "writes": false
+    }
+  ],
+  "probeSourceCommit": "daa14bed739503cc7dc65f838a1adf4fb133a01c",
+  "runtimeSeconds": 7.377,
+  "scope": "real semantic marker, rich text and signed canonical associations synchronize bidirectionally across distinct native accounts over actual private AnySync network, then survive cold OS-offline reopen",
+  "sharedProbeBinarySHA256": "d29ff41ecfa0e0dcdf1473489aa9a868e97ff4d053224d99d8cb6dc8fe096e63",
+  "sharedProductBase": "5c05a612e4054a4adfa7f812343be6a15871cc89",
+  "sourceConfigsPreserved": true,
+  "status": "PASS_REAL_ANY_NETWORK_SEMANTIC_SYNC_AND_COLD_OFFLINE",
+  "uiAcceptance": false
+}

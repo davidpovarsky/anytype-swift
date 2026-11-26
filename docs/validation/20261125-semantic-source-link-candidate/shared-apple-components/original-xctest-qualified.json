@@ -1,0 +1,1813 @@
+{
+  "collector_issue": {
+    "original_collector_status": "FAIL",
+    "original_receipt": "/Users/m1/builds/semantic-sources-20261125/shared-components-2b2a-attempt1/evidence/result.json",
+    "reason": "Swift CLI wrote empty original-swift-testing.xml for the Swift Testing runner; the five selected XCTest methods are recorded individually in the original process log. No test rerun or result file alteration.",
+    "xunit_sha256": "c30590ef3d49c5503678370b61d98067145985893c0ff2248abe2a9fbfab9c72"
+  },
+  "dependency_commit": "511454e49450cb2581ddf77f644146ff3e30dbef",
+  "evidence_files": [
+    {
+      "bytes": 911,
+      "path": "started.json",
+      "sha256": "48441c2fbd8c07c2b3e7f187cf776809e8bedcfb5feb06c1b38287cce6246f1d"
+    },
+    {
+      "bytes": 26984,
+      "path": "source-before.json",
+      "sha256": "4c2c910a11f34c7ddf7144ee825e893daacf13aa85be3547ad2b9983873712ec"
+    },
+    {
+      "bytes": 26984,
+      "path": "source-after.json",
+      "sha256": "4c2c910a11f34c7ddf7144ee825e893daacf13aa85be3547ad2b9983873712ec"
+    },
+    {
+      "bytes": 26038,
+      "path": "dependency-original.json",
+      "sha256": "712d144b2548e1b5b3e2d1bbc4bc6fb138e1527cc88a2ddfcc88f31b3eaa91f9"
+    },
+    {
+      "bytes": 131,
+      "path": "toolchain.txt",
+      "sha256": "8cc160f2a824f0a00c21426c39a17bb8fb0b8166c27de07ef86cac2a19a418e5"
+    },
+    {
+      "bytes": 4717,
+      "path": "run.py",
+      "sha256": "b15ec195bd8d8f40b65e78f5587b98b15fc35687bbd6ff97b4215a7eff46d403"
+    }
+  ],
+  "failure_count": 0,
+  "original_log": "/Users/m1/builds/semantic-sources-20261125/shared-components-2b2a-attempt1/evidence/original.log",
+  "original_log_sha256": "fa6a2b5d611eb1b04224bdba2d89c2152f9d4e27487427cc7433a51de521f386",
+  "original_process_exit": 0,
+  "owned_processes_remaining": 0,
+  "preserved_products": "/Users/m1/builds/semantic-sources-20261125/shared-components-2b2a-attempt1/evidence/retained-original/Products",
+  "products": [
+    {
+      "bytes": 3874704,
+      "path": "Loc.o",
+      "sha256": "916e3a61cc48ddeaa694bc786e24772c0d799fa54ed42de7c17d5504d28901cc"
+    },
+    {
+      "bytes": 882316,
+      "path": "Loc.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo",
+      "sha256": "724746527d4b4ab4f4fb97483e2721a2a07ebd60f00d7557f0e3d787514d5706"
+    },
+    {
+      "bytes": 149,
+      "path": "Loc.swiftmodule/arm64-apple-macos.abi.json",
+      "sha256": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728"
+    },
+    {
+      "bytes": 462136,
+      "path": "Loc.swiftmodule/arm64-apple-macos.swiftdoc",
+      "sha256": "7acb67c3d0c20bc726a878858c3c57b10c99971faef71396f9ce2fe5e5961cb7"
+    },
+    {
+      "bytes": 1243996,
+      "path": "Loc.swiftmodule/arm64-apple-macos.swiftmodule",
+      "sha256": "b9017bcc99c4f94d1114a8753453320ba3825e63d29ee08fafa683a18981f909"
+    },
+    {
+      "bytes": 1110,
+      "path": "Loc_Loc.bundle/Contents/Info.plist",
+      "sha256": "3dbb8e0d258fd2ecb21371c291b35f25808df05e687e941b8a057088991e7bd8"
+    },
+    {
+      "bytes": 16670,
+      "path": "Loc_Loc.bundle/Contents/Resources/ar.lproj/Auth.strings",
+      "sha256": "4ef8f9fca67be3c0b27343ea7592dcb2fc8e0caeef5512f72e7f61d451105260"
+    },
+    {
+      "bytes": 91124,
+      "path": "Loc_Loc.bundle/Contents/Resources/ar.lproj/UI.strings",
+      "sha256": "ccf0a773240ca6a2482cecb7c3e27d374518fab9cc64e6b79fbd0f90e01bea37"
+    },
+    {
+      "bytes": 33762,
+      "path": "Loc_Loc.bundle/Contents/Resources/ar.lproj/UI.stringsdict",
+      "sha256": "3ae8e8860cd390e64e233bb9671bf3aabfe6a35d1dea3a81aeca183046f81bed"
+    },
+    {
+      "bytes": 85368,
+      "path": "Loc_Loc.bundle/Contents/Resources/ar.lproj/Workspace.strings",
+      "sha256": "3989f5878c1e6652bd5b1f6ba403531ed2d72de905ad5cb4cf1fe55574ea103f"
+    },
+    {
+      "bytes": 17370,
+      "path": "Loc_Loc.bundle/Contents/Resources/ar.lproj/Workspace.stringsdict",
+      "sha256": "16fc2f0fbf2d854f91be568123750e2514e421be61c686fa1c6d566f3b21fa2a"
+    },
+    {
+      "bytes": 17386,
+      "path": "Loc_Loc.bundle/Contents/Resources/be.lproj/Auth.strings",
+      "sha256": "563639ed06b5522f223e7fdd8bd7ce15aec6f6ac4aa506b0a9de659ffcb709ce"
+    },
+    {
+      "bytes": 94636,
+      "path": "Loc_Loc.bundle/Contents/Resources/be.lproj/UI.strings",
+      "sha256": "0cad883a0146759915bd9b6d0b5f06211250654bcf43bb9ad2117365a0bd57d7"
+    },
+    {
+      "bytes": 28620,
+      "path": "Loc_Loc.bundle/Contents/Resources/be.lproj/UI.stringsdict",
+      "sha256": "2b700d5c64b581d29a4466536ab915e2e3994c1b4f7637f703952d82097c9e44"
+    },
+    {
+      "bytes": 89314,
+      "path": "Loc_Loc.bundle/Contents/Resources/be.lproj/Workspace.strings",
+      "sha256": "763bca5835f94b48bd0df111fab581fc6f025eed309fb74d9bfaa10df0508373"
+    },
+    {
+      "bytes": 14508,
+      "path": "Loc_Loc.bundle/Contents/Resources/be.lproj/Workspace.stringsdict",
+      "sha256": "e42abbc0651a8ebabf2dcac4c4c5f69e5a5d6c69935fc600ca0b1dbb4416e856"
+    },
+    {
+      "bytes": 17198,
+      "path": "Loc_Loc.bundle/Contents/Resources/cs.lproj/Auth.strings",
+      "sha256": "e3fa2ec7f729ee13da60b41b3c1d5de085322bb2557e6f626786cd50cd79588f"
+    },
+    {
+      "bytes": 91882,
+      "path": "Loc_Loc.bundle/Contents/Resources/cs.lproj/UI.strings",
+      "sha256": "28fb8a4f9e218e4d10183ed5880c251095a388b6b552f9b832e74ab7fc2e237d"
+    },
+    {
+      "bytes": 28474,
+      "path": "Loc_Loc.bundle/Contents/Resources/cs.lproj/UI.stringsdict",
+      "sha256": "68d2cafe23e625c86f7b0edac2d5a082a333c7502934f14c554272b32ccfd3dc"
+    },
+    {
+      "bytes": 87196,
+      "path": "Loc_Loc.bundle/Contents/Resources/cs.lproj/Workspace.strings",
+      "sha256": "0a19bb1af574ee43b3cd77180111674865382f944f46a92a642d3215efb106f5"
+    },
+    {
+      "bytes": 14508,
+      "path": "Loc_Loc.bundle/Contents/Resources/cs.lproj/Workspace.stringsdict",
+      "sha256": "e42abbc0651a8ebabf2dcac4c4c5f69e5a5d6c69935fc600ca0b1dbb4416e856"
+    },
+    {
+      "bytes": 18466,
+      "path": "Loc_Loc.bundle/Contents/Resources/de.lproj/Auth.strings",
+      "sha256": "f95c1fd626d24b4abddb4197e525ab226ec6f89a5c4dc6f30a1f4c11e8f5b891"
+    },
+    {
+      "bytes": 97936,
+      "path": "Loc_Loc.bundle/Contents/Resources/de.lproj/UI.strings",
+      "sha256": "30c48b091adade92b2beb48b4c81c36ff0cb66a858296b46c994c1d195e32129"
+    },
+    {
+      "bytes": 22974,
+      "path": "Loc_Loc.bundle/Contents/Resources/de.lproj/UI.stringsdict",
+      "sha256": "9f17d5c2f7c9f86c609ca14a3b74c967d657993c4f2276e8d8f8b6653641ad3d"
+    },
+    {
+      "bytes": 91774,
+      "path": "Loc_Loc.bundle/Contents/Resources/de.lproj/Workspace.strings",
+      "sha256": "b74ed0ef3321dd03d5417493c5c7dd1ea6d844d7cb5e969b8eabd0792dae736e"
+    },
+    {
+      "bytes": 11234,
+      "path": "Loc_Loc.bundle/Contents/Resources/de.lproj/Workspace.stringsdict",
+      "sha256": "4b62397042f04eebb9f3e41199b8bda885e96ab1ad9c2554d05d644d85e1d7a3"
+    },
+    {
+      "bytes": 17166,
+      "path": "Loc_Loc.bundle/Contents/Resources/en.lproj/Auth.strings",
+      "sha256": "02ca24f48ad8a3b58ede07b093926367593670833dc0b85a61b3aa406386aa08"
+    },
+    {
+      "bytes": 96884,
+      "path": "Loc_Loc.bundle/Contents/Resources/en.lproj/UI.strings",
+      "sha256": "0a66f62e36d48c5bd14cd4130829e38ae297db4bdf8fd0b41bfab74e24bff354"
+    },
+    {
+      "bytes": 22820,
+      "path": "Loc_Loc.bundle/Contents/Resources/en.lproj/UI.stringsdict",
+      "sha256": "e4f8032bf2af1b271e8dfecd5adc7994d522b02676bd7ac4816cb9938a29d83d"
+    },
+    {
+      "bytes": 102056,
+      "path": "Loc_Loc.bundle/Contents/Resources/en.lproj/Workspace.strings",
+      "sha256": "d7f54f85cbd481f557b03264a733e336f3ff7550b6dee81e03715c7f68e00402"
+    },
+    {
+      "bytes": 15072,
+      "path": "Loc_Loc.bundle/Contents/Resources/en.lproj/Workspace.stringsdict",
+      "sha256": "43d7ef65d50a0f45198769ab329f821a4f327601d8233a817bb86debc6312c56"
+    },
+    {
+      "bytes": 18050,
+      "path": "Loc_Loc.bundle/Contents/Resources/es.lproj/Auth.strings",
+      "sha256": "505821c74d9578f051416fca8a0625d3f66d3a3102139edf198535d46d21223e"
+    },
+    {
+      "bytes": 96472,
+      "path": "Loc_Loc.bundle/Contents/Resources/es.lproj/UI.strings",
+      "sha256": "f1804fb538532078477b41a27fc363b7e0e050144124399f61049df8e8a39567"
+    },
+    {
+      "bytes": 23016,
+      "path": "Loc_Loc.bundle/Contents/Resources/es.lproj/UI.stringsdict",
+      "sha256": "1c73fe619b417834288414bf9aca8f4e1015b90c5682cd1bf7b479178b823b04"
+    },
+    {
+      "bytes": 91686,
+      "path": "Loc_Loc.bundle/Contents/Resources/es.lproj/Workspace.strings",
+      "sha256": "a58e8d137f317dbac9a791a011b1ebad70e2af884ba7bf550d2bb3a835b2edab"
+    },
+    {
+      "bytes": 11348,
+      "path": "Loc_Loc.bundle/Contents/Resources/es.lproj/Workspace.stringsdict",
+      "sha256": "2c6f4b429ca06800e2f32170373e6ea3761eefff50e4a7bc61a18a75649cef95"
+    },
+    {
+      "bytes": 17018,
+      "path": "Loc_Loc.bundle/Contents/Resources/fa.lproj/Auth.strings",
+      "sha256": "e3096dd7628419bfdc64441c927dbcd4e72c5c46a32df5cc50c2bf7c5d54a837"
+    },
+    {
+      "bytes": 91680,
+      "path": "Loc_Loc.bundle/Contents/Resources/fa.lproj/UI.strings",
+      "sha256": "13d514dbb1e7394389ebc2e8da5ea00e6a5a96dbeb2bd46428c5736e98dd51bf"
+    },
+    {
+      "bytes": 22820,
+      "path": "Loc_Loc.bundle/Contents/Resources/fa.lproj/UI.stringsdict",
+      "sha256": "e4f8032bf2af1b271e8dfecd5adc7994d522b02676bd7ac4816cb9938a29d83d"
+    },
+    {
+      "bytes": 87108,
+      "path": "Loc_Loc.bundle/Contents/Resources/fa.lproj/Workspace.strings",
+      "sha256": "6ed74f44ba81e62ae06b3ab129cf727fb577a6069a2e6c67087643d11fdab5da"
+    },
+    {
+      "bytes": 11240,
+      "path": "Loc_Loc.bundle/Contents/Resources/fa.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 17092,
+      "path": "Loc_Loc.bundle/Contents/Resources/fi.lproj/Auth.strings",
+      "sha256": "b3f9a14e8d9b787ad6968c48227baec942b01ac1a51abc953d5f070680c9fc49"
+    },
+    {
+      "bytes": 92512,
+      "path": "Loc_Loc.bundle/Contents/Resources/fi.lproj/UI.strings",
+      "sha256": "c250e91efe3924b655a83e871115152f648ce28aec7417b978d5ecc36c6d8266"
+    },
+    {
+      "bytes": 22820,
+      "path": "Loc_Loc.bundle/Contents/Resources/fi.lproj/UI.stringsdict",
+      "sha256": "e4f8032bf2af1b271e8dfecd5adc7994d522b02676bd7ac4816cb9938a29d83d"
+    },
+    {
+      "bytes": 87388,
+      "path": "Loc_Loc.bundle/Contents/Resources/fi.lproj/Workspace.strings",
+      "sha256": "800c2548f626969f5f46951c9abab3551706999c7c9a9b8cb78b95c7f9ea54f0"
+    },
+    {
+      "bytes": 11240,
+      "path": "Loc_Loc.bundle/Contents/Resources/fi.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 18288,
+      "path": "Loc_Loc.bundle/Contents/Resources/fr.lproj/Auth.strings",
+      "sha256": "d28c727e47fe9ea092de47d6f00b1fd13bafc21480a56ac89dad72fe8142b270"
+    },
+    {
+      "bytes": 96748,
+      "path": "Loc_Loc.bundle/Contents/Resources/fr.lproj/UI.strings",
+      "sha256": "0f35b4205e68ba64a1518c3962ac6a61f3ff0d1b6eb938f6870c16bc97295c9f"
+    },
+    {
+      "bytes": 22876,
+      "path": "Loc_Loc.bundle/Contents/Resources/fr.lproj/UI.stringsdict",
+      "sha256": "42f2c1510b6d22a8dea52dfec0bdf5368c6e240ec28dc0a60621e9488acaa589"
+    },
+    {
+      "bytes": 90802,
+      "path": "Loc_Loc.bundle/Contents/Resources/fr.lproj/Workspace.strings",
+      "sha256": "60b15217d088e67d7449412a94157364a033e60bb07e54be03caf91f4b3b8cdb"
+    },
+    {
+      "bytes": 11240,
+      "path": "Loc_Loc.bundle/Contents/Resources/fr.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 16048,
+      "path": "Loc_Loc.bundle/Contents/Resources/he.lproj/Auth.strings",
+      "sha256": "3ea197fd175d86d06e4601ffdf793b069ab0794a5b09fa1a1a5123fec17a9574"
+    },
+    {
+      "bytes": 91524,
+      "path": "Loc_Loc.bundle/Contents/Resources/he.lproj/UI.strings",
+      "sha256": "f825b8ad391bd8667a6e3579b0ecfeb78933ce584554c2f860c211331a576c98"
+    },
+    {
+      "bytes": 22790,
+      "path": "Loc_Loc.bundle/Contents/Resources/he.lproj/UI.stringsdict",
+      "sha256": "9162ce9c1dda5dfd7f20d1d3255fc7709c2975c156d8a6404ba2caaf941a9a90"
+    },
+    {
+      "bytes": 95994,
+      "path": "Loc_Loc.bundle/Contents/Resources/he.lproj/Workspace.strings",
+      "sha256": "b13de9988fa5f04a7e92b12f2e04f23f753ec4f992ab4ebac477061d49288c37"
+    },
+    {
+      "bytes": 10748,
+      "path": "Loc_Loc.bundle/Contents/Resources/he.lproj/Workspace.stringsdict",
+      "sha256": "4ae7077378a993a3cc38be263eb3a653cf31eae5051c957c0288239c34a47b15"
+    },
+    {
+      "bytes": 17826,
+      "path": "Loc_Loc.bundle/Contents/Resources/id.lproj/Auth.strings",
+      "sha256": "b9e73fe4d7181448bf886fc3a016ae57f03fb38cbcc73273ab540256d736509e"
+    },
+    {
+      "bytes": 94884,
+      "path": "Loc_Loc.bundle/Contents/Resources/id.lproj/UI.strings",
+      "sha256": "4b774b455174c7a4efb493769f979942d85b79c08e27175c0e603ff373074d96"
+    },
+    {
+      "bytes": 20148,
+      "path": "Loc_Loc.bundle/Contents/Resources/id.lproj/UI.stringsdict",
+      "sha256": "47800a53926457e2194939290151a6df4df74bad0a629161d9ad0c35bbffd768"
+    },
+    {
+      "bytes": 90002,
+      "path": "Loc_Loc.bundle/Contents/Resources/id.lproj/Workspace.strings",
+      "sha256": "5c8c2a2f36307038430ebc914659204978c8e61606f858ee89070423d0681094"
+    },
+    {
+      "bytes": 9698,
+      "path": "Loc_Loc.bundle/Contents/Resources/id.lproj/Workspace.stringsdict",
+      "sha256": "51c4a125f61f9837a27c2ac0554ffcdaf08f51b2af4d85fcc787bb96a2913c84"
+    },
+    {
+      "bytes": 18250,
+      "path": "Loc_Loc.bundle/Contents/Resources/it.lproj/Auth.strings",
+      "sha256": "d35f79ae041ae1553372f23106ba500be41f7ca973ac07b238d7a5f6512f18e7"
+    },
+    {
+      "bytes": 96468,
+      "path": "Loc_Loc.bundle/Contents/Resources/it.lproj/UI.strings",
+      "sha256": "6126c83ee96ad1c865a634ba6c3275d523c06a9173b419f3609dcaf30534780b"
+    },
+    {
+      "bytes": 22904,
+      "path": "Loc_Loc.bundle/Contents/Resources/it.lproj/UI.stringsdict",
+      "sha256": "54519585020842da7ea8b9f20977f01589da98d28dcd847067b821d40369e98a"
+    },
+    {
+      "bytes": 91260,
+      "path": "Loc_Loc.bundle/Contents/Resources/it.lproj/Workspace.strings",
+      "sha256": "24822303e93d625e69444603740ce2833e8dea0c308b4df4342949f8aa04eaf8"
+    },
+    {
+      "bytes": 11240,
+      "path": "Loc_Loc.bundle/Contents/Resources/it.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 14970,
+      "path": "Loc_Loc.bundle/Contents/Resources/ja.lproj/Auth.strings",
+      "sha256": "faa109fcdd3fc532c3a3b57419057fbb13d95bb114ac0ced40afc674ead84c74"
+    },
+    {
+      "bytes": 83348,
+      "path": "Loc_Loc.bundle/Contents/Resources/ja.lproj/UI.strings",
+      "sha256": "209e00031c52dafc74c75db22793a7188570275c67fe2cede436e975de5ebec4"
+    },
+    {
+      "bytes": 20096,
+      "path": "Loc_Loc.bundle/Contents/Resources/ja.lproj/UI.stringsdict",
+      "sha256": "b3b03aa4706aca11100bfc4c22b19351535d8a7b0ba793da0d33e2cd0b9a2ed6"
+    },
+    {
+      "bytes": 79622,
+      "path": "Loc_Loc.bundle/Contents/Resources/ja.lproj/Workspace.strings",
+      "sha256": "da298fe0696003e9b0ac868c84a9181b843e5999acabc29c8a5f4101a8fc5962"
+    },
+    {
+      "bytes": 9640,
+      "path": "Loc_Loc.bundle/Contents/Resources/ja.lproj/Workspace.stringsdict",
+      "sha256": "9a5fa74663dc6597e4dea0aa61bf7f1a9ffd11c7431114e7730b8968c13bc9e1"
+    },
+    {
+      "bytes": 14454,
+      "path": "Loc_Loc.bundle/Contents/Resources/ko.lproj/Auth.strings",
+      "sha256": "eb9766d8e126c2d6380bd7d23124fbd2175f94762144b83fd45af287c7c30743"
+    },
+    {
+      "bytes": 81184,
+      "path": "Loc_Loc.bundle/Contents/Resources/ko.lproj/UI.strings",
+      "sha256": "bb77f47cd7a40ee19caa3a6a32230978f38a8ed1fdf630673eec132bc7ca5c3d"
+    },
+    {
+      "bytes": 19982,
+      "path": "Loc_Loc.bundle/Contents/Resources/ko.lproj/UI.stringsdict",
+      "sha256": "7b5109cec29f2d2d76c11188822a25588a1a5ac59ca5487ad50f94d534935b67"
+    },
+    {
+      "bytes": 78394,
+      "path": "Loc_Loc.bundle/Contents/Resources/ko.lproj/Workspace.strings",
+      "sha256": "d4668b6317bd6b15c104038d715cfd42e45f5eda42afefdfa8d00c7243cd2258"
+    },
+    {
+      "bytes": 9640,
+      "path": "Loc_Loc.bundle/Contents/Resources/ko.lproj/Workspace.stringsdict",
+      "sha256": "9a5fa74663dc6597e4dea0aa61bf7f1a9ffd11c7431114e7730b8968c13bc9e1"
+    },
+    {
+      "bytes": 17306,
+      "path": "Loc_Loc.bundle/Contents/Resources/nb.lproj/Auth.strings",
+      "sha256": "b5cd43d382c8876aa41763c8bed80976780b69c7105099ca2dd0edb769d214dd"
+    },
+    {
+      "bytes": 92978,
+      "path": "Loc_Loc.bundle/Contents/Resources/nb.lproj/UI.strings",
+      "sha256": "d2215c394ab8e45411646cf592c81ed13c04d19ddb64b8d5805d5297e481f1a5"
+    },
+    {
+      "bytes": 22820,
+      "path": "Loc_Loc.bundle/Contents/Resources/nb.lproj/UI.stringsdict",
+      "sha256": "e4f8032bf2af1b271e8dfecd5adc7994d522b02676bd7ac4816cb9938a29d83d"
+    },
+    {
+      "bytes": 87782,
+      "path": "Loc_Loc.bundle/Contents/Resources/nb.lproj/Workspace.strings",
+      "sha256": "79ea833b2adb793e68baf90a5f185a034bb31a5e350b7a7ba7f806628c584490"
+    },
+    {
+      "bytes": 11240,
+      "path": "Loc_Loc.bundle/Contents/Resources/nb.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 17822,
+      "path": "Loc_Loc.bundle/Contents/Resources/nl.lproj/Auth.strings",
+      "sha256": "1c5e1e5310e024fd7e595c7c97874ac2be7ac9eef9b92fc8833fa1c82b43410c"
+    },
+    {
+      "bytes": 96282,
+      "path": "Loc_Loc.bundle/Contents/Resources/nl.lproj/UI.strings",
+      "sha256": "eb6e9ce7133f4277cd08ac8c529b839b928db49f1d3bdd04a24a414428afd7a0"
+    },
+    {
+      "bytes": 22916,
+      "path": "Loc_Loc.bundle/Contents/Resources/nl.lproj/UI.stringsdict",
+      "sha256": "c3490ff8976654cd261c1b861ab5b3c9efde43bccad8afdf644d5bd62b2a6a3a"
+    },
+    {
+      "bytes": 90928,
+      "path": "Loc_Loc.bundle/Contents/Resources/nl.lproj/Workspace.strings",
+      "sha256": "41e1c73ad7d71c259ce4c05995cf1625984195bf8d899447676e9786181a0023"
+    },
+    {
+      "bytes": 11240,
+      "path": "Loc_Loc.bundle/Contents/Resources/nl.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 17336,
+      "path": "Loc_Loc.bundle/Contents/Resources/or.lproj/Auth.strings",
+      "sha256": "fe45e5bee335ba949d53560212d6084ed5ae849b15be48728fc51126207995a1"
+    },
+    {
+      "bytes": 93050,
+      "path": "Loc_Loc.bundle/Contents/Resources/or.lproj/UI.strings",
+      "sha256": "15b2234fb8c8b500c3f665d3373e8ae91f849b208487b1069f70aac43dce6709"
+    },
+    {
+      "bytes": 22820,
+      "path": "Loc_Loc.bundle/Contents/Resources/or.lproj/UI.stringsdict",
+      "sha256": "e4f8032bf2af1b271e8dfecd5adc7994d522b02676bd7ac4816cb9938a29d83d"
+    },
+    {
+      "bytes": 87730,
+      "path": "Loc_Loc.bundle/Contents/Resources/or.lproj/Workspace.strings",
+      "sha256": "cd2f475a2d5318e7210c76e9328746c4e1813ab2e267c617cd60525cf20dcb46"
+    },
+    {
+      "bytes": 11240,
+      "path": "Loc_Loc.bundle/Contents/Resources/or.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 17460,
+      "path": "Loc_Loc.bundle/Contents/Resources/pl.lproj/Auth.strings",
+      "sha256": "787606744aec4a3cd9ecc166f29adf01a16453947691481e6884bd856afe1084"
+    },
+    {
+      "bytes": 94164,
+      "path": "Loc_Loc.bundle/Contents/Resources/pl.lproj/UI.strings",
+      "sha256": "f71d2c391d5a6ea78e73de8a7335b987a947f7077f1dedbd7a77aaf09a68858e"
+    },
+    {
+      "bytes": 28542,
+      "path": "Loc_Loc.bundle/Contents/Resources/pl.lproj/UI.stringsdict",
+      "sha256": "d204bdfcae27cb071a58f664049bde633b00ea0f5d67405d7390bb89134ea336"
+    },
+    {
+      "bytes": 89640,
+      "path": "Loc_Loc.bundle/Contents/Resources/pl.lproj/Workspace.strings",
+      "sha256": "729f2839f79eaf0119eff84ce3464ae4ffe999ebaa203f1ff15b2b579e182490"
+    },
+    {
+      "bytes": 14508,
+      "path": "Loc_Loc.bundle/Contents/Resources/pl.lproj/Workspace.stringsdict",
+      "sha256": "e42abbc0651a8ebabf2dcac4c4c5f69e5a5d6c69935fc600ca0b1dbb4416e856"
+    },
+    {
+      "bytes": 17702,
+      "path": "Loc_Loc.bundle/Contents/Resources/pt-BR.lproj/Auth.strings",
+      "sha256": "ea99cbfced9945d01fee4fb35620c66d83b3726bdea016135ddc2b6526ac11e1"
+    },
+    {
+      "bytes": 95304,
+      "path": "Loc_Loc.bundle/Contents/Resources/pt-BR.lproj/UI.strings",
+      "sha256": "dec5ffc8a0a88bb4200eb9a8c4aac75b871edeb3015807c99a6d8aaab0e2534b"
+    },
+    {
+      "bytes": 22820,
+      "path": "Loc_Loc.bundle/Contents/Resources/pt-BR.lproj/UI.stringsdict",
+      "sha256": "538b4fe5e85f6805dd48a8fef24f7e153986ca8eba740778aa06b5d516fd14fd"
+    },
+    {
+      "bytes": 89842,
+      "path": "Loc_Loc.bundle/Contents/Resources/pt-BR.lproj/Workspace.strings",
+      "sha256": "983ad0e1c688487de0f35ef53a9bedb7c7d971cc9185bf81854c5dfbdc774ed5"
+    },
+    {
+      "bytes": 11228,
+      "path": "Loc_Loc.bundle/Contents/Resources/pt-BR.lproj/Workspace.stringsdict",
+      "sha256": "db6a8238abd56bd29f5bf32718daff32318e1c1d4cd6ebd1f9b16991ad41fc1a"
+    },
+    {
+      "bytes": 17684,
+      "path": "Loc_Loc.bundle/Contents/Resources/pt-PT.lproj/Auth.strings",
+      "sha256": "4d0a69e11c5ef01a08682bcec2192b0452463b6f4201226b29b556391afb2044"
+    },
+    {
+      "bytes": 92894,
+      "path": "Loc_Loc.bundle/Contents/Resources/pt-PT.lproj/UI.strings",
+      "sha256": "738184a12d7a55a8efafe9f4643156846b4879f0ca08903e07d6a3071ff66567"
+    },
+    {
+      "bytes": 22828,
+      "path": "Loc_Loc.bundle/Contents/Resources/pt-PT.lproj/UI.stringsdict",
+      "sha256": "e553724809f31c2bf90354953ff594a6a512f19466e9ed33e0b041bf2b48e844"
+    },
+    {
+      "bytes": 87600,
+      "path": "Loc_Loc.bundle/Contents/Resources/pt-PT.lproj/Workspace.strings",
+      "sha256": "78bd2aff1605846e2e56f3fab76ff532b83b959c945c7fa759a893eb0486dc13"
+    },
+    {
+      "bytes": 11240,
+      "path": "Loc_Loc.bundle/Contents/Resources/pt-PT.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 18042,
+      "path": "Loc_Loc.bundle/Contents/Resources/ru.lproj/Auth.strings",
+      "sha256": "9a9e760f0c6d956d50d62d83cf28f1043cc0b7d205e3083d2ad8149a7ddd8f5f"
+    },
+    {
+      "bytes": 95968,
+      "path": "Loc_Loc.bundle/Contents/Resources/ru.lproj/UI.strings",
+      "sha256": "90762e5133b6b1ebdd1d95600364b564ab55c5deecf0cf1ed5b7412fcdfe2740"
+    },
+    {
+      "bytes": 28920,
+      "path": "Loc_Loc.bundle/Contents/Resources/ru.lproj/UI.stringsdict",
+      "sha256": "0ac1012bff0cce9a2d67127f1ea78fef6c52ad57064a470be68b89a9adc4ac77"
+    },
+    {
+      "bytes": 91720,
+      "path": "Loc_Loc.bundle/Contents/Resources/ru.lproj/Workspace.strings",
+      "sha256": "f29cb4202f2b4b19c4b5b08e30de82a64b48b3c8d476e1a6f301bb4a978f72f5"
+    },
+    {
+      "bytes": 14686,
+      "path": "Loc_Loc.bundle/Contents/Resources/ru.lproj/Workspace.stringsdict",
+      "sha256": "14fc55fb0e61e9ec17be377ea5234df514080ef03fb1bc9163ce524f77c18f6f"
+    },
+    {
+      "bytes": 17514,
+      "path": "Loc_Loc.bundle/Contents/Resources/tr.lproj/Auth.strings",
+      "sha256": "76852c49900607525d93f926244cc04cab87b4cfaaed80b8cb9f57e7eb028e97"
+    },
+    {
+      "bytes": 94810,
+      "path": "Loc_Loc.bundle/Contents/Resources/tr.lproj/UI.strings",
+      "sha256": "b3f3b6a9e3c854ab3100a34d722b0b1914f024696495c54c16c84b3c9447a6f9"
+    },
+    {
+      "bytes": 22862,
+      "path": "Loc_Loc.bundle/Contents/Resources/tr.lproj/UI.stringsdict",
+      "sha256": "08f00193bc5ca8e5911d22d5e28767754884771688b8f3ae22b442c3812ff86c"
+    },
+    {
+      "bytes": 89422,
+      "path": "Loc_Loc.bundle/Contents/Resources/tr.lproj/Workspace.strings",
+      "sha256": "09c6c499dfad806635532fdc43461d7da3acbfd42850b60c375edb304d2ddbe0"
+    },
+    {
+      "bytes": 11178,
+      "path": "Loc_Loc.bundle/Contents/Resources/tr.lproj/Workspace.stringsdict",
+      "sha256": "49728aa690abff0af1b5540ce069ca02448c28004d79375e58affbd74504ee32"
+    },
+    {
+      "bytes": 17118,
+      "path": "Loc_Loc.bundle/Contents/Resources/uk.lproj/Auth.strings",
+      "sha256": "d5b9562da09ff50b32e8ab6c1b8a127ef26c4e1060341f3566f0c3d8a913b97e"
+    },
+    {
+      "bytes": 93680,
+      "path": "Loc_Loc.bundle/Contents/Resources/uk.lproj/UI.strings",
+      "sha256": "c866229970400eccf5f10c60fd031a6775c935630038ec87d43264909f22edca"
+    },
+    {
+      "bytes": 28502,
+      "path": "Loc_Loc.bundle/Contents/Resources/uk.lproj/UI.stringsdict",
+      "sha256": "fd1ec100ab716ef0ca2c3f95d0eca173b2eccd6ecebc260b135ef1eecaabd086"
+    },
+    {
+      "bytes": 87906,
+      "path": "Loc_Loc.bundle/Contents/Resources/uk.lproj/Workspace.strings",
+      "sha256": "3f2cf75598f1219c6959dc11beb3b7636695246181550794fd9adbbc608fe3ed"
+    },
+    {
+      "bytes": 14508,
+      "path": "Loc_Loc.bundle/Contents/Resources/uk.lproj/Workspace.stringsdict",
+      "sha256": "e42abbc0651a8ebabf2dcac4c4c5f69e5a5d6c69935fc600ca0b1dbb4416e856"
+    },
+    {
+      "bytes": 17054,
+      "path": "Loc_Loc.bundle/Contents/Resources/vi.lproj/Auth.strings",
+      "sha256": "f038ea7c5d579678a149b835741a51b63e50368f1c67795ac33cabb19c19c30b"
+    },
+    {
+      "bytes": 92860,
+      "path": "Loc_Loc.bundle/Contents/Resources/vi.lproj/UI.strings",
+      "sha256": "90720ac481eef0c0b57fdbc503a6c386c03e94505210bc23d332b76d8423eed0"
+    },
+    {
+      "bytes": 20242,
+      "path": "Loc_Loc.bundle/Contents/Resources/vi.lproj/UI.stringsdict",
+      "sha256": "dd4766ff1eab09f3d076eb9242ec474de2aa72c96357c9bac9a14d84b3a9a656"
+    },
+    {
+      "bytes": 87690,
+      "path": "Loc_Loc.bundle/Contents/Resources/vi.lproj/Workspace.strings",
+      "sha256": "9400e656435f7930e05178a2baa85d98e683fd28fa8a3d3be831985bfebfb69f"
+    },
+    {
+      "bytes": 9640,
+      "path": "Loc_Loc.bundle/Contents/Resources/vi.lproj/Workspace.stringsdict",
+      "sha256": "9a5fa74663dc6597e4dea0aa61bf7f1a9ffd11c7431114e7730b8968c13bc9e1"
+    },
+    {
+      "bytes": 13074,
+      "path": "Loc_Loc.bundle/Contents/Resources/zh-Hans.lproj/Auth.strings",
+      "sha256": "f68cfe06008ce45aa787dc8fe8b5b45b67ebeb328a90eaa5790a4954beb7fc6d"
+    },
+    {
+      "bytes": 77310,
+      "path": "Loc_Loc.bundle/Contents/Resources/zh-Hans.lproj/UI.strings",
+      "sha256": "926233cc5ba8c560eff21c8cb509b60d80f70b007d961050809764b86971740e"
+    },
+    {
+      "bytes": 19896,
+      "path": "Loc_Loc.bundle/Contents/Resources/zh-Hans.lproj/UI.stringsdict",
+      "sha256": "08499ec60e200fb6fd3ac5f0105a25eba7871617cb07cf93d24d3adfcab1fbd5"
+    },
+    {
+      "bytes": 72352,
+      "path": "Loc_Loc.bundle/Contents/Resources/zh-Hans.lproj/Workspace.strings",
+      "sha256": "1302a891cd72621bc53ad449e0693c1a58516aebc16752ecec5ed498ae076b64"
+    },
+    {
+      "bytes": 9228,
+      "path": "Loc_Loc.bundle/Contents/Resources/zh-Hans.lproj/Workspace.stringsdict",
+      "sha256": "6927e1fb29b31be22f59f60dfe221bd624e0f9a59a8b9698aca652b7e5a12bec"
+    },
+    {
+      "bytes": 15660,
+      "path": "Loc_Loc.bundle/Contents/Resources/zh-Hant.lproj/Auth.strings",
+      "sha256": "f2e00033ad1ab8a702e0f98dcbfdd29eebea72bf0dbfc948b5971b8fc2d8df7b"
+    },
+    {
+      "bytes": 83294,
+      "path": "Loc_Loc.bundle/Contents/Resources/zh-Hant.lproj/UI.strings",
+      "sha256": "54497c72f2c7e3754a94b093e78a5ab67bc92c808b45170c9664367b3166cedf"
+    },
+    {
+      "bytes": 20164,
+      "path": "Loc_Loc.bundle/Contents/Resources/zh-Hant.lproj/UI.stringsdict",
+      "sha256": "0f816e773b69cb49b6d026348ef8511a27be800e7173edafb1d690f37eb1a18b"
+    },
+    {
+      "bytes": 80838,
+      "path": "Loc_Loc.bundle/Contents/Resources/zh-Hant.lproj/Workspace.strings",
+      "sha256": "c649ba915443d2df08c908165f3000bda7072a6b20b7940895270f18b46f444c"
+    },
+    {
+      "bytes": 9640,
+      "path": "Loc_Loc.bundle/Contents/Resources/zh-Hant.lproj/Workspace.stringsdict",
+      "sha256": "9a5fa74663dc6597e4dea0aa61bf7f1a9ffd11c7431114e7730b8968c13bc9e1"
+    },
+    {
+      "bytes": 194,
+      "path": "Loc_Loc.bundle/Contents/_CodeSignature/CodeDirectory",
+      "sha256": "2c1727771eb680ff6f01178f5e41b9fe4730ee90c4033812bfc7b6c7ed49e956"
+    },
+    {
+      "bytes": 12,
+      "path": "Loc_Loc.bundle/Contents/_CodeSignature/CodeRequirements",
+      "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986"
+    },
+    {
+      "bytes": 49514,
+      "path": "Loc_Loc.bundle/Contents/_CodeSignature/CodeResources",
+      "sha256": "31115a68fbd1892b18a45945e83d41d2fc33da4252586fb6085bf0f789e60a66"
+    },
+    {
+      "bytes": 0,
+      "path": "Loc_Loc.bundle/Contents/_CodeSignature/CodeSignature",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3366312,
+      "path": "PinkhaKit.o",
+      "sha256": "cb251a72602449804b7f28b01fe1007bc1fcf7214188d12f66b1981d91b85f8f"
+    },
+    {
+      "bytes": 209136,
+      "path": "PinkhaKit.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo",
+      "sha256": "205f99da5655ec8f4c872b3057ab2262851e382192987c29b35cd9dbb777b407"
+    },
+    {
+      "bytes": 149,
+      "path": "PinkhaKit.swiftmodule/arm64-apple-macos.abi.json",
+      "sha256": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728"
+    },
+    {
+      "bytes": 47520,
+      "path": "PinkhaKit.swiftmodule/arm64-apple-macos.swiftdoc",
+      "sha256": "04edcb997a7509e4ae95f4a3ac76cf4c267aa3491bd2549cad1a591a6ced333b"
+    },
+    {
+      "bytes": 775268,
+      "path": "PinkhaKit.swiftmodule/arm64-apple-macos.swiftmodule",
+      "sha256": "c93d4b965a32a78d633ff9cd816e15ec6290ee84efb8d761ab7154ec27d9a9ac"
+    },
+    {
+      "bytes": 1134,
+      "path": "PinkhaKit_PinkhaKit.bundle/Contents/Info.plist",
+      "sha256": "c6b81065ccad18603492c11d88ec40b1a0910ec1039c98ef712d208bb6b05cc1"
+    },
+    {
+      "bytes": 2350,
+      "path": "PinkhaKit_PinkhaKit.bundle/Contents/Resources/en.lproj/PinkhaSemanticAnchors.strings",
+      "sha256": "78fdffe2f2d56febdff24496afb40debd59a5892367ee55034c4c2528e8fed2b"
+    },
+    {
+      "bytes": 4704,
+      "path": "PinkhaKit_PinkhaKit.bundle/Contents/Resources/he.lproj/PinkhaSemanticAnchors.strings",
+      "sha256": "c8122e8a3d82c772c3bda1e6bcb00ea99a37af47806aa56b548b41c6372a7ad1"
+    },
+    {
+      "bytes": 206,
+      "path": "PinkhaKit_PinkhaKit.bundle/Contents/_CodeSignature/CodeDirectory",
+      "sha256": "d2dc78045586a94ba05f118aae09ce9603f543d3c60360eb0f081041a5f175b3"
+    },
+    {
+      "bytes": 12,
+      "path": "PinkhaKit_PinkhaKit.bundle/Contents/_CodeSignature/CodeRequirements",
+      "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986"
+    },
+    {
+      "bytes": 2998,
+      "path": "PinkhaKit_PinkhaKit.bundle/Contents/_CodeSignature/CodeResources",
+      "sha256": "8df1b324e29df210f9397bec3521f9b82d585fe025da9ffe818391526d3c5ba5"
+    },
+    {
+      "bytes": 0,
+      "path": "PinkhaKit_PinkhaKit.bundle/Contents/_CodeSignature/CodeSignature",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 998280,
+      "path": "PinkhaTorahPresentation.o",
+      "sha256": "4b8f3bc192f4011c5bf46e5e624b1724ed40156d9a4a7bd61207860130c84a9a"
+    },
+    {
+      "bytes": 57116,
+      "path": "PinkhaTorahPresentation.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo",
+      "sha256": "fbc4e364b64850ad9a8f0a771f16e9d749ff962715527957aa2d246f4bc90b40"
+    },
+    {
+      "bytes": 149,
+      "path": "PinkhaTorahPresentation.swiftmodule/arm64-apple-macos.abi.json",
+      "sha256": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728"
+    },
+    {
+      "bytes": 3592,
+      "path": "PinkhaTorahPresentation.swiftmodule/arm64-apple-macos.swiftdoc",
+      "sha256": "75b9b942ec2dd745df051a2cd0694cb0f0f21c4764f0793e5d916a070aad7fee"
+    },
+    {
+      "bytes": 205204,
+      "path": "PinkhaTorahPresentation.swiftmodule/arm64-apple-macos.swiftmodule",
+      "sha256": "8185ba477a6868a8df2fd29799cb372bf6899e3d5ac802cd487a9ca4bf4ac679"
+    },
+    {
+      "bytes": 8688,
+      "path": "PinkhaTorahPresentationTests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo",
+      "sha256": "bd070b99c28e8b9b33f402e3593a8ebaaf45838b67071679751ffe8ad13d3695"
+    },
+    {
+      "bytes": 149,
+      "path": "PinkhaTorahPresentationTests.swiftmodule/arm64-apple-macos.abi.json",
+      "sha256": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728"
+    },
+    {
+      "bytes": 1524,
+      "path": "PinkhaTorahPresentationTests.swiftmodule/arm64-apple-macos.swiftdoc",
+      "sha256": "58980095b948bed67ea98d02f4b1ccb2ff60b0682acc0064519c01a31b5b5ec3"
+    },
+    {
+      "bytes": 141040,
+      "path": "PinkhaTorahPresentationTests.swiftmodule/arm64-apple-macos.swiftmodule",
+      "sha256": "ef777f4660f1902d78fdbd59550d25bb03129b6f1f9feab0bb4169de1cd27bd5"
+    },
+    {
+      "bytes": 1244,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Info.plist",
+      "sha256": "f3428dc04a8b84399eef642706f08bb1f65fb6706c371e6ded251323d78034b5"
+    },
+    {
+      "bytes": 12656208,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/MacOS/PinkhaTorahPresentationTests",
+      "sha256": "c7cb4be953dc9daf73394ee2262f511b08998759142f6c0134b9ef02ce672e94"
+    },
+    {
+      "bytes": 1110,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Info.plist",
+      "sha256": "3dbb8e0d258fd2ecb21371c291b35f25808df05e687e941b8a057088991e7bd8"
+    },
+    {
+      "bytes": 16670,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ar.lproj/Auth.strings",
+      "sha256": "4ef8f9fca67be3c0b27343ea7592dcb2fc8e0caeef5512f72e7f61d451105260"
+    },
+    {
+      "bytes": 91124,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ar.lproj/UI.strings",
+      "sha256": "ccf0a773240ca6a2482cecb7c3e27d374518fab9cc64e6b79fbd0f90e01bea37"
+    },
+    {
+      "bytes": 33762,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ar.lproj/UI.stringsdict",
+      "sha256": "3ae8e8860cd390e64e233bb9671bf3aabfe6a35d1dea3a81aeca183046f81bed"
+    },
+    {
+      "bytes": 85368,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ar.lproj/Workspace.strings",
+      "sha256": "3989f5878c1e6652bd5b1f6ba403531ed2d72de905ad5cb4cf1fe55574ea103f"
+    },
+    {
+      "bytes": 17370,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ar.lproj/Workspace.stringsdict",
+      "sha256": "16fc2f0fbf2d854f91be568123750e2514e421be61c686fa1c6d566f3b21fa2a"
+    },
+    {
+      "bytes": 17386,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/be.lproj/Auth.strings",
+      "sha256": "563639ed06b5522f223e7fdd8bd7ce15aec6f6ac4aa506b0a9de659ffcb709ce"
+    },
+    {
+      "bytes": 94636,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/be.lproj/UI.strings",
+      "sha256": "0cad883a0146759915bd9b6d0b5f06211250654bcf43bb9ad2117365a0bd57d7"
+    },
+    {
+      "bytes": 28620,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/be.lproj/UI.stringsdict",
+      "sha256": "2b700d5c64b581d29a4466536ab915e2e3994c1b4f7637f703952d82097c9e44"
+    },
+    {
+      "bytes": 89314,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/be.lproj/Workspace.strings",
+      "sha256": "763bca5835f94b48bd0df111fab581fc6f025eed309fb74d9bfaa10df0508373"
+    },
+    {
+      "bytes": 14508,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/be.lproj/Workspace.stringsdict",
+      "sha256": "e42abbc0651a8ebabf2dcac4c4c5f69e5a5d6c69935fc600ca0b1dbb4416e856"
+    },
+    {
+      "bytes": 17198,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/cs.lproj/Auth.strings",
+      "sha256": "e3fa2ec7f729ee13da60b41b3c1d5de085322bb2557e6f626786cd50cd79588f"
+    },
+    {
+      "bytes": 91882,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/cs.lproj/UI.strings",
+      "sha256": "28fb8a4f9e218e4d10183ed5880c251095a388b6b552f9b832e74ab7fc2e237d"
+    },
+    {
+      "bytes": 28474,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/cs.lproj/UI.stringsdict",
+      "sha256": "68d2cafe23e625c86f7b0edac2d5a082a333c7502934f14c554272b32ccfd3dc"
+    },
+    {
+      "bytes": 87196,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/cs.lproj/Workspace.strings",
+      "sha256": "0a19bb1af574ee43b3cd77180111674865382f944f46a92a642d3215efb106f5"
+    },
+    {
+      "bytes": 14508,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/cs.lproj/Workspace.stringsdict",
+      "sha256": "e42abbc0651a8ebabf2dcac4c4c5f69e5a5d6c69935fc600ca0b1dbb4416e856"
+    },
+    {
+      "bytes": 18466,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/de.lproj/Auth.strings",
+      "sha256": "f95c1fd626d24b4abddb4197e525ab226ec6f89a5c4dc6f30a1f4c11e8f5b891"
+    },
+    {
+      "bytes": 97936,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/de.lproj/UI.strings",
+      "sha256": "30c48b091adade92b2beb48b4c81c36ff0cb66a858296b46c994c1d195e32129"
+    },
+    {
+      "bytes": 22974,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/de.lproj/UI.stringsdict",
+      "sha256": "9f17d5c2f7c9f86c609ca14a3b74c967d657993c4f2276e8d8f8b6653641ad3d"
+    },
+    {
+      "bytes": 91774,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/de.lproj/Workspace.strings",
+      "sha256": "b74ed0ef3321dd03d5417493c5c7dd1ea6d844d7cb5e969b8eabd0792dae736e"
+    },
+    {
+      "bytes": 11234,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/de.lproj/Workspace.stringsdict",
+      "sha256": "4b62397042f04eebb9f3e41199b8bda885e96ab1ad9c2554d05d644d85e1d7a3"
+    },
+    {
+      "bytes": 17166,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/en.lproj/Auth.strings",
+      "sha256": "02ca24f48ad8a3b58ede07b093926367593670833dc0b85a61b3aa406386aa08"
+    },
+    {
+      "bytes": 96884,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/en.lproj/UI.strings",
+      "sha256": "0a66f62e36d48c5bd14cd4130829e38ae297db4bdf8fd0b41bfab74e24bff354"
+    },
+    {
+      "bytes": 22820,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/en.lproj/UI.stringsdict",
+      "sha256": "e4f8032bf2af1b271e8dfecd5adc7994d522b02676bd7ac4816cb9938a29d83d"
+    },
+    {
+      "bytes": 102056,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/en.lproj/Workspace.strings",
+      "sha256": "d7f54f85cbd481f557b03264a733e336f3ff7550b6dee81e03715c7f68e00402"
+    },
+    {
+      "bytes": 15072,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/en.lproj/Workspace.stringsdict",
+      "sha256": "43d7ef65d50a0f45198769ab329f821a4f327601d8233a817bb86debc6312c56"
+    },
+    {
+      "bytes": 18050,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/es.lproj/Auth.strings",
+      "sha256": "505821c74d9578f051416fca8a0625d3f66d3a3102139edf198535d46d21223e"
+    },
+    {
+      "bytes": 96472,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/es.lproj/UI.strings",
+      "sha256": "f1804fb538532078477b41a27fc363b7e0e050144124399f61049df8e8a39567"
+    },
+    {
+      "bytes": 23016,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/es.lproj/UI.stringsdict",
+      "sha256": "1c73fe619b417834288414bf9aca8f4e1015b90c5682cd1bf7b479178b823b04"
+    },
+    {
+      "bytes": 91686,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/es.lproj/Workspace.strings",
+      "sha256": "a58e8d137f317dbac9a791a011b1ebad70e2af884ba7bf550d2bb3a835b2edab"
+    },
+    {
+      "bytes": 11348,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/es.lproj/Workspace.stringsdict",
+      "sha256": "2c6f4b429ca06800e2f32170373e6ea3761eefff50e4a7bc61a18a75649cef95"
+    },
+    {
+      "bytes": 17018,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fa.lproj/Auth.strings",
+      "sha256": "e3096dd7628419bfdc64441c927dbcd4e72c5c46a32df5cc50c2bf7c5d54a837"
+    },
+    {
+      "bytes": 91680,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fa.lproj/UI.strings",
+      "sha256": "13d514dbb1e7394389ebc2e8da5ea00e6a5a96dbeb2bd46428c5736e98dd51bf"
+    },
+    {
+      "bytes": 22820,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fa.lproj/UI.stringsdict",
+      "sha256": "e4f8032bf2af1b271e8dfecd5adc7994d522b02676bd7ac4816cb9938a29d83d"
+    },
+    {
+      "bytes": 87108,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fa.lproj/Workspace.strings",
+      "sha256": "6ed74f44ba81e62ae06b3ab129cf727fb577a6069a2e6c67087643d11fdab5da"
+    },
+    {
+      "bytes": 11240,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fa.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 17092,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fi.lproj/Auth.strings",
+      "sha256": "b3f9a14e8d9b787ad6968c48227baec942b01ac1a51abc953d5f070680c9fc49"
+    },
+    {
+      "bytes": 92512,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fi.lproj/UI.strings",
+      "sha256": "c250e91efe3924b655a83e871115152f648ce28aec7417b978d5ecc36c6d8266"
+    },
+    {
+      "bytes": 22820,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fi.lproj/UI.stringsdict",
+      "sha256": "e4f8032bf2af1b271e8dfecd5adc7994d522b02676bd7ac4816cb9938a29d83d"
+    },
+    {
+      "bytes": 87388,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fi.lproj/Workspace.strings",
+      "sha256": "800c2548f626969f5f46951c9abab3551706999c7c9a9b8cb78b95c7f9ea54f0"
+    },
+    {
+      "bytes": 11240,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fi.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 18288,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fr.lproj/Auth.strings",
+      "sha256": "d28c727e47fe9ea092de47d6f00b1fd13bafc21480a56ac89dad72fe8142b270"
+    },
+    {
+      "bytes": 96748,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fr.lproj/UI.strings",
+      "sha256": "0f35b4205e68ba64a1518c3962ac6a61f3ff0d1b6eb938f6870c16bc97295c9f"
+    },
+    {
+      "bytes": 22876,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fr.lproj/UI.stringsdict",
+      "sha256": "42f2c1510b6d22a8dea52dfec0bdf5368c6e240ec28dc0a60621e9488acaa589"
+    },
+    {
+      "bytes": 90802,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fr.lproj/Workspace.strings",
+      "sha256": "60b15217d088e67d7449412a94157364a033e60bb07e54be03caf91f4b3b8cdb"
+    },
+    {
+      "bytes": 11240,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/fr.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 16048,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/he.lproj/Auth.strings",
+      "sha256": "3ea197fd175d86d06e4601ffdf793b069ab0794a5b09fa1a1a5123fec17a9574"
+    },
+    {
+      "bytes": 91524,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/he.lproj/UI.strings",
+      "sha256": "f825b8ad391bd8667a6e3579b0ecfeb78933ce584554c2f860c211331a576c98"
+    },
+    {
+      "bytes": 22790,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/he.lproj/UI.stringsdict",
+      "sha256": "9162ce9c1dda5dfd7f20d1d3255fc7709c2975c156d8a6404ba2caaf941a9a90"
+    },
+    {
+      "bytes": 95994,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/he.lproj/Workspace.strings",
+      "sha256": "b13de9988fa5f04a7e92b12f2e04f23f753ec4f992ab4ebac477061d49288c37"
+    },
+    {
+      "bytes": 10748,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/he.lproj/Workspace.stringsdict",
+      "sha256": "4ae7077378a993a3cc38be263eb3a653cf31eae5051c957c0288239c34a47b15"
+    },
+    {
+      "bytes": 17826,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/id.lproj/Auth.strings",
+      "sha256": "b9e73fe4d7181448bf886fc3a016ae57f03fb38cbcc73273ab540256d736509e"
+    },
+    {
+      "bytes": 94884,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/id.lproj/UI.strings",
+      "sha256": "4b774b455174c7a4efb493769f979942d85b79c08e27175c0e603ff373074d96"
+    },
+    {
+      "bytes": 20148,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/id.lproj/UI.stringsdict",
+      "sha256": "47800a53926457e2194939290151a6df4df74bad0a629161d9ad0c35bbffd768"
+    },
+    {
+      "bytes": 90002,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/id.lproj/Workspace.strings",
+      "sha256": "5c8c2a2f36307038430ebc914659204978c8e61606f858ee89070423d0681094"
+    },
+    {
+      "bytes": 9698,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/id.lproj/Workspace.stringsdict",
+      "sha256": "51c4a125f61f9837a27c2ac0554ffcdaf08f51b2af4d85fcc787bb96a2913c84"
+    },
+    {
+      "bytes": 18250,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/it.lproj/Auth.strings",
+      "sha256": "d35f79ae041ae1553372f23106ba500be41f7ca973ac07b238d7a5f6512f18e7"
+    },
+    {
+      "bytes": 96468,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/it.lproj/UI.strings",
+      "sha256": "6126c83ee96ad1c865a634ba6c3275d523c06a9173b419f3609dcaf30534780b"
+    },
+    {
+      "bytes": 22904,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/it.lproj/UI.stringsdict",
+      "sha256": "54519585020842da7ea8b9f20977f01589da98d28dcd847067b821d40369e98a"
+    },
+    {
+      "bytes": 91260,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/it.lproj/Workspace.strings",
+      "sha256": "24822303e93d625e69444603740ce2833e8dea0c308b4df4342949f8aa04eaf8"
+    },
+    {
+      "bytes": 11240,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/it.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 14970,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ja.lproj/Auth.strings",
+      "sha256": "faa109fcdd3fc532c3a3b57419057fbb13d95bb114ac0ced40afc674ead84c74"
+    },
+    {
+      "bytes": 83348,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ja.lproj/UI.strings",
+      "sha256": "209e00031c52dafc74c75db22793a7188570275c67fe2cede436e975de5ebec4"
+    },
+    {
+      "bytes": 20096,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ja.lproj/UI.stringsdict",
+      "sha256": "b3b03aa4706aca11100bfc4c22b19351535d8a7b0ba793da0d33e2cd0b9a2ed6"
+    },
+    {
+      "bytes": 79622,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ja.lproj/Workspace.strings",
+      "sha256": "da298fe0696003e9b0ac868c84a9181b843e5999acabc29c8a5f4101a8fc5962"
+    },
+    {
+      "bytes": 9640,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ja.lproj/Workspace.stringsdict",
+      "sha256": "9a5fa74663dc6597e4dea0aa61bf7f1a9ffd11c7431114e7730b8968c13bc9e1"
+    },
+    {
+      "bytes": 14454,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ko.lproj/Auth.strings",
+      "sha256": "eb9766d8e126c2d6380bd7d23124fbd2175f94762144b83fd45af287c7c30743"
+    },
+    {
+      "bytes": 81184,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ko.lproj/UI.strings",
+      "sha256": "bb77f47cd7a40ee19caa3a6a32230978f38a8ed1fdf630673eec132bc7ca5c3d"
+    },
+    {
+      "bytes": 19982,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ko.lproj/UI.stringsdict",
+      "sha256": "7b5109cec29f2d2d76c11188822a25588a1a5ac59ca5487ad50f94d534935b67"
+    },
+    {
+      "bytes": 78394,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ko.lproj/Workspace.strings",
+      "sha256": "d4668b6317bd6b15c104038d715cfd42e45f5eda42afefdfa8d00c7243cd2258"
+    },
+    {
+      "bytes": 9640,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ko.lproj/Workspace.stringsdict",
+      "sha256": "9a5fa74663dc6597e4dea0aa61bf7f1a9ffd11c7431114e7730b8968c13bc9e1"
+    },
+    {
+      "bytes": 17306,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/nb.lproj/Auth.strings",
+      "sha256": "b5cd43d382c8876aa41763c8bed80976780b69c7105099ca2dd0edb769d214dd"
+    },
+    {
+      "bytes": 92978,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/nb.lproj/UI.strings",
+      "sha256": "d2215c394ab8e45411646cf592c81ed13c04d19ddb64b8d5805d5297e481f1a5"
+    },
+    {
+      "bytes": 22820,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/nb.lproj/UI.stringsdict",
+      "sha256": "e4f8032bf2af1b271e8dfecd5adc7994d522b02676bd7ac4816cb9938a29d83d"
+    },
+    {
+      "bytes": 87782,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/nb.lproj/Workspace.strings",
+      "sha256": "79ea833b2adb793e68baf90a5f185a034bb31a5e350b7a7ba7f806628c584490"
+    },
+    {
+      "bytes": 11240,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/nb.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 17822,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/nl.lproj/Auth.strings",
+      "sha256": "1c5e1e5310e024fd7e595c7c97874ac2be7ac9eef9b92fc8833fa1c82b43410c"
+    },
+    {
+      "bytes": 96282,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/nl.lproj/UI.strings",
+      "sha256": "eb6e9ce7133f4277cd08ac8c529b839b928db49f1d3bdd04a24a414428afd7a0"
+    },
+    {
+      "bytes": 22916,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/nl.lproj/UI.stringsdict",
+      "sha256": "c3490ff8976654cd261c1b861ab5b3c9efde43bccad8afdf644d5bd62b2a6a3a"
+    },
+    {
+      "bytes": 90928,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/nl.lproj/Workspace.strings",
+      "sha256": "41e1c73ad7d71c259ce4c05995cf1625984195bf8d899447676e9786181a0023"
+    },
+    {
+      "bytes": 11240,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/nl.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 17336,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/or.lproj/Auth.strings",
+      "sha256": "fe45e5bee335ba949d53560212d6084ed5ae849b15be48728fc51126207995a1"
+    },
+    {
+      "bytes": 93050,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/or.lproj/UI.strings",
+      "sha256": "15b2234fb8c8b500c3f665d3373e8ae91f849b208487b1069f70aac43dce6709"
+    },
+    {
+      "bytes": 22820,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/or.lproj/UI.stringsdict",
+      "sha256": "e4f8032bf2af1b271e8dfecd5adc7994d522b02676bd7ac4816cb9938a29d83d"
+    },
+    {
+      "bytes": 87730,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/or.lproj/Workspace.strings",
+      "sha256": "cd2f475a2d5318e7210c76e9328746c4e1813ab2e267c617cd60525cf20dcb46"
+    },
+    {
+      "bytes": 11240,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/or.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 17460,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pl.lproj/Auth.strings",
+      "sha256": "787606744aec4a3cd9ecc166f29adf01a16453947691481e6884bd856afe1084"
+    },
+    {
+      "bytes": 94164,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pl.lproj/UI.strings",
+      "sha256": "f71d2c391d5a6ea78e73de8a7335b987a947f7077f1dedbd7a77aaf09a68858e"
+    },
+    {
+      "bytes": 28542,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pl.lproj/UI.stringsdict",
+      "sha256": "d204bdfcae27cb071a58f664049bde633b00ea0f5d67405d7390bb89134ea336"
+    },
+    {
+      "bytes": 89640,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pl.lproj/Workspace.strings",
+      "sha256": "729f2839f79eaf0119eff84ce3464ae4ffe999ebaa203f1ff15b2b579e182490"
+    },
+    {
+      "bytes": 14508,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pl.lproj/Workspace.stringsdict",
+      "sha256": "e42abbc0651a8ebabf2dcac4c4c5f69e5a5d6c69935fc600ca0b1dbb4416e856"
+    },
+    {
+      "bytes": 17702,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pt-BR.lproj/Auth.strings",
+      "sha256": "ea99cbfced9945d01fee4fb35620c66d83b3726bdea016135ddc2b6526ac11e1"
+    },
+    {
+      "bytes": 95304,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pt-BR.lproj/UI.strings",
+      "sha256": "dec5ffc8a0a88bb4200eb9a8c4aac75b871edeb3015807c99a6d8aaab0e2534b"
+    },
+    {
+      "bytes": 22820,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pt-BR.lproj/UI.stringsdict",
+      "sha256": "538b4fe5e85f6805dd48a8fef24f7e153986ca8eba740778aa06b5d516fd14fd"
+    },
+    {
+      "bytes": 89842,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pt-BR.lproj/Workspace.strings",
+      "sha256": "983ad0e1c688487de0f35ef53a9bedb7c7d971cc9185bf81854c5dfbdc774ed5"
+    },
+    {
+      "bytes": 11228,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pt-BR.lproj/Workspace.stringsdict",
+      "sha256": "db6a8238abd56bd29f5bf32718daff32318e1c1d4cd6ebd1f9b16991ad41fc1a"
+    },
+    {
+      "bytes": 17684,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pt-PT.lproj/Auth.strings",
+      "sha256": "4d0a69e11c5ef01a08682bcec2192b0452463b6f4201226b29b556391afb2044"
+    },
+    {
+      "bytes": 92894,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pt-PT.lproj/UI.strings",
+      "sha256": "738184a12d7a55a8efafe9f4643156846b4879f0ca08903e07d6a3071ff66567"
+    },
+    {
+      "bytes": 22828,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pt-PT.lproj/UI.stringsdict",
+      "sha256": "e553724809f31c2bf90354953ff594a6a512f19466e9ed33e0b041bf2b48e844"
+    },
+    {
+      "bytes": 87600,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pt-PT.lproj/Workspace.strings",
+      "sha256": "78bd2aff1605846e2e56f3fab76ff532b83b959c945c7fa759a893eb0486dc13"
+    },
+    {
+      "bytes": 11240,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/pt-PT.lproj/Workspace.stringsdict",
+      "sha256": "00144e9db8b97c490cb5ca17a648f8af8002501124b240a9afc04d9507936dd0"
+    },
+    {
+      "bytes": 18042,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ru.lproj/Auth.strings",
+      "sha256": "9a9e760f0c6d956d50d62d83cf28f1043cc0b7d205e3083d2ad8149a7ddd8f5f"
+    },
+    {
+      "bytes": 95968,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ru.lproj/UI.strings",
+      "sha256": "90762e5133b6b1ebdd1d95600364b564ab55c5deecf0cf1ed5b7412fcdfe2740"
+    },
+    {
+      "bytes": 28920,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ru.lproj/UI.stringsdict",
+      "sha256": "0ac1012bff0cce9a2d67127f1ea78fef6c52ad57064a470be68b89a9adc4ac77"
+    },
+    {
+      "bytes": 91720,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ru.lproj/Workspace.strings",
+      "sha256": "f29cb4202f2b4b19c4b5b08e30de82a64b48b3c8d476e1a6f301bb4a978f72f5"
+    },
+    {
+      "bytes": 14686,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/ru.lproj/Workspace.stringsdict",
+      "sha256": "14fc55fb0e61e9ec17be377ea5234df514080ef03fb1bc9163ce524f77c18f6f"
+    },
+    {
+      "bytes": 17514,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/tr.lproj/Auth.strings",
+      "sha256": "76852c49900607525d93f926244cc04cab87b4cfaaed80b8cb9f57e7eb028e97"
+    },
+    {
+      "bytes": 94810,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/tr.lproj/UI.strings",
+      "sha256": "b3f3b6a9e3c854ab3100a34d722b0b1914f024696495c54c16c84b3c9447a6f9"
+    },
+    {
+      "bytes": 22862,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/tr.lproj/UI.stringsdict",
+      "sha256": "08f00193bc5ca8e5911d22d5e28767754884771688b8f3ae22b442c3812ff86c"
+    },
+    {
+      "bytes": 89422,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/tr.lproj/Workspace.strings",
+      "sha256": "09c6c499dfad806635532fdc43461d7da3acbfd42850b60c375edb304d2ddbe0"
+    },
+    {
+      "bytes": 11178,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/tr.lproj/Workspace.stringsdict",
+      "sha256": "49728aa690abff0af1b5540ce069ca02448c28004d79375e58affbd74504ee32"
+    },
+    {
+      "bytes": 17118,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/uk.lproj/Auth.strings",
+      "sha256": "d5b9562da09ff50b32e8ab6c1b8a127ef26c4e1060341f3566f0c3d8a913b97e"
+    },
+    {
+      "bytes": 93680,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/uk.lproj/UI.strings",
+      "sha256": "c866229970400eccf5f10c60fd031a6775c935630038ec87d43264909f22edca"
+    },
+    {
+      "bytes": 28502,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/uk.lproj/UI.stringsdict",
+      "sha256": "fd1ec100ab716ef0ca2c3f95d0eca173b2eccd6ecebc260b135ef1eecaabd086"
+    },
+    {
+      "bytes": 87906,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/uk.lproj/Workspace.strings",
+      "sha256": "3f2cf75598f1219c6959dc11beb3b7636695246181550794fd9adbbc608fe3ed"
+    },
+    {
+      "bytes": 14508,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/uk.lproj/Workspace.stringsdict",
+      "sha256": "e42abbc0651a8ebabf2dcac4c4c5f69e5a5d6c69935fc600ca0b1dbb4416e856"
+    },
+    {
+      "bytes": 17054,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/vi.lproj/Auth.strings",
+      "sha256": "f038ea7c5d579678a149b835741a51b63e50368f1c67795ac33cabb19c19c30b"
+    },
+    {
+      "bytes": 92860,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/vi.lproj/UI.strings",
+      "sha256": "90720ac481eef0c0b57fdbc503a6c386c03e94505210bc23d332b76d8423eed0"
+    },
+    {
+      "bytes": 20242,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/vi.lproj/UI.stringsdict",
+      "sha256": "dd4766ff1eab09f3d076eb9242ec474de2aa72c96357c9bac9a14d84b3a9a656"
+    },
+    {
+      "bytes": 87690,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/vi.lproj/Workspace.strings",
+      "sha256": "9400e656435f7930e05178a2baa85d98e683fd28fa8a3d3be831985bfebfb69f"
+    },
+    {
+      "bytes": 9640,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/vi.lproj/Workspace.stringsdict",
+      "sha256": "9a5fa74663dc6597e4dea0aa61bf7f1a9ffd11c7431114e7730b8968c13bc9e1"
+    },
+    {
+      "bytes": 13074,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/zh-Hans.lproj/Auth.strings",
+      "sha256": "f68cfe06008ce45aa787dc8fe8b5b45b67ebeb328a90eaa5790a4954beb7fc6d"
+    },
+    {
+      "bytes": 77310,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/zh-Hans.lproj/UI.strings",
+      "sha256": "926233cc5ba8c560eff21c8cb509b60d80f70b007d961050809764b86971740e"
+    },
+    {
+      "bytes": 19896,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/zh-Hans.lproj/UI.stringsdict",
+      "sha256": "08499ec60e200fb6fd3ac5f0105a25eba7871617cb07cf93d24d3adfcab1fbd5"
+    },
+    {
+      "bytes": 72352,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/zh-Hans.lproj/Workspace.strings",
+      "sha256": "1302a891cd72621bc53ad449e0693c1a58516aebc16752ecec5ed498ae076b64"
+    },
+    {
+      "bytes": 9228,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/zh-Hans.lproj/Workspace.stringsdict",
+      "sha256": "6927e1fb29b31be22f59f60dfe221bd624e0f9a59a8b9698aca652b7e5a12bec"
+    },
+    {
+      "bytes": 15660,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/zh-Hant.lproj/Auth.strings",
+      "sha256": "f2e00033ad1ab8a702e0f98dcbfdd29eebea72bf0dbfc948b5971b8fc2d8df7b"
+    },
+    {
+      "bytes": 83294,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/zh-Hant.lproj/UI.strings",
+      "sha256": "54497c72f2c7e3754a94b093e78a5ab67bc92c808b45170c9664367b3166cedf"
+    },
+    {
+      "bytes": 20164,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/zh-Hant.lproj/UI.stringsdict",
+      "sha256": "0f816e773b69cb49b6d026348ef8511a27be800e7173edafb1d690f37eb1a18b"
+    },
+    {
+      "bytes": 80838,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/zh-Hant.lproj/Workspace.strings",
+      "sha256": "c649ba915443d2df08c908165f3000bda7072a6b20b7940895270f18b46f444c"
+    },
+    {
+      "bytes": 9640,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/Resources/zh-Hant.lproj/Workspace.stringsdict",
+      "sha256": "9a5fa74663dc6597e4dea0aa61bf7f1a9ffd11c7431114e7730b8968c13bc9e1"
+    },
+    {
+      "bytes": 194,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/_CodeSignature/CodeDirectory",
+      "sha256": "2c1727771eb680ff6f01178f5e41b9fe4730ee90c4033812bfc7b6c7ed49e956"
+    },
+    {
+      "bytes": 12,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/_CodeSignature/CodeRequirements",
+      "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986"
+    },
+    {
+      "bytes": 49514,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/_CodeSignature/CodeResources",
+      "sha256": "31115a68fbd1892b18a45945e83d41d2fc33da4252586fb6085bf0f789e60a66"
+    },
+    {
+      "bytes": 0,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/Loc_Loc.bundle/Contents/_CodeSignature/CodeSignature",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1134,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaKit_PinkhaKit.bundle/Contents/Info.plist",
+      "sha256": "c6b81065ccad18603492c11d88ec40b1a0910ec1039c98ef712d208bb6b05cc1"
+    },
+    {
+      "bytes": 2350,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaKit_PinkhaKit.bundle/Contents/Resources/en.lproj/PinkhaSemanticAnchors.strings",
+      "sha256": "78fdffe2f2d56febdff24496afb40debd59a5892367ee55034c4c2528e8fed2b"
+    },
+    {
+      "bytes": 4704,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaKit_PinkhaKit.bundle/Contents/Resources/he.lproj/PinkhaSemanticAnchors.strings",
+      "sha256": "c8122e8a3d82c772c3bda1e6bcb00ea99a37af47806aa56b548b41c6372a7ad1"
+    },
+    {
+      "bytes": 206,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaKit_PinkhaKit.bundle/Contents/_CodeSignature/CodeDirectory",
+      "sha256": "d2dc78045586a94ba05f118aae09ce9603f543d3c60360eb0f081041a5f175b3"
+    },
+    {
+      "bytes": 12,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaKit_PinkhaKit.bundle/Contents/_CodeSignature/CodeRequirements",
+      "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986"
+    },
+    {
+      "bytes": 2998,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaKit_PinkhaKit.bundle/Contents/_CodeSignature/CodeResources",
+      "sha256": "8df1b324e29df210f9397bec3521f9b82d585fe025da9ffe818391526d3c5ba5"
+    },
+    {
+      "bytes": 0,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaKit_PinkhaKit.bundle/Contents/_CodeSignature/CodeSignature",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1200,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaTorahPresentation_PinkhaTorahPresentationTests.bundle/Contents/Info.plist",
+      "sha256": "ae7aeff195d71b9851a6fd6286c3756a3881dcccb16af8c338e195786d61e04b"
+    },
+    {
+      "bytes": 483,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaTorahPresentation_PinkhaTorahPresentationTests.bundle/Contents/Resources/reference-resolved.json",
+      "sha256": "ab816e57830af5a3d39b578dc868766a6bbce0c7636cba8669d83b6a3ab0c2b6"
+    },
+    {
+      "bytes": 239,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaTorahPresentation_PinkhaTorahPresentationTests.bundle/Contents/_CodeSignature/CodeDirectory",
+      "sha256": "b7840b0519b8551c1bc410c07ccdf77e538539da9376eaad2e7644c702d2cb51"
+    },
+    {
+      "bytes": 12,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaTorahPresentation_PinkhaTorahPresentationTests.bundle/Contents/_CodeSignature/CodeRequirements",
+      "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986"
+    },
+    {
+      "bytes": 2468,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaTorahPresentation_PinkhaTorahPresentationTests.bundle/Contents/_CodeSignature/CodeResources",
+      "sha256": "fb6e82dc40143c9f76eb3a347de6c31d0667de720592416abd79dc684267f9b4"
+    },
+    {
+      "bytes": 0,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/PinkhaTorahPresentation_PinkhaTorahPresentationTests.bundle/Contents/_CodeSignature/CodeSignature",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 1164,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/TorahInspectorKit_TorahInspectorUI.bundle/Contents/Info.plist",
+      "sha256": "2d37189712a46fa319ae970834e80c16d4bb197c16f6372287765daae8184e23"
+    },
+    {
+      "bytes": 2866,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/TorahInspectorKit_TorahInspectorUI.bundle/Contents/Resources/en.lproj/Localizable.strings",
+      "sha256": "165de3b7f1894669a1bf9f7d0bd4cf01a7f2e29820455d55840efbebef0cda7d"
+    },
+    {
+      "bytes": 3525,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/TorahInspectorKit_TorahInspectorUI.bundle/Contents/Resources/he.lproj/Localizable.strings",
+      "sha256": "f81bcdabbf8136bdffb358b373f77c2191d3678f8763b944cff2e7c4c48c0f2b"
+    },
+    {
+      "bytes": 221,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/TorahInspectorKit_TorahInspectorUI.bundle/Contents/_CodeSignature/CodeDirectory",
+      "sha256": "78a04d455697553b9e60ad527aecef0397459a15b3ae0a6fd68d233d32170c3d"
+    },
+    {
+      "bytes": 12,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/TorahInspectorKit_TorahInspectorUI.bundle/Contents/_CodeSignature/CodeRequirements",
+      "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986"
+    },
+    {
+      "bytes": 2958,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/TorahInspectorKit_TorahInspectorUI.bundle/Contents/_CodeSignature/CodeResources",
+      "sha256": "16c211c26ffdc8f29a75512225195890f55a12f92b3ba5eb8ba07dde37864c9d"
+    },
+    {
+      "bytes": 0,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/Resources/TorahInspectorKit_TorahInspectorUI.bundle/Contents/_CodeSignature/CodeSignature",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 67636,
+      "path": "PinkhaTorahPresentationTests.xctest/Contents/_CodeSignature/CodeResources",
+      "sha256": "6a54a79d953b46356608e5f8b82c1bd68647d371662535abebc17d72f282ac5f"
+    },
+    {
+      "bytes": 1200,
+      "path": "PinkhaTorahPresentation_PinkhaTorahPresentationTests.bundle/Contents/Info.plist",
+      "sha256": "ae7aeff195d71b9851a6fd6286c3756a3881dcccb16af8c338e195786d61e04b"
+    },
+    {
+      "bytes": 483,
+      "path": "PinkhaTorahPresentation_PinkhaTorahPresentationTests.bundle/Contents/Resources/reference-resolved.json",
+      "sha256": "ab816e57830af5a3d39b578dc868766a6bbce0c7636cba8669d83b6a3ab0c2b6"
+    },
+    {
+      "bytes": 239,
+      "path": "PinkhaTorahPresentation_PinkhaTorahPresentationTests.bundle/Contents/_CodeSignature/CodeDirectory",
+      "sha256": "b7840b0519b8551c1bc410c07ccdf77e538539da9376eaad2e7644c702d2cb51"
+    },
+    {
+      "bytes": 12,
+      "path": "PinkhaTorahPresentation_PinkhaTorahPresentationTests.bundle/Contents/_CodeSignature/CodeRequirements",
+      "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986"
+    },
+    {
+      "bytes": 2468,
+      "path": "PinkhaTorahPresentation_PinkhaTorahPresentationTests.bundle/Contents/_CodeSignature/CodeResources",
+      "sha256": "fb6e82dc40143c9f76eb3a347de6c31d0667de720592416abd79dc684267f9b4"
+    },
+    {
+      "bytes": 0,
+      "path": "PinkhaTorahPresentation_PinkhaTorahPresentationTests.bundle/Contents/_CodeSignature/CodeSignature",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 936864,
+      "path": "TorahInspectorCore.o",
+      "sha256": "35daf0e95c0c6d0d49561c6651ce4e4e616eedbf39a1ce870eb4e2b7e4a30c00"
+    },
+    {
+      "bytes": 59244,
+      "path": "TorahInspectorCore.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo",
+      "sha256": "5e989644543513a16d22ce8d0214bffdab3a78fca46cfb3225518cd2c64254f0"
+    },
+    {
+      "bytes": 149,
+      "path": "TorahInspectorCore.swiftmodule/arm64-apple-macos.abi.json",
+      "sha256": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728"
+    },
+    {
+      "bytes": 3924,
+      "path": "TorahInspectorCore.swiftmodule/arm64-apple-macos.swiftdoc",
+      "sha256": "77bd886cdf636c0a394df973159b920b4e344282e9aa59704edfc1c9e6344a43"
+    },
+    {
+      "bytes": 321292,
+      "path": "TorahInspectorCore.swiftmodule/arm64-apple-macos.swiftmodule",
+      "sha256": "2170b43b551e0eb28f76113788b28731360dd22552e4f3ed2880350dca059c71"
+    },
+    {
+      "bytes": 1164,
+      "path": "TorahInspectorKit_TorahInspectorUI.bundle/Contents/Info.plist",
+      "sha256": "2d37189712a46fa319ae970834e80c16d4bb197c16f6372287765daae8184e23"
+    },
+    {
+      "bytes": 2866,
+      "path": "TorahInspectorKit_TorahInspectorUI.bundle/Contents/Resources/en.lproj/Localizable.strings",
+      "sha256": "165de3b7f1894669a1bf9f7d0bd4cf01a7f2e29820455d55840efbebef0cda7d"
+    },
+    {
+      "bytes": 3525,
+      "path": "TorahInspectorKit_TorahInspectorUI.bundle/Contents/Resources/he.lproj/Localizable.strings",
+      "sha256": "f81bcdabbf8136bdffb358b373f77c2191d3678f8763b944cff2e7c4c48c0f2b"
+    },
+    {
+      "bytes": 221,
+      "path": "TorahInspectorKit_TorahInspectorUI.bundle/Contents/_CodeSignature/CodeDirectory",
+      "sha256": "78a04d455697553b9e60ad527aecef0397459a15b3ae0a6fd68d233d32170c3d"
+    },
+    {
+      "bytes": 12,
+      "path": "TorahInspectorKit_TorahInspectorUI.bundle/Contents/_CodeSignature/CodeRequirements",
+      "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986"
+    },
+    {
+      "bytes": 2958,
+      "path": "TorahInspectorKit_TorahInspectorUI.bundle/Contents/_CodeSignature/CodeResources",
+      "sha256": "16c211c26ffdc8f29a75512225195890f55a12f92b3ba5eb8ba07dde37864c9d"
+    },
+    {
+      "bytes": 0,
+      "path": "TorahInspectorKit_TorahInspectorUI.bundle/Contents/_CodeSignature/CodeSignature",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 5814208,
+      "path": "TorahInspectorUI.o",
+      "sha256": "1eb51c5b5b7293b08cda5b855038b234f528b98065b8dbacda24f95629202b1e"
+    },
+    {
+      "bytes": 53892,
+      "path": "TorahInspectorUI.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo",
+      "sha256": "fdc8718dec5598b3b9965f43ec44a75fb483fdeb8866dd3932c6f29156ec3319"
+    },
+    {
+      "bytes": 149,
+      "path": "TorahInspectorUI.swiftmodule/arm64-apple-macos.abi.json",
+      "sha256": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728"
+    },
+    {
+      "bytes": 3700,
+      "path": "TorahInspectorUI.swiftmodule/arm64-apple-macos.swiftdoc",
+      "sha256": "a3ef3c07ef960ab7f924de11b481b1fb152ac353ec720ed879959b8c330ad5dc"
+    },
+    {
+      "bytes": 391140,
+      "path": "TorahInspectorUI.swiftmodule/arm64-apple-macos.swiftmodule",
+      "sha256": "b900890d99063cbc8c1dc72207d32f2d82dc4f6f48505d30ebbac283f9df0270"
+    },
+    {
+      "bytes": 15895752,
+      "path": "libPinkhaTorahPresentation.a",
+      "sha256": "a30f303e22b5d227fe3970908f257bd323def373ebe3d05c4234afc86fd9eaa5"
+    }
+  ],
+  "schema": "shared-semantic-source-original-xctest-receipt/v1",
+  "scope": "controlled provider/controller boundary tests; not native engine, UI or device acceptance",
+  "skip_count": 0,
+  "source_commit": "2b2a5611cee18ce7fcb76e7e91d455ca21e1bd3c",
+  "source_unchanged": true,
+  "status": "PASS_COMPONENTS_ONLY",
+  "test_count": 5,
+  "tests": [
+    {
+      "class": "PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests",
+      "duration_seconds": 0.005,
+      "method": "testCanonicalSourceRequiresFreshResolutionBeforeAndAfterTheWrite",
+      "original_outcome_line": "Test Case '-[PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests testCanonicalSourceRequiresFreshResolutionBeforeAndAfterTheWrite]' passed (0.005 seconds).",
+      "original_started_line": "Test Case '-[PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests testCanonicalSourceRequiresFreshResolutionBeforeAndAfterTheWrite]' started.",
+      "status": "PASS"
+    },
+    {
+      "class": "PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests",
+      "duration_seconds": 0.003,
+      "method": "testMissingAmbiguousAndForeignAnchorsCannotWriteOrFallBackToDocumentSources",
+      "original_outcome_line": "Test Case '-[PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests testMissingAmbiguousAndForeignAnchorsCannotWriteOrFallBackToDocumentSources]' passed (0.003 seconds).",
+      "original_started_line": "Test Case '-[PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests testMissingAmbiguousAndForeignAnchorsCannotWriteOrFallBackToDocumentSources]' started.",
+      "status": "PASS"
+    },
+    {
+      "class": "PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests",
+      "duration_seconds": 0.003,
+      "method": "testReplyCannotReplaceCanonicalFieldOrMarkerReadback",
+      "original_outcome_line": "Test Case '-[PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests testReplyCannotReplaceCanonicalFieldOrMarkerReadback]' passed (0.003 seconds).",
+      "original_started_line": "Test Case '-[PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests testReplyCannotReplaceCanonicalFieldOrMarkerReadback]' started.",
+      "status": "PASS"
+    },
+    {
+      "class": "PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests",
+      "duration_seconds": 0.048,
+      "method": "testSuspendedSourceDispatchRechecksPermissionCancellationAndDocumentLifetime",
+      "original_outcome_line": "Test Case '-[PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests testSuspendedSourceDispatchRechecksPermissionCancellationAndDocumentLifetime]' passed (0.048 seconds).",
+      "original_started_line": "Test Case '-[PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests testSuspendedSourceDispatchRechecksPermissionCancellationAndDocumentLifetime]' started.",
+      "status": "PASS"
+    },
+    {
+      "class": "PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests",
+      "duration_seconds": 0.034,
+      "method": "testUnlinkRechecksFinalAuthorityAndRequiresCanonicalAbsence",
+      "original_outcome_line": "Test Case '-[PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests testUnlinkRechecksFinalAuthorityAndRequiresCanonicalAbsence]' passed (0.034 seconds).",
+      "original_started_line": "Test Case '-[PinkhaTorahPresentationTests.SharedSemanticSourceLinkTests testUnlinkRechecksFinalAuthorityAndRequiresCanonicalAbsence]' started.",
+      "status": "PASS"
+    }
+  ]
+}

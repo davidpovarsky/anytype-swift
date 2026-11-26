@@ -1,0 +1,15 @@
+{
+  "builds": 0,
+  "controllerSHA256": "31e415e1266cb3162508f8326955b62613d4b2266401b371750f4a92f4c4d4d5",
+  "exactInverse": {
+    "after": "        # Preserve exact producer modes inside the already-private 0700 root.\n        clone_mask = os.umask(0)\n        try:\n            proof, built, app = core.admit_and_clone_products(admission, root, evidence, commands)\n        finally:\n            os.umask(clone_mask)\n",
+    "before": "        proof, built, app = core.admit_and_clone_products(admission, root, evidence, commands)\n"
+  },
+  "originalControllerSHA256": "f66b043709af2432e3e1eb5946f80219fbee01cddedb7dbd45413f6e28de3d06",
+  "parentCommit": "90e1339788420aeb4799eb8001503d8e4248cf6b",
+  "priorMaskRestoredInFinally": true,
+  "privateRootMode": "0700",
+  "protocol": "App14-MiniApps-exact-mode-copy-v1",
+  "tests": 0,
+  "wholeFileInverseVerified": true
+}

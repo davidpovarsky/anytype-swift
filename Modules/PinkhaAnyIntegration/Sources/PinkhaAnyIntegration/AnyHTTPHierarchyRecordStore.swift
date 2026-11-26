@@ -100,6 +100,41 @@ public struct AnyHTTPHierarchyRecordStore: AnyHierarchyObservableRecordStore, Se
         return rows
     }
 
+    /// The Bin is an actual native collection membership, not a fabricated
+    /// hierarchy object. Reads remain scoped to this installed writing library.
+    public func readArchivedRows() async throws -> [AnyJSON] {
+        try await validateMembership(intent: .read)
+        try await requireCurrentSchema()
+        let query: AnyJSON = .object([
+            "filter": .object(["$and": .array([
+                .object(["any.collections": .string(schema.collectionID)]),
+                .object(["any.collections": .string("bin")]),
+                .object(["any.collections": .object(["$nin": .array([.string("template")])])])
+            ])]),
+            "sort": .array([.string("any.name"), .string("id")]),
+            "limit": .integer(Int64(maximumNodes + 1)), "includeTotal": .bool(true)
+        ])
+        let result = try await client.requestJSON(method: "POST", path: base + ["objects", "query"], body: query)
+        guard let rows = result["records"]?.array, let total = result["total"]?.integer,
+              total >= 0, total == rows.count, total <= maximumNodes,
+              result["hasNext"]?.bool == false else { throw AnyEngineError.readLimit }
+        var seen = Set<String>()
+        for row in rows {
+            guard let id = row["id"]?.string, AnyHierarchySchema.validID(id), seen.insert(id).inserted,
+                  row["spaceId"]?.string == workspace.spaceID,
+                  let values = row["any"]?["collections"]?.array,
+                  values.allSatisfy({ $0.string.map(AnyHierarchySchema.validID) == true }),
+                  Set(values.compactMap(\.string)).count == values.count,
+                  values.contains(.string(schema.collectionID)), values.contains(.string("bin")),
+                  !values.contains(.string("template")) else {
+                throw AnyHierarchyError.malformedRow(row["id"]?.string ?? "")
+            }
+        }
+        try await requireCurrentSchema()
+        try await validateMembership(intent: .read)
+        return rows
+    }
+
     public func readObject(objectID: String) async throws -> AnyJSON {
         guard AnyHierarchySchema.validID(objectID) else { throw AnyEngineError.invalidIdentity("hierarchy object") }
         try await validateMembership(intent: .read)

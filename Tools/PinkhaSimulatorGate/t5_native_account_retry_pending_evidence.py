@@ -39,6 +39,23 @@ def expected_runtime_version(runtime_profile=RUNTIME_PROFILE):
     return heart_profiles.select(runtime_profile).version
 
 
+def restore_original_pagination_source(raw):
+    """Invert only the additional native presentation observations, never assertions."""
+    changes = [
+        (b"    let title: String\n    let nativeLayout: Int\n    let nativeSnippet: String\n    let displayTitle: String\n    let typeID: String\n    let isArchived: Bool",
+         b"    let title: String\n    let typeID: String\n    let isArchived: Bool"),
+        (b"title: value.name,\n            nativeLayout: value.resolvedLayoutValue.rawValue, nativeSnippet: value.snippet, displayTitle: value.objectName,\n            typeID: value.type",
+         b"title: value.name,\n            typeID: value.type"),
+    ]
+    restored = raw
+    for added, original in changes:
+        require(restored.count(added) == 1, "Exact reviewed native presentation observation differs")
+        restored = restored.replace(added, original)
+    require(hashlib.sha256(restored[:ORIGINAL_SWIFT_BYTES]).hexdigest() == ORIGINAL_SWIFT_SHA,
+            "Original pagination assertions, native actions or fixture helpers changed")
+    return restored
+
+
 def validate_retained_source(app, *, runtime_binding=None):
     """Bind this route to the recorded original result without replaying it."""
     app = Path(app)
@@ -55,8 +72,7 @@ def validate_retained_source(app, *, runtime_binding=None):
             and report.get("bindings", {}).get("runtime_source_run") == "44393343388",
             "Retained pagination scope/runtime source differs")
     original = (app / "AnyTypeTests/Pinkha/TorahT5NativePaginationTests.swift").read_bytes().replace(b"\r\n", b"\n")
-    require(hashlib.sha256(original[:ORIGINAL_SWIFT_BYTES]).hexdigest() == ORIGINAL_SWIFT_SHA,
-            "Retained pagination body/fixture helpers changed")
+    restore_original_pagination_source(original)
     pending = original.decode().split("struct TorahT5NativeAccountRetryPendingTests {", 1)
     require(len(pending) == 2, "Exact pending-only suite missing")
     suite = pending[1].split("\nextension TorahT5NativePaginationTests {", 1)[0]
@@ -77,7 +93,9 @@ def validate_retained_source(app, *, runtime_binding=None):
                 original_receipt_sha256=RETAINED_RECEIPT_SHA,
                 qualification_sha256=hashlib.sha256(raw).hexdigest(), original_search_calls=36,
                 replayed_baseline_body_invocations=0, replayed_baseline_search_calls=0,
-                unchanged_original_swift_prefix_sha256=ORIGINAL_SWIFT_SHA,
+                restored_original_swift_prefix_sha256=ORIGINAL_SWIFT_SHA,
+                original_assertions_and_native_actions_unchanged=True,
+                current_readback_observation_fields=["nativeLayout", "nativeSnippet", "displayTitle"],
                 current_application_acceptance="NOT_RUN", original_private_account_reused=False,
                 pending_runtime_profile=runtime_profile, pending_runtime_source_run_id=runtime_run,
                 pending_runtime_version=expected_runtime_version(runtime_profile),
@@ -131,7 +149,8 @@ def validate_prepared_fixture(fixture, *, source, run_id, token, root_sha, runti
         value, prior = current[obj["objectID"]], obj["original"]
         _, graph, reachable = pagination.validate_readback(value, obj)
         original_graph, original_reachable = pagination.graph_nodes(prior)
-        require(all(value[key] == prior[key] for key in ("canonicalRaw", "canonicalSHA256", "title", "typeID"))
+        require(all(value[key] == prior[key] for key in ("canonicalRaw", "canonicalSHA256", "title", "typeID", "nativeLayout", "displayTitle"))
+                and (obj["role"] == "block" or value["nativeSnippet"] == prior["nativeSnippet"])
                 and prior["updatedAt"] <= value["updatedAt"] <= completed,
                 "Fixture setup changed unrelated canonical bytes/metadata or native dates")
         if obj["role"] == "block":

@@ -1,0 +1,233 @@
+{
+  "upstream_repo": "https://github.com/anyproto/any-sync-dockercompose",
+  "upstream_commit": "960805aab318d45854f4cbd735fb28059d835573",
+  "network_scope": "isolated loopback-only pinkha-t2-20261125",
+  "service_state": [
+    {
+      "Service": "any-sync-consensusnode",
+      "State": "running",
+      "Health": "",
+      "ExitCode": 0,
+      "Image": "ghcr.io/anyproto/any-sync-consensusnode:v0.13.0"
+    },
+    {
+      "Service": "any-sync-coordinator",
+      "State": "running",
+      "Health": "",
+      "ExitCode": 0,
+      "Image": "ghcr.io/anyproto/any-sync-coordinator:v0.13.0"
+    },
+    {
+      "Service": "any-sync-coordinator_bootstrap",
+      "State": "exited",
+      "Health": "",
+      "ExitCode": 0,
+      "Image": "ghcr.io/anyproto/any-sync-coordinator:v0.13.0"
+    },
+    {
+      "Service": "any-sync-filenode",
+      "State": "running",
+      "Health": "",
+      "ExitCode": 0,
+      "Image": "ghcr.io/anyproto/any-sync-filenode:v0.13.0"
+    },
+    {
+      "Service": "any-sync-init",
+      "State": "exited",
+      "Health": "",
+      "ExitCode": 0,
+      "Image": "pinkha-t2-20261125-any-sync-init"
+    },
+    {
+      "Service": "any-sync-node-1",
+      "State": "running",
+      "Health": "",
+      "ExitCode": 0,
+      "Image": "ghcr.io/anyproto/any-sync-node:v0.13.1"
+    },
+    {
+      "Service": "any-sync-node-2",
+      "State": "running",
+      "Health": "",
+      "ExitCode": 0,
+      "Image": "ghcr.io/anyproto/any-sync-node:v0.13.1"
+    },
+    {
+      "Service": "any-sync-node-3",
+      "State": "running",
+      "Health": "",
+      "ExitCode": 0,
+      "Image": "ghcr.io/anyproto/any-sync-node:v0.13.1"
+    },
+    {
+      "Service": "garage",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0,
+      "Image": "dxflrs/garage:v2.3.0"
+    },
+    {
+      "Service": "mongo-1",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0,
+      "Image": "mongo:7.0.28"
+    },
+    {
+      "Service": "netcheck",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0,
+      "Image": "ghcr.io/anyproto/any-sync-tools:latest"
+    },
+    {
+      "Service": "redis",
+      "State": "running",
+      "Health": "healthy",
+      "ExitCode": 0,
+      "Image": "redis/redis-stack-server:7.2.0-v6"
+    },
+    {
+      "Service": "s3-guard",
+      "State": "exited",
+      "Health": "",
+      "ExitCode": 0,
+      "Image": "pinkha-t2-20261125-s3-guard"
+    }
+  ],
+  "images": [
+    {
+      "Id": "sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690",
+      "RepoTags": [
+        "dxflrs/garage:v2.3.0"
+      ],
+      "RepoDigests": [
+        "dxflrs/garage@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690"
+      ],
+      "Created": "2026-04-16T20:15:49.757190519Z",
+      "Architecture": "arm64",
+      "Os": "linux",
+      "Size": 27087157
+    },
+    {
+      "Id": "sha256:39e747c6c14ffe4eb94e1c96fbf9ffbe9aacf2289a6e02cc1fc78d7673b28f09",
+      "RepoTags": [
+        "ghcr.io/anyproto/any-sync-consensusnode:v0.13.0"
+      ],
+      "RepoDigests": [
+        "ghcr.io/anyproto/any-sync-consensusnode@sha256:39e747c6c14ffe4eb94e1c96fbf9ffbe9aacf2289a6e02cc1fc78d7673b28f09"
+      ],
+      "Created": "2026-08-07T20:14:29.583829333Z",
+      "Architecture": "arm64",
+      "Os": "linux",
+      "Size": 62546312
+    },
+    {
+      "Id": "sha256:488c96b9c57935919ae33bc500c8497df5576f7b9d16e3905bfa6c6608433cc6",
+      "RepoTags": [
+        "ghcr.io/anyproto/any-sync-coordinator:v0.13.0"
+      ],
+      "RepoDigests": [
+        "ghcr.io/anyproto/any-sync-coordinator@sha256:488c96b9c57935919ae33bc500c8497df5576f7b9d16e3905bfa6c6608433cc6"
+      ],
+      "Created": "2026-08-07T20:16:05.324982456Z",
+      "Architecture": "arm64",
+      "Os": "linux",
+      "Size": 100149964
+    },
+    {
+      "Id": "sha256:229f1fc369bf0fa639eb88b199a316ec9940d0d2726db439a6d68c411e1dcc33",
+      "RepoTags": [
+        "ghcr.io/anyproto/any-sync-filenode:v0.13.0"
+      ],
+      "RepoDigests": [
+        "ghcr.io/anyproto/any-sync-filenode@sha256:229f1fc369bf0fa639eb88b199a316ec9940d0d2726db439a6d68c411e1dcc33"
+      ],
+      "Created": "2026-08-07T20:17:32.764300336Z",
+      "Architecture": "arm64",
+      "Os": "linux",
+      "Size": 105750743
+    },
+    {
+      "Id": "sha256:91ca6c1998bed3e4fb72b905dc56df3379a3ac2567e4880947497082f3484db4",
+      "RepoTags": [
+        "ghcr.io/anyproto/any-sync-node:v0.13.1"
+      ],
+      "RepoDigests": [
+        "ghcr.io/anyproto/any-sync-node@sha256:91ca6c1998bed3e4fb72b905dc56df3379a3ac2567e4880947497082f3484db4"
+      ],
+      "Created": "2026-08-07T19:52:51.045476771Z",
+      "Architecture": "arm64",
+      "Os": "linux",
+      "Size": 74575145
+    },
+    {
+      "Id": "sha256:ee6cf65958ee4e9b558c3973802b7fbd64b3a66c7cf78d64d1a08fb9de0af510",
+      "RepoTags": [
+        "ghcr.io/anyproto/any-sync-tools:latest"
+      ],
+      "RepoDigests": [
+        "ghcr.io/anyproto/any-sync-tools@sha256:ee6cf65958ee4e9b558c3973802b7fbd64b3a66c7cf78d64d1a08fb9de0af510"
+      ],
+      "Created": "2026-06-05T11:41:03.146943716Z",
+      "Architecture": "arm64",
+      "Os": "linux",
+      "Size": 117311067
+    },
+    {
+      "Id": "sha256:4510cf3d7050003e958745adb25d2deb3fb907430716162d9cc1a92eda2a6047",
+      "RepoTags": [
+        "mongo:7.0.28"
+      ],
+      "RepoDigests": [
+        "mongo@sha256:4510cf3d7050003e958745adb25d2deb3fb907430716162d9cc1a92eda2a6047"
+      ],
+      "Created": "2026-01-15T22:37:00.136515107Z",
+      "Architecture": "arm64",
+      "Os": "linux",
+      "Size": 270366621
+    },
+    {
+      "Id": "sha256:9bb99383565b449f228959a59b6c43d4a98d8cb556f3a126cb93684193b1c6f3",
+      "RepoTags": [
+        "pinkha-t2-20261125-any-sync-init:latest"
+      ],
+      "RepoDigests": [
+        "pinkha-t2-20261125-any-sync-init@sha256:9bb99383565b449f228959a59b6c43d4a98d8cb556f3a126cb93684193b1c6f3"
+      ],
+      "Created": "2026-11-25T04:25:08.074667073Z",
+      "Architecture": "arm64",
+      "Os": "linux",
+      "Size": 156192383
+    },
+    {
+      "Id": "sha256:50ead1dc7b2ab894d7470e3eb25c57749c359661f841b01b4fb0b6ee4228ae9b",
+      "RepoTags": [
+        "pinkha-t2-20261125-s3-guard:latest"
+      ],
+      "RepoDigests": [
+        "pinkha-t2-20261125-s3-guard@sha256:50ead1dc7b2ab894d7470e3eb25c57749c359661f841b01b4fb0b6ee4228ae9b"
+      ],
+      "Created": "2026-11-25T04:25:08.074667073Z",
+      "Architecture": "arm64",
+      "Os": "linux",
+      "Size": 156192378
+    },
+    {
+      "Id": "sha256:92f0d6f0d2eb2582511f907f5bffbbedf10970e2427f4433ae2d3bec7e409c8b",
+      "RepoTags": [
+        "redis/redis-stack-server:7.2.0-v6"
+      ],
+      "RepoDigests": [
+        "redis/redis-stack-server@sha256:92f0d6f0d2eb2582511f907f5bffbbedf10970e2427f4433ae2d3bec7e409c8b"
+      ],
+      "Created": "2023-11-01T14:53:13.120800129Z",
+      "Architecture": "arm64",
+      "Os": "linux",
+      "Size": 232854550
+    }
+  ],
+  "client_configuration_sha256": "3a5e55f260e218179840fb9f6e1494611bee7a93beff9ae19050806ad52cf48b",
+  "native_product_acceptance": false,
+  "network_check": "coordinator native netcheck successful; application tests not run yet"
+}

@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "/usr/local/bin/go",
+    "tool",
+    "test2json",
+    "-t",
+    "-p",
+    "cutover-native-projection",
+    "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/projection-attempt1/cutover-host-projection.test",
+    "-test.v",
+    "-test.count=1",
+    "-test.timeout=60s",
+    "-test.run=^(TestCutoverProjectionRequiresAllSourceFactsAndSecondPhase|TestCutoverProjectionTwoAuthorsRetainEveryPhysicalBinding|TestCutoverProjectionDurableSealSurvivesUnlinkWithoutLegacyResurrection|TestCutoverProjectionLateOfflineImportAfterRemovalIsVisibleConflict|TestCutoverProjectionOlderWriterDivergenceDoesNotUnionOrDelete|TestCutoverProjectionInvalidNativeReceiptCannotSeal|TestCutoverProjectionSameAuthorChangedRetryIsExplicitConflict|TestCutoverOriginalWriteGateRequiresSealAndRealObservedHistory)$"
+  ],
+  "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/projection-attempt1/source/heart/core/block/editor/torahops",
+  "pgid": 2747174,
+  "pid": 2747174,
+  "startedUTC": "2026-11-26T01:32:01.869758+00:00"
+}

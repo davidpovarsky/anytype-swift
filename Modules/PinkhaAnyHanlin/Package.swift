@@ -1,5 +1,8 @@
 // swift-tools-version: 6.2
 import PackageDescription
+import Foundation
+
+let combinedRuntime = ProcessInfo.processInfo.environment["PINKHA_ANY_NATIVE_ARTIFACT"] == "verified-unified-v1"
 
 let package = Package(
     name: "PinkhaAnyHanlin",
@@ -15,6 +18,7 @@ let package = Package(
         .package(path: "../../Dependencies/Hanlin/Packages/HanlinAgentSDK"),
         .package(path: "../../Dependencies/Hanlin/Packages/HanlinPlatform"),
         .package(path: "../../Dependencies/Hanlin/Packages/HanlinPresentationSDK"),
+        .package(path: "../../Dependencies/Hanlin/Packages/HanlinMiniAppsBridge"),
         .package(path: "../PinkhaAnyHost"),
         .package(path: "../PinkhaAnyEngine"),
         .package(path: "../PinkhaAnyIntegration"),
@@ -27,7 +31,7 @@ let package = Package(
             .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
             .product(name: "HanlinPlatformContracts", package: "HanlinPlatform"),
             .product(name: "Crypto", package: "swift-crypto")
-        ]),
+        ], swiftSettings: combinedRuntime ? [.define("PINKHA_DUAL_ENGINE_RUNTIME")] : []),
         .target(name: "PinkhaAnyHanlin", dependencies: [
             "PinkhaHanlinCore", "PinkhaAnyHost", "PinkhaAnyEngine", "PinkhaAnyIntegration",
             .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
@@ -42,7 +46,9 @@ let package = Package(
             .product(name: "HanlinChatCore", package: "HanlinPlatform", condition: .when(platforms: [.iOS])),
             .product(name: "HanlinScriptUI", package: "HanlinPlatform", condition: .when(platforms: [.iOS])),
             .product(name: "HanlinChatUI", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS])),
-            .product(name: "HanlinPresentationKit", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS]))
+            .product(name: "HanlinPresentationKit", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS])),
+            .product(name: "HanlinMiniAppsBridge", package: "HanlinMiniAppsBridge", condition: .when(platforms: [.iOS])),
+            .product(name: "HanlinMiniAppsPicker", package: "HanlinMiniAppsBridge", condition: .when(platforms: [.iOS]))
         ], resources: [.process("Resources")]),
         .executableTarget(name: "PinkhaAnyHanlinProbe", dependencies: [
             "PinkhaAnyHanlin", "PinkhaHanlinCore", "PinkhaAnyHost", "PinkhaAnyEngine", "PinkhaAnyIntegration",

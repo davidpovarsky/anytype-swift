@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "PinkhaKit",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
         .macOS(.v14)
@@ -16,7 +17,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/davidpovarsky/TorahInspectorKit.git",
-            revision: "511454e49450cb2581ddf77f644146ff3e30dbef"
+            revision: "9058b489e9acc271b4f8ef69e2ed24648f93b4ed"
         )
     ],
     targets: [
@@ -26,6 +27,7 @@ let package = Package(
                 .product(name: "TorahInspectorCore", package: "TorahInspectorKit")
             ],
             path: "Sources/PinkhaKit",
+            resources: [.process("Editor/Resources")],
             swiftSettings: [
                 .swiftLanguageMode(.v6)
             ]

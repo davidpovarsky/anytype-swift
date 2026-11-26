@@ -33,6 +33,8 @@ UUID = r"[0-9A-Fa-f]{8}(?:-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}"
 
 
 def presentation_title(role, token):
+    if role == "note":
+        return "T5 UI note T5 existing Note " + token
     if role not in {"page", "writing"}:
         return "T5 UI " + role
     return ("כותרת עברית ארוכה למסמך " + role + " — "
@@ -107,6 +109,18 @@ def _validate_fixture(value, *, source, run_id, token, runtime):
             require(nonempty(item.get(key)), "Native UI target identity is missing")
         require(is_hash(item.get("canonicalSHA256")), "Canonical readback hash is absent")
         require(item.get("title") == presentation_title(item["role"], token), "Actual native presentation title differs")
+        require(type(item.get("nativeLayout")) is int and item["nativeLayout"] >= 0
+                and (item["nativeLayout"] == 9) == (item["role"] == "note")
+                and isinstance(item.get("nativeSnippet"), str),
+                "Independent native layout/snippet witness is missing")
+        if item["role"] == "note":
+            require(item.get("nativeName") == "" and item["nativeSnippet"] ==
+                    "T5 UI note\nT5 existing Note " + token
+                    and item["title"] == item["nativeSnippet"].replace("\n", " "),
+                    "Native Note raw name, exact body snippet or display derivation differs")
+        else:
+            require(item.get("nativeName") == presentation_title(item["role"], token),
+                    "Original native document name differs")
         if item["role"] in {"block", "quote"}:
             require(all(nonempty(item.get(key)) for key in ["blockID", "blockText", "firstBlockID", "firstBlockText"]),
                     "Actual distant block/negative-control content is missing")

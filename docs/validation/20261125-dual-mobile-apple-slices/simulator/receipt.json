@@ -1,0 +1,565 @@
+{
+  "actualModuleGraphSHA256": "e910eee8a55495581a27ddcc350c9d7fb0b5a329b15a5843753e1407489c3b1e",
+  "anyRuntimeVersion": "v0.5.0-pinkha.dual.1-70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72",
+  "appleTestsExecuted": 0,
+  "applicationBuilds": 0,
+  "archiveBytes": 98377722,
+  "archiveSHA256": "ac794619cd55f913e9e6812e144e9901197c9c9c257a0fa8a4d650421853d007",
+  "commands": [
+    {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "version"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.008484125137329,
+      "exitCode": 0,
+      "logSHA256": "c6f1c8d54aedc3afa72560d934397ad6c33b28f1b4d3546ec53176439b2397d5",
+      "minimumFreeBytes": 7376560128,
+      "name": "go-version",
+      "pgid": 75494,
+      "pid": 75494,
+      "started": 1795603298.2262669,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "xcodebuild",
+        "-version"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.006498098373413,
+      "exitCode": 0,
+      "logSHA256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77",
+      "minimumFreeBytes": 7440146432,
+      "name": "xcode-version",
+      "pgid": 75505,
+      "pid": 75505,
+      "started": 1795603299.236023,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "xcrun",
+        "--sdk",
+        "iphoneos",
+        "--show-sdk-version"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.0136799812316895,
+      "exitCode": 0,
+      "logSHA256": "7b01c549928398a045692f24bcac7803b348524cdd76f21265b02984b2ba556a",
+      "minimumFreeBytes": 7439855616,
+      "name": "iphoneos-version",
+      "pgid": 75506,
+      "pid": 75506,
+      "started": 1795603300.24381,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-version"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.0132660865783691,
+      "exitCode": 0,
+      "logSHA256": "7b01c549928398a045692f24bcac7803b348524cdd76f21265b02984b2ba556a",
+      "minimumFreeBytes": 7439859712,
+      "name": "iphonesimulator-version",
+      "pgid": 75508,
+      "pid": 75508,
+      "started": 1795603301.258751,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "list",
+        "-m",
+        "-json",
+        "all"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/source",
+      "elapsedSeconds": 1.0130281448364258,
+      "exitCode": 0,
+      "logSHA256": "e910eee8a55495581a27ddcc350c9d7fb0b5a329b15a5843753e1407489c3b1e",
+      "minimumFreeBytes": 7411343360,
+      "name": "module-graph",
+      "pgid": 75512,
+      "pid": 75512,
+      "started": 1795603303.23519,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/tools/gomobile",
+        "bind",
+        "-tags",
+        "mobile nogrpcserver gomobile nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg pinkha_loaded_account_witness",
+        "-ldflags",
+        "-X github.com/anyproto/anytype-heart/util/vcs.GitSummary=pinkha-dual-runtime-v1-70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72 -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=ea796999d648e27dcb7ad23a0bbd849d35fadc5a -X github.com/anyproto/any/internal/version.Version=v0.5.0-pinkha.dual.1-70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72 -X github.com/anyproto/any/internal/version.Commit=cf87c43ff0100c2dc43c3c105c82b1b070b3a7a3 -X github.com/anyproto/any/internal/version.BuildDate=2026-11-25",
+        "-target=iossimulator/arm64",
+        "-iosversion=18.4",
+        "-o",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/Lib.xcframework",
+        "github.com/anyproto/anytype-heart/clientlibrary/service",
+        "github.com/anyproto/anytype-heart/core",
+        "github.com/anyproto/any/mobile/android"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/source",
+      "elapsedSeconds": 89.52090692520142,
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "minimumFreeBytes": 4595982336,
+      "name": "combined-gomobile-bind",
+      "pgid": 75523,
+      "pid": 75523,
+      "started": 1795603305.707041,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 3600
+    },
+    {
+      "argv": [
+        "xcrun",
+        "libtool",
+        "-static",
+        "-o",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/Lib-with-tantivy-ios-arm64-sim.a",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/Lib.xcframework/ios-arm64-simulator/Lib.framework/Lib",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/source/heart/deps/libs/ios-arm64-sim/libtantivy_go.a"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.0130350589752197,
+      "exitCode": 0,
+      "logSHA256": "81c0e6f5afcabb4ed609481bd9e93b143bf432fb07bf1243c12d5d9e98a011b9",
+      "minimumFreeBytes": 5563371520,
+      "name": "tantivy-repack-ios-arm64-sim",
+      "pgid": 78539,
+      "pid": 78539,
+      "started": 1795603396.517001,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "xcrun",
+        "nm",
+        "--no-llvm-bc",
+        "-gU",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/Lib.xcframework/ios-arm64-simulator/Lib.framework/Lib"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.012235164642334,
+      "exitCode": 0,
+      "logSHA256": "1a6c6b78ed965ef9fc213238a87124f9d54def8b787670f6a16ee6ad752316d9",
+      "minimumFreeBytes": 5118062592,
+      "name": "symbols-ios-arm64-simulator",
+      "pgid": 78541,
+      "pid": 78541,
+      "started": 1795603397.604995,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-path"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.0125093460083008,
+      "exitCode": 0,
+      "logSHA256": "3ba87c09483737cf52e0f24936936ae207e4e5f433bc120069330c02d39a0cec",
+      "minimumFreeBytes": 5114908672,
+      "name": "slice-sdk-path",
+      "pgid": 78543,
+      "pid": 78543,
+      "started": 1795603398.8236449,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swiftc",
+        "-typecheck",
+        "-target",
+        "arm64-apple-ios27.0-simulator",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+        "-F",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/Lib.xcframework/ios-arm64-simulator",
+        "-module-cache-path",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/swift-module-cache",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/generated-entry.swift"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 2.0203800201416016,
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "minimumFreeBytes": 5113810944,
+      "name": "generated-actual-swift-entry-typecheck",
+      "pgid": 78544,
+      "pid": 78544,
+      "started": 1795603399.837559,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 180
+    }
+  ],
+  "controllerCommit": "5d6c1afb6b307d8c5481bda87f7a71edafe49290",
+  "controllerSHA256": "0d2d3dec2a73c61031fedbb941263252449831d68ddc2b86d7c3ffc0c2a4fdcd",
+  "effectiveWorkspaceSHA256": "28a984555952adedcba95db83190177227da9f51f1022c8591e1154871e8d5a5",
+  "executionKind": "local-mac",
+  "executionUUID": "3660ac11-e197-49c4-a7cc-eaa3e3f59bc0",
+  "frameworkInventorySHA256": "ed6e6513d36f6d8ab6244ab70a2a23eb84c83239704ce3347f779d766440c5ea",
+  "freeBytesAfter": 5359353856,
+  "freeBytesBefore": 7383003136,
+  "generatedModuleLauncherSHA256": "2c71dcad795ce68d483c719ec2b0a11bba39440162b73081402c78ad93f45c1d",
+  "generatedSwiftEntryCheckSHA256": "0b2685b772b616d1c09bb037bc9c98246bbe2ad0d8ae5fcfdb4ecced99eca692",
+  "goVersion": "go version go1.27.4 darwin/arm64",
+  "heartCaptureBridgeCommit": "5e8f9ce4ec789c1cd775b148a6cc49d4a28f56b5",
+  "heartPage154ManifestSHA256": "2f76212f9fcd749aeb9e806b941e0fd0b54eba17e5cc842adb81c7eb3bae0f38",
+  "heartRuntimeVersion": "pinkha-dual-runtime-v1-70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72",
+  "independentGoRuntimeCount": 1,
+  "iphoneos": "27.0",
+  "iphonesimulator": "27.0",
+  "mobileGatewayQualification": {
+    "applicationAcceptanceClaimed": false,
+    "currentGraphSHA256": "e910eee8a55495581a27ddcc350c9d7fb0b5a329b15a5843753e1407489c3b1e",
+    "identicalModuleIdentities": 760,
+    "originalGatewayReceiptSHA256": "5e0fc42e0249a8a86752baca01f2a4514f88bb11e207ea1ac42a4f995030a66f",
+    "originalGraphSHA256": "a662c4533856ace9b77b9b26b689fd1c395ca9e5a84bb37f8e2b2c53e9dac594",
+    "originalLogSHA256": "d52264ac1f71a33fe1c1939cf58678bd61388d28ce6f9480631c3bf25c1e29a4",
+    "originalReceipt": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-gateway/evidence-resume-1/receipt.json",
+    "originalReceiptSHA256": "55d4200e35fa61e805392adaf1fdb143f0e16ac4a3ae83f7b5f4119963f4dd3a",
+    "reusedActualMethods": 3,
+    "sourceManifestSHA256": "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72",
+    "status": "PASS_ORIGINAL_MOBILE_GATEWAY_COMPONENTS_NOT_APP_ACCEPTANCE",
+    "testsExecutedNow": 0
+  },
+  "nativeAcceptanceTestsExecuted": 0,
+  "nativeDependencies": {
+    "archiveSHA256": "c4f4143c8795156267824d8b973d91b9c53ab7f74fd72c4e67e9beb835563494",
+    "dependencyManifestSHA256": "36e0a3e99a0711c369e7686493d717edc2d11274b60467cab318b9850f0466bc",
+    "libraries": [
+      {
+        "macNativeSymbolsSHA256": "8f3d1325be04a2536246233f05132a024462397172af80a341c546fa9c8ec2d1",
+        "nativeLibrarySHA256": "598f4d40afa384f5364a234bffd07133a31f80c2bb4228491382fd95ff6e3e0e",
+        "nativeRuntimeAcceptance": "NOT_RUN",
+        "nativeSemanticInventorySHA256": "5a7d46dbecb89887fd9d61502b9c01e29d3d4db42b7439406ca74f88d47d2154",
+        "originalLibrarySHA256": "ee38c4bda5cd84be9f859cba8436f4c71367a74c9f9b83d79c1367f47f1cf56a",
+        "originalReleaseRetained": true,
+        "platform": "ios-arm64",
+        "releaseArchiveSHA256": "c949c72ac58601ef02f5b5e11569fbf21970a6afcd05d1ac645e78174398ccde",
+        "transformReceiptSHA256": "ffea7528032359718c2f191b28e25cea1d8774f02b1e47dd24132a4ea1a6a061"
+      },
+      {
+        "macNativeSymbolsSHA256": "7bb681ae14803d7802e80d68ed990931f13134aac6285db6d2e13c5ba69a7021",
+        "nativeLibrarySHA256": "aafce3613a1ec63a0cca3fa2acf08cf56cb5ebefe6dc03a88f5702cdc4981652",
+        "nativeRuntimeAcceptance": "NOT_RUN",
+        "nativeSemanticInventorySHA256": "fa9617b60afc28cc34841c78ee93e2b773fb45e265b43328c8bd4fe737137590",
+        "originalLibrarySHA256": "5792def7a0d87e3d119b8b39c4cf4672adf158bd58c7297d48ea368f97e9fd3b",
+        "originalReleaseRetained": true,
+        "platform": "ios-arm64-sim",
+        "releaseArchiveSHA256": "8902d1608a2263597f8f9fa9d7d4155e8ec5efe4701cc0db03905c170c25899a",
+        "transformReceiptSHA256": "3f186ed60d34e21870a25e255fd3acfa92655cdf059c7cd4bb4057276a9f6e70"
+      }
+    ]
+  },
+  "nativeLibraryBuildInvocations": 1,
+  "originalPreparationStopReceiptSHA256": "5dd31391afbb58444135910f29a10203920eac3d6eedb34c7ed275f687608331",
+  "phaseSpaceEstimate": {
+    "components": {
+      "bindingToolsAllowanceBytes": 134217728,
+      "compilerTemporaryAllowanceBytes": 1471780896,
+      "dependencyExtractionCopiesAllowanceBytes": 331224570,
+      "incrementalGoCacheAllowanceBytes": 1471780896,
+      "outputRepackZipAllowanceBytes": 1103835672,
+      "sourceBytes": 89574399
+    },
+    "emergencyFreeBytes": 2147483648,
+    "estimatedAdditionalBytes": 4602414161,
+    "heartReferencePlatform": "simulator",
+    "originalArchiveMeasurements": [
+      {
+        "bytes": 316294696,
+        "path": "/Users/m1/builds/_retained-anytype/45456314424-1/build/current-apple-release-return-rtl-45456314424-1/work/heart-originals/verified-production/Lib.xcframework/ios-arm64-simulator/Lib.framework/Lib",
+        "sha256": "1b317dd0d4a22222f0e2eac7769be65b301ffbf4e45c91be4ab4377b87dfa1d1"
+      },
+      {
+        "bytes": 51650528,
+        "path": "/Users/m1/builds/anytapy-prepared-components-v2-3fb2ab37/any/any.xcframework/ios-arm64-simulator/anylib.a",
+        "sha256": "3e7424a020835e078775a4b169009acc3ae1081700bc7cea997dd00fc5f2a25f"
+      }
+    ],
+    "phase": "simulator"
+  },
+  "reusedPreparationCommands": [
+    {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "version"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.1524500846862793,
+      "exitCode": 0,
+      "logSHA256": "c6f1c8d54aedc3afa72560d934397ad6c33b28f1b4d3546ec53176439b2397d5",
+      "minimumFreeBytes": 8403435520,
+      "name": "go-version",
+      "pgid": 69450,
+      "pid": 69450,
+      "started": 1795602931.710882,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "xcodebuild",
+        "-version"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.057703971862793,
+      "exitCode": 0,
+      "logSHA256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77",
+      "minimumFreeBytes": 8390852608,
+      "name": "xcode-version",
+      "pgid": 69452,
+      "pid": 69452,
+      "started": 1795602932.864702,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "xcrun",
+        "--sdk",
+        "iphoneos",
+        "--show-sdk-version"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.019542932510376,
+      "exitCode": 0,
+      "logSHA256": "7b01c549928398a045692f24bcac7803b348524cdd76f21265b02984b2ba556a",
+      "minimumFreeBytes": 8374124544,
+      "name": "iphoneos-version",
+      "pgid": 69453,
+      "pid": 69453,
+      "started": 1795602933.9236941,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-version"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.031912088394165,
+      "exitCode": 0,
+      "logSHA256": "7b01c549928398a045692f24bcac7803b348524cdd76f21265b02984b2ba556a",
+      "minimumFreeBytes": 8360157184,
+      "name": "iphonesimulator-version",
+      "pgid": 69454,
+      "pid": 69454,
+      "started": 1795602934.944648,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 30
+    },
+    {
+      "argv": [
+        "xcrun",
+        "nm",
+        "--no-llvm-bc",
+        "-g",
+        "-j",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/native-dependencies/ios-arm64/original-expanded/libtantivy_go.a"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.152562141418457,
+      "exitCode": 0,
+      "logSHA256": "8f3d1325be04a2536246233f05132a024462397172af80a341c546fa9c8ec2d1",
+      "minimumFreeBytes": 8129343488,
+      "name": "tantivy-ios-arm64-original-symbols",
+      "pgid": 69456,
+      "pid": 69456,
+      "started": 1795602936.734248,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "nm",
+        "--no-llvm-bc",
+        "-g",
+        "-j",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/native-dependencies/ios-arm64/libtantivy_go.a"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.0160260200500488,
+      "exitCode": 0,
+      "logSHA256": "8f3d1325be04a2536246233f05132a024462397172af80a341c546fa9c8ec2d1",
+      "minimumFreeBytes": 8115200000,
+      "name": "tantivy-ios-arm64-native-symbols",
+      "pgid": 69457,
+      "pid": 69457,
+      "started": 1795602937.8929439,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "nm",
+        "--no-llvm-bc",
+        "-g",
+        "-j",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/native-dependencies/ios-arm64-sim/original-expanded/libtantivy_go.a"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.1527228355407715,
+      "exitCode": 0,
+      "logSHA256": "7bb681ae14803d7802e80d68ed990931f13134aac6285db6d2e13c5ba69a7021",
+      "minimumFreeBytes": 7985119232,
+      "name": "tantivy-ios-arm64-sim-original-symbols",
+      "pgid": 69459,
+      "pid": 69459,
+      "started": 1795602939.2138171,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "nm",
+        "--no-llvm-bc",
+        "-g",
+        "-j",
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/native-dependencies/ios-arm64-sim/libtantivy_go.a"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator",
+      "elapsedSeconds": 1.0953612327575684,
+      "exitCode": 0,
+      "logSHA256": "7bb681ae14803d7802e80d68ed990931f13134aac6285db6d2e13c5ba69a7021",
+      "minimumFreeBytes": 7965765632,
+      "name": "tantivy-ios-arm64-sim-native-symbols",
+      "pgid": 69460,
+      "pid": 69460,
+      "started": 1795602940.372567,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 120
+    },
+    {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "list",
+        "-m",
+        "-json",
+        "all"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/source",
+      "elapsedSeconds": 1.0349881649017334,
+      "exitCode": 0,
+      "logSHA256": "ae6ba6c5b6eef576bdd8ef6aa8c57dcd5b7cd688cecf18f82eed270e3d6d0029",
+      "minimumFreeBytes": 7876554752,
+      "name": "module-graph",
+      "pgid": 69462,
+      "pid": 69462,
+      "started": 1795602942.05038,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "/Users/m1/toolchains/anytapy-go1.27.4/go/bin/go",
+        "install",
+        "golang.org/x/mobile/cmd/gomobile",
+        "golang.org/x/mobile/cmd/gobind"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/source",
+      "elapsedSeconds": 1.0972490310668945,
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "minimumFreeBytes": 7863762944,
+      "name": "install-bind-tools",
+      "pgid": 69464,
+      "pid": 69464,
+      "started": 1795602943.087636,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 600
+    },
+    {
+      "argv": [
+        "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/tools/gomobile",
+        "init"
+      ],
+      "cwd": "/Users/m1/builds/pinkha-dual-native-v1-70f0b2a66286-simulator/source",
+      "elapsedSeconds": 2.1898019313812256,
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "minimumFreeBytes": 7838908416,
+      "name": "gomobile-init",
+      "pgid": 69470,
+      "pid": 69470,
+      "started": 1795602944.1860092,
+      "status": "PASS_EXIT_0",
+      "timeoutSeconds": 300
+    }
+  ],
+  "slicePhase": "simulator",
+  "slices": {
+    "ios-arm64-simulator": {
+      "binaryBytes": 349572728,
+      "binarySHA256": "c3374a58dffb64658fe6840ee9bd2711a4b1bf8c449c32da5bd51ede4901cece",
+      "rawGoArchiveSHA256": "c02cbb728662509ea1cd6437db29d1c4003f99096ebdeae8138be4a21f02937b",
+      "tantivyPlatform": "ios-arm64-sim"
+    }
+  },
+  "sourceArchiveSHA256": "9197ea5c9f8a832430fce44b36aeeeb27099fff6e745ec6197e9a3493ffd51db",
+  "sourceFilesVerified": 4855,
+  "sourceManifestSHA256": "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72",
+  "sourcePins": {
+    "any": "cf87c43ff0100c2dc43c3c105c82b1b070b3a7a3",
+    "heart": "ea796999d648e27dcb7ad23a0bbd849d35fadc5a",
+    "sdk": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953",
+    "sync": "c005bd6cde8d8f8a6007c35f06894f3d89f9f07c"
+  },
+  "sourceUnchanged": true,
+  "status": "SOURCE_VERIFIED_SINGLE_GO_RUNTIME_APPLE_SLICE_BUILT_NOT_ACCEPTED",
+  "verifiedGatewayMetadataHydration": {
+    "authenticatedChecksumFieldsAdded": [
+      "github.com/kballard/go-shellquote",
+      "lukechampine.com/uint128",
+      "modernc.org/cc/v3",
+      "modernc.org/ccgo/v3",
+      "modernc.org/ccorpus2",
+      "modernc.org/lex",
+      "modernc.org/lexer",
+      "modernc.org/scannertest"
+    ],
+    "hydratedGraphSHA256": "e910eee8a55495581a27ddcc350c9d7fb0b5a329b15a5843753e1407489c3b1e",
+    "originalGraphSHA256": "ae6ba6c5b6eef576bdd8ef6aa8c57dcd5b7cd688cecf18f82eed270e3d6d0029",
+    "unchangedModuleIdentities": 760
+  },
+  "workspaceChecksumHydration": {
+    "addedGoModChecksums": [],
+    "hydratedWorkspaceSumSHA256": "0ce118248f3e2580833e915dbd3ef14925d3a71a1601e4c7d679b9217a368586",
+    "originalWorkspaceSumSHA256": "0ce118248f3e2580833e915dbd3ef14925d3a71a1601e4c7d679b9217a368586",
+    "proofReceiptSHA256": "524bd4225d2f42f6c27b9506f8304bd0b8cb05c151bd3cf1f1a128c522251903",
+    "reviewSHA256": "69b2f056688a2c009becbcac53f4c546648ab415e2e32ec5545cd295cb5dc863",
+    "sourceSumFilesModified": false,
+    "status": "AUTHENTICATED_CHECKSUMS_COPIED_TO_PRIVATE_WORKSPACE"
+  },
+  "xcodeVersion": "Xcode 27.0\nBuild version 27A266a"
+}

@@ -1,0 +1,439 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild build-for-testing -project /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj -scheme PinkhaAnyNativeTransitionUI -configuration Debug -destination "generic/platform=iOS Simulator" -derivedDataPath /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived -resultBundlePath /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/Build.xcresult -jobs 4 ARCHS=arm64 ONLY_ACTIVE_ARCH=YES ENABLE_TESTABILITY=YES SWIFT_OPTIMIZATION_LEVEL=-Onone CODE_SIGN_IDENTITY=- CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=YES PROVISIONING_PROFILE_SPECIFIER=
+
+Build settings from command line:
+    ARCHS = arm64
+    CODE_SIGN_IDENTITY = -
+    CODE_SIGNING_ALLOWED = YES
+    CODE_SIGNING_REQUIRED = YES
+    ENABLE_TESTABILITY = YES
+    ONLY_ACTIVE_ARCH = YES
+    PROVISIONING_PROFILE_SPECIFIER = 
+    SWIFT_OPTIMIZATION_LEVEL = -Onone
+
+Writing result bundle at path:
+	/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/Build.xcresult
+
+Build Preparation
+Build task concurrency set to 4 via user default IDEBuildOperationMaxNumberOfConcurrentCompileTasks
+
+note: Using codesigning identity override: -
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'PinkhaAnyNativeUITests' in project 'AnyNativeTransitionUI' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: e8a4a446220137e0ade85f36dce6b5f9
+Build description path: /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/XCBuildData/e8a4a446220137e0ade85f36dce6b5f9.xcbuilddata
+CreateBuildDirectory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/CompilationCache.noindex
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/CompilationCache.noindex
+
+CreateBuildDirectory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/ModuleCache.noindex
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/ModuleCache.noindex
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -o /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache
+
+CreateBuildDirectory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products
+
+CreateBuildDirectory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex
+
+CreateBuildDirectory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/PrecompiledHeaders
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/PrecompiledHeaders
+
+CreateBuildDirectory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/AnyNativeTransitionUI-78cca12f4a18655e6dce45bfe432e42e-VFS-iphonesimulator/all-product-headers.yaml
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/AnyNativeTransitionUI-78cca12f4a18655e6dce45bfe432e42e-VFS-iphonesimulator/all-product-headers.yaml
+
+CreateBuildDirectory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator
+
+CreateBuildDirectory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/ExplicitPrecompiledModules
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/AnyNativeTransitionUI.xcodeproj
+    builtin-create-build-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/ProductTypeInfoPlistAdditions.plist (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/ProductTypeInfoPlistAdditions.plist
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.hmap (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.hmap
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/empty-PinkhaAnyNativeUITests.plist (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/empty-PinkhaAnyNativeUITests.plist
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.DependencyStaticMetadataFileList (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.DependencyMetadataFileList (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-project-headers.hmap (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-project-headers.hmap
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-own-target-headers.hmap (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-generated-files.hmap (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-generated-files.hmap
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-all-target-headers.hmap (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-all-non-framework-target-headers.hmap (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests_const_extract_protocols.json (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.SwiftFileList (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.SwiftFileList
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.SwiftConstValuesFileList (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.LinkFileList (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.LinkFileList
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-OutputFileMap.json (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources/Entitlements-Simulated.plist (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    write-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources/Entitlements-Simulated.plist
+
+MkDir /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    /bin/mkdir -p /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest
+
+ProcessProductPackaging "" /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.xctest-Simulated.xcent (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    
+    Entitlements:
+    
+    {
+    "application-identifier" = "FAKETEAMID.io.pinkha.anynative.uitests.xctrunner";
+    "keychain-access-groups" =     (
+        "FAKETEAMID.io.pinkha.anynative.uitests.xctrunner"
+    );
+}
+    
+    builtin-productPackagingUtility -entitlements -format xml -o /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.xctest-Simulated.xcent
+
+ProcessProductPackagingDER /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.xctest-Simulated.xcent /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.xctest-Simulated.xcent.der (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    /usr/bin/derq query -f xml -i /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.xctest-Simulated.xcent -o /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.xctest-Simulated.xcent.der --raw
+
+ProcessInfoPlistFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/Info.plist /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/empty-PinkhaAnyNativeUITests.plist (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-infoPlistUtility /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/empty-PinkhaAnyNativeUITests.plist -producttype com.apple.product-type.bundle.ui-testing -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/ProductTypeInfoPlistAdditions.plist -o /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/Info.plist
+
+SwiftDriver PinkhaAnyNativeUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name PinkhaAnyNativeUITests -Onone @/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios27.0-simulator -g -module-cache-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Index.noindex/DataStore -swift-version 6 -I /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/ModuleCache.noindex -sdk-module-cache-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-generated-files.hmap -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-own-target-headers.hmap -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-project-headers.hmap -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources-normal/arm64 -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources/arm64 -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources -emit-objc-header -emit-objc-header-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-Swift.h -working-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/SwiftShims-EJ4K2NP72LOLDJ3Z8UWUL6S47.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_AvailabilityInternal-89YBQ42KHSBQF66WS3WGSCDX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/ptrauth-G4HCUSVAY6W79ED9ZKI5W856.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_Builtin_float-3OEEM5NG3HX65FALDXXZG21YD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_Builtin_stdbool-Y6SMM8QVD3VBIOUFZ8CVKJ03.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_SwiftConcurrencyShims-B895ZJTYPEGW6II9NAS1Y5ZGO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_Builtin_stdarg-8L9T66774Z4KY96HB5B1D877A.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_Builtin_stddef-5FCCGU3RR01E130CM2MG46UYD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/DeveloperToolsSupport-EY1VMUGKSAIHZX8VSRIBU4E9H.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/ptrcheck-EKEPWTV0Y269PBIR1HO1A2MXO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_DarwinFoundation1-BX55AHDUZPFU73J3TMCA0TSGF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_Builtin_limits-95TGCG1XO7W91Z3LAGRJWNAKL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_DarwinFoundation2-526UNMYEPMGGLWSTGJW7F1K0W.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_Builtin_tgmath-448H8ILL298LFDATW27XOEWDN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/string_h-961YRR7RL6TKAKRE3TN38Y2OB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/sys_types-19MFGJSC3YFYBRUJJW12MH1QQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_Builtin_stdint-7TTYDD3W6YWYNQ8SQKZC6L2EK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_DarwinFoundation3-JSOBBHUNZYF8XNK4F3PR003E.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_Builtin_stdatomic-9IV19OL9OV0TNZALOWA74D7F1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_Builtin_intrinsics-3IP38KAT7IB31O60FDUEP7EFA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_Builtin_inttypes-IVRARRJGBUGAM8MO6RC7HFRB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/Darwin-RNG7BVC88MU6X6264PJVB2U1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/simd-4IEL0J12YHAZ0Z3L1NP7PYOAX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/MachO-2B2D514TNZN2XQB4901Z0GE9X.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/ObjectiveC-EMVO7DJM1YZ5VALVFAIFHB491.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/os_object-5A27M5OUM3RBNW6TIS3Z9IXG6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/os_workgroup-C2RB4DRSZ4R2DA76B7F1S96I9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/Spatial-4PPIRR5I7IAEST55YBMLWNZ07.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/Dispatch-9QW9B9W4J8JJDYPB0YCFI28QY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/CoreFoundation-DUP5LQ9YTPZXZNFCJA3XXGX5P.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/XPC-BBO10CDAOFYSC363MDMEAEGZB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/os-D32L9BH2FEOLYUAF4HJDYHZXI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/CoreGraphics-7RRLUM185KC910GYD24MCFZ8E.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/CFNetwork-9OFP1NOWMXDVVATUBPIF2CQKT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/Security-8YN3294CIZ04MS4YA75QB4ZF0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/Foundation-2WTVRWI64DZOQ761NOZHQ09CI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/ImageIO-8IWAB44KZH7B8I3JQPO4WIQLM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/CoreText-7ZE9G0VMZH4HFBZ7VJB81RSU9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/DataDetection-ATMV57Q6F8MU1ZBI6N25E3EVZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/FileProvider-7WKKBSWGIBX7BFHR4Y4CH9I8Z.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/OpenGLES-2D1XKYQY6HQJPWW11O4YYJT0L.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/Symbols-6VTIWOU31CHISE931QFN8KO0U.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/UserNotifications-6FC51JUW6GQRCG6JGJN8O2LS4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/UniformTypeIdentifiers-4YEJH6C9KCU6MR7N15I6BZBV9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/LocalAuthentication-A9X5OI6PEF4PGXS91W9PDRZ1Y.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/UIUtilities-32ZHKJZRA6DNHRTHDPY23FKWC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/CoreTransferable-A9P4RJMFNAYJVE2KG4SS2GBN6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/OSLog-5TM7XW8ASM3YCAQEXIGW3GFEQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/IOSurface-36X819YYST4N8VXFRWOP1Q78J.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/Accessibility-9QO4YO2Y0JHJ632UJSTXNPXFG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/_LocationEssentials-1PRS5SI548GAFIAV5HASWKICC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/Metal-E5MASRCAIGZ4W8791EWEY14IV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/CoreLocation-7WJSSQK9C84XPR2QTNQ7O6C86.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/CoreMotion-7HDUN82FCEG0MFEA7N0IMWOVD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/CoreVideo-DRVSO8HLAZP0SLNHBT32YRZ8G.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/QuartzCore-EVOLC29FGK9SRMC5DB5DOEQYG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/CoreImage-AQ7PUH0DO5B0KBK4VZJ9GPEI1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/SwiftUICore-E3FD5VSANRYJ4MWET7LJ6LJJN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules/UIKit-A0CQPV0NIR3WMT9SEXYVRIRIC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCUIAutomation-EJVL2AZCYXHSHHI24QCQRSLK9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCTest-96CDVL9RI9XBNQGZ2XIS77RWA.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCUIAutomation-NNQ4DRLSJ4XS.swiftmodule
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCTest-TN5JTX4K0MBI.swiftmodule
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ PinkhaAnyNativeUITests (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+
+SwiftCompile normal arm64 (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    
+
+SwiftCompile normal arm64 Compiling\ NativeHistoryTests.swift /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/UITests/NativeHistoryTests.swift (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+
+SwiftCompile normal arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/UITests/NativeHistoryTests.swift (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-SwiftPerFileCompile NativeHistoryTests.swift
+
+SwiftCompile normal arm64 Compiling\ NativeLaunchTests.swift /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/UITests/NativeLaunchTests.swift (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+
+SwiftCompile normal arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source/UITests/NativeLaunchTests.swift (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-SwiftPerFileCompile NativeLaunchTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for PinkhaAnyNativeUITests (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+
+SwiftDriver\ Compilation\ Requirements PinkhaAnyNativeUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name PinkhaAnyNativeUITests -Onone @/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios27.0-simulator -g -module-cache-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Index.noindex/DataStore -swift-version 6 -I /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/ModuleCache.noindex -sdk-module-cache-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-generated-files.hmap -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-own-target-headers.hmap -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-project-headers.hmap -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources-normal/arm64 -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources/arm64 -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources -emit-objc-header -emit-objc-header-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-Swift.h -working-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source -experimental-emit-module-separately -disable-cmo
+
+SwiftMergeGeneratedHeaders /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources/PinkhaAnyNativeUITests-Swift.h /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-Swift.h (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-swiftHeaderTool -arch arm64 /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-Swift.h -o /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources/PinkhaAnyNativeUITests-Swift.h
+
+Copy /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests.swiftmodule/arm64-apple-ios-simulator.swiftmodule /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.swiftmodule (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -strip-unsigned-binaries -strip-deterministic -strip-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip -resolve-src-symlinks -rename /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.swiftmodule /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+Copy /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests.swiftmodule/arm64-apple-ios-simulator.swiftdoc /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.swiftdoc (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -strip-unsigned-binaries -strip-deterministic -strip-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip -resolve-src-symlinks -rename /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.swiftdoc /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+Copy /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests.swiftmodule/arm64-apple-ios-simulator.abi.json /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.abi.json (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -strip-unsigned-binaries -strip-deterministic -strip-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip -resolve-src-symlinks -rename /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.abi.json /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+Copy /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.swiftsourceinfo (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -strip-unsigned-binaries -strip-deterministic -strip-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip -resolve-src-symlinks -rename /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.swiftsourceinfo /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+SwiftDriverJobDiscovery normal arm64 Compiling NativeHistoryTests.swift (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+
+SwiftDriverJobDiscovery normal arm64 Compiling NativeLaunchTests.swift (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+
+SwiftDriver\ Compilation PinkhaAnyNativeUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name PinkhaAnyNativeUITests -Onone @/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios27.0-simulator -g -module-cache-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Index.noindex/DataStore -swift-version 6 -I /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/ModuleCache.noindex -sdk-module-cache-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-generated-files.hmap -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-own-target-headers.hmap -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests-project-headers.hmap -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources-normal/arm64 -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources/arm64 -Xcc -I/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/DerivedSources -emit-objc-header -emit-objc-header-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests-Swift.h -working-directory /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source -experimental-emit-module-separately -disable-cmo
+
+Ld /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/PinkhaAnyNativeUITests normal (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios27.0-simulator -bundle -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -Os -Xlinker -no_warn_duplicate_libraries -L/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator -L/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -filelist /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.LinkFileList -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests_lto.o -rdynamic -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.swiftmodule -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.xctest-Simulated.xcent -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __ents_der -Xlinker /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.xctest-Simulated.xcent.der -Xlinker -no_adhoc_codesign -o /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/PinkhaAnyNativeUITests
+
+CopySwiftLibs /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/PinkhaAnyNativeUITests --scan-folder /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/Frameworks --scan-folder /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/PlugIns --scan-folder /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/SystemExtensions --scan-folder /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/Extensions --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+ExtractAppIntentsMetadata (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name PinkhaAnyNativeUITests --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk --xcode-version 27A266a --platform-family iOS --deployment-target 27.0 --bundle-identifier io.pinkha.anynative.uitests --output /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest --target-triple arm64-apple-ios27.0-simulator --binary-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/PinkhaAnyNativeUITests --dependency-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests_dependency_info.dat --stringsdata-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.SwiftFileList --metadata-file-list /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.DependencyMetadataFileList --static-metadata-file-list /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.DependencyStaticMetadataFileList --swift-const-vals-list /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/Objects-normal/arm64/PinkhaAnyNativeUITests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-11-25 14:17:19.448 appintentsmetadataprocessor[83092:5744148] Starting appintentsmetadataprocessor export
+2026-11-25 14:17:19.450 appintentsmetadataprocessor[83092:5744148] warning: Metadata extraction skipped, no AppIntents.framework dependency found
+
+AppIntentsSSUTraining (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsnltrainingprocessor --infoplist-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/Info.plist --temp-dir-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/ssu --bundle-id io.pinkha.anynative.uitests --product-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest --extracted-metadata-path /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/Metadata.appintents --metadata-file-list /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/AnyNativeTransitionUI.build/Debug-iphonesimulator/PinkhaAnyNativeUITests.build/PinkhaAnyNativeUITests.DependencyMetadataFileList --source-file /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/Info.plist --archive-ssu-assets
+2026-11-25 14:17:19.477 appintentsnltrainingprocessor[83093:5744149] Parsing options for appintentsnltrainingprocessor
+2026-11-25 14:17:19.477 appintentsnltrainingprocessor[83093:5744149] Starting AppIntents SSU YAML Generation
+2026-11-25 14:17:19.478 appintentsnltrainingprocessor[83093:5744149] No AppShortcuts found - Skipping.
+
+MkDir /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    /bin/mkdir -p /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app
+
+CopyPlistFile /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/Info.plist /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/Info.plist (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-copyPlist --validate --convert xml1 --macro-expansion WRAPPEDPRODUCTNAME PinkhaAnyNativeUITests-Runner --macro-expansion WRAPPEDPRODUCTBUNDLEIDENTIFIER io.pinkha.anynative.uitests.xctrunner --macro-expansion TESTPRODUCTNAME PinkhaAnyNativeUITests --macro-expansion TESTPRODUCTBUNDLEIDENTIFIER io.pinkha.anynative.uitests --copy-value UIDeviceFamily /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest/Info.plist --outdir /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app -- /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/Info.plist
+
+CopyAndPreserveArchs /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PinkhaAnyNativeUITests-Runner (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/XCTRunner -output /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PinkhaAnyNativeUITests-Runner -extract arm64
+
+Copy /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PkgInfo /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/PkgInfo (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -strip-unsigned-binaries -strip-deterministic -strip-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Agents/XCTRunner.app/PkgInfo /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app
+
+CodeSign /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest
+
+CodeSign /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app
+/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app: replacing existing signature
+
+RegisterExecutionPolicyException /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    builtin-RegisterExecutionPolicyException /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest
+
+Touch /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest (in target 'PinkhaAnyNativeUITests' from project 'AnyNativeTransitionUI')
+    cd /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/source
+    /usr/bin/touch -c /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app/PlugIns/PinkhaAnyNativeUITests.xctest
+
+PruneExplicitPrecompiledModules /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/derived/SDKExplicitPrecompiledModules
+
+
+Result bundle written to path:
+	/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-9db-1/Build.xcresult
+
+** TEST BUILD SUCCEEDED **
+

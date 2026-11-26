@@ -262,11 +262,12 @@ private final class NativeAccountLifetimeWitness: PinkhaHanlinOwnedPresentation 
     let session: HanlinHostSession
     private(set) var invalidated = false
     init(accountID: String, spaceID: String) throws {
-        let namespace = try HanlinConversationNamespace(app: "anytype", account: accountID,
+        let namespace = try HanlinConversationNamespace(app: PinkhaHanlinEngineNamespace.any, account: accountID,
                                                         workspace: spaceID, space: spaceID)
         self.session = .init(conversationID: UUID(), context: .init(namespace: namespace,
             sceneID: UUID(), generation: UUID(), objectReference: nil,
             selectionReferences: [], sourceRevision: nil, localeIdentifier: "en"))
     }
     func invalidate() { invalidated = true }
+    func revokeAndDrain() async { }
 }

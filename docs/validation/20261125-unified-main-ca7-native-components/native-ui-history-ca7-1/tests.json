@@ -1,0 +1,67 @@
+{
+  "devices": [
+    {
+      "architecture": "arm64",
+      "deviceId": "ADB70119-A447-42DA-BB0B-F613341846A4",
+      "deviceName": "PinkhaUnifiedD-history-ff67cab1-d810-43de-990c-b293975c29e9",
+      "modelName": "iPad Pro 13-inch (M5)",
+      "osBuildNumber": "24A434",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    }
+  ],
+  "testNodes": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "name": "XCTAssertEqual failed: (\"XCTWaiterResult(rawValue: 2)\") is not equal to (\"XCTWaiterResult(rawValue: 1)\") - Expected native history UI state was not reached",
+                      "nodeType": "Failure Message",
+                      "sourceLocation": {
+                        "filePath": "/Users/m1/builds/pinkha-dual-main-20261125/native-ui-build-ca7-history6c-1/source/UITests/NativeHistoryTests.swift",
+                        "lineNumber": 289
+                      }
+                    },
+                    {
+                      "name": "    AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.",
+                      "nodeType": "Runtime Warning"
+                    }
+                  ],
+                  "duration": "49s",
+                  "durationInSeconds": 49.70596694946289,
+                  "name": "testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen()",
+                  "nodeIdentifier": "NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen()",
+                  "nodeIdentifierURL": "test://com.apple.xcode/AnyNativeTransitionUI/PinkhaAnyNativeUITests/NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen",
+                  "nodeType": "Test Case",
+                  "result": "Failed"
+                }
+              ],
+              "name": "NativeHistoryTests",
+              "nodeIdentifierURL": "test://com.apple.xcode/AnyNativeTransitionUI/PinkhaAnyNativeUITests/NativeHistoryTests",
+              "nodeType": "Test Suite",
+              "result": "Failed"
+            }
+          ],
+          "name": "PinkhaAnyNativeUITests",
+          "nodeIdentifierURL": "test://com.apple.xcode/AnyNativeTransitionUI/PinkhaAnyNativeUITests",
+          "nodeType": "UI test bundle",
+          "result": "Failed"
+        }
+      ],
+      "name": "PinkhaAnyNativeTransitionUI",
+      "nodeType": "Test Plan",
+      "result": "Failed"
+    }
+  ],
+  "testPlanConfigurations": [
+    {
+      "configurationId": "1",
+      "configurationName": "Test Scheme Action"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "actualAppPropertyLease": false,
+  "affectedOriginalMethods": [
+    "TestNativeCurrentWriteAuthority",
+    "TestNativeLocalAppendRequiresCommitGuard",
+    "TestNativeACLCommitFence",
+    "TestNativeCommitReceiptAfterHeadUpdateFailure",
+    "TestNativeCommitGuardKeepsHistoricalReplay",
+    "TestNativeTargetLeaseCoversDurableCommitAndReleasesBeforeHeadUpdate",
+    "TestNativeTargetLeaseReleasesOnCancelledPreparedAppend"
+  ],
+  "appBuilds": 0,
+  "appRegistry": false,
+  "cleanupFailures": [],
+  "commands": [
+    {
+      "argv": [
+        "/usr/local/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-o",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/native-attempt1/cutover-native-host.test",
+        "cutover_native_host.go",
+        "cutover_native_operations.go",
+        "cutover_native_read.go",
+        "cutover_native_tree.go",
+        "cutover_projection.go",
+        "cutover_store.go",
+        "native_authority.go",
+        "native_commit_guard.go",
+        "native_host.go",
+        "native_operation_read.go",
+        "native_validator.go",
+        "operation.go",
+        "projection.go",
+        "store.go",
+        "native_transport_test.go",
+        "native_read_authority_test.go",
+        "native_write_authority_test.go",
+        "native_commit_guard_test.go",
+        "native_target_lease_test.go",
+        "cutover_native_host_test.go"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/native-attempt1/source/heart/core/block/editor/torahops",
+      "durationSeconds": 134.27735557127744,
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ownedProcessGroupRemaining": [],
+      "pgid": 2821236,
+      "pid": 2821236,
+      "startedUTC": "2026-11-26T02:00:14.952123+00:00"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/go",
+        "version",
+        "-m",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/native-attempt1/cutover-native-host.test"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/native-attempt1/source/heart/core/block/editor/torahops",
+      "durationSeconds": 0.029498456045985222,
+      "exitCode": 0,
+      "logSHA256": "f8dd9234bf04d8335f478a28a73364f62e00475e4fd64eaa8b64b80f506403ec",
+      "ownedProcessGroupRemaining": [],
+      "pgid": 2829346,
+      "pid": 2829346,
+      "startedUTC": "2026-11-26T02:02:29.266091+00:00"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "cutover-native-host",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/native-attempt1/cutover-native-host.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=240s",
+        "-test.run=^(TestCutoverNativeSignedPhasesUnlinkAndReopen|TestCutoverNativeTwoAuthorsRetainAllBindingsAndOlderWriterDiverges|TestCutoverNativeCurrentACLAndRetiredLeaseRefuseReadAndRetry|TestCutoverNativeLostACKRetainsOneSignedBeginAndLeaseBoundary|TestNativeCurrentWriteAuthority|TestNativeLocalAppendRequiresCommitGuard|TestNativeACLCommitFence|TestNativeCommitReceiptAfterHeadUpdateFailure|TestNativeCommitGuardKeepsHistoricalReplay|TestNativeTargetLeaseCoversDurableCommitAndReleasesBeforeHeadUpdate|TestNativeTargetLeaseReleasesOnCancelledPreparedAppend)$"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/native-attempt1/source/heart/core/block/editor/torahops",
+      "durationSeconds": 2.885911568067968,
+      "exitCode": 1,
+      "logSHA256": "8c1e211544ae2f563995df1f7c16a5a5f903e9c3ca5599761d3f8ade1be4519b",
+      "ownedProcessGroupRemaining": [],
+      "pgid": 2829350,
+      "pid": 2829350,
+      "startedUTC": "2026-11-26T02:02:29.296082+00:00"
+    }
+  ],
+  "error": "RuntimeError: owned command failed: native-host",
+  "newMethods": [
+    "TestCutoverNativeSignedPhasesUnlinkAndReopen",
+    "TestCutoverNativeTwoAuthorsRetainAllBindingsAndOlderWriterDiverges",
+    "TestCutoverNativeCurrentACLAndRetiredLeaseRefuseReadAndRetry",
+    "TestCutoverNativeLostACKRetainsOneSignedBeginAndLeaseBoundary"
+  ],
+  "peerTransport": false,
+  "scope": "actual signed SyncTree/native ACL host; component legacy-property lease",
+  "sourceSHA256": "8a1dfc7edce86557db39a9c712448c8fa9c6aa0a9d91fb83023ba547d0a945d4",
+  "sourceUnchanged": true,
+  "status": "FAIL"
+}

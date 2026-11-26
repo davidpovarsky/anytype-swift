@@ -73,7 +73,7 @@ def successful_query(query, baseline, fixtures, *, prior_readbacks=None):
         previous = prior[obj["objectID"]]
         previous_graph, _ = pagination.graph_nodes(previous)
         require(value["canonicalRaw"] == previous["canonicalRaw"] and value["canonicalSHA256"] == previous["canonicalSHA256"]
-                and value["title"] == previous["title"] and value["typeID"] == previous["typeID"]
+                and all(value[key] == previous[key] for key in ("title", "typeID", "nativeLayout", "nativeSnippet", "displayTitle"))
                 and graph == previous_graph, "Account stop/restore changed existing canonical bytes, metadata or block graph")
         require(previous["updatedAt"] <= value["updatedAt"] <= query["finishedAt"],
                 "Current native modification date regressed or is in the future")
@@ -84,7 +84,7 @@ def successful_query(query, baseline, fixtures, *, prior_readbacks=None):
                 continue
             require(block is None or block in reachable, "Existing native target disappeared during restore")
             expected.append(dict(id=pagination.target_id(space, obj["objectID"], block), spaceID=space,
-                objectID=obj["objectID"], blockID=block, title=value["title"], typeID=value["typeID"],
+                objectID=obj["objectID"], blockID=block, title=pagination.display_title(value, obj), typeID=value["typeID"],
                 sourceReference=pagination.SOURCE[1], canUnlink=target["role"] == "document",
                 kind="note" if obj["role"] == "note" else "document", updatedAt=value["updatedAt"]))
     expected.sort(key=lambda row: (-row["updatedAt"], row["id"]))

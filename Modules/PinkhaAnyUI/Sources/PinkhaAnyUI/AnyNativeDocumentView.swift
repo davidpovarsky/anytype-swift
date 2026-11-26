@@ -14,6 +14,8 @@ public struct AnyNativeDocumentView: View {
     @Bindable private var presentation: AnyDocumentPresentation
     @State private var documentChildReserved = false
     @State private var history: AnyNativeHistoryPresentation?
+    @State private var attachments: AnyNativeAttachmentsPresentation?
+    @State private var showsAttachments = false
     public init(presentation: AnyDocumentPresentation) { self.presentation = presentation }
 
     public var body: some View {
@@ -59,6 +61,27 @@ public struct AnyNativeDocumentView: View {
                     .accessibilityIdentifier("any-native-document-properties")
                     .disabled(!canPresentDocumentChild)
                 Menu {
+                    Button("MiniApps", systemImage: "square.grid.2x2") {
+                        guard canPresentDocumentChild else { return }
+                        presentation.presentMiniApps()
+                    }.accessibilityIdentifier("any-native-miniapps")
+                        .disabled(!presentation.canMutate || presentation.hasPendingEdits || !canPresentDocumentChild)
+                    Button(AnyUIErrorText.text("בדיקת תוצאות MiniApps", "Review MiniApps results"), systemImage: "tray.and.arrow.down") {
+                        guard canPresentDocumentChild else { return }
+                        presentation.consumeMiniAppsResults(reviewDeferred: true)
+                    }.accessibilityIdentifier("any-native-miniapps-results")
+                        .disabled(!presentation.isMounted || presentation.hasPendingEdits || !canPresentDocumentChild)
+                    Button(AnyUIErrorText.text("קבצים מצורפים", "Attachments"), systemImage: "paperclip") {
+                        guard reserveDocumentChild() else { return }
+                        do {
+                            attachments = try AnyNativeAttachmentsPresentation(document: presentation)
+                            showsAttachments = true
+                        } catch {
+                            presentation.message = AnyUIErrorText.describe(error)
+                            releaseDocumentChildIfAbsent()
+                        }
+                    }.accessibilityIdentifier("any-native-attachments")
+                        .disabled(!presentation.isMounted || presentation.read == nil || !canPresentDocumentChild)
                     Button(AnyUIErrorText.text("היסטוריית גרסאות", "Version history"),
                            systemImage: "clock.arrow.circlepath") {
                         guard presentation.isMounted, presentation.read != nil,
@@ -157,6 +180,9 @@ public struct AnyNativeDocumentView: View {
                onDismiss: { releaseDocumentChildIfAbsent() }) {
             AnyNativeArchiveTransferView(document: presentation)
         }
+        .sheet(isPresented: $showsAttachments, onDismiss: closeAttachments) {
+            if let attachments { AnyNativeAttachmentsView(model: attachments) }
+        }
         .sheet(item: $history, onDismiss: { releaseDocumentChildIfAbsent() }) { owner in
             AnyNativeHistoryView(presentation: owner)
         }
@@ -177,12 +203,23 @@ public struct AnyNativeDocumentView: View {
             }
         } message: { Text(presentation.message ?? "") }
         .task { await presentation.load() }
-        .onAppear { presentation.recordEditorDiagnostic(.documentAppeared) }
+        .onAppear {
+            presentation.recordEditorDiagnostic(.documentAppeared)
+            presentation.consumeMiniAppsResults()
+        }
+        .onChange(of: presentation.isMounted) { _, mounted in
+            if mounted { presentation.consumeMiniAppsResults() }
+        }
+        .onChange(of: presentation.contentRevision) { _, _ in
+            presentation.consumeMiniAppsResults()
+        }
         .onChange(of: presentation.canMutate) { _, _ in
             presentation.recordEditorDiagnostic(.documentReadinessChanged)
+            presentation.consumeMiniAppsResults()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
             presentation.recordEditorDiagnostic(.documentSceneChanged)
+            presentation.consumeMiniAppsResults()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             presentation.recordEditorDiagnostic(.documentSceneChanged)
@@ -256,7 +293,7 @@ public struct AnyNativeDocumentView: View {
             isReserved: documentChildReserved,
             hasInspector: presentation.torah.selection != nil,
             hasSearch: presentation.torah.isSearchPresented,
-            hasNativeChild: presentation.showsProperties || presentation.showsArchiveTransfer || presentation.showsDraftReview || history != nil,
+            hasNativeChild: presentation.showsProperties || presentation.showsArchiveTransfer || presentation.showsDraftReview || history != nil || showsAttachments,
             isNavigating: presentation.isNavigating)
     }
 
@@ -269,8 +306,20 @@ public struct AnyNativeDocumentView: View {
     private func releaseDocumentChildIfAbsent() {
         guard presentation.torah.selection == nil, !presentation.torah.isSearchPresented,
               !presentation.showsProperties, !presentation.showsArchiveTransfer,
-              !presentation.showsDraftReview, history == nil else { return }
+              !presentation.showsDraftReview, history == nil, !showsAttachments else { return }
         documentChildReserved = false
+    }
+
+    private func closeAttachments() {
+        let owner = attachments
+        let input = owner?.pendingMiniAppsInput
+        attachments = nil
+        releaseDocumentChildIfAbsent()
+        Task {
+            await owner?.close()
+            guard let input, presentation.isMounted else { return }
+            AnyNativeMiniAppsCoordinator.shared.present(presentation, additionalInputs: [input])
+        }
     }
 
     private var draftReview: some View {
@@ -466,9 +515,16 @@ public struct AnyNativeSourceSearchView: View {
                                     .accessibilityValue(Text(verbatim: item.canonicalKey))
                                 Spacer()
                                 Button(role: .destructive) { Task { await presenter.unlinkAssociation(item) } }
-                                    label: { Image(systemName: "link.badge.minus") }
+                                    label: {
+                                        Image(systemName: "minus.circle")
+                                            .frame(width: 44, height: 44)
+                                            .contentShape(Rectangle())
+                                    }
                                     .disabled(!presenter.canEditAssociations)
                                     .buttonStyle(.plain)
+                                    .accessibilityIdentifier("any-native-source-unlink-\(item.id)")
+                                    .accessibilityLabel(Text(verbatim: AnyUIErrorText.text("הסרת קישור ", "Unlink ") +
+                                        TorahAssociationDisplayFormatter.label(for: item, locale: locale)))
                             }
                         }
                     }
@@ -513,7 +569,8 @@ public struct AnyNativeSourceSearchView: View {
                 }
             }
             .searchable(text: $presenter.searchQuery)
-            .navigationTitle(presenter.fixedScope ? presenter.searchScope.title : Loc.Pinkha.Torah.sources)
+            .navigationTitle(presenter.associationTargetAnchor != nil ? PinkhaSemanticAnchorUI.text(.sources) :
+                (presenter.fixedScope ? presenter.searchScope.title : Loc.Pinkha.Torah.sources))
             .toolbar {
                 if !isEmbedded {
                     ToolbarItem(placement: .confirmationAction) {

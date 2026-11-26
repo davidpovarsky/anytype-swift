@@ -244,7 +244,7 @@ final class AnytypeTorahSpaceRelatedDocumentsService {
                     spaceID: spaceID, rootID: candidate.id, nodes: nodes
                 )
                 let document = T5IndexedDocument(
-                    objectID: details.id, spaceID: details.spaceId, title: details.name,
+                    objectID: details.id, spaceID: details.spaceId, title: details.objectName,
                     typeID: details.type,
                     iconEmoji: nonempty(details.values[BundledPropertyKey.iconEmoji.rawValue]?.stringValue),
                     iconImageID: nonempty(details.iconImage), updatedAt: details.lastModifiedDate,

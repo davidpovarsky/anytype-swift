@@ -1,0 +1,63 @@
+Building for debugging...
+[Planning deferred tasks]
+[28 / 52]
+[29 / 53] PinkhaKit
+[34 / 89]
+[39 / 89]
+[44 / 89]
+[46 / 89]
+[48 / 89]
+[51 / 89]
+[53 / 89]
+[55 / 89]
+[57 / 89]
+[60 / 89]
+[61 / 89]
+[62 / 89]
+[63 / 89]
+[72 / 89]
+[73 / 89] PinkhaKit
+[79 / 90] PinkhaKitTests-product
+[82 / 126]
+[85 / 126]
+[90 / 126]
+[92 / 126]
+[97 / 126]
+[98 / 126]
+[101 / 126]
+[104 / 126]
+[106 / 126]
+[108 / 126]
+[109 / 126]
+[111 / 126]
+[112 / 126]
+[115 / 126] PinkhaKitTests-product
+[120 / 126] PinkhaKitTests-product
+[122 / 126] PinkhaKitTests-product
+Build complete! (13,64 secs)
+Test Suite 'Selected tests' started at 2026-11-25 13:45:31.038.
+Test Suite 'PinkhaKitTests.xctest' started at 2026-11-25 13:45:31.038.
+Test Suite 'PinkhaPrivateDirectoryMigrationTests' started at 2026-11-25 13:45:31.039.
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testConflictingDestinationPreservesBothOriginalSettingsStores]' started.
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testConflictingDestinationPreservesBothOriginalSettingsStores]' passed (0.004 seconds).
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testMovesExactOriginalSettingsAndFileIdentityToPrivateStorage]' started.
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testMovesExactOriginalSettingsAndFileIdentityToPrivateStorage]' passed (0.003 seconds).
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testNewInstallationCreatesOnlyThePrivateSettingsDirectory]' started.
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testNewInstallationCreatesOnlyThePrivateSettingsDirectory]' passed (0.001 seconds).
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testPrivateParentSymlinkIsRefusedBeforeAnyMove]' started.
+/Users/m1/builds/pinkha-dual-main-20261125/private-settings-450-1/projection/Tests/PinkhaKitTests/PinkhaPrivateDirectoryMigrationTests.swift:83: error: -[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testPrivateParentSymlinkIsRefusedBeforeAnyMove] : XCTAssertEqual failed: ("["Application Support"]") is not equal to ("[]")
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testPrivateParentSymlinkIsRefusedBeforeAnyMove]' failed (0.039 seconds).
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testRepeatedOpenKeepsTheAlreadyMovedBytesAndFilename]' started.
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testRepeatedOpenKeepsTheAlreadyMovedBytesAndFilename]' passed (0.003 seconds).
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testSourceSymlinkIsRefusedWithoutMovingItsTarget]' started.
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testSourceSymlinkIsRefusedWithoutMovingItsTarget]' passed (0.001 seconds).
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testUnexpectedNestedDirectoryKeepsOriginalTreeIntact]' started.
+Test Case '-[PinkhaKitTests.PinkhaPrivateDirectoryMigrationTests testUnexpectedNestedDirectoryKeepsOriginalTreeIntact]' passed (0.001 seconds).
+Test Suite 'PinkhaPrivateDirectoryMigrationTests' failed at 2026-11-25 13:45:31.091.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 0.052 (0.053) seconds
+Test Suite 'PinkhaKitTests.xctest' failed at 2026-11-25 13:45:31.091.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 0.052 (0.053) seconds
+Test Suite 'Selected tests' failed at 2026-11-25 13:45:31.091.
+	 Executed 7 tests, with 1 failure (0 unexpected) in 0.052 (0.054) seconds
+Note: Some test targets reported failures:
+  - PinkhaKitTests (XCTest)

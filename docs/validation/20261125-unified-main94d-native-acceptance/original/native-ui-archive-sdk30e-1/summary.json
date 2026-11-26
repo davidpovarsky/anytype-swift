@@ -1,0 +1,55 @@
+{
+  "devicesAndConfigurations": [
+    {
+      "device": {
+        "architecture": "arm64",
+        "deviceId": "43F53CEF-CC77-4C9D-BFCD-B32D64BB471F",
+        "deviceName": "PinkhaUnifiedD-archive-aa2cf3bd-8fec-4b36-9729-37d39df52826",
+        "modelName": "iPad Pro 13-inch (M5)",
+        "osBuildNumber": "24A434",
+        "osVersion": "27.0",
+        "platform": "iOS Simulator"
+      },
+      "expectedFailures": 0,
+      "failedTests": 1,
+      "passedTests": 0,
+      "skippedTests": 0,
+      "testPlanConfiguration": {
+        "configurationId": "1",
+        "configurationName": "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription": "PinkhaAnyNativeTransitionUI \u00b7 Built with macOS 27.0",
+  "expectedFailures": 0,
+  "failedTests": 1,
+  "finishTime": 1795608038.209,
+  "passedTests": 0,
+  "result": "Failed",
+  "runtimeWarnings": [
+    {
+      "issueType": "Runtime Warning",
+      "message": "    AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread."
+    },
+    {
+      "issueType": "Runtime Warning",
+      "message": "Type \"com.gloiiire.pinkha.torahSource\" was expected to be declared and exported in the Info.plist of Anytype.app, but it was not found."
+    }
+  ],
+  "skippedTests": 0,
+  "startTime": 1795607695.173,
+  "statistics": [],
+  "testFailures": [
+    {
+      "failureText": "failed: caught error: \"controlNotReady(\"canonical-source-EC3791C6-E75D-4C96-AB91-8969C0FF07D9_export_pinkha_folder_NOT_READY\")\"",
+      "targetName": "PinkhaAnyNativeUITests",
+      "testIdentifier": 1,
+      "testIdentifierString": "NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies()",
+      "testIdentifierURL": "test://com.apple.xcode/AnyNativeTransitionUI/PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",
+      "testName": "testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies()"
+    }
+  ],
+  "title": "Test - PinkhaAnyNativeTransitionUI",
+  "topInsights": [],
+  "totalTestCount": 1
+}

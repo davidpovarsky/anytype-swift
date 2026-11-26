@@ -1,0 +1,2109 @@
+{
+  "app": {
+    "argv": [
+      "xcodebuild",
+      "build-for-testing",
+      "-project",
+      "/Users/m1/builds/pinkha-dual-main-20261125/source/Anytype.xcodeproj",
+      "-scheme",
+      "Anytype",
+      "-configuration",
+      "Debug-Anytype",
+      "-destination",
+      "generic/platform=iOS Simulator",
+      "-derivedDataPath",
+      "/Users/m1/builds/pinkha-dual-main-20261125/app-derived",
+      "-clonedSourcePackagesDirPath",
+      "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/SourcePackages",
+      "-resultBundlePath",
+      "/Users/m1/builds/pinkha-dual-main-20261125/build7/App.xcresult",
+      "-onlyUsePackageVersionsFromResolvedFile",
+      "-disableAutomaticPackageResolution",
+      "-jobs",
+      "4",
+      "OTHER_SWIFT_FLAGS=$(inherited) -D DEBUG -D PINKHA_DUAL_ENGINE_RUNTIME -D PINKHA_NATIVE_DERIVED -D PINKHA_NATIVE_T5_LOOKUP_V1 -D PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 -D PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1",
+      "ENABLE_TESTABILITY=YES",
+      "ONLY_ACTIVE_ARCH=YES",
+      "ARCHS=arm64",
+      "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGNING_REQUIRED=YES",
+      "PROVISIONING_PROFILE_SPECIFIER="
+    ],
+    "cwd": "/Users/m1/builds/pinkha-dual-main-20261125/source",
+    "elapsedSeconds": 296.55706787109375,
+    "environment": {
+      "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+      "PINKHA_ANY_NATIVE_ARTIFACT": "verified-unified-v1",
+      "PINKHA_NATIVE_T2_AUTHORIZED_READ_V1": "1"
+    },
+    "exitCode": 0,
+    "finished": 1795608938.297877,
+    "freeBytesAfter": 123788251136,
+    "freeBytesBefore": 123590434816,
+    "jobs": 4,
+    "logBytes": 2392833,
+    "logSHA256": "eebac5191f463f17f958c1e7358f25f914bfe7589bc8048f435cc01dc60cf335",
+    "minimumFreeBytes": 122186940416,
+    "ownedProcessGroup": "ABSENT_ESRCH",
+    "pgid": 29935,
+    "phase": "app",
+    "pid": 29935,
+    "sourceCommit": "ca7cb16f91c3d5fc4f7c8c178369abc9276e9a07",
+    "started": 1795608641.740811,
+    "status": "PASS_BUILD_EXIT_0",
+    "timeoutSeconds": 7200
+  },
+  "appBuildsThisContinuation": 0,
+  "appProductsUnchangedDuringUIContinuation": true,
+  "completeProductsInventory": {
+    "entries": 4602,
+    "path": "/Users/m1/builds/pinkha-dual-main-20261125/build7-ui2/products-all.json",
+    "sha256": "7aa385f0cf861ff21cfe1f2f13e525fc9e7346462910cd66e9c6aa96ce18b3a9"
+  },
+  "inputs": {
+    "cacheSizes": "2884656\t/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products\n4322724\t/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Intermediates.noindex\n",
+    "cpus": "10",
+    "freeBytes": 123619807232,
+    "lockSHA256": "ffc47556534ee279d01bb771c6d49637766e8828bd872cce739e541d8ce4f124",
+    "memsize": "17179869184",
+    "nativeSHA256": "c3374a58dffb64658fe6840ee9bd2711a4b1bf8c449c32da5bd51ede4901cece",
+    "nativeSourceManifestSHA256": "70f0b2a66286ae87afdc5a8d5becb267fd1aa5c5110e54381a3b0384afd69a72",
+    "phaseBudgetEvidence": {
+      "interpretation": "These global samples include unrelated activity. The next app allowance is 2.5 GiB, covering the largest observed peak plus not-yet-linked original test bundles; UI-only gets 0.5 GiB and is independently admitted.",
+      "previousMeasuredGlobalPeakDropsBytes": [
+        2239700992,
+        1799016448,
+        375001088
+      ]
+    },
+    "phaseGrowthAllowanceBytes": {
+      "app": 2684354560,
+      "ui": 536870912
+    },
+    "reasonForJobs4": "Measured 16 GiB/10 CPU host; sole incremental main compiler, other owner runs test-without-building. Four jobs preserve available parallelism with an owned-process 2 GiB emergency disk guard.",
+    "sdkReceiptSHA256": "0ae5a1476c899b1790f01a2a3b4118034e848d8ad8dcf2d97f12104f7387f798",
+    "vmStat": "Mach Virtual Memory Statistics: (page size of 16384 bytes)\nPages free:                                    72481.\nPages active:                                 181996.\nPages inactive:                               204636.\nPages speculative:                             12335.\nPages throttled:                                   0.\nPages wired down:                             215335.\nPages purgeable:                                3108.\n\"Translation faults\":                     6755672323.\nPages copy-on-write:                       110535108.\nPages zero filled:                        4697062225.\nPages reactivated:                         116666205.\nPages purged:                                5808435.\nFile-backed pages:                            212740.\nAnonymous pages:                              186229.\nPages stored in compressor:                   881795.\nPages occupied by compressor:                 328260.\nDecompressions:                             69155157.\nCompressions:                              114028879.\nPageins:                                   186593477.\nPageouts:                                     181708.\nSwapins:                                       19114.\nSwapouts:                                      51112.\n"
+  },
+  "originalAppResult": {
+    "path": "/Users/m1/builds/pinkha-dual-main-20261125/build7/app/result.json",
+    "sha256": "bacef644997739dafa5367f8b8cd49bf29dc5fe8b545dc4d3b6b45b77faa4705"
+  },
+  "priorFailedUIResult": {
+    "path": "/Users/m1/builds/pinkha-dual-main-20261125/build7/ui/result.json",
+    "sha256": "9394844ba08add4791e32c1c75be5b1390ab2ca17086ecfa865d440a1bc63006"
+  },
+  "products": {
+    "app-derived": [
+      {
+        "bytes": 14921,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Anytype_AnytypeTests_iphonesimulator27.0-arm64.xctestrun",
+        "sha256": "266f69c7f6f1aecd9b00263a5333dfb4f2d893070ca2668fa1d4ceeef3c1a37e"
+      },
+      {
+        "bytes": 6575,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Current-Page154-preparation.xctestrun",
+        "sha256": "e77adf08912898099308197ba21779ea9d810fdbf4262e2dcbc112c0d2b4e1f4"
+      },
+      {
+        "bytes": 687,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Amplitude-Swift_AmplitudeSwift.bundle/Info.plist",
+        "sha256": "7920c82f9df53deb5daf9e0bf39dd24d115592b66ad37791a56e9e9fdc4195ef"
+      },
+      {
+        "bytes": 736,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AmplitudeCore.framework/Info.plist",
+        "sha256": "0f912de7df813d0b1f74bab0735f2fdc0964b779976d7273339fb929a99f74e6"
+      },
+      {
+        "bytes": 687,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Amplitude-Swift_AmplitudeSwift.bundle/Info.plist",
+        "sha256": "7920c82f9df53deb5daf9e0bf39dd24d115592b66ad37791a56e9e9fdc4195ef"
+      },
+      {
+        "bytes": 40496,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Anytype",
+        "sha256": "a0158826af42d9fb36d4faa2caca2bd01d1f01916aaeadce79e40d4581f5a2a2"
+      },
+      {
+        "bytes": 651,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Assets_Assets.bundle/Info.plist",
+        "sha256": "ae24ed40a22d068ecf11406ac50d0e86ee3b0797346a9ce6355579a29a9d0fc4"
+      },
+      {
+        "bytes": 258,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Base.lproj/LaunchScreen.storyboardc/Info.plist",
+        "sha256": "1f255d5cc53b531e3f29a9406a8df49a958e2bf9443d3e20bd8374f707f7d5c8"
+      },
+      {
+        "bytes": 647,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Cache_Cache.bundle/Info.plist",
+        "sha256": "75f62aafe8ebce5615d93028867d9eeddbe07b40b0ffa6e884733edbd24682b5"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/DesignKit_DesignKit.bundle/Info.plist",
+        "sha256": "219aeeb2076c38ccc53c29ce9501a884b8b3e9b1cbcd52b0746ca0b03746cbd9"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/DeviceKit_DeviceKit.bundle/Info.plist",
+        "sha256": "3562b2676ab196e0733168a10be54f9c3e7df5494343fc74ac70760bdb994460"
+      },
+      {
+        "bytes": 677,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Firebase_FirebaseCore.bundle/Info.plist",
+        "sha256": "a70ce03f9c8feb5424f079fd2a514fade2ff8d7182dc7d1ef5cde440b2d34e71"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Firebase_FirebaseCoreInternal.bundle/Info.plist",
+        "sha256": "f45442ec844c39b142db41edd2aed1192360f782fc49a27ea5512214abaf496e"
+      },
+      {
+        "bytes": 695,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Firebase_FirebaseInstallations.bundle/Info.plist",
+        "sha256": "cd6cf16efbbfe57783d55483f03a1bddb536d7431aa405f3f7066a6bb5793ab4"
+      },
+      {
+        "bytes": 687,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Firebase_FirebaseMessaging.bundle/Info.plist",
+        "sha256": "26dc5247d653e16896d073523a3d282e53c784343392dffcdccbb056aa4c6b37"
+      },
+      {
+        "bytes": 744,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/AISDKProvider.framework/Info.plist",
+        "sha256": "01caebca22188b198ea767e10ea1dba291abb4a5172079a67f53bb1d22c5a16e"
+      },
+      {
+        "bytes": 756,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/AISDKProviderUtils.framework/Info.plist",
+        "sha256": "14bfe8e2da95a83f23ce0a9ad5401525b03c6b80951b0213c5f38272f01eae9c"
+      },
+      {
+        "bytes": 750,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/AISDKZodAdapter.framework/Info.plist",
+        "sha256": "a4a9faf7866f023fab4e8ea05b6f5fddf68f654e0c2e92b272ea933cc68d4689"
+      },
+      {
+        "bytes": 736,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/AmplitudeCore.framework/Info.plist",
+        "sha256": "0f912de7df813d0b1f74bab0735f2fdc0964b779976d7273339fb929a99f74e6"
+      },
+      {
+        "bytes": 786,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/AnthropicProvider_1131E7754C45D704_PackageProduct.framework/Info.plist",
+        "sha256": "adf136b1cfb8265aa7d4fd13ebb6de91c6d99b4faa58de340ce5527b380f92d0"
+      },
+      {
+        "bytes": 784,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/AnyCryptoSwift_4B7B7B8889D5B5C4_PackageProduct.framework/Info.plist",
+        "sha256": "3fe3561b1e98b78408cb3cce61650e5de13839b9e2da6fe9816977b668d48619"
+      },
+      {
+        "bytes": 739,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/AnytypeCore.framework/Info.plist",
+        "sha256": "4a338ca30dd036113998d9a12f33fea00d87855454927f5d14c527aaa68dbf37"
+      },
+      {
+        "bytes": 766,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/AppTarget_-256A0C750C206F_PackageProduct.framework/Info.plist",
+        "sha256": "b38d2f6e96c7e6b0c725d6c3d037790184b0cd948a32c80c8d2c6f383d493905"
+      },
+      {
+        "bytes": 754,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/BigInt_175F1397B99A03_PackageProduct.framework/Info.plist",
+        "sha256": "0f98a004b280213e279a916da49fee5f82dcafad9c6a3c0b78b1c4d21d86e098"
+      },
+      {
+        "bytes": 762,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/Crypto_17A3B1FFC41E47_PackageProduct.framework/Info.plist",
+        "sha256": "9dd75fb00d85fb8d147e3ee963327311eb9829522edab29c7b05943ed78f7b63"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/Crypto_17A3B1FFC41E47_PackageProduct.framework/swift-crypto_Crypto.bundle/Info.plist",
+        "sha256": "65a435071c87c2628d5d453d0fb91ac5dd8fd8613b8b1961b098a931c7168d03"
+      },
+      {
+        "bytes": 768,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/Equatable_-35D8E7FC36476C63_PackageProduct.framework/Info.plist",
+        "sha256": "e64bd897d84d24004f8debd6e89c8b92c33cdbf6de09c00d40fca49e3066f0d4"
+      },
+      {
+        "bytes": 754,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/EventSourceParser.framework/Info.plist",
+        "sha256": "1297b664288c44b0d2130aea876f8a2216711841669795e5be101cb763cf1a83"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/Factory_32A9B87E1196645F_PackageProduct.framework/Info.plist",
+        "sha256": "1a3689b22e462b89c0e7019055553b0374affa952209da8cacaa7f64a0a6092c"
+      },
+      {
+        "bytes": 781,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/GoogleProvider_-6DD8AE9F9ECCE14A_PackageProduct.framework/Info.plist",
+        "sha256": "708b9060f09364bf2984cccbefb1e18b9f6d7aec948db9db4335ec1c01518ce4"
+      },
+      {
+        "bytes": 778,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinAgentCore_-7D838ACD7D66B21F_PackageProduct.framework/Info.plist",
+        "sha256": "546dc0ef97a27d149cebdd63e2e6eb7dbf4d34752efc2123a212f3b0f117d76e"
+      },
+      {
+        "bytes": 741,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinChatCore.framework/Info.plist",
+        "sha256": "22ad9de59f60329cce5102cef310b5f3173d64a286dee6ef93056354506298bd"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinChatUI_-145D373D09E5497C_PackageProduct.framework/HanlinPresentationSDK_HanlinChatUI.bundle/Info.plist",
+        "sha256": "67c6539cae21b71396b87e3967c06d20c5d83e5f05beeb8a399f521e6a08ba41"
+      },
+      {
+        "bytes": 784,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinChatUI_-145D373D09E5497C_PackageProduct.framework/Info.plist",
+        "sha256": "340b4ef19e07a5a04997ad9f9110dde3774069ff1112f63bcb0dcde961fe2f94"
+      },
+      {
+        "bytes": 753,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinHostContracts.framework/Info.plist",
+        "sha256": "739af5cc948d0f7095aff0143e701aa8616b787f6f117b4f54e3419d7d3cd89f"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinMiniAppsBridge.framework/Info.plist",
+        "sha256": "352bd0e174c1c52b5c28003a96dfc7ec8e2d728f59c3144b050ebc18494c1a35"
+      },
+      {
+        "bytes": 702,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinMiniAppsPicker_543BCB781658C6ED_PackageProduct.framework/HanlinMiniAppsBridge_HanlinMiniAppsPicker.bundle/Info.plist",
+        "sha256": "a732f1ac5c0453449e652daac55145374f130da2a1cf1f7eb7fe97357ec56ca3"
+      },
+      {
+        "bytes": 793,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinMiniAppsPicker_543BCB781658C6ED_PackageProduct.framework/Info.plist",
+        "sha256": "af6159376d7d9c200fe3aac7cf44226e2b6e8da2f098beabb8cfdffe89e20cd8"
+      },
+      {
+        "bytes": 798,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinPersistenceAdapters_-2F7E82B1E9C686D4_PackageProduct.framework/Info.plist",
+        "sha256": "ed4b4ff8cdc3bbe81aa7848c20e1d2c50cdec0ebee08ed78b4e348f4a3f6b3b2"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinPlatformContracts.framework/Info.plist",
+        "sha256": "b07d01f613b6e1008b3b643ef160131a973cfefa536a297d478d3c7b10f3c14e"
+      },
+      {
+        "bytes": 769,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinPresentationKit.framework/Info.plist",
+        "sha256": "55e63088fbf20cca431c652641aac6bc4be6dfe01c8c58cab718c1abab0f6e1d"
+      },
+      {
+        "bytes": 678,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinScriptUI_1A54938DEE62D27B_PackageProduct.framework/HanlinPlatform_HanlinScriptUI.bundle/Info.plist",
+        "sha256": "4773509a00bccb66477118d5154f70b1f41b493a9a1b47a1898ec8a800a194b3"
+      },
+      {
+        "bytes": 775,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HanlinScriptUI_1A54938DEE62D27B_PackageProduct.framework/Info.plist",
+        "sha256": "9ac50bc0af2ccf26bfac39dd0570096bae4f32f34170cda76983cd52a4aee94a"
+      },
+      {
+        "bytes": 685,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HighlightSwift_-2F406FEDB9CAE34D_PackageProduct.framework/HighlightSwift_HighlightSwift.bundle/Info.plist",
+        "sha256": "a2976e4aebb315c9c2508738a262176a49720ebd445dfae312ea161914f51a0d"
+      },
+      {
+        "bytes": 783,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/HighlightSwift_-2F406FEDB9CAE34D_PackageProduct.framework/Info.plist",
+        "sha256": "94488bd8e572e9e9ab3d614d21788447ad5d2511262694935a37e6d29dbdfb08"
+      },
+      {
+        "bytes": 547,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/Lib.framework/Info.plist",
+        "sha256": "ca0635cbb177d233b40b5034ff7a3fda8b52270b6369d31e0798946dfba15db5"
+      },
+      {
+        "bytes": 739,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/Loc_1E069A29_PackageProduct.framework/Info.plist",
+        "sha256": "cdc5d07ea42885d639ded14ef2a1456c6fd408f629b4cc51e18c3a2b33ecef27"
+      },
+      {
+        "bytes": 639,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/Loc_1E069A29_PackageProduct.framework/Loc_Loc.bundle/Info.plist",
+        "sha256": "161e6c0b2a679d240521c2a1a1d9fe9144956a3371d1d5b51231c397c65b018d"
+      },
+      {
+        "bytes": 722,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/Logger.framework/Info.plist",
+        "sha256": "5a168dfa41b98aa52792d817a7196bc018a90eecfc778049fc53c701c1e0af88"
+      },
+      {
+        "bytes": 771,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/Markdown_-41C1F4010F78A9B5_PackageProduct.framework/Info.plist",
+        "sha256": "8dd76fe2416d4091eec1956e007049d79417ced07bd475dec851d36fd5e6fa95"
+      },
+      {
+        "bytes": 790,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/NotificationsCore_5AD5AD79262EBF4_PackageProduct.framework/Info.plist",
+        "sha256": "c4068b3d37635b58cceebe07b96b71e756e9f639df1f7d6a29b0637e7fd8979e"
+      },
+      {
+        "bytes": 801,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/OpenAICompatibleProvider_-12EEEC9CC3715281_PackageProduct.framework/Info.plist",
+        "sha256": "1c2732e35cc1114dc2082d7b33e498fb860476488fa972f4fec715fbeeebda89"
+      },
+      {
+        "bytes": 781,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/OpenAIProvider_-2301E57905F4388B_PackageProduct.framework/Info.plist",
+        "sha256": "013c7192e8637ca7ff33dd75f80346e26a91095bf0dc77c50982b7f74999bb7a"
+      },
+      {
+        "bytes": 764,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/OpenTelemetryApi.framework/Info.plist",
+        "sha256": "63b9890c6891bf8f090cf10f823fbae26ad24f68c61cac7c5d3950e2244fd921"
+      },
+      {
+        "bytes": 796,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/OpenTelemetrySdk_-BB873E213A09381_PackageProduct.framework/Info.plist",
+        "sha256": "531cd9d9e9997d46b8514b285ab2ed3f871a8eebafee8c6e3ba80bfe20525aa7"
+      },
+      {
+        "bytes": 786,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaAnyEngine_-32845DACDCEBC418_PackageProduct.framework/Info.plist",
+        "sha256": "d0850bfadd9b5278da9437d985cf3e679d8362e4aec4cfee0a8ab26a0b2c6f66"
+      },
+      {
+        "bytes": 746,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaAnyHanlin.framework/Info.plist",
+        "sha256": "339366ce665e71cd886f2a286870db45d6c744b0c6c4c5cb6c89f1a14fd6032c"
+      },
+      {
+        "bytes": 780,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaAnyHost_-37AFDC5F0CC79FD2_PackageProduct.framework/Info.plist",
+        "sha256": "83fec84f6efdb80f57fc20f57e635b807eaeeb468d5983b50b2cc054f6342473"
+      },
+      {
+        "bytes": 800,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaAnyIntegration_64B56E79D6B6D61B_PackageProduct.framework/Info.plist",
+        "sha256": "27ae52ab97859fa36e152dfde3358e2c107748f246ff3d8bba8d6ddce79c29d2"
+      },
+      {
+        "bytes": 779,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaAnyNative_-2DF43AF315B01C07_PackageProduct.framework/Info.plist",
+        "sha256": "d5751a610f5354bc21a022ef3789828d7c0f8da70bd28d7b901dfa54f2f694b0"
+      },
+      {
+        "bytes": 789,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaAnyRuntime_-4CB92FD257651F89_PackageProduct.framework/Info.plist",
+        "sha256": "d6624b60f89ca95c4cac249c7e7acf5e7c725eb0b3e2d1321db7f990c295e23c"
+      },
+      {
+        "bytes": 767,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaAnyUI_-2F3485EBA2160AD4_PackageProduct.framework/Info.plist",
+        "sha256": "7804cf6ac54eab21d629d493e005ad721428d83cc7a631af053d669968a6229b"
+      },
+      {
+        "bytes": 782,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaEngineHost_-234E37ABD108A8A1_PackageProduct.framework/Info.plist",
+        "sha256": "27dc26ea9b9378da5418d3bc51a6175a6b010294588508675e9c470297303436"
+      },
+      {
+        "bytes": 748,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaHanlinCore.framework/Info.plist",
+        "sha256": "17c5a9c56f7a656af8fd57cf3772bb495617f03ded63d3c5ddf2239f50175ea5"
+      },
+      {
+        "bytes": 776,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct.framework/Info.plist",
+        "sha256": "27e750c90f72df3d2b62ecd25ab89a2c858434b84b254689f6bb00ea29340072"
+      },
+      {
+        "bytes": 680,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct.framework/PinkhaAnyHanlin_PinkhaHanlinUI.bundle/Info.plist",
+        "sha256": "a82a0b5e4040de1050ed873810a39e8d5da606a6045ebb413fd543322f5ee159"
+      },
+      {
+        "bytes": 768,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaKit_-61E21269EE91C774_PackageProduct.framework/Info.plist",
+        "sha256": "2ea6f43e8c7701b7f8cd64cd336a88c276e43aa5cfe1d074e154d9096865a4a3"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaKit_-61E21269EE91C774_PackageProduct.framework/PinkhaKit_PinkhaKit.bundle/Info.plist",
+        "sha256": "edbe1c655e3f0925070b8eab72378d510b3fed585aca7007abddf58c28c3f6f6"
+      },
+      {
+        "bytes": 780,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaSharing_-2E95F4BACAAC84CC_PackageProduct.framework/Info.plist",
+        "sha256": "75913e4fa6d3ebbc543e8ac225fc566a911df4c47f07daae2337c8edbb17018e"
+      },
+      {
+        "bytes": 681,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaSharing_-2E95F4BACAAC84CC_PackageProduct.framework/PinkhaSharing_PinkhaSharing.bundle/Info.plist",
+        "sha256": "8e6c7004ca1b1d2a58ded78829373c530d2d2868edb313708438bf735a31ff1e"
+      },
+      {
+        "bytes": 810,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/PinkhaTorahPresentation_-6663E3BC08A48F94_PackageProduct.framework/Info.plist",
+        "sha256": "70eb7a5be56dfcfd89bd4014072d5d9bc6ad07b488d708bfaf6e8f450bc3c911"
+      },
+      {
+        "bytes": 756,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/ProtobufMessages.framework/Info.plist",
+        "sha256": "29818c875eb9e9ea2711269bfb128ea1c271d5a24fd22165421848abbd20e7f2"
+      },
+      {
+        "bytes": 745,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/SecureService.framework/Info.plist",
+        "sha256": "6e269659db9d7eae29b14be6546a11d5aa395157234d46ece7daf27d1cec1df7"
+      },
+      {
+        "bytes": 726,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/Sentry.framework/Info.plist",
+        "sha256": "d2a39e5e31580773a5624dd87a1c41bdc4a73278116e244e8249e06917374924"
+      },
+      {
+        "bytes": 730,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/Services.framework/Info.plist",
+        "sha256": "47c489c8c99454e4ed9d1dff5edb1330d1284a88b047e6e5cd353497d2459a52"
+      },
+      {
+        "bytes": 768,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/SharedContentManager.framework/Info.plist",
+        "sha256": "26f066492c3a2bd73921e1b843a9812d75698f5d15b61227d750196872dd9824"
+      },
+      {
+        "bytes": 769,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/Shimmer_3962051978DE45DC_PackageProduct.framework/Info.plist",
+        "sha256": "20d8b6e6e3a65dd9198cf414f11acf534af7fa6fd78aecc7d627370caa24b744"
+      },
+      {
+        "bytes": 772,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/SwiftAISDK_6FA7094CA5C06683_PackageProduct.framework/Info.plist",
+        "sha256": "119c4d2203f4c00bdb4d67d13fa63de20213c8a4d1959a7b9cd54c317f937358"
+      },
+      {
+        "bytes": 780,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/SwiftProtobuf_7CEE9AB92C12BC6B_PackageProduct.framework/Info.plist",
+        "sha256": "a0a8ad49678d6e57dc50a920a134d15e92b9f66d5e062f0809c5afefaba6ef38"
+      },
+      {
+        "bytes": 682,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/SwiftProtobuf_7CEE9AB92C12BC6B_PackageProduct.framework/SwiftProtobuf_SwiftProtobuf.bundle/Info.plist",
+        "sha256": "dc7bc4913c00fb8e2a55cc7f5ea348482e01ebb017bb20b92e6a434b054c81f5"
+      },
+      {
+        "bytes": 810,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/SwiftStreamingMarkdown_-504EC1C7D1AEC0F0_PackageProduct.framework/Info.plist",
+        "sha256": "6c313922c022ddf76b3bd673a4231c5c68874c0905de22a0825e4b1c67491a45"
+      },
+      {
+        "bytes": 720,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/SwiftStreamingMarkdown_-504EC1C7D1AEC0F0_PackageProduct.framework/SwiftStreamingMarkdown_SwiftStreamingMarkdown.bundle/Info.plist",
+        "sha256": "bd36116a9e4aea0558a24e60d5f89cba49de712175874e7dd1f2d27b860b64b6"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/TorahInspectorCore.framework/Info.plist",
+        "sha256": "f3b9823a4b54ee74dc22b7349ff4f8d174e7c712d9a88b5c9dd2c3675c683537"
+      },
+      {
+        "bytes": 790,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/TorahInspectorUI_-34E075219D9C2A9D_PackageProduct.framework/Info.plist",
+        "sha256": "b65112583d05c315fba1840cd993bf9a4a353a04f5907b672d7cf5e52f1ddc3b"
+      },
+      {
+        "bytes": 695,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/TorahInspectorUI_-34E075219D9C2A9D_PackageProduct.framework/TorahInspectorKit_TorahInspectorUI.bundle/Info.plist",
+        "sha256": "31e56ce7de877eed7d4355bf1c08cd1b9bb62d831369f78606775fe127dcbc59"
+      },
+      {
+        "bytes": 792,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/cmark-gfm-extensions_-5BB516D967F054FA_PackageProduct.framework/Info.plist",
+        "sha256": "f76f06828e5ae5db662593549d745e50dbe4cc74d384a3b50821ebd202d186ca"
+      },
+      {
+        "bytes": 735,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/cmark-gfm.framework/Info.plist",
+        "sha256": "73dfb1651769164a1e2e4703b3bda95258dca949d1a8920f2725ab448ac5047d"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/iosMath_44BECE163071ABDC_PackageProduct.framework/Info.plist",
+        "sha256": "fb46c1ecbc8d907d0c0c349614479235e530eb3adb74bbfe6051692a50f2962a"
+      },
+      {
+        "bytes": 657,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Frameworks/iosMath_44BECE163071ABDC_PackageProduct.framework/iosMath_iosMath.bundle/Info.plist",
+        "sha256": "7440bed3d61f286aa4d30c525d39cb9c3116ccee5d43857ffaa8b3f8258b84e5"
+      },
+      {
+        "bytes": 705,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/GoogleDataTransport_GoogleDataTransport.bundle/Info.plist",
+        "sha256": "9250238c64a091cf26e0892955eb7610ad85622826c3affd008a40822d8b616a"
+      },
+      {
+        "bytes": 729,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/GoogleUtilities_GoogleUtilities-AppDelegateSwizzler.bundle/Info.plist",
+        "sha256": "944880c26c71aff886f71426ef57a991b947a900eb314168a6fd7385aab029ef"
+      },
+      {
+        "bytes": 713,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/GoogleUtilities_GoogleUtilities-Environment.bundle/Info.plist",
+        "sha256": "cb5c528690eb7a08bf5d49a4c15003bf5069f0f487fc216187b7373f9e2da72f"
+      },
+      {
+        "bytes": 703,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/GoogleUtilities_GoogleUtilities-Logger.bundle/Info.plist",
+        "sha256": "789879be9d5c5d69764e9a835051a0f842eeeb2580d2d2be26ecf108807ff5d5"
+      },
+      {
+        "bytes": 703,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/GoogleUtilities_GoogleUtilities-NSData.bundle/Info.plist",
+        "sha256": "69a86efd33d844b3261c5e7db095aa4b42cd0af1edb687a54229d03585e3236e"
+      },
+      {
+        "bytes": 705,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/GoogleUtilities_GoogleUtilities-Network.bundle/Info.plist",
+        "sha256": "22c4fa06c1f19348cc0dd6d5e2031c5c281006ee88a916b0800373dd889ae654"
+      },
+      {
+        "bytes": 715,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/GoogleUtilities_GoogleUtilities-Reachability.bundle/Info.plist",
+        "sha256": "742461006b6208bb116d3248942758bbd9be340b9f39eedcdd38e834c6b77706"
+      },
+      {
+        "bytes": 715,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/GoogleUtilities_GoogleUtilities-UserDefaults.bundle/Info.plist",
+        "sha256": "895b7cae974773f95cda8ea2d9954061caccca3d8b3edbf72f5538c015fd16be"
+      },
+      {
+        "bytes": 692,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/HanlinAgentSDK_HanlinExactJSONSchema.bundle/Info.plist",
+        "sha256": "e0c0a8a777bea42bf5c4dc136b1589b0819d0c4538321a0d3b6f7f4e91adae2d"
+      },
+      {
+        "bytes": 702,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/HanlinMiniAppsBridge_HanlinMiniAppsPicker.bundle/Info.plist",
+        "sha256": "a732f1ac5c0453449e652daac55145374f130da2a1cf1f7eb7fe97357ec56ca3"
+      },
+      {
+        "bytes": 696,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/HanlinPlatform_HanlinPlatformContracts.bundle/Info.plist",
+        "sha256": "3791c08325baefe177152857b11d2f6dd1612f56b2f2de376c8b563376d01080"
+      },
+      {
+        "bytes": 692,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/HanlinPlatform_HanlinScriptContracts.bundle/Info.plist",
+        "sha256": "87b9ffc9738e48ccdfe18828639b51544600ebb3d6287522f6e8803a0ac69925"
+      },
+      {
+        "bytes": 678,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/HanlinPlatform_HanlinScriptUI.bundle/Info.plist",
+        "sha256": "4773509a00bccb66477118d5154f70b1f41b493a9a1b47a1898ec8a800a194b3"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/HanlinPresentationSDK_HanlinChatUI.bundle/Info.plist",
+        "sha256": "67c6539cae21b71396b87e3967c06d20c5d83e5f05beeb8a399f521e6a08ba41"
+      },
+      {
+        "bytes": 705,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/HanlinPresentationSDK_HanlinLocalization.bundle/Info.plist",
+        "sha256": "61b0251177713a5b889bcab6440f481b7ee9b6d951ce1d6fc97fd2fea9139a39"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/HanlinPresentationSDK_HanlinRichUI.bundle/Info.plist",
+        "sha256": "5053d94351fdf6481d77fc81a9871ee4527d950b03d8c00262e22c9626366e7e"
+      },
+      {
+        "bytes": 685,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/HighlightSwift_HighlightSwift.bundle/Info.plist",
+        "sha256": "a2976e4aebb315c9c2508738a262176a49720ebd445dfae312ea161914f51a0d"
+      },
+      {
+        "bytes": 669,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Highlightr_Highlightr.bundle/Info.plist",
+        "sha256": "4067386eef344544be81de22e9ec55fb7abbbc41e693bf7fcb7e0db249a2d40f"
+      },
+      {
+        "bytes": 3094,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Info.plist",
+        "sha256": "0da219f70bc78099f9114cd82b979efc506ba515e503238ca69eace3a9157b6f"
+      },
+      {
+        "bytes": 669,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Kingfisher_Kingfisher.bundle/Info.plist",
+        "sha256": "752ce3023a4d2b1eb359d03a3e6d39176e0a560f310925c007da443b5f914151"
+      },
+      {
+        "bytes": 639,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Loc_Loc.bundle/Info.plist",
+        "sha256": "161e6c0b2a679d240521c2a1a1d9fe9144956a3371d1d5b51231c397c65b018d"
+      },
+      {
+        "bytes": 680,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PinkhaAnyHanlin_PinkhaHanlinUI.bundle/Info.plist",
+        "sha256": "a82a0b5e4040de1050ed873810a39e8d5da606a6045ebb413fd543322f5ee159"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PinkhaKit_PinkhaKit.bundle/Info.plist",
+        "sha256": "edbe1c655e3f0925070b8eab72378d510b3fed585aca7007abddf58c28c3f6f6"
+      },
+      {
+        "bytes": 681,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PinkhaSharing_PinkhaSharing.bundle/Info.plist",
+        "sha256": "8e6c7004ca1b1d2a58ded78829373c530d2d2868edb313708438bf735a31ff1e"
+      },
+      {
+        "bytes": 1191,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeNotificationServiceExtension.appex/Info.plist",
+        "sha256": "78d040b4f32a24d9d278de34539e62e0e2ac54c1f15a4abdc8bacff68e5e2a33"
+      },
+      {
+        "bytes": 639,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeNotificationServiceExtension.appex/Loc_Loc.bundle/Info.plist",
+        "sha256": "161e6c0b2a679d240521c2a1a1d9fe9144956a3371d1d5b51231c397c65b018d"
+      },
+      {
+        "bytes": 682,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeNotificationServiceExtension.appex/SwiftProtobuf_SwiftProtobuf.bundle/Info.plist",
+        "sha256": "dc7bc4913c00fb8e2a55cc7f5ea348482e01ebb017bb20b92e6a434b054c81f5"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeNotificationServiceExtension.appex/swift-crypto_Crypto.bundle/Info.plist",
+        "sha256": "65a435071c87c2628d5d453d0fb91ac5dd8fd8613b8b1961b098a931c7168d03"
+      },
+      {
+        "bytes": 258,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeShareExtension.appex/Base.lproj/MainInterface.storyboardc/Info.plist",
+        "sha256": "427a79a55a8bfe54424842120d866cd5504bc5f7049dfa4ecc783a5a07202e09"
+      },
+      {
+        "bytes": 1546,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeShareExtension.appex/Info.plist",
+        "sha256": "70de1657882d4d161adcecf7e6abfb2addf8e1abfc48e015b6553a1d9b78f965"
+      },
+      {
+        "bytes": 682,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeShareExtension.appex/SwiftProtobuf_SwiftProtobuf.bundle/Info.plist",
+        "sha256": "dc7bc4913c00fb8e2a55cc7f5ea348482e01ebb017bb20b92e6a434b054c81f5"
+      },
+      {
+        "bytes": 687,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Amplitude-Swift_AmplitudeSwift.bundle/Info.plist",
+        "sha256": "7920c82f9df53deb5daf9e0bf39dd24d115592b66ad37791a56e9e9fdc4195ef"
+      },
+      {
+        "bytes": 651,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Assets_Assets.bundle/Info.plist",
+        "sha256": "ae24ed40a22d068ecf11406ac50d0e86ee3b0797346a9ce6355579a29a9d0fc4"
+      },
+      {
+        "bytes": 647,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Cache_Cache.bundle/Info.plist",
+        "sha256": "75f62aafe8ebce5615d93028867d9eeddbe07b40b0ffa6e884733edbd24682b5"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/DesignKit_DesignKit.bundle/Info.plist",
+        "sha256": "219aeeb2076c38ccc53c29ce9501a884b8b3e9b1cbcd52b0746ca0b03746cbd9"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/DeviceKit_DeviceKit.bundle/Info.plist",
+        "sha256": "3562b2676ab196e0733168a10be54f9c3e7df5494343fc74ac70760bdb994460"
+      },
+      {
+        "bytes": 677,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Firebase_FirebaseCore.bundle/Info.plist",
+        "sha256": "a70ce03f9c8feb5424f079fd2a514fade2ff8d7182dc7d1ef5cde440b2d34e71"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Firebase_FirebaseCoreInternal.bundle/Info.plist",
+        "sha256": "f45442ec844c39b142db41edd2aed1192360f782fc49a27ea5512214abaf496e"
+      },
+      {
+        "bytes": 695,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Firebase_FirebaseInstallations.bundle/Info.plist",
+        "sha256": "cd6cf16efbbfe57783d55483f03a1bddb536d7431aa405f3f7066a6bb5793ab4"
+      },
+      {
+        "bytes": 687,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Firebase_FirebaseMessaging.bundle/Info.plist",
+        "sha256": "26dc5247d653e16896d073523a3d282e53c784343392dffcdccbb056aa4c6b37"
+      },
+      {
+        "bytes": 744,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/AISDKProvider.framework/Info.plist",
+        "sha256": "01caebca22188b198ea767e10ea1dba291abb4a5172079a67f53bb1d22c5a16e"
+      },
+      {
+        "bytes": 756,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/AISDKProviderUtils.framework/Info.plist",
+        "sha256": "14bfe8e2da95a83f23ce0a9ad5401525b03c6b80951b0213c5f38272f01eae9c"
+      },
+      {
+        "bytes": 750,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/AISDKZodAdapter.framework/Info.plist",
+        "sha256": "a4a9faf7866f023fab4e8ea05b6f5fddf68f654e0c2e92b272ea933cc68d4689"
+      },
+      {
+        "bytes": 786,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/AnthropicProvider_1131E7754C45D704_PackageProduct.framework/Info.plist",
+        "sha256": "adf136b1cfb8265aa7d4fd13ebb6de91c6d99b4faa58de340ce5527b380f92d0"
+      },
+      {
+        "bytes": 784,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/AnyCryptoSwift_4B7B7B8889D5B5C4_PackageProduct.framework/Info.plist",
+        "sha256": "3fe3561b1e98b78408cb3cce61650e5de13839b9e2da6fe9816977b668d48619"
+      },
+      {
+        "bytes": 739,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/AnytypeCore.framework/Info.plist",
+        "sha256": "4a338ca30dd036113998d9a12f33fea00d87855454927f5d14c527aaa68dbf37"
+      },
+      {
+        "bytes": 766,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/AppTarget_-256A0C750C206F_PackageProduct.framework/Info.plist",
+        "sha256": "b38d2f6e96c7e6b0c725d6c3d037790184b0cd948a32c80c8d2c6f383d493905"
+      },
+      {
+        "bytes": 754,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/BigInt_175F1397B99A03_PackageProduct.framework/Info.plist",
+        "sha256": "0f98a004b280213e279a916da49fee5f82dcafad9c6a3c0b78b1c4d21d86e098"
+      },
+      {
+        "bytes": 762,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/Crypto_17A3B1FFC41E47_PackageProduct.framework/Info.plist",
+        "sha256": "9dd75fb00d85fb8d147e3ee963327311eb9829522edab29c7b05943ed78f7b63"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/Crypto_17A3B1FFC41E47_PackageProduct.framework/swift-crypto_Crypto.bundle/Info.plist",
+        "sha256": "65a435071c87c2628d5d453d0fb91ac5dd8fd8613b8b1961b098a931c7168d03"
+      },
+      {
+        "bytes": 768,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/Equatable_-35D8E7FC36476C63_PackageProduct.framework/Info.plist",
+        "sha256": "e64bd897d84d24004f8debd6e89c8b92c33cdbf6de09c00d40fca49e3066f0d4"
+      },
+      {
+        "bytes": 754,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/EventSourceParser.framework/Info.plist",
+        "sha256": "1297b664288c44b0d2130aea876f8a2216711841669795e5be101cb763cf1a83"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/Factory_32A9B87E1196645F_PackageProduct.framework/Info.plist",
+        "sha256": "1a3689b22e462b89c0e7019055553b0374affa952209da8cacaa7f64a0a6092c"
+      },
+      {
+        "bytes": 781,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/GoogleProvider_-6DD8AE9F9ECCE14A_PackageProduct.framework/Info.plist",
+        "sha256": "708b9060f09364bf2984cccbefb1e18b9f6d7aec948db9db4335ec1c01518ce4"
+      },
+      {
+        "bytes": 778,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinAgentCore_-7D838ACD7D66B21F_PackageProduct.framework/Info.plist",
+        "sha256": "546dc0ef97a27d149cebdd63e2e6eb7dbf4d34752efc2123a212f3b0f117d76e"
+      },
+      {
+        "bytes": 741,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinChatCore.framework/Info.plist",
+        "sha256": "22ad9de59f60329cce5102cef310b5f3173d64a286dee6ef93056354506298bd"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinChatUI_-145D373D09E5497C_PackageProduct.framework/HanlinPresentationSDK_HanlinChatUI.bundle/Info.plist",
+        "sha256": "67c6539cae21b71396b87e3967c06d20c5d83e5f05beeb8a399f521e6a08ba41"
+      },
+      {
+        "bytes": 784,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinChatUI_-145D373D09E5497C_PackageProduct.framework/Info.plist",
+        "sha256": "340b4ef19e07a5a04997ad9f9110dde3774069ff1112f63bcb0dcde961fe2f94"
+      },
+      {
+        "bytes": 753,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinHostContracts.framework/Info.plist",
+        "sha256": "739af5cc948d0f7095aff0143e701aa8616b787f6f117b4f54e3419d7d3cd89f"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinMiniAppsBridge.framework/Info.plist",
+        "sha256": "352bd0e174c1c52b5c28003a96dfc7ec8e2d728f59c3144b050ebc18494c1a35"
+      },
+      {
+        "bytes": 702,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinMiniAppsPicker_543BCB781658C6ED_PackageProduct.framework/HanlinMiniAppsBridge_HanlinMiniAppsPicker.bundle/Info.plist",
+        "sha256": "a732f1ac5c0453449e652daac55145374f130da2a1cf1f7eb7fe97357ec56ca3"
+      },
+      {
+        "bytes": 793,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinMiniAppsPicker_543BCB781658C6ED_PackageProduct.framework/Info.plist",
+        "sha256": "af6159376d7d9c200fe3aac7cf44226e2b6e8da2f098beabb8cfdffe89e20cd8"
+      },
+      {
+        "bytes": 798,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinPersistenceAdapters_-2F7E82B1E9C686D4_PackageProduct.framework/Info.plist",
+        "sha256": "ed4b4ff8cdc3bbe81aa7848c20e1d2c50cdec0ebee08ed78b4e348f4a3f6b3b2"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinPlatformContracts.framework/Info.plist",
+        "sha256": "b07d01f613b6e1008b3b643ef160131a973cfefa536a297d478d3c7b10f3c14e"
+      },
+      {
+        "bytes": 769,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinPresentationKit.framework/Info.plist",
+        "sha256": "55e63088fbf20cca431c652641aac6bc4be6dfe01c8c58cab718c1abab0f6e1d"
+      },
+      {
+        "bytes": 678,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinScriptUI_1A54938DEE62D27B_PackageProduct.framework/HanlinPlatform_HanlinScriptUI.bundle/Info.plist",
+        "sha256": "4773509a00bccb66477118d5154f70b1f41b493a9a1b47a1898ec8a800a194b3"
+      },
+      {
+        "bytes": 775,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HanlinScriptUI_1A54938DEE62D27B_PackageProduct.framework/Info.plist",
+        "sha256": "9ac50bc0af2ccf26bfac39dd0570096bae4f32f34170cda76983cd52a4aee94a"
+      },
+      {
+        "bytes": 685,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HighlightSwift_-2F406FEDB9CAE34D_PackageProduct.framework/HighlightSwift_HighlightSwift.bundle/Info.plist",
+        "sha256": "a2976e4aebb315c9c2508738a262176a49720ebd445dfae312ea161914f51a0d"
+      },
+      {
+        "bytes": 783,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/HighlightSwift_-2F406FEDB9CAE34D_PackageProduct.framework/Info.plist",
+        "sha256": "94488bd8e572e9e9ab3d614d21788447ad5d2511262694935a37e6d29dbdfb08"
+      },
+      {
+        "bytes": 547,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/Lib.framework/Info.plist",
+        "sha256": "ca0635cbb177d233b40b5034ff7a3fda8b52270b6369d31e0798946dfba15db5"
+      },
+      {
+        "bytes": 739,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/Loc_1E069A29_PackageProduct.framework/Info.plist",
+        "sha256": "cdc5d07ea42885d639ded14ef2a1456c6fd408f629b4cc51e18c3a2b33ecef27"
+      },
+      {
+        "bytes": 639,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/Loc_1E069A29_PackageProduct.framework/Loc_Loc.bundle/Info.plist",
+        "sha256": "161e6c0b2a679d240521c2a1a1d9fe9144956a3371d1d5b51231c397c65b018d"
+      },
+      {
+        "bytes": 722,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/Logger.framework/Info.plist",
+        "sha256": "5a168dfa41b98aa52792d817a7196bc018a90eecfc778049fc53c701c1e0af88"
+      },
+      {
+        "bytes": 771,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/Markdown_-41C1F4010F78A9B5_PackageProduct.framework/Info.plist",
+        "sha256": "8dd76fe2416d4091eec1956e007049d79417ced07bd475dec851d36fd5e6fa95"
+      },
+      {
+        "bytes": 790,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/NotificationsCore_5AD5AD79262EBF4_PackageProduct.framework/Info.plist",
+        "sha256": "c4068b3d37635b58cceebe07b96b71e756e9f639df1f7d6a29b0637e7fd8979e"
+      },
+      {
+        "bytes": 801,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/OpenAICompatibleProvider_-12EEEC9CC3715281_PackageProduct.framework/Info.plist",
+        "sha256": "1c2732e35cc1114dc2082d7b33e498fb860476488fa972f4fec715fbeeebda89"
+      },
+      {
+        "bytes": 781,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/OpenAIProvider_-2301E57905F4388B_PackageProduct.framework/Info.plist",
+        "sha256": "013c7192e8637ca7ff33dd75f80346e26a91095bf0dc77c50982b7f74999bb7a"
+      },
+      {
+        "bytes": 764,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/OpenTelemetryApi.framework/Info.plist",
+        "sha256": "63b9890c6891bf8f090cf10f823fbae26ad24f68c61cac7c5d3950e2244fd921"
+      },
+      {
+        "bytes": 796,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/OpenTelemetrySdk_-BB873E213A09381_PackageProduct.framework/Info.plist",
+        "sha256": "531cd9d9e9997d46b8514b285ab2ed3f871a8eebafee8c6e3ba80bfe20525aa7"
+      },
+      {
+        "bytes": 786,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaAnyEngine_-32845DACDCEBC418_PackageProduct.framework/Info.plist",
+        "sha256": "d0850bfadd9b5278da9437d985cf3e679d8362e4aec4cfee0a8ab26a0b2c6f66"
+      },
+      {
+        "bytes": 746,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaAnyHanlin.framework/Info.plist",
+        "sha256": "339366ce665e71cd886f2a286870db45d6c744b0c6c4c5cb6c89f1a14fd6032c"
+      },
+      {
+        "bytes": 780,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaAnyHost_-37AFDC5F0CC79FD2_PackageProduct.framework/Info.plist",
+        "sha256": "83fec84f6efdb80f57fc20f57e635b807eaeeb468d5983b50b2cc054f6342473"
+      },
+      {
+        "bytes": 800,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaAnyIntegration_64B56E79D6B6D61B_PackageProduct.framework/Info.plist",
+        "sha256": "27ae52ab97859fa36e152dfde3358e2c107748f246ff3d8bba8d6ddce79c29d2"
+      },
+      {
+        "bytes": 779,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaAnyNative_-2DF43AF315B01C07_PackageProduct.framework/Info.plist",
+        "sha256": "d5751a610f5354bc21a022ef3789828d7c0f8da70bd28d7b901dfa54f2f694b0"
+      },
+      {
+        "bytes": 789,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaAnyRuntime_-4CB92FD257651F89_PackageProduct.framework/Info.plist",
+        "sha256": "d6624b60f89ca95c4cac249c7e7acf5e7c725eb0b3e2d1321db7f990c295e23c"
+      },
+      {
+        "bytes": 767,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaAnyUI_-2F3485EBA2160AD4_PackageProduct.framework/Info.plist",
+        "sha256": "7804cf6ac54eab21d629d493e005ad721428d83cc7a631af053d669968a6229b"
+      },
+      {
+        "bytes": 782,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaEngineHost_-234E37ABD108A8A1_PackageProduct.framework/Info.plist",
+        "sha256": "27dc26ea9b9378da5418d3bc51a6175a6b010294588508675e9c470297303436"
+      },
+      {
+        "bytes": 748,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaHanlinCore.framework/Info.plist",
+        "sha256": "17c5a9c56f7a656af8fd57cf3772bb495617f03ded63d3c5ddf2239f50175ea5"
+      },
+      {
+        "bytes": 776,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct.framework/Info.plist",
+        "sha256": "27e750c90f72df3d2b62ecd25ab89a2c858434b84b254689f6bb00ea29340072"
+      },
+      {
+        "bytes": 680,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct.framework/PinkhaAnyHanlin_PinkhaHanlinUI.bundle/Info.plist",
+        "sha256": "a82a0b5e4040de1050ed873810a39e8d5da606a6045ebb413fd543322f5ee159"
+      },
+      {
+        "bytes": 768,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaKit_-61E21269EE91C774_PackageProduct.framework/Info.plist",
+        "sha256": "2ea6f43e8c7701b7f8cd64cd336a88c276e43aa5cfe1d074e154d9096865a4a3"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaKit_-61E21269EE91C774_PackageProduct.framework/PinkhaKit_PinkhaKit.bundle/Info.plist",
+        "sha256": "edbe1c655e3f0925070b8eab72378d510b3fed585aca7007abddf58c28c3f6f6"
+      },
+      {
+        "bytes": 780,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaSharing_-2E95F4BACAAC84CC_PackageProduct.framework/Info.plist",
+        "sha256": "75913e4fa6d3ebbc543e8ac225fc566a911df4c47f07daae2337c8edbb17018e"
+      },
+      {
+        "bytes": 681,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaSharing_-2E95F4BACAAC84CC_PackageProduct.framework/PinkhaSharing_PinkhaSharing.bundle/Info.plist",
+        "sha256": "8e6c7004ca1b1d2a58ded78829373c530d2d2868edb313708438bf735a31ff1e"
+      },
+      {
+        "bytes": 810,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/PinkhaTorahPresentation_-6663E3BC08A48F94_PackageProduct.framework/Info.plist",
+        "sha256": "70eb7a5be56dfcfd89bd4014072d5d9bc6ad07b488d708bfaf6e8f450bc3c911"
+      },
+      {
+        "bytes": 756,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/ProtobufMessages.framework/Info.plist",
+        "sha256": "29818c875eb9e9ea2711269bfb128ea1c271d5a24fd22165421848abbd20e7f2"
+      },
+      {
+        "bytes": 745,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/SecureService.framework/Info.plist",
+        "sha256": "6e269659db9d7eae29b14be6546a11d5aa395157234d46ece7daf27d1cec1df7"
+      },
+      {
+        "bytes": 730,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/Services.framework/Info.plist",
+        "sha256": "47c489c8c99454e4ed9d1dff5edb1330d1284a88b047e6e5cd353497d2459a52"
+      },
+      {
+        "bytes": 769,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/Shimmer_3962051978DE45DC_PackageProduct.framework/Info.plist",
+        "sha256": "20d8b6e6e3a65dd9198cf414f11acf534af7fa6fd78aecc7d627370caa24b744"
+      },
+      {
+        "bytes": 772,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/SwiftAISDK_6FA7094CA5C06683_PackageProduct.framework/Info.plist",
+        "sha256": "119c4d2203f4c00bdb4d67d13fa63de20213c8a4d1959a7b9cd54c317f937358"
+      },
+      {
+        "bytes": 780,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/SwiftProtobuf_7CEE9AB92C12BC6B_PackageProduct.framework/Info.plist",
+        "sha256": "a0a8ad49678d6e57dc50a920a134d15e92b9f66d5e062f0809c5afefaba6ef38"
+      },
+      {
+        "bytes": 682,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/SwiftProtobuf_7CEE9AB92C12BC6B_PackageProduct.framework/SwiftProtobuf_SwiftProtobuf.bundle/Info.plist",
+        "sha256": "dc7bc4913c00fb8e2a55cc7f5ea348482e01ebb017bb20b92e6a434b054c81f5"
+      },
+      {
+        "bytes": 810,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/SwiftStreamingMarkdown_-504EC1C7D1AEC0F0_PackageProduct.framework/Info.plist",
+        "sha256": "6c313922c022ddf76b3bd673a4231c5c68874c0905de22a0825e4b1c67491a45"
+      },
+      {
+        "bytes": 720,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/SwiftStreamingMarkdown_-504EC1C7D1AEC0F0_PackageProduct.framework/SwiftStreamingMarkdown_SwiftStreamingMarkdown.bundle/Info.plist",
+        "sha256": "bd36116a9e4aea0558a24e60d5f89cba49de712175874e7dd1f2d27b860b64b6"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/TorahInspectorCore.framework/Info.plist",
+        "sha256": "f3b9823a4b54ee74dc22b7349ff4f8d174e7c712d9a88b5c9dd2c3675c683537"
+      },
+      {
+        "bytes": 790,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/TorahInspectorUI_-34E075219D9C2A9D_PackageProduct.framework/Info.plist",
+        "sha256": "b65112583d05c315fba1840cd993bf9a4a353a04f5907b672d7cf5e52f1ddc3b"
+      },
+      {
+        "bytes": 695,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/TorahInspectorUI_-34E075219D9C2A9D_PackageProduct.framework/TorahInspectorKit_TorahInspectorUI.bundle/Info.plist",
+        "sha256": "31e56ce7de877eed7d4355bf1c08cd1b9bb62d831369f78606775fe127dcbc59"
+      },
+      {
+        "bytes": 792,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/cmark-gfm-extensions_-5BB516D967F054FA_PackageProduct.framework/Info.plist",
+        "sha256": "f76f06828e5ae5db662593549d745e50dbe4cc74d384a3b50821ebd202d186ca"
+      },
+      {
+        "bytes": 735,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/cmark-gfm.framework/Info.plist",
+        "sha256": "73dfb1651769164a1e2e4703b3bda95258dca949d1a8920f2725ab448ac5047d"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/iosMath_44BECE163071ABDC_PackageProduct.framework/Info.plist",
+        "sha256": "fb46c1ecbc8d907d0c0c349614479235e530eb3adb74bbfe6051692a50f2962a"
+      },
+      {
+        "bytes": 657,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Frameworks/iosMath_44BECE163071ABDC_PackageProduct.framework/iosMath_iosMath.bundle/Info.plist",
+        "sha256": "7440bed3d61f286aa4d30c525d39cb9c3116ccee5d43857ffaa8b3f8258b84e5"
+      },
+      {
+        "bytes": 705,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/GoogleDataTransport_GoogleDataTransport.bundle/Info.plist",
+        "sha256": "9250238c64a091cf26e0892955eb7610ad85622826c3affd008a40822d8b616a"
+      },
+      {
+        "bytes": 729,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/GoogleUtilities_GoogleUtilities-AppDelegateSwizzler.bundle/Info.plist",
+        "sha256": "944880c26c71aff886f71426ef57a991b947a900eb314168a6fd7385aab029ef"
+      },
+      {
+        "bytes": 713,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/GoogleUtilities_GoogleUtilities-Environment.bundle/Info.plist",
+        "sha256": "cb5c528690eb7a08bf5d49a4c15003bf5069f0f487fc216187b7373f9e2da72f"
+      },
+      {
+        "bytes": 703,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/GoogleUtilities_GoogleUtilities-Logger.bundle/Info.plist",
+        "sha256": "789879be9d5c5d69764e9a835051a0f842eeeb2580d2d2be26ecf108807ff5d5"
+      },
+      {
+        "bytes": 703,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/GoogleUtilities_GoogleUtilities-NSData.bundle/Info.plist",
+        "sha256": "69a86efd33d844b3261c5e7db095aa4b42cd0af1edb687a54229d03585e3236e"
+      },
+      {
+        "bytes": 705,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/GoogleUtilities_GoogleUtilities-Network.bundle/Info.plist",
+        "sha256": "22c4fa06c1f19348cc0dd6d5e2031c5c281006ee88a916b0800373dd889ae654"
+      },
+      {
+        "bytes": 715,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/GoogleUtilities_GoogleUtilities-Reachability.bundle/Info.plist",
+        "sha256": "742461006b6208bb116d3248942758bbd9be340b9f39eedcdd38e834c6b77706"
+      },
+      {
+        "bytes": 715,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/GoogleUtilities_GoogleUtilities-UserDefaults.bundle/Info.plist",
+        "sha256": "895b7cae974773f95cda8ea2d9954061caccca3d8b3edbf72f5538c015fd16be"
+      },
+      {
+        "bytes": 692,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/HanlinAgentSDK_HanlinExactJSONSchema.bundle/Info.plist",
+        "sha256": "e0c0a8a777bea42bf5c4dc136b1589b0819d0c4538321a0d3b6f7f4e91adae2d"
+      },
+      {
+        "bytes": 702,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/HanlinMiniAppsBridge_HanlinMiniAppsPicker.bundle/Info.plist",
+        "sha256": "a732f1ac5c0453449e652daac55145374f130da2a1cf1f7eb7fe97357ec56ca3"
+      },
+      {
+        "bytes": 696,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/HanlinPlatform_HanlinPlatformContracts.bundle/Info.plist",
+        "sha256": "3791c08325baefe177152857b11d2f6dd1612f56b2f2de376c8b563376d01080"
+      },
+      {
+        "bytes": 692,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/HanlinPlatform_HanlinScriptContracts.bundle/Info.plist",
+        "sha256": "87b9ffc9738e48ccdfe18828639b51544600ebb3d6287522f6e8803a0ac69925"
+      },
+      {
+        "bytes": 678,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/HanlinPlatform_HanlinScriptUI.bundle/Info.plist",
+        "sha256": "4773509a00bccb66477118d5154f70b1f41b493a9a1b47a1898ec8a800a194b3"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/HanlinPresentationSDK_HanlinChatUI.bundle/Info.plist",
+        "sha256": "67c6539cae21b71396b87e3967c06d20c5d83e5f05beeb8a399f521e6a08ba41"
+      },
+      {
+        "bytes": 705,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/HanlinPresentationSDK_HanlinLocalization.bundle/Info.plist",
+        "sha256": "61b0251177713a5b889bcab6440f481b7ee9b6d951ce1d6fc97fd2fea9139a39"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/HanlinPresentationSDK_HanlinRichUI.bundle/Info.plist",
+        "sha256": "5053d94351fdf6481d77fc81a9871ee4527d950b03d8c00262e22c9626366e7e"
+      },
+      {
+        "bytes": 685,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/HighlightSwift_HighlightSwift.bundle/Info.plist",
+        "sha256": "a2976e4aebb315c9c2508738a262176a49720ebd445dfae312ea161914f51a0d"
+      },
+      {
+        "bytes": 669,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Highlightr_Highlightr.bundle/Info.plist",
+        "sha256": "4067386eef344544be81de22e9ec55fb7abbbc41e693bf7fcb7e0db249a2d40f"
+      },
+      {
+        "bytes": 703,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Info.plist",
+        "sha256": "91839c417fc05753de3d4571af6fdb67f56ac1aeb305836563b1d89301dd5f8a"
+      },
+      {
+        "bytes": 669,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Kingfisher_Kingfisher.bundle/Info.plist",
+        "sha256": "752ce3023a4d2b1eb359d03a3e6d39176e0a560f310925c007da443b5f914151"
+      },
+      {
+        "bytes": 639,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Loc_Loc.bundle/Info.plist",
+        "sha256": "161e6c0b2a679d240521c2a1a1d9fe9144956a3371d1d5b51231c397c65b018d"
+      },
+      {
+        "bytes": 680,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/PinkhaAnyHanlin_PinkhaHanlinUI.bundle/Info.plist",
+        "sha256": "a82a0b5e4040de1050ed873810a39e8d5da606a6045ebb413fd543322f5ee159"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/PinkhaKit_PinkhaKit.bundle/Info.plist",
+        "sha256": "edbe1c655e3f0925070b8eab72378d510b3fed585aca7007abddf58c28c3f6f6"
+      },
+      {
+        "bytes": 681,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/PinkhaSharing_PinkhaSharing.bundle/Info.plist",
+        "sha256": "8e6c7004ca1b1d2a58ded78829373c530d2d2868edb313708438bf735a31ff1e"
+      },
+      {
+        "bytes": 667,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/Promises_FBLPromises.bundle/Info.plist",
+        "sha256": "df60221331b8bb97cc047f3fd49bb1ea3697cafad124d7a2ef813ad75791ca0f"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/ProtobufMessages_ProtobufMessages.bundle/Info.plist",
+        "sha256": "1480c9cfa5c5de9a89d528e581c3e48682a04e3f31e6fab0b4b318614fe30b5d"
+      },
+      {
+        "bytes": 651,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/QRCode_QRCode.bundle/Info.plist",
+        "sha256": "032256fc8a3b29b315ddcd2045e52b0f4d4860e3983697b9fb8cac8619e2d195"
+      },
+      {
+        "bytes": 705,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/SwiftImageReadWrite_SwiftImageReadWrite.bundle/Info.plist",
+        "sha256": "a40b7d6db6e7da1ec4754cfef4be8ca4f9767d144dff2d706f63c7c9737ccb57"
+      },
+      {
+        "bytes": 682,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/SwiftProtobuf_SwiftProtobuf.bundle/Info.plist",
+        "sha256": "dc7bc4913c00fb8e2a55cc7f5ea348482e01ebb017bb20b92e6a434b054c81f5"
+      },
+      {
+        "bytes": 720,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/SwiftStreamingMarkdown_SwiftStreamingMarkdown.bundle/Info.plist",
+        "sha256": "bd36116a9e4aea0558a24e60d5f89cba49de712175874e7dd1f2d27b860b64b6"
+      },
+      {
+        "bytes": 695,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/TorahInspectorKit_TorahInspectorUI.bundle/Info.plist",
+        "sha256": "31e56ce7de877eed7d4355bf1c08cd1b9bb62d831369f78606775fe127dcbc59"
+      },
+      {
+        "bytes": 681,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/ZIPFoundation_ZIPFoundation.bundle/Info.plist",
+        "sha256": "36fbe1237b0dd950d6eec6dc72de6d9a315a339639bb8f729d9a03df53cdf14e"
+      },
+      {
+        "bytes": 657,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/iosMath_iosMath.bundle/Info.plist",
+        "sha256": "7440bed3d61f286aa4d30c525d39cb9c3116ccee5d43857ffaa8b3f8258b84e5"
+      },
+      {
+        "bytes": 651,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/nanopb_nanopb.bundle/Info.plist",
+        "sha256": "57b11e904c2fe5daa66653ebada0c3de8e095e9a0954b1e9edf6c8bf84ce96a1"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeTests.xctest/swift-crypto_Crypto.bundle/Info.plist",
+        "sha256": "65a435071c87c2628d5d453d0fb91ac5dd8fd8613b8b1961b098a931c7168d03"
+      },
+      {
+        "bytes": 1048,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeWidgetExtension.appex/Info.plist",
+        "sha256": "7397fc2bb7ec33a48de3676621e2d3f2112e39d7fc49070eca6f6d45a995e310"
+      },
+      {
+        "bytes": 639,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/PlugIns/AnytypeWidgetExtension.appex/Loc_Loc.bundle/Info.plist",
+        "sha256": "161e6c0b2a679d240521c2a1a1d9fe9144956a3371d1d5b51231c397c65b018d"
+      },
+      {
+        "bytes": 667,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/Promises_FBLPromises.bundle/Info.plist",
+        "sha256": "df60221331b8bb97cc047f3fd49bb1ea3697cafad124d7a2ef813ad75791ca0f"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/ProtobufMessages_ProtobufMessages.bundle/Info.plist",
+        "sha256": "1480c9cfa5c5de9a89d528e581c3e48682a04e3f31e6fab0b4b318614fe30b5d"
+      },
+      {
+        "bytes": 651,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/QRCode_QRCode.bundle/Info.plist",
+        "sha256": "032256fc8a3b29b315ddcd2045e52b0f4d4860e3983697b9fb8cac8619e2d195"
+      },
+      {
+        "bytes": 705,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/SwiftImageReadWrite_SwiftImageReadWrite.bundle/Info.plist",
+        "sha256": "a40b7d6db6e7da1ec4754cfef4be8ca4f9767d144dff2d706f63c7c9737ccb57"
+      },
+      {
+        "bytes": 682,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/SwiftProtobuf_SwiftProtobuf.bundle/Info.plist",
+        "sha256": "dc7bc4913c00fb8e2a55cc7f5ea348482e01ebb017bb20b92e6a434b054c81f5"
+      },
+      {
+        "bytes": 720,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/SwiftStreamingMarkdown_SwiftStreamingMarkdown.bundle/Info.plist",
+        "sha256": "bd36116a9e4aea0558a24e60d5f89cba49de712175874e7dd1f2d27b860b64b6"
+      },
+      {
+        "bytes": 695,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/TorahInspectorKit_TorahInspectorUI.bundle/Info.plist",
+        "sha256": "31e56ce7de877eed7d4355bf1c08cd1b9bb62d831369f78606775fe127dcbc59"
+      },
+      {
+        "bytes": 681,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/ZIPFoundation_ZIPFoundation.bundle/Info.plist",
+        "sha256": "36fbe1237b0dd950d6eec6dc72de6d9a315a339639bb8f729d9a03df53cdf14e"
+      },
+      {
+        "bytes": 657,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/iosMath_iosMath.bundle/Info.plist",
+        "sha256": "7440bed3d61f286aa4d30c525d39cb9c3116ccee5d43857ffaa8b3f8258b84e5"
+      },
+      {
+        "bytes": 651,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/nanopb_nanopb.bundle/Info.plist",
+        "sha256": "57b11e904c2fe5daa66653ebada0c3de8e095e9a0954b1e9edf6c8bf84ce96a1"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Anytype.app/swift-crypto_Crypto.bundle/Info.plist",
+        "sha256": "65a435071c87c2628d5d453d0fb91ac5dd8fd8613b8b1961b098a931c7168d03"
+      },
+      {
+        "bytes": 766,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeCoreTests.xctest/Frameworks/AppTarget_-256A0C750C206F_PackageProduct.framework/Info.plist",
+        "sha256": "b38d2f6e96c7e6b0c725d6c3d037790184b0cd948a32c80c8d2c6f383d493905"
+      },
+      {
+        "bytes": 780,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeCoreTests.xctest/Frameworks/SwiftProtobuf_7CEE9AB92C12BC6B_PackageProduct.framework/Info.plist",
+        "sha256": "a0a8ad49678d6e57dc50a920a134d15e92b9f66d5e062f0809c5afefaba6ef38"
+      },
+      {
+        "bytes": 682,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeCoreTests.xctest/Frameworks/SwiftProtobuf_7CEE9AB92C12BC6B_PackageProduct.framework/SwiftProtobuf_SwiftProtobuf.bundle/Info.plist",
+        "sha256": "dc7bc4913c00fb8e2a55cc7f5ea348482e01ebb017bb20b92e6a434b054c81f5"
+      },
+      {
+        "bytes": 686,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeCoreTests.xctest/Info.plist",
+        "sha256": "7dc946895e0896f2a77214653bac6767d3eed6f3bca83251c60461c95656e9c9"
+      },
+      {
+        "bytes": 682,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeCoreTests.xctest/SwiftProtobuf_SwiftProtobuf.bundle/Info.plist",
+        "sha256": "dc7bc4913c00fb8e2a55cc7f5ea348482e01ebb017bb20b92e6a434b054c81f5"
+      },
+      {
+        "bytes": 1191,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeNotificationServiceExtension.appex/Info.plist",
+        "sha256": "78d040b4f32a24d9d278de34539e62e0e2ac54c1f15a4abdc8bacff68e5e2a33"
+      },
+      {
+        "bytes": 639,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeNotificationServiceExtension.appex/Loc_Loc.bundle/Info.plist",
+        "sha256": "161e6c0b2a679d240521c2a1a1d9fe9144956a3371d1d5b51231c397c65b018d"
+      },
+      {
+        "bytes": 682,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeNotificationServiceExtension.appex/SwiftProtobuf_SwiftProtobuf.bundle/Info.plist",
+        "sha256": "dc7bc4913c00fb8e2a55cc7f5ea348482e01ebb017bb20b92e6a434b054c81f5"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeNotificationServiceExtension.appex/swift-crypto_Crypto.bundle/Info.plist",
+        "sha256": "65a435071c87c2628d5d453d0fb91ac5dd8fd8613b8b1961b098a931c7168d03"
+      },
+      {
+        "bytes": 675,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeNotificationServiceExtension.appex.dSYM/Contents/Info.plist",
+        "sha256": "38ceb6fc9956627ee8527d7120d9c58cbe3ec65997c4db184b399fa385ddf1e5"
+      },
+      {
+        "bytes": 258,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeShareExtension.appex/Base.lproj/MainInterface.storyboardc/Info.plist",
+        "sha256": "427a79a55a8bfe54424842120d866cd5504bc5f7049dfa4ecc783a5a07202e09"
+      },
+      {
+        "bytes": 1546,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeShareExtension.appex/Info.plist",
+        "sha256": "70de1657882d4d161adcecf7e6abfb2addf8e1abfc48e015b6553a1d9b78f965"
+      },
+      {
+        "bytes": 682,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeShareExtension.appex/SwiftProtobuf_SwiftProtobuf.bundle/Info.plist",
+        "sha256": "dc7bc4913c00fb8e2a55cc7f5ea348482e01ebb017bb20b92e6a434b054c81f5"
+      },
+      {
+        "bytes": 1048,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeWidgetExtension.appex/Info.plist",
+        "sha256": "7397fc2bb7ec33a48de3676621e2d3f2112e39d7fc49070eca6f6d45a995e310"
+      },
+      {
+        "bytes": 639,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/AnytypeWidgetExtension.appex/Loc_Loc.bundle/Info.plist",
+        "sha256": "161e6c0b2a679d240521c2a1a1d9fe9144956a3371d1d5b51231c397c65b018d"
+      },
+      {
+        "bytes": 651,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Assets_Assets.bundle/Info.plist",
+        "sha256": "ae24ed40a22d068ecf11406ac50d0e86ee3b0797346a9ce6355579a29a9d0fc4"
+      },
+      {
+        "bytes": 647,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Cache_Cache.bundle/Info.plist",
+        "sha256": "75f62aafe8ebce5615d93028867d9eeddbe07b40b0ffa6e884733edbd24682b5"
+      },
+      {
+        "bytes": 766,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/DeepLinksTests.xctest/Frameworks/AppTarget_-256A0C750C206F_PackageProduct.framework/Info.plist",
+        "sha256": "b38d2f6e96c7e6b0c725d6c3d037790184b0cd948a32c80c8d2c6f383d493905"
+      },
+      {
+        "bytes": 678,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/DeepLinksTests.xctest/Info.plist",
+        "sha256": "5ad80aef591e08c520085e996be0cd44c458a2abf9017717ee94f5e883db7dc3"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/DesignKit_DesignKit.bundle/Info.plist",
+        "sha256": "219aeeb2076c38ccc53c29ce9501a884b8b3e9b1cbcd52b0746ca0b03746cbd9"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/DeviceKit_DeviceKit.bundle/Info.plist",
+        "sha256": "3562b2676ab196e0733168a10be54f9c3e7df5494343fc74ac70760bdb994460"
+      },
+      {
+        "bytes": 677,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Firebase_FirebaseCore.bundle/Info.plist",
+        "sha256": "a70ce03f9c8feb5424f079fd2a514fade2ff8d7182dc7d1ef5cde440b2d34e71"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Firebase_FirebaseCoreInternal.bundle/Info.plist",
+        "sha256": "f45442ec844c39b142db41edd2aed1192360f782fc49a27ea5512214abaf496e"
+      },
+      {
+        "bytes": 695,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Firebase_FirebaseInstallations.bundle/Info.plist",
+        "sha256": "cd6cf16efbbfe57783d55483f03a1bddb536d7431aa405f3f7066a6bb5793ab4"
+      },
+      {
+        "bytes": 687,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Firebase_FirebaseMessaging.bundle/Info.plist",
+        "sha256": "26dc5247d653e16896d073523a3d282e53c784343392dffcdccbb056aa4c6b37"
+      },
+      {
+        "bytes": 705,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/GoogleDataTransport_GoogleDataTransport.bundle/Info.plist",
+        "sha256": "9250238c64a091cf26e0892955eb7610ad85622826c3affd008a40822d8b616a"
+      },
+      {
+        "bytes": 729,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/GoogleUtilities_GoogleUtilities-AppDelegateSwizzler.bundle/Info.plist",
+        "sha256": "944880c26c71aff886f71426ef57a991b947a900eb314168a6fd7385aab029ef"
+      },
+      {
+        "bytes": 713,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/GoogleUtilities_GoogleUtilities-Environment.bundle/Info.plist",
+        "sha256": "cb5c528690eb7a08bf5d49a4c15003bf5069f0f487fc216187b7373f9e2da72f"
+      },
+      {
+        "bytes": 703,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/GoogleUtilities_GoogleUtilities-Logger.bundle/Info.plist",
+        "sha256": "789879be9d5c5d69764e9a835051a0f842eeeb2580d2d2be26ecf108807ff5d5"
+      },
+      {
+        "bytes": 703,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/GoogleUtilities_GoogleUtilities-NSData.bundle/Info.plist",
+        "sha256": "69a86efd33d844b3261c5e7db095aa4b42cd0af1edb687a54229d03585e3236e"
+      },
+      {
+        "bytes": 705,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/GoogleUtilities_GoogleUtilities-Network.bundle/Info.plist",
+        "sha256": "22c4fa06c1f19348cc0dd6d5e2031c5c281006ee88a916b0800373dd889ae654"
+      },
+      {
+        "bytes": 715,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/GoogleUtilities_GoogleUtilities-Reachability.bundle/Info.plist",
+        "sha256": "742461006b6208bb116d3248942758bbd9be340b9f39eedcdd38e834c6b77706"
+      },
+      {
+        "bytes": 715,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/GoogleUtilities_GoogleUtilities-UserDefaults.bundle/Info.plist",
+        "sha256": "895b7cae974773f95cda8ea2d9954061caccca3d8b3edbf72f5538c015fd16be"
+      },
+      {
+        "bytes": 692,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/HanlinAgentSDK_HanlinExactJSONSchema.bundle/Info.plist",
+        "sha256": "e0c0a8a777bea42bf5c4dc136b1589b0819d0c4538321a0d3b6f7f4e91adae2d"
+      },
+      {
+        "bytes": 702,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/HanlinMiniAppsBridge_HanlinMiniAppsPicker.bundle/Info.plist",
+        "sha256": "a732f1ac5c0453449e652daac55145374f130da2a1cf1f7eb7fe97357ec56ca3"
+      },
+      {
+        "bytes": 696,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/HanlinPlatform_HanlinPlatformContracts.bundle/Info.plist",
+        "sha256": "3791c08325baefe177152857b11d2f6dd1612f56b2f2de376c8b563376d01080"
+      },
+      {
+        "bytes": 692,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/HanlinPlatform_HanlinScriptContracts.bundle/Info.plist",
+        "sha256": "87b9ffc9738e48ccdfe18828639b51544600ebb3d6287522f6e8803a0ac69925"
+      },
+      {
+        "bytes": 678,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/HanlinPlatform_HanlinScriptUI.bundle/Info.plist",
+        "sha256": "4773509a00bccb66477118d5154f70b1f41b493a9a1b47a1898ec8a800a194b3"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/HanlinPresentationSDK_HanlinChatUI.bundle/Info.plist",
+        "sha256": "67c6539cae21b71396b87e3967c06d20c5d83e5f05beeb8a399f521e6a08ba41"
+      },
+      {
+        "bytes": 705,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/HanlinPresentationSDK_HanlinLocalization.bundle/Info.plist",
+        "sha256": "61b0251177713a5b889bcab6440f481b7ee9b6d951ce1d6fc97fd2fea9139a39"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/HanlinPresentationSDK_HanlinRichUI.bundle/Info.plist",
+        "sha256": "5053d94351fdf6481d77fc81a9871ee4527d950b03d8c00262e22c9626366e7e"
+      },
+      {
+        "bytes": 685,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/HighlightSwift_HighlightSwift.bundle/Info.plist",
+        "sha256": "a2976e4aebb315c9c2508738a262176a49720ebd445dfae312ea161914f51a0d"
+      },
+      {
+        "bytes": 669,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Highlightr_Highlightr.bundle/Info.plist",
+        "sha256": "4067386eef344544be81de22e9ec55fb7abbbc41e693bf7fcb7e0db249a2d40f"
+      },
+      {
+        "bytes": 669,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Kingfisher_Kingfisher.bundle/Info.plist",
+        "sha256": "752ce3023a4d2b1eb359d03a3e6d39176e0a560f310925c007da443b5f914151"
+      },
+      {
+        "bytes": 547,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Lib.framework/Info.plist",
+        "sha256": "ca0635cbb177d233b40b5034ff7a3fda8b52270b6369d31e0798946dfba15db5"
+      },
+      {
+        "bytes": 639,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Loc_Loc.bundle/Info.plist",
+        "sha256": "161e6c0b2a679d240521c2a1a1d9fe9144956a3371d1d5b51231c397c65b018d"
+      },
+      {
+        "bytes": 744,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/AISDKProvider.framework/Info.plist",
+        "sha256": "01caebca22188b198ea767e10ea1dba291abb4a5172079a67f53bb1d22c5a16e"
+      },
+      {
+        "bytes": 756,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/AISDKProviderUtils.framework/Info.plist",
+        "sha256": "14bfe8e2da95a83f23ce0a9ad5401525b03c6b80951b0213c5f38272f01eae9c"
+      },
+      {
+        "bytes": 750,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/AISDKZodAdapter.framework/Info.plist",
+        "sha256": "a4a9faf7866f023fab4e8ea05b6f5fddf68f654e0c2e92b272ea933cc68d4689"
+      },
+      {
+        "bytes": 786,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/AnthropicProvider_1131E7754C45D704_PackageProduct.framework/Info.plist",
+        "sha256": "adf136b1cfb8265aa7d4fd13ebb6de91c6d99b4faa58de340ce5527b380f92d0"
+      },
+      {
+        "bytes": 784,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/AnyCryptoSwift_4B7B7B8889D5B5C4_PackageProduct.framework/Info.plist",
+        "sha256": "3fe3561b1e98b78408cb3cce61650e5de13839b9e2da6fe9816977b668d48619"
+      },
+      {
+        "bytes": 739,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/AnytypeCore.framework/Info.plist",
+        "sha256": "4a338ca30dd036113998d9a12f33fea00d87855454927f5d14c527aaa68dbf37"
+      },
+      {
+        "bytes": 766,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/AppTarget_-256A0C750C206F_PackageProduct.framework/Info.plist",
+        "sha256": "b38d2f6e96c7e6b0c725d6c3d037790184b0cd948a32c80c8d2c6f383d493905"
+      },
+      {
+        "bytes": 754,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/BigInt_175F1397B99A03_PackageProduct.framework/Info.plist",
+        "sha256": "0f98a004b280213e279a916da49fee5f82dcafad9c6a3c0b78b1c4d21d86e098"
+      },
+      {
+        "bytes": 762,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Crypto_17A3B1FFC41E47_PackageProduct.framework/Info.plist",
+        "sha256": "9dd75fb00d85fb8d147e3ee963327311eb9829522edab29c7b05943ed78f7b63"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Crypto_17A3B1FFC41E47_PackageProduct.framework/swift-crypto_Crypto.bundle/Info.plist",
+        "sha256": "65a435071c87c2628d5d453d0fb91ac5dd8fd8613b8b1961b098a931c7168d03"
+      },
+      {
+        "bytes": 768,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Equatable_-35D8E7FC36476C63_PackageProduct.framework/Info.plist",
+        "sha256": "e64bd897d84d24004f8debd6e89c8b92c33cdbf6de09c00d40fca49e3066f0d4"
+      },
+      {
+        "bytes": 754,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/EventSourceParser.framework/Info.plist",
+        "sha256": "1297b664288c44b0d2130aea876f8a2216711841669795e5be101cb763cf1a83"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Factory_32A9B87E1196645F_PackageProduct.framework/Info.plist",
+        "sha256": "1a3689b22e462b89c0e7019055553b0374affa952209da8cacaa7f64a0a6092c"
+      },
+      {
+        "bytes": 781,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/GoogleProvider_-6DD8AE9F9ECCE14A_PackageProduct.framework/Info.plist",
+        "sha256": "708b9060f09364bf2984cccbefb1e18b9f6d7aec948db9db4335ec1c01518ce4"
+      },
+      {
+        "bytes": 778,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinAgentCore_-7D838ACD7D66B21F_PackageProduct.framework/Info.plist",
+        "sha256": "546dc0ef97a27d149cebdd63e2e6eb7dbf4d34752efc2123a212f3b0f117d76e"
+      },
+      {
+        "bytes": 741,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinChatCore.framework/Info.plist",
+        "sha256": "22ad9de59f60329cce5102cef310b5f3173d64a286dee6ef93056354506298bd"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinChatUI_-145D373D09E5497C_PackageProduct.framework/HanlinPresentationSDK_HanlinChatUI.bundle/Info.plist",
+        "sha256": "67c6539cae21b71396b87e3967c06d20c5d83e5f05beeb8a399f521e6a08ba41"
+      },
+      {
+        "bytes": 784,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinChatUI_-145D373D09E5497C_PackageProduct.framework/Info.plist",
+        "sha256": "340b4ef19e07a5a04997ad9f9110dde3774069ff1112f63bcb0dcde961fe2f94"
+      },
+      {
+        "bytes": 753,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinHostContracts.framework/Info.plist",
+        "sha256": "739af5cc948d0f7095aff0143e701aa8616b787f6f117b4f54e3419d7d3cd89f"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinMiniAppsBridge.framework/Info.plist",
+        "sha256": "352bd0e174c1c52b5c28003a96dfc7ec8e2d728f59c3144b050ebc18494c1a35"
+      },
+      {
+        "bytes": 702,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinMiniAppsPicker_543BCB781658C6ED_PackageProduct.framework/HanlinMiniAppsBridge_HanlinMiniAppsPicker.bundle/Info.plist",
+        "sha256": "a732f1ac5c0453449e652daac55145374f130da2a1cf1f7eb7fe97357ec56ca3"
+      },
+      {
+        "bytes": 793,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinMiniAppsPicker_543BCB781658C6ED_PackageProduct.framework/Info.plist",
+        "sha256": "af6159376d7d9c200fe3aac7cf44226e2b6e8da2f098beabb8cfdffe89e20cd8"
+      },
+      {
+        "bytes": 798,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinPersistenceAdapters_-2F7E82B1E9C686D4_PackageProduct.framework/Info.plist",
+        "sha256": "ed4b4ff8cdc3bbe81aa7848c20e1d2c50cdec0ebee08ed78b4e348f4a3f6b3b2"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinPlatformContracts.framework/Info.plist",
+        "sha256": "b07d01f613b6e1008b3b643ef160131a973cfefa536a297d478d3c7b10f3c14e"
+      },
+      {
+        "bytes": 769,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinPresentationKit.framework/Info.plist",
+        "sha256": "55e63088fbf20cca431c652641aac6bc4be6dfe01c8c58cab718c1abab0f6e1d"
+      },
+      {
+        "bytes": 678,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinScriptUI_1A54938DEE62D27B_PackageProduct.framework/HanlinPlatform_HanlinScriptUI.bundle/Info.plist",
+        "sha256": "4773509a00bccb66477118d5154f70b1f41b493a9a1b47a1898ec8a800a194b3"
+      },
+      {
+        "bytes": 775,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinScriptUI_1A54938DEE62D27B_PackageProduct.framework/Info.plist",
+        "sha256": "9ac50bc0af2ccf26bfac39dd0570096bae4f32f34170cda76983cd52a4aee94a"
+      },
+      {
+        "bytes": 685,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HighlightSwift_-2F406FEDB9CAE34D_PackageProduct.framework/HighlightSwift_HighlightSwift.bundle/Info.plist",
+        "sha256": "a2976e4aebb315c9c2508738a262176a49720ebd445dfae312ea161914f51a0d"
+      },
+      {
+        "bytes": 783,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HighlightSwift_-2F406FEDB9CAE34D_PackageProduct.framework/Info.plist",
+        "sha256": "94488bd8e572e9e9ab3d614d21788447ad5d2511262694935a37e6d29dbdfb08"
+      },
+      {
+        "bytes": 547,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Lib.framework/Info.plist",
+        "sha256": "ca0635cbb177d233b40b5034ff7a3fda8b52270b6369d31e0798946dfba15db5"
+      },
+      {
+        "bytes": 739,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Loc_1E069A29_PackageProduct.framework/Info.plist",
+        "sha256": "cdc5d07ea42885d639ded14ef2a1456c6fd408f629b4cc51e18c3a2b33ecef27"
+      },
+      {
+        "bytes": 639,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Loc_1E069A29_PackageProduct.framework/Loc_Loc.bundle/Info.plist",
+        "sha256": "161e6c0b2a679d240521c2a1a1d9fe9144956a3371d1d5b51231c397c65b018d"
+      },
+      {
+        "bytes": 722,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Logger.framework/Info.plist",
+        "sha256": "5a168dfa41b98aa52792d817a7196bc018a90eecfc778049fc53c701c1e0af88"
+      },
+      {
+        "bytes": 771,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Markdown_-41C1F4010F78A9B5_PackageProduct.framework/Info.plist",
+        "sha256": "8dd76fe2416d4091eec1956e007049d79417ced07bd475dec851d36fd5e6fa95"
+      },
+      {
+        "bytes": 790,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/NotificationsCore_5AD5AD79262EBF4_PackageProduct.framework/Info.plist",
+        "sha256": "c4068b3d37635b58cceebe07b96b71e756e9f639df1f7d6a29b0637e7fd8979e"
+      },
+      {
+        "bytes": 801,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/OpenAICompatibleProvider_-12EEEC9CC3715281_PackageProduct.framework/Info.plist",
+        "sha256": "1c2732e35cc1114dc2082d7b33e498fb860476488fa972f4fec715fbeeebda89"
+      },
+      {
+        "bytes": 781,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/OpenAIProvider_-2301E57905F4388B_PackageProduct.framework/Info.plist",
+        "sha256": "013c7192e8637ca7ff33dd75f80346e26a91095bf0dc77c50982b7f74999bb7a"
+      },
+      {
+        "bytes": 764,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/OpenTelemetryApi.framework/Info.plist",
+        "sha256": "63b9890c6891bf8f090cf10f823fbae26ad24f68c61cac7c5d3950e2244fd921"
+      },
+      {
+        "bytes": 796,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/OpenTelemetrySdk_-BB873E213A09381_PackageProduct.framework/Info.plist",
+        "sha256": "531cd9d9e9997d46b8514b285ab2ed3f871a8eebafee8c6e3ba80bfe20525aa7"
+      },
+      {
+        "bytes": 786,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaAnyEngine_-32845DACDCEBC418_PackageProduct.framework/Info.plist",
+        "sha256": "d0850bfadd9b5278da9437d985cf3e679d8362e4aec4cfee0a8ab26a0b2c6f66"
+      },
+      {
+        "bytes": 746,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaAnyHanlin.framework/Info.plist",
+        "sha256": "339366ce665e71cd886f2a286870db45d6c744b0c6c4c5cb6c89f1a14fd6032c"
+      },
+      {
+        "bytes": 780,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaAnyHost_-37AFDC5F0CC79FD2_PackageProduct.framework/Info.plist",
+        "sha256": "83fec84f6efdb80f57fc20f57e635b807eaeeb468d5983b50b2cc054f6342473"
+      },
+      {
+        "bytes": 800,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaAnyIntegration_64B56E79D6B6D61B_PackageProduct.framework/Info.plist",
+        "sha256": "27ae52ab97859fa36e152dfde3358e2c107748f246ff3d8bba8d6ddce79c29d2"
+      },
+      {
+        "bytes": 779,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaAnyNative_-2DF43AF315B01C07_PackageProduct.framework/Info.plist",
+        "sha256": "d5751a610f5354bc21a022ef3789828d7c0f8da70bd28d7b901dfa54f2f694b0"
+      },
+      {
+        "bytes": 789,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaAnyRuntime_-4CB92FD257651F89_PackageProduct.framework/Info.plist",
+        "sha256": "d6624b60f89ca95c4cac249c7e7acf5e7c725eb0b3e2d1321db7f990c295e23c"
+      },
+      {
+        "bytes": 767,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaAnyUI_-2F3485EBA2160AD4_PackageProduct.framework/Info.plist",
+        "sha256": "7804cf6ac54eab21d629d493e005ad721428d83cc7a631af053d669968a6229b"
+      },
+      {
+        "bytes": 782,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaEngineHost_-234E37ABD108A8A1_PackageProduct.framework/Info.plist",
+        "sha256": "27dc26ea9b9378da5418d3bc51a6175a6b010294588508675e9c470297303436"
+      },
+      {
+        "bytes": 748,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaHanlinCore.framework/Info.plist",
+        "sha256": "17c5a9c56f7a656af8fd57cf3772bb495617f03ded63d3c5ddf2239f50175ea5"
+      },
+      {
+        "bytes": 776,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct.framework/Info.plist",
+        "sha256": "27e750c90f72df3d2b62ecd25ab89a2c858434b84b254689f6bb00ea29340072"
+      },
+      {
+        "bytes": 680,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct.framework/PinkhaAnyHanlin_PinkhaHanlinUI.bundle/Info.plist",
+        "sha256": "a82a0b5e4040de1050ed873810a39e8d5da606a6045ebb413fd543322f5ee159"
+      },
+      {
+        "bytes": 768,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaKit_-61E21269EE91C774_PackageProduct.framework/Info.plist",
+        "sha256": "2ea6f43e8c7701b7f8cd64cd336a88c276e43aa5cfe1d074e154d9096865a4a3"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaKit_-61E21269EE91C774_PackageProduct.framework/PinkhaKit_PinkhaKit.bundle/Info.plist",
+        "sha256": "edbe1c655e3f0925070b8eab72378d510b3fed585aca7007abddf58c28c3f6f6"
+      },
+      {
+        "bytes": 780,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaSharing_-2E95F4BACAAC84CC_PackageProduct.framework/Info.plist",
+        "sha256": "75913e4fa6d3ebbc543e8ac225fc566a911df4c47f07daae2337c8edbb17018e"
+      },
+      {
+        "bytes": 681,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaSharing_-2E95F4BACAAC84CC_PackageProduct.framework/PinkhaSharing_PinkhaSharing.bundle/Info.plist",
+        "sha256": "8e6c7004ca1b1d2a58ded78829373c530d2d2868edb313708438bf735a31ff1e"
+      },
+      {
+        "bytes": 810,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaTorahPresentation_-6663E3BC08A48F94_PackageProduct.framework/Info.plist",
+        "sha256": "70eb7a5be56dfcfd89bd4014072d5d9bc6ad07b488d708bfaf6e8f450bc3c911"
+      },
+      {
+        "bytes": 756,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/ProtobufMessages.framework/Info.plist",
+        "sha256": "29818c875eb9e9ea2711269bfb128ea1c271d5a24fd22165421848abbd20e7f2"
+      },
+      {
+        "bytes": 745,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/SecureService.framework/Info.plist",
+        "sha256": "6e269659db9d7eae29b14be6546a11d5aa395157234d46ece7daf27d1cec1df7"
+      },
+      {
+        "bytes": 730,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Services.framework/Info.plist",
+        "sha256": "47c489c8c99454e4ed9d1dff5edb1330d1284a88b047e6e5cd353497d2459a52"
+      },
+      {
+        "bytes": 768,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/SharedContentManager.framework/Info.plist",
+        "sha256": "26f066492c3a2bd73921e1b843a9812d75698f5d15b61227d750196872dd9824"
+      },
+      {
+        "bytes": 769,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Shimmer_3962051978DE45DC_PackageProduct.framework/Info.plist",
+        "sha256": "20d8b6e6e3a65dd9198cf414f11acf534af7fa6fd78aecc7d627370caa24b744"
+      },
+      {
+        "bytes": 772,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/SwiftAISDK_6FA7094CA5C06683_PackageProduct.framework/Info.plist",
+        "sha256": "119c4d2203f4c00bdb4d67d13fa63de20213c8a4d1959a7b9cd54c317f937358"
+      },
+      {
+        "bytes": 780,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/SwiftProtobuf_7CEE9AB92C12BC6B_PackageProduct.framework/Info.plist",
+        "sha256": "a0a8ad49678d6e57dc50a920a134d15e92b9f66d5e062f0809c5afefaba6ef38"
+      },
+      {
+        "bytes": 682,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/SwiftProtobuf_7CEE9AB92C12BC6B_PackageProduct.framework/SwiftProtobuf_SwiftProtobuf.bundle/Info.plist",
+        "sha256": "dc7bc4913c00fb8e2a55cc7f5ea348482e01ebb017bb20b92e6a434b054c81f5"
+      },
+      {
+        "bytes": 810,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/SwiftStreamingMarkdown_-504EC1C7D1AEC0F0_PackageProduct.framework/Info.plist",
+        "sha256": "6c313922c022ddf76b3bd673a4231c5c68874c0905de22a0825e4b1c67491a45"
+      },
+      {
+        "bytes": 720,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/SwiftStreamingMarkdown_-504EC1C7D1AEC0F0_PackageProduct.framework/SwiftStreamingMarkdown_SwiftStreamingMarkdown.bundle/Info.plist",
+        "sha256": "bd36116a9e4aea0558a24e60d5f89cba49de712175874e7dd1f2d27b860b64b6"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/TorahInspectorCore.framework/Info.plist",
+        "sha256": "f3b9823a4b54ee74dc22b7349ff4f8d174e7c712d9a88b5c9dd2c3675c683537"
+      },
+      {
+        "bytes": 790,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/TorahInspectorUI_-34E075219D9C2A9D_PackageProduct.framework/Info.plist",
+        "sha256": "b65112583d05c315fba1840cd993bf9a4a353a04f5907b672d7cf5e52f1ddc3b"
+      },
+      {
+        "bytes": 695,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/TorahInspectorUI_-34E075219D9C2A9D_PackageProduct.framework/TorahInspectorKit_TorahInspectorUI.bundle/Info.plist",
+        "sha256": "31e56ce7de877eed7d4355bf1c08cd1b9bb62d831369f78606775fe127dcbc59"
+      },
+      {
+        "bytes": 792,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/cmark-gfm-extensions_-5BB516D967F054FA_PackageProduct.framework/Info.plist",
+        "sha256": "f76f06828e5ae5db662593549d745e50dbe4cc74d384a3b50821ebd202d186ca"
+      },
+      {
+        "bytes": 735,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/cmark-gfm.framework/Info.plist",
+        "sha256": "73dfb1651769164a1e2e4703b3bda95258dca949d1a8920f2725ab448ac5047d"
+      },
+      {
+        "bytes": 761,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/iosMath_44BECE163071ABDC_PackageProduct.framework/Info.plist",
+        "sha256": "fb46c1ecbc8d907d0c0c349614479235e530eb3adb74bbfe6051692a50f2962a"
+      },
+      {
+        "bytes": 657,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/iosMath_44BECE163071ABDC_PackageProduct.framework/iosMath_iosMath.bundle/Info.plist",
+        "sha256": "7440bed3d61f286aa4d30c525d39cb9c3116ccee5d43857ffaa8b3f8258b84e5"
+      },
+      {
+        "bytes": 680,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaAnyHanlin_PinkhaHanlinUI.bundle/Info.plist",
+        "sha256": "a82a0b5e4040de1050ed873810a39e8d5da606a6045ebb413fd543322f5ee159"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaKit_PinkhaKit.bundle/Info.plist",
+        "sha256": "edbe1c655e3f0925070b8eab72378d510b3fed585aca7007abddf58c28c3f6f6"
+      },
+      {
+        "bytes": 681,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaSharing_PinkhaSharing.bundle/Info.plist",
+        "sha256": "8e6c7004ca1b1d2a58ded78829373c530d2d2868edb313708438bf735a31ff1e"
+      },
+      {
+        "bytes": 667,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Promises_FBLPromises.bundle/Info.plist",
+        "sha256": "df60221331b8bb97cc047f3fd49bb1ea3697cafad124d7a2ef813ad75791ca0f"
+      },
+      {
+        "bytes": 693,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/ProtobufMessages_ProtobufMessages.bundle/Info.plist",
+        "sha256": "1480c9cfa5c5de9a89d528e581c3e48682a04e3f31e6fab0b4b318614fe30b5d"
+      },
+      {
+        "bytes": 651,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/QRCode_QRCode.bundle/Info.plist",
+        "sha256": "032256fc8a3b29b315ddcd2045e52b0f4d4860e3983697b9fb8cac8619e2d195"
+      },
+      {
+        "bytes": 726,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/Sentry.framework/Info.plist",
+        "sha256": "d2a39e5e31580773a5624dd87a1c41bdc4a73278116e244e8249e06917374924"
+      },
+      {
+        "bytes": 705,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/SwiftImageReadWrite_SwiftImageReadWrite.bundle/Info.plist",
+        "sha256": "a40b7d6db6e7da1ec4754cfef4be8ca4f9767d144dff2d706f63c7c9737ccb57"
+      },
+      {
+        "bytes": 682,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/SwiftProtobuf_SwiftProtobuf.bundle/Info.plist",
+        "sha256": "dc7bc4913c00fb8e2a55cc7f5ea348482e01ebb017bb20b92e6a434b054c81f5"
+      },
+      {
+        "bytes": 720,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/SwiftStreamingMarkdown_SwiftStreamingMarkdown.bundle/Info.plist",
+        "sha256": "bd36116a9e4aea0558a24e60d5f89cba49de712175874e7dd1f2d27b860b64b6"
+      },
+      {
+        "bytes": 695,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/TorahInspectorKit_TorahInspectorUI.bundle/Info.plist",
+        "sha256": "31e56ce7de877eed7d4355bf1c08cd1b9bb62d831369f78606775fe127dcbc59"
+      },
+      {
+        "bytes": 681,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/ZIPFoundation_ZIPFoundation.bundle/Info.plist",
+        "sha256": "36fbe1237b0dd950d6eec6dc72de6d9a315a339639bb8f729d9a03df53cdf14e"
+      },
+      {
+        "bytes": 657,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/iosMath_iosMath.bundle/Info.plist",
+        "sha256": "7440bed3d61f286aa4d30c525d39cb9c3116ccee5d43857ffaa8b3f8258b84e5"
+      },
+      {
+        "bytes": 651,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/nanopb_nanopb.bundle/Info.plist",
+        "sha256": "57b11e904c2fe5daa66653ebada0c3de8e095e9a0954b1e9edf6c8bf84ce96a1"
+      },
+      {
+        "bytes": 665,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/app-derived/Build/Products/Debug-Anytype-iphonesimulator/swift-crypto_Crypto.bundle/Info.plist",
+        "sha256": "65a435071c87c2628d5d453d0fb91ac5dd8fd8613b8b1961b098a931c7168d03"
+      }
+    ],
+    "ui-derived": [
+      {
+        "bytes": 10960,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/ui-derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app/Info.plist",
+        "sha256": "ebefbe291a3626a2d8242026b60d4f070dbfc58413eeea52b2d475ad8ea9ee6c"
+      },
+      {
+        "bytes": 95248,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/ui-derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app/PinkhaStage1AcceptanceUITests-Runner",
+        "sha256": "1ac0405f97e1052854a4c72e2e57076b80146450e14b210c0c4f6526c47e0f58"
+      },
+      {
+        "bytes": 741,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/ui-derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app/PlugIns/PinkhaStage1AcceptanceUITests.xctest/Info.plist",
+        "sha256": "7dbc03ae94b49982b08c4b1267ef4428a9c2ddf9f4e6ace64895dda0aed5f2e2"
+      },
+      {
+        "bytes": 2516016,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/ui-derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app/PlugIns/PinkhaStage1AcceptanceUITests.xctest/PinkhaStage1AcceptanceUITests",
+        "sha256": "51282b94b0ceccf52bc85dafb1f396fbd7759f1c4278d5dc1584189ddc480759"
+      },
+      {
+        "bytes": 671,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/ui-derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app/PlugIns/PinkhaStage1AcceptanceUITests.xctest.dSYM/Contents/Info.plist",
+        "sha256": "dd6f40c63b141b448e084b73ba4bd06ea7248bcc37859d4854ecc159f88baf41"
+      },
+      {
+        "bytes": 3238292,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/ui-derived/Build/Products/Debug-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app/PlugIns/PinkhaStage1AcceptanceUITests.xctest.dSYM/Contents/Resources/DWARF/PinkhaStage1AcceptanceUITests",
+        "sha256": "8204e0c9112114acbb00f14241d8c1dd7ae0aeed0e631ccb9473d24b0ca8f9af"
+      },
+      {
+        "bytes": 4909,
+        "path": "/Users/m1/builds/pinkha-dual-main-20261125/ui-derived/Build/Products/PinkhaPrebuiltUI_iphonesimulator27.0-arm64.xctestrun",
+        "sha256": "05312fa8af79b5091b0343085dbc6b68df99e0b96ebd0624d75210d9446f0b5a"
+      }
+    ]
+  },
+  "sameCommitForAppAndUITests": false,
+  "sourceCommit": "ca7cb16f91c3d5fc4f7c8c178369abc9276e9a07",
+  "sourceUnchanged": true,
+  "status": "PASS_COMBINED_MAIN_AND_COMPLETE_UI_BUILD_NOT_ACCEPTANCE",
+  "testsExecuted": 0,
+  "ui": {
+    "argv": [
+      "xcodebuild",
+      "build-for-testing",
+      "-project",
+      "/Users/m1/builds/pinkha-dual-main-20261125/ui-source-capture-helper-8aa603-1/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj",
+      "-scheme",
+      "PinkhaPrebuiltUI",
+      "-configuration",
+      "Debug-Anytype",
+      "-destination",
+      "generic/platform=iOS Simulator",
+      "-derivedDataPath",
+      "/Users/m1/builds/pinkha-dual-main-20261125/ui-derived",
+      "-resultBundlePath",
+      "/Users/m1/builds/pinkha-dual-main-20261125/build7-ui2/UI.xcresult",
+      "-jobs",
+      "4",
+      "OTHER_SWIFT_FLAGS=$(inherited) -D DEBUG -D PINKHA_DUAL_ENGINE_RUNTIME -D PINKHA_NATIVE_DERIVED -D PINKHA_NATIVE_T5_LOOKUP_V1 -D PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 -D PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1",
+      "ENABLE_TESTABILITY=YES",
+      "ONLY_ACTIVE_ARCH=YES",
+      "ARCHS=arm64",
+      "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGNING_REQUIRED=YES",
+      "PROVISIONING_PROFILE_SPECIFIER="
+    ],
+    "cwd": "/Users/m1/builds/pinkha-dual-main-20261125/source",
+    "elapsedSeconds": 6.340788841247559,
+    "environment": {
+      "DEVELOPER_DIR": "/Applications/Xcode.app/Contents/Developer",
+      "PINKHA_ANY_NATIVE_ARTIFACT": "verified-unified-v1",
+      "PINKHA_NATIVE_T2_AUTHORIZED_READ_V1": "1"
+    },
+    "exitCode": 0,
+    "finished": 1795609256.446757,
+    "freeBytesAfter": 120995328000,
+    "freeBytesBefore": 121000292352,
+    "jobs": 4,
+    "logBytes": 219644,
+    "logSHA256": "b08f4d86be7ce118757365e62dd2a75dc35173deabc221fe5e86a261e274111a",
+    "minimumFreeBytes": 120998281216,
+    "ownedProcessGroup": "ABSENT_ESRCH",
+    "pgid": 37789,
+    "phase": "ui",
+    "pid": 37789,
+    "sourceCommit": "8aa603ddb179a98a711a1cb2208d556a498c602f",
+    "started": 1795609250.105969,
+    "status": "PASS_BUILD_EXIT_0",
+    "timeoutSeconds": 7200
+  },
+  "uiSourceDerivative": {
+    "allOtherUITestSourcesByteIdentical": true,
+    "changedTestSources": [
+      "PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift"
+    ],
+    "inverseDeltaRestoresOriginalFile": true,
+    "manifestSHA256": "8fc663f993ac31b18340ccc6e26c2e0cf34b14de9e5cbf72239f1021ebaa3a7b",
+    "sourceCommit": "8aa603ddb179a98a711a1cb2208d556a498c602f"
+  }
+}

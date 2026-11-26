@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>PinkhaNativeAppGroup</key>
+	<string>$(PINKHA_NATIVE_APP_GROUP)</string>
 	<key>AmplitudeApiKey</key>
 	<string></string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -12,6 +14,8 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleDisplayName</key>
+	<string>Pinkha</string>
 	<key>CFBundleName</key>
 	<string>$(BUNDLE_NAME)</string>
 	<key>CFBundlePackageType</key>
@@ -28,6 +32,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>$(BUILD_APP_URL_SCHEME)</string>
+				<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 			</array>
 		</dict>
 		<dict>
@@ -47,7 +52,15 @@
 	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>hanlinminiapps</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<!-- Documents contains user exports. Imported server settings are migrated
+	     to private Application Support before the custom network is opened. -->
+	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
@@ -113,6 +126,14 @@
 	<false/>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.gloiiire.pinkha.torahSource</string>
+			<key>UTTypeDescription</key>
+			<string>Torah source transfer</string>
+			<key>UTTypeConformsTo</key>
+			<array><string>public.data</string></array>
+		</dict>
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>

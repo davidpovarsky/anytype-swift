@@ -1,0 +1,83 @@
+{
+  "actualCases": {
+    "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen()": "Failed"
+  },
+  "applicationBuilds": 0,
+  "counts": {
+    "failedTests": 1,
+    "passedTests": 0,
+    "skippedTests": 0,
+    "totalTestCount": 1
+  },
+  "diagnosticFailures": [
+    {
+      "phase": "original-results",
+      "reason": "exact_original_method_did_not_pass"
+    }
+  ],
+  "finished": 1795610611.431453,
+  "firstFailure": {
+    "reason": "actual_original_ui_execution_failed",
+    "type": "RuntimeError"
+  },
+  "historyKeyboardPreparation": {
+    "allOriginalHistoryAssertionsUnchanged": true,
+    "compiledSHA256": "2772d790979de88a3b622f17453a91ca792114292016f01e31386de7f4f614ca",
+    "inputRoute": "real-keyboard-with-original-native-UIKit-range-witness",
+    "longPressMenuAccepted": false,
+    "originalSHA256": "6c4064014253837e4738b1c143f45f9af91746c53b3b665439e65f55bc837a77",
+    "reviewSHA256": "27925f01b2a7817435637517793c19d49db9a6814caef6e33b88dafb6beb2117",
+    "sourceCommit": "6c398307682073f31f9fb59af59f34c96003d542"
+  },
+  "mainReceiptSHA256": "c63a1aa11b72495229c4f6e667b2610d8ae8b9451e7353fdc184c70e180de0ba",
+  "nativeLibraryBuilds": 0,
+  "originalAppFileCount": 2499,
+  "ownedSimulator": "FA2A5EE5-718B-49D5-A394-F7BD7FD11439",
+  "runnerReceiptSHA256": "575ea5ebac9cc5c3878a3afcff557cf5456863e14b94e4e36dd99ebeae3ec605",
+  "sourceCommit": "ca7cb16f91c3d5fc4f7c8c178369abc9276e9a07",
+  "stage": "hanlin",
+  "status": "FAIL",
+  "testCommand": {
+    "argv": [
+      "xcodebuild",
+      "test-without-building",
+      "-xctestrun",
+      "/Users/m1/builds/pinkha-dual-main-20261125/native-ui-hanlin-ca7-1/Selected.xctestrun",
+      "-destination",
+      "platform=iOS Simulator,id=FA2A5EE5-718B-49D5-A394-F7BD7FD11439",
+      "-parallel-testing-enabled",
+      "NO",
+      "-test-timeouts-enabled",
+      "YES",
+      "-default-test-execution-time-allowance",
+      "600",
+      "-maximum-test-execution-time-allowance",
+      "600",
+      "-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
+      "-collect-test-diagnostics",
+      "never",
+      "ARCHS=arm64",
+      "ONLY_ACTIVE_ARCH=YES",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGNING_REQUIRED=YES",
+      "-resultBundlePath",
+      "/Users/m1/builds/pinkha-dual-main-20261125/native-ui-hanlin-ca7-1/Original.xcresult"
+    ],
+    "elapsedSeconds": 232.71324968338013,
+    "exitCode": 65,
+    "freeBytesBefore": 115481014272,
+    "logSHA256": "c67e32818046d0d4a03a349dd79eab7220bed5ac25cbefa1c106ccfc56956b9b",
+    "minimumFreeBytes": 113782620160,
+    "ownedProcessGroup": "ABSENT_ESRCH",
+    "pgid": 44105,
+    "pid": 44105,
+    "started": 1795610359.9217112,
+    "status": "FAIL",
+    "stopped": null
+  },
+  "testCommandIssued": true,
+  "testResultAvailability": "ORIGINAL_XCRESULT",
+  "testsExecuted": 1,
+  "uiRunnerBuilds": 0
+}

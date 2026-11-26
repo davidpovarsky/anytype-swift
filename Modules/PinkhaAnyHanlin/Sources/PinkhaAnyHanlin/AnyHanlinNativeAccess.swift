@@ -173,7 +173,7 @@ public final class AnyHanlinNativeAccess: PinkhaHanlinHostAccess {
 
     private func validateOwner(_ context: HanlinHostContext) throws {
         guard context == session.context,
-              PinkhaHanlinAccountOwner.shared.isAvailable(account: context.namespace.account),
+              PinkhaHanlinAccountOwner.shared.isAvailable(namespace: context.namespace),
               let owner else { throw HanlinHostError.staleContext }
         let current = try owner.currentScope()
         guard current.ownerID == original.ownerID, current.sceneID == original.sceneID,

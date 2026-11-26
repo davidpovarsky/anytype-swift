@@ -1,0 +1,67 @@
+{
+  "devices": [
+    {
+      "architecture": "arm64",
+      "deviceId": "A8BCEF42-17B0-4B0B-A667-83B1A33DB726",
+      "deviceName": "EAnchorSources-40655e02-037990db",
+      "modelName": "iPad Pro 13-inch (M5)",
+      "osBuildNumber": "24A434",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    }
+  ],
+  "testNodes": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "name": "Failed to failed to scroll to visible (by AX action) Button, {{258.0, 621.0}, {0.0, 0.0}}, identifier: 'any-native-source-unlink-1A326224-A2A9-4349-8D91-634E3EF6A436', label: '\u05d4\u05e1\u05e8\u05ea \u05e7\u05d9\u05e9\u05d5\u05e8 \u05d1\u05e8\u05d0\u05e9\u05d9\u05ea \u05d0\u05f3:\u05d0\u05f3', error: Error kAXErrorFailure performing AXAction kAXScrollToVisibleAction on element AX element pid: 88464, elementOrHash.elementID: 5404552448.480. (Underlying Error: Error kAXErrorFailure performing AXAction kAXScrollToVisibleAction on element AX element pid: 88464, elementOrHash.elementID: 5404552448.480)",
+                      "nodeType": "Failure Message",
+                      "sourceLocation": {
+                        "filePath": "/Users/m1/builds/any-semantic-20261125/source-fbb7b19/NativeApp/UITests/NativeLaunchTests.swift",
+                        "lineNumber": 2310
+                      }
+                    },
+                    {
+                      "name": "Update the Info.plist: Support for all orientations will soon be required.",
+                      "nodeType": "Runtime Warning"
+                    }
+                  ],
+                  "duration": "6m 27s",
+                  "durationInSeconds": 387.0731610059738,
+                  "name": "testSemanticSourceLinkSurvivesEditAndColdReopen()",
+                  "nodeIdentifier": "NativeLaunchTests/testSemanticSourceLinkSurvivesEditAndColdReopen()",
+                  "nodeIdentifierURL": "test://com.apple.xcode/AnyNative/PinkhaAnyNativeUITests/NativeLaunchTests/testSemanticSourceLinkSurvivesEditAndColdReopen",
+                  "nodeType": "Test Case",
+                  "result": "Failed"
+                }
+              ],
+              "name": "NativeLaunchTests",
+              "nodeIdentifierURL": "test://com.apple.xcode/AnyNative/PinkhaAnyNativeUITests/NativeLaunchTests",
+              "nodeType": "Test Suite",
+              "result": "Failed"
+            }
+          ],
+          "name": "PinkhaAnyNativeUITests",
+          "nodeIdentifierURL": "test://com.apple.xcode/AnyNative/PinkhaAnyNativeUITests",
+          "nodeType": "UI test bundle",
+          "result": "Failed"
+        }
+      ],
+      "name": "PinkhaAnyNativeApp",
+      "nodeType": "Test Plan",
+      "result": "Failed"
+    }
+  ],
+  "testPlanConfigurations": [
+    {
+      "configurationId": "1",
+      "configurationName": "Test Scheme Action"
+    }
+  ]
+}

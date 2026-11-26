@@ -1,0 +1,73 @@
+{
+  "source": "9c957c012fdb3ca2a4ffa1f76e1d3021f262e7a5",
+  "reviews": [
+    {
+      "path": "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "priorMappedBlob": null,
+      "reviewedBlob": "62e23f1166907ea5fbc5477e7cb14284ddbf607e",
+      "reason": "Propagate the selected private-network configuration error at original create/select boundaries; do not silently fall back to the public network."
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ServerConfigirationStorage/ServerConfigirationStorage.swift",
+      "priorMappedBlob": null,
+      "reviewedBlob": "7f5fa2d31805f36a03677df7bd37ebf745e5f2d3",
+      "reason": "Move private network configurations through the reviewed downstream lossless directory migration, preserve originals on failure, require selected custom configuration to exist, and validate the requested configuration when selecting it."
+    },
+    {
+      "path": "Tools/PinkhaNativeDerived/rerun_original_ui.py",
+      "priorMappedBlob": null,
+      "reviewedBlob": "ce14bb27846eb06900f7827449516ea9ed1c924f",
+      "reason": "Recognize the exact original four configurations or reviewed six with separate owner signing; validate each identity/binding before the isolated UI-only derivative removes its implicit application dependency."
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/TorahT5RuntimePairTests.swift",
+      "priorMappedBlob": "fa8a0acbb5f2ee56cb42e6528a4abdee52a91912",
+      "reviewedBlob": "f70d2e7fabf39a6d055149d9819acc1a9e0016ca",
+      "reason": "Preserve original T5 pair assertions and accept only the exact source-qualified unified runtime behind PINKHA_DUAL_ENGINE_RUNTIME in the explicit new profile."
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift",
+      "priorMappedBlob": "ec1ed3d7302e2505990384d715bb86113f23121c",
+      "reviewedBlob": "f54fd02a9d6fed904e6f14af36b732313d5e4a2f",
+      "reason": "Preserve the five-target fixture and all original mutations; the explicitly flagged unified profile must also perform actual type change and whole-object delete."
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift",
+      "priorMappedBlob": "b8707ef289ee065ebd766227999b8a0318176551",
+      "reviewedBlob": "f571d21502180ee0cea32e8272ae037751ab821d",
+      "reason": "Keep explicit semantic-link navigation out of active text editing and forward native UIKit edit-menu lifecycle to the scoped text-view owner; original edit, keyboard and selection contracts remain."
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/Views/TextViewWithPlaceholder.swift",
+      "priorMappedBlob": "ce7ff2b6face40d72379ef8818f916415382f4e8",
+      "reviewedBlob": "62aaf86510a3543eaac438aa6d647ec7e7dc25c6",
+      "reason": "Retain original gesture behavior outside the actual edit-menu lifetime; defer gesture reconfiguration only for that menu, clear on detach, and preserve focused same-editor menu presentation ownership."
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift",
+      "priorMappedBlob": "2c7bbb3473a02a63cef2f7be725ca19e6fd39577",
+      "reviewedBlob": "613d5df610f4e5fc10ba8dbb3378cebb1417e172",
+      "reason": "Preserve input only while its actual focused edit menu belongs to this mounted editor; all ordinary presentation still ends editing. Keep existing MiniApps, semantic-anchor, editor and Hanlin hooks."
+    },
+    {
+      "path": "Modules/PinkhaKit/Package.swift",
+      "priorMappedBlob": "3e3334970e795b2c28e576773eec7221e78e09b5",
+      "reviewedBlob": "34a5ca9307e411919cb5a83ccdd80cecaa4aa97a",
+      "reason": "Advance the single shared TorahInspectorKit pin from511454 to reviewed9058b489e9acc271b4f8ef69e2ed24648f93b4ed, preserving products, resources and targets."
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift",
+      "priorMappedBlob": "41ce523419a158a7c01093a2f6e4b48037a2fb99",
+      "reviewedBlob": "beb4f1fe8d0a4ee928b662518ad69d443d63f3d0",
+      "reason": "Bind the explicit unified-runtime capability to actual70f0 source closure; partial, unflagged and foreign runtimes remain refused."
+    },
+    {
+      "path": "Tools/Hanlin/source.json",
+      "priorMappedBlob": "b87866a443b279bc47f8bec387122c49bbf46688",
+      "reviewedBlob": "68911c27652bda9cb533f36df24576ac46104da9",
+      "reason": "Advance the common four-package source to86a6 and SwiftAIabf. Independent Git comparison proves all959 package files/four trees identical to qualified30e; standalone producer changes remain outside Pinkha."
+    }
+  ],
+  "semanticAcceptance": "NOT_PROVEN_BY_MAPPING",
+  "rawEvidenceWhitespace": "Retain original captured compiler log bytes; prior diff-check2 preserved. One imported Python trailing blank line has no runtime change."
+}

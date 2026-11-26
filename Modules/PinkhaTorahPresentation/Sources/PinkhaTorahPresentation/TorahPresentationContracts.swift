@@ -9,6 +9,8 @@ public protocol TorahAssociationSnapshotRepository: TorahAssociationRepository {
     func listAssociationRecords(objectId: String, spaceId: String) async throws -> [TorahStoredAssociationRecord]
     func addAssociation(_ item: TorahAssociationItem, target: TorahAssociationTarget, spaceId: String,
                         authorize: @escaping TorahAssociationWriteAuthorization) async throws -> TorahAssociationItem
+    func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String,
+                           authorize: @escaping TorahAssociationWriteAuthorization) async throws
 }
 
 public enum TorahAssociationPersistenceState: Sendable, Equatable {

@@ -174,7 +174,8 @@ class NativeAccountRetryEvidenceControls(unittest.TestCase):
 class NativeAccountRetrySelectionControls(unittest.TestCase):
     def test_separate_swift_suite_keeps_the_full_accepted_original_source_byte_identical(self):
         source = Path(__file__).resolve().parents[2] / "AnyTypeTests/Pinkha/TorahT5NativePaginationTests.swift"
-        raw = source.read_bytes()
+        import t5_native_account_retry_pending_evidence as pending
+        raw = pending.restore_original_pagination_source(source.read_bytes())
         self.assertEqual(hashlib.sha256(raw[:28741]).hexdigest(), "dff9dd58471659cc19d082ea0961f2ccff9666ad86c4aa052c85a3aa4e5d4990")
         added = raw[28741:].decode().split("private struct T5AccountRetryPreparedFixture:", 1)[0]
         self.assertEqual(added.count("@Test("), 1)

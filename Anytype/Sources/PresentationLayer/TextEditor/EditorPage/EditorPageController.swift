@@ -101,6 +101,10 @@ final class EditorPageController: UIViewController {
             guard let self, let owner = self.pinkhaHanlinRouteOwner else { return }
             PinkhaHanlinSelectionEntry.open(editor: self, routeOwner: owner)
         },
+        onMiniAppsTap: { [weak self] in
+            guard let self else { return }
+            PinkhaMiniAppsCoordinator.shared.present(editor: self)
+        },
         onWebBannerTap: { [weak viewModel] in
             UISelectionFeedbackGenerator().selectionChanged()
             viewModel?.onPublishingBannerTap()
@@ -180,6 +184,7 @@ final class EditorPageController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         viewModel.viewDidAppear()
+        PinkhaMiniAppsCoordinator.shared.attach(editor: self)
 #if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
         PinkhaSemanticAnchorMountedObserver.startIfRequested(editor: self)
 #endif
@@ -322,7 +327,14 @@ final class EditorPageController: UIViewController {
     }
 
     override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
-        view.endEditing(true)
+        // UIKit also presents an expanded edit menu through this controller.
+        // Ending editing during that handoff resigns its source input before
+        // the selected action can run. Preserve only this editor's live menu;
+        // ordinary app presentations keep the existing keyboard behavior.
+        let input = firstResponderView as? TextViewWithPlaceholder
+        if input?.ownsActiveEditMenu(in: view) != true {
+            view.endEditing(true)
+        }
 
         super.present(viewControllerToPresent, animated: flag, completion: completion)
     }
@@ -476,16 +488,29 @@ extension EditorPageController: EditorPageViewInput {
         }
         if let textView = firstResponderView as? TextViewWithPlaceholder {
 #if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
-            if pinkhaSemanticSelection == nil {
-                pinkhaSemanticSelection = PinkhaSemanticAnchorSelectionCoordinator(editor: self)
-            }
-            pinkhaSemanticSelection?.bind(textView)
+            bindSemanticAnchorInput(textView)
 #endif
             textView.onSelectionHandlePan = { [weak self] recognizer in
                 self?.handleSelectionEscalationPan(recognizer)
             }
         }
     }
+
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+    /// Install navigation when a text block is displayed or reconfigured. This
+    /// does not request focus, change selection, acquire a lease or call native.
+    func configureSemanticAnchorInput(in cell: UICollectionViewCell) {
+        guard let content = firstTextBlockContentView(in: cell) else { return }
+        bindSemanticAnchorInput(content.textView.textView)
+    }
+
+    private func bindSemanticAnchorInput(_ textView: TextViewWithPlaceholder) {
+        if pinkhaSemanticSelection == nil {
+            pinkhaSemanticSelection = PinkhaSemanticAnchorSelectionCoordinator(editor: self)
+        }
+        pinkhaSemanticSelection?.bind(textView)
+    }
+#endif
 
     func itemDidChangeFrame(item: EditorItem) {
         DispatchQueue.main.async { [weak self] in
@@ -683,6 +708,9 @@ private extension EditorPageController {
         }
         
         cell.contentConfiguration = newConfiguration
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        configureSemanticAnchorInput(in: cell)
+#endif
     }
 
     func dataSourceItem(for blockId: String) -> EditorItem? {
@@ -806,6 +834,9 @@ private extension EditorPageController {
             isLocked: collectionView.isLocked
         )
         cell.contentView.isUserInteractionEnabled = true
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        configureSemanticAnchorInput(in: cell)
+#endif
         configureTorahAccessory(in: cell, blockId: item.blockId)
         
         cell.backgroundConfiguration = UIBackgroundConfiguration.clear()

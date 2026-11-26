@@ -1,0 +1,26 @@
+--- /mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/native-attempt1/source/heart/core/block/editor/torahops/cutover_native_host_test.go	2026-11-26 02:00:14.415007631 +0000
++++ /mnt/development/projects/worktrees/page154-final-event-20261125/Tools/TorahNativeOperations/legacy_cutover/overlay/core/block/editor/torahops/cutover_native_host_test.go	2026-11-26 02:20:48.495486192 +0000
+@@ -239,6 +239,11 @@
+ 	s := f.read(t)
+ 	r := f.record(t, key, id, cutover.Seal)
+ 	for _, imp := range s.State.Imports {
++		// A well-formed seal names only paired phase-two records. The new
++		// phase-one claim remains pending and must be refused by the host.
++		if len(imp.MetadataClaims) == 0 {
++			continue
++		}
+ 		r.Imported = append(r.Imported, cutover.Binding{FactID: imp.FactID, ClaimID: imp.ClaimID})
+ 		r.ImportRecords = append(r.ImportRecords, imp.MetadataClaims...)
+ 	}
+@@ -346,7 +351,10 @@
+ 			require.NoError(t, err)
+ 			require.Equal(t, Created, result.Disposition)
+ 			before := f.read(t)
+-			_, err = h.Append(ctx, v1, f.seal(t, key, 90+i*2+j))
++			incomplete := f.seal(t, key, 90+i*2+j)
++			_, err = incomplete.CanonicalBytes()
++			require.NoError(t, err, "partial-history probe must first be a valid metadata request")
++			_, err = h.Append(ctx, v1, incomplete)
+ 			require.ErrorIs(t, err, cutover.ErrIncomplete)
+ 			require.Equal(t, before, f.read(t))
+ 			metadata := f.importMetadata(t, key, 10+i*2+j, factID, result.ClaimID)

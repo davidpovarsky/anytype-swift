@@ -16,6 +16,12 @@ public struct AnyLibraryDocument: Identifiable, Sendable, Equatable {
     public let snippet: String?
 }
 
+public struct AnyLibraryBinItem: Identifiable, Sendable, Equatable {
+    public let id: String
+    public let title: String
+    public let isFolder: Bool
+}
+
 public struct AnyLibraryPendingCreation: Identifiable, Sendable {
     public var id: String { plan.mutationID }
     public let plan: AnyHierarchyCreationPlan
@@ -29,6 +35,9 @@ public final class AnyLibraryPresentation {
     public private(set) var hierarchyPresentation: AnyHierarchyPresentationState
     public var hierarchy: AnyHierarchySnapshot? { hierarchyPresentation.snapshot }
     public private(set) var allDocuments: [AnyLibraryDocument] = []
+    public private(set) var binItems: [AnyLibraryBinItem] = []
+    public private(set) var isLoadingBin = false
+    public private(set) var pendingRestores: Set<String> = []
     public private(set) var searchResults: [AnyLibraryDocument] = []
     public private(set) var pendingCreations: [AnyLibraryPendingCreation] = []
     public private(set) var pendingMoves: Set<String> = []
@@ -62,6 +71,7 @@ public final class AnyLibraryPresentation {
     @ObservationIgnored private var catalogRefreshTask: Task<Void, Never>?
     @ObservationIgnored private var searchEpoch: UInt64 = 0
     @ObservationIgnored private var documentsReadEpoch: UInt64 = 0
+    @ObservationIgnored private var binReadEpoch: UInt64 = 0
     @ObservationIgnored private var closingObservations: [Task<Void, Never>] = []
     @ObservationIgnored private var epoch = UUID()
     @ObservationIgnored private var registration: UUID?
@@ -323,6 +333,69 @@ public final class AnyLibraryPresentation {
         } catch { message = AnyUIErrorText.describe(error) }
     }
 
+    public func refreshBin() async {
+        guard lifetime.isActive, let store else { return }
+        let expected = epoch, schema = store.schema
+        binReadEpoch &+= 1
+        let request = binReadEpoch
+        isLoadingBin = true
+        defer { if request == binReadEpoch { isLoadingBin = false } }
+        do {
+            let rows = try await session.perform { lease in
+                let rows = try await store.readArchivedRows()
+                try await lease.validate()
+                return try rows.map { row -> AnyLibraryBinItem in
+                    guard let id = row["id"]?.string,
+                          row["any"]?["name"] == nil || row["any"]?["name"]?.string != nil,
+                          row[schema.collectionID]?[schema.folderPropertyID] == nil ||
+                            row[schema.collectionID]?[schema.folderPropertyID]?.bool != nil else {
+                        throw AnyHostError.invalidDocument("native Bin record")
+                    }
+                    return .init(id: id, title: row["any"]?["name"]?.string ?? "",
+                        isFolder: row[schema.collectionID]?[schema.folderPropertyID]?.bool ?? false)
+                }
+            }
+            try validate(expected)
+            guard request == binReadEpoch else { return }
+            binItems = rows
+        } catch {
+            guard expected == epoch, request == binReadEpoch, lifetime.isActive else { return }
+            message = AnyUIErrorText.describe(error)
+        }
+    }
+
+    /// This uses the original conditional native membership write. The item
+    /// disappears from the Bin only after a fresh authorized native read.
+    public func restoreFromBin(objectID: String) async {
+        guard lifetime.isActive, canWrite, let store,
+              binItems.contains(where: { $0.id == objectID }),
+              !pendingRestores.contains(objectID) else { return }
+        let expected = epoch, authorize = authorization(epoch)
+        pendingRestores.insert(objectID)
+        defer { pendingRestores.remove(objectID) }
+        do {
+            try await session.perform { lease in
+                try await store.setArchived(objectID: objectID, archived: false) {
+                    try await lease.validate(); try await authorize()
+                }
+                let stored = try await store.readObject(objectID: objectID)
+                guard let collections = stored["any"]?["collections"]?.array,
+                      collections.contains(.string(store.schema.collectionID)),
+                      !collections.contains(.string("bin")) else {
+                    throw AnyHostError.writeUncertain
+                }
+                try await lease.validate(); try await authorize()
+            }
+            try validate(expected)
+            await refreshBin()
+            try validate(expected)
+            await refresh()
+        } catch {
+            guard expected == epoch, lifetime.isActive else { return }
+            message = AnyUIErrorText.describe(error)
+        }
+    }
+
     public func refresh() async {
         guard repository != nil else { await open(); return }
         let expected = epoch
@@ -514,6 +587,7 @@ public final class AnyLibraryPresentation {
 
     public func revoke() {
         epoch = UUID(); canWrite = false
+        binReadEpoch &+= 1; binItems = []; isLoadingBin = false
         _ = replaceObservationFeed(); searchTask?.cancel(); catalogRefreshTask?.cancel()
         for editor in editors.values { editor.revoke() }
     }

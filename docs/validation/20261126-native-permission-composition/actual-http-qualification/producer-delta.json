@@ -1,0 +1,8 @@
+{
+  "afterSHA256": "cb9477dc383ada4ab5d2361ca5105ff9c7c18f1d1db6d861f034b91f48337077",
+  "beforeSHA256": "009fd34c3fa9f1d4b3d11c8a656e088220fe1260d57a20f01ee3e1de2cd2cf05",
+  "helperSHA256": "a986b28899cacdd8b2868b1bf2e1cc80ef1b92ce15940acb6389f4723a279751",
+  "mixedPeerResultSHA256": "b8694dbd2ac3facce43771bdb7f206461d1b95924a5ccb1248114185a394ce1d",
+  "newGate": "    require(digest(Path(native_http_qualification.__file__)) == NATIVE_HTTP_HELPER_SHA,\n            \"reviewed_native_http_qualifier_changed\")\n    native_http_proof = native_http_qualification.qualify(root / \"native-http-originals\", manifest)\n    require(native_http_proof[\"resultSHA256\"] == NATIVE_HTTP_QUALIFICATION_SHA,\n            \"original_native_http_qualification_changed\")",
+  "oldGate": "    require(isinstance(NATIVE_HTTP_QUALIFICATION_SHA, str)\n            and len(NATIVE_HTTP_QUALIFICATION_SHA) == 64,\n            \"actual_mixed_peer_result_not_yet_qualified\")\n    qualification_path = root / \"native-http-qualification.json\"\n    require(digest(qualification_path) == NATIVE_HTTP_QUALIFICATION_SHA,\n            \"original_native_http_qualification_changed\")"
+}

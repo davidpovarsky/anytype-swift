@@ -870,9 +870,19 @@ extension TorahT5RuntimePairTests {
                     && sourceSHA.count == 40 && sourceSHA.allSatisfy(\.isHexDigit)
                     && runID.allSatisfy(\.isNumber) && Int(runAttempt).map({ $0 > 0 }) == true,
                     "invalid-current-run-identity")
-        try require(runtimeProfile == "r15-attachment-authorized-current-read-v1", "explicit-coherent-runtime-required")
+        let expectedRuntimeVersion: String
+        switch runtimeProfile {
+        case "r15-attachment-authorized-current-read-v1":
+            expectedRuntimeVersion = T5NativeRelatedLookupCapability.coherentRuntimeVersion
+        #if PINKHA_DUAL_ENGINE_RUNTIME
+        case "dual-engine-runtime-v1":
+            expectedRuntimeVersion = T5NativeRelatedLookupCapability.unifiedRuntimeVersion
+        #endif
+        default:
+            throw T5ApplePairFailure.invariant("explicit-coherent-runtime-required")
+        }
         let version = try await ClientCommands.appGetVersion().invoke().version
-        try require(version == T5NativeRelatedLookupCapability.coherentRuntimeVersion, "actual-coherent-runtime-differs")
+        try require(version == expectedRuntimeVersion, "actual-coherent-runtime-differs")
         guard case .verified = try await AnytypeT5NativeRelatedLookup.current() else {
             throw T5ApplePairFailure.invariant("actual-production-lookup-capability-unavailable")
         }

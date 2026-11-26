@@ -1,0 +1,2 @@
+        XCTAssertTrue(source.wait(for: .runningForeground, timeout: 30))
+        let ready = source.descendants(matching: .any).matching(NSPredicate(

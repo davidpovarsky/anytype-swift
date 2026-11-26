@@ -14,6 +14,7 @@ public enum AnyNativeLibraryDestination: Hashable, Sendable {
     case document(String, String?)
     case allDocuments
     case notes
+    case bin
 }
 
 public struct AnyNativeRecoveredBlockDraft: Sendable, Equatable, Encodable {
@@ -149,7 +150,7 @@ public final class AnyNativeLibraryRecovery {
                 }
             case .folder(let id):
                 guard AnyEditorBlock.validID(id) else { throw AnyNativeRecoveryError.invalidSnapshot }
-            case .allDocuments, .notes: break
+            case .allDocuments, .notes, .bin: break
             }
         }
         navigation = path

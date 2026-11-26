@@ -39,6 +39,7 @@ final class TextViewWithPlaceholder: UITextView {
 
 #if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
     var pinkhaSemanticAnchorAction: ((NSRange) -> UIMenuElement?)?
+    var pinkhaSemanticAnchorOpenURL: ((URL) -> Void)?
 #endif
 
     // Where the selection is pinned while the user shift+arrows: UITextView exposes only the
@@ -48,6 +49,9 @@ final class TextViewWithPlaceholder: UITextView {
     private var previousSelectedRange: NSRange?
     private let selectionProbe = UIPanGestureRecognizer()
     private let handleSniffer = SelectionHandleSniffer()
+    // UIKit may resign the input while expanding its edit-menu overflow. The
+    // recognizers still own that menu's pending action until dismissal ends.
+    private var editMenuLifetime: UUID?
     
     // MARK: - Internal variables
     
@@ -97,6 +101,25 @@ final class TextViewWithPlaceholder: UITextView {
         }
     }
     
+    override var selectedRange: NSRange {
+        get { super.selectedRange }
+        set {
+            super.selectedRange = newValue
+            // The native selection setter can clear typing attributes after its
+            // synchronous delegate callback. Restore the current empty-row policy
+            // only once UIKit has completed that write; never move the selection.
+            PinkhaTextDirectionUIKitAdapter.restoreAfterNativeSelection(in: self)
+        }
+    }
+
+    override var selectedTextRange: UITextRange? {
+        get { super.selectedTextRange }
+        set {
+            super.selectedTextRange = newValue
+            PinkhaTextDirectionUIKitAdapter.restoreAfterNativeSelection(in: self)
+        }
+    }
+
     override var canBecomeFirstResponder: Bool {
         let canBecome = super.canBecomeFirstResponder
         return isLockedForEditing ? false : canBecome
@@ -118,10 +141,54 @@ final class TextViewWithPlaceholder: UITextView {
     }
     //
     override func resignFirstResponder() -> Bool {
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        PinkhaSemanticSourceEntryDiagnostics.recordInput("input-resign-before", textView: self)
+#endif
         let value = super.resignFirstResponder()
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        PinkhaSemanticSourceEntryDiagnostics.recordInput("input-resign-after-super", textView: self)
+#endif
         
         reloadGestures()
         return value
+    }
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        guard window == nil, editMenuLifetime != nil else { return }
+        // A detached/reused input must not keep a menu lifetime or allow an old
+        // dismissal completion to change the next input owner's gesture state.
+        editMenuLifetime = nil
+        reloadGestures()
+    }
+
+    /// The presentation must belong to the currently focused input in this
+    /// editor. Detached/reused inputs and a completed menu cannot retain focus.
+    func ownsActiveEditMenu(in container: UIView) -> Bool {
+        editMenuLifetime != nil && isFirstResponder && window != nil
+            && window === container.window && isDescendant(of: container)
+    }
+
+    func editMenuWillPresent() {
+        editMenuLifetime = UUID()
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        PinkhaSemanticSourceEntryDiagnostics.recordInput("input-edit-menu-will-present", textView: self)
+#endif
+    }
+
+    func editMenuWillDismiss(with animator: any UIEditMenuInteractionAnimating) {
+        guard let lifetime = editMenuLifetime else { return }
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        PinkhaSemanticSourceEntryDiagnostics.recordInput("input-edit-menu-will-dismiss", textView: self)
+#endif
+        animator.addCompletion { [weak self] in
+            guard let self, self.editMenuLifetime == lifetime else { return }
+            self.editMenuLifetime = nil
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+            PinkhaSemanticSourceEntryDiagnostics.recordInput("input-edit-menu-dismissed", textView: self)
+#endif
+            self.reloadGestures()
+        }
     }
     
     override func paste(_ sender: Any?) {
@@ -327,18 +394,30 @@ private final class SelectionHandleSniffer: NSObject, UIGestureRecognizerDelegat
 
 extension TextViewWithPlaceholder {
     override func addGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
-        if gestureRecognizer.isKind(of: UILongPressGestureRecognizer.self) {
+        if editMenuLifetime == nil && gestureRecognizer.isKind(of: UILongPressGestureRecognizer.self) {
             gestureRecognizer.isEnabled = isFirstResponder
         }
         return super.addGestureRecognizer(gestureRecognizer)
     }
     
     func reloadGestures() {
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        PinkhaSemanticSourceEntryDiagnostics.recordInput("input-gesture-policy-before", textView: self)
+#endif
+        guard editMenuLifetime == nil else {
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+            PinkhaSemanticSourceEntryDiagnostics.recordInput("input-gesture-policy-deferred-for-menu", textView: self)
+#endif
+            return
+        }
         gestureRecognizers?.forEach {
             if $0.isKind(of: UILongPressGestureRecognizer.self) {
                 $0.isEnabled = isFirstResponder
             }
         }
+#if DEBUG && targetEnvironment(simulator) && PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
+        PinkhaSemanticSourceEntryDiagnostics.recordInput("input-gesture-policy-after", textView: self)
+#endif
     }
     
 }
@@ -355,4 +434,3 @@ extension TextViewWithPlaceholder {
         syncPlaceholder()
     }
 }
-

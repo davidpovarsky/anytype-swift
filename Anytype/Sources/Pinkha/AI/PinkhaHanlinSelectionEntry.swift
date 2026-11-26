@@ -13,8 +13,10 @@ extension EnvironmentValues {
 @MainActor
 final class PinkhaHanlinSelectionControls: UIStackView {
     private let hanlinButton: UIButton
+    private let miniAppsButton: UIButton
 
-    init(doneButton: UIButton, onOpen: @escaping () -> Void) {
+    init(doneButton: UIButton, onOpen: @escaping () -> Void, onMiniApps: @escaping () -> Void = {}) {
+        miniAppsButton = PinkhaMiniAppsEntry.button(action: onMiniApps)
         var configuration = UIButton.Configuration.glassIOS26()
         configuration.image = UIImage(systemName: "sparkles")
         configuration.baseForegroundColor = .Control.primary
@@ -29,6 +31,7 @@ final class PinkhaHanlinSelectionControls: UIStackView {
         alignment = .center
         spacing = EditorNavigationBarEditingControls.spacing
         addArrangedSubview(button)
+        addArrangedSubview(miniAppsButton)
         addArrangedSubview(doneButton)
         // A hidden arranged view collapses to zero width; retain that behavior.
         let width = button.widthAnchor.constraint(equalToConstant: 44)
@@ -45,6 +48,7 @@ final class PinkhaHanlinSelectionControls: UIStackView {
 
     func setSelectionPresent(_ present: Bool) {
         hanlinButton.isEnabled = present
+        miniAppsButton.isEnabled = present
     }
 }
 

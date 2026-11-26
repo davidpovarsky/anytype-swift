@@ -1,0 +1,3 @@
+# History keyboard preparation candidate
+
+The original failed run remains retained. Its movie shows a collapsed caret and magnifier after long press, with no edit menu. The replacement setup uses normal keyboard Select All and requires a read-only witness of the exact native/rendered block, unchanged owner/version and full UIKit selection before the existing edit. Every original history, body, version identity, background and cold-reopen assertion remains unchanged. This does not accept the long-press menu path. Actual UI execution is still pending; only Swift grammar and the inverse source delta were checked.

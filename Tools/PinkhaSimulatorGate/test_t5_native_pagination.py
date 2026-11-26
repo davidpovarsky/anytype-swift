@@ -34,6 +34,8 @@ def inputs():
         nodes = [dict(id=identifier, childIDs=children), *[dict(id=child, childIDs=[]) for child in children]]
         original = dict(objectID=identifier, spaceID=space, rootID=identifier, title="" if role == "note" else "Native " + role,
                         typeID="native-" + (role if role in ["note", "writing"] else "page"),
+                        nativeLayout=9 if role == "note" else 0, nativeSnippet="Native note\nBody" if role == "note" else "",
+                        displayTitle="Native note Body" if role == "note" else "Native " + role,
                         isArchived=False, isDeleted=False, isReadonly=False, detailsRestricted=False,
                         projectionReady=True, projectionState="READY", projectionVersion=1, relatedVersion=1,
                         canonicalRaw=raw, canonicalSHA256=evidence.sha(raw), updatedAt=1000.0 + index, nodes=nodes)
@@ -82,7 +84,7 @@ def inputs():
                 continue
             for target in obj["targets"]:
                 rows.append(dict(id=evidence.target_id(space, obj["objectID"], target["blockID"]),
-                                 spaceID=space, objectID=obj["objectID"], blockID=target["blockID"], title=current["title"],
+                                 spaceID=space, objectID=obj["objectID"], blockID=target["blockID"], title=current["displayTitle"],
                                  typeID=current["typeID"], sourceReference="Genesis 5:5", canUnlink=target["role"] == "document",
                                  kind="note" if obj["role"] == "note" else "document", updatedAt=current["updatedAt"]))
         rows.sort(key=lambda row: (-row["updatedAt"], row["id"]))
@@ -122,17 +124,26 @@ class NativePaginationEvidenceControls(unittest.TestCase):
         self.assertEqual(result["current_space_targets"], 9)
         self.assertEqual(result["whole_index_completeness"], "NOT_PROVEN")
 
-    def test_empty_native_note_name_is_preserved_exactly_in_every_live_row(self):
+    def test_empty_native_note_name_is_preserved_and_display_uses_exact_snippet(self):
         receipt = inputs()
         self.assertEqual(receipt["objects"][2]["original"]["title"], "")
         for observation in receipt["observations"]:
             for row in observation["rows"]:
                 if row["objectID"] == "object-2":
-                    self.assertEqual(row["title"], "")
+                    self.assertEqual(row["title"], "Native note Body")
         self.validate(receipt)
         self.reject(lambda value: value["observations"][0]["readbacks"][2].update(title="fabricated title"))
         self.reject(lambda value: next(row for row in value["observations"][0]["rows"]
                                       if row["objectID"] == "object-2").update(title="fabricated title"))
+
+    def test_note_presentation_requires_independent_exact_native_witness(self):
+        for field, value in [("nativeLayout", 0), ("nativeLayout", True), ("nativeSnippet", ""),
+                             ("nativeSnippet", "forged"), ("displayTitle", ""), ("displayTitle", "forged")]:
+            with self.subTest(field=field, value=value):
+                self.reject(lambda receipt: receipt["objects"][2]["original"].update({field: value}))
+        for field in ("nativeLayout", "nativeSnippet", "displayTitle"):
+            with self.subTest(missing=field):
+                self.reject(lambda receipt: receipt["objects"][2]["original"].pop(field))
 
     def test_empty_note_name_does_not_allow_missing_or_empty_non_note_titles(self):
         for title in [None, 1, False, "x" * 4097]:

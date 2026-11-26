@@ -1,0 +1,51 @@
+{
+  "devicesAndConfigurations": [
+    {
+      "device": {
+        "architecture": "arm64",
+        "deviceId": "ADB70119-A447-42DA-BB0B-F613341846A4",
+        "deviceName": "PinkhaUnifiedD-history-ff67cab1-d810-43de-990c-b293975c29e9",
+        "modelName": "iPad Pro 13-inch (M5)",
+        "osBuildNumber": "24A434",
+        "osVersion": "27.0",
+        "platform": "iOS Simulator"
+      },
+      "expectedFailures": 0,
+      "failedTests": 1,
+      "passedTests": 0,
+      "skippedTests": 0,
+      "testPlanConfiguration": {
+        "configurationId": "1",
+        "configurationName": "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription": "PinkhaAnyNativeTransitionUI \u00b7 Built with macOS 27.0",
+  "expectedFailures": 0,
+  "failedTests": 1,
+  "finishTime": 1795610419.326,
+  "passedTests": 0,
+  "result": "Failed",
+  "runtimeWarnings": [
+    {
+      "issueType": "Runtime Warning",
+      "message": "    AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread."
+    }
+  ],
+  "skippedTests": 0,
+  "startTime": 1795610361.144,
+  "statistics": [],
+  "testFailures": [
+    {
+      "failureText": "XCTAssertEqual failed: (\"XCTWaiterResult(rawValue: 2)\") is not equal to (\"XCTWaiterResult(rawValue: 1)\") - Expected native history UI state was not reached",
+      "targetName": "PinkhaAnyNativeUITests",
+      "testIdentifier": 1,
+      "testIdentifierString": "NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen()",
+      "testIdentifierURL": "test://com.apple.xcode/AnyNativeTransitionUI/PinkhaAnyNativeUITests/NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen",
+      "testName": "testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen()"
+    }
+  ],
+  "title": "Test - PinkhaAnyNativeTransitionUI",
+  "topInsights": [],
+  "totalTestCount": 1
+}

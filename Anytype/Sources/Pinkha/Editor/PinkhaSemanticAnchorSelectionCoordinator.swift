@@ -22,13 +22,38 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
     init(editor: EditorPageController) { self.editor = editor }
 
     func bind(_ textView: TextViewWithPlaceholder) {
-        textView.pinkhaSemanticAnchorAction = { [weak self, weak textView] range in
-            guard let self, let textView else { return nil }
+        guard let model = editor?.viewModel else {
+            textView.pinkhaSemanticAnchorAction = nil
+            textView.pinkhaSemanticAnchorOpenURL = nil
+            return
+        }
+        // Displayed links must work before this input has ever become first
+        // responder. Reused inputs may not dispatch into a retired editor model.
+        textView.pinkhaSemanticAnchorAction = { [weak self, weak textView, weak model] range in
+            guard let self, let textView, let model,
+                  self.ownsDisplayedInput(textView, model: model) else { return nil }
             return self.action(in: textView, range: range)
+        }
+        textView.pinkhaSemanticAnchorOpenURL = { [weak self, weak textView, weak model] url in
+            guard let self, let textView, let model,
+                  self.ownsDisplayedInput(textView, model: model) else { return }
+            do { openSources(try PinkhaSemanticTextAnchor(markerURL: url)) }
+            catch { presentMessage(PinkhaSemanticAnchorStrings.message(for: error)) }
         }
     }
 
+    private func ownsDisplayedInput(_ textView: TextViewWithPlaceholder,
+                                    model: any EditorPageViewModelProtocol) -> Bool {
+        guard let editor, editor.viewModel === model, let view = editor.viewIfLoaded,
+              let window = view.window, textView.window === window,
+              textView.isDescendant(of: view) else { return false }
+        return true
+    }
+
     func invalidate() {
+#if DEBUG && targetEnvironment(simulator)
+        observeSourceEntry("coordinator-invalidate")
+#endif
         epoch = UUID()
         activeID = nil
         preparation?.cancel()
@@ -49,6 +74,7 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
     }
 
     private func action(in textView: TextViewWithPlaceholder, range: NSRange) -> UIMenuElement? {
+        if let source = sourceAction(in: textView, range: range) { return source }
         guard activeID == nil, let editor, let model = editor.viewModel,
               editor.presentedViewController == nil,
               editor.viewIfLoaded?.window != nil, textView.isFirstResponder,
@@ -76,6 +102,96 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
                 self?.prepare(selection)
             }
     }
+
+    private func sourceAction(in textView: TextViewWithPlaceholder, range: NSRange) -> UIAction? {
+        guard activeID == nil, let editor, let model = editor.viewModel,
+              editor.presentedViewController == nil, editor.viewIfLoaded?.window != nil,
+              textView.window === editor.viewIfLoaded?.window, textView.isFirstResponder,
+              textView.markedTextRange == nil, model.document.isOpened,
+              model.document.mode.isHandling, model.torahSession != nil,
+              range.location != NSNotFound, range.location >= 0, range.length > 0,
+              range.location <= textView.attributedText.length,
+              range.length <= textView.attributedText.length - range.location else { return nil }
+        guard let anchor = PinkhaSemanticAnchorUI.selectedAnchor(in: textView.attributedText, range: range,
+            spaceID: model.document.spaceId, objectID: model.document.objectId) else { return nil }
+#if DEBUG && targetEnvironment(simulator)
+        PinkhaSemanticSourceEntryDiagnostics.recordInput("source-menu-input", textView: textView)
+        observeSourceEntry("source-menu-built")
+#endif
+        return UIAction(title: PinkhaSemanticAnchorUI.text(.sources), image: UIImage(systemName: "books.vertical"),
+            identifier: .init("pinkha.semanticAnchor.sources")) { [weak self] _ in
+#if DEBUG && targetEnvironment(simulator)
+                PinkhaSemanticSourceEntryDiagnostics.record("source-menu-handler", state: ["coordinatorPresent": self != nil])
+#endif
+                self?.openSources(anchor)
+            }
+    }
+
+    private func openSources(_ anchor: PinkhaSemanticTextAnchor) {
+#if DEBUG && targetEnvironment(simulator)
+        observeSourceEntry("open-sources-guard")
+#endif
+        guard activeID == nil, let editor, let model = editor.viewModel,
+              editor.presentedViewController == nil, editor.viewIfLoaded?.window != nil,
+              model.document.mode.isHandling, model.document.isOpened,
+              let session = model.torahSession else { return }
+#if DEBUG && targetEnvironment(simulator)
+        observeSourceEntry("open-sources-guard-admitted")
+#endif
+        Task { @MainActor [weak self, weak editor] in
+            do {
+#if DEBUG && targetEnvironment(simulator)
+                self?.observeSourceEntry("shared-source-session-enter")
+#endif
+                try await session.presentSemanticAnchorSources(anchor)
+#if DEBUG && targetEnvironment(simulator)
+                self?.observeSourceEntry("shared-source-session-return")
+#endif
+            }
+            catch {
+#if DEBUG && targetEnvironment(simulator)
+                self?.observeSourceEntry("shared-source-session-error", error: error)
+#endif
+                guard let self, let editor, editor.viewModel === model,
+                      editor.viewIfLoaded?.window != nil else { return }
+                presentMessage(PinkhaSemanticAnchorStrings.message(for: error))
+            }
+        }
+    }
+
+#if DEBUG && targetEnvironment(simulator)
+    /// Read-only UI state for the owned source continuation. It does not acquire
+    /// a lease, issue an engine call, change selection, dismiss a menu or retry.
+    private func observeSourceEntry(_ stage: String, error: Error? = nil) {
+        guard PinkhaSemanticSourceEntryDiagnostics.isEnabled else { return }
+        let editor = self.editor
+        let model = editor?.viewModel
+        let presented = editor?.presentedViewController
+        var state: [String: Any] = [
+            "captureActive": activeID != nil,
+            "epoch": epoch.uuidString.lowercased(),
+            "editorPresent": editor != nil,
+            "modelPresent": model != nil,
+            "windowPresent": editor?.viewIfLoaded?.window != nil,
+            "presentedControllerPresent": presented != nil,
+            "documentIsHandling": model?.document.mode.isHandling ?? false,
+            "documentIsOpened": model?.document.isOpened ?? false,
+            "sessionPresent": model?.torahSession != nil,
+            "searchPresented": model?.torahSession?.isSearchPresented ?? false
+        ]
+        if let editor { state["editorIdentity"] = String(describing: ObjectIdentifier(editor)) }
+        if let model { state["modelIdentity"] = String(describing: ObjectIdentifier(model)) }
+        if let session = model?.torahSession { state["sessionIdentity"] = String(describing: ObjectIdentifier(session)) }
+        if let presented { state["presentedControllerType"] = String(reflecting: type(of: presented)) }
+        if let error {
+            state["errorType"] = String(reflecting: type(of: error))
+            state["errorDomain"] = (error as NSError).domain
+            state["errorCode"] = (error as NSError).code
+            state["errorDescription"] = String(String(reflecting: error).prefix(256))
+        }
+        PinkhaSemanticSourceEntryDiagnostics.record(stage, state: state)
+    }
+#endif
 
     private func prepare(_ selection: Selection) {
         guard activeID == nil, owns(selection, focused: true), let editor,
@@ -113,28 +229,18 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
 #endif
         // The client already validated the complete native text and grapheme range.
         let selected = (selection.text as NSString).substring(with: selection.range)
-        let preview = String(selected.prefix(240))
-        let alert = UIAlertController(title: PinkhaSemanticAnchorStrings.confirmTitle,
-            message: PinkhaSemanticAnchorStrings.confirmBody + "\n\n" + preview, preferredStyle: .alert)
-        alert.view.accessibilityIdentifier = "pinkha.semanticAnchor.confirmation"
-        alert.addAction(UIAlertAction(title: PinkhaSemanticAnchorStrings.cancel, style: .cancel) { [weak self] _ in
-            self?.confirmation = nil
-            self?.finish(id)
+        let alert = PinkhaSemanticAnchorUI.confirmation(selectedText: selected,
+            cancelled: { [weak self] in
+                self?.confirmation = nil
+                self?.finish(id)
 #if DEBUG && targetEnvironment(simulator)
-            if let editor = self?.editor { PinkhaSemanticAnchorMountedObserver.cancelled(editor: editor) }
+                if let editor = self?.editor { PinkhaSemanticAnchorMountedObserver.cancelled(editor: editor) }
 #endif
-        })
-        alert.addAction(UIAlertAction(title: PinkhaSemanticAnchorStrings.create, style: .default) {
-            [weak self, weak alert] _ in
-            guard let self else { return }
-            self.confirmation = nil
-            // Wait for this actual presentation to close before an outcome can
-            // present another alert. Ownership is checked again in the completion.
-            guard let alert else { self.finish(id); return }
-            alert.dismiss(animated: true) { [weak self] in
+            }, willConfirm: { [weak self] in
+                self?.confirmation = nil
+            }, confirmed: { [weak self] in
                 self?.apply(selection, pending: pending, id: id)
-            }
-        })
+            })
         confirmation = alert
         editor.present(alert, animated: true)
     }
@@ -198,12 +304,9 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
     private func presentMessage(_ message: String) {
         guard let editor, editor.viewIfLoaded?.window != nil,
               editor.presentedViewController == nil else { return }
-        let alert = UIAlertController(title: PinkhaSemanticAnchorStrings.title,
-            message: message, preferredStyle: .alert)
-        alert.view.accessibilityIdentifier = "pinkha.semanticAnchor.outcome"
-        alert.addAction(UIAlertAction(title: PinkhaSemanticAnchorStrings.done, style: .default) { [weak self] _ in
+        let alert = PinkhaSemanticAnchorUI.outcome(message) { [weak self] in
             self?.confirmation = nil
-        })
+        }
         confirmation = alert
         editor.present(alert, animated: true)
     }
@@ -265,4 +368,88 @@ final class PinkhaSemanticAnchorSelectionCoordinator {
         }
     }
 }
+
+#if DEBUG && targetEnvironment(simulator)
+/// Private diagnostics only. The original mounted observer remains disabled in
+/// this continuation, and no original fixture/capture/readback file is touched.
+@MainActor
+enum PinkhaSemanticSourceEntryDiagnostics {
+    private static let context: [String: String]? = {
+        let env = ProcessInfo.processInfo.environment
+        guard env["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1",
+              env["PINKHA_SEMANTIC_MOUNTED_UI"] == "0" else { return nil }
+        var binding: [String: String] = [:]
+        for (key, suffix, pattern) in [
+            ("sourceSHA", "SOURCE_SHA", "^[0-9a-f]{40}$"),
+            ("runID", "RUN_ID", "^[0-9]+$"),
+            ("runAttempt", "RUN_ATTEMPT", "^[1-9][0-9]*$"),
+            ("nonce", "NONCE", "^[0-9a-f]{32}$")
+        ] {
+            guard let value = env["PINKHA_SEMANTIC_MOUNTED_" + suffix],
+                  value.range(of: pattern, options: .regularExpression) != nil else { return nil }
+            binding[key] = value
+        }
+        return binding
+    }()
+    private static var events: [[String: Any]] = []
+    private static weak var selectedInput: UITextView?
+    static var isEnabled: Bool { context != nil }
+
+    static func recordInput(_ stage: String, textView: UITextView) {
+        guard isEnabled else { return }
+        if stage == "source-menu-input" {
+            selectedInput = textView
+        } else {
+            guard selectedInput === textView else { return }
+        }
+        let gestures = (textView.gestureRecognizers ?? []).compactMap { recognizer -> [String: Any]? in
+            guard recognizer is UILongPressGestureRecognizer else { return nil }
+            return ["type": String(reflecting: type(of: recognizer)), "enabled": recognizer.isEnabled,
+                    "state": recognizer.state.rawValue]
+        }
+        var state: [String: Any] = [
+            "inputIdentity": String(describing: ObjectIdentifier(textView)),
+            "firstResponder": textView.isFirstResponder, "windowPresent": textView.window != nil,
+            "selectedLength": textView.selectedRange.length, "editable": textView.isEditable,
+            "longPressRecognizers": gestures
+        ]
+        if stage == "input-resign-before" {
+            // The public edit-menu callbacks proved that gesture preservation
+            // alone does not restore action delivery. Capture the actual caller
+            // of this selected input's resignation before changing any focus or
+            // presentation policy. This remains a bounded private observation.
+            state["callStackSymbols"] = Array(Thread.callStackSymbols.prefix(24))
+        }
+        record(stage, state: state)
+    }
+
+    static func record(_ stage: String, state: [String: Any]) {
+        guard let context, events.count < 64 else { return }
+        let event: [String: Any] = ["stage": stage, "uptime": ProcessInfo.processInfo.systemUptime, "state": state]
+        events.append(event)
+        let processID = ProcessInfo.processInfo.processIdentifier
+        var value: [String: Any] = [
+            "protocol": "pinkha-heart-semantic-source-entry-observation-v1",
+            "processID": processID, "events": events,
+            "maximumEvents": 64, "capacityReached": events.count == 64,
+            "extraEngineCalls": 0, "selectionChanges": 0, "menuDismissals": 0,
+            "automaticRetries": 0, "originalMountedObserverEnabled": false
+        ]
+        for (key, entry) in context { value[key] = entry }
+        guard JSONSerialization.isValidJSONObject(value),
+              let bytes = try? JSONSerialization.data(withJSONObject: value, options: [.sortedKeys]),
+              bytes.count <= 65_536,
+              let directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return }
+        let file = directory.appendingPathComponent("pinkha-semantic-source-entry-\(processID).json")
+        do {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            try bytes.write(to: file, options: .atomic)
+            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: file.path)
+        } catch {
+            // Observation failure must not become a product retry or success.
+            // The collector requires the original file before making a claim.
+        }
+    }
+}
+#endif
 #endif

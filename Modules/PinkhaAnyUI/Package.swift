@@ -5,6 +5,7 @@ let package = Package(
     platforms: [.iOS("27.0"), .macOS(.v26)],
     products: [.library(name: "PinkhaAnyUI", targets: ["PinkhaAnyUI"])],
     dependencies: [
+        .package(path: "../../Dependencies/Hanlin/Packages/HanlinMiniAppsBridge"),
         .package(path: "../PinkhaSharing"),
         .package(path: "../PinkhaTorahPresentation"),
         .package(path: "../PinkhaAnyHost"),
@@ -14,10 +15,11 @@ let package = Package(
         .package(path: "../PinkhaAnyHanlin"),
         .package(path: "../Loc"),
         .package(url: "https://github.com/davidpovarsky/TorahInspectorKit.git",
-                 revision: "511454e49450cb2581ddf77f644146ff3e30dbef")
+                 revision: "9058b489e9acc271b4f8ef69e2ed24648f93b4ed")
     ],
     targets: [
         .target(name: "PinkhaAnyUI", dependencies: [
+            .product(name: "HanlinMiniAppsBridge", package: "HanlinMiniAppsBridge", condition: .when(platforms: [.iOS])),
             "PinkhaSharing",
             "PinkhaTorahPresentation", "PinkhaAnyHost", "PinkhaAnyHanlin",
             "PinkhaAnyEngine", "PinkhaAnyIntegration", "PinkhaKit",

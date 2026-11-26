@@ -16,6 +16,11 @@ final class AppSceneUrlHandlerModifierModel: ObservableObject {
     @Published var safariUrl: URL?
     
     func onOpenURL(_ url: URL, source: DeepLinkSource = .internal) -> Bool {
+        let miniApps = PinkhaMiniAppsCoordinator.shared.routeCallback(url)
+        if miniApps.handled {
+            if let link = miniApps.link { appActionStorage.action = .deepLink(link, source) }
+            return true
+        }
         let urlWithScheme = url.urlByAddingHttpIfSchemeIsEmpty()
         
         if let deepLink = deepLinkParser.parse(url: urlWithScheme) {

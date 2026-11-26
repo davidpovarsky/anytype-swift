@@ -66,7 +66,7 @@ public struct PinkhaHanlinWriteIdentity: Codable, Equatable, Sendable {
     public var key: String { PinkhaHanlinCreatePagePlan.digest(Data(invocationID.rawValue.utf8)) }
 
     public func validate() throws {
-        guard session.context.namespace.app.utf8.elementsEqual("anytype".utf8), step >= 0,
+        guard PinkhaHanlinEngineNamespace.supports(session.context.namespace.app), step >= 0,
               [providerCallDigest, argumentsDigest, envelopeDigest].allSatisfy(Self.isDigest),
               session.context.namespace.workspace.utf8.elementsEqual(session.context.namespace.space.utf8),
               session.context.objectReference.map({ !$0.isEmpty && $0.utf8.count <= 256 }) ?? true,

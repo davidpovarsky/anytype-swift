@@ -1,0 +1,36 @@
+{
+  "checked_at": "2026-11-24T00:16:46.761974+00:00",
+  "status": "LOCAL_PROFILE_SELECTION_PASS_NATIVE_NOT_RUN",
+  "checks": [
+    "owned branch resolves tracked five-method profile",
+    "upstream shared branch preserves original selection suite",
+    "editor and original shared-editor lanes are unchanged",
+    "requested and effective lanes are distinct"
+  ],
+  "selection": {
+    "requested_lane": "hanlin-selection",
+    "effective_lane": "miniapps-native",
+    "source_profile": "Tools/MiniApps/native-profile.json",
+    "source_profile_sha256": "fe0924a08a715cdea2e61d6e1fb0e51b56caccbe80d753484e0150352b9c368f",
+    "selected_methods": [
+      "PinkhaMiniAppsNativePreparationTests/prepareMiniAppsDocument",
+      "MiniAppsNativeAcceptanceUITests/testNativeEditorPickerTextStudioReturnAndColdReopen",
+      "MiniAppsNativeAcceptanceUITests/testDuplicateCallbackDoesNotInsertAgain",
+      "PinkhaMiniAppsNativePreparationTests/verifyReturnedNativeDocument",
+      "PinkhaMiniAppsNativePreparationTests/applySelectedTextAndPreserveNewerNativeContent"
+    ],
+    "original_hanlin_selection_executed": false
+  },
+  "rejected_dispatch": {
+    "source_sha": "d17eb950935d1aaafda55ff9a2f5bd870a4ff7fe",
+    "workflow": "torah-inspector-ipados27.yml",
+    "attempted_lane": "miniapps-native",
+    "http_status": 422,
+    "created_run": false,
+    "reason": "Provided value for acceptance_lane is not in the existing workflow choice list"
+  },
+  "retained_tests_not_repeated": {
+    "planner": 13,
+    "sdk_materialization": 2
+  }
+}

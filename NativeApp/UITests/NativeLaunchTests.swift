@@ -1056,27 +1056,25 @@ final class NativeLaunchTests: XCTestCase {
     }
 
     private func selectHanlinBlockFromNativeMenu(_ app: XCUIApplication, textView: XCUIElement) throws {
+        let prefix = "any-native-block-"
+        guard textView.identifier.hasPrefix(prefix) else {
+            throw HanlinMountedFixtureError.unavailableBlockMenu
+        }
+        let nativeID = String(textView.identifier.dropFirst(prefix.count))
+        guard !nativeID.isEmpty else { throw HanlinMountedFixtureError.unavailableBlockMenu }
         let cells = app.cells.containing(.textView, identifier: textView.identifier)
         let cell = cells.firstMatch
         waitUntilEnabled(cell)
         XCTAssertEqual(cells.count, 1)
-        XCTAssertTrue(cell.isHittable)
-        let row = cell.frame, text = textView.frame
-        guard row.width.isFinite, row.height.isFinite, row.height >= 8,
-              row.contains(text), !text.isEmpty else {
-            throw HanlinMountedFixtureError.unavailableBlockGutter
-        }
-        let left = text.minX - row.minX, right = row.maxX - text.maxX
-        guard max(left, right) >= 4 else { throw HanlinMountedFixtureError.unavailableBlockGutter }
-        let x = left >= right ? row.minX + left / 2 : text.maxX + right / 2
-        let point = CGPoint(x: x, y: text.midY)
-        guard row.contains(point), !text.contains(point), app.frame.contains(point) else {
-            throw HanlinMountedFixtureError.unavailableBlockGutter
-        }
-        // The existing cell's physical gutter is outside UITextView, so this
-        // exercises UITableView's real context menu instead of the edit menu.
-        cell.coordinate(withNormalizedOffset: .zero).withOffset(
-            CGVector(dx: point.x - row.minX, dy: point.y - row.minY)).press(forDuration: 1.2)
+        let menus = cell.buttons.matching(identifier: "any-native-block-menu-" + nativeID)
+        XCTAssertEqual(menus.count, 1)
+        let menu = menus.firstMatch
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: menu, timeout: 30)
+        XCTAssertTrue(cell.frame.intersects(menu.frame))
+        // The actual explicit row menu preserves native UITextView selection.
+        // No coordinate or programmatic selection bypass is used.
+        menu.tap()
         tapWhenEnabled(app.buttons.matching(NSPredicate(
             format: "label == %@ OR label == %@", "בחירת בלוק", "Select block")).firstMatch)
     }
@@ -1492,9 +1490,16 @@ final class NativeLaunchTests: XCTestCase {
                     return false
                 }
                 let element = query.element(boundBy: 0)
-                let frame = element.frame
-                guard element.exists, element.isEnabled, element.isHittable,
-                      labels.map({ $0.contains(element.label) }) ?? true,
+                // Read the related attributes from one real accessibility
+                // snapshot. Independent cross-process property reads can consume
+                // this unchanged readiness budget before a second stable sample.
+                guard element.exists, let snapshot = try? element.snapshot() else {
+                    previousFrame = nil; firstMatchingSample = nil
+                    return false
+                }
+                let frame = snapshot.frame
+                guard snapshot.isEnabled, element.isHittable,
+                      labels.map({ $0.contains(snapshot.label) }) ?? true,
                       !frame.isNull, !frame.isInfinite, frame.width > 0, frame.height > 0 else {
                     previousFrame = nil; firstMatchingSample = nil
                     return false
@@ -1891,8 +1896,12 @@ final class NativeLaunchTests: XCTestCase {
                 try fail("pinkha_icon_changed_before_tap")
             }
             _ = try remaining("before_pinkha_folder_icon_tap")
-            navigation.append("pinkha_folder_icon")
-            icon.tap() // One observed UI target; no coordinate fallback or retap.
+            navigation.append("pinkha_folder_icon_center")
+            // Tap the center of the freshly observed icon bounds. The remote
+            // Files Image's synthesized accessibility hit point did not enter
+            // this folder in either original failed run; keep one real tap and
+            // require the same breadcrumb/Exports navigation before proceeding.
+            icon.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
             _ = try remaining("after_pinkha_folder")
             _ = try ready(app.buttons.matching(NSPredicate(
                 format: "label == %@ OR label BEGINSWITH %@", "Pinkha", "Pinkha,")),
@@ -2015,7 +2024,11 @@ final class NativeLaunchTests: XCTestCase {
         let peek = app.descendants(matching: .any)
             .matching(identifier: "torah-inspector-sheet-peek").firstMatch
         if peek.exists {
-            peek.swipeDown()
+            // Search and Close are independent controls in the shared inspector.
+            // Use the actual visible Close action; the original sheet-absence
+            // and archive/export/import/readback assertions remain unchanged.
+            let close = app.buttons["torah-inspector-peek-close"]
+            tapWhenEnabled(close)
             waitFor(NSPredicate(format: "exists == false"), object: peek, timeout: 15)
         }
         openCanonicalArchiveObservationEntry(app)
@@ -2295,8 +2308,178 @@ final class NativeLaunchTests: XCTestCase {
     }
     // END_NATIVE_CUSTOM_TYPE_UI_V1
 
+    func testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen() throws {
+        let scope = UUID(), suffix = String(UUID().uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        let spaceName = "Bin UI Space " + suffix
+        let title = "מסמך לשחזור " + suffix
+        let body = "Restore preserves mixed English ועברית 864"
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        try createNamedItemWithObservedTransition(app, action: "any-native-new-document", title: title)
+        tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+        let blocks = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        waitUntilEnabled(blocks.firstMatch)
+        blocks.firstMatch.tap(); blocks.firstMatch.typeText(body)
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        let status = app.descendants(matching: .any).matching(identifier: "any-native-save-status").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"), object: status, timeout: 45)
+        let blockID = blocks.firstMatch.identifier
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        let row = app.buttons[title].firstMatch
+        // The cold-open navigation must expose the actual Library before this
+        // actions menu. An enabled row in a retained navigation view is not
+        // evidence that the visible row can receive this real menu tap.
+        let libraryToolbar = app.buttons["any-native-create-menu"]
+        var binRowFrame: CGRect?
+        var binRowReadySince: TimeInterval?
+        let binRowReady = NSPredicate { _, _ in
+            guard app.buttons.matching(NSPredicate(format: "label == %@", title)).count == 1,
+                  row.exists, row.isEnabled, row.isHittable,
+                  libraryToolbar.exists, libraryToolbar.isEnabled, libraryToolbar.isHittable,
+                  let snapshot = try? row.snapshot() else {
+                binRowFrame = nil; binRowReadySince = nil
+                return false
+            }
+            let frame = snapshot.frame
+            guard !frame.isNull, !frame.isInfinite, frame.width > 0, frame.height > 0 else {
+                binRowFrame = nil; binRowReadySince = nil
+                return false
+            }
+            let now = ProcessInfo.processInfo.systemUptime
+            if binRowFrame == frame, let binRowReadySince, now - binRowReadySince >= 0.15 {
+                return true
+            }
+            if binRowFrame != frame || binRowReadySince == nil {
+                binRowFrame = frame; binRowReadySince = now
+            }
+            return false
+        }
+        guard XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: binRowReady, object: app)],
+                            timeout: 60) == .completed else {
+            recordNativeCreateTransition(app, phase: "bin_library_row_not_hittable")
+            XCTFail("The original Bin row and Library toolbar must be stably hittable before opening its actions menu")
+            return
+        }
+        recordNativeCreateTransition(app, phase: "bin_library_row_hittable")
+        let rowID = row.identifier
+        XCTAssertTrue(rowID.hasPrefix("any-native-hierarchy-row-"))
+        let objectID = String(rowID.dropFirst("any-native-hierarchy-row-".count))
+        let actions = app.buttons["any-native-hierarchy-actions-" + objectID]
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: actions, timeout: 30)
+        actions.tap()
+        tapWhenEnabled(app.buttons["any-native-hierarchy-archive"])
+        confirmNativeBinRemoval(app)
+        waitFor(NSPredicate(format: "exists == false"), object: app.buttons[rowID], timeout: 45)
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        XCTAssertFalse(app.buttons[rowID].exists)
+        tapWhenEnabled(app.buttons["any-native-open-bin"])
+        let archived = app.descendants(matching: .any).matching(identifier: "any-native-bin-item-" + objectID)
+        waitUntilEnabled(archived.firstMatch, timeout: 45)
+        XCTAssertEqual(archived.count, 1)
+        XCTAssertTrue(archived.firstMatch.staticTexts[title].exists)
+        tapWhenEnabled(app.buttons["any-native-bin-restore-" + objectID])
+        waitFor(NSPredicate(format: "exists == false"), object: archived.firstMatch, timeout: 45)
+        waitUntilEnabled(app.staticTexts["any-native-bin-empty"])
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        let restored = app.buttons.matching(identifier: rowID)
+        waitUntilEnabled(restored.firstMatch, timeout: 60)
+        XCTAssertEqual(restored.count, 1)
+        XCTAssertEqual(restored.firstMatch.label, title)
+        tapWhenEnabled(restored.firstMatch)
+        waitFor(NSPredicate(format: "exists == true AND value == %@", body),
+                object: app.textViews[blockID], timeout: 60)
+        XCTAssertEqual(blocks.count, 1)
+    }
+
+    // BEGIN_NATIVE_BIN_CONFIRMATION_AX_PREPARATION_V1
+    /// UIKit exposes the actual confirmation action as nested Buttons.
+    /// Choose its unique leaf only inside the exact rendered confirmation Sheet.
+    private func confirmNativeBinRemoval(_ app: XCUIApplication,
+                                         file: StaticString = #filePath, line: UInt = #line) {
+        let labels = ["העברה לסל המחזור", "Move to Bin"]
+        let sheets = app.sheets.matching(NSPredicate(format: "label IN %@", labels))
+        let menuAction = app.buttons["any-native-hierarchy-archive"]
+        func usableFrame(_ frame: CGRect) -> Bool {
+            frame.minX.isFinite && frame.minY.isFinite && frame.width.isFinite && frame.height.isFinite
+                && frame.width > 0 && frame.height > 0
+        }
+        func confirmation() -> (sheetCount: Int, titleCount: Int, actionCount: Int,
+                                leafActions: [XCUIElement], label: String) {
+            let count = sheets.count
+            guard count == 1 else { return (count, 0, 0, [], "") }
+            let sheet = sheets.element(boundBy: 0)
+            let label = sheet.label
+            let titles = sheet.staticTexts.matching(NSPredicate(format: "label == %@", label))
+            let actions = sheet.buttons.matching(NSPredicate(
+                format: "identifier == %@ AND label == %@", "any-native-bin-confirm-remove", label))
+            let leaves = actions.allElementsBoundByIndex.filter {
+                $0.descendants(matching: .button).count == 0
+            }
+            return (count, titles.count, actions.count, leaves, label)
+        }
+        let ready = NSPredicate { _, _ in
+            let current = confirmation()
+            guard !menuAction.exists, current.sheetCount == 1, current.titleCount == 1,
+                  current.leafActions.count == 1 else { return false }
+            let action = current.leafActions[0]
+            let frame = action.frame
+            return action.isEnabled && action.isHittable && usableFrame(frame)
+        }
+        let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)],
+                                   timeout: 30)
+        let ax = XCTAttachment(string: String(decoding: Data(app.debugDescription.utf8).prefix(131_072),
+                                              as: UTF8.self))
+        ax.name = "NATIVE_BIN_CONFIRMATION_private_AX"; ax.lifetime = .keepAlways; add(ax)
+        let screen = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        screen.name = "NATIVE_BIN_CONFIRMATION_private_screen"; screen.lifetime = .keepAlways; add(screen)
+        let current = confirmation()
+        let action = current.leafActions.count == 1 ? current.leafActions[0] : nil
+        let observed: [String: Any] = [
+            "sheetCount": current.sheetCount, "sheetLabel": current.label,
+            "titleCount": current.titleCount, "actionCount": current.actionCount,
+            "leafActionCount": current.leafActions.count,
+            "initiatingMenuActionPresent": menuAction.exists,
+            "waitCompleted": result == .completed,
+            "actionLabel": action?.label ?? "",
+            "actionIdentifier": action?.identifier ?? "",
+            "actionEnabled": action?.isEnabled ?? false,
+            "actionHittable": action?.isHittable ?? false,
+            "actionFrame": action.map { String(describing: $0.frame) } ?? ""
+        ]
+        if let data = try? JSONSerialization.data(withJSONObject: observed, options: [.sortedKeys]),
+           let text = String(data: data, encoding: .utf8) {
+            let control = XCTAttachment(string: text)
+            control.name = "NATIVE_BIN_CONFIRMATION_control"; control.lifetime = .keepAlways; add(control)
+        }
+        XCTAssertEqual(result, .completed, "The unique native Bin confirmation was not ready.",
+                       file: file, line: line)
+        guard result == .completed else { return }
+        let final = confirmation()
+        guard !menuAction.exists, final.sheetCount == 1, final.titleCount == 1,
+              final.leafActions.count == 1 else {
+            XCTFail("The native Bin confirmation changed before the real tap.", file: file, line: line)
+            return
+        }
+        let finalAction = final.leafActions[0]
+        let frame = finalAction.frame
+        guard finalAction.identifier == "any-native-bin-confirm-remove",
+              finalAction.label == final.label, finalAction.isEnabled,
+              finalAction.isHittable, usableFrame(frame) else {
+            XCTFail("The native Bin confirmation action lost its actual hit frame.", file: file, line: line)
+            return
+        }
+        finalAction.tap()
+    }
+    // END_NATIVE_BIN_CONFIRMATION_AX_PREPARATION_V1
+
     private func makeApplication(scope: UUID = UUID()) -> XCUIApplication {
-        let app = XCUIApplication()
+        let app = NativeApplicationUnderTest()
         app.launchArguments = [
             "--native-ui-tests", "--native-ui-test-scope", scope.uuidString,
             "-AppleLanguages", "(he,en)", "-AppleLocale", "he_IL"
@@ -2324,11 +2507,87 @@ final class NativeLaunchTests: XCTestCase {
     }
 }
 
+
+/// The existing native flows may run against the standalone acceptance app or
+/// the original combined app. The latter uses its real, visible engine selector.
+@MainActor
+final class NativeApplicationUnderTest: XCUIApplication {
+    override func launch() {
+        super.launch()
+        guard ProcessInfo.processInfo.environment["PINKHA_NATIVE_UI_UNIFIED_HOST"] == "1" else { return }
+        let selector = buttons["pinkha.engine.selector"]
+        guard selector.waitForExistence(timeout: 60) else {
+            XCTFail("The real combined-host engine selector did not appear.")
+            return
+        }
+        guard acknowledgeEmptyHeartDebugDisclosureIfPresent(selector) else { return }
+        if selector.value as? String != "Any" {
+            let ready = XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: selector)
+            guard XCTWaiter.wait(for: [ready], timeout: 60) == .completed else {
+                XCTFail("The real combined-host engine selector is not ready.")
+                return
+            }
+            selector.tap()
+            let chooseAny = buttons["pinkha.engine.select.any"]
+            guard chooseAny.waitForExistence(timeout: 15), chooseAny.isHittable else {
+                XCTFail("The actual Any engine menu item is unavailable.")
+                return
+            }
+            chooseAny.tap()
+        }
+        let selected = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "exists == true AND value == %@", "Any"),
+            object: selector)
+        XCTAssertEqual(XCTWaiter.wait(for: [selected], timeout: 60), .completed,
+                       "The original host did not complete the actual Any engine transition.")
+    }
+
+    /// The original Debug Heart startup disclosure is real UI. A fresh isolated
+    /// native journey has no Heart vault, so only its one-button empty-account
+    /// shape is admitted; a loaded-account or unrelated alert must fail closed.
+    private func acknowledgeEmptyHeartDebugDisclosureIfPresent(_ selector: XCUIElement) -> Bool {
+        let alert = alerts.firstMatch
+        if !selector.isHittable && !alert.exists {
+            _ = alert.waitForExistence(timeout: 15)
+        }
+        guard alert.exists else { return true }
+        let messages = [
+            "You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken.",
+            "הפעלת את האפליקציה עם תווכה (middleware) לא יציבה. אל תשתמש בכספת הייצור שלך. הכספת עלולה להיפגם."
+        ]
+        let labels = [
+            "I won't be using my production vault",
+            "לא אשתמש בכספת הייצור שלי"
+        ]
+        let text = alert.staticTexts.matching(NSPredicate(format: "label IN %@", messages))
+        let proceed = alert.buttons.matching(NSPredicate(format: "label IN %@", labels))
+        guard alerts.count == 1, text.count == 1, alert.buttons.count == 1,
+              proceed.count == 1, proceed.firstMatch.isEnabled, proceed.firstMatch.isHittable else {
+            XCTFail("An unexpected alert blocked the isolated native journey; no account action was approved.")
+            return false
+        }
+        XCTContext.runActivity(named: "Acknowledge original empty Heart Debug disclosure") { activity in
+            let original = XCTAttachment(screenshot: screenshot())
+            original.name = "unified-native-original-empty-heart-disclosure"
+            original.lifetime = .keepAlways
+            activity.add(original)
+        }
+        proceed.firstMatch.tap()
+        guard alert.waitForNonExistence(timeout: 15) else {
+            XCTFail("The original empty Heart Debug disclosure did not close after its actual button was tapped.")
+            return false
+        }
+        return true
+    }
+}
+
 // Test-runner-only fixture protocol. These types never enter the app target.
 private enum HanlinMountedFixtureError: Error {
     case missingConfiguration, invalidConfiguration, invalidResponse
     case wrongFixtureContract, fixtureFailed(String), phaseDeadline(Int), unexpectedPhase(Int)
-    case unavailableBlockGutter, invalidCreatePrompt, unavailableReceipt, incompleteProof
+    case unavailableBlockMenu, invalidCreatePrompt, unavailableReceipt, incompleteProof
 }
 
 private struct HanlinMountedFixtureScenario: Encodable, Sendable {
@@ -2525,3 +2784,558 @@ private enum CanonicalPickerObservationError: Error {
     case onboardingOrRecoveryVisible
     case entryDidNotPresentAnotherSurface
 }
+
+
+// BEGIN_NATIVE_SEMANTIC_ANCHOR_UI_V1
+extension NativeLaunchTests {
+    /// Normal account, document, UITextView selection, confirmation, typing and
+    /// cold reopen. The opt-in observer reads native/UI values and cannot act.
+    func testActualSemanticSelectionCancelCreateEditAndColdReopen() throws {
+        executionTimeAllowance = 1_800
+        let scope = UUID(), suffix = String(UUID().uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION"] = "1"
+        let spaceName = "Anchor Space " + suffix, documentName = "Anchor Document " + suffix
+        let firstText = "Anchor", editedText = "Changed"
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+
+        let addParagraph = app.buttons["any-native-add-paragraph"]
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: addParagraph, timeout: 60)
+        addParagraph.tap()
+        let editors = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        let editor = editors.firstMatch
+        waitForNativeEditorInput(app, editor)
+        editor.tap(); editor.typeText(firstText)
+        semanticCommit(app, editor: editor, text: firstText)
+        XCTAssertEqual(editors.count, 1)
+        let blockIdentifier = editor.identifier
+        let initial = try semanticObservation(app, phase: "initial-saved") {
+            $0.nativeMarkCount == 0 && $0.blocks.count == 1 &&
+            $0.blocks[0].textSHA256 == Self.semanticHash(firstText)
+        }
+
+        try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
+        tapWhenEnabled(app.buttons["pinkha.semanticAnchor.capture"])
+        let confirmation = app.alerts.firstMatch
+        waitUntilEnabled(confirmation)
+        XCTAssertEqual(app.alerts.count, 1)
+        XCTAssertTrue(confirmation.staticTexts[firstText].exists ||
+                      confirmation.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", firstText)).firstMatch.exists)
+        tapWhenEnabled(confirmation.buttons.matching(NSPredicate(
+            format: "label IN %@", ["Cancel", "ביטול"])).firstMatch)
+        waitFor(NSPredicate(format: "exists == false"), object: confirmation, timeout: 15)
+        let cancelled = try semanticObservation(app, phase: "cancel-without-native-mutation") {
+            $0.nativeMarkCount == 0 && $0.nativeVersionSHA256 == initial.nativeVersionSHA256
+        }
+        XCTAssertEqual(cancelled.blocks[0].sourceSHA256, initial.blocks[0].sourceSHA256)
+        XCTAssertEqual(editor.value as? String, firstText)
+
+        // A fresh real selection and a new confirmation own the only capture.
+        try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
+        tapWhenEnabled(app.buttons["pinkha.semanticAnchor.capture"])
+        waitUntilEnabled(confirmation)
+        tapWhenEnabled(confirmation.buttons.matching(NSPredicate(
+            format: "label IN %@", ["Create text anchor", "יצירת עוגן טקסט"])).firstMatch)
+        let createdMessage = app.alerts.staticTexts.matching(NSPredicate(format: "label IN %@", [
+            "The selected text now has an anchor.", "נוסף עוגן לטקסט שנבחר."
+        ])).firstMatch
+        waitUntilEnabled(createdMessage, timeout: 60)
+        tapWhenEnabled(app.alerts.buttons.matching(NSPredicate(
+            format: "label IN %@", ["Done", "סיום"])).firstMatch)
+        waitFor(NSPredicate(format: "exists == false"), object: app.alerts.firstMatch, timeout: 15)
+        let captured = try semanticObservation(app, phase: "native-and-rendered-anchor-created") {
+            $0.nativeMarkCount == 1 && $0.blocks.count == 1 &&
+            $0.blocks[0].nativeMarks.count == 1 &&
+            $0.blocks[0].nativeMarks[0].location == 0 &&
+            $0.blocks[0].nativeMarks[0].length == firstText.utf16.count &&
+            $0.blocks[0].textSHA256 == Self.semanticHash(firstText)
+        }
+        XCTAssertNotEqual(captured.nativeVersionSHA256, initial.nativeVersionSHA256)
+        XCTAssertEqual(captured.blocks[0].nativeMarks, captured.blocks[0].renderedMarks)
+        let identity = captured.blocks[0].nativeMarks[0].identitySHA256
+        XCTAssertEqual(editor.value as? String, firstText)
+        XCTAssertEqual(editor.identifier, blockIdentifier)
+
+        // Replacing marked characters through ordinary typing must preserve the
+        // existing semantic identity and transform its live range/text.
+        try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
+        editor.typeText(editedText)
+        semanticCommit(app, editor: editor, text: editedText)
+        let edited = try semanticObservation(app, phase: "ordinary-ui-edit-preserved-identity") {
+            $0.nativeMarkCount == 1 && $0.blocks.count == 1 &&
+            $0.blocks[0].textSHA256 == Self.semanticHash(editedText) &&
+            $0.blocks[0].nativeMarks.first?.identitySHA256 == identity &&
+            $0.blocks[0].nativeMarks.first?.length == editedText.utf16.count
+        }
+        XCTAssertNotEqual(edited.nativeVersionSHA256, captured.nativeVersionSHA256)
+        XCTAssertEqual(edited.blocks[0].nativeMarks, edited.blocks[0].renderedMarks)
+        XCTAssertEqual(edited.blocks[0].nativeMarks[0].textSHA256, Self.semanticHash(editedText))
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
+        waitForNativeEditorInput(app, editor)
+        waitFor(NSPredicate(format: "value == %@", editedText), object: editor, timeout: 60)
+        let reopened = try semanticObservation(app, phase: "fresh-process-native-and-ui-reopen") {
+            $0.nativeMarkCount == 1 && $0.blocks.count == 1 &&
+            $0.blocks[0].textSHA256 == Self.semanticHash(editedText) &&
+            $0.blocks[0].nativeMarks.first?.identitySHA256 == identity
+        }
+        XCTAssertNotEqual(reopened.pid, edited.pid)
+        XCTAssertNotEqual(reopened.generation, edited.generation)
+        XCTAssertEqual(reopened.spaceSHA256, initial.spaceSHA256)
+        XCTAssertEqual(reopened.objectSHA256, initial.objectSHA256)
+        XCTAssertEqual(reopened.blocks[0].sourceSHA256, edited.blocks[0].sourceSHA256)
+        XCTAssertEqual(reopened.blocks[0].nativeMarks, edited.blocks[0].nativeMarks)
+        XCTAssertEqual(reopened.blocks[0].nativeMarks, reopened.blocks[0].renderedMarks)
+        XCTAssertEqual(editors.count, 1)
+        XCTAssertEqual(editor.identifier, blockIdentifier)
+        let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        screenshot.name = "native-semantic-anchor-cold-reopen-owned-document"
+        screenshot.lifetime = .keepAlways
+        add(screenshot)
+    }
+
+    /// Production Sefaria search and canonical source writes through the real
+    /// selected-text menu. The observer hashes only already-read native data.
+    func testSemanticSourceLinkSurvivesEditAndColdReopen() throws {
+        executionTimeAllowance = 1_800
+        let scope = UUID(), suffix = String(UUID().uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION"] = "1"
+        let spaceName = "Source Anchor Space " + suffix
+        let documentName = "Source Anchor Document " + suffix
+        let firstText = "Anchor", editedText = "Changed", reference = "Genesis 1:1"
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+        tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+        let editor = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-")).firstMatch
+        waitForNativeEditorInput(app, editor)
+        editor.tap(); editor.typeText(firstText)
+        semanticCommit(app, editor: editor, text: firstText)
+        try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
+        tapWhenEnabled(app.buttons["pinkha.semanticAnchor.capture"])
+        let confirmation = app.alerts.firstMatch
+        waitUntilEnabled(confirmation)
+        tapWhenEnabled(confirmation.buttons.matching(NSPredicate(
+            format: "label IN %@", ["Create text anchor", "יצירת עוגן טקסט"])).firstMatch)
+        waitUntilEnabled(app.alerts.staticTexts.matching(NSPredicate(format: "label IN %@", [
+            "The selected text now has an anchor.", "נוסף עוגן לטקסט שנבחר."
+        ])).firstMatch, timeout: 60)
+        tapWhenEnabled(app.alerts.buttons.matching(NSPredicate(
+            format: "label IN %@", ["Done", "סיום"])).firstMatch)
+        let captured = try semanticObservation(app, phase: "source-target-native-anchor-created") {
+            $0.nativeMarkCount == 1 && $0.blocks.count == 1 &&
+            $0.blocks[0].nativeMarks.first?.length == firstText.utf16.count &&
+            $0.semanticSources?.isEmpty == true
+        }
+        let identity = try XCTUnwrap(captured.blocks.first?.nativeMarks.first?.identitySHA256)
+
+        try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
+        try semanticOpenSelectedSources(app)
+        let search = app.searchFields.firstMatch
+        waitUntilEnabled(search)
+        XCTAssertTrue(app.navigationBars.matching(NSPredicate(format: "identifier IN %@ OR label IN %@", [
+            "Sources for anchored text", "מקורות לטקסט המעוגן"
+        ], ["Sources for anchored text", "מקורות לטקסט המעוגן"])).firstMatch.exists)
+        search.tap(); search.typeText(reference)
+        let result = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND value == %@",
+            "any-native-source-result-", reference)).firstMatch
+        waitUntilEnabled(result, timeout: 60)
+        let resultID = String(result.identifier.dropFirst("any-native-source-result-".count))
+        tapWhenEnabled(app.buttons["any-native-source-link-" + resultID])
+        let linked = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND value == %@",
+            "any-native-linked-source-", reference))
+        waitUntilEnabled(linked.firstMatch, timeout: 60)
+        XCTAssertEqual(linked.count, 1)
+        let linkedID = linked.firstMatch.identifier
+        tapWhenEnabled(app.buttons["any-native-source-search-done"])
+        let stored = try semanticObservation(app, phase: "source-link-canonical-native-readback") {
+            $0.sourceReadOrigin == "TorahEditorSession.associationRecords" &&
+            $0.semanticSources?.count == 1 &&
+            $0.semanticSources?.first?.identitySHA256 == identity &&
+            $0.semanticSources?.first?.canonicalSHA256 == Self.semanticHash(reference) &&
+            $0.semanticSources?.first?.resolution == "resolved"
+        }
+        let association = try XCTUnwrap(stored.semanticSources?.first)
+        XCTAssertEqual(stored.blocks[0].nativeMarks, captured.blocks[0].nativeMarks)
+
+        try semanticSelectAll(app, editor: editor, length: firstText.utf16.count)
+        editor.typeText(editedText)
+        semanticCommit(app, editor: editor, text: editedText)
+        let edited = try semanticObservation(app, phase: "source-link-follows-real-text-edit") {
+            $0.blocks.count == 1 && $0.blocks[0].textSHA256 == Self.semanticHash(editedText) &&
+            $0.blocks[0].nativeMarks.first?.identitySHA256 == identity &&
+            $0.blocks[0].nativeMarks.first?.length == editedText.utf16.count &&
+            $0.semanticSources == [association]
+        }
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
+        waitForNativeEditorInput(app, editor)
+        let reopened = try semanticObservation(app, phase: "source-link-fresh-process-native-reopen") {
+            $0.blocks.count == 1 && $0.blocks[0].textSHA256 == Self.semanticHash(editedText) &&
+            $0.semanticSources == [association]
+        }
+        XCTAssertNotEqual(reopened.pid, edited.pid)
+        XCTAssertNotEqual(reopened.generation, edited.generation)
+        XCTAssertEqual(reopened.spaceSHA256, captured.spaceSHA256)
+        XCTAssertEqual(reopened.objectSHA256, captured.objectSHA256)
+        XCTAssertEqual(reopened.blocks[0].sourceSHA256, edited.blocks[0].sourceSHA256)
+        XCTAssertEqual(reopened.blocks[0].nativeMarks, edited.blocks[0].nativeMarks)
+
+        try semanticSelectAll(app, editor: editor, length: editedText.utf16.count)
+        try semanticOpenSelectedSources(app)
+        waitUntilEnabled(app.buttons[linkedID], timeout: 60)
+        XCTAssertEqual(app.buttons[linkedID].value as? String, reference)
+        let associationID = String(linkedID.dropFirst("any-native-linked-source-".count))
+        let unlink = app.buttons["any-native-source-unlink-" + associationID]
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"), object: unlink, timeout: 30)
+        XCTAssertGreaterThanOrEqual(unlink.frame.width, 44)
+        XCTAssertGreaterThanOrEqual(unlink.frame.height, 44)
+        tapWhenEnabled(unlink)
+        waitFor(NSPredicate(format: "exists == false"), object: app.buttons[linkedID], timeout: 60)
+        tapWhenEnabled(app.buttons["any-native-source-search-done"])
+        let unlinked = try semanticObservation(app, phase: "source-unlink-keeps-native-text-and-marker") {
+            $0.semanticSources?.isEmpty == true && $0.nativeMarkCount == 1 &&
+            $0.blocks.count == 1 && $0.blocks[0].textSHA256 == Self.semanticHash(editedText) &&
+            $0.blocks[0].nativeMarks.first?.identitySHA256 == identity
+        }
+        XCTAssertEqual(unlinked.blocks[0].sourceSHA256, reopened.blocks[0].sourceSHA256)
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
+        let removed = try semanticObservation(app, phase: "source-unlink-fresh-process-readback") {
+            $0.semanticSources?.isEmpty == true && $0.nativeMarkCount == 1 &&
+            $0.blocks.count == 1 && $0.blocks[0].textSHA256 == Self.semanticHash(editedText) &&
+            $0.blocks[0].nativeMarks.first?.identitySHA256 == identity
+        }
+        XCTAssertNotEqual(removed.pid, unlinked.pid)
+        XCTAssertEqual(removed.blocks[0].sourceSHA256, unlinked.blocks[0].sourceSHA256)
+        let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        screenshot.name = "native-semantic-source-link-and-unlink-cold-reopen"
+        screenshot.lifetime = .keepAlways
+        add(screenshot)
+    }
+
+    private func semanticOpenSelectedSources(_ app: XCUIApplication) throws {
+        // The retained original UIKit link-menu hierarchy contains this exact
+        // action as a native Button, but does not expose UIAction.identifier.
+        // Require one real, enabled, hittable action; never replace the complete
+        // native selection witness or invoke the application through a hook.
+        let labels = ["Sources for anchored text", "מקורות לטקסט המעוגן"]
+        let predicate = NSPredicate(format: "label IN %@", labels)
+        var selected: XCUIElement?
+        let ready = NSPredicate { _, _ in
+            let matches = app.buttons.matching(predicate).allElementsBoundByIndex
+                + app.descendants(matching: .menuItem).matching(predicate).allElementsBoundByIndex
+            let actions = matches.filter { $0.exists && $0.isEnabled && $0.isHittable }
+            guard actions.count == 1 else { return false }
+            selected = actions[0]
+            return true
+        }
+        let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)], timeout: 30)
+        XCTAssertEqual(result, .completed, "The selected anchor must expose one real Sources menu action")
+        guard result == .completed, let selected else { throw SemanticAnchorUIError.originalComparisonUnavailable }
+        XCTAssertTrue(selected.exists && selected.isEnabled && selected.isHittable)
+        XCTAssertTrue(labels.contains(selected.label))
+        selected.tap()
+    }
+
+    private func semanticCommit(_ app: XCUIApplication, editor: XCUIElement, text: String) {
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        let status = app.descendants(matching: .any).matching(identifier: "any-native-save-status").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"), object: status, timeout: 60)
+        waitFor(NSPredicate(format: "value == %@", text), object: editor, timeout: 30)
+    }
+
+    private func semanticSelectAll(_ app: XCUIApplication, editor: XCUIElement, length: Int) throws {
+        editor.tap()
+        let focused = try semanticObservation(app, phase: "actual-uikit-selection-before-reselection") {
+            $0.blocks.count == 1 && $0.blocks[0].isFirstResponder
+        }
+        if focused.blocks[0].selectionLength > 0 {
+            // Cancel correctly preserves UIKit's selection. A tap in the empty
+            // paragraph area can keep that selection; a real physical arrow
+            // key collapses it through UIKit's native text-input system.
+            // No selection is set through the observer or an app test hook.
+            editor.typeKey(.rightArrow, modifierFlags: [])
+            _ = try semanticObservation(app, phase: "actual-uikit-caret-before-reselection") {
+                $0.blocks.count == 1 && $0.blocks[0].isFirstResponder &&
+                $0.blocks[0].selectionLength == 0
+            }
+        }
+        editor.press(forDuration: 1.2)
+        let action = app.descendants(matching: .any).matching(NSPredicate(
+            format: "label IN %@", ["Select All", "בחר הכל", "בחר הכול", "בחירת הכול"])).firstMatch
+        // A native long press can itself select this entire one-word paragraph;
+        // UIKit then omits the redundant Select All item. Either path must still
+        // satisfy the same complete, actual UIKit range witness below.
+        if action.waitForExistence(timeout: 3) { tapWhenEnabled(action) }
+        _ = try semanticObservation(app, phase: "actual-uikit-selected-range") {
+            $0.blocks.count == 1 && $0.blocks[0].isFirstResponder &&
+            $0.blocks[0].selectionLocation == 0 && $0.blocks[0].selectionLength == length
+        }
+    }
+
+    private func semanticObservation(_ app: XCUIApplication, phase: String,
+        predicate: @escaping (SemanticAnchorUIObservation) -> Bool) throws -> SemanticAnchorUIObservation {
+        let element = app.descendants(matching: .any)
+            .matching(identifier: "any-native-semantic-anchor-observation").firstMatch
+        var matched: SemanticAnchorUIObservation?
+        let condition = NSPredicate { _, _ in
+            guard element.exists, let value = element.value as? String,
+                  let data = value.data(using: .utf8), data.count <= 24_576,
+                  let observation = try? JSONDecoder().decode(SemanticAnchorUIObservation.self, from: data),
+                  observation.state == "MATCHED", observation.mode == "read-only",
+                  observation.engineCalls == 0, observation.mutations == 0, observation.selectionChanges == 0,
+                  observation.nativeMarkCount == observation.renderedMarkCount,
+                  predicate(observation) else { return false }
+            matched = observation
+            return true
+        }
+        let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: condition, object: element)], timeout: 60)
+        XCTAssertEqual(result, .completed, "Original native/rendered comparison failed at " + phase)
+        guard result == .completed, let matched else { throw SemanticAnchorUIError.originalComparisonUnavailable }
+        let attachment = XCTAttachment(data: try JSONEncoder().encode(matched), uniformTypeIdentifier: "public.json")
+        attachment.name = "native-semantic-anchor-" + phase
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        return matched
+    }
+
+    private static func semanticHash(_ value: String) -> String {
+        SHA256.hash(data: Data(value.utf8)).map { String(format: "%02x", $0) }.joined()
+    }
+}
+
+private enum SemanticAnchorUIError: Error { case originalComparisonUnavailable }
+
+private struct SemanticAnchorUIObservation: Codable {
+    struct Source: Codable, Equatable {
+        let identitySHA256: String
+        let associationSHA256: String
+        let canonicalSHA256: String
+        let recordSHA256: String
+        let resolution: String
+    }
+    let sourceReadOrigin: String?
+    let semanticSources: [Source]?
+    struct Mark: Codable, Equatable {
+        let identitySHA256: String
+        let location: Int
+        let length: Int
+        let textSHA256: String
+    }
+    struct Block: Codable {
+        let blockSHA256: String
+        let textSHA256: String
+        let sourceSHA256: String
+        let utf16Length: Int
+        let nativeMarks: [Mark]
+        let renderedMarks: [Mark]
+        let selectionLocation: Int
+        let selectionLength: Int
+        let isFirstResponder: Bool
+    }
+    let schema: String
+    let state: String
+    let mode: String
+    let pid: Int
+    let generation: String
+    let spaceSHA256: String
+    let objectSHA256: String
+    let nativeVersionSHA256: String
+    let engineCalls: Int
+    let mutations: Int
+    let selectionChanges: Int
+    let nativeMarkCount: Int
+    let renderedMarkCount: Int
+    let blocks: [Block]
+}
+// END_NATIVE_SEMANTIC_ANCHOR_UI_V1
+
+
+// BEGIN_NATIVE_MINIAPPS_CROSS_APP_UI_V1
+extension NativeLaunchTests {
+    /// A fresh controller-owned simulator uses the ordinary app storage and
+    /// Keychain configuration so an OS callback after process termination does
+    /// not depend on test-only launch arguments.
+    func testAnyMiniAppsTextStudioWarmAndColdReturnPersistInNativeDocument() throws {
+        executionTimeAllowance = 900
+        XCTAssertEqual(ProcessInfo.processInfo.environment["PINKHA_SIMULATOR_UI_DISPOSABLE"], "1")
+        XCTAssertEqual(ProcessInfo.processInfo.environment["PINKHA_NATIVE_UI_UNIFIED_HOST"], "1")
+        let app = NativeApplicationUnderTest()
+        app.launchArguments = ["--native-ui-test-scope", UUID().uuidString,
+                               "-AppleLanguages", "(he,en)", "-AppleLocale", "he_IL"]
+        app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION"] = "1"
+        app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION_NORMAL_STORAGE"] = "1"
+        app.launchEnvironment["PINKHA_SIMULATOR_UI_DISPOSABLE"] = "1"
+        XCTAssertFalse(app.launchArguments.contains("--native-ui-tests"))
+        let companion = XCUIApplication(bundleIdentifier: "com.itorah.hanlinminiapps")
+        let suffix = String(UUID().uuidString.prefix(8))
+        let spaceName = "MiniApps Space " + suffix
+        let documentName = "MiniApps native " + suffix
+        let initialText = "מקור Any " + suffix
+        let warmText = "MiniApps warm שלום " + suffix
+        let coldText = "MiniApps cold תורה " + suffix
+
+        func tapReady(_ element: XCUIElement, timeout: TimeInterval = 45) {
+            waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                    object: element, timeout: timeout)
+            element.tap()
+        }
+        func screenshot(_ name: String) {
+            let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            attachment.name = name
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
+        func expectRendered(_ texts: [String]) {
+            for text in texts {
+                let matches = app.textViews.matching(NSPredicate(
+                    format: "identifier BEGINSWITH %@ AND value == %@", "any-native-block-", text))
+                waitFor(NSPredicate(format: "exists == true AND value == %@", text),
+                        object: matches.firstMatch, timeout: 60)
+                XCTAssertEqual(matches.count, 1, "The actual editor must contain one exact returned paragraph")
+            }
+            XCTAssertEqual(app.textViews.matching(
+                NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-")).count, texts.count)
+        }
+        func openSavedAccountAndSpace() {
+            let saved = app.buttons.matching(identifier: "any-native-saved-account")
+            waitUntilEnabled(saved.firstMatch, timeout: 60)
+            XCTAssertEqual(saved.count, 1, "The fresh simulator owns exactly one real native account")
+            tapReady(saved.firstMatch)
+            tapReady(app.buttons[spaceName].firstMatch, timeout: 60)
+        }
+        func roundTrip(_ text: String, cold: Bool) {
+            tapReady(app.buttons["any-native-document-options"])
+            tapReady(app.buttons["any-native-miniapps"])
+            let launch = app.buttons["miniapps-launch-nativeapp.textstudio"].firstMatch
+            tapReady(launch)
+            XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 45))
+            let input = companion.textViews["miniapps.textstudio.editor"].firstMatch
+            waitUntilEnabled(input, timeout: 45)
+            XCTAssertEqual(input.value as? String ?? "", "",
+                           "A toolbar insert must not send unselected native document content")
+            if cold {
+                app.terminate()
+                XCTAssertTrue(app.wait(for: .notRunning, timeout: 15))
+                XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 15))
+            }
+            tapReady(input)
+            input.typeText(text)
+            XCTAssertEqual(input.value as? String, text)
+            screenshot(cold ? "any-miniapps-real-companion-cold" : "any-miniapps-real-companion-warm")
+            tapReady(companion.buttons["miniapps.textstudio.return"])
+            // Only the companion's real callback may foreground the source.
+            // Do not call launch(), activate() or open() to aid that transition.
+            XCTAssertTrue(app.wait(for: .runningForeground, timeout: 45))
+            if cold {
+                // The native account gate still requires the user's ordinary
+                // selection after a new process; a URL cannot authenticate it.
+                // No document is selected manually: the retained request must
+                // route its exact document only after that native account opens.
+                openSavedAccountAndSpace()
+            }
+        }
+
+        companion.launch()
+        XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 45))
+        waitUntilEnabled(companion.buttons["hanlin-apps-add"].firstMatch, timeout: 45)
+        XCTAssertTrue(companion.descendants(matching: .any)
+            .matching(identifier: "hanlin-package-card-Text Studio").firstMatch.waitForExistence(timeout: 30))
+        app.launch()
+        defer { app.terminate(); companion.terminate() }
+        waitUntilEnabled(app.buttons["any-native-account-create"], timeout: 60)
+        XCTAssertEqual(app.buttons.matching(identifier: "any-native-saved-account").count, 0)
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+        tapReady(app.buttons["any-native-add-paragraph"], timeout: 60)
+        let editor = app.textViews.matching(
+            NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-")).firstMatch
+        waitForNativeEditorInput(app, editor)
+        tapReady(editor)
+        editor.typeText(initialText)
+        semanticCommit(app, editor: editor, text: initialText)
+        let initialHash = Self.semanticHash(initialText)
+        let warmHash = Self.semanticHash(warmText)
+        let coldHash = Self.semanticHash(coldText)
+        let initial = try semanticObservation(app, phase: "miniapps-original-native-before-launch") {
+            $0.blocks.count == 1 && $0.blocks[0].textSHA256 == initialHash
+        }
+        XCTAssertEqual(initial.nativeMarkCount, 0)
+        let initialBlock = initial.blocks[0].blockSHA256
+
+        roundTrip(warmText, cold: false)
+        expectRendered([initialText, warmText])
+        let warm = try semanticObservation(app, phase: "miniapps-warm-native-and-editor-readback") {
+            $0.spaceSHA256 == initial.spaceSHA256 && $0.objectSHA256 == initial.objectSHA256 &&
+            $0.blocks.count == 2 &&
+            Set($0.blocks.map(\.textSHA256)) == Set([initialHash, warmHash]) &&
+            $0.blocks.contains { $0.blockSHA256 == initialBlock && $0.textSHA256 == initialHash }
+        }
+        XCTAssertEqual(initial.pid, warm.pid)
+        XCTAssertEqual(Set(warm.blocks.map(\.blockSHA256)).count, 2)
+        XCTAssertNotEqual(initial.nativeVersionSHA256, warm.nativeVersionSHA256)
+        screenshot("any-miniapps-warm-original-native-document")
+
+        roundTrip(coldText, cold: true)
+        expectRendered([initialText, warmText, coldText])
+        screenshot("any-miniapps-cold-callback-after-normal-account-selection")
+
+        app.terminate()
+        XCTAssertTrue(app.wait(for: .notRunning, timeout: 15))
+        app.launch()
+        openSavedAccountAndSpace()
+        let row = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND label == %@", "any-native-hierarchy-row-", documentName))
+        waitUntilEnabled(row.firstMatch, timeout: 60)
+        XCTAssertEqual(row.count, 1)
+        tapReady(row.firstMatch)
+        expectRendered([initialText, warmText, coldText])
+        let reopened = try semanticObservation(app, phase: "miniapps-second-cold-native-persistence") {
+            $0.spaceSHA256 == initial.spaceSHA256 && $0.objectSHA256 == initial.objectSHA256 &&
+            $0.blocks.count == 3 &&
+            Set($0.blocks.map(\.textSHA256)) == Set([initialHash, warmHash, coldHash]) &&
+            Set(warm.blocks.map(\.blockSHA256)).isSubset(of: Set($0.blocks.map(\.blockSHA256)))
+        }
+        XCTAssertNotEqual(initial.pid, reopened.pid)
+        XCTAssertNotEqual(initial.generation, reopened.generation)
+        XCTAssertNotEqual(warm.nativeVersionSHA256, reopened.nativeVersionSHA256)
+        XCTAssertEqual(Set(reopened.blocks.map(\.blockSHA256)).count, 3)
+        XCTAssertEqual(reopened.nativeMarkCount, 0)
+        screenshot("any-miniapps-second-cold-native-and-editor-readback")
+        let report: [String: Any] = [
+            "schema": "any-miniapps-real-cross-app-ui/v1",
+            "fixtureUsesNormalAppStorage": true,
+            "testStorageOverrides": false,
+            "actualCompanionReturns": 2,
+            "sourceTerminatedBeforeSecondReturn": true,
+            "manualSourceLaunchForCallback": false,
+            "ordinaryAccountSelectionAfterColdCallback": true,
+            "manualDocumentSelectionForCallback": false,
+            "nativeReadOrigin": "original-runtime-readback-and-mounted-editor",
+            "nativeReadExtraCallsByObserver": 0,
+            "sameSpaceSHA256": initial.spaceSHA256,
+            "sameObjectSHA256": initial.objectSHA256,
+            "originalBlockPreserved": reopened.blocks.contains { $0.blockSHA256 == initialBlock && $0.textSHA256 == initialHash },
+            "nativeParagraphCount": reopened.blocks.count,
+            "initialProcessID": initial.pid,
+            "finalProcessID": reopened.pid
+        ]
+        let attachment = XCTAttachment(data: try JSONSerialization.data(withJSONObject: report, options: [.sortedKeys]),
+                                       uniformTypeIdentifier: "public.json")
+        attachment.name = "any-miniapps-real-cross-app-original-result"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+}
+// END_NATIVE_MINIAPPS_CROSS_APP_UI_V1

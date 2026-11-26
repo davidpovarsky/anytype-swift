@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "source_sha": "d340d9258dc066d6a66e19d81f6eeae3ba637130",
+  "run_id": "45309252445",
+  "run_attempt": "1",
+  "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45309252445",
+  "overall_status": "FAIL",
+  "native_application_and_test_target_build": "EXECUTED_PASS",
+  "native_build_log_sha256": "10ae1f4d246ef7ba8c8e3f5930f19c286df381558ce1e96b2f1178096aa4c5de",
+  "native_build_log_terminal_evidence": "** TEST BUILD SUCCEEDED **",
+  "ui_target_build": "NOT_RUN",
+  "actual_test_methods": 0,
+  "failure_stage": "POST_NATIVE_BUILD_ENTITLEMENT_READBACK",
+  "failure": {
+    "type": "KeyError",
+    "key": "com.apple.security.application-groups",
+    "cause": "codesign ad-hoc plist is empty; actual simulator entitlement plist is linked into __TEXT,__entitlements from Anytype.app-Simulated.xcent"
+  },
+  "original_receipt_preserved": {
+    "status": "BUILD_FAILED_TESTS_NOT_RUN",
+    "phase": "build-native",
+    "sha256": "9bee7438777c5aaddc6025cd7a70a483043edfc57376954a3643311efead28cb",
+    "note": "Original broad status label is preserved; this separately authenticated log proves compilation succeeded before that postbuild check."
+  },
+  "artifact": {
+    "id": 14884788203,
+    "name": "Pinkha-UI27-hanlin-selection-45309252445-1",
+    "bytes": 1079553,
+    "sha256": "28380f8b7d495b0bbbb5854e922308a1c7792f41ac49f88dcf75a603de26c360",
+    "full_download_hash_verified": true,
+    "compiled_products_included": false
+  },
+  "dependency_resolution": {
+    "status": "PINNED_MACRO_AND_RESOLUTION_RECORDED",
+    "stage": "native",
+    "source_sha": "d340d9258dc066d6a66e19d81f6eeae3ba637130",
+    "run_id": "45309252445",
+    "run_attempt": "1",
+    "generated_tracked_deltas": [
+      "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+    ],
+    "locks": [
+      {
+        "path": "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+        "resolved_sha256": "4b7b004500d26576591b0e9402140f58ac6603e17346a8932fe3f8d4f9013bef",
+        "resolved_snapshot": "dependency-resolution/native/0-resolved.json",
+        "original_sha256": "e1f20cfcd191832a49f3f94925aa314968d8ee9e344d6fac9a4aa30f2d90cc4f",
+        "original_snapshot": "dependency-resolution/native/0-original.json",
+        "pin_count": 54
+      }
+    ],
+    "macro": {
+      "identity": "equatable",
+      "location": "https://github.com/ordo-one/equatable",
+      "version": "1.4.1",
+      "revision": "597c2bb34af0c51331eb3b5e705f942d8ee20daa",
+      "target": "EquatableMacros",
+      "source_tree": "dd72dc8a6b47d7b3d78f9a6550275cc7eaeeccd2",
+      "manifest_sha256": {
+        "Package.swift": "21f122fb50207cf54b2177b6fcf85841ad40371769ba0d6587828748cc8b60f3"
+      }
+    },
+    "activation_arguments": [
+      "-skipMacroValidation"
+    ],
+    "source_integrity": "TRACKED_RESOLUTION_DELTA_RECORDED"
+  },
+  "requested_lane": "hanlin-selection",
+  "effective_lane": "miniapps-native",
+  "source_profile_sha256": "fe0924a08a715cdea2e61d6e1fb0e51b56caccbe80d753484e0150352b9c368f",
+  "selected_methods": [
+    "PinkhaMiniAppsNativePreparationTests/prepareMiniAppsDocument",
+    "MiniAppsNativeAcceptanceUITests/testNativeEditorPickerTextStudioReturnAndColdReopen",
+    "MiniAppsNativeAcceptanceUITests/testDuplicateCallbackDoesNotInsertAgain",
+    "PinkhaMiniAppsNativePreparationTests/verifyReturnedNativeDocument",
+    "PinkhaMiniAppsNativePreparationTests/applySelectedTextAndPreserveNewerNativeContent"
+  ],
+  "producer_revision": "a774de24926ca13d563c45c42917d03b8c04296f",
+  "producer_run_id": "45294462656",
+  "preserved_test_evidence": {
+    "planner": 13,
+    "materialization": 2,
+    "dependency_binding": 5,
+    "repeated": false
+  },
+  "physical_sharing": "NOT_PROVEN_BY_SIMULATOR",
+  "apple_profile_grants": "PENDING_APPLE_GRANT"
+}

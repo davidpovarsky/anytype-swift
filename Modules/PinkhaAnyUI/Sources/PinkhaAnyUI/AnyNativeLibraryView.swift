@@ -1,6 +1,7 @@
 #if canImport(UIKit) && canImport(SwiftUI)
 import Foundation
 import SwiftUI
+import UniformTypeIdentifiers
 import PinkhaKit
 import PinkhaAnyEngine
 import PinkhaAnyIntegration
@@ -34,16 +35,19 @@ public struct AnyNativeLibraryView: View {
     @State private var removeItem: AnyHierarchyItem?
     private let onRequestClose: @MainActor () async -> Void
     private let lifetime: AnyUIPresentationLifetime
+    private let onManageMembers: (@MainActor () -> Void)?
 
     public init(client: AnyHTTPClient, session: AnyApplicationSession,
                 objects: AnyNativeObjectCreator, blocks: AnyNativeBlockCreator,
                 capabilities: AnyUIFoundationCapabilities,
                 onRequestClose: @escaping @MainActor () async -> Void,
-                lifetime: AnyUIPresentationLifetime, recovery: AnyNativeLibraryRecovery) {
+                lifetime: AnyUIPresentationLifetime, recovery: AnyNativeLibraryRecovery,
+                onManageMembers: (@MainActor () -> Void)? = nil) {
         _model = State(initialValue: AnyLibraryPresentation(client: client, session: session,
             objects: objects, blocks: blocks, capabilities: capabilities, lifetime: lifetime, recovery: recovery))
         _path = State(initialValue: recovery.workspace == session.workspace ? recovery.navigation : [])
         self.onRequestClose = onRequestClose; self.lifetime = lifetime
+        self.onManageMembers = onManageMembers
     }
 
     public var body: some View {
@@ -56,6 +60,7 @@ public struct AnyNativeLibraryView: View {
                         AnyNativeDocumentEntry(library: model, objectID: id, blockID: blockID)
                     case .allDocuments: documents(notesOnly: false)
                     case .notes: documents(notesOnly: true)
+                    case .bin: bin
                     }
                 }
         }
@@ -68,7 +73,10 @@ public struct AnyNativeLibraryView: View {
         .task {
             model.onOpenDocument = { id, blockID in path.append(.document(id, blockID)) }
             await model.open()
+            routeMiniAppsReturn()
         }
+        .task(id: AnyMiniAppsReturnRouter.shared.requestID) { routeMiniAppsReturn() }
+        .onChange(of: model.isReady) { _, ready in if ready { routeMiniAppsReturn() } }
         .sheet(item: $nameRequest, onDismiss: submitAfterNameDismissal) { request in
             if let item = request.item {
                 AnyNativeNameSheet(title: AnyUIErrorText.text("שינוי שם", "Rename"),
@@ -92,7 +100,7 @@ public struct AnyNativeLibraryView: View {
                         AnyUIErrorText.text("העברת התוכן לתיקיית האב והסרת התיקייה", "Move contents to the parent and remove folder") :
                         AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), role: .destructive) {
                             Task { await model.remove(item) }; removeItem = nil
-                        }
+                        }.accessibilityIdentifier("any-native-bin-confirm-remove")
                 }
                 Button(AnyUIErrorText.text("ביטול", "Cancel"), role: .cancel) { removeItem = nil }
             }
@@ -125,6 +133,15 @@ public struct AnyNativeLibraryView: View {
         guard nameRequest?.id == request.id else { return }
         pendingNameSubmission = nil
         nameRequest = nil
+    }
+
+    private func routeMiniAppsReturn() {
+        guard lifetime.isActive, model.isReady,
+              let objectID = AnyMiniAppsReturnRouter.shared.pendingObject(
+                accountID: model.session.workspace.accountID, spaceID: model.session.workspace.spaceID) else { return }
+        if path.last != .document(objectID, nil) { path.append(.document(objectID, nil)) }
+        AnyMiniAppsReturnRouter.shared.didRoute(accountID: model.session.workspace.accountID,
+            spaceID: model.session.workspace.spaceID, objectID: objectID)
     }
 
     private func submitAfterNameDismissal() {
@@ -180,6 +197,9 @@ public struct AnyNativeLibraryView: View {
                                 NavigationLink(value: AnyNativeLibraryDestination.notes) {
                                     Label(AnyUIErrorText.text("הערות", "Notes"), systemImage: "note.text")
                                 }
+                                NavigationLink(value: AnyNativeLibraryDestination.bin) {
+                                    Label(AnyUIErrorText.text("סל המחזור", "Bin"), systemImage: "trash")
+                                }.accessibilityIdentifier("any-native-open-bin")
                             }
                         }
                         Section {
@@ -188,7 +208,8 @@ public struct AnyNativeLibraryView: View {
                                 hierarchyRow(item)
                                     .moveDisabled(!editMode.isEditing || !model.canWrite)
                             }
-                                .onMove { offsets, destination in
+                                // Remove List reordering outside Edit mode so folder drops own the interaction.
+                                .onMove(perform: editMode.isEditing && model.canWrite ? { offsets, destination in
                                     guard lifetime.isActive, model.canWrite, editMode.isEditing,
                                           offsets.count == 1, let offset = offsets.first,
                                           items.indices.contains(offset) else { return }
@@ -199,7 +220,7 @@ public struct AnyNativeLibraryView: View {
                                     let before = index + 1 < reordered.count ? reordered[index + 1] : nil
                                     Task { await model.move(objectID: item.objectID, parentID: parentID,
                                                             beforeSiblingID: before) }
-                                }
+                                } : nil)
                             ForEach(model.pendingCreations.filter { $0.plan.parentID == parentID }) { pending in
                                 HStack {
                                     Label(pending.plan.title, systemImage: pending.plan.kind == .folder ? "folder" : "doc")
@@ -240,6 +261,12 @@ public struct AnyNativeLibraryView: View {
                 }
             }
             ToolbarItemGroup(placement: .topBarTrailing) {
+                if let onManageMembers {
+                    Button(action: onManageMembers) { Image(systemName: "person.2") }
+                        .accessibilityLabel(Text(AnyUIErrorText.text("הרשאות והזמנות", "Members and invitations")))
+                        .accessibilityIdentifier("any-native-members")
+                        .disabled(!lifetime.isActive)
+                }
                 if model.hierarchy != nil {
                     EditButton().disabled(!model.canWrite)
                     Button {
@@ -255,62 +282,74 @@ public struct AnyNativeLibraryView: View {
     }
 
     private func hierarchyRow(_ item: AnyHierarchyPresentationItem) -> some View {
-        HStack(spacing: 8) {
-            Button {
-                path.append(item.kind == .folder ? .folder(item.objectID) : .document(item.objectID, nil))
-            } label: {
-                HStack {
-                    Label(item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
-                          systemImage: item.kind == .folder ? "folder" : "doc.text")
-                        .foregroundStyle(.primary)
-                    Spacer()
-                    if item.isPending || model.pendingMoves.contains(item.objectID) { ProgressView() }
-                    if item.kind == .folder { Image(systemName: "chevron.forward").foregroundStyle(.secondary) }
-                }
-                .contentShape(Rectangle())
+        AnyNativeHierarchyDropRow(session: model.session, canDrop: { sourceID in
+            canDropHierarchy(sourceID, onto: item.objectID)
+        }, performDrop: { sourceID in
+            Task { @MainActor in
+                guard canDropHierarchy(sourceID, onto: item.objectID),
+                      let destination = model.hierarchy?.itemsByID[item.objectID] else { return }
+                await model.move(objectID: sourceID,
+                    parentID: destination.kind == .folder ? destination.objectID : destination.parentID,
+                    beforeSiblingID: destination.kind == .folder ? nil : destination.objectID)
             }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("any-native-hierarchy-row-\(item.objectID)")
-            .contextMenu {
-                Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
-                    beginNaming(.init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false))
-                }.disabled(!model.canWrite)
-                Button(AnyUIErrorText.text("העברה", "Move"), systemImage: "folder") { moveItem = item.native }
-                    .disabled(!model.canWrite)
-                    .accessibilityIdentifier("any-native-hierarchy-move")
-                Button(AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), systemImage: "trash", role: .destructive) {
-                    removeItem = item.native
-                }.disabled(!model.canWrite)
-            }
-
-            if model.canWrite && !editMode.isEditing {
-                Image(systemName: "line.3.horizontal")
-                    .foregroundStyle(.secondary)
-                    .frame(width: 44, height: 44)
+        }) {
+            HStack(spacing: 8) {
+                Button {
+                    path.append(item.kind == .folder ? .folder(item.objectID) : .document(item.objectID, nil))
+                } label: {
+                    HStack {
+                        Label(item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
+                              systemImage: item.kind == .folder ? "folder" : "doc.text")
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        if item.isPending || model.pendingMoves.contains(item.objectID) { ProgressView() }
+                        if item.kind == .folder { Image(systemName: "chevron.forward").foregroundStyle(.secondary) }
+                    }
                     .contentShape(Rectangle())
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(Text(AnyUIErrorText.text("גרירה של ", "Drag ") +
-                        (item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title)))
-                    .accessibilityHint(Text(AnyUIErrorText.text("גרירה לתיקייה כדי להעביר את הפריט.",
-                                                              "Drag into a folder to move this item.")))
-                    .accessibilityIdentifier("any-native-hierarchy-drag-\(item.objectID)")
-                    .draggable("pinkha-any-node|\(model.session.workspace.spaceID)|\(item.objectID)")
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("any-native-hierarchy-row-\(item.objectID)")
+                .contextMenu { hierarchyActions(item) }
+
+                Menu { hierarchyActions(item) } label: {
+                    Image(systemName: "ellipsis")
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.borderless)
+                .accessibilityLabel(AnyUIErrorText.text("פעולות פריט", "Item actions"))
+                .accessibilityIdentifier("any-native-hierarchy-actions-\(item.objectID)")
+
+                if model.canWrite && !editMode.isEditing {
+                    AnyNativeHierarchyDragHandle(session: model.session, objectID: item.objectID,
+                        title: item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
+                        canDrag: { lifetime.isActive && model.canWrite && !editMode.isEditing
+                            && !model.pendingMoves.contains(item.objectID) })
+                        .frame(width: 44, height: 44)
+                }
             }
         }
-        .accessibilityElement(children: .contain)
-        .dropDestination(for: String.self) { payloads, _ in
-            guard lifetime.isActive, model.canWrite, !editMode.isEditing,
-                  payloads.count == 1 else { return false }
-            let parts = payloads[0].split(separator: "|", omittingEmptySubsequences: false).map(String.init)
-            guard parts.count == 3, parts[0] == "pinkha-any-node",
-                  parts[1] == model.session.workspace.spaceID,
-                  model.hierarchy?.itemsByID[parts[2]] != nil else { return false }
-            Task {
-                await model.move(objectID: parts[2], parentID: item.kind == .folder ? item.objectID : item.parentID,
-                                 beforeSiblingID: item.kind == .folder ? nil : item.objectID)
-            }
-            return true
-        }
+    }
+
+    @ViewBuilder
+    private func hierarchyActions(_ item: AnyHierarchyPresentationItem) -> some View {
+        Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
+            beginNaming(.init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false))
+        }.disabled(!model.canWrite)
+        Button(AnyUIErrorText.text("העברה", "Move"), systemImage: "folder") { moveItem = item.native }
+            .disabled(!model.canWrite)
+            .accessibilityIdentifier("any-native-hierarchy-move")
+        Button(AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), systemImage: "trash", role: .destructive) {
+            removeItem = item.native
+        }.disabled(!model.canWrite)
+            .accessibilityIdentifier("any-native-hierarchy-archive")
+    }
+
+    private func canDropHierarchy(_ sourceID: String, onto destinationID: String) -> Bool {
+        lifetime.isActive && model.canWrite && !editMode.isEditing && sourceID != destinationID
+            && !model.pendingMoves.contains(sourceID)
+            && model.hierarchy?.itemsByID[sourceID] != nil
+            && model.hierarchy?.itemsByID[destinationID] != nil
     }
 
     private func documents(notesOnly: Bool) -> some View {
@@ -318,6 +357,40 @@ public struct AnyNativeLibraryView: View {
             .navigationTitle(notesOnly ? AnyUIErrorText.text("הערות", "Notes") :
                                         AnyUIErrorText.text("כל המסמכים", "All documents"))
             .refreshable { await model.refresh() }
+    }
+
+    private var bin: some View {
+        List {
+            if model.isLoadingBin && model.binItems.isEmpty { ProgressView() }
+            ForEach(model.binItems) { item in
+                HStack {
+                    Label(item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
+                          systemImage: item.isFolder ? "folder" : "doc.text")
+                    Spacer()
+                    if model.pendingRestores.contains(item.id) {
+                        ProgressView()
+                    } else {
+                        Button(AnyUIErrorText.text("שחזור", "Restore")) {
+                            Task { await model.restoreFromBin(objectID: item.id) }
+                        }
+                        .buttonStyle(.borderless)
+                        .disabled(!lifetime.isActive || !model.canWrite)
+                        .accessibilityIdentifier("any-native-bin-restore-" + item.id)
+                    }
+                }
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("any-native-bin-item-" + item.id)
+            }
+            if !model.isLoadingBin && model.binItems.isEmpty {
+                Text(AnyUIErrorText.text("סל המחזור ריק", "The Bin is empty"))
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("any-native-bin-empty")
+            }
+        }
+        .navigationTitle(AnyUIErrorText.text("סל המחזור", "Bin"))
+        .accessibilityIdentifier("any-native-bin")
+        .task(id: model.isReady) { if model.isReady { await model.refreshBin() } }
+        .refreshable { await model.refreshBin() }
     }
 
     private func documentRow(_ item: AnyLibraryDocument) -> some View {

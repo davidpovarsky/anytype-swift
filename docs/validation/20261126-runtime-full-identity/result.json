@@ -1,0 +1,123 @@
+{
+  "actualPythonControls": 13,
+  "appOrNativeCompilations": 0,
+  "applicationAcceptanceClaimed": false,
+  "cases": [
+    {
+      "expectedRefusal": "consumer_full_native_identity_differs",
+      "name": "actual_compiled_App76_stale_profile_is_rejected",
+      "observedRefusal": "consumer_full_native_identity_differs",
+      "status": "PASS"
+    },
+    {
+      "name": "corrected_profile_matches_both_actual_original_linker_commands",
+      "status": "PASS"
+    },
+    {
+      "expectedRefusal": "consumer_full_native_identity_differs",
+      "name": "consumer_commit_mismatch_is_rejected",
+      "observedRefusal": "consumer_full_native_identity_differs",
+      "status": "PASS"
+    },
+    {
+      "expectedRefusal": "consumer_full_native_identity_differs",
+      "name": "consumer_build_date_mismatch_is_rejected",
+      "observedRefusal": "consumer_full_native_identity_differs",
+      "status": "PASS"
+    },
+    {
+      "expectedRefusal": "consumer_full_native_identity_differs",
+      "name": "consumer_manifest_mismatch_is_rejected",
+      "observedRefusal": "consumer_full_native_identity_differs",
+      "status": "PASS"
+    },
+    {
+      "expectedRefusal": "ambiguous_native_version_binding",
+      "name": "duplicate_native_linker_assignment_is_rejected",
+      "observedRefusal": "ambiguous_native_version_binding",
+      "status": "PASS"
+    },
+    {
+      "expectedRefusal": "actual_linker_full_identity_differs",
+      "name": "actual_linker_date_disagreement_is_rejected",
+      "observedRefusal": "actual_linker_full_identity_differs",
+      "status": "PASS"
+    },
+    {
+      "expectedRefusal": "actual_linker_full_identity_differs",
+      "name": "actual_linker_commit_disagreement_is_rejected",
+      "observedRefusal": "actual_linker_full_identity_differs",
+      "status": "PASS"
+    },
+    {
+      "expectedRefusal": "native_slice_target_differs",
+      "name": "wrong_apple_target_is_rejected",
+      "observedRefusal": "native_slice_target_differs",
+      "status": "PASS"
+    },
+    {
+      "expectedRefusal": "actual_successful_original_bind_required",
+      "name": "failed_original_native_command_is_rejected",
+      "observedRefusal": "actual_successful_original_bind_required",
+      "status": "PASS"
+    },
+    {
+      "expectedRefusal": "native_version_route_changed:any/internal/version/version.go",
+      "name": "changed_actual_version_formatter_is_rejected",
+      "observedRefusal": "native_version_route_changed:any/internal/version/version.go",
+      "status": "PASS"
+    },
+    {
+      "expectedRefusal": "original_qualified_slice_identity_differs",
+      "name": "future_8fbd_consumer_cannot_reuse_old11619_binaries",
+      "observedRefusal": "original_qualified_slice_identity_differs",
+      "status": "PASS"
+    },
+    {
+      "expectedRefusal": "both_original_apple_slices_required",
+      "name": "missing_original_device_slice_is_rejected",
+      "observedRefusal": "both_original_apple_slices_required",
+      "status": "PASS"
+    }
+  ],
+  "controllerSHA256": "4477ecf945d0eb20b23de43d1fdaab4271d740f2192ba48075be02284e4a9241",
+  "currentNativeSourceManifestSHA256": "11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b",
+  "failed": 0,
+  "historicalCorrectedProfileFixtureSHA256": "3ae29c89fd6b4a33abc4b14f625d14c7ce6cbf81adce1285232e8beae6fc5339",
+  "historicalProductReclassified": false,
+  "moduleSHA256": "306c0cabcf39c6de55470d642cf5b9e6e9176d73351966330b90cf333b9359b0",
+  "nativeCalls": 0,
+  "nextExpectedRuntimeVersion": "any v0.5.0-pinkha.dual.1-8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b (commit 8fbd1e819fb132ac0e0a848d2ddf5c5714189b81, built 2026-11-26)",
+  "nextNativeSourceManifestSHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+  "nextProfileFixtureSHA256": "26bbdfc1d25986818149b2a53f506cc6aa9fc7bc70f040f9f8b7c024cfaab8f2",
+  "originalCompiledBridgeSHA256": "29f365adab078c488f303f35d0269a7a97d02fbeb245c8b0807542f03616b6e5",
+  "passed": 13,
+  "protocol": "pinkha-runtime-full-identity-regression-controls-v1",
+  "skipped": 0,
+  "sourceAfter": {
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/device/combined-gomobile-bind.command.json": "7ed624973d66e8b61edbbde7177984bbf80ae29323c1fd633df1c12d69affa6e",
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/device/combined-gomobile-bind.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/device/receipt.json": "f71d7d1108e427d79790c4e3bb99cd7667b7d62397cabe1ac53e0a7fd48c9f33",
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/receipt.json": "55841b0f7bf8cdf95541420bddfd027a6e1e89e15a111774d9d7323aa2a1744a",
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/simulator/combined-gomobile-bind.command.json": "8ae9c723dbae7f99246becd667fd7f055aff6b80d8df39ddb1e84acc12e60d62",
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/simulator/combined-gomobile-bind.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/simulator/receipt.json": "aa9320f43659d56fe7f366ad6a77943a296f0fe55e545ff2e6516dafbde91e49",
+    "/mnt/development/projects/worktrees/anytype-native-d-completion-20261125/Tools/PinkhaDualEngineRuntime/runtime_identity.py": "306c0cabcf39c6de55470d642cf5b9e6e9176d73351966330b90cf333b9359b0",
+    "/mnt/development/projects/worktrees/anytype-native-d-completion-20261125/Tools/PinkhaDualEngineRuntime/source-immutable-manifest.json": "11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b",
+    "/mnt/development/projects/worktrees/anytype-native-d-completion-20261125/Tools/PinkhaDualEngineRuntime/source-permission-manifest.json": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b"
+  },
+  "sourceBefore": {
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/device/combined-gomobile-bind.command.json": "7ed624973d66e8b61edbbde7177984bbf80ae29323c1fd633df1c12d69affa6e",
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/device/combined-gomobile-bind.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/device/receipt.json": "f71d7d1108e427d79790c4e3bb99cd7667b7d62397cabe1ac53e0a7fd48c9f33",
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/receipt.json": "55841b0f7bf8cdf95541420bddfd027a6e1e89e15a111774d9d7323aa2a1744a",
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/simulator/combined-gomobile-bind.command.json": "8ae9c723dbae7f99246becd667fd7f055aff6b80d8df39ddb1e84acc12e60d62",
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/simulator/combined-gomobile-bind.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/mnt/development/projects/evidence/native-d-final-20261125/runtime-identity-originals11619/simulator/receipt.json": "aa9320f43659d56fe7f366ad6a77943a296f0fe55e545ff2e6516dafbde91e49",
+    "/mnt/development/projects/worktrees/anytype-native-d-completion-20261125/Tools/PinkhaDualEngineRuntime/runtime_identity.py": "306c0cabcf39c6de55470d642cf5b9e6e9176d73351966330b90cf333b9359b0",
+    "/mnt/development/projects/worktrees/anytype-native-d-completion-20261125/Tools/PinkhaDualEngineRuntime/source-immutable-manifest.json": "11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b",
+    "/mnt/development/projects/worktrees/anytype-native-d-completion-20261125/Tools/PinkhaDualEngineRuntime/source-permission-manifest.json": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b"
+  },
+  "sourceUnchanged": true,
+  "status": "PASS"
+}

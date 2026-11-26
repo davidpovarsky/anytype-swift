@@ -187,6 +187,22 @@ public struct AnyNativePropertySnapshot: Sendable {
     public var nativeVersion: AnyJSON { fence.nativeVersion }
     public let catalog: AnyNativePropertyCatalog
     public let rows: [AnyNativePropertyRow]
+    public let importedPresentation: AnyNativeImportedTypePresentation?
+    /// The URL role is usable only through its verified, currently visible native row.
+    public var bookmarkSourceRow: AnyNativePropertyRow? {
+        guard let key = importedPresentation?.sourceURLKey else { return nil }
+        return rows.first { $0.id == key && $0.isVisible }
+    }
+    /// Opening is a user action. Unsupported values remain unchanged in raw storage.
+    public var bookmarkSourceURL: URL? {
+        guard let text = bookmarkSourceRow?.value?.string, !text.isEmpty,
+              text.utf8.count <= 8192, text == text.trimmingCharacters(in: .whitespacesAndNewlines),
+              let parts = URLComponents(string: text),
+              let scheme = parts.scheme?.lowercased(), ["http", "https"].contains(scheme),
+              let host = parts.host, !host.isEmpty, parts.user == nil, parts.password == nil,
+              let url = parts.url else { return nil }
+        return url
+    }
     /// Effective hidden keys: persisted keys (including unknown future keys),
     /// or explicit imported-Type defaults until preferences are first stored.
     /// A hide/show mutation composes from this set and carries the native version.
@@ -747,6 +763,7 @@ public struct AnyNativePropertyStore: Sendable {
         return .init(workspace: catalog.workspace, objectID: objectID, generation: catalog.generation,
             fence: fence, currentTypeID: membership.typeID,
             collectionIDs: membership.collections, raw: raw, catalog: catalog, rows: rows,
+            importedPresentation: imported,
             hiddenPropertyKeys: hiddenSet, presentationAttached: membership.collections.contains(Self.presentationCollectionID), canWrite: canWrite,
             definitions: Dictionary(uniqueKeysWithValues: definitions.map { ($0.key, $0) }))
     }

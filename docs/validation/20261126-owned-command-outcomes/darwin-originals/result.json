@@ -1,0 +1,52 @@
+{
+  "allCreatedGroupsPositivelyAbsent": true,
+  "appOrSimulatorCalls": 0,
+  "appleBuilds": 0,
+  "cases": [
+    {
+      "actualExitCode": 0,
+      "exitSHA256": "2273255b4b828116c943a75e1e7020cd17160d0d91e487cad569531475b1d179",
+      "groupObservations": [
+        {
+          "at": 1795665697.8481731,
+          "status": "ABSENT_ESRCH"
+        }
+      ],
+      "label": "actual-zero",
+      "resultSHA256": "e98217068514ec3e4ca47bcc2b309fba08b3752b7723f7fdd98cc042a9b789cd",
+      "status": "PASS"
+    },
+    {
+      "actualExitCode": 7,
+      "exitSHA256": "fe34294a20f33ce05d0d194134ad50cfd2af362546853adbfff2b3f078170ee9",
+      "groupObservations": [
+        {
+          "at": 1795665698.8581939,
+          "status": "ABSENT_ESRCH"
+        }
+      ],
+      "label": "actual-nonzero",
+      "resultSHA256": "db7d8f2bc431de5b2e39d86ea098ef9e2f39f170bd0046786b6ca149b49159e4",
+      "status": "PASS"
+    },
+    {
+      "actualExitCode": -15,
+      "exitSHA256": "bed11a2ba6b83ecf7925feb9e3fad662901fc589f5789275be4c617020c6073c",
+      "groupObservations": [
+        {
+          "at": 1795665699.880815,
+          "status": "ABSENT_ESRCH"
+        }
+      ],
+      "label": "actual-timeout",
+      "resultSHA256": "c46e5f60038ba993a13707cffe39fc23c71e78047b0db89749a64c1fcab0f8a9",
+      "status": "PASS"
+    }
+  ],
+  "controllerSHA256": "73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a",
+  "finishedAt": 1795665699.883229,
+  "nativeBuilds": 0,
+  "platform": "darwin",
+  "startedAt": 1795665696.8337631,
+  "status": "PASS_THREE_ACTUAL_DARWIN_COMMAND_CASES"
+}

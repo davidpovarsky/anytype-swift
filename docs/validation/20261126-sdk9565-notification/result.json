@@ -1,0 +1,79 @@
+{
+  "appBuilds": 0,
+  "argv": [
+    "/usr/bin/xcrun",
+    "swift",
+    "test",
+    "--package-path",
+    "/Users/m1/development/anytype-d-active-20261125/sdk9565-notification/source/Packages/HanlinPlatform",
+    "--scratch-path",
+    "/Users/m1/development/anytype-d-active-20261125/sdk9565-notification/original-suite-attempt1/build",
+    "--force-resolved-versions",
+    "--skip-update",
+    "--jobs",
+    "10",
+    "--filter",
+    "HanlinNotificationInvocationTests",
+    "--xunit-output",
+    "/Users/m1/development/anytype-d-active-20261125/sdk9565-notification/original-suite-attempt1/original-tests.xml"
+  ],
+  "controllerSHA256": "a7dd95a6c10d494af0c70a6db791fc579bd4347f871060a4c07a7437ecadd776",
+  "elapsedSeconds": 155.31856008298928,
+  "errors": [
+    {
+      "message": "exact_original_twelve_case_instances",
+      "type": "RuntimeError"
+    }
+  ],
+  "estimatedColdBuildGrowthBytes": 10737418240,
+  "exitCode": 0,
+  "finished": 1795650608.4793322,
+  "freeBytesBefore": 185860575232,
+  "fullAppAcceptance": false,
+  "groupCensusExit": 0,
+  "jobs": 10,
+  "jobsBasis": "actual host logical CPUs; no additional utilization cap",
+  "logSHA256": "bc782f3205ab74c7126bee07afd5abda5f0ab6c8d47ab54c782546918b8b8840",
+  "minimumFreeBytes": 181348102144,
+  "nativeGoBuilds": 0,
+  "originalPassedLines": [
+    "independentlyAuthoredAPNsParametersDecodeAsPlainJSON()",
+    "malformedTaggedEventsAndUnknownVersionsDoNotBecomeCommands()",
+    "userInfoEmitsPlainJSONWhileInternalCodableKeepsItsTags()",
+    "independentlyAuthoredAPNsStillRequiresTheCompleteValidEnvelope()",
+    "missingCatalogStillDurablyRetainsTheEventForLiveHostValidation()",
+    "foregroundAdmissionLeavesUnstartedWorkQueuedWithoutConsumingAnAttempt()",
+    "typedEventExecutesOnceAndKeepsItsActualResultAfterReopen(_:) with 2 test cases",
+    "identicalEventIDsStayInsideTheirProductNamespace()",
+    "cachedCatalogCannotOverrideLiveInstallationOrItsFailureReceipt()",
+    "cancellationExpiryAndActionErrorsRemainDistinct()",
+    "changedInstallationsAndUndeclaredTargetsProduceRealFailureReceipts()",
+    "run with 11 tests in 1 suite"
+  ],
+  "originalSwiftTestingCounts": [
+    11
+  ],
+  "osNotificationDeliveryAccepted": false,
+  "ownedGroupRemaining": false,
+  "pgid": 39090,
+  "pid": 39090,
+  "simulatorBoots": 0,
+  "sourceAfterVerified": true,
+  "sourceBeforeVerified": true,
+  "sourceCommit": "9565a9e4775901a4cee6f0402d7fd2978fab6612",
+  "sourceMethods": [
+    "typedEventExecutesOnceAndKeepsItsActualResultAfterReopen",
+    "independentlyAuthoredAPNsParametersDecodeAsPlainJSON",
+    "userInfoEmitsPlainJSONWhileInternalCodableKeepsItsTags",
+    "independentlyAuthoredAPNsStillRequiresTheCompleteValidEnvelope",
+    "foregroundAdmissionLeavesUnstartedWorkQueuedWithoutConsumingAnAttempt",
+    "changedInstallationsAndUndeclaredTargetsProduceRealFailureReceipts",
+    "malformedTaggedEventsAndUnknownVersionsDoNotBecomeCommands",
+    "cancellationExpiryAndActionErrorsRemainDistinct",
+    "identicalEventIDsStayInsideTheirProductNamespace",
+    "missingCatalogStillDurablyRetainsTheEventForLiveHostValidation",
+    "cachedCatalogCannotOverrideLiveInstallationOrItsFailureReceipt"
+  ],
+  "started": 1795650453.1611671,
+  "status": "FAIL"
+}

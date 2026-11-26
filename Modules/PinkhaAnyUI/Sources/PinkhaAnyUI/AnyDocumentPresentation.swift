@@ -73,6 +73,8 @@ public final class AnyDocumentPresentation: Sendable {
     public var showsDraftReview = false
     public private(set) var requiresDraftReview = false
     public private(set) var isComposing = false
+    public private(set) var isCreatingTextAnchor = false
+    public private(set) var isApplyingMiniApps = false
     public var sourceDocuments: [TorahRelatedDocument] = []
     public var sourceDocumentsTitle: String?
     public private(set) var nativeProperties: AnyNativeDerivedDocumentProperties?
@@ -117,6 +119,9 @@ public final class AnyDocumentPresentation: Sendable {
     @ObservationIgnored private var composition: AnyDocumentComposition?
     @ObservationIgnored private var unmappedDrafts: [String: AnyNativeUnmappedTextDraft] = [:]
     @ObservationIgnored private var lastUndo: AnyPreparedBlockEdit?
+    @ObservationIgnored private var semanticAnchorIntent: AnySemanticAnchorIntent?
+    @ObservationIgnored private var semanticAnchorPreparationID: UUID?
+    @ObservationIgnored private var semanticAnchorMutationID: UUID?
     @ObservationIgnored private var acknowledgedBlockVersions: [String: AnyJSON] = [:]
     @ObservationIgnored private var closingObservers: [Task<Void, Never>] = []
     @ObservationIgnored private var scopeInvalidators: [@Sendable () -> Void] = []
@@ -184,6 +189,10 @@ public final class AnyDocumentPresentation: Sendable {
             self?.requestOpenObject(id, blockID: blockID)
         }
         torah.installAssociationSnapshotHandler { [weak self] _ in self?.contentRevision &+= 1 }
+        torah.installSemanticAnchorResolver { [weak self] anchor in
+            guard let self else { throw AnyHostError.sessionClosed }
+            return try await self.inspectSemanticAnchor(anchor)
+        }
         registration = try lifetime.register(revoke: { [weak self] in self?.revoke() },
                                               drain: { [weak self] in await self?.drain() })
     }
@@ -203,7 +212,7 @@ public final class AnyDocumentPresentation: Sendable {
     }
     public var title: String { read?.snapshot.title ?? "" }
     public var isNavigating: Bool { navigation.isPending }
-    public var canMutate: Bool { isMounted && lifetime.isActive && canWrite && !isNavigating && !requiresDraftReview && !isComposing && surface?.isForegroundMounted == true }
+    public var canMutate: Bool { isMounted && lifetime.isActive && canWrite && !isNavigating && !requiresDraftReview && !isComposing && !isCreatingTextAnchor && !isApplyingMiniApps && surface?.isForegroundMounted == true }
     public var hasPendingEdits: Bool { !drafts.isEmpty || !unmappedDrafts.isEmpty || isComposing || saving }
     public var orderedBlocks: [AnyEditorBlock] {
         guard let snapshot = read?.snapshot else { return [] }
@@ -419,10 +428,176 @@ public final class AnyDocumentPresentation: Sendable {
         retainRecovery()
     }
 
+    /// Prepare an anchor from an unchanged mounted selection and a real current
+    /// native read. Preview/Cancel never flush drafts or issue a write.
+    public func prepareSemanticAnchor(blockID: String, range: NSRange,
+                                      visibleText: String) async throws -> AnySemanticAnchorIntent {
+        let owner = epoch, requestID = UUID()
+        try requireMounted(owner)
+        guard canMutate, !hasPendingEdits, semanticAnchorIntent == nil,
+              selectedBlockIDs == [blockID], focusedBlockID == blockID,
+              selectedTextRange == range, range.location != NSNotFound,
+              range.location >= 0, range.length > 0,
+              range.location <= visibleText.utf16.count,
+              range.length <= visibleText.utf16.count - range.location,
+              let original = read,
+              let block = original.snapshot.blocks.first(where: { $0.id == blockID }),
+              projection(for: block).display.utf8.elementsEqual(visibleText.utf8) else {
+            throw AnyHostError.invalidSelection
+        }
+        semanticAnchorPreparationID = requestID
+        defer {
+            if semanticAnchorPreparationID == requestID { semanticAnchorPreparationID = nil }
+        }
+        let documents = documents, objectID = objectID
+        let capture = try await nativeSession.perform { lease in
+            let current = try await documents.read(objectID: objectID, lease: lease)
+            guard current.generation == original.generation,
+                  current.engineStartedAt == original.engineStartedAt,
+                  current.nativeVersion == original.nativeVersion,
+                  current.snapshot.revision == original.snapshot.revision else {
+                throw AnyHostError.changedDocument
+            }
+            let anchor = try PinkhaSemanticTextAnchor(spaceID: lease.workspace.spaceID, objectID: objectID)
+            return try AnySemanticAnchorCapture(read: current, blockID: blockID, range: range, anchor: anchor)
+        }
+        try Task.checkCancellation()
+        try requireMounted(owner)
+        guard semanticAnchorPreparationID == requestID, canMutate, !hasPendingEdits,
+              selectedBlockIDs == [blockID], focusedBlockID == blockID, selectedTextRange == range,
+              let latest = read else { throw AnyHostError.changedDocument }
+        _ = try capture.prepare(current: latest, documents: documents)
+        let intent = AnySemanticAnchorIntent(owner: owner, capture: capture,
+            selectedText: (visibleText as NSString).substring(with: range))
+        semanticAnchorIntent = intent
+        return intent
+    }
+
+    public func cancelSemanticAnchor(_ intent: AnySemanticAnchorIntent) {
+        guard semanticAnchorIntent === intent else { return }
+        semanticAnchorIntent = nil
+        intent.consumed = true
+    }
+
+    /// Only the explicit confirmation calls this method. The existing native
+    /// conditional PATCH, account lease and final dispatch authorization remain
+    /// the only write path; a lost/uncertain reply is never automatically retried.
+    public func applySemanticAnchor(_ intent: AnySemanticAnchorIntent) async throws -> PinkhaSemanticTextAnchor {
+        try Task.checkCancellation()
+        try requireMounted(intent.owner)
+        guard semanticAnchorIntent === intent, !intent.consumed,
+              canMutate, !hasPendingEdits else { throw AnyHostError.changedDocument }
+        let mutationID = try beginNativeMutation(owner: intent.owner)
+        intent.consumed = true
+        semanticAnchorIntent = nil
+        semanticAnchorMutationID = mutationID
+        isCreatingTextAnchor = true
+        writeState = .saving
+        var completed = false
+        defer {
+            if semanticAnchorMutationID == mutationID {
+                semanticAnchorMutationID = nil
+                isCreatingTextAnchor = false
+            }
+            finishNativeMutation(mutationID, owner: intent.owner, completed: completed)
+        }
+        do {
+            let documents = documents, objectID = objectID, capture = intent.capture
+            let owner = intent.owner, readOperation = editorReadOperation
+            let authorize: @Sendable () async throws -> Void = { [weak self] in
+                guard let self else { throw AnyHostError.sessionClosed }
+                try await self.requireSemanticAnchorMutation(mutationID, owner: owner)
+            }
+            let result = try await nativeSession.perform { lease in
+                let current = try await documents.read(objectID: objectID, lease: lease)
+                let edit = try capture.prepare(current: current, documents: documents)
+                let receipt = try await documents.apply(edit, lease: lease, authorize: authorize)
+                guard receipt.readback == .verifiedCurrent else { throw AnyHostError.writeUncertain }
+                let readback = try await readOperation(.mutationReadback, documents, objectID, lease)
+                try capture.verifyReadback(readback)
+                return (receipt, readback)
+            }
+            try requireSemanticAnchorMutation(mutationID, owner: owner)
+            acceptAcknowledged(result.1, blockID: intent.blockID, undo: result.0.undo)
+            writeState = .saved
+            completed = true
+            return intent.anchor
+        } catch {
+            if ownsNativeMutation(mutationID, owner: intent.owner) {
+                switch error {
+                case AnyHostError.changedDocument: writeState = .conflict(AnyUIErrorText.changedDocument)
+                case AnyHostError.writeUncertain, AnyEngineError.writeUncertain:
+                    writeState = .uncertain(AnyUIErrorText.uncertainWrite)
+                default: writeState = .failed(AnyUIErrorText.describe(error))
+                }
+            }
+            throw error
+        }
+    }
+
+    private func requireSemanticAnchorMutation(_ mutationID: UUID, owner: UUID) throws {
+        try requireMounted(owner)
+        guard ownsNativeMutation(mutationID, owner: owner),
+              semanticAnchorMutationID == mutationID, canWrite,
+              drafts.isEmpty, unmappedDrafts.isEmpty, !isComposing, !requiresDraftReview else {
+            throw AnyHostError.changedDocument
+        }
+    }
+
+    /// Read-only source linking validation. It cannot publish a display read,
+    /// navigate, change selection, write a marker, or retry any native mutation.
+    public func inspectSemanticAnchor(_ anchor: PinkhaSemanticTextAnchor) async throws
+        -> PinkhaSemanticTextAnchorResolver.Resolution {
+        let owner = epoch
+        try requireMounted(owner)
+        guard !hasPendingEdits, !isLoading, !isCreatingTextAnchor else { throw AnyHostError.changedDocument }
+        guard anchor.belongsTo(spaceID: workspace.spaceID, objectID: objectID) else {
+            throw PinkhaSemanticTextAnchorError.wrongDocument
+        }
+        let documents = documents, objectID = objectID
+        let current = try await nativeSession.perform {
+            try await documents.read(objectID: objectID, lease: $0)
+        }
+        try Task.checkCancellation()
+        try requireMounted(owner)
+        guard !hasPendingEdits, !isLoading, !isCreatingTextAnchor else { throw AnyHostError.changedDocument }
+        return try AnySemanticAnchorDocument.resolve(anchor, read: current)
+    }
+
+    /// Resolve only from a newly authorized full native document. The shared
+    /// resolver reports missing/ambiguous markers rather than searching old text
+    /// or trusting an old offset; valid split fragments stay in native order.
+    @discardableResult
+    public func revealSemanticAnchor(_ anchor: PinkhaSemanticTextAnchor) async throws
+        -> PinkhaSemanticTextAnchorResolver.Resolution {
+        let owner = epoch, requestID = UUID()
+        try requireMounted(owner)
+        guard !hasPendingEdits, !isLoading else { throw AnyHostError.changedDocument }
+        guard anchor.belongsTo(spaceID: workspace.spaceID, objectID: objectID) else {
+            throw PinkhaSemanticTextAnchorError.wrongDocument
+        }
+        editorReadID = requestID
+        let documents = documents, objectID = objectID
+        let current = try await nativeSession.perform {
+            try await documents.read(objectID: objectID, lease: $0)
+        }
+        try requireMounted(owner)
+        guard mayPublishRead(requestID, owner: owner), !hasPendingEdits else {
+            throw AnyHostError.changedDocument
+        }
+        let resolution = try AnySemanticAnchorDocument.resolve(anchor, read: current)
+        accept(current)
+        if case .resolved(let fragments) = resolution, let first = fragments.first {
+            select(blockIDs: fragments.map(\.blockID), focusedBlockID: first.blockID, range: first.range)
+            surface?.reveal(blockID: first.blockID, selection: first.range)
+        }
+        return resolution
+    }
+
     public func changeText(blockID: String, source: String, displaySelection: NSRange,
                            renderedBlock: AnyEditorBlock) throws {
         try requireMounted(epoch)
-        guard canWrite, !requiresDraftReview, !isComposing, source.utf8.count <= 65_536,
+        guard canWrite, !requiresDraftReview, !isComposing, !isCreatingTextAnchor, !isApplyingMiniApps, source.utf8.count <= 65_536,
               let block = read?.snapshot.blocks.first(where: { $0.id == blockID }),
               read?.snapshot.depthFirstIDs.contains(blockID) == true,
               renderedBlock.id == blockID,
@@ -1019,6 +1194,8 @@ public final class AnyDocumentPresentation: Sendable {
         retainRecovery()
         guard isMounted else { return }
         isMounted = false; epoch = UUID()
+        semanticAnchorIntent = nil; semanticAnchorPreparationID = nil
+        semanticAnchorMutationID = nil; isCreatingTextAnchor = false
         retireEditorReads()
         nativeMutationID = nil; inFlightTextBlockID = nil; saving = false
         loadAfterMutation = false; refreshAfterMutation = false; saveAfterMutation = false
@@ -1092,6 +1269,49 @@ public enum AnyUIErrorText {
     }
     public static func text(_ hebrew: String, _ english: String) -> String {
         Locale.autoupdatingCurrent.language.languageCode?.identifier == "he" ? hebrew : english
+    }
+}
+#endif
+
+#if canImport(UIKit)
+extension AnyDocumentPresentation {
+    /// A MiniApps return shares the editor's real mutation owner and readback
+    /// publication. Text input cannot race its multi-block native receipts.
+    func performMiniAppsMutation<Value: Sendable>(
+        _ operation: @escaping @Sendable (
+            AnyHostLease, @escaping @Sendable () async throws -> Void
+        ) async throws -> (Value, AnyEditorRead, AnyPreparedBlockEdit?)
+    ) async throws -> Value {
+        let owner = epoch
+        await flush()
+        try requireMounted(owner)
+        guard canMutate, !hasPendingEdits else { throw AnyHostError.changedDocument }
+        let mutation = try beginNativeMutation(owner: owner)
+        isApplyingMiniApps = true
+        var completed = false
+        defer {
+            isApplyingMiniApps = false
+            finishNativeMutation(mutation, owner: owner, completed: completed)
+        }
+        let authorize: @Sendable () async throws -> Void = { [weak self] in
+            guard let self else { throw AnyHostError.sessionClosed }
+            try await self.requireMiniAppsMutation(mutation, owner: owner)
+        }
+        let result = try await nativeSession.perform { lease in
+            try await operation(lease, authorize)
+        }
+        try requireMiniAppsMutation(mutation, owner: owner)
+        acceptAcknowledged(result.1, blockID: nil, undo: result.2)
+        completed = true
+        return result.0
+    }
+
+    private func requireMiniAppsMutation(_ mutation: UUID, owner: UUID) throws {
+        try requireMounted(owner)
+        guard ownsNativeMutation(mutation, owner: owner), isApplyingMiniApps,
+              canWrite, !requiresDraftReview, !isComposing, drafts.isEmpty else {
+            throw AnyHostError.changedDocument
+        }
     }
 }
 #endif

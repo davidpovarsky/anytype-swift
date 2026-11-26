@@ -71,7 +71,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     public func validateInstallation(for session: HanlinHostSession) throws {
         guard !closed, self.session == session,
               PinkhaHanlinAccountOwner.shared.owns(self),
-              PinkhaHanlinAccountOwner.shared.isAvailable(account: session.context.namespace.account),
+              PinkhaHanlinAccountOwner.shared.isAvailable(namespace: session.context.namespace),
               let scene, let controller, controller.presentation === self,
               controller.presentingViewController != nil,
               controller.viewIfLoaded?.window?.windowScene === scene,
