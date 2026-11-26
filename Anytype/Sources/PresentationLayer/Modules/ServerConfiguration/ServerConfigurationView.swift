@@ -41,11 +41,13 @@ struct ServerConfigurationView: View {
                 {
                     model.onTapAddServer()
                 }
+                .accessibilityIdentifier("original-anytype-add-network")
                 .padding(16)
             }
             .background(Color.Background.secondary)
             .navigationBarHidden(true)
         }
+        .accessibilityIdentifier("original-anytype-network-settings")
         .anytypeSheet(isPresented: $model.showLocalConfigurationAlert) {
             ServerLocalConfigurationAlert {
                 model.setup(config: .localOnly)
@@ -71,5 +73,6 @@ struct ServerConfigurationView: View {
             .fixTappableArea()
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(row.isSelected ? .isSelected : [])
     }
 }
