@@ -1,0 +1,40 @@
+{
+  "appBuilds": 0,
+  "baseAdmissionSHA256": "7bc72cfffcd1e21abf572162fc2844dce30cefe6e58635e07199b0edbb42202a",
+  "commonSHA256": "f31cf1b3ae3f7b03618165db5f61cef1fa813ffe047d268a8050ea040a626221",
+  "controllerSHA256": "3fdce7fe5a60012147d9c7736cea064f4af7fa3bf01705bd11fcfe7e2e6c3794",
+  "mainByteIdentical": true,
+  "originalControllerSHA256": "4c64b23e605970cc636b012aa79a66ab4766c66bf323ca7299d9d7fc9caaaf6c",
+  "protocol": "app15-original-six-stage-specialization-source-inverse-v1",
+  "sharedCommands": "exact original qualified 73bb through pinned f31cf1 module",
+  "status": "PASS_SOURCE_ONLY_NOT_ACCEPTANCE",
+  "substitutions": [
+    {
+      "after": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+      "before": "11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b"
+    },
+    {
+      "after": "f94079de9eeb9e2e869f02bd1dda93fcd272e3191b2417ca4b4657cae5dc6763",
+      "before": "9f64b4469e221cd27b04c0f46b7479cf1fb079b36fce8a26c0fd8b0521ecaf5e"
+    },
+    {
+      "after": "425783c76858b542cb908e5d4c606e3d27b54d6e5bbc1e28a163cc18f13cf4de",
+      "before": "1943362eb5fb171252600134e4126a36160eb1e2adb233deb94df620c0b73262"
+    },
+    {
+      "after": "def qualified_shared_controller():\n    import combined_heart_semantics_current as shared\n    helper = Path(__file__).with_name(\"combined_heart_semantics_current.py\")\n    require(Path(shared.__file__).resolve() == helper.resolve()\n            and digest(helper) == \"f31cf1b3ae3f7b03618165db5f61cef1fa813ffe047d268a8050ea040a626221\",\n            \"Exact shared App15 admission and owned command outcomes required\")\n    return shared\n\n\nCommands = qualified_shared_controller().Commands",
+      "before": "class Commands:\n    def __init__(self, root, cwd):\n        self.root, self.cwd = Path(root), Path(cwd)\n        self.root.mkdir(mode=0o700)\n        self.groups = []\n        self.absent_groups = set()\n        self.cancelled = False\n        self.environment = dict(os.environ, DEVELOPER_DIR=\"/Applications/Xcode.app/Contents/Developer\")\n        self.environment[\"PATH\"] = \"/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\"\n\n    def run(self, argv, label, timeout=120, *, checked=True, capacity=True):\n        require(re.fullmatch(r\"[a-z0-9-]+\", label), \"scoped command label required\")\n        require(not self.cancelled, \"owned execution cancelled\")\n        directory = self.root / label\n        directory.mkdir(mode=0o700)\n        started, minimum = time.time(), shutil.disk_usage(self.root).free\n        require(not capacity or minimum >= FLOOR, \"free space below owned 2 GiB guard\")\n        log = directory / \"original.log\"\n        outcome = {\"argv\": list(map(str, argv)), \"cwd\": str(self.cwd), \"startedAt\": started,\n                   \"timeoutSeconds\": timeout, \"freeBytesBefore\": minimum, \"status\": \"FAIL\"}\n        with log.open(\"xb\") as stream:\n            process = subprocess.Popen(argv, cwd=self.cwd, env=self.environment, stdout=stream,\n                                       stderr=subprocess.STDOUT, start_new_session=True)\n            self.groups.append(process.pid)\n            outcome.update(pid=process.pid, pgid=process.pid)\n            write(directory / \"started.json\", outcome)\n            reason = None\n            try:\n                while process.poll() is None:\n                    minimum = min(minimum, shutil.disk_usage(self.root).free)\n                    if capacity and minimum < FLOOR:\n                        reason = \"OWNED_RESOURCE_FLOOR\"\n                    elif time.time() - started > timeout:\n                        reason = \"OWNED_TIMEOUT\"\n                    if reason:\n                        raise TimeoutError(reason)\n                    time.sleep(1)\n            except BaseException as exc:\n                reason = reason or str(exc)\n                self.stop(process.pid)\n                process.wait()\n                outcome[\"interruption\"] = error(exc)\n            code = process.wait()\n        outcome.update(exitCode=code, finishedAt=time.time(), minimumFreeBytes=minimum,\n                       logSHA256=digest(log), logBytes=log.stat().st_size,\n                       status=\"PASS_COMMAND\" if code == 0 and reason is None else \"FAIL_COMMAND\")\n        outcome[\"ownedGroupPresentAfterExit\"] = self.present(process.pid)\n        if not outcome[\"ownedGroupPresentAfterExit\"]:\n            self.absent_groups.add(process.pid)\n        write(directory / \"result.json\", outcome)\n        if checked:\n            require(outcome[\"status\"] == \"PASS_COMMAND\", label + \" failed: \" + str(reason or code))\n        return log, outcome\n\n    @staticmethod\n    def present(group):\n        try:\n            os.killpg(group, 0)\n            return True\n        except ProcessLookupError:\n            return False\n\n    @staticmethod\n    def stop(group):\n        try:\n            os.killpg(group, signal.SIGTERM)\n        except ProcessLookupError:\n            return\n        deadline = time.monotonic() + 15\n        while Commands.present(group) and time.monotonic() < deadline:\n            time.sleep(0.2)\n        if Commands.present(group):\n            os.killpg(group, signal.SIGKILL)"
+    },
+    {
+      "after": "def admit_and_clone_products(admission, root, evidence, commands):\n    shared = qualified_shared_controller()\n    original = pinned(admission[\"sharedAdmission\"])\n    require(sha(original) == \"7bc72cfffcd1e21abf572162fc2844dce30cefe6e58635e07199b0edbb42202a\",\n            \"Exact canonical App15 shared admission required\")\n    expected = decode(original)\n    expected[\"controllerSHA256\"] = digest(Path(__file__))\n    expected[\"sharedAdmission\"] = admission[\"sharedAdmission\"]\n    require(admission == expected, \"E specialization may only bind its controller to the canonical admission\")\n    # The private root was created as 0700 before this scope. Preserve all\n    # admitted product modes, including existing 0777 directories.\n    previous_mask = os.umask(0)\n    try:\n        return shared.admit_and_clone_products(admission, root, evidence, commands)\n    finally:\n        os.umask(previous_mask)",
+      "before": "def admit_and_clone_products(admission, root, evidence, commands):\n    import combined_heart_semantics_current as shared\n    helper = Path(__file__).with_name(\"combined_heart_semantics_current.py\")\n    require(Path(shared.__file__).resolve() == helper.resolve()\n            and digest(helper) == \"59a9d5627bf0f2144d1d4f73d044c8e2b0b5156cd2c2f2e580be5667f62605de\",\n            \"Exact shared App14 admission helper required\")\n    original = pinned(admission[\"sharedAdmission\"])\n    require(sha(original) == \"e3871c16ccaa3147d90c1c3061690cca2551a54ff8b3c81583196720abaace9e\",\n            \"Exact canonical shared admission required\")\n    expected = decode(original)\n    expected[\"controllerSHA256\"] = digest(Path(__file__))\n    expected[\"sharedAdmission\"] = admission[\"sharedAdmission\"]\n    require(admission == expected, \"E specialization may only bind its controller to the canonical admission\")\n    return shared.admit_and_clone_products(admission, root, evidence, commands)"
+    }
+  ],
+  "tests": 0,
+  "unchangedHelpers": {
+    "replacement_selection_observation.py": "460937313a94977b121a4fb85d81be0d0e9617f96796b8afe15d248a84ea3f12",
+    "retain_owned_heart_account.py": "c562f0b2297902efd62b3a92fdef68e658fb688bbd002d15db24609d47602f3b",
+    "semantic_link_route_observation.py": "ed57e0df1b461fe559b8e82af1ad4c1a95e1100802c96fdd87cada9bbd1598a6"
+  },
+  "wholeOriginalInverse": true
+}
