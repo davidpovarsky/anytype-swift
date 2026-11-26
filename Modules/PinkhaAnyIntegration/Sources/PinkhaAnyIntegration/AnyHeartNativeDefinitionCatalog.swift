@@ -104,6 +104,8 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
     public let captureManifestSHA256: String
     public let sourceWitnessSHA256: String
     public let contentSHA256: String
+    /// Separate recovered-source evidence; nil for the unchanged captured-only path.
+    public let recoveredDefinitionManifestSHA256: String?
     public let types: [TypeDefinition]
     public let relations: [Relation]
     public let options: [Option]
@@ -126,13 +128,27 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
             snapshots: bundle.objects, compiledDefinitions: bundle.bundledDefinitions)
     }
 
+    /// Explicit recovery input is validated against the unchanged outer bundle.
+    /// Captured native overrides retain their existing precedence.
+    public init(bundle: AnyHeartNativeSpaceBundle,
+                recoveredDefinitions: AnyHeartNativeRecoveredDefinitions) throws {
+        try recoveredDefinitions.validate(bundle: bundle)
+        try self.init(sourceAccountID: bundle.sourceAccountID, sourceSpaceID: bundle.sourceSpaceID,
+            captureManifestSHA256: bundle.manifestSHA256, sourceWitnessSHA256: bundle.sourceWitnessSHA256,
+            snapshots: bundle.objects,
+            compiledDefinitions: bundle.bundledDefinitions + recoveredDefinitions.definitions,
+            recoveredDefinitionManifestSHA256: recoveredDefinitions.manifestSHA256)
+    }
+
     /// Internal fixture boundary. Production callers supply the admitted outer
     /// bundle; detached JSON views alone never establish account authority.
     init(sourceAccountID: String, sourceSpaceID: String, captureManifestSHA256: String,
          sourceWitnessSHA256: String, snapshots: [AnyHeartNativeSnapshotView],
-         compiledDefinitions: [AnyHeartNativeBundledDefinition] = []) throws {
+         compiledDefinitions: [AnyHeartNativeBundledDefinition] = [],
+          recoveredDefinitionManifestSHA256: String? = nil) throws {
         guard Self.identifier(sourceAccountID), Self.identifier(sourceSpaceID),
-              Self.digest(captureManifestSHA256), Self.digest(sourceWitnessSHA256) else {
+              Self.digest(captureManifestSHA256), Self.digest(sourceWitnessSHA256),
+              recoveredDefinitionManifestSHA256.map(Self.digest) ?? true else {
             throw AnyHeartNativeDefinitionCatalogError.invalidBinding
         }
         guard snapshots.count <= 100_000, compiledDefinitions.count <= 1024 else {
@@ -325,12 +341,17 @@ public struct AnyHeartNativeDefinitionCatalog: Sendable {
                          "json": .string($0.jsonViewSHA256)])
             })
         }
+        if let recoveredDefinitionManifestSHA256 {
+            boundFields["contract"] = .string("pinkha-captured-and-recovered-definition-catalog-v1")
+            boundFields["recoveredDefinitionManifestSHA256"] = .string(recoveredDefinitionManifestSHA256)
+        }
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         contentSHA256 = AnyContentDigest.sha256(try encoder.encode(AnyJSON.object(boundFields)))
         self.sourceAccountID = sourceAccountID; self.sourceSpaceID = sourceSpaceID
         self.captureManifestSHA256 = captureManifestSHA256; self.sourceWitnessSHA256 = sourceWitnessSHA256
         self.types = types; self.relations = relations; self.options = options; self.issues = issues
         self.compiledRelations = compiledRelations
+        self.recoveredDefinitionManifestSHA256 = recoveredDefinitionManifestSHA256
         self.compiledRelationKeys = unambiguous(compiledRelations.enumerated().map { ($0.element.relationKey, $0.offset) })
         self.capturedRelationKeys = Set(relations.map { Data($0.relationKey.utf8) })
         self.typeIDs = typeIDs; self.typeKeys = typeKeys
