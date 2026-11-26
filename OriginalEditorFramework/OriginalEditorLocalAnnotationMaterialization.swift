@@ -241,9 +241,8 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
               Set(blockIDs).count == blockIDs.count, blockIDs.contains(objectID),
               OriginalEditorLocalAnnotationNativeBody.string(detail.details, "id") == objectID,
               OriginalEditorLocalAnnotationNativeBody.string(detail.details, "spaceId") == spaceID,
-              case .listValue(let types)? = detail.details.fields["type"]?.kind,
-              types.values.count == 1,
-              case .stringValue(let type)? = types.values.first?.kind, type == annotationTypeID else {
+              let type = OriginalEditorLocalAnnotationNativeBody.annotationTypeID(detail.details),
+              type.utf8.elementsEqual(annotationTypeID.utf8) else {
             throw AnytypeOriginalEditorLocalAnnotationError.wrongNativeIdentity
         }
         try OriginalEditorLocalAnnotationNativeBody.requireMarkers(detail.details, source: source,

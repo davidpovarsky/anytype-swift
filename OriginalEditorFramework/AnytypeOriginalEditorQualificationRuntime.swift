@@ -489,11 +489,9 @@ internal final class OwnedOriginalEditorQualificationRuntime {
         guard roots.count == 1, roots[0].hasDetails,
               case .stringValue(let actualID)? = roots[0].details.fields["id"]?.kind,
               case .stringValue(let actualSpace)? = roots[0].details.fields["spaceId"]?.kind,
-              case .listValue(let types)? = roots[0].details.fields["type"]?.kind,
               actualID.utf8.elementsEqual(checkpoint.objectID.utf8),
               actualSpace.utf8.elementsEqual(checkpoint.spaceID.utf8),
-              types.values.count == 1,
-              case .stringValue(let typeID)? = types.values[0].kind,
+              let typeID = OriginalEditorLocalAnnotationNativeBody.annotationTypeID(roots[0].details),
               typeID.utf8.elementsEqual(page.id.utf8) else {
             throw OriginalEditorQualificationRuntimeError.invalidResumeCheckpoint
         }

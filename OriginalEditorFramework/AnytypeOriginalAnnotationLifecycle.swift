@@ -980,8 +980,7 @@ fileprivate struct OriginalAnnotationLifecycleObservation: Sendable {
 
     private static func rootType(archive bytes: Data, root: Anytype_Model_SmartBlockSnapshotBase,
                                  spaceID: String) throws -> (objectID: String, uniqueKey: String) {
-        guard case .listValue(let types)? = root.details.fields["type"]?.kind,
-              types.values.count == 1, case .stringValue(let id)? = types.values.first?.kind,
+        guard let id = OriginalEditorLocalAnnotationNativeBody.annotationTypeID(root.details),
               OriginalAnnotationRevisionWire.identifier(id), !id.contains("/") else {
             throw AnytypeOriginalAnnotationLifecycleError.invalidResponse
         }

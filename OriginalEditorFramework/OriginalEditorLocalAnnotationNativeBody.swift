@@ -22,10 +22,7 @@ internal enum OriginalEditorLocalAnnotationNativeBody {
         try requireMarkers(details, source: source,
             transportOriginHostProfileID: snapshot.provenance.transportOriginHostProfileID)
         let archive = try Archive(data: snapshot.nativeArchiveBytes, accessMode: .read)
-        guard case .listValue(let types)? = details.fields["type"]?.kind,
-              types.values.count == 1,
-              case .stringValue(let typeID)? = types.values.first?.kind,
-              !typeID.isEmpty, !typeID.contains("/"),
+        guard let typeID = annotationTypeID(details), !typeID.contains("/"),
               let entry = archive["types/" + typeID + ".pb"] else {
             throw AnytypeOriginalEditorLocalAnnotationError.wrongNativeIdentity
         }
@@ -72,6 +69,23 @@ internal enum OriginalEditorLocalAnnotationNativeBody {
     static func string(_ details: Google_Protobuf_Struct, _ key: String) -> String? {
         guard case .stringValue(let value)? = details.fields[key]?.kind else { return nil }
         return value
+    }
+
+    /// Current Heart projects the single object type as a string in ObjectShow
+    /// and export. Older saved archives carry the same identity in a singleton
+    /// list. Both forms must contain exactly one nonempty native object ID.
+    static func annotationTypeID(_ details: Google_Protobuf_Struct) -> String? {
+        let value: String
+        switch details.fields["type"]?.kind {
+        case .stringValue(let typeID):
+            value = typeID
+        case .listValue(let types) where types.values.count == 1:
+            guard case .stringValue(let typeID)? = types.values.first?.kind else { return nil }
+            value = typeID
+        default:
+            return nil
+        }
+        return value.isEmpty ? nil : value
     }
 
     struct TextProjection: Sendable {
