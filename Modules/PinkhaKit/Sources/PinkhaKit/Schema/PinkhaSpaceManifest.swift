@@ -213,6 +213,33 @@ public struct PinkhaSpaceManifest: Codable, Sendable, Equatable, Hashable {
         return try fromJSONData(data)
     }
 
+
+    /// Decode a fresh native read of an already-discovered manifest. A missing
+    /// or malformed body is a read failure, never proof that a new manifest
+    /// should be created. Legacy payloads without a self ID bind to this exact
+    /// native object; contradictory object/Space identities remain errors.
+    public static func fromStoredJSONString(
+        _ string: String?, objectId: String, spaceId: String
+    ) throws -> PinkhaSpaceManifest {
+        guard !objectId.isEmpty, !spaceId.isEmpty else {
+            throw PinkhaBootstrapError.invalidManifest("Native manifest identity is empty.")
+        }
+        guard let string, !string.isEmpty else {
+            throw PinkhaBootstrapError.manifestStoreError(
+                "Native manifest \(objectId) has no readable payload.")
+        }
+        var manifest = try fromJSONString(string)
+        guard manifest.spaceId.utf8.elementsEqual(spaceId.utf8) else {
+            throw PinkhaBootstrapError.invalidManifest("Native manifest belongs to a different Space.")
+        }
+        if let recorded = manifest.manifestObjectId,
+           !recorded.utf8.elementsEqual(objectId.utf8) {
+            throw PinkhaBootstrapError.invalidManifest("Native manifest self identity differs from its object.")
+        }
+        manifest.manifestObjectId = objectId
+        return manifest
+    }
+
     // MARK: - Equatable & Hashable (comparing dates at second precision for ISO8601 stability)
 
     public static func == (lhs: PinkhaSpaceManifest, rhs: PinkhaSpaceManifest) -> Bool {

@@ -75,17 +75,15 @@ public final class PinkhaSpaceManifestStore: PinkhaSpaceManifestStoreProtocol, @
 
         guard let details = objectShow.objectView.details.first(where: { $0.id == objectId })?.details,
               let objectDetails = try? ObjectDetails(protobufStruct: details) else {
-            return nil
+            // Discovery already observed an existing canonical manifest. An
+            // incomplete native read must never authorize a second manifest.
+            throw PinkhaBootstrapError.manifestStoreError(
+                "Native manifest \(objectId) returned no readable root details.")
         }
 
-        guard let jsonString = objectDetails.values[BundledPropertyKey.description.rawValue]?.stringValue,
-              !jsonString.isEmpty else {
-            return nil
-        }
-
-        var manifest = try PinkhaSpaceManifest.fromJSONString(jsonString)
-        manifest.manifestObjectId = objectId
-        return manifest
+        return try PinkhaSpaceManifest.fromStoredJSONString(
+            objectDetails.values[BundledPropertyKey.description.rawValue]?.stringValue,
+            objectId: objectId, spaceId: spaceId)
     }
 
     public func saveManifest(_ manifest: PinkhaSpaceManifest) async throws -> PinkhaSpaceManifest {
