@@ -1,0 +1,58 @@
+Building for debugging...
+[Computing dependencies]
+[Provisioning 1 / 19]
+[Using on-disk description]
+[1 / 8] PinkhaAnyHost
+[2 / 9] PinkhaAnyHost
+[7 / 12] PinkhaAnyHostTests-product
+[10 / 15] PinkhaAnyHostTests-product
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeIdentityTests.swift:146:30: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m144 |[0;0m                 "spaceID": .string(space), "typeID": .string(type), "exactNativeQueryCount": .integer(1)]))
+[0;36m145 |[0;0m         }
+[0;36m146 |[0;0m         let descriptorRows = try bindings.map { binding -> AnyJSON in
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m147 |[0;0m             .object(["propertyID": .string(binding.propertyID), "nativeContract": .string(binding.nativeContract),
+[0;36m148 |[0;0m                      "nativeDescriptorSHA256": .string(binding.nativeDescriptorSHA256),
+
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeTypeOrderTests.swift:104:24: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m102 |[0;0m         }
+[0;36m103 |[0;0m         try require(plan.binding.workspace == workspace && plan.items.count == 6)
+[0;36m104 |[0;0m         let executor = try AnyDestinationMigrationExecutor(client: client, journalDirectory: journal)
+    [0;36m|[0;0m                        `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m105 |[0;0m         let progress = try await executor.execute(plan: plan,
+[0;36m106 |[0;0m             payloads: { _ in throw TypeOrderNativeFailure.unexpectedPayload },
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[12 / 20] CCryptoBoringSSL
+[14 / 21] PinkhaAnyHostTests-product
+[15 / 21] PinkhaAnyHost
+[17 / 24] PinkhaAnyHost
+[19 / 24]
+[20 / 24] PinkhaAnyHost
+[21 / 24] PinkhaAnyHostTests-product
+[24 / 26] PinkhaAnyHostTests-test-runner
+[25 / 27] PinkhaAnyHostTests-test-runner
+[27 / 29] PinkhaAnyHostTests-test-runner
+[30 / 30] PinkhaAnyHostTests-test-runner
+[33 / 38] PinkhaAnyHostTests-test-runner
+[35 / 37] PinkhaAnyHostTests-test-runner
+[37 / 38] pinkha-any-host-probe-product
+[38 / 38] pinkha-any-host-probe-product
+Build complete! (43.96 secs)
+Test Suite 'Selected tests' started at 2026-11-26 01:14:01.016
+Test Suite 'NativeDefinitionPlanTests' started at 2026-11-26 01:14:01.027
+Test Case 'NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance' started at 2026-11-26 01:14:01.027
+<EXPR>:0: error: NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance : threw error "unsupportedSource"
+Test Case 'NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance' failed (3.077 seconds)
+Test Suite 'NativeDefinitionPlanTests' failed at 2026-11-26 01:14:04.104
+	 Executed 1 test, with 1 failure (1 unexpected) in 3.077 (3.077) seconds
+Test Suite 'NativePageCompositionTests' started at 2026-11-26 01:14:04.104
+Test Case 'NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities' started at 2026-11-26 01:14:04.104
+NATIVE_CUSTOM_PAGE_COMPOSITION pages=2 details=16 bodyBlocks=2 distinctObjectIdentities=true completeCaptureObjects=156 originalCustomAcceptanceFailureRetained=true destinationWrites=false
+Test Case 'NativePageCompositionTests.testOriginalCustomCapturePreservesBothPagesAllValuesAndDistinctIdentities' passed (1.852 seconds)
+Test Suite 'NativePageCompositionTests' passed at 2026-11-26 01:14:05.956
+	 Executed 1 test, with 0 failures (0 unexpected) in 1.852 (1.852) seconds
+Test Suite 'Selected tests' failed at 2026-11-26 01:14:05.956
+	 Executed 2 tests, with 1 failure (1 unexpected) in 4.929 (4.929) seconds
+Note: Some test targets reported failures:
+  - PinkhaAnyHostTests (XCTest)

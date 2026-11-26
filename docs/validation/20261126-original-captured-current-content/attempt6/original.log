@@ -1,0 +1,30 @@
+Building for debugging...
+[Computing dependencies]
+[Provisioning 1 / 19]
+[Using on-disk description]
+[1 / 8] PinkhaAnyHost
+[2 / 9] PinkhaAnyHost
+[4 / 10] Crypto
+[5 / 10] PinkhaAnyHost
+[6 / 11] PinkhaAnyHost
+[8 / 12] PinkhaAnyHost
+[9 / 12] PinkhaAnyHostTests-product
+[10 / 12] PinkhaAnyHostTests-test-runner
+[11 / 13] PinkhaAnyHostTests-test-runner
+[13 / 15] PinkhaAnyHostTests-test-runner
+[16 / 16] PinkhaAnyHostTests-test-runner
+[19 / 22] PinkhaAnyHostTests-test-runner
+[20 / 20] pinkha-any-host-probe-product
+Build complete! (24.36 secs)
+Test Suite 'Selected tests' started at 2026-11-26 01:37:53.421
+Test Suite 'NativeDefinitionPlanTests' started at 2026-11-26 01:37:53.432
+Test Case 'NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance' started at 2026-11-26 01:37:53.432
+CURRENT_CONTENT_COMPONENT_FAILURE stage=construct-plan errorType=PinkhaAnyHost.AnyDestinationMigrationError error=invalidPlan("item identity/order")
+<EXPR>:0: error: NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance : threw error "invalidPlan("item identity/order")"
+Test Case 'NativeDefinitionPlanTests.testOriginalCustomCaptureMapsCurrentChoicesAndValuesWithoutPromotingSourceAcceptance' failed (8.042 seconds)
+Test Suite 'NativeDefinitionPlanTests' failed at 2026-11-26 01:38:01.474
+	 Executed 1 test, with 1 failure (1 unexpected) in 8.042 (8.042) seconds
+Test Suite 'Selected tests' failed at 2026-11-26 01:38:01.474
+	 Executed 1 test, with 1 failure (1 unexpected) in 8.042 (8.042) seconds
+Note: Some test targets reported failures:
+  - PinkhaAnyHostTests (XCTest)
