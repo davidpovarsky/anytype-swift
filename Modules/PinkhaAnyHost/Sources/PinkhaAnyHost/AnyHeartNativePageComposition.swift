@@ -132,13 +132,21 @@ public struct AnyHeartNativePageComposition: Sendable {
         let detailKeys = snapshot.details.keys.sorted { Data($0.utf8).lexicographicallyPrecedes(Data($1.utf8)) }
         // Every present detail is consumed; there is no caller-selected subset.
         let values = try definitions.values(snapshot: snapshot, relationKeys: detailKeys, objects: objects, files: files)
-        guard Set(values.initialRelationKeys + values.deferredRelationKeys + values.nativeIdentityRelationKeys) == Set(detailKeys) else {
+        // The scoped current-content schema actually owns an immutable facts
+        // dataset. Historical fields count as consumed only when the concrete
+        // source-fact operation is constructed and included below.
+        let facts = try definitions.contentSelection.map { _ in
+            try AnyHeartNativeSourceFacts.item(snapshot: snapshot, values: values, type: type, objectSourceKey: sourceKey)
+        }
+        let retainedDerivedKeys = facts == nil ? [] : values.nativeDerivedSourceValues.map(\.sourceRelationKey)
+        guard Set(values.initialRelationKeys + values.deferredRelationKeys + values.nativeIdentityRelationKeys + retainedDerivedKeys) == Set(detailKeys) else {
             throw AnyHeartNativePageCompositionError.sourceBinding
         }
         var items = [AnyDestinationMigrationItem(sourceKey: sourceKey, sourceObjectID: snapshot.sourceObjectID,
             operation: .object(type: type.object, collections: definitions.propertyOwner.map { [$0] } ?? [],
                                initialProperties: values.initialProperties))]
         items.append(contentsOf: body.destinationItems(ownerSourceKey: sourceKey))
+        if let facts { items.append(facts) }
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         for group in values.deferredGroups {
             let ownerDigest = AnyContentDigest.sha256(try encoder.encode(group.owner))

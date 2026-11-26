@@ -86,6 +86,10 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
     }
 
     public let catalog: AnyHeartNativeDefinitionCatalog
+    /// A current-content dependency closure is explicitly narrower than the
+    /// complete source vocabulary. The original full-catalogue initializer
+    /// keeps its existing strict behavior when this value is nil.
+    public let contentSelection: AnyHeartNativeContentSelection?
     public let catalogSourceKey: String?
     public let properties: [PropertyBinding]
     public let types: [TypeBinding]
@@ -94,32 +98,42 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
     /// Every ordinary schema item still requires its normal mapped coverage.
     public let definitionCoverage: [AnyDestinationCoverage]
     public let issues: [Issue]
+    public let deferredDefinitionIssues: [Issue]
     public var permitsDestinationWrites: Bool { false }
     public var propertyOwner: AnyDestinationReference? {
         catalogSourceKey.map { .mapped(sourceKey: $0, slot: .objectID, encoding: .rawID) }
     }
 
-    public init(catalog: AnyHeartNativeDefinitionCatalog) throws {
+    public init(catalog: AnyHeartNativeDefinitionCatalog,
+                contentSelection: AnyHeartNativeContentSelection? = nil) throws {
         self.catalog = catalog
-        var issues = catalog.issues.map {
+        self.contentSelection = contentSelection
+        try contentSelection?.require(catalog)
+        let selectedDefinitionIDs = contentSelection.map { Set($0.definitionObjectIDs.map { Data($0.utf8) }) }
+        let allCatalogIssues = catalog.issues.map {
             Issue(sourceObjectID: $0.sourceObjectID, field: $0.field, reason: "captured-" + $0.kind.rawValue)
         }
+        var issues = allCatalogIssues.filter { selectedDefinitionIDs?.contains(Data($0.sourceObjectID.utf8)) ?? true }
+        deferredDefinitionIssues = allCatalogIssues.filter { selectedDefinitionIDs?.contains(Data($0.sourceObjectID.utf8)) == false }
+        let selectedTypes = contentSelection.map { selection in
+            let ids = Set(selection.typeObjectIDs.map { Data($0.utf8) })
+            return catalog.types.filter { ids.contains(Data($0.objectID.utf8)) }
+        } ?? catalog.types
+        let selectedRelations = contentSelection.map { selection in
+            let ids = Set(selection.relationObjectIDs.map { Data($0.utf8) })
+            return catalog.relations.filter { ids.contains(Data($0.objectID.utf8)) }
+        } ?? catalog.relations
         func key(_ kind: String, _ id: String) -> String {
             "heart-native-" + kind + ":" + Self.identity(catalog.sourceSpaceID, id, kind)
         }
-        let types = catalog.types.map {
+        let types = selectedTypes.map {
             TypeBinding(definition: $0, sourceKey: key("type", $0.objectID),
                         xKey: "heart_type_" + Self.identity(catalog.sourceSpaceID, $0.objectID, "type-handle"))
         }
         let typesByID = Dictionary(uniqueKeysWithValues: types.map { (Data($0.definition.objectID.utf8), $0) })
         var items: [AnyDestinationMigrationItem] = [], properties: [PropertyBinding] = []
         var definitionCoverage: [AnyDestinationCoverage] = []
-        func nativeCanonicalIdentity(_ relation: AnyHeartNativeDefinitionCatalog.Relation) -> Bool {
-            relation.snapshot.nativeType == 521 && ["name", "description", "id", "spaceId", "type",
-                "creator", "createdDate", "lastModifiedDate", "lastModifiedBy"].contains(relation.relationKey) &&
-            Data(relation.snapshot.uniqueKey.utf8) == Data(("rel-" + relation.relationKey).utf8)
-        }
-        let namespaceAnchor = catalog.relations.first { !nativeCanonicalIdentity($0) }
+        let namespaceAnchor = selectedRelations.first { !Self.isNativeCanonicalIdentity($0) }
         let ownerKey = namespaceAnchor.map { key("property-catalog", $0.objectID) }
         if let ownerKey, let first = namespaceAnchor {
             // This is the destination property namespace. It does not claim
@@ -133,8 +147,8 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                         "heartPropertyNamespace": .bool(true),
                     ]))))))
         }
-        for relation in catalog.relations {
-            if nativeCanonicalIdentity(relation) {
+        for relation in selectedRelations {
+            if Self.isNativeCanonicalIdentity(relation) {
                 do {
                     let targetTypeEvidence: AnyDestinationDefinitionEvidence?
                     if ["spaceId", "type", "creator", "lastModifiedBy"].contains(relation.relationKey),
@@ -330,6 +344,12 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                 metadata["heartSourceAddedDateSeconds"] = original
                 metadata["heartSourceAddedDateContract"] = .string("pinkha-heart-source-added-date-seconds-v1")
             }
+            if contentSelection != nil {
+                metadata["heartSourceFacts"] = .object([
+                    "contract": .string(AnyHeartNativeSourceFacts.contract),
+                    "dataset": .string(AnyHeartNativeSourceFacts.datasetKey),
+                ])
+            }
             items.append(.init(sourceKey: type.sourceKey, sourceObjectID: definition.objectID,
                 operation: .typeDefinition(.init(xKey: type.xKey, name: definition.name,
                     description: definition.description, layout: layout,
@@ -342,6 +362,7 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                     "ui": .object(["type": .string("document")]),
                     "datasets": .array([.object(["module": .string("editor"), "key": .string("editor_blocks")])]),
                 ])))))
+            if contentSelection != nil { items.append(AnyHeartNativeSourceFacts.definitionItem(type: type)) }
         }
         self.catalogSourceKey = ownerKey; self.types = types; self.properties = properties
         self.schemaItems = items; self.definitionCoverage = definitionCoverage; self.issues = issues
@@ -368,6 +389,7 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
     /// coverage. Unknown/ambiguous keys and nulls never become guessed values.
     public func values(snapshot: AnyHeartNativeSnapshotView, relationKeys: [String],
                        objects: [ObjectBinding], files: [AnyHeartNativeFileBinding] = []) throws -> Values {
+        try contentSelection?.require(snapshot)
         guard Data(snapshot.sourceSpaceID.utf8) == Data(catalog.sourceSpaceID.utf8),
               Set(relationKeys.map { Data($0.utf8) }).count == relationKeys.count else {
             throw AnyHeartNativeDefinitionPlanError.wrongSource
@@ -447,6 +469,12 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
             deferredRelationKeys: deferredKeys, nativeIdentityRelationKeys: nativeIdentityKeys,
             nativeDerivedSourceValues: nativeDerivedSourceValues,
             originalDetailsSHA256: AnyContentDigest.sha256(try encoder.encode(AnyJSON.object(snapshot.details))))
+    }
+
+    static func isNativeCanonicalIdentity(_ relation: AnyHeartNativeDefinitionCatalog.Relation) -> Bool {
+        relation.snapshot.nativeType == 521 && ["name", "description", "id", "spaceId", "type",
+            "creator", "createdDate", "lastModifiedDate", "lastModifiedBy"].contains(relation.relationKey) &&
+        Data(relation.snapshot.uniqueKey.utf8) == Data(("rel-" + relation.relationKey).utf8)
     }
 
     /// Heart's system relation is a link to the current object, source space

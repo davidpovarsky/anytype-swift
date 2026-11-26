@@ -141,6 +141,51 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertNil(mapper.property(sourceKey: "creator"))
         XCTAssertThrowsError(try mapper.admittedSchemaItems())
     }
+
+    func testHistoricalDerivedValuesAreBoundToConcreteImmutableFactsWithoutSupplyingNativeStamps() throws {
+        let roles: [AnyDestinationCanonicalPropertyBinding.DerivedRole] = [.author, .createdAt, .modifiedAt, .modifiedBy]
+        let participant = try type("source-participant-type", key: "participant")
+        let nativeType = try type()
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog(roles.map { try nativeDerived($0) } + [participant, nativeType]))
+        let typeBinding = try XCTUnwrap(mapper.types.first { $0.definition.objectID == nativeType.sourceObjectID })
+        let original: [String: AnyJSON] = ["creator": .array([.string("historical-participant")]),
+            "createdDate": .integer(-7), "lastModifiedDate": .integer(Int64.max), "lastModifiedBy": .array([])]
+        let row = try snapshot("source-document", type: 16, key: "page", details: original)
+        let values = try mapper.values(snapshot: row, relationKeys: roles.map(\.sourceKey), objects: [])
+        let item = try AnyHeartNativeSourceFacts.item(snapshot: row, values: values, type: typeBinding, objectSourceKey: "document")
+        guard case .immutableRecord(let object, let owner, let dataset, .literal(let fields)) = item.operation else {
+            return XCTFail("immutable native source record")
+        }
+        XCTAssertEqual(object, .mapped(sourceKey: "document", slot: .objectID, encoding: .rawID))
+        XCTAssertEqual(owner, typeBinding.object); XCTAssertEqual(dataset, AnyHeartNativeSourceFacts.datasetKey)
+        XCTAssertEqual(fields["sourceSnapshotBase64"]?.string.flatMap { Data(base64Encoded: $0) }, row.protobufBytes)
+        XCTAssertEqual(fields["sourceViewJSON"]?.string.map { Data($0.utf8) }, row.jsonViewBytes)
+        XCTAssertNil(fields["importedBy"]); XCTAssertNil(fields["importedAt"])
+        let bindings = try JSONDecoder().decode(AnyJSON.self,
+            from: Data(XCTUnwrap(fields["sourceDerivedBindingsJSON"]?.string).utf8))
+        XCTAssertEqual(bindings["contract"], .string(AnyHeartNativeSourceFacts.contract))
+        XCTAssertEqual(bindings["historicalAuthorIsDestinationSigner"], .bool(false))
+        let facts = try XCTUnwrap(bindings["historicalValues"]?.array)
+        XCTAssertEqual(facts.count, 4)
+        for fact in facts {
+            let key = try XCTUnwrap(fact["sourceRelationKey"]?.string)
+            XCTAssertEqual(try AnyDestinationDefinitionChecks.bytes(XCTUnwrap(fact["originalValue"])),
+                try AnyDestinationDefinitionChecks.bytes(XCTUnwrap(original[key])))
+        }
+        let changed = try snapshot("source-document", type: 16, key: "page", details: ["createdDate": .integer(42)])
+        XCTAssertThrowsError(try AnyHeartNativeSourceFacts.item(snapshot: changed, values: values, type: typeBinding, objectSourceKey: "document"))
+        let foreign = try snapshot("foreign-document", type: 16, key: "page", details: original)
+        XCTAssertThrowsError(try AnyHeartNativeSourceFacts.item(snapshot: foreign, values: values, type: typeBinding, objectSourceKey: "document"))
+        let part = AnyHeartNativeSourceFacts.definitionItem(type: typeBinding)
+        XCTAssertEqual(part.expectedRecordCount, 10)
+        guard case .partDefinition(let definitionOwner, .literal(let draft)) = part.operation else {
+            return XCTFail("native facts dataset")
+        }
+        XCTAssertEqual(definitionOwner, typeBinding.object)
+        let definition = try XCTUnwrap(draft["datasets"]?.array?.first)
+        XCTAssertEqual(definition["module"], .string("records")); XCTAssertEqual(definition["deleteBy"], .string("none"))
+        XCTAssertEqual(definition["fields"]?.array?.filter { $0["stamp"] != nil }.count, 2)
+    }
     /// Deliberately synthetic declaration-only envelopes for closed coverage
     /// controls. They are not full native bundle or current authority proofs.
     private func wireManifest(_ rows: [AnyHeartNativeSnapshotView]) throws -> Data {
@@ -1063,6 +1108,63 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertFalse(mapper.issues.contains { $0.sourceObjectID == capturedText.objectID && $0.field == "relationDefaultValue" })
         XCTAssertThrowsError(try mapper.admittedSchemaItems())
         XCTAssertFalse(mapper.permitsDestinationWrites)
+        let current = try AnyHeartNativeContentComposition(bundle: bundle)
+        XCTAssertEqual(current.selection.objects.count, 2)
+        XCTAssertEqual(current.selection.typeObjectIDs, [custom.objectID])
+        XCTAssertEqual(current.selection.relationObjectIDs.count, 8)
+        XCTAssertEqual(current.selection.optionObjectIDs.count, 4)
+        XCTAssertEqual(current.selection.remainingDefinitionObjectIDs.count, 137)
+        XCTAssertEqual(current.selection.remainingSourceObjectIDs.count, 144)
+        XCTAssertEqual(current.selection.executedSourceObjectIDs.count, 15)
+        XCTAssertEqual(current.definitions.types.count, 1)
+        XCTAssertEqual(current.definitions.properties.count, 8)
+        XCTAssertFalse(current.permitsWholeSourceAdmission)
+        XCTAssertFalse(current.selection.permitsWholeSourceAdmission)
+        XCTAssertFalse(current.definitions.permitsDestinationWrites)
+        XCTAssertTrue(current.definitions.issues.isEmpty, String(describing: current.definitions.issues))
+        XCTAssertEqual(current.pages.count, 2)
+        XCTAssertEqual(Set(current.pages.flatMap(\.presentDetailKeys)), Set(first.details.keys))
+        XCTAssertTrue(current.pages.allSatisfy { $0.presentDetailKeys.count == 8 })
+        XCTAssertEqual(current.definitions.schemaItems.count, 11)
+        let currentPlan = try current.currentContentPlan(workspace: .init(accountID: "destination-account", spaceID: "destination-space"),
+            storeID: "destination-store", planID: String(repeating: "a", count: 64))
+        XCTAssertEqual(currentPlan.source.sourceObjectIDs.count, 15)
+        XCTAssertEqual(currentPlan.items.count, 19)
+        XCTAssertEqual(currentPlan.coverage.count, 15)
+        XCTAssertEqual(try AnyDestinationMigrationPlan.decode(JSONEncoder().encode(currentPlan)).canonicalBytes, currentPlan.canonicalBytes)
+        let lastCreate = try XCTUnwrap(currentPlan.items.lastIndex { if case .object = $0.operation { return true }; return false })
+        let firstReference = try XCTUnwrap(currentPlan.items.firstIndex { if case .propertyUpdate = $0.operation { return true }; return false })
+        XCTAssertLessThan(lastCreate, firstReference)
+        let facts = currentPlan.items.filter { if case .immutableRecord = $0.operation { return true }; return false }
+        XCTAssertEqual(facts.count, 2)
+        for fact in facts {
+            guard case .immutableRecord(_, _, let dataset, .literal(let fields)) = fact.operation,
+                  let original = docs.first(where: { $0.sourceObjectID == fact.sourceObjectID }) else {
+                return XCTFail("concrete source facts")
+            }
+            XCTAssertEqual(dataset, AnyHeartNativeSourceFacts.datasetKey)
+            XCTAssertEqual(fields["sourceSnapshotBase64"]?.string.flatMap { Data(base64Encoded: $0) }, original.protobufBytes)
+            XCTAssertEqual(fields["sourceViewJSON"]?.string.map { Data($0.utf8) }, original.jsonViewBytes)
+            XCTAssertEqual(fields["sourceSnapshotSHA256"], .string(original.snapshotSHA256))
+            XCTAssertEqual(fields["sourceViewSHA256"], .string(original.viewSHA256))
+            XCTAssertNil(fields["importedBy"]); XCTAssertNil(fields["importedAt"])
+        }
+        // A selected catalogue cannot be reused with an unobserved revision
+        // of the same source object, even if its account/space is unchanged.
+        var changedView = try XCTUnwrap(JSONDecoder().decode(AnyJSON.self, from: first.jsonViewBytes).object)
+        var changedSnapshot = try XCTUnwrap(changedView["Snapshot"]?.object)
+        var changedDetails = first.details
+        changedDetails["name"] = .string("a different current revision")
+        changedSnapshot["details"] = .object(changedDetails); changedView["Snapshot"] = .object(changedSnapshot)
+        let changed = try AnyHeartNativeSnapshotView(jsonView: JSONEncoder().encode(AnyJSON.object(changedView)),
+            snapshotBytes: first.protobufBytes, sourceSpaceID: first.sourceSpaceID, sourceObjectID: first.sourceObjectID)
+        XCTAssertThrowsError(try current.selection.require(changed))
+        XCTAssertThrowsError(try current.definitions.values(snapshot: changed, relationKeys: ["name"], objects: []))
+        XCTAssertEqual(current.definitions.catalog.contentSHA256, mapper.catalog.contentSHA256)
+        XCTAssertEqual(current.definitions.catalog.types.count, 20)
+        XCTAssertEqual(current.definitions.catalog.relations.count, 126)
+        XCTAssertEqual(current.definitions.catalog.options.count, 4)
+        XCTAssertThrowsError(try mapper.admittedSchemaItems())
         XCTAssertEqual(AnyContentDigest.sha256(try bytes("manifest.json", under: directory)), bundle.manifestSHA256)
         print("NATIVE_CUSTOM_CAPTURE_DIAGNOSTIC snapshots=156 types=20 relations=126 options=4 source_method=FAIL destination_writes=false originals_unchanged=true")
     }
