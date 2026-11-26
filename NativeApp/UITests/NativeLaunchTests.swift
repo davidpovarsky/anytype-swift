@@ -2372,7 +2372,7 @@ final class NativeLaunchTests: XCTestCase {
                 object: actions, timeout: 30)
         actions.tap()
         tapWhenEnabled(app.buttons["any-native-hierarchy-archive"])
-        tapWhenEnabled(app.buttons["any-native-bin-confirm-remove"])
+        confirmNativeBinRemoval(app)
         waitFor(NSPredicate(format: "exists == false"), object: app.buttons[rowID], timeout: 45)
 
         reopenOwnedWorkspace(app, spaceName: spaceName)
@@ -2396,6 +2396,87 @@ final class NativeLaunchTests: XCTestCase {
                 object: app.textViews[blockID], timeout: 60)
         XCTAssertEqual(blocks.count, 1)
     }
+
+    // BEGIN_NATIVE_BIN_CONFIRMATION_AX_PREPARATION_V1
+    /// UIKit exposes the actual confirmation action as nested Buttons.
+    /// Choose its unique leaf only inside the exact rendered confirmation Sheet.
+    private func confirmNativeBinRemoval(_ app: XCUIApplication,
+                                         file: StaticString = #filePath, line: UInt = #line) {
+        let labels = ["העברה לסל המחזור", "Move to Bin"]
+        let sheets = app.sheets.matching(NSPredicate(format: "label IN %@", labels))
+        let menuAction = app.buttons["any-native-hierarchy-archive"]
+        func usableFrame(_ frame: CGRect) -> Bool {
+            frame.minX.isFinite && frame.minY.isFinite && frame.width.isFinite && frame.height.isFinite
+                && frame.width > 0 && frame.height > 0
+        }
+        func confirmation() -> (sheetCount: Int, titleCount: Int, actionCount: Int,
+                                leafActions: [XCUIElement], label: String) {
+            let count = sheets.count
+            guard count == 1 else { return (count, 0, 0, [], "") }
+            let sheet = sheets.element(boundBy: 0)
+            let label = sheet.label
+            let titles = sheet.staticTexts.matching(NSPredicate(format: "label == %@", label))
+            let actions = sheet.buttons.matching(NSPredicate(
+                format: "identifier == %@ AND label == %@", "any-native-bin-confirm-remove", label))
+            let leaves = actions.allElementsBoundByIndex.filter {
+                $0.descendants(matching: .button).count == 0
+            }
+            return (count, titles.count, actions.count, leaves, label)
+        }
+        let ready = NSPredicate { _, _ in
+            let current = confirmation()
+            guard !menuAction.exists, current.sheetCount == 1, current.titleCount == 1,
+                  current.leafActions.count == 1 else { return false }
+            let action = current.leafActions[0]
+            let frame = action.frame
+            return action.isEnabled && action.isHittable && usableFrame(frame)
+        }
+        let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)],
+                                   timeout: 30)
+        let ax = XCTAttachment(string: String(decoding: Data(app.debugDescription.utf8).prefix(131_072),
+                                              as: UTF8.self))
+        ax.name = "NATIVE_BIN_CONFIRMATION_private_AX"; ax.lifetime = .keepAlways; add(ax)
+        let screen = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        screen.name = "NATIVE_BIN_CONFIRMATION_private_screen"; screen.lifetime = .keepAlways; add(screen)
+        let current = confirmation()
+        let action = current.leafActions.count == 1 ? current.leafActions[0] : nil
+        let observed: [String: Any] = [
+            "sheetCount": current.sheetCount, "sheetLabel": current.label,
+            "titleCount": current.titleCount, "actionCount": current.actionCount,
+            "leafActionCount": current.leafActions.count,
+            "initiatingMenuActionPresent": menuAction.exists,
+            "waitCompleted": result == .completed,
+            "actionLabel": action?.label ?? "",
+            "actionIdentifier": action?.identifier ?? "",
+            "actionEnabled": action?.isEnabled ?? false,
+            "actionHittable": action?.isHittable ?? false,
+            "actionFrame": action.map { String(describing: $0.frame) } ?? ""
+        ]
+        if let data = try? JSONSerialization.data(withJSONObject: observed, options: [.sortedKeys]),
+           let text = String(data: data, encoding: .utf8) {
+            let control = XCTAttachment(string: text)
+            control.name = "NATIVE_BIN_CONFIRMATION_control"; control.lifetime = .keepAlways; add(control)
+        }
+        XCTAssertEqual(result, .completed, "The unique native Bin confirmation was not ready.",
+                       file: file, line: line)
+        guard result == .completed else { return }
+        let final = confirmation()
+        guard !menuAction.exists, final.sheetCount == 1, final.titleCount == 1,
+              final.leafActions.count == 1 else {
+            XCTFail("The native Bin confirmation changed before the real tap.", file: file, line: line)
+            return
+        }
+        let finalAction = final.leafActions[0]
+        let frame = finalAction.frame
+        guard finalAction.identifier == "any-native-bin-confirm-remove",
+              finalAction.label == final.label, finalAction.isEnabled,
+              finalAction.isHittable, usableFrame(frame) else {
+            XCTFail("The native Bin confirmation action lost its actual hit frame.", file: file, line: line)
+            return
+        }
+        finalAction.tap()
+    }
+    // END_NATIVE_BIN_CONFIRMATION_AX_PREPARATION_V1
 
     private func makeApplication(scope: UUID = UUID()) -> XCUIApplication {
         let app = NativeApplicationUnderTest()

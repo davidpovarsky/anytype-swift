@@ -38,6 +38,16 @@ def write(path, value):
     temporary.replace(path)
 
 
+def bin_confirmation_module():
+    path = Path(__file__).resolve().with_name("bin_confirmation_preparation.py")
+    require(digest(path) == "6f30156103912fdebe67bedc530e57f159ece79d640cde38b1c05b51e67341a4", "exact_Bin_confirmation_source_validator_required")
+    sys.dont_write_bytecode = True
+    spec = importlib.util.spec_from_file_location("qualified_bin_confirmation", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--main-root", type=Path, required=True)
@@ -49,6 +59,7 @@ def main():
     parser.add_argument("--miniapps-source-commit", choices=["53eec4a2289f969979bc301760ce152088ebc2f7"])
     parser.add_argument("--bin-source-commit", choices=["36401a8e49189465ad89e395d962695e3a76e67a", "06a3d5b83caf656f2b9a28618cd186c6794ab27e"])
     parser.add_argument("--miniapps-menu-source-commit", choices=["9b7f0df07ad4b9f81829ee834ac30c5c4c8588fd"])
+    parser.add_argument("--bin-confirmation-source-commit", choices=["d9acff333db5a2df0cfa373524a9c17e53410ffe"])
     args = parser.parse_args()
     root, evidence, output = args.main_root, args.main_evidence, args.output
     for path in (root, evidence, output):
@@ -418,6 +429,24 @@ def main():
                 and hashlib.sha256(runner_launch.split(marker)[1]).hexdigest() ==
                     current410b_binding["miniAppsMethodSectionSHA256"],
                 "exact_integrated_document_menu_Bin_and_original_assertions_required")
+    bin_confirmation_binding = None
+    bin_confirmation_review = None
+    if args.bin_confirmation_source_commit is not None:
+        validator = bin_confirmation_module()
+        require(origin == validator.MAIN and runner_origin == origin and current410b_binding is not None,
+                "one_Bin_confirmation_derivative_on_exact_App13_required")
+        changed = subprocess.run(["git", "-C", str(source), "diff", "--name-only", origin,
+            validator.SOURCE], check=True, capture_output=True, text=True).stdout.splitlines()
+        require(inputs[2] in changed and all(name == inputs[2] or
+                name.startswith(("Tools/", "docs/validation/")) for name in changed),
+                "Bin_confirmation_candidate_must_not_change_App_or_other_UI_files")
+        candidate = subprocess.run(["git", "-C", str(source), "show", validator.SOURCE + ":" + inputs[2]],
+                                   check=True, capture_output=True).stdout
+        bin_confirmation_review = subprocess.run(["git", "-C", str(source), "show",
+            validator.SOURCE + ":" + validator.REVIEW_PATH], check=True, capture_output=True).stdout
+        bin_confirmation_binding = validator.qualify_source(runner_launch, candidate, bin_confirmation_review)
+        current410b_binding = None  # This is explicitly a separately sourced UI derivative.
+        runner_origin, runner_launch = validator.SOURCE, candidate
     helper = source / "Tools/AnyEnginePort/native_ui_transition_project.py"
     original_helper = subprocess.run(["git", "-C", str(source), "show",
         origin + ":Tools/AnyEnginePort/native_ui_transition_project.py"],
@@ -440,6 +469,8 @@ def main():
         "source/UITests/NativeLaunchTests.swift": runner_launch,
         "source/UITests/NativeHistoryTests.swift": runner_history,
     }
+    if bin_confirmation_review is not None:
+        files["bin-confirmation-source-review.json"] = bin_confirmation_review
     if current_menu_review is not None:
         files["miniapps-menu-source-review.json"] = current_menu_review
     if bin_review is not None:
@@ -460,6 +491,7 @@ def main():
         "binContextPreparation": bin_binding,
         "currentMiniAppsMenuFixture": current_menu_binding,
         "current410bFixture": current410b_binding,
+        "current410bBinConfirmationFixture": bin_confirmation_binding,
         "mainReceiptSHA256": digest(evidence / "receipt.json"),
         "reviewedInputProfile": profile,
         "exactOriginalProjectAndScheme": transformation, "sourceFiles": sources,
@@ -496,6 +528,7 @@ def main():
         "binContextPreparation": bin_binding,
         "currentMiniAppsMenuFixture": current_menu_binding,
         "current410bFixture": current410b_binding,
+        "current410bBinConfirmationFixture": bin_confirmation_binding,
                   "mainReceiptSHA256": digest(evidence / "receipt.json"),
                   "reviewedInputProfile": profile,
                   "argv": argv, "pid": process.pid,
