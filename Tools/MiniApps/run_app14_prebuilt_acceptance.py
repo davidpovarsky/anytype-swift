@@ -270,7 +270,12 @@ def main():
     for number in (signal.SIGINT, signal.SIGTERM):
         signal.signal(number, interrupted)
     try:
-        proof, built, app = core.admit_and_clone_products(admission, root, evidence, commands)
+        # Preserve exact producer modes inside the already-private 0700 root.
+        clone_mask = os.umask(0)
+        try:
+            proof, built, app = core.admit_and_clone_products(admission, root, evidence, commands)
+        finally:
+            os.umask(clone_mask)
         write(evidence / "original-product-admission.json", proof)
         source = Path(admission["sourceRoot"])
         before = json.loads(core.pinned(admission["sourceBefore"]))
