@@ -356,6 +356,7 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
             try self.isolationRecord(pending.request.id, shared).result?.status == "success"
         }
         try await isolationRequireUnacknowledged(pending.request.id, shared)
+        let foreignWarm = try isolationPendingSnapshot(pending.request.id, shared, selectedAccount: bScope.account)
         screenshot("miniapps-foreign-account-result-pending")
 
         // A fresh process must retain the actual result without writing to B or
@@ -367,6 +368,7 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
         try await isolationOpenAny(account: bScope.account, space: bSpace, title: bTitle)
         try await isolationAnyRows([bText], originalBlock: bBlock)
         try await isolationRequireUnacknowledged(pending.request.id, shared)
+        let foreignCold = try isolationPendingSnapshot(pending.request.id, shared, selectedAccount: bScope.account)
         screenshot("miniapps-foreign-account-cold-result-still-pending")
 
         // Only the original account/Space/document may consume the result.
@@ -435,6 +437,7 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
             "originalAnyText": aText, "anyReturnedText": anyText, "foreignAnyText": bText,
             "originalAnyBlock": aBlock, "foreignAnyBlock": bBlock, "savedAnyBlocks": aSavedBlocks,
             "foreignAccountRejectedBeforeAndAfterColdReopen": true,
+            "foreignPendingObservations": [foreignWarm, foreignCold],
             "foreignNativeBlocksAndVersionUnchanged": true,
             "replayedCallbacks": 2, "sourceColdReopens": 2,
             "syntheticRequests": 0, "syntheticResults": 0, "directNativeTestMutations": 0
@@ -611,6 +614,21 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
             XCTAssertFalse(record.acknowledged, "Foreign account must leave the actual return pending")
             try await Task.sleep(for: .milliseconds(200))
         } while clock.now < deadline
+    }
+
+    private func isolationPendingSnapshot(_ id: UUID, _ shared: URL,
+                                          selectedAccount: String) throws -> [String: Any] {
+        let path = shared.appendingPathComponent("requests")
+            .appendingPathComponent(id.uuidString.lowercased() + ".json")
+        let raw = try Data(contentsOf: path)
+        let actual = try JSONDecoder().decode(FWRecord.self, from: raw)
+        XCTAssertEqual(actual.request.id, id)
+        XCTAssertEqual(actual.result?.status, "success")
+        XCTAssertFalse(actual.acknowledged)
+        XCTAssertNotEqual(actual.request.source.metadata["anytype.accountID"], selectedAccount)
+        return ["recordJSON": try XCTUnwrap(String(data: raw, encoding: .utf8)),
+                "recordSHA256": fwDigest(raw), "selectedAccountID": selectedAccount,
+                "observedAt": Date().timeIntervalSince1970]
     }
 
     private func isolationCallback(_ request: FWRequest) throws -> URL {
