@@ -1,0 +1,747 @@
+{
+  "actualStagingReceiptSHA256": "ed896be868e973f0bdd704612b641547f51b15509805d4d66b7461be88507d21",
+  "builds": 0,
+  "byteIdenticalFunctions": [
+    "run_phase",
+    "source_state",
+    "verify_runtime_identity",
+    "verify_dependencies"
+  ],
+  "cacheRequalificationReceiptSHA256": "26b16e0bb4266f6f15bd445f70a4032f027c36ca6ec6c255b2e6f9608f7f7245",
+  "candidateSHA256": "9b1405ea44ba9cce3fca47a88127fc798fedab3d1b05f6e3728da3597d19929c",
+  "changes": [
+    {
+      "count": 1,
+      "new": "6-wave2-20261127",
+      "newPositions": [
+        197
+      ],
+      "old": "5"
+    },
+    {
+      "count": 1,
+      "new": "6",
+      "newPositions": [
+        317
+      ],
+      "old": "5"
+    },
+    {
+      "count": 1,
+      "new": "a089ff29a5c0a",
+      "newPositions": [
+        359
+      ],
+      "old": "3"
+    },
+    {
+      "count": 1,
+      "new": "e415aac800844505f0",
+      "newPositions": [
+        373
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "9",
+      "newPositions": [
+        392
+      ],
+      "old": "c"
+    },
+    {
+      "count": 1,
+      "new": "5",
+      "newPositions": [
+        394
+      ],
+      "old": "3"
+    },
+    {
+      "count": 1,
+      "new": "1",
+      "newPositions": [
+        397
+      ],
+      "old": "8f247"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        399
+      ],
+      "old": "2fc218ed63df24796d461713c0"
+    },
+    {
+      "count": 1,
+      "new": "6",
+      "newPositions": [
+        441
+      ],
+      "old": "3"
+    },
+    {
+      "count": 1,
+      "new": "any(part.casefold()==",
+      "newPositions": [
+        6969
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "a",
+      "newPositions": [
+        6991
+      ],
+      "old": "A"
+    },
+    {
+      "count": 1,
+      "new": "t",
+      "newPositions": [
+        6998
+      ],
+      "old": "T"
+    },
+    {
+      "count": 1,
+      "new": "for part ",
+      "newPositions": [
+        7011
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": ")",
+      "newPositions": [
+        7030
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "compiler_paths=[line.strip().strip('\"').casefold() for line in data.splitlines()]\n  ",
+      "newPositions": [
+        7107
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "(compiler_paths.count",
+      "newPositions": [
+        7197
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": ".casefol",
+      "newPositions": [
+        7228
+      ],
+      "old": " in "
+    },
+    {
+      "count": 1,
+      "new": "())==1",
+      "newPositions": [
+        7237
+      ],
+      "old": "ata"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        8980
+      ],
+      "old": "379"
+    },
+    {
+      "count": 1,
+      "new": "e",
+      "newPositions": [
+        9412
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "896be868e973f",
+      "newPositions": [
+        9414
+      ],
+      "old": "c"
+    },
+    {
+      "count": 1,
+      "new": "bdd704",
+      "newPositions": [
+        9428
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "2b64154",
+      "newPositions": [
+        9436
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "f51b15509805d4d66b7461",
+      "newPositions": [
+        9444
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "885",
+      "newPositions": [
+        9468
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "7d",
+      "newPositions": [
+        9472
+      ],
+      "old": "38131"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        9475
+      ],
+      "old": "9b76a09a347c15f835611e6520f4f261825abacab16a7178"
+    },
+    {
+      "count": 1,
+      "new": "6",
+      "newPositions": [
+        9593
+      ],
+      "old": "5"
+    },
+    {
+      "count": 1,
+      "new": "R",
+      "newPositions": [
+        9613
+      ],
+      "old": "MAT"
+    },
+    {
+      "count": 1,
+      "new": "US",
+      "newPositions": [
+        9615
+      ],
+      "old": "RIALIZ"
+    },
+    {
+      "count": 1,
+      "new": ")\n cache_receipt=ROOT/\"cache-requalification1/receipt.json\"\n assert sha(cache_receipt)==\"26b16e0bb4266f6f15bd445f70a4032f027c36ca6ec6c255b2e6f9608f7f7245\"\n cache=json.loads(cache_receipt.read_bytes())\n assert cache[\"protocol\"]==\"app16-observed-cache-requalification-v1\" and cache[\"sourceCommit\"]==EXPECTED\n assert cache[\"stageReceiptSHA256\"]==sha(ROOT/\"source-staging1/receipt.json\")\n assert cache[\"stageSourceAndNativePreservationRetained\"] is True\n assert cache[\"invalidatedStageMetadata\"]==[\"originalIntermediatesAndPackagePathsReused\"]\n assert cache[\"originalIntermediatesAndPackagePathsReused\"] is False\n assert cache[\"applicationBuilds\"]==0 and cache[\"testsExecuted\"]==0\n assert cache[\"estimateNewAppPhaseBytes\"]==PHASE_GROWTH[\"app\"]\n assert cache[\"emergencyFloorBytes\"]==FLOOR and cache[\"concurrentGrowthAllowanceBytes\"]==CONCURRENT_GROWTH\n for name,path,present in [(\"intermediates\",APP_DERIVED/\"Build/Intermediates.noindex\",False),(\"sourcePackages\",APP_DERIVED/\"SourcePackages\",False),(\"sdkModules\",APP_DERIVED/\"SDKExplicitPrecompiledModules\",True),(\"products\",APP_DERIVED/\"Build/Products\",True)]:\n  assert cache[\"observedPaths\"][name]=={\"path\":str(path),\"exists\":present,\"symlink\":False}\n  assert path.exists()==present and not path.is_symlink(),\"Cache state changed after explicit qualification\"\n write(EVIDENCE/\"cache-requalification.json\",dict(cache,receiptSHA256=sha(cache_receipt),freshFreeBytes=shutil.disk_usage(ROOT).free)",
+      "newPositions": [
+        9763
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        12665
+      ],
+      "old": "is is the sole Pinkha main compiler, reusing th"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        12702
+      ],
+      "old": "D"
+    },
+    {
+      "count": 1,
+      "new": "xact nat",
+      "newPositions": [
+        12703
+      ],
+      "old": "r"
+    },
+    {
+      "count": 1,
+      "new": " framework, SDK explicit mo",
+      "newPositions": [
+        12714
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "ules and complete Products remain. Compiler intermedi",
+      "newPositions": [
+        12742
+      ],
+      "old": "D"
+    },
+    {
+      "count": 1,
+      "new": "es ",
+      "newPositions": [
+        12797
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "nd",
+      "newPositions": [
+        12801
+      ],
+      "old": ","
+    },
+    {
+      "count": 1,
+      "new": "re absent a",
+      "newPositions": [
+        12820
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "will be recreate",
+      "newPositions": [
+        12834
+      ],
+      "old": "mo"
+    },
+    {
+      "count": 1,
+      "new": " in t",
+      "newPositions": [
+        12851
+      ],
+      "old": "ule-cac"
+    },
+    {
+      "count": 1,
+      "new": " existing DerivedData",
+      "newPositions": [
+        12858
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        12884
+      ],
+      "old": "s"
+    },
+    {
+      "count": 1,
+      "new": "5",
+      "newPositions": [
+        12899
+      ],
+      "old": "4"
+    },
+    {
+      "count": 1,
+      "new": "the new ",
+      "newPositions": [
+        13043
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "cac",
+      "newPositions": [
+        13060
+      ],
+      "old": "p"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        13064
+      ],
+      "old": "as"
+    },
+    {
+      "count": 1,
+      "new": "Intermediates and Sour",
+      "newPositions": [
+        13336
+      ],
+      "old": "A"
+    },
+    {
+      "count": 1,
+      "new": "eP",
+      "newPositions": [
+        13359
+      ],
+      "old": "tu"
+    },
+    {
+      "count": 1,
+      "new": "ckages",
+      "newPositions": [
+        13362
+      ],
+      "old": "l"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        13369
+      ],
+      "old": "m"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        13370
+      ],
+      "old": "in14 "
+    },
+    {
+      "count": 1,
+      "new": " absen",
+      "newPositions": [
+        13372
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": ". Pr",
+      "newPositions": [
+        13379
+      ],
+      "old": "a"
+    },
+    {
+      "count": 1,
+      "new": "or",
+      "newPositions": [
+        13384
+      ],
+      "old": "ns the"
+    },
+    {
+      "count": 1,
+      "new": "App15 inte",
+      "newPositions": [
+        13396
+      ],
+      "old": "wa"
+    },
+    {
+      "count": 1,
+      "new": "ediates",
+      "newPositions": [
+        13408
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "o",
+      "newPositions": [
+        13416
+      ],
+      "old": "physi"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        13418
+      ],
+      "old": "al "
+    },
+    {
+      "count": 1,
+      "new": "u",
+      "newPositions": [
+        13419
+      ],
+      "old": "om"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        13422
+      ],
+      "old": "l"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        13423
+      ],
+      "old": "r an"
+    },
+    {
+      "count": 1,
+      "new": "3.46",
+      "newPositions": [
+        13425
+      ],
+      "old": "package"
+    },
+    {
+      "count": 1,
+      "new": "GiB; ",
+      "newPositions": [
+        13430
+      ],
+      "old": "pa"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        13436
+      ],
+      "old": "hs. T"
+    },
+    {
+      "count": 1,
+      "new": "6",
+      "newPositions": [
+        13439
+      ],
+      "old": "3"
+    },
+    {
+      "count": 1,
+      "new": "adds 2.54 GiB for pa",
+      "newPositions": [
+        13459
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "kage check",
+      "newPositions": [
+        13480
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "ut",
+      "newPositions": [
+        13491
+      ],
+      "old": "ver"
+    },
+    {
+      "count": 1,
+      "new": " and",
+      "newPositions": [
+        13494
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        13507
+      ],
+      "old": "l"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        13508
+      ],
+      "old": "cal-module inte"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        13509
+      ],
+      "old": "mediates and"
+    },
+    {
+      "count": 1,
+      "new": ".",
+      "newPositions": [
+        13527
+      ],
+      "old": ";"
+    },
+    {
+      "count": 1,
+      "new": "Th",
+      "newPositions": [
+        13529
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "s",
+      "newPositions": [
+        13532
+      ],
+      "old": "t"
+    },
+    {
+      "count": 1,
+      "new": ". Native, SDK explicit modules and Products remain",
+      "newPositions": [
+        13570
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "unchan",
+      "newPositions": [
+        13685
+      ],
+      "old": "ori"
+    },
+    {
+      "count": 1,
+      "new": "ed",
+      "newPositions": [
+        13692
+      ],
+      "old": "inal"
+    },
+    {
+      "count": 1,
+      "new": "Th",
+      "newPositions": [
+        13731
+      ],
+      "old": "Curr"
+    },
+    {
+      "count": 1,
+      "new": "",
+      "newPositions": [
+        13734
+      ],
+      "old": "nt original-workspace preservation receipt is"
+    },
+    {
+      "count": 1,
+      "new": "cache qualification ",
+      "newPositions": [
+        13753
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "validates only",
+      "newPositions": [
+        13775
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": " earlier",
+      "newPositions": [
+        13793
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "metadata claim",
+      "newPositions": [
+        13810
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "g all com",
+      "newPositions": [
+        13826
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "iler and package pa",
+      "newPositions": [
+        13836
+      ],
+      "old": "u"
+    },
+    {
+      "count": 1,
+      "new": "hs were retained",
+      "newPositions": [
+        13856
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": ",\"cacheRequalificationReceiptSHA256\":sha(cache_receipt),\"originalIntermediatesAndPackagePathsReused\":False",
+      "newPositions": [
+        14113
+      ],
+      "old": ""
+    },
+    {
+      "count": 1,
+      "new": "6",
+      "newPositions": [
+        15379
+      ],
+      "old": "5"
+    }
+  ],
+  "compilerPathRule": "Exactly one case-normalized complete SwiftFileList line for each required UIKit source; no substring acceptance",
+  "inverseRestoresEveryOriginalByte": true,
+  "nativeManifest": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+  "observedCacheState": "Intermediates and SourcePackages absent; native, SDK explicit modules and Products retained",
+  "originalSHA256": "617b163951a9692909bef38a4991ded8c53e8c21ad9278a9564222fce1a57a68",
+  "phaseGrowthAllowanceBytes": {
+    "app": 6442450944,
+    "ui": 1073741824
+  },
+  "previousUnlaunchedCandidateSHA256": "9b1a5f5cffa990113707be5d8005416a2f58ef55943b29e1284ab29c967737e5",
+  "protocol": "App16-original-main-builder-byte-inverse-v1",
+  "sourceCommit": "a089ff29a5c0a7e415aac800844505f099a5561d",
+  "tests": 0
+}
