@@ -1,0 +1,11 @@
+# Actual original App14 joint build and complete retention
+
+Frozen application source76f59f1e838991d1bbc7a07ecd08c6a2f15915c7 actually built with native manifest11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b, SDK9565a9e4775901a4cee6f0402d7fd2978fab6612 and the retained Torah9058 lock. The native manifest is the separate tracked source-immutable-manifest.json; historical source-manifest.json410b remains unchanged.
+
+Original App plus AnytypeTests build passed1777.730 seconds. The complete original Stage1 UI runner passed16.093 seconds. Both actual commands exited0, and both original process groups were positively absent. All4482 compiler input files match before and after; all4602 product file entries are retained. No XCTest method was invoked by either build. App, physical device, migration, F/T5, E, MiniApps and D UI acceptance remain separate.
+
+The original producer receipt is b6b3ba75809a9bebe6fbf2dbf77149def27cb1eabe1771f9d5d73108c56e00d6. The complete product inventory is1941073f958baf7285b83ed411aef2b1a0d5dee75c2ff830510fb47b50d60109. The external producer controller b9e9 is independently attributed from frozen App76; it is not represented as compiled product source.
+
+All6433 original retained members, including full App and Stage1 Products, generated original UI source, producer logs/results and source/native provenance, were archived on the Mac and transferred to Oracle. Every archived file byte, directory mode and symbolic link was independently compared against the original manifest; originals were unchanged before/copy/after. Archive size1052653727B, SHA97e1eb1a94111196e80a5fd7a0e6d7f0b67d20bad875664caee5144eee6a9a55. The complete archive and6433-member manifest remain at /mnt/development/projects/evidence/native-d-final-20261125/app14-original-retention1. The original full compiler logs are in that archive and remain hash-bound by the original command receipts. No account, keychain or user data is part of this build retention.
+
+The separate original NativeUI runner build, its first zero-test History admission failure and exact correction are documented in20261126-native11619-integrated-history-admission. They do not change this original joint App/Stage1 build.
