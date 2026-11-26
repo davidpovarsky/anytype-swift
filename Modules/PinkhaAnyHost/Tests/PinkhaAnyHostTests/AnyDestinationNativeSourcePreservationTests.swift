@@ -59,7 +59,8 @@ final class AnyDestinationNativeSourcePreservationTests: XCTestCase, @unchecked 
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         let definitions = try await AnyNativePreparedDefinitionMigration.open(client: client, workspace: workspace, authorize: authorize)
         let plan: AnyDestinationMigrationPlan
-        if phase == "execute" {
+        let interruptedPlanSHA256 = fixture["interruptedPlanSHA256"]?.string
+        if phase == "execute" && interruptedPlanSHA256 == nil {
             try require(!FileManager.default.fileExists(atPath: planURL.path))
             try FileManager.default.createDirectory(at: journal, withIntermediateDirectories: false,
                                                    attributes: [.posixPermissions: 0o700])
@@ -69,21 +70,33 @@ final class AnyDestinationNativeSourcePreservationTests: XCTestCase, @unchecked 
             try archive.bytes.write(to: payloadURL, options: .withoutOverwriting)
             try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: payloadURL.path)
         } else {
-            plan = try AnyDestinationMigrationPlan.decode(Data(contentsOf: planURL))
+            let retainedPlanBytes = try Self.sourceBytes(planURL.lastPathComponent, under: work)
+            if phase == "execute" {
+                try require(interruptedPlanSHA256 == AnyContentDigest.sha256(retainedPlanBytes))
+            }
+            plan = try AnyDestinationMigrationPlan.decode(retainedPlanBytes)
             let same = try preservation.preservationPlan(workspace: workspace, storeID: definitions.capabilities.storeID,
                                                          planID: plan.binding.planID)
             try require(same.canonicalBytes == plan.canonicalBytes)
         }
         try require(plan.items.count == 182 && plan.coverage.count == 159 && plan.binding.workspace == workspace)
         try require(try Self.sourceBytes(payloadURL.lastPathComponent, under: work) == archive.bytes)
+        // This fixture is an immutable historical capture. Authenticate all original
+        // members at phase boundaries, then bind every callback to those exact bytes
+        // through the independently reconstructed archive. Native account/lease/ACL
+        // authorization still executes around every native request below.
+        try Self.requireOriginalBytes(original, root: originalRoot)
+        try Self.requireRecoveryBytes(recovered, evidence: recoveryRoot, repository: repositoryRoot)
         let source = plan.source
         let verifySource: @Sendable (AnyDestinationSourceBinding) async throws -> Void = { candidate in
             guard candidate == source, candidate.semanticPlanSHA256 == preservation.contentSHA256,
                   candidate.captureManifestSHA256 == original.manifestSHA256 else {
                 throw AnyDestinationMigrationError.changedSource
             }
-            try Self.requireOriginalBytes(original, root: originalRoot)
-            try Self.requireRecoveryBytes(recovered, evidence: recoveryRoot, repository: repositoryRoot)
+            try Task.checkCancellation()
+            guard try Self.sourceBytes(payloadURL.lastPathComponent, under: work) == archive.bytes else {
+                throw AnyDestinationMigrationError.changedSource
+            }
         }
         let payloads: @Sendable (String) async throws -> URL = { key in
             guard Data(key.utf8) == Data(preservation.archiveItemSourceKey.utf8),
