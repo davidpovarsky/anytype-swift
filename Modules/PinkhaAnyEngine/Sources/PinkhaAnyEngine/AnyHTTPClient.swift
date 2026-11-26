@@ -74,17 +74,24 @@ public struct AnyHTTPClient: Sendable, CustomStringConvertible, CustomDebugStrin
     public func requestJSON(
         method: String, path: [String], body: AnyJSON? = nil,
         query: [String: String] = [:], maximumResponseBytes: Int? = nil,
+        validateResponse: (@Sendable () async throws -> Void)? = nil,
         authorize: @escaping @Sendable () async throws -> Void = {}
     ) async throws -> AnyJSON {
         try await requestJSONResponse(method: method, path: path, body: body, query: query,
-                                      maximumResponseBytes: maximumResponseBytes, authorize: authorize).body
+                                      maximumResponseBytes: maximumResponseBytes,
+                                      validateResponse: validateResponse, authorize: authorize).body
     }
 
     /// Preserve HTTP 202 versus 201 for native asynchronous operations such as joining.
-    /// The account, cancellation, authorization and uncertain-write fences are identical.
+    /// `authorize` admits dispatch and may consume a one-shot mutation approval. GET
+    /// rechecks it before delivering the response unless `validateResponse` is supplied.
+    /// Mutations can supply a separate, side-effect-free response lifetime check;
+    /// their dispatch approval is never consumed again. Callers that journal native
+    /// receipts must retain them in the original scope before publishing to a consumer.
     public func requestJSONResponse(
         method: String, path: [String], body: AnyJSON? = nil,
         query: [String: String] = [:], maximumResponseBytes: Int? = nil,
+        validateResponse: (@Sendable () async throws -> Void)? = nil,
         authorize: @escaping @Sendable () async throws -> Void = {}
     ) async throws -> AnyHTTPJSONResponse {
         try await checkAccount()
@@ -95,8 +102,12 @@ public struct AnyHTTPClient: Sendable, CustomStringConvertible, CustomDebugStrin
                                            query: query, maximumResponseBytes: maximumResponseBytes)
         // A switch can occur while the HTTP request is in flight. The caller
         // must reconcile mutations against this account before claiming success.
-        do { try await checkAccount() }
-        catch {
+        do {
+            try await checkAccount()
+            if let validateResponse { try await validateResponse() }
+            else if method == "GET" { try await authorize() }
+            try Task.checkCancellation()
+        } catch {
             if method == "GET" { throw error }
             if let recovery = AnyObjectCreationUncertain.lostConfirmation(method: method, path: path, response: result.body) {
                 throw recovery
