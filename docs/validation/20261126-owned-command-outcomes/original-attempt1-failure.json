@@ -1,0 +1,164 @@
+{
+  "appOrSimulatorCalls": 0,
+  "appleBuilds": 0,
+  "candidateSHA256": "75288a49a9955e539b6d900c8b6d340a91f399ee99041c0fb3416c26677f3c86",
+  "checks": [
+    {
+      "evidence": {
+        "actualExitCode": 0,
+        "exitPersistedBeforeProbe": true,
+        "exitReceiptSHA256": "c5a3bde43f604d8c88e59501b7af8cc2a3e62bf0459f95f2046d03bf62c69b6e",
+        "resultSHA256": "103394a53561db463cf7264453be8b25ac3d13e22080469dee336167b0bb394e"
+      },
+      "finishedAt": 1795665384.0539436,
+      "name": "actual-zero-exit-recorded-before-probe",
+      "startedAt": 1795665383.0345025,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualExitCode": 7,
+        "checked": true,
+        "exitReceiptSHA256": "f1fe1c44c5d0f00183a266bded2187950c616f8525d59c78c8ec157162e203db",
+        "resultSHA256": "08e54d9c7cac6c5124293e9875f64e31856e30e9cea400263c310f183db44f06"
+      },
+      "finishedAt": 1795665385.0741365,
+      "name": "actual-nonzero-checked",
+      "startedAt": 1795665384.0595286,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualExitCode": 7,
+        "checked": false,
+        "exitReceiptSHA256": "2ac16126928ae433b45b4066e27c073af8b008a079248243a34d19006566f21d",
+        "resultSHA256": "6f9089f67299fcff23b42e5b9f0a8dcfd4d980c2a221c9e7ce7d10144a41f0ef"
+      },
+      "finishedAt": 1795665386.0896785,
+      "name": "actual-nonzero-unchecked",
+      "startedAt": 1795665385.077735,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualProcessStarted": false,
+        "exitReceiptSHA256": "34cffc7ae1502101a23949846f1f5f82e5a9053fc74a5cdf2351063500bbb248",
+        "resultSHA256": "0dfee223b8db809d08be01d4e70dfe998253c5b8ad6042de20eb946bb9e1280e"
+      },
+      "finishedAt": 1795665386.0980444,
+      "name": "actual-spawn-failure-retained",
+      "startedAt": 1795665386.0922785,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualESRCH": 1,
+        "exitReceiptSHA256": "a04ad8a8d085eac887885b929b1b71c83d81056711ae694fb86a6df327110073",
+        "injectedEPERM": 1,
+        "resultSHA256": "27943cf923aaec68c8dbcdc7588b26f6b8a417be7e5726c66d0dacacf8e6a55d",
+        "signals": 0
+      },
+      "finishedAt": 1795665387.1606092,
+      "name": "injected-eperm-then-real-esrch",
+      "startedAt": 1795665386.0999742,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualExitCode": 0,
+        "elapsedSeconds": 3.5617204448208213,
+        "exitReceiptSHA256": "b44ad061420acbcfcf9123e8c0977afab2ae46295735cb925a9567176d0e3abe",
+        "injectedEPERM": true,
+        "originalStatusRetained": "FAIL_COMMAND",
+        "resultSHA256": "1a015772d28291c5aa9f4dbb325d1d0b10de711c8b48a639e8cbf418324826fe"
+      },
+      "finishedAt": 1795665390.7253654,
+      "name": "injected-unresolved-eperm-stays-fail",
+      "startedAt": 1795665387.1631742,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualESRCH": 1,
+        "exitReceiptSHA256": "874e3422b48a2b7ad4d396cbce96242e054814a5711f7a8bcaf5bb1d4d4a080c",
+        "injectedPresent": 1,
+        "resultSHA256": "2b1a811bfb6e9c100e78d4f4148ee266ee22492fd675ef80a5752ac687163189"
+      },
+      "finishedAt": 1795665391.7892196,
+      "name": "injected-present-then-real-esrch",
+      "startedAt": 1795665390.7282133,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "exitReceiptSHA256": "f0695c7bbde26008ae7189fd87f87ca781efad6cacbc341f1c69ee3c04ecc67e",
+        "injectedPresent": true,
+        "originalStatusRetained": "FAIL_COMMAND",
+        "resultSHA256": "a3326daf47971f550a37bebed922e06a7b088f40465363a1c60d250f81b47113"
+      },
+      "finishedAt": 1795665395.3560274,
+      "name": "injected-unresolved-present-stays-fail",
+      "startedAt": 1795665391.791376,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "exitReceiptSHA256": "2b05ccd630a50146b9f537a76e0bb2ae2cf42fbf327dbb326b2b820c58e07245",
+        "originalExitRetained": 0,
+        "resultSHA256": "18e097eef5eb833161571282a53770e1a17e2f2ad2557b4ed0aa208de15856e9"
+      },
+      "finishedAt": 1795665396.3718426,
+      "name": "injected-other-probe-error-retains-exit",
+      "startedAt": 1795665395.3584566,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualChildReaped": true,
+        "actualExitCode": -15,
+        "exitReceiptSHA256": "8fbd9039eece239d86290c058ae6ebb817e5f12d58ccb0d5b4bef65a3924ac2a",
+        "resultSHA256": "2b066be4b6b4f7dcef8377389700ae0562e3a49da18470f2f7bc4b0dde8eb9df"
+      },
+      "finishedAt": 1795665397.3932347,
+      "name": "actual-timeout-terminates-and-reaps-owned-child",
+      "startedAt": 1795665396.3753567,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualExitCode": 0,
+        "actualSignalsSent": 0,
+        "exitReceiptSHA256": "4d8f38f2b7385a275c5ece783582c4a7c0c2a930f072cef97cfe5385d7b7646a",
+        "injectedSignalEPERM": 1,
+        "originalTimeoutRetained": true,
+        "resultSHA256": "08fb09590212ffa5fddf6329fbbba5daf0b4fab712e7242b09ff21df979d1b15"
+      },
+      "finishedAt": 1795665398.8937669,
+      "name": "injected-signal-eperm-still-reaps-and-keeps-timeout",
+      "startedAt": 1795665397.396529,
+      "status": "PASS"
+    },
+    {
+      "error": {
+        "message": "",
+        "type": "AssertionError"
+      },
+      "finishedAt": 1795665398.9265246,
+      "name": "exact-source-inverse",
+      "startedAt": 1795665398.896248,
+      "status": "FAIL"
+    }
+  ],
+  "failed": 1,
+  "finishedAt": 1795665398.9294283,
+  "nativeBuilds": 0,
+  "originalSHA256": "59a9d5627bf0f2144d1d4f73d044c8e2b0b5156cd2c2f2e580be5667f62605de",
+  "passed": 11,
+  "platform": "Linux-6.17.0-1020-oracle-aarch64-with-glibc2.39",
+  "protocol": "pinkha-owned-command-outcome-controls-v1",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "skipped": 0,
+  "sourcesUnchanged": true,
+  "startedAt": 1795665383.0343769,
+  "status": "FAIL"
+}

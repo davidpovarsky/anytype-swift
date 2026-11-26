@@ -1,0 +1,165 @@
+{
+  "appOrSimulatorCalls": 0,
+  "appleBuilds": 0,
+  "candidateSHA256": "73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a",
+  "checks": [
+    {
+      "evidence": {
+        "actualExitCode": 0,
+        "exitPersistedBeforeProbe": true,
+        "exitReceiptSHA256": "b6b8ff96c346939377959d72126e8c4ce611d4a69cd7e4759eb3960c605ae9b1",
+        "resultSHA256": "f5e7c0b71bd8e36d1c7ca73f2e0a55dc517bf39c90c8b1acc01bd2cd6a6d24e3"
+      },
+      "finishedAt": 1795665555.2474437,
+      "name": "actual-zero-exit-recorded-before-probe",
+      "startedAt": 1795665554.2367945,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualExitCode": 7,
+        "checked": true,
+        "exitReceiptSHA256": "46f3d7509047cba730e8c298ad63e0b13825252e362e44b2bac5b1dab1b31b94",
+        "resultSHA256": "80d304faf7748cef80935c4de8aacf04cb450fba979082fa5ea3bb8a3a262ed1"
+      },
+      "finishedAt": 1795665556.259728,
+      "name": "actual-nonzero-checked",
+      "startedAt": 1795665555.250048,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualExitCode": 7,
+        "checked": false,
+        "exitReceiptSHA256": "a4add1eff540d4412d32930485b5a95c59d62d8156351556592ac1367b21f055",
+        "resultSHA256": "80349c842446fdc37c8b31a6ac158e64736a8f41f4b1d5baf929d553af9dac9f"
+      },
+      "finishedAt": 1795665557.270921,
+      "name": "actual-nonzero-unchecked",
+      "startedAt": 1795665556.2618568,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualProcessStarted": false,
+        "exitReceiptSHA256": "4976071d093023171a7e320672a3fe8612def34dee00eadfeb6ed3f1be719385",
+        "resultSHA256": "39510367d6582dca3a256e8e3354041ca1cd34c607b64e75cfe86220f5bd53a9"
+      },
+      "finishedAt": 1795665557.2824333,
+      "name": "actual-spawn-failure-retained",
+      "startedAt": 1795665557.2746186,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualESRCH": 1,
+        "exitReceiptSHA256": "c90c45a8a78dff9597243db649986c2e62881020e44fa2ec7f41737c9597157a",
+        "injectedEPERM": 1,
+        "resultSHA256": "fd36329bc2e73a5df40e04c33afd0f270e24dc7a7571b2ff182304140e963125",
+        "signals": 0
+      },
+      "finishedAt": 1795665558.3452294,
+      "name": "injected-eperm-then-real-esrch",
+      "startedAt": 1795665557.2854445,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualExitCode": 0,
+        "elapsedSeconds": 3.56081061437726,
+        "exitReceiptSHA256": "2e00af28103a46b1a70ace6d1061b2baada6b90fec582206910396d6bf8fb790",
+        "injectedEPERM": true,
+        "originalStatusRetained": "FAIL_COMMAND",
+        "resultSHA256": "427df513a751e249e6697c297572a24112fcd5d9eaa80e084276b0d10bd4c4ce"
+      },
+      "finishedAt": 1795665561.9089673,
+      "name": "injected-unresolved-eperm-stays-fail",
+      "startedAt": 1795665558.3474839,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualESRCH": 1,
+        "exitReceiptSHA256": "ab3e3616cdfa0a8ab9bede647756517581633cde5650434b63ea045d37bf9e76",
+        "injectedPresent": 1,
+        "resultSHA256": "d27ed4e4303da41f546e6d75faaa921138c48f2c83df605de280f7eb12f94cac"
+      },
+      "finishedAt": 1795665562.971821,
+      "name": "injected-present-then-real-esrch",
+      "startedAt": 1795665561.911711,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "exitReceiptSHA256": "d065ef0e75e8eb6eff0640ad971933bd518a66a3512d722fc16e2a7a1c5c2abc",
+        "injectedPresent": true,
+        "originalStatusRetained": "FAIL_COMMAND",
+        "resultSHA256": "43597aa24124b778d3fd54ee5b0a3ebef30ebdd0971ac67783652d1901e63af6"
+      },
+      "finishedAt": 1795665566.535206,
+      "name": "injected-unresolved-present-stays-fail",
+      "startedAt": 1795665562.9740422,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "exitReceiptSHA256": "30988add334a6c31a1c389374920c867197866dd47cc7e24dabe7970d5168cba",
+        "originalExitRetained": 0,
+        "resultSHA256": "a1611e5bf6a6bce5287655a34f827bed5767f58f2d676d8440cee8b48efdc863"
+      },
+      "finishedAt": 1795665567.5479221,
+      "name": "injected-other-probe-error-retains-exit",
+      "startedAt": 1795665566.537472,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualChildReaped": true,
+        "actualExitCode": -15,
+        "exitReceiptSHA256": "05fea588cec910148c16830a93b0f118e73995916205a8b7a685bddabe4809b9",
+        "resultSHA256": "597c491a219980cc192b3bf70c21443d960ce848eec80bab86ffe3de2b16e22d"
+      },
+      "finishedAt": 1795665568.563352,
+      "name": "actual-timeout-terminates-and-reaps-owned-child",
+      "startedAt": 1795665567.5499673,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "actualExitCode": 0,
+        "actualSignalsSent": 0,
+        "exitReceiptSHA256": "ed63ee755e064d349dcfc564d93d2cd121d526c7bbb2309fcf6bb34ce67a9f2f",
+        "injectedSignalEPERM": 1,
+        "originalTimeoutRetained": true,
+        "resultSHA256": "a2b248a282950dafdbadfa834bbc0fc93b934d56fde570886bb0812c6d7a2ce5"
+      },
+      "finishedAt": 1795665570.044874,
+      "name": "injected-signal-eperm-still-reaps-and-keeps-timeout",
+      "startedAt": 1795665568.5654488,
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "allAdmissionAndStageBytesUnchanged": true,
+        "inverseSHA256": "59a9d5627bf0f2144d1d4f73d044c8e2b0b5156cd2c2f2e580be5667f62605de",
+        "noAppleBuildOrTests": true
+      },
+      "finishedAt": 1795665570.0798802,
+      "name": "exact-source-inverse",
+      "startedAt": 1795665570.0470784,
+      "status": "PASS"
+    }
+  ],
+  "failed": 0,
+  "finishedAt": 1795665570.0831833,
+  "nativeBuilds": 0,
+  "originalSHA256": "59a9d5627bf0f2144d1d4f73d044c8e2b0b5156cd2c2f2e580be5667f62605de",
+  "passed": 12,
+  "platform": "Linux-6.17.0-1020-oracle-aarch64-with-glibc2.39",
+  "protocol": "pinkha-owned-command-outcome-controls-v1",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "skipped": 0,
+  "sourcesUnchanged": true,
+  "startedAt": 1795665554.236649,
+  "status": "PASS"
+}

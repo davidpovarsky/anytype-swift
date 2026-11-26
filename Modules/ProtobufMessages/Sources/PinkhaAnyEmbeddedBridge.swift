@@ -5,12 +5,13 @@ import Lib
 /// One source-qualified library owns both engines and the shared Go runtime.
 /// Native account/Space authorization remains in each engine's existing API.
 public enum PinkhaUnifiedRuntimeProfile {
-    public static let sourceManifestSHA256 =
-        "11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b"
+    public static let sourceManifestSHA256 = "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b"
     public static let heartVersion = "pinkha-dual-runtime-v1-" + sourceManifestSHA256
     public static let anyVersion = "v0.5.0-pinkha.dual.1-" + sourceManifestSHA256
+    public static let anyCommit = "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81"
+    public static let anyBuildDate = "2026-11-26"
     public static let anyRuntimeVersion = "any " + anyVersion
-        + " (commit cf87c43ff0100c2dc43c3c105c82b1b070b3a7a3, built 2026-11-25)"
+        + " (commit " + anyCommit + ", built " + anyBuildDate + ")"
 }
 
 public enum PinkhaAnyEmbeddedBridge {
