@@ -699,8 +699,8 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                                       text: text, attachments: [], maximumBodyBytes: maximumBodyBytes)
     }
 
-    /// Adds original native attachments and verifies both native download bytes
-    /// and the complete returned export before the Host's canonical save/ACK.
+    /// Links the original native file object and verifies its bytes in the
+    /// complete original export before the Host's canonical save/ACK.
     public func applyMiniAppsResult(requestID: UUID, context: AnytypeOriginalEditorMiniAppsContext,
         action: AnytypeOriginalEditorMiniAppsAction, text: String,
         attachments: [AnytypeOriginalEditorMiniAppsAttachment], maximumBodyBytes: Int) async throws
@@ -851,7 +851,8 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                 try Task.checkCancellation()
                 try owner.validateCurrent()
                 guard !saved.id.isEmpty, saved.spaceId == binding.spaceID,
-                      saved.sizeInBytes == attachment.data.count else {
+                      saved.sizeInBytes == attachment.data.count,
+                      saved.fileName.utf8.elementsEqual(attachment.name.utf8) else {
                     throw AnytypeOriginalEditorMiniAppsError.resultNotSaved
                 }
                 let contextID = binding.objectID
@@ -874,13 +875,10 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
                         == String(index) else {
                     throw AnytypeOriginalEditorMiniAppsError.resultNotSaved
                 }
-                let readback = try await downloadMiniAppsFile(file, maximumBytes: attachment.data.count)
-                try Task.checkCancellation()
-                try owner.validateCurrent()
-                guard readback.data == attachment.data,
-                      readback.name.utf8.elementsEqual(attachment.name.utf8) else {
-                    throw AnytypeOriginalEditorMiniAppsError.resultNotSaved
-                }
+                // The terminal native export below reads the bytes from the
+                // same linked file object under the document owner's barrier.
+                // A second FileDownload may wait for network availability even
+                // for this freshly uploaded private file.
                 importedFiles.append((file.targetObjectID, attachment.data))
                 fileAnchor = added
             }
