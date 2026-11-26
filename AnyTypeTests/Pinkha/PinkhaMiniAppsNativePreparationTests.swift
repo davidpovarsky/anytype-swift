@@ -450,6 +450,81 @@ struct PinkhaMiniAppsNativePreparationTests {
             operation: .replaceSelection)
     }
 
+
+    @Test("Read original Heart blocks and original receipts after real engine/account callback isolation")
+    func verifyEngineAccountIsolationNativeHeartReadback() async throws {
+        let environment = ProcessInfo.processInfo.environment
+        try #require(environment["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1")
+        let fixture = try JSONDecoder().decode([String: String].self, from: Data(contentsOf: fixtureURL()))
+        let name = try #require(environment["PINKHA_MINIAPPS_ISOLATION_REPORT_NAME"])
+        try #require(URL(fileURLWithPath: name).lastPathComponent == name)
+        let group = try #require(FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: "group.com.itorah.shared"))
+        let bridge = group.appendingPathComponent("MiniAppsBridge/v1", isDirectory: true)
+        try #require(bridge.standardizedFileURL.path == environment["PINKHA_MINIAPPS_SHARED_BRIDGE"])
+        let raw = try Data(contentsOf: bridge.appendingPathComponent(name))
+        try #require(raw.count < 64 * 1024)
+        let report = try #require(JSONSerialization.jsonObject(with: raw) as? [String: Any])
+        try #require(report["status"] as? String == "REAL_ENGINE_ACCOUNT_MINIAPPS_UI_PASS")
+        try #require(report["sourceSHA"] as? String == fixture["sourceSHA"]
+            && report["sourceSHA"] as? String == environment["PINKHA_MINIAPPS_SOURCE_SHA"])
+        try #require(report["runID"] as? String == fixture["runID"]
+            && report["runID"] as? String == environment["PINKHA_MINIAPPS_EXECUTION_ID"])
+        let account = try #require(fixture["accountID"]), space = try #require(fixture["spaceID"])
+        let object = try #require(fixture["objectID"])
+        try #require(report["heartAccountID"] as? String == account
+            && report["heartSpaceID"] as? String == space && report["heartDocumentID"] as? String == object)
+        let heartID = try #require(UUID(uuidString: try #require(report["heartRequestID"] as? String)))
+        let anyID = try #require(UUID(uuidString: try #require(report["anyRequestID"] as? String)))
+        let text = try #require(report["heartReturnedText"] as? String)
+        let foreignText = try #require(report["foreignAnyText"] as? String)
+        let anyText = try #require(report["anyReturnedText"] as? String)
+        let store = try MiniAppBridgeStore(appGroupIdentifier: "group.com.itorah.shared")
+        let request = try store.request(id: heartID)
+        try #require(request.source.appID == PinkhaMiniAppsContext.sourceAppID)
+        try #require(request.source.metadata["pinkha.engine"] == "heart")
+        try #require(request.source.metadata["anytype.accountID"] == account
+            && request.source.metadata["anytype.spaceID"] == space && request.source.documentID == object)
+
+        let clock = ContinuousClock(), deadline = clock.now.advanced(by: .seconds(60))
+        while Container.shared.accountManager().account.id != account && clock.now < deadline {
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        try #require(Container.shared.accountManager().account.id == account)
+        _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: space)
+        let view = try await Container.shared.objectLifecycleService().openForPreview(
+            contextId: object, spaceId: space)
+        try #require(view.rootID == object)
+        let original = view.blocks.filter { $0.text.text == fixture["originalText"] }
+        let warm = view.blocks.filter { $0.text.text == fixture["returnedText"] }
+        let cold = view.blocks.filter { $0.text.text == fixture["coldReturnedText"] }
+        let switched = view.blocks.filter { $0.text.text == text }
+        try #require(original.count == 1 && original[0].id == fixture["blockID"])
+        try #require(warm.count == 1 && cold.count == 1 && switched.count == 1)
+        try #require(Set([original[0].id, warm[0].id, cold[0].id, switched[0].id]).count == 4)
+        try #require(switched[0].fields.fields[PinkhaMiniAppsResultApplier.receiptField]?.stringValue
+            == heartID.uuidString.lowercased() + ":0")
+        try #require(view.blocks.allSatisfy { $0.text.text != foreignText && $0.text.text != anyText })
+        let pending = try store.pendingResults(sourceAppID: PinkhaMiniAppsContext.sourceAppID)
+        try #require(pending.allSatisfy { $0.requestID != heartID && $0.requestID != anyID })
+        let proof: [String: Any] = [
+            "status": "REAL_ENGINE_ACCOUNT_MINIAPPS_HEART_NATIVE_PASS",
+            "sourceSHA": try #require(fixture["sourceSHA"]), "runID": try #require(fixture["runID"]),
+            "uiReportSHA256": SHA256.hash(data: raw).map { String(format: "%02x", $0) }.joined(),
+            "heartRequestID": heartID.uuidString.lowercased(), "anyRequestID": anyID.uuidString.lowercased(),
+            "accountID": account, "spaceID": space, "objectID": object,
+            "originalBlockID": original[0].id, "returnedBlockID": switched[0].id,
+            "originalCount": original.count, "returnedCount": switched.count,
+            "foreignContentAbsent": true, "nativeReadOnly": true
+        ]
+        let destination = try fixtureURL().deletingLastPathComponent()
+            .appendingPathComponent("miniapps-engine-account-native-readback.json")
+        try #require(!FileManager.default.fileExists(atPath: destination.path))
+        try JSONSerialization.data(withJSONObject: proof, options: [.sortedKeys])
+            .write(to: destination, options: .withoutOverwriting)
+        print("MINIAPPS_ENGINE_ACCOUNT_NATIVE_READBACK_PASS")
+    }
+
     private func fixtureURL() throws -> URL {
         try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask,
             appropriateFor: nil, create: true).appendingPathComponent("miniapps-native-fixture.json")
