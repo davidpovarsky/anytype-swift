@@ -1,0 +1,130 @@
+{
+  "afterSHA256": "e01cdca96d3cd1c4eef2606c5a24ebd4995e02a2679bb03ebad552a49d16ea9c",
+  "beforeSHA256": "7a9cd3767fe8b929266dbe58e3f314aa59b9af4f7800d514205764ea653e8347",
+  "inverseExact": true,
+  "nativeBuilds": 0,
+  "protocol": "pinkha8ac-assembly-source-inverse-v1",
+  "substitutions": [
+    {
+      "after": "8ac permission-qualified slices",
+      "before": "11619 slices",
+      "count": 1
+    },
+    {
+      "after": "import json\nimport importlib.util\n",
+      "before": "import json\n",
+      "count": 1
+    },
+    {
+      "after": "\"8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b\"",
+      "before": "\"11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b\"",
+      "count": 1
+    },
+    {
+      "after": "INPUT = BASE / \"native-permission8ac\"",
+      "before": "INPUT = BASE / \"native-immutable-retry1\"",
+      "count": 1
+    },
+    {
+      "after": "OUTPUT = BASE / \"native8ac-combined\"",
+      "before": "OUTPUT = BASE / \"native11619-combined\"",
+      "count": 1
+    },
+    {
+      "after": "\"52a02c34a90ca4ad84dff7e27c6255fd01861c7905dd7aea8bea4b01a77e8738\"",
+      "before": "\"44dd8248b245a588407011d7f70cfc59c592586355add8c16f502aabe983aec6\"",
+      "count": 1
+    },
+    {
+      "after": "\"6ad534380b0fb5f9cd2092782437a32808157efc902785c18484f037c8829567\"",
+      "before": "\"dba9ab48e9607fa0a9ba1829c883fba10121faf82f064bf9d61ba90a3e211e09\"",
+      "count": 1
+    },
+    {
+      "after": "\"source-permission-manifest.json\"",
+      "before": "\"source-immutable-manifest.json\"",
+      "count": 1
+    },
+    {
+      "after": "\"946fe141ee4fa1c1fa8ceafc9060d9d9eedb0d546360140eadaf5ecf1f264f9b\", \"f94079de9eeb9e2e869f02bd1dda93fcd272e3191b2417ca4b4657cae5dc6763\"",
+      "before": "\"aa9320f43659d56fe7f366ad6a77943a296f0fe55e545ff2e6516dafbde91e49\", \"9f64b4469e221cd27b04c0f46b7479cf1fb079b36fce8a26c0fd8b0521ecaf5e\"",
+      "count": 1
+    },
+    {
+      "after": "\"c5237b26fe0a1ab7fe3c373aed50a34a0a6f65c306ed47918b4e4b54a9245208\", \"8592fb526b8796b3e118f1a18bacc276e89894459207d5df294b17b0c3859c50\"",
+      "before": "\"f71d7d1108e427d79790c4e3bb99cd7667b7d62397cabe1ac53e0a7fd48c9f33\", \"539a8d5e1b888dddb423261002011db39b7ca7c15718ff4aaa7658ec18aaedaf\"",
+      "count": 1
+    },
+    {
+      "after": "\nEVIDENCE = {\"simulator\": \"evidence\", \"device\": \"evidence-gateway-invocation-resume-1\"}\nCONTROLLERS = {\n    \"simulator\": (\"e185fd77f691c08b9e59ad3a4fbb8ab2a4e703f9\", \"cb9477dc383ada4ab5d2361ca5105ff9c7c18f1d1db6d861f034b91f48337077\"),\n    \"device\": (\"04f501a166a2feb62ee57a09803b77c5dc8c601c\", \"e993303f60619afb05bb65449ea73253365e9e0e446339a9f7b0ba586742866a\"),\n}\nIDENTITY_HELPER_SHA = \"306c0cabcf39c6de55470d642cf5b9e6e9176d73351966330b90cf333b9359b0\"\nHTTP_QUALIFICATION_SHA = \"d50faf7ce50c6c418b8cc55dd7e46d86aa1a9d5783819b0b943e74c3ddb09da0\"\nPRIOR_DEVICE_REFUSAL = \"c33de905244e6f77d94f9491d4930e8aa4b1445547b5c8b9c73ebb812e61f9dc\"\n\ndef require(ok, reason):",
+      "before": "\ndef require(ok, reason):",
+      "count": 1
+    },
+    {
+      "after": "    manifest_bytes = SOURCE_MANIFEST.read_bytes()\n    require(hashlib.sha256(manifest_bytes).hexdigest() == MANIFEST, \"original_native_source_manifest_changed\")\n    manifest = json.loads(manifest_bytes)\n    require(len(manifest[\"files\"]) == 4868, \"complete_original_native_source_required\")\n    helper = Path(__file__).with_name(\"runtime_identity.py\")\n    require(digest(helper) == IDENTITY_HELPER_SHA, \"original_runtime_identity_helper_changed\")\n    specification = importlib.util.spec_from_file_location(\"qualified_8ac_runtime_identity\", helper)\n    runtime = importlib.util.module_from_spec(specification)\n    specification.loader.exec_module(runtime)\n    identity = runtime.identity(manifest_bytes, \"2026-11-26\")",
+      "before": "    require(digest(SOURCE_MANIFEST) == MANIFEST, \"original_native_source_manifest_changed\")\n    manifest = json.loads(SOURCE_MANIFEST.read_text())\n    require(len(manifest[\"files\"]) == 4862, \"complete_original_native_source_required\")",
+      "count": 1
+    },
+    {
+      "after": "item[\"status\"] == \"PASS_ORIGINAL_STREAM_AND_SOURCE_UNCHANGED\"\n                and item[\"sourceManifestSHA256\"] == MANIFEST and item[\"sourceFiles\"] == 4868",
+      "before": "item[\"status\"] == \"PASS_EXACT_ORIGINAL_\" + phase.upper() + \"_SOURCE_DEPENDENCIES_PRODUCTS_AND_COMMANDS_RETAINED\"",
+      "count": 1
+    },
+    {
+      "after": "and (folder / \"members-before.json\").read_bytes() == (folder / \"members-after.json\").read_bytes()\n                and digest(INPUT / \"original-archives\" / (phase + \"8ac-originals.tar.gz\")) == item[\"archiveSHA256\"]\n                and (INPUT / \"original-archives\" / (phase + \"8ac-originals.tar.gz\")).stat().st_size == item[\"archiveBytes\"]",
+      "before": "and digest(Path(item[\"archive\"])) == item[\"archiveSHA256\"]\n                and Path(item[\"archive\"]).stat().st_size == item[\"archiveBytes\"]",
+      "count": 1
+    },
+    {
+      "after": "\"pinkha-dual-native-v1-8ac407e75a4b-\"",
+      "before": "\"pinkha-dual-native-v1-11619a9928d6-\"",
+      "count": 4
+    },
+    {
+      "after": "path = root / EVIDENCE[phase] / \"receipt.json\"",
+      "before": "path = root / \"evidence/receipt.json\"",
+      "count": 1
+    },
+    {
+      "after": "proof[\"sourceFilesVerified\"] == 4868",
+      "before": "proof[\"sourceFilesVerified\"] == 4862",
+      "count": 1
+    },
+    {
+      "after": "and (proof[\"controllerCommit\"], proof[\"controllerSHA256\"]) == CONTROLLERS[phase]",
+      "before": "and proof[\"controllerCommit\"] == \"ae86c032c93c1e6040e7c76fab6a7f05b913dc36\"\n                    and proof[\"controllerSHA256\"] == \"f9249a0238b32680f4f4d7ca58b9ab04da4de1c7ad30f4e4200214ab0b7e8aa2\"",
+      "count": 1
+    },
+    {
+      "after": "root / EVIDENCE[phase] / (command[\"name\"] + \".log\")",
+      "before": "root / \"evidence\" / (command[\"name\"] + \".log\")",
+      "count": 1
+    },
+    {
+      "after": "            command_path = root / EVIDENCE[phase] / \"combined-gomobile-bind.command.json\"\n            command_bytes = command_path.read_bytes()\n            bind_rows = [row for row in proof[\"commands\"] if row[\"name\"] == \"combined-gomobile-bind\"]\n            require(len(bind_rows) == 1 and json.loads(command_bytes) == bind_rows[0],\n                    \"actual_bind_command_must_equal_original_receipt_row\")\n            runtime_proof = runtime.qualify_slice(\n                path.read_bytes(), command_bytes,\n                (root / EVIDENCE[phase] / \"combined-gomobile-bind.log\").read_bytes(),\n                manifest_bytes, identity, phase)\n            require(proof[\"runtimeIdentity\"] == identity\n                    and proof[\"fullAnyRuntimeVersion\"] == identity[\"anyRuntimeVersion\"]\n                    and proof[\"runtimeIdentityHelperSHA256\"] == IDENTITY_HELPER_SHA\n                    and proof[\"nativeHTTPQualificationSHA256\"] == HTTP_QUALIFICATION_SHA,\n                    \"full_actual_native_identity_and_real_HTTP_qualification_required\")\n            if phase == \"device\":\n                require(proof[\"originalGatewayInvocationRefusalSHA256\"] == PRIOR_DEVICE_REFUSAL\n                        and digest(root / \"evidence/receipt.json\") == PRIOR_DEVICE_REFUSAL,\n                        \"original_zero_bind_gateway_refusal_must_remain_preserved\")\n            verify_original_source(root / \"source\", manifest)",
+      "before": "            verify_original_source(root / \"source\", manifest)",
+      "count": 1
+    },
+    {
+      "after": "\"frameworkFiles\": inventory(framework), \"runtimeIdentityQualification\": runtime_proof}",
+      "before": "\"frameworkFiles\": inventory(framework)}",
+      "count": 1
+    },
+    {
+      "after": "/ EVIDENCE[phase] / \"receipt.json\") == receipt_sha",
+      "before": "/ \"evidence/receipt.json\") == receipt_sha",
+      "count": 1
+    },
+    {
+      "after": "                      anyRuntimeVersion=\"v0.5.0-pinkha.dual.1-\" + MANIFEST,\n                      fullAnyRuntimeVersion=identity[\"anyRuntimeVersion\"], runtimeIdentity=identity)",
+      "before": "                      anyRuntimeVersion=\"v0.5.0-pinkha.dual.1-\" + MANIFEST)",
+      "count": 1
+    },
+    {
+      "after": "and proof[\"nativeHTTPQualificationSHA256\"] == \"b8694dbd2ac3facce43771bdb7f206461d1b95924a5ccb1248114185a394ce1d\"\n                    and proof[\"nativeHTTPQualification\"][\"sourceQualificationSHA256\"] == HTTP_QUALIFICATION_SHA,",
+      "before": "and proof[\"nativeHTTPQualificationSHA256\"] == HTTP_QUALIFICATION_SHA,",
+      "count": 1
+    }
+  ],
+  "tests": 0
+}
