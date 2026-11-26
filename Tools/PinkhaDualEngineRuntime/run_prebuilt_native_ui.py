@@ -356,6 +356,16 @@ def admit_current_menu_runner(source, main_record, ui_build, ui_record):
     return expected
 
 
+def native11619_module():
+    path = Path(__file__).resolve().with_name("native11619_profile.py")
+    require(digest(path) == "ee3a32a7f468aa9d4eab2eb2ebe11cda5ea2dcbf0347eace98f57a2fd79e6e70", "exact_App14_NativeUI_profile_required")
+    sys.dont_write_bytecode = True
+    spec = importlib.util.spec_from_file_location("qualified_native11619", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def bin_confirmation_module():
     path = Path(__file__).resolve().with_name("bin_confirmation_preparation.py")
     require(digest(path) == "6f30156103912fdebe67bedc530e57f159ece79d640cde38b1c05b51e67341a4", "exact_Bin_confirmation_source_validator_required")
@@ -543,6 +553,12 @@ def main():
             receipt.update(admit_current_runner(source, main_record, args.ui_build, ui_record))
         if ui_record.get("currentMiniAppsMenuFixture") is not None:
             receipt["currentMiniAppsMenuFixture"] = admit_current_menu_runner(source, main_record, args.ui_build, ui_record)
+        if (main_record["sourceCommit"] == "76f59f1e838991d1bbc7a07ecd08c6a2f15915c7"
+                or main_record.get("inputs", {}).get("nativeSourceManifestSHA256") ==
+                    "11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b"
+                or ui_record.get("current11619Fixture") is not None):
+            receipt["current11619Fixture"] = native11619_module().admit(
+                source, main_record, args.ui_build, ui_record)
         if ui_record.get("current410bFixture") is not None:
             receipt["current410bFixture"] = admit_410b_runner(source, main_record, args.ui_build, ui_record)
         if ui_record.get("current410bBinConfirmationFixture") is not None:
@@ -580,7 +596,8 @@ def main():
             require((receipt.get("miniAppsCrossAppFixture") is not None
                      or receipt.get("integratedMiniAppsFixture") is not None
                      or receipt.get("currentMiniAppsMenuFixture") is not None
-                      or receipt.get("current410bFixture") is not None)
+                      or receipt.get("current410bFixture") is not None
+                      or receipt.get("current11619Fixture") is not None)
                     and args.companion_manifest is not None,
                     "real_companion_and_new_compiled_method_required")
         else:
