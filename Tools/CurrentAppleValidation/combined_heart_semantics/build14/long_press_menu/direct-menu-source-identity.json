@@ -1,0 +1,14 @@
+{
+  "addedBytes": "        // A tap on the persisted link invokes its normal Sources navigation.\n        // Use the real UIKit long-press selection path for the first edit menu.\n        // The original menu action and every result assertion remain required.\n        try requireHittable(input)\n        input.press(forDuration: 1.2)\n        let started = ProcessInfo.processInfo.systemUptime\n",
+  "afterSHA256": "fa8d8504faa08fb8abbe30110f1ec4debe92384daf7bd943554db62bc477c0d5",
+  "appChanges": 0,
+  "baseAppCommit": "76f59f1e838991d1bbc7a07ecd08c6a2f15915c7",
+  "beforeSHA256": "935d722957539a1499816295cac97d369618a77fe33e27b9f9e42d90fbb8cff8",
+  "file": "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift",
+  "firstOriginalMenuRoutePreserved": true,
+  "nativeChanges": 0,
+  "originalOutcomeAssertionsChanged": false,
+  "removedBytes": "        try tap(input)\n        input.typeKey(.rightArrow, modifierFlags: [])\n        input.doubleTap()\n        let started = ProcessInfo.processInfo.systemUptime\n",
+  "schema": "pinkha-app14-long-press-native-menu-selection-v1",
+  "uiChangeCommit": "bfc5646efcaea558190ae5aa55d76b13fe5624d5"
+}

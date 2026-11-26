@@ -1,0 +1,14 @@
+{
+  "addedBytes": "        // The production link-selection interaction accepts only a real glyph\n        // hit. Use its unique accessible Link, not the wide text view or row.\n        // The original native menu action and every outcome remain required.\n        try requireHittable(input)\n        let selectionLinks = input.links.matching(NSPredicate(format: \"label == %@\", text))\n        guard selectionLinks.count == 1 else { throw Failure.invalidFixture }\n        let selectionLink = selectionLinks.firstMatch\n        try requireHittable(selectionLink)\n        let inputFrame = input.frame\n        let linkFrame = selectionLink.frame\n        guard selectionLink.exists, selectionLink.isEnabled, selectionLink.isHittable,\n              selectionLink.elementType == .link, selectionLink.label == text,\n              [inputFrame, linkFrame].allSatisfy({ frame in\n                  frame.minX.isFinite && frame.minY.isFinite && frame.width.isFinite && frame.height.isFinite\n                      && frame.width > 0 && frame.height > 0\n              }), inputFrame.contains(linkFrame) else { throw Failure.invalidFixture }\n        let selectionTarget = XCTAttachment(string: selectionLink.debugDescription)\n        selectionTarget.name = \"semantic-source-native-link-selection-target-ax\"\n        selectionTarget.lifetime = .keepAlways; add(selectionTarget)\n        selectionLink.doubleTap()\n        let started = ProcessInfo.processInfo.systemUptime\n",
+  "afterSHA256": "8834541f5a47da80b460ecb96b20c930813b743d94f285fc1efba8a93f65ee4d",
+  "appChanges": 0,
+  "baseAppCommit": "76f59f1e838991d1bbc7a07ecd08c6a2f15915c7",
+  "beforeSHA256": "935d722957539a1499816295cac97d369618a77fe33e27b9f9e42d90fbb8cff8",
+  "file": "PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift",
+  "firstOriginalMenuRoutePreserved": true,
+  "nativeChanges": 0,
+  "originalOutcomeAssertionsChanged": false,
+  "removedBytes": "        try tap(input)\n        input.typeKey(.rightArrow, modifierFlags: [])\n        input.doubleTap()\n        let started = ProcessInfo.processInfo.systemUptime\n",
+  "schema": "pinkha-app14-link-glyph-native-menu-selection-v1",
+  "uiChangeCommit": "ca1ad2f68e0e00ef32f2c3ad67623ed0a9befa43"
+}

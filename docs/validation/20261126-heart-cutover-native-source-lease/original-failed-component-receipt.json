@@ -1,0 +1,92 @@
+{
+  "actualAppPropertyLease": false,
+  "affectedOriginalMethods": [
+    "TestPinkhaNativeTargetLeaseHoldsBothLocksAndReleasesOnce",
+    "TestPinkhaNativeTargetLeaseCanBeBorrowedOnce"
+  ],
+  "appBuilds": 0,
+  "appRegistry": false,
+  "cleanupFailures": [],
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-o",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-source-lease/attempt3/cutover-native-source-lease.test",
+        "authorized_operation.go",
+        "cutover_source_lease.go",
+        "object.go",
+        "operation_target_lease.go",
+        "semantic_anchor_lease.go",
+        "target_lease.go",
+        "target_lease_test.go",
+        "semantic_anchor_lease_test.go",
+        "cutover_source_lease_test.go"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-source-lease/attempt3/source/heart/core/block/editor/torahopsobject",
+      "durationSeconds": 177.85177723132074,
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ownedProcessGroupRemaining": [],
+      "pgid": 3119138,
+      "pid": 3119138,
+      "startedUTC": "2026-11-26T03:54:47.951614+00:00"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "version",
+        "-m",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-source-lease/attempt3/cutover-native-source-lease.test"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-source-lease/attempt3/source/heart/core/block/editor/torahopsobject",
+      "durationSeconds": 0.03105082456022501,
+      "exitCode": 0,
+      "logSHA256": "ffa1d45781716db23be7f5c89ea02a3f3a51a7deb139c6bcf34a0f86d8e61aa9",
+      "ownedProcessGroupRemaining": [],
+      "pgid": 3128854,
+      "pid": 3128854,
+      "startedUTC": "2026-11-26T03:57:45.875922+00:00"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "cutover-native-source-lease",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-source-lease/attempt3/cutover-native-source-lease.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=240s",
+        "-test.run=^(TestCutoverSourceLeasePreservesExactNativePropertyAndOneBorrow|TestCutoverSourceLeaseRefusesNonStringNativeProperties|TestCutoverSourceLeaseRechecksHeldAccountDocumentAndExactSource|TestCutoverSourceLeaseRefusesForeignACLAndBorrowScope|TestPinkhaNativeTargetLeaseHoldsBothLocksAndReleasesOnce|TestPinkhaNativeTargetLeaseCanBeBorrowedOnce)$"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-source-lease/attempt3/source/heart/core/block/editor/torahopsobject",
+      "durationSeconds": 1.5326697565615177,
+      "exitCode": 1,
+      "logSHA256": "d38243f21e028d8f669f9ef4bbc67581e2fa84170168aa05a0a3fb559f5f5247",
+      "ownedProcessGroupRemaining": [],
+      "pgid": 3128858,
+      "pid": 3128858,
+      "startedUTC": "2026-11-26T03:57:45.907414+00:00"
+    }
+  ],
+  "error": "RuntimeError: owned command failed: source-lease",
+  "newMethods": [
+    "TestCutoverSourceLeasePreservesExactNativePropertyAndOneBorrow",
+    "TestCutoverSourceLeaseRefusesNonStringNativeProperties",
+    "TestCutoverSourceLeaseRechecksHeldAccountDocumentAndExactSource",
+    "TestCutoverSourceLeaseRefusesForeignACLAndBorrowScope"
+  ],
+  "peerTransport": false,
+  "scope": "real native document/settings locks and signed tree/ACL binding; controlled loaded cache and application scope",
+  "sourceSHA256": "f41e5f1b3f977fd8f9fc935cf490233f6c84a9ffa58244aaf3d0f03d4577d59c",
+  "sourceUnchanged": true,
+  "status": "FAIL"
+}
