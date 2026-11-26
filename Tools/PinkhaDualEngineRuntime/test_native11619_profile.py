@@ -60,6 +60,7 @@ class Native11619AdmissionControls(unittest.TestCase):
         self.projection = {
             "mainSourceCommit": p.SOURCE, "runnerSourceCommit": p.SOURCE,
             "current11619Fixture": dict(p.FIXTURE),
+            "historyKeyboardPreparation": dict(p.INTEGRATED_HISTORY),
             "reviewedInputProfile": dict(p.PROFILE),
             "changedOriginalMethodAssertions": 0, "applicationBuildTargets": 0,
             "nativeLibraryBuilds": 0, "allOriginalNativeUITestMethodsCompiled": True,
@@ -72,6 +73,7 @@ class Native11619AdmissionControls(unittest.TestCase):
             "status": "PASS_UI_RUNNER_BUILD_NOT_ACCEPTANCE", "testsExecuted": 0,
             "reviewedInputProfile": dict(p.PROFILE),
             "current11619Fixture": dict(p.FIXTURE),
+            "historyKeyboardPreparation": dict(p.INTEGRATED_HISTORY),
         }
         self.main = main_fixture()
         self.write_projection()
@@ -132,6 +134,23 @@ class Native11619AdmissionControls(unittest.TestCase):
     def test_mixed_old_derivative_binding_is_refused(self):
         self.ui["current410bFixture"] = {"sourceCommit": "e540"}
         with self.assertRaisesRegex(RuntimeError, "App14_disallows_other_source_derivatives"):
+            p.admit(ROOT, self.main, self.directory, self.ui)
+
+
+    def test_missing_integrated_history_receipt_is_refused(self):
+        self.ui.pop("historyKeyboardPreparation")
+        with self.assertRaisesRegex(RuntimeError, "App14_exact_already_integrated_History_binding_required"):
+            p.admit(ROOT, self.main, self.directory, self.ui)
+
+    def test_unintegrated_history_derivative_is_refused(self):
+        self.ui["historyKeyboardPreparation"]["sourceAlreadyIntegrated"] = False
+        with self.assertRaisesRegex(RuntimeError, "App14_exact_already_integrated_History_binding_required"):
+            p.admit(ROOT, self.main, self.directory, self.ui)
+
+    def test_history_source_and_compiled_receipt_mismatch_is_refused(self):
+        self.projection["historyKeyboardPreparation"]["sourceCommit"] = "e540"
+        self.write_projection()
+        with self.assertRaisesRegex(RuntimeError, "App14_exact_already_integrated_History_binding_required"):
             p.admit(ROOT, self.main, self.directory, self.ui)
 
 

@@ -40,7 +40,7 @@ def write(path, value):
 
 def native11619_module():
     path = Path(__file__).resolve().with_name("native11619_profile.py")
-    require(digest(path) == "ee3a32a7f468aa9d4eab2eb2ebe11cda5ea2dcbf0347eace98f57a2fd79e6e70", "exact_App14_NativeUI_profile_required")
+    require(digest(path) == "58643d32057cf6f692b39e15eb53d50925170d26ccbe12304c55a62f73fa5e41", "exact_App14_NativeUI_profile_required")
     sys.dont_write_bytecode = True
     spec = importlib.util.spec_from_file_location("qualified_native11619", path)
     module = importlib.util.module_from_spec(spec)

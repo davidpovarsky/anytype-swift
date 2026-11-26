@@ -47,8 +47,9 @@ FIXTURE = {
     "binPreparation": "real-unique-confirmation-sheet-and-leaf-button",
     "nativeSourceManifestSHA256": NATIVE,
 }
+INTEGRATED_HISTORY = {'allOriginalHistoryAssertionsUnchanged': True, 'compiledSHA256': '2772d790979de88a3b622f17453a91ca792114292016f01e31386de7f4f614ca', 'inputRoute': 'real-keyboard-with-original-native-UIKit-range-witness', 'longPressMenuAccepted': False, 'originalSHA256': '6c4064014253837e4738b1c143f45f9af91746c53b3b665439e65f55bc837a77', 'reviewSHA256': '27925f01b2a7817435637517793c19d49db9a6814caef6e33b88dafb6beb2117', 'reviewedPreparationCommit': '6c398307682073f31f9fb59af59f34c96003d542', 'sourceAlreadyIntegrated': True, 'sourceCommit': '76f59f1e838991d1bbc7a07ecd08c6a2f15915c7'}
 ALTERNATIVE_BINDINGS = (
-    "historyKeyboardPreparation", "archiveGrabberPreparation",
+    "archiveGrabberPreparation",
     "miniAppsCrossAppFixture", "integratedMiniAppsFixture",
     "binContextPreparation", "currentMiniAppsMenuFixture",
     "current410bFixture", "current410bBinConfirmationFixture",
@@ -127,6 +128,9 @@ def admit(source, main_record, ui_build, ui_record):
             and projection.get("applicationBuildTargets") == projection.get("nativeLibraryBuilds") == 0
             and projection.get("allOriginalNativeUITestMethodsCompiled") is True,
             "complete_same_source_App14_NativeUI_projection_required")
+    require(ui_record.get("historyKeyboardPreparation") ==
+            projection.get("historyKeyboardPreparation") == INTEGRATED_HISTORY,
+            "App14_exact_already_integrated_History_binding_required")
     require(all(ui_record.get(key) is None and projection.get(key) is None
                 for key in ALTERNATIVE_BINDINGS),
             "App14_disallows_other_source_derivatives")
