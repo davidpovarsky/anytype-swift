@@ -333,8 +333,17 @@ func (h *CutoverNativeHost) Append(ctx context.Context, v1 *NativeHost, record c
 	return h.appendLocked(ctx, claim, wire, lease)
 }
 func (h *CutoverNativeHost) candidatePropertyLocked(ctx context.Context, objectID, planID string) (string, error) {
-	if err := AuthorizeCurrentACL(h.tree.AclList(), h.key, true); err != nil {
+	// Even this internal property-key lookup holds verified current authority
+	// through recovery and history access. A later held source lease revalidates
+	// the full property and operation; this candidate is never RPC authority.
+	acl := h.tree.AclList()
+	acl.RLock()
+	defer acl.RUnlock()
+	if err := requireCurrentReadAccess(acl, h.key); err != nil {
 		return "", err
+	}
+	if !acl.AclState().Permissions(h.key.GetPublic()).CanWrite() {
+		return "", list.ErrInsufficientPermissions
 	}
 	if _, err := h.recoverLocked(ctx, h.tree); err != nil {
 		return "", err

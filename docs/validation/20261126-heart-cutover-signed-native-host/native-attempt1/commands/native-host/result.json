@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "/usr/local/bin/go",
+    "tool",
+    "test2json",
+    "-t",
+    "-p",
+    "cutover-native-host",
+    "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/native-attempt1/cutover-native-host.test",
+    "-test.v",
+    "-test.count=1",
+    "-test.timeout=240s",
+    "-test.run=^(TestCutoverNativeSignedPhasesUnlinkAndReopen|TestCutoverNativeTwoAuthorsRetainAllBindingsAndOlderWriterDiverges|TestCutoverNativeCurrentACLAndRetiredLeaseRefuseReadAndRetry|TestCutoverNativeLostACKRetainsOneSignedBeginAndLeaseBoundary|TestNativeCurrentWriteAuthority|TestNativeLocalAppendRequiresCommitGuard|TestNativeACLCommitFence|TestNativeCommitReceiptAfterHeadUpdateFailure|TestNativeCommitGuardKeepsHistoricalReplay|TestNativeTargetLeaseCoversDurableCommitAndReleasesBeforeHeadUpdate|TestNativeTargetLeaseReleasesOnCancelledPreparedAppend)$"
+  ],
+  "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/native-attempt1/source/heart/core/block/editor/torahops",
+  "durationSeconds": 2.885911568067968,
+  "exitCode": 1,
+  "logSHA256": "8c1e211544ae2f563995df1f7c16a5a5f903e9c3ca5599761d3f8ade1be4519b",
+  "ownedProcessGroupRemaining": [],
+  "pgid": 2829350,
+  "pid": 2829350,
+  "startedUTC": "2026-11-26T02:02:29.296082+00:00"
+}

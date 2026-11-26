@@ -1,0 +1,89 @@
+{
+  "affected": [],
+  "files": {
+    "cutover_native_host.go": {
+      "bytes": 16749,
+      "sha256": "96874282e4e332cfee1207911c4e37d5a1bcae5c370ce3753088404e90237647"
+    },
+    "cutover_native_host_test.go": {
+      "bytes": 19447,
+      "sha256": "46e8ab14255b8edb118887c9e9f4a3b57ba71553aeae4e7b1f20021e8fe55a94"
+    },
+    "cutover_native_operations.go": {
+      "bytes": 5764,
+      "sha256": "dac1af78a7542b6f2d9d72bb9297af58199140bad65c590f9405de783e24d7da"
+    },
+    "cutover_native_read.go": {
+      "bytes": 9342,
+      "sha256": "4b5f9918a0ac105d01ad0f6b8c6604ef4d90845f94e71ef4226a6e2a175c104c"
+    },
+    "cutover_native_tree.go": {
+      "bytes": 3947,
+      "sha256": "20d5295ba144760312c496066c4b965719b6787b1c7c7ee5ecadcc7316b9d8d1"
+    },
+    "cutover_projection.go": {
+      "bytes": 11381,
+      "sha256": "0804326995989deb461b1eba8f8b9e25ca4c3e4e7b9d3b90901b70b200f77858"
+    },
+    "cutover_store.go": {
+      "bytes": 10535,
+      "sha256": "cec81959c5112ed4e4255fe109f1fba72e71498d752f23f4a5803819ad00b752"
+    },
+    "native_authority.go": {
+      "bytes": 851,
+      "sha256": "2444790b76063b5500bdcb1dc98d19b93fbb24b26a15e26fac84ea34e95430b1"
+    },
+    "native_commit_guard.go": {
+      "bytes": 7986,
+      "sha256": "26ef149415810e5305f7ce42287fc69c06755c462ee631b0306c59b0302001be"
+    },
+    "native_commit_guard_test.go": {
+      "bytes": 11794,
+      "sha256": "7fbba98d2d58c2dd87730203305f1b401d5efb4e18c4e7e53f1893a2dd007220"
+    },
+    "native_host.go": {
+      "bytes": 16108,
+      "sha256": "bb36bfa5b26d4f600030f48cb5df9c4fdbd8607814d2c5186c9d220006e95c3a"
+    },
+    "native_operation_read.go": {
+      "bytes": 15365,
+      "sha256": "f9284dd5a6d85e7c0d58cc51b7c51a4ddee4fc407258490424dccc7163a20656"
+    },
+    "native_read_authority_test.go": {
+      "bytes": 5773,
+      "sha256": "2b0635ced9d9d4e210a1cbbac6ecbbef1e22e8cc75165a0a0a339eb201345853"
+    },
+    "native_target_lease_test.go": {
+      "bytes": 4311,
+      "sha256": "2f48188666387598401eff391e4b2a241336b6673aeedf6d02edf3178b4b9e68"
+    },
+    "native_transport_test.go": {
+      "bytes": 30263,
+      "sha256": "5f0aa72236989eab4628cef5488a29564a8d5213c0089c284678bb7626f90d86"
+    },
+    "native_validator.go": {
+      "bytes": 1836,
+      "sha256": "65e97d14aa7706a6fb300cc88631b014fa2ecd46e25c9f986906ea02a9efebb1"
+    },
+    "native_write_authority_test.go": {
+      "bytes": 4199,
+      "sha256": "75251ec6aab4ac12022b17f517fe43a830e681e3ba8606c033c86d7b2092559b"
+    },
+    "operation.go": {
+      "bytes": 6737,
+      "sha256": "cd8cb9dbd662691cb3c4ed6f5c95c29bbdc8e02698acb64b805afe804609193a"
+    },
+    "projection.go": {
+      "bytes": 3102,
+      "sha256": "3fabfc4684c596a38ca8924c3271097db362a4d42a62e7ee01f37a21a9d7ddfb"
+    },
+    "store.go": {
+      "bytes": 13004,
+      "sha256": "943b16ee869409223d0881d627475a7123cde0a6065f1df7f45704e9b029be93"
+    }
+  },
+  "new": [
+    "TestCutoverNativeTwoAuthorsRetainAllBindingsAndOlderWriterDiverges"
+  ],
+  "reason": "only original failed two-author request preparation changed; ten accepted methods and every production byte retained"
+}
