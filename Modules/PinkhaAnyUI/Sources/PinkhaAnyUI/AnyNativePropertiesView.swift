@@ -53,6 +53,17 @@ public struct AnyNativePropertiesView: View {
                         .accessibilityIdentifier("any-native-property-type")
                         .accessibilityValue(Text(snapshot.catalog.types.first(where: { $0.id == snapshot.currentTypeID })?.name ?? snapshot.currentTypeID))
                     }
+                    if let source = snapshot.bookmarkSourceRow, let url = snapshot.bookmarkSourceURL {
+                        Section(AnyUIErrorText.text("סימנייה", "Bookmark")) {
+                            Link(destination: url) {
+                                Label(AnyUIErrorText.text("פתיחת האתר", "Open website"),
+                                      systemImage: "arrow.up.right.square")
+                            }
+                            .disabled(!presentation.isMounted || !canPresentPropertyChild || model.needsReview)
+                            .accessibilityIdentifier("any-native-bookmark-open-source")
+                            .accessibilityValue(Text(source.value?.string ?? ""))
+                        }
+                    }
                     if !model.visibleRows.isEmpty {
                         Section(AnyUIErrorText.text("מאפייני המסמך", "Document properties")) {
                             ForEach(model.visibleRows) { row in propertyRow(row, snapshot: snapshot) }
