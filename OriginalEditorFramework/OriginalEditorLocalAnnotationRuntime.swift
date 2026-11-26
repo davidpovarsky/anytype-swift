@@ -251,6 +251,7 @@ internal final class OriginalEditorLocalAnnotationRuntime {
             // Each subscription owns a captured native account dispatch.
             // Unsubscribe while that dispatch and its Go account are available.
             // An unsubscribe after AccountStop can block the next local reopen.
+            await Container.shared.activeSpaceManager().stopSubscription()
             await Container.shared.spaceViewsStorage().stopSubscription()
             await Container.shared.participantsStorage().stopSubscription()
             // Retired source operations retain their admissions until native
@@ -586,7 +587,8 @@ internal final class OriginalEditorLocalAnnotationRuntime {
         // persisted records. Wait for its original claim before reading the
         // fixed annotation schema so registration never races those writes.
         if PinkhaRuntime.enabled {
-            _ = try await Container.shared.pinkhaBootstrapStateManager().awaitReadiness(spaceId: spaceID)
+            _ = try await Container.shared.pinkhaBootstrapStateManager().awaitReadiness(
+                spaceId: spaceID, timeoutSeconds: 45)
             try validate()
             for captured in captures { try captured.validate() }
             try selection.validate()
