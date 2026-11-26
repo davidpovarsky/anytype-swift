@@ -609,11 +609,17 @@ internal final class OriginalEditorLocalAnnotationRuntime {
         let types = response.registration.observation.definitions.filter {
             $0.hasNative && $0.native.nativeKey == OriginalAnnotationNativeMetadata.originalTypeUniqueKey
         }
+        // The original fixed-schema observer copies persisted details only.
+        // Anytype derives id and uniqueKey outside that stored detail map.
+        // The observer reports them separately from its validated tree root.
+        let nativePersistedMatch: UInt32 = 1
         guard types.count == 1, let type = types.first?.native, !type.objectID.isEmpty,
-              type.accountIdentity == accountID, type.spaceID == spaceID, type.hasDetails,
-              OriginalEditorLocalAnnotationNativeBody.string(type.details, "id") == type.objectID,
-              OriginalEditorLocalAnnotationNativeBody.string(type.details, "uniqueKey")
-                == OriginalAnnotationNativeMetadata.originalTypeUniqueKey else {
+              type.accountIdentity == accountID, type.spaceID == spaceID,
+              type.disposition == nativePersistedMatch, type.hasDetails, !type.persistedHeads.isEmpty,
+              type.details.fields["id"] == nil
+                || OriginalEditorLocalAnnotationNativeBody.string(type.details, "id") == type.objectID,
+              type.details.fields["uniqueKey"] == nil
+                || OriginalEditorLocalAnnotationNativeBody.string(type.details, "uniqueKey") == type.nativeKey else {
             throw AnytypeOriginalEditorLocalAnnotationError.unobservedSchema
         }
         return (selection, type.objectID)
