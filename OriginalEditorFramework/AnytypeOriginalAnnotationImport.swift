@@ -159,7 +159,7 @@ public struct AnytypeOriginalAnnotationImportReceipt: Sendable {
         let nativeID = try OriginalEditorLocalAnnotationMaterialization.observedImport(
             response, snapshot: snapshot, accountID: source.accountID,
             targetSpaceID: source.spaceID, source: savedSource
-        )
+        ).objectID
         self.source = source
         objectID = nativeID
         traceID = response.mapping.traceID

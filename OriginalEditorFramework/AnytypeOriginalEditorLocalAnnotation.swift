@@ -405,12 +405,16 @@ internal struct OriginalEditorMiniAppsNode: Codable, Sendable {
         try Anytype_Model_Block(serializedBytes: bytes)
     }
 
-    func equivalent(to other: Self) throws -> Bool {
+    func equivalent(to other: Self, importedFileIDs: [String: String] = [:]) throws -> Bool {
         var left = try native(), right = try other.native()
         // Original native Import assigns a new private object/Space. The exact
         // ordered child paths and every other protobuf field remain witnesses.
         left.id = ""; right.id = ""
         left.childrenIds = []; right.childrenIds = []
+        if case .file(var file)? = left.content, let imported = importedFileIDs[file.targetObjectID] {
+            file.targetObjectID = imported
+            left.content = .file(file)
+        }
         return path == other.path && left == right && bodyText == other.bodyText
     }
 }
@@ -450,10 +454,12 @@ internal enum OriginalEditorMiniAppsGraph {
         return nodes
     }
 
-    static func matching(_ expected: [OriginalEditorMiniAppsNode],
-                         _ actual: [OriginalEditorMiniAppsNode]) throws -> Bool {
+    static func matching(_ expected: [OriginalEditorMiniAppsNode], _ actual: [OriginalEditorMiniAppsNode],
+                         importedFileIDs: [String: String] = [:]) throws -> Bool {
         guard expected.count == actual.count else { return false }
-        return try zip(expected, actual).allSatisfy { left, right in try left.equivalent(to: right) }
+        return try zip(expected, actual).allSatisfy { left, right in
+            try left.equivalent(to: right, importedFileIDs: importedFileIDs)
+        }
     }
 
     static func range(location: Int, length: Int, text: String) throws -> Range<String.Index> {
@@ -644,7 +650,14 @@ extension AnytypeOriginalEditorLocalAnnotationSession {
             throw AnytypeOriginalEditorMiniAppsError.sourceChanged
         }
         let current = try await readMiniAppsNodes()
-        guard try OriginalEditorMiniAppsGraph.matching(context.nodes, current) else {
+        let importedFileIDs: [String: String]
+        if let originalImport = owner.importedObjectIDs,
+           originalImport.sourceRoot == source.object, originalImport.sourceSpace == source.space {
+            importedFileIDs = originalImport.bySourceID
+        } else {
+            importedFileIDs = [:]
+        }
+        guard try OriginalEditorMiniAppsGraph.matching(context.nodes, current, importedFileIDs: importedFileIDs) else {
             throw AnytypeOriginalEditorMiniAppsError.nativeBodyChanged
         }
         try owner.validateCurrent()

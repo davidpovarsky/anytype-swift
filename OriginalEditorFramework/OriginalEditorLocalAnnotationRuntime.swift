@@ -489,10 +489,10 @@ internal final class OriginalEditorLocalAnnotationRuntime {
                 selection: selected.selection, annotationTypeID: selected.typeID,
                 binding: prepared, sourceIsCurrent: check)
             // Actual typed drain and fresh ObjectShow precede every observation.
-            draft = try await journal.transition(draft, to: "object_observed", objectID: materialized)
+            draft = try await journal.transition(draft, to: "object_observed", objectID: materialized.objectID)
             try check()
             let editorBinding = try AnytypeOriginalEditorBinding(accountID: accountID,
-                spaceID: spaceID, objectID: materialized, hostProfileID: source.hostProfileID,
+                spaceID: spaceID, objectID: materialized.objectID, hostProfileID: source.hostProfileID,
                 annotationUUID: source.annotationUUID, expectedRevision: source.expectedRevision,
                 sourceWitnessSHA256: source.sourceWitnessSHA256)
             let originalSource = AnytypeOriginalEditorSourceLifetime(binding: editorBinding)
@@ -541,7 +541,7 @@ internal final class OriginalEditorLocalAnnotationRuntime {
             host.snapshotTransportOriginHostProfileID = canonical.transportOriginHostProfileID
             draft = try await journal.transition(draft, to: "opened")
             let owner = OriginalEditorLocalAnnotationDraftOwner(host: host, sourceLifetime: sourceLifetime,
-                journal: journal, draft: draft, retirement: retirement,
+                journal: journal, draft: draft, retirement: retirement, importedObjectIDs: materialized.imported,
                 sourceIsCurrent: stillCurrent, runtime: self)
             currentOwner = owner
             return owner
@@ -680,6 +680,7 @@ private final class OriginalEditorLocalSchemaHistory {
 @MainActor
 internal final class OriginalEditorLocalAnnotationDraftOwner {
     let host: AnytypeOriginalEditorHost
+    let importedObjectIDs: OriginalEditorLocalAnnotationMaterialization.ImportedObjectIDs?
     nonisolated let sourceLifetime: AnytypeOriginalEditorLocalAnnotationSourceLifetime
     private var source: AnytypeOriginalEditorLocalAnnotationSourceLifetime { sourceLifetime }
     private let journal: OriginalEditorLocalAnnotationJournal
@@ -692,9 +693,11 @@ internal final class OriginalEditorLocalAnnotationDraftOwner {
     init(host: AnytypeOriginalEditorHost, sourceLifetime: AnytypeOriginalEditorLocalAnnotationSourceLifetime,
          journal: OriginalEditorLocalAnnotationJournal, draft: OriginalEditorLocalAnnotationJournal.Draft,
          retirement: EditorDocumentWriteLifetime.Observation,
+         importedObjectIDs: OriginalEditorLocalAnnotationMaterialization.ImportedObjectIDs?,
          sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorLocalAnnotationSource) -> Bool,
          runtime: OriginalEditorLocalAnnotationRuntime) {
         self.host = host; self.sourceLifetime = sourceLifetime; self.journal = journal; self.draft = draft
+        self.importedObjectIDs = importedObjectIDs
         self.retirement = retirement; self.sourceIsCurrent = sourceIsCurrent; self.runtime = runtime
     }
 

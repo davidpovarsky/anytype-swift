@@ -10,6 +10,17 @@ import ProtobufMessages
 /// and a fresh ObjectShow in the independently selected account and Space.
 @MainActor
 internal enum OriginalEditorLocalAnnotationMaterialization {
+    struct Observation: Sendable {
+        let objectID: String
+        let imported: ImportedObjectIDs?
+    }
+
+    struct ImportedObjectIDs: Sendable {
+        let sourceRoot: String
+        let sourceSpace: String
+        let bySourceID: [String: String]
+    }
+
     static func materialize(
         canonical: OriginalEditorLocalAnnotationCanonical,
         source: AnytypeOriginalEditorLocalAnnotationSource,
@@ -19,7 +30,7 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
         annotationTypeID: String,
         binding: EditorDocumentWriteSourceBinding,
         sourceIsCurrent: @escaping @MainActor () throws -> Void
-    ) async throws -> String {
+    ) async throws -> Observation {
         try sourceIsCurrent()
         try selection.validate()
         let spaceID = selection.accountInfo.accountSpaceId
@@ -35,8 +46,10 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
         }
 
         let objectID: String
+        let imported: ImportedObjectIDs?
         switch canonical.body {
         case .plainText(let text):
+            imported = nil
             let drain = OriginalEditorLocalAnnotationDrain()
             objectID = try await binding.performOperation(
                 rpcNames: ["ObjectCreate", "ObjectShow", "BlockCreate", "BlockTextSetText"],
@@ -68,8 +81,10 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
                   attempt.drainedHistory?.response == returned else {
                 throw AnytypeOriginalEditorLocalAnnotationError.invalidNativeImport
             }
-            objectID = try observedImport(returned, snapshot: snapshot,
+            let observation = try observedImport(returned, snapshot: snapshot,
                 accountID: accountID, targetSpaceID: spaceID, source: source)
+            objectID = observation.objectID
+            imported = observation.imported
         }
 
         try sourceIsCurrent()
@@ -88,7 +103,7 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
         try requireIdentity(view, objectID: objectID, spaceID: spaceID,
                             annotationTypeID: annotationTypeID, source: source,
                             transportOriginHostProfileID: canonical.transportOriginHostProfileID)
-        return objectID
+        return .init(objectID: objectID, imported: imported)
     }
 
     private static func createPlain(text: String, source: AnytypeOriginalEditorLocalAnnotationSource,
@@ -174,7 +189,7 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
     internal static func observedImport(_ response: Anytype_Rpc.Annotation.Import.Response,
                                        snapshot: AnytypeOriginalEditorSnapshot,
                                        accountID: String, targetSpaceID: String,
-                                       source: AnytypeOriginalEditorLocalAnnotationSource) throws -> String {
+                                       source: AnytypeOriginalEditorLocalAnnotationSource) throws -> Observation {
         let inputDigest = Data(SHA256.hash(data: snapshot.nativeArchiveBytes))
         guard response.error.code == .null, response.importProtocol == "pinkha.annotation.import.v1",
               response.registered, response.operationDone, response.copyDisposition == .complete,
@@ -217,7 +232,17 @@ internal enum OriginalEditorLocalAnnotationMaterialization {
             reportedObjectCount: readback.exportReport.succeed)
         try OriginalEditorLocalAnnotationNativeBody.requireMarkers(archive.rootSnapshot.details, source: source,
             transportOriginHostProfileID: snapshot.provenance.transportOriginHostProfileID)
-        return readback.rootID
+        let importedIDs = Set(archive.objectIDs)
+        var witnessed: [String: String] = [:]
+        for entry in mapping.sourceAssignments where entry.sourceSpaceID == snapshot.provenance.spaceID
+            && entry.sourceArchiveSha256 == inputDigest && importedIDs.contains(entry.nativeID) {
+            guard !entry.sourceObjectID.isEmpty, !entry.nativeID.isEmpty,
+                  witnessed.updateValue(entry.nativeID, forKey: entry.sourceObjectID) == nil else {
+                throw AnytypeOriginalEditorLocalAnnotationError.invalidNativeImport
+            }
+        }
+        return .init(objectID: readback.rootID, imported: .init(
+            sourceRoot: snapshot.provenance.objectID, sourceSpace: snapshot.provenance.spaceID, bySourceID: witnessed))
     }
 
     private static func show(objectID: String, spaceID: String) async throws -> Anytype_Model_ObjectView {
