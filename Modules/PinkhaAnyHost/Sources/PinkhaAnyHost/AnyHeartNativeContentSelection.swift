@@ -5,6 +5,7 @@ import PinkhaAnyIntegration
 public enum AnyHeartNativeContentSelectionError: Error, Equatable, Sendable {
     case sourceBinding, noCurrentPages, unknownType(String), unknownProperty(String)
     case unsupportedType(String), changedSnapshot(String)
+    case unsupportedSource, compiledDefinitionDependency(String)
 }
 
 /// The exact dependency closure of all captured native Page instances. An
@@ -39,6 +40,11 @@ public struct AnyHeartNativeContentSelection: Sendable {
     /// the exact source JSON/PB in the immutable facts record, not installed as
     /// invented writable values or removed from the full-source obligations.
     public let retainedAbsentDeclarations: [AbsentDeclaration]
+    /// These compiled property descriptors were used elsewhere by the source
+    /// capture. Their generic property semantics are not available to this
+    /// selected graph; the exact original whole-source blockers stay retained.
+    public let retainedCompiledDefinitionIDs: [String]
+    public let retainedWholeSourceIssues: [String]
     public let remainingDefinitionObjectIDs: [String]
     /// Includes native heads without a current decoded object. It remains a
     /// separate full-source obligation even when every current Page qualifies.
@@ -142,13 +148,49 @@ public struct AnyHeartNativeContentSelection: Sendable {
         let executed = selectedDefinitions.union(objects.map { Data($0.sourceObjectID.utf8) })
         let headIDs = Set(headCensus.sourceHeadIDs.map { Data($0.utf8) })
         guard executed.isSubset(of: headIDs) else { throw AnyHeartNativeContentSelectionError.sourceBinding }
+        let compiled = try Self.unusedCompiledDefinitions(bundle.bundledDefinitionsUsed,
+                                                          selectedRelationKeys: relationKeys)
+        // This boundary only separates unused compiled property definitions.
+        // Every actual source gap, unknown field, snapshot problem, resolver
+        // omission or unmapped native collection still refuses this scope.
+        guard bundle.sourceGaps.isEmpty, bundle.resolverUnmapped.isEmpty,
+              bundle.nativeStoreContext?.unmappedCollectionNames.isEmpty == true,
+              bundle.issues.allSatisfy({
+                  $0.code == "compiled-definition-descriptors-not-captured" && $0.sourceID == nil &&
+                      $0.field == "BundledDefinitionsUsed" && !compiled.isEmpty
+              }) else { throw AnyHeartNativeContentSelectionError.unsupportedSource }
+        var retainedIssues = bundle.issues.map { "bundle:" + $0.code + ":" + $0.field }
+        if !compiled.isEmpty { retainedIssues.append("bundled-definition-fallback") }
         sourceAccountID = bundle.sourceAccountID; sourceSpaceID = bundle.sourceSpaceID
         captureManifestSHA256 = bundle.manifestSHA256; sourceWitnessSHA256 = bundle.sourceWitnessSHA256
         catalogSHA256 = catalog.contentSHA256; self.objects = objects
         typeObjectIDs = types; relationObjectIDs = relations; optionObjectIDs = options
         retainedAbsentDeclarations = absentDeclarations.filter { !requiredProperties.contains(Data($0.relationObjectID.utf8)) }
+        retainedCompiledDefinitionIDs = compiled
+        retainedWholeSourceIssues = retainedIssues
         remainingDefinitionObjectIDs = allDefinitions.filter { !selectedDefinitions.contains(Data($0.utf8)) }
         remainingSourceObjectIDs = headCensus.sourceHeadIDs.filter { !executed.contains(Data($0.utf8)) }
+    }
+
+    /// A Type's captured orderId or a captured property's format fields are
+    /// typed definition metadata handled by their existing exact adapters.
+    /// This never supplies the missing generic property definition, a value
+    /// address or a default. A selected property dependency on one refuses.
+    static func unusedCompiledDefinitions(_ identities: [String], selectedRelationKeys: Set<Data>) throws -> [String] {
+        var seen = Set<Data>(), normalized = Set<String>()
+        for identity in identities {
+            guard identity.hasPrefix("property:"),
+                  seen.insert(Data(identity.utf8)).inserted, normalized.insert(identity).inserted else {
+                throw AnyHeartNativeContentSelectionError.compiledDefinitionDependency(identity)
+            }
+            let key = String(identity.dropFirst("property:".count))
+            guard !key.isEmpty, !key.contains(":"),
+                  !key.unicodeScalars.contains(where: CharacterSet.controlCharacters.contains),
+                  !selectedRelationKeys.contains(Data(key.utf8)) else {
+                throw AnyHeartNativeContentSelectionError.compiledDefinitionDependency(identity)
+            }
+        }
+        return identities
     }
 
     func require(_ catalog: AnyHeartNativeDefinitionCatalog) throws {

@@ -55,6 +55,8 @@ public struct AnyHeartNativeContentComposition: Sendable {
             let selectedSourceObjectIDs: [String]
             let remainingSourceObjectIDs: [String]
             let retainedAbsentDeclarations: [AnyHeartNativeContentSelection.AbsentDeclaration]
+            let retainedCompiledDefinitionIDs: [String]
+            let retainedWholeSourceIssues: [String]
             let pageSHA256: [String]
             let items: [AnyDestinationMigrationItem]
             let coverage: [AnyDestinationCoverage]
@@ -64,7 +66,9 @@ public struct AnyHeartNativeContentComposition: Sendable {
             sourceManifestSHA256: bundle.manifestSHA256, sourceWitnessSHA256: bundle.sourceWitnessSHA256,
             catalogSHA256: catalog.contentSHA256, selectedSourceObjectIDs: selection.executedSourceObjectIDs,
             remainingSourceObjectIDs: selection.remainingSourceObjectIDs,
-            retainedAbsentDeclarations: selection.retainedAbsentDeclarations, pageSHA256: pages.map(\.contentSHA256),
+            retainedAbsentDeclarations: selection.retainedAbsentDeclarations,
+            retainedCompiledDefinitionIDs: selection.retainedCompiledDefinitionIDs,
+            retainedWholeSourceIssues: selection.retainedWholeSourceIssues, pageSHA256: pages.map(\.contentSHA256),
             items: items, coverage: coverage))
         try AnyTorahSourceJSONGuard.validateRoundTrip(original: bytes, encoded: bytes)
         self.bundle = bundle; self.selection = selection; self.definitions = definitions
@@ -78,7 +82,7 @@ public struct AnyHeartNativeContentComposition: Sendable {
     public func currentContentPlan(workspace: AnyTorahWorkspace, storeID: String,
                                    planID: String) throws -> AnyDestinationMigrationPlan {
         _ = try definitions.admittedSchemaItems()
-        for page in pages { _ = try page.admittedCurrentItems() }
+        for page in pages { _ = try page.admittedSelectedItems(selection) }
         let source = try AnyDestinationSourceBinding(bundle: bundle, semanticPlanSHA256: contentSHA256,
                                                      sourceObjectIDs: selection.executedSourceObjectIDs)
         return try .init(source: source, workspace: workspace, storeID: storeID, planID: planID,

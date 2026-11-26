@@ -1114,6 +1114,18 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(current.selection.relationObjectIDs.count, 8)
         XCTAssertEqual(current.selection.optionObjectIDs.count, 4)
         XCTAssertEqual(current.selection.retainedAbsentDeclarations.count, 58)
+        XCTAssertEqual(current.selection.retainedCompiledDefinitionIDs, bundle.bundledDefinitionsUsed)
+        XCTAssertEqual(current.selection.retainedCompiledDefinitionIDs.count, 7)
+        XCTAssertFalse(current.selection.retainedWholeSourceIssues.isEmpty)
+        for identity in current.selection.retainedCompiledDefinitionIDs {
+            XCTAssertNil(current.definitions.property(sourceKey: String(identity.dropFirst("property:".count))))
+        }
+        for identity in ["property:name", "property:", "type:page", "property:name:shadow"] {
+            XCTAssertThrowsError(try AnyHeartNativeContentSelection.unusedCompiledDefinitions(
+                [identity], selectedRelationKeys: [Data("name".utf8)]))
+        }
+        XCTAssertThrowsError(try AnyHeartNativeContentSelection.unusedCompiledDefinitions(
+            ["property:unused", "property:unused"], selectedRelationKeys: []))
         for declaration in current.selection.retainedAbsentDeclarations {
             let page = try XCTUnwrap(docs.first { $0.sourceObjectID == declaration.sourceObjectID })
             XCTAssertNil(page.details[declaration.relationKey])
@@ -1131,6 +1143,10 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertFalse(current.definitions.permitsDestinationWrites)
         XCTAssertTrue(current.definitions.issues.isEmpty, String(describing: current.definitions.issues))
         XCTAssertEqual(current.pages.count, 2)
+        for page in current.pages {
+            XCTAssertEqual(page.sourceIssues, current.selection.retainedWholeSourceIssues)
+            XCTAssertThrowsError(try page.admittedCurrentItems(), "Original whole-bundle admission remains refused")
+        }
         XCTAssertEqual(Set(current.pages.flatMap(\.presentDetailKeys)), Set(first.details.keys))
         XCTAssertTrue(current.pages.allSatisfy { $0.presentDetailKeys.count == 8 })
         XCTAssertEqual(current.definitions.schemaItems.count, 11)

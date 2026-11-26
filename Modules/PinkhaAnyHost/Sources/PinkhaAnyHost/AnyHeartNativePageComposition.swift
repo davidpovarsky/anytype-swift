@@ -13,6 +13,8 @@ public enum AnyHeartNativePageCompositionError: Error, Equatable, Sendable {
 public struct AnyHeartNativePageComposition: Sendable {
     public let sourceSpaceID: String
     public let sourceObjectID: String
+    public let sourceSnapshotSHA256: String
+    public let sourceViewSHA256: String
     public let sourceKey: String
     public let contentSHA256: String
     public let layout: AnyHeartNativePageLayout
@@ -180,6 +182,7 @@ public struct AnyHeartNativePageComposition: Sendable {
         let bytes = try encoder.encode(material)
         try AnyTorahSourceJSONGuard.validateRoundTrip(original: bytes, encoded: bytes)
         self.sourceSpaceID = snapshot.sourceSpaceID; self.sourceObjectID = snapshot.sourceObjectID
+        self.sourceSnapshotSHA256 = snapshot.snapshotSHA256; self.sourceViewSHA256 = snapshot.viewSHA256
         self.sourceKey = sourceKey; self.contentSHA256 = AnyContentDigest.sha256(bytes)
         self.layout = layout; self.body = body; self.values = values
         self.presentDetailKeys = detailKeys; self.items = items; self.definitionIssues = definitions.issues
@@ -191,6 +194,20 @@ public struct AnyHeartNativePageComposition: Sendable {
     /// must additionally cover the full native census and current authorization.
     public func admittedCurrentItems() throws -> [AnyDestinationMigrationItem] {
         guard sourceIssues.isEmpty else { throw AnyHeartNativePageCompositionError.unsupportedSource }
+        guard definitionIssues.isEmpty else { throw AnyHeartNativePageCompositionError.unsupportedDefinitions }
+        return items
+    }
+
+    /// Used only by the explicit dependency-closed current-content graph.
+    /// The ordinary whole-bundle admission above remains unchanged, including
+    /// the original missing compiled descriptor refusal.
+    func admittedSelectedItems(_ selection: AnyHeartNativeContentSelection) throws -> [AnyDestinationMigrationItem] {
+        guard Data(sourceSpaceID.utf8) == Data(selection.sourceSpaceID.utf8),
+              let selected = selection.objects.first(where: { Data($0.sourceObjectID.utf8) == Data(sourceObjectID.utf8) }),
+              selected.snapshotSHA256 == sourceSnapshotSHA256, selected.jsonViewSHA256 == sourceViewSHA256,
+              sourceIssues == selection.retainedWholeSourceIssues else {
+            throw AnyHeartNativePageCompositionError.unsupportedSource
+        }
         guard definitionIssues.isEmpty else { throw AnyHeartNativePageCompositionError.unsupportedDefinitions }
         return items
     }
