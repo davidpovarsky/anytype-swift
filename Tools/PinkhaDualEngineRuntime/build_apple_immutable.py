@@ -405,7 +405,7 @@ def main():
             "reviewed_metadata_resume_requires_original_device_disk_stop")
     require(platform.system() == "Darwin" and platform.machine() == "arm64",
             "actual_apple_silicon_host_required")
-    require(root.is_dir() and root.resolve() == root and root.parent == Path("/Users/m1/development/anytype-d-active-20261125/native-immutable")
+    require(root.is_dir() and root.resolve() == root and root.parent == Path("/Users/m1/development/anytype-d-active-20261125/native-immutable-retry1")
             and root.name == "pinkha-dual-native-v1-" + MANIFEST_SHA[:12] + "-" + args.slice,
             "fixed_owned_build_root_required")
     require(len(args.controller_sha) == 40 and all(c in "0123456789abcdef" for c in args.controller_sha),
