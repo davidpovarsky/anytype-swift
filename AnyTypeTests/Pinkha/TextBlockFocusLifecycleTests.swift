@@ -362,6 +362,78 @@ struct TextBlockFocusLifecycleTests {
         }
     }
 
+    @Test("A real collection presentation delivers an empty row's waiting request without replaying a newer cursor",
+          arguments: [false, true])
+    func collectionPresentationResumesOnlyCurrentUnattemptedFocus(superseded: Bool) async throws {
+        let fixture = try TextBlockFocusWindow()
+        defer { fixture.close() }
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let keeper = TextBlockContentView(frame: .zero)
+        keeper.update(with: configuration("presentation-keeper", cursor: cursor, subjects: subjects))
+        fixture.attach(keeper, y: 80)
+        var empty = configuration("presentation-empty", cursor: cursor, subjects: subjects, initial: .beginning)
+        empty.content = .plain("", contentType: .text)
+        empty.attributedString = NSAttributedString(string: "")
+        let collection = TextBlockFocusCellCollection(configuration: cellConfiguration(empty), locked: false)
+        collection.view.alpha = 0
+        fixture.attach(collection.view, y: 240)
+        await collection.display()
+        await finishMainQueueTurn()
+        let row = try #require(collection.row)
+        try #require(row.textView.textView.text.isEmpty && !row.textView.textView.isFirstResponder)
+        if superseded {
+            keeper.takeFocus(at: .end)
+            try #require(keeper.textView.textView.isFirstResponder)
+        }
+        // Only the ancestor's presentation changes. No direct row layout, focus,
+        // input replacement or new cursor request repairs the pending request.
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            UIView.animate(withDuration: 0.01, animations: {
+                collection.view.alpha = 1
+            }, completion: { _ in
+                collection.view.resumePendingTextFocusAfterDisplay()
+                continuation.resume()
+            })
+        }
+        await finishMainQueueTurn()
+        #expect(row.textView.textView.isFirstResponder == !superseded)
+        if superseded {
+            #expect(keeper.textView.textView.isFirstResponder)
+        } else {
+            try #require(row.textView.textView.isFirstResponder)
+            #expect(row.textView.textView.selectedRange == NSRange(location: 0, length: 0))
+            row.textView.textView.insertText("שלום abc")
+            #expect(row.textView.textView.text == "שלום abc")
+        }
+    }
+
+    @Test("Collection presentation cannot repeat a native delegate refusal")
+    func collectionPresentationDoesNotReplayNativeRefusal() async throws {
+        let fixture = try TextBlockFocusWindow()
+        defer { fixture.close() }
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let collection = TextBlockFocusCellCollection(
+            configuration: cellConfiguration(configuration("display-refusal", cursor: cursor, subjects: subjects)),
+            locked: false
+        )
+        fixture.attach(collection.view)
+        await collection.display()
+        let row = try #require(collection.row)
+        let refusal = TextBlockFocusRefusingDelegate()
+        row.textView.textView.delegate = refusal
+        cursor.focus(at: "display-refusal", position: .end)
+        await finishMainQueueTurn()
+        try #require(refusal.beginAttempts == 1 && !row.textView.textView.isFirstResponder)
+        for _ in 0..<3 {
+            collection.view.resumePendingTextFocusAfterDisplay()
+            await finishMainQueueTurn()
+        }
+        #expect(refusal.beginAttempts == 1)
+        #expect(!row.textView.textView.isFirstResponder)
+    }
+
     @Test("Repeated visible layouts do not replay a native focus refusal")
     func visibleLayoutsDoNotRetryNativeRefusal() async throws {
         let fixture = try TextBlockFocusWindow()

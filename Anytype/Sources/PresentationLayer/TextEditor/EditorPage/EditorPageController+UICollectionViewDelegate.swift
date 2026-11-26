@@ -4,12 +4,13 @@ import Services
 // MARK: - UICollectionViewDelegate
 
 extension EditorPageController: UICollectionViewDelegate {
-#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell,
                         forItemAt indexPath: IndexPath) {
+        (cell as? EditorViewListCell)?.resumePendingTextFocusAfterDisplay()
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1
         configureSemanticAnchorInput(in: cell)
-    }
 #endif
+    }
 
     
     func collectionView(

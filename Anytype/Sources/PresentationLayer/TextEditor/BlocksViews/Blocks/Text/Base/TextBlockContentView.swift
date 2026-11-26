@@ -55,6 +55,7 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     private var focusLifetimeId = UUID()
     private var scheduledFocusId: UUID?
     private var pendingInputWasVisible: Bool?
+    private var pendingFocusReachedNativeResponder = false
     private var focusReadinessSubscriptions = [AnyCancellable]()
     private var torahAccessoryAction: (() -> Void)?
     
@@ -232,6 +233,7 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         focusLifetimeId = pendingId
         pendingFocus = (pendingId, position, requestId)
         pendingInputWasVisible = nil
+        pendingFocusReachedNativeResponder = false
         recordFocus(.retained, requestId: requestId)
         observeFocusReadiness()
         return pendingId
@@ -250,6 +252,7 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         DispatchQueue.main.async { [weak self] in
             guard let self, self.scheduledFocusId == pendingId else { return }
             self.scheduledFocusId = nil
+            self.recordFocus(.scheduledCallback, requestId: self.pendingFocus?.requestId)
             self.applyPendingFocus(id: pendingId)
         }
     }
@@ -262,7 +265,19 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         pendingFocus = nil
         scheduledFocusId = nil
         pendingInputWasVisible = nil
+        pendingFocusReachedNativeResponder = false
         focusReadinessSubscriptions.removeAll()
+    }
+
+    /// A collection insertion can finish making an ancestor cell visible after
+    /// this row's own layout callback. Resume only its existing unattempted request;
+    /// this lifecycle event cannot create focus, repeat a native refusal or steal
+    /// the cursor from a newer request. The queued delivery rechecks ownership.
+    func resumePendingFocusAfterDisplay() {
+        guard let pendingFocus, !pendingFocusReachedNativeResponder,
+              pendingFocus.id == focusLifetimeId, inputIsVisible else { return }
+        recordFocus(.presentationReady, requestId: pendingFocus.requestId)
+        schedulePendingFocus()
     }
 
     private func observeFocusReadiness() {
@@ -289,10 +304,17 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
             return
         }
         guard let window, textView.textView.window === window, window.isKeyWindow,
-              window.windowScene?.activationState == .foregroundActive else { return }
+              window.windowScene?.activationState == .foregroundActive else {
+            recordFocus(.waitingWindow, requestId: pendingFocus.requestId)
+            return
+        }
         let visible = inputIsVisible
         pendingInputWasVisible = visible
-        guard visible else { return }
+        guard visible else {
+            recordFocus(.waitingPresentation, requestId: pendingFocus.requestId)
+            return
+        }
+        pendingFocusReachedNativeResponder = true
         recordFocus(.nativeAttempted, requestId: pendingFocus.requestId)
         // Consume before UIKit delegates run, so its successful begin-editing cannot replay a caret.
         self.pendingFocus = nil

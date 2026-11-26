@@ -887,7 +887,10 @@ private extension EditorPageController {
             snapshot,
             to: .main,
             animatingDifferences: animatingDifferences,
-            completion: completion
+            completion: { [weak self] in
+                self?.collectionView.resumePendingTextFocusAfterDisplay()
+                completion()
+            }
         )
 
         let selectedCells = collectionView.indexPathsForSelectedItems

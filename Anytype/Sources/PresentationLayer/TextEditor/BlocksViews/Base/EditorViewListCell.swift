@@ -17,6 +17,22 @@ final class EditorViewListCell: UICollectionViewListCell, CustomTypesAccessable 
         contentConfiguration = configuration.updated(for: configurationState)
     }
 
+    /// Called by the owning collection's display lifecycle, after configuration.
+    /// Nested text blocks retain their own cursor owner; no request is synthesized.
+    func resumePendingTextFocusAfterDisplay() {
+        guard let owningCollectionView, window != nil,
+              window === owningCollectionView.window,
+              owningCollectionView.indexPath(for: self) != nil else { return }
+        var remaining = [contentView]
+        while let view = remaining.popLast() {
+            if let row = view as? TextBlockContentView {
+                row.resumePendingFocusAfterDisplay()
+            } else {
+                remaining.append(contentsOf: view.subviews)
+            }
+        }
+    }
+
     override func prepareForReuse() {
         owningCollectionView = nil
         super.prepareForReuse()

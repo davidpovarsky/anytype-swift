@@ -39,6 +39,14 @@ class EditorCollectionView: UICollectionView {
         }
     }
 
+    /// The diffable completion is the point at which inserted ancestors have
+    /// their final presentation, even when a child did not receive another layout.
+    func resumePendingTextFocusAfterDisplay() {
+        for cell in visibleCells {
+            (cell as? EditorViewListCell)?.resumePendingTextFocusAfterDisplay()
+        }
+    }
+
     private(set) var indexPathsForMovingItems = Set<IndexPath>()
 
     func deselectAllMovingItems() {

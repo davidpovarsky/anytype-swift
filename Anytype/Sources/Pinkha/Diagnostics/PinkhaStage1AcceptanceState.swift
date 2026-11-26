@@ -81,6 +81,7 @@ enum PinkhaStage1AcceptanceDiagnostics {
 
     enum FocusEvent: String, CaseIterable, Hashable {
         case initialRequested, publisherRequested, retained, scheduled
+        case scheduledCallback, waitingWindow, waitingPresentation, presentationReady
         case cancelledState, cancelledLifetime, cancelledSuperseded
         case consumed, nativeAttempted, nativeAcquired, nativeRefused, nativeBegan
     }
@@ -247,6 +248,7 @@ enum PinkhaStage1AcceptanceDiagnostics {
             "interaction=\(textView.isUserInteractionEnabled)",
             "locked=\((textView as? TextViewWithPlaceholder)?.isLockedForEditing == true)",
             "firstResponder=\(textView.isFirstResponder)",
+            "readiness={\(nativeFocusState(in: textView))}",
             "nativeTraceTruncated=\(record?.nativeTraceTruncated == true)",
             "nativeTrace=\(record?.nativeTrace.joined(separator: "|") ?? "none")"
         ]).joined(separator: " ")
