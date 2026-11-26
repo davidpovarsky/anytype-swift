@@ -205,6 +205,19 @@ def host_validation_module(contract, helpers):
     return helpers["t5_host_actions"]
 
 
+def native_ui_prior_processes(fixture, observed):
+    """Keep every original UI lifetime excluded from the two R08 relaunches."""
+    processes = observed.get("actual_processes")
+    require(isinstance(processes, dict) and set(processes) == {"related-targets", "note-lifecycle"},
+            "Original named core UI process inventory required")
+    require(all(isinstance(values, list) and values for values in processes.values()),
+            "Original core UI process lists required")
+    values = [fixture["preparationProcessID"], *(pid for rows in processes.values() for pid in rows)]
+    require(len(values) == 4 and all(type(pid) is int and pid > 0 for pid in values)
+            and len(set(values)) == len(values), "Preparation and every original UI lifetime must be distinct")
+    return set(values)
+
+
 class Consumer:
     def __init__(self, root, admission, commands, built, app, helpers, binding):
         self.root, self.admission, self.commands = root, admission, commands
@@ -505,7 +518,7 @@ class Consumer:
         require(original.native_ui_identity(current)[0] == identity, "UI replaced original native credentials/fixture")
         note = observed["receipts"]["note-lifecycle"]["observations"][-1]
         retained = {k: note[k] for k in ("objectID", "blockID", "actualText")}
-        used = {fixture["preparationProcessID"], *observed["actual_processes"]}
+        used = native_ui_prior_processes(fixture, observed)
         reports = {}
         for appearance in r08.APPEARANCES:
             name = "r08-he-" + appearance
