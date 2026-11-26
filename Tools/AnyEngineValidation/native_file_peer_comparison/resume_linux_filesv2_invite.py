@@ -214,7 +214,7 @@ def main():
             "appBuilds":0,"goBuilds":0,"wholeSpaceMigrationAccepted":False,"cloudCustodyAccepted":False,
             "actualFilesV2Acceptance":False,"processes":[],"phases":[],"files":[],"errors":[],
             "resourcePolicy":{"estimatedNewBytes":ESTIMATE,"emergencyFreeBytes":FLOOR,
-                "reason":"Two fresh native account stores, less than 11 MiB plaintext, sparse encrypted caches and bounded logs; no compiler or download."}}
+                "reason":"Two retained existing native account stores, less than 11 MiB new plaintext, sparse encrypted caches and bounded logs; no init, compiler or download."}}
     config_hashes={}
     def save():
         result["seconds"]=round(time.monotonic()-started,3)
