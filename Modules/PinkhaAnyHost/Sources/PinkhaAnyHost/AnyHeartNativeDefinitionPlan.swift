@@ -326,7 +326,8 @@ public struct AnyHeartNativeDefinitionPlan: Sendable {
                 let visible = Set((definition.recommendedRelations + definition.featuredRelations).map { Data($0.utf8) })
                 if let ownerKey, candidates.count == 1, let source = candidates.first,
                    source.relation.format == .url, source.kind == "string", source.format == "url",
-                   source.canonicalBinding == nil, source.relation.readonlyValue != true,
+                   source.canonicalBinding == nil, source.relation.maximumCount == 1,
+                   source.relation.readonlyValue != true,
                    source.owner == .mapped(sourceKey: ownerKey, slot: .objectID, encoding: .rawID),
                    visible.contains(Data(source.relation.objectID.utf8)) {
                     recommendations.append(.init(key: .native("sourceURL"), value: source.address))

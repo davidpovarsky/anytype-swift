@@ -741,7 +741,7 @@ final class NativeDefinitionPlanTests: XCTestCase {
 
 
     func testBookmarkDefinitionEmitsItsDistinctNativeLayoutAndExactMappedURLRole() throws {
-        let url = try relation("captured-url-e\u{301}", key: "source", format: 7)
+        let url = try relation("captured-url-e\u{301}", key: "source", format: 7, extra: ["relationMaxCount": .integer(1)])
         let bookmark = try type("captured-bookmark", key: "bookmark", extra: [
             "recommendedLayout": .integer(11),
             "recommendedRelations": .array([.string(url.sourceObjectID)]),
@@ -800,11 +800,13 @@ final class NativeDefinitionPlanTests: XCTestCase {
 
     func testBookmarkDefinitionRefusesWrongSourceRoleFormatAndReadOnlyAuthority() throws {
         let cases: [AnyHeartNativeSnapshotView] = try [
-            relation("candidate", key: "origin", format: 7),
-            relation("candidate", key: "sourceObject", format: 7),
-            relation("candidate", key: "source", format: 0),
-            relation("candidate", key: "source", format: 7, extra: ["relationReadonlyValue": .bool(true)]),
-            relation("candidate", key: "source", format: 7, extra: ["isReadonly": .bool(true)]),
+            relation("candidate", key: "origin", format: 7, extra: ["relationMaxCount": .integer(1)]),
+            relation("candidate", key: "sourceObject", format: 7, extra: ["relationMaxCount": .integer(1)]),
+            relation("candidate", key: "source", format: 0, extra: ["relationMaxCount": .integer(1)]),
+            relation("candidate", key: "source", format: 7, extra: ["relationMaxCount": .integer(0)]),
+            relation("candidate", key: "source", format: 7, extra: ["relationMaxCount": .integer(2)]),
+            relation("candidate", key: "source", format: 7, extra: ["relationReadonlyValue": .bool(true), "relationMaxCount": .integer(1)]),
+            relation("candidate", key: "source", format: 7, extra: ["isReadonly": .bool(true), "relationMaxCount": .integer(1)]),
         ]
         for candidate in cases {
             let bookmark = try type("bookmark", key: "bookmark", extra: [
@@ -820,7 +822,7 @@ final class NativeDefinitionPlanTests: XCTestCase {
             XCTAssertEqual(layout["type"], .string("bookmark"))
             XCTAssertNil(layout["config"]?["pinkhaHeart"]?["sourceURL"])
         }
-        let valid = try relation("candidate", key: "source", format: 7)
+        let valid = try relation("candidate", key: "source", format: 7, extra: ["relationMaxCount": .integer(1)])
         let impostor = try snapshot(valid.sourceObjectID, type: 521, key: "rel-sourceObject", details: valid.details)
         let bookmark = try type(extra: ["recommendedLayout": .integer(11),
                                        "recommendedRelations": .array([.string(valid.sourceObjectID)])])
@@ -828,7 +830,7 @@ final class NativeDefinitionPlanTests: XCTestCase {
     }
 
     func testBookmarkDefinitionRequiresVisibleRoleAndKeepsBasicAndOtherLayoutsSeparate() throws {
-        let url = try relation("url", key: "source", format: 7)
+        let url = try relation("url", key: "source", format: 7, extra: ["relationMaxCount": .integer(1)])
         for changes: [String: AnyJSON] in [
             [:], ["recommendedHiddenRelations": .array([.string(url.sourceObjectID)])],
             ["recommendedFileRelations": .array([.string(url.sourceObjectID)])],
@@ -859,7 +861,7 @@ final class NativeDefinitionPlanTests: XCTestCase {
     }
 
     func testBookmarkDefinitionRetainsSourceURLValuesWithoutMakingURLActionsOrSourceObjectAliases() throws {
-        let url = try relation("url", key: "source", format: 7)
+        let url = try relation("url", key: "source", format: 7, extra: ["relationMaxCount": .integer(1)])
         let bookmark = try type(extra: ["recommendedLayout": .integer(11),
             "recommendedRelations": .array([.string(url.sourceObjectID)])])
         let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog([url, bookmark]))
