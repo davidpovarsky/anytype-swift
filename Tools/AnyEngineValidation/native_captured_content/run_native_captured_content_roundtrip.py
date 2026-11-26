@@ -31,10 +31,13 @@ def remote(code, timeout=30):
     return r.stdout
 def verify_original():
     index = ORIGINAL.parent / "original156-member-index.json"
-    assert not index.is_symlink() and sha(index) == "30420980bd3261a9e7284f7427ab47d8dc98f44e342549ea4d8c39a80073712b"
+    assert index.is_file() and not index.is_symlink()
+    index_bytes = index.read_bytes()
+    index_sha = hashlib.sha256(index_bytes).hexdigest()
+    assert index_sha == "30420980bd3261a9e7284f7427ab47d8dc98f44e342549ea4d8c39a80073712b"
     assert ORIGINAL.resolve() == ORIGINAL and ORIGINAL.is_dir() and not ORIGINAL.is_symlink()
     root_before = ORIGINAL.stat()
-    rows = json.loads(index.read_bytes())
+    rows = json.loads(index_bytes)
     expected = set()
     total = 0
     for row in rows:
@@ -59,7 +62,8 @@ def verify_original():
     assert actual == expected
     root_after = ORIGINAL.stat()
     assert (root_before.st_dev, root_before.st_ino, root_before.st_mode) == (root_after.st_dev, root_after.st_ino, root_after.st_mode)
-    return {"indexSHA256":sha(index),"originalMemberCount":len(rows),"originalBytes":total,"unchanged":True}
+    assert sha(index) == index_sha
+    return {"indexSHA256":index_sha,"originalMemberCount":len(rows),"originalBytes":total,"unchanged":True}
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
