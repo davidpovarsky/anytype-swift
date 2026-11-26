@@ -11,7 +11,7 @@ internal actor OriginalEditorLocalAnnotationJournal {
         let owner: UUID
         let bundleID: String
         let appGroup: String
-        let repository: String
+        var repository: String
         var phase: String
         var accountID: String?
         var preferredSpaceID: String?
@@ -85,15 +85,17 @@ internal actor OriginalEditorLocalAnnotationJournal {
             try requireDirectory(root)
             let bytes = try read(path, maximum: 65_536)
             let value = try JSONDecoder().decode(Account.self, from: bytes)
+            let accountWasObserved = ["account_observed", "ready"].contains(value.phase)
             guard value.schema == "otzaria.original-local-annotation-account/1",
                   value.bundleID == bundle, value.appGroup == appGroup,
-                  value.repository == repo.path,
+                  value.repository == repo.path
+                    || (accountWasObserved && Self.isRelocatedRepository(value.repository, current: repo)),
                   ["claimed", "wallet_may_have_dispatched", "wallet_stored",
                    "account_may_have_dispatched", "account_observed", "ready"].contains(value.phase) else {
                 throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
             }
             try requireDirectory(root.appendingPathComponent("OriginalEditorLocalAnnotationDrafts"))
-            if ["account_observed", "ready"].contains(value.phase) {
+            if accountWasObserved {
                 guard let account = value.accountID, !account.isEmpty,
                       !account.utf8.contains(0), account.utf8.count <= 16_384,
                       value.preferredSpaceID.map({ !$0.isEmpty && !$0.utf8.contains(0)
@@ -200,7 +202,15 @@ internal actor OriginalEditorLocalAnnotationJournal {
               account.accountID == accountID else {
             throw AnytypeOriginalEditorLocalAnnotationError.invalidJournal
         }
-        if account.phase != "ready" { try updateAccount(phase: "ready") }
+        let current = root.appendingPathComponent("middleware-go", isDirectory: true)
+        // Only after WalletRecover and AccountSelect proved the same original
+        // account may a moved application sandbox update its journal location.
+        if account.phase != "ready" || account.repository != current.path {
+            var ready = account
+            ready.phase = "ready"
+            ready.repository = current.path
+            try replaceAccount(ready)
+        }
     }
 
     func credential() throws -> String {
@@ -375,6 +385,26 @@ internal actor OriginalEditorLocalAnnotationJournal {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         return try encoder.encode(value)
+    }
+
+    private static func isRelocatedRepository(_ recordedPath: String, current: URL) -> Bool {
+        guard recordedPath.hasPrefix("/"), !recordedPath.utf8.contains(0) else { return false }
+        let recorded = URL(fileURLWithPath: recordedPath, isDirectory: true)
+        let previousComponents = recorded.pathComponents
+        let currentComponents = current.pathComponents
+        let repositorySuffix = ["Library", "Application Support", "Anytype", "middleware-go"]
+        let containerIndex = currentComponents.count - repositorySuffix.count - 1
+        guard containerIndex >= 3, recorded.standardizedFileURL.path == recordedPath,
+              previousComponents.count == currentComponents.count,
+              currentComponents.suffix(repositorySuffix.count).elementsEqual(repositorySuffix),
+              previousComponents.suffix(repositorySuffix.count).elementsEqual(repositorySuffix),
+              currentComponents.prefix(containerIndex).suffix(3).elementsEqual(["Containers", "Data", "Application"]),
+              currentComponents.prefix(containerIndex).elementsEqual(previousComponents.prefix(containerIndex)),
+              let previousContainer = UUID(uuidString: previousComponents[containerIndex]),
+              let currentContainer = UUID(uuidString: currentComponents[containerIndex]),
+              previousContainer != currentContainer else { return false }
+        var info = stat()
+        return Darwin.lstat(recordedPath, &info) != 0 && errno == ENOENT
     }
 
     private static func requireDirectory(_ path: URL) throws {
