@@ -37,6 +37,9 @@ def verify(root, path, digest, source):
             and re.fullmatch(r'[0-9a-f]{64}', digest or '') and sha(path) == digest,
             'Exact owned Import ABI receipt is required')
     value = json.loads(path.read_bytes())
+    if value.get('schema') == 'otzaria.original-saved-body-retained-abi/1':
+        from saved_body_abi_input import verify as verify_saved_body_abi
+        return verify_saved_body_abi(root, path, digest, source, value)
     if value.get('schema') == 'otzaria.original-import-donor-sdk-input/1':
         from donor_abi_input import verify as verify_donor
         return verify_donor(root, path, digest, source, value)
