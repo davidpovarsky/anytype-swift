@@ -1,0 +1,77 @@
+{
+  "protocol": "wave2-property-selection-source-review-v1",
+  "baseCommit": "33f316afd19d33036705b3839067cc2070e084f2",
+  "status": "SOURCE_REVIEWED_APPLE_EXECUTION_PENDING",
+  "changes": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSelection.swift",
+      "sha256": "9f112a3524b3b39731f089b5d9f438d86a5438d71ccaac66790ce8ec459f3b0c",
+      "bytes": 1641,
+      "classification": "DOWNSTREAM_OWNED"
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PropertyCreationSelectionTests.swift",
+      "sha256": "029f38d998c1f81f46805978093354cb477432bfafb0101ca3a46273e3059c55",
+      "bytes": 4194,
+      "classification": "DOWNSTREAM_OWNED"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+      "sha256": "3eb4aac8c43a22a36615bcbdd37e744436faf57fcf29a73bfe059e72ee8d1a4d",
+      "bytes": 10225,
+      "classification": "UPSTREAM_OWNED_SCOPED_INTEGRATION"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift",
+      "sha256": "cd9e6425dc7647b3e9eae240ccd6f449457f3c4c084b3fa991f545770f9d5501",
+      "bytes": 2916,
+      "classification": "UPSTREAM_OWNED_SCOPED_INTEGRATION"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertyLocalization.swift",
+      "sha256": "a7405dc5d8c55f65a9b8c99f85cf0d4095563bba8d0ca85dcd8255784ce49109",
+      "bytes": 1183,
+      "classification": "DOWNSTREAM_OWNED"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/Resources/PinkhaTorahProperties.xcstrings",
+      "sha256": "0ac66bbd4bc89284dba77c211b105adadbc22faca4248080ae7d05ceaa45cf2e",
+      "bytes": 1496,
+      "classification": "DOWNSTREAM_OWNED"
+    }
+  ],
+  "problem": "The existing picker launches an unobserved throwing Task. Native add/reveal/dataview failure does not publish UI error, and repeated taps can overlap writes.",
+  "behavior": "Serialize each native selection, retain picker on a real error, offer explicit retry, separate cancellation from failure, preserve success callback/dismiss only after successful operation. All original target-specific native operations are byte-identical.",
+  "authorization": "Explicit user Wave2 development/Properties correction authorization and repository standing owner authorization.",
+  "preservedNativeOperations": {
+    "from": "private func onExistingPropertyTap",
+    "through": "end of PropertyCreationViewModel",
+    "exactBytesAfterTrailingWhitespaceNormalization": true,
+    "sha256": "4d7bb2cc459cdaf19a464b9fca7213c389ae3bfaf47fc5e89d453a6fab27c395"
+  },
+  "nativeSchemaChanges": 0,
+  "documentTypeChanges": 0,
+  "sourceDataDuplication": false,
+  "checks": {
+    "gitDiffCheck": "PASS",
+    "localizedResourceJSON": "PASS",
+    "nativeOperationBodyRetention": "PASS"
+  },
+  "appleTests": {
+    "suite": "PropertyCreationSelectionTests",
+    "methods": 5,
+    "status": "NOT_RUN"
+  },
+  "originalSearchTests": {
+    "commit": "33f316afd19d33036705b3839067cc2070e084f2",
+    "methods": 8,
+    "status": "NOT_RUN"
+  },
+  "uiAcceptance": "NOT_RUN: original Properties/Set UI and native postflight must run against combined published source; verify Hebrew/English error and retry, double taps, object/type/dataview,3originaldocumenttypes,Tags/links,persistence.",
+  "limitations": [
+    "No source build or simulator/device execution in this source-review stage.",
+    "A native operation failure may follow a partial native write; no rollback is fabricated. Retry calls unchanged target-specific APIs and rechecks permission.",
+    "Full T5 index freshness/coverage remains a separate Wave1 Native contract dependency."
+  ],
+  "rollback": "Revert this scoped follow-up commit; earlier33f316 search correction remains independently usable."
+}

@@ -16,6 +16,8 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     var hasLookupFailure: Bool { nativeLookupFailed || existingLookupFailed }
     private var lastSearchText = ""
     private var activeSearch: UUID?
+    let propertySelection = PinkhaPropertyPickerSelection()
+    private var retryProperty: PropertyDetails?
 
     @ObservationIgnored
     private let searchLoader: any PinkhaPropertyPickerSearchLoading
@@ -104,32 +106,49 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
         await search(text: lastSearchText)
     }
 
-    func onRowTap(_ row: PropertySearchData) {
-        Task {
-            switch row {
-            case .existing(let details):
+    func onRowTap(_ row: PropertySearchData) async {
+        guard !propertySelection.isRunning else { return }
+        switch row {
+        case .existing(let details):
+            retryProperty = details
+            let succeeded = await propertySelection.perform(
+                spaceID: data.spaceId, objectID: data.objectId, propertyID: details.id
+            ) {
                 guard await PinkhaTorahPropertyPolicy.shared.canAddPropertyAsync(
                     propertyId: details.id, key: details.key, target: data.target, spaceId: data.spaceId
-                ) else { return }
+                ) else { throw PinkhaPropertyPickerSelectionError.propertyUnavailable }
+                try Task.checkCancellation()
                 try await onExistingPropertyTap(details)
                 try? await objectActionsService.updateBundledDetails(contextID: details.id, details: [ .lastUsedDate(Date.now)])
-                
+            }
+            if succeeded {
+                retryProperty = nil
                 data.onRelationSelect(details, false) // isNew = false
                 dismiss?()
-            case .new(let format):
-                newPropertyData = PropertyInfoData(
-                    name: "",
-                    objectId: data.objectId,
-                    spaceId: data.spaceId,
-                    target: data.target,
-                    mode: .create(format: format),
-                    isReadOnly: false
-                )
             }
+        case .new(let format):
+            propertySelection.clearFailure()
+            retryProperty = nil
+            newPropertyData = PropertyInfoData(
+                name: "",
+                objectId: data.objectId,
+                spaceId: data.spaceId,
+                target: data.target,
+                mode: .create(format: format),
+                isReadOnly: false
+            )
         }
+    }
+
+    func retryPropertySelection() async {
+        guard propertySelection.failed, let retryProperty else { return }
+        await onRowTap(.existing(retryProperty))
     }
     
     func onNewPropertyTap(name: String) {
+        guard !propertySelection.isRunning else { return }
+        propertySelection.clearFailure()
+        retryProperty = nil
         newPropertyData = PropertyInfoData(
             name: name,
             objectId: data.objectId,
