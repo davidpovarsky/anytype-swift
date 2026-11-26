@@ -168,6 +168,11 @@ def exact_enumeration(value, selectors):
             parts = parts[1:]
         require(len(parts) == 2 and all(part and part == part.strip() for part in parts),
                 "Exact class/method or target/class/method enumeration required")
+        # Xcode 27 emits empty call parentheses for parameterless XCTest UI
+        # methods, while -only-testing uses their declaration names.
+        # Keep Swift Testing signatures and every target/class/count check exact.
+        if target == UI and re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*\(\)", parts[-1]):
+            parts[-1] = parts[-1][:-2]
         return "/".join(parts)
     normalized = {key: [normalize(value) for value in names[key]] for key in names}
     require(all(len(values) == len(set(values)) for values in normalized.values()),
