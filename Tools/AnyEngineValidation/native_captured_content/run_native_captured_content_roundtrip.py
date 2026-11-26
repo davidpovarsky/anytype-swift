@@ -6,7 +6,7 @@ from pathlib import Path
 import argparse, datetime, hashlib, json, os, signal, socket, stat, subprocess, time
 
 WORKTREE = Path("/mnt/development/projects/worktrees/anytype-migration-final-20261125")
-BUILD = Path("/mnt/development/projects/evidence/migration-final-20261125/native-current-content/native-shared-build1")
+BUILD = Path("/mnt/development/projects/evidence/migration-final-20261125/native-current-content/native-shared-build2")
 CACHE = Path("/tmp/pinkha-c-swift-cache-20261125")
 ORIGINAL = Path("/mnt/development/projects/evidence/migration-final-20261125/native-head-census/original-source-recovery/original156")
 MAC_SCRIPT = "/Users/m1/development/anytype-c-active-20261125/native-captured-content/control/run_native_captured_content_process.py"
@@ -14,12 +14,12 @@ MAC_SHA = "7ccd96079a277633664cf77c4d553a15513523b79ac96c494e25ec908a276a1f"
 TEST = "AnyDestinationNativeCapturedContentTests.testBothOriginalPagesExecuteAndCompareAfterColdNativeReopen"
 TEST_PATH = "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeCapturedContentTests.swift"
 TEST_SHA = "bdac02d5151211e2ea76dc422b486b98ba80ac935eabd14c398cdc0b0d528fdc"
-BUILD_SHA = "1c6104c72ab81197c0677e781e4257262bbeb06414665d0029f84345e9a4eaa8"
-SOURCE_SHA = "0babc7a1eb3c55e2b6cb5c0e616c8090eaa67778d95369088572f36f8f56f7db"
+BUILD_SHA = "f7ce7f5e37261ad4aa35fb71bc778033a0027efdbd5ff5e3c745c2b0e776711f"
+SOURCE_SHA = "b51c89059ff6fbecd247b74fcef7ab240bb3d86a3778af3987ea3fdc7d80cefe"
 DEPS_SHA = "5a401246574e5a03b4abd63b3081677e1bee61955e59abe7ad67bca6bfa76b61"
 BINARIES = {
     "PinkhaAnyHostTests-test-runner": "ab045b52dacafb6ac2a7c590a9fe40f411f67a8540cc7dc49c572d660a5286a4",
-    "PinkhaAnyHostTests.so": "757bb31eed82b311676ae9232d11e22da2e5ef1350903c518ecc7a4c4648f760",
+    "PinkhaAnyHostTests.so": "66d6f87b6efbf974ad62ee5eefe83d04c6a9d0866f3d16c37fbc4cf9b1970cad",
 }
 SSH = ["sudo", "-n", "-u", "ubuntu", "ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=10"]
 def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -82,7 +82,7 @@ def main():
     known_absent = set()
     result = {"protocol": "pinkha-native-captured-content-roundtrip-v1",
         "scope": "nineteen actual native operations; both original Pages, immutable original bytes, exact links and cold-offline reopen",
-        "sourceCommit": "e2086c978b310dc3e7910530ec3eea821ab8dea0",
+        "sourceCommit": "482f1ee0bf6d98eef1a92ecae7187a8b6513303e",
         "sourceAdmissionPromoted": False, "wholeSpaceMigration": False,
         "result": "RUNNING", "phases": [], "macOutput": args.mac_output, "errors": []}
     def save():
@@ -209,6 +209,7 @@ def main():
             log_text = log_bytes.decode(errors="replace")
             item.update(exitCode=code, seconds=round(time.monotonic() - phase_started, 3),
                 logSHA256=hashlib.sha256(log_bytes).hexdigest(), inputsAfter=verify_inputs())
+            item["result"] = "FAIL"
             save()
             assert code == 0, "original compiled Swift phase failed"
             assert "Executed 1 test, with 0 failures" in log_text and "skipped" not in log_text.lower()
