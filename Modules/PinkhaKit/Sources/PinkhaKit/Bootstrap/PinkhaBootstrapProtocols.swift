@@ -86,3 +86,58 @@ public protocol PinkhaTemplateServiceProtocol: Sendable {
     func createAndAssignDefaultTemplate(typeId: String, spaceId: String) async throws -> String
     func validateTemplateExists(templateId: String, spaceId: String) async throws -> Bool
 }
+
+/// The original bootstrap claim/state storage, shared with the application
+/// adapter so its failure-recovery and stale-completion rules are testable.
+public final class PinkhaBootstrapStateStorage: @unchecked Sendable {
+    private struct Entry {
+        let state: PinkhaSpaceBootstrapState
+        let claim: UUID
+    }
+    private let lock = NSLock()
+    private var states: [String: Entry] = [:]
+
+    public init() {}
+
+    public func state(for spaceId: String) -> PinkhaSpaceBootstrapState {
+        lock.lock()
+        defer { lock.unlock() }
+        return states[spaceId]?.state ?? .uninitialized
+    }
+
+    public func setState(_ state: PinkhaSpaceBootstrapState, for spaceId: String) {
+        lock.lock()
+        defer { lock.unlock() }
+        states[spaceId] = Entry(state: state, claim: UUID())
+    }
+
+    @discardableResult
+    public func setState(_ state: PinkhaSpaceBootstrapState, for spaceId: String, claim: UUID) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard states[spaceId]?.claim == claim else { return false }
+        states[spaceId] = Entry(state: state, claim: claim)
+        return true
+    }
+
+    public func resetForAccountChange() {
+        lock.lock()
+        defer { lock.unlock() }
+        states.removeAll(keepingCapacity: true)
+    }
+
+    /// A new explicit Space activation may retry a finished failure. There is
+    /// no timer, automatic retry loop or permission to overlap an active writer.
+    public func beginProvisioningClaim(spaceId: String) -> UUID? {
+        lock.lock()
+        defer { lock.unlock() }
+        switch states[spaceId]?.state ?? .uninitialized {
+        case .provisioning, .ready:
+            return nil
+        case .uninitialized, .failed:
+            let claim = UUID()
+            states[spaceId] = Entry(state: .provisioning, claim: claim)
+            return claim
+        }
+    }
+}

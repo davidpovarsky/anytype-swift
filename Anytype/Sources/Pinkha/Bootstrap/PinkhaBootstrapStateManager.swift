@@ -1,41 +1,30 @@
 import Foundation
 import PinkhaKit
-import Factory
 import os.log
 
 private let pinkhaLog = OSLog(subsystem: "com.anytype.pinkha", category: "Bootstrap")
 
 public final class PinkhaBootstrapStateManager: Sendable {
-    private struct Entry: Sendable {
-        let state: PinkhaSpaceBootstrapState
-        let claim: UUID
-    }
-    private let states = LockIsolated<[String: Entry]>([:])
+    private let states = PinkhaBootstrapStateStorage()
 
     public init() {}
 
     public func state(for spaceId: String) -> PinkhaSpaceBootstrapState {
-        states.value[spaceId]?.state ?? .uninitialized
+        states.state(for: spaceId)
     }
 
     public func setState(_ state: PinkhaSpaceBootstrapState, for spaceId: String) {
-        states.withValue { dict in
-            dict[spaceId] = Entry(state: state, claim: UUID())
-        }
+        states.setState(state, for: spaceId)
         logState(state, for: spaceId)
     }
 
     public func setState(_ state: PinkhaSpaceBootstrapState, for spaceId: String, claim: UUID) {
-        let accepted = states.withValue { dict in
-            guard dict[spaceId]?.claim == claim else { return false }
-            dict[spaceId] = Entry(state: state, claim: claim)
-            return true
-        }
+        let accepted = states.setState(state, for: spaceId, claim: claim)
         if accepted { logState(state, for: spaceId) }
     }
 
     public func resetForAccountChange() {
-        states.withValue { $0.removeAll(keepingCapacity: true) }
+        states.resetForAccountChange()
     }
 
     private func logState(_ state: PinkhaSpaceBootstrapState, for spaceId: String) {
@@ -59,14 +48,7 @@ public final class PinkhaBootstrapStateManager: Sendable {
     }
 
     public func beginProvisioningClaim(spaceId: String) -> UUID? {
-        let claim = states.withValue { dict -> UUID? in
-            guard case .uninitialized = dict[spaceId]?.state ?? .uninitialized else {
-                return nil
-            }
-            let claim = UUID()
-            dict[spaceId] = Entry(state: .provisioning, claim: claim)
-            return claim
-        }
+        let claim = states.beginProvisioningClaim(spaceId: spaceId)
         if claim != nil { logState(.provisioning, for: spaceId) }
         return claim
     }
@@ -86,26 +68,5 @@ public final class PinkhaBootstrapStateManager: Sendable {
             }
         }
         throw PinkhaBootstrapError.manifestStoreError("Timed out waiting for space \(spaceId) bootstrap readiness")
-    }
-}
-
-private final class LockIsolated<Value>: @unchecked Sendable {
-    private var _value: Value
-    private var _lock = os_unfair_lock()
-
-    init(_ value: Value) {
-        self._value = value
-    }
-
-    var value: Value {
-        os_unfair_lock_lock(&_lock)
-        defer { os_unfair_lock_unlock(&_lock) }
-        return _value
-    }
-
-    func withValue<Result>(_ body: (inout Value) throws -> Result) rethrows -> Result {
-        os_unfair_lock_lock(&_lock)
-        defer { os_unfair_lock_unlock(&_lock) }
-        return try body(&_value)
     }
 }
