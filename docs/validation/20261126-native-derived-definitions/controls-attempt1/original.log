@@ -1,0 +1,54 @@
+Building for debugging...
+[Computing dependencies]
+[Provisioning 16 / 19]
+[Constructing description]
+[Pre-planning 1 / 392]
+[Planning 1 / 392]
+[Planning 248 / 392]
+[Planning 364 / 392]
+[Planning deferred tasks]
+[Constructing 13 / 1199]
+[Constructing 213 / 1199]
+[Constructing 731 / 1199]
+[Starting]
+[1 / 6] PinkhaAnyHost
+[2 / 7] PinkhaAnyHost
+[7 / 12] PinkhaAnyHostTests-product
+[8 / 13] PinkhaAnyHostTests-product
+[13 / 18] PinkhaAnyHostTests-product
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeIdentityTests.swift:146:30: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m144 |[0;0m                 "spaceID": .string(space), "typeID": .string(type), "exactNativeQueryCount": .integer(1)]))
+[0;36m145 |[0;0m         }
+[0;36m146 |[0;0m         let descriptorRows = try bindings.map { binding -> AnyJSON in
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m147 |[0;0m             .object(["propertyID": .string(binding.propertyID), "nativeContract": .string(binding.nativeContract),
+[0;36m148 |[0;0m                      "nativeDescriptorSHA256": .string(binding.nativeDescriptorSHA256),
+
+/mnt/development/projects/worktrees/anytype-migration-final-20261125/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeTypeOrderTests.swift:104:24: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m102 |[0;0m         }
+[0;36m103 |[0;0m         try require(plan.binding.workspace == workspace && plan.items.count == 6)
+[0;36m104 |[0;0m         let executor = try AnyDestinationMigrationExecutor(client: client, journalDirectory: journal)
+    [0;36m|[0;0m                        `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m105 |[0;0m         let progress = try await executor.execute(plan: plan,
+[0;36m106 |[0;0m             payloads: { _ in throw TypeOrderNativeFailure.unexpectedPayload },
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[14 / 19] PinkhaAnyHostTests-product
+[17 / 23] PinkhaAnyHost
+[19 / 25] PinkhaAnyHost
+[20 / 28] PinkhaAnyHost
+[21 / 28] PinkhaAnyHost
+[22 / 28] PinkhaAnyHost
+[24 / 28] PinkhaAnyHost
+[25 / 29] PinkhaAnyHostTests-product
+[26 / 29] PinkhaAnyHostTests-product
+[27 / 29] PinkhaAnyHostTests-test-runner
+[28 / 30] PinkhaAnyHostTests-test-runner
+[30 / 32] PinkhaAnyHostTests-test-runner
+[31 / 33] PinkhaAnyHostTests-test-runner
+[34 / 34] PinkhaAnyHostTests-test-runner
+[38 / 40] PinkhaAnyHostTests-test-runner
+[40 / 43] pinkha-any-host-probe-product
+[42 / 42] pinkha-any-host-probe-product
+Build complete! (81.77 secs)
+warning: No matching test cases were run
