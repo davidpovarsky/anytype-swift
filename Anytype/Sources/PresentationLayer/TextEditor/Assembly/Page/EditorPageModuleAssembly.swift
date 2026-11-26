@@ -172,6 +172,7 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
                 blockId: data.blockId,
                 usecase: data.usecase,
                 quickCapture: data.quickCapture,
+                suppressesAutomaticCursorFocus: data.suppressesAutomaticCursorFocus == true,
                 headerHint: data.headerHint
             ),
             torahSession: torahSession,
@@ -206,10 +207,13 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
         let rowIdentityMap = BlockRowIdentityMap()
         let blockCollectionController = EditorBlockCollectionController(viewInput: viewInput)
 
-        let cursorManager = EditorCursorManager(
-            focusSubjectHolder: focusSubjectHolder,
-            focusPolicy: configuration.quickCapture ? .continueWriting : .firstEmptyTextBlock
-        )
+        let cursorFocusPolicy: EditorCursorFocusPolicy
+        if configuration.suppressesAutomaticCursorFocus {
+            cursorFocusPolicy = .manual
+        } else {
+            cursorFocusPolicy = configuration.quickCapture ? .continueWriting : .firstEmptyTextBlock
+        }
+        let cursorManager = EditorCursorManager(focusSubjectHolder: focusSubjectHolder, focusPolicy: cursorFocusPolicy)
         let forkRebinder = BlockForkRebinder(
             modelsHolder: modelsHolder,
             rowIdentityMap: rowIdentityMap,

@@ -522,7 +522,8 @@ internal final class OriginalEditorLocalAnnotationRuntime {
                 }
             } else {
                 host = try await AnytypeOriginalEditorModule.openExistingEditor(
-                    binding: editorBinding, sourceLifetime: originalSource
+                    binding: editorBinding, sourceLifetime: originalSource,
+                    suppressesAutomaticCursorFocus: true
                 ) { candidate in
                     candidate == editorBinding && sourceLifetime.isCurrent && stillCurrent(source)
                 }

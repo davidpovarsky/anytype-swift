@@ -28,6 +28,8 @@ struct EditorPageObject: Hashable, Codable {
     var blockId: String?
     let usecase: ObjectHeaderEmptyUsecase
     var quickCapture: Bool = false
+    // Absent for ordinary Anytype and existing serialized destinations.
+    var suppressesAutomaticCursorFocus: Bool?
     var headerHint: ObjectHeaderExpectedLayout?
 
     init(

@@ -255,6 +255,17 @@ extension AnytypeOriginalEditorModule {
         sourceLifetime: AnytypeOriginalEditorSourceLifetime,
         sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorBinding) -> Bool
     ) async throws -> AnytypeOriginalEditorHost {
+        try await openExistingEditor(binding: binding, sourceLifetime: sourceLifetime,
+                                     suppressesAutomaticCursorFocus: false, sourceIsCurrent: sourceIsCurrent)
+    }
+
+    @MainActor
+    internal static func openExistingEditor(
+        binding: AnytypeOriginalEditorBinding,
+        sourceLifetime: AnytypeOriginalEditorSourceLifetime,
+        suppressesAutomaticCursorFocus: Bool,
+        sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorBinding) -> Bool
+    ) async throws -> AnytypeOriginalEditorHost {
         try sourceLifetime.claim(for: binding)
         do {
             try Task.checkCancellation()
@@ -287,7 +298,8 @@ extension AnytypeOriginalEditorModule {
             )
             return try await makeHost(
                 binding: binding, sourceLifetime: sourceLifetime,
-                sourceBinding: sourceBinding, accountManager: accountManager
+                sourceBinding: sourceBinding, accountManager: accountManager,
+                suppressesAutomaticCursorFocus: suppressesAutomaticCursorFocus
             )
         } catch {
             sourceLifetime.retire()
@@ -303,14 +315,16 @@ extension AnytypeOriginalEditorModule {
         binding: AnytypeOriginalEditorBinding,
         sourceLifetime: AnytypeOriginalEditorSourceLifetime,
         sourceBinding: EditorDocumentWriteSourceBinding,
-        accountManager: any AccountManagerProtocol
+        accountManager: any AccountManagerProtocol,
+        suppressesAutomaticCursorFocus: Bool = false
     ) async throws -> AnytypeOriginalEditorHost {
         guard sourceLifetime.binding == binding,
               sourceBinding.lifetime === sourceLifetime.lifetime else {
             throw AnytypeOriginalEditorHostError.invalidBinding
         }
         try sourceBinding.validate()
-        let data = EditorPageObject(objectId: binding.objectID, spaceId: binding.spaceID, mode: .handling)
+        var data = EditorPageObject(objectId: binding.objectID, spaceId: binding.spaceID, mode: .handling)
+        if suppressesAutomaticCursorFocus { data.suppressesAutomaticCursorFocus = true }
         let navigationProvider = ViewControllerProvider()
         let navigationContext = NavigationContext(viewControllerProvider: navigationProvider)
         let session = try await PreparedEditorPageSessionFactory.prepare(

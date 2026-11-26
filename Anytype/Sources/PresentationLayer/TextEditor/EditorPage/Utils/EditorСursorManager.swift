@@ -8,6 +8,7 @@ struct BlockFocus {
 }
 
 enum EditorCursorFocusPolicy {
+    case manual
     case firstEmptyTextBlock
     // Quick capture reopens a draft to keep writing: put the caret at the end of what
     // is already there, so the keyboard (and the type bar above it) always comes up
@@ -113,6 +114,8 @@ final class EditorCursorManager {
 
     private func setInitialFocus(blocks: [EditorItem]) {
         switch focusPolicy {
+        case .manual:
+            return
         case .firstEmptyTextBlock:
             setFocusOnFirstTextBlock(blocks: blocks)
         case .continueWriting:
