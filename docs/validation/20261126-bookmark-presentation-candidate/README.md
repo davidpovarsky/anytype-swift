@@ -5,3 +5,7 @@ This isolated candidate preserves native layout bookmark and captured layout11 u
 The native property snapshot retains raw values, visibility and write fences. The properties screen adds a user-initiated HTTP/HTTPS website action; it never downloads a preview or writes a fallback URL. Unsupported or absent values remain in the native property rows. Original native permission and mutation rules remain authoritative.
 
 Seven focused component controls and all ten original imported-presentation methods are planned. No portable, native or Apple execution is claimed by this source checkpoint. Actual native Bookmark materialization and UI behavior remain pending. This candidate is not part of the currently frozen11619 native producer.
+
+## Actual portable component qualification
+
+Source443e5a83 ran7 new Bookmark cases plus10 unchanged Basic imported-presentation cases. All17 passed,0failed/0skipped, with350 source inputs identical before and after. Original Swift logs and source inventories are retained in components. No native runtime, Apple typecheck, or UIKit execution is claimed by these portable controls. The historical156 source contains no Bookmark content instance.
