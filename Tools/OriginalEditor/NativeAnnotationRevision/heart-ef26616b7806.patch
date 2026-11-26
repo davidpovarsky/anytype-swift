@@ -1,0 +1,3284 @@
+diff --git a/core/application/owned_annotation_lifecycle_native_test.go b/core/application/owned_annotation_lifecycle_native_test.go
+new file mode 100644
+index 0000000000000000000000000000000000000000..c463ebf34a773b339edef3dddd822100efd92d75
+--- /dev/null
++++ b/core/application/owned_annotation_lifecycle_native_test.go
+@@ -0,0 +1,525 @@
++package application_test
++
++import (
++	"archive/zip"
++	"bytes"
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"errors"
++	"github.com/anyproto/anytype-heart/core/block/simple/base"
++	"github.com/anyproto/anytype-heart/pb"
++	"io"
++	"reflect"
++	"slices"
++	"sort"
++	"strings"
++	"testing"
++	"time"
++
++	importer "github.com/anyproto/anytype-heart/core/block/import"
++	"github.com/anyproto/anytype-heart/core/block/object/objectcreator"
++	"github.com/anyproto/anytype-heart/core/domain"
++	annotationschema "github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition"
++	torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++	"github.com/anyproto/anytype-heart/pkg/lib/database"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/gogo/protobuf/proto"
++)
++
++type nativeLifecycleWire struct {
++	AnnotationTypeID    string   `json:"annotation_type_id"`
++	AnnotationTypeKey   string   `json:"annotation_type_unique_key"`
++	AnnotationTypeHeads []string `json:"annotation_type_heads"`
++	nativeRevisionWire
++	MutationID          string   `json:"mutation_object_id"`
++	BeforeMutationHeads []string `json:"before_mutation_heads"`
++	MutationHeads       []string `json:"mutation_heads"`
++	Classification      string   `json:"classification"`
++	DocumentRole        string   `json:"document_role"`
++	DocumentTypeID      string   `json:"document_type_id"`
++	DocumentTypeKey     string   `json:"document_type_unique_key"`
++	ManifestID          string   `json:"manifest_object_id"`
++	ManifestSHA         string   `json:"manifest_sha256"`
++	ManifestJSON        string   `json:"manifest_json"`
++	ManifestHeads       []string `json:"manifest_heads"`
++	PromotionRole       string   `json:"promotion_role"`
++	PromotionTypeID     string   `json:"promotion_type_id"`
++	PromotionTypeKey    string   `json:"promotion_type_unique_key"`
++	PromotionTypeHeads  []string `json:"promotion_type_heads"`
++}
++
++func lifecycleNativeCall(t *testing.T, f *ownedClosedFixture, label, operation, root, annotationUUID, role string, base nativeLifecycleWire) (nativeLifecycleWire, error) {
++	return lifecycleNativeCallSource(t, f, label, operation, root, annotationUUID, role, base, nil)
++}
++func lifecycleNativeCallSource(t *testing.T, f *ownedClosedFixture, label, operation, root, annotationUUID, role string, base nativeLifecycleWire, source *ownedClosedSpecimen) (nativeLifecycleWire, error) {
++	t.Helper()
++	request := map[string]any{"schema": 1, "operation": operation, "target_root_id": root, "annotation_uuid": strings.ToUpper(annotationUUID)}
++	switch operation {
++	case "read_lifecycle":
++		if role != "" {
++			request["promotion_role"] = role
++		}
++	case "read_promoted":
++		request["document_role"] = role
++	case "archive", "restore", "promote", "revert_promotion", "replace_promoted":
++		request["expected_heads"] = base.Heads
++		request["expected_root_sha256"] = base.RootSHA
++		request["expected_archive_id"] = base.ArchiveID
++		request["expected_archive_heads"] = base.ArchiveHeads
++		request["expected_is_archived"] = base.IsArchived
++		if operation == "promote" || operation == "revert_promotion" || operation == "replace_promoted" {
++			if operation == "promote" {
++				request["promotion_role"] = role
++			} else {
++				request["document_role"] = role
++			}
++			request["expected_annotation_type_id"] = base.AnnotationTypeID
++			request["expected_annotation_type_unique_key"] = base.AnnotationTypeKey
++			request["expected_annotation_type_heads"] = base.AnnotationTypeHeads
++			request["expected_manifest_id"] = base.ManifestID
++			request["expected_manifest_sha256"] = base.ManifestSHA
++			request["expected_manifest_heads"] = base.ManifestHeads
++			request["expected_destination_type_id"] = base.PromotionTypeID
++			request["expected_destination_type_unique_key"] = base.PromotionTypeKey
++			request["expected_destination_type_heads"] = base.PromotionTypeHeads
++		} else if role != "" {
++			request["document_role"] = role
++		}
++	default:
++		t.Fatal("invalid test operation")
++	}
++	sourceRoot, sourceSpace := root, f.spc.Id()
++	if source != nil {
++		if operation != "replace_promoted" {
++			t.Fatal("unexpected saved source")
++		}
++		request["desired_archive"] = source.Raw
++		request["desired_archive_sha256"] = hex.EncodeToString(source.Digest[:])
++		sourceRoot, sourceSpace = source.RootID, source.SourceSpace
++	}
++	raw, err := revisionNativeJSONCall(t, f, label, root, sourceRoot, sourceSpace, request)
++	var value nativeLifecycleWire
++	ownedClosedNoError(t, json.Unmarshal(raw, &value))
++	if err == nil {
++		if value.ArchiveID != f.spc.DerivedIDs().Archive || len(value.ArchiveHeads) == 0 || value.IsArchived == nil {
++			t.Fatal("actual Archive witness missing")
++		}
++		if role != "" {
++			digest := sha256.Sum256([]byte(value.ManifestJSON))
++			if value.ManifestID == "" || len(value.ManifestHeads) == 0 || hex.EncodeToString(digest[:]) != value.ManifestSHA ||
++				value.PromotionRole != role || value.PromotionTypeID == "" || value.PromotionTypeKey == "" || len(value.PromotionTypeHeads) == 0 || value.AnnotationTypeID == "" || value.AnnotationTypeKey != annotationschema.TypeUniqueKey || len(value.AnnotationTypeHeads) == 0 {
++				t.Fatal("actual original manifest/type observation missing")
++			}
++			lifecycleNativeSchema(t, value.NativeArchive, value.AnnotationTypeID, value.AnnotationTypeKey)
++			lifecycleNativeSchema(t, value.NativeArchive, value.PromotionTypeID, value.PromotionTypeKey)
++		}
++	}
++	return value, err
++}
++func lifecycleUUID(t *testing.T, s *ownedClosedSpecimen) string {
++	t.Helper()
++	return domain.NewDetailsFromProto(s.Snapshots[s.RootID].Snapshot.Data.Details).GetString("pinkhaTorahAnnotationUUID")
++}
++func lifecycleAssertNoEffects(t *testing.T, value nativeLifecycleWire, err error) {
++	t.Helper()
++	if !errors.Is(err, importer.ErrAnnotationRevisionConflict) || value.Status != "conflict" || value.NativeApplyAttempted || value.NativeWriteObserved {
++		t.Fatalf("lifecycle conflict was not an explicit no-effects refusal: %s %v", value.Status, err)
++	}
++}
++func TestOtzariaNativeAnnotationArchiveRestore(t *testing.T) {
++	f := newOwnedClosedFixture(t)
++	source := f.produce(t, "format")
++	root, annotationUUID := source.RootID, lifecycleUUID(t, source)
++	before, err := lifecycleNativeCall(t, f, "lifecycle-before", "read_lifecycle", root, annotationUUID, "", nativeLifecycleWire{})
++	ownedClosedNoError(t, err)
++	if before.Status != "read_lifecycle" || *before.IsArchived || before.NativeApplyAttempted || before.NativeWriteObserved {
++		t.Fatal("invalid initial actual read")
++	}
++	archived, err := lifecycleNativeCall(t, f, "archive", "archive", root, annotationUUID, "", before)
++	ownedClosedNoError(t, err)
++	if archived.Status != "archived" || !*archived.IsArchived || !archived.NativeApplyAttempted || !archived.NativeWriteObserved ||
++		archived.MutationID != before.ArchiveID || slices.Equal(archived.ArchiveHeads, before.ArchiveHeads) ||
++		!slices.Equal(archived.Heads, before.Heads) || archived.RootSHA != before.RootSHA {
++		t.Fatal("archive changed content or lacks actual collection mutation")
++	}
++	strict, strictErr := revisionNativeCall(t, f, "archived-strict-read", root, annotationUUID, nil, nativeRevisionWire{})
++	if strictErr == nil || strict.NativeApplyAttempted || strict.NativeWriteObserved {
++		t.Fatal("ordinary reader accepted archived Annotation")
++	}
++	staleReplace, replaceErr := revisionNativeCall(t, f, "archive-invalidates-saved-update", root, annotationUUID, source, before.nativeRevisionWire)
++	if !errors.Is(replaceErr, importer.ErrAnnotationRevisionConflict) || staleReplace.NativeApplyAttempted || staleReplace.NativeWriteObserved {
++		t.Fatal("Archive change was not part of root update CAS")
++	}
++	freshArchived, replaceErr := revisionNativeCall(t, f, "archived-fresh-update-refused", root, annotationUUID, source, archived.nativeRevisionWire)
++	if replaceErr == nil || freshArchived.NativeApplyAttempted || freshArchived.NativeWriteObserved {
++		t.Fatal("fresh archived token permitted ordinary body update")
++	}
++	observed, err := lifecycleNativeCall(t, f, "archived-read", "read_lifecycle", root, annotationUUID, "", nativeLifecycleWire{})
++	ownedClosedNoError(t, err)
++	if !*observed.IsArchived || observed.RootSHA != before.RootSHA {
++		t.Fatal("archived Annotation could not be read")
++	}
++	again, err := lifecycleNativeCall(t, f, "archive-idempotent", "archive", root, annotationUUID, "", observed)
++	ownedClosedNoError(t, err)
++	if again.Status != "unchanged" || again.NativeApplyAttempted || again.NativeWriteObserved {
++		t.Fatal("idempotent archive mutated")
++	}
++	stale, err := lifecycleNativeCall(t, f, "stale-root-archive", "restore", root, annotationUUID, "", before)
++	lifecycleAssertNoEffects(t, stale, err)
++	restored, err := lifecycleNativeCall(t, f, "restore", "restore", root, annotationUUID, "", again)
++	ownedClosedNoError(t, err)
++	if restored.Status != "restored" || *restored.IsArchived || !restored.NativeApplyAttempted || !restored.NativeWriteObserved ||
++		!slices.Equal(restored.Heads, before.Heads) || restored.RootSHA != before.RootSHA {
++		t.Fatal("restore did not preserve the original rich object")
++	}
++	stale, err = lifecycleNativeCall(t, f, "stale-after-cycle", "archive", root, annotationUUID, "", before)
++	lifecycleAssertNoEffects(t, stale, err)
++	// An unrelated original Archive mutation also invalidates a captured token.
++	second := f.annotation(t, "Another actual original Annotation")
++	secondRead, err := lifecycleNativeCall(t, f, "second-read", "read_lifecycle", second, f.detailsUUID(t, second), "", nativeLifecycleWire{})
++	ownedClosedNoError(t, err)
++	_, err = lifecycleNativeCall(t, f, "second-archive", "archive", second, f.detailsUUID(t, second), "", secondRead)
++	ownedClosedNoError(t, err)
++	stale, err = lifecycleNativeCall(t, f, "other-archive-change", "archive", root, annotationUUID, "", restored)
++	lifecycleAssertNoEffects(t, stale, err)
++	current, err := lifecycleNativeCall(t, f, "final-read", "read_lifecycle", root, annotationUUID, "", nativeLifecycleWire{})
++	ownedClosedNoError(t, err)
++	if current.RootSHA != before.RootSHA || *current.IsArchived || !slices.Equal(current.Heads, before.Heads) {
++		t.Fatal("refused lifecycle intent altered the root")
++	}
++	f.receipt(t, "native-archive-restore-acceptance.json", map[string]any{
++		"actual_native_archive_collection_apply": true, "root_and_complete_rich_content_unchanged": true,
++		"read_archived_annotation": true, "archive_restore_idempotence": true, "root_unchanged_archive_cas_conflict": true,
++		"unrelated_archive_change_conflicts": true, "original_projection_observed": true,
++		"remote_network_ack": false, "permanent_purge": false,
++	})
++}
++func (f *ownedClosedFixture) detailsUUID(t *testing.T, id string) string {
++	t.Helper()
++	details, err := f.store.SpaceIndex(f.spc.Id()).GetDetails(id)
++	ownedClosedNoError(t, err)
++	if details == nil {
++		t.Fatal("actual object details missing")
++	}
++	value := details.GetString("pinkhaTorahAnnotationUUID")
++	if value == "" {
++		t.Fatal("actual UUID missing")
++	}
++	return value
++}
++
++type nativeLifecycleManifest struct {
++	ID, Raw     string
++	Types, Keys map[string]string
++}
++
++func lifecycleCreate(t *testing.T, f *ownedClosedFixture, key domain.TypeKey, name string, values map[domain.RelationKey]domain.Value) (string, *domain.Details) {
++	t.Helper()
++	d := domain.NewDetails()
++	d.SetString(bundle.RelationKeyName, name)
++	for k, v := range values {
++		d.Set(k, v)
++	}
++	id, created, err := f.creator.CreateObject(f.ctx, f.spc.Id(), objectcreator.CreateObjectRequest{ObjectTypeKey: key, Details: d})
++	ownedClosedNoError(t, err)
++	if id == "" || created == nil {
++		t.Fatal("original native creator returned no object")
++	}
++	return id, created
++}
++func lifecycleOriginalManifest(t *testing.T, f *ownedClosedFixture) nativeLifecycleManifest {
++	t.Helper()
++	result := nativeLifecycleManifest{Types: map[string]string{}, Keys: map[string]string{}}
++	templates := map[string]string{}
++	for _, role := range []string{"chiddush", "article", "research"} {
++		id, d := lifecycleCreate(t, f, bundle.TypeKeyObjectType, "Native "+role, map[domain.RelationKey]domain.Value{bundle.RelationKeyRecommendedLayout: domain.Int64(model.ObjectType_basic)})
++		result.Types[role], result.Keys[role] = id, d.GetString(bundle.RelationKeyUniqueKey)
++		template, _ := lifecycleCreate(t, f, bundle.TypeKeyTemplate, "Default "+role, map[domain.RelationKey]domain.Value{bundle.RelationKeyTargetObjectType: domain.String(id)})
++		templates[role] = template
++	}
++	canonical, cd := lifecycleCreate(t, f, bundle.TypeKeyRelation, "Document associations", map[domain.RelationKey]domain.Value{bundle.RelationKeyRelationFormat: domain.Int64(model.RelationFormat_longtext)})
++	parent, pd := lifecycleCreate(t, f, bundle.TypeKeyRelation, "Parent", map[domain.RelationKey]domain.Value{bundle.RelationKeyRelationFormat: domain.Int64(model.RelationFormat_object)})
++	order, od := lifecycleCreate(t, f, bundle.TypeKeyRelation, "Order", map[domain.RelationKey]domain.Value{bundle.RelationKeyRelationFormat: domain.Int64(model.RelationFormat_longtext)})
++	folder, _ := lifecycleCreate(t, f, bundle.TypeKeyObjectType, "Folder", nil)
++	bookFolder, _ := lifecycleCreate(t, f, bundle.TypeKeyObjectType, "Book folder", nil)
++	raw, err := json.Marshal(map[string]any{
++		"schemaVersion": 1, "spaceId": f.spc.Id(), "provisioningState": "complete",
++		"documentAssociationsPropertyId": canonical, "documentAssociationsPropertyKey": cd.GetString(bundle.RelationKeyRelationKey),
++		"parentPropertyId": parent, "parentPropertyKey": pd.GetString(bundle.RelationKeyRelationKey),
++		"orderPropertyId": order, "orderPropertyKey": od.GetString(bundle.RelationKeyRelationKey),
++		"folderTypeId": folder, "bookFolderTypeId": bookFolder, "registeredDocumentTypes": result.Types, "defaultTemplateIds": templates,
++	})
++	ownedClosedNoError(t, err)
++	result.Raw = string(raw)
++	result.ID, _ = lifecycleCreate(t, f, bundle.TypeKeyPage, torah.ManifestUniqueKey, map[domain.RelationKey]domain.Value{bundle.RelationKeyDescription: domain.String(result.Raw)})
++	// Wait for the original indexing pipeline, never fabricate an index entry.
++	deadline := time.Now().Add(10 * time.Second)
++	for {
++		rows, err := f.store.SpaceIndex(f.spc.Id()).QueryRaw(&database.Filters{FilterObj: database.FilterEq{Key: bundle.RelationKeyName, Value: domain.String(torah.ManifestUniqueKey)}}, 2, 0)
++		ownedClosedNoError(t, err)
++		if len(rows) == 1 && rows[0].Details.GetString(bundle.RelationKeyId) == result.ID {
++			return result
++		}
++		if time.Now().After(deadline) {
++			t.Fatal("actual manifest index did not converge")
++		}
++		select {
++		case <-f.ctx.Done():
++			t.Fatal(f.ctx.Err())
++		case <-time.After(20 * time.Millisecond):
++		}
++	}
++}
++func lifecycleQueryContains(t *testing.T, f *ownedClosedFixture, id string, condition model.BlockContentDataviewFilterCondition) bool {
++	t.Helper()
++	rows, err := f.store.SpaceIndex(f.spc.Id()).Query(database.Query{Filters: []database.FilterRequest{
++		{RelationKey: bundle.RelationKeyId, Condition: model.BlockContentDataviewFilter_Equal, Value: domain.String(id)},
++		{RelationKey: "type.uniqueKey", Condition: condition, Value: domain.String(annotationschema.TypeUniqueKey)},
++	}, Limit: 2})
++	ownedClosedNoError(t, err)
++	return len(rows) == 1 && rows[0].Details.GetString(bundle.RelationKeyId) == id
++}
++func lifecycleQueryExpect(t *testing.T, f *ownedClosedFixture, id string, include bool) {
++	t.Helper()
++	deadline := time.Now().Add(10 * time.Second)
++	for {
++		hiddenDefault := lifecycleQueryContains(t, f, id, model.BlockContentDataviewFilter_NotEqual)
++		explicitAnnotation := lifecycleQueryContains(t, f, id, model.BlockContentDataviewFilter_Equal)
++		if hiddenDefault == !include && explicitAnnotation == include {
++			return
++		}
++		if time.Now().After(deadline) {
++			t.Fatalf("actual nested type.uniqueKey index differs: default=%v explicit=%v expectedAnnotation=%v", hiddenDefault, explicitAnnotation, include)
++		}
++		select {
++		case <-f.ctx.Done():
++			t.Fatal(f.ctx.Err())
++		case <-time.After(20 * time.Millisecond):
++		}
++	}
++}
++func TestOtzariaNativeAnnotationPromotionAndVisibility(t *testing.T) {
++	f := newOwnedClosedFixture(t)
++	manifest := lifecycleOriginalManifest(t, f)
++	for _, role := range []string{"chiddush", "article", "research"} {
++		t.Run(role, func(t *testing.T) {
++			source := &ownedClosedSpecimen{Kind: "promotion-" + role, RootID: f.annotation(t, "Native promotion "+role), Expected: map[string]*model.Block{}}
++			f.text(t, source, source.RootID, "", "Native heading", model.BlockContentText_Header2, nil)
++			f.text(t, source, source.RootID, "", "Saved native rich source", model.BlockContentText_Paragraph, &model.BlockContentTextMarks{Marks: []*model.BlockContentTextMark{
++				{Type: model.BlockContentTextMark_Link, Param: "https://example.org/native-source", Range: &model.Range{From: 0, To: 5}},
++				{Type: model.BlockContentTextMark_Bold, Range: &model.Range{From: 6, To: 12}},
++			}})
++			f.export(t, source)
++			root, annotationUUID := source.RootID, lifecycleUUID(t, source)
++			// Actual original materialization into another Space supplies the saved
++			// local Annotation input; no protobuf archive is fabricated for the update.
++			local := f.target(t, "promoted-local-"+role, source)
++			localOp, stage := local.prepare(t, source)
++			local.start(localOp)
++			imported := local.wait(t, role+"-local-materialized", localOp)
++			local.stageRemoved(t, stage)
++			local.assertRoundTrip(t, source, imported)
++			mappings, ok := imported.NativeMappingObservation()
++			if !ok {
++				t.Fatal("local mapping missing")
++			}
++			localRoot := ""
++			for _, row := range mappings.SourceAssignments() {
++				if row.SourceObjectID == source.RootID {
++					localRoot = row.NativeID
++				}
++			}
++			if localRoot == "" || localRoot == source.RootID {
++				t.Fatal("local root not materialized")
++			}
++			saved := &ownedClosedSpecimen{Kind: role + "-saved-local-document-input", RootID: localRoot, Expected: map[string]*model.Block{}}
++			added := local.text(t, saved, localRoot, "", "Explicit saved Document replacement", model.BlockContentText_Paragraph, &model.BlockContentTextMarks{Marks: []*model.BlockContentTextMark{{Type: model.BlockContentTextMark_Bold, Range: &model.Range{From: 0, To: 8}}}})
++			local.export(t, saved)
++			lifecycleQueryExpect(t, f, root, true)
++			read, err := lifecycleNativeCall(t, f, role+"-promotion-read", "read_lifecycle", root, annotationUUID, role, nativeLifecycleWire{})
++			ownedClosedNoError(t, err)
++			if read.ManifestID != manifest.ID || read.ManifestJSON != manifest.Raw || read.PromotionTypeID != manifest.Types[role] || read.PromotionTypeKey != manifest.Keys[role] {
++				t.Fatal("promotion did not bind the actual original manifest role")
++			}
++			tampered := read
++			tampered.PromotionTypeID = manifest.Types[map[string]string{"chiddush": "article", "article": "research", "research": "chiddush"}[role]]
++			refused, err := lifecycleNativeCall(t, f, role+"-wrong-role-witness", "promote", root, annotationUUID, role, tampered)
++			lifecycleAssertNoEffects(t, refused, err)
++			promoted, err := lifecycleNativeCall(t, f, role+"-promoted", "promote", root, annotationUUID, role, read)
++			ownedClosedNoError(t, err)
++			if promoted.Status != "promoted" || !promoted.NativeApplyAttempted || !promoted.NativeWriteObserved || promoted.RootID != root ||
++				promoted.DocumentRole != role || promoted.DocumentTypeID != manifest.Types[role] || promoted.DocumentTypeKey != manifest.Keys[role] ||
++				promoted.Classification != "promoted_document" || slices.Equal(promoted.Heads, read.Heads) {
++				t.Fatal("missing actual same-object promotion")
++			}
++			oldRoot := revisionNativeRoot(t, read.NativeArchive, f.spc.Id(), root)
++			newRoot := revisionNativeRoot(t, promoted.NativeArchive, f.spc.Id(), root)
++			if !reflect.DeepEqual(lifecycleRichBlocks(t, oldRoot.Snapshot.Data.Blocks), lifecycleRichBlocks(t, newRoot.Snapshot.Data.Blocks)) {
++				t.Fatal("promotion changed rich block/mark/anchor inventory")
++			}
++			oldDetails, newDetails := domain.NewDetailsFromProto(oldRoot.Snapshot.Data.Details), domain.NewDetailsFromProto(newRoot.Snapshot.Data.Details)
++			for _, key := range []domain.RelationKey{"pinkhaTorahAnnotationUUID", "pinkhaTorahAnnotationNamespace", "pinkhaTorahAnnotationCreationDestination", "pinkhaTorahAnnotationCreationAccount", "pinkhaTorahAnnotationCreationSpace"} {
++				if !oldDetails.Get(key).Equal(newDetails.Get(key)) {
++					t.Fatalf("promotion changed identity %s", key)
++				}
++			}
++			if newDetails.GetString("pinkhaTorahAnnotationClassification") != role {
++				t.Fatal("original role classification missing")
++			}
++			if len(newRoot.Snapshot.Data.ObjectTypes) != 1 || newRoot.Snapshot.Data.ObjectTypes[0] != manifest.Keys[role] {
++				t.Fatal("original native Document type missing")
++			}
++			// A promoted Document never becomes acceptable to the strict Annotation reader.
++			strict, err := revisionNativeCall(t, f, role+"-strict-refusal", root, annotationUUID, nil, nativeRevisionWire{})
++			if err == nil || strict.NativeApplyAttempted || strict.NativeWriteObserved {
++				t.Fatal("promoted Document weakened Annotation verifier")
++			}
++			observed, err := lifecycleNativeCall(t, f, role+"-promoted-read", "read_promoted", root, annotationUUID, role, nativeLifecycleWire{})
++			ownedClosedNoError(t, err)
++			if observed.RootSHA != promoted.RootSHA || !slices.Equal(observed.Heads, promoted.Heads) {
++				t.Fatal("separate promoted Document read differs")
++			}
++			lifecycleQueryExpect(t, f, root, false)
++			updated, err := lifecycleNativeCallSource(t, f, role+"-saved-document-update", "replace_promoted", root, annotationUUID, role, observed, saved)
++			ownedClosedNoError(t, err)
++			if updated.Status != "applied" || !updated.NativeApplyAttempted || !updated.NativeWriteObserved || updated.RootID != root || updated.DocumentRole != role || updated.MutationID != root {
++				t.Fatal("actual promoted replacement missing")
++			}
++			updatedRoot := revisionNativeRoot(t, updated.NativeArchive, f.spc.Id(), root)
++			expectedBlocks := lifecycleRichBlocks(t, saved.Snapshots[saved.RootID].Snapshot.Data.Blocks)
++			for _, b := range expectedBlocks {
++				if b.Id == saved.RootID {
++					b.Id = root
++				}
++				for i, id := range b.ChildrenIds {
++					if id == saved.RootID {
++						b.ChildrenIds[i] = root
++					}
++				}
++			}
++			if !reflect.DeepEqual(lifecycleRichBlocks(t, expectedBlocks), lifecycleRichBlocks(t, updatedRoot.Snapshot.Data.Blocks)) {
++				t.Fatal("promoted replacement lost saved rich content or stable child IDs")
++			}
++			found := false
++			for _, b := range updatedRoot.Snapshot.Data.Blocks {
++				if b.Id == added && b.GetText() != nil && b.GetText().Text == saved.Expected[added].GetText().Text {
++					found = true
++				}
++			}
++			if !found {
++				t.Fatal("saved rich addition missing")
++			}
++			if domain.NewDetailsFromProto(updatedRoot.Snapshot.Data.Details).GetString("pinkhaTorahAnnotationClassification") != role || len(updatedRoot.Snapshot.Data.ObjectTypes) != 1 || updatedRoot.Snapshot.Data.ObjectTypes[0] != manifest.Keys[role] {
++				t.Fatal("body update changed actual Document role")
++			}
++			conflict, conflictErr := lifecycleNativeCallSource(t, f, role+"-stale-document-update", "replace_promoted", root, annotationUUID, role, observed, saved)
++			lifecycleAssertNoEffects(t, conflict, conflictErr)
++			observed = updated
++			archived, err := lifecycleNativeCall(t, f, role+"-document-archive", "archive", root, annotationUUID, role, observed)
++			ownedClosedNoError(t, err)
++			if !*archived.IsArchived || archived.DocumentRole != role {
++				t.Fatal("promoted archive lost classification")
++			}
++			archivedRead, err := lifecycleNativeCall(t, f, role+"-archived-document-read", "read_promoted", root, annotationUUID, role, nativeLifecycleWire{})
++			ownedClosedNoError(t, err)
++			restored, err := lifecycleNativeCall(t, f, role+"-document-restore", "restore", root, annotationUUID, role, archivedRead)
++			ownedClosedNoError(t, err)
++			if *restored.IsArchived || restored.RootSHA != updated.RootSHA {
++				t.Fatal("promoted restore changed saved body")
++			}
++			reverted, err := lifecycleNativeCall(t, f, role+"-revert-promotion", "revert_promotion", root, annotationUUID, role, restored)
++			ownedClosedNoError(t, err)
++			if reverted.Status != "reverted" || reverted.Classification != "annotation" || reverted.DocumentRole != "" || reverted.RootID != root || !reverted.NativeApplyAttempted || !reverted.NativeWriteObserved {
++				t.Fatal("same-object original Annotation revert missing")
++			}
++			revertedRoot := revisionNativeRoot(t, reverted.NativeArchive, f.spc.Id(), root)
++			if !reflect.DeepEqual(lifecycleRichBlocks(t, updatedRoot.Snapshot.Data.Blocks), lifecycleRichBlocks(t, revertedRoot.Snapshot.Data.Blocks)) {
++				t.Fatal("revert changed saved payload")
++			}
++			if len(revertedRoot.Snapshot.Data.ObjectTypes) != 1 || revertedRoot.Snapshot.Data.ObjectTypes[0] != annotationschema.TypeUniqueKey || domain.NewDetailsFromProto(revertedRoot.Snapshot.Data.Details).GetString("pinkhaTorahAnnotationClassification") != "annotation" {
++				t.Fatal("registered original Annotation type/classification not restored")
++			}
++			strictAgain, err := revisionNativeCall(t, f, role+"-reverted-strict-read", root, annotationUUID, nil, nativeRevisionWire{})
++			ownedClosedNoError(t, err)
++			if strictAgain.RootSHA != reverted.RootSHA {
++				t.Fatal("strict Annotation read after revert differs")
++			}
++			wrongDocument, wrongErr := lifecycleNativeCall(t, f, role+"-reverted-document-refusal", "read_promoted", root, annotationUUID, role, nativeLifecycleWire{})
++			if wrongErr == nil || wrongDocument.NativeApplyAttempted || wrongDocument.NativeWriteObserved {
++				t.Fatal("reverted Annotation accepted as Document")
++			}
++			lifecycleQueryExpect(t, f, root, true)
++		})
++	}
++	f.receipt(t, "native-promotion-visibility-acceptance.json", map[string]any{
++		"actual_original_manifest_and_role_types": true, "all_three_document_roles": true, "same_root_and_annotation_uuid": true,
++		"rich_blocks_marks_links_and_creation_identity_preserved": true, "wrong_role_witness_no_effect_conflict": true,
++		"separate_promoted_verifier": true, "saved_original_annotation_updates_promoted_document": true, "promoted_update_stale_conflict_no_effects": true, "same_object_revert_to_registered_annotation": true, "promoted_archive_restore_and_read": true,
++		"actual_native_nested_type_unique_key_default_exclusion_and_explicit_inclusion": true,
++		"swift_visibility_callers_verified":                                             false, "original_ui_visibility_test": false, "remote_network_ack": false,
++	})
++}
++
++func lifecycleRichBlocks(t *testing.T, blocks []*model.Block) []*model.Block {
++	t.Helper()
++	out := make([]*model.Block, 0, len(blocks))
++	seen := map[string]bool{}
++	for _, block := range blocks {
++		if block == nil || block.Id == "" || seen[block.Id] {
++			t.Fatal("invalid native block inventory")
++		}
++		seen[block.Id] = true
++		value := proto.Clone(block).(*model.Block)
++		twin := proto.Clone(value).(*model.Block)
++		changes, err := base.NewBase(value).Diff("", base.NewBase(twin))
++		ownedClosedNoError(t, err)
++		if len(changes) != 0 {
++			t.Fatal("original self comparison changed content")
++		}
++		if text := value.GetText(); text != nil && text.Marks != nil {
++			sort.SliceStable(text.Marks.Marks, func(i, j int) bool {
++				a, err := proto.Marshal(text.Marks.Marks[i])
++				ownedClosedNoError(t, err)
++				b, err := proto.Marshal(text.Marks.Marks[j])
++				ownedClosedNoError(t, err)
++				return bytes.Compare(a, b) < 0
++			})
++		}
++		out = append(out, value)
++	}
++	sort.Slice(out, func(i, j int) bool { return out[i].Id < out[j].Id })
++	return out
++}
++
++// A receipt's type authority is also present in the genuine original ZIP.
++func lifecycleNativeSchema(t *testing.T, raw []byte, id, key string) {
++	t.Helper()
++	z, err := zip.NewReader(bytes.NewReader(raw), int64(len(raw)))
++	ownedClosedNoError(t, err)
++	count := 0
++	for _, entry := range z.File {
++		if entry.Name != "types/"+id+".pb" && entry.Name != "objects/"+id+".pb" {
++			continue
++		}
++		r, err := entry.Open()
++		ownedClosedNoError(t, err)
++		data, err := io.ReadAll(r)
++		ownedClosedNoError(t, err)
++		ownedClosedNoError(t, r.Close())
++		value := &pb.SnapshotWithType{}
++		ownedClosedNoError(t, value.Unmarshal(data))
++		expected, keyErr := domain.UnmarshalUniqueKey(key)
++		if keyErr != nil || expected.SmartblockType() != coresb.SmartBlockTypeObjectType ||
++			value.SbType != expected.SmartblockType().ToProto() || value.Snapshot == nil || value.Snapshot.Data == nil ||
++			value.Snapshot.Data.Key != expected.InternalKey() {
++			t.Fatal("exported native type authority differs")
++		}
++		count++
++	}
++	if count != 1 {
++		t.Fatalf("native type %s missing or repeated in genuine ZIP", id)
++	}
++}
+diff --git a/core/application/owned_annotation_revision_graph_native_test.go b/core/application/owned_annotation_revision_graph_native_test.go
+new file mode 100644
+index 0000000000000000000000000000000000000000..2bd68e2c6fab77391bebe2682ab95d944897fa1a
+--- /dev/null
++++ b/core/application/owned_annotation_revision_graph_native_test.go
+@@ -0,0 +1,208 @@
++package application_test
++
++import (
++	"archive/zip"
++	"bytes"
++	"encoding/json"
++	"io"
++	"os"
++	"path/filepath"
++	"reflect"
++	"slices"
++	"testing"
++
++	"github.com/anyproto/anytype-heart/core/block"
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
++	"github.com/anyproto/anytype-heart/pb"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	"github.com/anyproto/anytype-heart/pkg/lib/database"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/gogo/protobuf/proto"
++)
++
++func graphImportedIDs(t *testing.T, f *ownedClosedFixture, source string) []string {
++	t.Helper()
++	rows, err := f.store.SpaceIndex(f.spc.Id()).QueryRaw(&database.Filters{FilterObj: database.FiltersOr{
++		database.FilterEq{Key: bundle.RelationKeyOldAnytypeID, Value: domain.String(source)},
++		database.FilterEq{Key: bundle.RelationKeyId, Value: domain.String(source)},
++	}}, 0, 0)
++	ownedClosedNoError(t, err)
++	ids := make([]string, 0, len(rows))
++	for _, row := range rows {
++		ids = append(ids, row.Details.GetString(bundle.RelationKeyId))
++	}
++	return ids
++}
++
++func TestOtzariaNativeConditionalAnnotationGraphExpansion(t *testing.T) {
++	f := newOwnedClosedFixture(t)
++	source := f.produce(t, "format")
++	target := f.target(t, "graph-revision", source)
++	operation, stage := target.prepare(t, source)
++	target.start(operation)
++	imported := target.wait(t, "graph-initial-import", operation)
++	target.stageRemoved(t, stage)
++	target.assertRoundTrip(t, source, imported)
++	mapping, ok := imported.NativeMappingObservation()
++	if !ok {
++		t.Fatal("initial native mapping absent")
++	}
++	root := ""
++	for _, row := range mapping.SourceAssignments() {
++		if row.SourceObjectID == source.RootID {
++			root = row.NativeID
++		}
++	}
++	if root == "" || root == source.RootID {
++		t.Fatal("initial native root identity")
++	}
++	annotationUUID := lifecycleUUID(t, source)
++	initial, err := revisionNativeCall(t, target, "graph-before", root, annotationUUID, nil, nativeRevisionWire{})
++	ownedClosedNoError(t, err)
++	readonly := target.readOnlyHeads(t, source)
++	desired := *source
++	desired.Kind = "graph-saved"
++	desired.Expected = map[string]*model.Block{}
++	for id, value := range source.Expected {
++		desired.Expected[id] = value
++	}
++	desired.LinkedID = f.annotation(t, "New native referenced annotation")
++	childBlock := f.text(t, &desired, desired.LinkedID, "", "New referenced native body", model.BlockContentText_Paragraph,
++		&model.BlockContentTextMarks{Marks: []*model.BlockContentTextMark{{Type: model.BlockContentTextMark_Bold, Range: &model.Range{From: 0, To: 3}}}})
++	linkBlock := f.expectedBlock(t, &desired, source.RootID, "", &model.Block{Content: &model.BlockContentOfLink{Link: &model.BlockContentLink{TargetBlockId: desired.LinkedID}}})
++	desired.AttachmentBytes = []byte("New native attachment, exact bytes\nHebrew and English graph witness\n")
++	input := filepath.Join(f.directory, "graph-new-attachment.txt")
++	ownedClosedNoError(t, os.WriteFile(input, desired.AttachmentBytes, 0600))
++	fileID, kind, _, err := f.blocks.UploadFile(f.ctx, f.spc.Id(), block.FileUploadRequest{
++		RpcFileUploadRequest: pb.RpcFileUploadRequest{SpaceId: f.spc.Id(), LocalPath: input, Type: model.BlockContentFile_File, Style: model.BlockContentFile_Link, CreatedInContext: source.RootID},
++		ObjectOrigin:         objectorigin.None(), Name: "graph-new-attachment.txt",
++	})
++	ownedClosedNoError(t, err)
++	if fileID == "" {
++		t.Fatal("original file upload did not return identity")
++	}
++	desired.AttachmentID = fileID
++	fileBlock := f.expectedBlock(t, &desired, source.RootID, "", &model.Block{Content: &model.BlockContentOfFile{File: &model.BlockContentFile{
++		TargetObjectId: fileID, Type: kind, State: model.BlockContentFile_Done, Style: model.BlockContentFile_Link, Name: "graph-new-attachment.txt", Size_: int64(len(desired.AttachmentBytes)),
++	}}})
++	anchorBlock := f.text(t, &desired, source.RootID, "", "source anchor", model.BlockContentText_Paragraph,
++		&model.BlockContentTextMarks{Marks: []*model.BlockContentTextMark{{Type: model.BlockContentTextMark_Link, Param: "https://example.org/book/1#source-anchor", Range: &model.Range{From: 0, To: 6}}}})
++	f.export(t, &desired)
++	// An actual independent original write makes the old root token stale.
++	target.text(t, &ownedClosedSpecimen{Expected: map[string]*model.Block{}}, root, "", "Independent native peer state", model.BlockContentText_Paragraph, nil)
++	beforeConflict := target.pageHeads(t, root)
++	refused, err := revisionNativeCall(t, target, "graph-stale", root, annotationUUID, &desired, initial)
++	lifecycleAssertNoEffects(t, nativeLifecycleWire{nativeRevisionWire: refused}, err)
++	if !slices.Equal(beforeConflict, target.pageHeads(t, root)) || len(graphImportedIDs(t, target, desired.LinkedID)) != 0 || len(graphImportedIDs(t, target, fileID)) != 0 {
++		t.Fatal("stale token created a dependency or changed native root")
++	}
++	fresh, err := revisionNativeCall(t, target, "graph-fresh", root, annotationUUID, nil, nativeRevisionWire{})
++	ownedClosedNoError(t, err)
++	applied, err := revisionNativeCall(t, target, "graph-applied", root, annotationUUID, &desired, fresh)
++	ownedClosedNoError(t, err)
++	if applied.Status != "applied" || !applied.NativeApplyAttempted || !applied.NativeWriteObserved || applied.RootID != root {
++		t.Fatal("full original graph update was not confirmed")
++	}
++	raw, err := os.ReadFile(filepath.Join(target.evidence, "graph-applied-revision.json"))
++	ownedClosedNoError(t, err)
++	var result struct {
++		Mappings []struct {
++			SourceSpaceID  string `json:"source_space_id"`
++			SourceObjectID string `json:"source_object_id"`
++			ObjectID       string `json:"object_id"`
++		} `json:"mappings"`
++	}
++	ownedClosedNoError(t, json.Unmarshal(raw, &result))
++	ids := map[string]string{}
++	seen := map[string]bool{}
++	for _, row := range result.Mappings {
++		if row.SourceSpaceID != desired.SourceSpace || row.SourceObjectID == "" || row.ObjectID == "" || ids[row.SourceObjectID] != "" || seen[row.ObjectID] {
++			t.Fatal("incomplete/non-injective native graph mapping")
++		}
++		ids[row.SourceObjectID] = row.ObjectID
++		seen[row.ObjectID] = true
++	}
++	if len(ids) != len(desired.Snapshots) || ids[desired.RootID] != root || ids[desired.LinkedID] == "" || ids[desired.LinkedID] == desired.LinkedID || ids[fileID] == "" || ids[fileID] == fileID {
++		t.Fatal("fresh original dependency assignment missing")
++	}
++	actual := revisionNativeRoot(t, applied.NativeArchive, target.spc.Id(), root)
++	blocks := map[string]*model.Block{}
++	for _, b := range actual.Snapshot.Data.Blocks {
++		blocks[b.Id] = b
++	}
++	for id := range source.Expected {
++		if blocks[id] == nil {
++			t.Fatal("existing child block identity lost")
++		}
++	}
++	if blocks[linkBlock] == nil || blocks[linkBlock].GetLink() == nil || blocks[linkBlock].GetLink().TargetBlockId != ids[desired.LinkedID] {
++		t.Fatal("new linked object not mapped in actual root")
++	}
++	if blocks[fileBlock] == nil || blocks[fileBlock].GetFile() == nil || blocks[fileBlock].GetFile().TargetObjectId != ids[fileID] {
++		t.Fatal("new original file reference missing")
++	}
++	if blocks[anchorBlock] == nil || !bytes.Equal(mustGraphBlock(t, blocks[anchorBlock]), mustGraphBlock(t, desired.Expected[anchorBlock])) {
++		t.Fatal("text anchor/source link changed")
++	}
++	child := revisionNativeRoot(t, applied.NativeArchive, target.spc.Id(), ids[desired.LinkedID])
++	found := false
++	for _, b := range child.Snapshot.Data.Blocks {
++		if b.Id == childBlock {
++			found = bytes.Equal(mustGraphBlock(t, b), mustGraphBlock(t, desired.Expected[childBlock]))
++		}
++	}
++	if !found {
++		t.Fatal("new annotation rich body/mark identity differs")
++	}
++	archive, err := zip.NewReader(bytes.NewReader(applied.NativeArchive), int64(len(applied.NativeArchive)))
++	ownedClosedNoError(t, err)
++	binaryCount := 0
++	for _, entry := range archive.File {
++		if entry.FileInfo().IsDir() {
++			continue
++		}
++		reader, err := entry.Open()
++		ownedClosedNoError(t, err)
++		data, err := io.ReadAll(reader)
++		ownedClosedNoError(t, err)
++		ownedClosedNoError(t, reader.Close())
++		if bytes.Equal(data, desired.AttachmentBytes) {
++			binaryCount++
++		}
++	}
++	if binaryCount != 1 {
++		t.Fatal("exact uploaded file bytes missing or repeated")
++	}
++	if !reflect.DeepEqual(readonly, target.readOnlyHeads(t, source)) {
++		t.Fatal("readonly native schema changed")
++	}
++	reopened, err := revisionNativeCall(t, target, "graph-reopen", root, annotationUUID, nil, nativeRevisionWire{})
++	ownedClosedNoError(t, err)
++	if reopened.RootSHA != applied.RootSHA || !slices.Equal(reopened.Heads, applied.Heads) {
++		t.Fatal("reopened graph differs")
++	}
++	unchanged, err := revisionNativeCall(t, target, "graph-idempotent", root, annotationUUID, &desired, reopened)
++	ownedClosedNoError(t, err)
++	if unchanged.Status != "unchanged" || unchanged.NativeApplyAttempted || unchanged.NativeWriteObserved {
++		t.Fatal("same saved graph created duplicate dependencies")
++	}
++	if len(graphImportedIDs(t, target, desired.LinkedID)) != 1 || len(graphImportedIDs(t, target, fileID)) != 1 {
++		t.Fatal("duplicate native dependency")
++	}
++	target.receipt(t, "conditional-native-graph-acceptance.json", map[string]any{
++		"original_converter_provider_fresh_creator_and_file_uploader": true, "stable_original_root_and_prior_child_ids": true,
++		"new_referenced_annotation_rich_body": true, "new_file_exact_bytes": true, "complete_injective_actual_mapping": true,
++		"source_link_and_text_anchor_preserved": true, "stale_root_refused_before_dependency_creation": true,
++		"same_saved_graph_no_duplicate_or_apply": true, "readonly_schema_heads_unchanged": true,
++		"independent_remote_network_ack": false, "cold_account_reopen": false,
++	})
++}
++
++func mustGraphBlock(t *testing.T, b *model.Block) []byte {
++	t.Helper()
++	canonical := lifecycleRichBlocks(t, []*model.Block{b})
++	raw, err := proto.Marshal(canonical[0])
++	ownedClosedNoError(t, err)
++	return raw
++}
+diff --git a/core/application/owned_annotation_revision_native_test.go b/core/application/owned_annotation_revision_native_test.go
+index 703b0910b645683a0a081b422591b28637738ac6..3a9cf606461bbee4e4ee9c5d71c296ad5405bdc0 100644
+--- a/core/application/owned_annotation_revision_native_test.go
++++ b/core/application/owned_annotation_revision_native_test.go
+@@ -21,6 +21,9 @@ import (
+ )
+ 
+ type nativeRevisionWire struct {
++	ArchiveID            string   `json:"archive_object_id"`
++	ArchiveHeads         []string `json:"archive_heads"`
++	IsArchived           *bool    `json:"is_archived"`
+ 	Status               string   `json:"status"`
+ 	RootID               string   `json:"root_id"`
+ 	Heads                []string `json:"heads"`
+@@ -40,10 +43,21 @@ func revisionNativeCall(t *testing.T, f *ownedClosedFixture, label, root, annota
+ 		request["operation"] = "replace"
+ 		request["expected_heads"] = base.Heads
+ 		request["expected_root_sha256"] = base.RootSHA
++		request["expected_archive_id"] = base.ArchiveID
++		request["expected_archive_heads"] = base.ArchiveHeads
++		request["expected_is_archived"] = base.IsArchived
+ 		request["desired_archive"] = source.Raw
+ 		request["desired_archive_sha256"] = hex.EncodeToString(source.Digest[:])
+ 		sourceRoot, sourceSpace = source.RootID, source.SourceSpace
+ 	}
++	result, operationErr := revisionNativeJSONCall(t, f, label, root, sourceRoot, sourceSpace, request)
++	var value nativeRevisionWire
++	ownedClosedNoError(t, json.Unmarshal(result, &value))
++	return value, operationErr
++}
++
++func revisionNativeJSONCall(t *testing.T, f *ownedClosedFixture, label, root, sourceRoot, sourceSpace string, request map[string]any) ([]byte, error) {
++	t.Helper()
+ 	raw, err := json.Marshal(request)
+ 	ownedClosedNoError(t, err)
+ 	var secret [32]byte
+@@ -58,7 +72,8 @@ func revisionNativeCall(t *testing.T, f *ownedClosedFixture, label, root, annota
+ 	var value nativeRevisionWire
+ 	ownedClosedNoError(t, json.Unmarshal(result, &value))
+ 	if operationErr == nil {
+-		if !completion.Observed() || value.RootID != root || len(value.Heads) == 0 || len(value.RootSHA) != 64 || len(value.NativeArchive) == 0 {
++		if !completion.Observed() || value.RootID != root || len(value.Heads) == 0 || len(value.RootSHA) != 64 || len(value.NativeArchive) == 0 ||
++			value.ArchiveID == "" || len(value.ArchiveHeads) == 0 || value.IsArchived == nil {
+ 			t.Fatal("success lacks actual native readback")
+ 		}
+ 		report := completion.ExportReport()
+@@ -71,7 +86,7 @@ func revisionNativeCall(t *testing.T, f *ownedClosedFixture, label, root, annota
+ 		}
+ 		ownedClosedNoError(t, ownedClosedWrite(f.evidence, label+"-native.zip", value.NativeArchive))
+ 	}
+-	return value, operationErr
++	return result, operationErr
+ }
+ func revisionNativeRoot(t *testing.T, raw []byte, space, root string) *pb.SnapshotWithType {
+ 	t.Helper()
+diff --git a/core/block/export/collection.go b/core/block/export/collection.go
+index f3e47c9d03d84399a897bd6d53eba6ed662266c2..612bd09f86d2996d5db567ee32355451bf058c0e 100644
+--- a/core/block/export/collection.go
++++ b/core/block/export/collection.go
+@@ -122,15 +122,22 @@ func (e *exportContext) queryAndFilterObjectsByRelation(spaceId string, reqIds [
+ }
+ 
+ func (e *exportContext) queryObjectsByRelation(spaceId string, reqIds []string, relationKey domain.RelationKey) ([]database.Record, error) {
+-	return e.objectStore.SpaceIndex(spaceId).Query(database.Query{
+-		Filters: []database.FilterRequest{
+-			{
+-				RelationKey: relationKey,
+-				Condition:   model.BlockContentDataviewFilter_In,
+-				Value:       domain.StringList(reqIds),
+-			},
+-		},
+-	})
++	filters := []database.FilterRequest{{
++		RelationKey: relationKey,
++		Condition:   model.BlockContentDataviewFilter_In,
++		Value:       domain.StringList(reqIds),
++	}}
++	if e.includeArchive {
++		// Query injects isArchived != true unless the request names this
++		// relation. The explicit export opt-in must apply to selected roots
++		// and their dependency closure, just as it does to whole-space export.
++		// Keep the independent isDeleted/type defaults intact.
++		filters = append(filters, database.FilterRequest{
++			RelationKey: bundle.RelationKeyIsArchived,
++			Condition:   model.BlockContentDataviewFilter_None,
++		})
++	}
++	return e.objectStore.SpaceIndex(spaceId).Query(database.Query{Filters: filters})
+ }
+ 
+ func (e *exportContext) addSpaceToDocs(ctx context.Context) error {
+diff --git a/core/block/export/collection_test.go b/core/block/export/collection_test.go
+index 27c2cf108edade013ac8dd3396e39bd8794ef27b..702d392fba35b5d0a4ea762976923ca2f0fcebe7 100644
+--- a/core/block/export/collection_test.go
++++ b/core/block/export/collection_test.go
+@@ -159,3 +159,35 @@ func Test_docsForExport_WholeSpaceClosureRules(t *testing.T) {
+ 		assert.Contains(t, expCtx.docs, "pageId")
+ 	})
+ }
++
++// Selected-root collection must honor the same archived opt-in as the
++// whole-space path. This exercises the real store's injected query defaults.
++func Test_queryObjectsByRelation_ArchiveOptIn(t *testing.T) {
++	for _, includeArchived := range []bool{false, true} {
++		name := "default_refuses_archived"
++		if includeArchived {
++			name = "explicit_includes_archived_keeps_deleted_refused"
++		}
++		t.Run(name, func(t *testing.T) {
++			fx := newFixture(t)
++			fx.store.AddObjects(t, spaceId, []spaceindex.TestObject{
++				{bundle.RelationKeyId: domain.String("selected-live"), bundle.RelationKeyName: domain.String("Live")},
++				{bundle.RelationKeyId: domain.String("selected-archived"), bundle.RelationKeyName: domain.String("Archived"), bundle.RelationKeyIsArchived: domain.Bool(true)},
++				{bundle.RelationKeyId: domain.String("selected-deleted"), bundle.RelationKeyName: domain.String("Deleted"), bundle.RelationKeyIsDeleted: domain.Bool(true)},
++				{bundle.RelationKeyId: domain.String("unselected-archived"), bundle.RelationKeyName: domain.String("Unselected"), bundle.RelationKeyIsArchived: domain.Bool(true)},
++			})
++			exp := newExportContext(fx.export, pb.RpcObjectListExportRequest{SpaceId: spaceId, Format: model.Export_Protobuf, IncludeArchived: includeArchived})
++			rows, err := exp.queryObjectsByRelation(spaceId, []string{"selected-live", "selected-archived", "selected-deleted", "missing"}, bundle.RelationKeyId)
++			require.NoError(t, err)
++			ids := make([]string, 0, len(rows))
++			for _, row := range rows {
++				ids = append(ids, row.Details.GetString(bundle.RelationKeyId))
++			}
++			want := []string{"selected-live"}
++			if includeArchived {
++				want = append(want, "selected-archived")
++			}
++			assert.ElementsMatch(t, want, ids)
++		})
++	}
++}
+diff --git a/core/block/import/common/objectcreator/objectcreator.go b/core/block/import/common/objectcreator/objectcreator.go
+index 969e2263f769345ac7ff0de2aef5cda88b0b2386..4543644b519ec1416fa38b4fdf17fa3f1d321494 100644
+--- a/core/block/import/common/objectcreator/objectcreator.go
++++ b/core/block/import/common/objectcreator/objectcreator.go
+@@ -98,14 +98,10 @@ func (oc *ObjectCreator) create(dataObject *DataObject, sn *common.Snapshot, adm
+ 		return nil, newID, nil
+ 	}
+ 
+-	oc.setRootBlock(snapshot, newID)
+-
+-	oc.injectImportDetails(sn, origin)
+-	st, err := state.NewDocFromSnapshot(newID, sn.Snapshot.ToProto())
++	st, err := oc.prepareImportedState(dataObject, sn)
+ 	if err != nil {
+-		return nil, "", fmt.Errorf("doc from snapshot: %w", err)
++		return nil, "", err
+ 	}
+-	st.SetLocalDetail(bundle.RelationKeyLastModifiedDate, snapshot.Details.Get(bundle.RelationKeyLastModifiedDate))
+ 
+ 	var (
+ 		filesToDelete []string
+@@ -117,14 +113,7 @@ func (oc *ObjectCreator) create(dataObject *DataObject, sn *common.Snapshot, adm
+ 		}
+ 	}()
+ 
+-	// File object details (createdInContext/createdInContextRef) are pre-mapped by the processor
+-	// before GetIDAndPayload is called, so they arrive as final system IDs. Skip remapping here
+-	// to prevent UpdateObjectIDsInRelations from treating them as unknown CIDs → _missing_object.
+-	if sn.Snapshot.SbType != coresb.SmartBlockTypeFileObject {
+-		common.UpdateObjectIDsInRelations(st, oldIDtoNew, dataObject.relationKeysToFormat)
+-	}
+-
+-	if err = common.UpdateLinksToObjects(st, oldIDtoNew); err != nil {
++	if err = oc.remapImportedState(dataObject, sn, st); err != nil {
+ 		if admitted != nil {
+ 			return nil, "", err
+ 		}
+@@ -683,3 +672,25 @@ func (oc *ObjectCreator) updateDetails(st *state.State, newKey domain.RelationKe
+ 	}
+ 	st.RemoveRelation(key)
+ }
++
++// prepareImportedState and remapImportedState are the original creator's actual
++// transforms. Both fresh import and a deferred conditional root use these same
++// functions; comparison snapshots are never substituted as write input.
++func (oc *ObjectCreator) prepareImportedState(data *DataObject, sn *common.Snapshot) (*state.State, error) {
++	id := data.oldIDtoNew[sn.Id]
++	oc.setRootBlock(sn.Snapshot.Data, id)
++	oc.injectImportDetails(sn, data.origin)
++	st, err := state.NewDocFromSnapshot(id, sn.Snapshot.ToProto())
++	if err != nil {
++		return nil, fmt.Errorf("doc from snapshot: %w", err)
++	}
++	st.SetLocalDetail(bundle.RelationKeyLastModifiedDate, sn.Snapshot.Data.Details.Get(bundle.RelationKeyLastModifiedDate))
++	return st, nil
++}
++func (oc *ObjectCreator) remapImportedState(data *DataObject, sn *common.Snapshot, st *state.State) error {
++	// The original provider pre-maps FileObject context references before upload.
++	if sn.Snapshot.SbType != coresb.SmartBlockTypeFileObject {
++		common.UpdateObjectIDsInRelations(st, data.oldIDtoNew, data.relationKeysToFormat)
++	}
++	return common.UpdateLinksToObjects(st, data.oldIDtoNew)
++}
+diff --git a/core/block/import/common/objectcreator/owned_annotation_revision.go b/core/block/import/common/objectcreator/owned_annotation_revision.go
+new file mode 100644
+index 0000000000000000000000000000000000000000..94705bd920baae3ea95f1c3a4af4fb3ecf67d7e3
+--- /dev/null
++++ b/core/block/import/common/objectcreator/owned_annotation_revision.go
+@@ -0,0 +1,53 @@
++package objectcreator
++
++import (
++	"github.com/anyproto/anytype-heart/core/block/editor/state"
++	"github.com/anyproto/anytype-heart/core/block/import/common"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++)
++
++// PrepareOwnedAnnotationRevisionState uses the original converter/provider's
++// DataObject and the ordinary creator's real state transformations. It performs
++// no create/reset/Apply, schema installation, fetch, favorite or archive write.
++// Only the revision operation may later Apply this state under its native CAS.
++func (oc *ObjectCreator) PrepareOwnedAnnotationRevisionState(data *DataObject, sn *common.Snapshot) (*state.State, error) {
++	if oc == nil || data == nil || data.ctx == nil || data.spaceID == "" || sn == nil ||
++		sn.Id == "" || sn.Snapshot == nil || sn.Snapshot.Data == nil || sn.Snapshot.Data.Details == nil ||
++		sn.Snapshot.SbType != coresb.SmartBlockTypePage || len(sn.Snapshot.FileKeys) != 0 ||
++		sn.Snapshot.Data.Key != "" || sn.Snapshot.Data.FileInfo != nil {
++		return nil, errOwnedAnnotationFreshPayload
++	}
++	if err := data.ctx.Err(); err != nil {
++		return nil, err
++	}
++	target := data.oldIDtoNew[sn.Id]
++	if target == "" || data.createPayloads[target].RootRawChange != nil ||
++		sn.Snapshot.Data.Details.GetString(bundle.RelationKeyUniqueKey) != "" ||
++		sn.Snapshot.Data.Details.GetBool(bundle.RelationKeyIsFavorite) ||
++		sn.Snapshot.Data.Details.GetBool(bundle.RelationKeyIsArchived) {
++		return nil, errOwnedAnnotationFreshPayload
++	}
++	if _, present := data.newIdsSet[target]; !present {
++		return nil, errOwnedAnnotationFreshPayload
++	}
++	st, err := oc.prepareImportedState(data, sn)
++	if err != nil {
++		return nil, err
++	}
++	if err = oc.remapImportedState(data, sn, st); err != nil {
++		return nil, err
++	}
++	oc.updateKeys(st, data.oldIDtoNew, data.relationKeysToFormat)
++	if st.Store() != nil {
++		oc.updateLinksInCollections(st, data.oldIDtoNew, false)
++	}
++	admitted := &ownedAnnotationCreate{data: data, targetID: target}
++	if err = admitted.validatePreparedState(st, oc.formatFetcher); err != nil {
++		return nil, err
++	}
++	if err = st.Validate(); err != nil {
++		return nil, err
++	}
++	return st, nil
++}
+diff --git a/core/block/import/owned_annotation_graph.go b/core/block/import/owned_annotation_graph.go
+index 70450e67af4214720d3d395b0ceba258ad681e38..183afbb06f0f6accd322f284bb10ed281d63d3f5 100644
+--- a/core/block/import/owned_annotation_graph.go
++++ b/core/block/import/owned_annotation_graph.go
+@@ -98,6 +98,7 @@ type ownedAnnotationGraph struct {
+ 	mu                                    sync.Mutex
+ 	fileUploads                           map[string]ownedAnnotationUploadedFile
+ 	fileInputs                            map[string]*types.Struct
++	revision                              *ownedAnnotationRevisionGraph
+ }
+ 
+ func ownedAnnotationRefused(code string) error {
+@@ -400,7 +401,11 @@ func (g *ownedAnnotationGraph) admitConversion(ctx context.Context, p *importPro
+ 	// checked at their original execution points.
+ 	for _, sourceID := range g.order {
+ 		plan := g.members[sourceID]
+-		if plan.role == ownedAnnotationFreshPage || plan.role == ownedAnnotationFileObject {
++		if g.revision.retained(plan) != "" {
++			if _, err := g.revision.observeRetained(ctx, plan); err != nil {
++				return err
++			}
++		} else if plan.role == ownedAnnotationFreshPage || plan.role == ownedAnnotationFileObject {
+ 			if err := g.requireNoExistingImportIdentity(ctx, plan); err != nil {
+ 				return err
+ 			}
+@@ -558,6 +563,10 @@ func (g *ownedAnnotationGraph) beforeAssignment(ctx context.Context, p *importPr
+ 		}
+ 		g.fileInputs[plan.sourceID] = proto.Clone(details.ToProto()).(*types.Struct)
+ 	}
++	if g.revision.retained(plan) != "" {
++		_, err := g.revision.observeRetained(ctx, plan)
++		return err
++	}
+ 	if plan.role == ownedAnnotationFreshPage || plan.role == ownedAnnotationFileObject {
+ 		return g.requireNoExistingImportIdentity(ctx, plan)
+ 	}
+@@ -573,6 +582,16 @@ func (g *ownedAnnotationGraph) afterAssignment(ctx context.Context, sn *common.S
+ 	if err := g.requireCurrentWriter(ctx); err != nil {
+ 		return err
+ 	}
++	if retained := g.revision.retained(plan); retained != "" {
++		if id != retained || payload.RootRawChange != nil {
++			return ownedAnnotationRefused("revision_retained_assignment_changed")
++		}
++		if _, err := g.revision.observeRetained(ctx, plan); err != nil {
++			return err
++		}
++		g.nativeIDs[sn.Id], g.targets[id] = id, plan
++		return nil
++	}
+ 	switch plan.role {
+ 	case ownedAnnotationFreshPage:
+ 		if id == plan.sourceID || id == sn.Id || payload.RootRawChange == nil || payload.RootRawChange.Id != id {
+@@ -628,6 +647,9 @@ func (c ownedAnnotationObjectCreator) Create(data *creator.DataObject, sn *commo
+ 	if plan == nil || id == "" {
+ 		return nil, "", ownedAnnotationRefused("unassigned_create_source")
+ 	}
++	if g.revision.retained(plan) != "" {
++		return g.revision.createRetained(data, sn, c.original, plan)
++	}
+ 	switch plan.role {
+ 	case ownedAnnotationFreshPage:
+ 		native, ok := c.original.(interface {
+@@ -636,6 +658,9 @@ func (c ownedAnnotationObjectCreator) Create(data *creator.DataObject, sn *commo
+ 		if !ok {
+ 			return nil, "", ownedAnnotationRefused("original_fresh_creator_unavailable")
+ 		}
++		if g.revision != nil {
++			g.revision.attempted.Store(true)
++		}
+ 		details, actualID, err := native.CreateOwnedAnnotationFresh(data, sn)
+ 		if err != nil {
+ 			return details, actualID, err
+@@ -643,6 +668,9 @@ func (c ownedAnnotationObjectCreator) Create(data *creator.DataObject, sn *commo
+ 		if actualID != id {
+ 			return details, actualID, ownedAnnotationRefused("actual_create_identity_changed")
+ 		}
++		if g.revision != nil {
++			g.revision.observed.Store(true)
++		}
+ 		return details, actualID, g.requireCurrentWriter(g.ctx)
+ 	case ownedAnnotationFixedSchema, ownedAnnotationBundledSchema, ownedAnnotationParticipant:
+ 		details, err := g.readOnlyContext(g.ctx, plan)
+@@ -790,7 +818,13 @@ func (s ownedAnnotationFileUploader) UploadFile(_ context.Context, spaceID strin
+ 	}
+ 	g.fileUploads[sourceID] = ownedAnnotationUploadedFile{err: ownedAnnotationRefused("native_file_call_not_returned")}
+ 	g.mu.Unlock()
++	if g.revision != nil {
++		g.revision.attempted.Store(true)
++	}
+ 	id, kind, details, err = s.ownedImportBlockService.UploadFile(s.owned.ctx, spaceID, req)
++	if g.revision != nil && err == nil && id != "" && details != nil {
++		g.revision.observed.Store(true)
++	}
+ 	// A created file remains historical even if final currentness fails. No
+ 	// cancellation request is relabelled as drain and no pre-existing user
+ 	// object is deleted to simulate rollback.
+@@ -821,6 +855,12 @@ func originalOwnedAnnotationMetadataKeys() []domain.RelationKey {
+ // members only. Classification has already validated their snapshot and binary.
+ func (g *ownedAnnotationGraph) originalImportMetadataKeys() []domain.RelationKey {
+ 	keys := originalOwnedAnnotationMetadataKeys()
++	if g.revision != nil {
++		// The original revision graph may export relation definitions as peers.
++		// These system relations describe those definitions. Capture both via
++		// readOnlyContext before any dependency is uploaded or created.
++		keys = append(keys, bundle.RelationKeyRelationKey, bundle.RelationKeyRelationReadonlyValue)
++	}
+ 	for _, plan := range g.members {
+ 		if plan != nil && plan.role == ownedAnnotationFileObject && plan.sourceID != "" &&
+ 			plan.snapshot != nil && plan.snapshot.SbType == coresb.SmartBlockTypeFileObject.ToProto() &&
+diff --git a/core/block/import/owned_annotation_lifecycle.go b/core/block/import/owned_annotation_lifecycle.go
+new file mode 100644
+index 0000000000000000000000000000000000000000..fea349c7199ba1286db66b68fa6e4697558c1f1a
+--- /dev/null
++++ b/core/block/import/owned_annotation_lifecycle.go
+@@ -0,0 +1,481 @@
++package importer
++
++import (
++	"crypto/sha256"
++	"encoding/hex"
++	"errors"
++	"fmt"
++	"slices"
++	"sort"
++	"time"
++
++	"github.com/anyproto/anytype-heart/core/block/cache"
++	"github.com/anyproto/anytype-heart/core/block/editor/basic"
++	"github.com/anyproto/anytype-heart/core/block/editor/blockcollection"
++	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
++	"github.com/anyproto/anytype-heart/core/converter/pbc"
++	"github.com/anyproto/anytype-heart/core/domain"
++	annotationschema "github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition"
++	"github.com/anyproto/anytype-heart/pb"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/gogo/protobuf/proto"
++	"github.com/google/uuid"
++)
++
++func revisionDocumentRole(role string) bool {
++	return role == "chiddush" || role == "article" || role == "research"
++}
++func hasAnnotationLifecycleFields(r annotationRevisionRequest) bool {
++	return r.DocumentRole != "" || r.PromotionRole != "" || r.ExpectedArchiveID != "" || len(r.ExpectedArchiveHeads) != 0 ||
++		r.ExpectedIsArchived != nil || hasRevisionPromotionWitness(r)
++}
++func hasRevisionPromotionWitness(r annotationRevisionRequest) bool {
++	return r.ExpectedManifestID != "" || r.ExpectedManifestSHA256 != "" || len(r.ExpectedManifestHeads) != 0 ||
++		r.ExpectedDestinationTypeID != "" || r.ExpectedDestinationTypeKey != "" || len(r.ExpectedDestinationTypeHeads) != 0 ||
++		r.ExpectedAnnotationTypeID != "" || r.ExpectedAnnotationTypeKey != "" || len(r.ExpectedAnnotationTypeHeads) != 0
++}
++func validRevisionPromotionWitness(r annotationRevisionRequest) bool {
++	return revisionText(r.ExpectedManifestID) && revisionHash(r.ExpectedManifestSHA256) && revisionHeads(r.ExpectedManifestHeads) &&
++		revisionText(r.ExpectedDestinationTypeID) && revisionText(r.ExpectedDestinationTypeKey) && revisionHeads(r.ExpectedDestinationTypeHeads) &&
++		revisionText(r.ExpectedAnnotationTypeID) && r.ExpectedAnnotationTypeKey == annotationschema.TypeUniqueKey && revisionHeads(r.ExpectedAnnotationTypeHeads)
++}
++func validateAnnotationLifecycleRequest(r annotationRevisionRequest) error {
++	if (r.DocumentRole != "" && !revisionDocumentRole(r.DocumentRole)) || (r.PromotionRole != "" && !revisionDocumentRole(r.PromotionRole)) ||
++		(r.DocumentRole != "" && r.PromotionRole != "") {
++		return ErrAnnotationRevisionInvalid
++	}
++	if r.Operation == "replace_promoted" {
++		if len(r.DesiredArchive) < 22 || len(r.DesiredArchive) > ownedArchiveMaxBytes || !revisionHash(r.DesiredArchiveSHA256) {
++			return ErrAnnotationRevisionInvalid
++		}
++		digest := sha256.Sum256(r.DesiredArchive)
++		if hex.EncodeToString(digest[:]) != r.DesiredArchiveSHA256 {
++			return ErrAnnotationRevisionInvalid
++		}
++	} else if len(r.DesiredArchive) != 0 || r.DesiredArchiveSHA256 != "" {
++		return ErrAnnotationRevisionInvalid
++	}
++	switch r.Operation {
++	case "read_lifecycle", "read_promoted":
++		if len(r.ExpectedHeads) != 0 || r.ExpectedRootSHA256 != "" || r.ExpectedArchiveID != "" ||
++			len(r.ExpectedArchiveHeads) != 0 || r.ExpectedIsArchived != nil || hasRevisionPromotionWitness(r) {
++			return ErrAnnotationRevisionInvalid
++		}
++		if r.Operation == "read_promoted" && (r.DocumentRole == "" || r.PromotionRole != "") {
++			return ErrAnnotationRevisionInvalid
++		}
++		if r.Operation == "read_lifecycle" && r.DocumentRole != "" {
++			return ErrAnnotationRevisionInvalid
++		}
++	case "archive", "restore", "promote", "revert_promotion", "replace_promoted":
++		if !revisionHeads(r.ExpectedHeads) || !revisionHash(r.ExpectedRootSHA256) || !revisionText(r.ExpectedArchiveID) ||
++			!revisionHeads(r.ExpectedArchiveHeads) || r.ExpectedIsArchived == nil {
++			return ErrAnnotationRevisionInvalid
++		}
++		switch r.Operation {
++		case "promote":
++			if r.DocumentRole != "" || !revisionDocumentRole(r.PromotionRole) || !validRevisionPromotionWitness(r) {
++				return ErrAnnotationRevisionInvalid
++			}
++		case "revert_promotion", "replace_promoted":
++			if !revisionDocumentRole(r.DocumentRole) || r.PromotionRole != "" || !validRevisionPromotionWitness(r) {
++				return ErrAnnotationRevisionInvalid
++			}
++		default:
++			if r.PromotionRole != "" || hasRevisionPromotionWitness(r) {
++				return ErrAnnotationRevisionInvalid
++			}
++		}
++	default:
++		return ErrAnnotationRevisionInvalid
++	}
++	return nil
++}
++
++func (o *OwnedAnnotationRevisionOperation) lifecycleIdentity(b smartblock.SmartBlock, snapshot *pb.SnapshotWithType, promotion *revisionPromotionContext) error {
++	if b.Id() != o.request.TargetRootID || b.SpaceID() != o.owner.spaceID || b.IsDeleted() || b.Tree() == nil {
++		return ErrAnnotationRevisionInvalid
++	}
++	if o.request.DocumentRole == "" {
++		return revisionIdentity(snapshot, b.Id(), o.request.AnnotationUUID)
++	}
++	return revisionPromotedIdentity(snapshot, b.Id(), o.request.AnnotationUUID, o.request.DocumentRole, promotion)
++}
++
++// Promotion is a separate verifier. It never expands the dedicated Annotation
++// verifier to accept arbitrary Document types or caller-provided type IDs.
++func revisionPromotedIdentity(snapshot *pb.SnapshotWithType, id, expectedUUID, role string, promotion *revisionPromotionContext) error {
++	if promotion == nil || promotion.role != role || !revisionDocumentRole(role) ||
++		snapshot == nil || snapshot.Snapshot == nil || snapshot.Snapshot.Data == nil || snapshot.SbType != coresb.SmartBlockTypePage.ToProto() {
++		return ErrAnnotationRevisionInvalid
++	}
++	d := snapshot.Snapshot.Data
++	if len(d.ObjectTypes) != 1 || d.ObjectTypes[0] != promotion.typeKey || d.Key != "" {
++		return ErrAnnotationRevisionInvalid
++	}
++	details := domain.NewDetailsFromProto(d.Details)
++	actual, ae := uuid.Parse(details.GetString("pinkhaTorahAnnotationUUID"))
++	expected, ee := uuid.Parse(expectedUUID)
++	if ae != nil || ee != nil || actual == uuid.Nil || actual != expected ||
++		details.GetString("pinkhaTorahAnnotationProtocol") != annotationschema.Protocol ||
++		details.GetString("pinkhaTorahAnnotationClassification") != role {
++		return ErrAnnotationRevisionInvalid
++	}
++	for _, block := range d.Blocks {
++		if block != nil && block.Id == id && block.GetSmartblock() != nil {
++			return nil
++		}
++	}
++	return ErrAnnotationRevisionInvalid
++}
++
++// Lock order matches the original archive path: Archive, optional native
++// manifest and destination type, then the Annotation/Document object tree.
++// Native Archive hooks schedule their original reconciliation asynchronously;
++// no original callback/hook is skipped and no mutex is re-entered here.
++func (o *OwnedAnnotationRevisionOperation) withLifecycleLocks(promotion *revisionPromotionContext, body func(smartblock.SmartBlock, blockcollection.Collection, smartblock.SmartBlock) error) error {
++	archiveID := o.owner.space.DerivedIDs().Archive
++	if archiveID == "" || archiveID == o.request.TargetRootID {
++		return ErrAnnotationRevisionInvalid
++	}
++	return cache.DoContextFullID(o.getter, o.ctx, domain.FullID{SpaceID: o.owner.spaceID, ObjectID: archiveID}, func(archive smartblock.SmartBlock) error {
++		collection, ok := archive.(blockcollection.Collection)
++		if !ok || archive.IsDeleted() || archive.Tree() == nil {
++			return ErrAnnotationRevisionInvalid
++		}
++		root := func() error {
++			return cache.DoContextFullID(o.getter, o.ctx, domain.FullID{SpaceID: o.owner.spaceID, ObjectID: o.request.TargetRootID}, func(b smartblock.SmartBlock) error {
++				return body(archive, collection, b)
++			})
++		}
++		if promotion == nil {
++			return root()
++		}
++		if found, _ := collection.HasObject(promotion.manifestID); found {
++			return ErrAnnotationRevisionInvalid
++		}
++		if found, _ := collection.HasObject(promotion.typeID); found {
++			return ErrAnnotationRevisionInvalid
++		}
++		if promotion.annotation == nil {
++			return ErrAnnotationRevisionInvalid
++		}
++		if found, _ := collection.HasObject(promotion.annotation.id); found {
++			return ErrAnnotationRevisionInvalid
++		}
++		return o.withRevisionPromotionLocks(promotion, root)
++	})
++}
++
++func (o *OwnedAnnotationRevisionOperation) observeLifecycleLocked(result *annotationRevisionResult, archive smartblock.SmartBlock, collection blockcollection.Collection, b smartblock.SmartBlock, promotion *revisionPromotionContext) (*pb.SnapshotWithType, error) {
++	if err := o.owner.requireCurrentWriter(o.ctx); err != nil {
++		return nil, err
++	}
++	snapshot, digest, err := revisionSnapshot(b)
++	if err != nil {
++		return nil, err
++	}
++	if err = o.lifecycleIdentity(b, snapshot, promotion); err != nil {
++		return nil, err
++	}
++	heads, archiveHeads := sortedRevisionHeads(b.Tree().Heads()), sortedRevisionHeads(archive.Tree().Heads())
++	if !revisionHeads(heads) || !revisionHeads(archiveHeads) {
++		return nil, ErrAnnotationRevisionUnconfirmed
++	}
++	archived, _ := collection.HasObject(b.Id())
++	result.Heads, result.RootSnapshotSHA256 = heads, digest
++	result.ArchiveObjectID, result.ArchiveHeads, result.IsArchived = archive.Id(), archiveHeads, &archived
++	result.Classification = "annotation"
++	if o.request.DocumentRole != "" {
++		result.Classification, result.DocumentRole = "promoted_document", o.request.DocumentRole
++		result.DocumentTypeID, result.DocumentTypeUniqueKey = promotion.typeID, promotion.typeKey
++	}
++	if promotion != nil {
++		promotion.applyReceipt(result)
++	}
++	return snapshot, nil
++}
++
++func (o *OwnedAnnotationRevisionOperation) lifecyclePrecondition(result annotationRevisionResult, promotion *revisionPromotionContext) bool {
++	r := o.request
++	if !slices.Equal(result.Heads, r.ExpectedHeads) || result.RootSnapshotSHA256 != r.ExpectedRootSHA256 ||
++		result.ArchiveObjectID != r.ExpectedArchiveID || !slices.Equal(result.ArchiveHeads, r.ExpectedArchiveHeads) ||
++		result.IsArchived == nil || r.ExpectedIsArchived == nil || *result.IsArchived != *r.ExpectedIsArchived {
++		return false
++	}
++	if r.Operation == "promote" || r.Operation == "revert_promotion" || r.Operation == "replace_promoted" {
++		return promotion != nil && promotion.manifestID == r.ExpectedManifestID && promotion.manifestSHA == r.ExpectedManifestSHA256 &&
++			slices.Equal(promotion.manifestHeads, r.ExpectedManifestHeads) && promotion.typeID == r.ExpectedDestinationTypeID &&
++			promotion.typeKey == r.ExpectedDestinationTypeKey && slices.Equal(promotion.typeHeads, r.ExpectedDestinationTypeHeads) && promotion.hasExpectedTypeWitness(r)
++	}
++	return true
++}
++
++func (o *OwnedAnnotationRevisionOperation) executeLifecycle(result annotationRevisionResult) (annotationRevisionResult, error) {
++	role := o.request.PromotionRole
++	if role == "" {
++		role = o.request.DocumentRole
++	}
++	var promotion *revisionPromotionContext
++	var err error
++	if role != "" {
++		promotion, err = o.discoverRevisionPromotion(role)
++		if err != nil {
++			return result, err
++		}
++
++		o.extraExportIDs = []string{promotion.annotation.id, promotion.typeID}
++	}
++	before, err := o.exportRoot("lifecycle-before")
++	if err != nil {
++		return result, err
++	}
++	var expected *pb.SnapshotWithType
++	completion := ""
++	err = o.withLifecycleLocks(promotion, func(archive smartblock.SmartBlock, collection blockcollection.Collection, b smartblock.SmartBlock) error {
++		current, err := o.observeLifecycleLocked(&result, archive, collection, b, promotion)
++		if err != nil {
++			return err
++		}
++		result.BeforeHeads = slices.Clone(result.Heads)
++		if !revisionSnapshotEqual(current, before.snapshots[b.Id()]) {
++			result.Status = "conflict"
++			return ErrAnnotationRevisionConflict
++		}
++		if o.request.Operation == "read_lifecycle" || o.request.Operation == "read_promoted" {
++			result.Status = o.request.Operation
++			expected = current
++			return nil
++		}
++		if !o.lifecyclePrecondition(result, promotion) {
++			result.Status = "conflict"
++			return ErrAnnotationRevisionConflict
++		}
++		switch o.request.Operation {
++		case "archive", "restore":
++			if o.request.Operation == "archive" {
++				if err = b.Restrictions().Object.Check(model.Restrictions_Delete); err != nil {
++					return err
++				}
++			}
++			target := o.request.Operation == "archive"
++			result.MutationObjectID, result.BeforeMutationHeads = archive.Id(), slices.Clone(result.ArchiveHeads)
++			if *result.IsArchived == target {
++				result.Status = "unchanged"
++				result.MutationHeads = slices.Clone(result.ArchiveHeads)
++				expected = current
++				return nil
++			}
++			result.Status, result.NativeApplyAttempted = "applied_unconfirmed", true
++			if target {
++				err = collection.AddObject(b.Id())
++			} else {
++				err = collection.RemoveObject(b.Id())
++			}
++			result.MutationHeads = sortedRevisionHeads(archive.Tree().Heads())
++			result.NativeWriteObserved = !slices.Equal(result.BeforeMutationHeads, result.MutationHeads)
++			if err != nil {
++				return err
++			}
++			observed, _, hash, observeErr := o.lockedObservationForLifecycle(b, promotion)
++			if observeErr != nil {
++				return observeErr
++			}
++			member, _ := collection.HasObject(b.Id())
++			if !result.NativeWriteObserved || member != target || !revisionSnapshotEqual(current, observed) {
++				return fmt.Errorf("%w: archive_apply write=%t membership=%t body=%t", ErrAnnotationRevisionUnconfirmed, result.NativeWriteObserved, member == target, revisionSnapshotEqual(current, observed))
++			}
++			result.Heads, result.RootSnapshotSHA256 = sortedRevisionHeads(b.Tree().Heads()), hash
++			result.ArchiveHeads, result.IsArchived = slices.Clone(result.MutationHeads), &member
++			expected = observed
++			if target {
++				completion = "archived"
++			} else {
++				completion = "restored"
++			}
++		case "promote", "revert_promotion":
++			if *result.IsArchived || promotion == nil {
++				return ErrAnnotationRevisionInvalid
++			}
++			native, ok := b.(basic.CommonOperations)
++			if !ok {
++				return ErrAnnotationRevisionUnsupported
++			}
++			targetKey, classification := promotion.typeKey, promotion.role
++			if o.request.Operation == "revert_promotion" {
++				targetKey, classification = promotion.annotation.key, "annotation"
++			}
++			key, err := domain.UnmarshalUniqueKey(targetKey)
++			if err != nil || key.SmartblockType() != coresb.SmartBlockTypeObjectType {
++				return ErrAnnotationRevisionInvalid
++			}
++			desired := b.NewState()
++			if err = native.SetObjectTypesInState(desired, []domain.TypeKey{domain.TypeKey(key.InternalKey())}, false); err != nil {
++				return err
++			}
++			desired.SetDetail(domain.RelationKey("pinkhaTorahAnnotationClassification"), domain.String(classification))
++			desired.AddRelationLinks(&model.RelationLink{Key: "pinkhaTorahAnnotationClassification", Format: model.RelationFormat_longtext})
++			expected = &pb.SnapshotWithType{}
++			if err = proto.Unmarshal(pbc.NewConverter(desired, false).Convert(b.Type().ToProto()), expected); err != nil {
++				return err
++			}
++			if !revisionPromotionPayloadEqual(current, expected) {
++				return ErrAnnotationRevisionUnsupported
++			}
++			result.MutationObjectID, result.BeforeMutationHeads = b.Id(), slices.Clone(result.Heads)
++			result.Status, result.NativeApplyAttempted = "applied_unconfirmed", true
++			applyErr := b.Apply(desired)
++			result.MutationHeads = sortedRevisionHeads(b.Tree().Heads())
++			result.NativeWriteObserved = !slices.Equal(result.BeforeMutationHeads, result.MutationHeads)
++			if applyErr != nil {
++				return applyErr
++			}
++			observed, hash, err := revisionSnapshot(b)
++			if err != nil {
++				return err
++			}
++			identityErr := revisionPromotedIdentity(observed, b.Id(), o.request.AnnotationUUID, promotion.role, promotion)
++			if o.request.Operation == "revert_promotion" {
++				identityErr = revisionIdentity(observed, b.Id(), o.request.AnnotationUUID)
++			}
++			if !result.NativeWriteObserved || identityErr != nil || !revisionSnapshotEqual(expected, observed) || !revisionPromotionPayloadEqual(current, observed) {
++				return ErrAnnotationRevisionUnconfirmed
++			}
++			result.Heads, result.RootSnapshotSHA256 = slices.Clone(result.MutationHeads), hash
++			result.Classification, result.DocumentRole = "promoted_document", promotion.role
++			result.DocumentTypeID, result.DocumentTypeUniqueKey = promotion.typeID, promotion.typeKey
++			expected = observed
++			completion = "promoted"
++			if o.request.Operation == "revert_promotion" {
++				result.Classification, result.DocumentRole = "annotation", ""
++				result.DocumentTypeID, result.DocumentTypeUniqueKey = "", ""
++				completion = "reverted"
++			}
++		default:
++			return ErrAnnotationRevisionInvalid
++		}
++		return nil
++	})
++	if err != nil {
++		return result, err
++	}
++	if result.IsArchived == nil || expected == nil {
++		return result, ErrAnnotationRevisionUnconfirmed
++	}
++	if err = o.waitLifecycleProjection(*result.IsArchived); err != nil {
++		return result, err
++	}
++	observed, err := o.exportRoot("lifecycle-after")
++	if err != nil {
++		return result, err
++	}
++	if !revisionSnapshotEqual(expected, observed.snapshots[o.request.TargetRootID]) {
++		return result, revisionComparisonError("lifecycle_export", expected, observed.snapshots[o.request.TargetRootID])
++	}
++	// Recheck all actual witnesses after the asynchronous original projection
++	// and full export. Another native change is never accepted as our receipt.
++	err = o.withLifecycleLocks(promotion, func(archive smartblock.SmartBlock, collection blockcollection.Collection, b smartblock.SmartBlock) error {
++		root, hash, err := revisionSnapshot(b)
++		if err != nil {
++			return err
++		}
++		if completion != "reverted" && (completion == "promoted" || o.request.DocumentRole != "") {
++			role := result.DocumentRole
++			if err = revisionPromotedIdentity(root, b.Id(), o.request.AnnotationUUID, role, promotion); err != nil {
++				return err
++			}
++		} else if err = revisionIdentity(root, b.Id(), o.request.AnnotationUUID); err != nil {
++			return err
++		}
++		member, _ := collection.HasObject(b.Id())
++		if !slices.Equal(sortedRevisionHeads(b.Tree().Heads()), result.Heads) || hash != result.RootSnapshotSHA256 ||
++			!slices.Equal(sortedRevisionHeads(archive.Tree().Heads()), result.ArchiveHeads) || member != *result.IsArchived ||
++			!revisionSnapshotEqual(root, expected) {
++			return fmt.Errorf("%w: lifecycle_after root_heads=%t root_hash=%t archive_heads=%t membership=%t root_body=%t", ErrAnnotationRevisionUnconfirmed, slices.Equal(sortedRevisionHeads(b.Tree().Heads()), result.Heads), hash == result.RootSnapshotSHA256, slices.Equal(sortedRevisionHeads(archive.Tree().Heads()), result.ArchiveHeads), member == *result.IsArchived, revisionSnapshotEqual(root, expected))
++		}
++		return o.owner.requireCurrentWriter(o.ctx)
++	})
++	if err != nil {
++		return result, err
++	}
++	ids := make([]string, 0, len(observed.snapshots))
++	for id := range observed.snapshots {
++		ids = append(ids, id)
++	}
++	sort.Strings(ids)
++	for _, id := range ids {
++		result.Mappings = append(result.Mappings, annotationRevisionMapping{o.owner.spaceID, id, id})
++	}
++	result.NativeArchive = slices.Clone(observed.raw)
++	digest := sha256.Sum256(observed.raw)
++	result.NativeArchiveSHA256 = hex.EncodeToString(digest[:])
++	if completion != "" {
++		result.Status = completion
++	}
++	return result, nil
++}
++
++func (o *OwnedAnnotationRevisionOperation) lockedObservationForLifecycle(b smartblock.SmartBlock, promotion *revisionPromotionContext) (*pb.SnapshotWithType, []string, string, error) {
++	if err := o.owner.requireCurrentWriter(o.ctx); err != nil {
++		return nil, nil, "", err
++	}
++	snapshot, digest, err := revisionSnapshot(b)
++	if err != nil {
++		return nil, nil, "", err
++	}
++	if err = o.lifecycleIdentity(b, snapshot, promotion); err != nil {
++		return nil, nil, "", err
++	}
++	heads := sortedRevisionHeads(b.Tree().Heads())
++	if !revisionHeads(heads) {
++		return nil, nil, "", ErrAnnotationRevisionUnconfirmed
++	}
++	return snapshot, heads, digest, nil
++}
++func (o *OwnedAnnotationRevisionOperation) waitLifecycleProjection(expected bool) error {
++	if o.owner.store == nil {
++		return ErrAnnotationRevisionInvalid
++	}
++	timeout := time.NewTimer(10 * time.Second)
++	defer timeout.Stop()
++	tick := time.NewTicker(20 * time.Millisecond)
++	defer tick.Stop()
++	for {
++		details, err := o.owner.store.SpaceIndex(o.owner.spaceID).GetDetails(o.request.TargetRootID)
++		if err == nil && details != nil && !details.GetBool(bundle.RelationKeyIsDeleted) && details.GetBool(bundle.RelationKeyIsArchived) == expected {
++			return nil
++		}
++		select {
++		case <-o.ctx.Done():
++			return o.ctx.Err()
++		case <-timeout.C:
++			return errors.Join(ErrAnnotationRevisionUnconfirmed, err)
++		case <-tick.C:
++		}
++	}
++}
++
++// Only normal type/layout bookkeeping and the explicit classification change
++// may differ. Every block, text/mark tuple, child, anchor, link, collection and
++// other detail remains compared completely.
++func revisionPromotionPayloadEqual(before, after *pb.SnapshotWithType) bool {
++	a, err := canonicalRevisionSnapshot(before)
++	if err != nil {
++		return false
++	}
++	b, err := canonicalRevisionSnapshot(after)
++	if err != nil {
++		return false
++	}
++	for _, x := range []*pb.SnapshotWithType{a, b} {
++		x.Snapshot.Data.ObjectTypes = nil
++		details := domain.NewDetailsFromProto(x.Snapshot.Data.Details)
++		for _, key := range []domain.RelationKey{bundle.RelationKeyType, bundle.RelationKeyLayout, bundle.RelationKeyLayoutAlign, bundle.RelationKeyFeaturedRelations, bundle.RelationKeyInternalFlags, "pinkhaTorahAnnotationClassification"} {
++			details.Delete(key)
++		}
++		x.Snapshot.Data.Details = details.ToProto()
++	}
++	return proto.Equal(a, b)
++}
+diff --git a/core/block/import/owned_annotation_lifecycle_test.go b/core/block/import/owned_annotation_lifecycle_test.go
+new file mode 100644
+index 0000000000000000000000000000000000000000..908ea6e48520d2989573c30ee292fdce83d1c3e8
+--- /dev/null
++++ b/core/block/import/owned_annotation_lifecycle_test.go
+@@ -0,0 +1,229 @@
++package importer
++
++import (
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"strings"
++	"testing"
++
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/pb"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/gogo/protobuf/proto"
++)
++
++func lifecycleEnvelope(operation string) map[string]any {
++	r := map[string]any{"schema": 1, "operation": operation, "target_root_id": "root", "annotation_uuid": "d632fce3-dc28-4b2d-acf5-ce9b0343b83a"}
++	if operation == "archive" || operation == "restore" || operation == "promote" || operation == "revert_promotion" || operation == "replace_promoted" {
++		r["expected_heads"] = []string{"root-head"}
++		r["expected_root_sha256"] = strings.Repeat("a", 64)
++		r["expected_archive_id"] = "archive"
++		r["expected_archive_heads"] = []string{"archive-head"}
++		r["expected_is_archived"] = false
++	}
++	if operation == "read_promoted" {
++		r["document_role"] = "article"
++	}
++	if operation == "promote" || operation == "revert_promotion" || operation == "replace_promoted" {
++		if operation == "promote" {
++			r["promotion_role"] = "chiddush"
++		} else {
++			r["document_role"] = "chiddush"
++		}
++		r["expected_annotation_type_id"] = "annotation-type"
++		r["expected_annotation_type_unique_key"] = "ot-pinkhatorahannotationv1"
++		r["expected_annotation_type_heads"] = []string{"annotation-type-head"}
++		r["expected_manifest_id"] = "manifest"
++		r["expected_manifest_sha256"] = strings.Repeat("b", 64)
++		r["expected_manifest_heads"] = []string{"manifest-head"}
++		r["expected_destination_type_id"] = "native-type"
++		r["expected_destination_type_unique_key"] = "ot-native-type"
++		r["expected_destination_type_heads"] = []string{"type-head"}
++	}
++	if operation == "replace_promoted" {
++		body := []byte(strings.Repeat("genuine-archive-parser-is-a-later-gate", 2))
++		hash := sha256.Sum256(body)
++		r["desired_archive"] = body
++		r["desired_archive_sha256"] = hex.EncodeToString(hash[:])
++	}
++	return r
++}
++func TestAnnotationLifecycleStrictEnvelope(t *testing.T) {
++	for _, op := range []string{"read_lifecycle", "read_promoted", "archive", "restore", "promote", "revert_promotion", "replace_promoted"} {
++		t.Run("valid_"+op, func(t *testing.T) {
++			raw, err := json.Marshal(lifecycleEnvelope(op))
++			if err != nil {
++				t.Fatal(err)
++			}
++			got, err := decodeAnnotationRevision(raw, sha256.Sum256(raw))
++			if err != nil || got.Operation != op {
++				t.Fatal(err)
++			}
++		})
++	}
++	negatives := map[string]struct {
++		operation string
++		mutate    func(map[string]any)
++	}{
++		"archive_missing_heads":                  {"archive", func(r map[string]any) { delete(r, "expected_archive_heads") }},
++		"archive_unsorted_heads":                 {"archive", func(r map[string]any) { r["expected_archive_heads"] = []string{"z", "a"} }},
++		"archive_duplicate_heads":                {"archive", func(r map[string]any) { r["expected_archive_heads"] = []string{"a", "a"} }},
++		"archive_missing_membership":             {"archive", func(r map[string]any) { delete(r, "expected_is_archived") }},
++		"archive_null_membership":                {"archive", func(r map[string]any) { r["expected_is_archived"] = nil }},
++		"archive_wrong_membership_type":          {"archive", func(r map[string]any) { r["expected_is_archived"] = "false" }},
++		"archive_missing_identity":               {"archive", func(r map[string]any) { delete(r, "expected_archive_id") }},
++		"archive_arbitrary_role":                 {"archive", func(r map[string]any) { r["document_role"] = "note" }},
++		"archive_promotion_role":                 {"archive", func(r map[string]any) { r["promotion_role"] = "article" }},
++		"archive_manifest_witness":               {"archive", func(r map[string]any) { r["expected_manifest_id"] = "injected" }},
++		"read_lifecycle_mutation_heads":          {"read_lifecycle", func(r map[string]any) { r["expected_heads"] = []string{"head"} }},
++		"read_lifecycle_membership":              {"read_lifecycle", func(r map[string]any) { r["expected_is_archived"] = false }},
++		"read_lifecycle_document":                {"read_lifecycle", func(r map[string]any) { r["document_role"] = "article" }},
++		"read_promoted_missing_role":             {"read_promoted", func(r map[string]any) { delete(r, "document_role") }},
++		"read_promoted_both_roles":               {"read_promoted", func(r map[string]any) { r["promotion_role"] = "research" }},
++		"promote_missing_annotation_id":          {"promote", func(r map[string]any) { delete(r, "expected_annotation_type_id") }},
++		"revert_missing_annotation_heads":        {"revert_promotion", func(r map[string]any) { delete(r, "expected_annotation_type_heads") }},
++		"revert_wrong_annotation_key":            {"revert_promotion", func(r map[string]any) { r["expected_annotation_type_unique_key"] = "ot-arbitrary" }},
++		"revert_missing_role":                    {"revert_promotion", func(r map[string]any) { delete(r, "document_role") }},
++		"replace_promoted_missing_archive":       {"replace_promoted", func(r map[string]any) { delete(r, "desired_archive") }},
++		"replace_promoted_corrupt_digest":        {"replace_promoted", func(r map[string]any) { r["desired_archive_sha256"] = strings.Repeat("c", 64) }},
++		"replace_promoted_missing_native_type":   {"replace_promoted", func(r map[string]any) { delete(r, "expected_destination_type_heads") }},
++		"replace_promoted_missing_archive_heads": {"replace_promoted", func(r map[string]any) { delete(r, "expected_archive_heads") }},
++		"promote_missing_manifest_heads":         {"promote", func(r map[string]any) { delete(r, "expected_manifest_heads") }},
++		"promote_missing_type_heads":             {"promote", func(r map[string]any) { delete(r, "expected_destination_type_heads") }},
++		"promote_missing_type_id":                {"promote", func(r map[string]any) { delete(r, "expected_destination_type_id") }},
++		"promote_missing_type_key":               {"promote", func(r map[string]any) { delete(r, "expected_destination_type_unique_key") }},
++		"promote_missing_manifest_hash":          {"promote", func(r map[string]any) { delete(r, "expected_manifest_sha256") }},
++		"promote_unknown_role":                   {"promote", func(r map[string]any) { r["promotion_role"] = "page" }},
++		"promote_both_roles":                     {"promote", func(r map[string]any) { r["document_role"] = "article" }},
++		"promote_archive_payload":                {"promote", func(r map[string]any) { r["desired_archive"] = []byte("not allowed") }},
++		"old_read_rejects_new_fields":            {"read", func(r map[string]any) { r["expected_is_archived"] = false }},
++	}
++	for name, test := range negatives {
++		t.Run(name, func(t *testing.T) {
++			r := lifecycleEnvelope(test.operation)
++			test.mutate(r)
++			raw, err := json.Marshal(r)
++			if err != nil {
++				t.Fatal(err)
++			}
++			if _, err = decodeAnnotationRevision(raw, sha256.Sum256(raw)); err == nil {
++				t.Fatal("accepted invalid lifecycle authority")
++			}
++		})
++	}
++}
++func TestAnnotationLifecycleArchiveWitnessCannotBeReplacedByRoot(t *testing.T) {
++	token := lifecycleEnvelope("archive")
++	raw, _ := json.Marshal(token)
++	request, err := decodeAnnotationRevision(raw, sha256.Sum256(raw))
++	if err != nil {
++		t.Fatal(err)
++	}
++	archived := false
++	observation := annotationRevisionResult{Heads: []string{"root-head"}, RootSnapshotSHA256: strings.Repeat("a", 64), ArchiveObjectID: "archive", ArchiveHeads: []string{"archive-head"}, IsArchived: &archived}
++	operation := OwnedAnnotationRevisionOperation{request: request}
++	if !operation.lifecyclePrecondition(observation, nil) {
++		t.Fatal("valid root plus Archive witness rejected")
++	}
++	observation.ArchiveHeads = []string{"other-archive-head"}
++	if operation.lifecyclePrecondition(observation, nil) {
++		t.Fatal("unchanged root accepted changed Archive")
++	}
++	observation.ArchiveHeads = []string{"archive-head"}
++	archived = true
++	if operation.lifecyclePrecondition(observation, nil) {
++		t.Fatal("root accepted changed native membership")
++	}
++}
++func TestAnnotationPromotionRetainsCompleteRichPayload(t *testing.T) {
++	details := domain.NewDetails()
++	details.SetString("pinkhaTorahAnnotationUUID", "d632fce3-dc28-4b2d-acf5-ce9b0343b83a")
++	details.SetString("pinkhaTorahAnnotationClassification", "annotation")
++	details.SetString("anchor-source", "stable-link")
++	before := &pb.SnapshotWithType{SbType: model.SmartBlockType_Page, Snapshot: &pb.ChangeSnapshot{Data: &model.SmartBlockSnapshotBase{
++		Details: details.ToProto(), ObjectTypes: []string{"ot-pinkhatorahannotationv1"},
++		Blocks: []*model.Block{
++			{Id: "root", ChildrenIds: []string{"rich"}, Content: &model.BlockContentOfSmartblock{Smartblock: &model.BlockContentSmartblock{}}},
++			{Id: "rich", Content: &model.BlockContentOfText{Text: &model.BlockContentText{Text: "native body", Marks: &model.BlockContentTextMarks{Marks: []*model.BlockContentTextMark{{Type: model.BlockContentTextMark_Link, Param: "https://source.example/1", Range: &model.Range{From: 0, To: 6}}}}}}},
++		},
++	}}}
++	after := proto.Clone(before).(*pb.SnapshotWithType)
++	after.Snapshot.Data.ObjectTypes = []string{"ot-article"}
++	d := domain.NewDetailsFromProto(after.Snapshot.Data.Details)
++	d.SetString("pinkhaTorahAnnotationClassification", "article")
++	after.Snapshot.Data.Details = d.ToProto()
++	if !revisionPromotionPayloadEqual(before, after) {
++		t.Fatal("exact type/classification-only transition rejected")
++	}
++	for name, mutate := range map[string]func(*pb.SnapshotWithType){
++		"body":           func(v *pb.SnapshotWithType) { v.Snapshot.Data.Blocks[1].GetText().Text += " changed" },
++		"link":           func(v *pb.SnapshotWithType) { v.Snapshot.Data.Blocks[1].GetText().Marks.Marks[0].Param += "different" },
++		"range":          func(v *pb.SnapshotWithType) { v.Snapshot.Data.Blocks[1].GetText().Marks.Marks[0].Range.To++ },
++		"child_identity": func(v *pb.SnapshotWithType) { v.Snapshot.Data.Blocks[1].Id = "different" },
++		"anchor": func(v *pb.SnapshotWithType) {
++			d := domain.NewDetailsFromProto(v.Snapshot.Data.Details)
++			d.SetString("anchor-source", "different")
++			v.Snapshot.Data.Details = d.ToProto()
++		},
++		"uuid": func(v *pb.SnapshotWithType) {
++			d := domain.NewDetailsFromProto(v.Snapshot.Data.Details)
++			d.SetString("pinkhaTorahAnnotationUUID", "different")
++			v.Snapshot.Data.Details = d.ToProto()
++		},
++	} {
++		t.Run(name, func(t *testing.T) {
++			changed := proto.Clone(after).(*pb.SnapshotWithType)
++			mutate(changed)
++			if revisionPromotionPayloadEqual(before, changed) {
++				t.Fatal("promotion changed preserved payload")
++			}
++		})
++	}
++}
++
++func TestAnnotationRevisionArchiveCASClosedEnvelope(t *testing.T) {
++	makeRequest := func() map[string]any {
++		r := lifecycleEnvelope("archive")
++		r["operation"] = "replace"
++		body := []byte(strings.Repeat("archive-envelope-only", 2))
++		digest := sha256.Sum256(body)
++		r["desired_archive"] = body
++		r["desired_archive_sha256"] = hex.EncodeToString(digest[:])
++		return r
++	}
++	raw, _ := json.Marshal(makeRequest())
++	if _, err := decodeAnnotationRevision(raw, sha256.Sum256(raw)); err != nil {
++		t.Fatal(err)
++	}
++	for _, key := range []string{"expected_archive_id", "expected_archive_heads", "expected_is_archived"} {
++		t.Run(key, func(t *testing.T) {
++			r := makeRequest()
++			delete(r, key)
++			raw, _ := json.Marshal(r)
++			if _, err := decodeAnnotationRevision(raw, sha256.Sum256(raw)); err == nil {
++				t.Fatal("ordinary replacement accepted no Archive CAS witness")
++			}
++		})
++	}
++}
++func TestAnnotationLifecycleRestrictionComparisonPreservesEveryFlag(t *testing.T) {
++	value := &pb.SnapshotWithType{SbType: model.SmartBlockType_Page, Snapshot: &pb.ChangeSnapshot{Data: &model.SmartBlockSnapshotBase{Blocks: []*model.Block{{Id: "root", Content: &model.BlockContentOfSmartblock{Smartblock: &model.BlockContentSmartblock{}}}}}}}
++	empty := proto.Clone(value).(*pb.SnapshotWithType)
++	empty.Snapshot.Data.Blocks[0].Restrictions = &model.BlockRestrictions{}
++	if !revisionSnapshotEqual(value, empty) {
++		t.Fatal("original nil/all-false restriction normalization rejected")
++	}
++	for name, restriction := range map[string]*model.BlockRestrictions{"edit": {Edit: true}, "remove": {Remove: true}, "drag": {Drag: true}, "drop": {DropOn: true}} {
++		t.Run(name, func(t *testing.T) {
++			changed := proto.Clone(empty).(*pb.SnapshotWithType)
++			changed.Snapshot.Data.Blocks[0].Restrictions = restriction
++			if revisionSnapshotEqual(value, changed) {
++				t.Fatal("nonempty original restriction disappeared")
++			}
++		})
++	}
++	if value.Snapshot.Data.Blocks[0].Restrictions != nil {
++		t.Fatal("comparison mutated input")
++	}
++}
+diff --git a/core/block/import/owned_annotation_promotion.go b/core/block/import/owned_annotation_promotion.go
+new file mode 100644
+index 0000000000000000000000000000000000000000..b7d69f6ec1f8bd8436bffbf76e2f9976631e8ce9
+--- /dev/null
++++ b/core/block/import/owned_annotation_promotion.go
+@@ -0,0 +1,264 @@
++package importer
++
++import (
++	"bytes"
++	"context"
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"fmt"
++	"github.com/anyproto/anytype-heart/core/block/cache"
++	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
++	"github.com/anyproto/anytype-heart/core/domain"
++	torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++	"github.com/anyproto/anytype-heart/pkg/lib/database"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"io"
++	"slices"
++)
++
++type revisionPromotionContext struct {
++	annotation                                          *revisionAnnotationTypeContext
++	role, manifestID, manifestSHA, raw, typeID, typeKey string
++	manifestHeads, typeHeads                            []string
++}
++type revisionPromotionManifest struct {
++	SchemaVersion     int               `json:"schemaVersion"`
++	SpaceID           string            `json:"spaceId"`
++	ManifestID        string            `json:"manifestObjectId"`
++	ProvisioningState *string           `json:"provisioningState"`
++	CanonicalID       string            `json:"documentAssociationsPropertyId"`
++	CanonicalKey      string            `json:"documentAssociationsPropertyKey"`
++	Types             map[string]string `json:"registeredDocumentTypes"`
++}
++
++func (p *revisionPromotionContext) applyReceipt(r *annotationRevisionResult) {
++	if p.annotation != nil {
++		r.AnnotationTypeID, r.AnnotationTypeUniqueKey = p.annotation.id, p.annotation.key
++		r.AnnotationTypeHeads = slices.Clone(p.annotation.heads)
++	}
++	r.ManifestObjectID, r.ManifestSHA256, r.ManifestJSON = p.manifestID, p.manifestSHA, p.raw
++	r.ManifestHeads = slices.Clone(p.manifestHeads)
++	r.PromotionRole, r.PromotionTypeID, r.PromotionTypeUniqueKey = p.role, p.typeID, p.typeKey
++	r.PromotionTypeHeads = slices.Clone(p.typeHeads)
++}
++
++// The existing canonical Torah binding verifier consumes bytes and properties
++// read from actual persisted native objects, never a caller manifest or type ID.
++type revisionManifestSource struct {
++	owner                *OwnedAnnotationRevisionOperation
++	id, raw, canonicalID string
++}
++
++func (s revisionManifestSource) Manifests(ctx context.Context, space string) ([]torah.ManifestCandidate, error) {
++	if ctx.Err() != nil {
++		return nil, ctx.Err()
++	}
++	if space != s.owner.owner.spaceID {
++		return nil, torah.ErrBinding
++	}
++	return []torah.ManifestCandidate{{ObjectID: s.id, Raw: []byte(s.raw)}}, nil
++}
++func (s revisionManifestSource) CanonicalProperty(ctx context.Context, space, key string) (torah.PropertyDescriptor, error) {
++	var result torah.PropertyDescriptor
++	if space != s.owner.owner.spaceID || key == "" || s.canonicalID == "" || s.canonicalID == s.id {
++		return result, torah.ErrBinding
++	}
++	exists, err := s.owner.owner.space.Storage().HasTree(ctx, s.canonicalID)
++	if err != nil || !exists {
++		return result, torah.ErrBinding
++	}
++	err = cache.DoContextFullID(s.owner.getter, ctx, domain.FullID{SpaceID: space, ObjectID: s.canonicalID}, func(b smartblock.SmartBlock) error {
++		if b.IsDeleted() || b.SpaceID() != space || b.Type() != coresb.SmartBlockTypeRelation || b.Tree() == nil || !revisionHeads(sortedRevisionHeads(b.Tree().Heads())) {
++			return torah.ErrBinding
++		}
++		keyNative := b.UniqueKey()
++		d := b.CombinedDetails()
++		if keyNative == nil || keyNative.InternalKey() != key || d == nil || d.GetString(bundle.RelationKeyRelationKey) != key ||
++			!d.Has(bundle.RelationKeyRelationFormat) || d.GetInt64(bundle.RelationKeyRelationFormat) != int64(model.RelationFormat_longtext) ||
++			d.GetBool(bundle.RelationKeyIsArchived) || d.GetBool(bundle.RelationKeyIsDeleted) || d.GetBool(bundle.RelationKeyIsUninstalled) {
++			return torah.ErrBinding
++		}
++		result = torah.PropertyDescriptor{ID: b.Id(), Key: key, Format: int(model.RelationFormat_longtext)}
++		return nil
++	})
++	return result, err
++}
++func (o *OwnedAnnotationRevisionOperation) revisionManifestIDs() ([]string, error) {
++	if o.owner.store == nil {
++		return nil, ErrAnnotationRevisionInvalid
++	}
++	rows, err := o.owner.store.SpaceIndex(o.owner.spaceID).QueryRaw(&database.Filters{FilterObj: database.FiltersOr{
++		database.FilterEq{Key: bundle.RelationKeyName, Value: domain.String(torah.ManifestUniqueKey)},
++		database.FilterEq{Key: bundle.RelationKeyUniqueKey, Value: domain.String(torah.ManifestUniqueKey)},
++	}}, 257, 0)
++	if err != nil {
++		return nil, err
++	}
++	if len(rows) > 256 {
++		return nil, ErrAnnotationRevisionUnsupported
++	}
++	var ids []string
++	for _, row := range rows {
++		d := row.Details
++		if d == nil || d.GetBool(bundle.RelationKeyIsArchived) || d.GetBool(bundle.RelationKeyIsDeleted) {
++			continue
++		}
++		id := d.GetString(bundle.RelationKeyId)
++		if id == "" || d.GetString(bundle.RelationKeySpaceId) != o.owner.spaceID {
++			return nil, ErrAnnotationRevisionInvalid
++		}
++		ids = append(ids, id)
++	}
++	return ids, nil
++}
++func (o *OwnedAnnotationRevisionOperation) readRevisionManifestLocked(b smartblock.SmartBlock, role string) (revisionPromotionManifest, string, []string, error) {
++	var m revisionPromotionManifest
++	if b.Id() == o.request.TargetRootID || b.SpaceID() != o.owner.spaceID || b.IsDeleted() || b.Tree() == nil {
++		return m, "", nil, ErrAnnotationRevisionInvalid
++	}
++	d := b.CombinedDetails()
++	if d == nil || (d.GetString(bundle.RelationKeyName) != torah.ManifestUniqueKey && d.GetString(bundle.RelationKeyUniqueKey) != torah.ManifestUniqueKey) ||
++		d.GetBool(bundle.RelationKeyIsArchived) || d.GetBool(bundle.RelationKeyIsDeleted) {
++		return m, "", nil, ErrAnnotationRevisionInvalid
++	}
++	raw := d.GetString(bundle.RelationKeyDescription)
++	if len(raw) == 0 || len(raw) > 128<<10 {
++		return m, "", nil, ErrAnnotationRevisionInvalid
++	}
++	dec := json.NewDecoder(bytes.NewReader([]byte(raw)))
++	dec.UseNumber()
++	fields := 0
++	// Depth one keeps duplicate/depth/field bounds without the envelope key list.
++	if revisionJSONValue(dec, 1, &fields) != nil {
++		return m, "", nil, ErrAnnotationRevisionInvalid
++	}
++	if _, err := dec.Token(); err != io.EOF {
++		return m, "", nil, ErrAnnotationRevisionInvalid
++	}
++	if json.Unmarshal([]byte(raw), &m) != nil || m.SchemaVersion != 1 || m.SpaceID != o.owner.spaceID ||
++		(m.ManifestID != "" && m.ManifestID != b.Id()) || (m.ProvisioningState != nil && *m.ProvisioningState != "complete") {
++		return m, "", nil, ErrAnnotationRevisionInvalid
++	}
++	used := map[string]bool{}
++	for _, r := range []string{"chiddush", "article", "research"} {
++		id := m.Types[r]
++		if !revisionText(id) || id == b.Id() || id == o.request.TargetRootID || used[id] {
++			return m, "", nil, ErrAnnotationRevisionInvalid
++		}
++		used[id] = true
++	}
++	if !revisionDocumentRole(role) {
++		return m, "", nil, ErrAnnotationRevisionInvalid
++	}
++	s := revisionManifestSource{owner: o, id: b.Id(), raw: raw, canonicalID: m.CanonicalID}
++	if _, err := torah.ResolveBinding(o.ctx, s, o.owner.spaceID); err != nil {
++		return m, "", nil, err
++	}
++	heads := sortedRevisionHeads(b.Tree().Heads())
++	if !revisionHeads(heads) {
++		return m, "", nil, ErrAnnotationRevisionUnconfirmed
++	}
++	return m, raw, heads, nil
++}
++func (o *OwnedAnnotationRevisionOperation) readRevisionTypeLocked(b smartblock.SmartBlock) (string, []string, error) {
++	if b.SpaceID() != o.owner.spaceID || b.IsDeleted() || b.Type() != coresb.SmartBlockTypeObjectType || b.Tree() == nil {
++		return "", nil, ErrAnnotationRevisionInvalid
++	}
++	key := b.UniqueKey()
++	d := b.CombinedDetails()
++	if key == nil || key.SmartblockType() != coresb.SmartBlockTypeObjectType || d == nil ||
++		d.GetString(bundle.RelationKeyUniqueKey) != key.Marshal() || d.GetBool(bundle.RelationKeyIsArchived) ||
++		d.GetBool(bundle.RelationKeyIsDeleted) || d.GetBool(bundle.RelationKeyIsUninstalled) {
++		return "", nil, ErrAnnotationRevisionInvalid
++	}
++	layout := model.ObjectTypeLayout(d.GetInt64(bundle.RelationKeyRecommendedLayout))
++	if layout != model.ObjectType_basic && layout != model.ObjectType_note {
++		return "", nil, ErrAnnotationRevisionUnsupported
++	}
++	heads := sortedRevisionHeads(b.Tree().Heads())
++	if !revisionHeads(heads) {
++		return "", nil, ErrAnnotationRevisionUnconfirmed
++	}
++	return key.Marshal(), heads, nil
++}
++func (o *OwnedAnnotationRevisionOperation) discoverRevisionPromotion(role string) (*revisionPromotionContext, error) {
++	if !revisionDocumentRole(role) {
++		return nil, ErrAnnotationRevisionInvalid
++	}
++	ids, err := o.revisionManifestIDs()
++	if err != nil {
++		return nil, err
++	}
++	if len(ids) != 1 {
++		return nil, fmt.Errorf("%w: one complete original Torah manifest required", ErrAnnotationRevisionUnsupported)
++	}
++	exists, err := o.owner.space.Storage().HasTree(o.ctx, ids[0])
++	if err != nil || !exists {
++		return nil, ErrAnnotationRevisionInvalid
++	}
++	p := &revisionPromotionContext{role: role, manifestID: ids[0]}
++	err = cache.DoContextFullID(o.getter, o.ctx, domain.FullID{SpaceID: o.owner.spaceID, ObjectID: p.manifestID}, func(b smartblock.SmartBlock) error {
++		m, raw, heads, err := o.readRevisionManifestLocked(b, role)
++		if err != nil {
++			return err
++		}
++		digest := sha256.Sum256([]byte(raw))
++		p.raw, p.manifestSHA, p.manifestHeads = raw, hex.EncodeToString(digest[:]), heads
++		p.typeID = m.Types[role]
++		return nil
++	})
++	if err != nil {
++		return nil, err
++	}
++	exists, err = o.owner.space.Storage().HasTree(o.ctx, p.typeID)
++	if err != nil || !exists {
++		return nil, ErrAnnotationRevisionInvalid
++	}
++	err = cache.DoContextFullID(o.getter, o.ctx, domain.FullID{SpaceID: o.owner.spaceID, ObjectID: p.typeID}, func(b smartblock.SmartBlock) error {
++		key, heads, err := o.readRevisionTypeLocked(b)
++		p.typeKey, p.typeHeads = key, heads
++		return err
++	})
++	if err != nil {
++		return nil, err
++	}
++	p.annotation, err = o.discoverRevisionAnnotationType()
++	if err != nil {
++		return nil, err
++	}
++	if p.typeID == p.annotation.id || p.typeKey == p.annotation.key {
++		return nil, ErrAnnotationRevisionInvalid
++	}
++	return p, nil
++}
++func (o *OwnedAnnotationRevisionOperation) withRevisionPromotionLocks(p *revisionPromotionContext, body func() error) error {
++	ids, err := o.revisionManifestIDs()
++	if err != nil {
++		return err
++	}
++	if len(ids) != 1 || ids[0] != p.manifestID {
++		return ErrAnnotationRevisionConflict
++	}
++	return cache.DoContextFullID(o.getter, o.ctx, domain.FullID{SpaceID: o.owner.spaceID, ObjectID: p.manifestID}, func(manifest smartblock.SmartBlock) error {
++		m, raw, heads, err := o.readRevisionManifestLocked(manifest, p.role)
++		if err != nil {
++			return err
++		}
++		if raw != p.raw || !slices.Equal(heads, p.manifestHeads) || m.Types[p.role] != p.typeID {
++			return ErrAnnotationRevisionConflict
++		}
++		return cache.DoContextFullID(o.getter, o.ctx, domain.FullID{SpaceID: o.owner.spaceID, ObjectID: p.typeID}, func(kind smartblock.SmartBlock) error {
++			key, heads, err := o.readRevisionTypeLocked(kind)
++			if err != nil {
++				return err
++			}
++			if key != p.typeKey || !slices.Equal(heads, p.typeHeads) {
++				return ErrAnnotationRevisionConflict
++			}
++			return o.withRevisionAnnotationTypeLock(p.annotation, body)
++		})
++	})
++}
+diff --git a/core/block/import/owned_annotation_readback.go b/core/block/import/owned_annotation_readback.go
+index 3ebec79be6e4738b39a10635d27588d89d602d37..bdd1eff170a5bddf3116820aaacdc3d03cc3f856 100644
+--- a/core/block/import/owned_annotation_readback.go
++++ b/core/block/import/owned_annotation_readback.go
+@@ -4,6 +4,7 @@ import (
+ 	"context"
+ 	"crypto/sha256"
+ 	"errors"
++	"fmt"
+ 	"io"
+ 	"os"
+ 	"path/filepath"
+@@ -104,6 +105,9 @@ func (g *ownedAnnotationGraph) actualMapping(p *importProcessor, response *Impor
+ // This runs on the SAME original owned operation goroutine after Execute and
+ // its workers/file slots have actually drained, before owned.cancel and Done.
+ func (g *ownedAnnotationGraph) finishReadback(ctx context.Context, p *importProcessor, response *ImportResponse) (*OwnedAnnotationReadbackObservation, error) {
++	if g.revision != nil {
++		return nil, ownedAnnotationRefused("revision_is_not_import_v1_readback")
++	}
+ 	if response == nil || response.Err != nil {
+ 		return nil, ownedAnnotationRefused("native_execution_not_successful")
+ 	}
+@@ -350,7 +354,11 @@ func expectedOriginalFileMetadataBlocks(data *model.SmartBlockSnapshotBase, nati
+ }
+ 
+ func (g *ownedAnnotationGraph) compareNativeExport(ctx context.Context, p *importProcessor, ids map[string]string, actual *ownedAnnotationArchive, result *OwnedAnnotationReadbackObservation) error {
+-	if len(actual.snapshots) < len(g.members) || len(actual.snapshots) > len(g.members)+len(g.additionalContext) {
++	maximum := len(g.members) + len(g.additionalContext)
++	if g.revision != nil {
++		maximum += len(g.revision.before.snapshots)
++	}
++	if len(actual.snapshots) < len(g.members) || len(actual.snapshots) > maximum {
+ 		return ownedAnnotationRefused("native_export_graph_inventory")
+ 	}
+ 	seen := make(map[string]bool, len(actual.snapshots))
+@@ -375,6 +383,9 @@ func (g *ownedAnnotationGraph) compareNativeExport(ctx context.Context, p *impor
+ 		targetID := ids[sourceID]
+ 		observed := actual.snapshots[targetID]
+ 		if observed == nil || observed.Snapshot == nil || observed.Snapshot.Data == nil || observed.SbType != plan.snapshot.SbType || seen[targetID] {
++			if g.revision != nil {
++				return fmt.Errorf("%w: source=%s target=%s role=%v missing=%t duplicate=%t", ownedAnnotationRefused("native_export_source_member"), sourceID, targetID, plan.role, observed == nil, seen[targetID])
++			}
+ 			return ownedAnnotationRefused("native_export_source_member")
+ 		}
+ 		seen[targetID] = true
+@@ -384,6 +395,13 @@ func (g *ownedAnnotationGraph) compareNativeExport(ctx context.Context, p *impor
+ 		}
+ 		switch plan.role {
+ 		case ownedAnnotationFreshPage:
++			if g.revision.retained(plan) != "" {
++				if err := g.revision.compareRetainedExport(plan, observed); err != nil {
++					return err
++				}
++				result.annotationPages++
++				continue
++			}
+ 			expected, err := g.expectedCreatedPage(p, g.sourceToConverter[sourceID], targetID)
+ 			if err != nil {
+ 				return err
+@@ -424,6 +442,13 @@ func (g *ownedAnnotationGraph) compareNativeExport(ctx context.Context, p *impor
+ 				return ownedAnnotationRefused("native_file_body_differs")
+ 			}
+ 			usedFiles[source] = true
++			if g.revision.retained(plan) != "" {
++				if err := g.revision.compareRetainedExport(plan, observed); err != nil {
++					return err
++				}
++				result.fileObjects++
++				continue
++			}
+ 			expected := proto.Clone(plan.snapshot).(*pb.SnapshotWithType)
+ 			for _, b := range expected.Snapshot.Data.Blocks {
+ 				if b.Id == sourceID {
+@@ -484,9 +509,19 @@ func (g *ownedAnnotationGraph) compareNativeExport(ctx context.Context, p *impor
+ 		if seen[id] {
+ 			continue
+ 		}
++		if g.revision != nil {
++			if prior := g.revision.before.snapshots[id]; prior != nil && revisionSnapshotEqual(prior, snapshot) {
++				seen[id] = true
++				result.additionalContexts++
++				continue
++			}
++		}
+ 		plan := g.additionalContext[id]
+ 		if plan == nil || !g.isOriginalImportMetadata(plan) || snapshot == nil || snapshot.Snapshot == nil || snapshot.Snapshot.Data == nil ||
+ 			snapshot.Snapshot.Data.Key != plan.nativeKey.InternalKey() {
++			if g.revision != nil && snapshot != nil && snapshot.Snapshot != nil && snapshot.Snapshot.Data != nil {
++				return fmt.Errorf("%w: object=%s native_type=%d native_key=%q", ownedAnnotationRefused("unaccounted_native_export_dependency"), id, snapshot.SbType, snapshot.Snapshot.Data.Key)
++			}
+ 			return ownedAnnotationRefused("unaccounted_native_export_dependency")
+ 		}
+ 		if _, err := g.readOnlyContext(ctx, plan); err != nil {
+diff --git a/core/block/import/owned_annotation_revision.go b/core/block/import/owned_annotation_revision.go
+index d25a7896afa5cddc01e86561ef961afd5a2bf9f1..40f30669949e1d860cdca3bc1f07e76110bfd724 100644
+--- a/core/block/import/owned_annotation_revision.go
++++ b/core/block/import/owned_annotation_revision.go
+@@ -26,14 +26,17 @@ import (
+ 
+ 	"github.com/anyproto/anytype-heart/core/anytype/account"
+ 	"github.com/anyproto/anytype-heart/core/block/cache"
++	"github.com/anyproto/anytype-heart/core/block/editor/blockcollection"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/state"
+ 	"github.com/anyproto/anytype-heart/core/block/export"
++	"github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+ 	"github.com/anyproto/anytype-heart/core/converter/pbc"
+ 	"github.com/anyproto/anytype-heart/core/domain"
+ 	annotationschema "github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition"
+ 	"github.com/anyproto/anytype-heart/pb"
+ 	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++	"github.com/anyproto/anytype-heart/pkg/lib/localstore/objectstore"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+ 	"github.com/anyproto/anytype-heart/space"
+ 	"github.com/anyproto/anytype-heart/space/spacedomain"
+@@ -49,14 +52,28 @@ var ErrAnnotationRevisionUnconfirmed = errors.New("native annotation write requi
+ var ErrAnnotationRevisionUnsupported = errors.New("annotation revision graph is not safely representable")
+ 
+ type annotationRevisionRequest struct {
+-	Schema               int      `json:"schema"`
+-	Operation            string   `json:"operation"`
+-	TargetRootID         string   `json:"target_root_id"`
+-	AnnotationUUID       string   `json:"annotation_uuid"`
+-	ExpectedHeads        []string `json:"expected_heads,omitempty"`
+-	ExpectedRootSHA256   string   `json:"expected_root_sha256,omitempty"`
+-	DesiredArchive       []byte   `json:"desired_archive,omitempty"`
+-	DesiredArchiveSHA256 string   `json:"desired_archive_sha256,omitempty"`
++	Schema                       int      `json:"schema"`
++	Operation                    string   `json:"operation"`
++	TargetRootID                 string   `json:"target_root_id"`
++	AnnotationUUID               string   `json:"annotation_uuid"`
++	ExpectedHeads                []string `json:"expected_heads,omitempty"`
++	ExpectedRootSHA256           string   `json:"expected_root_sha256,omitempty"`
++	DesiredArchive               []byte   `json:"desired_archive,omitempty"`
++	DesiredArchiveSHA256         string   `json:"desired_archive_sha256,omitempty"`
++	DocumentRole                 string   `json:"document_role,omitempty"`
++	PromotionRole                string   `json:"promotion_role,omitempty"`
++	ExpectedArchiveID            string   `json:"expected_archive_id,omitempty"`
++	ExpectedArchiveHeads         []string `json:"expected_archive_heads,omitempty"`
++	ExpectedIsArchived           *bool    `json:"expected_is_archived,omitempty"`
++	ExpectedManifestID           string   `json:"expected_manifest_id,omitempty"`
++	ExpectedManifestSHA256       string   `json:"expected_manifest_sha256,omitempty"`
++	ExpectedManifestHeads        []string `json:"expected_manifest_heads,omitempty"`
++	ExpectedDestinationTypeID    string   `json:"expected_destination_type_id,omitempty"`
++	ExpectedDestinationTypeKey   string   `json:"expected_destination_type_unique_key,omitempty"`
++	ExpectedDestinationTypeHeads []string `json:"expected_destination_type_heads,omitempty"`
++	ExpectedAnnotationTypeID     string   `json:"expected_annotation_type_id,omitempty"`
++	ExpectedAnnotationTypeKey    string   `json:"expected_annotation_type_unique_key,omitempty"`
++	ExpectedAnnotationTypeHeads  []string `json:"expected_annotation_type_heads,omitempty"`
+ }
+ 
+ type annotationRevisionMapping struct {
+@@ -65,22 +82,43 @@ type annotationRevisionMapping struct {
+ 	ObjectID       string `json:"object_id"`
+ }
+ type annotationRevisionResult struct {
+-	Schema               int                         `json:"schema"`
+-	Operation            string                      `json:"operation"`
+-	Status               string                      `json:"status"`
+-	AccountID            string                      `json:"account_id"`
+-	SpaceID              string                      `json:"space_id"`
+-	RootID               string                      `json:"root_id"`
+-	AnnotationUUID       string                      `json:"annotation_uuid"`
+-	BeforeHeads          []string                    `json:"before_heads,omitempty"`
+-	Heads                []string                    `json:"heads,omitempty"`
+-	RootSnapshotSHA256   string                      `json:"root_snapshot_sha256,omitempty"`
+-	NativeArchive        []byte                      `json:"native_archive,omitempty"`
+-	NativeArchiveSHA256  string                      `json:"native_archive_sha256,omitempty"`
+-	SourceArchiveSHA256  string                      `json:"source_archive_sha256,omitempty"`
+-	Mappings             []annotationRevisionMapping `json:"mappings,omitempty"`
+-	NativeWriteObserved  bool                        `json:"native_write_observed"`
+-	NativeApplyAttempted bool                        `json:"native_apply_attempted"`
++	Schema                  int                         `json:"schema"`
++	Operation               string                      `json:"operation"`
++	Status                  string                      `json:"status"`
++	AccountID               string                      `json:"account_id"`
++	SpaceID                 string                      `json:"space_id"`
++	RootID                  string                      `json:"root_id"`
++	AnnotationUUID          string                      `json:"annotation_uuid"`
++	BeforeHeads             []string                    `json:"before_heads,omitempty"`
++	Heads                   []string                    `json:"heads,omitempty"`
++	RootSnapshotSHA256      string                      `json:"root_snapshot_sha256,omitempty"`
++	NativeArchive           []byte                      `json:"native_archive,omitempty"`
++	NativeArchiveSHA256     string                      `json:"native_archive_sha256,omitempty"`
++	SourceArchiveSHA256     string                      `json:"source_archive_sha256,omitempty"`
++	Mappings                []annotationRevisionMapping `json:"mappings,omitempty"`
++	NativeWriteObserved     bool                        `json:"native_write_observed"`
++	NativeApplyAttempted    bool                        `json:"native_apply_attempted"`
++	ArchiveObjectID         string                      `json:"archive_object_id,omitempty"`
++	ArchiveHeads            []string                    `json:"archive_heads,omitempty"`
++	IsArchived              *bool                       `json:"is_archived,omitempty"`
++	MutationObjectID        string                      `json:"mutation_object_id,omitempty"`
++	BeforeMutationHeads     []string                    `json:"before_mutation_heads,omitempty"`
++	MutationHeads           []string                    `json:"mutation_heads,omitempty"`
++	Classification          string                      `json:"classification,omitempty"`
++	DocumentRole            string                      `json:"document_role,omitempty"`
++	DocumentTypeID          string                      `json:"document_type_id,omitempty"`
++	DocumentTypeUniqueKey   string                      `json:"document_type_unique_key,omitempty"`
++	ManifestObjectID        string                      `json:"manifest_object_id,omitempty"`
++	ManifestSHA256          string                      `json:"manifest_sha256,omitempty"`
++	ManifestJSON            string                      `json:"manifest_json,omitempty"`
++	ManifestHeads           []string                    `json:"manifest_heads,omitempty"`
++	PromotionRole           string                      `json:"promotion_role,omitempty"`
++	PromotionTypeID         string                      `json:"promotion_type_id,omitempty"`
++	PromotionTypeUniqueKey  string                      `json:"promotion_type_unique_key,omitempty"`
++	PromotionTypeHeads      []string                    `json:"promotion_type_heads,omitempty"`
++	AnnotationTypeID        string                      `json:"annotation_type_id,omitempty"`
++	AnnotationTypeUniqueKey string                      `json:"annotation_type_unique_key,omitempty"`
++	AnnotationTypeHeads     []string                    `json:"annotation_type_heads,omitempty"`
+ }
+ 
+ // This operation cannot be constructed from caller completion functions or flags.
+@@ -99,6 +137,9 @@ type OwnedAnnotationRevisionOperation struct {
+ 	observed                                 bool
+ 	exportReport                             *model.ExportReport
+ 	err                                      error
++	extraExportIDs                           []string
++	nativeApp                                *app.App
++	expansion                                *ownedAnnotationRevisionGraph
+ }
+ 
+ func revisionText(value string) bool {
+@@ -152,7 +193,7 @@ func revisionJSONValue(dec *json.Decoder, depth int, fields *int) error {
+ 			// struct fields. The versioned wire contract has exact field names.
+ 			if depth == 0 {
+ 				switch name {
+-				case "schema", "operation", "target_root_id", "annotation_uuid", "expected_heads", "expected_root_sha256", "desired_archive", "desired_archive_sha256":
++				case "schema", "operation", "target_root_id", "annotation_uuid", "expected_heads", "expected_root_sha256", "desired_archive", "desired_archive_sha256", "document_role", "promotion_role", "expected_archive_id", "expected_archive_heads", "expected_is_archived", "expected_manifest_id", "expected_manifest_sha256", "expected_manifest_heads", "expected_destination_type_id", "expected_destination_type_unique_key", "expected_destination_type_heads", "expected_annotation_type_id", "expected_annotation_type_unique_key", "expected_annotation_type_heads":
+ 				default:
+ 					return ErrAnnotationRevisionInvalid
+ 				}
+@@ -220,9 +261,26 @@ func decodeAnnotationRevision(raw []byte, digest [32]byte) (annotationRevisionRe
+ 		if hex.EncodeToString(actual[:]) != result.DesiredArchiveSHA256 {
+ 			return result, ErrAnnotationRevisionInvalid
+ 		}
++	case "read_lifecycle", "read_promoted", "archive", "restore", "promote", "revert_promotion", "replace_promoted":
++		if err := validateAnnotationLifecycleRequest(result); err != nil {
++			return result, err
++		}
+ 	default:
+ 		return result, ErrAnnotationRevisionInvalid
+ 	}
++	if result.Operation == "read" && hasAnnotationLifecycleFields(result) {
++		return result, ErrAnnotationRevisionInvalid
++	}
++	if result.Operation == "replace" {
++		if !revisionText(result.ExpectedArchiveID) || !revisionHeads(result.ExpectedArchiveHeads) || result.ExpectedIsArchived == nil {
++			return result, ErrAnnotationRevisionInvalid
++		}
++		copy := result
++		copy.ExpectedArchiveID, copy.ExpectedArchiveHeads, copy.ExpectedIsArchived = "", nil, nil
++		if hasAnnotationLifecycleFields(copy) {
++			return result, ErrAnnotationRevisionInvalid
++		}
++	}
+ 	return result, nil
+ }
+ 
+@@ -236,12 +294,12 @@ func PrepareOwnedAnnotationRevision(ctx context.Context, a *app.App, raw []byte,
+ 	if err != nil {
+ 		return nil, err
+ 	}
+-	if request.Operation == "read" && (sourceRootID != request.TargetRootID || sourceSpaceID != targetSpaceID) {
++	if request.Operation != "replace" && request.Operation != "replace_promoted" && (sourceRootID != request.TargetRootID || sourceSpaceID != targetSpaceID) {
+ 		return nil, ErrAnnotationRevisionInvalid
+ 	}
+ 	ownedCtx, cancel := context.WithCancel(ctx)
+ 	var owner *ownedAnnotationGraph
+-	if request.Operation == "replace" {
++	if request.Operation == "replace" || request.Operation == "replace_promoted" {
+ 		archiveDigest := sha256.Sum256(request.DesiredArchive)
+ 		owner, err = prepareOwnedAnnotationGraph(ownedCtx, a, request.DesiredArchive, archiveDigest, sourceRootID, sourceSpaceID, targetSpaceID)
+ 		if err != nil {
+@@ -255,7 +313,15 @@ func PrepareOwnedAnnotationRevision(ctx context.Context, a *app.App, raw []byte,
+ 			cancel()
+ 			return nil, ErrAnnotationRevisionInvalid
+ 		}
+-		owner = &ownedAnnotationGraph{ctx: ownedCtx, account: accounts, accountID: accounts.AccountID(), identity: accounts.Keys().SignKey.GetPublic(), spaces: spaces, spaceID: targetSpaceID, exporter: app.MustComponent[export.Export](a)}
++		owner = &ownedAnnotationGraph{ctx: ownedCtx, account: accounts, accountID: accounts.AccountID(), identity: accounts.Keys().SignKey.GetPublic(), spaces: spaces, spaceID: targetSpaceID, exporter: app.MustComponent[export.Export](a), store: app.MustComponent[objectstore.ObjectStore](a)}
++	}
++	if owner.observer == nil {
++		observer, ok := app.MustComponent[objectcreator.Service](a).(objectcreator.OwnedAnnotationSchemaObserver)
++		if !ok {
++			cancel()
++			return nil, ErrAnnotationRevisionInvalid
++		}
++		owner.observer = observer
+ 	}
+ 	root, err := os.MkdirTemp("", "anytype-annotation-revision-")
+ 	if err != nil {
+@@ -265,7 +331,7 @@ func PrepareOwnedAnnotationRevision(ctx context.Context, a *app.App, raw []byte,
+ 		cancel()
+ 		return nil, err
+ 	}
+-	return &OwnedAnnotationRevisionOperation{ctx: ownedCtx, cancel: cancel, done: make(chan struct{}), owner: owner, getter: app.MustComponent[cache.ObjectGetter](a), request: request, sourceRootID: sourceRootID, sourceSpaceID: sourceSpaceID, privateRoot: root}, nil
++	return &OwnedAnnotationRevisionOperation{ctx: ownedCtx, cancel: cancel, done: make(chan struct{}), owner: owner, getter: app.MustComponent[cache.ObjectGetter](a), nativeApp: a, request: request, sourceRootID: sourceRootID, sourceSpaceID: sourceSpaceID, privateRoot: root}, nil
+ }
+ func (o *OwnedAnnotationRevisionOperation) TargetSpaceID() string { return o.owner.spaceID }
+ func (o *OwnedAnnotationRevisionOperation) Done() <-chan struct{} {
+@@ -292,6 +358,9 @@ func (o *OwnedAnnotationRevisionOperation) Start() {
+ 			defer close(o.done)
+ 			defer o.cancel()
+ 			defer func() {
++				if o.expansion != nil {
++					o.err = errors.Join(o.err, o.expansion.close())
++				}
+ 				if o.owner.stage != nil {
+ 					o.err = errors.Join(o.err, o.owner.stage.Close())
+ 				}
+@@ -303,7 +372,7 @@ func (o *OwnedAnnotationRevisionOperation) Start() {
+ 			if encodeErr != nil || len(raw) > annotationRevisionResponseMaximum {
+ 				result.NativeArchive, result.Mappings = nil, nil
+ 				result.NativeArchiveSHA256 = ""
+-				if result.NativeWriteObserved {
++				if result.NativeApplyAttempted {
+ 					result.Status = "applied_unconfirmed"
+ 				} else {
+ 					result.Status = "refused"
+@@ -335,12 +404,12 @@ func (o *OwnedAnnotationRevisionOperation) exportRoot(label string) (*ownedAnnot
+ 	if err := os.Mkdir(directory, 0700); err != nil {
+ 		return nil, err
+ 	}
+-	path, report, err := o.owner.exporter.Export(o.ctx, pb.RpcObjectListExportRequest{SpaceId: o.owner.spaceID, ObjectIds: []string{o.request.TargetRootID}, Path: directory, Format: model.Export_Protobuf, Zip: true, IncludeFiles: true, IncludeNested: true, IncludeArchived: true, NoProgress: true})
++	path, report, err := o.owner.exporter.Export(o.ctx, pb.RpcObjectListExportRequest{SpaceId: o.owner.spaceID, ObjectIds: append([]string{o.request.TargetRootID}, o.extraExportIDs...), Path: directory, Format: model.Export_Protobuf, Zip: true, IncludeFiles: true, IncludeNested: true, IncludeArchived: true, NoProgress: true})
+ 	if err != nil || o.ctx.Err() != nil {
+ 		return nil, errors.Join(err, o.ctx.Err())
+ 	}
+ 	if report == nil || report.Status != model.ExportReport_SUCCESS || report.Succeed <= 0 || report.ObjectErrors != 0 || report.FileErrors != 0 || len(report.Issues) != 0 {
+-		return nil, ErrAnnotationRevisionUnconfirmed
++		return nil, fmt.Errorf("%w: %s original export report %+v", ErrAnnotationRevisionUnconfirmed, label, report)
+ 	}
+ 	o.exportReport = proto.Clone(report).(*model.ExportReport)
+ 	raw, err := readOwnedAnnotationExport(o.ctx, directory, path)
+@@ -352,7 +421,7 @@ func (o *OwnedAnnotationRevisionOperation) exportRoot(label string) (*ownedAnnot
+ 		return nil, err
+ 	}
+ 	if int(report.Succeed) != len(archive.snapshots) {
+-		return nil, ErrAnnotationRevisionUnconfirmed
++		return nil, fmt.Errorf("%w: %s original export count %d snapshots %d", ErrAnnotationRevisionUnconfirmed, label, report.Succeed, len(archive.snapshots))
+ 	}
+ 	return archive, nil
+ }
+@@ -472,11 +541,34 @@ func (o *OwnedAnnotationRevisionOperation) execute() (annotationRevisionResult,
+ 	if err := o.owner.requireCurrentWriter(o.ctx); err != nil {
+ 		return result, err
+ 	}
++	if o.request.Operation == "replace_promoted" {
++		promotion, err := o.discoverRevisionPromotion(o.request.DocumentRole)
++		if err != nil {
++			return result, err
++		}
++		o.extraExportIDs = []string{promotion.annotation.id, promotion.typeID}
++		return o.executeRevisionBody(result, promotion)
++	}
++	if o.request.Operation != "read" && o.request.Operation != "replace" {
++		return o.executeLifecycle(result)
++	}
++	return o.executeRevisionBody(result, nil)
++}
++func (o *OwnedAnnotationRevisionOperation) executeRevisionBody(result annotationRevisionResult, promotion *revisionPromotionContext) (returned annotationRevisionResult, returnedErr error) {
++	defer func() {
++		if o.expansion != nil {
++			o.expansion.mergeOutcome(&returned, &returnedErr)
++		}
++	}()
+ 	before, err := o.exportRoot("before")
+ 	if err != nil {
+ 		return result, err
+ 	}
+-	if err := revisionIdentity(before.snapshots[o.request.TargetRootID], o.request.TargetRootID, o.request.AnnotationUUID); err != nil {
++	if promotion == nil {
++		if err := revisionIdentity(before.snapshots[o.request.TargetRootID], o.request.TargetRootID, o.request.AnnotationUUID); err != nil {
++			return result, err
++		}
++	} else if err := revisionPromotedIdentity(before.snapshots[o.request.TargetRootID], o.request.TargetRootID, o.request.AnnotationUUID, o.request.DocumentRole, promotion); err != nil {
+ 		return result, err
+ 	}
+ 	if o.request.Operation == "read" {
+@@ -490,21 +582,22 @@ func (o *OwnedAnnotationRevisionOperation) execute() (annotationRevisionResult,
+ 		}
+ 	}
+ 	var desired *state.State
+-	if o.request.Operation == "replace" {
++	if o.request.Operation == "replace" || o.request.Operation == "replace_promoted" {
+ 		if err := o.owner.classifyCompleteGraph(o.ctx); err != nil {
+ 			return result, err
+ 		}
+-		desired, result.Mappings, err = o.prepareReplacement(before)
++		desired, result.Mappings, err = o.prepareReplacement(before, promotion, &result)
+ 		if err != nil {
+ 			return result, err
+ 		}
+ 	}
+ 	var afterSnapshot *pb.SnapshotWithType
+-	err = cache.DoContextFullID(o.getter, o.ctx, domain.FullID{SpaceID: o.owner.spaceID, ObjectID: o.request.TargetRootID}, func(b smartblock.SmartBlock) error {
+-		current, heads, digest, err := o.lockedObservation(b)
++	err = o.withLifecycleLocks(promotion, func(archive smartblock.SmartBlock, collection blockcollection.Collection, b smartblock.SmartBlock) error {
++		current, err := o.observeLifecycleLocked(&result, archive, collection, b, promotion)
+ 		if err != nil {
+ 			return err
+ 		}
++		heads, digest := result.Heads, result.RootSnapshotSHA256
+ 		result.BeforeHeads = slices.Clone(heads)
+ 		result.Heads, result.RootSnapshotSHA256 = slices.Clone(heads), digest
+ 		if !revisionSnapshotEqual(current, before.snapshots[b.Id()]) {
+@@ -512,13 +605,19 @@ func (o *OwnedAnnotationRevisionOperation) execute() (annotationRevisionResult,
+ 			return ErrAnnotationRevisionConflict
+ 		}
+ 		if o.request.Operation == "read" {
++			if result.IsArchived == nil || *result.IsArchived {
++				return ErrAnnotationRevisionInvalid
++			}
+ 			result.Status = "read"
+ 			return nil
+ 		}
+-		if !slices.Equal(heads, o.request.ExpectedHeads) || digest != o.request.ExpectedRootSHA256 {
++		if !o.lifecyclePrecondition(result, promotion) {
+ 			result.Status = "conflict"
+ 			return ErrAnnotationRevisionConflict
+ 		}
++		if result.IsArchived == nil || *result.IsArchived {
++			return ErrAnnotationRevisionInvalid
++		}
+ 		if err := b.Restrictions().Object.Check(model.Restrictions_Blocks, model.Restrictions_Details); err != nil {
+ 			return err
+ 		}
+@@ -529,6 +628,11 @@ func (o *OwnedAnnotationRevisionOperation) execute() (annotationRevisionResult,
+ 		if err := proto.Unmarshal(pbc.NewConverter(desired, false).Convert(b.Type().ToProto()), expected); err != nil {
+ 			return err
+ 		}
++		if promotion != nil {
++			result.MutationObjectID = b.Id()
++			result.BeforeMutationHeads = slices.Clone(heads)
++			result.MutationHeads = slices.Clone(heads)
++		}
+ 		if revisionSnapshotEqual(expected, current) {
+ 			result.Status = "unchanged"
+ 			return nil
+@@ -538,16 +642,22 @@ func (o *OwnedAnnotationRevisionOperation) execute() (annotationRevisionResult,
+ 		result.Status, result.NativeApplyAttempted = "applied_unconfirmed", true
+ 		applyErr := b.Apply(desired)
+ 		result.NativeWriteObserved = !slices.Equal(heads, sortedRevisionHeads(b.Tree().Heads()))
++		if promotion != nil {
++			result.MutationHeads = sortedRevisionHeads(b.Tree().Heads())
++		}
+ 		if applyErr != nil {
+ 			return applyErr
+ 		}
+-		observed, newHeads, hash, err := o.lockedObservation(b)
++		observed, newHeads, hash, err := o.lockedObservationForLifecycle(b, promotion)
+ 		if err != nil {
+ 			result.Status = "applied_unconfirmed"
+ 			return err
+ 		}
+ 		result.NativeWriteObserved = !slices.Equal(heads, newHeads)
+ 		result.Heads, result.RootSnapshotSHA256 = newHeads, hash
++		if promotion != nil {
++			result.MutationHeads = slices.Clone(newHeads)
++		}
+ 		result.Status = "applied_unconfirmed"
+ 		if !result.NativeWriteObserved {
+ 			return fmt.Errorf("%w: root Apply did not advance heads", ErrAnnotationRevisionUnconfirmed)
+@@ -556,11 +666,17 @@ func (o *OwnedAnnotationRevisionOperation) execute() (annotationRevisionResult,
+ 			return revisionComparisonError("root_after_apply", expected, observed)
+ 		}
+ 		afterSnapshot = observed
++		if o.expansion != nil {
++			o.expansion.rootAfterApply = proto.Clone(observed).(*pb.SnapshotWithType)
++		}
+ 		return nil
+ 	})
+ 	if err != nil {
+ 		return result, err
+ 	}
++	if o.expansion != nil && o.expansion.attempted.Load() && afterSnapshot == nil {
++		return result, ErrAnnotationRevisionUnconfirmed
++	}
+ 	selected := before
+ 	if result.NativeWriteObserved {
+ 		selected, err = o.exportRoot("after")
+@@ -570,13 +686,15 @@ func (o *OwnedAnnotationRevisionOperation) execute() (annotationRevisionResult,
+ 		if !revisionSnapshotEqual(afterSnapshot, selected.snapshots[o.request.TargetRootID]) {
+ 			return result, revisionComparisonError("export_after_apply", afterSnapshot, selected.snapshots[o.request.TargetRootID])
+ 		}
+-		err = cache.DoContextFullID(o.getter, o.ctx, domain.FullID{SpaceID: o.owner.spaceID, ObjectID: o.request.TargetRootID}, func(b smartblock.SmartBlock) error {
+-			observed, heads, digest, err := o.lockedObservation(b)
++		err = o.withLifecycleLocks(promotion, func(archive smartblock.SmartBlock, collection blockcollection.Collection, b smartblock.SmartBlock) error {
++			observed, heads, digest, err := o.lockedObservationForLifecycle(b, promotion)
+ 			if err != nil {
+ 				return err
+ 			}
+-			if !slices.Equal(heads, result.Heads) || digest != result.RootSnapshotSHA256 || !revisionSnapshotEqual(observed, selected.snapshots[b.Id()]) {
+-				return ErrAnnotationRevisionUnconfirmed
++			member, _ := collection.HasObject(b.Id())
++			if member || archive.Id() != result.ArchiveObjectID || !slices.Equal(sortedRevisionHeads(archive.Tree().Heads()), result.ArchiveHeads) ||
++				!slices.Equal(heads, result.Heads) || digest != result.RootSnapshotSHA256 || !revisionSnapshotEqual(observed, selected.snapshots[b.Id()]) {
++				return fmt.Errorf("%w: final_revision archive_membership=%t archive_id=%t archive_heads=%t root_heads=%t root_hash=%t root_body=%t", ErrAnnotationRevisionUnconfirmed, !member, archive.Id() == result.ArchiveObjectID, slices.Equal(sortedRevisionHeads(archive.Tree().Heads()), result.ArchiveHeads), slices.Equal(heads, result.Heads), digest == result.RootSnapshotSHA256, revisionSnapshotEqual(observed, selected.snapshots[b.Id()]))
+ 			}
+ 			return nil
+ 		})
+diff --git a/core/block/import/owned_annotation_revision_graph.go b/core/block/import/owned_annotation_revision_graph.go
+new file mode 100644
+index 0000000000000000000000000000000000000000..b5c9222eea14d36111ac3c07a4249f1e575eccb5
+--- /dev/null
++++ b/core/block/import/owned_annotation_revision_graph.go
+@@ -0,0 +1,345 @@
++package importer
++
++import (
++	"context"
++	"crypto/sha256"
++	"errors"
++	"fmt"
++	"slices"
++	"sync"
++	"sync/atomic"
++	"time"
++
++	"github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
++	"github.com/anyproto/anytype-heart/core/block/cache"
++	blockcollection "github.com/anyproto/anytype-heart/core/block/editor/blockcollection"
++	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
++	"github.com/anyproto/anytype-heart/core/block/editor/state"
++	"github.com/anyproto/anytype-heart/core/block/import/common"
++	creator "github.com/anyproto/anytype-heart/core/block/import/common/objectcreator"
++	"github.com/anyproto/anytype-heart/core/block/import/common/objectid"
++	"github.com/anyproto/anytype-heart/core/converter/pbc"
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
++	"github.com/anyproto/anytype-heart/pb"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/gogo/protobuf/proto"
++)
++
++// This private context exists only inside the versioned revision operation.
++// The original import-v1 path has nil revision and keeps its fresh-only guards.
++// It binds retained identities to a genuine prior export; all new identities,
++// uploads, remapping and creation still run through the original processor.
++type ownedAnnotationRevisionGraph struct {
++	operation         *OwnedAnnotationRevisionOperation
++	graph             *ownedAnnotationGraph
++	existing          map[string]string
++	before            *ownedAnnotationArchive
++	processor         *importProcessor
++	execution         *ownedImportExecution
++	ids               map[string]string
++	attempted         atomic.Bool
++	observed          atomic.Bool
++	mu                sync.Mutex
++	preparedRoot      *state.State
++	rootAfterApply    *pb.SnapshotWithType
++	retainedFailure   error
++	retainedFileHeads map[string][]string
++}
++
++func (r *ownedAnnotationRevisionGraph) retained(plan *ownedAnnotationMemberPlan) string {
++	if r == nil || plan == nil || (plan.role != ownedAnnotationFreshPage && plan.role != ownedAnnotationFileObject) {
++		return ""
++	}
++	return r.existing[plan.sourceID]
++}
++func (r *ownedAnnotationRevisionGraph) observeRetained(ctx context.Context, plan *ownedAnnotationMemberPlan) (*domain.Details, error) {
++	id := r.retained(plan)
++	if id == "" || r.before.snapshots[id] == nil {
++		return nil, ErrAnnotationRevisionInvalid
++	}
++	var details *domain.Details
++	err := cache.DoContextFullID(r.operation.getter, ctx, domain.FullID{SpaceID: r.graph.spaceID, ObjectID: id}, func(b smartblock.SmartBlock) error {
++		if b.Id() != id || b.SpaceID() != r.graph.spaceID || b.IsDeleted() || b.Tree() == nil {
++			return ErrAnnotationRevisionConflict
++		}
++		expected := r.before.snapshots[id]
++		current, _, err := revisionSnapshot(b)
++		if err != nil {
++			return err
++		}
++		if plan.role == ownedAnnotationFileObject {
++			// resolveReplacementIDs already checked the exact prior archive
++			// binary. Reproduce the original export's archive filename in a
++			// copied state, while pinning the actual persisted file tree heads.
++			name := domain.NewDetailsFromProto(expected.Snapshot.Data.Details).GetString(bundle.RelationKeySource)
++			if name == "" || current.SbType != expected.SbType {
++				return ErrAnnotationRevisionInvalid
++			}
++			projection := b.NewState().Copy()
++			projection.SetDetailAndBundledRelation(bundle.RelationKeySource, domain.String(name))
++			projected := pbc.NewConverter(projection, false).Convert(b.Type().ToProto())
++			if len(projected) == 0 || len(projected) > ownedArchiveMaxExpanded {
++				return ErrAnnotationRevisionUnconfirmed
++			}
++			current = &pb.SnapshotWithType{}
++			if err := proto.Unmarshal(projected, current); err != nil {
++				return err
++			}
++			heads := sortedRevisionHeads(b.Tree().Heads())
++			if !revisionHeads(heads) {
++				return ErrAnnotationRevisionUnconfirmed
++			}
++			r.mu.Lock()
++			if r.retainedFileHeads == nil {
++				r.retainedFileHeads = make(map[string][]string)
++			}
++			previous, exists := r.retainedFileHeads[id]
++			if !exists {
++				r.retainedFileHeads[id] = heads
++			}
++			r.mu.Unlock()
++			if exists && !slices.Equal(previous, heads) {
++				return fmt.Errorf("%w: retained file tree heads changed", ErrAnnotationRevisionConflict)
++			}
++		}
++		if !revisionSnapshotEqual(current, expected) {
++			return errors.Join(ErrAnnotationRevisionConflict, revisionComparisonError("retained_original_dependency", expected, current))
++		}
++		if err = r.graph.requireCurrentWriter(ctx); err != nil {
++			return err
++		}
++		details = b.NewState().CombinedDetails().Copy()
++		return nil
++	})
++	if err != nil {
++		r.mu.Lock()
++		r.retainedFailure = errors.Join(r.retainedFailure, err)
++		r.mu.Unlock()
++	}
++	return details, err
++}
++
++// Existing identities are returned only after re-observing the exact real tree.
++// Every unbound member delegates to the original ID/key provider and uploader.
++type ownedRevisionIDProvider struct {
++	objectid.IdAndKeyProvider
++	graph *ownedAnnotationGraph
++}
++
++func (p ownedRevisionIDProvider) GetIDAndPayload(ctx context.Context, spaceID string, sn *common.Snapshot, created time.Time, existing bool, origin objectorigin.ObjectOrigin) (string, treestorage.TreeStorageCreatePayload, error) {
++	var empty treestorage.TreeStorageCreatePayload
++	if p.graph == nil || p.graph.revision == nil || sn == nil || spaceID != p.graph.spaceID {
++		return "", empty, ErrAnnotationRevisionInvalid
++	}
++	plan := p.graph.byConverter[sn.Id]
++	if id := p.graph.revision.retained(plan); id != "" {
++		_, err := p.graph.revision.observeRetained(ctx, plan)
++		return id, empty, err
++	}
++	return p.IdAndKeyProvider.GetIDAndPayload(ctx, spaceID, sn, created, existing, origin)
++}
++
++func (r *ownedAnnotationRevisionGraph) createRetained(data *creator.DataObject, sn *common.Snapshot, native creator.Service, plan *ownedAnnotationMemberPlan) (*domain.Details, string, error) {
++	id := r.retained(plan)
++	details, err := r.observeRetained(r.graph.ctx, plan)
++	if err != nil {
++		return nil, id, err
++	}
++	if plan.sourceID != r.operation.sourceRootID {
++		// The preflight compared every retained dependency's entire saved state.
++		// Never reset a dependency as a side effect of updating its parent.
++		return details, id, nil
++	}
++	preparer, ok := native.(interface {
++		PrepareOwnedAnnotationRevisionState(*creator.DataObject, *common.Snapshot) (*state.State, error)
++	})
++	if !ok {
++		return nil, id, ErrAnnotationRevisionUnsupported
++	}
++	prepared, err := preparer.PrepareOwnedAnnotationRevisionState(data, sn)
++	if err != nil {
++		return nil, id, err
++	}
++	if prepared == nil || prepared.RootId() != id {
++		return nil, id, ErrAnnotationRevisionInvalid
++	}
++	r.mu.Lock()
++	defer r.mu.Unlock()
++	if r.preparedRoot != nil {
++		return nil, id, ErrAnnotationRevisionInvalid
++	}
++	r.preparedRoot = prepared
++	return details, id, nil
++}
++
++// Preparation runs the REAL original converter, typed Torah remapper, native
++// provider, synchronous file upload and fresh creator. Only the selected root
++// is deferred until the same original root/Archive CAS can be checked again.
++func (o *OwnedAnnotationRevisionOperation) prepareReplacement(target *ownedAnnotationArchive, promotion *revisionPromotionContext, observed *annotationRevisionResult) (*state.State, []annotationRevisionMapping, error) {
++	g := o.owner
++	if o.nativeApp == nil || observed == nil {
++		return nil, nil, ErrAnnotationRevisionInvalid
++	}
++	if err := revisionIdentity(g.archive.snapshots[o.sourceRootID], o.sourceRootID, o.request.AnnotationUUID); err != nil {
++		return nil, nil, err
++	}
++	existing, formats, err := o.resolveReplacementIDs(target)
++	if err != nil {
++		return nil, nil, err
++	}
++	validationIDs := make(map[string]string, len(existing)+len(g.order)+len(target.snapshots))
++	for key, value := range existing {
++		validationIDs[key] = value
++	}
++	for id := range target.snapshots {
++		if validationIDs[id] == "" {
++			validationIDs[id] = id
++		}
++	}
++	for _, id := range g.order {
++		if validationIDs[id] == "" {
++			validationIDs[id] = id
++		}
++	}
++	for _, sourceID := range g.order {
++		plan := g.members[sourceID]
++		if plan.role != ownedAnnotationFreshPage && plan.role != ownedAnnotationFileObject {
++			continue
++		}
++		mapped, err := revisionMapState(plan.snapshot, sourceID, validationIDs[sourceID], validationIDs, formats)
++		if err != nil {
++			return nil, nil, err
++		}
++		if sourceID != o.sourceRootID && existing[sourceID] != "" {
++			if err = o.compareRetainedRevisionMember(plan, mapped, target.snapshots[existing[sourceID]], existing[sourceID]); err != nil {
++				return nil, nil, err
++			}
++		}
++	}
++	// A stale root/Archive or lost writer/restriction is refused BEFORE any
++	// original dependency upload/create is admitted.
++	err = o.withLifecycleLocks(promotion, func(archive smartblock.SmartBlock, collection blockcollection.Collection, b smartblock.SmartBlock) error {
++		current, err := o.observeLifecycleLocked(observed, archive, collection, b, promotion)
++		if err != nil {
++			return err
++		}
++		observed.BeforeHeads = slices.Clone(observed.Heads)
++		if expected := target.snapshots[b.Id()]; !revisionSnapshotEqual(current, expected) {
++			observed.Status = "conflict"
++			return errors.Join(ErrAnnotationRevisionConflict, revisionComparisonError("preparation_root_export", expected, current))
++		}
++		if !o.lifecyclePrecondition(*observed, promotion) {
++			observed.Status = "conflict"
++			return fmt.Errorf("%w: preparation root or Archive precondition changed", ErrAnnotationRevisionConflict)
++		}
++		if observed.IsArchived == nil || *observed.IsArchived {
++			return ErrAnnotationRevisionInvalid
++		}
++		return b.Restrictions().Object.Check(model.Restrictions_Blocks, model.Restrictions_Details)
++	})
++	if err != nil {
++		return nil, nil, err
++	}
++	native, err := prepareOwnedAnnotationGraph(o.ctx, o.nativeApp, o.request.DesiredArchive, sha256.Sum256(o.request.DesiredArchive), o.sourceRootID, o.sourceSpaceID, g.spaceID)
++	if err != nil {
++		return nil, nil, err
++	}
++	revision := &ownedAnnotationRevisionGraph{operation: o, graph: native, existing: existing, before: target}
++	native.revision = revision
++	o.expansion = revision // Keep real side-effect history and stage through completion.
++	owned := newOwnedImportExecution(o.ctx)
++	revision.execution = owned
++	processor, err := newOwnedAnnotationImportProcessor(o.nativeApp, owned, native)
++	if err != nil {
++		return nil, nil, err
++	}
++	revision.processor = processor
++	processor.deps.idProvider = ownedRevisionIDProvider{IdAndKeyProvider: processor.deps.idProvider, graph: native}
++	response := processor.Execute(o.ctx) // Includes original workers and file-slot drain.
++	if response == nil {
++		return nil, nil, ErrAnnotationRevisionUnconfirmed
++	}
++	if response.Err != nil {
++		// The original aggregate import error formats nested errors as text.
++		// Retain the exact typed native refusal observed by our private reader,
++		// without inferring authority from that text or hiding partial effects.
++		revision.mu.Lock()
++		retainedFailure := revision.retainedFailure
++		revision.mu.Unlock()
++		if errors.Is(retainedFailure, ErrAnnotationRevisionConflict) && !revision.attempted.Load() {
++			observed.Status = "conflict"
++		}
++		return nil, nil, errors.Join(response.Err, retainedFailure)
++	}
++	ids, err := native.actualMapping(processor, response)
++	if err != nil {
++		return nil, nil, err
++	}
++	if ids[o.sourceRootID] != o.request.TargetRootID {
++		return nil, nil, ErrAnnotationRevisionUnconfirmed
++	}
++	revision.ids = ids
++	revision.mu.Lock()
++	desired := revision.preparedRoot
++	revision.mu.Unlock()
++	if desired == nil || desired.RootId() != o.request.TargetRootID {
++		return nil, nil, ErrAnnotationRevisionUnconfirmed
++	}
++	mappings := make([]annotationRevisionMapping, 0, len(native.order))
++	for _, sourceID := range native.order {
++		mappings = append(mappings, annotationRevisionMapping{native.archive.spaceID, sourceID, ids[sourceID]})
++		// A promoted root need not retain every original Annotation schema as
++		// a live dependency. Explicitly export ALL actual mapped source objects
++		// through the original exporter so complete mapping remains witnessed.
++		if id := ids[sourceID]; id != o.request.TargetRootID && !slices.Contains(o.extraExportIDs, id) {
++			o.extraExportIDs = append(o.extraExportIDs, id)
++		}
++	}
++	slices.Sort(o.extraExportIDs)
++	return desired, mappings, native.requireCurrentWriter(o.ctx)
++}
++
++func (r *ownedAnnotationRevisionGraph) mergeOutcome(result *annotationRevisionResult, outcome *error) {
++	if r == nil || !r.attempted.Load() {
++		return
++	}
++	result.NativeApplyAttempted = true
++	result.NativeWriteObserved = result.NativeWriteObserved || r.observed.Load()
++	if *outcome != nil {
++		// Partial native dependency effects are not mislabeled conflict/no-effects.
++		result.Status = "applied_unconfirmed"
++		*outcome = errors.Join(ErrAnnotationRevisionUnconfirmed, *outcome)
++	}
++}
++func (r *ownedAnnotationRevisionGraph) compareRetainedExport(plan *ownedAnnotationMemberPlan, observed *pb.SnapshotWithType) error {
++	expected := r.before.snapshots[r.retained(plan)]
++	if plan.sourceID == r.operation.sourceRootID {
++		expected = r.rootAfterApply
++	}
++	if expected == nil || !revisionSnapshotEqual(expected, observed) {
++		return ErrAnnotationRevisionUnconfirmed
++	}
++	return nil
++}
++func (r *ownedAnnotationRevisionGraph) close() error {
++	if r == nil {
++		return nil
++	}
++	if r.execution != nil {
++		r.execution.cancel()
++	}
++	if r.graph != nil && r.graph.stage != nil {
++		return r.graph.stage.Close()
++	}
++	return nil
++}
++func (r *ownedAnnotationRevisionGraph) verifyFinal(actual *ownedAnnotationArchive, root *pb.SnapshotWithType) error {
++	if r == nil || r.processor == nil || len(r.ids) != len(r.graph.members) || root == nil {
++		return ErrAnnotationRevisionUnconfirmed
++	}
++	r.rootAfterApply = proto.Clone(root).(*pb.SnapshotWithType)
++	// This is the revision receipt's full graph check, not an import-v1 success.
++	return r.graph.compareNativeExport(r.operation.ctx, r.processor, r.ids, actual, &OwnedAnnotationReadbackObservation{})
++}
+diff --git a/core/block/import/owned_annotation_revision_graph_test.go b/core/block/import/owned_annotation_revision_graph_test.go
+new file mode 100644
+index 0000000000000000000000000000000000000000..03fb218fe0a454e13ed63c068dbddb4a35a10b99
+--- /dev/null
++++ b/core/block/import/owned_annotation_revision_graph_test.go
+@@ -0,0 +1,41 @@
++package importer
++
++import (
++	"context"
++	"errors"
++	"testing"
++)
++
++func TestAnnotationRevisionPartialDependencyEffectsRemainUnconfirmed(t *testing.T) {
++	for _, observed := range []bool{false, true} {
++		r := &ownedAnnotationRevisionGraph{}
++		r.attempted.Store(true)
++		r.observed.Store(observed)
++		result := annotationRevisionResult{Status: "conflict"}
++		err := error(ErrAnnotationRevisionConflict)
++		r.mergeOutcome(&result, &err)
++		if result.Status != "applied_unconfirmed" || !result.NativeApplyAttempted || result.NativeWriteObserved != observed ||
++			!errors.Is(err, ErrAnnotationRevisionUnconfirmed) || !errors.Is(err, ErrAnnotationRevisionConflict) {
++			t.Fatal("a possible/observed original dependency effect was mislabeled no-effects")
++		}
++	}
++}
++func TestAnnotationRevisionReadOnlyRolesNeverBecomeExistingPageAuthority(t *testing.T) {
++	r := &ownedAnnotationRevisionGraph{existing: map[string]string{"source": "target"}}
++	for _, role := range []ownedAnnotationMemberRole{ownedAnnotationFixedSchema, ownedAnnotationBundledSchema, ownedAnnotationParticipant} {
++		if r.retained(&ownedAnnotationMemberPlan{sourceID: "source", role: role}) != "" {
++			t.Fatal("read-only original schema admitted through revision page route")
++		}
++	}
++	var absent *ownedAnnotationRevisionGraph
++	if absent.retained(&ownedAnnotationMemberPlan{sourceID: "source", role: ownedAnnotationFreshPage}) != "" {
++		t.Fatal("legacy import acquired revision authority")
++	}
++}
++func TestAnnotationRevisionCannotMintImportV1BodyReceipt(t *testing.T) {
++	g := &ownedAnnotationGraph{revision: &ownedAnnotationRevisionGraph{}}
++	receipt, err := g.finishReadback(context.Background(), nil, nil)
++	if receipt != nil || err == nil {
++		t.Fatal("deferred root phase minted a legacy import success")
++	}
++}
+diff --git a/core/block/import/owned_annotation_revision_mapping.go b/core/block/import/owned_annotation_revision_mapping.go
+index 6c6165ae0bfa11b475eba47afe0433239924dddd..8d33e1f9276e40cfa8964e421956b60f5709c2b1 100644
+--- a/core/block/import/owned_annotation_revision_mapping.go
++++ b/core/block/import/owned_annotation_revision_mapping.go
+@@ -8,6 +8,7 @@ import (
+ 	"github.com/gogo/protobuf/proto"
+ 	"github.com/google/uuid"
+ 
++	"github.com/anyproto/anytype-heart/core/block/cache"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/state"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/template"
+@@ -23,18 +24,11 @@ import (
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+ )
+ 
+-// No dependency is reset, created, installed, downloaded or uploaded by revision
+-// preparation. Each desired member must correspond to the actual target graph
+-// or an already persisted, semantically identical original schema/context.
+-// Unsupported graph expansion is refused before the one root mutation.
+-func (o *OwnedAnnotationRevisionOperation) prepareReplacement(target *ownedAnnotationArchive) (*state.State, []annotationRevisionMapping, error) {
++// Resolve only identities actually present in the prior original export or
++// the original registered schema. Missing page/file members are left unassigned
++// for the ORIGINAL provider and fresh creator, never fabricated or reused.
++func (o *OwnedAnnotationRevisionOperation) resolveReplacementIDs(target *ownedAnnotationArchive) (map[string]string, map[domain.RelationKey]int32, error) {
+ 	g := o.owner
+-	if err := g.admitOriginalImportMetadata(o.ctx); err != nil {
+-		return nil, nil, err
+-	}
+-	if err := revisionIdentity(g.archive.snapshots[o.sourceRootID], o.sourceRootID, o.request.AnnotationUUID); err != nil {
+-		return nil, nil, err
+-	}
+ 	ids := make(map[string]string)
+ 	targets := make(map[string]string)
+ 	formats := make(map[domain.RelationKey]int32)
+@@ -95,66 +89,72 @@ func (o *OwnedAnnotationRevisionOperation) prepareReplacement(target *ownedAnnot
+ 		default:
+ 			return nil, nil, ErrAnnotationRevisionUnsupported
+ 		}
+-		if targetID == "" || targets[targetID] != "" {
++		if targetID == "" {
++			if plan.role == ownedAnnotationFreshPage || plan.role == ownedAnnotationFileObject {
++				continue
++			}
++			return nil, nil, ErrAnnotationRevisionUnsupported
++		}
++		if targets[targetID] != "" {
+ 			return nil, nil, ErrAnnotationRevisionUnsupported
+ 		}
+ 		ids[sourceID], targets[targetID] = targetID, sourceID
+ 	}
+-	// Existing fully observed target identities are self mappings; an absent
+-	// arbitrary CID must never silently turn into _missing_object.
+-	for id := range target.snapshots {
+-		if ids[id] == "" {
+-			ids[id] = id
+-		}
++	return ids, formats, g.requireCurrentWriter(o.ctx)
++}
++
++func (o *OwnedAnnotationRevisionOperation) compareRetainedRevisionMember(plan *ownedAnnotationMemberPlan, mapped *state.State, observed *pb.SnapshotWithType, targetID string) error {
++	if observed == nil {
++		return ErrAnnotationRevisionUnsupported
+ 	}
+-	var root *state.State
+-	mappings := make([]annotationRevisionMapping, 0, len(g.order))
+-	for _, sourceID := range g.order {
+-		plan, targetID := g.members[sourceID], ids[sourceID]
+-		mappings = append(mappings, annotationRevisionMapping{g.archive.spaceID, sourceID, targetID})
+-		if plan.role == ownedAnnotationFixedSchema || plan.role == ownedAnnotationBundledSchema || plan.role == ownedAnnotationParticipant {
+-			continue
+-		}
+-		mapped, err := revisionMapState(plan.snapshot, sourceID, targetID, ids, formats)
+-		if err != nil {
+-			return nil, nil, err
+-		}
+-		if sourceID == o.sourceRootID {
+-			root = mapped
+-			continue
+-		}
+-		observed := target.snapshots[targetID]
+-		if observed == nil {
+-			return nil, nil, ErrAnnotationRevisionUnsupported
+-		}
+-		expected := &pb.SnapshotWithType{}
+-		if err := proto.Unmarshal(pbc.NewConverter(mapped, false).Convert(plan.snapshot.SbType), expected); err != nil {
+-			return nil, nil, err
+-		}
+-		if plan.role == ownedAnnotationFileObject {
+-			// File content was compared byte-for-byte by its full native export.
+-			// Only original storage identity and the export-relative binary path
+-			// differ when that same file was materialized into a local Space.
+-			if expected.Snapshot.Data.FileInfo == nil || observed.Snapshot.Data.FileInfo == nil {
+-				return nil, nil, ErrAnnotationRevisionUnsupported
++	expected := &pb.SnapshotWithType{}
++	if err := proto.Unmarshal(pbc.NewConverter(mapped, false).Convert(plan.snapshot.SbType), expected); err != nil {
++		return err
++	}
++	if plan.role == ownedAnnotationFreshPage && domain.NewDetailsFromProto(plan.snapshot.Snapshot.Data.Details).GetInt64(bundle.RelationKeyCreatedDate) > 0 {
++		// Original injectCreationInfo supplies AddedDate from the assigned tree
++		// header when imported source metadata had none. Derive that exact
++		// native value from the authenticated original header, never readback.
++		err := cache.DoContextFullID(o.getter, o.ctx, domain.FullID{SpaceID: o.owner.spaceID, ObjectID: targetID}, func(b smartblock.SmartBlock) error {
++			if b.Id() != targetID || b.SpaceID() != o.owner.spaceID || b.IsDeleted() || b.Tree() == nil {
++				return ErrAnnotationRevisionConflict
+ 			}
+-			if err := expectedOriginalFileMetadataBlocks(expected.Snapshot.Data, targetID); err != nil {
+-				return nil, nil, err
++			current, _, err := revisionSnapshot(b)
++			if err != nil {
++				return err
++			}
++			if !revisionSnapshotEqual(current, observed) {
++				return ErrAnnotationRevisionConflict
++			}
++			details := domain.NewDetailsFromProto(expected.Snapshot.Data.Details)
++			if err := expectedOriginalImportedAddedDate(details, b.Tree().Header(), targetID, o.owner.spaceID); err != nil {
++				return err
+ 			}
+-			expected.Snapshot.Data.FileInfo.FileId = observed.Snapshot.Data.FileInfo.FileId
+-			ed, od := domain.NewDetailsFromProto(expected.Snapshot.Data.Details), domain.NewDetailsFromProto(observed.Snapshot.Data.Details)
+-			ed.Set(bundle.RelationKeyFileId, od.Get(bundle.RelationKeyFileId))
+-			ed.Set(bundle.RelationKeySource, od.Get(bundle.RelationKeySource))
+-			expected.Snapshot.Data.Details = ed.ToProto()
++			expected.Snapshot.Data.Details = details.ToProto()
++			return o.owner.requireCurrentWriter(o.ctx)
++		})
++		if err != nil {
++			return err
+ 		}
+-		if !revisionSnapshotEqual(expected, observed) {
+-			return nil, nil, ErrAnnotationRevisionUnsupported
++	}
++	if plan.role == ownedAnnotationFileObject {
++		// Exact bytes and SHA already bind the genuine source/target binaries.
++		if expected.Snapshot.Data.FileInfo == nil || observed.Snapshot.Data.FileInfo == nil {
++			return ErrAnnotationRevisionUnsupported
+ 		}
++		if err := expectedOriginalFileMetadataBlocks(expected.Snapshot.Data, targetID); err != nil {
++			return err
++		}
++		expected.Snapshot.Data.FileInfo.FileId = observed.Snapshot.Data.FileInfo.FileId
++		ed, od := domain.NewDetailsFromProto(expected.Snapshot.Data.Details), domain.NewDetailsFromProto(observed.Snapshot.Data.Details)
++		ed.Set(bundle.RelationKeyFileId, od.Get(bundle.RelationKeyFileId))
++		ed.Set(bundle.RelationKeySource, od.Get(bundle.RelationKeySource))
++		expected.Snapshot.Data.Details = ed.ToProto()
+ 	}
+-	if root == nil {
+-		return nil, nil, ErrAnnotationRevisionUnsupported
++	if !revisionSnapshotEqual(expected, observed) {
++		return errors.Join(ErrAnnotationRevisionUnsupported, revisionComparisonError("retained_dependency_preflight", expected, observed))
+ 	}
+-	return root, mappings, g.requireCurrentWriter(o.ctx)
++	return nil
+ }
+ 
+ func revisionMapState(snapshot *pb.SnapshotWithType, sourceID, targetID string, ids map[string]string, formats map[domain.RelationKey]int32) (*state.State, error) {
+@@ -292,6 +292,22 @@ func (o *OwnedAnnotationRevisionOperation) bindReplacement(b smartblock.SmartBlo
+ 		return ErrAnnotationRevisionUnsupported
+ 	}
+ 	prior := b.NewState()
++	// A saved local Annotation remains the closed input format. Its body may
++	// replace a separately verified manifest-bound Document, but never its
++	// actual role/type/layout. No type conversion is requested by this operation.
++	if o.request.Operation == "replace_promoted" {
++		if o.request.DocumentRole == "" {
++			return ErrAnnotationRevisionInvalid
++		}
++		desired.SetObjectTypeKeys(prior.ObjectTypeKeys())
++		for _, key := range []domain.RelationKey{bundle.RelationKeyType, bundle.RelationKeyLayout, bundle.RelationKeyLayoutAlign, bundle.RelationKeyFeaturedRelations, bundle.RelationKeyInternalFlags, "pinkhaTorahAnnotationClassification"} {
++			if value := prior.Details().Get(key); value.Ok() {
++				desired.SetDetail(key, value)
++			} else {
++				desired.RemoveDetail(key)
++			}
++		}
++	}
+ 	// Creation identity is immutable. Preserve original bytes (UUID case too);
+ 	// the UUID itself is compared semantically before this point.
+ 	for key, value := range prior.Details().Iterate() {
+@@ -352,6 +368,9 @@ func (o *OwnedAnnotationRevisionOperation) bindReplacement(b smartblock.SmartBlo
+ }
+ 
+ func (o *OwnedAnnotationRevisionOperation) verifyRevisionGraph(before, after *ownedAnnotationArchive, mappings []annotationRevisionMapping) error {
++	if o.expansion != nil {
++		return o.expansion.verifyFinal(after, o.expansion.rootAfterApply)
++	}
+ 	ids := make(map[string]string, len(mappings))
+ 	expectedTargets := map[string]bool{}
+ 	for _, row := range mappings {
+@@ -403,6 +422,14 @@ func (o *OwnedAnnotationRevisionOperation) verifyRevisionGraph(before, after *ow
+ 		if expectedTargets[id] {
+ 			continue
+ 		}
++		// Promoted observations explicitly export both native type objects.
++		// Additional original dependencies are permitted only when the SAME
++		// genuine pre-export already contained their complete unchanged snapshot.
++		if o.request.Operation == "replace_promoted" {
++			if previous := before.snapshots[id]; previous != nil && revisionSnapshotEqual(previous, observed) {
++				continue
++			}
++		}
+ 		plan := o.owner.additionalContext[id]
+ 		if plan == nil || !o.owner.isOriginalImportMetadata(plan) {
+ 			return ErrAnnotationRevisionUnconfirmed
+diff --git a/core/block/import/owned_annotation_revision_type.go b/core/block/import/owned_annotation_revision_type.go
+new file mode 100644
+index 0000000000000000000000000000000000000000..ab1bc2b9dd896c9abda491b59d9af6ea976e3585
+--- /dev/null
++++ b/core/block/import/owned_annotation_revision_type.go
+@@ -0,0 +1,75 @@
++package importer
++
++import (
++	"slices"
++
++	"github.com/anyproto/anytype-heart/core/block/cache"
++	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
++	"github.com/anyproto/anytype-heart/core/block/object/objectcreator"
++	"github.com/anyproto/anytype-heart/core/domain"
++	annotationschema "github.com/anyproto/anytype-heart/core/pinkha/annotationschema/definition"
++	"github.com/anyproto/anytype-heart/pb"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++)
++
++// The destination type is the original registered fixed schema, observed by
++// its existing raw signed-tree observer. A caller cannot select a substitute.
++type revisionAnnotationTypeContext struct {
++	id, key  string
++	heads    []string
++	snapshot *pb.SnapshotWithType
++}
++
++func (o *OwnedAnnotationRevisionOperation) discoverRevisionAnnotationType() (*revisionAnnotationTypeContext, error) {
++	if o.owner.observer == nil {
++		return nil, ErrAnnotationRevisionInvalid
++	}
++	definitions, err := annotationschema.Definitions()
++	if err != nil {
++		return nil, err
++	}
++	for _, definition := range definitions {
++		if definition.Key.Marshal() != annotationschema.TypeUniqueKey {
++			continue
++		}
++		observed, err := o.owner.observer.ObserveOwnedAnnotationFixedSchema(o.ctx, o.owner.space, definition)
++		if err != nil {
++			return nil, err
++		}
++		snapshot := observed.CopySnapshot()
++		if observed.Disposition != objectcreator.FixedSchemaPersistedMatch || observed.AccountIdentity != o.owner.accountID ||
++			observed.SpaceID != o.owner.spaceID || observed.ObjectID == "" || snapshot == nil ||
++			!revisionHeads(sortedRevisionHeads(observed.PersistedHeads)) {
++			return nil, ErrAnnotationRevisionInvalid
++		}
++		return &revisionAnnotationTypeContext{id: observed.ObjectID, key: annotationschema.TypeUniqueKey,
++			heads: sortedRevisionHeads(observed.PersistedHeads), snapshot: snapshot}, nil
++	}
++	return nil, ErrAnnotationRevisionInvalid
++}
++func (o *OwnedAnnotationRevisionOperation) withRevisionAnnotationTypeLock(kind *revisionAnnotationTypeContext, body func() error) error {
++	if kind == nil || kind.id == o.request.TargetRootID || kind.key != annotationschema.TypeUniqueKey {
++		return ErrAnnotationRevisionInvalid
++	}
++	return cache.DoContextFullID(o.getter, o.ctx, domain.FullID{SpaceID: o.owner.spaceID, ObjectID: kind.id}, func(b smartblock.SmartBlock) error {
++		if b.IsDeleted() || b.SpaceID() != o.owner.spaceID || b.Type() != coresb.SmartBlockTypeObjectType || b.Tree() == nil ||
++			b.UniqueKey() == nil || b.UniqueKey().Marshal() != kind.key {
++			return ErrAnnotationRevisionInvalid
++		}
++		snapshot, _, err := revisionSnapshot(b)
++		if err != nil {
++			return err
++		}
++		if !slices.Equal(sortedRevisionHeads(b.Tree().Heads()), kind.heads) || !revisionSnapshotEqual(snapshot, kind.snapshot) {
++			return ErrAnnotationRevisionConflict
++		}
++		if err = o.owner.requireCurrentWriter(o.ctx); err != nil {
++			return err
++		}
++		return body()
++	})
++}
++func (p *revisionPromotionContext) hasExpectedTypeWitness(r annotationRevisionRequest) bool {
++	return p != nil && p.annotation != nil && p.annotation.id == r.ExpectedAnnotationTypeID &&
++		p.annotation.key == r.ExpectedAnnotationTypeKey && slices.Equal(p.annotation.heads, r.ExpectedAnnotationTypeHeads)
++}
