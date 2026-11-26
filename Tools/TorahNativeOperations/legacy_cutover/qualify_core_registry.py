@@ -76,7 +76,10 @@ def main():
             PINKHA_CUTOVER_SHARED_FIXTURE=str(binary),PINKHA_CUTOVER_SHARED_FIXTURE_SHA256=FIXTURE_BINARY_SHA,
             PINKHA_CUTOVER_CORE_PRIVATE_ROOT=str(private))
         c.save(root/"environment.json",{key:env[key] for key in ["GOWORK","GOTOOLCHAIN","GOMAXPROCS","GOMEMLIMIT","GOCACHE","CGO_ENABLED","CGO_LDFLAGS","GOTMPDIR","TMPDIR","GOFLAGS","GOEXPERIMENT","PINKHA_CUTOVER_SHARED_FIXTURE","PINKHA_CUTOVER_SHARED_FIXTURE_SHA256","PINKHA_CUTOVER_CORE_PRIVATE_ROOT"]})
-        commands.run("go-version",[GO,"version"],source/"heart",env,30)
+        result["goToolSHA256"]=c.digest(Path(GO))
+        versionLog=commands.run("go-version",[GO,"version"],source/"heart",env,30)
+        if versionLog.read_text().strip()!="go version go1.27.4 linux/arm64":raise ValueError("exact qualified Go toolchain")
+        commands.run("go-environment",[GO,"env","-json","GOVERSION","GOROOT","GOTOOLDIR","GOOS","GOARCH","CGO_ENABLED","CC","CXX","GOMODCACHE","GOCACHE","GOWORK"],source/"heart",env,30)
         commands.run("module-graph",[GO,"list","-m","-json","all"],source/"heart",env,120)
         if inventory()!=expected:raise ValueError("module metadata changed before compilation")
         executable=root/"cutover-real-core.test"
@@ -117,6 +120,7 @@ def main():
                 c.save(root/"private-inventory.json",privateFiles)
             except Exception as error:result.update(status="FAIL",retentionError=str(error))
         if hashlib.sha256(helper.read_bytes()).hexdigest()!=HELPER_SHA:result.update(status="FAIL",controlError="owned helper changed")
+        if result.get("goToolSHA256") and c.digest(Path(GO))!=result["goToolSHA256"]:result.update(status="FAIL",toolError="Go toolchain changed")
         c.save(root/"receipt.json",result)
     print(json.dumps(result));return 0 if result["status"].startswith("PASS_") else 1
 if __name__=="__main__":raise SystemExit(main())
