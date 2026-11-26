@@ -2,6 +2,7 @@ import Foundation
 import CryptoKit
 import UIKit
 import AnytypeCore
+import PinkhaKit
 @_spi(OriginalEditorLocalAnnotation) import Services
 import ProtobufMessages
 import SwiftProtobuf
@@ -246,12 +247,16 @@ internal final class OriginalEditorLocalAnnotationRuntime {
         phase = .stopping
         lifetime.markUnavailable()
         currentOwner?.retire()
-        // This reservation protected the selected local account between calls.
-        // Retired source operations keep THEIR original admissions until their
-        // actual native callbacks drain; AccountStop waits on those admissions.
-        accountReservation?.cancel()
-        accountReservation = nil
         let task = Task { @MainActor [self] in
+            // Each subscription owns a captured native account dispatch.
+            // Unsubscribe while that dispatch and its Go account are available.
+            // An unsubscribe after AccountStop can block the next local reopen.
+            await Container.shared.spaceViewsStorage().stopSubscription()
+            await Container.shared.participantsStorage().stopSubscription()
+            // Retired source operations retain their admissions until native
+            // callbacks drain. AccountStop waits on those original admissions.
+            accountReservation?.cancel()
+            accountReservation = nil
             let transition = EditorAccountWriteTransition(
                 lifetime: accountLifetime, rpcNames: ["AccountStop"])
             do {
@@ -260,8 +265,6 @@ internal final class OriginalEditorLocalAnnotationRuntime {
                 }
                 await transition.finishAndWaitForRelease()
                 try await ServiceMessageHandlerAdapter.shared.waitForPendingEventDelivery()
-                await Container.shared.spaceViewsStorage().stopSubscription()
-                await Container.shared.participantsStorage().stopSubscription()
                 await Container.shared.loginStateService().cleanStateAfterLogout()
                 try await ServiceMessageHandlerAdapter.shared.waitForPendingEventDelivery()
                 accountManager.account = .empty
@@ -578,6 +581,15 @@ internal final class OriginalEditorLocalAnnotationRuntime {
         try selection.validate()
         guard selection.accountID == accountID, selection.accountInfo.accountSpaceId == spaceID else {
             throw AnytypeOriginalEditorLocalAnnotationError.unavailableSpace
+        }
+        // Original Space selection starts Pinkha provisioning on the same
+        // persisted records. Wait for its original claim before reading the
+        // fixed annotation schema so registration never races those writes.
+        if PinkhaRuntime.enabled {
+            _ = try await Container.shared.pinkhaBootstrapStateManager().awaitReadiness(spaceId: spaceID)
+            try validate()
+            for captured in captures { try captured.validate() }
+            try selection.validate()
         }
         let observed = OriginalEditorLocalSchemaHistory()
         let response = try await selection.registerOriginalAnnotationSchema { observed.record($0) }
