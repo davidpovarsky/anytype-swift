@@ -60,6 +60,20 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
     public static let contract = "pinkha-native-any-name-v1"
     public static let descriptionContract = "pinkha-native-any-description-v1"
     public enum IdentityRole: String, Codable, Sendable { case id, spaceId, type }
+    /// A destination's native clocks/signers remain native. Captured historical
+    /// values belong to the immutable source facts, never to these fields.
+    public enum DerivedRole: String, Codable, Sendable {
+        case author, createdAt, modifiedAt, modifiedBy
+        public var sourceKey: String {
+            switch self {
+            case .author: "creator"
+            case .createdAt: "createdDate"
+            case .modifiedAt: "lastModifiedDate"
+            case .modifiedBy: "lastModifiedBy"
+            }
+        }
+        public var isTimestamp: Bool { self == .createdAt || self == .modifiedAt }
+    }
     public let evidence: AnyDestinationDefinitionEvidence
     /// The captured target Type of a system relation, in the same source
     /// checkpoint. Registry labels cannot substitute for this native object.
@@ -70,6 +84,8 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
     public let nativeDescriptorSHA256: String
     public var sourceHidden: Bool? { evidence.snapshot.details["isHidden"]?.bool }
     public var identityRole: IdentityRole? { IdentityRole(rawValue: propertyID) }
+    public var derivedRole: DerivedRole? { DerivedRole(rawValue: propertyID) }
+    public var sourceRelationKey: String { derivedRole?.sourceKey ?? propertyID }
 
     // SDK e195f6/internal/types/any/any.go. The executor admits the complete
     // actual native HTTP descriptor again before its first mutation.
@@ -103,6 +119,25 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
         }
     }
 
+    public static func nativeDerivedDescriptor(_ role: DerivedRole) -> AnyJSON {
+        let name: String, description: String
+        switch role {
+        case .author:
+            name = "Author"; description = "Account identity that created the object; derived."
+        case .createdAt:
+            name = "Created at"; description = "Instant of the creating change (author's clock); derived."
+        case .modifiedAt:
+            name = "Modified at"; description = "Instant of the latest valid synced change (author's clock); derived."
+        case .modifiedBy:
+            name = "Modified by"; description = "Account identity that signed the change modifiedAt names; derived."
+        }
+        var fields: [String: AnyJSON] = ["id": .string(role.rawValue), "name": .string(name),
+            "description": .string(description), "kind": .string(role.isTimestamp ? "datetime" : "string"),
+            "scope": .string("derived")]
+        if role.isTimestamp { fields["xFormat"] = .object(["type": .string("datetime")]) }
+        return .object(fields)
+    }
+
     public init(evidence: AnyDestinationDefinitionEvidence,
                 targetTypeEvidence: AnyDestinationDefinitionEvidence? = nil) throws {
         self.evidence = evidence; self.targetTypeEvidence = targetTypeEvidence; ownerID = "any"
@@ -112,6 +147,10 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
         case Data("rel-id".utf8): propertyID = "id"
         case Data("rel-spaceId".utf8): propertyID = "spaceId"
         case Data("rel-type".utf8): propertyID = "type"
+        case Data("rel-creator".utf8): propertyID = "author"
+        case Data("rel-createdDate".utf8): propertyID = "createdAt"
+        case Data("rel-lastModifiedDate".utf8): propertyID = "modifiedAt"
+        case Data("rel-lastModifiedBy".utf8): propertyID = "modifiedBy"
         default: throw AnyDestinationMigrationError.invalidPlan("unknown canonical property identity")
         }
         let required = try Self.specification(propertyID)
@@ -129,6 +168,7 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
         let sourceDescription: String
         let sourceReadonly: Bool
         let targetTypeUniqueKey: String?
+        var sourceIncludeTime: Bool { sourceFormat == 4 }
     }
     private static func specification(_ propertyID: String) throws -> Specification {
         switch propertyID {
@@ -145,6 +185,18 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
         case "type": return .init(contract: "pinkha-native-any-type-membership-v1", descriptor: nativeIdentityDescriptor(.type),
             sourceFormat: 100, sourceName: "Object type", sourceDescription: "Relation that stores the object's type",
             sourceReadonly: true, targetTypeUniqueKey: "ot-objectType")
+        case "author": return .init(contract: "pinkha-native-any-derived-author-v1", descriptor: nativeDerivedDescriptor(.author),
+            sourceFormat: 100, sourceName: "Created by", sourceDescription: "Human which created this object",
+            sourceReadonly: true, targetTypeUniqueKey: "ot-participant")
+        case "createdAt": return .init(contract: "pinkha-native-any-derived-created-at-v1", descriptor: nativeDerivedDescriptor(.createdAt),
+            sourceFormat: 4, sourceName: "Creation date", sourceDescription: "Date when the object was initially created",
+            sourceReadonly: true, targetTypeUniqueKey: nil)
+        case "modifiedAt": return .init(contract: "pinkha-native-any-derived-modified-at-v1", descriptor: nativeDerivedDescriptor(.modifiedAt),
+            sourceFormat: 4, sourceName: "Last modified date", sourceDescription: "Date when the object was modified last time",
+            sourceReadonly: true, targetTypeUniqueKey: nil)
+        case "modifiedBy": return .init(contract: "pinkha-native-any-derived-modified-by-v1", descriptor: nativeDerivedDescriptor(.modifiedBy),
+            sourceFormat: 100, sourceName: "Last modified by", sourceDescription: "Human who updated the object last time",
+            sourceReadonly: true, targetTypeUniqueKey: "ot-participant")
         default: throw AnyDestinationMigrationError.invalidPlan("unknown canonical property identity")
         }
     }
@@ -152,10 +204,10 @@ public struct AnyDestinationCanonicalPropertyBinding: Codable, Equatable, Sendab
         let row = evidence.snapshot, d = row.details, required = try Self.specification(propertyID)
         guard ownerID == "any", nativeContract == required.contract,
               nativeDescriptorSHA256 == (try AnyDestinationDefinitionChecks.digest(required.descriptor)),
-              row.nativeType == 521, Data(row.uniqueKey.utf8) == Data(("rel-" + propertyID).utf8),
-              d["relationKey"] == .string(propertyID), d["relationFormat"] == .integer(required.sourceFormat),
+              row.nativeType == 521, Data(row.uniqueKey.utf8) == Data(("rel-" + sourceRelationKey).utf8),
+              d["relationKey"] == .string(sourceRelationKey), d["relationFormat"] == .integer(required.sourceFormat),
               d["relationMaxCount"] == .integer(1), d["relationReadonlyValue"] == .bool(required.sourceReadonly),
-              d["relationDefaultValue"] == .null, d["relationFormatIncludeTime"] == .bool(false),
+              d["relationDefaultValue"] == .null, d["relationFormatIncludeTime"] == .bool(required.sourceIncludeTime),
               d["name"] == .string(required.sourceName), d["description"] == .string(required.sourceDescription),
               d["isArchived"] == nil || d["isArchived"] == .bool(false),
               d["isHidden"] == nil || d["isHidden"]?.bool != nil,
