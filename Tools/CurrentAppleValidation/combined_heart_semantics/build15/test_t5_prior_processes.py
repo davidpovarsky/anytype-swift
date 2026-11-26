@@ -20,7 +20,8 @@ def load_function():
 class PriorProcessTests(unittest.TestCase):
     def test_actual_processes_are_excluded_instead_of_role_names(self):
         prior = load_function()({'preparationProcessID': 110},
-            {'actual_processes': {'related-targets': [111], 'note-lifecycle': [112, 113]}})
+            {'actual_processes': {'related-targets': [111, 111, 111],
+                'note-lifecycle': [112, 112, 112, 112, 113, 113, 113]}})
         self.assertEqual(prior, {110, 111, 112, 113})
         for stale_pid in (110, 111, 112, 113):
             self.assertIn(stale_pid, prior)
@@ -30,6 +31,9 @@ class PriorProcessTests(unittest.TestCase):
         invalid = [
             {'related-targets': [111], 'note-lifecycle': [112]},
             {'related-targets': [111], 'note-lifecycle': [110, 113]},
+            {'related-targets': [111, 111], 'note-lifecycle': [111, 113, 113]},
+            {'related-targets': [111, 112], 'note-lifecycle': [113, 114]},
+            {'related-targets': [111], 'note-lifecycle': [112, 113, 114]},
             {'related-targets': [111], 'note-lifecycle': ['112', 113]},
             {'related-targets': [111], 'note-lifecycle': [True, 113]},
             {'related-targets': [111], 'unexpected': [112, 113]},
