@@ -1108,6 +1108,8 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertFalse(mapper.issues.contains { $0.sourceObjectID == capturedText.objectID && $0.field == "relationDefaultValue" })
         XCTAssertThrowsError(try mapper.admittedSchemaItems())
         XCTAssertFalse(mapper.permitsDestinationWrites)
+        var currentContentStage = "compose"
+        do {
         let current = try AnyHeartNativeContentComposition(bundle: bundle)
         XCTAssertEqual(current.selection.objects.count, 2)
         XCTAssertEqual(current.selection.typeObjectIDs, [custom.objectID])
@@ -1150,11 +1152,13 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(Set(current.pages.flatMap(\.presentDetailKeys)), Set(first.details.keys))
         XCTAssertTrue(current.pages.allSatisfy { $0.presentDetailKeys.count == 8 })
         XCTAssertEqual(current.definitions.schemaItems.count, 11)
+        currentContentStage = "construct-plan"
         let currentPlan = try current.currentContentPlan(workspace: .init(accountID: "destination-account", spaceID: "destination-space"),
             storeID: "destination-store", planID: String(repeating: "a", count: 64))
         XCTAssertEqual(currentPlan.source.sourceObjectIDs.count, 15)
         XCTAssertEqual(currentPlan.items.count, 19)
         XCTAssertEqual(currentPlan.coverage.count, 15)
+        currentContentStage = "decode-plan"
         XCTAssertEqual(try AnyDestinationMigrationPlan.decode(JSONEncoder().encode(currentPlan)).canonicalBytes, currentPlan.canonicalBytes)
         let lastCreate = try XCTUnwrap(currentPlan.items.lastIndex { if case .object = $0.operation { return true }; return false })
         let firstReference = try XCTUnwrap(currentPlan.items.firstIndex { if case .propertyUpdate = $0.operation { return true }; return false })
@@ -1175,6 +1179,7 @@ final class NativeDefinitionPlanTests: XCTestCase {
         }
         // A selected catalogue cannot be reused with an unobserved revision
         // of the same source object, even if its account/space is unchanged.
+        currentContentStage = "changed-snapshot-control"
         var changedView = try XCTUnwrap(JSONDecoder().decode(AnyJSON.self, from: first.jsonViewBytes).object)
         var changedSnapshot = try XCTUnwrap(changedView["Snapshot"]?.object)
         var changedDetails = first.details
@@ -1190,6 +1195,10 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(current.definitions.catalog.options.count, 4)
         XCTAssertThrowsError(try mapper.admittedSchemaItems())
         XCTAssertEqual(AnyContentDigest.sha256(try bytes("manifest.json", under: directory)), bundle.manifestSHA256)
+        } catch {
+            print("CURRENT_CONTENT_COMPONENT_FAILURE stage=\(currentContentStage) errorType=\(String(reflecting: type(of: error))) error=\(error)")
+            throw error
+        }
         print("NATIVE_CUSTOM_CAPTURE_DIAGNOSTIC snapshots=156 types=20 relations=126 options=4 source_method=FAIL destination_writes=false originals_unchanged=true")
     }
 
