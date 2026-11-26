@@ -521,9 +521,18 @@ internal final class OriginalEditorLocalAnnotationRuntime {
                     throw error
                 }
             } else {
+                // Preserve native initial focus for a genuinely empty note.
+                // Saved text or a saved native document already has a body to show.
+                let hasSavedBody: Bool
+                switch canonical.body {
+                case .plainText(let text):
+                    hasSavedBody = !text.isEmpty
+                case .nativeSnapshot:
+                    hasSavedBody = true
+                }
                 host = try await AnytypeOriginalEditorModule.openExistingEditor(
                     binding: editorBinding, sourceLifetime: originalSource,
-                    suppressesAutomaticCursorFocus: true
+                    suppressesAutomaticCursorFocus: hasSavedBody
                 ) { candidate in
                     candidate == editorBinding && sourceLifetime.isCurrent && stillCurrent(source)
                 }
