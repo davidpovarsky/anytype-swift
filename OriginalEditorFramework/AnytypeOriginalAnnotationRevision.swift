@@ -1,5 +1,8 @@
 import Foundation
 import CryptoKit
+import Services
+import PinkhaKit
+import Factory
 import SwiftProtobuf
 @_spi(OriginalEditor) import ProtobufMessages
 
@@ -576,5 +579,100 @@ fileprivate struct OriginalAnnotationRevisionObservation {
         let snapshot = try AnytypeOriginalEditorSnapshot.frame(archive: bytes, reportBytes: reportBytes,
             responseCount: report.succeed, binding: binding, maximumBodyBytes: maximumBodyBytes)
         return .init(snapshot: snapshot, retainedArchiveURL: archiveURL, retainedDirectoryURL: directory)
+    }
+}
+
+
+// MARK: - Original selected-account copy discovery
+
+/// A fresh original search observation for one canonical annotation UUID.
+/// This value grants no write authority and cannot be decoded into a read,
+/// replacement token or remote acknowledgement. The chosen root must still
+/// pass the existing original native revision/read boundary.
+public struct AnytypeOriginalAnnotationDiscoveredCopy: Sendable, Equatable {
+    public let accountID: String
+    public let spaceID: String
+    public let objectID: String
+    public let annotationUUID: UUID
+
+    fileprivate init(candidate: TorahAnnotationNativeCandidate) {
+        accountID = candidate.identity.scope.account
+        spaceID = candidate.identity.scope.space
+        objectID = candidate.identity.objectID
+        annotationUUID = candidate.identity.scope.annotationUUID
+    }
+}
+
+private enum OriginalAnnotationDiscoveryError: Error {
+    case unexpectedScope, tooManyCopies, duplicateObject
+}
+
+extension AnytypeOriginalEditorAccountSession {
+    /// Finds the existing shared roots after a canonical note arrives on a
+    /// second Host through its original annotation import or sync path. It
+    /// reuses the exact Host row lifetime and selected original account. No
+    /// object is created, adopted by display name, or marked as delivered.
+    public func discoverOriginalAnnotationCopies(
+        sourceLifetime: AnytypeOriginalEditorLocalAnnotationSourceLifetime,
+        sourceIsCurrent: @escaping @MainActor (AnytypeOriginalEditorLocalAnnotationSource) -> Bool
+    ) async throws -> [AnytypeOriginalAnnotationDiscoveredCopy] {
+        try sourceLifetime.claim()
+        defer { sourceLifetime.retire() }
+        try validateCurrent()
+        let source = sourceLifetime.source
+        let frozen = try originalAnnotationImportSourceBinding(
+            lifetime: sourceLifetime.lifetime,
+            sourceIsCurrent: { sourceLifetime.isCurrent && sourceIsCurrent(source) })
+        let original = try OriginalSearchMiddleServiceBinding.requireOriginal(
+            Container.shared.searchMiddleService())
+        let accountID = identity.accountID
+        let spaceID = identity.spaceID
+        let keys = OriginalAnnotationMetadataField.allCases.map(\.rawValue)
+            + ["id", "spaceId", "type", "isArchived", "isDeleted"]
+        let filters: [DataviewFilter] = [
+            .with {
+                $0.relationKey = OriginalAnnotationMetadataField.annotationUUID.rawValue
+                $0.condition = .equal
+                $0.value = source.annotationUUID.uuidString.protobufValue
+            },
+            .with {
+                $0.relationKey = OriginalAnnotationMetadataField.schemaProtocol.rawValue
+                $0.condition = .equal
+                $0.value = OriginalAnnotationNativeMetadata.protocolValue.protobufValue
+            },
+            .with {
+                $0.relationKey = OriginalAnnotationMetadataField.namespace.rawValue
+                $0.condition = .equal
+                $0.value = "otzaria.local.annotation".protobufValue
+            }
+        ]
+        let records = try await frozen.performRead(rpcNames: ["ObjectSearch"]) {
+            try await original.search(spaceId: spaceID, filters: filters, keys: keys, limit: 65)
+        }
+        try Task.checkCancellation()
+        try frozen.validate()
+        try validateCurrent()
+        guard records.count <= 64 else { throw OriginalAnnotationDiscoveryError.tooManyCopies }
+        var seen = Set<String>()
+        var result: [AnytypeOriginalAnnotationDiscoveredCopy] = []
+        for record in records {
+            let candidate = try OriginalAnnotationNativeMetadata.decode(
+                .with { $0.fields = record.values }, rootID: record.id)
+            let scope = candidate.identity.scope
+            guard scope.account.utf8.elementsEqual(accountID.utf8),
+                  scope.space.utf8.elementsEqual(spaceID.utf8),
+                  scope.namespace == "otzaria.local.annotation",
+                  scope.annotationUUID == source.annotationUUID else {
+                throw OriginalAnnotationDiscoveryError.unexpectedScope
+            }
+            guard seen.insert(candidate.identity.objectID).inserted else {
+                throw OriginalAnnotationDiscoveryError.duplicateObject
+            }
+            // Archived/promoted roots keep their separate explicit lifecycle.
+            // Receive must never silently unarchive or reclassify a document.
+            guard candidate.objectState == .present, candidate.classification == .annotation else { continue }
+            result.append(.init(candidate: candidate))
+        }
+        return result.sorted { $0.objectID.utf8.lexicographicallyPrecedes($1.objectID.utf8) }
     }
 }
