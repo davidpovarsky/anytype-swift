@@ -1,0 +1,60 @@
+{
+  "files": {
+    "cutover_store.go": {
+      "bytes": 10535,
+      "sha256": "cec81959c5112ed4e4255fe109f1fba72e71498d752f23f4a5803819ad00b752"
+    },
+    "cutover_store_test.go": {
+      "bytes": 11001,
+      "sha256": "3fe41a43d9b249d404f3e51a1571172cb16bb9116e3cd6d334985d7079cba1c7"
+    },
+    "native_authority.go": {
+      "bytes": 851,
+      "sha256": "2444790b76063b5500bdcb1dc98d19b93fbb24b26a15e26fac84ea34e95430b1"
+    },
+    "native_commit_guard.go": {
+      "bytes": 7986,
+      "sha256": "26ef149415810e5305f7ce42287fc69c06755c462ee631b0306c59b0302001be"
+    },
+    "native_host.go": {
+      "bytes": 15520,
+      "sha256": "ac934c890e8d32f45c8cee0e2bc9bfc3adae4c56074751a2e3e09d172de7ae44"
+    },
+    "native_operation_read.go": {
+      "bytes": 15365,
+      "sha256": "f9284dd5a6d85e7c0d58cc51b7c51a4ddee4fc407258490424dccc7163a20656"
+    },
+    "native_validator.go": {
+      "bytes": 1836,
+      "sha256": "65e97d14aa7706a6fb300cc88631b014fa2ecd46e25c9f986906ea02a9efebb1"
+    },
+    "operation.go": {
+      "bytes": 6737,
+      "sha256": "cd8cb9dbd662691cb3c4ed6f5c95c29bbdc8e02698acb64b805afe804609193a"
+    },
+    "projection.go": {
+      "bytes": 3102,
+      "sha256": "3fabfc4684c596a38ca8924c3271097db362a4d42a62e7ee01f37a21a9d7ddfb"
+    },
+    "store.go": {
+      "bytes": 13004,
+      "sha256": "943b16ee869409223d0881d627475a7123cde0a6065f1df7f45704e9b029be93"
+    },
+    "store_test.go": {
+      "bytes": 15528,
+      "sha256": "49354a8d09bd74a313784ab42f0651b518bd6e1a8ec1b4f02c029eb977d1f16c"
+    }
+  },
+  "originalExistingMethodsInvoked": 0,
+  "scope": "every actual torahops production file plus unchanged original store fixture/test source and the additive cutover tests",
+  "selectors": [
+    "TestCutoverMetadataKeepsV1NamespaceAndOrdinaryClaims",
+    "TestCutoverMetadataIndependentDisksRetainActualComponentAuthors",
+    "TestCutoverMetadataRecordCollisionHasNoWinnerOrSilentRetry",
+    "TestCutoverMetadataCommitExitAndFrozenRetry",
+    "TestCutoverMetadataRefusesForeignAuthorSpaceAndMissingACL",
+    "TestCutoverMetadataNeverTruncatesHistoryOrHidesCrossObjectCollision",
+    "TestCutoverMetadataModifyDeleteAndRawWireForgeryRefuse",
+    "TestCutoverMetadataCancelledContextCannotWrite"
+  ]
+}
