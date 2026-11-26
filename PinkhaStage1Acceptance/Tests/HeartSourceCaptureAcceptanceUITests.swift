@@ -226,8 +226,9 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
 
     private func identity(_ suffix: String) throws -> String {
         let row = try reveal("heart-source-review-" + suffix)
-        let value = row.label
-        try require(!value.isEmpty, "empty-identity-" + suffix)
+        guard let value = row.value as? String, !value.isEmpty else {
+            throw Failure.admission("empty-identity-" + suffix)
+        }
         return value
     }
 
@@ -294,3 +295,4 @@ final class HeartSourceCaptureAcceptanceUITests: XCTestCase {
         let text: String; let excludedText: String
     }
 }
+
