@@ -42,6 +42,12 @@ CUSTODY_BACKUP = "edc062aeec58156bb805aae76cdea5d8443f1e6f0ce30b0f8f4f9f1264cf73
 CUSTODY_PLIST = "1bb2fe60d9cd48b1da33c0a0127cc2d0087db8bae0e3c75cdf06c48d708834e2"
 CUSTODY_COMPLETION = "7bd4f893993378dd9557ba5b9494aff4633686c82e46f0f37f25b8767b22f554"
 
+CURRENT_CUSTODY = PRIOR.parent / "direct-menu-continuation2"
+CURRENT_CUSTODY_EXECUTION = "265a52e2c6e8f21efb0dbcdda0778f02a5ba0835358b8778eb408c3f78bb5042"
+CURRENT_CUSTODY_BACKUP = "8c17100136edb75a6db54240503b0801a5b827cf70d40ddc94d01353e5beff71"
+CURRENT_CUSTODY_PLIST = "ccdb1b7f32a932a45d28c363a2f2204bceae83b02caf92b834ad6680c54db17f"
+CURRENT_CUSTODY_COMPLETION = "a0ffe58b3433279fc5ca047f0e3f7e3e33e9c1eb3d03bc6ad500e3e35db3e106"
+
 # These aliases let the entire four-stage execution/verification sequence remain
 # byte-exact to the reviewed original controller. No predicate is rewritten.
 require, app_file, decode, sha, write = c.require, c.app_file, c.decode, c.sha, c.write
@@ -163,12 +169,68 @@ def admit_failed_controller(prior):
             "devicePlistSHA256": CUSTODY_PLIST, "methodsInvoked": 0,
             "status": "RETAINED_ORIGINAL_CONTROLLER_FAILURE_NOT_ACCEPTANCE"}
 
+def admit_failed_witness_copy(prior, predecessor):
+    path = CURRENT_CUSTODY / "evidence/execution.json"
+    require(c.digest(path) == CURRENT_CUSTODY_EXECUTION, "Exact zero-method controller failure required")
+    failed = decode(c.raw(path))
+    require(failed["status"] == "FAIL" and failed["controllerSHA256"] ==
+            "25d860048c24002632b25cdc2721d1ca769b13ced95a587f974f83bf1f2fcfa4"
+            and failed["coreControllerSHA256"] == CORE and failed["sourceCommit"] == SOURCE
+            and failed["nativeManifestSHA256"] == c.MANIFEST and failed["heartOverlaySHA256"] == c.OVERLAY
+            and failed["ownedSimulator"] == DEVICE and failed["binding"] == prior["binding"]
+            and failed["stages"] == {} and failed["actualInvocationStartedEvidence"] == {}
+            and failed["actualMethodsInvokedInThisContinuation"] == 0
+            and failed["currentCustody"] == predecessor
+            and failed["firstFailure"] == {"type": "FileExistsError", "message":
+                "[Errno 17] File exists: '" + str(CURRENT_CUSTODY / "private/pinkha-semantic-page154-mounted-capture.json") + "'"},
+            "Prior controller failure scope or exact original binding changed")
+    require(failed["uiDerivative"]["uiReceiptSHA256"] ==
+            "fb360a5f9764f27de59d4004170c9ca5996da0d189b2d2d798142ccd2c730691"
+            and failed["uiDerivative"]["uiTestChangeCommit"] == "813f4f03edf2d965b4167cab5966fa6d3857f97e",
+            "Failed continuation did not use the admitted UI-only producer")
+    require(failed["originalFixtureSHA256"] == ORIGINAL_FIXTURE
+            and failed["priorExecutionSHA256"] == PRIOR_EXECUTION
+            and failed["priorBackupSHA256"] == PRIOR_BACKUP
+            and failed["originalFixtureExpiryUnix"] ==
+                decode(c.raw(PRIOR / "private/final-sandbox-originals" / c.FIXTURE))["createdAt"] + 978307200 + 7200,
+            "Prior failure changed the original prepared fixture or deadline")
+    require(not any(CURRENT_CUSTODY.glob("commands/*-test/started.json"))
+            and not any(CURRENT_CUSTODY.glob("commands/*-enumerate/started.json")),
+            "A test or enumeration was invoked by the failed continuation")
+    cleanup = failed["cleanup"]
+    require(cleanup["status"] == "PASS" and cleanup["errors"] == []
+            and cleanup["ownedSimulatorDeleted"] is False
+            and cleanup["ownedSimulatorRetainedForRecovery"] == DEVICE
+            and all(row.get("absentAtOriginalExit") is True
+                    and row.get("historicalGroupReprobed") is False for row in cleanup["groups"]),
+            "Failed continuation did not drain its owned processes")
+    for name, row in prior["finalPrivateSandbox"]["files"].items():
+        current = failed["finalPrivateSandbox"]["files"][name]
+        require(current == row, "Original mounted witness status changed in the zero-method continuation")
+        if row["status"] == "COPIED_ORIGINAL":
+            require(c.digest(CURRENT_CUSTODY / "private/final-sandbox-originals" / name) == row["sha256"],
+                    "Retained current witness bytes differ from original mounted acceptance")
+    completion_path = CURRENT_CUSTODY / "evidence/retention-completion.json"
+    require(c.digest(completion_path) == CURRENT_CUSTODY_COMPLETION
+            and c.digest(CURRENT_CUSTODY / "private/owned-account-originals/retention.json") == CURRENT_CUSTODY_BACKUP
+            and c.digest(CURRENT_CUSTODY / "private/owned-account-originals/device.plist") == CURRENT_CUSTODY_PLIST,
+            "Exact post-failure full private custody is required")
+    completion = decode(c.raw(completion_path))
+    require(completion["executionSHA256"] == CURRENT_CUSTODY_EXECUTION
+            and completion["devicePlistSHA256"] == CURRENT_CUSTODY_PLIST
+            and completion["privateAccount"] == decode(c.raw(CURRENT_CUSTODY / "private/owned-account-originals/retention.json"))
+            and completion["fullEAcceptance"] is False,
+            "Post-failure custody may not reclassify acceptance")
+    return {"executionSHA256": CURRENT_CUSTODY_EXECUTION, "backupSHA256": CURRENT_CUSTODY_BACKUP,
+            "devicePlistSHA256": CURRENT_CUSTODY_PLIST, "methodsInvoked": 0,
+            "status": "RETAINED_ORIGINAL_CONTROLLER_FAILURE_NOT_ACCEPTANCE"}
+
 def admit_shutdown_account(commands, prior):
-    directory = CUSTODY / "private/owned-account-originals"
-    c.require(c.digest(directory / "retention.json") == CUSTODY_BACKUP, "Exact original account seal required")
+    directory = CURRENT_CUSTODY / "private/owned-account-originals"
+    c.require(c.digest(directory / "retention.json") == CURRENT_CUSTODY_BACKUP, "Exact original account seal required")
     backup = c.decode(c.raw(directory / "retention.json"))
     c.require(backup["status"] == "PASS_PRIVATE_ACCOUNT_BACKUP_NOT_NEW_ACCEPTANCE"
-              and backup["executionSHA256"] == CUSTODY_EXECUTION and backup["device"] == DEVICE
+              and backup["executionSHA256"] == CURRENT_CUSTODY_EXECUTION and backup["device"] == DEVICE
               and backup["fixtureDeadlineChanged"] is False and backup["restoredFixtures"] == 0,
               "Original backup identity/scope differs")
     log, _ = commands.run(["xcrun", "simctl", "list", "devices", "--json"], "admit-owned-shutdown", 30)
@@ -205,7 +267,7 @@ def admit_shutdown_account(commands, prior):
                 c.require(not live.exists() and not live.is_symlink(), "Absent account root appeared")
             else:
                 c.require(identity(live) == expected, "Original private account root was replaced")
-    command_root = CUSTODY / "commands/final-private-sandbox-container"
+    command_root = CURRENT_CUSTODY / "commands/final-private-sandbox-container"
     command = c.decode(c.raw(command_root / "result.json"))
     c.require(command["argv"] == ["xcrun", "simctl", "get_app_container", DEVICE, "io.anytype.app", "data"]
               and command["status"] == "PASS_COMMAND" and command["exitCode"] == 0
@@ -231,7 +293,7 @@ def admit_shutdown_account(commands, prior):
                   "The live original account or sealed backup changed")
         require_same_shutdown("admit-after-" + name)
     require_same_shutdown("admit-final-original-shutdown")
-    return {"status": "EXACT_SEALED_ORIGINAL_SHUTDOWN_ACCOUNT", "backupSHA256": CUSTODY_BACKUP,
+    return {"status": "EXACT_SEALED_ORIGINAL_SHUTDOWN_ACCOUNT", "backupSHA256": CURRENT_CUSTODY_BACKUP,
             "devicePlistSHA256": plist_sha256, "deviceRootIdentityUnchanged": True}
 
 def main():
@@ -269,7 +331,8 @@ def main():
     ui_proof = ui_profile.qualify(c, ui_admission, Path(admission["sourceRoot"]),
                                  decode(c.pinned(admission["producerReceipt"])))
     prior = admit_prior(admission)
-    custody = admit_failed_controller(prior)
+    predecessor = admit_failed_controller(prior)
+    custody = admit_failed_witness_copy(prior, predecessor)
     require(args.root.is_absolute() and args.root.parent == PRIOR.parent
             and args.root.parent.resolve() == args.root.parent and not args.root.exists(),
             "Fresh separately owned continuation root required")
@@ -348,9 +411,11 @@ def main():
         require(actual_fixture == fixture_raw, "Live original prepared fixture differs after boot")
         mounted.fixture(decode(actual_fixture), binding)
         # All original mounted witnesses must remain byte-identical after the failed menu.
+        prior_witnesses = private / "original-mounted-witnesses"
+        prior_witnesses.mkdir(mode=0o700)
         for witness_index, filename in enumerate((c.CAPTURE, c.REOPEN, *boundary.FILES.values())):
             expected = c.raw(PRIOR / "private/final-sandbox-originals" / filename, boundary.MAXIMUM)
-            actual = app_file(commands, DEVICE, private, filename, "preserve-prior-" + str(witness_index), boundary.MAXIMUM)
+            actual = app_file(commands, DEVICE, prior_witnesses, filename, "preserve-prior-" + str(witness_index), boundary.MAXIMUM)
             require(actual == expected and sha(expected) == prior["finalPrivateSandbox"]["files"][filename]["sha256"],
                     "Original mounted witness changed since the actual pass")
         base = {"PINKHA_SIMULATOR_UI_DISPOSABLE": "1"}
