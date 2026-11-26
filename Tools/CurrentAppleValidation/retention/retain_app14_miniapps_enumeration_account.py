@@ -62,6 +62,16 @@ def write(path, value):
 def retain(root, expected_execution_sha256):
     """A new custody observation; original failed execution remains immutable."""
     root = Path(root)
+    prior_path = Path("/Users/m1/development/anytype-c-active-20261125/terminal-custody/app14-miniapps-b35a/evidence/result.json")
+    prior_bytes = prior_path.read_bytes()
+    require(hashlib.sha256(prior_bytes).hexdigest() ==
+            "2efe63f8972bd013ca443676319fb8c8433fa97e30c3f753a55247b87dd6e5ea",
+            "Original metadata equality refusal changed")
+    prior = json.loads(prior_bytes)
+    require(prior["status"] == "FAIL" and prior["originalAcceptance"] == "FAIL"
+            and prior["actualMethods"] == prior["bootCalls"] == prior["engineCalls"] == 0
+            and prior["error"] == {"type": "ValueError", "message": "Native metadata UUID differs from the container"},
+            "Original custody refusal must remain separate")
     require(root == Path("/Users/m1/development/anytype-d-active-20261125/main14/heart-miniapps86-attempt1")
             and root.resolve() == root, "Only the exact original MiniApps attempt is admitted")
     require(expected_execution_sha256 == "2ce146a369cb38b79e1b449cdc929449fc5e5259d2c117af1a8b0c978f1860a5",
@@ -182,9 +192,13 @@ def retain(root, expected_execution_sha256):
         value = plistlib.loads(metadata_bytes)
         if value.get("MCMMetadataIdentifier") == "io.anytype.app":
             require(re.fullmatch(r"[0-9A-F-]{36}", child.name), "Invalid native container UUID")
-            if "MCMMetadataUUID" in value:
-                require(str(value["MCMMetadataUUID"]).upper() == child.name.upper(),
-                        "Native metadata UUID differs from the container")
+            # This exact device has distinct filesystem and native logical UUIDs.
+            # Bind both observed namespaces and the same parsed metadata bytes;
+            # neither is substituted for the other or for a successful simctl lookup.
+            require(child.name == "33BA9B08-3BE2-49DC-A412-C559AA02EF7F"
+                    and value.get("MCMMetadataUUID") == "6FDEAF40-98D3-4A58-A396-B5D09802B6CE"
+                    and metadata_parsed_sha == "c44fbff39d2dc03d71708b12414bcddcbcf6d5eb844950200107957d21cf6cbe",
+                    "Exact separately observed native and filesystem container identity changed")
             candidates.append((child, metadata, metadata_parsed_sha))
     require(len(candidates) == 1, "Exactly one native io.anytype.app data container is required")
     app, container_metadata, container_metadata_sha = candidates[0]
@@ -195,6 +209,9 @@ def retain(root, expected_execution_sha256):
         "origin": "native-mobile-container-manager-metadata",
         "bundleIdentifier": "io.anytype.app", "containerPath": str(app),
         "nativeMetadataSHA256": container_metadata_sha,
+        "filesystemContainerUUID": "33BA9B08-3BE2-49DC-A412-C559AA02EF7F",
+        "nativeLogicalContainerUUID": "6FDEAF40-98D3-4A58-A396-B5D09802B6CE",
+        "priorCustodyRefusalSHA256": hashlib.sha256(prior_bytes).hexdigest(),
         "originalContainerCommandStatus": "FAIL_COMMAND",
         "newSimctlContainerCommandClaimed": False, "engineCalls": 0,
     }
@@ -210,7 +227,7 @@ def retain(root, expected_execution_sha256):
     device_identity = identity(device_root)
     plist_identity = identity(plist_path)
     container_metadata_identity = identity(container_metadata)
-    directory = Path("/Users/m1/development/anytype-c-active-20261125/terminal-custody/app14-miniapps-b35a/private/owned-account-originals")
+    directory = Path("/Users/m1/development/anytype-c-active-20261125/terminal-custody/app14-miniapps-b35a-mcm1/private/owned-account-originals")
     require(not directory.exists(), "Private account retention must never overwrite an original")
     directory.mkdir(mode=0o700, parents=True)
     write(directory / "container-admission.json", container_admission)
@@ -296,7 +313,7 @@ if __name__ == "__main__":
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--execution-sha256", required=True)
     args = parser.parse_args()
-    evidence = Path("/Users/m1/development/anytype-c-active-20261125/terminal-custody/app14-miniapps-b35a/evidence")
+    evidence = Path("/Users/m1/development/anytype-c-active-20261125/terminal-custody/app14-miniapps-b35a-mcm1/evidence")
     evidence.mkdir(mode=0o700, parents=True, exist_ok=False)
     outcome = {"protocol": "pinkha-b35a-postterminal-custody-result-v1", "status": "FAIL",
                "originalAcceptance": "FAIL", "actualMethods": 0, "bootCalls": 0, "engineCalls": 0}
