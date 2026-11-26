@@ -364,8 +364,11 @@ enum AnyDestinationDefinitionChecks {
                 "heartDefinitionJSON": .string(String(decoding: try bytes(.object(d)), as: UTF8.self)),
         ]
         if let original = provenance.originalAddedDate {
-            metadata["heartSourceAddedDateSeconds"] = original
-            metadata["heartSourceAddedDateContract"] = .string("pinkha-heart-source-added-date-seconds-v1")
+            // Native choice-option metadata has string leaves only. Preserve
+            // the typed source number as canonical JSON, not a native stamp.
+            // Property/type vendor metadata has a different scalar contract.
+            metadata["heartSourceAddedDateJSON"] = .string(String(decoding: try bytes(original), as: UTF8.self))
+            metadata["heartSourceAddedDateContract"] = .string("pinkha-heart-source-added-date-json-v1")
         }
         return .object([
             "name": .string(name), "color": .string(color), "pos": .string(order),

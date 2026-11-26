@@ -942,8 +942,10 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertEqual(c.options[0].sourceProvenance.addedDateSeconds, 0)
         XCTAssertEqual(c.types[0].sourceProvenance.addedDateSeconds, -1)
         let descriptor = try AnyDestinationDefinitionChecks.optionDescriptor(.init(snapshot: choice), relationObjectID: property.sourceObjectID)
-        XCTAssertEqual(descriptor["meta"]?["heartSourceAddedDateSeconds"], .integer(0))
-        XCTAssertEqual(descriptor["meta"]?["heartSourceAddedDateContract"], .string("pinkha-heart-source-added-date-seconds-v1"))
+        XCTAssertEqual(descriptor["meta"]?["heartSourceAddedDateJSON"], .string("0"))
+        XCTAssertEqual(descriptor["meta"]?["heartSourceAddedDateContract"], .string("pinkha-heart-source-added-date-json-v1"))
+        XCTAssertNil(descriptor["meta"]?["heartSourceAddedDateSeconds"])
+        XCTAssertTrue(try XCTUnwrap(descriptor["meta"]?.object).values.allSatisfy { $0.string != nil })
         XCTAssertEqual(descriptor["pos"], .string("captured-order"))
         XCTAssertNil(descriptor["createdAt"])
         let mapper = try AnyHeartNativeDefinitionPlan(catalog: c)
@@ -969,7 +971,10 @@ final class NativeDefinitionPlanTests: XCTestCase {
         XCTAssertTrue(try catalog([property, unknown]).issues.contains { $0.kind == .unknownDetailField })
         XCTAssertThrowsError(try AnyDestinationDefinitionChecks.optionDescriptor(.init(snapshot: unknown), relationObjectID: property.sourceObjectID))
         let absent = try option("absentOption", relation: "tag", order: "a")
-        XCTAssertNil(try AnyDestinationDefinitionChecks.optionDescriptor(.init(snapshot: absent), relationObjectID: property.sourceObjectID)["meta"]?["heartSourceAddedDateSeconds"])
+        let absentDescriptor = try AnyDestinationDefinitionChecks.optionDescriptor(.init(snapshot: absent), relationObjectID: property.sourceObjectID)
+        XCTAssertNil(absentDescriptor["meta"]?["heartSourceAddedDateJSON"])
+        XCTAssertNil(absentDescriptor["meta"]?["heartSourceAddedDateContract"])
+        XCTAssertTrue(try XCTUnwrap(absentDescriptor["meta"]?.object).values.allSatisfy { $0.string != nil })
     }
 
     /// Original immutable bytes from a native method whose final fixture
@@ -1063,7 +1068,10 @@ final class NativeDefinitionPlanTests: XCTestCase {
             let descriptor = try AnyDestinationDefinitionChecks.optionDescriptor(evidence, relationObjectID: property.relation.objectID)
             XCTAssertEqual(descriptor["pos"], option.snapshot.details["orderId"])
             XCTAssertEqual(descriptor["name"], option.snapshot.details["name"])
-            XCTAssertEqual(descriptor["meta"]?["heartSourceAddedDateSeconds"], option.snapshot.details["addedDate"])
+            let originalDateJSON = try XCTUnwrap(descriptor["meta"]?["heartSourceAddedDateJSON"]?.string)
+            XCTAssertEqual(try JSONDecoder().decode(AnyJSON.self, from: Data(originalDateJSON.utf8)), option.snapshot.details["addedDate"])
+            XCTAssertEqual(originalDateJSON, String(decoding: try AnyDestinationDefinitionChecks.bytes(XCTUnwrap(option.snapshot.details["addedDate"])), as: UTF8.self))
+            XCTAssertTrue(try XCTUnwrap(descriptor["meta"]?.object).values.allSatisfy { $0.string != nil })
             let item = try XCTUnwrap(mapper.schemaItems.first { $0.sourceKey == property.sourceKey })
             guard case .propertyDefinition(_, _, _, _, _, _, .literal(let format)?, _) = item.operation else {
                 return XCTFail("native choice operation")
