@@ -1,0 +1,102 @@
+{
+  "actualNativeCalls": 0,
+  "appBuilds": 0,
+  "binarySHA256": "8818155e1f77f232140e88b626e645328133715ca691aec359a5e0a9c41a5e1d",
+  "candidateSHA256": "7e3e56e9ae35d81aabb70868834137a71be257aa8b4a6eba6314a9c3538c2363",
+  "cleanupFailures": [],
+  "commands": [
+    {
+      "argv": [
+        "/usr/local/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-o",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/projection-attempt1/cutover-host-projection.test",
+        "cutover_native_host.go",
+        "cutover_native_operations.go",
+        "cutover_native_read.go",
+        "cutover_native_tree.go",
+        "cutover_projection.go",
+        "cutover_store.go",
+        "native_authority.go",
+        "native_commit_guard.go",
+        "native_host.go",
+        "native_operation_read.go",
+        "native_validator.go",
+        "operation.go",
+        "projection.go",
+        "store.go",
+        "cutover_projection_test.go"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/projection-attempt1/source/heart/core/block/editor/torahops",
+      "durationSeconds": 84.92115503828973,
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ownedProcessGroupRemaining": [],
+      "pgid": 2743632,
+      "pid": 2743632,
+      "startedUTC": "2026-11-26T01:30:36.885885+00:00"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/go",
+        "version",
+        "-m",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/projection-attempt1/cutover-host-projection.test"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/projection-attempt1/source/heart/core/block/editor/torahops",
+      "durationSeconds": 0.021462918259203434,
+      "exitCode": 0,
+      "logSHA256": "75e2a26f3a4e150a5eae2d5578f302437095d8303b8a811f653a4ed65f1ce911",
+      "ownedProcessGroupRemaining": [],
+      "pgid": 2747170,
+      "pid": 2747170,
+      "startedUTC": "2026-11-26T01:32:01.847862+00:00"
+    },
+    {
+      "argv": [
+        "/usr/local/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "cutover-native-projection",
+        "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/projection-attempt1/cutover-host-projection.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=60s",
+        "-test.run=^(TestCutoverProjectionRequiresAllSourceFactsAndSecondPhase|TestCutoverProjectionTwoAuthorsRetainEveryPhysicalBinding|TestCutoverProjectionDurableSealSurvivesUnlinkWithoutLegacyResurrection|TestCutoverProjectionLateOfflineImportAfterRemovalIsVisibleConflict|TestCutoverProjectionOlderWriterDivergenceDoesNotUnionOrDelete|TestCutoverProjectionInvalidNativeReceiptCannotSeal|TestCutoverProjectionSameAuthorChangedRetryIsExplicitConflict|TestCutoverOriginalWriteGateRequiresSealAndRealObservedHistory)$"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/projection-attempt1/source/heart/core/block/editor/torahops",
+      "durationSeconds": 0.3339395113289356,
+      "exitCode": 0,
+      "logSHA256": "64fc77f00c72dcc147bb3ee5d2b7b5397202938e4cd178f49d2a1f0a7539d2da",
+      "ownedProcessGroupRemaining": [],
+      "pgid": 2747174,
+      "pid": 2747174,
+      "startedUTC": "2026-11-26T01:32:01.869758+00:00"
+    }
+  ],
+  "existingAcceptedTestsReplayed": 0,
+  "failures": 0,
+  "logSHA256": "64fc77f00c72dcc147bb3ee5d2b7b5397202938e4cd178f49d2a1f0a7539d2da",
+  "methods": 8,
+  "passed": [
+    "TestCutoverProjectionRequiresAllSourceFactsAndSecondPhase",
+    "TestCutoverProjectionTwoAuthorsRetainEveryPhysicalBinding",
+    "TestCutoverProjectionDurableSealSurvivesUnlinkWithoutLegacyResurrection",
+    "TestCutoverProjectionLateOfflineImportAfterRemovalIsVisibleConflict",
+    "TestCutoverProjectionOlderWriterDivergenceDoesNotUnionOrDelete",
+    "TestCutoverProjectionInvalidNativeReceiptCannotSeal",
+    "TestCutoverProjectionSameAuthorChangedRetryIsExplicitConflict",
+    "TestCutoverOriginalWriteGateRequiresSealAndRealObservedHistory"
+  ],
+  "peers": 0,
+  "scope": "compile actual native host candidate and new pure interleaving projection controls",
+  "skips": 0,
+  "sourceSHA256": "4e8efb94a883c172b7404853c3bd9db3e80d13b3c2e79f30538a67a8f821cc1b",
+  "status": "PASS_COMPILED_NATIVE_HOST_AND_PROJECTION_CONTROLS_NOT_NATIVE_ACCEPTANCE"
+}
