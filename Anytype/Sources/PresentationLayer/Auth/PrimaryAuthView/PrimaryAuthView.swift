@@ -80,6 +80,8 @@ struct PrimaryAuthView: View {
                 Image(asset: .X24.spaceSettings)
                     .foregroundStyle(Color.Control.secondary)
             }
+            .accessibilityLabel(Loc.Server.network)
+            .accessibilityIdentifier("original-anytype-auth-network")
             .frame(width: NavigationHeaderConstants.buttonSize, height: NavigationHeaderConstants.buttonSize)
             .buttonStyleCircleGlassIOS26()
             .disabled(model.inProgress)
