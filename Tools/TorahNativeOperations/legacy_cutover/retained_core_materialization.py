@@ -8,6 +8,11 @@ CANDIDATE_SHA="db2018871482d911b15fce3002d3e15d25fd17d50ca0ae7f64c72725de18bb58"
 def digest(path):
  if path.resolve()!=path or path.is_symlink() or not path.is_file():raise ValueError("regular retained original required")
  return hashlib.sha256(path.read_bytes()).hexdigest()
+def pinned_json(path,expected):
+ if path.resolve()!=path or path.is_symlink() or not path.is_file():raise ValueError("regular retained original required")
+ raw=path.read_bytes()
+ require(hashlib.sha256(raw).hexdigest()==expected,"exact retained original bytes: "+str(path))
+ return raw,json.loads(raw)
 def require(value,message):
  if not value:raise ValueError(message)
 def inventory(source):
@@ -18,8 +23,7 @@ def inventory(source):
   else:require(p.is_dir(),"unexpected retained source kind")
  return result
 def admit(directory):
- require(digest(PRIOR/"receipt.json")==RECEIPT_SHA,"exact original resource failure")
- prior=json.loads((PRIOR/"receipt.json").read_bytes())
+ _,prior=pinned_json(PRIOR/"receipt.json",RECEIPT_SHA)
  require(prior["status"]=="FAIL" and prior["sourceUnchanged"] is True
   and prior["sourceSHA256"]==SOURCE_SHA and prior["cleanupFailures"]==[],"original failure remains failed")
  require(len(prior["commands"])==4 and all(row["groupState"]=="ABSENT_ESRCH" for row in prior["commands"])
@@ -27,15 +31,17 @@ def admit(directory):
  build=prior["commands"][-1]
  require(build["status"]=="FAIL" and build["resourceFloor"] is True and build["timedOut"] is False
   and build["exitCode"]==-15 and build["argv"][-1]=="./core" and "-c" in build["argv"],"actual resource-stopped compiler required")
- require(digest(PRIOR/"commands/build/result.json")=="bb1299af34cfff00095009ec26b9e340cb85e02aa2b3360b12cb053d5e57d59a"
-  and json.loads((PRIOR/"commands/build/result.json").read_bytes())==build,"original build outcome differs")
+ _,buildOriginal=pinned_json(PRIOR/"commands/build/result.json","bb1299af34cfff00095009ec26b9e340cb85e02aa2b3360b12cb053d5e57d59a")
+ require(buildOriginal==build,"original build outcome differs")
  require(not (PRIOR/"cutover-real-core.test").exists() and not (PRIOR/"commands/actual-core").exists()
   and not list((PRIOR/"private").iterdir()),"original method/account was not invoked")
- require(digest(PRIOR/"source-before.json")==digest(PRIOR/"source-after.json")==SOURCE_SHA
-  and digest(PRIOR/"candidate.json")==digest(directory/"native-core-registry-candidate.json")==CANDIDATE_SHA,"exact unchanged source/candidate")
- expected=json.loads((PRIOR/"source-before.json").read_bytes());source=PRIOR/"source"
+ beforeRaw,expected=pinned_json(PRIOR/"source-before.json",SOURCE_SHA)
+ afterRaw,_=pinned_json(PRIOR/"source-after.json",SOURCE_SHA)
+ candidateRaw,candidate=pinned_json(PRIOR/"candidate.json",CANDIDATE_SHA)
+ currentCandidateRaw,_=pinned_json(directory/"native-core-registry-candidate.json",CANDIDATE_SHA)
+ require(beforeRaw==afterRaw and candidateRaw==currentCandidateRaw,"exact unchanged source/candidate")
+ source=PRIOR/"source"
  require(len(expected)==4879 and source.resolve()==source and inventory(source)==expected,"full retained source bytes differ")
- candidate=json.loads((PRIOR/"candidate.json").read_bytes())
  for name,row in candidate["sourceFiles"].items():
   require(expected["heart/"+name]==row and digest(directory/"overlay"/name)==row["sha256"],"core candidate delta differs")
  return source,expected,{"status":"PASS_RETAINED_SOURCE_FOR_NEW_ATTEMPT_NOT_NATIVE_ACCEPTANCE",

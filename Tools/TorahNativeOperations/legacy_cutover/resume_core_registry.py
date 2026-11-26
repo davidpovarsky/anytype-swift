@@ -5,8 +5,8 @@ from pathlib import Path
 BASE=Path("/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-store/attempt1")
 BASE_SHA="32a701c389455d78d9a9271224921e3cc5772005481e3a7eac83312d2436c171"
 CANDIDATE_SHA="db2018871482d911b15fce3002d3e15d25fd17d50ca0ae7f64c72725de18bb58"
-HELPER_SHA="6cf50d36e25aaa6b2258ac2010030d514dc1c3185251480e472d491b785de7f2"
-RETAINED_HELPER_SHA="b1b8838b228bf044848e17544caf60c21252bed3e346163809ee3aea7590ddf0"
+HELPER_SHA="f95e3dd28817ae5e892fc2768eb4edee2cb105c6dbb81ad5bfaceea4c09f39dd"
+RETAINED_HELPER_SHA="840229d10ff94e2c77027a42b06dc3b57e3e08e47830771a46a5aae29b7e7bff"
 METADATA_HELPER_SHA="a7ae9732da45d5e1235030ad061e7c3008ed6119b7ea84bcb5fba95028279dd5"
 DEPENDENCY_HELPER_SHA="b69dc246d6b38fc396a55e20437fb86399249bc02efaee5d6e314e35d1ead9a1"
 FIXTURE_RECEIPT=Path("/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-host/shared-fixture-qualification1/receipt.json")
@@ -19,6 +19,17 @@ DEPENDENCY_NAME="/mnt/development/projects/worktrees/anytype-heart-semantic-page
 DEPENDENCY_SHA="efee68b0fdf23fd8c1c630f10f4cad497bbbcb7372b6b985933324ebe730a601"
 METHOD="TestPinkhaTorahCutoverActualCoreRegistryAndReopen"
 GO="/mnt/development/toolchains/go1.27.4/go/bin/go"
+def read_pinned_json(path,expected):
+    if path.resolve()!=path or path.is_symlink() or not path.is_file():raise ValueError("canonical original JSON required")
+    raw=path.read_bytes()
+    if hashlib.sha256(raw).hexdigest()!=expected:raise ValueError("original JSON digest differs")
+    return json.loads(raw)
+def verify_final_file(c,path,expected,result,errorKey):
+    try:
+        if c.digest(path)!=expected:raise ValueError("final pinned file changed")
+    except Exception as error:
+        result.update(status="FAIL")
+        result[errorKey]=type(error).__name__+": "+str(error)
 def main():
     ap=argparse.ArgumentParser();ap.add_argument("--root",type=Path,required=True);a=ap.parse_args()
     directory=Path(__file__).resolve().parent;helper=directory/"owned_volume_commands.py"
@@ -37,8 +48,7 @@ def main():
             for p in sorted(source.rglob("*")) if p.is_file()}
     try:
         if c.digest(BASE/"source-after.json")!=BASE_SHA or c.digest(directory/"native-core-registry-candidate.json")!=CANDIDATE_SHA:raise ValueError("native source identity")
-        if c.digest(FIXTURE_RECEIPT)!=FIXTURE_RECEIPT_SHA:raise ValueError("shared-codec producer identity")
-        fixture=json.loads(FIXTURE_RECEIPT.read_text());binary=Path(fixture["binary"])
+        fixture=read_pinned_json(FIXTURE_RECEIPT,FIXTURE_RECEIPT_SHA);binary=Path(fixture["binary"])
         if fixture["status"]!="PASS_RETAINED_SHARED_SWIFT_GENERATOR_NOT_NATIVE_ACCEPTANCE" or c.digest(binary)!=FIXTURE_BINARY_SHA or binary.resolve()!=binary:raise ValueError("actual shared-codec binary")
         cacheFree=shutil.disk_usage(BASE/"cache").free;rootFree=shutil.disk_usage(root).free
         if cacheFree<(2<<30)+(768<<20) or rootFree<(2<<30)+(1280<<20):
@@ -53,9 +63,8 @@ def main():
         retained=importlib.util.module_from_spec(rspec);rspec.loader.exec_module(retained)
         source,expected,retainedProof=retained.admit(directory)
         c.save(root/"retained-source-admission.json",retainedProof)
-        candidate=json.loads((directory/"native-core-registry-candidate.json").read_bytes())
-        if c.digest(DEPENDENCY_MANIFEST)!=DEPENDENCY_MANIFEST_SHA:raise ValueError("original dependency authority")
-        manifest=json.loads(DEPENDENCY_MANIFEST.read_text())
+        candidate=read_pinned_json(directory/"native-core-registry-candidate.json",CANDIDATE_SHA)
+        manifest=read_pinned_json(DEPENDENCY_MANIFEST,DEPENDENCY_MANIFEST_SHA)
         rows=[r for r in manifest["files"]["rows"] if r[0]==DEPENDENCY_NAME]
         if len(rows)!=1 or rows[0][2]!="pinned_tantivy_archive" or rows[0][4]!=DEPENDENCY_SHA or int(rows[0][3][6])!=59821546:raise ValueError("original pinned library row")
         lib=DEPENDENCY_ROOT/DEPENDENCY_NAME.lstrip("/")
@@ -121,7 +130,9 @@ def main():
             binarySHA256=c.digest(executable),logSHA256=c.digest(log),nativeProofSHA256=c.digest(proofPath),nativeProof=proof,candidateSHA256=CANDIDATE_SHA)
     except Exception as error:result["error"]=type(error).__name__+": "+str(error)
     finally:
-        failures=commands.cleanup();result["commands"]=commands.rows;result["cleanupFailures"]=failures
+        try:failures=commands.cleanup()
+        except Exception as error:failures=[{"error":type(error).__name__+": "+str(error)}]
+        result["commands"]=commands.rows;result["cleanupFailures"]=failures
         if failures:result["status"]="FAIL"
         if source is not None:
             try:
@@ -134,11 +145,11 @@ def main():
                 privateFiles={str(p.relative_to(root/"private")):{"bytes":p.stat().st_size,"sha256":c.digest(p)} for p in sorted((root/"private").rglob("*")) if p.is_file()}
                 c.save(root/"private-inventory.json",privateFiles)
             except Exception as error:result.update(status="FAIL",retentionError=str(error))
-        if hashlib.sha256(helper.read_bytes()).hexdigest()!=HELPER_SHA:result.update(status="FAIL",controlError="owned helper changed")
-        if c.digest(directory/"core_workspace_metadata.py")!=METADATA_HELPER_SHA:result.update(status="FAIL",metadataControlError="metadata helper changed")
-        if c.digest(directory/"retained_core_materialization.py")!=RETAINED_HELPER_SHA:result.update(status="FAIL",retainedControlError="retained source helper changed")
-        if c.digest(directory/"linux_core_dependency.py")!=DEPENDENCY_HELPER_SHA:result.update(status="FAIL",dependencyControlError="native dependency helper changed")
-        if result.get("goToolSHA256") and c.digest(Path(GO))!=result["goToolSHA256"]:result.update(status="FAIL",toolError="Go toolchain changed")
+        verify_final_file(c,helper,HELPER_SHA,result,"controlError")
+        verify_final_file(c,directory/"core_workspace_metadata.py",METADATA_HELPER_SHA,result,"metadataControlError")
+        verify_final_file(c,directory/"retained_core_materialization.py",RETAINED_HELPER_SHA,result,"retainedControlError")
+        verify_final_file(c,directory/"linux_core_dependency.py",DEPENDENCY_HELPER_SHA,result,"dependencyControlError")
+        if result.get("goToolSHA256"):verify_final_file(c,Path(GO),result["goToolSHA256"],result,"toolError")
         c.save(root/"receipt.json",result)
     print(json.dumps(result));return 0 if result["status"].startswith("PASS_") else 1
 if __name__=="__main__":raise SystemExit(main())

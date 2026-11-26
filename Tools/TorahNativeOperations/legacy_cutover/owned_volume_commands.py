@@ -86,8 +86,18 @@ class Commands:
             pending=error;row["error"]=type(error).__name__+": "+str(error)
         finally:
             row["seconds"]=time.monotonic()-started
-            if (folder/"original.log").exists():row["logSHA256"]=digest(folder/"original.log")
-            save(folder/"result.json",row)
+            try:
+                if (folder/"original.log").exists():row["logSHA256"]=digest(folder/"original.log")
+            except Exception as error:
+                row.update(status="FAIL",logRetentionError=type(error).__name__+": "+str(error))
+                if pending is None:pending=error
+            try:
+                save(folder/"result.json",row)
+            except Exception as error:
+                # Keep this failure in the parent receipt even if the command
+                # directory itself cannot retain a terminal result.
+                row.update(status="FAIL",resultRetentionError=type(error).__name__+": "+str(error))
+                if pending is None:pending=error
         if pending is not None:raise pending
         if row["status"]!="PASS":raise RuntimeError("owned command failed: "+name)
         return folder/"original.log"
