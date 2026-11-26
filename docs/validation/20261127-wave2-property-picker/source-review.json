@@ -1,0 +1,38 @@
+{
+  "status": "SOURCE_FIX_RUNTIME_ACCEPTANCE_PENDING",
+  "baseCommit": "a089ff29a5c0a7e415aac800844505f099a5561d",
+  "baseTree": "bf6aa5ec62724639a8802b9ba2b3cdaa2a6cab63",
+  "branch": "codex/chatgpt-wave15-wave2-torah-20261127",
+  "scope": "Wave2 native Properties picker request ownership and honest lookup errors",
+  "observedSourceMechanism": [
+    "SearchView.task(id:) cancels superseded queries; PropertyCreationViewModel previously published after multiple awaits without cancellation or request identity checks.",
+    "Native catalog caught CancellationError as a failed search and could enter bootstrap retry; ordinary relation failures were silently converted to empty arrays.",
+    "An unresolved canonical/order identity could permit internal descriptors into the visible ordinary list."
+  ],
+  "changes": [
+    "Move downstream catalog lookup into a cancellable loader; only current picker request may publish rows or failures.",
+    "Abort native catalog work at cancellation boundaries before provisioning retry or diagnostic publication.",
+    "Retain native property formats and ordinary choices when the Torah catalog fails; show localized independent lookup errors and suppress misleading empty-result copy.",
+    "Keep canonical/order descriptors hidden unless their real Space identities have resolved."
+  ],
+  "originalAnytypeExceptions": [
+    "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+    "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift",
+    "Anytype/Sources/PresentationLayer/Common/SwiftUI/Search/Common/SearchView/SearchView.swift"
+  ],
+  "justification": "The original picker owns rendered rows and error/empty state. It needs a narrow latest-request publication hook and optional empty-state visibility; catalog/domain behavior remains in downstream Pinkha files. SearchView default behavior is unchanged.",
+  "ownerAuthorization": "User Wave2 execution mandate and repository standing owner authorization of 2026-11-19.",
+  "nativeContractChanged": false,
+  "documentTypesChanged": false,
+  "originalT5CallsRepeated": 0,
+  "focusedSwiftSuite": "PropertyCreationSearchTests",
+  "authoredMethods": 8,
+  "actualSwiftExecution": "NOT_RUN",
+  "actualVisualAcceptance": "NOT_RUN",
+  "requiredRemaining": [
+    "Compile source in shared Mac producer",
+    "Run eight focused request/catalog tests",
+    "Actual Add Property/empty canonical selector/native preservation UI acceptance",
+    "Visual Hebrew/English inspection"
+  ]
+}
