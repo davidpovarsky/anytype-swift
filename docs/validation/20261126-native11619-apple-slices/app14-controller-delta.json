@@ -1,0 +1,66 @@
+{
+  "applicationBuilds": 0,
+  "fullInverseRestoresOriginal": true,
+  "newControllerSHA256": "850de05de95f4ddeeef5349781f4ea7c4b72f85a42186b0e448c769e8afd43db",
+  "originalAppAndCompleteUITargetGatesUnchanged": true,
+  "originalControllerSHA256": "96a8c38d3ae29bc4d7f2999520fe925d3cc8f4be0541562cb04ce59de450e7f1",
+  "sourceCommit": "76f59f1e838991d1bbc7a07ecd08c6a2f15915c7",
+  "substitutions": [
+    {
+      "new": "main14",
+      "occurrences": 1,
+      "old": "main13"
+    },
+    {
+      "new": "build14",
+      "occurrences": 2,
+      "old": "build13"
+    },
+    {
+      "new": "native-materialization-11619",
+      "occurrences": 2,
+      "old": "native-materialization-410b"
+    },
+    {
+      "new": "c745a177f7d4239d31484a1a287db3debe016ec2e6064b78c5b13d8ae280817b",
+      "occurrences": 1,
+      "old": "b129e386fb0f96dcf08e0d7a6324b718a4c3c8f2ee11c7a2fc33a3fc93118af5"
+    },
+    {
+      "new": "a27b5f2f955d85b31157d7aedf7733e7d32e0acdac59920c0bd142ed304484bd",
+      "occurrences": 1,
+      "old": "8556b47a6a7e523bd5ad4c58ae292501acda1038b0d1f827e268cef15a542797"
+    },
+    {
+      "new": "b5b2ce165c1217140fcddd9289f6f496acb2e7fbd41ccd82fb3bc0a368002150",
+      "occurrences": 1,
+      "old": "bad0afa285da6bd023235b15f82329f9d7b32ec50bf9194d63b9ee96730324a5"
+    },
+    {
+      "new": "9f64b4469e221cd27b04c0f46b7479cf1fb079b36fce8a26c0fd8b0521ecaf5e",
+      "occurrences": 1,
+      "old": "48905b7312d7228fe88a60517ec90c1c23d73f2ada762877c05ace9752103342"
+    },
+    {
+      "new": "11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b",
+      "occurrences": 1,
+      "old": "410b441e5726b4a2ff7b259e296ad2ba819a5751cd46732945f62259ace42cc9"
+    },
+    {
+      "new": "PHASE_GROWTH={\"app\":int(24*1024**3),\"ui\":int(1*1024**3)}",
+      "occurrences": 1,
+      "old": "PHASE_GROWTH={\"app\":int(8*1024**3),\"ui\":int(0.5*1024**3)}"
+    },
+    {
+      "new": "Four jobs use an isolated APFS clone of retained Products and SDK precompiled modules. Original Intermediates and SourcePackages are absent, so source dependencies and intermediates must be recreated. A 2 GiB owned-process emergency floor and original process/memory samples are retained.",
+      "occurrences": 1,
+      "old": "Four jobs reuse the current incremental cache with a 2 GiB owned-process emergency floor; original process and memory samples retained."
+    },
+    {
+      "new": "Previous global samples include unrelated activity. Actual main13 inventory has no Intermediates or SourcePackages. The 24 GiB App allowance budgets source dependency materialization, cold compiler intermediates, products, and margin; this is an estimate, not an observed peak. UI has a separate 1 GiB allowance; the live emergency floor remains 2 GiB.",
+      "occurrences": 1,
+      "old": "Previous global samples include unrelated activity. The relocated path may invalidate caches: 8 GiB budgets the prior 2.24 GB peak plus a second roughly 3.6 GB intermediate tree and margin. UI gets 0.5 GiB separately. The live emergency floor is 2 GiB."
+    }
+  ],
+  "testsExecuted": 0
+}
