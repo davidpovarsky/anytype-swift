@@ -54,7 +54,59 @@ def validate_document(value, binding):
     return rows
 
 
-def observe_current_runtime(root, binding, historical_trees):
+def observe_saved_body_focus(root, binding, historical_trees):
+    relative = "Tools/OriginalEditor/MiniApps/saved_body_focus_source_adoption.json"
+    base = "b10eee2845859c03c534eed41e8682ad8cd5bff6"
+    reviewed = "e973cc7432419778f0342624a3b7052055fd270d"
+    products = tuple(historical_trees)
+    document = root / relative
+    require(document.is_file() and not document.is_symlink() and document.resolve() == document,
+            "Missing or aliased original saved-body focus source adoption")
+    raw = document.read_bytes()
+    require(binding.get("path") == relative and binding.get("reviewed_source") == reviewed
+            and hashlib.sha256(raw).hexdigest() == binding.get("sha256")
+            and git(root, "hash-object", "--", relative) == git(root, "rev-parse", "HEAD:" + relative),
+            "Committed original saved-body focus source adoption differs")
+    value = json.loads(raw)
+    require(value.get("schema") == "anytype.original-saved-body-focus-source-adoption/1"
+            and value.get("base_source") == base and value.get("reviewed_source") == reviewed
+            and value.get("scope") == "SOURCE_ONLY_CURRENT_SDK_QUALIFICATION_REQUIRED"
+            and value.get("native_acceptance_reused_by_this_document") is False,
+            "Unreviewed original saved-body focus source identity or scope")
+    for older, newer in ((CURRENT_SOURCE, base), (base, reviewed), (reviewed, "HEAD")):
+        subprocess.run(["git", "-C", str(root), "merge-base", "--is-ancestor", older, newer],
+                       check=True, timeout=60)
+    before = {key: git(root, "rev-parse", base + ":" + key) for key in products}
+    after = {key: git(root, "rev-parse", reviewed + ":" + key) for key in products}
+    require(before == historical_trees == value.get("base_product_trees")
+            and after == value.get("reviewed_product_trees")
+            and all(before[key] == after[key] for key in products
+                    if key not in ("Anytype/Sources", "OriginalEditorFramework")),
+            "Saved-body focus changed the original generated, resource or middleware source")
+    changes = git(root, "diff", "--name-status", "-z", base, reviewed, "--", *products).split("\0")[:-1]
+    rows = value.get("files", [])
+    names = [row.get("path") for row in rows]
+    require(len(rows) == len(set(names)) == 6
+            and changes[::2] == ["M"] * 6 and changes[1::2] == names
+            and all(set(row) == {"path", "before_blob", "after_blob", "bytes", "sha256"} for row in rows),
+            "Original saved-body focus source delta differs")
+    for row in rows:
+        name = row["path"]
+        path = root / name
+        require(path.is_file() and not path.is_symlink() and path.resolve() == path,
+                "Missing or aliased original saved-body focus source")
+        data = path.read_bytes()
+        require(row["before_blob"] == git(root, "rev-parse", base + ":" + name)
+                and row["after_blob"] == git(root, "rev-parse", reviewed + ":" + name)
+                and git(root, "hash-object", "--", name) == row["after_blob"]
+                and len(data) == row["bytes"] and hashlib.sha256(data).hexdigest() == row["sha256"],
+                "Current original saved-body focus bytes differ: " + name)
+    return {"schema": value["schema"], "base_source": base, "reviewed_source": reviewed,
+            "adoption_sha256": binding["sha256"], "reviewed_product_trees": after,
+            "all_changed_paths": names, "native_acceptance_reused_by_this_document": False}
+
+
+def observe_current_runtime(root, binding, historical_trees, focus_binding=None):
     products = tuple(historical_trees)
     document = root / CURRENT_RELATIVE
     require(document.is_file() and not document.is_symlink() and document.resolve() == document,
@@ -82,6 +134,8 @@ def observe_current_runtime(root, binding, historical_trees):
     require(git(root, "diff", "--name-status", REVIEWED, CURRENT_SOURCE, "--", *products).splitlines()
             == ["M\t" + name for name in CURRENT_FILES],
             "Original annotation runtime source delta differs")
+    focus = observe_saved_body_focus(root, focus_binding, reviewed) if focus_binding else None
+    focus_paths = set(focus["all_changed_paths"]) if focus else set()
     rows = value.get("files", [])
     require([item.get("path") for item in rows] == list(CURRENT_FILES)
             and all(set(item) == {"path", "before_blob", "after_blob", "bytes", "sha256"} for item in rows),
@@ -91,15 +145,24 @@ def observe_current_runtime(root, binding, historical_trees):
         source = root / name
         require(source.is_file() and not source.is_symlink() and source.resolve() == source,
                 "Missing or aliased original annotation runtime source")
-        data = source.read_bytes()
+        verified_blob = git(root, "rev-parse", CURRENT_SOURCE + ":" + name)
+        if name in focus_paths:
+            data = subprocess.check_output(["git", "-C", str(root), "cat-file", "blob", verified_blob], timeout=60)
+            observed_blob = verified_blob
+        else:
+            data = source.read_bytes()
+            observed_blob = git(root, "hash-object", "--", name)
         require(row["before_blob"] == git(root, "rev-parse", REVIEWED + ":" + name)
-                and row["after_blob"] == git(root, "rev-parse", CURRENT_SOURCE + ":" + name)
-                and git(root, "hash-object", "--", name) == row["after_blob"]
+                and row["after_blob"] == verified_blob
+                and observed_blob == row["after_blob"]
                 and len(data) == row["bytes"] and hashlib.sha256(data).hexdigest() == row["sha256"],
                 "Current original annotation runtime source bytes differ: " + name)
     return {"schema": value["schema"], "status": "EXACT_ORIGINAL_ANNOTATION_RUNTIME_SOURCE_OBSERVED",
-            "base_source": REVIEWED, "reviewed_source": CURRENT_SOURCE, "reviewed_product_trees": reviewed,
-            "adoption_sha256": binding["sha256"], "changed_files": rows, "all_changed_paths": list(CURRENT_FILES),
+            "base_source": REVIEWED, "reviewed_source": CURRENT_SOURCE,
+            "reviewed_product_trees": focus["reviewed_product_trees"] if focus else reviewed,
+            "adoption_sha256": binding["sha256"], "changed_files": rows,
+            "all_changed_paths": sorted(set(CURRENT_FILES) | focus_paths),
+            **({"saved_body_focus": focus} if focus else {}),
             "native_acceptance_reused_by_this_document": False,
             "sdk_compiler_and_runtime_acceptance": "NOT_GRANTED_BY_SOURCE_OBSERVATION"}
 
@@ -131,7 +194,10 @@ def observe(root, profile, historical_trees):
     require(git(root, "diff", "--name-status", BASE, REVIEWED, "--", *products).splitlines()
             == ["M\t" + name for name in FILES], "Unreviewed native-file facade change")
     runtime_binding = profile.get("current_annotation_runtime_source_adoption")
-    runtime = observe_current_runtime(root, runtime_binding, reviewed) if runtime_binding else None
+    focus_binding = profile.get("saved_body_focus_source_adoption")
+    require(runtime_binding or not focus_binding, "Saved-body focus requires the original annotation runtime")
+    runtime = (observe_current_runtime(root, runtime_binding, reviewed, focus_binding)
+               if runtime_binding else None)
     current = runtime["reviewed_product_trees"] if runtime else reviewed
     require({key: git(root, "rev-parse", "HEAD:" + key) for key in products} == current,
             "Current product source differs from reviewed native-file facade")
