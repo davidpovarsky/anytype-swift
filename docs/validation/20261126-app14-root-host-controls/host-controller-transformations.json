@@ -1,0 +1,42 @@
+[
+  {
+    "before": "bad911f0bcbb46b54ec42d898e468cd683af4bfee3d0e558e7d997d885a434c6",
+    "after": "4df2de4b4c1345b7a02e01c4d8b21e2cc632a37f85a1732616148186102b185e"
+  },
+  {
+    "before": "e3b614136296081479f407c150282e70c7ede0e330bcbcd803654aadc8004650",
+    "after": "60948f650a437fb04ba8bb349fa4d2eb833d13989ed4b1f07c69d2805dd63256"
+  },
+  {
+    "before": "    \"first-editor\": (\"editor\",),",
+    "after": "    \"first-editor\": (\"editor\",),\n    \"focus-lifecycle-only\": (\"focus-lifecycle\",),\n    \"t5-pending-and-ui-only\": (\"t5-pending-nine\", \"t5-native-ui\"),"
+  },
+  {
+    "before": "ORIGINAL_SERIES = (\"return-controls\", \"rtl-preparation\", \"editor\", \"quote-drop\", \"properties-set\",\n                   \"t5-host-actions\", \"t5-pending-nine\", \"t5-remaining-freshness\", \"t5-native-ui\")",
+    "after": "ORIGINAL_SERIES = ('return-controls', 'rtl-preparation', 'editor', 'quote-drop', 'properties-set', 't5-host-actions', 't5-pending-nine', 't5-remaining-freshness', 't5-native-ui', 'focus-lifecycle')"
+  },
+  {
+    "before": "    # Xcode27 filters the parameterized Swift Testing method out when its full",
+    "after": "    if host_contract.get(\"kind\") == \"focus-lifecycle\":\n        import focus_lifecycle_profile as focus\n        require(host_contract.get(\"source_sha256\") == focus.SOURCE_SHA256\n                and host_contract.get(\"expected_methods\") == focus.METHOD_COUNT\n                and host_contract.get(\"declared_cases\") == focus.CASE_COUNT\n                and len(selectors) == len(set(selectors)) == focus.METHOD_COUNT\n                and sorted(selectors) == host_contract.get(\"compiled_identifiers\"),\n                \"Complete source-bound affected focus suite required\")\n        suite = NATIVE + \"/\" + focus.SUITE\n        require(all(len(value.split(\"/\")) == 3 and value.startswith(suite + \"/\") for value in selectors),\n                \"Only reviewed focus declarations can select their complete affected suite\")\n        return [suite]\n    # Xcode27 filters the parameterized Swift Testing method out when its full"
+  },
+  {
+    "before": "self.helpers[\"t5_host_actions\"].validate_enumeration(decode(raw(listing)), host_contract)",
+    "after": "host_validation_module(host_contract, self.helpers).validate_enumeration(decode(raw(listing)), host_contract)"
+  },
+  {
+    "before": "self.helpers[\"t5_host_actions\"].validate_results(summary, tree, udid)",
+    "after": "host_validation_module(host_contract, self.helpers).validate_results(summary, tree, udid)"
+  },
+  {
+    "before": "class Consumer:",
+    "after": "def host_validation_module(contract, helpers):\n    if contract.get(\"kind\") == \"focus-lifecycle\":\n        import focus_lifecycle_profile\n        return focus_lifecycle_profile\n    return helpers[\"t5_host_actions\"]\n\n\nclass Consumer:"
+  },
+  {
+    "before": "            elif lane == \"t5-host-actions\":",
+    "after": "            elif lane == \"focus-lifecycle\":\n                import focus_lifecycle_profile as focus\n                contract = focus.source_contract(self.source)\n                methods = [n.removeprefix(NATIVE + \"/\") for n in contract[\"compiled_identifiers\"]]\n                result[\"actual\"], _ = self.stage(directory, \"native\", udid, methods, {}, allowance=300, host_contract=contract)\n                result[\"scope\"] = \"Affected UIKit19 methods including3 new visible-focus/refusal cases; no appUI/nativeACL/release credit\"\n            elif lane == \"t5-host-actions\":"
+  },
+  {
+    "before": "\"combined_host_helper_pins_gateway.json\", \"combined_t5_pending_gateway.py\", \"combined_t5_retry_gateway.py\", \"combined_t5_freshness_gateway.py\"}",
+    "after": "\"combined_host_helper_pins_gateway.json\", \"combined_t5_pending_gateway.py\", \"combined_t5_retry_gateway.py\", \"combined_t5_freshness_gateway.py\", \"focus_lifecycle_profile.py\"}"
+  }
+]
