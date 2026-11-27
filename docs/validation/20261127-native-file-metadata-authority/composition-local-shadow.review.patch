@@ -1,0 +1,22 @@
+--- preserved73ffe/complete_final_files_authority.py
++++ completion2/complete_final_files_authority.py
+@@ -26,7 +26,7 @@
+ MIB = 1024**2
+ GIB = 1024**3
+ HERE = Path('/mnt/development/projects/evidence/pinkha-final-files-authority-source-20261127-attempt1')
+-CONTINUATION_SOURCE = Path('/mnt/development/projects/evidence/pinkha-final-files-authority-completion-source-20261127-attempt1')
++CONTINUATION_SOURCE = Path('/mnt/development/projects/evidence/pinkha-final-files-authority-completion-source-20261127-attempt2')
+ PARENT = Path('/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127')
+ PRIOR = PARENT/'attempt4'
+ PRIOR_RECEIPT_SHA = '173fdab404efc5340035151022946ae2324543cb7f10889fc47257efa79f24df'
+@@ -372,8 +372,8 @@
+         assert len(metadata_layer['changes'])==8 and len(cache_layer['changes'])==6
+         composed={name:{key:value[key] for key in ('bytes','sha256')} for name,value in metadata_layer['changes'].items()}
+         for name,value in cache_layer['changes'].items():
+-            prior=composed.get(name,base_expected.get(name))
+-            assert (None if prior is None else prior['sha256'])==value['beforeSHA256']
++            layer_before_image=composed.get(name,base_expected.get(name))
++            assert (None if layer_before_image is None else layer_before_image['sha256'])==value['beforeSHA256']
+             composed[name]={key:value[key] for key in ('bytes','sha256')}
+         measurement_name='internal/files/readguard/readguard_cached_stream_measurement_test.go'
+         assert measurement_name not in composed and measurement_name not in base_expected

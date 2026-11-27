@@ -1,0 +1,279 @@
+--- accepted92fd/qualify_final_files_authority.py
++++ completion/complete_final_files_authority.py
+@@ -1,9 +1,11 @@
+ #!/usr/bin/env python3
+-"""Qualify final Files authority33 plus one bounded cached-stream measurement.
+-
+-Reads frozen public SDK source and public receipts only. Creates two new fixture
+-SDKs under outbound OS denial and selects one in-memory read measurement. No retained account, private-store export, original
+-pair operation, Any CLI or prior test replay is part of this controller.
++"""Complete final Files authority34 with32 retained unit events and2 new SDK events.
++
++The original attempt4 receipt remains FAIL after a fragmented measurement-output
++parse. Pin and requalify that exact public source/log/closed-command chain, join
++only the same Package/Test output fragments, and run only the two never-started
++fresh SDK methods. No retained account, private export, Any CLI, unit rerun or
++measurement rerun is part of this continuation.
+ """
+ import argparse
+ from collections import Counter
+@@ -23,8 +25,15 @@
+ 
+ MIB = 1024**2
+ GIB = 1024**3
+-HERE = Path(__file__).absolute().parent
++HERE = Path('/mnt/development/projects/evidence/pinkha-final-files-authority-source-20261127-attempt1')
++CONTINUATION_SOURCE = Path('/mnt/development/projects/evidence/pinkha-final-files-authority-completion-source-20261127-attempt1')
+ PARENT = Path('/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127')
++PRIOR = PARENT/'attempt4'
++PRIOR_RECEIPT_SHA = '173fdab404efc5340035151022946ae2324543cb7f10889fc47257efa79f24df'
++PRIOR_UNIT_LOG_SHA = '5755748de4ee2bb1477dba8f1c8ad2218202258bc53d97ca997e124a653f9313'
++PRIOR_METADATA_LOG_SHA = '865117f0fe0f842b406e0a216c4f9c249a7a2df9b66e478067066f5ef3485c1d'
++PRIOR_SOURCE_SHA = 'c70cea6f04851ccbbb6b312a4e760bfd3659351927439ec9632b71f81dbe3b82'
++ORIGINAL_QUALIFIER_SHA = '92fd3781063138f11055631db09ec39a3e519b65a0d44bcab4284cdceae1872c'
+ BASE = Path('/var/lib/pinkha-c-filesv2-20261126/readguard-native1')
+ BASE_RECEIPT_SHA = 'e26587d911cec570f9215db8bc424f9faa7fe2d09c4354f71cdb772e6fafd394'
+ BASE_MANIFEST_SHA = 'aa43f853a28c2cd0e125b70cdcc01b05a4748f0c25541f5ed86cea511e6b8dd1'
+@@ -118,6 +127,38 @@
+     return found
+ 
+ 
++def parse_package_log(raw, package, expected_names):
++    """Join only this exact test's ordered Go Output fragments before JSON decode."""
++    events = []
++    measurement_output = []
++    for line in raw.splitlines():
++        event = json.loads(line)
++        assert isinstance(event, dict) and event.get('Package') == package
++        if event.get('Action') == 'output' and event.get('Test') == MEASUREMENT_METHOD:
++            assert package == UNIT_PACKAGE and isinstance(event['Output'], str)
++            measurement_output.append(event['Output'])
++        if event.get('Action') in ('run', 'pass', 'fail', 'skip'):
++            events.append({key:event[key] for key in ('Action','Package','Test','Elapsed') if key in event})
++    wanted = Counter({(package,name):1 for name in expected_names})
++    for action in ('run', 'pass'):
++        observed = Counter((event['Package'],event['Test']) for event in events if event['Action']==action and 'Test' in event)
++        assert observed == wanted, 'only the fixed package methods/subcases may run and pass'
++    assert not any(event['Action'] in ('fail','skip') for event in events)
++    assert Counter(event['Package'] for event in events if event['Action']=='pass' and 'Test' not in event)==Counter({package:1})
++    joined = ''.join(measurement_output)
++    assert len(joined.encode()) <= 65536, 'bounded same-test output reconstruction'
++    marker = 'READGUARD_CACHED_MEASUREMENT '
++    measurements = []
++    if package == UNIT_PACKAGE:
++        assert joined.endswith('\n') and joined.count(marker)==1, 'one complete original measurement line'
++        lines = [line for line in joined.splitlines() if marker in line]
++        assert len(lines)==1
++        measurements.append(json.loads(lines[0].split(marker,1)[1]))
++    else:
++        assert not measurement_output, 'fresh package cannot supply a reused measurement'
++    return events, measurements, [len(value.encode()) for value in measurement_output]
++
++
+ def main():
+     if sys.flags.optimize:
+         raise RuntimeError('qualification requires assertions enabled')
+@@ -126,7 +167,7 @@
+     parser.add_argument('--output', type=Path, required=True)
+     args = parser.parse_args()
+     assert os.geteuid()==0 and os.uname().nodename=='torah-social'
+-    assert args.output.parent==PARENT and re.fullmatch(r'attempt[1-9][0-9]{0,2}', args.output.name) and int(args.output.name[7:])>=4
++    assert args.output.parent==PARENT and re.fullmatch(r'attempt[1-9][0-9]{0,2}', args.output.name) and int(args.output.name[7:])>=5
+     os.umask(0o077)
+     physical(PARENT, True)
+     output = args.output
+@@ -139,21 +180,24 @@
+     admitted = {}
+     base_expected = None
+     source_expected = None
++    prior_expected = None
+     cache_before = None
+-    result = {'protocol': 'pinkha-final-files-authority-synthetic-v1', 'status': 'RUNNING',
++    result = {'protocol': 'pinkha-final-files-authority-completion-v1', 'status': 'RUNNING',
+               'baseNativeReceiptSHA256': BASE_RECEIPT_SHA, 'baseFullSourceManifestSHA256': BASE_MANIFEST_SHA,
+               'finalCandidateSHA256': CANDIDATE_SHA, 'finalPatchSHA256': PATCH_SHA,
+               'sourceOnlyMetadata16Precursor': METADATA_SHA, 'sourceOnlyCache17Precursor': CACHE_EFFECT_SHA,
+               'reusedContentOnlyHTTP14SHA256': BASELINE_RECEIPT_SHA,
+               'retainedPrivateInputs': 0, 'retainedAccountOpens': 0, 'privateRecordExports': 0,
+               'nativeCLIServers': 0, 'originalRoleMutations': 0, 'replayedPriorTestMethods': 0, 'separateMetadata16OrCache17OrPerformance1Executed': False,
+-              'processes': [], 'events': [], 'errors': [], 'completionErrors': [],
++              'processes': [], 'events': [], 'newEvents': [], 'reusedEvents': [], 'reusedProcesses': [],
++              'errors': [], 'completionErrors': [], 'priorUnitMethodsReexecuted': 0,
++              'priorMeasurementReexecuted': False, 'historicalProcessIDsProbed': False,
+               'resourcePolicy': {'rootFloorBytes': ROOT_FLOOR, 'developmentFloorBytes': DEV_FLOOR,
+                 'rootAdmissionReserveBytes': ROOT_RESERVE, 'developmentAdmissionReserveBytes': DEV_RESERVE,
+                 'ownedOutputCapBytes': OWNED_CAP, 'observedSharedCacheGrowthCapBytes': CACHE_GROWTH_CAP,
+                 'logCapBytes': LOG_CAP, 'controllerSeconds': 420, 'finalizationSeconds': 60,
+                 'requiredOuterTimeoutSeconds': 480, 'workers': 2, 'goMemoryLimit': '1GiB',
+-                'allocationBasis': 'Reuse qualified SDK726 compile closure with13 explicit paths: final735. Two new6MiB encrypted fixtures plus tiny inline row, two test binaries and one2x64MiB in-memory stream using64KiB buffers. Total owned384MiB and observed cache128MiB caps remain unchanged. No cache deletion or relocation.'}}
++                'allocationBasis': 'Reuse actual attempt4 source735 and32 unit/measurement events without rerun. Recreate the exact public source copy and run only two new6MiB SDK fixtures plus tiny inline row. Original owned384MiB and observed cache128MiB caps remain unchanged. No cache deletion or relocation.'}}
+ 
+     def save_json(path, value):
+         nonlocal serial
+@@ -171,7 +215,7 @@
+         save_json(receipt, result)
+ 
+     def save_command(path, value):
+-        assert path.parent in (output/'toolchain', output/'final-units', output/'final-fresh')
++        assert path.parent == output/'final-fresh'
+         assert path.name in ('started.json', 'result.json')
+         save_json(path, value)
+         save()
+@@ -240,6 +284,8 @@
+     signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGTERM, signal.SIGINT})
+     try:
+         own = Path(__file__).absolute()
++        assert own.parent == CONTINUATION_SOURCE and own.resolve() == own
++        pin(HERE/'qualify_final_files_authority.py', ORIGINAL_QUALIFIER_SHA)
+         admitted[str(own)] = {'identity': identity(frozen(own)), 'maximum': 4*MIB}
+         result['controller'] = admitted[str(own)]['identity']
+         pin(OWNED, OWNED_SHA)
+@@ -280,6 +326,26 @@
+         assert baseline['allOwnedGroupsPositivelyAbsent'] and baseline['errors']==baseline['completionErrors']==[]
+         result['reusedActualReceipts'] = {'signed35':SIGNED_RECEIPT_SHA, 'freshFilesOpen2':FRESH_RECEIPT_SHA,
+                                          'contentOnlyHTTP14':BASELINE_RECEIPT_SHA, 'baseProducer':BASE_RECEIPT_SHA}
++        prior = json.loads(pin(PRIOR/'result.json', PRIOR_RECEIPT_SHA))
++        assert prior['protocol']=='pinkha-final-files-authority-synthetic-v1' and prior['status']=='FAIL_FINAL_FILES_AUTHORITY34'
++        assert prior['controller']=={'bytes':32627,'sha256':ORIGINAL_QUALIFIER_SHA}
++        assert prior['errors']==[{'type':'JSONDecodeError','message':'Expecting value: line 1 column 941 (char 940)'}]
++        assert prior['completionErrors']==[] and prior['allOwnedGroupsPositivelyAbsent'] is True
++        assert prior['sourceUnchanged'] and prior['qualifiedPublicSDKBaseUnchanged'] and prior['usedPublicInputsUnchanged']
++        assert prior['sourceManifestSHA256']==PRIOR_SOURCE_SHA and prior['sdkSourceFiles']==735
++        assert prior['finalCandidateSHA256']==CANDIDATE_SHA and prior['finalPatchSHA256']==PATCH_SHA
++        assert prior['reusedActualReceipts']==result['reusedActualReceipts'] and prior['goToolchain']==producer['goToolchain']
++        assert len(prior['processes'])==2 and len({row['pid'] for row in prior['processes']})==2
++        assert all(row['exitCode']==0 and row['processGroupAbsent'] is True and not row['forcedCleanup'] and row['cleanupErrors']==[] and row['signals']==[] for row in prior['processes'])
++        assert prior['processes'][0]['logSHA256']==PRIOR_METADATA_LOG_SHA and prior['processes'][1]['logSHA256']==PRIOR_UNIT_LOG_SHA
++        assert prior['events']==[] and not (PRIOR/'final-fresh').exists(), 'original fresh package never started'
++        prior_expected = json.loads(pin(PRIOR/'source-before.json', PRIOR_SOURCE_SHA))
++        assert len(prior_expected)==735 and inventory(PRIOR/'sdk-source',capacity)==prior_expected
++        result['reusedProcesses']=prior['processes']
++        result['reusedAllOwnedGroupsPositivelyAbsent']=True
++        result['continuationOf']={'receipt':str(PRIOR/'result.json'),'sha256':PRIOR_RECEIPT_SHA,
++            'status':prior['status'],'unitLog':str(PRIOR/'final-units/original.log'),
++            'unitLogSHA256':PRIOR_UNIT_LOG_SHA,'originalControllerSHA256':ORIGINAL_QUALIFIER_SHA}
+         full = json.loads(pin(BASE/'source-manifest.json', BASE_MANIFEST_SHA))['files']
+         prefix = '.runtime-artifacts/sdk-source/'
+         base_expected = {name.removeprefix(prefix): value for name,value in full.items() if name.startswith(prefix)}
+@@ -347,7 +413,7 @@
+             write_new(target, raw, 0o644)
+             expected[name] = identity(raw)
+         source_expected = expected
+-        assert len(expected)==735 and inventory(source)==expected
++        assert len(expected)==735 and expected==prior_expected and inventory(source)==expected
+         write_new(output/'source-before.json', (json.dumps(expected, sort_keys=True, indent=2)+'\n').encode())
+         result['sourceManifestSHA256'] = identity(frozen(output/'source-before.json'))['sha256']
+         result['sdkSourceFiles'] = len(expected)
+@@ -373,9 +439,12 @@
+         raw_python = frozen(python,32*MIB)
+         admitted[str(python)] = {'identity':identity(raw_python),'maximum':32*MIB}
+         result['OSExecPython'] = {'path':str(python),**identity(raw_python)}
+-        metadata_log, _ = owned.run(output/'toolchain', [str(driver),'env','-json','GOVERSION','GOROOT','GOTOOLDIR','GOHOSTOS','GOHOSTARCH','GOOS','GOARCH'],
+-            source,env,15,observe,save_command,lambda path:identity(frozen(path,LOG_CAP))['sha256'],result['processes'])
+-        assert json.loads(frozen(metadata_log,65536))==known_go['metadata']
++        metadata_raw = pin(PRIOR/'toolchain/original.log',PRIOR_METADATA_LOG_SHA,65536)
++        assert json.loads(metadata_raw)==known_go['metadata']
++        assert prior['OSExecPython']==result['OSExecPython'] and prior['OSPolicy']==result['OSPolicy']
++        for key in ('GOTOOLCHAIN','GOMAXPROCS','GOMEMLIMIT','GOCACHE','GOMODCACHE','CGO_ENABLED','GOWORK','GOFLAGS','GOPROXY','GOSUMDB'):
++            assert prior['environment'][key]==env[key], 'same admitted toolchain environment'
++        result['reusedToolchainMetadata']={'path':str(PRIOR/'toolchain/original.log'),**identity(metadata_raw)}
+         result['goToolchain'] = known_go
+         result['environment'] = {key:env[key] for key in ('GOTOOLCHAIN','GOMAXPROCS','GOMEMLIMIT','GOCACHE','GOMODCACHE','GOTMPDIR','TMPDIR','CGO_ENABLED','GOWORK','GOFLAGS','GOPROXY','GOSUMDB','PINKHA_FRESH_FILES_FIXTURE_ROOT')}
+         exec_prefix = shlex.join([str(python),'-B',str(OFFLINE),'--exec'])
+@@ -395,33 +464,35 @@
+                 if failure is not None: raise failure
+                 raise AssertionError('missing actual new-method log')
+             raw = frozen(path,LOG_CAP)
+-            events = []
+-            measurements = []
+-            for line in raw.splitlines():
+-                try: event = json.loads(line)
+-                except json.JSONDecodeError: continue
+-                if event.get('Action')=='output' and event.get('Test')==MEASUREMENT_METHOD and event.get('Package')==UNIT_PACKAGE:
+-                    marker='READGUARD_CACHED_MEASUREMENT '
+-                    if marker in event.get('Output',''):
+-                        measurements.append(json.loads(event['Output'].split(marker,1)[1]))
+-                if event.get('Action') in ('run','pass','fail','skip'):
+-                    events.append({key:event[key] for key in ('Action','Package','Test','Elapsed') if key in event})
+-            result['events'].extend(events)
+-            result.setdefault('observedCachedMeasurements',[]).extend(measurements)
+             result.setdefault('rawLogs',{})[directory] = {'path':str(path),**identity(raw)}
+             save()
+             if failure is not None: raise failure
+-            wanted = Counter({(package,name):1 for name in expected_names})
+-            for action in ('run','pass'):
+-                observed = Counter((event['Package'],event['Test']) for event in events if event['Action']==action and 'Test' in event)
+-                assert observed==wanted, 'only the fixed new authority methods/subcases may run and pass'
+-            assert not any(event['Action'] in ('fail','skip') for event in events)
+-            assert Counter(event['Package'] for event in events if event['Action']=='pass' and 'Test' not in event)==Counter({package:1})
++            events, measurements, chunks = parse_package_log(raw, package, expected_names)
++            assert measurements==[] and chunks==[], 'only the new fresh package executes here'
++            result['newEvents'].extend(events)
++            result['events'].extend(events)
++            save()
+             assert command['exitCode']==0 and command['processGroupAbsent'] and not command['forcedCleanup'] and not command['cleanupErrors']
+ 
+         names = list(UNIT_METHODS)+[parent+'/'+child for parent,children in UNIT_SUBCASES.items() for child in children]
+         assert len(UNIT_METHODS)==14 and len(names)==32 and len(FRESH_METHODS)==2
+-        run_events('final-units',UNIT_PACKAGE,UNIT_METHODS,names,120,'45s')
++        expected_unit_argv=[str(driver),'test','-json','-count=1','-p=2','-parallel=1','-timeout=45s','-exec',exec_prefix,
++            '-run','^('+'|'.join(sorted(UNIT_METHODS))+')$',UNIT_PACKAGE]
++        assert prior['processes'][1]['argv']==expected_unit_argv
++        assert prior['processes'][0]['argv']==[str(driver),'env','-json','GOVERSION','GOROOT','GOTOOLDIR','GOHOSTOS','GOHOSTARCH','GOOS','GOARCH']
++        assert all(row['cwd']==str(PRIOR/'sdk-source') for row in prior['processes'])
++        unit_raw=pin(PRIOR/'final-units/original.log',PRIOR_UNIT_LOG_SHA,LOG_CAP)
++        reused_events, measurements, chunks=parse_package_log(unit_raw,UNIT_PACKAGE,names)
++        assert chunks==[57,1024,69,65], 'exact retained fragmented measurement stream'
++        result['reusedEvents']=reused_events
++        result['events'].extend(reused_events)
++        result['observedCachedMeasurements']=measurements
++        result['reusedUnitLog']={'path':str(PRIOR/'final-units/original.log'),**identity(unit_raw),
++            'measurementOutputChunkBytes':chunks,'samePackageAndTestReassembled':True}
++        result['executionAccounting']={'aggregateRequiredRuns':34,'aggregateRequiredPasses':34,'reusedUnitRuns':32,
++            'reusedUnitPasses':32,'newFreshRunsRequired':2,'newFreshPassesRequired':2,
++            'historicalClosedGroups':2,'newOwnedGroupsRequired':1,'unitOrMeasurementReruns':0}
++        save()
+         run_events('final-fresh',SDK_PACKAGE,FRESH_METHODS,FRESH_METHODS,240,'90s')
+         assert sorted(path.name for path in fixtures.iterdir())==sorted(FRESH_METHODS)
+         assert inventory(source,capacity)==source_expected and inventory(BASE_SOURCE,capacity)==base_expected
+@@ -442,6 +513,8 @@
+         original,current=measured['measurements']
+         assert math.isclose(measured['elapsedRatioGuardToOriginal'],current['elapsedNanoseconds']/original['elapsedNanoseconds'],rel_tol=1e-12)
+         assert measured['allocationDeltaGuardMinusOriginalBytes']==current['processTotalAllocatedBytes']-original['processTotalAllocatedBytes']
++        result['newActualMethods']={'freshSDKParents':2,'totalRuns':2,'totalPasses':2,'skips':0}
++        result['eventsRepresentAggregateOnly']=True
+         result['actualMethods'] = {'unitParents':14,'unitSubcases':18,'freshSDKParents':2,
+                                   'totalRuns':34,'totalPasses':34,'skips':0,'oldMethodsRerun':0}
+         result['actualScopes']={'metadataAuthority':{'runs':16,'passes':16},
+@@ -450,9 +523,9 @@
+             'cachedStreamMeasurement':{'runs':1,'passes':1,'measurement':measured,
+                 'throughputAcceptanceThreshold':False,'nativeSDKOrStorageThroughput':False}}
+         result['actualFreshSDKOSDenialVerified'] = True
+-        result['status'] = 'PASS_FINAL_FILES_AUTHORITY33_AND_CACHED_MEASUREMENT1_ONLY_NOT_NATIVE'
++        result['status'] = 'PASS_FINAL_FILES_AUTHORITY34_WITH_REUSED_UNIT32_AND_NEW_FRESH2'
+     except BaseException as error:
+-        result['status'] = 'FAIL_FINAL_FILES_AUTHORITY34'
++        result['status'] = 'FAIL_FINAL_FILES_AUTHORITY34_COMPLETION'
+         result['errors'].append({'type':type(error).__name__,'message':str(error)})
+     finally:
+         for number in (signal.SIGTERM,signal.SIGINT): signal.signal(number,signal.SIG_IGN)
+@@ -472,14 +545,17 @@
+             if base_expected is not None:
+                 assert inventory(BASE_SOURCE,final_guard)==base_expected
+                 result['qualifiedPublicSDKBaseUnchanged'] = True
++            if prior_expected is not None:
++                assert inventory(PRIOR/'sdk-source',final_guard)==prior_expected
++                result['originalAttempt4PublicSourceUnchanged']=True
+             if result['status'].startswith('PASS_'):
+-                assert len(result['processes'])==3 and result['allOwnedGroupsPositivelyAbsent']
++                assert len(result['processes'])==1 and result['allOwnedGroupsPositivelyAbsent']
+                 assert all(row['exitCode']==0 and not row['forcedCleanup'] and not row['cleanupErrors'] for row in result['processes'])
+             allocation()
+             result['freeAfter'] = capacity(bounded=False)
+             assert time.monotonic()<final_deadline
+         except BaseException as error:
+-            result['status'] = 'FAIL_FINAL_FILES_AUTHORITY34'
++            result['status'] = 'FAIL_FINAL_FILES_AUTHORITY34_COMPLETION'
+             result['completionErrors'].append({'type':type(error).__name__,'message':str(error)})
+         save()
+     print(json.dumps({'status':result['status'],'result':str(receipt),'sha256':identity(frozen(receipt,8*MIB))['sha256']}))

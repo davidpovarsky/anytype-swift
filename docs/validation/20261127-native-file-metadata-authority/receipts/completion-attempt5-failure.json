@@ -1,0 +1,191 @@
+{
+  "OSExecPython": {
+    "bytes": 7845048,
+    "path": "/usr/bin/python3.12",
+    "sha256": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960"
+  },
+  "OSPolicy": {
+    "helperSHA256": "6eaca8b9602f9c1c7fce4b8a176759ad1a10577c0ee74eddb3264992976e86b1",
+    "installedBeforeSDKInitialization": true,
+    "librarySHA256": "3d128123b494ca9e88f3c237b0912397145af1754e86ea99f460af6857441f19",
+    "liveTCPAndUDPRequireEPERM": true
+  },
+  "allOwnedGroupsPositivelyAbsent": true,
+  "baseFullSourceManifestSHA256": "aa43f853a28c2cd0e125b70cdcc01b05a4748f0c25541f5ed86cea511e6b8dd1",
+  "baseNativeReceiptSHA256": "e26587d911cec570f9215db8bc424f9faa7fe2d09c4354f71cdb772e6fafd394",
+  "completionErrors": [],
+  "continuationOf": {
+    "originalControllerSHA256": "92fd3781063138f11055631db09ec39a3e519b65a0d44bcab4284cdceae1872c",
+    "receipt": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt4/result.json",
+    "sha256": "173fdab404efc5340035151022946ae2324543cb7f10889fc47257efa79f24df",
+    "status": "FAIL_FINAL_FILES_AUTHORITY34",
+    "unitLog": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt4/final-units/original.log",
+    "unitLogSHA256": "5755748de4ee2bb1477dba8f1c8ad2218202258bc53d97ca997e124a653f9313"
+  },
+  "controller": {
+    "bytes": 38527,
+    "sha256": "73ffe2e222dfe0714493736021cb36eb31a7e92efe916070ebb3b46ab2b151e7"
+  },
+  "errors": [
+    {
+      "message": "'OSExecPython'",
+      "type": "KeyError"
+    }
+  ],
+  "events": [],
+  "finalCandidateSHA256": "71c0b47b5aea45a9ab0a2498f56361b0b7239fab183e37af7bb365dfb9b2ee81",
+  "finalPatchSHA256": "9088b91cd098124b68d794185898aaf29d829a0e1b44ad3e8e06c914f4bb0350",
+  "freeAfter": {
+    "development": 12685225984,
+    "root": 2548129792
+  },
+  "historicalProcessIDsProbed": false,
+  "initialFreeBytes": {
+    "development": 12694048768,
+    "root": 2548187136
+  },
+  "memAvailableBefore": 4518883328,
+  "minimumFreeBytes": {
+    "development": 12685225984,
+    "root": 2548129792
+  },
+  "nativeCLIServers": 0,
+  "newEvents": [],
+  "originalAttempt4PublicSourceUnchanged": true,
+  "originalRoleMutations": 0,
+  "peakObservedSharedCacheGrowthBytes": 0,
+  "peakOwnedBytes": 8642560,
+  "priorMeasurementReexecuted": false,
+  "priorUnitMethodsReexecuted": 0,
+  "privateRecordExports": 0,
+  "processes": [],
+  "protocol": "pinkha-final-files-authority-completion-v1",
+  "qualifiedPublicSDKBaseUnchanged": true,
+  "replayedPriorTestMethods": 0,
+  "resourcePolicy": {
+    "allocationBasis": "Reuse actual attempt4 source735 and32 unit/measurement events without rerun. Recreate the exact public source copy and run only two new6MiB SDK fixtures plus tiny inline row. Original owned384MiB and observed cache128MiB caps remain unchanged. No cache deletion or relocation.",
+    "controllerSeconds": 420,
+    "developmentAdmissionReserveBytes": 536870912,
+    "developmentFloorBytes": 536870912,
+    "finalizationSeconds": 60,
+    "goMemoryLimit": "1GiB",
+    "logCapBytes": 8388608,
+    "observedSharedCacheGrowthCapBytes": 134217728,
+    "ownedOutputCapBytes": 402653184,
+    "requiredOuterTimeoutSeconds": 480,
+    "rootAdmissionReserveBytes": 33554432,
+    "rootFloorBytes": 2147483648,
+    "workers": 2
+  },
+  "retainedAccountOpens": 0,
+  "retainedPrivateInputs": 0,
+  "reusedActualReceipts": {
+    "baseProducer": "e26587d911cec570f9215db8bc424f9faa7fe2d09c4354f71cdb772e6fafd394",
+    "contentOnlyHTTP14": "7efa899783f5cabb54b2693dca0a22a9571d499ef4b9838749dfb8e677784099",
+    "freshFilesOpen2": "4eb696473d3cc199f935f826944a03681e0decd16047039579aba9718fc2ff35",
+    "signed35": "68964e6db8802065ba69edad5614ec52cde3603b14f9628d65d808aa76563766"
+  },
+  "reusedAllOwnedGroupsPositivelyAbsent": true,
+  "reusedContentOnlyHTTP14SHA256": "7efa899783f5cabb54b2693dca0a22a9571d499ef4b9838749dfb8e677784099",
+  "reusedEvents": [],
+  "reusedOwnershipReceiptSHA256": "040ffa3fcf93094369e24928732aeba9eb10fdb673db76ab7540a887748aa27d",
+  "reusedProcesses": [
+    {
+      "absenceObservedAtSeconds": 1.5153346108272672,
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "env",
+        "-json",
+        "GOVERSION",
+        "GOROOT",
+        "GOTOOLDIR",
+        "GOHOSTOS",
+        "GOHOSTARCH",
+        "GOOS",
+        "GOARCH"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt4/sdk-source",
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "logSHA256": "865117f0fe0f842b406e0a216c4f9c249a7a2df9b66e478067066f5ef3485c1d",
+      "pgid": 1450656,
+      "pid": 1450656,
+      "processGroupAbsent": true,
+      "seconds": 1.5153364101424813,
+      "signals": [],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    },
+    {
+      "absenceObservedAtSeconds": 7.263912552967668,
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-json",
+        "-count=1",
+        "-p=2",
+        "-parallel=1",
+        "-timeout=45s",
+        "-exec",
+        "/usr/bin/python3.12 -B /mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Tools/AnyEngineValidation/native_source_preservation/linux_outbound_denial.py --exec",
+        "-run",
+        "^(TestCacheEffectAdmitsCurrentReaderAndGuest|TestCacheEffectDiscardsChangedPreparation|TestCacheEffectInlineNoopRequiresCurrentAuthority|TestCacheEffectPreservesAdmittedOutcome|TestCacheEffectPreservesUnchangedPreparationError|TestCacheEffectRefusesRemovedBeforePreparation|TestMetadataValueGuardAdmitsCurrentReaderAndGuest|TestMetadataValueGuardDiscardsAwaitedResultWithoutHoldingACL|TestMetadataValueGuardRefusesRemovedLookupAndMasksFailedRead|TestMetadataValueGuardRejectsSignedABAAndAccountRetirement|TestReadGuardFreshCachedStreamMeasurement64MiB|TestStatusEventGuardAlreadyAdmittedCallbackMayFinish|TestStatusEventGuardQuiescesWithoutWaitingAndPreservesDeclinedClose|TestStatusEventGuardRefusesQueuedRemovedOrCancelledEvents)$",
+        "github.com/anyproto/any-sync-sdk/internal/files/readguard"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt4/sdk-source",
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "logSHA256": "5755748de4ee2bb1477dba8f1c8ad2218202258bc53d97ca997e124a653f9313",
+      "pgid": 1450878,
+      "pid": 1450878,
+      "processGroupAbsent": true,
+      "seconds": 7.263914313167334,
+      "signals": [],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    }
+  ],
+  "sdkSourceFiles": 735,
+  "seconds": 5.266135724261403,
+  "separateMetadata16OrCache17OrPerformance1Executed": false,
+  "sharedCacheAllocationBefore": 1393115136,
+  "sourceComposition": {
+    "baseSDKFiles": 726,
+    "cache17PrecursorExecuted": false,
+    "cacheEffectSDKFiles": 734,
+    "changedPaths": 13,
+    "defaultFreshConstructorExactInverse": {
+      "currentSHA256": "31759517cd3f033e0c44f53b3938af0faf6db4f75efe53c5df7fd2d67fb88409",
+      "defaultSetupHooks": [
+        null,
+        null
+      ],
+      "exactInverseRestoresPrevious": true,
+      "inverseChanges": [
+        "remove the optional constructor wrapper/signature",
+        "select the original nil queue setup branch",
+        "remove the optional pre-Reader registration call",
+        "undo canonical four-space alignment in the unchanged ReadKeyChangePayload literal"
+      ],
+      "oldMethodsRerun": 0,
+      "previousSHA256": "b7d91dd885239f0b5c7cad99d22985affd3d20cc554b9f097487ce2be6dfc76b",
+      "productionHookChanges": 0,
+      "protocol": "pinkha-fresh-fixture-startup-source-successor-v1",
+      "retainedAccountInputs": 0,
+      "status": "SOURCE_ONLY_NOT_RUN"
+    },
+    "finalFullAnySourceFiles": 1616,
+    "finalSDKFiles": 735,
+    "metadata16PrecursorExecuted": false,
+    "metadataOnlySDKFiles": 731,
+    "standaloneMeasurementPrecursorExecuted": false
+  },
+  "sourceManifestSHA256": "c70cea6f04851ccbbb6b312a4e760bfd3659351927439ec9632b71f81dbe3b82",
+  "sourceOnlyCache17Precursor": "eb0b1fa3c432a56d0767ae856043aa32b39bcde694133e432b25b34087f86a22",
+  "sourceOnlyMetadata16Precursor": "d2fa0dd59b0826918631c71b6d1b5b2561599897b438077bdf53cc3b34f38af8",
+  "sourceUnchanged": true,
+  "status": "FAIL_FINAL_FILES_AUTHORITY34_COMPLETION",
+  "usedPublicInputsUnchanged": true
+}

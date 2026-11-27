@@ -1,0 +1,98 @@
+{
+  "baseMetadataManifestSHA256": "d2fa0dd59b0826918631c71b6d1b5b2561599897b438077bdf53cc3b34f38af8",
+  "baseNativeReceiptSHA256": "e26587d911cec570f9215db8bc424f9faa7fe2d09c4354f71cdb772e6fafd394",
+  "baseSDKFileCount": 731,
+  "candidateFullSourceFileCount": 1615,
+  "candidateSDKFileCount": 734,
+  "canonicalFormattingSHA256": "b54b2e7b5c7c79a797cc41a48fbfc4ae56b6f32a199b7a42a91c4195b7d81528",
+  "changes": {
+    "files_cache_effect_authority_fresh_linux_test.go": {
+      "beforeSHA256": null,
+      "bytes": 4882,
+      "kind": "test",
+      "sha256": "d0bec436057d1fbfd7e8e2adb1c3fccc2ea479e478a10df2dd42b73b70367e9b"
+    },
+    "files_readguard_fresh_linux_test.go": {
+      "beforeSHA256": "b7d91dd885239f0b5c7cad99d22985affd3d20cc554b9f097487ce2be6dfc76b",
+      "bytes": 20481,
+      "kind": "test",
+      "sha256": "31759517cd3f033e0c44f53b3938af0faf6db4f75efe53c5df7fd2d67fb88409"
+    },
+    "internal/files/readguard/effect.go": {
+      "beforeSHA256": null,
+      "bytes": 1289,
+      "kind": "production",
+      "sha256": "e278dc93a4f2fb406d2f1f48e07e51a937d132295af3c13eaa0a68585a7d7814"
+    },
+    "internal/files/readguard/effect_test.go": {
+      "beforeSHA256": null,
+      "bytes": 4826,
+      "kind": "test",
+      "sha256": "a75d9c3d00702667f27c4c2c8fa4cd9120594bafede9f9546b55fd938db16b62"
+    },
+    "internal/spaceimpl/files.go": {
+      "beforeSHA256": "bcb9d3d4e6c975fb898206fdfdaee738f11dc6c19d5a31f51434fffbdc0fda06",
+      "bytes": 21036,
+      "kind": "production",
+      "sha256": "6e0e8d3576b80a2d8bb522ebd731217e82f4518acd123ff54c9189ca0d5a7004"
+    },
+    "space/files.go": {
+      "beforeSHA256": "863b7f520d665c0532e0785d7bb44ebe7e4126d83d232ec2e92c4d9aea10b936",
+      "bytes": 11459,
+      "kind": "production",
+      "sha256": "1f5ac1991c8ec194104cd7c650566a4153598380bb9b1e7da9bf11e4d4355f6d"
+    }
+  },
+  "defaultFreshFixtureRestorationSHA256": "31fc741523900913eccce7df053cfb5e4c1f22e917371ba60d7abdc229ae75bc",
+  "oldMethodsRerun": 0,
+  "originalRoleMutations": 0,
+  "patch": {
+    "bytes": 20198,
+    "sha256": "38d40f93b2320616d826d28207455b009b51cd7aeb006a85c83b6fd225bc76f8"
+  },
+  "plannedRunPassEvents": 17,
+  "protocol": "pinkha-files-cache-operation-authority-source-v1",
+  "retainedAccountInputs": 0,
+  "scope": {
+    "admission": "current signed READ membership and captured account/Space before first effect",
+    "freshQueueWorkersStarted": 0,
+    "freshRemovedMemberDenials": 9,
+    "fullOffloadSuccessClaim": false,
+    "positiveFullOffload": "original ErrFileNotBackedUp preserved for unsigned fresh bytes",
+    "positiveInlineOffload": true,
+    "postAdmission": "original operation result retained; no authority rollback or automatic retry",
+    "priorQueuedJobsCancelled": false
+  },
+  "selectedFreshSDKParents": [
+    "TestFilesCacheEffectsFreshReaderAdmissionAndSignedRemoval"
+  ],
+  "selectedUnitParents": [
+    "TestCacheEffectAdmitsCurrentReaderAndGuest",
+    "TestCacheEffectRefusesRemovedBeforePreparation",
+    "TestCacheEffectDiscardsChangedPreparation",
+    "TestCacheEffectPreservesAdmittedOutcome",
+    "TestCacheEffectInlineNoopRequiresCurrentAuthority",
+    "TestCacheEffectPreservesUnchangedPreparationError"
+  ],
+  "selectedUnitSubcases": {
+    "TestCacheEffectAdmitsCurrentReaderAndGuest": [
+      "reader",
+      "guest"
+    ],
+    "TestCacheEffectDiscardsChangedPreparation": [
+      "signed-removal-and-read-error",
+      "account-retired",
+      "space-retired",
+      "cancelled"
+    ],
+    "TestCacheEffectInlineNoopRequiresCurrentAuthority": [
+      "current",
+      "removed-during-preparation"
+    ],
+    "TestCacheEffectPreservesAdmittedOutcome": [
+      "success",
+      "original-error-after-effect"
+    ]
+  },
+  "status": "SOURCE_ONLY_NOT_COMPILED_OR_TESTED"
+}

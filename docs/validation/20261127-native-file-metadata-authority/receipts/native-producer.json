@@ -1,0 +1,289 @@
+{
+  "actualScopesFromQualification": {
+    "cacheEffectAuthority": {
+      "freshRemovedMemberDenials": 9,
+      "passes": 17,
+      "positiveFullOffloadEviction": false,
+      "positiveInlineOffload": true,
+      "priorQueuedJobsCancelled": false,
+      "runs": 17
+    },
+    "cachedStreamMeasurement": {
+      "measurement": {
+        "allocationDeltaGuardMinusOriginalBytes": 67920240,
+        "elapsedRatioGuardToOriginal": 3.305668492984039,
+        "measurements": [
+          {
+            "bytes": 67108864,
+            "callerBufferBytes": 65536,
+            "elapsedNanoseconds": 41577841,
+            "largestInnerRequest": 65536,
+            "mibPerSecond": 1539.2814648552821,
+            "path": "original-unwrapped-memory-reader",
+            "processAllocationCount": 0,
+            "processTotalAllocatedBytes": 0,
+            "reads": 1024,
+            "sha256": "9b586ad8ac9a1e0a79d2cab4ff1f9d2671ed3d0434d8e068eebcb09330171ca9"
+          },
+          {
+            "bytes": 67108864,
+            "callerBufferBytes": 65536,
+            "elapsedNanoseconds": 137442559,
+            "largestInnerRequest": 65536,
+            "mibPerSecond": 465.64907162416847,
+            "path": "current-signed-lifetime-guard",
+            "processAllocationCount": 19459,
+            "processTotalAllocatedBytes": 67920240,
+            "reads": 1024,
+            "sha256": "9b586ad8ac9a1e0a79d2cab4ff1f9d2671ed3d0434d8e068eebcb09330171ca9"
+          }
+        ],
+        "nativeSDKOrStorageThroughput": false,
+        "order": [
+          "original-unwrapped-memory-reader",
+          "current-signed-lifetime-guard"
+        ],
+        "protocol": "pinkha-fresh-cached-stream-measurement-v1",
+        "retainedAccountInputs": 0,
+        "throughputAcceptanceThreshold": false
+      },
+      "nativeSDKOrStorageThroughput": false,
+      "passes": 1,
+      "runs": 1,
+      "throughputAcceptanceThreshold": false
+    },
+    "metadataAuthority": {
+      "passes": 16,
+      "runs": 16
+    }
+  },
+  "admissionModule": {
+    "bytes": 28708,
+    "sha256": "cc6e5b4163712bfccae98bb1e586c24723ade0c8862c3656a6e657522996714f"
+  },
+  "admittedPublicInputsUnchanged": true,
+  "allOwnedGroupsPositivelyAbsent": true,
+  "appleRuntimeQualified": false,
+  "baseNativeReceiptSHA256": "e26587d911cec570f9215db8bc424f9faa7fe2d09c4354f71cdb772e6fafd394",
+  "baseSourceManifestSHA256": "aa43f853a28c2cd0e125b70cdcc01b05a4748f0c25541f5ed86cea511e6b8dd1",
+  "baseSourceUnchanged": true,
+  "binaryBytes": 78107649,
+  "binaryModuleMetadata": {
+    "bytes": 13269,
+    "sha256": "92e523e1ed8d73dd4da76c559b6d24f4886d09e8d0f6a2be194386c3e93b21b0"
+  },
+  "binarySHA256": "cac96a8ab3edb6a2e908f423c45726818bcf3cc223d57aa4018869702be0ee21",
+  "buildExitCode": 0,
+  "commits": {
+    "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+    "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+  },
+  "completionErrors": [],
+  "controller": {
+    "bytes": 20710,
+    "sha256": "9f335c8402b566384f3b4d980178ebb5363205f6d9e9d0e0e05212c2a632da78"
+  },
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOCACHE": "/var/lib/pinkha-root-t2-linux-20261126/go-cache",
+    "GOFLAGS": "-mod=readonly",
+    "GOMAXPROCS": "2",
+    "GOMEMLIMIT": "1GiB",
+    "GOMODCACHE": "/root/go/pkg/mod",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOTMPDIR": "/mnt/development/projects/caches/pinkha-w1-final-files-authority-native-20261127/final-authority-native1",
+    "GOTOOLCHAIN": "local",
+    "GOWORK": "off",
+    "TMPDIR": "/mnt/development/projects/caches/pinkha-w1-final-files-authority-native-20261127/final-authority-native1"
+  },
+  "errors": [],
+  "finalCandidateSHA256": "71c0b47b5aea45a9ab0a2498f56361b0b7239fab183e37af7bb365dfb9b2ee81",
+  "finalFreeBytes": {
+    "development": 11826438144,
+    "root": 2327785472
+  },
+  "finalPatchSHA256": "9088b91cd098124b68d794185898aaf29d829a0e1b44ad3e8e06c914f4bb0350",
+  "goToolchain": {
+    "driver": {
+      "bytes": 15863091,
+      "path": "/mnt/development/toolchains/go1.27.4/go/bin/go",
+      "sha256": "59c65090beeda377c09007eb8fae1c6aadf0a7b551e65ee13d461092d29e8005"
+    },
+    "metadata": {
+      "GOARCH": "arm64",
+      "GOHOSTARCH": "arm64",
+      "GOHOSTOS": "linux",
+      "GOOS": "linux",
+      "GOROOT": "/mnt/development/toolchains/go1.27.4/go",
+      "GOTOOLDIR": "/mnt/development/toolchains/go1.27.4/go/pkg/tool/linux_arm64",
+      "GOVERSION": "go1.27.4"
+    },
+    "tools": {
+      "compile": {
+        "bytes": 26606430,
+        "path": "/mnt/development/toolchains/go1.27.4/go/pkg/tool/linux_arm64/compile",
+        "sha256": "4070e0e743ba23672219a3687a1f9bfb489fa5c95bfb6584b4f33932339f92ef"
+      },
+      "link": {
+        "bytes": 6852809,
+        "path": "/mnt/development/toolchains/go1.27.4/go/pkg/tool/linux_arm64/link",
+        "sha256": "c119b682a4c1ba107279fe3ec0f0317518e5d21900f1f75941528b65b8d47590"
+      }
+    }
+  },
+  "heartProductEmbedded": false,
+  "initialFreeBytes": {
+    "development": 11939504128,
+    "root": 2433323008
+  },
+  "measuredBaseAllocationInputs": {
+    "additionalReserveBytes": 8388608,
+    "priorNativeBinary": {
+      "bytes": 78093866,
+      "sha256": "1b25764f9af1af854a928b3c445044a6906cb3477b64b4da6689b9e29997e639"
+    },
+    "sourceLogicalBytes": 17411109
+  },
+  "memAvailableBefore": 4543205376,
+  "minimumFreeBytes": {
+    "development": 11643424768,
+    "root": 2327777280
+  },
+  "nativeAccountProcesses": 0,
+  "nativeCLIStarted": false,
+  "peakObservedSharedCacheGrowthBytes": 112115712,
+  "peakRootOutputBytes": 99946496,
+  "peakTemporaryBytes": 189198336,
+  "processes": [
+    {
+      "absenceObservedAtSeconds": 0.47521146945655346,
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "env",
+        "-json",
+        "GOVERSION",
+        "GOROOT",
+        "GOTOOLDIR",
+        "GOHOSTOS",
+        "GOHOSTARCH",
+        "GOOS",
+        "GOARCH"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/var/lib/pinkha-c-filesv2-20261126/final-authority-native1/source",
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "logSHA256": "865117f0fe0f842b406e0a216c4f9c249a7a2df9b66e478067066f5ef3485c1d",
+      "pgid": 1529430,
+      "pid": 1529430,
+      "processGroupAbsent": true,
+      "seconds": 0.475213629193604,
+      "signals": [],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    },
+    {
+      "absenceObservedAtSeconds": 45.865669494494796,
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "build",
+        "-p",
+        "2",
+        "-o",
+        "/var/lib/pinkha-c-filesv2-20261126/final-authority-native1/any",
+        "./cmd/any"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/var/lib/pinkha-c-filesv2-20261126/final-authority-native1/source",
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pgid": 1529472,
+      "pid": 1529472,
+      "processGroupAbsent": true,
+      "seconds": 45.865671414881945,
+      "signals": [],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    },
+    {
+      "absenceObservedAtSeconds": 0.48527996987104416,
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "version",
+        "-m",
+        "/var/lib/pinkha-c-filesv2-20261126/final-authority-native1/any"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/var/lib/pinkha-c-filesv2-20261126/final-authority-native1/source",
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "logSHA256": "92e523e1ed8d73dd4da76c559b6d24f4886d09e8d0f6a2be194386c3e93b21b0",
+      "pgid": 1531909,
+      "pid": 1531909,
+      "processGroupAbsent": true,
+      "seconds": 0.48528129048645496,
+      "signals": [],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    }
+  ],
+  "productionOverlayApplications": 1,
+  "protocol": "pinkha-final-files-authority-native-qualified-v1",
+  "qualification": {
+    "path": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt6/result.json",
+    "sha256": "4be8657cd077774edc76767195a79f5e6b97fc10704dce12dc8f05f973a2d622"
+  },
+  "qualifiedSDKSourceUnchanged": true,
+  "replayedTests": 0,
+  "resourcePolicy": {
+    "allocationEstimateNotMeasuredPeak": true,
+    "buildSeconds": 360,
+    "controllerSeconds": 480,
+    "developmentAdmissionReserveBytes": 402653184,
+    "developmentFloorBytes": 536870912,
+    "developmentTemporaryCapBytes": 268435456,
+    "estimateBasis": "Prior actual e265 native build measured root99852288/temp182853632/cache111902720 B within the same128/256/128MiB caps. Final source adds nine files and replaces four, with one unchanged build command. Fresh floors and measured caps apply; no cache deletion.",
+    "finalVerificationSeconds": 60,
+    "goMemoryLimit": "1GiB",
+    "metadataCommandSeconds": 15,
+    "requiredOuterSeconds": 570,
+    "rootAdmissionReserveBytes": 134217728,
+    "rootFloorBytes": 2147483648,
+    "rootOutputCapBytes": 134217728,
+    "sharedCacheGrowthCapBytes": 134217728,
+    "workers": 2
+  },
+  "retainedPrivateInputs": 0,
+  "reusedActualReceipts": {
+    "baseProducer": "e26587d911cec570f9215db8bc424f9faa7fe2d09c4354f71cdb772e6fafd394",
+    "contentOnlyHTTP14": "7efa899783f5cabb54b2693dca0a22a9571d499ef4b9838749dfb8e677784099",
+    "freshFilesOpen2": "4eb696473d3cc199f935f826944a03681e0decd16047039579aba9718fc2ff35",
+    "signed35": "68964e6db8802065ba69edad5614ec52cde3603b14f9628d65d808aa76563766"
+  },
+  "reusedOwnershipReceiptSHA256": "040ffa3fcf93094369e24928732aeba9eb10fdb673db76ab7540a887748aa27d",
+  "sdkSourceFiles": 735,
+  "seconds": 65.33972591627389,
+  "sharedCacheAllocationBefore": 1467400192,
+  "sourceChanges": [
+    ".runtime-artifacts/sdk-source/docs/files.md",
+    ".runtime-artifacts/sdk-source/files_cache_effect_authority_fresh_linux_test.go",
+    ".runtime-artifacts/sdk-source/files_metadata_authority_fresh_linux_test.go",
+    ".runtime-artifacts/sdk-source/files_readguard_fresh_linux_test.go",
+    ".runtime-artifacts/sdk-source/internal/files/readguard/effect.go",
+    ".runtime-artifacts/sdk-source/internal/files/readguard/effect_test.go",
+    ".runtime-artifacts/sdk-source/internal/files/readguard/events.go",
+    ".runtime-artifacts/sdk-source/internal/files/readguard/metadata_test.go",
+    ".runtime-artifacts/sdk-source/internal/files/readguard/readguard_cached_stream_measurement_test.go",
+    ".runtime-artifacts/sdk-source/internal/files/readguard/value.go",
+    ".runtime-artifacts/sdk-source/internal/spaceimpl/files.go",
+    ".runtime-artifacts/sdk-source/internal/spaceimpl/files_status_authority.go",
+    ".runtime-artifacts/sdk-source/space/files.go"
+  ],
+  "sourceFiles": 1616,
+  "sourceManifestSHA256": "773f0a25422b3460a375182fb6f839fd71d7246ad8b489b6c20418bfab3b2471",
+  "sourceUnchanged": true,
+  "status": "PASS_FINAL_NATIVE_BUILD_AND_FILES_AUTHORITY34",
+  "syncModule": "github.com/anyproto/any-sync@v0.13.8"
+}
