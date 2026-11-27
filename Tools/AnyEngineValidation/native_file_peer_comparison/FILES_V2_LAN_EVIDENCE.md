@@ -2,7 +2,7 @@
 
 ## Accepted boundary
 
-The actual native run at `2026-11-27T02:15:42Z` completed in 13.951 seconds with `PASS_COPIED_PRODUCTION_ACCOUNTS_LAN_PARTIAL_CRASH_COLD_FILE_BYTES`. This is a file-transfer qualification on exact custody copies of two independently created, genuinely granted production-test accounts. It is separate from the unresolved original private-network invitation and from cloud durability.
+The actual native run at `2026-11-27T02:15:42Z` completed in 13.951 seconds with `PASS_COPIED_PRODUCTION_ACCOUNTS_LAN_PARTIAL_CRASH_COLD_FILE_BYTES`. This is a file-transfer qualification on exact custody copies of two independently created, genuinely granted production-test accounts. It is separate from the original private-network invitation recovery and from cloud durability. The original invitation was subsequently recovered as documented in `acl_refresh/RETAINED_JOIN_RECOVERY.md`.
 
 Receipt: `/var/lib/pinkha-c-filesv2-20261126/production-lan-files2/result.json`, SHA-256 `c23b78e312fa9efbe1a5fe7abd9e0061e131a0514fdb4fc07cf12ebe42376692`. An exact copy is included in `receipts/production-lan-files2.json`.
 
@@ -55,7 +55,7 @@ Original inputs: Any `8fbd1e819fb132ac0e0a848d2ddf5c5714189b81`, SDK `c1fd59bd8f
 
 The LAN run uses only the signed-ACL refresh overlay from commit `baa37153538b9b3f3bf22fa049acc902d445844c`. Its qualified native binary is SHA-256 `79248a63132a0146deff4e9fe1c4104a381a34d5c2ffcad536247a8429f98857`, from a 1,597-file source manifest with SHA-256 `44abb44523e01b4631c8eff5f3ff183aca17f58b472fbb041e7a1e501028ca68`. Its build receipt is `/var/lib/pinkha-c-filesv2-20261126/acl-refresh-native1/result.json`, SHA-256 `bfafdf6d7304786726235fd1d2f3065dbf5782091123f03fbd6bb54b09328380`; actual build time was 86.205 seconds. Exactly four SDK files differ from the original closure. Original and qualified source admissions remained identical before/after the accepted runs.
 
-The original private-network owner's pending request was genuinely recovered by this binary and one ordinary Reader acceptance returned 204. The recipient still remained pending; that complete continuation is retained as a failure. Its local signed grant is not yet represented in the observed node snapshot. See `acl_refresh/EVIDENCE.md`. The unrelated production accounts used here had already completed a real Reader grant; no account reset or replacement is claimed to fix the private failure.
+The original private-network owner's pending request was genuinely recovered by this binary and one ordinary Reader acceptance returned 204. The recipient still remained pending; that complete continuation is retained as a failure. A subsequent exact three-node comparison confirmed the same signed grant on all three nodes, and the original recipient completed that existing join and reopened offline as Reader. See `acl_refresh/RETAINED_JOIN_RECOVERY.md`; the earlier 90-second failure is preserved and the convergence interval is unmeasured. The unrelated production accounts used here had already completed a real Reader grant; no account reset or replacement is claimed to fix the private failure.
 
 The existing 12 network cases, two ACL-enforcement cases and two Linux P2P cold-restore cases remain unchanged evidence for their own recorded inputs. This document does not relabel them as rerun tests of the new binary. Cloud quota recovery, whole-space migration, Apple device qualification and final release acceptance remain distinct gates owned/coordinated by their lanes.
 

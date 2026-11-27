@@ -1,0 +1,354 @@
+{
+  "accountInitCalls": 0,
+  "accounts": {
+    "alice": "A7MAdySTn1MR4Fb3gDr67ZeXEvt8fqNjtHEwB3b9kUGFZZya",
+    "bob": "AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR"
+  },
+  "activeReaderOffline": {
+    "identity": "AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR",
+    "permission": "reader",
+    "status": "active"
+  },
+  "activeReaderOnline": {
+    "identity": "AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR",
+    "permission": "reader",
+    "status": "active"
+  },
+  "actualFilesV2Acceptance": false,
+  "allOwnedGroupsPositivelyAbsent": true,
+  "attachmentCalls": 0,
+  "controllerSHA256": "f7972d8b90f9e614592e11ad35bc22ba86a073e442539d0c7f016272b516d0af",
+  "deniedWriteAttempts": [
+    {
+      "phase": "bob-existing-grant-online",
+      "status": 403,
+      "value": {
+        "error": {
+          "code": "space.read_only",
+          "details": {
+            "objectId": "bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e",
+            "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+          },
+          "message": "space is read-only for this account (guest access or reader role)"
+        }
+      }
+    },
+    {
+      "phase": "bob-existing-grant-offline",
+      "status": 403,
+      "value": {
+        "error": {
+          "code": "space.read_only",
+          "details": {
+            "objectId": "bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e",
+            "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+          },
+          "message": "space is read-only for this account (guest access or reader role)"
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "finalAccountInventorySHA256": "c9d6d7c245c239bd2a56b47f7b89e4a104630db5a15675a3f703cd9d434499b4",
+  "grantCalls": 0,
+  "inviteCreateCalls": 0,
+  "joinCalls": 0,
+  "minimumRootFreeBytes": 3924475904,
+  "nativeAfter": {
+    "binarySHA256": "79248a63132a0146deff4e9fe1c4104a381a34d5c2ffcad536247a8429f98857",
+    "sourceFiles": 1597,
+    "sourceManifestSHA256": "44abb44523e01b4631c8eff5f3ff183aca17f58b472fbb041e7a1e501028ca68"
+  },
+  "nativeBefore": {
+    "binarySHA256": "79248a63132a0146deff4e9fe1c4104a381a34d5c2ffcad536247a8429f98857",
+    "sourceFiles": 1597,
+    "sourceManifestSHA256": "44abb44523e01b4631c8eff5f3ff183aca17f58b472fbb041e7a1e501028ca68"
+  },
+  "nodeReadReceiptSHA256": "b4ea294a8090cd867bae1246a635d0afba8a48e12ee073a9362f2598591321c6",
+  "objectId": "bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e",
+  "offlineControlEvidenceReused": {
+    "freshNativeSeccompFlagsRequired": true,
+    "freshProbeRerun": false,
+    "policy": {
+      "actual": {
+        "deniedSyscalls": [
+          "connect",
+          "sendto",
+          "sendmsg",
+          "sendmmsg",
+          "io_uring_setup",
+          "io_uring_enter",
+          "io_uring_register"
+        ],
+        "librarySHA256": "3d128123b494ca9e88f3c237b0912397145af1754e86ea99f460af6857441f19",
+        "noNewPrivileges": true,
+        "seccompFilterActive": true,
+        "tcpDenied": true,
+        "tcpErrno": 1,
+        "udpDenied": true,
+        "udpErrno": 1
+      },
+      "baselineTCPAndUDPReachable": true,
+      "helperSHA256": "6eaca8b9602f9c1c7fce4b8a176759ad1a10577c0ee74eddb3264992976e86b1"
+    },
+    "receiptSHA256": "c23b78e312fa9efbe1a5fe7abd9e0061e131a0514fdb4fc07cf12ebe42376692"
+  },
+  "offlineSync": {
+    "status": 200,
+    "value": {
+      "globalPeers": 0,
+      "lastSyncedAt": "0001-01-01T00:00:00Z",
+      "localPeers": 0,
+      "networkPeers": 0,
+      "p2p": "notpossible",
+      "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l",
+      "state": "offline",
+      "synced": 2,
+      "total": 2
+    }
+  },
+  "onlineSync": {
+    "status": 200,
+    "value": {
+      "globalPeers": 0,
+      "lastSyncedAt": "2026-11-27T02:46:19.331451801Z",
+      "localPeers": 0,
+      "networkPeers": 3,
+      "p2p": "notconnected",
+      "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l",
+      "state": "synced",
+      "synced": 2,
+      "total": 2
+    }
+  },
+  "originalOwnerOpened": false,
+  "priorCustodySHA256": "9e0719b6bf2837c9717de89e61e5d49cf9b7478458e34a2117a61fbf4e95025c",
+  "priorGrantReceiptSHA256": "8793e1eb84315d793022b8f1ed6ea98247a94b5acfc67e37cbbe845696eb2e8d",
+  "processes": [
+    {
+      "closed": true,
+      "command": [
+        "/var/lib/pinkha-c-filesv2-20261126/acl-refresh-native1/any",
+        "run",
+        "--config",
+        "/var/lib/pinkha-c-filesv2-20261126/retained-recipient-continuation1/config.yml",
+        "--data-dir",
+        "/var/lib/pinkha-c-filesv2-20261126/attempt1/bob",
+        "--addr",
+        "127.0.0.1:46029"
+      ],
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "label": "bob-existing-grant-online",
+      "log": "/var/lib/pinkha-c-filesv2-20261126/retained-recipient-continuation1/bob-existing-grant-online.log",
+      "logSHA256": "d54af9693d7ab458c91650da346fe69f5ea18c626ba81bd716bda061f3fab52e",
+      "offline": false,
+      "pgid": 2891191,
+      "pid": 2891191
+    },
+    {
+      "actualInheritedNoNewPrivs": 1,
+      "actualInheritedSeccomp": 2,
+      "closed": true,
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Tools/AnyEngineValidation/native_source_preservation/linux_outbound_denial.py",
+        "--exec",
+        "/var/lib/pinkha-c-filesv2-20261126/acl-refresh-native1/any",
+        "run",
+        "--config",
+        "/var/lib/pinkha-c-filesv2-20261126/retained-recipient-continuation1/config.yml",
+        "--data-dir",
+        "/var/lib/pinkha-c-filesv2-20261126/attempt1/bob",
+        "--addr",
+        "127.0.0.1:33325"
+      ],
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "label": "bob-existing-grant-offline",
+      "log": "/var/lib/pinkha-c-filesv2-20261126/retained-recipient-continuation1/bob-existing-grant-offline.log",
+      "logSHA256": "1e8108c47ffbe74e89c8f6238139cc8c8a84c0d4cb3f47b2ba8914f7b53f1170",
+      "offline": true,
+      "pgid": 2891802,
+      "pid": 2891802
+    }
+  ],
+  "protocol": "original-pending-recipient-signed-grant-continuation-v1",
+  "readerObservations": [
+    {
+      "phase": "bob-existing-grant-online",
+      "seconds": 20.412,
+      "status": 409,
+      "value": {
+        "error": {
+          "code": "space.not_accepted",
+          "details": {
+            "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+          },
+          "message": "space join is pending approval; not materialized on this device"
+        }
+      }
+    },
+    {
+      "phase": "bob-existing-grant-online",
+      "seconds": 21.037,
+      "status": 409,
+      "value": {
+        "error": {
+          "code": "space.not_accepted",
+          "details": {
+            "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+          },
+          "message": "space join is pending approval; not materialized on this device"
+        }
+      }
+    },
+    {
+      "phase": "bob-existing-grant-online",
+      "seconds": 21.738,
+      "status": 409,
+      "value": {
+        "error": {
+          "code": "space.not_accepted",
+          "details": {
+            "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+          },
+          "message": "space join is pending approval; not materialized on this device"
+        }
+      }
+    },
+    {
+      "phase": "bob-existing-grant-online",
+      "seconds": 22.541,
+      "status": 409,
+      "value": {
+        "error": {
+          "code": "space.not_accepted",
+          "details": {
+            "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+          },
+          "message": "space join is pending approval; not materialized on this device"
+        }
+      }
+    },
+    {
+      "phase": "bob-existing-grant-online",
+      "seconds": 23.438,
+      "status": 409,
+      "value": {
+        "error": {
+          "code": "space.not_accepted",
+          "details": {
+            "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+          },
+          "message": "space join is pending approval; not materialized on this device"
+        }
+      }
+    },
+    {
+      "phase": "bob-existing-grant-online",
+      "seconds": 23.966,
+      "status": 409,
+      "value": {
+        "error": {
+          "code": "space.not_accepted",
+          "details": {
+            "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+          },
+          "message": "space join is pending approval; not materialized on this device"
+        }
+      }
+    },
+    {
+      "phase": "bob-existing-grant-online",
+      "seconds": 24.527,
+      "status": 409,
+      "value": {
+        "error": {
+          "code": "space.not_accepted",
+          "details": {
+            "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+          },
+          "message": "space join is pending approval; not materialized on this device"
+        }
+      }
+    },
+    {
+      "phase": "bob-existing-grant-online",
+      "seconds": 25.063,
+      "status": 409,
+      "value": {
+        "error": {
+          "code": "space.not_accepted",
+          "details": {
+            "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+          },
+          "message": "space join is pending approval; not materialized on this device"
+        }
+      }
+    },
+    {
+      "phase": "bob-existing-grant-online",
+      "seconds": 25.568,
+      "status": 409,
+      "value": {
+        "error": {
+          "code": "space.not_accepted",
+          "details": {
+            "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l"
+          },
+          "message": "space join is pending approval; not materialized on this device"
+        }
+      }
+    },
+    {
+      "phase": "bob-existing-grant-online",
+      "seconds": 26.11,
+      "status": 200,
+      "value": {
+        "identity": "AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR",
+        "permission": "reader",
+        "status": "active"
+      }
+    },
+    {
+      "phase": "bob-existing-grant-offline",
+      "seconds": 34.397,
+      "status": 200,
+      "value": {
+        "identity": "AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR",
+        "permission": "reader",
+        "status": "active"
+      }
+    }
+  ],
+  "seconds": 44.12,
+  "sourceAfter": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "sourceBefore": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "spaceId": "bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l",
+  "status": "PASS_ORIGINAL_RECIPIENT_EXISTING_GRANT_AND_COLD_READER_AUTHORITY",
+  "unopenedOwnerUnchanged": true
+}
