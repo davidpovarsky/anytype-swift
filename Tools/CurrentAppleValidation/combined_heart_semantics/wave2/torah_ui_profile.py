@@ -22,7 +22,7 @@ UI_SOURCE_HASHES = {
     "PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift":
         "66c18c084ed66baf9b58d45b094e985127e77f8b627fc924f67be7201125f219",
     "PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift":
-        "61e8b2a35e96c0f6ff31cbf9f5efb81b3b40197906961186aed275f48fdeb03a",
+        "d4ffc25ee659e03bd4dd76b7847faf4fecf343630edf094c0bc02fe060f00850",
 }
 LANES = {
     "inspector": {
@@ -65,6 +65,11 @@ LANES = {
         "fixture": "pinkha-stage1-acceptance-state.json",
     },
 }
+EDITOR_SPEC = {
+    "preparation": "PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState",
+    "fixture": "pinkha-stage1-acceptance-state.json",
+}
+STARTUP_LANES = {**LANES, "editor": EDITOR_SPEC}
 EXPECTED = {
     "SOURCE_SHA": "sourceSHA", "RUN_ID": "runID", "RUN_ATTEMPT": "runAttempt", "TOKEN": "token",
     "SIMULATOR_UDID": "simulatorUDID", "LANE": "lane", "ADMISSION_SHA256": "admissionSHA256",
@@ -102,6 +107,8 @@ def inspect_original_lanes(original):
     for lane, specification in LANES.items():
         require(all(original.LANES[lane].get(key) == value for key, value in specification.items()),
                 "Original Torah lane changed: " + lane)
+    require(all(original.LANES["editor"].get(key) == value for key, value in EDITOR_SPEC.items()),
+            "Original editor preparation or fixture changed")
     methods = [spec["suite"] + "/" + name for spec in LANES.values() for name in spec["methods"]]
     require(len(methods) == len(set(methods)) == 13, "Original thirteen UI methods required")
     return {"methods": methods, "ui_method_count": 13, "native_preparation_count": 6,
@@ -128,7 +135,7 @@ def reviewed_ui_sources(app, *, source_commit):
 
 def validate_startup_environment(environment, *, lane, expected_space):
     """Portable binding controls; Swift independently checks it before Continue."""
-    require(lane in LANES and environment.get("PINKHA_NATIVE_UI_DISPOSABLE") == "1", "Unsupported or non-disposable UI lane")
+    require(lane in STARTUP_LANES and environment.get("PINKHA_NATIVE_UI_DISPOSABLE") == "1", "Unsupported or non-disposable UI lane")
     raw = environment.get(PREFIX + "BINDING_JSON", "").encode("utf-8")
     require(0 < len(raw) <= 262144, "Missing or oversized startup binding")
     value = decode(raw)
@@ -142,7 +149,7 @@ def validate_startup_environment(environment, *, lane, expected_space):
     for key in ("admissionSHA256", "preparationReceiptSHA256", "preparationInvocationSHA256",
                 "ownedSimulatorReceiptSHA256", "fixtureSHA256"):
         require(re.fullmatch(r"[0-9a-f]{64}", value.get(key, "")) is not None, "Missing evidence hash: " + key)
-    spec = LANES[lane]
+    spec = STARTUP_LANES[lane]
     require(value.get("fixtureFilename") == spec["fixture"] and value.get("preparationIdentifier") == spec["preparation"],
             "Original native fixture or preparation changed")
     fixture_raw = base64.b64decode(value.get("fixtureBase64", ""), validate=True)
@@ -154,8 +161,10 @@ def validate_startup_environment(environment, *, lane, expected_space):
     require(isinstance(selected, dict) and selected and all(isinstance(k, str) and isinstance(v, str)
             and not k.startswith(PREFIX) and environment.get(k) == v for k, v in selected.items()),
             "Original UI fixture environment changed")
-    require(selected.get("PINKHA_NATIVE_UI_DISPOSABLE") == "1" and selected.get("PINKHA_UI27_APP_LANGUAGE") == "en"
-            and selected.get("PINKHA_UI27_SELECTION_SCOPE") == "WAVE15_ACCEPTANCE", "Original English disposable scope required")
+    language = selected.get("PINKHA_UI27_APP_LANGUAGE")
+    require(selected.get("PINKHA_NATIVE_UI_DISPOSABLE") == "1"
+            and (language == "en" or (lane == "editor" and language == "he"))
+            and selected.get("PINKHA_UI27_SELECTION_SCOPE") == "WAVE15_ACCEPTANCE", "Original disposable language scope required")
     if lane == "canonical-properties":
         require(re.fullmatch(r"[0-9a-f]{64}", value.get("canonicalPreparationConsoleSHA256", "")) is not None,
                 "Original canonical preparation console evidence is missing")
@@ -165,7 +174,18 @@ def validate_startup_environment(environment, *, lane, expected_space):
         require(all(isinstance(i, str) and i for i in ids) and len(set(ids)) == 3, "Three distinct original writing documents required")
     else:
         require(value.get("canonicalPreparationConsoleSHA256") == "", "Unexpected canonical preparation console")
-        require(decode(selected.get("PINKHA_NATIVE_UI_FIXTURE_JSON", "null")) == fixture, "UI and original native fixture IDs differ")
+        if lane == "editor":
+            require(selected.get("PINKHA_ACCEPTANCE_SPACE_ID") == expected_space, "Original editor Space differs")
+            fields = [("pinkhaObjectId", "PINKHA"), ("noteObjectId", "NOTE"), ("pageObjectId", "PAGE")]
+            ids = [fixture.get(field) for field, _ in fields]
+            require(all(isinstance(value, str) and value for value in ids) and len(set(ids)) == 3
+                    and all(selected.get("PINKHA_ACCEPTANCE_" + suffix + "_ID") == fixture[field] for field, suffix in fields),
+                    "Original editor document IDs differ")
+            require(selected.get("PINKHA_ACCEPTANCE_DIRECTION") == ("rtl" if language == "he" else "ltr")
+                    and selected.get("PINKHA_ACCEPTANCE_DEVICE_LANGUAGE") == ("en" if language == "he" else "he"),
+                    "Original editor direction/opposite device language differs")
+        else:
+            require(decode(selected.get("PINKHA_NATIVE_UI_FIXTURE_JSON", "null")) == fixture, "UI and original native fixture IDs differ")
     if lane in {"inspector", "inspector-search"}:
         require(re.fullmatch(r"[1-9][0-9]*", selected.get("PINKHA_UI27_EXPECTED_APP_PID", "")) is not None,
                 "Mapped Inspector prelaunch PID is missing")
@@ -181,14 +201,16 @@ def startup_environment(*, lane, fixture_raw, ui_environment, preparation_raw, i
     mechanism. Call this after admit_and_clone_products, create, stage(PASS),
     read_private, and (for Inspector) real prelaunch mapping have all succeeded.
     """
-    require(lane in LANES, "Only the six original Torah UI lanes are supported")
-    spec = LANES[lane]
+    require(lane in STARTUP_LANES, "Only original Torah and editor startup lanes are supported")
+    spec = STARTUP_LANES[lane]
     require(isinstance(fixture_raw, bytes) and 0 < len(fixture_raw) <= 65536, "Original bounded fixture bytes required")
     admission, prepared, invocation, owned = map(decode, (admission_raw, preparation_raw, invocation_raw, owned_simulator_raw))
     require(admission.get("schema") == "pinkha-combined-host-acceptance-admission-v1"
             and admission.get("executionEnvironment") == "SentinelX-owned-Mac"
-            and admission.get("sourceCommit") == binding.get("sourceSHA") and admission.get("appLanguage") == "en",
-            "Original admitted source and English UI required")
+            and admission.get("sourceCommit") == binding.get("sourceSHA")
+            and admission.get("appLanguage") == ui_environment.get("PINKHA_UI27_APP_LANGUAGE")
+            and (admission.get("appLanguage") == "en" or (lane == "editor" and admission.get("appLanguage") == "he")),
+            "Original admitted source and UI language required")
     require(invocation.get("binding") == binding and invocation.get("argv", []).count("platform=iOS Simulator,id=" + udid) == 1
             and invocation["argv"].count("-only-testing:AnytypeTests/" + spec["preparation"] + "()") == 1,
             "Original successful preparation was not bound to this source/run/owned simulator")
@@ -206,8 +228,10 @@ def startup_environment(*, lane, fixture_raw, ui_environment, preparation_raw, i
             and owned.get("deviceType") == admission.get("deviceType")
             and owned.get("deviceFamily") == admission.get("deviceFamily"), "Fresh owned simulator receipt differs")
     require(not any(key.startswith(PREFIX) for key in ui_environment), "Startup binding may not replace prior evidence")
+    require(ui_environment.get("PINKHA_NATIVE_UI_DISPOSABLE") in (None, "1"),
+            "A contradictory non-disposable UI scope cannot be promoted")
     require(ui_environment.get("PINKHA_NATIVE_UI_DISPOSABLE") == "1" or
-            (lane == "canonical-properties" and ui_environment.get("PINKHA_PROPERTIES_ISOLATED_SPACE_CONFIRMED") == "1"),
+            (lane == "canonical-properties" and ui_environment.get("PINKHA_PROPERTIES_ISOLATED_SPACE_CONFIRMED") == "1") or lane == "editor",
             "Original fixture did not confirm disposable native or isolated canonical scope")
     ui_environment = dict(ui_environment, PINKHA_NATIVE_UI_DISPOSABLE="1")
     console_sha = ""

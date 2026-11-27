@@ -6,31 +6,37 @@ import torah_ui_profile as profile
 
 
 class TorahUIProfileControls(unittest.TestCase):
-    def fixture(self, lane="quote-drop"):
+    def fixture(self, lane="quote-drop", language="en"):
         udid = "01234567-89AB-CDEF-0123-456789ABCDEF"
         binding = {"sourceSHA": "1" * 40, "runID": "42", "runAttempt": "1", "nonce": "a" * 32}
         admission = {"schema": "pinkha-combined-host-acceptance-admission-v1", "executionEnvironment": "SentinelX-owned-Mac",
-                     "sourceCommit": binding["sourceSHA"], "appLanguage": "en", "deviceType": "synthetic-iphone",
+                     "sourceCommit": binding["sourceSHA"], "appLanguage": language, "deviceType": "synthetic-iphone",
                      "deviceFamily": "iphone"}
         native = {"spaceId": "synthetic-space", "universalDocuments": {"page": "synthetic-page"},
                   "manySourcesDocument": "synthetic-source"}
         ui = {"PINKHA_NATIVE_UI_DISPOSABLE": "1", "PINKHA_NATIVE_UI_FIXTURE_JSON": profile.encode(native).decode(),
-              "PINKHA_UI27_APP_LANGUAGE": "en", "PINKHA_UI27_SELECTION_SCOPE": "WAVE15_ACCEPTANCE"}
+              "PINKHA_UI27_APP_LANGUAGE": language, "PINKHA_UI27_SELECTION_SCOPE": "WAVE15_ACCEPTANCE"}
         console = None
         if lane in {"inspector", "inspector-search"}:
             ui["PINKHA_UI27_EXPECTED_APP_PID"] = "12345"
-        if lane == "canonical-properties":
+        if lane in {"canonical-properties", "editor"}:
             native = {"spaceId": "synthetic-space", "pinkhaObjectId": "synthetic-pinkha", "noteObjectId": "synthetic-note",
                       "pageObjectId": "synthetic-page"}
             ui.pop("PINKHA_NATIVE_UI_DISPOSABLE")
             ui.pop("PINKHA_NATIVE_UI_FIXTURE_JSON")
+        if lane == "editor":
+            ui.update(PINKHA_ACCEPTANCE_SPACE_ID=native["spaceId"], PINKHA_ACCEPTANCE_PINKHA_ID=native["pinkhaObjectId"],
+                      PINKHA_ACCEPTANCE_NOTE_ID=native["noteObjectId"], PINKHA_ACCEPTANCE_PAGE_ID=native["pageObjectId"],
+                      PINKHA_ACCEPTANCE_DIRECTION="rtl" if language == "he" else "ltr",
+                      PINKHA_ACCEPTANCE_DEVICE_LANGUAGE="en" if language == "he" else "he")
+        if lane == "canonical-properties":
             ui.update(PINKHA_PROPERTIES_ISOLATED_SPACE_CONFIRMED="1", PINKHA_PROPERTIES_SPACE_ID="synthetic-space",
                       PINKHA_PROPERTIES_CHIDDUSH_ID="synthetic-chiddush", PINKHA_PROPERTIES_ARTICLE_ID="synthetic-article",
                       PINKHA_PROPERTIES_RESEARCH_ID="synthetic-research")
             ui["PINKHA_PROPERTIES_NATIVE_PROPERTY_LABELS"] = '{"synthetic-chiddush":["Name"],"synthetic-article":["Name"],"synthetic-research":["Name"]}'
             properties = {key: value for key, value in ui.items() if key.startswith("PINKHA_PROPERTIES_")}
             console = b"Synthetic original console\nPINKHA_PROPERTIES_ACCEPTANCE_FIXTURE_JSON " + profile.encode(properties) + b"\n"
-        method = profile.LANES[lane]["preparation"]
+        method = profile.STARTUP_LANES[lane]["preparation"]
         prepared = {"status": "PASS", "testInvoked": True, "selected": [method], "command_exit_code": 0,
                     "passed": 1, "failed": 0, "skipped": 0,
                     "actual_devices": [{"deviceId": udid, "platform": "iOS Simulator"}],
@@ -134,6 +140,37 @@ class TorahUIProfileControls(unittest.TestCase):
         with self.assertRaises(ValueError): profile.startup_environment(**changed)
         result = profile.startup_environment(**arguments)
         self.assertEqual(result[profile.PREFIX + "CANONICAL_CONSOLE_SHA256"], profile.sha(arguments["canonical_console_raw"]))
+
+    def test_editor_two_app_languages_bind_exact_native_ids_and_opposite_device_language(self):
+        for language in ("en", "he"):
+            with self.subTest(language=language):
+                arguments = self.fixture("editor", language)
+                original = arguments["fixture_raw"]
+                environment = profile.startup_environment(**arguments)
+                actual = profile.validate_startup_environment(environment, lane="editor", expected_space="synthetic-space")
+                self.assertEqual(actual["fixtureSHA256"], profile.sha(original))
+                self.assertEqual(actual["canonicalPreparationConsoleSHA256"], "")
+                self.assertEqual(environment["PINKHA_ACCEPTANCE_DEVICE_LANGUAGE"], "en" if language == "he" else "he")
+
+    def test_editor_rejects_foreign_ids_direction_same_language_or_non_disposable_scope(self):
+        for language in ("en", "he"):
+            for change in [{"PINKHA_ACCEPTANCE_SPACE_ID": "foreign-space"}, {"PINKHA_ACCEPTANCE_NOTE_ID": "foreign-note"},
+                           {"PINKHA_ACCEPTANCE_DIRECTION": "ltr" if language == "he" else "rtl"},
+                           {"PINKHA_ACCEPTANCE_DEVICE_LANGUAGE": language}, {"PINKHA_NATIVE_UI_DISPOSABLE": "0"}]:
+                with self.subTest(language=language, change=change):
+                    arguments = self.fixture("editor", language)
+                    arguments["ui_environment"].update(change)
+                    with self.assertRaises(ValueError): profile.startup_environment(**arguments)
+        arguments = self.fixture("editor")
+        with self.assertRaises(ValueError):
+            profile.startup_environment(**{**arguments, "canonical_console_raw": b"foreign canonical console"})
+
+    def test_editor_app_language_must_match_the_admitted_product_selection(self):
+        arguments = self.fixture("editor", "he")
+        admission = profile.decode(arguments["admission_raw"])
+        admission["appLanguage"] = "en"
+        arguments["admission_raw"] = profile.encode(admission)
+        with self.assertRaises(ValueError): profile.startup_environment(**arguments)
 
 
 if __name__ == "__main__":
