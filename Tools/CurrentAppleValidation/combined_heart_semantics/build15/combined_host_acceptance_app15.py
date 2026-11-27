@@ -213,9 +213,15 @@ def native_ui_prior_processes(fixture, observed):
     require(all(isinstance(values, list) and values for values in processes.values()),
             "Original core UI process lists required")
     values = [fixture["preparationProcessID"], *(pid for rows in processes.values() for pid in rows)]
-    require(len(values) == 4 and all(type(pid) is int and pid > 0 for pid in values)
-            and len(set(values)) == len(values), "Preparation and every original UI lifetime must be distinct")
-    return set(values)
+    require(all(type(pid) is int and pid > 0 for pid in values),
+            "Every original UI screenshot must name a positive process ID")
+    related = set(processes["related-targets"])
+    note = set(processes["note-lifecycle"])
+    preparation = fixture["preparationProcessID"]
+    require(len(related) == 1 and len(note) == 2 and related.isdisjoint(note)
+            and preparation not in related | note and len(set(values)) == 4,
+            "Preparation, related targets and both Note lifetimes must be distinct")
+    return {preparation} | related | note
 
 
 class Consumer:

@@ -321,10 +321,53 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
     private func launch() throws {
         if app.state != .notRunning { app.terminate() }
         app.launch()
-        let ready = app.descendants(matching: .any).matching(NSPredicate(
+        let deadline = ProcessInfo.processInfo.systemUptime + 120
+        func remaining() throws -> TimeInterval {
+            let value = deadline - ProcessInfo.processInfo.systemUptime
+            try require(value > 0, "Native Home did not become ready")
+            return value
+        }
+        let home = NSPredicate(
             format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@ OR (elementType == %d AND (label == %@ OR label == %@))",
-            "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton", XCUIElement.ElementType.button.rawValue, "More", "x24/More")).firstMatch
-        try require(ready.waitForExistence(timeout: 120), "Native Home did not become ready")
+            "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton", XCUIElement.ElementType.button.rawValue, "More", "x24/More")
+        let ready = app.descendants(matching: .any).matching(home).firstMatch
+        let warningPredicate = NSPredicate(format: "elementType == %d AND label == %@",
+            XCUIElement.ElementType.alert.rawValue, "Warning")
+        let startup = app.descendants(matching: .any).matching(NSCompoundPredicate(
+            orPredicateWithSubpredicates: [home, warningPredicate])).firstMatch
+        try require(startup.waitForExistence(timeout: remaining()), "Native Home did not become ready")
+        let warnings = app.alerts.matching(NSPredicate(format: "label == %@", "Warning"))
+        if warnings.firstMatch.exists {
+            try acceptOriginalDisposableAccountWarning(warnings, deadline: deadline)
+        }
+        try require(ready.waitForExistence(timeout: remaining()), "Native Home did not become ready")
+        try require(!warnings.firstMatch.exists, "Native startup warning remained or returned")
+    }
+    private func acceptOriginalDisposableAccountWarning(_ warnings: XCUIElementQuery, deadline: TimeInterval) throws {
+        // Use the original visible action only for this controller-bound disposable
+        // account. Production warnings and native authentication remain unchanged.
+        let environment = ProcessInfo.processInfo.environment
+        try require(environment["PINKHA_NATIVE_UI_DISPOSABLE"] == "1"
+            && fixture.token == environment["PINKHA_T5_UI_TOKEN"]
+            && fixture.appSourceSHA == environment["PINKHA_T5_UI_APP_SHA"]
+            && fixture.runID == environment["PINKHA_T5_UI_RUN_ID"], "Disposable warning fixture source/run differs")
+        let warning = warnings.firstMatch
+        try require(warnings.count == 1 && app.alerts.count == 1, "Native startup warning is not unique")
+        let text = "You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken."
+        let messages = warning.staticTexts.matching(NSPredicate(format: "label == %@", text))
+        let proceed = warning.buttons.matching(NSPredicate(format: "label == %@", "Continue with current vault"))
+        let logout = warning.buttons.matching(NSPredicate(format: "label == %@", "Logout from current vault"))
+        try require(messages.count == 1 && messages.firstMatch.exists, "Native startup warning message differs")
+        try require(warning.buttons.count == 2 && proceed.count == 1 && logout.count == 1,
+                    "Native startup warning actions differ")
+        let button = proceed.firstMatch
+        try require(button.exists && button.isEnabled && button.isHittable, "Native startup Continue is not hittable")
+        attachEvidence("t5-native-startup-warning")
+        try require(deadline > ProcessInfo.processInfo.systemUptime, "Native Home did not become ready")
+        button.tap()
+        let remaining = deadline - ProcessInfo.processInfo.systemUptime
+        try require(remaining > 0, "Native Home did not become ready")
+        try require(warning.waitForNonExistence(timeout: remaining), "Native startup warning remained")
     }
     private func enterObject(_ id: String) throws {
         var url = URLComponents()
