@@ -1,0 +1,12 @@
+{
+  "schema": "wave2-mounted-root-source-inspection-stop/v1",
+  "recordedAtUTC": "2026-11-27T19:37:04.485259+00:00",
+  "toolChunk": "50cc25",
+  "exitCode": 1,
+  "candidateSHA256": "05767e33a0e169e7e8beb4a4c29137f59c33d74e1794e74c7837dbd52575d0bc",
+  "observedError": "AssertionError: ('', 22473, 1)",
+  "cause": "Reviewer tried count-based reversal of a deletion whose after string is empty. This inspection cannot locate a deleted body by counting an empty string.",
+  "resolution": "Use complete pinned donor, reproduce all16 forward edits while retaining exact positions, compare whole final class, then reverse those recorded positions.",
+  "candidateModified": false,
+  "runtimeExecuted": false
+}

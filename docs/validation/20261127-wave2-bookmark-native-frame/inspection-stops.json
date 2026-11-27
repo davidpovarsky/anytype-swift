@@ -1,0 +1,10 @@
+{
+  "schema": "bookmark-frame-inspection-stops/v1",
+  "stops": [
+    {
+      "stage": "initial source-manifest display",
+      "error": "AttributeError: 'list' object has no attribute 'get'",
+      "meaning": "Read-only display assumed a dict for w1-source-manifest, which is an array. No source or publication operation occurred. Subsequent source composition reads the array explicitly."
+    }
+  ]
+}

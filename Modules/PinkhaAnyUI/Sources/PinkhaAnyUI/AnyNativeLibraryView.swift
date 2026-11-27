@@ -2,6 +2,10 @@
 import Foundation
 import SwiftUI
 import UniformTypeIdentifiers
+import DesignKit
+import AnytypeCore
+import Assets
+import Loc
 import PinkhaKit
 import PinkhaAnyEngine
 import PinkhaAnyIntegration
@@ -15,12 +19,18 @@ private struct AnyNativeNameRequest: Identifiable {
     let isNote: Bool
 }
 
+private struct AnyNativeBookmarkSubmission {
+    let typeID: String
+    let sourceURL: String
+}
+
 private struct AnyNativeNameSubmission {
     let item: AnyHierarchyItem?
     let kind: PinkhaHierarchyNodeKind
     let parentID: String?
     let isNote: Bool
     let title: String
+    var bookmark: AnyNativeBookmarkSubmission? = nil
 }
 
 /// One coherent native Space. Its account/session/creators are supplied by the
@@ -84,8 +94,11 @@ public struct AnyNativeLibraryView: View {
                         finishNaming(request, title: title, kind: request.kind, isNote: request.isNote)
                     }, cancel: { cancelNaming(request) })
             } else {
-                AnyNativeCreationSheet(commit: { kind, isNote, title in
+                AnyNativeCreationSheet(bookmarkTypes: model.bookmarkTypes, commit: { kind, isNote, title in
                     finishNaming(request, title: title, kind: kind, isNote: isNote)
+                }, bookmarkCommit: { typeID, sourceURL in
+                    finishNaming(request, title: "", kind: .writingDocument, isNote: false,
+                        bookmark: .init(typeID: typeID, sourceURL: sourceURL))
                 }, cancel: { cancelNaming(request) })
             }
         }
@@ -117,7 +130,8 @@ public struct AnyNativeLibraryView: View {
     }
 
     private func finishNaming(_ request: AnyNativeNameRequest, title: String,
-                              kind: PinkhaHierarchyNodeKind, isNote: Bool) {
+                              kind: PinkhaHierarchyNodeKind, isNote: Bool,
+                              bookmark: AnyNativeBookmarkSubmission? = nil) {
         guard nameRequest?.id == request.id else { return }
         guard lifetime.isActive, model.canWrite else {
             pendingNameSubmission = nil
@@ -125,7 +139,7 @@ public struct AnyNativeLibraryView: View {
             return
         }
         pendingNameSubmission = .init(item: request.item, kind: kind,
-            parentID: request.parentID, isNote: isNote, title: title)
+            parentID: request.parentID, isNote: isNote, title: title, bookmark: bookmark)
         nameRequest = nil
     }
 
@@ -154,6 +168,9 @@ public struct AnyNativeLibraryView: View {
             guard lifetime.isActive, model.canWrite else { return }
             if let item = submission.item {
                 await model.rename(item, title: submission.title)
+            } else if let bookmark = submission.bookmark {
+                await model.createBookmark(typeID: bookmark.typeID, sourceURL: bookmark.sourceURL,
+                                           parentID: submission.parentID)
             } else {
                 await model.create(title: submission.title, kind: submission.kind,
                                    parentID: submission.parentID, isNote: submission.isNote)
@@ -223,7 +240,8 @@ public struct AnyNativeLibraryView: View {
                                 } : nil)
                             ForEach(model.pendingCreations.filter { $0.plan.parentID == parentID }) { pending in
                                 HStack {
-                                    Label(pending.plan.title, systemImage: pending.plan.kind == .folder ? "folder" : "doc")
+                                    Label(pending.plan.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : pending.plan.title,
+                                          systemImage: pending.bookmark != nil ? "bookmark" : (pending.plan.kind == .folder ? "folder" : "doc"))
                                         .foregroundStyle(.secondary)
                                     Spacer()
                                     if pending.error == nil { ProgressView() }
@@ -475,11 +493,13 @@ private struct AnyNativeDocumentEntry: View {
 }
 
 private enum AnyNativeCreationKind: Hashable {
-    case document, note, folder
+    case document, note, folder, bookmarkTypes, bookmarkURL(String)
 }
 
 private struct AnyNativeCreationSheet: View {
+    let bookmarkTypes: [AnyNativePropertyOwner]
     let commit: (PinkhaHierarchyNodeKind, Bool, String) -> Void
+    let bookmarkCommit: (String, String) -> Void
     let cancel: () -> Void
     @State private var path: [AnyNativeCreationKind] = []
 
@@ -495,6 +515,17 @@ private struct AnyNativeCreationSheet: View {
                 Button(AnyUIErrorText.text("תיקייה חדשה", "New folder"), systemImage: "folder.badge.plus") {
                     path.append(.folder)
                 }.accessibilityIdentifier("any-native-new-folder")
+                Button(AnyUIErrorText.text("סימנייה חדשה", "New bookmark"), systemImage: "bookmark") {
+                    if let only = bookmarkTypes.first, bookmarkTypes.count == 1 {
+                        path.append(.bookmarkURL(only.id))
+                    } else { path.append(.bookmarkTypes) }
+                }
+                .disabled(bookmarkTypes.isEmpty)
+                .accessibilityIdentifier("any-native-new-bookmark")
+                if bookmarkTypes.isEmpty {
+                    Text(AnyUIErrorText.text("יצירת סימניות אינה זמינה במרחב הזה.", "Bookmark creation is unavailable in this Space."))
+                        .font(.footnote).foregroundStyle(.secondary)
+                }
             }
             .navigationTitle(AnyUIErrorText.text("יצירה", "Create"))
             .toolbar {
@@ -505,13 +536,83 @@ private struct AnyNativeCreationSheet: View {
                 }
             }
             .navigationDestination(for: AnyNativeCreationKind.self) { choice in
-                AnyNativeNameForm(title: AnyUIErrorText.text("יצירה", "Create"), initialValue: "",
-                    commit: { title in
-                        commit(choice == .folder ? .folder : .writingDocument, choice == .note, title)
-                    }, cancel: cancel)
+                switch choice {
+                case .document, .note, .folder:
+                    AnyNativeNameForm(title: AnyUIErrorText.text("יצירה", "Create"), initialValue: "",
+                        commit: { title in
+                            commit(choice == .folder ? .folder : .writingDocument, choice == .note, title)
+                        }, cancel: cancel)
+                case .bookmarkTypes:
+                    List(bookmarkTypes) { type in
+                        Button(type.name) { path.append(.bookmarkURL(type.id)) }
+                            .accessibilityIdentifier("any-native-bookmark-type-" + type.id)
+                    }
+                    .navigationTitle(AnyUIErrorText.text("סוג סימנייה", "Bookmark type"))
+                case .bookmarkURL(let typeID):
+                    AnyNativeBookmarkURLForm(commit: { value in bookmarkCommit(typeID, value) }, cancel: cancel)
+                }
             }
         }
         .presentationDetents([.medium])
+    }
+}
+
+private struct AnyNativeBookmarkURLForm: View {
+    let commit: (String) -> Void
+    let cancel: () -> Void
+    @State private var value = ""
+    @State private var submitted = false
+    @State private var invalidURL = false
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                AnytypeTextField(placeholder: Loc.Set.Bookmark.Create.placeholder,
+                                 font: .uxBodyRegular, text: $value)
+                    .foregroundStyle(Color.Text.primary)
+                    .keyboardType(.URL)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .submitLabel(.done)
+                    .focused($focused)
+                    .accessibilityLabel(Loc.Set.Bookmark.Create.placeholder)
+                    .accessibilityIdentifier("any-native-bookmark-url-input")
+                    .onSubmit(submit)
+                Spacer(minLength: 8)
+                Button(Loc.create, action: submit)
+                    .font(AnytypeFontBuilder.font(anytypeFont: .uxBodyRegular))
+                    .foregroundStyle(isDisabled ? Color.Text.tertiary : Color.Control.accent100)
+                    .disabled(isDisabled)
+                    .accessibilityIdentifier("any-native-bookmark-create")
+            }
+            .padding(.horizontal, 20)
+            .frame(minHeight: 48)
+            Spacer().frame(height: 12)
+        }
+        .background(Color.Background.secondary)
+        .navigationTitle(AnyUIErrorText.text("סימנייה חדשה", "New bookmark"))
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(AnyUIErrorText.text("ביטול", "Cancel")) { focused = false; cancel() }
+            }
+        }
+        .alert(Loc.Set.Bookmark.Error.message, isPresented: $invalidURL) {
+            Button(AnyUIErrorText.text("אישור", "OK"), role: .cancel) {}
+        }
+        .task { focused = true }
+    }
+
+    private var isDisabled: Bool { value.isEmpty || submitted }
+
+    private func submit() {
+        guard !isDisabled else { return }
+        guard let url = AnytypeURL(string: value),
+              AnyNativeBookmarkCreationBinding.websiteURL(url.absoluteString) != nil else {
+            invalidURL = true; return
+        }
+        submitted = true; focused = false
+        commit(url.absoluteString)
     }
 }
 

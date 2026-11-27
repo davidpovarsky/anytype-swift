@@ -1141,3 +1141,127 @@ private struct AnyHierarchyRawTitleTests {
         #expect(Array(stored.utf8) == Array(example.original.utf8))
     }
 }
+
+private enum HierarchyCreationQueueTestError: Error { case boundaryNotReached }
+
+private func hierarchyCreationSignal(_ stream: AsyncStream<Void>) async throws {
+    try await withThrowingTaskGroup(of: Bool.self) { group in
+        group.addTask {
+            var iterator = stream.makeAsyncIterator()
+            return await iterator.next() != nil
+        }
+        group.addTask {
+            try await Task.sleep(for: .seconds(5))
+            return false
+        }
+        defer { group.cancelAll() }
+        let signalled = try await group.next()
+        try Task.checkCancellation()
+        guard signalled == true else { throw HierarchyCreationQueueTestError.boundaryNotReached }
+    }
+}
+
+/// Uses the existing explicit native-API dependency fixture. No HTTP, Native
+/// process, permission bypass or second production queue is involved.
+private struct HierarchyObservedCreator: AnyHierarchyObjectCreating {
+    let scope: AnyTorahWorkspace
+    let store: HierarchyFixtureStore
+    let workspaceRead: AsyncStream<Void>.Continuation
+    var workspace: AnyTorahWorkspace { workspaceRead.yield(()); return scope }
+
+    func ensureHierarchyObject(plan: AnyHierarchyCreationPlan,
+                               authorize: @escaping @Sendable () async throws -> Void) async throws -> String {
+        try await store.ensureHierarchyObject(plan: plan, authorize: authorize)
+    }
+}
+
+private struct HierarchyHeldCreator: AnyHierarchyObjectCreating {
+    let workspace: AnyTorahWorkspace
+    let store: HierarchyFixtureStore
+    let entered: AsyncStream<Void>.Continuation
+    let release: AsyncStream<Void>
+
+    func ensureHierarchyObject(plan: AnyHierarchyCreationPlan,
+                               authorize: @escaping @Sendable () async throws -> Void) async throws -> String {
+        entered.yield(())
+        try await hierarchyCreationSignal(release)
+        try Task.checkCancellation()
+        return try await store.ensureHierarchyObject(plan: plan, authorize: authorize)
+    }
+}
+
+extension AnyHierarchyTests {
+    @Test func creationOverrideRejectsAnotherWorkspaceBeforeDispatch() async throws {
+        let (store, repository) = try repository([])
+        let plan = try await repository.prepareCreation(typeID: "page", title: "", kind: .writingDocument)
+        let observed = AsyncStream<Void>.makeStream(bufferingPolicy: .bufferingNewest(2))
+        defer { observed.continuation.finish() }
+        let foreign = HierarchyObservedCreator(
+            scope: try AnyTorahWorkspace(accountID: "account", spaceID: "foreign"),
+            store: store, workspaceRead: observed.continuation)
+        await #expect(throws: AnyHierarchyError.incompatibleSchema) {
+            try await repository.create(plan, using: foreign)
+        }
+        #expect(await store.countCreated() == 0)
+        let ordinary = try await repository.create(plan)
+        #expect(ordinary.title.isEmpty)
+        #expect(await store.countCreated() == 1)
+    }
+
+    @Test func creationOverrideAndDefaultCreatorShareTheExistingMutationQueue() async throws {
+        let store = HierarchyFixtureStore([])
+        let defaultRead = AsyncStream<Void>.makeStream(bufferingPolicy: .bufferingNewest(2))
+        let entered = AsyncStream<Void>.makeStream(bufferingPolicy: .bufferingNewest(1))
+        let release = AsyncStream<Void>.makeStream(bufferingPolicy: .bufferingNewest(1))
+        defer {
+            defaultRead.continuation.finish(); entered.continuation.finish(); release.continuation.finish()
+        }
+        let ordinary = HierarchyObservedCreator(scope: hierarchyWorkspace, store: store,
+                                                workspaceRead: defaultRead.continuation)
+        let repository = try AnyHierarchyRepository(workspace: hierarchyWorkspace, store: store,
+                                                     creator: ordinary, allowedTypeIDs: ["page"])
+        // Consume the original constructor's workspace check before observing
+        // the second create call's new selected-creator check.
+        try await hierarchyCreationSignal(defaultRead.stream)
+        let first = try await repository.prepareCreation(typeID: "page", title: "first", kind: .writingDocument)
+        let second = try await repository.prepareCreation(typeID: "page", title: "second", kind: .writingDocument)
+        let held = HierarchyHeldCreator(workspace: hierarchyWorkspace, store: store,
+                                       entered: entered.continuation, release: release.stream)
+        let (completed, handoffError) = await withTaskGroup(of: Result<AnyHierarchyItem, Error>.self) { group in
+            var handoffError: Error?
+            group.addTask {
+                do { return .success(try await repository.create(first, using: held)) }
+                catch { return .failure(error) }
+            }
+            do {
+                try await hierarchyCreationSignal(entered.stream)
+                group.addTask {
+                    do { return .success(try await repository.create(second)) }
+                    catch { return .failure(error) }
+                }
+                // The getter proves entry, not serial admission. Cancellation
+                // must prevent dispatch even if the second call is scheduled late.
+                try await hierarchyCreationSignal(defaultRead.stream)
+            } catch { handoffError = error }
+            group.cancelAll()
+            release.continuation.finish()
+            var completed: [Result<AnyHierarchyItem, Error>] = []
+            for await outcome in group { completed.append(outcome) }
+            return (completed, handoffError)
+        }
+        if let handoffError { throw handoffError }
+        #expect(completed.count == 2)
+        for outcome in completed {
+            switch outcome {
+            case .success:
+                Issue.record("A canceled creation dispatched past the existing mutation queue")
+            case .failure(let error):
+                #expect(error is CancellationError)
+            }
+        }
+        #expect(await store.countCreated() == 0)
+        let recovered = try await repository.create(second)
+        #expect(recovered.objectID == "created-1" && recovered.title == "second")
+        #expect(await store.countCreated() == 1)
+    }
+}

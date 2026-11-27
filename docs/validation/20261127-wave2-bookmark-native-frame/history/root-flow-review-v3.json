@@ -1,0 +1,32 @@
+{
+  "schema": "bookmark-creation-root-flow-review/v3",
+  "status": "SHARED_QUEUE_AND_CANCEL_TEST_SOURCE_ACCEPTED_NATIVE_CONTRACT_PENDING",
+  "base": "78ccffbc711affe743a96edcb79455998f8b73a6",
+  "manifestSHA256": "9892b9b50e684581d4fde2141f18eaee744243f5035e5de239ac3ec8bebe8025",
+  "unchangedSourceReview": "root-flow-review-v2.json",
+  "unchangedSourceReviewSHA256": "f536ba558f570872ebd3e56df4935ee60081087717a21922bf7b461f549f24dc",
+  "unchangedOtherSources": 6,
+  "testSource": {
+    "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift",
+    "originalBytes": 30174,
+    "originalSHA256": "306aaa783a635eba2123c3403f572ccc104f951f4ce11574f6700cea28b5eaec",
+    "originalGitBlob": "b11d9e0cb64b91bded003c1a4059df3adef2e789",
+    "bytes": 36428,
+    "sha256": "b0a013646bbcde37fcbf956ca215290f7de08bfd809eafc13904db024d1a6d0d",
+    "gitBlob": "6021f96b40626e9680eaa5481fb918f4b82dac8a"
+  },
+  "retainedPreviousTestSHA256": "040196fe673db5eb4c54ac099f651ec9c9a96a56e793b5ecda49406996b37311",
+  "original23MethodPrefixBytes": 30174,
+  "originalPrefixSHA256": "306aaa783a635eba2123c3403f572ccc104f951f4ce11574f6700cea28b5eaec",
+  "review": [
+    "Same two declared new methods; no old method body is edited.",
+    "Foreign-workspace override refuses before dispatch; ordinary default creation still succeeds.",
+    "The queued cancellation case positively observes the held creator and the second call entry, then cancels and drains the nonthrowing Result task group before asserting both cancellations and zero creations.",
+    "Existing fixture/default authorize do not auto-check task cancellation; a serial-bypass successor can therefore dispatch after cancellation, even if scheduled after release. This is source analysis, not an executed mutation test.",
+    "The bounded stream helper checks cancellation after group.next so closed-stream cancellation cannot become a misleading timeout.",
+    "A fresh default creation after drain proves the original default creator remains usable; no production queue hook, timing-based negative interval, extra scenario or process manager was added."
+  ],
+  "nativeContractHold": "Asana1220959506656195; no publication or native writing before C concrete contract/bodyless evidence",
+  "runtimeExecuted": false,
+  "newRuntimeQualification": false
+}

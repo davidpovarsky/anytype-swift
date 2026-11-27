@@ -1,0 +1,289 @@
+{
+  "schema": "wave2-bookmark-dependency-independent-readonly-review/v1",
+  "status": "PASS_READ_ONLY_COMPOSITION_PROOF_NO_MERGE_AUTHORIZATION",
+  "reviewer": "/root/torah_continue",
+  "reviewedAtUTC": "2026-11-27T21:00:56.571428+00:00",
+  "decision": "No concrete source/tree composition blocker found in the frozen70550 proposal. Per Root latest instruction this result preserves the completed read-only proof only; it does not advance or authorize an isolated W2 merge while the coherent W3 baseline is forthcoming.",
+  "proposal": {
+    "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/owned-base-proposal.json",
+    "bytes": 5760,
+    "sha256": "70550f2f600131f71324b7b80ca720cfc77f5b39316aa735a480a8a9aaee4505"
+  },
+  "sourceManifest": {
+    "path": "interfaces_work/bookmark-native-frame-successor/candidate-manifest.json",
+    "bytes": 8375,
+    "sha256": "1ad4c5583443aa8c674e78f1b9620396d901d26e7730942109afd18369c94d32"
+  },
+  "proofInputs": [
+    {
+      "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/primary-tree-responses.json",
+      "bytes": 3802324,
+      "sha256": "17148c971b38b2b454941e98ce0067e80c7e98b93ecddd9a8775e5196828a225"
+    },
+    {
+      "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/complete-git-tree-proof.json",
+      "bytes": 389846,
+      "sha256": "da125cd12af4225ec202ef4f88f712f46b4cdbd188381ba8aa43448142c3a71c"
+    },
+    {
+      "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/donor-leaf-composition.json",
+      "bytes": 35541,
+      "sha256": "6c7576790e68855907fb903c6217264f427ce8ac294f7aca188dea6b7f8de30c"
+    },
+    {
+      "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/source-ancestry.json",
+      "bytes": 3247,
+      "sha256": "f0b1fc619b9a2d35eb7af7a2fdde67b364464f66e3e2f9e9aa783362206760d5"
+    },
+    {
+      "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/source-overlap-proof.json",
+      "bytes": 8552,
+      "sha256": "7828dd1db90d000be0e319ed11e1f4101f1ce370dad50c78dfd5709c3a79877b"
+    },
+    {
+      "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/exact-dependency-tree-entries.json",
+      "bytes": 15234,
+      "sha256": "500b54afca4525e52dcb10ea59a95653311c6b3d7d4446542193137e0ead1a72"
+    }
+  ],
+  "primaryTrees": {
+    "count": 74,
+    "allPrimaryResponseBodiesEqualTheirParsedData": true,
+    "allTruncatedFalse": true,
+    "allRawGitTreeObjectIDsRecomputed": true,
+    "algorithm": "Independent local binary Git-tree encoding: mode without leading zero, space, UTF8 name, NUL, raw20-byte object ID; Git tree sorting uses a slash for directory comparison. No author generator or Git object writes were executed."
+  },
+  "commitAncestry": [
+    {
+      "commit": "087748598c502d59e70b966507e64ac80038159a",
+      "tree": "e97141628e9c2d9bff69c543f580639c43dcaef8",
+      "parents": [
+        "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+        "972f6c2eaed18fdcfa4e5f885d519b3fb18a9aa7",
+        "25fb60a3d1b32fbc8879f1631c8c85d38c76e510"
+      ],
+      "primary": {
+        "path": "interfaces_work/bookmark-native-frame-successor/primary/ui-base-commit.json",
+        "bytes": 5135,
+        "sha256": "8db06ac00b6e6305e337938e5ea288da659731eaa47fe41e61bf33fd0e10d751"
+      }
+    },
+    {
+      "commit": "6866f0e83a48917b07d919f9c77087f3eb441aa8",
+      "tree": "a7ae1b0a76764f70032c30732b023ed2ac8762cf",
+      "parents": [
+        "063d3ef0b16392f67e5044faa81cf8689a75dab2"
+      ],
+      "primary": {
+        "path": "interfaces_work/bookmark-native-frame-successor/primary/host-commit.json",
+        "bytes": 3347,
+        "sha256": "93ec0689372aa5bea3ca7b7655d99605b31e938cd0a43d8458ee99cff22edb84"
+      }
+    },
+    {
+      "commit": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+      "tree": "ed8e302914a0e25eb848625eb8215ec7821a34d7",
+      "parents": [
+        "e96ba072887e7581ed6de20fdd81e0897c83763d"
+      ],
+      "primary": {
+        "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/primary/host-parent-commit.json",
+        "bytes": 3335,
+        "sha256": "16a0d824e0ca16894b835286382983a3c362cd1e5e1c26ac20f5f3d04b294dc0"
+      }
+    },
+    {
+      "commit": "9e4aa3f1b88d8f6bfec27cdf2cb47d07ffd416ce",
+      "tree": "c8466a2e97f13d5708213f4275bb4f30ac96cc22",
+      "parents": [
+        "9f0cbdffbda45520124ee1f0b50961641c5c49b1"
+      ],
+      "primary": {
+        "path": "interfaces_work/hierarchy-title-exact/publication/api/commit-primary-before-branch.original.json",
+        "bytes": 4047,
+        "sha256": "4b0d2891f855f6085cd3dbc66257adca0bd8e5f8737ec9f2b6819b596eae27e0"
+      }
+    },
+    {
+      "commit": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+      "tree": "dbe46fdd4128843bb3bb687bd00ae69d024f12b5",
+      "parents": [
+        "9b510b5ea80fba508d01314cefb646682943f7a9",
+        "937a8167700481b71c3c2eeb8771634d2c6bbc4f"
+      ],
+      "primary": {
+        "path": "interfaces_work/hierarchy-title-exact/publication/api/base-commit.original.json",
+        "bytes": 4585,
+        "sha256": "45f01c2af33f47c353bd850814aac26989566d2554205edb5b34cc09669c9b4c"
+      }
+    }
+  ],
+  "ancestryChecks": {
+    "currentDirectParentsIncludeRenameParentAnd25fb": true,
+    "hostDirectParent063d": true,
+    "renameDirectParent9f": true,
+    "primaryComparisonsConfirm063dAncestorOf0877": true,
+    "currentHostMergeBase": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+    "currentRenameMergeBase": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+    "comparison300FileListNotUsedAsCompleteInventory": true
+  },
+  "independentUnion": {
+    "renameDonorPaths": 24,
+    "renameNonDocsSwiftPaths": 2,
+    "renameDocsPaths": 22,
+    "hostDonorPaths": 32,
+    "hostSwiftPaths": 5,
+    "hostValidationToolPaths": 13,
+    "hostDocsPaths": 14,
+    "all56CurrentLeavesMatchTheirDonorParent": true,
+    "changedLeafSetsDisjoint": true,
+    "unionLogicalBytes": 832026,
+    "prospectiveTree": "4626923da10f9dfc6ad23155ea08e4b8b7c2b211",
+    "bothApplicationOrdersMatch": true,
+    "diffFrom0877Exactly56LeavesAndModes": true,
+    "allUntouchedSubtreesRetainedByExactTreeIdentity": true,
+    "realTreeCreated": false,
+    "realCommitCreated": false
+  },
+  "sevenCandidatePreimageJoin": [
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyRepository.swift",
+      "mode": "100644",
+      "gitBlob": "89bca79a5e1c5753006af364ddb0d9ef6967fd49",
+      "bytes": 22565,
+      "exactReviewPreimage": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "mode": "100644",
+      "gitBlob": "e11bb97a37c323b43d3842b081b7c8e2d5eee8e3",
+      "bytes": 44570,
+      "exactReviewPreimage": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "mode": "100644",
+      "gitBlob": "70849e7476816de1a2f4673f127a81e71a45067f",
+      "bytes": 33946,
+      "exactReviewPreimage": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "mode": "100644",
+      "gitBlob": "00999518ec3aa6180ecda8c357635ec14e5ad4bb",
+      "bytes": 29436,
+      "exactReviewPreimage": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "mode": "100644",
+      "gitBlob": "b0a0df61c5a62c8a0fb4fc7419c9b947f6fc06d8",
+      "bytes": 2051,
+      "exactReviewPreimage": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeBookmarkPresentationTests.swift",
+      "mode": "100644",
+      "gitBlob": "425c5ee8f16f505e5846c257e3a1074f50930dbb",
+      "bytes": 10518,
+      "exactReviewPreimage": true
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift",
+      "mode": "100644",
+      "gitBlob": "64925976aca576d2542ebab82ba8bd4475ae7481",
+      "bytes": 38951,
+      "exactReviewPreimage": true
+    }
+  ],
+  "attachmentCompatibility": {
+    "W1SwiftPaths": [
+      "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBookmarkCreationFrame.swift",
+      "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyNativeBookmarkCreationFrameTests.swift",
+      "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyNativeFileAttachmentPostCloseTests.swift",
+      "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyNativeObjectCreationExactValueTests.swift"
+    ],
+    "directOverlapWith25fb": [],
+    "directOverlapWithFrozenSevenCandidates": [],
+    "attachmentCreatorPreserved": {
+      "bytes": 23257,
+      "sha256": "704a3a50613129d966729e56491bdf17349bcbb9e0f977d5666867f39bf2d010",
+      "gitBlob": "bd134e85ef9924b19be0f1e6d65a211fa5b85a8d"
+    },
+    "originalOneAttachmentOwnerConstruction": {
+      "bytes": 169,
+      "sha256": "82df60e9e8388c9b039e25e7657a69d11fc6e91274cf442af989bf2e6739efbd",
+      "exactBeforeAfter": true
+    },
+    "makeFileAttachmentCreator": {
+      "bytes": 289,
+      "sha256": "df981120787a0d364278a47c0b7a9240b7bbd5e78bd1fbef1459923b78a7511b",
+      "exactBeforeAfter": true
+    },
+    "published25fbSources": [
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+        "sha256": "bba403bfe183ffed00709c973549043980eed52e478c840bb613bbd1cc8673d8",
+        "gitBlob": "0a8772af7f70fb22665ee4eac2e8470af5554f79",
+        "bytes": 42250
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+        "sha256": "949651cb362238b713a626164f95eb378d0e54de47b7c84d7bca5821e1122480",
+        "gitBlob": "a43b1f745570aec8b3777215df9adfcf75a3dfb5",
+        "bytes": 33731
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+        "sha256": "a02e081d56d58b3fa964c601e712fd969901096755daf67bffb22499b5c7aa25",
+        "gitBlob": "290284dd21b3fe9ec17814b865819b03d6c6a6f0",
+        "bytes": 47302
+      }
+    ],
+    "semanticAssessment": "Read the exact063d-to6866 ObjectCreator delta. Bookmark reader/optional intent frame and exact object-creation readback do not replace the attachment factory, its original retained creator/journal, or AttachmentCreator APIs. The AttachmentCreator implementation does not use AnyNativeObjectCreationIntent. The three25fb caller/store/test leaves remain byte-identical and their original creator/opaque receipt pairing is not superseded. The added post-close Host test is separate coverage source, not a caller replacement."
+  },
+  "preservedCriticalPaths": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "gitBlob": "e11bb97a37c323b43d3842b081b7c8e2d5eee8e3"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "gitBlob": "bd134e85ef9924b19be0f1e6d65a211fa5b85a8d"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "gitBlob": "0a8772af7f70fb22665ee4eac2e8470af5554f79"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "gitBlob": "a43b1f745570aec8b3777215df9adfcf75a3dfb5"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "gitBlob": "290284dd21b3fe9ec17814b865819b03d6c6a6f0"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "gitBlob": "b0a0df61c5a62c8a0fb4fc7419c9b947f6fc06d8"
+    }
+  ],
+  "scope": {
+    "W3FinalRefOwnershipUnchanged": true,
+    "prospectiveTreeIsNotSharedSourceOrProductAdmission": true,
+    "candidateFrozenUnchanged": true,
+    "compiled": false,
+    "testsOrRuntime": false,
+    "bodylessWarmCrashColdAccepted": false,
+    "gitMutation": false,
+    "sourceMutation": false,
+    "next": "Read the actual immutable W3 baseline when published and verify these seven review preimages plus exact6866 APIs there; do not infer admission from this prospective tree."
+  },
+  "findings": [],
+  "reviewerInspectionStop": {
+    "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/torah-review-inspection-stop.json",
+    "bytes": 582,
+    "sha256": "e17a6e3692f3cc177c12d03a34b99db91f40e27992d96e01fb57887a07c66010"
+  }
+}

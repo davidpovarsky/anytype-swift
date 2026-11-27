@@ -1,0 +1,13 @@
+{
+  "schema": "mounted-attachment-assertion-failure-retention/v1",
+  "predecessorSHA256": "673377afcacfd1fefa92fde98176cf7b7d52360f10956ab4b3c2e4d8444aa672",
+  "successorSHA256": "05767e33a0e169e7e8beb4a4c29137f59c33d74e1794e74c7837dbd52575d0bc",
+  "before": "        // Keep the tiny owned fixture directory on failure for diagnosis. The\n        // original caller namespace is not recursively removed by this test.\n        if firstFailure == nil {\n",
+  "after": "        // XCTAssert failures are recorded without throwing. Keep the owned\n        // fixture unless both thrown and actual XCTest issue counts are clear;\n        // a missing run also retains it. The caller namespace is never removed.\n        if firstFailure == nil, testRun?.totalFailureCount == 0 {\n",
+  "fullInverseExact": true,
+  "finding": "An ordinary XCTest assertion records an issue without setting firstFailure; that old cleanup path could remove failed physical fixture evidence. It did not turn XCTest into PASS.",
+  "source": "https://developer.apple.com/documentation/xctest/xctestrun/totalfailurecount",
+  "primaryDescriptionParaphrase": "The integer reports failed assertions and uncaught exceptions recorded by the test run. The existing run is checked before deletion; nil or any nonzero count retains the owned root.",
+  "testMethodsUnchanged": 1,
+  "runtimeExecuted": false
+}

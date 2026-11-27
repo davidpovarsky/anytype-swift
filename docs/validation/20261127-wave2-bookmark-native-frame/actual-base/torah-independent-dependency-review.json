@@ -1,0 +1,223 @@
+{
+  "schema": "wave2-bookmark-actual-baseline-api-dependency-review/v1",
+  "status": "PASS_EXACT_SOURCE_DEPENDENCIES_NO_RUNTIME_ADMISSION",
+  "reviewer": "/root/torah_continue",
+  "reviewedAtUTC": "2026-11-27T21:06:59.260775+00:00",
+  "actualBaseline": {
+    "commit": "2fcfecefaa3d99d63c47e34823d18a45e13f11f9",
+    "tree": "7f009cbe4cd41b41f7e577cd569ebf6c903caf53",
+    "parents": [
+      "087748598c502d59e70b966507e64ac80038159a",
+      "6866f0e83a48917b07d919f9c77087f3eb441aa8",
+      "9e4aa3f1b88d8f6bfec27cdf2cb47d07ffd416ce",
+      "02bfc5cb35e7fd3a32ea4d70cb8669ff4c858b93"
+    ],
+    "primary": {
+      "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/actual-2fc-primary/commit.original.json",
+      "bytes": 5891,
+      "sha256": "16a7a998129e04b79ed9f4c2ed2797d924396bb6ac2fb6e1dc0b1ce62fceb211"
+    },
+    "url": "https://api.github.com/repos/davidpovarsky/anytype-swift/git/commits/2fcfecefaa3d99d63c47e34823d18a45e13f11f9"
+  },
+  "decision": "The actual published W3 baseline contains the exact reviewed public6866 Frame/ObjectCreator APIs and preserves original attachment owner/caller and c653/Kit26 dependency identities. No concrete dependency compatibility blocker found. This joins source identities only; it is not compilation, installed-Native, UI or runtime qualification.",
+  "freshFullPrimaryBodyReads": [
+    {
+      "role": "bookmark-frame",
+      "repositoryPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBookmarkCreationFrame.swift",
+      "primary": {
+        "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/actual-2fc-primary/bookmark-frame.json",
+        "bytes": 11459,
+        "sha256": "fea61f8b9c9609f15941c74486cee323f0303c46b479189a26d43be8715edca1"
+      },
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/2fcfecefaa3d99d63c47e34823d18a45e13f11f9/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBookmarkCreationFrame.swift",
+      "body": {
+        "bytes": 10591,
+        "sha256": "498f37384519cc638a16b23d5c1f2b615d3228abb109dd7677a8006e15a9b116",
+        "gitBlob": "1f6f13693a26511f25febd85e02d4bbd948e2a62"
+      },
+      "matchesPreviouslyReviewedWholeSource": true,
+      "retainedComparisonPath": "interfaces_work/bookmark-native-frame-successor/source-w1/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBookmarkCreationFrame.swift"
+    },
+    {
+      "role": "object-creator",
+      "repositoryPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "primary": {
+        "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/actual-2fc-primary/object-creator.json",
+        "bytes": 20652,
+        "sha256": "4385cd7a66c5e84f620a9373a6faad8b59b67ca8c74896b9b4454bca99480449"
+      },
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/2fcfecefaa3d99d63c47e34823d18a45e13f11f9/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "body": {
+        "bytes": 19634,
+        "sha256": "ae8faf092774401c595a63e389517aa2777fa83c9b2b9ffa31cc054355ed02f6",
+        "gitBlob": "2dd759fe5f70feead52b536e81520f4c27460a1e"
+      },
+      "matchesPreviouslyReviewedWholeSource": true,
+      "retainedComparisonPath": "interfaces_work/bookmark-native-frame-successor/source-w1/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift"
+    },
+    {
+      "role": "attachment-creator",
+      "repositoryPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "primary": {
+        "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/actual-2fc-primary/attachment-creator.json",
+        "bytes": 24249,
+        "sha256": "60bef5ef17ed945766fafe7fa28a9d02b6af38fd049f0b2b3ff65f350a91c44d"
+      },
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/2fcfecefaa3d99d63c47e34823d18a45e13f11f9/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "body": {
+        "bytes": 23257,
+        "sha256": "704a3a50613129d966729e56491bdf17349bcbb9e0f977d5666867f39bf2d010",
+        "gitBlob": "bd134e85ef9924b19be0f1e6d65a211fa5b85a8d"
+      },
+      "matchesPreviouslyReviewedWholeSource": true,
+      "retainedComparisonPath": "torah-acceptance-prep/uploader-recovery-review/source/063d3ef0b16392f67e5044faa81cf8689a75dab2/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift"
+    },
+    {
+      "role": "attachment-ui",
+      "repositoryPath": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "primary": {
+        "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/actual-2fc-primary/attachment-ui.json",
+        "bytes": 43823,
+        "sha256": "3bddfeffe8180e8561e91b2b99dbd151dee49aa2548699f6354b24174eb23a45"
+      },
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/2fcfecefaa3d99d63c47e34823d18a45e13f11f9/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "body": {
+        "bytes": 42250,
+        "sha256": "bba403bfe183ffed00709c973549043980eed52e478c840bb613bbd1cc8673d8",
+        "gitBlob": "0a8772af7f70fb22665ee4eac2e8470af5554f79"
+      },
+      "matchesPreviouslyReviewedWholeSource": true,
+      "retainedComparisonPath": "wave2-attachment-post-close-publication/packet-v2/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift"
+    },
+    {
+      "role": "attachment-store",
+      "repositoryPath": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "primary": {
+        "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/actual-2fc-primary/attachment-store.json",
+        "bytes": 34952,
+        "sha256": "c00c88597af91769b689b5cbe1f00846e9fd844d991e15a66ba46600cabf608b"
+      },
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/2fcfecefaa3d99d63c47e34823d18a45e13f11f9/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "body": {
+        "bytes": 33731,
+        "sha256": "949651cb362238b713a626164f95eb378d0e54de47b7c84d7bca5821e1122480",
+        "gitBlob": "a43b1f745570aec8b3777215df9adfcf75a3dfb5"
+      },
+      "matchesPreviouslyReviewedWholeSource": true,
+      "retainedComparisonPath": "wave2-attachment-post-close-publication/packet-v2/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift"
+    },
+    {
+      "role": "attachment-tests",
+      "repositoryPath": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "primary": {
+        "path": "interfaces_work/bookmark-native-frame-successor/dependency-composition/actual-2fc-primary/attachment-tests.json",
+        "bytes": 48887,
+        "sha256": "9516a0c3dadeab97a252a99ce3a513eb37aca39fc22c45fe532004e13f3bd13d"
+      },
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/2fcfecefaa3d99d63c47e34823d18a45e13f11f9/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "body": {
+        "bytes": 47302,
+        "sha256": "a02e081d56d58b3fa964c601e712fd969901096755daf67bffb22499b5c7aa25",
+        "gitBlob": "290284dd21b3fe9ec17814b865819b03d6c6a6f0"
+      },
+      "matchesPreviouslyReviewedWholeSource": true,
+      "retainedComparisonPath": "wave2-attachment-post-close-publication/packet-v2/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift"
+    }
+  ],
+  "requiredBookmarkAPI": {
+    "sourceCommit": "6866f0e83a48917b07d919f9c77087f3eb441aa8",
+    "FrameWholeBodyExact": true,
+    "ObjectCreatorWholeBodyExact": true,
+    "declarationsPresent": [
+      "public struct AnyNativeBookmarkCreationFrame",
+      "public func makeCreationIntent",
+      "public struct AnyNativeBookmarkCreationFrameReader",
+      "public func frame",
+      "public func makeBookmarkCreationFrameReader"
+    ],
+    "actualDeclaredBehaviorRetained": "Reader is obtained from the original creator and bound to its native client/workspace. It reads a genuine opaque frame under current supplied read authorization. Intent construction retains that exact frame. The original ObjectCreator journal/authority and frame-specific capability path are present verbatim."
+  },
+  "attachmentOwnerCompatibility": {
+    "originalSingleOwnerConstruction": {
+      "bytes": 169,
+      "sha256": "82df60e9e8388c9b039e25e7657a69d11fc6e91274cf442af989bf2e6739efbd",
+      "gitBlob": "a2f63eadf08de3f59c346a23cdb44c9f9396e6e9"
+    },
+    "originalSingleOwnerConstructionByteIdentical": true,
+    "makeFileAttachmentCreator": {
+      "bytes": 289,
+      "sha256": "df981120787a0d364278a47c0b7a9240b7bbd5e78bd1fbef1459923b78a7511b",
+      "gitBlob": "32752dda45fc79ea6dea20f212a50a7e7d560cee"
+    },
+    "makeFileAttachmentCreatorByteIdentical": true,
+    "wholeAttachmentCreatorExact": "bd134e85ef9924b19be0f1e6d65a211fa5b85a8d",
+    "attachmentCreatorDoesNotUseNewObjectIntentType": true,
+    "published25fbSourceCommit": "25fb60a3d1b32fbc8879f1631c8c85d38c76e510",
+    "allThreePublishedCallerStoreTestsByteIdentical": true,
+    "meaning": "The current baseline still creates one original attachment creator per object-creator/journal owner. It retains the exact opaque-receipt/current-claim/owner-pair and completed owner-transition implementation. The Bookmark additions do not replace it or serialize its process-local receipt."
+  },
+  "reusedFreshPrimaryDependencyReads": [
+    {
+      "repositoryPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "primary": {
+        "path": "interfaces_work/bookmark-native-frame-successor/actual-base/primary/file-1.json",
+        "bytes": 46149,
+        "sha256": "1f6b2ff53c13c8888707ce366ba52847266350946d15a128a9fe6a57ec2f757f"
+      },
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/2fcfecefaa3d99d63c47e34823d18a45e13f11f9/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "body": {
+        "bytes": 44570,
+        "sha256": "c653fa8489f7f9dc7d835d57ab4ec27be0bc46e189a29d226524d81e70e6db48",
+        "gitBlob": "e11bb97a37c323b43d3842b081b7c8e2d5eee8e3"
+      },
+      "meaning": "Interfaces fresh seven-file primary read reused and independently byte/Git-blob compared here; no duplicate API fetch."
+    },
+    {
+      "repositoryPath": "Modules/PinkhaAnyUI/Package.swift",
+      "primary": {
+        "path": "interfaces_work/bookmark-native-frame-successor/actual-base/primary/file-4.json",
+        "bytes": 2602,
+        "sha256": "c292786251ea1621b3ed55ca692985ebe9c2670f16b11bbe9d820124149c9a17"
+      },
+      "url": "https://github.com/davidpovarsky/anytype-swift/blob/2fcfecefaa3d99d63c47e34823d18a45e13f11f9/Modules/PinkhaAnyUI/Package.swift",
+      "body": {
+        "bytes": 2051,
+        "sha256": "33a710dfb7793f943c85432b28cafa1fef0fa081da35ba295e092937a7c91b35",
+        "gitBlob": "b0a0df61c5a62c8a0fb4fc7419c9b947f6fc06d8"
+      },
+      "meaning": "Interfaces fresh seven-file primary read reused and independently byte/Git-blob compared here; no duplicate API fetch."
+    }
+  ],
+  "propertyAndKit": {
+    "currentPropertyStoreSHA256": "c653fa8489f7f9dc7d835d57ab4ec27be0bc46e189a29d226524d81e70e6db48",
+    "property937aWholeSourceUnchanged": true,
+    "currentUIPackageSHA256": "33a710dfb7793f943c85432b28cafa1fef0fa081da35ba295e092937a7c91b35",
+    "TorahInspectorKitRevision": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+    "meaning": "No property comparator rewrite or Kit dependency substitution is needed to join this frozen Bookmark source. Earlier actual Property4 evidence remains bound to its own executed source and does not admit the new Bookmark candidate."
+  },
+  "coordination": {
+    "sevenCandidatePreimages": "Interfaces owns and freshly verified the full seven-file join; this review only reused its two requested dependency responses.",
+    "interfacesFullBodyJoin": {
+      "path": "interfaces_work/bookmark-native-frame-successor/actual-base/full-body-join.json",
+      "bytes": 5689,
+      "sha256": "a807393143b7082e10bfb6686eb9e3643e75525067a1c649ba957254a4941580"
+    },
+    "frozenCandidateManifest": {
+      "path": "interfaces_work/bookmark-native-frame-successor/candidate-manifest.json",
+      "bytes": 8375,
+      "sha256": "1ad4c5583443aa8c674e78f1b9620396d901d26e7730942109afd18369c94d32"
+    },
+    "oldProspectiveTree": "4626923da10f9dfc6ad23155ea08e4b8b7c2b211",
+    "oldProspectiveTreeIsNotActualBaseline": true,
+    "noSeparateW2DependencyMergeAdvanced": true,
+    "W3FinalRefOwnershipUnchanged": true
+  },
+  "limits": [
+    "No source/test candidate, existing manifest, Git object/ref, controller, admission gate or runtime limit was changed.",
+    "No compiler, test, control, HTTP fixture, Native engine, Mac/Oracle/host operation or process probe was performed. Only GitHub read-only primary retrieval and local source-byte checks were used.",
+    "Whole source identity proves API presence and preservation; it does not prove Apple typechecking or installed Native contract compatibility.",
+    "Bodyless warm/crash/cold and mounted Bookmark creation/open/Name/URL/Link acceptance remain pending. Process-local pending frame/intent is not cold rehydration.",
+    "A new coherent source baseline does not authorize runtime; W1/W3 retain the coordinated queue and all admission gates."
+  ],
+  "findings": []
+}

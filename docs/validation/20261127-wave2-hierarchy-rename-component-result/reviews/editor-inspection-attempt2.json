@@ -1,0 +1,22 @@
+{
+  "cause": "The 56 source/Package pins include Package.swift. It is separately compiled as the SwiftPM manifest; the six module FileLists correctly contain55 original target sources plus2 generated inputs. Set difference is exactly Package.swift.",
+  "compilerOrSourceChange": false,
+  "correction": "Compare original module sources with the55 Sources/ and Tests/ entries; retain the manifest hash and actual manifest command separately.",
+  "error": "AssertionError at local inline inspection line64",
+  "incorrectPredicate": "Original module source set equals every source pin ending in .swift",
+  "originalEvidenceEdited": false,
+  "originalReceipt": {
+    "bytes": 283810,
+    "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/receipt.json",
+    "sha256": "42d6a0b7b5bd09bf253fcabb814120397da615fc6db8647b633c4ba677cf8266"
+  },
+  "originalSourceInventory": {
+    "bytes": 7167,
+    "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/source-inputs-before.json",
+    "sha256": "ebcbc67a21604151c86f738fd7635e148287998856f300692a8e8faeaafc607a"
+  },
+  "reviewer": "/root/editor",
+  "runtimeOrTestsRerun": false,
+  "schema": "pinkha-hierarchy-peer-inspection-stop/v1",
+  "status": "REVIEWER_SOURCE_CLASSIFICATION_STOP_NOT_RUNTIME_FAILURE"
+}

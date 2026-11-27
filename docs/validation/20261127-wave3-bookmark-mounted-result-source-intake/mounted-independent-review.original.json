@@ -1,0 +1,91 @@
+{
+  "actualBase": "2fcfecefaa3d99d63c47e34823d18a45e13f11f9",
+  "actualBaseTree": "7f009cbe4cd41b41f7e577cd569ebf6c903caf53",
+  "futureStart": null,
+  "testsExecuted": 0,
+  "compilerInvocations": 0,
+  "candidateImports": 0,
+  "hostActions": 0,
+  "runtimeAcceptance": false,
+  "schema": "pinkha-mounted-attachment-independent-source-review/v1",
+  "status": "SOURCE_READY_CONTROLLED_HOSTED_TEST_NOT_RUN",
+  "donorCommit": "9a2c8e7abd6311293f7eb8c35d2e9f6ed43ab33c",
+  "donorTree": "fe082661e58acf00eba72e91297b32edd7286db8",
+  "donorParent": "25fb60a3d1b32fbc8879f1631c8c85d38c76e510",
+  "branch": "codex/chatgpt-wave15-wave2-mounted-attachment-recovery-20261127",
+  "primaryPaths": 27,
+  "modified": 0,
+  "added": 27,
+  "primaryBytes": 347344,
+  "sourcePath": "AnyTypeTests/Pinkha/AnyNativeAttachmentMountedRecoveryTests.swift",
+  "sourceBytes": 55563,
+  "sourceSHA256": "05767e33a0e169e7e8beb4a4c29137f59c33d74e1794e74c7837dbd52575d0bc",
+  "sourceGitBlob": "20420e0576cf0634fb6a266eaf53c97a25d93265",
+  "selector": "AnyNativeAttachmentMountedRecoveryTests/testMountedCheckRecoversOriginalACKAfterProtectedJournalFailureAndOwnerDrain",
+  "methodCount": 1,
+  "caseCount": 1,
+  "methodAllowanceSeconds": 120,
+  "sourceReview": [
+    "The complete 55,563-byte test uses actual UIKit-mounted editor/attachment presentation, real original protected-journal files, original Host/Engine client APIs and a bounded controlled loopback HTTP listener. It does not construct an opaque recovery receipt or replace the protected journal with a mock.",
+    "One real original caller operation consumes the controlled file. The fixture observes the exact persisted intent/reservation, then changes only its own journal directory0700->0500 immediately before the actual controlled201. A root test process is refused. The resulting original append/poison path is required before the test proceeds.",
+    "The original live catch is held at a real current-lease HTTP check. A duplicate caller claim must fail while that worker remains live. Permission repair preserves the same device/inode; the poisoned original journal still owns its lock and cannot be reopened early.",
+    "The presentation lifetime is revoked and drained, the actual owner closes through session revoke-and-drain then journal close, and tracked transport connections reach zero. The same caller intent and retained original creator can then be reconciled under a new session generation using the original Check path. The old generation is inactive; no cross-account result delivery or repeated POST is admitted.",
+    "The final assertions require one upload/one201, two metadata reads, one range/digest content read, exact original file, durable verified entry, pending removal and unchanged document body. These are controlled HTTP/client/journal observations, not real Native engine evidence.",
+    "The serial fixture bounds connection/request/body/response budgets and start/stop/watchdog time. Every accepted socket remains tracked until cancellation callback; listener cancellation and zero remaining sockets are required for owned file removal.",
+    "First thrown failure is preserved across cleanup; XCTest assertion failures also retain fixture files through testRun.totalFailureCount. Missing testRun retains evidence. No other caller/account namespace is recursively removed.",
+    "The original renderer listener class is preserved through16 declared literal edits/50 occurrences, verified in both directions using original positions for the deletion. Full render-capture and later assertion-retention corrections are independently reconstructed; previous candidates/failed inspection evidence remain unchanged.",
+    "Actual foreground window rendering is checked, JSON and PNG are retained, and visualReview remains PENDING. The system picker is bypassed through its actual model callback and is not claimed as a system-picker or XCUITest interaction."
+  ],
+  "dependencyClosure": {
+    "wholeCurrentMatches": 19,
+    "explicitCompatibleCurrentDifference": "AnyNativeObjectCreator.swift is the already-integrated6866 version19634B/ae8faf/2dd759. Its single attachment creator construction and entire makeFileAttachmentCreator declaration match the historical9b source exactly. Other19 current dependencies, including25fb caller/intent/store-test bytes, match declared current parent."
+  },
+  "remainingSourceBlockers": [],
+  "futureAcceptance": [
+    "Add exactly this genuine test source to an explicitly reviewed compiler/FileList admission. The existing frozen App61 inventory does not include this new source and cannot claim it compiled.",
+    "Prove the actual AnytypeTests target and physical AnyTypeTests source path through original project/materialization and real compiler evidence. Required DEBUG/canImport conditions and testable Host/Native/UI modules must be active; zero enumeration cannot pass.",
+    "Enumerate exactly the one declared120-second method, retain its actual result instance, original logs, first failure/owned connection closure and phase JSON/PNG. Review screenshots separately before visual acceptance.",
+    "Real engine/account/native upload durability, process-death recovery, production account connect, system picker and physical-device protection remain separate pending acceptance. This test does not replace the already authored15/36 attachment component or qualify a real account."
+  ],
+  "unchangedProduction": true,
+  "sourceMap145Changed": false,
+  "noPBXOrRuntimeControllerChangesInDonor": true,
+  "evidence": {
+    "primary-identities.json": {
+      "path": "/workspace/scratch/ae335eba85e3/w2-attachment-mounted-9a2c-intake/primary-identities.json",
+      "bytes": 13665,
+      "sha256": "6b9bb8ed5dadc31f53365f8cfb9d1cf4c9d09ea2744ef19c87ca56e3e842355e",
+      "gitBlob": "2566cf7bb05ff8ca825db8aa3602a87f2d1e5a66"
+    },
+    "independent-tree-proof.json": {
+      "path": "/workspace/scratch/ae335eba85e3/w2-attachment-mounted-9a2c-intake/independent-tree-proof.json",
+      "bytes": 9692,
+      "sha256": "ea27946e2d38620aecfcd6b29f543eff11eda3ebb35792ff0c5851641f9ae4aa",
+      "gitBlob": "517af485bcd9e6a435068411dda5208bc256e44d"
+    },
+    "independent-fixture-inverse-proof.json": {
+      "path": "/workspace/scratch/ae335eba85e3/w2-attachment-mounted-9a2c-intake/independent-fixture-inverse-proof.json",
+      "bytes": 6410,
+      "sha256": "fabedb2a75bbf034621b715bc01488000b740b4a25c77de87682d93e462db209",
+      "gitBlob": "e6b8402db25b5407e26bbdb0ab713f792cdfe974"
+    },
+    "prepared1/current-dependency-proof.json": {
+      "path": "/workspace/scratch/ae335eba85e3/w2-attachment-mounted-9a2c-intake/prepared1/current-dependency-proof.json",
+      "bytes": 17161,
+      "sha256": "437cd50ee29f83d6b2089234f3dc81e81f8c0ab7474d369d21066d6c1970e592",
+      "gitBlob": "b578ee28293059fb90eb71e81533dba391a30dba"
+    },
+    "prepared1/full-fixture-correction-proof.json": {
+      "path": "/workspace/scratch/ae335eba85e3/w2-attachment-mounted-9a2c-intake/prepared1/full-fixture-correction-proof.json",
+      "bytes": 1468,
+      "sha256": "0f4303a86d9632368b0cc8275b59fd84f3459cdbd6e1c05dd011cd08cfa8b047",
+      "gitBlob": "f5d8980b03897ec99dde189e233999943de5d524"
+    },
+    "prepared1/source-inputs.json": {
+      "path": "/workspace/scratch/ae335eba85e3/w2-attachment-mounted-9a2c-intake/prepared1/source-inputs.json",
+      "bytes": 477692,
+      "sha256": "8ed580bea8f84e9e6da5c5d6c068ac35d62681aa232ea87290935d6ad9c941cc",
+      "gitBlob": "8e97344010b6207e3b4cfc6bf7662cc3efaa5b73"
+    }
+  }
+}

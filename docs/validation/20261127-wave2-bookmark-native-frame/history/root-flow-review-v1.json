@@ -1,0 +1,29 @@
+{
+  "schema": "bookmark-creation-root-flow-review/v1",
+  "status": "CHANGES_REQUESTED",
+  "base": "78ccffbc711affe743a96edcb79455998f8b73a6",
+  "reviewedModelSHA256": "02bf26bf2441c4907a40c4fa39fc1cb1c0f363001c41a56affa1c778ad7bc077",
+  "findings": [
+    {
+      "id": "BOOKMARK-CREATE-01",
+      "severity": "correctness",
+      "summary": "A fresh repository per Bookmark request bypasses the live Library repository's shared mutation queue.",
+      "evidence": {
+        "repositoryGitBlob": "41bb8ecb03a5930b24d465448939dfdb4be444a9",
+        "repositorySHA256": "42986d1384446edea4b1c685eed305612aa0e8629bc7d6284f086ca87e27939a",
+        "retainedPath": "interfaces_work/next-d-readiness/source/hierarchy-repository.swift",
+        "originalBehavior": "create, placement, rename and removal use instance-local mutationTail through serial().",
+        "candidateBehavior": "private createBookmark constructs a new AnyHierarchyRepository for each invocation and calls its create()."
+      },
+      "implication": "Bookmark creation may overlap local parent/folder operations that ordinary creation serializes on the live repository. This is a source-proven queue regression; no actual native race is claimed.",
+      "requestedCorrection": "Pass the private typed creator adapter to the existing live repository's create operation through a minimal optional using parameter. Keep its original serial closure, parent/member/readback checks and default creator behavior. Validate the supplied creator workspace. Do not introduce a second manager or weaken validation."
+    }
+  ],
+  "otherReviewedFacts": [
+    "Existing plan/repository/intent validators permit an empty Name, preserving the original URL-first input flow.",
+    "Adapter reconstructs the complete intent and compares fingerprint, binding mutation ID, workspace, type, hierarchy collection/parent/position, Name and exact source URL.",
+    "Properties writes use current member/lease authorization independently of body block count; actual bodyless Native mount remains unqualified.",
+    "Host binding and UI/package peer reviews do not qualify this separate queue boundary."
+  ],
+  "runtimeExecuted": false
+}

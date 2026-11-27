@@ -1,0 +1,533 @@
+{
+  "actions": {
+    "compilerCalls": 0,
+    "hostCalls": 0,
+    "originalEvidenceWrites": 0,
+    "processProbes": 0,
+    "runnerImports": 0,
+    "runtimeReruns": 0,
+    "signals": 0
+  },
+  "actualJob": {
+    "duration_s": 45.51,
+    "exit_code": 0,
+    "finished_at": "2026-11-27T21:17:09.502134+00:00",
+    "id": "job_ef7ccd6b6900",
+    "output_truncated": false,
+    "started_at": "2026-11-27T21:16:23.997055+00:00",
+    "status": "succeeded",
+    "timeout_s": 360
+  },
+  "actualReceipt": {
+    "bytes": 283810,
+    "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/receipt.json",
+    "sha256": "42d6a0b7b5bd09bf253fcabb814120397da615fc6db8647b633c4ba677cf8266"
+  },
+  "actualTests": {
+    "AppleCalls": 0,
+    "HTTPFixtures": 0,
+    "NativeCalls": 0,
+    "XCTestCases": 0,
+    "allMethodAndCaseStartedPassedEventsMatched": true,
+    "argumentCaseCount": 8,
+    "cases": [
+      {
+        "argument": "latin",
+        "method": "canonicallyEquivalentRequestedRenameReachesTheOriginalStore",
+        "passedLogLine": 11,
+        "startedLogLine": 10
+      },
+      {
+        "argument": "hebrew",
+        "method": "canonicallyEquivalentRequestedRenameReachesTheOriginalStore",
+        "passedLogLine": 13,
+        "startedLogLine": 12
+      },
+      {
+        "argument": "latin",
+        "method": "canonicallyEquivalentStaleExpectedTitleRefusesBeforeDispatch",
+        "passedLogLine": 17,
+        "startedLogLine": 16
+      },
+      {
+        "argument": "hebrew",
+        "method": "canonicallyEquivalentStaleExpectedTitleRefusesBeforeDispatch",
+        "passedLogLine": 19,
+        "startedLogLine": 18
+      },
+      {
+        "argument": "latin",
+        "method": "canonicallyEquivalentSuccessfulReadbackCannotCertifyRename",
+        "passedLogLine": 23,
+        "startedLogLine": 22
+      },
+      {
+        "argument": "hebrew",
+        "method": "canonicallyEquivalentSuccessfulReadbackCannotCertifyRename",
+        "passedLogLine": 25,
+        "startedLogLine": 24
+      },
+      {
+        "argument": "latin",
+        "method": "canonicallyEquivalentReadbackPreservesTheOriginalWriteError",
+        "passedLogLine": 29,
+        "startedLogLine": 28
+      },
+      {
+        "argument": "hebrew",
+        "method": "canonicallyEquivalentReadbackPreservesTheOriginalWriteError",
+        "passedLogLine": 31,
+        "startedLogLine": 30
+      }
+    ],
+    "framework": "Swift Testing",
+    "methodCount": 4,
+    "methods": [
+      "canonicallyEquivalentRequestedRenameReachesTheOriginalStore",
+      "canonicallyEquivalentStaleExpectedTitleRefusesBeforeDispatch",
+      "canonicallyEquivalentSuccessfulReadbackCannotCertifyRename",
+      "canonicallyEquivalentReadbackPreservesTheOriginalWriteError"
+    ],
+    "oldMethodsExecuted": 0,
+    "stdout": {
+      "bytes": 4471,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/stdout.original.log",
+      "sha256": "21ee8d308fafe51351ec9c1ccf93b052ec877edf4ad92c86f37090f5301fc0e3"
+    },
+    "suite": "AnyHierarchyRawTitleTests",
+    "suiteCount": 1,
+    "testRunOpeningAndClosingBannersClassifiedSeparately": true,
+    "testSeconds": 0.012
+  },
+  "compiler": {
+    "actualCommandCwd": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component",
+    "actualCompilerWorkingDirectory": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127",
+    "actualLaunchCwdAndPWD": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127",
+    "allDriverLinesAndArgvMatchFullOriginalStderr": true,
+    "allEmbeddedSourceListAndGeneratedTextHashesRecomputed": true,
+    "allOriginalSourceBytesAndGitBlobsMatchWholeSource": true,
+    "binaryHashLimit": "Object and emitted-module hash records are associated with actual compiler inputs and validated for complete shape. Raw binary artifacts were not downloaded/rehashed by this peer; original exact f63 runner performed their physical reads/hashes.",
+    "buildSeconds": 35.88,
+    "diagnostics": "No error or source warning diagnostic found. The original verbose Package-manifest command appears under warning: component; retained unchanged.",
+    "driverGroups": 6,
+    "generatedInputs": 2,
+    "innerJobs": 2,
+    "manifestCompiledSeparately": true,
+    "manifestSHA256": "bf6b4e867ea96c9fe8a51fb148867c33885b2c5ee335c07070cacb53d3ac305c",
+    "modules": [
+      {
+        "actualDriverLineSHA256": "0545f22cbf875684aac01b9268ea80dbce429c568cf6a11a29b90a2c2e8a28df",
+        "actualDriverLogLine": 234,
+        "emittedModuleSHA256": "ae8ce7c2a8d3466292315cfac08771a29bbc97196b34594594a3dd1cfed009b2",
+        "generatedInputs": [],
+        "module": "PinkhaAnyEngine",
+        "sourceInputs": 15,
+        "sourceList": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine.SwiftFileList",
+        "sourceListSHA256": "5692354c78759b4d1e0a65a932cb7831cee4886b2c419c8f772ea85e0aceb6bb"
+      },
+      {
+        "actualDriverLineSHA256": "65b0c7d2c61087269e198f1b28f85ac99b40e90397972a732afd2ce9ba1166d3",
+        "actualDriverLogLine": 478,
+        "emittedModuleSHA256": "ea864f4c155101c5a63c3dd261a554f52610c7f8b8088868e883a17e00bf979c",
+        "generatedInputs": [],
+        "module": "PinkhaAnyIntegration",
+        "sourceInputs": 19,
+        "sourceList": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration.SwiftFileList",
+        "sourceListSHA256": "a82b6259d2a77cca8695f583cab2a31f3c6eb83ad3802d6ea97e7711e7cae922"
+      },
+      {
+        "actualDriverLineSHA256": "e39e6e7c0531817ed7508f78a74e79d161cef0d4edf9dcc8c74587c3c28b8651",
+        "actualDriverLogLine": 586,
+        "emittedModuleSHA256": "a763b59fc3e109c65761b1bf7f404b7d00710cf40347bccee57fcc2f7aaa524e",
+        "generatedInputs": [
+          {
+            "bytes": 56,
+            "path": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/DerivedSources/test_anchor.swift",
+            "sha256": "2808284b2e4462657567b48452d73b675bd78337198b60b7e179a2fd7525e813"
+          }
+        ],
+        "module": "PinkhaAnyIntegrationTests",
+        "sourceInputs": 2,
+        "sourceList": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests.SwiftFileList",
+        "sourceListSHA256": "9c5a98c890f1ce4934245e97ad9d7206dff520fcf66077fce13587ebdd3f6ff5"
+      },
+      {
+        "actualDriverLineSHA256": "9b93a0778fd160fa53c499e28859edbcc674c686b0f620dcd2f88e691c948980",
+        "actualDriverLogLine": 699,
+        "emittedModuleSHA256": "d63cdd017b4c2585864d8a8051927c9bf6093d64804737eb2fb5529b2ee1699c",
+        "generatedInputs": [
+          {
+            "bytes": 18980,
+            "path": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/DerivedSources/test_entry_point.swift",
+            "sha256": "ef1ea588c48abfb9df451d79abb95237c2380da8b15cc97422bbfcccd532993b"
+          }
+        ],
+        "module": "PinkhaAnyIntegrationTests_test_runner",
+        "sourceInputs": 1,
+        "sourceList": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner.SwiftFileList",
+        "sourceListSHA256": "72774b6d86ff041286a8b7590a894d95e7126c9784b16948762acdf5634244fa"
+      },
+      {
+        "actualDriverLineSHA256": "21a5fd6f36f78d24875a2d89093a9e4411d2f7f780195fadfbdade5da7bbcf76",
+        "actualDriverLogLine": 374,
+        "emittedModuleSHA256": "ecfa105c80c2632f0141c10ddecd5a70b5e737bbadcb2b89766eb20d20d5acfe",
+        "generatedInputs": [],
+        "module": "PinkhaKit",
+        "sourceInputs": 12,
+        "sourceList": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit.SwiftFileList",
+        "sourceListSHA256": "d67e175c1c4fb485befa0da62af463881a98a236f6ad216eeaa9a1141abd5afd"
+      },
+      {
+        "actualDriverLineSHA256": "e7a52bfcc267accb4de828dc39024b3c8f33287bdb7a1020f663527cfeafbf38",
+        "actualDriverLogLine": 238,
+        "emittedModuleSHA256": "c24c3be7979f1a50ed055cd1dd85d8741250fc82928d7ea1d887d9c01e3164df",
+        "generatedInputs": [],
+        "module": "TorahInspectorCore",
+        "sourceInputs": 8,
+        "sourceList": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.SwiftFileList",
+        "sourceListSHA256": "6b8f3875a38e5659f2aa0647c9113d8ae7c56338383a91e401a0068bbdb12d33"
+      }
+    ],
+    "originalInputs": 55,
+    "outerJobs": 2,
+    "outputMapsMatchEverySourceAndObject": true,
+    "sourceListGroups": 6,
+    "stderr": {
+      "bytes": 146679,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/stderr.original.log",
+      "sha256": "b0014ec10c3dc09948ae103395f360fe4aef4952d945208ad3fde1a26f402235"
+    },
+    "target": "aarch64-unknown-linux-gnu",
+    "totalInputInstances": 57,
+    "version": "Swift6.4.3 swift-6.4.3-RELEASE"
+  },
+  "controller": {
+    "bytes": 36251,
+    "path": "wave2-hierarchy-rename-component/execution-preparation/inputs/run_component.py",
+    "sha256": "f63adbdfde8bfa5d1779371e1c046f196e617f2f286181dc6c8c7768414e3628"
+  },
+  "custody": {
+    "allBeforeFDAndAfterPathStatIdentitiesMatch": true,
+    "allDecodedOriginalBytesEqualLocalCopies": true,
+    "allRowsMatchOriginalPacket": true,
+    "atimePreservationClaim": false,
+    "collectorIsEvidenceOnly": true,
+    "completedNotification": {
+      "bytes": 19304,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/completed-job.structured.original.json",
+      "sha256": "aa37202fde4def73e3928cd210d9ff42bd9de0380ef33e31fd820db138e89f48"
+    },
+    "contentBytes": 561482,
+    "export": {
+      "bytes": 790527,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-export.json",
+      "sha256": "c265b142f60d3a8eec20b38b15fdf9ee65c32b8d759efae611c874ac8fff3bd9"
+    },
+    "materializedBytes": 781373,
+    "materializedFiles": 61,
+    "originalFiles": 10,
+    "stageCoordinationStory": "1220962223365617",
+    "stageStatus": "PASS_EXACT_INPUTS_MATERIALIZED_PENDING_EXEC",
+    "transport": {
+      "bytes": 2341,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-transport.json",
+      "sha256": "33485e748c294d8b72b6fb2429158de5854e5635dd98f149074815feb2007c64"
+    }
+  },
+  "dependencies": {
+    "actualCopies": {
+      "bytes": 81705,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/actual-dependency-copies.json",
+      "sha256": "15c21564f31cb807dab215aefad2c5ba6fbba9013b8a9163168f8ad3b1ef157f"
+    },
+    "allExactOriginalSourceAliasTargetBindingsMatch": true,
+    "allFourPinnedObjectsPresentInActualLinkCommands": true,
+    "files": 102,
+    "kindSpecificOriginalAliasFieldsPreserved": true,
+    "manifest": {
+      "bytes": 122971,
+      "path": "wave2-hierarchy-rename-component/execution-preparation/inputs/retained-crypto-closure.json",
+      "sha256": "10c98c4192acba640c401586fb84ef9aa227e6d52bdde7198f251a0498146c2c"
+    },
+    "originalRunnerRecheckedHashesAndAliasesAfterAndFinally": true,
+    "payloadBytes": 19775715,
+    "stageBeforeAfterPhysicalCustodySHA256": "ed4095b5d4988fb574d1b190cc09ae2b238b7f885a6f004d90e8d2805534ddf3"
+  },
+  "lifecycle": {
+    "cleanupReusedSameAbsence": true,
+    "historicalGroupReprobedByPeer": false,
+    "originalCommandExit": 0,
+    "originalRunnerErrors": [],
+    "originalSafeRelease": true,
+    "peerSignals": 0,
+    "process": {
+      "bytes": 102,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/process.json",
+      "sha256": "c1e3dc583fb238eb5245d5cc901da4fdc12f6ecd7f0f099add0a3ad73192b137"
+    },
+    "recordedPositiveAbsence": {
+      "atUTC": "2026-11-27T21:17:08.879198+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 2428255,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "releaseDecisionOwner": "/root"
+  },
+  "limits": [
+    "Exact published hierarchy rename repository7a1/fulltest3a11 controlled-store component passes on Linux; not Apple/UI or real Native/account/device acceptance.",
+    "Full old23-method prefix compiled but did not run. No Host2, Property4, or legacy hierarchy replay.",
+    "Later Bookmark repository59e/fulltest427 and its new six methods are outside this executed source tuple.",
+    "Original source-only preparation records remain historical and unmodified."
+  ],
+  "originalArtifacts": [
+    {
+      "bytes": 81705,
+      "originalStatIdentity": {
+        "ctime_ns": 1795814184765318737,
+        "dev": 2064,
+        "gid": 0,
+        "ino": 818808,
+        "mode": 33188,
+        "mtime_ns": 1795814184765318737,
+        "nlink": 1,
+        "size": 81705,
+        "uid": 0
+      },
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/actual-dependency-copies.json",
+      "sha256": "15c21564f31cb807dab215aefad2c5ba6fbba9013b8a9163168f8ad3b1ef157f"
+    },
+    {
+      "bytes": 1757,
+      "originalStatIdentity": {
+        "ctime_ns": 1795814184874030920,
+        "dev": 2064,
+        "gid": 0,
+        "ino": 818882,
+        "mode": 33188,
+        "mtime_ns": 1795814184874030920,
+        "nlink": 1,
+        "size": 1757,
+        "uid": 0
+      },
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/command.json",
+      "sha256": "2bdb159a676d86b1b13e89b5cb607daec92414d1d7bec84728c2451c26ef0814"
+    },
+    {
+      "bytes": 102,
+      "originalStatIdentity": {
+        "ctime_ns": 1795814184879807755,
+        "dev": 2064,
+        "gid": 0,
+        "ino": 818885,
+        "mode": 33188,
+        "mtime_ns": 1795814184879807755,
+        "nlink": 1,
+        "size": 102,
+        "uid": 0
+      },
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/process.json",
+      "sha256": "c1e3dc583fb238eb5245d5cc901da4fdc12f6ecd7f0f099add0a3ad73192b137"
+    },
+    {
+      "bytes": 283810,
+      "originalStatIdentity": {
+        "ctime_ns": 1795814229489417890,
+        "dev": 2064,
+        "gid": 0,
+        "ino": 836895,
+        "mode": 33188,
+        "mtime_ns": 1795814229489417890,
+        "nlink": 1,
+        "size": 283810,
+        "uid": 0
+      },
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/receipt.json",
+      "sha256": "42d6a0b7b5bd09bf253fcabb814120397da615fc6db8647b633c4ba677cf8266"
+    },
+    {
+      "bytes": 14027,
+      "originalStatIdentity": {
+        "ctime_ns": 1795814229409216163,
+        "dev": 2064,
+        "gid": 0,
+        "ino": 836894,
+        "mode": 33188,
+        "mtime_ns": 1795814229409216163,
+        "nlink": 1,
+        "size": 14027,
+        "uid": 0
+      },
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/resource-samples.json",
+      "sha256": "4031b2a208a7e07aa5cdc6e3d287e2d659c703609ff45225650051bde661a4de"
+    },
+    {
+      "bytes": 7167,
+      "originalStatIdentity": {
+        "ctime_ns": 1795814229255294227,
+        "dev": 2064,
+        "gid": 0,
+        "ino": 836892,
+        "mode": 33188,
+        "mtime_ns": 1795814229255294227,
+        "nlink": 1,
+        "size": 7167,
+        "uid": 0
+      },
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/source-inputs-after.json",
+      "sha256": "ebcbc67a21604151c86f738fd7635e148287998856f300692a8e8faeaafc607a"
+    },
+    {
+      "bytes": 7167,
+      "originalStatIdentity": {
+        "ctime_ns": 1795814184777199009,
+        "dev": 2064,
+        "gid": 0,
+        "ino": 818873,
+        "mode": 33188,
+        "mtime_ns": 1795814184777199009,
+        "nlink": 1,
+        "size": 7167,
+        "uid": 0
+      },
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/source-inputs-before.json",
+      "sha256": "ebcbc67a21604151c86f738fd7635e148287998856f300692a8e8faeaafc607a"
+    },
+    {
+      "bytes": 14597,
+      "originalStatIdentity": {
+        "ctime_ns": 1795814229369781323,
+        "dev": 2064,
+        "gid": 0,
+        "ino": 836893,
+        "mode": 33188,
+        "mtime_ns": 1795814229369781323,
+        "nlink": 1,
+        "size": 14597,
+        "uid": 0
+      },
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/source-inputs-final.json",
+      "sha256": "16f68a4178b8ea228ffc3f3eaeb33becd5d8be5bf64f9fb00f04ba2f852b9b36"
+    },
+    {
+      "bytes": 146679,
+      "originalStatIdentity": {
+        "ctime_ns": 1795814228776413557,
+        "dev": 2064,
+        "gid": 0,
+        "ino": 818884,
+        "mode": 33188,
+        "mtime_ns": 1795814228776413557,
+        "nlink": 1,
+        "size": 146679,
+        "uid": 0
+      },
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/stderr.original.log",
+      "sha256": "b0014ec10c3dc09948ae103395f360fe4aef4952d945208ad3fde1a26f402235"
+    },
+    {
+      "bytes": 4471,
+      "originalStatIdentity": {
+        "ctime_ns": 1795814228867414110,
+        "dev": 2064,
+        "gid": 0,
+        "ino": 818883,
+        "mode": 33188,
+        "mtime_ns": 1795814228867414110,
+        "nlink": 1,
+        "size": 4471,
+        "uid": 0
+      },
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/stdout.original.log",
+      "sha256": "21ee8d308fafe51351ec9c1ccf93b052ec877edf4ad92c86f37090f5301fc0e3"
+    }
+  ],
+  "packet": {
+    "bytes": 14202,
+    "path": "wave2-hierarchy-rename-component/execution-preparation/input-packet.json",
+    "sha256": "ed3ef9bfce4119bc199934d4740a09f5e0e621abd0806a45e831f392cf043df6"
+  },
+  "preparedInputPublication": "8b70497157758f3ae8148842f1236d215d6d2d50",
+  "productSourceCommit": "9e4aa3f1b88d8f6bfec27cdf2cb47d07ffd416ce",
+  "resources": {
+    "budget": {
+      "admissionMarginBytes": 33554432,
+      "commandSeconds": 300,
+      "developmentFloorBytes": 536870912,
+      "finalEvidenceReserveWithinCapBytes": 1048576,
+      "jobs": 2,
+      "memoryFloorBytes": 536870912,
+      "ownedAllocationCapBytes": 268435456,
+      "rootFloorBytes": 2147483648
+    },
+    "continuousPeakOrGlobalWriterClaim": false,
+    "controllerSeconds": 44.842,
+    "everySamplePassedOriginalFloorAndCap": true,
+    "initialAdmissionMarginsPassed": true,
+    "maximumSampledOwnedAllocatedBytes": 145113088,
+    "minimumSampledDevelopmentFreeBytes": 1709158400,
+    "minimumSampledMemAvailableBytes": 3756175360,
+    "minimumSampledRootFreeBytes": 2332925952,
+    "samples": 45,
+    "source": {
+      "bytes": 14027,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/resource-samples.json",
+      "sha256": "4031b2a208a7e07aa5cdc6e3d287e2d659c703609ff45225650051bde661a4de"
+    }
+  },
+  "retainedReviewerInspectionStops": [
+    {
+      "bytes": 1273,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/editor-inspection-attempt1.json",
+      "sha256": "7a61ac1597a9ddd9f589bd368ba8f29b5719054c3434dcb1b582e5cf258110b9"
+    },
+    {
+      "bytes": 1320,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/editor-inspection-attempt2.json",
+      "sha256": "4f40f3230d8eae51051cd9d9d22ae4dc9c9941fec3c78376a2f25bfec1580228"
+    },
+    {
+      "bytes": 1156,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/editor-inspection-attempt3.json",
+      "sha256": "422f40a8b024d092001fde4c61b5199419d9fe1b0704ba9ecbedc993354beb7a"
+    }
+  ],
+  "reviewedAtUTC": "2026-11-27T21:29:10.995183+00:00",
+  "reviewer": "/root/editor",
+  "schema": "pinkha-hierarchy-rename-independent-actual-review/v1",
+  "scope": "Independent complete local evidence review; no import/execution of runner, compiler, tests, host, process probe or signal.",
+  "source": {
+    "after": {
+      "bytes": 7167,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/source-inputs-after.json",
+      "sha256": "ebcbc67a21604151c86f738fd7635e148287998856f300692a8e8faeaafc607a"
+    },
+    "before": {
+      "bytes": 7167,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/source-inputs-before.json",
+      "sha256": "ebcbc67a21604151c86f738fd7635e148287998856f300692a8e8faeaafc607a"
+    },
+    "beforeAfterExactBytes": true,
+    "final": {
+      "bytes": 14597,
+      "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/source-inputs-final.json",
+      "sha256": "16f68a4178b8ea228ffc3f3eaeb33becd5d8be5bf64f9fb00f04ba2f852b9b36"
+    },
+    "finalInputsEqualCompiledCopyAndOriginalPins": true,
+    "fullTestFiles": 1,
+    "fullTestSHA256": "3a11428238fabc27fc93f8cfb98535864dfbb7c2b09ae501c14f699d47b292c1",
+    "original23MethodPrefixExact": true,
+    "originalSwiftBytes": 526737,
+    "repositorySHA256": "7a1af6090a300a17e1427abb97423a49fbd26031d0578d17e6cba5f719016463",
+    "sourceAndPackagePins": 56,
+    "sourceBodyProjection": false,
+    "wholeProductionFiles": 54,
+    "wholeSourceManifest": {
+      "bytes": 83917,
+      "path": "wave2-hierarchy-rename-component/execution-preparation/inputs/whole-source-closure.json",
+      "sha256": "510a00d5fb0065bcc5292d83443b9e4b6774f9dda4a7fd1d1d0ef4cfddeb8ca0"
+    }
+  },
+  "status": "PASS_INDEPENDENT_LOCAL_REVIEW_OF_ACTUAL_LINUX_COMPONENT"
+}

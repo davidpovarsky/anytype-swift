@@ -1,0 +1,749 @@
+info: using 'Package.resolved' file as lock file
+warning: 'component': /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-frontend -frontend -c -primary-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component/Package.swift -target aarch64-unknown-linux-gnu -Xllvm -aarch64-use-tbi -disable-objc-interop -I /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -vfsoverlay /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/tmp/TemporaryDirectory.bzXyD9/vfs.yaml -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/swift-module-cache -no-color-diagnostics -Xcc -fno-color-diagnostics -swift-version 6 -package-description-version 6.0.0 -empty-abi-descriptor -no-auto-bridging-header-chaining -module-name main -in-process-plugin-server-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins -plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/local/lib/swift/host/plugins -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/tmp/TemporaryDirectory.Kz2zHu/Package-1.o
+/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-autolink-extract /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/tmp/TemporaryDirectory.Kz2zHu/Package-1.o -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/tmp/TemporaryDirectory.Kz2zHu/main-1.autolink
+/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/clang -pie -Xlinker --build-id -Xlinker -rpath -Xlinker /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/aarch64/swiftrt.o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/tmp/TemporaryDirectory.Kz2zHu/Package-1.o @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/tmp/TemporaryDirectory.Kz2zHu/main-1.autolink -L /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -lswiftCore --target=aarch64-unknown-linux-gnu -v -L /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -lPackageDescription -Xlinker -rpath -Xlinker /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/tmp/TemporaryDirectory.peMdvp/component-manifest
+Swift version 6.4.3 (swift-6.4.3-RELEASE)
+Target: aarch64-unknown-linux-gnu
+clang version 21.0.0 (https://github.com/swiftlang/llvm-project.git fb5f84d903a3b4e7aea15cd5666598a46f56c833)
+Target: aarch64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin
+Found candidate GCC installation: /usr/lib/gcc/aarch64-linux-gnu/13
+Selected GCC installation: /usr/lib/gcc/aarch64-linux-gnu/13
+Candidate multilib: .;@m64
+Selected multilib: .;@m64
+ "/usr/bin/ld.gold" -EL -z relro --hash-style=gnu --eh-frame-hdr -m aarch64linux -pie -dynamic-linker /lib/ld-linux-aarch64.so.1 -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/tmp/TemporaryDirectory.peMdvp/component-manifest /lib/aarch64-linux-gnu/Scrt1.o /lib/aarch64-linux-gnu/crti.o /usr/lib/gcc/aarch64-linux-gnu/13/crtbeginS.o -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -L/usr/lib/gcc/aarch64-linux-gnu/13 -L/lib/aarch64-linux-gnu -L/usr/lib/aarch64-linux-gnu -L/lib -L/usr/lib --build-id -rpath /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/aarch64/swiftrt.o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/tmp/TemporaryDirectory.Kz2zHu/Package-1.o -lswiftSwiftOnoneSupport -lswiftCore -lswift_Concurrency -lswift_StringProcessing -lswift_RegexParser -lswiftCore -lPackageDescription -rpath /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/aarch64-linux-gnu/13/crtendS.o /lib/aarch64-linux-gnu/crtn.o
+info: using 'Package.resolved' file as lock file
+Building for debugging...
+Planning build
+[Computing dependencies]
+Compute target dependency graph
+info: Building targets in dependency order
+info: Target dependency graph (7 targets)
+info: Target 'AllIncludingTests' in project 'Aggregate'
+info: ➜ Explicit dependency on target 'PinkhaAnyIntegrationTests-product' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'PinkhaAnyIntegrationTests-test-runner' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'PinkhaKit' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'PinkhaAnyIntegration' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'PinkhaAnyEngine' in project 'HierarchyRawTitleProof'
+info: Target 'PinkhaAnyIntegrationTests-test-runner' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'PinkhaAnyIntegrationTests-product' in project 'HierarchyRawTitleProof'
+info: Target 'PinkhaAnyIntegrationTests-product' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'PinkhaKit' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'PinkhaAnyEngine' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'PinkhaAnyIntegration' in project 'HierarchyRawTitleProof'
+info: Target 'PinkhaAnyIntegration' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'PinkhaKit' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'PinkhaAnyEngine' in project 'HierarchyRawTitleProof'
+info: Target 'PinkhaAnyEngine' in project 'HierarchyRawTitleProof' (no dependencies)
+info: Target 'PinkhaKit' in project 'HierarchyRawTitleProof'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'HierarchyRawTitleProof'
+info: Target 'TorahInspectorCore' in project 'HierarchyRawTitleProof' (no dependencies)
+Gather provisioning inputs
+Planning complete
+[Pre-planning 1 / 182]
+Discovering version info for clang
+Discovering version info for swiftc
+Discovering version info for ld
+[Planning deferred tasks]
+Create build description
+Build description signature: ddf0cbd7c2d2099759650fd31481c4ccf8389e131d73b69e1cce0fe6d8c18675
+Build description path: /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/XCBuildData/ddf0cbd7c2d2099759650fd31481c4ccf8389e131d73b69e1cce0fe6d8c18675.xcbuilddata
+Create build directory $(TARGET_BUILD_DIR)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products
+
+Create build directory $(DERIVED_DATA_DIR)/SDKExplicitPrecompiledModules
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/SDKExplicitPrecompiledModules
+
+Create build directory $(DERIVED_DATA_DIR)/PCH
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/PCH
+
+Create build directory $(TARGET_BUILD_DIR)/Debug-linux-aarch64
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64
+
+Create build directory $(DERIVED_DATA_DIR)/ModuleCache.noindex
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex
+
+Create build directory $(OBJROOT)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex
+
+Create build directory $(TARGET_BUILD_DIR)/Debug-linux-aarch64/PackageFrameworks
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PackageFrameworks
+
+Create build directory $(DERIVED_DATA_DIR)/CompilationCache.noindex
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/CompilationCache.noindex
+
+Create build directory $(OBJROOT)/SwiftExplicitPrecompiledModules
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+Create build directory $(OBJROOT)/ExplicitPrecompiledModules
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/ExplicitPrecompiledModules
+
+Create build directory $(OBJROOT)/EagerLinkingTBDs/Debug-linux-aarch64
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-create-build-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/EagerLinkingTBDs/Debug-linux-aarch64
+
+Write TorahInspectorCore.modulemap
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/TorahInspectorCore.modulemap
+
+Write TorahInspectorCore_const_extract_protocols.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore_const_extract_protocols.json
+
+Write TorahInspectorCore.SwiftFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.SwiftFileList
+
+Write TorahInspectorCore.LinkFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.LinkFileList
+
+Write TorahInspectorCore-OutputFileMap.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-OutputFileMap.json
+
+[17 / 87] TorahInspectorCore
+Write PinkhaKit.modulemap
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/PinkhaKit.modulemap
+
+Write PinkhaKit_const_extract_protocols.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit_const_extract_protocols.json
+
+Write PinkhaKit.SwiftFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit.SwiftFileList
+
+Write PinkhaKit.LinkFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit.LinkFileList
+
+Write PinkhaKit-OutputFileMap.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit-OutputFileMap.json
+
+Copy TorahInspectorCore.modulemap
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/TorahInspectorCore.modulemap /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64
+
+Copy PinkhaKit.modulemap
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/PinkhaKit.modulemap /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64
+
+Write PinkhaAnyIntegrationTests-test-runner_const_extract_protocols.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner_const_extract_protocols.json
+
+Write PinkhaAnyIntegrationTests-test-runner.SwiftFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner.SwiftFileList
+
+Write PinkhaAnyIntegrationTests-test-runner.LinkFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner.LinkFileList
+
+Write PinkhaAnyIntegrationTests-test-runner-OutputFileMap.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner-OutputFileMap.json
+
+Write PinkhaAnyIntegrationTests_const_extract_protocols.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests_const_extract_protocols.json
+
+Write PinkhaAnyIntegrationTests.SwiftFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests.SwiftFileList
+
+Write PinkhaAnyIntegrationTests.LinkFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests.LinkFileList
+
+Write PinkhaAnyIntegrationTests-OutputFileMap.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-OutputFileMap.json
+
+Write test_anchor.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/DerivedSources/test_anchor.swift
+
+Write PinkhaAnyIntegration.modulemap
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/PinkhaAnyIntegration.modulemap
+
+Write PinkhaAnyIntegration_const_extract_protocols.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration_const_extract_protocols.json
+
+Write PinkhaAnyIntegration.SwiftFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration.SwiftFileList
+
+Write PinkhaAnyIntegration-OutputFileMap.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration-OutputFileMap.json
+
+Write PinkhaAnyIntegration.LinkFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration.LinkFileList
+
+Copy PinkhaAnyIntegration.modulemap
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/PinkhaAnyIntegration.modulemap /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64
+
+Write PinkhaAnyEngine.modulemap
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/PinkhaAnyEngine.modulemap
+
+Write PinkhaAnyEngine.SwiftFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine.SwiftFileList
+
+Write PinkhaAnyEngine_const_extract_protocols.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine_const_extract_protocols.json
+
+Write PinkhaAnyEngine.LinkFileList (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine.LinkFileList
+
+Write PinkhaAnyEngine-OutputFileMap.json (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    write-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine-OutputFileMap.json
+
+Copy PinkhaAnyEngine.modulemap
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/PinkhaAnyEngine.modulemap /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64
+
+Planning Swift module PinkhaAnyEngine (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyEngine -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/Modules/PinkhaAnyEngine.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Planning Swift module TorahInspectorCore (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCore -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Compile
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    
+
+Emitting module for PinkhaAnyEngine
+[49 / 95] TorahInspectorCore
+Discovering Swift tasks after 'Emitting module for PinkhaAnyEngine'
+Compile
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    
+
+Emitting module for TorahInspectorCore
+Discovering Swift tasks after 'Emitting module for TorahInspectorCore'
+Compile TorahReaderScrollStateMachine.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahReaderScrollStateMachine.swift
+
+Compile TorahRelatedDocumentsAccessError.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahRelatedDocumentsAccessError.swift
+
+Compile TorahSourceTransfer.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahSourceTransfer.swift
+
+Compile TorahToolSelectorStateMachine.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahToolSelectorStateMachine.swift
+
+Compiling TorahReaderScrollStateMachine.swift, TorahRelatedDocumentsAccessError.swift, TorahSourceTransfer.swift, TorahToolSelectorStateMachine.swift
+[50 / 95] TorahInspectorCore
+Unblock downstream dependents of TorahInspectorCore (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCore -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Unblock downstream dependents of PinkhaAnyEngine (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyEngine -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/Modules/PinkhaAnyEngine.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling TorahReaderScrollStateMachine.swift, TorahRelatedDocumentsAccessError.swift, TorahSourceTransfer.swift, TorahToolSelectorStateMachine.swift'
+Compile Models.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile Models.swift
+
+Compile ProviderProtocols.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile ProviderProtocols.swift
+
+Compile TorahInspectorCoordinator.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahInspectorCoordinator.swift
+
+Compile TorahInspectorRepository.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahInspectorRepository.swift
+
+Compiling Models.swift, ProviderProtocols.swift, TorahInspectorCoordinator.swift, TorahInspectorRepository.swift
+Merge Objective-C generated interface headers
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-swiftHeaderTool -single -arch aarch64 /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-Swift.h -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64/TorahInspectorCore-Swift.h
+
+Copy TorahInspectorCore.swiftmodule (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftmodule /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorCore.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy TorahInspectorCore.swiftdoc (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftdoc /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorCore.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy TorahInspectorCore.swiftsourceinfo (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftsourceinfo /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorCore.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Merge Objective-C generated interface headers
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-swiftHeaderTool -single -arch aarch64 /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine-Swift.h -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64/PinkhaAnyEngine-Swift.h
+
+Copy PinkhaAnyEngine.swiftmodule (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/Modules/PinkhaAnyEngine.swiftmodule /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyEngine.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy PinkhaAnyEngine.swiftdoc (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/Modules/PinkhaAnyEngine.swiftdoc /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyEngine.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy PinkhaAnyEngine.swiftsourceinfo (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/Modules/PinkhaAnyEngine.swiftsourceinfo /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyEngine.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Discovering Swift tasks after 'Compiling Models.swift, ProviderProtocols.swift, TorahInspectorCoordinator.swift, TorahInspectorRepository.swift'
+Compile AnyNativeFileUploadStaging.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyNativeFileUploadStaging.swift
+
+Compile AnyNativeFileUploader.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyNativeFileUploader.swift
+
+Compile AnyObjectCreationUncertain.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyObjectCreationUncertain.swift
+
+Compile AnySSEParser.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnySSEParser.swift
+
+Compile AnyTorahClaimsRepository.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyTorahClaimsRepository.swift
+
+Compile AnyTorahLiveQuery.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyTorahLiveQuery.swift
+
+Compile AnyTorahOperation.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyTorahOperation.swift
+
+Compiling AnyNativeFileUploadStaging.swift, AnyNativeFileUploader.swift, AnyObjectCreationUncertain.swift, AnySSEParser.swift, AnyTorahClaimsRepository.swift, AnyTorahLiveQuery.swift, AnyTorahOperation.swift
+[62 / 96] TorahInspectorCore
+Discovering Swift tasks after 'Compiling AnyNativeFileUploadStaging.swift, AnyNativeFileUploader.swift, AnyObjectCreationUncertain.swift, AnySSEParser.swift, AnyTorahClaimsRepository.swift, AnyTorahLiveQuery.swift, AnyTorahOperation.swift'
+Wrapping Swift module TorahInspectorCore
+Discovering Swift tasks after 'Wrapping Swift module TorahInspectorCore'
+Compile TorahInspectorCore (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCore -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Link TorahInspectorCore.o (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/clang -target aarch64-unknown-linux-gnu -r --sysroot / -O0 @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.LinkFileList -nostdlib -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorCore.o
+
+[65 / 96]
+Planning Swift module PinkhaKit (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaKit -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/Modules/PinkhaKit.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Compile AnyGuardedTorahClaimsRepository.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyGuardedTorahClaimsRepository.swift
+
+Compile AnyGuardedTorahContract.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyGuardedTorahContract.swift
+
+Compile AnyGuardedTorahOperationRead.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyGuardedTorahOperationRead.swift
+
+Compile AnyHTTPClient.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHTTPClient.swift
+
+Compile AnyJSON.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyJSON.swift
+
+Compile AnyLiveQuery.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyLiveQuery.swift
+
+Compile AnyNativeFileDurability.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyNativeFileDurability.swift
+
+Compile AnyNativeFileUploadResponse.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyNativeFileUploadResponse.swift
+
+Compiling AnyGuardedTorahClaimsRepository.swift, AnyGuardedTorahContract.swift, AnyGuardedTorahOperationRead.swift, AnyHTTPClient.swift, AnyJSON.swift, AnyLiveQuery.swift, AnyNativeFileDurability.swift, AnyNativeFileUploadResponse.swift
+[68 / 100] PinkhaKit
+Discovering Swift tasks after 'Compiling AnyGuardedTorahClaimsRepository.swift, AnyGuardedTorahContract.swift, AnyGuardedTorahOperationRead.swift, AnyHTTPClient.swift, AnyJSON.swift, AnyLiveQuery.swift, AnyNativeFileDurability.swift, AnyNativeFileUploadResponse.swift'
+Compile
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    
+
+Emitting module for PinkhaKit
+[69 / 101] PinkhaKit
+Discovering Swift tasks after 'Emitting module for PinkhaKit'
+Compile PinkhaHierarchyBuilder.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile PinkhaHierarchyBuilder.swift
+
+Compile PinkhaHierarchyModels.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile PinkhaHierarchyModels.swift
+
+Compile PinkhaHierarchyMutationValidator.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile PinkhaHierarchyMutationValidator.swift
+
+Compile PinkhaHierarchyOrdering.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile PinkhaHierarchyOrdering.swift
+
+Compile PinkhaSemanticTextAnchor.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile PinkhaSemanticTextAnchor.swift
+
+Compile TorahAssociationIdentity.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahAssociationIdentity.swift
+
+Compiling PinkhaHierarchyBuilder.swift, PinkhaHierarchyModels.swift, PinkhaHierarchyMutationValidator.swift, PinkhaHierarchyOrdering.swift, PinkhaSemanticTextAnchor.swift, TorahAssociationIdentity.swift
+[70 / 101] PinkhaKit
+Unblock downstream dependents of PinkhaKit (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaKit -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/Modules/PinkhaKit.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling PinkhaHierarchyBuilder.swift, PinkhaHierarchyModels.swift, PinkhaHierarchyMutationValidator.swift, PinkhaHierarchyOrdering.swift, PinkhaSemanticTextAnchor.swift, TorahAssociationIdentity.swift'
+Wrapping Swift module PinkhaAnyEngine
+Discovering Swift tasks after 'Wrapping Swift module PinkhaAnyEngine'
+Merge Objective-C generated interface headers
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-swiftHeaderTool -single -arch aarch64 /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit-Swift.h -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64/PinkhaKit-Swift.h
+
+Copy PinkhaKit.swiftmodule (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/Modules/PinkhaKit.swiftmodule /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaKit.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy PinkhaKit.swiftdoc (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/Modules/PinkhaKit.swiftdoc /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaKit.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy PinkhaKit.swiftsourceinfo (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/Modules/PinkhaKit.swiftsourceinfo /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaKit.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Compile PinkhaAnyEngine (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyEngine -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/Modules/PinkhaAnyEngine.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Link PinkhaAnyEngine.o (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/clang -target aarch64-unknown-linux-gnu -r --sysroot / -O0 @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyEngine-t.build/Objects-normal/aarch64/PinkhaAnyEngine.LinkFileList -nostdlib -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyEngine.o
+
+[77 / 101] PinkhaAnyIntegration
+Planning Swift module PinkhaAnyIntegration (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyIntegration -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegration.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Compile TorahAssociationModels.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahAssociationModels.swift
+
+Compile TorahAssociationPayloadCodec.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahAssociationPayloadCodec.swift
+
+Compile TorahAssociationRepository.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahAssociationRepository.swift
+
+Compile TorahCanonicalAssociations.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahCanonicalAssociations.swift
+
+Compile TorahSemanticAnchorAssociation.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahSemanticAnchorAssociation.swift
+
+Compile TorahSourceJSONGuard.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile TorahSourceJSONGuard.swift
+
+Compiling TorahAssociationModels.swift, TorahAssociationPayloadCodec.swift, TorahAssociationRepository.swift, TorahCanonicalAssociations.swift, TorahSemanticAnchorAssociation.swift, TorahSourceJSONGuard.swift
+[80 / 105] PinkhaAnyIntegration
+Discovering Swift tasks after 'Compiling TorahAssociationModels.swift, TorahAssociationPayloadCodec.swift, TorahAssociationRepository.swift, TorahCanonicalAssociations.swift, TorahSemanticAnchorAssociation.swift, TorahSourceJSONGuard.swift'
+Compile
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    
+
+Emitting module for PinkhaAnyIntegration
+[81 / 106] PinkhaKit
+Discovering Swift tasks after 'Emitting module for PinkhaAnyIntegration'
+Wrapping Swift module PinkhaKit
+Discovering Swift tasks after 'Wrapping Swift module PinkhaKit'
+Unblock downstream dependents of PinkhaAnyIntegration (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyIntegration -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegration.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Compile AnyHeartNativeStoreContext.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHeartNativeStoreContext.swift
+
+Compile AnyHierarchyArchiveRequest.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHierarchyArchiveRequest.swift
+
+Compile AnyHierarchyModels.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHierarchyModels.swift
+
+Compile AnyHierarchyRepository.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHierarchyRepository.swift
+
+Compile AnyLexicographicPosition.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyLexicographicPosition.swift
+
+Compile AnyNativeDocumentPolicy.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyNativeDocumentPolicy.swift
+
+Compile AnyTorahSemanticAnchorMigration.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyTorahSemanticAnchorMigration.swift
+
+Compile AnyTorahSourceJSONGuard.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyTorahSourceJSONGuard.swift
+
+Compile AnyTorahWorkspace.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyTorahWorkspace.swift
+
+Compiling AnyHeartNativeStoreContext.swift, AnyHierarchyArchiveRequest.swift, AnyHierarchyModels.swift, AnyHierarchyRepository.swift, AnyLexicographicPosition.swift, AnyNativeDocumentPolicy.swift, AnyTorahSemanticAnchorMigration.swift, AnyTorahSourceJSONGuard.swift, AnyTorahWorkspace.swift
+[84 / 106] PinkhaAnyIntegration
+Merge Objective-C generated interface headers
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-swiftHeaderTool -single -arch aarch64 /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration-Swift.h -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64/PinkhaAnyIntegration-Swift.h
+
+Copy PinkhaAnyIntegration.swiftmodule (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegration.swiftmodule /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegration.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy PinkhaAnyIntegration.swiftdoc (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegration.swiftdoc /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegration.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy PinkhaAnyIntegration.swiftsourceinfo (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegration.swiftsourceinfo /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegration.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Compile PinkhaKit (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaKit -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/Modules/PinkhaKit.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling AnyHeartNativeStoreContext.swift, AnyHierarchyArchiveRequest.swift, AnyHierarchyModels.swift, AnyHierarchyRepository.swift, AnyLexicographicPosition.swift, AnyNativeDocumentPolicy.swift, AnyTorahSemanticAnchorMigration.swift, AnyTorahSourceJSONGuard.swift, AnyTorahWorkspace.swift'
+Link PinkhaKit.o (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/clang -target aarch64-unknown-linux-gnu -r --sysroot / -O0 @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaKit-t.build/Objects-normal/aarch64/PinkhaKit.LinkFileList -nostdlib -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaKit.o
+
+[89 / 106] PinkhaKit
+Planning Swift module PinkhaAnyIntegrationTests (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyIntegrationTests -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegrationTests.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Compile
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    
+
+Emitting module for PinkhaAnyIntegrationTests
+[92 / 110] PinkhaAnyIntegrationTests-product
+Discovering Swift tasks after 'Emitting module for PinkhaAnyIntegrationTests'
+Compile test_anchor.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile test_anchor.swift
+
+Compiling test_anchor.swift
+Unblock downstream dependents of PinkhaAnyIntegrationTests (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyIntegrationTests -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegrationTests.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling test_anchor.swift'
+[94 / 110] PinkhaAnyIntegrationTests-product
+Compile AnyHierarchyTests.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHierarchyTests.swift
+
+Compiling AnyHierarchyTests.swift
+[95 / 110] PinkhaAnyIntegrationTests-product
+Copy PinkhaAnyIntegrationTests.swiftmodule (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegrationTests.swiftmodule /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy PinkhaAnyIntegrationTests.swiftdoc (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegrationTests.swiftdoc /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy PinkhaAnyIntegrationTests.swiftsourceinfo (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegrationTests.swiftsourceinfo /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Discovering Swift tasks after 'Compiling AnyHierarchyTests.swift'
+Wrapping Swift module PinkhaAnyIntegrationTests
+Discovering Swift tasks after 'Wrapping Swift module PinkhaAnyIntegrationTests'
+Compile PinkhaAnyIntegrationTests (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyIntegrationTests -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegrationTests.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Extract autolink entries for 'PinkhaAnyIntegrationTests'
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-autolink-extract /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/test_anchor.o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/AnyHierarchyTests.o -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-swiftbuild.autolink
+
+Compile AnyConditionalPropertyFence.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyConditionalPropertyFence.swift
+
+Compile AnyGuardedHTTPHierarchyRecordStore.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyGuardedHTTPHierarchyRecordStore.swift
+
+Compile AnyHTTPHierarchyRecordStore.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHTTPHierarchyRecordStore.swift
+
+Compile AnyHeartInlineProjection.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHeartInlineProjection.swift
+
+Compile AnyHeartNativeBundledDefinition.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHeartNativeBundledDefinition.swift
+
+Compile AnyHeartNativeCompiledRelation.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHeartNativeCompiledRelation.swift
+
+Compile AnyHeartNativeDefinitionCatalog.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHeartNativeDefinitionCatalog.swift
+
+Compile AnyHeartNativeRecoveredDefinitions.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHeartNativeRecoveredDefinitions.swift
+
+Compile AnyHeartNativeSnapshotView.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHeartNativeSnapshotView.swift
+
+Compile AnyHeartNativeSpaceBundle.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile AnyHeartNativeSpaceBundle.swift
+
+Compiling AnyConditionalPropertyFence.swift, AnyGuardedHTTPHierarchyRecordStore.swift, AnyHTTPHierarchyRecordStore.swift, AnyHeartInlineProjection.swift, AnyHeartNativeBundledDefinition.swift, AnyHeartNativeCompiledRelation.swift, AnyHeartNativeDefinitionCatalog.swift, AnyHeartNativeRecoveredDefinitions.swift, AnyHeartNativeSnapshotView.swift, AnyHeartNativeSpaceBundle.swift
+[100 / 111] PinkhaAnyIntegration
+Discovering Swift tasks after 'Compiling AnyConditionalPropertyFence.swift, AnyGuardedHTTPHierarchyRecordStore.swift, AnyHTTPHierarchyRecordStore.swift, AnyHeartInlineProjection.swift, AnyHeartNativeBundledDefinition.swift, AnyHeartNativeCompiledRelation.swift, AnyHeartNativeDefinitionCatalog.swift, AnyHeartNativeRecoveredDefinitions.swift, AnyHeartNativeSnapshotView.swift, AnyHeartNativeSpaceBundle.swift'
+Wrapping Swift module PinkhaAnyIntegration
+Discovering Swift tasks after 'Wrapping Swift module PinkhaAnyIntegration'
+Compile PinkhaAnyIntegration (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyIntegration -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegration.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration-Swift.h -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Link PinkhaAnyIntegration.o (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/clang -target aarch64-unknown-linux-gnu -r --sysroot / -O0 @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegration-t.build/Objects-normal/aarch64/PinkhaAnyIntegration.LinkFileList -nostdlib -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegration.o
+
+Link PinkhaAnyIntegrationTests.so (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -target aarch64-unknown-linux-gnu -emit-library -L/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/EagerLinkingTBDs/Debug-linux-aarch64 -L/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests.LinkFileList -Xlinker -soname -Xlinker PinkhaAnyIntegrationTests.so -Xlinker -rpath -Xlinker \$ORIGIN -Xlinker -rpath -Xlinker /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PackageFrameworks -Xlinker -rpath -Xlinker \$ORIGIN/Frameworks -Xlinker -rpath -Xlinker \$ORIGIN/../Frameworks -Xlinker --gc-sections -Xclang-linker -rdynamic -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -L/usr/lib/swift @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-swiftbuild.autolink /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-objects/Crypto.o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-objects/CryptoBoringWrapper.o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-objects/CCryptoBoringSSL.o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-objects/CCryptoBoringSSLShims.o -lstdc++ -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests.so
+
+[104 / 112] PinkhaAnyIntegrationTests-product
+Generate entry point for PinkhaAnyIntegrationTests-test-runner
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-generateTestEntryPoint --output /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/DerivedSources/test_entry_point.swift --discover-tests --linker-file-list-format unixShellQuotedNewlineSeparated --index-store-library-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/libIndexStore.so --linker-filelist /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-p.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests.LinkFileList --index-store /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out --index-unit-base-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex --test-anchor-module PinkhaAnyIntegrationTests
+
+Planning Swift module PinkhaAnyIntegrationTests_test_runner (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -module-name PinkhaAnyIntegrationTests_test_runner -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -parse-as-library -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegrationTests_test_runner.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Compile
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    
+
+Emitting module for PinkhaAnyIntegrationTests_test_runner
+[108 / 115] PinkhaAnyIntegrationTests-test-runner
+Discovering Swift tasks after 'Emitting module for PinkhaAnyIntegrationTests_test_runner'
+Unblock downstream dependents of PinkhaAnyIntegrationTests-test-runner (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -module-name PinkhaAnyIntegrationTests_test_runner -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -parse-as-library -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegrationTests_test_runner.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Copy PinkhaAnyIntegrationTests_test_runner.swiftdoc (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegrationTests_test_runner.swiftdoc /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests_test_runner.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy PinkhaAnyIntegrationTests_test_runner.swiftmodule (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegrationTests_test_runner.swiftmodule /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests_test_runner.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy PinkhaAnyIntegrationTests_test_runner.swiftsourceinfo (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegrationTests_test_runner.swiftsourceinfo /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests_test_runner.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Compile test_entry_point.swift
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-SwiftPerFileCompile test_entry_point.swift
+
+Compiling test_entry_point.swift
+[112 / 115] PinkhaAnyIntegrationTests-test-runner
+Discovering Swift tasks after 'Compiling test_entry_point.swift'
+Wrapping Swift module PinkhaAnyIntegrationTests_test_runner
+Discovering Swift tasks after 'Wrapping Swift module PinkhaAnyIntegrationTests_test_runner'
+Compile PinkhaAnyIntegrationTests-test-runner (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -module-name PinkhaAnyIntegrationTests_test_runner -Onone @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include -Xcc -fmodule-map-file\=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 -parse-as-library -c -j2 -enable-batch-mode -incremental -output-file-map /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaAnyIntegrationTests_test_runner.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner_const_extract_protocols.json -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/DerivedSources-normal/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/DerivedSources/aarch64 -Xcc -I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127 -experimental-emit-module-separately -disable-cmo
+
+Extract autolink entries for 'PinkhaAnyIntegrationTests_test_runner'
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-autolink-extract /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/test_entry_point.o -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests_test_runner-swiftbuild.autolink
+
+Link PinkhaAnyIntegrationTests-test-runner (aarch64)
+    cd /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/component
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -target aarch64-unknown-linux-gnu -emit-executable -L/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/EagerLinkingTBDs/Debug-linux-aarch64 -L/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64 @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests-test-runner.LinkFileList -Xlinker -rpath -Xlinker \$ORIGIN -Xlinker -rpath -Xlinker /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PackageFrameworks -Xlinker --gc-sections -Xclang-linker -rdynamic -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -L/usr/lib/swift @/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner.build/Objects-normal/aarch64/PinkhaAnyIntegrationTests_test_runner-swiftbuild.autolink /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-objects/Crypto.o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-objects/CryptoBoringWrapper.o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-objects/CCryptoBoringSSL.o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-objects/CCryptoBoringSSLShims.o -lstdc++ /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests.so -o /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner
+
+[116 / 116] PinkhaAnyIntegrationTests-test-runner
+Prune stale explicit modules at /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/ExplicitPrecompiledModules
+Prune stale explicit modules at /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules
+Prune stale explicit modules at /mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/build/out/SDKExplicitPrecompiledModules
+Build complete! (35.88 secs)

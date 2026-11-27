@@ -1,0 +1,18 @@
+{
+  "schema": "pinkha-readonly-qualifier-source-inverse/v1",
+  "before": {
+    "bytes": 11440,
+    "sha256": "9c8eb26302a43daa4e314caffad6553e1310fa885d9bcd429a3c4c677fe7bd0e"
+  },
+  "after": {
+    "bytes": 11553,
+    "sha256": "b5765a996f978b7b101f22c6c2744a7ec135d8e6a730fef2707ae00e0a9df30f"
+  },
+  "operation": {
+    "old": "    assert entry['alias'] == expected['recordedHistoricalAliasPath']\n",
+    "new": "    alias_key = 'actualOriginalPackageLinkerPath' if expected['kind'] == 'aggregated-link-object' else 'recordedHistoricalAliasPath'\n    assert entry['alias'] == expected[alias_key]\n",
+    "count": 1
+  },
+  "fullReverse": true,
+  "reason": "Four aggregate objects use actualOriginalPackageLinkerPath; all 98 other original copy rows use recordedHistoricalAliasPath. No original evidence was edited or test replayed."
+}

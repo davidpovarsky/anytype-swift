@@ -1,0 +1,106 @@
+{
+  "schema": "wave2-hierarchy-actual-result-summary-v1",
+  "status": "ACTUAL_FOUR_METHODS_EIGHT_CASES_PASS_LINUX_COMPONENT_ONLY",
+  "productCommit": "9e4aa3f1b88d8f6bfec27cdf2cb47d07ffd416ce",
+  "preparationCommit": "8b70497157758f3ae8148842f1236d215d6d2d50",
+  "receipt": {
+    "bytes": 283810,
+    "sha256": "42d6a0b7b5bd09bf253fcabb814120397da615fc6db8647b633c4ba677cf8266",
+    "gitBlob": "d81a354ecae6be6876e6c24e92118f36e26ded5d"
+  },
+  "originalFiles": 10,
+  "originalBytes": 561482,
+  "tests": {
+    "methods": [
+      "canonicallyEquivalentRequestedRenameReachesTheOriginalStore",
+      "canonicallyEquivalentStaleExpectedTitleRefusesBeforeDispatch",
+      "canonicallyEquivalentSuccessfulReadbackCannotCertifyRename",
+      "canonicallyEquivalentReadbackPreservesTheOriginalWriteError"
+    ],
+    "actualMethodCount": 4,
+    "actualArgumentCases": 8,
+    "oldMethodsExecuted": 0,
+    "XCTestCases": 0,
+    "HTTPFixturesInvoked": 0
+  },
+  "timingsSeconds": {
+    "wholeJob": 45.51,
+    "runner": 44.842,
+    "build": 35.88,
+    "selectedTests": 0.012
+  },
+  "sourceAndCompilerScope": {
+    "all56PackageAndWholeSourcePinsLocalBeforeAfterFinalEqual": true,
+    "wholeSwiftBodies": 55,
+    "sourceBodiesRewritten": 0
+  },
+  "compilerWitness": {
+    "actualDriverModules": 6,
+    "completeOriginalInputObjects": 55,
+    "exactGeneratedInputObjects": 2,
+    "allSourceListsAndInputObjectHashesLinked": true,
+    "allActualWorkingDirectories": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127",
+    "allActualJobs": 2,
+    "actualTarget": "aarch64-unknown-linux-gnu",
+    "testingLibraryVersion": "6.4.3 (ba0861fb203553c)",
+    "buildSeconds": 35.88
+  },
+  "resourcesAreHistoricalOnly": {
+    "samples": 45,
+    "maximumSampledOwnedBytes": 145113088,
+    "minimumRootFreeBytes": 2332925952,
+    "minimumDevelopmentFreeBytes": 1709158400,
+    "minimumSampledMemAvailableBytes": 3756175360,
+    "everySampleWithinOriginalBounds": true,
+    "dependencyRecords": 102,
+    "dependencyPayloadBytes": 19775715,
+    "fullDependencyIdentityReview": "Independent Editor peer review; root confirms count/payload and frozen original runner qualification."
+  },
+  "stderr": {
+    "bytes": 146679,
+    "sha256": "b0014ec10c3dc09948ae103395f360fe4aef4952d945208ad3fde1a26f402235",
+    "warningLineCount": 1,
+    "warningPrefix": "warning: 'component': /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-frontend -frontend -c -primary-file /mnt/development/projects/ev",
+    "warningFreeBuildClaim": false
+  },
+  "closedGroup": {
+    "originalObservation": {
+      "atUTC": "2026-11-27T21:17:08.879198+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 2428255,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "permanentlyHistorical": true,
+    "mustNeverProbeOrSignalAgain": true
+  },
+  "reviews": {
+    "root": {
+      "bytes": 2950,
+      "sha256": "11b58d051bd8da9203fb693d38887a209de92cc5dc553159cf8ebb7eff6be83e",
+      "gitBlob": "486ebcc38c68085e22d3acab357e0c010ca62f60"
+    },
+    "peer": {
+      "bytes": 22547,
+      "sha256": "2b5b3c884d3756e64a37baf002db7916304dd581fcd1b4ca3b86d806f09013e2",
+      "gitBlob": "734e81b468f19984ed83137c996fac6579b1bcdb"
+    }
+  },
+  "newPacketOperations": {
+    "hostCalls": 0,
+    "processQueries": 0,
+    "signals": 0,
+    "collectorOrRunnerInvocations": 0,
+    "compilerOrTestInvocations": 0,
+    "sourceOrOriginalReceiptChanges": 0,
+    "gitWrites": 0
+  },
+  "scopeLimits": [
+    "Original controlled-store hierarchy component only",
+    "No Native, HTTP, App, UI, device or whole-source Apple acceptance",
+    "Later Bookmark creator-override sources are outside this compiled envelope",
+    "No new runtime window or current capacity admission",
+    "Source/controller/control preparation and earlier findings remain unchanged in ancestor8b704"
+  ]
+}

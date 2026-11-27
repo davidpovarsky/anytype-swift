@@ -22,10 +22,38 @@ public struct AnyLibraryBinItem: Identifiable, Sendable, Equatable {
     public let isFolder: Bool
 }
 
+public struct AnyLibraryBookmarkCreation: Sendable {
+    public let binding: AnyNativeBookmarkCreationBinding
+    public let frame: AnyNativeBookmarkCreationFrame
+    public let intent: AnyNativeObjectCreationIntent
+}
+
+/// Uses the unchanged hierarchy repository for parent/membership validation and
+/// readback, and the same application-owned native creator/journal for dispatch.
+private struct AnyLibraryBookmarkCreator: AnyHierarchyObjectCreating {
+    let objects: AnyNativeObjectCreator
+    let request: AnyLibraryBookmarkCreation
+    var workspace: AnyTorahWorkspace { request.intent.workspace }
+
+    func ensureHierarchyObject(plan: AnyHierarchyCreationPlan,
+                               authorize: @escaping @Sendable () async throws -> Void) async throws -> String {
+        guard plan.workspace == workspace, objects.workspace == workspace,
+              plan.typeID == request.intent.typeID, plan.kind == .writingDocument,
+              let url = request.intent.initialProperties[request.binding.sourceURLKey.ownerID]?[request.binding.sourceURLKey.propertyID]?.string else {
+            throw AnyNativeCreationError.invalidIntent
+        }
+        let expected = try request.binding.makeIntent(frame: request.frame, mutationID: plan.mutationID,
+            collections: plan.collections, initialProperties: plan.initialProperties, sourceURL: url)
+        guard expected.fingerprint == request.intent.fingerprint else { throw AnyNativeCreationError.contentConflict }
+        return try await objects.ensureObject(request.intent, authorize: authorize)
+    }
+}
+
 public struct AnyLibraryPendingCreation: Identifiable, Sendable {
     public var id: String { plan.mutationID }
     public let plan: AnyHierarchyCreationPlan
     public let isNote: Bool
+    public var bookmark: AnyLibraryBookmarkCreation? = nil
     public var error: String?
     public var confirmedObjectID: String?
 }
@@ -41,6 +69,7 @@ public final class AnyLibraryPresentation {
     public private(set) var pendingRestores: Set<String> = []
     public private(set) var searchResults: [AnyLibraryDocument] = []
     public private(set) var pendingCreations: [AnyLibraryPendingCreation] = []
+    public private(set) var bookmarkTypes: [AnyNativePropertyOwner] = []
     public private(set) var pendingMoves: Set<String> = []
     public private(set) var isLoading = false
     public private(set) var isSearching = false
@@ -133,10 +162,13 @@ public final class AnyLibraryPresentation {
                 let value = try await repository.snapshot()
                 try await lease.validate(); return value
             }
+            let availableBookmarks = try await availableBookmarkTypes(in: catalog, expected: expected)
             try validate(expected)
+            guard hierarchyPresentation.isCurrent(feed) else { return }
             self.store = store; self.repository = repository
             self.propertyCatalogStore = properties; self.creationWorkflow = workflow
             self.eligibleDocumentTypeIDs = eligible
+            bookmarkTypes = availableBookmarks
             self.knownDocumentTypeIDs = Set(catalog.types.map(\.id))
                 .union(snapshot.nativeRows.values.compactMap { $0["any"]?["type"]?.string })
             marker = configuration.1; operations = configuration.2; canWrite = configuration.3
@@ -208,13 +240,112 @@ public final class AnyLibraryPresentation {
         } catch { message = AnyUIErrorText.describe(error) }
     }
 
+    public func createBookmark(typeID: String, sourceURL: String, parentID: String?) async {
+        guard lifetime.isActive, canWrite, !Task.isCancelled,
+              bookmarkTypes.contains(where: { $0.id.utf8.elementsEqual(typeID.utf8) }),
+              let properties = propertyCatalogStore, let repository else { return }
+        let expected = epoch
+        do {
+            let objects = objects, authorize = authorization(expected)
+            let prepared = try await session.perform { lease in
+                let readAuthorization: @Sendable () async throws -> Void = {
+                    try Task.checkCancellation()
+                    try await lease.validate()
+                    try await authorize()
+                }
+                try await readAuthorization()
+                let binding = try await properties.bookmarkCreationBinding(typeID: typeID, lease: lease)
+                // Native object creation does not fetch website metadata. Keep
+                // Name empty; the original Rename/Properties control owns it.
+                let plan = try await repository.prepareCreation(typeID: typeID, title: "",
+                    kind: .writingDocument, parentID: parentID)
+                try await readAuthorization()
+                let reader = try await objects.makeBookmarkCreationFrameReader()
+                let frame = try await reader.frame(typeID: typeID, collections: plan.collections,
+                                                    authorizeRead: readAuthorization)
+                let intent = try binding.makeIntent(frame: frame, mutationID: plan.mutationID,
+                    collections: plan.collections, initialProperties: plan.initialProperties, sourceURL: sourceURL)
+                try await readAuthorization()
+                return (plan, AnyLibraryBookmarkCreation(binding: binding, frame: frame, intent: intent))
+            }
+            try validate(expected)
+            try Task.checkCancellation()
+            // Retain the original native frame and intent before any object
+            // dispatch. An uncertain retry must never read a replacement frame.
+            pendingCreations.append(.init(plan: prepared.0, isNote: false, bookmark: prepared.1))
+            await retryCreation(prepared.0.mutationID)
+        } catch {
+            guard epoch == expected, lifetime.isActive, !Task.isCancelled else { return }
+            message = AnyUIErrorText.describe(error)
+        }
+    }
+
+    private func createBookmark(_ pending: AnyLibraryPendingCreation,
+                                request: AnyLibraryBookmarkCreation, expected: UUID) async throws -> AnyHierarchyItem {
+        guard !pending.isNote, pending.plan.kind == .writingDocument,
+              canWrite, let repository, let properties = propertyCatalogStore else {
+            throw AnyNativePropertyError.readOnly
+        }
+        let creator = AnyLibraryBookmarkCreator(objects: objects, request: request)
+        let client = client, authorize = authorization(expected)
+        return try await session.perform { lease in
+            let currentAuthorization: @Sendable () async throws -> Void = {
+                try await lease.validate()
+                try await authorize()
+                let binding = try await properties.bookmarkCreationBinding(typeID: request.binding.typeID, lease: lease)
+                try request.binding.requireMatching(binding)
+                let member = try await client.requestJSON(method: "GET",
+                    path: ["v1", "spaces", lease.workspace.spaceID, "members", "me"],
+                    authorize: { try await lease.validate(); try await authorize() })
+                try AnyHTTPTorahTargetAccess.validateMember(member, workspace: lease.workspace, intent: .write)
+                try Task.checkCancellation()
+                try await lease.validate()
+                try await authorize()
+            }
+            let item = try await repository.create(pending.plan, using: creator, authorize: currentAuthorization)
+            let snapshot = try await properties.read(objectID: item.objectID, lease: lease)
+            try request.binding.requireCreated(snapshot, intent: request.intent,
+                                                objectID: item.objectID, policy: properties.policy)
+            try await currentAuthorization()
+            return item
+        }
+    }
+
+    /// Availability is a current native observation. Submission still reads a
+    /// genuine definition frame and the creator rechecks its original authority.
+    private func availableBookmarkTypes(in catalog: AnyNativePropertyCatalog,
+                                        expected: UUID) async throws -> [AnyNativePropertyOwner] {
+        let candidates = catalog.selectableDocumentTypes.filter(AnyNativeBookmarkCreationBinding.isCandidate)
+        guard !candidates.isEmpty else { return [] }
+        let client = client, authorize = authorization(expected)
+        return try await session.perform { lease in
+            guard catalog.workspace == lease.workspace, catalog.generation == lease.generation,
+                  catalog.engineStartedAt == lease.engineStartedAt else { throw AnyHostError.wrongWorkspace }
+            let readAuthorization: @Sendable () async throws -> Void = {
+                try Task.checkCancellation()
+                try await lease.validate()
+                try await authorize()
+            }
+            let value = try await client.requestJSON(method: "GET", path: ["v1", "pinkha", "capabilities"],
+                maximumResponseBytes: 256 << 10, validateResponse: readAuthorization, authorize: readAuthorization)
+            guard value["contract"]?.string == AnyUIFoundationCapabilities.contract,
+                  value["currentWriterObjectCreate"]?.integer == 1 else {
+                throw AnyEngineError.incompatibleSchema("current-writer native object creation unavailable")
+            }
+            try await readAuthorization()
+            return value["nativeBookmarkObjectCreate"]?.integer == 1 ? candidates : []
+        }
+    }
+
     public func retryCreation(_ id: String) async {
         guard canWrite, let repository,
               let pending = pendingCreations.first(where: { $0.id == id }) else { return }
         let expected = epoch, authorize = authorization(epoch)
         do {
             let result: AnyHierarchyItem
-            if pending.isNote {
+            if let bookmark = pending.bookmark {
+                result = try await createBookmark(pending, request: bookmark, expected: expected)
+            } else if pending.isNote {
                 guard let marker else { throw AnyHostError.incompleteDocument }
                 let objects = objects, client = client
                 let intent = try AnyNativeObjectCreationIntent(workspace: session.workspace,
@@ -448,10 +579,12 @@ public final class AnyLibraryPresentation {
             let value = try await repository.snapshot()
             try await lease.validate(); return value
         }
+        let availableBookmarks = try await availableBookmarkTypes(in: catalog, expected: expected)
         try validate(expected)
         guard hierarchyPresentation.isCurrent(feed) else { return nil }
         self.repository = repository
         eligibleDocumentTypeIDs = eligible
+        bookmarkTypes = availableBookmarks
         knownDocumentTypeIDs = Set(catalog.types.map(\.id))
             .union(snapshot.nativeRows.values.compactMap { $0["any"]?["type"]?.string })
         try acceptHierarchy(snapshot, feed: feed)
@@ -627,7 +760,7 @@ public final class AnyLibraryPresentation {
     }
 
     public func revoke() {
-        epoch = UUID(); canWrite = false
+        epoch = UUID(); canWrite = false; bookmarkTypes = []
         binReadEpoch &+= 1; binItems = []; isLoadingBin = false; binReadFailed = false
         _ = replaceObservationFeed(); searchTask?.cancel(); catalogRefreshTask?.cancel()
         for editor in editors.values { editor.revoke() }

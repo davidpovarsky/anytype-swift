@@ -1,0 +1,13 @@
+{
+  "schema": "bounded-primary-api-source-note/v1",
+  "source": "Apple Developer Documentation",
+  "url": "https://developer.apple.com/documentation/xctest/xctestrun/totalfailurecount",
+  "retrievedSourceURL": "https://developer.apple.com/documentation/xctest/xctestrun/totalfailurecount?changes=__1",
+  "retrievalReference": "turn120084300search2",
+  "checkedDateUTC": "2026-11-27",
+  "declaration": "var totalFailureCount: Int { get }",
+  "paraphrase": "This property counts failed assertions together with uncaught exceptions recorded by the run. The candidate checks the existing run at the final cleanup boundary, after its assertions and evidence operations have finished; a missing run or a nonzero count preserves the fixture.",
+  "inference": "Unlike hasSucceeded, the selected predicate does not assume that the currently executing test has already completed. This is a cleanup-only condition, not a substitute for XCTest's actual final result.",
+  "fullPageCopied": false,
+  "runtimeExecuted": false
+}

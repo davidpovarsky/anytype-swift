@@ -1,0 +1,24 @@
+{
+  "cause": "The predicate included both the opening ◇ Test run started. banner and the final ✔ Test run with4 summary, but budgeted only the final summary. All individually matched method/case pairs were already correct.",
+  "correction": "Classify both run banners explicitly and retain exact4 start/4 pass method events plus8 start/8 pass argument events.",
+  "error": "AssertionError at local inline inspection line53",
+  "expectedByIncorrectPredicate": 25,
+  "incorrectPredicate": "len(allTestLines) == 4+4+8+8+1",
+  "observedCount": 26,
+  "originalEvidenceEdited": false,
+  "originalReceipt": {
+    "bytes": 283810,
+    "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/receipt.json",
+    "sha256": "42d6a0b7b5bd09bf253fcabb814120397da615fc6db8647b633c4ba677cf8266"
+  },
+  "originalStdout": {
+    "bytes": 4471,
+    "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/stdout.original.log",
+    "sha256": "21ee8d308fafe51351ec9c1ccf93b052ec877edf4ad92c86f37090f5301fc0e3"
+  },
+  "reviewer": "/root/editor",
+  "runnerOrSourceChange": false,
+  "runtimeOrTestsRerun": false,
+  "schema": "pinkha-hierarchy-peer-inspection-stop/v1",
+  "status": "REVIEWER_COUNTING_STOP_NOT_RUNTIME_FAILURE"
+}

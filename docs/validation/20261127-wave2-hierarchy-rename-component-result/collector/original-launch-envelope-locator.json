@@ -1,0 +1,58 @@
+{
+  "meaning": "The 360-second outer Sentinel envelope is evidenced by both the original dispatch custody and original completed-job timeout_s. This is a historical locator, not a new runtime request or grant.",
+  "newHierarchy": {
+    "completedJobResult": null,
+    "internalDeadlineSecondsUnchanged": 300,
+    "preparationCommit": "8b70497157758f3ae8148842f1236d215d6d2d50",
+    "rootOwnsFutureDispatch": true,
+    "runtimeGrant": null,
+    "schedulingNoticeIsNotExecutionAuthority": "1220961913615252"
+  },
+  "operationsDuringPreparation": {
+    "hostCalls": 0,
+    "processQueries": 0,
+    "runtime": 0,
+    "signals": 0
+  },
+  "originalAutomaticRetries": 0,
+  "originalInternalSwiftDeadlineSeconds": 300,
+  "originalOuterToolEnvelopeSeconds": 360,
+  "originalSentinel": {
+    "duration_s": 59.51,
+    "exit_code": 0,
+    "finished_at": "2026-11-27T19:17:21.198735+00:00",
+    "host": "host_299cf75f6b338ecd",
+    "id": "job_4136629b8503",
+    "output_truncated": false,
+    "started_at": "2026-11-27T19:16:21.684030+00:00",
+    "status": "succeeded",
+    "timeout_s": 360,
+    "tool": "script_run"
+  },
+  "originalWrapper": {
+    "historicalCoordinationStory": "1220960923229560",
+    "mechanism": "Verify the exact physical stager and SHA256, then os.execv /usr/bin/python3 -B with the recorded actual coordination story.",
+    "separateTimeoutChildOrProcessManager": false,
+    "stagerPath": "/var/lib/sentinelx/uploads/pinkha-wave2-property4-stage-2a7ef1c0d7f5957e.py",
+    "stagerSHA256": "2a7ef1c0d7f5957ef1194b27d34a5456d254b1d077f6e3eceda628925f236a1b"
+  },
+  "schema": "pinkha-hierarchy-original-launch-envelope-locator/v1",
+  "sourceRecords": [
+    {
+      "bytes": 8546,
+      "path": "/workspace/scratch/1d35894f12d5/wave2-property-unicode-audit/runtime-attempt1-root-custody/dispatch.json",
+      "sha256": "526f626987c0252f2c6b5a83dcb595ba99267b22fd7b94059c121904346e907a"
+    },
+    {
+      "bytes": 408,
+      "path": "/workspace/scratch/1d35894f12d5/wave2-property-unicode-audit/runtime-attempt1-root-custody/launcher.py",
+      "sha256": "6df5b5f52ada228860cf419a345e177f843643ccf6c0bd9e8796f0a030ce462d"
+    },
+    {
+      "bytes": 25822,
+      "path": "/workspace/scratch/1d35894f12d5/wave2-property-unicode-audit/runtime-attempt1-root-custody/original-job-notification.json",
+      "sha256": "d21158eeed9a03e8d75063ab55c8f47dada53b6246143dabd6224e5eed2a5cea"
+    }
+  ],
+  "status": "EXACT_RETAINED_PROPERTY4_LAUNCH_FACTS_ONLY"
+}
