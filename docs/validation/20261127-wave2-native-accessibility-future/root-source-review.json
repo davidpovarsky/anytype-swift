@@ -1,0 +1,25 @@
+{
+  "schema": "pinkha-source-review-v1",
+  "reviewer": "Wave2 root",
+  "status": "SOURCE_REVIEWED_PENDING_REAL_SDK_IMPORTER",
+  "candidateSHA256": "5d3462b25dd64423cf33fc1243b2d734acea55011a9e5da4c66004022685958a",
+  "additionSHA256": "98c68f7e1d9ab0617218ae38e290cc6ddf1842d42f41bda680001e7c752d4317",
+  "preservedPrefixBytes": 214858,
+  "preservedPrefixSHA256": "31c64474cebf4890050f9077d3c44fac63264d878a77bd6f55811cc407e02422",
+  "verified": [
+    "All19 original NativeLaunch methods remain byte-identical in the prefix.",
+    "Accessibility audit requests all issue types; handler returns false and ignores no issue.",
+    "VoiceOver initial enabled state is refused; this case only restores its own attempted enable, and cleanup errors fail.",
+    "Speech traversal uses actual public service operations with finite move, time and evidence limits. Only utterance is claimed, not an unavailable focused accessibility identifier.",
+    "Final bounded private AX, screen image and invocation context are retained before termination, including failed startup or fixture setup.",
+    "Controller context distinguishes claims from actual OS preference readbacks; future controller and runtime admission are still required."
+  ],
+  "reviewFindingResolved": "Initial draft lost live failure screens before terminating App; corrected source registers final capture before launch and retains it without an onboarding precondition.",
+  "integrationGate": "Actual swiftc -typecheck using selected Xcode27 Simulator SDK must verify documented public NS_REFINED_FOR_SWIFT method imports before this tranche is merge-ready. No underscore/runtime fallback.",
+  "compileOnlyProbeSHA256": "a5a94fc6defc2affe2666e25790b774af0d9edf499e338114fc85c106e938b14",
+  "appleTypecheck": "NOT_RUN",
+  "XCTest": "NOT_RUN",
+  "VoiceOverRuntime": "NOT_RUN",
+  "visualReview": "NOT_RUN",
+  "physicalDevice": "NOT_RUN"
+}

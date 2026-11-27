@@ -3755,3 +3755,425 @@ extension NativeLaunchTests {
     }
 }
 // END_NATIVE_MINIAPPS_CROSS_APP_UI_V1
+// BEGIN_NATIVE_ACCESSIBILITY_FUTURE_V1
+// Future test-only tranche. Its controller must bind the actual App/UI products,
+// descriptor, device, account scope and pre/post simctl preference readbacks.
+// An environment assertion is not evidence that an OS preference took effect.
+@MainActor
+extension NativeLaunchTests {
+    @objc func testNativeLibraryAndEditorAccessibilityAuditAtRequestedContentSize() throws {
+        executionTimeAllowance = 900
+        let context = try NativeAccessibilityInvocation.read(
+            method: "testNativeLibraryAndEditorAccessibilityAuditAtRequestedContentSize")
+        guard #available(iOS 17.0, *) else {
+            throw NativeAccessibilityFailure.unsupportedRuntime
+        }
+        let app = accessibilityApplication(context)
+        var reachedEnd = false
+        defer {
+            finishAccessibilityInvocation(app, context: context, reachedEnd: reachedEnd)
+        }
+        app.launch()
+        let fixture = try createAccessibilityFixture(app, context: context)
+        let back = app.navigationBars.buttons.matching(NSPredicate(
+            format: "label IN %@", ["ספרייה", "Library"])).firstMatch
+        tapWhenEnabled(back)
+        waitUntilEnabled(app.buttons["any-native-create-menu"], timeout: 60)
+        let row = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND label == %@",
+            "any-native-hierarchy-row-", fixture.documentName))
+        waitUntilEnabled(row.firstMatch, timeout: 45)
+        XCTAssertEqual(row.count, 1)
+        let rowIdentifier = row.firstMatch.identifier
+        guard rowIdentifier.count > "any-native-hierarchy-row-".count else {
+            throw NativeAccessibilityFailure.changedFixture("libraryObjectIdentity")
+        }
+        try captureAccessibility(app, context: context, fixture: fixture, phase: "library-before-audit",
+                                 extra: ["hierarchyRowIdentifier": rowIdentifier])
+        try auditNativeAccessibility(app, context: context, fixture: fixture, phase: "library")
+
+        tapWhenEnabled(app.buttons[rowIdentifier], timeout: 45)
+        let editor = app.textViews[fixture.blockIdentifier]
+        waitFor(NSPredicate(format: "exists == true AND value == %@", fixture.body),
+                object: editor, timeout: 60)
+        let blocks = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        XCTAssertEqual(blocks.count, 1)
+        XCTAssertEqual(editor.identifier, fixture.blockIdentifier)
+        XCTAssertEqual(Self.semanticHash(editor.value as? String ?? ""), Self.semanticHash(fixture.body))
+        try captureAccessibility(app, context: context, fixture: fixture, phase: "editor-before-audit",
+                                 extra: ["hierarchyRowIdentifier": rowIdentifier])
+        try auditNativeAccessibility(app, context: context, fixture: fixture, phase: "editor")
+        try captureAccessibility(app, context: context, fixture: fixture, phase: "audits-returned",
+                                 extra: ["hierarchyRowIdentifier": rowIdentifier,
+                                         "auditTypes": "all",
+                                         "acceptanceAuthority": "original-xctest-result-and-visual-review"])
+        reachedEnd = true
+    }
+
+    @objc func testNativeVoiceOverTraversalSpeaksCurrentNativeContent() throws {
+        executionTimeAllowance = 900
+        let context = try NativeAccessibilityInvocation.read(
+            method: "testNativeVoiceOverTraversalSpeaksCurrentNativeContent")
+        guard #available(iOS 27.0, *) else {
+            throw NativeAccessibilityFailure.unsupportedRuntime
+        }
+        guard context.contentSize == "large" else {
+            throw NativeAccessibilityFailure.invalidInvocation("voiceOverCellContentSize")
+        }
+        let app = accessibilityApplication(context)
+        var reachedEnd = false
+        defer {
+            finishAccessibilityInvocation(app, context: context, reachedEnd: reachedEnd)
+        }
+        app.launch()
+        let fixture = try createAccessibilityFixture(app, context: context)
+        try captureAccessibility(app, context: context, fixture: fixture, phase: "voiceover-before-enable")
+        try observeNativeVoiceOver(app, context: context, fixture: fixture)
+        reachedEnd = true
+    }
+
+    private func accessibilityApplication(_ context: NativeAccessibilityInvocation) -> XCUIApplication {
+        let app = makeApplication(scope: context.ownedScope)
+        if context.appLanguage == "en" {
+            app.launchArguments = [
+                "--native-ui-tests", "--native-ui-test-scope", context.ownedScope.uuidString,
+                "-AppleLanguages", "(en,he)", "-AppleLocale", "en_US"
+            ]
+        }
+        return app
+    }
+
+    private func createAccessibilityFixture(_ app: XCUIApplication,
+                                             context: NativeAccessibilityInvocation) throws -> NativeAccessibilityFixture {
+        let suffix = String(context.ownedScope.uuidString.prefix(8))
+        let spaceName = "Accessibility Space " + suffix
+        let documentName = "Accessibility Document " + suffix
+        let body = "שלום נגישות. Native speech marker."
+        createOwnedWorkspace(app, spaceName: spaceName)
+        try createNamedItemWithObservedTransition(app, action: "any-native-new-document", title: documentName)
+        let addParagraph = app.buttons["any-native-add-paragraph"]
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: addParagraph, timeout: 60)
+        addParagraph.tap()
+        let blocks = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        let editor = blocks.firstMatch
+        waitForNativeEditorInput(app, editor)
+        editor.tap()
+        editor.typeText(body)
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        let status = app.descendants(matching: .any).matching(identifier: "any-native-save-status").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"), object: status, timeout: 45)
+        XCTAssertEqual(editor.value as? String, body)
+        XCTAssertEqual(blocks.count, 1)
+        XCTAssertEqual(app.keyboards.count, 0)
+        guard editor.identifier.count > "any-native-block-".count,
+              editor.identifier.hasPrefix("any-native-block-") else {
+            throw NativeAccessibilityFailure.changedFixture("nativeBlockIdentity")
+        }
+        try requireArchiveObservationPastOnboarding(app)
+        return NativeAccessibilityFixture(spaceName: spaceName, documentName: documentName,
+                                          body: body, blockIdentifier: editor.identifier)
+    }
+
+    @available(iOS 17.0, *)
+    private func auditNativeAccessibility(_ app: XCUIApplication,
+                                          context: NativeAccessibilityInvocation,
+                                          fixture: NativeAccessibilityFixture, phase: String) throws {
+        var issues: [[String: String]] = []
+        defer {
+            do {
+                try accessibilityJSON(["schema": "native-accessibility-audit-observation/v1",
+                    "invocation": context.dictionary, "phase": phase, "auditTypes": "all",
+                    "ignoredIssues": 0, "issues": issues],
+                    name: "native-accessibility-" + phase + "-audit")
+            } catch {
+                XCTFail("Could not retain the actual accessibility audit observations: \(error)")
+            }
+        }
+        try requireArchiveObservationPastOnboarding(app)
+        // Returning false preserves every original XCTest audit issue as failure.
+        // No element exclusions, ignored issue types, or expected-failure wrapper.
+        try app.performAccessibilityAudit(for: .all) { issue in
+            issues.append([
+                "auditType": String(describing: issue.auditType),
+                "compactDescription": issue.compactDescription,
+                "detailedDescription": issue.detailedDescription
+            ])
+            return false
+        }
+    }
+
+    @available(iOS 27.0, *)
+    private func observeNativeVoiceOver(_ app: XCUIApplication,
+                                        context: NativeAccessibilityInvocation,
+                                        fixture: NativeAccessibilityFixture) throws {
+        let service = XCUIDevice.shared.voiceOverService
+        guard !service.isEnabled else {
+            // A pre-existing setting is not ours to change.
+            throw NativeAccessibilityFailure.voiceOverAlreadyEnabled
+        }
+        var enableAttempted = false
+        var enabledObserved = false
+        var completedTraversal = false
+        var trace: [[String: Any]] = []
+        let maximumSearchForwardMoves = 24
+        let traversalSeconds: TimeInterval = 60
+        var traversalStarted: TimeInterval?
+        let marker = "native speech marker"
+        func normalized(_ text: String) -> String {
+            text.lowercased().split(whereSeparator: { $0.isWhitespace }).joined(separator: " ")
+        }
+        defer {
+            var cleanupFailures: [String] = []
+            var disabledObserved = false
+            if enableAttempted {
+                do {
+                    try service.disable()
+                    disabledObserved = !service.isEnabled
+                    if !disabledObserved { cleanupFailures.append("VoiceOver remained enabled after disable().") }
+                } catch {
+                    cleanupFailures.append("VoiceOver disable() threw: \(error)")
+                }
+            }
+            do {
+                try captureAccessibility(app, context: context, fixture: fixture, phase: "voiceover-trace",
+                    extra: ["initialVoiceOverEnabled": false,
+                            "enableAttempted": enableAttempted, "enabledObserved": enabledObserved,
+                            "disabledObserved": disabledObserved, "completedTraversal": completedTraversal,
+                            "cleanupFailures": cleanupFailures, "trace": trace,
+                            "maximumSearchForwardMoves": maximumSearchForwardMoves,
+                            "maximumForwardMoves": maximumSearchForwardMoves + 1,
+                            "maximumSpeechOperations": maximumSearchForwardMoves + 5,
+                            "traversalBudgetSeconds": traversalSeconds,
+                            "traversalElapsedSeconds": traversalStarted.map {
+                                ProcessInfo.processInfo.systemUptime - $0
+                            } ?? 0,
+                            "speechMatchRule": "normalized utterance contains the fixture phrase: " + marker,
+                            "focusedAccessibilityIdentifierObserved": false,
+                            "acceptanceAuthority": "original-xctest-result-and-visual-review"])
+            } catch {
+                cleanupFailures.append("Could not retain VoiceOver observations: \(error)")
+            }
+            if !cleanupFailures.isEmpty {
+                XCTFail(cleanupFailures.joined(separator: "\n"))
+            }
+        }
+        enableAttempted = true
+        try service.enable()
+        enabledObserved = service.isEnabled
+        guard enabledObserved else {
+            throw NativeAccessibilityFailure.voiceOverDidNotEnable
+        }
+        traversalStarted = ProcessInfo.processInfo.systemUptime
+        func observe(_ action: String, _ operation: () throws -> XCUIVoiceOverService.Output) throws -> String {
+            guard let started = traversalStarted,
+                  ProcessInfo.processInfo.systemUptime - started <= traversalSeconds else {
+                throw NativeAccessibilityFailure.traversalBudgetExhausted
+            }
+            let before = ProcessInfo.processInfo.systemUptime
+            let output: XCUIVoiceOverService.Output
+            do {
+                output = try operation()
+            } catch {
+                trace.append(["action": action, "error": String(describing: error),
+                              "elapsedSeconds": ProcessInfo.processInfo.systemUptime - started])
+                throw error
+            }
+            let after = ProcessInfo.processInfo.systemUptime
+            guard output.utterance.utf8.count <= 16_384 else {
+                trace.append(["action": action, "utteranceUTF8Bytes": output.utterance.utf8.count,
+                              "utteranceSHA256": Self.semanticHash(output.utterance),
+                              "elapsedSeconds": after - started,
+                              "error": "Speech exceeded the finite evidence budget."])
+                throw NativeAccessibilityFailure.speechEvidenceBudgetExceeded
+            }
+            trace.append(["action": action, "utterance": output.utterance,
+                          "operationSeconds": after - before, "elapsedSeconds": after - started])
+            guard after - started <= traversalSeconds else {
+                throw NativeAccessibilityFailure.traversalBudgetExhausted
+            }
+            guard !output.utterance.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                throw NativeAccessibilityFailure.emptySpeech
+            }
+            return normalized(output.utterance)
+        }
+        var current = try observe("currentSpeech.initial") { try service.currentSpeech() }
+        var moves = 0
+        while !current.contains(marker), moves < maximumSearchForwardMoves {
+            moves += 1
+            current = try observe("moveForward.search.\(moves)") { try service.moveForward() }
+        }
+        guard current.contains(marker) else {
+            throw NativeAccessibilityFailure.fixtureSpeechNotReached
+        }
+        let atTarget = try observe("currentSpeech.target") { try service.currentSpeech() }
+        guard atTarget.contains(marker) else {
+            throw NativeAccessibilityFailure.fixtureSpeechChanged
+        }
+        let next = try observe("moveForward.afterTarget") { try service.moveForward() }
+        guard !next.contains(marker), next != atTarget else {
+            throw NativeAccessibilityFailure.speechDidNotAdvance
+        }
+        let returned = try observe("moveBackward.returnToTarget") { try service.moveBackward() }
+        guard returned.contains(marker) else {
+            throw NativeAccessibilityFailure.fixtureSpeechDidNotReturn
+        }
+        let confirmed = try observe("currentSpeech.returnedTarget") { try service.currentSpeech() }
+        guard confirmed.contains(marker) else {
+            throw NativeAccessibilityFailure.fixtureSpeechChanged
+        }
+        // The public Output contains utterance only. These are real forward/
+        // backward speech observations, not proof of an accessibility identifier.
+        try captureAccessibility(app, context: context, fixture: fixture, phase: "voiceover-returned",
+                                 extra: ["observedUtterance": confirmed,
+                                         "focusedAccessibilityIdentifierObserved": false])
+        completedTraversal = true
+    }
+
+    private func captureAccessibility(_ app: XCUIApplication, context: NativeAccessibilityInvocation,
+                                       fixture: NativeAccessibilityFixture, phase: String,
+                                       extra: [String: Any] = [:]) throws {
+        try requireArchiveObservationPastOnboarding(app)
+        var report: [String: Any] = [
+            "schema": "native-accessibility-ui-observation/v1", "phase": phase,
+            "invocation": context.dictionary, "runnerProcessID": ProcessInfo.processInfo.processIdentifier,
+            "runnerSimulatorUDID": ProcessInfo.processInfo.environment["SIMULATOR_UDID"] ?? "",
+            "appLaunchArguments": app.launchArguments,
+            "spaceName": fixture.spaceName, "documentName": fixture.documentName,
+            "blockIdentifier": fixture.blockIdentifier, "bodySHA256": Self.semanticHash(fixture.body),
+            "actualOSPreferencesAuthority": "bound-controller-pre-and-post-readbacks",
+            "visualReview": "PENDING"
+        ]
+        for (key, value) in extra { report[key] = value }
+        try accessibilityJSON(report, name: "native-accessibility-" + phase)
+        let tree = String(decoding: app.debugDescription.utf8.prefix(131_072), as: UTF8.self)
+        try requireArchiveObservationPastOnboarding(app)
+        let ax = XCTAttachment(string: tree)
+        ax.name = "native-accessibility-" + phase + "-private-ax"
+        ax.lifetime = .keepAlways
+        add(ax)
+        let screenshot = XCTAttachment(screenshot: app.screenshot())
+        screenshot.name = "native-accessibility-" + phase
+        screenshot.lifetime = .keepAlways
+        add(screenshot)
+    }
+
+    private func accessibilityJSON(_ object: [String: Any], name: String) throws {
+        let data = try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
+        let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    private func finishAccessibilityInvocation(_ app: XCUIApplication,
+                                               context: NativeAccessibilityInvocation, reachedEnd: Bool) {
+        var failures: [String] = []
+        do {
+            // This final diagnostic deliberately covers startup, onboarding and
+            // failure screens on this qualified disposable device/account.
+            // Keep it private: never publish these AX or PNG contents to Git.
+            let prefix = "PRIVATE-native-accessibility-final-" + (context.dictionary["method"] ?? "")
+            let tree = String(decoding: app.debugDescription.utf8.prefix(131_072), as: UTF8.self)
+            let ax = XCTAttachment(string: tree)
+            ax.name = prefix + "-ax"
+            ax.lifetime = .keepAlways
+            add(ax)
+            let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            screenshot.name = prefix + "-screen"
+            screenshot.lifetime = .keepAlways
+            add(screenshot)
+            try accessibilityJSON([
+                "schema": "native-accessibility-private-final/v1",
+                "invocation": context.dictionary, "caseReachedEnd": reachedEnd,
+                "appStateBeforeTermination": String(describing: app.state),
+                "runnerSimulatorUDID": ProcessInfo.processInfo.environment["SIMULATOR_UDID"] ?? "",
+                "captureRequiresCompletedOnboarding": false,
+                "contentsPrivate": true, "captureBeforeTermination": true
+            ], name: prefix + "-context")
+        } catch {
+            failures.append("The final private accessibility UI capture failed: \(error)")
+        }
+        app.terminate()
+        if !app.wait(for: .notRunning, timeout: 15) {
+            failures.append("The owned accessibility App did not terminate.")
+        }
+        if !failures.isEmpty {
+            XCTFail(failures.joined(separator: "\n"))
+        }
+    }
+}
+
+private struct NativeAccessibilityFixture {
+    let spaceName: String
+    let documentName: String
+    let body: String
+    let blockIdentifier: String
+}
+
+private struct NativeAccessibilityInvocation {
+    let dictionary: [String: String]
+    let ownedScope: UUID
+    var appLanguage: String { dictionary["appLanguage"]! }
+    var contentSize: String { dictionary["contentSize"]! }
+
+    static func read(method: String) throws -> Self {
+        let environment = ProcessInfo.processInfo.environment
+        guard environment["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1",
+              let raw = environment["PINKHA_NATIVE_ACCESSIBILITY_CONTEXT_JSON"],
+              raw.utf8.count <= 16_384,
+              let bytes = raw.data(using: .utf8),
+              let fields = try JSONSerialization.jsonObject(with: bytes) as? [String: String] else {
+            throw NativeAccessibilityFailure.invalidInvocation("missingQualifiedContext")
+        }
+        let keys: Set<String> = ["schema", "runID", "appSourceCommit", "uiSourceCommit",
+            "simulatorUDID", "ownedScope", "method", "appLanguage", "osLanguage",
+            "contentSize", "appearance", "deviceFamily", "settingsReadbackSHA256"]
+        let digest = SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()
+        func hex(_ value: String?, count: Int) -> Bool {
+            guard let value, value.count == count else { return false }
+            return value.utf8.allSatisfy { (48...57).contains($0) || (97...102).contains($0) }
+        }
+        guard Set(fields.keys) == keys,
+              fields["schema"] == "native-accessibility-invocation/v1",
+              fields["method"] == method,
+              let scopeValue = fields["ownedScope"], let scope = UUID(uuidString: scopeValue),
+              let runValue = fields["runID"], UUID(uuidString: runValue) != nil,
+              let deviceValue = fields["simulatorUDID"], let device = UUID(uuidString: deviceValue),
+              let observedDeviceValue = environment["SIMULATOR_UDID"],
+              UUID(uuidString: observedDeviceValue) == device,
+              fields["appLanguage"].map({ ["he", "en"].contains($0) }) == true,
+              fields["osLanguage"].map({ ["he", "en"].contains($0) }) == true,
+              fields["contentSize"].map({
+                  ["large", "accessibility-extra-extra-extra-large"].contains($0)
+              }) == true,
+              fields["appearance"].map({ ["light", "dark"].contains($0) }) == true,
+              fields["deviceFamily"].map({ ["iphone", "ipad"].contains($0) }) == true,
+              hex(fields["appSourceCommit"], count: 40), hex(fields["uiSourceCommit"], count: 40),
+              hex(fields["settingsReadbackSHA256"], count: 64),
+              environment["PINKHA_NATIVE_ACCESSIBILITY_CONTEXT_SHA256"] == digest else {
+            throw NativeAccessibilityFailure.invalidInvocation("contextBindingMismatch")
+        }
+        // The closed external controller supplies and verifies these identities.
+        // This parser does not independently attest source or preference state.
+        return Self(dictionary: fields, ownedScope: scope)
+    }
+}
+
+private enum NativeAccessibilityFailure: Error {
+    case invalidInvocation(String)
+    case unsupportedRuntime
+    case changedFixture(String)
+    case voiceOverAlreadyEnabled
+    case voiceOverDidNotEnable
+    case traversalBudgetExhausted
+    case emptySpeech
+    case speechEvidenceBudgetExceeded
+    case fixtureSpeechNotReached
+    case fixtureSpeechChanged
+    case speechDidNotAdvance
+    case fixtureSpeechDidNotReturn
+}
+// END_NATIVE_ACCESSIBILITY_FUTURE_V1
