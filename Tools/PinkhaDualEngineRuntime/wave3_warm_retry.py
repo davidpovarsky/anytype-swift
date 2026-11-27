@@ -63,7 +63,7 @@ def wr_packages(source, derived):
         git = ['/usr/bin/git', '--no-replace-objects', '-C', str(checkout)]
         head = subprocess.run(git + ['rev-parse', 'HEAD'], capture_output=True, text=True, timeout=30,
                               env=dict(os.environ, GIT_OPTIONAL_LOCKS='0'))
-        status = subprocess.run(git + ['status', '--porcelain', '--untracked-files=no'], capture_output=True, text=True,
+        status = subprocess.run(git + ['status', '--porcelain', '--untracked-files=all'], capture_output=True, text=True,
                                 timeout=30, env=dict(os.environ, GIT_OPTIONAL_LOCKS='0'))
         wr_require(head.returncode == status.returncode == 0 and head.stdout.strip() == expected[name]['revision']
                    and status.stdout == '', 'Actual pinned package checkout differs: ' + name)
