@@ -1,0 +1,65 @@
+{
+  "RPCs": 0,
+  "accountOpens": 0,
+  "allOwnedGroupsPositivelyAbsent": true,
+  "binary": {
+    "bytes": 47399229,
+    "path": "/mnt/development/projects/evidence/pinkha-w1-role-helper-20261127/comparer",
+    "sha256": "cfca1f994c7d369f3107b0b1aa29be263179083c314825231114fa1232d7b945"
+  },
+  "controllerSHA256": "ca856b106263b25937fce0da76733b4bc2476304a32947294d4b1538cc02699e",
+  "errors": [],
+  "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "minimumDevelopmentFreeBytes": 1161895936,
+  "minimumRootFreeBytes": 2428436480,
+  "oldHelperAndCurrentProductUnchanged": true,
+  "processes": [
+    {
+      "command": [
+        "/usr/local/bin/go",
+        "build",
+        "-p=2",
+        "-overlay",
+        "/mnt/development/projects/evidence/pinkha-w1-role-helper-20261127/source-overlay.json",
+        "-o",
+        "/mnt/development/projects/evidence/pinkha-w1-role-helper-20261127/comparer",
+        "./cmd/retained-acl-node-diagnostic"
+      ],
+      "cwd": "/var/lib/pinkha-c-filesv2-20261126/retained-node-grant-comparison1/sdk-source",
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "guardTermination": false,
+      "name": "independent-device-helper-build",
+      "pgid": 129002,
+      "pid": 129002,
+      "seconds": 16.236
+    }
+  ],
+  "productSourceChanges": 0,
+  "protocol": "independent-device-signed-acl-comparator-build-v2",
+  "resourcePolicy": {
+    "developmentEmergencyFloor": 536870912,
+    "developmentFreeBefore": 1218981888,
+    "developmentReserveBytes": 268435456,
+    "memAvailableBefore": 5021044736,
+    "originalMeasuredHelperBuildPeakDevelopmentDrop": 121442304,
+    "productTemporaryCacheAndEvidenceOnDevelopment": true,
+    "reason": "Original47MB helper had121.4MB peak development allocation; reserve256MiB for the one-main overlay link, product, cache, temp and logs. Root stores only bounded Sentinel/control state; no root bulk output. Both runtime floors unchanged.",
+    "rootEmergencyFloor": 2147483648,
+    "rootFreeBefore": 2428534784,
+    "rootReserveBytes": 4194304,
+    "workers": 2
+  },
+  "seconds": 18.669,
+  "sourceClosure": {
+    "currentProductBinarySHA256": "0796b939145f98fd3436b40c3ae3c7c9daec239b54f8c1fa237fb20a349d0b07",
+    "oldHelperBinarySHA256": "46efa5ce752e279d6a8362f0dfa1622224cfbf3c608368ef557f210bcd35f096",
+    "replacementHelperSourceSHA256": "793fd8748fd90ac51b61f65e959a4da410f7be753809520f860c3a30d40b367e",
+    "retainedFiles": 714,
+    "retainedManifestSHA256": "92e8799325e308a2c94db4a17482b3aecf726e145a2f8de82d297bc342215d87",
+    "sourceOverlaySHA256": "02f79a3befb71f736b747e9a83a617a7fae2ea9d37d2860ab8654ecce6ed63cd",
+    "unchangedSDKFiles": 713
+  },
+  "status": "PASS_BUILD_ONLY_INDEPENDENT_DEVICE_HELPER_NOT_RUNTIME_ACCEPTANCE"
+}
