@@ -1,0 +1,38 @@
+{
+  "schema": "wave2-attachment-intent-accessor-inverse/v1",
+  "status": "PASS_ONE_INSERTION_BYTE_INVERSE_ONLY",
+  "baseCommit": "21d63bef8950f8b927f0d8d3b4b052758bc98fcb",
+  "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+  "before": {
+    "bytes": 72821,
+    "sha256": "f3b6b6bb5425d69d7eff09aecac9c82a5dfd125ed004c644126cb518e137c4a5",
+    "gitBlob": "221b312b0c3fa3fe51cf9f30efdfb09bfb4f369f"
+  },
+  "after": {
+    "bytes": 73025,
+    "sha256": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",
+    "gitBlob": "0585f7031c638d97ae3d8f28b6a748e8e6eedc7a"
+  },
+  "insertion": "    func attachmentIntentStore(for owner: UUID) throws -> AnyNativeAttachmentIntentStore {\n        try requireMounted(owner)\n        return try recovery.attachmentIntentStore(workspace: workspace)\n    }\n\n",
+  "insertionBytes": 204,
+  "patchSHA256": "41e9d8b48675107308283c5240ac13cd6c52dc152b2d132055480998d44b60bb",
+  "completeOriginalRestored": true,
+  "originalConstructorRecoveryIsRequired": true,
+  "constructorWorkspaceCheck": "try recovery.requireWorkspace(session.workspace)",
+  "accessorMountedCheck": "try requireMounted(owner)",
+  "accessorRecoveryWorkspaceCheck": "return try recovery.attachmentIntentStore(workspace: workspace)",
+  "dependencies": {
+    "store": "internal actor AnyNativeAttachmentIntentStore (Interfaces-owned companion)",
+    "recovery": "internal func attachmentIntentStore(workspace expected: AnyTorahWorkspace) throws -> AnyNativeAttachmentIntentStore (Interfaces-owned companion)",
+    "publication": "Must be integrated together with the exact reviewed companion; no standalone runtime admission"
+  },
+  "changesToNativeSessionJournalOrWrites": false,
+  "runtimeAdmission": false,
+  "operations": {
+    "compiler": 0,
+    "tests": 0,
+    "oracle": 0,
+    "mac": 0,
+    "native": 0
+  }
+}

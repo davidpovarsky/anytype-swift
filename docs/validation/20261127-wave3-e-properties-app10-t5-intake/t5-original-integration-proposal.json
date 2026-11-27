@@ -1,0 +1,39 @@
+{
+  "actualEvidenceScope": {
+    "actualNodeControls": 5,
+    "actualPythonControls": 6,
+    "executedSourceIndex": "d011bb85ac64a9d21ffd55767cc8346105ac8ae7cf156761d81ca0b56f24f6c0",
+    "failedOrSkippedControls": 0,
+    "previousActualFailurePreserved": true,
+    "publishedSourceIndex": "69d9fac9924184684079f6bc85f4f91f56a2041ee98bd57392789a4a184b66d5",
+    "readonlyQualificationChecks": 41,
+    "soleSourceDifference": "one extra EOF newline removed outside all declarations"
+  },
+  "expectedBase": "ROOT_MUST_BIND_ACTUAL_CURRENT_HEAD_BEFORE_MUTATION",
+  "inputRoot": "/workspace/scratch/ae335eba85e3/hosted-t5-source/publication/after",
+  "manifest": {
+    "bytes": 18466,
+    "sha256": "30249c6f9a7e65a2b2881ba2960198d343d37bec02fe05e6aed5ac6ecb090447"
+  },
+  "manifestPath": "/workspace/scratch/ae335eba85e3/hosted-t5-source/publication/integration-manifest.json",
+  "mode": "ADD_EXACT58_NEW_FILES_ONLY",
+  "noTestsRerun": true,
+  "noUploadOrRemoteApplyByThisAgent": true,
+  "privateKeyTransferred": false,
+  "requiredAfterIntegration": [
+    "normal commit/push with actual parent/tree/SHA readback; no force/reset",
+    "retain original control receipts under their exact executed source identities",
+    "final native/runtime/compiler promotion is a separate reviewed source step"
+  ],
+  "requiredPreconditions": [
+    "root verifies actual current branch/head and retains current dirty/untracked work",
+    "every target path is absent; do not replace an existing path implicitly",
+    "all58 input byte/SHA/Git-blob identities match immutable manifest",
+    "ordinary full git diff --cached --check and existing source-retention gate pass",
+    "runtime activation remains false; final producer tuple remains null; no workflow/pin/source identity promotion"
+  ],
+  "schema": "pinkha-hosted-t5-root-only-integration-proposal-v1",
+  "status": "SOURCE_INTEGRATION_ONLY_NO_RUNTIME_DISPATCH",
+  "targetBranch": "codex/chatgpt-wave15-final-20261125",
+  "targetRepository": "davidpovarsky/anytype-swift"
+}

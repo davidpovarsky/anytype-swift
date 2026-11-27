@@ -1,0 +1,55 @@
+{
+  "affectedDocumentSHA256": "f3b6b6bb5425d69d7eff09aecac9c82a5dfd125ed004c644126cb518e137c4a5",
+  "affectedModelSHA256": "4138a4c8226e4e274e00a932c62d0abd463b22dd6231164b4f64e5843f67b0be",
+  "findingID": "PROPERTIES-READ-CLEANUP-FOREGROUND",
+  "neededRegression": "A same-generation read settles while owner publication authority is temporarily false, publishes no data/error, still clears loading/current request and its reservation, then permits a foreground retry. Cover both provider success and error if selected by the source owner.",
+  "observedAt": "2026-11-27T12:13:19.440484+00:00",
+  "operations": {
+    "compiler": 0,
+    "mac": 0,
+    "native": 0,
+    "oracle": 0,
+    "primaryGitHubReads": 2,
+    "runtimeReproduction": 0,
+    "sourceEdits": 0,
+    "tests": 0
+  },
+  "path": [
+    "Production ownsSourceDocumentsPresentation calls requireMounted, which requires surface.isForegroundMounted.",
+    "Exact AnyNativeEditor isForegroundMounted reads windowScene.activationState == .foregroundActive. Its viewWillDisappear retires the document only for removal/dismissal; exact AnyNativeDocumentView has no scenePhase-driven retirement.",
+    "A temporarily inactive scene can retain the same mounted document and Properties generation while isOwnerCurrent is false.",
+    "When the pending read settles or its Task reaches its initial guard, defer requires owns(captured) AND isOwnerCurrent, so it skips clearing request/task/isLoading and skips the reservation completion callback.",
+    "Foreground restoration does not itself retire that unchanged generation; a subsequent model.load rejects because request is still non-nil."
+  ],
+  "primarySources": [
+    {
+      "bytes": 61374,
+      "commit": "d8a2c67b6dae09a7b769e803a319de3d3080019c",
+      "gitBlob": "81eec84bc476ce7d0c4835ebee912e57b35717c6",
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "retainedPrimaryResponse": "editor-lifecycle-primary.json",
+      "retainedPrimaryResponseSHA256": "87f121ddf3263bc57af4ebedd083ebc992e83f0a37cc1ae5546c22506fbfae3f",
+      "sha256": "8b461efe44868904b826da7b601c1537fd1c164705f861b15920143a556caac5"
+    },
+    {
+      "bytes": 35813,
+      "commit": "d8a2c67b6dae09a7b769e803a319de3d3080019c",
+      "gitBlob": "1c7a14c636e2908012fdac88e1264f164d212b3e",
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "retainedPrimaryResponse": "editor-document-view-primary.json",
+      "retainedPrimaryResponseSHA256": "0f2e627d5eac1f45ee25ee03168d8dcd326be702d588e3184352a7253de67ba6",
+      "sha256": "8a2a18ad56ac7fde85223bf24bc8c104204e2031eddf9548ad810832aa8a673f"
+    }
+  ],
+  "priorReviewRetained": {
+    "path": "editor-independent-review-v2.json",
+    "scope": "Its two original correction findings remain resolved. This additional cleanup finding supersedes any broad no-blocker inference for that candidate.",
+    "sha256": "5e65dfa4bc67288a2dfbf7cda3f651c204569fbd07b3f2810f9a6b79aa3a9cc0"
+  },
+  "reportedIndependentlyBy": "/root",
+  "requiredCorrection": "Separate exact-current-request cleanup from foreground/native publication authorization. Keep all success/error publication authority guards and old-generation suppression. Finish only the captured current request and let its generation-bound completion release only that request presentation reservation.",
+  "reviewer": "/root/editor",
+  "schema": "wave2-properties-source-documents-foreground-cleanup-finding-v1",
+  "sourceOwner": "/root/torah_continue",
+  "status": "BLOCKED_SOURCE_FINDING_NO_RUNTIME_REPRODUCTION"
+}

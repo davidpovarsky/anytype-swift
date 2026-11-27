@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: ciphertext seal preserves original evidence and refuses replacement
+ok 1 - ciphertext seal preserves original evidence and refuses replacement
+  ---
+  duration_ms: 209.507292
+  type: 'test'
+  ...
+# Subtest: unowned scope and mismatched Node are rejected before a ciphertext is created
+ok 2 - unowned scope and mismatched Node are rejected before a ciphertext is created
+  ---
+  duration_ms: 169.559542
+  type: 'test'
+  ...
+# Subtest: a private scope symlink never expands the finite owned input
+ok 3 - a private scope symlink never expands the finite owned input
+  ---
+  duration_ms: 103.558417
+  type: 'test'
+  ...
+# Subtest: authenticated receiver restores exact file bytes and refuses an existing destination
+ok 4 - authenticated receiver restores exact file bytes and refuses an existing destination
+  ---
+  duration_ms: 329.422792
+  type: 'test'
+  ...
+# Subtest: tampered GCM ciphertext creates no plaintext file or destination
+ok 5 - tampered GCM ciphertext creates no plaintext file or destination
+  ---
+  duration_ms: 212.770625
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1120.1135

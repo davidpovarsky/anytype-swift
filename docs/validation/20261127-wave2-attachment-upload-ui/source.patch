@@ -1,0 +1,1054 @@
+--- /dev/null
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift
+@@ -0,0 +1,432 @@
++import Foundation
++import PinkhaAnyEngine
++import PinkhaAnyHost
++import PinkhaAnyIntegration
++#if canImport(Darwin)
++import Darwin
++#elseif canImport(Glibc)
++import Glibc
++#endif
++
++enum AnyNativeAttachmentRecoveryError: Error, Equatable, Sendable {
++    case operationInProgress, invalidRecord, conflictingIntent, capacityExceeded, unavailable
++}
++
++struct AnyNativeAttachmentIntentClaim: Sendable {
++    fileprivate let id: UUID
++    fileprivate let objectID: String
++}
++
++/// Caller state only. The original Host creator remains the sole owner of
++/// dispatch reservation and native receipt recording in its existing journal.
++/// This file contains no selected URL, file bytes, native metadata or authority.
++private struct AnyNativeAttachmentIntentRecord: Codable {
++    let format: Int
++    let intent: AnyNativeFileAttachmentIntent
++
++    init(intent: AnyNativeFileAttachmentIntent) {
++        format = 1
++        self.intent = intent
++    }
++}
++
++/// The existing account/Space recovery owner shares this one store between
++/// replacement sheets. A filesystem claim also excludes a second store instance
++/// until the actual previous task has drained; cancellation alone releases none.
++actor AnyNativeAttachmentIntentStore {
++    nonisolated let workspace: AnyTorahWorkspace
++    private let parentOverride: URL?
++    private var owned: (claim: AnyNativeAttachmentIntentClaim, files: AnyAttachmentIntentFiles)?
++
++    init(workspace: AnyTorahWorkspace, parent: URL? = nil) {
++        self.workspace = workspace
++        parentOverride = parent
++    }
++
++    func claim(objectID: String) throws -> AnyNativeAttachmentIntentClaim {
++        guard owned == nil else { throw AnyNativeAttachmentRecoveryError.operationInProgress }
++        _ = try PinkhaAnyEngine.AnyNativeFileReference(accountID: workspace.accountID, spaceID: workspace.spaceID,
++                                      objectID: objectID, fileID: "caller-intent-scope")
++        let parent = try parentOverride ?? FileManager.default.url(for: .applicationSupportDirectory,
++            in: .userDomainMask, appropriateFor: nil, create: true)
++        let scope = AnyContentDigest.sha256(try Self.encode(["any", workspace.accountID, workspace.spaceID]))
++        let files = try AnyAttachmentIntentFiles(parent: parent, scope: scope)
++        let claim = AnyNativeAttachmentIntentClaim(id: UUID(), objectID: objectID)
++        owned = (claim, files)
++        return claim
++    }
++
++    func release(_ claim: AnyNativeAttachmentIntentClaim) {
++        guard owned?.claim.id == claim.id else { return }
++        // The caller awaits every child and native operation before release.
++        // Dropping the private descriptors releases only this caller-state lock.
++        owned = nil
++    }
++
++    func pending(_ claim: AnyNativeAttachmentIntentClaim) throws -> AnyNativeFileAttachmentIntent? {
++        let files = try requireClaim(claim)
++        guard let bytes = try files.read(name: Self.name(claim.objectID)) else { return nil }
++        let record = try JSONDecoder().decode(AnyNativeAttachmentIntentRecord.self, from: bytes)
++        guard record.format == 1, try Self.encode(record) == bytes else {
++            throw AnyNativeAttachmentRecoveryError.invalidRecord
++        }
++        try requireIntent(record.intent, claim: claim)
++        return record.intent
++    }
++
++    /// A pending user action is never overwritten by another selection. The
++    /// exclusive filesystem owner serializes the read/create across instances.
++    func save(_ intent: AnyNativeFileAttachmentIntent, claim: AnyNativeAttachmentIntentClaim) throws {
++        let files = try requireClaim(claim)
++        try requireIntent(intent, claim: claim)
++        if let existing = try pending(claim) {
++            guard try Self.encode(existing) == Self.encode(intent) else {
++                throw AnyNativeAttachmentRecoveryError.conflictingIntent
++            }
++            try files.confirmDurability(name: Self.name(claim.objectID))
++            return
++        }
++        try files.create(name: Self.name(claim.objectID), bytes: Self.encode(AnyNativeAttachmentIntentRecord(intent: intent)))
++    }
++
++    /// The presentation invokes this only after verified Host/list reconciliation.
++    /// A missing/replaced journal cannot certify non-dispatch. Neither a native
++    /// error, no-record result, missing ACK nor a reserved entry is that proof.
++    func remove(_ intent: AnyNativeFileAttachmentIntent, claim: AnyNativeAttachmentIntentClaim) throws {
++        let files = try requireClaim(claim)
++        try requireIntent(intent, claim: claim)
++        guard let current = try pending(claim), try Self.encode(current) == Self.encode(intent) else {
++            throw AnyNativeAttachmentRecoveryError.conflictingIntent
++        }
++        try files.remove(name: Self.name(claim.objectID), expected: Self.encode(AnyNativeAttachmentIntentRecord(intent: intent)))
++    }
++
++    private func requireClaim(_ claim: AnyNativeAttachmentIntentClaim) throws -> AnyAttachmentIntentFiles {
++        guard let owned, owned.claim.id == claim.id,
++              owned.claim.objectID.utf8.elementsEqual(claim.objectID.utf8) else {
++            throw AnyNativeAttachmentRecoveryError.operationInProgress
++        }
++        return owned.files
++    }
++
++    private func requireIntent(_ intent: AnyNativeFileAttachmentIntent,
++                               claim: AnyNativeAttachmentIntentClaim) throws {
++        guard intent.workspace.accountID.utf8.elementsEqual(workspace.accountID.utf8),
++              intent.workspace.spaceID.utf8.elementsEqual(workspace.spaceID.utf8),
++              intent.objectID.utf8.elementsEqual(claim.objectID.utf8) else {
++            throw AnyNativeAttachmentRecoveryError.invalidRecord
++        }
++    }
++
++    private static func name(_ objectID: String) -> String {
++        AnyContentDigest.sha256(Data(objectID.utf8)) + ".json"
++    }
++
++    private static func encode<T: Encodable>(_ value: T) throws -> Data {
++        let encoder = JSONEncoder()
++        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
++        return try encoder.encode(value)
++    }
++}
++
++/// Bounded protected caller snapshots, under a namespace separate from the
++/// creation journal. All operations run on the store actor, away from UIKit.
++private final class AnyAttachmentIntentFiles: @unchecked Sendable {
++    private static let maximumBytes = 32_768
++    private static let maximumRecords = 128
++    private let directory: URL
++    private let directoryFD: Int32
++    private let lockFD: Int32
++
++    init(parent: URL, scope: String) throws {
++        guard parent.isFileURL, parent.query == nil, parent.fragment == nil,
++              parent.path.hasPrefix("/"), !parent.path.utf8.contains(0) else {
++            throw AnyNativeAttachmentRecoveryError.unavailable
++        }
++        // Application Support can include a system alias (for example /var).
++        // Only its resolved physical directory is used for the private children.
++        let physical = parent.resolvingSymlinksInPath().standardizedFileURL
++        var currentURL = physical
++        var currentFD = open(physical.path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC)
++        guard currentFD >= 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++        var retained = false
++        defer { if !retained { _ = close(currentFD) } }
++        try Self.requireDirectory(currentFD, privateMode: false)
++        for component in ["PinkhaAttachmentIntents", "any", scope] {
++            let created = mkdirat(currentFD, component, mode_t(0o700)) == 0
++            guard created || errno == EEXIST else { throw AnyNativeAttachmentRecoveryError.unavailable }
++            let child = openat(currentFD, component, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC)
++            guard child >= 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++            do {
++                try Self.requireDirectory(child, privateMode: true)
++                let childURL = currentURL.appendingPathComponent(component, isDirectory: true)
++                if created { try Self.protect(childURL) }
++                try Self.requireProtection(childURL)
++                try Self.requireNamedIdentity(childURL, descriptor: child, directory: true)
++                guard fsync(child) == 0, fsync(currentFD) == 0 else {
++                    throw AnyNativeAttachmentRecoveryError.unavailable
++                }
++                _ = close(currentFD)
++                currentFD = child
++                currentURL = childURL
++            } catch { _ = close(child); throw error }
++        }
++        let lock = openat(currentFD, "owner.lock", O_RDWR | O_CREAT | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK, mode_t(0o600))
++        guard lock >= 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++        do {
++            try Self.requireFile(lock, allowEmpty: true)
++            guard flock(lock, LOCK_EX | LOCK_NB) == 0 else {
++                throw AnyNativeAttachmentRecoveryError.operationInProgress
++            }
++            try Self.protect(currentURL.appendingPathComponent("owner.lock"))
++            try Self.requireNamedIdentity(currentURL.appendingPathComponent("owner.lock"), descriptor: lock, directory: false)
++            guard fsync(lock) == 0, fsync(currentFD) == 0 else {
++                throw AnyNativeAttachmentRecoveryError.unavailable
++            }
++        } catch { _ = close(lock); throw error }
++        directory = currentURL
++        directoryFD = currentFD
++        lockFD = lock
++        retained = true
++    }
++
++    deinit {
++        _ = close(lockFD)
++        _ = close(directoryFD)
++    }
++
++    func read(name: String) throws -> Data? {
++        try requireOwner()
++        let descriptor = openat(directoryFD, name, O_RDONLY | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK)
++        if descriptor < 0 {
++            if errno == ENOENT { return nil }
++            throw AnyNativeAttachmentRecoveryError.invalidRecord
++        }
++        defer { _ = close(descriptor) }
++        let before = try Self.requireFile(descriptor)
++        try Self.requireProtection(directory.appendingPathComponent(name))
++        var bytes = Data(count: Self.maximumBytes + 1)
++        var count = 0
++        try bytes.withUnsafeMutableBytes { buffer in
++            guard let address = buffer.baseAddress else { throw AnyNativeAttachmentRecoveryError.invalidRecord }
++            while count < buffer.count {
++                let size = Self.systemRead(descriptor, address.advanced(by: count), buffer.count - count)
++                if size < 0 && errno == EINTR { continue }
++                guard size >= 0 else { throw AnyNativeAttachmentRecoveryError.invalidRecord }
++                if size == 0 { break }
++                count += size
++            }
++        }
++        guard count > 0, count <= Self.maximumBytes, count == before.st_size else {
++            throw AnyNativeAttachmentRecoveryError.invalidRecord
++        }
++        let after = try Self.requireFile(descriptor)
++        guard Self.sameFile(before, after), before.st_size == after.st_size else {
++            throw AnyNativeAttachmentRecoveryError.invalidRecord
++        }
++        try Self.requireNamedIdentity(directory.appendingPathComponent(name), descriptor: descriptor, directory: false)
++        bytes.count = count
++        return bytes
++    }
++
++    func create(name: String, bytes: Data) throws {
++        try requireOwner()
++        guard !bytes.isEmpty, bytes.count <= Self.maximumBytes else {
++            throw AnyNativeAttachmentRecoveryError.capacityExceeded
++        }
++        guard try read(name: name) == nil else { throw AnyNativeAttachmentRecoveryError.conflictingIntent }
++        guard try recordCount() < Self.maximumRecords else { throw AnyNativeAttachmentRecoveryError.capacityExceeded }
++        let temporary = ".pending-" + UUID().uuidString.lowercased() + ".tmp"
++        let descriptor = openat(directoryFD, temporary, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, mode_t(0o600))
++        guard descriptor >= 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++        var temporaryRemoved = false
++        defer {
++            // Only this exclusively created inode belongs to this cleanup.
++            if !temporaryRemoved, (try? Self.requireNamedIdentity(directory.appendingPathComponent(temporary),
++                descriptor: descriptor, directory: false)) != nil { _ = unlinkat(directoryFD, temporary, 0) }
++            _ = close(descriptor)
++        }
++        try Self.protect(directory.appendingPathComponent(temporary))
++        try Self.requireNamedIdentity(directory.appendingPathComponent(temporary), descriptor: descriptor, directory: false)
++        try Self.requireFile(descriptor, allowEmpty: true)
++        try bytes.withUnsafeBytes { buffer in
++            guard let address = buffer.baseAddress else { throw AnyNativeAttachmentRecoveryError.unavailable }
++            var count = 0
++            while count < buffer.count {
++                let size = Self.systemWrite(descriptor, address.advanced(by: count), buffer.count - count)
++                if size < 0 && errno == EINTR { continue }
++                guard size > 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++                count += size
++            }
++        }
++        try Self.synchronize(descriptor)
++        try requireOwner()
++        guard try read(name: name) == nil else { throw AnyNativeAttachmentRecoveryError.conflictingIntent }
++        // linkat is an atomic create-if-absent even outside the cooperating
++        // owner lock. It cannot replace a different pending request.
++        guard linkat(directoryFD, temporary, directoryFD, name, 0) == 0 else {
++            throw errno == EEXIST ? AnyNativeAttachmentRecoveryError.conflictingIntent : .unavailable
++        }
++        guard unlinkat(directoryFD, temporary, 0) == 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++        temporaryRemoved = true
++        guard fsync(directoryFD) == 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++        try Self.synchronize(descriptor)
++        guard try read(name: name) == bytes else { throw AnyNativeAttachmentRecoveryError.invalidRecord }
++    }
++
++    func remove(name: String, expected: Data) throws {
++        try requireOwner()
++        guard try read(name: name) == expected else { throw AnyNativeAttachmentRecoveryError.conflictingIntent }
++        guard unlinkat(directoryFD, name, 0) == 0, fsync(directoryFD) == 0 else {
++            throw AnyNativeAttachmentRecoveryError.unavailable
++        }
++    }
++
++    func confirmDurability(name: String) throws {
++        try requireOwner()
++        let descriptor = openat(directoryFD, name, O_RDWR | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK)
++        guard descriptor >= 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++        defer { _ = close(descriptor) }
++        try Self.requireFile(descriptor)
++        try Self.requireProtection(directory.appendingPathComponent(name))
++        try Self.requireNamedIdentity(directory.appendingPathComponent(name), descriptor: descriptor, directory: false)
++        try Self.synchronize(descriptor)
++        guard fsync(directoryFD) == 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++        try Self.synchronize(descriptor)
++    }
++
++    private func requireOwner() throws {
++        try Self.requireDirectory(directoryFD, privateMode: true)
++        try Self.requireNamedIdentity(directory, descriptor: directoryFD, directory: true)
++        try Self.requireNamedIdentity(directory.appendingPathComponent("owner.lock"), descriptor: lockFD, directory: false)
++    }
++
++    private func recordCount() throws -> Int {
++        let duplicate = dup(directoryFD)
++        guard duplicate >= 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++        guard let stream = fdopendir(duplicate) else {
++            _ = close(duplicate)
++            throw AnyNativeAttachmentRecoveryError.unavailable
++        }
++        defer { _ = closedir(stream) }
++        rewinddir(stream)
++        var count = 0
++        while true {
++            errno = 0
++            guard let entry = readdir(stream) else {
++                guard errno == 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++                break
++            }
++            let name = withUnsafePointer(to: entry.pointee.d_name) { pointer in
++                pointer.withMemoryRebound(to: CChar.self, capacity: MemoryLayout.size(ofValue: entry.pointee.d_name)) {
++                    String(cString: $0)
++                }
++            }
++            if [".", "..", "owner.lock"].contains(name) { continue }
++            // An incomplete caller snapshot is retained for diagnosis. It does
++            // not grant permission to discard or replay its original request.
++            guard name.utf8.count == 69, name.hasSuffix(".json"),
++                  name.dropLast(5).utf8.allSatisfy({ (48...57).contains($0) || (97...102).contains($0) }) else {
++                throw AnyNativeAttachmentRecoveryError.invalidRecord
++            }
++            count += 1
++            guard count <= Self.maximumRecords else { throw AnyNativeAttachmentRecoveryError.capacityExceeded }
++        }
++        return count
++    }
++
++    private static func requireDirectory(_ descriptor: Int32, privateMode: Bool) throws {
++        var value = stat()
++        guard fstat(descriptor, &value) == 0, value.st_uid == geteuid(),
++              value.st_mode & S_IFMT == S_IFDIR,
++              !privateMode || value.st_mode & 0o777 == 0o700 else {
++            throw AnyNativeAttachmentRecoveryError.unavailable
++        }
++    }
++
++    @discardableResult
++    private static func requireFile(_ descriptor: Int32, allowEmpty: Bool = false) throws -> stat {
++        var value = stat()
++        guard fstat(descriptor, &value) == 0, value.st_uid == geteuid(), value.st_nlink == 1,
++              value.st_mode & S_IFMT == S_IFREG, value.st_mode & 0o777 == 0o600,
++              value.st_size >= (allowEmpty ? 0 : 1), value.st_size <= maximumBytes else {
++            throw AnyNativeAttachmentRecoveryError.invalidRecord
++        }
++        return value
++    }
++
++    private static func requireNamedIdentity(_ url: URL, descriptor: Int32, directory: Bool) throws {
++        var held = stat(), named = stat()
++        guard fstat(descriptor, &held) == 0, lstat(url.path, &named) == 0,
++              sameFile(held, named), named.st_mode & S_IFMT == (directory ? S_IFDIR : S_IFREG),
++              url.standardizedFileURL == url.resolvingSymlinksInPath().standardizedFileURL else {
++            throw AnyNativeAttachmentRecoveryError.unavailable
++        }
++    }
++
++    private static func sameFile(_ left: stat, _ right: stat) -> Bool {
++        #if canImport(Darwin)
++        let modifiedLeft = left.st_mtimespec, modifiedRight = right.st_mtimespec
++        let changedLeft = left.st_ctimespec, changedRight = right.st_ctimespec
++        #else
++        let modifiedLeft = left.st_mtim, modifiedRight = right.st_mtim
++        let changedLeft = left.st_ctim, changedRight = right.st_ctim
++        #endif
++        return left.st_dev == right.st_dev && left.st_ino == right.st_ino && left.st_uid == right.st_uid &&
++            left.st_gid == right.st_gid && left.st_mode == right.st_mode && left.st_nlink == right.st_nlink &&
++            left.st_size == right.st_size && modifiedLeft.tv_sec == modifiedRight.tv_sec &&
++            modifiedLeft.tv_nsec == modifiedRight.tv_nsec && changedLeft.tv_sec == changedRight.tv_sec &&
++            changedLeft.tv_nsec == changedRight.tv_nsec
++    }
++
++    private static func protect(_ url: URL) throws {
++        #if os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
++        try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: url.path)
++        #endif
++        #if canImport(Darwin)
++        var mutable = url
++        var values = URLResourceValues()
++        values.isExcludedFromBackup = true
++        try mutable.setResourceValues(values)
++        #endif
++        try requireProtection(url)
++    }
++
++    private static func requireProtection(_ url: URL) throws {
++        #if os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
++        let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
++        #if targetEnvironment(simulator)
++        // The existing protected journal uses this Simulator-only distinction.
++        // Physical-device data protection still requires its own actual proof.
++        if attributes[.protectionKey] == nil { return }
++        #endif
++        let raw = (attributes[.protectionKey] as? FileProtectionType)?.rawValue ?? attributes[.protectionKey] as? String
++        guard raw == FileProtectionType.completeUntilFirstUserAuthentication.rawValue else {
++            throw AnyNativeAttachmentRecoveryError.unavailable
++        }
++        #endif
++    }
++
++    private static func synchronize(_ descriptor: Int32) throws {
++        guard fsync(descriptor) == 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++        #if canImport(Darwin)
++        guard Darwin.fcntl(descriptor, F_FULLFSYNC) == 0 else { throw AnyNativeAttachmentRecoveryError.unavailable }
++        #endif
++    }
++
++    private static func systemRead(_ descriptor: Int32, _ buffer: UnsafeMutableRawPointer, _ count: Int) -> Int {
++        #if canImport(Darwin)
++        Darwin.read(descriptor, buffer, count)
++        #else
++        Glibc.read(descriptor, buffer, count)
++        #endif
++    }
++
++    private static func systemWrite(_ descriptor: Int32, _ buffer: UnsafeRawPointer, _ count: Int) -> Int {
++        #if canImport(Darwin)
++        Darwin.write(descriptor, buffer, count)
++        #else
++        Glibc.write(descriptor, buffer, count)
++        #endif
++    }
++}
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift
+@@ -8,6 +8,7 @@
+ import PinkhaAnyEngine
+ import PinkhaAnyHost
+ import PinkhaAnyIntegration
++import PinkhaKit
+ import HanlinMiniAppsBridge
+ 
+ struct AnyNativeAttachment: Identifiable, Equatable, Sendable {
+@@ -44,6 +45,32 @@
+ struct AnyNativeAttachmentPreview: Identifiable {
+     let id = UUID()
+     let url: URL
++}
++
++struct AnyNativeAttachmentPicker: Identifiable {
++    let id = UUID()
++    let initialDirectory: URL
++}
++
++private actor AnyNativeAttachmentUploadApproval {
++    private var consumed = false
++    func consume() throws {
++        guard !consumed else { throw AnyNativeFileAttachmentError.writeUncertain }
++        consumed = true
++    }
++}
++
++private struct AnyNativeAttachmentOperation: Sendable {
++    let creator: AnyNativeFileAttachmentCreator
++    let authorizeRead: AnyNativeFileAttachmentCreator.Check
++    let authorizeAttachment: AnyNativeFileAttachmentCreator.Check
++    let files: @Sendable () async throws -> [AnyNativeAttachment]
++}
++
++private enum AnyNativeAttachmentResume: Sendable {
++    case verified(AnyNativeFileAttachmentIntent, [AnyNativeAttachment])
++    case notRecorded(AnyNativeFileAttachmentIntent, [AnyNativeAttachment])
++    case noPending([AnyNativeAttachment])
+ }
+ 
+ /// A visible Retry action can authorize one scheduling request. A native 204
+@@ -74,6 +101,10 @@
+     var pendingMiniAppsInput: MiniAppContent?
+     var storageStatuses: [String: AnyNativeFileStatus] = [:]
+     var storageNotice: String?
++    var filePicker: AnyNativeAttachmentPicker?
++    var pendingAttachment: AnyNativeFileAttachmentIntent?
++    var uploadNotice: String?
++    private var uploadRecoveryReady = false
+     private var active = true
+     @ObservationIgnored private var task: Task<Void, Never>?
+     @ObservationIgnored private var directories: [URL] = []
+@@ -293,6 +324,10 @@
+         preview = nil
+         storageStatuses = [:]
+         storageNotice = nil
++        filePicker = nil
++        pendingAttachment = nil
++        uploadNotice = nil
++        uploadRecoveryReady = false
+     }
+ 
+     private func requireActive() throws {
+@@ -305,6 +340,297 @@
+             guard let self else { throw AnyHostError.sessionClosed }
+             try await self.requireActive()
+         }
++    }
++}
++
++extension AnyNativeAttachmentsPresentation {
++    var canAddAttachment: Bool {
++        active && !busy && task == nil && filePicker == nil && uploadRecoveryReady &&
++        pendingAttachment == nil && document.canMutate && !document.hasPendingEdits
++    }
++
++    var showsAttachmentCheck: Bool { pendingAttachment != nil || !uploadRecoveryReady }
++
++    func chooseAttachment() {
++        guard canAddAttachment else { return }
++        do {
++            try requireUploadWrite()
++            let directory = try FileManager.default.url(for: .documentDirectory,
++                in: .userDomainMask, appropriateFor: nil, create: true)
++            filePicker = .init(initialDirectory: directory)
++        } catch { self.error = AnyUIErrorText.describe(error) }
++    }
++
++    func selectedAttachment(_ result: Result<URL?, any Error>, pickerID: UUID) {
++        guard filePicker?.id == pickerID else { return }
++        filePicker = nil
++        guard active, !busy, task == nil else { return }
++        switch result {
++        case .success(nil): break
++        case .failure(let error): self.error = AnyUIErrorText.describe(error)
++        case .success(let selected?): upload(selected)
++        }
++    }
++
++    /// Loading the protected original intent does not upload or verify a whole
++    /// file automatically. The user's Check action performs read-only recovery.
++    func loadUploadRecovery() {
++        guard active, !busy, task == nil else { return }
++        busy = true
++        task = Task { [weak self] in
++            guard let self else { return }
++            defer { task = nil; busy = false }
++            do {
++                let pending = try await withUploadClaim { store, claim in
++                    try await performAttachment { operation in
++                        try await operation.authorizeRead()
++                        let pending = try await store.pending(claim)
++                        try await operation.authorizeRead()
++                        return pending
++                    }
++                }
++                try requireActive()
++                pendingAttachment = pending
++                uploadRecoveryReady = true
++                uploadNotice = pending == nil ? nil : Self.pendingUploadMessage
++            } catch { presentUploadFailure(error) }
++        }
++    }
++
++    private func upload(_ url: URL) {
++        guard canAddAttachment else { return }
++        busy = true
++        uploadRecoveryReady = false
++        uploadNotice = nil
++        task = Task { [weak self] in
++            guard let self else { return }
++            defer { task = nil; busy = false }
++            let scoped = url.startAccessingSecurityScopedResource()
++            defer { if scoped { url.stopAccessingSecurityScopedResource() } }
++            var mayHaveSavedIntent = true
++            do {
++                try requireUploadWrite()
++                let rows = try await withUploadClaim { store, claim in
++                    guard try await store.pending(claim) == nil else {
++                        throw AnyNativeAttachmentRecoveryError.conflictingIntent
++                    }
++                    mayHaveSavedIntent = false
++                    let fingerprint = try await Self.fingerprint(url)
++                    try requireUploadWrite()
++                    let intent = try AnyNativeFileAttachmentIntent(workspace: document.workspace,
++                        mutationID: UUID().uuidString.replacingOccurrences(of: "-", with: "").lowercased(),
++                        objectID: document.objectID, name: url.lastPathComponent,
++                        mime: UTType(filenameExtension: url.pathExtension)?.preferredMIMEType ?? "application/octet-stream",
++                        byteCount: fingerprint.byteCount, contentSHA256: fingerprint.sha256)
++                    mayHaveSavedIntent = true
++                    let rows = try await performAttachment { operation in
++                        try await operation.authorizeRead()
++                        // The caller snapshot is durable before the Host can
++                        // reserve its one original native POST.
++                        try await store.save(intent, claim: claim)
++                        try await operation.authorizeRead()
++                        let file = try await operation.creator.attach(intent, fileURL: url,
++                            authorizeRead: operation.authorizeRead,
++                            authorizeAttachment: operation.authorizeAttachment)
++                        let rows = try await operation.files()
++                        try Self.requireReturnedFile(file, in: rows, intent: intent)
++                        return rows
++                    }
++                    try requireActive()
++                    try await store.remove(intent, claim: claim)
++                    try requireActive()
++                    return rows
++                }
++                try requireActive()
++                publishUploadRows(rows)
++                uploadNotice = AnyUIErrorText.text("הקובץ צורף למסמך.", "The file was attached to this document.")
++            } catch { presentUploadFailure(error, pendingPossible: mayHaveSavedIntent) }
++        }
++    }
++
++    func checkPendingAttachment() {
++        guard active, !busy, task == nil else { return }
++        busy = true
++        task = Task { [weak self] in
++            guard let self else { return }
++            defer { task = nil; busy = false }
++            do {
++                let result = try await withUploadClaim { store, claim in
++                    let result = try await performAttachment { operation in
++                        try await operation.authorizeRead()
++                        guard let intent = try await store.pending(claim) else {
++                            return AnyNativeAttachmentResume.noPending(try await operation.files())
++                        }
++                        do {
++                            // No selected URL and no new mutation ID exists on
++                            // this path. Unknown or reserved outcomes never POST.
++                            let file = try await operation.creator.resume(intent, authorizeRead: operation.authorizeRead)
++                            let rows = try await operation.files()
++                            try Self.requireReturnedFile(file, in: rows, intent: intent)
++                            return AnyNativeAttachmentResume.verified(intent, rows)
++                        } catch AnyNativeFileAttachmentError.noRecordedAttachment {
++                            try await operation.authorizeRead()
++                            return AnyNativeAttachmentResume.notRecorded(intent, try await operation.files())
++                        }
++                    }
++                    try requireActive()
++                    switch result {
++                    case .verified(let intent, _): try await store.remove(intent, claim: claim)
++                    case .notRecorded, .noPending: break
++                    }
++                    try requireActive()
++                    return result
++                }
++                try requireActive()
++                switch result {
++                case .verified(_, let rows):
++                    publishUploadRows(rows)
++                    uploadNotice = AnyUIErrorText.text("הקובץ המצורף אומת.", "The original attachment was verified.")
++                case .notRecorded(let intent, let rows):
++                    publishUploadRows(rows)
++                    pendingAttachment = intent
++                    // A missing/replaced journal can also return no record.
++                    // That does not prove the original native POST never ran.
++                    uploadNotice = AnyUIErrorText.text("אין רישום שמאפשר לאמת את בקשת הצירוף. הבקשה המקורית נשמרה ולא תישלח שוב.",
++                        "No record is available to verify this attachment request. The original request is retained and will not be sent again.")
++                case .noPending(let rows): publishUploadRows(rows)
++                }
++            } catch { presentUploadFailure(error) }
++        }
++    }
++
++    private func withUploadClaim<Value: Sendable>(
++        _ operation: @MainActor (AnyNativeAttachmentIntentStore, AnyNativeAttachmentIntentClaim) async throws -> Value
++    ) async throws -> Value {
++        try requireActive()
++        let store = try document.attachmentIntentStore(for: owner)
++        let claim = try await store.claim(objectID: document.objectID)
++        do {
++            try requireActive()
++            let result = try await operation(store, claim)
++            await store.release(claim)
++            return result
++        } catch {
++            // Every nested fingerprint/native operation is awaited, including
++            // cancellation, before a replacement sheet may acquire this claim.
++            await store.release(claim)
++            throw error
++        }
++    }
++
++    private func performAttachment<Value: Sendable>(
++        _ operation: @escaping @Sendable (AnyNativeAttachmentOperation) async throws -> Value
++    ) async throws -> Value {
++        try requireActive()
++        let client = document.client, documents = document.documents, objects = document.objects
++        let workspace = document.workspace, objectID = document.objectID
++        let access = try AnyHTTPTorahTargetAccess(client: client, workspace: workspace,
++            allowedTypeIDs: document.capabilities.allowedTargetTypes,
++            editorDataset: documents.dataset, documentTypePolicy: .nativeCanonicalEditorV1)
++        let approval = AnyNativeAttachmentUploadApproval()
++        let current = authorization()
++        let writable: AnyNativeFileAttachmentCreator.Check = { [weak self] in
++            guard let self else { throw AnyHostError.sessionClosed }
++            try await self.requireUploadWrite()
++        }
++        return try await document.nativeSession.perform { lease in
++            let authorizeRead: AnyNativeFileAttachmentCreator.Check = {
++                try await lease.validate()
++                try await current()
++                try await access.validate(.object(objectId: objectID), intent: .read)
++                try await current()
++                try await lease.validate()
++            }
++            let authorizeAttachment: AnyNativeFileAttachmentCreator.Check = {
++                try await approval.consume()
++                try await access.validate(.object(objectId: objectID), intent: .write)
++                try await lease.validate()
++                try await writable()
++            }
++            let readFiles: @Sendable () async throws -> [AnyNativeAttachment] = {
++                _ = try await documents.read(objectID: objectID, lease: lease)
++                let value = try await client.requestJSON(method: "GET",
++                    path: ["v1", "spaces", workspace.spaceID, "files"],
++                    query: ["objectId": objectID, "limit": "10001"], maximumResponseBytes: 8 << 20,
++                    authorize: authorizeRead)
++                guard let rows = value["files"]?.array, rows.count <= 10_000 else {
++                    throw AnyHostError.incompleteDocument
++                }
++                let files = try rows.map { try AnyNativeAttachment($0, objectID: objectID) }
++                guard Set(files.map(\.id)).count == files.count else { throw AnyHostError.incompleteDocument }
++                try await authorizeRead()
++                return files
++            }
++            try await authorizeRead()
++            let creator = try await objects.makeFileAttachmentCreator()
++            let result = try await operation(.init(creator: creator, authorizeRead: authorizeRead,
++                authorizeAttachment: authorizeAttachment, files: readFiles))
++            try await authorizeRead()
++            return result
++        }
++    }
++
++    private func requireUploadWrite() throws {
++        try requireActive()
++        guard document.canMutate, !document.hasPendingEdits else { throw AnyHostError.changedDocument }
++    }
++
++    private func publishUploadRows(_ rows: [AnyNativeAttachment]) {
++        files = rows.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
++        pendingAttachment = nil
++        uploadRecoveryReady = true
++        storageStatuses = [:]
++        storageNotice = nil
++        uploadNotice = nil
++        error = nil
++    }
++
++    private func presentUploadFailure(_ failure: any Error, pendingPossible: Bool = true) {
++        guard active else { return }
++        discardVisibleFiles()
++        guard (try? requireActive()) != nil else { return }
++        // No original hint or resolved native metadata is republished after a
++        // failed authority/readback. Check starts with fresh current authority.
++        uploadNotice = pendingPossible ? Self.pendingUploadMessage : nil
++        uploadRecoveryReady = !pendingPossible
++        switch failure {
++        case AnyNativeFileAttachmentError.writeUncertain,
++             AnyNativeFileAttachmentError.knownFileUnverified(_):
++            error = AnyUIErrorText.text("תוצאת הצירוף עדיין לא אומתה. בדוק את הבקשה המקורית; הקובץ לא יישלח שוב.",
++                "The attachment result is not yet verified. Check the original request; the file will not be sent again.")
++        case AnyNativeAttachmentRecoveryError.operationInProgress:
++            error = AnyUIErrorText.text("פעולת צירוף קודמת עדיין מסתיימת. נסה לבדוק שוב לאחר שתסתיים.",
++                "An earlier attachment operation is still finishing. Check again after it finishes.")
++        default: error = AnyUIErrorText.describe(failure)
++        }
++    }
++
++    private static var pendingUploadMessage: String {
++        AnyUIErrorText.text("אפשר לבדוק את בקשת הצירוף השמורה ללא שליחה נוספת.",
++            "You can check the saved attachment request without sending it again.")
++    }
++
++    nonisolated private static func requireReturnedFile(_ file: AnyNativeAttachedFile,
++        in rows: [AnyNativeAttachment], intent: AnyNativeFileAttachmentIntent) throws {
++        let reference = file.reference
++        guard reference.accountID.utf8.elementsEqual(intent.workspace.accountID.utf8),
++              reference.spaceID.utf8.elementsEqual(intent.workspace.spaceID.utf8),
++              reference.objectID.utf8.elementsEqual(intent.objectID.utf8),
++              file.byteCount == intent.byteCount,
++              let row = rows.first(where: { $0.id.utf8.elementsEqual(reference.fileID.utf8) }),
++              row.objectID.utf8.elementsEqual(intent.objectID.utf8), row.size == file.byteCount,
++              row.name.utf8.elementsEqual(file.name.utf8),
++              row.mime.utf8.elementsEqual((file.mime.isEmpty ? "application/octet-stream" : file.mime).utf8),
++              (row.rootCID ?? "").utf8.elementsEqual((file.rootCID ?? "").utf8) else {
++            throw AnyHostError.changedDocument
++        }
++    }
++
++    nonisolated private static func fingerprint(_ url: URL) async throws -> AnyNativeFileSourceFingerprint {
++        let child = Task.detached(priority: .utility) { try await AnyNativeFileUploader.fingerprint(fileURL: url) }
++        return try await withTaskCancellationHandler {
++            try await child.value
++        } onCancel: { child.cancel() }
+     }
+ }
+ 
+@@ -320,6 +646,22 @@
+                         .accessibilityIdentifier("any-native-file-retry-notice")
+                 }
+                 if model.busy { ProgressView() }
++                if let notice = model.uploadNotice {
++                    Section {
++                        Text(notice).font(.footnote).foregroundStyle(.secondary)
++                            .accessibilityIdentifier("any-native-upload-notice")
++                        if let pending = model.pendingAttachment {
++                            Text(pending.name.isEmpty ? AnyUIErrorText.text("קובץ מצורף", "Attachment") : pending.name)
++                                .accessibilityIdentifier("any-native-upload-pending-name")
++                        }
++                        if model.showsAttachmentCheck {
++                            Button(AnyUIErrorText.text("בדיקת בקשת הצירוף", "Check attachment request"),
++                                   systemImage: "arrow.clockwise") { model.checkPendingAttachment() }
++                                .disabled(model.busy)
++                                .accessibilityIdentifier("any-native-upload-check")
++                        }
++                    }
++                }
+                 if !model.busy && model.files.isEmpty && model.error == nil {
+                     Text(AnyUIErrorText.text("אין קבצים מצורפים במסמך.", "This document has no attachments."))
+                 }
+@@ -369,13 +711,23 @@
+                     Button(AnyUIErrorText.text("סגירה", "Close")) { dismiss() }
+                 }
+                 ToolbarItem(placement: .primaryAction) {
++                    Button(AnyUIErrorText.text("צירוף קובץ", "Add attachment"), systemImage: "plus") {
++                        model.chooseAttachment()
++                    }.disabled(!model.canAddAttachment).accessibilityIdentifier("any-native-upload-add")
++                }
++                ToolbarItem(placement: .primaryAction) {
+                     Button(AnyUIErrorText.text("רענון", "Refresh"), systemImage: "arrow.clockwise") {
+-                        Task { await model.load() }
++                        Task { await model.load(); model.loadUploadRecovery() }
+                     }.disabled(model.busy)
+                 }
+             }
+-            .task { await model.load() }
++            .task { await model.load(); model.loadUploadRecovery() }
+             .sheet(item: $model.preview) { item in AnyNativeFilePreview(url: item.url) }
++            .sheet(item: $model.filePicker) { picker in
++                PinkhaDocumentTransferPicker(operation: .open([.data]), initialDirectory: picker.initialDirectory) { result in
++                    model.selectedAttachment(result, pickerID: picker.id)
++                }
++            }
+         }
+     }
+ 
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift
+@@ -129,10 +129,25 @@
+     public private(set) var navigation: [AnyNativeLibraryDestination] = []
+     @ObservationIgnored private var documents: [String: AnyNativeDocumentRecoverySnapshot] = [:]
+     @ObservationIgnored private var sizes: [String: Int] = [:]
++    @ObservationIgnored private var attachmentIntents: AnyNativeAttachmentIntentStore?
+     private static let maximumDocuments = 128
+     private static let maximumBytes = 16_777_216
+ 
+     public init(workspace: AnyTorahWorkspace) { self.workspace = workspace }
++
++    /// Only attachment caller intents use protected process-persistent storage.
++    /// The original navigation/text recovery above keeps its existing lifetime.
++    func attachmentIntentStore(workspace expected: AnyTorahWorkspace) throws -> AnyNativeAttachmentIntentStore {
++        try requireWorkspace(expected)
++        guard workspace.accountID.utf8.elementsEqual(expected.accountID.utf8),
++              workspace.spaceID.utf8.elementsEqual(expected.spaceID.utf8) else {
++            throw AnyNativeRecoveryError.wrongWorkspace
++        }
++        if let attachmentIntents { return attachmentIntents }
++        let store = AnyNativeAttachmentIntentStore(workspace: workspace)
++        attachmentIntents = store
++        return store
++    }
+ 
+     public func requireWorkspace(_ expected: AnyTorahWorkspace) throws {
+         guard workspace == expected else { throw AnyNativeRecoveryError.wrongWorkspace }
+--- /dev/null
++++ b/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift
+@@ -0,0 +1,162 @@
++import Foundation
++import Testing
++import PinkhaAnyEngine
++import PinkhaAnyHost
++import PinkhaAnyIntegration
++@testable import PinkhaAnyUI
++
++@Suite("Native attachment caller recovery", .timeLimit(.minutes(1)))
++struct AnyNativeAttachmentIntentStoreTests {
++    @Test
++    func originalIntentSurvivesNewStoreWithoutASelectedURLOrNativeReceipt() async throws {
++        let fixture = try AttachmentIntentStoreFixture()
++        defer { fixture.removeOwnedDirectory() }
++        let intent = try fixture.intent()
++        let original = AnyNativeAttachmentIntentStore(workspace: fixture.workspace, parent: fixture.parent)
++        let first = try await original.claim(objectID: intent.objectID)
++        try await original.save(intent, claim: first)
++        await original.release(first)
++
++        let restarted = AnyNativeAttachmentIntentStore(workspace: fixture.workspace, parent: fixture.parent)
++        let second = try await restarted.claim(objectID: intent.objectID)
++        do {
++            let loaded = try await restarted.pending(second)
++            let actual = try #require(loaded)
++            #expect(actual == intent)
++            #expect(actual.mutationID == intent.mutationID)
++            #expect(actual.fingerprint == intent.fingerprint)
++            let raw = try Data(contentsOf: fixture.recordURL(objectID: intent.objectID))
++            let value = try #require(JSONSerialization.jsonObject(with: raw) as? [String: Any])
++            #expect(Set(value.keys) == ["format", "intent"])
++            let storedIntent = try #require(value["intent"] as? [String: Any])
++            #expect(Set(storedIntent.keys) == ["workspace", "mutationID", "objectID", "name", "mime", "byteCount", "contentSHA256", "fingerprint"])
++            #expect(storedIntent["name"] as? String == intent.name)
++            #expect(storedIntent["contentSHA256"] as? String == intent.contentSHA256)
++            // Store removal is tested as caller-state CAS only. No native
++            // receipt or UI reconciliation is invented by this component.
++            try await restarted.remove(intent, claim: second)
++            let removed = try await restarted.pending(second)
++            #expect(removed == nil)
++            await restarted.release(second)
++        } catch { await restarted.release(second); throw error }
++    }
++
++    @Test
++    func replacementStoreCannotAcquireOrOverwriteTheOriginalPendingIntent() async throws {
++        let fixture = try AttachmentIntentStoreFixture()
++        defer { fixture.removeOwnedDirectory() }
++        let intent = try fixture.intent()
++        let first = AnyNativeAttachmentIntentStore(workspace: fixture.workspace, parent: fixture.parent)
++        let replacement = AnyNativeAttachmentIntentStore(workspace: fixture.workspace, parent: fixture.parent)
++        let held = try await first.claim(objectID: intent.objectID)
++        do {
++            try await first.save(intent, claim: held)
++            do {
++                let forbidden = try await replacement.claim(objectID: intent.objectID)
++                await replacement.release(forbidden)
++                Issue.record("A replacement owner acquired a still-owned caller snapshot")
++            } catch let error as AnyNativeAttachmentRecoveryError {
++                #expect(error == .operationInProgress)
++            }
++            await first.release(held)
++        } catch { await first.release(held); throw error }
++
++        let current = try await replacement.claim(objectID: intent.objectID)
++        do {
++            let different = try fixture.intent(mutationID: String(repeating: "b", count: 32), name: "different.txt")
++            do {
++                try await replacement.save(different, claim: current)
++                Issue.record("A different user selection replaced an unresolved original intent")
++            } catch let error as AnyNativeAttachmentRecoveryError {
++                #expect(error == .conflictingIntent)
++            }
++            let retained = try await replacement.pending(current)
++            #expect(retained == intent)
++            await first.release(held)
++            do {
++                let forbidden = try await first.claim(objectID: intent.objectID)
++                await first.release(forbidden)
++                Issue.record("A stale release unlocked the replacement owner's claim")
++            } catch let error as AnyNativeAttachmentRecoveryError {
++                #expect(error == .operationInProgress)
++            }
++            await replacement.release(current)
++        } catch { await replacement.release(current); throw error }
++    }
++
++    @Test(arguments: [false, true])
++    func malformedOrForeignSnapshotCannotBecomeARecoveryIntent(foreignWorkspace: Bool) async throws {
++        let fixture = try AttachmentIntentStoreFixture()
++        defer { fixture.removeOwnedDirectory() }
++        let intent = try fixture.intent()
++        let first = AnyNativeAttachmentIntentStore(workspace: fixture.workspace, parent: fixture.parent)
++        let held = try await first.claim(objectID: intent.objectID)
++        try await first.save(intent, claim: held)
++        await first.release(held)
++        let path = try fixture.recordURL(objectID: intent.objectID)
++        let damaged: Data
++        if foreignWorkspace {
++            let workspace = try AnyTorahWorkspace(accountID: "other-account", spaceID: fixture.workspace.spaceID)
++            let other = try AnyNativeFileAttachmentIntent(workspace: workspace, mutationID: intent.mutationID,
++                objectID: intent.objectID, name: intent.name, mime: intent.mime,
++                byteCount: intent.byteCount, contentSHA256: intent.contentSHA256)
++            let encoder = JSONEncoder()
++            encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
++            let encoded = try encoder.encode(other)
++            let object = try JSONSerialization.jsonObject(with: encoded)
++            damaged = try JSONSerialization.data(withJSONObject: ["format": 1, "intent": object],
++                options: [.sortedKeys, .withoutEscapingSlashes])
++        } else { damaged = Data("{incomplete".utf8) }
++        // Preserve the real original inode, mode and Apple protection so the
++        // intended schema/scope boundary, rather than a permission error, fires.
++        let output = try FileHandle(forWritingTo: path)
++        do {
++            try output.truncate(atOffset: 0)
++            try output.write(contentsOf: damaged)
++            try output.synchronize()
++            try output.close()
++        } catch { try? output.close(); throw error }
++        #expect(try Data(contentsOf: path) == damaged)
++        let reopened = AnyNativeAttachmentIntentStore(workspace: fixture.workspace, parent: fixture.parent)
++        let claim = try await reopened.claim(objectID: intent.objectID)
++        do {
++            do {
++                _ = try await reopened.pending(claim)
++                Issue.record("An invalid caller snapshot supplied a recovery intent")
++            } catch let error as AnyNativeAttachmentRecoveryError {
++                #expect(foreignWorkspace && error == .invalidRecord)
++            } catch is DecodingError {
++                #expect(!foreignWorkspace)
++            }
++            await reopened.release(claim)
++        } catch { await reopened.release(claim); throw error }
++    }
++}
++
++private struct AttachmentIntentStoreFixture {
++    let parent: URL
++    let workspace: AnyTorahWorkspace
++
++    init() throws {
++        workspace = try .init(accountID: "attachment-account", spaceID: "attachment-space")
++        parent = FileManager.default.temporaryDirectory.resolvingSymlinksInPath()
++            .appendingPathComponent("pinkha-caller-intent-test-" + UUID().uuidString, isDirectory: true)
++        try FileManager.default.createDirectory(at: parent, withIntermediateDirectories: false,
++            attributes: [.posixPermissions: 0o700])
++    }
++
++    func intent(mutationID: String = String(repeating: "a", count: 32), name: String = "original.txt") throws -> AnyNativeFileAttachmentIntent {
++        try .init(workspace: workspace, mutationID: mutationID, objectID: "document", name: name,
++            mime: "text/plain", byteCount: 7, contentSHA256: AnyContentDigest.sha256(Data("example".utf8)))
++    }
++
++    func recordURL(objectID: String) throws -> URL {
++        let encoder = JSONEncoder()
++        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
++        let scope = AnyContentDigest.sha256(try encoder.encode(["any", workspace.accountID, workspace.spaceID]))
++        return parent.appendingPathComponent("PinkhaAttachmentIntents/any/" + scope, isDirectory: true)
++            .appendingPathComponent(AnyContentDigest.sha256(Data(objectID.utf8)) + ".json")
++    }
++
++    func removeOwnedDirectory() { try? FileManager.default.removeItem(at: parent) }
++}
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift
+@@ -1228,6 +1228,11 @@
+         }
+     }
+ 
++    func attachmentIntentStore(for owner: UUID) throws -> AnyNativeAttachmentIntentStore {
++        try requireMounted(owner)
++        return try recovery.attachmentIntentStore(workspace: workspace)
++    }
++
+     func installSourceInvalidator(_ invalidate: @escaping @Sendable () -> Void) throws {
+         try requireMounted(epoch)
+         scopeInvalidators.append(invalidate)

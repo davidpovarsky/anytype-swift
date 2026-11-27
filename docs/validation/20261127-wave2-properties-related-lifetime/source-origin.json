@@ -1,0 +1,60 @@
+{
+  "schema": "wave2-properties-related-source-origin/v1",
+  "classification": "DOWNSTREAM_OWNED",
+  "appBase": "d8a2c67b6dae09a7b769e803a319de3d3080019c",
+  "sourceMap": {
+    "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+    "gitBlob": "93004078884dfadcbaf8fa61226063af17c514f9",
+    "rows": 130,
+    "unchanged": true,
+    "baselineCommit": "586c98bcc17dee425664224e508fc0e8df277678",
+    "candidatePathsPresentInMap": false
+  },
+  "freshUpstream": {
+    "ref": "refs/heads/develop",
+    "node_id": "REF_kwDOJnx6q7JyZWZzL2hlYWRzL2RldmVsb3A",
+    "url": "https://api.github.com/repos/anyproto/anytype-swift/git/refs/heads/develop",
+    "object": {
+      "sha": "d857b23ea540be33d6faab4f7a7a1a260ab578c1",
+      "type": "commit",
+      "url": "https://api.github.com/repos/anyproto/anytype-swift/git/commits/d857b23ea540be33d6faab4f7a7a1a260ab578c1"
+    }
+  },
+  "directoryAbsenceChecks": [
+    {
+      "repository": "anyproto/anytype-swift",
+      "ref": "d857b23ea540be33d6faab4f7a7a1a260ab578c1",
+      "path": "Modules/PinkhaAnyUI",
+      "result": {
+        "error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}",
+        "error_code": "NOT_FOUND",
+        "error_data": {
+          "message": "Not Found",
+          "documentation_url": "https://docs.github.com/rest/repos/contents#get-repository-content",
+          "status": "404"
+        }
+      }
+    },
+    {
+      "repository": "davidpovarsky/anytype-swift",
+      "ref": "586c98bcc17dee425664224e508fc0e8df277678",
+      "path": "Modules/PinkhaAnyUI",
+      "result": {
+        "error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}",
+        "error_code": "NOT_FOUND",
+        "error_data": {
+          "message": "Not Found",
+          "documentation_url": "https://docs.github.com/rest/repos/contents#get-repository-content",
+          "status": "404"
+        }
+      }
+    }
+  ],
+  "instructions": {
+    "standingAuthorizationGitBlob": "908d94f93d40ca5994d9ef8e7a280f5ebc4a560b",
+    "upstreamPolicyGitBlob": "fd8ffbf9f8ea203085b93f49c6fb6b83034f90db",
+    "interpretation": "User and standing owner authorization permits isolated source work/publication; technical Native/Host/upstream and evidence boundaries remain."
+  },
+  "sourceGateExecuted": false,
+  "note": "The four candidate paths are within the downstream-only PinkhaAnyUI module; no baseline-source map row is added or altered."
+}

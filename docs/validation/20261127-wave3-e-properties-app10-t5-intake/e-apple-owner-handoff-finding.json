@@ -1,0 +1,230 @@
+{
+  "acceptedLinux17Unchanged": true,
+  "factoryActivationPermitted": false,
+  "id": "E-APPLE-ACCOUNT-HANDOFF",
+  "limits": [
+    "No source implementation or activation by reviewer.",
+    "No new tests, compiler, account, simulator, native, workflow or remote write actions.",
+    "Original17 uses injected IO or captured frames and excludes this Apple factory.",
+    "Native source lineage is the already accepted intermediate composition, not a promotion of the pending final tuple."
+  ],
+  "permittedCallOrder": [
+    "A-owned Swift lease and runtime pass preflight; owned task validates the lease and calls IO.",
+    "Apple IO enqueues the direct Lib byte method on the global queue and suspends; no native account lease has been acquired.",
+    "An AccountSelect/Stop transition retires A Swift leases and obtains native application writer lock; selection of B can complete before the queued call starts.",
+    "The queued old request enters Lib; native pinkhaTorahScope now acquires B current-app read lock and derives B signer.",
+    "If B is authorized for that same shared Space and other operation preconditions hold, native can commit under B. Swift original-owner/claim checks can withhold the response but cannot prevent that commit."
+  ],
+  "requiredOwnerClosure": [
+    "Supply an atomic handoff/fence linking the queued operation to the original owned native account lifetime, or identify and qualify an already-existing serialization guarantee covering the complete queue-wait/account-transition boundary.",
+    "Preserve all native current ACL/source/target/signer validation. An expected identity or lease token may reject a stale owner but must never grant authority.",
+    "Demonstrate that a queued old-account mutation cannot enter under a replacement account; after an original-account handoff, retain original durable-ACK and drain behavior.",
+    "A separate final Swift recheck before calling Lib or postflight reply rejection is insufficient unless the account transition and native entry are atomically serialized."
+  ],
+  "schema": "pinkha-e-apple-owner-handoff-finding-v1",
+  "severity": "P1_BEFORE_ACTIVATION",
+  "sources": [
+    {
+      "anchors": [
+        {
+          "line": 287,
+          "text": "let owned = Task { @MainActor in"
+        },
+        {
+          "line": 288,
+          "text": "try self.validateOwner(scope, lease)"
+        },
+        {
+          "line": 289,
+          "text": "let raw: Data"
+        },
+        {
+          "line": 290,
+          "text": "self.io.invoke(method, data)"
+        },
+        {
+          "line": 352,
+          "text": "private func writePostflight"
+        }
+      ],
+      "bytes": 25382,
+      "originalReadPath": "/workspace/scratch/ae335eba85e3/e-d860-independent-review/source/Modules/ProtobufMessages/Sources/PinkhaHeartCutoverClient.swift",
+      "path": "Modules/ProtobufMessages/Sources/PinkhaHeartCutoverClient.swift",
+      "sha256": "8e1ada6f785e5a3286c46f2ab88329052c7354e6ba57483ed18f17c4f13739a8",
+      "sourceIdentity": "d860cb15de479556110c5e6efa07e739fb0d07fc"
+    },
+    {
+      "anchors": [
+        {
+          "line": 19,
+          "text": "await withCheckedContinuation"
+        },
+        {
+          "line": 20,
+          "text": "DispatchQueue.global(qos: .userInitiated).async"
+        },
+        {
+          "line": 28,
+          "text": "Lib.ServicePinkhaTorahCutoverAppend(request)"
+        }
+      ],
+      "bytes": 2059,
+      "originalReadPath": "/workspace/scratch/ae335eba85e3/e-d860-independent-review/source/Modules/ProtobufMessages/Sources/PinkhaHeartCutoverNative.swift",
+      "path": "Modules/ProtobufMessages/Sources/PinkhaHeartCutoverNative.swift",
+      "sha256": "3d4beab93fa232a223985f22005adc28240995cf8a67ba360b06e5f7503e1057",
+      "sourceIdentity": "d860cb15de479556110c5e6efa07e739fb0d07fc"
+    },
+    {
+      "anchors": [
+        {
+          "line": 55,
+          "text": "Native calls keep their original scheduling and cancellation behavior."
+        },
+        {
+          "line": 102,
+          "text": "func beforeInvocation"
+        },
+        {
+          "line": 134,
+          "text": "retireAllSpaces()"
+        }
+      ],
+      "bytes": 10059,
+      "originalReadPath": "/workspace/scratch/ae335eba85e3/e-d860-independent-review/original-controllers/PinkhaNativeReadLifetime.swift",
+      "path": "Modules/ProtobufMessages/Sources/PinkhaNativeReadLifetime.swift",
+      "sha256": "08e17c60411fa031ff07a420fc9c3bcd1889c79216ada06d86a9b4a0889da3bc",
+      "sourceIdentity": "d860cb15de479556110c5e6efa07e739fb0d07fc"
+    },
+    {
+      "anchors": [
+        {
+          "line": 125,
+          "text": "public struct Scope: Sendable"
+        },
+        {
+          "line": 130,
+          "text": "public var protocolVersion: UInt32"
+        },
+        {
+          "line": 132,
+          "text": "public var spaceID: String"
+        },
+        {
+          "line": 134,
+          "text": "public var objectID: String"
+        },
+        {
+          "line": 136,
+          "text": "public var propertyKey: String"
+        }
+      ],
+      "bytes": 103467,
+      "originalReadPath": "/workspace/scratch/ae335eba85e3/e-d860-independent-review/source/Modules/ProtobufMessages/Sources/Protocol/pinkha_torah_cutover.pb.swift",
+      "path": "Modules/ProtobufMessages/Sources/Protocol/pinkha_torah_cutover.pb.swift",
+      "sha256": "c24f3aa88fda64b04c9f041e9147a78b6845c2e56d5440dd77e2754ac811b2d8",
+      "sourceIdentity": "d860cb15de479556110c5e6efa07e739fb0d07fc"
+    },
+    {
+      "anchors": [
+        {
+          "line": 7932,
+          "text": "func PinkhaTorahCutoverAppend(b []byte)"
+        },
+        {
+          "line": 7948,
+          "text": "clientCommandsHandler.PinkhaTorahCutoverAppend(context.Background(), in)"
+        }
+      ],
+      "bytes": 612495,
+      "originalReadPath": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/clientlibrary/service/service.pb.go",
+      "path": "heart/clientlibrary/service/service.pb.go",
+      "sha256": "340c8834744f95b5476743e11b58818383893bd17d22f43dce94395762847237",
+      "sourceIdentity": "root-accepted source-only native4905 composition / full manifest1787c1255d7385565d596cbd9c896c8f96e0c97df1619838a1942613730b0dcc; exact source-after map checked by byte-proof.json"
+    },
+    {
+      "anchors": [
+        {
+          "line": 79,
+          "text": "func (mw *Middleware) pinkhaTorahScope"
+        },
+        {
+          "line": 80,
+          "text": "mw.applicationService.LeasePinkhaTorahApp(ctx)"
+        },
+        {
+          "line": 97,
+          "text": "keys := accounts.Account()"
+        }
+      ],
+      "bytes": 10236,
+      "originalReadPath": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/pinkha_torah_operations.go",
+      "path": "heart/core/pinkha_torah_operations.go",
+      "sha256": "d30fb5f7749e9abf41ee6c5f145ce0fabb7cd31581c8f7e95f3208692656ba39",
+      "sourceIdentity": "root-accepted source-only native4905 composition / full manifest1787c1255d7385565d596cbd9c896c8f96e0c97df1619838a1942613730b0dcc; exact source-after map checked by byte-proof.json"
+    },
+    {
+      "anchors": [
+        {
+          "line": 14,
+          "text": "func (s *Service) LeasePinkhaTorahApp"
+        },
+        {
+          "line": 18,
+          "text": "s.lock.RLock()"
+        },
+        {
+          "line": 28,
+          "text": "return s.app"
+        }
+      ],
+      "bytes": 791,
+      "originalReadPath": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/application/pinkha_torah_lifecycle.go",
+      "path": "heart/core/application/pinkha_torah_lifecycle.go",
+      "sha256": "2964d64dde48ea025f9e761197f33210d4541665ad97398ca82a2729faa5fd83",
+      "sourceIdentity": "root-accepted source-only native4905 composition / full manifest1787c1255d7385565d596cbd9c896c8f96e0c97df1619838a1942613730b0dcc; exact source-after map checked by byte-proof.json"
+    },
+    {
+      "anchors": [
+        {
+          "line": 36,
+          "text": "func (s *Service) AccountSelect"
+        },
+        {
+          "line": 65,
+          "text": "s.lock.Lock()"
+        }
+      ],
+      "bytes": 6389,
+      "originalReadPath": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/application/account_select.go",
+      "path": "heart/core/application/account_select.go",
+      "sha256": "70df8befa61075fb2fa0b4fe486a20518de418cc685db1f77d410daff9620a91",
+      "sourceIdentity": "root-accepted source-only native4905 composition / full manifest1787c1255d7385565d596cbd9c896c8f96e0c97df1619838a1942613730b0dcc; exact source-after map checked by byte-proof.json"
+    },
+    {
+      "anchors": [
+        {
+          "line": 256,
+          "text": "func (mw *Middleware) NativeTorahCutoverAppend"
+        },
+        {
+          "line": 266,
+          "text": "AuthorID: scope.key.GetPublic().Account()"
+        },
+        {
+          "line": 289,
+          "text": "metadata.AppendTorahCutover(held, original, record)"
+        }
+      ],
+      "bytes": 13118,
+      "originalReadPath": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/pinkha_torah_cutover.go",
+      "path": "heart/core/pinkha_torah_cutover.go",
+      "sha256": "e20050cdc7014f2326972f6abab0355b1500527febb1121fceed5acebc4c5d0b",
+      "sourceIdentity": "root-accepted source-only native4905 composition / full manifest1787c1255d7385565d596cbd9c896c8f96e0c97df1619838a1942613730b0dcc; exact source-after map checked by byte-proof.json"
+    }
+  ],
+  "status": "SOURCE_LEVEL_GAP_NOT_RUNTIME_REPRODUCTION",
+  "supportingByteProof": {
+    "path": "/workspace/scratch/ae335eba85e3/e-d860-independent-review/byte-proof.json",
+    "sha256": "bdce554739d69c0c33b664bd5b1e4f12418488df8482c5b9d4aafb82c282735b"
+  }
+}

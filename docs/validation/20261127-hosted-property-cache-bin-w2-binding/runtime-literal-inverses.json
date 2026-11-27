@@ -1,0 +1,96 @@
+{
+  "files": {
+    "admission.py": {
+      "afterBytes": 18200,
+      "afterSHA256": "b9e596c040d545073e89c231ffa5e87bc03130b3c17925e25bf167ed9bfc91a4",
+      "beforeBytes": 18191,
+      "beforeSHA256": "c6a18cf3c3e539c6d3dda67c98eb392ce290891a46fc7f413b3c4b7eb82338e4",
+      "fullOriginalRestored": true,
+      "literalOperations": [
+        {
+          "after": "\"profile_binding.py\", \"profile-dependency.json\", \"activation.json\", \"native23_receipts.py\")}",
+          "before": "\"cache_bin_profile.py\", \"profile.json\", \"activation.json\", \"native23_receipts.py\")}"
+        }
+      ]
+    },
+    "originals.py": {
+      "afterBytes": 11100,
+      "afterSHA256": "aabcf1eec2643f331ed3ab3ae095e156c03de29c4a75ea32405819495af2c9cc",
+      "beforeBytes": 11175,
+      "beforeSHA256": "644ad97debeed3b695a38061d05870e3ff73f1fab00d0c6daffdb732eaada1a4",
+      "fullOriginalRestored": true,
+      "literalOperations": [
+        {
+          "after": "",
+          "before": "\nimport cache_bin_profile\n"
+        },
+        {
+          "after": "",
+          "before": "        self.delta_profile = cache_bin_profile\n"
+        },
+        {
+          "after": "bindings = {\"shared\": self.shared, \"native_core\": self.native_core,",
+          "before": "bindings = {\"shared\": self.shared, \"native_core\": self.delta_profile,"
+        }
+      ]
+    },
+    "run.py": {
+      "afterBytes": 29642,
+      "afterSHA256": "5e26e8a3228bcaf2476309e0259c33832db913572e7d8242333536c723c3ba8b",
+      "beforeBytes": 29336,
+      "beforeSHA256": "067c0caa93718eb84d6bf71fe24adcf5f684adafd3ef453afd75a7b28e73bc01",
+      "fullOriginalRestored": true,
+      "literalOperations": [
+        {
+          "after": "import profile_binding\n",
+          "before": "import cache_bin_profile\n"
+        },
+        {
+          "after": "LANES = profile_binding.LANES\nLANE_SCOPE = profile_binding.LANE_SCOPE",
+          "before": "LANES = (\"property-read-only-hosted\", \"property-revision-hosted\",\n         \"property-source-drop-hosted\", \"library-bin-hosted\")\nLANE_SCOPE = {\"property-read-only-hosted\": (3, 7), \"property-revision-hosted\": (3, 6),\n              \"property-source-drop-hosted\": (2, 2), \"library-bin-hosted\": (2, 3)}"
+        },
+        {
+          "after": "def source_contract_for_lane(consumer, lane, originals, producer_pin):\n    \"\"\"Delegate to one real W2 lane instance under the original command barrier.\"\"\"\n    require(lane in LANES and consumer.profile_bindings.originals is originals,\n            \"Only the four fixed lanes and actual original Core22 loader are permitted\")\n    return consumer.profile_bindings.source_contract(lane,\n        source_commit=consumer.binding[\"sourceSHA\"], native_compilation_proof=producer_pin)",
+          "before": "def source_contract_for_lane(consumer, lane, originals, producer_pin):\n    \"\"\"Bind only the finite G05/G07/Bin methods to the original compiler proof.\"\"\"\n    require(lane in LANES, \"Only the four fixed G05/G07/Bin lanes are permitted\")\n    rtl_witness = originals.source / \"Tools/CurrentAppleValidation/combined_heart_semantics/wave2/rtl-current-editor-profile/rtl_hosted_profile.py\"\n    return originals.delta_profile.source_contract(consumer.source, lane,\n        source_commit=consumer.binding[\"sourceSHA\"], native_compilation_proof=producer_pin, rtl_profile_path=rtl_witness)"
+        },
+        {
+          "after": "\"originalTarget\": None, \"executedTarget\": \"AnytypeTests\",",
+          "before": "\"originalTarget\": \"AnytypeTests\", \"executedTarget\": \"AnytypeTests\","
+        },
+        {
+          "after": "        require(before[\"original_target\"] == profile_binding.ORIGINAL_TARGETS[lane]\n                and before[\"selected_target\"] == \"AnytypeTests\", \"Original source target identity differs\")\n        result[\"originalTarget\"] = before[\"original_target\"]\n        result[\"sourceContract\"] = before\n",
+          "before": "        result[\"sourceContract\"] = before\n"
+        },
+        {
+          "after": "methods = [name.removeprefix(\"AnytypeTests/\") for name in before[\"expected_compiled_identifiers\"]]",
+          "before": "methods = [name.removeprefix(\"AnytypeTests/\") for name in before[\"compiled_identifiers\"]]"
+        },
+        {
+          "after": "def run(args, originals):\n    profile_binding.require_runtime_ready()",
+          "before": "def run(args, originals):\n    cache_bin_profile.require_runtime_ready()"
+        },
+        {
+          "after": "    built, contract, consumer, clone_progress = {}, None, None, {}\n    profile_bindings = None\n",
+          "before": "    built, contract, consumer, clone_progress = {}, None, None, {}\n"
+        },
+        {
+          "after": "            result.update(receiptContract=contract_ref, commonBuildAdmission=proof)\n            profile_bindings = profile_binding.RuntimeBindings(originals, commands)\n            result[\"publishedW2ProfileBinding\"] = profile_bindings.proof\n",
+          "before": "            result.update(receiptContract=contract_ref, commonBuildAdmission=proof)\n"
+        },
+        {
+          "after": "            consumer = profile_bindings.host.Consumer(output, settings, commands, built, app, originals.helpers, binding)\n            consumer.profile_bindings = profile_bindings\n",
+          "before": "            consumer = originals.host.Consumer(output, settings, commands, built, app, originals.helpers, binding)\n"
+        },
+        {
+          "after": "                originals.unchanged()\n                if profile_bindings is not None:\n                    profile_bindings.unchanged()  # File-only after any owned-command closure.\n                result[\"native23CompilerFinal\"] = native23_reader.recheck()",
+          "before": "                originals.unchanged()\n                result[\"native23CompilerFinal\"] = native23_reader.recheck()"
+        },
+        {
+          "after": "    args = parser.parse_args()\n    profile_binding.require_runtime_ready()",
+          "before": "    args = parser.parse_args()\n    cache_bin_profile.require_runtime_ready()"
+        }
+      ]
+    }
+  },
+  "schema": "pinkha-app10-w2-runtime-literal-inverses-v1"
+}

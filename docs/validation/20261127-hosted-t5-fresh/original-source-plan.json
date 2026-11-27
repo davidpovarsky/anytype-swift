@@ -1,0 +1,262 @@
+{
+  "schema": "pinkha-wave3-fresh-t5-shared-product-source-review-v1",
+  "status": "SOURCE_REVIEWED_IMPLEMENTATION_BOUNDARIES_IDENTIFIED_RUNTIME_CLOSED",
+  "source": {
+    "repository": "davidpovarsky/anytype-swift",
+    "commit": "03b7e7ef9bebed23d864c0c8a7b1046214906710",
+    "tree": "97332a35e7bf39a094ac3bbc0c7516fc402bc310",
+    "parent": "cee06ac951f735514059e616fbea48f07d4e7c09"
+  },
+  "proof": {
+    "path": "independent-source-byte-proof.json",
+    "sha256": "b3b4b8f3a9d445e9efa42fb5addf8b16d8c7ad0c918977aee219bff4dbdf1c41",
+    "primaryGitFiles": 19,
+    "warningInverseHunks": 7,
+    "originalPairPrefixBytes": 41696
+  },
+  "existingRetainedAccount": {
+    "source": "b68ee97c45c2ecbc5b21258b4624767cc81689d4",
+    "controlSHA256": "5f8b05b256fc4739d6901963f74cca80e7f7b311e03283523dcbccc2e655f09c",
+    "runnerSHA256": "252a52f0cea40f86d27e3179c5a2baf6bc4d9ea1bc01da091442b73ec925240e",
+    "commonSHA256": "9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d",
+    "fixtureSource": "379ca3568f247d2fc218ed63df24796d461713c0",
+    "nativeManifestSHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+    "UIsha256": "698f4ed7f1f81fe567b94b531f43e14259d08e6acbf79d72e132a5b9b6b941a7",
+    "current57Qualified": false,
+    "review": {
+      "path": "../pinkha-wave3-t5-current/retained-readonly-observation1/review.json",
+      "sha256": "ae9a85a51a94d8d4610cae6914d4c91074dc36662a8a50fe071a04b3feda475c"
+    },
+    "decision": "Keep old preparation, credentials/account, failure,36+9 and all old pins unchanged. This is not the route for the new native/UI product."
+  },
+  "routes": [
+    {
+      "plan": "t5-native-ui-only",
+      "lane": "t5-native-ui",
+      "ownership": "One newly created owned simulator and localOnly native account; same actual fresh fixture through all UI stages.",
+      "stages": [
+        {
+          "name": "preparation",
+          "selector": "AnytypeTests/TorahT5UIAcceptancePreparationTests/prepareFreshNativeUIFixture()",
+          "methods": 1
+        },
+        {
+          "name": "core-ui",
+          "selectors": [
+            "PinkhaStage1AcceptanceUITests/PinkhaT5NativeAcceptanceUITests/testCurrentSpaceRowsAndExactBlockNavigation",
+            "PinkhaStage1AcceptanceUITests/PinkhaT5NativeAcceptanceUITests/testAddNoteEditOpenUnlinkAndRetainAfterRelaunch"
+          ],
+          "methods": 2
+        },
+        {
+          "name": "r08-he-light",
+          "selector": "PinkhaStage1AcceptanceUITests/PinkhaT5NativeAcceptanceUITests/testHebrewRelatedRowsLongTitlesAndReadOnlyNavigation",
+          "language": "he",
+          "appearance": "light",
+          "contentSize": "large",
+          "methods": 1
+        },
+        {
+          "name": "r08-he-dark",
+          "selector": "PinkhaStage1AcceptanceUITests/PinkhaT5NativeAcceptanceUITests/testHebrewRelatedRowsLongTitlesAndReadOnlyNavigation",
+          "language": "he",
+          "appearance": "dark",
+          "contentSize": "large",
+          "methods": 1
+        }
+      ],
+      "mustRetain": [
+        "Core2 must pass before either R08 stage.",
+        "R08 Note objectID/blockID/actualText must come from the actual note-lifecycle final observation, never an invented fixture.",
+        "Original fixture/source/run/token, credentials and mutation hashes must remain identical across UI.",
+        "Actual preparation, related-results, both Note lifetimes and twoR08 PIDs remain distinct as original validators require.",
+        "Actual simulator appearance and content-size readbacks; all original JSON, AX and PNG witnesses; visual review remains separate."
+      ]
+    },
+    {
+      "plan": "t5-remaining-freshness-only",
+      "lane": "t5-remaining-freshness",
+      "ownership": "Separate newly created owned simulator and original localOnly freshness fixture; no old runtime-pair or pagination account.",
+      "selector": "AnytypeTests/TorahT5RemainingFreshnessTests/nativeQuoteMoveAndBlockDeletion()",
+      "sourcePath": "AnyTypeTests/Pinkha/TorahT5RuntimePairTests.swift",
+      "methods": 1,
+      "queries": 6,
+      "nativeMutations": {
+        "ObjectSetDetails": 2,
+        "BlockListDelete": 1
+      },
+      "observations": [
+        "baseline",
+        "moved_original",
+        "moved_other",
+        "restored_original",
+        "restored_other_empty",
+        "quote_block_removed"
+      ],
+      "mustRetain": [
+        "Same original serviceID, six actual ordered queries and before/after native candidate witnesses.",
+        "Exact canonical bytes except original quote move; restore and actual block-deletion readback.",
+        "Original accountStopCompleted/accountNotRunningConfirmed/appShutdownCompleted receipts.",
+        "Original pair phases=[], historical pagination invocations0; wholeIndexCompleteness NOT_PROVEN."
+      ]
+    }
+  ],
+  "selectionScope": {
+    "uniqueMethods": 5,
+    "methodExecutionInstancesIfBothRoutesPass": 6,
+    "xctestStages": 5,
+    "old36Selected": false,
+    "oldNineSelected": false,
+    "excludedAggregatePlans": [
+      "t5-only",
+      "t5-pending-and-ui-only",
+      "t5-data-and-ui-only"
+    ],
+    "originalFPlanInput": "admission.plan; original F CLI has no --plan option"
+  },
+  "newUI": {
+    "path": "PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift",
+    "gitBlob": "d4a15a8c318880c379c83a8ee2631e2fd6fa7568",
+    "sha256": "b43f97b3c1283f05b728b15cc9871bfecc1692ca55563f1e2c1f1886ecd38d5e",
+    "bytes": 34629,
+    "scope": "Only exact requested en/he original warning strings plus final zero-alert guard; all3 methods/setup/fixture/assertions and120s startup preserved."
+  },
+  "routeAuthority": {
+    "path": "Tools/CurrentAppleValidation/combined_heart_semantics/build15/combined_host_acceptance_app15.py",
+    "gitBlob": "bfa3cceb533ec988a015e5082e4d2111a9ef6006",
+    "sha256": "e574f30bd123e6645f093951744a924bf2e9190be6c7474480eb6ec8f58d8eed",
+    "mustUse": [
+      "Consumer.native_ui",
+      "native_ui_prior_processes",
+      "Consumer.freshness",
+      "Consumer.stage",
+      "scoped_descriptor",
+      "exact_enumeration",
+      "result_selection"
+    ],
+    "excludedAlternateT5Method": "Core22/Renderer16 host8875 differs in one native_ui line and lacks the current native_ui_prior_processes correction; Core22 itself does not select T5."
+  },
+  "concreteBoundaries": [
+    {
+      "id": "FINAL_NATIVE_PRODUCT_AND_GATEWAY",
+      "status": "REQUIRED_BEFORE_NEW_NATIVE_COMPILE_AND_RUNTIME",
+      "facts": [
+        "Primary03b7 T5NativeRelatedLookupCapability.unifiedRuntimeVersion is literally pinkha-dual-runtime-v1-8ac…; fresh Swift tests call actual ClientCommands.appGetVersion and production capability.",
+        "Original combined_t5_pending_gateway.VERSION and original shared.VERSION are also literally8ac; freshness validates exact same runtime.",
+        "Current common57d63 and reviewed hosted producer remain8ac-scoped."
+      ],
+      "required": "Root/source owner must promote the exact approved new runtime identity into the product source and actual source/assembly/App compiler tuple. A separately reviewed same-job T5 loader may bind the identical new identity only from that fixed qualified tuple; no arbitrary runtime override, compatibility list or old product relabel."
+    },
+    {
+      "id": "SAME_JOB_PRODUCTS_AND_SOURCE",
+      "status": "REQUIRED",
+      "facts": [
+        "Existing canonical gate binds absolute physical source/Products and actual FileList/log inputs.",
+        "Current57 includes original native preparation and RuntimePair source; completeStage1 must compile exactb43. Native23 UI2 is a separate target and does not provide T5 tests."
+      ],
+      "required": "Use actual same-GitHub-job source/producer/toolchain/runtime before teardown. Reuse strict shared receipt admission, real native and Stage1 compiler proofs and original complete product inventory; no Mac/standalone alias or path rewrite."
+    },
+    {
+      "id": "ORIGINAL_T5_PROCESS_HELPER",
+      "status": "SOURCE_CHOICE_RESOLVED",
+      "required": "Bind primarye574 native_ui and native_ui_prior_processes. Do not import the scoped Core22 host's old T5 method. Reuse Core22's reviewed command-admission/lifecycle helpers separately, with exact source pins."
+    },
+    {
+      "id": "ACCOUNT_EVIDENCE_PUBLICATION",
+      "status": "REQUIRED",
+      "facts": [
+        "Both routes create original localOnly wallet mnemonic/accountKey and retain original private secrets.json.",
+        "Original publish_evidence requires exact token+complete credentials, scans UTF8/UTF16LE/UTF16BE and forbids secrets.json/raw.xcresult/.app/account data; caps200MiB/file and512MiB total."
+      ],
+      "required": "Keep private evidence and public allowlisted evidence separate. Reuse original publish_evidence+contains_secret with complete initially captured credential inventory, including on failure. Core13's blanket artifact uploader cannot publish an account-bearing T5 root. Missing secret inventory or leakage withholds public evidence. Preserve raw/private originals under root-reviewed private custody; do not claim durable retention from a hosted simulator that will disappear."
+    },
+    {
+      "id": "OWNED_PROCESS_AND_FIRST_FAILURE",
+      "status": "REQUIRED_IN_NEW_ADAPTER",
+      "required": "Reuse reviewed same-job CommandAdmission and owned cleanup. After unresolved group custody, forbid new Git, xcode/xcresult or simctl operations; allow file-only retention. Preserve first native/test failure if subsequent stage/lane/final receipt IO fails. Retain exact original stage methods and wrap receipt publication/cleanup separately; old closed Mac entry stays unchanged."
+    }
+  ],
+  "originalBounds": {
+    "enumerationSeconds": 180,
+    "preparationNativeMethodSeconds": 300,
+    "freshnessNativeMethodSeconds": 300,
+    "nativeCommandSecondsIncludingOriginalOverhead": 600,
+    "coreUIEachMethodSeconds": 300,
+    "coreUITotalCommandSeconds": 900,
+    "R08EachMethodSeconds": 300,
+    "R08EachCommandSeconds": 600,
+    "startupSeconds": 120,
+    "freeBytesFloor": 2147483648,
+    "appearance": "fixed-large only",
+    "source": "Actual original F.stage and run_ui27.selection_time_budget; no bound changed."
+  },
+  "implementationPlan": [
+    {
+      "order": 1,
+      "owner": "Root with native/source owner",
+      "action": "Finalize new source/native/SDK/Kit tuple including production unifiedRuntimeVersion; compile one actual App57 and completeStage1UI10 (plus separate Native23UI2 as its own phase). Keep all historical controls unchanged."
+    },
+    {
+      "order": 2,
+      "owner": "Wave3 T5 controller owner",
+      "proposedNamespace": "Tools/PinkhaDualEngineRuntime/hosted_t5/",
+      "action": "New closed same-job wrapper/profile only. Reuse original strict shared admission and e574 methods plus source-pinned pure validator declarations. Finite original plan input only; activation final tuple null and plans empty until root supplies real producer.",
+      "proposedFiles": [
+        "run.py",
+        "originals.py",
+        "original_sources.json",
+        "activation.json",
+        "test_control.py"
+      ],
+      "scope": "New closed namespace only; old b68/App15/full standalone T5 entry points unchanged. Original declarations are reused from exact Git sources, not copied Swift tests or altered validators."
+    },
+    {
+      "order": 3,
+      "owner": "Wave3 T5 controller owner",
+      "action": "Bind original preparation4df2/RuntimePair04a5/UIb43 to actual AnytypeTests and Stage1 SwiftDriver FileLists/logs. Preserve exact enumeration and six method-execution instances across two new owned fixtures."
+    },
+    {
+      "order": 4,
+      "owner": "Wave3 T5 controller owner",
+      "action": "Separate original private custody from credential-scanned public allowlist; preserve first failure and closed process custody. Do not call standalone run_t5_native_ui main, which has its own historical build route."
+    },
+    {
+      "order": 5,
+      "owner": "Apple workflow owner after root review",
+      "action": "Place success-gated exact T5 entry after matching producer and before teardown. Upload only separately qualified public evidence; private retention needs the existing root-approved protected destination. No workflow edit made by this review."
+    },
+    {
+      "order": 6,
+      "owner": "Root",
+      "action": "Review exact source inverse and only novel control boundaries (fixed new runtime source binding, exclusion of old pair9/36, credential publication and receipt-failure priority), then decide activation. Existing original tests/validators are reused, not rewritten."
+    }
+  ],
+  "unresolvedAcceptance": [
+    "Actual new App/UI/native compiler receipt and observed runtime/toolchain not yet provided.",
+    "Complete current-Space/current-generation index and Reader-role/revoke UI require separate Wave1 wire/accepted fixture; narrow T5 does not close them.",
+    "Physical device, VoiceOver, broader DynamicType, performance, release and TestFlight remain outside these Debug simulator selectors.",
+    "Page154 fresh six-stage sequence remains a separate owner route; no duplicate runner created."
+  ],
+  "execution": {
+    "sourceReadsOnly": true,
+    "SwiftTests": 0,
+    "PythonControllerTests": 0,
+    "compiler": 0,
+    "nativeCalls": 0,
+    "simulatorCalls": 0,
+    "accountActions": 0,
+    "OracleWrites": 0,
+    "MacCalls": 0,
+    "workflowEdits": 0,
+    "productEdits": 0,
+    "runtimeControllerAuthored": false
+  },
+  "requiredProductCompileConditions": {
+    "native": [
+      "PINKHA_DUAL_ENGINE_RUNTIME",
+      "PINKHA_NATIVE_T5_LOOKUP_V1"
+    ],
+    "appBundleIdentifier": "io.anytype.app",
+    "sourceAuthority": "Original T5 preparation/freshness Swift guards and XCUIApplication identifier; actual compiler/result/source binding must agree. These are Debug acceptance requirements, not a signing Bundle ID decision."
+  }
+}

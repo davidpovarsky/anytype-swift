@@ -1,0 +1,120 @@
+{
+  "schema": "pinkha-wave3-root-f731-source-review-v1",
+  "status": "SOURCE_READY_RUNTIME_AND_INHERITED_TRANSPORT_ACCEPTANCE_OPEN",
+  "reviewer": "/root",
+  "repository": "davidpovarsky/anytype-swift",
+  "source": "f731e30409b7b479d9ed5e87280624485c181da8",
+  "tree": "180fe9995d8f594cfc7f10f1e7f02c3433da8e2e",
+  "parent": "1384176f817605d6d97e07c7a1366a3d5fd8501c",
+  "parentTree": "c8d94e00158db1a25fa8f035fb48ce54b66d4a29",
+  "parentParents": [
+    "e4556ba1edbf7c698eb04cb1ecc9caaeed34e1ff",
+    "21d63bef8950f8b927f0d8d3b4b052758bc98fcb"
+  ],
+  "currentRoot": "919626d8a5a2701c2dfb56277a657fa593700b98",
+  "primaryIntake": {
+    "files": 49,
+    "bytes": 772526,
+    "modifiedExistingSwift": 3,
+    "addedSwift": 2,
+    "addedEvidence": 44,
+    "allGitBlobIDsIndependentlyVerified": true,
+    "index": "complete-verified-index.json",
+    "indexSHA256": "71b2519fab23608ff7505e3f972d7c39f52b5501f8eb9056d0f0d1be39630a57"
+  },
+  "products": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "bytes": 21506,
+      "sha256": "0032c6be0f667e5082afd4e0e2dfa03a37ac43438141034358ee95a1d6e4c325"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "bytes": 38543,
+      "sha256": "7c520f26f70eb21f3e4939a29107d5cccb3e9172c6cdceed37149416d5315801"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+      "bytes": 9912,
+      "sha256": "f646eed644d128c30057011ddd384154f5d6a2bd7082bca52e44488bf19fa758"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "bytes": 73025,
+      "sha256": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "bytes": 8725,
+      "sha256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809"
+    }
+  ],
+  "inverse": {
+    "file": "independent-inverse-proof.json",
+    "sha256": "b0d6c15b337891b9ae01b153d25e7642234946991ebdcb8aea8851f9bc42fd07",
+    "literalEdits": 13,
+    "entirePrimaryParentFilesRestored": 3,
+    "documentInsertionBytes": 204,
+    "scope": "The inverse restores the exact f731 parent; its document includes the separately qualified Properties lifetime commit. Integration must retain that intermediate ancestry and all other source changes."
+  },
+  "peer": {
+    "file": "peer/independent-peer-review.json",
+    "bytes": 11734,
+    "sha256": "c00c3599753c1d0c9aad3fb2bc167f85666e2033ec5942d1f7f4fac971fb568b"
+  },
+  "findings": [],
+  "sourceAssessment": [
+    "Root read the complete new protected store and all new upload/recovery workflow bodies, exact document/recovery insertions, original Swift test source, and prior resolved findings; all49 primary files were independently hashed and retained.",
+    "The immutable original caller intent is persisted before the original Host creator can reserve or dispatch a native POST. The same protected account/Space recovery owner supplies the store; exact UTF8 workspace and document claim checks supplement canonical encoded intent validation.",
+    "The original picker security scope remains active through the awaited fingerprint/Host operation. No new plaintext file copy is introduced. The detached fingerprint is joined through cancellation forwarding.",
+    "Claims are actor-owned, UUID-bound and protected by a nonblocking filesystem owner lock. Exact stale release cannot release a successor claim. Descriptor-relative no-follow access, restricted inode/owner/mode/link checks, bounded128records/32768bytes and canonical snapshots preserve the reviewed source storage boundary.",
+    "The original one-shot approval is consumed before the final native write ACL, lease and mounted/mutation eligibility checks. Readback and visible publication retain the original owner checks. No current-account alias or foreign intent conversion is added.",
+    "Check supplies the original intent only to the original read-only resume API. It never selects another file, invents another mutation ID, or dispatches POST. noRecorded retains the unresolved original request and keeps Add unavailable; a missing or replaced journal is not negative dispatch proof.",
+    "The only two caller-snapshot removal sites follow a verified Host response and actual matching native list readback. Errors and unknown outcomes retain the caller intent. Original status, cloud retry,204ack distinction, previews and MiniApps behavior restore exactly under the literal inverse.",
+    "The UI joins the actual Swift Host operation before releasing the caller store claim; this is not complete URLSession/delegate/server drain evidence. Original physical protection, crash behavior and native account replacement still require acceptance.",
+    "The five existing-source changes are downstream UI additions and leave root SDK4cb source/map rows, all package/native pins and compiler controllers untouched. Root must enforce the complete current-tree merge proof and original132 retention gate at actual integration."
+  ],
+  "inheritedAcceptanceDependency": {
+    "id": "ENGINE_UPLOAD_TRANSPORT_DRAIN_NOT_PROVEN",
+    "notAnObservedLateWrite": true,
+    "notANewDuplicatePostFinding": true,
+    "response": {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift",
+      "sha256": "4e9cf26ed4344493a98a64556781215a4c34ee7d70fd41cdc59d6795668ba36a",
+      "observation": "finish cancels URLSessionTask and invalidates the session, then immediately resumes its Swift continuation; no delegate invalidation completion is awaited there."
+    },
+    "session": {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+      "observation": "The actual application owner tracks and awaits Swift task.value; this exact source adds no later URLSession delegate/transport completion barrier.",
+      "gitBlob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0"
+    },
+    "requiredClosure": "Engine owner must provide the exact appropriate shutdown/handoff correction or original positive serialization/drain proof before final transport/account-switch acceptance. Keep original caller intent, single-dispatch journal and uncertain/committed ACK behavior intact."
+  },
+  "tests": {
+    "suite": "AnyNativeAttachmentIntentStoreTests",
+    "originalTarget": "PinkhaAnyUITests",
+    "methods": 3,
+    "declaredCases": 4,
+    "compiled": false,
+    "executed": 0,
+    "required": "W2 is preparing the two new attachment files' actual AnytypeTests PBX/origin membership. Require actual current source/compiler inventories and enumeration/results before runtime credit."
+  },
+  "separateOutstanding": [
+    "Optional name/MIME decoder correction2f9ac20a was newly published and is a separate successor; this review covers exact f731 only.",
+    "Actual Properties5/11 component failed compilation of #require callback macro expansion; W2 owns the narrow test-only successor. No source/runtime success is inferred from that failed test build.",
+    "W1 known201/poisoned-journal recovery successor remains separate and must be integrated with exact matching APIs.",
+    "Actual upload/readback, uncertainACK, cold/warm reopen, picker cancellation, same-account/engine replacement, physical protection, crash stability, RTL/AX/visual and two-engine App acceptance remain open."
+  ],
+  "operations": {
+    "sourceByteInspection": true,
+    "literalInverseProof": true,
+    "repositoryMutations": 0,
+    "hostWrites": 0,
+    "compilers": 0,
+    "tests": 0,
+    "nativeCalls": 0,
+    "workflowDispatches": 0
+  },
+  "runtimeAdmission": false
+}

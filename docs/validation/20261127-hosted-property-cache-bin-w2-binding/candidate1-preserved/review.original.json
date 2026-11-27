@@ -1,0 +1,79 @@
+{
+  "scope": "Source-only review of runtime, admission, original loader and Native23 reader; competing local profile is NOT promoted",
+  "runtimeExecuted": false,
+  "swiftExecuted": false,
+  "controllerTestsRerun": false,
+  "inverseFiles": {
+    "admission.py": {
+      "beforeBytes": 18064,
+      "beforeSHA256": "0bd03cc7446bac2ba233bf046228bf89ae690670a030a733be423b7f91847870",
+      "afterBytes": 18191,
+      "afterSHA256": "c6a18cf3c3e539c6d3dda67c98eb392ce290891a46fc7f413b3c4b7eb82338e4",
+      "literalOperations": 3,
+      "wholeOriginalRestored": true
+    },
+    "originals.py": {
+      "beforeBytes": 11100,
+      "beforeSHA256": "aabcf1eec2643f331ed3ab3ae095e156c03de29c4a75ea32405819495af2c9cc",
+      "afterBytes": 11175,
+      "afterSHA256": "644ad97debeed3b695a38061d05870e3ff73f1fab00d0c6daffdb732eaada1a4",
+      "literalOperations": 3,
+      "wholeOriginalRestored": true
+    },
+    "run.py": {
+      "beforeBytes": 28729,
+      "beforeSHA256": "cf16f08fefcc0d639e1f924a230c2fefb8bcc7af4f311e9e03191165908a29c8",
+      "afterBytes": 29336,
+      "afterSHA256": "067c0caa93718eb84d6bf71fe24adcf5f684adafd3ef453afd75a7b28e73bc01",
+      "literalOperations": 25,
+      "wholeOriginalRestored": true
+    }
+  },
+  "unchangedRunDeclarations": {
+    "CommandAdmission": {
+      "bytes": 1901,
+      "sha256": "830ec882e7f986c731da9f8eb3b156102b3bb4f3465e4b884572aeeda6488f89"
+    },
+    "retain_receipt": {
+      "bytes": 483,
+      "sha256": "810b5cebf7dbb3d407794e08bda354633f3d4554dfefe41b2b29f51e45dfa0eb"
+    },
+    "select_runtime": {
+      "bytes": 1606,
+      "sha256": "c4f23f37bbdbea19b5c4d3b3bbff4bd04e6667d6eb4df448e3f26830b3e19a11"
+    },
+    "fresh_toolchain": {
+      "bytes": 1207,
+      "sha256": "a5e0fc129ca64a16e16b434194410cef5d7ebdc57cbf94d74f4da9936d1e226c"
+    },
+    "clone_products": {
+      "bytes": 2666,
+      "sha256": "61b20c004b9f1e8b76f32fdc9a53de4b4fc2bcce22a98b970aa3f29a98c4fb14"
+    },
+    "verify_created_device": {
+      "bytes": 1226,
+      "sha256": "1029470fa4378f5dee0acdd1450c79909c6e0147a7f8f6f0d35714d8c04cfe30"
+    },
+    "include_lane_cleanup": {
+      "bytes": 565,
+      "sha256": "c5d1fc434fca33e8b41cb39fb47d1c6b9f9fd3b38bddb87e63f1477d78da3043"
+    }
+  },
+  "native23Reader": {
+    "bytes": 4819,
+    "sha256": "1b4114b0843cb01067e6ced4398df6b8e4d0baada315d81201fbfd4f9eaa38b8",
+    "observations": [
+      "Reuses exact 5c62 control + 1edf input reader + f696 definitions and original f00 helper; no runtime main/configure call.",
+      "Requires actual same-job App57/Stage1UI10/Native23UI2 compiler inputs, complete original source/project/FileList/log/receipt/product closure.",
+      "Recheck delegates the already-reviewed file-only reader paths; helper parent_receipts/source_rows/original_argv/descriptor_proof were read statically and do not launch commands.",
+      "Final blocked admission branch withholds new direct Git/source admission; final source/control/product evidence readers retain failure without clearing unresolved custody."
+    ]
+  },
+  "limitations": [
+    "W2 owns the replacement original App10 source/declaration/selector/result profile. The competing cache_bin_profile/profile inspected before the ownership correction is not part of this approval.",
+    "A later frozen successor must bind W2 exact bytes and update finite control/source hashes. This report does not authorize activation, publication or dispatch.",
+    "This is source read plus literal byte/AST proof only. Six existing portable results were not replayed and no native result was inferred."
+  ],
+  "findings": [],
+  "status": "NO_CONCRETE_SOURCE_BLOCKER_IN_REVIEWED_RUNTIME_CUSTODY_SEAMS_ONLY"
+}

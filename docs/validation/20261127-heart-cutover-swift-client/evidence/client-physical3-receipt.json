@@ -1,0 +1,134 @@
+{
+  "appleAcceptance": false,
+  "buildRoot": "/mnt/development/projects/caches/pinkha-e-cutover-swift-client-physical3-20261127",
+  "commands": [
+    {
+      "absenceObservedAtSeconds": 112.27257815655321,
+      "argv": [
+        "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+        "test",
+        "--package-path",
+        "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical3/package",
+        "--scratch-path",
+        "/mnt/development/projects/caches/pinkha-e-cutover-swift-client-physical3-20261127/swift-build",
+        "--cache-path",
+        "/mnt/development/projects/caches/pinkha-e-cutover-swift-client-physical3-20261127/swiftpm-cache",
+        "--jobs",
+        "1",
+        "-Xswiftc",
+        "-gnone",
+        "--filter",
+        "PinkhaHeartCutover(Client|Interop)Tests",
+        "--xunit-output",
+        "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical3/tests.xml"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical3/package",
+      "exitCode": -15,
+      "forcedCleanup": true,
+      "logSHA256": "74f8d9999062addc5a82b9b91ab4462435935b2cd1098809925555ed869fa058",
+      "originalError": {
+        "message": "owned client output growth cap",
+        "type": "RuntimeError"
+      },
+      "pgid": 336316,
+      "pid": 336316,
+      "processGroupAbsent": true,
+      "resourceSamples": 426,
+      "sampledOwnedBytesPeak": 134627328,
+      "seconds": 112.27258015610278,
+      "signals": [
+        15
+      ],
+      "stopReason": "owned client output growth cap",
+      "unreapedLeaderDuringGroupCleanup": true
+    }
+  ],
+  "completedUTC": "2026-11-27T11:04:04Z",
+  "completionErrors": [],
+  "controllerSHA256": "80488d446e2c5e61f36411e79767520504f59d5de976fab5674bd6afa8915315",
+  "error": "RuntimeError: owned client output growth cap",
+  "generatorReceipt": {
+    "bytes": 150227,
+    "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-generation-physical1/receipt.json",
+    "sha256": "2ff5021a3795448300a5062f474e3bdc40d8925382831fd4f3eef9548a2304a5"
+  },
+  "nativeAcceptance": false,
+  "nativeReceipt": {
+    "bytes": 7566,
+    "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/retained/current8ac/rpc-core-attempt5/receipt.json",
+    "sha256": "73478d7b445484746b2504cd0e0136735a3893143e83230ced242394fdbc7bfb"
+  },
+  "originalAggregateDeclarations": {
+    "Modules/ProtobufMessages/Sources/Protocol/export_report.pb.swift": {
+      "sha256": "3f77442c6efe1ba8a2c868c9c13d807d5d81bc57dff341b4c8dd76c67562d86b",
+      "symbols": [
+        "Anytype_Model_ExportReport"
+      ]
+    },
+    "Modules/ProtobufMessages/Sources/Protocol/localstore.pb.swift": {
+      "sha256": "12d07b4cd1355017804360fa00c9ec3a6c5620701e868a804d3c810987474557",
+      "symbols": [
+        "Anytype_Model_ObjectInfo",
+        "Anytype_Model_ObjectDetails",
+        "Anytype_Model_ObjectLinks",
+        "Anytype_Model_ObjectLinksInfo",
+        "Anytype_Model_ObjectInfoWithLinks",
+        "Anytype_Model_ObjectInfoWithOutboundLinks",
+        "Anytype_Model_ObjectInfoWithOutboundLinksIDs",
+        "Anytype_Model_ObjectStoreChecksums"
+      ]
+    }
+  },
+  "ownedBuildGrowthCapBytes": 134217728,
+  "ownedEvidenceBytesAtCompletion": 3117056,
+  "ownedEvidenceGrowthCapBytes": 67108864,
+  "relocatedSourceAdmission": {
+    "aliasFallbackAllowed": false,
+    "compilerInvocations": 0,
+    "custodyControllerSHA256": "4ddaa92aaa5fe2d13d39bab699dbe6c409a2900eb9713da48af2470435c635fd",
+    "custodyReceipt": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/attempt1/result.json",
+    "custodySHA256": "331b93a174d36a639d3748dfa01692fc0add62624d31c7a3cd957f5a5eb5d772",
+    "exactOriginalToPhysicalRoots": {
+      "/var/tmp/pinkha-e-cutover-core-dryrun-20261126": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/retained/core-dryrun",
+      "/var/tmp/pinkha-e-cutover-current8ac-20261127": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/retained/current8ac",
+      "/var/tmp/pinkha-e-cutover-llvm-native-20261126": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/retained/llvm-native"
+    },
+    "nativeInvocations": 0,
+    "originalReceiptsUnchanged": {
+      "attempt2/receipt.json": "fbae1f7a1a628ab75317e2812613a6c96682c6bceef9d8f3187ab13cf5e7e3e6",
+      "attempt2/source-before.json": "ccd8659be20d4f7e45ec311195be9211be79b1af17aa9f031374de4ca53ada28",
+      "rpc-core-attempt5/receipt.json": "73478d7b445484746b2504cd0e0136735a3893143e83230ced242394fdbc7bfb",
+      "rpc-generated-qualification1/receipt.json": "b02f58b6a9c341bcc2c0820c599e0f6ed1cb699d457e936375aea8495865ee62",
+      "rpc-host-attempt2/receipt.json": "ad68dc512105c751c6971e31702452f7f3ebebb73b1ecc1b3911c67b9dde01ea"
+    },
+    "source": {
+      "bytesModesOwnersModificationTimesXattrsAndTopologyUnchanged": true,
+      "custodyManifestSHA256": "a53a7a9c029a9fc45ad3b02ae36b9a551699ca1b62d1a189f0ebf71cefa1581c",
+      "entries": 5835,
+      "files": 4893,
+      "physicalPath": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/retained/current8ac/attempt2/source"
+    },
+    "sourceManifestSHA256": "ccd8659be20d4f7e45ec311195be9211be79b1af17aa9f031374de4ca53ada28",
+    "status": "EXACT_RELOCATED_PHYSICAL_SOURCE_ADMITTED_NO_RUNTIME_CLAIM"
+  },
+  "resourceAdmission": {
+    "/": 3674058752,
+    "/mnt/development": 1589932032
+  },
+  "resourcePolicy": {
+    "developmentAdmissionBytes": 738197504,
+    "developmentRuntimeFloorBytes": 536870912,
+    "ownedBuildGrowthCapBytes": 134217728,
+    "ownedEvidenceGrowthCapBytes": 67108864,
+    "rootAdmissionBytes": 2281701376,
+    "rootRuntimeFloorBytes": 2147483648
+  },
+  "reusedCompilerProducts": {
+    "bytes": 434243,
+    "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical3/retained-dependency-products.json",
+    "sha256": "da72939a5b20da7b417f85d00a689c245f59516d3ae94ddaef31c2c7a50f65f0"
+  },
+  "scope": "Exact production Swift owner/client + canonical generated protocol + captured actual native frames",
+  "status": "FAIL"
+}

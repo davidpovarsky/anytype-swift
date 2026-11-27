@@ -1,0 +1,71 @@
+{
+  "schema": "wave2-ordinary-attachment-root-source-review/v2",
+  "status": "PASS_SOURCE_REVIEW_ONLY",
+  "observedAt": "2026-11-27T12:30:44.141054+00:00",
+  "requiredLifetimeCommit": "21d63bef8950f8b927f0d8d3b4b052758bc98fcb",
+  "requiredHostCommit": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+  "inputs": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "bytes": 21506,
+      "sha256": "0032c6be0f667e5082afd4e0e2dfa03a37ac43438141034358ee95a1d6e4c325"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "bytes": 38543,
+      "sha256": "7c520f26f70eb21f3e4939a29107d5cccb3e9172c6cdceed37149416d5315801"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+      "bytes": 9912,
+      "sha256": "f646eed644d128c30057011ddd384154f5d6a2bd7082bca52e44488bf19fa758"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "bytes": 8725,
+      "sha256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "bytes": 73025,
+      "sha256": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",
+      "scope": "Separate exact204-byte insertion over21d63, original lifetime/native bytes retained"
+    }
+  ],
+  "fullOriginalsIndependentlyRestored": [
+    "9e88bb9abd3536b76ccde71a102ba88ca82e3a9dd0c27e28850ae79359cfde73",
+    "64aa6192ac2a2db63c2c0c7fa4120a64ee29eb1b1d80d7ce9a27a35afe6200a0"
+  ],
+  "resolvedFindings": [
+    "APPROVAL_SUSPENSION_AFTER_FINAL_AUTHORITY",
+    "UNKNOWN_PENDING_CLAIM_REENABLED_ADD",
+    "NO_RECORDED_IS_NOT_NEGATIVE_DISPATCH_PROOF"
+  ],
+  "sourceObservations": [
+    "One-shot approval consumption now precedes final write ACL, lease and mounted/mutation fences; existing Host/Engine cancellation and one-reservation semantics remain.",
+    "Unknown claim/lookup outcomes retain Check; positive current absence under the held claim precedes any no-pending UI state. Snapshot is protected and durable before attach.",
+    "Both snapshot removal sites are success-only: verified Host receipt plus actual FilesV2 matching list. noRecorded retains exact intent; no arbitrary ID intake, re-selection, new mutation ID or POST exists on Check.",
+    "All nested fingerprint/native work is joined before filesystem claim release. Final UI publication checks original active mounted owner after release; source scope is unchanged.",
+    "Security-scoped picker access remains alive through bounded detached fingerprint and Host staging; there is no new UI plaintext copy.",
+    "The store comment-only correction reverses exactly to peer-reviewed bd91. Current storage source0032, Recoveryf646 and tests c0b remain covered by peer441337 plus this exact inverse.",
+    "The separately owned204-byte accessor checks original mounted owner, then exact account/Space recovery owner. Required recovery already flows from Root through Library to the original Document constructor.",
+    "Full byte inverse restores original9e88 Attachments and64aa Recovery; original load/open/close/status/retry methods and existing navigation/text recovery contract remain."
+  ],
+  "independentStorageReviewSHA256": "441337ed21820b57b8b14305f7ef8850b2dd0109619638f233eb8c929a80609f",
+  "originalFindingsSHA256": "ae2d1b2d3a746a744b832cfee72236e59780a30a323593e39cc4101fbb9c0409",
+  "accessorInverseSHA256": "b57a5b86c6fc30377e4a58615cb0900bdc944a42c05e8bdffd147297ce6f0ce4",
+  "separateRemainingWork": [
+    "Original row decoder optional-name/MIME bounds mismatch is intentionally unchanged here; separately reviewed projection correction is still needed.",
+    "W1 later validated201/poisoned-journal recovery successor is not included or guessed.",
+    "New store3methods/4cases, actual compiler/Native upload/readback, uncertain ACK, reopening, picker cancellation, permission changes, SwiftUI/RTL/AX/visual and physical-device acceptance are NOT_RUN."
+  ],
+  "operations": {
+    "sourceByteInspection": true,
+    "compiler": 0,
+    "tests": 0,
+    "oracle": 0,
+    "mac": 0,
+    "native": 0
+  },
+  "productRuntimeAdmission": false
+}

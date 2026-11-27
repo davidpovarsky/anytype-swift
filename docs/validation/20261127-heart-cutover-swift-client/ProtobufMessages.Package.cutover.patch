@@ -1,0 +1,11 @@
+--- a/Modules/ProtobufMessages/Package.swift
++++ b/Modules/ProtobufMessages/Package.swift
+@@ -5,0 +6,4 @@
++// The factory directly links the five generated cutover byte symbols. Runtime
++// admission also requires the caller-supplied exact coherent native source profile.
++let heartCutover = authorizedReadCandidate
++    && ProcessInfo.processInfo.environment["PINKHA_NATIVE_HEART_CUTOVER_V1"] == "1"
+@@ -42 +46,2 @@
+-              + (semanticAnchorPage154 ? [.define("PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1")] : []),
++              + (semanticAnchorPage154 ? [.define("PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1")] : [])
++              + (heartCutover ? [.define("PINKHA_NATIVE_HEART_CUTOVER_V1")] : []),

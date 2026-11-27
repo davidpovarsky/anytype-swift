@@ -8,6 +8,7 @@ import UniformTypeIdentifiers
 import PinkhaAnyEngine
 import PinkhaAnyHost
 import PinkhaAnyIntegration
+import PinkhaKit
 import HanlinMiniAppsBridge
 
 struct AnyNativeAttachment: Identifiable, Equatable, Sendable {
@@ -46,6 +47,32 @@ struct AnyNativeAttachmentPreview: Identifiable {
     let url: URL
 }
 
+struct AnyNativeAttachmentPicker: Identifiable {
+    let id = UUID()
+    let initialDirectory: URL
+}
+
+private actor AnyNativeAttachmentUploadApproval {
+    private var consumed = false
+    func consume() throws {
+        guard !consumed else { throw AnyNativeFileAttachmentError.writeUncertain }
+        consumed = true
+    }
+}
+
+private struct AnyNativeAttachmentOperation: Sendable {
+    let creator: AnyNativeFileAttachmentCreator
+    let authorizeRead: AnyNativeFileAttachmentCreator.Check
+    let authorizeAttachment: AnyNativeFileAttachmentCreator.Check
+    let files: @Sendable () async throws -> [AnyNativeAttachment]
+}
+
+private enum AnyNativeAttachmentResume: Sendable {
+    case verified(AnyNativeFileAttachmentIntent, [AnyNativeAttachment])
+    case notRecorded(AnyNativeFileAttachmentIntent, [AnyNativeAttachment])
+    case noPending([AnyNativeAttachment])
+}
+
 /// A visible Retry action can authorize one scheduling request. A native 204
 /// acknowledges that request only; it never supplies a file-status value.
 private actor AnyNativeAttachmentRetryApproval {
@@ -74,6 +101,10 @@ final class AnyNativeAttachmentsPresentation: Identifiable {
     var pendingMiniAppsInput: MiniAppContent?
     var storageStatuses: [String: AnyNativeFileStatus] = [:]
     var storageNotice: String?
+    var filePicker: AnyNativeAttachmentPicker?
+    var pendingAttachment: AnyNativeFileAttachmentIntent?
+    var uploadNotice: String?
+    private var uploadRecoveryReady = false
     private var active = true
     @ObservationIgnored private var task: Task<Void, Never>?
     @ObservationIgnored private var directories: [URL] = []
@@ -293,6 +324,10 @@ final class AnyNativeAttachmentsPresentation: Identifiable {
         preview = nil
         storageStatuses = [:]
         storageNotice = nil
+        filePicker = nil
+        pendingAttachment = nil
+        uploadNotice = nil
+        uploadRecoveryReady = false
     }
 
     private func requireActive() throws {
@@ -308,6 +343,297 @@ final class AnyNativeAttachmentsPresentation: Identifiable {
     }
 }
 
+extension AnyNativeAttachmentsPresentation {
+    var canAddAttachment: Bool {
+        active && !busy && task == nil && filePicker == nil && uploadRecoveryReady &&
+        pendingAttachment == nil && document.canMutate && !document.hasPendingEdits
+    }
+
+    var showsAttachmentCheck: Bool { pendingAttachment != nil || !uploadRecoveryReady }
+
+    func chooseAttachment() {
+        guard canAddAttachment else { return }
+        do {
+            try requireUploadWrite()
+            let directory = try FileManager.default.url(for: .documentDirectory,
+                in: .userDomainMask, appropriateFor: nil, create: true)
+            filePicker = .init(initialDirectory: directory)
+        } catch { self.error = AnyUIErrorText.describe(error) }
+    }
+
+    func selectedAttachment(_ result: Result<URL?, any Error>, pickerID: UUID) {
+        guard filePicker?.id == pickerID else { return }
+        filePicker = nil
+        guard active, !busy, task == nil else { return }
+        switch result {
+        case .success(nil): break
+        case .failure(let error): self.error = AnyUIErrorText.describe(error)
+        case .success(let selected?): upload(selected)
+        }
+    }
+
+    /// Loading the protected original intent does not upload or verify a whole
+    /// file automatically. The user's Check action performs read-only recovery.
+    func loadUploadRecovery() {
+        guard active, !busy, task == nil else { return }
+        busy = true
+        task = Task { [weak self] in
+            guard let self else { return }
+            defer { task = nil; busy = false }
+            do {
+                let pending = try await withUploadClaim { store, claim in
+                    try await performAttachment { operation in
+                        try await operation.authorizeRead()
+                        let pending = try await store.pending(claim)
+                        try await operation.authorizeRead()
+                        return pending
+                    }
+                }
+                try requireActive()
+                pendingAttachment = pending
+                uploadRecoveryReady = true
+                uploadNotice = pending == nil ? nil : Self.pendingUploadMessage
+            } catch { presentUploadFailure(error) }
+        }
+    }
+
+    private func upload(_ url: URL) {
+        guard canAddAttachment else { return }
+        busy = true
+        uploadRecoveryReady = false
+        uploadNotice = nil
+        task = Task { [weak self] in
+            guard let self else { return }
+            defer { task = nil; busy = false }
+            let scoped = url.startAccessingSecurityScopedResource()
+            defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+            var mayHaveSavedIntent = true
+            do {
+                try requireUploadWrite()
+                let rows = try await withUploadClaim { store, claim in
+                    guard try await store.pending(claim) == nil else {
+                        throw AnyNativeAttachmentRecoveryError.conflictingIntent
+                    }
+                    mayHaveSavedIntent = false
+                    let fingerprint = try await Self.fingerprint(url)
+                    try requireUploadWrite()
+                    let intent = try AnyNativeFileAttachmentIntent(workspace: document.workspace,
+                        mutationID: UUID().uuidString.replacingOccurrences(of: "-", with: "").lowercased(),
+                        objectID: document.objectID, name: url.lastPathComponent,
+                        mime: UTType(filenameExtension: url.pathExtension)?.preferredMIMEType ?? "application/octet-stream",
+                        byteCount: fingerprint.byteCount, contentSHA256: fingerprint.sha256)
+                    mayHaveSavedIntent = true
+                    let rows = try await performAttachment { operation in
+                        try await operation.authorizeRead()
+                        // The caller snapshot is durable before the Host can
+                        // reserve its one original native POST.
+                        try await store.save(intent, claim: claim)
+                        try await operation.authorizeRead()
+                        let file = try await operation.creator.attach(intent, fileURL: url,
+                            authorizeRead: operation.authorizeRead,
+                            authorizeAttachment: operation.authorizeAttachment)
+                        let rows = try await operation.files()
+                        try Self.requireReturnedFile(file, in: rows, intent: intent)
+                        return rows
+                    }
+                    try requireActive()
+                    try await store.remove(intent, claim: claim)
+                    try requireActive()
+                    return rows
+                }
+                try requireActive()
+                publishUploadRows(rows)
+                uploadNotice = AnyUIErrorText.text("הקובץ צורף למסמך.", "The file was attached to this document.")
+            } catch { presentUploadFailure(error, pendingPossible: mayHaveSavedIntent) }
+        }
+    }
+
+    func checkPendingAttachment() {
+        guard active, !busy, task == nil else { return }
+        busy = true
+        task = Task { [weak self] in
+            guard let self else { return }
+            defer { task = nil; busy = false }
+            do {
+                let result = try await withUploadClaim { store, claim in
+                    let result = try await performAttachment { operation in
+                        try await operation.authorizeRead()
+                        guard let intent = try await store.pending(claim) else {
+                            return AnyNativeAttachmentResume.noPending(try await operation.files())
+                        }
+                        do {
+                            // No selected URL and no new mutation ID exists on
+                            // this path. Unknown or reserved outcomes never POST.
+                            let file = try await operation.creator.resume(intent, authorizeRead: operation.authorizeRead)
+                            let rows = try await operation.files()
+                            try Self.requireReturnedFile(file, in: rows, intent: intent)
+                            return AnyNativeAttachmentResume.verified(intent, rows)
+                        } catch AnyNativeFileAttachmentError.noRecordedAttachment {
+                            try await operation.authorizeRead()
+                            return AnyNativeAttachmentResume.notRecorded(intent, try await operation.files())
+                        }
+                    }
+                    try requireActive()
+                    switch result {
+                    case .verified(let intent, _): try await store.remove(intent, claim: claim)
+                    case .notRecorded, .noPending: break
+                    }
+                    try requireActive()
+                    return result
+                }
+                try requireActive()
+                switch result {
+                case .verified(_, let rows):
+                    publishUploadRows(rows)
+                    uploadNotice = AnyUIErrorText.text("הקובץ המצורף אומת.", "The original attachment was verified.")
+                case .notRecorded(let intent, let rows):
+                    publishUploadRows(rows)
+                    pendingAttachment = intent
+                    // A missing/replaced journal can also return no record.
+                    // That does not prove the original native POST never ran.
+                    uploadNotice = AnyUIErrorText.text("אין רישום שמאפשר לאמת את בקשת הצירוף. הבקשה המקורית נשמרה ולא תישלח שוב.",
+                        "No record is available to verify this attachment request. The original request is retained and will not be sent again.")
+                case .noPending(let rows): publishUploadRows(rows)
+                }
+            } catch { presentUploadFailure(error) }
+        }
+    }
+
+    private func withUploadClaim<Value: Sendable>(
+        _ operation: @MainActor (AnyNativeAttachmentIntentStore, AnyNativeAttachmentIntentClaim) async throws -> Value
+    ) async throws -> Value {
+        try requireActive()
+        let store = try document.attachmentIntentStore(for: owner)
+        let claim = try await store.claim(objectID: document.objectID)
+        do {
+            try requireActive()
+            let result = try await operation(store, claim)
+            await store.release(claim)
+            return result
+        } catch {
+            // Every nested fingerprint/native operation is awaited, including
+            // cancellation, before a replacement sheet may acquire this claim.
+            await store.release(claim)
+            throw error
+        }
+    }
+
+    private func performAttachment<Value: Sendable>(
+        _ operation: @escaping @Sendable (AnyNativeAttachmentOperation) async throws -> Value
+    ) async throws -> Value {
+        try requireActive()
+        let client = document.client, documents = document.documents, objects = document.objects
+        let workspace = document.workspace, objectID = document.objectID
+        let access = try AnyHTTPTorahTargetAccess(client: client, workspace: workspace,
+            allowedTypeIDs: document.capabilities.allowedTargetTypes,
+            editorDataset: documents.dataset, documentTypePolicy: .nativeCanonicalEditorV1)
+        let approval = AnyNativeAttachmentUploadApproval()
+        let current = authorization()
+        let writable: AnyNativeFileAttachmentCreator.Check = { [weak self] in
+            guard let self else { throw AnyHostError.sessionClosed }
+            try await self.requireUploadWrite()
+        }
+        return try await document.nativeSession.perform { lease in
+            let authorizeRead: AnyNativeFileAttachmentCreator.Check = {
+                try await lease.validate()
+                try await current()
+                try await access.validate(.object(objectId: objectID), intent: .read)
+                try await current()
+                try await lease.validate()
+            }
+            let authorizeAttachment: AnyNativeFileAttachmentCreator.Check = {
+                try await approval.consume()
+                try await access.validate(.object(objectId: objectID), intent: .write)
+                try await lease.validate()
+                try await writable()
+            }
+            let readFiles: @Sendable () async throws -> [AnyNativeAttachment] = {
+                _ = try await documents.read(objectID: objectID, lease: lease)
+                let value = try await client.requestJSON(method: "GET",
+                    path: ["v1", "spaces", workspace.spaceID, "files"],
+                    query: ["objectId": objectID, "limit": "10001"], maximumResponseBytes: 8 << 20,
+                    authorize: authorizeRead)
+                guard let rows = value["files"]?.array, rows.count <= 10_000 else {
+                    throw AnyHostError.incompleteDocument
+                }
+                let files = try rows.map { try AnyNativeAttachment($0, objectID: objectID) }
+                guard Set(files.map(\.id)).count == files.count else { throw AnyHostError.incompleteDocument }
+                try await authorizeRead()
+                return files
+            }
+            try await authorizeRead()
+            let creator = try await objects.makeFileAttachmentCreator()
+            let result = try await operation(.init(creator: creator, authorizeRead: authorizeRead,
+                authorizeAttachment: authorizeAttachment, files: readFiles))
+            try await authorizeRead()
+            return result
+        }
+    }
+
+    private func requireUploadWrite() throws {
+        try requireActive()
+        guard document.canMutate, !document.hasPendingEdits else { throw AnyHostError.changedDocument }
+    }
+
+    private func publishUploadRows(_ rows: [AnyNativeAttachment]) {
+        files = rows.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        pendingAttachment = nil
+        uploadRecoveryReady = true
+        storageStatuses = [:]
+        storageNotice = nil
+        uploadNotice = nil
+        error = nil
+    }
+
+    private func presentUploadFailure(_ failure: any Error, pendingPossible: Bool = true) {
+        guard active else { return }
+        discardVisibleFiles()
+        guard (try? requireActive()) != nil else { return }
+        // No original hint or resolved native metadata is republished after a
+        // failed authority/readback. Check starts with fresh current authority.
+        uploadNotice = pendingPossible ? Self.pendingUploadMessage : nil
+        uploadRecoveryReady = !pendingPossible
+        switch failure {
+        case AnyNativeFileAttachmentError.writeUncertain,
+             AnyNativeFileAttachmentError.knownFileUnverified(_):
+            error = AnyUIErrorText.text("תוצאת הצירוף עדיין לא אומתה. בדוק את הבקשה המקורית; הקובץ לא יישלח שוב.",
+                "The attachment result is not yet verified. Check the original request; the file will not be sent again.")
+        case AnyNativeAttachmentRecoveryError.operationInProgress:
+            error = AnyUIErrorText.text("פעולת צירוף קודמת עדיין מסתיימת. נסה לבדוק שוב לאחר שתסתיים.",
+                "An earlier attachment operation is still finishing. Check again after it finishes.")
+        default: error = AnyUIErrorText.describe(failure)
+        }
+    }
+
+    private static var pendingUploadMessage: String {
+        AnyUIErrorText.text("אפשר לבדוק את בקשת הצירוף השמורה ללא שליחה נוספת.",
+            "You can check the saved attachment request without sending it again.")
+    }
+
+    nonisolated private static func requireReturnedFile(_ file: AnyNativeAttachedFile,
+        in rows: [AnyNativeAttachment], intent: AnyNativeFileAttachmentIntent) throws {
+        let reference = file.reference
+        guard reference.accountID.utf8.elementsEqual(intent.workspace.accountID.utf8),
+              reference.spaceID.utf8.elementsEqual(intent.workspace.spaceID.utf8),
+              reference.objectID.utf8.elementsEqual(intent.objectID.utf8),
+              file.byteCount == intent.byteCount,
+              let row = rows.first(where: { $0.id.utf8.elementsEqual(reference.fileID.utf8) }),
+              row.objectID.utf8.elementsEqual(intent.objectID.utf8), row.size == file.byteCount,
+              row.name.utf8.elementsEqual(file.name.utf8),
+              row.mime.utf8.elementsEqual((file.mime.isEmpty ? "application/octet-stream" : file.mime).utf8),
+              (row.rootCID ?? "").utf8.elementsEqual((file.rootCID ?? "").utf8) else {
+            throw AnyHostError.changedDocument
+        }
+    }
+
+    nonisolated private static func fingerprint(_ url: URL) async throws -> AnyNativeFileSourceFingerprint {
+        let child = Task.detached(priority: .utility) { try await AnyNativeFileUploader.fingerprint(fileURL: url) }
+        return try await withTaskCancellationHandler {
+            try await child.value
+        } onCancel: { child.cancel() }
+    }
+}
+
 struct AnyNativeAttachmentsView: View {
     @Bindable var model: AnyNativeAttachmentsPresentation
     @Environment(\.dismiss) private var dismiss
@@ -320,6 +646,22 @@ struct AnyNativeAttachmentsView: View {
                         .accessibilityIdentifier("any-native-file-retry-notice")
                 }
                 if model.busy { ProgressView() }
+                if let notice = model.uploadNotice {
+                    Section {
+                        Text(notice).font(.footnote).foregroundStyle(.secondary)
+                            .accessibilityIdentifier("any-native-upload-notice")
+                        if let pending = model.pendingAttachment {
+                            Text(pending.name.isEmpty ? AnyUIErrorText.text("קובץ מצורף", "Attachment") : pending.name)
+                                .accessibilityIdentifier("any-native-upload-pending-name")
+                        }
+                        if model.showsAttachmentCheck {
+                            Button(AnyUIErrorText.text("בדיקת בקשת הצירוף", "Check attachment request"),
+                                   systemImage: "arrow.clockwise") { model.checkPendingAttachment() }
+                                .disabled(model.busy)
+                                .accessibilityIdentifier("any-native-upload-check")
+                        }
+                    }
+                }
                 if !model.busy && model.files.isEmpty && model.error == nil {
                     Text(AnyUIErrorText.text("אין קבצים מצורפים במסמך.", "This document has no attachments."))
                 }
@@ -369,13 +711,23 @@ struct AnyNativeAttachmentsView: View {
                     Button(AnyUIErrorText.text("סגירה", "Close")) { dismiss() }
                 }
                 ToolbarItem(placement: .primaryAction) {
+                    Button(AnyUIErrorText.text("צירוף קובץ", "Add attachment"), systemImage: "plus") {
+                        model.chooseAttachment()
+                    }.disabled(!model.canAddAttachment).accessibilityIdentifier("any-native-upload-add")
+                }
+                ToolbarItem(placement: .primaryAction) {
                     Button(AnyUIErrorText.text("רענון", "Refresh"), systemImage: "arrow.clockwise") {
-                        Task { await model.load() }
+                        Task { await model.load(); model.loadUploadRecovery() }
                     }.disabled(model.busy)
                 }
             }
-            .task { await model.load() }
+            .task { await model.load(); model.loadUploadRecovery() }
             .sheet(item: $model.preview) { item in AnyNativeFilePreview(url: item.url) }
+            .sheet(item: $model.filePicker) { picker in
+                PinkhaDocumentTransferPicker(operation: .open([.data]), initialDirectory: picker.initialDirectory) { result in
+                    model.selectedAttachment(result, pickerID: picker.id)
+                }
+            }
         }
     }
 

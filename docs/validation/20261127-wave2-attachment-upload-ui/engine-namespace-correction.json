@@ -1,0 +1,9 @@
+{
+  "status": "ONE_ENGINE_NAMESPACE_QUALIFICATION",
+  "oldSHA256": "604a79eae487b6ec1ff4b1d5b7ad2b69872ac6bebcbae0bec3e1706972b2a5da",
+  "newSHA256": "bd91c48c0dc408e04f054d2e7dd2bd3cdd0a73e9df751edba15be4348b43ffce",
+  "original": "_ = try AnyNativeFileReference(accountID: workspace.accountID",
+  "replacement": "_ = try PinkhaAnyEngine.AnyNativeFileReference(accountID: workspace.accountID",
+  "reason": "Both Host and Engine export AnyNativeFileReference; matches existing original Attachments explicit Engine qualifier. No runtime or schema change.",
+  "reverseRestoresOriginal": true
+}

@@ -1,0 +1,354 @@
+{
+  "actual17": {
+    "appleAcceptance": false,
+    "dependencies": {
+      "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/retained/current8ac/swift-protobuf-source1/swift-protobuf": {
+        "commit": "c6fe6442e6a64250495669325044052e113e990c",
+        "trackedFiles": 745
+      },
+      "/tmp/pinkha-w1-migration-swift-20261127/checkouts/swift-asn1": {
+        "commit": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+        "trackedFiles": 211
+      },
+      "/tmp/pinkha-w1-migration-swift-20261127/checkouts/swift-crypto": {
+        "commit": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+        "trackedFiles": 919
+      }
+    },
+    "generatorReceipt": {
+      "bytes": 150227,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-generation-physical1/receipt.json",
+      "sha256": "2ff5021a3795448300a5062f474e3bdc40d8925382831fd4f3eef9548a2304a5"
+    },
+    "methods": [
+      "PinkhaHeartCutoverClientTests.testAllFiveMethodsDispatchWithTheOwnedFrozenScope",
+      "PinkhaHeartCutoverClientTests.testBareAcknowledgementsBindFullFrozenAuthorAndPayloadDigest",
+      "PinkhaHeartCutoverClientTests.testBothReadsRefuseOwnerRetirementWithoutReleasingPrivateResponse",
+      "PinkhaHeartCutoverClientTests.testCancellationAfterDispatchRetainsEachNativeAcknowledgement",
+      "PinkhaHeartCutoverClientTests.testCancellationBeforeValidatedHandoffNeverDispatches",
+      "PinkhaHeartCutoverClientTests.testForeignOrMismatchedAcknowledgementsNeverBecomeDurableReceipts",
+      "PinkhaHeartCutoverClientTests.testForeignSpaceAndReplacementCannotReuseOldOwner",
+      "PinkhaHeartCutoverClientTests.testMalformedOversizedAndVersionlessRepliesNeverInventCommitReceipts",
+      "PinkhaHeartCutoverClientTests.testNativeChangeIDGrammarRefusesNoncanonicalRepresentations",
+      "PinkhaHeartCutoverClientTests.testOwnedTaskKeepsOriginalRequestBytesWhileCallerValueChanges",
+      "PinkhaHeartCutoverClientTests.testPrivateOrMalformedChangeIDsCannotCrossRetirementOrCancellation",
+      "PinkhaHeartCutoverClientTests.testRuntimeChangeAndRetiredLeaseRefuseBeforeNativeDispatch",
+      "PinkhaHeartCutoverClientTests.testThreeWritesPreserveNativeFailureReceiptsWithoutRetry",
+      "PinkhaHeartCutoverClientTests.testThreeWritesRetainCommitAndAllNativeIssuesAfterOwnerRetirement",
+      "PinkhaHeartCutoverClientTests.testTransportFailureIsUncertainAndNeverAutomaticallyRetried",
+      "PinkhaHeartCutoverInteropTests.testAllFiveSwiftMethodsDecodeExactCapturedNativeFrames",
+      "PinkhaHeartCutoverInteropTests.testCanonicalIdentityMatchesEveryCapturedSignedClaim"
+    ],
+    "nativeAcceptance": false,
+    "originalCommand": {
+      "absenceObservedAtSeconds": 109.47477031871676,
+      "argv": [
+        "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+        "test",
+        "--package-path",
+        "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical5/package",
+        "--scratch-path",
+        "/mnt/development/projects/caches/pinkha-e-cutover-swift-client-physical5-20261127/swift-build",
+        "--cache-path",
+        "/mnt/development/projects/caches/pinkha-e-cutover-swift-client-physical5-20261127/swiftpm-cache",
+        "--jobs",
+        "1",
+        "-Xswiftc",
+        "-gnone",
+        "--filter",
+        "PinkhaHeartCutover(Client|Interop)Tests",
+        "--xunit-output",
+        "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical5/tests.xml"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical5/package",
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "logSHA256": "62a9e4430e3f58c37c1ff8af426a3034257faadd54fb9abeb594fc62528cc0d5",
+      "pgid": 439253,
+      "pid": 439253,
+      "processGroupAbsent": true,
+      "resourceSamples": 447,
+      "sampledOwnedBytesPeak": 295899136,
+      "seconds": 109.47477271873504,
+      "signals": [],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    },
+    "originalLog": {
+      "bytes": 6021,
+      "sha256": "62a9e4430e3f58c37c1ff8af426a3034257faadd54fb9abeb594fc62528cc0d5"
+    },
+    "packageRows": 247,
+    "receipt": {
+      "bytes": 62564,
+      "sha256": "caae8ef5c4056a0b3137b07f35093297414a450259f19dc44d1fab75b1554fe3"
+    },
+    "rpcManifestSHA256": "b98c93ff11e492e173ca2a0b93548ed4cdfb275bb4b345bd82468e55c6e481ac",
+    "sourceBaseCommit": "4488a43443cbb09e25f02ae593d8cc8cb3d2b470",
+    "sourceRows": 246
+  },
+  "allPrimaryBytes": 1555385,
+  "allPrimaryRows": 51,
+  "commit": "d860cb15de479556110c5e6efa07e739fb0d07fc",
+  "controllers": [
+    {
+      "bytes": 11027,
+      "name": "cutover_retained_location.py",
+      "sha256": "8ee6831c07fe912cbd2d63541862a8ec20b42ca5dc1937ac1070e86509dc6059"
+    },
+    {
+      "bytes": 14264,
+      "name": "generate_cutover_swift_relocated.py",
+      "sha256": "e12dc150343c13ef2bc5d087442ecd1cf83d2e5fc88d93c919472cb9fd07b4a8"
+    },
+    {
+      "bytes": 9527,
+      "name": "owned_swift_commands.py",
+      "sha256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56"
+    },
+    {
+      "bytes": 18947,
+      "name": "qualify_cutover_swift_relocated.py",
+      "sha256": "80488d446e2c5e61f36411e79767520504f59d5de976fab5674bd6afa8915315"
+    },
+    {
+      "bytes": 20964,
+      "name": "qualify_cutover_swift_relocated_alloc192.py",
+      "sha256": "c0c4c9a16f84bba0db3df5068a2670e9de49584d39843d19b98bc11bd0ce7939"
+    },
+    {
+      "bytes": 21046,
+      "name": "qualify_cutover_swift_relocated_alloc320.py",
+      "sha256": "dbc986b06f29cc0c6a47918c18d103d32da15d5832e47b9ba07d2922fdb0b5b3"
+    },
+    {
+      "bytes": 14894,
+      "name": "qualify_cutover_swift_reuse_physical.py",
+      "sha256": "6d23b1c2de1e3e425dfdecdf1cf646b1d283be4e6b6d0e852a9a29442199ac4b"
+    }
+  ],
+  "copiedRows": 40,
+  "evidenceRows": 19,
+  "generationCommands": 10,
+  "largeInventoryFilesReadInOriginalCaptureOnly": 5,
+  "nativeBoundaryCompositionReceipt": {
+    "bytes": 18503,
+    "sha256": "4a6321bc3dda209682ef166207c8b2e30946f6933f07ae362f2ef1236c5022b2"
+  },
+  "nativeBoundarySourceReadback": [
+    {
+      "bytes": 612495,
+      "path": "heart/clientlibrary/service/service.pb.go",
+      "sha256": "340c8834744f95b5476743e11b58818383893bd17d22f43dce94395762847237"
+    },
+    {
+      "bytes": 22072,
+      "path": "heart/core/pinkha_torah_cutover_rpc.go",
+      "sha256": "6a0ca15096120e383effec2d80813d17a3868f8a39d35940076ecf1b1ef9c945"
+    },
+    {
+      "bytes": 13118,
+      "path": "heart/core/pinkha_torah_cutover.go",
+      "sha256": "e20050cdc7014f2326972f6abab0355b1500527febb1121fceed5acebc4c5d0b"
+    },
+    {
+      "bytes": 10236,
+      "path": "heart/core/pinkha_torah_operations.go",
+      "sha256": "d30fb5f7749e9abf41ee6c5f145ce0fabb7cd31581c8f7e95f3208692656ba39"
+    },
+    {
+      "bytes": 791,
+      "path": "heart/core/application/pinkha_torah_lifecycle.go",
+      "sha256": "2964d64dde48ea025f9e761197f33210d4541665ad97398ca82a2729faa5fd83"
+    },
+    {
+      "bytes": 6389,
+      "path": "heart/core/application/account_select.go",
+      "sha256": "70df8befa61075fb2fa0b4fe486a20518de418cc685db1f77d410daff9620a91"
+    }
+  ],
+  "newCompilerTestNativeAccountCalls": 0,
+  "originalFailures": [
+    {
+      "attempt": 1,
+      "buildAllocationBytes": 134217728,
+      "error": "RuntimeError: owned command did not finish normally: exact-swift-client-tests",
+      "exitCode": 1,
+      "measuredBuildPeakBytes": 23437312,
+      "originalLog": {
+        "bytes": 57166,
+        "sha256": "ab13fd54cef95975e73af8f50f4db20666a08e73211efa3c6fb297ad59687602"
+      },
+      "processGroupAbsent": true,
+      "receipt": {
+        "bytes": 5598,
+        "sha256": "61752ab18445a625012edc63844b8e358b44f28f6ddf5c500934fba326765e8d"
+      },
+      "signals": []
+    },
+    {
+      "attempt": 2,
+      "buildAllocationBytes": 134217728,
+      "error": "RuntimeError: owned command did not finish normally: exact-swift-client-tests",
+      "exitCode": 1,
+      "measuredBuildPeakBytes": 107151360,
+      "originalLog": {
+        "bytes": 23746,
+        "sha256": "56d02e3c307ee41b287a60a094b4effd344b5b7a5ca2539fd4655a4b62713d35"
+      },
+      "processGroupAbsent": true,
+      "receipt": {
+        "bytes": 6377,
+        "sha256": "7b3c8ddcff00ac071dc4b331d7e8ae6aefa5fc85f148734d2d0859786e04f203"
+      },
+      "signals": []
+    },
+    {
+      "attempt": 3,
+      "buildAllocationBytes": 134217728,
+      "error": "RuntimeError: owned client output growth cap",
+      "exitCode": -15,
+      "measuredBuildPeakBytes": 134627328,
+      "originalLog": {
+        "bytes": 418,
+        "sha256": "74f8d9999062addc5a82b9b91ab4462435935b2cd1098809925555ed869fa058"
+      },
+      "processGroupAbsent": true,
+      "receipt": {
+        "bytes": 6513,
+        "sha256": "de50efc7cfb94ace6bc6b502fb1653ea1beeabc36043f5e7191e0c8a355a7047"
+      },
+      "signals": [
+        15
+      ]
+    },
+    {
+      "attempt": 4,
+      "buildAllocationBytes": 201326592,
+      "error": "RuntimeError: owned client output growth cap",
+      "exitCode": -15,
+      "measuredBuildPeakBytes": 253173760,
+      "originalLog": {
+        "bytes": 737,
+        "sha256": "b5276d3a7001568d635cbaa2acb39cf8049d91c2d9dfbd6257a9c65c0865fde1"
+      },
+      "processGroupAbsent": true,
+      "receipt": {
+        "bytes": 7412,
+        "sha256": "b460fadc9c970e6b846420561f384d7599a303bd79c7debc05e416c971cd3738"
+      },
+      "signals": [
+        15
+      ]
+    }
+  ],
+  "packageDraft": {
+    "after": {
+      "bytes": 2886,
+      "sha256": "119443f53342b253832e2e30bfc1448739648c7628837e98624080d7c010b173"
+    },
+    "afterGitBlob": "4162dffe86d2aa474026306143e49a0e9809199e",
+    "baseCommit": "e4556ba1edbf7c698eb04cb1ecc9caaeed34e1ff",
+    "before": {
+      "bytes": 2513,
+      "sha256": "1cc18e497d8385c9f6a34c039aac3678b72963507f095567660a1fa51db64220"
+    },
+    "beforeGitBlob": "b688ee88408f58af27ca2183646ebd160384fe46",
+    "combinedRuntimeAndExistingDefinesUnchanged": true,
+    "fullByteInverse": true,
+    "literalInverseOperations": [
+      {
+        "removeAfter": "let authorizedReadCandidate = combinedRuntime || ProcessInfo.processInfo.environment[\"PINKHA_NATIVE_T2_AUTHORIZED_READ_V1\"] == \"1\"\n// The factory directly links the five generated cutover byte symbols. Runtime\n// admission also requires the caller-supplied exact coherent native source profile.\nlet heartCutover = authorizedReadCandidate\n    && ProcessInfo.processInfo.environment[\"PINKHA_NATIVE_HEART_CUTOVER_V1\"] == \"1\"\n",
+        "restoreBefore": "let authorizedReadCandidate = combinedRuntime || ProcessInfo.processInfo.environment[\"PINKHA_NATIVE_T2_AUTHORIZED_READ_V1\"] == \"1\"\n"
+      },
+      {
+        "removeAfter": "              + (combinedRuntime ? [.define(\"PINKHA_DUAL_ENGINE_RUNTIME\")] : [])\n              + (heartCutover ? [.define(\"PINKHA_NATIVE_HEART_CUTOVER_V1\")] : []),",
+        "restoreBefore": "              + (combinedRuntime ? [.define(\"PINKHA_DUAL_ENGINE_RUNTIME\")] : []),"
+      }
+    ],
+    "newFactoryStillRequiresExplicitOptIn": true,
+    "requiresRootSourceRetentionMapRow62UpdateIfApplied": true,
+    "sharedSourcesDependenciesAndFixturePreconditionUnchanged": true,
+    "status": "PROPOSED_ONLY_NOT_APPLIED_OR_ACTIVATED"
+  },
+  "remoteWrites": 0,
+  "removedBytes": 11,
+  "runtimeActivation": false,
+  "selectedLocalFiles": 46,
+  "sourceRows": 8,
+  "status": "PASS_STATIC_ORIGINAL_BYTE_AND_RECEIPT_REVIEW",
+  "tree": "8215e1286d14f86efde6bd1faa5564cb791a4723",
+  "whitespaceInverses": [
+    {
+      "after": {
+        "bytes": 25382,
+        "sha256": "8e1ada6f785e5a3286c46f2ab88329052c7354e6ba57483ed18f17c4f13739a8"
+      },
+      "before": {
+        "bytes": 25383,
+        "sha256": "ccc8251a38939f243873310a0ae757f8336a861da440bc370a7d34452e01a5de"
+      },
+      "completeByteInverse": true,
+      "offset": 25382,
+      "path": "Modules/ProtobufMessages/Sources/PinkhaHeartCutoverClient.swift",
+      "removedASCII": "\n"
+    },
+    {
+      "after": {
+        "bytes": 32951,
+        "sha256": "a1eb40355f7b0cc42db069660a6e95aca20c8cd66dffe7769d2c89cb7141c7d9"
+      },
+      "before": {
+        "bytes": 32952,
+        "sha256": "7476f9beb1e4fec6e153a80734de70cd3d22cc622fa5c191193a22005725664b"
+      },
+      "completeByteInverse": true,
+      "offset": 32951,
+      "path": "Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartCutoverClientTests.swift",
+      "removedASCII": "\n"
+    },
+    {
+      "after": {
+        "bytes": 10278,
+        "sha256": "981d55372a074704d0a8828f123fec4af43d7bf3d8d47f721f8d3dc44103f9a4"
+      },
+      "before": {
+        "bytes": 10279,
+        "sha256": "6efe72cf027ce3871ce74897a5edf2a61186dcf8d166e815987b8c98e30fe480"
+      },
+      "completeByteInverse": true,
+      "offset": 10278,
+      "path": "Tools/TorahNativeOperations/legacy_cutover/swift/Tests/PinkhaHeartCutoverInteropTests.swift",
+      "removedASCII": "\n"
+    },
+    {
+      "after": {
+        "bytes": 65682,
+        "sha256": "b26778d47c508ff7d9c78212eb768f16439893c95c97d0331ad99092304f38f6"
+      },
+      "before": {
+        "bytes": 65686,
+        "sha256": "2de5a67464019e72ba1e5889c5b6f5a8df98de8602a129b9cd4bde172ec8bd4b"
+      },
+      "completeByteInverse": true,
+      "offset": 28348,
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Pinkha.TorahOperations.swift",
+      "removedASCII": "    "
+    },
+    {
+      "after": {
+        "bytes": 2105,
+        "sha256": "1c6df346371e3fff968533e1ea00702e56147f1c8896d4058aa9c4fd3c812f5b"
+      },
+      "before": {
+        "bytes": 2109,
+        "sha256": "5de3d19e8e8d03140a1f5c0f3717c920ddfa128d00fe57a44dd4eb046cc85ea4"
+      },
+      "completeByteInverse": true,
+      "offset": 707,
+      "path": "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Pinkha.swift",
+      "removedASCII": "    "
+    }
+  ]
+}

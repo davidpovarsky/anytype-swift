@@ -1,0 +1,54 @@
+{
+  "changes": [
+    {
+      "after": {
+        "bytes": 10782,
+        "sha256": "f617d7200e8589c316ae7c2767efd893974a04a292b70b4646ef0cae64253af4"
+      },
+      "before": {
+        "bytes": 10783,
+        "sha256": "c77085ca4956802c26ba3a77e1d0cc3c480f9674c0367e2081d84ef61b47f923"
+      },
+      "diff": "--- snapshot2/README.md\n+++ snapshot3/README.md\n@@ -152,7 +152,7 @@\n only on the Mac. No runtime results are synthesized from these control fixtures.\n \n `run_controls.py` is a concrete one-shot Mac supervisor for all eleven. It binds\n-the full original receiver closure, exact staged source index and three original\n+the full original receiver closure, exact staged source index and four original\n supervisor sources; runs the six Python cases once (60 seconds) and five Node\n cases once (120 seconds); requires zero skipped cases and positive owned-group\n closure; and uses only synthetic fixture bytes under its new owned directory.\n",
+      "path": "README.md"
+    },
+    {
+      "after": {
+        "bytes": 14563,
+        "sha256": "ca95c31a20c6c378b0ab8854a966feabba6b48c68da81b1a0c0874c22e8aed39"
+      },
+      "before": {
+        "bytes": 13623,
+        "sha256": "51b4e2463674003d6bef333a43d213329edbdd5ed7c4295f8c9975af46be6e04"
+      },
+      "diff": "--- snapshot2/run_controls.py\n+++ snapshot3/run_controls.py\n@@ -9,6 +9,7 @@\n \n import argparse\n import ast\n+from contextlib import contextmanager\n import hashlib\n import json\n import os\n@@ -31,6 +32,7 @@\n     \"shared\": (\"Tools/CurrentAppleValidation/combined_heart_semantics/build15/combined_heart_semantics_current.py\", \"1dcd02a4413b26c201e8a38772484eff48e448ae4398af2fd4ee1fc6a5675736\"),\n     \"lifetime\": (\"Tools/PinkhaDualEngineRuntime/hosted_core13/run.py\", \"cf16f08fefcc0d639e1f924a230c2fefb8bcc7af4f311e9e03191165908a29c8\"),\n     \"t5\": (\"Tools/CurrentAppleValidation/combined_heart_semantics/build15/combined_host_acceptance_app15.py\", \"e574f30bd123e6645f093951744a924bf2e9190be6c7474480eb6ec8f58d8eed\"),\n+    \"signals\": (\"Tools/Hanlin/host_command.py\", \"5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807\"),\n }\n PYTHON_METHODS = (\n     \"test_original_stage_failure_survives_receipt_io_failure\",\n@@ -66,7 +68,7 @@\n         selected.append(found[0])\n     module = ModuleType(\"t5_control_original_\" + kind)\n     module.__file__ = str(path)\n-    module.__dict__.update({\"Path\": Path, \"hashlib\": hashlib, \"json\": json, \"os\": os, \"re\": re,\n+    module.__dict__.update({\"Path\": Path, \"contextmanager\": contextmanager, \"hashlib\": hashlib, \"json\": json, \"os\": os, \"re\": re,\n         \"shutil\": shutil, \"signal\": signal, \"stat\": stat, \"subprocess\": subprocess, \"sys\": sys, \"time\": time,\n         \"FLOOR\": 2 * 1024**3, **(bindings or {})})\n     future = ast.ImportFrom(module=\"__future__\", names=[ast.alias(name=\"annotations\")], level=0)\n@@ -156,8 +158,15 @@\n         for name, argv, timeout in ((\"python-six\", [sys.executable, \"-B\", str(args.source / \"test_control.py\"), \"-v\"], 60),\n             (\"node-five\", [node[\"executable\"], \"--test\", \"--test-reporter=tap\", str(args.source / \"custody_crypto.test.mjs\")], 120)):\n             require(commands.is_open, \"Original unresolved group forbids the next control process\")\n+            command = None\n             try:\n                 log, command = commands.run(argv, name, timeout, checked=False)\n+                interruption = command.get(\"interruption\")\n+                if isinstance(interruption, dict):\n+                    if first is None:\n+                        first = {\"phase\": name, **interruption}\n+                    if interruption.get(\"type\") in {\"CommandCancelled\", \"KeyboardInterrupt\"}:\n+                        commands.original.cancelled = True\n                 text = shared.raw(log).decode()\n                 if name == \"python-six\":\n                     require(re.search(r\"\\bRan 6 tests in [0-9.]+s\", text) and re.search(r\"^OK$\", text, re.MULTILINE)\n@@ -172,8 +181,10 @@\n                     \"logSHA256\": sha(log), \"logBytes\": log.stat().st_size}\n             except BaseException as error:\n                 fail(error, name)\n-                result[\"series\"][name] = {\"status\": \"FAIL\", \"error\": shared.error(error)}\n-                if not commands.is_open:\n+                result[\"series\"][name] = {\"status\": \"FAIL\", \"error\": shared.error(error), \"originalCommand\": command}\n+                if isinstance(error, KeyboardInterrupt):\n+                    commands.original.cancelled = True\n+                if not commands.is_open or commands.original.cancelled:\n                     break\n         if len(result[\"series\"]) == 2 and all(row[\"status\"] == \"PASS\" for row in result[\"series\"].values()):\n             result[\"status\"] = \"PASS_ELEVEN_SYNTHETIC_MAC_CONTROLS_NOT_APP_OR_T5_ACCEPTANCE\"\n@@ -210,7 +221,10 @@\n     for name in (\"source\", \"source-index\", \"original-root\", \"receiver-node-closure\", \"receiver-private-key\", \"output\"):\n         parser.add_argument(\"--\" + name, type=Path, required=True)\n     parser.add_argument(\"--source-index-sha256\", required=True)\n-    return run(parser.parse_args())\n+    args = parser.parse_args()\n+    original_signals = load_declarations(args.original_root, \"signals\", (\"CommandCancelled\", \"cancellation_signals\"))\n+    with original_signals.cancellation_signals():\n+        return run(args)\n \n \n if __name__ == \"__main__\":\n",
+      "path": "run_controls.py"
+    }
+  ],
+  "originalBodiesChanged": false,
+  "originalDeclarations": [
+    {
+      "bytes": 172,
+      "declaration": "CommandCancelled",
+      "originalNodeUnchanged": true,
+      "sha256": "6896f3de5c4a0dc153fb1d51f14534fac170388c1ffb4fe1efe95ca6f3a23aa9"
+    },
+    {
+      "bytes": 549,
+      "declaration": "cancellation_signals",
+      "originalNodeUnchanged": true,
+      "sha256": "d1522f89115df853ab4c2badc313136f1f6e2f6514fa8914d5926b1edfc9d604"
+    }
+  ],
+  "originalSignalsFile": {
+    "bytes": 4236,
+    "sha256": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807"
+  },
+  "secondCommandAfterCancellation": false,
+  "signalContextSpansBothCommandsAndClosure": true,
+  "snapshot2": {
+    "bytes": 2154,
+    "sha256": "8999558b93a77b1cb702cda4832c31fb11528c09ecbbc6b32cc2a5604501359d"
+  },
+  "status": "SOURCE_ONLY_NOT_RUN"
+}

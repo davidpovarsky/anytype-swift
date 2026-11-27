@@ -1,0 +1,118 @@
+{
+  "schema": "wave3-independent-properties-related-lifetime21-review-v1",
+  "status": "SOURCE_READY_NO_CONCRETE_SCOPED_BLOCKER",
+  "reviewer": "/root/sdk_hanlin",
+  "repository": "davidpovarsky/anytype-swift",
+  "source": "21d63bef8950f8b927f0d8d3b4b052758bc98fcb",
+  "tree": "c1ea417afe3cfdbd3a21f84f510fcc3dcbb233c4",
+  "soleParent": "d8a2c67b6dae09a7b769e803a319de3d3080019c",
+  "currentRootPreimagesVerifiedAt": "e4556ba1edbf7c698eb04cb1ecc9caaeed34e1ff",
+  "findings": [],
+  "primarySourceClosure": {
+    "fileCount": 63,
+    "bytes": 965770,
+    "modifiedProductOrTestFiles": 3,
+    "addedProductFiles": 1,
+    "addedEvidenceFiles": 59,
+    "allPrimaryGitBlobsVerified": true,
+    "completeFileIndex": "verified-full-source-index.json",
+    "completeFileIndexSHA256": "30ffb030bad9e5e7ff49a534ccfd9745aa682d99cb708ed93856bab41c20eeef",
+    "primaryCompareIndex": "primary-exact-file-index.json",
+    "primaryCompareIndexSHA256": "748b45cd84e93758eaf2c03a036c27bdb727f39cfb8bd26c91ec3d7660d43a68",
+    "currentRootPreimageReceipt": "current-root-preimages.primary.json",
+    "currentRootPreimageReceiptSHA256": "0f7dc44332710e77dc1d869a31db561a2b84003adfe5f4958d8af3588b31dc0d",
+    "wholeTreeScope": "The primary comparison is ahead1/behind0 against the sole parent and contains exactly these63 paths. No workflow, Package.swift, PBX, source-map, SDK or engine file is in the change set. Root must still use its actual final merge-tree admission; this review does not mutate or materialize that tree."
+  },
+  "products": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "bytes": 72821,
+      "gitBlob": "221b312b0c3fa3fe51cf9f30efdfb09bfb4f369f",
+      "sha256": "f3b6b6bb5425d69d7eff09aecac9c82a5dfd125ed004c644126cb518e137c4a5",
+      "originalGitBlob": "f9cc5b324ec9e3d965aac5ea185beb7a1296c08a"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+      "bytes": 25348,
+      "gitBlob": "333cf9157b49853526fc1e5edee963b272423e60",
+      "sha256": "47e04a0dedaebe5a0d6dc35e4b8d30b58a5f0c8eda0cb44fea6283ecf801465d",
+      "originalGitBlob": "24cd3e10f410977bec1ab137a93455ac78e403fe"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift",
+      "bytes": 5157,
+      "gitBlob": "8ead95ff360b0abb67e7d85bb16b41415ec85551",
+      "sha256": "1cf8d0790e949b7592d4298dff0e788982ad3b0959c838350fe587d2c80e48c1",
+      "originalGitBlob": null
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift",
+      "bytes": 20809,
+      "gitBlob": "fb18996d811599334984085982c28bc78bd39d37",
+      "sha256": "f334ce278537413df7ef7b508db8bd250135f002f3b6dfa65a306459e4b807c6",
+      "originalGitBlob": "5c2f413005d9e2252f97f6a6b3b46f5f7c81d14d"
+    }
+  ],
+  "independentInverse": {
+    "receipt": "independent-byte-closure.json",
+    "sha256": "0e2c685e15bebdf16958b50fbee8c7e90e9dc576be030de4eb2bb63c3e6b6ae9",
+    "mechanism": "Parse and reverse each literal unified-diff hunk in memory, checking all after-context bytes and exact old/new line counts. Compare the three reconstructed complete originals with separately fetched immutable primary parent files; remove the sole new model. This is a byte proof, not an owner test/control replay.",
+    "hunks": 18,
+    "allThreeFullOriginalsRestored": true,
+    "newModelRemovedByInverse": true,
+    "originalOwnerInverseSHA256": "43b7c54c50412cb85f6626d189d5c86779b20e9a5e6d74c93b9356e40239a67b",
+    "rawPatchSHA256": "fef4fda22efb6bb5ed2c853a816e19a86b29bee139515b46195074e6ba03fbb2"
+  },
+  "sourceAssessment": [
+    "The real Properties tap reserves its child presentation and calls requestSourceDocuments synchronously. The request captures mounted document UUID, Properties presentation UUID and its own request UUID before constructing the MainActor Task; closing/reopening before task entry cannot let that task borrow the new presentation.",
+    "Both initial read admission and success/error publication require the exact request tuple, the original mounted/lifetime/foreground gate, original modal eligibility and noncancellation. Native results and localized failure/incomplete-index feedback are published in the same synchronous actor turn after those guards, without a suspension between guard and publication.",
+    "The original963-byte native index/metadata/repeated-readiness/lease body is unchanged. This candidate introduces no new account session, permission surrogate, write, index implementation or title-based identity recovery.",
+    "Changing showsProperties, actual unmount/revoke and a new mounted owner retire the model synchronously, clear rows/title/current request and cancel its original task. The returned cancelled task is appended to the existing closingObservers list and is joined by the existing document drain. Read-only noncooperative providers can finish, but their old result and defer cannot publish or finish a successor request.",
+    "The retained SwiftUI State reservation is keyed by the observable Properties UUID. A captured old dismissal/completion cannot release the reopened generation. Related-sheet dismissal setters also compare their captured UUID. Child-sheet coverage alone retains the Properties owner, matching the original presentation/navigation policy.",
+    "The resolved foreground issue is real in the inspected source: requireMounted includes surface.isForegroundMounted. The final defer checks only exact request ownership, so a settled same-generation read releases loading/reservation during temporary inactivity while its publication remains fully authority-gated. A replacement generation still cannot be cleared.",
+    "The original public async showDocuments signature remains, rejects an already-cancelled caller, awaits the exact task and forwards caller cancellation through withTaskCancellationHandler. Awaiting a cancelled caller still joins the child rather than reporting completion after scheduling.",
+    "The new test suite exercises the actual production request/result model with bounded typed suspended reads, including deliberately noncooperative completion. It is component source coverage, not native ACL/index or actual SwiftUI lifecycle acceptance. No assertion was counted as an executed result."
+  ],
+  "retainedOriginals": {
+    "nativeQueryBytes": 963,
+    "nativeQuerySHA256": "d87529a209c6942cb1c77ee0e36c956a5c992ea14210238ddc12c46916768f14",
+    "relatedIdentityTestPrefixBytes": 7010,
+    "relatedIdentityTestPrefixSHA256": "af7e3270f8b29d56ade52603e648d2ef36bb6a07dfea8bc07b9d7c2d448d8095",
+    "relatedIdentityMethods": 5,
+    "relatedIdentityDeclaredCases": 7,
+    "predecessorCandidatesAndFindings": ["review-v1", "review-v2", "review-successor.patch", "foreground-cleanup-successor.patch"],
+    "finalOwnerRootReviewSHA256": "5a000a11e62e3818d06b8042957316214bdd10a277f460084d98c0594897a94f",
+    "finalOwnerEditorReviewSHA256": "2eab027ef19c26d5af5e76a0dbcd6d276a52bfa9f1647546621a799210789d7e"
+  },
+  "newTests": {
+    "originalDeclaredTarget": "PinkhaAnyUITests",
+    "suite": "AnyNativeSourceDocumentsPublicationTests",
+    "methods": [
+      {"name": "queuedOldRequestCannotBorrowReopenedSheetAndCurrentFailureCanRetry()", "declaredCases": 1},
+      {"name": "noncooperativeOldCompletionCannotReplaceReopenedRequest(olderFails:changesDocumentOwner:)", "declaredCases": 4},
+      {"name": "retirementDiscardsRowsAndRejectsANoncooperativeCompletion(fails:)", "declaredCases": 2},
+      {"name": "asyncWaiterJoinsReadAndForwardsCallerCancellation(cancelCaller:)", "declaredCases": 2},
+      {"name": "temporarilyInactiveOwnerFinishesItsRequestAndCanRetry(fails:)", "declaredCases": 2}
+    ],
+    "methodCount": 5,
+    "declaredCaseCount": 11,
+    "typecheck": "NOT_RUN",
+    "actualEnumeration": null,
+    "actualResults": null,
+    "futureAdmission": "The future shared App must compile this exact changed test file and the new product source, retain actual compiler inputs, and select/enumerate the new suite through a separately reviewed current-source binding. No historicalT5 or unchanged5/7 identity replay is needed for this byte-only intake."
+  },
+  "sourceMapComposition": {
+    "reviewedMapRows": 132,
+    "changedPathsPresentInMap": false,
+    "requiredPropertyMapRowReplacements": [],
+    "pendingSDKMapRowsPreserved": [17, 27, 28, 102],
+    "decision": "These four paths are downstream PinkhaAnyUI source, absent from every current map row. Preserve the entire132-row map including the four already reviewed SDK replacements; do not import the donor's older130-row map. The donor changes no map/register file. Root can record the scoped source intake separately without inventing a baseline-source row.",
+    "originalGateExecutedHere": false
+  },
+  "limits": [
+    "This is source and original-byte custody review only. No Swift syntax parse/typecheck, test, native call, simulator, account mutation, package materialization or final-branch mutation was performed.",
+    "Actual sheet lifetime, same-scene inactivity, real account/runtime cancellation and native related-read behavior remain future matching shared-App acceptance obligations.",
+    "No current product receives these semantics through a controller-only source pin; no historical failed or passed runtime receipt is relabeled.",
+    "Root remains sole source integration and build owner."
+  ]
+}

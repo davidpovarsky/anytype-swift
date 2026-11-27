@@ -1,0 +1,497 @@
+{
+  "MacCommandsExecutedByChild": 0,
+  "after": {
+    "bytes": 14578,
+    "sha256": "de021b657c1f91e630204fd58eed6e1364c113c3b57d2d8915f0e2cb9cb5e2f4"
+  },
+  "before": {
+    "bytes": 14563,
+    "sha256": "ca95c31a20c6c378b0ab8854a966feabba6b48c68da81b1a0c0874c22e8aed39"
+  },
+  "cause": "NameError: write_bytes in original receipt writer; no test event observed; Node not run",
+  "finalProducerTuple": null,
+  "literalInverse": {
+    "occurrences": 1,
+    "replace": "(\"require\", \"sha\", \"digest\", \"raw\", \"decode\", \"write_bytes\", \"write\", \"error\", \"Commands\")",
+    "restoresWholeOriginalBytes": true,
+    "with": "(\"require\", \"sha\", \"digest\", \"raw\", \"decode\", \"write\", \"error\", \"Commands\")"
+  },
+  "loaderBindings": {
+    "FLOOR": "2 * 1024 ** 3",
+    "Path": "Path",
+    "contextmanager": "contextmanager",
+    "hashlib": "hashlib",
+    "json": "json",
+    "os": "os",
+    "re": "re",
+    "shutil": "shutil",
+    "signal": "signal",
+    "stat": "stat",
+    "subprocess": "subprocess",
+    "sys": "sys",
+    "time": "time"
+  },
+  "newControlsExecuted": 0,
+  "originalFailureContainer": {
+    "path": "mac-staging/actual-source1-run1.original.json",
+    "sha256": "9c61b38a9d1bb4565b86bc38095be36b7f83dc8ccc35e6b42f6ba57ca23b58e5"
+  },
+  "originalFirstFailurePreserved": true,
+  "originalHistoricalPGIDReprobed": false,
+  "originalReceiptSHA256": "78a142baf0e703d97cf1ceef0f6a4a18e567b44c632880061d2113bd855ba82f",
+  "originals": [
+    {
+      "allScopes": [
+        {
+          "globalReferences": [],
+          "kind": "module",
+          "scope": "top"
+        },
+        {
+          "globalReferences": [
+            "ValueError"
+          ],
+          "kind": "function",
+          "scope": "require"
+        },
+        {
+          "globalReferences": [
+            "hashlib"
+          ],
+          "kind": "function",
+          "scope": "sha"
+        },
+        {
+          "globalReferences": [
+            "Path",
+            "hashlib"
+          ],
+          "kind": "function",
+          "scope": "digest"
+        },
+        {
+          "globalReferences": [
+            "Path",
+            "require",
+            "stat",
+            "str"
+          ],
+          "kind": "function",
+          "scope": "raw"
+        },
+        {
+          "globalReferences": [
+            "json"
+          ],
+          "kind": "function",
+          "scope": "decode"
+        },
+        {
+          "globalReferences": [
+            "require"
+          ],
+          "kind": "function",
+          "scope": "unique"
+        },
+        {
+          "globalReferences": [
+            "ValueError"
+          ],
+          "kind": "function",
+          "scope": "lambda"
+        },
+        {
+          "globalReferences": [],
+          "kind": "function",
+          "scope": "genexpr"
+        },
+        {
+          "globalReferences": [
+            "Path",
+            "os"
+          ],
+          "kind": "function",
+          "scope": "write_bytes"
+        },
+        {
+          "globalReferences": [
+            "json",
+            "write_bytes"
+          ],
+          "kind": "function",
+          "scope": "write"
+        },
+        {
+          "globalReferences": [
+            "str",
+            "type"
+          ],
+          "kind": "function",
+          "scope": "error"
+        },
+        {
+          "globalReferences": [
+            "signal",
+            "staticmethod"
+          ],
+          "kind": "class",
+          "scope": "Commands"
+        },
+        {
+          "globalReferences": [
+            "Path",
+            "dict",
+            "os",
+            "set"
+          ],
+          "kind": "function",
+          "scope": "__init__"
+        },
+        {
+          "globalReferences": [
+            "BaseException",
+            "ProcessLookupError",
+            "error",
+            "int",
+            "os",
+            "subprocess",
+            "time"
+          ],
+          "kind": "function",
+          "scope": "_terminate_owned_process"
+        },
+        {
+          "globalReferences": [
+            "BaseException",
+            "PermissionError",
+            "bool",
+            "error",
+            "int",
+            "require",
+            "time",
+            "type"
+          ],
+          "kind": "function",
+          "scope": "_observe_exited_group"
+        },
+        {
+          "globalReferences": [
+            "BaseException",
+            "FLOOR",
+            "TimeoutError",
+            "digest",
+            "error",
+            "float",
+            "int",
+            "list",
+            "map",
+            "min",
+            "re",
+            "require",
+            "shutil",
+            "str",
+            "subprocess",
+            "time",
+            "type",
+            "write"
+          ],
+          "kind": "function",
+          "scope": "run"
+        },
+        {
+          "globalReferences": [
+            "ProcessLookupError",
+            "os"
+          ],
+          "kind": "function",
+          "scope": "present"
+        },
+        {
+          "globalReferences": [
+            "Commands",
+            "ProcessLookupError",
+            "os",
+            "signal",
+            "time"
+          ],
+          "kind": "function",
+          "scope": "stop"
+        }
+      ],
+      "declarations": [
+        {
+          "bytes": 78,
+          "name": "require",
+          "sha256": "5bd59df650372261d6867a85133cb091aaa6f998ad279ecc1c120b966ecb10b1"
+        },
+        {
+          "bytes": 56,
+          "name": "sha",
+          "sha256": "166ad903d6d1b4f98706f40c535e6a84f4a6268f81640d32bb1d0f02c6857de1"
+        },
+        {
+          "bytes": 124,
+          "name": "digest",
+          "sha256": "7cae4bfc8c3cf52979aff7e17b43069cbaaa72560544581ce66a4a7af08d6911"
+        },
+        {
+          "bytes": 464,
+          "name": "raw",
+          "sha256": "77ed67f10c47001d1293dc526375ebcfca4fd7926d1c1371b5822de6c5668e4c"
+        },
+        {
+          "bytes": 360,
+          "name": "decode",
+          "sha256": "1950972255af4080bd268f848ae40be68f18179e17ba26fb1f819f5cbe55d64c"
+        },
+        {
+          "bytes": 257,
+          "name": "write_bytes",
+          "sha256": "c8db3fc331f6f05d3742eb31a514a4826e5b50f384cfeff448d769b0f96216bb"
+        },
+        {
+          "bytes": 125,
+          "name": "write",
+          "sha256": "e2cd89fbcf79c4bf9504404e4bc3fb73a32ed6749ea7c2d7761220d32d5c5946"
+        },
+        {
+          "bytes": 76,
+          "name": "error",
+          "sha256": "530ee35697fbb56ea9be464f95c8d3eb46ee3de780fed63deb744608faad48ca"
+        },
+        {
+          "bytes": 9512,
+          "name": "Commands",
+          "sha256": "85eecac20b1ad4e182203a06bb6f50428fe4ddae16f333f6a86d87105f82be67"
+        }
+      ],
+      "extraBindings": [],
+      "kind": "shared",
+      "moduleBindings": [
+        "FLOOR",
+        "Path",
+        "contextmanager",
+        "hashlib",
+        "json",
+        "os",
+        "re",
+        "shutil",
+        "signal",
+        "stat",
+        "subprocess",
+        "sys",
+        "time"
+      ],
+      "originalFile": "hosted-core22-source/original/Tools/CurrentAppleValidation/combined_heart_semantics/build15/combined_heart_semantics_current.py",
+      "originalSHA256": "1dcd02a4413b26c201e8a38772484eff48e448ae4398af2fd4ee1fc6a5675736",
+      "sourceBodiesChanged": false,
+      "unresolvedGlobals": []
+    },
+    {
+      "allScopes": [
+        {
+          "globalReferences": [],
+          "kind": "module",
+          "scope": "top"
+        },
+        {
+          "globalReferences": [
+            "property"
+          ],
+          "kind": "class",
+          "scope": "CommandAdmission"
+        },
+        {
+          "globalReferences": [],
+          "kind": "function",
+          "scope": "__init__"
+        },
+        {
+          "globalReferences": [
+            "set",
+            "sorted",
+            "time"
+          ],
+          "kind": "function",
+          "scope": "_latch"
+        },
+        {
+          "globalReferences": [],
+          "kind": "function",
+          "scope": "is_open"
+        },
+        {
+          "globalReferences": [
+            "BaseException",
+            "require"
+          ],
+          "kind": "function",
+          "scope": "run"
+        },
+        {
+          "globalReferences": [],
+          "kind": "function",
+          "scope": "present"
+        }
+      ],
+      "declarations": [
+        {
+          "bytes": 1901,
+          "name": "CommandAdmission",
+          "sha256": "830ec882e7f986c731da9f8eb3b156102b3bb4f3465e4b884572aeeda6488f89"
+        }
+      ],
+      "extraBindings": [
+        "require"
+      ],
+      "kind": "lifetime",
+      "moduleBindings": [
+        "FLOOR",
+        "Path",
+        "contextmanager",
+        "hashlib",
+        "json",
+        "os",
+        "re",
+        "shutil",
+        "signal",
+        "stat",
+        "subprocess",
+        "sys",
+        "time"
+      ],
+      "originalFile": "hosted-core22-source/after/Tools/PinkhaDualEngineRuntime/hosted_core13/run.py",
+      "originalSHA256": "cf16f08fefcc0d639e1f924a230c2fefb8bcc7af4f311e9e03191165908a29c8",
+      "sourceBodiesChanged": false,
+      "unresolvedGlobals": []
+    },
+    {
+      "allScopes": [
+        {
+          "globalReferences": [],
+          "kind": "module",
+          "scope": "top"
+        },
+        {
+          "globalReferences": [
+            "BaseException",
+            "shared"
+          ],
+          "kind": "function",
+          "scope": "observe_owned_groups"
+        }
+      ],
+      "declarations": [
+        {
+          "bytes": 947,
+          "name": "observe_owned_groups",
+          "sha256": "9290dc6647e04987888b987bf3246b672a9e7798f92a26622752957ae92cded3"
+        }
+      ],
+      "extraBindings": [
+        "shared"
+      ],
+      "kind": "t5",
+      "moduleBindings": [
+        "FLOOR",
+        "Path",
+        "contextmanager",
+        "hashlib",
+        "json",
+        "os",
+        "re",
+        "shutil",
+        "signal",
+        "stat",
+        "subprocess",
+        "sys",
+        "time"
+      ],
+      "originalFile": "t5-fresh-shared-source-plan/primary/Tools/CurrentAppleValidation/combined_heart_semantics/build15/combined_host_acceptance_app15.py",
+      "originalSHA256": "e574f30bd123e6645f093951744a924bf2e9190be6c7474480eb6ec8f58d8eed",
+      "sourceBodiesChanged": false,
+      "unresolvedGlobals": []
+    },
+    {
+      "allScopes": [
+        {
+          "globalReferences": [
+            "KeyboardInterrupt",
+            "contextmanager"
+          ],
+          "kind": "module",
+          "scope": "top"
+        },
+        {
+          "globalReferences": [],
+          "kind": "class",
+          "scope": "CommandCancelled"
+        },
+        {
+          "globalReferences": [
+            "signal",
+            "super"
+          ],
+          "kind": "function",
+          "scope": "__init__"
+        },
+        {
+          "globalReferences": [
+            "signal"
+          ],
+          "kind": "function",
+          "scope": "cancellation_signals"
+        },
+        {
+          "globalReferences": [
+            "CommandCancelled",
+            "signal"
+          ],
+          "kind": "function",
+          "scope": "cancel"
+        }
+      ],
+      "declarations": [
+        {
+          "bytes": 171,
+          "name": "CommandCancelled",
+          "sha256": "b4410a378cb2d7c0c2524f6e63fd72b75c98f7b1c030c1009fc32f150cf8d528"
+        },
+        {
+          "bytes": 532,
+          "name": "cancellation_signals",
+          "sha256": "8da282a9ffc1ec9c48701be0b422cc1d1327dfb0414f060b9557ad428ba8e810"
+        }
+      ],
+      "extraBindings": [],
+      "kind": "signals",
+      "moduleBindings": [
+        "FLOOR",
+        "Path",
+        "contextmanager",
+        "hashlib",
+        "json",
+        "os",
+        "re",
+        "shutil",
+        "signal",
+        "stat",
+        "subprocess",
+        "sys",
+        "time"
+      ],
+      "originalFile": "hosted-core22-source/original/Tools/Hanlin/host_command.py",
+      "originalSHA256": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807",
+      "sourceBodiesChanged": false,
+      "unresolvedGlobals": []
+    }
+  ],
+  "readyForRuntime": false,
+  "schema": "pinkha-t5-original-writer-dependency-correction-v1",
+  "sourceChanged": [
+    "run_controls.py"
+  ],
+  "sourceIndexSHA256": "d011bb85ac64a9d21ffd55767cc8346105ac8ae7cf156761d81ca0b56f24f6c0",
+  "staticAnalysis": "Python AST and symtable only; no module execution/import or test",
+  "status": "STATIC_SOURCE_ONLY_ACTUAL_CORRECTED_CONTROLS_NOT_RUN"
+}

@@ -169,6 +169,21 @@ def main():
    "exactExcerptSHA256":base.sha(conformance),"symbols":["Account.Create.Response","Account.Select.Response","Workspace.Open.Response"]}
   paths=subprocess.check_output(["git","-C",str(REPO),"ls-tree","-r","--name-only",BASE_COMMIT,MODULE+"Sources/Protocol"],text=True).splitlines()
   by_type={Path(p).stem:p for p in paths if p.endswith(".swift") and Path(p).stem.startswith("Anytype_")}
+  # Original aggregate protobuf files do not use a type name as their filename.
+  # Resolve their actual public declarations, retaining complete original bytes
+  # only when a referenced symbol pulls that file into the closure below.
+  aggregate_declarations={}
+  for rel in paths:
+   if not rel.endswith(".pb.swift") or Path(rel).stem.startswith("Anytype_"):continue
+   data=git(rel)
+   declarations=re.findall(r"\bpublic (?:struct|enum) (Anytype_[A-Za-z0-9_]+)\b",data.decode())
+   assert declarations and len(declarations)==len(set(declarations)),rel
+   aggregate_declarations[rel]={"sha256":hashlib.sha256(data).hexdigest(),"symbols":declarations}
+   for symbol in declarations:
+    assert symbol not in by_type or by_type[symbol]==rel,symbol
+    by_type[symbol]=rel
+  assert set(aggregate_declarations)=={MODULE+"Sources/Protocol/export_report.pb.swift",MODULE+"Sources/Protocol/localstore.pb.swift"}
+  result["originalAggregateDeclarations"]=aggregate_declarations
   # New canonical namespace declarations supersede no original declaration.
   provided={"Anytype_PinkhaTorahCutover","Anytype_Rpc.Pinkha","Anytype_Rpc.Pinkha.TorahOperations"}
   seen=set();queue=[p for p in (root/"package").rglob("*.swift")]
@@ -230,8 +245,10 @@ let package = Package(name: "CutoverClientQualification",
    CLANG_MODULE_CACHE_PATH=str(build_root/"clang-module-cache"),SWIFTCI_USE_LOCAL_DEPS="1",PROTOBUF_NO_PROTOC="1",
    PINKHA_CUTOVER_NATIVE_WIRE_ROOT=str(wire),PINKHA_CUTOVER_NATIVE_RPC_MANIFEST=a.rpc_manifest_sha)
   swift=reused["swiftDriver"];assert Path(swift).is_file()
+  # Swift 6.4 XCTest discovery requires its normal index; the same owned-output
+  # growth cap remains enforced while that canonical discovery runs.
   log=run("exact-swift-client-tests",[swift,"test","--package-path",str(root/"package"),"--scratch-path",str(build_root/"swift-build"),
-   "--cache-path",str(build_root/"swiftpm-cache"),"--jobs","1","--disable-index-store","-Xswiftc","-gnone","--filter","PinkhaHeartCutover(Client|Interop)Tests",
+   "--cache-path",str(build_root/"swiftpm-cache"),"--jobs","1","-Xswiftc","-gnone","--filter","PinkhaHeartCutover(Client|Interop)Tests",
    "--xunit-output",str(root/"tests.xml")],env,900)
   matches=re.findall(r"Test Case '([^']+)' (started|passed|failed|skipped)",log.read_text())
   starts=[name for name,state in matches if state=="started"]

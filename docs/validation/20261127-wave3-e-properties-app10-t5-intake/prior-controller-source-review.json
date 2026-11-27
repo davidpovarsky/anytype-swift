@@ -1,0 +1,126 @@
+{
+  "controller": {
+    "bytes": 14085,
+    "gitBlob": "fb92ae68df6ac200b0ccfc28e28c304adf3b7b62",
+    "path": "/workspace/scratch/ae335eba85e3/root-t5-kit-source-integration.py",
+    "sha256": "3bd2dccbe1cdad803fa2554ad1d28eff754083e923241744672b71445f629729"
+  },
+  "controllerInverse": {
+    "count": 6,
+    "fullOriginalRestored": true,
+    "operations": [
+      {
+        "from": "len(packed)==79393",
+        "to": "len(packed)==62142"
+      },
+      {
+        "from": "171b983e644a878f30cda285e7b72af149ab9fc6c437509218c0e6fc3a0d3e39",
+        "to": "78f31f05aa6c17c3a1c5ffa46dc40dc54d2e52a6c3ddac2991c1b5bd31479a4f"
+      },
+      {
+        "from": "len(raw)==374994",
+        "to": "len(raw)==303549"
+      },
+      {
+        "from": "b31aa907de71c7ff8456d7a100b7ab19563c0b91ab829d9c6dd9825ebdca1d86",
+        "to": "6494b4073cc19f72ca783b6fbcac77a2509a0ca17fdc6d945e3632540fb84c13"
+      },
+      {
+        "from": "'diffCheck':payload['diffCheck'],'completeDiffCheck':payload['completeDiffCheck'],'scope':",
+        "to": "'diffCheck':payload['diffCheck'],'scope':"
+      },
+      {
+        "from": "b('add','--',PREFIX);diff_check(['diff','--cached','--check'],payload['completeDiffCheck'])",
+        "to": "b('add','--',PREFIX);diff_check(['diff','--cached','--check'],payload['diffCheck'])"
+      }
+    ],
+    "unchangedFunctionBodies": [
+      "b",
+      "blob",
+      "diff_check",
+      "h",
+      "match",
+      "owned",
+      "pins",
+      "resources",
+      "t"
+    ]
+  },
+  "diffChecks": {
+    "afterEvidence": {
+      "additionalOriginalLogLines": [
+        158,
+        207,
+        270
+      ],
+      "diagnostics": 10,
+      "exit": 2,
+      "sameOriginalRawLogSHA256": "6dd85809ecb7cdabc6f40fabc28894d699abc75a60ca834ab8da0517316458bf",
+      "stdoutSHA256": "bd05feae4d04460b47e22e4a2fc62eedd7f698d2f3a4889318c7fc883edf6c09"
+    },
+    "noWhitespaceNormalization": true,
+    "preview94": {
+      "diagnostics": 7,
+      "exit": 2,
+      "stdoutSHA256": "3981f63441f6d097011d7b71aa683cb813bf9127f4f3e4127f5a359b6ee31032"
+    }
+  },
+  "execution": {
+    "compilerCalls": 0,
+    "controllerExecutions": 0,
+    "gitMutations": 0,
+    "remoteActions": 0,
+    "sourceGateExecutions": 0,
+    "testsExecuted": 0
+  },
+  "originalController": {
+    "bytes": 14028,
+    "gitBlob": "7dec0c3cf8f7412d1397eff597b8cf07853afac5",
+    "path": "/workspace/scratch/ae335eba85e3/t5-kit-source-batch-prepared2/controller.unexecuted-first.py",
+    "sha256": "8743d6fd406156b7bcc2d541eb4aac68a424ec84c9355770ccb901d98bb874d5"
+  },
+  "originalReview": {
+    "bytes": 5878,
+    "gitBlob": "36c18e0ad6a66c841a552c0381089b1fae4f8fcb",
+    "path": "/workspace/scratch/ae335eba85e3/t5-kit-source-batch-independent-review/review-original.json",
+    "sha256": "48e8e131fb674031bad5e216cc6b8179247590c0acbfef31ad5ab4ee12a8f28c"
+  },
+  "payload": {
+    "bytes": 374994,
+    "gitBlob": "13caa798e721419e1e2203db3b284a691f0fd4de",
+    "path": "/workspace/scratch/ae335eba85e3/t5-kit-source-batch-prepared2/payload.json",
+    "sha256": "b31aa907de71c7ff8456d7a100b7ab19563c0b91ab829d9c6dd9825ebdca1d86"
+  },
+  "payloadInverse": {
+    "all18DependenciesUnchanged": true,
+    "all20PriorEvidenceFilesUnchanged": true,
+    "all3DonorsAndPinsUnchanged": true,
+    "all94SourceRowsUnchanged": true,
+    "fullOriginalBytesRestored": true,
+    "originalSHA256": "6494b4073cc19f72ca783b6fbcac77a2509a0ca17fdc6d945e3632540fb84c13",
+    "removedEvidence": [
+      "first-full-evidence-diff-review.json",
+      "root-independent-byte-proof.json",
+      "root-independent-source-review.json",
+      "root-integration-controller.unexecuted-first.py"
+    ],
+    "removedTopKeys": [
+      "completeDiffCheck"
+    ]
+  },
+  "remainingActualGates": [
+    "fresh exact source/remote/resource admission and original G07 receipt",
+    "complete actual merge tree equals derived preview before evidence",
+    "exact final evidence-inclusive diff output",
+    "132-row original retention and normal commit/push/readback"
+  ],
+  "schema": "pinkha-root-t5-kit-source-batch-bounded-successor-review-v1",
+  "scope": "Only the six literal controller substitutions, complete payload inverse and exact additional diagnostics; original full source review is reused unchanged.",
+  "status": "PASS_SOURCE_REVIEW_NO_REMAINING_CONCRETE_SCOPED_BLOCKER",
+  "transport": {
+    "bytes": 79393,
+    "gitBlob": "430d779cd9d8156ab157e448cc53670e68737bd9",
+    "path": "/workspace/scratch/ae335eba85e3/t5-kit-source-batch-prepared2/payload.json.gz",
+    "sha256": "171b983e644a878f30cda285e7b72af149ab9fc6c437509218c0e6fc3a0d3e39"
+  }
+}

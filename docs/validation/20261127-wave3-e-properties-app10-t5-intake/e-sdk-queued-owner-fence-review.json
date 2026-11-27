@@ -1,0 +1,60 @@
+{
+  "finding": "The inspected factory has no atomic original-account fence covering the interval between Swift validation and original native application lease acquisition.",
+  "observations": [
+    "The typed write validates the Swift lease inside its owned MainActor task, then awaits io.invoke. The factory queues the direct Lib call on DispatchQueue.global without carrying an expected original account or native generation into the five wire methods.",
+    "PinkhaNativeReadLifetime.beforeInvocation retires old Swift leases before AccountSelect but neither drains that global queue nor obtains a native application lease on behalf of the pending write.",
+    "The real LeasePinkhaTorahApp acquires s.lock.RLock only at native handler entry and returns whichever s.app is current then. AccountSelect takes the writer lock; this protects a native call that already owns the RLock from a midcall switch, but does not order an earlier Swift-enqueued call ahead of AccountSelect.",
+    "The actual wire scope contains protocolVersion, SpaceID, ObjectID and PropertyKey. It has no trusted original account/generation fence. pinkhaTorahScope derives SignKey from the current app after acquiring its native lease.",
+    "Therefore a permitted source interleaving is old Swift preflight/queue -> account transition retires lease and completes -> queued native call enters and derives new app signer. A shared Space with valid new-account ACL can still admit a write before postflight refuses publication. This is a source-level possibility, not an observed native write or proof that every request can succeed.",
+    "Receipt/author matching and retired-owner postflight protect returned private data and can label uncertainty; they cannot undo or prevent a write that the native handler already accepted under the replacement app."
+  ],
+  "operations": {
+    "compiler": 0,
+    "native": 0,
+    "newPrimaryReads": 0,
+    "remoteCalls": 0,
+    "sourceEdits": 0,
+    "tests": 0
+  },
+  "requiredBoundary": "Before activation, require an atomic original-account/runtime identity or original dispatch/transition gate that spans validation through native application lease acquisition and rejects a retired queued operation before its effect. Rechecking the Swift flag on a separate actor hop alone does not establish that atomic boundary. The original native signer/ACL remains the authority; do not accept caller author identity as authority.",
+  "reviewer": "/root/sdk_hanlin",
+  "schema": "independent-cutover-native-queued-owner-fence-review-v1",
+  "sources": [
+    {
+      "bytes": 2059,
+      "path": "e-d860-independent-review/source/Modules/ProtobufMessages/Sources/PinkhaHeartCutoverNative.swift",
+      "sha256": "3d4beab93fa232a223985f22005adc28240995cf8a67ba360b06e5f7503e1057"
+    },
+    {
+      "bytes": 25382,
+      "path": "e-d860-independent-review/source/Modules/ProtobufMessages/Sources/PinkhaHeartCutoverClient.swift",
+      "sha256": "8e1ada6f785e5a3286c46f2ab88329052c7354e6ba57483ed18f17c4f13739a8"
+    },
+    {
+      "bytes": 10059,
+      "path": "e-d860-independent-review/original-controllers/PinkhaNativeReadLifetime.swift",
+      "sha256": "08e17c60411fa031ff07a420fc9c3bcd1889c79216ada06d86a9b4a0889da3bc"
+    },
+    {
+      "bytes": 10236,
+      "path": "native4905-producer-readiness/physical-composition2/source/heart/core/pinkha_torah_operations.go",
+      "sha256": "d30fb5f7749e9abf41ee6c5f145ce0fabb7cd31581c8f7e95f3208692656ba39"
+    },
+    {
+      "bytes": 791,
+      "path": "native4905-producer-readiness/physical-composition2/source/heart/core/application/pinkha_torah_lifecycle.go",
+      "sha256": "2964d64dde48ea025f9e761197f33210d4541665ad97398ca82a2729faa5fd83"
+    },
+    {
+      "bytes": 6389,
+      "path": "native4905-producer-readiness/physical-composition2/source/heart/core/application/account_select.go",
+      "sha256": "70df8befa61075fb2fa0b4fe486a20518de418cc685db1f77d410daff9620a91"
+    },
+    {
+      "bytes": 22072,
+      "path": "native4905-producer-readiness/physical-composition2/source/heart/core/pinkha_torah_cutover_rpc.go",
+      "sha256": "6a0ca15096120e383effec2d80813d17a3868f8a39d35940076ecf1b1ef9c945"
+    }
+  ],
+  "status": "CONCUR_SOURCE_ACTIVATION_BLOCKER_NOT_RUNTIME_REPRODUCTION"
+}

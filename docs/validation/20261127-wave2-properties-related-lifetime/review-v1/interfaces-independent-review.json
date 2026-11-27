@@ -1,0 +1,39 @@
+{
+  "status": "PASS_SOURCE_REVIEW_ONLY",
+  "reviewer": "/root/interfaces",
+  "inputs": [
+    {
+      "path": "candidate/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift",
+      "bytes": 3903,
+      "sha256": "b1f628a658fb1e2d55ce3ed7ae9b36a02cc32d974e4ef468e095f2f985516925"
+    },
+    {
+      "path": "candidate/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift",
+      "bytes": 15478,
+      "sha256": "b41069a936e75d0f88bcf09a9fc4e85958fef96115bce4bb930f3ffadac8559d"
+    },
+    {
+      "path": "source-inverse.json",
+      "bytes": 3114,
+      "sha256": "dddf647e04ac36ae73d8128088bf63cfa17822cce859ad11e78b324f8a78c501"
+    }
+  ],
+  "scope": [
+    "MainActor publication ownership model",
+    "new three methods/seven argument cases and controlled noncooperative provider"
+  ],
+  "findings": [],
+  "observations": [
+    "Request identity captures document owner, presentation UUID and request UUID synchronously before Task creation; a queued old Task cannot borrow a reopened sheet.",
+    "Initial, post-await success, catch and defer publication all retain owner/request fencing; current failure permits retry and old defer cannot finish a new request.",
+    "retire synchronously clears visible state and identity, cancels the old Task and returns it to the caller for the existing drain path; this review does not certify the caller drain wiring.",
+    "Tests exercise queued old work, noncooperative success/error under same/different document owner, current failure/retry, current cleanup and explicit retirement. All suspended branches retain bounded start waits and deferred continuation cleanup.",
+    "No nested await is passed to a Testing macro in these new cases; explicit MainActor closures and Sendable read value match the intended actor boundary."
+  ],
+  "boundaries": [
+    "No Swift compiler, tests, UI, native call or host action performed.",
+    "Root separately owns AnyDocumentPresentation and AnyNativePropertiesView caller/native-read/lifecycle review.",
+    "No attachment accessor or upload persistence change is included in this review."
+  ],
+  "executedTests": 0
+}
