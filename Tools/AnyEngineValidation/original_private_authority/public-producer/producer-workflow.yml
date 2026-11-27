@@ -1,0 +1,1171 @@
+name: Pinkha Stage 1 Manual Dispatcher
+run-name: Pinkha ${{ inputs.route }} · ${{ github.sha }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      route:
+        description: Stage 1 route to run
+        type: choice
+        required: true
+        options:
+          - full-acceptance
+          - ipa-only
+          - native-derived
+          - native-ipa-fast
+          - native-ipa-repair
+          - native-diagnostics
+          - t5-coverage-proof
+          - t5-r05-alias
+          - related-read-authority-packages
+          - t2-native-operations
+          - t2-authorized-read-packages
+          - t2-native-rpc
+          - t2-authorized-operation-read
+          - t2-authorized-read-account
+          - t2-authorized-read-apple-runtime
+          - t2-authorized-read-ios
+          - t2-account-rpc
+          - t2-native-clients
+          - t2-native-clients-offline
+          - t2-native-clients-crash
+          - t2-native-clients-observed-remove
+          - t2-native-clients-concurrent-replace
+          - t2-account-lifecycle
+          - t2-rpc-lifecycle-races
+          - t2-rpc-space-close
+          - simulator-ui27
+          - heart-runtime
+          - heart-dependency-resolution
+          - t5-r15-runtime
+          - t5-r15-attachment-runtime
+          - t5-apple-pairs
+          - t5-apple-ui
+          - t5-corrected-ui
+          - t5-signed-revocation
+          - t5-current-read-proof
+          - coherent-heart-native
+          - coherent-heart-apple
+          - coherent-heart-peers
+          - independent-member-acl
+          - semantic-anchor-native
+          - semantic-page-apple-runtime
+          - semantic-page-apple-consumer
+          - semantic-page-apple-mounted
+          - semantic-page-startup-warning
+          - sdk06-projected-components
+          - coherent-original-products
+          - current-release-return-rtl
+          - current-release-return-retained
+          - native-ui-original-products
+          - native-ui-transition-candidate
+          - native-ui-runner-continuation
+          - current-native-ui-failed
+          - current-native-ui-retained
+          - loaded-account-arm64-compiler
+          - loaded-account-arm64-native
+          - native-tree-inventory-arm64
+          - native-whole-source-arm64
+          - native-source-file-peers-arm64
+          - current-page154-mounted
+          - current-page154-retained
+          - owned-simulator-inventory-diagnostic
+          - prepared-migration-apple
+          - prepared-inline-file-apple
+          - sdk06-enumeration-probe
+          - sdk06-basename-probe
+          - sdk06-tagged-continuation
+          - sdk06-original-native-continuation
+          - t5-native-pagination
+          - t5-native-account-retry
+          - t5-native-attachment
+          - sdk06-tests
+          - hanlin-journal-probe
+          - editor-host-tests
+          - wave15-core-tests
+          - wave15-component-tests
+          - wave15-acceptance
+      t5_component:
+        description: Bounded T5 component; index-freshness also selects the fifth Apple phase
+        type: choice
+        options:
+          - native-index
+          - projection-cache
+          - native-rpc
+          - compatibility-pairs
+          - account-pairs
+          - index-freshness
+        default: native-index
+      ui_scope:
+        description: UI27 focused diagnostic selection; no release or full matrix acceptance
+        type: choice
+        options:
+          - FULL_SMOKE
+          - STARTUP_IPAD_DIAGNOSTIC
+          - NATIVE_CANCELLATION_DIAGNOSTIC
+        default: FULL_SMOKE
+      acceptance_lane:
+        description: Existing lane, six Release lanes, or the three remaining retained-Heart lanes
+        type: choice
+        options:
+          - inspector
+          - inspector-search
+          - quote-drop
+          - properties
+          - properties-set
+          - editor
+          - canonical-properties
+          - hanlin-native
+          - hanlin-native-text-ack
+          - hanlin-native-shared-editor
+          - hanlin-selection
+          - remaining-release
+          - retained-heart-release
+          - coherent-heart-release
+        default: inspector
+      acceptance_device:
+        description: Disposable OS27 device family
+        type: choice
+        options:
+          - ipad
+          - iphone
+        default: ipad
+      acceptance_language:
+        description: Actual app language; current non-editor methods require en
+        type: choice
+        options:
+          - en
+          - he
+        default: en
+      runtime_profile:
+        description: Exact retained Heart runtime; corrected runtime must use its own producer run
+        type: choice
+        options:
+          - r14
+          - r15-attachment-v1
+          - r15-attachment-authorized-current-read-v1
+        default: r14
+      source_run_id:
+        description: Verified Heart runtime run, or native evidence source for diagnostics
+        type: string
+        default: ''
+      prepared_native_producer_commit:
+        description: Exact original prepared migration producer commit when reusing source_run_id
+        type: string
+        default: ''
+      prepared_native_artifact_run_attempt:
+        description: Exact original prepared migration producer attempt when reusing source_run_id
+        type: string
+        default: ''
+      t5_r15_run_id:
+        description: Original successful r15 runtime build for same-source Apple pairing
+        type: string
+        default: ''
+      native_test_scope:
+        description: Native acceptance scope (failed-ui reuses the accepted app)
+        type: choice
+        options:
+          - all
+          - failed-ui
+          - readonly-startup
+          - t5-wave1
+        default: all
+      require_full_acceptance:
+        description: Require Full Acceptance success before IPA packaging
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  simulator-ui27:
+    if: ${{ inputs.route == 'simulator-ui27' }}
+    uses: ./.github/workflows/pinkha-simulator-ui27.yml
+    with:
+      ui_scope: ${{ inputs.ui_scope }}
+      runtime_profile: ${{ inputs.runtime_profile }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+
+  wave15-acceptance:
+    if: ${{ inputs.route == 'wave15-acceptance' }}
+    uses: ./.github/workflows/pinkha-simulator-ui27.yml
+    with:
+      runtime_profile: ${{ inputs.runtime_profile }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      acceptance_lane: ${{ inputs.acceptance_lane }}
+      acceptance_device: ${{ inputs.acceptance_device }}
+      acceptance_language: ${{ inputs.acceptance_language }}
+
+  editor-host-tests:
+    if: ${{ inputs.route == 'editor-host-tests' }}
+    uses: ./.github/workflows/pinkha-sdk06-tests.yml
+    with:
+      runtime_profile: ${{ inputs.runtime_profile }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      expected_app_branch: ${{ github.ref_name }}
+      profile: editor
+
+  wave15-core-tests:
+    if: ${{ inputs.route == 'wave15-core-tests' }}
+    uses: ./.github/workflows/pinkha-sdk06-tests.yml
+    with:
+      runtime_profile: ${{ inputs.runtime_profile }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      expected_app_branch: ${{ github.ref_name }}
+      profile: wave15-core
+
+  wave15-component-tests:
+    if: ${{ inputs.route == 'wave15-component-tests' }}
+    uses: ./.github/workflows/pinkha-sdk06-tests.yml
+    with:
+      runtime_profile: ${{ inputs.runtime_profile }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      expected_app_branch: ${{ github.ref_name }}
+      profile: wave15-components
+
+  hanlin-journal-probe:
+    if: ${{ inputs.route == 'hanlin-journal-probe' }}
+    uses: ./.github/workflows/pinkha-hanlin-journal-probe.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-native-clients:
+    if: ${{ inputs.route == 't2-native-clients' || inputs.route == 't2-native-clients-offline' || inputs.route == 't2-native-clients-crash' || inputs.route == 't2-native-clients-observed-remove' || inputs.route == 't2-native-clients-concurrent-replace' }}
+    uses: ./.github/workflows/pinkha-t2-native-clients.yml
+    with:
+      source_sha: ${{ github.sha }}
+      scenario: ${{ (inputs.route == 't2-native-clients-offline' || inputs.route == 't2-native-clients-crash' || inputs.route == 't2-native-clients-observed-remove' || inputs.route == 't2-native-clients-concurrent-replace') && 'offline' || 'bootstrap' }}
+      crash_after_commit: ${{ inputs.route == 't2-native-clients-crash' }}
+      observed_remove_after_reopen: ${{ inputs.route == 't2-native-clients-observed-remove' }}
+      concurrent_replace_after_reopen: ${{ inputs.route == 't2-native-clients-concurrent-replace' }}
+
+  t2-account-rpc:
+    if: ${{ inputs.route == 't2-account-rpc' }}
+    uses: ./.github/workflows/pinkha-t2-account-rpc.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  sdk06-tests:
+    if: ${{ inputs.route == 'sdk06-tests' }}
+    uses: ./.github/workflows/pinkha-sdk06-tests.yml
+    with:
+      runtime_profile: ${{ inputs.runtime_profile }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      expected_app_branch: ${{ github.ref_name }}
+
+  heart-dependency-resolution:
+    if: ${{ inputs.route == 'heart-dependency-resolution' }}
+    uses: ./.github/workflows/pinkha-heart-dependencies.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+
+  heart-runtime:
+    if: ${{ inputs.route == 'heart-runtime' }}
+    uses: ./.github/workflows/pinkha-heart-runtime.yml
+
+  t5-corrected-ui:
+    if: ${{ inputs.route == 't5-corrected-ui' }}
+    uses: ./.github/workflows/pinkha-t5-corrected-ui.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+
+  related-read-authority-packages:
+    if: ${{ inputs.route == 'related-read-authority-packages' }}
+    uses: ./.github/workflows/pinkha-related-read-authority.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t5-r05-alias:
+    if: ${{ inputs.route == 't5-r05-alias' }}
+    uses: ./.github/workflows/pinkha-t5-r05-alias.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t5-signed-revocation:
+    if: ${{ inputs.route == 't5-signed-revocation' }}
+    uses: ./.github/workflows/pinkha-t5-signed-revocation.yml
+
+  t5-current-read-proof:
+    if: ${{ inputs.route == 't5-current-read-proof' }}
+    uses: ./.github/workflows/pinkha-t5-signed-revocation.yml
+    with:
+      runtime_profile: r15-attachment-current-read-v1
+
+  coherent-heart-native:
+    if: ${{ inputs.route == 'coherent-heart-native' }}
+    uses: ./.github/workflows/pinkha-coherent-heart-native.yml
+
+  coherent-heart-apple:
+    if: ${{ inputs.route == 'coherent-heart-apple' }}
+    uses: ./.github/workflows/pinkha-coherent-heart-apple.yml
+    with:
+      source_run_id: ${{ inputs.source_run_id }}
+
+  coherent-heart-peers:
+    if: ${{ inputs.route == 'coherent-heart-peers' }}
+    uses: ./.github/workflows/pinkha-coherent-heart-peers.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  independent-member-acl:
+    if: ${{ inputs.route == 'independent-member-acl' }}
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: pinkha-independent-member-acl-${{ github.ref }}
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      EXPECTED_APP_SHA: ${{ github.sha }}
+      T2_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact independent member controller
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: control
+          persist-credentials: false
+      - name: Checkout clean pinned Heart base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: heart
+          persist-credentials: false
+      - name: Read original qualified native source run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p evidence/toolchain
+          gh api repos/davidpovarsky/anytype-swift/actions/runs/45026227924 > evidence/original-native-run.json
+      - name: Restore compiled musl dependencies only
+        id: member_native_cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .t2-cache
+          key: t2-member-acl-alpine-111d7915-go1.26.5-${{ hashFiles('heart/go.sum', 'heart/tantivity_sha256.txt') }}
+          restore-keys: |
+            t2-coherent-peers-alpine-111d7915-go1.26.5-
+            t2-native-clients-alpine-111d7915-go1.26.5-
+            t2-account-rpc-alpine-111d7915-go1.26.5-
+            t2-account-alpine-111d7915-go1.26.5-
+      - name: Compile new member transport fixture over original coherent139 bytes
+        run: |
+          mkdir -p .t2-cache native-work
+          docker pull --platform linux/amd64 "$T2_GO_IMAGE"
+          docker image inspect "$T2_GO_IMAGE" > evidence/toolchain/image.json
+          docker run --rm --platform linux/amd64 --cpus=2 --memory=6g --pids-limit=512 \
+            --workdir /workspace \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/control,dst=/workspace/control,readonly" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/heart,dst=/workspace/heart" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/native-work,dst=/workspace/work" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/evidence,dst=/workspace/evidence" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/.t2-cache,dst=/cache" \
+            -e EXPECTED_APP_SHA -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e T2_GO_IMAGE \
+            -e CC=gcc -e CXX=g++ -e GOTOOLCHAIN=local \
+            -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
+            -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \
+            "$T2_GO_IMAGE" sh -eu -c '
+              apk add --no-cache python3 git build-base > /workspace/evidence/toolchain/apk-install.log 2>&1
+              git config --global --add safe.directory /workspace/control
+              git config --global --add safe.directory /workspace/heart
+              go version > /workspace/evidence/toolchain/go-version.txt
+              gcc --version > /workspace/evidence/toolchain/compiler.txt
+              gcc -dumpmachine > /workspace/evidence/toolchain/compiler-target.txt
+              exec python3 -B /workspace/control/Tools/PinkhaNativeDerived/member_acl_transport/build.py \
+                --control /workspace/control --heart /workspace/heart --work /workspace/work/build \
+                --evidence /workspace/evidence --original-run /workspace/evidence/original-native-run.json \
+                --expected-app-sha "$EXPECTED_APP_SHA"
+            '
+      - name: Save successful compilation cache before native acceptance
+        if: steps.member_native_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .t2-cache
+          key: ${{ steps.member_native_cache.outputs.cache-primary-key }}
+      - name: Run independent members through grant role revoke and reconnect fence
+        run: |
+          python3 -B control/Tools/PinkhaNativeDerived/member_acl_transport/run.py \
+            --control "$GITHUB_WORKSPACE/control" --native-work "$GITHUB_WORKSPACE/native-work/build" \
+            --private "$GITHUB_WORKSPACE/member-acl-private" --evidence "$GITHUB_WORKSPACE/evidence" \
+            --expected-app-sha "$EXPECTED_APP_SHA"
+      - name: Preserve honest member transport status
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          directory = Path('evidence')
+          directory.mkdir(parents=True, exist_ok=True)
+          path = directory / 'receipt.json'
+          if not path.exists():
+              path.write_text(json.dumps({
+                  'protocol': 'pinkha-independent-member-acl-transport-v1',
+                  'status': 'NOT_RUN_NATIVE_MEMBER_BUILD_FAILED',
+                  'run_id': os.environ.get('GITHUB_RUN_ID'), 'run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT'),
+                  'app_sha': os.environ.get('EXPECTED_APP_SHA'),
+                  'finished_at': datetime.now(timezone.utc).isoformat(),
+                  'actual_native_processes': 0, 'network_acl_transport': 'NOT_RUN',
+                  'coordinator_invite_acceptance': 'NOT_RUN', 'discovery_bootstrap': 'STATIC_OWNED_PEER_ROUTE',
+                  'mixed_versions': 'NOT_RUN', 'offline_unknown_revocation': 'LAST_KNOWN_AUTHORITY_NOT_GLOBAL_FRESHNESS',
+                  'full_t2_acceptance': 'NOT_RUN', 'ios_acceptance': 'NOT_RUN', 'app_capability': 'OFF'
+              }, indent=2) + '\n')
+          PY
+      - name: Upload original source-bound evidence screened against both wallet secrets
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Member-ACL-Transport-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/
+          retention-days: 30
+          if-no-files-found: error
+
+  prepared-migration-apple:
+    if: ${{ inputs.route == 'prepared-migration-apple' }}
+    uses: ./.github/workflows/pinkha-prepared-migration-apple.yml
+    with:
+      native_artifact_run_id: ${{ inputs.source_run_id }}
+      native_producer_commit: ${{ inputs.prepared_native_producer_commit }}
+      native_artifact_run_attempt: ${{ inputs.prepared_native_artifact_run_attempt }}
+
+  sdk06-enumeration-probe:
+    if: ${{ inputs.route == 'sdk06-enumeration-probe' }}
+    uses: ./.github/workflows/pinkha-sdk06-enumeration-probe.yml
+
+  sdk06-basename-probe:
+    if: ${{ inputs.route == 'sdk06-basename-probe' }}
+    uses: ./.github/workflows/pinkha-sdk06-basename-probe.yml
+
+  sdk06-tagged-continuation:
+    if: ${{ inputs.route == 'sdk06-tagged-continuation' }}
+    uses: ./.github/workflows/pinkha-sdk06-tagged-continuation.yml
+
+  sdk06-original-native-continuation:
+    if: ${{ inputs.route == 'sdk06-original-native-continuation' }}
+    uses: ./.github/workflows/pinkha-sdk06-original-native-continuation.yml
+
+  prepared-inline-file-apple:
+    if: ${{ inputs.route == 'prepared-inline-file-apple' }}
+    uses: ./.github/workflows/pinkha-prepared-inline-file-apple.yml
+    with:
+      native_artifact_run_id: ${{ inputs.source_run_id }}
+      native_producer_commit: ${{ inputs.prepared_native_producer_commit }}
+      native_artifact_run_attempt: ${{ inputs.prepared_native_artifact_run_attempt }}
+
+  semantic-page-startup-warning:
+    if: ${{ inputs.route == 'semantic-page-startup-warning' }}
+    uses: ./.github/workflows/pinkha-semantic-page-startup-warning.yml
+
+  semantic-page-apple-mounted:
+    if: ${{ inputs.route == 'semantic-page-apple-mounted' }}
+    uses: ./.github/workflows/pinkha-semantic-page-apple-mounted.yml
+
+  native-ui-original-products:
+    if: ${{ inputs.route == 'native-ui-original-products' }}
+    uses: ./.github/workflows/pinkha-any-native-ui-original-products.yml
+
+  native-ui-transition-candidate:
+    if: ${{ inputs.route == 'native-ui-transition-candidate' }}
+    uses: ./.github/workflows/pinkha-any-native-ui-transition-candidate.yml
+
+  native-ui-runner-continuation:
+    if: ${{ inputs.route == 'native-ui-runner-continuation' }}
+    uses: ./.github/workflows/pinkha-any-native-ui-runner-continuation.yml
+
+  current-native-ui-failed:
+    if: ${{ inputs.route == 'current-native-ui-failed' || inputs.route == 'current-native-ui-retained' }}
+    permissions:
+      contents: read
+      actions: read
+    runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
+    timeout-minutes: 196
+    env:
+      DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_OPTIONAL_LOCKS: '0'
+      GH_TOKEN: ${{ github.token }}
+      EVIDENCE: build/current-apple-native-ui-failed-${{ github.run_id }}-${{ github.run_attempt }}/evidence
+      CURRENT_NATIVE_CONTROLLER: ${{ inputs.route == 'current-native-ui-retained' && 'native_ui_retained.py' || 'native_ui_failed.py' }}
+    steps:
+      - name: Checkout the exact current App and controller source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Bind the dispatched local branch without advancing its commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$GITHUB_REF" = "refs/heads/$GITHUB_REF_NAME"
+          test "$GITHUB_REF_NAME" = "codex/chatgpt-wave15-shared-20261121"
+          current_branch="$(git branch --show-current)"
+          if [ -z "$current_branch" ]; then
+            git switch -c "$GITHUB_REF_NAME"
+          else
+            test "$current_branch" = "$GITHUB_REF_NAME"
+          fi
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Select installed native ARM64 Python 3.12
+        shell: bash
+        run: |
+          pinkha_python_bin=/opt/homebrew/opt/python@3.12/libexec/bin
+          "$pinkha_python_bin/python3" -I -c 'import platform, sys; assert sys.version_info[:2] == (3, 12), sys.version; assert platform.machine() == "arm64", platform.machine(); assert platform.system() == "Darwin", platform.system(); print(sys.version.split()[0], platform.machine(), sys.executable)'
+          printf '%s\n' "$pinkha_python_bin" >> "$GITHUB_PATH"
+      - name: Checkout the exact public canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Build the current App once and execute only this fixed unresolved scope
+        id: execute
+        timeout-minutes: 176
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "Tools/CurrentAppleValidation/$CURRENT_NATIVE_CONTROLLER" execute --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
+      - name: Finalize only journaled current-run resources even after an early failure
+        if: ${{ always() && steps.execute.outcome != 'skipped' }}
+        timeout-minutes: 8
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "Tools/CurrentAppleValidation/$CURRENT_NATIVE_CONTROLLER" cleanup --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
+      - name: Preserve original Products, commands, results and cleanup without filtering raw streams
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Current-NativeApp-Unresolved-UI-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.EVIDENCE }}
+            build/any-patched-evidence/hanlin-provider
+          retention-days: 30
+          if-no-files-found: error
+
+  sdk06-projected-components:
+    if: ${{ inputs.route == 'sdk06-projected-components' }}
+    uses: ./.github/workflows/pinkha-sdk06-original-native-continuation.yml
+    with:
+      component_projection: true
+
+  coherent-original-products:
+    if: ${{ inputs.route == 'coherent-original-products' }}
+    uses: ./.github/workflows/pinkha-coherent-original-products.yml
+
+  current-release-return-rtl:
+    if: ${{ inputs.route == 'current-release-return-rtl' || inputs.route == 'current-release-return-retained' }}
+    permissions:
+      contents: read
+      actions: read
+    runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
+    timeout-minutes: 150
+    env:
+      DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      CURRENT_RELEASE_CONTROLLER: ${{ inputs.route == 'current-release-return-retained' && 'Tools/CurrentAppleValidation/release_retained.py' || 'Tools/CurrentAppleValidation/release_return_rtl.py' }}
+      GIT_OPTIONAL_LOCKS: '0'
+      GH_TOKEN: ${{ github.token }}
+      EVIDENCE: build/current-apple-release-return-rtl-${{ github.run_id }}-${{ github.run_attempt }}/evidence
+    steps:
+      - name: Checkout the exact current App and controller source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Bind the dispatched local branch without advancing its commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$GITHUB_REF" = "refs/heads/$GITHUB_REF_NAME"
+          test "$GITHUB_REF_NAME" = "codex/chatgpt-wave15-shared-20261121"
+          current_branch="$(git branch --show-current)"
+          if [ -z "$current_branch" ]; then
+            git switch -c "$GITHUB_REF_NAME"
+          else
+            test "$current_branch" = "$GITHUB_REF_NAME"
+          fi
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Select installed native ARM64 Python 3.12
+        shell: bash
+        run: |
+          pinkha_python_bin=/opt/homebrew/opt/python@3.12/libexec/bin
+          "$pinkha_python_bin/python3" -I -c 'import platform, sys; assert sys.version_info[:2] == (3, 12), sys.version; assert platform.machine() == "arm64", platform.machine(); assert platform.system() == "Darwin", platform.system(); print(sys.version.split()[0], platform.machine(), sys.executable)'
+          printf '%s\n' "$pinkha_python_bin" >> "$GITHUB_PATH"
+      - name: Checkout the exact public canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Build or admit the fixed retained App and execute only this unresolved scope
+        id: execute
+        timeout-minutes: 130
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "$CURRENT_RELEASE_CONTROLLER" execute --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
+      - name: Finalize only journaled current-run resources even after an early failure
+        if: ${{ always() && steps.execute.outcome != 'skipped' }}
+        timeout-minutes: 8
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "$CURRENT_RELEASE_CONTROLLER" cleanup --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
+      - name: Preserve original Products, commands, results and cleanup without filtering raw streams
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Current-Anytype-Release-Return-RTL-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.EVIDENCE }}
+          retention-days: 30
+          if-no-files-found: error
+
+  semantic-page-apple-consumer:
+    if: ${{ inputs.route == 'semantic-page-apple-consumer' }}
+    uses: ./.github/workflows/pinkha-semantic-page-apple-consumer.yml
+
+  semantic-page-apple-runtime:
+    if: ${{ inputs.route == 'semantic-page-apple-runtime' }}
+    uses: ./.github/workflows/pinkha-semantic-page-apple-runtime.yml
+
+  semantic-anchor-native:
+    if: ${{ inputs.route == 'semantic-anchor-native' }}
+    uses: ./.github/workflows/pinkha-semantic-anchor-native.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t5-apple-pairs:
+    if: ${{ inputs.route == 't5-apple-pairs' || inputs.route == 't5-apple-ui' }}
+    uses: ./.github/workflows/pinkha-t5-apple-pair.yml
+    with:
+      heart_r14_run_id: ${{ inputs.source_run_id }}
+      heart_r15_run_id: ${{ inputs.t5_r15_run_id }}
+      include_freshness: ${{ inputs.route == 't5-apple-ui' || inputs.t5_component == 'index-freshness' }}
+      include_native_ui: ${{ inputs.route == 't5-apple-ui' }}
+
+  t5-r15-attachment-runtime:
+    if: ${{ inputs.route == 't5-r15-attachment-runtime' }}
+    uses: ./.github/workflows/pinkha-t5-attachment-runtime.yml
+    with:
+      variant: r15-attachment-v1
+  t5-r15-runtime:
+    if: ${{ inputs.route == 't5-r15-runtime' }}
+    uses: ./.github/workflows/pinkha-t5-r15-runtime.yml
+
+  t5-native-pagination:
+    if: ${{ inputs.route == 't5-native-pagination' || inputs.route == 't5-native-account-retry' }}
+    uses: ./.github/workflows/pinkha-t5-native-pagination.yml
+    with:
+      heart_r15_run_id: ${{ inputs.t5_r15_run_id }}
+      include_account_retry: ${{ inputs.route == 't5-native-account-retry' }}
+
+  t5-native-attachment:
+    if: ${{ inputs.route == 't5-native-attachment' }}
+    uses: ./.github/workflows/pinkha-t5-native-attachment.yml
+
+  t2-account-lifecycle:
+    if: ${{ inputs.route == 't2-account-lifecycle' }}
+    uses: ./.github/workflows/pinkha-t2-account-lifecycle.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-native-rpc:
+    if: ${{ inputs.route == 't2-native-rpc' }}
+    uses: ./.github/workflows/pinkha-t2-native-rpc.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-authorized-read-packages:
+    if: ${{ inputs.route == 't2-authorized-read-packages' }}
+    uses: ./.github/workflows/pinkha-authorized-operation-read-packages.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-authorized-operation-read:
+    if: ${{ inputs.route == 't2-authorized-operation-read' }}
+    uses: ./.github/workflows/pinkha-t2-native-rpc.yml
+    with:
+      source_sha: ${{ github.sha }}
+      rpc_profile: authorized-operation-read-v1
+
+  t2-authorized-read-account:
+    if: ${{ inputs.route == 't2-authorized-read-account' }}
+    uses: ./.github/workflows/pinkha-t2-native-rpc.yml
+    with:
+      source_sha: ${{ github.sha }}
+      rpc_profile: authorized-operation-read-v1
+      native_stage: account
+
+  t2-native-operations:
+    if: ${{ inputs.route == 't2-native-operations' }}
+    uses: ./.github/workflows/pinkha-t2-native-operations.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t5-coverage-proof:
+    if: ${{ inputs.route == 't5-coverage-proof' && inputs.t5_component != 'compatibility-pairs' && inputs.t5_component != 'account-pairs' && inputs.t5_component != 'index-freshness' }}
+    uses: ./.github/workflows/pinkha-t5-coverage-proof.yml
+    with:
+      component: ${{ inputs.t5_component }}
+
+  t5-compatibility-pairs:
+    if: ${{ inputs.route == 't5-coverage-proof' && inputs.t5_component == 'compatibility-pairs' }}
+    uses: ./.github/workflows/pinkha-t5-compatibility-pairs.yml
+
+  t5-account-pairs:
+    if: ${{ inputs.route == 't5-coverage-proof' && (inputs.t5_component == 'account-pairs' || inputs.t5_component == 'index-freshness') }}
+    uses: ./.github/workflows/pinkha-t5-account-pairs.yml
+    with:
+      include_freshness: ${{ inputs.t5_component == 'index-freshness' }}
+
+  native-diagnostics:
+    if: ${{ inputs.route == 'native-diagnostics' }}
+    uses: ./.github/workflows/pinkha-native-diagnostics.yml
+    with:
+      source_run_id: ${{ inputs.source_run_id }}
+
+  native-derived:
+    if: ${{ inputs.route == 'native-derived' }}
+    uses: ./.github/workflows/pinkha-native-derived.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      validation_scope: ${{ inputs.native_test_scope }}
+    secrets: inherit
+
+  full-acceptance:
+    if: ${{ inputs.route == 'full-acceptance' }}
+    uses: ./.github/workflows/pinkha-full-acceptance.yml
+    secrets: inherit
+
+  ipa-only:
+    if: ${{ inputs.route == 'ipa-only' }}
+    uses: ./.github/workflows/pinkha-ipa-only.yml
+    with:
+      require_full_acceptance: ${{ inputs.require_full_acceptance }}
+    secrets: inherit
+
+  native-ipa-fast:
+    if: ${{ inputs.route == 'native-ipa-fast' }}
+    uses: ./.github/workflows/pinkha-native-ipa-fast.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+    secrets: inherit
+
+  native-ipa-repair:
+    if: ${{ inputs.route == 'native-ipa-repair' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout Pinkha repair script
+        uses: actions/checkout@v4
+      - name: Download already built custom Heart IPA - NO recompilation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p build/ipa-repair/input
+          gh run download 41878176487 --repo "$GITHUB_REPOSITORY" --name Pinkha-Custom-Heart-Fast-Unsigned-IPA --dir build/ipa-repair/input
+          test -s build/ipa-repair/input/Pinkha-Native-Derived-iPad-Unsigned.ipa
+      - name: Fix and validate nested extension bundle identifiers
+        run: |
+          python3 Tools/PinkhaNativeDerived/repair_ipa_bundle_ids.py \
+            --input build/ipa-repair/input/Pinkha-Native-Derived-iPad-Unsigned.ipa \
+            --output build/ipa-repair/Pinkha-Torah-iPad-Extensions-Fixed-Unsigned.ipa \
+            --receipt build/ipa-repair/repair-receipt.json
+          sha256sum build/ipa-repair/Pinkha-Torah-iPad-Extensions-Fixed-Unsigned.ipa > build/ipa-repair/sha256.txt
+      - name: Upload corrected unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Torah-iPad-Extensions-Fixed-Unsigned-IPA
+          path: build/ipa-repair/Pinkha-Torah-iPad-Extensions-Fixed-Unsigned.ipa
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload integrity receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Torah-Extension-Repair-Evidence
+          path: |
+            build/ipa-repair/repair-receipt.json
+            build/ipa-repair/sha256.txt
+          if-no-files-found: warn
+          retention-days: 14
+
+  t2-rpc-lifecycle-races:
+    if: ${{ inputs.route == 't2-rpc-lifecycle-races' }}
+    uses: ./.github/workflows/pinkha-t2-rpc-lifecycle-races.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-rpc-space-close:
+    if: ${{ inputs.route == 't2-rpc-space-close' }}
+    uses: ./.github/workflows/pinkha-t2-rpc-space-close.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-authorized-read-apple-runtime:
+    if: ${{ inputs.route == 't2-authorized-read-apple-runtime' }}
+    uses: ./.github/workflows/pinkha-heart-authorized-read-runtime.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-authorized-read-ios:
+    if: ${{ inputs.route == 't2-authorized-read-ios' }}
+    uses: ./.github/workflows/pinkha-heart-authorized-read-ios.yml
+    with:
+      source_sha: ${{ github.sha }}
+      runtime_run: ${{ inputs.source_run_id }}
+
+  compiler:
+    if: ${{ inputs.route == 'loaded-account-arm64-compiler' }}
+    permissions:
+      contents: read
+    concurrency:
+      group: pinkha-loaded-account-compiler-${{ github.ref }}
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact compiler-producer controller
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Tools/AnyEngineValidation/loaded_account_witness/portable/
+            /Tools/AnyEngineValidation/loaded_account_witness/native-compiler-support.json
+            /.github/workflows/pinkha-loaded-account-arm64-compiler.yml
+
+      - name: Acquire signed compiler packages and assemble an offline image
+        env:
+          EXPECTED_SOURCE_SHA: ${{ inputs.source_sha || github.sha }}
+        run: python3 -B Tools/AnyEngineValidation/loaded_account_witness/portable/compiler_producer.py --execute
+
+      - name: Preserve original compiler evidence and exact image bytes
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Pinkha-Loaded-Account-ARM64-Compiler-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pinkha-loaded-account-compiler
+          include-hidden-files: true
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 14
+
+  current-page154-mounted:
+    if: ${{ inputs.route == 'current-page154-mounted' || inputs.route == 'current-page154-retained' }}
+    runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
+    timeout-minutes: 150
+    permissions:
+      contents: read
+      actions: read
+    env:
+      DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      CURRENT_PAGE_CONTROLLER: ${{ inputs.route == 'current-page154-retained' && 'Tools/CurrentAppleValidation/page154_retained.py' || 'Tools/CurrentAppleValidation/page154_current.py' }}
+      GIT_OPTIONAL_LOCKS: '0'
+      GH_TOKEN: ${{ github.token }}
+      EVIDENCE: build/current-page154-${{ github.run_id }}-${{ github.run_attempt }}/evidence
+    steps:
+      - name: Checkout the exact current Page154 App and controller source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Bind the dispatched local branch without advancing its commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$GITHUB_REF" = "refs/heads/$GITHUB_REF_NAME"
+          test "$GITHUB_REF_NAME" = "codex/chatgpt-wave15-shared-20261121"
+          current_branch="$(git branch --show-current)"
+          if [ -z "$current_branch" ]; then
+            git switch -c "$GITHUB_REF_NAME"
+          else
+            test "$current_branch" = "$GITHUB_REF_NAME"
+          fi
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Select installed native ARM64 Python 3.12
+        shell: bash
+        run: |
+          pinkha_python_bin=/opt/homebrew/opt/python@3.12/libexec/bin
+          "$pinkha_python_bin/python3" -I -c 'import platform, sys; assert sys.version_info[:2] == (3, 12), sys.version; assert platform.machine() == "arm64", platform.machine(); assert platform.system() == "Darwin", platform.system(); print(sys.version.split()[0], platform.machine(), sys.executable)'
+          printf '%s\n' "$pinkha_python_bin" >> "$GITHUB_PATH"
+      - name: Checkout the exact public canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Build or admit the fixed retained App and UI, then execute necessary setup and the one failed journey
+        id: execute
+        timeout-minutes: 130
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "$CURRENT_PAGE_CONTROLLER" execute --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
+      - name: Finalize only journaled current-run resources even after failure
+        if: ${{ always() && steps.execute.outcome != 'skipped' }}
+        timeout-minutes: 8
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B "$CURRENT_PAGE_CONTROLLER" cleanup --expected-source "$GITHUB_SHA" --inventory-recovery owned-inventory-timeout-v1
+      - name: Preserve current App and UI Products, original results, private diagnostics and cleanup
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Current-Page154-Mounted-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.EVIDENCE }}
+          retention-days: 30
+          if-no-files-found: error
+
+  owned-simulator-inventory-diagnostic:
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      EVIDENCE: build/owned-simulator-inventory-${{ github.run_id }}-${{ github.run_attempt }}
+      GIT_OPTIONAL_LOCKS: '0'
+      PYTHONDONTWRITEBYTECODE: '1'
+    if: ${{ inputs.route == 'owned-simulator-inventory-diagnostic' }}
+    runs-on: xcode-27
+    steps:
+    - name: Checkout only the exact diagnostic source
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+        persist-credentials: false
+        ref: ${{ github.sha }}
+        sparse-checkout: |-
+          AGENTS.md
+          Tools/SimulatorBootInventoryDiagnostic
+          .github/workflows/pinkha-owned-simulator-inventory-diagnostic.yml
+        sparse-checkout-cone-mode: false
+    - name: Bind the dispatched branch without advancing its commit
+      run: |-
+        set -euo pipefail
+        test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+        test "$GITHUB_REF" = "refs/heads/$GITHUB_REF_NAME"
+        test "$GITHUB_REF_NAME" = "codex/chatgpt-wave15-shared-20261121"
+        current_branch="$(git branch --show-current)"
+        if [ -z "$current_branch" ]; then
+          git switch -c "$GITHUB_REF_NAME"
+        else
+          test "$current_branch" = "$GITHUB_REF_NAME"
+        fi
+        test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      shell: bash
+    - name: Select an already installed ARM64 Python without downloading a runtime
+      run: |-
+        set -euo pipefail
+        shopt -s nullglob
+        candidates=()
+        default_python="$(command -v python3 || true)"
+        if [ -n "$default_python" ]; then candidates+=("$default_python"); fi
+        if [ -n "${RUNNER_TOOL_CACHE:-}" ]; then
+          for candidate in "$RUNNER_TOOL_CACHE"/Python/3.12.*/arm64/bin/python3; do
+            candidates+=("$candidate")
+          done
+        fi
+        test "${#candidates[@]}" -gt 0
+        test "${#candidates[@]}" -le 12
+        selected=''
+        for candidate in "${candidates[@]}"; do
+          if "$candidate" -I -B -c 'import platform,sys; assert sys.version_info[:2] == (3,12) and platform.machine() == "arm64"' >/dev/null 2>&1; then
+            selected="$candidate"
+            break
+          fi
+        done
+        test -n "$selected"
+        printf 'DIAGNOSTIC_PYTHON=%s\n' "$selected" >> "$GITHUB_ENV"
+        "$selected" -I -B -c 'import platform,sys; print(sys.executable); print(sys.version); print(platform.machine())'
+      shell: bash
+      timeout-minutes: 2
+    - id: diagnose
+      name: Observe one exact owned simulator without building or testing products
+      run: |-
+        set -euo pipefail
+        "$DIAGNOSTIC_PYTHON" -I -B Tools/SimulatorBootInventoryDiagnostic/run.py execute --expected-source "$GITHUB_SHA"
+      shell: bash
+      timeout-minutes: 22
+    - if: ${{ always() && steps.diagnose.outcome != 'skipped' }}
+      name: Finalize only the journaled simulator within its original global budget
+      run: |-
+        set -euo pipefail
+        "$DIAGNOSTIC_PYTHON" -I -B Tools/SimulatorBootInventoryDiagnostic/run.py cleanup --expected-source "$GITHUB_SHA"
+      shell: bash
+      timeout-minutes: 3
+    - if: always()
+      name: Preserve all diagnostic commands and original failure outcomes
+      uses: actions/upload-artifact@v4
+      with:
+        if-no-files-found: error
+        include-hidden-files: true
+        name: Owned-Simulator-Inventory-${{ github.run_id }}-${{ github.run_attempt }}
+        path: ${{ env.EVIDENCE }}
+        retention-days: 30
+    timeout-minutes: 30
+
+  loaded-account-native:
+    if: ${{ inputs.route == 'loaded-account-arm64-native' }}
+    permissions:
+      contents: read
+    concurrency:
+      group: pinkha-loaded-account-native-${{ github.ref }}
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 80
+    steps:
+      - name: Checkout the exact native consumer and original auditor
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Tools/AnyEngineValidation/loaded_account_witness/portable/run_native.py
+            /Tools/AnyEngineValidation/loaded_account_witness/portable/source-delta-v2.json
+            /Tools/AnyEngineValidation/loaded_account_witness/portable/loaded-witness-context.patch
+            /Tools/AnyEngineValidation/loaded_account_witness/portable/custody-recipient.pem
+            /Tools/AnyEngineValidation/loaded_account_witness/native_audit.py
+      - name: Execute one build and the four pending native methods
+        env:
+          EXPECTED_SOURCE_SHA: ${{ inputs.source_sha || github.sha }}
+          PINKHA_NATIVE_COMPILER_URL: ${{ secrets.PINKHA_NATIVE_COMPILER_URL }}
+          PINKHA_NATIVE_SOURCE_URL: ${{ secrets.PINKHA_NATIVE_SOURCE_URL }}
+        run: python3 -B Tools/AnyEngineValidation/loaded_account_witness/portable/run_native.py
+      - name: Preserve safe receipts and encrypted original evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Pinkha-Loaded-Account-Native-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pinkha-loaded-account-native/public
+          include-hidden-files: true
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 30
+
+  native-tree-inventory:
+    if: ${{ inputs.route == 'native-tree-inventory-arm64' }}
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: pinkha-native-tree-inventory-${{ github.ref }}
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 45
+    env:
+      EXPECTED_SOURCE_SHA: ${{ github.sha }}
+      PINKHA_NATIVE_COMPILER_URL: ${{ secrets.PINKHA_NATIVE_COMPILER_URL }}
+      PINKHA_NATIVE_SOURCE_URL: ${{ secrets.PINKHA_NATIVE_SOURCE_URL }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact native inventory controller and qualified source carrier helper
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: |
+            Tools/AnyEngineValidation/native_tree_inventory
+            Tools/AnyEngineValidation/loaded_account_witness/portable
+      - name: Compile and execute only the three new native tree inventory methods
+        run: python3 Tools/AnyEngineValidation/native_tree_inventory/run_native.py
+      - name: Preserve original native inventory result and encrypted evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-tree-inventory-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pinkha-native-tree-inventory/public
+          if-no-files-found: error
+          retention-days: 90
+  native-whole-source:
+    if: ${{ inputs.route == 'native-whole-source-arm64' }}
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: pinkha-native-whole-source-${{ github.ref }}
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 45
+    env:
+      EXPECTED_SOURCE_SHA: ${{ github.sha }}
+      PINKHA_NATIVE_COMPILER_URL: ${{ secrets.PINKHA_NATIVE_COMPILER_URL }}
+      PINKHA_NATIVE_SOURCE_URL: ${{ secrets.PINKHA_NATIVE_SOURCE_URL }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact native whole-source controller and qualified source carrier helper
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout: |
+            Tools/AnyEngineValidation/native_whole_source
+            Tools/AnyEngineValidation/loaded_account_witness/portable
+      - name: Compile and execute only the two selected native whole-source capture methods
+        run: python3 Tools/AnyEngineValidation/native_whole_source/run_native.py
+      - name: Preserve original native whole-source result and encrypted evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-whole-source-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/pinkha-native-whole-source/public
+          if-no-files-found: error
+          retention-days: 90
+  native-source-file-peers:
+    if: ${{ inputs.route == 'native-source-file-peers-arm64' }}
+    permissions:
+      contents: read
+      actions: read
+    concurrency:
+      group: pinkha-native-file-peer-${{ github.ref }}
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 45
+    env:
+      EXPECTED_SOURCE_SHA: ${{ github.sha }}
+      PINKHA_NATIVE_COMPILER_URL: ${{ secrets.PINKHA_NATIVE_COMPILER_URL }}
+      PINKHA_NATIVE_SOURCE_URL: ${{ secrets.PINKHA_NATIVE_SOURCE_URL }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+    - name: Checkout exact native JSON and peer controller with qualified source helpers
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+        sparse-checkout: |
+          Tools/AnyEngineValidation/native_file_peer
+          Tools/AnyEngineValidation/native_whole_source
+          Tools/AnyEngineValidation/loaded_account_witness/portable
+    - name: Compile once and execute native JSON plus three real peer processes
+      run: python3 Tools/AnyEngineValidation/native_file_peer/run_native.py
+    - name: Preserve original native JSON and peer result with encrypted evidence
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: native-file-peer-${{ github.run_id }}-${{ github.run_attempt }}
+        path: ${{ runner.temp }}/pinkha-native-file-peer/public
+        if-no-files-found: error
+        retention-days: 90
