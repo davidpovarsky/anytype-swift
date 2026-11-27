@@ -1,0 +1,59 @@
+{
+  "actualPlanSHA256": "d22db29bd444895e0152cc9234b3631cfb085684d23bd5ac9c074b64e51e5f3d",
+  "appBuildsByReview": 0,
+  "candidateSHA256": "f097cdb1a12087475cda0728d34d7a7dcb2ef0d62ad67810fd9724d11d096bfa",
+  "findings": [],
+  "independentChecks": {
+    "addedDeclarations": [
+      "w3_stage_control_references"
+    ],
+    "changedDeclarations": [
+      "w3_stage_proof"
+    ],
+    "exactBundleFields": [
+      "bytes",
+      "path",
+      "prerequisite",
+      "sha256"
+    ],
+    "exactInverseRestoresPublished7ff": true,
+    "exactSixControls": [
+      "originalAdapter",
+      "originalProducer",
+      "originalStager",
+      "preservation",
+      "warmAdapter",
+      "warmStager"
+    ],
+    "materializerOnlyFragmentPinChanged": true,
+    "originalGateRetainsStrictTwoFieldReferenceAndSHA256Validation": true,
+    "originalProducerMatchesEmbeddedBase": true,
+    "readyForRuntimeAdmission": false,
+    "unchangedExistingDeclarations": 13,
+    "warmStagerBoundToActualStagingScriptReference": true
+  },
+  "materializerSHA256": "58e06ecb707875c2d690a796f7f90ea7802c90fd4503cda49432248ad2507e21",
+  "profileSHA256": "2636d2ca598efa876a83a4abc99fc7a9f68296c80bb8348a7788b84ac7432248",
+  "remainingGates": [
+    "Actual approved build admission and exact expanded producer/delta pins",
+    "Successful App/UI phase receipts and exact product/compiler source witnesses",
+    "Real runtime admission and requested UI/native acceptance"
+  ],
+  "retainedPriorEvidence": {
+    "constantOnly917": "917ff76398e1fd7961e1057ad662da31bfbca710a89ac9de77fdfc8d991d669b",
+    "published7ff": "7ff8af54801d089fe6abad52fdd3c6fbec957c8f205be1d2299556a75d227ad5"
+  },
+  "reviewedAt": "2026-11-27T03:42:02.777309+00:00",
+  "reviewer": "Wave2 root",
+  "schema": "pinkha.wave2.root-warm-staged-schema-review.v1",
+  "status": "SOURCE_REVIEWED_ACTUAL_STAGE_SCHEMA_RUNTIME_CLOSED",
+  "testEvidenceReviewed": {
+    "durationSeconds": 0.512,
+    "methods": 3,
+    "negativeCases": 7,
+    "rerunByRoot": false,
+    "scope": "Portable schema controls; actual bundle hash observed separately, synthetic local length buffer is explicitly not real Git admission",
+    "suite": "test_staged_warm_intake.py"
+  },
+  "testsExecutedByReview": 0
+}

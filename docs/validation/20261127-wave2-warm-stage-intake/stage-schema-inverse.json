@@ -1,0 +1,271 @@
+{
+  "actualPlanSHA256": "d22db29bd444895e0152cc9234b3631cfb085684d23bd5ac9c074b64e51e5f3d",
+  "addedFunctions": [
+    "w3_stage_control_references"
+  ],
+  "candidateSHA256": "f097cdb1a12087475cda0728d34d7a7dcb2ef0d62ad67810fd9724d11d096bfa",
+  "changedOriginalFunctions": [
+    "w3_stage_proof"
+  ],
+  "changes": [
+    {
+      "candidateStart": 2173,
+      "new": "\"41dc40b",
+      "old": "None  # Aw",
+      "originalStart": 2173
+    },
+    {
+      "candidateStart": 2182,
+      "new": "36",
+      "old": "it the ex",
+      "originalStart": 2184
+    },
+    {
+      "candidateStart": 2185,
+      "new": "4b5b1d",
+      "old": "ct ",
+      "originalStart": 2194
+    },
+    {
+      "candidateStart": 2192,
+      "new": "7b87f530",
+      "old": "ctu",
+      "originalStart": 2198
+    },
+    {
+      "candidateStart": 2201,
+      "new": "332ddfb89bbbb901b4bf0455d76f59f049",
+      "old": "l w",
+      "originalStart": 2202
+    },
+    {
+      "candidateStart": 2236,
+      "new": "80\"",
+      "old": "rm-retry evidence.",
+      "originalStart": 2206
+    },
+    {
+      "candidateStart": 2492,
+      "new": "'d22db29bd444895",
+      "old": "Non",
+      "originalStart": 2477
+    },
+    {
+      "candidateStart": 2509,
+      "new": "0152cc9234b3631cfb085684d23bd5",
+      "old": "  # Await the ex",
+      "originalStart": 2481
+    },
+    {
+      "candidateStart": 2541,
+      "new": "9",
+      "old": "t a",
+      "originalStart": 2499
+    },
+    {
+      "candidateStart": 2543,
+      "new": "074b64",
+      "old": "tual warm-r",
+      "originalStart": 2503
+    },
+    {
+      "candidateStart": 2550,
+      "new": "51",
+      "old": "try ",
+      "originalStart": 2515
+    },
+    {
+      "candidateStart": 2553,
+      "new": "5f3",
+      "old": "vi",
+      "originalStart": 2520
+    },
+    {
+      "candidateStart": 2557,
+      "new": "'",
+      "old": "ence.",
+      "originalStart": 2523
+    },
+    {
+      "candidateStart": 2577,
+      "new": "206516",
+      "old": "None",
+      "originalStart": 2547
+    },
+    {
+      "candidateStart": 2964,
+      "new": "'506620",
+      "old": "Non",
+      "originalStart": 2932
+    },
+    {
+      "candidateStart": 2972,
+      "new": "9c9cb2",
+      "old": "  # Aw",
+      "originalStart": 2936
+    },
+    {
+      "candidateStart": 2979,
+      "new": "af",
+      "old": "it th",
+      "originalStart": 2943
+    },
+    {
+      "candidateStart": 2982,
+      "new": "0c89076269c2",
+      "old": " ex",
+      "originalStart": 2949
+    },
+    {
+      "candidateStart": 2995,
+      "new": "7d3a4",
+      "old": "",
+      "originalStart": 2953
+    },
+    {
+      "candidateStart": 3001,
+      "new": "b6f",
+      "old": "t ",
+      "originalStart": 2954
+    },
+    {
+      "candidateStart": 3005,
+      "new": "7334924",
+      "old": "ctu",
+      "originalStart": 2957
+    },
+    {
+      "candidateStart": 3013,
+      "new": "18dd",
+      "old": "l w",
+      "originalStart": 2961
+    },
+    {
+      "candidateStart": 3018,
+      "new": "4",
+      "old": "rm-retry evi",
+      "originalStart": 2965
+    },
+    {
+      "candidateStart": 3020,
+      "new": "ff1b2f6bb'",
+      "old": "ence.",
+      "originalStart": 2978
+    },
+    {
+      "candidateStart": 3059,
+      "new": "'cf181c",
+      "old": "Non",
+      "originalStart": 3012
+    },
+    {
+      "candidateStart": 3067,
+      "new": "88",
+      "old": "  # Await the ex",
+      "originalStart": 3016
+    },
+    {
+      "candidateStart": 3071,
+      "new": "84618868",
+      "old": "t ",
+      "originalStart": 3034
+    },
+    {
+      "candidateStart": 3080,
+      "new": "4",
+      "old": "",
+      "originalStart": 3037
+    },
+    {
+      "candidateStart": 3082,
+      "new": "1c9f",
+      "old": "tu",
+      "originalStart": 3038
+    },
+    {
+      "candidateStart": 3087,
+      "new": "ed69288bcb191599e8015271d629bcd0be00",
+      "old": "l w",
+      "originalStart": 3041
+    },
+    {
+      "candidateStart": 3124,
+      "new": "'",
+      "old": "rm-retry evidence.",
+      "originalStart": 3045
+    },
+    {
+      "candidateStart": 17988,
+      "new": "control_references(plan, contract, gate):\n    \"\"\"Bind the actual six-control d22 plan without a generic extra-key allowance.\"\"\"\n    controls = plan[\"controls\"]\n    require(set(controls) == {\"originalStager\", \"originalAdapter\", \"originalProducer\",\n                              \"preservation\", \"warmAdapter\", \"warmStager\"},\n            \"Exactly the six reviewed original and warm controls are required\")\n    for name, expected in ((\"originalStager\", W3_ORIGINAL_STAGE_SHA), (\"originalAdapter\", W3_ORIGINAL_ADAPTER_SHA),\n                           (\"originalProducer\", W3_BASE_SHA), (\"preservation\", W3_FAILED_CONTROL_SHA),\n                           (\"warmAdapter\", W3_ADAPTER_SHA), (\"warmStager\", W3_STAGE_SHA)):\n        require(controls[name][\"sha256\"] == expected and sha(gate.read_ref(controls[name])) == expected,\n                \"An original staging control changed: \" + name)\n    require(gate.read_ref(controls[\"originalProducer\"]) == W3_EMBEDDED[\"base_producer\"].encode(),\n            \"The actual staged original producer differs from the exact embedded204f base\")\n    warm_refs = contract[\"warmRetry\"][\"controls\"]\n    require(controls[\"preservation\"] == w3_ref(warm_refs[\"preservation\"])\n            and controls[\"warmAdapter\"] == w3_ref(warm_refs[\"adapter\"])\n            and controls[\"warmStager\"] == w3_ref(contract[\"stagingScript\"]),\n            \"The consumer's exact warm control references differ from the actual staged files\")\n    bundle = plan[\"gitBundle\"]\n    require(set(bundle) == {\"path\", \"sha256\", \"bytes\", \"prerequisite\"}\n            and bundle[\"sha256\"] == W3_BUNDLE_SHA and bundle[\"bytes\"] == W3_BUNDLE_BYTES\n            and bundle[\"prerequisite\"] == W3_PREVIOUS,\n            \"The exact transferred8f2 bundle identity, byte count or prerequisite differs\")\n    # Preserve the original receipt gate's strict two-key reference schema.\n    require(len(gate.read_ref({\"path\": bundle[\"path\"], \"sha256\": bundle[\"sha256\"]})) == W3_BUNDLE_BYTES,\n            \"Actual transferred8f2 bundle byte count differs\")\n\n\ndef w3_stage_",
+      "old": "",
+      "originalStart": 17926
+    },
+    {
+      "candidateStart": 22593,
+      "new": "w3_stage_",
+      "old": "",
+      "originalStart": 20493
+    },
+    {
+      "candidateStart": 22609,
+      "new": "_reference",
+      "old": "",
+      "originalStart": 20500
+    },
+    {
+      "candidateStart": 22620,
+      "new": "(",
+      "old": " = ",
+      "originalStart": 20501
+    },
+    {
+      "candidateStart": 22625,
+      "new": "",
+      "old": "[\"controls\"]\n    require(set(controls) == {\"originalStager\"",
+      "originalStart": 20508
+    },
+    {
+      "candidateStart": 22626,
+      "new": "",
+      "old": " \"originalAdapter\", \"preservation\", \"warmAdapter\"},\n            \"Only the exact original and reviewed warm",
+      "originalStart": 20568
+    },
+    {
+      "candidateStart": 22632,
+      "new": "",
+      "old": "ols ",
+      "originalStart": 20680
+    },
+    {
+      "candidateStart": 22633,
+      "new": "c",
+      "old": "re admi",
+      "originalStart": 20685
+    },
+    {
+      "candidateStart": 22635,
+      "new": "",
+      "old": "ted\")\n    for name",
+      "originalStart": 20693
+    },
+    {
+      "candidateStart": 22637,
+      "new": "",
+      "old": "expected in ((\"originalStager\", W3_ORIGINAL_STAGE_SHA), (\"originalAdapter\", W3_ORIGINAL_ADAPTER_SHA),\n                           (\"preservation\", W3_FAILED_CONTROL_SHA), (\"warmAdapter\", W3_ADAPTER_SHA)):\n        require(controls[name][\"sha256\"] == expected and sha(",
+      "originalStart": 20713
+    },
+    {
+      "candidateStart": 22641,
+      "new": "",
+      "old": ".read_ref(controls[name])) == expected,\n                \"An original staging control changed: \" + name)\n    require(controls[\"preservation\"] == w3_ref(warm_refs[\"controls\"][\"preservation\"])\n            and controls[\"warmAdapter\"] == w3_ref(warm_refs[\"controls\"][\"adapter\"]),\n            \"The consumer's warm control files differ from the actual staged files\")\n    require(plan[\"gitBundle\"][\"sha256\"] == W3_BUNDLE_SHA\n            and len(gate.read_ref(plan[\"gitBundle\"])) == W3_BUNDLE_BYTES, \"Exact transferred8f2 bundle differs\"",
+      "originalStart": 20982
+    }
+  ],
+  "inverseRestoresEveryOriginalByte": true,
+  "original7ffMismatch": "Actual stage plan has six fixed controls and a four-field gitBundle record; original four-control check and direct two-key gate call would reject it.",
+  "originalSHA256": "7ff8af54801d089fe6abad52fdd3c6fbec957c8f205be1d2299556a75d227ad5",
+  "parentCommit": "a50771dfb5c845faa283f9b472e721fa89ff0786",
+  "preservedConstantOnlyDraftSHA256": "917ff76398e1fd7961e1057ad662da31bfbca710a89ac9de77fdfc8d991d669b",
+  "runtimeAdmission": false,
+  "status": "EXACT_ACTUAL_STAGE_SCHEMA_SUCCESSOR_RUNTIME_CLOSED"
+}
