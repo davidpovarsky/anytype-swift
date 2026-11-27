@@ -44,7 +44,7 @@ def native8ac_module():
     path = Path(__file__).resolve().with_name("native16_profile.py")
     sys.dont_write_bytecode = True
     original = path.read_bytes()
-    require(hashlib.sha256(original).hexdigest() == "b97e9fd3fff73b92326f88937f63360275463a9ef6bceb78bb0f9d70dfd65c5b",
+    require(hashlib.sha256(original).hexdigest() == "5bd072193b503cb98766e400725a5cf3fd3c12fa29345a90ad132ab7708b454e",
             "exact_reviewed_shared_app_NativeUI_profile_required")
     cached = getattr(native8ac_module, "qualified", None)
     if cached is not None:

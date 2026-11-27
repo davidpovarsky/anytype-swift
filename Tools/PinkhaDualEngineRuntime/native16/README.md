@@ -1,71 +1,150 @@
-# Shared NativeUI continuation for sharing and Archive
+# Shared-product NativeUI continuation: sharing, Archive and native RTL
 
-These files prepare one complete NativeUI runner for the current integrated app. The selected continuations are `sharing-owner` and the full `archive` roundtrip. The already accepted drag method is retained in the complete original source and is not selected again.
+These controllers prepare the original NativeUI builder and consumer for one
+separately admitted shared App/UI product. They do not provide a successful
+producer receipt, run Apple commands during preparation, or establish acceptance.
+Execution remains blocked until Wave 3's exact integrated source, SDK, compiler
+inputs, successful phase exits, complete products and common admission have all
+been qualified. The previous App16/a089 producer was cancelled before compilation.
 
-No app build, UI build, simulator operation or application test has been performed by this preparation. Wave 3 stopped the proposed a089 App16 queue before compilation and requested the next integrated product. The existing common qualifier `4ec8617c59da3183a68a53ea9f840e57738469f36f9a0bc5b5a00e806d73cd9c` remains an a089 preparation; it must not be relabeled as acceptance of the next source.
+## Preserved boundary
 
-## Source authority
+The original controller inputs remain:
 
-At execution, the source commit and SDK/lock/native binary pins come exclusively from a separately reviewed exact shared qualifier and its immutable successful producer admission. There is no source-commit override. The NativeUI profile requires the common qualifier's `APP16_SOURCE` to equal the admission source and invokes its complete `admit_and_clone_products` API before compilation or XCTest. The common qualifier must validate the actual App and complete Stage1 UI producer, not a fabricated receipt or a header-only source change.
+| Controller | Original SHA256 |
+| --- | --- |
+| `build_prebuilt_native_ui8ac.py` | `e6c4c506cf893b2dc495fdc4b76c686f09a108c9980e05d19590d92acab804f9` |
+| `run_prebuilt_native_ui8ac.py` | `18c7cc5722a856782d454a11db11ea172c9d718cecd17cd6dc54ffcc2a256d2b` |
 
-The admission API remains:
+`prepare_native_ui16_controllers.py` records every exact replacement and verifies
+the inverse restores every original byte. The original owned-command executor,
+descriptor binder, enumeration contract, actual xcresult parser, account
+retention, code/product integrity and compiler-source checks remain. No old
+failure, result or build receipt is replaced. The original two NativeUI source
+files are still the only required Swift compiler inputs.
 
-```python
-source_proof, products, app = shared.admit_and_clone_products(
-    admission, private_root, evidence_directory, commands
-)
-```
+The finite execution stages are `sharing-owner`, `archive` and `rtl`. Other
+legacy stage names are rejected by this profile; in particular the already
+passed drag journey is not selected. Sharing and Archive retain their original
+simulator and method allowances. The native RTL method retains its original
+360-second allowance.
 
-The verified common file is placed beside the generated controllers as `combined_heart_semantics_current.py`. Its actual reviewed SHA-256 is required on every invocation. Native manifest `8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b` is fixed; a different native contract requires a separate review.
+The original `bc51a2e69bdb1b8a1be4ee87af894d836c31a025` sharing/Archive preparation
+and its ten portable checks remain historical preparation evidence. This update
+qualifies the subsequently reviewed NativeLaunch source, not an older runner.
 
-NativeUI source remains independently fixed: NativeLaunch `fdb706fc9d1c805ceb7220e4ae64a14244f7437525cf06d8d14e1b1f100de6da`, NativeHistory `2772d790979de88a3b622f17453a91ca792114292016f01e31386de7f4f614ca`, the original project/scheme, and the original projection/selection/result helpers. The title correction is reversed in memory to the complete original `0b4cbd…` file using the two reviewed fragments and original proof `3d7bb101…`. Original invitation, ownership, confirmation, cancellation, reopen and Archive assertions are retained. Source overlays are refused.
+## NativeLaunch source closure
 
-## Materialize and build once
+`NativeLaunchTests.swift` must be exactly
+`e32f68676df1330c0255aa7ffa93b71c16f158570250013c607084f440c54375` from the integrated
+source. `docs/validation/20261127-wave2-native-rtl/source-proof.json`, SHA256
+`699e0ccdb963cfd9a630b65ffce9973a5c63d440b62db7fa3aacdb34907240d5`, restores the
+single RTL method to the complete original `fdb706fc…` file. The existing title
+proof then restores the original `0b4cbd…` file. All bytes outside the RTL method
+are unchanged, and the Hebrew actions/assertions restore exactly.
 
-Run this preparer against the retained original `build_prebuilt_native_ui8ac.py` (`e6c4c506…`) and `run_prebuilt_native_ui8ac.py` (`18c7cc57…`):
+The source's exact English/Hebrew expected style values are deliberately part of
+this reviewed method. The builder applies zero source overlays. Its existing
+`changedOriginalMethodAssertions=0` field describes that projection step; the
+source-localization extension is separately recorded in `current8acFixture`.
 
-```sh
-python3.12 -B prepare_native_ui16_controllers.py \
-  --original-controller-root /absolute/original-nativeui-control \
-  --native-ui-profile /absolute/native16_profile.py \
-  --output /absolute/new-nativeui-control
-```
+The prepared NativeLaunch method remains
+`PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen`.
+No duplicate RTL test is introduced. The original test creates its own fresh
+account/Space, chooses LTR then RTL and center alignment, and checks native style,
+one block, identity/body and selected menu state after cold reopen.
 
-The preparer retains every original controller byte through a reversible delta. The original builder command, disk floor, growth allowances, 1200-second build timeout and process lifecycle remain unchanged. The original consumer's descriptor binder, selected method, enumeration, XCTest result checks and cleanup remain unchanged. The changes load the new profile, bind the shared admission, and add a post-build compiler/product proof.
+## Exact shared-product inputs
 
-After Wave 3 has reviewed the final common qualifier and admitted the successful app producer, place that exact common file beside the generated controllers and run the UI-only build under the coordinated Mac owner:
+The builder and consumer accept `--shared-admission`, its independently retained
+`--shared-admission-sha256`, and `--shared-controller-sha256`. The sibling
+`combined_heart_semantics_current.py` must have that exact reviewed SHA and expose
+the original shared admission API. Source, SDK, native binary and lock identities
+come exclusively from that qualifier and admission. Native manifest remains
+`8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b`.
 
-```sh
-python3.12 -B /absolute/new-nativeui-control/build_prebuilt_native_ui16.py \
-  --main-root /absolute/shared-main-root \
-  --main-evidence /absolute/shared-main-root/actual-build-evidence \
-  --source-root /absolute/actual-frozen-source \
-  --output /absolute/shared-main-root/native-ui16-build1 \
-  --shared-controller-sha256 ACTUAL_REVIEWED_COMMON_CONTROLLER_SHA256 \
-  --shared-admission /absolute/actual-shared-admission.json \
-  --shared-admission-sha256 ACTUAL_SHARED_ADMISSION_SHA256
-```
+The consumer also requires the actual `--native-ui-proof-sha256` for the completed
+same-source UI-only build. It verifies the original builder receipt, immutable
+builder/controller materialization, two actual SwiftFileLists, all original
+products with modes/links, successful stdout, exit and process-group observations.
+No current shared producer or NativeUI build is supplied by this preparation.
 
-The build preserves the original `receipt.json` and creates `native16-qualified.json` only after the real SwiftFileList contains exactly the two original NativeUI source files. It retains those compiler lists and the complete product inventory including modes and links. Both receipts are required; a build success without the additional qualification is not admitted by the consumer.
+Every test invocation requires a fresh owned output root and `--retain-owned-simulator`.
+Existing alternate-source, SDK, product-path, source-overlay and companion
+arguments remain rejected. Old Page154 fixtures or T5 calls are not part of this
+NativeUI profile.
 
-## Consume the same runner
+## Finite RTL configuration
 
-Use separate fresh execution roots for sharing and Archive. Supply the actual SHA of `native16-qualified.json`:
+Only `--stage rtl` accepts `--rtl-cell` and `--rtl-cell-sha256`. The canonical
+cell JSON has exactly these fields:
 
-```sh
-python3.12 -B /absolute/new-nativeui-control/run_prebuilt_native_ui16.py \
-  --main-root /absolute/shared-main-root \
-  --main-evidence /absolute/shared-main-root/actual-build-evidence \
-  --source-root /absolute/actual-frozen-source \
-  --ui-build /absolute/shared-main-root/native-ui16-build1 \
-  --output /absolute/shared-main-root/native-archive16-attempt1 \
-  --stage archive --retain-owned-simulator \
-  --shared-controller-sha256 ACTUAL_REVIEWED_COMMON_CONTROLLER_SHA256 \
-  --shared-admission /absolute/actual-shared-admission.json \
-  --shared-admission-sha256 ACTUAL_SHARED_ADMISSION_SHA256 \
-  --native-ui-proof-sha256 ACTUAL_NATIVEUI_QUALIFICATION_SHA256
-```
+| Field | Required value |
+| --- | --- |
+| `schema` | `pinkha-native-rtl-cell-v1` |
+| `appLanguage` | `he` or `en` |
+| `deviceFamily` | `iphone` or `ipad` |
+| `deviceType` | An exact installed CoreSimulator device-type identifier |
+| `appearance` | `light` or `dark` |
+| `contentSize` | `large` |
 
-For sharing, use `--stage sharing-owner` and a distinct output root. Each invocation creates a separate adjacent `OUTPUT-app16-intake` directory for verified APFS product copies. Existing directories are rejected, including after a failed attempt. The original build/evidence, simulator account and previous failure receipts are not overwritten.
+The exact runtime identifier/version/build come from the common qualifier. The
+observed installed device type must match its declared family and be supported
+by that runtime. The consumer creates a fresh owned simulator for each cell.
+It configures the opposite OS language and matching OS locale, reboots, and
+reads the actual globals. It sets and reads appearance and content size. The
+same checks run after the original method, with the cell pin checked again.
 
-The old sharing attempt `df8ad97c…` remains a failed/incomplete original attempt; no completed XCTest total is inferred. The old Archive failure `733b210f79f5b31cb07772e104f6dfd43285d0e11dd818346fa28eb537131d94` remains failed. Picker-only diagnostic `8e473704…` is not full export/import acceptance. The full Archive method must perform actual Save, import, canonical mapping/body verification and cold reopen, with original screenshots and xcresult retained. Physical-device acceptance remains outstanding.
+The test-runner environment `PINKHA_NATIVE_RTL_APP_LANGUAGE` is explicitly bound
+to the selected language in the original descriptor and xcodebuild environment.
+The descriptor inverse permits only that added key; existing keys, other methods
+or ambient language overrides cannot substitute another configuration. The
+Swift test's Hebrew default is legacy compatibility and supplies no OS evidence.
+
+`native_rtl_matrix.py` loads three unchanged original declarations by both whole
+file SHA and declaration SHA, without executing unrelated helper entry points:
+
+- `run_wave15_acceptance.validate_device_language` verifies the opposite actual
+  OS language/locale after reboot.
+- `t5_native_ui_r08.actual_setting` verifies actual appearance and content size.
+- `run_ui27.code_carriers` binds installed executable bytes to the admitted App
+  before and after the test. It does not claim all resources are executable code.
+
+The eight requested cells are the cross product of two opposite-language pairs,
+two device families and two appearances. Each invocation selects only the one
+original RTL method. No cell has been executed by this preparation.
+
+## Results and visual evidence
+
+The original exact one-pass/zero-failure/zero-skip assertion and observed device
+UUID/arm64 check remain mandatory. Two `.keepAlways` app screenshots are exported
+from the actual original xcresult into the owned private evidence directory.
+The collector checks both phase names, original method/device, unique contained
+paths, PNG type/dimensions and digests. JSON manifests and PNG files retain their
+separate original size bounds.
+
+A successful RTL method produces
+`PASS_NATIVE_RTL_METHOD_VISUAL_REVIEW_PENDING`. It preserves the two actual PNG
+paths/hashes, pre/post setting observations, installed code-carrier hashes and
+original XCTest evidence. A person/agent must inspect those actual images and
+record that visual review separately; no header check establishes visual quality.
+The owned simulator is retained Shutdown and the native account is preserved.
+
+Current-product matrix acceptance, physical-device validation and Release
+acceptance remain absent. Empty fields, lists, headings, quotes, keyboard,
+selection, gestures and accessibility have their own editor acceptance scope.
+
+## Portable preparation controls
+
+`validate_native_rtl_preparation.py` runs no Apple command. It checks the source
+inverse, all eight synthetic configurations, explicit descriptor binding,
+unsupported values/overrides, wrong runtime/family/readbacks, and two same-device
+attachment phases. Synthetic PNGs are test data, not UI evidence. The optional
+`--only-control` permits a targeted replay.
+
+The first control run produced 6 PASS / 1 FAIL: the negative screenshot fixture
+tried to rewrite its synthetic manifest through the shared immutable writer.
+That receipt and exact script are retained. The harness now changes only its
+synthetic negative input explicitly; the targeted seventh control passed. The
+six passed controls were not rerun. No app defect or Apple result is inferred
+from this control-harness issue.

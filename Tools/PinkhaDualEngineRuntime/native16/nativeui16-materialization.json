@@ -1,15 +1,16 @@
 {
   "allowedExecutionStages": [
     "sharing-owner",
-    "archive"
+    "archive",
+    "rtl"
   ],
   "builds": 0,
   "controllers": {
     "build_prebuilt_native_ui16.py": {
-      "candidateSHA256": "3fa869dac9dead5e516fc4ca9c1a0fee065ee911a0870b4b5dcc9dc5a2ea3a08",
+      "candidateSHA256": "a2470636b2743e028dbc95784dd8ee9a556f412f652f2071dbc5b2f9e6fa5739",
       "changes": [
         {
-          "new": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native16_profile.py\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() == \"b97e9fd3fff73b92326f88937f63360275463a9ef6bceb78bb0f9d70dfd65c5b\",\n            \"exact_reviewed_shared_app_NativeUI_profile_required\")\n    cached = getattr(native8ac_module, \"qualified\", None)\n    if cached is not None:\n        return cached\n    module = type(sys)(\"qualified_native16\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    native8ac_module.qualified = module\n    return module",
+          "new": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native16_profile.py\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() == \"5bd072193b503cb98766e400725a5cf3fd3c12fa29345a90ad132ab7708b454e\",\n            \"exact_reviewed_shared_app_NativeUI_profile_required\")\n    cached = getattr(native8ac_module, \"qualified\", None)\n    if cached is not None:\n        return cached\n    module = type(sys)(\"qualified_native16\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    native8ac_module.qualified = module\n    return module",
           "old": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native8ac_profile.py\")\n    require(digest(path) == \"ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332\",\n            \"exact_App15_NativeUI_profile_required\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() ==\n            \"ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332\",\n            \"App15_profile_changed_during_admission\")\n    module = type(sys)(\"qualified_native8ac\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    return module",
           "position": 967
         },
@@ -35,17 +36,62 @@
       ]
     },
     "run_prebuilt_native_ui16.py": {
-      "candidateSHA256": "a9fb1c54195fcc3a8e6843d9a3f4b2d7b7a1918a8dd421f611fe87f6f37c4934",
+      "candidateSHA256": "83f5f9c2d7df495b8949557e3d3cbcb573eab784e13f00f3f3d995800e0c1b36",
       "changes": [
         {
-          "new": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native16_profile.py\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() == \"b97e9fd3fff73b92326f88937f63360275463a9ef6bceb78bb0f9d70dfd65c5b\",\n            \"exact_reviewed_shared_app_NativeUI_profile_required\")\n    cached = getattr(native8ac_module, \"qualified\", None)\n    if cached is not None:\n        return cached\n    module = type(sys)(\"qualified_native16\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    native8ac_module.qualified = module\n    return module",
+          "new": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native16_profile.py\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() == \"5bd072193b503cb98766e400725a5cf3fd3c12fa29345a90ad132ab7708b454e\",\n            \"exact_reviewed_shared_app_NativeUI_profile_required\")\n    cached = getattr(native8ac_module, \"qualified\", None)\n    if cached is not None:\n        return cached\n    module = type(sys)(\"qualified_native16\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    native8ac_module.qualified = module\n    return module",
           "old": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native8ac_profile.py\")\n    require(digest(path) == \"ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332\",\n            \"exact_App15_NativeUI_profile_required\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() ==\n            \"ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332\",\n            \"App15_profile_changed_during_admission\")\n    module = type(sys)(\"qualified_native8ac\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    return module",
           "position": 21970
         },
         {
-          "new": "    parser.add_argument(\"--shared-admission\", type=Path, required=True)\n    parser.add_argument(\"--shared-admission-sha256\", required=True)\n    parser.add_argument(\"--shared-controller-sha256\", required=True)\n    parser.add_argument(\"--native-ui-proof-sha256\", required=True)\n    args = parser.parse_args()\n    native8ac_module().configure(args)",
+          "new": "    parser.add_argument(\"--shared-admission\", type=Path, required=True)\n    parser.add_argument(\"--shared-admission-sha256\", required=True)\n    parser.add_argument(\"--shared-controller-sha256\", required=True)\n    parser.add_argument(\"--native-ui-proof-sha256\", required=True)\n    parser.add_argument(\"--rtl-cell\", type=Path)\n    parser.add_argument(\"--rtl-cell-sha256\")\n    args = parser.parse_args()\n    native8ac_module().configure(args)",
           "old": "    args = parser.parse_args()",
           "position": 33212
+        },
+        {
+          "new": "STAGES = {\n    \"rtl\": (\"NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen\", 360),",
+          "old": "STAGES = {",
+          "position": 653
+        },
+        {
+          "new": "        if args.stage == \"rtl\":\n            _, runtimes_raw = run([\"xcrun\", \"simctl\", \"list\", \"runtimes\", \"--json\"], out, \"runtimes\")\n            _, types_raw = run([\"xcrun\", \"simctl\", \"list\", \"devicetypes\", \"--json\"], out, \"device-types\")\n            runtime, actual_type = current8ac.rtl_device(runtimes_raw, types_raw)\n            types = [actual_type]\n            receipt[\"rtlActualDevice\"] = {\"runtime\": runtime, \"deviceType\": actual_type}\n        else:\n            _, raw = run([\"xcrun\", \"simctl\", \"list\", \"runtimes\", \"--json\"], out, \"runtimes\")\n            runtimes = [x for x in json.loads(raw)[\"runtimes\"] if\n                        x.get(\"isAvailable\") is True and x.get(\"version\") == \"27.0\"\n                        and \"iOS\" in x.get(\"name\", \"\")]\n            require(len(runtimes) == 1, \"one_available_original_ios27_runtime_required\")\n            _, raw = run([\"xcrun\", \"simctl\", \"list\", \"devicetypes\", \"--json\"], out, \"device-types\")\n            types = [x for x in json.loads(raw)[\"devicetypes\"] if\n                     x.get(\"identifier\") == \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB\"]\n            require(len(types) == 1, \"one_available_ipad_pro_m5_device_type_required\")\n            runtime = runtimes[0]",
+          "old": "        _, raw = run([\"xcrun\", \"simctl\", \"list\", \"runtimes\", \"--json\"], out, \"runtimes\")\n        runtimes = [x for x in json.loads(raw)[\"runtimes\"] if\n                    x.get(\"isAvailable\") is True and x.get(\"version\") == \"27.0\"\n                    and \"iOS\" in x.get(\"name\", \"\")]\n        require(len(runtimes) == 1, \"one_available_original_ios27_runtime_required\")\n        _, raw = run([\"xcrun\", \"simctl\", \"list\", \"devicetypes\", \"--json\"], out, \"device-types\")\n        types = [x for x in json.loads(raw)[\"devicetypes\"] if\n                 x.get(\"identifier\") == \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB\"]\n        require(len(types) == 1, \"one_available_ipad_pro_m5_device_type_required\")\n        runtime = runtimes[0]",
+          "position": 46303
+        },
+        {
+          "new": "        run([\"xcrun\", \"simctl\", \"bootstatus\", udid, \"-b\"], out, \"bootstatus\", timeout=180)\n        if args.stage == \"rtl\":\n            receipt[\"nativeRTL\"] = current8ac.rtl_prepare(run, out, udid)",
+          "old": "        run([\"xcrun\", \"simctl\", \"bootstatus\", udid, \"-b\"], out, \"bootstatus\", timeout=180)",
+          "position": 48060
+        },
+        {
+          "new": "        run([\"xcrun\", \"simctl\", \"install\", udid, str(app)], out, \"install-unified-app\", timeout=120)\n        if args.stage == \"rtl\":\n            receipt[\"nativeRTL\"][\"installedBefore\"] = current8ac.rtl_installed(run, out, udid, app, \"before\")",
+          "old": "        run([\"xcrun\", \"simctl\", \"install\", udid, str(app)], out, \"install-unified-app\", timeout=120)",
+          "position": 48508
+        },
+        {
+          "new": "        if args.stage == \"rtl\":\n            configured, binding[\"nativeRTL\"] = current8ac.rtl_bind(configured)\n            fixture_environment = current8ac.rtl_environment()\n        else:\n            fixture_environment = {}",
+          "old": "        fixture_environment = {}",
+          "position": 49150
+        },
+        {
+          "new": "        require(record[\"status\"] == \"PASS\", \"actual_original_ui_execution_failed\")\n        if args.stage == \"rtl\":\n            receipt[\"nativeRTL\"][\"after\"] = current8ac.rtl_after(run, out, udid, app)",
+          "old": "        require(record[\"status\"] == \"PASS\", \"actual_original_ui_execution_failed\")",
+          "position": 52784
+        },
+        {
+          "new": "        if args.stage == \"rtl\" and not first_error and not cleanup_errors:\n            try:\n                receipt[\"nativeRTL\"][\"screenshots\"] = current8ac.rtl_attachments(run, out, udid)\n            except BaseException as exc:\n                cleanup_errors.append({\"phase\": \"original-rtl-screenshots\", \"reason\": str(exc)})\n        if args.stage == \"miniapps\" and not first_error and not cleanup_errors:",
+          "old": "        if args.stage == \"miniapps\" and not first_error and not cleanup_errors:",
+          "position": 55952
+        },
+        {
+          "new": "        if args.stage == \"rtl\" and receipt[\"status\"] == \"PASS\":\n            receipt[\"status\"] = \"PASS_NATIVE_RTL_METHOD_VISUAL_REVIEW_PENDING\"\n        if args.stage == \"archive-picker-observe\" and receipt[\"status\"] == \"PASS\":",
+          "old": "        if args.stage == \"archive-picker-observe\" and receipt[\"status\"] == \"PASS\":",
+          "position": 61966
+        },
+        {
+          "new": "    expected_status = (\"PASS_NATIVE_RTL_METHOD_VISUAL_REVIEW_PENDING\" if args.stage == \"rtl\" else\n                       \"PASS_DIAGNOSTIC_ONLY_NOT_ARCHIVE_ACCEPTANCE\"\n                       if args.stage == \"archive-picker-observe\" else \"PASS\")",
+          "old": "    expected_status = (\"PASS_DIAGNOSTIC_ONLY_NOT_ARCHIVE_ACCEPTANCE\"\n                       if args.stage == \"archive-picker-observe\" else \"PASS\")",
+          "position": 62315
         }
       ],
       "inverseRestoresEveryOriginalByte": true,
@@ -73,19 +119,42 @@
   "files": {
     "build_prebuilt_native_ui16.py": {
       "bytes": 45722,
-      "sha256": "3fa869dac9dead5e516fc4ca9c1a0fee065ee911a0870b4b5dcc9dc5a2ea3a08"
+      "sha256": "a2470636b2743e028dbc95784dd8ee9a556f412f652f2071dbc5b2f9e6fa5739"
     },
     "native16_profile.py": {
-      "bytes": 22442,
-      "sha256": "b97e9fd3fff73b92326f88937f63360275463a9ef6bceb78bb0f9d70dfd65c5b"
+      "bytes": 27297,
+      "sha256": "5bd072193b503cb98766e400725a5cf3fd3c12fa29345a90ad132ab7708b454e"
+    },
+    "native_rtl_matrix.py": {
+      "bytes": 13850,
+      "sha256": "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae"
     },
     "run_prebuilt_native_ui16.py": {
-      "bytes": 60880,
-      "sha256": "a9fb1c54195fcc3a8e6843d9a3f4b2d7b7a1918a8dd421f611fe87f6f37c4934"
+      "bytes": 62695,
+      "sha256": "83f5f9c2d7df495b8949557e3d3cbcb573eab784e13f00f3f3d995800e0c1b36"
     }
   },
   "nativeCalls": 0,
-  "nativeUIProfileSHA256": "b97e9fd3fff73b92326f88937f63360275463a9ef6bceb78bb0f9d70dfd65c5b",
+  "nativeRTLHelperSHA256": "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae",
+  "nativeRTLMatrix": {
+    "appLanguages": [
+      "he",
+      "en"
+    ],
+    "appearances": [
+      "light",
+      "dark"
+    ],
+    "cellsExecuted": 0,
+    "contentSize": "large",
+    "deviceFamilies": [
+      "iphone",
+      "ipad"
+    ],
+    "oppositeOSLanguageRequired": true
+  },
+  "nativeRTLMethod": "PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+  "nativeUIProfileSHA256": "5bd072193b503cb98766e400725a5cf3fd3c12fa29345a90ad132ab7708b454e",
   "nextIntegratedSource": "BLOCKED_UNTIL_SEPARATELY_REVIEWED_COMMON_QUALIFIER_AND_ACTUAL_BUILD_RECEIPT",
   "originalProfilesModified": false,
   "schema": "pinkha-nativeui-shared-app-controller-preparation-v1",

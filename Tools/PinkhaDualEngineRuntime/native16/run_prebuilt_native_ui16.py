@@ -26,6 +26,7 @@ import uuid
 
 TARGET = "PinkhaAnyNativeUITests"
 STAGES = {
+    "rtl": ("NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen", 360),
     "sharing-owner": ("NativeLaunchTests/testNativeSharingInvitationConfirmationCancellationAndColdReopen", 900),
     "drag": ("NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen", 600),
     "archive": ("NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies", 1800),
@@ -386,7 +387,7 @@ def native8ac_module():
     path = Path(__file__).resolve().with_name("native16_profile.py")
     sys.dont_write_bytecode = True
     original = path.read_bytes()
-    require(hashlib.sha256(original).hexdigest() == "b97e9fd3fff73b92326f88937f63360275463a9ef6bceb78bb0f9d70dfd65c5b",
+    require(hashlib.sha256(original).hexdigest() == "5bd072193b503cb98766e400725a5cf3fd3c12fa29345a90ad132ab7708b454e",
             "exact_reviewed_shared_app_NativeUI_profile_required")
     cached = getattr(native8ac_module, "qualified", None)
     if cached is not None:
@@ -563,6 +564,8 @@ def main():
     parser.add_argument("--shared-admission-sha256", required=True)
     parser.add_argument("--shared-controller-sha256", required=True)
     parser.add_argument("--native-ui-proof-sha256", required=True)
+    parser.add_argument("--rtl-cell", type=Path)
+    parser.add_argument("--rtl-cell-sha256")
     args = parser.parse_args()
     native8ac_module().configure(args)
     for path in (args.main_root, args.main_evidence, args.ui_build, args.output):
@@ -742,16 +745,23 @@ def main():
                 companion_contract = admit_real_companion(source, args.companion_manifest, out, app)
             receipt["companionManifestSHA256"] = digest(args.companion_manifest)
             receipt["companionBuilds"] = 0
-        _, raw = run(["xcrun", "simctl", "list", "runtimes", "--json"], out, "runtimes")
-        runtimes = [x for x in json.loads(raw)["runtimes"] if
-                    x.get("isAvailable") is True and x.get("version") == "27.0"
-                    and "iOS" in x.get("name", "")]
-        require(len(runtimes) == 1, "one_available_original_ios27_runtime_required")
-        _, raw = run(["xcrun", "simctl", "list", "devicetypes", "--json"], out, "device-types")
-        types = [x for x in json.loads(raw)["devicetypes"] if
-                 x.get("identifier") == "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB"]
-        require(len(types) == 1, "one_available_ipad_pro_m5_device_type_required")
-        runtime = runtimes[0]
+        if args.stage == "rtl":
+            _, runtimes_raw = run(["xcrun", "simctl", "list", "runtimes", "--json"], out, "runtimes")
+            _, types_raw = run(["xcrun", "simctl", "list", "devicetypes", "--json"], out, "device-types")
+            runtime, actual_type = current8ac.rtl_device(runtimes_raw, types_raw)
+            types = [actual_type]
+            receipt["rtlActualDevice"] = {"runtime": runtime, "deviceType": actual_type}
+        else:
+            _, raw = run(["xcrun", "simctl", "list", "runtimes", "--json"], out, "runtimes")
+            runtimes = [x for x in json.loads(raw)["runtimes"] if
+                        x.get("isAvailable") is True and x.get("version") == "27.0"
+                        and "iOS" in x.get("name", "")]
+            require(len(runtimes) == 1, "one_available_original_ios27_runtime_required")
+            _, raw = run(["xcrun", "simctl", "list", "devicetypes", "--json"], out, "device-types")
+            types = [x for x in json.loads(raw)["devicetypes"] if
+                     x.get("identifier") == "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB"]
+            require(len(types) == 1, "one_available_ipad_pro_m5_device_type_required")
+            runtime = runtimes[0]
         name = "PinkhaUnifiedD-" + args.stage + "-" + str(uuid.uuid4())
         _, raw = run(["xcrun", "simctl", "create", name, types[0]["identifier"],
                       runtime["identifier"]], out, "create-simulator")
@@ -760,18 +770,26 @@ def main():
               "runtime": runtime["identifier"], "deviceType": types[0]["identifier"]})
         run(["xcrun", "simctl", "boot", udid], out, "boot-simulator")
         run(["xcrun", "simctl", "bootstatus", udid, "-b"], out, "bootstatus", timeout=180)
+        if args.stage == "rtl":
+            receipt["nativeRTL"] = current8ac.rtl_prepare(run, out, udid)
         _, raw = run(["xcrun", "simctl", "getenv", udid, "SIMULATOR_ROOT"],
                      out, "simulator-runtime-root")
         runtime_root = Path(raw.decode().strip())
         require(runtime_root.is_dir(), "observed_runtime_root_required")
         run(["xcrun", "simctl", "install", udid, str(app)], out, "install-unified-app", timeout=120)
+        if args.stage == "rtl":
+            receipt["nativeRTL"]["installedBefore"] = current8ac.rtl_installed(run, out, udid, app, "before")
         if companion_contract is not None:
             run(["xcrun", "simctl", "install", udid, companion_contract[0]["app"]],
                 out, "install-real-companion", timeout=120)
         selector, allowance = STAGES[args.stage]
         original_template = plistlib.loads(templates[0].read_bytes())
         configured, binding = bind(original_template, products, app, selector, runtime_root)
-        fixture_environment = {}
+        if args.stage == "rtl":
+            configured, binding["nativeRTL"] = current8ac.rtl_bind(configured)
+            fixture_environment = current8ac.rtl_environment()
+        else:
+            fixture_environment = {}
         if args.stage == "hanlin":
             private = out / "private-provider"
             private.mkdir(mode=0o700)
@@ -821,6 +839,8 @@ def main():
                         environment=fixture_environment, allow_failure=True)
         receipt["testCommand"] = record
         require(record["status"] == "PASS", "actual_original_ui_execution_failed")
+        if args.stage == "rtl":
+            receipt["nativeRTL"]["after"] = current8ac.rtl_after(run, out, udid, app)
         if args.stage == "hanlin":
             run([sys.executable, "-B", str(fixture), "verify", "--private-config",
                  str(fixture_config), "--safe-result", str(out / "provider-contract.json")],
@@ -867,6 +887,11 @@ def main():
                         "original_result_destination_mismatch")
             except BaseException as exc:
                 cleanup_errors.append({"phase": "original-results", "reason": str(exc)})
+        if args.stage == "rtl" and not first_error and not cleanup_errors:
+            try:
+                receipt["nativeRTL"]["screenshots"] = current8ac.rtl_attachments(run, out, udid)
+            except BaseException as exc:
+                cleanup_errors.append({"phase": "original-rtl-screenshots", "reason": str(exc)})
         if args.stage == "miniapps" and not first_error and not cleanup_errors:
             try:
                 receipt["originalCrossAppReport"] = qualify_miniapps_report(out)
@@ -954,10 +979,13 @@ def main():
                        finished=time.time())
         receipt["status"] = "PASS" if first_error is None and not cleanup_errors and \
             receipt.get("counts", {}).get("passedTests") == 1 else "FAIL"
+        if args.stage == "rtl" and receipt["status"] == "PASS":
+            receipt["status"] = "PASS_NATIVE_RTL_METHOD_VISUAL_REVIEW_PENDING"
         if args.stage == "archive-picker-observe" and receipt["status"] == "PASS":
             receipt["status"] = "PASS_DIAGNOSTIC_ONLY_NOT_ARCHIVE_ACCEPTANCE"
         write(out / "receipt.json", receipt)
-    expected_status = ("PASS_DIAGNOSTIC_ONLY_NOT_ARCHIVE_ACCEPTANCE"
+    expected_status = ("PASS_NATIVE_RTL_METHOD_VISUAL_REVIEW_PENDING" if args.stage == "rtl" else
+                       "PASS_DIAGNOSTIC_ONLY_NOT_ARCHIVE_ACCEPTANCE"
                        if args.stage == "archive-picker-observe" else "PASS")
     require(receipt["status"] == expected_status, "scoped_unified_native_ui_execution_failed")
 

@@ -17,13 +17,17 @@ import sys
 NATIVE = "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b"
 OWNED_OUTCOMES_SHA = "73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a"
 SOURCE_FILES = {
-    "NativeApp/UITests/NativeLaunchTests.swift": "fdb706fc9d1c805ceb7220e4ae64a14244f7437525cf06d8d14e1b1f100de6da",
+    "NativeApp/UITests/NativeLaunchTests.swift": "e32f68676df1330c0255aa7ffa93b71c16f158570250013c607084f440c54375",
     "NativeApp/UITests/NativeHistoryTests.swift": "2772d790979de88a3b622f17453a91ca792114292016f01e31386de7f4f614ca",
     "NativeApp/AnyNative.xcodeproj/project.pbxproj": "7282befe3104df28a3e0f5feef05a018bc515c68cf443307de65dbe977e33532",
     "NativeApp/AnyNative.xcodeproj/xcshareddata/xcschemes/PinkhaAnyNativeApp.xcscheme": "f208c605b78e849e18defc7c759f3588dc9ab9b3f3bdd7502257c605da9db308",
     "Tools/AnyEnginePort/native_ui_transition_project.py": "3c666726a42f9e42b481f82e45d90362079c0c0ff062192e4b5c3461ea1f02ec",
     "Tools/AnyEnginePort/native_ui_transition_contract.py": "42d56e2193643fde5ae6f329b63a123fee89a2ef22d858e3bea8aeb94cd0d3d5",
     "Tools/AnyEnginePort/verify_native_test_execution.py": "af126a59d47fec07b0d465c0077c812fb5f52cfcadf71a2da22cebb969e21b91",
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": "f99b1c04efeee2be45459b49d8c71fd8207039c97be4578cd6f2dfc8d29bb283",
+    "Tools/PinkhaSimulatorGate/t5_native_ui_r08.py": "f726c600bd04f77b2ca8e8b42610b6c66dfbdaf96d86cc6535eaed0218fae4ea",
+    "Tools/PinkhaSimulatorGate/run_ui27.py": "87e0972ee6852d1fdb34d82afa5dde346baf836afaa8419203b647e7d3e21ca7",
+    "docs/validation/20261127-wave2-native-rtl/source-proof.json": "699e0ccdb963cfd9a630b65ffce9973a5c63d440b62db7fa3aacdb34907240d5",
 }
 TITLE_PROOF = "docs/validation/20261126-native-sharing-rendered-title/source-proof.json"
 TITLE_PROOF_SHA = "3d7bb101ac6062e486acfc1250c06498c127ef9018b528663bf18b4eb8116b19"
@@ -66,6 +70,17 @@ ORIGINAL_EVIDENCE = None
 _state = None
 
 
+def rtl_module():
+    path = Path(__file__).with_name("native_rtl_matrix.py")
+    require(path.resolve() == path and not path.is_symlink(), "Canonical reviewed RTL matrix helper required")
+    raw = path.read_bytes()
+    require(sha(raw) == "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae", "Exact reviewed RTL matrix helper required")
+    module = type(sys)("nativeui_verified_rtl_matrix")
+    module.__file__ = str(path)
+    exec(compile(raw, str(path), "exec"), module.__dict__)
+    return module
+
+
 def require(condition, message):
     if not condition:
         raise RuntimeError(message)
@@ -81,8 +96,8 @@ def configure(args):
     require(all(getattr(args, name, None) is None for name in OVERLAY_ARGUMENTS),
             "Only the already integrated NativeUI source is admitted; overlays are forbidden")
     if hasattr(args, "stage"):
-        require(args.stage in ("sharing-owner", "archive") and args.retain_owned_simulator,
-                "This continuation selects only missing sharing/Archive and retains its owned account")
+        require(args.stage in ("sharing-owner", "archive", "rtl") and args.retain_owned_simulator,
+                "This continuation selects only missing sharing/Archive/RTL and retains its owned account")
     require(re.fullmatch(r"[0-9a-f]{64}", args.shared_controller_sha256)
             and re.fullmatch(r"[0-9a-f]{64}", args.shared_admission_sha256), "Exact shared input pins required")
     path = Path(__file__).with_name("combined_heart_semantics_current.py")
@@ -110,6 +125,14 @@ def configure(args):
             "NativeUI paths must be the actual shared producer source and receipt")
     require(args.output.is_absolute() and args.output.parent.resolve() == args.output.parent
             and args.main_root in args.output.parents, "Canonical owned NativeUI output required")
+    matrix = rtl_module()
+    rtl_cell = getattr(args, "rtl_cell", None)
+    rtl_cell_sha = getattr(args, "rtl_cell_sha256", None)
+    if getattr(args, "stage", None) == "rtl":
+        configuration = matrix.cell(module, rtl_cell, rtl_cell_sha)
+    else:
+        require(rtl_cell is None and rtl_cell_sha is None, "RTL configuration is only valid for its exact original method")
+        configuration = None
     SOURCE = admission["sourceCommit"]
     ORIGINAL_EVIDENCE = args.main_evidence
     for value in (module.NATIVE_BINARY, module.SDK_RECEIPT, module.LOCK):
@@ -121,8 +144,11 @@ def configure(args):
                    originalSHA256=SOURCE_FILES["NativeApp/UITests/NativeLaunchTests.swift"],
                    compiledSHA256=SOURCE_FILES["NativeApp/UITests/NativeLaunchTests.swift"],
                    historySHA256=SOURCE_FILES["NativeApp/UITests/NativeHistoryTests.swift"],
-                   sourceAlreadyIntegrated=True, allOriginalMethodAssertionsUnchanged=True,
+                   sourceAlreadyIntegrated=True, allOriginalMethodsOutsideRTLByteIdentical=True,
+                   rtlOriginalHebrewAssertionsRestoreExactly=True,
                    nativeSourceManifestSHA256=NATIVE, sharingTitlePreparationSHA256=TITLE_PROOF_SHA,
+                   rtlLocalizationPreparationSHA256=matrix.SOURCE_PROOF_SHA,
+                   rtlLocalizationSourceChanged=True, testCompilerAppliesNoSourceOverlay=True,
                    originalSharingAttemptReceiptSHA256="df8ad97c2a146765a7ea065df49ab86a2abe55bba34897d9172d5ecff31c421f",
                    testStorageOverrides=False, originalNativeUIIsolatedAccountScope=True)
     INTEGRATED_HISTORY.update(sourceCommit=SOURCE,
@@ -133,7 +159,9 @@ def configure(args):
         inputRoute="real-keyboard-with-original-native-UIKit-range-witness",
         longPressMenuAccepted=False, allOriginalHistoryAssertionsUnchanged=True, sourceAlreadyIntegrated=True)
     _state = dict(args=args, shared=module, admission=admission, admissionPin=pin,
-                  sharedSHA=args.shared_controller_sha256, proof=None, products=None)
+                  sharedSHA=args.shared_controller_sha256, proof=None, products=None,
+                  rtl=matrix, rtlCell=configuration, rtlCellSHA256=rtl_cell_sha,
+                  rtlHelpers=None, rtlHelperClosure=None)
 
 
 def qualify_main(record):
@@ -162,6 +190,12 @@ def check_source(source):
                 "Stable original NativeUI source changed: " + name)
     old = c.raw(source / TITLE_ORIGINAL)
     current = c.raw(source / "NativeApp/UITests/NativeLaunchTests.swift")
+    matrix = _state["rtl"]
+    current = matrix.qualify_source(c, current, c.raw(source / matrix.SOURCE_PROOF))
+    for row in matrix.HELPERS.values():
+        path = source / row["path"]
+        require(path.resolve() == path and not path.is_symlink() and c.digest(path) == row["sha256"],
+                "Stable original RTL validator source changed: " + row["path"])
     proof_raw = c.raw(source / TITLE_PROOF)
     proof = c.decode(proof_raw)
     require(sha(old) == TITLE_ORIGINAL_SHA and sha(proof_raw) == TITLE_PROOF_SHA
@@ -345,6 +379,58 @@ def admit(source, main_record, ui_build, ui_record):
             and c.digest(ui_build / "process-exit.json") == ui_record["processExitReceiptSHA256"],
             "Original successful NativeUI stdout and process exit required")
     return dict(FIXTURE)
+
+
+def rtl_device(runtimes_raw, types_raw):
+    require(_state["rtlCell"] is not None, "Explicit native RTL cell required")
+    return _state["rtl"].device(_state["shared"], runtimes_raw, types_raw, _state["rtlCell"])
+
+
+def rtl_prepare(run, out, udid):
+    c, matrix, configuration = _state["shared"], _state["rtl"], _state["rtlCell"]
+    require(configuration is not None, "Explicit native RTL cell required")
+    require(matrix.cell(c, _state["args"].rtl_cell, _state["rtlCellSHA256"]) == configuration,
+            "Native RTL cell changed before owned simulator configuration")
+    helpers, closure = matrix.original_helpers(c, Path(_state["admission"]["sourceRoot"]))
+    _state.update(rtlHelpers=helpers, rtlHelperClosure=closure)
+    result = {"configuration": configuration, "configurationSHA256": _state["rtlCellSHA256"],
+              "helperClosure": closure, "sourceLocalizationProofSHA256": matrix.SOURCE_PROOF_SHA,
+              "visualReview": "PENDING", "physicalDevice": "NOT_RUN"}
+    c.write(out / "rtl-configuration.json", result)
+    result["before"] = matrix.prepare(c, helpers, configuration, run, out, udid)
+    return result
+
+
+def rtl_installed(run, out, udid, app, phase):
+    return _state["rtl"].installed(_state["shared"], _state["rtlHelpers"], run, out, udid, app, phase)
+
+
+def rtl_bind(configured):
+    return _state["rtl"].bind(_state["shared"], configured, _state["rtlCell"])
+
+
+def rtl_environment():
+    require(_state["rtlCell"] is not None, "Explicit native RTL cell required")
+    return {"TEST_RUNNER_" + _state["rtl"].ENVIRONMENT: _state["rtlCell"]["appLanguage"]}
+
+
+def rtl_after(run, out, udid, app):
+    matrix, c = _state["rtl"], _state["shared"]
+    require(matrix.cell(c, _state["args"].rtl_cell, _state["rtlCellSHA256"]) == _state["rtlCell"],
+            "Native RTL cell changed during the original method")
+    return {"environment": matrix.observe(c, _state["rtlHelpers"], _state["rtlCell"], run, out, udid, "after"),
+            "installedCode": rtl_installed(run, out, udid, app, "after")}
+
+
+def rtl_attachments(run, out, udid):
+    directory = out / "private-original-rtl-attachments"
+    require(not directory.exists() and not directory.is_symlink(), "Fresh original RTL attachment export required")
+    run(["xcrun", "xcresulttool", "export", "attachments", "--path", str(out / "Original.xcresult"),
+         "--output-path", str(directory)], out, "rtl-original-attachments", timeout=180, cleanup=True)
+    directory.chmod(0o700)
+    result = _state["rtl"].screenshots(_state["shared"], directory, udid, _state["rtlCell"])
+    _state["shared"].write(out / "rtl-original-screenshots.json", result)
+    return result
 
 
 def owned_lifecycle(source, root, directory):

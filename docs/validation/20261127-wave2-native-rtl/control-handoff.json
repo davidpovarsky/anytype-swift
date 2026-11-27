@@ -1,0 +1,133 @@
+{
+  "AppleCommands": 0,
+  "XCTestMethodsExecuted": 0,
+  "allowedStages": [
+    "sharing-owner",
+    "archive",
+    "rtl"
+  ],
+  "builds": 0,
+  "controlEvidence": {
+    "firstRun": {
+      "failed": 1,
+      "failureCause": "Negative synthetic screenshot fixture attempted a rewrite through the shared immutable writer; not an Apple/app failure.",
+      "passed": 6,
+      "retained": "portable-controls-first.json",
+      "retainedScript": "portable-controls-first-script.py"
+    },
+    "shared4ecModuleUsage": "Original utility functions and runtime constants for portable synthetic controls only; no producer admission was attempted.",
+    "sourceClosure": "source-closure.json",
+    "sourceClosureDoesNotAdmitProducer": true,
+    "sourceClosureFileCount": 13,
+    "targetedReplay": {
+      "failed": 0,
+      "harnessChange": "Only synthetic negative manifest mutation uses an explicit write. Other passed controls not rerun.",
+      "passed": 1,
+      "retained": "portable-controls-targeted.json",
+      "scope": "screenshots_require_both_original_phases_and_same_device",
+      "unusedNativeLaunchArgument": "The selected attachment-only replay did not consume its native-launch argument; source inverse remains covered by the first run and real Git source closure."
+    },
+    "uniquePortableControlsPassed": 7
+  },
+  "exactSharedProducerAdmitted": false,
+  "files": {
+    "Tools/PinkhaDualEngineRuntime/native16/README.md": {
+      "bytes": 8289,
+      "sha256": "b74f9084362931d5208a5f134d133a39f789c0a0b7aa781be050f4e75fcc9e72"
+    },
+    "Tools/PinkhaDualEngineRuntime/native16/build_prebuilt_native_ui16.py": {
+      "bytes": 45722,
+      "sha256": "a2470636b2743e028dbc95784dd8ee9a556f412f652f2071dbc5b2f9e6fa5739"
+    },
+    "Tools/PinkhaDualEngineRuntime/native16/native16_profile.py": {
+      "bytes": 27297,
+      "sha256": "5bd072193b503cb98766e400725a5cf3fd3c12fa29345a90ad132ab7708b454e"
+    },
+    "Tools/PinkhaDualEngineRuntime/native16/native_rtl_matrix.py": {
+      "bytes": 13850,
+      "sha256": "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae"
+    },
+    "Tools/PinkhaDualEngineRuntime/native16/nativeui16-materialization.json": {
+      "bytes": 12817,
+      "sha256": "1cd2c1fbd27db9d647b0720fcaa52a9ad212083144b91bef151b70475227d764"
+    },
+    "Tools/PinkhaDualEngineRuntime/native16/prepare_native_ui16_controllers.py": {
+      "bytes": 12008,
+      "sha256": "ca19a93496dc9e781c1b087d794e7fabf70086d4662a61685fb300dfdda76430"
+    },
+    "Tools/PinkhaDualEngineRuntime/native16/run_prebuilt_native_ui16.py": {
+      "bytes": 62695,
+      "sha256": "83f5f9c2d7df495b8949557e3d3cbcb573eab784e13f00f3f3d995800e0c1b36"
+    },
+    "Tools/PinkhaDualEngineRuntime/native16/validate_native_rtl_preparation.py": {
+      "bytes": 13123,
+      "sha256": "d6c259825f783b5cc60fbe2279b4cf4cf28e167ff14ae7206c80401aeb9fb07c"
+    },
+    "docs/validation/20261127-wave2-native-rtl/portable-controls-first-script.py": {
+      "bytes": 12643,
+      "sha256": "0b68e6e182bedcae30719a4a535fc6967e8ab3982605d23486c901b3bd4e079c"
+    },
+    "docs/validation/20261127-wave2-native-rtl/portable-controls-first.json": {
+      "bytes": 4402,
+      "sha256": "4a62e17316c1e8a6d582d611d50c222d5e82b955e05c83fd08f32bb8c78cdcde"
+    },
+    "docs/validation/20261127-wave2-native-rtl/portable-controls-targeted.json": {
+      "bytes": 1931,
+      "sha256": "9fd770aca70bab88b4404c25950de1cf5a6bd3475f0bea846b78a6d99ef6c779"
+    },
+    "docs/validation/20261127-wave2-native-rtl/source-closure.json": {
+      "bytes": 3835,
+      "sha256": "c5720bd8b912a194eb62de234e50b18d7a0c049a2dae4409144112cb211e54d6"
+    }
+  },
+  "independentReview": {
+    "AppleCommands": 0,
+    "result": "No concrete false-PASS blocker found by source review",
+    "reviewer": "Wave2 editor subagent",
+    "scope": "materialized2 config/consumer, latest precise metadata, e32→fdb inverse, helpers, descriptor/enumeration/results, pre/post settings/code, two PNGs and failure propagation"
+  },
+  "matrix": {
+    "appLanguages": [
+      "he",
+      "en"
+    ],
+    "appearances": [
+      "light",
+      "dark"
+    ],
+    "contentSize": "large",
+    "deviceFamilies": [
+      "iphone",
+      "ipad"
+    ],
+    "executedCells": 0,
+    "oppositeOSLanguageRequired": true,
+    "physicalDevice": "NOT_RUN",
+    "totalRequiredCells": 8
+  },
+  "nativeCalls": 0,
+  "nativeLaunchSHA256": "e32f68676df1330c0255aa7ffa93b71c16f158570250013c607084f440c54375",
+  "nativeRTLSelector": "PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+  "nativeSourceManifestSHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+  "postExecutionStatus": "PASS_NATIVE_RTL_METHOD_VISUAL_REVIEW_PENDING",
+  "projectionSemantics": {
+    "actualSourceOverlayApplied": false,
+    "actualSwiftCompileEvidencePending": true,
+    "actualSwiftFileListsStillRequired": true,
+    "exactOriginalBuilderAndRunnerInverse": true,
+    "originalRunAndDescriptorFunctionsUnchanged": true
+  },
+  "releaseAccepted": false,
+  "schema": "pinkha-wave2-native-rtl-control-handoff-v1",
+  "separateDLibrarySearchGap": {
+    "NativeLaunchFreezeUntouchedByThisControlTranche": true,
+    "changedProductCommit": "03dae6742dec6279b8329991d435a7562918a278",
+    "existingNativeLibrarySearchUISelector": null,
+    "requiredFollowup": "Separately coordinated real Library search typing/query replacement/open/cold-reopen visual journey on the same shared product; no new product instrumentation or existing drag replay.",
+    "sourceAudit": "All five NativeLaunch searchFields entry sites are source/Sefaria Inspector routes. HierarchyMove does not type Library search. The two package model methods do not establish visual UI acceptance."
+  },
+  "sharedProducerRequirement": "Exact separately reviewed common qualifier plus actual successful next-source App/UI producer and same-source two-Swift-file NativeUI runner. Old a089 producer was cancelled before compilation. No source/SDK override.",
+  "sourceTranche": "a524b787eef2a7a253de31bb011eb24e37341abd",
+  "status": "READY_SOURCE_AND_PORTABLE_CONTROLS_NOT_APPLE_ACCEPTANCE",
+  "visualReview": "PENDING_ACTUAL_IMAGES"
+}

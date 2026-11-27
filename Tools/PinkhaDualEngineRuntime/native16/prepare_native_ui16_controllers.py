@@ -53,6 +53,57 @@ def substitute(value, changes):
     return text.encode(), inverse
 
 
+def rtl_runner_changes():
+    original_devices = '''        _, raw = run(["xcrun", "simctl", "list", "runtimes", "--json"], out, "runtimes")
+        runtimes = [x for x in json.loads(raw)["runtimes"] if
+                    x.get("isAvailable") is True and x.get("version") == "27.0"
+                    and "iOS" in x.get("name", "")]
+        require(len(runtimes) == 1, "one_available_original_ios27_runtime_required")
+        _, raw = run(["xcrun", "simctl", "list", "devicetypes", "--json"], out, "device-types")
+        types = [x for x in json.loads(raw)["devicetypes"] if
+                 x.get("identifier") == "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB"]
+        require(len(types) == 1, "one_available_ipad_pro_m5_device_type_required")
+        runtime = runtimes[0]'''
+    devices = '''        if args.stage == "rtl":
+            _, runtimes_raw = run(["xcrun", "simctl", "list", "runtimes", "--json"], out, "runtimes")
+            _, types_raw = run(["xcrun", "simctl", "list", "devicetypes", "--json"], out, "device-types")
+            runtime, actual_type = current8ac.rtl_device(runtimes_raw, types_raw)
+            types = [actual_type]
+            receipt["rtlActualDevice"] = {"runtime": runtime, "deviceType": actual_type}
+        else:
+''' + "\n".join("    " + line for line in original_devices.splitlines())
+    boot = '        run(["xcrun", "simctl", "bootstatus", udid, "-b"], out, "bootstatus", timeout=180)'
+    install = '        run(["xcrun", "simctl", "install", udid, str(app)], out, "install-unified-app", timeout=120)'
+    executed = '        require(record["status"] == "PASS", "actual_original_ui_execution_failed")'
+    final_guard = '        if args.stage == "miniapps" and not first_error and not cleanup_errors:'
+    return [
+        ('STAGES = {', 'STAGES = {\n    "rtl": ("NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen", 360),'),
+        (original_devices, devices),
+        (boot, boot + '\n        if args.stage == "rtl":\n            receipt["nativeRTL"] = current8ac.rtl_prepare(run, out, udid)'),
+        (install, install + '\n        if args.stage == "rtl":\n            receipt["nativeRTL"]["installedBefore"] = current8ac.rtl_installed(run, out, udid, app, "before")'),
+        ('        fixture_environment = {}', '''        if args.stage == "rtl":
+            configured, binding["nativeRTL"] = current8ac.rtl_bind(configured)
+            fixture_environment = current8ac.rtl_environment()
+        else:
+            fixture_environment = {}'''),
+        (executed, executed + '\n        if args.stage == "rtl":\n            receipt["nativeRTL"]["after"] = current8ac.rtl_after(run, out, udid, app)'),
+        (final_guard, '''        if args.stage == "rtl" and not first_error and not cleanup_errors:
+            try:
+                receipt["nativeRTL"]["screenshots"] = current8ac.rtl_attachments(run, out, udid)
+            except BaseException as exc:
+                cleanup_errors.append({"phase": "original-rtl-screenshots", "reason": str(exc)})
+''' + final_guard),
+        ('        if args.stage == "archive-picker-observe" and receipt["status"] == "PASS":',
+         '''        if args.stage == "rtl" and receipt["status"] == "PASS":
+            receipt["status"] = "PASS_NATIVE_RTL_METHOD_VISUAL_REVIEW_PENDING"
+        if args.stage == "archive-picker-observe" and receipt["status"] == "PASS":'''),
+        ('    expected_status = ("PASS_DIAGNOSTIC_ONLY_NOT_ARCHIVE_ACCEPTANCE"\n                       if args.stage == "archive-picker-observe" else "PASS")',
+         '''    expected_status = ("PASS_NATIVE_RTL_METHOD_VISUAL_REVIEW_PENDING" if args.stage == "rtl" else
+                       "PASS_DIAGNOSTIC_ONLY_NOT_ARCHIVE_ACCEPTANCE"
+                       if args.stage == "archive-picker-observe" else "PASS")'''),
+    ]
+
+
 def prepare(original_root, profile_path, output):
     original_root, profile_path, output = map(Path, (original_root, profile_path, output))
     require(original_root.is_absolute() and original_root.resolve() == original_root
@@ -65,6 +116,13 @@ def prepare(original_root, profile_path, output):
     require(len(profile) < 128 * 1024, "Bounded NativeUI profile required")
     ast.parse(profile)
     profile_sha = sha(profile)
+    matrix_path = profile_path.with_name("native_rtl_matrix.py")
+    require(matrix_path.resolve() == matrix_path and not matrix_path.is_symlink(), "Canonical RTL helper required")
+    matrix = matrix_path.read_bytes()
+    require(len(matrix) < 128 * 1024, "Bounded NativeUI RTL helper required")
+    ast.parse(matrix)
+    require(('sha(raw) == "' + sha(matrix) + '"').encode() in profile,
+            "NativeUI profile must pin the exact reviewed RTL helper")
     loader = '''def native8ac_module():
     path = Path(__file__).resolve().with_name("native16_profile.py")
     sys.dont_write_bytecode = True
@@ -79,7 +137,7 @@ def prepare(original_root, profile_path, output):
     exec(compile(original, str(path), "exec"), module.__dict__)
     native8ac_module.qualified = module
     return module'''.replace("PROFILE_SHA", profile_sha)
-    files = {"native16_profile.py": profile}
+    files = {"native16_profile.py": profile, "native_rtl_matrix.py": matrix}
     receipts = {}
     for name, expected in ORIGINALS.items():
         path = original_root / name
@@ -92,12 +150,16 @@ def prepare(original_root, profile_path, output):
                      '    parser.add_argument("--shared-controller-sha256", required=True)\n')
         if name.startswith("run_"):
             arguments += '    parser.add_argument("--native-ui-proof-sha256", required=True)\n'
+            arguments += ('    parser.add_argument("--rtl-cell", type=Path)\n'
+                          '    parser.add_argument("--rtl-cell-sha256")\n')
         arguments += '    args = parser.parse_args()\n    native8ac_module().configure(args)'
         changes = [(original_defs["native8ac_module"], loader),
                    ("    args = parser.parse_args()", arguments)]
         if name.startswith("build_"):
             old = '    require(code == 0 and stopped is None, "original_native_ui_runner_build_failed")'
             changes.append((old, old + '\n    current8ac.seal_ui_build(output, record, Path(__file__).resolve())'))
+        else:
+            changes += rtl_runner_changes()
         candidate, inverse = substitute(original, changes)
         after_defs = functions(candidate)
         preserved = sorted(set(original_defs) - {"native8ac_module", "main"})
@@ -113,7 +175,12 @@ def prepare(original_root, profile_path, output):
         "schema": "pinkha-nativeui-shared-app-controller-preparation-v1",
         "status": "PREPARED_NATIVEUI_CONTROLLERS_NOT_APP_OR_UI_ACCEPTANCE",
         "nativeUIProfileSHA256": profile_sha, "controllers": receipts,
-        "allowedExecutionStages": ["sharing-owner", "archive"],
+        "allowedExecutionStages": ["sharing-owner", "archive", "rtl"],
+        "nativeRTLHelperSHA256": sha(matrix),
+        "nativeRTLMethod": "PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+        "nativeRTLMatrix": {"appLanguages": ["he", "en"], "oppositeOSLanguageRequired": True,
+                            "deviceFamilies": ["iphone", "ipad"], "appearances": ["light", "dark"],
+                            "contentSize": "large", "cellsExecuted": 0},
         "sourcePinAuthority": "Exact reviewed shared controller APP16_SOURCE plus its immutable successful producer admission",
         "sharedProducerAdmitted": False, "builds": 0, "tests": 0, "nativeCalls": 0,
         "originalProfilesModified": False,
