@@ -22,8 +22,17 @@ final class PinkhaHanlinCreateApproval {
     }
 
     func consume(for plan: PinkhaHanlinCreatePagePlan, in context: PinkhaHanlinCreatePageContext) throws -> ObjectType {
-        guard !consumed, identity == plan.identity else { throw HanlinHostError.denied }
-        let type = try context.validate(plan)
+        try consume(identity: plan.identity) { try context.validate(plan) }
+    }
+
+    func consume(for plan: PinkhaHanlinSaveMessagePlan, in context: PinkhaHanlinCreatePageContext) throws -> ObjectType {
+        try consume(identity: plan.identity) { try context.validate(plan) }
+    }
+
+    private func consume(identity requested: PinkhaHanlinWriteIdentity,
+                         validate: () throws -> ObjectType) throws -> ObjectType {
+        guard !consumed, identity == requested else { throw HanlinHostError.denied }
+        let type = try validate()
         guard Data(type.id.utf8) == typeID else { throw HanlinHostError.staleContext }
         consumed = true
         return type
@@ -43,7 +52,7 @@ final class PinkhaHanlinCreatePageContext {
     private var invalidated = false
     private var alert: PinkhaHanlinConsentController?
     private var decision: PinkhaHanlinReadConsentDecision?
-    private var pendingPlan: PinkhaHanlinCreatePagePlan?
+    private var pendingIdentity: PinkhaHanlinWriteIdentity?
 
     init(presenter: UIViewController, routeOwner: SpaceHubCoordinatorViewModel,
          conversationID: UUID, locale: Locale) throws {
@@ -54,7 +63,7 @@ final class PinkhaHanlinCreatePageContext {
             Task { @MainActor in
                 guard let self else { return }
                 do {
-                    if let plan = self.pendingPlan { _ = try self.validate(plan) }
+                    if let identity = self.pendingIdentity { _ = try self.validateNativeIdentity(identity, requireUnexpired: true) }
                     else { try self.authority.validate(self.session.context) }
                 }
                 catch { self.invalidate() }
@@ -101,7 +110,7 @@ final class PinkhaHanlinCreatePageContext {
     func requestContextReadConsent() async throws { try await authority.requestContextReadConsent() }
 
     func cancelConfirmation(for id: HanlinToolInvocationID) {
-        guard pendingPlan?.identity.invocationID == id else { return }
+        guard pendingIdentity?.invocationID == id else { return }
         let owned = alert
         decision?.revoke()
         owned?.dismiss(animated: false)
@@ -118,8 +127,20 @@ final class PinkhaHanlinCreatePageContext {
     }
 
     func validate(_ plan: PinkhaHanlinCreatePagePlan) throws -> ObjectType {
+        try validateNativeIdentity(plan.identity, requireUnexpired: true)
+    }
+
+    func validate(_ plan: PinkhaHanlinSaveMessagePlan) throws -> ObjectType {
+        try validateNativeIdentity(plan.identity, requireUnexpired: true)
+    }
+
+    /// Readback after an original ACK may outlive the model deadline. It still
+    /// requires this exact live account/Space/runtime/presentation and Page type.
+    /// It never authorizes a new effect; the shared worker fences every effect.
+    func validateNativeIdentity(_ identity: PinkhaHanlinWriteIdentity, requireUnexpired: Bool) throws -> ObjectType {
         try Task.checkCancellation()
-        guard !invalidated, plan.identity.session == session, plan.identity.deadline > .now else {
+        guard !invalidated, identity.session == session,
+              !requireUnexpired || identity.deadline > .now else {
             throw HanlinHostError.staleContext
         }
         return try validateCreationAvailability()
@@ -161,13 +182,23 @@ final class PinkhaHanlinCreatePageContext {
 
     func requestConfirmation(for plan: PinkhaHanlinCreatePagePlan) async throws -> PinkhaHanlinCreateApproval {
         let type = try validate(plan)
+        return try await requestConfirmation(identity: plan.identity, title: plan.title, markdown: nil, type: type)
+    }
+
+    func requestConfirmation(for plan: PinkhaHanlinSaveMessagePlan) async throws -> PinkhaHanlinCreateApproval {
+        let type = try validate(plan)
+        return try await requestConfirmation(identity: plan.identity, title: plan.title, markdown: plan.markdown, type: type)
+    }
+
+    private func requestConfirmation(identity: PinkhaHanlinWriteIdentity, title documentTitle: String,
+                                     markdown: String?, type: ObjectType) async throws -> PinkhaHanlinCreateApproval {
         guard decision == nil, let presenter, presenter.presentedViewController == nil,
               let member = members.participantSpaceView(spaceId: session.context.namespace.space) else { throw HanlinHostError.denied }
         let current = PinkhaHanlinReadConsentDecision() // Starts denied for EACH exact operation.
         let hebrew = Locale(identifier: session.context.localeIdentifier).language.languageCode?.identifier == "he"
         let timeout = Task { @MainActor [weak self, weak current] in
             do {
-                try await Task.sleep(for: .seconds(max(0, plan.identity.deadline.timeIntervalSinceNow)))
+                try await Task.sleep(for: .seconds(max(0, identity.deadline.timeIntervalSinceNow)))
                 guard let self, let current, self.decision === current else { return }
                 let owned = self.alert
                 current.resolve(false)
@@ -178,20 +209,27 @@ final class PinkhaHanlinCreatePageContext {
         let allowed = await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
                 guard !Task.isCancelled, !invalidated, current.begin({ [weak self] allowed in
-                    self?.decision = nil; self?.alert = nil; self?.pendingPlan = nil
+                    self?.decision = nil; self?.alert = nil; self?.pendingIdentity = nil
                     continuation.resume(returning: allowed)
                 }) else { continuation.resume(returning: false); return }
                 decision = current
-                pendingPlan = plan
-                let title = hebrew ? "ליצור דף חדש?" : "Create a new page?"
-                // Exact title and ORIGINAL native Space are visible to the user; neither is logged/persisted.
-                let message = "\(plan.title)\n\n\(member.spaceView.name)\n\(session.context.namespace.space)"
-                let alert = PinkhaHanlinConsentController(purpose: .createPage,
+                pendingIdentity = identity
+                let isSave = markdown != nil
+                let title = isSave
+                    ? (hebrew ? "לשמור את ההודעה בדף חדש?" : "Save the message in a new page?")
+                    : (hebrew ? "ליצור דף חדש?" : "Create a new page?")
+                // Exact title/body and ORIGINAL native Space are visible. They
+                // remain in memory only and are never written to the metadata journal.
+                var message = "\(documentTitle)\n\n\(member.spaceView.name)\n\(session.context.namespace.space)"
+                if let markdown {
+                    message += "\n\n" + (hebrew ? "גוף ההודעה המלא:" : "Complete message body:") + "\n" + markdown
+                }
+                let alert = PinkhaHanlinConsentController(purpose: isSave ? .saveMessage : .createPage,
                     title: title, explanation: message,
-                    allowTitle: hebrew ? "יצירת דף" : "Create page",
+                    allowTitle: isSave ? (hebrew ? "שמירת ההודעה" : "Save message") : (hebrew ? "יצירת דף" : "Create page"),
                     cancelTitle: hebrew ? "ביטול" : "Cancel", decision: current) { [weak self] in
                         guard let self else { throw HanlinHostError.staleContext }
-                        let live = try self.validate(plan)
+                        let live = try self.validateNativeIdentity(identity, requireUnexpired: true)
                         guard live.id.utf8.elementsEqual(type.id.utf8) else { throw HanlinHostError.staleContext }
                 }
                 self.alert = alert
@@ -200,8 +238,8 @@ final class PinkhaHanlinCreatePageContext {
                 }
             }
         } onCancel: { [weak self] in Task { @MainActor in self?.invalidate() } }
-        let live = try validate(plan)
+        let live = try validateNativeIdentity(identity, requireUnexpired: true)
         guard allowed, live.id.utf8.elementsEqual(type.id.utf8) else { throw HanlinHostError.denied }
-        return .init(identity: plan.identity, typeID: live.id)
+        return .init(identity: identity, typeID: live.id)
     }
 }
