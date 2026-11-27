@@ -102,6 +102,20 @@ class WarmRetryControls(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Actual pinned'):
                 warm.wr_packages(source, derived)
 
+    def test_untracked_swift_source_in_pinned_checkout_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, derived, checkout, workspace, dependencies = self.checkout_fixture(Path(directory))
+            admitted = warm.wr_packages(source, derived)
+            additional = checkout / 'Sources/Unexpected.swift'
+            additional.parent.mkdir()
+            additional.write_text('public let unexpectedCompiledSource = true\n')
+            # The pinned HEAD remains exact while SwiftPM could compile this
+            # extra source. A tracked-files-only status check would miss it.
+            head = subprocess.check_output(['/usr/bin/git', '-C', str(checkout), 'rev-parse', 'HEAD'], text=True).strip()
+            self.assertEqual(head, admitted['checkouts']['original']['revision'])
+            with self.assertRaisesRegex(ValueError, 'Actual pinned'):
+                warm.wr_packages(source, derived)
+
     def test_missing_pin_duplicate_checkout_and_foreign_local_sdk_rejected(self):
         for mutation in ('missing', 'duplicate', 'foreign-local'):
             with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as directory:
