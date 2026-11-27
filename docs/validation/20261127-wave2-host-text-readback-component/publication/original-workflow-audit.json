@@ -1,0 +1,508 @@
+{
+  "status": "SOURCE_REVIEW_NO_MATCHING_PUSH_OR_CREATE_TRIGGER",
+  "parent": "60d32628f44f334063b756bad29b8861201287b7",
+  "branch": "codex/chatgpt-wave15-w1-ordinary-upload-20261127",
+  "workflowCount": 83,
+  "workflowWrites": 0,
+  "workflowDispatches": 0,
+  "workflows": [
+    {
+      "path": ".github/workflows/automerge.yaml",
+      "gitBlob": "f6431cd77fbbcc9582810c11c7c10eef70972491",
+      "bytes": 1111,
+      "triggerSource": "on: pull_request_target\n\n"
+    },
+    {
+      "path": ".github/workflows/branch_build.yaml",
+      "gitBlob": "43143cf9dabffe677ff2b208169e16786da6ab95",
+      "bytes": 5249,
+      "triggerSource": "on:\n  # Allows you to run this workflow manually from the Actions tab\n  workflow_dispatch:\n    inputs:\n      tf_comment:\n        description: 'TestFlight Comment'\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/cla.yml",
+      "gitBlob": "effe2846c316b350ee924fa7ff0f4af71d3985e7",
+      "bytes": 331,
+      "triggerSource": "on:\n  issue_comment:\n    types: [created]\n  pull_request_target:\n    types: [opened,closed,synchronize]\n\n"
+    },
+    {
+      "path": ".github/workflows/claude-code-review.yml",
+      "gitBlob": "20cae5ec7b3891c4e78ee6f45ad38e29d9fb1dcb",
+      "bytes": 3315,
+      "triggerSource": "on:\n  pull_request:\n    types: [opened, synchronize]\n    # Optional: Only run on specific file changes\n    # paths:\n    #   - \"src/**/*.ts\"\n    #   - \"src/**/*.tsx\"\n    #   - \"src/**/*.js\"\n    #   - \"src/**/*.jsx\"\n\n"
+    },
+    {
+      "path": ".github/workflows/claude.yml",
+      "gitBlob": "3e5eca101463317678bc628da1d58204ebb78d8b",
+      "bytes": 2544,
+      "triggerSource": "on:\n  issue_comment:\n    types: [created]\n  pull_request_review_comment:\n    types: [created]\n  issues:\n    types: [opened, assigned]\n  pull_request_review:\n    types: [submitted]\n\n"
+    },
+    {
+      "path": ".github/workflows/dev_build.yaml",
+      "gitBlob": "a0e2d4be49312c6016be75014a20c057ca4925bc",
+      "bytes": 5789,
+      "triggerSource": "on:\n  schedule:\n    # 05:00 UTC\n    - cron:  '0 5 * * 1-5'\n  workflow_dispatch:\n\n"
+    },
+    {
+      "path": ".github/workflows/generator_checks.yaml",
+      "gitBlob": "5a34d86e9f049eb7d2bb572f2e5e2ae140ebbf0b",
+      "bytes": 3082,
+      "triggerSource": "on:\n  pull_request:\n  workflow_dispatch:\n\n"
+    },
+    {
+      "path": ".github/workflows/ipa.yaml",
+      "gitBlob": "ba46aca106d2f6f0d2cff4a66c659063382b5054",
+      "bytes": 6719,
+      "triggerSource": "on:\n  workflow_dispatch:\n    inputs:\n      build_type:\n        description: \"App build type\"\n        required: false\n        default: release\n        type: choice\n        options:\n          - release\n          - dev\n  repository_dispatch:\n    types:\n      - trigger-build\n\n"
+    },
+    {
+      "path": ".github/workflows/license-checks.yml",
+      "gitBlob": "09497d5483e8ba03a9945674c1826102e2d2af9e",
+      "bytes": 3439,
+      "triggerSource": "on:\n  pull_request:\n  workflow_dispatch:\n\n"
+    },
+    {
+      "path": ".github/workflows/link_issue_to_release.yaml",
+      "gitBlob": "0d06849b03a79b783e0be0065cc74d8327c4383b",
+      "bytes": 10681,
+      "triggerSource": "on:\n  pull_request:\n    types: [closed]\n    branches:\n      - develop\n      - release\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-any-engine-port.yml",
+      "gitBlob": "95742ceae550780dd8447fa1ba7d159c6b87b2d8",
+      "bytes": 86431,
+      "triggerSource": "on:\n  push:\n    branches: [codex/any-engine-port-20261119]\n    paths:\n      - 'Modules/PinkhaAnyEngine/**'\n      - 'Modules/PinkhaAnyIntegration/**'\n      - 'Modules/PinkhaAnyRuntime/**'\n      - 'Modules/PinkhaAnyHost/**'\n      - 'Modules/PinkhaAnyHanlin/**'\n      - 'Modules/PinkhaAnyNative/**'\n      - 'NativeApp/**'\n      - 'Modules/PinkhaAnyUI/**'\n      - 'Modules/PinkhaTorahPresentation/**'\n      - 'Anytype/Sources/Pinkha/**'\n      - 'AnyTypeTests/Pinkha/**'\n      - 'docs/any-engine-port/SOURCE_REFACTOR_MAP.json'\n      - 'Modules/PinkhaKit/**'\n      - 'Tools/AnyEnginePort/**'\n      - 'Tools/AnyEngineValidation/**'\n      - '.github/workflows/pinkha-any-engine-port.yml'\n  workflow_dispatch:\n    inputs:\n      validation_scope:\n        description: Full, remaining acceptance, unpassed native UI, or isolated candidate operation read\n        type: choice\n        options: [full, remaining, remaining-native-ui, remaining-native-ui-continuation, candidate-runtime-read]\n        default: full\n      native_artifact_run_id:\n        description: Original native binary producer run for unchanged-source reuse\n        type: string\n        default: ''\n      native_producer_commit:\n        description: Exact original native producer commit\n        type: string\n        default: ''\n      ui_artifact_run_id:\n        description: Original UIKit14 execution run for verified unchanged-source reuse\n        type: string\n        default: ''\n      ui_producer_commit:\n        description: Exact original UIKit14 producer commit\n        type: string\n        default: ''\n      continuation_history:\n        description: Execute the new read-only native history journey after successful continued Custom Type acceptance\n        type: boolean\n        default: true\n      focus_handoff_validation:\n        description: Retain eight unaffected UIKit methods and execute ten affected focus methods before remaining native UI\n        type: boolean\n        default: false\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-any-native-ui-original-products.yml",
+      "gitBlob": "5c8d9f30f1024b90a5e5a7d01c3f5070186b8623",
+      "bytes": 20019,
+      "triggerSource": "on:\n  workflow_call:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-any-native-ui-runner-continuation.yml",
+      "gitBlob": "f66cb973abb0fc6ad9d1f526e61aa36c252162ef",
+      "bytes": 4292,
+      "triggerSource": "on:\n  workflow_call:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-any-native-ui-transition-candidate.yml",
+      "gitBlob": "5028543c969a3d3fbb2a8cbf17e625e4c602e3d4",
+      "bytes": 4227,
+      "triggerSource": "on:\n  workflow_call:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-authorized-operation-read-packages.yml",
+      "gitBlob": "275b223572ece83fd5fb7df5fd5d76bfbc05e475",
+      "bytes": 1705,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        required: true\n  workflow_dispatch:\n    inputs:\n      source_sha:\n        description: Exact reviewed source SHA for only the 14 new read methods\n        type: string\n        required: true\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-coherent-heart-apple.yml",
+      "gitBlob": "3c5293c01b8f9881a0ee1200270a7ba9fdd09178",
+      "bytes": 6520,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_run_id:\n        description: Exact completed framework build to continue; empty performs a new build\n        type: string\n        required: false\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-coherent-heart-native.yml",
+      "gitBlob": "f0f2c59aecb0a5826a6dd0801909b576127d9e70",
+      "bytes": 5065,
+      "triggerSource": "on:\n  workflow_call:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-coherent-heart-peers.yml",
+      "gitBlob": "cec519ebeecc13d6881f73374f52f9fe86ea4fb4",
+      "bytes": 5828,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-coherent-original-products.yml",
+      "gitBlob": "b7fd456310b38762d4c1fe518c5a53134693ad94",
+      "bytes": 3604,
+      "triggerSource": "on:\n  workflow_dispatch: {}\n  workflow_call: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-current-native-ui-failed.yml",
+      "gitBlob": "819df194264395c8bf18c308ed3b2030f4678001",
+      "bytes": 3773,
+      "triggerSource": "on:\n  workflow_call: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-current-page154-mounted.yml",
+      "gitBlob": "3ce561c69916f5317b7a701d7dd72f6d4204eca1",
+      "bytes": 3369,
+      "triggerSource": "on:\n  workflow_call: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-current-release-return-rtl.yml",
+      "gitBlob": "30902cb11fd1813ee448a5dfde7b9f9040bffb6c",
+      "bytes": 3337,
+      "triggerSource": "on:\n  workflow_call: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-fast-ci.yml",
+      "gitBlob": "d52d2ee18a963c55b240f29e54a5363fb7248e3e",
+      "bytes": 18432,
+      "triggerSource": "on:\n  push:\n    branches:\n      - pinkha/torah-associations-native-ux-persistence-localization-2026-10-20\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-full-acceptance.yml",
+      "gitBlob": "8e0ed6b3a09232f94c23021000a04e88637ba573",
+      "bytes": 9908,
+      "triggerSource": "on:\n  workflow_call:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-hanlin-journal-probe.yml",
+      "gitBlob": "a88f2a9011ff55d06e60ffaf6b918b00817bcfc0",
+      "bytes": 1462,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        required: true\n  workflow_dispatch:\n    inputs:\n      source_sha:\n        description: Exact immutable reviewed source SHA\n        type: string\n        required: true\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-heart-authorized-read-ios.yml",
+      "gitBlob": "bc15dd399ab0ca38182bbb0cc43d91e5aa223aff",
+      "bytes": 2973,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n      runtime_run:\n        type: string\n        required: true\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-heart-authorized-read-runtime.yml",
+      "gitBlob": "0f4e921dec08f729cf1ff6e676862eb6b52e9ed5",
+      "bytes": 3154,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-heart-dependencies.yml",
+      "gitBlob": "0445b33905fe6f42f2ce3aed98ffc6b92834136a",
+      "bytes": 2578,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        type: string\n        required: true\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-heart-runtime.yml",
+      "gitBlob": "eea7eedd6156cdd9005f567f5938a09bdb713912",
+      "bytes": 2849,
+      "triggerSource": "on:\n  workflow_call:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-ipa-only.yml",
+      "gitBlob": "46b675f865941e5dec6b9969a5ea514a357992a0",
+      "bytes": 7572,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      require_full_acceptance:\n        description: Require Full Acceptance success on the same SHA\n        type: boolean\n        default: true\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-loaded-account-arm64-compiler.yml",
+      "gitBlob": "823958381b4fd11cb785ec0714c523186e8ae50d",
+      "bytes": 1689,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        required: true\n  workflow_dispatch:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-loaded-account-arm64-native.yml",
+      "gitBlob": "021b60b332ad2072d074088f8c74565633a1be68",
+      "bytes": 2157,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        required: true\n    secrets:\n      PINKHA_NATIVE_COMPILER_URL:\n        required: true\n      PINKHA_NATIVE_SOURCE_URL:\n        required: true\n  workflow_dispatch:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-native-derived.yml",
+      "gitBlob": "8af5ecbdfe4503c69fa6dca252f223a6682a9421",
+      "bytes": 9326,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        type: string\n        default: ''\n      validation_scope:\n        type: string\n        default: all\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-native-diagnostics.yml",
+      "gitBlob": "17bc1d78ad0618646c5acf3b49fc607b7b778f46",
+      "bytes": 4424,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_run_id:\n        required: true\n        type: string\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-native-fast-ipa.yml",
+      "gitBlob": "039181f83f06e7c378b221d4056a393b8f8006e3",
+      "bytes": 5536,
+      "triggerSource": "on:\n  workflow_dispatch:\n  workflow_call:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-native-ipa-fast.yml",
+      "gitBlob": "2b10b1a16194b101380129a7a604a8d894f51169",
+      "bytes": 5745,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        type: string\n        default: ''\n  workflow_dispatch:\n    inputs:\n      heart_source_run_id:\n        type: string\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-owned-simulator-inventory-diagnostic.yml",
+      "gitBlob": "1c3b3d5864aa109851e61b6594f61aa108b9e958",
+      "bytes": 3939,
+      "triggerSource": "\"on\":\n  \"workflow_dispatch\": {}\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-prepared-inline-file-apple.yml",
+      "gitBlob": "42dde9ed3d33bce7d2262b2279d6ecd2737aef6b",
+      "bytes": 7804,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      native_artifact_run_id:\n        type: string\n        default: ''\n      native_producer_commit:\n        type: string\n        default: ''\n      native_artifact_run_attempt:\n        type: string\n        default: ''\n  workflow_dispatch:\n    inputs:\n      native_artifact_run_id:\n        description: Exact original producer run; leave all three fields empty for a new build\n        type: string\n        default: ''\n      native_producer_commit:\n        description: Exact original producer source commit\n        type: string\n        default: ''\n      native_artifact_run_attempt:\n        description: Exact original producer attempt\n        type: string\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-prepared-migration-apple.yml",
+      "gitBlob": "08a7ad70215a088610856d1a91de7ac0543034b2",
+      "bytes": 7760,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      native_artifact_run_id:\n        type: string\n        default: ''\n      native_producer_commit:\n        type: string\n        default: ''\n      native_artifact_run_attempt:\n        type: string\n        default: ''\n  workflow_dispatch:\n    inputs:\n      native_artifact_run_id:\n        description: Exact original producer run; leave all three fields empty for a new build\n        type: string\n        default: ''\n      native_producer_commit:\n        description: Exact original producer source commit\n        type: string\n        default: ''\n      native_artifact_run_attempt:\n        description: Exact original producer attempt\n        type: string\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-related-read-authority.yml",
+      "gitBlob": "2d5e993bad17b1b971ce32aae65a779c9bfc6496",
+      "bytes": 3996,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        required: true\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-sdk06-basename-probe.yml",
+      "gitBlob": "aa09c6e4b41efb9d7036070f612a52374f8afc3e",
+      "bytes": 1716,
+      "triggerSource": "on:\n  workflow_call: {}\n  workflow_dispatch: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-sdk06-enumeration-probe.yml",
+      "gitBlob": "299895c81c582699e5b22690b60303abc83d9e75",
+      "bytes": 1687,
+      "triggerSource": "on:\n  workflow_call: {}\n  workflow_dispatch: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-sdk06-original-native-continuation.yml",
+      "gitBlob": "978e178f1bdd3b15dafc50a018150be7e39973db",
+      "bytes": 5027,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      component_projection:\n        type: boolean\n        required: false\n        default: false\n  workflow_dispatch:\n    inputs:\n      component_projection:\n        type: boolean\n        required: false\n        default: false\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-sdk06-projected-components.yml",
+      "gitBlob": "491455204c62ec716b25645bc01745b2d92ec0fb",
+      "bytes": 4117,
+      "triggerSource": "on:\n  workflow_call: {}\n  workflow_dispatch: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-sdk06-qualified-continuation.yml",
+      "gitBlob": "ab8ef4d2909b8b9682713b10dcbd7d055570e032",
+      "bytes": 4703,
+      "triggerSource": "on:\n  workflow_call: {}\n  workflow_dispatch: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-sdk06-tagged-continuation.yml",
+      "gitBlob": "17326db66748bfd837f89ef04eb60c3377589898",
+      "bytes": 4646,
+      "triggerSource": "on:\n  workflow_call: {}\n  workflow_dispatch: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-sdk06-tests.yml",
+      "gitBlob": "4a17cacc8edca67e9a7f95b6180f708a9524da17",
+      "bytes": 6134,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      runtime_profile:\n        description: Explicit Heart runtime identity; no automatic fallback between variants\n        type: string\n        default: r14\n      heart_source_run_id:\n        description: Successful run containing the explicitly selected verified Heart runtime\n        required: true\n        type: string\n      expected_app_branch:\n        description: Reviewed isolated integration branch; producer branches are not accepted\n        required: true\n        type: string\n      profile:\n        description: Explicit reviewed profile sdk06/editor/shared-editor/wave15-core/wave15-components; no arbitrary test selection\n        required: false\n        type: string\n        default: sdk06\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-semantic-anchor-native.yml",
+      "gitBlob": "220c2ede2415a700a1661453df54c3f548f8394d",
+      "bytes": 5494,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-semantic-page-apple-consumer.yml",
+      "gitBlob": "465d50f4b136e2ecb1ffc0c233b809492f440af1",
+      "bytes": 1999,
+      "triggerSource": "on:\n  workflow_dispatch: {}\n  workflow_call: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-semantic-page-apple-mounted.yml",
+      "gitBlob": "ab7f4e609b12bdd90da29502c15fa85c32a68efa",
+      "bytes": 2326,
+      "triggerSource": "on:\n  workflow_dispatch: {}\n  workflow_call: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-semantic-page-apple-runtime.yml",
+      "gitBlob": "63c389c0516a34b169e8fd55e0c6471cb14c454b",
+      "bytes": 2682,
+      "triggerSource": "on:\n  workflow_call: {}\n  workflow_dispatch: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-semantic-page-startup-warning.yml",
+      "gitBlob": "24a9f4ce206ac1316b00f09a5849fe52422493b2",
+      "bytes": 2375,
+      "triggerSource": "on:\n  workflow_dispatch: {}\n  workflow_call: {}\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-simulator-ui27.yml",
+      "gitBlob": "329529ab61626f6eb088bfb2fe15747bd617c261",
+      "bytes": 14542,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      ui_scope:\n        type: string\n        default: FULL_SMOKE\n      runtime_profile:\n        description: Explicit Heart runtime identity; no automatic fallback between variants\n        type: string\n        default: r14\n      heart_source_run_id:\n        type: string\n        required: true\n      acceptance_lane:\n        description: Existing lane, SDK06, or reviewed Release and coherent T5 preset\n        type: string\n        default: ''\n      acceptance_device:\n        type: string\n        default: ipad\n      acceptance_language:\n        type: string\n        default: en\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-account-lifecycle.yml",
+      "gitBlob": "114726702a8fe06488aee6a4c50a39f95d0e6181",
+      "bytes": 4671,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-account-rpc.yml",
+      "gitBlob": "7fc3e80ac4890313975099a27925cc2f860deb84",
+      "bytes": 5266,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-native-clients.yml",
+      "gitBlob": "77748bd290add1632786fdcc6a17f22c3c571401",
+      "bytes": 8860,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n      scenario:\n        type: string\n        default: bootstrap\n      crash_after_commit:\n        type: boolean\n        default: false\n      observed_remove_after_reopen:\n        type: boolean\n        default: false\n      concurrent_replace_after_reopen:\n        type: boolean\n        default: false\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-native-operations.yml",
+      "gitBlob": "c20ffdf200af318a6a6c23aa9ee526826aa50847",
+      "bytes": 5996,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-native-rpc.yml",
+      "gitBlob": "a408826ca49af661eb6ce5013b180f2df4ae5109",
+      "bytes": 5700,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n      rpc_profile:\n        type: string\n        default: retained-v1\n      native_stage:\n        type: string\n        default: test\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-rpc-lifecycle-races.yml",
+      "gitBlob": "e04873303bbe7111feaed31a879b89d675f0f216",
+      "bytes": 5764,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-rpc-space-close.yml",
+      "gitBlob": "32d3acd425644047ac4e5e37d25b1f7e334baac4",
+      "bytes": 8447,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-account-pairs.yml",
+      "gitBlob": "9bbb3b52b2cff975d3a24fd20dfdbbe32a7f1f41",
+      "bytes": 4048,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      include_freshness:\n        description: Run a fifth process with native index mutations after the compatibility sequence\n        type: boolean\n        default: false\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-apple-pair.yml",
+      "gitBlob": "2d8765b1e09c5586ca0b8a26f66deda15d94216e",
+      "bytes": 7140,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      include_native_ui:\n        description: After five passing native phases reuse the retained r15 App for real Inspector UI on a separate fresh iPad\n        type: boolean\n        default: false\n      include_freshness:\n        description: After four passing compatibility phases run bounded host freshness in a fifth process\n        type: boolean\n        default: false\n      heart_r14_run_id:\n        type: string\n        required: true\n      heart_r15_run_id:\n        type: string\n        required: true\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-attachment-runtime.yml",
+      "gitBlob": "195aa609aed159bf7dd847cfe6e924ebf039a773",
+      "bytes": 3815,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      variant:\n        type: string\n        default: r15-attachment-v1\n        description: Explicit corrected variant; original r14 and r15 are never relabeled.\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-compatibility-pairs.yml",
+      "gitBlob": "5a0532e4a08eb15ccb4344bbbb6a512bc5b79c1f",
+      "bytes": 3576,
+      "triggerSource": "on:\n  workflow_call:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-corrected-ui.yml",
+      "gitBlob": "9eaa7a134b21458951dc1e7f46b286a3f8c9217c",
+      "bytes": 5870,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        type: string\n        required: true\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-coverage-proof.yml",
+      "gitBlob": "29dc84e0347a4f3533e0d111f3f66b64d86ef263",
+      "bytes": 3040,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      component:\n        type: string\n        default: native-index\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-native-attachment.yml",
+      "gitBlob": "03b3d9ac4b7329d53b05756043c197c15a714108",
+      "bytes": 3997,
+      "triggerSource": "on:\n  workflow_call:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-native-pagination.yml",
+      "gitBlob": "49c447fc316f81f87a0fba2bc968cd1c1dbb03d0",
+      "bytes": 8802,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      heart_r15_run_id:\n        type: string\n        required: true\n      include_account_retry:\n        type: boolean\n        default: false\n      pending_account_retry_only:\n        type: boolean\n        default: false\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-r05-alias.yml",
+      "gitBlob": "657c4dd18b7fb28d81e94ea6a75557d57e3608b1",
+      "bytes": 1433,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        required: true\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-r15-runtime.yml",
+      "gitBlob": "2141488688297c66e2c5c52842caed0baa3dc411",
+      "bytes": 3407,
+      "triggerSource": "on:\n  workflow_call:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-signed-revocation.yml",
+      "gitBlob": "30627bd43b3b9cc2d5ce46ea2487aa2854bada5d",
+      "bytes": 5538,
+      "triggerSource": "on:\n  workflow_call:\n    inputs:\n      runtime_profile:\n        description: Exact native runtime variant; method selection is fixed\n        type: string\n        required: false\n        default: r15-attachment-v1\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-tests.yaml",
+      "gitBlob": "bca318a63250ef9c969aabac592acc318501ff40",
+      "bytes": 2031,
+      "triggerSource": "on:\n  push:\n    branches:\n      - 'pinkha/*'\n    paths:\n      - 'Modules/PinkhaKit/**'\n      - 'Anytype/Sources/Pinkha/**'\n      - '.github/workflows/pinkha-tests.yaml'\n  pull_request:\n    paths:\n      - 'Modules/PinkhaKit/**'\n      - 'Anytype/Sources/Pinkha/**'\n      - '.github/workflows/pinkha-tests.yaml'\n  workflow_dispatch:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-ui27-release-gate.yml",
+      "gitBlob": "3191a652743f75529a0656c8fd833fad6d3f0836",
+      "bytes": 947,
+      "triggerSource": "on:\n  workflow_call:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha-validation.yml",
+      "gitBlob": "3e3e0e2cf2166f1b3bff7436df32a930371cb9aa",
+      "bytes": 5546,
+      "triggerSource": "on:\n  workflow_dispatch:\n    inputs:\n      build_type:\n        description: \"Build type\"\n        required: false\n        default: release\n        type: choice\n        options:\n          - release\n          - dev\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha_t2l_native_probe.yml",
+      "gitBlob": "7ee1cddd62079f391b974544bee14bf4c4194c79",
+      "bytes": 10233,
+      "triggerSource": "on:\n  push:\n    branches:\n      - pinkha/torah-functional-ui-single-device-2026-10-18\n    paths:\n      - Anytype/Sources/Pinkha/Torah/Storage/**\n      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift\n      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift\n      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahCanonicalAssociations.swift\n      - Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/**\n      - AnyTypeTests/Pinkha/TorahAssociationNativeMiddlewareProbeTests.swift\n      - AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift\n  workflow_dispatch:\n\n"
+    },
+    {
+      "path": ".github/workflows/pinkha_u10_native_tests.yml",
+      "gitBlob": "401bf536703c6d44daab1c0ca9f70a1f69aa23de",
+      "bytes": 20705,
+      "triggerSource": "on:\n  push:\n    branches:\n      - pinkha/upstream-u10-validation-2026-10-18\n    paths-ignore:\n      - docs/pinkha/torah-integration/UPSTREAM_U10_VALIDATION_2026-10-18.md\n  workflow_dispatch:\n\n"
+    },
+    {
+      "path": ".github/workflows/pr_tests.yml",
+      "gitBlob": "8178cefd864f3d97d38f6ddd34d447705ea3ba75",
+      "bytes": 5118,
+      "triggerSource": "on:\n  pull_request:\n  workflow_dispatch:\n\n"
+    },
+    {
+      "path": ".github/workflows/release_build.yaml",
+      "gitBlob": "1ac147ff05ccf2340f7c764e8345b58fd3003def",
+      "bytes": 6197,
+      "triggerSource": "on:\n  # Allows you to run this workflow manually from the Actions tab\n  workflow_dispatch:\n\n"
+    },
+    {
+      "path": ".github/workflows/test_fastlane_build.yaml",
+      "gitBlob": "27f744e5cab1e0637278efd8bfeb778306841ac2",
+      "bytes": 4739,
+      "triggerSource": "on:\n  workflow_dispatch:\n\n"
+    },
+    {
+      "path": ".github/workflows/torah-inspector-ipados27.yml",
+      "gitBlob": "5d89439a34f4284b7cceccb780f70ef63587d7a7",
+      "bytes": 49408,
+      "triggerSource": "on:\n  workflow_dispatch:\n    inputs:\n      route:\n        description: Stage 1 route to run\n        type: choice\n        required: true\n        options:\n          - full-acceptance\n          - ipa-only\n          - native-derived\n          - native-ipa-fast\n          - native-ipa-repair\n          - native-diagnostics\n          - t5-coverage-proof\n          - t5-r05-alias\n          - related-read-authority-packages\n          - t2-native-operations\n          - t2-authorized-read-packages\n          - t2-native-rpc\n          - t2-authorized-operation-read\n          - t2-authorized-read-account\n          - t2-authorized-read-apple-runtime\n          - t2-authorized-read-ios\n          - t2-account-rpc\n          - t2-native-clients\n          - t2-native-clients-offline\n          - t2-native-clients-crash\n          - t2-native-clients-observed-remove\n          - t2-native-clients-concurrent-replace\n          - t2-account-lifecycle\n          - t2-rpc-lifecycle-races\n          - t2-rpc-space-close\n          - simulator-ui27\n          - heart-runtime\n          - heart-dependency-resolution\n          - t5-r15-runtime\n          - t5-r15-attachment-runtime\n          - t5-apple-pairs\n          - t5-apple-ui\n          - t5-corrected-ui\n          - t5-signed-revocation\n          - t5-current-read-proof\n          - coherent-heart-native\n          - coherent-heart-apple\n          - coherent-heart-peers\n          - independent-member-acl\n          - semantic-anchor-native\n          - semantic-page-apple-runtime\n          - semantic-page-apple-consumer\n          - semantic-page-apple-mounted\n          - semantic-page-startup-warning\n          - sdk06-projected-components\n          - coherent-original-products\n          - current-release-return-rtl\n          - current-release-return-retained\n          - native-ui-original-products\n          - native-ui-transition-candidate\n          - native-ui-runner-continuation\n          - current-native-ui-failed\n          - current-native-ui-retained\n          - loaded-account-arm64-compiler\n          - loaded-account-arm64-native\n          - native-tree-inventory-arm64\n          - native-whole-source-arm64\n          - native-source-file-peers-arm64\n          - current-page154-mounted\n          - current-page154-retained\n          - owned-simulator-inventory-diagnostic\n          - prepared-migration-apple\n          - prepared-inline-file-apple\n          - sdk06-enumeration-probe\n          - sdk06-basename-probe\n          - sdk06-tagged-continuation\n          - sdk06-original-native-continuation\n          - t5-native-pagination\n          - t5-native-account-retry\n          - t5-native-attachment\n          - sdk06-tests\n          - hanlin-journal-probe\n          - editor-host-tests\n          - wave15-core-tests\n          - wave15-component-tests\n          - wave15-acceptance\n      t5_component:\n        description: Bounded T5 component; index-freshness also selects the fifth Apple phase\n        type: choice\n        options:\n          - native-index\n          - projection-cache\n          - native-rpc\n          - compatibility-pairs\n          - account-pairs\n          - index-freshness\n        default: native-index\n      ui_scope:\n        description: UI27 focused diagnostic selection; no release or full matrix acceptance\n        type: choice\n        options:\n          - FULL_SMOKE\n          - STARTUP_IPAD_DIAGNOSTIC\n          - NATIVE_CANCELLATION_DIAGNOSTIC\n        default: FULL_SMOKE\n      acceptance_lane:\n        description: Existing lane, six Release lanes, or the three remaining retained-Heart lanes\n        type: choice\n        options:\n          - inspector\n          - inspector-search\n          - quote-drop\n          - properties\n          - properties-set\n          - editor\n          - canonical-properties\n          - hanlin-native\n          - hanlin-native-text-ack\n          - hanlin-native-shared-editor\n          - hanlin-selection\n          - remaining-release\n          - retained-heart-release\n          - coherent-heart-release\n        default: inspector\n      acceptance_device:\n        description: Disposable OS27 device family\n        type: choice\n        options:\n          - ipad\n          - iphone\n        default: ipad\n      acceptance_language:\n        description: Actual app language; current non-editor methods require en\n        type: choice\n        options:\n          - en\n          - he\n        default: en\n      runtime_profile:\n        description: Exact retained Heart runtime; corrected runtime must use its own producer run\n        type: choice\n        options:\n          - r14\n          - r15-attachment-v1\n          - r15-attachment-authorized-current-read-v1\n        default: r14\n      source_run_id:\n        description: Verified Heart runtime run, or native evidence source for diagnostics\n        type: string\n        default: ''\n      prepared_native_producer_commit:\n        description: Exact original prepared migration producer commit when reusing source_run_id\n        type: string\n        default: ''\n      prepared_native_artifact_run_attempt:\n        description: Exact original prepared migration producer attempt when reusing source_run_id\n        type: string\n        default: ''\n      t5_r15_run_id:\n        description: Original successful r15 runtime build for same-source Apple pairing\n        type: string\n        default: ''\n      native_test_scope:\n        description: Native acceptance scope (failed-ui reuses the accepted app)\n        type: choice\n        options:\n          - all\n          - failed-ui\n          - readonly-startup\n          - t5-wave1\n        default: all\n      require_full_acceptance:\n        description: Require Full Acceptance success before IPA packaging\n        type: boolean\n        default: true\n\n"
+    },
+    {
+      "path": ".github/workflows/update_cache.yaml",
+      "gitBlob": "b25478e44b73d3b56760d497cf5539e939b7515f",
+      "bytes": 4467,
+      "triggerSource": "on:\n  schedule:\n    - cron:  '0 5 * * 6'\n  workflow_dispatch:\n\n"
+    },
+    {
+      "path": ".github/workflows/update_middleware.yaml",
+      "gitBlob": "0e34a806c829c0279ab1c6ae850ddfcbcd3e5bed",
+      "bytes": 14733,
+      "triggerSource": "on:\n  workflow_dispatch:\n    inputs:\n      middle_version:\n        description: \"Middleware version\"\n        required: true\n        type: string\n      task_name:\n        description: \"Task name (e.g. IOS-123)\"\n        required: false\n        type: string\n  workflow_call:\n    inputs:\n      middle_version:\n        required: true\n        type: string\n      task_name:\n        required: false\n        type: string\n\n"
+    },
+    {
+      "path": ".github/workflows/update_middleware_nightly.yaml",
+      "gitBlob": "c90696be1928137d450b6b4b3078b40ec25bcb4e",
+      "bytes": 2276,
+      "triggerSource": "on:\n  workflow_dispatch:\n  schedule:\n    # Weekdays 03:00 UTC (adjust as needed)\n    - cron: \"0 3 * * 1-5\"\n\n# Parent must grant write permissions so the child can push commits/PRs\n"
+    }
+  ]
+}
