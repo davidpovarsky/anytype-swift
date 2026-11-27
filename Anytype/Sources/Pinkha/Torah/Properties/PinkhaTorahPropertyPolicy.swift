@@ -130,9 +130,91 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
 
     private let identityStore = IdentityStore()
     private let bootstrapService: any PinkhaSpaceBootstrapServiceProtocol
+    private let pickerManifestLoader: @Sendable (String) async throws -> PinkhaSpaceManifest?
 
-    public init(bootstrapService: any PinkhaSpaceBootstrapServiceProtocol = Container.shared.pinkhaBootstrapService()) {
+    public init(
+        bootstrapService: any PinkhaSpaceBootstrapServiceProtocol = Container.shared.pinkhaBootstrapService(),
+        pickerManifestLoader: (@Sendable (String) async throws -> PinkhaSpaceManifest?)? = nil
+    ) {
         self.bootstrapService = bootstrapService
+        self.pickerManifestLoader = pickerManifestLoader ?? {
+            try await Container.shared.pinkhaSpaceManifestStore().loadManifest(spaceId: $0)
+        }
+    }
+
+    // MARK: - Read-only Property Picker
+
+    /// Typing and Retry may read the existing synced manifest, but must never
+    /// provision a Space or repair its Types. Explicit bootstrap keeps its
+    /// existing entry points outside the picker.
+    func loadPickerManifest(spaceId: String) async throws -> PinkhaSpaceManifest? {
+        try Task.checkCancellation()
+        guard PinkhaRuntime.enabled, !spaceId.isEmpty else { return nil }
+        if let cached = verifiedPickerManifest(bootstrapService.manifest(forSpaceId: spaceId), spaceId: spaceId) {
+            return cached
+        }
+        let manifest = try await pickerManifestLoader(spaceId)
+        try Task.checkCancellation()
+        return verifiedPickerManifest(manifest, spaceId: spaceId)
+    }
+
+    private func verifiedPickerManifest(_ manifest: PinkhaSpaceManifest?, spaceId: String) -> PinkhaSpaceManifest? {
+        guard let manifest, manifest.spaceId == spaceId, manifest.isComplete,
+              manifest.schemaVersion == PinkhaSpaceManifest.currentSchemaVersion,
+              let identities = PinkhaInternalPropertyIdentities(manifest: manifest),
+              !identities.canonicalPropertyId.isEmpty, !identities.canonicalPropertyKey.isEmpty,
+              !identities.orderPropertyId.isEmpty, !identities.orderPropertyKey.isEmpty else { return nil }
+        return manifest
+    }
+
+    /// Selection independently rechecks the same read-only identity path. A
+    /// native-only lookup failure must not turn an ordinary row into a write
+    /// through optional Torah provisioning.
+    func canAddPropertyFromPicker(propertyId: String, key: String, target: PropertiesModuleTarget,
+                                  spaceId: String) async throws -> Bool {
+        try Task.checkCancellation()
+        guard PinkhaRuntime.enabled else { return true }
+        let manifest = try await loadPickerManifest(spaceId: spaceId)
+        let allowed = await canAddPropertyInPicker(propertyId: propertyId, key: key,
+            target: target, spaceId: spaceId, manifest: manifest)
+        try Task.checkCancellation()
+        return allowed
+    }
+
+    func canAddPropertyInPicker(propertyId: String, key: String, target: PropertiesModuleTarget,
+                                spaceId: String, manifest: PinkhaSpaceManifest?) async -> Bool {
+        guard PinkhaRuntime.enabled else { return true }
+        guard let manifest = verifiedPickerManifest(manifest, spaceId: spaceId),
+              let identities = PinkhaInternalPropertyIdentities(manifest: manifest),
+              !identities.isInternal(propertyId: propertyId, key: key) else { return false }
+        guard TorahNativePropertyDefinition.definition(for: key) != nil else { return true }
+        switch target {
+        case .type(let typeData):
+            switch typeData {
+            case .recommendedFeaturedRelations(let type), .recommendedRelations(let type):
+                return isNormalType(type, spaceId: spaceId, manifest: manifest)
+            }
+        case .library:
+            return true
+        case .object(let objectId):
+            let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
+            guard doc.permissions.canEditRelationValues else { return false }
+            let details: ObjectDetails?
+            if let opened = doc.details { details = opened }
+            else { details = await PinkhaTorahNativePropertyCatalog.shared.fetchLiveObjectDetails(id: objectId, spaceId: spaceId) }
+            return details?.id == objectId && details?.isReadonly == false &&
+                isNormalDocument(details, spaceId: spaceId, manifest: manifest)
+        case let .dataview(objectId, _, typeDetails):
+            if let typeDetails {
+                return typeDetails.isObjectType && isNormalType(ObjectType(details: typeDetails), spaceId: spaceId, manifest: manifest)
+            }
+            let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
+            let details: ObjectDetails?
+            if let opened = doc.details { details = opened }
+            else { details = await PinkhaTorahNativePropertyCatalog.shared.fetchLiveObjectDetails(id: objectId, spaceId: spaceId) }
+            return details?.id == objectId && isNormalDocument(details, spaceId: spaceId, manifest: manifest) &&
+                details?.resolvedLayoutValue.isList == true
+        }
     }
 
     // MARK: - Invalidation & Retry
@@ -511,6 +593,10 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
     // MARK: - Private Target Inspection
 
     func isNormalDocument(_ details: ObjectDetails?, spaceId: String) -> Bool {
+        isNormalDocument(details, spaceId: spaceId, manifest: bootstrapService.manifest(forSpaceId: spaceId))
+    }
+
+    private func isNormalDocument(_ details: ObjectDetails?, spaceId: String, manifest: PinkhaSpaceManifest?) -> Bool {
         guard PinkhaRuntime.enabled, let details, details.spaceId == spaceId else { return false }
         return TorahDocumentPropertyEligibility.includesDocument(
             objectId: details.id, typeId: details.type, spaceId: spaceId, layout: details.resolvedLayout ?? details.layout,
@@ -519,15 +605,22 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
                 details.values[BundledPropertyKey.relationKey.rawValue] != nil ||
                 details.values[BundledPropertyKey.relationFormat.rawValue] != nil ||
                 details.values[BundledPropertyKey.recommendedLayout.rawValue] != nil,
-            manifest: bootstrapService.manifest(forSpaceId: spaceId)
+            manifest: manifest
         )
     }
 
     private func isNormalType(_ type: ObjectType, spaceId: String) -> Bool {
+        isNormalType(type, spaceId: spaceId, manifest: nil)
+    }
+
+    private func isNormalType(_ type: ObjectType, spaceId: String, manifest: PinkhaSpaceManifest?) -> Bool {
         guard type.spaceId == spaceId, !type.id.isEmpty, !type.hidden,
               !type.isDeleted, !type.isArchived,
               let layout = type.recommendedLayout,
               (DetailsLayout.editorLayouts + DetailsLayout.listLayouts + [.bookmark]).contains(layout) else { return false }
+        if let manifest {
+            return PinkhaRuntime.enabled && TorahDocumentPropertyEligibility.includes(typeId: type.id, spaceId: spaceId, manifest: manifest)
+        }
         return isTargetEligibleForNativeProperties(typeId: type.id, spaceId: spaceId)
     }
 

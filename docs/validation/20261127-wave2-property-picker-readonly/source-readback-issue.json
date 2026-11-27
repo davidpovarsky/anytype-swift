@@ -1,0 +1,20 @@
+{
+  "schema": "wave2-g05-original-readback-issue-v1",
+  "issue": "Initial read-only gate-path lookup used Tools/PinkhaDualEngineRuntime/verify_source_retention.py; actual tree later resolved Tools/AnyEnginePort/verify_source_retention.py. No source mutation or test invocation occurred.",
+  "original": {
+    "ok": false,
+    "interpreter": "python3",
+    "sudo": false,
+    "cwd": null,
+    "cleanup": true,
+    "command": [
+      "python3",
+      "/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_503fdf5100234c7ea2419833027afbb9/script.py"
+    ],
+    "output": "Traceback (most recent call last):\n  File \"/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_503fdf5100234c7ea2419833027afbb9/script.py\", line 12, in <module>\n    v=g(\"show\",c+\":\"+p);v.check_returncode();text=v.stdout.decode()\n                        ^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 502, in check_returncode\n    raise CalledProcessError(self.returncode, self.args, self.stdout,\nsubprocess.CalledProcessError: Command '['runuser', '-u', 'ubuntu', '-g', 'chatgpt-agent', '--', 'git', '--no-optional-locks', '-C', '/mnt/development/projects/worktrees/anytype-final-integration-20261125', 'show', '6581508faffa748ca51d97e6ea51ecf6400fef35:Tools/PinkhaDualEngineRuntime/verify_source_retention.py']' returned non-zero exit status 128.",
+    "duration": 0.17,
+    "returncode": 1,
+    "hub_request_id": "hreq_037419b682bb47cd"
+  },
+  "correctedGateSHA256": "f69d6a465db0517c5b41143c9b54aa275ecc6cbc63de6e9d20bc074d98feabf0"
+}

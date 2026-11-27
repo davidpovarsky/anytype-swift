@@ -1,0 +1,11 @@
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift
+@@ -122,7 +122,7 @@
+                     dismiss?()
+                 }
+             ) {
+-                guard await PinkhaTorahPropertyPolicy.shared.canAddPropertyAsync(
++                guard try await PinkhaTorahPropertyPolicy.shared.canAddPropertyFromPicker(
+                     propertyId: details.id, key: details.key, target: data.target, spaceId: data.spaceId
+                 ) else { throw PinkhaPropertyPickerSelectionError.propertyUnavailable }
+                 try Task.checkCancellation()

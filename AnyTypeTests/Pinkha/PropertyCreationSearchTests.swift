@@ -245,3 +245,172 @@ private struct PickerBootstrapProbe: PinkhaSpaceBootstrapServiceProtocol {
     }
     func isBootstrapped(spaceId: String) -> Bool { manifest.spaceId == spaceId }
 }
+
+@MainActor
+@Suite("Property picker read-only production lookup")
+struct PropertyPickerReadOnlyLookupTests {
+    @Test("Native-only failure keeps verified ordinary choices during typing and Retry without bootstrap", arguments: [false, true])
+    func ordinaryChoicesSurviveNativeFailureWithoutProvisioning(nativeSearchFails: Bool) async throws {
+        let probe = ReadOnlyPickerProbe()
+        let manifest = makeManifest()
+        let policy = PinkhaTorahPropertyPolicy(
+            bootstrapService: PickerBootstrapMustStayIdle(probe: probe),
+            pickerManifestLoader: { _ in await probe.didReadManifest(); return manifest }
+        )
+        let nativeSearch = ReadOnlyPickerNativeSearch(fails: nativeSearchFails)
+        let catalog = PinkhaTorahNativePropertyCatalog(policy: policy,
+            searchService: nativeSearch, propertyDetailsStorage: EmptyPickerPropertyStorage(),
+            bootstrapSpace: { _ in await probe.didBootstrap(); throw PickerProbeFailure.lookup })
+        let ordinary = property("ordinary", key: "ordinary-key", name: "הקשר תורני")
+        let candidates = [ordinary,
+            property("canonical-id", key: "canonical-key"),
+            property("order-id", key: "order-key"),
+            property("foreign", key: "foreign-key", space: "other-space")]
+        var queries: [String] = []
+        let loader = PinkhaPropertyPickerSearchLoader(policy: policy, catalog: catalog,
+            existingSearch: { text, _, space in
+                #expect(space == "picker-space")
+                queries.append(text)
+                return candidates
+            })
+        let data = makeData()
+        for query in ["", "מקור", "source"] {
+            let result = try await loader.load(text: query, data: data)
+            #expect(result.properties.map(\.id) == [ordinary.id])
+            #expect(result.nativeLookupFailed)
+            #expect(!result.existingLookupFailed)
+        }
+        loader.invalidate(spaceId: data.spaceId)
+        let retried = try await loader.load(text: "source", data: data)
+        #expect(retried.properties.map(\.id) == [ordinary.id])
+        #expect(retried.nativeLookupFailed)
+        #expect(!retried.existingLookupFailed)
+
+        let ordinaryAllowed = try await policy.canAddPropertyFromPicker(
+            propertyId: ordinary.id, key: ordinary.key, target: data.target, spaceId: data.spaceId)
+        let canonicalAllowed = try await policy.canAddPropertyFromPicker(
+            propertyId: "canonical-id", key: "canonical-key", target: data.target, spaceId: data.spaceId)
+        let orderAllowed = try await policy.canAddPropertyFromPicker(
+            propertyId: "order-id", key: "order-key", target: data.target, spaceId: data.spaceId)
+        #expect(ordinaryAllowed)
+        #expect(!canonicalAllowed && !orderAllowed)
+        #expect(queries == ["", "מקור", "source", "source"])
+        #expect(await probe.manifestReads == 7)
+        #expect(await probe.bootstrapCalls == 0)
+        #expect(await nativeSearch.calls == 12)
+    }
+
+    @Test("Unresolved or foreign internal identity stays explicit and never guesses ordinary safety", arguments: ["unavailable", "wrong-space", "missing-canonical", "missing-order"])
+    func unresolvedIdentityKeepsInternalFieldsClosed(mode: String) async throws {
+        let probe = ReadOnlyPickerProbe()
+        var prepared = makeManifest()
+        if mode == "wrong-space" { prepared.spaceId = "other-space" }
+        if mode == "missing-canonical" { prepared.documentAssociationsPropertyKey = "" }
+        if mode == "missing-order" { prepared.orderPropertyId = "" }
+        let captured = prepared
+        let policy = PinkhaTorahPropertyPolicy(
+            bootstrapService: PickerBootstrapMustStayIdle(probe: probe),
+            pickerManifestLoader: { _ in
+                await probe.didReadManifest()
+                if mode == "unavailable" { throw PickerProbeFailure.lookup }
+                return captured
+            }
+        )
+        let nativeSearch = ReadOnlyPickerNativeSearch(fails: false)
+        let catalog = PinkhaTorahNativePropertyCatalog(policy: policy,
+            searchService: nativeSearch, propertyDetailsStorage: EmptyPickerPropertyStorage(),
+            bootstrapSpace: { _ in await probe.didBootstrap(); throw PickerProbeFailure.lookup })
+        let ordinary = property("ordinary", key: "ordinary-key")
+        let loader = PinkhaPropertyPickerSearchLoader(policy: policy, catalog: catalog,
+            existingSearch: { _, _, _ in [ordinary] })
+        let data = makeData()
+        let result = try await loader.load(text: "", data: data)
+        #expect(result.properties.isEmpty)
+        #expect(result.nativeLookupFailed)
+        #expect(!result.existingLookupFailed)
+        do {
+            let allowed = try await policy.canAddPropertyFromPicker(
+                propertyId: ordinary.id, key: ordinary.key, target: data.target, spaceId: data.spaceId)
+            #expect(!allowed)
+        } catch PickerProbeFailure.lookup {
+            #expect(mode == "unavailable")
+        } catch {
+            Issue.record("Unexpected manifest selection error")
+        }
+        #expect(await probe.manifestReads == 2)
+        #expect(await probe.bootstrapCalls == 0)
+        #expect(await nativeSearch.calls == 0)
+    }
+
+    @Test("Cancellation from the read-only manifest is not an empty or failed completed lookup")
+    func readOnlyManifestCancellationPropagates() async {
+        let probe = ReadOnlyPickerProbe()
+        let policy = PinkhaTorahPropertyPolicy(
+            bootstrapService: PickerBootstrapMustStayIdle(probe: probe),
+            pickerManifestLoader: { _ in await probe.didReadManifest(); throw CancellationError() }
+        )
+        let nativeSearch = ReadOnlyPickerNativeSearch(fails: false)
+        let catalog = PinkhaTorahNativePropertyCatalog(policy: policy,
+            searchService: nativeSearch, propertyDetailsStorage: EmptyPickerPropertyStorage(),
+            bootstrapSpace: { _ in await probe.didBootstrap(); throw PickerProbeFailure.lookup })
+        var existingInvoked = false
+        let loader = PinkhaPropertyPickerSearchLoader(policy: policy, catalog: catalog,
+            existingSearch: { _, _, _ in existingInvoked = true; return [] })
+        do {
+            _ = try await loader.load(text: "source", data: makeData())
+            Issue.record("Provider cancellation must propagate from the actual loader")
+        } catch is CancellationError {
+            // Expected: the unchanged VM keeps this distinct from completed empty results.
+        } catch {
+            Issue.record("Unexpected non-cancellation error")
+        }
+        #expect(!existingInvoked)
+        #expect(await probe.manifestReads == 1)
+        #expect(await probe.bootstrapCalls == 0)
+        #expect(await nativeSearch.calls == 0)
+    }
+
+    private func makeManifest() -> PinkhaSpaceManifest {
+        .init(spaceId: "picker-space", orderPropertyId: "order-id", orderPropertyKey: "order-key",
+              documentAssociationsPropertyId: "canonical-id", documentAssociationsPropertyKey: "canonical-key")
+    }
+
+    private func makeData() -> PropertiesSearchData {
+        .init(objectId: "picker-object", spaceId: "picker-space", excludedRelationsIds: [],
+              target: .library, onRelationSelect: { _, _ in })
+    }
+
+    private func property(_ id: String, key: String, name: String = "Property", space: String = "picker-space") -> PropertyDetails {
+        .init(id: id, key: key, name: name, format: .tag, isHidden: false,
+              isReadOnly: false, isReadOnlyValue: false, objectTypes: [],
+              maxCount: 0, sourceObject: "", isDeleted: false, spaceId: space)
+    }
+}
+
+private actor ReadOnlyPickerProbe {
+    private(set) var manifestReads = 0
+    private(set) var bootstrapCalls = 0
+    func didReadManifest() { manifestReads += 1 }
+    func didBootstrap() { bootstrapCalls += 1 }
+}
+
+private struct PickerBootstrapMustStayIdle: PinkhaSpaceBootstrapServiceProtocol {
+    let probe: ReadOnlyPickerProbe
+    func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
+        await probe.didBootstrap()
+        throw PickerProbeFailure.lookup
+    }
+    func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? { nil }
+    func isBootstrapped(spaceId: String) -> Bool { false }
+}
+
+private actor ReadOnlyPickerNativeSearch: SearchMiddleServiceProtocol {
+    let fails: Bool
+    private(set) var calls = 0
+    init(fails: Bool) { self.fails = fails }
+    func search(data: SearchRequest) async throws -> [ObjectDetails] {
+        calls += 1
+        if fails { throw PickerProbeFailure.lookup }
+        return []
+    }
+}

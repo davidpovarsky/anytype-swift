@@ -1,0 +1,340 @@
+{
+  "schema": "wave2-g05-map-scope-v1",
+  "base": "6581508faffa748ca51d97e6ea51ecf6400fef35",
+  "originalRows": 129,
+  "candidateRows": 130,
+  "changedExistingRows": [
+    {
+      "index": 121,
+      "from": "Anytype/Sources/PresentationLayer/Common/SwiftUI/Search/Common/SearchView/SearchView.swift",
+      "before": {
+        "kind": "refactor",
+        "from": "Anytype/Sources/PresentationLayer/Common/SwiftUI/Search/Common/SearchView/SearchView.swift",
+        "to": "Anytype/Sources/PresentationLayer/Common/SwiftUI/Search/Common/SearchView/SearchView.swift",
+        "baselineBlob": "9dc9013dfdc7176113989bba544547ef52494f18",
+        "replacementBlob": "7bbb7ecd924dc3fe3b834be52b68353aedf13186",
+        "reason": "Add a default-true empty-state presentation option so the original SearchView behavior stays unchanged for every existing caller; Property picker opts out during uncompleted searches and errors.",
+        "sharedSources": [
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+            "gitBlob": "d0667ecd5eb08dc8767ef5eef436c4cefa44c72c"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSelection.swift",
+            "gitBlob": "d17b88a15e92f3b5d8c82ef97b18ffd0afd877bd"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+            "gitBlob": "cc4f6c5fc96749fbe8cc06b3befe044be050d92d"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertyLocalization.swift",
+            "gitBlob": "6a1c41c3190aa7598558b6afef4b86bbce37dd93"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/UI/Resources/PinkhaTorahProperties.xcstrings",
+            "gitBlob": "daa6bc91e075b7405fa303bde504fcd976a90ff9"
+          }
+        ],
+        "validation": [
+          "Owner explicitly authorized Wave2 editor/Properties corrections on isolated branches.",
+          "All121 prior mapping rows are retained unchanged from published c44d5ea4dc9780ee1ae48bb9db7aa72287675cdc;3original property-picker seams appended.",
+          "Provider CancellationError is preserved through the internal throwing catalog route, real loader, and picker even when caller Task.isCancelled is false. Existing public nonthrowing catalog APIs remain compatible.",
+          "Nine PropertyCreationSearchTests and six PropertyCreationSelectionTests are written; Apple execution NOT_RUN. No native/schema/Kit/document-type changes.",
+          "Source-map/source-retention qualification proves source provenance only; actual Properties/Set native and UI acceptance and physical-device checks remain pending.",
+          "Late-success cancellation keeps the completed native outcome true but suppresses the shared synchronous UI publication closure. Suspended-success regression written; Apple execution NOT_RUN."
+        ]
+      },
+      "after": {
+        "kind": "refactor",
+        "from": "Anytype/Sources/PresentationLayer/Common/SwiftUI/Search/Common/SearchView/SearchView.swift",
+        "to": "Anytype/Sources/PresentationLayer/Common/SwiftUI/Search/Common/SearchView/SearchView.swift",
+        "baselineBlob": "9dc9013dfdc7176113989bba544547ef52494f18",
+        "replacementBlob": "7bbb7ecd924dc3fe3b834be52b68353aedf13186",
+        "reason": "Add a default-true empty-state presentation option so the original SearchView behavior stays unchanged for every existing caller; Property picker opts out during uncompleted searches and errors.",
+        "sharedSources": [
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+            "gitBlob": "98048c0edd43cba903fe0096e7137d5b01648084"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSelection.swift",
+            "gitBlob": "d17b88a15e92f3b5d8c82ef97b18ffd0afd877bd"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+            "gitBlob": "d7d6a243a69d4470642e3e17103fb61577168d2d"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertyLocalization.swift",
+            "gitBlob": "6a1c41c3190aa7598558b6afef4b86bbce37dd93"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/UI/Resources/PinkhaTorahProperties.xcstrings",
+            "gitBlob": "daa6bc91e075b7405fa303bde504fcd976a90ff9"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift",
+            "gitBlob": "41579bf6f087784ea6d328d8b51358997563f612"
+          }
+        ],
+        "validation": [
+          "Owner explicitly authorized Wave2 editor/Properties corrections on isolated branches.",
+          "All121 prior mapping rows are retained unchanged from published c44d5ea4dc9780ee1ae48bb9db7aa72287675cdc;3original property-picker seams appended.",
+          "Provider CancellationError is preserved through the internal throwing catalog route, real loader, and picker even when caller Task.isCancelled is false. Existing public nonthrowing catalog APIs remain compatible.",
+          "Nine PropertyCreationSearchTests and six PropertyCreationSelectionTests are written; Apple execution NOT_RUN. No native/schema/Kit/document-type changes.",
+          "Source-map/source-retention qualification proves source provenance only; actual Properties/Set native and UI acceptance and physical-device checks remain pending.",
+          "Late-success cancellation keeps the completed native outcome true but suppresses the shared synchronous UI publication closure. Suspended-success regression written; Apple execution NOT_RUN.",
+          "G05 adds a picker-specific read-only manifest and descriptor lookup, including the selection policy guard. Explicit initialization/bootstrap entry points are preserved. Three new production-loader methods/seven cases are written; original nine search methods and six selection methods remain unchanged. Swift/XCTest/UI/native/device execution is NOT_RUN for this delta."
+        ]
+      }
+    },
+    {
+      "index": 122,
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift",
+      "before": {
+        "kind": "refactor",
+        "from": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift",
+        "to": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift",
+        "baselineBlob": "0682b7e7549fb2f5e0c34d2cbb1a599f97551b18",
+        "replacementBlob": "8e61add3043f863396314485eefa76e5c07bf001",
+        "reason": "Use the original SearchView and Anytype typography for separate catalog/search/add failure and explicit retry; preserve native picker selection routes and disable overlapping pending selections.",
+        "sharedSources": [
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+            "gitBlob": "d0667ecd5eb08dc8767ef5eef436c4cefa44c72c"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSelection.swift",
+            "gitBlob": "d17b88a15e92f3b5d8c82ef97b18ffd0afd877bd"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+            "gitBlob": "cc4f6c5fc96749fbe8cc06b3befe044be050d92d"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertyLocalization.swift",
+            "gitBlob": "6a1c41c3190aa7598558b6afef4b86bbce37dd93"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/UI/Resources/PinkhaTorahProperties.xcstrings",
+            "gitBlob": "daa6bc91e075b7405fa303bde504fcd976a90ff9"
+          }
+        ],
+        "validation": [
+          "Owner explicitly authorized Wave2 editor/Properties corrections on isolated branches.",
+          "All121 prior mapping rows are retained unchanged from published c44d5ea4dc9780ee1ae48bb9db7aa72287675cdc;3original property-picker seams appended.",
+          "Provider CancellationError is preserved through the internal throwing catalog route, real loader, and picker even when caller Task.isCancelled is false. Existing public nonthrowing catalog APIs remain compatible.",
+          "Nine PropertyCreationSearchTests and six PropertyCreationSelectionTests are written; Apple execution NOT_RUN. No native/schema/Kit/document-type changes.",
+          "Source-map/source-retention qualification proves source provenance only; actual Properties/Set native and UI acceptance and physical-device checks remain pending.",
+          "Late-success cancellation keeps the completed native outcome true but suppresses the shared synchronous UI publication closure. Suspended-success regression written; Apple execution NOT_RUN."
+        ]
+      },
+      "after": {
+        "kind": "refactor",
+        "from": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift",
+        "to": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift",
+        "baselineBlob": "0682b7e7549fb2f5e0c34d2cbb1a599f97551b18",
+        "replacementBlob": "8e61add3043f863396314485eefa76e5c07bf001",
+        "reason": "Use the original SearchView and Anytype typography for separate catalog/search/add failure and explicit retry; preserve native picker selection routes and disable overlapping pending selections.",
+        "sharedSources": [
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+            "gitBlob": "98048c0edd43cba903fe0096e7137d5b01648084"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSelection.swift",
+            "gitBlob": "d17b88a15e92f3b5d8c82ef97b18ffd0afd877bd"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+            "gitBlob": "d7d6a243a69d4470642e3e17103fb61577168d2d"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertyLocalization.swift",
+            "gitBlob": "6a1c41c3190aa7598558b6afef4b86bbce37dd93"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/UI/Resources/PinkhaTorahProperties.xcstrings",
+            "gitBlob": "daa6bc91e075b7405fa303bde504fcd976a90ff9"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift",
+            "gitBlob": "41579bf6f087784ea6d328d8b51358997563f612"
+          }
+        ],
+        "validation": [
+          "Owner explicitly authorized Wave2 editor/Properties corrections on isolated branches.",
+          "All121 prior mapping rows are retained unchanged from published c44d5ea4dc9780ee1ae48bb9db7aa72287675cdc;3original property-picker seams appended.",
+          "Provider CancellationError is preserved through the internal throwing catalog route, real loader, and picker even when caller Task.isCancelled is false. Existing public nonthrowing catalog APIs remain compatible.",
+          "Nine PropertyCreationSearchTests and six PropertyCreationSelectionTests are written; Apple execution NOT_RUN. No native/schema/Kit/document-type changes.",
+          "Source-map/source-retention qualification proves source provenance only; actual Properties/Set native and UI acceptance and physical-device checks remain pending.",
+          "Late-success cancellation keeps the completed native outcome true but suppresses the shared synchronous UI publication closure. Suspended-success regression written; Apple execution NOT_RUN.",
+          "G05 adds a picker-specific read-only manifest and descriptor lookup, including the selection policy guard. Explicit initialization/bootstrap entry points are preserved. Three new production-loader methods/seven cases are written; original nine search methods and six selection methods remain unchanged. Swift/XCTest/UI/native/device execution is NOT_RUN for this delta."
+        ]
+      }
+    },
+    {
+      "index": 123,
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+      "before": {
+        "kind": "refactor",
+        "from": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+        "to": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+        "baselineBlob": "1e898ca01827f33ebae58dd5a8eae7a7ee4fd021",
+        "replacementBlob": "05381d92837d1d13cea5f5e36b02dd2b6c0a5e35",
+        "reason": "Route property query ownership/cancellation and mutation serialization through isolated downstream helpers. Keep original object/type/dataview operations byte-identical; publish selection/dismiss only for a live consumer after successful mutation.",
+        "sharedSources": [
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+            "gitBlob": "d0667ecd5eb08dc8767ef5eef436c4cefa44c72c"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSelection.swift",
+            "gitBlob": "d17b88a15e92f3b5d8c82ef97b18ffd0afd877bd"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+            "gitBlob": "cc4f6c5fc96749fbe8cc06b3befe044be050d92d"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertyLocalization.swift",
+            "gitBlob": "6a1c41c3190aa7598558b6afef4b86bbce37dd93"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/UI/Resources/PinkhaTorahProperties.xcstrings",
+            "gitBlob": "daa6bc91e075b7405fa303bde504fcd976a90ff9"
+          }
+        ],
+        "validation": [
+          "Owner explicitly authorized Wave2 editor/Properties corrections on isolated branches.",
+          "All121 prior mapping rows are retained unchanged from published c44d5ea4dc9780ee1ae48bb9db7aa72287675cdc;3original property-picker seams appended.",
+          "Provider CancellationError is preserved through the internal throwing catalog route, real loader, and picker even when caller Task.isCancelled is false. Existing public nonthrowing catalog APIs remain compatible.",
+          "Nine PropertyCreationSearchTests and six PropertyCreationSelectionTests are written; Apple execution NOT_RUN. No native/schema/Kit/document-type changes.",
+          "Source-map/source-retention qualification proves source provenance only; actual Properties/Set native and UI acceptance and physical-device checks remain pending.",
+          "Late-success cancellation keeps the completed native outcome true but suppresses the shared synchronous UI publication closure. Suspended-success regression written; Apple execution NOT_RUN."
+        ]
+      },
+      "after": {
+        "kind": "refactor",
+        "from": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+        "to": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+        "baselineBlob": "1e898ca01827f33ebae58dd5a8eae7a7ee4fd021",
+        "replacementBlob": "403721c54d1430938c0e654eb8af01a831452032",
+        "reason": "Route property query ownership/cancellation and mutation serialization through isolated downstream helpers. Keep original object/type/dataview operations byte-identical; publish selection/dismiss only for a live consumer after successful mutation.",
+        "sharedSources": [
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+            "gitBlob": "98048c0edd43cba903fe0096e7137d5b01648084"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSelection.swift",
+            "gitBlob": "d17b88a15e92f3b5d8c82ef97b18ffd0afd877bd"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+            "gitBlob": "d7d6a243a69d4470642e3e17103fb61577168d2d"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertyLocalization.swift",
+            "gitBlob": "6a1c41c3190aa7598558b6afef4b86bbce37dd93"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/UI/Resources/PinkhaTorahProperties.xcstrings",
+            "gitBlob": "daa6bc91e075b7405fa303bde504fcd976a90ff9"
+          },
+          {
+            "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift",
+            "gitBlob": "41579bf6f087784ea6d328d8b51358997563f612"
+          }
+        ],
+        "validation": [
+          "Owner explicitly authorized Wave2 editor/Properties corrections on isolated branches.",
+          "All121 prior mapping rows are retained unchanged from published c44d5ea4dc9780ee1ae48bb9db7aa72287675cdc;3original property-picker seams appended.",
+          "Provider CancellationError is preserved through the internal throwing catalog route, real loader, and picker even when caller Task.isCancelled is false. Existing public nonthrowing catalog APIs remain compatible.",
+          "Nine PropertyCreationSearchTests and six PropertyCreationSelectionTests are written; Apple execution NOT_RUN. No native/schema/Kit/document-type changes.",
+          "Source-map/source-retention qualification proves source provenance only; actual Properties/Set native and UI acceptance and physical-device checks remain pending.",
+          "Late-success cancellation keeps the completed native outcome true but suppresses the shared synchronous UI publication closure. Suspended-success regression written; Apple execution NOT_RUN.",
+          "G05 adds a picker-specific read-only manifest and descriptor lookup, including the selection policy guard. Explicit initialization/bootstrap entry points are preserved. Three new production-loader methods/seven cases are written; original nine search methods and six selection methods remain unchanged. Swift/XCTest/UI/native/device execution is NOT_RUN for this delta."
+        ]
+      }
+    },
+    {
+      "index": 124,
+      "from": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+      "before": {
+        "kind": "refactor",
+        "from": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+        "to": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+        "baselineBlob": "0e964aae5c7b8c939201ff30bba19bdb272b590f",
+        "replacementBlob": "cc4f6c5fc96749fbe8cc06b3befe044be050d92d",
+        "reason": "Preserve provider and caller cancellation across internal throwing picker catalog operations while retaining public nonthrowing catalog signatures, descriptor identity verification, duplicate rejection, Space filtering and bootstrap retry semantics for non-cancellation failures.",
+        "sharedSources": [],
+        "validation": [
+          "Source-specific follow-up required by original prospective source-retention failure; first failure retained in docs/validation/20261127-wave2-property-cancellation/prospective-integration-01.",
+          "Provider cancellation regression traverses actual catalog, loader and picker with an uncancelled caller.14new Apple methods are written but NOT_RUN.",
+          "Preserves3originaldocumenttypes and original canonical identity/Tag/link behavior; native schema and protocol unchanged. No broad functional acceptance inferred."
+        ]
+      },
+      "after": {
+        "kind": "refactor",
+        "from": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+        "to": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+        "baselineBlob": "0e964aae5c7b8c939201ff30bba19bdb272b590f",
+        "replacementBlob": "d7d6a243a69d4470642e3e17103fb61577168d2d",
+        "reason": "Preserve provider and caller cancellation across internal throwing picker catalog operations while retaining public nonthrowing catalog signatures, descriptor identity verification, duplicate rejection, Space filtering and bootstrap retry semantics for non-cancellation failures.",
+        "sharedSources": [],
+        "validation": [
+          "Source-specific follow-up required by original prospective source-retention failure; first failure retained in docs/validation/20261127-wave2-property-cancellation/prospective-integration-01.",
+          "Provider cancellation regression traverses actual catalog, loader and picker with an uncancelled caller.14new Apple methods are written but NOT_RUN.",
+          "Preserves3originaldocumenttypes and original canonical identity/Tag/link behavior; native schema and protocol unchanged. No broad functional acceptance inferred.",
+          "G05 adds a picker-specific read-only manifest and descriptor lookup, including the selection policy guard. Explicit initialization/bootstrap entry points are preserved. Three new production-loader methods/seven cases are written; original nine search methods and six selection methods remain unchanged. Swift/XCTest/UI/native/device execution is NOT_RUN for this delta."
+        ]
+      }
+    }
+  ],
+  "newRow": {
+    "kind": "refactor",
+    "from": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift",
+    "to": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift",
+    "baselineBlob": "8a5abc0a225ab9ca2d3db9fe9670b5f35753886e",
+    "replacementBlob": "41579bf6f087784ea6d328d8b51358997563f612",
+    "reason": "Keep Add Property lookup and its pre-add identity guard read-only: verify existing same-Space canonical/order identities and share original document/Type predicates, without optional native provisioning during typing or Retry. Retain all legacy IdentityStore, bootstrap and generic policy APIs.",
+    "sharedSources": [
+      {
+        "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+        "gitBlob": "98048c0edd43cba903fe0096e7137d5b01648084"
+      },
+      {
+        "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+        "gitBlob": "d7d6a243a69d4470642e3e17103fb61577168d2d"
+      },
+      {
+        "path": "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift",
+        "gitBlob": "dbbe2d84e2a7e96f7fd8c1876e867556b4bc8758"
+      },
+      {
+        "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift",
+        "gitBlob": "b712657e45feea1f05ca68a3aa2098fb9d053e5b"
+      },
+      {
+        "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahDocumentPropertyProjection.swift",
+        "gitBlob": "69999176cedd86968830acf09f2ea7fb16108c7e"
+      }
+    ],
+    "validation": [
+      "Owner authorized the Wave2 Properties correction on an isolated branch; the upstream VM hook is a single call-site redirect documented in the exception register.",
+      "Original129 mapping rows are retained; only existing picker dependency/replacement blobs and an appended validation note change in rows121-124. One new baseline policy row is appended.",
+      "Read-only manifest validates Space/schema/completion plus both internal ID/key pairs; missing identity stays an explicit failure, never a guess by label or format. Ordinary properties with the same Hebrew display name remain selectable after positive identity verification.",
+      "Production-loader regression suite PropertyPickerReadOnlyLookupTests has3 methods/7 cases, with injected original service boundaries and zero-policy/catalog-bootstrap assertions. Apple compilation/execution and real UI/native/physical-device acceptance remain NOT_RUN.",
+      "Global IdentityStore invalidation race is outside this isolated picker path and is not claimed fixed. No Native engine/protocol/schema, document-type or persisted storage change."
+    ]
+  },
+  "otherTopLevelFieldsUnchanged": {
+    "schemaVersion": true,
+    "baselineCommit": true,
+    "authorization": true,
+    "purpose": true,
+    "integration": true
+  }
+}

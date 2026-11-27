@@ -1,0 +1,116 @@
+{
+  "schema": "pinkha.wave2.g05.root-production-source-review.v1",
+  "reviewer": "root",
+  "base": "6581508faffa748ca51d97e6ea51ecf6400fef35",
+  "status": "PASS_SCOPED_READ_ONLY_PICKER_SOURCE_REVIEW_NOT_RUNTIME_ACCEPTANCE",
+  "primarySources": [
+    {
+      "path": "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift",
+      "originalGitBlob": "3b777698042dc23730f0976aef3826d6dc5438f8",
+      "originalSHA256": "1bdd1c498a685902f7c8e8a0980b4e09b90d2e34ee74f13316e8ec1a2532c3e4",
+      "candidateSHA256": "6f17a932410b59369eaade81bfbabf08362a22593358c2c90201ecfe8c65166a",
+      "candidateBytes": 19495,
+      "exactPrimarySourceReadback": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+      "originalGitBlob": "d0667ecd5eb08dc8767ef5eef436c4cefa44c72c",
+      "originalSHA256": "91d98b046f070d6c1b33eeb2db66fffb3bdbad9f4401d5b2200bf4c13271d45f",
+      "candidateSHA256": "035acc3a38934abd0273ba9b1392e35aa4f47ddaad9a549b7f9aaf9c7cdb65d9",
+      "candidateBytes": 4933,
+      "exactPrimarySourceReadback": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+      "originalGitBlob": "cc4f6c5fc96749fbe8cc06b3befe044be050d92d",
+      "originalSHA256": "e4f1b053139810570565a0000413fde89f82516513cddd1c4b5579d63e39ffce",
+      "candidateSHA256": "e898a23f760a8e0e9ffe715fcd570319766a03679dd2b4d9efd502e05d548f86",
+      "candidateBytes": 35814,
+      "exactPrimarySourceReadback": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift",
+      "originalGitBlob": "8a5abc0a225ab9ca2d3db9fe9670b5f35753886e",
+      "originalSHA256": "91797e706a8a72318745437d44d7f6ce6c0d45c47e11d6a799805be2a45eee71",
+      "candidateSHA256": "27519a1f21dd9f013629f3d986cde1a78ddb874082369f4765feed56bcf51ee7",
+      "candidateBytes": 32722,
+      "exactPrimarySourceReadback": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+      "originalGitBlob": "05381d92837d1d13cea5f5e36b02dd2b6c0a5e35",
+      "originalSHA256": "fedb1107bfa4b2d79e33071fa37e6d5ce18c5f44119d9d1a7469c0728d7a096b",
+      "candidateSHA256": "6c50f929f42051f1c16942cf451e2453a52e1357ae45eded0b1a8988115127ee",
+      "candidateBytes": 10375,
+      "exactPrimarySourceReadback": true
+    }
+  ],
+  "evidence": {
+    "source-inverse.json": {
+      "sha256": "f17866278f12cfb0f0eca0de2a59558faf48d064255a1c3eec02f477499f7940",
+      "bytes": 1922
+    },
+    "candidate-manifest.json": {
+      "sha256": "297022a1ce122dab75ab5d285c0e5944d57e9416b24ce3ef50d9f964c19aa1e9",
+      "bytes": 2657
+    },
+    "interfaces-independent-review.json": {
+      "sha256": "6b7326c8058e44c0cb8ddbf8e1b2c16d18b72336bd5906aade4e3b1c379ed17b",
+      "bytes": 5599
+    },
+    "candidate/docs/any-engine-port/SOURCE_REFACTOR_MAP.json": {
+      "sha256": "ac1340d6a10a5e755ca12df9d4a8ebe91950cbd10e6c4bde3b4ae37237636262",
+      "bytes": 223087
+    },
+    "candidate/docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md": {
+      "sha256": "1907e5ebcdb696cfa85517d0a9f571878d2b742660ea2f0606bf4b1e51fb282d",
+      "bytes": 88753
+    },
+    "source/docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md": {
+      "sha256": "912c2b5088a37e2c29edf817253dd851ba675c4d349c6c7cf83b503711a50c0a",
+      "bytes": 85928
+    },
+    "originalRegisterPrefixPreserved": true
+  },
+  "scope": "Five frozen Swift files for read-only production picker lookup and pre-selection identity policy. Source-only approval after the original retention gate, on a Wave2 isolated branch.",
+  "checks": [
+    "Root directly read all five full diffs, new production loader and policy methods, exact original target predicates, actual ManifestStore loadManifest implementation and all new test methods.",
+    "Root independently fetched all five original files from GitHub at exact6581508 and compared UTF-8 bytes with frozen preimages; original Git blobs and SHA256 values are recorded.",
+    "Typing and explicit lookup Retry use existing manifest reads and the allowProvisioning=false catalog wrapper. Independent pre-add selection follows the same read-only path, avoiding hidden reentry into optional schema provisioning.",
+    "Verified same-Space current-schema complete manifest and both canonical/order ID+key pairs protect internal fields. Missing or foreign identity remains an explicit lookup error. User labels and formats never establish internal identity.",
+    "The production loader retains ordinary current-Space, nondeleted, nonempty-ID properties through native-only descriptor failure after positive identity verification, preserving distinct ordinary and native failure signals.",
+    "Existing descriptor verification of key, ID, Space, sourceObject, tag format and readOnlyValue is retained, as are de-duplication, hidden relation reveal exclusions, cancellation and original mutation operations.",
+    "Manifest-specific overloads retain universal normal document/Type eligibility; Chiddush, Article and Research remain separate, with no native/schema/data migration change.",
+    "Existing search9 source is an exact prefix. Added production-loader3methods/7cases cover native search errors or missing descriptors, ordinary/internal/foreign identities, typing/Retry, unavailable identity and provider cancellation; bootstrap seams are explicitly counted.",
+    "Source map preserves129 existing rows, changes only picker dependency/replacement bindings plus appended validation in rows121-124, and appends the previously unmapped baseline policy row. Exception register is an append-only record for the one VM guard call-site redirect.",
+    "Legacy initialization APIs and global IdentityStore remain unchanged. The readonly cache getter is reused without introducing bootstrap invocation."
+  ],
+  "findingsBlockingThisTranche": [],
+  "separateOpenFindings": [
+    {
+      "id": "G05-native-descriptor-cache-invalidation",
+      "source": "PinkhaTorahNativePropertyCatalog.CacheBox.set/setDiagnostics and nativePropertiesForPicker",
+      "observation": "Unlike typeRelations, native descriptor/diagnostic publication does not check cache/Space generation. A read begun before invalidate can publish after a newer result; loader also reads global diagnostics after awaiting the result.",
+      "nextAction": "Separate bounded successor: capture existing revision, atomically admit lookup results only while current, and return diagnostics with the same lookup. Add controlled old-read/invalidate/new-read/late-old regression before final G05 acceptance.",
+      "fixedHere": false
+    },
+    {
+      "id": "global-IdentityStore-invalidation",
+      "fixedHere": false,
+      "scope": "Recorded earlier; new picker path does not use the global IdentityStore. Do not infer a global policy fix."
+    }
+  ],
+  "runtime": {
+    "swiftCompilation": "NOT_RUN",
+    "xctest": "NOT_RUN",
+    "native": "NOT_RUN",
+    "mountedUI": "NOT_RUN",
+    "visual": "NOT_RUN",
+    "physicalDevice": "NOT_RUN"
+  },
+  "handoff": [
+    "Publish exact frozen candidate and retention evidence; Wave3 alone integrates final branch and shared App.",
+    "New3methods/7cases require actual current Apple execution, in addition to pending original picker search9/selection6 and the real controlled failure/retry/Space UI journey. Core22 does not automatically include these tests.",
+    "No broad G05/Properties acceptance or test preservation inferred from source review."
+  ]
+}

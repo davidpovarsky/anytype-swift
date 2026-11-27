@@ -1,0 +1,87 @@
+{
+  "schema": "pinkha.wave2.g05.interfaces-source-review.v1",
+  "reviewer": "/root/interfaces",
+  "reviewedAtUTC": "2026-11-27T09:57:21.343493+00:00",
+  "base": "6581508faffa748ca51d97e6ea51ecf6400fef35",
+  "status": "PASS_SOURCE_REVIEW_NOT_RUNTIME_ACCEPTANCE",
+  "candidateManifestSHA256": "297022a1ce122dab75ab5d285c0e5944d57e9416b24ce3ef50d9f964c19aa1e9",
+  "files": [
+    {
+      "path": "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift",
+      "originalSHA256": "1bdd1c498a685902f7c8e8a0980b4e09b90d2e34ee74f13316e8ec1a2532c3e4",
+      "candidateSHA256": "6f17a932410b59369eaade81bfbabf08362a22593358c2c90201ecfe8c65166a",
+      "bytes": 19495
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+      "originalSHA256": "91d98b046f070d6c1b33eeb2db66fffb3bdbad9f4401d5b2200bf4c13271d45f",
+      "candidateSHA256": "035acc3a38934abd0273ba9b1392e35aa4f47ddaad9a549b7f9aaf9c7cdb65d9",
+      "bytes": 4933
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+      "originalSHA256": "e4f1b053139810570565a0000413fde89f82516513cddd1c4b5579d63e39ffce",
+      "candidateSHA256": "e898a23f760a8e0e9ffe715fcd570319766a03679dd2b4d9efd502e05d548f86",
+      "bytes": 35814
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift",
+      "originalSHA256": "91797e706a8a72318745437d44d7f6ce6c0d45c47e11d6a799805be2a45eee71",
+      "candidateSHA256": "27519a1f21dd9f013629f3d986cde1a78ddb874082369f4765feed56bcf51ee7",
+      "bytes": 32722
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+      "originalSHA256": "fedb1107bfa4b2d79e33071fa37e6d5ce18c5f44119d9d1a7469c0728d7a096b",
+      "candidateSHA256": "6c50f929f42051f1c16942cf451e2453a52e1357ae45eded0b1a8988115127ee",
+      "bytes": 10375
+    }
+  ],
+  "findings": [],
+  "checks": [
+    "Verified exact five original and candidate SHA256 pairs against the frozen manifest.",
+    "IdentityStore remains byte-identical; all original search-test source is an exact candidate prefix.",
+    "MainActor loader/VM ownership and Sendable policy/catalog closure storage remain consistent with the existing APIs; no concrete source-level actor/API blocker found.",
+    "Picker fallback calls the actual manifest store loadManifest: discover/search plus objectShow and in-memory manifestObjectId assignment, with no saveManifest/bootstrap call on that route. The synchronous cached bootstrap getter delegates to the existing engine getter; no new provisioning was inserted there.",
+    "Verified same Space, current schema, complete state and both canonical/order nonempty ID+key requirements before exposing rows or selecting existing properties. Missing/foreign identity remains closed; native-only descriptor errors keep separately verified ordinary rows.",
+    "Read-only catalog wrapper passes allowProvisioning=false; unchanged descriptor validation/search/storage fallback remains distinct from the original default provisioning entry points. Both bootstrap seams are explicitly counted by the new test source.",
+    "Existing selection mutation path follows a new independent read-only identity check; the VM callback/onExistingPropertyTap and original native property service mutations remain unchanged.",
+    "Native target predicates use the same document/layout/permissions and type eligibility policy, with the explicitly passed verified manifest; shared includes policy accepts ordinary nonempty type IDs and does not restrict documents to the three writing types.",
+    "Cancellation is propagated through manifest read, catalog and selection, rather than published as completed empty search. New tests cover only meaningful added production lookup boundaries: native failure, unsafe identity and cancellation."
+  ],
+  "additionalSourceReads": [
+    {
+      "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift",
+      "sha256": "86d012df02efd4b54235987b02104c97e222b5aaf45fda684184c66431a62a22"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceBootstrapService.swift",
+      "sha256": "bae192331aa8cb7abcb3655503400efc860fcab8e201379f65510b9ce10bd44b"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+      "sha256": "aa0e424dcd17c948531b3d8389bf66894f5a7afd1bb2e93f54f43d7a69588e17"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahDocumentPropertyProjection.swift",
+      "sha256": "a2326bff80b3c9f068f7ee8cf03c7d4d2f94423e36e24299ef471a6fb87a7d2d"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSelection.swift",
+      "sha256": "f0f23222a325a5f21ec39bd795244ddac16ff877b1011f634630cb42accfedca"
+    }
+  ],
+  "reviewBoundary": [
+    "This is a narrow source review, not Swift typechecking, XCTest execution, UI acceptance or a native write/permission audit.",
+    "The implementation of the existing engine.manifest getter and unchanged downstream propertiesService mutation bodies was not separately refetched; no claim of a new transactional authority check is made.",
+    "Original nine tests and the new three methods/seven cases were read, not executed. Shared actual App build and real Add Property UI acceptance remain required."
+  ],
+  "actualExecution": {
+    "compiler": false,
+    "tests": false,
+    "native": false,
+    "UI": false,
+    "hostCallsForReview": false,
+    "sourceMutations": false
+  }
+}
