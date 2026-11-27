@@ -363,7 +363,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
             "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton"
         )).firstMatch
         let expectedPID = ProcessInfo.processInfo.environment["PINKHA_UI27_EXPECTED_APP_PID"].flatMap(Int.init)
-        if expectedPID == nil || Self.readyPID != expectedPID {
+        if expectedPID == nil || Self.readyPID != expectedPID || app.alerts.count > 0 {
             let waitStart = ProcessInfo.processInfo.systemUptime
             let startedAt = Date()
             defer {
@@ -374,15 +374,12 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
                 attachment.lifetime = .keepAlways
                 add(attachment)
             }
-            if !more.exists {
-                guard home.waitForExistence(timeout: 120) else {
-                    // Throw so Swift unwinds both timing and final-evidence defers.
-                    // XCTest still records the missing readiness as a failed test.
-                    throw NSError(domain: "UI27Readiness", code: 1, userInfo: [
-                        NSLocalizedDescriptionKey: "Restored home did not become ready before the deep link"
-                    ])
-                }
-            }
+            // Preserve the runner's exact process; only continue the original
+            // warning for its controller-bound, freshly prepared native fixture.
+            try PinkhaDisposableStartupWarning.waitForNavigation(
+                app, testCase: self, spaceID: fixture.spaceId,
+                allowedLanes: ["inspector", "inspector-search"]
+            )
             Self.readyPID = expectedPID
         }
         var url = URLComponents()

@@ -135,12 +135,9 @@ final class PinkhaTorahQuoteAcceptanceUITests: XCTestCase {
     private func launchSourceDocument() throws {
         if app.state != .notRunning { app.terminate() }
         app.launch()
-        let ready = app.descendants(matching: .any).matching(NSPredicate(
-            format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@ OR (elementType == %d AND (label == %@ OR label == %@))",
-            "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton",
-            XCUIElement.ElementType.button.rawValue, "More", "x24/More"
-        )).firstMatch
-        try require(ready.waitForExistence(timeout: 120), "Native Home did not become ready before document routing")
+        try PinkhaDisposableStartupWarning.waitForNavigation(
+            app, testCase: self, spaceID: fixture.spaceId, allowedLanes: ["quote-drop"]
+        )
         var url = URLComponents()
         url.scheme = "anytype"
         url.host = "object"
