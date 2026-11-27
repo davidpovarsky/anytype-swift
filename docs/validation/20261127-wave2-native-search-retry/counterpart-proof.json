@@ -1,0 +1,62 @@
+{
+  "status": "EXACT_EXISTING_COUNTERPART_AND_INHERITED_GUARDS_SOURCE_ONLY",
+  "sourceCommit": "919626d8a5a2701c2dfb56277a657fa593700b98",
+  "heartCounterpart": {
+    "source": {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift",
+      "commit": "919626d8a5a2701c2dfb56277a657fa593700b98",
+      "gitBlob": "aa05299483402494da71e9e264b747ce80edaa06",
+      "local": "torah-acceptance-prep/core-remainder-audit/source/Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift",
+      "displayURL": "https://github.com/davidpovarsky/anytype-swift/blob/919626d8a5a2701c2dfb56277a657fa593700b98/Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift",
+      "bytes": 18382,
+      "sha256": "a35096bca030ea8f764ddbe5b8ba7ef1a9260fbf281ed7e1f4fe0ce1a01951af",
+      "copiedGitBlobMatches": true,
+      "readbackExtraNewlineRemoved": true
+    },
+    "errorCaseUTF8": "        case .error(let message):\n            EmptyStateView(\n                title: Loc.Pinkha.Torah.title,\n                subtitle: message,\n                style: .error,\n                buttonData: EmptyStateView.ButtonData(\n                    title: Loc.Pinkha.Home.retry,\n                    action: { await presenter.performSearch() }\n                )\n            )\n            .accessibilityElement(children: .contain)\n            .accessibilityIdentifier(\"torah-search-error\")\n",
+    "errorCaseSHA256": "9a7fe7129866e8672f821c47213d9f8423c43ead63fc12ac1d03d614217a57de",
+    "label": "Loc.Pinkha.Home.retry",
+    "action": "await presenter.performSearch()"
+  },
+  "sharedPresenter": {
+    "source": {
+      "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahSourcesSearchPresenter.swift",
+      "commit": "919626d8a5a2701c2dfb56277a657fa593700b98",
+      "gitBlob": "d90f1c04a5b8a977c4fcb8d717300a530aa6410e",
+      "local": "torah-acceptance-prep/core-remainder-audit/source/Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahSourcesSearchPresenter.swift",
+      "displayURL": "https://github.com/davidpovarsky/anytype-swift/blob/919626d8a5a2701c2dfb56277a657fa593700b98/Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahSourcesSearchPresenter.swift",
+      "bytes": 9564,
+      "sha256": "8b81677f5aa0d0111600d54e15967c217ed7a0f7692836d867933efd3e4b891f",
+      "copiedGitBlobMatches": true,
+      "readbackExtraNewlineRemoved": true
+    },
+    "performSearchSHA256": "0ed68f86708ced9fd1851e7e7d87cc8811f4239ad9637f1781f396a3fc7ae96d",
+    "cancellationAndCurrentQueryGuardsSHA256": "75cb21db33ab50fb1a70ebde12ccfa9e0d9994cfd78e50bccfef74ea3cc160eb",
+    "guards": [
+      "searchEpoch captured for request",
+      "trimmed query equality",
+      "scope equality",
+      "Task.checkCancellation before and after provider await",
+      "cancelPendingRequests invalidates request identities on view disappearance"
+    ]
+  },
+  "ownerBoundary": {
+    "sessionSource": {
+      "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift",
+      "commit": "919626d8a5a2701c2dfb56277a657fa593700b98",
+      "gitBlob": "0e9d22b56bca1176a67fa57c055cd9a5f2fb6db5",
+      "local": "torah-acceptance-prep/core-remainder-audit/source/Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift",
+      "displayURL": "https://github.com/davidpovarsky/anytype-swift/blob/919626d8a5a2701c2dfb56277a657fa593700b98/Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift",
+      "bytes": 54690,
+      "sha256": "2f56aafeb516497c30c13bff9ba2da5c9cf626586b5a67826f65813c29bc716a",
+      "copiedGitBlobMatches": true,
+      "readbackExtraNewlineRemoved": true
+    },
+    "existingSearchDoesNotValidateMountedOwner": true,
+    "existingSearchRoute": "workspace.suggestReferences/suggestTopics/suggestWords",
+    "fixedPresenterContext": "same existing context; exact documentAssociationContext for embedded search",
+    "existingOpenAndMutationValidationUnchanged": true,
+    "newOwnerGuaranteeClaimed": false
+  },
+  "candidateScope": "Only add localized native List Retry to call same existing search action; no new request wrapper, session/provider/context/mutation change, suite, selector, controller or runtime gate."
+}
