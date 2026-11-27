@@ -1,0 +1,119 @@
+{
+  "schema": "pinkha-rtl-current-editor-source-inverse-v1",
+  "profileOriginalSHA256": "80ebc56005110ee78615322f56b876b5b6fd4fae23975b86d249ae05ebcac8ea",
+  "profileCandidateSHA256": "f16a16071fadf66ca0b1cd8a0583e41aadf7439e567a7c51daf72d56ad83885c",
+  "profileEdits": [
+    {
+      "before": "e25deb24f68be376fc3bd55a9b3f97fd755949c104bcec16f3368ce679c4733a",
+      "after": "8b461efe44868904b826da7b601c1537fd1c164705f861b15920143a556caac5"
+    }
+  ],
+  "editorInverseChain": [
+    {
+      "sourceCommit": "7380a797d13b279b6d19e43ade7af1929089b8ef",
+      "name": "styled-observation",
+      "beforeSHA256": "c0c045570318f03ac38633e3b48dd6602506b748e0866594ba2f434a523bd4f8",
+      "afterSHA256": "8b461efe44868904b826da7b601c1537fd1c164705f861b15920143a556caac5",
+      "edits": [
+        {
+          "before": "                         isFirstResponder: cell.textView.isFirstResponder)\n",
+          "after": "                         isFirstResponder: cell.textView.isFirstResponder,\n                         typingAttributes: cell.textView.typingAttributes,\n                         contentSizeCategory: cell.textView.traitCollection.preferredContentSizeCategory)\n"
+        }
+      ]
+    },
+    {
+      "sourceCommit": "dfbb481102226e5484b5b8e4dd730661f9b03d14",
+      "name": "native-Hanlin-entry",
+      "beforeSHA256": "4b7a6feaa4557a63183789549ae9fe498ef2d988f0b7516f39947891a3c1dd3a",
+      "afterSHA256": "c0c045570318f03ac38633e3b48dd6602506b748e0866594ba2f434a523bd4f8",
+      "edits": [
+        {
+          "before": "                let chat = try AnyHanlinPresentation.present(from: self, native: presentation.nativeSession,\n                    documents: presentation.documents, sourceOwner: presentation,\n                    conversationID: conversationID, creation: creation)\n",
+          "after": "                let chat = try await AnyHanlinPresentation.presentFromNativeEditor(from: self,\n                    native: presentation.nativeSession, documents: presentation.documents,\n                    client: presentation.client, sourceOwner: presentation,\n                    conversationID: conversationID, creation: creation)\n"
+        }
+      ]
+    },
+    {
+      "sourceCommit": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "name": "original-design-typography",
+      "beforeSHA256": "26a3876cab8926445449c07542d5ebdda01e6eaf33ee0cc27fd03d072540ec61",
+      "afterSHA256": "4b7a6feaa4557a63183789549ae9fe498ef2d988f0b7516f39947891a3c1dd3a",
+      "edits": [
+        {
+          "before": "        #endif\n        render()\n    }\n\n    public override func viewDidAppear",
+          "after": "        #endif\n        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) {\n            (controller: AnyNativeEditorController, _: UITraitCollection) in\n            controller.render()\n        }\n        render()\n    }\n\n    public override func viewDidAppear"
+        },
+        {
+          "before": "        if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native[\"style\"] {",
+          "after": "        if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native[\"style\"]\n            || cell.renderedContentSizeCategory != traitCollection.preferredContentSizeCategory {"
+        },
+        {
+          "before": "                cell.renderedSource = renderedSource; cell.renderedNativeStyle = block.native[\"style\"]",
+          "after": "                cell.renderedSource = renderedSource; cell.renderedNativeStyle = block.native[\"style\"]\n                cell.renderedContentSizeCategory = traitCollection.preferredContentSizeCategory"
+        },
+        {
+          "before": "        let base = UIFont.preferredFont(forTextStyle: block.type == \"heading\" ? .title2 : .body)",
+          "after": "        let base = AnyNativeTextTypography.font(for: block, compatibleWith: traitCollection)"
+        },
+        {
+          "before": "            var traits: UIFontDescriptor.SymbolicTraits = []\n            if run.traits.contains(.bold) { traits.insert(.traitBold) }\n            if run.traits.contains(.italic) { traits.insert(.traitItalic) }\n            var font = base\n            if run.traits.contains(.code) { font = .monospacedSystemFont(ofSize: base.pointSize, weight: .regular) }\n            if let descriptor = font.fontDescriptor.withSymbolicTraits(traits) {\n                font = UIFont(descriptor: descriptor, size: base.pointSize)\n            }",
+          "after": "            let font = AnyNativeTextTypography.inlineFont(base: base,\n                bold: run.traits.contains(.bold), italic: run.traits.contains(.italic),\n                code: run.traits.contains(.code))"
+        },
+        {
+          "before": "    var renderedNativeStyle: PinkhaAnyEngine.AnyJSON?\n",
+          "after": "    var renderedNativeStyle: PinkhaAnyEngine.AnyJSON?\n    var renderedContentSizeCategory: UIContentSizeCategory?\n"
+        },
+        {
+          "before": "        marker.font = .preferredFont(forTextStyle: .body)\n",
+          "after": "        marker.font = .preferredFont(forTextStyle: .body)\n        marker.adjustsFontForContentSizeCategory = true\n"
+        },
+        {
+          "before": "        sourceButton.titleLabel?.font = .preferredFont(forTextStyle: .caption1)\n",
+          "after": "        sourceButton.titleLabel?.font = .preferredFont(forTextStyle: .caption1)\n        sourceButton.titleLabel?.adjustsFontForContentSizeCategory = true\n"
+        },
+        {
+          "before": "        stateLabel.font = .preferredFont(forTextStyle: .caption2)\n",
+          "after": "        stateLabel.font = .preferredFont(forTextStyle: .caption2)\n        stateLabel.adjustsFontForContentSizeCategory = true\n"
+        },
+        {
+          "before": "        textView.blockID = nil; renderedSource = nil; renderedHistoryEpoch = nil; renderedNativeStyle = nil; sourceAction = nil",
+          "after": "        textView.blockID = nil; renderedSource = nil; renderedHistoryEpoch = nil; renderedNativeStyle = nil; sourceAction = nil\n        renderedContentSizeCategory = nil"
+        },
+        {
+          "before": "        if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native[\"style\"]\n",
+          "after": "        if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native[\"style\"]\n            || cell.renderedBlockType != block.type\n"
+        },
+        {
+          "before": "                cell.renderedContentSizeCategory = traitCollection.preferredContentSizeCategory\n",
+          "after": "                cell.renderedContentSizeCategory = traitCollection.preferredContentSizeCategory\n                cell.renderedBlockType = block.type\n"
+        },
+        {
+          "before": "    var renderedContentSizeCategory: UIContentSizeCategory?\n",
+          "after": "    var renderedContentSizeCategory: UIContentSizeCategory?\n    var renderedBlockType: String?\n"
+        },
+        {
+          "before": "        renderedContentSizeCategory = nil\n",
+          "after": "        renderedContentSizeCategory = nil; renderedBlockType = nil\n"
+        },
+        {
+          "before": "            let font = AnyNativeTextTypography.inlineFont(base: base,\n",
+          "after": "            let font = AnyNativeTextTypography.inlineFont(for: block, base: base,\n"
+        }
+      ]
+    },
+    {
+      "sourceCommit": "dc582ba3239d6dcb66dbe1f7098b95349e4289f9",
+      "name": "shared-block-catalog-menu",
+      "beforeSHA256": "e25deb24f68be376fc3bd55a9b3f97fd755949c104bcec16f3368ce679c4733a",
+      "afterSHA256": "26a3876cab8926445449c07542d5ebdda01e6eaf33ee0cc27fd03d072540ec61",
+      "edits": [
+        {
+          "before": "                Task { await presentation?.addParagraph(before: id) }\n            }\n        ])",
+          "after": "                Task { await presentation?.addParagraph(before: id) }\n            },\n            AnyNativeBlockCreationMenu.before(id, presentation: presentation)\n        ])"
+        }
+      ]
+    }
+  ],
+  "originalCompleteEditorRestoredSHA256": "e25deb24f68be376fc3bd55a9b3f97fd755949c104bcec16f3368ce679c4733a",
+  "allOriginalRTLFunctionsClassesAndTestInventoriesUnchanged": true
+}

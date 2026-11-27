@@ -1,0 +1,70 @@
+{
+  "baseSHA256": "26a3876cab8926445449c07542d5ebdda01e6eaf33ee0cc27fd03d072540ec61",
+  "candidateSHA256": "4b7a6feaa4557a63183789549ae9fe498ef2d988f0b7516f39947891a3c1dd3a",
+  "exactChanges": [
+    {
+      "old": "        #endif\n        render()\n    }\n\n    public override func viewDidAppear",
+      "new": "        #endif\n        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) {\n            (controller: AnyNativeEditorController, _: UITraitCollection) in\n            controller.render()\n        }\n        render()\n    }\n\n    public override func viewDidAppear"
+    },
+    {
+      "old": "        if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native[\"style\"] {",
+      "new": "        if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native[\"style\"]\n            || cell.renderedContentSizeCategory != traitCollection.preferredContentSizeCategory {"
+    },
+    {
+      "old": "                cell.renderedSource = renderedSource; cell.renderedNativeStyle = block.native[\"style\"]",
+      "new": "                cell.renderedSource = renderedSource; cell.renderedNativeStyle = block.native[\"style\"]\n                cell.renderedContentSizeCategory = traitCollection.preferredContentSizeCategory"
+    },
+    {
+      "old": "        let base = UIFont.preferredFont(forTextStyle: block.type == \"heading\" ? .title2 : .body)",
+      "new": "        let base = AnyNativeTextTypography.font(for: block, compatibleWith: traitCollection)"
+    },
+    {
+      "old": "            var traits: UIFontDescriptor.SymbolicTraits = []\n            if run.traits.contains(.bold) { traits.insert(.traitBold) }\n            if run.traits.contains(.italic) { traits.insert(.traitItalic) }\n            var font = base\n            if run.traits.contains(.code) { font = .monospacedSystemFont(ofSize: base.pointSize, weight: .regular) }\n            if let descriptor = font.fontDescriptor.withSymbolicTraits(traits) {\n                font = UIFont(descriptor: descriptor, size: base.pointSize)\n            }",
+      "new": "            let font = AnyNativeTextTypography.inlineFont(base: base,\n                bold: run.traits.contains(.bold), italic: run.traits.contains(.italic),\n                code: run.traits.contains(.code))"
+    },
+    {
+      "old": "    var renderedNativeStyle: PinkhaAnyEngine.AnyJSON?\n",
+      "new": "    var renderedNativeStyle: PinkhaAnyEngine.AnyJSON?\n    var renderedContentSizeCategory: UIContentSizeCategory?\n"
+    },
+    {
+      "old": "        marker.font = .preferredFont(forTextStyle: .body)\n",
+      "new": "        marker.font = .preferredFont(forTextStyle: .body)\n        marker.adjustsFontForContentSizeCategory = true\n"
+    },
+    {
+      "old": "        sourceButton.titleLabel?.font = .preferredFont(forTextStyle: .caption1)\n",
+      "new": "        sourceButton.titleLabel?.font = .preferredFont(forTextStyle: .caption1)\n        sourceButton.titleLabel?.adjustsFontForContentSizeCategory = true\n"
+    },
+    {
+      "old": "        stateLabel.font = .preferredFont(forTextStyle: .caption2)\n",
+      "new": "        stateLabel.font = .preferredFont(forTextStyle: .caption2)\n        stateLabel.adjustsFontForContentSizeCategory = true\n"
+    },
+    {
+      "old": "        textView.blockID = nil; renderedSource = nil; renderedHistoryEpoch = nil; renderedNativeStyle = nil; sourceAction = nil",
+      "new": "        textView.blockID = nil; renderedSource = nil; renderedHistoryEpoch = nil; renderedNativeStyle = nil; sourceAction = nil\n        renderedContentSizeCategory = nil"
+    }
+  ],
+  "reviewCorrectionChanges": [
+    {
+      "old": "        if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native[\"style\"]\n",
+      "new": "        if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native[\"style\"]\n            || cell.renderedBlockType != block.type\n"
+    },
+    {
+      "old": "                cell.renderedContentSizeCategory = traitCollection.preferredContentSizeCategory\n",
+      "new": "                cell.renderedContentSizeCategory = traitCollection.preferredContentSizeCategory\n                cell.renderedBlockType = block.type\n"
+    },
+    {
+      "old": "    var renderedContentSizeCategory: UIContentSizeCategory?\n",
+      "new": "    var renderedContentSizeCategory: UIContentSizeCategory?\n    var renderedBlockType: String?\n"
+    },
+    {
+      "old": "        renderedContentSizeCategory = nil\n",
+      "new": "        renderedContentSizeCategory = nil; renderedBlockType = nil\n"
+    }
+  ],
+  "bodyWeightCorrectionChanges": [
+    {
+      "old": "            let font = AnyNativeTextTypography.inlineFont(base: base,\n",
+      "new": "            let font = AnyNativeTextTypography.inlineFont(for: block, base: base,\n"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "AppleInvocations": 0,
+  "findings": [],
+  "independentChecks": {
+    "actualProducerAndAdmissionAbsent": true,
+    "allEightHelperBodiesByteIdentical": true,
+    "allFiveRetainedGitBlobsAndSourceHashesMatch": true,
+    "allFourCompleteEditorTranchesRestore": true,
+    "noPBXOrAppSourceChanged": true,
+    "oneLiteralChanged": true,
+    "originalCompilerEnumerationAndResultAuthorityUnchanged": true,
+    "sameTwoSuitesSixMethodsTenCases": true,
+    "wholeProfileInverseExact": true
+  },
+  "limits": [
+    "This source-only derivative is compatible with the observed editor bytes; it does not admit the observed source commit or a product.",
+    "The original module remains subordinate to the common product/native compiler qualification. Six methods and ten cases have no new runtime result from this review."
+  ],
+  "nativeCalls": 0,
+  "originalProfile": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-editor-control/rtl_hosted_profile.py",
+    "sha256": "80ebc56005110ee78615322f56b876b5b6fd4fae23975b86d249ae05ebcac8ea"
+  },
+  "portableControlsRerun": 0,
+  "reviewedFiles": {
+    "materialized1/rtl_hosted_profile.py": {
+      "bytes": 12708,
+      "sha256": "f16a16071fadf66ca0b1cd8a0583e41aadf7439e567a7c51daf72d56ad83885c"
+    },
+    "materialized1/source-inverse.json": {
+      "bytes": 8283,
+      "sha256": "c2adf9336d5a6411228fc2aa13cac7f92efc2188961c582e179346320456050d"
+    },
+    "materialized1/source-qualification.json": {
+      "bytes": 2554,
+      "sha256": "8d58f686deb7dd2de87f5d48faa281e7d59c1a04a337f68bc9f8f77a1b3cb402"
+    },
+    "original-source-readback.json": {
+      "bytes": 83087,
+      "sha256": "1e0d9ad3e362ac5c7cee178146f9ad8674ed6aec314832badc4e2161967008b4"
+    },
+    "prepare_rtl_current_editor.py": {
+      "bytes": 9054,
+      "sha256": "3d774cd3e819472c849f7c731bc3bfc3f142c006fb8f1f8c403f0643616c18fa"
+    }
+  },
+  "reviewer": "/root/interfaces",
+  "schema": "independent-rtl-current-editor-source-review/v1",
+  "scope": "One full-editor literal pin successor; no tests, compiler, runtime or controls executed",
+  "status": "PASS_SOURCE_ONLY",
+  "testsExecuted": 0
+}
