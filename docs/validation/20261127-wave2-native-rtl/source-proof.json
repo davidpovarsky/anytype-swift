@@ -1,0 +1,91 @@
+{
+  "XCTestMethodsExecuted": 0,
+  "allBytesOutsideRTLMethodUnchanged": true,
+  "builds": 0,
+  "environment": {
+    "allowed": [
+      "he",
+      "en"
+    ],
+    "key": "PINKHA_NATIVE_RTL_APP_LANGUAGE",
+    "legacyDefault": "he",
+    "matrixRequiresExplicitSelection": true
+  },
+  "exactLocalizedExpectations": {
+    "en": {
+      "centerTitle": "Center",
+      "leftToRightStyle": "Saved style: Left to right, alignment Natural",
+      "naturalTitle": "Natural",
+      "rightToLeftStyle": "Saved style: Right to left, alignment Natural",
+      "savedStyle": "Saved style: Right to left, alignment Center"
+    },
+    "he": {
+      "centerTitle": "למרכז",
+      "leftToRightStyle": "העיצוב השמור: כתיבה משמאל לימין, יישור טבעי",
+      "naturalTitle": "טבעי",
+      "rightToLeftStyle": "העיצוב השמור: כתיבה מימין לשמאל, יישור טבעי",
+      "savedStyle": "העיצוב השמור: כתיבה מימין לשמאל, יישור למרכז"
+    }
+  },
+  "hebrewActionsAndAssertionsRestoreExactly": true,
+  "inverseRestoresEveryOriginalByte": true,
+  "matrixCellsExecuted": 0,
+  "method": "NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+  "methodAfter": "    func testExplicitHebrewDirectionAndAlignmentSurviveColdReopen() {\n        let appLanguage = ProcessInfo.processInfo.environment[\"PINKHA_NATIVE_RTL_APP_LANGUAGE\"] ?? \"he\"\n        guard appLanguage == \"he\" || appLanguage == \"en\" else {\n            XCTFail(\"The native RTL journey requires the exact app language he or en.\")\n            return\n        }\n        let hebrewApp = appLanguage == \"he\"\n        let leftToRightStyle = hebrewApp\n            ? \"העיצוב השמור: כתיבה משמאל לימין, יישור טבעי\"\n            : \"Saved style: Left to right, alignment Natural\"\n        let rightToLeftStyle = hebrewApp\n            ? \"העיצוב השמור: כתיבה מימין לשמאל, יישור טבעי\"\n            : \"Saved style: Right to left, alignment Natural\"\n        let savedStyle = hebrewApp\n            ? \"העיצוב השמור: כתיבה מימין לשמאל, יישור למרכז\"\n            : \"Saved style: Right to left, alignment Center\"\n        let centerTitle = hebrewApp ? \"למרכז\" : \"Center\"\n        let naturalTitle = hebrewApp ? \"טבעי\" : \"Natural\"\n        let scope = UUID()\n        let suffix = String(scope.uuidString.prefix(8))\n        let app = makeApplication(scope: scope)\n        if !hebrewApp {\n            app.launchArguments = [\n                \"--native-ui-tests\", \"--native-ui-test-scope\", scope.uuidString,\n                \"-AppleLanguages\", \"(en,he)\", \"-AppleLocale\", \"en_US\"\n            ]\n        }\n        let spaceName = \"Writing UI Space \" + suffix\n        let documentName = \"Writing UI Document \" + suffix\n        let body = \"שלום עולם, כיוון ויישור מפורשים 789\"\n        func recordSavedParagraph(_ phase: String) {\n            let screenshot = XCTAttachment(screenshot: app.screenshot())\n            screenshot.name = \"NATIVE_RTL_\" + appLanguage + \"_\" + phase\n            screenshot.lifetime = .keepAlways\n            add(screenshot)\n        }\n        app.launch()\n        defer { app.terminate() }\n        createOwnedWorkspace(app, spaceName: spaceName)\n        createNamedItem(app, action: \"any-native-new-document\", title: documentName)\n        tapWhenEnabled(app.buttons[\"any-native-add-paragraph\"], timeout: 60)\n\n        let blocks = app.textViews.matching(NSPredicate(\n            format: \"identifier BEGINSWITH %@\", \"any-native-block-\"))\n        waitUntilEnabled(blocks.firstMatch)\n        blocks.firstMatch.tap()\n        blocks.firstMatch.typeText(body)\n        tapWhenEnabled(app.buttons[\"any-native-editor-done\"])\n        let status = app.descendants(matching: .any)\n            .matching(identifier: \"any-native-save-status\").firstMatch\n        waitFor(NSPredicate(format: \"exists == true AND value == %@\", \"saved\"),\n                object: status, timeout: 45)\n        let blockIdentifier = blocks.firstMatch.identifier\n        XCTAssertEqual(blocks.firstMatch.value as? String, body)\n        XCTAssertEqual(blocks.count, 1)\n\n        let options = app.buttons[\"any-native-document-options\"]\n        // A Hebrew paragraph can render RTL by detection alone. First force\n        // the opposite persisted direction, then explicitly choose RTL.\n        tapWhenEnabled(options)\n        tapWhenEnabled(app.buttons[\"any-native-writing-direction-ltr\"])\n        waitFor(NSPredicate(format: \"exists == true AND value == %@\",\n                            leftToRightStyle),\n                object: options, timeout: 45)\n        tapWhenEnabled(options)\n        tapWhenEnabled(app.buttons[\"any-native-writing-direction-rtl\"])\n        waitFor(NSPredicate(format: \"exists == true AND value == %@\",\n                            rightToLeftStyle),\n                object: options, timeout: 45)\n        tapWhenEnabled(options)\n        tapWhenEnabled(app.buttons[\"any-native-text-alignment\"])\n        // UIKit exposes this nested menu by its visible localized title;\n        // select the exact app-language title. Native readback remains the assertion.\n        tapWhenEnabled(app.buttons[centerTitle])\n        // This value comes only from the current native readback snapshot;\n        // choosing the menu action does not update it optimistically.\n        waitFor(NSPredicate(format: \"exists == true AND value == %@\", savedStyle),\n                object: options, timeout: 45)\n        XCTAssertEqual(app.textViews[blockIdentifier].value as? String, body)\n        recordSavedParagraph(\"center_before_reopen\")\n\n        reopenOwnedWorkspace(app, spaceName: spaceName)\n        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)\n        let reopened = app.textViews[blockIdentifier]\n        waitFor(NSPredicate(format: \"exists == true AND value == %@\", body),\n                object: reopened, timeout: 60)\n        XCTAssertEqual(blocks.count, 1)\n        // Select the actual reopened block without editing or applying a style.\n        reopened.tap()\n        tapWhenEnabled(app.buttons[\"any-native-editor-done\"])\n        waitFor(NSPredicate(format: \"exists == true AND value == %@\", savedStyle),\n                object: options, timeout: 45)\n        recordSavedParagraph(\"center_after_reopen\")\n        tapWhenEnabled(options)\n        let rtl = app.buttons[\"any-native-writing-direction-rtl\"]\n        waitUntilEnabled(rtl)\n        XCTAssertTrue(rtl.isSelected, \"The reopened native direction must be selected.\")\n        XCTAssertFalse(app.buttons[\"any-native-writing-direction-ltr\"].isSelected)\n        tapWhenEnabled(app.buttons[\"any-native-text-alignment\"])\n        let center = app.buttons[centerTitle]\n        waitUntilEnabled(center)\n        XCTAssertTrue(center.isSelected, \"The reopened explicit alignment must be selected.\")\n        let natural = app.buttons[naturalTitle]\n        waitUntilEnabled(natural)\n        XCTAssertFalse(natural.isSelected)\n    }\n\n",
+  "methodAfterDeclarationSHA256": "3e8e894f6cf405c17dad8f7e78b795cc420f30db1636b1cad703ed766ed3403d",
+  "methodAfterSHA256": "b776a98de5c097c6d0a9b8932a18a2682b70f180284c0ab44ec3c3d4c9334c0d",
+  "methodBefore": "    func testExplicitHebrewDirectionAndAlignmentSurviveColdReopen() {\n        let scope = UUID()\n        let suffix = String(scope.uuidString.prefix(8))\n        let app = makeApplication(scope: scope)\n        let spaceName = \"Writing UI Space \" + suffix\n        let documentName = \"Writing UI Document \" + suffix\n        let body = \"שלום עולם, כיוון ויישור מפורשים 789\"\n        app.launch()\n        defer { app.terminate() }\n        createOwnedWorkspace(app, spaceName: spaceName)\n        createNamedItem(app, action: \"any-native-new-document\", title: documentName)\n        tapWhenEnabled(app.buttons[\"any-native-add-paragraph\"], timeout: 60)\n\n        let blocks = app.textViews.matching(NSPredicate(\n            format: \"identifier BEGINSWITH %@\", \"any-native-block-\"))\n        waitUntilEnabled(blocks.firstMatch)\n        blocks.firstMatch.tap()\n        blocks.firstMatch.typeText(body)\n        tapWhenEnabled(app.buttons[\"any-native-editor-done\"])\n        let status = app.descendants(matching: .any)\n            .matching(identifier: \"any-native-save-status\").firstMatch\n        waitFor(NSPredicate(format: \"exists == true AND value == %@\", \"saved\"),\n                object: status, timeout: 45)\n        let blockIdentifier = blocks.firstMatch.identifier\n        XCTAssertEqual(blocks.firstMatch.value as? String, body)\n        XCTAssertEqual(blocks.count, 1)\n\n        let options = app.buttons[\"any-native-document-options\"]\n        // A Hebrew paragraph can render RTL by detection alone. First force\n        // the opposite persisted direction, then explicitly choose RTL.\n        tapWhenEnabled(options)\n        tapWhenEnabled(app.buttons[\"any-native-writing-direction-ltr\"])\n        waitFor(NSPredicate(format: \"exists == true AND value == %@\",\n                            \"העיצוב השמור: כתיבה משמאל לימין, יישור טבעי\"),\n                object: options, timeout: 45)\n        tapWhenEnabled(options)\n        tapWhenEnabled(app.buttons[\"any-native-writing-direction-rtl\"])\n        waitFor(NSPredicate(format: \"exists == true AND value == %@\",\n                            \"העיצוב השמור: כתיבה מימין לשמאל, יישור טבעי\"),\n                object: options, timeout: 45)\n        tapWhenEnabled(options)\n        tapWhenEnabled(app.buttons[\"any-native-text-alignment\"])\n        // UIKit exposes this nested menu by its visible localized title;\n        // the test app pins Hebrew. Native readback remains the assertion.\n        tapWhenEnabled(app.buttons[\"למרכז\"])\n        let savedStyle = \"העיצוב השמור: כתיבה מימין לשמאל, יישור למרכז\"\n        // This value comes only from the current native readback snapshot;\n        // choosing the menu action does not update it optimistically.\n        waitFor(NSPredicate(format: \"exists == true AND value == %@\", savedStyle),\n                object: options, timeout: 45)\n        XCTAssertEqual(app.textViews[blockIdentifier].value as? String, body)\n\n        reopenOwnedWorkspace(app, spaceName: spaceName)\n        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)\n        let reopened = app.textViews[blockIdentifier]\n        waitFor(NSPredicate(format: \"exists == true AND value == %@\", body),\n                object: reopened, timeout: 60)\n        XCTAssertEqual(blocks.count, 1)\n        // Select the actual reopened block without editing or applying a style.\n        reopened.tap()\n        tapWhenEnabled(app.buttons[\"any-native-editor-done\"])\n        waitFor(NSPredicate(format: \"exists == true AND value == %@\", savedStyle),\n                object: options, timeout: 45)\n        tapWhenEnabled(options)\n        let rtl = app.buttons[\"any-native-writing-direction-rtl\"]\n        waitUntilEnabled(rtl)\n        XCTAssertTrue(rtl.isSelected, \"The reopened native direction must be selected.\")\n        XCTAssertFalse(app.buttons[\"any-native-writing-direction-ltr\"].isSelected)\n        tapWhenEnabled(app.buttons[\"any-native-text-alignment\"])\n        let center = app.buttons[\"למרכז\"]\n        waitUntilEnabled(center)\n        XCTAssertTrue(center.isSelected, \"The reopened explicit alignment must be selected.\")\n        let natural = app.buttons[\"טבעי\"]\n        waitUntilEnabled(natural)\n        XCTAssertFalse(natural.isSelected)\n    }\n\n",
+  "methodBeforeDeclarationSHA256": "43f0a8e4f485fd3c85fbb938730453aa9b717daf681462fd9991f0b20c7e44b9",
+  "methodBeforeSHA256": "3e31f8be3dca3ef280ef938f3ec7ca1735c7049fd8c6ca35aff77d04b06026a3",
+  "methodNamesAndOrderUnchanged": true,
+  "nativeCalls": 0,
+  "originalMethodBudgetSeconds": 360,
+  "originalPass": {
+    "appLanguage": "he",
+    "appearance": "NOT_ATTESTED",
+    "archiveSHA256": "6625e363c7cd9e4c256dfc116073687228db7a0564ae6f2aed8213eca089616b",
+    "device": "iPad mini (A20 Pro)",
+    "durationSeconds": 156.65911900997162,
+    "matrixCellAccepted": false,
+    "os": "27.2",
+    "osBuild": "24B8117",
+    "osLanguage": "NOT_ATTESTED",
+    "receiptSHA256": "257f4fa40aa3c3b3375f7b479ca812fbcb98fc66e3aa6f5e9e7c9ee08dfa0500",
+    "runID": 45087682296,
+    "sourceCommit": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73"
+  },
+  "originalTestMethodCount": 18,
+  "physicalDevice": "NOT_RUN",
+  "priorFailuresRetained": [
+    {
+      "runID": 45038244641,
+      "sourcePrefix": "07c3568f"
+    },
+    {
+      "runID": 44695105165,
+      "sourcePrefix": "31ae"
+    }
+  ],
+  "productLocalization": {
+    "sha256": "1ff7f253667435032d518c5bbf9d3f41d6863ec5e989ab98b8cdc220327f6498",
+    "sourceCommit": "55541cb5042693fd760703127ffc1c678c186ccc",
+    "sourcePath": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift"
+  },
+  "referenceSourceCommit": "55541cb5042693fd760703127ffc1c678c186ccc",
+  "review": {
+    "result": "no concrete compile/actor/relaunch/localization blocker by source review",
+    "reviewer": "Wave2 editor subagent",
+    "scope": "exact Swift diff, original helpers, cold reopen, and product string source"
+  },
+  "schema": "pinkha-native-rtl-localization-source-v1",
+  "sourceAfterBytes": 202612,
+  "sourceAfterSHA256": "e32f68676df1330c0255aa7ffa93b71c16f158570250013c607084f440c54375",
+  "sourceBeforeBytes": 201173,
+  "sourceBeforeSHA256": "fdb706fc9d1c805ceb7220e4ae64a14244f7437525cf06d8d14e1b1f100de6da",
+  "sourcePath": "NativeApp/UITests/NativeLaunchTests.swift",
+  "status": "PASS_SOURCE_REVIEW_NOT_COMPILER_OR_UI_ACCEPTANCE",
+  "successfulScreenshotNames": [
+    "NATIVE_RTL_<he|en>_center_before_reopen",
+    "NATIVE_RTL_<he|en>_center_after_reopen"
+  ]
+}
