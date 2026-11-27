@@ -9,7 +9,7 @@ from pathlib import Path
 import subprocess
 
 BASE = "75a98ba98d6455eefc2c98113fa744b0f3c2e7bf"
-REVIEWED = "efad6194ccf224eed61c4e2e71d104b5b078add3"
+REVIEWED = "7e03c5b264b23e0afe3ffa5e83ecfb5cc8dc7fb4"
 RELATIVE = "Tools/OriginalEditor/Wave1/product_source_adoption.json"
 SCHEMA = "anytype.original-wave1-product-source-adoption/2"
 PRODUCTS = ("Anytype/Sources", "Anytype/Resources", "Modules",
@@ -21,6 +21,7 @@ FILES = (
     'Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthView.swift',
     'Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationView.swift',
     'Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift',
+    'Modules/Logger/Package.swift',
     'Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift',
     'Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaSpaceBootstrapEngine.swift',
     'Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift',

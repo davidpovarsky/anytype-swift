@@ -34,7 +34,7 @@ def git(root, *args):
 def read_manifest():
     value = json.loads((HERE / 'framework_profile.json').read_text())
     require(value.get('schema') == 1 and value.get('branch') == BRANCH
-            and value.get('package_pin_count') == 58, 'Unreviewed framework profile')
+            and value.get('package_pin_count') == 67, 'Unreviewed framework profile')
     require(set(value.get('reviewed_shared_dependency_objects', {})) == {
         '5333421A262E249100238121', '2A685D582B7B854200456E08', 'FA1000002F000001006805CC',
         '2E63D9B52D56520C008A733A', '538ABD4C284F9F88000D3CCC'},
@@ -283,8 +283,11 @@ def source_observation(root, environment=None):
         require(actual == expected, 'Original source/resource tree differs: ' + path)
         trees[path] = actual
     pinned = root / profile['package_resolved_path']
-    require(blob(pinned.read_bytes()) == profile['package_resolved_blob'], 'Reviewed exact 58-pin package closure differs')
-    require(len(json.loads(pinned.read_text())['pins']) == 58, 'Reviewed package pin inventory differs')
+    require(blob(pinned.read_bytes()) == profile['package_resolved_blob'], 'Reviewed exact 67-pin package closure differs')
+    require(len(json.loads(pinned.read_text())['pins']) == 67, 'Reviewed package pin inventory differs')
+    from assistant_dependency_source import observe as observe_assistant_dependencies
+    assistant_dependencies = observe_assistant_dependencies(
+        root, profile['assistant_capability_dependency_adoption'])
     before = (HERE / 'original_project.pbxproj').read_bytes()
     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
@@ -337,6 +340,7 @@ def source_observation(root, environment=None):
             'reviewed_complete_source_sha': continuation['reviewed_source_sha'],
             'original_trees': trees, 'generated_import_source': generated_source,
             'project': project, 'source_inputs': records,
+            'assistant_dependency_source': assistant_dependencies,
             'original_swift_sources': len(source_files), 'source_files': source_files,
             'framework_facade_sources': facades,
             'public_host_contract_sha256': profile['public_host_contract_sha256'],
