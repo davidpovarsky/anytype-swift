@@ -53,7 +53,7 @@ struct HanlinAssistantComponentTests {
                 summary: .init(["en": "Search the supplied host concordance catalog"]),
                 inputSchema: .decodeCanonicalJSON(schema, defaultDialect: .draft2020_12),
                 risk: .read, presentation: .init())
-            tools = [.init(route: .init(alias: alias, logicalToolID: logical, descriptorRevision: .init(1)),
+            tools = [.init(route: .init(alias: alias, logicalToolID: logical, descriptorRevision: descriptor.descriptorRevision),
                 descriptor: descriptor, writeGuarantee: .readOnly, originalInputSchemaJSON: schema)]
         }
         return .init(apiVersion: .init(major: 1, minor: 1), revision: .init(71),
