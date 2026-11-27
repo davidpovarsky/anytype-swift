@@ -1,0 +1,170 @@
+{
+  "AppleCompilation": "NOT_RUN",
+  "UIAcceptance": "NOT_RUN",
+  "argv": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/component",
+    "--scratch-path",
+    "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build",
+    "--cache-path",
+    "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/cache",
+    "--jobs",
+    "1",
+    "--no-parallel",
+    "--disable-experimental-prebuilts",
+    "-v",
+    "--filter",
+    "TorahDocumentLoadLifetimeTests"
+  ],
+  "artifacts": [
+    {
+      "bytes": 604,
+      "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/attempt1/invocation.json",
+      "sha256": "354133589106abfba1a2e22c675d6f1ce69489abe972b957890fb58f6f8c8f90"
+    },
+    {
+      "bytes": 100,
+      "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/attempt1/process.json",
+      "sha256": "4b1f7e28c9e00347f70ce85df48000bce3afee0f5518f340d9f1f99b7800de9a"
+    },
+    {
+      "bytes": 4220,
+      "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/attempt1/resource-samples.json",
+      "sha256": "3e78aa5c077941389e521e643271565c20f72cb37e5887f31507f46c7b1b75ba"
+    },
+    {
+      "bytes": 474,
+      "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/attempt1/source-inputs-after.json",
+      "sha256": "6a637422cc22f840cb1a3f227ed622765b563f4a98138225bb76bf9329388563"
+    },
+    {
+      "bytes": 474,
+      "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/attempt1/source-inputs-before.json",
+      "sha256": "6a637422cc22f840cb1a3f227ed622765b563f4a98138225bb76bf9329388563"
+    },
+    {
+      "bytes": 61852,
+      "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/attempt1/stderr.original.log",
+      "sha256": "6dd85809ecb7cdabc6f40fabc28894d699abc75a60ca834ab8da0517316458bf"
+    },
+    {
+      "bytes": 3491,
+      "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/attempt1/stdout.original.log",
+      "sha256": "1bd5482cfc960df1c319b13786ffcd12eb452238a9a1a69cff79cf4c2731e92f"
+    },
+    {
+      "bytes": 76,
+      "path": "/var/lib/pinkha-wave2-reader-document-lifetime-20261127/attempt1/toolchain.original.log",
+      "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce"
+    }
+  ],
+  "baselineReplay": "NONE_NEW_HELPER",
+  "cleanupSourceProvenance": {
+    "originalRunnerSHA256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+    "outputSHA256": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924",
+    "sourceFunctions": [
+      {
+        "characters": 436,
+        "exactOriginalASTSourceSlice": true,
+        "name": "group_members",
+        "sha256": "8fec98e73fa15e9a4223603871b17867223072f4b9430d912610d1aaab7f9cba"
+      },
+      {
+        "characters": 783,
+        "exactOriginalASTSourceSlice": true,
+        "name": "observe_owned_group",
+        "sha256": "df09ba2d632f867e4dbd902adb5a89a5c56e11dedf7c3018d875658207eebcc0"
+      },
+      {
+        "characters": 3202,
+        "exactOriginalASTSourceSlice": true,
+        "name": "drain_owned_process",
+        "sha256": "bc502d4e202391f87720b600047a28d2f61bb0a559e274a2b3a8cb2c757dd94b"
+      },
+      {
+        "characters": 740,
+        "exactOriginalASTSourceSlice": true,
+        "name": "finish_owned_process",
+        "sha256": "70bc0e7b38d1d60446d2c665cff360fbf01459e238f4a0243f7234000f797b59"
+      }
+    ]
+  },
+  "coordinationStory": "1220951397682669",
+  "declaredCases": 9,
+  "elapsedSeconds": 16.222,
+  "finishedAtUTC": "2026-11-27T11:22:35.940838+00:00",
+  "freeBytesAfter": 3551457280,
+  "fullKitCompilation": "NOT_RUN",
+  "memberListIsDiagnosticOnly": true,
+  "methods": 6,
+  "minimalPackageIsDerived": true,
+  "nativeAcceptance": "NOT_RUN",
+  "nativeServiceCalls": 0,
+  "newTestBytesAreExact": true,
+  "observedTestOutcomeLines": [
+    "\u2714 Test case passing 1 argument providerFails \u2192 false (Swift.Bool) to newerSelectionRejectsLateProviderCompletion(providerFails:) passed after 0.003 seconds.",
+    "\u2714 Test case passing 1 argument providerFails \u2192 true (Swift.Bool) to newerSelectionRejectsLateProviderCompletion(providerFails:) passed after 0.003 seconds.",
+    "\u2714 Test newerSelectionRejectsLateProviderCompletion(providerFails:) with 2 test cases passed after 0.007 seconds.",
+    "\u2714 Test case passing 1 argument disappears \u2192 false (Swift.Bool) to sameSelectionRetryOrReactivationRejectsItsPriorLifetime(disappears:) passed after 0.001 seconds.",
+    "\u2714 Test case passing 1 argument disappears \u2192 true (Swift.Bool) to sameSelectionRetryOrReactivationRejectsItsPriorLifetime(disappears:) passed after 0.001 seconds.",
+    "\u2714 Test sameSelectionRetryOrReactivationRejectsItsPriorLifetime(disappears:) with 2 test cases passed after 0.003 seconds.",
+    "\u2714 Test case passing 1 argument providerFails \u2192 false (Swift.Bool) to callerCancellationRejectsANonCooperativeProvider(providerFails:) passed after 0.001 seconds.",
+    "\u2714 Test case passing 1 argument providerFails \u2192 true (Swift.Bool) to callerCancellationRejectsANonCooperativeProvider(providerFails:) passed after 0.001 seconds.",
+    "\u2714 Test callerCancellationRejectsANonCooperativeProvider(providerFails:) with 2 test cases passed after 0.003 seconds.",
+    "\u2714 Test preCancelledCallerDoesNotDispatchAProviderRead() passed after 0.001 seconds.",
+    "\u2714 Test invalidatedOwnerCannotDispatchOrScheduleARetry() passed after 0.001 seconds.",
+    "\u2714 Test currentProviderFailureRemainsAnActualFailure() passed after 0.001 seconds.",
+    "\u2714 Test run with 6 tests in 1 suite passed after 0.017 seconds."
+  ],
+  "originalKitBase": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "ownedCleanup": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T11:22:35.935545+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 401602,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "historicalGroupReprobed": false,
+    "processGroup": 401602,
+    "status": "PASS_OWNED_GROUP_ABSENT"
+  },
+  "ownedGroupAtExit": {
+    "atUTC": "2026-11-27T11:22:35.935545+00:00",
+    "errno": 3,
+    "error": "[Errno 3] No such process",
+    "processGroup": 401602,
+    "signal": 0,
+    "status": "ABSENT_ESRCH"
+  },
+  "priorAcceptedTestsRerun": 0,
+  "processExit": 0,
+  "productionHelperBytesAreExact": true,
+  "providerIsControlledNonCooperativeFixture": true,
+  "remainingOwnedProcessGroup": [],
+  "resourceAdmission": {
+    "allowanceIsEstimate": true,
+    "atUTC": "2026-11-27T11:22:19.720273+00:00",
+    "freeBytes": 3603111936,
+    "incrementalAllowanceBytes": 268435456,
+    "jobs": 1,
+    "liveDiskFloorBytes": 2147483648,
+    "load": [
+      1.15869140625,
+      0.9130859375,
+      1.1552734375
+    ],
+    "memAvailableBytes": 4725633024,
+    "minimumAvailableMemoryBytes": 1610612736,
+    "swapFreeBytes": 188416
+  },
+  "runnerSHA256": "2e9d2fdd8fd83741719cfd6cb659fbd06786f392cbca854d6db78185da8dbe50",
+  "schema": "pinkha.wave2.reader.actual-helper-component.v1",
+  "selectedSuite": "TorahDocumentLoadLifetimeTests",
+  "shippingSourceMutationsByRunner": 0,
+  "startedAtUTC": "2026-11-27T11:22:19.719130+00:00",
+  "status": "PASS_SIX_METHODS_NINE_DECLARED_CASES_EXACT_HELPER_COMPONENT_ONLY"
+}

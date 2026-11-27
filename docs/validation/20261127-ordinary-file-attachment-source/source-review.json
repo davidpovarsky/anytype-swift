@@ -1,0 +1,53 @@
+{
+  "status": "SOURCE_REVIEW_ONLY_NOT_RUNTIME_ACCEPTANCE",
+  "reviewers": [
+    "Wave1 root",
+    "Wave1 migration (Engine/fixture author and Host delta review)",
+    "Wave1 cutover (independent Host/ack privacy review)"
+  ],
+  "originalObjectCreator": {
+    "sha256": "0273ca566d58456569eeff7d90e6e582791fcf33aa2c6b2e48c280fe53dcb723",
+    "gitBlob": "aa28d864b8fd55805e4717917779750b20514df0"
+  },
+  "findings": [
+    {
+      "boundary": "warm native acknowledgement vs stable later metadata",
+      "finding": "Originally stable GET metadata could differ from native201 without rejection.",
+      "resolution": "Require201 immutable metadata to match first GET, then verify bounded content and second GET.",
+      "runtime": "NOT_RUN"
+    },
+    {
+      "boundary": "postflight failed account or lease",
+      "finding": "Full knownReceipt error retained resolved name/MIME/rootCID/storage data.",
+      "resolution": "Error acknowledgement contains scoped reference and byteCount only; full metadata remains in original-scope retention callback or authorized success.",
+      "runtime": "NOT_RUN"
+    },
+    {
+      "boundary": "maximum filename hint",
+      "finding": "Native extension refinement can exceed the original8192-byte hint bound.",
+      "resolution": "Keep hint8192; accept safe resolvedname through16384 within the unchanged65536-byte response cap.",
+      "runtime": "NOT_RUN"
+    },
+    {
+      "boundary": "public session journal factory",
+      "finding": "OriginalObjectCreator retains client only through closures.",
+      "resolution": "Capture original client/workspace/journal in typed private factory. No new journal owner, raw accessor, native operation or external client substitution.",
+      "runtime": "NOT_RUN"
+    },
+    {
+      "boundary": "loopback fixture process ownership",
+      "finding": "PID-based kill escalation and discarded dispatch ledgers were unsuitable for retained proof.",
+      "resolution": "Owned stdinEOF/CLOEXEC; authenticate original controller session and ancestor chain, join its processgroup before listening; preserve rawdispatch/stderr/start/exit/parent receipts. Runtime controller still under review.",
+      "runtime": "NOT_RUN"
+    }
+  ],
+  "limitations": [
+    "No compiler or component tests have executed for this new adapter.",
+    "No native end-to-end or Apple/App acceptance is supplied by this checkpoint.",
+    "Unknown native Attach acknowledgement has no proven correlation key and is never automatically resent.",
+    "Cold recovery proves current stable metadata and originalcontentdigest, not unchanged201 metadata history.",
+    "Crash may leave private staging residue pending owner/system cleanup.",
+    "Full-tier cached/readback does not prove cloud custody; independent quota/status/retry contract remains.",
+    "Source resource limits and runtime ownership controller will be qualified separately."
+  ]
+}

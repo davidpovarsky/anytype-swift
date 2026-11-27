@@ -1,0 +1,1633 @@
+[
+  {
+    "path": ".github/workflows/automerge.yaml",
+    "gitBlob": "f6431cd77fbbcc9582810c11c7c10eef70972491",
+    "sha256": "3b493b9867514ff2531afeaa00e3cfd29f5d919080edcb3ed09192818ed60058",
+    "bytes": 1111,
+    "on": "pull_request_target"
+  },
+  {
+    "path": ".github/workflows/branch_build.yaml",
+    "gitBlob": "43143cf9dabffe677ff2b208169e16786da6ab95",
+    "sha256": "7f83c1c969cd177f1c7286b4f8ba05a16fd709a51ebecfd5a4bf4a1d6b1c3245",
+    "bytes": 5249,
+    "on": {
+      "workflow_dispatch": {
+        "inputs": {
+          "tf_comment": {
+            "description": "TestFlight Comment",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/cla.yml",
+    "gitBlob": "effe2846c316b350ee924fa7ff0f4af71d3985e7",
+    "sha256": "976e548a3c60142b0d949185f39b05c41960161dfbd88c1e07c66a80fc429b8a",
+    "bytes": 331,
+    "on": {
+      "issue_comment": {
+        "types": [
+          "created"
+        ]
+      },
+      "pull_request_target": {
+        "types": [
+          "opened",
+          "closed",
+          "synchronize"
+        ]
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/claude-code-review.yml",
+    "gitBlob": "20cae5ec7b3891c4e78ee6f45ad38e29d9fb1dcb",
+    "sha256": "f8ef06d82b175775663019a337d91935375d1ef94a5b9a0fcd8383bf07131804",
+    "bytes": 3315,
+    "on": {
+      "pull_request": {
+        "types": [
+          "opened",
+          "synchronize"
+        ]
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/claude.yml",
+    "gitBlob": "3e5eca101463317678bc628da1d58204ebb78d8b",
+    "sha256": "9f9e3d0ecc50006c07a827dbcc40e285077bb2ac8ff6ba041db0a6535255d6f9",
+    "bytes": 2544,
+    "on": {
+      "issue_comment": {
+        "types": [
+          "created"
+        ]
+      },
+      "pull_request_review_comment": {
+        "types": [
+          "created"
+        ]
+      },
+      "issues": {
+        "types": [
+          "opened",
+          "assigned"
+        ]
+      },
+      "pull_request_review": {
+        "types": [
+          "submitted"
+        ]
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/dev_build.yaml",
+    "gitBlob": "a0e2d4be49312c6016be75014a20c057ca4925bc",
+    "sha256": "8f4c7f5d4e4877418d5c1de28adedfe2edc47b49908e67dc8f49f18076a3663b",
+    "bytes": 5789,
+    "on": {
+      "schedule": [
+        {
+          "cron": "0 5 * * 1-5"
+        }
+      ],
+      "workflow_dispatch": ""
+    }
+  },
+  {
+    "path": ".github/workflows/generator_checks.yaml",
+    "gitBlob": "5a34d86e9f049eb7d2bb572f2e5e2ae140ebbf0b",
+    "sha256": "e0e6869eaaf10609db623d2acf1429956a942115329f35e22e21c22dad2366a4",
+    "bytes": 3082,
+    "on": {
+      "pull_request": "",
+      "workflow_dispatch": ""
+    }
+  },
+  {
+    "path": ".github/workflows/ipa.yaml",
+    "gitBlob": "ba46aca106d2f6f0d2cff4a66c659063382b5054",
+    "sha256": "78f6277a36b17bf5210ce0228bdc7c4a93a33263dc6d288fd7d022bd12fa22a4",
+    "bytes": 6719,
+    "on": {
+      "workflow_dispatch": {
+        "inputs": {
+          "build_type": {
+            "description": "App build type",
+            "required": "false",
+            "default": "release",
+            "type": "choice",
+            "options": [
+              "release",
+              "dev"
+            ]
+          }
+        }
+      },
+      "repository_dispatch": {
+        "types": [
+          "trigger-build"
+        ]
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/license-checks.yml",
+    "gitBlob": "09497d5483e8ba03a9945674c1826102e2d2af9e",
+    "sha256": "25587c37dd532e6c0ddea4d61f1b0b108bdd674f9e5b0545739f9d52adb39871",
+    "bytes": 3439,
+    "on": {
+      "pull_request": "",
+      "workflow_dispatch": ""
+    }
+  },
+  {
+    "path": ".github/workflows/link_issue_to_release.yaml",
+    "gitBlob": "0d06849b03a79b783e0be0065cc74d8327c4383b",
+    "sha256": "2d212c5c31e7d67764234086d22696d43dd94962b72a9aa6ecf6241c8e1c9690",
+    "bytes": 10681,
+    "on": {
+      "pull_request": {
+        "types": [
+          "closed"
+        ],
+        "branches": [
+          "develop",
+          "release"
+        ]
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-any-engine-port.yml",
+    "gitBlob": "95742ceae550780dd8447fa1ba7d159c6b87b2d8",
+    "sha256": "92f344e6284654eb744c3f84cd70355067e04639dfa712f3c14d7cd43787d86b",
+    "bytes": 86431,
+    "on": {
+      "push": {
+        "branches": [
+          "codex/any-engine-port-20261119"
+        ],
+        "paths": [
+          "Modules/PinkhaAnyEngine/**",
+          "Modules/PinkhaAnyIntegration/**",
+          "Modules/PinkhaAnyRuntime/**",
+          "Modules/PinkhaAnyHost/**",
+          "Modules/PinkhaAnyHanlin/**",
+          "Modules/PinkhaAnyNative/**",
+          "NativeApp/**",
+          "Modules/PinkhaAnyUI/**",
+          "Modules/PinkhaTorahPresentation/**",
+          "Anytype/Sources/Pinkha/**",
+          "AnyTypeTests/Pinkha/**",
+          "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+          "Modules/PinkhaKit/**",
+          "Tools/AnyEnginePort/**",
+          "Tools/AnyEngineValidation/**",
+          ".github/workflows/pinkha-any-engine-port.yml"
+        ]
+      },
+      "workflow_dispatch": {
+        "inputs": {
+          "validation_scope": {
+            "description": "Full, remaining acceptance, unpassed native UI, or isolated candidate operation read",
+            "type": "choice",
+            "options": [
+              "full",
+              "remaining",
+              "remaining-native-ui",
+              "remaining-native-ui-continuation",
+              "candidate-runtime-read"
+            ],
+            "default": "full"
+          },
+          "native_artifact_run_id": {
+            "description": "Original native binary producer run for unchanged-source reuse",
+            "type": "string",
+            "default": ""
+          },
+          "native_producer_commit": {
+            "description": "Exact original native producer commit",
+            "type": "string",
+            "default": ""
+          },
+          "ui_artifact_run_id": {
+            "description": "Original UIKit14 execution run for verified unchanged-source reuse",
+            "type": "string",
+            "default": ""
+          },
+          "ui_producer_commit": {
+            "description": "Exact original UIKit14 producer commit",
+            "type": "string",
+            "default": ""
+          },
+          "continuation_history": {
+            "description": "Execute the new read-only native history journey after successful continued Custom Type acceptance",
+            "type": "boolean",
+            "default": "true"
+          },
+          "focus_handoff_validation": {
+            "description": "Retain eight unaffected UIKit methods and execute ten affected focus methods before remaining native UI",
+            "type": "boolean",
+            "default": "false"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-any-native-ui-original-products.yml",
+    "gitBlob": "5c8d9f30f1024b90a5e5a7d01c3f5070186b8623",
+    "sha256": "1237ab248bba792e361ca606aa6077f8d8dff427a0b6430dc50b9e892af67a56",
+    "bytes": 20019,
+    "on": {
+      "workflow_call": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-any-native-ui-runner-continuation.yml",
+    "gitBlob": "f66cb973abb0fc6ad9d1f526e61aa36c252162ef",
+    "sha256": "be8af38cb623a2802ba490154e021c639c0199262f1d27ace2719d07b4446eb8",
+    "bytes": 4292,
+    "on": {
+      "workflow_call": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-any-native-ui-transition-candidate.yml",
+    "gitBlob": "5028543c969a3d3fbb2a8cbf17e625e4c602e3d4",
+    "sha256": "45f4d2f875042d41fc7f20d2ac6e9c04ddcd7ef915f387222c9b98e8a43f7b39",
+    "bytes": 4227,
+    "on": {
+      "workflow_call": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-authorized-operation-read-packages.yml",
+    "gitBlob": "275b223572ece83fd5fb7df5fd5d76bfbc05e475",
+    "sha256": "d8e42a53d21ad48e22e0bf1260c9af8bfc5fdaac1389a14f1bd365421e8d03c4",
+    "bytes": 1705,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "required": "true"
+          }
+        }
+      },
+      "workflow_dispatch": {
+        "inputs": {
+          "source_sha": {
+            "description": "Exact reviewed source SHA for only the 14 new read methods",
+            "type": "string",
+            "required": "true"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-coherent-heart-apple.yml",
+    "gitBlob": "3c5293c01b8f9881a0ee1200270a7ba9fdd09178",
+    "sha256": "877616dd330096125b07ed95a212b8ecad9f6d480135b5a2106a73aed9c33170",
+    "bytes": 6520,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_run_id": {
+            "description": "Exact completed framework build to continue; empty performs a new build",
+            "type": "string",
+            "required": "false",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-coherent-heart-native.yml",
+    "gitBlob": "f0f2c59aecb0a5826a6dd0801909b576127d9e70",
+    "sha256": "d74fdb56ea980ac513f2affdd207648cfa07a41922c85795bae56413abeb8a3c",
+    "bytes": 5065,
+    "on": {
+      "workflow_call": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-coherent-heart-peers.yml",
+    "gitBlob": "cec519ebeecc13d6881f73374f52f9fe86ea4fb4",
+    "sha256": "745abdfe84d108ecb164c357d42de17dec5e1bf11f639015557d5bce09f0bafa",
+    "bytes": 5828,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-coherent-original-products.yml",
+    "gitBlob": "b7fd456310b38762d4c1fe518c5a53134693ad94",
+    "sha256": "7f22a40884d7ac96136446581d319722daf3b3afba0ad8f84f0a1ad5bd48f34c",
+    "bytes": 3604,
+    "on": {
+      "workflow_dispatch": {},
+      "workflow_call": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-current-native-ui-failed.yml",
+    "gitBlob": "819df194264395c8bf18c308ed3b2030f4678001",
+    "sha256": "b7a8945abffda5dc9297820d237156487ed837b30fd122f470655f2b60183a53",
+    "bytes": 3773,
+    "on": {
+      "workflow_call": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-current-page154-mounted.yml",
+    "gitBlob": "3ce561c69916f5317b7a701d7dd72f6d4204eca1",
+    "sha256": "84fe1dfee001dc4c1d8ca63c9e1ade4fe9750607ef53dac67ed65dc1904609a6",
+    "bytes": 3369,
+    "on": {
+      "workflow_call": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-current-release-return-rtl.yml",
+    "gitBlob": "30902cb11fd1813ee448a5dfde7b9f9040bffb6c",
+    "sha256": "4b4f4927cb2655ace54f58663132d148d012ad3b1924954d37fcd5ac37376d1c",
+    "bytes": 3337,
+    "on": {
+      "workflow_call": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-fast-ci.yml",
+    "gitBlob": "d52d2ee18a963c55b240f29e54a5363fb7248e3e",
+    "sha256": "b62ffc3c8ad97623b31b60b522e771041f3a767aad0085e488685eacdfefd02b",
+    "bytes": 18432,
+    "on": {
+      "push": {
+        "branches": [
+          "pinkha/torah-associations-native-ux-persistence-localization-2026-10-20"
+        ]
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-full-acceptance.yml",
+    "gitBlob": "8e0ed6b3a09232f94c23021000a04e88637ba573",
+    "sha256": "ac606c80f06b21d020df6484654a42f23650a82c167a448b930e4b918a1c101f",
+    "bytes": 9908,
+    "on": {
+      "workflow_call": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-hanlin-journal-probe.yml",
+    "gitBlob": "a88f2a9011ff55d06e60ffaf6b918b00817bcfc0",
+    "sha256": "b4513c01b64ddf83a2742d93e3b33fc98962e34886c4618f960e86499184fa43",
+    "bytes": 1462,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "required": "true"
+          }
+        }
+      },
+      "workflow_dispatch": {
+        "inputs": {
+          "source_sha": {
+            "description": "Exact immutable reviewed source SHA",
+            "type": "string",
+            "required": "true"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-heart-authorized-read-ios.yml",
+    "gitBlob": "bc15dd399ab0ca38182bbb0cc43d91e5aa223aff",
+    "sha256": "75bdca8022e4220ea10b33a4deae6eb37606aaefd18724eeb34168c08a339f22",
+    "bytes": 2973,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "default": ""
+          },
+          "runtime_run": {
+            "type": "string",
+            "required": "true"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-heart-authorized-read-runtime.yml",
+    "gitBlob": "0f4e921dec08f729cf1ff6e676862eb6b52e9ed5",
+    "sha256": "2f963fdcb6bc3336761f61342989c55b4eae09cc437b24f3e2c69270257d4421",
+    "bytes": 3154,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-heart-dependencies.yml",
+    "gitBlob": "0445b33905fe6f42f2ce3aed98ffc6b92834136a",
+    "sha256": "c62b20d8e85d7eaa03fc4054987be3c5702b42e9c68abe5970b2fed27d68aefd",
+    "bytes": 2578,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "heart_source_run_id": {
+            "type": "string",
+            "required": "true"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-heart-runtime.yml",
+    "gitBlob": "eea7eedd6156cdd9005f567f5938a09bdb713912",
+    "sha256": "9e4446ef5efc8278cbaab71e7b1fe8ba224dcf0d6cb80c5ab4cfc7e41b95aca8",
+    "bytes": 2849,
+    "on": {
+      "workflow_call": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-ipa-only.yml",
+    "gitBlob": "46b675f865941e5dec6b9969a5ea514a357992a0",
+    "sha256": "8927bbcd88c8a7a3c464219b11c1588bde4d370d98383bc3f664786ef8baa363",
+    "bytes": 7572,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "require_full_acceptance": {
+            "description": "Require Full Acceptance success on the same SHA",
+            "type": "boolean",
+            "default": "true"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-loaded-account-arm64-compiler.yml",
+    "gitBlob": "823958381b4fd11cb785ec0714c523186e8ae50d",
+    "sha256": "d21711d98031fb8a2ef585e81bed98c9c3bb5acc3f8388d2f84046c718fd6f64",
+    "bytes": 1689,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "required": "true"
+          }
+        }
+      },
+      "workflow_dispatch": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-loaded-account-arm64-native.yml",
+    "gitBlob": "021b60b332ad2072d074088f8c74565633a1be68",
+    "sha256": "815fe86ba69428a16e9b57dec32f4248d385abade4f65b10ababfd97d1ba5771",
+    "bytes": 2157,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "required": "true"
+          }
+        },
+        "secrets": {
+          "PINKHA_NATIVE_COMPILER_URL": {
+            "required": "true"
+          },
+          "PINKHA_NATIVE_SOURCE_URL": {
+            "required": "true"
+          }
+        }
+      },
+      "workflow_dispatch": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-native-derived.yml",
+    "gitBlob": "8af5ecbdfe4503c69fa6dca252f223a6682a9421",
+    "sha256": "3d0403c6ddfbef60ce8e71240d7dff2c7e1eb78692fa924ad8eaa4dbcf74406d",
+    "bytes": 9326,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "heart_source_run_id": {
+            "type": "string",
+            "default": ""
+          },
+          "validation_scope": {
+            "type": "string",
+            "default": "all"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-native-diagnostics.yml",
+    "gitBlob": "17bc1d78ad0618646c5acf3b49fc607b7b778f46",
+    "sha256": "0e8be732729549324eabcb83865150a03b34191779d2bc07e62c59efc40ac134",
+    "bytes": 4424,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_run_id": {
+            "required": "true",
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-native-fast-ipa.yml",
+    "gitBlob": "039181f83f06e7c378b221d4056a393b8f8006e3",
+    "sha256": "6ba2671c58e823de1ddbd930da5a4c44f5033906477055e1c2440ee46a446448",
+    "bytes": 5536,
+    "on": {
+      "workflow_dispatch": "",
+      "workflow_call": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-native-ipa-fast.yml",
+    "gitBlob": "2b10b1a16194b101380129a7a604a8d894f51169",
+    "sha256": "d71ba82f190db8160e9b7431cafaacd08fa23ed3e9e2cad0c417e458f4da3598",
+    "bytes": 5745,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "heart_source_run_id": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      },
+      "workflow_dispatch": {
+        "inputs": {
+          "heart_source_run_id": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-owned-simulator-inventory-diagnostic.yml",
+    "gitBlob": "1c3b3d5864aa109851e61b6594f61aa108b9e958",
+    "sha256": "d30fe8e4011225763cab8dc72906f717dc38c85a97a4118f0eafb0754aace405",
+    "bytes": 3939,
+    "on": {
+      "workflow_dispatch": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-prepared-inline-file-apple.yml",
+    "gitBlob": "42dde9ed3d33bce7d2262b2279d6ecd2737aef6b",
+    "sha256": "b08251afb32de31ee8c2a5903c0ddb4f4587c527da45edc7a2b7f60d66331d70",
+    "bytes": 7804,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "native_artifact_run_id": {
+            "type": "string",
+            "default": ""
+          },
+          "native_producer_commit": {
+            "type": "string",
+            "default": ""
+          },
+          "native_artifact_run_attempt": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      },
+      "workflow_dispatch": {
+        "inputs": {
+          "native_artifact_run_id": {
+            "description": "Exact original producer run; leave all three fields empty for a new build",
+            "type": "string",
+            "default": ""
+          },
+          "native_producer_commit": {
+            "description": "Exact original producer source commit",
+            "type": "string",
+            "default": ""
+          },
+          "native_artifact_run_attempt": {
+            "description": "Exact original producer attempt",
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-prepared-migration-apple.yml",
+    "gitBlob": "08a7ad70215a088610856d1a91de7ac0543034b2",
+    "sha256": "67afae3001c7760905182855be82920be9ea4fce6cd4e938c268676106a693b1",
+    "bytes": 7760,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "native_artifact_run_id": {
+            "type": "string",
+            "default": ""
+          },
+          "native_producer_commit": {
+            "type": "string",
+            "default": ""
+          },
+          "native_artifact_run_attempt": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      },
+      "workflow_dispatch": {
+        "inputs": {
+          "native_artifact_run_id": {
+            "description": "Exact original producer run; leave all three fields empty for a new build",
+            "type": "string",
+            "default": ""
+          },
+          "native_producer_commit": {
+            "description": "Exact original producer source commit",
+            "type": "string",
+            "default": ""
+          },
+          "native_artifact_run_attempt": {
+            "description": "Exact original producer attempt",
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-related-read-authority.yml",
+    "gitBlob": "2d5e993bad17b1b971ce32aae65a779c9bfc6496",
+    "sha256": "ebab908f3648c34281f0eb965c80020576848260c6b4904fafcc568ae7aba0b1",
+    "bytes": 3996,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "required": "true"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-sdk06-basename-probe.yml",
+    "gitBlob": "aa09c6e4b41efb9d7036070f612a52374f8afc3e",
+    "sha256": "084142af3a6c38cf227e87a2952146931b65e63e1a47f4f8488930d06a22d5d2",
+    "bytes": 1716,
+    "on": {
+      "workflow_call": {},
+      "workflow_dispatch": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-sdk06-enumeration-probe.yml",
+    "gitBlob": "299895c81c582699e5b22690b60303abc83d9e75",
+    "sha256": "012a41cdd9737b67061a794d1489001782d3744a20b636e23b6dda9a29514a80",
+    "bytes": 1687,
+    "on": {
+      "workflow_call": {},
+      "workflow_dispatch": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-sdk06-original-native-continuation.yml",
+    "gitBlob": "978e178f1bdd3b15dafc50a018150be7e39973db",
+    "sha256": "c402856366ae1ca1fcbe74717a53d4e4fd5b95d6b99f760ba5cef23640d0821a",
+    "bytes": 5027,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "component_projection": {
+            "type": "boolean",
+            "required": "false",
+            "default": "false"
+          }
+        }
+      },
+      "workflow_dispatch": {
+        "inputs": {
+          "component_projection": {
+            "type": "boolean",
+            "required": "false",
+            "default": "false"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-sdk06-projected-components.yml",
+    "gitBlob": "491455204c62ec716b25645bc01745b2d92ec0fb",
+    "sha256": "54a2cf8b9f34df088e06b11b0946672f5d0519f3c5a6132adf291f1c8c601ba0",
+    "bytes": 4117,
+    "on": {
+      "workflow_call": {},
+      "workflow_dispatch": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-sdk06-qualified-continuation.yml",
+    "gitBlob": "ab8ef4d2909b8b9682713b10dcbd7d055570e032",
+    "sha256": "d79c9eb43ad11d494985f310b241fb9a7bed555e5f8182523f2fd5194e2f770c",
+    "bytes": 4703,
+    "on": {
+      "workflow_call": {},
+      "workflow_dispatch": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-sdk06-tagged-continuation.yml",
+    "gitBlob": "17326db66748bfd837f89ef04eb60c3377589898",
+    "sha256": "bb1d5c97f981a962f75a34b927160b7ff171f7ba23ef597180f01e6d3249cf33",
+    "bytes": 4646,
+    "on": {
+      "workflow_call": {},
+      "workflow_dispatch": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-sdk06-tests.yml",
+    "gitBlob": "4a17cacc8edca67e9a7f95b6180f708a9524da17",
+    "sha256": "7e32182ea3edd5531b9208e262cbf20be183f3fa74438ac05d2ebeff8d325377",
+    "bytes": 6134,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "runtime_profile": {
+            "description": "Explicit Heart runtime identity; no automatic fallback between variants",
+            "type": "string",
+            "default": "r14"
+          },
+          "heart_source_run_id": {
+            "description": "Successful run containing the explicitly selected verified Heart runtime",
+            "required": "true",
+            "type": "string"
+          },
+          "expected_app_branch": {
+            "description": "Reviewed isolated integration branch; producer branches are not accepted",
+            "required": "true",
+            "type": "string"
+          },
+          "profile": {
+            "description": "Explicit reviewed profile sdk06/editor/shared-editor/wave15-core/wave15-components; no arbitrary test selection",
+            "required": "false",
+            "type": "string",
+            "default": "sdk06"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-semantic-anchor-native.yml",
+    "gitBlob": "220c2ede2415a700a1661453df54c3f548f8394d",
+    "sha256": "5368370694b872ecb33c9754a71b234613fd9655c0c56e3512cc72a47ae7aa29",
+    "bytes": 5494,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-semantic-page-apple-consumer.yml",
+    "gitBlob": "465d50f4b136e2ecb1ffc0c233b809492f440af1",
+    "sha256": "adb9a45eff69664bbb97a511fc88923b3067da6296a27aeb0681cb8bd6443b21",
+    "bytes": 1999,
+    "on": {
+      "workflow_dispatch": {},
+      "workflow_call": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-semantic-page-apple-mounted.yml",
+    "gitBlob": "ab7f4e609b12bdd90da29502c15fa85c32a68efa",
+    "sha256": "f57059d980542845ca44e4019064550147186e48a78196b61390c9e10b1f6b42",
+    "bytes": 2326,
+    "on": {
+      "workflow_dispatch": {},
+      "workflow_call": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-semantic-page-apple-runtime.yml",
+    "gitBlob": "63c389c0516a34b169e8fd55e0c6471cb14c454b",
+    "sha256": "ca28404ac1a5a5fca7edbc0eafabfacd4ccc9fbdf710842bfc049b141e2ec4f6",
+    "bytes": 2682,
+    "on": {
+      "workflow_call": {},
+      "workflow_dispatch": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-semantic-page-startup-warning.yml",
+    "gitBlob": "24a9f4ce206ac1316b00f09a5849fe52422493b2",
+    "sha256": "035b3fb1ca27fff1efba846dabe38aaf0757547d6a0a4be0f8ebb84f1cbe823f",
+    "bytes": 2375,
+    "on": {
+      "workflow_dispatch": {},
+      "workflow_call": {}
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-simulator-ui27.yml",
+    "gitBlob": "329529ab61626f6eb088bfb2fe15747bd617c261",
+    "sha256": "b731b3eb700ace7fd0c13e2a35622c99314f156b6c36e1e11168e34b60e3d97a",
+    "bytes": 14542,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "ui_scope": {
+            "type": "string",
+            "default": "FULL_SMOKE"
+          },
+          "runtime_profile": {
+            "description": "Explicit Heart runtime identity; no automatic fallback between variants",
+            "type": "string",
+            "default": "r14"
+          },
+          "heart_source_run_id": {
+            "type": "string",
+            "required": "true"
+          },
+          "acceptance_lane": {
+            "description": "Existing lane, SDK06, or reviewed Release and coherent T5 preset",
+            "type": "string",
+            "default": ""
+          },
+          "acceptance_device": {
+            "type": "string",
+            "default": "ipad"
+          },
+          "acceptance_language": {
+            "type": "string",
+            "default": "en"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t2-account-lifecycle.yml",
+    "gitBlob": "114726702a8fe06488aee6a4c50a39f95d0e6181",
+    "sha256": "23bd6e3a2aee116ca15137af594f5e0e68058b6bcc1a90ebb610fcc90707e917",
+    "bytes": 4671,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t2-account-rpc.yml",
+    "gitBlob": "7fc3e80ac4890313975099a27925cc2f860deb84",
+    "sha256": "8151a47204288fe5445b2f17f19d015d30ae343499f7cbf83b1e5b5da0bf64b5",
+    "bytes": 5266,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t2-native-clients.yml",
+    "gitBlob": "77748bd290add1632786fdcc6a17f22c3c571401",
+    "sha256": "21610d7f45683d7c5ae62502816df90c79b152c17a363cb1d17c5b7a3b491b25",
+    "bytes": 8860,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "default": ""
+          },
+          "scenario": {
+            "type": "string",
+            "default": "bootstrap"
+          },
+          "crash_after_commit": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "observed_remove_after_reopen": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "concurrent_replace_after_reopen": {
+            "type": "boolean",
+            "default": "false"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t2-native-operations.yml",
+    "gitBlob": "c20ffdf200af318a6a6c23aa9ee526826aa50847",
+    "sha256": "469c5e659df2c05c9a0aabdeb21aa6f9b0293cca9573cdc907c20c51cde03598",
+    "bytes": 5996,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t2-native-rpc.yml",
+    "gitBlob": "a408826ca49af661eb6ce5013b180f2df4ae5109",
+    "sha256": "fde74e2996045832c95f0f4ba18ebee5b1b66af6aece6ab4de9bdc2733b68a61",
+    "bytes": 5700,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "default": ""
+          },
+          "rpc_profile": {
+            "type": "string",
+            "default": "retained-v1"
+          },
+          "native_stage": {
+            "type": "string",
+            "default": "test"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t2-rpc-lifecycle-races.yml",
+    "gitBlob": "e04873303bbe7111feaed31a879b89d675f0f216",
+    "sha256": "4f0190779b892c2e1c030cf0b61c8ee9c42ddc1efeafd4a375c196f90b89ef77",
+    "bytes": 5764,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t2-rpc-space-close.yml",
+    "gitBlob": "32d3acd425644047ac4e5e37d25b1f7e334baac4",
+    "sha256": "46a595cb97d8fe6a1e032cace5233319353449add236c05259695c468fe320d1",
+    "bytes": 8447,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "default": ""
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t5-account-pairs.yml",
+    "gitBlob": "9bbb3b52b2cff975d3a24fd20dfdbbe32a7f1f41",
+    "sha256": "f1b8a8667990d16ae1b8c73fe607b973903c7011e64a9109d4021582354eb76e",
+    "bytes": 4048,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "include_freshness": {
+            "description": "Run a fifth process with native index mutations after the compatibility sequence",
+            "type": "boolean",
+            "default": "false"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t5-apple-pair.yml",
+    "gitBlob": "2d8765b1e09c5586ca0b8a26f66deda15d94216e",
+    "sha256": "6589fca110ca6d3f51551eb4a1fb52929a3b1a9c607982dbca29af5e36b65e6c",
+    "bytes": 7140,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "include_native_ui": {
+            "description": "After five passing native phases reuse the retained r15 App for real Inspector UI on a separate fresh iPad",
+            "type": "boolean",
+            "default": "false"
+          },
+          "include_freshness": {
+            "description": "After four passing compatibility phases run bounded host freshness in a fifth process",
+            "type": "boolean",
+            "default": "false"
+          },
+          "heart_r14_run_id": {
+            "type": "string",
+            "required": "true"
+          },
+          "heart_r15_run_id": {
+            "type": "string",
+            "required": "true"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t5-attachment-runtime.yml",
+    "gitBlob": "195aa609aed159bf7dd847cfe6e924ebf039a773",
+    "sha256": "7a8d131cc307925def9d07cf444c07ef93fd4d788685b39846e9ec8993bad617",
+    "bytes": 3815,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "variant": {
+            "type": "string",
+            "default": "r15-attachment-v1",
+            "description": "Explicit corrected variant; original r14 and r15 are never relabeled."
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t5-compatibility-pairs.yml",
+    "gitBlob": "5a0532e4a08eb15ccb4344bbbb6a512bc5b79c1f",
+    "sha256": "63aa8906c2500b9565dec9414764deaa79f4eb31cb5f45afcd42bfeb974b9a98",
+    "bytes": 3576,
+    "on": {
+      "workflow_call": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t5-corrected-ui.yml",
+    "gitBlob": "9eaa7a134b21458951dc1e7f46b286a3f8c9217c",
+    "sha256": "a10b6946776d423d500f95330510a2c87f3ab2ddbff1ec009d7e95710e4f2cdf",
+    "bytes": 5870,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "heart_source_run_id": {
+            "type": "string",
+            "required": "true"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t5-coverage-proof.yml",
+    "gitBlob": "29dc84e0347a4f3533e0d111f3f66b64d86ef263",
+    "sha256": "48c9780a78c199c1eed095ef533e3a032f5dddff02a3fcb67912d26fc740194e",
+    "bytes": 3040,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "component": {
+            "type": "string",
+            "default": "native-index"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t5-native-attachment.yml",
+    "gitBlob": "03b3d9ac4b7329d53b05756043c197c15a714108",
+    "sha256": "27d0fce19120bb711b2941af2cb8a4d512f7e77dc54ad612929de467932f5834",
+    "bytes": 3997,
+    "on": {
+      "workflow_call": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t5-native-pagination.yml",
+    "gitBlob": "49c447fc316f81f87a0fba2bc968cd1c1dbb03d0",
+    "sha256": "2b86714c87e3aac3a109cb103f14961b264ea7148e87df0c31afb8099e4978e2",
+    "bytes": 8802,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "heart_r15_run_id": {
+            "type": "string",
+            "required": "true"
+          },
+          "include_account_retry": {
+            "type": "boolean",
+            "default": "false"
+          },
+          "pending_account_retry_only": {
+            "type": "boolean",
+            "default": "false"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t5-r05-alias.yml",
+    "gitBlob": "657c4dd18b7fb28d81e94ea6a75557d57e3608b1",
+    "sha256": "7cf9f4dd98dd06342615129ef19222b51831ea485fe988eb85b3426f9a9a0a16",
+    "bytes": 1433,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "source_sha": {
+            "type": "string",
+            "required": "true"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t5-r15-runtime.yml",
+    "gitBlob": "2141488688297c66e2c5c52842caed0baa3dc411",
+    "sha256": "b32cb247bea87341a49057f008c60e84a667103a9bfc8d5f8ce54adf7d01609a",
+    "bytes": 3407,
+    "on": {
+      "workflow_call": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-t5-signed-revocation.yml",
+    "gitBlob": "30627bd43b3b9cc2d5ce46ea2487aa2854bada5d",
+    "sha256": "c8b04698c10ed28bcda692eec93675ddd789daac6dad2512d20c079597457377",
+    "bytes": 5538,
+    "on": {
+      "workflow_call": {
+        "inputs": {
+          "runtime_profile": {
+            "description": "Exact native runtime variant; method selection is fixed",
+            "type": "string",
+            "required": "false",
+            "default": "r15-attachment-v1"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-tests.yaml",
+    "gitBlob": "bca318a63250ef9c969aabac592acc318501ff40",
+    "sha256": "b6c01fb97a82dc61868aa1de91e453fe674638aa553b7b1e7e8b8f9f579083af",
+    "bytes": 2031,
+    "on": {
+      "push": {
+        "branches": [
+          "pinkha/*"
+        ],
+        "paths": [
+          "Modules/PinkhaKit/**",
+          "Anytype/Sources/Pinkha/**",
+          ".github/workflows/pinkha-tests.yaml"
+        ]
+      },
+      "pull_request": {
+        "paths": [
+          "Modules/PinkhaKit/**",
+          "Anytype/Sources/Pinkha/**",
+          ".github/workflows/pinkha-tests.yaml"
+        ]
+      },
+      "workflow_dispatch": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-ui27-release-gate.yml",
+    "gitBlob": "3191a652743f75529a0656c8fd833fad6d3f0836",
+    "sha256": "43e215659eab883a6d2707b314d2a45c91e985e0f94f88553c188d48be9848a7",
+    "bytes": 947,
+    "on": {
+      "workflow_call": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha-validation.yml",
+    "gitBlob": "3e3e0e2cf2166f1b3bff7436df32a930371cb9aa",
+    "sha256": "a59709a06fca470eef8e238f42719b674a0b4ac7abb937005376359020d58722",
+    "bytes": 5546,
+    "on": {
+      "workflow_dispatch": {
+        "inputs": {
+          "build_type": {
+            "description": "Build type",
+            "required": "false",
+            "default": "release",
+            "type": "choice",
+            "options": [
+              "release",
+              "dev"
+            ]
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha_t2l_native_probe.yml",
+    "gitBlob": "7ee1cddd62079f391b974544bee14bf4c4194c79",
+    "sha256": "36891612f99f98ba50ec54f8c91cc95a9f1ae9b5688072559e86c6e5c0225231",
+    "bytes": 10233,
+    "on": {
+      "push": {
+        "branches": [
+          "pinkha/torah-functional-ui-single-device-2026-10-18"
+        ],
+        "paths": [
+          "Anytype/Sources/Pinkha/Torah/Storage/**",
+          "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift",
+          "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift",
+          "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahCanonicalAssociations.swift",
+          "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/**",
+          "AnyTypeTests/Pinkha/TorahAssociationNativeMiddlewareProbeTests.swift",
+          "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift"
+        ]
+      },
+      "workflow_dispatch": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pinkha_u10_native_tests.yml",
+    "gitBlob": "401bf536703c6d44daab1c0ca9f70a1f69aa23de",
+    "sha256": "5c3d9d8963b3e5a1758cfa651cc7de33ee9368fc324430abf64d15cc1719983c",
+    "bytes": 20705,
+    "on": {
+      "push": {
+        "branches": [
+          "pinkha/upstream-u10-validation-2026-10-18"
+        ],
+        "paths-ignore": [
+          "docs/pinkha/torah-integration/UPSTREAM_U10_VALIDATION_2026-10-18.md"
+        ]
+      },
+      "workflow_dispatch": ""
+    }
+  },
+  {
+    "path": ".github/workflows/pr_tests.yml",
+    "gitBlob": "8178cefd864f3d97d38f6ddd34d447705ea3ba75",
+    "sha256": "723c88abe7f247bfeed2c2836abae1749585b23e996697afdd4b79664e4ee295",
+    "bytes": 5118,
+    "on": {
+      "pull_request": "",
+      "workflow_dispatch": ""
+    }
+  },
+  {
+    "path": ".github/workflows/release_build.yaml",
+    "gitBlob": "1ac147ff05ccf2340f7c764e8345b58fd3003def",
+    "sha256": "9da594cf2a2636a6f6e77d84a4b76b091b39160db4b46db445b08bde1d3e056c",
+    "bytes": 6197,
+    "on": {
+      "workflow_dispatch": ""
+    }
+  },
+  {
+    "path": ".github/workflows/test_fastlane_build.yaml",
+    "gitBlob": "27f744e5cab1e0637278efd8bfeb778306841ac2",
+    "sha256": "f7d2f094ee2bb755047a9e4332c4b75cf1854d31db1e0c86a12acedf302eb9d3",
+    "bytes": 4739,
+    "on": {
+      "workflow_dispatch": ""
+    }
+  },
+  {
+    "path": ".github/workflows/torah-inspector-ipados27.yml",
+    "gitBlob": "5d89439a34f4284b7cceccb780f70ef63587d7a7",
+    "sha256": "b08e6d697a2a799573e6bf88b335b667f5ac8ae229273a27ea4f28eff07973c6",
+    "bytes": 49408,
+    "on": {
+      "workflow_dispatch": {
+        "inputs": {
+          "route": {
+            "description": "Stage 1 route to run",
+            "type": "choice",
+            "required": "true",
+            "options": [
+              "full-acceptance",
+              "ipa-only",
+              "native-derived",
+              "native-ipa-fast",
+              "native-ipa-repair",
+              "native-diagnostics",
+              "t5-coverage-proof",
+              "t5-r05-alias",
+              "related-read-authority-packages",
+              "t2-native-operations",
+              "t2-authorized-read-packages",
+              "t2-native-rpc",
+              "t2-authorized-operation-read",
+              "t2-authorized-read-account",
+              "t2-authorized-read-apple-runtime",
+              "t2-authorized-read-ios",
+              "t2-account-rpc",
+              "t2-native-clients",
+              "t2-native-clients-offline",
+              "t2-native-clients-crash",
+              "t2-native-clients-observed-remove",
+              "t2-native-clients-concurrent-replace",
+              "t2-account-lifecycle",
+              "t2-rpc-lifecycle-races",
+              "t2-rpc-space-close",
+              "simulator-ui27",
+              "heart-runtime",
+              "heart-dependency-resolution",
+              "t5-r15-runtime",
+              "t5-r15-attachment-runtime",
+              "t5-apple-pairs",
+              "t5-apple-ui",
+              "t5-corrected-ui",
+              "t5-signed-revocation",
+              "t5-current-read-proof",
+              "coherent-heart-native",
+              "coherent-heart-apple",
+              "coherent-heart-peers",
+              "independent-member-acl",
+              "semantic-anchor-native",
+              "semantic-page-apple-runtime",
+              "semantic-page-apple-consumer",
+              "semantic-page-apple-mounted",
+              "semantic-page-startup-warning",
+              "sdk06-projected-components",
+              "coherent-original-products",
+              "current-release-return-rtl",
+              "current-release-return-retained",
+              "native-ui-original-products",
+              "native-ui-transition-candidate",
+              "native-ui-runner-continuation",
+              "current-native-ui-failed",
+              "current-native-ui-retained",
+              "loaded-account-arm64-compiler",
+              "loaded-account-arm64-native",
+              "native-tree-inventory-arm64",
+              "native-whole-source-arm64",
+              "native-source-file-peers-arm64",
+              "current-page154-mounted",
+              "current-page154-retained",
+              "owned-simulator-inventory-diagnostic",
+              "prepared-migration-apple",
+              "prepared-inline-file-apple",
+              "sdk06-enumeration-probe",
+              "sdk06-basename-probe",
+              "sdk06-tagged-continuation",
+              "sdk06-original-native-continuation",
+              "t5-native-pagination",
+              "t5-native-account-retry",
+              "t5-native-attachment",
+              "sdk06-tests",
+              "hanlin-journal-probe",
+              "editor-host-tests",
+              "wave15-core-tests",
+              "wave15-component-tests",
+              "wave15-acceptance"
+            ]
+          },
+          "t5_component": {
+            "description": "Bounded T5 component; index-freshness also selects the fifth Apple phase",
+            "type": "choice",
+            "options": [
+              "native-index",
+              "projection-cache",
+              "native-rpc",
+              "compatibility-pairs",
+              "account-pairs",
+              "index-freshness"
+            ],
+            "default": "native-index"
+          },
+          "ui_scope": {
+            "description": "UI27 focused diagnostic selection; no release or full matrix acceptance",
+            "type": "choice",
+            "options": [
+              "FULL_SMOKE",
+              "STARTUP_IPAD_DIAGNOSTIC",
+              "NATIVE_CANCELLATION_DIAGNOSTIC"
+            ],
+            "default": "FULL_SMOKE"
+          },
+          "acceptance_lane": {
+            "description": "Existing lane, six Release lanes, or the three remaining retained-Heart lanes",
+            "type": "choice",
+            "options": [
+              "inspector",
+              "inspector-search",
+              "quote-drop",
+              "properties",
+              "properties-set",
+              "editor",
+              "canonical-properties",
+              "hanlin-native",
+              "hanlin-native-text-ack",
+              "hanlin-native-shared-editor",
+              "hanlin-selection",
+              "remaining-release",
+              "retained-heart-release",
+              "coherent-heart-release"
+            ],
+            "default": "inspector"
+          },
+          "acceptance_device": {
+            "description": "Disposable OS27 device family",
+            "type": "choice",
+            "options": [
+              "ipad",
+              "iphone"
+            ],
+            "default": "ipad"
+          },
+          "acceptance_language": {
+            "description": "Actual app language; current non-editor methods require en",
+            "type": "choice",
+            "options": [
+              "en",
+              "he"
+            ],
+            "default": "en"
+          },
+          "runtime_profile": {
+            "description": "Exact retained Heart runtime; corrected runtime must use its own producer run",
+            "type": "choice",
+            "options": [
+              "r14",
+              "r15-attachment-v1",
+              "r15-attachment-authorized-current-read-v1"
+            ],
+            "default": "r14"
+          },
+          "source_run_id": {
+            "description": "Verified Heart runtime run, or native evidence source for diagnostics",
+            "type": "string",
+            "default": ""
+          },
+          "prepared_native_producer_commit": {
+            "description": "Exact original prepared migration producer commit when reusing source_run_id",
+            "type": "string",
+            "default": ""
+          },
+          "prepared_native_artifact_run_attempt": {
+            "description": "Exact original prepared migration producer attempt when reusing source_run_id",
+            "type": "string",
+            "default": ""
+          },
+          "t5_r15_run_id": {
+            "description": "Original successful r15 runtime build for same-source Apple pairing",
+            "type": "string",
+            "default": ""
+          },
+          "native_test_scope": {
+            "description": "Native acceptance scope (failed-ui reuses the accepted app)",
+            "type": "choice",
+            "options": [
+              "all",
+              "failed-ui",
+              "readonly-startup",
+              "t5-wave1"
+            ],
+            "default": "all"
+          },
+          "require_full_acceptance": {
+            "description": "Require Full Acceptance success before IPA packaging",
+            "type": "boolean",
+            "default": "true"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/update_cache.yaml",
+    "gitBlob": "b25478e44b73d3b56760d497cf5539e939b7515f",
+    "sha256": "3b6fa3d3e30404757c1c5313b0c207d6cd4b2024cd9650775cec6019149bb91b",
+    "bytes": 4467,
+    "on": {
+      "schedule": [
+        {
+          "cron": "0 5 * * 6"
+        }
+      ],
+      "workflow_dispatch": ""
+    }
+  },
+  {
+    "path": ".github/workflows/update_middleware.yaml",
+    "gitBlob": "0e34a806c829c0279ab1c6ae850ddfcbcd3e5bed",
+    "sha256": "304ce59242b7d9ced368d819844cfde8d2d445a90a4b2394e6cd33880c04162e",
+    "bytes": 14733,
+    "on": {
+      "workflow_dispatch": {
+        "inputs": {
+          "middle_version": {
+            "description": "Middleware version",
+            "required": "true",
+            "type": "string"
+          },
+          "task_name": {
+            "description": "Task name (e.g. IOS-123)",
+            "required": "false",
+            "type": "string"
+          }
+        }
+      },
+      "workflow_call": {
+        "inputs": {
+          "middle_version": {
+            "required": "true",
+            "type": "string"
+          },
+          "task_name": {
+            "required": "false",
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  {
+    "path": ".github/workflows/update_middleware_nightly.yaml",
+    "gitBlob": "c90696be1928137d450b6b4b3078b40ec25bcb4e",
+    "sha256": "337fed366abd49474791b28375aa920d2fa1ffda515f9640bad6e3bba9532807",
+    "bytes": 2276,
+    "on": {
+      "workflow_dispatch": "",
+      "schedule": [
+        {
+          "cron": "0 3 * * 1-5"
+        }
+      ]
+    }
+  }
+]

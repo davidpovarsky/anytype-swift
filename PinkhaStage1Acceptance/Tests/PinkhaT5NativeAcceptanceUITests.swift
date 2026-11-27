@@ -353,17 +353,18 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
             format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@ OR (elementType == %d AND (label == %@ OR label == %@))",
             "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton", XCUIElement.ElementType.button.rawValue, "More", "x24/More")
         let ready = app.descendants(matching: .any).matching(home).firstMatch
+        let warningTitle = appLanguage == "he" ? "אזהרה" : "Warning"
         let warningPredicate = NSPredicate(format: "elementType == %d AND label == %@",
-            XCUIElement.ElementType.alert.rawValue, "Warning")
+            XCUIElement.ElementType.alert.rawValue, warningTitle)
         let startup = app.descendants(matching: .any).matching(NSCompoundPredicate(
             orPredicateWithSubpredicates: [home, warningPredicate])).firstMatch
         try require(startup.waitForExistence(timeout: remaining()), "Native Home did not become ready")
-        let warnings = app.alerts.matching(NSPredicate(format: "label == %@", "Warning"))
+        let warnings = app.alerts.matching(NSPredicate(format: "label == %@", warningTitle))
         if warnings.firstMatch.exists {
             try acceptOriginalDisposableAccountWarning(warnings, deadline: deadline)
         }
         try require(ready.waitForExistence(timeout: remaining()), "Native Home did not become ready")
-        try require(!warnings.firstMatch.exists, "Native startup warning remained or returned")
+        try require(!warnings.firstMatch.exists && app.alerts.count == 0, "Native startup warning remained or returned")
     }
     private func acceptOriginalDisposableAccountWarning(_ warnings: XCUIElementQuery, deadline: TimeInterval) throws {
         // Use the original visible action only for this controller-bound disposable
@@ -375,10 +376,14 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
             && fixture.runID == environment["PINKHA_T5_UI_RUN_ID"], "Disposable warning fixture source/run differs")
         let warning = warnings.firstMatch
         try require(warnings.count == 1 && app.alerts.count == 1, "Native startup warning is not unique")
-        let text = "You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken."
+        let text = appLanguage == "he"
+            ? "הפעלת את האפליקציה עם תווכה (middleware) לא יציבה. אל תשתמש בכספת הייצור שלך. הכספת עלולה להיפגם."
+            : "You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken."
+        let continueTitle = appLanguage == "he" ? "המשך עם הכספת הנוכחית" : "Continue with current vault"
+        let logoutTitle = appLanguage == "he" ? "התנתק מהכספת הנוכחית" : "Logout from current vault"
         let messages = warning.staticTexts.matching(NSPredicate(format: "label == %@", text))
-        let proceed = warning.buttons.matching(NSPredicate(format: "label == %@", "Continue with current vault"))
-        let logout = warning.buttons.matching(NSPredicate(format: "label == %@", "Logout from current vault"))
+        let proceed = warning.buttons.matching(NSPredicate(format: "label == %@", continueTitle))
+        let logout = warning.buttons.matching(NSPredicate(format: "label == %@", logoutTitle))
         try require(messages.count == 1 && messages.firstMatch.exists, "Native startup warning message differs")
         try require(warning.buttons.count == 2 && proceed.count == 1 && logout.count == 1,
                     "Native startup warning actions differ")

@@ -1,0 +1,103 @@
+{
+  "actualMethodOutcomeLines": [
+    "\u2714 Test case passing 1 argument providerFails \u2192 false (Swift.Bool) to newerSelectionRejectsLateProviderCompletion(providerFails:) passed after 0.003 seconds.",
+    "\u2714 Test case passing 1 argument providerFails \u2192 true (Swift.Bool) to newerSelectionRejectsLateProviderCompletion(providerFails:) passed after 0.003 seconds.",
+    "\u2714 Test newerSelectionRejectsLateProviderCompletion(providerFails:) with 2 test cases passed after 0.007 seconds.",
+    "\u2714 Test case passing 1 argument disappears \u2192 false (Swift.Bool) to sameSelectionRetryOrReactivationRejectsItsPriorLifetime(disappears:) passed after 0.001 seconds.",
+    "\u2714 Test case passing 1 argument disappears \u2192 true (Swift.Bool) to sameSelectionRetryOrReactivationRejectsItsPriorLifetime(disappears:) passed after 0.001 seconds.",
+    "\u2714 Test sameSelectionRetryOrReactivationRejectsItsPriorLifetime(disappears:) with 2 test cases passed after 0.003 seconds.",
+    "\u2714 Test case passing 1 argument providerFails \u2192 false (Swift.Bool) to callerCancellationRejectsANonCooperativeProvider(providerFails:) passed after 0.001 seconds.",
+    "\u2714 Test case passing 1 argument providerFails \u2192 true (Swift.Bool) to callerCancellationRejectsANonCooperativeProvider(providerFails:) passed after 0.001 seconds.",
+    "\u2714 Test callerCancellationRejectsANonCooperativeProvider(providerFails:) with 2 test cases passed after 0.003 seconds.",
+    "\u2714 Test preCancelledCallerDoesNotDispatchAProviderRead() passed after 0.001 seconds.",
+    "\u2714 Test invalidatedOwnerCannotDispatchOrScheduleARetry() passed after 0.001 seconds.",
+    "\u2714 Test currentProviderFailureRemainsAnActualFailure() passed after 0.001 seconds.",
+    "\u2714 Test run with 6 tests in 1 suite passed after 0.017 seconds."
+  ],
+  "historicalProcessReprobed": false,
+  "originalBytesVerified": [
+    {
+      "bytes": 7318,
+      "path": "kit-26beca-independent-review/component-originals/receipt.json",
+      "sha256": "bdc048352dde0e89ff922ca97fc0ab37af21cce4610d16b707bcea813c86156c"
+    },
+    {
+      "bytes": 604,
+      "path": "kit-26beca-independent-review/component-originals/invocation.json",
+      "sha256": "354133589106abfba1a2e22c675d6f1ce69489abe972b957890fb58f6f8c8f90"
+    },
+    {
+      "bytes": 100,
+      "path": "kit-26beca-independent-review/component-originals/process.json",
+      "sha256": "4b1f7e28c9e00347f70ce85df48000bce3afee0f5518f340d9f1f99b7800de9a"
+    },
+    {
+      "bytes": 4220,
+      "path": "kit-26beca-independent-review/component-originals/resource-samples.json",
+      "sha256": "3e78aa5c077941389e521e643271565c20f72cb37e5887f31507f46c7b1b75ba"
+    },
+    {
+      "bytes": 474,
+      "path": "kit-26beca-independent-review/component-originals/source-inputs-after.json",
+      "sha256": "6a637422cc22f840cb1a3f227ed622765b563f4a98138225bb76bf9329388563"
+    },
+    {
+      "bytes": 474,
+      "path": "kit-26beca-independent-review/component-originals/source-inputs-before.json",
+      "sha256": "6a637422cc22f840cb1a3f227ed622765b563f4a98138225bb76bf9329388563"
+    },
+    {
+      "bytes": 61852,
+      "path": "kit-26beca-independent-review/component-originals/stderr.original.log",
+      "sha256": "6dd85809ecb7cdabc6f40fabc28894d699abc75a60ca834ab8da0517316458bf"
+    },
+    {
+      "bytes": 3491,
+      "path": "kit-26beca-independent-review/component-originals/stdout.original.log",
+      "sha256": "1bd5482cfc960df1c319b13786ffcd12eb452238a9a1a69cff79cf4c2731e92f"
+    },
+    {
+      "bytes": 76,
+      "path": "kit-26beca-independent-review/component-originals/toolchain.original.log",
+      "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce"
+    }
+  ],
+  "ownedClosure": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T11:22:35.935545+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 401602,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "historicalGroupReprobed": false,
+    "processGroup": 401602,
+    "status": "PASS_OWNED_GROUP_ABSENT"
+  },
+  "processExit": 0,
+  "receipt": {
+    "bytes": 7318,
+    "path": "kit-26beca-independent-review/component-originals/receipt.json",
+    "sha256": "bdc048352dde0e89ff922ca97fc0ab37af21cce4610d16b707bcea813c86156c"
+  },
+  "schema": "pinkha-root-original-kit-component-review/v1",
+  "scope": "Exact Foundation helper and original six methods/nine cases only; no SwiftUI caller, complete Kit, App, Native or Apple acceptance",
+  "sourceInputs": {
+    "Package.swift": {
+      "bytes": 510,
+      "sha256": "3e0ee022676138e3fb2eb1f5a9bfcb7d425ca01c5820a34c65d0fdaa0d56efd9"
+    },
+    "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift": {
+      "bytes": 1858,
+      "sha256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7"
+    },
+    "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift": {
+      "bytes": 6211,
+      "sha256": "ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c"
+    }
+  },
+  "sourceInputsBeforeAfterEqual": true,
+  "status": "PASS_ORIGINAL_SCOPED_COMPONENT_RECEIPT_QUALIFIED",
+  "testsRerun": 0
+}

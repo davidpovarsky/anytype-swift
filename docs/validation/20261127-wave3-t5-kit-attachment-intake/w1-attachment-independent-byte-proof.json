@@ -1,0 +1,260 @@
+{
+  "commit": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+  "declarationsOnly": [
+    {
+      "count": 6,
+      "executed": false,
+      "methods": [
+        "testPublicFingerprintBuildsAnIntentWithoutWholeFileLoadingAndChangedSelectionIsRefused",
+        "testSpecificationIncludesEmptyInlineFilesAndRejectsUnsafeOrUnboundedInputs",
+        "testNativeReceiptPreservesResolvedMetadataAndKeepsInlineCustodyDistinct",
+        "testReceiptRejectsForeignIdentityVariantsAndMalformedStorage",
+        "testVerifiedStagingStreamsSeveralChunksAndCleansOnlyItsOwnPrivateCopy",
+        "testSourceSymlinkWrongDigestReplacementAndChangedCopyCannotBeDispatched"
+      ],
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeFileUploadTests.swift",
+      "sourceSHA256": "22da3355e5d03cdc82be1ef3d472910603e6b4ad8ef7c37813f30888aad9a462"
+    },
+    {
+      "count": 11,
+      "executed": false,
+      "methods": [
+        "testEmptyAndStreamedAttachmentsHaveOneApprovalAndRetainNativeMetadataBeforePostflight",
+        "testForeignAccountWrongDigestAndChangedSourceAreRefusedBeforeApprovalOrPost",
+        "testFailedOneShotCallbackPreservesUncertaintyWithoutSendingTheBody",
+        "testKnownReceiptPrecedesRevokedScopeAndAccountPostflight",
+        "testFailedReceiptJournalAndCancellationAfterAcknowledgementKeepKnownIdentity",
+        "testMalformedAcknowledgementsAndNativeErrorsNeverBecomeReceiptsOrAutomaticRetries",
+        "testResponseCeilingIncludesExactChunkedBoundaryAndRefusesBothOversizeForms",
+        "testRedirectCannotForwardThePrivateBodyOrConsumeAnotherDispatch",
+        "testCancellationAfterBodyDispatchKeepsUnknownOutcomeAndDoesNotResend",
+        "testLostAcknowledgementAfterCompleteBodyDoesNotReplayTheUpload",
+        "testKnownFileInfoRequiresCurrentScopeAndExactObjectWithoutWriting"
+      ],
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeFileUploadHTTPTests.swift",
+      "sourceSHA256": "14d27f18c4f81b812a2817f6c3943d0e4a9c0e8ef06e373427002449f64b59cb"
+    },
+    {
+      "count": 13,
+      "executed": false,
+      "methods": [
+        "testUnknownAcknowledgementSurvivesNewCreatorWithoutSecondDispatch",
+        "testKnownReceiptPersistsBeforeLifetimeFailureAndResumesWithReads",
+        "testDigestMismatchRetainsOriginalIDWithoutVerificationOrResend",
+        "testConcurrentCallsConsumeOneApprovalAndOneNativePOST",
+        "testRevocationWhileUploadIsInFlightPreservesOriginalReceiptWithoutDelivery",
+        "testFailedReceiptJournalReportsKnownIDAndNeverCreatesReplacement",
+        "testCancelledCallerRetainsLateKnownReceiptAndCannotReceiveSuccess",
+        "testDeniedMutationApprovalSendsNothingAndRetainsConservativeReservation",
+        "testNativeRejectionIsTypedButDoesNotClearReservation",
+        "testReadbackMetadataDriftDoesNotVerifyEvenWithMatchingContent",
+        "testStableReadbackMetadataMustMatchTheOriginalWarmAcknowledgement",
+        "testIntentMismatchAndForeignScopeFailBeforeNativeDispatch",
+        "testJournalIdentityContainsNoNamePayloadOrLocalURLAndRejectsForgedFingerprint"
+      ],
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyNativeFileAttachmentCreatorTests.swift",
+      "sourceSHA256": "a33c1ad2b18928fd9c665b4249dc5996136cf7d0e2d26f7fb7d756ef89b341c1"
+    }
+  ],
+  "executedTests": 0,
+  "files": [
+    {
+      "bytes": 6333,
+      "gitBlob": "300f9c46285c535f719f3e7a10a77ae71a0614f3",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift",
+      "sha256": "4e9cf26ed4344493a98a64556781215a4c34ee7d70fd41cdc59d6795668ba36a"
+    },
+    {
+      "bytes": 15355,
+      "gitBlob": "33820e91ce26e23bc109c8c7df349f38d698e2e3",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadStaging.swift",
+      "sha256": "d0a02b1be20973b87c9be01bbf04e40f734f9ccddc39d0c4e61b83d1212bc349"
+    },
+    {
+      "bytes": 14691,
+      "gitBlob": "35cb7c1827bc9a846534997c1de3d6066b838871",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift",
+      "sha256": "83e4618ee93a04ce407a62926a0bffbb1752756a59b38e6e5e5d636bad9138a6"
+    },
+    {
+      "bytes": 10600,
+      "gitBlob": "0817b08324f4c5914f5e0e31af269312f62dc16b",
+      "path": "Modules/PinkhaAnyEngine/Tests/Fixtures/file_upload_server.py",
+      "sha256": "0abb449e43aa17d2b883427ee6a448765f645e3fc60087bdf33c53bb7da5f0f7"
+    },
+    {
+      "bytes": 26748,
+      "gitBlob": "4d9d243c0ea8f9fb77c13fa7434919e62ac8690a",
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeFileUploadHTTPTests.swift",
+      "sha256": "14d27f18c4f81b812a2817f6c3943d0e4a9c0e8ef06e373427002449f64b59cb"
+    },
+    {
+      "bytes": 13514,
+      "gitBlob": "5399b2edb0612f8ad2ed1d73afc235e8911afd45",
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeFileUploadTests.swift",
+      "sha256": "22da3355e5d03cdc82be1ef3d472910603e6b4ad8ef7c37813f30888aad9a462"
+    },
+    {
+      "bytes": 14839,
+      "gitBlob": "1e1a37b1b77064c659c00e49e459f5252d77fe32",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "sha256": "78e5ecf7a1e1ad54225551a06a5616438a051befa0c9cfd5e113bd72daf26fee"
+    },
+    {
+      "bytes": 15411,
+      "gitBlob": "a3f4b109146df2a8b651dacead6f82c8a2d0025d",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "sha256": "deb279cc959d535f4264072043069112403475bb1a300288f4628a959f4ce95a"
+    },
+    {
+      "bytes": 21878,
+      "gitBlob": "5564e213e9158a9b55c9988bba9d73a3c1a95439",
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyNativeFileAttachmentCreatorTests.swift",
+      "sha256": "a33c1ad2b18928fd9c665b4249dc5996136cf7d0e2d26f7fb7d756ef89b341c1"
+    },
+    {
+      "bytes": 10646,
+      "gitBlob": "2791169a8f19531a08753240ba9e6814e0c908f8",
+      "path": "docs/architecture/ordinary-file-attachment-contract-20261127.md",
+      "sha256": "877f25249eea3ec03ee96d6d956b817326a1f349c6b95201ff44362687ef8ff3"
+    },
+    {
+      "bytes": 1598,
+      "gitBlob": "87cc14010ea870913cab8d8e83fef0fea53eea55",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/README.md",
+      "sha256": "3507d39cf6b6f1deca9f3f19b0640b4cf1d7fc44bf913947f4f77003395f4019"
+    },
+    {
+      "bytes": 9238,
+      "gitBlob": "a2755ed880ca043ef1235f54616d02d4e4f0c753",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/candidate-manifest.json",
+      "sha256": "854bd616feed4870c654accc938877d028fdf2b05982aa78503d2eb70cdfa053"
+    },
+    {
+      "bytes": 224,
+      "gitBlob": "1c4648e74ac8f556857fe95382a3dedc93b96d52",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/identity-only-engine-ack-identity.json",
+      "sha256": "bf83f976dae8b60f3478aca2f91e44c6dc8d70b87012e3f8f741fe3b5ca7dca5"
+    },
+    {
+      "bytes": 2471,
+      "gitBlob": "eae6171f5a908e3e7ce45ade9415f9ad1252b350",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/identity-only-engine-ack.patch",
+      "sha256": "f9ffb57edda3bce085a191deb571c251556537ae7069cf4f1d69ecfae888956f"
+    },
+    {
+      "bytes": 224,
+      "gitBlob": "2be281ca7d5c1bbf32f00de27bda69447c2c2a0a",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/identity-only-host-ack-identity.json",
+      "sha256": "e4dd035c80f4f20c019618af1bf59d8be71bba1f7fa97c88adf50ba798e2354f"
+    },
+    {
+      "bytes": 1399,
+      "gitBlob": "957419d17217facc091bf27a4c241bff42af015c",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/identity-only-host-ack.patch",
+      "sha256": "31bc4606e509825dfb47a1926623fdb0bcb06b08aab0634e53b8d5e1af1751cb"
+    },
+    {
+      "bytes": 2670,
+      "gitBlob": "21babae76bf257f50a3fe7c23e173c328b1774d0",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/object-creator-source.patch",
+      "sha256": "88adc9964f17d05da1b6358269c0946d1b016863e8abb4da7a45ff76ebe60279"
+    },
+    {
+      "bytes": 5806,
+      "gitBlob": "b6c4a05621b47653d47cf4a13ea7153cfc77b327",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/original-source-manifest.json",
+      "sha256": "36bf5e663ebfb91801b7c5eea38eecefa4a6ce54b091a6dfb73fe264e5d814c4"
+    },
+    {
+      "bytes": 387,
+      "gitBlob": "7677581d8f65ae5020218b53fde7b2cd0b62a2ca",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/relay-byte-correction.json",
+      "sha256": "c251060d361927b023511db10e6c2d95792f39be266bbe8fd488d75dc14c953a"
+    },
+    {
+      "bytes": 1596,
+      "gitBlob": "fe224e3a8db73c4ab408cafade44c97d45a6e42f",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/source-provenance.json",
+      "sha256": "b025c58c9d945fbd43b73b5a466035128a146c9ad2bee4937e000b9d164b980e"
+    },
+    {
+      "bytes": 2898,
+      "gitBlob": "a1224eec53f728ac18ce8867a475ffbf637a03f3",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/source-review.json",
+      "sha256": "26720fc693ede1b66318be63cfcbc11cf2cc2c059051cf20b9af33a52d8dc467"
+    },
+    {
+      "bytes": 3532,
+      "gitBlob": "a49ab2e8a6339ca2e222dcb841e7210ad3f82aaf",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/test-inventory.json",
+      "sha256": "5ca3cbb2492b3304d4aa37d02ad4d829836fcef2790c7346e0b37c7d4186e050"
+    },
+    {
+      "bytes": 1721,
+      "gitBlob": "06b788b84bd469900da9f6c4499a38e398f10edf",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/torah-source-manifest.json",
+      "sha256": "9c3e30c2862728deae18a10727a0922cddf5618430b71c053ba9ffa1cdef6bf4"
+    },
+    {
+      "bytes": 224,
+      "gitBlob": "f833cd8940b45cb05398a736bbb30dc86e0f7e39",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/warm-ack-binding-identity.json",
+      "sha256": "1e64a03243b82f526adf0998dbc1034ca9b658fb59615faaae73cfe965a618bf"
+    },
+    {
+      "bytes": 4015,
+      "gitBlob": "3cf9b7e44bc716dbe9e277b8c9510a96567fba9d",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/warm-ack-binding.patch",
+      "sha256": "fbf9ab77616ad54acfdd2e40d35a8b3bf225680805b63e8c839df6c1207047f2"
+    },
+    {
+      "bytes": 36939,
+      "gitBlob": "818be9da4292faa7bfdd0545a349afec2c31bde6",
+      "path": "docs/validation/20261127-ordinary-file-attachment-source/workflow-trigger-review.json",
+      "sha256": "51921c475999cc4032e1c5ee0248bb12f9d75264115fbde91fea1aa90ab4df87"
+    }
+  ],
+  "originalCreatorInverse": {
+    "after": {
+      "bytes": 15411,
+      "path": "/workspace/scratch/ae335eba85e3/w1-ordinary-upload-primary-review/source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "sha256": "deb279cc959d535f4264072043069112403475bb1a300288f4628a959f4ce95a"
+    },
+    "completeByteInverse": true,
+    "hunks": 4,
+    "oldObjectCreatorBodyPreserved": true,
+    "patch": {
+      "bytes": 2670,
+      "path": "/workspace/scratch/ae335eba85e3/w1-ordinary-upload-primary-review/source/docs/validation/20261127-ordinary-file-attachment-source/object-creator-source.patch",
+      "sha256": "88adc9964f17d05da1b6358269c0946d1b016863e8abb4da7a45ff76ebe60279"
+    },
+    "preimageGitBlob": "aa28d864b8fd55805e4717917779750b20514df0",
+    "reconstructedPreimage": {
+      "bytes": 14656,
+      "path": "/workspace/scratch/ae335eba85e3/w1-ordinary-upload-independent-review/reconstructed-original-object-creator.swift",
+      "sha256": "0273ca566d58456569eeff7d90e6e582791fcf33aa2c6b2e48c280fe53dcb723"
+    },
+    "source": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift"
+  },
+  "primaryIdentity": {
+    "bytes": 7266,
+    "path": "/workspace/scratch/ae335eba85e3/w1-ordinary-upload-primary-review/primary-identities.json",
+    "sha256": "fd94193c516b250fb6556ca310d839b01dfb020d8b71672ebe32b853ef6017c7"
+  },
+  "primaryTransport": {
+    "bytes": 926621,
+    "path": "/workspace/scratch/ae335eba85e3/w1-ordinary-upload-primary-review/primary-transport.json",
+    "sha256": "51be928774da5dd90bd3347dcf46c1d1bc485ebbd32a74952c0d6efa17be2eee"
+  },
+  "readOriginalDependency": {
+    "bytes": 27831,
+    "path": "/workspace/scratch/ae335eba85e3/attachment99f-independent-review/dependencies/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+    "sha256": "8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182"
+  },
+  "remoteOperations": false,
+  "schema": "pinkha-ordinary-attachment-independent-byte-proof-v1",
+  "sourceEdits": false,
+  "verifiedBytes": 224957,
+  "verifiedFiles": 26
+}

@@ -1,0 +1,79 @@
+{
+  "schema": "g03-kind-routing-bounded-audit/v1",
+  "status": "EXISTING_TYPED_MANAGEMENT_ROUTES_SOURCE_VERIFIED_CURRENT_UI_PENDING",
+  "appSource": "cee06ac951f735514059e616fbea48f07d4e7c09",
+  "currentAppKitPin": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "finalRefReadUTC": "2026-11-27 11:14:56 UTC",
+  "primaryExactFiles": 25,
+  "conclusion": {
+    "topicOrWordCastIntoTextReferenceFound": false,
+    "originalNativePropertiesHasCorrectFixedKindChooser": true,
+    "sharedBlockEntryHasDocumentedManagementChooser": true,
+    "newEngineHasTypedRelatedDocumentMenu": true,
+    "topicWordDetailReaderImplemented": false,
+    "explicitUnavailableReaderCopyObserved": false,
+    "productDefectProvenRequiringNewRoute": false,
+    "productEdits": 0,
+    "extraUISelectorsCreated": 0
+  },
+  "existingComponentSelectors": [
+    "AnytypeTests/TorahAssociationNativeRepositoryTests/embeddedTopicAndWordLinksPreserveKinds()",
+    "AnytypeTests/TorahAssociationNativeRepositoryTests/linkedBlockOpeningRoutesByAssociationShape()",
+    "AnytypeTests/TorahAssociationNativeRepositoryTests/propertyRoutesResetCategoryAndTarget()"
+  ],
+  "existingUISelectors": [
+    "PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testNativePropertiesPickerChipsSetMembershipAndRelaunch",
+    "PinkhaStage1AcceptanceUITests/PinkhaTorahPropertiesAcceptanceUITests/testOriginalPropertiesCanonicalLinkUnlinkAndRelaunchForAllWritingTypes"
+  ],
+  "retainedNativeJourney": {
+    "selector": "NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen",
+    "runID": "45087682296",
+    "source": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
+    "retentionReceiptSHA256": "86308e62d31375be5b5f241be391cd65a8860a070a11f2026f3a4ccf1a634b9d",
+    "currentProductAcceptance": false,
+    "replaySelected": false
+  },
+  "requiredBoundary": "The accepted ADR uses a kind-correct scoped management chooser. Do not promote that to a Topic/Word reader or reopen unrelated product work. Current admitted-product UI evidence remains required.",
+  "operations": {
+    "Oracle": 0,
+    "Mac": 0,
+    "Native": 0,
+    "compiler": 0,
+    "XCTest": 0,
+    "simulator": 0,
+    "historicalT5Replay": 0,
+    "runtimeGateOpened": false
+  },
+  "evidence": {
+    "README.md": {
+      "path": "README.md",
+      "bytes": 9683,
+      "sha256": "ce51adf921dd5d3e54f8070164f498673e645dceb428786267165d466c3e6a3b"
+    },
+    "source-manifest.json": {
+      "path": "source-manifest.json",
+      "bytes": 14532,
+      "sha256": "0f102ef664d86e6027444d67b05b9b5afbe6615cb188a522be42f873c75ff9d3"
+    },
+    "asana-requirements.json": {
+      "path": "asana-requirements.json",
+      "bytes": 77927,
+      "sha256": "33680d46bf6186eadc5e0a2a2fc5040523c35d19e6c3b080656986cb91e85f49"
+    },
+    "primary-ref-observations.json": {
+      "path": "primary-ref-observations.json",
+      "bytes": 3587,
+      "sha256": "5003231a8e8fb6d18c7fd433f005a743d67168244c3eda16da96274267804092"
+    },
+    "path-lookup-failures.json": {
+      "path": "path-lookup-failures.json",
+      "bytes": 1793,
+      "sha256": "244b1b1843fefc7036f3418988b89cb1f27b245c860cdb10824f2fdd4cfd0ea3"
+    },
+    "g04-route-boundary.json": {
+      "path": "g04-route-boundary.json",
+      "bytes": 1117,
+      "sha256": "1ad5eb51e1b60db191485a0ad5e373cee7c08aaa5d5dd6075f82b953278125a9"
+    }
+  }
+}

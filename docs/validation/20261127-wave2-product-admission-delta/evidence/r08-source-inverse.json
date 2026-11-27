@@ -1,0 +1,64 @@
+{
+  "status": "PASS_EXACT_SOURCE_INVERSE_NOT_SWIFT_OR_UI_EXECUTION",
+  "baseCommit": "cee06ac951f735514059e616fbea48f07d4e7c09",
+  "path": "PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift",
+  "originalSHA256": "698f4ed7f1f81fe567b94b531f43e14259d08e6acbf79d72e132a5b9b6b941a7",
+  "originalBytes": 34098,
+  "candidateSHA256": "b43f97b3c1283f05b728b15cc9871bfecc1692ca55563f1e2c1f1886ecd38d5e",
+  "candidateBytes": 34629,
+  "productionAuthSHA256": "8ee4b81dfe98236853f6ba3949148ca2c2c8ca78aefdaf676c40aa128aa33161",
+  "changes": [
+    {
+      "old": "        let warningPredicate = NSPredicate(format: \"elementType == %d AND label == %@\",\n",
+      "new": "        let warningTitle = appLanguage == \"he\" ? \"אזהרה\" : \"Warning\"\n        let warningPredicate = NSPredicate(format: \"elementType == %d AND label == %@\",\n",
+      "count": 1
+    },
+    {
+      "old": "XCUIElement.ElementType.alert.rawValue, \"Warning\")",
+      "new": "XCUIElement.ElementType.alert.rawValue, warningTitle)",
+      "count": 1
+    },
+    {
+      "old": "let warnings = app.alerts.matching(NSPredicate(format: \"label == %@\", \"Warning\"))",
+      "new": "let warnings = app.alerts.matching(NSPredicate(format: \"label == %@\", warningTitle))",
+      "count": 1
+    },
+    {
+      "old": "try require(!warnings.firstMatch.exists, \"Native startup warning remained or returned\")",
+      "new": "try require(!warnings.firstMatch.exists && app.alerts.count == 0, \"Native startup warning remained or returned\")",
+      "count": 1
+    },
+    {
+      "old": "        let text = \"You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken.\"\n",
+      "new": "        let text = appLanguage == \"he\"\n            ? \"הפעלת את האפליקציה עם תווכה (middleware) לא יציבה. אל תשתמש בכספת הייצור שלך. הכספת עלולה להיפגם.\"\n            : \"You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken.\"\n        let continueTitle = appLanguage == \"he\" ? \"המשך עם הכספת הנוכחית\" : \"Continue with current vault\"\n        let logoutTitle = appLanguage == \"he\" ? \"התנתק מהכספת הנוכחית\" : \"Logout from current vault\"\n",
+      "count": 1
+    },
+    {
+      "old": "let proceed = warning.buttons.matching(NSPredicate(format: \"label == %@\", \"Continue with current vault\"))",
+      "new": "let proceed = warning.buttons.matching(NSPredicate(format: \"label == %@\", continueTitle))",
+      "count": 1
+    },
+    {
+      "old": "let logout = warning.buttons.matching(NSPredicate(format: \"label == %@\", \"Logout from current vault\"))",
+      "new": "let logout = warning.buttons.matching(NSPredicate(format: \"label == %@\", logoutTitle))",
+      "count": 1
+    }
+  ],
+  "fullInverseRestoresEveryOriginalByte": true,
+  "unchangedPrefixBeforeLaunch": true,
+  "unchangedSuffixAfterWarningHelper": true,
+  "originalTestMethodsUnchanged": [
+    "testCurrentSpaceRowsAndExactBlockNavigation",
+    "testAddNoteEditOpenUnlinkAndRetainAfterRelaunch",
+    "testHebrewRelatedRowsLongTitlesAndReadOnlyNavigation"
+  ],
+  "preparationFixtureAndEnvironmentContractChanged": false,
+  "startupSeconds": 120,
+  "onlyContinueCanBeTapped": true,
+  "unknownDialogs": "Untouched; explicit final zero-alert requirement",
+  "sourceReviewRequired": true,
+  "swiftCompilation": "NOT_RUN",
+  "XCTest": "NOT_RUN",
+  "nativeCalls": 0,
+  "productAdmission": false
+}

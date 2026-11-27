@@ -1,0 +1,277 @@
+{
+  "schema": "pinkha.wave3.kit26-independent-source-review.v1",
+  "reviewer": "/root/miniapps_otzaria",
+  "reviewedAtUTC": "2026-11-27T11:07:28.061327+00:00",
+  "status": "PASS_SOURCE_REVIEW_NO_CONCRETE_SCOPED_BLOCKER",
+  "repository": "davidpovarsky/TorahInspectorKit",
+  "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "tree": "91b2132ff8e55fbc0c3df2b14d0ad6ddf1626a41",
+  "parent": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "parentTree": "43ce9677dbeff494facf971ae59ab9a2eeb754ea",
+  "scope": "Independent read of all three changed UI caller diffs and their source/lifetime/viewport contexts, complete new helper and six-method source, all18 original evidence files, exact four-preimage inverses, complete original135-leaf retention, and actual component custody correction. No execution or App pin change.",
+  "primaryIndex": {
+    "path": "primary-identities.json",
+    "sha256": "42639d26a18303af218734690d73b535052c22c48d2ec24644f29a75354d3dfc",
+    "primaryFileCount": 29
+  },
+  "independentByteProof": {
+    "path": "independent-byte-proof.json",
+    "sha256": "94c4942bdec372f3a111d1b1110330cab8b256dbb96fe3f11997005eca8833ae"
+  },
+  "sourceDelta": {
+    "modifiedOriginal": [
+      "PROJECT_BOARD.md",
+      "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "Sources/TorahInspectorUI/TorahSourceReaderView.swift"
+    ],
+    "newHelper": "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+    "newTest": "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+    "newEvidenceCount": 18,
+    "allChangedPaths": [
+      "PROJECT_BOARD.md",
+      "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+      "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "Sources/TorahInspectorUI/TorahSourceReaderView.swift",
+      "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+      "docs/validation/20261127-reader-document-lifetime/README.md",
+      "docs/validation/20261127-reader-document-lifetime/board-source-inverse.json",
+      "docs/validation/20261127-reader-document-lifetime/candidate-manifest.json",
+      "docs/validation/20261127-reader-document-lifetime/component/Package.swift",
+      "docs/validation/20261127-reader-document-lifetime/component/custody-correction.json",
+      "docs/validation/20261127-reader-document-lifetime/component/editor-controller-source-review-2e9.json",
+      "docs/validation/20261127-reader-document-lifetime/component/editor-controller-source-review-c079.json",
+      "docs/validation/20261127-reader-document-lifetime/component/owned-process-provenance.json",
+      "docs/validation/20261127-reader-document-lifetime/component/owned_process.py",
+      "docs/validation/20261127-reader-document-lifetime/component/run_component.prereview-c079.py",
+      "docs/validation/20261127-reader-document-lifetime/component/run_component.py",
+      "docs/validation/20261127-reader-document-lifetime/interfaces-independent-review.json",
+      "docs/validation/20261127-reader-document-lifetime/original-source-binding.json",
+      "docs/validation/20261127-reader-document-lifetime/original-tree.json",
+      "docs/validation/20261127-reader-document-lifetime/publication-api-plan.json",
+      "docs/validation/20261127-reader-document-lifetime/publication-source-check.json",
+      "docs/validation/20261127-reader-document-lifetime/publication-workflow-check.json",
+      "docs/validation/20261127-reader-document-lifetime/source-inverse.json"
+    ],
+    "originalFiles": 135,
+    "candidateFiles": 155,
+    "unchangedOriginalFiles": 131,
+    "deletedOriginalFiles": 0,
+    "originalModesPreserved": true,
+    "allRecursiveTreeObjectsRehashed": true,
+    "viewInverseEdits": 47,
+    "boardInverseEdits": 1,
+    "allFourWholePreimagesRestoredExactly": true,
+    "newHelperAndTestsAbsentAtParent": true
+  },
+  "behaviorReview": [
+    {
+      "source": "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+      "observation": "The MainActor-owned request includes the existing selection ID and a fresh UUID for each activation or explicit Retry. restart refuses an invalidated/different owner. load checks the original request and caller cancellation before dispatch, after a provider result, and before rethrowing a provider error. A noncooperative provider cannot publish through a retired request; a current provider failure remains the original failure."
+    },
+    {
+      "source": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "observation": "Both linked-source and relationships entry tasks check cancellation before activation. Retry captures the new request synchronously before its Task is queued. Disappearance invalidates the owner. Original repository arguments, source/segment resolution, navigation actions, search/Close/full-source routing and localized error content remain; both success and error publications recheck the request after the await."
+    },
+    {
+      "source": "Sources/TorahInspectorUI/TorahSourceReaderView.swift",
+      "observation": "Initial load resets the local section/loading/state-machine state and then reuses the original session snapshot path. Initial, previous and next reads retain exact existing repository arguments. Pagination captures ownership before Task creation. Request-scoped defers cannot clear a replacement owner’s loading flags. The seven-section window, append/prepend ordering, trimming and original scroll decisions remain."
+    },
+    {
+      "source": "Sources/TorahInspectorUI/TorahSourceReaderView.swift",
+      "observation": "The existing yielded viewport restoration now checks ownership/cancellation, unchanged pending viewport and actual segment membership after Task.yield, before scrollTo and session.save. Synchronous viewport recording refuses a disappeared/other-selection lifetime. The original selection-keyed session and viewport structures are unchanged, not replaced by the new helper."
+    },
+    {
+      "source": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "observation": "Expanded-source reads capture the mounted focus request before scheduling and recheck it at dispatch, success, error and loading cleanup. Existing in-flight source-ID protection remains. Disappearance invalidates expanded requests, advances the original snippet generation and clears only loading IDs. Original snippet post-await/error/defer generation checks, provider selection, resolvers, panel demand and host actions are preserved."
+    },
+    {
+      "source": "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+      "observation": "All six new methods/nine declared cases use the real new helper with a deliberately noncooperative suspended provider. Cases cover new selection; same-ID Retry/reactivation; late success/error after cancellation; pre-cancelled dispatch; invalidated retry/dispatch; and unchanged current provider errors. Rendezvous uses an actual continuation boundary plus a finite failure deadline. No assertion is a fabricated native or mounted SwiftUI result."
+    }
+  ],
+  "componentControlReview": {
+    "path": "docs/validation/20261127-reader-document-lifetime/component/run_component.py",
+    "sha256": "2e9d2fdd8fd83741719cfd6cb659fbd06786f392cbca854d6db78185da8dbe50",
+    "priorRejectedControllerPreserved": "c079c67d218200af5100f22a503e603c16f9daf8badc014d9dc295d45ed1ab3c",
+    "priorFindingPreserved": "76b2d74472efd5037e56806229bf7ed327751d881e6a5507bb456031e7845178",
+    "correction": "0f01ece2d060adff6a570097f3b77e0ffa28fe0afee4302cb1e367faff98e1cd",
+    "reviewedSuccessor": "17217798b0821d1f67744627d69ac113a0dd378bd642f017203db2adf52aa89e",
+    "observations": [
+      "Exact helper/provenance SHA constants and actual imported helper path are checked before main compiler dispatch and after completion. Source allowlist is exact Package.swift plus the two original new Swift files; no additional source or test is admitted.",
+      "The literal custody correction matches the published diff. Four unaffected controller declarations remain exact; all four cleanup functions match the separately retained actual99dc Properties controller by full AST source slice. This review imported or executed neither controller.",
+      "Fresh attempt/component directories refuse overwrite. Main compiler runs one new owned session, jobs1, deadline300 seconds, root disk2GiB floor plus256MiB estimate, initial1.5GiB available memory and live memory512MiB floor. Positive process-group absence is latched; original cleanup retains the first failure. Final evidence/receipt failures are separately reported and cannot turn failure into PASS.",
+      "The selected component is explicitly a derived Foundation/Testing package containing the exact new helper/test. It does not compile the three original SwiftUI views, the full Kit package, either App or native service. Six-method PASS parsing is not any actual execution evidence in this source packet."
+    ],
+    "execution": "NOT_RUN"
+  },
+  "additionalDependencies": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 5032,
+      "gitBlob": "ccc53d3a630ca44c3ecb1667d3828e2c88294dd6",
+      "sha256": "597448f0b85b0469a9dbb366924e58df9a41aab18d31baafc9f8cb88b2b65168"
+    },
+    {
+      "path": "docs/ai-team/TEAM.md",
+      "bytes": 7008,
+      "gitBlob": "306473f9c3527790aff5a2834d5d68ad4eca623d",
+      "sha256": "49628f3330e9c5b9b57584ccca65e15d72223dfadee035c57dc738a7dbf626a6"
+    },
+    {
+      "path": "docs/ai-team/PROJECT_ASSIGNMENTS.md",
+      "bytes": 2753,
+      "gitBlob": "0605fa7af86e6eede33967ed0fe5ca2189c10c50",
+      "sha256": "926d8212b8cf5cd40f2c19ecddd1e75ed32bb16ba563d5372eef17e25e8a26bd"
+    },
+    {
+      "path": "docs/ai-team/ASANA_POLICY.md",
+      "bytes": 6375,
+      "gitBlob": "01d7b8aec78d69032942b7d5a60142a73755b0c7",
+      "sha256": "becf71a1b99195553ad04625d63f2f985df14d9653577963865bbc99f5f01c05"
+    },
+    {
+      "path": ".agents/roles/roni.md",
+      "bytes": 868,
+      "gitBlob": "820cbf129d0a60452c9429734329dccaaf852e7a",
+      "sha256": "45cea319d08b9e5341cc409974cbcb738a94a9feeb255dd2da7d5b222ab5d4c1"
+    },
+    {
+      "path": "Sources/TorahInspectorCore/Models.swift",
+      "bytes": 24592,
+      "gitBlob": "aeb7cc4215456c2db9bda284f7e947c643507408",
+      "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahReaderSessionState.swift",
+      "bytes": 649,
+      "gitBlob": "f7387ace46bd8e4934b578b63bbafa920eaf1df4",
+      "sha256": "aad8efcd8a619b23f8e0ae107373364b5ab4853eb7b5678e70821c35465d1861"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahPanelLoadState.swift",
+      "bytes": 2875,
+      "gitBlob": "d17bfe19e37af50d5a5bdec31b680c50d498ea89",
+      "sha256": "c8696cce4327712b339ae3028ced4e3c9e5e844d7631a69644371f35533044b7"
+    }
+  ],
+  "testSourceAndTarget": {
+    "path": "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+    "bytes": 6211,
+    "sha256": "ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c",
+    "gitBlob": "b78b37b9cc0e430402ff18d6e4ba7eebceb03c6b",
+    "packageTarget": "TorahInspectorUITests",
+    "testedModule": "TorahInspectorUI",
+    "methods": [
+      {
+        "suite": "TorahDocumentLoadLifetimeTests",
+        "method": "newerSelectionRejectsLateProviderCompletion",
+        "parameters": "providerFails: Bool",
+        "arguments": [
+          false,
+          true
+        ],
+        "declaredCases": 2
+      },
+      {
+        "suite": "TorahDocumentLoadLifetimeTests",
+        "method": "sameSelectionRetryOrReactivationRejectsItsPriorLifetime",
+        "parameters": "disappears: Bool",
+        "arguments": [
+          false,
+          true
+        ],
+        "declaredCases": 2
+      },
+      {
+        "suite": "TorahDocumentLoadLifetimeTests",
+        "method": "callerCancellationRejectsANonCooperativeProvider",
+        "parameters": "providerFails: Bool",
+        "arguments": [
+          false,
+          true
+        ],
+        "declaredCases": 2
+      },
+      {
+        "suite": "TorahDocumentLoadLifetimeTests",
+        "method": "preCancelledCallerDoesNotDispatchAProviderRead",
+        "parameters": "",
+        "arguments": null,
+        "declaredCases": 1
+      },
+      {
+        "suite": "TorahDocumentLoadLifetimeTests",
+        "method": "invalidatedOwnerCannotDispatchOrScheduleARetry",
+        "parameters": "",
+        "arguments": null,
+        "declaredCases": 1
+      },
+      {
+        "suite": "TorahDocumentLoadLifetimeTests",
+        "method": "currentProviderFailureRemainsAnActualFailure",
+        "parameters": "",
+        "arguments": null,
+        "declaredCases": 1
+      }
+    ],
+    "methodCount": 6,
+    "declaredCaseCount": 9,
+    "executed": false
+  },
+  "appPinObserved": {
+    "repository": "davidpovarsky/anytype-swift",
+    "commit": "cee06ac951f735514059e616fbea48f07d4e7c09",
+    "kitRevision": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+    "files": [
+      {
+        "path": "Modules/PinkhaTorahPresentation/Package.swift",
+        "commit": "cee06ac951f735514059e616fbea48f07d4e7c09",
+        "bytes": 1106,
+        "gitBlob": "6657557e483120665e62813069b4e2b7e811fa65",
+        "sha256": "7709a4b4cc13b0b76f4e884c42ffca35d1016536c1d4cb78b7ee72cf8556da71"
+      },
+      {
+        "path": "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+        "commit": "cee06ac951f735514059e616fbea48f07d4e7c09",
+        "bytes": 15183,
+        "gitBlob": "d5c29f59bb54d2ae3060fe4ad36d16cde30a3486",
+        "sha256": "e22368e522ac795253935b0a31e39d1b36bd9043ef2ed1014845927914527ccd"
+      }
+    ],
+    "source": "Exact current primary connector bytes, both independently Git-blob verified.",
+    "changedByThisReview": false
+  },
+  "integrationPrerequisites": [
+    "Root may integrate the reviewed Kit source only after its own source decision; current Anytype manifest and shared resolved pin remain9058. A deliberate exact Kit pin/lock update and matching source qualification are still needed before any shared App can contain this helper.",
+    "The original Kit test target is TorahInspectorUITests and the test imports @testable TorahInspectorUI. The new helper is internal. Existing AnytypeTests57 and Native23 two-file UI compilation do not by themselves compile or enumerate these six tests. Wave2 must hand off an explicit exact target/compiler/source-binding route; no wildcard57 allowlist change or module-name relabel is admitted.",
+    "Actual full Kit SwiftUI/App compilation must cover all three changed view call sites and new helper. The Foundation component has a separate limited boundary even if its eventual six/nine execution passes.",
+    "Use the matching shared App for mounted G04/reader Commentaries and Links, exact full-source entry/return, pagination and viewport restoration, current-error Retry, rapid source replacement and disappearance/reopen while a provider is pending. Verify late completion cannot change the current content/loading/error state.",
+    "Hebrew/English and opposite OS language, iPhone/iPad, light/dark, Dynamic Type/accessibility, actual native/provider scope and physical-device acceptance remain separate required observations. No App15/Page154 failure or current9058 result transfers automatically.",
+    "The coordinated Oracle capacity hold remains active. This source review does not authorize or perform its component/runtime controller, native operation, account restoration or new workflow dispatch."
+  ],
+  "findings": [],
+  "notClaims": [
+    "No Swift compiler/typecheck/test execution",
+    "No mounted SwiftUI/App or native/runtime acceptance",
+    "No public API/ABI product qualification",
+    "No changed App dependency pin",
+    "No aggregate implementation or closed-gate activation"
+  ],
+  "execution": {
+    "primaryReadOnlyGitHubFetches": true,
+    "localStaticByteAndASTAnalysisOnly": true,
+    "donorImports": 0,
+    "tests": 0,
+    "compilers": 0,
+    "nativeCalls": 0,
+    "accountOperations": 0,
+    "macCommands": 0,
+    "oracleCommands": 0,
+    "oracleWrites": 0,
+    "gitMutations": 0,
+    "workflowDispatches": 0,
+    "productSourceEdits": 0
+  }
+}

@@ -1,0 +1,46 @@
+--- a/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift
++++ b/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift
+@@ -26,7 +26,7 @@
+     public init(workspace: AnyTorahWorkspace, mutationID: String,
+                 kind: String, fingerprint: String) throws {
+         guard Self.isHex(mutationID, count: 32), Self.isHex(fingerprint, count: 64),
+-              ["object", "editorBlock"].contains(kind) else { throw AnyNativeCreationError.invalidIntent }
++              ["object", "editorBlock", "fileAttachment"].contains(kind) else { throw AnyNativeCreationError.invalidIntent }
+         self.workspace = workspace; self.mutationID = mutationID
+         self.kind = kind; self.fingerprint = fingerprint
+     }
+@@ -124,6 +124,7 @@
+     private let dispatch: @Sendable (AnyNativeObjectCreationIntent, @escaping @Sendable () async throws -> Void) async throws -> String
+     private let inspect: @Sendable (String) async throws -> AnyJSON
+     private let validateContract: @Sendable () async throws -> Void
++    private let fileAttachmentFactory: (@Sendable () throws -> AnyNativeFileAttachmentCreator)?
+ 
+     public init(client: AnyHTTPClient, workspace: AnyTorahWorkspace,
+                 journal: any AnyNativeCreationJournaling) throws {
+@@ -131,6 +132,9 @@
+             throw AnyHostError.wrongWorkspace
+         }
+         self.workspace = workspace; self.journal = journal
++        self.fileAttachmentFactory = {
++            try AnyNativeFileAttachmentCreator(client: client, workspace: workspace, journal: journal)
++        }
+         self.validateContract = {
+             let value = try await client.requestJSON(method: "GET", path: ["v1", "pinkha", "capabilities"])
+             guard value["contract"]?.string == "pinkha-torah-native-v1",
+@@ -164,6 +168,16 @@
+          validateContract: @escaping @Sendable () async throws -> Void = {}) {
+         self.workspace = workspace; self.journal = journal; self.dispatch = dispatch; self.inspect = inspect
+         self.validateContract = validateContract
++        self.fileAttachmentFactory = nil
++    }
++
++    /// Reuses this owner's original client, workspace and journal. Creating the
++    /// service neither opens another journal nor admits a native mutation.
++    public func makeFileAttachmentCreator() throws -> AnyNativeFileAttachmentCreator {
++        guard let fileAttachmentFactory else {
++            throw AnyEngineError.incompatibleSchema("native file attachment client unavailable")
++        }
++        return try fileAttachmentFactory()
+     }
+ 
+     public func recordedObjectID(for intent: AnyNativeObjectCreationIntent) async throws -> String? {

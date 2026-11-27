@@ -1,0 +1,974 @@
+{
+  "afterPins": {
+    "collections": {
+      "revision": "7b847a3b7008b2dc2f47ca3110d8c782fb2e5c7e",
+      "version": "1.3.0"
+    },
+    "common57SHA256": "d63b8a04bd424a92bf852449c2ecbf8a22bd5ccae95b61ae32feb6be63e6b901",
+    "kit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+    "kitManifestSHA256": "e519cc067165f89741485fd10566b63e788f9219d11a56429b2d33fd1f21c494",
+    "packageResolvedSHA256": "4065a37e9e6dd3c117bd72bec90c2039108a0985df6989f9dc66b0f47840f689",
+    "sdk": "0ae1920d316b9592cbad0462bea96a07fd1ca351",
+    "stage1SHA256": "c1e37371ce061cfec1ec6d30fc2f55a0df0e477f9727ffd96d635f46e91e0906"
+  },
+  "beforePins": {
+    "collections": {
+      "revision": "7b847a3b7008b2dc2f47ca3110d8c782fb2e5c7e",
+      "version": "1.3.0"
+    },
+    "common57SHA256": "d63b8a04bd424a92bf852449c2ecbf8a22bd5ccae95b61ae32feb6be63e6b901",
+    "kit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+    "kitManifestSHA256": "7709a4b4cc13b0b76f4e884c42ffca35d1016536c1d4cb78b7ee72cf8556da71",
+    "packageResolvedSHA256": "e22368e522ac795253935b0a31e39d1b36bd9043ef2ed1014845927914527ccd",
+    "sdk": "0ae1920d316b9592cbad0462bea96a07fd1ca351",
+    "stage1SHA256": "c1e37371ce061cfec1ec6d30fc2f55a0df0e477f9727ffd96d635f46e91e0906"
+  },
+  "completeDiffCheck": {
+    "diagnostics": 10,
+    "exit": 2,
+    "scope": "Original7 donor patches plus3 original Kit stderr lines158/207/270 only; exact raw bytes retained.",
+    "stderr": "",
+    "stdout": "docs/validation/20261127-ordinary-file-attachment-source/identity-only-engine-ack.patch:24: trailing whitespace.\n+ \ndocs/validation/20261127-ordinary-file-attachment-source/identity-only-engine-ack.patch:29: trailing whitespace.\n+ \ndocs/validation/20261127-ordinary-file-attachment-source/identity-only-host-ack.patch:13: trailing whitespace.\n+ \ndocs/validation/20261127-ordinary-file-attachment-source/object-creator-source.patch:17: trailing whitespace.\n+ \ndocs/validation/20261127-ordinary-file-attachment-source/object-creator-source.patch:45: trailing whitespace.\n+ \ndocs/validation/20261127-ordinary-file-attachment-source/warm-ack-binding.patch:26: trailing whitespace.\n+ \ndocs/validation/20261127-ordinary-file-attachment-source/warm-ack-binding.patch:56: trailing whitespace.\n+ \ndocs/validation/20261127-wave3-t5-kit-attachment-intake/kit-component/stderr.original.log:158: trailing whitespace.\n+    \ndocs/validation/20261127-wave3-t5-kit-attachment-intake/kit-component/stderr.original.log:207: trailing whitespace.\n+    \ndocs/validation/20261127-wave3-t5-kit-attachment-intake/kit-component/stderr.original.log:270: trailing whitespace.\n+    \n",
+    "stdoutSHA256": "bd05feae4d04460b47e22e4a2fc62eedd7f698d2f3a4889318c7fc883edf6c09"
+  },
+  "coreDependencies": 15,
+  "currentDependencies": 18,
+  "diffCheck": {
+    "diagnostics": [
+      {
+        "line": 24,
+        "message": "trailing whitespace.",
+        "path": "docs/validation/20261127-ordinary-file-attachment-source/identity-only-engine-ack.patch"
+      },
+      {
+        "line": 29,
+        "message": "trailing whitespace.",
+        "path": "docs/validation/20261127-ordinary-file-attachment-source/identity-only-engine-ack.patch"
+      },
+      {
+        "line": 13,
+        "message": "trailing whitespace.",
+        "path": "docs/validation/20261127-ordinary-file-attachment-source/identity-only-host-ack.patch"
+      },
+      {
+        "line": 17,
+        "message": "trailing whitespace.",
+        "path": "docs/validation/20261127-ordinary-file-attachment-source/object-creator-source.patch"
+      },
+      {
+        "line": 45,
+        "message": "trailing whitespace.",
+        "path": "docs/validation/20261127-ordinary-file-attachment-source/object-creator-source.patch"
+      },
+      {
+        "line": 26,
+        "message": "trailing whitespace.",
+        "path": "docs/validation/20261127-ordinary-file-attachment-source/warm-ack-binding.patch"
+      },
+      {
+        "line": 56,
+        "message": "trailing whitespace.",
+        "path": "docs/validation/20261127-ordinary-file-attachment-source/warm-ack-binding.patch"
+      }
+    ],
+    "exit": 2,
+    "scope": "Any nonzero diagnostic is retained literal donor evidence diff/patch text; not rewritten and not claimed as clean diff.",
+    "stderr": "",
+    "stdout": "docs/validation/20261127-ordinary-file-attachment-source/identity-only-engine-ack.patch:24: trailing whitespace.\n+ \ndocs/validation/20261127-ordinary-file-attachment-source/identity-only-engine-ack.patch:29: trailing whitespace.\n+ \ndocs/validation/20261127-ordinary-file-attachment-source/identity-only-host-ack.patch:13: trailing whitespace.\n+ \ndocs/validation/20261127-ordinary-file-attachment-source/object-creator-source.patch:17: trailing whitespace.\n+ \ndocs/validation/20261127-ordinary-file-attachment-source/object-creator-source.patch:45: trailing whitespace.\n+ \ndocs/validation/20261127-ordinary-file-attachment-source/warm-ack-binding.patch:26: trailing whitespace.\n+ \ndocs/validation/20261127-ordinary-file-attachment-source/warm-ack-binding.patch:56: trailing whitespace.\n+ \n",
+    "stdoutIdentity": {
+      "bytes": 788,
+      "gitBlob": "b60550a81aae9f32988f68565aedb3c29fd21240",
+      "sha256": "3981f63441f6d097011d7b71aa683cb813bf9127f4f3e4127f5a359b6ee31032"
+    }
+  },
+  "donors": [
+    "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+    "2519140dd1966cedc4403b74f0f00479e9bd289f",
+    "e96ba072887e7581ed6de20fdd81e0897c83763d"
+  ],
+  "expectedMergeTree": "f77c1a3c373ba8c38c741c3cb4a49015294f3ac9",
+  "files": {
+    "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": {
+      "after": {
+        "bytes": 15183,
+        "gitBlob": "2347b5ff49542cc3f15b1a2119fbcc597725203b",
+        "sha256": "4065a37e9e6dd3c117bd72bec90c2039108a0985df6989f9dc66b0f47840f689"
+      },
+      "before": {
+        "bytes": 15183,
+        "gitBlob": "d5c29f59bb54d2ae3060fe4ad36d16cde30a3486",
+        "sha256": "e22368e522ac795253935b0a31e39d1b36bd9043ef2ed1014845927914527ccd"
+      },
+      "rootChange": "Exact original Kit pin only",
+      "status": "M"
+    },
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift": {
+      "after": {
+        "bytes": 6333,
+        "gitBlob": "300f9c46285c535f719f3e7a10a77ae71a0614f3",
+        "sha256": "4e9cf26ed4344493a98a64556781215a4c34ee7d70fd41cdc59d6795668ba36a"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadStaging.swift": {
+      "after": {
+        "bytes": 15355,
+        "gitBlob": "33820e91ce26e23bc109c8c7df349f38d698e2e3",
+        "sha256": "d0a02b1be20973b87c9be01bbf04e40f734f9ccddc39d0c4e61b83d1212bc349"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift": {
+      "after": {
+        "bytes": 14691,
+        "gitBlob": "35cb7c1827bc9a846534997c1de3d6066b838871",
+        "sha256": "83e4618ee93a04ce407a62926a0bffbb1752756a59b38e6e5e5d636bad9138a6"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/file_upload_server.py": {
+      "after": {
+        "bytes": 10600,
+        "gitBlob": "0817b08324f4c5914f5e0e31af269312f62dc16b",
+        "sha256": "0abb449e43aa17d2b883427ee6a448765f645e3fc60087bdf33c53bb7da5f0f7"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeFileUploadHTTPTests.swift": {
+      "after": {
+        "bytes": 26748,
+        "gitBlob": "4d9d243c0ea8f9fb77c13fa7434919e62ac8690a",
+        "sha256": "14d27f18c4f81b812a2817f6c3943d0e4a9c0e8ef06e373427002449f64b59cb"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeFileUploadTests.swift": {
+      "after": {
+        "bytes": 13514,
+        "gitBlob": "5399b2edb0612f8ad2ed1d73afc235e8911afd45",
+        "sha256": "22da3355e5d03cdc82be1ef3d472910603e6b4ad8ef7c37813f30888aad9a462"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift": {
+      "after": {
+        "bytes": 14839,
+        "gitBlob": "1e1a37b1b77064c659c00e49e459f5252d77fe32",
+        "sha256": "78e5ecf7a1e1ad54225551a06a5616438a051befa0c9cfd5e113bd72daf26fee"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift": {
+      "after": {
+        "bytes": 15411,
+        "gitBlob": "a3f4b109146df2a8b651dacead6f82c8a2d0025d",
+        "sha256": "deb279cc959d535f4264072043069112403475bb1a300288f4628a959f4ce95a"
+      },
+      "before": {
+        "bytes": 14656,
+        "gitBlob": "aa28d864b8fd55805e4717917779750b20514df0",
+        "sha256": "0273ca566d58456569eeff7d90e6e582791fcf33aa2c6b2e48c280fe53dcb723"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "M"
+    },
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyNativeFileAttachmentCreatorTests.swift": {
+      "after": {
+        "bytes": 21878,
+        "gitBlob": "5564e213e9158a9b55c9988bba9d73a3c1a95439",
+        "sha256": "a33c1ad2b18928fd9c665b4249dc5996136cf7d0e2d26f7fb7d756ef89b341c1"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "Modules/PinkhaTorahPresentation/Package.swift": {
+      "after": {
+        "bytes": 1106,
+        "gitBlob": "14ad8b1b5a0411825ce8262eb7e0038994ed2dc6",
+        "sha256": "e519cc067165f89741485fd10566b63e788f9219d11a56429b2d33fd1f21c494"
+      },
+      "before": {
+        "bytes": 1106,
+        "gitBlob": "6657557e483120665e62813069b4e2b7e811fa65",
+        "sha256": "7709a4b4cc13b0b76f4e884c42ffca35d1016536c1d4cb78b7ee72cf8556da71"
+      },
+      "rootChange": "Exact original Kit pin only",
+      "status": "M"
+    },
+    "PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift": {
+      "after": {
+        "bytes": 34629,
+        "gitBlob": "d4a15a8c318880c379c83a8ee2631e2fd6fa7568",
+        "sha256": "b43f97b3c1283f05b728b15cc9871bfecc1692ca55563f1e2c1f1886ecd38d5e"
+      },
+      "before": {
+        "bytes": 34098,
+        "gitBlob": "58a2e07fb3a2737ebfa1fb939bb7ab7f45da2f1f",
+        "sha256": "698f4ed7f1f81fe567b94b531f43e14259d08e6acbf79d72e132a5b9b6b941a7"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "M"
+    },
+    "docs/architecture/ordinary-file-attachment-contract-20261127.md": {
+      "after": {
+        "bytes": 10646,
+        "gitBlob": "2791169a8f19531a08753240ba9e6814e0c908f8",
+        "sha256": "877f25249eea3ec03ee96d6d956b817326a1f349c6b95201ff44362687ef8ff3"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/README.md": {
+      "after": {
+        "bytes": 1598,
+        "gitBlob": "87cc14010ea870913cab8d8e83fef0fea53eea55",
+        "sha256": "3507d39cf6b6f1deca9f3f19b0640b4cf1d7fc44bf913947f4f77003395f4019"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/candidate-manifest.json": {
+      "after": {
+        "bytes": 9238,
+        "gitBlob": "a2755ed880ca043ef1235f54616d02d4e4f0c753",
+        "sha256": "854bd616feed4870c654accc938877d028fdf2b05982aa78503d2eb70cdfa053"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/identity-only-engine-ack-identity.json": {
+      "after": {
+        "bytes": 224,
+        "gitBlob": "1c4648e74ac8f556857fe95382a3dedc93b96d52",
+        "sha256": "bf83f976dae8b60f3478aca2f91e44c6dc8d70b87012e3f8f741fe3b5ca7dca5"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/identity-only-engine-ack.patch": {
+      "after": {
+        "bytes": 2471,
+        "gitBlob": "eae6171f5a908e3e7ce45ade9415f9ad1252b350",
+        "sha256": "f9ffb57edda3bce085a191deb571c251556537ae7069cf4f1d69ecfae888956f"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/identity-only-host-ack-identity.json": {
+      "after": {
+        "bytes": 224,
+        "gitBlob": "2be281ca7d5c1bbf32f00de27bda69447c2c2a0a",
+        "sha256": "e4dd035c80f4f20c019618af1bf59d8be71bba1f7fa97c88adf50ba798e2354f"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/identity-only-host-ack.patch": {
+      "after": {
+        "bytes": 1399,
+        "gitBlob": "957419d17217facc091bf27a4c241bff42af015c",
+        "sha256": "31bc4606e509825dfb47a1926623fdb0bcb06b08aab0634e53b8d5e1af1751cb"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/object-creator-source.patch": {
+      "after": {
+        "bytes": 2670,
+        "gitBlob": "21babae76bf257f50a3fe7c23e173c328b1774d0",
+        "sha256": "88adc9964f17d05da1b6358269c0946d1b016863e8abb4da7a45ff76ebe60279"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/original-source-manifest.json": {
+      "after": {
+        "bytes": 5806,
+        "gitBlob": "b6c4a05621b47653d47cf4a13ea7153cfc77b327",
+        "sha256": "36bf5e663ebfb91801b7c5eea38eecefa4a6ce54b091a6dfb73fe264e5d814c4"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/relay-byte-correction.json": {
+      "after": {
+        "bytes": 387,
+        "gitBlob": "7677581d8f65ae5020218b53fde7b2cd0b62a2ca",
+        "sha256": "c251060d361927b023511db10e6c2d95792f39be266bbe8fd488d75dc14c953a"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/source-provenance.json": {
+      "after": {
+        "bytes": 1596,
+        "gitBlob": "fe224e3a8db73c4ab408cafade44c97d45a6e42f",
+        "sha256": "b025c58c9d945fbd43b73b5a466035128a146c9ad2bee4937e000b9d164b980e"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/source-review.json": {
+      "after": {
+        "bytes": 2898,
+        "gitBlob": "a1224eec53f728ac18ce8867a475ffbf637a03f3",
+        "sha256": "26720fc693ede1b66318be63cfcbc11cf2cc2c059051cf20b9af33a52d8dc467"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/test-inventory.json": {
+      "after": {
+        "bytes": 3532,
+        "gitBlob": "a49ab2e8a6339ca2e222dcb841e7210ad3f82aaf",
+        "sha256": "5ca3cbb2492b3304d4aa37d02ad4d829836fcef2790c7346e0b37c7d4186e050"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/torah-source-manifest.json": {
+      "after": {
+        "bytes": 1721,
+        "gitBlob": "06b788b84bd469900da9f6c4499a38e398f10edf",
+        "sha256": "9c3e30c2862728deae18a10727a0922cddf5618430b71c053ba9ffa1cdef6bf4"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/warm-ack-binding-identity.json": {
+      "after": {
+        "bytes": 224,
+        "gitBlob": "f833cd8940b45cb05398a736bbb30dc86e0f7e39",
+        "sha256": "1e64a03243b82f526adf0998dbc1034ca9b658fb59615faaae73cfe965a618bf"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/warm-ack-binding.patch": {
+      "after": {
+        "bytes": 4015,
+        "gitBlob": "3cf9b7e44bc716dbe9e277b8c9510a96567fba9d",
+        "sha256": "fbf9ab77616ad54acfdd2e40d35a8b3bf225680805b63e8c839df6c1207047f2"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-ordinary-file-attachment-source/workflow-trigger-review.json": {
+      "after": {
+        "bytes": 36939,
+        "gitBlob": "818be9da4292faa7bfdd0545a349afec2c31bde6",
+        "sha256": "51921c475999cc4032e1c5ee0248bb12f9d75264115fbde91fea1aa90ab4df87"
+      },
+      "donor": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/README.md": {
+      "after": {
+        "bytes": 12020,
+        "gitBlob": "8dfb95564d90c82dd0d279f7b190093dbcf62440",
+        "sha256": "e36a68b3b93a9f5710f37a8a8864b7dc0e4c955dbeb602134a9c506a0ff9697b"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/checkpoints/README.g04-published.d7ba5163.md": {
+      "after": {
+        "bytes": 7142,
+        "gitBlob": "0544632a6308f9aff47a3a4ec8b4f8b9ae1191cf",
+        "sha256": "d7ba5163e44f91f448df71490e2dab4e54e211828ef3f49815a012673e926f02"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/checkpoints/README.pending-g04.9597beaa.md": {
+      "after": {
+        "bytes": 5481,
+        "gitBlob": "53c03c86ed635d5f03a4642e5fff40ad6752ab99",
+        "sha256": "9597beaac6dbc4508e27cb1d2ec3e51da3bc4bb1a6042edf60aad9176e45e3b6"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/checkpoints/source-test-admission-delta.g04-published.60f4e4ec.json": {
+      "after": {
+        "bytes": 32722,
+        "gitBlob": "5bb89f5138d8c0e5ccf83d4a57239d8d80003eba",
+        "sha256": "60f4e4ec2a01ac27031610cbf289b1ed4d8e92725878d6b8f760ba306ef13920"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/checkpoints/source-test-admission-delta.pending-g04.45adeebb.json": {
+      "after": {
+        "bytes": 25704,
+        "gitBlob": "26002c221585c0a2e75a5f5f3f4a5c64a1caeb1d",
+        "sha256": "45adeebb1c9ee75d422554c49dda2742d7cd3201c2d2ec62de02cbc60ec53983"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/attachment-README.md": {
+      "after": {
+        "bytes": 6889,
+        "gitBlob": "5f0d70c78038a20e60766ad6c9cebb159658da53",
+        "sha256": "be2912320298e13b7168e8cad810fb8487f3f09a47bf1a3f3cdc73ce55b82670"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/attachment-handoff.json": {
+      "after": {
+        "bytes": 5065,
+        "gitBlob": "da3ae0adc6f030e06133b0eb4bede4a37e86bd3b",
+        "sha256": "48d20ccab431c521bc8cb6f089e19d366fc89754c59a828e2c00a8c11cb76596"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/bin-handoff.json": {
+      "after": {
+        "bytes": 9757,
+        "gitBlob": "2b7fee0f50d6ffeffee1668e62cd67706082c045",
+        "sha256": "9cfca40602f611b7515f88918a448e956da9822b6a7aed2a75981019a88fec8d"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/core-renderer-handoff.json": {
+      "after": {
+        "bytes": 4148,
+        "gitBlob": "217beca1a4d569ce2083c658b6f192732586d928",
+        "sha256": "02d6c47c32eda6eeccf13a19ea0fd07e792cd646773b32615cecb9ebabffb812"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/core-rtl-handoff.json": {
+      "after": {
+        "bytes": 3401,
+        "gitBlob": "a3b589fb41a477a819827dcd11ae6c3719f2ea22",
+        "sha256": "8cc7184288343d0f00441a28b8548b2f13783944665f2cb6f568b9253147411b"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/g04-component-controller-review.json": {
+      "after": {
+        "bytes": 1509,
+        "gitBlob": "d802e3323ec00bcbf7733532d14e9b9e6624dc9c",
+        "sha256": "17217798b0821d1f67744627d69ac113a0dd378bd642f017203db2adf52aa89e"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/g04-source-test-handoff.json": {
+      "after": {
+        "bytes": 2997,
+        "gitBlob": "854cac625fee5fc7af3e6cee65f20a5ce4e6ea90",
+        "sha256": "7c2ad527ebad8c32b3ec8628d153de509f5cedb5f7e1e5baeec1599d60f5cb8a"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/g05-cache-candidate-manifest.json": {
+      "after": {
+        "bytes": 1400,
+        "gitBlob": "6ecc6cc2d96e1df441258f8356b3784fc07ecd41",
+        "sha256": "521d77b7c7d38d783daa1759b0f7427bf2d72afd5cfd9cae4d9a270eaa79e396"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/g05-cache-publication.json": {
+      "after": {
+        "bytes": 2153,
+        "gitBlob": "818350a5417f588e100613f77f8c42ea6eec42e3",
+        "sha256": "a3974acf63833af0cbb1976d3d94d7ed7f740fce40059aa4555433b9effdc092"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/g05-readonly-candidate-manifest.json": {
+      "after": {
+        "bytes": 2657,
+        "gitBlob": "2e1b4598a810ee2a9ace917af2dfbde78819fa1b",
+        "sha256": "297022a1ce122dab75ab5d285c0e5944d57e9416b24ce3ef50d9f964c19aa1e9"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/g05-readonly-publication.original.json": {
+      "after": {
+        "bytes": 3723,
+        "gitBlob": "9f20776f846bca101dd4c84c940fa5943f04fec7",
+        "sha256": "4f97010f0f22891304c4f88320a77be597025d5c0174f3fb298329a640a9ed7a"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/g05-readonly-publication.precision2.json": {
+      "after": {
+        "bytes": 4329,
+        "gitBlob": "bc32b87c41b3db51f8ed52e70201d70cdba4c212",
+        "sha256": "89830836a3434e59389d19c273d6aee04810e931ef949735a6888ffe30fa72a3"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/g07-handoff.json": {
+      "after": {
+        "bytes": 3705,
+        "gitBlob": "972ac38ffc731c62e01f94c70f37ce9e8fc2c14e",
+        "sha256": "aa95373adacb430acbc934fec99e681784a428925e16d707c67bae02775cf0ce"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/g07-publication.json": {
+      "after": {
+        "bytes": 893,
+        "gitBlob": "fe3e08dce310ccc74187054621d1e053f7d60ef1",
+        "sha256": "dd81cd6190ed14b572dc59b9f62c7f6fc22a49fea4ebd275f5457f95ebb3fcce"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/historical-native-input-membership.json": {
+      "after": {
+        "bytes": 18548,
+        "gitBlob": "edc18030851c29648981467d84884a77bed97db5",
+        "sha256": "18cdc4b1d90898db1f054fb8ca0446be0e33c6d548010820c854dc649e0f44e0"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/original-editor-acceptance-queue.json": {
+      "after": {
+        "bytes": 16946,
+        "gitBlob": "196ed5284abe8d26aca3698e614e503f72f46841",
+        "sha256": "55486639642fdf24a02f963b79683941fb46f4229884d1e0ecde90b417aec00b"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/r08-README.md": {
+      "after": {
+        "bytes": 4727,
+        "gitBlob": "dd051d11ddcd901019b242c5e8cd921977a8800d",
+        "sha256": "9edcfd636159afa4289c67ad0454cc702f72bba4684f08d3ae8c6558fef6922c"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/r08-publication.json": {
+      "after": {
+        "bytes": 1820,
+        "gitBlob": "953a9a825648843082a30d932c3630646094f346",
+        "sha256": "d5855599a8f7ac9c92967a603d3bcb0b69dff6470eaebfbb359bb70814e882a4"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/r08-root-review.json": {
+      "after": {
+        "bytes": 3119,
+        "gitBlob": "ab06afe1fe681ad7fd5718659251fba8b1c2c0f7",
+        "sha256": "8401c0031cc84e58cfa189e8083f6813e7039e430342f71f8da0ef8db5dbeed1"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/evidence/r08-source-inverse.json": {
+      "after": {
+        "bytes": 3534,
+        "gitBlob": "dfa0a13a48b097ec34e65414a816cc9aabd48dd5",
+        "sha256": "cf666b38559546d84686151d2e21153eb9d85fd810568f0deb409e8430d43819"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/publication-preflight/complete-merkle-retention.json": {
+      "after": {
+        "bytes": 11459,
+        "gitBlob": "5e3f08d177ed79eef1bb1657fd9beedaa1ee8c5e",
+        "sha256": "e287fabf23598f41678d9c4afc39ab976506847c7b5d42050724f24b5e8d8912"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/publication-preflight/workflow-preflight.json": {
+      "after": {
+        "bytes": 1974,
+        "gitBlob": "f04ae161c6c3bfc53b1b7641b5465a35c580a2ec",
+        "sha256": "178f7bb9fcaa0b60dffdd4c8cda1a18777787c9047d0d7ab4960a4cb3e8cbdb2"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/publication-preflight/workflow-triggers.reused.json": {
+      "after": {
+        "bytes": 48277,
+        "gitBlob": "f145d5b883df1880f8bc91adff9f86c521397fbb",
+        "sha256": "b82279198ddad0ee81c72738f2c2ec28f462e32f234fedfe46881c10417769cc"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-product-admission-delta/source-test-admission-delta.json": {
+      "after": {
+        "bytes": 50987,
+        "gitBlob": "bfd0f8a9f63f81765d3c4290d7fa8bdc8441ee6c",
+        "sha256": "0e1117216895d8bd7187c1843b6ae08c9729936914d2b78093da8e3ff0502d72"
+      },
+      "donor": "2519140dd1966cedc4403b74f0f00479e9bd289f",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/README.md": {
+      "after": {
+        "bytes": 4727,
+        "gitBlob": "dd051d11ddcd901019b242c5e8cd921977a8800d",
+        "sha256": "9edcfd636159afa4289c67ad0454cc702f72bba4684f08d3ae8c6558fef6922c"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/api-custody/base-commit.original.json": {
+      "after": {
+        "bytes": 2390,
+        "gitBlob": "21002b0e09813f264dd9d4a88f8bd1c1ab215e5c",
+        "sha256": "94449aa963d5566d73613a144ead4cc50d0b859057ec821fcb8f35ea7539fedf"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/api-custody/base-docs-tree.original.json": {
+      "after": {
+        "bytes": 3310,
+        "gitBlob": "efc0b35852cf6c3641b5891555e9a1ce1b8e2f53",
+        "sha256": "8e406b670bd55636f59dcd442ffb165317852e09d06f84052cb7c8611b95dbda"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/api-custody/base-engine-docs-tree.original.json": {
+      "after": {
+        "bytes": 2118,
+        "gitBlob": "98628c499decd3ab41ec22e9680ef6f28fc43189",
+        "sha256": "970a0f1488f0cd198ac27e7a1eebdc1f3e40e6e53af41fa5bb971360ea68f98b"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/api-custody/base-root-tree.original.json": {
+      "after": {
+        "bytes": 9329,
+        "gitBlob": "e1ddbfe2af434e63f93cc90db97b46f5b9173123",
+        "sha256": "1d5ed652bdfcd20d25f9a3b36a9ad8e5a6fbd6ffae26850215f55ba72c5ec079"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/api-custody/base-ui-tree.original.json": {
+      "after": {
+        "bytes": 4897,
+        "gitBlob": "ccbc96fbcec67e5a9b4069f0b8216b9b0e1a4fa0",
+        "sha256": "5e293e2eb071d611115fa2d86f2e1b88d2ac3678025b1da00d0ee708fd24cb17"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/api-custody/base-validation-tree.original.json": {
+      "after": {
+        "bytes": 150205,
+        "gitBlob": "cd26493b747305ada244fe70e4dc670cb0d80e0d",
+        "sha256": "bbf59cc90c74bb450a759600cf427ef7bf5990ddb3e92de79246d25f07e6a781"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/api-custody/branch-absence-before.original.json": {
+      "after": {
+        "bytes": 348,
+        "gitBlob": "2b3d675a3f66fd7d844733722893d1367ca7aab7",
+        "sha256": "4abe075f7529991cf7708bc7b1dbb72b9270855cc13a664142f7760b040c1dfc"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/api-custody/original-recursive-tree-transport-failure.json": {
+      "after": {
+        "bytes": 192,
+        "gitBlob": "17d9950f85bf2e71607827e2ed96e2afbda93755",
+        "sha256": "482c062779a4d830188ddb8d8a4db9bb5324f3100480cb7eada7acef52f7df94"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/api-custody/publication-preflight.json": {
+      "after": {
+        "bytes": 3005,
+        "gitBlob": "1d272ba140687df0fa5c307b5ffc97dff969b5a9",
+        "sha256": "be7c0e19f69ae170847a95c1ca4972e1429340df260ff861fe58b8f6103e27fb"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/api-custody/source-retention-gate.original.py": {
+      "after": {
+        "bytes": 7239,
+        "gitBlob": "5b579e9bbb5a82981b5aef7d649f2caf88e998b6",
+        "sha256": "f69d6a465db0517c5b41143c9b54aa275ecc6cbc63de6e9d20bc074d98feabf0"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/api-custody/workflow-triggers.json": {
+      "after": {
+        "bytes": 48277,
+        "gitBlob": "f145d5b883df1880f8bc91adff9f86c521397fbb",
+        "sha256": "b82279198ddad0ee81c72738f2c2ec28f462e32f234fedfe46881c10417769cc"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/changes.diff": {
+      "after": {
+        "bytes": 3694,
+        "gitBlob": "96f562cca80c5b6477ff8b258d23cd26990a776a",
+        "sha256": "70f1611527f40a7960bbfa3dca2431aa583b8df2dfc4183e756e8662ac741b8d"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/originals/PinkhaT5NativeAcceptanceUITests.swift": {
+      "after": {
+        "bytes": 34098,
+        "gitBlob": "58a2e07fb3a2737ebfa1fb939bb7ab7f45da2f1f",
+        "sha256": "698f4ed7f1f81fe567b94b531f43e14259d08e6acbf79d72e132a5b9b6b941a7"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/packet-manifest.json": {
+      "after": {
+        "bytes": 7627,
+        "gitBlob": "332f189f121adacf18d439b68526fa670ccfbde1",
+        "sha256": "a9d38fcb2438b05d4658bb9c8334ba74772cea22e80cbdd0fd93566927b2f951"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/prepare_api_packet.py": {
+      "after": {
+        "bytes": 7996,
+        "gitBlob": "002ecda2f65c82be0ed992f700558d56c34a725c",
+        "sha256": "c651e39580e5f1b9ca9005556c1c47304ed16ecf8cb64a87933e62bf0c17df2e"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/prepare_source.py": {
+      "after": {
+        "bytes": 5653,
+        "gitBlob": "1771581cbaaf43c36f7c13c1ef24a865e8d35f94",
+        "sha256": "d5aba567e162a0ffa42290c6aaef26810854565a400b8f2e9d7f98f58d65f319"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/production-auth-evidence.json": {
+      "after": {
+        "bytes": 1017,
+        "gitBlob": "f12935a4c1fd529238e32cc55017c2104d1bf2e8",
+        "sha256": "10779e3a6444921ecedcd4b0409be0d83cf20972bb1bb4fa99ee67d03232d57c"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/readiness/README.md": {
+      "after": {
+        "bytes": 14391,
+        "gitBlob": "29bb2b80a04fd037f4a63c47891ca4c626196188",
+        "sha256": "4d37b203f3f755e5f0d1476750be94c2d5dace72d311eaba4cba561e9fba0c12"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/readiness/asana-material-handoffs.json": {
+      "after": {
+        "bytes": 23269,
+        "gitBlob": "45198346f5e143483b2337e2553fd72fc2404caa",
+        "sha256": "5971fd475f8d3aa46e5041b68fc0435db00839912e7f747ba67a56cecdbcff4e"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/readiness/primary-source-readback.json": {
+      "after": {
+        "bytes": 4519,
+        "gitBlob": "d364f1261793fae51ec96877690c030edfff481d",
+        "sha256": "bddb4e71a12bc28818f03e586e6a5b0c5e288a974a4b598a8df6a6216145daab"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/readiness/readiness.json": {
+      "after": {
+        "bytes": 22355,
+        "gitBlob": "200dfd81fbec114b32058c786d1ef82508f60269",
+        "sha256": "afacd928e1d12a3d2b5a1bd4b91ec630d7d164781c9cf3c3dd6f9ba8e95a3614"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/root-independent-review.json": {
+      "after": {
+        "bytes": 3119,
+        "gitBlob": "ab06afe1fe681ad7fd5718659251fba8b1c2c0f7",
+        "sha256": "8401c0031cc84e58cfa189e8083f6813e7039e430342f71f8da0ef8db5dbeed1"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-t5-r08-warning/source-inverse.json": {
+      "after": {
+        "bytes": 3534,
+        "gitBlob": "dfa0a13a48b097ec34e65414a816cc9aabd48dd5",
+        "sha256": "cf666b38559546d84686151d2e21153eb9d85fd810568f0deb409e8430d43819"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-torah-routing-readiness/README.md": {
+      "after": {
+        "bytes": 2333,
+        "gitBlob": "ddd8bcdb2f18e6966fa10f5fa8fdb84b85d24744",
+        "sha256": "941d336aa242b70b3043c09d65f7e480c8665aeca3abeae9cf33dac5cefb9e12"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-torah-routing-readiness/g03/README.md": {
+      "after": {
+        "bytes": 9802,
+        "gitBlob": "16ddfc437c6385a7ef252bae756ea33eac1d9943",
+        "sha256": "a1e7748be2a42689f119946227513829f05d8a22bcdc0528b18e779f5244c6aa"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-torah-routing-readiness/g03/audit.json": {
+      "after": {
+        "bytes": 3344,
+        "gitBlob": "6af61106c50575b32d0d677b15695090c4682450",
+        "sha256": "ee13fd70b989d50e2199507f7b2822bba1994359f7a08184a86bd251771a6f00"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-torah-routing-readiness/g03/g04-route-boundary.json": {
+      "after": {
+        "bytes": 1117,
+        "gitBlob": "00e557c92fe1e0436e9ede97518a03772743a363",
+        "sha256": "1ad5eb51e1b60db191485a0ad5e373cee7c08aaa5d5dd6075f82b953278125a9"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-torah-routing-readiness/g03/requirements-reference.json": {
+      "after": {
+        "bytes": 1090,
+        "gitBlob": "b2ca78239e79fae959e94a201a9d70da64564527",
+        "sha256": "ab4307ca6c4a1f43788892c8d068a74ca6568e090d37c9f024a6255af1ab6219"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-torah-routing-readiness/g03/source-manifest.json": {
+      "after": {
+        "bytes": 14532,
+        "gitBlob": "4b1eb71fffa4bdfdb25fc8fe7f59412ea9219a77",
+        "sha256": "0f102ef664d86e6027444d67b05b9b5afbe6615cb188a522be42f873c75ff9d3"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-torah-routing-readiness/root-review.json": {
+      "after": {
+        "bytes": 685,
+        "gitBlob": "f222b1524e068d78c8a9aa5b516622cd921ebb6b",
+        "sha256": "1fe9290bbfe4aa871591d389cb3f33432627c5eaf9ae5fbcc0fbf7ec718ae32f"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-torah-routing-readiness/t5/README.md": {
+      "after": {
+        "bytes": 16041,
+        "gitBlob": "161cb47bd35185596b83f7f4c9a5a5e4f382fbf8",
+        "sha256": "85d1f52a317deeecf7a7858a80b89a112c942f8bd01325979ac09737b34eb062"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-torah-routing-readiness/t5/locator-readiness-delta.json": {
+      "after": {
+        "bytes": 839,
+        "gitBlob": "3fc3a3979c46188b521796a2802485e9bea97e45",
+        "sha256": "34ad25d7082e4202c3b2e95adb72ed0ac93f76541369d519f669aea945810e55"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-torah-routing-readiness/t5/locator-update.json": {
+      "after": {
+        "bytes": 3232,
+        "gitBlob": "dcee36b2c5ce734d41f435cd3abf6f7f9e1002d1",
+        "sha256": "50d1624644e151dde121d701b891479a2031009d23da57da61789cb35f93b2cd"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-torah-routing-readiness/t5/previous-readiness-reference.json": {
+      "after": {
+        "bytes": 989,
+        "gitBlob": "033175f57d939dfee44172a056d2ad737f1406da",
+        "sha256": "c54a646f897fa092765cacca5ccfd8eb05ee36dba9178b9e633223756cdbf854"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    },
+    "docs/validation/20261127-wave2-torah-routing-readiness/t5/readiness.json": {
+      "after": {
+        "bytes": 24977,
+        "gitBlob": "1382667e28df4c7129736559ccb6406872c2622b",
+        "sha256": "1c1ad2c675043a8e0145280b4ce432e68f294fa9ca5766490bff72bd42c73a24"
+      },
+      "donor": "02910d8e7cacb90b2654a013b9b29ea4d11c5c1e",
+      "status": "A"
+    }
+  },
+  "knownOpenGaps": [
+    "ordinary attachment caller intent persistence and known-file ID reconciliation after journal failure",
+    "new uploader30 component/native/Apple qualification",
+    "three Kit SwiftUI callers and matching original target",
+    "T5 fresh fixtures/new native product and current UI acceptance",
+    "separate SDK4cb/host promotion"
+  ],
+  "newTestsExecuted": 0,
+  "originalKitHelperDeclaredCases": 9,
+  "originalKitHelperMethodsPassed": 6,
+  "originalKitHelperReceipt": "bdc048352dde0e89ff922ca97fc0ab37af21cce4610d16b707bcea813c86156c",
+  "parent": "db7b1c8cc5be5950912b91b8cae4f6e5f19f3a16",
+  "schema": "pinkha-root-t5-kit-attachment-source-intake/v1",
+  "scope": "Source checkpoint only. Uploader30 and T5/UI/App/completeKit acceptance remain open; known recovery limits preserved. Original SDK/native inputs and all55 other package pins retained.",
+  "sourceRetentionRows": 132,
+  "wholeMergeTreeEqualsReviewedInputs": true
+}

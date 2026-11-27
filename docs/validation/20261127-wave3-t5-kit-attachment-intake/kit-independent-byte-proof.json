@@ -1,0 +1,583 @@
+{
+  "schema": "pinkha.wave3.kit26-independent-byte-proof.v1",
+  "status": "PASS_STATIC_SOURCE_RETENTION_ONLY",
+  "repository": "davidpovarsky/TorahInspectorKit",
+  "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "tree": "91b2132ff8e55fbc0c3df2b14d0ad6ddf1626a41",
+  "parent": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "parentTree": "43ce9677dbeff494facf971ae59ab9a2eeb754ea",
+  "primaryFiles": [
+    {
+      "path": "PROJECT_BOARD.md",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 3987,
+      "sha256": "c66d2d931a5b42a3006258b0c86536c61e0ead070d573c88f0c3bda8a9a63db8",
+      "gitBlob": "24fe50c0e54c51a3534b0bc2d591c09d08aa3f3a"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 1858,
+      "sha256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7",
+      "gitBlob": "2a48b998f1d520fcc22f3aad0082b9e66d862373"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 26545,
+      "sha256": "d68b95a931f2dedec125a50e233c6844d518895e49d13c6d520bd448cac55655",
+      "gitBlob": "e3679c662649aef41294fb965d5eb4db21430a58"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 56161,
+      "sha256": "5ac7fad544a637c5e0ae0e2c497ac7e4c6fb0cde3bc232a620e44f390dab8464",
+      "gitBlob": "c9e7b0fa676f13350fb9f04560b8d2fc3f344ed0"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSourceReaderView.swift",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 23576,
+      "sha256": "1c85e7e11d2b62b05beb68e83e835691a343c5bdf30321678b0d5241a6b54d89",
+      "gitBlob": "929bc16744dfd0eb53278e70b3f7a2419d8bccd1"
+    },
+    {
+      "path": "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 6211,
+      "sha256": "ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c",
+      "gitBlob": "b78b37b9cc0e430402ff18d6e4ba7eebceb03c6b"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/README.md",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 6640,
+      "sha256": "8baea1a7cfc6bce9d3268774c88212d86f74e0ec3b48781bb07d170816844087",
+      "gitBlob": "a7794917239cc6b11fd05a09952342d5f90b5cdc"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/board-source-inverse.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 1320,
+      "sha256": "142356163f2d7c0d3448204e50684b04fbe6e57c625e088e5832effcf708645c",
+      "gitBlob": "2add49c2ac6a8b7e21d0372de9307e8f1a1c2e63"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/candidate-manifest.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 1569,
+      "sha256": "07095eef913e46be27aa61a86e239b3439b4b8fda3664a651c333c82bce14954",
+      "gitBlob": "5e3f0324203cb98b8c6b03a729cbaf15e02d392e"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/component/Package.swift",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 510,
+      "sha256": "3e0ee022676138e3fb2eb1f5a9bfcb7d425ca01c5820a34c65d0fdaa0d56efd9",
+      "gitBlob": "e85bcc819a69187dc6ede2e2c0ff56099c81fa04"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/component/custody-correction.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 3194,
+      "sha256": "0f01ece2d060adff6a570097f3b77e0ffa28fe0afee4302cb1e367faff98e1cd",
+      "gitBlob": "192d7541dce5c3c159251d5fd8b8f7557b1edb9c"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/component/editor-controller-source-review-2e9.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 1509,
+      "sha256": "17217798b0821d1f67744627d69ac113a0dd378bd642f017203db2adf52aa89e",
+      "gitBlob": "d802e3323ec00bcbf7733532d14e9b9e6624dc9c"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/component/editor-controller-source-review-c079.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 2422,
+      "sha256": "76b2d74472efd5037e56806229bf7ed327751d881e6a5507bb456031e7845178",
+      "gitBlob": "bfac40023369faac1ef25e5a69fa69d68aa00be6"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/component/owned-process-provenance.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 1010,
+      "sha256": "4c2f95a4129fdb89125458c4a3a5874c97dbbf0ed9aaa3d1b15d638ccef734b1",
+      "gitBlob": "d8defbf00ae69acb4c0e4b8a8c0eabdba0e11698"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/component/owned_process.py",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 5529,
+      "sha256": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924",
+      "gitBlob": "23ef3207a1a62b67ace65938dc40b5c78b9d06f8"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/component/run_component.prereview-c079.py",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 10932,
+      "sha256": "c079c67d218200af5100f22a503e603c16f9daf8badc014d9dc295d45ed1ab3c",
+      "gitBlob": "fa3465f076017651c3fc33b362df322208fb9c31"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/component/run_component.py",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 11622,
+      "sha256": "2e9d2fdd8fd83741719cfd6cb659fbd06786f392cbca854d6db78185da8dbe50",
+      "gitBlob": "dad16bf10e44d5d4fd072950050724cd64cd678a"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/interfaces-independent-review.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 5755,
+      "sha256": "76bfdf3c758ce0f5d0a2c6ec2316082fdcbd7e6eb789ee835c8bbd7059d3db98",
+      "gitBlob": "7d3ab49a72a3ef03c81b4c23feb34331c7f6da98"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/original-source-binding.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 2264,
+      "sha256": "fa8fd441d19b58010e595fedf1a786febd3231c985120d4f79563bba046a2717",
+      "gitBlob": "3ec4e69af681eccc517ecf4f2cf0c2ca810ed391"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/original-tree.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 57443,
+      "sha256": "7cf1389e2ccc3c3a5e0003a9525de3950b077361a104b93e9d4c67571282721c",
+      "gitBlob": "a425f37e0a4c6cc08e857be9f83d16067516d381"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/publication-api-plan.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 884,
+      "sha256": "6b47941915f06b6d796367505682a6ae11ba37e9dbb804cdfc4866ef753c8550",
+      "gitBlob": "17556c66496c3688324c59be02477d6807639cf5"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/publication-source-check.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 1951,
+      "sha256": "de56971cef15356618db1874152949b24ec53061f38a02b763c632a5a862b65b",
+      "gitBlob": "391428c35af536a502f2c8e964a78a09b2479f41"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/publication-workflow-check.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 1374,
+      "sha256": "930669947ae70b526c3325dfc1b35cc8bea1cb7a243b8258d775930e79c4c389",
+      "gitBlob": "d069b50e994ceb0707a665a1de3cded6cbc27663"
+    },
+    {
+      "path": "docs/validation/20261127-reader-document-lifetime/source-inverse.json",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 24464,
+      "sha256": "e296e6206bb39a2d55ed735318531069eac0b7dabc94a168fe31a0d5d53bb5de",
+      "gitBlob": "cd54fa9a63aee096ba8ecbc558dcb30c2151c1a4"
+    },
+    {
+      "path": "PROJECT_BOARD.md",
+      "commit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+      "bytes": 3472,
+      "sha256": "494191bb24dbdeb21e3fbf028e652953504a7efbcbb386a792266e3c19b3802d",
+      "gitBlob": "cde132f85412a3343cb65f741311e18b25a9622a"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "commit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+      "bytes": 24889,
+      "sha256": "92295e1d372d393309fc03d15ea2cd2ea51997acf22a065ec865dea72ed89c33",
+      "gitBlob": "ee653e6205a577183548575a896044016178c851"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "commit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+      "bytes": 54961,
+      "sha256": "5e6799ab608d9dfcf9d8d895ce050dd878ce743c19f5ffe864e1863e1037c7b5",
+      "gitBlob": "366712cf677f71464b2255155149d08ae14601ae"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSourceReaderView.swift",
+      "commit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+      "bytes": 20848,
+      "sha256": "88371bf98ab8cd4273c459abb9a896924b680d1d7c422da8aa5501da76942dd8",
+      "gitBlob": "150c1780db7e93009bda86447e36906af0b439bf"
+    },
+    {
+      "path": "Package.swift",
+      "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+      "bytes": 841,
+      "sha256": "2fd7d2fda776da4ee55a50a67d6cfd8b7171f2311304a8d836fb5e4b7ad86401",
+      "gitBlob": "5ec0de7727f3e99768c8f49d95734c74d90c1571"
+    }
+  ],
+  "treeRetention": {
+    "originalFiles": 135,
+    "candidateFiles": 155,
+    "unchangedOriginalFiles": 131,
+    "unchangedPaths": [
+      ".agents/agents/dana.md",
+      ".agents/agents/eitan.md",
+      ".agents/agents/maya.md",
+      ".agents/agents/noam.md",
+      ".agents/agents/roni.md",
+      ".agents/agents/tomer.md",
+      ".agents/agents/yael.md",
+      ".agents/roles/dana.md",
+      ".agents/roles/eitan.md",
+      ".agents/roles/maya.md",
+      ".agents/roles/noam.md",
+      ".agents/roles/roni.md",
+      ".agents/roles/tomer.md",
+      ".agents/roles/yael.md",
+      ".agents/rules/ai-team-router.md",
+      ".agents/skills/asana-team-coordination/SKILL.md",
+      ".codex/agents/dana.toml",
+      ".codex/agents/eitan.toml",
+      ".codex/agents/maya.toml",
+      ".codex/agents/noam.toml",
+      ".codex/agents/roni.toml",
+      ".codex/agents/tomer.toml",
+      ".codex/agents/yael.toml",
+      ".github/workflows/ci.yml",
+      ".github/workflows/common-sdk-focused.yml",
+      ".github/workflows/ios27-side-sheet.yml",
+      ".gitignore",
+      "AGENTS.md",
+      "Demo/App/TorahInspectorSheetDemoApp.swift",
+      "Demo/UITests/TorahInspectorSheetDemoUITests.swift",
+      "Demo/project.yml",
+      "GEMINI.md",
+      "Package.swift",
+      "README.md",
+      "Sources/TorahInspectorCore/Models.swift",
+      "Sources/TorahInspectorCore/ProviderProtocols.swift",
+      "Sources/TorahInspectorCore/TorahInspectorCoordinator.swift",
+      "Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+      "Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift",
+      "Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+      "Sources/TorahInspectorCore/TorahSourceTransfer.swift",
+      "Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift",
+      "Sources/TorahInspectorUI/Resources/en.lproj/Localizable.strings",
+      "Sources/TorahInspectorUI/Resources/he.lproj/Localizable.strings",
+      "Sources/TorahInspectorUI/TorahInspectorAppearance.swift",
+      "Sources/TorahInspectorUI/TorahInspectorHostActions.swift",
+      "Sources/TorahInspectorUI/TorahInspectorPresentation.swift",
+      "Sources/TorahInspectorUI/TorahInspectorPresentationOptions.swift",
+      "Sources/TorahInspectorUI/TorahInspectorRoute.swift",
+      "Sources/TorahInspectorUI/TorahInspectorSheetPresenter.swift",
+      "Sources/TorahInspectorUI/TorahPanelLoadState.swift",
+      "Sources/TorahInspectorUI/TorahPlatformSupport.swift",
+      "Sources/TorahInspectorUI/TorahReaderSessionState.swift",
+      "Sources/TorahInspectorUI/TorahStrings.swift",
+      "Tests/TorahInspectorCoreTests/DocumentConsumerCancellationTests.swift",
+      "Tests/TorahInspectorCoreTests/RelatedDocumentsAuthorityTests.swift",
+      "Tests/TorahInspectorCoreTests/RelatedDocumentsRefreshTests.swift",
+      "Tests/TorahInspectorCoreTests/TorahInspectorCoreTests.swift",
+      "Tests/TorahInspectorUITests/TorahInspectorHostActionsTests.swift",
+      "Tests/TorahInspectorUITests/TorahRelatedDocumentsAccessStateTests.swift",
+      "docs/FAITHFUL_HOST_CHROME.md",
+      "docs/ai-team/ASANA_POLICY.md",
+      "docs/ai-team/BRANCH_INTEGRATION.md",
+      "docs/ai-team/PLATFORMS.md",
+      "docs/ai-team/PROJECT_ASSIGNMENTS.md",
+      "docs/ai-team/TASK_HANDOFF_TEMPLATE.md",
+      "docs/ai-team/TEAM.md",
+      "docs/ai-team/VALIDATION.md",
+      "docs/anytype/integration-20261115/V3_SOURCE_HANDOFF.md",
+      "docs/validation/20261118-document-cancellation/README.md",
+      "docs/validation/20261118-document-cancellation/after.json",
+      "docs/validation/20261118-document-cancellation/after.log",
+      "docs/validation/20261118-document-cancellation/baseline.json",
+      "docs/validation/20261118-document-cancellation/baseline.log",
+      "docs/validation/20261118-document-cancellation/handoff.json",
+      "docs/validation/20261118-document-cancellation/implementation.patch",
+      "docs/validation/20261118-document-cancellation/portable-Package.swift",
+      "docs/validation/20261118-t5-coverage-contract/.gitattributes",
+      "docs/validation/20261118-t5-coverage-contract/README.md",
+      "docs/validation/20261118-t5-coverage-contract/kit.json",
+      "docs/validation/20261118-t5-coverage-contract/kit.log",
+      "docs/validation/20261118-t5-coverage-contract/portable-Package.swift",
+      "docs/validation/20261118-t5-coverage-contract/swift-parse.log",
+      "docs/validation/20261121-related-read-authority/.gitattributes",
+      "docs/validation/20261121-related-read-authority/MANIFEST.json",
+      "docs/validation/20261121-related-read-authority/README.md",
+      "docs/validation/20261121-related-read-authority/test-profile.json",
+      "docs/validation/20261121-related-read-authority/windows-component/attempt-1/execution.json",
+      "docs/validation/20261121-related-read-authority/windows-component/attempt-1/source-manifest.json",
+      "docs/validation/20261121-related-read-authority/windows-component/attempt-1/test.log",
+      "docs/validation/20261121-related-read-authority/windows-component/attempt-2/execution.json",
+      "docs/validation/20261121-related-read-authority/windows-component/attempt-2/source-manifest.json",
+      "docs/validation/20261121-related-read-authority/windows-component/attempt-2/test.log",
+      "docs/validation/20261121-related-read-authority/windows-component/attempt-3/execution.json",
+      "docs/validation/20261121-related-read-authority/windows-component/attempt-3/source-manifest.json",
+      "docs/validation/20261121-related-read-authority/windows-component/attempt-3/test.log",
+      "docs/validation/20261121-related-read-authority/windows-component/final/execution.json",
+      "docs/validation/20261121-related-read-authority/windows-component/final/session-lifetime-syntax.json",
+      "docs/validation/20261121-related-read-authority/windows-component/final/source-manifest.json",
+      "docs/validation/20261121-related-read-authority/windows-component/final/syntax.json",
+      "docs/validation/20261121-related-read-authority/windows-component/final/test.log",
+      "docs/validation/20261122-common-sdk/FINAL_SEGMENT_SYNTAX.json",
+      "docs/validation/20261122-common-sdk/INITIAL_SWIFT_SYNTAX_RESULT.json",
+      "docs/validation/20261122-common-sdk/README.md",
+      "docs/validation/20261122-common-sdk/RESOLUTION_MANIFEST.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/.gitattributes",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/COMMITTED_SOURCE_VERIFICATION.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/DOWNLOAD_IDENTITY.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/INDEPENDENT_AUDIT.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/PARSER_REPLAY.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/PUBLICATION_SCOPE.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/README.md",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/TRANSFER_MANIFEST.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/artifact-original.zip",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/audit_archived_execution.py",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/command.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/events.jsonl",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/execution.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/identity.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/selection.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/source-after.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/source-before.json",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/swift-test.log",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/swift-version.log",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/tests-swift-testing.xml",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/evidence/xcode-version.log",
+      "docs/validation/20261122-common-sdk/receipt-44968013856/job-original.log",
+      "docs/validation/20261122-common-sdk/selection.json",
+      "scripts/CI/verify-common-sdk.py",
+      "scripts/validate-project-board.sh",
+      "tools/ai-team/ensure-team.ps1"
+    ],
+    "modified": [
+      "PROJECT_BOARD.md",
+      "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "Sources/TorahInspectorUI/TorahSourceReaderView.swift"
+    ],
+    "added": [
+      "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+      "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+      "docs/validation/20261127-reader-document-lifetime/README.md",
+      "docs/validation/20261127-reader-document-lifetime/board-source-inverse.json",
+      "docs/validation/20261127-reader-document-lifetime/candidate-manifest.json",
+      "docs/validation/20261127-reader-document-lifetime/component/Package.swift",
+      "docs/validation/20261127-reader-document-lifetime/component/custody-correction.json",
+      "docs/validation/20261127-reader-document-lifetime/component/editor-controller-source-review-2e9.json",
+      "docs/validation/20261127-reader-document-lifetime/component/editor-controller-source-review-c079.json",
+      "docs/validation/20261127-reader-document-lifetime/component/owned-process-provenance.json",
+      "docs/validation/20261127-reader-document-lifetime/component/owned_process.py",
+      "docs/validation/20261127-reader-document-lifetime/component/run_component.prereview-c079.py",
+      "docs/validation/20261127-reader-document-lifetime/component/run_component.py",
+      "docs/validation/20261127-reader-document-lifetime/interfaces-independent-review.json",
+      "docs/validation/20261127-reader-document-lifetime/original-source-binding.json",
+      "docs/validation/20261127-reader-document-lifetime/original-tree.json",
+      "docs/validation/20261127-reader-document-lifetime/publication-api-plan.json",
+      "docs/validation/20261127-reader-document-lifetime/publication-source-check.json",
+      "docs/validation/20261127-reader-document-lifetime/publication-workflow-check.json",
+      "docs/validation/20261127-reader-document-lifetime/source-inverse.json"
+    ],
+    "removed": [],
+    "allRecursiveTreeObjectsRehashed": true,
+    "publishedOriginalTreeMatchesPrimaryParent": true
+  },
+  "sourceInverses": [
+    {
+      "path": "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+      "newFileAbsentInOriginal": true,
+      "bytes": 1858,
+      "sha256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7",
+      "gitBlob": "2a48b998f1d520fcc22f3aad0082b9e66d862373"
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "literalEdits": 12,
+      "exactWholeOriginalRestored": true,
+      "original": {
+        "bytes": 24889,
+        "sha256": "92295e1d372d393309fc03d15ea2cd2ea51997acf22a065ec865dea72ed89c33",
+        "gitBlob": "ee653e6205a577183548575a896044016178c851"
+      },
+      "candidate": {
+        "bytes": 26545,
+        "sha256": "d68b95a931f2dedec125a50e233c6844d518895e49d13c6d520bd448cac55655",
+        "gitBlob": "e3679c662649aef41294fb965d5eb4db21430a58"
+      }
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "literalEdits": 10,
+      "exactWholeOriginalRestored": true,
+      "original": {
+        "bytes": 54961,
+        "sha256": "5e6799ab608d9dfcf9d8d895ce050dd878ce743c19f5ffe864e1863e1037c7b5",
+        "gitBlob": "366712cf677f71464b2255155149d08ae14601ae"
+      },
+      "candidate": {
+        "bytes": 56161,
+        "sha256": "5ac7fad544a637c5e0ae0e2c497ac7e4c6fb0cde3bc232a620e44f390dab8464",
+        "gitBlob": "c9e7b0fa676f13350fb9f04560b8d2fc3f344ed0"
+      }
+    },
+    {
+      "path": "Sources/TorahInspectorUI/TorahSourceReaderView.swift",
+      "literalEdits": 25,
+      "exactWholeOriginalRestored": true,
+      "original": {
+        "bytes": 20848,
+        "sha256": "88371bf98ab8cd4273c459abb9a896924b680d1d7c422da8aa5501da76942dd8",
+        "gitBlob": "150c1780db7e93009bda86447e36906af0b439bf"
+      },
+      "candidate": {
+        "bytes": 23576,
+        "sha256": "1c85e7e11d2b62b05beb68e83e835691a343c5bdf30321678b0d5241a6b54d89",
+        "gitBlob": "929bc16744dfd0eb53278e70b3f7a2419d8bccd1"
+      }
+    },
+    {
+      "path": "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+      "newFileAbsentInOriginal": true,
+      "bytes": 6211,
+      "sha256": "ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c",
+      "gitBlob": "b78b37b9cc0e430402ff18d6e4ba7eebceb03c6b"
+    }
+  ],
+  "boardInverse": {
+    "literalEdits": 1,
+    "exactWholeOriginalRestored": true,
+    "original": {
+      "bytes": 3472,
+      "sha256": "494191bb24dbdeb21e3fbf028e652953504a7efbcbb386a792266e3c19b3802d",
+      "gitBlob": "cde132f85412a3343cb65f741311e18b25a9622a"
+    },
+    "candidate": {
+      "bytes": 3987,
+      "sha256": "c66d2d931a5b42a3006258b0c86536c61e0ead070d573c88f0c3bda8a9a63db8",
+      "gitBlob": "24fe50c0e54c51a3534b0bc2d591c09d08aa3f3a"
+    }
+  },
+  "manifestAndOriginalBindingVerified": true,
+  "componentCustodyCorrection": {
+    "literalDiffExact": true,
+    "prior": {
+      "bytes": 10932,
+      "sha256": "c079c67d218200af5100f22a503e603c16f9daf8badc014d9dc295d45ed1ab3c",
+      "gitBlob": "fa3465f076017651c3fc33b362df322208fb9c31"
+    },
+    "candidate": {
+      "bytes": 11622,
+      "sha256": "2e9d2fdd8fd83741719cfd6cb659fbd06786f392cbca854d6db78185da8dbe50",
+      "gitBlob": "dad16bf10e44d5d4fd072950050724cd64cd678a"
+    },
+    "unchangedDeclarations": [
+      "resource_sample",
+      "sha",
+      "source_inventory",
+      "write"
+    ],
+    "originalCleanupRunner": {
+      "path": "/workspace/scratch/ae335eba85e3/wave2-native-core-independent-review/sources/54079356628487f7ecedf5cfe87434c8cc57ea36/Tools/PinkhaDualEngineRuntime/property_lifecycle/run_component.py",
+      "sha256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2"
+    },
+    "fourCleanupDeclarationsExactPrimary": [
+      {
+        "name": "group_members",
+        "sha256": "8fec98e73fa15e9a4223603871b17867223072f4b9430d912610d1aaab7f9cba",
+        "characters": 436,
+        "exactOriginalASTSourceSlice": true
+      },
+      {
+        "name": "observe_owned_group",
+        "sha256": "df09ba2d632f867e4dbd902adb5a89a5c56e11dedf7c3018d875658207eebcc0",
+        "characters": 783,
+        "exactOriginalASTSourceSlice": true
+      },
+      {
+        "name": "drain_owned_process",
+        "sha256": "bc502d4e202391f87720b600047a28d2f61bb0a559e274a2b3a8cb2c757dd94b",
+        "characters": 3202,
+        "exactOriginalASTSourceSlice": true
+      },
+      {
+        "name": "finish_owned_process",
+        "sha256": "70bc0e7b38d1d60446d2c665cff360fbf01459e238f4a0243f7234000f797b59",
+        "characters": 740,
+        "exactOriginalASTSourceSlice": true
+      }
+    ]
+  },
+  "testSource": {
+    "path": "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+    "bytes": 6211,
+    "sha256": "ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c",
+    "gitBlob": "b78b37b9cc0e430402ff18d6e4ba7eebceb03c6b",
+    "packageTarget": "TorahInspectorUITests",
+    "testedModule": "TorahInspectorUI",
+    "methods": [
+      {
+        "suite": "TorahDocumentLoadLifetimeTests",
+        "method": "newerSelectionRejectsLateProviderCompletion",
+        "parameters": "providerFails: Bool",
+        "arguments": [
+          false,
+          true
+        ],
+        "declaredCases": 2
+      },
+      {
+        "suite": "TorahDocumentLoadLifetimeTests",
+        "method": "sameSelectionRetryOrReactivationRejectsItsPriorLifetime",
+        "parameters": "disappears: Bool",
+        "arguments": [
+          false,
+          true
+        ],
+        "declaredCases": 2
+      },
+      {
+        "suite": "TorahDocumentLoadLifetimeTests",
+        "method": "callerCancellationRejectsANonCooperativeProvider",
+        "parameters": "providerFails: Bool",
+        "arguments": [
+          false,
+          true
+        ],
+        "declaredCases": 2
+      },
+      {
+        "suite": "TorahDocumentLoadLifetimeTests",
+        "method": "preCancelledCallerDoesNotDispatchAProviderRead",
+        "parameters": "",
+        "arguments": null,
+        "declaredCases": 1
+      },
+      {
+        "suite": "TorahDocumentLoadLifetimeTests",
+        "method": "invalidatedOwnerCannotDispatchOrScheduleARetry",
+        "parameters": "",
+        "arguments": null,
+        "declaredCases": 1
+      },
+      {
+        "suite": "TorahDocumentLoadLifetimeTests",
+        "method": "currentProviderFailureRemainsAnActualFailure",
+        "parameters": "",
+        "arguments": null,
+        "declaredCases": 1
+      }
+    ],
+    "methodCount": 6,
+    "declaredCaseCount": 9,
+    "executed": false
+  },
+  "execution": {
+    "sourceByteAnalysisOnly": true,
+    "donorImports": 0,
+    "tests": 0,
+    "compilers": 0,
+    "nativeCalls": 0,
+    "accountOperations": 0,
+    "remoteCommands": 0,
+    "oracleWrites": 0,
+    "workflowDispatches": 0
+  }
+}

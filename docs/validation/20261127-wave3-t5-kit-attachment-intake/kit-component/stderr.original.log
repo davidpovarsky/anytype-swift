@@ -1,0 +1,316 @@
+warning: 'component': /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-frontend -frontend -c -primary-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component/Package.swift -target aarch64-unknown-linux-gnu -Xllvm -aarch64-use-tbi -disable-objc-interop -I /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -vfsoverlay /tmp/TemporaryDirectory.rlFVT8/vfs.yaml -module-cache-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/swiftpm-module-cache -no-color-diagnostics -Xcc -fno-color-diagnostics -swift-version 6 -package-description-version 6.0.0 -empty-abi-descriptor -no-auto-bridging-header-chaining -module-name main -in-process-plugin-server-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins -plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/local/lib/swift/host/plugins -o /tmp/TemporaryDirectory.rq1a54/Package-1.o
+/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-autolink-extract /tmp/TemporaryDirectory.rq1a54/Package-1.o -o /tmp/TemporaryDirectory.rq1a54/main-1.autolink
+/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/clang -pie -Xlinker --build-id -Xlinker -rpath -Xlinker /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/aarch64/swiftrt.o /tmp/TemporaryDirectory.rq1a54/Package-1.o @/tmp/TemporaryDirectory.rq1a54/main-1.autolink -L /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -lswiftCore --target=aarch64-unknown-linux-gnu -v -L /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -lPackageDescription -Xlinker -rpath -Xlinker /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -o /tmp/TemporaryDirectory.VjMuB8/component-manifest
+Swift version 6.4.3 (swift-6.4.3-RELEASE)
+Target: aarch64-unknown-linux-gnu
+clang version 21.0.0 (https://github.com/swiftlang/llvm-project.git fb5f84d903a3b4e7aea15cd5666598a46f56c833)
+Target: aarch64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin
+Found candidate GCC installation: /usr/lib/gcc/aarch64-linux-gnu/13
+Selected GCC installation: /usr/lib/gcc/aarch64-linux-gnu/13
+Candidate multilib: .;@m64
+Selected multilib: .;@m64
+ "/usr/bin/ld.gold" -EL -z relro --hash-style=gnu --eh-frame-hdr -m aarch64linux -pie -dynamic-linker /lib/ld-linux-aarch64.so.1 -o /tmp/TemporaryDirectory.VjMuB8/component-manifest /lib/aarch64-linux-gnu/Scrt1.o /lib/aarch64-linux-gnu/crti.o /usr/lib/gcc/aarch64-linux-gnu/13/crtbeginS.o -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -L/usr/lib/gcc/aarch64-linux-gnu/13 -L/lib/aarch64-linux-gnu -L/usr/lib/aarch64-linux-gnu -L/lib -L/usr/lib --build-id -rpath /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/aarch64/swiftrt.o /tmp/TemporaryDirectory.rq1a54/Package-1.o -lswiftSwiftOnoneSupport -lswiftCore -lswift_Concurrency -lswift_StringProcessing -lswift_RegexParser -lswiftCore -lPackageDescription -rpath /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/aarch64-linux-gnu/13/crtendS.o /lib/aarch64-linux-gnu/crtn.o
+Building for debugging...
+Planning build
+[Computing dependencies]
+Compute target dependency graph
+info: Building targets in dependency order
+info: Target dependency graph (5 targets)
+info: Target 'AllIncludingTests' in project 'Aggregate'
+info: ➜ Explicit dependency on target 'TorahInspectorUITests-product' in project 'TorahReaderLifetimeComponent'
+info: ➜ Explicit dependency on target 'TorahInspectorUITests-test-runner' in project 'TorahReaderLifetimeComponent'
+info: ➜ Explicit dependency on target 'TorahInspectorUI-product' in project 'TorahReaderLifetimeComponent'
+info: ➜ Explicit dependency on target 'TorahInspectorUI' in project 'TorahReaderLifetimeComponent'
+info: Target 'TorahInspectorUI-product' in project 'TorahReaderLifetimeComponent'
+info: ➜ Explicit dependency on target 'TorahInspectorUI' in project 'TorahReaderLifetimeComponent'
+info: Target 'TorahInspectorUITests-test-runner' in project 'TorahReaderLifetimeComponent'
+info: ➜ Explicit dependency on target 'TorahInspectorUITests-product' in project 'TorahReaderLifetimeComponent'
+info: Target 'TorahInspectorUITests-product' in project 'TorahReaderLifetimeComponent'
+info: ➜ Explicit dependency on target 'TorahInspectorUI' in project 'TorahReaderLifetimeComponent'
+info: Target 'TorahInspectorUI' in project 'TorahReaderLifetimeComponent' (no dependencies)
+Gather provisioning inputs
+Planning complete
+[Pre-planning 1 / 124]
+Discovering version info for clang
+Discovering version info for swiftc
+Discovering version info for ld
+[Planning deferred tasks]
+Create build description
+Build description signature: c991986ac056dae5463421ce186bbd64c3c58c02100e1fea2cc08c835d2cdf94
+Build description path: /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/XCBuildData/c991986ac056dae5463421ce186bbd64c3c58c02100e1fea2cc08c835d2cdf94.xcbuilddata
+Create build directory $(DERIVED_DATA_DIR)/CompilationCache.noindex
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/CompilationCache.noindex
+
+Create build directory $(DERIVED_DATA_DIR)/SDKExplicitPrecompiledModules
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/SDKExplicitPrecompiledModules
+
+Create build directory $(TARGET_BUILD_DIR)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products
+
+Create build directory $(DERIVED_DATA_DIR)/PCH
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/PCH
+
+Create build directory $(TARGET_BUILD_DIR)/Debug-linux-aarch64
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64
+
+Create build directory $(DERIVED_DATA_DIR)/ModuleCache.noindex
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex
+
+Create build directory $(TARGET_BUILD_DIR)/Debug-linux-aarch64/PackageFrameworks
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/PackageFrameworks
+
+Create build directory $(OBJROOT)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex
+
+Create build directory $(OBJROOT)/SwiftExplicitPrecompiledModules
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+Create build directory $(OBJROOT)/ExplicitPrecompiledModules
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/ExplicitPrecompiledModules
+
+Create build directory $(OBJROOT)/EagerLinkingTBDs/Debug-linux-aarch64
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/EagerLinkingTBDs/Debug-linux-aarch64
+
+Write TorahInspectorUITests-test-runner_const_extract_protocols.json (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner_const_extract_protocols.json
+
+Write TorahInspectorUITests-test-runner.SwiftFileList (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner.SwiftFileList
+
+Write TorahInspectorUITests-test-runner.LinkFileList (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner.LinkFileList
+
+Write TorahInspectorUITests-test-runner-OutputFileMap.json (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner-OutputFileMap.json
+
+Write TorahInspectorUITests_const_extract_protocols.json (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests_const_extract_protocols.json
+
+Write TorahInspectorUITests.SwiftFileList (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests.SwiftFileList
+
+Write TorahInspectorUITests.LinkFileList (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests.LinkFileList
+
+Write TorahInspectorUITests-OutputFileMap.json (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests-OutputFileMap.json
+
+Write test_anchor.swift
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/DerivedSources/test_anchor.swift
+
+Write TorahInspectorUI.LinkFileList (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-product-p.build/Objects-normal/aarch64/TorahInspectorUI.LinkFileList
+
+Write TorahInspectorUI.modulemap
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/TorahInspectorUI.modulemap
+
+Write TorahInspectorUI_const_extract_protocols.json (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI_const_extract_protocols.json
+
+Write TorahInspectorUI.SwiftFileList (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI.SwiftFileList
+
+Write TorahInspectorUI.LinkFileList (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI.LinkFileList
+
+Write TorahInspectorUI-OutputFileMap.json (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI-OutputFileMap.json
+
+Copy TorahInspectorUI.modulemap
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/TorahInspectorUI.modulemap /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64
+
+[27 / 51] TorahInspectorUI
+Planning Swift module TorahInspectorUI (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorUI -Onone @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/Modules/TorahInspectorUI.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI-Swift.h -working-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Compile
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    
+
+Emitting module for TorahInspectorUI
+[30 / 53] TorahInspectorUI
+Discovering Swift tasks after 'Emitting module for TorahInspectorUI'
+Compile TorahDocumentLoadLifetime.swift
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-SwiftPerFileCompile TorahDocumentLoadLifetime.swift
+
+Compiling TorahDocumentLoadLifetime.swift
+[31 / 53] TorahInspectorUI
+Unblock downstream dependents of TorahInspectorUI (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorUI -Onone @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/Modules/TorahInspectorUI.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI-Swift.h -working-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling TorahDocumentLoadLifetime.swift'
+Wrapping Swift module TorahInspectorUI
+[33 / 54] TorahInspectorUI
+Discovering Swift tasks after 'Wrapping Swift module TorahInspectorUI'
+Merge Objective-C generated interface headers
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    builtin-swiftHeaderTool -single -arch aarch64 /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI-Swift.h -o /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64/TorahInspectorUI-Swift.h
+
+Copy TorahInspectorUI.swiftmodule (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/Modules/TorahInspectorUI.swiftmodule /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUI.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy TorahInspectorUI.swiftdoc (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/Modules/TorahInspectorUI.swiftdoc /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUI.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy TorahInspectorUI.swiftsourceinfo (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/Modules/TorahInspectorUI.swiftsourceinfo /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUI.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Compile TorahInspectorUI (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorUI -Onone @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/Modules/TorahInspectorUI.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI-Swift.h -working-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Link TorahInspectorUI.o (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/clang -target aarch64-unknown-linux-gnu -r --sysroot / -O0 @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-t.build/Objects-normal/aarch64/TorahInspectorUI.LinkFileList -nostdlib -o /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUI.o
+
+Planning Swift module TorahInspectorUITests (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorUITests -Onone @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/Modules/TorahInspectorUITests.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Compile
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    
+
+Emitting module for TorahInspectorUITests
+[41 / 58] TorahInspectorUITests-product
+Discovering Swift tasks after 'Emitting module for TorahInspectorUITests'
+Compile TorahDocumentLoadLifetimeTests.swift
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-SwiftPerFileCompile TorahDocumentLoadLifetimeTests.swift
+
+Compiling TorahDocumentLoadLifetimeTests.swift
+Unblock downstream dependents of TorahInspectorUITests (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorUITests -Onone @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/Modules/TorahInspectorUITests.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling TorahDocumentLoadLifetimeTests.swift'
+Compile test_anchor.swift
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-SwiftPerFileCompile test_anchor.swift
+
+Compiling test_anchor.swift
+Discovering Swift tasks after 'Compiling test_anchor.swift'
+Copy TorahInspectorUITests.swiftmodule (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/Modules/TorahInspectorUITests.swiftmodule /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUITests.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy TorahInspectorUITests.swiftdoc (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/Modules/TorahInspectorUITests.swiftdoc /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUITests.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy TorahInspectorUITests.swiftsourceinfo (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/Modules/TorahInspectorUITests.swiftsourceinfo /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUITests.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Wrapping Swift module TorahInspectorUITests
+[47 / 59] TorahInspectorUITests-product
+Discovering Swift tasks after 'Wrapping Swift module TorahInspectorUITests'
+Compile TorahInspectorUITests (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorUITests -Onone @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/Modules/TorahInspectorUITests.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Extract autolink entries for 'TorahInspectorUITests'
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-autolink-extract /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/test_anchor.o /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahDocumentLoadLifetimeTests.o -o /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests-swiftbuild.autolink
+
+Link TorahInspectorUITests.so (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -target aarch64-unknown-linux-gnu -emit-library -L/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/EagerLinkingTBDs/Debug-linux-aarch64 -L/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64 @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests.LinkFileList -Xlinker -soname -Xlinker TorahInspectorUITests.so -Xlinker -rpath -Xlinker \$ORIGIN -Xlinker -rpath -Xlinker /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/PackageFrameworks -Xlinker -rpath -Xlinker \$ORIGIN/Frameworks -Xlinker -rpath -Xlinker \$ORIGIN/../Frameworks -Xlinker --gc-sections -Xclang-linker -rdynamic -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -L/usr/lib/swift @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests-swiftbuild.autolink -o /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUITests.so
+
+[50 / 59] TorahInspectorUITests-product
+Create static library libTorahInspectorUI.a (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/llvm-ar rcs /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/libTorahInspectorUI.a @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUI-product-p.build/Objects-normal/aarch64/TorahInspectorUI.LinkFileList
+
+Generate entry point for TorahInspectorUITests-test-runner
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    builtin-generateTestEntryPoint --output /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/DerivedSources/test_entry_point.swift --discover-tests --linker-file-list-format unixShellQuotedNewlineSeparated --index-store-library-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/libIndexStore.so --linker-filelist /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-p.build/Objects-normal/aarch64/TorahInspectorUITests.LinkFileList --index-store /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out --index-unit-base-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex --test-anchor-module TorahInspectorUITests
+
+Planning Swift module TorahInspectorUITests_test_runner (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -module-name TorahInspectorUITests_test_runner -Onone @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -parse-as-library -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/Modules/TorahInspectorUITests_test_runner.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Compile
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    
+
+Emitting module for TorahInspectorUITests_test_runner
+[55 / 62] TorahInspectorUITests-test-runner
+Discovering Swift tasks after 'Emitting module for TorahInspectorUITests_test_runner'
+Compile test_entry_point.swift
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-SwiftPerFileCompile test_entry_point.swift
+
+Compiling test_entry_point.swift
+[56 / 62] TorahInspectorUITests-test-runner
+Unblock downstream dependents of TorahInspectorUITests-test-runner (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -module-name TorahInspectorUITests_test_runner -Onone @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -parse-as-library -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/Modules/TorahInspectorUITests_test_runner.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling test_entry_point.swift'
+Wrapping Swift module TorahInspectorUITests_test_runner
+Discovering Swift tasks after 'Wrapping Swift module TorahInspectorUITests_test_runner'
+Copy TorahInspectorUITests_test_runner.swiftmodule (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/Modules/TorahInspectorUITests_test_runner.swiftmodule /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUITests_test_runner.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy TorahInspectorUITests_test_runner.swiftdoc (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/Modules/TorahInspectorUITests_test_runner.swiftdoc /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUITests_test_runner.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy TorahInspectorUITests_test_runner.swiftsourceinfo (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/Modules/TorahInspectorUITests_test_runner.swiftsourceinfo /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUITests_test_runner.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Compile TorahInspectorUITests-test-runner (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -module-name TorahInspectorUITests_test_runner -Onone @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -parse-as-library -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/Modules/TorahInspectorUITests_test_runner.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /var/lib/pinkha-wave2-reader-document-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Extract autolink entries for 'TorahInspectorUITests_test_runner'
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-autolink-extract /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/test_entry_point.o -o /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests_test_runner-swiftbuild.autolink
+
+Link TorahInspectorUITests-test-runner (aarch64)
+    cd /var/lib/pinkha-wave2-reader-document-lifetime-20261127/component
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -target aarch64-unknown-linux-gnu -emit-executable -L/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/EagerLinkingTBDs/Debug-linux-aarch64 -L/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64 @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests-test-runner.LinkFileList -Xlinker -rpath -Xlinker \$ORIGIN -Xlinker -rpath -Xlinker /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/PackageFrameworks -Xlinker --gc-sections -Xclang-linker -rdynamic -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -L/usr/lib/swift @/var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/TorahReaderLifetimeComponent.build/Debug-linux-aarch64/TorahInspectorUITests-test-runner.build/Objects-normal/aarch64/TorahInspectorUITests_test_runner-swiftbuild.autolink /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUITests.so -o /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorUITests-test-runner
+
+[63 / 63] AllIncludingTests
+Prune stale explicit modules at /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/SDKExplicitPrecompiledModules
+Prune stale explicit modules at /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/ExplicitPrecompiledModules
+Prune stale explicit modules at /var/lib/pinkha-wave2-reader-document-lifetime-20261127/build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules
+Build complete! (14.18 secs)

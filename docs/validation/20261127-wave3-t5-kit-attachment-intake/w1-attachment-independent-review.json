@@ -1,0 +1,83 @@
+{
+  "byteProof": {
+    "bytes": 12618,
+    "path": "/workspace/scratch/ae335eba85e3/w1-ordinary-upload-independent-review/byte-proof.json",
+    "sha256": "5823c3cc323aaf18969a02aec956098a7a2a12e52d57e6970b2ea8e289a2ece3"
+  },
+  "commit": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+  "findings": [
+    {
+      "blocksSourceCheckpoint": false,
+      "evidence": "Declared testFailedReceiptJournalReportsKnownIDAndNeverCreatesReplacement explicitly expects .reserved and one POST; it has NOT_RUN.",
+      "id": "RECOVERY-KNOWN-ID-NOT-PERSISTED",
+      "implication": "Do not advertise every knownFileUnverified outcome as automatically resumable. The already-persisted-ID branch supports read-only resume; journal-failure recovery requires an explicit original-scope reconciliation design if the product promises it. Never erase the reservation or resend.",
+      "observation": "After a validated 201, failure of original .created journal persistence returns identity-only knownFileUnverified(fileID), while the durable state may remain .reserved. Public resume(intent:) obtains the ID only from state.objectID and therefore rejects that state as writeUncertain.",
+      "severity": "integration limitation; no duplicate-write permission",
+      "source": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "sourceLines": [
+        167,
+        172,
+        193,
+        201
+      ]
+    },
+    {
+      "id": "ORIGINAL-INTENT-CARRIER",
+      "implementationOwner": "W1 adapter/W2 UI; reviewer adds no competing implementation.",
+      "implication": "W2 must retain/recover the exact original intent and mutationID across sheet/model lifetimes, or disclose the missing cold recovery path. Filename/content matching or a fresh mutationID is not recovery.",
+      "observation": "The journal protocol exposes reserve/record/lookup for an exact AnyNativeCreationIdentity and retains only scoped identity/fingerprint/ID. It does not enumerate or reconstruct AnyNativeFileAttachmentIntent, which includes original target, metadata hints, byte count and digest.",
+      "severity": "required UI integration boundary"
+    }
+  ],
+  "lifetimeQualificationBoundary": {
+    "observation": "URLSession onCancel calls the once-only finish, cancels/invalidateAndCancel and resumes its continuation. It does not await URLSession invalidation/server-native termination; the returned uncertainty must not be treated as rollback or drained native work.",
+    "recommendation": "Keep original lifetime/account owner active as required by its contract; qualify the real Engine cancellation and matching native/account route before claiming end-to-end cancellation or account-switch acceptance.",
+    "source": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift:21-52,124-135",
+    "testScope": "Host late-receipt cancellation method uses an injected noncooperative upload. The separate real HTTP cancellation method expects an unknown outcome after body acceptance. Neither is executed in this review."
+  },
+  "limits": [
+    "The complete current 18-file dependency closure and final merge tree remain root-owned qualification. This reviewer read the exact original AnyHTTPClient dependency and checked changed-source bytes, not all current dependency source bodies.",
+    "Protected durable journal crash persistence is not proved by the Host in-memory component fixture.",
+    "No new source, UI recovery implementation, tests or public APIs were modified."
+  ],
+  "qualification": {
+    "AppleCommandsInvoked": false,
+    "SwiftCompilerInvoked": false,
+    "artifactTransportInvoked": false,
+    "componentMethodsDeclared": {
+      "EngineLoopbackHTTP": 11,
+      "EngineSourceStaging": 6,
+      "HostJournalRecovery": 13
+    },
+    "componentTestsExecuted": 0,
+    "nativeAccountInvoked": false,
+    "portableControlsRerun": 0,
+    "runtimeStatus": "NOT_RUN",
+    "totalDeclaredMethods": 30
+  },
+  "reviewedSafety": [
+    {
+      "boundary": "single native dispatch and unknown ACK",
+      "observation": "Source/digest/staging checks precede the dispatch callback; durable reserve precedes write authorization; ownsDispatch false prevents another POST. Entering a possibly committed callback becomes uncertainty even if it throws. No automatic resend/deletion or filename attribution exists."
+    },
+    {
+      "boundary": "account/Space and acknowledgement retention",
+      "observation": "Specifications, intents and typed receipts bind exact UTF-8 account/Space/object/file/size. Native response account/Space extensions are rejected if conflicting. The callback records into the captured original journal before postflight account, consumer and cancellation checks; error exposes reference/count only."
+    },
+    {
+      "boundary": "readback",
+      "observation": "Warm 201 immutable name/MIME/rootCID/inline metadata must match first info, then complete content size/SHA256 and second stable info. Cold resume proves only current stable metadata and original content, not historical 201 metadata. Cached/durable can advance and are reported from final info, not promoted to cloud custody."
+    },
+    {
+      "boundary": "file/resource handling",
+      "observation": "Regular no-follow descriptors, bounded 1MiB streaming, 512MiB file ceiling, exact byte count/digest and metadata identity checks, private 0700/0600 staging, Apple protection before content, descriptor-relative identity-limited cleanup. Response is capped at65536 bytes for both advertised and chunked sizes; redirects/body-stream/auth replay are refused."
+    },
+    {
+      "boundary": "original ObjectCreator",
+      "observation": "Only adds fileAttachment identity kind, a typed factory capturing the same client/workspace/journal, and explicit absence for clientless component initializer. Four-hunk reverse restores every original byte, including existing detached original object creation worker/fence."
+    }
+  ],
+  "schema": "pinkha-ordinary-attachment-independent-source-review-v1",
+  "scope": "Independent read of changed Engine/Host production, original creator full inverse, contract and component/HTTP fixture declarations. This is not a compiler, native, UI, account, durability or release acceptance.",
+  "status": "NO_BLOCKING_SOURCE_FINDING_FOR_CHECKPOINT_WITH_EXPLICIT_RECOVERY_LIMITATION"
+}
