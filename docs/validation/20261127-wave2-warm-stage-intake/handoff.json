@@ -1,0 +1,70 @@
+{
+  "AppleTests": 0,
+  "actualPhysicalReferences": {
+    "bytes": 3740,
+    "file": "actual-inputs/plan-physical-references.json",
+    "sha256": "2394f573db3ea272be0012c22f53d99ffe7f690425aa525b28b9344cca4fd42d"
+  },
+  "actualProductAdmitted": false,
+  "applicationBuilds": 0,
+  "buildAdmissionApproved": false,
+  "files": [
+    {
+      "bytes": 41884,
+      "file": "wave3_intake.py",
+      "sha256": "f097cdb1a12087475cda0728d34d7a7dcb2ef0d62ad67810fd9724d11d096bfa"
+    },
+    {
+      "bytes": 8901,
+      "file": "materialize_wave3_intake.py",
+      "sha256": "58e06ecb707875c2d690a796f7f90ea7802c90fd4503cda49432248ad2507e21"
+    },
+    {
+      "bytes": 6620,
+      "file": "frozen-profile.staged.closed.json",
+      "sha256": "2636d2ca598efa876a83a4abc99fc7a9f68296c80bb8348a7788b84ac7432248"
+    },
+    {
+      "bytes": 6469,
+      "file": "test_staged_warm_intake.py",
+      "sha256": "83317ed72421fc0b70abe6cf841bd1aa3d9dbae5b9627cea69cc20d32eaf25c1"
+    },
+    {
+      "bytes": 8973,
+      "file": "stage-schema-inverse.json",
+      "sha256": "bb693b7a4f7c76f614caa40bb3edc9b6ab903ce08d920f1bf0f24a60d564e56d"
+    },
+    {
+      "bytes": 2215,
+      "file": "root-stage-schema-review.json",
+      "sha256": "aa16966a634daa47aeb03cde6f0b79b0b47ce31fda63e8be7c7cb417d66b2040"
+    },
+    {
+      "bytes": 645,
+      "file": "staged-schema-controls.log",
+      "sha256": "26ed920b37bd3be739972598c3a2cb2493a91177afa08e55e437703091c4a42e"
+    }
+  ],
+  "localControlMethods": 3,
+  "localNegativeCases": 7,
+  "materialization": {
+    "bytes": 2118,
+    "file": "closed-stage-materialization1/materialization.json",
+    "sha256": "8511a77647a0d6a327a0a37d61fa38f9973b9ee12e57de86426e0c419885cdce"
+  },
+  "nativeBuilds": 0,
+  "originalSevenControlsRepeated": false,
+  "parentCommit": "a50771dfb5c845faa283f9b472e721fa89ff0786",
+  "readyForRuntimeAdmission": false,
+  "reportedControlSeconds": 0.512,
+  "schema": "pinkha-wave2-actual-warm-stage-binding-v1",
+  "scopes": [
+    "Actual read-only stage/cache/plan/control-file observations",
+    "Local isolated schema/guard controls",
+    "Source-only independent root review"
+  ],
+  "simulatorActions": 0,
+  "sourceCommit": "8f2c11713fb8a40ae13444104723666ffef68afe",
+  "sourceStagingObserved": true,
+  "status": "PREPARED_ACTUAL_STAGE_BOUND_INTAKE_RUNTIME_CLOSED"
+}
