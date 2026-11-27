@@ -8,6 +8,7 @@ import HanlinPresentationKit
 /// Layout composition only. Message rendering, input and send control are canonical Hanlin UI.
 public struct PinkhaHanlinChatView: View {
     @Bindable var presentation: PinkhaHanlinChatPresentation
+    @State private var transcriptWidth: CGFloat = 320
 
     public init(presentation: PinkhaHanlinChatPresentation) { self.presentation = presentation }
 
@@ -19,7 +20,7 @@ public struct PinkhaHanlinChatView: View {
                         presentation.appearance.label(presentation.readAllowed ? PinkhaHanlinStrings.contextShared : PinkhaHanlinStrings.shareContext,
                                     .body)
                     }
-                    .disabled(presentation.isStreaming || presentation.readAllowed)
+                    .disabled(presentation.isStreaming || presentation.isStopping || presentation.readAllowed)
                     .accessibilityIdentifier("pinkha.hanlin.share-context")
                     .padding()
                 }
@@ -52,6 +53,7 @@ public struct PinkhaHanlinChatView: View {
             }
         }
         .accessibilityIdentifier("pinkha.hanlin.chat")
+        .environment(\.locale, Locale(identifier: presentation.session.context.localeIdentifier))
     }
 
     private var chat: some View {
@@ -60,9 +62,8 @@ public struct PinkhaHanlinChatView: View {
                 ScrollView {
                     LazyVStack(spacing: 12) {
                         ForEach(presentation.messages) { message in
-                            HanlinChatMessageBubble(message: message,
-                                isStreaming: presentation.isStreaming && message.id == presentation.messages.last?.id,
-                                presentationMode: .full)
+                            PinkhaHanlinMessageView(message: message, containerWidth: transcriptWidth,
+                                presentation: presentation)
                                 .id(message.id)
                         }
                         ForEach(Array(presentation.receiptMessages.enumerated()), id: \.offset) { _, receipt in
@@ -72,6 +73,9 @@ public struct PinkhaHanlinChatView: View {
                     }
                     .padding()
                     .padding(.bottom, 96)
+                }
+                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in
+                    if width.isFinite, width > 0 { transcriptWidth = width }
                 }
                 .onChange(of: presentation.messages.last?.content) { _, _ in
                     if let last = presentation.messages.last { reader.scrollTo(last.id, anchor: .bottom) }

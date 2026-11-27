@@ -7,6 +7,8 @@ import HanlinAgentCore
 import HanlinChatCore
 import HanlinHostContracts
 import HanlinPersistenceAdapters
+import HanlinAgentActivityCore
+import HanlinPresentationKit
 
 /// Application lifetime and UI state around ONE canonical Hanlin session/engine.
 /// The SDK owns model execution; Anytype owns source authority, native prompts and write receipts.
@@ -23,6 +25,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     public private(set) var readAllowed = false
     public private(set) var isReturningToSource = false
     public private(set) var errorMessage: String?
+    private(set) var activities: [UUID: PinkhaHanlinMessageActivity] = [:]
 
     @ObservationIgnored private let host: any PinkhaHanlinPresentationHost
     @ObservationIgnored public let appearance: PinkhaHanlinAppearance
@@ -38,12 +41,19 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     @ObservationIgnored private var closing: Task<Void, Never>?
     @ObservationIgnored private var closed = false
     @ObservationIgnored private var receiptIDs = Set<UUID>()
+    private let speech = PinkhaHanlinMessageSpeech()
     @ObservationIgnored public private(set) var returnReceipt: PinkhaHanlinNavigationHandoff?
 
-    public var canSend: Bool {
+    private var canStartRun: Bool {
         isConfigured && !closed && !isStreaming && !isStopping && !requiresReconciliation
-            && currentRunID == nil && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            && draft.utf8.count <= 32_768 && messages.count < 256
+            && currentRunID == nil
+    }
+    public var canSend: Bool {
+        canStartRun && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && draft.utf8.count <= 32_768 && messages.count <= 254
+    }
+    public var canModifyTranscript: Bool {
+        !closed && !isStreaming && !isStopping && currentRunID == nil
     }
     public var hasSource: Bool { session.context.objectReference != nil }
 
@@ -123,15 +133,86 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     }
 
     public func send() {
-        guard canSend, let agent, let modelReference else { return }
+        guard canSend else { return }
         let prompt = draft
         draft = ""
         messages.append(.user(prompt))
+        startRun()
+    }
+
+    /// A UI action is bound to an actual message in this mounted, account-owned
+    /// presentation. An old menu/preview cannot act after account or source loss.
+    public func canAccessMessage(_ id: UUID) -> Bool {
+        !closed && messages.contains(where: { $0.id == id })
+            && (try? validateInstallation(for: session)) != nil
+    }
+
+    @discardableResult
+    public func copyMessage(_ id: UUID, selection: String? = nil) -> Bool {
+        guard canAccessMessage(id), let message = messages.first(where: { $0.id == id }) else { return false }
+        // Selection text is emitted by the original Markdown selection surface.
+        // It remains local and is never treated as a command or tool permission.
+        UIPasteboard.general.string = selection ?? message.content
+        return true
+    }
+
+    public func isSpeaking(_ id: UUID) -> Bool { speech.messageID == id }
+
+    public func speak(_ id: UUID) {
+        guard canAccessMessage(id), let message = messages.first(where: { $0.id == id }) else { return }
+        speech.toggle(messageID: id, text: message.content,
+                      localeIdentifier: session.context.localeIdentifier)
+    }
+
+    public func deleteMessage(_ id: UUID) {
+        guard canModifyTranscript, canAccessMessage(id) else { return }
+        if speech.messageID == id { speech.stop() }
+        messages.removeAll { $0.id == id }
+        activities[id] = nil
+        // Native effect receipts and the unresolved-write barrier are not
+        // deleted with a transcript row and never imply native rollback.
+    }
+
+    public func canRepeatResponse(_ id: UUID) -> Bool {
+        guard canStartRun, canAccessMessage(id), let last = messages.last,
+              last.id == id, last.role == "assistant" else { return false }
+        return messages.dropLast().last?.role == "user"
+    }
+
+    public func canContinueResponse(_ id: UUID) -> Bool {
+        canRepeatResponse(id) && messages.count <= 254 && messages.last?.content.isEmpty == false
+    }
+
+    public func retryMessage(_ id: UUID) {
+        guard canRepeatResponse(id) else { return }
+        if speech.messageID == id { speech.stop() }
+        messages.removeLast()
+        activities[id] = nil
+        // This explicit user action uses the same SDK and fresh native consent.
+        // It never repeats an uncertain operation, and it preserves the draft.
+        startRun()
+    }
+
+    public func continueResponse(_ id: UUID) {
+        guard canContinueResponse(id) else { return }
+        messages.append(.user(PinkhaHanlinStrings.continuePrompt))
+        startRun()
+    }
+
+    func openSource(_ source: HanlinSourceReference, messageID: UUID) {
+        guard canAccessMessage(messageID), let sourceURL = source.url,
+              activities[messageID]?.sources.contains(source) == true else { return }
+        UIApplication.shared.open(sourceURL)
+    }
+
+    private func startRun() {
+        guard canStartRun, messages.count < 256, let agent, let modelReference else { return }
         let history = messages.map { HanlinAISDKMessage(role: $0.role == "user" ? .user : .assistant, text: $0.content) }
         let answerID = UUID()
         let runID = UUID()
         currentRunID = runID
         messages.append(.init(id: answerID, role: "assistant", content: ""))
+        activities[answerID] = .init(session: session, messageID: answerID)
         errorMessage = nil
         running = Task { @MainActor [weak self] in
             guard let self, !self.closed, self.currentRunID == runID else { return }
@@ -150,19 +231,40 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                 for try await event in stream {
                     try Task.checkCancellation()
                     try self.validateInstallation(for: event.session)
-                    if !self.isStopping, self.currentRunID == runID,
-                       case .textDelta(let delta) = event.event,
-                       let index = self.messages.firstIndex(where: { $0.id == answerID }) {
-                        guard self.messages[index].content.utf8.count + delta.utf8.count <= 262_144 else {
-                            throw HanlinHostError.outputLimitExceeded
+                    if !self.isStopping, self.currentRunID == runID {
+                        guard var activity = self.activities[answerID] else { throw HanlinHostError.staleContext }
+                        try activity.consume(event.event, session: event.session,
+                                             runID: event.runID, sequence: event.sequence)
+                        self.activities[answerID] = activity
+                        if case .textDelta(let delta) = event.event,
+                           let index = self.messages.firstIndex(where: { $0.id == answerID }) {
+                            guard self.messages[index].content.utf8.count + delta.utf8.count <= 262_144 else {
+                                throw HanlinHostError.outputLimitExceeded
+                            }
+                            self.messages[index].content += delta
                         }
-                        self.messages[index].content += delta
                     }
+                }
+                if !self.closed, !self.isStopping, self.currentRunID == runID {
+                    self.activities[answerID]?.finish(status: .completed)
                 }
             } catch {
                 // Provider errors may contain request details. Never log or expose them verbatim.
                 if !self.closed, !self.isStopping, self.currentRunID == runID {
-                    self.errorMessage = PinkhaHanlinStrings.requestFailed
+                    // A local projection/output limit can end the consumer before
+                    // producer EOF. Retain the run fence until the original SDK
+                    // and native workers have drained, just as the Stop path does.
+                    if (error as? HanlinHostError) == .unresolvedWrite { self.requiresReconciliation = true }
+                    do {
+                        let result = try await agent.cancelCurrentRun()
+                        self.requiresReconciliation = self.requiresReconciliation || (result?.requiresReconciliation ?? false)
+                    } catch {
+                        self.requiresReconciliation = true
+                    }
+                    guard !self.closed, !self.isStopping, self.currentRunID == runID else { return }
+                    self.activities[answerID]?.finish(status: .failed)
+                    self.errorMessage = self.requiresReconciliation
+                        ? PinkhaHanlinStrings.uncertain : PinkhaHanlinStrings.requestFailed
                 }
             }
         }
@@ -173,6 +275,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         isStopping = true
         errorMessage = nil
         let consumer = running
+        let answerID = messages.last?.id
         stopping = Task { @MainActor [weak self] in
             guard let self else { return }
             do {
@@ -180,7 +283,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                 await consumer?.value
                 guard !self.closed, self.currentRunID == runID else { return }
                 try self.validateInstallation(for: self.session)
-                self.requiresReconciliation = result?.requiresReconciliation ?? false
+                self.requiresReconciliation = self.requiresReconciliation || (result?.requiresReconciliation ?? false)
                 if self.requiresReconciliation { self.errorMessage = PinkhaHanlinStrings.uncertain }
             } catch {
                 await consumer?.value
@@ -191,6 +294,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                 self.errorMessage = PinkhaHanlinStrings.uncertain
             }
             guard !self.closed, self.currentRunID == runID else { return }
+            if let answerID { self.activities[answerID]?.finish(status: .cancelled) }
             self.isStopping = false
             self.isStreaming = false
             self.running = nil
@@ -205,7 +309,9 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         // The presentation owns only safe outcome labels; payloads never enter a receipt log.
         switch event.result.effectState {
         case .confirmedCommitted: receiptMessages.append(PinkhaHanlinStrings.pageCreated)
-        case .uncertain: receiptMessages.append(PinkhaHanlinStrings.uncertain)
+        case .uncertain:
+            requiresReconciliation = true
+            receiptMessages.append(PinkhaHanlinStrings.uncertain)
         case .notDispatched: receiptMessages.append(PinkhaHanlinStrings.notDispatched)
         case .confirmedNoEffect:
             if case .completed = event.result.result.outcome { receiptMessages.append(PinkhaHanlinStrings.contextRead) }
@@ -275,9 +381,11 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         isStopping = false
         let agent = agent
         self.agent = nil
+        speech.stop()
         modelReference = nil
         draft = ""
         messages.removeAll()
+        activities.removeAll()
         receiptMessages.removeAll()
         receiptIDs.removeAll()
         isConfigured = false
