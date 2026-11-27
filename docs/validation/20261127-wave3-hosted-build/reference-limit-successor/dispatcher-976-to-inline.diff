@@ -1,0 +1,230 @@
+--- 976a8378/.github/workflows/torah-inspector-ipados27.yml
++++ candidate/.github/workflows/torah-inspector-ipados27.yml
+@@ -192,17 +192,219 @@
+ jobs:
+   wave3-native8ac-export:
+     if: ${{ inputs.route == 'wave3-native8ac-export' }}
+-    uses: ./.github/workflows/pinkha-native8ac-export.yml
+-    with:
+-      plan_json: ${{ inputs.shared_build_plan_json }}
+-      plan_sha256: ${{ inputs.shared_build_plan_sha256 }}
++    permissions:
++      contents: read
++    concurrency:
++      group: pinkha-original-native8ac-export
++      cancel-in-progress: false
++    runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
++    timeout-minutes: 30
++    env:
++      PYTHONDONTWRITEBYTECODE: '1'
++      GIT_OPTIONAL_LOCKS: '0'
++      PLAN_SHA256: ${{ inputs.shared_build_plan_sha256 }}
++      EXPORT_ROOT: ${{ runner.temp }}/pinkha-native8ac-export-${{ github.run_id }}-${{ github.run_attempt }}
++    steps:
++      - name: Checkout only exact read-only export controls
++        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
++        with:
++          ref: ${{ github.sha }}
++          path: control-native8ac-export-${{ github.run_id }}-${{ github.run_attempt }}
++          persist-credentials: false
++          set-safe-directory: false
++          clean: false
++          sparse-checkout-cone-mode: false
++          sparse-checkout: |
++            /Tools/PinkhaDualEngineRuntime/hosted_shared_build/
++      - name: Select already installed native ARM64 Python 3.12
++        shell: bash
++        run: |
++          set -euo pipefail
++          shopt -s nullglob
++          candidates=("$(command -v python3)" "${RUNNER_TOOL_CACHE:-/nonexistent}"/Python/3.12.*/arm64/bin/python3 /opt/homebrew/opt/python@3.12/libexec/bin/python3)
++          selected=''
++          for candidate in "${candidates[@]}"; do
++            if [ -x "$candidate" ] && "$candidate" -I -B -c 'import platform,sys; assert sys.version_info[:2] == (3,12) and platform.machine() == "arm64"' >/dev/null 2>&1; then
++              selected="$candidate"
++              break
++            fi
++          done
++          test -n "$selected"
++          dirname "$selected" >> "$GITHUB_PATH"
++      - name: Admit the exact original native export plan
++        env:
++          PINKHA_HOSTED_PLAN: ${{ inputs.shared_build_plan_json }}
++        run: |
++          python3 -B "control-native8ac-export-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py" inspect \
++            --export --control "$GITHUB_WORKSPACE/control-native8ac-export-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
++            --plan "$RUNNER_TEMP/pinkha-native8ac-root-plan-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json" \
++            --plan-sha256 "$PLAN_SHA256"
++      - name: Package and independently verify only original native inputs
++        run: |
++          set -euo pipefail
++          python3 -B "control-native8ac-export-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py" export \
++            --control "$GITHUB_WORKSPACE/control-native8ac-export-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
++            --plan "$RUNNER_TEMP/pinkha-native8ac-root-plan-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json" \
++            --plan-sha256 "$PLAN_SHA256" --output "$EXPORT_ROOT" \
++            2>&1 | tee "$RUNNER_TEMP/pinkha-native8ac-export-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.original.log"
++      - name: Publish the exact source-bound input archive as an Actions artifact
++        id: upload
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
++        with:
++          name: Pinkha-Native8ac-Inputs-${{ github.run_id }}-${{ github.run_attempt }}
++          path: ${{ env.EXPORT_ROOT }}/native8ac-inputs.tar.gz
++          compression-level: 0
++          if-no-files-found: error
++          retention-days: 30
++      - name: Record the actual exported artifact identity
++        env:
++          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
++          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
++        run: |
++          python3 -B - <<'PY'
++          import json, os
++          from pathlib import Path
++          p = Path(os.environ['EXPORT_ROOT']) / 'actions-artifact.json'
++          with p.open('x') as f:
++              json.dump({'artifactID': os.environ['ARTIFACT_ID'], 'artifactDigest': os.environ['ARTIFACT_DIGEST'],
++                         'runID': os.environ['GITHUB_RUN_ID'], 'runAttempt': os.environ['GITHUB_RUN_ATTEMPT'],
++                         'controlCommit': os.environ['GITHUB_SHA'], 'nativeBuildsNow': 0, 'testsExecuted': 0}, f, indent=2)
++              f.write('\n')
++          PY
++      - name: Preserve original input export receipts
++        if: always()
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
++        with:
++          name: Pinkha-Native8ac-Export-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
++          path: |
++            ${{ runner.temp }}/pinkha-native8ac-root-plan-${{ github.run_id }}-${{ github.run_attempt }}.json
++            ${{ runner.temp }}/pinkha-native8ac-export-${{ github.run_id }}-${{ github.run_attempt }}.original.log
++            ${{ env.EXPORT_ROOT }}/*.json
++          include-hidden-files: true
++          if-no-files-found: error
++          retention-days: 30
+ 
+   wave3-hosted-shared-build:
+     if: ${{ inputs.route == 'wave3-hosted-shared-build' }}
+-    uses: ./.github/workflows/pinkha-hosted-shared-build.yml
+-    with:
+-      plan_json: ${{ inputs.shared_build_plan_json }}
+-      plan_sha256: ${{ inputs.shared_build_plan_sha256 }}
++    permissions:
++      contents: read
++      actions: read
++    concurrency:
++      group: pinkha-original-hosted-shared-build
++      cancel-in-progress: false
++    runs-on: xcode-27
++    timeout-minutes: 300
++    env:
++      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
++      GIT_OPTIONAL_LOCKS: '0'
++      PYTHONDONTWRITEBYTECODE: '1'
++      PLAN_SHA256: ${{ inputs.shared_build_plan_sha256 }}
++      BUILD_ROOT: ${{ runner.temp }}/pinkha-hosted-shared-${{ github.run_id }}-${{ github.run_attempt }}
++      RETAIN_ROOT: ${{ runner.temp }}/pinkha-hosted-shared-retained-${{ github.run_id }}-${{ github.run_attempt }}
++    steps:
++      - name: Checkout exact downstream controls without persistent credentials
++        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
++        with:
++          ref: ${{ github.sha }}
++          path: control
++          persist-credentials: false
++          set-safe-directory: false
++          sparse-checkout-cone-mode: false
++          sparse-checkout: |
++            /Tools/PinkhaDualEngineRuntime/
++            /Tools/CurrentAppleValidation/combined_heart_semantics/build14/combined_heart_semantics_owned_outcomes.py
++            /.github/workflows/pinkha-hosted-shared-build.yml
++            /.github/workflows/pinkha-native8ac-export.yml
++            /.github/workflows/torah-inspector-ipados27.yml
++      - name: Select already installed native ARM64 Python 3.12
++        shell: bash
++        run: |
++          set -euo pipefail
++          shopt -s nullglob
++          candidates=("$(command -v python3)" "${RUNNER_TOOL_CACHE:-/nonexistent}"/Python/3.12.*/arm64/bin/python3 /opt/homebrew/opt/python@3.12/libexec/bin/python3)
++          selected=''
++          for candidate in "${candidates[@]}"; do
++            if [ -x "$candidate" ] && "$candidate" -I -B -c 'import platform,sys; assert sys.version_info[:2] == (3,12) and platform.machine() == "arm64"' >/dev/null 2>&1; then
++              selected="$candidate"
++              break
++            fi
++          done
++          test -n "$selected"
++          dirname "$selected" >> "$GITHUB_PATH"
++      - name: Admit the exact root plan before selecting any source
++        id: plan
++        env:
++          PINKHA_HOSTED_PLAN: ${{ inputs.shared_build_plan_json }}
++        run: |
++          python3 -B control/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py inspect \
++            --control "$GITHUB_WORKSPACE/control" --plan "$RUNNER_TEMP/pinkha-root-plan.json" \
++            --plan-sha256 "$PLAN_SHA256"
++      - name: Checkout only the explicitly admitted compiled App source
++        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
++        with:
++          ref: ${{ steps.plan.outputs.source_sha }}
++          path: app/source
++          persist-credentials: false
++          set-safe-directory: false
++          fetch-depth: 1
++      - name: Checkout exact canonical Hanlin source for the original materializer
++        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
++        with:
++          repository: davidpovarsky/hanlin-ai
++          ref: ${{ steps.plan.outputs.hanlin_sha }}
++          path: hanlin
++          persist-credentials: false
++          set-safe-directory: false
++          sparse-checkout: |
++            Packages/HanlinAgentSDK
++            Packages/HanlinPlatform
++            Packages/HanlinPresentationSDK
++            Packages/HanlinMiniAppsBridge
++      - name: Build the original App and complete UI once with exact native8ac
++        id: build
++        env:
++          GH_TOKEN: ${{ github.token }}
++        run: |
++          set -euo pipefail
++          python3 -B control/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py execute \
++            --control "$GITHUB_WORKSPACE/control" --source "$GITHUB_WORKSPACE/app/source" \
++            --hanlin "$GITHUB_WORKSPACE/hanlin" --plan "$RUNNER_TEMP/pinkha-root-plan.json" \
++            --plan-sha256 "$PLAN_SHA256" --output "$BUILD_ROOT" \
++            2>&1 | tee "$RUNNER_TEMP/pinkha-hosted-execute.original.log"
++      - name: Retain original source, complete Products and all original compiler outcomes
++        if: ${{ always() && steps.build.outcome != 'skipped' }}
++        run: |
++          set -euo pipefail
++          python3 -B control/Tools/PinkhaDualEngineRuntime/hosted_shared_build/retain.py \
++            --control "$GITHUB_WORKSPACE/control" --source "$GITHUB_WORKSPACE/app/source" \
++            --root "$BUILD_ROOT" --output "$RETAIN_ROOT" \
++            2>&1 | tee "$RUNNER_TEMP/pinkha-hosted-retention.original.log"
++      - name: Preserve original build receipts even if complete product archival fails
++        if: always()
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
++        with:
++          name: Pinkha-Hosted-Shared-Original-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
++          path: |
++            ${{ runner.temp }}/pinkha-root-plan.json
++            ${{ runner.temp }}/pinkha-hosted-execute.original.log
++            ${{ runner.temp }}/pinkha-hosted-retention.original.log
++            ${{ env.BUILD_ROOT }}/*.json
++            ${{ env.BUILD_ROOT }}/*.log
++            ${{ env.BUILD_ROOT }}/toolchain/
++            ${{ env.BUILD_ROOT }}/build16/
++          retention-days: 30
++          include-hidden-files: true
++          if-no-files-found: error
++      - name: Preserve full retained original App and UI products without mode loss
++        if: always()
++        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
++        with:
++          name: Pinkha-Hosted-Shared-Original-Products-${{ github.run_id }}-${{ github.run_attempt }}
++          path: ${{ env.RETAIN_ROOT }}/
++          compression-level: 0
++          retention-days: 30
++          include-hidden-files: true
++          if-no-files-found: warn
+ 
+   simulator-ui27:
+     if: ${{ inputs.route == 'simulator-ui27' }}
