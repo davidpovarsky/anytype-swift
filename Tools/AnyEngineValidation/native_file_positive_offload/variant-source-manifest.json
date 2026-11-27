@@ -1,0 +1,49 @@
+{
+  "acceptedVariantReceiptSHA256": "c23b78e312fa9efbe1a5fe7abd9e0061e131a0514fdb4fc07cf12ebe42376692",
+  "changes": [
+    {
+      "after": "CLOUD_RECEIPT_SHA = 'e6446c4ff820e0dcdf80ba298a977368a7a5c19ada0eea9dab1280998a6937ba'\nPRIOR_OFFLOAD_RECEIPT = OUTPUT_PARENT/'attempt1/result.json'\nPRIOR_OFFLOAD_SHA = '875ed86695e1cf5acc8ef38f5b6e553cb8d2fb2ef4cb885e52727d61a0e162da'\nPRIOR_OFFLOAD_SOURCE = Path('/mnt/development/projects/evidence/pinkha-positive-full-tier-offload-source-20261127-attempt1/run_positive_full_tier_offload.py')\nPRIOR_OFFLOAD_SOURCE_SHA = '58df056c9b02b88f3196d77114fb47100380183ae1fb2fd81be3a182b0633609'\nVARIANT_RECEIPT = ROOT/'production-lan-files2/result.json'\nVARIANT_RECEIPT_SHA = 'c23b78e312fa9efbe1a5fe7abd9e0061e131a0514fdb4fc07cf12ebe42376692'\nPROTECTED_VARIANT = 'thumb'\nPROTECTED_VARIANT_OF = 'YhnuHkqoHza'\n",
+      "before": "CLOUD_RECEIPT_SHA = 'e6446c4ff820e0dcdf80ba298a977368a7a5c19ada0eea9dab1280998a6937ba'\n"
+    },
+    {
+      "after": "    require(args.output==OUTPUT_PARENT/'attempt2', 'one explicit successor after proven zero prior Offload dispatches')",
+      "before": "    require(args.output==OUTPUT_PARENT/'attempt1', 'single exclusive Offload attempt; no blind continuation/replay')"
+    },
+    {
+      "after": "        result['controller'] = public_inputs[str(own_path)]['identity']\n        pin(PRIOR_OFFLOAD_SOURCE, PRIOR_OFFLOAD_SOURCE_SHA)\n        prior = json_object(pin(PRIOR_OFFLOAD_RECEIPT, PRIOR_OFFLOAD_SHA))\n        require(prior['status']=='FAIL_BACKED_FULL_TIER_OFFLOAD_RETAINED' and\n                prior['controller']=={'bytes':45625,'sha256':PRIOR_OFFLOAD_SOURCE_SHA} and\n                prior['errors']==[{'type':'RuntimeError','message':'AssertionError: original file, not a variant redirection'}] and\n                prior['completionErrors']==[] and prior['allOwnedGroupsPositivelyAbsent'] is True and\n                prior['nativeSourceUnchanged'] is True and prior['qualifiedPublicSourcesUnchanged'] is True and\n                prior['publicInputsUnchanged'] is True and prior['offloadDispatches']==[],\n                'exact original pre-dispatch failure retained; no prior Offload effect to retry')\n        require(prior['requests'] and all(row['method']=='GET' and row['phase']=='member-offload'\n                for row in prior['requests']) and len(prior['phases'])==1 and\n                prior['phases'][0]['stepsCompleted']==['health','identity','self-member','sync','file-before'],\n                'only original bounded metadata reads preceded the failed protected-variant check')\n        require(len(prior['processes'])==1, 'exact original single native process')\n        old_process = prior['processes'][0]\n        require(old_process['exitCode']==0 and old_process['processGroupAbsent'] is True and\n                old_process['forcedCleanup'] is True and old_process['signals']==[15] and\n                old_process['cleanupErrors']==[] and old_process['unreapedLeaderDuringGroupCleanup'] is True,\n                'original failed observer cleanup remains explicit, never promoted to normal acceptance')\n        pin(PRIOR_OFFLOAD_RECEIPT.parent/'member-offload/original.log', old_process['logSHA256'])\n        result['retainedPreDispatchFailure'] = {'receiptSHA256':PRIOR_OFFLOAD_SHA,\n            'controllerSHA256':PRIOR_OFFLOAD_SOURCE_SHA,'offloadDispatches':0,\n            'forcedCleanup':True,'failureReclassified':False,'priorAcceptanceEventsReused':0,\n            'historicalProcessIDsProbed':False}\n",
+      "before": "        result['controller'] = public_inputs[str(own_path)]['identity']\n"
+    },
+    {
+      "after": "        variant_history = json_object(pin(VARIANT_RECEIPT, VARIANT_RECEIPT_SHA))\n        require(variant_history['status']=='PASS_COPIED_PRODUCTION_ACCOUNTS_LAN_PARTIAL_CRASH_COLD_FILE_BYTES' and\n                variant_history['errors']==[] and variant_history['allOwnedGroupsPositivelyAbsent'] is True and\n                variant_history['sourcesBefore']==variant_history['sourcesAfter'] and\n                variant_history['sourcesAfter']['sourceUnchanged'] is True and\n                variant_history['nativeBefore']==variant_history['nativeAfter'] and\n                variant_history['accounts']=={'alice':OWNER,'bob':MEMBER} and\n                variant_history['spaceId']==SPACE and variant_history['objectId']==OBJECT,\n                'unchanged accepted public fixture lineage for the protected thumbnail')\n        historical_protected = variant_history['files'][3]\n        expected_protected = EXPECTED[PROTECTED_FILE_ID]\n        require(historical_protected['fileId']==PROTECTED_FILE_ID and historical_protected['objectId']==OBJECT and\n                historical_protected['variant']==PROTECTED_VARIANT and\n                historical_protected['variantOf']==PROTECTED_VARIANT_OF and\n                historical_protected['rootCid']==expected_protected['rootCid'] and\n                historical_protected['plaintextBytes']==expected_protected['bytes'] and\n                historical_protected['plaintextSHA256']==historical_protected['destinationSHA256']==expected_protected['plaintextSHA256'] and\n                historical_protected['inline'] is False and historical_protected['durable'] is True,\n                'exact original protected thumbnail identity and accepted plaintext')\n        require(variant_history['ownerMetadataObserved'][PROTECTED_FILE_ID]=={\n                'cached':True,'durable':True,'fileId':PROTECTED_FILE_ID,'inline':False,\n                'mime':expected_protected['mime'],'name':expected_protected['name'],'objectId':OBJECT,\n                'rootCid':expected_protected['rootCid'],'size':expected_protected['bytes'],\n                'variant':PROTECTED_VARIANT,'variantOf':PROTECTED_VARIANT_OF} and\n                variant_history['variantResolution']=={'byteEquality':True,\n                    'nativeVariantOf':PROTECTED_VARIANT_OF,'sha256':expected_protected['plaintextSHA256'],\n                    'variantFileId':PROTECTED_FILE_ID}, 'two independent exact public variant bindings')\n        result['protectedVariantBinding'] = {'historicalReceiptSHA256':VARIANT_RECEIPT_SHA,\n            'fileId':PROTECTED_FILE_ID,'variant':PROTECTED_VARIANT,'variantOf':PROTECTED_VARIANT_OF,\n            'historicalMethodsReplayed':0,'rejectedAttemptFreshVariantBodyRecovered':False}\n        pin(ADMISSION,ADMISSION_SHA)\n",
+      "before": "        pin(ADMISSION,ADMISSION_SHA)\n"
+    },
+    {
+      "after": "            if file_id==FILE_ID:\n                require(not value.get('variant') and not value.get('variantOf'), 'original file, not a variant redirection')\n            else:\n                require(file_id==PROTECTED_FILE_ID and value.get('variant')==PROTECTED_VARIANT and\n                        value.get('variantOf')==PROTECTED_VARIANT_OF,\n                        'exact retained protected thumbnail and original variant owner')",
+      "before": "            require(not value.get('variant') and not value.get('variantOf'), 'original file, not a variant redirection')"
+    }
+  ],
+  "inverseRestoresExactOriginal": true,
+  "literalReplacementCount": 5,
+  "original": {
+    "bytes": 45625,
+    "sha256": "58df056c9b02b88f3196d77114fb47100380183ae1fb2fd81be3a182b0633609"
+  },
+  "priorFailureSHA256": "875ed86695e1cf5acc8ef38f5b6e553cb8d2fb2ef4cb885e52727d61a0e162da",
+  "reviewPatch": {
+    "bytes": 9416,
+    "sha256": "126d42034f1c68bf0562d3e78fe160af683f0795f494b9373beb52b054eeec19"
+  },
+  "status": "SOURCE_ONLY_NOT_INSTALLED_OR_RUN",
+  "successor": {
+    "bytes": 51421,
+    "sha256": "2079f987b6735cfbcb779066ac6d4f34c7f0cf0732a9aa67ddefeef3b7d50553"
+  },
+  "unchangedTopLevelDeclarations": [
+    "require",
+    "identity",
+    "public_bytes",
+    "json_object",
+    "physical_directory",
+    "absolute_http_deadline"
+  ]
+}

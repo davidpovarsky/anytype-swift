@@ -1,0 +1,108 @@
+--- original58df/run_positive_full_tier_offload.py
++++ variant-successor/run_positive_full_tier_offload_variant.py
+@@ -33,6 +33,14 @@
+ PRODUCER_RECEIPT_SHA = '9282a20d65d2dc3006a9a256e6fbeda926089b84efc770609d4e32b54cb89602'
+ CLOUD_RECEIPT = CLOUD/'attempt6-small-cloud/result.json'
+ CLOUD_RECEIPT_SHA = 'e6446c4ff820e0dcdf80ba298a977368a7a5c19ada0eea9dab1280998a6937ba'
++PRIOR_OFFLOAD_RECEIPT = OUTPUT_PARENT/'attempt1/result.json'
++PRIOR_OFFLOAD_SHA = '875ed86695e1cf5acc8ef38f5b6e553cb8d2fb2ef4cb885e52727d61a0e162da'
++PRIOR_OFFLOAD_SOURCE = Path('/mnt/development/projects/evidence/pinkha-positive-full-tier-offload-source-20261127-attempt1/run_positive_full_tier_offload.py')
++PRIOR_OFFLOAD_SOURCE_SHA = '58df056c9b02b88f3196d77114fb47100380183ae1fb2fd81be3a182b0633609'
++VARIANT_RECEIPT = ROOT/'production-lan-files2/result.json'
++VARIANT_RECEIPT_SHA = 'c23b78e312fa9efbe1a5fe7abd9e0061e131a0514fdb4fc07cf12ebe42376692'
++PROTECTED_VARIANT = 'thumb'
++PROTECTED_VARIANT_OF = 'YhnuHkqoHza'
+ DEADLINE_RECEIPT = Path('/mnt/development/projects/evidence/pinkha-current-authority-http-controls-20261127/attempt1/result.json')
+ DEADLINE_RECEIPT_SHA = '0a2da3fdb8c1d962a0e6d74e750292dc934ff5c826c0b025bb38702717394db6'
+ DEADLINE_SOURCE = Path('/mnt/development/projects/evidence/pinkha-current-authority-http-controls-20261127-source1/verify_current_authority_http.py')
+@@ -162,7 +170,7 @@
+     parser.add_argument('--producer-sha256', required=True)
+     args = parser.parse_args()
+     require(os.geteuid()==0 and os.uname().nodename=='torah-social', 'fixed authorized Oracle host')
+-    require(args.output==OUTPUT_PARENT/'attempt1', 'single exclusive Offload attempt; no blind continuation/replay')
++    require(args.output==OUTPUT_PARENT/'attempt2', 'one explicit successor after proven zero prior Offload dispatches')
+     producer_dir = args.producer_receipt.parent
+     require(producer_dir.parent==ROOT and re.fullmatch(r'final-authority-native[1-9][0-9]{0,2}', producer_dir.name), 'future native producer scope')
+     require(args.producer_receipt.name=='result.json' and re.fullmatch(r'[0-9a-f]{64}', args.producer_sha256), 'pinned producer receipt')
+@@ -319,6 +327,30 @@
+         own_path = Path(__file__).resolve()
+         public_inputs[str(own_path)] = {'identity': identity(public_bytes(own_path)), 'maximum': 8*MIB}
+         result['controller'] = public_inputs[str(own_path)]['identity']
++        pin(PRIOR_OFFLOAD_SOURCE, PRIOR_OFFLOAD_SOURCE_SHA)
++        prior = json_object(pin(PRIOR_OFFLOAD_RECEIPT, PRIOR_OFFLOAD_SHA))
++        require(prior['status']=='FAIL_BACKED_FULL_TIER_OFFLOAD_RETAINED' and
++                prior['controller']=={'bytes':45625,'sha256':PRIOR_OFFLOAD_SOURCE_SHA} and
++                prior['errors']==[{'type':'RuntimeError','message':'AssertionError: original file, not a variant redirection'}] and
++                prior['completionErrors']==[] and prior['allOwnedGroupsPositivelyAbsent'] is True and
++                prior['nativeSourceUnchanged'] is True and prior['qualifiedPublicSourcesUnchanged'] is True and
++                prior['publicInputsUnchanged'] is True and prior['offloadDispatches']==[],
++                'exact original pre-dispatch failure retained; no prior Offload effect to retry')
++        require(prior['requests'] and all(row['method']=='GET' and row['phase']=='member-offload'
++                for row in prior['requests']) and len(prior['phases'])==1 and
++                prior['phases'][0]['stepsCompleted']==['health','identity','self-member','sync','file-before'],
++                'only original bounded metadata reads preceded the failed protected-variant check')
++        require(len(prior['processes'])==1, 'exact original single native process')
++        old_process = prior['processes'][0]
++        require(old_process['exitCode']==0 and old_process['processGroupAbsent'] is True and
++                old_process['forcedCleanup'] is True and old_process['signals']==[15] and
++                old_process['cleanupErrors']==[] and old_process['unreapedLeaderDuringGroupCleanup'] is True,
++                'original failed observer cleanup remains explicit, never promoted to normal acceptance')
++        pin(PRIOR_OFFLOAD_RECEIPT.parent/'member-offload/original.log', old_process['logSHA256'])
++        result['retainedPreDispatchFailure'] = {'receiptSHA256':PRIOR_OFFLOAD_SHA,
++            'controllerSHA256':PRIOR_OFFLOAD_SOURCE_SHA,'offloadDispatches':0,
++            'forcedCleanup':True,'failureReclassified':False,'priorAcceptanceEventsReused':0,
++            'historicalProcessIDsProbed':False}
+         helper_path = own_path.with_name('owned_swift_commands.py')
+         pin(helper_path, HELPER_SHA)
+         ownership = json_object(pin(HELPER_PROOF, HELPER_PROOF_SHA))
+@@ -358,6 +390,36 @@
+             require(old_files[file_id]['durableBeforeRead'] is True and old_files[file_id]['initiallyCached'] is False and expected['rootCid'], 'actual full-tier backed cloud file, not size inference')
+         result['originalCloudProof'] = {'receiptSHA256':CLOUD_RECEIPT_SHA,'sourceManifestSHA256':previous['sourceAfter']['sourceManifestSHA256'],
+             'historicalGroupCount':2,'historicalProcessIDsProbed':False,'twoFiles':EXPECTED,'originalGroupsReexecuted':0}
++        variant_history = json_object(pin(VARIANT_RECEIPT, VARIANT_RECEIPT_SHA))
++        require(variant_history['status']=='PASS_COPIED_PRODUCTION_ACCOUNTS_LAN_PARTIAL_CRASH_COLD_FILE_BYTES' and
++                variant_history['errors']==[] and variant_history['allOwnedGroupsPositivelyAbsent'] is True and
++                variant_history['sourcesBefore']==variant_history['sourcesAfter'] and
++                variant_history['sourcesAfter']['sourceUnchanged'] is True and
++                variant_history['nativeBefore']==variant_history['nativeAfter'] and
++                variant_history['accounts']=={'alice':OWNER,'bob':MEMBER} and
++                variant_history['spaceId']==SPACE and variant_history['objectId']==OBJECT,
++                'unchanged accepted public fixture lineage for the protected thumbnail')
++        historical_protected = variant_history['files'][3]
++        expected_protected = EXPECTED[PROTECTED_FILE_ID]
++        require(historical_protected['fileId']==PROTECTED_FILE_ID and historical_protected['objectId']==OBJECT and
++                historical_protected['variant']==PROTECTED_VARIANT and
++                historical_protected['variantOf']==PROTECTED_VARIANT_OF and
++                historical_protected['rootCid']==expected_protected['rootCid'] and
++                historical_protected['plaintextBytes']==expected_protected['bytes'] and
++                historical_protected['plaintextSHA256']==historical_protected['destinationSHA256']==expected_protected['plaintextSHA256'] and
++                historical_protected['inline'] is False and historical_protected['durable'] is True,
++                'exact original protected thumbnail identity and accepted plaintext')
++        require(variant_history['ownerMetadataObserved'][PROTECTED_FILE_ID]=={
++                'cached':True,'durable':True,'fileId':PROTECTED_FILE_ID,'inline':False,
++                'mime':expected_protected['mime'],'name':expected_protected['name'],'objectId':OBJECT,
++                'rootCid':expected_protected['rootCid'],'size':expected_protected['bytes'],
++                'variant':PROTECTED_VARIANT,'variantOf':PROTECTED_VARIANT_OF} and
++                variant_history['variantResolution']=={'byteEquality':True,
++                    'nativeVariantOf':PROTECTED_VARIANT_OF,'sha256':expected_protected['plaintextSHA256'],
++                    'variantFileId':PROTECTED_FILE_ID}, 'two independent exact public variant bindings')
++        result['protectedVariantBinding'] = {'historicalReceiptSHA256':VARIANT_RECEIPT_SHA,
++            'fileId':PROTECTED_FILE_ID,'variant':PROTECTED_VARIANT,'variantOf':PROTECTED_VARIANT_OF,
++            'historicalMethodsReplayed':0,'rejectedAttemptFreshVariantBodyRecovered':False}
+         pin(ADMISSION,ADMISSION_SHA)
+         spec = importlib.util.spec_from_file_location('positive_offload_final_product_admission',ADMISSION)
+         admission = importlib.util.module_from_spec(spec); spec.loader.exec_module(admission)
+@@ -405,7 +467,12 @@
+                     value.get('name')==expected['name'] and value.get('inline') is False and
+                     value.get('durable') is True and value.get('cached') is cached, 'exact full-tier durable cache state')
+             require((value.get('mime') or 'application/octet-stream')==expected['mime'], 'original MIME omission/default contract')
+-            require(not value.get('variant') and not value.get('variantOf'), 'original file, not a variant redirection')
++            if file_id==FILE_ID:
++                require(not value.get('variant') and not value.get('variantOf'), 'original file, not a variant redirection')
++            else:
++                require(file_id==PROTECTED_FILE_ID and value.get('variant')==PROTECTED_VARIANT and
++                        value.get('variantOf')==PROTECTED_VARIANT_OF,
++                        'exact retained protected thumbnail and original variant owner')
+             binding = {key:item for key,item in value.items() if key!='cached'}
+             if file_id in first_metadata:
+                 require(binding==first_metadata[file_id], 'all original file metadata except local cache bit preserved')
