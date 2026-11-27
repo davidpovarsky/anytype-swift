@@ -1,0 +1,38 @@
+{
+  "allReplacementCountsExactlyOne": true,
+  "final": {
+    "bytes": 63597,
+    "sha256": "c628aee892a5cff15bd80f2473f64cffaf831f816d51412a54e142f7e7c410a5"
+  },
+  "originalRunnerChanged": false,
+  "reverseDescriptorWriter": {
+    "correctionPath": "self-inspection-correction.json",
+    "replace": {
+      "from": "            remaining = memoryview(raw)\n            while remaining:\n                written = os.write(fd, remaining)\n                assert written > 0, 'Receipt write made no progress'\n                remaining = remaining[written:]\n            os.fsync(fd)\n",
+      "to": "            with os.fdopen(fd, 'wb', closefd=False) as stream:\n                stream.write(raw)\n                stream.flush()\n                os.fsync(fd)\n"
+    },
+    "result": {
+      "bytes": 63184,
+      "sha256": "29b2bb6a54fac428f859ecc854ff9c7524b61d74e643b3395c59c7e31233311c"
+    }
+  },
+  "reverseErrorRetention": {
+    "completeRetainedPredecessorCompared": true,
+    "correctionPath": "error-retention-correction.json",
+    "replaceFunction": {
+      "from": "def failure_record(phase, error):\n    # Never ask linecache to open source while retaining a timeout/I/O failure.\n    frames = []\n    cursor = error.__traceback__\n    while cursor is not None and len(frames) < 32:\n        code = cursor.tb_frame.f_code\n        frames.append({'file': code.co_filename, 'function': code.co_name, 'line': cursor.tb_lineno})\n        cursor = cursor.tb_next\n    return {'phase': phase, 'type': type(error).__name__, 'message': str(error)[:8192],\n            'tracebackFrames': frames, 'additionalFramesOmitted': cursor is not None}",
+      "to": "def failure_record(phase, error):\n    return {'phase': phase, 'type': type(error).__name__, 'message': str(error)[:8192],\n            'traceback': ''.join(traceback.format_exception(type(error), error, error.__traceback__))[-32768:]}"
+    },
+    "restoreImport": {
+      "from": "import time\n",
+      "to": "import time\nimport traceback\n"
+    },
+    "result": {
+      "bytes": 63288,
+      "sha256": "b6beca6833856bd279d20af90713e620a318d22eb33567fbf9901564c7ad9ef3"
+    }
+  },
+  "runtimeFailureOrTestClaim": false,
+  "schema": "bookmark6-completion-predecessor-reconstruction/v1",
+  "status": "EXACT_LOCAL_BYTE_RECONSTRUCTION_NO_EXECUTION"
+}

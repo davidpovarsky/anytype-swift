@@ -1,0 +1,52 @@
+{
+  "schema": "pinkha.bookmark6.dispatch-actual-log-read.v1",
+  "status": "LOCAL_ORIGINAL_LOG_READ_ONLY_NOT_COMPILER_PRODUCT_QUALIFICATION",
+  "sourceFinding": {
+    "path": "wave2-bookmark6-component/dispatch-diagnosis/source-finding.json",
+    "bytes": 11116,
+    "sha256": "6d5f6c0edadfb2617b6b93b69abfbbe47ea642d5bd54f50447e1b2e89995e8b0"
+  },
+  "originals": [
+    {
+      "path": "wave2-bookmark6-component/runtime-attempt1-root-custody/original-attempt/receipt.json",
+      "bytes": 4923,
+      "sha256": "4441afb94ce64ef8656dd001ec040bee2cb69201eaddba16d2fc8e7a3d4fb556"
+    },
+    {
+      "path": "wave2-bookmark6-component/runtime-attempt1-root-custody/original-attempt/command.json",
+      "bytes": 2022,
+      "sha256": "35f2b31ba614562563f8fd9379a4a744f1d8adf65bb5e57dc4df4fc1a94da9c7"
+    },
+    {
+      "path": "wave2-bookmark6-component/runtime-attempt1-root-custody/original-attempt/stdout.original.log",
+      "bytes": 1701,
+      "sha256": "bdd491647284cb881775720437223dc5d39c9314fcc1f1249c596646a1db7bdf"
+    },
+    {
+      "path": "wave2-bookmark6-component/runtime-attempt1-root-custody/original-attempt/stderr.original.log",
+      "bytes": 210554,
+      "sha256": "3129a86a2eba944743567e25b4e317182133cb8e37970d640088067008ca5ed0"
+    }
+  ],
+  "actualOriginalResult": "FAIL",
+  "firstFailure": "AssertionError: Both selected Swift Testing cases must pass",
+  "swiftCommandExit": 0,
+  "actualFourXCTestNames": [
+    "testBookmarkCreationReadbackRequiresExactSourceAndOriginalIdentity",
+    "testBookmarkCreationRefusesFramesOutsideTheSelectedBinding",
+    "testBookmarkCreationRefusesHiddenManagedAndChangedBindings",
+    "testBookmarkCreationRetainsEmptyNameAndOneExactMappedURL"
+  ],
+  "actualXCTestSummary": "Executed4 tests,0failures,in0.029seconds; separate product printed0tests.",
+  "swiftTestingEventsObserved": 0,
+  "verboseLogExposesSwiftTestingSkipOrRuntimeChildArgv": false,
+  "sourceInterpretation": "Options.swift at exact release tag defaults SwiftTesting enabled, but explicit enable is false. SwiftTestCommand uses an additional testEntryPointPath gate. The retained multiple-product source route does not equate generated entry files with that metadata. The exact actual dispatch omission cause remains unproven.",
+  "executableProvenanceLimit": "The original receipt pins the requested swift path resolving to swift-driver. It does not separately capture the executing swift-test child binary or its resolved option/product metadata. The compiler version string alone does not establish the actual dispatcher branch taken.",
+  "nextBoundedSourceCheck": "Use root-collected four actual generated files plus original full compiler/link/source qualification. No extra host path is requested without an observed source/log locator.",
+  "noSourceChange": true,
+  "noRunnerImportOrFunctionInvocation": true,
+  "noRuntime": true,
+  "noHistoricGroupProbe": true,
+  "originalOverallFailureRetained": true,
+  "acceptance": "No overall6-method acceptance or continuation success claimed; four observed XCTest passes await original product/source qualification."
+}

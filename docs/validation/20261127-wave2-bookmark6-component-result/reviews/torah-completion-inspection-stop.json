@@ -1,0 +1,22 @@
+{
+  "atUTC": "2026-11-27T23:08:28.289430+00:00",
+  "candidateImports": 0,
+  "controlsOrTests": 0,
+  "correction": "Compare actual compiler inputs against exact Sources/Tests Swift rows, keeping the Package entry independently checked in the90 inputs/85 source-map custody.",
+  "finding": "The reviewer selected every .swift key from the 85-entry Package/source map, inadvertently including Package.swift as a compiled Swift source. Actual compiler source rows are the exact84 Sources/Tests files; Package.swift is the separate85th map entry.",
+  "hostCalls": 0,
+  "observedDifference": {
+    "actualCompiledOnly": [],
+    "expectedMapOnly": [
+      "Package.swift"
+    ]
+  },
+  "originalChanges": 0,
+  "phase": "independent completion metadata comparison",
+  "processQueriesOrSignals": 0,
+  "qualifierInvocations": 0,
+  "reviewFileWrittenBeforeStop": false,
+  "schema": "bookmark6-reviewer-local-inspection-stop/v1",
+  "sourceCompletionSHA256": "ac38377da08aac68629d2ae04f8d4878a52eb8b28ee3e1009700c810902302d7",
+  "status": "REVIEWER_ONLY_ASSERTION_STOP_NOT_RUNTIME_OR_PRODUCT_FAILURE"
+}

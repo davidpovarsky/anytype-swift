@@ -1,0 +1,10 @@
+{
+  "link_id": "link_6b037fa8537081919acb0c7a2cb11e3e",
+  "host_id": "host_299cf75f6b338ecd",
+  "interpreter": "python3",
+  "content": "import hashlib, os\nfrom pathlib import Path\np=Path('/var/lib/sentinelx/uploads/pinkha-wave2-bookmark6-stage-0a4d01543136969a.py')\nassert p.resolve(strict=True)==p and not p.is_symlink()\nassert hashlib.sha256(p.read_bytes()).hexdigest()=='0a4d01543136969aeb363bd56d0b87716fc25dab302b5580932740cefc28a548'\nos.execv('/usr/bin/python3',['/usr/bin/python3','-B',str(p),'--coordination-story','1220963068892650'])\n",
+  "timeout": 360,
+  "background": true,
+  "notify_telegram": false,
+  "notify_resend": false
+}

@@ -1,0 +1,151 @@
+{
+  "schema": "pinkha.bookmark6.swiftpm-dispatch-source-finding.v1",
+  "status": "SOURCE_DIAGNOSIS_ONLY_RUNTIME_CLOSED",
+  "generatedAtUTC": "2026-11-27T22:47:28.858226+00:00",
+  "originalRunner": {
+    "path": "wave2-bookmark6-component/execution-preparation/inputs/run_component.py",
+    "bytes": 48105,
+    "sha256": "3729eed7d91e3400c19137420df96465d4785c0bd9587d81553864e1041f176c",
+    "gitBlob": "7acffd501928ce64c2eb70728a1fdddcf0bd7d99"
+  },
+  "frozenArtifactsChanged": false,
+  "runtimeOrQualificationInvocation": false,
+  "actualAttemptBoundary": {
+    "authority": "Root-reported completed attempt; this source-only finding has not yet independently read its original receipt/log bodies or qualified its products.",
+    "job": "job_81ac11c248c8",
+    "receiptSHA256": "4441afb94ce64ef8656dd001ec040bee2cb69201eaddba16d2fc8e7a3d4fb556",
+    "swiftCommandExit": 0,
+    "componentResult": "FAIL",
+    "firstFailure": "Both selected Swift Testing cases must pass",
+    "observedXCTestMethods": 4,
+    "observedSwiftTestingEvents": 0,
+    "acceptance": "Four observed positives are not overall component acceptance; original failed receipt remains immutable.",
+    "historicalGroup": "2634766 permanently closed by original positive absence; never queried or signalled by this review."
+  },
+  "primarySource": [
+    {
+      "path": "wave2-bookmark6-component/execution-preparation/toolchain-source/SwiftTestCommand.swift",
+      "bytes": 87123,
+      "sha256": "1e51f46b52df6ad9fde0982b6d180b16c3c9e7a016eeb4050b077b34faccfee3",
+      "gitBlob": "19d3cffbbfe5f45c63638aa0baa172d3204c8ccd",
+      "upstream": {
+        "repository": "swiftlang/swift-package-manager",
+        "ref": "swift-6.4.3-RELEASE",
+        "path": "Sources/Commands/SwiftTestCommand.swift",
+        "gitBlob": "19d3cffbbfe5f45c63638aa0baa172d3204c8ccd",
+        "url": "https://github.com/swiftlang/swift-package-manager/blob/swift-6.4.3-RELEASE/Sources/Commands/SwiftTestCommand.swift",
+        "originalUTF8Bytes": 87123
+      }
+    },
+    {
+      "path": "wave2-bookmark6-component/execution-preparation/toolchain-source/SwiftBuildSystem.swift",
+      "bytes": 72589,
+      "sha256": "db990e0b36a4da98473ee10c2703957b5ac4c450f43257ce4159d28dbf8992c2",
+      "gitBlob": "4c953734a98ea78597071dff92ad8d06b673b7c4",
+      "upstream": {
+        "repository": "swiftlang/swift-package-manager",
+        "ref": "swift-6.4.3-RELEASE",
+        "path": "Sources/SwiftBuildSupport/SwiftBuildSystem.swift",
+        "gitBlob": "4c953734a98ea78597071dff92ad8d06b673b7c4",
+        "url": "https://github.com/swiftlang/swift-package-manager/blob/swift-6.4.3-RELEASE/Sources/SwiftBuildSupport/SwiftBuildSystem.swift"
+      }
+    },
+    {
+      "path": "wave2-bookmark6-component/execution-preparation/toolchain-source/SwiftCommandState.swift",
+      "bytes": 62788,
+      "sha256": "b55c403ec0577b3084b6da08d9aea405f3d7baee632937c11cfe2ff60c2de36a",
+      "gitBlob": "409c9f346410639325098905f14a9c1c615d0ea5",
+      "upstream": {
+        "repository": "swiftlang/swift-package-manager",
+        "ref": "swift-6.4.3-RELEASE",
+        "path": "Sources/CoreCommands/SwiftCommandState.swift",
+        "gitBlob": "409c9f346410639325098905f14a9c1c615d0ea5",
+        "url": "https://github.com/swiftlang/swift-package-manager/blob/swift-6.4.3-RELEASE/Sources/CoreCommands/SwiftCommandState.swift"
+      }
+    },
+    {
+      "path": "wave2-bookmark6-component/execution-preparation/toolchain-source/PackageBuilder.swift",
+      "bytes": 81546,
+      "sha256": "a1f0d5bd1198cafccb937d59d4f121362bbd4dee3773130ad099054b05b12611",
+      "gitBlob": "005f230468c196171775d2ffd5df29c15a3d1af5",
+      "upstream": {
+        "repository": "swiftlang/swift-package-manager",
+        "ref": "swift-6.4.3-RELEASE",
+        "path": "Sources/PackageLoading/PackageBuilder.swift",
+        "gitBlob": "005f230468c196171775d2ffd5df29c15a3d1af5",
+        "url": "https://github.com/swiftlang/swift-package-manager/blob/swift-6.4.3-RELEASE/Sources/PackageLoading/PackageBuilder.swift"
+      }
+    },
+    {
+      "path": "wave2-bookmark6-component/dispatch-diagnosis/primary/Options.swift",
+      "bytes": 37058,
+      "sha256": "57abeb57bf47a9c65eca51fd1cd183ed6f98bc6a9e3cb85125a1dcf1e011102a",
+      "gitBlob": "97ac882836f467a842abfe84062f4890ec7a5ced"
+    }
+  ],
+  "newPrimaryRead": "Only the five-entry CoreCommands directory listing and its Options.swift at the same swift-6.4.3-RELEASE tag, to resolve the previously unretained default-library implementation. Both original connector responses are retained in primary/.",
+  "findings": [
+    {
+      "id": "B6-DISPATCH-01",
+      "location": "CoreCommands/Options.swift:TestLibraryOptions",
+      "fact": "Both isEnabled(.swiftTesting) and isExplicitlyEnabled delegate to the same option resolution with different defaults: true and false respectively. --enable-swift-testing makes both true; --disable-xctest makes the XCTest dispatch false.",
+      "implication": "The primary source does not support the claim that mixed-framework defaults simply disable Swift Testing."
+    },
+    {
+      "id": "B6-DISPATCH-02",
+      "location": "SwiftTestCommand.swift run(), retained lines431-448",
+      "fact": "Automatic Swift Testing requires isEnabled and either explicit enabling or no nonnil BuiltTestProduct.testEntryPointPath among selected products.",
+      "implication": "The original3729 argv supplies neither enabling/disabling flag; a nonnil entrypoint metadata value would suppress automatic Swift Testing. Whether this actual attempt had that metadata is not established here."
+    },
+    {
+      "id": "B6-DISPATCH-03",
+      "location": "PackageBuilder.swift constructProducts(); SwiftBuildSystem.swift builtTestProducts; SwiftCommandState.swift build-system product configuration",
+      "fact": "The swiftbuild multiple-product route constructs each test Product without a testEntryPointPath argument, while SwiftBuildSystem forwards product.underlying.testEntryPointPath. Generated test_entry_point.swift existence is distinct from this metadata.",
+      "implication": "Do not diagnose the gating branch merely because two generated entrypoint files exist. The missing actual dispatch condition remains unresolved by the retained public-source chain alone."
+    },
+    {
+      "id": "B6-DISPATCH-04",
+      "location": "expected-generated/PinkhaAnyIntegrationTests-test_entry_point.swift:__SwiftPMGeneratedTestRunner",
+      "fact": "The retained generated template defaults to xctest when --testing-library is absent; the swift-testing branch calls Testing.__swiftPMEntryPoint when compiled/importable. SwiftTestCommand.TestRunner adds --testing-library swift-testing for a Swift Testing invocation.",
+      "implication": "Zero XCTest in the Integration product is expected for the XCTest invocation; it supplies no Swift Testing credit. Actual generated bytes and compiled/link evidence must be qualified before proposing reuse."
+    },
+    {
+      "id": "B6-DISPATCH-05",
+      "location": "SwiftTestCommand.swift SharedOptions/buildTestsIfNeeded/buildParametersForTest; SwiftBuildSystem.swift build()",
+      "fact": "--skip-build reaches buildParameters.shouldSkipBuilding, whose SwiftBuildSystem guard returns before plugin compilation and PIF/build work. --test-product selects one exact test product. Library flags are checked by dispatch, not substituted into source bodies.",
+      "implication": "A separate explicit Swift-Testing-only invocation can be proposed without rebuilding the already compiled source or replaying XCTest, conditional on actual product/source qualification."
+    }
+  ],
+  "minimalSeparateContinuationProposal": {
+    "status": "PROPOSAL_NOT_CONTROLLER_OR_EXECUTION_GRANT",
+    "preferredShape": "Reuse the same actual Swift executable/package/scratch/cache/config/security paths, cwd/PWD and resource/owned-child conventions; add --skip-build --test-product PinkhaAnyIntegrationTests --disable-xctest --enable-swift-testing; replace the six-name filter with the exact two-name filter below. Keep --no-parallel and no automatic retry.",
+    "selectedFramework": "Swift Testing only",
+    "selectedProduct": "PinkhaAnyIntegrationTests",
+    "selectedSourceSuite": "AnyHierarchyTests",
+    "selectedMethods": [
+      "creationOverrideRejectsAnotherWorkspaceBeforeDispatch",
+      "creationOverrideAndDefaultCreatorShareTheExistingMutationQueue"
+    ],
+    "filter": "(?:creationOverrideRejectsAnotherWorkspaceBeforeDispatch|creationOverrideAndDefaultCreatorShareTheExistingMutationQueue)(?:\\(\\))?$",
+    "excluded": "All four already observed XCTest methods, old Host7 and old Integration27.",
+    "beforeAdmissionRequired": [
+      "Qualify all original90 inputs and exact Package/source before-after pins; original82 production and2 complete test bodies remain unchanged.",
+      "Qualify actual nine compiler/FileList groups, four generated inputs, nine products/link closure and102 Crypto dependency files using the frozen qualifier contract; no acceptance from expected templates alone.",
+      "Bind exact actual Integration runner/test shared library/product hashes, generated entrypoint/anchor bytes, original source/compiler/link witnesses and original failing receipt to a separate continuation evidence directory; do not overwrite attempt1.",
+      "Bind retained actual four XCTest method events independently before combining any later two-case result; preserve the original overall FAIL.",
+      "Root must obtain a new legitimate owner window, recheck unchanged floors/cap and review any finite continuation command/evidence wrapper before execution."
+    ],
+    "futureEvidenceRequired": [
+      "The explicit flags and one actual test product/runner invocation, with no XCTest event or old-suite execution.",
+      "Exactly the two named Swift Testing starts and positive finishes, a two-test positive summary, no failures/skips/unknown output, and zero build/compiler/link invocations during continuation.",
+      "Before/after byte equality for original inputs, generated/compiler products and dependency copies, plus original owned-process terminal evidence and first-error retention."
+    ],
+    "directBinaryAlternative": "The qualified Integration test-runner with --testing-library swift-testing and the same two-name filter would bypass SwiftPM build planning entirely. It is not yet proposed as an executable because actual entrypoint/link/runtime-environment custody has not been supplied; do not assume source templates establish it.",
+    "noRebuildClaimLimit": "The primary skip-build code prevents product build work. Actual continuation must still show no compiler/link command and unchanged products; source reasoning alone is not execution evidence."
+  },
+  "remainingUnknowns": [
+    "Actual original built-product entrypoint metadata and dispatch reason for zero Swift Testing events.",
+    "Actual generated entrypoint, full compiler/link/source closure and product byte hashes; root is collecting originals.",
+    "No new runtime admission, no product acceptance, and no proof that the explicit continuation has executed."
+  ]
+}

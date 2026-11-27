@@ -1,0 +1,12 @@
+{
+  "exactFullReverse": true,
+  "finding": "The initial audit guard admitted only the exclusive named open; os.fdopen would emit a second write-open audit event with an integer descriptor. Use direct bounded os.write on that already-created descriptor instead.",
+  "newLiteral": "            remaining = memoryview(raw)\n            while remaining:\n                written = os.write(fd, remaining)\n                assert written > 0, 'Receipt write made no progress'\n                remaining = remaining[written:]\n            os.fsync(fd)\n",
+  "newSHA256": "b6beca6833856bd279d20af90713e620a318d22eb33567fbf9901564c7ad9ef3",
+  "oldLiteral": "            with os.fdopen(fd, 'wb', closefd=False) as stream:\n                stream.write(raw)\n                stream.flush()\n                os.fsync(fd)\n",
+  "oldSHA256": "29b2bb6a54fac428f859ecc854ff9c7524b61d74e643b3395c59c7e31233311c",
+  "runtimeFailure": false,
+  "schema": "bookmark6-completion-local-source-self-inspection/v1",
+  "status": "SOURCE_CORRECTION_NO_EXECUTION",
+  "testsExecuted": false
+}
