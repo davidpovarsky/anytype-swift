@@ -1,0 +1,42 @@
+{
+  "schema": "pinkha-existing-qualification-receipt-control/v1",
+  "status": "PASS_ONE_DISPOSABLE_EXISTING_RECEIPT_CONTROL",
+  "argv": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+    "-B",
+    "/workspace/scratch/ae335eba85e3/miniapps-independent-network-restore-review/repair/after/Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody/test_restore_qualification_receipt_preservation.py"
+  ],
+  "cwd": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-restore-review/repair",
+  "pid": 5,
+  "exitCode": 0,
+  "ownedProcessGroupAbsent": true,
+  "forcedCleanup": false,
+  "seconds": 0.166746,
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "controllerSHA256": "92aea3a445abd8007e5fa7cc51f0757774f5de38833a6dcca430f75660de8e7f",
+  "sourceBefore": {
+    "qualify_restore_exclusive.py": "e2b025dc9a48f547b4e87fcceb39b9d9185c3c6b8f8920946369979fe3e379e5",
+    "test_restore_qualification_receipt_preservation.py": "ee64f05a918732656de8870b17bd9c4bb18db8a34df2dcbeef95b2768c6ab228"
+  },
+  "sourceAfter": {
+    "qualify_restore_exclusive.py": "e2b025dc9a48f547b4e87fcceb39b9d9185c3c6b8f8920946369979fe3e379e5",
+    "test_restore_qualification_receipt_preservation.py": "ee64f05a918732656de8870b17bd9c4bb18db8a34df2dcbeef95b2768c6ab228"
+  },
+  "log": {
+    "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-restore-review/repair/control/original.log",
+    "bytes": 284,
+    "sha256": "5cc366bf24d1c901f2abab0e3ec6efa851cfd17d08a0f65d8ee7cbc72fcbfabb"
+  },
+  "executedMethods": [
+    "RestoreQualificationReceiptPreservationTests.test_existing_result_is_preserved_before_native_custody_reads"
+  ],
+  "actualNativeRestoreCalls": 0,
+  "nativeProcesses": 0,
+  "accountOpens": 0,
+  "nativeQualificationRuns": 0,
+  "originalFourFilesystemCasesReplayed": false,
+  "originalF8ccReceiptAccessedByControl": false,
+  "compilerRuns": 0,
+  "scope": "Real disposable existing-file admission of exact candidate wrapper only, on this local Linux host. No native custody paths are reached."
+}

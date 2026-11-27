@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+"""Verify local retained source/receipt bytes only; never run their controllers."""
+from pathlib import Path
+import hashlib,json,difflib
+R=Path(__file__).resolve().parent
+BASE='a70e94f9647df16ce8962894b1973ba5a5a35163'
+LEDGER='a935931252e46c5f56c322432bda3011f3dc2171'
+REL=Path('Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody')
+LREL=REL.parent/'network_evidence_reuse'
+sha=lambda b:hashlib.sha256(b).hexdigest()
+blob=lambda b:hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
+def item(path):
+ b=path.read_bytes();return {'path':str(path),'bytes':len(b),'sha256':sha(b)}
+rows=json.loads((R/'download-source-index.json').read_text())
+for row in rows:
+ b=(R/row['local']).read_bytes();assert blob(b)==row['blob'];row.update(bytes=len(b),sha256=sha(b))
+assert len(rows)==11
+byname={row['path'].split('/')[-1]:row for row in rows if row['ref']==BASE}
+success={};errors=[]
+for name in ['original-f8cc-receipt-read.json','original-read-batch.json','original-read-retry.json','original-read-retry2.json']:
+ values=json.loads((R/name).read_text());values=values if isinstance(values,list) else [{'status':'fulfilled','value':{'result':values}}]
+ for value in values:
+  if value['status']!='fulfilled':errors.append({'evidence':name,'status':value['status']});continue
+  result=value['value']['result'];d=result.get('structuredContent')
+  if not d or not d.get('ok'):
+   errors.append({'evidence':name,'path':value['value'].get('path'),'isError':result.get('isError')});continue
+  assert d['encoding']=='utf-8' and d['truncated'] is False
+  b=d['content'].encode();assert len(b)==d['size_bytes']
+  if d['path'] in success:assert success[d['path']]['sha256']==sha(b)
+  success[d['path']]={'path':d['path'],'bytes':len(b),'sha256':sha(b),'content':d['content'],'readEvidence':name}
+expected={
+ '/mnt/development/projects/evidence/pinkha-w1-restore-exclusive-20261127/result.json':'exclusive-restore-controls.json',
+ '/mnt/development/projects/evidence/pinkha-w1-restore-exclusive-20261127/tests.log':'exclusive-restore-controls.log',
+ '/mnt/development/projects/evidence/pinkha-w1-restore-exclusive-20261127/qualify_restore_exclusive.py':'qualify_restore_exclusive.py',
+ '/mnt/development/projects/evidence/pinkha-w1-restore-exclusive-20261127/test_restore_exclusive.py':'test_restore_exclusive.py',
+ '/mnt/development/projects/evidence/pinkha-w1-restore-exclusive-20261127/restore.py':'restore.py',
+ '/mnt/development/projects/evidence/pinkha-w1-network-native792-raw-20261127/restore.py':'restore.py',
+ '/mnt/development/projects/evidence/pinkha-w1-network-native792-raw-20261127/restore-exclusivity-update.json':'restore-exclusivity-update.json',
+}
+for path,name in expected.items():assert success[path]['sha256']==byname[name]['sha256'],path
+custody='/mnt/development/projects/evidence/pinkha-w1-network-native792-raw-20261127/receipt.json'
+old_root=R.parent/'miniapps-independent-network-review/4a381db674fa1f011bff5d02d1a1e9badf253c1e'/REL
+assert success[custody]['content'].encode()==(old_root/'receipt.json').read_bytes()
+old=(old_root/'restore.py').read_bytes()
+assert sha(old)=='f4b368bdf8280caa52967585fd55be03a99b9c8ecf4aa9c50421bfd814f6b481'
+assert old==(R/'sources'/BASE/REL/'restore-v1-before-exclusive.py').read_bytes()
+new=(R/'sources'/BASE/REL/'restore.py').read_bytes()
+(R/'restore-original-to-exclusive.diff').write_text(''.join(difflib.unified_diff(old.decode().splitlines(True),new.decode().splitlines(True),fromfile='4a381/original-restore.py',tofile='a70/exclusive-restore.py')))
+
+restore=json.loads((R/'sources'/BASE/REL/'exclusive-restore-controls.json').read_text())
+log=(R/'sources'/BASE/REL/'exclusive-restore-controls.log').read_bytes()
+assert restore['logSHA256']==sha(log) and restore['exitCode']==0 and restore['ownedGroupAbsent']
+assert restore['errors']==[] and restore['productsAndSourceUnchanged'] and restore['actualRestoredNativePathStillAbsent']
+assert restore['testsExpected']==len(restore['passedMethods'])==4
+assert [line for line in log.decode().splitlines() if line.startswith('test_')]==restore['passedMethods']
+assert log.endswith(b'\nOK\n') and b'Ran 4 tests in ' in log and b'skipped' not in log.lower()
+for k,n in [('candidateSHA256','restore.py'),('testsSHA256','test_restore_exclusive.py'),('controllerSHA256','qualify_restore_exclusive.py')]:assert restore[k]==byname[n]['sha256']
+for k in ['accountOpens','actualNativeRestoreCalls','goBuilds','swiftBuilds','nativeProcesses']:assert restore[k]==0
+addendum=json.loads((R/'sources'/BASE/REL/'restore-exclusivity-update.json').read_text())
+assert addendum['disposableTestReceiptSHA256']==byname['exclusive-restore-controls.json']['sha256']
+assert addendum['currentRestoreSHA256']==sha(new) and addendum['historicalRestoreSHA256']==sha(old)
+assert addendum['originalRawCustodyReceiptSHA256']==success[custody]['sha256']
+
+ledger_path=R/'sources'/LEDGER/LREL/'retained-evidence-audit.json'
+ledger=json.loads(ledger_path.read_text())
+assert sha(ledger_path.read_bytes())=='f02e889371683127cd9dc9e821d38a1bc51cd28ac46ce7dc548aca42d1134cfa'
+assert ledger['controllerSHA256']==sha((R/'sources'/LEDGER/LREL/'qualify_retained_network_evidence.py').read_bytes())
+methods={}
+for group in ledger['retainedNetworkProofs']:
+ for name,value in group['acceptedMethods'].items():assert name not in methods and value['status']=='pass';methods[name]=value
+ assert group['sourceAfterVerifiedByOriginalController'] and group['originalForcedNativeStops']==0
+assert len(methods)==ledger['historicalNetworkMethodCount']==12
+invite,remaining,refusals=ledger['retainedNetworkProofs']
+assert invite['originalRunStatus']=='FAIL' and invite['originalExitCode']==0
+assert invite['separateProcessQualification']['nativeGroupAbsentByKernelESRCH'] and invite['separateProcessQualification']['newTestInvocations']==0
+assert remaining['originalGroupRemaining'] is False
+assert refusals['originalRunStatus']=='FAIL' and refusals['originalExitCode']==1 and refusals['originalFailed']==2 and refusals['originalPassed']==2 and refusals['originalGroupRemaining'] is False
+assert len(refusals['otherOriginalMethodResults'])==2 and all(x['status']=='fail' for x in refusals['otherOriginalMethodResults'].values())
+for key,count_key in [('retainedAuthorityProof','historicalAuthorityMethodCount'),('retainedLinuxP2PProof','historicalLinuxP2PMethodCount')]:
+ g=ledger[key];assert len(g['acceptedMethods'])==ledger[count_key]==2 and all(x['status']=='pass' for x in g['acceptedMethods'].values())
+ assert g['originalForcedNativeStops']==0 and g['originalGroupAbsent'] is True
+boundary=ledger['sourceBoundary'];assert boundary['baseFiles']==1594 and boundary['currentFiles']==1599 and boundary['sameSourceClaimForOldNetworkRuns'] is False
+assert len(boundary['delta'])==7 and sum(x['before'] is None for x in boundary['delta'])==5
+current_manifest=R.parent/'miniapps-independent-network-review/988d057848087410dc6363b21fadea94ee759b52/Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/native-source-manifest.json'
+assert sha(current_manifest.read_bytes())==boundary['currentManifestSHA256']
+current=json.loads(current_manifest.read_text())['files'];assert len(current)==1599
+for row in boundary['delta']:assert {k:current[row['path']][k] for k in ['bytes','sha256']}==row['after']
+for k in ['newNativeRuns','newTestInvocations','newCompilers','accountsOpened','sourceEdits']:assert ledger[k]==0
+
+commits=[json.loads((R/('github-'+sha_value+'.json')).read_text()) for sha_value in [LEDGER,BASE]]
+assert commits[0]['parents'][0]['sha']=='4a381db674fa1f011bff5d02d1a1e9badf253c1e' and commits[1]['parents'][0]['sha']==LEDGER
+proof={'schema':'pinkha-network-restore-independent-byte-review/v1','status':'PASS_RETAINED_SOURCE_RECEIPT_BINDING_NO_REPLAY',
+ 'gitInputs':rows,'originalReadsVerified':[{k:v for k,v in row.items() if k!='content'} for row in success.values()],
+ 'originalReadTransportErrorsRetained':errors,'restoreReceipt':restore,'custodyAddendum':addendum,
+ 'ledger':ledger,'priorNativeManifest':item(current_manifest),'historicalRestoreExactBytesPreserved':True,
+ 'originalCustodyReceiptExactBytesPreserved':True,'originalToExclusiveDiff':item(R/'restore-original-to-exclusive.diff'),
+ 'receiptReuseScope':'Exact published original f02e audit reused with independent controller review. Large archives/raw Go logs were not rehashed or replayed. Exact closed f8cc receipt/log/controller/tests/installed helper/addendum read through the existing Oracle reader and matched Git.',
+ 'reviewerNativeRuns':0,'reviewerRestoreCalls':0,'reviewerOriginalFourCasesReplayed':False,
+ 'sourceChain':[x['sha'] for x in commits]}
+(R/'independent-byte-proof.json').write_text(json.dumps(proof,indent=2)+'\n')
+print(json.dumps({'proof':item(R/'independent-byte-proof.json'),'gitInputs':len(rows),'originalReads':len(success),'networkMethods':len(methods),'sourceDelta':len(boundary['delta'])}))

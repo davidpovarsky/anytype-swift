@@ -37,8 +37,13 @@ def interrupted(*_):raise RuntimeError('owned disposable restore controls interr
 
 signal.signal(signal.SIGTERM,interrupted);signal.signal(signal.SIGINT,interrupted)
 signal.pthread_sigmask(signal.SIG_UNBLOCK,{signal.SIGTERM,signal.SIGINT})
+# Claim the output before entering any cleanup or persistence path. A second
+# invocation must fail here without touching its predecessor's receipt or
+# reading native custody inputs. O_EXCL also rejects an existing symlink.
+receipt_fd=os.open(OUT/'result.json',os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+os.close(receipt_fd)
+
 try:
-    assert not (OUT/'result.json').exists(),'preserve prior receipt'
     assert sha(CANDIDATE)=='00bb2666c2af282d70dcba8f6092b978f61744f1dcc94e58631ff19d3f8df64c'
     assert sha(TEST)=='3525a82435a8791768582cef875c0bebf7e1820ec206e0d7c70f15a8889a120e'
     assert not RESTORED.exists() and not RESTORED.is_symlink()

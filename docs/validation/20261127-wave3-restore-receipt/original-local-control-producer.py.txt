@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+import hashlib,json,os,platform,signal,subprocess,sys,time
+from pathlib import Path
+root=Path(__file__).resolve().parent
+source=root/'after/Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody'
+out=root/'control'
+out.mkdir()
+names=['qualify_restore_exclusive.py','test_restore_qualification_receipt_preservation.py']
+def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+before={name:digest(source/name) for name in names}
+started=time.monotonic()
+argv=[sys.executable,'-B',str(source/names[1])]
+environment=os.environ.copy();environment['PYTHONDONTWRITEBYTECODE']='1'
+forced=False
+with (out/'original.log').open('xb') as stream:
+    process=subprocess.Popen(argv,cwd=root,env=environment,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
+    try:process.wait(timeout=15)
+    except subprocess.TimeoutExpired:
+        forced=True;os.killpg(process.pid,signal.SIGKILL);process.wait(timeout=5)
+try:os.killpg(process.pid,0);absent=False
+except ProcessLookupError:absent=True
+log=(out/'original.log').read_bytes()
+after={name:digest(source/name) for name in names}
+passed=(process.returncode==0 and not forced and absent and before==after and
+    len(log)<65536 and log.count(b' ... ok')==1 and b'Ran 1 test in ' in log and log.endswith(b'\nOK\n') and b'skipped' not in log.lower())
+receipt={'schema':'pinkha-existing-qualification-receipt-control/v1',
+ 'status':'PASS_ONE_DISPOSABLE_EXISTING_RECEIPT_CONTROL' if passed else 'FAIL_EXISTING_RECEIPT_CONTROL',
+ 'argv':argv,'cwd':str(root),'pid':process.pid,'exitCode':process.returncode,'ownedProcessGroupAbsent':absent,
+ 'forcedCleanup':forced,'seconds':round(time.monotonic()-started,6),'python':sys.version,'platform':platform.platform(),
+ 'controllerSHA256':digest(Path(__file__)),'sourceBefore':before,'sourceAfter':after,
+ 'log':{'path':str(out/'original.log'),'bytes':len(log),'sha256':hashlib.sha256(log).hexdigest()},
+ 'executedMethods':['RestoreQualificationReceiptPreservationTests.test_existing_result_is_preserved_before_native_custody_reads'],
+ 'actualNativeRestoreCalls':0,'nativeProcesses':0,'accountOpens':0,'nativeQualificationRuns':0,
+ 'originalFourFilesystemCasesReplayed':False,'originalF8ccReceiptAccessedByControl':False,
+ 'compilerRuns':0,'scope':'Real disposable existing-file admission of exact candidate wrapper only, on this local Linux host. No native custody paths are reached.'}
+with (out/'result.json').open('x') as stream:json.dump(receipt,stream,indent=2);stream.write('\n')
+print(json.dumps({'status':receipt['status'],'receipt':str(out/'result.json'),'sha256':digest(out/'result.json'),'logSHA256':receipt['log']['sha256'],'source':before}))
+raise SystemExit(0 if passed else 1)
