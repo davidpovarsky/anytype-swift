@@ -1,0 +1,94 @@
+{
+  "status": "PASS_NARROW_INDEPENDENT_SOURCE_REVIEW_RUNTIME_NOT_RUN",
+  "reviewer": "Wave2 Interfaces",
+  "recordedAt": "2026-11-27T18:17:31.496519+00:00",
+  "scope": "Only actor reentrancy/current claim+pending validation, existing filesystem/JSON preservation and four appended real-Host-token component fixture semantics. Root retains overall UI/lifetime integration ownership.",
+  "manifestSHA256": "1ec8b8d8a51d8b1a2ab149f52d75c0804dcaf2560191bee3b17d66bfe687b8cf",
+  "inverseSHA256": "c563d7085ad0c4a1b80ca4a994498cb78ac6c0359ab34734cbe21fa0dbc63f5d",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "beforeSHA256": "0032c6be0f667e5082afd4e0e2dfa03a37ac43438141034358ee95a1d6e4c325",
+      "afterSHA256": "ff24dab542c153ad6e9dcd87e27f39d7cc2ec0f1e8a6a02f3de43f07ea17fb98",
+      "beforeBytes": 21506,
+      "afterBytes": 26048,
+      "beforeGitBlob": "dc2059f3d93a1274bf3913ee32238d06e0c958b5",
+      "afterGitBlob": "5f9db1004de6df6e8fadffb4c17b0007ec6de20b"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "beforeSHA256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809",
+      "afterSHA256": "c6abeef1c9bfc83e60f364d5a1598d15dfa371642bc7ee1c8d16779fdd78f85f",
+      "beforeBytes": 8725,
+      "afterBytes": 32593,
+      "beforeGitBlob": "f481d9a198904fb57aba4e49e2076743855776c0",
+      "afterGitBlob": "fea04984113a541fa2de612a57a2dfe4cfcaa357"
+    }
+  ],
+  "originalHostInputs": [
+    {
+      "ref": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "bytes": 23257,
+      "sha256": "704a3a50613129d966729e56491bdf17349bcbb9e0f977d5666867f39bf2d010",
+      "gitBlob": "bd134e85ef9924b19be0f1e6d65a211fa5b85a8d"
+    },
+    {
+      "ref": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift",
+      "bytes": 9648,
+      "sha256": "08635cd324835923b713674c359694a380005585cadd1de3075270f41ed0f6d2",
+      "gitBlob": "4b9aa812ebcd19f94856fb3ce6a25ac05a73c36f"
+    },
+    {
+      "ref": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+      "path": "docs/architecture/ordinary-file-attachment-contract-20261127.md",
+      "bytes": 23294,
+      "sha256": "f234c05963617fca10bd417f2f050127899fd795773bc0a5579aa28741b27abb",
+      "gitBlob": "85b4a582e917513b5e003eda08b9bba626f10e45"
+    }
+  ],
+  "independentChecks": {
+    "completeStoreInverse": true,
+    "originalCodableRecordBytesUnchanged": true,
+    "completeFilesystemSuffixBytesUnchanged": true,
+    "filesystemSuffixSHA256": "a3484607298818b02984214be74d31527ccaa4f7e624d0cffd4f4624b82bf245",
+    "originalTestPrefix": {
+      "bytes": 8725,
+      "sha256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809",
+      "methods": 3,
+      "declaredCases": 4
+    },
+    "appendedSuite": {
+      "bytes": 23868,
+      "sha256": "e408095935257995977f62aa4d006d592cc9b8e32bc73a36856919fbfe41f507",
+      "methods": [
+        "originalOpaqueReceiptSurvivesClaimReopenWithoutEnteringDurableJSON",
+        "currentClaimExactIntentAndFreshHostAuthorityRemainRequired",
+        "claimRetirementDuringHostAuthorizationCannotInsertALateToken",
+        "fullPendingCapacityPreservesAllOpaqueReceiptsWithoutEviction"
+      ],
+      "declaredMethods": 4,
+      "declaredCases": 4
+    }
+  },
+  "findings": [],
+  "sourceConclusions": [
+    "The actor validates the exact claimed document and canonical durable intent before the real Host export; after the awaited export it rechecks cancellation, current claim, exact pending intent and finite capacity before insertion. Stale claim release/replacement cannot publish a late token.",
+    "Only opaque063d tokens and exact intent bytes enter the process-local dictionary; no creator reference, URL, native metadata encoding, guessed ID, alternate journal or POST path is added. Original filesystem locks/CAS/protection and durable JSON schema remain byte-identical.",
+    "Receipt retrieval/consumption and successful caller-state removal have no suspension. Token reuse still passes through the original Host scope/fingerprint/reservation/current-authority/readback checks; the new carrier does not grant mutation authority.",
+    "The controlled fixture calls the actual existing Host component initializer and actual attach/export/resume APIs. A validated component ACK populates the actual private Host receipt carrier; modeled journal poison/close/reopen does not claim production protected-journal continuity.",
+    "The claim-retirement test observes the real authorization wait, then retires/reacquires the claim and releases/awaits the owned task on both normal and error paths. The gate has a bounded start wait and no independent external process.",
+    "The capacity case retains128 genuine Host-minted tokens, releases only the Host memory after real Host verification, and checks all128 remain. The129th refusal is correctly labeled the existing filesystem capacity boundary, not execution of the new dictionary defensive overflow."
+  ],
+  "explicitLimits": [
+    "No compiler, Swift test, control, Native HTTP, Apple, simulator, filesystem-recovery runtime or UI action was executed by this reviewer.",
+    "The new suite has4 declared methods/4 cases; the original3 methods/4 cases are preserved and not rerun. The128 controlled component replies are neither128 cases nor actual Native attachments.",
+    "No UI wiring, original-creator retention or post-close receipt export exists in this candidate. W1 close/cancel contract clarification remains separate.",
+    "The future caller must consume only after the original Host verified result and remove durable caller state only after Host plus FilesV2 reconciliation under current authority. This source-only carrier does not prove that future call-site ordering.",
+    "Durable original-journal custody and process restart loss of volatile ACK remain unchanged provider/acceptance boundaries."
+  ],
+  "candidateEdited": false,
+  "runtimeExecuted": false,
+  "hostCalls": 0
+}

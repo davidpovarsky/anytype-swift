@@ -1,0 +1,159 @@
+{
+  "schema": "pinkha-independent-wave2-attachment25fb-source-review/v1",
+  "status": "SOURCE_READY_NO_CONCRETE_SCOPED_BLOCKER_RUNTIME_NOT_RUN",
+  "reviewedCommit": "25fb60a3d1b32fbc8879f1631c8c85d38c76e510",
+  "reviewedTree": "6f8cf2fd6f5ad4385c61a6d897be75ee4dec5a2a",
+  "publishedBranch": "codex/chatgpt-wave15-wave2-attachment-post-close-20261127",
+  "directParent": "9b510b5ea80fba508d01314cefb646682943f7a9",
+  "actualCurrentRoot": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+  "actualCurrentTree": "dbe46fdd4128843bb3bb687bd00ae69d024f12b5",
+  "intake": {
+    "primaryPaths": 40,
+    "primaryBytes": 556203,
+    "modifiedSwiftPaths": 3,
+    "addedEvidencePaths": 37,
+    "allPrimaryGitBlobsAndModesVerified": true,
+    "allCurrent9fPreimagesExact": true,
+    "addedPathCollisions": [],
+    "literalForwardAndInverseOperations": 16,
+    "fullProductionFilesRestored": 2,
+    "originalTestPrefixBytes": 8725,
+    "preservedCarrierTestPrefixBytes": 32593,
+    "finalTestBytes": 47302,
+    "currentSourceBindings": 12,
+    "exactOwnerTransitionDeclarations": 15,
+    "currentHostedAndWarmControlsReadAsBytes": 107,
+    "sourceRetentionMapRows": 145,
+    "sourceRetentionMapEditsRequired": false,
+    "sourceInputs": {
+      "path": "w2-attachment25fb-review/source-inputs.json",
+      "bytes": 862020,
+      "sha256": "2f8e4ad75a44fff852d47b52676c1e067f7947811e44f25036db59e8c4810df6"
+    },
+    "byteProof": {
+      "path": "w2-attachment25fb-review/independent-byte-proof.json",
+      "bytes": 20338,
+      "sha256": "a129654da8847b6cbd5930a396550bf65c5f1bc6ddd277199249338774c3e801"
+    }
+  },
+  "productionReview": [
+    {
+      "topic": "Original intent and creator ownership before the only upload",
+      "conclusion": "The existing exclusive caller claim durably saves the exact original intent, checks live authority, and retains the original creator with its actual session generation before calling attach. The original Host reservation remains the sole dispatch owner. Neither the caller store nor any recovery route invents a mutation identity or performs a POST.",
+      "source": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "functions": ["upload", "withUploadClaim", "performAttachment"],
+      "sha256": "bba403bfe183ffed00709c973549043980eed52e478c840bb613bbd1cc8673d8"
+    },
+    {
+      "topic": "Queued original completion versus replacement owner",
+      "conclusion": "The caller awaits the complete native session operation before releasing the filesystem claim. The existing presentation lifetime revokes and drains handlers; AnyNativeWorkspaceOwner.close then awaits session.revokeAndDrain before journal.close. The serialized application transition creates a fresh session and journal owner only after that close. Each ObjectCreator caches exactly one attachment creator. The store admits either the same generation plus identical actor, or a different generation plus different actor. That pair check is a consistency guard; the real serialized transition and successful protected-journal open supply the lifecycle authority.",
+      "unchangedSourceAnchors": [
+        "AnyNativeRootView.closeWorkspace(expectedSession:)",
+        "AnyNativeRootView.openSpaceOwned(id:)",
+        "AnyNativeWorkspaceOwner.close()",
+        "AnyNativeApplication.connectOwnedSpace(id:)",
+        "AnyNativeApplication.closeOwnedSpace()",
+        "AnyApplicationSession.perform(_:)",
+        "AnyApplicationSession.revokeAndDrain()",
+        "AnyNativeObjectCreator.makeFileAttachmentCreator()"
+      ]
+    },
+    {
+      "topic": "Read-only opaque recovery after journal close",
+      "conclusion": "The only call made on the retained retired creator is retainedRecoveryReceipt. The original Host implementation reads its private receipt memory without touching the closed journal and invokes current-lease read authorization before and after reading the acknowledgement. The replacement creator must still find the original reservation, validate the opaque identity, and perform real metadata/content verification. A token cannot create a reservation, grant write permission, select a local file, or authorize another upload.",
+      "requiredPublishedHost": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+      "currentHostSourceSHA256": "704a3a50613129d966729e56491bdf17349bcbb9e0f977d5666867f39bf2d010",
+      "ownerContractStory": "1220960414985793",
+      "functions": ["retainedRecoveryReceipt(for:authorizeRead:)", "resume(_:recoveryReceipt:authorizeRead:)"]
+    },
+    {
+      "topic": "Cancellation, account/Space isolation and late publication",
+      "conclusion": "Exact UTF8 account/Space comparisons, the durable encoded intent and active claim are checked around awaited work. A current read failure is wrapped separately so an authority error typed writeUncertain cannot be mistaken for missing ACK. The unchanged session lease checks actual engine run and account, and the presentation checks its exact mount owner and fresh read ACL. A retired claim cannot insert a late token. Any stored token remains metadata only; Host resume and the final UI read checks must still succeed before publication. Cancellation does not remove the unresolved intent or cause a replacement POST.",
+      "source": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "sha256": "949651cb362238b713a626164f95eb378d0e54de47b7c84d7bca5821e1122480"
+    },
+    {
+      "topic": "Known completion, durable intent and FilesV2 reconciliation",
+      "conclusion": "The process-local token/original-actor pair is consumed only after a Host verified result, whose original journal has already recorded the verified ID. The caller's durable intent remains until separate FilesV2 matching and current-presentation checks succeed. A later FilesV2 failure remains recoverable from the verified journal. Missing journal/ACK and noRecordedAttachment preserve the original pending intent; the UI does not infer non-dispatch from those failures. The best-effort live export stays inside the awaited operation and claim and rethrows the original error.",
+      "functions": ["consumeRecoveryReceipt", "checkPendingAttachment", "requireReturnedFile", "remove", "retainLiveAttachmentReceipt"]
+    },
+    {
+      "topic": "Protected storage and bounded process-local retention",
+      "conclusion": "Only original caller intent JSON is durable. The format1 record and existing filesystem protection, exclusive claim, exact removal, account/Space partition and limits remain unchanged. The new creator/token dictionaries share a 128-key bound, never evict unresolved entries and are scoped to the existing account/Space recovery owner. A recreated store has no token; process-death recovery is not claimed. The protected journal close poisons the retired owner and releases its exclusive flock. Retaining the actor can retain file descriptors until deinit; it does not retain the exclusive lock after close, and a reopened journal must acquire its own original lock.",
+      "precisionAddendumSHA256": "039878692a5ca09a6f169242c4ff57171ff882fdd2c10af616435b8fb255c617",
+      "ownerTransitionProofV2SHA256": "b07634b5d33c72cb831fbe07a9d4212c5ff7ddfb111d4dde64ab297b7ae3abf5"
+    },
+    {
+      "topic": "Engine and source scope",
+      "conclusion": "All product changes are in PinkhaAnyUI and use the current original Any Host API. No Heart engine, SDK ABI, native engine source, package manifest/lock, project membership, workflow, runtime controller or account-generation authority changes are included. Heart behavior is unchanged and no new two-engine runtime result is asserted. The pending real transport/delegate and account-replacement qualification is not replaced by this caller source review."
+    }
+  ],
+  "testSourceReview": {
+    "result": "NOT_RUN",
+    "methods": 10,
+    "cases": 12,
+    "newMethodsRelativeTo9f": 7,
+    "newCasesRelativeTo9f": 8,
+    "originalMethods": 3,
+    "originalCases": 4,
+    "completeTestSourceSHA256": "a02e081d56d58b3fa964c601e712fd969901096755daf67bffb22499b5c7aa25",
+    "suites": [
+      {"suite": "AnyNativeAttachmentIntentStoreTests", "methods": 3, "cases": 4, "sourcePrefixUnchanged": true},
+      {"suite": "AnyNativeAttachmentReceiptCarrierTests", "methods": 4, "cases": 4},
+      {"suite": "AnyNativeAttachmentOriginalCreatorTests", "methods": 3, "cases": 4}
+    ],
+    "observedCoverageFromSource": [
+      "A real Host acknowledgement callback populates private memory; an injected post-ACK failure leaves one upload and a pending original intent.",
+      "Claim reopen preserves process-local opaque receipts without changing durable JSON; a separate store models process-local loss and gets no token.",
+      "Exact-intent byte differences, foreign account/Space/object, stale claim and revoked current authority reject token use.",
+      "A bounded held authorization forces claim retirement before return and verifies no late token insertion.",
+      "The 128-entry caller capacity keeps existing tokens without eviction while original Host verification releases its own separate 64-entry memory slots.",
+      "The actual session is revoked and drained before the modeled old journal closes/reopens; the retained original actor exports under a real replacement session lease, then replacement Host resume verifies the same ID with one upload total.",
+      "Wrong creator/generation pairs cannot replace the original actor; an authority-thrown writeUncertain is not interpreted as ACK absence.",
+      "The parameterized held-read case forces either claim retirement or real session revocation before the original export returns; both keep the pending intent, zero readback and one original upload."
+    ],
+    "limits": [
+      "The journal and native callbacks are component models. The tests do not run AnyProtectedCreationJournal filesystem failure/reopen or actual HTTP/native upload.",
+      "Swift compile/typecheck and execution on Darwin remain pending; no Linux or Darwin execution is inferred from source presence.",
+      "The component does not remove durable caller intent as a substitute for the actual UI FilesV2 reconciliation.",
+      "No mounted UI, real process death, physical-device, cross-engine or account-removal acceptance is claimed."
+    ]
+  },
+  "downstreamAdmission": {
+    "compileSourceMembership": "Existing direct AnytypeTests membership already includes the same test path. This commit adds declarations within it and changes no source count or PBX entry; App61/Stage1UI10/separateUI2 membership remains unchanged.",
+    "warmApp98": "The exact current9f complete98 inventory includes the old test whole file and must be explicitly rebound to the new source before a future matching compiler admission. The two production files are not members of that finite test-input inventory; actual final source-tree closure still binds them.",
+    "strictExistingComponentProfile": "hosted_attachment_components/profile.json and profile-dependency.json still bind original8725B/c0b7 store tests and original3methods/4cases. They remain closed and are not modified by this intake. Explicit later source/profile integration is required; no wildcard or prefix-only admission is proposed.",
+    "possibleFutureCompleteComponentScope": "The unchanged metadata suite remains5methods/24cases. Including all new Store declarations would yield15methods/36cases across the two original files, subject to a separately reviewed exact selector/enumeration profile and actual compiler result.",
+    "sharedProducerAndWarmMembership": "hosted_shared_build/run.py and warm_focus_editor/source-membership.json reference the existing path without the old content hash. Their unchanged path membership is not runtime acceptance.",
+    "requiredActualReceipts": [
+      "Matching final-source compiler receipt proving the whole47,302-byte Store test and unchanged project membership.",
+      "Actual exact ten Store methods/twelve cases, including forced late authorization and session revoke/drain ordering, with zero skipped cases under an explicitly reviewed profile.",
+      "Mounted original uploader: actual ACK followed by protected-journal recording failure, real old-owner drain/lock release, current same-scope journal reopen and opaque recovery without repeated POST.",
+      "Mounted cancellation/account/Space replacement rejects stale callbacks and foreign delivery while retaining the original unresolved intent.",
+      "Actual Host metadata/content plus separate FilesV2 verification precedes visible success and intent removal; missing ACK or reservation remains unresolved.",
+      "Original transport/delegate physical closure and real account replacement proof remain required separately."
+    ]
+  },
+  "composition": {
+    "rootOnlyIntegration": true,
+    "w1Tip": "972f6c2eaed18fdcfa4e5f885d519b3fb18a9aa7",
+    "w1Paths": 52,
+    "native26StoreWitnessPaths": 5,
+    "pairwisePathOverlaps": [],
+    "combinedSourcePathCountBeforeRootReviewEvidence": 97,
+    "combinedModified": 4,
+    "combinedAdded": 93,
+    "allExistingFailuresAndHistoricalProofsPreserved": true
+  },
+  "reviewMethod": {
+    "primaryReads": "Immutable GitHub commit/blob/tree reads plus exact retained current-root leaves; all source bodies read locally.",
+    "mechanicalChecks": "Byte/hash/Git object reconstruction, full literal forward/reverse reconstruction, exact original prefixes, declaration identities, finite current-control reference census and path-disjointness only.",
+    "declarationReaderCorrection": "Initial local line extraction included the final LF, while all fifteen owner declaration identities end at the closing brace. A narrow byte-reader correction excludes exactly that LF; every whole-source hash remains exact. This was not a product failure or test run.",
+    "candidateImports": false,
+    "testsExecuted": false,
+    "compilerInvocations": false,
+    "hostActions": false,
+    "repoWrites": false,
+    "runtimeReady": false
+  }
+}

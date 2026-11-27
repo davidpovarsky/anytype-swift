@@ -1,0 +1,1537 @@
+--- a/docs/files.md
++++ b/docs/files.md
+@@ -229,6 +229,29 @@
+ 
+ ## Listing and queries
+ 
++`Get` and `List` release member-only information only while the loaded signed
++identity still has read permission. `Status` and `Stats` apply the same guard
++to the member surface's local diagnostics. Each materializes its result outside
++ACL/lifetime locks, then checks the same signed head and captured account/Space
++generation before releasing it. A removed identity receives a permission error
++and no result even if historical read keys and bytes remain cached locally.
++Already delivered information is not erased.
++
++`SubscribeStatus` captures the current loaded generation without loading a
++Space. Each local event is admitted against that same identity, signed head and
++lifetime immediately before external callback invocation. Queued events that
++observe removal, cancellation or retirement are withheld; quiescing events are
++dropped because this is a best-effort stream. An already admitted callback may
++finish after cancellation or retirement. User callbacks run outside every ACL,
++lifetime and subscription-admission lock, and unsubscribe does not promise to
++drain external callback execution. A changed authority generation requires a
++new subscription; `Status` remains the point-in-time recovery path.
++
++The raw `Query`/live-query and `PayloadsView` surfaces retain their separate
++node-readable contract. They expose the original cleartext index and sealed
++`enc` blob, not unsealed member metadata. Their existing owner-deletion checks
++are unchanged.
++
+ - `List(opts)` — typed `FileInfo`s; `ObjectId` is the indexed fast path,
+   `Limit` caps the result. An unfiltered listing walks every file in the
+   space; large-space consumers page or use `Query` / `Changes`.
+--- /dev/null
++++ b/files_cache_effect_authority_fresh_linux_test.go
+@@ -0,0 +1,125 @@
++//go:build linux
++
++package anysyncsdk
++
++import (
++	"context"
++	"crypto/sha256"
++	"errors"
++	"io"
++	"sync/atomic"
++	"testing"
++
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/ipfs/go-cid"
++	"github.com/stretchr/testify/require"
++
++	"github.com/anyproto/any-sync-sdk/internal/files/fetch"
++	"github.com/anyproto/any-sync-sdk/internal/files/status"
++	filestore "github.com/anyproto/any-sync-sdk/internal/files/store"
++	"github.com/anyproto/any-sync-sdk/internal/payloads"
++	"github.com/anyproto/any-sync-sdk/internal/spaceimpl"
++	"github.com/anyproto/any-sync-sdk/space"
++)
++
++// One new fixture exercises the real Files facade and persistent queue. It
++// configures that queue before any new Space exists and never calls Queue.Run:
++// this is a dispatch-authority proof, not a background job or cloud claim.
++func TestFilesCacheEffectsFreshReaderAdmissionAndSignedRemoval(t *testing.T) {
++	var queue *status.Queue
++	var store *filestore.Store
++	var workerCalls atomic.Int32
++	var inlineID string
++	f := newFreshFilesFixtureWithPreparation(t, true,
++		func(f *freshFilesFixture, fetcher *fetch.Service, destination *filestore.Store) {
++			var err error
++			store = destination
++			queue, err = status.NewQueue(f.ctx, f.metadataDBs[len(f.metadataDBs)-1],
++				func(context.Context, status.Job) error {
++					workerCalls.Add(1)
++					return errors.New("fresh dispatch fixture never starts a worker")
++				}, f.sdk.spaces.OnFileJobChange)
++			require.NoError(t, err)
++			t.Cleanup(queue.Close)
++			f.sdk.spaces.SetFiles(nil, fetcher, destination, queue)
++		},
++		func(f *freshFilesFixture) {
++			registrar, ok := f.space.(interface{ PayloadsInternal() *spaceimpl.PayloadsAPI })
++			require.True(t, ok)
++			inline := []byte("new inline cache authority fixture")
++			var err error
++			inlineID, _, err = registrar.PayloadsInternal().RegisterFile(f.ctx, f.space.SpaceIndexObjectId(), spaceimpl.RegisterFileOpts{
++				Size: int64(len(inline)),
++				Enc:  payloads.EncPayload{Name: "new-inline-cache.txt", Mime: "text/plain", Inline: inline},
++			})
++			require.NoError(t, err)
++		})
++	f.requireLocalPermission(t, list.AclPermissionsReader)
++	files := f.space.Files()
++	inlineInfo, err := files.Get(f.ctx, inlineID)
++	require.NoError(t, err)
++	require.True(t, inlineInfo.Inline)
++	fullInfo, err := files.Get(f.ctx, f.fileID)
++	require.NoError(t, err)
++	require.True(t, fullInfo.Cached)
++	require.False(t, fullInfo.Durable)
++	root, err := cid.Decode(fullInfo.RootCid)
++	require.NoError(t, err)
++	carDigest := func() [32]byte {
++		info, infoErr := store.Info(f.ctx, f.space.Id(), root)
++		require.NoError(t, infoErr)
++		require.Equal(t, filestore.StateComplete, info.State)
++		handle, openErr := store.Open(f.ctx, f.space.Id(), root)
++		require.NoError(t, openErr)
++		digest := sha256.New()
++		n, readErr := io.CopyBuffer(digest, io.NewSectionReader(handle, 0, info.Size), make([]byte, 64*1024))
++		closeErr := handle.Close()
++		require.NoError(t, readErr)
++		require.NoError(t, closeErr)
++		require.Equal(t, info.Size, n)
++		var sum [32]byte
++		copy(sum[:], digest.Sum(nil))
++		return sum
++	}
++	beforeCAR := carDigest()
++
++	// Readers can manage their own local cache. Inline no-ops retain the same
++	// authority requirement, and unsigned full content is never offloaded.
++	require.NoError(t, files.Pin(f.ctx, inlineID))
++	require.NoError(t, files.Retry(f.ctx, inlineID))
++	require.NoError(t, files.Offload(f.ctx, inlineID))
++	beforeJobs, err := queue.ListSpace(f.ctx, f.space.Id())
++	require.NoError(t, err)
++	require.Empty(t, beforeJobs)
++	require.NoError(t, files.Pin(f.ctx, f.fileID))
++	require.NoError(t, files.Retry(f.ctx, f.fileID))
++	require.ErrorIs(t, files.Offload(f.ctx, f.fileID), space.ErrFileNotBackedUp)
++	admittedJobs, err := queue.ListSpace(f.ctx, f.space.Id())
++	require.NoError(t, err)
++	require.Len(t, admittedJobs, 2)
++	kinds := make([]string, 0, len(admittedJobs))
++	for _, job := range admittedJobs {
++		require.Equal(t, f.space.Id(), job.SpaceId)
++		require.Equal(t, f.fileID, job.FileId)
++		kinds = append(kinds, job.Kind)
++	}
++	require.ElementsMatch(t, []string{status.KindPin, status.KindDurable}, kinds)
++
++	f.revoke(t)
++	for _, operation := range []struct {
++		name string
++		call func(context.Context, string) error
++	}{{"pin", files.Pin}, {"retry", files.Retry}, {"offload", files.Offload}} {
++		for _, id := range []string{f.fileID, inlineID, "new-fixture-nonexistent-file"} {
++			require.ErrorIs(t, operation.call(f.ctx, id), list.ErrInsufficientPermissions,
++				"%s refuses removed-member full/inline/missing routes before any effect", operation.name)
++		}
++	}
++	afterJobs, err := queue.ListSpace(f.ctx, f.space.Id())
++	require.NoError(t, err)
++	require.ElementsMatch(t, admittedJobs, afterJobs,
++		"new refused dispatches neither change nor cancel previously admitted jobs")
++	require.Equal(t, beforeCAR, carDigest(), "unsigned original fixture bytes remain intact")
++	require.Zero(t, workerCalls.Load())
++	require.Zero(t, f.baseURLCalls.Load())
++}
+--- /dev/null
++++ b/files_metadata_authority_fresh_linux_test.go
+@@ -0,0 +1,118 @@
++//go:build linux
++
++package anysyncsdk
++
++import (
++	"bytes"
++	"sync"
++	"testing"
++
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/stretchr/testify/require"
++
++	"github.com/anyproto/any-sync-sdk/internal/files/status"
++	"github.com/anyproto/any-sync-sdk/internal/payloads"
++	"github.com/anyproto/any-sync-sdk/space"
++)
++
++// This one new integration method reuses only the qualified fresh-fixture
++// constructor source. It creates a NEW isolated SDK/account/Space/file and
++// applies its own signed removal; neither older Files.Open method runs and no
++// original account, saved key, database or signed private-store record is read.
++func TestFilesMetadataFreshGetListStatusAndStatsStopAtSignedRemoval(t *testing.T) {
++	f := newFreshFilesFixture(t, true)
++	files := f.space.Files()
++	before, err := files.Get(f.ctx, f.fileID)
++	require.NoError(t, err)
++	require.Equal(t, f.fileID, before.FileId)
++	require.Equal(t, f.space.SpaceIndexObjectId(), before.ObjectId)
++	require.Equal(t, "new-synthetic-reader.bin", before.Name)
++	require.Equal(t, "application/octet-stream", before.Mime)
++	require.EqualValues(t, len(f.plain), before.Size)
++	require.True(t, before.Cached)
++	require.False(t, before.Durable)
++	objectFiles, err := files.List(f.ctx, space.FileListOpts{ObjectId: before.ObjectId})
++	require.NoError(t, err)
++	require.Equal(t, []space.FileInfo{before}, objectFiles)
++	allFiles, err := files.List(f.ctx, space.FileListOpts{})
++	require.NoError(t, err)
++	require.Equal(t, []space.FileInfo{before}, allFiles)
++	beforeStatus, err := files.Status(f.ctx, f.fileID)
++	require.NoError(t, err)
++	require.Equal(t, space.FileStatus{FileId: f.fileID, ObjectId: before.ObjectId,
++		State: space.FileStateInFlight, Cached: true}, beforeStatus)
++	beforeStats, err := files.Stats(f.ctx)
++	require.NoError(t, err)
++	require.Equal(t, space.FileStats{Total: 1, InFlight: 1}, beforeStats)
++
++	var eventsMu sync.Mutex
++	var events []space.FileStatus
++	unsub := files.SubscribeStatus(func(st space.FileStatus) {
++		eventsMu.Lock()
++		events = append(events, st)
++		eventsMu.Unlock()
++	})
++	t.Cleanup(unsub)
++	job := status.Job{SpaceId: f.space.Id(), FileId: f.fileID, Kind: status.KindDurable}
++	// Use the actual production queue-to-status hook on this new fixture. Its
++	// original fanout is synchronous and remains unchanged by the guard.
++	f.sdk.spaces.OnFileJobChange(job, false)
++	eventsMu.Lock()
++	beforeEvents := append([]space.FileStatus(nil), events...)
++	eventsMu.Unlock()
++	require.Equal(t, []space.FileStatus{beforeStatus}, beforeEvents)
++
++	// The separate, explicitly node-readable raw query remains sealed. It is
++	// not the member-only FileInfo API and is not claimed to erase broker data.
++	rawQuery, err := files.Query(before.ObjectId)
++	require.NoError(t, err)
++	rawBefore, err := rawQuery.All(f.ctx)
++	require.NoError(t, err)
++	require.Len(t, rawBefore, 1)
++	require.Equal(t, before.RootCid, rawBefore[0].GetString(payloads.FieldRootCid))
++	ciphertext := bytes.Clone(rawBefore[0].GetBytes(payloads.FieldEnc, payloads.EncKeyCiphertext))
++	require.NotEmpty(t, ciphertext)
++	for _, secret := range []string{"name", "mime", "key", "sha256", "inline", "variant", "variantOf"} {
++		require.Nil(t, rawBefore[0].Get(secret), "member-only metadata stays sealed in the raw query")
++	}
++
++	f.revoke(t)
++	got, err := files.Get(f.ctx, f.fileID)
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, got)
++	objectFiles, err = files.List(f.ctx, space.FileListOpts{ObjectId: before.ObjectId})
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Nil(t, objectFiles)
++	allFiles, err = files.List(f.ctx, space.FileListOpts{})
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Nil(t, allFiles)
++	gotStatus, err := files.Status(f.ctx, f.fileID)
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, gotStatus)
++	gotStats, err := files.Stats(f.ctx)
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, gotStats)
++
++	f.sdk.spaces.OnFileJobChange(job, false)
++	lateUnsub := files.SubscribeStatus(func(st space.FileStatus) {
++		eventsMu.Lock()
++		events = append(events, st)
++		eventsMu.Unlock()
++	})
++	t.Cleanup(lateUnsub)
++	f.sdk.spaces.OnFileJobChange(job, false)
++	eventsMu.Lock()
++	afterEvents := append([]space.FileStatus(nil), events...)
++	eventsMu.Unlock()
++	require.Equal(t, beforeEvents, afterEvents, "existing and late subscriptions release no removed-member diagnostics")
++
++	rawAfter, err := rawQuery.All(f.ctx)
++	require.NoError(t, err)
++	require.Len(t, rawAfter, 1)
++	require.Equal(t, before.RootCid, rawAfter[0].GetString(payloads.FieldRootCid))
++	require.Equal(t, ciphertext, rawAfter[0].GetBytes(payloads.FieldEnc, payloads.EncKeyCiphertext))
++	for _, secret := range []string{"name", "mime", "key", "sha256", "inline", "variant", "variantOf"} {
++		require.Nil(t, rawAfter[0].Get(secret))
++	}
++	require.Zero(t, f.baseURLCalls.Load())
++}
+--- a/files_readguard_fresh_linux_test.go
++++ b/files_readguard_fresh_linux_test.go
+@@ -173,6 +173,17 @@
+ }
+ 
+ func newFreshFilesFixture(t *testing.T, cached bool) *freshFilesFixture {
++	return newFreshFilesFixtureWithPreparation(t, cached, nil, nil)
++}
++
++// Optional hooks belong only to a newly created fixture: byte services are
++// configured before its first Space exists, and extra rows are registered while
++// its new identity is still the original owner. The qualified default path has
++// neither hook. No existing account or live production reconfiguration is used.
++func newFreshFilesFixtureWithPreparation(t *testing.T, cached bool,
++	configureBeforeSpace func(*freshFilesFixture, *fetch.Service, *filestore.Store),
++	registerBeforeReader func(*freshFilesFixture),
++) *freshFilesFixture {
+ 	t.Helper()
+ 	freshFilesRequireOSIsolation(t)
+ 	root := freshFilesRoot(t)
+@@ -255,7 +266,11 @@
+ 	// Test-only boot wiring, before creating any regular Space or file. The
+ 	// new SDK has no queued file work and no periodic GC. No production hook or
+ 	// dynamic consumer reconfiguration is introduced by this test source.
+-	f.sdk.spaces.SetFiles(nil, fetcher, destination, nil)
++	if configureBeforeSpace == nil {
++		f.sdk.spaces.SetFiles(nil, fetcher, destination, nil)
++	} else {
++		configureBeforeSpace(f, fetcher, destination)
++	}
+ 	f.space, err = f.sdk.Spaces().Create(ctx, space.CreateRequest{Name: "fresh held-file authority"})
+ 	require.NoError(t, err)
+ 	// Reload this new fixture space as local-only before any fixture record
+@@ -302,6 +317,10 @@
+ 		f.peer = &freshFilesPeer{spaceID: f.space.Id(), root: carInfo.Root, car: carBytes,
+ 			entered: make(chan struct{}), release: make(chan struct{})}
+ 		fetcher.SetPeer(f.peer)
++	}
++
++	if registerBeforeReader != nil {
++		registerBeforeReader(f)
+ 	}
+ 
+ 	// Make the actual SDK's loaded identity a Reader without replacing its
+@@ -396,7 +415,7 @@
+ 	require.NoError(t, err)
+ 	raw, err := f.ownerACL.RecordBuilder().BuildAccountRemove(list.AccountRemovePayload{
+ 		Identities: []crypto.PubKey{f.sdk.app.AccountKeys().SignKey.GetPublic()},
+-		Change: list.ReadKeyChangePayload{MetadataKey: metadataKey, ReadKey: crypto.NewAES()},
++		Change:     list.ReadKeyChangePayload{MetadataKey: metadataKey, ReadKey: crypto.NewAES()},
+ 	})
+ 	require.NoError(t, err)
+ 	f.apply(t, f.ownerACL, raw)
+--- /dev/null
++++ b/internal/files/readguard/effect.go
+@@ -0,0 +1,34 @@
++package readguard
++
++import "context"
++
++// Effect admits one cache operation against the captured account/Space and
++// current signed read authority. prepare may read immutable row/service inputs
++// but must not change storage, queue work or call user code. Its returned action
++// contains every effect and runs only after the same authority is rechecked.
++//
++// The final short authority check is the admission point. All ACL/lifetime locks
++// are released before action runs. A later removal or retirement does not undo
++// an already admitted effect or replace its original result with an authority
++// error. The caller passes its original context to the underlying operation;
++// this helper neither retries it nor promises cancellation of earlier jobs.
++func Effect(ctx context.Context, load LoadACL, prepare func() (func() error, error)) error {
++	var admitted authority
++	if err := withAuthority(ctx, load, nil, func(current authority) error {
++		admitted = current
++		return nil
++	}); err != nil {
++		return err
++	}
++	action, prepareErr := prepare()
++	if err := withAuthority(ctx, load, &admitted, nil); err != nil {
++		return err
++	}
++	if prepareErr != nil {
++		return prepareErr
++	}
++	if action == nil {
++		return nil // An inline/no-work result still required current admission.
++	}
++	return action()
++}
+--- /dev/null
++++ b/internal/files/readguard/effect_test.go
+@@ -0,0 +1,150 @@
++package readguard
++
++import (
++	"context"
++	"errors"
++	"testing"
++	"time"
++
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/stretchr/testify/require"
++)
++
++func TestCacheEffectAdmitsCurrentReaderAndGuest(t *testing.T) {
++	for _, role := range []struct {
++		name       string
++		permission list.AclPermissions
++	}{{"reader", list.AclPermissionsReader}, {"guest", list.AclPermissionsGuest}} {
++		t.Run(role.name, func(t *testing.T) {
++			f := newSignedFixture(t, role.permission)
++			prepared, invoked := 0, 0
++			err := Effect(context.Background(), f.load, func() (func() error, error) {
++				prepared++
++				return func() error { invoked++; return nil }, nil
++			})
++			require.NoError(t, err)
++			require.Equal(t, 1, prepared)
++			require.Equal(t, 1, invoked)
++		})
++	}
++}
++
++func TestCacheEffectRefusesRemovedBeforePreparation(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	require.NoError(t, f.revoke())
++	prepared, invoked := 0, 0
++	err := Effect(context.Background(), f.load, func() (func() error, error) {
++		prepared++
++		return func() error { invoked++; return nil }, nil
++	})
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, prepared)
++	require.Zero(t, invoked)
++}
++
++func TestCacheEffectDiscardsChangedPreparation(t *testing.T) {
++	for _, changed := range []string{"signed-removal-and-read-error", "account-retired", "space-retired", "cancelled"} {
++		t.Run(changed, func(t *testing.T) {
++			f := newSignedFixture(t, list.AclPermissionsReader)
++			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
++			defer cancel()
++			prepared, invoked := 0, 0
++			originalReadError := errors.New("original synthetic row lookup error")
++			err := Effect(ctx, f.load, func() (func() error, error) {
++				prepared++
++				// These operations take ACL/lifetime writer locks. Preparation
++				// must not retain the guard's reader locks around a row lookup.
++				switch changed {
++				case "signed-removal-and-read-error":
++					require.NoError(t, f.revoke())
++				case "account-retired":
++					f.accountLifetime.Retire()
++				case "space-retired":
++					f.spaceLifetime.Retire()
++				case "cancelled":
++					cancel()
++				}
++				return func() error { invoked++; return nil }, originalReadError
++			})
++			if changed == "cancelled" {
++				require.ErrorIs(t, err, context.Canceled)
++			} else {
++				require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++			}
++			require.NotErrorIs(t, err, originalReadError)
++			require.Equal(t, 1, prepared)
++			require.Zero(t, invoked)
++		})
++	}
++}
++
++func TestCacheEffectPreservesAdmittedOutcome(t *testing.T) {
++	for _, outcome := range []string{"success", "original-error-after-effect"} {
++		t.Run(outcome, func(t *testing.T) {
++			f := newSignedFixture(t, list.AclPermissionsReader)
++			originalError := errors.New("original synthetic second-stage failure")
++			prepared, effects, callbacks := 0, 0, 0
++			err := Effect(context.Background(), f.load, func() (func() error, error) {
++				prepared++
++				return func() error {
++					effects++
++					// A queue/store may synchronously call other code. The action
++					// is outside all guard locks, so signed removal and retirement
++					// can complete without waiting for this action to return.
++					if revokeErr := f.revoke(); revokeErr != nil {
++						return revokeErr
++					}
++					f.accountLifetime.Retire()
++					f.spaceLifetime.Retire()
++					callbacks++
++					if outcome == "original-error-after-effect" {
++						return originalError
++					}
++					return nil
++				}, nil
++			})
++			if outcome == "success" {
++				require.NoError(t, err)
++			} else {
++				require.ErrorIs(t, err, originalError)
++			}
++			require.NotErrorIs(t, err, list.ErrInsufficientPermissions)
++			require.Equal(t, 1, prepared)
++			require.Equal(t, 1, effects)
++			require.Equal(t, 1, callbacks)
++		})
++	}
++}
++
++func TestCacheEffectInlineNoopRequiresCurrentAuthority(t *testing.T) {
++	for _, state := range []string{"current", "removed-during-preparation"} {
++		t.Run(state, func(t *testing.T) {
++			f := newSignedFixture(t, list.AclPermissionsReader)
++			prepared := 0
++			err := Effect(context.Background(), f.load, func() (func() error, error) {
++				prepared++
++				if state == "removed-during-preparation" {
++					require.NoError(t, f.revoke())
++				}
++				return nil, nil
++			})
++			if state == "current" {
++				require.NoError(t, err)
++			} else {
++				require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++			}
++			require.Equal(t, 1, prepared)
++		})
++	}
++}
++
++func TestCacheEffectPreservesUnchangedPreparationError(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	originalError := errors.New("original synthetic row failure before any effect")
++	invoked := 0
++	err := Effect(context.Background(), f.load, func() (func() error, error) {
++		return func() error { invoked++; return nil }, originalError
++	})
++	require.ErrorIs(t, err, originalError)
++	require.Zero(t, invoked)
++}
+--- /dev/null
++++ b/internal/files/readguard/events.go
+@@ -0,0 +1,77 @@
++package readguard
++
++import (
++	"context"
++	"errors"
++	"sync"
++	"sync/atomic"
++
++	"github.com/anyproto/any-sync-sdk/internal/readlifetime"
++)
++
++// EventGate binds one local status subscription to its original signed ACL
++// generation and account/Space lifetimes. Its loader must only peek an already
++// loaded Space: event delivery must not load a cache or wait for a network.
++type EventGate struct {
++	ctx      context.Context
++	cancel   context.CancelFunc
++	load     LoadACL
++	admitted authority
++	closed   atomic.Bool
++	mu       sync.Mutex
++}
++
++// NewEventGate refuses unavailable or quiescing authority. Status subscriptions
++// are a best-effort local stream; Status remains the point-in-time truth.
++func NewEventGate(ctx context.Context, load LoadACL) (*EventGate, error) {
++	ctx, cancel := context.WithCancel(ctx)
++	g := &EventGate{ctx: ctx, cancel: cancel, load: load}
++	err := withAuthorityOnce(ctx, load, nil, func(current authority) error {
++		g.admitted = current
++		return nil
++	})
++	if err != nil {
++		cancel()
++		return nil, err
++	}
++	return g, nil
++}
++
++// Admit linearizes one event before invocation of external user code. It never
++// calls that code or waits for TryClose. A queued event rejected after removal,
++// cancellation or lifetime retirement is not delivered. An event already
++// admitted may finish after Cancel/retirement; neither drains user callbacks.
++func (g *EventGate) Admit() bool {
++	if g == nil || g.closed.Load() {
++		return false
++	}
++	accepted := false
++	err := withAuthorityOnce(g.ctx, g.load, &g.admitted, func(authority) error {
++		g.mu.Lock()
++		defer g.mu.Unlock()
++		if !g.closed.Load() && g.ctx.Err() == nil {
++			accepted = true
++		}
++		return nil
++	})
++	if err != nil {
++		var pending *readlifetime.Pending
++		if !errors.As(err, &pending) {
++			g.Cancel()
++		}
++		return false
++	}
++	return accepted
++}
++
++// Cancel prevents later admission without acquiring an ACL or cache lock. The
++// short gate lock is never retained while unregistering or running user code.
++func (g *EventGate) Cancel() {
++	if g == nil {
++		return
++	}
++	g.mu.Lock()
++	g.closed.Store(true)
++	g.cancel()
++	g.mu.Unlock()
++}
+--- /dev/null
++++ b/internal/files/readguard/metadata_test.go
+@@ -0,0 +1,280 @@
++package readguard
++
++import (
++	"context"
++	"errors"
++	"sync"
++	"sync/atomic"
++	"testing"
++	"time"
++
++	"github.com/anyproto/any-sync-sdk/internal/fanout"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/stretchr/testify/require"
++)
++
++// These controls use the existing, fully verified fresh signed ACL fixture.
++// Only the new materialized-value and status-event boundaries are selected.
++type privateFileMetadata struct {
++	Name string
++	Mime string
++}
++
++func TestMetadataValueGuardAdmitsCurrentReaderAndGuest(t *testing.T) {
++	for _, role := range []struct {
++		name       string
++		permission list.AclPermissions
++	}{{"reader", list.AclPermissionsReader}, {"guest", list.AclPermissionsGuest}} {
++		t.Run(role.name, func(t *testing.T) {
++			f := newSignedFixture(t, role.permission)
++			want := privateFileMetadata{Name: "current-member.txt", Mime: "text/plain"}
++			got, err := Value(context.Background(), f.load, func() (privateFileMetadata, error) { return want, nil })
++			require.NoError(t, err)
++			require.Equal(t, want, got)
++		})
++	}
++}
++
++func TestMetadataValueGuardRefusesRemovedLookupAndMasksFailedRead(t *testing.T) {
++	t.Run("removed-before-lookup", func(t *testing.T) {
++		f := newSignedFixture(t, list.AclPermissionsReader)
++		require.NoError(t, f.revoke())
++		called := false
++		got, err := Value(context.Background(), f.load, func() (privateFileMetadata, error) {
++			called = true
++			return privateFileMetadata{Name: "must not be looked up"}, nil
++		})
++		require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++		require.Zero(t, got)
++		require.False(t, called)
++	})
++	t.Run("removed-during-failed-read", func(t *testing.T) {
++		f := newSignedFixture(t, list.AclPermissionsReader)
++		lookupErr := errors.New("private lookup diagnostic")
++		got, err := Value(context.Background(), f.load, func() (privateFileMetadata, error) {
++			require.NoError(t, f.revoke())
++			return privateFileMetadata{Name: "partial private result"}, lookupErr
++		})
++		require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++		require.NotErrorIs(t, err, lookupErr)
++		require.Zero(t, got)
++	})
++}
++
++func TestMetadataValueGuardDiscardsAwaitedResultWithoutHoldingACL(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	ctx, cancel := context.WithCancel(context.Background())
++	entered, release := make(chan struct{}), make(chan struct{})
++	var releaseOnce sync.Once
++	unblock := func() { releaseOnce.Do(func() { close(release) }) }
++	type outcome struct {
++		value privateFileMetadata
++		err   error
++	}
++	done := make(chan outcome, 1)
++	finished := make(chan struct{})
++	t.Cleanup(func() {
++		cancel()
++		unblock()
++		select {
++		case <-finished:
++		case <-time.After(time.Second):
++			t.Error("owned metadata read did not finish")
++		}
++	})
++	go func() {
++		defer close(finished)
++		value, err := Value(ctx, f.load, func() (privateFileMetadata, error) {
++			close(entered)
++			select {
++			case <-release:
++			case <-ctx.Done():
++				return privateFileMetadata{}, ctx.Err()
++			}
++			return privateFileMetadata{Name: "private metadata fetched while awaiting"}, nil
++		})
++		done <- outcome{value, err}
++	}()
++	select {
++	case <-entered:
++	case <-time.After(time.Second):
++		t.Fatal("metadata read did not reach its barrier")
++	}
++	revoked := make(chan error, 1)
++	go func() { revoked <- f.revoke() }()
++	select {
++	case err := <-revoked:
++		require.NoError(t, err)
++	case <-time.After(time.Second):
++		unblock()
++		t.Fatal("the awaited read blocked the signed ACL writer")
++	}
++	unblock()
++	select {
++	case got := <-done:
++		require.ErrorIs(t, got.err, list.ErrInsufficientPermissions)
++		require.Zero(t, got.value)
++	case <-time.After(time.Second):
++		t.Fatal("metadata read did not return after release")
++	}
++}
++
++func TestMetadataValueGuardRejectsSignedABAAndAccountRetirement(t *testing.T) {
++	for _, transition := range []string{"signed-remove-restore", "account-retired"} {
++		t.Run(transition, func(t *testing.T) {
++			f := newSignedFixture(t, list.AclPermissionsReader)
++			got, err := Value(context.Background(), f.load, func() (privateFileMetadata, error) {
++				if transition == "signed-remove-restore" {
++					require.NoError(t, f.revoke())
++					require.NoError(t, f.restore())
++				} else {
++					f.accountLifetime.Retire()
++				}
++				return privateFileMetadata{Name: "cross-generation metadata"}, nil
++			})
++			require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++			require.Zero(t, got)
++		})
++	}
++}
++
++func TestStatusEventGuardRefusesQueuedRemovedOrCancelledEvents(t *testing.T) {
++	for _, transition := range []string{"signed-removal", "unsubscribe"} {
++		t.Run(transition, func(t *testing.T) {
++			f := newSignedFixture(t, list.AclPermissionsReader)
++			entered, release := make(chan struct{}), make(chan struct{})
++			var releaseOnce sync.Once
++			unblock := func() { releaseOnce.Do(func() { close(release) }) }
++			var calls atomic.Int32
++			load := func(ctx context.Context) (Scope, error) {
++				if calls.Add(1) == 2 {
++					close(entered)
++					select {
++					case <-release:
++					case <-ctx.Done():
++						return Scope{}, ctx.Err()
++					}
++				}
++				return f.load(ctx)
++			}
++			gate, err := NewEventGate(context.Background(), load)
++			require.NoError(t, err)
++			registry := fanout.New[privateFileMetadata]()
++			var delivered atomic.Int32
++			unsub := registry.Add(func(value privateFileMetadata) {
++				if gate.Admit() {
++					delivered.Add(1)
++				}
++			})
++			finished := make(chan struct{})
++			t.Cleanup(func() {
++				gate.Cancel()
++				unsub()
++				unblock()
++				select {
++				case <-finished:
++				case <-time.After(time.Second):
++					t.Error("owned queued status dispatch did not finish")
++				}
++			})
++			go func() {
++				defer close(finished)
++				registry.Dispatch(privateFileMetadata{Name: "queued local diagnostics"})
++			}()
++			select {
++			case <-entered:
++			case <-time.After(time.Second):
++				t.Fatal("real fanout dispatch did not reach admission")
++			}
++			if transition == "signed-removal" {
++				require.NoError(t, f.revoke())
++			} else {
++				gate.Cancel()
++				unsub()
++			}
++			unblock()
++			select {
++			case <-finished:
++			case <-time.After(time.Second):
++				t.Fatal("status dispatch did not finish after release")
++			}
++			require.Zero(t, delivered.Load(), "a snapshotted callback must not admit a queued stale value")
++			registry.Dispatch(privateFileMetadata{Name: "later event"})
++			require.Zero(t, delivered.Load())
++		})
++	}
++}
++
++func TestStatusEventGuardAlreadyAdmittedCallbackMayFinish(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	gate, err := NewEventGate(context.Background(), f.load)
++	require.NoError(t, err)
++	entered, release := make(chan struct{}), make(chan struct{})
++	var releaseOnce sync.Once
++	unblock := func() { releaseOnce.Do(func() { close(release) }) }
++	var delivered atomic.Int32
++	registry := fanout.New[privateFileMetadata]()
++	unsub := registry.Add(func(privateFileMetadata) {
++		if gate.Admit() {
++			close(entered)
++			<-release // External code is deliberately still running.
++			delivered.Add(1)
++		}
++	})
++	finished := make(chan struct{})
++	t.Cleanup(func() {
++		gate.Cancel()
++		unsub()
++		unblock()
++		select {
++		case <-finished:
++		case <-time.After(time.Second):
++			t.Error("owned admitted callback did not finish")
++		}
++	})
++	go func() { defer close(finished); registry.Dispatch(privateFileMetadata{Name: "already admitted event"}) }()
++	select {
++	case <-entered:
++	case <-time.After(time.Second):
++		t.Fatal("callback was not admitted")
++	}
++	retired := make(chan error, 1)
++	go func() { err := f.revoke(); gate.Cancel(); unsub(); retired <- err }()
++	select {
++	case err := <-retired:
++		require.NoError(t, err)
++	case <-time.After(time.Second):
++		t.Fatal("external callback retained an ACL/lifetime/gate lock")
++	}
++	require.Zero(t, delivered.Load(), "Cancel is not a callback-drain claim")
++	unblock()
++	select {
++	case <-finished:
++	case <-time.After(time.Second):
++		t.Fatal("admitted callback did not finish")
++	}
++	require.Equal(t, int32(1), delivered.Load())
++	registry.Dispatch(privateFileMetadata{Name: "not admitted after retirement"})
++	require.Equal(t, int32(1), delivered.Load())
++}
++
++func TestStatusEventGuardQuiescesWithoutWaitingAndPreservesDeclinedClose(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	gate, err := NewEventGate(context.Background(), f.load)
++	require.NoError(t, err)
++	defer gate.Cancel()
++	f.spaceLifetime.BeginCloseAttempt()
++	finished := make(chan bool, 1)
++	go func() { finished <- gate.Admit() }()
++	select {
++	case admitted := <-finished:
++		require.False(t, admitted)
++	case <-time.After(time.Second):
++		f.spaceLifetime.FinishCloseAttempt(false)
++		t.Fatal("a best-effort status event waited on TryClose")
++	}
++	f.spaceLifetime.FinishCloseAttempt(false)
++	require.True(t, gate.Admit(), "the same subscription remains valid after a declined close")
++	f.spaceLifetime.Retire()
++	require.False(t, gate.Admit())
++}
+--- /dev/null
++++ b/internal/files/readguard/readguard_cached_stream_measurement_test.go
+@@ -0,0 +1,196 @@
++package readguard
++
++import (
++	"context"
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"errors"
++	"io"
++	"runtime"
++	"testing"
++	"time"
++
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/stretchr/testify/require"
++)
++
++const measuredCachedBytes int64 = 64 * 1024 * 1024
++const measuredCachedBuffer = 64 * 1024
++const measuredCachedSHA256 = "9b586ad8ac9a1e0a79d2cab4ff1f9d2671ed3d0434d8e068eebcb09330171ca9"
++
++// measurementCachedReader is a deterministic in-memory cached source. It
++// creates no account, file store or network connection. A 4KiB repeating
++// pattern represents exactly64MiB without allocating a64MiB payload.
++type measurementCachedReader struct {
++	pattern        [4096]byte
++	offset         int64
++	delivered      int64
++	reads          int
++	largestRequest int
++	closed         bool
++}
++
++func newMeasurementCachedReader() *measurementCachedReader {
++	r := new(measurementCachedReader)
++	for i := range r.pattern {
++		r.pattern[i] = byte((i*37 + i/31) % 251)
++	}
++	return r
++}
++
++func (r *measurementCachedReader) Read(p []byte) (int, error) {
++	if r.closed {
++		return 0, io.ErrClosedPipe
++	}
++	if len(p) > r.largestRequest {
++		r.largestRequest = len(p)
++	}
++	r.reads++
++	if r.offset == measuredCachedBytes {
++		return 0, io.EOF
++	}
++	n := min(len(p), int(measuredCachedBytes-r.offset))
++	for done := 0; done < n; {
++		start := int(r.offset % int64(len(r.pattern)))
++		copied := copy(p[done:n], r.pattern[start:])
++		done += copied
++		r.offset += int64(copied)
++	}
++	r.delivered += int64(n)
++	return n, nil
++}
++
++func (r *measurementCachedReader) Seek(offset int64, whence int) (int64, error) {
++	if r.closed {
++		return 0, io.ErrClosedPipe
++	}
++	position := offset
++	switch whence {
++	case io.SeekStart:
++	case io.SeekCurrent:
++		position += r.offset
++	case io.SeekEnd:
++		position += measuredCachedBytes
++	default:
++		return 0, errors.New("invalid synthetic seek origin")
++	}
++	if position < 0 || position > measuredCachedBytes {
++		return 0, errors.New("invalid synthetic seek position")
++	}
++	r.offset = position
++	return position, nil
++}
++
++func (r *measurementCachedReader) Size() int64  { return measuredCachedBytes }
++func (r *measurementCachedReader) Close() error { r.closed = true; return nil }
++
++type cachedStreamMeasurement struct {
++	Path                       string  `json:"path"`
++	Bytes                      int64   `json:"bytes"`
++	SHA256                     string  `json:"sha256"`
++	Reads                      int     `json:"reads"`
++	LargestInnerRequest        int     `json:"largestInnerRequest"`
++	CallerBufferBytes          int     `json:"callerBufferBytes"`
++	ElapsedNanoseconds         int64   `json:"elapsedNanoseconds"`
++	ProcessTotalAllocatedBytes uint64  `json:"processTotalAllocatedBytes"`
++	ProcessAllocationCount     uint64  `json:"processAllocationCount"`
++	MiBPerSecond               float64 `json:"mibPerSecond"`
++}
++
++// measureCachedPath reports an end-to-end read+SHA measurement. Allocations are
++// the process TotalAlloc/Mallocs deltas, not a claim of isolated allocator
++// attribution. Fixture creation, Open, buffers, GC and Close are outside the
++// measured region. There are no warm-up reads or repeated benchmark rounds.
++func measureCachedPath(t *testing.T, ctx context.Context, name string, reader Reader, inner *measurementCachedReader) cachedStreamMeasurement {
++	t.Helper()
++	buffer := make([]byte, measuredCachedBuffer)
++	digest := sha256.New()
++	runtime.GC()
++	var before, after runtime.MemStats
++	runtime.ReadMemStats(&before)
++	started := time.Now()
++	deadline := started.Add(10 * time.Second)
++	var count int64
++	for count < measuredCachedBytes {
++		if ctx.Err() != nil || !time.Now().Before(deadline) {
++			t.Fatalf("%s exceeded the fixed stream deadline", name)
++		}
++		n, err := reader.Read(buffer)
++		if err != nil || n <= 0 || n > len(buffer) || count+int64(n) > measuredCachedBytes {
++			t.Fatalf("%s invalid synthetic read: n=%d error=%v", name, n, err)
++		}
++		if written, writeErr := digest.Write(buffer[:n]); writeErr != nil || written != n {
++			t.Fatalf("%s did not hash the entire returned byte range", name)
++		}
++		count += int64(n)
++	}
++	elapsed := time.Since(started)
++	runtime.ReadMemStats(&after)
++	require.Less(t, elapsed, 10*time.Second, "bounded measurement, not a throughput acceptance threshold")
++	require.GreaterOrEqual(t, after.TotalAlloc, before.TotalAlloc)
++	require.GreaterOrEqual(t, after.Mallocs, before.Mallocs)
++	require.Equal(t, measuredCachedBytes, count)
++	require.Equal(t, measuredCachedBytes, inner.delivered)
++	require.Equal(t, int(measuredCachedBytes/int64(measuredCachedBuffer)), inner.reads)
++	require.LessOrEqual(t, inner.largestRequest, measuredCachedBuffer)
++	sum := hex.EncodeToString(digest.Sum(nil))
++	require.Equal(t, measuredCachedSHA256, sum)
++	return cachedStreamMeasurement{
++		Path: name, Bytes: count, SHA256: sum, Reads: inner.reads,
++		LargestInnerRequest: inner.largestRequest, CallerBufferBytes: len(buffer),
++		ElapsedNanoseconds:         elapsed.Nanoseconds(),
++		ProcessTotalAllocatedBytes: after.TotalAlloc - before.TotalAlloc,
++		ProcessAllocationCount:     after.Mallocs - before.Mallocs,
++		MiBPerSecond:               float64(count) / (1024 * 1024) / elapsed.Seconds(),
++	}
++}
++
++// TestReadGuardFreshCachedStreamMeasurement64MiB measures only the added
++// guard boundary over the same in-memory cached source. It is not a disk,
++// network, Apple, full SDK Files.Open or throughput-nonregression proof.
++func TestReadGuardFreshCachedStreamMeasurement64MiB(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
++	defer cancel()
++	f.local.RLock()
++	beforeHead := f.local.Head().Id
++	f.local.RUnlock()
++	unwrapped := newMeasurementCachedReader()
++	t.Cleanup(func() { require.NoError(t, unwrapped.Close()) })
++	baseline := measureCachedPath(t, ctx, "original-unwrapped-memory-reader", unwrapped, unwrapped)
++	require.NoError(t, unwrapped.Close())
++
++	inner := newMeasurementCachedReader()
++	guarded, err := Open(ctx, f.load, func() (Reader, error) { return inner, nil })
++	require.NoError(t, err)
++	t.Cleanup(func() { require.NoError(t, guarded.Close()) })
++	current := measureCachedPath(t, ctx, "current-signed-lifetime-guard", guarded, inner)
++	require.NoError(t, guarded.Close())
++	f.local.RLock()
++	afterHead := f.local.Head().Id
++	f.local.RUnlock()
++	require.Equal(t, beforeHead, afterHead)
++	require.Equal(t, baseline.Bytes, current.Bytes)
++	require.Equal(t, baseline.SHA256, current.SHA256)
++
++	record := struct {
++		Protocol                      string                    `json:"protocol"`
++		Measurements                  []cachedStreamMeasurement `json:"measurements"`
++		Order                         []string                  `json:"order"`
++		ElapsedRatio                  float64                   `json:"elapsedRatioGuardToOriginal"`
++		AllocationDeltaBytes          int64                     `json:"allocationDeltaGuardMinusOriginalBytes"`
++		NativeSDKOrStorageThroughput  bool                      `json:"nativeSDKOrStorageThroughput"`
++		ThroughputAcceptanceThreshold bool                      `json:"throughputAcceptanceThreshold"`
++		RetainedAccountInputs         int                       `json:"retainedAccountInputs"`
++	}{
++		Protocol:             "pinkha-fresh-cached-stream-measurement-v1",
++		Measurements:         []cachedStreamMeasurement{baseline, current},
++		Order:                []string{baseline.Path, current.Path},
++		ElapsedRatio:         float64(current.ElapsedNanoseconds) / float64(baseline.ElapsedNanoseconds),
++		AllocationDeltaBytes: int64(current.ProcessTotalAllocatedBytes) - int64(baseline.ProcessTotalAllocatedBytes),
++	}
++	raw, err := json.Marshal(record)
++	require.NoError(t, err)
++	t.Logf("READGUARD_CACHED_MEASUREMENT %s", raw)
++}
+--- /dev/null
++++ b/internal/files/readguard/value.go
+@@ -0,0 +1,29 @@
++package readguard
++
++import "context"
++
++// Value releases an owned, materialized member-only result only while the same
++// signed ACL generation and captured account/Space lifetimes remain current.
++// The read runs outside every authority lock. Its result stays private until
++// the final short assignment; a failed read never releases a partial value.
++// This helper is not for a live iterator, subscription, reader or callback.
++func Value[T any](ctx context.Context, load LoadACL, read func() (T, error)) (out T, err error) {
++	var admitted authority
++	if err = withAuthority(ctx, load, nil, func(current authority) error {
++		admitted = current
++		return nil
++	}); err != nil {
++		return out, err
++	}
++	private, readErr := read()
++	err = withAuthority(ctx, load, &admitted, func(authority) error {
++		if readErr == nil {
++			out = private
++		}
++		return nil
++	})
++	if err != nil {
++		return out, err
++	}
++	return out, readErr
++}
+--- a/internal/spaceimpl/files.go
++++ b/internal/spaceimpl/files.go
+@@ -189,11 +189,13 @@
+ 
+ // Get returns the file's info. See space.Files.
+ func (f *filesAPI) Get(ctx context.Context, fileId string) (space.FileInfo, error) {
+-	row, err := f.s.PayloadsInternal().FindRow(ctx, fileId)
+-	if err != nil {
+-		return space.FileInfo{}, err
+-	}
+-	return f.rowToInfo(ctx, row), nil
++	return readguard.Value(ctx, f.s.fileReadACL, func() (space.FileInfo, error) {
++		row, err := f.s.PayloadsInternal().FindRow(ctx, fileId)
++		if err != nil {
++			return space.FileInfo{}, err
++		}
++		return f.rowToInfo(ctx, row), nil
++	})
+ }
+ 
+ // rowToInfo maps a typed row to the public FileInfo, resolving local
+@@ -224,39 +226,41 @@
+ 
+ // List returns the space's files. See space.Files.
+ func (f *filesAPI) List(ctx context.Context, opts space.FileListOpts) ([]space.FileInfo, error) {
+-	pa := f.s.PayloadsInternal()
+-	var out []space.FileInfo
+-	appendRows := func(rows []payloads.Row) bool {
+-		for _, row := range rows {
+-			out = append(out, f.rowToInfo(ctx, row))
+-			if opts.Limit > 0 && len(out) >= opts.Limit {
+-				return false
+-			}
+-		}
+-		return true
+-	}
+-	if opts.ObjectId != "" {
+-		rows, err := pa.ListRows(ctx, opts.ObjectId)
++	return readguard.Value(ctx, f.s.fileReadACL, func() ([]space.FileInfo, error) {
++		pa := f.s.PayloadsInternal()
++		var out []space.FileInfo
++		appendRows := func(rows []payloads.Row) bool {
++			for _, row := range rows {
++				out = append(out, f.rowToInfo(ctx, row))
++				if opts.Limit > 0 && len(out) >= opts.Limit {
++					return false
++				}
++			}
++			return true
++		}
++		if opts.ObjectId != "" {
++			rows, err := pa.ListRows(ctx, opts.ObjectId)
++			if err != nil {
++				return nil, err
++			}
++			appendRows(rows)
++			return out, nil
++		}
++		objIds, err := f.s.store.TreeIdsByChangeType(ctx, payloads.ChangeType)
+ 		if err != nil {
+ 			return nil, err
+ 		}
+-		appendRows(rows)
++		for _, objId := range objIds {
++			rows, err := pa.listRowsIn(ctx, objId)
++			if err != nil {
++				return nil, err
++			}
++			if !appendRows(rows) {
++				break
++			}
++		}
+ 		return out, nil
+-	}
+-	objIds, err := f.s.store.TreeIdsByChangeType(ctx, payloads.ChangeType)
+-	if err != nil {
+-		return nil, err
+-	}
+-	for _, objId := range objIds {
+-		rows, err := pa.listRowsIn(ctx, objId)
+-		if err != nil {
+-			return nil, err
+-		}
+-		if !appendRows(rows) {
+-			break
+-		}
+-	}
+-	return out, nil
++	})
+ }
+ 
+ // Query returns the generic query surface over one object's payload
+@@ -371,136 +375,164 @@
+ 
+ // Status derives the file's durability state on read. See space.Files.
+ func (f *filesAPI) Status(ctx context.Context, fileId string) (space.FileStatus, error) {
+-	return f.s.fileStatus(ctx, fileId)
++	return readguard.Value(ctx, f.s.fileReadACL, func() (space.FileStatus, error) {
++		return f.s.fileStatus(ctx, fileId)
++	})
+ }
+ 
+ // SubscribeStatus registers a local-transition listener. See
+ // space.Files.
+ func (f *filesAPI) SubscribeStatus(cb func(space.FileStatus)) (unsubscribe func()) {
+-	return f.s.parent.fileStatusSubs.add(f.s.id, cb)
++	if cb == nil {
++		return func() {}
++	}
++	gate, err := readguard.NewEventGate(context.Background(), f.s.fileStatusACL)
++	if err != nil {
++		return func() {}
++	}
++	unsub := f.s.parent.fileStatusSubs.add(f.s.id, func(st space.FileStatus) {
++		if gate.Admit() {
++			cb(st) // User code runs after every ACL/lifetime/gate lock is released.
++		}
++	})
++	return func() { gate.Cancel(); unsub() }
+ }
+ 
+ // Stats aggregates this space's durability counts. See space.Files.
+ func (f *filesAPI) Stats(ctx context.Context) (space.FileStats, error) {
+-	var stats space.FileStats
+-	limited := map[string]bool{}
+-	if q := f.s.parent.fqueue; q != nil {
+-		jobs, err := q.ListSpace(ctx, f.s.id)
++	return readguard.Value(ctx, f.s.fileReadACL, func() (space.FileStats, error) {
++		var stats space.FileStats
++		limited := map[string]bool{}
++		if q := f.s.parent.fqueue; q != nil {
++			jobs, err := q.ListSpace(ctx, f.s.id)
++			if err != nil {
++				return space.FileStats{}, err
++			}
++			for _, j := range jobs {
++				if j.Kind == status.KindDurable && j.Limited {
++					limited[j.FileId] = true
++				}
++			}
++		}
++		view := f.s.Payloads()
++		objIds, err := view.ListObjects(ctx)
+ 		if err != nil {
+ 			return space.FileStats{}, err
+ 		}
+-		for _, j := range jobs {
+-			if j.Kind == status.KindDurable && j.Limited {
+-				limited[j.FileId] = true
+-			}
+-		}
+-	}
+-	view := f.s.Payloads()
+-	objIds, err := view.ListObjects(ctx)
+-	if err != nil {
+-		return space.FileStats{}, err
+-	}
+-	for _, objId := range objIds {
+-		rows, err := view.ListRows(ctx, objId)
+-		if err != nil {
+-			return space.FileStats{}, err
+-		}
+-		for _, row := range rows {
+-			stats.Total++
+-			switch {
+-			case row.RootCid == "" || row.NetworkSign != "":
+-				stats.Durable++
+-			case limited[row.FileId]:
+-				stats.Limited++
+-			default:
+-				stats.InFlight++
+-			}
+-		}
+-	}
+-	return stats, nil
++		for _, objId := range objIds {
++			rows, err := view.ListRows(ctx, objId)
++			if err != nil {
++				return space.FileStats{}, err
++			}
++			for _, row := range rows {
++				stats.Total++
++				switch {
++				case row.RootCid == "" || row.NetworkSign != "":
++					stats.Durable++
++				case limited[row.FileId]:
++					stats.Limited++
++				default:
++					stats.InFlight++
++				}
++			}
++		}
++		return stats, nil
++	})
+ }
+ 
+ // Pin schedules a persistent full background fetch. See space.Files.
+ func (f *filesAPI) Pin(ctx context.Context, fileId string) error {
+-	q := f.s.parent.fqueue
+-	if q == nil {
+-		return errors.New("files: not configured")
+-	}
+-	row, err := f.s.PayloadsInternal().FindRow(ctx, fileId)
+-	if err != nil {
+-		return err
+-	}
+-	if row.Inline() {
+-		return nil // rides the row; nothing to fetch
+-	}
+-	return q.Enqueue(ctx, status.KindPin, f.s.id, fileId)
++	return readguard.Effect(ctx, f.s.fileReadACL, func() (func() error, error) {
++		q := f.s.parent.fqueue
++		if q == nil {
++			return nil, errors.New("files: not configured")
++		}
++		row, err := f.s.PayloadsInternal().FindRow(ctx, fileId)
++		if err != nil {
++			return nil, err
++		}
++		if row.Inline() {
++			return nil, nil // rides the row; the no-op still requires admission
++		}
++		return func() error { return q.Enqueue(ctx, status.KindPin, f.s.id, fileId) }, nil
++	})
+ }
+ 
+ // Retry makes the file's pending background work due immediately,
+ // re-enqueueing the backup when the row is unsigned with complete
+ // local bytes. See space.Files.
+ func (f *filesAPI) Retry(ctx context.Context, fileId string) error {
+-	q := f.s.parent.fqueue
+-	if q == nil {
+-		return errors.New("files: not configured")
+-	}
+-	row, err := f.s.PayloadsInternal().FindRow(ctx, fileId)
+-	if err != nil {
+-		return err
+-	}
+-	kickedDurable, err := q.KickJob(ctx, status.KindDurable, f.s.id, fileId)
+-	if err != nil {
+-		return err
+-	}
+-	if _, err = q.KickJob(ctx, status.KindPin, f.s.id, fileId); err != nil {
+-		return err
+-	}
+-	if kickedDurable || row.Inline() || row.NetworkSign != "" {
+-		return nil
+-	}
+-	// Unsigned with no pending job (e.g. the row predates the queue or
+-	// its job was lost): re-enqueue when we hold the bytes to drive it.
+-	root, err := cid.Decode(row.RootCid)
+-	if err != nil {
+-		return err
+-	}
+-	info, err := f.s.parent.filesStore().Info(ctx, f.s.id, root)
+-	if err != nil || info.State != filestore.StateComplete {
+-		return nil // nothing local to upload; SYN-24 P2P may change this
+-	}
+-	return q.Enqueue(ctx, status.KindDurable, f.s.id, fileId)
++	return readguard.Effect(ctx, f.s.fileReadACL, func() (func() error, error) {
++		q := f.s.parent.fqueue
++		if q == nil {
++			return nil, errors.New("files: not configured")
++		}
++		row, err := f.s.PayloadsInternal().FindRow(ctx, fileId)
++		if err != nil {
++			return nil, err
++		}
++		// These services are fixed on this captured account's Service before
++		// any Space is handed out. Never resolve a later active account here.
++		st := f.s.parent.filesStore()
++		return func() error {
++			kickedDurable, err := q.KickJob(ctx, status.KindDurable, f.s.id, fileId)
++			if err != nil {
++				return err
++			}
++			if _, err = q.KickJob(ctx, status.KindPin, f.s.id, fileId); err != nil {
++				return err
++			}
++			if kickedDurable || row.Inline() || row.NetworkSign != "" {
++				return nil
++			}
++			// Preserve the original operation order and its possible partial
++			// effects: a prior kick is not rolled back if a later step fails.
++			root, err := cid.Decode(row.RootCid)
++			if err != nil {
++				return err
++			}
++			info, err := st.Info(ctx, f.s.id, root)
++			if err != nil || info.State != filestore.StateComplete {
++				return nil // nothing local to upload; SYN-24 P2P may change this
++			}
++			return q.Enqueue(ctx, status.KindDurable, f.s.id, fileId)
++		}, nil
++	})
+ }
+ 
+ // Offload drops the file's local bytes (refetchable-only). See
+ // space.Files.
+ func (f *filesAPI) Offload(ctx context.Context, fileId string) error {
+-	row, err := f.s.PayloadsInternal().FindRow(ctx, fileId)
+-	if err != nil {
+-		return err
+-	}
+-	if row.Inline() {
+-		return nil // rides the row; nothing local to drop
+-	}
+-	if row.NetworkSign == "" {
+-		return fmt.Errorf("files: offload %s — local bytes are the only copy: %w", fileId, space.ErrFileNotBackedUp)
+-	}
+-	root, err := cid.Decode(row.RootCid)
+-	if err != nil {
+-		return err
+-	}
+-	if err = f.s.parent.filesStore().Offload(ctx, f.s.id, root); err != nil {
+-		if errors.Is(err, filestore.ErrNotFound) {
+-			return nil // nothing local (never fetched here)
+-		}
+-		return err
+-	}
+-	f.s.parent.fileStatusSubs.dispatch(f.s.id, space.FileStatus{
+-		FileId:   row.Id,
+-		ObjectId: row.ObjectId,
+-		State:    space.FileStateDurable,
+-		Cached:   false,
+-	})
+-	return nil
++	return readguard.Effect(ctx, f.s.fileReadACL, func() (func() error, error) {
++		row, err := f.s.PayloadsInternal().FindRow(ctx, fileId)
++		if err != nil {
++			return nil, err
++		}
++		if row.Inline() {
++			return nil, nil // rides the row; the no-op still requires admission
++		}
++		if row.NetworkSign == "" {
++			return nil, fmt.Errorf("files: offload %s — local bytes are the only copy: %w", fileId, space.ErrFileNotBackedUp)
++		}
++		root, err := cid.Decode(row.RootCid)
++		if err != nil {
++			return nil, err
++		}
++		st := f.s.parent.filesStore()
++		return func() error {
++			if err := st.Offload(ctx, f.s.id, root); err != nil {
++				if errors.Is(err, filestore.ErrNotFound) {
++					return nil // nothing local (never fetched here)
++				}
++				return err
++			}
++			f.s.parent.fileStatusSubs.dispatch(f.s.id, space.FileStatus{
++				FileId: row.Id, ObjectId: row.ObjectId,
++				State: space.FileStateDurable, Cached: false,
++			})
++			return nil
++		}, nil
++	})
+ }
+ 
+ // Delete removes the file's payload row (and its variant rows) in one
+--- /dev/null
++++ b/internal/spaceimpl/files_status_authority.go
+@@ -0,0 +1,23 @@
++package spaceimpl
++
++import (
++	"context"
++
++	"github.com/anyproto/any-sync-sdk/internal/files/readguard"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++)
++
++// fileStatusACL never loads a Space or waits on an in-flight cache load. A
++// callback belongs to the exact originally loaded account/Space generation;
++// a later reload or signed ACL change requires a new subscription.
++func (s *spaceImpl) fileStatusACL(context.Context) (readguard.Scope, error) {
++	handle, ok := s.app.PeekSpace(s.id)
++	if !ok || handle.Id() != s.id {
++		return readguard.Scope{}, list.ErrInsufficientPermissions
++	}
++	account, loadedSpace, err := s.app.FileReadLifetimes(handle)
++	if err != nil {
++		return readguard.Scope{}, list.ErrInsufficientPermissions
++	}
++	return readguard.Scope{ACL: handle.Inner().Acl(), Account: account, Space: loadedSpace}, nil
++}
+--- a/space/files.go
++++ b/space/files.go
+@@ -34,6 +34,15 @@
+ // The storage tiers (inline vs content-addressed + node backup) are
+ // invisible here: Attach picks the tier from the content, and Open
+ // resolves it through the availability ladder (local cache → network).
++// Get/List and the local Status/Stats diagnostics require the loaded signed
++// identity's current read permission and a live captured account/Space. They
++// recheck authority after materializing their private result. The separate
++// raw Query and PayloadsView retain their documented node-readable boundary.
++// Pin/Retry/Offload require current read authority, including inline/no-work
++// results. They admit once after read-only row preparation, before their first
++// queue/store effect. Later authority loss does not undo an admitted operation
++// or replace its original result. No ACL/lifetime lock covers storage, queue
++// work or user callbacks; these methods do not cancel previously queued jobs.
+ type Files interface {
+ 	// Attach ingests r as a file bound to objectId. The whole reader is
+ 	// consumed. Attach is local-only and never waits on the network:
+@@ -71,7 +80,13 @@
+ 	// pin completion, manual retries. (Remote flips — another device
+ 	// finishing a backup — are visible via Status/Get reads; a synced
+ 	// event feed arrives with the SYN-30 files view.) The returned
+-	// function unsubscribes.
++	// function cancels future admission. The subscription captures the current
++	// signed ACL and loaded account/Space generation without loading a Space.
++	// Unavailable/quiescing authority yields an inert subscription; changed or
++	// retired authority suppresses later queued events. Resubscribe after an
++	// authority-generation change. A callback already admitted may finish after
++	// cancellation or retirement: no ACL/lifetime lock is held around user code,
++	// and cancellation does not drain external callback execution.
+ 	SubscribeStatus(cb func(FileStatus)) (unsubscribe func())
+ 
+ 	// Stats returns this space's aggregate durability counts (UI

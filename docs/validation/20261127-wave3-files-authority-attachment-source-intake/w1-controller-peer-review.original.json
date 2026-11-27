@@ -1,0 +1,43 @@
+{
+  "acceptanceLimit": "Actual standalone Linux arm64 Any with Syncv0.13.8 and735-file SDK within1616-source product. This is not a new shared Apple native product, Heart runtime, current App or SDK Swift acceptance.",
+  "controllerImports": 0,
+  "findings": [
+    {
+      "actualReceiptIsStillPositive": true,
+      "code": "            result['finalFreeBytes'] = guard()\n        except BaseException as error:\n            result['status'] = 'FAIL_FINAL_NATIVE_BUILD_PRESERVED'\n            result['completionErrors'].append({'type':type(error).__name__,'message':str(error)})\n        save()\n    print(json.dumps({'status':result['status'],'receipt':str(receipt),'sha256':identity(frozen(receipt))['sha256'],\n        'allOwnedGroupsPositivelyAbsent':result['allOwnedGroupsPositivelyAbsent'],'errors':result['errors'],'completionErrors':result['completionErrors']}))\n",
+      "disposition": "Preserve this exact producer and successful9282 receipt. If this producer is reused in a future authorized run, use a narrowly reviewed owner successor to retain the first actual error and append terminal-write IO as secondary. No rewrite/replay is requested by this review.",
+      "fact": "The outer finally calls save() without a protective try after recording errors/completionErrors. If that final exclusive staging/fsync/replace fails, the IO exception escapes main before its terminal JSON print and can hide an earlier logical/command failure from stdout; the last durable receipt may predate errors.",
+      "falsePassPossibleFromThisEdge": false,
+      "id": "NATIVE_FINAL_RECEIPT_FIRST_CAUSE",
+      "line": 326,
+      "observedInActualRetainedRun": false,
+      "severity": "future-controller-failure-reporting",
+      "source": {
+        "bytes": 20710,
+        "path": "/workspace/scratch/ae335eba85e3/wave1-final-authority972-intake/source/Tools/AnyEngineValidation/native_file_metadata_authority/native_producer/build_final_authority_native.py",
+        "sha256": "9f335c8402b566384f3b4d980178ebb5363205f6d9e9d0e0e05212c2a632da78"
+      }
+    }
+  ],
+  "hostActions": 0,
+  "nativeOrTestRuns": 0,
+  "proof": {
+    "bytes": 10950,
+    "path": "/workspace/scratch/ae335eba85e3/wave1-final-authority972-intake/apple-controller-receipt-review/exact-source-receipt-joins.json",
+    "sha256": "41a03d03fec1abfe966863753e25164b214098c92fac390ad4ab3764742c9f19"
+  },
+  "schema": "pinkha-w1-972-bounded-apple-lane-controller-review-v1",
+  "scope": [
+    "Exact two requested controller bodies",
+    "Two retained actual terminal receipts",
+    "Finite source/producer/product/HTTP joins and command closure recorded there"
+  ],
+  "sourceWrites": 0,
+  "status": "NO_ACTUAL_RECEIPT_ADMISSION_BLOCKER_IN_REVIEWED_SCOPE",
+  "unchangedPins": {
+    "actualFiveLifecycleProofSHA256": "040ffa3fcf93094369e24928732aeba9eb10fdb673db76ab7540a887748aa27d",
+    "dependencyBodyReview": "The SDK owner retains full52/admission/lifecycle intake ownership; this report does not repeat or broaden those source reviews.",
+    "finalProductAdmissionSHA256": "cc6e5b4163712bfccae98bb1e586c24723ade0c8862c3656a6e657522996714f",
+    "ownedHelperSHA256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56"
+  }
+}

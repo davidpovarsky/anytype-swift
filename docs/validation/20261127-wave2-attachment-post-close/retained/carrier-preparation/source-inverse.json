@@ -1,0 +1,52 @@
+{
+  "schema": "wave2-live-receipt-carrier-inverse/v1",
+  "status": "EXACT_SOURCE_INVERSE",
+  "storeEdits": [
+    {
+      "before": "    private var owned: (claim: AnyNativeAttachmentIntentClaim, files: AnyAttachmentIntentFiles)?\n",
+      "after": "    private var owned: (claim: AnyNativeAttachmentIntentClaim, files: AnyAttachmentIntentFiles)?\n    private struct RetainedRecoveryReceipt: Sendable {\n        let encodedIntent: Data\n        let receipt: AnyNativeFileAttachmentRecoveryReceipt\n    }\n    private var recoveryReceipts: [String: RetainedRecoveryReceipt] = [:]\n    private static let maximumRecoveryReceipts = 128\n"
+    },
+    {
+      "before": "    /// The presentation invokes this only after verified Host/list reconciliation.\n",
+      "after": "    /// The token is minted by the original Host while this task still holds\n    /// current read authority. It never enters the protected caller JSON. This\n    /// method does not retain a creator or export after that owner's retirement.\n    func retainRecoveryReceipt(for intent: AnyNativeFileAttachmentIntent,\n                               from creator: AnyNativeFileAttachmentCreator,\n                               authorizeRead: @escaping AnyNativeFileAttachmentCreator.Check,\n                               claim: AnyNativeAttachmentIntentClaim) async throws {\n        let encoded = try requirePendingIntent(intent, claim: claim)\n        let key = Self.name(claim.objectID)\n        try requireRecoveryCapacity(key: key, encodedIntent: encoded)\n        let receipt = try await creator.retainedRecoveryReceipt(for: intent, authorizeRead: authorizeRead)\n        try Task.checkCancellation()\n        // The claim can retire while the Host's authority checks suspend.\n        guard try requirePendingIntent(intent, claim: claim) == encoded else {\n            throw AnyNativeAttachmentRecoveryError.conflictingIntent\n        }\n        try requireRecoveryCapacity(key: key, encodedIntent: encoded)\n        try Task.checkCancellation()\n        // Keep the first original acknowledgement; never replace or evict an\n        // unresolved token when the same request is observed again.\n        if recoveryReceipts[key] == nil {\n            recoveryReceipts[key] = .init(encodedIntent: encoded, receipt: receipt)\n        }\n    }\n\n    /// Only the current claimed, durable original intent can retrieve this\n    /// process-local token. A current Host must still validate it, its original\n    /// journal reservation, current read authority and actual native readback.\n    func recoveryReceipt(for intent: AnyNativeFileAttachmentIntent,\n                         claim: AnyNativeAttachmentIntentClaim) throws -> AnyNativeFileAttachmentRecoveryReceipt? {\n        let encoded = try requirePendingIntent(intent, claim: claim)\n        guard let retained = recoveryReceipts[Self.name(claim.objectID)] else { return nil }\n        guard retained.encodedIntent == encoded else {\n            throw AnyNativeAttachmentRecoveryError.conflictingIntent\n        }\n        return retained.receipt\n    }\n\n    /// The caller invokes this only after the current Host has returned its\n    /// verified result. Ordinary claim release, cancellation and missing journal\n    /// records do not consume the token or clear the durable pending intent.\n    func consumeRecoveryReceipt(for intent: AnyNativeFileAttachmentIntent,\n                                claim: AnyNativeAttachmentIntentClaim) throws {\n        let encoded = try requirePendingIntent(intent, claim: claim)\n        let key = Self.name(claim.objectID)\n        if let retained = recoveryReceipts[key], retained.encodedIntent != encoded {\n            throw AnyNativeAttachmentRecoveryError.conflictingIntent\n        }\n        recoveryReceipts.removeValue(forKey: key)\n    }\n\n    private func requirePendingIntent(_ intent: AnyNativeFileAttachmentIntent,\n                                      claim: AnyNativeAttachmentIntentClaim) throws -> Data {\n        _ = try requireClaim(claim)\n        try requireIntent(intent, claim: claim)\n        let encoded = try Self.encode(intent)\n        guard let pending = try pending(claim), try Self.encode(pending) == encoded else {\n            throw AnyNativeAttachmentRecoveryError.conflictingIntent\n        }\n        return encoded\n    }\n\n    private func requireRecoveryCapacity(key: String, encodedIntent: Data) throws {\n        if let retained = recoveryReceipts[key] {\n            guard retained.encodedIntent == encodedIntent else {\n                throw AnyNativeAttachmentRecoveryError.conflictingIntent\n            }\n            return\n        }\n        guard recoveryReceipts.count < Self.maximumRecoveryReceipts else {\n            throw AnyNativeAttachmentRecoveryError.capacityExceeded\n        }\n    }\n\n    /// The presentation invokes this only after verified Host/list reconciliation.\n"
+    },
+    {
+      "before": "        try files.remove(name: Self.name(claim.objectID), expected: Self.encode(AnyNativeAttachmentIntentRecord(intent: intent)))\n",
+      "after": "        let key = Self.name(claim.objectID)\n        if let retained = recoveryReceipts[key], retained.encodedIntent != (try Self.encode(intent)) {\n            throw AnyNativeAttachmentRecoveryError.conflictingIntent\n        }\n        try files.remove(name: Self.name(claim.objectID), expected: Self.encode(AnyNativeAttachmentIntentRecord(intent: intent)))\n        recoveryReceipts.removeValue(forKey: key)\n"
+    }
+  ],
+  "fullStoreRestored": true,
+  "durableRecordBytesUnchanged": true,
+  "filesystemSuffixBytesUnchanged": true,
+  "filesystemSuffixSHA256": "bfb8a756f4f4e330e0a6df9b70e189557ebf8b6e58c297558063952fd7fb8905",
+  "testsAreExactOriginalPrefixPlusSuffix": true,
+  "testSuffix": {
+    "path": "receipt_carrier_tests.swift",
+    "bytes": 23868,
+    "sha256": "e408095935257995977f62aa4d006d592cc9b8e32bc73a36856919fbfe41f507"
+  },
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "before": {
+        "bytes": 21506,
+        "sha256": "0032c6be0f667e5082afd4e0e2dfa03a37ac43438141034358ee95a1d6e4c325"
+      },
+      "after": {
+        "bytes": 26048,
+        "sha256": "ff24dab542c153ad6e9dcd87e27f39d7cc2ec0f1e8a6a02f3de43f07ea17fb98"
+      }
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "before": {
+        "bytes": 8725,
+        "sha256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809"
+      },
+      "after": {
+        "bytes": 32593,
+        "sha256": "c6abeef1c9bfc83e60f364d5a1598d15dfa371642bc7ee1c8d16779fdd78f85f"
+      }
+    }
+  ]
+}

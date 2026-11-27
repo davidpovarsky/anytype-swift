@@ -1,0 +1,125 @@
+{
+  "schema": "wave2-attachment-full-caller-independent-review/v1",
+  "reviewer": "/root/editor",
+  "decision": "ACCEPTED_SOURCE_ONLY_NO_CONCRETE_BLOCKER_FOUND",
+  "scope": "Independent Swift actor/Sendable, lease and creator-generation pairing, error classification, original-intent custody, capacity/consumption and appended-test source review. Root separately owns the complete production owner-transition proof.",
+  "base": "9b510b5ea80fba508d01314cefb646682943f7a9",
+  "requiredHost": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+  "candidateManifest": {
+    "path": "candidate-manifest.json",
+    "bytes": 2718,
+    "sha256": "12db1ccf18cf685f5e5e24dc61184c1e9e2815247a9f27bfb8a34845eb0e171d"
+  },
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "bytes": 42250,
+      "sha256": "bba403bfe183ffed00709c973549043980eed52e478c840bb613bbd1cc8673d8"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "bytes": 33731,
+      "sha256": "949651cb362238b713a626164f95eb378d0e54de47b7c84d7bca5821e1122480"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "bytes": 47302,
+      "sha256": "a02e081d56d58b3fa964c601e712fd969901096755daf67bffb22499b5c7aa25"
+    }
+  ],
+  "exactSupportingSources": [
+    {
+      "path": "../full-caller-proposal/source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "bytes": 5633,
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd"
+    },
+    {
+      "path": "../full-caller-proposal/source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "bytes": 23257,
+      "sha256": "704a3a50613129d966729e56491bdf17349bcbb9e0f977d5666867f39bf2d010"
+    },
+    {
+      "path": "../full-caller-proposal/source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "bytes": 15590,
+      "sha256": "7a641b9693803360603cb2df554eaa316fbeb1c59127795a6592404d437444f3"
+    }
+  ],
+  "checkedBoundaries": [
+    {
+      "id": "FULL-CALLER-ACTOR",
+      "result": "NO_CONCRETE_SOURCE_BLOCKER",
+      "assessment": "The operation value contains the existing Sendable actor reference, explicitly Sendable lease and Sendable callbacks. Retained creator/receipt values stay inside the existing store actor. The private Error wrapper transports the original error without exporting mutable actor state. New caller work is awaited inside the existing session operation and claim; no detached recovery task or process manager is introduced. The preceding test suffix imports PinkhaAnyHost with @testable, so the existing internal session and creator component initializers are in scope; no new public construction seam is added. This is static source review, not a Swift compiler result."
+    },
+    {
+      "id": "FULL-CALLER-PAIR",
+      "result": "NO_CONCRETE_SOURCE_BLOCKER",
+      "assessment": "AnyNativeObjectCreator production construction captures one attachment actor and returns that same actor from makeFileAttachmentCreator. The candidate forwards it with the actual lease from the document's existing session.perform call. Registration requires exact current scope, pending intent and active claim before and after lease suspension. An existing original cannot be replaced. Matching generation requires matching actor identity; changed generation rejects the original actor as current. This guard is necessary but is not by itself proof of drain/journal reopening; the root-reviewed unchanged production owner-transition route remains required."
+    },
+    {
+      "id": "FULL-CALLER-LEASE",
+      "result": "NO_CONCRETE_SOURCE_BLOCKER",
+      "assessment": "The existing session revokes before suspension, cancels its owned calls and drains them. Its immutable generation cannot reactivate. Export uses the new current lease and mounted/object read callback, validating the lease before and after that callback. After awaited export the store checks task cancellation, the exact still-active claim/pending bytes and the same retained original before caching. The Host export also checks cancellation and authority at both sides of its memory read. The current Host resume and existing outer performAttachment/session delivery fences remain required before data reaches the UI. The cached opaque value itself is not a Native authority or successful receipt."
+    },
+    {
+      "id": "FULL-CALLER-ERROR",
+      "result": "NO_CONCRETE_SOURCE_BLOCKER",
+      "assessment": "RecoveryReadFailure tags errors from current authority/lease checks and rethrows their original cause before matching the Host's missing-private-ACK writeUncertain result. A permission callback that throws the same Host enum therefore cannot become nil and journal-only fallback. Missing-ACK fallback rechecks current authority, cancellation, claim/pending bytes and original-creator identity. Other errors propagate. The live best-effort catch cannot replace the original attach/resume failure. noRecordedAttachment remains unresolved and cannot clear the caller intent or authorize POST."
+    },
+    {
+      "id": "FULL-CALLER-INTENT-CAPACITY",
+      "result": "NO_CONCRETE_SOURCE_BLOCKER",
+      "assessment": "Scope IDs use exact UTF8 comparison. The raw-object-ID digest key is paired with exact deterministically encoded pending intent Data, including the original mutation/fingerprint, rather than user-visible String equality. The maps share a union-of-keys limit of 128, preserve existing matching slots and reject mismatches or overflow without eviction. The original creator is registered before possible dispatch; cancellation and ordinary claim release do not clear it. The original durable record/filesystem implementation is outside this new in-memory mechanism and remains covered by the retained full inverse."
+    },
+    {
+      "id": "FULL-CALLER-CONSUMPTION",
+      "result": "NO_CONCRETE_SOURCE_BLOCKER",
+      "assessment": "Volatile entries are consumed only after the current Host returns its verified file; the unchanged Host verify path records verified state before its final authority checks. The separate FilesV2 reconciliation and final mounted/session checks must still succeed before durable caller removal. If list reconciliation fails after volatile consumption, the unresolved caller file stays and the verified journal ID supports the next existing read-only resume. Removal performs the original exact-file CAS before clearing remaining volatile entries. The Check path contains neither a selected file URL nor a new mutation/POST fallback."
+    },
+    {
+      "id": "FULL-CALLER-TESTS",
+      "result": "NO_CONCRETE_SOURCE_BLOCKER",
+      "assessment": "The first new method uses the actual session/Host/caller store with modeled journal/native callbacks, registers before acknowledgement, exports only after explicit old-session drain and modeled close/reopen, and checks one upload, two metadata reads, one content read, verified original identity and unchanged durable caller JSON. The second method exercises both invalid actor/generation pairings, rejects original replacement, and distinguishes a deliberately identical authorization error from absent private ACK. The two cases of the third method hold the actual export callback before retiring/reacquiring the claim or revoking the current session; release then requires rejection, no cached token and retained intent. Both normal and error paths open the gate and await their owned capture/shutdown tasks before cleanup. The start/revocation waits have five-second bounds and the new suite has its explicit two-minute allowance. No negative sleep is used as the acceptance predicate."
+    }
+  ],
+  "preservationChecks": {
+    "candidateFilesRehashed": true,
+    "exactNewTestSuffixBytes": 14709,
+    "exactNewTestSuffixSHA256": "0640f9f3fe5303c3e531f8760251ecfaf453c83d66a446fa170a462a91bd4496",
+    "precedingTestPrefixBytes": 32593,
+    "precedingTestPrefixSHA256": "c6abeef1c9bfc83e60f364d5a1598d15dfa371642bc7ee1c8d16779fdd78f85f",
+    "sourceInverseSHA256": "b3453f4ddd94052830955904afb0062a8acc86b57ed99e453550eac52cae890d",
+    "ownerTransitionSourceProofSHA256": "b2ac684c24d7c8c9c60a971f809b95b04a74fca5329d2f22675c5dfd4eb43467",
+    "fullThreeFileAndFifteenDeclarationInverseReviewOwner": "/root",
+    "rootSourceReviewSHA256": "631a67a702699c55783c7f95a83baef216bb4c296bf833651f7e3a60e12804a8"
+  },
+  "countsAndLimits": {
+    "originalMethods": 3,
+    "originalDeclaredCases": 4,
+    "carrierPrecursorMethods": 4,
+    "carrierPrecursorDeclaredCases": 4,
+    "newMethods": 3,
+    "newDeclaredCases": 4,
+    "combinedDeclaredMethods": 10,
+    "combinedDeclaredCases": 12,
+    "newMethodsCompiledOrExecutedByReview": 0,
+    "status": "NOT_RUN",
+    "limitations": [
+      "Real session and Host methods are source-visible in the proposed component tests, but journal failures/native replies are modeled fixtures.",
+      "No actual protected-journal append failure, mounted view, FilesV2 HTTP/native recovery, Apple behavior or process-death recovery is qualified.",
+      "The new four cases do not execute or replace the original or carrier precursor suites, and the unchanged capacity precursor is not claimed as new coverage.",
+      "No claim that a different creator/generation pair alone proves a completed production owner transition.",
+      "Actual Swift compilation and the new tests remain pending under their exact eventual source/build admission."
+    ]
+  },
+  "actions": {
+    "candidateSourceMutations": 0,
+    "compilerInvocations": 0,
+    "testInvocations": 0,
+    "portableControlsRepeated": 0,
+    "hostCalls": 0,
+    "nativeCalls": 0,
+    "appleCalls": 0,
+    "runtimeAdmissionChanged": false,
+    "reviewArtifactOnly": true
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "schema": "wave2-full-attachment-caller-root-source-review/v1",
+  "atUTC": "2026-11-27T19:05:14.042027+00:00",
+  "status": "SOURCE_APPROVED_PENDING_INDEPENDENT_SWIFT_REVIEW",
+  "base": "9b510b5ea80fba508d01314cefb646682943f7a9",
+  "requiredHost": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+  "w1ContractStory": "1220960414985793",
+  "candidateManifestSHA256": "12db1ccf18cf685f5e5e24dc61184c1e9e2815247a9f27bfb8a34845eb0e171d",
+  "fullInverseSHA256": "b3453f4ddd94052830955904afb0062a8acc86b57ed99e453550eac52cae890d",
+  "restorations": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "candidateSHA256": "bba403bfe183ffed00709c973549043980eed52e478c840bb613bbd1cc8673d8",
+      "original9bRestoredSHA256": "0a120812b5f8bc5d9280a42f6a7bde597cb64a9154c10c7ff04204cfb2862de5",
+      "predecessorRestoredSHA256": "c63745bb67bc98b45fb944cb39a7f56a87cba3dd3ea506c2ead7903a1a0f3cb9"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "candidateSHA256": "949651cb362238b713a626164f95eb378d0e54de47b7c84d7bca5821e1122480",
+      "original9bRestoredSHA256": "0032c6be0f667e5082afd4e0e2dfa03a37ac43438141034358ee95a1d6e4c325",
+      "predecessorRestoredSHA256": "ff24dab542c153ad6e9dcd87e27f39d7cc2ec0f1e8a6a02f3de43f07ea17fb98"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "candidateSHA256": "a02e081d56d58b3fa964c601e712fd969901096755daf67bffb22499b5c7aa25",
+      "original9bRestoredSHA256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809",
+      "predecessorRestoredSHA256": "c6abeef1c9bfc83e60f364d5a1598d15dfa371642bc7ee1c8d16779fdd78f85f"
+    }
+  ],
+  "ownerTransitionProofSHA256": "b2ac684c24d7c8c9c60a971f809b95b04a74fca5329d2f22675c5dfd4eb43467",
+  "boundSourceDeclarations": [
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "declaration": "    func closeWorkspace(expectedSession:",
+      "sha256": "71ae111f5baca8c53663615cd781be53a1b1c7d690ec72d2d4936b5eaab91f37"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "declaration": "    func close() async {",
+      "sha256": "d41345e85d1faffbd825c9a7b37c7843c52ec63b4a55dc3426c3c19e2e7c6461"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "declaration": "    private func connectOwnedSpace(id:",
+      "sha256": "b50733feb4ef628f70666a888c5d21454965f6998594efadcd05ad8f751b1963"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "declaration": "    private func closeOwnedSpace() async {",
+      "sha256": "3573ec8d533fda508b6e3b675d4c5646254ff5c14b553a8dad57fcf8e4af0ddc"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "declaration": "    private func openSpaceOwned(id:",
+      "sha256": "9d07b3d1446680784ce1f3da07fa5b3e7ec66e5862637a518e371203670948bb"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "declaration": "    public func perform<Value:",
+      "sha256": "9463ed92f78a953d632969e6821e3582df6fef43534c1873186c31f62929ec93"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "declaration": "    public func revokeAndDrain() async {",
+      "sha256": "a625ec2260776910a3e45811bf0cd86aa7007a5e36a896443eefb5ce8385b7dc"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyProtectedCreationJournal.swift",
+      "declaration": "    public func close() {",
+      "sha256": "9821841d54097da39004617e6b42c12a5824a408584709af6b01472810a20351"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "declaration": "    public func makeFileAttachmentCreator() throws",
+      "sha256": "df981120787a0d364278a47c0b7a9240b7bbd5e78bd1fbef1459923b78a7511b"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "declaration": "    public func retainedRecoveryReceipt(for",
+      "sha256": "6e0894c97fb9db2e0ccac225eaa2d3d7ee144d585018d95ea67afb922fa19805"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "declaration": "    public func resume(_ intent: AnyNativeFileAttachmentIntent,\n                       recoveryReceipt:",
+      "sha256": "3265dfa98c5f32b86313dd661a639f79755cc7351e0c680884736d5c9e8a0e0a"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+      "declaration": "    func attachmentIntentStore(workspace",
+      "sha256": "ffad62ed827331271969f540c9fb22c29607d2e4ff5371450c853d6af623a6d0"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "declaration": "    func attachmentIntentStore(for owner:",
+      "sha256": "623aaa48bd43a0a8c96ee48cc9b666b42dc5a9f9d28581a426b546bc3d8c942b"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "declaration": "    private func withUploadClaim<Value:",
+      "sha256": "829ba0f74bf56030248b0d1ef2cc87abdc34686922bf755c5fa2dad7cb7e5c9e"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "declaration": "    private func performAttachment<Value:",
+      "sha256": "b6503fac3bba8847a90a3e8d963d66b85c03384a8ea7306c6cfd38f1a0230462"
+    }
+  ],
+  "reviewFindings": [
+    "Complete candidate UI dispatch/Check/claim/perform paths and all new store methods reviewed. Exact original creator, intent bytes and actual lease generation retained after durable caller save and before attach. No selected URL or raw receipt is persisted.",
+    "Verified production transition on immutable9b: existing root lifetime drain then application close; workspace owner awaits session revokeAndDrain then actual journal close; serialized connect reopens original protected journal before publishing current creator/session. Generation UUID is unique, lifetime state monotonic; actor inequality alone is not claimed as evidence.",
+    "Only old-actor memory export is called. Both callbacks use current lease and actual mounted/object authorization; new current creator alone resumes exact original reservation. Same-generation different-creator and replacement-generation same-creator are rejected.",
+    "Original missing-ACK writeUncertain alone may return nil for existing current read-only journal resume. Wrapped callback errors, claim retirement, cancellation, foreign scope and intent changes propagate. No fallback attach, POST, new mutation, fabricated token or new journal.",
+    "Current claim and exact pending bytes rechecked after await; original record identity must remain exact. Combined volatile keys bounded128 without replacing or evicting unresolved entries.",
+    "Volatile creator/token consumed only after verified Host return. Durable pending file remains through FilesV2 and final current-authority checks. Original format1 serialization and full protected-filesystem suffix restored exactly by complete inverse.",
+    "All original3methods/4cases and carrier4methods/4cases remain byte prefixes. New3methods/4cases use real session/Host with modeled journal/native callbacks; they are NOT_RUN and do not establish protected-journal/mounted/HTTP/Native acceptance."
+  ],
+  "sourceBlockers": [],
+  "runtimeExecuted": false,
+  "swiftCompilerClaim": false,
+  "appleMountedAcceptance": false,
+  "physicalDeviceAcceptance": false,
+  "publicationAuthorizedByThisReview": false
+}

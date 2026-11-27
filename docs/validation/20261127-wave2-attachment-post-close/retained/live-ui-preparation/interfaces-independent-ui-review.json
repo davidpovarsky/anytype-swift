@@ -1,0 +1,72 @@
+{
+  "schema": "wave2-live-authorized-attachment-ui-independent-review/v1",
+  "status": "PASS_NARROW_SOURCE_REVIEW_WITH_REQUIRED_HOST_DEPENDENCY_RUNTIME_NOT_RUN",
+  "reviewer": "Wave2 Interfaces",
+  "reviewedAt": "2026-11-27T18:34:26.992393+00:00",
+  "scope": "Only three new UI wiring edits: original task/error/claim and live authority retention, token resume/consumption ordering and nonisolated Sendable helper. Root owns overall integration and native contract; existing carrier review320c remains unchanged.",
+  "base": "2e312d361f6782ca7365d4bacc1e231b27571cd4",
+  "requiredHostDependency": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+  "inputPins": {
+    "candidateManifest": "56a9b384cc7015b854cb05ff11275f62dbc0eeedc701bfdd6551e79e10c891bf",
+    "UI": "c63745bb67bc98b45fb944cb39a7f56a87cba3dd3ea506c2ead7903a1a0f3cb9",
+    "UIBytes": 41693,
+    "UIOnlyPatch": "e8674c0d87702aedaeba83b1a1d31419a6f1d2ac9bace24973a0e33cb4554f41",
+    "inverse": "7e2aefe39770839df61ebeb49010448a61c4d73e0997666d6cfe12c2927404dd",
+    "rootSourceReview": "4e401dbecad1f12404ef0bbf0819a4e2c6fdcff4752e44cf76236a41d0fb7165",
+    "actual063dHostSource": "704a3a50613129d966729e56491bdf17349bcbb9e0f977d5666867f39bf2d010"
+  },
+  "independentByteChecks": {
+    "threeExactUIEditsInverseRestoresCompleteOriginal": true,
+    "originalUIBytes": 39091,
+    "originalUISHA256": "0a120812b5f8bc5d9280a42f6a7bde597cb64a9154c10c7ff04204cfb2862de5",
+    "originalSwiftUIViewSuffixUnchanged": true,
+    "originalOperationSendableDefinitionUnchanged": true,
+    "carrierFiles": [
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+        "sha256": "ff24dab542c153ad6e9dcd87e27f39d7cc2ec0f1e8a6a02f3de43f07ea17fb98",
+        "bytes": 26048,
+        "exactPreviouslyReviewedCarrier": true
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+        "sha256": "c6abeef1c9bfc83e60f364d5a1598d15dfa371642bc7ee1c8d16779fdd78f85f",
+        "bytes": 32593,
+        "exactPreviouslyReviewedCarrier": true
+      }
+    ]
+  },
+  "findings": [],
+  "conclusions": [
+    {
+      "boundary": "Original task, error and filesystem claim",
+      "assessment": "Capture is awaited inside the original attach/resume catch while withUploadClaim and nativeSession.perform remain active. The helper creates no Task/creator/journal and its try? cannot replace the original thrown error. Existing withUploadClaim release and close cancel/await bodies remain unchanged."
+    },
+    {
+      "boundary": "Current authority",
+      "assessment": "The helper first refuses a canceled task and passes the exact existing authorizeRead closure to the real063d Host. Host export checks original scope, cancellation and current read authority; carrier rechecks claim/pending identity after await. No metadata is republished, old creator retained, or post-retirement export introduced."
+    },
+    {
+      "boundary": "Verified receipt versus durable caller state",
+      "assessment": "consumeRecoveryReceipt runs only after the real Host attach/resume returns, whose original verify path records verified ID before final authority/cancellation delivery. Only volatile memory is consumed then. FilesV2 list/readback, exact file/size/content/tier matching and the existing final nativeSession authority fence precede the unchanged outer store.remove call. A list failure or cancellation retains durable pending intent and the Host verified record remains the read-only recovery authority."
+    },
+    {
+      "boundary": "No-record and unknown outcomes",
+      "assessment": "The current token is read only under the original pending intent/claim. Both resume overloads are the original063d APIs; neither dispatches another attachment. Explicit noRecorded remains routed to the unchanged read-only unresolved response, retaining intent/token and refusing replacement ID/POST inference."
+    },
+    {
+      "boundary": "Actor and type shape",
+      "assessment": "The added helper is nonisolated static and receives Sendable intent, original Sendable operation, actor store and Sendable claim. It touches no MainActor presentation state. Its actor awaits and API labels agree with the actual063d Host and the previously reviewed carrier. No concrete source-level compile blocker found; actual Apple typecheck remains required."
+    }
+  ],
+  "limits": [
+    "No Swift compiler, controls, tests, Native, HTTP, Apple, UI, Oracle or Mac execution; no candidate edit.",
+    "No new UI method or test case is added. The existing four carrier methods/four cases remain NOT_RUN and do not validate this mounted UI wiring.",
+    "This candidate requires the actual063d Host opaque receipt/export/resume APIs. The bare2e base is not asserted to be a coherent standalone build; root/author identify its missing dependency. Publication needs the qualified dependency merge/source admission, not a UI-only child that omits the Host source.",
+    "Simultaneous close/cancellation plus nondurable ACK, original-creator retention/post-close export and process restart loss of volatile tokens remain separate unresolved contract/acceptance boundaries.",
+    "The comparison/final lease/list order was source-reviewed; no actual protected-journal reopening, current permission loss or recovery journey passed here."
+  ],
+  "sourceEdited": false,
+  "runtimeExecuted": false,
+  "testsRun": 0
+}
