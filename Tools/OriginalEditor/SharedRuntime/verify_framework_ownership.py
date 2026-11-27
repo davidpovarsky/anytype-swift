@@ -24,6 +24,9 @@ HOST_PRODUCTS = [
     'HanlinChatUI', 'HanlinPresentationKit', 'HanlinRichUI', 'HanlinPlatformContracts',
     'FloatingPanel', 'TorahInspectorCore', 'TorahInspectorUI', 'ZIPFoundation',
 ]
+# The original dynamic Logger product owns the shared swift-log module. MCP
+# must bind to that same implementation after its admitted dependency upgrade.
+DEPENDENCY_MODULE_OWNERS = {'Logging': 'Logger'}
 FIREBASE = re.compile(
     r'^_(?:(?:OBJC_(?:META)?CLASS_\$_)?(?:FIR|Firebase|FBL|GUL|GDT)|pb_|'
     r'\$s20FirebaseCoreInternal|\$s8Promises)'
@@ -36,15 +39,18 @@ def verify_definitions(symbols):
     require(RUNTIME in symbols and EDITOR in symbols, 'Missing actual shared or original editor image')
     owners = {}
     module_symbols = {}
-    for module in HOST_PRODUCTS:
+    expected_module_owners = {**dict.fromkeys(HOST_PRODUCTS, EDITOR), **DEPENDENCY_MODULE_OWNERS}
+    symbol_owners = {}
+    for module, expected_owner in expected_module_owners.items():
         prefix = '_$s' + str(len(module)) + module
         module_symbols[module] = {s for values in symbols.values() for s in values if s.startswith(prefix)}
         require(module_symbols[module], 'Shared Host module has no exported implementation: ' + module)
+        symbol_owners.update(dict.fromkeys(module_symbols[module], expected_owner))
     selected = {s for values in symbols.values() for s in values if FIREBASE.match(s) or EDITOR_C.match(s)}
     selected |= set().union(*module_symbols.values())
     for symbol in sorted(selected):
         images = sorted(image for image, values in symbols.items() if symbol in values)
-        expected = RUNTIME if FIREBASE.match(symbol) else EDITOR
+        expected = RUNTIME if FIREBASE.match(symbol) else symbol_owners.get(symbol, EDITOR)
         require(images == [expected], 'Shared definition has the wrong/multiple providers: ' + symbol + ': ' + repr(images))
         owners[symbol] = images[0]
     required = {'_OBJC_CLASS_$_' + c for c in FIREBASE_CLASSES}
@@ -52,6 +58,7 @@ def verify_definitions(symbols):
     require({'_OBJC_CLASS_$_MTMathUILabel', '_cmark_parse_document'} <= set(owners),
             'Original iosMath/cmark implementations are missing')
     return {'selected_definition_count': len(owners), 'owners': owners,
+            'required_module_owners': expected_module_owners,
             'host_module_definition_counts': {k: len(v) for k, v in module_symbols.items()}}
 
 
@@ -224,7 +231,7 @@ def execute(args, receipt, *, inspect_only=False):
     require('@rpath/' + RUNTIME + '.framework/' + RUNTIME in loads,
             'Original framework does not load the shared runtime')
     modules = {}
-    for module in HOST_PRODUCTS:
+    for module in [*HOST_PRODUCTS, *DEPENDENCY_MODULE_OWNERS]:
         directory = distribution / 'Modules' / (module + '.swiftmodule')
         require(directory.is_dir() and not directory.is_symlink(), 'Missing shared Host module declarations: ' + module)
         files = {p.relative_to(directory).as_posix(): sha256(p) for p in sorted(directory.rglob('*')) if p.is_file()}
@@ -246,6 +253,7 @@ def execute(args, receipt, *, inspect_only=False):
         dependency_contract_sha256=sha256(contract_path), original_package_lock_sha256=sha256(lock_path),
         root_dependency_revisions={k: pins[k] for k in contract['dependencies']},
         binary_identity=binaries, shared_host_products=HOST_PRODUCTS, shared_module_declarations=modules,
+        shared_dependency_module_owners=DEPENDENCY_MODULE_OWNERS,
         definition_count=definitions['selected_definition_count'],
         selected_definitions_sha256=sha256(evidence / 'shared-provider-selected-definitions.json'),
         host_module_definition_counts=definitions['host_module_definition_counts'],

@@ -7,6 +7,7 @@ import unittest
 
 from SharedRuntime.verify_framework_ownership import (
     EDITOR, RUNTIME, FIREBASE_CLASSES, HOST_PRODUCTS, verify_definitions, dependency_source_inventory,
+    DEPENDENCY_MODULE_OWNERS,
 )
 
 
@@ -16,12 +17,15 @@ class SharedDefinitionControls(unittest.TestCase):
             RUNTIME: {'_OBJC_CLASS_$_' + c for c in FIREBASE_CLASSES},
             EDITOR: {'_OBJC_CLASS_$_MTMathUILabel', '_cmark_parse_document',
                      *{'_$s' + str(len(m)) + m + 'ExplicitSyntheticFunction' for m in HOST_PRODUCTS}},
+            'Logger': {'_$s7LoggingExplicitSyntheticFunction'},
             'external-consumer-0': {'_main'},
         }
 
     def test_complete_unique_synthetic_definitions_have_no_native_credit(self):
         result = verify_definitions(self.fixture())
-        self.assertEqual(len(result['host_module_definition_counts']), 12)
+        self.assertEqual(len(result['host_module_definition_counts']), 14)
+        self.assertEqual(result['required_module_owners']['AI_Hanlin'], EDITOR)
+        self.assertEqual(DEPENDENCY_MODULE_OWNERS, {'Logging': 'Logger'})
         self.assertNotIn('status', result)
         self.assertNotIn('native', result)
 
@@ -60,6 +64,30 @@ class SharedDefinitionControls(unittest.TestCase):
         symbols = self.fixture()
         symbol = next(s for s in symbols[EDITOR] if 'HanlinHostContracts' in s)
         symbols['external-consumer-0'].add(symbol)
+        with self.assertRaises(ValueError):
+            verify_definitions(symbols)
+
+    def test_editor_cannot_link_a_second_original_logging_implementation(self):
+        symbols = self.fixture()
+        symbols[EDITOR].update(symbols['Logger'])
+        with self.assertRaises(ValueError):
+            verify_definitions(symbols)
+
+    def test_logging_cannot_move_out_of_its_original_dynamic_owner(self):
+        symbols = self.fixture()
+        symbols[EDITOR].update(symbols.pop('Logger'))
+        with self.assertRaises(ValueError):
+            verify_definitions(symbols)
+
+    def test_original_logging_implementation_cannot_be_missing(self):
+        symbols = self.fixture()
+        symbols.pop('Logger')
+        with self.assertRaises(ValueError):
+            verify_definitions(symbols)
+
+    def test_external_consumer_cannot_link_the_original_logging_again(self):
+        symbols = self.fixture()
+        symbols['external-consumer-0'].update(symbols['Logger'])
         with self.assertRaises(ValueError):
             verify_definitions(symbols)
 
