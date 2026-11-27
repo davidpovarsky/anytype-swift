@@ -17,7 +17,7 @@ public struct AnyHanlinCreationServices: Sendable {
 /// model requests only reach the canonical shared Hanlin router. Missing native
 /// confirmation or protected journals makes the writable catalog unavailable.
 @MainActor
-public final class AnyHanlinHost: HanlinHostIntegration, PinkhaHanlinOwnedPresentation {
+public final class AnyHanlinHost: HanlinHostCancellationDrainSource, PinkhaHanlinOwnedPresentation {
     public nonisolated let apiVersion = HanlinAPIVersion(major: 1, minor: 0)
     public let session: HanlinHostSession
     public let access: AnyHanlinNativeAccess
@@ -86,6 +86,9 @@ public final class AnyHanlinHost: HanlinHostIntegration, PinkhaHanlinOwnedPresen
         try await router.execute(invocation, progress: progress)
     }
     public func cancel(_ id: HanlinToolInvocationID) async { await router.cancel(id) }
+    public func drainCancelledInvocation(_ id: HanlinToolInvocationID) async -> HanlinHostExecutionResult? {
+        await router.drainCancelledInvocation(id)
+    }
     public func open(_ destination: HanlinHostDestination) async throws -> HanlinHostNavigationResult {
         try await router.open(destination)
     }

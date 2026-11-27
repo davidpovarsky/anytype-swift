@@ -7,7 +7,7 @@ import PinkhaHanlinCore
 /// UIKit ownership stays in the application. Routing, replay protection and
 /// original-scope receipts use the same shared implementation as the Any host.
 @MainActor
-final class PinkhaHanlinReadWriteHost: HanlinHostIntegration {
+final class PinkhaHanlinReadWriteHost: HanlinHostCancellationDrainSource {
     nonisolated let apiVersion = HanlinAPIVersion(major: 1, minor: 0)
     let session: HanlinHostSession
     private let router: PinkhaHanlinHostRouter
@@ -54,6 +54,9 @@ final class PinkhaHanlinReadWriteHost: HanlinHostIntegration {
         try await router.execute(invocation, progress: progress)
     }
     func cancel(_ id: HanlinToolInvocationID) async { await router.cancel(id) }
+    func drainCancelledInvocation(_ id: HanlinToolInvocationID) async -> HanlinHostExecutionResult? {
+        await router.drainCancelledInvocation(id)
+    }
     func open(_ destination: HanlinHostDestination) async throws -> HanlinHostNavigationResult {
         try await router.open(destination)
     }
@@ -171,6 +174,10 @@ private final class PinkhaHanlinCreateBinding: PinkhaHanlinWriteBinding {
     func cancel(_ id: HanlinToolInvocationID) async {
         context.cancelConfirmation(for: id)
         await runner?.cancel(id) // Best-effort request fence/uncertain metadata; never native rollback.
+    }
+    func drainCancelledInvocation(_ id: HanlinToolInvocationID) async -> HanlinHostExecutionResult? {
+        let retained = await runner?.drainCancelledInvocation(id)
+        return retained?.metadataReceipt() ?? preflight.receipt(for: id)?.metadataReceipt()
     }
 
     func invalidate() { context.invalidate() }
