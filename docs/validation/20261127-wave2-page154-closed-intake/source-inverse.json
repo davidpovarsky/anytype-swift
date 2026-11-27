@@ -1,0 +1,64 @@
+{
+  "schema": "pinkha-page154-future-closed-preparer-inverse-v1",
+  "status": "PASS_EXACT_CLOSED_SOURCE_DERIVATIVE_NOT_MATERIALIZATION_OR_ACCEPTANCE",
+  "originalCommit": "4005c42f76eb2ee57508ab5724b3a3ef5ae91bba",
+  "originalPath": "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/prepare_wave2_page154_profile.py",
+  "originalSHA256": "a9a8ee451d4ae5acd8b207c90404ca97ee2f184134dd648d16038103a64ead08",
+  "candidateSHA256": "0893c414fb7bacde191679df7cde048235463413832b3937d43553d20c786789",
+  "edits": [
+    {
+      "before": "\"\"\"Bind the original six Page154 methods to the shared, admitted App16 product.",
+      "after": "\"\"\"Prepare the original six Page154 methods for one future pinned shared product."
+    },
+    {
+      "before": "SOURCE = \"a089ff29a5c0a7e415aac800844505f099a5561d\"",
+      "after": "SOURCE = None\nFUTURE_SHARED_CONTROLLER_SHA256 = None\nFUTURE_CANONICAL_ADMISSION_SHA256 = None\nREADY_FOR_MATERIALIZATION = False"
+    },
+    {
+      "before": "    originals_root, output = Path(originals_root), Path(output)\n",
+      "after": "    require(READY_FOR_MATERIALIZATION is True\n            and isinstance(SOURCE, str) and re.fullmatch(r\"[0-9a-f]{40}\", SOURCE)\n            and isinstance(FUTURE_SHARED_CONTROLLER_SHA256, str)\n            and re.fullmatch(r\"[0-9a-f]{64}\", FUTURE_SHARED_CONTROLLER_SHA256)\n            and isinstance(FUTURE_CANONICAL_ADMISSION_SHA256, str)\n            and re.fullmatch(r\"[0-9a-f]{64}\", FUTURE_CANONICAL_ADMISSION_SHA256),\n            \"Page154 future shared profile is closed: actual exact source, shared controller and canonical admission pins are pending\")\n    require(shared_sha == FUTURE_SHARED_CONTROLLER_SHA256\n            and admission_sha == FUTURE_CANONICAL_ADMISSION_SHA256,\n            \"Only the separately reviewed fixed future pins are accepted; caller overrides are not permitted\")\n    originals_root, output = Path(originals_root), Path(output)\n"
+    },
+    {
+      "before": "(\"admit_app16_and_clone_products\", \"qualify_app16_producer\", \"qualify_app16_runtime\")",
+      "after": "(\"admit_and_clone_products\", \"admit_app16_and_clone_products\", \"qualify_app16_producer\", \"qualify_app16_runtime\")"
+    },
+    {
+      "before": "\"freshFixtureReason\": \"Original fixture expired under the unchanged 7200-second authority; App16 includes the focus correction.\",",
+      "after": "\"freshFixtureReason\": \"Original fixture expired under the unchanged 7200-second authority; the next exact shared source requires a fresh owned six-stage fixture.\","
+    }
+  ],
+  "exactOriginalRestored": true,
+  "changedDefinitions": [
+    "prepare"
+  ],
+  "unchangedDefinitions": [
+    "decode",
+    "definitions",
+    "encoded",
+    "main",
+    "read",
+    "replace_exact",
+    "require",
+    "sha"
+  ],
+  "reviewedCurrentSharedSHA256": "4c7a275472c1ebb2d15287dfe5c81f0093eddedc3103225eae1b85acd7176b8a",
+  "currentSharedCommandsByteIdentical": true,
+  "currentSharedAPIsPresent": {
+    "admit_and_clone_products": true,
+    "admit_app16_and_clone_products": true,
+    "qualify_app16_producer": true,
+    "qualify_app16_runtime": true
+  },
+  "futureSourceCommit": null,
+  "futureSharedControllerSHA256": null,
+  "futureCanonicalAdmissionSHA256": null,
+  "current8f2Accepted": false,
+  "historicalA089Accepted": false,
+  "canonicalAdmissionsFabricated": 0,
+  "sixStageControllerMaterializations": 0,
+  "sourceStageBodiesChanged": 0,
+  "fixtureDeadlineChanges": 0,
+  "enumerationDeadlineSeconds": 180,
+  "nativeCalls": 0,
+  "AppleInvocations": 0
+}
