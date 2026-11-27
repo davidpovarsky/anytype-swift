@@ -1,0 +1,26 @@
+{
+  "schema": "pinkha-bookmark-shared-queue-review/v1",
+  "reviewer": "Wave2 editor agent",
+  "atUTC": "2026-11-27T17:47:48.431935+00:00",
+  "status": "PRODUCTION_SOURCE_NO_BLOCKER_TEST_COUNTEREXAMPLE_REQUIRES_CORRECTION",
+  "repositorySHA256": "8c96a95c2182c9081dc1bb11f86e66a8d036815f3ac9eebd9a57900334f0a4d7",
+  "modelSHA256": "d442b3605eeaa86d4e9c08067c4c7b17921fd0cefd8e21b48e9e91d9254f1a56",
+  "testSHA256": "040196fe673db5eb4c54ac099f651ec9c9a96a56e793b5ecda49406996b37311",
+  "queueProofSHA256": "bb07ca7ea11be62ac359fed94d97670fd635a4ddb50fc24f855bd03623f97c47",
+  "sourceAssessment": "The selected creator is checked against the repository workspace before dispatch. The corrected model uses its existing repository, and create continues through the original serial closure and mutationTail. Optional default creator remains selected when using is omitted.",
+  "finding": {
+    "id": "BOOKMARK-QUEUE-TEST-01",
+    "scope": "New queue test witness strength",
+    "detail": "The defaultRead workspace getter signal occurs before serial admission. A second operation that bypasses serialization can be scheduled after the first held creator is released, still observing created-1 then created-2. The signal and final IDs therefore do not form a deterministic serialization-bypass counterexample.",
+    "agreedCorrection": "Keep the two-method/two-case scope; cancel both structured creation children while the first is held and the default guard is observed, then finish/release and drain both Result outcomes. Both must be CancellationError and creation count zero; an uncancelled default creation after the group proves compatibility. The existing fixture/default authorization does not implicitly check task cancellation, so a bypassed second mutation would still create.",
+    "helperPrecision": "Check Task cancellation after group.next and before false/nil is classified as boundaryNotReached, so canceled AsyncStream.next cannot become a misleading boundary error."
+  },
+  "streamAndLifetimeReview": "On successful signal, the iterator child has completed before group.cancelAll; no active iterator cancellation handler remains to terminate the reused stream. Timeout/cancellation paths are already failing and must cancel/drain the timer and stream child. Five-second helper limits and release.finish on exit keep the fixture handoff bounded.",
+  "runtime": {
+    "compilerOrTests": false,
+    "controls": false,
+    "hostOrNative": false,
+    "publicationOrAdmissionAuthorizedByReview": false
+  },
+  "ownership": "Interfaces owns replacement source; root owns C/W3 publication and runtime coordination."
+}

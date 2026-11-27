@@ -1,0 +1,30 @@
+{
+  "sourceTask": "1220541349302681",
+  "story": {
+    "gid": "1220959504188117",
+    "created_at": "2026-11-27T17:20:39.964Z",
+    "created_by": {
+      "gid": "1219597879016933",
+      "name": "דוד פוברסקי",
+      "resource_type": "user"
+    },
+    "resource_type": "story",
+    "text": "Wave1/C → Wave2: source review of ordinary Bookmark-create proposal1220959179993749 (no implementation/build/account action).\n\nI read the exact proposed parent78ccffbc711affe743a96edcb79455998f8b73a6 Host files and the immutable native1607 source manifest aa43f853a28c2cd0e125b70cdcc01b05a4748f0c25541f5ed86cea511e6b8dd1.\n\nCompatible source boundary: an imported layout11 Type must actually declare the canonical editor/editor_blocks dataset. Native document target policy checks current Type/metadata and excludes bin/template; it does not require a nonempty editor block. A bodyless Bookmark is therefore structurally eligible. The earlier48a643 component created paragraphs, so it is not an actual bodyless-creation acceptance receipt. Keep the new empty-body/read/cold path a focused new proof, without adding a dummy paragraph.\n\nTwo concrete gaps:\n1. AnyNativePropertyStore.catalog returns eligible Type/Collection owners; propertyDefinitions is private and the public read method requires an already existing object. AnyNativeImportedTypePresentation is explicitly display-only. A public precreate read seam is needed for fresh Type+property-owner+sourceURL definitions without fabricating schema or borrowing an unrelated object's definitions.\n2. currentWriterObjectCreate genuinely guards current signed writer authority and locks/validates current native Type/Collection owners at bootstrap. It does NOT bind the caller's selected layout11/sourceURL descriptor revision. AnyNativeObjectCreationIntent carries only type/collections/initialProperties; bootstrap sets NativeDefinitionOwners but no expected definition heads/digest or required editor dataset/presentation predicate. HTTP descriptor checks happen before the root/append. Root creation and bootstrap are separate effects, so a later refusal can retain a known object ID.\n\nDo not describe ordinary currentWriterObjectCreate plus a post-create read as atomic acceptance of the selected imported Bookmark descriptor. Root owns assessment of a narrow optional expected-definition fence under the existing native writer transaction; C is inspecting the exact original hooks. W2 may prepare the UI/read-only Host seam, keeping creation unavailable until that contract is concrete.\n\nAfter a known ACK, retain the original ID/journal and reconcile read-only; never send a replacement POST because metadata/authority/descriptor readback changed. Final Bookmark readiness must recheck exact Type, attached owner, sourceURL key/definition and URL UTF8 bytes. Existing generic ObjectCreator.containsExpected uses AnyJSON equality, so it is not a byte-exact URL certificate.\n\nExact source pins:\nHost ObjectCreator deb279cc959d535f4264072043069112403475bb1a300288f4628a959f4ce95a;\nPropertyStore bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c;\nImportedTypePresentation 9cc30290575197f7cc2b8f3c8fdd700b8967223b035726f314ea11b2e1991e1a;\nDocumentStore de35930cd2689caaaa1195576073a117fa917b5ff078fccb24baba98eac68c43;\nnative handlers_objects.go509be58130afb88687381e1e89704d4c5681752bdd284c3d22d0556dfcc182af;\nSDK objects.go188b1b52a9234b76f8909b1a1c3a9b05a26f4a9e0b554452d448f7d06e65a333;\nnative_definitions.gobc09041f7e55dd6a56f1569bb4426c6619e431c5a5a425e39810488e77069c52;\ndocument_policy.go3f40008a740bc078d408b419b35c8bd4f563a10c3ba36da19f916d0a190adf64.\nAll actual C acceptance and original failures remain unchanged; C313/C3 frozen.",
+    "type": "comment",
+    "resource_subtype": "comment_added"
+  },
+  "decisionTask": "1220709844846577",
+  "decision": {
+    "gid": "1220959506656195",
+    "created_at": "2026-11-27T17:33:20.652Z",
+    "created_by": {
+      "gid": "1219597879016933",
+      "name": "דוד פוברסקי",
+      "resource_type": "user"
+    },
+    "resource_type": "story",
+    "text": "W3 integration decision following C story1220959504188117 and W2 structural-editor warning1220959471605219: please proceed in your owned source lane with the narrow native contract assessment/implementation required for both ordinary imported Bookmark creation and real Native structural editing. These remain product acceptance gaps; the current W3 shared-App source freeze is explicitly intermediate.\nBookmark: preserve generic creation compatibility; an optional expected-definition fence must bind the selected layout11 Type, attached property owner, sourceURL definition/UTF8 value and required editor/editor_blocks dataset at the actual native signed-writer boundary. Determine and document the original transaction/locking scope before claiming atomicity. If existing root-create and bootstrap remain separate effects, preserve any known object ID/ACK and reconcile read-only; no replacement POST after an ambiguous refusal. Bodyless layout11 must be proven with its real empty snapshot, no synthetic paragraph. W2 owns the public precreate read/UI seam and should keep this path unavailable until your concrete contract is published.\nNative editor: actual Return must split blocks, and merge/Undo must preserve their identities and signed revision semantics. Separate CAS PATCH+POST is not an atomic split, and sticky tombstones cannot be treated as reversible identity restoration. Please return an explicit existing-writer transaction/Undo contract and focused original native evidence for split/merge/Undo or the exact remaining code gap. Do not broaden or replay the frozen C313/C3/1607 acceptance under the same identity; use a distinct follow-on source milestone and coordinate runtime after the current owner queue. Root remains sole final merge/build owner.",
+    "type": "comment",
+    "resource_subtype": "comment_added"
+  }
+}

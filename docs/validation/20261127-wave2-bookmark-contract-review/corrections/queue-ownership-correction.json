@@ -1,0 +1,24 @@
+{
+  "status": "SOURCE_QUEUE_OWNERSHIP_CORRECTION_NOT_RUN",
+  "finding": "BOOKMARK-CREATE-01",
+  "repositorySHA256": "8c96a95c2182c9081dc1bb11f86e66a8d036815f3ac9eebd9a57900334f0a4d7",
+  "modelBeforeSHA256": "02bf26bf2441c4907a40c4fa39fc1cb1c0f363001c41a56affa1c778ad7bc077",
+  "modelAfterSHA256": "d442b3605eeaa86d4e9c08067c4c7b17921fd0cefd8e21b48e9e91d9254f1a56",
+  "unchangedCreateSerialBodySHA256": "3125931fd899c345e980cdcdc8895425fdbdcc5ecda8f89f57485c0cd5d59009",
+  "unchangedSerialFunctionAndEndSHA256": "0ef898a0aa70c2b4b6c4e494c2d620cc68d18dd6dfcb8a0575d97d0c7582142d",
+  "tests": {
+    "originalPrefixBytes": 30174,
+    "originalPrefixSHA256": "306aaa783a635eba2123c3403f572ccc104f951f4ce11574f6700cea28b5eaec",
+    "originalMethods": 23,
+    "newMethods": [
+      "creationOverrideRejectsAnotherWorkspaceBeforeDispatch",
+      "creationOverrideAndDefaultCreatorShareTheExistingMutationQueue"
+    ],
+    "newDeclaredCases": 2,
+    "runtime": "NOT_RUN"
+  },
+  "baseInverse": "source-inverse.json",
+  "predecessor": "review-v2",
+  "nativeContractChanged": false,
+  "newProcessManager": false
+}

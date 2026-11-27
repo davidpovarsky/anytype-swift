@@ -1,0 +1,18 @@
+{
+  "status": "EXPLICIT_EXISTING_LOCAL_DEPENDENCY_SOURCE_ONLY",
+  "reason": "Exact original color namespaces are declared by Assets; no observed compiler failure claimed for predecessor",
+  "deltas": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "beforeSHA256": "2c06575caf1b4d8fdc7c0e04ea064b6992e145250c3a80037d5a993478fcdd56",
+      "afterSHA256": "4f7c473dfd7a1345e4b563bd98988a78cb9625ee8a8f80695dbd45fe9819c693",
+      "inverse": "remove exactly one import Assets line"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "beforeSHA256": "2a1151a8a858d9dc7ad56c3dcf6baa3ffd75b23b1a0220d4b9a85619f9fb5987",
+      "afterSHA256": "594a1d0b7a95c771154b201b5dffd027b66985df9911eee77a34395f113a910e",
+      "inverse": "remove exact existing-local Assets package and iOS product lines"
+    }
+  ]
+}

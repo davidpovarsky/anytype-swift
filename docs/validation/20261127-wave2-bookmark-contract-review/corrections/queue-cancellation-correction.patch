@@ -1,0 +1,72 @@
+--- review-v3/Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift
++++ candidate/Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift
+@@ -970,7 +970,9 @@
+             return false
+         }
+         defer { group.cancelAll() }
+-        guard try await group.next() == true else { throw HierarchyCreationQueueTestError.boundaryNotReached }
++        let signalled = try await group.next()
++        try Task.checkCancellation()
++        guard signalled == true else { throw HierarchyCreationQueueTestError.boundaryNotReached }
+     }
+ }
+ 
+@@ -1040,22 +1042,41 @@
+         let second = try await repository.prepareCreation(typeID: "page", title: "second", kind: .writingDocument)
+         let held = HierarchyHeldCreator(workspace: hierarchyWorkspace, store: store,
+                                        entered: entered.continuation, release: release.stream)
+-        try await withThrowingTaskGroup(of: AnyHierarchyItem.self) { group in
+-            defer { release.continuation.finish() }
+-            group.addTask { try await repository.create(first, using: held) }
+-            try await hierarchyCreationSignal(entered.stream)
+-            group.addTask { try await repository.create(second) }
+-            // Positive evidence that the default call reached this same
+-            // repository, while the first selected creator is still suspended.
+-            try await hierarchyCreationSignal(defaultRead.stream)
+-            #expect(await store.countCreated() == 0)
+-            release.continuation.yield(())
+-            var completed: [AnyHierarchyItem] = []
+-            for try await item in group { completed.append(item) }
+-            #expect(completed.count == 2)
+-            #expect(completed.first(where: { $0.title == "first" })?.objectID == "created-1")
+-            #expect(completed.first(where: { $0.title == "second" })?.objectID == "created-2")
+-        }
+-        #expect(await store.countCreated() == 2)
++        let (completed, handoffError) = await withTaskGroup(of: Result<AnyHierarchyItem, Error>.self) { group in
++            var handoffError: Error?
++            group.addTask {
++                do { return .success(try await repository.create(first, using: held)) }
++                catch { return .failure(error) }
++            }
++            do {
++                try await hierarchyCreationSignal(entered.stream)
++                group.addTask {
++                    do { return .success(try await repository.create(second)) }
++                    catch { return .failure(error) }
++                }
++                // The getter proves entry, not serial admission. Cancellation
++                // must prevent dispatch even if the second call is scheduled late.
++                try await hierarchyCreationSignal(defaultRead.stream)
++            } catch { handoffError = error }
++            group.cancelAll()
++            release.continuation.finish()
++            var completed: [Result<AnyHierarchyItem, Error>] = []
++            for await outcome in group { completed.append(outcome) }
++            return (completed, handoffError)
++        }
++        if let handoffError { throw handoffError }
++        #expect(completed.count == 2)
++        for outcome in completed {
++            switch outcome {
++            case .success:
++                Issue.record("A canceled creation dispatched past the existing mutation queue")
++            case .failure(let error):
++                #expect(error is CancellationError)
++            }
++        }
++        #expect(await store.countCreated() == 0)
++        let recovered = try await repository.create(second)
++        #expect(recovered.objectID == "created-1" && recovered.title == "second")
++        #expect(await store.countCreated() == 1)
+     }
+ }

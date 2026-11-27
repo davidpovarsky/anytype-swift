@@ -1,0 +1,104 @@
+{
+  "schema": "pinkha-bookmark-url-first-ui-package-independent-review/v1",
+  "reviewer": "Wave2 editor agent",
+  "reviewedAtUTC": "2026-11-27T17:25:01.267990+00:00",
+  "status": "SOURCE_ONLY_ACCEPTED_NO_CONCRETE_BLOCKER",
+  "base": "78ccffbc711affe743a96edcb79455998f8b73a6",
+  "scope": "Frozen URL-first Library View and direct iOS package dependencies. Model/Host types checked for UI call shape only; Host authorization/binding and test semantics remain root/Torah review scopes.",
+  "candidate": {
+    "view": {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "bytes": 34375,
+      "sha256": "4f7c473dfd7a1345e4b563bd98988a78cb9625ee8a8f80695dbd45fe9819c693"
+    },
+    "package": {
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "bytes": 2328,
+      "sha256": "594a1d0b7a95c771154b201b5dffd027b66985df9911eee77a34395f113a910e"
+    },
+    "modelShapeOnly": {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "bytes": 39600,
+      "sha256": "02bf26bf2441c4907a40c4fa39fc1cb1c0f363001c41a56affa1c778ad7bc077"
+    },
+    "hostPublicTypesOnly": {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "bytes": 52020,
+      "sha256": "42206a8c9f4484e9e0b0959f283895d08b5038bc5d1b2814b23f1ae2a906ca2f"
+    },
+    "testsHashOnly": {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeBookmarkPresentationTests.swift",
+      "bytes": 16312,
+      "sha256": "cc64b7d960103c37f5cc8ca1f78c2ba648b3fb15ea59fc32168a2489fc2056c4"
+    }
+  },
+  "evidence": {
+    "fullInverse": {
+      "path": "source-inverse.json",
+      "bytes": 55915,
+      "sha256": "5d8f4512058c0194abb19eb6b832e7db19844d083daf6f35e3f5fbf0c4c806ce"
+    },
+    "assetsDependencyCorrection": {
+      "path": "assets-dependency-correction.json",
+      "bytes": 867,
+      "sha256": "2d2ce18a29c061af8e5266d7e182ade8d0678bb72cdd4e468b09a0e84bf88c92"
+    },
+    "candidateManifest": {
+      "path": "candidate-manifest.json",
+      "bytes": 2968,
+      "sha256": "7a861bacc1343e4705578a55a61f791f5bf22701ed5a53bf940743071916c12c"
+    },
+    "originalUIRecommendation": {
+      "path": "editor-ui-recommendation.json",
+      "bytes": 6595,
+      "sha256": "210b707034ecbfba4ea8a07e97533144434a8bb04a50ea826e30b523e76d3024"
+    },
+    "publicAPIPrimaryInputs": {
+      "path": "editor-review-primary.json",
+      "bytes": 5272,
+      "sha256": "7a56030d514579460f2949d15c5cdf96e87d86981db8fe0008a97a7dec7789c5"
+    }
+  },
+  "independentInverse": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "editRows": 13,
+      "inverseEqualsRetainedOriginal": true,
+      "originalSHA256": "3791fe7ccadbf5caf4d1a82b1f6cc8d497b5562db1c58ba346803a9ebf43fec1"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "editRows": 2,
+      "inverseEqualsRetainedOriginal": true,
+      "originalSHA256": "298ef94254c6d8f17a389a5ff0efd02a5c03099e9a819b50886a5d9e8b3d9854"
+    }
+  ],
+  "assetsCorrectionInverseEqualsRetainedViewAndPackage": true,
+  "assessment": [
+    "Bookmark opens the original-style URL row directly when one native candidate Type exists; only multiple candidate Types require a chooser. No extra Name screen or fabricated title was introduced. Empty stored title and the existing Untitled/Rename routes remain explicit.",
+    "Public AnytypeTextField and AnytypeFontBuilder are used with the original URL placeholder, uxBodyRegular, original color tokens, keyboard/autocorrection/capitalization settings, 20-point side padding and inline Create. The new 48-point minimum row preserves room for intrinsic content; actual layout remains unverified.",
+    "The local FocusState follows the original app wrapper. Both Button and onSubmit invoke the same synchronous guarded method. Invalid input leaves the form open; submitted is latched before commit, preventing a second accepted submission during dismissal.",
+    "The original request-ID and lifetime/write checks, single pending submission, real sheet onDismiss callback and final MainActor guard remain in the same path. Bookmark adds one typed payload and one async model dispatch after the owned sheet closes; cancel and interactive dismissal without submission do not create an object.",
+    "AnyNativePropertyOwner publicly conforms to Identifiable with String ID/name, so the dynamic List and typed Hashable navigation cases use the actual exported types. The existing no-payload document/note/folder routes remain the original Name form.",
+    "The actual AnytypeCore package exports the public AnytypeCore product and AnytypeURL API. The iOS-only target dependency matches the UIKit-gated View. The shared DesignKit already depends on the same local AnytypeCore and Assets; explicit direct imports/products do not add a second package identity, new package revision or platform path.",
+    "The direct Assets successor is exactly one import plus its local package and iOS product. Actual Color+Assets public members and Assets product were primary-verified. This is explicit dependency qualification, not an observed compiler-failure claim.",
+    "The field explicitly uses the original localized URL placeholder as accessibility label and has a stable URL identifier; Create and Type choices have their own identifiers. Other new labels follow the existing AnyUIErrorText language mechanism. No visible or VoiceOver behavior is claimed from source.",
+    "AnytypeURL.absoluteString retains the supplied raw string. Creation additionally uses the existing shared HTTP/HTTPS open policy, so bare domains/relative URLs and other unsupported schemes are deliberately rejected. This does not claim full behavioral parity with every input the older Bookmark service may accept."
+  ],
+  "findings": [],
+  "remainingAcceptance": [
+    "Apple Swift/SwiftUI compilation of the actual package graph.",
+    "Mounted URL entry, invalid/cancel/submission/readback, one/multiple/no Type cases and pending/retry behavior.",
+    "Actual light/dark, mixed language, keyboard and accessibility behavior; source labels and minimum heights alone do not qualify them.",
+    "Root/Torah model, Host binding and regression-test review; no duplicate review credit is claimed here."
+  ],
+  "execution": {
+    "candidateEditsByReviewer": false,
+    "swiftCompilerOrTests": false,
+    "portableControlRerun": false,
+    "oracleOrMacCalls": false,
+    "nativeOrUIExecution": false,
+    "runtimeAdmission": false,
+    "primaryReadOnlyGitHubAndAppleDocumentationLookups": true
+  }
+}

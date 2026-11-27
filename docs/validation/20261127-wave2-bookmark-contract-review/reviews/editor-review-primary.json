@@ -1,0 +1,36 @@
+{
+  "schema": "pinkha-bookmark-editor-public-api-inputs/v1",
+  "sourceCommit": "78ccffbc711affe743a96edcb79455998f8b73a6",
+  "primaryGitHubFiles": [
+    {
+      "path": "Modules/AnytypeCore/Package.swift",
+      "content": "// swift-tools-version:6.0\nimport PackageDescription\n\nlet package = Package(\n    name: \"AnytypeCore\",\n    platforms: [\n        .iOS(.v17),\n    ],\n    products: [\n        .library(\n            name: \"AnytypeCore\",\n            type: .dynamic,\n            targets: [\"AnytypeCore\"]),\n    ],\n    dependencies: [\n        .package(url: \"https://github.com/apple/swift-protobuf\", revision: \"1.32.0\"),\n        .package(path: \"../Logger\"),\n        .package(path: \"../AppTarget\")\n    ],\n    targets: [\n        .target(\n            name: \"AnytypeCore\",\n            dependencies: [\n                .product(name: \"SwiftProtobuf\", package: \"swift-protobuf\"),\n                \"Logger\",\n                \"AppTarget\"\n            ],\n            path: \"AnytypeCore\",\n            swiftSettings: [\n                .swiftLanguageMode(.v6)\n            ]\n        ),\n        .testTarget(\n            name: \"AnytypeCoreTests\",\n            dependencies: [\n                \"AnytypeCore\"\n            ]),\n    ]\n)\n",
+      "encoding": "utf-8",
+      "sha": "e304520a477f243bb9515e6db0ea1a84868a5dcf",
+      "display_url": "https://github.com/davidpovarsky/anytype-swift/blob/78ccffbc711affe743a96edcb79455998f8b73a6/Modules/AnytypeCore/Package.swift",
+      "display_title": "Package.swift"
+    },
+    {
+      "path": "Modules/DesignKit/Package.swift",
+      "content": "// swift-tools-version: 6.0\n// The swift-tools-version declares the minimum version of Swift required to build this package.\n\nimport PackageDescription\n\nlet package = Package(\n    name: \"DesignKit\",\n    platforms: [\n        .iOS(.v17),\n    ],\n    products: [\n        .library(\n            name: \"DesignKit\",\n            targets: [\"DesignKit\"]),\n    ],\n    dependencies: [\n        .package(path: \"../AnytypeCore\"),\n        .package(path: \"../Assets\"),\n        .package(path: \"../AsyncTools\"),\n        .package(path: \"../LayoutKit\"),\n        .package(url: \"https://github.com/huri000/SwiftEntryKit\", exact: \"2.0.0\"),\n        .package(url: \"https://github.com/hyperoslo/Cache\", exact: \"7.4.0\")\n    ],\n    targets: [\n        .target(\n            name: \"DesignKit\",\n            dependencies: [\n                \"AnytypeCore\",\n                \"Assets\",\n                \"AsyncTools\",\n                \"LayoutKit\",\n                \"SwiftEntryKit\",\n                \"Cache\"\n            ],\n            resources: [\n                .process(\"Resources\")\n            ],\n            swiftSettings: [\n                .swiftLanguageMode(.v6)\n            ]\n        ),\n        .testTarget(\n            name: \"DesignKitTests\",\n            dependencies: [\"DesignKit\"]\n        ),\n    ]\n)\n",
+      "encoding": "utf-8",
+      "sha": "9665bb9200e11fc6b66acdd1724f3ff5acd8e74b",
+      "display_url": "https://github.com/davidpovarsky/anytype-swift/blob/78ccffbc711affe743a96edcb79455998f8b73a6/Modules/DesignKit/Package.swift",
+      "display_title": "Package.swift"
+    },
+    {
+      "path": "Modules/DesignKit/Sources/DesignKit/Fonts/Config/SwiftUIFont.swift",
+      "content": "import SwiftUI\nimport AnytypeCore\n\npublic struct AnytypeFontBuilder {\n    \n    private static let fontCache = SynchronizedDictionary<FontCacheKey, Font>()\n    \n    private struct FontCacheKey: Equatable, Hashable {\n        let font: FontConvertible\n        let size: CGFloat\n    }\n    \n    public static func font(font: FontConvertible, size: CGFloat) -> Font {\n        let fontCacheKey = FontCacheKey(font: font, size: size)\n        \n        if let cacheFont = fontCache[fontCacheKey] {\n            return cacheFont\n        }\n        \n        let font = font.swiftUIFont(size: size)\n        \n        fontCache[fontCacheKey] = font\n        \n        return font\n    }\n\n    public static func font(anytypeFont: AnytypeFont) -> Font {\n        return font(font: anytypeFont.config.font, size: anytypeFont.config.size)\n    }\n}\n",
+      "encoding": "utf-8",
+      "sha": "83066d1ef7b082f53c52dee53a35ef23262c6ca5",
+      "display_url": "https://github.com/davidpovarsky/anytype-swift/blob/78ccffbc711affe743a96edcb79455998f8b73a6/Modules/DesignKit/Sources/DesignKit/Fonts/Config/SwiftUIFont.swift",
+      "display_title": "SwiftUIFont.swift"
+    }
+  ],
+  "publicAPIReference": {
+    "url": "https://developer.apple.com/documentation/swiftui/view/onsubmit(of:_:).md",
+    "finding": "The public signature has a default text trigger and an unlabeled escaping zero-argument Void callback, matching the candidate's method reference. No compiler or UI execution was performed.",
+    "additionalVisibilityReference": "https://forums.swift.org/t/amending-se-0444-exempt-default-implementations-of-protocol-requirements-from-member-import-visibility-rules/86127",
+    "visibilityQualification": "Historical transitive extension-member visibility is not evidence of a failed compile. Direct Assets import and target dependency state the actual source dependency explicitly."
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "schema": "pinkha-bookmark-url-first-ui-review/v1",
+  "reviewer": "Wave2 editor agent",
+  "atUTC": "2026-11-27T17:11:40.184928+00:00",
+  "status": "SOURCE_REVIEW_RECOMMENDATION_ONLY",
+  "sourceCommit": "78ccffbc711affe743a96edcb79455998f8b73a6",
+  "scope": "Original Bookmark creation view/model and shared DesignKit/input/URL implementation; candidate and model remain Interfaces-owned.",
+  "sources": [
+    {
+      "path": "source/original-bookmark-view.swift",
+      "bytes": 1813,
+      "sha256": "9cb6cc3e08f3f55510fb423e681fcdbe16c5c439667f5de80fb39d09010c93c9",
+      "gitBlob": "28cd917ef5630486027ee4fcbb741164bbd073fa",
+      "primaryURL": "https://github.com/davidpovarsky/anytype-swift/blob/78ccffbc711affe743a96edcb79455998f8b73a6/Anytype/Sources/PresentationLayer/Modules/BookmarkCreate/BookmarkCreateView.swift"
+    },
+    {
+      "path": "source/original-bookmark-model.swift",
+      "bytes": 2619,
+      "sha256": "cdf3157707be844192d687e0b2b74648e5f49e8d0a359daa8acf698dbf726b46",
+      "gitBlob": "57f1d266f78e5a1310865140b0e08491387c0f74",
+      "primaryURL": "https://github.com/davidpovarsky/anytype-swift/blob/78ccffbc711affe743a96edcb79455998f8b73a6/Anytype/Sources/PresentationLayer/Modules/BookmarkCreate/BookmarkCreateViewModel.swift"
+    },
+    {
+      "path": "source/designkit-textfield.swift",
+      "bytes": 1128,
+      "sha256": "b14b35882deea9198e2caed356c5781e5612bbb793737381f0ce3ce4041dd363",
+      "gitBlob": "f9e9917d89325ffa3abad64cb2e5aeac25af17a4",
+      "primaryURL": "https://github.com/davidpovarsky/anytype-swift/blob/78ccffbc711affe743a96edcb79455998f8b73a6/Modules/DesignKit/Sources/DesignKit/Components/AnytypeTextField.swift"
+    },
+    {
+      "path": "source/designkit-drag.swift",
+      "bytes": 616,
+      "sha256": "3ea9d2048ff0f7a242b11868698df68b1e7c274535b313be7e7a97ade30be7c1",
+      "gitBlob": "08cc1687017f65ab1cdd3ae02734f60ede0366e5",
+      "primaryURL": "https://github.com/davidpovarsky/anytype-swift/blob/78ccffbc711affe743a96edcb79455998f8b73a6/Modules/DesignKit/Sources/DesignKit/Components/DragIndicator.swift"
+    },
+    {
+      "path": "source/original-auto-textfield.swift",
+      "bytes": 1334,
+      "sha256": "1a37b7b532a0733550115b16f889450b18657d41783557f1e5721193704c2f2a",
+      "gitBlob": "fe504a45bdf54b7d020c4ef56852af23f4cef086",
+      "primaryURL": "https://github.com/davidpovarsky/anytype-swift/blob/78ccffbc711affe743a96edcb79455998f8b73a6/Anytype/Sources/PresentationLayer/Common/SwiftUI/iOS15Wrappers/AutofocusedTextField.swift"
+    },
+    {
+      "path": "source/original-anytype-url.swift",
+      "bytes": 1777,
+      "sha256": "e8163c640b7c24b09859a53b3e3ec0103c49b8212b9b30c81a1711985a6a0f40",
+      "gitBlob": "847deb114098d75f8d6dfbdf18449676fb66ba5a",
+      "primaryURL": "https://github.com/davidpovarsky/anytype-swift/blob/78ccffbc711affe743a96edcb79455998f8b73a6/Modules/AnytypeCore/AnytypeCore/Structs/AnytypeURL.swift"
+    },
+    {
+      "path": "source/ui-package.swift",
+      "bytes": 2051,
+      "sha256": "298ef94254c6d8f17a389a5ff0efd02a5c03099e9a819b50886a5d9e8b3d9854",
+      "gitBlob": "166d1db172057b25f82c4a67ddcac595cca43a59",
+      "primaryURL": "https://github.com/davidpovarsky/anytype-swift/blob/78ccffbc711affe743a96edcb79455998f8b73a6/Modules/PinkhaAnyUI/Package.swift"
+    }
+  ],
+  "recommendation": {
+    "flow": "Existing Create chooser → Bookmark → URL entry with inline Create. Only require a native Type choice when more than one genuinely eligible Bookmark Type exists.",
+    "name": "No mandatory NameForm before or after the URL form. Keep the explicit name empty unless the user separately chooses to name the object; use the existing Rename/Properties Name route after creation. Existing Library and document views already show localized Untitled for empty stored titles.",
+    "originalUI": [
+      "One original-style URL row, with 20-point horizontal padding, 48-point row, 8-point minimum field/button spacing and original 12-point bottom spacing where it fits the existing sheet host.",
+      "Use public DesignKit.AnytypeTextField with .uxBodyRegular, Text.primary, the original URL placeholder, URL keyboard, no autocorrection, no capitalization and Done submission; inline Loc.create with existing tertiary/accent disabled/enabled colors.",
+      "Use local FocusState to reproduce the existing app-only AutofocusedTextField behavior; no new shared focus component or source change is required.",
+      "Reuse the current owned creation sheet/navigation/cancel path. A DragIndicator belongs at the sheet boundary; do not add a duplicate indicator or sheet merely for the optional name."
+    ],
+    "validation": [
+      "Reuse the actual public AnytypeURL parser and original Loc.Set.Bookmark.Error.message. Keep invalid input in the same URL form.",
+      "Keep empty/loading submission guards; both Return and inline Create must use the same guarded submission path.",
+      "Do not fabricate fetched metadata, page title, preview or a URL-derived stored Name. Native metadata fetch/preview and mounted readback are separate unresolved capabilities."
+    ],
+    "dependencyAndAccessibilityNotes": [
+      "AnytypeURL is in AnytypeCore. The reviewed PinkhaAnyUI Package.swift has no direct AnytypeCore product dependency; the candidate must resolve its actual module dependency/import rather than copy the parser.",
+      "AnytypeTextField currently provides a generic literal TextField accessibility label; give this URL use the existing localized placeholder label and a stable identifier without modifying the shared component."
+    ]
+  },
+  "sourceFindings": [
+    "The original BookmarkCreateView has no Name field or Name screen; it displays only the URL field and Create action.",
+    "The original creation model validates with AnytypeURL before beginning its async operation and prevents empty/busy duplicate submission.",
+    "AnytypeTextField and DragIndicator have public initializers. The app-only AutofocusedTextField wraps AnytypeTextField with private FocusState and a focus task.",
+    "The native hierarchy creation plan permits an empty title and the existing Native Library/document views already render its localized Untitled fallback."
+  ],
+  "limits": {
+    "candidateReviewed": false,
+    "candidateSourceEdited": false,
+    "modelOrPropertyOwnerEdited": false,
+    "buildOrTestsOrHostCalls": false,
+    "runtimeOrAccessibilityAcceptance": false,
+    "remainingReview": "Review the frozen Interfaces candidate for concrete SwiftUI lifecycle, module, validation and original-style behavior before source publication."
+  }
+}
