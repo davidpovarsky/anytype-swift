@@ -201,6 +201,58 @@ class ReceiptAdmissionTests(unittest.TestCase):
         reference = self.save("contract.json", self.contract)
         return gate.admit(reference["path"], reference["sha256"])
 
+    def include_hosted_source_fixture(self, name):
+        # Bind this fixture through the same source/root/actual-compiler records
+        # as ordinary native tests; only the reviewed path admission may differ.
+        path = self.source / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("original hosted package source fixture: " + name)
+        original = {"bytes": path.stat().st_size, "sha256": gate.sha256(path)}
+        observed = json.loads(Path(self.contract["source"]["before"]["path"]).read_bytes())
+        observed["files"][name] = original
+        for side in ("before", "after"):
+            reference = self.save("source-" + side + ".json", observed)
+            self.contract["source"][side] = reference
+            self.build["source" + side.title() + "SHA256"] = reference["sha256"]
+
+        proof = self.proofs["native"]
+        proof["requiredSources"].append({"repositoryPath": name, "compiledPath": str(path), **original})
+        filelist = proof["actualCompilerFileLists"][0]
+        retained = Path(filelist["path"])
+        retained.write_text(retained.read_text() + str(path) + "\n")
+        filelist["sha256"] = gate.sha256(retained)
+        filelist["requiredSourcePaths"].append(str(path))
+        root = gate.json_ref(self.build["controlAdmission"]["admission"])
+        root["selectedNativeTestSources"].append(name)
+        self.build["controlAdmission"]["admission"] = self.save("root-admission.json", root)
+        self.refresh_proof("native")
+
+    def test_reviewed_original_package_files_admit_only_as_actual_hosted_inputs(self):
+        for name in sorted(gate.HOSTED_PACKAGE_TEST_SOURCES):
+            self.include_hosted_source_fixture(name)
+        _, proof, _ = self.admit()
+        self.assertEqual(proof["testMethodsExecuted"], 0)
+        actual = self.proofs["native"]["actualCompilerFileLists"][0]
+        self.assertEqual(actual["compilerInvocation"]["moduleName"], "AnytypeTests")
+        self.assertTrue(gate.HOSTED_PACKAGE_TEST_SOURCES.issubset(
+            row["repositoryPath"] for row in self.proofs["native"]["requiredSources"]))
+
+    def test_unreviewed_package_source_cannot_enter_hosted_target(self):
+        self.include_hosted_source_fixture(
+            "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/UnreviewedHostedFixture.swift")
+        with self.assertRaisesRegex(ValueError, "An unreviewed source"):
+            self.admit()
+
+    def test_reviewed_hosted_source_still_requires_root_selected_source_binding(self):
+        name = sorted(gate.HOSTED_PACKAGE_TEST_SOURCES)[0]
+        self.include_hosted_source_fixture(name)
+        root = gate.json_ref(self.build["controlAdmission"]["admission"])
+        root["selectedNativeTestSources"].remove(name)
+        self.build["controlAdmission"]["admission"] = self.save("root-admission.json", root)
+        self.refresh_build()
+        with self.assertRaisesRegex(ValueError, "root-selected native test source"):
+            self.admit()
+
     def test_matching_original_source_inputs_and_products_admit_without_claiming_tests(self):
         _, proof, _ = self.admit()
         self.assertEqual(proof["status"], "ADMITTED_ORIGINAL_BUILD_NOT_APPLICATION_ACCEPTANCE")

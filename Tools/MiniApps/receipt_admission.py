@@ -25,6 +25,14 @@ REQUIRED_PRODUCT_SOURCES = {
     "AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift",
     "PinkhaStage1Acceptance/Tests/MiniAppsNativeAcceptanceUITests.swift",
 }
+# Original package test files explicitly referenced by the existing hosted
+# AnytypeTests target. Their package runner is not built or claimed by this gate.
+HOSTED_PACKAGE_TEST_SOURCES = frozenset({
+    "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeDocumentPublicationTests.swift",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyLibrarySearchPublicationTests.swift",
+})
 REQUIRED_CONTROLS = {
     "Tools/MiniApps/receipt_admission.py", "Tools/MiniApps/run_receipt_acceptance.py",
     "Tools/MiniApps/file_acceptance.py", "Tools/MiniApps/isolation_acceptance.py",
@@ -285,8 +293,10 @@ def verify_compilation(contract, build, observed):
         if label == "ui":
             require(set(names) == expected, "UI compiler proof does not cover every copied Swift source")
         else:
-            require(all(name.startswith("AnyTypeTests/") and name.endswith(".swift") for name in names),
-                    "A foreign source was admitted as a native test compiler input")
+            require(all(name.endswith(".swift") and
+                        (name.startswith("AnyTypeTests/") or name in HOSTED_PACKAGE_TEST_SOURCES)
+                        for name in names),
+                    "An unreviewed source was admitted as a hosted native test compiler input")
         compiled_paths = set()
         for row in rows:
             name = row["repositoryPath"]
