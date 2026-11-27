@@ -1,0 +1,339 @@
+{
+  "actualOSDenial": {
+    "NoNewPrivs": 1,
+    "Seccomp": 2,
+    "helperSHA256": "6eaca8b9602f9c1c7fce4b8a176759ad1a10577c0ee74eddb3264992976e86b1"
+  },
+  "actualWholeSpaceAcceptance": false,
+  "builds": 0,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Tools/AnyEngineValidation/native_source_preservation/linux_outbound_denial.py",
+    "--exec",
+    "/var/lib/pinkha-root-t2-linux-20261126/build1/current/any",
+    "run",
+    "--config",
+    "/var/lib/pinkha-w1-engine-contracts-20261127/markdown-body-native1/offline-native-config.yml",
+    "--data-dir",
+    "/var/lib/pinkha-w1-engine-contracts-20261127/markdown-body-native1/private-account-copy",
+    "--addr",
+    "127.0.0.1:51591"
+  ],
+  "controllerSHA256": "6d9742b1c8f939a5752d847026509f7b1e577464ee77a09f4dee2dfe27f0a65a",
+  "exitCode": 0,
+  "groupAbsent": true,
+  "logSHA256": "1973351e7b4fdd93292a9eed3871ea12e77f1ac58358ddd3bb55c5ab7500f0b7",
+  "nativeAfter": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "nativeBefore": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "nativePID": 3052416,
+  "observations": [
+    {
+      "bytes": 148,
+      "keys": [
+        "id",
+        "techSpaceId"
+      ],
+      "name": "account",
+      "path": "/v1/account",
+      "responseSHA256": "6232317bc5ce67307a444767c43f6fb394ccbbe8fe895061fb496b43d7fd267a",
+      "status": 200
+    },
+    {
+      "bytes": 103,
+      "keys": [
+        "identity",
+        "permission",
+        "status"
+      ],
+      "name": "member",
+      "path": "/v1/spaces/bafyreicbctkf6ogqxta4pn2lfoijoesvmrtub2spj2ei2wbagywgcqau2y.11113vcq7lykz/members/me",
+      "responseSHA256": "b28bdbec6e0dbc352f97da46a339f294a354098431dde2b53a7b96b641c1321d",
+      "status": 200
+    },
+    {
+      "bytes": 233,
+      "keys": [
+        "globalPeers",
+        "lastSyncedAt",
+        "localPeers",
+        "networkPeers",
+        "p2p",
+        "spaceId",
+        "state",
+        "synced",
+        "total"
+      ],
+      "name": "sync",
+      "path": "/v1/spaces/bafyreicbctkf6ogqxta4pn2lfoijoesvmrtub2spj2ei2wbagywgcqau2y.11113vcq7lykz/sync-status",
+      "responseSHA256": "851e9566c9c0cb3aaa6a4bcce213d47c596562371fbe0711081ebf762909f8ce",
+      "status": 200
+    },
+    {
+      "bytes": 1515,
+      "contract": "pinkha-torah-native-v1",
+      "keys": [
+        "allowedTargetTypes",
+        "associationBlockDataset",
+        "authorizedOperationReadContract",
+        "authorizedOperationReadMaxBytes",
+        "authorizedOperationReadMaxVariants",
+        "bundleId",
+        "conditionalBlockCurrentWriterFence",
+        "conditionalBlockPatch",
+        "conditionalMembershipSet",
+        "conditionalPropertiesApplySeq",
+        "conditionalPropertiesNoop",
+        "conditionalPropertiesSet",
+        "contract",
+        "currentACLCommitFence",
+        "currentWriterBlockCreate",
+        "currentWriterObjectCreate",
+        "dataVersion",
+        "dataset",
+        "documentTypePolicy",
+        "mobileManagedTokenGateway",
+        "module",
+        "nativeAuthorizedOperationRead",
+        "nativeClaimsMaxBytes",
+        "nativeClaimsMaxRecords",
+        "nativeClaimsSnapshot",
+        "nativeClaimsWatch",
+        "nativeDocumentMembership",
+        "nativeDocumentProperties",
+        "nativeDocumentTypePolicy",
+        "nativeIndexedSourceQuery",
+        "nativeObjectClaimsSnapshot",
+        "nativeObjectClaimsWatch",
+        "nativeOrderedOperationCollision",
+        "nativePropertyPresentation",
+        "nativeRelatedVersion",
+        "nativeSemanticPayload",
+        "nativeSignedClaims",
+        "propertyPresentationCollection",
+        "propertyPresentationHiddenProperty",
+        "propertyPresentationMaxKeyBytes",
+        "propertyPresentationMaxKeys",
+        "spaceWideOperationConflictDomain",
+        "targetTreeCommitFence"
+      ],
+      "name": "capabilities",
+      "path": "/v1/pinkha/capabilities",
+      "responseSHA256": "cd62d3665f36dd7e8ab75c9bfee515ee8158f642255ae1736486f0e2557751c2",
+      "status": 200
+    },
+    {
+      "bytes": 255,
+      "keys": [
+        "bundle",
+        "synced"
+      ],
+      "name": "bundle",
+      "path": "/v1/spaces/bafyreicbctkf6ogqxta4pn2lfoijoesvmrtub2spj2ei2wbagywgcqau2y.11113vcq7lykz/bundles/pinkha%2Ftorah-native%2Fv1",
+      "responseSHA256": "d806d1db6afb6d025c2522915955fe6f5ded1dab31501e27043a31949d9060ee",
+      "status": 200
+    },
+    {
+      "bytes": 7209,
+      "contract": "pinkha-torah-native-v1",
+      "keys": [
+        "complete",
+        "contract",
+        "dataset",
+        "limit",
+        "readiness",
+        "records",
+        "rootObjectId",
+        "spaceId"
+      ],
+      "name": "space-claims",
+      "path": "/v1/spaces/bafyreicbctkf6ogqxta4pn2lfoijoesvmrtub2spj2ei2wbagywgcqau2y.11113vcq7lykz/pinkha/claims?limit=10000",
+      "readiness": {
+        "generation": "bb41be130159949b279e9852a521f67ea4af827cbee482a705da4a9cb24fcbb6",
+        "state": "ready-local-snapshot",
+        "version": 1
+      },
+      "recordsCount": 3,
+      "responseSHA256": "9717bbedea05eda5c366dc3d77730aab0ae75153642b63fc2c01c4f95d8a5971",
+      "status": 200
+    },
+    {
+      "bytes": 7361,
+      "contract": "pinkha-torah-native-v1",
+      "keys": [
+        "complete",
+        "contract",
+        "dataset",
+        "limit",
+        "reachableClaimBlockIds",
+        "readiness",
+        "records",
+        "rootObjectId",
+        "scope",
+        "spaceId",
+        "targetObjectId",
+        "version"
+      ],
+      "name": "target-claims",
+      "path": "/v1/spaces/bafyreicbctkf6ogqxta4pn2lfoijoesvmrtub2spj2ei2wbagywgcqau2y.11113vcq7lykz/pinkha/objects/bafyreigcv3i3omngn7eivsxmumj2ihui2kyke5v7aivrytxq6anwbag3e4/claims?limit=10000",
+      "readiness": {
+        "generation": "dc44dd3027d1c6b83c27186e5a0444263655f1d05f27a64d7e36ef24344fa0dc",
+        "state": "ready-local-snapshot",
+        "version": 1
+      },
+      "recordsCount": 3,
+      "responseSHA256": "8cc51bc001f8c0bc3e0fedf13578d1983f84eb22863e4a2d6214628dd6743107",
+      "scope": "object-logical-closure",
+      "status": 200,
+      "version": 1
+    },
+    {
+      "bytes": 330,
+      "conflictingTargetsCount": 0,
+      "contract": "pinkha-torah-native-v1",
+      "coverage": "complete",
+      "keys": [
+        "conflictingTargets",
+        "contract",
+        "coverage",
+        "identity",
+        "readiness",
+        "targets",
+        "unsupportedClaimsPresent",
+        "version"
+      ],
+      "name": "removed-genesis",
+      "path": "/v1/spaces/bafyreicbctkf6ogqxta4pn2lfoijoesvmrtub2spj2ei2wbagywgcqau2y.11113vcq7lykz/pinkha/related?identity=torah1%7C3%3Aref%7C7%3Asefaria%7C11%3AGenesis+1%3A1&limit=1000",
+      "readiness": {
+        "generation": "a2abdce9406f2b6562b746af518b616736fd6b81a617abb29ac545d57c797032",
+        "state": "ready-local-snapshot",
+        "version": 1
+      },
+      "responseSHA256": "22f09053f0194e1495f6f3f0c61e4cc04e70676d95d19a7d6f1b52ceb5966153",
+      "status": 200,
+      "targetsCount": 0,
+      "unsupportedClaimsPresent": false,
+      "version": 1
+    },
+    {
+      "bytes": 330,
+      "conflictingTargetsCount": 0,
+      "contract": "pinkha-torah-native-v1",
+      "coverage": "complete",
+      "keys": [
+        "conflictingTargets",
+        "contract",
+        "coverage",
+        "identity",
+        "readiness",
+        "targets",
+        "unsupportedClaimsPresent",
+        "version"
+      ],
+      "name": "removed-genesis-repeat",
+      "path": "/v1/spaces/bafyreicbctkf6ogqxta4pn2lfoijoesvmrtub2spj2ei2wbagywgcqau2y.11113vcq7lykz/pinkha/related?identity=torah1%7C3%3Aref%7C7%3Asefaria%7C11%3AGenesis+1%3A1&limit=1000",
+      "readiness": {
+        "generation": "a2abdce9406f2b6562b746af518b616736fd6b81a617abb29ac545d57c797032",
+        "state": "ready-local-snapshot",
+        "version": 1
+      },
+      "responseSHA256": "22f09053f0194e1495f6f3f0c61e4cc04e70676d95d19a7d6f1b52ceb5966153",
+      "status": 200,
+      "targetsCount": 0,
+      "unsupportedClaimsPresent": false,
+      "version": 1
+    },
+    {
+      "bytes": 689,
+      "conflictingTargetsCount": 0,
+      "contract": "pinkha-torah-native-v1",
+      "coverage": "complete",
+      "keys": [
+        "conflictingTargets",
+        "contract",
+        "coverage",
+        "identity",
+        "readiness",
+        "targets",
+        "unsupportedClaimsPresent",
+        "version"
+      ],
+      "name": "retained-exodus",
+      "path": "/v1/spaces/bafyreicbctkf6ogqxta4pn2lfoijoesvmrtub2spj2ei2wbagywgcqau2y.11113vcq7lykz/pinkha/related?identity=torah1%7C3%3Aref%7C7%3Asefaria%7C10%3AExodus+1%3A1&limit=1000",
+      "readiness": {
+        "generation": "a2abdce9406f2b6562b746af518b616736fd6b81a617abb29ac545d57c797032",
+        "state": "ready-local-snapshot",
+        "version": 1
+      },
+      "responseSHA256": "41d8d2d32ef7db931b66e8609096493294a4b7b071b14cda70ff30a9c64212a6",
+      "status": 200,
+      "targetsCount": 1,
+      "unsupportedClaimsPresent": false,
+      "version": 1
+    },
+    {
+      "bytes": 689,
+      "conflictingTargetsCount": 0,
+      "contract": "pinkha-torah-native-v1",
+      "coverage": "complete",
+      "keys": [
+        "conflictingTargets",
+        "contract",
+        "coverage",
+        "identity",
+        "readiness",
+        "targets",
+        "unsupportedClaimsPresent",
+        "version"
+      ],
+      "name": "retained-exodus-repeat",
+      "path": "/v1/spaces/bafyreicbctkf6ogqxta4pn2lfoijoesvmrtub2spj2ei2wbagywgcqau2y.11113vcq7lykz/pinkha/related?identity=torah1%7C3%3Aref%7C7%3Asefaria%7C10%3AExodus+1%3A1&limit=1000",
+      "readiness": {
+        "generation": "a2abdce9406f2b6562b746af518b616736fd6b81a617abb29ac545d57c797032",
+        "state": "ready-local-snapshot",
+        "version": 1
+      },
+      "responseSHA256": "41d8d2d32ef7db931b66e8609096493294a4b7b071b14cda70ff30a9c64212a6",
+      "status": 200,
+      "targetsCount": 1,
+      "unsupportedClaimsPresent": false,
+      "version": 1
+    },
+    {
+      "bytes": 88,
+      "keys": [
+        "error"
+      ],
+      "name": "invalid-limit",
+      "path": "/v1/spaces/bafyreicbctkf6ogqxta4pn2lfoijoesvmrtub2spj2ei2wbagywgcqau2y.11113vcq7lykz/pinkha/related?identity=torah1%7C3%3Aref%7C7%3Asefaria%7C10%3AExodus+1%3A1&limit=0",
+      "responseSHA256": "5f2db94130fc82d3778628f0fc4386aef6deac8006581e34c822729e020d9d50",
+      "status": 400
+    }
+  ],
+  "readOnlyHTTP": true,
+  "seconds": 4.395,
+  "sourceUnchanged": true,
+  "started": 1795750273.3088095,
+  "status": "READ_ONLY_DISCOVERY_COMPLETE_NOT_ACCEPTANCE",
+  "writes": 0
+}
