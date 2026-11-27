@@ -1,0 +1,79 @@
+{
+  "schema": "pinkha-wave2-styled-ui-fixture-semantics-source-review-v1",
+  "reviewer": "/root/torah_continue",
+  "createdAt": "2026-11-27T06:04:01.273060+00:00",
+  "status": "ONE_NARROW_FALSE_PASS_FINDING_PENDING_OWNER_CORRECTION",
+  "scope": "Finite fixture/menu/style/empty-field/cold/live-size assertion source review; root independently reviews observer mechanics. External controller is not implemented or admitted by this review.",
+  "files": [
+    {
+      "path": "interfaces_work/native-styled-ui/native_styled_block_addition.swift",
+      "sha256": "bf1abf46802f217b0efe973812824326d2d64aecf4234a1731cc19e9c34432b2"
+    },
+    {
+      "path": "interfaces_work/native-styled-ui/patch/NativeLaunchTests.swift",
+      "sha256": "321f87924bc430ec77f6f960ee6304ebbdec3c01e1aff2a9df4dac59de9cb432"
+    },
+    {
+      "path": "interfaces_work/native-styled-ui/AnySemanticAnchorObservation.swift.diff",
+      "sha256": "1fc74941bc4470293a42ac4f37e270c96339b335f0522ea9fdb90351dae800e8"
+    },
+    {
+      "path": "interfaces_work/native-styled-ui/AnyNativeEditor.swift.diff",
+      "sha256": "d1e9926117d23e975141fabaa7a71c2e6d8b3aec2dae3082504b2c0644101c19"
+    },
+    {
+      "path": "interfaces_work/native-styled-ui/source/PinkhaWritingDirectionPolicy.swift",
+      "sha256": "e9df376edef7276bf45706d140617901602fb2b8b94670daf87762680ccab67a"
+    },
+    {
+      "path": "interfaces_work/native-styled-rtl/patch/AnyNativeBlockCreationMenu.swift",
+      "sha256": "4e76920ba0d9bc24aba432c681c771ed90b77bda1497bde3f70f1ccc6401a512"
+    },
+    {
+      "path": "interfaces_work/native-styled-rtl/patch/AnyNativeTextBlockKind.swift",
+      "sha256": "61f1fe2d2d2a282dd846279db9be519c00628bf6d2b2f4771bb52350ec889275"
+    },
+    {
+      "path": "interfaces_work/native-typography/source/AnytypeFontConfig.swift",
+      "sha256": "70c67569888bc1cb5b89ecbd499e0b86077ea115bf2877d58c07a2384ddd8f27"
+    },
+    {
+      "path": "interfaces_work/native-typography/source/Fonts.swift",
+      "sha256": "14a5b94f5ca6df53aaefc5daba480941045cb86e609d809df90fb9df46027b4b"
+    },
+    {
+      "path": "interfaces_work/native-typography/source/TextContent+Font.swift",
+      "sha256": "b001239ea8113c96a0a315af1647c511f51fc4b76cfe67372237199b4fe02d58"
+    }
+  ],
+  "preservation": {
+    "prefixBytes": 237631,
+    "prefixSHA256": "5d3462b25dd64423cf33fc1243b2d734acea55011a9e5da4c66004022685958a",
+    "suffixExactlyAppended": true,
+    "publishedOriginalPrefixSHA256": "5d3462b25dd64423cf33fc1243b2d734acea55011a9e5da4c66004022685958a"
+  },
+  "finding": {
+    "id": "expanded-font-runs",
+    "function": "fontsAreLarger(_:than:)",
+    "detail": "Expanded matchesOne(nominal:false) requires each run to have the correct face/traits and a positive size, while fontsAreLarger compares only primaryFont. A partially refreshed heading/code with an enlarged first run and a later unchanged-size run could satisfy the current expanded assertion.",
+    "requestedNarrowCorrection": "Require every expanded font run to exceed the already-qualified nominal baseline size for that block; use typingFont for the empty paragraph. Existing complete UTF16 coverage/style checks remain.",
+    "owner": "/root/interfaces",
+    "sourceModifiedByReviewer": false
+  },
+  "otherObservations": [
+    "Nine menu labels and native type/level/ordered/number/checked fields agree with the separately published catalog; the representative UIKit before-menu insertion retains exact order and visible geometry checks.",
+    "The original writing policy resolves natural alignment by application language, with explicit RTL applied separately. Empty-field assertions require zero native/rendered text and actual mounted typing attributes.",
+    "Nine small documents retain the original complete-visible snapshot requirement and 24KiB output limit; no partial-render acceptance is introduced.",
+    "Cold readback retains native object/block identity, complete style JSON and text/markers and requires a different App PID within the owned account/Space.",
+    "Live-size readback requires one App PID, native generation/version, Space/object/blocks/text and selection to remain identical. Actual mounted category and font observations remain mandatory despite the controller response.",
+    "No additional concrete blocker found in the reviewed fixture/semantics scope. App/runner source admission, simulator settings restoration, raw attachment qualification and visual review remain explicit future requirements."
+  ],
+  "execution": {
+    "controlsRunByReviewer": 0,
+    "SwiftCompilations": 0,
+    "XCTestInvocations": 0,
+    "NativeCalls": 0,
+    "MacCalls": 0,
+    "UIInvocations": 0
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "afterSHA256": "b141d6ba3f78bcddc4b35cbe0a7afb107b09ab38c067b2222ccf14787b699b48",
+  "beforeSHA256": "c063e18d8cda3175aa61c2119f4bbaa33b8939e6f335609bc8ae15bba09fc8ff",
+  "changes": [
+    {
+      "new": "        let typingAttributes: [NSAttributedString.Key: Any]\n        let contentSizeCategory: UIContentSizeCategory\n",
+      "newRange": [
+        17,
+        19
+      ],
+      "old": "",
+      "oldRange": [
+        17,
+        17
+      ],
+      "operation": "insert"
+    },
+    {
+      "new": "\n    private var observesTextPresentation: Bool {\n        #if targetEnvironment(simulator)\n        let process = ProcessInfo.processInfo\n        return process.arguments.contains(\"--native-ui-tests\")\n            && process.environment[\"PINKHA_NATIVE_TYPOGRAPHY_OBSERVATION\"] == \"1\"\n        #else\n        return false\n        #endif\n    }\n",
+      "newRange": [
+        29,
+        39
+      ],
+      "old": "",
+      "oldRange": [
+        27,
+        27
+      ],
+      "operation": "insert"
+    },
+    {
+      "new": "                if observesTextPresentation {\n                    blocks[blocks.count - 1][\"textPresentation\"] = try Self.textPresentation(block, actual: actual)\n                }\n",
+      "newRange": [
+        138,
+        141
+      ],
+      "old": "",
+      "oldRange": [
+        126,
+        126
+      ],
+      "operation": "insert"
+    },
+    {
+      "new": "    /// Read existing snapshot values and mounted UIKit attributes only. These\n    /// observations do not select a font, normalize native style, or write data.\n    private static func textPresentation(_ block: AnyEditorBlock, actual: RenderedBlock) throws -> [String: Any] {\n        let encoder = JSONEncoder()\n        encoder.outputFormatting = [.sortedKeys]\n        let style = try encoder.encode(block.native[\"style\"])\n        guard style.count <= 8_192 else { throw TextPresentationObservationError.bounds }\n        var result: [String: Any] = [\n            \"schema\": \"native-mounted-text-presentation/v1\",\n            \"nativeType\": block.type,\n            \"nativeStylePresent\": block.native[\"style\"] != nil,\n            \"nativeStyleJSON\": String(decoding: style, as: UTF8.self),\n            \"contentSizeCategory\": actual.contentSizeCategory.rawValue,\n            \"fontReadOrigin\": \"mounted-UITextView-attributedText-and-typingAttributes\",\n            \"nativeReadOrigin\": \"AnyDocumentPresentation.read.snapshot.blocks\",\n            \"assignedUIFontOnly\": true\n        ]\n        var fonts: [[String: Any]] = []\n        var exceededBounds = false\n        actual.text.enumerateAttributes(in: NSRange(location: 0, length: actual.text.length)) { attributes, range, stop in\n            guard fonts.count < 128 else { exceededBounds = true; stop.pointee = true; return }\n            var row: [String: Any] = [\"location\": range.location, \"length\": range.length]\n            if let value = attributes[.font] as? UIFont { row[\"font\"] = Self.font(value) }\n            if let value = attributes[.paragraphStyle] as? NSParagraphStyle { row[\"paragraph\"] = Self.paragraph(value) }\n            fonts.append(row)\n        }\n        guard !exceededBounds else { throw TextPresentationObservationError.bounds }\n        // Existing whole-observation 24 KiB and all-visible guards remain the\n        // authority. This opt-in never weakens them to accept partial rendering.\n        result[\"fontRuns\"] = fonts\n        if let value = actual.typingAttributes[.font] as? UIFont { result[\"typingFont\"] = Self.font(value) }\n        if let value = actual.typingAttributes[.paragraphStyle] as? NSParagraphStyle {\n            result[\"typingParagraph\"] = Self.paragraph(value)\n        }\n        return result\n    }\n\n    private enum TextPresentationObservationError: Error { case bounds }\n\n    private static func font(_ value: UIFont) -> [String: Any] {\n        [\"name\": value.fontName, \"family\": value.familyName, \"pointSize\": value.pointSize,\n         \"bold\": value.fontDescriptor.symbolicTraits.contains(.traitBold),\n         \"italic\": value.fontDescriptor.symbolicTraits.contains(.traitItalic)]\n    }\n\n    private static func paragraph(_ value: NSParagraphStyle) -> [String: Any] {\n        [\"baseWritingDirection\": value.baseWritingDirection.rawValue, \"alignment\": value.alignment.rawValue]\n    }\n\n",
+      "newRange": [
+        179,
+        228
+      ],
+      "old": "",
+      "oldRange": [
+        164,
+        164
+      ],
+      "operation": "insert"
+    }
+  ],
+  "file": "AnySemanticAnchorObservation.swift",
+  "status": "EXACT_ORIGINAL_BYTES_RESTORED"
+}

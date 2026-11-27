@@ -319,7 +319,9 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
             guard let cell = cell as? AnyNativeBlockCell, let id = cell.textView.blockID else { return nil }
             return .init(id: id, text: NSAttributedString(attributedString: cell.textView.attributedText),
                          selection: cell.textView.selectedRange,
-                         isFirstResponder: cell.textView.isFirstResponder)
+                         isFirstResponder: cell.textView.isFirstResponder,
+                         typingAttributes: cell.textView.typingAttributes,
+                         contentSizeCategory: cell.textView.traitCollection.preferredContentSizeCategory)
         }
         observer.update(presentation, rendered: rendered)
         #endif

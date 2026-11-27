@@ -1,0 +1,535 @@
+
+// BEGIN_NATIVE_STYLED_BLOCK_ACCEPTANCE_FUTURE_V1
+import UIKit
+
+extension NativeLaunchTests {
+    /// Each small document fits the original complete-visible-snapshot observer
+    /// on iPhone as well as iPad. One account/Space and one cold reopen serve all
+    /// nine actual menu actions; this does not repeat the accepted drag journey.
+    @objc func testTypedBlockMenusPersistAllNineKindsAndColdReopen() throws {
+        executionTimeAllowance = 1_800
+        let context = try styledContext(method: "testTypedBlockMenusPersistAllNineKindsAndColdReopen")
+        let app = styledApplication(context)
+        var reachedEnd = false
+        defer { finishAccessibilityInvocation(app, context: context, reachedEnd: reachedEnd) }
+        app.launch()
+        let suffix = String(context.ownedScope.uuidString.prefix(8))
+        let spaceName = "Styled Space " + suffix
+        createOwnedWorkspace(app, spaceName: spaceName)
+        var documents: [NativeStyledDocument] = []
+        var firstPID: Int?
+        var spaceHash: String?
+        for (index, choice) in NativeStyledChoice.allCases.enumerated() {
+            let title = "Styled " + String(index + 1) + " " + suffix
+            try createNamedItemWithObservedTransition(app, action: "any-native-new-document", title: title)
+            let block = try createStyledBlock(app, context: context, choice: choice,
+                existing: [], body: "אב7", phase: "choice-" + choice.rawValue)
+            let read = try styledReadback(app, phase: "choice-" + choice.rawValue + "-saved", count: 1) {
+                Self.matches($0, blocks: [block], appLanguage: context.appLanguage,
+                             category: UIContentSizeCategory.large.rawValue, nominal: true)
+            }
+            if let firstPID { XCTAssertEqual(read.value.original.pid, firstPID) }
+            else { firstPID = read.value.original.pid }
+            if let spaceHash { XCTAssertEqual(read.value.original.spaceSHA256, spaceHash) }
+            else { spaceHash = read.value.original.spaceSHA256 }
+            try captureStyled(app, context: context, read: read, phase: "choice-" + choice.rawValue + "-saved")
+            returnToStyledLibrary(app)
+            let row = try styledLibraryRow(app, title: title)
+            let objectID = String(row.identifier.dropFirst("any-native-hierarchy-row-".count))
+            XCTAssertEqual(read.value.original.objectSHA256, Self.semanticHash(objectID))
+            documents.append(.init(title: title, rowIdentifier: row.identifier,
+                                   objectSHA256: read.value.original.objectSHA256, blocks: [block]))
+        }
+
+        // Exercise the separate original UIKit menu surface once. Its complete
+        // nine-choice menu is checked before the representative insertion.
+        var first = try XCTUnwrap(documents.first)
+        tapWhenEnabled(app.buttons[first.rowIdentifier], timeout: 60)
+        let original = try XCTUnwrap(first.blocks.first)
+        let inserted = try createStyledBlock(app, context: context, choice: .heading3,
+            existing: first.blocks, body: "ת8", before: original.identifier, phase: "before-menu")
+        first.blocks.insert(inserted, at: 0)
+        let before = try styledReadback(app, phase: "before-menu-saved", count: 2) {
+            $0.original.objectSHA256 == first.objectSHA256 &&
+            Self.matches($0, blocks: first.blocks, appLanguage: context.appLanguage,
+                         category: UIContentSizeCategory.large.rawValue, nominal: true)
+        }
+        XCTAssertEqual(before.value.original.blocks.map(\.blockSHA256), first.blocks.map { Self.blockHash($0.identifier) })
+        XCTAssertLessThan(app.textViews[inserted.identifier].frame.minY, app.textViews[original.identifier].frame.minY)
+        try captureStyled(app, context: context, read: before, phase: "before-menu-saved")
+        documents[0] = first
+
+        // This is the sole cold-reopen phase for the complete catalog.
+        let originalPID = try XCTUnwrap(firstPID)
+        let originalSpaceHash = try XCTUnwrap(spaceHash)
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        for document in documents {
+            tapWhenEnabled(app.buttons[document.rowIdentifier], timeout: 60)
+            let lastBlock = try XCTUnwrap(document.blocks.last)
+            let read = try styledReadback(app, phase: "cold-" + lastBlock.choice.rawValue,
+                                         count: document.blocks.count) {
+                $0.original.pid != originalPID && $0.original.spaceSHA256 == originalSpaceHash &&
+                $0.original.objectSHA256 == document.objectSHA256 &&
+                Self.matches($0, blocks: document.blocks, appLanguage: context.appLanguage,
+                             category: UIContentSizeCategory.large.rawValue, nominal: true)
+            }
+            for block in document.blocks { try requireStyledMarker(app, block: block) }
+            try captureStyled(app, context: context, read: read,
+                phase: "cold-" + lastBlock.choice.rawValue,
+                extra: ["hierarchyRowIdentifier": document.rowIdentifier,
+                        "objectIDFromOriginalHierarchy": String(document.rowIdentifier.dropFirst("any-native-hierarchy-row-".count))])
+            returnToStyledLibrary(app)
+        }
+        XCTAssertEqual(documents.count, 9)
+        reachedEnd = true
+    }
+
+    /// The existing, sole NativeUI controller must change the owned simulator's
+    /// setting in response to the private runner rendezvous. No launch override,
+    /// settings UI assumption, app hook, or native mutation simulates this change.
+    @objc func testNativeStyledTypographyRefreshesLiveAtAccessibilitySize() throws {
+        executionTimeAllowance = 900
+        let context = try styledContext(method: "testNativeStyledTypographyRefreshesLiveAtAccessibilitySize")
+        let app = styledApplication(context)
+        var reachedEnd = false
+        defer { finishAccessibilityInvocation(app, context: context, reachedEnd: reachedEnd) }
+        app.launch()
+        let suffix = String(context.ownedScope.uuidString.prefix(8))
+        createOwnedWorkspace(app, spaceName: "Live Type Space " + suffix)
+        try createNamedItemWithObservedTransition(app, action: "any-native-new-document",
+                                                 title: "Live Type " + suffix)
+        var blocks: [NativeStyledBlock] = []
+        for (choice, body) in [(NativeStyledChoice.heading1, "אב"), (.code, "A7"), (.paragraph, "")] {
+            blocks.append(try createStyledBlock(app, context: context, choice: choice,
+                existing: blocks, body: body, phase: "live-" + choice.rawValue))
+        }
+        let baseline = try styledReadback(app, phase: "live-large-before", count: 3) {
+            $0.original.blocks.allSatisfy { !$0.isFirstResponder } &&
+            Self.matches($0, blocks: blocks, appLanguage: context.appLanguage,
+                         category: UIContentSizeCategory.large.rawValue, nominal: true)
+        }
+        try captureStyled(app, context: context, read: baseline, phase: "live-large-before")
+        let rendezvous = try NativeTypographyRendezvous(context: context)
+        let expandedReceipt = try rendezvous.request("accessibility-extra-extra-extra-large", phase: "expanded",
+                                                     before: baseline)
+        let expanded = try styledReadback(app, phase: "live-accessibility", count: 3) {
+            Self.sameNativeAndSelection($0, baseline.value) &&
+            Self.matches($0, blocks: blocks, appLanguage: context.appLanguage,
+                         category: UIContentSizeCategory.accessibilityExtraExtraExtraLarge.rawValue,
+                         nominal: false) && Self.fontsAreLarger($0, than: baseline.value)
+        }
+        try captureStyled(app, context: context, read: expanded, phase: "live-accessibility",
+                          extra: ["controllerReadback": expandedReceipt])
+        let restoredReceipt = try rendezvous.request("large", phase: "restored", before: expanded)
+        let restored = try styledReadback(app, phase: "live-large-restored", count: 3) {
+            Self.sameNativeAndSelection($0, baseline.value) &&
+            Self.matches($0, blocks: blocks, appLanguage: context.appLanguage,
+                         category: UIContentSizeCategory.large.rawValue, nominal: true) &&
+            Self.fontsEqual($0, baseline.value)
+        }
+        try captureStyled(app, context: context, read: restored, phase: "live-large-restored",
+                          extra: ["controllerReadback": restoredReceipt,
+                                  "baselineObservationSHA256": Self.styledHash(baseline.raw),
+                                  "baselineAppPID": baseline.value.original.pid,
+                                  "restoredAppPID": restored.value.original.pid])
+        reachedEnd = true
+    }
+
+    private func styledContext(method: String) throws -> NativeAccessibilityInvocation {
+        let context = try NativeAccessibilityInvocation.read(method: method)
+        guard context.contentSize == "large",
+              context.dictionary["appSourceCommit"] == context.dictionary["uiSourceCommit"] else {
+            throw NativeStyledFailure.invalidContext
+        }
+        return context
+    }
+
+    private func styledApplication(_ context: NativeAccessibilityInvocation) -> XCUIApplication {
+        let app = accessibilityApplication(context)
+        app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION"] = "1"
+        app.launchEnvironment["PINKHA_NATIVE_TYPOGRAPHY_OBSERVATION"] = "1"
+        return app
+    }
+
+    private func createStyledBlock(_ app: XCUIApplication, context: NativeAccessibilityInvocation,
+        choice: NativeStyledChoice, existing: [NativeStyledBlock], body: String,
+        before: String? = nil, phase: String) throws -> NativeStyledBlock {
+        if app.keyboards.firstMatch.exists { tapWhenEnabled(app.buttons["any-native-editor-done"]) }
+        if let before {
+            let blockID = String(before.dropFirst("any-native-block-".count))
+            tapWhenEnabled(app.buttons["any-native-block-menu-" + blockID])
+            tapWhenEnabled(app.buttons[context.appLanguage == "he" ? "הוספת בלוק לפני" : "Add block before"])
+        } else {
+            tapWhenEnabled(app.buttons["any-native-document-options"])
+            tapWhenEnabled(app.buttons["any-native-add-block-menu"])
+        }
+        for item in NativeStyledChoice.allCases {
+            let row = app.buttons.matching(NSPredicate(format: "label == %@", item.title(context.appLanguage)))
+            waitUntilEnabled(row.firstMatch)
+            XCTAssertEqual(row.count, 1, "The actual menu must contain exactly one of each published choice.")
+        }
+        tapWhenEnabled(app.buttons.matching(NSPredicate(format: "label == %@", choice.title(context.appLanguage))).firstMatch)
+        let oldIDs = existing.map(\.identifier)
+        let candidates = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND NOT identifier IN %@", "any-native-block-", oldIDs))
+        waitForNativeEditorInput(app, candidates.firstMatch)
+        XCTAssertEqual(candidates.count, 1)
+        let editor = candidates.firstMatch
+        let identifier = editor.identifier
+        guard identifier.count > "any-native-block-".count else { throw NativeStyledFailure.missingBlockIdentity }
+        editor.tap()
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        tapWhenEnabled(app.buttons["any-native-document-options"])
+        tapWhenEnabled(app.buttons["any-native-writing-direction-rtl"])
+        let empty = try styledReadback(app, phase: phase + "-empty-rtl", count: existing.count + 1) {
+            Self.matchesOne($0, identifier: identifier, choice: choice, body: "", nativeStyleJSON: nil,
+                            appLanguage: context.appLanguage,
+                            category: UIContentSizeCategory.large.rawValue, nominal: true)
+        }
+        try captureStyled(app, context: context, read: empty, phase: phase + "-empty-rtl")
+        if !body.isEmpty {
+            editor.tap(); editor.typeText(body)
+            tapWhenEnabled(app.buttons["any-native-editor-done"])
+        }
+        if app.keyboards.firstMatch.exists { tapWhenEnabled(app.buttons["any-native-editor-done"]) }
+        let saved = try styledReadback(app, phase: phase + "-filled", count: existing.count + 1) {
+            Self.matchesOne($0, identifier: identifier, choice: choice, body: body, nativeStyleJSON: nil,
+                            appLanguage: context.appLanguage,
+                            category: UIContentSizeCategory.large.rawValue, nominal: true)
+        }
+        let observed = try XCTUnwrap(saved.value.presentations.first { $0.blockSHA256 == Self.blockHash(identifier) })
+        let result = NativeStyledBlock(choice: choice, identifier: identifier, body: body,
+                                      nativeStyleJSON: observed.textPresentation.nativeStyleJSON)
+        try requireStyledMarker(app, block: result)
+        return result
+    }
+
+    private func returnToStyledLibrary(_ app: XCUIApplication) {
+        let back = app.navigationBars.buttons.matching(NSPredicate(format: "label IN %@", ["ספרייה", "Library"]))
+        tapWhenEnabled(back.firstMatch)
+        waitUntilEnabled(app.buttons["any-native-create-menu"], timeout: 60)
+    }
+
+    private func styledLibraryRow(_ app: XCUIApplication, title: String) throws -> XCUIElement {
+        let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND label == %@",
+            "any-native-hierarchy-row-", title))
+        waitUntilEnabled(row.firstMatch, timeout: 45)
+        XCTAssertEqual(row.count, 1)
+        guard row.firstMatch.identifier.count > "any-native-hierarchy-row-".count else {
+            throw NativeStyledFailure.missingObjectIdentity
+        }
+        return row.firstMatch
+    }
+
+    private func requireStyledMarker(_ app: XCUIApplication, block: NativeStyledBlock) throws {
+        let editor = app.textViews[block.identifier]
+        if block.body.isEmpty {
+            waitUntilEnabled(editor)
+            // Match the original empty-editor helper: UIKit may expose nil for
+            // an empty value. The paired native/rendered UTF-16 length is zero.
+            XCTAssertEqual(editor.value as? String ?? "", "")
+        } else {
+            waitFor(NSPredicate(format: "exists == true AND value == %@", block.body), object: editor, timeout: 45)
+        }
+        if let marker = block.choice.marker {
+            let row = app.tables["any-native-editor-blocks"].cells.containing(.textView, identifier: block.identifier)
+            XCTAssertEqual(row.count, 1)
+            XCTAssertEqual(row.firstMatch.staticTexts.matching(NSPredicate(format: "label == %@", marker)).count, 1)
+        }
+    }
+
+    private func styledReadback(_ app: XCUIApplication, phase: String, count: Int,
+        predicate: @escaping (NativeStyledSnapshot) -> Bool) throws -> NativeStyledReadback {
+        let elements = app.descendants(matching: .any).matching(identifier: "any-native-semantic-anchor-observation")
+        var accepted: NativeStyledReadback?
+        var last: Data?
+        let condition = NSPredicate { _, _ in
+            guard elements.count == 1, let text = elements.firstMatch.value as? String,
+                  let raw = text.data(using: .utf8), raw.count <= 24_576 else { return false }
+            last = raw
+            guard let snapshot = try? JSONDecoder().decode(NativeStyledSnapshot.self, from: raw),
+                  snapshot.original.schema == "any-semantic-anchor-native-rendered/v1",
+                  snapshot.original.state == "MATCHED", snapshot.original.mode == "read-only",
+                  snapshot.original.engineCalls == 0, snapshot.original.mutations == 0,
+                  snapshot.original.selectionChanges == 0,
+                  snapshot.original.nativeMarkCount == 0, snapshot.original.renderedMarkCount == 0,
+                  snapshot.original.blocks.count == count, snapshot.presentations.count == count,
+                  snapshot.original.blocks.map(\.blockSHA256) == snapshot.presentations.map(\.blockSHA256),
+                  snapshot.presentations.allSatisfy({ $0.textPresentation.schema == "native-mounted-text-presentation/v1"
+                      && $0.textPresentation.assignedUIFontOnly
+                      && $0.textPresentation.fontReadOrigin == "mounted-UITextView-attributedText-and-typingAttributes"
+                      && $0.textPresentation.nativeReadOrigin == "AnyDocumentPresentation.read.snapshot.blocks" }),
+                  predicate(snapshot) else { return false }
+            accepted = .init(raw: raw, value: snapshot)
+            return true
+        }
+        let state = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: condition, object: app)], timeout: 60)
+        guard state == .completed, let accepted else {
+            if let last {
+                let attachment = XCTAttachment(data: last, uniformTypeIdentifier: "public.json")
+                attachment.name = "PRIVATE-native-styled-" + phase + "-FAILED-observation"
+                attachment.lifetime = .keepAlways; add(attachment)
+            }
+            throw NativeStyledFailure.observation(phase)
+        }
+        return accepted
+    }
+
+    private func captureStyled(_ app: XCUIApplication, context: NativeAccessibilityInvocation,
+        read: NativeStyledReadback, phase: String, extra: [String: Any] = [:]) throws {
+        try requireArchiveObservationPastOnboarding(app)
+        let native = XCTAttachment(data: read.raw, uniformTypeIdentifier: "public.json")
+        native.name = "PRIVATE-native-styled-" + phase + "-native"; native.lifetime = .keepAlways; add(native)
+        var report: [String: Any] = ["schema": "native-styled-ui-observation/v1", "phase": phase,
+            "invocation": context.dictionary, "nativeObservationSHA256": Self.styledHash(read.raw),
+            "appPIDFromOriginalObserver": read.value.original.pid, "appLaunchArguments": app.launchArguments,
+            "runnerProcessID": ProcessInfo.processInfo.processIdentifier,
+            "visualReview": "PENDING", "fontClaim": "Assigned UIFont, not per-glyph fallback face"]
+        report["visibleBlocks"] = app.textViews.matching(NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-"))
+            .allElementsBoundByIndex.map { element in
+                ["identifier": element.identifier, "value": element.value as? String ?? "",
+                 "frame": NSStringFromCGRect(element.frame)]
+            }
+        for (key, value) in extra { report[key] = value }
+        try accessibilityJSON(report, name: "PRIVATE-native-styled-" + phase + "-context")
+        let ax = XCTAttachment(string: String(decoding: app.debugDescription.utf8.prefix(131_072), as: UTF8.self))
+        ax.name = "PRIVATE-native-styled-" + phase + "-ax"; ax.lifetime = .keepAlways; add(ax)
+        let screen = XCTAttachment(screenshot: app.screenshot())
+        screen.name = "PRIVATE-native-styled-" + phase + "-screen"; screen.lifetime = .keepAlways; add(screen)
+    }
+
+    private static func blockHash(_ identifier: String) -> String {
+        semanticHash(String(identifier.dropFirst("any-native-block-".count)))
+    }
+    private static func styledHash(_ data: Data) -> String {
+        SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    }
+    private static func matches(_ value: NativeStyledSnapshot, blocks: [NativeStyledBlock], appLanguage: String, category: String,
+                                nominal: Bool) -> Bool {
+        value.original.blocks.map(\.blockSHA256) == blocks.map { blockHash($0.identifier) } &&
+        blocks.allSatisfy { matchesOne(value, identifier: $0.identifier, choice: $0.choice, body: $0.body,
+            nativeStyleJSON: $0.nativeStyleJSON, appLanguage: appLanguage, category: category, nominal: nominal) }
+    }
+    private static func matchesOne(_ value: NativeStyledSnapshot, identifier: String, choice: NativeStyledChoice,
+        body: String, nativeStyleJSON: String?, appLanguage: String, category: String, nominal: Bool) -> Bool {
+        let hash = blockHash(identifier)
+        guard let block = value.original.blocks.first(where: { $0.blockSHA256 == hash }),
+              let report = value.presentations.first(where: { $0.blockSHA256 == hash })?.textPresentation,
+              block.sourceSHA256 == semanticHash(body), block.textSHA256 == semanticHash(body),
+              block.utf16Length == body.utf16.count, block.nativeMarks.isEmpty, block.renderedMarks.isEmpty,
+              report.nativeType == choice.nativeType, report.nativeStylePresent,
+              report.contentSizeCategory == category,
+              nativeStyleJSON.map({ $0 == report.nativeStyleJSON }) ?? true,
+              let bytes = report.nativeStyleJSON.data(using: .utf8),
+              let style = try? JSONDecoder().decode(NativeStyledNativeStyle.self, from: bytes),
+              style.pinkhaWritingDirection == "rightToLeft", style.pinkhaTextAlignment == "natural",
+              style.level == choice.level, style.ordered == choice.ordered,
+              style.number == (choice == .numberedList ? 1 : nil),
+              style.checked == (choice == .checklist ? false : nil), style.lang == nil else { return false }
+        func fontMatches(_ font: NativeStyledFont?) -> Bool {
+            guard let font, font.name == choice.fontName, font.bold == (choice.level != nil), !font.italic,
+                  font.pointSize.isFinite, font.pointSize > 0 else { return false }
+            return !nominal || abs(font.pointSize - choice.nominalSize) < 0.01
+        }
+        func paragraphMatches(_ paragraph: NativeStyledParagraph?) -> Bool {
+            // Original PinkhaWritingDirectionPolicy resolves a natural native
+            // alignment to the effective application direction, independently
+            // of the explicit RTL writing direction, including empty fields.
+            paragraph?.baseWritingDirection == NSWritingDirection.rightToLeft.rawValue &&
+            paragraph?.alignment == (appLanguage == "he" ? NSTextAlignment.right : .left).rawValue
+        }
+        if body.isEmpty {
+            return report.fontRuns.isEmpty && fontMatches(report.typingFont) && paragraphMatches(report.typingParagraph)
+        }
+        var offset = 0
+        for run in report.fontRuns {
+            guard run.location == offset, run.length > 0, fontMatches(run.font), paragraphMatches(run.paragraph) else { return false }
+            offset += run.length
+        }
+        return offset == body.utf16.count
+    }
+    private static func sameNativeAndSelection(_ lhs: NativeStyledSnapshot, _ rhs: NativeStyledSnapshot) -> Bool {
+        guard lhs.original.pid == rhs.original.pid, lhs.original.spaceSHA256 == rhs.original.spaceSHA256,
+              lhs.original.objectSHA256 == rhs.original.objectSHA256,
+              lhs.original.nativeVersionSHA256 == rhs.original.nativeVersionSHA256,
+              lhs.original.generation == rhs.original.generation,
+              lhs.original.blocks.count == rhs.original.blocks.count else { return false }
+        return zip(lhs.original.blocks, rhs.original.blocks).allSatisfy { a, b in
+            a.blockSHA256 == b.blockSHA256 && a.sourceSHA256 == b.sourceSHA256 && a.textSHA256 == b.textSHA256 &&
+            a.selectionLocation == b.selectionLocation && a.selectionLength == b.selectionLength &&
+            a.isFirstResponder == b.isFirstResponder
+        }
+    }
+    private static func fontsAreLarger(_ lhs: NativeStyledSnapshot, than rhs: NativeStyledSnapshot) -> Bool {
+        zip(lhs.presentations, rhs.presentations).allSatisfy { a, b in
+            let current = a.textPresentation.primaryFont, previous = b.textPresentation.primaryFont
+            return current?.name == previous?.name && current.map { f in previous.map { f.pointSize > $0.pointSize } ?? false } == true
+        }
+    }
+    private static func fontsEqual(_ lhs: NativeStyledSnapshot, _ rhs: NativeStyledSnapshot) -> Bool {
+        zip(lhs.presentations, rhs.presentations).allSatisfy { $0.textPresentation.primaryFont == $1.textPresentation.primaryFont }
+    }
+}
+
+private enum NativeStyledChoice: String, CaseIterable {
+    case paragraph, heading1 = "heading-1", heading2 = "heading-2", heading3 = "heading-3"
+    case bulletedList = "bulleted-list", numberedList = "numbered-list", checklist, quote, code
+    var nativeType: String {
+        switch self {
+        case .heading1, .heading2, .heading3: "heading"
+        case .bulletedList, .numberedList: "list_item"
+        case .checklist: "check_list_item"
+        default: rawValue
+        }
+    }
+    var level: Int? { switch self { case .heading1: 1; case .heading2: 2; case .heading3: 3; default: nil } }
+    var ordered: Bool? { switch self { case .bulletedList: false; case .numberedList: true; default: nil } }
+    // These acceptance expectations are pinned to original DesignKit source,
+    // not derived from the new renderer under test.
+    var fontName: String { self == .code ? "IBMPlexMono" : level == nil ? "Inter" : "Inter_Bold" }
+    var nominalSize: Double { switch self { case .heading1: 28; case .heading2: 22; case .code: 15; default: 17 } }
+    var marker: String? {
+        switch self { case .bulletedList: "•"; case .numberedList: "1."; case .checklist: "☐"; case .quote: "❝"; default: nil }
+    }
+    func title(_ language: String) -> String {
+        switch self {
+        case .paragraph: language == "he" ? "טקסט" : "Text"
+        case .heading1: language == "he" ? "כותרת 1" : "Heading 1"
+        case .heading2: language == "he" ? "כותרת 2" : "Heading 2"
+        case .heading3: language == "he" ? "כותרת 3" : "Heading 3"
+        case .bulletedList: language == "he" ? "רשימה עם תבליטים" : "Bulleted list"
+        case .numberedList: language == "he" ? "רשימה ממוספרת" : "Numbered list"
+        case .checklist: language == "he" ? "רשימת משימות" : "Checklist"
+        case .quote: language == "he" ? "ציטוט" : "Quote"
+        case .code: language == "he" ? "קוד" : "Code"
+        }
+    }
+}
+
+private struct NativeStyledBlock {
+    let choice: NativeStyledChoice
+    let identifier: String
+    let body: String
+    let nativeStyleJSON: String
+}
+private struct NativeStyledDocument {
+    let title: String
+    let rowIdentifier: String
+    let objectSHA256: String
+    var blocks: [NativeStyledBlock]
+}
+private struct NativeStyledNativeStyle: Decodable {
+    let level: Int?
+    let ordered: Bool?
+    let number: Int?
+    let checked: Bool?
+    let lang: String?
+    let pinkhaWritingDirection: String?
+    let pinkhaTextAlignment: String?
+}
+private struct NativeStyledFont: Codable, Equatable {
+    let name: String
+    let family: String
+    let pointSize: Double
+    let bold: Bool
+    let italic: Bool
+}
+private struct NativeStyledParagraph: Codable, Equatable {
+    let baseWritingDirection: Int
+    let alignment: Int
+}
+private struct NativeStyledTextPresentation: Decodable {
+    struct Run: Decodable { let location: Int; let length: Int; let font: NativeStyledFont?; let paragraph: NativeStyledParagraph? }
+    let schema: String
+    let nativeType: String
+    let nativeStylePresent: Bool
+    let nativeStyleJSON: String
+    let contentSizeCategory: String
+    let fontReadOrigin: String
+    let nativeReadOrigin: String
+    let assignedUIFontOnly: Bool
+    let fontRuns: [Run]
+    let typingFont: NativeStyledFont?
+    let typingParagraph: NativeStyledParagraph?
+    var primaryFont: NativeStyledFont? { fontRuns.first?.font ?? typingFont }
+}
+private struct NativeStyledSnapshot: Decodable {
+    struct Block: Decodable { let blockSHA256: String; let textPresentation: NativeStyledTextPresentation }
+    let original: SemanticAnchorUIObservation
+    let presentations: [Block]
+    private enum CodingKeys: String, CodingKey { case blocks }
+    init(from decoder: any Decoder) throws {
+        original = try SemanticAnchorUIObservation(from: decoder)
+        presentations = try decoder.container(keyedBy: CodingKeys.self).decode([Block].self, forKey: .blocks)
+    }
+}
+private struct NativeStyledReadback { let raw: Data; let value: NativeStyledSnapshot }
+
+/// Private test-runner I/O only. The existing sole controller must retain the
+/// request, actual simctl command/readback and response. It must restore the
+/// original category in its finally path if XCTest fails before normal restore.
+private struct NativeTypographyRendezvous {
+    let context: NativeAccessibilityInvocation
+    let directory: URL
+    init(context: NativeAccessibilityInvocation) throws {
+        self.context = context
+        let base = try XCTUnwrap(FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first)
+        directory = base.appendingPathComponent("PinkhaNativeTypographyAcceptance", isDirectory: true)
+            .appendingPathComponent(context.ownedScope.uuidString, isDirectory: true)
+        guard !FileManager.default.fileExists(atPath: directory.path) else { throw NativeStyledFailure.staleRendezvous }
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true,
+                                               attributes: [.posixPermissions: 0o700])
+    }
+    @MainActor
+    func request(_ size: String, phase: String, before: NativeStyledReadback) throws -> [String: Any] {
+        guard (phase == "expanded" && size == "accessibility-extra-extra-extra-large") ||
+              (phase == "restored" && size == "large") else { throw NativeStyledFailure.invalidContext }
+        let requestURL = directory.appendingPathComponent(phase + "-request.json")
+        let responseURL = directory.appendingPathComponent(phase + "-response.json")
+        guard !FileManager.default.fileExists(atPath: requestURL.path),
+              !FileManager.default.fileExists(atPath: responseURL.path) else { throw NativeStyledFailure.staleRendezvous }
+        let nonce = UUID().uuidString
+        let request: [String: Any] = ["schema": "native-typography-live-request/v1", "phase": phase,
+            "requestNonce": nonce, "invocation": context.dictionary, "requestedContentSize": size,
+            "runnerProcessID": ProcessInfo.processInfo.processIdentifier,
+            "runnerBundleID": Bundle.main.bundleIdentifier ?? "",
+            "appPIDFromOriginalObserver": before.value.original.pid,
+            "nativeObservationJSON": String(decoding: before.raw, as: UTF8.self),
+            "nativeObservationSHA256": Self.hash(before.raw)]
+        let raw = try JSONSerialization.data(withJSONObject: request, options: [.sortedKeys])
+        guard raw.count <= 65_536 else { throw NativeStyledFailure.rendezvousBounds }
+        let temporary = directory.appendingPathComponent(nonce + ".request.tmp")
+        try raw.write(to: temporary, options: .withoutOverwriting)
+        try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: temporary.path)
+        try FileManager.default.moveItem(at: temporary, to: requestURL)
+        let ready = NSPredicate { _, _ in FileManager.default.fileExists(atPath: responseURL.path) }
+        guard XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: NSObject())], timeout: 60) == .completed else {
+            throw NativeStyledFailure.controllerDidNotRespond(phase)
+        }
+        let info = try responseURL.resourceValues(forKeys: [.isSymbolicLinkKey, .fileSizeKey, .isRegularFileKey])
+        guard info.isSymbolicLink == false, info.isRegularFile == true,
+              let count = info.fileSize, count > 0, count <= 16_384 else { throw NativeStyledFailure.rendezvousBounds }
+        let bytes = try Data(contentsOf: responseURL)
+        guard let reply = try JSONSerialization.jsonObject(with: bytes) as? [String: String],
+              Set(reply.keys) == ["schema", "phase", "requestNonce", "requestSHA256", "simulatorUDID",
+                                  "contentSize", "readback", "readbackSHA256", "status"],
+              reply["schema"] == "native-typography-live-response/v1", reply["phase"] == phase,
+              reply["requestNonce"] == nonce, reply["requestSHA256"] == Self.hash(raw),
+              reply["simulatorUDID"] == context.dictionary["simulatorUDID"], reply["contentSize"] == size,
+              reply["status"] == "APPLIED_AND_READ_BACK", let readback = reply["readback"],
+              readback.trimmingCharacters(in: .whitespacesAndNewlines) == size,
+              reply["readbackSHA256"] == Self.hash(Data(readback.utf8)) else { throw NativeStyledFailure.invalidControllerResponse }
+        // The response is a coordination receipt only. The test still requires
+        // actual mounted UIKit category/font changes in the original App PID.
+        return ["requestSHA256": Self.hash(raw), "responseSHA256": Self.hash(bytes), "response": reply]
+    }
+    private static func hash(_ raw: Data) -> String {
+        SHA256.hash(data: raw).map { String(format: "%02x", $0) }.joined()
+    }
+}
+
+private enum NativeStyledFailure: Error {
+    case invalidContext, missingBlockIdentity, missingObjectIdentity, observation(String)
+    case staleRendezvous, rendezvousBounds, controllerDidNotRespond(String), invalidControllerResponse
+}
+// END_NATIVE_STYLED_BLOCK_ACCEPTANCE_FUTURE_V1

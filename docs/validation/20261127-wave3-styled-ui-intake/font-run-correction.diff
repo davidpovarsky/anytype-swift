@@ -1,0 +1,15 @@
+--- retained-initial-suffix
++++ published-final-suffix
+@@ -329,7 +329,11 @@
+         func fontMatches(_ font: NativeStyledFont?) -> Bool {
+             guard let font, font.name == choice.fontName, font.bold == (choice.level != nil), !font.italic,
+                   font.pointSize.isFinite, font.pointSize > 0 else { return false }
+-            return !nominal || abs(font.pointSize - choice.nominalSize) < 0.01
++            // The already-qualified large-category baseline equals this original
++            // nominal size. Require every expanded run (or the empty field's
++            // typing font), not just the first run, to grow past that baseline.
++            return nominal ? abs(font.pointSize - choice.nominalSize) < 0.01
++                : font.pointSize > choice.nominalSize
+         }
+         func paragraphMatches(_ paragraph: NativeStyledParagraph?) -> Bool {
+             // Original PinkhaWritingDirectionPolicy resolves a natural native

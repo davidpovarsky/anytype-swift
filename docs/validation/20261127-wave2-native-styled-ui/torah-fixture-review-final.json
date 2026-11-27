@@ -1,0 +1,42 @@
+{
+  "schema": "pinkha-wave2-styled-ui-fixture-semantics-final-source-review-v1",
+  "reviewer": "/root/torah_continue",
+  "createdAt": "2026-11-27T06:06:24.828927+00:00",
+  "status": "NO_REMAINING_CONCRETE_SOURCE_BLOCKER_FOUND_IN_REVIEWED_SCOPE",
+  "priorReview": {
+    "path": "torah-acceptance-prep/styled-ui-review/first-review.json",
+    "sha256": "81100b143d7398aa3395c8462a9f01c031a613a625bd74554d24943de9aaebfe"
+  },
+  "reviewedSource": {
+    "suffixSHA256": "b97c6ad4910088bae310914010a494981569becac0cffb0cf3ccd9018690828a",
+    "fullNativeLaunchSHA256": "8d58c41e8907019bf67088900bb5c35843562edd669422573c1280f800500e86",
+    "original21PrefixBytes": 237631,
+    "original21PrefixSHA256": "5d3462b25dd64423cf33fc1243b2d734acea55011a9e5da4c66004022685958a",
+    "exactSuffix": true
+  },
+  "resolvedFinding": {
+    "id": "expanded-font-runs",
+    "resolution": "matchesOne.fontMatches now requires every expanded nonempty run or the empty field typing font to exceed the already-qualified original nominal baseline size; nominal-size checking remains exactly unchanged. The enclosing loop still requires contiguous full UTF16 coverage, correct font face/traits and paragraph direction/alignment.",
+    "delta": "One reversible replacement inside fontMatches only; restoring it reproduces the complete prior bf1abf suffix exactly.",
+    "originalSuffixSHA256": "bf1abf46802f217b0efe973812824326d2d64aecf4234a1731cc19e9c34432b2"
+  },
+  "conclusions": [
+    "All fixture/menu/empty-field/native-style/cold identity findings and source references in the prior review remain applicable.",
+    "The partial-font-refresh false-PASS path identified in the first review is closed by the narrow final source delta.",
+    "The original 21-method source remains byte-identical; the suffix adds exactly the same two selectors and retains original lifecycle/assertion/evidence paths.",
+    "Actual shared producer/compile/enumeration, external owned-simulator live-size control and finally restoration, raw attachment qualification and mandatory visual review remain unexecuted and required."
+  ],
+  "reviewScopeExclusions": [
+    "Root-owned observer implementation and final composition with the separate Hanlin hook; no duplicate independent review claimed.",
+    "External controller implementation or product admission."
+  ],
+  "execution": {
+    "controlsRunByReviewer": 0,
+    "SwiftCompilations": 0,
+    "XCTestInvocations": 0,
+    "NativeCalls": 0,
+    "MacCalls": 0,
+    "UIInvocations": 0
+  },
+  "runtimeAndVisualAcceptance": "NOT_RUN"
+}
