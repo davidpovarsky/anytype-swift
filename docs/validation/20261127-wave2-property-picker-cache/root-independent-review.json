@@ -1,0 +1,54 @@
+{
+  "schema": "pinkha.wave2.g05-cache.root-source-review.v1",
+  "base": "1cc7f696cfa01790c90c6d29273147d07da71b65",
+  "reviewer": "root",
+  "status": "SOURCE_REVIEWED_NO_REMAINING_SCOPED_BLOCKER",
+  "files": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+      "originalSHA256": "e898a23f760a8e0e9ffe715fcd570319766a03679dd2b4d9efd502e05d548f86",
+      "candidateSHA256": "01271d4a4764facb65fbbc61fbb66937c2e1bdd9aebecc47a6553187cbde8a8a",
+      "inverseOutputMatchesOriginal": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+      "originalSHA256": "035acc3a38934abd0273ba9b1392e35aa4f47ddaad9a549b7f9aaf9c7cdb65d9",
+      "candidateSHA256": "3f56cc40c3c2d71b937fbc15a154e997ad2bcc5ae0e691a28644df92fa013b7c",
+      "inverseOutputMatchesOriginal": true
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift",
+      "originalSHA256": "6f17a932410b59369eaade81bfbabf08362a22593358c2c90201ecfe8c65166a",
+      "candidateSHA256": "6ef0ad1ebd2dd41d05cc38dbceb0947456ad4d234aad3daf1eb8207fba401625",
+      "inverseOutputMatchesOriginal": true
+    }
+  ],
+  "evidence": {
+    "root-primary-source-check.json": "3b7d5efe494eb8419ece35368f97e62a092bde0fbb22d1964f86314948fd49bc",
+    "source-inverse.json": "178b34a86fe169797b49027ee2afe6ede9b79c8c41fed30dff70ab85e1ff91c9",
+    "map-scope.json": "d5d29365cb5590d77a59eb411910bf71cb984982d4822b3342f65379cdda77d6",
+    "interfaces-independent-review.json": "9f50ecae7ddf136ef8c3a734f293277c8bbdbfdbbb7e2859246de58c3972c372",
+    "test-start-cancellation-delta.json": "c86afe7614fd73b7b7a5ca1dc75ac39435f8e1e1a5827bcadefdf580aa2e2b7f"
+  },
+  "checks": [
+    "Direct primary GitHub blobs for the exact published1cc7 original catalog, loader and tests independently match local originals. Preserved reverse-apply outputs restore all three exactly.",
+    "Cache/Space revision capture and atomic locked admission now fence native descriptors and their diagnostics. A read superseded by Space/all invalidation throws CancellationError before provisioning/retry or publication.",
+    "Cached lookup, synchronous property-storage fallback, bootstrap refresh and target-ineligible diagnostic publication use the same existing generation authority; old native setters were removed so these paths cannot bypass admission.",
+    "The production picker receives descriptors and diagnostics as one immutable per-call value. It no longer queries mutable global diagnostics after its awaited descriptor lookup. PropertyDetails and NativePropertyLookupFailureReason are actual Sendable value types.",
+    "Existing ordinary public/nonthrowing/array wrappers and normal initialization provisioning remain. The earlier picker-only read-only path still forbids bootstrap; three writing Types are not merged, and no Native schema/data/API changes occur.",
+    "Read invalidation is the narrow scope: same-generation concurrent completion order and separate IdentityStore behavior are not claimed fixed. Existing type relation generations remain unchanged.",
+    "Three new methods/six cases use the actual loader/catalog and suspended SearchMiddleService provider to cover old success/failure after Space/all invalidation, bootstrap refresh and reentrant synchronous storage. Original19,495-byte twelve-method/sixteen-case prefix is exact. A cancellation-at-entry check prevents an orphaned continuation after a test deadline."
+  ],
+  "approval": "Publish frozen three-file successor on own isolated branch based on1cc7, retaining original gate/inverse and explicit source-only status. W3 merges only the affected map rows and reviews actual test admission.",
+  "execution": {
+    "compiler": "NOT_RUN",
+    "tests": "NOT_RUN",
+    "native": "NOT_RUN",
+    "ui": "NOT_RUN",
+    "visual": "NOT_RUN"
+  },
+  "pending": [
+    "Actual Apple compilation and the three new methods/six cases, plus prior three methods/seven cases written in1cc7.",
+    "Mounted Properties add/Retry/current Space/permission/error recovery and original native postflight remain open."
+  ]
+}

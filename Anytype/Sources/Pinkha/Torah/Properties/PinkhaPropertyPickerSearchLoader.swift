@@ -97,19 +97,21 @@ final class PinkhaPropertyPickerSearchLoader: PinkhaPropertyPickerSearchLoading 
         }
 
         let native: [PropertyDetails]
+        let nativeLookupFailed: Bool
         if eligible {
-            let descriptors = try await catalog.nativePropertiesForReadOnlyPicker(spaceId: data.spaceId)
-            native = descriptors.filter {
+            let lookup = try await catalog.nativePropertyLookupForReadOnlyPicker(spaceId: data.spaceId)
+            native = lookup.properties.filter {
                 !excluded.contains($0.id) && PinkhaTorahNativePropertyCatalog.matchesSearchQuery(property: $0, query: text)
             }
+            nativeLookupFailed = !lookup.failures.isEmpty
         } else {
             native = []
+            nativeLookupFailed = false
         }
         try Task.checkCancellation()
 
         let identityUnavailable = PinkhaRuntime.enabled && identities == nil
-        let nativeFailed = identityUnavailable
-            || (eligible && !catalog.lastLookupDiagnostics(spaceId: data.spaceId).isEmpty)
+        let nativeFailed = identityUnavailable || nativeLookupFailed
 
         var ids = Set<String>()
         var keys = Set<String>()
