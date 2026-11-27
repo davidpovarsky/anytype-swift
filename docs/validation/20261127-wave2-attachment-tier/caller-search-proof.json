@@ -1,0 +1,934 @@
+{
+  "status": "PASS_BOUNDED_CURRENT_MODULE_SOURCE_SEARCH_ONLY",
+  "baseCommit": "bd684a8ad5b12cc2eef3b14d4fb64a34bd98f304",
+  "packageTree": "517cc7019f35f897ab1c129e051c90ac391d7681",
+  "scope": "Every Swift blob under the exact current Modules/PinkhaAnyUI tree, including its Package.swift, Sources and Tests; not a whole-repository search claim. Internal row type is declared in this module.",
+  "inspectedSwiftFiles": 71,
+  "sourceFiles": 41,
+  "testFiles": 29,
+  "packageFiles": 1,
+  "currentInitializerFiles": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "calls": [
+        {
+          "line": 140,
+          "text": "                let files = try rows.map { try AnyNativeAttachment($0, objectID: objectID) }"
+        },
+        {
+          "line": 208,
+          "text": "                        try AnyNativeAttachment(await client.requestJSON(method: \"GET\","
+        },
+        {
+          "line": 288,
+          "text": "                    let before = try AnyNativeAttachment("
+        },
+        {
+          "line": 294,
+          "text": "                    let after = try AnyNativeAttachment("
+        },
+        {
+          "line": 563,
+          "text": "                let files = try rows.map { try AnyNativeAttachment($0, objectID: objectID) }"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift",
+      "calls": [
+        {
+          "line": 14,
+          "text": "        let absent = try AnyNativeAttachment(row(omitting: [\"name\", \"mime\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 15,
+          "text": "        let empty = try AnyNativeAttachment(row([\"name\": .string(\"\"), \"mime\": .string(\"\")]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 23,
+          "text": "        let nameOnly = try AnyNativeAttachment(row([\"name\": .string(\"\u05d8\u05d9\u05d5\u05d8\u05d4.TXT\")], omitting: [\"mime\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 26,
+          "text": "        let mimeOnly = try AnyNativeAttachment(row([\"mime\": .string(\"Text/Plain\")], omitting: [\"name\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 30,
+          "text": "        let changedName = try AnyNativeAttachment(row([\"name\": .string(\"other.txt\")], omitting: [\"mime\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 31,
+          "text": "        let changedMIME = try AnyNativeAttachment(row([\"mime\": .string(\"text/plain\")], omitting: [\"name\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 34,
+          "text": "        let changedRoot = try AnyNativeAttachment(row([\"rootCid\": .string(\"root-two\")], omitting: [\"name\", \"mime\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 45,
+          "text": "        let bounded = try AnyNativeAttachment(row([field: .string(value)]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 48,
+          "text": "            try AnyNativeAttachment(row([field: .string(value + \"x\")]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 69,
+          "text": "            try AnyNativeAttachment(.object(fields), objectID: \"doc-1\")"
+        }
+      ]
+    }
+  ],
+  "otherCurrentModuleInitializerFixturesRequiringInline": [],
+  "requiredFixtureChange": "Only the existing metadata row helper gains inline:false; all three existing method bodies and 13 argument cases remain exact.",
+  "inputs": {
+    "tree": {
+      "path": "base-ui-tree.primary.json",
+      "sha256": "ea55588077247830ee1c9151e61bb7d866b0057936bd5582bf85b66cd699d404"
+    },
+    "retainedInventory": {
+      "path": "caller-search-inventory.json",
+      "sha256": "fe7983d0d23545f82d3d83aeee3c80a95fd955e8876f783274d35fdeb2482833"
+    },
+    "rawPrimaryFetchesRetainedLocally": {
+      "path": "caller-search-primary-fetches.json",
+      "sha256": "39986a8df41185123586fa74abcb2bcce18287c674a532dc443042ca089a1f5c"
+    }
+  },
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "blob": "166d1db172057b25f82c4a67ddcac595cca43a59",
+      "sha256": "298ef94254c6d8f17a389a5ff0efd02a5c03099e9a819b50886a5d9e8b3d9854",
+      "bytes": 2051,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "blob": "0585f7031c638d97ae3d8f28b6a748e8e6eedc7a",
+      "sha256": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",
+      "bytes": 73025,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyHeartNativeSourceReviewView.swift",
+      "blob": "6097aa137ae4ba5d83346eb9f0a380a64b04162d",
+      "sha256": "c41d7c5a7cc8799dbe8d3caf244899c0384ff1f94039ef95d254537971a011af",
+      "bytes": 15953,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyHierarchyPresentationState.swift",
+      "blob": "9dcbe70b6a8e9dc7cbc9e34204b5957b24411d12",
+      "sha256": "1b2bced966f411efc532e535d03f1daf456f1e8c222e13baa64d8822b82a6b72",
+      "bytes": 4654,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyInlineMarkdown.swift",
+      "blob": "ebf6e503a7c266efce44285ce609fc8fb11403c5",
+      "sha256": "8f72a09509d5ec3376f074ebff8510e593bbe0e6fd0d5da0035ea3183e3e91b7",
+      "bytes": 436,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "blob": "70849e7476816de1a2f4673f127a81e71a45067f",
+      "sha256": "3dd7517d2ecba44fe7568b16ed005a97489929f4a248c1899ad3d1c1864e66d4",
+      "bytes": 33946,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsContext.swift",
+      "blob": "894ff73262854cd6a89c51e1bfabf032103f1b51",
+      "sha256": "a804b72c9c9b66be30467138dfe503cbad7d50dcb8a3e6e681079d7497cc8ab0",
+      "bytes": 7058,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsJournal.swift",
+      "blob": "3955c14c183ee43cf12c52478bdca73bb248d561",
+      "sha256": "624e0fa4a7bc14b6fd255f57be469f0796bdd87373a6bc7f588f93a54a95f7ce",
+      "bytes": 4282,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsResultApplier.swift",
+      "blob": "81d268378adb5956b522886b61d60254573b3839",
+      "sha256": "057bf2f049572306171c9980876222fd6e8196f5fb82aa7c66bfe2420a9f8cc2",
+      "bytes": 16018,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeArchiveTransfer.swift",
+      "blob": "ce7fe8252c47a52db25ba6138ef40f52c4c404f9",
+      "sha256": "1b47c4ec4be6bdebb4f42fbc6a57d4bd0824c3ca8a1536dc01859a44122e12f9",
+      "bytes": 29907,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "blob": "dc2059f3d93a1274bf3913ee32238d06e0c958b5",
+      "sha256": "0032c6be0f667e5082afd4e0e2dfa03a37ac43438141034358ee95a1d6e4c325",
+      "bytes": 21506,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "blob": "187df84fbe9b74b9cd2a98c40efa2d9579ad7599",
+      "sha256": "75cac2b2b7ffe0d84e0f461d80c94e3be48d804896170a2b67e895e006977631",
+      "bytes": 38709,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [
+        {
+          "line": 14,
+          "text": "struct AnyNativeAttachment: Identifiable, Equatable, Sendable {"
+        },
+        {
+          "line": 71,
+          "text": "    let files: @Sendable () async throws -> [AnyNativeAttachment]"
+        },
+        {
+          "line": 75,
+          "text": "    case verified(AnyNativeFileAttachmentIntent, [AnyNativeAttachment])"
+        },
+        {
+          "line": 76,
+          "text": "    case notRecorded(AnyNativeFileAttachmentIntent, [AnyNativeAttachment])"
+        },
+        {
+          "line": 77,
+          "text": "    case noPending([AnyNativeAttachment])"
+        },
+        {
+          "line": 101,
+          "text": "    var files: [AnyNativeAttachment] = []"
+        },
+        {
+          "line": 140,
+          "text": "                let files = try rows.map { try AnyNativeAttachment($0, objectID: objectID) }"
+        },
+        {
+          "line": 156,
+          "text": "    func canRetryStorage(_ file: AnyNativeAttachment) -> Bool {"
+        },
+        {
+          "line": 162,
+          "text": "    func checkStorageStatus(_ file: AnyNativeAttachment) {"
+        },
+        {
+          "line": 166,
+          "text": "    func retryStorage(_ file: AnyNativeAttachment) {"
+        },
+        {
+          "line": 173,
+          "text": "    private func storageOperation(_ file: AnyNativeAttachment, retry: Bool) {"
+        },
+        {
+          "line": 207,
+          "text": "                    let metadata: @Sendable () async throws -> AnyNativeAttachment = {"
+        },
+        {
+          "line": 208,
+          "text": "                        try AnyNativeAttachment(await client.requestJSON(method: \"GET\","
+        },
+        {
+          "line": 252,
+          "text": "    private func requireCurrentFile(_ file: AnyNativeAttachment) throws {"
+        },
+        {
+          "line": 260,
+          "text": "    private func requireStorageRetry(_ file: AnyNativeAttachment) throws {"
+        },
+        {
+          "line": 267,
+          "text": "    func open(_ file: AnyNativeAttachment, inMiniApps: Bool = false, completed: @escaping @MainActor () -> Void = {}) {"
+        },
+        {
+          "line": 288,
+          "text": "                    let before = try AnyNativeAttachment("
+        },
+        {
+          "line": 294,
+          "text": "                    let after = try AnyNativeAttachment("
+        },
+        {
+          "line": 554,
+          "text": "            let readFiles: @Sendable () async throws -> [AnyNativeAttachment] = {"
+        },
+        {
+          "line": 563,
+          "text": "                let files = try rows.map { try AnyNativeAttachment($0, objectID: objectID) }"
+        },
+        {
+          "line": 582,
+          "text": "    private func publishUploadRows(_ rows: [AnyNativeAttachment]) {"
+        },
+        {
+          "line": 618,
+          "text": "        in rows: [AnyNativeAttachment], intent: AnyNativeFileAttachmentIntent) throws {"
+        }
+      ],
+      "constructors": [
+        {
+          "line": 140,
+          "text": "                let files = try rows.map { try AnyNativeAttachment($0, objectID: objectID) }"
+        },
+        {
+          "line": 208,
+          "text": "                        try AnyNativeAttachment(await client.requestJSON(method: \"GET\","
+        },
+        {
+          "line": 288,
+          "text": "                    let before = try AnyNativeAttachment("
+        },
+        {
+          "line": 294,
+          "text": "                    let after = try AnyNativeAttachment("
+        },
+        {
+          "line": 563,
+          "text": "                let files = try rows.map { try AnyNativeAttachment($0, objectID: objectID) }"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeBlockCreationMenu.swift",
+      "blob": "83104ffda90a9287d347d845351505330cdb3e4b",
+      "sha256": "4e76920ba0d9bc24aba432c681c771ed90b77bda1497bde3f70f1ccc6401a512",
+      "bytes": 2965,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeBlockInsertionPosition.swift",
+      "blob": "f6a4d1a903bce209a655daa2cd58b299d400c540",
+      "sha256": "6cf3ef7ac2fe658751640d93744118f2d575a4bd4785add07612df2ff2851d62",
+      "bytes": 2501,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeBlockMarkerPolicy.swift",
+      "blob": "e6d5a165175d55aca9195800d50613d7943d1048",
+      "sha256": "b207cd9b81e68bf9fe689d7126798c70069ed773dce63f56af8141e40e6042ba",
+      "bytes": 1032,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentNavigation.swift",
+      "blob": "27928d752afaeb05d788c357c131b4961a1f0834",
+      "sha256": "6a8671a5e230243e92fc0f2b80871fdaa031d1050ab3807b095593bd879566b9",
+      "bytes": 3291,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "blob": "1c7a14c636e2908012fdac88e1264f164d212b3e",
+      "sha256": "8a2a18ad56ac7fde85223bf24bc8c104204e2031eddf9548ad810832aa8a673f",
+      "bytes": 35813,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "blob": "81eec84bc476ce7d0c4835ebee912e57b35717c6",
+      "sha256": "8b461efe44868904b826da7b601c1537fd1c164705f861b15920143a556caac5",
+      "bytes": 61374,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditorDiagnostics.swift",
+      "blob": "d8bf6501897cfb53b5faa4db26894cc04371a884",
+      "sha256": "b09438ba81be2794dd388d050cb9f3fa619f8583d53e1bcdeadd9ca797be2527",
+      "bytes": 3516,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeFocusCoordinator.swift",
+      "blob": "bef053d891d3a9cc10f042d62ef331d730d85681",
+      "sha256": "3c565e2b46983921881d3a093e61825529e59df49ba8662a81b37f337120c7f2",
+      "bytes": 4930,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeHierarchyDragDrop.swift",
+      "blob": "67202f36fa267916ba6798831ab0b74e85c85bd6",
+      "sha256": "79c56adbd38ef0256588dda7f885d3771c82dc8d2b2750c81795e3c93f9dda56",
+      "bytes": 6109,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeHistoryPresentation.swift",
+      "blob": "1ce7ba612c411788e95ddffa95e31473619b693f",
+      "sha256": "0930eda2e012811b4087e1a54b93cb010b3dc6c3d20477b992870fa0c0240270",
+      "bytes": 10736,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeHistoryView.swift",
+      "blob": "f8c7ad750be2b46ffa48bddef84895da44d5939e",
+      "sha256": "5e0a9e30fc37e6089143e90413e97ad571b9c1272acc60df5c7dbc4c986fafb2",
+      "bytes": 11990,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+      "blob": "41cd23c7ae9704197babaa7378fa1b357e833a16",
+      "sha256": "f646eed644d128c30057011ddd384154f5d6a2bd7082bca52e44488bf19fa758",
+      "bytes": 9912,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "blob": "00999518ec3aa6180ecda8c357635ec14e5ad4bb",
+      "sha256": "3791fe7ccadbf5caf4d1a82b1f6cc8d497b5562db1c58ba346803a9ebf43fec1",
+      "bytes": 29436,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeMiniApps.swift",
+      "blob": "e193bc307106fb8e32af2332d64747ae7d414150",
+      "sha256": "ac5cb7a9ee1be034cc7ba4a6adefd2e496804236bb9990757d0ff99bf662fb89",
+      "bytes": 11854,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+      "blob": "333cf9157b49853526fc1e5edee963b272423e60",
+      "sha256": "47e04a0dedaebe5a0d6dc35e4b8d30b58a5f0c8eda0cb44fea6283ecf801465d",
+      "bytes": 25348,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertyPresentation.swift",
+      "blob": "b8d482b1e9a51923bfc49c9714087cad7fcd021e",
+      "sha256": "aa40239c5ba749b20974735337c0af11ba477c9aac870261f4ae5ae76f76c731",
+      "bytes": 16259,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift",
+      "blob": "8ead95ff360b0abb67e7d85bb16b41415ec85551",
+      "sha256": "1cf8d0790e949b7592d4298dff0e788982ad3b0959c838350fe587d2c80e48c1",
+      "bytes": 5157,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextBlockKind.swift",
+      "blob": "6dc477e504f0b19441b4e28417b7a3783e1a9984",
+      "sha256": "61f1fe2d2d2a282dd846279db9be519c00628bf6d2b2f4771bb52350ec889275",
+      "bytes": 1837,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextComposition.swift",
+      "blob": "0a0abeeefce2382425bcad0c501851c0abf80e18",
+      "sha256": "e03a579e1ab5294fd06e6c2fc63bbb11b3e61877ebbd4dbf94d9013ad398aa9b",
+      "bytes": 2695,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextRenderer.swift",
+      "blob": "6516f0744f06854ac02141d94ed88106c564c99f",
+      "sha256": "adf318945d89600fec59a99eb2e16dab2ef9f2f7f30d974afbbca0f99a8dcb34",
+      "bytes": 1541,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextTypography.swift",
+      "blob": "ae8dd9397659ea31bd62c7cbd629ef962f4d2d9d",
+      "sha256": "5e14d63f52575461d43de7494b379ffd969194d89dbfb415ce75a51344a5d4d7",
+      "bytes": 3241,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTorahRelatedPresentation.swift",
+      "blob": "7d7d4087af2ef3c1c2a12a26a794c621e34e0089",
+      "sha256": "46a43e439a879d662c66ef3336caf92b6112527d9804ca2cea091cbc193e88c9",
+      "bytes": 6026,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeWritingPolicy.swift",
+      "blob": "096cfb6ffef2bf3b3d2996056d71f97c9f2ced68",
+      "sha256": "dbe723700b6d30960249f053ae8dbb5a2ea63d4cd8c7b2c29dea76877eb2e545",
+      "bytes": 1529,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNoteBootstrap.swift",
+      "blob": "07bdc216acdab46c1733aece84bf6d5d06ad92c3",
+      "sha256": "cb2f2ae24c7e4953cd651fc981d1250f5f4ccae0e62f1f855fafa5d9bab6d71f",
+      "bytes": 253,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnySemanticAnchorIntent.swift",
+      "blob": "735a93df48caecb22911f57a9dadad06d5f1e135",
+      "sha256": "ad81df7583f40d7d5fd2599a1b1e5891329b3e504c9305466d8347d6b34eafeb",
+      "bytes": 762,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnySemanticAnchorObservation.swift",
+      "blob": "2049af655b538c1aea6eea614fda64ea4f21ca92",
+      "sha256": "b141d6ba3f78bcddc4b35cbe0a7afb107b09ab38c067b2222ccf14787b699b48",
+      "bytes": 12721,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyTorahPresentationBridge.swift",
+      "blob": "17a6fdfbff1b2a6ee4e635372e51708859a91143",
+      "sha256": "e6e6d0c5e8f913b4d5ca99951387b9d85af79ecf9ae3e78adc587d55672fd8fc",
+      "bytes": 14425,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyTorahRelatedReadFailure.swift",
+      "blob": "8c598cf1560aa6a22b3054fa9080470cf8205a6b",
+      "sha256": "eba7bcb400949041c8122d9bd66b2e1f1273142a439aeea423080f73ab850770",
+      "bytes": 1351,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyUIFoundationCapabilities.swift",
+      "blob": "dc51cc4ae3251a77c007b9a994ce8ede289da509",
+      "sha256": "074c9a58305af8362d17beb0bf61eadc13467c74c98d34224537c5134c88f373",
+      "bytes": 4129,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyUIPresentationLifetime.swift",
+      "blob": "45cc719e6aebc1559620589710fa6acf78f7656c",
+      "sha256": "43f92a43f956d475a0f87c02c62210a8811da80333b2ec9ccdf554a7fd0b1deb",
+      "bytes": 1809,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyCanonicalArchiveBoundedReaderTests.swift",
+      "blob": "e84954b5985c721c981020753dc87bf01b7f7051",
+      "sha256": "affad47ed09de3620d32a0cb9c5059b6271a455c19c47a336505352aa0726758",
+      "bytes": 1497,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyHierarchyPresentationStateTests.swift",
+      "blob": "96753cadc13c08172ab187755ca52c1ad60dc702",
+      "sha256": "60b62d4773fd9afdf2de51ba1028b86918ce25b0e8e79d6e2d2870230de51618",
+      "bytes": 5768,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyInlineMarkdownReplacementTests.swift",
+      "blob": "bb7395e165c50a82782f35ca7d7ffd30fb5549f6",
+      "sha256": "304e46100d9dfddb62507564f1c3473c94e2c56d636419acd34660d21489a1d8",
+      "bytes": 5637,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyInlineMarkdownTests.swift",
+      "blob": "add5f78976ade2b651e77e206c21f66b1647dc54",
+      "sha256": "3f3ec0fa7ee204ee53fa418ec02ea528c2f47d284cbf9d7b0873c06156795553",
+      "bytes": 3931,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyInlineMarkdownToggleTests.swift",
+      "blob": "f51ddff20ff99b0b88187e1eb7f08ec168fdf218",
+      "sha256": "aaf415e158bad37262d7995f4e9beaec3d6d4dc6fa0705117ffd44a3601f8dcf",
+      "bytes": 8992,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyLibrarySearchPublicationTests.swift",
+      "blob": "60ed50ff5847ff269bd5b78d1cbba6790ded0107",
+      "sha256": "b242b8bdbe9f2c9c10c742d26ffe88b237b797b28dfd600e07b85f4e3c2a5494",
+      "bytes": 13860,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeArchiveImportIdentityTests.swift",
+      "blob": "67925be38c5eeac5c4772937e526e6f871d2eac4",
+      "sha256": "302be98e3865d3a9a740bdbeb1b376823b4fa217a47f6288595354038949c414",
+      "bytes": 3156,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "blob": "f481d9a198904fb57aba4e49e2076743855776c0",
+      "sha256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809",
+      "bytes": 8725,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift",
+      "blob": "feafbcdeb1d3c1849fc8445c23d686c1162db22a",
+      "sha256": "b9d0f1b8c72e503d4e4952b33f519fc93680d54a8384e828f001d498ddd71a91",
+      "bytes": 4744,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [
+        {
+          "line": 14,
+          "text": "        let absent = try AnyNativeAttachment(row(omitting: [\"name\", \"mime\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 15,
+          "text": "        let empty = try AnyNativeAttachment(row([\"name\": .string(\"\"), \"mime\": .string(\"\")]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 23,
+          "text": "        let nameOnly = try AnyNativeAttachment(row([\"name\": .string(\"\u05d8\u05d9\u05d5\u05d8\u05d4.TXT\")], omitting: [\"mime\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 26,
+          "text": "        let mimeOnly = try AnyNativeAttachment(row([\"mime\": .string(\"Text/Plain\")], omitting: [\"name\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 30,
+          "text": "        let changedName = try AnyNativeAttachment(row([\"name\": .string(\"other.txt\")], omitting: [\"mime\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 31,
+          "text": "        let changedMIME = try AnyNativeAttachment(row([\"mime\": .string(\"text/plain\")], omitting: [\"name\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 34,
+          "text": "        let changedRoot = try AnyNativeAttachment(row([\"rootCid\": .string(\"root-two\")], omitting: [\"name\", \"mime\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 45,
+          "text": "        let bounded = try AnyNativeAttachment(row([field: .string(value)]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 48,
+          "text": "            try AnyNativeAttachment(row([field: .string(value + \"x\")]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 69,
+          "text": "            try AnyNativeAttachment(.object(fields), objectID: \"doc-1\")"
+        }
+      ],
+      "constructors": [
+        {
+          "line": 14,
+          "text": "        let absent = try AnyNativeAttachment(row(omitting: [\"name\", \"mime\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 15,
+          "text": "        let empty = try AnyNativeAttachment(row([\"name\": .string(\"\"), \"mime\": .string(\"\")]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 23,
+          "text": "        let nameOnly = try AnyNativeAttachment(row([\"name\": .string(\"\u05d8\u05d9\u05d5\u05d8\u05d4.TXT\")], omitting: [\"mime\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 26,
+          "text": "        let mimeOnly = try AnyNativeAttachment(row([\"mime\": .string(\"Text/Plain\")], omitting: [\"name\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 30,
+          "text": "        let changedName = try AnyNativeAttachment(row([\"name\": .string(\"other.txt\")], omitting: [\"mime\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 31,
+          "text": "        let changedMIME = try AnyNativeAttachment(row([\"mime\": .string(\"text/plain\")], omitting: [\"name\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 34,
+          "text": "        let changedRoot = try AnyNativeAttachment(row([\"rootCid\": .string(\"root-two\")], omitting: [\"name\", \"mime\"]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 45,
+          "text": "        let bounded = try AnyNativeAttachment(row([field: .string(value)]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 48,
+          "text": "            try AnyNativeAttachment(row([field: .string(value + \"x\")]), objectID: \"doc-1\")"
+        },
+        {
+          "line": 69,
+          "text": "            try AnyNativeAttachment(.object(fields), objectID: \"doc-1\")"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeBlockInsertionPositionTests.swift",
+      "blob": "7f6b16b9b2efd86fb67473ce87d38e61a7b228d6",
+      "sha256": "9ca757366f627230956cf211b983d82bc22b4501b69666ebf63a08c9ce54eec2",
+      "bytes": 2784,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeBlockMarkerTests.swift",
+      "blob": "b84af0abb83fac2984b1a7999256508ba3d91d5a",
+      "sha256": "c17e8198d628e27072b6b8da329ebee1677091d1df099c29c63a027cbe2859f2",
+      "bytes": 2686,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeDocumentNavigationTests.swift",
+      "blob": "d2750ea7ed40eac8798d0ae8ea1755adb32ec155",
+      "sha256": "e5bda23ac5153a7d39216d8911cda99eee4a528736626daadff930227ab2aba3",
+      "bytes": 7827,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeFocusHandoffTests.swift",
+      "blob": "7aef0601107efe1f51174bee9ff3f3fbfa8c20ee",
+      "sha256": "df49aa84964c7ce17e9db8a65d5e3594c0a01b636cb545f9820009fb6f65ef34",
+      "bytes": 8791,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeFocusLifecycleTests.swift",
+      "blob": "7f1a0ce95f042f9346dfc66056fb631ecd3507b5",
+      "sha256": "b229703a1869a0ad303fc7cf2e1609bd7564c6139e74d4b1c8a0b2cd6640e1f4",
+      "bytes": 6770,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeHistoryPresentationTests.swift",
+      "blob": "5e036410c35b9573468d1732238ae3883de69d5b",
+      "sha256": "309d436266ee7dd99862b96f077998954396eb285aac12f50ecae148c52381c6",
+      "bytes": 8702,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeLibraryRecoveryTests.swift",
+      "blob": "fa62deebf8bdb55bb8999f05c58cc4c082deee6a",
+      "sha256": "50b2005369a98652bc50a24422e8b60a23c5ccf9bb38da78bd4806c49549399b",
+      "bytes": 6668,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeMarkedTextTests.swift",
+      "blob": "15877d0d64c3ce52b1a724e19e0dd5ca75d72bf2",
+      "sha256": "2fff24da4cba52263752bbc97f653308a953f7448a6247806174a19f32db85bc",
+      "bytes": 5873,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift",
+      "blob": "ff380c374743423652e8a6fb82b1253483c8bf69",
+      "sha256": "7df1a45aa85cd71bc7ec8353b98150609bc2d2fb07a2aa1ebf08f7fb40fdab61",
+      "bytes": 24061,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyValueCodecTests.swift",
+      "blob": "aecba9b0e81c7e3a36e8811310e6a0075efa5f33",
+      "sha256": "27841ce235f758c5fad2b7f214a69cd3fe9c3ff7485ec8b5d1abe05814996481",
+      "bytes": 3300,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextBlockCreationTests.swift",
+      "blob": "ad6ddab459308ce035ef8a1bdabfa1508cc6e9d3",
+      "sha256": "e36af9a049013d2e19453849170ee2deac65d189d1c9603cf75c3f47b71a037e",
+      "bytes": 3728,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextCompositionTests.swift",
+      "blob": "60d6030d4d51a20bb4971e12e81b50e3952e9067",
+      "sha256": "32f406785982c1496b38e488a44ba03e7d9a89935be5ab8dbe1f01316aa4f055",
+      "bytes": 3418,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+      "blob": "c8372f370ff3cba7bc6f9563c4e522f919081662",
+      "sha256": "695c89e5c8d5ad8e41f8ec525486836e42338bcc063d13f0945080c169fd7eaa",
+      "bytes": 3269,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextTypographyTests.swift",
+      "blob": "95f8db719f53dfa503d07bc998d8c9fa7a28cd06",
+      "sha256": "fde5f3bd8da14f0f3e6502d60cacdf3304ea78aba9c41b35ca73317995cdff07",
+      "bytes": 8257,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift",
+      "blob": "fb18996d811599334984085982c28bc78bd39d37",
+      "sha256": "f334ce278537413df7ef7b508db8bd250135f002f3b6dfa65a306459e4b807c6",
+      "bytes": 20809,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeUnmappedRecoveryTests.swift",
+      "blob": "0c7d08c6d35476a67bcd459ca31ba14a28d0f85d",
+      "sha256": "6262f9b7c957bc108a625e9585905390236eb86d48d570fb41ca13c754b82959",
+      "bytes": 2524,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeWritingPolicyTests.swift",
+      "blob": "4090c7e93c7b94a2de12c49d8f9ff75ab1f0a9ca",
+      "sha256": "55ac2115107643e45c49788a5630239081b76820265cba2f205e20ba9c7aa870",
+      "bytes": 3528,
+      "authority": "retained local bytes matched to exact current Git tree blob",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyTorahRelatedReadFailureTests.swift",
+      "blob": "827b7d88e54d860ddcd21f37017d38cd04e1ba9c",
+      "sha256": "37a8c018569b1987dc0ea36cea6df8b49bf9f863fcb46b8146931d2b4e769476",
+      "bytes": 1937,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyUIActivationTests.swift",
+      "blob": "48daf978533ec0f3a6f04e5c80fa4be32e4be9c5",
+      "sha256": "94205def22c91576ccff9f5c1a3f937ab60b67e68823b3081c26787061dd6832",
+      "bytes": 4905,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyUIPresentationLifetimeTests.swift",
+      "blob": "ac666bbd0ef8ca842d4a3c060fb76d3881826512",
+      "sha256": "153a7bea54f053a412d963860f399a788d8845b307d4a72bdec1f283d70957a7",
+      "bytes": 2620,
+      "authority": "exact GitHub fetch_file at base commit",
+      "mentions": [],
+      "constructors": []
+    }
+  ],
+  "swiftCompiler": false,
+  "testExecution": false,
+  "nativeOrAppleRuntime": false
+}

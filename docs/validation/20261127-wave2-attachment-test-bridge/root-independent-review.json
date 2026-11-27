@@ -1,0 +1,42 @@
+{
+  "status": "PASS_SOURCE_ONLY_EXACT_TWO_EXISTING_TARGET_BRIDGES",
+  "reviewer": "/root",
+  "atUTC": "2026-11-27T13:16:51.760559+00:00",
+  "baseCommit": "2f9ac20a910d9922e13f8e5d410757604437fcc5",
+  "matchingCurrentPreimages": "919626d8a5a2701c2dfb56277a657fa593700b98",
+  "files": [
+    {
+      "path": "Anytype.xcodeproj/project.pbxproj",
+      "bytes": 163508,
+      "sha256": "680b75e2b66e7268084b6e1770161bbd6f7f0a1affddbebc976cf14afbfd40cb",
+      "gitBlob": "7790ac9200e5ba38bf29a170bb4b31ff3389be8d",
+      "originalSHA256": "39b5ebb5f24ae107bea0b7c85d3fce51ff12c333a28ff43c01415dc87a04cbb4",
+      "originalGitBlob": "d0749db7a666a14c3ac3d8d94d98d20f0d07a91e",
+      "addedLines": 8
+    },
+    {
+      "path": "Tools/MiniApps/receipt_admission.py",
+      "bytes": 29997,
+      "sha256": "0290645de02ecbc9511af9b647e2f70befad79d7805de617476d6ddb84cc4285",
+      "gitBlob": "e2e0a1263c9d24d1d4512e8f93c62616bde589e9",
+      "originalSHA256": "d63b8a04bd424a92bf852449c2ecbf8a22bd5ccae95b61ae32feb6be63e6b901",
+      "originalGitBlob": "46653086aa8294ea9056459509190b166ac9d805",
+      "addedLines": 2
+    }
+  ],
+  "inverseSHA256": "3c00db371ca6b265aaa96edcbc8ae50dbad519919d96d2c08c04c2c67bfe98b1",
+  "checks": [
+    "Complete byte inverses independently restore both original files39b5/d63b.",
+    "Each new path has one unique SOURCE_ROOT file reference, one matching build file, root group membership and existing AnytypeTests sources-phase membership; referenced target/phase ownership verified.",
+    "All original IDs and unrelated PBX bytes retained; no new target or Package source scheme.",
+    "All17 original admission functions including nestedcommand are exact source slices; only two actual existing package-test paths added to original source-origin set.",
+    "The source gate remains a producer/compiled-input requirement; no runtime opening, fixed new source count or test execution implied."
+  ],
+  "preservedLocalReviewCorrection": "root-review-attempt1.json",
+  "newSourceInputs": 2,
+  "currentSelectedInventory": null,
+  "qualifiedNextNativeSourceCount": null,
+  "actualTests": 0,
+  "actualCompiler": false,
+  "runtimeAdmission": false
+}

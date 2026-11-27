@@ -1,0 +1,89 @@
+{
+  "builds_run": 0,
+  "bundle_sha256": "830388532b1a69e7549a9075f0777da1253b16e95d51292c2ba1f2108cc3054d",
+  "candidate": "d6090c03b9ac4e5760941e34f4c04478db4ae59f",
+  "candidate_parent": "1be970356c655bcef3688ddf1d129d5029bbc533",
+  "exact_changed_files": [
+    "Anytype/Sources/ServiceLayer/Block/Pastboard/PasteboardHelper.swift",
+    "docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md",
+    "docs/otzaria-wave3-sdk-pasteboard-compatibility-20261127/ORIGINAL_UPSTREAM.swift.gz",
+    "docs/otzaria-wave3-sdk-pasteboard-compatibility-20261127/PRE_EDIT.json",
+    "docs/otzaria-wave3-sdk-pasteboard-compatibility-20261127/README.md",
+    "docs/otzaria-wave3-sdk-pasteboard-compatibility-20261127/SOURCE.patch.gz"
+  ],
+  "file_sha256": {
+    "Anytype/Sources/ServiceLayer/Block/Pastboard/PasteboardHelper.swift": "0eee42f7036e43d74d82088b2bd21696dc3b248f4430e4c9dfc887bbbc1a60d9",
+    "docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md": "5b70026206ae1f765fdd451b6a129ddf8fc571da7c3c49db63265bc87442c2b6",
+    "docs/otzaria-wave3-sdk-pasteboard-compatibility-20261127/ORIGINAL_UPSTREAM.swift.gz": "d13b83c811bbf2572bc599cba5a95b3c9a45de52b2de9bfe769a3b59f1013374",
+    "docs/otzaria-wave3-sdk-pasteboard-compatibility-20261127/PRE_EDIT.json": "0244b05a42b36738d3c8e79fd3278a3daed0e37a7a164658149710617fae8424",
+    "docs/otzaria-wave3-sdk-pasteboard-compatibility-20261127/README.md": "307d9321def661abffa4c133f0280200fe8f08cb43156e0f1f81e6128a87f963",
+    "docs/otzaria-wave3-sdk-pasteboard-compatibility-20261127/SOURCE.patch.gz": "d9d392f1a6f4f641e96f406f942c6117ecbdd5561da4434c0aa29587305f2499"
+  },
+  "finished_at": "2026-11-27T12:28:01.106134+00:00",
+  "free_after": 11385516032,
+  "free_before": 11385593856,
+  "fresh_output_paths_absent": {
+    "abi": "/Users/m1/builds/otzaria-wave1-sdk-20261127/source/build/SDK-Wave3-d6090c03-NativeABI-PasteboardOptions-20261127",
+    "evidence": "/Users/m1/builds/otzaria-wave1-sdk-20261127/source/build/SDK-Wave3-d6090c03-Debug-PasteboardOptions-20261127-Evidence",
+    "macro": "/Users/m1/builds/otzaria-wave1-sdk-20261127/source/build/SDK-Wave3-d6090c03-ReviewedMacro-PasteboardOptions-20261127",
+    "work": "/Users/m1/builds/otzaria-wave1-sdk-20261127/source/build/SDK-Wave3-d6090c03-Debug-PasteboardOptions-20261127-Work"
+  },
+  "hook_observation": {
+    "active": [],
+    "directory": "/Users/m1/builds/otzaria-wave1-sdk-20261127/source/.git/hooks",
+    "hooks_disabled": false
+  },
+  "new_preservation_ref": "refs/otzaria-preserved/sdk-before-pasteboard-options-20261127",
+  "new_review_ref": "refs/otzaria-reviewed/sdk-pasteboard-options-20261127",
+  "original_guard_count": 17,
+  "precheck_sha256": "9014944513989a12862e9f43fc1c0437814eb09736997f1462da5e473440a88f",
+  "preserved_old_head": "1be970356c655bcef3688ddf1d129d5029bbc533",
+  "process_guard": {
+    "active_exact_source_sdk_processes": [],
+    "utc": "2026-11-27T12:27:59.801163+00:00"
+  },
+  "script_sha256": "01c047b138ceed49e107dacbbf627a1b0929510b654c35e9f64d02dadfe4623e",
+  "source_after": {
+    "branch": "codex/anytype-wave1-sdk-admission-20261127",
+    "head": "d6090c03b9ac4e5760941e34f4c04478db4ae59f",
+    "tracked_status": ""
+  },
+  "source_before": {
+    "branch": "codex/anytype-wave1-sdk-admission-20261127",
+    "head": "1be970356c655bcef3688ddf1d129d5029bbc533",
+    "tracked_status": ""
+  },
+  "source_mutated": true,
+  "status": "EXACT_REVIEWED_SOURCE_FAST_FORWARDED_NO_BUILD",
+  "steps": [
+    {
+      "argv": [
+        "update-ref",
+        "refs/otzaria-preserved/sdk-before-pasteboard-options-20261127",
+        "1be970356c655bcef3688ddf1d129d5029bbc533",
+        "0000000000000000000000000000000000000000"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "fetch",
+        "--no-tags",
+        "--no-recurse-submodules",
+        "/Users/m1/builds/otzaria-wave3-sdk-pasteboard-fix-20261127/.git/EXACT_FIX.bundle",
+        "refs/heads/codex/otzaria-wave3-sdk-pasteboard-fix-20261127:refs/otzaria-reviewed/sdk-pasteboard-options-20261127"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "merge",
+        "--ff-only",
+        "--no-edit",
+        "refs/otzaria-reviewed/sdk-pasteboard-options-20261127"
+      ],
+      "exit": 0
+    }
+  ],
+  "utc": "2026-11-27T12:27:59.801920+00:00"
+}

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA9E01012F112700006805CC /* AnyNativeAttachmentIntentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9E00012F112700006805CC /* AnyNativeAttachmentIntentStoreTests.swift */; };
+		FA9E01022F112700006805CC /* AnyNativeAttachmentMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9E00022F112700006805CC /* AnyNativeAttachmentMetadataTests.swift */; };
 		FA9D01012F112700006805CC /* AnyNativePropertyPresentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9D00012F112700006805CC /* AnyNativePropertyPresentationTests.swift */; };
 		FA9D01022F112700006805CC /* AnyNativeTextBlockCreationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9D00022F112700006805CC /* AnyNativeTextBlockCreationTests.swift */; };
 		FA9D01032F112700006805CC /* AnyNativeTextTypographyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9D00032F112700006805CC /* AnyNativeTextTypographyTests.swift */; };
@@ -119,6 +121,7 @@
 		FA6301022F111800006805CC /* HanlinPlatformContracts in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201022F111800006805CC /* HanlinPlatformContracts */; };
 		FA6301032F111800006805CC /* HanlinAgentCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201032F111800006805CC /* HanlinAgentCore */; };
 		FA6301042F111800006805CC /* HanlinChatCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201042F111800006805CC /* HanlinChatCore */; };
+		FA6301052F111800006805CC /* HanlinChatUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA6200072F111800006805CC /* HanlinChatUI */; };
 		FA7300012F111900006805CC /* PinkhaHanlinCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA7200012F111900006805CC /* PinkhaHanlinCore */; };
 		FA7301012F111900006805CC /* PinkhaHanlinCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA7201012F111900006805CC /* PinkhaHanlinCore */; };
 		FA8300012F111900006805CC /* PinkhaTorahPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = FA8200012F111900006805CC /* PinkhaTorahPresentation */; };
@@ -217,6 +220,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FA9E00012F112700006805CC /* AnyNativeAttachmentIntentStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnyNativeAttachmentIntentStoreTests.swift; path = Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift; sourceTree = SOURCE_ROOT; };
+		FA9E00022F112700006805CC /* AnyNativeAttachmentMetadataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnyNativeAttachmentMetadataTests.swift; path = Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift; sourceTree = SOURCE_ROOT; };
 		FA9D00012F112700006805CC /* AnyNativePropertyPresentationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnyNativePropertyPresentationTests.swift; path = Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift; sourceTree = SOURCE_ROOT; };
 		FA9D00022F112700006805CC /* AnyNativeTextBlockCreationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnyNativeTextBlockCreationTests.swift; path = Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextBlockCreationTests.swift; sourceTree = SOURCE_ROOT; };
 		FA9D00032F112700006805CC /* AnyNativeTextTypographyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnyNativeTextTypographyTests.swift; path = Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextTypographyTests.swift; sourceTree = SOURCE_ROOT; };
@@ -404,6 +409,7 @@
 				FA6301022F111800006805CC /* HanlinPlatformContracts in Frameworks */,
 				FA6301032F111800006805CC /* HanlinAgentCore in Frameworks */,
 				FA6301042F111800006805CC /* HanlinChatCore in Frameworks */,
+				FA6301052F111800006805CC /* HanlinChatUI in Frameworks */,
 				2A90C46D285B5A9100B6B44E /* ProtobufMessages in Frameworks */,
 				3DF266E12BE9382F0038249A /* Factory in Frameworks */,
 				2A90C46A285B5A9100B6B44E /* Services in Frameworks */,
@@ -453,6 +459,8 @@
 		0303ECF222D8EDAA005C552B = {
 			isa = PBXGroup;
 			children = (
+				FA9E00012F112700006805CC /* AnyNativeAttachmentIntentStoreTests.swift */,
+				FA9E00022F112700006805CC /* AnyNativeAttachmentMetadataTests.swift */,
 				FA9A00012F112500006805CC /* NativeDocumentPublicationTests.swift */,
 				FA9D00012F112700006805CC /* AnyNativePropertyPresentationTests.swift */,
 				FA9D00022F112700006805CC /* AnyNativeTextBlockCreationTests.swift */,
@@ -686,6 +694,7 @@
 				FA6201022F111800006805CC /* HanlinPlatformContracts */,
 				FA6201032F111800006805CC /* HanlinAgentCore */,
 				FA6201042F111800006805CC /* HanlinChatCore */,
+				FA6200072F111800006805CC /* HanlinChatUI */,
 				2A90C465285B5A9100B6B44E /* AnytypeCore */,
 				2A90C469285B5A9100B6B44E /* Services */,
 				2A90C46C285B5A9100B6B44E /* ProtobufMessages */,
@@ -961,6 +970,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA9E01012F112700006805CC /* AnyNativeAttachmentIntentStoreTests.swift in Sources */,
+				FA9E01022F112700006805CC /* AnyNativeAttachmentMetadataTests.swift in Sources */,
 				FA9A00022F112500006805CC /* NativeDocumentPublicationTests.swift in Sources */,
 				FA9D01012F112700006805CC /* AnyNativePropertyPresentationTests.swift in Sources */,
 				FA9D01022F112700006805CC /* AnyNativeTextBlockCreationTests.swift in Sources */,

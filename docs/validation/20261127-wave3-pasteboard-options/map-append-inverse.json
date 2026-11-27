@@ -1,0 +1,35 @@
+{
+  "after": {
+    "bytes": 230961,
+    "gitBlob": "686bf2d18b6a6311b131807e550420b9ccd932a9",
+    "sha256": "2b62f8f91f5314e978549e929bb9f8677bc49efee703c3ecf806bc6694f3be08"
+  },
+  "before": {
+    "bytes": 229148,
+    "gitBlob": "3a29602f002d2365045a6ef332895fe2d6b50c45",
+    "sha256": "39c392b12a80bd8fb5327f2edd6d9e7de075e926a98246c018f99af44b63b311"
+  },
+  "concurrentRootRows": "Rows17/102 and other separately reviewed SDK mapping changes are not modified. Append this row to the root-composed map; do not overwrite it with the illustrative full candidate.",
+  "fullInverseRestoresOriginal": true,
+  "insertedUTF8": ",\n    {\n      \"kind\": \"refactor\",\n      \"from\": \"Anytype/Sources/ServiceLayer/Block/Pastboard/PasteboardHelper.swift\",\n      \"to\": \"Anytype/Sources/ServiceLayer/Block/Pastboard/PasteboardHelper.swift\",\n      \"baselineBlob\": \"995df1ccf9a3131919d89bb398bed38594cb47f8\",\n      \"replacementBlob\": \"e7d115cd681318953bc669a436b72a730114f7ea\",\n      \"reason\": \"Supply the explicit empty PropertyListSerialization read options required by the current original Foundation API at the existing pasteboard decode call; preserve every other original byte and the existing decode/result/error behavior.\",\n      \"sharedSources\": [],\n      \"validation\": [\n        \"2026-11-27 Wave3: exact original586c98 and current2752229 source are byte-identical (6258 bytes, Git blob995df1ccf9a3131919d89bb398bed38594cb47f8, SHA2561edd18bf419c01fb88f72dcbca367e3417b2b8993394d1d0a3190dcb685b7eb0). One13-byte insertion of options:[] produces6271 bytes/Git blobe7d115cd681318953bc669a436b72a730114f7ea/SHA2560eee42f7036e43d74d82088b2bd21696dc3b248f4430e4c9dfc887bbbc1a60d9. The full literal inverse restores the entire original file.\",\n        \"The candidate equals the original Otzaria SDK owner d609 cutover result published as Maktabah1b9a917b: CUTOVER_RESULT.json SHA256277a572634499e1498614d9c7a313a2853cea0884f881e3b81edfe6934176e88. That receipt records a source-only fast-forward and builds_run0; full framework ancestry/ABI adoption remains separate.\",\n        \"Root authorized independent reuse against the exact current preimage. No framework target, SDK/native pin, account, storage, permission or public product API is changed. Apple compilation and native/runtime acceptance of this shared App delta remain NOT_RUN. See docs/validation/20261127-wave3-pasteboard-options/source-intake.json and literal-inverse.json.\"\n      ]\n    }",
+  "insertionByteOffset": 228811,
+  "newRow": {
+    "baselineBlob": "995df1ccf9a3131919d89bb398bed38594cb47f8",
+    "from": "Anytype/Sources/ServiceLayer/Block/Pastboard/PasteboardHelper.swift",
+    "kind": "refactor",
+    "reason": "Supply the explicit empty PropertyListSerialization read options required by the current original Foundation API at the existing pasteboard decode call; preserve every other original byte and the existing decode/result/error behavior.",
+    "replacementBlob": "e7d115cd681318953bc669a436b72a730114f7ea",
+    "sharedSources": [],
+    "to": "Anytype/Sources/ServiceLayer/Block/Pastboard/PasteboardHelper.swift",
+    "validation": [
+      "2026-11-27 Wave3: exact original586c98 and current2752229 source are byte-identical (6258 bytes, Git blob995df1ccf9a3131919d89bb398bed38594cb47f8, SHA2561edd18bf419c01fb88f72dcbca367e3417b2b8993394d1d0a3190dcb685b7eb0). One13-byte insertion of options:[] produces6271 bytes/Git blobe7d115cd681318953bc669a436b72a730114f7ea/SHA2560eee42f7036e43d74d82088b2bd21696dc3b248f4430e4c9dfc887bbbc1a60d9. The full literal inverse restores the entire original file.",
+      "The candidate equals the original Otzaria SDK owner d609 cutover result published as Maktabah1b9a917b: CUTOVER_RESULT.json SHA256277a572634499e1498614d9c7a313a2853cea0884f881e3b81edfe6934176e88. That receipt records a source-only fast-forward and builds_run0; full framework ancestry/ABI adoption remains separate.",
+      "Root authorized independent reuse against the exact current preimage. No framework target, SDK/native pin, account, storage, permission or public product API is changed. Apple compilation and native/runtime acceptance of this shared App delta remain NOT_RUN. See docs/validation/20261127-wave3-pasteboard-options/source-intake.json and literal-inverse.json."
+    ]
+  },
+  "newRows": 133,
+  "original132RowsUnchanged": true,
+  "originalRows": 132,
+  "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+  "schema": "pinkha-single-source-retention-row-append-v1"
+}

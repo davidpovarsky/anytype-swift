@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "/workspace/scratch/ae335eba85e3/wave3-w2-sdk61-intake/build_final_payload2.py",
+    "prepare"
+  ],
+  "compilerRuntimeOrHostActions": 0,
+  "diagnostic": "The source reader compared the entire stat_result, including access time which may change upon its own read. Exact original before/after timestamps were not captured; no content-change attribution is asserted. The successor retains inode/device/mode/ownership/size/mtime/ctime and open-FD identity while excluding atime.",
+  "exitCode": 1,
+  "failure": "ValueError: Input changed during read",
+  "originalStderr": "Traceback (most recent call last):\n  File \"/workspace/scratch/ae335eba85e3/wave3-w2-sdk61-intake/build_final_payload2.py\", line 537, in <module>\n    prepare() if options.mode == \"prepare\" else seal()\n    ^^^^^^^^^\n  File \"/workspace/scratch/ae335eba85e3/wave3-w2-sdk61-intake/build_final_payload2.py\", line 405, in prepare\n    inputs = load_inputs()\n             ^^^^^^^^^^^^^\n  File \"/workspace/scratch/ae335eba85e3/wave3-w2-sdk61-intake/build_final_payload2.py\", line 226, in load_inputs\n    take(path)\n  File \"/workspace/scratch/ae335eba85e3/wave3-w2-sdk61-intake/build_final_payload2.py\", line 148, in take\n    raw = read(path)\n          ^^^^^^^^^^\n  File \"/workspace/scratch/ae335eba85e3/wave3-w2-sdk61-intake/build_final_payload2.py\", line 103, in read\n    require(path.stat() == before and len(raw) == before.st_size, \"Input changed during read\")\n  File \"/workspace/scratch/ae335eba85e3/wave3-w2-sdk61-intake/build_final_payload2.py\", line 71, in require\n    raise ValueError(message)\nValueError: Input changed during read\n",
+  "preparedOutputCreated": false,
+  "schema": "pinkha-local-source-preparation-failure-v1",
+  "source": {
+    "bytes": 35237,
+    "gitBlob": "7f671404cbf7da320541e3287eca0476d2b9a41d",
+    "sha256": "3fbe3770c6c2bf228fd4e65414355e285710c81d6f9d6959116a6680f234a693"
+  }
+}

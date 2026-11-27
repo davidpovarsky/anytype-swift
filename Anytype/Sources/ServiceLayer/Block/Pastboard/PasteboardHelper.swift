@@ -85,7 +85,7 @@ final class PasteboardHelper: PasteboardHelperProtocol, Sendable {
                 guard let data = pasteboardData.first else { return nil }
 
                 // https://stackoverflow.com/questions/9164278/storing-nsarray-in-uipasteboard
-                let blockSlots = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String]
+                let blockSlots = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String]
                 return blockSlots
             }
         }

@@ -535,7 +535,11 @@ public struct AnyNativeSourceSearchView: View {
                     case .idle: Text(AnyUIErrorText.text("חפש מקור, נושא או מילה.", "Search for a source, topic, or word.")).foregroundStyle(.secondary)
                     case .loading: ProgressView()
                     case .empty: Text(AnyUIErrorText.text("לא נמצאו תוצאות", "No results"))
-                    case .error(let message): Text(message).foregroundStyle(.red)
+                    case .error(let message):
+                        Text(message).foregroundStyle(.red)
+                        Button(Loc.Pinkha.Home.retry) {
+                            Task { await presenter.performSearch() }
+                        }
                     case .results(let results):
                         ForEach(results) { result in
                             HStack(alignment: .top) {

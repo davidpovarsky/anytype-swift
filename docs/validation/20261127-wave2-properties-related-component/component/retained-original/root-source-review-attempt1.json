@@ -1,0 +1,13 @@
+{
+  "status": "ROOT_SOURCE_INSPECTION_ASSERTION_FAILED_NOT_PRODUCT_EXECUTION",
+  "commandExit": 1,
+  "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 26, in <module>\nAssertionError\n",
+  "cause": "Root independently assumed an extra trailing newline in the import prefix (89 bytes). The actual declared prefix is exactly four import lines ending in one newline, 88 bytes. Its following exact original suite suffix already starts with the separating newline.",
+  "observedPrefix": "import Foundation\nimport Testing\nimport TorahInspectorCore\n@testable import PinkhaAnyUI\n",
+  "observedSuffixSHA256": "ebd009a1cd8af9f768192d699f9af2c9dd977c939a4154773ebf5a4397402136",
+  "candidateSourceChanged": false,
+  "compilerInvocations": 0,
+  "testInvocations": 0,
+  "oracleOperations": 0,
+  "runtimeAdmission": false
+}

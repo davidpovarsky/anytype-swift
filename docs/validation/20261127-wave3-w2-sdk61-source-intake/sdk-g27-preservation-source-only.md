@@ -1,0 +1,11 @@
+
+
+## 2026-11-27 — Original SDK63 and G27 source preservation
+
+The reviewed four-package Hanlin source advances from `4cb6454c1c6e110ead73179c06ada9e909bf250b` to the actually published `5fffe60fbcec8b12ae2cc14bcb092884677f19b0`. The original source-only publisher has sole parent `8b548bbe5b1340a48e741191c41d6b30c73537df`, tree `a52fdb359190930d23a76877baf2fe8fa25101d6`, and the new non-force ref `codex/pinkha-sdk-native-follow-binding-20261127`. The actual successful receipt and exact remote readback are required; no planned commit or historical test result substitutes for them.
+
+Preserve the original SDK63 checkpoint, canonical cancellation and Composer behavior, Promise settlement correction, explicit-handler bridge and standalone companion boundary. Add only the reviewed original follow-overlay and G27 native-binding corrections. The shared mounted consumer uses the original binding generation without changing native account authority or the original SDK API. Three original G27 methods extend the existing20 selected UIKit methods to23; the two source projections change only their import. The original attachment metadata successor9986 retains3/13 and adds2/11, alongside original IntentStore3/4, for8 methods/28 cases. These are source selection requirements, not new runtime passes.
+
+The61 native source inputs,10 Stage1 UI inputs and separate2 Native23 UI inputs require their real common compiler receipts. Every existing false/null/empty activation remains closed. All56 original Package.resolved pins, Kit26 source, original ProtobufMessages package, original materializer, existing native8ac gate and protected T5 custody remain unchanged. No SDK materialization, native or Apple compile, fixture preparation, runtime, signing or delivery is authorized by this source record. Historical failures and receipts retain their original source and execution scope. Pending Inspector changes are outside this payload.
+
+Only existing retention-map row17's shared host blob and row102's SDK-manifest replacement blob change; all other132-row metadata and the complete original exception-register prefix remain exact. Pasteboard has the separate reviewed row133 and exception above. Full source inputs, literal inverses and original publication evidence are retained under `docs/validation/20261127-wave3-w2-sdk61-source-intake/`.

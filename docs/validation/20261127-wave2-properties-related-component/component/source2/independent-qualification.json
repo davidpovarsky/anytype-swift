@@ -1,0 +1,407 @@
+{
+  "actualCasesPassed": 11,
+  "actualJob": {
+    "duration_s": 19.21,
+    "exit_code": 0,
+    "finished_at": "2026-11-27T13:23:37.105768+00:00",
+    "id": "job_0bf2d13ad6f5",
+    "output_truncated": false,
+    "started_at": "2026-11-27T13:23:17.892086+00:00",
+    "status": "succeeded"
+  },
+  "actualMethodOutcomes": {
+    "asyncWaiterJoinsReadAndForwardsCallerCancellation(cancelCaller:)": {
+      "caseCount": 2,
+      "durationSeconds": 0.001,
+      "line": 32,
+      "rawLineSHA256WithoutNewline": "29945458740999af74ef09cc06fe3daa17bffa5a32f6f6106d0b788edd15bf32"
+    },
+    "noncooperativeOldCompletionCannotReplaceReopenedRequest(olderFails:changesDocumentOwner:)": {
+      "caseCount": 4,
+      "durationSeconds": 0.002,
+      "line": 20,
+      "rawLineSHA256WithoutNewline": "52419be1b6c60e2a64c49514888591d7d01d5fc2564a6c65eb09dc464d1554a6"
+    },
+    "queuedOldRequestCannotBorrowReopenedSheetAndCurrentFailureCanRetry()": {
+      "caseCount": 1,
+      "durationSeconds": 0.003,
+      "line": 10,
+      "rawLineSHA256WithoutNewline": "7dd0fa657407c372cc111d525ae1d33bcb58544fc2b44cc0e21b51e1b3a2e1c5"
+    },
+    "retirementDiscardsRowsAndRejectsANoncooperativeCompletion(fails:)": {
+      "caseCount": 2,
+      "durationSeconds": 0.001,
+      "line": 26,
+      "rawLineSHA256WithoutNewline": "01928ef2632efe79325b358d6c39a397bd4cfc98f8b001b7433a353a20a602c3"
+    },
+    "temporarilyInactiveOwnerFinishesItsRequestAndCanRetry(fails:)": {
+      "caseCount": 2,
+      "durationSeconds": 0.001,
+      "line": 38,
+      "rawLineSHA256WithoutNewline": "1af0fa27d212881d8f07971364553f622434d8b6166f8a3f7b5ce9944119dab8"
+    }
+  },
+  "actualMethodsPassed": 5,
+  "actualParameterizedCases": [
+    {
+      "parameters": {
+        "changesDocumentOwner": false,
+        "olderFails": false
+      },
+      "signature": "noncooperativeOldCompletionCannotReplaceReopenedRequest(olderFails:changesDocumentOwner:)"
+    },
+    {
+      "parameters": {
+        "changesDocumentOwner": true,
+        "olderFails": false
+      },
+      "signature": "noncooperativeOldCompletionCannotReplaceReopenedRequest(olderFails:changesDocumentOwner:)"
+    },
+    {
+      "parameters": {
+        "changesDocumentOwner": false,
+        "olderFails": true
+      },
+      "signature": "noncooperativeOldCompletionCannotReplaceReopenedRequest(olderFails:changesDocumentOwner:)"
+    },
+    {
+      "parameters": {
+        "changesDocumentOwner": true,
+        "olderFails": true
+      },
+      "signature": "noncooperativeOldCompletionCannotReplaceReopenedRequest(olderFails:changesDocumentOwner:)"
+    },
+    {
+      "parameters": {
+        "fails": false
+      },
+      "signature": "retirementDiscardsRowsAndRejectsANoncooperativeCompletion(fails:)"
+    },
+    {
+      "parameters": {
+        "fails": true
+      },
+      "signature": "retirementDiscardsRowsAndRejectsANoncooperativeCompletion(fails:)"
+    },
+    {
+      "parameters": {
+        "cancelCaller": false
+      },
+      "signature": "asyncWaiterJoinsReadAndForwardsCallerCancellation(cancelCaller:)"
+    },
+    {
+      "parameters": {
+        "cancelCaller": true
+      },
+      "signature": "asyncWaiterJoinsReadAndForwardsCallerCancellation(cancelCaller:)"
+    },
+    {
+      "parameters": {
+        "fails": false
+      },
+      "signature": "temporarilyInactiveOwnerFinishesItsRequestAndCanRetry(fails:)"
+    },
+    {
+      "parameters": {
+        "fails": true
+      },
+      "signature": "temporarilyInactiveOwnerFinishesItsRequestAndCanRetry(fails:)"
+    }
+  ],
+  "actualParameterizedPassedEvents": 10,
+  "actualParameterizedStartedEvents": 10,
+  "actualReadbackSHA256": "2d1bedc6203e9ea94660c53d0c97a0b4707a9638426b768295b44b6623a2f9ec",
+  "actualReceiptSHA256": "05971770c170562bc9ab8d01efff29ad459c440f6901f19ca84c116f07d543b4",
+  "actualSummary": "\u2714 Test run with 5 tests in 1 suite passed after 0.009 seconds.",
+  "actualToolchain": "Swift version 6.4.3 (swift-6.4.3-RELEASE)\nTarget: aarch64-unknown-linux-gnu",
+  "actualUnparameterizedCases": 1,
+  "compilerReadbacks": {
+    "compiler-filelists-and-stage.original.json": {
+      "bytes": 7420,
+      "sha256": "081cd8cd285550dacd67de771678a06525de176ec721b95d82e5c5e9ddd833b5"
+    },
+    "compiler-generated-inputs.original.json": {
+      "bytes": 20510,
+      "sha256": "6118337d690e9d2734a89b4f1c7f8ece3b46665cd0ecbb0535a59f881ed999e0"
+    }
+  },
+  "compilerWitnesses": [
+    {
+      "actualSwiftcInvocation": {
+        "exactLine": "    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyUI -Onone @/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/Modules/PinkhaAnyUI.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\\=86400 -Xcc -fmodules-prune-after\\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\\=1 -emit-objc-header -emit-objc-header-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI-Swift.h -working-directory /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127 -experimental-emit-module-separately -disable-cmo",
+        "fileListArgument": "@/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI.SwiftFileList",
+        "internalSwiftDriverJobs": 2,
+        "module": "PinkhaAnyUI",
+        "rawLineSHA256IncludingOriginalNewline": "65236fa30ddb70df746f33b9a4ae144bbba717553c3400953a943b31f9f4e2b2",
+        "stderrLine": 230,
+        "target": "aarch64-unknown-linux-gnu"
+      },
+      "fileList": {
+        "bytes": 140,
+        "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI.SwiftFileList",
+        "sha256": "4bb465e645f3753b253f93f39c1fc98fa80517ac43aa2c444ac160b124aad9db"
+      },
+      "members": [
+        {
+          "bytes": 5157,
+          "kind": "EXACT_COMPILED_COMPONENT_SOURCE",
+          "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/component/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift",
+          "sha256": "1cf8d0790e949b7592d4298dff0e788982ad3b0959c838350fe587d2c80e48c1"
+        }
+      ],
+      "module": "PinkhaAnyUI"
+    },
+    {
+      "actualSwiftcInvocation": {
+        "exactLine": "    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyUITests -Onone @/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/Modules/PinkhaAnyUITests.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\\=86400 -Xcc -fmodules-prune-after\\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\\=1 -working-directory /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127 -experimental-emit-module-separately -disable-cmo",
+        "fileListArgument": "@/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests.SwiftFileList",
+        "internalSwiftDriverJobs": 2,
+        "module": "PinkhaAnyUITests",
+        "rawLineSHA256IncludingOriginalNewline": "bcb464fd75530c77f51cf6a744b0dfca71e1ed6a8c01c86e4cf8d4c455540bad",
+        "stderrLine": 279,
+        "target": "aarch64-unknown-linux-gnu"
+      },
+      "fileList": {
+        "bytes": 365,
+        "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests.SwiftFileList",
+        "sha256": "a3ae61c3c1da15388ef7b3a924e6767783d0990f45ac486c46a1f733bc4415fd"
+      },
+      "members": [
+        {
+          "bytes": 47,
+          "kind": "ACTUAL_GENERATED_SOURCE",
+          "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources/test_anchor.swift",
+          "sha256": "0c4e28a96ba3e653365b244a8cdfbf32236172ffdeff2a8d952580efee24d62a"
+        },
+        {
+          "bytes": 13953,
+          "kind": "EXACT_COMPILED_COMPONENT_SOURCE",
+          "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/component/Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift",
+          "sha256": "15fa97a7e9467ab2657d4d87ea4cef8bd448819d75bf3a3a03182ac1f237fc4e"
+        }
+      ],
+      "module": "PinkhaAnyUITests"
+    },
+    {
+      "actualSwiftcInvocation": {
+        "exactLine": "    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -module-name PinkhaAnyUITests_test_runner -Onone @/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/Objects-normal/aarch64/PinkhaAnyUITests-test-runner.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Products/Debug-linux-aarch64 -parse-as-library -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/Objects-normal/aarch64/PinkhaAnyUITests-test-runner-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/Objects-normal/aarch64/Modules/PinkhaAnyUITests_test_runner.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\\=86400 -Xcc -fmodules-prune-after\\=345600 -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/Objects-normal/aarch64/PinkhaAnyUITests-test-runner_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\\=1 -working-directory /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127 -experimental-emit-module-separately -disable-cmo",
+        "fileListArgument": "@/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/Objects-normal/aarch64/PinkhaAnyUITests-test-runner.SwiftFileList",
+        "internalSwiftDriverJobs": 2,
+        "module": "PinkhaAnyUITests_test_runner",
+        "rawLineSHA256IncludingOriginalNewline": "b6a6b0ed345a389d6ab2dab31b79705fb41e3582b1faa07d6ba1ddffb1953892",
+        "stderrLine": 342,
+        "target": "aarch64-unknown-linux-gnu"
+      },
+      "fileList": {
+        "bytes": 233,
+        "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/Objects-normal/aarch64/PinkhaAnyUITests-test-runner.SwiftFileList",
+        "sha256": "558ec8f98f08737a4c6adeb123bee90ae3b0d04ae6405444cb810cfb7a1412fd"
+      },
+      "members": [
+        {
+          "bytes": 18962,
+          "kind": "ACTUAL_GENERATED_SOURCE",
+          "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/DerivedSources/test_entry_point.swift",
+          "sha256": "5e8c26522080ee850994b26e370570f81b92c69eb43511e3ba823cfec034767f"
+        }
+      ],
+      "module": "PinkhaAnyUITests_test_runner"
+    },
+    {
+      "actualSwiftcInvocation": {
+        "exactLine": "    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCore -Onone @/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\\=86400 -Xcc -fmodules-prune-after\\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\\=1 -emit-objc-header -emit-objc-header-path /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-Swift.h -working-directory /var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127 -experimental-emit-module-separately -disable-cmo",
+        "fileListArgument": "@/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.SwiftFileList",
+        "internalSwiftDriverJobs": 2,
+        "module": "TorahInspectorCore",
+        "rawLineSHA256IncludingOriginalNewline": "8763d79f808ba4cbaff95a553d17bea72d6b14d4d107e9c2e980ac2c1f8d4d48",
+        "stderrLine": 183,
+        "target": "aarch64-unknown-linux-gnu"
+      },
+      "fileList": {
+        "bytes": 117,
+        "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.SwiftFileList",
+        "sha256": "852f3cdf9fb7aed787df25873fdf085a49e95ca2e4574ebf93fbe7ae37891a74"
+      },
+      "members": [
+        {
+          "bytes": 24592,
+          "kind": "EXACT_COMPILED_COMPONENT_SOURCE",
+          "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/component/Sources/TorahInspectorCore/Models.swift",
+          "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0"
+        }
+      ],
+      "module": "TorahInspectorCore"
+    }
+  ],
+  "diagnostics": {
+    "compilerErrors": [],
+    "warningLabels": [
+      {
+        "kind": "Verbose package-manifest frontend invocation",
+        "line": 1,
+        "rawLineSHA256WithoutNewline": "32203abe74c30a1f6526af72f806b864ffaf2e58e60004af63c94ddf513d56ef"
+      }
+    ]
+  },
+  "findings": [],
+  "generatedSources": [
+    {
+      "bytes": 47,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources/test_anchor.swift",
+      "sha256": "0c4e28a96ba3e653365b244a8cdfbf32236172ffdeff2a8d952580efee24d62a"
+    },
+    {
+      "bytes": 18962,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/DerivedSources/test_entry_point.swift",
+      "sha256": "5e8c26522080ee850994b26e370570f81b92c69eb43511e3ba823cfec034767f"
+    }
+  ],
+  "internalSwiftDriverJobsObserved": [
+    2
+  ],
+  "jobOriginalSHA256": "23b27d03f944d4caf1b613a3591f23592f2864d5fa10469b729a016266c86f34",
+  "originalFailureRetained": {
+    "compilerExit": 1,
+    "mutated": false,
+    "receiptSHA256": "8fbaf3c6dd6b57bc577d7f91ba54403f2ee57ee350d37a0280da74d17c405ceb",
+    "testEvents": 0
+  },
+  "ownedCleanup": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T13:23:37.079302+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 759204,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "historicalGroupReprobed": false,
+    "processGroup": 759204,
+    "status": "PASS_OWNED_GROUP_ABSENT"
+  },
+  "rawArtifactsVerified": [
+    {
+      "bytes": 9049,
+      "name": "receipt.json",
+      "sha256": "05971770c170562bc9ab8d01efff29ad459c440f6901f19ca84c116f07d543b4"
+    },
+    {
+      "bytes": 647,
+      "name": "invocation.json",
+      "sha256": "2b251f774a70974ccf4b2533c575f66fd88891c30cc516a94cb9d39c834403f4"
+    },
+    {
+      "bytes": 100,
+      "name": "process.json",
+      "sha256": "14aff24285bf940432b76fc9d3eb201c8345043850b821f0c207011c769cd43b"
+    },
+    {
+      "bytes": 4628,
+      "name": "resource-samples.json",
+      "sha256": "a0cc8e5f6eda1c09677a5039c1b938ef19007994cb7551375a0f981f74ce0898"
+    },
+    {
+      "bytes": 639,
+      "name": "source-inputs-after.json",
+      "sha256": "7902ca3123030725dd98041627bf56dcdd0ca540a6bd1e444db725dd5b538571"
+    },
+    {
+      "bytes": 639,
+      "name": "source-inputs-before.json",
+      "sha256": "7902ca3123030725dd98041627bf56dcdd0ca540a6bd1e444db725dd5b538571"
+    },
+    {
+      "bytes": 82452,
+      "name": "stderr.original.log",
+      "sha256": "4ae892b0779f2ab41837de4accb98599d311cf13075c0ccaea62f7fc037e912f"
+    },
+    {
+      "bytes": 5260,
+      "name": "stdout.original.log",
+      "sha256": "94ce0937bce51713bd1eb533eb7b33359c4eb77fa66ea40766a2ebac11964de4"
+    },
+    {
+      "bytes": 76,
+      "name": "toolchain.original.log",
+      "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce"
+    }
+  ],
+  "resourceSamples": {
+    "count": 20,
+    "minimumFreeBytes": 2467921920,
+    "minimumMemAvailableBytes": 4419330048,
+    "originalAdmission": {
+      "allowanceIsEstimate": true,
+      "atUTC": "2026-11-27T13:23:17.992712+00:00",
+      "freeBytes": 2526584832,
+      "incrementalAllowanceBytes": 268435456,
+      "jobs": 1,
+      "liveDiskFloorBytes": 2147483648,
+      "load": [
+        0.50439453125,
+        0.90185546875,
+        1.095703125
+      ],
+      "memAvailableBytes": 4624998400,
+      "minimumAvailableMemoryBytes": 1610612736,
+      "swapFreeBytes": 94208
+    }
+  },
+  "reviewOperations": {
+    "compilerOrTestsRerun": 0,
+    "historicalProcessProbes": 0,
+    "originalReceiptsMutated": false,
+    "remoteHostCalls": 0,
+    "shippingSourceEdits": 0
+  },
+  "reviewedAtUTC": "2026-11-27T13:27:57.956873+00:00",
+  "reviewer": "/root/editor",
+  "schema": "pinkha.wave2.properties.actual-component.independent-qualification.v1",
+  "scopeBoundary": {
+    "AppleCompilation": "NOT_RUN",
+    "MixedAppOSLanguage": "NOT_RUN",
+    "NativeServices": "NOT_RUN",
+    "PhysicalDevice": "NOT_RUN",
+    "SwiftUICallersCompilation": "NOT_RUN",
+    "VisibleUI": "NOT_RUN",
+    "derivedMinimalPackage": true,
+    "exactProductionModelCompiled": true,
+    "fullAppCompilation": "NOT_RUN",
+    "fullCoreModelsCompiled": true,
+    "fullKitCompilation": "NOT_RUN",
+    "fullOriginalTestFileCompiled": false,
+    "newSuiteSuffixPlusImportsOnly": true,
+    "oldFiveIdentityMethodsSelected": 0,
+    "sharedProductAdmissionOpened": false
+  },
+  "sourceInputBeforeAfter": {
+    "Package.swift": {
+      "bytes": 677,
+      "sha256": "b6aae03e2f5dab5d8e80b582f2def376c527ef115f51ed5fa2981fa794560548"
+    },
+    "Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift": {
+      "bytes": 5157,
+      "sha256": "1cf8d0790e949b7592d4298dff0e788982ad3b0959c838350fe587d2c80e48c1"
+    },
+    "Sources/TorahInspectorCore/Models.swift": {
+      "bytes": 24592,
+      "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0"
+    },
+    "Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift": {
+      "bytes": 13953,
+      "sha256": "15fa97a7e9467ab2657d4d87ea4cef8bd448819d75bf3a3a03182ac1f237fc4e"
+    }
+  },
+  "sourceInputBeforeAfterSHA256": "7902ca3123030725dd98041627bf56dcdd0ca540a6bd1e444db725dd5b538571",
+  "sourceProvenance": {
+    "fullTestSHA256": "629b751244d0b87020ffa3a21e27c2123274b2c26e39aed3aae3bbdade36f2aa",
+    "newSuiteSuffixSHA256": "a9a92d220b39e3987fc8877f1cbf26ffcec67fce77c8d24a4b4fe99f35c5e851",
+    "productionModelSourceCommit": "21d63bef8950f8b927f0d8d3b4b052758bc98fcb",
+    "publishedTestSourceCommit": null,
+    "runnerSHA256": "1e4bf0b6fe7ad5bc0005513aaad0d2b7429dde623592355f4f774420184f54f5",
+    "testSourceBaseCommit": "21d63bef8950f8b927f0d8d3b4b052758bc98fcb",
+    "testSourceStatus": "UNPUBLISHED_TEST_ONLY_SUCCESSOR"
+  },
+  "status": "QUALIFIED_ACTUAL_FIVE_METHODS_ELEVEN_CASES_EXACT_SOURCE_MODEL_COMPONENT_ONLY",
+  "swiftPMJobsArgument": 1
+}

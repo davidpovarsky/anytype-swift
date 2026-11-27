@@ -1,0 +1,46 @@
+{
+  "status": "PASS_SOURCE_REVIEW_ONLY_NOT_COMPILED_NOT_RUN",
+  "reviewer": "/root",
+  "observedUTC": "2026-11-27T12:59:51.192104+00:00",
+  "baseCommit": "f731e30409b7b479d9ed5e87280624485c181da8",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "bytes": 38709,
+      "sha256": "75cac2b2b7ffe0d84e0f461d80c94e3be48d804896170a2b67e895e006977631",
+      "gitBlob": "187df84fbe9b74b9cd2a98c40efa2d9579ad7599",
+      "change": "modified"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift",
+      "bytes": 4744,
+      "sha256": "b9d0f1b8c72e503d4e4952b33f519fc93680d54a8384e828f001d498ddd71a91",
+      "gitBlob": "feafbcdeb1d3c1849fc8445c23d686c1162db22a",
+      "change": "added"
+    }
+  ],
+  "independentChecks": [
+    "Both frozen candidate byte counts, SHA256 and Git blob IDs independently match manifest.",
+    "Complete inverse restores original 38543 bytes and retained actual f731 GitHub primary readback, not a regenerated substitute.",
+    "Only row initializer changes: two absence fallbacks, separate present-type guards and original Native name/MIME byte bounds16384/1024. Null and other present non-string values still fail.",
+    "All bytes beyond row initializer are original, including raw field equality, empty MIME fallback, MiniApps, preview, uploads, claim recovery and authority checks.",
+    "Three actual-production decoder methods declare1+2+10 cases; correct UTF8 exact-bound/+1 Hebrew case, original identity/size/state rejection and omission/empty/raw spelling cases. No replacement decoder or Native execution.",
+    "Read actual retained e96 uploader83e primary metadata authority: optionalString only permits absence/String, resolved name16384/MIME1024. New list inline guard remains excluded pending exact Native list source."
+  ],
+  "originalSHA256": "7c520f26f70eb21f3e4939a29107d5cccb3e9172c6cdceed37149416d5315801",
+  "inverseSHA256": "e236555c4b4230ee2ed6d519824beebb33a546193761a7070f7c00929dc3227a",
+  "peerReviewSHA256": "eb060bc06e9ceee995c1ab6eeeca88c6e5171e10d7947299f0095a35bd545134",
+  "declaredTests": {
+    "methods": 3,
+    "cases": 13,
+    "executions": 0
+  },
+  "actualCompiler": false,
+  "actualNative": false,
+  "runtimeAdmission": false,
+  "limits": [
+    "No Swift parse/typecheck/Apple compile/run.",
+    "Test input requires actual target/compiler inventory before matching product qualification.",
+    "No claim that source metadata compatibility proves cold-reopen, unknown ACK, physical protection, mounted UI or original list-inline requiredness."
+  ]
+}

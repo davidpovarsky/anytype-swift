@@ -1,0 +1,80 @@
+{
+  "schema": "wave2-mixed-app-os-language-audit/v1",
+  "status": "NO_PROVEN_DEFECT_IN_AUDITED_LOCALE_SELECTION_SOURCE_ONLY",
+  "baseCommit": "e4556ba1edbf7c698eb04cb1ecc9caaeed34e1ff",
+  "rootTree": "e4781f05f8700d506317d6f43aeadbeb0c89dee9",
+  "sourceManifestSHA256": "5aa7a9e696f6993bbada19d6776509a02c6df8c981554401b71a77a6381844a6",
+  "scope": "AnyUIErrorText, related-document title formatting, original app entry/Settings/Loc resolver, and existing shared SwiftUI Torah locale seam.",
+  "findings": [
+    {
+      "id": "LANG-PLATFORM-01",
+      "classification": "CONTRACT_CLARIFICATION_NOT_RUNTIME_ACCEPTANCE",
+      "detail": "Official current Foundation documentation says autoupdatingCurrent reflects per-app Settings choices and supported locales. No OS-only assumption is valid."
+    },
+    {
+      "id": "LANG-SOURCE-01",
+      "classification": "EXISTING_SHARED_SEAM",
+      "detail": "Loc resource lookup is bundle-based. Properties rows and both Heart/Native shared presentation hosts pass SwiftUI locale to the common formatter/session."
+    },
+    {
+      "id": "LANG-SOURCE-02",
+      "classification": "BOUNDED_NEGATIVE_FINDING",
+      "detail": "Inspected AppScene, GlobalEnv, EngineScene, SceneDelegate and Settings/Appearance bodies contain no separate custom application-language or SwiftUI-locale override. This is not repository-wide absence proof."
+    },
+    {
+      "id": "LANG-ENV-01",
+      "classification": "CONDITIONAL_FUTURE_BOUNDARY_NOT_CURRENT_DEFECT",
+      "detail": "An explicit subtree-only locale override could diverge from model autoupdatingCurrent. Such an app-language override is not established by the inspected current production path."
+    }
+  ],
+  "resourceSourceEvidence": {
+    "appResourceTrees": {
+      "en.lproj": "b7c3788680bdf2301e15225cb3bc495c12aa0a16",
+      "he.lproj": "39536f22da033b92e361fb7a20410999c9761d2e"
+    },
+    "compiledBundleChecked": false,
+    "locAuth": {
+      "path": "Modules/Loc/Sources/Loc/Resources/Auth.xcstrings",
+      "gitBlob": "86c6301edc3c17fe01eb563bb045161eb397c8f2",
+      "sha256": "8ee4b81dfe98236853f6ba3949148ca2c2c8ca78aefdaf676c40aa128aa33161",
+      "bytes": 353547,
+      "currentBlobMatchesRetainedPrimaryEvidence": true,
+      "retainedEvidenceSHA256": "10779e3a6444921ecedcd4b0409be0d83cf20972bb1bb4fa99ee67d03232d57c",
+      "languagesObserved": [
+        "he",
+        "en"
+      ]
+    }
+  },
+  "frozenTranchesUnchanged": {
+    "lifetimeCommit": "21d63bef8950f8b927f0d8d3b4b052758bc98fcb",
+    "accessorCandidateSHA256": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",
+    "AnyUIErrorTextBodyExactAcrossAllThree": true,
+    "errorBodySHA256": "50f35741ee3d0527e438f231b539692872e7db44c4c1f82652fd056e8938e6f8",
+    "relatedTitleExpressionExactAcrossAllThree": true
+  },
+  "proposal": "No product patch from this source audit. On actual mismatch, reuse the existing effective-locale/Loc seam at the failing caller; do not add a global override or duplicate resolver without evidence.",
+  "pendingAcceptance": [
+    {
+      "appLanguage": "he",
+      "osLanguage": "en",
+      "scope": "Actual bundle locale/resources, Properties row/title, known error, RTL under existing coordinated UI lane."
+    },
+    {
+      "appLanguage": "en",
+      "osLanguage": "he",
+      "scope": "Corresponding actual English locale/resources/row/title/error and LTR."
+    }
+  ],
+  "operations": {
+    "productEdits": 0,
+    "oracle": 0,
+    "mac": 0,
+    "compiler": 0,
+    "native": 0,
+    "simulator": 0,
+    "xctest": 0
+  },
+  "runtimeAdmission": false,
+  "uiAcceptance": false
+}

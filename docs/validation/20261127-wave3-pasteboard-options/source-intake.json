@@ -1,0 +1,76 @@
+{
+  "baselineAndCurrentByteIdentical": true,
+  "baselineCommit": "586c98bcc17dee425664224e508fc0e8df277678",
+  "candidate": {
+    "bytes": 6271,
+    "gitBlob": "e7d115cd681318953bc669a436b72a730114f7ea",
+    "sha256": "0eee42f7036e43d74d82088b2bd21696dc3b248f4430e4c9dfc887bbbc1a60d9"
+  },
+  "compilerTestsNativeRuns": 0,
+  "currentCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "exclusionReason": null,
+  "gate": {
+    "bytes": 7239,
+    "executed": false,
+    "gitBlob": "5b579e9bbb5a82981b5aef7d649f2caf88e998b6",
+    "path": "Tools/AnyEnginePort/verify_source_retention.py",
+    "sha256": "f69d6a465db0517c5b41143c9b54aa275ecc6cbc63de6e9d20bc074d98feabf0",
+    "sourceOnlyRead": true
+  },
+  "localPreparationDiagnostic": "An earlier inline packet script failed Python parsing on a non-ASCII bytes literal before any statement ran. The corrected source packet uses explicit UTF-8 encoding. No candidate test or retention gate was executed.",
+  "map": {
+    "appendRows": 1,
+    "applyPolicy": "Root appends only this exact row after its own17/102 and other reviewed composition changes. The full illustrative map must not overwrite the root-composed map.",
+    "illustrativeCandidate": {
+      "bytes": 230961,
+      "gitBlob": "686bf2d18b6a6311b131807e550420b9ccd932a9",
+      "sha256": "2b62f8f91f5314e978549e929bb9f8677bc49efee703c3ecf806bc6694f3be08"
+    },
+    "inverse": "map-append-inverse.json",
+    "original": {
+      "bytes": 229148,
+      "gitBlob": "3a29602f002d2365045a6ef332895fe2d6b50c45",
+      "sha256": "39c392b12a80bd8fb5327f2edd6d9e7de075e926a98246c018f99af44b63b311"
+    },
+    "originalRows": 132,
+    "originalRowsPreserved": true,
+    "resultRows": 133,
+    "rowFile": "proposed-row133.json"
+  },
+  "noFrameworkTargetSDKNativeOrABIChange": true,
+  "noOtherSourceChanges": true,
+  "original": {
+    "bytes": 6258,
+    "gitBlob": "995df1ccf9a3131919d89bb398bed38594cb47f8",
+    "sha256": "1edd18bf419c01fb88f72dcbca367e3417b2b8993394d1d0a3190dcb685b7eb0"
+  },
+  "originalSourceProtectedByCurrentGate": true,
+  "publicationBoundary": "This independent exact-preimage one-hunk correction does not wait for unavailable donor ancestry. Root accepted its reuse in principle. Full OriginalEditorFramework/SDK/ABI closure remains separate and pending.",
+  "remoteOrRepositoryWrites": 0,
+  "reviewedAt": "2026-11-27T14:26:43.541402+00:00",
+  "schema": "pinkha-original-pasteboard-retention-proposal-v1",
+  "sourceCandidateIntake": {
+    "bytes": 3748,
+    "gitBlob": "6f461025ebc9c26241c2b1aafe2f49dfee74a25a",
+    "path": "/workspace/scratch/ae335eba85e3/otzaria-pasteboard-quarantined-candidate/source-intake.json",
+    "sha256": "bae177fccfec9a168c3358b033cfffea2db39c384a3008204cbaa5cf8e2a8f48"
+  },
+  "sourcePath": "Anytype/Sources/ServiceLayer/Block/Pastboard/PasteboardHelper.swift",
+  "sourceRetentionGateResult": "NOT_RUN_BY_THIS_SOURCE_PROPOSAL; root verifies the actual staged combined tree",
+  "status": "READY_SOURCE_PROPOSAL_NOT_APPLIED_OR_TESTED",
+  "suggestedGitEvidencePrefix": "docs/validation/20261127-wave3-pasteboard-options/",
+  "upstreamException": {
+    "illustrativeCandidate": {
+      "bytes": 97768,
+      "gitBlob": "5782a19d9ee1fead5375183d6a18a9e288296bd2",
+      "sha256": "6e6543d4fb02d4cb825d563e64bd865895142d204cb23e77ea97b3b7f78d6d8d"
+    },
+    "inverse": "exception-append-inverse.json",
+    "original": {
+      "bytes": 94800,
+      "gitBlob": "a9ff1204a091b7fe0f6c66cb46946734af6af188",
+      "sha256": "88342aaa61342b5cabdfe7a67f37c7cbb1cf92e02dd82ea62e29fcde06e89ecf"
+    },
+    "originalPrefixRetained": true
+  }
+}

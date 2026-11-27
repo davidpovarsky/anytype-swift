@@ -1,0 +1,73 @@
+{
+  "schema": "wave2-independent-source-review/v1",
+  "status": "PASS_SOURCE_REVIEW_NO_CONCRETE_BLOCKER_NOT_COMPILED_NOT_RUN",
+  "reviewer": "/root/torah_continue",
+  "observedUTC": "2026-11-27T12:58:20.173415+00:00",
+  "baseCommit": "f731e30409b7b479d9ed5e87280624485c181da8",
+  "reviewedFiles": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "bytes": 38709,
+      "sha256": "75cac2b2b7ffe0d84e0f461d80c94e3be48d804896170a2b67e895e006977631",
+      "gitBlob": "187df84fbe9b74b9cd2a98c40efa2d9579ad7599",
+      "change": "modified"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift",
+      "bytes": 4744,
+      "sha256": "b9d0f1b8c72e503d4e4952b33f519fc93680d54a8384e828f001d498ddd71a91",
+      "gitBlob": "feafbcdeb1d3c1849fc8445c23d686c1162db22a",
+      "change": "added"
+    }
+  ],
+  "scope": "Only the two actual list-row initializer substitutions and the three new production-decoder test methods; no independent review credit for unchanged transport, upload, journal, authorization or native storage behavior.",
+  "checks": [
+    "Independently reversed both exact offset/base64 edits and recovered every original byte (7c520f26f70eb21f3e4939a29107d5cccb3e9172c6cdceed37149416d5315801). Original is byte-equal to retained f731 primary GitHub readback, Git blob57f3c5ca438c8929ffe29550098e4a39488869b1.",
+    "Read the retained e96 metadata authority (SHA83e4618ee93a04ce407a62926a0bffbb1752756a59b38e6e5e5d636bad9138a6): optionalString permits only absence or String; resolved name/MIME bounds are16384/1024. No new native contract or inferred list-inline requirement is introduced.",
+    "AnyJSON represents explicit null separately from absent dictionary entries. Each new presence/type guard rejects present null and all present non-String values even though the local fallback is empty. Non-object values still fail unchanged file/identity/state guards.",
+    "The real decoder remains a nonisolated Sendable value initializer. New tests call it directly under the identical UIKit/HanlinMiniAppsBridge conditional. AnyJSON.integer is Int64; existing host error is Equatable; single #require and #expect(throws: exact error) usages have no identified macro/type blocker from source inspection.",
+    "Reviewed all3 methods/13 declared cases: one omission/empty/fallback/content-comparison case, two exact UTF8 upper-bound/+1 cases, ten invalid present-type/identity/size/state cases. Hebrew name uses8192 two-byte characters; MIME uses12+1012 ASCII bytes. No fake native call or replacement decoder.",
+    "Unchanged name/MIME spelling, empty-MIME fallback, file/object/size/cache/durable/root fields and sameContent body remain exact. No new normalization, authority grant, MiniApps action or uploader behavior is included."
+  ],
+  "limitations": [
+    "Source review only; no Swift parser/compiler, Swift Testing/XCTest, Apple/Native/simulator/device or host calls were performed.",
+    "The new test file must be present in the actual target/compiler input and executed against its matching future product before it receives test acceptance.",
+    "The upload reader is the retained metadata authority for this narrow compatibility change; original FilesV2 list inline-field requiredness remains unresolved and unchanged.",
+    "The retained AnyJSON and AnyHostError declarations were inspected locally. They were not newly fetched from GitHub by this review; no broad engine contract validation is claimed."
+  ],
+  "evidence": {
+    "inverse": {
+      "path": "interfaces_work/attachment-metadata-projection/source-inverse.json",
+      "sha256": "e236555c4b4230ee2ed6d519824beebb33a546193761a7070f7c00929dc3227a",
+      "bytes": 1631
+    },
+    "originalPrimaryReadback": {
+      "path": "interfaces_work/attachment-upload-ui/publication/api/source-readback/AnyNativeAttachments.swift.json",
+      "sha256": "29e16e7c6aed666fe6591ce850b8d186b2222d9dd2883bf255ce6f5c88d91b8a",
+      "bytes": 39856
+    },
+    "metadataAuthority": {
+      "path": "interfaces_work/attachment-upload-ui/wave1-source/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift",
+      "sha256": "83e4618ee93a04ce407a62926a0bffbb1752756a59b38e6e5e5d636bad9138a6",
+      "bytes": 14691
+    },
+    "AnyJSONDeclaration": {
+      "path": "interfaces_work/native-styled-rtl/source/AnyJSON.swift",
+      "sha256": "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d",
+      "bytes": 2600
+    },
+    "AnyHostErrorDeclaration": {
+      "path": "interfaces_work/attachment-upload-ui/source/AnyApplicationSession.swift",
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+      "bytes": 5633
+    }
+  },
+  "actualExecutions": {
+    "compiler": 0,
+    "tests": 0,
+    "Native": 0,
+    "Apple": 0,
+    "host": 0
+  },
+  "runtimeAdmission": false
+}

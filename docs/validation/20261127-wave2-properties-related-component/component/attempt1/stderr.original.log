@@ -1,0 +1,447 @@
+warning: 'component': /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-frontend -frontend -c -primary-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component/Package.swift -target aarch64-unknown-linux-gnu -Xllvm -aarch64-use-tbi -disable-objc-interop -I /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -vfsoverlay /tmp/TemporaryDirectory.04yuEL/vfs.yaml -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/swiftpm-module-cache -no-color-diagnostics -Xcc -fno-color-diagnostics -swift-version 6 -package-description-version 6.0.0 -empty-abi-descriptor -no-auto-bridging-header-chaining -module-name main -in-process-plugin-server-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins -plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/local/lib/swift/host/plugins -o /tmp/TemporaryDirectory.lnCqXP/Package-1.o
+/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-autolink-extract /tmp/TemporaryDirectory.lnCqXP/Package-1.o -o /tmp/TemporaryDirectory.lnCqXP/main-1.autolink
+/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/clang -pie -Xlinker --build-id -Xlinker -rpath -Xlinker /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/aarch64/swiftrt.o /tmp/TemporaryDirectory.lnCqXP/Package-1.o @/tmp/TemporaryDirectory.lnCqXP/main-1.autolink -L /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -lswiftCore --target=aarch64-unknown-linux-gnu -v -L /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -lPackageDescription -Xlinker -rpath -Xlinker /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -o /tmp/TemporaryDirectory.KVBgUA/component-manifest
+Swift version 6.4.3 (swift-6.4.3-RELEASE)
+Target: aarch64-unknown-linux-gnu
+clang version 21.0.0 (https://github.com/swiftlang/llvm-project.git fb5f84d903a3b4e7aea15cd5666598a46f56c833)
+Target: aarch64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin
+Found candidate GCC installation: /usr/lib/gcc/aarch64-linux-gnu/13
+Selected GCC installation: /usr/lib/gcc/aarch64-linux-gnu/13
+Candidate multilib: .;@m64
+Selected multilib: .;@m64
+ "/usr/bin/ld.gold" -EL -z relro --hash-style=gnu --eh-frame-hdr -m aarch64linux -pie -dynamic-linker /lib/ld-linux-aarch64.so.1 -o /tmp/TemporaryDirectory.KVBgUA/component-manifest /lib/aarch64-linux-gnu/Scrt1.o /lib/aarch64-linux-gnu/crti.o /usr/lib/gcc/aarch64-linux-gnu/13/crtbeginS.o -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux -L/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -L/usr/lib/gcc/aarch64-linux-gnu/13 -L/lib/aarch64-linux-gnu -L/usr/lib/aarch64-linux-gnu -L/lib -L/usr/lib --build-id -rpath /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/linux/aarch64/swiftrt.o /tmp/TemporaryDirectory.lnCqXP/Package-1.o -lswiftSwiftOnoneSupport -lswiftCore -lswift_Concurrency -lswift_StringProcessing -lswift_RegexParser -lswiftCore -lPackageDescription -rpath /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/pm/ManifestAPI -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/aarch64-linux-gnu/13/crtendS.o /lib/aarch64-linux-gnu/crtn.o
+Building for debugging...
+Planning build
+[Computing dependencies]
+Compute target dependency graph
+info: Building targets in dependency order
+info: Target dependency graph (6 targets)
+info: Target 'AllIncludingTests' in project 'Aggregate'
+info: ➜ Explicit dependency on target 'PinkhaAnyUITests-product' in project 'PropertiesSourceDocumentsComponent'
+info: ➜ Explicit dependency on target 'PinkhaAnyUITests-test-runner' in project 'PropertiesSourceDocumentsComponent'
+info: ➜ Explicit dependency on target 'PinkhaAnyUI-product' in project 'PropertiesSourceDocumentsComponent'
+info: ➜ Explicit dependency on target 'PinkhaAnyUI' in project 'PropertiesSourceDocumentsComponent'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'PropertiesSourceDocumentsComponent'
+info: Target 'PinkhaAnyUI-product' in project 'PropertiesSourceDocumentsComponent'
+info: ➜ Explicit dependency on target 'PinkhaAnyUI' in project 'PropertiesSourceDocumentsComponent'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'PropertiesSourceDocumentsComponent'
+info: Target 'PinkhaAnyUITests-test-runner' in project 'PropertiesSourceDocumentsComponent'
+info: ➜ Explicit dependency on target 'PinkhaAnyUITests-product' in project 'PropertiesSourceDocumentsComponent'
+info: Target 'PinkhaAnyUITests-product' in project 'PropertiesSourceDocumentsComponent'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'PropertiesSourceDocumentsComponent'
+info: ➜ Explicit dependency on target 'PinkhaAnyUI' in project 'PropertiesSourceDocumentsComponent'
+info: Target 'PinkhaAnyUI' in project 'PropertiesSourceDocumentsComponent'
+info: ➜ Explicit dependency on target 'TorahInspectorCore' in project 'PropertiesSourceDocumentsComponent'
+info: Target 'TorahInspectorCore' in project 'PropertiesSourceDocumentsComponent' (no dependencies)
+Gather provisioning inputs
+Planning complete
+[Pre-planning 1 / 153]
+Discovering version info for clang
+Discovering version info for swiftc
+Discovering version info for ld
+[Planning deferred tasks]
+Create build description
+Build description signature: ea2c5ceaff2ee3bc128f998ab9fe6bc1f1e6af33a3e267baac537ac231ae61d0
+Build description path: /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/XCBuildData/ea2c5ceaff2ee3bc128f998ab9fe6bc1f1e6af33a3e267baac537ac231ae61d0.xcbuilddata
+Create build directory $(DERIVED_DATA_DIR)/SDKExplicitPrecompiledModules
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/SDKExplicitPrecompiledModules
+
+Create build directory $(TARGET_BUILD_DIR)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products
+
+Create build directory $(DERIVED_DATA_DIR)/PCH
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/PCH
+
+Create build directory $(TARGET_BUILD_DIR)/Debug-linux-aarch64
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64
+
+Create build directory $(DERIVED_DATA_DIR)/ModuleCache.noindex
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex
+
+Create build directory $(TARGET_BUILD_DIR)/Debug-linux-aarch64/PackageFrameworks
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/PackageFrameworks
+
+Create build directory $(OBJROOT)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex
+
+Create build directory $(DERIVED_DATA_DIR)/CompilationCache.noindex
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/CompilationCache.noindex
+
+Create build directory $(OBJROOT)/SwiftExplicitPrecompiledModules
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+Create build directory $(OBJROOT)/ExplicitPrecompiledModules
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/ExplicitPrecompiledModules
+
+Create build directory $(OBJROOT)/EagerLinkingTBDs/Debug-linux-aarch64
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-create-build-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/EagerLinkingTBDs/Debug-linux-aarch64
+
+Write TorahInspectorCore.modulemap
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/TorahInspectorCore.modulemap
+
+Write TorahInspectorCore_const_extract_protocols.json (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore_const_extract_protocols.json
+
+Write TorahInspectorCore.SwiftFileList (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.SwiftFileList
+
+Write TorahInspectorCore.LinkFileList (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.LinkFileList
+
+Write TorahInspectorCore-OutputFileMap.json (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-OutputFileMap.json
+
+Copy TorahInspectorCore.modulemap
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/TorahInspectorCore.modulemap /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64
+
+Write PinkhaAnyUITests-test-runner_const_extract_protocols.json (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/Objects-normal/aarch64/PinkhaAnyUITests-test-runner_const_extract_protocols.json
+
+Write PinkhaAnyUITests-test-runner.SwiftFileList (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/Objects-normal/aarch64/PinkhaAnyUITests-test-runner.SwiftFileList
+
+Write PinkhaAnyUITests-test-runner.LinkFileList (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/Objects-normal/aarch64/PinkhaAnyUITests-test-runner.LinkFileList
+
+Write PinkhaAnyUITests-test-runner-OutputFileMap.json (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-test-runner.build/Objects-normal/aarch64/PinkhaAnyUITests-test-runner-OutputFileMap.json
+
+Write PinkhaAnyUITests_const_extract_protocols.json (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests_const_extract_protocols.json
+
+Write PinkhaAnyUITests.SwiftFileList (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests.SwiftFileList
+
+Write PinkhaAnyUITests.LinkFileList (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests.LinkFileList
+
+Write PinkhaAnyUITests-OutputFileMap.json (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests-OutputFileMap.json
+
+Write test_anchor.swift
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources/test_anchor.swift
+
+Write PinkhaAnyUI.LinkFileList (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-product-p.build/Objects-normal/aarch64/PinkhaAnyUI.LinkFileList
+
+Write PinkhaAnyUI.modulemap
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/PinkhaAnyUI.modulemap
+
+Write PinkhaAnyUI_const_extract_protocols.json (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI_const_extract_protocols.json
+
+Write PinkhaAnyUI.SwiftFileList (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI.SwiftFileList
+
+Write PinkhaAnyUI.LinkFileList (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI.LinkFileList
+
+Write PinkhaAnyUI-OutputFileMap.json (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    write-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI-OutputFileMap.json
+
+Copy PinkhaAnyUI.modulemap
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/PinkhaAnyUI.modulemap /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64
+
+[33 / 63]
+Planning Swift module TorahInspectorCore (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCore -Onone @/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-Swift.h -working-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Compile
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    
+
+Emitting module for TorahInspectorCore
+[36 / 66] TorahInspectorCore
+Discovering Swift tasks after 'Emitting module for TorahInspectorCore'
+Compile Models.swift
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-SwiftPerFileCompile Models.swift
+
+Compiling Models.swift
+[37 / 66] TorahInspectorCore
+Unblock downstream dependents of TorahInspectorCore (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCore -Onone @/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-Swift.h -working-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling Models.swift'
+Wrapping Swift module TorahInspectorCore
+Discovering Swift tasks after 'Wrapping Swift module TorahInspectorCore'
+Merge Objective-C generated interface headers
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    builtin-swiftHeaderTool -single -arch aarch64 /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-Swift.h -o /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64/TorahInspectorCore-Swift.h
+
+Copy TorahInspectorCore.swiftmodule (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftmodule /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorCore.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy TorahInspectorCore.swiftdoc (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftdoc /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorCore.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy TorahInspectorCore.swiftsourceinfo (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftsourceinfo /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorCore.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Compile TorahInspectorCore (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name TorahInspectorCore -Onone @/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/Modules/TorahInspectorCore.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore-Swift.h -working-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Link TorahInspectorCore.o (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/clang -target aarch64-unknown-linux-gnu -r --sysroot / -O0 @/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/TorahInspectorCore-t.build/Objects-normal/aarch64/TorahInspectorCore.LinkFileList -nostdlib -o /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/TorahInspectorCore.o
+
+[44 / 67] TorahInspectorCore
+Planning Swift module PinkhaAnyUI (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyUI -Onone @/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/Modules/PinkhaAnyUI.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI-Swift.h -working-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Compile
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    
+
+Emitting module for PinkhaAnyUI
+[47 / 70] PinkhaAnyUI
+Discovering Swift tasks after 'Emitting module for PinkhaAnyUI'
+Compile AnyNativeSourceDocumentsPresentation.swift
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-SwiftPerFileCompile AnyNativeSourceDocumentsPresentation.swift
+
+Compiling AnyNativeSourceDocumentsPresentation.swift
+[48 / 70] PinkhaAnyUI
+Unblock downstream dependents of PinkhaAnyUI (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyUI -Onone @/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/Modules/PinkhaAnyUI.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI-Swift.h -working-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling AnyNativeSourceDocumentsPresentation.swift'
+Wrapping Swift module PinkhaAnyUI
+Discovering Swift tasks after 'Wrapping Swift module PinkhaAnyUI'
+Merge Objective-C generated interface headers
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    builtin-swiftHeaderTool -single -arch aarch64 /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI-Swift.h -o /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/GeneratedModuleMaps-linux-aarch64/PinkhaAnyUI-Swift.h
+
+Copy PinkhaAnyUI.swiftmodule (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/Modules/PinkhaAnyUI.swiftmodule /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyUI.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Copy PinkhaAnyUI.swiftdoc (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/Modules/PinkhaAnyUI.swiftdoc /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyUI.swiftmodule/aarch64-unknown-linux-gnu.swiftdoc
+
+Copy PinkhaAnyUI.swiftsourceinfo (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/Modules/PinkhaAnyUI.swiftsourceinfo /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyUI.swiftmodule/Project/aarch64-unknown-linux-gnu.swiftsourceinfo
+
+Compile PinkhaAnyUI (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-Swift-Compilation -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyUI -Onone @/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/Modules/PinkhaAnyUI.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI-Swift.h -working-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Link PinkhaAnyUI.o (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/clang -target aarch64-unknown-linux-gnu -r --sysroot / -O0 @/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI.LinkFileList -nostdlib -o /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyUI.o
+
+Planning Swift module PinkhaAnyUITests (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-SwiftDriver -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyUITests -Onone @/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/Modules/PinkhaAnyUITests.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Compile
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    
+
+Emitting module for PinkhaAnyUITests
+[58 / 75] PinkhaAnyUITests-product
+Discovering Swift tasks after 'Emitting module for PinkhaAnyUITests'
+Compile test_anchor.swift
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-SwiftPerFileCompile test_anchor.swift
+
+Compiling test_anchor.swift
+Unblock downstream dependents of PinkhaAnyUITests (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-Swift-Compilation-Requirements -- /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc -parse-as-library -module-name PinkhaAnyUITests -Onone @/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DXcode -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -enable-experimental-feature DebugDescriptionMacro -target aarch64-unknown-linux-gnu -g -Xcc -fno-omit-frame-pointer -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -c -j2 -enable-batch-mode -incremental -output-file-map /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests-OutputFileMap.json -save-temps -color-diagnostics -emit-dependencies -emit-module -emit-module-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/Modules/PinkhaAnyUITests.swiftmodule -serialize-diagnostics -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name component -emit-const-values -const-gather-protocols-list /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests_const_extract_protocols.json -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -working-directory /var/lib/pinkha-wave2-properties-related-lifetime-20261127 -experimental-emit-module-separately -disable-cmo
+
+Discovering Swift tasks after 'Compiling test_anchor.swift'
+Compile AnyNativeSourceDocumentsPublicationTests.swift
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-SwiftPerFileCompile AnyNativeSourceDocumentsPublicationTests.swift
+
+error: SwiftCompile normal aarch64 /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component/Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift failed with a nonzero exit code. Command line:     cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127
+    builtin-SwiftPerFileCompile AnyNativeSourceDocumentsPublicationTests.swift
+Compiling AnyNativeSourceDocumentsPublicationTests.swift
+macro expansion #require:2:85: [1;31merror: [1;39mpassing non-Sendable parameter '$5' to function expecting a '@Sendable' closure[0;0m
+`- /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component/Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift:192:16: [1;39mnote: [1;39mexpanded code originates here[0;0m
+[0;36m178 |[0;0m         var reservation = AnyNativePropertyChildReservation()
+[0;36m179 |[0;0m         _ = reservation.reserve(in: presentation)
+[0;36m180 |[0;0m         let request = try [4;39m#require(owner.model.load(documentOwner: documentOwner,[0;0m
+    [0;36m|[0;0m                           |- [1;39mnote: [1;39min expansion of macro 'require' here[0;0m
+    [0;36m|[0;0m                           `- [1;39mnote: [1;39min expansion of macro 'require' here[0;0m
+[0;36m181 |[0;0m             read: { try await pending.read() },
+[0;36m182 |[0;0m             isOwnerCurrent: { owner.active && owner.documentOwner == documentOwner },
+    [0;36m:[0;0m
+[0;36m190 |[0;0m                 owner.finished.append("inactive")
+[0;36m191 |[0;0m                 reservation.release(in: presentation, current: owner.model.presentationID)
+[0;36m192 |[0;0m             }))
+[0;36m    +--- [0;0mmacro expansion #require [0;36m--------------------------------------[0;0m
+[0;36m    |[0;0m [0;36m1 |[0;0m Testing.__checkFunctionCall(owner.model.self,calling: {
+[0;36m    |[0;0m   [0;36m|[0;0m                                                       `- [1;39mnote: [1;39mparameter '$5' is implicitly non-Sendable[0;0m
+[0;36m    |[0;0m [0;36m2 |[0;0m   $0.load(documentOwner: $1,read: $2,isOwnerCurrent: $3,canPresent: $4,didComplete: $5,didFinish: $6)
+[0;36m    |[0;0m   [0;36m|[0;0m                                                                                     `- [1;31merror: [1;39mpassing non-Sendable parameter '$5' to function expecting a '@Sendable' closure[0;0m
+[0;36m    |[0;0m [0;36m3 |[0;0m },documentOwner,{ try await pending.read() },{ owner.active && owner.documentOwner == documentOwner },{ true },{ result in
+[0;36m    |[0;0m [0;36m4 |[0;0m                 switch result {
+[0;36m    +-----------------------------[0;0m[0;36m--------------------------------------[0;0m
+[0;36m193 |[0;0m         defer { request.cancel(); pending.cancelOutstanding(); owner.close() }
+[0;36m194 |[0;0m         try await pending.waitUntilStarted()
+
+macro expansion #require:2:35: [1;31merror: [1;39mpassing non-Sendable parameter '$2' to function expecting a '@Sendable' closure[0;0m
+`- /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component/Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift:192:16: [1;39mnote: [1;39mexpanded code originates here[0;0m
+[0;36m178 |[0;0m         var reservation = AnyNativePropertyChildReservation()
+[0;36m179 |[0;0m         _ = reservation.reserve(in: presentation)
+[0;36m180 |[0;0m         let request = try [4;39m#require(owner.model.load(documentOwner: documentOwner,[0;0m
+    [0;36m|[0;0m                           |- [1;39mnote: [1;39min expansion of macro 'require' here[0;0m
+    [0;36m|[0;0m                           `- [1;39mnote: [1;39min expansion of macro 'require' here[0;0m
+[0;36m181 |[0;0m             read: { try await pending.read() },
+[0;36m182 |[0;0m             isOwnerCurrent: { owner.active && owner.documentOwner == documentOwner },
+    [0;36m:[0;0m
+[0;36m190 |[0;0m                 owner.finished.append("inactive")
+[0;36m191 |[0;0m                 reservation.release(in: presentation, current: owner.model.presentationID)
+[0;36m192 |[0;0m             }))
+[0;36m    +--- [0;0mmacro expansion #require [0;36m--------------------------------------[0;0m
+[0;36m    |[0;0m [0;36m1 |[0;0m Testing.__checkFunctionCall(owner.model.self,calling: {
+[0;36m    |[0;0m   [0;36m|[0;0m                                                       `- [1;39mnote: [1;39mparameter '$2' is implicitly non-Sendable[0;0m
+[0;36m    |[0;0m [0;36m2 |[0;0m   $0.load(documentOwner: $1,read: $2,isOwnerCurrent: $3,canPresent: $4,didComplete: $5,didFinish: $6)
+[0;36m    |[0;0m   [0;36m|[0;0m                                   `- [1;31merror: [1;39mpassing non-Sendable parameter '$2' to function expecting a '@Sendable' closure[0;0m
+[0;36m    |[0;0m [0;36m3 |[0;0m },documentOwner,{ try await pending.read() },{ owner.active && owner.documentOwner == documentOwner },{ true },{ result in
+[0;36m    |[0;0m [0;36m4 |[0;0m                 switch result {
+[0;36m    +-----------------------------[0;0m[0;36m--------------------------------------[0;0m
+[0;36m193 |[0;0m         defer { request.cancel(); pending.cancelOutstanding(); owner.close() }
+[0;36m194 |[0;0m         try await pending.waitUntilStarted()
+
+macro expansion #require:2:54: [1;31merror: [1;39mpassing non-Sendable parameter '$3' to function expecting a '@Sendable' closure[0;0m
+`- /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component/Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift:192:16: [1;39mnote: [1;39mexpanded code originates here[0;0m
+[0;36m178 |[0;0m         var reservation = AnyNativePropertyChildReservation()
+[0;36m179 |[0;0m         _ = reservation.reserve(in: presentation)
+[0;36m180 |[0;0m         let request = try [4;39m#require(owner.model.load(documentOwner: documentOwner,[0;0m
+    [0;36m|[0;0m                           |- [1;39mnote: [1;39min expansion of macro 'require' here[0;0m
+    [0;36m|[0;0m                           `- [1;39mnote: [1;39min expansion of macro 'require' here[0;0m
+[0;36m181 |[0;0m             read: { try await pending.read() },
+[0;36m182 |[0;0m             isOwnerCurrent: { owner.active && owner.documentOwner == documentOwner },
+    [0;36m:[0;0m
+[0;36m190 |[0;0m                 owner.finished.append("inactive")
+[0;36m191 |[0;0m                 reservation.release(in: presentation, current: owner.model.presentationID)
+[0;36m192 |[0;0m             }))
+[0;36m    +--- [0;0mmacro expansion #require [0;36m--------------------------------------[0;0m
+[0;36m    |[0;0m [0;36m1 |[0;0m Testing.__checkFunctionCall(owner.model.self,calling: {
+[0;36m    |[0;0m   [0;36m|[0;0m                                                       `- [1;39mnote: [1;39mparameter '$3' is implicitly non-Sendable[0;0m
+[0;36m    |[0;0m [0;36m2 |[0;0m   $0.load(documentOwner: $1,read: $2,isOwnerCurrent: $3,canPresent: $4,didComplete: $5,didFinish: $6)
+[0;36m    |[0;0m   [0;36m|[0;0m                                                      `- [1;31merror: [1;39mpassing non-Sendable parameter '$3' to function expecting a '@Sendable' closure[0;0m
+[0;36m    |[0;0m [0;36m3 |[0;0m },documentOwner,{ try await pending.read() },{ owner.active && owner.documentOwner == documentOwner },{ true },{ result in
+[0;36m    |[0;0m [0;36m4 |[0;0m                 switch result {
+[0;36m    +-----------------------------[0;0m[0;36m--------------------------------------[0;0m
+[0;36m193 |[0;0m         defer { request.cancel(); pending.cancelOutstanding(); owner.close() }
+[0;36m194 |[0;0m         try await pending.waitUntilStarted()
+
+macro expansion #require:2:69: [1;31merror: [1;39mpassing non-Sendable parameter '$4' to function expecting a '@Sendable' closure[0;0m
+`- /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component/Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift:192:16: [1;39mnote: [1;39mexpanded code originates here[0;0m
+[0;36m178 |[0;0m         var reservation = AnyNativePropertyChildReservation()
+[0;36m179 |[0;0m         _ = reservation.reserve(in: presentation)
+[0;36m180 |[0;0m         let request = try [4;39m#require(owner.model.load(documentOwner: documentOwner,[0;0m
+    [0;36m|[0;0m                           |- [1;39mnote: [1;39min expansion of macro 'require' here[0;0m
+    [0;36m|[0;0m                           `- [1;39mnote: [1;39min expansion of macro 'require' here[0;0m
+[0;36m181 |[0;0m             read: { try await pending.read() },
+[0;36m182 |[0;0m             isOwnerCurrent: { owner.active && owner.documentOwner == documentOwner },
+    [0;36m:[0;0m
+[0;36m190 |[0;0m                 owner.finished.append("inactive")
+[0;36m191 |[0;0m                 reservation.release(in: presentation, current: owner.model.presentationID)
+[0;36m192 |[0;0m             }))
+[0;36m    +--- [0;0mmacro expansion #require [0;36m--------------------------------------[0;0m
+[0;36m    |[0;0m [0;36m1 |[0;0m Testing.__checkFunctionCall(owner.model.self,calling: {
+[0;36m    |[0;0m   [0;36m|[0;0m                                                       `- [1;39mnote: [1;39mparameter '$4' is implicitly non-Sendable[0;0m
+[0;36m    |[0;0m [0;36m2 |[0;0m   $0.load(documentOwner: $1,read: $2,isOwnerCurrent: $3,canPresent: $4,didComplete: $5,didFinish: $6)
+[0;36m    |[0;0m   [0;36m|[0;0m                                                                     `- [1;31merror: [1;39mpassing non-Sendable parameter '$4' to function expecting a '@Sendable' closure[0;0m
+[0;36m    |[0;0m [0;36m3 |[0;0m },documentOwner,{ try await pending.read() },{ owner.active && owner.documentOwner == documentOwner },{ true },{ result in
+[0;36m    |[0;0m [0;36m4 |[0;0m                 switch result {
+[0;36m    +-----------------------------[0;0m[0;36m--------------------------------------[0;0m
+[0;36m193 |[0;0m         defer { request.cancel(); pending.cancelOutstanding(); owner.close() }
+[0;36m194 |[0;0m         try await pending.waitUntilStarted()
+
+macro expansion #require:2:99: [1;31merror: [1;39mpassing non-Sendable parameter '$6' to function expecting a '@Sendable' closure[0;0m
+`- /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component/Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift:192:16: [1;39mnote: [1;39mexpanded code originates here[0;0m
+[0;36m178 |[0;0m         var reservation = AnyNativePropertyChildReservation()
+[0;36m179 |[0;0m         _ = reservation.reserve(in: presentation)
+[0;36m180 |[0;0m         let request = try [4;39m#require(owner.model.load(documentOwner: documentOwner,[0;0m
+    [0;36m|[0;0m                           |- [1;39mnote: [1;39min expansion of macro 'require' here[0;0m
+    [0;36m|[0;0m                           `- [1;39mnote: [1;39min expansion of macro 'require' here[0;0m
+[0;36m181 |[0;0m             read: { try await pending.read() },
+[0;36m182 |[0;0m             isOwnerCurrent: { owner.active && owner.documentOwner == documentOwner },
+    [0;36m:[0;0m
+[0;36m190 |[0;0m                 owner.finished.append("inactive")
+[0;36m191 |[0;0m                 reservation.release(in: presentation, current: owner.model.presentationID)
+[0;36m192 |[0;0m             }))
+[0;36m    +--- [0;0mmacro expansion #require [0;36m--------------------------------------[0;0m
+[0;36m    |[0;0m [0;36m1 |[0;0m Testing.__checkFunctionCall(owner.model.self,calling: {
+[0;36m    |[0;0m   [0;36m|[0;0m                                                       `- [1;39mnote: [1;39mparameter '$6' is implicitly non-Sendable[0;0m
+[0;36m    |[0;0m [0;36m2 |[0;0m   $0.load(documentOwner: $1,read: $2,isOwnerCurrent: $3,canPresent: $4,didComplete: $5,didFinish: $6)
+[0;36m    |[0;0m   [0;36m|[0;0m                                                                                                   `- [1;31merror: [1;39mpassing non-Sendable parameter '$6' to function expecting a '@Sendable' closure[0;0m
+[0;36m    |[0;0m [0;36m3 |[0;0m },documentOwner,{ try await pending.read() },{ owner.active && owner.documentOwner == documentOwner },{ true },{ result in
+[0;36m    |[0;0m [0;36m4 |[0;0m                 switch result {
+[0;36m    +-----------------------------[0;0m[0;36m--------------------------------------[0;0m
+[0;36m193 |[0;0m         defer { request.cancel(); pending.cancelOutstanding(); owner.close() }
+[0;36m194 |[0;0m         try await pending.waitUntilStarted()
+
+/var/lib/pinkha-wave2-properties-related-lifetime-20261127/component/Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift:180:23: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m178 |[0;0m         var reservation = AnyNativePropertyChildReservation()
+[0;36m179 |[0;0m         _ = reservation.reserve(in: presentation)
+[0;36m180 |[0;0m         let request = try #require(owner.model.load(documentOwner: documentOwner,
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m181 |[0;0m             read: { try await pending.read() },
+[0;36m182 |[0;0m             isOwnerCurrent: { owner.active && owner.documentOwner == documentOwner },
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+Failed frontend command:
+/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-frontend -frontend -c /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources/test_anchor.swift -primary-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component/Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift -emit-dependencies-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/AnyNativeSourceDocumentsPublicationTests.d -emit-const-values-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/AnyNativeSourceDocumentsPublicationTests.swiftconstvalues -emit-reference-dependencies-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/AnyNativeSourceDocumentsPublicationTests.swiftdeps -serialize-diagnostics-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/AnyNativeSourceDocumentsPublicationTests.dia -target aarch64-unknown-linux-gnu -Xllvm -aarch64-use-tbi -disable-objc-interop -I /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64 -module-cache-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex -color-diagnostics -Xcc -fcolor-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -swift-version 6 -Onone -D SWIFT_PACKAGE -D DEBUG -D Xcode -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -external-plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins/testing\#/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-plugin-server -validate-clang-modules-once -clang-build-session-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /var/lib/pinkha-wave2-properties-related-lifetime-20261127 -enable-anonymous-context-mangled-names -file-compilation-dir /var/lib/pinkha-wave2-properties-related-lifetime-20261127 -Xcc -fno-omit-frame-pointer -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/include -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources-normal/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources/aarch64 -Xcc -I/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name PinkhaAnyUITests -package-name component -const-gather-protocols-file /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests_const_extract_protocols.json -in-process-plugin-server-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/libSwiftInProcPluginServer.so -plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/lib/swift/host/plugins -plugin-path /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/local/lib/swift/host/plugins -parse-as-library -o /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/AnyNativeSourceDocumentsPublicationTests.o -index-unit-output-path /PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/AnyNativeSourceDocumentsPublicationTests.o -index-store-path /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out -index-system-modules
+info: SwiftCompile normal aarch64 Compiling\ AnyNativeSourceDocumentsPublicationTests.swift /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component/Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift failed with a nonzero exit code.
+[61 / 75] PinkhaAnyUITests-product
+Copy PinkhaAnyUITests.swiftmodule (aarch64)
+    cd /var/lib/pinkha-wave2-properties-related-lifetime-20261127/component
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/PropertiesSourceDocumentsComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/Modules/PinkhaAnyUITests.swiftmodule /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyUITests.swiftmodule/aarch64-unknown-linux-gnu.swiftmodule
+
+Prune stale explicit modules at /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/SwiftExplicitPrecompiledModules
+Prune stale explicit modules at /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/Intermediates.noindex/ExplicitPrecompiledModules
+Prune stale explicit modules at /var/lib/pinkha-wave2-properties-related-lifetime-20261127/build/out/SDKExplicitPrecompiledModules
+error: Build failed
+error: fatalError

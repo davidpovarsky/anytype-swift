@@ -1,0 +1,183 @@
+{
+  "AppleCompilation": "NOT_RUN",
+  "UIAcceptance": "NOT_RUN",
+  "argv": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/component",
+    "--scratch-path",
+    "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build",
+    "--cache-path",
+    "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/cache",
+    "--jobs",
+    "1",
+    "--no-parallel",
+    "--disable-experimental-prebuilts",
+    "-v",
+    "--filter",
+    "AnyNativeSourceDocumentsPublicationTests"
+  ],
+  "artifacts": [
+    {
+      "bytes": 647,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/attempt1/invocation.json",
+      "sha256": "2b251f774a70974ccf4b2533c575f66fd88891c30cc516a94cb9d39c834403f4"
+    },
+    {
+      "bytes": 100,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/attempt1/process.json",
+      "sha256": "14aff24285bf940432b76fc9d3eb201c8345043850b821f0c207011c769cd43b"
+    },
+    {
+      "bytes": 4628,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/attempt1/resource-samples.json",
+      "sha256": "a0cc8e5f6eda1c09677a5039c1b938ef19007994cb7551375a0f981f74ce0898"
+    },
+    {
+      "bytes": 639,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/attempt1/source-inputs-after.json",
+      "sha256": "7902ca3123030725dd98041627bf56dcdd0ca540a6bd1e444db725dd5b538571"
+    },
+    {
+      "bytes": 639,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/attempt1/source-inputs-before.json",
+      "sha256": "7902ca3123030725dd98041627bf56dcdd0ca540a6bd1e444db725dd5b538571"
+    },
+    {
+      "bytes": 82452,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/attempt1/stderr.original.log",
+      "sha256": "4ae892b0779f2ab41837de4accb98599d311cf13075c0ccaea62f7fc037e912f"
+    },
+    {
+      "bytes": 5260,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/attempt1/stdout.original.log",
+      "sha256": "94ce0937bce51713bd1eb533eb7b33359c4eb77fa66ea40766a2ebac11964de4"
+    },
+    {
+      "bytes": 76,
+      "path": "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/attempt1/toolchain.original.log",
+      "sha256": "59360730c588801a672c1118d5d1debc93581f6b74e6a82d5d8cbda1b4a729ce"
+    }
+  ],
+  "baselineReplay": "NONE_NEW_MODEL_SUITE",
+  "cleanupSourceProvenance": {
+    "originalRunnerSHA256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+    "outputSHA256": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924",
+    "sourceFunctions": [
+      {
+        "characters": 436,
+        "exactOriginalASTSourceSlice": true,
+        "name": "group_members",
+        "sha256": "8fec98e73fa15e9a4223603871b17867223072f4b9430d912610d1aaab7f9cba"
+      },
+      {
+        "characters": 783,
+        "exactOriginalASTSourceSlice": true,
+        "name": "observe_owned_group",
+        "sha256": "df09ba2d632f867e4dbd902adb5a89a5c56e11dedf7c3018d875658207eebcc0"
+      },
+      {
+        "characters": 3202,
+        "exactOriginalASTSourceSlice": true,
+        "name": "drain_owned_process",
+        "sha256": "bc502d4e202391f87720b600047a28d2f61bb0a559e274a2b3a8cb2c757dd94b"
+      },
+      {
+        "characters": 740,
+        "exactOriginalASTSourceSlice": true,
+        "name": "finish_owned_process",
+        "sha256": "70bc0e7b38d1d60446d2c665cff360fbf01459e238f4a0243f7234000f797b59"
+      }
+    ]
+  },
+  "coordinationStory": "1220954051801669",
+  "declaredCases": 11,
+  "elapsedSeconds": 19.09,
+  "finishedAtUTC": "2026-11-27T13:23:37.082431+00:00",
+  "freeBytesAfter": 2467909632,
+  "fullAppTargetCompilation": "NOT_RUN",
+  "fullKitCompilation": "NOT_RUN",
+  "fullOriginalTestFileCompiled": false,
+  "fullSourceTestSHA256": "629b751244d0b87020ffa3a21e27c2123274b2c26e39aed3aae3bbdade36f2aa",
+  "memberListIsDiagnosticOnly": true,
+  "methods": 5,
+  "minimalPackageIsDerived": true,
+  "nativeAcceptance": "NOT_RUN",
+  "nativeServiceCalls": 0,
+  "newTestSuiteSuffixBytesAreExact": true,
+  "observedTestOutcomeLines": [
+    "\u2714 Test queuedOldRequestCannotBorrowReopenedSheetAndCurrentFailureCanRetry() passed after 0.003 seconds.",
+    "\u2714 Test case passing 2 arguments olderFails \u2192 false (Swift.Bool), changesDocumentOwner \u2192 false (Swift.Bool) to noncooperativeOldCompletionCannotReplaceReopenedRequest(olderFails:changesDocumentOwner:) passed after 0.001 seconds.",
+    "\u2714 Test case passing 2 arguments olderFails \u2192 false (Swift.Bool), changesDocumentOwner \u2192 true (Swift.Bool) to noncooperativeOldCompletionCannotReplaceReopenedRequest(olderFails:changesDocumentOwner:) passed after 0.001 seconds.",
+    "\u2714 Test case passing 2 arguments olderFails \u2192 true (Swift.Bool), changesDocumentOwner \u2192 false (Swift.Bool) to noncooperativeOldCompletionCannotReplaceReopenedRequest(olderFails:changesDocumentOwner:) passed after 0.001 seconds.",
+    "\u2714 Test case passing 2 arguments olderFails \u2192 true (Swift.Bool), changesDocumentOwner \u2192 true (Swift.Bool) to noncooperativeOldCompletionCannotReplaceReopenedRequest(olderFails:changesDocumentOwner:) passed after 0.001 seconds.",
+    "\u2714 Test noncooperativeOldCompletionCannotReplaceReopenedRequest(olderFails:changesDocumentOwner:) with 4 test cases passed after 0.002 seconds.",
+    "\u2714 Test case passing 1 argument fails \u2192 false (Swift.Bool) to retirementDiscardsRowsAndRejectsANoncooperativeCompletion(fails:) passed after 0.001 seconds.",
+    "\u2714 Test case passing 1 argument fails \u2192 true (Swift.Bool) to retirementDiscardsRowsAndRejectsANoncooperativeCompletion(fails:) passed after 0.001 seconds.",
+    "\u2714 Test retirementDiscardsRowsAndRejectsANoncooperativeCompletion(fails:) with 2 test cases passed after 0.001 seconds.",
+    "\u2714 Test case passing 1 argument cancelCaller \u2192 false (Swift.Bool) to asyncWaiterJoinsReadAndForwardsCallerCancellation(cancelCaller:) passed after 0.001 seconds.",
+    "\u2714 Test case passing 1 argument cancelCaller \u2192 true (Swift.Bool) to asyncWaiterJoinsReadAndForwardsCallerCancellation(cancelCaller:) passed after 0.001 seconds.",
+    "\u2714 Test asyncWaiterJoinsReadAndForwardsCallerCancellation(cancelCaller:) with 2 test cases passed after 0.001 seconds.",
+    "\u2714 Test case passing 1 argument fails \u2192 false (Swift.Bool) to temporarilyInactiveOwnerFinishesItsRequestAndCanRetry(fails:) passed after 0.001 seconds.",
+    "\u2714 Test case passing 1 argument fails \u2192 true (Swift.Bool) to temporarilyInactiveOwnerFinishesItsRequestAndCanRetry(fails:) passed after 0.001 seconds.",
+    "\u2714 Test temporarilyInactiveOwnerFinishesItsRequestAndCanRetry(fails:) with 2 test cases passed after 0.001 seconds.",
+    "\u2714 Test run with 5 tests in 1 suite passed after 0.009 seconds."
+  ],
+  "oldIdentityMethodsSelected": 0,
+  "originalKitBase": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "ownedCleanup": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T13:23:37.079302+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 759204,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "historicalGroupReprobed": false,
+    "processGroup": 759204,
+    "status": "PASS_OWNED_GROUP_ABSENT"
+  },
+  "ownedGroupAtExit": {
+    "atUTC": "2026-11-27T13:23:37.079302+00:00",
+    "errno": 3,
+    "error": "[Errno 3] No such process",
+    "processGroup": 759204,
+    "signal": 0,
+    "status": "ABSENT_ESRCH"
+  },
+  "priorAcceptedTestsRerun": 0,
+  "processExit": 0,
+  "productionModelBytesAreExact": true,
+  "productionModelSourceCommit": "21d63bef8950f8b927f0d8d3b4b052758bc98fcb",
+  "providerIsControlledNonCooperativeFixture": true,
+  "publishedTestSourceCommit": null,
+  "remainingOwnedProcessGroup": [],
+  "resourceAdmission": {
+    "allowanceIsEstimate": true,
+    "atUTC": "2026-11-27T13:23:17.992712+00:00",
+    "freeBytes": 2526584832,
+    "incrementalAllowanceBytes": 268435456,
+    "jobs": 1,
+    "liveDiskFloorBytes": 2147483648,
+    "load": [
+      0.50439453125,
+      0.90185546875,
+      1.095703125
+    ],
+    "memAvailableBytes": 4624998400,
+    "minimumAvailableMemoryBytes": 1610612736,
+    "swapFreeBytes": 94208
+  },
+  "runnerSHA256": "1e4bf0b6fe7ad5bc0005513aaad0d2b7429dde623592355f4f774420184f54f5",
+  "schema": "pinkha.wave2.properties.actual-source-model-component.v1",
+  "selectedSuite": "AnyNativeSourceDocumentsPublicationTests",
+  "shippingSourceMutationsByRunner": 0,
+  "sourceTestSuffixSHA256": "a9a92d220b39e3987fc8877f1cbf26ffcec67fce77c8d24a4b4fe99f35c5e851",
+  "startedAtUTC": "2026-11-27T13:23:17.992275+00:00",
+  "status": "PASS_FIVE_METHODS_ELEVEN_DECLARED_CASES_EXACT_SOURCE_MODEL_COMPONENT_ONLY",
+  "testProjection": "IMPORTS_PLUS_EXACT_NEW_SUITE_SUFFIX",
+  "testSourceBaseCommit": "21d63bef8950f8b927f0d8d3b4b052758bc98fcb",
+  "testSourceStatus": "UNPUBLISHED_TEST_ONLY_SUCCESSOR"
+}

@@ -14,8 +14,8 @@ import re
 import sys
 
 PROFILE_SHA256 = "99f81462cf589865af3224090215ab4ebf8e0c7275932f5b93629d1247b7daa8"
-ORIGINALS_SHA256 = "aabcf1eec2643f331ed3ab3ae095e156c03de29c4a75ea32405819495af2c9cc"
-ORIGINAL_MANIFEST_SHA256 = "81d178d6d829dc2eff201b8b8dcd190db2da79dc68a6cc06f36ca0d8a90d2778"
+ORIGINALS_SHA256 = "adc29fa18b2bd64dce6bca3cf6ded88ae6203246a12fa7e781229fda41b1f326"
+ORIGINAL_MANIFEST_SHA256 = "b0afbd53aef99cc44adc77432c6fba6b7b060faf4808e81ec01799df3d2e627c"
 TARGET = "AnytypeTests"
 LANES = (
     "product-g05-readonly-hosted", "product-g05-revision-hosted",

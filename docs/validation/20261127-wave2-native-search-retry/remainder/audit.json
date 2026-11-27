@@ -1,0 +1,136 @@
+{
+  "schema": "wave2-t6-anchor-search-remainder/v1",
+  "status": "ONE_CONCRETE_NATIVE_SEARCH_RETRY_GAP_CANDIDATE_SEPARATE_OTHER_SCOPED_ITEMS_REQUIRE_ACCEPTANCE",
+  "observedUTC": "2026-11-27T13:09:39.663608+00:00",
+  "sourceCommit": "919626d8a5a2701c2dfb56277a657fa593700b98",
+  "currentKitPin": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "requirements": [
+    {
+      "key": "T6",
+      "task": "1219604717617397",
+      "title": "[P0][IN PROGRESS] T6 — iPad search-layout PASS; broad device acceptance OPEN",
+      "modifiedAt": "2026-11-27T01:39:32.448Z",
+      "completed": false,
+      "subtasksReturned": 0,
+      "notesSHA256": "b98442a9448e157d05461d0583b9e83413364c183cc89f03d64197094aec51cc",
+      "commentsRead": 34,
+      "latestComment": {
+        "gid": "1220941751676742",
+        "createdAt": "2026-11-27T01:39:32.447Z"
+      },
+      "permalink": "https://app.asana.com/1/1219597879016953/project/1219604672449660/task/1219604717617397"
+    },
+    {
+      "key": "anchors",
+      "task": "1219610432822791",
+      "title": "[P0][PLANNED] עוגן סמנטי לבחירת מילים בתוך בלוק Anytype",
+      "modifiedAt": "2026-11-23T03:59:05.179Z",
+      "completed": false,
+      "subtasksReturned": 0,
+      "notesSHA256": "c441ddf38131796adb905fcddf523d52db4cc6a0a201a72160c5ac7c51803ba7",
+      "commentsRead": 6,
+      "latestComment": {
+        "gid": "1220775019537246",
+        "createdAt": "2026-11-23T03:59:05.179Z"
+      },
+      "permalink": "https://app.asana.com/1/1219597879016953/project/1219604672449660/task/1219610432822791"
+    },
+    {
+      "key": "search",
+      "task": "1219878918433851",
+      "title": "[P1][CODE PRESENT][QA OPEN] חיפוש מקור בתוך Inspector — בדיקות קבלה נדרשות",
+      "modifiedAt": "2026-11-19T00:14:24.201Z",
+      "completed": false,
+      "subtasksReturned": 0,
+      "notesSHA256": "e7b968a1a5c29e235eabd227b3ec27c0c71caab0e07e593160739631071257b6",
+      "commentsRead": 4,
+      "latestComment": {
+        "gid": "1220690092698283",
+        "createdAt": "2026-11-19T00:14:24.201Z"
+      },
+      "permalink": "https://app.asana.com/1/1219597879016953/project/1219604672449660/task/1219878918433851"
+    }
+  ],
+  "sourceManifestSHA256": "45bdbf280b03e5972aee6ec5b01b4fdf53952c43b8c0dfedd5b775677f1fa89b",
+  "finding": {
+    "id": "NATIVE_SEARCH_RETRY_ABSENT",
+    "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+    "originalGitBlob": "1c7a14c636e2908012fdac88e1264f164d212b3e",
+    "originalLine": 539,
+    "behavior": "Error state contains only Text; identical failed query cannot be explicitly retried on the Native standalone/embedded source-search surface. Query onChange is the only search action; initial task only refreshes associations.",
+    "counterpart": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift existing error ButtonData uses Loc.Pinkha.Home.retry and await presenter.performSearch().",
+    "requirement": "Current required-coverage UI11 visible-error-retry-recovery",
+    "candidate": "../native-search-retry/candidate/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+    "candidateSHA256": "beea22b4d19484f6dad508f819d874ece31d43a91d36fa0d03805c527c9332da",
+    "candidateStatus": "FROZEN_FOR_ROOT_SOURCE_REVIEW_NOT_PUBLISHED_NOT_COMPILED_NOT_RUN"
+  },
+  "remaining": {
+    "T6": [
+      "Preserve narrow historical physical-iPad search-icon/association-strip PASS; it is not broad current-product acceptance.",
+      "Use existing editor/RTL/Native23/source-drag/AX plans only after actual matching shared products are admitted.",
+      "Mixed App/OS language both directions, iPhone/iPad/light/dark, list/title/quote/selection, keyboard, gestures, VoiceOver/DynamicType and visual inspection remain scope-specific runtime obligations.",
+      "Multiple-window/Stage Manager/offline and physical-device observations have no new acceptance from this bounded source read."
+    ],
+    "anchors": [
+      "Retain original preparation/mounted/linked-ui1PASS each, original collection failure and original linked-native enumeration timeout.",
+      "Expired original fixture cannot resume; unchanged7200s lifetime requires all six original preparation/mounted/linked-ui/linked-native/unlinked-ui/unlinked-native stages on a fresh owned fixture.",
+      "Six-stage Page154 control and typed collector already exist; runtime/source/common producer pins remain closed until separately qualified.",
+      "Original linked-ui replaces the marked text and cold-reopens; no before/after/partial mixed-RTL/emoji/split-merge/copy-paste/Undo anchor UI acceptance is inferred. Such cases are not mapped to a mounted selector in the bounded existing six-stage handoff; this does not prove missing production behavior."
+    ],
+    "InspectorSearch": [
+      "Current Heart and Native hosts both inject the optional same-panel search capability, use fixed document association context for embedded search and navigate through supplied navigation.navigateToFullSource.",
+      "Existing inspector-search-only selector testInspectorEmbeddedSearchOpenReturnAndDocumentLink covers Open/Back/query/result retention/no-write/explicit Link/previous links. Current matching-product execution remains required.",
+      "Topic/Word use accepted typed management capability from the earlier G03 audit; no reader-page extension or new misrouting claim.",
+      "Controlled provider-error fixture and actual Retry recovery remain required; no empty-result substitution or new controller/suite introduced."
+    ]
+  },
+  "excludedPriorAnalyses": [
+    "G04 reader-lifetime correction",
+    "G07 quote/drop policy",
+    "T5 readiness/native wire/index/36+9 history and related-document lifetime"
+  ],
+  "existingHandoffs": [
+    {
+      "name": "accepted-kind-routing",
+      "path": "torah-acceptance-prep/g03-kind-routing/README.md",
+      "sha256": "ce51adf921dd5d3e54f8070164f498673e645dceb428786267165d466c3e6a3b"
+    },
+    {
+      "name": "original-acceptance-queue",
+      "path": "torah-acceptance-prep/acceptance-queue/README.md",
+      "sha256": "a94d87db22553a33efe1b052a9c4cac20d76324b0b0d8ef2e0a494b2d52d7503"
+    },
+    {
+      "name": "published-future-torah-controls",
+      "path": "torah-acceptance-prep/future-torah-control/README.md",
+      "sha256": "bc2653ae56d23d948ad9018cc8b1a76ec404449b50ea23df8553dbce016bfcb6"
+    },
+    {
+      "name": "page154-closed-derivative",
+      "path": "wave2-page154-closed-intake/README.md",
+      "sha256": "103a85ecfe80ef9ec0118227fa1aa2a3f2e386f038e7a266577aeeafbe0b4437"
+    },
+    {
+      "name": "page154-original-timeout",
+      "path": "wave2-page154-original-timeout/README.md",
+      "sha256": "2742fdad9b94bc39768ba5340cb9469b504ecba408f0379d5aa4de59a2306eab"
+    },
+    {
+      "name": "mixed-language-runtime-observations",
+      "path": "torah-acceptance-prep/mixed-app-os-language/ACCEPTANCE_HANDOFF.md",
+      "sha256": "c9eb5ed03b775970ed3e49329fccd5a877d65d0bc319b039940bbad7317ec2bf"
+    }
+  ],
+  "actions": {
+    "newProductCandidateFiles": 1,
+    "newTestSuites": 0,
+    "newControllers": 0,
+    "compiler": 0,
+    "tests": 0,
+    "Native": 0,
+    "Mac": 0,
+    "Oracle": 0,
+    "accountOperations": 0
+  },
+  "runtimeAdmission": false
+}

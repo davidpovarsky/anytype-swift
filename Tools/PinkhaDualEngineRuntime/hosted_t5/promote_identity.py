@@ -79,7 +79,7 @@ def propose(args):
             "wholeOriginalBytesRestored": proposed_profile.replace('MANIFEST_SHA256 = "' + new_manifest_sha + '"', needle) == current_profile},
         "sharedDependenciesStillRequireRootPromotion": profile.DEPENDENCIES,
         "requiredNextEvidence": ["published final product commit/tree", "actual shared producer and common admission for the native tuple",
-            "actual 57/10/2 compiler/source/FileList receipts", "selected hosted Node executable/version/backend",
+            "actual61/10/2 compiler/source/FileList receipts", "selected hosted Node executable/version/backend",
             "fresh original T5 fixtures, core2, both R08 appearances and quote freshness", "ciphertext artifact readback and exact private receiver restore"],
         "runtimeOverridesInstalled": False, "oldFixturesAdmitted": False, "sourceEdited": False, "testsExecuted": 0}
     (output / "promotion-proposal.json").write_text(json.dumps(evidence, sort_keys=True, indent=2) + "\n")

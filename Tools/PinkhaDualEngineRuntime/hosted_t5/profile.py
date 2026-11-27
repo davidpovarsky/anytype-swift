@@ -9,7 +9,7 @@ import re
 PREFIX = "Tools/PinkhaDualEngineRuntime/hosted_t5/"
 MANIFEST_SHA256 = "1807a0aab8d76b53691a9e97a58339c251263a8f42377ef6d5f7166ed855df77"
 # Replaced only by the source-packaging step, not by runtime input.
-ACTIVATION_SHA256 = "b3fcfed369598b852580a680544244467b72daea5e73bef88b8878caefbf1f29"
+ACTIVATION_SHA256 = "9b0704f98a73e5586636050c8701c554ea6abf1b14689fda3d192a272fefa4b2"
 PROFILE = "dual-engine-runtime-v1"
 CAPABILITY = "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift"
 T5_UI = "PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift"
@@ -27,12 +27,12 @@ METHODS = (
     "AnytypeTests/TorahT5RemainingFreshnessTests/nativeQuoteMoveAndBlockDeletion()",
 )
 DEPENDENCIES = {
-    "admission": ("Tools/PinkhaDualEngineRuntime/hosted_core13/admission.py", "0bd03cc7446bac2ba233bf046228bf89ae690670a030a733be423b7f91847870"),
-    "originals": ("Tools/PinkhaDualEngineRuntime/hosted_core13/originals.py", "aabcf1eec2643f331ed3ab3ae095e156c03de29c4a75ea32405819495af2c9cc"),
+    "admission": ("Tools/PinkhaDualEngineRuntime/hosted_core13/admission.py", "983ea0db628f3ff81f677c2a91822d72843de4fb94cfd374f418a1c2fcf86849"),
+    "originals": ("Tools/PinkhaDualEngineRuntime/hosted_core13/originals.py", "adc29fa18b2bd64dce6bca3cf6ded88ae6203246a12fa7e781229fda41b1f326"),
     "hosted_t5_core_lifetime": ("Tools/PinkhaDualEngineRuntime/hosted_core13/run.py", "cf16f08fefcc0d639e1f924a230c2fefb8bcc7af4f311e9e03191165908a29c8"),
     # This exact shared file-only reader is a pending root-reviewed dependency;
     # it never configures or executes the separate Native23 runner.
-    "hosted_t5_native23_receipts": ("Tools/PinkhaDualEngineRuntime/hosted_property_cache_bin/native23_receipts.py", "1b4114b0843cb01067e6ced4398df6b8e4d0baada315d81201fbfd4f9eaa38b8"),
+    "hosted_t5_native23_receipts": ("Tools/PinkhaDualEngineRuntime/hosted_property_cache_bin/native23_receipts.py", "db5bb39b9dfbd6f990b0563bb8a7a7c1172f80ceefe7fc0efcdcccb4562e419e"),
 }
 
 
@@ -67,7 +67,7 @@ def activation(root):
             "T5 is CLOSED: final native/product/runtime identity has not been selected")
     require(value["plans"] == [row[0] for row in PLANS]
             and value["startupSeconds"] == 120 and value["methodCount"] == 5
-            and value["executionCount"] == 6 and value["compiledSourceCounts"] == [57, 10, 2],
+            and value["executionCount"] == 6 and value["compiledSourceCounts"] == [61, 10, 2],
             "Only the two original fresh plans and exact source counts may run")
     final = value["finalProducerTuple"]
     require(set(final) == {"appSourceSHA", "appSourceTree", "nativeRuntimeVersion", "nativeSourceManifestSHA256",

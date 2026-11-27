@@ -1,0 +1,17 @@
+{
+  "after": {
+    "bytes": 97768,
+    "gitBlob": "5782a19d9ee1fead5375183d6a18a9e288296bd2",
+    "sha256": "6e6543d4fb02d4cb825d563e64bd865895142d204cb23e77ea97b3b7f78d6d8d"
+  },
+  "appendUTF8": "\n\n## 2026-11-27 — Original Pasteboard property-list options compatibility\n\nThe owner's Wave3 integration authorization covers this single original call-site correction. The pinned retention baseline is `586c98bcc17dee425664224e508fc0e8df277678`; its `Anytype/Sources/ServiceLayer/Block/Pastboard/PasteboardHelper.swift` is byte-identical to the reviewed integration source `2752229aacf72f468f32a4bfe5fe0a91142f5dbe`: 6,258 bytes, Git blob `995df1ccf9a3131919d89bb398bed38594cb47f8`, SHA-256 `1edd18bf419c01fb88f72dcbca367e3417b2b8993394d1d0a3190dcb685b7eb0`.\n\nThe existing call to `PropertyListSerialization.propertyList(from: data, format: nil)` receives the required explicit empty `options: []` argument. This is one thirteen-byte insertion at the original decode site. A downstream helper cannot supply a missing argument to this call without changing or redirecting the same original call site; retaining the existing call with the explicit empty options is the smaller compatibility change. The decoded data, property-list format handling, result conversion, errors and all other original bytes remain unchanged. No new parsing mode or mutable-container option is enabled.\n\nThe candidate is 6,271 bytes, Git blob `e7d115cd681318953bc669a436b72a730114f7ea`, SHA-256 `0eee42f7036e43d74d82088b2bd21696dc3b248f4430e4c9dfc887bbbc1a60d9`. It exactly matches the original Otzaria SDK owner's source correction recorded in Maktabah commit `1b9a917b5d129a98767e3e284edae55256d1d891`, `CUTOVER_RESULT.json` SHA-256 `277a572634499e1498614d9c7a313a2853cea0884f881e3b81edfe6934176e88`. The donor's local `d6090c03b9ac4e5760941e34f4c04478db4ae59f` and parent `1be970356c655bcef3688ddf1d129d5029bbc533` were not available through the observed public ref. This integration reuses the independently reconstructed, whole-hash-matching hunk against the published current preimage; it does not adopt the donor's framework target, public/SPI/ABI closure, native libraries or package graph.\n\nThe original SDK compiler failure and source-only cutover remain distinct: the retained cutover explicitly records `builds_run: 0`. No shared-App compiler, native journey or product acceptance is inferred from that source correction. The exact source preimage, immutable published donor evidence and full forward/inverse are retained under `docs/validation/20261127-wave3-pasteboard-options/`. The preservation map adds one `refactor` row for this original path, with the exact original and replacement blobs; existing 132 rows are retained. Concurrent root-owned SDK mapping updates are a separate integration decision.\n\nRollback removes only the explicit empty argument and this path's corresponding mapping/exception addition, using the complete retained original file. It does not reset framework checkouts, alter source pins, remove old failures or invalidate original evidence. The final shared Apple compile and ordinary pasteboard behavior remain part of the integrated acceptance.\n",
+  "before": {
+    "bytes": 94800,
+    "gitBlob": "a9ff1204a091b7fe0f6c66cb46946734af6af188",
+    "sha256": "88342aaa61342b5cabdfe7a67f37c7cbb1cf92e02dd82ea62e29fcde06e89ecf"
+  },
+  "completeOriginalPrefixUnchanged": true,
+  "fullInverseRestoresOriginal": true,
+  "path": "docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md",
+  "schema": "pinkha-upstream-exception-append-v1"
+}

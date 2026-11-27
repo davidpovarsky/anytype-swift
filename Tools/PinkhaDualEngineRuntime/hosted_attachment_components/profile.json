@@ -1,0 +1,307 @@
+{
+  "actualRuntimeTests": 0,
+  "declaredCases": 28,
+  "finalSDKAndNativeTuple": null,
+  "lanes": {
+    "attachment-intent-store-hosted": {
+      "declaredCases": 4,
+      "expectedMethods": 3,
+      "invocationScope": "exact-methods",
+      "invocationSelectors": [
+        "AnytypeTests/AnyNativeAttachmentIntentStoreTests/malformedOrForeignSnapshotCannotBecomeARecoveryIntent(foreignWorkspace:)",
+        "AnytypeTests/AnyNativeAttachmentIntentStoreTests/originalIntentSurvivesNewStoreWithoutASelectedURLOrNativeReceipt()",
+        "AnytypeTests/AnyNativeAttachmentIntentStoreTests/replacementStoreCannotAcquireOrOverwriteTheOriginalPendingIntent()"
+      ],
+      "methods": {
+        "malformedOrForeignSnapshotCannotBecomeARecoveryIntent": {
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2,
+          "parameters": [
+            {
+              "name": "foreignWorkspace",
+              "type": "Bool"
+            }
+          ]
+        },
+        "originalIntentSurvivesNewStoreWithoutASelectedURLOrNativeReceipt": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        },
+        "replacementStoreCannotAcquireOrOverwriteTheOriginalPendingIntent": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        }
+      },
+      "originalSelectors": [
+        "PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests/malformedOrForeignSnapshotCannotBecomeARecoveryIntent(foreignWorkspace:)",
+        "PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests/originalIntentSurvivesNewStoreWithoutASelectedURLOrNativeReceipt()",
+        "PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests/replacementStoreCannotAcquireOrOverwriteTheOriginalPendingIntent()"
+      ],
+      "source": "store",
+      "suite": "AnyNativeAttachmentIntentStoreTests"
+    },
+    "attachment-metadata-hosted": {
+      "declaredCases": 24,
+      "expectedMethods": 5,
+      "invocationScope": "exact-methods",
+      "invocationSelectors": [
+        "AnytypeTests/AnyNativeAttachmentMetadataTests/missingMalformedOrContradictoryTierMetadataIsRejected(invalidCase:)",
+        "AnytypeTests/AnyNativeAttachmentMetadataTests/nativeMetadataByteBoundsAreAcceptedButNotExceeded(field:)",
+        "AnytypeTests/AnyNativeAttachmentMetadataTests/omittedAndEmptyMetadataPreserveExistingFallbackAndContentComparison()",
+        "AnytypeTests/AnyNativeAttachmentMetadataTests/presentWrongTypesAndInvalidIdentitySizeOrStateRemainRejected(invalidCase:)",
+        "AnytypeTests/AnyNativeAttachmentMetadataTests/validStorageTiersRetainRawRootAndAllowAvailabilityProgress()"
+      ],
+      "methods": {
+        "missingMalformedOrContradictoryTierMetadataIsRejected": {
+          "argument_collections": [
+            [
+              "missing-inline",
+              "null-inline",
+              "wrong-inline",
+              "inline-with-root",
+              "inline-not-cached",
+              "inline-not-durable",
+              "full-missing-root",
+              "full-empty-root",
+              "null-root",
+              "wrong-root"
+            ]
+          ],
+          "case_count": 10,
+          "parameters": [
+            {
+              "name": "invalidCase",
+              "type": "String"
+            }
+          ]
+        },
+        "nativeMetadataByteBoundsAreAcceptedButNotExceeded": {
+          "argument_collections": [
+            [
+              "name",
+              "mime"
+            ]
+          ],
+          "case_count": 2,
+          "parameters": [
+            {
+              "name": "field",
+              "type": "String"
+            }
+          ]
+        },
+        "omittedAndEmptyMetadataPreserveExistingFallbackAndContentComparison": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        },
+        "presentWrongTypesAndInvalidIdentitySizeOrStateRemainRejected": {
+          "argument_collections": [
+            [
+              "name-null",
+              "mime-null",
+              "name-integer",
+              "mime-bool",
+              "file-id",
+              "foreign-object",
+              "negative-size",
+              "large-size",
+              "missing-cached",
+              "wrong-durable"
+            ]
+          ],
+          "case_count": 10,
+          "parameters": [
+            {
+              "name": "invalidCase",
+              "type": "String"
+            }
+          ]
+        },
+        "validStorageTiersRetainRawRootAndAllowAvailabilityProgress": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        }
+      },
+      "originalSelectors": [
+        "PinkhaAnyUITests/AnyNativeAttachmentMetadataTests/missingMalformedOrContradictoryTierMetadataIsRejected(invalidCase:)",
+        "PinkhaAnyUITests/AnyNativeAttachmentMetadataTests/nativeMetadataByteBoundsAreAcceptedButNotExceeded(field:)",
+        "PinkhaAnyUITests/AnyNativeAttachmentMetadataTests/omittedAndEmptyMetadataPreserveExistingFallbackAndContentComparison()",
+        "PinkhaAnyUITests/AnyNativeAttachmentMetadataTests/presentWrongTypesAndInvalidIdentitySizeOrStateRemainRejected(invalidCase:)",
+        "PinkhaAnyUITests/AnyNativeAttachmentMetadataTests/validStorageTiersRetainRawRootAndAllowAvailabilityProgress()"
+      ],
+      "source": "metadata",
+      "suite": "AnyNativeAttachmentMetadataTests"
+    }
+  },
+  "methods": 8,
+  "originalMethodBodiesAndAssertionsUnchanged": true,
+  "runtimeReady": false,
+  "schema": "pinkha-hosted-attachment-components-closed-profile-v1",
+  "scope": "Original3/4 caller intent-store and5/24 metadata decoder methods. The original3/13 metadata prefix is retained plus the exact two tier methods with11 cases. This does not qualify native upload, HTTP cancellation drain, server account teardown, unknown ACK resolution, physical-device file protection or UI delivery.",
+  "sourceInverse": {
+    "bytes": 222,
+    "file": "source-inverse.json",
+    "gitBlob": "0e2277011046f8c96b3f50d92592005bb7012da0",
+    "sha256": "f9716a5a489f303eda4a4738591c86f2b43269d842203d8d2821b04c230b1684"
+  },
+  "sources": {
+    "metadata": {
+      "bytes": 8197,
+      "completeDeclarations": {
+        "missingMalformedOrContradictoryTierMetadataIsRejected": {
+          "argument_collections": [
+            [
+              "missing-inline",
+              "null-inline",
+              "wrong-inline",
+              "inline-with-root",
+              "inline-not-cached",
+              "inline-not-durable",
+              "full-missing-root",
+              "full-empty-root",
+              "null-root",
+              "wrong-root"
+            ]
+          ],
+          "case_count": 10,
+          "parameters": [
+            {
+              "name": "invalidCase",
+              "type": "String"
+            }
+          ]
+        },
+        "nativeMetadataByteBoundsAreAcceptedButNotExceeded": {
+          "argument_collections": [
+            [
+              "name",
+              "mime"
+            ]
+          ],
+          "case_count": 2,
+          "parameters": [
+            {
+              "name": "field",
+              "type": "String"
+            }
+          ]
+        },
+        "omittedAndEmptyMetadataPreserveExistingFallbackAndContentComparison": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        },
+        "presentWrongTypesAndInvalidIdentitySizeOrStateRemainRejected": {
+          "argument_collections": [
+            [
+              "name-null",
+              "mime-null",
+              "name-integer",
+              "mime-bool",
+              "file-id",
+              "foreign-object",
+              "negative-size",
+              "large-size",
+              "missing-cached",
+              "wrong-durable"
+            ]
+          ],
+          "case_count": 10,
+          "parameters": [
+            {
+              "name": "invalidCase",
+              "type": "String"
+            }
+          ]
+        },
+        "validStorageTiersRetainRawRootAndAllowAvailabilityProgress": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        }
+      },
+      "gitBlob": "b7475178d610e2aea1cfd1bbb4b62359b292d042",
+      "inverseSteps": [],
+      "originalSource": {
+        "bytes": 8197,
+        "gitBlob": "b7475178d610e2aea1cfd1bbb4b62359b292d042",
+        "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift",
+        "publishedBridgeCommit": "bd684a8ad5b12cc2eef3b14d4fb64a34bd98f304",
+        "publishedSource": "9986f60d8e56d3835d755f1ed07b7255766d3451",
+        "repository": "davidpovarsky/anytype-swift",
+        "sha256": "253f84cf90dc93684b701407b93d3317775c599bac7c1d142406f5a650174f19",
+        "target": "PinkhaAnyUITests"
+      },
+      "originalTarget": "PinkhaAnyUITests",
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift",
+      "restoredOriginalBytes": 8197,
+      "restoredOriginalGitBlob": "b7475178d610e2aea1cfd1bbb4b62359b292d042",
+      "restoredOriginalSHA256": "253f84cf90dc93684b701407b93d3317775c599bac7c1d142406f5a650174f19",
+      "sha256": "253f84cf90dc93684b701407b93d3317775c599bac7c1d142406f5a650174f19"
+    },
+    "store": {
+      "bytes": 8725,
+      "completeDeclarations": {
+        "malformedOrForeignSnapshotCannotBecomeARecoveryIntent": {
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2,
+          "parameters": [
+            {
+              "name": "foreignWorkspace",
+              "type": "Bool"
+            }
+          ]
+        },
+        "originalIntentSurvivesNewStoreWithoutASelectedURLOrNativeReceipt": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        },
+        "replacementStoreCannotAcquireOrOverwriteTheOriginalPendingIntent": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        }
+      },
+      "gitBlob": "f481d9a198904fb57aba4e49e2076743855776c0",
+      "inverseSteps": [],
+      "originalSource": {
+        "bytes": 8725,
+        "gitBlob": "f481d9a198904fb57aba4e49e2076743855776c0",
+        "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+        "publishedBridgeCommit": "bd684a8ad5b12cc2eef3b14d4fb64a34bd98f304",
+        "publishedSource": "f731e30409b7b479d9ed5e87280624485c181da8",
+        "repository": "davidpovarsky/anytype-swift",
+        "sha256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809",
+        "target": "PinkhaAnyUITests"
+      },
+      "originalTarget": "PinkhaAnyUITests",
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "restoredOriginalBytes": 8725,
+      "restoredOriginalGitBlob": "f481d9a198904fb57aba4e49e2076743855776c0",
+      "restoredOriginalSHA256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809",
+      "sha256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809"
+    }
+  },
+  "supportSources": {
+    "Anytype.xcodeproj/project.pbxproj": {
+      "bytes": 163764,
+      "gitBlob": "6e7ae670ef561985588bc8c283109f64299befde",
+      "sha256": "8c7cbf3ca73482202fcb58d494e306956d989b0d85cc1ee91c87675f4ebcc127"
+    }
+  }
+}

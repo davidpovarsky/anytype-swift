@@ -1,0 +1,108 @@
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift
+@@ -22,12 +22,16 @@
+     let durable: Bool
+ 
+     init(_ value: AnyJSON, objectID: String) throws {
++        let name = value["name"]?.string ?? ""
++        let mime = value["mime"]?.string ?? ""
+         guard let id = value["fileId"]?.string, AnyEditorBlock.validID(id),
+               value["objectId"]?.string == objectID,
+               let size = value["size"]?.integer, (0...AnyPreparedFileIntent.maximumBytes).contains(size),
+               let cached = value["cached"]?.bool, let durable = value["durable"]?.bool,
+-              let name = value["name"]?.string, name.utf8.count <= 1024,
+-              let mime = value["mime"]?.string, mime.utf8.count <= 255 else {
++              value["name"] == nil || value["name"]?.string != nil,
++              name.utf8.count <= 16_384,
++              value["mime"] == nil || value["mime"]?.string != nil,
++              mime.utf8.count <= 1_024 else {
+             throw AnyHostError.invalidDocument("native attachment metadata")
+         }
+         self.id = id; self.objectID = objectID; self.size = size
+--- /dev/null
++++ b/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift
+@@ -0,0 +1,84 @@
++#if canImport(UIKit) && canImport(HanlinMiniAppsBridge)
++import Foundation
++import Testing
++import PinkhaAnyEngine
++import PinkhaAnyHost
++@testable import PinkhaAnyUI
++
++/// Value fixtures exercise the actual list-row decoder. These tests do not
++/// simulate a Native upload, grant authority, or qualify file storage.
++@Suite("Native attachment metadata projection", .timeLimit(.minutes(1)))
++struct AnyNativeAttachmentMetadataTests {
++    @Test
++    func omittedAndEmptyMetadataPreserveExistingFallbackAndContentComparison() throws {
++        let absent = try AnyNativeAttachment(row(omitting: ["name", "mime"]), objectID: "doc-1")
++        let empty = try AnyNativeAttachment(row(["name": .string(""), "mime": .string("")]), objectID: "doc-1")
++        #expect(absent.name.isEmpty)
++        #expect(absent.mime == "application/octet-stream")
++        #expect(absent.sameContent(as: empty))
++        #expect(absent.id == "file-1" && absent.objectID == "doc-1")
++        #expect(absent.size == 3 && absent.rootCID == "root-one")
++        #expect(absent.cached && !absent.durable)
++
++        let nameOnly = try AnyNativeAttachment(row(["name": .string("טיוטה.TXT")], omitting: ["mime"]), objectID: "doc-1")
++        #expect(nameOnly.name == "טיוטה.TXT")
++        #expect(nameOnly.mime == "application/octet-stream")
++        let mimeOnly = try AnyNativeAttachment(row(["mime": .string("Text/Plain")], omitting: ["name"]), objectID: "doc-1")
++        #expect(mimeOnly.name.isEmpty)
++        #expect(mimeOnly.mime == "Text/Plain", "The projection must preserve supplied MIME spelling")
++
++        let changedName = try AnyNativeAttachment(row(["name": .string("other.txt")], omitting: ["mime"]), objectID: "doc-1")
++        let changedMIME = try AnyNativeAttachment(row(["mime": .string("text/plain")], omitting: ["name"]), objectID: "doc-1")
++        #expect(!nameOnly.sameContent(as: changedName))
++        #expect(!mimeOnly.sameContent(as: changedMIME))
++        let changedRoot = try AnyNativeAttachment(row(["rootCid": .string("root-two")], omitting: ["name", "mime"]), objectID: "doc-1")
++        #expect(!absent.sameContent(as: changedRoot))
++    }
++
++    @Test(arguments: ["name", "mime"])
++    func nativeMetadataByteBoundsAreAcceptedButNotExceeded(field: String) throws {
++        let maximum = field == "name" ? 16_384 : 1_024
++        let value = field == "name"
++            ? String(repeating: "א", count: 8_192)
++            : "application/" + String(repeating: "x", count: 1_012)
++        #expect(value.utf8.count == maximum)
++        let bounded = try AnyNativeAttachment(row([field: .string(value)]), objectID: "doc-1")
++        #expect((field == "name" ? bounded.name : bounded.mime).utf8.elementsEqual(value.utf8))
++        #expect(throws: AnyHostError.invalidDocument("native attachment metadata")) {
++            try AnyNativeAttachment(row([field: .string(value + "x")]), objectID: "doc-1")
++        }
++    }
++
++    @Test(arguments: ["name-null", "mime-null", "name-integer", "mime-bool", "file-id", "foreign-object", "negative-size", "large-size", "missing-cached", "wrong-durable"])
++    func presentWrongTypesAndInvalidIdentitySizeOrStateRemainRejected(invalidCase: String) throws {
++        var fields = try #require(row(omitting: ["name", "mime"]).object)
++        switch invalidCase {
++        case "name-null": fields["name"] = .null
++        case "mime-null": fields["mime"] = .null
++        case "name-integer": fields["name"] = .integer(3)
++        case "mime-bool": fields["mime"] = .bool(true)
++        case "file-id": fields["fileId"] = .string("")
++        case "foreign-object": fields["objectId"] = .string("another-document")
++        case "negative-size": fields["size"] = .integer(-1)
++        case "large-size": fields["size"] = .integer(AnyPreparedFileIntent.maximumBytes + 1)
++        case "missing-cached": fields.removeValue(forKey: "cached")
++        case "wrong-durable": fields["durable"] = .integer(1)
++        default: Issue.record("Unknown finite attachment metadata fixture"); return
++        }
++        #expect(throws: AnyHostError.invalidDocument("native attachment metadata")) {
++            try AnyNativeAttachment(.object(fields), objectID: "doc-1")
++        }
++    }
++
++    private func row(_ overrides: [String: AnyJSON] = [:], omitting: [String] = []) -> AnyJSON {
++        var fields: [String: AnyJSON] = [
++            "fileId": .string("file-1"), "objectId": .string("doc-1"), "size": .integer(3),
++            "cached": .bool(true), "durable": .bool(false), "rootCid": .string("root-one"),
++            "name": .string("notes.txt"), "mime": .string("text/plain")
++        ]
++        for (key, value) in overrides { fields[key] = value }
++        for key in omitting { fields.removeValue(forKey: key) }
++        return .object(fields)
++    }
++}
++#endif

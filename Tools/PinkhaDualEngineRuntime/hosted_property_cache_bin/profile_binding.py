@@ -16,7 +16,7 @@ import sys
 
 from originals import HOST_PATH, require
 
-DEPENDENCY_SHA256 = "c771e77ebd44e470ccee6964e898a3b1af707de3409298b4607ee522ea02b46c"
+DEPENDENCY_SHA256 = "d7acb21ff7bc7bd344168b7c582872dca2e929d49560c3ff874ef6f632f82d24"
 ACTIVATION_SHA256 = "f59d84fb9fc613236b6244fd78b0339c4a0a19edff6ef3705572ea78730efda7"
 W2_PREFIX = "Tools/PinkhaDualEngineRuntime/hosted_app_product_delta10/"
 W2_MODULE_NAME = "app10_published_w2_profile"
@@ -123,9 +123,9 @@ class RuntimeBindings:
         require(hashlib.sha256(raw).hexdigest() == DEPENDENCY_SHA256,
                 "The exact published W2 dependency binding changed")
         self.dependency = json.loads(raw)
-        require(self.dependency["schema"] == "pinkha-hosted-app10-published-profile-binding-v1"
+        require(self.dependency["schema"] == "pinkha-hosted-app10-profile-loader-successor-v1"
                 and self.dependency["repository"] == "davidpovarsky/anytype-swift"
-                and self.dependency["commit"] == "6abd34abc0ab3388d82dc4a9884e205f9fe8ab74"
+                and self.dependency["originalPublishedCommit"] == "6abd34abc0ab3388d82dc4a9884e205f9fe8ab74"
                 and self.dependency["runtimeReady"] is False
                 and self.dependency["newProfileImplementation"] is False
                 and set(self.dependency["files"]) == {W2_PREFIX + name for name in
@@ -159,7 +159,9 @@ class RuntimeBindings:
                 "Only the four exact published lanes may bind original host functions")
         self.HOSTED_LANES = self.profile.HOSTED_LANES
         self.proof = {"schema": "pinkha-app10-original-host-api-binding-v1",
-            "publishedCommit": self.dependency["commit"], "publishedTree": self.dependency["tree"],
+            "originalPublishedCommit": self.dependency["originalPublishedCommit"],
+            "originalPublishedTree": self.dependency["originalPublishedTree"],
+            "loaderBindingSuccessor": copy.deepcopy(self.dependency["loaderBindingSuccessor"]),
             "profileFiles": copy.deepcopy(self.dependency["files"]),
             "originalCore22LoaderSHA256": self.dependency["originalCore22LoaderSHA256"],
             "originalCore22ManifestSHA256": originals.proof["manifestSHA256"],

@@ -1,0 +1,100 @@
+{
+  "actualFailedAttempt": {
+    "elapsedSeconds": 17.779,
+    "ownedCleanup": {
+      "absenceEvidence": {
+        "atUTC": "2026-11-27T13:03:50.377266+00:00",
+        "errno": 3,
+        "error": "[Errno 3] No such process",
+        "processGroup": 702869,
+        "signal": 0,
+        "status": "ABSENT_ESRCH"
+      },
+      "historicalGroupReprobed": false,
+      "processGroup": 702869,
+      "status": "PASS_OWNED_GROUP_ABSENT"
+    },
+    "processExit": 1,
+    "receiptSHA256": "8fbaf3c6dd6b57bc577d7f91ba54403f2ee57ee350d37a0280da74d17c405ceb",
+    "sourceBeforeAfterSHA256": "93ba88447b301a90d1f10f60e8f922fc6b4959fc189f249df33787be1336180d",
+    "stderrSHA256": "a96f511f240b7293f40c4eb043a8d947c6a6fcfb7748a1b93dfdb600359123fc",
+    "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "testOutcomeEvents": []
+  },
+  "atUTC": "2026-11-27T13:08:04.974892+00:00",
+  "change": "Exactly two source substitutions: typed optionalRequest declaration around the unchanged load call, then #require(optionalRequest). All five callback bodies, assertions, suite5/11 and old7010B prefix retained.",
+  "correctedComponentCompilation": "NOT_RUN",
+  "diagnosis": "Swift Testing #require expansion forwards five MainActor closure arguments through non-Sendable macro closure parameters in the direct model.load expression. Evaluate the typed optional Task using normal Swift call checking before passing only that value into #require. No model.begin API is changed; the actual failing call is model.load.",
+  "diagnostics": [
+    {
+      "line": 306,
+      "text": "macro expansion #require:2:85: error: passing non-Sendable parameter '$5' to function expecting a '@Sendable' closure"
+    },
+    {
+      "line": 323,
+      "text": "    |   |                                                                                     `- error: passing non-Sendable parameter '$5' to function expecting a '@Sendable' closure"
+    },
+    {
+      "line": 330,
+      "text": "macro expansion #require:2:35: error: passing non-Sendable parameter '$2' to function expecting a '@Sendable' closure"
+    },
+    {
+      "line": 347,
+      "text": "    |   |                                   `- error: passing non-Sendable parameter '$2' to function expecting a '@Sendable' closure"
+    },
+    {
+      "line": 354,
+      "text": "macro expansion #require:2:54: error: passing non-Sendable parameter '$3' to function expecting a '@Sendable' closure"
+    },
+    {
+      "line": 371,
+      "text": "    |   |                                                      `- error: passing non-Sendable parameter '$3' to function expecting a '@Sendable' closure"
+    },
+    {
+      "line": 378,
+      "text": "macro expansion #require:2:69: error: passing non-Sendable parameter '$4' to function expecting a '@Sendable' closure"
+    },
+    {
+      "line": 395,
+      "text": "    |   |                                                                     `- error: passing non-Sendable parameter '$4' to function expecting a '@Sendable' closure"
+    },
+    {
+      "line": 402,
+      "text": "macro expansion #require:2:99: error: passing non-Sendable parameter '$6' to function expecting a '@Sendable' closure"
+    },
+    {
+      "line": 419,
+      "text": "    |   |                                                                                                   `- error: passing non-Sendable parameter '$6' to function expecting a '@Sendable' closure"
+    },
+    {
+      "line": 426,
+      "text": "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/component/Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift:180:23: warning: no calls to throwing functions occur within 'try' expression [#]"
+    }
+  ],
+  "files": [
+    {
+      "bytes": 20875,
+      "path": "AnyNativeTorahRelatedIdentityTests.swift",
+      "sha256": "629b751244d0b87020ffa3a21e27c2123274b2c26e39aed3aae3bbdade36f2aa"
+    },
+    {
+      "bytes": 13953,
+      "path": "AnyNativeSourceDocumentsPublicationTests.swift",
+      "sha256": "15fa97a7e9467ab2657d4d87ea4cef8bd448819d75bf3a3a03182ac1f237fc4e"
+    },
+    {
+      "bytes": 13865,
+      "path": "new-suite-suffix.swift",
+      "sha256": "a9a92d220b39e3987fc8877f1cbf26ffcec67fce77c8d24a4b4fe99f35c5e851"
+    }
+  ],
+  "fullAppCompilation": "NOT_RUN",
+  "historicalGroupReprobed": false,
+  "nativeCalls": 0,
+  "originalFailedAttemptMutated": false,
+  "published21dMutated": false,
+  "schema": "wave2-properties-actual-compile-failure-repair/v1",
+  "sourceControllerEdits": 0,
+  "sourceInverseSHA256": "3d66b19dc4c47ac8c70bdac28b1d23e2a5957da18a8b6e127055f4a26daadb79",
+  "status": "FROZEN_TEST_ONLY_CANDIDATE_NOT_COMPILED_OR_EXECUTED"
+}

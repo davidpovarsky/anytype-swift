@@ -1,0 +1,139 @@
+{
+  "currentApp": {
+    "commit": "919626d8a5a2701c2dfb56277a657fa593700b98",
+    "tree": "314816d893ec5b9a3643526da3080e2ede9a4a89"
+  },
+  "exactCurrentSource": {
+    "Anytype.xcodeproj/project.pbxproj": {
+      "bytes": 162179,
+      "gitBlob": "d0749db7a666a14c3ac3d8d94d98d20f0d07a91e",
+      "local": "project.pbxproj",
+      "sha256": "39b5ebb5f24ae107bea0b7c85d3fce51ff12c333a28ff43c01415dc87a04cbb4"
+    },
+    "Modules/PinkhaAnyUI/Package.swift": {
+      "bytes": 2051,
+      "gitBlob": "166d1db172057b25f82c4a67ddcac595cca43a59",
+      "local": "Package.swift",
+      "sha256": "298ef94254c6d8f17a389a5ff0efd02a5c03099e9a819b50886a5d9e8b3d9854"
+    },
+    "Tools/MiniApps/receipt_admission.py": {
+      "bytes": 29816,
+      "gitBlob": "46653086aa8294ea9056459509190b166ac9d805",
+      "local": "receipt_admission.py",
+      "sha256": "d63b8a04bd424a92bf852449c2ecbf8a22bd5ccae95b61ae32feb6be63e6b901"
+    },
+    "Tools/PinkhaDualEngineRuntime/wave3_shared_build.py": {
+      "bytes": 23103,
+      "gitBlob": "0e60a1c589caeeea02f02e4f2126b8004cd5990d",
+      "local": "wave3_shared_build.py",
+      "sha256": "47c66dde6122d19b12e5206a4a5f0b1841a026fb8088aa4bdb2c69d6a657cfcd"
+    }
+  },
+  "findings": [
+    "SwiftPM PinkhaAnyUITests has default source discovery and no sources/exclude list; both new files belong to its existing Tests/PinkhaAnyUITests path without Package.swift modification.",
+    "AnytypeTests App target uses its own synchronized AnytypeTests group plus explicit direct-source PBX bridges for seven original package files. Neither new attachment test is among those bridges.",
+    "Related-identity source already has its existing bridge and allowlist entry. Its newly appended model suite changes the bytes of that existing compiler input, not the number of bridge paths.",
+    "New tests import only module products already present on AnytypeTests: PinkhaAnyUI, PinkhaAnyHost, PinkhaAnyEngine and PinkhaAnyIntegration. HanlinMiniAppsBridge is already linked/importable in this target; metadata guard must still be confirmed by actual compiled enumeration.",
+    "Current receipt_admission native proof accepts only AnyTypeTests paths or its exact seven original-package paths; adding PBX entries alone would still leave both new paths unqualified.",
+    "The exact current wave3_shared_build.py equals retained original47c66. Its selectedNativeTestSources field feeds w3_native_proof requiredSources and existing actual SwiftFileList/command verification. No weakening of these original functions is required for an additive source selection."
+  ],
+  "locators": {
+    "actualProofField": "nativeCompilationProof.requiredSources",
+    "consumerScope": "Original Core22 five lanes do not automatically execute either new attachment suite.",
+    "existingHostAllowlist": [
+      "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeDocumentPublicationTests.swift",
+      "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyLibrarySearchPublicationTests.swift",
+      "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift",
+      "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextBlockCreationTests.swift",
+      "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+      "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextTypographyTests.swift",
+      "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift"
+    ],
+    "existingRelatedBuildFile": "FA9C01022F112700006805CC",
+    "existingRelatedReference": "FA9C00022F112700006805CC",
+    "originalSameJobConsumer": "Tools/PinkhaDualEngineRuntime/hosted_core13/run.py",
+    "pbxSourcePhase": "03C5C53C22DFD90C00DD91DE",
+    "pbxTarget": "03C5C53F22DFD90C00DD91DE (AnytypeTests)",
+    "producerFunctions": [
+      "load_admission",
+      "w3_native_proof",
+      "w3_sources",
+      "w3_compiler_filelists"
+    ],
+    "producerInputField": "selectedNativeTestSources"
+  },
+  "minimalWiringDeltaBeforeNextMatchingBuild": [
+    {
+      "change": "For each of exactly two new paths add one PBXFileReference with sourceTree SOURCE_ROOT, one PBXBuildFile referencing it, membership in existing top-level source group, and one member of existing AnytypeTests PBXSourcesBuildPhase03C5C53C22DFD90C00DD91DE. Use unique IDs; retain all seven bridges, original groups and target/dependencies.",
+      "newDirectTestSources": 2,
+      "newTargetOrPackageDependency": false,
+      "path": "Anytype.xcodeproj/project.pbxproj"
+    },
+    {
+      "change": "Add only these two exact paths to HOSTED_PACKAGE_TEST_SOURCES (7\u21929), keeping every validator function byte-identical. Propagate changed gate pin through the separately reviewed W3 admission/control closure.",
+      "newAllowedPaths": [
+        "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+        "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift"
+      ],
+      "path": "Tools/MiniApps/receipt_admission.py"
+    },
+    {
+      "change": "Retain every existing selected native path with hashes from the new exact combined source; append the two original paths with actual hashes. selectedNativeTestSources and nativeCompilationProof.requiredSources must contain both. If the reported current57 paths are otherwise retained this becomes59; no new Stage1 UI input.",
+      "currentReportedNativeCount": 57,
+      "expectedCountIfUnchangedOtherPaths": 59,
+      "inventoryDelta": 2,
+      "liveCurrentMaterializerPathVerified": false,
+      "path": "W3 next exact source freeze/compiler-input inventory and live materializer admission"
+    },
+    {
+      "change": "Select the two distinct original suites (3/4 and3/13) using actual AnytypeTests compiled enumeration and original result validators. This intake creates no selector/profile/controller and claims no compiled ID.",
+      "path": "W3 actual hosted consumer selection after successful build"
+    }
+  ],
+  "newOriginalTestSources": [
+    {
+      "bytes": 8725,
+      "declaredCases": 4,
+      "declaredMethods": 3,
+      "guard": null,
+      "hostedTarget": "AnytypeTests",
+      "local": "interfaces_work/attachment-upload-ui/candidate/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "originalTarget": "PinkhaAnyUITests",
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "sha256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809",
+      "sourceCommit": "f731e30409b7b479d9ed5e87280624485c181da8",
+      "suite": "AnyNativeAttachmentIntentStoreTests"
+    },
+    {
+      "bytes": 4744,
+      "declaredCases": 13,
+      "declaredMethods": 3,
+      "guard": "canImport(UIKit) && canImport(HanlinMiniAppsBridge)",
+      "hostedTarget": "AnytypeTests",
+      "local": "interfaces_work/attachment-metadata-projection/candidate/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift",
+      "originalTarget": "PinkhaAnyUITests",
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift",
+      "sha256": "b9d0f1b8c72e503d4e4952b33f519fc93680d54a8384e828f001d498ddd71a91",
+      "sourceCommit": "2f9ac20a910d9922e13f8e5d410757604437fcc5",
+      "suite": "AnyNativeAttachmentMetadataTests"
+    }
+  ],
+  "observedAtUTC": "2026-11-27T13:05:59.352091+00:00",
+  "operations": {
+    "compilerInvocations": 0,
+    "controllerEdits": 0,
+    "githubReadOnly": true,
+    "localPrimarySourceCopiesOnly": true,
+    "packageEdits": 0,
+    "productSourceEdits": 0,
+    "remoteRuntimeCalls": 0,
+    "runtimeAdmission": false,
+    "tests": 0
+  },
+  "schema": "wave2-attachment-two-test-hosted-bridge-intake/v1",
+  "status": "READ_ONLY_SOURCE_WIRING_GAP_CONFIRMED_NO_EDIT_OR_EXECUTION",
+  "unknowns": [
+    "Current live W3 materializer file path and exact57-row inventory were not independently resolved in this bounded intake. The confirmed original producer field/proof seam is recorded; W3 must bind its actual current source/controls.",
+    "Successful Apple compiler witness and actual test enumeration/outcomes do not yet exist for these two new inputs."
+  ]
+}

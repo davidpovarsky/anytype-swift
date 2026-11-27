@@ -25,7 +25,7 @@ import sys
 import time
 from types import ModuleType, SimpleNamespace
 
-PIN_MANIFEST_SHA256 = "81d178d6d829dc2eff201b8b8dcd190db2da79dc68a6cc06f36ca0d8a90d2778"
+PIN_MANIFEST_SHA256 = "b0afbd53aef99cc44adc77432c6fba6b7b060faf4808e81ec01799df3d2e627c"
 CORE_ROOT = "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/"
 SHARED_PATH = "Tools/CurrentAppleValidation/combined_heart_semantics/build15/combined_heart_semantics_current.py"
 HOST_PATH = CORE_ROOT + "native-renderer-hosted/combined_host_acceptance_app15.py"

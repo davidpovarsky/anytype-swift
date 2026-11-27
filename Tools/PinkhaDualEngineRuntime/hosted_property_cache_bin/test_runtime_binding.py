@@ -119,7 +119,7 @@ class PublishedW2BindingControls(unittest.TestCase):
 
     def test_same_published_instance_reaches_all_original_host_callbacks(self):
         self.assertEqual(self.binding.originals.proof["manifestSHA256"],
-                         "81d178d6d829dc2eff201b8b8dcd190db2da79dc68a6cc06f36ca0d8a90d2778")
+                         "b0afbd53aef99cc44adc77432c6fba6b7b060faf4808e81ec01799df3d2e627c")
         self.assertEqual(len(self.binding.proof["unchangedOriginalDeclarations"]), 12)
         instances = []
         with patch.object(self.originals.witness, "verify_native_compiler_sources", self.witness):

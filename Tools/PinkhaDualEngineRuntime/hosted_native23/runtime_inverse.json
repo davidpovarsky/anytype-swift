@@ -1,0 +1,78 @@
+{
+  "schema": "pinkha-hosted-native23-runtime-literal-derivative-v1",
+  "originalPath": "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/run_prebuilt_native_ui16.py",
+  "originalSHA256": "e4515cc6cd36424c607ee1e986ea9f0cfdcb0db516bf6e91276eef685ba29a22",
+  "candidateSHA256": "55259767750bba973e0b5355d79f2f758201be27562719f746170a1ceb054d07",
+  "originalBytes": 72356,
+  "candidateBytes": 65073,
+  "patches": [
+    {
+      "label": "explicit-separate-bridge",
+      "before": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native16_profile.py\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() == \"3fd3049737f4be72f4257a04e5ca94085e6d9e11cd3916257ced4bf2e8943aa6\",\n            \"exact_reviewed_shared_app_NativeUI_profile_required\")\n    cached = getattr(native8ac_module, \"qualified\", None)\n    if cached is not None:\n        return cached\n    module = type(sys)(\"qualified_native16\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    native8ac_module.qualified = module\n    return module\n",
+      "after": "def native8ac_module():\n    # Separately admitted same-job bridge. The historical Mac profile is never opened.\n    require(SAME_JOB_BRIDGE is not None, \"Exact same-job Native23 bridge required\")\n    return SAME_JOB_BRIDGE\n"
+    },
+    {
+      "label": "real-three-product-intake-without-legacy-receipts",
+      "before": "        main_record = json.loads((args.main_evidence / \"receipt.json\").read_bytes())\n        ui_record = json.loads((args.ui_build / \"receipt.json\").read_bytes())\n        require((main_record[\"status\"] == \"PASS_COMBINED_MAIN_AND_COMPLETE_UI_BUILD_NOT_ACCEPTANCE\"\n                 or (main_record.get(\"sourceCommit\") == \"379ca3568f247d2fc218ed63df24796d461713c0\"\n                     and main_record.get(\"status\") == \"PASS_ORIGINAL_APP_AND_CONTINUED_COMPLETE_UI_BUILD_NOT_ACCEPTANCE\"\n                     and main_record.get(\"protocol\") == \"pinkha-app15-original-app-ui-continuation-v1\"))\n                and main_record[\"sourceUnchanged\"] is True and main_record[\"testsExecuted\"] == 0,\n                \"complete_original_main_build_required\")\n        require(ui_record[\"status\"] == \"PASS_UI_RUNNER_BUILD_NOT_ACCEPTANCE\"\n                and ui_record[\"sourceCommit\"] == main_record[\"sourceCommit\"]\n                and ui_record[\"testsExecuted\"] == 0\n                and ui_record.get(\"mainReceiptSHA256\") == digest(args.main_evidence / \"receipt.json\"),\n                \"same_source_exact_main_receipt_ui_runner_build_required\")\n        if ui_record.get(\"miniAppsCrossAppFixture\") is not None:\n            receipt[\"miniAppsCrossAppFixture\"] = admit_miniapps_runner(source, main_record, args.ui_build, ui_record)\n        if ui_record.get(\"integratedMiniAppsFixture\") is not None:\n            receipt.update(admit_current_runner(source, main_record, args.ui_build, ui_record))\n        if ui_record.get(\"currentMiniAppsMenuFixture\") is not None:\n            receipt[\"currentMiniAppsMenuFixture\"] = admit_current_menu_runner(source, main_record, args.ui_build, ui_record)\n        if (main_record[\"sourceCommit\"] == \"76f59f1e838991d1bbc7a07ecd08c6a2f15915c7\"\n                or main_record.get(\"inputs\", {}).get(\"nativeSourceManifestSHA256\") ==\n                    \"11619a9928d681ee4a0114bbba7b8c66d3b7383b6289e639e67d50e546b8ae8b\"\n                or ui_record.get(\"current11619Fixture\") is not None):\n            receipt[\"current11619Fixture\"] = native11619_module().admit(\n                source, main_record, args.ui_build, ui_record)\n        if (main_record[\"sourceCommit\"] == \"379ca3568f247d2fc218ed63df24796d461713c0\"\n                or main_record.get(\"inputs\", {}).get(\"nativeSourceManifestSHA256\") ==\n                    \"8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b\"\n                or ui_record.get(\"current8acFixture\") is not None):\n            current8ac = native8ac_module()\n            runtime_binding = current8ac.qualify_runtime_inputs(source, args.main_evidence, main_record)\n            projection = json.loads((args.ui_build / \"projection.json\").read_bytes())\n            require(ui_record.get(\"current8acRuntimeIdentity\") ==\n                    projection.get(\"current8acRuntimeIdentity\") == runtime_binding,\n                    \"exact_App15_original_runtime_proofs_required\")\n            receipt[\"current8acFixture\"] = current8ac.admit(\n                source, main_record, args.ui_build, ui_record)\n            receipt[\"current8acRuntimeIdentity\"] = runtime_binding\n            LIFECYCLE = current8ac.owned_lifecycle(source, out, out / \"owned-command-lifecycle\")\n            if args.stage in ('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type', 'accessibility-audit-large', 'accessibility-audit-expanded', 'accessibility-voiceover-large'):\n                run = current8ac.styled_owned_commands(run, out)\n        require(args.source_root is None or receipt.get(\"current8acFixture\") is not None,\n                \"explicit_source_root_is_only_for_closed_App15_warm_layout\")\n        if ui_record.get(\"current410bFixture\") is not None:\n            receipt[\"current410bFixture\"] = admit_410b_runner(source, main_record, args.ui_build, ui_record)\n        if ui_record.get(\"current410bBinConfirmationFixture\") is not None:\n            require(args.stage == \"bin\" and ui_record.get(\"current410bFixture\") is None,\n                    \"Bin_confirmation_derivative_has_one_explicit_original_stage\")\n            receipt[\"current410bBinConfirmationFixture\"] = bin_confirmation_module().admit(\n                source, main_record, args.ui_build, ui_record)\n        require(main_record[\"sourceCommit\"] != \"e540cd7e01b497f1b3173ae2e68b43ade0b00b6f\"\n                or receipt.get(\"current410bFixture\") is not None\n                or receipt.get(\"current410bBinConfirmationFixture\") is not None,\n                \"current410b_fixture_binding_cannot_be_omitted\")\n        if args.stage == \"archive-picker-observe\":\n            require(main_record[\"sourceCommit\"] == \"5ffff121e696044b0d1955524b7a69baf453b4b1\",\n                    \"exact_observation_app_source_required\")\n            method_start = \"    func testObserveCanonicalArchiveSystemPickers() throws {\"\n            method_end = \"    private func openCanonicalArchiveObservationEntry\"\n            method_hashes = []\n            for path in (source / \"NativeApp/UITests/NativeLaunchTests.swift\",\n                         args.ui_build / \"source/UITests/NativeLaunchTests.swift\"):\n                text = path.read_text()\n                require(text.count(method_start) == 1 and text.count(method_end) == 1,\n                        \"one_original_picker_observation_method_required\")\n                body = method_start + text.split(method_start, 1)[1].split(method_end, 1)[0]\n                method_hashes.append(hashlib.sha256(body.encode()).hexdigest())\n            require(method_hashes == [\"49e9472a160dcb7f4cb6824e6e11369120a6d5cb6ee6f592ade19c3f66d00ded\", \"49e9472a160dcb7f4cb6824e6e11369120a6d5cb6ee6f592ade19c3f66d00ded\"],\n                    \"original_picker_observation_method_changed\")\n            receipt[\"observationScope\"] = {\n                \"methodSHA256\": method_hashes[0],\n                \"purpose\": \"observe_original_system_picker_presentation_after_actual_blank_exporter\",\n                \"acceptance\": False, \"exportSaveInvoked\": False,\n                \"importFileSelected\": False, \"archiveRoundtripAccepted\": False,\n                \"originalArchiveFailureReceiptSHA256\":\n                    \"733b210f79f5b31cb07772e104f6dfd43285d0e11dd818346fa28eb537131d94\"}\n        if args.stage == \"miniapps\":\n            require((receipt.get(\"miniAppsCrossAppFixture\") is not None\n                     or receipt.get(\"integratedMiniAppsFixture\") is not None\n                     or receipt.get(\"currentMiniAppsMenuFixture\") is not None\n                      or receipt.get(\"current410bFixture\") is not None\n                      or receipt.get(\"current11619Fixture\") is not None\n                      or receipt.get(\"current8acFixture\") is not None)\n                    and args.companion_manifest is not None,\n                    \"real_companion_and_new_compiled_method_required\")\n        else:\n            require(args.companion_manifest is None, \"companion_is_only_needed_for_its_scoped_stage\")\n        if args.frozen_inputs is not None:\n            frozen = json.loads((args.frozen_inputs / \"receipt.json\").read_bytes())\n            require(frozen.get(\"status\") == \"PASS_EXACT_FROZEN_NATIVE_UI_INPUTS\"\n                    and frozen.get(\"sourceCommit\") == main_record[\"sourceCommit\"]\n                    and frozen.get(\"mainReceiptSHA256\") == digest(args.main_evidence / \"receipt.json\")\n                    and frozen.get(\"uiReceiptSHA256\") == digest(args.ui_build / \"receipt.json\"),\n                    \"exact_frozen_source_and_product_provenance_required\")\n            receipt[\"frozenInputReceiptSHA256\"] = digest(args.frozen_inputs / \"receipt.json\")\n",
+      "after": "        main_record = json.loads((args.main_evidence / \"receipt.json\").read_bytes())\n        ui_record = json.loads((args.ui_build / \"evidence/receipt.json\").read_bytes())\n        current8ac = native8ac_module()\n        LIFECYCLE = current8ac.owned_lifecycle(source, out, out / \"owned-command-lifecycle\")\n        run = current8ac.styled_owned_commands(run, out)\n        runtime_binding = current8ac.qualify_runtime_inputs(source, args.main_evidence, main_record)\n        receipt[\"sameJobNative23Fixture\"] = current8ac.admit(source, main_record, args.ui_build, ui_record)\n        receipt[\"sameJobRuntimeIdentity\"] = runtime_binding\n"
+    },
+    {
+      "label": "real-native23-full-product-inventory",
+      "before": "        product_record = args.ui_build / \"products-all.json\"\n        require(digest(product_record) == ui_record[\"completeProductsInventory\"][\"sha256\"],\n                \"native_ui_build_product_record_changed\")\n        ui_inventory = json.loads(product_record.read_bytes())\n",
+      "after": "        product_record = args.ui_build / \"evidence/products-with-modes.json\"\n        ui_inventory = current8ac.native23_product_entries(product_record, ui_record)\n"
+    },
+    {
+      "label": "actual-third-compiler-receipt-reference",
+      "before": "                       runnerReceiptSHA256=digest(args.ui_build / \"receipt.json\"),\n",
+      "after": "                       runnerReceiptSHA256=digest(args.ui_build / \"evidence/receipt.json\"),\n"
+    },
+    {
+      "label": "retain-original-exception-object",
+      "before": "    first_error = None\n    cleanup_errors = []\n",
+      "after": "    first_error = None\n    first_exception = None\n    cleanup_errors = []\n"
+    },
+    {
+      "label": "protect-first-failure-receipt",
+      "before": "    except BaseException as exc:\n        first_error = {\"type\": type(exc).__name__, \"reason\": str(exc)}\n        write(out / \"first-failure.json\", {**first_error, \"traceback\": traceback.format_exc()})\n",
+      "after": "    except BaseException as exc:\n        first_exception = exc\n        first_error = {\"type\": type(exc).__name__, \"reason\": str(exc)}\n        retain_native23_failure(write, out / \"first-failure.json\",\n            {**first_error, \"traceback\": traceback.format_exc()}, first_exception, cleanup_errors)\n"
+    },
+    {
+      "label": "closed-custody-final-command-barrier-with-file-only-preservation",
+      "before": "            if receipt.get(\"current8acFixture\") is not None:\n                require(native8ac_module().qualify_runtime_inputs(\n                    source, args.main_evidence, main_record) == receipt[\"current8acRuntimeIdentity\"],\n                    \"original_App15_runtime_inputs_changed_during_UI_execution\")\n",
+      "after": "            if receipt.get(\"sameJobNative23Fixture\") is not None:\n                final_input_boundary(current8ac, source, args.main_evidence, main_record,\n                                     receipt[\"sameJobRuntimeIdentity\"], cleanup_errors)\n"
+    },
+    {
+      "label": "final-receipt-preserves-first-exception",
+      "before": "        write(out / \"receipt.json\", receipt)\n    expected_status = (",
+      "after": "        first_exception = retain_native23_receipt(write, out / \"receipt.json\", receipt,\n                                                  first_exception, cleanup_errors)\n    if first_exception is not None:\n        raise first_exception\n    expected_status = ("
+    },
+    {
+      "label": "actual-compiler-source-and-proof-without-historical-fixture-labels",
+      "before": "                       historyKeyboardPreparation=ui_record.get(\"historyKeyboardPreparation\"),\n                       runnerSourceCommit=ui_record.get(\"runnerSourceCommit\"),\n                       archiveGrabberPreparation=ui_record.get(\"archiveGrabberPreparation\"),\n",
+      "after": "                       runnerSourceCommit=ui_record[\"sourceCommit\"],\n                       native23CompilerProof=ui_record[\"compilerProof\"],\n                       native23CompiledDescriptor=ui_record[\"compiledDescriptor\"],\n"
+    }
+  ],
+  "changedDeclarations": [
+    "native8ac_module",
+    "main"
+  ],
+  "preservedDeclarations": {
+    "require": "9076d3fda7085a4a4daa711bed7a9b4b1005cc75efbb3ff5b15950d744ba4813",
+    "digest": "9e90cc7f72ef79217fdbc6ac97a20b289aa7638fc9c49d1516e9c489cd0294a2",
+    "write": "17f5afcee02db834b4bbcc3a06720977caa00e90132ee7bcd8f629c09f240ef9",
+    "inventory": "638a91d24af23c0fc6298c6b9acc1387aafd9db9622c1d99f2b2425df6db1122",
+    "original_module": "b57dec92bcb115291e8b4f81a86f888584987a545c230dae653de46d2189fd06",
+    "run": "5ea092b2a4d7159e8dec45b264224811e24e64265493a1e4958e4937b5fecaad",
+    "bind": "6b48b09e76ce7af30470d19c4dc543f0d677cf43463ef4d42c1cd71710e34f00",
+    "admit_miniapps_runner": "b19203f4991c8bb502266ecee413bcbd373842299b17fe166fa28f30432685ab",
+    "admit_current_runner": "e58e1ee941da1b64f77550791e8a27d80d57876b1d8b8656252b44e6988d5f2a",
+    "admit_current_menu_runner": "6420c310e7ebac6f954534e944b50fa30e813d93a05f77e64b3b7b35c66c25f3",
+    "native11619_module": "c96363ae3c13037cb8181170eac8cfda98d516ff9c560f9ba9b46d9e45719611",
+    "bin_confirmation_module": "b0981326dfd835ac248547ac7d5d0a32fb9d35b58b2dfc80bf8d745bf45d544e",
+    "admit_410b_runner": "85fea1999c9b6e51781b23e65740c2034e66ec5e36fc1ff7d9b2aabd68e5ce95",
+    "companion86_module": "ba5ce39001fcde29968bd06635db10f6766499ba2881a1324309d7bcc9260cf0",
+    "admit_real_companion": "dee1516be39accd759a581fcb6236b363d5391ba516e3d34b214443995bdfbb4",
+    "qualify_miniapps_report": "db4eceade2c3be553d6bd9381d13c5177d5b093f51e63e769811526984ba6b79"
+  },
+  "fullInverseRestoresOriginal": true
+}

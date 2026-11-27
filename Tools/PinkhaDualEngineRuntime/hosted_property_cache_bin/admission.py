@@ -16,7 +16,7 @@ from originals import require
 REPOSITORY = "davidpovarsky/anytype-swift"
 CONTROL_PREFIX = "Tools/PinkhaDualEngineRuntime/hosted_property_cache_bin/"
 HOSTED_OWNER = "Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py"
-HOSTED_OWNER_SHA256 = "7583a05a9623e2a32e7c981fb857d97eb361d20f201cf503caa18d79fd365f2e"
+HOSTED_OWNER_SHA256 = "3940542e154c83ee4c8e433381449b6ff35a9fda702e8b9bd02af3b5c1d1d4c1"
 NATIVE_INPUTS = "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_inputs.py"
 NATIVE_INPUTS_SHA256 = "e8aaf254140c06410813d5ab6f3b9168b71c1722dfe2ecdac8155a1bdc9d4d3c"
 LOCK = "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
@@ -139,9 +139,10 @@ def producer_context(args, plan, originals, owner):
             and sha(source / LOCK) == plan["pins"]["packageResolvedSHA256"],
             "Original canonical SDK, materializer, installed receipt or App lock differs")
     owner_proof = owner.control_identity(control, plan["controlCommit"])
-    require(owner.selected_sources(source) == plan["compilerInputs"]
-            and len(plan["compilerInputs"]["native"]) == 57 and len(plan["compilerInputs"]["ui"]) == 10,
-            "The original complete 57-native/10-UI source selection differs")
+    selected = owner.selected_sources(source)
+    require(selected == plan["compilerInputs"]
+            and owner.validate_compiler_inputs(selected) == {"native": 61, "stage1UI": 10, "native23UI": 2},
+            "The exact reviewed61-native/10-Stage1 source membership, bytes and import projection differ")
     expected_plan = ref(args.plan)
     require(expected_plan["sha256"] == args.plan_sha256, "Root plan changed after admission")
     hosted = gate.json_ref(ref(root / "hosted-receipt.json"))

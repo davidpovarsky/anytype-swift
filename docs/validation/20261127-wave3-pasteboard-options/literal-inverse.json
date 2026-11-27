@@ -1,0 +1,36 @@
+{
+  "after": {
+    "bytes": 6271,
+    "gitBlob": "e7d115cd681318953bc669a436b72a730114f7ea",
+    "sha256": "0eee42f7036e43d74d82088b2bd21696dc3b248f4430e4c9dfc887bbbc1a60d9"
+  },
+  "baseCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "before": {
+    "bytes": 6258,
+    "gitBlob": "995df1ccf9a3131919d89bb398bed38594cb47f8",
+    "sha256": "1edd18bf419c01fb88f72dcbca367e3417b2b8993394d1d0a3190dcb685b7eb0"
+  },
+  "candidateMatchesPublishedCutoverReceipt": true,
+  "candidateProvenance": "Derived locally from the exact published current275 preimage and one literal original API correction; whole candidate SHA matches the immutable published d609 cutover receipt. Direct d609 Git source and parent remain unavailable in the observed public ref.",
+  "operations": [
+    {
+      "addedBytes": 13,
+      "byteOffset": 2846,
+      "new": "PropertyListSerialization.propertyList(from: data, options: [], format: nil)",
+      "occurrences": 1,
+      "old": "PropertyListSerialization.propertyList(from: data, format: nil)"
+    }
+  ],
+  "originalDonorCommit": "d6090c03b9ac4e5760941e34f4c04478db4ae59f",
+  "originalDonorParent": "1be970356c655bcef3688ddf1d129d5029bbc533",
+  "path": "Anytype/Sources/ServiceLayer/Block/Pastboard/PasteboardHelper.swift",
+  "prefixSHA256": "c9546dcd5ed49f4d2207ed5609a001a43ab7287fd544c4abdd06c3a5cd2e0da8",
+  "publishedEvidenceCommit": "1b9a917b5d129a98767e3e284edae55256d1d891",
+  "repository": "davidpovarsky/anytype-swift",
+  "schema": "pinkha-exact-single-hunk-source-inverse-v1",
+  "status": "PASS_STATIC_WHOLE_FILE_INVERSE_NOT_COMPILATION",
+  "suffixSHA256": "8c34e6be59fea8b63a49a38df4c04524d32bbe7f4bb2c43feeda9ac42e4e5fd9",
+  "unchangedPrefixAndSuffix": true,
+  "wholeForwardEqualsCandidate": true,
+  "wholeInverseEqualsOriginal": true
+}

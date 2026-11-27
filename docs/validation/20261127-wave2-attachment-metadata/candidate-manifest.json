@@ -1,0 +1,37 @@
+{
+  "status": "FROZEN_FOR_SOURCE_REVIEW_NOT_COMPILED_NOT_RUN",
+  "baseCommit": "f731e30409b7b479d9ed5e87280624485c181da8",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "bytes": 38709,
+      "sha256": "75cac2b2b7ffe0d84e0f461d80c94e3be48d804896170a2b67e895e006977631",
+      "gitBlob": "187df84fbe9b74b9cd2a98c40efa2d9579ad7599",
+      "change": "modified"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift",
+      "bytes": 4744,
+      "sha256": "b9d0f1b8c72e503d4e4952b33f519fc93680d54a8384e828f001d498ddd71a91",
+      "gitBlob": "feafbcdeb1d3c1849fc8445c23d686c1162db22a",
+      "change": "added"
+    }
+  ],
+  "changes": "Optional absent name/MIME only; present wrong types remain errors; original name raw bytes and empty MIME fallback retained; byte bounds16384/1024",
+  "nativeInlineListRequiredness": "UNCONFIRMED_NO_CHANGE",
+  "preserved": "Every byte outside actual row initializer; sameContent/MiniApps/open/status/upload/authority remain unchanged",
+  "tests": {
+    "suite": "AnyNativeAttachmentMetadataTests",
+    "originTarget": "PinkhaAnyUITests",
+    "conditional": "canImport(UIKit) && canImport(HanlinMiniAppsBridge), same as production row",
+    "methods": 3,
+    "declaredCases": 13,
+    "actualExecutions": 0,
+    "selectors": [
+      "omittedAndEmptyMetadataPreserveExistingFallbackAndContentComparison()",
+      "nativeMetadataByteBoundsAreAcceptedButNotExceeded(field:)",
+      "presentWrongTypesAndInvalidIdentitySizeOrStateRemainRejected(invalidCase:)"
+    ]
+  },
+  "runtimeAdmission": false
+}

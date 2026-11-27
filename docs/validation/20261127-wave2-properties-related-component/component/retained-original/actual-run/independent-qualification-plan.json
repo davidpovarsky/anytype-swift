@@ -1,0 +1,211 @@
+{
+  "actual": {
+    "casesPassed": null,
+    "compilerFileLists": null,
+    "job": null,
+    "methodsPassed": null,
+    "receipt": null,
+    "stagingReceipt": null
+  },
+  "actualOutcomeReview": [
+    "Require exactly the five selected method identities, each started and passed, and one successful suite/overall summary for five Swift Testing methods. Zero XCTest methods alone provides no acceptance.",
+    "Require each of the ten Boolean argument tuples above to have its own actual started/passed case event. The one parameterless passed method supplies the eleventh case; do not invent a parameterized event for it.",
+    "For the two-argument method require the full Cartesian product false/false,false/true,true/false,true/true with exact parameter names. Check unordered identity sets and uniqueness, not presumed scheduling order.",
+    "Reject missing, duplicate, extra, failed or skipped selected outcomes; inspect recorded issue/diagnostic lines. Preserve actual FAIL and unknown-format evidence instead of relabeling it or rerunning tests.",
+    "The runner method summary remains original authority, supplemented by independent case-event inspection. Declared case counts are not substituted for observed completed cases."
+  ],
+  "compilerReadbackPlan": {
+    "buildRoot": "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build",
+    "pathAuthority": "Only exact actual paths read from verbose compiler command lines inside the owned component build root; no guessed FileList path or original-App proof reuse.",
+    "requiredModules": [
+      {
+        "module": "TorahInspectorCore",
+        "otherApplicationSourcesAllowed": false,
+        "requiredExactSource": "Sources/TorahInspectorCore/Models.swift"
+      },
+      {
+        "module": "PinkhaAnyUI",
+        "otherApplicationSourcesAllowed": false,
+        "requiredExactSource": "Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift"
+      },
+      {
+        "generatedSource": "Read and separately hash the actual SwiftPM test_anchor.swift, if present; verify it is the generated anchor for this test module, not an unreviewed test/body.",
+        "module": "PinkhaAnyUITests",
+        "otherApplicationSourcesAllowed": false,
+        "requiredExactSource": "Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift"
+      },
+      {
+        "generatedSource": "Read and separately hash the actual generated test_entry_point.swift and consumed FileList; this is infrastructure, not another test source.",
+        "module": "PinkhaAnyUITests_test_runner"
+      }
+    ],
+    "sourceRoot": "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/component",
+    "witnessRequirements": [
+      "Retain raw FileList bytes with exact absolute source paths, byte count/hash and member source hashes; compare each tracked input against current fixed pins.",
+      "For each module retain actual builtin-SwiftDriver or equivalent swiftc command consuming that exact @FileList. Write-file announcements or existence of a list alone are insufficient.",
+      "Retain the original command line and its stderr line number; hash the raw line bytes with newline policy recorded explicitly. Extract actual module,target and inner-driver jobs from that line.",
+      "Read actual generated anchor and runner sources rather than infer their bytes from the earlier G04 run. Reject extra compiled test/product sources; preserve unexpected compiler format as an inspection gap pending bounded actual readback, not a new compiler invocation."
+    ]
+  },
+  "exactInputs": {
+    "actual-run/launch-template.py": {
+      "bytes": 948,
+      "sha256": "34500021707bd92d78dca2345beeeb87b172f85a26dc48c7e6583299a9aefe25"
+    },
+    "actual-run/stage-inputs-template.py": {
+      "bytes": 37701,
+      "sha256": "64a0b8243e3fb73026549cbb301cecb5e023eae944fc45a487eb07f7149dce81"
+    },
+    "materialized1/inputs/Package.swift": {
+      "bytes": 677,
+      "sha256": "b6aae03e2f5dab5d8e80b582f2def376c527ef115f51ed5fa2981fa794560548"
+    },
+    "materialized1/inputs/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift": {
+      "bytes": 5157,
+      "sha256": "1cf8d0790e949b7592d4298dff0e788982ad3b0959c838350fe587d2c80e48c1"
+    },
+    "materialized1/inputs/Sources/TorahInspectorCore/Models.swift": {
+      "bytes": 24592,
+      "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0"
+    },
+    "materialized1/inputs/Tests/PinkhaAnyUITests/AnyNativeSourceDocumentsPublicationTests.swift": {
+      "bytes": 13887,
+      "sha256": "b056ddc8e2114a8666708db45d71fc8caa0e6f7e9c804655b1023d96003131b4"
+    },
+    "materialized1/inputs/owned-process-provenance.json": {
+      "bytes": 1010,
+      "sha256": "4c2f95a4129fdb89125458c4a3a5874c97dbbf0ed9aaa3d1b15d638ccef734b1"
+    },
+    "materialized1/inputs/owned_process.py": {
+      "bytes": 5529,
+      "sha256": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924"
+    },
+    "materialized1/inputs/run_component.py": {
+      "bytes": 12289,
+      "sha256": "f0c459b34a20fdce78f4cbdf07988ac9c4976ba2cbce4daeb316a0dd7d88d42c"
+    }
+  },
+  "executionOwner": "/root",
+  "expectedParameterizedCaseEvents": 10,
+  "expectedUnparameterizedCaseOutcomes": 1,
+  "methods": [
+    {
+      "name": "queuedOldRequestCannotBorrowReopenedSheetAndCurrentFailureCanRetry",
+      "signature": "queuedOldRequestCannotBorrowReopenedSheetAndCurrentFailureCanRetry()",
+      "sourceDeclaredCases": [
+        {}
+      ]
+    },
+    {
+      "name": "noncooperativeOldCompletionCannotReplaceReopenedRequest",
+      "signature": "noncooperativeOldCompletionCannotReplaceReopenedRequest(olderFails:changesDocumentOwner:)",
+      "sourceDeclaredCases": [
+        {
+          "changesDocumentOwner": false,
+          "olderFails": false
+        },
+        {
+          "changesDocumentOwner": true,
+          "olderFails": false
+        },
+        {
+          "changesDocumentOwner": false,
+          "olderFails": true
+        },
+        {
+          "changesDocumentOwner": true,
+          "olderFails": true
+        }
+      ]
+    },
+    {
+      "name": "retirementDiscardsRowsAndRejectsANoncooperativeCompletion",
+      "signature": "retirementDiscardsRowsAndRejectsANoncooperativeCompletion(fails:)",
+      "sourceDeclaredCases": [
+        {
+          "fails": false
+        },
+        {
+          "fails": true
+        }
+      ]
+    },
+    {
+      "name": "asyncWaiterJoinsReadAndForwardsCallerCancellation",
+      "signature": "asyncWaiterJoinsReadAndForwardsCallerCancellation(cancelCaller:)",
+      "sourceDeclaredCases": [
+        {
+          "cancelCaller": false
+        },
+        {
+          "cancelCaller": true
+        }
+      ]
+    },
+    {
+      "name": "temporarilyInactiveOwnerFinishesItsRequestAndCanRetry",
+      "signature": "temporarilyInactiveOwnerFinishesItsRequestAndCanRetry(fails:)",
+      "sourceDeclaredCases": [
+        {
+          "fails": false
+        },
+        {
+          "fails": true
+        }
+      ]
+    }
+  ],
+  "owner": "/root/editor",
+  "preparedAtUTC": "2026-11-27T12:59:42.168510+00:00",
+  "rawEvidenceReadback": [
+    "Retain exact input-staging receipt and executed wrapper/runner pins; preserve original raw bytes and actual final Sentinel job result.",
+    "Read and independently hash receipt.json, invocation.json, process.json, resource-samples.json, source-inputs-before.json, source-inputs-after.json, stdout.original.log, stderr.original.log and toolchain.original.log from the actual attempt.",
+    "Match all original receipt artifact entries to exact readback bytes/hashes. Compare source inventories before/after and compiled component copies to the four fixed Package/model/Core/test pins.",
+    "Use only the original recorded process return and positive ABSENT_ESRCH cleanup latch. Never probe the former process/group again.",
+    "Confirm original argv --jobs1 --no-parallel, exact suite filter,300s command, one actual invocation, actual admission/live samples and no timeout/resource-stop/cleanup/evidence-finalization failure. Record actual inner SwiftDriver -j separately."
+  ],
+  "retainedG04QualificationExamples": {
+    "wave2-reader-audit/component/actual-run/attempt1/actual-compiler-filelists-readback.json": {
+      "bytes": 2788,
+      "sha256": "2dfce1989fbfd3f034e7d89703df00a505bc052a83ff374690bc50436c883542"
+    },
+    "wave2-reader-audit/component/actual-run/attempt1/independent-component-review.json": {
+      "bytes": 13093,
+      "sha256": "d463e768a74f7017f7655dd27bfee5c813db8fb0e8264ca9d3a9a94ea0da8b62"
+    },
+    "wave2-reader-audit/component/actual-run/attempt1/root-qualification.json": {
+      "bytes": 5797,
+      "sha256": "0ee97117c10c528dc5a3e74ceb828c2e019a54abb18c6da4a563275a7db37802"
+    },
+    "wave2-reader-audit/component/actual-run/attempt1/stderr.original.log": {
+      "bytes": 61852,
+      "sha256": "6dd85809ecb7cdabc6f40fabc28894d699abc75a60ca834ab8da0517316458bf"
+    },
+    "wave2-reader-audit/component/actual-run/attempt1/stdout.original.log": {
+      "bytes": 3491,
+      "sha256": "1bd5482cfc960df1c319b13786ffcd12eb452238a9a1a69cff79cf4c2731e92f"
+    }
+  },
+  "reviewOperations": {
+    "localSourceAndRetainedEvidenceReadsOnly": true,
+    "newController": false,
+    "processManager": false,
+    "remoteHostCalls": 0,
+    "runtimeAdmission": false,
+    "sourceEdits": 0,
+    "testsOrControlsRun": 0
+  },
+  "schema": "pinkha.wave2.properties.component-independent-qualification-plan.v1",
+  "scopeLimits": [
+    "Exact new model plus unchanged full Core Models.swift in a derived minimal package.",
+    "Derived test file is imports plus exact13,799B new suite suffix; the original7,010B/5-method7-case prefix is excluded and not replayed.",
+    "Does not compile full App module/original hosted test file, SwiftUI callers, whole Kit package,Native services or Apple targets.",
+    "No visible UI, mixed-App/OS language,RTL,VoiceOver,simulator,physical-device,release or shared-product admission credit."
+  ],
+  "sourceCommit": "21d63bef8950f8b927f0d8d3b4b052758bc98fcb",
+  "sourceDeclaredCaseCount": 11,
+  "sourceDeclaredMethodCount": 5,
+  "status": "SOURCE_BOUND_QUALIFICATION_PLAN_ONLY_WAITING_FOR_ACTUAL_OUTPUT",
+  "suite": "AnyNativeSourceDocumentsPublicationTests",
+  "suiteDisplayName": "Native Properties related-document publication"
+}
