@@ -1,0 +1,111 @@
+{
+  "schema": "pinkha-host2-exact-xdg-alias-independent-source-review/v1",
+  "atUTC": "2026-11-27T16:55:15.598525+00:00",
+  "reviewer": "Wave2 editor agent",
+  "status": "NO_CONCRETE_SOURCE_BLOCKER_FRESH_RUNTIME_ADMISSION_STILL_REQUIRED",
+  "controller": {
+    "path": "torah-acceptance-prep/native-text-readback/execution-preparation/xdg-repair1/inputs/run_component.py",
+    "sha256": "fc6dba3c88cdc599df16421264629070f6107348d4d7705e31983806cc20b881",
+    "bytes": 33464
+  },
+  "package": {
+    "path": "torah-acceptance-prep/native-text-readback/execution-preparation/xdg-repair1/inputs/component/Package.swift",
+    "sha256": "f66f3701c73d02788cff61f5c3d10b021975a9f40b4b865295e76b0538cda590",
+    "bytes": 6223
+  },
+  "inputPacket": {
+    "path": "torah-acceptance-prep/native-text-readback/execution-preparation/xdg-repair1/input-packet.json",
+    "sha256": "3a23e8da2f0126c567bf4c1f78d265400a78c65226281b75b25094b7297fedb3",
+    "bytes": 7995
+  },
+  "sourceInverse": {
+    "path": "torah-acceptance-prep/native-text-readback/execution-preparation/xdg-repair1/source-inverse.json",
+    "sha256": "7abd783b095ba941c6057fb99eb9160e4cc4712c34a35c3fb2a3f360ecb4cdeb",
+    "bytes": 3925
+  },
+  "priorControllerSHA256": "cb85418882d403318e786dae2564bbd2c4a2313be622a39139b84fb67090dce0",
+  "priorPackageSHA256": "fdfcac028c96b46646bbafd01933fa58eb48f89753d1a42111f142b0c9c7564e",
+  "independentVerification": {
+    "wholeControllerInverseExact": true,
+    "wholePackageInverseExact": true,
+    "changedDefinitions": [
+      "allocated_bytes"
+    ],
+    "unchangedOtherDefinitionsByteExact": true,
+    "controllerRootLiteralChanges": 1,
+    "packageRootLiteralChanges": 34,
+    "packagePinLiteralChanges": 1,
+    "completeInputPaths": 35,
+    "completeInputBytes": 448981,
+    "changedInputFiles": [
+      "inputs/run_component.py",
+      "inputs/component/Package.swift"
+    ],
+    "allOther33InputBodiesByteExact": true
+  },
+  "checks": [
+    "The added alias branch names exactly ROOT/xdg-config/swiftpm/cache. Both os.readlink and the resolved destination must equal the fixed absolute ROOT/xdg-cache/org.swift.swiftpm path. No other XDG link, relative spelling, original-attempt target or foreign target is admitted.",
+    "The original build-subtree alias condition remains byte-identical in the else branch. os.walk retains followlinks=False and lstat allocated-block counting. The XDG link is counted as a link; its private target is separately traversed under the same fresh root, without link traversal or duplicate target accounting.",
+    "The allowed destination is fixed under the new physical owned ROOT. This allocation policy does not grant source-input or dependency symlink acceptance; their original physical/full-content checks remain unchanged.",
+    "Only the fresh fixed source2 root and derived Package hash/path spellings change outside that branch. All product, full test, fixture, Crypto closure, whole-source closure and exact cleanup helper bodies remain unchanged.",
+    "Original no-reuse root admission, resource floors/cap, first-error handling,300-second command, two XCTest leaves/four looped flows, compiler FileList proof and owned group/fixture closure are byte-identical. No historical process probe, new manager, ignored failure or runtime gate override is added."
+  ],
+  "actualFailureBoundary": {
+    "originalReceipt": {
+      "path": "torah-acceptance-prep/native-text-readback/execution-preparation/actual-attempt1/receipt.json",
+      "sha256": "2287f91526496a1fa4b5fc749fb83b9a6b20d2a19196cb0c1e1e9fbc68b2e05f",
+      "bytes": 6470
+    },
+    "originalAliasObservation": {
+      "path": "torah-acceptance-prep/native-text-readback/execution-preparation/actual-attempt1/actual-symlinks.json",
+      "sha256": "a8d886b210780f4a6b8baa455dd1e5c5b905b1187617b75b52ebc558063cdf18",
+      "bytes": 431
+    },
+    "separateReadOnlyRetentionAudit": {
+      "path": "torah-acceptance-prep/native-text-readback/execution-preparation/actual-attempt1/final-audit-result.json",
+      "sha256": "ac83d09136f73236bb2ab1be402b0314f68137e705d5d6cdc5d9fe22c9355a74",
+      "bytes": 1879
+    },
+    "swiftTestCLICommandsActuallyStarted": 1,
+    "observedCompilerLogInvocations": 0,
+    "actualCompilerExecutionQualified": false,
+    "XCTestEvents": 0,
+    "fixtureJournals": 0,
+    "originalStatusRemains": "FAIL",
+    "originalSafeToReleaseRuntimeSlotRemains": false,
+    "interpretation": "Empty logs do not establish that no compiler work could have begun. The original Swift test CLI was actually started and terminated. The ac83 retention audit separately retains the original failure, confirms source/dependency custody and reuses the existing positive group-absence receipt; its slot-release outcome is not product/test acceptance."
+  },
+  "metadataPrecision": {
+    "currentPacketUsesQualifiedObservationFields": true,
+    "superseded3449AndD15MetadataRetained": true,
+    "priorUnqualifiedCompilerZeroClaimNotAdopted": true
+  },
+  "retainedGuardControl": {
+    "receipt": {
+      "path": "torah-acceptance-prep/native-text-readback/execution-preparation/xdg-repair1/alias-control2/result.json",
+      "sha256": "0f513e81b82051a7b53ad09c0c0da2e4defce545f362c055b4c0518d7532b14a",
+      "bytes": 827
+    },
+    "priorHarnessSetupStop": {
+      "path": "torah-acceptance-prep/native-text-readback/execution-preparation/xdg-repair1/alias-control1/result.json",
+      "sha256": "c11c1669f57b6feff8c36da8fe8ed393242f35c03e28930d5489b70ad34c99b7",
+      "bytes": 630
+    },
+    "reviewerReran": false,
+    "meaning": "One local extracted-guard control with exact-alias acceptance and two specific rejection cases; not a driver/compiler/runtime execution."
+  },
+  "actions": {
+    "driverExecuted": false,
+    "driverImported": false,
+    "portableControlsRerun": 0,
+    "SwiftCompilerCalls": 0,
+    "XCTestCalls": 0,
+    "HTTPFixtureCalls": 0,
+    "NativeCalls": 0,
+    "OracleCalls": 0,
+    "MacCalls": 0,
+    "historicalProcessProbes": 0
+  },
+  "runtimeSlotGranted": false,
+  "remaining": "Root must separately coordinate, stage the exact final packet into a fresh namespace and satisfy unchanged live resource admission before any source2 invocation. Original attempt1 evidence is preserved."
+}

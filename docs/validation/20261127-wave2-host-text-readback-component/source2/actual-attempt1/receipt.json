@@ -1,0 +1,122 @@
+{
+  "AppleCalls": 0,
+  "actualToolchainExecutable": {
+    "bytes": 35095592,
+    "physicalPath": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-driver",
+    "requestedPath": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+    "sha256": "39d41b0dc9eba623b0e37cea42c3145720168214ba4349d6fa3bd9db9b1e651a",
+    "versionAndTargetAuthority": "Actual verbose compiler output is qualified after execution."
+  },
+  "budget": {
+    "admissionMarginBytes": 33554432,
+    "commandSeconds": 300,
+    "developmentFloorBytes": 536870912,
+    "finalEvidenceReserveWithinCapBytes": 1048576,
+    "jobs": 2,
+    "memoryFloorBytes": 536870912,
+    "ownedAllocationCapBytes": 268435456,
+    "rootFloorBytes": 2147483648
+  },
+  "command": {
+    "argv": [
+      "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+      "test",
+      "--package-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/component",
+      "--scratch-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/build",
+      "--cache-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/swift-cache",
+      "--config-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/swift-config",
+      "--security-path",
+      "/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/swift-security",
+      "--disable-automatic-resolution",
+      "--jobs",
+      "2",
+      "--no-parallel",
+      "-v",
+      "--filter",
+      "NativeTextEditReadbackHTTPTests"
+    ],
+    "cwd": "/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/component",
+    "environmentOverrides": {
+      "CLANG_MODULE_CACHE_PATH": "/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/clang-module-cache",
+      "GIT_TERMINAL_PROMPT": "0",
+      "PATH": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin:/usr/bin:/bin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "SWIFTPM_MODULECACHE_OVERRIDE": "/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/swift-module-cache",
+      "TMPDIR": "/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/tmp",
+      "XDG_CACHE_HOME": "/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/xdg-cache",
+      "XDG_CONFIG_HOME": "/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/xdg-config"
+    }
+  },
+  "controllerSHA256": "cb85418882d403318e786dae2564bbd2c4a2313be622a39139b84fb67090dce0",
+  "declaredControlledOutputBytesOnRoot": 0,
+  "errors": [
+    {
+      "phase": "actual-component",
+      "traceback": "Traceback (most recent call last):\n  File \"/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/inputs/run_component.py\", line 425, in main\n    sample = resource_sample(); samples.append(sample); require_budget(sample)\n             ^^^^^^^^^^^^^^^^^\n  File \"/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/inputs/run_component.py\", line 103, in resource_sample\n    'ownedAllocatedBytes': allocated_bytes(), 'memAvailableBytes': memory['MemAvailable'],\n                           ^^^^^^^^^^^^^^^^^\n  File \"/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/inputs/run_component.py\", line 92, in allocated_bytes\n    assert p.is_relative_to(ROOT / 'build') and p.resolve().is_relative_to(ROOT / 'build'), str(p)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: /mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/xdg-config/swiftpm/cache\n",
+      "type": "AssertionError"
+    },
+    {
+      "phase": "retention-and-final-budget",
+      "traceback": "Traceback (most recent call last):\n  File \"/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/inputs/run_component.py\", line 468, in main\n    sample = resource_sample(); samples.append(sample); require_budget(sample)\n             ^^^^^^^^^^^^^^^^^\n  File \"/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/inputs/run_component.py\", line 103, in resource_sample\n    'ownedAllocatedBytes': allocated_bytes(), 'memAvailableBytes': memory['MemAvailable'],\n                           ^^^^^^^^^^^^^^^^^\n  File \"/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/inputs/run_component.py\", line 92, in allocated_bytes\n    assert p.is_relative_to(ROOT / 'build') and p.resolve().is_relative_to(ROOT / 'build'), str(p)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: /mnt/development/projects/evidence/pinkha-wave2-host-text-readback-20261127/xdg-config/swiftpm/cache\n",
+      "type": "AssertionError"
+    }
+  ],
+  "finishedAtUTC": "2026-11-27T16:46:49.492457+00:00",
+  "maximumOwnedAllocatedBytes": 21114880,
+  "minimumDevelopmentFreeBytes": 13022830592,
+  "minimumRootFreeBytes": 2601492480,
+  "nativeCalls": 0,
+  "noGlobalRootWriteAuditClaim": true,
+  "ownedCleanup": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T16:46:49.483876+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 1405860,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "errors": [],
+    "groupObservations": [
+      {
+        "atUTC": "2026-11-27T16:46:49.474203+00:00",
+        "processGroup": 1405860,
+        "signal": 0,
+        "status": "PRESENT"
+      },
+      {
+        "atUTC": "2026-11-27T16:46:49.483876+00:00",
+        "errno": 3,
+        "error": "[Errno 3] No such process",
+        "processGroup": 1405860,
+        "signal": 0,
+        "status": "ABSENT_ESRCH"
+      }
+    ],
+    "historicalGroupReprobed": false,
+    "initialMembersDiagnosticOnly": [
+      1405860
+    ],
+    "processExit": -15,
+    "processGroup": 1405860,
+    "signals": [
+      "SIGTERM"
+    ],
+    "status": "PASS_OWNED_GROUP_ABSENT",
+    "terminationRequired": true
+  },
+  "processExit": -15,
+  "productCommit": "cde0b83a3f04f36232eed93e6ab2cb7be0e692a5",
+  "retainedFixtureFiles": [],
+  "runtimeSlotGrantedByThisScript": false,
+  "safeToReleaseRuntimeSlot": false,
+  "schema": "pinkha-host-text-readback-component/v1",
+  "seconds": 1.477,
+  "sourceBodiesModifiedForComponent": 0,
+  "startedAtUTC": "2026-11-27T16:46:48.015817+00:00",
+  "status": "FAIL"
+}

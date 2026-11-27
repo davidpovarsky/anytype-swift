@@ -1,0 +1,106 @@
+{
+  "schema": "pinkha-host2-source2-stager-independent-review/v1",
+  "reviewer": "Wave2 editor agent",
+  "reviewedAtUTC": "2026-11-27T17:03:28.064943+00:00",
+  "status": "SOURCE_ONLY_ACCEPTED_NO_CONCRETE_BLOCKER",
+  "scope": "Exact source2 staging wrapper literal derivative and original gzip payload; no new execution authority.",
+  "inputs": {
+    "stager": {
+      "path": "xdg-repair1/staging/materialize_and_exec.py",
+      "bytes": 6916,
+      "sha256": "e3c5f144126a35f40ebc78a75373baef73ab6877d7c1443c33caba167af59ebf"
+    },
+    "retainedOriginalStager": {
+      "path": "staging/materialize_and_exec.py",
+      "bytes": 6900,
+      "sha256": "afefe9a5908eb91f6d06465d400d1fc894ae2d43626f95a14c3a6ff7a3344076"
+    },
+    "derivation": {
+      "path": "xdg-repair1/staging/stager-derivation.json",
+      "bytes": 3095,
+      "sha256": "3c63072abb89e02e7df4f9c7d5d9372ac2976af1f4f6450089aba101772ebd5a"
+    },
+    "payload": {
+      "path": "xdg-repair1/staging/host2-source2-inputs.json.gz",
+      "bytes": 131828,
+      "sha256": "c313760624950ae4e4b3f4cf45bf3df821d2cf7b745e6e07c57d7b831c8c3e1d"
+    },
+    "transportManifest": {
+      "path": "xdg-repair1/staging/transport-manifest.json",
+      "bytes": 723,
+      "sha256": "fed7011c05aade163bc8793fe79e032936dc5dee31509e4409adc830d17b6f0f"
+    },
+    "packet": {
+      "path": "xdg-repair1/input-packet.json",
+      "bytes": 7995,
+      "sha256": "3a23e8da2f0126c567bf4c1f78d265400a78c65226281b75b25094b7297fedb3"
+    },
+    "reviewedDriver": {
+      "path": "xdg-repair1/inputs/run_component.py",
+      "bytes": 33464,
+      "sha256": "fc6dba3c88cdc599df16421264629070f6107348d4d7705e31983806cc20b881"
+    },
+    "priorDriverReview": {
+      "path": "xdg-repair1/editor-independent-review.json",
+      "bytes": 6228,
+      "sha256": "c4469c3dff09fe64230fae4a10277f649b9c62e57a86f931e35b2ecdaf9cfad7"
+    }
+  },
+  "sourceInputCommit": "1e559d715ed82107d3cc98352ce1e7429336febb",
+  "sourceInputTree": "3518940ba5fb5ed5c9994234c5871f6d0aac446f",
+  "independentByteVerification": {
+    "literalReplacementRows": 10,
+    "literalReplacementOccurrences": 12,
+    "fullInverseEqualsActualRetainedOriginal": true,
+    "fullInverseSHA256": "afefe9a5908eb91f6d06465d400d1fc894ae2d43626f95a14c3a6ff7a3344076",
+    "allOtherStagerBytesIdentical": true,
+    "changedLiterals": [
+      "One fixed source2 root",
+      "One fixed uploaded gzip basename",
+      "Four exact SHA256 pins: gzip, raw payload, packet and driver",
+      "Exact published source-input commit",
+      "Three exact sizes, with original occurrence counts"
+    ],
+    "pythonASTParse": "PASS_WITHOUT_IMPORT_OR_EXECUTION"
+  },
+  "independentPayloadVerification": {
+    "decompressedBytes": 612662,
+    "decompressedSHA256": "d4e10e87e6aa35db0fcefa5e1195d31fc8672a20a4f80ba9dbb9b9ef9b799027",
+    "exactPayloadSchemaAndKeys": true,
+    "embeddedPacketEqualsReviewedRawPacket": true,
+    "files": 35,
+    "totalDecodedInputBytes": 448981,
+    "uniqueCanonicalRelativeInputPaths": true,
+    "everyEntryStrictBase64Decoded": true,
+    "everyEntrySizeAndSHA256EqualsPacket": true,
+    "everyEntryEqualsReviewedLocalInputBytes": true,
+    "packetRootAndExecArgvEqualFixedStager": true,
+    "decodedDriverEqualsFixedControllerPin": true
+  },
+  "retainedExecutionAndCustodyBoundaries": [
+    "Original physical-parent and absent-root checks reject reuse or symlink roots before materialization; fixed upload is physical, regular, single-linked, exact-size/hash, and stable across its read.",
+    "Only the 35 pinned inputs can be materialized. Original exclusive file creation, owned physical 0700 directories, 0600 single-linked files, fsync, full byte readback and complete final file-set checks remain byte-identical after literal inversion.",
+    "Original root 2GiB+32MiB and Development 512MiB+256MiB+32MiB staging floors remain unchanged, including their pre/post checks. Actual availability was not checked in this review.",
+    "The only CLI parameter is the existing finite coordination story. It records external scheduling and does not grant a runtime slot.",
+    "Original failure traceback and partial-directory retention remain unchanged; no retry, overwrite, cleanup or alternate root was added.",
+    "PASS_EXACT_INPUTS_MATERIALIZED_PENDING_EXEC describes input custody only. The original fixed os.execv replacement remains unchanged, with the reviewed driver retaining ownership of runtime admission and child cleanup."
+  ],
+  "priorFailureBoundary": {
+    "originalAttempt1ReceiptSHA256": "2287f91526496a1fa4b5fc749fb83b9a6b20d2a19196cb0c1e1e9fbc68b2e05f",
+    "originalFailureUnchanged": true,
+    "description": "The original Swift test CLI started once; zero compiler invocations were observed in its empty logs, actual compiler execution remains unqualified, and zero XCTest/HTTP-fixture events were observed. Separate ac83 retention/slot audit does not change that failed receipt."
+  },
+  "limits": {
+    "stagerImportedOrExecuted": false,
+    "driverImportedOrExecuted": false,
+    "controlsRerun": false,
+    "remoteHostCalls": false,
+    "swiftCompilerOrTestsRun": false,
+    "httpOrNativeOrAppleExecution": false,
+    "historicalProcessProbes": false,
+    "runtimeAdmissionGranted": false,
+    "runtimeAcceptanceClaimed": false,
+    "onlyNewArtifact": "This independent review JSON."
+  },
+  "findings": []
+}

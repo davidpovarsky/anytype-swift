@@ -1,0 +1,11 @@
+--- a/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHostTests.swift
++++ b/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHostTests.swift
+@@ -286,7 +286,7 @@
+         defer { fixture.stop() }
+         let workspace = try AnyTorahWorkspace(accountID: "account", spaceID: "space")
+         let store = try AnyEditorDocumentStore(client: fixture.client(), workspace: workspace, allowedTypeIDs: ["page"])
+-        let owner = try AnyApplicationSession(workspace: workspace, engineStartedAt: "run1", verifyRun: { "run1" })
++        let owner = AnyApplicationSession(workspace: workspace, engineStartedAt: "run1", verifyRun: { "run1" })
+         let values: (AnyEditorRead, AnyPreparedBlockEdit, AnyBlockEditReceipt, AnyEditorRead)
+         do {
+             values = try await owner.perform { lease in

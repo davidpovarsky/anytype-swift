@@ -1,0 +1,44 @@
+{
+  "schema": "pinkha-wave2-host2-zero-child-completion-source-review/v1",
+  "status": "PASS_SOURCE_REVIEW_ONLY_COMPLETION_NOT_EXECUTED_BY_REVIEWER",
+  "reviewer": "/root/torah_continue",
+  "reviewedAtUTC": "2026-11-27T17:26:08.275414+00:00",
+  "source": {
+    "path": "complete_retained_execution.py",
+    "bytes": 18138,
+    "sha256": "efc72d19cb9315f0ed26be0f39a3b8fc79e1b61a586fa992fa2deaf1f1fd6a6e"
+  },
+  "originalDriverSHA256": "fc6dba3c88cdc599df16421264629070f6107348d4d7705e31983806cc20b881",
+  "originalReceiptSHA256": "1903e2725437835136dd14f4b072a012df7f8773febc54ee131236deb54b3b5c",
+  "originalIndependentReviewSHA256": "92687b92be98ff60f8a97fa092ce07b931a750223e0cc40dea1b85e5f0f765e5",
+  "verifiedCorrection": {
+    "originalFunctionSHA256": "957960eb165750124c131e8d7fbb6bd00fa981ed787c5bb1336210a3255559ce",
+    "qualifiedFunctionSHA256": "adc31efbf2168aee9ed18c8a70b994575b39456078ce8b56c27ed0d273eb7326",
+    "before": "assert value(argv, '-working-directory') == str(COMPONENT)",
+    "after": "assert value(argv, '-working-directory') == str(ROOT)",
+    "uniqueReplacement": true,
+    "completeFunctionInverseExact": true,
+    "allOtherOriginalFunctionBytesUnchanged": true,
+    "sourceAndFileListPathsRemainComponentBound": true
+  },
+  "checks": [
+    "All63 pinned artifacts exactly equal the retained primary manifest,439354 bytes; immutable original receipt, command, process, logs, source inventories, Crypto-copy manifest, fixture files, seven file lists/maps and two generated inputs are checked before and after.",
+    "The fixed expected working directory is the one actually present in all seven retained SwiftDriver commands. It is not an either-path or arbitrary-source acceptance path.",
+    "runpy loads exact hash-pinned fc6d under a non-main name; the original module has only imports, fixed definitions/constants and an if __name__ == main guard. That main, Popen, copy_crypto, original cleanup execution and fixture startup are not invoked. The unchanged owned helper provenance is checked.",
+    "Completion calls the unchanged source inventory, Crypto pin verification, actual XCTest parser, compiler witness function with only the one literal assertion replacement, fixture qualification, retained fixture inventory and original resource qualifier. Existing module/object and generated-input physical/hash checks remain.",
+    "Original1903 must still be FAIL with exactly the known assertion, actual Swift exit0 and identical positive normal-exit group-absence evidence. It reuses that observation and never probes the historical group or PID.",
+    "Only a fresh0700 completion1 directory and exclusive0600 result.json are written. Original inputs, receipt, logs, fixtures and generated artifacts are not modified. All63 original artifacts are checked twice, and the original driver/receipt are byte-compared at the end.",
+    "Success requires the original budget floors/cap and completion elapsed time under30 seconds. A caught qualifier exception emits separate FAIL_COMPLETION, preserves original FAIL, and leaves safeToReleaseRuntimeSlot false. The result does not rerun or relabel tests."
+  ],
+  "scope": "Read-only completion of one already-executed full-file Linux Foundation Host component. It cannot establish full App/Apple/Native-account or UI acceptance.",
+  "concreteSourceBlockers": [],
+  "reviewerActions": {
+    "compilerRuns": 0,
+    "XCTestRuns": 0,
+    "HTTPFixturesStarted": 0,
+    "remoteCalls": 0,
+    "historicalProcessProbes": 0,
+    "sourceModifications": 0
+  },
+  "actualCompletionResult": "PENDING_ROOT_EXECUTION"
+}

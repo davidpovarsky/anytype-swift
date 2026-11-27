@@ -1,0 +1,208 @@
+{
+  "HTTPOriginal": {
+    "bytes": 74014,
+    "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/http12-attempt1-result.json",
+    "sha256": "0526d95b3e0239387bf0bd94226e797a151d7986c6812ada0768d53dbf5242c3"
+  },
+  "all43CandidateManifestRowsVerified": true,
+  "allPublicProofHashesVerified": true,
+  "component35": {
+    "actualLaterHTTPPasses": 12,
+    "actualOriginalPasses": 23,
+    "counts": {
+      "compiledTestFiles": 4,
+      "excludedNativeMethods": 1,
+      "hostMethods": 17,
+      "httpFixtureInstances": 26,
+      "httpMethods": 12,
+      "methods": 35,
+      "originalCoreCompiledFiles": 8,
+      "originalProjectCompiledFiles": 19,
+      "originalProjectReadFiles": 20,
+      "preparedProductionCompiledFiles": 5,
+      "productionCompiledFiles": 32,
+      "pureMethods": 6,
+      "testFiles": 3
+    },
+    "fixtureInstances": 26,
+    "historicalWholeFailuresPreserved": true,
+    "originalCompiledSourceInputs": {
+      "bytes": 526113,
+      "path": "/mnt/development/projects/evidence/pinkha-ordinary-file-upload-20261127/components-attempt2/compiled-source-inputs.json",
+      "sha256": "de642b7c2cc54367d1b767807443a38e4803bc8cba628beefa3cee819688f9bc"
+    },
+    "originalCoreCommit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+    "originalProjectCommit": "12e49ea69efdde499a6b5343cbe77139073dfbd8",
+    "qualifiedDistinctNames": [
+      "AnyNativeFileAttachmentCreatorTests.testBoundedReceiptMemoryRefusesOverflowAndReleasesVerifiedSlots",
+      "AnyNativeFileAttachmentCreatorTests.testCancelledCallerRetainsLateKnownReceiptAndCannotReceiveSuccess",
+      "AnyNativeFileAttachmentCreatorTests.testConcurrentCallsConsumeOneApprovalAndOneNativePOST",
+      "AnyNativeFileAttachmentCreatorTests.testDeniedMutationApprovalSendsNothingAndRetainsConservativeReservation",
+      "AnyNativeFileAttachmentCreatorTests.testDigestMismatchRetainsOriginalIDWithoutVerificationOrResend",
+      "AnyNativeFileAttachmentCreatorTests.testFailedReceiptJournalReportsKnownIDAndNeverCreatesReplacement",
+      "AnyNativeFileAttachmentCreatorTests.testFinalDeliveryRechecksCancellationAndAuthorityAfterVerifiedJournal",
+      "AnyNativeFileAttachmentCreatorTests.testIntentMismatchAndForeignScopeFailBeforeNativeDispatch",
+      "AnyNativeFileAttachmentCreatorTests.testJournalIdentityContainsNoNamePayloadOrLocalURLAndRejectsForgedFingerprint",
+      "AnyNativeFileAttachmentCreatorTests.testKnownReceiptPersistsBeforeLifetimeFailureAndResumesWithReads",
+      "AnyNativeFileAttachmentCreatorTests.testNativeRejectionIsTypedButDoesNotClearReservation",
+      "AnyNativeFileAttachmentCreatorTests.testOriginalAcknowledgementRequiresOriginalReservationAcrossJournalOwners",
+      "AnyNativeFileAttachmentCreatorTests.testReadbackMetadataDriftDoesNotVerifyEvenWithMatchingContent",
+      "AnyNativeFileAttachmentCreatorTests.testRememberedReceiptRequiresOriginalIntentAuthorityAndMetadata",
+      "AnyNativeFileAttachmentCreatorTests.testRevocationWhileUploadIsInFlightPreservesOriginalReceiptWithoutDelivery",
+      "AnyNativeFileAttachmentCreatorTests.testStableReadbackMetadataMustMatchTheOriginalWarmAcknowledgement",
+      "AnyNativeFileAttachmentCreatorTests.testUnknownAcknowledgementSurvivesNewCreatorWithoutSecondDispatch",
+      "AnyNativeFileUploadHTTPTests.testCancellationAfterBodyDispatchKeepsUnknownOutcomeAndDoesNotResend",
+      "AnyNativeFileUploadHTTPTests.testCancelledTransportCannotFinishBeforeItsSerialDelegateDrains",
+      "AnyNativeFileUploadHTTPTests.testEmptyAndStreamedAttachmentsHaveOneApprovalAndRetainNativeMetadataBeforePostflight",
+      "AnyNativeFileUploadHTTPTests.testFailedOneShotCallbackPreservesUncertaintyWithoutSendingTheBody",
+      "AnyNativeFileUploadHTTPTests.testFailedReceiptJournalAndCancellationAfterAcknowledgementKeepKnownIdentity",
+      "AnyNativeFileUploadHTTPTests.testForeignAccountWrongDigestAndChangedSourceAreRefusedBeforeApprovalOrPost",
+      "AnyNativeFileUploadHTTPTests.testKnownFileInfoRequiresCurrentScopeAndExactObjectWithoutWriting",
+      "AnyNativeFileUploadHTTPTests.testKnownReceiptPrecedesRevokedScopeAndAccountPostflight",
+      "AnyNativeFileUploadHTTPTests.testLostAcknowledgementAfterCompleteBodyDoesNotReplayTheUpload",
+      "AnyNativeFileUploadHTTPTests.testMalformedAcknowledgementsAndNativeErrorsNeverBecomeReceiptsOrAutomaticRetries",
+      "AnyNativeFileUploadHTTPTests.testRedirectCannotForwardThePrivateBodyOrConsumeAnotherDispatch",
+      "AnyNativeFileUploadHTTPTests.testResponseCeilingIncludesExactChunkedBoundaryAndRefusesBothOversizeForms",
+      "AnyNativeFileUploadTests.testNativeReceiptPreservesResolvedMetadataAndKeepsInlineCustodyDistinct",
+      "AnyNativeFileUploadTests.testPublicFingerprintBuildsAnIntentWithoutWholeFileLoadingAndChangedSelectionIsRefused",
+      "AnyNativeFileUploadTests.testReceiptRejectsForeignIdentityVariantsAndMalformedStorage",
+      "AnyNativeFileUploadTests.testSourceSymlinkWrongDigestReplacementAndChangedCopyCannotBeDispatched",
+      "AnyNativeFileUploadTests.testSpecificationIncludesEmptyInlineFilesAndRejectsUnsafeOrUnboundedInputs",
+      "AnyNativeFileUploadTests.testVerifiedStagingStreamsSeveralChunksAndCleansOnlyItsOwnPrivateCopy"
+    ],
+    "testRunner": {
+      "bytes": 11013888,
+      "mode": 448,
+      "path": "/mnt/development/projects/evidence/pinkha-ordinary-file-upload-20261127/components-attempt2/build/out/Products/Debug-linux-aarch64/OrdinaryFileUploadTests-test-runner",
+      "sha256": "29abac5bd94b7ed30304121df37fc2308cc978e0722d9b7c4be1621f324fbb3c"
+    }
+  },
+  "componentOriginal": {
+    "bytes": 6543,
+    "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/components-attempt2-result.json",
+    "sha256": "4b24eb81b7e7fa6b108568ea619bf125148e8952b38879a71cc8091b55d101c5"
+  },
+  "fiveChangedSwiftFilesMatchCompiledManifest": [
+    {
+      "bytes": 9648,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift",
+      "sha256": "08635cd324835923b713674c359694a380005585cadd1de3075270f41ed0f6d2"
+    },
+    {
+      "bytes": 23257,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "sha256": "704a3a50613129d966729e56491bdf17349bcbb9e0f977d5666867f39bf2d010"
+    },
+    {
+      "bytes": 15590,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "sha256": "7a641b9693803360603cb2df554eaa316fbeb1c59127795a6592404d437444f3"
+    },
+    {
+      "bytes": 29787,
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeFileUploadHTTPTests.swift",
+      "sha256": "6c6d0be36ad6930a675f5296bc907ec52a0a30b69f7dafebbe23648b2295a6ff"
+    },
+    {
+      "bytes": 32317,
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyNativeFileAttachmentCreatorTests.swift",
+      "sha256": "a542a47feb24a04818abb857da68cea98b369dc35d53dd5c4815e51f2d021f35"
+    }
+  ],
+  "limits": [
+    "Linux full-file derived component with original project12e49 and TorahInspectorKit9058; not current full App/Kit26 acceptance.",
+    "Original compiled-source-input inventory de642 and native producer e265 remain referenced original artifacts; this review authenticates their published binding receipts, not a new physical product/source rehash.",
+    "Native route covers two files in one fresh local account, graceful stop/cold reopen and outbound-denied native processes; full-tier cached=true,durable=false.",
+    "No Apple protected-journal, current UI recovery, cloud, cross-account, crash or peer acceptance."
+  ],
+  "losslessCompressedOriginals": [
+    {
+      "decodedBytes": 10131,
+      "decodedSHA256": "037f5e82734fdcf91f2fd6c7607ff70a20b54f5ed43617f97d1e0d0453889edf",
+      "encodedBytes": 1711,
+      "encodedSHA256": "081cb50570fd802fe98ec46da0c887a03dc4d46fa6c2b5ca0dbf3f6a86010629",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/components-attempt1-original.log.gz"
+    },
+    {
+      "decodedBytes": 18807,
+      "decodedSHA256": "b33285e302a32c04a90007ffb82db2c20058ed466ad4dacfa8cdea2249cbc094",
+      "encodedBytes": 5808,
+      "encodedSHA256": "0d8cf19bdb2c71abfef743a10f687216f3425e01dbc3b98b3002a67127c9f3e3",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/Tools/AnyEngineValidation/ordinary_file_upload_recovery_20261127/http12-completion-only.review.patch.gz"
+    },
+    {
+      "decodedBytes": 11762,
+      "decodedSHA256": "434cc43d1b12aa695f9ce88965bbb65297e904d01c81155b3d0c5c9258207cd1",
+      "encodedBytes": 4274,
+      "encodedSHA256": "c1cf170ec6f54369b5756908db7feff38888617bc6c7f5c0cd38e1bfea184fa4",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/Tools/AnyEngineValidation/ordinary_file_upload_recovery_20261127/original-source-dependency-successor.review.patch.gz"
+    }
+  ],
+  "native": {
+    "actualAttachments": 2,
+    "actualMethod": "AnyNativeFileUploadNativeRouteTests.testOriginalNativeAttachResolvesMetadataAndVerifiesInlineAndFullTierBytes",
+    "coldOfflineReads": 2,
+    "groups": [
+      {
+        "absent": true,
+        "exitCode": 0,
+        "pgid": 1479160
+      },
+      {
+        "absent": true,
+        "exitCode": 0,
+        "pgid": 1479205
+      },
+      {
+        "absent": true,
+        "exitCode": 0,
+        "pgid": 1479304
+      },
+      {
+        "absent": true,
+        "exitCode": 0,
+        "pgid": 1479407
+      }
+    ],
+    "nativeOSDenialVerified": true,
+    "nativeProducer": {
+      "binary": {
+        "bytes": 78093866,
+        "sha256": "1b25764f9af1af854a928b3c445044a6906cb3477b64b4da6689b9e29997e639"
+      },
+      "receiptSHA256": "e26587d911cec570f9215db8bc424f9faa7fe2d09c4354f71cdb772e6fafd394",
+      "sourceFiles": 1607,
+      "sourceManifestSHA256": "aa43f853a28c2cd0e125b70cdcc01b05a4748f0c25541f5ed86cea511e6b8dd1"
+    },
+    "newAccount": 1,
+    "originalFailure": {
+      "bytes": 4048,
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/native-attempt1-result.json",
+      "sha256": "5b017bdc76b0b1123257dfbaefbabe07a3aa67add48750430936999d9ccdc0fa"
+    },
+    "originalReceipt": {
+      "bytes": 23517,
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/native-attempt2-result.json",
+      "sha256": "8b7a4dd471777d31dc37a7a95e7c00430c9d1463d540c95b9905f49146693159"
+    },
+    "sourceCorrectionOnlyTwoCompilerKeyLines": true,
+    "swiftOSDenialWrapper": false,
+    "uploadHTTPAttemptsDirectlyInstrumented": false,
+    "wholeNativeControllerInverseRestoresOriginal": true
+  },
+  "reviewExecution": {
+    "accounts": 0,
+    "compiler": 0,
+    "controllerImports": 0,
+    "hosts": 0,
+    "tests": 0
+  },
+  "schema": "pinkha-uploader-original-evidence-static-audit/v1",
+  "sourceCommit": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+  "status": "ORIGINAL_SCOPED_RESULTS_BOUND_NO_NEW_EXECUTION",
+  "zeroChildCompletion": {
+    "bytes": 76101,
+    "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/http12-completion1-result.json",
+    "sha256": "02fa0059b57fec6e2f0fa1bd47121f1dfd3268b545bff2f489083fddd0281878"
+  }
+}

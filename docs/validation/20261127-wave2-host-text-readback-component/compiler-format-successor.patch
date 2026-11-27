@@ -1,0 +1,148 @@
+--- review-v1/run_component.py
++++ inputs/run_component.py
+@@ -160,38 +160,126 @@
+ def compiler_inputs(log):
+     assert 'Swift version 6.4.3 (swift-6.4.3-RELEASE)' in log
+     assert 'aarch64-unknown-linux-gnu' in log
++    # Exact layout observed with this same 6.4.3 compiler in retained source2
++    # (4d4aaa998116af4ea4a31ba0ad9714a3dd4f56bc195632314f0fe2cd9ad9673d).
++    # Generated test inputs are named individually, never admitted by directory.
++    build = ROOT / 'build'
++    project = build / 'out/Intermediates.noindex/HostTextReadbackProof.build/Debug-linux-aarch64'
++    swiftc = str(SWIFT.with_name('swiftc'))
++    test_module = 'PinkhaAnyHostTests'
++    runner_module = test_module + '_test_runner'
++    anchor = project / (test_module + '-p.build/DerivedSources/test_anchor.swift')
++    entry = project / (test_module + '-test-runner.build/DerivedSources/test_entry_point.swift')
++
++    def physical(path, maximum=16 * 1024**2):
++        assert path.is_relative_to(ROOT) and path.resolve(strict=True) == path, str(path)
++        assert path.is_file() and not path.is_symlink(), str(path)
++        raw = path.read_bytes()
++        assert 0 < len(raw) <= maximum, str(path)
++        return raw
++
++    def value(argv, flag):
++        assert argv.count(flag) == 1, (flag, argv)
++        return argv[argv.index(flag) + 1]
++
+     groups = {}
+     for relative in SOURCE_PINS:
+         parts = Path(relative).parts
+         if len(parts) == 3 and parts[0] in ('Sources', 'Tests') and relative.endswith('.swift'):
+             groups.setdefault(parts[1], set()).add(str(COMPONENT / relative))
+-    assert sum(len(x) for x in groups.values()) == 28
++    assert sum(len(x) for x in groups.values()) == 28 and len(groups) == 6
++    groups[test_module].add(str(anchor))
++    groups[runner_module] = {str(entry)}
++    anchor_raw = physical(anchor)
++    assert anchor_raw == b'public func __test_anchor_PinkhaAnyHostTests() {}'
++    entry_raw = physical(entry)
++    entry_text = entry_raw.decode('utf-8')
++    assert 'import PinkhaAnyHostTests' in entry_text and '__test_anchor_PinkhaAnyHostTests()' in entry_text
++    assert 'struct __SwiftPMGeneratedTestRunner' in entry_text and 'XCTMain(__allDiscoveredTests())' in entry_text
++    assert all(method in entry_text for method in METHODS), 'Actual generated XCTest discovery omits selected method'
++    generated = {str(anchor): anchor_raw, str(entry): entry_raw}
++    assert {str(p) for p in build.rglob('*.swift')} == set(generated), 'Unexpected generated Swift input'
++
++    driver_lines = {}
++    anchor_writes = []
++    entry_generators = []
++    for line in log.splitlines():
++        stripped = line.strip()
++        if stripped.startswith('builtin-SwiftDriver -- '):
++            argv = shlex.split(stripped)
++            assert argv[:3] == ['builtin-SwiftDriver', '--', swiftc]
++            module = value(argv, '-module-name')
++            assert module in groups and module not in driver_lines, 'Unexpected or duplicate Swift driver'
++            driver_lines[module] = (line, argv)
++        elif stripped.startswith('write-file '):
++            if shlex.split(stripped) == ['write-file', str(anchor)]:
++                anchor_writes.append(line)
++        elif stripped.startswith('builtin-generateTestEntryPoint '):
++            argv = shlex.split(stripped)
++            assert value(argv, '--output') == str(entry)
++            assert '--discover-tests' in argv
++            assert value(argv, '--test-anchor-module') == test_module
++            assert value(argv, '--linker-file-list-format') == 'unixShellQuotedNewlineSeparated'
++            assert value(argv, '--index-store-library-path') == str(SWIFT.parent.parent / 'lib/libIndexStore.so')
++            assert value(argv, '--index-store') == str(build / 'out')
++            assert value(argv, '--index-unit-base-path') == str(build / 'out/Intermediates.noindex')
++            link_list = Path(value(argv, '--linker-filelist'))
++            assert link_list == project / (test_module + '-p.build/Objects-normal/aarch64/' + test_module + '.LinkFileList')
++            raw = physical(link_list)
++            entry_generators.append({'actualCommandLine': line, 'linkerFileList': str(link_list),
++                                     'linkerFileListSHA256': sha(raw), 'linkerFileListText': raw.decode('utf-8')})
++    assert set(driver_lines) == set(groups) and len(anchor_writes) == len(entry_generators) == 1
++
+     proof = []
++    qualified_lists = set()
+     for module, expected in sorted(groups.items()):
+-        candidates = list((ROOT / 'build').glob('**/' + module + '.build/sources'))
+-        assert len(candidates) == 1, 'Missing unique actual Swift source list: ' + module
+-        source_list = candidates[0]
+-        assert set(shlex.split(source_list.read_text())) == expected, module
+-        map_path = source_list.parent / 'output-file-map.json'
+-        output_map = json.loads(map_path.read_bytes())
++        if module == runner_module:
++            stem, target = test_module + '-test-runner', test_module + '-test-runner.build'
++        else:
++            stem, target = module, module + ('-p.build' if module == test_module else '-t.build')
++        object_root = project / target / 'Objects-normal/aarch64'
++        source_list = object_root / (stem + '.SwiftFileList')
++        source_list_raw = physical(source_list)
++        sources = shlex.split(source_list_raw.decode('utf-8'))
++        assert len(sources) == len(set(sources)) and set(sources) == expected, module
++        qualified_lists.add(source_list)
++        map_path = object_root / (stem + '-OutputFileMap.json')
++        map_raw = physical(map_path)
++        output_map = json.loads(map_raw)
+         assert set(output_map) - {''} == expected, module
+-        witnesses = [line for line in log.splitlines()
+-                     if '/swiftc ' in line and '-module-name ' + module + ' ' in line
+-                     and ('@' + str(source_list) in line or all(p in line for p in expected))]
+-        assert witnesses, 'No actual swiftc witness for ' + module
++        line, argv = driver_lines[module]
++        assert [arg for arg in argv if arg.startswith('@')] == ['@' + str(source_list)]
++        assert value(argv, '-output-file-map') == str(map_path)
++        assert value(argv, '-target') == 'aarch64-unknown-linux-gnu'
++        assert value(argv, '-swift-version') == ('5' if module == runner_module else '6')
++        assert value(argv, '-working-directory') == str(COMPONENT)
++        assert '-j2' in argv and '-c' in argv and '-enable-testing' in argv
++        module_path = object_root / 'Modules' / (module + '.swiftmodule')
++        assert value(argv, '-emit-module-path') == str(module_path)
++        module_raw = physical(module_path)
+         objects = []
+         for source in sorted(expected):
++            source_raw = physical(Path(source))
++            if source in generated:
++                assert source_raw == generated[source]
++            else:
++                assert sha(source_raw) == SOURCE_PINS[Path(source).relative_to(COMPONENT).as_posix()]
+             object_path = Path(output_map[source]['object'])
+-            assert object_path.is_relative_to(ROOT / 'build')
+-            assert object_path.is_file() and not object_path.is_symlink()
+-            raw = object_path.read_bytes()
+-            assert raw
+-            objects.append({'source': source, 'sourceSHA256': sha(Path(source).read_bytes()),
++            assert object_path.is_relative_to(object_root) and object_path.suffix == '.o'
++            raw = physical(object_path)
++            objects.append({'source': source, 'sourceSHA256': sha(source_raw), 'sourceBytes': len(source_raw),
++                            'generatedSource': source in generated,
+                             'object': str(object_path), 'objectSHA256': sha(raw), 'objectBytes': len(raw)})
+         proof.append({'module': module, 'sourceList': str(source_list),
+-                      'sourceListSHA256': sha(source_list.read_bytes()), 'sourceListText': source_list.read_text(),
+-                      'outputFileMap': str(map_path), 'outputFileMapSHA256': sha(map_path.read_bytes()),
+-                      'actualCompilerLines': witnesses, 'objects': objects})
++                      'sourceListSHA256': sha(source_list_raw), 'sourceListText': source_list_raw.decode('utf-8'),
++                      'outputFileMap': str(map_path), 'outputFileMapSHA256': sha(map_raw), 'outputFileMapValue': output_map,
++                      'actualCompilerLines': [line], 'actualCompilerArgv': argv,
++                      'emittedModule': str(module_path), 'emittedModuleSHA256': sha(module_raw),
++                      'objects': objects,
++                      'generatedInputs': [{'path': source, 'bytes': len(raw), 'sha256': sha(raw), 'text': raw.decode('utf-8'),
++                                           'actualGeneration': anchor_writes if source == str(anchor) else entry_generators}
++                                          for source, raw in generated.items() if source in expected]})
++    assert set(build.rglob('*.SwiftFileList')) == qualified_lists, 'Unexpected compiler source list'
+     return proof
+ 
+ 

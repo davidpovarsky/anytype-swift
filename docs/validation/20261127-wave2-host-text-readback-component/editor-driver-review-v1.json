@@ -1,0 +1,97 @@
+{
+  "schema": "pinkha-independent-host-two-execution-controller-review-v1",
+  "reviewer": "/root/editor",
+  "reviewedAtUTC": "2026-11-27T15:50:06.384748+00:00",
+  "status": "BLOCKED_ONE_COMPILER_EVIDENCE_FORMAT_MISMATCH_SOURCE_ONLY",
+  "controller": {
+    "path": "torah-acceptance-prep/native-text-readback/execution-preparation/inputs/run_component.py",
+    "bytes": 27634,
+    "sha256": "7e012aa794fd336e0c37b111013195d191ea5ae9622e0256b2dfec21387bb720"
+  },
+  "packet": {
+    "path": "torah-acceptance-prep/native-text-readback/execution-preparation/input-packet.json",
+    "bytes": 7368,
+    "sha256": "4fd1082637b6a4f3dcdc16b9325f3143d4c604b50e8b038df767f01fb5b9cea7"
+  },
+  "preparation": {
+    "path": "torah-acceptance-prep/native-text-readback/execution-preparation/preparation-proof.json",
+    "bytes": 3112,
+    "sha256": "95d207b1528d06f3faf817cee558d0d1a848d41da3fdee59d4a9d3bc5e8fb638"
+  },
+  "package": {
+    "path": "torah-acceptance-prep/native-text-readback/execution-preparation/inputs/component/Package.swift",
+    "bytes": 5951,
+    "sha256": "fdfcac028c96b46646bbafd01933fa58eb48f89753d1a42111f142b0c9c7564e"
+  },
+  "originalOwnedHelper": {
+    "path": "torah-acceptance-prep/native-text-readback/execution-preparation/inputs/owned_process.py",
+    "bytes": 5529,
+    "sha256": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924"
+  },
+  "originalOwnedProvenance": {
+    "path": "torah-acceptance-prep/native-text-readback/execution-preparation/inputs/owned-process-provenance.json",
+    "bytes": 1010,
+    "sha256": "4c2f95a4129fdb89125458c4a3a5874c97dbbf0ed9aaa3d1b15d638ccef734b1"
+  },
+  "priorPortableControlsReviewedNotRerun": {
+    "path": "torah-acceptance-prep/native-text-readback/execution-preparation/portable-controls1/result.json",
+    "bytes": 1104,
+    "sha256": "2aa34adbb49cc46c872a5b58e772ea04e9d456f6c01e07dec93b725b942a5f47"
+  },
+  "finding": {
+    "id": "HOST2-RUN-01",
+    "classification": "Concrete current-toolchain evidence-format incompatibility before execution",
+    "scope": "compiler_inputs(log) only",
+    "currentRequirement": "<Module>.build/sources plus output-file-map.json, exactly27 whole production plus1 whole test source and no generated inputs",
+    "actualRetainedFormat": "The same /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swiftc is actually invoked by builtin-SwiftDriver with build/out/Intermediates.noindex/<Package>.build/Debug-linux-aarch64/<Module>-t/-p.build/Objects-normal/aarch64/<Module>.SwiftFileList and <Module>-OutputFileMap.json; the test and runner also consume generated test_anchor.swift/test_entry_point.swift.",
+    "effect": "A genuine build in the already observed current-toolchain format cannot satisfy the old-only paths/source sets, even if both tests pass. No alternative backend was established or selected by this driver.",
+    "requiredCorrection": "Keep7e012 as predecessor; bind exact observed SwiftFileList/SwiftDriver/output-map and generated-input custody for this finite component. Do not add a broad file allowance or force another backend merely to fit the qualifier. Re-review the changed compiler witness only.",
+    "retainedActualProofs": [
+      {
+        "path": "wave2-properties-related-component/macro-repair1/actual-source2/root-actual-qualification.json",
+        "bytes": 50470,
+        "sha256": "4d4aaa998116af4ea4a31ba0ad9714a3dd4f56bc195632314f0fe2cd9ad9673d"
+      },
+      {
+        "path": "wave2-properties-related-component/macro-repair1/actual-source2/compiler-filelists-and-stage.original.json",
+        "bytes": 7420,
+        "sha256": "081cd8cd285550dacd67de771678a06525de176ec721b95d82e5c5e9ddd833b5"
+      },
+      {
+        "path": "wave2-properties-related-component/macro-repair1/actual-source2/compiler-generated-inputs.original.json",
+        "bytes": 20510,
+        "sha256": "6118337d690e9d2734a89b4f1c7f8ece3b46665cd0ecbb0535a59f881ed999e0"
+      }
+    ],
+    "actualRunRepeated": false
+  },
+  "remainingScopeFindings": [],
+  "checks": [
+    "The frozen source and full test/fixture pins are fixed; the suite filter is NativeTextEditReadbackHTTPTests. Actual parsing demands exactly the two named started/passed XCTest cases, rejects any extra started method and does not substitute a Swift Testing zero-test footer. Four Unicode flows are explicitly looped fixture journeys, not four enumerated XCTest cases.",
+    "Only one new Popen command is launched. Its handle is assigned before process-ledger persistence and remains inside the guaranteed cleanup finally. The exact58624 helper is pinned/import-path-bound and reused; its poll/reap-before-observation behavior remains original and is not represented as a newer W1 lifecycle.",
+    "The four Python fixtures can have independent Process lifetime. Successful qualification requires four actual printed owned directories, both exact Unicode vectors with both reply modes, actual raw PATCH bytes/versions, unchanged request counts, matching start/exit PIDs, empty stderr, stdin-eof journal and actual passed XCTest waitUntilExit/exit0 assertions. Outer group absence alone is not used as fixture closure.",
+    "Interruption or partial/missing fixture closure preserves evidence and conservatively keeps safeToReleaseRuntimeSlot=false. The final49-second journal wait does not probe or signal retained fixture PIDs. Original outer-process cleanup remains the only controller process manager.",
+    "Source inventory requires the exact complete fixed file set in both inputs/component and the compiled component copy. No generated file is silently admitted into these source roots. After the scoped correction, generated inputs must be explicitly identified under owned build scratch and tied to the actual compiler invocation; an unexpected component-root file must still fail closed.",
+    "Default invocation does not start the attempt. Fixed ROOT is exclusive, physical and0700; explicit caches/config/security/tmp/build/log paths are on Development. Actual compilation requires fresh initial and live W1 floors, bounded256MiB allocation including1MiB final reserve, jobs2 and300s command deadline.",
+    "Failure logs and available fixture/source evidence are retained. Later cleanup/retention/resource failure sets FAIL and preserves the original error. The source does not grant native/Apple/full-package acceptance or the next runtime slot."
+  ],
+  "resourceHold": {
+    "basis": "Root message15:38, not a reviewer host observation",
+    "reportedRootFreeBytes": 1856311296,
+    "rootLiveFloorBytes": 2147483648,
+    "rootAdmissionBytes": 2181038080,
+    "admissionSatisfied": false,
+    "executionOrGateChangeAuthorizedByReview": false
+  },
+  "actions": {
+    "localReadAndHashOnly": true,
+    "newArtifact": "this review",
+    "portableControlsRerun": 0,
+    "sourceMutations": 0,
+    "hostCalls": 0,
+    "SwiftRuns": 0,
+    "HTTPServersStarted": 0,
+    "NativeCalls": 0,
+    "historicalProcessProbes": 0
+  }
+}

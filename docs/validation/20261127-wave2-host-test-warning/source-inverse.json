@@ -1,0 +1,45 @@
+{
+  "schema": "pinkha-host-test-unnecessary-try-source-inverse/v1",
+  "status": "PREPARED_TEST_ONLY_NOT_PUBLISHED_NOT_EXECUTED",
+  "baseCommit": "eede7b8487105c1acd96ea36c08444863abb60ab",
+  "baseTree": "08edd2dd66c03b9ea7ca8f9aec0b41eae9578050",
+  "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHostTests.swift",
+  "before": {
+    "bytes": 23666,
+    "sha256": "4cc5c251b525b36ab710d6fa05163ccb27a8e3c801c5e88eab44533253db13e5",
+    "gitBlob": "a906253cb86dc64e2befa4d0991e105b6b3a8472"
+  },
+  "after": {
+    "bytes": 23662,
+    "sha256": "8ef6224dd40255359d879c1eabe2aa64805650004743da87dbbd1bbea59642b5",
+    "gitBlob": "89c9b37eee9ba30580654477f073101ef09cc2f8"
+  },
+  "edit": {
+    "oldLine": "        let owner = try AnyApplicationSession(workspace: workspace, engineStartedAt: \"run1\", verifyRun: { \"run1\" })",
+    "newLine": "        let owner = AnyApplicationSession(workspace: workspace, engineStartedAt: \"run1\", verifyRun: { \"run1\" })",
+    "removedUTF8": "try ",
+    "occurrences": 1,
+    "originalSourceLine": 289
+  },
+  "fullInverseEqualsOriginal": true,
+  "testDeclarationsUnchanged": true,
+  "selectedHost2MethodsUnchanged": [
+    "testCanonicalEquivalentTextReadbackCannotCertifyWriteOrMintUndo",
+    "testExactUnicodeTextReadbackRetainsVerifiedReceiptAndExactInverse"
+  ],
+  "fixtureCallbacksAssertionsLifecycleUnchanged": true,
+  "originalExecutedSourceUnchanged": true,
+  "actualDiagnostic": {
+    "path": "/workspace/scratch/1d35894f12d5/torah-acceptance-prep/native-text-readback/execution-preparation/actual-source2/originals/attempt1/stderr.original.log",
+    "bytes": 166511,
+    "sha256": "dcc308a6c01185b4327a36ebb0b0160c19944dd56cfdfbfd66767988fb3e10b2",
+    "excerptSHA256": "2a1042553dc775aac0536e31f226394e1764713c1489e40d0806b432bae7da99",
+    "excerptIsExactContiguousRawBytes": true,
+    "firstLogLine": 645,
+    "lastLogLine": 652
+  },
+  "actualHistoricalEvidenceCommit": "eede7b8487105c1acd96ea36c08444863abb60ab",
+  "historicalSuccessRemainsBoundToOriginal4ccSource": true,
+  "compilerOrTestsReplayed": false,
+  "newRuntimeQualification": false
+}

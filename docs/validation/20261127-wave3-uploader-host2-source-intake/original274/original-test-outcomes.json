@@ -1,0 +1,739 @@
+{
+  "originalTestLogs": {
+    "component35Original23Passes": {
+      "bytes": 13708,
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/components-attempt2-original.log",
+      "rows": [
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testBoundedReceiptMemoryRefusesOverflowAndReleasesVerifiedSlots"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.107,
+          "test": "AnyNativeFileAttachmentCreatorTests.testBoundedReceiptMemoryRefusesOverflowAndReleasesVerifiedSlots"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testCancelledCallerRetainsLateKnownReceiptAndCannotReceiveSuccess"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.004,
+          "test": "AnyNativeFileAttachmentCreatorTests.testCancelledCallerRetainsLateKnownReceiptAndCannotReceiveSuccess"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testConcurrentCallsConsumeOneApprovalAndOneNativePOST"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.003,
+          "test": "AnyNativeFileAttachmentCreatorTests.testConcurrentCallsConsumeOneApprovalAndOneNativePOST"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testDeniedMutationApprovalSendsNothingAndRetainsConservativeReservation"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.002,
+          "test": "AnyNativeFileAttachmentCreatorTests.testDeniedMutationApprovalSendsNothingAndRetainsConservativeReservation"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testDigestMismatchRetainsOriginalIDWithoutVerificationOrResend"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.006,
+          "test": "AnyNativeFileAttachmentCreatorTests.testDigestMismatchRetainsOriginalIDWithoutVerificationOrResend"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testFailedReceiptJournalReportsKnownIDAndNeverCreatesReplacement"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.005,
+          "test": "AnyNativeFileAttachmentCreatorTests.testFailedReceiptJournalReportsKnownIDAndNeverCreatesReplacement"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testFinalDeliveryRechecksCancellationAndAuthorityAfterVerifiedJournal"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.012,
+          "test": "AnyNativeFileAttachmentCreatorTests.testFinalDeliveryRechecksCancellationAndAuthorityAfterVerifiedJournal"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testIntentMismatchAndForeignScopeFailBeforeNativeDispatch"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.004,
+          "test": "AnyNativeFileAttachmentCreatorTests.testIntentMismatchAndForeignScopeFailBeforeNativeDispatch"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testJournalIdentityContainsNoNamePayloadOrLocalURLAndRejectsForgedFingerprint"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.012,
+          "test": "AnyNativeFileAttachmentCreatorTests.testJournalIdentityContainsNoNamePayloadOrLocalURLAndRejectsForgedFingerprint"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testKnownReceiptPersistsBeforeLifetimeFailureAndResumesWithReads"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.004,
+          "test": "AnyNativeFileAttachmentCreatorTests.testKnownReceiptPersistsBeforeLifetimeFailureAndResumesWithReads"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testNativeRejectionIsTypedButDoesNotClearReservation"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.003,
+          "test": "AnyNativeFileAttachmentCreatorTests.testNativeRejectionIsTypedButDoesNotClearReservation"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testOriginalAcknowledgementRequiresOriginalReservationAcrossJournalOwners"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.005,
+          "test": "AnyNativeFileAttachmentCreatorTests.testOriginalAcknowledgementRequiresOriginalReservationAcrossJournalOwners"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testReadbackMetadataDriftDoesNotVerifyEvenWithMatchingContent"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.002,
+          "test": "AnyNativeFileAttachmentCreatorTests.testReadbackMetadataDriftDoesNotVerifyEvenWithMatchingContent"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testRememberedReceiptRequiresOriginalIntentAuthorityAndMetadata"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.006,
+          "test": "AnyNativeFileAttachmentCreatorTests.testRememberedReceiptRequiresOriginalIntentAuthorityAndMetadata"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testRevocationWhileUploadIsInFlightPreservesOriginalReceiptWithoutDelivery"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.005,
+          "test": "AnyNativeFileAttachmentCreatorTests.testRevocationWhileUploadIsInFlightPreservesOriginalReceiptWithoutDelivery"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testStableReadbackMetadataMustMatchTheOriginalWarmAcknowledgement"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.003,
+          "test": "AnyNativeFileAttachmentCreatorTests.testStableReadbackMetadataMustMatchTheOriginalWarmAcknowledgement"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileAttachmentCreatorTests.testUnknownAcknowledgementSurvivesNewCreatorWithoutSecondDispatch"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.003,
+          "test": "AnyNativeFileAttachmentCreatorTests.testUnknownAcknowledgementSurvivesNewCreatorWithoutSecondDispatch"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testCancellationAfterBodyDispatchKeepsUnknownOutcomeAndDoesNotResend"
+        },
+        {
+          "outcome": "failed",
+          "seconds": 0.001,
+          "test": "AnyNativeFileUploadHTTPTests.testCancellationAfterBodyDispatchKeepsUnknownOutcomeAndDoesNotResend"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testCancelledTransportCannotFinishBeforeItsSerialDelegateDrains"
+        },
+        {
+          "outcome": "failed",
+          "seconds": 0.0,
+          "test": "AnyNativeFileUploadHTTPTests.testCancelledTransportCannotFinishBeforeItsSerialDelegateDrains"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testEmptyAndStreamedAttachmentsHaveOneApprovalAndRetainNativeMetadataBeforePostflight"
+        },
+        {
+          "outcome": "failed",
+          "seconds": 0.001,
+          "test": "AnyNativeFileUploadHTTPTests.testEmptyAndStreamedAttachmentsHaveOneApprovalAndRetainNativeMetadataBeforePostflight"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testFailedOneShotCallbackPreservesUncertaintyWithoutSendingTheBody"
+        },
+        {
+          "outcome": "failed",
+          "seconds": 0.001,
+          "test": "AnyNativeFileUploadHTTPTests.testFailedOneShotCallbackPreservesUncertaintyWithoutSendingTheBody"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testFailedReceiptJournalAndCancellationAfterAcknowledgementKeepKnownIdentity"
+        },
+        {
+          "outcome": "failed",
+          "seconds": 0.0,
+          "test": "AnyNativeFileUploadHTTPTests.testFailedReceiptJournalAndCancellationAfterAcknowledgementKeepKnownIdentity"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testForeignAccountWrongDigestAndChangedSourceAreRefusedBeforeApprovalOrPost"
+        },
+        {
+          "outcome": "failed",
+          "seconds": 0.001,
+          "test": "AnyNativeFileUploadHTTPTests.testForeignAccountWrongDigestAndChangedSourceAreRefusedBeforeApprovalOrPost"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testKnownFileInfoRequiresCurrentScopeAndExactObjectWithoutWriting"
+        },
+        {
+          "outcome": "failed",
+          "seconds": 0.0,
+          "test": "AnyNativeFileUploadHTTPTests.testKnownFileInfoRequiresCurrentScopeAndExactObjectWithoutWriting"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testKnownReceiptPrecedesRevokedScopeAndAccountPostflight"
+        },
+        {
+          "outcome": "failed",
+          "seconds": 0.001,
+          "test": "AnyNativeFileUploadHTTPTests.testKnownReceiptPrecedesRevokedScopeAndAccountPostflight"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testLostAcknowledgementAfterCompleteBodyDoesNotReplayTheUpload"
+        },
+        {
+          "outcome": "failed",
+          "seconds": 0.0,
+          "test": "AnyNativeFileUploadHTTPTests.testLostAcknowledgementAfterCompleteBodyDoesNotReplayTheUpload"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testMalformedAcknowledgementsAndNativeErrorsNeverBecomeReceiptsOrAutomaticRetries"
+        },
+        {
+          "outcome": "failed",
+          "seconds": 0.001,
+          "test": "AnyNativeFileUploadHTTPTests.testMalformedAcknowledgementsAndNativeErrorsNeverBecomeReceiptsOrAutomaticRetries"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testRedirectCannotForwardThePrivateBodyOrConsumeAnotherDispatch"
+        },
+        {
+          "outcome": "failed",
+          "seconds": 0.0,
+          "test": "AnyNativeFileUploadHTTPTests.testRedirectCannotForwardThePrivateBodyOrConsumeAnotherDispatch"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testResponseCeilingIncludesExactChunkedBoundaryAndRefusesBothOversizeForms"
+        },
+        {
+          "outcome": "failed",
+          "seconds": 0.001,
+          "test": "AnyNativeFileUploadHTTPTests.testResponseCeilingIncludesExactChunkedBoundaryAndRefusesBothOversizeForms"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadTests.testNativeReceiptPreservesResolvedMetadataAndKeepsInlineCustodyDistinct"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.003,
+          "test": "AnyNativeFileUploadTests.testNativeReceiptPreservesResolvedMetadataAndKeepsInlineCustodyDistinct"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadTests.testPublicFingerprintBuildsAnIntentWithoutWholeFileLoadingAndChangedSelectionIsRefused"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.093,
+          "test": "AnyNativeFileUploadTests.testPublicFingerprintBuildsAnIntentWithoutWholeFileLoadingAndChangedSelectionIsRefused"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadTests.testReceiptRejectsForeignIdentityVariantsAndMalformedStorage"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.003,
+          "test": "AnyNativeFileUploadTests.testReceiptRejectsForeignIdentityVariantsAndMalformedStorage"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadTests.testSourceSymlinkWrongDigestReplacementAndChangedCopyCannotBeDispatched"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.041,
+          "test": "AnyNativeFileUploadTests.testSourceSymlinkWrongDigestReplacementAndChangedCopyCannotBeDispatched"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadTests.testSpecificationIncludesEmptyInlineFilesAndRejectsUnsafeOrUnboundedInputs"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.005,
+          "test": "AnyNativeFileUploadTests.testSpecificationIncludesEmptyInlineFilesAndRejectsUnsafeOrUnboundedInputs"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadTests.testVerifiedStagingStreamsSeveralChunksAndCleansOnlyItsOwnPrivateCopy"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.111,
+          "test": "AnyNativeFileUploadTests.testVerifiedStagingStreamsSeveralChunksAndCleansOnlyItsOwnPrivateCopy"
+        }
+      ],
+      "sha256": "1d3da611166dbb0194e00a28c0092ca492385336b774f3c80ece0afa4facaa23",
+      "summaryLines": [
+        "Build complete! (50.92 secs)",
+        "\t Executed 17 tests, with 0 failures (0 unexpected) in 0.185 (0.185) seconds",
+        "\t Executed 12 tests, with 12 failures (12 unexpected) in 0.007 (0.007) seconds",
+        "\t Executed 6 tests, with 0 failures (0 unexpected) in 0.256 (0.256) seconds",
+        "\t Executed 35 tests, with 12 failures (12 unexpected) in 0.449 (0.449) seconds"
+      ]
+    },
+    "host2Passes": {
+      "bytes": 1740,
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-wave2-host-text-readback-component/source2/actual-source2/originals/attempt1/stdout.original.log",
+      "rows": [
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "NativeTextEditReadbackHTTPTests.testCanonicalEquivalentTextReadbackCannotCertifyWriteOrMintUndo"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.854,
+          "test": "NativeTextEditReadbackHTTPTests.testCanonicalEquivalentTextReadbackCannotCertifyWriteOrMintUndo"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "NativeTextEditReadbackHTTPTests.testExactUnicodeTextReadbackRetainsVerifiedReceiptAndExactInverse"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.635,
+          "test": "NativeTextEditReadbackHTTPTests.testExactUnicodeTextReadbackRetainsVerifiedReceiptAndExactInverse"
+        }
+      ],
+      "sha256": "1b230983e98f83c065a996bc67e198a3daf8702da4a980bf6d0e23ff47e252e8",
+      "summaryLines": [
+        "\t Executed 2 tests, with 0 failures (0 unexpected) in 1.488 (1.488) seconds",
+        "\t Executed 2 tests, with 0 failures (0 unexpected) in 1.488 (1.488) seconds"
+      ]
+    },
+    "http12Passes": {
+      "bytes": 3804,
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/http12-attempt1-original.log",
+      "rows": [
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testCancellationAfterBodyDispatchKeepsUnknownOutcomeAndDoesNotResend"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.207,
+          "test": "AnyNativeFileUploadHTTPTests.testCancellationAfterBodyDispatchKeepsUnknownOutcomeAndDoesNotResend"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testCancelledTransportCannotFinishBeforeItsSerialDelegateDrains"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.377,
+          "test": "AnyNativeFileUploadHTTPTests.testCancelledTransportCannotFinishBeforeItsSerialDelegateDrains"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testEmptyAndStreamedAttachmentsHaveOneApprovalAndRetainNativeMetadataBeforePostflight"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.474,
+          "test": "AnyNativeFileUploadHTTPTests.testEmptyAndStreamedAttachmentsHaveOneApprovalAndRetainNativeMetadataBeforePostflight"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testFailedOneShotCallbackPreservesUncertaintyWithoutSendingTheBody"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.168,
+          "test": "AnyNativeFileUploadHTTPTests.testFailedOneShotCallbackPreservesUncertaintyWithoutSendingTheBody"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testFailedReceiptJournalAndCancellationAfterAcknowledgementKeepKnownIdentity"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.351,
+          "test": "AnyNativeFileUploadHTTPTests.testFailedReceiptJournalAndCancellationAfterAcknowledgementKeepKnownIdentity"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testForeignAccountWrongDigestAndChangedSourceAreRefusedBeforeApprovalOrPost"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.515,
+          "test": "AnyNativeFileUploadHTTPTests.testForeignAccountWrongDigestAndChangedSourceAreRefusedBeforeApprovalOrPost"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testKnownFileInfoRequiresCurrentScopeAndExactObjectWithoutWriting"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.378,
+          "test": "AnyNativeFileUploadHTTPTests.testKnownFileInfoRequiresCurrentScopeAndExactObjectWithoutWriting"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testKnownReceiptPrecedesRevokedScopeAndAccountPostflight"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.363,
+          "test": "AnyNativeFileUploadHTTPTests.testKnownReceiptPrecedesRevokedScopeAndAccountPostflight"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testLostAcknowledgementAfterCompleteBodyDoesNotReplayTheUpload"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.166,
+          "test": "AnyNativeFileUploadHTTPTests.testLostAcknowledgementAfterCompleteBodyDoesNotReplayTheUpload"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testMalformedAcknowledgementsAndNativeErrorsNeverBecomeReceiptsOrAutomaticRetries"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 1.182,
+          "test": "AnyNativeFileUploadHTTPTests.testMalformedAcknowledgementsAndNativeErrorsNeverBecomeReceiptsOrAutomaticRetries"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testRedirectCannotForwardThePrivateBodyOrConsumeAnotherDispatch"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.167,
+          "test": "AnyNativeFileUploadHTTPTests.testRedirectCannotForwardThePrivateBodyOrConsumeAnotherDispatch"
+        },
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadHTTPTests.testResponseCeilingIncludesExactChunkedBoundaryAndRefusesBothOversizeForms"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.521,
+          "test": "AnyNativeFileUploadHTTPTests.testResponseCeilingIncludesExactChunkedBoundaryAndRefusesBothOversizeForms"
+        }
+      ],
+      "sha256": "f81e79cfe9488d11a066bd402f38db4778c5b0d816cf335fdea07cdd451c19a9",
+      "summaryLines": [
+        "\t Executed 12 tests, with 0 failures (0 unexpected) in 4.867 (4.867) seconds",
+        "\t Executed 12 tests, with 0 failures (0 unexpected) in 4.867 (4.867) seconds"
+      ]
+    },
+    "native1Pass": {
+      "bytes": 739,
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/native-attempt2-original.log",
+      "rows": [
+        {
+          "outcome": "started",
+          "seconds": null,
+          "test": "AnyNativeFileUploadNativeRouteTests.testOriginalNativeAttachResolvesMetadataAndVerifiesInlineAndFullTierBytes"
+        },
+        {
+          "outcome": "passed",
+          "seconds": 0.18,
+          "test": "AnyNativeFileUploadNativeRouteTests.testOriginalNativeAttachResolvesMetadataAndVerifiesInlineAndFullTierBytes"
+        }
+      ],
+      "sha256": "719cdbf4b427d0f2028b53f0ef0d218b502ccef9d027a308fe2ce1ed598d550f",
+      "summaryLines": [
+        "\t Executed 1 test, with 0 failures (0 unexpected) in 0.18 (0.18) seconds",
+        "\t Executed 1 test, with 0 failures (0 unexpected) in 0.18 (0.18) seconds"
+      ]
+    }
+  },
+  "receipts": {
+    "HTTPFailed": {
+      "bytes": 74014,
+      "originalOwnedClosure": null,
+      "ownedCommands": [
+        {
+          "absent": true,
+          "cleanupErrors": [],
+          "exitCode": 0,
+          "filter": "AnyNativeFileUploadHTTPTests",
+          "pgid": 1336896,
+          "pid": 1336896,
+          "seconds": 7.7140094535425305,
+          "signals": []
+        }
+      ],
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/http12-attempt1-result.json",
+      "seconds": 80.374,
+      "sha256": "0526d95b3e0239387bf0bd94226e797a151d7986c6812ada0768d53dbf5242c3",
+      "status": "FAIL_HTTP12_CONTINUATION"
+    },
+    "component35Completion": {
+      "bytes": 76101,
+      "originalOwnedClosure": null,
+      "ownedCommands": [],
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/http12-completion1-result.json",
+      "seconds": 18.375,
+      "sha256": "02fa0059b57fec6e2f0fa1bd47121f1dfd3268b545bff2f489083fddd0281878",
+      "status": "PASS_COMPONENT35_WITH_REUSED23_REUSED_HTTP12_AND_COMPLETED_SOURCE_AUDIT"
+    },
+    "componentsFailed": {
+      "bytes": 6543,
+      "originalOwnedClosure": null,
+      "ownedCommands": [
+        {
+          "absent": true,
+          "cleanupErrors": [],
+          "exitCode": 0,
+          "filter": null,
+          "pgid": 959122,
+          "pid": 959122,
+          "seconds": 0.2604340463876724,
+          "signals": []
+        },
+        {
+          "absent": true,
+          "cleanupErrors": [],
+          "exitCode": 0,
+          "filter": null,
+          "pgid": 959123,
+          "pid": 959123,
+          "seconds": 0.2518467968329787,
+          "signals": []
+        },
+        {
+          "absent": true,
+          "cleanupErrors": [],
+          "exitCode": 0,
+          "filter": null,
+          "pgid": 959146,
+          "pid": 959146,
+          "seconds": 0.24705052934587002,
+          "signals": []
+        },
+        {
+          "absent": true,
+          "cleanupErrors": [],
+          "exitCode": 1,
+          "filter": "AnyNativeFileAttachmentCreatorTests|AnyNativeFileUploadHTTPTests|AnyNativeFileUploadTests",
+          "pgid": 959533,
+          "pid": 959533,
+          "seconds": 55.24774869438261,
+          "signals": []
+        }
+      ],
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/components-attempt2-result.json",
+      "seconds": 78.991,
+      "sha256": "4b24eb81b7e7fa6b108568ea619bf125148e8952b38879a71cc8091b55d101c5",
+      "status": "FAIL"
+    },
+    "host2Completion": {
+      "bytes": 228611,
+      "originalOwnedClosure": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T17:20:06.611334+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 1494943,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "historicalGroupReprobed": false,
+        "processGroup": 1494943,
+        "status": "PASS_OWNED_GROUP_ABSENT"
+      },
+      "ownedCommands": [],
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-wave2-host-text-readback-component/source2/actual-source2/completion-result.original.json",
+      "seconds": 0.717,
+      "sha256": "137c17f247fe146122a9b2acee832f0b39a3ae63773f9d21023592a2e90bbd41",
+      "status": "PASS_REUSED_HOST2_WITH_COMPLETE_SOURCE_AND_HTTP_EVIDENCE"
+    },
+    "host2FailedQualifier": {
+      "bytes": 17396,
+      "originalOwnedClosure": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T17:20:06.611334+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 1494943,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "historicalGroupReprobed": false,
+        "processGroup": 1494943,
+        "status": "PASS_OWNED_GROUP_ABSENT"
+      },
+      "ownedCommands": [],
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-wave2-host-text-readback-component/source2/actual-source2/originals/attempt1/receipt.json",
+      "seconds": 27.721,
+      "sha256": "1903e2725437835136dd14f4b072a012df7f8773febc54ee131236deb54b3b5c",
+      "status": "FAIL"
+    },
+    "nativeFailedPreflight": {
+      "bytes": 4048,
+      "originalOwnedClosure": null,
+      "ownedCommands": [],
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/native-attempt1-result.json",
+      "seconds": 3.480302106589079,
+      "sha256": "5b017bdc76b0b1123257dfbaefbabe07a3aa67add48750430936999d9ccdc0fa",
+      "status": "FAIL_FRESH_NATIVE_UPLOAD_PRESERVED"
+    },
+    "nativeOriginal": {
+      "bytes": 23517,
+      "originalOwnedClosure": null,
+      "ownedCommands": [
+        {
+          "absent": true,
+          "cleanupErrors": [],
+          "exitCode": 0,
+          "filter": null,
+          "pgid": 1479160,
+          "pid": 1479160,
+          "seconds": 1.2460296507924795,
+          "signals": []
+        },
+        {
+          "absent": true,
+          "cleanupErrors": [],
+          "exitCode": 0,
+          "filter": null,
+          "pgid": 1479205,
+          "pid": 1479205,
+          "seconds": 3.228491830639541,
+          "signals": []
+        },
+        {
+          "absent": true,
+          "cleanupErrors": [],
+          "exitCode": 0,
+          "filter": "AnyNativeFileUploadNativeRouteTests",
+          "pgid": 1479304,
+          "pid": 1479304,
+          "seconds": 2.2904689302667975,
+          "signals": []
+        },
+        {
+          "absent": true,
+          "cleanupErrors": [],
+          "exitCode": 0,
+          "filter": null,
+          "pgid": 1479407,
+          "pid": 1479407,
+          "seconds": 0.6442713104188442,
+          "signals": []
+        }
+      ],
+      "path": "/workspace/scratch/ae335eba85e3/wave1-uploader-host2-followon-intake/source/docs/validation/20261127-ordinary-file-upload-recovery/native-attempt2-result.json",
+      "seconds": 8.682607531547546,
+      "sha256": "8b7a4dd471777d31dc37a7a95e7c00430c9d1463d540c95b9905f49146693159",
+      "status": "PASS_FRESH_NATIVE_UPLOAD2_AND_OS_OFFLINE_REOPEN_ONLY"
+    }
+  },
+  "reviewExecution": {
+    "compiler": 0,
+    "hosts": 0,
+    "tests": 0
+  },
+  "schema": "pinkha-uploader-host2-original-test-outcomes/v1"
+}

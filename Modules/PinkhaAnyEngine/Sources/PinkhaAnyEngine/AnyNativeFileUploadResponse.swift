@@ -9,18 +9,45 @@ import FoundationNetworking
 final class AnyNativeFileUploadResponse: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     static let maximumResponseBytes = 65_536
     private let lock = NSLock()
+    private let delegateQueue: OperationQueue
     private var continuation: CheckedContinuation<(Data, HTTPURLResponse), any Error>?
     private var currentSession: URLSession?
     private var currentTask: URLSessionTask?
     private var expectedURL: URL?
     private var response: HTTPURLResponse?
     private var bytes = Data()
-    private var finished = false
+    private var consumed = false
+    private var finishing = false
+    private var taskCompleted = false
+    private var sessionInvalidated = false
+    private var pendingResult: Result<(Data, HTTPURLResponse), any Error>?
+
+    init(delegateQueue: OperationQueue? = nil) {
+        let queue = delegateQueue ?? OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        self.delegateQueue = queue
+        super.init()
+    }
 
     func perform(_ request: URLRequest, fileURL: URL?) async throws -> (Data, HTTPURLResponse) {
         try await withTaskCancellationHandler {
             try Task.checkCancellation()
             return try await withCheckedThrowingContinuation { continuation in
+                // Register and start under the cancellation lock. Cancellation
+                // before this point creates no session; after it, completion
+                // must await both callbacks from this exact owned task/session.
+                lock.lock()
+                guard !consumed else {
+                    lock.unlock()
+                    continuation.resume(throwing: AnyEngineError.malformedResponse("file attachment response reused"))
+                    return
+                }
+                consumed = true
+                if let pendingResult {
+                    lock.unlock()
+                    continuation.resume(with: pendingResult)
+                    return
+                }
                 let configuration = URLSessionConfiguration.ephemeral
                 configuration.httpShouldSetCookies = false
                 configuration.httpCookieStorage = nil
@@ -29,23 +56,14 @@ final class AnyNativeFileUploadResponse: NSObject, URLSessionDataDelegate, @unch
                 configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
                 configuration.timeoutIntervalForRequest = request.timeoutInterval
                 configuration.timeoutIntervalForResource = 300
-                let queue = OperationQueue()
-                queue.maxConcurrentOperationCount = 1
-                let session = URLSession(configuration: configuration, delegate: self, delegateQueue: queue)
+                let session = URLSession(configuration: configuration, delegate: self, delegateQueue: delegateQueue)
                 let task: URLSessionTask
                 if let fileURL { task = session.uploadTask(with: request, fromFile: fileURL) }
                 else { task = session.dataTask(with: request) }
-                lock.lock()
-                guard !finished else {
-                    lock.unlock()
-                    session.invalidateAndCancel()
-                    continuation.resume(throwing: CancellationError())
-                    return
-                }
                 self.continuation = continuation
                 currentSession = session; currentTask = task; expectedURL = request.url
-                lock.unlock()
                 task.resume()
+                lock.unlock()
             }
         } onCancel: {
             self.finish(.failure(CancellationError()))
@@ -57,7 +75,7 @@ final class AnyNativeFileUploadResponse: NSObject, URLSessionDataDelegate, @unch
                     completionHandler: @escaping @Sendable (URLRequest?) -> Void) {
         // No second target receives the original body or managed capability.
         completionHandler(nil)
-        finish(.failure(AnyNativeFileUploadError.redirectRefused))
+        if owns(session, task: task) { finish(.failure(AnyNativeFileUploadError.redirectRefused)) }
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask,
@@ -76,6 +94,7 @@ final class AnyNativeFileUploadResponse: NSObject, URLSessionDataDelegate, @unch
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse,
                     completionHandler: @escaping @Sendable (URLSession.ResponseDisposition) -> Void) {
+        guard owns(session, task: dataTask) else { completionHandler(.cancel); return }
         guard let http = response as? HTTPURLResponse else {
             completionHandler(.cancel)
             finish(.failure(AnyEngineError.malformedResponse("file attachment HTTP response")))
@@ -87,7 +106,7 @@ final class AnyNativeFileUploadResponse: NSObject, URLSessionDataDelegate, @unch
             return
         }
         lock.lock()
-        let active = !finished
+        let active = !finishing
         let matches = expectedURL?.absoluteString.utf8.elementsEqual(http.url?.absoluteString.utf8 ?? "".utf8) == true
         if active && matches { self.response = http }
         lock.unlock()
@@ -101,7 +120,7 @@ final class AnyNativeFileUploadResponse: NSObject, URLSessionDataDelegate, @unch
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         lock.lock()
-        guard !finished else { lock.unlock(); return }
+        guard currentSession === session, currentTask === dataTask, !finishing else { lock.unlock(); return }
         guard data.count <= Self.maximumResponseBytes - bytes.count else {
             lock.unlock()
             finish(.failure(AnyEngineError.readLimit))
@@ -113,24 +132,73 @@ final class AnyNativeFileUploadResponse: NSObject, URLSessionDataDelegate, @unch
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
         lock.lock()
+        guard currentSession === session, currentTask === task else { lock.unlock(); return }
+        taskCompleted = true
         let result: Result<(Data, HTTPURLResponse), any Error>
         if let error { result = .failure(error) }
         else if let response { result = .success((bytes, response)) }
         else { result = .failure(AnyEngineError.malformedResponse("file attachment missing response")) }
+        let shutdown = beginFinishLocked(result)
         lock.unlock()
-        finish(result)
+        requestShutdown(shutdown)
+        resumeAfterDrain()
+    }
+
+    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: (any Error)?) {
+        lock.lock()
+        guard currentSession === session else { lock.unlock(); return }
+        sessionInvalidated = true
+        lock.unlock()
+        resumeAfterDrain()
+    }
+
+    private func owns(_ session: URLSession, task: URLSessionTask) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return currentSession === session && currentTask === task
     }
 
     private func finish(_ result: Result<(Data, HTTPURLResponse), any Error>) {
         lock.lock()
-        guard !finished else { lock.unlock(); return }
-        finished = true
-        let continuation = continuation, task = currentTask, session = currentSession
+        let shutdown = beginFinishLocked(result)
+        lock.unlock()
+        requestShutdown(shutdown)
+    }
+
+    /// The caller holds lock. Observing task completion and preserving its
+    /// first outcome are one transaction against concurrent cancellation.
+    private func beginFinishLocked(_ result: Result<(Data, HTTPURLResponse), any Error>) -> (URLSessionTask?, URLSession?)? {
+        guard !finishing else { return nil }
+        finishing = true
+        pendingResult = result
+        return (currentTask, currentSession)
+    }
+
+    private func requestShutdown(_ shutdown: (URLSessionTask?, URLSession?)?) {
+        guard let (task, session) = shutdown else { return }
+        // Cancel this session's sole task, then request invalidation only after
+        // its completion callbacks. invalidateAndCancel may invalidate the
+        // session immediately; that alone cannot establish transport drain.
+        // These calls initiate shutdown. They are not a completion barrier.
+        // Keep the task, delegate, continuation and staged-file lifetime owned
+        // until both actual completion and session invalidation are observed.
+        task?.cancel()
+        session?.finishTasksAndInvalidate()
+    }
+
+    private func resumeAfterDrain() {
+        lock.lock()
+        guard taskCompleted, sessionInvalidated,
+              let result = pendingResult, let continuation else { lock.unlock(); return }
         self.continuation = nil; currentTask = nil; currentSession = nil
+        pendingResult = nil
         response = nil; expectedURL = nil; bytes = Data()
         lock.unlock()
-        task?.cancel()
-        session?.invalidateAndCancel()
-        continuation?.resume(with: result)
+        // A completed 201 wins over later cancellation, preserving the existing
+        // original-scope receipt callback before the caller's postflight fence.
+        // An earlier cancellation still has an uncertain native outcome.
+        // The serial queue also lets the last delegate callback return before
+        // the Swift operation can finish and release its staged-file owner.
+        delegateQueue.addOperation { continuation.resume(with: result) }
     }
 }

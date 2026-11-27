@@ -1,0 +1,52 @@
+{
+  "candidate": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+  "compilerInvocations": 0,
+  "concreteSourceBlockers": [],
+  "files": [
+    {
+      "bytes": 9648,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift",
+      "sha256": "08635cd324835923b713674c359694a380005585cadd1de3075270f41ed0f6d2"
+    },
+    {
+      "bytes": 29787,
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeFileUploadHTTPTests.swift",
+      "sha256": "6c6d0be36ad6930a675f5296bc907ec52a0a30b69f7dafebbe23648b2295a6ff"
+    },
+    {
+      "bytes": 23294,
+      "path": "docs/architecture/ordinary-file-attachment-contract-20261127.md",
+      "sha256": "f234c05963617fca10bd417f2f050127899fd795773bc0a5579aa28741b27abb"
+    }
+  ],
+  "findings": [
+    "Private serial OperationQueue establishes the reviewed delegate delivery order. Task start and pre-start cancellation are coordinated under the original lock; one first-result latch controls final continuation delivery.",
+    "Cancellation calls cancel and finishTasksAndInvalidate; task completion alone cannot resume the caller. Both taskCompleted and sessionInvalidated are required, and continuation dispatch is queued after the last original delegate callback returns.",
+    "Original bounded65536-byte response, challenge/redirect/new-body refusal and no automatic POST replay remain. Callback draining is not server rollback.",
+    "The added real HTTP fixture test deliberately suspends the delegate queue after one accepted body, cancels, observes the task still not finished, releases the queue and checks CancellationError and one POST with exact original digest. This is meaningful component coverage, not proof of every possible schedule.",
+    "Opaque recovery source requires matching original durable reservation, scope and actual native acknowledgement. One workspace ObjectCreator retains one attachment creator. Current caller lacks the post-close/reopen opaque handoff; Wave2 owns that narrow follow-on and its unresolved contract question.",
+    "Published35 component and one previously unrun real-native method receipts require original source/product admission; accepted source review does not relabel them Apple current App acceptance. Full tier remains cached true/durable false."
+  ],
+  "hostCalls": 0,
+  "officialFoundationEvidence": [
+    "https://developer.apple.com/documentation/foundation/urlsession/finishtasksandinvalidate()",
+    "https://developer.apple.com/documentation/foundation/urlsession/init(configuration:delegate:delegatequeue:)"
+  ],
+  "parent": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+  "peerReview": {
+    "bytes": 10049,
+    "path": "wave1-uploader063d-intake/peer/independent-host-recovery-review.json",
+    "sha256": "55cbf1bd3b05877f48c3b520ece9aa057dcb2f40b55e3e14e6c51ecc34076888"
+  },
+  "remaining": [
+    "Complete44-path source/evidence ancestry intake and original native/component qualification by SDK agent",
+    "Exact final-source integration/map and pin verification",
+    "Wave1 contract answer and Wave2 protected-journal caller wiring",
+    "Actual Apple protected append-failure/reopen and account/engine replacement acceptance"
+  ],
+  "runtimeAcceptance": false,
+  "schema": "pinkha-uploader063d-root-transport-source-review/v1",
+  "scope": "Full transport9648 bytes, changed HTTP test source and full current contract read; complete Host creator/ObjectCreator/test source reviewed by delegated independent peer. No new execution.",
+  "sourceImports": 0,
+  "testsExecuted": 0
+}

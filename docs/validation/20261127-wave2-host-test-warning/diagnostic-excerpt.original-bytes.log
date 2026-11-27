@@ -1,0 +1,8 @@
+Compiling NativeHostTests.swift
+/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-source2-20261127/component/Tests/PinkhaAnyHostTests/NativeHostTests.swift:289:21: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m287 |[0;0m         let workspace = try AnyTorahWorkspace(accountID: "account", spaceID: "space")
+[0;36m288 |[0;0m         let store = try AnyEditorDocumentStore(client: fixture.client(), workspace: workspace, allowedTypeIDs: ["page"])
+[0;36m289 |[0;0m         let owner = try AnyApplicationSession(workspace: workspace, engineStartedAt: "run1", verifyRun: { "run1" })
+    [0;36m|[0;0m                     `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m290 |[0;0m         let values: (AnyEditorRead, AnyPreparedBlockEdit, AnyBlockEditReceipt, AnyEditorRead)
+[0;36m291 |[0;0m         do {

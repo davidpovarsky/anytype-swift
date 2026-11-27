@@ -13,6 +13,9 @@ public enum AnyNativeFileAttachmentError: Error, Equatable, Sendable {
     /// The original file ID is known, but complete readback has not been verified.
     case knownFileUnverified(String)
     case noRecordedAttachment
+    /// The current owner already holds its bounded set of unresolved receipts.
+    /// This error never authorizes resending an existing reserved operation.
+    case recoveryCapacityReached
 }
 
 /// A user action has one durable identity. Only its hash and scoped mutation ID
@@ -81,6 +84,21 @@ public struct AnyNativeFileAttachmentIntent: Codable, Equatable, Sendable {
     }
 }
 
+/// A process-local original native acknowledgement, minted only by this module.
+/// It is deliberately not Codable and exposes no mutable or public initializer.
+/// A caller may retain it while draining/closing a failed journal owner, then
+/// present it to a new owner of the SAME original durable journal reservation.
+/// This is not proof that the acknowledgement itself reached durable storage.
+public struct AnyNativeFileAttachmentRecoveryReceipt: Sendable, CustomStringConvertible, CustomDebugStringConvertible {
+    fileprivate let identity: AnyNativeCreationIdentity
+    fileprivate let receipt: AnyNativeAttachedFile
+    fileprivate init(identity: AnyNativeCreationIdentity, receipt: AnyNativeAttachedFile) {
+        self.identity = identity; self.receipt = receipt
+    }
+    public var description: String { "AnyNativeFileAttachmentRecoveryReceipt(original acknowledgement, private context redacted)" }
+    public var debugDescription: String { description }
+}
+
 /// Uploads through the original native FilesV2 route. Native Attach has no
 /// caller idempotency key: the existing durable creation journal owns the one
 /// permitted POST, and an unknown result is never changed into another POST.
@@ -99,6 +117,57 @@ public actor AnyNativeFileAttachmentCreator {
     private let upload: Upload
     private let inspect: Inspect
     private let digest: Digest
+    private let receipts = ReceiptMemory()
+
+    /// Volatile original acknowledgements belong only to this creator's owner.
+    /// There is no public import-by-ID API. Reserve capacity before dispatch so
+    /// a valid native acknowledgement never needs to evict another action.
+    private actor ReceiptMemory {
+        struct Entry: Sendable {
+            let identity: AnyNativeCreationIdentity
+            var receipt: AnyNativeAttachedFile?
+        }
+        private var entries: [String: Entry] = [:]
+
+        func reserve(_ identity: AnyNativeCreationIdentity) throws {
+            if let old = entries[identity.key] {
+                guard old.identity == identity else { throw AnyNativeFileAttachmentError.contentConflict }
+                return
+            }
+            guard entries.count < 64 else { throw AnyNativeFileAttachmentError.recoveryCapacityReached }
+            entries[identity.key] = Entry(identity: identity)
+        }
+
+        func remember(_ receipt: AnyNativeAttachedFile, for identity: AnyNativeCreationIdentity) throws {
+            guard var entry = entries[identity.key], entry.identity == identity else {
+                throw AnyNativeFileAttachmentError.contentConflict
+            }
+            if let original = entry.receipt {
+                guard AnyNativeFileAttachmentCreator.same(original.reference.fileID, receipt.reference.fileID),
+                      AnyNativeFileAttachmentCreator.sameMetadata(original, receipt),
+                      original.byteCount == receipt.byteCount else {
+                    throw AnyNativeFileAttachmentError.contentConflict
+                }
+            }
+            entry.receipt = receipt
+            entries[identity.key] = entry
+        }
+
+        func receipt(for identity: AnyNativeCreationIdentity) throws -> AnyNativeAttachedFile? {
+            guard let entry = entries[identity.key] else { return nil }
+            guard entry.identity == identity else { throw AnyNativeFileAttachmentError.contentConflict }
+            return entry.receipt
+        }
+
+        func complete(_ identity: AnyNativeCreationIdentity, fileID: String) throws {
+            guard let entry = entries[identity.key] else { return }
+            guard entry.identity == identity,
+                  entry.receipt.map({ AnyNativeFileAttachmentCreator.same($0.reference.fileID, fileID) }) ?? true else {
+                throw AnyNativeFileAttachmentError.contentConflict
+            }
+            entries.removeValue(forKey: identity.key)
+        }
+    }
 
     public init(client: AnyHTTPClient, workspace: AnyTorahWorkspace,
                 journal: any AnyNativeCreationJournaling) throws {
@@ -134,6 +203,24 @@ public actor AnyNativeFileAttachmentCreator {
         return try await journal.lookup(intent.identity)?.objectID
     }
 
+    /// Obtain the actual remembered acknowledgement before retiring this owner.
+    /// A poisoned journal is intentionally not queried or unpoisoned here.
+    /// The caller must still hold the original account/Space read authority.
+    public func retainedRecoveryReceipt(for intent: AnyNativeFileAttachmentIntent,
+                                        authorizeRead: @escaping Check) async throws -> AnyNativeFileAttachmentRecoveryReceipt {
+        try requireScope(intent)
+        try Task.checkCancellation()
+        try await authorizeRead()
+        guard let receipt = try await receipts.receipt(for: intent.identity) else {
+            throw AnyNativeFileAttachmentError.writeUncertain
+        }
+        try Self.requireReceipt(receipt, specification: intent.specification)
+        try Task.checkCancellation()
+        try await authorizeRead()
+        try Task.checkCancellation()
+        return .init(identity: intent.identity, receipt: receipt)
+    }
+
     /// `authorizeRead` checks the live account, Space and consumer lifetime without
     /// consuming consent. `authorizeAttachment` admits the single user mutation.
     /// A concurrent call may stage a private copy but cannot acquire a second
@@ -145,15 +232,16 @@ public actor AnyNativeFileAttachmentCreator {
         try Task.checkCancellation()
         try await authorizeRead()
         if let state = try await journal.lookup(intent.identity) {
-            guard let fileID = state.objectID else { throw AnyNativeFileAttachmentError.writeUncertain }
-            return try await verify(intent, fileID: fileID, authorizeRead: authorizeRead)
+            return try await reconcile(intent, state: state, authorizeRead: authorizeRead)
         }
         let journal = journal
+        let receipts = receipts
         let specification = try intent.specification
         do {
             let receipt = try await upload(specification, fileURL, authorizeRead, {
                 try Task.checkCancellation()
                 try await authorizeRead()
+                try await receipts.reserve(intent.identity)
                 // Persist before dispatch. If authorization or dispatch then
                 // fails, keep the reservation rather than guessing no write.
                 let reservation = try await journal.reserve(intent.identity)
@@ -162,6 +250,10 @@ public actor AnyNativeFileAttachmentCreator {
                 try Task.checkCancellation()
             }, { receipt in
                 try Self.requireReceipt(receipt, specification: specification)
+                // This bounded private carrier is populated only by the real
+                // native acknowledgement. Keep it even if durable recording
+                // fails; it never becomes a substitute durability claim.
+                try await receipts.remember(receipt, for: intent.identity)
                 // This callback precedes the HTTP client's postflight account
                 // and consumer checks. Never journal into the newly active scope.
                 try await journal.record(.created(receipt.reference.fileID), identity: intent.identity)
@@ -178,12 +270,17 @@ public actor AnyNativeFileAttachmentCreator {
                case .http(let status, let code) = native {
                 throw AnyNativeFileAttachmentError.nativeResponse(status: status, code: code)
             }
+            if uncertain.underlying as? AnyNativeFileAttachmentError == .recoveryCapacityReached {
+                throw AnyNativeFileAttachmentError.recoveryCapacityReached
+            }
             throw AnyNativeFileAttachmentError.writeUncertain
         }
     }
 
-    /// Safe after cancellation, process restart, or a lost UI response when the
-    /// original file ID was retained. It never calls the native attachment route.
+    /// Safe after cancellation or a lost UI response when this original owner
+    /// retains the real acknowledgement. A temporary journal failure may be
+    /// repaired from that private witness before readback. After process restart,
+    /// the original ID must already be durable. This never calls native Attach.
     /// An unresolved reservation with no ID stays unresolved; matching filenames
     /// or content among concurrent uploads cannot prove which one this call made.
     /// The metadata journal retains the original ID and input fingerprint, not
@@ -198,8 +295,57 @@ public actor AnyNativeFileAttachmentCreator {
         guard let state = try await journal.lookup(intent.identity) else {
             throw AnyNativeFileAttachmentError.noRecordedAttachment
         }
-        guard let fileID = state.objectID else { throw AnyNativeFileAttachmentError.writeUncertain }
-        return try await verify(intent, fileID: fileID, authorizeRead: authorizeRead)
+        return try await reconcile(intent, state: state, authorizeRead: authorizeRead)
+    }
+
+    /// A failed protected journal remains poisoned. Its owning session must be
+    /// drained and closed, and the original journal must reopen successfully
+    /// through its own unchanged storage/ownership checks before calling here.
+    /// This overload requires that exact original reservation; it never creates
+    /// a new one and never accepts an arbitrary file ID or serialized witness.
+    public func resume(_ intent: AnyNativeFileAttachmentIntent,
+                       recoveryReceipt: AnyNativeFileAttachmentRecoveryReceipt,
+                       authorizeRead: @escaping Check) async throws -> AnyNativeAttachedFile {
+        try requireScope(intent)
+        guard recoveryReceipt.identity == intent.identity else {
+            throw AnyNativeFileAttachmentError.contentConflict
+        }
+        try Self.requireReceipt(recoveryReceipt.receipt, specification: intent.specification)
+        try Task.checkCancellation()
+        try await authorizeRead()
+        guard let state = try await journal.lookup(intent.identity) else {
+            throw AnyNativeFileAttachmentError.noRecordedAttachment
+        }
+        if let fileID = state.objectID {
+            try Self.requireReceipt(recoveryReceipt.receipt, specification: intent.specification, fileID: fileID)
+        }
+        try await receipts.reserve(intent.identity)
+        try await receipts.remember(recoveryReceipt.receipt, for: intent.identity)
+        return try await reconcile(intent, state: state, authorizeRead: authorizeRead)
+    }
+
+    private func reconcile(_ intent: AnyNativeFileAttachmentIntent, state: AnyNativeCreationState,
+                           authorizeRead: @escaping Check) async throws -> AnyNativeAttachedFile {
+        let original = try await receipts.receipt(for: intent.identity)
+        if let fileID = state.objectID {
+            if let original {
+                try Self.requireReceipt(original, specification: intent.specification, fileID: fileID)
+            }
+            return try await verify(intent, fileID: fileID, expectedReceipt: original, authorizeRead: authorizeRead)
+        }
+        guard let original else { throw AnyNativeFileAttachmentError.writeUncertain }
+        let fileID = original.reference.fileID
+        do {
+            try Self.requireReceipt(original, specification: intent.specification)
+            try Task.checkCancellation()
+            try await authorizeRead()
+            // Preserve the SAME journal reservation and original file identity.
+            // A new creator without this actual witness cannot execute this path.
+            try await journal.record(.created(fileID), identity: intent.identity)
+        } catch {
+            throw AnyNativeFileAttachmentError.knownFileUnverified(fileID)
+        }
+        return try await verify(intent, fileID: fileID, expectedReceipt: original, authorizeRead: authorizeRead)
     }
 
     private func verify(_ intent: AnyNativeFileAttachmentIntent, fileID: String,
@@ -229,8 +375,13 @@ public actor AnyNativeFileAttachmentCreator {
             // Cached/durable may legitimately advance during the content read.
             // The returned status is the actual final native observation.
             try await journal.record(.verified(fileID), identity: intent.identity)
+            // The durable verified record now owns recovery. Release the
+            // volatile slot before the final delivery fence: no actor hop may
+            // follow the current authority and original-task cancellation checks.
+            try await receipts.complete(intent.identity, fileID: fileID)
             try Task.checkCancellation()
             try await authorizeRead()
+            try Task.checkCancellation()
             return after
         } catch {
             throw AnyNativeFileAttachmentError.knownFileUnverified(fileID)

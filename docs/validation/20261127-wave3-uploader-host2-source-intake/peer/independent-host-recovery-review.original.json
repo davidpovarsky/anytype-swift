@@ -1,0 +1,144 @@
+{
+  "schema": "pinkha-uploader063d-host-recovery-independent-review/v1",
+  "status": "PASS_SCOPED_SOURCE_REVIEW_APPLE_RECOVERY_ACCEPTANCE_PENDING",
+  "scope": "Complete attachment recovery creator, exact ObjectCreator one-owner initializer change, and all associated Host test changes; original account/journal/current UI caller closure. Root separately reviews URLSession transport and complete source/native evidence.",
+  "candidate": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+  "candidateTree": "ed8e302914a0e25eb848625eb8215ec7821a34d7",
+  "parent": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+  "actualCurrentRootWitness": "af63f6209c38bddf6ed851f0b894e2f627a671af",
+  "inverse": {
+    "path": "wave1-uploader063d-intake/peer/host-three-source-inverse.json",
+    "bytes": 51649,
+    "sha256": "974207cef81cddb385463c7b9671a786a094b6e5cec842c8ac0f4d9c9668b764",
+    "gitBlob": "38a780f31424128927aeebf9adc87a9cd4fe1477"
+  },
+  "concreteSourceBlockers": [],
+  "sourceFindings": [
+    {
+      "id": "R1",
+      "anchor": "AnyNativeFileAttachmentCreator.swift:122-169,241-259",
+      "finding": "64 bounded slots are reserved before the durable dispatch reservation. Only the validated native receipt callback fills them; no eviction or caller-supplied ID import exists. The callback retains actual original scope metadata before journal recording and postflight checks. Capacity refusal precedes native dispatch and does not authorize a fresh ID or repeat POST."
+    },
+    {
+      "id": "R2",
+      "anchor": "AnyNativeFileAttachmentCreator.swift:290-348",
+      "finding": "Both resume overloads require an existing matching original journal state. Ordinary resume uses a durable ID or same-owner remembered acknowledgement; the opaque handoff additionally checks exact identity, ACK scope/byte count and any existing ID. Empty journal remains noRecordedAttachment; reserve() here is memory capacity only, never journal.reserve or native Attach."
+    },
+    {
+      "id": "R3",
+      "anchor": "AnyProtectedCreationJournal.af63.swift:47-87,90-128,143-170,181-234,258-276",
+      "finding": "The actual unchanged production journal poisons on append failure and refuses lookup/record while poisoned. It reopens only through canonical exact namespace/entry bytes and restrictive exclusive file/lock ownership. It is never unpoisoned by this adapter. Physical original-file continuity remains an owner responsibility; a custom protocol implementation alone cannot prove it."
+    },
+    {
+      "id": "R4",
+      "anchor": "AnyNativeFileAttachmentCreator.swift:351-388",
+      "finding": "Verification still requires original metadata -> complete byte count/digest -> metadata, exact UTF8 account/Space/object/file/immutable metadata, then durable .verified. Releasing memory occurs before the final current-authority and original task cancellation fence; no explicit async call follows that fence. Revoked delivery preserves durable verified identity for authorized read-only recovery."
+    },
+    {
+      "id": "R5",
+      "anchor": "AnyNativeObjectCreator.swift:129-138; AnyNativeApplication.af63.swift:30-43,345-379",
+      "finding": "The four-line factory change retains one attachment actor for the existing object/journal owner. Actual native workspace construction makes one ObjectCreator for its protected journal, and actual workspace close drains the session before closing that journal. No new account/session/authority owner is introduced; clientless test construction still refuses uploader manufacture. The eager attachment initialization also applies its exact UTF8 client/journal workspace guard before returning the production ObjectCreator."
+    },
+    {
+      "id": "R6",
+      "anchor": "AnyNativeAttachments.swift:323-330,411-509,513-581,624-638; AnyApplicationSession.swift:74-112",
+      "finding": "Current af63 UI persists original caller intent before the Host reservation; Check has no URL or regenerated mutation ID. noRecorded retains unresolved intent. One original document claim spans the awaited native operation; captured native session, current mount and fresh read/write ACL remain required. UI and session both recheck before publication, and both await their retained task during closure. Root-owned transport review determines the added delegate-drain guarantee; native server rollback is not implied."
+    }
+  ],
+  "testDelta": {
+    "beforeMethods": 13,
+    "afterMethods": 17,
+    "unchangedWholeOriginalMethodBodies": 11,
+    "extendedExistingMethods": [
+      "testFailedReceiptJournalReportsKnownIDAndNeverCreatesReplacement",
+      "testJournalIdentityContainsNoNamePayloadOrLocalURLAndRejectsForgedFingerprint"
+    ],
+    "addedMethods": [
+      "testRememberedReceiptRequiresOriginalIntentAuthorityAndMetadata",
+      "testOriginalAcknowledgementRequiresOriginalReservationAcrossJournalOwners",
+      "testBoundedReceiptMemoryRefusesOverflowAndReleasesVerifiedSlots",
+      "testFinalDeliveryRechecksCancellationAndAuthorityAfterVerifiedJournal"
+    ],
+    "meaningfulCoverage": "Wrong original intent/account, revoked authority, stable metadata contradicting ACK, absent journal, modeled poisoned owner reopen, cold loss of volatile receipt, exact64 bound before effect, and final cancellation/revocation after verified record. Existing unknown-ACK/concurrency/readback/no-second-POST bodies preserved. The final-delivery method exercises two explicit paths.",
+    "fixtureLimit": "AttachmentJournal is an in-memory transition/poisoning model. It does not prove Apple protected filesystem/lock reopening, native account replacement or actual transport callback ordering. The native injection always returns one stable fixture file ID; this is not native identity generation evidence.",
+    "executedByThisReview": false,
+    "publishedComponentResults": "The exact published contract retains original17 Host/6 staging plus12 HTTP passes with original failed wrapper receipts. This peer review reads source/tests, not the full raw35-result admission; root/SDK owns that retained evidence qualification."
+  },
+  "integrationGaps": [
+    {
+      "severity": "follow-on integration/acceptance; no unsafe fallback found",
+      "anchor": "Current AnyNativeAttachments.swift:478 and AnyNativeApplication.af63.swift:40-43",
+      "gap": "Current UI calls only resume(intent, authorizeRead:). It does not call retainedRecoveryReceipt before closing a poisoned original journal or resume(recoveryReceipt:) after reopening. Thus063d makes the Host seam safe and reusable, and sheet reopen preserves ACK memory, but does not complete actual protected-journal recovery end to end.",
+      "required": "An explicitly owned caller handoff must capture the opaque original witness while original authority is live, drain the same session, close/reopen the same protected namespace, retain exact durable intent and use read-only resume. Do not infer an ACK from a surfaced ID or replace a missing journal."
+    },
+    {
+      "severity": "runtime qualification",
+      "gap": "Actual Apple protected append-failure/reopen, cancellation during real delegate completion, same-account/Space recovery and account/engine replacement must be qualified against the exact current App/SDK/native tuple; existing component model is not this receipt."
+    },
+    {
+      "severity": "declared semantic boundary",
+      "gap": "The ACK carrier is volatile and not Codable. Process death before durable created ID loses it; reservation-only cold state remains uncertain. Known local full-tier file is not cloud durable."
+    }
+  ],
+  "dependencyWitnesses": [
+    {
+      "path": "wave1-uploader063d-intake/peer/AnyProtectedCreationJournal.af63.swift",
+      "bytes": 17368,
+      "sha256": "5f0c526fa4f88e530242198bb152c3e1840cc5396df771420bff64f4183de8d5",
+      "gitBlob": "7612298ae4a38518136d3430e477665a8367dc29"
+    },
+    {
+      "path": "wave1-uploader063d-intake/peer/primary-journal-af63.original.json",
+      "bytes": 36509,
+      "sha256": "10c84f517edf503474beade4fcb94163533c3bd980a7e5424c442e8759b3cb66",
+      "gitBlob": "69605ecbba50bd06f30eb565ba91668501cf433f"
+    },
+    {
+      "path": "wave1-uploader063d-intake/peer/AnyNativeApplication.af63.swift",
+      "bytes": 23564,
+      "sha256": "c5474020ad3bababfef8fc43ea8624ecf0b9b8e80bfacfa5eb5caeb09142b40c",
+      "gitBlob": "110de501e91665280e4751da7b7b6a8392a47913"
+    },
+    {
+      "path": "wave1-uploader063d-intake/peer/primary-application-af63.original.json",
+      "bytes": 49245,
+      "sha256": "cf432389f1470beea0ada11ddfa5b0169607614742bb83d97fe6e27fc053337b",
+      "gitBlob": "ba4961e818c862d0de68e3394e24d4c439938ca9"
+    },
+    {
+      "path": "w2-upload-f731-review/peer/AnyApplicationSession.swift",
+      "bytes": 5633,
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+      "gitBlob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0"
+    },
+    {
+      "path": "w1-ordinary-upload-primary-review/source/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift",
+      "bytes": 14691,
+      "sha256": "83e4618ee93a04ce407a62926a0bffbb1752756a59b38e6e5e5d636bad9138a6",
+      "gitBlob": "35cb7c1827bc9a846534997c1de3d6066b838871"
+    },
+    {
+      "path": "w2-attachment-tier-9986-review/source/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "bytes": 39091,
+      "sha256": "0a120812b5f8bc5d9280a42f6a7bde597cb64a9154c10c7ff04204cfb2862de5",
+      "gitBlob": "603e3d179343a57ff2af82e7e0dd6234a00fd46e"
+    },
+    {
+      "path": "w2-upload-f731-review/source/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "bytes": 21506,
+      "sha256": "0032c6be0f667e5082afd4e0e2dfa03a37ac43438141034358ee95a1d6e4c325",
+      "gitBlob": "dc2059f3d93a1274bf3913ee32238d06e0c958b5"
+    }
+  ],
+  "execution": {
+    "sourceImports": 0,
+    "tests": 0,
+    "compiler": 0,
+    "hostCalls": 0,
+    "accountActions": 0,
+    "sourceChanges": 0,
+    "branchWrites": 0,
+    "newRuntimeClaim": false,
+    "readonlyGitHubDependencyReads": 2
+  }
+}
