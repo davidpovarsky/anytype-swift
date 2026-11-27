@@ -709,3 +709,609 @@ final class PinkhaTorahSourceOverflowAcceptanceUITests: XCTestCase {
         }
     }
 }
+
+import CryptoKit
+
+/// Additive G02 UI stages. The controller interleaves a read-only native
+/// baseline/postflight on this same original, disposable NativeDerived fixture.
+@MainActor
+final class PinkhaTorahWordUnlinkAcceptanceUITests: XCTestCase {
+    private struct Fixture: Decodable {
+        struct TypeChoice: Decodable {
+            let id: String
+            let label: String
+            let propertyName: String
+            let sectionTitle: String
+            let sectionExpandable: Bool
+        }
+        struct TypeMetadata: Decodable { let types: [String: TypeChoice] }
+        let spaceId: String
+        let documents: [String: String]
+        let names: [String: String]
+        let types: [String: String]
+        let typeSwitch: TypeMetadata
+        let nativeProperties: [String]
+        let sourceQuery: String
+        let sourceLabel: String
+        let topicQuery: String
+        let topicLabel: String
+        let wordQuery: String
+    }
+
+    private struct Baseline: Decodable {
+        struct Document: Decodable {
+            let objectID: String
+            let typeID: String
+            let name: String
+            let sourceLabel: String
+            let topicLabel: String
+            let wordRecordID: String
+            let wordIdentity: String
+            let wordLabel: String
+            let tagPropertyName: String
+            let tagID: String
+            let tagName: String
+        }
+        let schema: String
+        let nativeBaselineSHA256: String
+        let seedUIReceiptSHA256: String
+        let controller: [String: String]
+        let spaceID: String
+        let documents: [String: Document]
+    }
+
+    private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+    private let roles = ["chiddush", "article", "research"]
+    private let sourceName = "מקור/ות"
+    private let topicName = "נושא"
+    private let wordName = "מילה / ערך"
+    private let emptyValue = "Select options"
+    private var fixture: Fixture!
+    private var controller = [String: String]()
+    private var expandedSections = Set<String>()
+
+    override func tearDownWithError() throws {
+        if app.state != .notRunning { app.terminate() }
+        guard app.wait(for: .notRunning, timeout: 15) else {
+            let attachment = XCTAttachment(string: app.debugDescription)
+            attachment.name = "word-unlink-owned-app-exit-failure-ax"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+            XCTFail("The owned App must exit before the next read-only native stage opens its store")
+            throw NSError(domain: "PinkhaWordUnlinkOwnedAppExit", code: 1)
+        }
+        try super.tearDownWithError()
+    }
+
+    func testSeedOriginalWordUnlinkFixturesThroughProperties() throws {
+        executionTimeAllowance = 900
+        continueAfterFailure = false
+        defer { attachState("seed-final") }
+        try configure(phase: "seed")
+        var documents = [String: [String: Any]]()
+        for role in roles {
+            try openProperties(role, cold: true)
+            let source = try selectOrObserveCanonical(sourceName, query: fixture.sourceQuery,
+                                                       expectedLabel: fixture.sourceLabel, role: role)
+            let topic = try selectOrObserveCanonical(topicName, query: fixture.topicQuery,
+                                                      expectedLabel: fixture.topicLabel, role: role)
+            let word = try selectOrObserveCanonical(wordName, query: fixture.wordQuery,
+                                                     expectedLabel: nil, role: role)
+            let tagPropertyName = try seedOriginalTag(role: role)
+            try openProperties(role, cold: true)
+            let observed = try observeRetainedValues(role: role, wordLabel: word.label,
+                                                     tagPropertyName: tagPropertyName, tagName: tagName(role))
+            let value: [String: Any] = [
+                "objectID": try XCTUnwrap(fixture.documents[role]),
+                "typeID": try XCTUnwrap(fixture.types[role]),
+                "name": try documentName(role),
+                "sourceLabel": source.label, "topicLabel": topic.label, "wordLabel": word.label,
+                "sourceAction": source.action, "topicAction": topic.action, "wordAction": word.action,
+                "tagPropertyName": tagPropertyName, "tagName": tagName(role),
+                "observedRows": observed, "appPID": try processID()
+            ]
+            documents[role] = value
+            try record("seed-" + role, fields: ["role": role, "document": value])
+        }
+        // Labels here are actual UI observations. The next native stage must
+        // resolve and retain the real canonical/Tag IDs before unlink can run.
+        try record("seed-complete", fields: ["documents": documents,
+                   "nativeIdentifiersEstablishedByThisUIStage": false])
+    }
+
+    func testChangedQueryPickerCancelThenWordUnlinkAndColdReopenForAllWritingTypes() throws {
+        executionTimeAllowance = 600
+        continueAfterFailure = false
+        defer { attachState("unlink-final") }
+        try configure(phase: "unlink")
+        let baseline = try loadBaseline()
+        var completed = [String: [String: Any]]()
+        for role in roles {
+            let expected = try XCTUnwrap(baseline.documents[role])
+            try openProperties(role, cold: true)
+            _ = try observeRetainedValues(role: role, wordLabel: expected.wordLabel,
+                                           tagPropertyName: expected.tagPropertyName, tagName: expected.tagName)
+            try openCanonicalPicker(wordName)
+            try require(try selectedCanonicalLabel() == expected.wordLabel,
+                        "The sole Word label differs from the native baseline for this exact document")
+            let cancelQuery = "G02 cancel " + String((try XCTUnwrap(controller["TOKEN"])).prefix(8))
+            try replaceSearch(nativeSearch, with: cancelQuery)
+            try require(try selectedCanonicalLabel() == expected.wordLabel,
+                        "Changing the query changed the existing Word before cancellation")
+            let cancelPID = try processID()
+            try record("cancel-query-" + role, fields: ["role": role, "query": cancelQuery,
+                       "wordRecordIDFromNativeBaseline": expected.wordRecordID,
+                       "wordIdentityFromNativeBaseline": expected.wordIdentity])
+            try dismissChangedQueryPicker()
+            let afterCancel = try observeRetainedValues(role: role, wordLabel: expected.wordLabel,
+                                                         tagPropertyName: expected.tagPropertyName,
+                                                         tagName: expected.tagName)
+            try require(try processID() == cancelPID, "Cancellation restarted the App instead of closing the picker")
+            try record("cancelled-" + role, fields: ["role": role, "observedRows": afterCancel,
+                       "wordRecordIDFromNativeBaseline": expected.wordRecordID,
+                       "cancelMechanism": "DISMISS_CHANGED_QUERY_PICKER_WITHOUT_LINK_OR_UNLINK"])
+
+            try openCanonicalPicker(wordName)
+            try require(try selectedCanonicalLabel() == expected.wordLabel,
+                        "The exact baseline Word was not retained after closing its picker")
+            let remove = associationStrip.buttons.matching(NSPredicate(format: "label == %@", "Remove link"))
+            try require(remove.count == 1 && remove.firstMatch.isEnabled && remove.firstMatch.isHittable,
+                        "Only the sole selected Word's original Remove link action may be invoked")
+            remove.firstMatch.tap()
+            // This original action commits immediately; there is no confirmation
+            // dialog. A pending/error persistence strip must not count as saved.
+            try require(associationStrip.waitForNonExistence(timeout: 30)
+                        && nativeSearch.exists && app.alerts.count == 0,
+                        "The original Word unlink did not finish or left a persistence error")
+            let previousPID = try processID()
+            try record("unlinked-warm-" + role, fields: ["role": role,
+                       "wordRecordIDFromNativeBaseline": expected.wordRecordID,
+                       "wordIdentityFromNativeBaseline": expected.wordIdentity,
+                       "confirmationDialogExpected": false])
+            try openProperties(role, cold: true)
+            let currentPID = try processID()
+            try require(currentPID != previousPID, "Cold reopen reused the previous App process")
+            let after = try observeRetainedValues(role: role, wordLabel: emptyValue,
+                                                   tagPropertyName: expected.tagPropertyName,
+                                                   tagName: expected.tagName)
+            try openCanonicalPicker(wordName)
+            try require(associationStrip.waitForNonExistence(timeout: 15)
+                        && !app.buttons["Remove link"].exists,
+                        "The removed Word reappeared in the exact fixed-scope picker after cold reopen")
+            let value: [String: Any] = [
+                "objectID": expected.objectID, "typeID": expected.typeID, "name": expected.name,
+                "wordRecordIDFromNativeBaseline": expected.wordRecordID,
+                "wordIdentityFromNativeBaseline": expected.wordIdentity,
+                "tagIDFromNativeBaseline": expected.tagID, "observedRows": after,
+                "previousPID": previousPID, "appPID": currentPID
+            ]
+            completed[role] = value
+            try record("cold-reopen-" + role, fields: ["role": role, "document": value])
+        }
+        try record("unlink-complete", fields: ["documents": completed,
+                   "nativeBaselineSHA256": baseline.nativeBaselineSHA256,
+                   "seedUIReceiptSHA256": baseline.seedUIReceiptSHA256,
+                   "nativePersistencePostflightRequired": true])
+    }
+
+    private func configure(phase: String) throws {
+        let environment = ProcessInfo.processInfo.environment
+        try require(environment["PINKHA_G02_UI_PHASE"] == phase
+                    && environment["PINKHA_NATIVE_UI_DISPOSABLE"] == "1"
+                    && environment["PINKHA_UI27_APP_LANGUAGE"] == "en",
+                    "This future G02 stage requires the bound disposable English Properties lane")
+        let raw = try XCTUnwrap(environment["PINKHA_NATIVE_UI_FIXTURE_JSON"])
+        fixture = try JSONDecoder().decode(Fixture.self, from: Data(raw.utf8))
+        try require(!fixture.spaceId.isEmpty && Set(fixture.documents.keys) == Set(roles)
+                    && Set(fixture.documents.values).count == 3
+                    && Set(roles.compactMap { fixture.types[$0] }).count == 3
+                    && Set([sourceName, topicName, wordName]).isSubset(of: Set(fixture.nativeProperties)),
+                    "The three original writing documents and native Torah properties are required")
+        for role in roles {
+            let id = try XCTUnwrap(fixture.documents[role])
+            let type = try XCTUnwrap(fixture.typeSwitch.types[role])
+            try require(!id.isEmpty && type.id == fixture.types[role] && !type.label.isEmpty,
+                        "Original Type metadata does not match this writing role")
+            _ = try documentName(role)
+        }
+        for key in ["SOURCE_SHA", "RUN_ID", "RUN_ATTEMPT", "TOKEN", "SIMULATOR_UDID", "LANE",
+                    "ADMISSION_SHA256", "PREPARATION_SHA256", "INVOCATION_SHA256",
+                    "OWNED_SIMULATOR_SHA256", "FIXTURE_SHA256"] {
+            controller[key] = try XCTUnwrap(environment["PINKHA_UI27_STARTUP_" + key])
+        }
+        try require(controller["LANE"] == "properties", "G02 must reuse the original Properties fixture lane")
+        app.launchEnvironment["PINKHA_UI27_ROUTE_OBSERVATION"] = "1"
+        app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+    }
+
+    private func loadBaseline() throws -> Baseline {
+        let environment = ProcessInfo.processInfo.environment
+        let raw = try XCTUnwrap(environment["PINKHA_G02_BASELINE_UI_JSON"])
+        let data = Data(raw.utf8)
+        let expectedSHA = try XCTUnwrap(environment["PINKHA_G02_BASELINE_UI_SHA256"])
+        try require(!data.isEmpty && data.count <= 65_536 && sha256(data) == expectedSHA,
+                    "The actual native baseline UI handoff is missing or its bytes differ")
+        let baseline = try JSONDecoder().decode(Baseline.self, from: data)
+        try require(baseline.schema == "pinkha-g02-word-native-ui-baseline-v1"
+                    && baseline.controller == controller && baseline.spaceID == fixture.spaceId
+                    && Set(baseline.documents.keys) == Set(roles)
+                    && isSHA256(baseline.nativeBaselineSHA256) && isSHA256(baseline.seedUIReceiptSHA256),
+                    "Native baseline belongs to another original fixture, source, run or owned simulator")
+        for role in roles {
+            let value = try XCTUnwrap(baseline.documents[role])
+            try require(value.objectID == fixture.documents[role] && value.typeID == fixture.types[role]
+                        && value.name == (try documentName(role))
+                        && value.sourceLabel == fixture.sourceLabel && value.topicLabel == fixture.topicLabel
+                        && !value.wordRecordID.isEmpty && !value.wordIdentity.isEmpty && !value.wordLabel.isEmpty
+                        && ["Tag", "Tags"].contains(value.tagPropertyName)
+                        && !value.tagID.isEmpty && value.tagName == tagName(role),
+                        "Native baseline values do not match the actual UI-seeded writing document")
+        }
+        let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+        attachment.name = "word-unlink-native-ui-baseline"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        return baseline
+    }
+
+    private func openProperties(_ role: String, cold: Bool) throws {
+        if cold {
+            if app.state != .notRunning { app.terminate() }
+            try require(app.wait(for: .notRunning, timeout: 15), "The owned App did not exit before cold open")
+        }
+        if app.state == .notRunning { app.launch() }
+        try PinkhaDisposableStartupWarning.waitForNavigation(
+            app, testCase: self, spaceID: fixture.spaceId, allowedLanes: ["properties"]
+        )
+        let id = try XCTUnwrap(fixture.documents[role])
+        var route = URLComponents()
+        route.scheme = "anytype"; route.host = "object"
+        route.queryItems = [URLQueryItem(name: "objectId", value: id),
+                            URLQueryItem(name: "spaceId", value: fixture.spaceId)]
+        XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
+        let editors = app.otherElements.matching(identifier: "pinkha-ui27-editor:\(fixture.spaceId):\(id)")
+        let title = try documentName(role)
+        let names = app.descendants(matching: .any).matching(NSPredicate(format: "label == %@ OR value == %@", title, title))
+        let more = app.buttons.matching(NSPredicate(format: "label == %@ OR label == %@", "More", "x24/More")).firstMatch
+        try wait(timeout: 45, reason: "The exact prepared Space, object and document title are not mounted") {
+            editors.count == 1 && editors.firstMatch.isHittable && more.isHittable
+                && names.allElementsBoundByIndex.contains { $0.isHittable } && self.app.alerts.count == 0
+        }
+        more.tap()
+        let properties = app.buttons["Properties"].firstMatch
+        try require(properties.waitForExistence(timeout: 15) && properties.isHittable,
+                    "The original Properties action is unavailable")
+        properties.tap()
+        expandedSections.removeAll()
+        try require(propertyTitle(sourceName).waitForExistence(timeout: 20), "The original Properties sheet did not open")
+        try require(!app.buttons["torah-property-ref"].exists, "A legacy projection replaced the original native row")
+    }
+
+    private func selectOrObserveCanonical(_ property: String, query: String, expectedLabel: String?,
+                                          role: String) throws -> (label: String, action: String) {
+        try openCanonicalPicker(property)
+        try replaceSearch(nativeSearch, with: query)
+        // Observe an original earlier Properties selection if present. Otherwise
+        // use the real fixed-scope provider picker, then capture its actual label.
+        let links = app.buttons.matching(NSPredicate(format: "label == %@", "Link to document"))
+        try wait(timeout: 45, reason: "The original fixed-scope picker produced neither a selection nor a link action") {
+            self.associationStrip.buttons["Remove link"].exists
+                || links.allElementsBoundByIndex.contains { $0.isEnabled && $0.isHittable }
+        }
+        let created = !associationStrip.buttons["Remove link"].exists
+        if created {
+            let link = try XCTUnwrap(links.allElementsBoundByIndex.first { $0.isEnabled && $0.isHittable })
+            link.tap()
+        }
+        let label = try selectedCanonicalLabel()
+        if let expectedLabel { try require(label == expectedLabel, "Canonical selected label differs from the original fixture") }
+        try openProperties(role, cold: true)
+        _ = try propertyValue(property, label: label)
+        return (label, created ? "LINKED_THROUGH_ORIGINAL_PICKER" : "OBSERVED_EXISTING_SOLE_SELECTION")
+    }
+
+    private func seedOriginalTag(role: String) throws -> String {
+        try expandSection("Local")
+        try expandSection("Hidden")
+        var names = ["Tag", "Tags"].filter { propertyTitle($0).exists }
+        if names.isEmpty {
+            let add = app.buttons["torah-object-add-property"]
+            try reveal(add)
+            try require(add.isEnabled && add.isHittable, "The original Add property action is unavailable")
+            add.tap()
+            let search = app.textFields.matching(NSPredicate(format: "placeholderValue == %@", "Search or create new")).firstMatch
+            try require(search.waitForExistence(timeout: 15), "The original property search did not open")
+            try replaceSearch(search, with: "Tag")
+            let existing = app.staticTexts["Existing properties"].firstMatch
+            let choices = app.buttons.matching(NSPredicate(format: "label == %@ OR label == %@", "Tag", "Tags"))
+            try wait(timeout: 30, reason: "The original existing Tag property is unavailable or ambiguous") {
+                existing.exists && choices.allElementsBoundByIndex.filter {
+                    $0.isEnabled && $0.isHittable && $0.frame.minY >= existing.frame.maxY
+                }.count == 1
+            }
+            let choice = try XCTUnwrap(choices.allElementsBoundByIndex.first {
+                $0.isEnabled && $0.isHittable && $0.frame.minY >= existing.frame.maxY
+            })
+            let name = choice.label
+            choice.tap()
+            try require(search.waitForNonExistence(timeout: 30), "Adding the original Tag property failed")
+            try openProperties(role, cold: true)
+            try expandSection("Local"); try expandSection("Hidden")
+            names = [name].filter { propertyTitle($0).exists }
+        }
+        try require(names.count == 1, "The original Tag property must have one actual row")
+        let name = try XCTUnwrap(names.first)
+        let empty = try propertyValue(name, label: emptyValue)
+        empty.tap()
+        let navigation = app.navigationBars.matching(NSPredicate(format: "identifier == %@ OR label == %@", name, name)).firstMatch
+        try require(navigation.waitForExistence(timeout: 15), "The original native Tag option list did not open")
+        // No selected option is cleared or replaced. Seed one real native option
+        // through its existing creation UI on this initially empty property.
+        try require(!navigation.buttons["Clear"].exists, "This writing document unexpectedly already has Tag values")
+        let create = app.buttons.matching(NSPredicate(format: "label == %@ AND hittable == true", "Create"))
+        if create.count == 1 {
+            create.firstMatch.tap()
+        } else {
+            // A nonempty native option list exposes its original search and
+            // exact Create “name” row. Do not guess an icon's accessibility label.
+            let fields = app.textFields.matching(NSPredicate(format: "hittable == true"))
+            try require(create.count == 0 && fields.count == 1,
+                        "The original Tag list has no unique native creation/search route")
+            try replaceSearch(fields.firstMatch, with: tagName(role))
+            let row = app.buttons.matching(NSPredicate(format: "label == %@", "Create “\(tagName(role))”"))
+            try require(row.firstMatch.waitForExistence(timeout: 20) && row.count == 1
+                        && row.firstMatch.isEnabled && row.firstMatch.isHittable,
+                        "The original exact-name Tag creation row is unavailable")
+            row.firstMatch.tap()
+        }
+        let field = app.textFields.matching(NSPredicate(format: "placeholderValue == %@", "Enter name...")).firstMatch
+        try require(field.waitForExistence(timeout: 15) && field.isHittable, "The original Create option name field is unavailable")
+        try replaceSearch(field, with: tagName(role))
+        let save = app.buttons.matching(NSPredicate(format: "label == %@ AND hittable == true", "Create"))
+        try require(save.count == 1 && save.firstMatch.isEnabled, "The original Create option action is unavailable or ambiguous")
+        save.firstMatch.tap()
+        try require(field.waitForNonExistence(timeout: 30), "The original native Tag option creation did not complete")
+        let option = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", tagName(role)))
+        try require(option.firstMatch.waitForExistence(timeout: 20)
+                    && navigation.buttons["Clear"].waitForExistence(timeout: 20),
+                    "The created native Tag was not selected by its original list")
+        // The list's selectedOptionsIds publishes before updateProperty awaits.
+        // Close only this observed Tag sheet, then await the parent document's
+        // actual subscribed row before terminating its process.
+        try dismissTagPicker(navigation)
+        _ = try propertyValue(name, label: tagName(role))
+        try openProperties(role, cold: true)
+        try expandSection("Local"); try expandSection("Hidden")
+        _ = try propertyValue(name, label: tagName(role))
+        return name
+    }
+
+    private func dismissTagPicker(_ navigation: XCUIElement) throws {
+        let frame = navigation.frame.intersection(app.frame)
+        try require(navigation.isHittable && frame.width > 100 && frame.height > 20,
+                    "The original foreground Tag sheet has no observed navigation bounds")
+        let start = app.coordinate(withNormalizedOffset: .zero)
+            .withOffset(CGVector(dx: frame.midX, dy: frame.minY + 6))
+        let end = app.coordinate(withNormalizedOffset: .zero)
+            .withOffset(CGVector(dx: frame.midX, dy: app.frame.maxY - 12))
+        start.press(forDuration: 0.15, thenDragTo: end)
+        try require(navigation.waitForNonExistence(timeout: 20)
+                    && propertyTitle(sourceName).waitForExistence(timeout: 15) && app.alerts.count == 0,
+                    "The original Tag picker did not return to its parent Properties sheet")
+    }
+
+    private func observeRetainedValues(role: String, wordLabel: String, tagPropertyName: String,
+                                       tagName: String) throws -> [String: String] {
+        try require(!nativeSearch.exists && app.alerts.count == 0, "A picker or alert obscures original Properties")
+        try expandSection("Local"); try expandSection("Hidden")
+        var observed = [String: String]()
+        for (name, expected) in [(sourceName, fixture.sourceLabel), (topicName, fixture.topicLabel),
+                                 (wordName, wordLabel), (tagPropertyName, tagName)] {
+            observed[name] = try propertyValue(name, label: expected).label
+        }
+        let type = try XCTUnwrap(fixture.typeSwitch.types[role])
+        if type.sectionExpandable { try expandSection(type.sectionTitle) }
+        let values = app.buttons.matching(identifier: "pinkha-properties-type-value:" + type.id)
+        try reveal(values.firstMatch)
+        try require(values.count == 1 && values.firstMatch.isHittable && values.firstMatch.label.contains(type.label),
+                    "The original writing Type changed or is not the exact native Type value")
+        observed[type.propertyName] = values.firstMatch.label
+        return observed
+    }
+
+    private func openCanonicalPicker(_ property: String) throws {
+        let title = propertyTitle(property)
+        try reveal(title)
+        try require(title.isHittable, "The original canonical property row is not hittable")
+        let x = min(app.frame.maxX - 24, title.frame.maxX + 28)
+        app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: x, dy: title.frame.midY)).tap()
+        try require(nativeSearch.waitForExistence(timeout: 15) && nativeSearch.isHittable
+                    && app.segmentedControls.count == 0,
+                    "The original fixed-scope native property picker did not open")
+    }
+
+    private var nativeSearch: XCUIElement {
+        app.textFields.matching(NSPredicate(format: "identifier == %@ OR identifier == %@",
+                                           "torah-native-property-editor", "torah-sources-search-field")).firstMatch
+    }
+
+    private var associationStrip: XCUIElement {
+        app.descendants(matching: .any).matching(identifier: "torah-existing-associations-strip").firstMatch
+    }
+
+    private func selectedCanonicalLabel() throws -> String {
+        try require(associationStrip.waitForExistence(timeout: 30), "The selected canonical preview is unavailable")
+        let remove = associationStrip.buttons.matching(NSPredicate(format: "label == %@", "Remove link"))
+        let chips = associationStrip.buttons.matching(NSPredicate(format: "label != %@", "Remove link"))
+        try wait(timeout: 30, reason: "The fixed-scope picker must contain exactly one real selected item") {
+            remove.count == 1 && chips.count == 1 && remove.firstMatch.isHittable && chips.firstMatch.isHittable
+        }
+        let label = chips.firstMatch.label.trimmingCharacters(in: .whitespacesAndNewlines)
+        try require(!label.isEmpty && ![emptyValue, sourceName, topicName, wordName].contains(label)
+                    && !label.contains("torah1|"), "The actual selected canonical item has no human label")
+        return label
+    }
+
+    private func dismissChangedQueryPicker() throws {
+        let search = nativeSearch
+        let containers = app.otherElements.matching(NSPredicate(format: "identifier == %@ OR identifier == %@",
+            "torah-native-property-editor", "torah-native-property-picker")).allElementsBoundByIndex.filter {
+                $0.exists && $0.frame.contains(search.frame) && $0.frame.height > search.frame.height * 2
+            }
+        let frames = Set(containers.map { NSStringFromCGRect($0.frame) })
+        try require(frames.count == 1, "The original native picker has no unambiguous observed sheet bounds")
+        let panel = try XCTUnwrap(containers.first)
+        let frame = panel.frame.intersection(app.frame)
+        try require(frame.width > 100 && frame.height > 120 && frame.minY + 6 < search.frame.minY,
+                    "There is no observed sheet chrome above the actual search field for cancellation")
+        let start = app.coordinate(withNormalizedOffset: .zero)
+            .withOffset(CGVector(dx: frame.midX, dy: frame.minY + 6))
+        let end = app.coordinate(withNormalizedOffset: .zero)
+            .withOffset(CGVector(dx: frame.midX, dy: app.frame.maxY - 12))
+        start.press(forDuration: 0.15, thenDragTo: end)
+        try require(search.waitForNonExistence(timeout: 20) && app.alerts.count == 0,
+                    "The changed-query picker did not dismiss through its original sheet gesture")
+    }
+
+    private func propertyTitle(_ name: String) -> XCUIElement {
+        app.descendants(matching: .any).matching(NSPredicate(
+            format: "(elementType == %d OR elementType == %d) AND label == %@",
+            XCUIElement.ElementType.button.rawValue, XCUIElement.ElementType.staticText.rawValue, name)).firstMatch
+    }
+
+    private func propertyValue(_ name: String, label: String) throws -> XCUIElement {
+        let title = propertyTitle(name)
+        try reveal(title)
+        let candidates = app.descendants(matching: .any).matching(NSPredicate(
+            format: "(elementType == %d OR elementType == %d) AND label == %@",
+            XCUIElement.ElementType.button.rawValue, XCUIElement.ElementType.staticText.rawValue, label))
+        try wait(timeout: 20, reason: "The original \(name) row did not render \(label)") {
+            title.isHittable && candidates.allElementsBoundByIndex.contains {
+                $0.isHittable && abs($0.frame.midY - title.frame.midY) < 22 && $0.frame.minX >= title.frame.maxX
+            }
+        }
+        return try XCTUnwrap(candidates.allElementsBoundByIndex.first {
+            $0.isHittable && abs($0.frame.midY - title.frame.midY) < 22 && $0.frame.minX >= title.frame.maxX
+        })
+    }
+
+    private func expandSection(_ title: String) throws {
+        guard !title.isEmpty, !expandedSections.contains(title) else { return }
+        let header = app.buttons.matching(NSPredicate(format: "label == %@", title)).firstMatch
+        guard header.exists else { return }
+        try reveal(header)
+        try require(header.isHittable, "The original Properties section is not hittable: " + title)
+        header.tap()
+        expandedSections.insert(title)
+    }
+
+    private func reveal(_ element: XCUIElement) throws {
+        let deadline = Date().addingTimeInterval(20)
+        var swipes = 0
+        while Date() < deadline {
+            if element.exists && element.isHittable { return }
+            let scrolls = app.scrollViews.allElementsBoundByIndex.filter {
+                $0.isHittable && $0.frame.height > 150 && $0.frame.width > 150
+            }
+            if scrolls.count == 1 && swipes < 4 {
+                let scroll = scrolls[0]
+                let viewport = scroll.frame.intersection(app.frame)
+                if element.exists && element.frame.maxY <= viewport.minY {
+                    scroll.swipeDown(); swipes += 1
+                } else if !element.exists || element.frame.minY >= viewport.maxY {
+                    scroll.swipeUp(); swipes += 1
+                }
+            }
+            Thread.sleep(forTimeInterval: 0.1)
+        }
+        throw NSError(domain: "PinkhaWordUnlinkControl", code: 1,
+                      userInfo: [NSLocalizedDescriptionKey: "The original control did not become hittable: " + element.debugDescription])
+    }
+
+    private func replaceSearch(_ search: XCUIElement, with value: String) throws {
+        try require(search.exists && search.isHittable, "The actual editable text field is not hittable")
+        let current = (search.value as? String).flatMap { $0 == search.placeholderValue ? nil : $0 } ?? ""
+        search.tap()
+        if !current.isEmpty {
+            // Reuse the original native UI replacement gesture; tapping alone
+            // does not establish that the caret is at the end of the field.
+            search.typeKey("a", modifierFlags: .command)
+            search.typeText(XCUIKeyboardKey.delete.rawValue)
+        }
+        search.typeText(value)
+        try wait(timeout: 10, reason: "The original editable field did not contain the requested text") {
+            search.value as? String == value
+        }
+    }
+
+    private func documentName(_ role: String) throws -> String {
+        let id = try XCTUnwrap(fixture.documents[role])
+        let name = try XCTUnwrap(fixture.names[id])
+        try require(!name.isEmpty, "The original prepared document name is empty")
+        return name
+    }
+
+    private func tagName(_ role: String) -> String {
+        "G02 " + role + " " + String((controller["TOKEN"] ?? "").prefix(8))
+    }
+
+    private func processID() throws -> Int {
+        let text = app.debugDescription
+        let expression = try NSRegularExpression(pattern: "\\A\\s*(?:Attributes:\\s*)?Application,\\s*0x[0-9a-fA-F]+,\\s*pid:\\s*([0-9]+)")
+        let match = try XCTUnwrap(expression.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)))
+        let digits = try XCTUnwrap(Range(match.range(at: 1), in: text))
+        let value = try XCTUnwrap(Int(text[digits]))
+        try require(value > 0, "The actual App process ID is invalid")
+        return value
+    }
+
+    private func record(_ phase: String, fields: [String: Any]) throws {
+        var receipt = fields
+        receipt["schema"] = "pinkha-g02-word-ui-observation-v1"
+        receipt["phase"] = phase
+        receipt["spaceID"] = fixture.spaceId
+        receipt["controller"] = controller
+        receipt["evidenceScope"] = "OBSERVED_UI_ONLY_NATIVE_BASELINE_AND_POSTFLIGHT_SEPARATE"
+        receipt["controllerProvenance"] = "CONTROLLER_OWNED_SIMULATOR_AFTER_ORIGINAL_NATIVE_PREPARATION"
+        receipt["observedAtUTC"] = ISO8601DateFormatter().string(from: Date())
+        let data = try JSONSerialization.data(withJSONObject: receipt, options: [.sortedKeys])
+        let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+        attachment.name = "word-unlink-" + phase
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        attachState(phase)
+    }
+
+    private func attachState(_ phase: String) {
+        let hierarchy = XCTAttachment(string: app.debugDescription)
+        hierarchy.name = "word-unlink-" + phase + "-ax"
+        hierarchy.lifetime = .keepAlways
+        add(hierarchy)
+        if app.state == .runningForeground {
+            let screenshot = XCTAttachment(screenshot: app.screenshot())
+            screenshot.name = "word-unlink-" + phase + "-visual"
+            screenshot.lifetime = .keepAlways
+            add(screenshot)
+        }
+    }
+
+    private func wait(timeout: TimeInterval, reason: String, until condition: @escaping () -> Bool) throws {
+        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in condition() }, object: app)
+        try require(XCTWaiter.wait(for: [expectation], timeout: timeout) == .completed && condition(), reason)
+    }
+
+    private func sha256(_ value: Data) -> String {
+        SHA256.hash(data: value).map { String(format: "%02x", $0) }.joined()
+    }
+
+    private func isSHA256(_ value: String) -> Bool {
+        value.range(of: "\\A[0-9a-f]{64}\\z", options: .regularExpression) != nil
+    }
+
+    private func require(_ condition: @autoclosure () throws -> Bool, _ reason: String) throws {
+        guard try condition() else {
+            throw NSError(domain: "PinkhaWordUnlinkAcceptance", code: 1,
+                          userInfo: [NSLocalizedDescriptionKey: reason])
+        }
+    }
+}
