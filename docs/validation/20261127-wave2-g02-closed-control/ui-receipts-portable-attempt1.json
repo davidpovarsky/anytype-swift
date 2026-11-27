@@ -1,0 +1,33 @@
+{
+  "AppleBuilds": 0,
+  "XCTestInvocations": 0,
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "torah-acceptance-prep/word-unlink-control",
+    "-p",
+    "test_g02_ui_receipts.py",
+    "-v"
+  ],
+  "methods": [
+    "test_exact_source_inverse_and_two_allowances",
+    "test_original_raw_fixture_semantics_and_scope",
+    "test_seed_typed_groups_and_foreign_evidence_rejected",
+    "test_unlink_native_identity_cold_process_and_retained_values"
+  ],
+  "nativeCalls": 0,
+  "observedExitCode": 0,
+  "observedUnittestMethodCount": 4,
+  "observedUnittestSeconds": 0.031,
+  "receiptOrigin": "Observed exec_command terminal result in this conversation; no simulator/native evidence",
+  "schema": "pinkha-portable-control-observation-v1",
+  "sourceHashes": {
+    "g02_ui_receipts.py": "a357c7b35c5a273d4e92c7ee9d7316c22074693d04b5145ef522072a2cfd7091",
+    "test_g02_ui_receipts.py": "43c481152b16b34cd351ad2a41680b1c912413c5d8b2241b3005fbd669b5ec0f"
+  },
+  "status": "PASS_PORTABLE_SYNTHETIC_CONTROLS_NOT_APPLE_EXECUTION",
+  "testData": "SYNTHETIC_WITH_REAL_PUBLISHED_SOURCE_INVERSE"
+}

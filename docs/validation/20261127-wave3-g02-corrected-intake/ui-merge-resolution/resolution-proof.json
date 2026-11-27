@@ -1,0 +1,62 @@
+{
+  "schema": "pinkha-g02-ui-root-preserving-resolution-v1",
+  "status": "EXACT_DONOR_IS_ROOT_PLUS_ORIGINAL_SUFFIX_NO_REPIN_REQUIRED",
+  "repositoryPath": "PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift",
+  "rootCommit": "71e586ff6e46ef758e8d6f264f7c49476e86a136",
+  "donorCommit": "28bb60e4d4403251b1fde909ccfa1c84aa3966ba",
+  "parentCommit": "4c3f2f24771e13a366fc4915152c5fedfc7c21e3",
+  "root": {
+    "bytes": 43356,
+    "blob": "ba1c971fc89ccd2c46831c051294e33befcaad83",
+    "sha256": "e56a5f6839c9426bb0e70b274a3eaafbc3f850bc6343355bed92538723a28bb9"
+  },
+  "mergeBase": {
+    "bytes": 28068,
+    "blob": "7f7968b587adc53c2ce572f5b7bec50252e85c29",
+    "sha256": "066d45e4ba7198c878bb457f2c2c9f6423609451f4a85ac07da4d5d3657c30ad"
+  },
+  "donorParentIsExactCurrentRoot": true,
+  "rootPreservesEntireMergeBasePrefix": true,
+  "currentRootAddedSuffix": {
+    "bytes": 15288,
+    "sha256": "f9f932463270a6e417e05ddd5819307d2ace8d5bc70bb4e7c0c0bbe8806283aa",
+    "classes": [
+      "PinkhaTorahSourceOverflowAcceptanceUITests"
+    ],
+    "methods": [
+      "testHiddenSourceSelectionOpensExactReferenceAndReturnsToDocument"
+    ]
+  },
+  "G02Suffix": {
+    "bytes": 35497,
+    "sha256": "fe889e034c5ffe1a3b30e06b4915cbbc7381a8517fa4471d1dd8a3e7570c09e9",
+    "classes": [
+      "PinkhaTorahWordUnlinkAcceptanceUITests"
+    ],
+    "methods": [
+      "testSeedOriginalWordUnlinkFixturesThroughProperties",
+      "testChangedQueryPickerCancelThenWordUnlinkAndColdReopenForAllWritingTypes"
+    ]
+  },
+  "proposed": {
+    "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-g02-correction-review/ui-merge-resolution/AnytypeComprehensiveAcceptanceUITests.swift",
+    "bytes": 78853,
+    "blob": "a11cbeb6e19d1ba3ab02478575e4f3881665b1c5",
+    "sha256": "d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3"
+  },
+  "inverse": {
+    "removeExactOriginalG02SuffixRestoresAllRootBytes": true,
+    "removeBothExactAppendicesRestoresAllMergeBaseBytes": true,
+    "everyRootBytePreserved": true,
+    "everyDonorBytePreserved": true,
+    "allOriginalRootTestMethodsRetained": true,
+    "noDuplicateAppendix": true
+  },
+  "conflictExplanation": "Both histories append content after the same28,068-byte merge-base file. Currentroot adds the existing15,288-byte G03 suffix; donor contains that exact same suffix followed by35,497 original G02 bytes. The append regions overlap in a textual three-way merge even though currentroot is an exact prefix of donor. Resolve by appending only the one original G02 suffix to the verified currentroot, which reproduces the complete unchanged donor blob.",
+  "closedControlUIPinRequiresChange": false,
+  "closedControlCurrentUIHash": "d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3",
+  "qualificationLimit": "Source identity only. This does not admit a compiled product or open runtimeReady. If the actual root UI changes from ba1c/e56 before integration, stop and independently compose/review the new bytes; do not reuse this equality or silently repin.",
+  "rootBranchWrites": 0,
+  "testsExecuted": 0,
+  "compilerInvocations": 0
+}

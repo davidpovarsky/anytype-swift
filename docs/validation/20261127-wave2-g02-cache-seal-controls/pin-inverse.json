@@ -1,0 +1,86 @@
+{
+  "AppleBuilds": 0,
+  "NativeCalls": 0,
+  "XCTestInvocations": 0,
+  "allOriginalAssertionsAndLifecycleLogicUnchanged": true,
+  "closedGateDiagnosticOnlyChangedToSuccessorHash": true,
+  "complete17FileClosureShapeChanged": false,
+  "controlParentCommit": "831a7dfb90164c55fa87c32273f2f61062d52c92",
+  "files": {
+    "g02-closed-profile.json": {
+      "afterSHA256": "3d7210b27dfaa7944fa93a13cfd4f0bac7cc880c7384e157b93e36845eed319f",
+      "beforeSHA256": "dc348330779fc7c6f8d61b3cfd4b083e3ac1b53cde71e9999eb576a1918058a8",
+      "exactFullInverse": true,
+      "literalReplacements": 3
+    },
+    "g02_native_phase.py": {
+      "afterSHA256": "bccc446085987c881d6ed21aa6317a570947492c652682500d8ac9b61cff1f11",
+      "beforeSHA256": "072c57365a60ed812df8dfe6eb95d542194dbefa2069bb965a3633c9878faa63",
+      "byteIdenticalFunctionOrClassBodies": [
+        "qualify_native_source",
+        "source_contract",
+        "phase_environment",
+        "validate_receipt",
+        "native_invocation",
+        "retain_outputs",
+        "run_native_phase"
+      ],
+      "exactFullInverse": true,
+      "literalReplacements": 1
+    },
+    "g02_ui_receipts.py": {
+      "afterSHA256": "a357c7b35c5a273d4e92c7ee9d7316c22074693d04b5145ef522072a2cfd7091",
+      "beforeSHA256": "a357c7b35c5a273d4e92c7ee9d7316c22074693d04b5145ef522072a2cfd7091",
+      "byteIdenticalFunctionOrClassBodies": [
+        "qualify_source",
+        "ui_time_budget",
+        "pinned",
+        "reference",
+        "fixture_binding",
+        "_string",
+        "_pid",
+        "_rows",
+        "validate_metadata",
+        "attachments",
+        "collect_ui_phase"
+      ],
+      "exactFullInverse": true,
+      "literalReplacements": 0
+    },
+    "g02_word_consumer.py": {
+      "afterSHA256": "7bc7c513cbaa0bcfcb98af6fd48c2fa4f391f15708c404fb2a7ef00ca91e55ac",
+      "beforeSHA256": "9ac283adf9148cfaf6020e1744b7104909fef8bdb638f8c074b89be3128d7355",
+      "byteIdenticalFunctionOrClassBodies": [
+        "ui_budget",
+        "save_result",
+        "source_contract",
+        "lifecycle_boundary",
+        "run_word_lane"
+      ],
+      "exactFullInverse": true,
+      "literalReplacements": 2
+    },
+    "materialize_g02_control.py": {
+      "afterSHA256": "4473a365079fcaca78310b5df2b77b8550c1bc54b5803732f5640a74b1d7672a",
+      "beforeSHA256": "f85fb3da4e2f72ed2fc220af9f000c489abc3b0554e53a6c54e9fa582d26cfb7",
+      "byteIdenticalFunctionOrClassBodies": [
+        "require",
+        "sha",
+        "changes",
+        "nodes",
+        "source",
+        "compose",
+        "main"
+      ],
+      "exactFullInverse": true,
+      "literalReplacements": 1
+    }
+  },
+  "nativeSourceCommit": "67e0f612fbb166cf9a80c21ae9c97f6641daef45",
+  "nativeSourceSHA256": "b453fafed2e5e5737ef04524b6add7c4bf0019cf99a03c6137151039f38171ed",
+  "nativeSuffixSHA256": "1363c0f8679dab6b4d1feeeaabac63abce7a9fe733f7e15d3b4b2f3ed857afd9",
+  "original13FileClosureChanged": false,
+  "runtimeGateOpened": false,
+  "schema": "pinkha-g02-cache-seal-control-pin-inverse-v1",
+  "status": "PASS_LITERAL_SOURCE_PIN_INVERSE_NOT_RUNTIME"
+}

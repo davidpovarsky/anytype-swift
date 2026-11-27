@@ -1,0 +1,44 @@
+{
+  "schema": "pinkha-g02-future-lifecycle-source-contract-v1",
+  "runtimeAdmission": "CLOSED_PENDING_PUBLISHED_NATIVE_COMPANION_AND_ACTUAL_APPLE_PRODUCTS",
+  "uiSourceSHA256": "d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3",
+  "sourceDependencies": [
+    "4c3f2f24771e13a366fc4915152c5fedfc7c21e3",
+    "original NativeDerived preparation7ec7ef47c53c02e61b0cccb05ab7f4f58b3824368d84883aadee6767ff24ab85"
+  ],
+  "ownedFixture": "pinkha-native-derived-ui-fixture.json",
+  "uiSeedSelector": "PinkhaStage1AcceptanceUITests/PinkhaTorahWordUnlinkAcceptanceUITests/testSeedOriginalWordUnlinkFixturesThroughProperties",
+  "uiUnlinkSelector": "PinkhaStage1AcceptanceUITests/PinkhaTorahWordUnlinkAcceptanceUITests/testChangedQueryPickerCancelThenWordUnlinkAndColdReopenForAllWritingTypes",
+  "uiPhases": [
+    "seed",
+    "unlink"
+  ],
+  "uiPhaseEnvironment": "PINKHA_G02_UI_PHASE",
+  "nativeGate": "PINKHA_G02_NATIVE_READBACK=1",
+  "nativePhaseEnvironment": "PINKHA_G02_NATIVE_PHASE",
+  "nativePhases": [
+    "baseline",
+    "postflight"
+  ],
+  "nativeSelector": "PENDING_COMPANION_SOURCE_RECEIPT",
+  "seedAttachment": "word-unlink-seed-complete",
+  "seedEnvironment": [
+    "PINKHA_G02_SEED_UI_JSON",
+    "PINKHA_G02_SEED_UI_SHA256"
+  ],
+  "unlinkAttachment": "word-unlink-unlink-complete",
+  "unlinkEnvironment": [
+    "PINKHA_G02_UNLINK_UI_JSON",
+    "PINKHA_G02_UNLINK_UI_SHA256"
+  ],
+  "nativeUIBaselineEnvironment": [
+    "PINKHA_G02_BASELINE_UI_JSON",
+    "PINKHA_G02_BASELINE_UI_SHA256"
+  ],
+  "nativeUIBaselineFilename": "pinkha-g02-word-ui-baseline-<TOKEN>.json",
+  "fullNativeBaselinePostflightPin": "PINKHA_G02_BASELINE_SHA256",
+  "nativePreparationOrAccountCreationFlags": "MUST_ALL_BE_ZERO_AS_REQUIRED_BY_PUBLISHED_COMPANION_READER",
+  "evidenceScope": "UI observations plus separately bound actual native reads; no fabricated identities or native echo",
+  "nativeContractChanges": false,
+  "AppBuildOrSimulatorDispatchByThisTranche": false
+}
