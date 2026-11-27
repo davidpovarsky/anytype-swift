@@ -1,0 +1,20 @@
+{
+  "cause": "The four aggregated-link-object rows use actualOriginalPackageLinkerPath; the other98 rows use recordedHistoricalAliasPath. The first reviewer predicate incorrectly assumed a uniform key.",
+  "correction": "Use the exact kind-specific key from the original manifest, preserving all102 size/hash/source/original/alias/target checks.",
+  "error": "KeyError: 'recordedHistoricalAliasPath' at local inline inspection line15",
+  "originalCopyManifest": {
+    "bytes": 81705,
+    "path": "wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/actual-dependency-copies.json",
+    "sha256": "15c21564f31cb807dab215aefad2c5ba6fbba9013b8a9163168f8ad3b1ef157f"
+  },
+  "originalCryptoManifest": {
+    "bytes": 122971,
+    "path": "wave2-hierarchy-rename-component/execution-preparation/inputs/retained-crypto-closure.json",
+    "sha256": "10c98c4192acba640c401586fb84ef9aa227e6d52bdde7198f251a0498146c2c"
+  },
+  "originalEvidenceEdited": false,
+  "reviewer": "/root/editor",
+  "runtimeOrTestsRerun": false,
+  "schema": "pinkha-hierarchy-peer-inspection-stop/v1",
+  "status": "REVIEWER_MANIFEST_FIELD_STOP_NOT_RUNTIME_FAILURE"
+}

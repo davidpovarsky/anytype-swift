@@ -1,0 +1,72 @@
+{
+  "schema": "wave2-hierarchy-root-original-result-review/v1",
+  "atUTC": "2026-11-27T21:26:21.131164+00:00",
+  "reviewer": "/root",
+  "status": "PASS_FOUR_METHODS_EIGHT_CASES_LINUX_COMPONENT",
+  "receipt": {
+    "bytes": 283810,
+    "sha256": "42d6a0b7b5bd09bf253fcabb814120397da615fc6db8647b633c4ba677cf8266"
+  },
+  "product": "9e4aa3f1b88d8f6bfec27cdf2cb47d07ffd416ce",
+  "preparation": "8b70497157758f3ae8148842f1236d215d6d2d50",
+  "source": {
+    "all56PackageAndWholeSourcePinsLocalBeforeAfterFinalEqual": true,
+    "wholeSwiftBodies": 55,
+    "sourceBodiesRewritten": 0
+  },
+  "compiler": {
+    "actualDriverModules": 6,
+    "completeOriginalInputObjects": 55,
+    "exactGeneratedInputObjects": 2,
+    "allSourceListsAndInputObjectHashesLinked": true,
+    "allActualWorkingDirectories": "/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127",
+    "allActualJobs": 2,
+    "actualTarget": "aarch64-unknown-linux-gnu",
+    "testingLibraryVersion": "6.4.3 (ba0861fb203553c)",
+    "buildSeconds": 35.88
+  },
+  "tests": {
+    "methods": [
+      "canonicallyEquivalentRequestedRenameReachesTheOriginalStore",
+      "canonicallyEquivalentStaleExpectedTitleRefusesBeforeDispatch",
+      "canonicallyEquivalentSuccessfulReadbackCannotCertifyRename",
+      "canonicallyEquivalentReadbackPreservesTheOriginalWriteError"
+    ],
+    "actualNamedStartsAndPasses": 4,
+    "actualDistinctLatinHebrewStartedPassedPairs": 8,
+    "summarySeconds": 0.012,
+    "oldMethodsRun": 0,
+    "HTTPFixtures": 0,
+    "Native": 0,
+    "Apple": 0
+  },
+  "resources": {
+    "samples": 45,
+    "maximumSampledOwnedBytes": 145113088,
+    "minimumRootFreeBytes": 2332925952,
+    "minimumDevelopmentFreeBytes": 1709158400,
+    "minimumSampledMemAvailableBytes": 3756175360,
+    "everySampleWithinOriginalBounds": true,
+    "dependencyRecords": 102,
+    "dependencyPayloadBytes": 19775715,
+    "fullDependencyIdentityReview": "Independent Editor peer review; root confirms count/payload and frozen original runner qualification."
+  },
+  "closure": {
+    "atUTC": "2026-11-27T21:17:08.879198+00:00",
+    "errno": 3,
+    "error": "[Errno 3] No such process",
+    "processGroup": 2428255,
+    "signal": 0,
+    "status": "ABSENT_ESRCH"
+  },
+  "errors": [],
+  "stderr": {
+    "bytes": 146679,
+    "sha256": "b0014ec10c3dc09948ae103395f360fe4aef4952d945208ad3fde1a26f402235",
+    "warningLineCount": 1,
+    "warningPrefix": "warning: 'component': /mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-frontend -frontend -c -primary-file /mnt/development/projects/ev",
+    "warningFreeBuildClaim": false
+  },
+  "scope": "Full original controlled-store hierarchy component only. No actual Native/HTTP/App/UI/device or whole-source Apple acceptance. No test/controller rerun or process probe was used for this review.",
+  "reviewerInspectionStop": "root-inspection-stop.json retained separately; local display assumption only, original evidence unchanged."
+}

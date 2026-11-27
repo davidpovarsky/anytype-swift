@@ -1,0 +1,10 @@
+{
+  "schema": "wave2-hierarchy-result-packet-inspection-stop-v1",
+  "kind": "Local metadata-display/schema error only",
+  "error": "The packet inspector assumed original-export.json had a files array; its actual schema uses entries. The same display accidentally expanded payload-bearing metadata and tool output was truncated before the KeyError stop was displayed in full.",
+  "sourceOrOriginalReceiptChanged": false,
+  "collectorRunnerOrTestInvoked": false,
+  "hostOrProcessCalls": 0,
+  "classification": "Packaging inspection stop, not an actual component/test, collection or product failure.",
+  "recovery": "Use the observed entries schema and emit only finite names/sizes/hashes; compare the already-retained decoded bytes locally without invoking the collector or runtime."
+}

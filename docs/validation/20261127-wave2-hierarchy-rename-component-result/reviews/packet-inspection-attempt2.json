@@ -1,0 +1,12 @@
+{
+  "schema": "local-packet-inspection-stop-v1",
+  "classification": "PACKET_AUTHOR_METADATA_DISPLAY_ONLY_NOT_RUNTIME_FAILURE",
+  "operation": "Display the first origin record after reading the already-sealed target and packet manifest",
+  "observed": "The display treated packet-origins.json as an array and accessed [0]; its actual root is an object containing origins, so the local display exited with KeyError: 0.",
+  "result": "No packet or original evidence was changed by that read. The correct object schema was subsequently inspected.",
+  "runtimeOrTestsOrHostInvocations": 0,
+  "originalEvidenceChanged": false,
+  "qualificationChanged": false,
+  "toolChunk": "edc8d6",
+  "displayExitCode": 1
+}

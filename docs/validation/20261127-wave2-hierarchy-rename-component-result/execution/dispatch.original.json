@@ -1,0 +1,31 @@
+{
+  "request": {
+    "link_id": "link_6b037fa8537081919acb0c7a2cb11e3e",
+    "host_id": "host_299cf75f6b338ecd",
+    "interpreter": "python3",
+    "content": "import hashlib, os\nfrom pathlib import Path\np=Path('/var/lib/sentinelx/uploads/pinkha-wave2-hierarchy-rename-stage-b3cfea8a789c4aba.py')\nassert p.resolve(strict=True)==p and not p.is_symlink()\nassert hashlib.sha256(p.read_bytes()).hexdigest()=='b3cfea8a789c4abae7f2f2b8aa3202dc7cf2725a5fae2438eb5c5c9d6342f7eb'\nos.execv('/usr/bin/python3',['/usr/bin/python3','-B',str(p),'--coordination-story','1220962223365617'])\n",
+    "timeout": 360,
+    "background": true,
+    "notify_telegram": false,
+    "notify_resend": false
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"ok\":true,\"job_id\":\"job_ef7ccd6b6900\",\"status\":\"running\",\"tool\":\"script_run\",\"host\":\"host_299cf75f6b338ecd\",\"message\":\"Task started in background as job_ef7ccd6b6900. It will not block. When you next need its result — or when the user asks if it finished — call notifications_check to see completed jobs, then notifications_get(job_id=\\\"job_ef7ccd6b6900\\\") for the full output. IMPORTANT: this is event-driven, NOT a polling loop — check when the user asks or when you actually need the result, never repeatedly in a loop (each check is a full turn and there is no sleep between checks, so looping just burns turns for nothing). If you want to be pinged the moment it finishes, relaunch with notify_telegram.\",\"poll_hint\":\"notifications_check\"}"
+      }
+    ],
+    "structuredContent": {
+      "ok": true,
+      "job_id": "job_ef7ccd6b6900",
+      "status": "running",
+      "tool": "script_run",
+      "host": "host_299cf75f6b338ecd",
+      "message": "Task started in background as job_ef7ccd6b6900. It will not block. When you next need its result — or when the user asks if it finished — call notifications_check to see completed jobs, then notifications_get(job_id=\"job_ef7ccd6b6900\") for the full output. IMPORTANT: this is event-driven, NOT a polling loop — check when the user asks or when you actually need the result, never repeatedly in a loop (each check is a full turn and there is no sleep between checks, so looping just burns turns for nothing). If you want to be pinged the moment it finishes, relaunch with notify_telegram.",
+      "poll_hint": "notifications_check"
+    },
+    "isError": false
+  }
+}
+
