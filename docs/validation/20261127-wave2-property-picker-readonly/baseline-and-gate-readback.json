@@ -1,0 +1,65 @@
+{
+  "commit": "6581508faffa748ca51d97e6ea51ecf6400fef35",
+  "baseline": "586c98bcc17dee425664224e508fc0e8df277678",
+  "paths": {
+    "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift": {
+      "baselineLookupExit": 0,
+      "baselineBlob": "8a5abc0a225ab9ca2d3db9fe9670b5f35753886e"
+    },
+    "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift": {
+      "baselineLookupExit": 128,
+      "baselineBlob": null
+    },
+    "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift": {
+      "baselineLookupExit": 128,
+      "baselineBlob": null
+    }
+  },
+  "extra": {
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahDocumentPropertyProjection.swift": {
+      "exit": 0,
+      "bytes": 3949,
+      "sha256": "a2326bff80b3c9f068f7ee8cf03c7d4d2f94423e36e24299ef471a6fb87a7d2d"
+    },
+    "docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md": {
+      "exit": 0,
+      "bytes": 85928,
+      "sha256": "912c2b5088a37e2c29edf817253dd851ba675c4d349c6c7cf83b503711a50c0a",
+      "propertyReferences": [
+        "  3. *Defect C (Display-name restrictions):* Removed blanket Hebrew string/display-name reservations from generic Anytype creation flows (`PropertyCreationViewModel`, `PropertyInfoViewModel`), allowing users to create custom fields with the same Hebrew display name while strictly protecting verified engine keys/IDs.",
+        "  - *Upstream-Owned Connection Hooks:* `PropertyCreationViewModel.swift`, `PropertyInfoViewModel.swift`, `TypePropertiesViewModel.swift`, `ObjectPropertiesViewModel.swift`, `ObjectPropertiesLibraryViewModel.swift`, `SetDocument.swift`, `PropertyValueCoordinatorViewModel.swift`, `PropertiesListCoordinatorViewModel.swift`, `EditorFeaturedPropertiesView.swift`, `SinglePropertyBuilder.swift`, `BaseDocument+Extensions.swift`.",
+        "  1. *Defect A (Internal `סדר` relation exposed in native Properties UI):* Added `PinkhaInternalPropertyIdentities` and `InternalIdentityStatus` in `PinkhaTorahPropertyPolicy.swift` and `isOrderProperty`/`isInternalProperty` in `TorahDocumentPropertyProjection.swift` covering both canonical storage (`documentAssociationsPropertyId`/`documentAssociationsPropertyKey`) and internal hierarchy order storage (`orderPropertyId`/`orderPropertyKey`), while preserving canonical-only write routing (`isCanonicalStorage`) and user-visible hierarchy fields (`הורה` / `parentPropertyId`). Applied `isInternalProperty` across `SinglePropertyBuilder`, `BaseDocument`, `BaseDocument+Extensions`, `PinkhaTorahPropertiesModel`, `EditorFeaturedPropertiesView`, `TypePropertiesViewModel`, `ObjectPropertiesViewModel`, `PropertiesListCoordinatorViewModel`, `ObjectPropertiesLibraryViewModel`, `SetDocument`, `SetContentViewDataBuilder`, `PropertyCreationViewModel`, `PropertyInfoViewModel`, and `PropertyValueCoordinatorViewModel`. Handled tri-state cold start safely so manifest resolution failure does not permanently hide normal user properties and automatically retries.",
+        "  2. *Defect B (Native Torah Properties discoverability, revealability, and canonical picker routing):* Expanded `PinkhaTorahNativePropertyCatalog` with structured lookup diagnostics, `PropertyDetailsStorage` fallback, and full Hebrew/English alias matching (`מקור/ות`, `מקורות`, `נושא`, `מילה / ערך`, `Source(s)`, `Sources`, `Topic(s)`, `Topics`, `Word / entry`, `Words`). Differentiated \"not installed at all\" vs \"installed but hidden\" across `TypePropertiesViewModel`/`TypePropertiesView`, `ObjectPropertiesViewModel`/`ObjectPropertiesView`, `EditorPageCoordinatorViewModel`, `SetPropertiesCoordinatorViewModel`, `SetPropertiesViewModel`, `PropertyCreationViewModel`, and `PropertiesServiceProtocolExtensions` (`revealTypeHiddenProperty`, `hideTypeProperty`), offering explicit `Show` actions and unhiding via the original visibility/recommended/dataview APIs without duplication. Ensured fresh eligible documents render native rows as editable by the canonical Torah picker (`TorahNativePropertyPresentation.property`, `ObjectPropertiesView`). Enforced Set eligibility in `SetDocument` and `SetContentViewDataBuilder` so single-Type and writing-only Sets support native columns/filters while mixed or ordinary Page/Note Sets exclude unsupported native projections.",
+        "    - `Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift`",
+        "  3. *`ObjectTypeSubscriptionDataBuilder` (`noDepSubscription: true`) & `PropertyDetailsStorage` Lag:* Extended `PinkhaTorahNativePropertyCatalog` with cached verified native `PropertyDetails`, live Type relation ID tracking (`resolvedTypeRelationIds`, `recordUpdatedTypeRelations`, `resolveRelationDetails`, `resolveCurrentTypeProperties`, `buildParsedPropertiesForType`), and post-bootstrap refresh. Updated `BaseDocument`, `PropertiesServiceProtocolExtensions`, `ObjectPropertiesViewModel`, `TypePropertiesViewModel`, `PropertyCreationViewModel`, and `SetDocument` so zero-association documents (`חידוש`, `מאמר`, `מחקר`), Type editors, and Set views always display and live-update the three native properties without destructive overwrites.",
+        "    - `Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift`"
+      ]
+    },
+    "Tools/AnyEnginePort/verify_source_retention.py": {
+      "exit": 0,
+      "bytes": 7239,
+      "sha256": "f69d6a465db0517c5b41143c9b54aa275ecc6cbc63de6e9d20bc074d98feabf0"
+    },
+    "docs/any-engine-port/evidence/20261120/apple57-packages-v1/source/verify_source_retention.py": {
+      "exit": 0,
+      "bytes": 7239,
+      "sha256": "f69d6a465db0517c5b41143c9b54aa275ecc6cbc63de6e9d20bc074d98feabf0"
+    },
+    "docs/validation/20261127-wave3-any-body-composition/original-map-preview/verify_source_retention.py": {
+      "exit": 0,
+      "bytes": 7239,
+      "sha256": "f69d6a465db0517c5b41143c9b54aa275ecc6cbc63de6e9d20bc074d98feabf0"
+    },
+    "docs/validation/20261127-wave3-hanlin-host-integration/original-preview/verify_source_retention.py": {
+      "exit": 0,
+      "bytes": 7239,
+      "sha256": "f69d6a465db0517c5b41143c9b54aa275ecc6cbc63de6e9d20bc074d98feabf0"
+    },
+    "docs/validation/20261127-wave3-hanlin45-integration/original-preview/verify_source_retention.py": {
+      "exit": 0,
+      "bytes": 7239,
+      "sha256": "f69d6a465db0517c5b41143c9b54aa275ecc6cbc63de6e9d20bc074d98feabf0"
+    }
+  },
+  "readOnly": true
+}

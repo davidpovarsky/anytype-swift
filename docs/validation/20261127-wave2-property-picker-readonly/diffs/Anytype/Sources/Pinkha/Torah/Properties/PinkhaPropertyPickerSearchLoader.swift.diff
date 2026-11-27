@@ -1,0 +1,78 @@
+--- a/Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift
++++ b/Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift
+@@ -43,13 +43,27 @@
+     func load(text: String, data: PropertiesSearchData) async throws -> PinkhaPropertyPickerSearchResult {
+         try Task.checkCancellation()
+         let excluded = data.excludedRelationsIds.filter { !data.hiddenRelationsIds.contains($0) }
+-        let identity = await policy.awaitInternalIdentity(spaceId: data.spaceId)
++        let manifest: PinkhaSpaceManifest?
++        do {
++            manifest = try await policy.loadPickerManifest(spaceId: data.spaceId)
++        } catch is CancellationError {
++            throw CancellationError()
++        } catch {
++            try Task.checkCancellation()
++            manifest = nil
++        }
+         try Task.checkCancellation()
++        let identities = manifest.flatMap { PinkhaInternalPropertyIdentities(manifest: $0) }
+ 
+-        let eligible = await policy.canAddPropertyAsync(
+-            propertyId: "", key: TorahNativePropertyDefinition.all[0].key,
+-            target: data.target, spaceId: data.spaceId
+-        )
++        let eligible: Bool
++        if PinkhaRuntime.enabled {
++            eligible = await policy.canAddPropertyInPicker(
++                propertyId: "", key: TorahNativePropertyDefinition.all[0].key,
++                target: data.target, spaceId: data.spaceId, manifest: manifest
++            )
++        } else {
++            eligible = false
++        }
+         try Task.checkCancellation()
+ 
+         var existing: [PropertyDetails] = []
+@@ -66,13 +80,14 @@
+             try Task.checkCancellation()
+             // A failed manifest read cannot expose canonical/order rows whose
+             // real IDs have not been resolved. Native format creation stays usable.
+-            if case .known(let identities) = identity {
++            if let identities {
+                 existing = found.filter {
+-                    !identities.isInternal(propertyId: $0.id, key: $0.key)
++                    $0.spaceId == data.spaceId && !$0.isDeleted && !$0.id.isEmpty
++                        && !identities.isInternal(propertyId: $0.id, key: $0.key)
+                         && TorahNativePropertyDefinition.definition(for: $0.key) == nil
+                 }
+             } else if !PinkhaRuntime.enabled {
+-                existing = found
++                existing = found.filter { $0.spaceId == data.spaceId && !$0.isDeleted && !$0.id.isEmpty }
+             }
+         } catch is CancellationError {
+             throw CancellationError()
+@@ -83,19 +98,16 @@
+ 
+         let native: [PropertyDetails]
+         if eligible {
+-            native = try await catalog.searchNativePropertiesForPicker(
+-                text: text, excludedIds: excluded, target: data.target, spaceId: data.spaceId
+-            )
++            let descriptors = try await catalog.nativePropertiesForReadOnlyPicker(spaceId: data.spaceId)
++            native = descriptors.filter {
++                !excluded.contains($0.id) && PinkhaTorahNativePropertyCatalog.matchesSearchQuery(property: $0, query: text)
++            }
+         } else {
+             native = []
+         }
+         try Task.checkCancellation()
+ 
+-        let identityUnavailable: Bool
+-        switch identity {
+-        case .known: identityUnavailable = false
+-        case .loading, .unavailable: identityUnavailable = PinkhaRuntime.enabled
+-        }
++        let identityUnavailable = PinkhaRuntime.enabled && identities == nil
+         let nativeFailed = identityUnavailable
+             || (eligible && !catalog.lastLookupDiagnostics(spaceId: data.spaceId).isEmpty)
+ 

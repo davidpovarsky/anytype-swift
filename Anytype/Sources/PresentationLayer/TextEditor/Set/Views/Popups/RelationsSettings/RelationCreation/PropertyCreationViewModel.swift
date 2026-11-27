@@ -122,7 +122,7 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
                     dismiss?()
                 }
             ) {
-                guard await PinkhaTorahPropertyPolicy.shared.canAddPropertyAsync(
+                guard try await PinkhaTorahPropertyPolicy.shared.canAddPropertyFromPicker(
                     propertyId: details.id, key: details.key, target: data.target, spaceId: data.spaceId
                 ) else { throw PinkhaPropertyPickerSelectionError.propertyUnavailable }
                 try Task.checkCancellation()

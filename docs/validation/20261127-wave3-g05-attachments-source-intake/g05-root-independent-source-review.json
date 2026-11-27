@@ -1,0 +1,124 @@
+{
+  "acceptanceNeeded": [
+    "ActualcurrentApplecompile and affected originalpicker search9/selection6 plus new3/7 cases.",
+    "Controlled sameSpaceold-read/invalidate/new-read/late-old descriptor cache successor with per-call diagnostics; not fixed here.",
+    "Original mounted picker failure/retry/selection acrossdocument/type/set and requireddevice/language/theme/permission cases."
+  ],
+  "compilerCalls": 0,
+  "currentRoot": "1786e7a60762036484127edfcb588ad45c4e0d9e",
+  "findings": [
+    "Current manifest store lookup uses discover/search/objectShow and in-memory identity assignment only; no save or bootstrap is on the new lookup path.",
+    "Manifest isComplete means completion state; policy separately verifies sameSpace/currentSchema plus both nonempty canonical/order ID+key pairs. Its test fixture is consistent with the actual model initializer.",
+    "Read-only catalog wrapper prevents optional provisioning on typing, retry and independent pre-selection identity checks. Existing initialization entry points retain default provisioning behavior.",
+    "Original target document/type/list eligibility is reused with the explicitly verified manifest; no restriction to only three writing kinds is introduced.",
+    "Ordinary currentSpace/nondeleted/nonemptyID rows survive native-descriptor failure after identity verification; matching display names do not establish internal identity.",
+    "Provider/task cancellation remains distinct from a completed empty or failed lookup; original mutation/callback/dismiss/hidden-reveal selection implementation remains unchanged.",
+    "Original9 search tests remain a completebyteprefix; new3methods/7cases are actualproductionloader/catalog/policy seams but have not been compiled or run."
+  ],
+  "fullSourceInverse": [
+    {
+      "gitBlob": "3b777698042dc23730f0976aef3826d6dc5438f8",
+      "originalBytes": 10826,
+      "path": "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift",
+      "sha256": "1bdd1c498a685902f7c8e8a0980b4e09b90d2e34ee74f13316e8ec1a2532c3e4",
+      "wholeOriginalRestored": true
+    },
+    {
+      "gitBlob": "d0667ecd5eb08dc8767ef5eef436c4cefa44c72c",
+      "originalBytes": 4341,
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+      "sha256": "91d98b046f070d6c1b33eeb2db66fffb3bdbad9f4401d5b2200bf4c13271d45f",
+      "wholeOriginalRestored": true
+    },
+    {
+      "gitBlob": "cc4f6c5fc96749fbe8cc06b3befe044be050d92d",
+      "originalBytes": 35065,
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+      "sha256": "e4f1b053139810570565a0000413fde89f82516513cddd1c4b5579d63e39ffce",
+      "wholeOriginalRestored": true
+    },
+    {
+      "gitBlob": "8a5abc0a225ab9ca2d3db9fe9670b5f35753886e",
+      "originalBytes": 27373,
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift",
+      "sha256": "91797e706a8a72318745437d44d7f6ce6c0d45c47e11d6a799805be2a45eee71",
+      "wholeOriginalRestored": true
+    },
+    {
+      "gitBlob": "05381d92837d1d13cea5f5e36b02dd2b6c0a5e35",
+      "originalBytes": 10366,
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+      "sha256": "fedb1107bfa4b2d79e33071fa37e6d5ce18c5f44119d9d1a7469c0728d7a096b",
+      "wholeOriginalRestored": true
+    }
+  ],
+  "inverseCommand": [
+    "git",
+    "apply",
+    "--reverse",
+    "/workspace/scratch/ae335eba85e3/w2-attachments-g05-primary-review/g05/source/docs/validation/20261127-wave2-property-picker-readonly/source-changes.patch"
+  ],
+  "inverseExit": 0,
+  "nativeCalls": 0,
+  "newTestsRun": 0,
+  "originalManifestStoreAndModelReads": [
+    {
+      "bytes": 10826,
+      "gitBlob": "69220b20ad4a55b9b4d10c62793c66b9521ce1af",
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+      "sha256": "aa0e424dcd17c948531b3d8389bf66894f5a7afd1bb2e93f54f43d7a69588e17"
+    },
+    {
+      "bytes": 6452,
+      "gitBlob": "b712657e45feea1f05ca68a3aa2098fb9d053e5b",
+      "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift",
+      "sha256": "86d012df02efd4b54235987b02104c97e222b5aaf45fda684184c66431a62a22"
+    }
+  ],
+  "rootReadAllFiveSourceDiffsAndActualTargetPredicates": true,
+  "runtimeAccepted": false,
+  "schema": "pinkha-wave3-independent-g05-readonly-source-review/v1",
+  "separateOpenFindings": [
+    {
+      "fixedHere": false,
+      "id": "G05-native-descriptor-cache-invalidation",
+      "nextAction": "Separate bounded successor: capture existing revision, atomically admit lookup results only while current, and return diagnostics with the same lookup. Add controlled old-read/invalidate/new-read/late-old regression before final G05 acceptance.",
+      "observation": "Unlike typeRelations, native descriptor/diagnostic publication does not check cache/Space generation. A read begun before invalidate can publish after a newer result; loader also reads global diagnostics after awaiting the result.",
+      "source": "PinkhaTorahNativePropertyCatalog.CacheBox.set/setDiagnostics and nativePropertiesForPicker"
+    },
+    {
+      "fixedHere": false,
+      "id": "global-IdentityStore-invalidation",
+      "scope": "Recorded earlier; new picker path does not use the global IdentityStore. Do not infer a global policy fix."
+    }
+  ],
+  "source": "1cc7f696cfa01790c90c6d29273147d07da71b65",
+  "sourceBase": "6581508faffa748ca51d97e6ea51ecf6400fef35",
+  "sourceBlockers": [],
+  "sourceMap": {
+    "afterSHA256": "ac1340d6a10a5e755ca12df9d4a8ebe91950cbd10e6c4bde3b4ae37237636262",
+    "allOtherRowsAndTopLevelFieldsUnchanged": true,
+    "beforeSHA256": "a2b59291bbc623a5213163695d5278d313f30a83dc666d9b51a931f0621d9be4",
+    "exactPublishedScopeChecked": true,
+    "existingRowsChanged": [
+      121,
+      122,
+      123,
+      124
+    ],
+    "rowsAfter": 130,
+    "rowsBefore": 129
+  },
+  "status": "SOURCE_READY_WITH_SEPARATE_CACHE_AND_RUNTIME_GAPS_OPEN",
+  "unchangedSearchTestPrefix": {
+    "bytes": 10826,
+    "sha256": "1bdd1c498a685902f7c8e8a0980b4e09b90d2e34ee74f13316e8ec1a2532c3e4"
+  },
+  "upstreamExceptionRegister": {
+    "appendOnly": true,
+    "appendSHA256": "f9840d683a7b3b6d42f8c971766e5a19ec8b8ea391e7323ab68be7eb624ac0af",
+    "originalPrefixBytes": 85928,
+    "originalSHA256": "912c2b5088a37e2c29edf817253dd851ba675c4d349c6c7cf83b503711a50c0a"
+  },
+  "wholeVMOnlyOneGuardCallChanged": true
+}

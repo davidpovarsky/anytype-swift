@@ -1,0 +1,459 @@
+--- a/AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift
++++ b/AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift
+@@ -245,3 +245,172 @@
+     }
+     func isBootstrapped(spaceId: String) -> Bool { manifest.spaceId == spaceId }
+ }
++
++@MainActor
++@Suite("Property picker read-only production lookup")
++struct PropertyPickerReadOnlyLookupTests {
++    @Test("Native-only failure keeps verified ordinary choices during typing and Retry without bootstrap", arguments: [false, true])
++    func ordinaryChoicesSurviveNativeFailureWithoutProvisioning(nativeSearchFails: Bool) async throws {
++        let probe = ReadOnlyPickerProbe()
++        let manifest = makeManifest()
++        let policy = PinkhaTorahPropertyPolicy(
++            bootstrapService: PickerBootstrapMustStayIdle(probe: probe),
++            pickerManifestLoader: { _ in await probe.didReadManifest(); return manifest }
++        )
++        let nativeSearch = ReadOnlyPickerNativeSearch(fails: nativeSearchFails)
++        let catalog = PinkhaTorahNativePropertyCatalog(policy: policy,
++            searchService: nativeSearch, propertyDetailsStorage: EmptyPickerPropertyStorage(),
++            bootstrapSpace: { _ in await probe.didBootstrap(); throw PickerProbeFailure.lookup })
++        let ordinary = property("ordinary", key: "ordinary-key", name: "הקשר תורני")
++        let candidates = [ordinary,
++            property("canonical-id", key: "canonical-key"),
++            property("order-id", key: "order-key"),
++            property("foreign", key: "foreign-key", space: "other-space")]
++        var queries: [String] = []
++        let loader = PinkhaPropertyPickerSearchLoader(policy: policy, catalog: catalog,
++            existingSearch: { text, _, space in
++                #expect(space == "picker-space")
++                queries.append(text)
++                return candidates
++            })
++        let data = makeData()
++        for query in ["", "מקור", "source"] {
++            let result = try await loader.load(text: query, data: data)
++            #expect(result.properties.map(\.id) == [ordinary.id])
++            #expect(result.nativeLookupFailed)
++            #expect(!result.existingLookupFailed)
++        }
++        loader.invalidate(spaceId: data.spaceId)
++        let retried = try await loader.load(text: "source", data: data)
++        #expect(retried.properties.map(\.id) == [ordinary.id])
++        #expect(retried.nativeLookupFailed)
++        #expect(!retried.existingLookupFailed)
++
++        let ordinaryAllowed = try await policy.canAddPropertyFromPicker(
++            propertyId: ordinary.id, key: ordinary.key, target: data.target, spaceId: data.spaceId)
++        let canonicalAllowed = try await policy.canAddPropertyFromPicker(
++            propertyId: "canonical-id", key: "canonical-key", target: data.target, spaceId: data.spaceId)
++        let orderAllowed = try await policy.canAddPropertyFromPicker(
++            propertyId: "order-id", key: "order-key", target: data.target, spaceId: data.spaceId)
++        #expect(ordinaryAllowed)
++        #expect(!canonicalAllowed && !orderAllowed)
++        #expect(queries == ["", "מקור", "source", "source"])
++        #expect(await probe.manifestReads == 7)
++        #expect(await probe.bootstrapCalls == 0)
++        #expect(await nativeSearch.calls == 12)
++    }
++
++    @Test("Unresolved or foreign internal identity stays explicit and never guesses ordinary safety", arguments: ["unavailable", "wrong-space", "missing-canonical", "missing-order"])
++    func unresolvedIdentityKeepsInternalFieldsClosed(mode: String) async throws {
++        let probe = ReadOnlyPickerProbe()
++        var prepared = makeManifest()
++        if mode == "wrong-space" { prepared.spaceId = "other-space" }
++        if mode == "missing-canonical" { prepared.documentAssociationsPropertyKey = "" }
++        if mode == "missing-order" { prepared.orderPropertyId = "" }
++        let captured = prepared
++        let policy = PinkhaTorahPropertyPolicy(
++            bootstrapService: PickerBootstrapMustStayIdle(probe: probe),
++            pickerManifestLoader: { _ in
++                await probe.didReadManifest()
++                if mode == "unavailable" { throw PickerProbeFailure.lookup }
++                return captured
++            }
++        )
++        let nativeSearch = ReadOnlyPickerNativeSearch(fails: false)
++        let catalog = PinkhaTorahNativePropertyCatalog(policy: policy,
++            searchService: nativeSearch, propertyDetailsStorage: EmptyPickerPropertyStorage(),
++            bootstrapSpace: { _ in await probe.didBootstrap(); throw PickerProbeFailure.lookup })
++        let ordinary = property("ordinary", key: "ordinary-key")
++        let loader = PinkhaPropertyPickerSearchLoader(policy: policy, catalog: catalog,
++            existingSearch: { _, _, _ in [ordinary] })
++        let data = makeData()
++        let result = try await loader.load(text: "", data: data)
++        #expect(result.properties.isEmpty)
++        #expect(result.nativeLookupFailed)
++        #expect(!result.existingLookupFailed)
++        do {
++            let allowed = try await policy.canAddPropertyFromPicker(
++                propertyId: ordinary.id, key: ordinary.key, target: data.target, spaceId: data.spaceId)
++            #expect(!allowed)
++        } catch PickerProbeFailure.lookup {
++            #expect(mode == "unavailable")
++        } catch {
++            Issue.record("Unexpected manifest selection error")
++        }
++        #expect(await probe.manifestReads == 2)
++        #expect(await probe.bootstrapCalls == 0)
++        #expect(await nativeSearch.calls == 0)
++    }
++
++    @Test("Cancellation from the read-only manifest is not an empty or failed completed lookup")
++    func readOnlyManifestCancellationPropagates() async {
++        let probe = ReadOnlyPickerProbe()
++        let policy = PinkhaTorahPropertyPolicy(
++            bootstrapService: PickerBootstrapMustStayIdle(probe: probe),
++            pickerManifestLoader: { _ in await probe.didReadManifest(); throw CancellationError() }
++        )
++        let nativeSearch = ReadOnlyPickerNativeSearch(fails: false)
++        let catalog = PinkhaTorahNativePropertyCatalog(policy: policy,
++            searchService: nativeSearch, propertyDetailsStorage: EmptyPickerPropertyStorage(),
++            bootstrapSpace: { _ in await probe.didBootstrap(); throw PickerProbeFailure.lookup })
++        var existingInvoked = false
++        let loader = PinkhaPropertyPickerSearchLoader(policy: policy, catalog: catalog,
++            existingSearch: { _, _, _ in existingInvoked = true; return [] })
++        do {
++            _ = try await loader.load(text: "source", data: makeData())
++            Issue.record("Provider cancellation must propagate from the actual loader")
++        } catch is CancellationError {
++            // Expected: the unchanged VM keeps this distinct from completed empty results.
++        } catch {
++            Issue.record("Unexpected non-cancellation error")
++        }
++        #expect(!existingInvoked)
++        #expect(await probe.manifestReads == 1)
++        #expect(await probe.bootstrapCalls == 0)
++        #expect(await nativeSearch.calls == 0)
++    }
++
++    private func makeManifest() -> PinkhaSpaceManifest {
++        .init(spaceId: "picker-space", orderPropertyId: "order-id", orderPropertyKey: "order-key",
++              documentAssociationsPropertyId: "canonical-id", documentAssociationsPropertyKey: "canonical-key")
++    }
++
++    private func makeData() -> PropertiesSearchData {
++        .init(objectId: "picker-object", spaceId: "picker-space", excludedRelationsIds: [],
++              target: .library, onRelationSelect: { _, _ in })
++    }
++
++    private func property(_ id: String, key: String, name: String = "Property", space: String = "picker-space") -> PropertyDetails {
++        .init(id: id, key: key, name: name, format: .tag, isHidden: false,
++              isReadOnly: false, isReadOnlyValue: false, objectTypes: [],
++              maxCount: 0, sourceObject: "", isDeleted: false, spaceId: space)
++    }
++}
++
++private actor ReadOnlyPickerProbe {
++    private(set) var manifestReads = 0
++    private(set) var bootstrapCalls = 0
++    func didReadManifest() { manifestReads += 1 }
++    func didBootstrap() { bootstrapCalls += 1 }
++}
++
++private struct PickerBootstrapMustStayIdle: PinkhaSpaceBootstrapServiceProtocol {
++    let probe: ReadOnlyPickerProbe
++    func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
++        await probe.didBootstrap()
++        throw PickerProbeFailure.lookup
++    }
++    func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? { nil }
++    func isBootstrapped(spaceId: String) -> Bool { false }
++}
++
++private actor ReadOnlyPickerNativeSearch: SearchMiddleServiceProtocol {
++    let fails: Bool
++    private(set) var calls = 0
++    init(fails: Bool) { self.fails = fails }
++    func search(data: SearchRequest) async throws -> [ObjectDetails] {
++        calls += 1
++        if fails { throw PickerProbeFailure.lookup }
++        return []
++    }
++}
+--- a/Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift
++++ b/Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift
+@@ -43,13 +43,27 @@
+     func load(text: String, data: PropertiesSearchData) async throws -> PinkhaPropertyPickerSearchResult {
+         try Task.checkCancellation()
+         let excluded = data.excludedRelationsIds.filter { !data.hiddenRelationsIds.contains($0) }
+-        let identity = await policy.awaitInternalIdentity(spaceId: data.spaceId)
++        let manifest: PinkhaSpaceManifest?
++        do {
++            manifest = try await policy.loadPickerManifest(spaceId: data.spaceId)
++        } catch is CancellationError {
++            throw CancellationError()
++        } catch {
++            try Task.checkCancellation()
++            manifest = nil
++        }
+         try Task.checkCancellation()
++        let identities = manifest.flatMap { PinkhaInternalPropertyIdentities(manifest: $0) }
+ 
+-        let eligible = await policy.canAddPropertyAsync(
+-            propertyId: "", key: TorahNativePropertyDefinition.all[0].key,
+-            target: data.target, spaceId: data.spaceId
+-        )
++        let eligible: Bool
++        if PinkhaRuntime.enabled {
++            eligible = await policy.canAddPropertyInPicker(
++                propertyId: "", key: TorahNativePropertyDefinition.all[0].key,
++                target: data.target, spaceId: data.spaceId, manifest: manifest
++            )
++        } else {
++            eligible = false
++        }
+         try Task.checkCancellation()
+ 
+         var existing: [PropertyDetails] = []
+@@ -66,13 +80,14 @@
+             try Task.checkCancellation()
+             // A failed manifest read cannot expose canonical/order rows whose
+             // real IDs have not been resolved. Native format creation stays usable.
+-            if case .known(let identities) = identity {
++            if let identities {
+                 existing = found.filter {
+-                    !identities.isInternal(propertyId: $0.id, key: $0.key)
++                    $0.spaceId == data.spaceId && !$0.isDeleted && !$0.id.isEmpty
++                        && !identities.isInternal(propertyId: $0.id, key: $0.key)
+                         && TorahNativePropertyDefinition.definition(for: $0.key) == nil
+                 }
+             } else if !PinkhaRuntime.enabled {
+-                existing = found
++                existing = found.filter { $0.spaceId == data.spaceId && !$0.isDeleted && !$0.id.isEmpty }
+             }
+         } catch is CancellationError {
+             throw CancellationError()
+@@ -83,19 +98,16 @@
+ 
+         let native: [PropertyDetails]
+         if eligible {
+-            native = try await catalog.searchNativePropertiesForPicker(
+-                text: text, excludedIds: excluded, target: data.target, spaceId: data.spaceId
+-            )
++            let descriptors = try await catalog.nativePropertiesForReadOnlyPicker(spaceId: data.spaceId)
++            native = descriptors.filter {
++                !excluded.contains($0.id) && PinkhaTorahNativePropertyCatalog.matchesSearchQuery(property: $0, query: text)
++            }
+         } else {
+             native = []
+         }
+         try Task.checkCancellation()
+ 
+-        let identityUnavailable: Bool
+-        switch identity {
+-        case .known: identityUnavailable = false
+-        case .loading, .unavailable: identityUnavailable = PinkhaRuntime.enabled
+-        }
++        let identityUnavailable = PinkhaRuntime.enabled && identities == nil
+         let nativeFailed = identityUnavailable
+             || (eligible && !catalog.lastLookupDiagnostics(spaceId: data.spaceId).isEmpty)
+ 
+--- a/Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift
++++ b/Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift
+@@ -137,6 +137,7 @@
+     private let searchOverride: (any SearchMiddleServiceProtocol)?
+     private let storageOverride: (any PropertyDetailsStorageProtocol)?
+     private let objectDetailsOverride: (@Sendable (String, String) async -> ObjectDetails?)?
++    private let bootstrapSpace: @Sendable (String) async throws -> PinkhaSpaceManifest
+ 
+     @Injected(\.searchMiddleService)
+     private var defaultSearch: any SearchMiddleServiceProtocol
+@@ -156,12 +157,16 @@
+         policy: PinkhaTorahPropertyPolicy = .shared,
+         searchService: (any SearchMiddleServiceProtocol)? = nil,
+         propertyDetailsStorage: (any PropertyDetailsStorageProtocol)? = nil,
+-        objectDetails: (@Sendable (String, String) async -> ObjectDetails?)? = nil
++        objectDetails: (@Sendable (String, String) async -> ObjectDetails?)? = nil,
++        bootstrapSpace: (@Sendable (String) async throws -> PinkhaSpaceManifest)? = nil
+     ) {
+         self.policy = policy
+         self.searchOverride = searchService
+         self.storageOverride = propertyDetailsStorage
+         self.objectDetailsOverride = objectDetails
++        self.bootstrapSpace = bootstrapSpace ?? {
++            try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: $0)
++        }
+     }
+ 
+     public func invalidate(spaceId: String? = nil) {
+@@ -536,7 +541,7 @@
+ 
+     /// The picker must distinguish provider cancellation from a completed empty query.
+     /// Keep the existing nonthrowing API for other catalog consumers.
+-    func nativePropertiesForPicker(spaceId: String) async throws -> [PropertyDetails] {
++    func nativePropertiesForPicker(spaceId: String, allowProvisioning: Bool = true) async throws -> [PropertyDetails] {
+         try Task.checkCancellation()
+         guard PinkhaRuntime.enabled else {
+             return []
+@@ -574,10 +579,10 @@
+             return false
+         }
+ 
+-        if !hasAmbiguousDuplicates && firstAttempt.properties.count < TorahNativePropertyDefinition.all.count {
++        if allowProvisioning && !hasAmbiguousDuplicates && firstAttempt.properties.count < TorahNativePropertyDefinition.all.count {
+             let bootstrapped: PinkhaSpaceManifest?
+             do {
+-                bootstrapped = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: spaceId)
++                bootstrapped = try await bootstrapSpace(spaceId)
+             } catch is CancellationError {
+                 throw CancellationError()
+             } catch {
+@@ -603,6 +608,13 @@
+ 
+         cache.setDiagnostics(spaceId: spaceId, reasons: firstAttempt.failures)
+         return firstAttempt.properties
++    }
++
++    /// The Add Property picker can observe existing native descriptors during
++    /// typing or Retry. Missing descriptors stay an explicit lookup failure;
++    /// only the existing initialization consumers may provision them.
++    func nativePropertiesForReadOnlyPicker(spaceId: String) async throws -> [PropertyDetails] {
++        try await nativePropertiesForPicker(spaceId: spaceId, allowProvisioning: false)
+     }
+ 
+     private func resolveNativePropertiesOnce(
+--- a/Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift
++++ b/Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift
+@@ -130,9 +130,91 @@
+ 
+     private let identityStore = IdentityStore()
+     private let bootstrapService: any PinkhaSpaceBootstrapServiceProtocol
+-
+-    public init(bootstrapService: any PinkhaSpaceBootstrapServiceProtocol = Container.shared.pinkhaBootstrapService()) {
++    private let pickerManifestLoader: @Sendable (String) async throws -> PinkhaSpaceManifest?
++
++    public init(
++        bootstrapService: any PinkhaSpaceBootstrapServiceProtocol = Container.shared.pinkhaBootstrapService(),
++        pickerManifestLoader: (@Sendable (String) async throws -> PinkhaSpaceManifest?)? = nil
++    ) {
+         self.bootstrapService = bootstrapService
++        self.pickerManifestLoader = pickerManifestLoader ?? {
++            try await Container.shared.pinkhaSpaceManifestStore().loadManifest(spaceId: $0)
++        }
++    }
++
++    // MARK: - Read-only Property Picker
++
++    /// Typing and Retry may read the existing synced manifest, but must never
++    /// provision a Space or repair its Types. Explicit bootstrap keeps its
++    /// existing entry points outside the picker.
++    func loadPickerManifest(spaceId: String) async throws -> PinkhaSpaceManifest? {
++        try Task.checkCancellation()
++        guard PinkhaRuntime.enabled, !spaceId.isEmpty else { return nil }
++        if let cached = verifiedPickerManifest(bootstrapService.manifest(forSpaceId: spaceId), spaceId: spaceId) {
++            return cached
++        }
++        let manifest = try await pickerManifestLoader(spaceId)
++        try Task.checkCancellation()
++        return verifiedPickerManifest(manifest, spaceId: spaceId)
++    }
++
++    private func verifiedPickerManifest(_ manifest: PinkhaSpaceManifest?, spaceId: String) -> PinkhaSpaceManifest? {
++        guard let manifest, manifest.spaceId == spaceId, manifest.isComplete,
++              manifest.schemaVersion == PinkhaSpaceManifest.currentSchemaVersion,
++              let identities = PinkhaInternalPropertyIdentities(manifest: manifest),
++              !identities.canonicalPropertyId.isEmpty, !identities.canonicalPropertyKey.isEmpty,
++              !identities.orderPropertyId.isEmpty, !identities.orderPropertyKey.isEmpty else { return nil }
++        return manifest
++    }
++
++    /// Selection independently rechecks the same read-only identity path. A
++    /// native-only lookup failure must not turn an ordinary row into a write
++    /// through optional Torah provisioning.
++    func canAddPropertyFromPicker(propertyId: String, key: String, target: PropertiesModuleTarget,
++                                  spaceId: String) async throws -> Bool {
++        try Task.checkCancellation()
++        guard PinkhaRuntime.enabled else { return true }
++        let manifest = try await loadPickerManifest(spaceId: spaceId)
++        let allowed = await canAddPropertyInPicker(propertyId: propertyId, key: key,
++            target: target, spaceId: spaceId, manifest: manifest)
++        try Task.checkCancellation()
++        return allowed
++    }
++
++    func canAddPropertyInPicker(propertyId: String, key: String, target: PropertiesModuleTarget,
++                                spaceId: String, manifest: PinkhaSpaceManifest?) async -> Bool {
++        guard PinkhaRuntime.enabled else { return true }
++        guard let manifest = verifiedPickerManifest(manifest, spaceId: spaceId),
++              let identities = PinkhaInternalPropertyIdentities(manifest: manifest),
++              !identities.isInternal(propertyId: propertyId, key: key) else { return false }
++        guard TorahNativePropertyDefinition.definition(for: key) != nil else { return true }
++        switch target {
++        case .type(let typeData):
++            switch typeData {
++            case .recommendedFeaturedRelations(let type), .recommendedRelations(let type):
++                return isNormalType(type, spaceId: spaceId, manifest: manifest)
++            }
++        case .library:
++            return true
++        case .object(let objectId):
++            let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
++            guard doc.permissions.canEditRelationValues else { return false }
++            let details: ObjectDetails?
++            if let opened = doc.details { details = opened }
++            else { details = await PinkhaTorahNativePropertyCatalog.shared.fetchLiveObjectDetails(id: objectId, spaceId: spaceId) }
++            return details?.id == objectId && details?.isReadonly == false &&
++                isNormalDocument(details, spaceId: spaceId, manifest: manifest)
++        case let .dataview(objectId, _, typeDetails):
++            if let typeDetails {
++                return typeDetails.isObjectType && isNormalType(ObjectType(details: typeDetails), spaceId: spaceId, manifest: manifest)
++            }
++            let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
++            let details: ObjectDetails?
++            if let opened = doc.details { details = opened }
++            else { details = await PinkhaTorahNativePropertyCatalog.shared.fetchLiveObjectDetails(id: objectId, spaceId: spaceId) }
++            return details?.id == objectId && isNormalDocument(details, spaceId: spaceId, manifest: manifest) &&
++                details?.resolvedLayoutValue.isList == true
++        }
+     }
+ 
+     // MARK: - Invalidation & Retry
+@@ -511,6 +593,10 @@
+     // MARK: - Private Target Inspection
+ 
+     func isNormalDocument(_ details: ObjectDetails?, spaceId: String) -> Bool {
++        isNormalDocument(details, spaceId: spaceId, manifest: bootstrapService.manifest(forSpaceId: spaceId))
++    }
++
++    private func isNormalDocument(_ details: ObjectDetails?, spaceId: String, manifest: PinkhaSpaceManifest?) -> Bool {
+         guard PinkhaRuntime.enabled, let details, details.spaceId == spaceId else { return false }
+         return TorahDocumentPropertyEligibility.includesDocument(
+             objectId: details.id, typeId: details.type, spaceId: spaceId, layout: details.resolvedLayout ?? details.layout,
+@@ -519,15 +605,22 @@
+                 details.values[BundledPropertyKey.relationKey.rawValue] != nil ||
+                 details.values[BundledPropertyKey.relationFormat.rawValue] != nil ||
+                 details.values[BundledPropertyKey.recommendedLayout.rawValue] != nil,
+-            manifest: bootstrapService.manifest(forSpaceId: spaceId)
++            manifest: manifest
+         )
+     }
+ 
+     private func isNormalType(_ type: ObjectType, spaceId: String) -> Bool {
++        isNormalType(type, spaceId: spaceId, manifest: nil)
++    }
++
++    private func isNormalType(_ type: ObjectType, spaceId: String, manifest: PinkhaSpaceManifest?) -> Bool {
+         guard type.spaceId == spaceId, !type.id.isEmpty, !type.hidden,
+               !type.isDeleted, !type.isArchived,
+               let layout = type.recommendedLayout,
+               (DetailsLayout.editorLayouts + DetailsLayout.listLayouts + [.bookmark]).contains(layout) else { return false }
++        if let manifest {
++            return PinkhaRuntime.enabled && TorahDocumentPropertyEligibility.includes(typeId: type.id, spaceId: spaceId, manifest: manifest)
++        }
+         return isTargetEligibleForNativeProperties(typeId: type.id, spaceId: spaceId)
+     }
+ 
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift
+@@ -122,7 +122,7 @@
+                     dismiss?()
+                 }
+             ) {
+-                guard await PinkhaTorahPropertyPolicy.shared.canAddPropertyAsync(
++                guard try await PinkhaTorahPropertyPolicy.shared.canAddPropertyFromPicker(
+                     propertyId: details.id, key: details.key, target: data.target, spaceId: data.spaceId
+                 ) else { throw PinkhaPropertyPickerSelectionError.propertyUnavailable }
+                 try Task.checkCancellation()

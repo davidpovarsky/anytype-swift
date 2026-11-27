@@ -7,6 +7,7 @@ import QuickLook
 import UniformTypeIdentifiers
 import PinkhaAnyEngine
 import PinkhaAnyHost
+import PinkhaAnyIntegration
 import HanlinMiniAppsBridge
 
 struct AnyNativeAttachment: Identifiable, Equatable, Sendable {
@@ -45,6 +46,22 @@ struct AnyNativeAttachmentPreview: Identifiable {
     let url: URL
 }
 
+/// A visible Retry action can authorize one scheduling request. A native 204
+/// acknowledges that request only; it never supplies a file-status value.
+private actor AnyNativeAttachmentRetryApproval {
+    private var consumed = false
+    private(set) var acknowledged = false
+
+    func consume() throws {
+        guard !consumed else {
+            throw AnyEngineError.invalidOperation("native file retry approval already used")
+        }
+        consumed = true
+    }
+
+    func acknowledge() { acknowledged = true }
+}
+
 @Observable @MainActor
 final class AnyNativeAttachmentsPresentation: Identifiable {
     let id = UUID()
@@ -55,6 +72,8 @@ final class AnyNativeAttachmentsPresentation: Identifiable {
     var error: String?
     var busy = false
     var pendingMiniAppsInput: MiniAppContent?
+    var storageStatuses: [String: AnyNativeFileStatus] = [:]
+    var storageNotice: String?
     private var active = true
     @ObservationIgnored private var task: Task<Void, Never>?
     @ObservationIgnored private var directories: [URL] = []
@@ -69,6 +88,7 @@ final class AnyNativeAttachmentsPresentation: Identifiable {
 
     func load() async {
         guard active, !busy else { return }
+        storageStatuses = [:]; storageNotice = nil
         busy = true; defer { busy = false }
         let client = document.client, documents = document.documents, objectID = document.objectID
         let workspace = document.workspace, authorize = authorization()
@@ -95,6 +115,117 @@ final class AnyNativeAttachmentsPresentation: Identifiable {
                 discardVisibleFiles()
                 self.error = AnyUIErrorText.describe(error)
             }
+        }
+    }
+
+    func canRetryStorage(_ file: AnyNativeAttachment) -> Bool {
+        guard let status = storageStatuses[file.id] else { return false }
+        return active && !busy && task == nil && document.canMutate && !document.hasPendingEdits &&
+            files.contains(where: { $0.sameContent(as: file) }) && status.state != .durable
+    }
+
+    func checkStorageStatus(_ file: AnyNativeAttachment) {
+        storageOperation(file, retry: false)
+    }
+
+    func retryStorage(_ file: AnyNativeAttachment) {
+        guard canRetryStorage(file) else { return }
+        storageOperation(file, retry: true)
+    }
+
+    /// Status is fetched only for the chosen row, never by polling every file
+    /// or by automatically repeating an uncertain scheduling request.
+    private func storageOperation(_ file: AnyNativeAttachment, retry: Bool) {
+        guard active, !busy, task == nil,
+              files.contains(where: { $0.sameContent(as: file) }) else { return }
+        storageStatuses[file.id] = nil; storageNotice = nil
+        busy = true
+        task = Task { [weak self] in
+            guard let self else { return }
+            defer { task = nil; busy = false }
+            let approval = AnyNativeAttachmentRetryApproval()
+            do {
+                try requireCurrentFile(file)
+                let client = document.client, workspace = document.workspace
+                let reference = try PinkhaAnyEngine.AnyNativeFileReference(accountID: workspace.accountID,
+                    spaceID: workspace.spaceID, objectID: document.objectID, fileID: file.id)
+                let storage = AnyNativeFileDurability(client: client)
+                let access = try AnyHTTPTorahTargetAccess(client: client, workspace: workspace,
+                    allowedTypeIDs: document.capabilities.allowedTargetTypes,
+                    editorDataset: document.documents.dataset,
+                    documentTypePolicy: .nativeCanonicalEditorV1)
+                let currentFile: @Sendable () async throws -> Void = { [weak self] in
+                    guard let self else { throw AnyHostError.sessionClosed }
+                    try await self.requireCurrentFile(file)
+                }
+                let currentRetry: @Sendable () async throws -> Void = { [weak self] in
+                    guard let self else { throw AnyHostError.sessionClosed }
+                    try await self.requireStorageRetry(file)
+                }
+                let status = try await document.nativeSession.perform { lease in
+                    let authorizeRead: @Sendable () async throws -> Void = {
+                        try await lease.validate()
+                        try await currentFile()
+                        try await access.validate(.object(objectId: reference.objectID), intent: .read)
+                        try await currentFile()
+                    }
+                    let metadata: @Sendable () async throws -> AnyNativeAttachment = {
+                        try AnyNativeAttachment(await client.requestJSON(method: "GET",
+                            path: ["v1", "spaces", workspace.spaceID, "files", reference.fileID],
+                            authorize: authorizeRead), objectID: reference.objectID)
+                    }
+                    let before = try await metadata()
+                    guard before.sameContent(as: file) else { throw AnyHostError.changedDocument }
+                    if retry {
+                        _ = try await storage.retry(reference, authorizeRead: authorizeRead,
+                            authorizeRetry: {
+                                try await access.validate(.object(objectId: reference.objectID), intent: .write)
+                                try await lease.validate()
+                                try await currentRetry()
+                                try await approval.consume()
+                            })
+                        await approval.acknowledge()
+                    }
+                    // Even after 204, publish only a separately returned native
+                    // status. The metadata bracket still binds the chosen file.
+                    let status = try await storage.status(reference, authorize: authorizeRead)
+                    let after = try await metadata()
+                    guard after.sameContent(as: before) else { throw AnyHostError.changedDocument }
+                    try await authorizeRead()
+                    return status
+                }
+                try requireCurrentFile(file)
+                storageStatuses[file.id] = status
+                storageNotice = retry ? Self.retryAcknowledgedMessage : nil
+                error = nil
+            } catch {
+                let acknowledged = await approval.acknowledged
+                if active {
+                    discardVisibleFiles()
+                    storageNotice = acknowledged ? Self.retryAcknowledgedMessage : nil
+                    self.error = AnyUIErrorText.describe(error)
+                }
+            }
+        }
+    }
+
+    private static var retryAcknowledgedMessage: String {
+        AnyUIErrorText.text("בקשת הניסיון החוזר התקבלה. בדוק את מצב השמירה הנוכחי.",
+                            "Retry requested. Check the current storage status for progress.")
+    }
+
+    private func requireCurrentFile(_ file: AnyNativeAttachment) throws {
+        try requireActive()
+        guard file.objectID == document.objectID,
+              files.contains(where: { $0.sameContent(as: file) }) else {
+            throw AnyHostError.changedDocument
+        }
+    }
+
+    private func requireStorageRetry(_ file: AnyNativeAttachment) throws {
+        try requireCurrentFile(file)
+        guard document.canMutate, !document.hasPendingEdits else {
+            throw AnyHostError.changedDocument
         }
     }
 
@@ -160,6 +291,8 @@ final class AnyNativeAttachmentsPresentation: Identifiable {
     private func discardVisibleFiles() {
         files = []
         preview = nil
+        storageStatuses = [:]
+        storageNotice = nil
     }
 
     private func requireActive() throws {
@@ -182,27 +315,52 @@ struct AnyNativeAttachmentsView: View {
         NavigationStack {
             List {
                 if let error = model.error { Text(error).foregroundStyle(.red).textSelection(.enabled) }
+                if let notice = model.storageNotice {
+                    Text(notice).font(.footnote).foregroundStyle(.secondary)
+                        .accessibilityIdentifier("any-native-file-retry-notice")
+                }
                 if model.busy { ProgressView() }
                 if !model.busy && model.files.isEmpty && model.error == nil {
                     Text(AnyUIErrorText.text("אין קבצים מצורפים במסמך.", "This document has no attachments."))
                 }
                 ForEach(model.files) { file in
-                    HStack {
-                        Button { model.open(file) } label: {
-                            VStack(alignment: .leading) {
-                                Label(file.name.isEmpty ? AnyUIErrorText.text("קובץ מצורף", "Attachment") : file.name, systemImage: "doc")
-                                Text(ByteCountFormatter.string(fromByteCount: file.size, countStyle: .file)).font(.caption)
-                                if !file.durable {
-                                    Text(AnyUIErrorText.text("השמירה ברשת עדיין לא אומתה", "Network backup is not yet verified"))
-                                        .font(.caption).foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Button { model.open(file) } label: {
+                                VStack(alignment: .leading) {
+                                    Label(file.name.isEmpty ? AnyUIErrorText.text("קובץ מצורף", "Attachment") : file.name, systemImage: "doc")
+                                    Text(ByteCountFormatter.string(fromByteCount: file.size, countStyle: .file)).font(.caption)
+                                    if !file.durable && model.storageStatuses[file.id] == nil {
+                                        Text(AnyUIErrorText.text("השמירה ברשת עדיין לא אומתה", "Network backup is not yet verified"))
+                                            .font(.caption).foregroundStyle(.secondary)
+                                    }
                                 }
-                            }
-                        }.accessibilityIdentifier("any-native-attachment-" + file.id)
-                        Spacer()
-                        Button("MiniApps", systemImage: "square.grid.2x2") {
-                            model.open(file, inMiniApps: true) { dismiss() }
-                        }.accessibilityIdentifier("any-native-attachment-miniapps-" + file.id)
-                    }.disabled(model.busy)
+                            }.accessibilityIdentifier("any-native-attachment-" + file.id)
+                            Spacer()
+                            Button("MiniApps", systemImage: "square.grid.2x2") {
+                                model.open(file, inMiniApps: true) { dismiss() }
+                            }.accessibilityIdentifier("any-native-attachment-miniapps-" + file.id)
+                        }
+                        if let status = model.storageStatuses[file.id] {
+                            Text(storageTitle(status.state)).font(.subheadline)
+                                .accessibilityIdentifier("any-native-file-storage-state-" + file.id)
+                            Text(status.cached
+                                 ? AnyUIErrorText.text("זמין במכשיר זה", "Available on this device")
+                                 : AnyUIErrorText.text("לא הורד למכשיר זה", "Not downloaded to this device"))
+                                .font(.caption).foregroundStyle(.secondary)
+                                .accessibilityIdentifier("any-native-file-local-availability-" + file.id)
+                        }
+                        Button(AnyUIErrorText.text("בדיקת מצב השמירה", "Check storage status"),
+                               systemImage: "icloud") { model.checkStorageStatus(file) }
+                            .accessibilityIdentifier("any-native-file-check-status-" + file.id)
+                        if let status = model.storageStatuses[file.id], status.state != .durable {
+                            Button(AnyUIErrorText.text("ניסיון שמירה חוזר", "Retry storage"),
+                                   systemImage: "arrow.clockwise") { model.retryStorage(file) }
+                                .disabled(!model.canRetryStorage(file))
+                                .accessibilityIdentifier("any-native-file-retry-storage-" + file.id)
+                        }
+                    }.buttonStyle(.borderless)
+                        .disabled(model.busy)
                 }
             }
             .navigationTitle(AnyUIErrorText.text("קבצים מצורפים", "Attachments"))
@@ -218,6 +376,14 @@ struct AnyNativeAttachmentsView: View {
             }
             .task { await model.load() }
             .sheet(item: $model.preview) { item in AnyNativeFilePreview(url: item.url) }
+        }
+    }
+
+    private func storageTitle(_ state: AnyNativeFileStatus.State) -> String {
+        switch state {
+        case .durable: AnyUIErrorText.text("שמירת הקובץ אומתה", "File storage confirmed")
+        case .inFlight: AnyUIErrorText.text("שמירת הקובץ מתבצעת", "File storage is in progress")
+        case .limited: AnyUIErrorText.text("מכסת האחסון מלאה", "Storage limit reached")
         }
     }
 }

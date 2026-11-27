@@ -1,0 +1,50 @@
+{
+  "schema": "wave2-torah-native-attachment-storage-source-review-v1",
+  "reviewer": "root/torah_continue",
+  "scope": "Actor isolation, authorization, one-shot retry, late publication and obvious compile hazards only; root separately owns UI and overall scope",
+  "candidate": {
+    "path": "/workspace/scratch/1d35894f12d5/interfaces_work/attachment-status/AnyNativeAttachments.swift",
+    "sha256": "9e88bb9abd3536b76ccde71a102ba88ca82e3a9dd0c27e28850ae79359cfde73",
+    "bytes": 20337
+  },
+  "original": {
+    "sha256": "b9d51cc5d71665f853e8601585013880a7dcfe1a600ddc7b84b5647f96fcda41",
+    "bytes": 11302
+  },
+  "unchangedBodies": {
+    "open": {
+      "sha256": "c7acbf7454a899f21c15ec71ef88976eabdddebbd99ea79f888c0f71f5869b98",
+      "byteIdentical": true
+    },
+    "close": {
+      "sha256": "adadc3cf284e07ecbbf4010bc9c4463d80248a216af5b53d006ea416aede0377",
+      "byteIdentical": true
+    },
+    "requireActive": {
+      "sha256": "3e04fe37a106f5645f4f4bd07d04944fb1b6eb0bbd6c2c9dcd2ac6113893d8af",
+      "byteIdentical": true
+    },
+    "authorization": {
+      "sha256": "8f3063e3c591e89b38aff6c0d75f4c88c6e7ba06ea281c4a248f6d72def9031e",
+      "byteIdentical": true
+    }
+  },
+  "checks": [
+    "MainActor presentation serializes start before first suspension; busy plus task prevent overlapping row operations; close cancels and awaits the same task",
+    "Engine file reference is explicitly module-qualified, avoiding existing Host type ambiguity",
+    "Real status stays separate from native204 acknowledgement; status decode binds exact file/object/account through existing Engine API",
+    "Native session lease, mounted owner and exact chosen-file metadata bracket are checked before delivery; revoked/cancelled owner cannot publish status",
+    "Retry write ACL and mounted canMutate/no-pending-edit checks occur in the original dispatch authorization; actor consumes approval once and uncertain outcome has no automatic retry",
+    "Acknowledgement is recorded only after existing retry returns, preserved if a later status/metadata read fails, and never converted into durable state",
+    "Failures retain existing discardVisibleFiles behavior; late inactive errors do not repopulate visible status",
+    "Existing AnyNativeFileDurability API and AnyApplicationSession source were read; AnyDocumentPresentation canMutate/requireMounted/lifecycle definitions align with the new closures"
+  ],
+  "limits": [
+    "No Swift typecheck, UI, native, component or control execution",
+    "Concrete AnyHTTPTorahTargetAccess implementation was not independently re-fetched in this narrow review; uses the existing original read/write API"
+  ],
+  "testsOrControlsRerun": 0,
+  "hostOrNativeCallsForThisReview": 0,
+  "findings": [],
+  "status": "PASS_SOURCE_REVIEW_NOT_RUNTIME_ACCEPTANCE"
+}

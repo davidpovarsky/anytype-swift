@@ -137,6 +137,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
     private let searchOverride: (any SearchMiddleServiceProtocol)?
     private let storageOverride: (any PropertyDetailsStorageProtocol)?
     private let objectDetailsOverride: (@Sendable (String, String) async -> ObjectDetails?)?
+    private let bootstrapSpace: @Sendable (String) async throws -> PinkhaSpaceManifest
 
     @Injected(\.searchMiddleService)
     private var defaultSearch: any SearchMiddleServiceProtocol
@@ -156,12 +157,16 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         policy: PinkhaTorahPropertyPolicy = .shared,
         searchService: (any SearchMiddleServiceProtocol)? = nil,
         propertyDetailsStorage: (any PropertyDetailsStorageProtocol)? = nil,
-        objectDetails: (@Sendable (String, String) async -> ObjectDetails?)? = nil
+        objectDetails: (@Sendable (String, String) async -> ObjectDetails?)? = nil,
+        bootstrapSpace: (@Sendable (String) async throws -> PinkhaSpaceManifest)? = nil
     ) {
         self.policy = policy
         self.searchOverride = searchService
         self.storageOverride = propertyDetailsStorage
         self.objectDetailsOverride = objectDetails
+        self.bootstrapSpace = bootstrapSpace ?? {
+            try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: $0)
+        }
     }
 
     public func invalidate(spaceId: String? = nil) {
@@ -536,7 +541,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
 
     /// The picker must distinguish provider cancellation from a completed empty query.
     /// Keep the existing nonthrowing API for other catalog consumers.
-    func nativePropertiesForPicker(spaceId: String) async throws -> [PropertyDetails] {
+    func nativePropertiesForPicker(spaceId: String, allowProvisioning: Bool = true) async throws -> [PropertyDetails] {
         try Task.checkCancellation()
         guard PinkhaRuntime.enabled else {
             return []
@@ -574,10 +579,10 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
             return false
         }
 
-        if !hasAmbiguousDuplicates && firstAttempt.properties.count < TorahNativePropertyDefinition.all.count {
+        if allowProvisioning && !hasAmbiguousDuplicates && firstAttempt.properties.count < TorahNativePropertyDefinition.all.count {
             let bootstrapped: PinkhaSpaceManifest?
             do {
-                bootstrapped = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: spaceId)
+                bootstrapped = try await bootstrapSpace(spaceId)
             } catch is CancellationError {
                 throw CancellationError()
             } catch {
@@ -603,6 +608,13 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
 
         cache.setDiagnostics(spaceId: spaceId, reasons: firstAttempt.failures)
         return firstAttempt.properties
+    }
+
+    /// The Add Property picker can observe existing native descriptors during
+    /// typing or Retry. Missing descriptors stay an explicit lookup failure;
+    /// only the existing initialization consumers may provision them.
+    func nativePropertiesForReadOnlyPicker(spaceId: String) async throws -> [PropertyDetails] {
+        try await nativePropertiesForPicker(spaceId: spaceId, allowProvisioning: false)
     }
 
     private func resolveNativePropertiesOnce(

@@ -1,0 +1,197 @@
+{
+  "byteProof": {
+    "currentRootPreimageExact": true,
+    "fullInverseSubstitutions": 10,
+    "fullOriginalFileRestored": true,
+    "path": "/workspace/scratch/ae335eba85e3/attachment99f-independent-review/independent-byte-proof.json",
+    "primaryFiles": 15,
+    "sha256": "08afed9c9e0f7cf3bdddcb70bf44ee2aecdb7477a8b91be93717afb7c322bf7e",
+    "tenOriginalFunctionBodiesByteIdentical": true
+  },
+  "candidate": {
+    "bytes": 20337,
+    "gitBlob": "a08350fa183bb54a3e0ed686750b343ca59409db",
+    "path": "/workspace/scratch/ae335eba85e3/w2-attachments-g05-primary-review/attachments/source/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+    "sha256": "9e88bb9abd3536b76ccde71a102ba88ca82e3a9dd0c27e28850ae79359cfde73"
+  },
+  "candidateCommit": "99f6194b41a030e2e164610913798d2d857cecdf",
+  "changes": {
+    "evidenceAdditions": 14,
+    "existingBodyChanges": [
+      "load adds explicit clearing of old status/notice before the unchanged original read",
+      "discardVisibleFiles additionally clears status/notice",
+      "SwiftUI row adds separate status/check/retry controls; existing open/MiniApps actions remain"
+    ],
+    "nativeOrHostChanges": 0,
+    "original426fRepair": "426f17d2f1c491e8aec2535fd114ffa006af7730",
+    "packageChanges": 0,
+    "productionFiles": 1,
+    "productionGitBlob": "a08350fa183bb54a3e0ed686750b343ca59409db",
+    "productionPath": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+    "productionSHA256": "9e88bb9abd3536b76ccde71a102ba88ca82e3a9dd0c27e28850ae79359cfde73",
+    "sourceRetentionMapChanges": 0
+  },
+  "currentDependencyClosure": [
+    {
+      "bytes": 6439,
+      "gitBlob": "f5f9334ba988665d12c486ab8fa646e874073a5d",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileDurability.swift",
+      "ref": "1786e7a60762036484127edfcb588ad45c4e0d9e",
+      "sha256": "364a1bea4e4cae6134c9bb5935c0432f257657f3ae0c889a669354de975c2dc6"
+    },
+    {
+      "bytes": 10327,
+      "gitBlob": "ea8148c0e3dc857db51415e01ccfe396e02ccc95",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift",
+      "ref": "1786e7a60762036484127edfcb588ad45c4e0d9e",
+      "sha256": "7a51c02baafba146fac43ab0b5737ab3db6465ebdc142bce3d1a6ea33bf36c56"
+    },
+    {
+      "bytes": 5633,
+      "gitBlob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "ref": "1786e7a60762036484127edfcb588ad45c4e0d9e",
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd"
+    },
+    {
+      "bytes": 27831,
+      "gitBlob": "c584a72be3fb60b7870ff89630eb26f6fa931986",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "ref": "1786e7a60762036484127edfcb588ad45c4e0d9e",
+      "sha256": "8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182"
+    },
+    {
+      "bytes": 2051,
+      "gitBlob": "166d1db172057b25f82c4a67ddcac595cca43a59",
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "ref": "1786e7a60762036484127edfcb588ad45c4e0d9e",
+      "sha256": "298ef94254c6d8f17a389a5ff0efd02a5c03099e9a819b50886a5d9e8b3d9854"
+    },
+    {
+      "bytes": 11302,
+      "gitBlob": "b7fe89170a9b90fe39fb4f4479ac052bd7a8980d",
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "ref": "1786e7a60762036484127edfcb588ad45c4e0d9e",
+      "sha256": "b9d51cc5d71665f853e8601585013880a7dcfe1a600ddc7b84b5647f96fcda41"
+    }
+  ],
+  "declaredBase": "6581508faffa748ca51d97e6ea51ecf6400fef35",
+  "excludedAcceptance": [
+    "Ordinary file add/upload",
+    "A new NativeScript companion binary",
+    "Historical accepted hierarchy drag/T5 replay",
+    "Native23 runtime gate activation",
+    "Release/TestFlight"
+  ],
+  "execution": {
+    "AppleCommands": 0,
+    "SwiftCompilations": 0,
+    "accountOperations": 0,
+    "fileRetries": 0,
+    "finalBranchWrites": 0,
+    "nativeCalls": 0,
+    "primaryGitHubReadCalls": 6,
+    "sourceEditsToOwners": 0,
+    "testsOrControlsRerun": 0
+  },
+  "existingSelectors": {
+    "acknowledgementNotice": "any-native-file-retry-notice",
+    "check": "any-native-file-check-status-<actual-file-id>",
+    "localAvailability": "any-native-file-local-availability-<actual-file-id>",
+    "panel": "any-native-attachments",
+    "retry": "any-native-file-retry-storage-<actual-file-id>",
+    "status": "any-native-file-storage-state-<actual-file-id>"
+  },
+  "findings": [],
+  "priorEvidenceReused": [
+    {
+      "path": "docs/validation/20261127-wave2-attachment-storage/root-source-review.json",
+      "scope": "W2 source/UI review only",
+      "sha256": "b4fcbfef671476192b41492eb57e08ccfe2af14992de20d41f6eafb74666a19b"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-attachment-storage/torah-independent-review.json",
+      "scope": "W2 independent source/isolation review only",
+      "sha256": "f58f179dfadc28e2a517d89506c9149a57fe236672164d74f6c3da42656501cd"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-attachment-storage/source-inverse.json",
+      "scope": "Independently replayed as byte reconstruction only; no source mutation",
+      "sha256": "22cb583bace82a41c275f85601f460b634d22c4fea357b90ce585628bf7adf27"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-attachment-storage/changes.diff.json",
+      "scope": "Exact original whitespace-preserving diff decoded/hash verified; packaging first attempt remains retained",
+      "sha256": "59818e0c702a45a2c764342eb01d6cc585827a6f7660af4d3904228e1054191e"
+    }
+  ],
+  "requiredSameSourceAcceptance": [
+    "Actual new shared App must compile exact9e88 attachment source with the admitted native/SDK/host source tuple. Old App15/8f2 products do not acquire this behavior by source review.",
+    "Use an explicitly owned real file fixture with actual native status/retry routes for the same account, Space, original object and engine generation. Preserve native receipt/log provenance; do not fabricate rows or transfer unrelated Linux/API proof into this UI.",
+    "Check a limited-but-cached file: real limited state and local availability are both visible; Check performs reads only. Check actual durable/inline and inflight states without treating either acknowledgement or cached bytes as network custody.",
+    "Press Retry once and retain one actual POST/204 plus independent status and metadata readbacks. Confirm nondurable state stays nondurable when the native status says so.",
+    "Exercise acknowledged POST followed by failed status/metadata read, and lost/uncertain POST confirmation separately. The former may show acknowledgement notice alongside the error; neither case automatically POSTs again. A later explicit read and new user decision are required.",
+    "Exercise membership write revocation, reader role, changed metadata, unmount/close and account/Space/engine replacement around pending reads/retry. Denied authority must not dispatch a new write; in-flight work must settle in the original namespace and must not publish stale status into a replacement.",
+    "Reopen/refresh then check actual status. Verify retained preview/download and successful MiniApps attachment handoff through the existing original flow.",
+    "Inspect Hebrew/English, iPhone/iPad, light/dark and large accessibility text on the matching build; physical-device availability remains a separate recorded acceptance."
+  ],
+  "reusedOriginalMountedSource": [
+    {
+      "bytes": 70688,
+      "gitBlob": "f9cc5b324ec9e3d965aac5ea185beb7a1296c08a",
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-w2-dc582-review/after/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "repositoryPath": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "sha256": "422eed9e20b72f673e7b2b3fed303a314c2bd402ae2fd3cf74bd2d4f7727b67a"
+    },
+    {
+      "bytes": 35813,
+      "gitBlob": "1c7a14c636e2908012fdac88e1264f164d212b3e",
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-w2-dc582-review/after/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "repositoryPath": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "sha256": "8a2a18ad56ac7fde85223bf24bc8c104204e2031eddf9548ad810832aa8a673f"
+    }
+  ],
+  "reviewedCurrentRoot": "1786e7a60762036484127edfcb588ad45c4e0d9e",
+  "reviewedSemantics": [
+    {
+      "evidence": "AnyNativeAttachments.swift storageOperation constructs Engine.AnyNativeFileReference from immutable document.workspace, document.objectID and the existing selected row. AnyNativeFileDurability requires byte-exact client expected account, and its status decoder checks native file/object IDs by UTF8. No UI account/Space override is supplied. Explicit Engine qualification avoids the distinct Host migration type.",
+      "topic": "One original account/Space/document/file"
+    },
+    {
+      "evidence": "All new native work runs through the original AnyApplicationSession.perform. Its real lease checks the original engine run and cancellation before and after work. Every new status/metadata authorization additionally validates the lease and mounted owner. Existing session revokeAndDrain cancels tracked tasks and waits before engine replacement.",
+      "topic": "Real current engine lease"
+    },
+    {
+      "evidence": "authorizeRead checks the lease, current row, access.validate(.read), then current row again. The current AnyHTTPTorahTargetAccess implementation reads members/me and nativeCanonicalEditorV1 target proof; inactive membership, disallowed roles and Bin/template targets are rejected. Retry independently validates .write, then lease and mounted canMutate/no-pending-edits immediately before consuming approval. These reads are not represented as an atomic ACL transaction; the native endpoint remains authoritative.",
+      "topic": "Fresh native ACL and target proof"
+    },
+    {
+      "evidence": "canRetryStorage requires an actually observed nondurable status. storageOperation starts synchronously under active/busy/task guards and clears stale status before awaiting. A fresh private actor approval can be consumed once. The original HTTP client calls mutation authorize once, using separate side-effect-free validateResponse. The new source contains one storage.retry invocation; no loop, automatic retry or timeout resubmission is added.",
+      "topic": "Exactly one approved retry dispatch"
+    },
+    {
+      "evidence": "The original native API reads current status before POST and only returns acknowledgement for HTTP204/null after current response authority. Post-dispatch account/lifetime failure or transport loss remains writeUncertain, not a not-dispatched result. Approval.acknowledged is set only after that typed acknowledgement returns. The UI then performs a separate original native status read; a 204 is never turned into durable/inflight/limited.",
+      "topic": "Uncertain write and acknowledgement remain distinct"
+    },
+    {
+      "evidence": "Actual file metadata is read before the operation and compared with the selected row using the unchanged sameContent method. A separate metadata read brackets the returned status; final authorizeRead and the original session postflight precede requireCurrentFile on MainActor and visible status publication. A changed row/content/target cannot publish that status.",
+      "topic": "Native result is bound to the same file content"
+    },
+    {
+      "evidence": "New operations use the same existing task that close cancels and awaits. The original synchronous presentation-revoke callback sets active=false, cancels task and clears visible files; new statuses/notice are included in that discard. Late inactive completions do not publish status or errors. The original parent NativeDocumentView sheet onDismiss retains the old owner and awaits owner.close before optional MiniApps handoff. The source guarantee is revocation from close/revoke entry; no claim of undoing an already dispatched scheduling request is made.",
+      "topic": "Late errors and close"
+    },
+    {
+      "evidence": "Actual durable/inflight/limited and independent cached values drive visible labels. The durable label says file storage confirmed and does not infer cloud custody for an inline file. Native private lastErr is not rendered/logged; the typed status description remains redacted. Original preview, private download, MiniApps input import, close/drain, requireActive and authorization function bodies are byte-identical. The required PinkhaAnyIntegration dependency already exists in the current Package.swift.",
+      "topic": "UI and private diagnostics"
+    }
+  ],
+  "reviewer": "root/miniapps_otzaria",
+  "schema": "pinkha-wave3-attachment99f-independent-source-review-v1",
+  "sourceProofGenerator": {
+    "path": "/workspace/scratch/ae335eba85e3/attachment99f-independent-review/verify_source_bytes.py",
+    "sha256": "01ce284442482e55ee42dadf33c9cd0315224cb6c7823045f0f36c980abe6cbb"
+  },
+  "status": "READY_FOR_SOURCE_INTAKE_APP_AND_NATIVE_ACCEPTANCE_NOT_RUN",
+  "verdict": "No concrete source blocker found. The single downstream presentation change is compatible with the exact current native/host/integration APIs read. Merge only with the retained b9d51cc5 preimage; this source review does not admit an old App or an unmatched native fixture."
+}
