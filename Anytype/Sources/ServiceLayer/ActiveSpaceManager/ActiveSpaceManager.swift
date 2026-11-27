@@ -204,6 +204,31 @@ actor ActiveSpaceManager: ActiveSpaceManagerProtocol, Sendable {
 
     init() {}
 
+    #if DEBUG
+    private var acceptanceWorkspaceOpen: (@Sendable (String) async throws -> AccountInfo)?
+
+    /// Existing storage/subscription protocols remain the injected boundaries.
+    /// Only WorkspaceOpen's transport result is controlled in component tests;
+    /// the original account capture, binding, selection and publication run here.
+    init(
+        acceptanceAccount: AccountManager,
+        workspaceStorage: any SpaceViewsStorageProtocol,
+        objectTypes: any ObjectTypeProviderProtocol,
+        properties: any PropertyDetailsStorageProtocol,
+        widgets: any WidgetsObjectsStorageProtocol,
+        recency: any SpaceRecencyStorageProtocol,
+        workspaceOpen: @escaping @Sendable (String) async throws -> AccountInfo
+    ) {
+        self.accountManager = acceptanceAccount
+        self.workspaceStorage = workspaceStorage
+        self.objectTypeProvider = objectTypes
+        self.propertyDetailsStorage = properties
+        self.widgetsObjectsStorage = widgets
+        self.spaceRecencyStorage = recency
+        acceptanceWorkspaceOpen = workspaceOpen
+    }
+    #endif
+
     deinit {
         selectionAttempt?.retire()
         workspaceSubscription?.cancel()
@@ -342,8 +367,14 @@ actor ActiveSpaceManager: ActiveSpaceManagerProtocol, Sendable {
             let binding = try await attempt.workspaceBinding()
             try requireCurrent(attempt)
             let service = workspaceService
+            #if DEBUG
+            let acceptanceWorkspaceOpen = acceptanceWorkspaceOpen
+            #endif
             let info = try await binding.performOperation(rpcNames: ["WorkspaceOpen"]) {
-                try await service.workspaceOpenForOriginalSelection(spaceId: spaceId)
+                #if DEBUG
+                if let acceptanceWorkspaceOpen { return try await acceptanceWorkspaceOpen(spaceId) }
+                #endif
+                return try await service.workspaceOpenForOriginalSelection(spaceId: spaceId)
             }
             await attempt.capture.source.waitForOperationsToDrain()
             try requireCurrent(attempt)

@@ -1,0 +1,45 @@
+{
+  "schema": "pinkha-properties-unicode-candidate-v1",
+  "status": "FROZEN_SOURCE_ONLY_NOT_COMPILED_OR_RUN",
+  "baseCommit": "af63f6209c38bddf6ed851f0b894e2f627a671af",
+  "baseTree": "c3c3f46ec9241b6d446000bbdb3f5f89826b6a0c",
+  "findingSHA256": "9713137a06bc4f939462099d3b0702a982797f49237357b67769d39f2347e659",
+  "sourceManifestSHA256": "747f2ad2448d474b0ba2eb8fbdecc4e8037aff63db3e59eba4954945e2367724",
+  "inverseSHA256": "6e339b966fa9dd7c7870f9ebb2ccc3615dcc594afd491febdf6bc0a24040d950",
+  "patchSHA256": "f212184e464f1622c97dd0cb7e788057d1a63b6f1cb4815dbd5d6c3872324614",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "originalBytes": 43999,
+      "originalSHA256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c",
+      "candidateBytes": 44570,
+      "candidateSHA256": "c653fa8489f7f9dc7d835d57ab4ec27be0bc46e189a29d226524d81e70e6db48"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePropertyStoreTests.swift",
+      "originalBytes": 15598,
+      "originalSHA256": "37f9a8976451a1cc05f7fbad957064b7da0367e1d04659993f0c5a79df6fcbcb",
+      "candidateBytes": 24917,
+      "candidateSHA256": "7ff24aed7ce350c368d9d5d5f31439c3c87566353842013948912001082492ca"
+    }
+  ],
+  "testSuffix": {
+    "bytes": 9319,
+    "sha256": "78fde68a6afecef9bd935cee80816203790f426832e0aa0bfb8078b7efb8cb8e"
+  },
+  "selectors": [
+    "PinkhaAnyHostTests.NativePropertyStoreTests/testStringReadbackRequiresExactUTF8BeforeCreatingUndo",
+    "PinkhaAnyHostTests.NativePropertyStoreTests/testNestedStringAndKeyReadbackRequiresExactUTF8BeforeCreatingUndo",
+    "PinkhaAnyHostTests.NativePropertyStoreTests/testPropertyReceiptRetainsDocumentedNativeNormalizationAndUnsetRules",
+    "PinkhaAnyHostTests.NativePropertyStoreTests/testPropertyValueComparisonUsesTheExistingCanonicalDepthLimit"
+  ],
+  "declaredOnly": true,
+  "originalTestPrefixExact": true,
+  "onlyProductionFunctionChanged": "AnyNativePropertyStore.nativeEquivalent",
+  "globalAnyJSONChanged": false,
+  "NativeContractChanged": false,
+  "runtimeConsumerChanged": false,
+  "frozenAppChanged": false,
+  "publicationPerformed": false,
+  "reviewPending": true
+}

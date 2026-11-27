@@ -1,0 +1,59 @@
+{
+  "allFourSnapshotIdentitiesVerified": true,
+  "candidateImports": 0,
+  "compilerInvocations": 0,
+  "findings": [],
+  "hostActions": 0,
+  "limits": [
+    "This is a bounded Auth publication/Stop review, not an independent complete semantic review of the remaining two selection/Bootstrap methods.",
+    "Controlled owner events and UUID holds are component observations, not actual MiniApps, Sharing, Hanlin UI, native AccountSelect/Stop, or persisted account proof.",
+    "The source contains20-second observation loops and2-minute Swift Testing suite limits; no new runtime or compiler acceptance is inferred from source."
+  ],
+  "originalV5AuthSHA256": "9573b90cdb321e3a538574828c08b250177682ffd5587e1c7171d63a5d11e87f",
+  "preservedBoundaries": [
+    "The actual v5 current/stopping/successfulStopRequired/OriginalAuthAttempt state machine and accountPublication record still decide admission and Stop ownership. Effects do not grant another account capability.",
+    "Publication task is registered before suspension, captures the same attempt, retains validation within the actual MainActor hop, and the same stage checks surround controlled effects. Stop captures and joins only that owner-publication task before the first owner close; original native startup remains after that join.",
+    "The held Hanlin boundary observes the real original attempt retired before release and requires zero subsequent Hanlin/Sharing opens. The held Sharing boundary permits the already-admitted controlled callback to finish and requires that event before Stop\u2019s first close and base.logout, plus final close ordering.",
+    "The startup case starts actual decorator Stop, observes the original base.logout entry before cancelling its caller, then releases it, requires caller CancellationError, rejects duplicate/remove-data/replacement attempts, and checks exact original token release after startup drain.",
+    "Controlled effects are instance-owned; Bootstrap protocol injection is task-local. No Factory registration or global native/session replacement is introduced. Ordinary callers retain the original effects; real authority remains outside the component fixture.",
+    "The fixture opens all owned gates and joins all retained task handles on normal return or thrown failure. Actual test-process/deadline behavior and native engine/account effects have not been run or qualified."
+  ],
+  "reviewedScope": [
+    "Complete Auth decorator delta against immutable v5",
+    "Actual startupStopRetiresOriginalAttemptAndDrainsBeforeReplacement source",
+    "Both Boolean queuedPublicationCannotReopenOwnersAfterStop cases",
+    "Fixture base Auth, gates, event observations, task registration and release/join cleanup",
+    "Context-only ActiveSpace and Bootstrap task-local seams"
+  ],
+  "schema": "pinkha-account-runtime-auth-publication-peer-review/v1",
+  "snapshotIndexSHA256": "53badef04fdd4dfec1994a4ed0a930ee087cbd9c4df4c78127989d07310d3bb2",
+  "snapshotRows": [
+    {
+      "bytes": 32455,
+      "gitBlob": "104157840055e1fd788115a080302685a7efce9e",
+      "path": "AnyTypeTests/Pinkha/PinkhaBootstrapStateManagerTests.swift",
+      "sha256": "5c9db0a1c0560f56d21dbf70af43c9e7f047fab98926a623b30f4f744ac3f82b"
+    },
+    {
+      "bytes": 17583,
+      "gitBlob": "d5303686524e0e456affb3b0d93064f2e2195f7d",
+      "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "sha256": "440949c8ef363a9234f2a24057319bff67534dbd1cd72f16e1e00cd9891e9791"
+    },
+    {
+      "bytes": 3523,
+      "gitBlob": "fc857448492801e971351bb5c12a096b041a65b1",
+      "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
+      "sha256": "6a7b6f13a4c3473ac05359b8ba3b9ec2c17120909678c21ccadba17e1ea3141c"
+    },
+    {
+      "bytes": 18152,
+      "gitBlob": "dd2cb3875fcc994592ae15b954760237be6c6743",
+      "path": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+      "sha256": "23e3cf522b51c89a8b8c76c741ba687a115951861d7a0f44f932df9620b38e16"
+    }
+  ],
+  "sourceEdits": 0,
+  "status": "NO_CONCRETE_BLOCKER_IN_BOUNDED_SOURCE_SCOPE",
+  "testsExecuted": 0
+}

@@ -1,0 +1,161 @@
+{
+  "schema": "pinkha-property-unicode-source-audit-v1",
+  "status": "SOURCE_PROVEN_READBACK_COMPARISON_GAP_NO_RUNTIME_REPRODUCTION",
+  "findingID": "PROPERTY-UTF8-READBACK-01",
+  "sourceCommit": "af63f6209c38bddf6ed851f0b894e2f627a671af",
+  "sourceTree": "c3c3f46ec9241b6d446000bbdb3f5f89826b6a0c",
+  "sourceManifestSHA256": "747f2ad2448d474b0ba2eb8fbdecc4e8037aff63db3e59eba4954945e2367724",
+  "scope": "Current Properties string-value editing and Host conditional property receipt, including any/name and the dynamically mapped imported sourceURL property.",
+  "noOpConclusion": {
+    "localStringNoOpSuppressionFound": false,
+    "basis": [
+      "AnyNativePropertiesView Save disables only for write authority and byte limit; it does not compare edited text with the original.",
+      "AnyNativePropertyValueCodec.text and parse return the original String without trimming or normalization.",
+      "prepareSetValue always prepares the one-property patch after validation; apply always dispatches its fenced POST after authority checks."
+    ],
+    "nativeNoOpBehaviorInspected": false
+  },
+  "intendedContract": {
+    "evidenceLevel": "Inferred from exact current caller, codec, canonical-identity helper, receipt comments and existing tests; no new Native promise or contract change.",
+    "strings": "Preserve the supplied scalar/UTF-8 representation of a string property. The codec returns .string(text), prepared patch retains it, and AnyHostCanonical uses Data(value.utf8) for string intent/revision identity.",
+    "explicitNativeEquivalences": [
+      "Unset .null matches absent property.",
+      "Integral Double versus exactly representable Int64 may match.",
+      "A sole $date representation may match the same native millisecond after timezone/fraction normalization."
+    ],
+    "unicodeNormalizationAllowanceFound": false,
+    "sourceURL": "The mapped property is validated as synced string with xFormat.type=url. The generic Properties edit uses its dynamic owner/property key; the separate URL-open projection does not rewrite that stored edit."
+  },
+  "path": [
+    {
+      "file": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+      "lines": [
+        208,
+        233,
+        361,
+        391,
+        425,
+        431
+      ],
+      "meaning": "Current exact editable row -> String state -> model.setValue; true dismisses the form."
+    },
+    {
+      "file": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertyPresentation.swift",
+      "lines": [
+        25,
+        40,
+        230,
+        236,
+        285,
+        318
+      ],
+      "meaning": "Raw string codec; prepare then apply; verifiedCurrent accepts snapshot/Undo, clears pending/review, reloads and returns true."
+    },
+    {
+      "file": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "lines": [
+        359,
+        369,
+        446,
+        496,
+        514,
+        537,
+        563,
+        571,
+        677,
+        704
+      ],
+      "meaning": "Unchanged requested patch and inverse -> fenced POST -> accepted sequence/readback -> nativeValueMatches -> nativeEquivalent fast synthesized equality -> verifiedCurrent and optional Undo."
+    },
+    {
+      "file": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyJSON.swift",
+      "lines": [
+        4,
+        11
+      ],
+      "meaning": "Synthesized Equatable includes Swift String canonical equality."
+    }
+  ],
+  "counterexample": {
+    "kind": "Source-derived branch evaluation, not an executed Swift/Native/UI test.",
+    "preconditions": [
+      "Same workspace/object/generation/run.",
+      "Readback fence exactly equals accepted fence and accepted applySequence increases.",
+      "Definition bytes remain matching, to demonstrate Undo eligibility.",
+      "Only the readback string encoding differs canonically from the requested string."
+    ],
+    "evaluation": "nativeEquivalent reaches lhs == rhs and returns true before any raw string code-unit comparison. receipt can mark verifiedCurrent and construct inverse Undo despite the raw mismatch. Presentation trusts that receipt; reloadDocument does not compare the requested property bytes.",
+    "literalExamples": [
+      {
+        "name": "name_nfc_nfd",
+        "actual": "Café",
+        "requested": "Café",
+        "actualUTF8Hex": "436166c3a9",
+        "requestedUTF8Hex": "43616665cc81",
+        "sameUTF8": false
+      },
+      {
+        "name": "name_hebrew_combining_order",
+        "actual": "שְׁ",
+        "requested": "שְׁ",
+        "actualUTF8Hex": "d7a9d781d6b0",
+        "requestedUTF8Hex": "d7a9d6b0d781",
+        "sameUTF8": false
+      },
+      {
+        "name": "mapped_source_url",
+        "actual": "https://example.invalid/Café",
+        "requested": "https://example.invalid/Café",
+        "actualUTF8Hex": "68747470733a2f2f6578616d706c652e696e76616c69642f436166c3a9",
+        "requestedUTF8Hex": "68747470733a2f2f6578616d706c652e696e76616c69642f43616665cc81",
+        "sameUTF8": false
+      }
+    ],
+    "actualNativeMismatchObserved": false,
+    "actualUserDataLossObserved": false
+  },
+  "existingCoverage": [
+    {
+      "suite": "NativePropertyStoreTests",
+      "methods": [
+        "testSingleValuePatchCapturesExactVersionAndInverseWithoutEchoingOtherNamespaces",
+        "testPropertyKindMismatchCannotBecomeAnUnconditionalOrWholeRecordWrite"
+      ],
+      "covers": "One-property intent/inverse; kind protection; integral numeric and RFC3339 native-equivalence examples. No direct Unicode representation assertion in this inspected file."
+    },
+    {
+      "suite": "NativePropertyFenceTests",
+      "methods": [
+        "testLaterReadbackWithSameVersionAndRequestedValueCannotMintUndo",
+        "testExactAcknowledgementBindsUndoToItsSequenceWithoutChangingOriginalIntent",
+        "testReadbackFromDifferentOwnerEpochOrTargetCannotCertifyTheWrite"
+      ],
+      "covers": "Sequence, epoch/identity and value mismatch guards using numeric fixture values. The existing internal receipt/materialize seam can support a meaningful later string regression."
+    },
+    {
+      "suite": "NativePreparedPropertyUpdateTests",
+      "covers": "Separate prepared property operation identity/journal/authority source inspected; it does not supply a Unicode receipt regression for this direct Properties route."
+    }
+  ],
+  "smallestLaterCorrectionBoundary": {
+    "notImplemented": true,
+    "proposal": "Use exact UTF-8 comparison for a direct (.string,.string) pair at the property value receipt boundary before falling through to the existing native-equivalence helper. Keep all other value kinds and all authority/fence/definition checks unchanged.",
+    "meaningfulRegression": "Through existing prepareSetValue + acceptedFence + materialize + receipt APIs, retain requested raw bytes, reject canonical-equivalent raw-different readback with nativeAcceptedButCurrentStateUnverified/no snapshot/no Undo, and accept the matching raw readback with the original inverse bytes. Cover Name NFC/NFD, Hebrew mark order and the exact mapped URL key. Existing documented numeric/date behavior remains separately preserved.",
+    "nestedContainerStringPolicy": "The generic AnyJSON fast path also affects nested strings; that is not required to fix these direct string properties and must not be silently included in a global equality rewrite."
+  },
+  "execution": {
+    "swiftCompilerCalls": 0,
+    "testsRun": 0,
+    "controlsRun": 0,
+    "nativeCalls": 0,
+    "oracleCalls": 0,
+    "macCalls": 0,
+    "remoteMutations": 0,
+    "productionEdits": 0,
+    "runtimeAdmissionChanges": 0
+  },
+  "retainedLookupFailure": {
+    "path": "primary/abbreviated-ref-lookup.original.json",
+    "result": "Original short af63 lookup returned GitHub 422; full immutable ref resolved and all nine actual primary bodies were Git-blob verified."
+  }
+}

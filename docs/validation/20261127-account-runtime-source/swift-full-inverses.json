@@ -1,0 +1,296 @@
+{
+  "schema": "pinkha-account-runtime-source-draft/v1",
+  "runtime": "NOT_RUN",
+  "rows": [
+    {
+      "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "before": {
+        "bytes": 14654,
+        "sha256": "9573b90cdb321e3a538574828c08b250177682ffd5587e1c7171d63a5d11e87f",
+        "gitBlob": "15de50a91b793bee20db3505e6b3bd4dc46974a4",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 17583,
+        "sha256": "440949c8ef363a9234f2a24057319bff67534dbd1cd72f16e1e00cd9891e9791",
+        "gitBlob": "d5303686524e0e456affb3b0d93064f2e2195f7d",
+        "gitMode": "100644"
+      },
+      "operations": [
+        {
+          "old": "    init(base: any AuthServiceProtocol) { self.base = base }\n",
+          "new": "    init(base: any AuthServiceProtocol) { self.base = base }\n\n    #if DEBUG\n    /// Component-test effects only. The actual decorator/attempt/stage/Stop\n    /// implementations remain the subject; this does not qualify a native account.\n    struct AcceptanceOwners: Sendable {\n        let accountManager: AccountManager\n        let bootstrap: any PinkhaSpaceBootstrapServiceProtocol\n        let prepareMiniApps: @Sendable () async throws -> UUID\n        let resumeMiniApps: @MainActor @Sendable (UUID) -> Void\n        let prepareEngine: @Sendable () async throws -> Void\n        let closeSharing: @Sendable () async -> Void\n        let openSharing: @Sendable (String) async throws -> Void\n        let closeHanlin: @Sendable (String, Bool) async throws -> Void\n        let beforeHanlinPublication: @Sendable () async -> Void\n        let openHanlin: @MainActor @Sendable (String) throws -> Void\n    }\n\n    private var acceptanceOwners: AcceptanceOwners?\n\n    init(base: any AuthServiceProtocol, acceptanceOwners: AcceptanceOwners) {\n        self.base = base\n        self.acceptanceOwners = acceptanceOwners\n    }\n    #endif\n\n    private var originalAccountID: String {\n        #if DEBUG\n        if let acceptanceOwners { return acceptanceOwners.accountManager.account.id }\n        #endif\n        return accounts.account.id\n    }\n\n    private func closeSharingAccount() async {\n        #if DEBUG\n        if let acceptanceOwners { await acceptanceOwners.closeSharing(); return }\n        #endif\n        await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)\n    }\n\n    private func closeHanlinAccount(_ account: String, removeData: Bool) async throws {\n        #if DEBUG\n        if let acceptanceOwners { try await acceptanceOwners.closeHanlin(account, removeData); return }\n        #endif\n        try await PinkhaHanlinAccountOwner.shared.closeAccount(account, removeData: removeData)\n    }\n",
+          "occurrences": 1,
+          "positionsBefore": [
+            1331
+          ]
+        },
+        {
+          "old": "    private var bootstrap: any PinkhaSpaceBootstrapServiceProtocol { Container.shared.pinkhaBootstrapService() }",
+          "new": "    private var bootstrap: any PinkhaSpaceBootstrapServiceProtocol {\n        #if DEBUG\n        if let acceptanceOwners { return acceptanceOwners.bootstrap }\n        #endif\n        return Container.shared.pinkhaBootstrapService()\n    }",
+          "occurrences": 1,
+          "positionsBefore": [
+            525
+          ]
+        },
+        {
+          "old": "let previousAccount = accounts.account.id",
+          "new": "let previousAccount = originalAccountID",
+          "occurrences": 2,
+          "positionsBefore": [
+            5092,
+            6302
+          ]
+        },
+        {
+          "old": "let originalAccount = accounts.account.id",
+          "new": "let originalAccount = originalAccountID",
+          "occurrences": 1,
+          "positionsBefore": [
+            8350
+          ]
+        },
+        {
+          "old": "let finalAccount = accounts.account.id",
+          "new": "let finalAccount = originalAccountID",
+          "occurrences": 1,
+          "positionsBefore": [
+            10078
+          ]
+        },
+        {
+          "old": "let account = accounts.account.id",
+          "new": "let account = originalAccountID",
+          "occurrences": 1,
+          "positionsBefore": [
+            11142
+          ]
+        },
+        {
+          "old": "let account = self.accounts.account.id",
+          "new": "let account = await self.originalAccountID",
+          "occurrences": 1,
+          "positionsBefore": [
+            12120
+          ]
+        },
+        {
+          "old": "await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)",
+          "new": "await self.closeSharingAccount()",
+          "occurrences": 9,
+          "positionsBefore": [
+            2951,
+            3632,
+            4115,
+            4595,
+            5335,
+            6786,
+            9020,
+            9886,
+            11378
+          ]
+        },
+        {
+          "old": "        await self.closeSharingAccount()\n    }\n\n    private func closeHanlinAccount",
+          "new": "        await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)\n    }\n\n    private func closeHanlinAccount",
+          "occurrences": 1,
+          "positionsBefore": [
+            2943
+          ]
+        },
+        {
+          "old": "try await PinkhaHanlinAccountOwner.shared.closeAccount(previousAccount, removeData: false)",
+          "new": "try await self.closeHanlinAccount(previousAccount, removeData: false)",
+          "occurrences": 2,
+          "positionsBefore": [
+            5322,
+            6737
+          ]
+        },
+        {
+          "old": "try await PinkhaHanlinAccountOwner.shared.closeAccount(originalAccount, removeData: removeData)",
+          "new": "try await closeHanlinAccount(originalAccount, removeData: removeData)",
+          "occurrences": 1,
+          "positionsBefore": [
+            8930
+          ]
+        },
+        {
+          "old": "try await PinkhaHanlinAccountOwner.shared.closeAccount(originalAccount, removeData: false)",
+          "new": "try await closeHanlinAccount(originalAccount, removeData: false)",
+          "occurrences": 1,
+          "positionsBefore": [
+            9651
+          ]
+        },
+        {
+          "old": "try await PinkhaHanlinAccountOwner.shared.closeAccount(finalAccount, removeData: false)",
+          "new": "try await closeHanlinAccount(finalAccount, removeData: false)",
+          "occurrences": 1,
+          "positionsBefore": [
+            9865
+          ]
+        },
+        {
+          "old": "try await PinkhaHanlinAccountOwner.shared.closeAccount(account, removeData: false)",
+          "new": "try await self.closeHanlinAccount(account, removeData: false)",
+          "occurrences": 1,
+          "positionsBefore": [
+            11101
+          ]
+        },
+        {
+          "old": "        let task = Task<Void, Error> { [self] in\n            try await stage(attempt) {",
+          "new": "        #if DEBUG\n        let acceptanceOwners = acceptanceOwners\n        #endif\n        let task = Task<Void, Error> { [self] in\n            try await stage(attempt) {\n                #if DEBUG\n                // Pause only the original incoming MainActor publication hop.\n                // Retirement is still checked inside that actual hop below.\n                await acceptanceOwners?.beforeHanlinPublication()\n                #endif",
+          "occurrences": 1,
+          "positionsBefore": [
+            12062
+          ]
+        },
+        {
+          "old": "                    try PinkhaHanlinAccountOwner.shared.accountDidOpen(account)",
+          "new": "                    #if DEBUG\n                    if let acceptanceOwners { try acceptanceOwners.openHanlin(account); return }\n                    #endif\n                    try PinkhaHanlinAccountOwner.shared.accountDidOpen(account)",
+          "occurrences": 1,
+          "positionsBefore": [
+            12749
+          ]
+        },
+        {
+          "old": "                try await PinkhaSharingAccountOwner.shared.didOpen(engine: .heart, accountID: account)",
+          "new": "                #if DEBUG\n                if let acceptanceOwners { try await acceptanceOwners.openSharing(account); return }\n                #endif\n                try await PinkhaSharingAccountOwner.shared.didOpen(engine: .heart, accountID: account)",
+          "occurrences": 1,
+          "positionsBefore": [
+            13054
+          ]
+        },
+        {
+          "old": "        let token = try await PinkhaMiniAppsCoordinator.shared.prepareEngineAccountChange()",
+          "new": "        let token: UUID\n        #if DEBUG\n        if let acceptanceOwners {\n            token = try await acceptanceOwners.prepareMiniApps()\n        } else {\n            token = try await PinkhaMiniAppsCoordinator.shared.prepareEngineAccountChange()\n        }\n        #else\n        token = try await PinkhaMiniAppsCoordinator.shared.prepareEngineAccountChange()\n        #endif",
+          "occurrences": 1,
+          "positionsBefore": [
+            13899
+          ]
+        },
+        {
+          "old": "        try await PinkhaEngineSceneOwner.shared.prepareHeartAccountChange()",
+          "new": "        #if DEBUG\n        if let acceptanceOwners { try await acceptanceOwners.prepareEngine() }\n        else { try await PinkhaEngineSceneOwner.shared.prepareHeartAccountChange() }\n        #else\n        try await PinkhaEngineSceneOwner.shared.prepareHeartAccountChange()\n        #endif",
+          "occurrences": 1,
+          "positionsBefore": [
+            14563
+          ]
+        },
+        {
+          "old": "        Task { @MainActor in\n            for token in tokens { PinkhaMiniAppsCoordinator.shared.resumeAfterAccountChange(token) }\n        }",
+          "new": "        #if DEBUG\n        let acceptanceOwners = acceptanceOwners\n        #endif\n        Task { @MainActor in\n            for token in tokens {\n                #if DEBUG\n                if let acceptanceOwners { acceptanceOwners.resumeMiniApps(token); continue }\n                #endif\n                PinkhaMiniAppsCoordinator.shared.resumeAfterAccountChange(token)\n            }\n        }",
+          "occurrences": 1,
+          "positionsBefore": [
+            15483
+          ]
+        }
+      ],
+      "fullInverseExact": true
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+      "before": {
+        "bytes": 16784,
+        "sha256": "22d02c37d53a877aff201b48375a9a4230e18d0b02dbaa17391f98e01848b0aa",
+        "gitBlob": "145f418680103ea26962a1ee2f8677a48f902557",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 18152,
+        "sha256": "23e3cf522b51c89a8b8c76c741ba687a115951861d7a0f44f932df9620b38e16",
+        "gitBlob": "dd2cb3875fcc994592ae15b954760237be6c6743",
+        "gitMode": "100644"
+      },
+      "operations": [
+        {
+          "old": "    init() {}\n",
+          "new": "    init() {}\n\n    #if DEBUG\n    private var acceptanceWorkspaceOpen: (@Sendable (String) async throws -> AccountInfo)?\n\n    /// Existing storage/subscription protocols remain the injected boundaries.\n    /// Only WorkspaceOpen's transport result is controlled in component tests;\n    /// the original account capture, binding, selection and publication run here.\n    init(\n        acceptanceAccount: AccountManager,\n        workspaceStorage: any SpaceViewsStorageProtocol,\n        objectTypes: any ObjectTypeProviderProtocol,\n        properties: any PropertyDetailsStorageProtocol,\n        widgets: any WidgetsObjectsStorageProtocol,\n        recency: any SpaceRecencyStorageProtocol,\n        workspaceOpen: @escaping @Sendable (String) async throws -> AccountInfo\n    ) {\n        self.accountManager = acceptanceAccount\n        self.workspaceStorage = workspaceStorage\n        self.objectTypeProvider = objectTypes\n        self.propertyDetailsStorage = properties\n        self.widgetsObjectsStorage = widgets\n        self.spaceRecencyStorage = recency\n        acceptanceWorkspaceOpen = workspaceOpen\n    }\n    #endif\n",
+          "occurrences": 1,
+          "positionsBefore": [
+            7827
+          ]
+        },
+        {
+          "old": "            let service = workspaceService\n            let info = try await binding.performOperation(rpcNames: [\"WorkspaceOpen\"]) {\n                try await service.workspaceOpenForOriginalSelection(spaceId: spaceId)\n            }",
+          "new": "            let service = workspaceService\n            #if DEBUG\n            let acceptanceWorkspaceOpen = acceptanceWorkspaceOpen\n            #endif\n            let info = try await binding.performOperation(rpcNames: [\"WorkspaceOpen\"]) {\n                #if DEBUG\n                if let acceptanceWorkspaceOpen { return try await acceptanceWorkspaceOpen(spaceId) }\n                #endif\n                return try await service.workspaceOpenForOriginalSelection(spaceId: spaceId)\n            }",
+          "occurrences": 1,
+          "positionsBefore": [
+            14341
+          ]
+        }
+      ],
+      "fullInverseExact": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
+      "before": {
+        "bytes": 2670,
+        "sha256": "2fd1e3096531ee2112ae20de301a0c438aed87355c0777553448b7ec16ade39d",
+        "gitBlob": "507a5e7861e433d85362b4934d25150b4d57b255",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 3523,
+        "sha256": "6a7b6f13a4c3473ac05359b8ba3b9ec2c17120909678c21ccadba17e1ea3141c",
+        "gitBlob": "fc857448492801e971351bb5c12a096b041a65b1",
+        "gitMode": "100644"
+      },
+      "operations": [
+        {
+          "old": "public enum PinkhaBootstrapHook {\n",
+          "new": "public enum PinkhaBootstrapHook {\n    #if DEBUG\n    struct AcceptanceDependencies: Sendable {\n        let stateManager: PinkhaBootstrapStateManager\n        let service: any PinkhaSpaceBootstrapServiceProtocol\n    }\n    // A per-task component fixture. No shared registration, native account,\n    // runtime feature gate, or original frozen capture is replaced.\n    @TaskLocal static var acceptanceDependencies: AcceptanceDependencies?\n    #endif\n",
+          "occurrences": 1,
+          "positionsBefore": [
+            75
+          ]
+        },
+        {
+          "old": "        let stateManager = Container.shared.pinkhaBootstrapStateManager()",
+          "new": "        #if DEBUG\n        let stateManager = acceptanceDependencies?.stateManager ?? Container.shared.pinkhaBootstrapStateManager()\n        #else\n        let stateManager = Container.shared.pinkhaBootstrapStateManager()\n        #endif",
+          "occurrences": 1,
+          "positionsBefore": [
+            1425
+          ]
+        },
+        {
+          "old": "                    let manifest = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: spaceId)",
+          "new": "                    #if DEBUG\n                    let service = acceptanceDependencies?.service ?? Container.shared.pinkhaBootstrapService()\n                    let manifest = try await service.bootstrapSpace(spaceId: spaceId)\n                    #else\n                    let manifest = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: spaceId)\n                    #endif",
+          "occurrences": 1,
+          "positionsBefore": [
+            2629
+          ]
+        }
+      ],
+      "fullInverseExact": true
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PinkhaBootstrapStateManagerTests.swift",
+      "before": {
+        "bytes": 1954,
+        "sha256": "c05867491f47a2740deac0cc684b0473d2fd401733bb3e65b1db7ff38369ec36",
+        "gitBlob": "25931d7cfa84f8544f97aa11c5d57b470b1a2258",
+        "gitMode": "100644"
+      },
+      "after": {
+        "bytes": 32653,
+        "sha256": "3156332458bcccccbac05404db172db49d992a163b4531543aa2577d2d5a695e",
+        "gitBlob": "421aabecc0e1686ff62a1096b2c0b937c9b9ae81",
+        "gitMode": "100644"
+      },
+      "operations": [
+        {
+          "old": "import PinkhaKit\nimport Testing\n@testable import Anytype\n\n@Suite(\"Pinkha bootstrap single-flight\")\nstruct PinkhaBootstrapStateManagerTests {\n    @Test(\"Only one concurrent caller can claim provisioning for a Space\")\n    func onlyOneProvisioningOwner() async {\n        let manager = PinkhaBootstrapStateManager()\n        let claims = await withTaskGroup(of: Bool.self, returning: [Bool].self) { group in\n            for _ in 0..<64 {\n                group.addTask {\n                    manager.beginProvisioningIfNeeded(spaceId: \"pinkha-acceptance-space\")\n                }\n            }\n\n            var values: [Bool] = []\n            for await value in group {\n                values.append(value)\n            }\n            return values\n        }\n\n        #expect(claims.filter { $0 }.count == 1)\n        guard case .provisioning = manager.state(for: \"pinkha-acceptance-space\") else {\n            Issue.record(\"The winning claim must publish provisioning before returning\")\n            return\n        }\n    }\n    @Test(\"An old account completion cannot overwrite a new claim for the same Space\")\n    func oldAccountCompletionCannotPublishIntoReplacementClaim() throws {\n        let manager = PinkhaBootstrapStateManager()\n        let original = try #require(manager.beginProvisioningClaim(spaceId: \"same-space\"))\n        manager.resetForAccountChange()\n        let replacement = try #require(manager.beginProvisioningClaim(spaceId: \"same-space\"))\n        #expect(original != replacement)\n        manager.setState(.failed(\"retired account\"), for: \"same-space\", claim: original)\n        guard case .provisioning = manager.state(for: \"same-space\") else {\n            Issue.record(\"A retired completion changed the replacement account's state\")\n            return\n        }\n        manager.setState(.failed(\"current account\"), for: \"same-space\", claim: replacement)\n        #expect(manager.state(for: \"same-space\") == .failed(\"current account\"))\n    }\n\n}\n",
+          "new": "import PinkhaKit\nimport Testing\n@testable import Anytype\n\n@Suite(\"Pinkha bootstrap single-flight\")\nstruct PinkhaBootstrapStateManagerTests {\n    @Test(\"Only one concurrent caller can claim provisioning for a Space\")\n    func onlyOneProvisioningOwner() async {\n        let manager = PinkhaBootstrapStateManager()\n        let claims = await withTaskGroup(of: Bool.self, returning: [Bool].self) { group in\n            for _ in 0..<64 {\n                group.addTask {\n                    manager.beginProvisioningIfNeeded(spaceId: \"pinkha-acceptance-space\")\n                }\n            }\n\n            var values: [Bool] = []\n            for await value in group {\n                values.append(value)\n            }\n            return values\n        }\n\n        #expect(claims.filter { $0 }.count == 1)\n        guard case .provisioning = manager.state(for: \"pinkha-acceptance-space\") else {\n            Issue.record(\"The winning claim must publish provisioning before returning\")\n            return\n        }\n    }\n    @Test(\"An old account completion cannot overwrite a new claim for the same Space\")\n    func oldAccountCompletionCannotPublishIntoReplacementClaim() throws {\n        let manager = PinkhaBootstrapStateManager()\n        let original = try #require(manager.beginProvisioningClaim(spaceId: \"same-space\"))\n        manager.resetForAccountChange()\n        let replacement = try #require(manager.beginProvisioningClaim(spaceId: \"same-space\"))\n        #expect(original != replacement)\n        manager.setState(.failed(\"retired account\"), for: \"same-space\", claim: original)\n        guard case .provisioning = manager.state(for: \"same-space\") else {\n            Issue.record(\"A retired completion changed the replacement account's state\")\n            return\n        }\n        manager.setState(.failed(\"current account\"), for: \"same-space\", claim: replacement)\n        #expect(manager.state(for: \"same-space\") == .failed(\"current account\"))\n    }\n\n}\n\n#if DEBUG\nimport AnytypeCore\nimport Combine\nimport Foundation\nimport ProtobufMessages\nimport Services\n\n/// App-hosted component coverage of the actual account decorator and selection\n/// implementations. Controlled protocol effects are not native-account proof.\n@Suite(\"Pinkha account startup, publication and explicit retry\", .serialized, .timeLimit(.minutes(2)))\n@MainActor\nstruct PinkhaAccountRuntimeTests {\n    @Test(\"Accepted Stop releases startup, rejects replacement work, and drains after caller cancellation\")\n    func startupStopRetiresOriginalAttemptAndDrainsBeforeReplacement() async throws {\n        let fixture = try AccountRuntimeAuthFixture(selectBlocked: true, logoutBlocked: true)\n        try await fixture.run {\n            let startup = fixture.startSelection()\n            try await accountRuntimeEventually { fixture.events.contains(\"base.select.enter\") }\n            let attempt = try #require(fixture.events.originalAttempt)\n            let removeData = await accountRuntimeResult { try await fixture.service.logout(removeData: true) }\n            #expect(accountRuntimeFailed(removeData))\n            #expect(fixture.events.count(\"base.logout.enter\") == 0)\n\n            let stop = fixture.startStop()\n            try await accountRuntimeEventually { fixture.events.contains(\"base.logout.enter\") }\n            #expect(!attempt.isCurrent)\n            let duplicate = await accountRuntimeResult { try await fixture.service.logout(removeData: false) }\n            let replacement = await accountRuntimeResult {\n                try await fixture.service.selectAccount(id: \"component-account-C\", preferredSpaceId: \"component-space\")\n            }\n            #expect(accountRuntimeFailed(duplicate))\n            #expect(accountRuntimeFailed(replacement))\n            #expect(fixture.events.count(\"base.select.enter\") == 1)\n            #expect(fixture.events.count(\"base.logout.enter\") == 1)\n\n            // The accepted cleanup is the original retained task. Cancelling its\n            // caller must not strand the original base operation or its holds.\n            stop.cancel()\n            fixture.logoutRelease.open()\n            let stopResult = await stop.result\n            let startupResult = await startup.result\n            #expect(accountRuntimeFailed(stopResult))\n            if case .failure(let error) = stopResult { #expect(error is CancellationError) }\n            #expect(accountRuntimeFailed(startupResult))\n            await attempt.waitForDrain()\n            try await accountRuntimeEventually { fixture.events.resumedTokens.count == 2 }\n            #expect(fixture.events.preparedTokens == fixture.events.resumedTokens)\n            #expect(fixture.events.count(\"miniapps.resume\") == 2)\n            #expect(fixture.events.count(\"base.select.drained\") == 1)\n            #expect(fixture.events.count(\"base.logout.return\") == 1)\n            #expect(fixture.events.precedes(\"base.select.drained\", \"bootstrap.quiesce\", lastSecond: true))\n            #expect(fixture.events.count(\"hanlin.open:component-account-B\") == 0)\n            #expect(fixture.events.count(\"sharing.open:component-account-B\") == 0)\n\n            let next = fixture.startSelection()\n            let nextAccount = try await next.value\n            #expect(nextAccount.id == \"component-account-B\")\n            #expect(fixture.events.count(\"base.select.enter\") == 2)\n        }\n    }\n\n    @Test(\"Stop joins the actual publication task before closing either presentation owner\", arguments: [false, true])\n    func queuedPublicationCannotReopenOwnersAfterStop(holdSharing: Bool) async throws {\n        let boundary: AccountRuntimePublicationBoundary = holdSharing ? .sharingReturn : .hanlinHop\n        let fixture = try AccountRuntimeAuthFixture(publicationBoundary: boundary)\n        try await fixture.run {\n            let startup = fixture.startSelection()\n            let held = boundary == .hanlinHop ? \"publication.hanlin.hop\" : \"sharing.open.enter\"\n            try await accountRuntimeEventually { fixture.events.contains(held) }\n            let attempt = try #require(fixture.events.originalAttempt)\n            let stop = fixture.startStop()\n            try await accountRuntimeEventually { !attempt.isCurrent }\n            fixture.hanlinHopRelease.open()\n            fixture.sharingRelease.open()\n            let startupResult = await startup.result\n            try await stop.value\n            #expect(accountRuntimeFailed(startupResult))\n            await attempt.waitForDrain()\n            try await accountRuntimeEventually { fixture.events.resumedTokens.count == 2 }\n            #expect(fixture.events.preparedTokens == fixture.events.resumedTokens)\n            #expect(fixture.events.count(\"miniapps.resume\") == 2)\n            #expect(fixture.events.count(\"sharing.close\") == 3)\n            #expect(fixture.events.count(\"hanlin.close:component-account-B:false\") == 2)\n            #expect(fixture.events.count(\"base.logout.enter\") == 1)\n            if boundary == .hanlinHop {\n                // This fails if the same-turn MainActor attempt check is lost,\n                // even though the outer stage would subsequently reject it.\n                #expect(fixture.events.count(\"hanlin.open:component-account-B\") == 0)\n                #expect(fixture.events.count(\"sharing.open.enter\") == 0)\n            } else {\n                #expect(fixture.events.count(\"hanlin.open:component-account-B\") == 1)\n                #expect(fixture.events.count(\"sharing.open:component-account-B\") == 1)\n                #expect(fixture.events.precedesOccurrence(\"sharing.open:component-account-B\", \"sharing.close\", occurrence: 1))\n                #expect(fixture.events.precedes(\"sharing.open:component-account-B\", \"base.logout.enter\"))\n            }\n            #expect(fixture.events.allOpensPrecedeLastClose())\n        }\n    }\n\n    @Test(\"Account replacement rejects the pending original Space selection and its late publication\")\n    func accountReplacementRejectsPendingSelectionAndLateBootstrap() async throws {\n        let fixture = try AccountRuntimeSelectionFixture(workspaceBlocked: true, failFirstBootstrap: false)\n        try await fixture.run {\n            let accountLifetime = try #require(fixture.account.editorWriteLifetime)\n            let originalCapture = try EditorDocumentWriteCapture(accountLifetime)\n            let pending = fixture.startSelection()\n            try await accountRuntimeEventually { fixture.events.contains(\"workspace.open\") }\n            fixture.account.account = try accountRuntimeAccount(\"component-account-B\")\n            #expect(!originalCapture.source.isCurrent(originalCapture.token))\n            fixture.workspaceRelease.open()\n            let pendingResult = await pending.result\n            #expect(accountRuntimeFailed(pendingResult))\n            if case .failure(let error) = pendingResult {\n                #expect(error as? EditorDocumentWriteError == .rejected(.retired))\n            }\n            #expect(fixture.manager.workspaceInfo == nil)\n            #expect(fixture.events.count(\"spaces.publish\") == 0)\n            #expect(fixture.events.count(\"widgets.prepare\") == 0)\n            #expect(fixture.events.count(\"types.start\") == 0)\n            #expect(fixture.events.count(\"properties.start\") == 0)\n            #expect(fixture.events.count(\"bootstrap.enter\") == 0)\n\n            let current = fixture.startSelection()\n            let actualInfo = try await current.value\n            #expect(actualInfo == fixture.info)\n            #expect(fixture.manager.workspaceInfo == fixture.info)\n            try await accountRuntimeEventually { fixture.state.state(for: \"component-space\") == .ready(fixture.manifest) }\n            let beforeStaleHook = fixture.events.count(\"bootstrap.enter\")\n            PinkhaBootstrapHook.handleSpaceActivated(spaceId: \"component-space\", accountCapture: originalCapture)\n            await originalCapture.source.waitForOperationsToDrain()\n            #expect(fixture.events.count(\"bootstrap.enter\") == beforeStaleHook)\n            #expect(fixture.events.count(\"workspace.open\") == 2)\n            #expect(fixture.events.count(\"spaces.publish\") == 1)\n            // The protocol fixture deliberately supplies no original native\n            // SpaceView capability; the component seam cannot mint one.\n            let nativeSelection = accountRuntimeSyncResult { try fixture.manager.currentOriginalActiveSpaceSelection() }\n            #expect(accountRuntimeFailed(nativeSelection))\n        }\n    }\n\n    @Test(\"Explicit same-Space retry reuses WorkspaceOpen and gives one failed Bootstrap claim a new owner\")\n    func cachedSameSpaceFailedBootstrapRetriesOnceWithoutWorkspaceReopen() async throws {\n        let fixture = try AccountRuntimeSelectionFixture(workspaceBlocked: false, failFirstBootstrap: true)\n        try await fixture.run {\n            let first = fixture.startSelection()\n            let firstInfo = try await first.value\n            #expect(firstInfo == fixture.info)\n            try await accountRuntimeEventually {\n                if case .failed = fixture.state.state(for: \"component-space\") { return true }\n                return false\n            }\n            #expect(fixture.events.count(\"bootstrap.enter\") == 1)\n            let retry = fixture.startSelection()\n            let retryInfo = try await retry.value\n            #expect(retryInfo == fixture.info)\n            try await accountRuntimeEventually { fixture.events.count(\"bootstrap.enter\") == 2 }\n            let concurrentExplicitRetry = fixture.startSelection()\n            let concurrentInfo = try await concurrentExplicitRetry.value\n            #expect(concurrentInfo == fixture.info)\n            #expect(fixture.state.state(for: \"component-space\") == .provisioning)\n            #expect(fixture.events.count(\"bootstrap.enter\") == 2)\n            fixture.bootstrapRelease.open()\n            try await accountRuntimeEventually { fixture.state.state(for: \"component-space\") == .ready(fixture.manifest) }\n            let readyReuse = fixture.startSelection()\n            let readyInfo = try await readyReuse.value\n            #expect(readyInfo == fixture.info)\n            await fixture.account.editorWriteLifetime?.waitForOperationsToDrain()\n            #expect(fixture.events.count(\"workspace.open\") == 1)\n            #expect(fixture.events.count(\"bootstrap.enter\") == 2)\n            #expect(fixture.events.count(\"spaces.publish\") == 1)\n            #expect(fixture.events.count(\"widgets.prepare\") == 1)\n            #expect(fixture.events.count(\"types.start\") == 1)\n            #expect(fixture.events.count(\"properties.start\") == 1)\n            #expect(fixture.events.precedes(\"widgets.prepare\", \"types.start\"))\n            #expect(fixture.events.precedes(\"types.start\", \"properties.start\"))\n        }\n    }\n}\n\nprivate enum AccountRuntimePublicationBoundary: String, Sendable {\n    case hanlinHop\n    case sharingReturn\n}\n\nprivate enum AccountRuntimeFixtureError: Error {\n    case timedOut\n    case unexpectedCall\n    case intentionalBootstrapFailure\n    case missingOriginalAttempt\n    case missingOriginalBinding\n    case conflictingNativeFixture\n}\n\nprivate func accountRuntimeRequireComponentEnvironment() throws {\n    let environment = ProcessInfo.processInfo.environment\n    let nativeFixtures = [\"PINKHA_TYPE_PRESERVATION_POSTFLIGHT\", \"PINKHA_NATIVE_DERIVED_ACCEPTANCE\",\n        \"PINKHA_PREPARE_TYPE_PRESERVATION\", \"PINKHA_SIMULATOR_ACCEPTANCE_PREPARATION\",\n        \"PINKHA_SIMULATOR_UI_DISPOSABLE\", \"PINKHA_HANLIN_NATIVE_PREPARATION\",\n        \"PINKHA_PREPARE_HANLIN_SELECTION_UI\", \"PINKHA_PROPERTIES_PREPARE\",\n        \"PINKHA_T5_UI_PREPARATION\", \"PINKHA_T5_APPLE_PAIR\"]\n    guard nativeFixtures.allSatisfy({ environment[$0] != \"1\" }) else {\n        throw AccountRuntimeFixtureError.conflictingNativeFixture\n    }\n}\n\n@MainActor\nprivate func accountRuntimeEventually(_ predicate: @MainActor () -> Bool) async throws {\n    let deadline = ContinuousClock.now.advanced(by: .seconds(20))\n    while ContinuousClock.now < deadline {\n        if predicate() { return }\n        try Task.checkCancellation()\n        await Task.yield()\n    }\n    throw AccountRuntimeFixtureError.timedOut\n}\n\n@MainActor\nprivate func accountRuntimeResult<Value>(_ body: @MainActor () async throws -> Value) async -> Result<Value, any Error> {\n    do { return .success(try await body()) } catch { return .failure(error) }\n}\n\nprivate func accountRuntimeSyncResult<Value>(_ body: () throws -> Value) -> Result<Value, any Error> {\n    do { return .success(try body()) } catch { return .failure(error) }\n}\n\nprivate func accountRuntimeFailed<Value>(_ result: Result<Value, any Error>) -> Bool {\n    if case .failure = result { return true }\n    return false\n}\n\nprivate func accountRuntimeAccount(_ id: String) throws -> AccountData {\n    var original = Anytype_Model_Account()\n    original.id = id\n    original.status = .active\n    original.info.accountSpaceID = \"component-space\"\n    original.info.spaceViewID = \"component-view\"\n    original.info.techSpaceID = \"component-tech-space\"\n    return try original.asModel()\n}\n\nprivate final class AccountRuntimeGate: @unchecked Sendable {\n    private let lock = NSLock()\n    private var isOpen: Bool\n    private var waiters: [CheckedContinuation<Void, Never>] = []\n    init(open: Bool = false) { isOpen = open }\n    func wait() async {\n        await withCheckedContinuation { continuation in\n            lock.lock()\n            if isOpen { lock.unlock(); continuation.resume() }\n            else { waiters.append(continuation); lock.unlock() }\n        }\n    }\n    func open() {\n        lock.lock()\n        isOpen = true\n        let pending = waiters\n        waiters.removeAll()\n        lock.unlock()\n        for waiter in pending { waiter.resume() }\n    }\n}\n\nprivate final class AccountRuntimeEvents: @unchecked Sendable {\n    private let lock = NSLock()\n    private var values: [String] = []\n    private var attempts: [OriginalAuthAttempt] = []\n    private var prepared: Set<UUID> = []\n    private var resumed: Set<UUID> = []\n    func record(_ value: String) { lock.lock(); values.append(value); lock.unlock() }\n    func capture(_ attempt: OriginalAuthAttempt) { lock.lock(); attempts.append(attempt); lock.unlock() }\n    var originalAttempt: OriginalAuthAttempt? { lock.lock(); defer { lock.unlock() }; return attempts.first }\n    var snapshot: [String] { lock.lock(); defer { lock.unlock() }; return values }\n    var preparedTokens: Set<UUID> { lock.lock(); defer { lock.unlock() }; return prepared }\n    var resumedTokens: Set<UUID> { lock.lock(); defer { lock.unlock() }; return resumed }\n    func prepare() -> UUID {\n        let token = UUID()\n        lock.lock(); prepared.insert(token); values.append(\"miniapps.prepare\"); lock.unlock()\n        return token\n    }\n    func resume(_ token: UUID) { lock.lock(); resumed.insert(token); values.append(\"miniapps.resume\"); lock.unlock() }\n    func contains(_ value: String) -> Bool { snapshot.contains(value) }\n    func count(_ value: String) -> Int { snapshot.filter { $0 == value }.count }\n    func allOpensPrecedeLastClose() -> Bool {\n        let values = snapshot\n        guard let close = values.lastIndex(of: \"sharing.close\") else { return false }\n        return values.indices.filter { values[$0].hasPrefix(\"sharing.open:\") }.allSatisfy { $0 < close }\n    }\n    func precedes(_ first: String, _ second: String, lastSecond: Bool = false) -> Bool {\n        let values = snapshot\n        guard let a = values.firstIndex(of: first),\n              let b = lastSecond ? values.lastIndex(of: second) : values.firstIndex(of: second) else { return false }\n        return a < b\n    }\n    func precedesOccurrence(_ first: String, _ second: String, occurrence: Int) -> Bool {\n        let values = snapshot\n        let positions = values.indices.filter { values[$0] == second }\n        guard let a = values.firstIndex(of: first), positions.indices.contains(occurrence) else { return false }\n        return a < positions[occurrence]\n    }\n}\n\nprivate final class AccountRuntimeBaseAuth: AuthServiceProtocol, Sendable {\n    let account: AccountManager\n    let selectedAccount: AccountData\n    let events: AccountRuntimeEvents\n    let selectRelease: AccountRuntimeGate\n    let logoutRelease: AccountRuntimeGate\n    init(account: AccountManager, selectedAccount: AccountData, events: AccountRuntimeEvents,\n         selectRelease: AccountRuntimeGate, logoutRelease: AccountRuntimeGate) {\n        self.account = account; self.selectedAccount = selectedAccount; self.events = events\n        self.selectRelease = selectRelease; self.logoutRelease = logoutRelease\n    }\n    func selectAccount(id: String, preferredSpaceId: String) async throws -> AccountData {\n        guard let attempt = OriginalAuthRequestContext.parent, attempt.kind == .startup else {\n            throw AccountRuntimeFixtureError.missingOriginalAttempt\n        }\n        try attempt.validate()\n        let admissions = try attempt.admitStage()\n        events.capture(attempt)\n        events.record(\"base.select.enter\")\n        defer {\n            for admission in admissions { admission.cancel() }\n            events.record(\"base.select.drained\")\n        }\n        await selectRelease.wait()\n        try attempt.validate()\n        guard id == selectedAccount.id, preferredSpaceId == selectedAccount.info.accountSpaceId else {\n            throw AccountRuntimeFixtureError.unexpectedCall\n        }\n        account.account = selectedAccount\n        events.record(\"base.select.return\")\n        return selectedAccount\n    }\n    func logout(removeData: Bool) async throws {\n        guard let attempt = OriginalAuthRequestContext.parent, attempt.kind == .stop, !removeData else {\n            throw AccountRuntimeFixtureError.missingOriginalAttempt\n        }\n        try attempt.validate()\n        events.record(\"base.logout.enter\")\n        selectRelease.open()\n        await logoutRelease.wait()\n        events.record(\"base.logout.return\")\n    }\n    func createWallet() async throws -> String { throw AccountRuntimeFixtureError.unexpectedCall }\n    func createAccount(name: String, iconOption: Int, imagePath: String) async throws -> AccountData { throw AccountRuntimeFixtureError.unexpectedCall }\n    func walletRecovery(mnemonic: String) async throws { throw AccountRuntimeFixtureError.unexpectedCall }\n    func accountRecover() async throws { throw AccountRuntimeFixtureError.unexpectedCall }\n    func mnemonicByEntropy(_ entropy: String) async throws -> String { throw AccountRuntimeFixtureError.unexpectedCall }\n    func deleteAccount() async throws -> AccountStatus { throw AccountRuntimeFixtureError.unexpectedCall }\n    func restoreAccount() async throws -> AccountStatus { throw AccountRuntimeFixtureError.unexpectedCall }\n}\n\nprivate final class AccountRuntimeBootstrap: PinkhaSpaceBootstrapServiceProtocol, Sendable {\n    let events: AccountRuntimeEvents\n    let manifestValue: PinkhaSpaceManifest\n    let failFirst: Bool\n    let release: AccountRuntimeGate\n    init(events: AccountRuntimeEvents, manifest: PinkhaSpaceManifest, failFirst: Bool = false,\n         release: AccountRuntimeGate = AccountRuntimeGate(open: true)) {\n        self.events = events; manifestValue = manifest; self.failFirst = failFirst; self.release = release\n    }\n    func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest {\n        guard spaceId == manifestValue.spaceId else { throw AccountRuntimeFixtureError.unexpectedCall }\n        guard let binding = InvocationDispatchContext.binding else { throw AccountRuntimeFixtureError.missingOriginalBinding }\n        try await binding.validateForOperation(named: \"ObjectCreate\")\n        events.record(\"bootstrap.enter\")\n        if failFirst && events.count(\"bootstrap.enter\") == 1 { throw AccountRuntimeFixtureError.intentionalBootstrapFailure }\n        await release.wait()\n        try await binding.validateForOperation(named: \"ObjectCreate\")\n        events.record(\"bootstrap.return\")\n        return manifestValue\n    }\n    func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? { nil }\n    func isBootstrapped(spaceId: String) -> Bool { false }\n    func quiesceAccountOperations() async { events.record(\"bootstrap.quiesce\") }\n    func resumeAccountOperations() async throws { events.record(\"bootstrap.resume\") }\n}\n\n@MainActor\nprivate final class AccountRuntimeAuthFixture {\n    let events = AccountRuntimeEvents()\n    let selectRelease: AccountRuntimeGate\n    let logoutRelease: AccountRuntimeGate\n    let hanlinHopRelease: AccountRuntimeGate\n    let sharingRelease: AccountRuntimeGate\n    let service: PinkhaHanlinAuthService\n    private var joins: [@MainActor () async -> Void] = []\n    init(selectBlocked: Bool = false, logoutBlocked: Bool = false,\n         publicationBoundary: AccountRuntimePublicationBoundary? = nil) throws {\n        try accountRuntimeRequireComponentEnvironment()\n        selectRelease = AccountRuntimeGate(open: !selectBlocked)\n        logoutRelease = AccountRuntimeGate(open: !logoutBlocked)\n        hanlinHopRelease = AccountRuntimeGate(open: publicationBoundary != .hanlinHop)\n        sharingRelease = AccountRuntimeGate(open: publicationBoundary != .sharingReturn)\n        let account = AccountManager()\n        account.account = try accountRuntimeAccount(\"component-account-A\")\n        let events = events, hanlinGate = hanlinHopRelease, sharingGate = sharingRelease\n        let base = AccountRuntimeBaseAuth(account: account, selectedAccount: try accountRuntimeAccount(\"component-account-B\"),\n                                          events: events, selectRelease: selectRelease, logoutRelease: logoutRelease)\n        let bootstrap = AccountRuntimeBootstrap(events: events, manifest: .initial(spaceId: \"component-space\"))\n        let owners = PinkhaHanlinAuthService.AcceptanceOwners(\n            accountManager: account, bootstrap: bootstrap,\n            prepareMiniApps: { events.prepare() }, resumeMiniApps: { events.resume($0) },\n            prepareEngine: { events.record(\"engine.prepare\") },\n            closeSharing: { events.record(\"sharing.close\") },\n            openSharing: { account in\n                events.record(\"sharing.open.enter\")\n                await sharingGate.wait()\n                events.record(\"sharing.open:\\(account)\")\n            },\n            closeHanlin: { account, removeData in events.record(\"hanlin.close:\\(account):\\(removeData)\") },\n            beforeHanlinPublication: { events.record(\"publication.hanlin.hop\"); await hanlinGate.wait() },\n            openHanlin: { events.record(\"hanlin.open:\\($0)\") }\n        )\n        service = PinkhaHanlinAuthService(base: base, acceptanceOwners: owners)\n    }\n    func startSelection() -> Task<AccountData, any Error> {\n        let service = service\n        let task = Task { try await service.selectAccount(id: \"component-account-B\", preferredSpaceId: \"component-space\") }\n        joins.append { _ = await task.result }\n        return task\n    }\n    func startStop() -> Task<Void, any Error> {\n        let service = service\n        let task = Task { try await service.logout(removeData: false) }\n        joins.append { _ = await task.result }\n        return task\n    }\n    func run(_ body: @MainActor () async throws -> Void) async throws {\n        do { try await body(); await finish() }\n        catch { await finish(); throw error }\n    }\n    private func finish() async {\n        selectRelease.open(); logoutRelease.open(); hanlinHopRelease.open(); sharingRelease.open()\n        for join in joins { await join() }\n        do {\n            try await accountRuntimeEventually { self.events.preparedTokens == self.events.resumedTokens }\n        } catch {\n            Issue.record(\"The component's actual MiniApps resume callbacks did not finish: \\(error)\")\n        }\n    }\n}\n\nprivate final class AccountRuntimeSpaces: SpaceViewsStorageProtocol, Sendable {\n    let events: AccountRuntimeEvents\n    init(_ events: AccountRuntimeEvents) { self.events = events }\n    var allSpaceViews: [SpaceView] { [] }\n    var allSpaceViewsPublisher: AnyPublisher<[SpaceView], Never> { Just([]).eraseToAnyPublisher() }\n    func startSubscription() async {}\n    func stopSubscription() async {}\n    func spaceView(spaceViewId: String) -> SpaceView? { nil }\n    func spaceView(spaceId: String) -> SpaceView? { nil }\n    func spaceInfo(spaceId: String) -> AccountInfo? { nil }\n    func addSpaceInfo(spaceId: String, info: AccountInfo) { events.record(\"spaces.publish\") }\n}\n\nprivate final class AccountRuntimeTypes: ObjectTypeProviderProtocol, Sendable {\n    let events: AccountRuntimeEvents\n    init(_ events: AccountRuntimeEvents) { self.events = events }\n    var syncPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }\n    func setDefaultObjectType(type: ObjectType, spaceId: String, route: AnalyticsDefaultObjectTypeChangeRoute) {}\n    func defaultObjectType(spaceId: String) throws -> ObjectType { throw AccountRuntimeFixtureError.unexpectedCall }\n    func defaultObjectTypePublisher(spaceId: String) -> AnyPublisher<ObjectType, Never> { Empty().eraseToAnyPublisher() }\n    func objectType(id: String) throws -> ObjectType { throw AccountRuntimeFixtureError.unexpectedCall }\n    func objectType(recommendedLayout: DetailsLayout, spaceId: String) throws -> ObjectType { throw AccountRuntimeFixtureError.unexpectedCall }\n    func objectType(uniqueKey: ObjectTypeUniqueKey, spaceId: String) throws -> ObjectType { throw AccountRuntimeFixtureError.unexpectedCall }\n    func objectTypes(spaceId: String) -> [ObjectType] { [] }\n    func deletedObjectType(id: String) -> ObjectType { preconditionFailure(\"Unexpected deleted-type access in account component fixture\") }\n    func startSubscription(spaceId: String) async { events.record(\"types.start\") }\n    func stopSubscription() async { events.record(\"types.stop\") }\n    func prepareData(spaceId: String) async {}\n}\n\nprivate final class AccountRuntimeProperties: PropertyDetailsStorageProtocol, Sendable {\n    let events: AccountRuntimeEvents\n    init(_ events: AccountRuntimeEvents) { self.events = events }\n    var syncPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }\n    func relationsDetails(keys: [String], spaceId: String) -> [PropertyDetails] { [] }\n    func relationsDetails(key: String, spaceId: String) throws -> PropertyDetails { throw AccountRuntimeFixtureError.unexpectedCall }\n    func relationsDetails(bundledKey: BundledPropertyKey, spaceId: String) throws -> PropertyDetails { throw AccountRuntimeFixtureError.unexpectedCall }\n    func relationsDetails(ids: [String], spaceId: String) -> [PropertyDetails] { [] }\n    func relationsDetails(spaceId: String) -> [PropertyDetails] { [] }\n    func startSubscription(spaceId: String) async { events.record(\"properties.start\") }\n    func stopSubscription() async { events.record(\"properties.stop\") }\n    func prepareData(spaceId: String) async {}\n}\n\n@MainActor\nprivate final class AccountRuntimeWidgets: WidgetsObjectsStorageProtocol {\n    let events: AccountRuntimeEvents\n    init(_ events: AccountRuntimeEvents) { self.events = events }\n    func prepare(info: AccountInfo) { events.record(\"widgets.prepare\") }\n    func waitForReady(spaceId: String) async {}\n    func widgetsObjects(spaceId: String) -> (channel: any BaseDocumentProtocol, personal: any BaseDocumentProtocol)? { nil }\n    func clear() { events.record(\"widgets.clear\") }\n}\n\nprivate final class AccountRuntimeRecency: SpaceRecencyStorageProtocol, Sendable {\n    let events: AccountRuntimeEvents\n    init(_ events: AccountRuntimeEvents) { self.events = events }\n    func markInteraction(spaceId: String) { events.record(\"recency\") }\n    func lastInteractionDates() -> [String: Date] { [:] }\n}\n\n@MainActor\nprivate final class AccountRuntimeSelectionFixture {\n    let account = AccountManager()\n    let events = AccountRuntimeEvents()\n    let state = PinkhaBootstrapStateManager()\n    let workspaceRelease: AccountRuntimeGate\n    let bootstrapRelease: AccountRuntimeGate\n    let info: AccountInfo\n    let manifest: PinkhaSpaceManifest\n    let service: AccountRuntimeBootstrap\n    let manager: ActiveSpaceManager\n    private var joins: [@MainActor () async -> Void] = []\n    init(workspaceBlocked: Bool, failFirstBootstrap: Bool) throws {\n        try accountRuntimeRequireComponentEnvironment()\n        let value = try accountRuntimeAccount(\"component-account-A\")\n        account.account = value\n        info = value.info\n        manifest = PinkhaSpaceManifest(spaceId: \"component-space\", manifestObjectId: \"component-manifest\",\n                                       createdAt: Date(timeIntervalSince1970: 0), updatedAt: Date(timeIntervalSince1970: 0))\n        workspaceRelease = AccountRuntimeGate(open: !workspaceBlocked)\n        bootstrapRelease = AccountRuntimeGate(open: !failFirstBootstrap)\n        service = AccountRuntimeBootstrap(events: events, manifest: manifest, failFirst: failFirstBootstrap,\n                                          release: bootstrapRelease)\n        let events = events, gate = workspaceRelease, info = info\n        manager = ActiveSpaceManager(\n            acceptanceAccount: account, workspaceStorage: AccountRuntimeSpaces(events),\n            objectTypes: AccountRuntimeTypes(events), properties: AccountRuntimeProperties(events),\n            widgets: AccountRuntimeWidgets(events), recency: AccountRuntimeRecency(events),\n            workspaceOpen: { spaceID in\n                guard spaceID == info.accountSpaceId else { throw AccountRuntimeFixtureError.unexpectedCall }\n                guard let binding = InvocationDispatchContext.binding else { throw AccountRuntimeFixtureError.missingOriginalBinding }\n                try await binding.validateForOperation(named: \"WorkspaceOpen\")\n                events.record(\"workspace.open\")\n                await gate.wait()\n                return info\n            }\n        )\n    }\n    func startSelection() -> Task<AccountInfo?, any Error> {\n        let manager = manager\n        let task = Task { try await manager.setActiveSpace(spaceId: \"component-space\") }\n        joins.append { _ = await task.result }\n        return task\n    }\n    func run(_ body: @MainActor () async throws -> Void) async throws {\n        let dependencies = PinkhaBootstrapHook.AcceptanceDependencies(stateManager: state, service: service)\n        try await PinkhaBootstrapHook.$acceptanceDependencies.withValue(dependencies) {\n            do { try await body(); await finish() }\n            catch { await finish(); throw error }\n        }\n    }\n    private func finish() async {\n        workspaceRelease.open(); bootstrapRelease.open()\n        for join in joins { await join() }\n        await manager.stopSubscription()\n        await account.editorWriteLifetime?.waitForOperationsToDrain()\n    }\n}\n#endif\n",
+          "occurrences": 1,
+          "positionsBefore": [
+            0
+          ]
+        }
+      ],
+      "fullInverseExact": true
+    }
+  ]
+}

@@ -250,7 +250,7 @@
       "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
       "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
       "baselineBlob": "d3820631ef1b344babf116ca8766e7c0dcf853df",
-      "replacementBlob": "15de50a91b793bee20db3505e6b3bd4dc46974a4",
+      "replacementBlob": "d5303686524e0e456affb3b0d93064f2e2195f7d",
       "reason": "Retain the original Hanlin account decorator and simulator postflight hook. Add independent Heart sharing owner drain before account transitions and reopen only after the original account operation succeeds. The Any engine has a separate existing workspace lease; no Heart logout is used to switch engines. Add the unified host pre-native account-change drain in all eight mutating auth entry points. Preserve original account serialization, sharing/Hanlin ownership and native auth; a capture close failure prevents transfer. Acquire and drain an independently owned shared MiniApps admission hold before native auth; retain native outcome, original serialization and replay journal, then release only that transition hold. Revoked callbacks and result ACK are refused.",
       "sharedSources": [
         {
@@ -2337,7 +2337,7 @@
       "from": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
       "to": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
       "baselineBlob": "a0b729b10e80067cd94466295b2296d56c4931ba",
-      "replacementBlob": "145f418680103ea26962a1ee2f8677a48f902557",
+      "replacementBlob": "dd2cb3875fcc994592ae15b954760237be6c6743",
       "sharedSources": [],
       "reason": "Reuse original selected-Space/account/SpaceView authority and native dispatch drain; retry a failed asynchronous Bootstrap only through the exact frozen original account capture. Preserve widget-before-subscription ordering, preview and analytics. The owned original subscription clears only the inherited temporary startup dispatch binding; the public unbound-selection guard and exact subscription identity remain intact.",
       "validation": [
@@ -2409,7 +2409,7 @@
       "from": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
       "to": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
       "baselineBlob": "865126d851cc3401b20e8eb917799230f032f414",
-      "replacementBlob": "507a5e7861e433d85362b4934d25150b4d57b255",
+      "replacementBlob": "fc857448492801e971351bb5c12a096b041a65b1",
       "sharedSources": [],
       "reason": "Propagate the original selected-account capture across the queued Bootstrap task, admit its full original account operation before cache/manifest work, and bind actual native dispatch; retain the legacy public entry and state claim behavior.",
       "validation": [
@@ -2471,6 +2471,47 @@
       "validation": [
         "2026-11-27: original586 primary bytes equal the retained af63 preimage. The exact already-reviewed Bootstrap5 source and full inverse are retained under docs/validation/20261127-wave3-kit-sdk-auth-warm-source-intake/bootstrap/; the source-only root review remains9d9a4338a69e5e21ac83045ccecdea543c3cbee472bf5bfb18b55db76ec6ebe7.",
         "The actual original140 retention gate failed only because these four existing baseline paths lacked their own mapping. Preserve the failed receipt, all140 prior rows and the pending normal four-parent merge. This mapping adds no product source, compiler, native, UI, account, resolver or materialization acceptance. See docs/validation/20261127-wave3-bootstrap-map144-continuation/."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/PinkhaBootstrapStateManagerTests.swift",
+      "to": "AnyTypeTests/Pinkha/PinkhaBootstrapStateManagerTests.swift",
+      "baselineBlob": "25931d7cfa84f8544f97aa11c5d57b470b1a2258",
+      "replacementBlob": "421aabecc0e1686ff62a1096b2c0b937c9b9ae81",
+      "sharedSources": [
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+          "gitBlob": "d5303686524e0e456affb3b0d93064f2e2195f7d"
+        },
+        {
+          "path": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+          "gitBlob": "dd2cb3875fcc994592ae15b954760237be6c6743"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
+          "gitBlob": "fc857448492801e971351bb5c12a096b041a65b1"
+        },
+        {
+          "path": "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+          "gitBlob": "8b5d3d362f2c73b248b8b5b68e6ecda9a62f09e2"
+        },
+        {
+          "path": "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+          "gitBlob": "41b75d84ae99a78c8cbb8410ca414f610646039b"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapStateManager.swift",
+          "gitBlob": "5235e8fec6bc6bda21442751a662291a1c3f68d0"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift",
+          "gitBlob": "c2e0b92df6fe5912c7e0452a1d866fd58942e676"
+        }
+      ],
+      "reason": "Retain the complete two-method original Bootstrap test prefix and add four App-hosted component methods/five cases that exercise the actual account decorator, original attempt/publication/Stop ownership, AccountManager retirement, selected-Space checks and original failed Bootstrap claim retry. Controlled protocol/DEBUG effects supply ordering only; they do not grant native account, SpaceView, SDK or transport acceptance.",
+      "validation": [
+        "Source-only full literal inverses, unchanged original authority declarations and exact four-method/five-case compiler/enumeration profile. No compiler, test, host or native runtime execution in this source packet; future actual shared-App acceptance remains required."
       ]
     }
   ],

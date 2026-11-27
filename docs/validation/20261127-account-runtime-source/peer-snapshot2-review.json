@@ -1,0 +1,110 @@
+{
+  "accountSelectionAnalysis": [
+    "The fixture uses the concrete current AccountManager. Its setter marks the existing lifetime unavailable before publishing the replacement and confirming a new generation; the captured old token cannot become current after reopen.",
+    "The actual selection attempt observes account retirement synchronously and owns the unchanged source/account captures. The test replaces AccountManager while WorkspaceOpen is held, releases that result, and requires the original binding postflight to reject it as retired before storage, subscriptions or Bootstrap publish.",
+    "The succeeding selection captures the replacement generation and uses the same original selection code. The protocol SpaceViews fixture supplies no OriginalSpaceViewPermission; currentOriginalActiveSpaceSelection must still reject it rather than minting native capability.",
+    "A stale original account capture is passed explicitly to the captured Hook overload; the actual Hook validates it before a claim and retains validation/admission around task-local service execution. The test observes no additional Bootstrap work in a ready state."
+  ],
+  "apiAndCompilerSourceReview": [
+    "Auth fixture implements the nine required methods of the exact current AuthServiceProtocol. Bootstrap fixture implements bootstrap/manifest/state/drain/reopen methods; original protocol defaults provide canonical bootstrap and native-schema-state methods.",
+    "SpaceViews, type, property and recency fixture methods match the actual protocol signatures; Widgets fixture and protocol are MainActor-isolated. AccountInfo/AccountData are current Sendable model values and the fixture constructs them through the original protobuf asModel conversion.",
+    "The exact App lock pins Factory8ca11. Its Injected wrappedValue setter replaces the current instance dependency, so DEBUG initializer assignments require no global registration. Original wrappers still resolve on initialization; this review does not claim zero construction of original dependencies.",
+    "All three production changes are the retained DEBUG optional seams plus their original-effect delegation. Original state, stage, retirement, same-turn MainActor publication validation, selection identity, binding restrictions and claim ownership remain the governing code. No production native authority or fixture-created native permission is added.",
+    "The existing current PBX and App lock are byte-qualified as dependencies. The candidate changes an existing test file and three existing product files only; no target, dependency, compiler flag or source-list modification is made. Actual future compiler FileList and selected result admission remain required."
+  ],
+  "baseCommit": "2e312d361f6782ca7365d4bacc1e231b27571cd4",
+  "baseTree": "88aafd76799e8d13782d7d0d8a79b0a02b8c6a17",
+  "bootstrapRetryAnalysis": [
+    "The first actual selection publishes controlled WorkspaceOpen once and invokes the original Hook. The injected Bootstrap service validates the real task-local binding then fails deliberately; the original Hook records failed state with its claim. Snapshot2 additionally requires exactly one initial Bootstrap entry.",
+    "The cached selection branch retains its original account/attempt validations and invokes the original Hook without another WorkspaceOpen. Original PinkhaBootstrapStateStorage atomically permits a new claim only for uninitialized or failed state; provisioning/ready return nil.",
+    "Holding the second Bootstrap service invocation makes the next explicit same-Space call observe provisioning. The test requires exactly two total service entries; after release and ready, another reuse still leaves WorkspaceOpen, storage publication and each subscription preparation at one.",
+    "Task-local dependencies cover the test body and its cleanup, propagate through original Tasks, and do not register a replacement in Factory. Cleanup opens both gates, joins every retained selection Task, stops the original manager and awaits the actual account lifetime operations."
+  ],
+  "candidateImports": 0,
+  "compilerInvocations": 0,
+  "findings": [],
+  "fullInverse": {
+    "bytes": 51843,
+    "gitBlob": "a38e85dddd7a419f64362b667d83233a98bcca94",
+    "gitMode": "100644",
+    "path": "account16-runtime-source/review-snapshot2-full-inverses.json",
+    "sha256": "ef077d7142e8e321cb521c8c0654a2092f7dbe57dc461a0577f290139de30951"
+  },
+  "hostActions": 0,
+  "independentByteProof": {
+    "bytes": 15927,
+    "gitBlob": "8f222753e27f059c611afcfbaef370f3a37e18d5",
+    "gitMode": "100644",
+    "path": "account16-runtime-source/snapshot2-independent-review/independent-byte-proof.json",
+    "sha256": "bc68d59080b01c456e08846a3d5feba18b7faaf89321f0a269d0194c721eee5c"
+  },
+  "limits": [
+    "No compiler, Swift macro expansion, runtime enumeration, test execution, native-account mutation or host action occurred. Source compatibility is not an Apple compiler or runtime PASS.",
+    "WorkspaceOpen and Bootstrap service effects are controlled components. InvocationDispatchBinding.validateForOperation prepares and validates the original context but does not begin a native dispatch permit; these cases do not qualify original middleware execution or native RPC drain.",
+    "The stale Hook assertion occurs when Bootstrap is already ready, so its no-extra-work observation does not by itself isolate stale-capture rejection from ready-state claim deduplication. The original stale-capture checks were separately read and remain intact.",
+    "Account replacement in this selection case directly changes a local concrete AccountManager; native AccountSelect/Stop, persisted account custody and original UI/SpaceView permission remain outside that case.",
+    "The actual suite has its existing2-minute Swift Testing limit and20-second observation loops. Gates are released and retained Tasks joined in fixture cleanup; deadline enforcement and cancellation behavior still require the future actual test process."
+  ],
+  "preservedBoundaries": [
+    "All four preimages match actual published2e312 complete tree;26 inverse operations reconstruct all four full originals.",
+    "The original1954-byte test prefix and both original methods are byte-exact; snapshot2 changes only three assertions from snapshot1 and no production bytes.",
+    "The prior3ac3 Auth review remains unchanged. The additional resume-count checks supplement UUID-set equality without altering the publication/Stop implementation.",
+    "Current shared compiler source plans61/Stage1-10 and warm22methods/34cases/editor4 selections were not edited or executed. The new finite profile is separately owned by Mini and is not qualified by this four-file source review."
+  ],
+  "priorAuthReview": {
+    "bytes": 4112,
+    "gitBlob": "4d43ef90ea160f4b9666c391a31cf614171ebe14",
+    "gitMode": "100644",
+    "path": "account16-runtime-source/review-snapshot1-auth-peer-review.json",
+    "preservedUnchanged": true,
+    "sha256": "3ac3f80325a80fbbeab3d0fe955dc46fe25450febf423cf540f5212d7355d8f9"
+  },
+  "reviewedScope": [
+    "Complete four-file immutable snapshot2 and all26 whole-file inverse operations against the actual2e312 tree",
+    "Full accountReplacementRejectsPendingSelectionAndLateBootstrap and cachedSameSpaceFailedBootstrapRetriesOnceWithoutWorkspaceReopen methods, fixtures and cleanup",
+    "Snapshot1 to2 assertion-only delta and continued validity of the prior complete Auth publication/Stop review",
+    "Current original account/lifetime/dispatch/selection/claim dependencies, protocol signatures and exact pinned Factory instance setter"
+  ],
+  "schema": "pinkha-account-runtime-snapshot2-independent-source-review/v1",
+  "snapshotIndex": {
+    "bytes": 4200,
+    "gitBlob": "aa6533ed1585b019096b6347a2cec8b81455c969",
+    "gitMode": "100644",
+    "path": "account16-runtime-source/review-snapshot2-identities.json",
+    "sha256": "31db768b92816445c846bc092d850c97acce701588c11babb53a095bf0d4fd2a"
+  },
+  "sourceEdits": 0,
+  "sourceStatus": "NOT_COMPILED_NOT_RUN",
+  "status": "NO_CONCRETE_SOURCE_BLOCKER_FOUND",
+  "testInventory": {
+    "allNewRuntime": "NOT_RUN",
+    "newCases": 5,
+    "newMethods": 4,
+    "newSuite": "PinkhaAccountRuntimeTests",
+    "originalMethodsPreserved": 2,
+    "selectors": [
+      {
+        "cases": 1,
+        "method": "startupStopRetiresOriginalAttemptAndDrainsBeforeReplacement"
+      },
+      {
+        "argumentType": "Bool",
+        "arguments": [
+          false,
+          true
+        ],
+        "cases": 2,
+        "method": "queuedPublicationCannotReopenOwnersAfterStop"
+      },
+      {
+        "cases": 1,
+        "method": "accountReplacementRejectsPendingSelectionAndLateBootstrap"
+      },
+      {
+        "cases": 1,
+        "method": "cachedSameSpaceFailedBootstrapRetriesOnceWithoutWorkspaceReopen"
+      }
+    ]
+  },
+  "testsExecuted": 0
+}

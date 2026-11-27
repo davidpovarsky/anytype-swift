@@ -1,0 +1,364 @@
+{
+  "acceptanceScope": "Actual App wrapper/attempt/account/selection/claim code with controlled protocol and DEBUG boundary effects",
+  "compilerScope": {
+    "currentNativeSourcePaths": 61,
+    "currentStage1UISourcePaths": 10,
+    "requiredConfigurationCondition": "DEBUG",
+    "separateNativeUIRunnerRequired": false,
+    "target": "AnytypeTests"
+  },
+  "declaredCases": 5,
+  "finalSDKAndNativeTuple": null,
+  "historicalWarmSelectionUnchanged": {
+    "declaredCases": 34,
+    "editorUI": 4,
+    "methods": 22
+  },
+  "lanes": {
+    "account-startup-stop-retry-hosted": {
+      "declaredCases": 5,
+      "expectedMethods": 4,
+      "invocationScope": "exact-methods",
+      "invocationSelectors": [
+        "AnytypeTests/PinkhaAccountRuntimeTests/accountReplacementRejectsPendingSelectionAndLateBootstrap()",
+        "AnytypeTests/PinkhaAccountRuntimeTests/cachedSameSpaceFailedBootstrapRetriesOnceWithoutWorkspaceReopen()",
+        "AnytypeTests/PinkhaAccountRuntimeTests/queuedPublicationCannotReopenOwnersAfterStop(holdSharing:)",
+        "AnytypeTests/PinkhaAccountRuntimeTests/startupStopRetiresOriginalAttemptAndDrainsBeforeReplacement()"
+      ],
+      "methods": {
+        "accountReplacementRejectsPendingSelectionAndLateBootstrap": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        },
+        "cachedSameSpaceFailedBootstrapRetriesOnceWithoutWorkspaceReopen": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        },
+        "queuedPublicationCannotReopenOwnersAfterStop": {
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2,
+          "parameters": [
+            {
+              "name": "holdSharing",
+              "type": "Bool"
+            }
+          ]
+        },
+        "startupStopRetiresOriginalAttemptAndDrainsBeforeReplacement": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        }
+      },
+      "originalSelectors": [
+        "AnytypeTests/PinkhaAccountRuntimeTests/accountReplacementRejectsPendingSelectionAndLateBootstrap()",
+        "AnytypeTests/PinkhaAccountRuntimeTests/cachedSameSpaceFailedBootstrapRetriesOnceWithoutWorkspaceReopen()",
+        "AnytypeTests/PinkhaAccountRuntimeTests/queuedPublicationCannotReopenOwnersAfterStop(holdSharing:)",
+        "AnytypeTests/PinkhaAccountRuntimeTests/startupStopRetiresOriginalAttemptAndDrainsBeforeReplacement()"
+      ],
+      "source": "account",
+      "suite": "PinkhaAccountRuntimeTests"
+    }
+  },
+  "methods": 4,
+  "newCompilerSourcePath": false,
+  "newPBXMembership": false,
+  "newRunner": false,
+  "notAccepted": [
+    "native account lifecycle",
+    "native middleware dispatch or transport drain",
+    "SDK execution",
+    "real dual-engine replacement",
+    "real native account replacement",
+    "SpaceView/Participant authority",
+    "native persistence",
+    "application UI",
+    "physical device"
+  ],
+  "processContract": {
+    "caseSignalWaitSeconds": 20,
+    "enumerationTimeoutSeconds": 180,
+    "existingConsumerOnly": true,
+    "newWorkflowOrRuntimeRouteCreated": false,
+    "originalCommandBarrierRequiredBeforeCompilerWitness": true,
+    "originalRawXCResultAndLogsRequired": true,
+    "parallelTestingEnabled": false,
+    "sameValidatorInstanceRequired": true,
+    "suiteTimeoutSeconds": 600,
+    "testTimeLimitSeconds": 120
+  },
+  "requiredEnvironment": {
+    "PINKHA_HANLIN_NATIVE_PREPARATION": "0",
+    "PINKHA_NATIVE_DERIVED_ACCEPTANCE": "0",
+    "PINKHA_PREPARE_HANLIN_SELECTION_UI": "0",
+    "PINKHA_PREPARE_TYPE_PRESERVATION": "0",
+    "PINKHA_PROPERTIES_PREPARE": "0",
+    "PINKHA_SIMULATOR_ACCEPTANCE_PREPARATION": "0",
+    "PINKHA_SIMULATOR_UI_DISPOSABLE": "0",
+    "PINKHA_T5_APPLE_PAIR": "0",
+    "PINKHA_T5_UI_PREPARATION": "0",
+    "PINKHA_TYPE_PRESERVATION_POSTFLIGHT": "0"
+  },
+  "runtimeReady": false,
+  "schema": "pinkha-hosted-account-runtime-closed-profile-v1",
+  "sourceInverse": {
+    "bytes": 853,
+    "file": "source-inverse.json",
+    "gitBlob": "c008d8039675bed8bbb33c43196526da2320ec14",
+    "gitMode": "100644",
+    "sha256": "2b7ca55648670b8f9766c2539d93bdd4742d5ff919e294dcbdcc46665c186585"
+  },
+  "sources": {
+    "account": {
+      "append": {
+        "bytes": 30699,
+        "gitBlob": "11eea963edf87c8072052a147139e9be5dcbda1f",
+        "gitMode": "100644",
+        "sha256": "2650bff8aa910418482de24bc9aba7298f73250e1fef7c1f62cde222486b60ef"
+      },
+      "bytes": 32653,
+      "completeDeclarations": {
+        "accountReplacementRejectsPendingSelectionAndLateBootstrap": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        },
+        "cachedSameSpaceFailedBootstrapRetriesOnceWithoutWorkspaceReopen": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        },
+        "oldAccountCompletionCannotPublishIntoReplacementClaim": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        },
+        "onlyOneProvisioningOwner": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        },
+        "queuedPublicationCannotReopenOwnersAfterStop": {
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2,
+          "parameters": [
+            {
+              "name": "holdSharing",
+              "type": "Bool"
+            }
+          ]
+        },
+        "startupStopRetiresOriginalAttemptAndDrainsBeforeReplacement": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        }
+      },
+      "gitBlob": "421aabecc0e1686ff62a1096b2c0b937c9b9ae81",
+      "gitMode": "100644",
+      "methodDeclarations": {
+        "accountReplacementRejectsPendingSelectionAndLateBootstrap": {
+          "declaration": {
+            "bytes": 2650,
+            "gitBlob": "e215b14f8d4a41975496c4f4fdcc886ff6e63a4f",
+            "gitMode": "100644",
+            "sha256": "ade53a2a8abfe3319a1ede1f727bad8949c070acf38642a5321315ca8a22adbb"
+          },
+          "headerUTF8": "    @Test(\"Account replacement rejects the pending original Space selection and its late publication\")\n    func accountReplacementRejectsPendingSelectionAndLateBootstrap() async throws {\n"
+        },
+        "cachedSameSpaceFailedBootstrapRetriesOnceWithoutWorkspaceReopen": {
+          "declaration": {
+            "bytes": 2290,
+            "gitBlob": "6da9b1be7333587b0b4ad396e7f16088d98173d9",
+            "gitMode": "100644",
+            "sha256": "f0e7834616860cb4b6b70e3fc7fa24e1890e92f948ce095aefb29325187b24da"
+          },
+          "headerUTF8": "    @Test(\"Explicit same-Space retry reuses WorkspaceOpen and gives one failed Bootstrap claim a new owner\")\n    func cachedSameSpaceFailedBootstrapRetriesOnceWithoutWorkspaceReopen() async throws {\n"
+        },
+        "queuedPublicationCannotReopenOwnersAfterStop": {
+          "declaration": {
+            "bytes": 2441,
+            "gitBlob": "edc15f2c74450da43647eed860ea068a2e0ab970",
+            "gitMode": "100644",
+            "sha256": "f537f10f05ba4f244c225820a8d724c99e8656c0e9fc4abd1149975a061c0471"
+          },
+          "headerUTF8": "    @Test(\"Stop joins the actual publication task before closing either presentation owner\", arguments: [false, true])\n    func queuedPublicationCannotReopenOwnersAfterStop(holdSharing: Bool) async throws {\n"
+        },
+        "startupStopRetiresOriginalAttemptAndDrainsBeforeReplacement": {
+          "declaration": {
+            "bytes": 2970,
+            "gitBlob": "e783a1d278b302a6a9a93e3b958c327491425d8c",
+            "gitMode": "100644",
+            "sha256": "c2a667b448e01c8dbc4d96acbc9ead0e61cccef641c6f1dd092df330d91ca8dd"
+          },
+          "headerUTF8": "    @Test(\"Accepted Stop releases startup, rejects replacement work, and drains after caller cancellation\")\n    func startupStopRetiresOriginalAttemptAndDrainsBeforeReplacement() async throws {\n"
+        }
+      },
+      "originalDeclarations": {
+        "oldAccountCompletionCannotPublishIntoReplacementClaim": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        },
+        "onlyOneProvisioningOwner": {
+          "argument_collections": [],
+          "case_count": 1,
+          "parameters": []
+        }
+      },
+      "originalPrefix": {
+        "bytes": 1954,
+        "gitBlob": "25931d7cfa84f8544f97aa11c5d57b470b1a2258",
+        "gitMode": "100644",
+        "sha256": "c05867491f47a2740deac0cc684b0473d2fd401733bb3e65b1db7ff38369ec36"
+      },
+      "originalTarget": "AnytypeTests",
+      "path": "AnyTypeTests/Pinkha/PinkhaBootstrapStateManagerTests.swift",
+      "restoredOriginalBytes": 1954,
+      "restoredOriginalSHA256": "c05867491f47a2740deac0cc684b0473d2fd401733bb3e65b1db7ff38369ec36",
+      "sha256": "3156332458bcccccbac05404db172db49d992a163b4531543aa2577d2d5a695e",
+      "suiteHeaderUTF8": "@Suite(\"Pinkha account startup, publication and explicit retry\", .serialized, .timeLimit(.minutes(2)))\n@MainActor\nstruct PinkhaAccountRuntimeTests {\n"
+    }
+  },
+  "supportSources": {
+    "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift": {
+      "bytes": 17583,
+      "gitBlob": "d5303686524e0e456affb3b0d93064f2e2195f7d",
+      "gitMode": "100644",
+      "sha256": "440949c8ef363a9234f2a24057319bff67534dbd1cd72f16e1e00cd9891e9791"
+    },
+    "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift": {
+      "bytes": 3523,
+      "gitBlob": "fc857448492801e971351bb5c12a096b041a65b1",
+      "gitMode": "100644",
+      "sha256": "6a7b6f13a4c3473ac05359b8ba3b9ec2c17120909678c21ccadba17e1ea3141c"
+    },
+    "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapStateManager.swift": {
+      "bytes": 3147,
+      "gitBlob": "5235e8fec6bc6bda21442751a662291a1c3f68d0",
+      "gitMode": "100644",
+      "sha256": "286de43200287de39493a6ae7cf66360bc1f609ccc8746a4ab5a88c78b00874d"
+    },
+    "Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift": {
+      "bytes": 6599,
+      "gitBlob": "74058e7b343365446b93db12395db7d2f948997a",
+      "gitMode": "100644",
+      "sha256": "43e21c2ac9d1eadbf0d364d960abd5eb5812ec0850eb7e426b1d7588296d4bcf"
+    },
+    "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift": {
+      "bytes": 5573,
+      "gitBlob": "02ea72dec1ca4be437a489e8bbc151ec82972725",
+      "gitMode": "100644",
+      "sha256": "5457cd5c0449d21192c72f43a15d5c8b6bfe7d8ce1c85c21d838fc72494ff167"
+    },
+    "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOperation.swift": {
+      "bytes": 2459,
+      "gitBlob": "fdfa2a427044e6ea395f02dbda43d244b1fbe4af",
+      "gitMode": "100644",
+      "sha256": "d6a1034809671d7550e21c5da4e46e1065d21ca6438bb66c7e1f9ea869b9dc51"
+    },
+    "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift": {
+      "bytes": 50759,
+      "gitBlob": "719b02f1ce8e24d672ab448a592286f97ce78559",
+      "gitMode": "100644",
+      "sha256": "bf619f8e022c99d6f7f5f8e374b7213989639502801d36b754dcd95aedae9873"
+    },
+    "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageDocument.swift": {
+      "bytes": 1093,
+      "gitBlob": "37ff035f30c0b2f17c2ce75b4c7a7f1acbbb78a2",
+      "gitMode": "100644",
+      "sha256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e"
+    },
+    "Anytype/Sources/ServiceLayer/Account/AccountManager.swift": {
+      "bytes": 1291,
+      "gitBlob": "8b5d3d362f2c73b248b8b5b68e6ecda9a62f09e2",
+      "gitMode": "100644",
+      "sha256": "954494a8c39f3c913dccb824a4064fdc1199ea46b0afbd9c54fd35f7105b224b"
+    },
+    "Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift": {
+      "bytes": 4589,
+      "gitBlob": "aed7b08966fc00ec7d78cd29e907eb86db165e58",
+      "gitMode": "100644",
+      "sha256": "11eddb8832b7a73b079665562b964073baef7fce3d6594ef3980915a9a429443"
+    },
+    "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift": {
+      "bytes": 18152,
+      "gitBlob": "dd2cb3875fcc994592ae15b954760237be6c6743",
+      "gitMode": "100644",
+      "sha256": "23e3cf522b51c89a8b8c76c741ba687a115951861d7a0f44f932df9620b38e16"
+    },
+    "Anytype/Sources/ServiceLayer/Auth/AuthService.swift": {
+      "bytes": 19519,
+      "gitBlob": "41b75d84ae99a78c8cbb8410ca414f610646039b",
+      "gitMode": "100644",
+      "sha256": "d355b8e912abf2c18b2fde0e3767a16a61a16de1118df8be78da042dc122f1d1"
+    },
+    "Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift": {
+      "bytes": 18567,
+      "gitBlob": "4f86624cc4f6c98de39811b818eadf32cf2ddf4a",
+      "gitMode": "100644",
+      "sha256": "8eaaa4ad9bc5bc757a18dc1c9b982cf4cb9c1af97f0d5a303b4206a993c4afb6"
+    },
+    "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift": {
+      "bytes": 21412,
+      "gitBlob": "21085b9a22f05d44ce4199005122a0a7e41e5d05",
+      "gitMode": "100644",
+      "sha256": "7fc5fc32d5dd7f21d6133f72511ccc133dea9dbe6bdabcbc9a5e435deffa8da1"
+    },
+    "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift": {
+      "bytes": 17829,
+      "gitBlob": "57e247b98ef5d8898154794a4121a6b9ff69b931",
+      "gitMode": "100644",
+      "sha256": "f1570f8cff28d87152ea455ded6bc0bdfeb729e0beb3a70e3a47fb06b4710a57"
+    },
+    "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift": {
+      "bytes": 4878,
+      "gitBlob": "c2e0b92df6fe5912c7e0452a1d866fd58942e676",
+      "gitMode": "100644",
+      "sha256": "1d3b20b5f88c2415a10ab21ba696bcfd821cca1b42979ffa51ad24c97818b525"
+    },
+    "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift": {
+      "bytes": 12178,
+      "gitBlob": "d42050a84d5f232d05493c3f1787390c094db0fc",
+      "gitMode": "100644",
+      "sha256": "d3d55b7b7c2ee1ea060af93ec42921a1634f97fd14254c2dc3ac49582c07f0f1"
+    },
+    "Modules/PinkhaKit/Tests/PinkhaKitTests/PinkhaBootstrapRecoveryTests.swift": {
+      "bytes": 5343,
+      "gitBlob": "5f32075e50679890f27dadce5310c7940f8ec495",
+      "gitMode": "100644",
+      "sha256": "1ce5d2783e19021566da0b3e944d8e643e2d0c4a85b1c375eb68ab21fc17bb83"
+    },
+    "Modules/ProtobufMessages/Sources/Invocation.swift": {
+      "bytes": 6233,
+      "gitBlob": "edc1e5ea79a2153068d80f8b7df1d7b906621e64",
+      "gitMode": "100644",
+      "sha256": "bff284fa8a6c02ad95f39aea0da28660567f47625ec351dcec1d0dce8255836e"
+    },
+    "Modules/ProtobufMessages/Sources/InvocationDispatchBinding.swift": {
+      "bytes": 3025,
+      "gitBlob": "7f6862925605de7a15220f6c44dbf4d6d884113d",
+      "gitMode": "100644",
+      "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb"
+    },
+    "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift": {
+      "bytes": 12134,
+      "gitBlob": "cdf22c38b3f647bcd83ab89af29ae4d9f5b5c317",
+      "gitMode": "100644",
+      "sha256": "284c09888c8cf75b2fa54a0f529e0ac6401fbc9ba9c9a923973edaaace061c21"
+    }
+  },
+  "testsExecuted": 0
+}

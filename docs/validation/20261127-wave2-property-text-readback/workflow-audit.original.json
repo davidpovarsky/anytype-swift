@@ -1,0 +1,359 @@
+{
+  "schema": "pinkha-native-render-cache-workflow-preflight/v1",
+  "status": "NO_MATCHING_PUSH_OR_CREATE_TRIGGER_IN_EXACT_SOURCE_AND_DEFAULT_WORKFLOWS",
+  "baseCommit": "d528e5413c72320c423ce9ccdbd4fbe423ca4a4a",
+  "branch": "codex/chatgpt-wave15-wave2-native-render-cache-20261127",
+  "sourceWorkflowTree": "f4fa7f14a0a5808683977491486ed37ced88433e",
+  "baseYamlCount": 83,
+  "defaultYamlCount": 17,
+  "defaultHead": "1b1043b3a810f6f528ec5147aeb1b29e17b840e7",
+  "sourceAuditSHA256": "b82279198ddad0ee81c72738f2c2ec28f462e32f234fedfe46881c10417769cc",
+  "all83SourceWorkflowRawHashesVerified": true,
+  "sourcePushTriggers": [
+    {
+      "path": ".github/workflows/pinkha-any-engine-port.yml",
+      "branches": [
+        "codex/any-engine-port-20261119"
+      ],
+      "matchesOwnBranch": []
+    },
+    {
+      "path": ".github/workflows/pinkha-fast-ci.yml",
+      "branches": [
+        "pinkha/torah-associations-native-ux-persistence-localization-2026-10-20"
+      ],
+      "matchesOwnBranch": []
+    },
+    {
+      "path": ".github/workflows/pinkha-tests.yaml",
+      "branches": [
+        "pinkha/*"
+      ],
+      "matchesOwnBranch": []
+    },
+    {
+      "path": ".github/workflows/pinkha_t2l_native_probe.yml",
+      "branches": [
+        "pinkha/torah-functional-ui-single-device-2026-10-18"
+      ],
+      "matchesOwnBranch": []
+    },
+    {
+      "path": ".github/workflows/pinkha_u10_native_tests.yml",
+      "branches": [
+        "pinkha/upstream-u10-validation-2026-10-18"
+      ],
+      "matchesOwnBranch": []
+    }
+  ],
+  "defaultWorkflowRows": [
+    {
+      "path": ".github/workflows/automerge.yaml",
+      "gitBlob": "f6431cd77fbbcc9582810c11c7c10eef70972491",
+      "sha256": "3b493b9867514ff2531afeaa00e3cfd29f5d919080edcb3ed09192818ed60058",
+      "bytes": 1111,
+      "on": "pull_request_target",
+      "custody": "Retained raw audit; freshly matched full Git blob"
+    },
+    {
+      "path": ".github/workflows/branch_build.yaml",
+      "gitBlob": "98a6c70b521feb5b5a720f3c14e2d097bf890da6",
+      "sha256": "bbf09cfa543b2b85e3f67f403682b0bf6ad32bbc5a851a2a86c7deb2dd35bc31",
+      "bytes": 5075,
+      "on": {
+        "workflow_dispatch": {
+          "inputs": {
+            "tf_comment": {
+              "description": "TestFlight Comment",
+              "default": ""
+            }
+          }
+        }
+      },
+      "custody": "Fresh immutable default-head primary read"
+    },
+    {
+      "path": ".github/workflows/cla.yml",
+      "gitBlob": "effe2846c316b350ee924fa7ff0f4af71d3985e7",
+      "sha256": "976e548a3c60142b0d949185f39b05c41960161dfbd88c1e07c66a80fc429b8a",
+      "bytes": 331,
+      "on": {
+        "issue_comment": {
+          "types": [
+            "created"
+          ]
+        },
+        "pull_request_target": {
+          "types": [
+            "opened",
+            "closed",
+            "synchronize"
+          ]
+        }
+      },
+      "custody": "Retained raw audit; freshly matched full Git blob"
+    },
+    {
+      "path": ".github/workflows/claude-code-review.yml",
+      "gitBlob": "20cae5ec7b3891c4e78ee6f45ad38e29d9fb1dcb",
+      "sha256": "f8ef06d82b175775663019a337d91935375d1ef94a5b9a0fcd8383bf07131804",
+      "bytes": 3315,
+      "on": {
+        "pull_request": {
+          "types": [
+            "opened",
+            "synchronize"
+          ]
+        }
+      },
+      "custody": "Retained raw audit; freshly matched full Git blob"
+    },
+    {
+      "path": ".github/workflows/claude.yml",
+      "gitBlob": "3e5eca101463317678bc628da1d58204ebb78d8b",
+      "sha256": "9f9e3d0ecc50006c07a827dbcc40e285077bb2ac8ff6ba041db0a6535255d6f9",
+      "bytes": 2544,
+      "on": {
+        "issue_comment": {
+          "types": [
+            "created"
+          ]
+        },
+        "pull_request_review_comment": {
+          "types": [
+            "created"
+          ]
+        },
+        "issues": {
+          "types": [
+            "opened",
+            "assigned"
+          ]
+        },
+        "pull_request_review": {
+          "types": [
+            "submitted"
+          ]
+        }
+      },
+      "custody": "Retained raw audit; freshly matched full Git blob"
+    },
+    {
+      "path": ".github/workflows/dev_build.yaml",
+      "gitBlob": "9b66174e55ea2d7676fe2a11b58593a0b20c491e",
+      "sha256": "1f742461de8144c28e10f9fa2e45e0c305e4ec69d9bfc8926635e6224bf352a1",
+      "bytes": 5614,
+      "on": {
+        "schedule": [
+          {
+            "cron": "0 5 * * 1-5"
+          }
+        ],
+        "workflow_dispatch": ""
+      },
+      "custody": "Fresh immutable default-head primary read"
+    },
+    {
+      "path": ".github/workflows/generator_checks.yaml",
+      "gitBlob": "5a34d86e9f049eb7d2bb572f2e5e2ae140ebbf0b",
+      "sha256": "e0e6869eaaf10609db623d2acf1429956a942115329f35e22e21c22dad2366a4",
+      "bytes": 3082,
+      "on": {
+        "pull_request": "",
+        "workflow_dispatch": ""
+      },
+      "custody": "Retained raw audit; freshly matched full Git blob"
+    },
+    {
+      "path": ".github/workflows/ipa.yaml",
+      "gitBlob": "1f3f16c1b8f24d1fa0a2512cca16a6f9d99aaad6",
+      "sha256": "4328861ce7f4ad390e7ba5f1931444da4053c740f3b6aee5fa7a247f4befc3f5",
+      "bytes": 4580,
+      "on": {
+        "workflow_dispatch": {
+          "inputs": {
+            "build_type": {
+              "description": "App build type",
+              "required": "true",
+              "type": "choice",
+              "options": [
+                "dev",
+                "release"
+              ]
+            }
+          }
+        },
+        "repository_dispatch": {
+          "types": [
+            "trigger-build"
+          ]
+        }
+      },
+      "custody": "Fresh immutable default-head primary read"
+    },
+    {
+      "path": ".github/workflows/license-checks.yml",
+      "gitBlob": "09497d5483e8ba03a9945674c1826102e2d2af9e",
+      "sha256": "25587c37dd532e6c0ddea4d61f1b0b108bdd674f9e5b0545739f9d52adb39871",
+      "bytes": 3439,
+      "on": {
+        "pull_request": "",
+        "workflow_dispatch": ""
+      },
+      "custody": "Retained raw audit; freshly matched full Git blob"
+    },
+    {
+      "path": ".github/workflows/link_issue_to_release.yaml",
+      "gitBlob": "0d06849b03a79b783e0be0065cc74d8327c4383b",
+      "sha256": "2d212c5c31e7d67764234086d22696d43dd94962b72a9aa6ecf6241c8e1c9690",
+      "bytes": 10681,
+      "on": {
+        "pull_request": {
+          "types": [
+            "closed"
+          ],
+          "branches": [
+            "develop",
+            "release"
+          ]
+        }
+      },
+      "custody": "Retained raw audit; freshly matched full Git blob"
+    },
+    {
+      "path": ".github/workflows/live-activity-bridge.yml",
+      "gitBlob": "ea4ac0ac050db9dd7dda71e70d0e6dac0ed14164",
+      "sha256": "20f37c5a70600833a9bc1f9658ac3907eadae6d61a7230099d517417603067ae",
+      "bytes": 1646,
+      "on": {
+        "workflow_run": {
+          "workflows": [
+            "Auto-merge",
+            "Branch build",
+            "CLA Check",
+            "Claude Code Review",
+            "Claude Code",
+            "Anytype Dev",
+            "Check generated files",
+            "Build IPA",
+            "License Checks",
+            "Link merged PR to Linear release",
+            "Pinkha Tests",
+            "Unit Tests",
+            "Anytype",
+            "Fastlane test build",
+            "Update build cache",
+            "Update middleware version",
+            "Update middleware nightly"
+          ],
+          "types": [
+            "in_progress",
+            "completed"
+          ]
+        }
+      },
+      "custody": "Fresh immutable default-head primary read"
+    },
+    {
+      "path": ".github/workflows/pr_tests.yml",
+      "gitBlob": "8178cefd864f3d97d38f6ddd34d447705ea3ba75",
+      "sha256": "723c88abe7f247bfeed2c2836abae1749585b23e996697afdd4b79664e4ee295",
+      "bytes": 5118,
+      "on": {
+        "pull_request": "",
+        "workflow_dispatch": ""
+      },
+      "custody": "Retained raw audit; freshly matched full Git blob"
+    },
+    {
+      "path": ".github/workflows/release_build.yaml",
+      "gitBlob": "0601a8876c53997bf0b8d0e43eb75d66eaf305c7",
+      "sha256": "8e1894eac6af27914b102a6b58e13f4a724dc4b31ce95ce2c87ac6de60cf2e4b",
+      "bytes": 6023,
+      "on": {
+        "workflow_dispatch": ""
+      },
+      "custody": "Fresh immutable default-head primary read"
+    },
+    {
+      "path": ".github/workflows/test_fastlane_build.yaml",
+      "gitBlob": "27f744e5cab1e0637278efd8bfeb778306841ac2",
+      "sha256": "f7d2f094ee2bb755047a9e4332c4b75cf1854d31db1e0c86a12acedf302eb9d3",
+      "bytes": 4739,
+      "on": {
+        "workflow_dispatch": ""
+      },
+      "custody": "Retained raw audit; freshly matched full Git blob"
+    },
+    {
+      "path": ".github/workflows/update_cache.yaml",
+      "gitBlob": "b25478e44b73d3b56760d497cf5539e939b7515f",
+      "sha256": "3b6fa3d3e30404757c1c5313b0c207d6cd4b2024cd9650775cec6019149bb91b",
+      "bytes": 4467,
+      "on": {
+        "schedule": [
+          {
+            "cron": "0 5 * * 6"
+          }
+        ],
+        "workflow_dispatch": ""
+      },
+      "custody": "Retained raw audit; freshly matched full Git blob"
+    },
+    {
+      "path": ".github/workflows/update_middleware.yaml",
+      "gitBlob": "0e34a806c829c0279ab1c6ae850ddfcbcd3e5bed",
+      "sha256": "304ce59242b7d9ced368d819844cfde8d2d445a90a4b2394e6cd33880c04162e",
+      "bytes": 14733,
+      "on": {
+        "workflow_dispatch": {
+          "inputs": {
+            "middle_version": {
+              "description": "Middleware version",
+              "required": "true",
+              "type": "string"
+            },
+            "task_name": {
+              "description": "Task name (e.g. IOS-123)",
+              "required": "false",
+              "type": "string"
+            }
+          }
+        },
+        "workflow_call": {
+          "inputs": {
+            "middle_version": {
+              "required": "true",
+              "type": "string"
+            },
+            "task_name": {
+              "required": "false",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "custody": "Retained raw audit; freshly matched full Git blob"
+    },
+    {
+      "path": ".github/workflows/update_middleware_nightly.yaml",
+      "gitBlob": "c90696be1928137d450b6b4b3078b40ec25bcb4e",
+      "sha256": "337fed366abd49474791b28375aa920d2fa1ffda515f9640bad6e3bba9532807",
+      "bytes": 2276,
+      "on": {
+        "workflow_dispatch": "",
+        "schedule": [
+          {
+            "cron": "0 3 * * 1-5"
+          }
+        ]
+      },
+      "custody": "Retained raw audit; freshly matched full Git blob"
+    }
+  ],
+  "initialConservativeMismatchSHA256": "bcfdf2c17a9fd90d5f14f60e27fc14ee32c403fa26a5e5345ca7a2b6e0bebba7",
+  "fiveChangedDefaultWorkflowsIndividuallyFetchedAndRead": true,
+  "ownRefPrecreate": "NOT_FOUND_404",
+  "workflowDispatches": 0,
+  "pullRequestsCreated": 0
+}

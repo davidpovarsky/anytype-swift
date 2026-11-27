@@ -11,7 +11,12 @@ import HanlinHostContracts
 actor PinkhaHanlinAuthService: AuthServiceProtocol {
     private let base: any AuthServiceProtocol
     private let accounts = Container.shared.accountManager()
-    private var bootstrap: any PinkhaSpaceBootstrapServiceProtocol { Container.shared.pinkhaBootstrapService() }
+    private var bootstrap: any PinkhaSpaceBootstrapServiceProtocol {
+        #if DEBUG
+        if let acceptanceOwners { return acceptanceOwners.bootstrap }
+        #endif
+        return Container.shared.pinkhaBootstrapService()
+    }
     private var current: OriginalAuthAttempt?
     private var stopping: OriginalAuthAttempt?
     private var successfulStopRequired = false
@@ -32,11 +37,56 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
 
     init(base: any AuthServiceProtocol) { self.base = base }
 
+    #if DEBUG
+    /// Component-test effects only. The actual decorator/attempt/stage/Stop
+    /// implementations remain the subject; this does not qualify a native account.
+    struct AcceptanceOwners: Sendable {
+        let accountManager: AccountManager
+        let bootstrap: any PinkhaSpaceBootstrapServiceProtocol
+        let prepareMiniApps: @Sendable () async throws -> UUID
+        let resumeMiniApps: @MainActor @Sendable (UUID) -> Void
+        let prepareEngine: @Sendable () async throws -> Void
+        let closeSharing: @Sendable () async -> Void
+        let openSharing: @Sendable (String) async throws -> Void
+        let closeHanlin: @Sendable (String, Bool) async throws -> Void
+        let beforeHanlinPublication: @Sendable () async -> Void
+        let openHanlin: @MainActor @Sendable (String) throws -> Void
+    }
+
+    private var acceptanceOwners: AcceptanceOwners?
+
+    init(base: any AuthServiceProtocol, acceptanceOwners: AcceptanceOwners) {
+        self.base = base
+        self.acceptanceOwners = acceptanceOwners
+    }
+    #endif
+
+    private var originalAccountID: String {
+        #if DEBUG
+        if let acceptanceOwners { return acceptanceOwners.accountManager.account.id }
+        #endif
+        return accounts.account.id
+    }
+
+    private func closeSharingAccount() async {
+        #if DEBUG
+        if let acceptanceOwners { await acceptanceOwners.closeSharing(); return }
+        #endif
+        await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)
+    }
+
+    private func closeHanlinAccount(_ account: String, removeData: Bool) async throws {
+        #if DEBUG
+        if let acceptanceOwners { try await acceptanceOwners.closeHanlin(account, removeData); return }
+        #endif
+        try await PinkhaHanlinAccountOwner.shared.closeAccount(account, removeData: removeData)
+    }
+
     func createWallet() async throws -> String {
         let base = base
         return try await perform(kind: .ordinary) { attempt in
             try await self.stage(attempt) { try await self.prepareEngineAccountChange(attempt) }
-            try await self.stage(attempt) { await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart) }
+            try await self.stage(attempt) { await self.closeSharingAccount() }
             return try await OriginalAuthRequestContext.$parent.withValue(attempt) { try await base.createWallet() }
         }
     }
@@ -45,7 +95,7 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
         let base = base
         try await perform(kind: .ordinary) { attempt in
             try await self.stage(attempt) { try await self.prepareEngineAccountChange(attempt) }
-            try await self.stage(attempt) { await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart) }
+            try await self.stage(attempt) { await self.closeSharingAccount() }
             try await OriginalAuthRequestContext.$parent.withValue(attempt) { try await base.walletRecovery(mnemonic: mnemonic) }
         }
     }
@@ -54,7 +104,7 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
         let base = base
         try await perform(kind: .ordinary) { attempt in
             try await self.stage(attempt) { try await self.prepareEngineAccountChange(attempt) }
-            try await self.stage(attempt) { await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart) }
+            try await self.stage(attempt) { await self.closeSharingAccount() }
             try await OriginalAuthRequestContext.$parent.withValue(attempt) { try await base.accountRecover() }
         }
     }
@@ -66,12 +116,12 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
     func createAccount(name: String, iconOption: Int, imagePath: String) async throws -> AccountData {
         let base = base
         let bootstrap = bootstrap
-        let previousAccount = accounts.account.id
+        let previousAccount = originalAccountID
         return try await perform(kind: .startup) { attempt in
             try await self.stage(attempt) { try await self.prepareEngineAccountChange(attempt) }
-            try await self.stage(attempt) { await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart) }
+            try await self.stage(attempt) { await self.closeSharingAccount() }
             try await self.stage(attempt) {
-                try await PinkhaHanlinAccountOwner.shared.closeAccount(previousAccount, removeData: false)
+                try await self.closeHanlinAccount(previousAccount, removeData: false)
             }
             try await self.stage(attempt) { await bootstrap.quiesceAccountOperations() }
             let account = try await self.stage(attempt) {
@@ -88,7 +138,7 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
     func selectAccount(id: String, preferredSpaceId: String) async throws -> AccountData {
         let base = base
         let bootstrap = bootstrap
-        let previousAccount = accounts.account.id
+        let previousAccount = originalAccountID
         return try await perform(kind: .startup) { attempt in
             try await self.stage(attempt) { try await self.prepareEngineAccountChange(attempt) }
             #if PINKHA_NATIVE_DERIVED && targetEnvironment(simulator)
@@ -96,9 +146,9 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
                 try PinkhaTypePreservationLaunchProof.captureBeforeAccountSelect(accountID: id)
             }
             #endif
-            try await self.stage(attempt) { await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart) }
+            try await self.stage(attempt) { await self.closeSharingAccount() }
             try await self.stage(attempt) {
-                try await PinkhaHanlinAccountOwner.shared.closeAccount(previousAccount, removeData: false)
+                try await self.closeHanlinAccount(previousAccount, removeData: false)
             }
             try await self.stage(attempt) { await bootstrap.quiesceAccountOperations() }
             let account = try await self.stage(attempt) {
@@ -127,7 +177,7 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
         let stop = try OriginalAuthAttempt(kind: .stop)
         stopping = stop
         previous?.retire()
-        let originalAccount = accounts.account.id
+        let originalAccount = originalAccountID
         let bootstrap = bootstrap
         // Once accepted, this original Stop must outlive its UI caller. Retiring
         // the parent above also prevents a queued child startup from dispatching.
@@ -138,9 +188,9 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
                 // native startup or Bootstrap work that real Stop must release.
                 _ = await pendingPublication?.task.result
                 try await prepareEngineAccountChange(stop)
-                await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)
+                await self.closeSharingAccount()
                 // Preserve journal revocation/removal before native data erasure.
-                try await PinkhaHanlinAccountOwner.shared.closeAccount(originalAccount, removeData: removeData)
+                try await closeHanlinAccount(originalAccount, removeData: removeData)
                 // Real Stop precedes the retired startup and Bootstrap drain: it
                 // may be the operation that releases AccountSelect/Create.
                 try await OriginalAuthRequestContext.$parent.withValue(stop) {
@@ -150,11 +200,11 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
                 await bootstrap.quiesceAccountOperations()
                 // A presentation stage admitted before retirement can finish
                 // late. Close its actual original state after that exact drain.
-                await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart)
-                try await PinkhaHanlinAccountOwner.shared.closeAccount(originalAccount, removeData: false)
-                let finalAccount = accounts.account.id
+                await self.closeSharingAccount()
+                try await closeHanlinAccount(originalAccount, removeData: false)
+                let finalAccount = originalAccountID
                 if !finalAccount.utf8.elementsEqual(originalAccount.utf8) {
-                    try await PinkhaHanlinAccountOwner.shared.closeAccount(finalAccount, removeData: false)
+                    try await closeHanlinAccount(finalAccount, removeData: false)
                 }
                 successfulStopRequired = false
                 stop.finishOuter()
@@ -177,12 +227,12 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
 
     func deleteAccount() async throws -> AccountStatus {
         let base = base
-        let account = accounts.account.id
+        let account = originalAccountID
         return try await perform(kind: .ordinary) { attempt in
             try await self.stage(attempt) { try await self.prepareEngineAccountChange(attempt) }
-            try await self.stage(attempt) { await PinkhaSharingAccountOwner.shared.closeAndDrain(engine: .heart) }
+            try await self.stage(attempt) { await self.closeSharingAccount() }
             try await self.stage(attempt) {
-                try await PinkhaHanlinAccountOwner.shared.closeAccount(account, removeData: false)
+                try await self.closeHanlinAccount(account, removeData: false)
             }
             return try await OriginalAuthRequestContext.$parent.withValue(attempt) { try await base.deleteAccount() }
         }
@@ -193,7 +243,7 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
         return try await perform(kind: .ordinary) { attempt in
             try await self.stage(attempt) { try await self.prepareEngineAccountChange(attempt) }
             let status = try await OriginalAuthRequestContext.$parent.withValue(attempt) { try await base.restoreAccount() }
-            let account = self.accounts.account.id
+            let account = await self.originalAccountID
             try await self.publishAccount(account, for: attempt)
             return status
         }
@@ -202,16 +252,30 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
     private func publishAccount(_ account: String, for attempt: OriginalAuthAttempt) async throws {
         try requireCurrent(attempt)
         guard accountPublication == nil else { throw HanlinHostError.staleContext }
+        #if DEBUG
+        let acceptanceOwners = acceptanceOwners
+        #endif
         let task = Task<Void, Error> { [self] in
             try await stage(attempt) {
+                #if DEBUG
+                // Pause only the original incoming MainActor publication hop.
+                // Retirement is still checked inside that actual hop below.
+                await acceptanceOwners?.beforeHanlinPublication()
+                #endif
                 // Retain the original same-turn MainActor check: retirement can
                 // happen after a caller queues this hop but before it executes.
                 try await MainActor.run {
                     try attempt.validate()
+                    #if DEBUG
+                    if let acceptanceOwners { try acceptanceOwners.openHanlin(account); return }
+                    #endif
                     try PinkhaHanlinAccountOwner.shared.accountDidOpen(account)
                 }
             }
             try await stage(attempt) {
+                #if DEBUG
+                if let acceptanceOwners { try await acceptanceOwners.openSharing(account); return }
+                #endif
                 try await PinkhaSharingAccountOwner.shared.didOpen(engine: .heart, accountID: account)
             }
         }
@@ -226,13 +290,27 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
 
     private func prepareEngineAccountChange(_ attempt: OriginalAuthAttempt) async throws {
         try requirePreparationOwner(attempt)
-        let token = try await PinkhaMiniAppsCoordinator.shared.prepareEngineAccountChange()
+        let token: UUID
+        #if DEBUG
+        if let acceptanceOwners {
+            token = try await acceptanceOwners.prepareMiniApps()
+        } else {
+            token = try await PinkhaMiniAppsCoordinator.shared.prepareEngineAccountChange()
+        }
+        #else
+        token = try await PinkhaMiniAppsCoordinator.shared.prepareEngineAccountChange()
+        #endif
         // Retain the returned real hold even if Stop retired this attempt during
         // the await. Only the final idle/successful boundary may release it.
         miniAppsChangeTokens.insert(token)
         try requirePreparationOwner(attempt)
         #if PINKHA_DUAL_ENGINE_RUNTIME
+        #if DEBUG
+        if let acceptanceOwners { try await acceptanceOwners.prepareEngine() }
+        else { try await PinkhaEngineSceneOwner.shared.prepareHeartAccountChange() }
+        #else
         try await PinkhaEngineSceneOwner.shared.prepareHeartAccountChange()
+        #endif
         #endif
         try requirePreparationOwner(attempt)
     }
@@ -251,8 +329,16 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
               !miniAppsChangeTokens.isEmpty else { return }
         let tokens = miniAppsChangeTokens
         miniAppsChangeTokens.removeAll()
+        #if DEBUG
+        let acceptanceOwners = acceptanceOwners
+        #endif
         Task { @MainActor in
-            for token in tokens { PinkhaMiniAppsCoordinator.shared.resumeAfterAccountChange(token) }
+            for token in tokens {
+                #if DEBUG
+                if let acceptanceOwners { acceptanceOwners.resumeMiniApps(token); continue }
+                #endif
+                PinkhaMiniAppsCoordinator.shared.resumeAfterAccountChange(token)
+            }
         }
     }
 
