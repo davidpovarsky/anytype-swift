@@ -1,0 +1,203 @@
+{
+  "appleUI": false,
+  "binaryPath": "/mnt/development/projects/caches/pinkha-e-cutover-rpc-core-attempt5-20261127/cutover-core.test",
+  "binarySHA256": "bbd8d9f28d7a948684d9771c5b0effe25abb00570ac0383b0324a56cb6ce1f75",
+  "buildRoot": "/mnt/development/projects/caches/pinkha-e-cutover-rpc-core-attempt5-20261127",
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-overlay",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-core-attempt5/go-overlay.json",
+        "-tags=pinkha_loaded_account_witness,pinkha_cutover_acceptance",
+        "-o",
+        "/mnt/development/projects/caches/pinkha-e-cutover-rpc-core-attempt5-20261127/cutover-core.test",
+        "./core"
+      ],
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 2998682,
+      "processGroupAbsent": true,
+      "seconds": 79.84351706504822,
+      "stopReason": null
+    },
+    {
+      "argv": [
+        "/usr/bin/unshare",
+        "--net",
+        "--",
+        "/usr/bin/python3",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-core-attempt5/private/crash/offline-exec.py",
+        "/mnt/development/projects/caches/pinkha-e-cutover-rpc-core-attempt5-20261127/cutover-core.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=540s",
+        "-test.run=^TestPinkhaTorahCutoverCrashPrepare$"
+      ],
+      "exitCode": -9,
+      "logSHA256": "51d3d6edc499733f1d9dca81568419a751ee491444a30001de86849ddaaf517e",
+      "pid": 3002933,
+      "processGroupAbsent": true,
+      "seconds": 7.138251304626465,
+      "stopReason": "intentional SIGKILL after committed v1 before metadata"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "cutover-crash-resume",
+        "/usr/bin/unshare",
+        "--net",
+        "--",
+        "/usr/bin/python3",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-core-attempt5/private/crash/offline-exec.py",
+        "/mnt/development/projects/caches/pinkha-e-cutover-rpc-core-attempt5-20261127/cutover-core.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=540s",
+        "-test.run=^TestPinkhaTorahCutoverCrashResume$"
+      ],
+      "exitCode": 0,
+      "logSHA256": "a46d2dba6e1304ed2ff262a96887ff109a29b7e770acca03eab785cf62c351f3",
+      "pid": 3003287,
+      "processGroupAbsent": true,
+      "seconds": 5.611319541931152,
+      "stopReason": null
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "cutover-crash-verify",
+        "/usr/bin/unshare",
+        "--net",
+        "--",
+        "/usr/bin/python3",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-core-attempt5/private/crash/offline-exec.py",
+        "/mnt/development/projects/caches/pinkha-e-cutover-rpc-core-attempt5-20261127/cutover-core.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=540s",
+        "-test.run=^TestPinkhaTorahCutoverCrashVerify$"
+      ],
+      "exitCode": 0,
+      "logSHA256": "29019a2560dc7a3a11fb0834ccb487e80f95de6e3e16e0bd538a5025f0e588d3",
+      "pid": 3003743,
+      "processGroupAbsent": true,
+      "seconds": 1.209852695465088,
+      "stopReason": null
+    }
+  ],
+  "completedUTC": "2026-11-27T03:17:48Z",
+  "controllerSHA256": "5f8ee0851af230a3239dadaacc93c9497e12ef358aebee4abab5ab15a279648c",
+  "crashProof": {
+    "actualTestPIDs": [
+      3002933,
+      3003402,
+      3003773
+    ],
+    "checkpointSHA256": "8e1689c44eb92c8051fadee9e46c3a79c2fcf836b66e017b2cf129f576105f83",
+    "resume": {
+      "accountStopped": true,
+      "createPID": 3002933,
+      "frozenImportRetryIdempotent": true,
+      "nonce": "d28b3032a7bf6fd211ee8efe56a1d300dd4c0d072e5bfd76",
+      "originalNativeReceiptPreserved": true,
+      "pid": 3003402,
+      "protocol": "pinkha-cutover-process-crash-v1",
+      "samePendingStateAfterCrash": true,
+      "sealed": true,
+      "signedMetadata": 4,
+      "signedV1Imports": 2,
+      "sourceAndFactBytesPreserved": true
+    },
+    "sealedSnapshotSHA256": "d53ba22249b6af0c1e66abca34a9478f04eebcb1301165611e4549f6b6e12e8d",
+    "verify": {
+      "accountStopped": true,
+      "appleUI": false,
+      "createPID": 3002933,
+      "exactSealedNativeHistoryPreserved": true,
+      "generatedGRPC": true,
+      "newProcessReopen": true,
+      "nonce": "d28b3032a7bf6fd211ee8efe56a1d300dd4c0d072e5bfd76",
+      "peerTransport": false,
+      "pid": 3003773,
+      "protocol": "pinkha-cutover-process-crash-v1",
+      "sourceAndFactBytesPreserved": true
+    }
+  },
+  "generatedRPC": true,
+  "generatedRPCProof": {
+    "accountStopAndReopen": true,
+    "allFiveGeneratedMethodsExecuted": true,
+    "appleUI": false,
+    "contract": "pinkha-cutover-generated-grpc-v1",
+    "generatedGRPC": true,
+    "nativeSignersVerified": true,
+    "newProcessReopen": false,
+    "peerTransport": false,
+    "realAccounts": 1,
+    "realLegacyFacts": 2,
+    "sealedImportRetryIdempotent": true,
+    "signedMetadataRecords": 4,
+    "signedV1ImportClaims": 2,
+    "signedV1RemovalClaims": 1,
+    "sourceBytesRetained": true
+  },
+  "generatedRPCProofSHA256": "beaa21ed5a3fb3afdd9a52ee790331a17670a2eb49f215c8060550cb1a2a3d65",
+  "manifestSHA256": "b98c93ff11e492e173ca2a0b93548ed4cdfb275bb4b345bd82468e55c6e481ac",
+  "methods": [
+    "TestPinkhaTorahCutoverWirePreservesFrozenIdentityAndCopies",
+    "TestPinkhaTorahCutoverGeneratedRPCRefusesUnloadedAccountAndVersions",
+    "TestPinkhaTorahCutoverWireFailureRetainsReceiptWithoutPrivateHistory",
+    "TestPinkhaTorahCutoverWireBoundRefusesWholeSnapshot",
+    "TestPinkhaTorahCutoverActualGeneratedRPCAndReopen"
+  ],
+  "methodsExecutedThisRun": [],
+  "mode": "core",
+  "newProcessReopen": true,
+  "osNetworkIsolated": true,
+  "peerTransport": false,
+  "resourceAdmission": {
+    "buildFreeBytes": 5065715712,
+    "buildMustExceedBytes": 1610612736,
+    "cacheFreeBytes": 5065715712,
+    "cacheMustExceedBytes": 671088640,
+    "cacheStopsBelowBytes": 536870912,
+    "rootFreeBytes": 3737153536,
+    "rootMustExceedBytes": 2684354560,
+    "rootStopsBelowBytes": 2147483648
+  },
+  "retainedSource": "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/source",
+  "retainedSourceUnchanged": true,
+  "reusedMethods": [
+    "TestPinkhaTorahCutoverWirePreservesFrozenIdentityAndCopies",
+    "TestPinkhaTorahCutoverGeneratedRPCRefusesUnloadedAccountAndVersions",
+    "TestPinkhaTorahCutoverWireFailureRetainsReceiptWithoutPrivateHistory",
+    "TestPinkhaTorahCutoverWireBoundRefusesWholeSnapshot",
+    "TestPinkhaTorahCutoverActualGeneratedRPCAndReopen"
+  ],
+  "reusedRPCQualification": {
+    "allProductAndFiveRPCMethodSourcesUnchanged": true,
+    "currentManifestSHA256": "b98c93ff11e492e173ca2a0b93548ed4cdfb275bb4b345bd82468e55c6e481ac",
+    "methodsExecutedAgain": false,
+    "onlyChangedPath": "core/pinkha_torah_cutover_crash_acceptance_test.go",
+    "originalManifestSHA256": "75f44277c8c5b3f89c5f9e1ed28e443658dd38a72bd573edc18a95f61e42dd48",
+    "originalOverallStatus": "FAIL",
+    "path": "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generated-qualification1/receipt.json",
+    "sha256": "b02f58b6a9c341bcc2c0820c599e0f6ed1cb699d457e936375aea8495865ee62"
+  },
+  "secretLogScanPassed": true,
+  "status": "PASS_GENERATED_GRPC_AND_OFFLINE_PROCESS_CRASH_NOT_PEER_OR_APPLE"
+}

@@ -1,0 +1,110 @@
+{
+  "XCTestMethodsExecuted": 0,
+  "appleInvocations": 0,
+  "commonIntakeCopiedOrRepinned": false,
+  "futureTorahClosureFiles": 16,
+  "g02Dependency": {
+    "after": "STARTUP_PROFILE_SHA = \"6960a4f74aa6b582e783addf358cc1806728dffd520483336c877e473b63aeb9\"",
+    "allFunctionBodiesUnchanged": true,
+    "before": "STARTUP_PROFILE_SHA = \"188fd2470d720a350718969c6bdd17250c107cbe2ceab2a1c72aa2508d00e0b3\"",
+    "candidateSHA256": "d8f3b0509fff4dc369440831d23c70c5b124c0fa63e08b2d87702da428eca0b5",
+    "exactSingleLiteralInverse": true,
+    "original17FileClosureShapeUnchanged": true,
+    "originalSHA256": "7bc7c513cbaa0bcfcb98af6fd48c2fa4f391f15708c404fb2a7ef00ca91e55ac",
+    "runtimeGateRemainsClosed": true
+  },
+  "g02Existing17FileHostAndNativeAdapterUnchanged": true,
+  "host": {
+    "candidateHostSHA256": "4c0df4d8bcd81aebb4dee04488839fe438db159c8cc08e3f853762d8d16d879c",
+    "edits": [
+      {
+        "after": "import torah_ui_consumer as torah_ui\nimport torah_future_control as future_torah\n",
+        "before": "import torah_ui_consumer as torah_ui\n"
+      },
+      {
+        "after": "PLANS = {\n    'torah-overflow-only': ('torah-source-overflow',),\n",
+        "before": "PLANS = {\n"
+      },
+      {
+        "after": "ORIGINAL_SERIES += ('torah-source-overflow',)\nEXPECTED_TEST_PROFILES = {\n",
+        "before": "EXPECTED_TEST_PROFILES = {\n"
+      },
+      {
+        "after": "budget = future_torah.ui_budget(self, target, methods)",
+        "before": "budget = self.helpers[\"run_ui27\"].selection_time_budget(target, methods)"
+      },
+      {
+        "after": "    def execute_lane(self, lane):\n        future_torah.require_runtime_ready(self.admission, Path(__file__).resolve().parent)\n",
+        "before": "    def execute_lane(self, lane):\n"
+      },
+      {
+        "after": "            udid, language = self.create(future_torah.STARTUP_LANE if lane == future_torah.LANE else lane, directory, editor=lane == \"editor\")\n",
+        "before": "            udid, language = self.create(lane, directory, editor=lane == \"editor\")\n"
+      },
+      {
+        "after": "            if lane == future_torah.LANE:\n                result[\"actual\"] = future_torah.run_overflow_lane(self, directory, udid)\n            elif lane in torah_ui.UI_LANES:\n",
+        "before": "            if lane in torah_ui.UI_LANES:\n"
+      },
+      {
+        "after": "'native_compiler_witness.py', 'torah_future_control.py', 'torah_overflow_observations.py', 'torah-future-closed-profile.json'}\n",
+        "before": "'native_compiler_witness.py'}\n"
+      },
+      {
+        "after": "    future_torah.require_runtime_ready(admission, parent)\n    require(args.root.is_absolute() and args.root.parent.resolve() == args.root.parent and not args.root.exists(), \"Fresh owned execution root required\")\n",
+        "before": "    require(args.root.is_absolute() and args.root.parent.resolve() == args.root.parent and not args.root.exists(), \"Fresh owned execution root required\")\n"
+      }
+    ],
+    "exactFullInverse": true,
+    "originalCanonicalConsoleInspectorContinuityAndPropertiesSetPostflightUnchanged": true,
+    "originalHostSHA256": "2e57294dc7a00d4302a9dd5f316b2419e75d6a08a4f55b47451d6c822335ec44",
+    "originalMainAndOwnedLaneFinallyUnchanged": true,
+    "originalStageOnlyOneSelectorBudgetDelegationChanged": true,
+    "unchangedOriginalFunctions": [
+      "exact_enumeration",
+      "freeze_helpers",
+      "host_validation_module",
+      "invocation_selectors",
+      "load_helpers",
+      "observe_owned_groups",
+      "result_selection",
+      "scoped_descriptor"
+    ],
+    "unchangedOriginalMethods": [
+      "__init__",
+      "appearance",
+      "command",
+      "container",
+      "create",
+      "freshness",
+      "installed",
+      "native_ui",
+      "pending",
+      "preserve",
+      "read_private",
+      "wave"
+    ]
+  },
+  "materializerSHA256": "d1c689c7810fc1c26d6462c0a117fea7e78f220c943bfd23efa696d1909e05da",
+  "nativeCalls": 0,
+  "oldF13NotModifiedInPlace": true,
+  "oldNativeCore15FileControlNotComposedHere": true,
+  "payloadSHA256": {
+    "torah-future-closed-profile.json": "d45c21aab18e5b736b511c3ec9bbb25d93ff346b1456f5ea938d65663c8bb49d",
+    "torah_future_control.py": "a1d864d5e7257faf1444af1c0335388c6f784d76afb75c6ec3578c7fed707747",
+    "torah_overflow_observations.py": "cadd23e2aa1726bb01c7601c46a6f26072e2ecad4bd95a389154069f5d3f1e38",
+    "torah_ui_profile.py": "6960a4f74aa6b582e783addf358cc1806728dffd520483336c877e473b63aeb9"
+  },
+  "runtimeReady": false,
+  "schema": "pinkha-future-torah-closed-materialization-v1",
+  "sourceProfile": {
+    "ComprehensiveSHA256": "d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3",
+    "Stage1ExactSuffixSHA256": "68ad800228afbbb8520151fd9991cd68f52dd3442a5b6984e1e9c5012adc7332",
+    "Stage1OriginalPrefixSHA256": "d4ffc25ee659e03bd4dd76b7847faf4fecf343630edf094c0bc02fe060f00850",
+    "Stage1SHA256": "c1e37371ce061cfec1ec6d30fc2f55a0df0e477f9727ffd96d635f46e91e0906",
+    "candidateProfileSHA256": "6960a4f74aa6b582e783addf358cc1806728dffd520483336c877e473b63aeb9",
+    "exactProfileInverse": true,
+    "originalProfileSHA256": "188fd2470d720a350718969c6bdd17250c107cbe2ceab2a1c72aa2508d00e0b3"
+  },
+  "sourceProfileInverseSHA256": "6efa087677993cd5b4d98b3c03cc9c335354d5c01d5faace2064978ebf16810f",
+  "status": "SOURCE_ONLY_RUNTIME_CLOSED"
+}

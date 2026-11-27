@@ -1,0 +1,74 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "apply",
+        "--check",
+        "/mnt/development/projects/worktrees/anytype-cutover-final-20261127/docs/architecture/20261127-heart-cutover-native-rpc/current8ac-plus-core-native-rpc.patch"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "/mnt/development/projects/worktrees/anytype-cutover-final-20261127/docs/architecture/20261127-heart-cutover-native-rpc/current8ac-plus-core-native-rpc.patch"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "files": 11,
+  "patchSHA256": "e938f0da046bc8538037884c3c8cd199edcf2dd0e6f37c65787fed2c5c588c7a",
+  "resultingFiles": {
+    "clientlibrary/service/pinkha_torah_cutover_rpc_wire_test.go": {
+      "bytes": 5424,
+      "sha256": "98d00608347c2d3ab3c954a585be1d542f178e92a759db4ebe8dfaeffa130af8"
+    },
+    "clientlibrary/service/service.pb.go": {
+      "bytes": 612495,
+      "sha256": "340c8834744f95b5476743e11b58818383893bd17d22f43dce94395762847237"
+    },
+    "core/pinkha_torah_cutover_crash_acceptance_test.go": {
+      "bytes": 20287,
+      "sha256": "6249ef6f3932837aedcb8d9f6aac3b7f584e0c386f213b1a608c8a151bf2b3fd"
+    },
+    "core/pinkha_torah_cutover_rpc.go": {
+      "bytes": 22072,
+      "sha256": "6a0ca15096120e383effec2d80813d17a3868f8a39d35940076ecf1b1ef9c945"
+    },
+    "core/pinkha_torah_cutover_rpc_acceptance_test.go": {
+      "bytes": 14562,
+      "sha256": "20f540c4b21d6ea4ffd4173a5698d67e5852eb23c4562021e1db0e7274d008ec"
+    },
+    "core/pinkha_torah_cutover_rpc_test.go": {
+      "bytes": 13302,
+      "sha256": "03cb900103da77e8c30d8bc7c109e1d69930237d291b1bec4bbf0a8c8e625290"
+    },
+    "pb/cutoverpb/pinkha_torah_cutover.pb.go": {
+      "bytes": 241921,
+      "sha256": "1583fb29dbfa061c3b0a7b2f4aae54eb0c32e2a43c4bf6c3968d349fd2459d05"
+    },
+    "pb/cutoverpb/pinkha_torah_cutover_gomobile_aliases.go": {
+      "bytes": 1321,
+      "sha256": "931e657c74668ff9937c488a803d1d9eac2cb5abae5685575ff0e8e80cee9f17"
+    },
+    "pb/protos/pinkha_torah_cutover.proto": {
+      "bytes": 6237,
+      "sha256": "e858be46d913b6ef209dfe2e86e839bf4d4b13dcd38757476c7990c8dc96e333"
+    },
+    "pb/protos/service/service.proto": {
+      "bytes": 48660,
+      "sha256": "5fb5bb7dc8da1eecd3d9264ecd381451c135be3f6b80a4c245709215e63e56af"
+    },
+    "pb/service/service.pb.go": {
+      "bytes": 640863,
+      "sha256": "3f0aca03b16bfa7332148d630231dcddb2266263ab48850c72c1ee4900cfcac4"
+    }
+  },
+  "status": "PASS_EXACT_PATCH_APPLY_ALL_ELEVEN_FILES"
+}

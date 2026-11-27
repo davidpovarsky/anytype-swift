@@ -1,0 +1,85 @@
+--- before/core/pinkha_torah_cutover_crash_acceptance_test.go
++++ after/core/pinkha_torah_cutover_crash_acceptance_test.go
+@@ -110,6 +110,59 @@
+ 		Source:  &pb.RpcPinkhaTorahOperationsSource{ProviderId: fact.ProviderID, CanonicalRef: fact.CanonicalRef},
+ 		Payload: bytes.Clone(fact.Payload)}
+ }
++
++// The production projection exposes the signed physical import before its
++// second metadata phase. The crash boundary requires exactly that import,
++// no metadata witness, visible pending work and a refused (nonmutating) Seal.
++func cutoverCrashRequireUnwitnessedImport(t *testing.T, ctx context.Context, client pbservice.ClientCommandsClient,
++	state *cutoverCrashState, snapshot *cutoverpb.PinkhaTorahCutoverSnapshot) {
++	t.Helper()
++	require.NotNil(t, snapshot.State)
++	require.Equal(t, cutoverpb.PinkhaTorahCutover_PENDING, snapshot.State.Status)
++	require.Len(t, state.Plan.Facts, 2)
++	require.Len(t, snapshot.State.Imports, 1)
++	binding := snapshot.State.Imports[0]
++	require.Equal(t, state.FirstOperation.FactId, binding.FactId)
++	require.Equal(t, state.FirstClaimID, binding.ClaimId)
++	require.Empty(t, binding.MetadataClaimIds, "the durable v1 import has no signed metadata witness")
++	require.Len(t, snapshot.MetadataClaims, 1)
++	require.Equal(t, cutoverpb.PinkhaTorahCutover_BEGIN, snapshot.MetadataClaims[0].Record.Kind)
++	require.Equal(t, state.AccountID, snapshot.MetadataClaims[0].Record.AuthorId)
++	require.Len(t, snapshot.MetadataReceipts, 1)
++	require.Equal(t, snapshot.MetadataClaims[0].ClaimId, snapshot.MetadataReceipts[0].ClaimId)
++	require.Len(t, snapshot.OriginalClaims, 1)
++	original := snapshot.OriginalClaims[0]
++	require.Equal(t, state.FirstClaimID, original.ClaimId)
++	require.Equal(t, state.FirstOperation.OperationId, original.Operation.OperationId)
++	require.Equal(t, state.AccountID, original.Operation.AuthorId)
++	require.Equal(t, state.FirstOperation.Payload, original.Operation.Payload)
++	require.Len(t, snapshot.OriginalReceipts, 1)
++	require.Equal(t, state.FirstClaimID, snapshot.OriginalReceipts[0].ClaimId)
++	require.Equal(t, state.FirstChangeID, snapshot.OriginalReceipts[0].ChangeId)
++	require.Equal(t, state.AccountID, snapshot.OriginalReceipts[0].Creator)
++	secondFactID, err := state.Plan.Facts[1].ID(state.Scope.SpaceId, state.Scope.ObjectId)
++	require.NoError(t, err)
++	require.ElementsMatch(t, []*cutoverpb.PinkhaTorahCutoverIssue{
++		{Reason: "importMetadataNotCommitted", Reference: state.FirstClaimID},
++		{Reason: "sourceFactNotImported", Reference: secondFactID},
++	}, snapshot.State.Pending)
++	require.Empty(t, snapshot.State.Seals)
++	require.Empty(t, snapshot.State.Conflicts)
++	planID, err := state.Plan.ID()
++	require.NoError(t, err)
++	// Empty bindings are structurally valid, but cannot cover this two-fact
++	// source or its missing signed metadata. Refusal must not add any history.
++	seal, err := client.PinkhaTorahCutoverAppend(ctx, &cutoverpb.PinkhaTorahCutoverRecordRequest{
++		Scope: state.Scope, RecordId: fmt.Sprintf("%032x", 99),
++		Kind: cutoverpb.PinkhaTorahCutover_SEAL, PlanId: planID,
++	})
++	require.NoError(t, err)
++	require.NotNil(t, seal.Error)
++	require.Equal(t, cutoverpb.PinkhaTorahCutoverError_INCOMPLETE, seal.Error.Code)
++	require.Nil(t, seal.Receipt, "a refused Seal has no committed identity or private resolution")
++	cutoverCrashSameSnapshot(t, snapshot, cutoverCrashRead(t, ctx, client, state))
++}
++
+ func TestPinkhaTorahCutoverCrashPrepare(t *testing.T) { cutoverCrashPhase(t, "prepare") }
+ func TestPinkhaTorahCutoverCrashResume(t *testing.T)  { cutoverCrashPhase(t, "resume") }
+ func TestPinkhaTorahCutoverCrashVerify(t *testing.T)  { cutoverCrashPhase(t, "verify") }
+@@ -240,11 +293,7 @@
+ 		require.NotEmpty(t, imported.Receipt.ChangeId)
+ 		state.FirstClaimID, state.FirstChangeID = imported.Receipt.ClaimId, imported.Receipt.ChangeId
+ 		before := cutoverCrashRead(t, ctx, client, state)
+-		require.Equal(t, cutoverpb.PinkhaTorahCutover_PENDING, before.State.Status)
+-		require.Len(t, before.MetadataClaims, 1)
+-		require.Len(t, before.OriginalClaims, 1)
+-		require.Empty(t, before.State.Imports, "v1 append is durable before its metadata witness")
+-		require.Empty(t, before.State.Seals)
++		cutoverCrashRequireUnwitnessedImport(t, ctx, client, state, before)
+ 		state.Before, err = proto.Marshal(before)
+ 		require.NoError(t, err)
+ 		cutoverCrashJSON(t, filepath.Join(root, "checkpoint.json"), state)
+@@ -261,8 +310,7 @@
+ 		require.NoError(t, proto.Unmarshal(state.Before, expected))
+ 		after := cutoverCrashRead(t, ctx, client, state)
+ 		cutoverCrashSameSnapshot(t, expected, after)
+-		require.Equal(t, cutoverpb.PinkhaTorahCutover_PENDING, after.State.Status)
+-		require.Empty(t, after.State.Imports)
++		cutoverCrashRequireUnwitnessedImport(t, ctx, client, state, after)
+ 		retried, e := client.PinkhaTorahCutoverImport(ctx, state.FirstOperation)
+ 		require.NoError(t, e)
+ 		require.Equal(t, cutoverpb.PinkhaTorahCutoverError_NULL, retried.Error.Code)

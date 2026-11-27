@@ -1,0 +1,70 @@
+{
+  "appleUI": false,
+  "binaryPath": "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-host-attempt2/cutover-host.test",
+  "binarySHA256": "6cae941b74a4e6bc5187610e4c52ab8325c1ad4ad5bbb409f14c39c99ca502da",
+  "buildRoot": "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-host-attempt2",
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "cutover-host",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-host-attempt2/cutover-host.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=540s",
+        "-test.run=^(TestCutoverNativeSignedPhasesUnlinkAndReopen|TestCutoverNativeTwoAuthorsRetainAllBindingsAndOlderWriterDiverges|TestCutoverNativeCurrentACLAndRetiredLeaseRefuseReadAndRetry|TestCutoverNativeLostACKRetainsOneSignedBeginAndLeaseBoundary)$"
+      ],
+      "exitCode": 0,
+      "logSHA256": "80995fb2f99ba70a8dafe3466ea49a8ba35f1c96b19e1eb53cba56c1e94b48f6",
+      "pid": 3065357,
+      "processGroupAbsent": true,
+      "seconds": 9.074219226837158,
+      "stopReason": null
+    }
+  ],
+  "completedUTC": "2026-11-27T03:34:50Z",
+  "controllerSHA256": "36494ad9236ccd4335d10145df07d6b93f02e577fbcd9fdb097bf79b8a0bfa59",
+  "manifestSHA256": "b98c93ff11e492e173ca2a0b93548ed4cdfb275bb4b345bd82468e55c6e481ac",
+  "methods": [
+    "TestCutoverNativeSignedPhasesUnlinkAndReopen",
+    "TestCutoverNativeTwoAuthorsRetainAllBindingsAndOlderWriterDiverges",
+    "TestCutoverNativeCurrentACLAndRetiredLeaseRefuseReadAndRetry",
+    "TestCutoverNativeLostACKRetainsOneSignedBeginAndLeaseBoundary"
+  ],
+  "methodsExecutedThisRun": [
+    "TestCutoverNativeSignedPhasesUnlinkAndReopen",
+    "TestCutoverNativeTwoAuthorsRetainAllBindingsAndOlderWriterDiverges",
+    "TestCutoverNativeCurrentACLAndRetiredLeaseRefuseReadAndRetry",
+    "TestCutoverNativeLostACKRetainsOneSignedBeginAndLeaseBoundary"
+  ],
+  "mode": "host",
+  "peerTransport": false,
+  "resourceAdmission": {
+    "cacheFreeBytes": 4413218816,
+    "cacheMustExceedBytes": 671088640,
+    "cacheStopsBelowBytes": 536870912,
+    "rootFreeBytes": 3462365184,
+    "rootMustExceedBytes": 2684354560,
+    "rootStopsBelowBytes": 2147483648
+  },
+  "retainedSource": "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/source",
+  "retainedSourceUnchanged": true,
+  "reusedCompiledBinary": {
+    "allSourceAndOverlayInputsUnchanged": true,
+    "binary": "/mnt/development/projects/caches/pinkha-e-cutover-rpc-host-attempt1-20261127/cutover-host.test",
+    "binarySHA256": "6cae941b74a4e6bc5187610e4c52ab8325c1ad4ad5bbb409f14c39c99ca502da",
+    "compilerExecutedAgain": false,
+    "fixtureEnvironment": {
+      "PINKHA_CUTOVER_NATIVE_WORK": "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-host-attempt2/private",
+      "PINKHA_CUTOVER_RPC_PRIVATE_ROOT": "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-host-attempt2/private"
+    },
+    "originalOverallStatus": "FAIL",
+    "receipt": "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-host-attempt1/receipt.json",
+    "receiptSHA256": "a7b0a1b46c890ea73eb487c6232cb26049b6df3939d44e22c19ce131aacb4703"
+  },
+  "status": "PASS_AFFECTED_NATIVE_SIGNED_HOST_REGRESSIONS"
+}

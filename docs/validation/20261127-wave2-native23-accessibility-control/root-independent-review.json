@@ -1,0 +1,100 @@
+{
+  "schema": "wave2-root-native23-accessibility-source-review-v1",
+  "predecessorCommit": "c7111ad400e9737ac3d35c54d9dcd6454e9a63b6",
+  "proof": {
+    "profile": {
+      "candidateSHA256": "3fd3049737f4be72f4257a04e5ca94085e6d9e11cd3916257ced4bf2e8943aa6",
+      "predecessorSHA256": "54ec0671be6bd88eadc795ae25ff24d8b46e968e8c61b8da23934536f3e2275f",
+      "inverseRestoresAllBytes": true
+    },
+    "materializer": {
+      "candidateSHA256": "a7d8fbe1a47266ef07381972fbae7190b4bc97c3f4633c5460e41dae54a143ef",
+      "predecessorSHA256": "d54988593a1191b5e255b6a0961723a2d7d7aaeb23e9880cbe8cc5ab0399c09b",
+      "inverseRestoresAllBytes": true
+    },
+    "runner": {
+      "candidateSHA256": "e4515cc6cd36424c607ee1e986ea9f0cfdcb0db516bf6e91276eef685ba29a22",
+      "predecessorSHA256": "3aff24c73606a2b071c00616866a606aa0f92c0433f3eec8e019c868fd85ef4f",
+      "inverseRestoresAllBytes": true
+    },
+    "builder": {
+      "candidateSHA256": "01433ea86c3dcb7f86c1c31a90139805a9407fa34b6fd25e8918dee4af87e25a",
+      "predecessorSHA256": "61ab8c1ed0a4420a277312f69fc82452a0b3f61e6751971382fdae0cb92110b7",
+      "inverseRestoresAllBytes": true
+    }
+  },
+  "allFourOriginalHelpersUnchanged": true,
+  "originalSourcePinsAndStagePlans": "Compared by full inverse;27 source pins and all seven predecessor stage declarations retained",
+  "additionalPlans": [
+    "accessibility-audit-large",
+    "accessibility-audit-expanded",
+    "accessibility-voiceover-large"
+  ],
+  "reviewedRuntimeSHA256": "8001c3efc0003ce659a7d5b9e97656b801e6d59a45972589904652f7de55f9d2",
+  "collectorSHA256": "a0e4a67a21594023537e830124272be23312afd9b3b5158fe7f0e6e5df543336",
+  "checks": [
+    "ten parser-selected stages; accepted historical lanes remain excluded",
+    "new AccessibilitySession installed before any prepare/settings command",
+    "the exact existing c249 registry owns each selected command and cleanup; no second owner",
+    "expanded write-attempt marked before setter; restoration attempted after any setter attempt only on positively closed custody",
+    "before/after settings and installed product observations retained; expanded restored to large",
+    "only two bound descriptor variables; whole original descriptor inverse required",
+    "original900-second method and1200-second command allowance retained",
+    "source/helper/descriptor identity retained and rechecked",
+    "accessibility finalization precedes collection; original first failure remains distinct from secondary diagnostics",
+    "all selected command registry final receipt after result exports/device operations/integrity checks",
+    "PASS remains visual-review-pending and physical-device NOT_RUN",
+    "unconditional future-product gate remains closed before execution-root/device/product I/O"
+  ],
+  "reusedReviews": [
+    "0f81e86965add59a9173c5582eea9ffe804a79840b889d910cba65d2b827cbd0",
+    {
+      "schema": "wave2-independent-accessibility-runtime-compatibility-review-v1",
+      "reviewer": "/root/torah_continue",
+      "status": "NO_CONCRETE_SOURCE_BLOCKER_FOUND",
+      "inputs": {
+        "runtime": {
+          "path": "/workspace/scratch/1d35894f12d5/interfaces_work/native23-accessibility-control/native_accessibility_runtime.py",
+          "bytes": 13001,
+          "sha256": "8001c3efc0003ce659a7d5b9e97656b801e6d59a45972589904652f7de55f9d2"
+        },
+        "observations": {
+          "path": "/workspace/scratch/1d35894f12d5/wave2-native-accessibility-control/native_accessibility_observations.py",
+          "bytes": 28005,
+          "sha256": "a0e4a67a21594023537e830124272be23312afd9b3b5158fe7f0e6e5df543336"
+        },
+        "originalRTL": {
+          "path": "/workspace/scratch/1d35894f12d5/interfaces_work/native-styled-control/native_rtl_matrix.py",
+          "bytes": 13850,
+          "sha256": "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae"
+        }
+      },
+      "scope": [
+        "Actual original rtl-before logs/environment feed large plan, expanded setter precedes accessibility-before readback and its exact hash in13-field invocation",
+        "Descriptor preserves full original dictionary except two source-defined context fields; ambient/prebound aliases rejected; exact selected method and900/1200 method/command budgets",
+        "Actual execute is followed by selected-after readback; expanded finalization restores large and retains restored readback, with original labels matching a0e collector",
+        "may_have_changed set before expanded setter; finalization attempts restoration after a failed setter/readback when owned registry is positively closed",
+        "Unresolved command custody prevents subsequent setting/code observations and restoration; supplied original OwnedCommands remains sole process owner",
+        "Finalization retains its first local failure and does not turn settings completion into UI acceptance"
+      ],
+      "findings": [],
+      "notReviewed": [
+        "Root-owned generated profile/runner admission and caller overall exception precedence",
+        "OwnedCommands implementation already under separate independent review"
+      ],
+      "limits": [
+        "Source review only; no portable controls rerun",
+        "No mutation of reviewed files",
+        "No App/Native/XCTest/simulator/Mac or settings actions"
+      ],
+      "testsExecuted": 0,
+      "nativeCalls": 0,
+      "appleInvocations": 0
+    }
+  ],
+  "retainedNewControlReceiptSHA256": "066d9112fb8e365f6336fe986d5cb608fa56ce770a3b5e2b2d55207960d87b8e",
+  "controlsRerunByRoot": 0,
+  "actualCompilerNativeUIRuns": 0,
+  "concreteBlockers": [],
+  "status": "PASS_SOURCE_WIRING_REVIEW_NOT_RUNTIME_ACCEPTANCE"
+}

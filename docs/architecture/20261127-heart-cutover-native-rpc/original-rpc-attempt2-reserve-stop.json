@@ -1,0 +1,44 @@
+{
+  "appleUI": false,
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-overlay",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-core-attempt2/go-overlay.json",
+        "-tags=pinkha_loaded_account_witness,pinkha_cutover_acceptance",
+        "-o",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-core-attempt2/cutover-core.test",
+        "./core"
+      ],
+      "exitCode": -15,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 2770599,
+      "processGroupAbsent": true,
+      "seconds": 253.21144032478333,
+      "stopReason": "root filesystem reserve"
+    }
+  ],
+  "completedUTC": "2026-11-27T02:21:10Z",
+  "controllerSHA256": "78e06324cfb63931eb4d1b471f319ed678b37047619669fc576c990928056dfa",
+  "error": "AssertionError: compile failed",
+  "manifestSHA256": "75f44277c8c5b3f89c5f9e1ed28e443658dd38a72bd573edc18a95f61e42dd48",
+  "mode": "core",
+  "peerTransport": false,
+  "resourceAdmission": {
+    "cacheFreeBytes": 3617116160,
+    "cacheMustExceedBytes": 671088640,
+    "cacheStopsBelowBytes": 536870912,
+    "rootFreeBytes": 2907742208,
+    "rootMustExceedBytes": 2684354560,
+    "rootStopsBelowBytes": 2147483648
+  },
+  "retainedSource": "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/source",
+  "retainedSourceUnchanged": true,
+  "status": "FAIL"
+}

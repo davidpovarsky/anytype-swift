@@ -1,0 +1,153 @@
+{
+  "appleUI": false,
+  "coreManifestSHA256": "0ea2bbfff9fd1faef02337ae247bb6706c5517c971d1346b762467b854782a20",
+  "descriptorIdentityPreservedExceptGoPackage": true,
+  "files": {
+    "clientlibrary/service/pinkha_torah_cutover_rpc_wire_test.go": {
+      "after": {
+        "bytes": 5424,
+        "sha256": "98d00608347c2d3ab3c954a585be1d542f178e92a759db4ebe8dfaeffa130af8"
+      },
+      "before": null
+    },
+    "clientlibrary/service/service.pb.go": {
+      "after": {
+        "bytes": 612495,
+        "sha256": "340c8834744f95b5476743e11b58818383893bd17d22f43dce94395762847237"
+      },
+      "before": {
+        "bytes": 603028,
+        "sha256": "59dcea52be20f141c5b54f895475a86842025c8c9ddeca727499b0e40c1b8b91"
+      }
+    },
+    "core/pinkha_torah_cutover_crash_acceptance_test.go": {
+      "after": {
+        "bytes": 17520,
+        "sha256": "979f7d52cdd81250f89c204f52c8fe74cf0dcaa6a00b608126ad1af5a84756cc"
+      },
+      "before": null
+    },
+    "core/pinkha_torah_cutover_rpc.go": {
+      "after": {
+        "bytes": 22072,
+        "sha256": "6a0ca15096120e383effec2d80813d17a3868f8a39d35940076ecf1b1ef9c945"
+      },
+      "before": null
+    },
+    "core/pinkha_torah_cutover_rpc_acceptance_test.go": {
+      "after": {
+        "bytes": 14562,
+        "sha256": "20f540c4b21d6ea4ffd4173a5698d67e5852eb23c4562021e1db0e7274d008ec"
+      },
+      "before": null
+    },
+    "core/pinkha_torah_cutover_rpc_test.go": {
+      "after": {
+        "bytes": 13302,
+        "sha256": "03cb900103da77e8c30d8bc7c109e1d69930237d291b1bec4bbf0a8c8e625290"
+      },
+      "before": null
+    },
+    "pb/cutoverpb/pinkha_torah_cutover.pb.go": {
+      "after": {
+        "bytes": 241921,
+        "sha256": "1583fb29dbfa061c3b0a7b2f4aae54eb0c32e2a43c4bf6c3968d349fd2459d05"
+      },
+      "before": null
+    },
+    "pb/cutoverpb/pinkha_torah_cutover_gomobile_aliases.go": {
+      "after": {
+        "bytes": 1321,
+        "sha256": "931e657c74668ff9937c488a803d1d9eac2cb5abae5685575ff0e8e80cee9f17"
+      },
+      "before": null
+    },
+    "pb/protos/pinkha_torah_cutover.proto": {
+      "after": {
+        "bytes": 6237,
+        "sha256": "e858be46d913b6ef209dfe2e86e839bf4d4b13dcd38757476c7990c8dc96e333"
+      },
+      "before": null
+    },
+    "pb/protos/service/service.proto": {
+      "after": {
+        "bytes": 48660,
+        "sha256": "5fb5bb7dc8da1eecd3d9264ecd381451c135be3f6b80a4c245709215e63e56af"
+      },
+      "before": {
+        "bytes": 47875,
+        "sha256": "76fb0fea3dc1e77e48853810ebb4521ed8c41965bea3761da3a5115d8ffb738e"
+      }
+    },
+    "pb/service/service.pb.go": {
+      "after": {
+        "bytes": 640863,
+        "sha256": "3f0aca03b16bfa7332148d630231dcddb2266263ab48850c72c1ee4900cfcac4"
+      },
+      "before": {
+        "bytes": 631025,
+        "sha256": "a901be3a394553934a5aebb80343de68ebf507643ba646e0cba0ac9fcc676ccc"
+      }
+    }
+  },
+  "generatedAcceptance": false,
+  "generatedFunctionRetention": {
+    "clientlibrary/service/service.pb.go": {
+      "addedFunctions": [
+        "func (h *ClientCommandsHandlerProxy) PinkhaTorahCutoverAppend(ctx context.Context, req *cutoverpb.PinkhaTorahCutoverRecordRequest) *cutoverpb.PinkhaTorahCutoverAppendResponse",
+        "func (h *ClientCommandsHandlerProxy) PinkhaTorahCutoverAssociationAppend(ctx context.Context, req *cutoverpb.PinkhaTorahCutoverOperationRequest) *cutoverpb.PinkhaTorahCutoverOperationResponse",
+        "func (h *ClientCommandsHandlerProxy) PinkhaTorahCutoverImport(ctx context.Context, req *cutoverpb.PinkhaTorahCutoverOperationRequest) *cutoverpb.PinkhaTorahCutoverOperationResponse",
+        "func (h *ClientCommandsHandlerProxy) PinkhaTorahCutoverRead(ctx context.Context, req *cutoverpb.PinkhaTorahCutoverScope) *cutoverpb.PinkhaTorahCutoverReadResponse",
+        "func (h *ClientCommandsHandlerProxy) PinkhaTorahCutoverSourceRead(ctx context.Context, req *cutoverpb.PinkhaTorahCutoverScope) *cutoverpb.PinkhaTorahCutoverSourceReadResponse",
+        "func PinkhaTorahCutoverAppend(b []byte) (resp []byte)",
+        "func PinkhaTorahCutoverAssociationAppend(b []byte) (resp []byte)",
+        "func PinkhaTorahCutoverImport(b []byte) (resp []byte)",
+        "func PinkhaTorahCutoverRead(b []byte) (resp []byte)",
+        "func PinkhaTorahCutoverSourceRead(b []byte) (resp []byte)"
+      ],
+      "changedExistingFunctions": [],
+      "missingFunctions": [],
+      "newFunctionCount": 712,
+      "onlyCommandAsyncAdditions": [
+        "PinkhaTorahCutoverSourceRead",
+        "PinkhaTorahCutoverRead",
+        "PinkhaTorahCutoverAppend",
+        "PinkhaTorahCutoverImport",
+        "PinkhaTorahCutoverAssociationAppend"
+      ],
+      "originalFunctionCount": 702
+    },
+    "pb/service/service.pb.go": {
+      "addedFunctions": [
+        "func (*UnimplementedClientCommandsServer) PinkhaTorahCutoverAppend(ctx context.Context, req *cutoverpb.PinkhaTorahCutoverRecordRequest) *cutoverpb.PinkhaTorahCutoverAppendResponse",
+        "func (*UnimplementedClientCommandsServer) PinkhaTorahCutoverAssociationAppend(ctx context.Context, req *cutoverpb.PinkhaTorahCutoverOperationRequest) *cutoverpb.PinkhaTorahCutoverOperationResponse",
+        "func (*UnimplementedClientCommandsServer) PinkhaTorahCutoverImport(ctx context.Context, req *cutoverpb.PinkhaTorahCutoverOperationRequest) *cutoverpb.PinkhaTorahCutoverOperationResponse",
+        "func (*UnimplementedClientCommandsServer) PinkhaTorahCutoverRead(ctx context.Context, req *cutoverpb.PinkhaTorahCutoverScope) *cutoverpb.PinkhaTorahCutoverReadResponse",
+        "func (*UnimplementedClientCommandsServer) PinkhaTorahCutoverSourceRead(ctx context.Context, req *cutoverpb.PinkhaTorahCutoverScope) *cutoverpb.PinkhaTorahCutoverSourceReadResponse",
+        "func (c *clientCommandsClient) PinkhaTorahCutoverAppend(ctx context.Context, in *cutoverpb.PinkhaTorahCutoverRecordRequest, opts ...grpc.CallOption) (*cutoverpb.PinkhaTorahCutoverAppendResponse, error)",
+        "func (c *clientCommandsClient) PinkhaTorahCutoverAssociationAppend(ctx context.Context, in *cutoverpb.PinkhaTorahCutoverOperationRequest, opts ...grpc.CallOption) (*cutoverpb.PinkhaTorahCutoverOperationResponse, error)",
+        "func (c *clientCommandsClient) PinkhaTorahCutoverImport(ctx context.Context, in *cutoverpb.PinkhaTorahCutoverOperationRequest, opts ...grpc.CallOption) (*cutoverpb.PinkhaTorahCutoverOperationResponse, error)",
+        "func (c *clientCommandsClient) PinkhaTorahCutoverRead(ctx context.Context, in *cutoverpb.PinkhaTorahCutoverScope, opts ...grpc.CallOption) (*cutoverpb.PinkhaTorahCutoverReadResponse, error)",
+        "func (c *clientCommandsClient) PinkhaTorahCutoverSourceRead(ctx context.Context, in *cutoverpb.PinkhaTorahCutoverScope, opts ...grpc.CallOption) (*cutoverpb.PinkhaTorahCutoverSourceReadResponse, error)",
+        "func _ClientCommands_PinkhaTorahCutoverAppend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error)",
+        "func _ClientCommands_PinkhaTorahCutoverAssociationAppend_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error)",
+        "func _ClientCommands_PinkhaTorahCutoverImport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error)",
+        "func _ClientCommands_PinkhaTorahCutoverRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error)",
+        "func _ClientCommands_PinkhaTorahCutoverSourceRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error)"
+      ],
+      "changedExistingFunctions": [],
+      "missingFunctions": [],
+      "newFunctionCount": 1070,
+      "onlyCommandAsyncAdditions": [],
+      "originalFunctionCount": 1055
+    }
+  },
+  "generatorReceipt": "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation2-isolated/receipt.json",
+  "generatorReceiptSHA256": "6dfcc384559a30439c257cba12edd648efe63fc781f8b76141deb9c3e9ec3846",
+  "goPackage": "github.com/anyproto/anytype-heart/pb/cutoverpb",
+  "peerTransport": false,
+  "protocol": "pinkha-cutover-generated-rpc-source-v1",
+  "status": "SOURCE_FROZEN_PENDING_NATIVE_ACCEPTANCE",
+  "supersededManifestSHA256": "74b2efd9a679a69e57e9a1d8b7e9288e1bdaab228c3b20b80e4193a72a1178e5",
+  "unchangedNativeSource": "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/source"
+}

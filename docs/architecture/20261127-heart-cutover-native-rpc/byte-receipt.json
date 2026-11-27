@@ -1,0 +1,75 @@
+{
+  "appleUI": false,
+  "binaryPath": "/mnt/development/projects/caches/pinkha-e-cutover-rpc-byte-attempt1-20261127/cutover-byte.test",
+  "binarySHA256": "c75bf6140036a3ff513e2ba6abc6412e9d22082833d206ec44d5f890c3688710",
+  "buildRoot": "/mnt/development/projects/caches/pinkha-e-cutover-rpc-byte-attempt1-20261127",
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-overlay",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-byte-attempt1/go-overlay.json",
+        "-tags=pinkha_loaded_account_witness,pinkha_cutover_acceptance",
+        "-o",
+        "/mnt/development/projects/caches/pinkha-e-cutover-rpc-byte-attempt1-20261127/cutover-byte.test",
+        "./clientlibrary/service"
+      ],
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 3085586,
+      "processGroupAbsent": true,
+      "seconds": 154.23702001571655,
+      "stopReason": null
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "cutover-byte",
+        "/mnt/development/projects/caches/pinkha-e-cutover-rpc-byte-attempt1-20261127/cutover-byte.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=540s",
+        "-test.run=^(TestPinkhaTorahCutoverGeneratedByteBoundary)$"
+      ],
+      "exitCode": 0,
+      "logSHA256": "34bbf2703cae6f5423d15ce42d16225d68c7b98251684dcf435fb9536ecd2ed9",
+      "pid": 3094539,
+      "processGroupAbsent": true,
+      "seconds": 5.0681312084198,
+      "stopReason": null
+    }
+  ],
+  "completedUTC": "2026-11-27T03:43:25Z",
+  "controllerSHA256": "36494ad9236ccd4335d10145df07d6b93f02e577fbcd9fdb097bf79b8a0bfa59",
+  "manifestSHA256": "b98c93ff11e492e173ca2a0b93548ed4cdfb275bb4b345bd82468e55c6e481ac",
+  "methods": [
+    "TestPinkhaTorahCutoverGeneratedByteBoundary"
+  ],
+  "methodsExecutedThisRun": [
+    "TestPinkhaTorahCutoverGeneratedByteBoundary"
+  ],
+  "mode": "byte",
+  "peerTransport": false,
+  "resourceAdmission": {
+    "buildFreeBytes": 4331216896,
+    "buildMustExceedBytes": 1610612736,
+    "cacheFreeBytes": 4331216896,
+    "cacheMustExceedBytes": 671088640,
+    "cacheStopsBelowBytes": 536870912,
+    "rootFreeBytes": 3408650240,
+    "rootMustExceedBytes": 2684354560,
+    "rootStopsBelowBytes": 2147483648
+  },
+  "retainedSource": "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/source",
+  "retainedSourceUnchanged": true,
+  "status": "PASS_GENERATED_GOMOBILE_BYTE_BOUNDARY"
+}

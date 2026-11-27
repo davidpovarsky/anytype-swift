@@ -1,0 +1,64 @@
+{
+  "schema": "pinkha-native23-pending-root-source-review-v1",
+  "reviewer": "/root",
+  "status": "PASS_SOURCE_REVIEW_RUNTIME_CLOSED",
+  "files": {
+    "profile": {
+      "originalSHA256": "a499920e54468a8a81b5d86ec16aa809a2b99d9bd7cee66df6d615b43ab1f5b5",
+      "candidateSHA256": "54ec0671be6bd88eadc795ae25ff24d8b46e968e8c61b8da23934536f3e2275f",
+      "fullForwardAndInverseVerified": true
+    },
+    "materializer": {
+      "originalSHA256": "57f2b7ec59923fe8ce8f37694a2eeae1582bd9251d67d70dc3bf59207a6ca9c5",
+      "candidateSHA256": "d54988593a1191b5e255b6a0961723a2d7d7aaeb23e9880cbe8cc5ab0399c09b",
+      "fullForwardAndInverseVerified": true
+    },
+    "builder": {
+      "originalSHA256": "b884c8d950d4ae7c1f658b1e4930d3632442c3ccd89996ffbbf8a4887053665a",
+      "candidateSHA256": "61ab8c1ed0a4420a277312f69fc82452a0b3f61e6751971382fdae0cb92110b7",
+      "fullForwardAndInverseVerified": true
+    },
+    "runner": {
+      "originalSHA256": "36c3c0e91616a0fdeb94dc7691c8b105ef75a46fba7b4c8c3607c733704284a0",
+      "candidateSHA256": "3aff24c73606a2b071c00616866a606aa0f92c0433f3eec8e019c868fd85ef4f",
+      "fullForwardAndInverseVerified": true
+    }
+  },
+  "sourceDerivativeSHA256": "8f7f29981eb15e8eb77cfe65af51a6f8ad200ecdf4ea99ecadd605fd802d9f2a",
+  "fourOriginalHelperHashesUnchanged": {
+    "native_styled_runtime.py": "c249ab9d04b4f8014475cf1eb8b81cf0371cab40a3f98a77b2938a2a0f2b6714",
+    "native_styled_observations.py": "71c376659d34b7065d152f22c41f2ded731d4527d0231375a3e688a31e7f4f02",
+    "native_rtl_matrix.py": "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae",
+    "native_library_search.py": "7f2af4c63464ae3ce9e088cf923d314b0bbb58b94bdc94ff871190a8b205d8f0"
+  },
+  "all27SourcePinsUnchanged": true,
+  "noFutureProductPinsOrReadinessOpened": true,
+  "manualFindings": [],
+  "reviewedBoundaries": [
+    "Exactly five pending legacy and two styled stages in parser and profile; accepted hierarchy drag unavailable.",
+    "Five original selectors/deadlines retained; other four legacy lanes reject language/device cells and RTL keeps the original fixed cell.",
+    "One unchanged c249 registry installed after exact73bb lifecycle and before original run calls; legacy and styled use the same local rebound callback.",
+    "Original run body, first-error capture, positive-absence latch and unresolved aggregate refusal retained.",
+    "All seven stages share final device guard and aggregate receipt after last command; unresolved group blocks further commands, including sandbox/settings/shutdown.",
+    "Configure rejects closed source/product admission before owned output creation; mutable flag cannot supply missing exact pins.",
+    "Actual complete NativeLaunch23 plus NativeHistory two-file swiftc witness and exact common App proof remain required."
+  ],
+  "reusedEvidence": {
+    "pendingControlsSHA256": "ab1aa84c46a500c4fe252e55793fe6257431ab67e6f2392444571c56e671d702",
+    "closedEntrypointsSHA256": "4da7666508e4f15ae1feb162f2be7048eb0fba51b0f59fdfcccb7f6afe1fa6b1",
+    "controlsRerun": 0
+  },
+  "retainedReviewHarnessFailure": {
+    "path": "root-review-attempt1.json",
+    "sha256": "2036d1ecfaf06cd27118bd3447fb350371ca06eebbbfe882c2e0d5231e94e187",
+    "correction": "linePosition denotes candidate line index; inverse uses it directly and forward reconstruction subtracts preceding size deltas. Candidate sources were never changed."
+  },
+  "limitations": [
+    "No App/build/native/simulator operation or UI acceptance from this review.",
+    "Runtime adaptation reuses reviewed registry; no executed-behavior-equivalence claim.",
+    "Actual native8ac/current SDK qualification remains required."
+  ],
+  "AppleInvocations": 0,
+  "NativeCalls": 0,
+  "testsExecuted": 0
+}
