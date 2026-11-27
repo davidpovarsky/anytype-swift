@@ -1,0 +1,86 @@
+{
+  "schema": "two-terminal-properties-build-custody-source-preparation-v1",
+  "preparedAtUTC": "2026-11-27T14:40:35.409800+00:00",
+  "status": "SOURCE_PREPARED_PENDING_ROOT_REVIEW_NOT_EXECUTED",
+  "scope": "Only two fixed positively terminal Properties component build directories; no new resource slot requested",
+  "files": [
+    {
+      "path": "relocate_terminal_properties_builds.py",
+      "sha256": "4c6aec30a2d9bc57f50804f82a2ccbf99f9ce385c4cec5a7898c308ffd07e3a2",
+      "bytes": 31917
+    },
+    {
+      "path": "README.md",
+      "sha256": "4ee48b907bc12ca8bbb5a27d5fc0ea6761dd0535c5a0495a5c479e8da30ef5ac",
+      "bytes": 7414
+    },
+    {
+      "path": "readonly-inventory.original.json",
+      "sha256": "c0afe84213f5539e5f6f41bcd7e7cee93cf2769be87785a08facafdb80915f5c",
+      "bytes": 3850
+    }
+  ],
+  "retainedOriginalReceipts": [
+    {
+      "scope": "original-failed-build",
+      "localOriginal": "/workspace/scratch/1d35894f12d5/wave2-properties-related-component/actual-run/attempt1/receipt.json",
+      "sha256": "8fbaf3c6dd6b57bc577d7f91ba54403f2ee57ee350d37a0280da74d17c405ceb",
+      "originalStatus": "FAIL",
+      "processExit": 1,
+      "historicalAbsenceEvidenceRetainedOnly": {
+        "atUTC": "2026-11-27T13:03:50.377266+00:00",
+        "errno": 3,
+        "error": "[Errno 3] No such process",
+        "processGroup": 702869,
+        "signal": 0,
+        "status": "ABSENT_ESRCH"
+      },
+      "newProcessProbes": 0
+    },
+    {
+      "scope": "source2-passed-build",
+      "localOriginal": "/workspace/scratch/1d35894f12d5/wave2-properties-related-component/macro-repair1/actual-source2/attempt1/receipt.json",
+      "sha256": "05971770c170562bc9ab8d01efff29ad459c440f6901f19ca84c116f07d543b4",
+      "originalStatus": "PASS_FIVE_METHODS_ELEVEN_DECLARED_CASES_EXACT_SOURCE_MODEL_COMPONENT_ONLY",
+      "processExit": 0,
+      "historicalAbsenceEvidenceRetainedOnly": {
+        "atUTC": "2026-11-27T13:23:37.079302+00:00",
+        "errno": 3,
+        "error": "[Errno 3] No such process",
+        "processGroup": 759204,
+        "signal": 0,
+        "status": "ABSENT_ESRCH"
+      },
+      "newProcessProbes": 0
+    }
+  ],
+  "priorCustodyConventionSource": {
+    "path": "wave2-sharing-cache-custody/preserve_terminal_sharing_build.py",
+    "sha256": "4cdb3bc70daee065e267172598a4eb40b472a0b74246cb27eee0a14145dc6774",
+    "reuse": "Same no-follow/no-atime capture, immutable fsynced receipts, verified copy and atomic stable-alias convention; this is a separately reviewed fixed-two-tree controller, not an exact body derivative."
+  },
+  "localValidation": {
+    "pythonASTParse": true,
+    "sourceInspectionNoSubprocessNoHistoricalIDsNoSignalsNoRecursiveDelete": true,
+    "controllerExecuted": false,
+    "syntheticRelocationControlsRun": false
+  },
+  "remote": {
+    "writes": 0,
+    "calls": 0,
+    "slotRequested": false,
+    "nativeOrCompilerRuns": 0
+  },
+  "resourcePolicy": {
+    "rootLiveFloorBytes": 2147483648,
+    "rootMetadataAdmissionAllowanceBytes": 1048576,
+    "destinationLiveReserveBytes": 536870912,
+    "destinationEvidenceMarginBytes": 16777216,
+    "maximumMeasuredCopyUpperBytes": 134217728,
+    "surveyedOriginalAllocationSumBytes": 93413376,
+    "operationSeconds": 300,
+    "finalIntegritySeconds": 60,
+    "existingRuntimeCompilerFloorsChanged": false
+  },
+  "hold": "W1 capacity recovery8494db93 is already terminal; root holds this optional W2 operation behind queued consumers and will assess any remaining need."
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "pinkha-independent-two-terminal-build-custody-source-review-v1",
+  "reviewer": "/root/editor",
+  "reviewedAtUTC": "2026-11-27T15:22:13.880816+00:00",
+  "status": "NO_CONCRETE_SOURCE_BLOCKER_FOUND_EXECUTION_RESOURCE_GATE_UNSATISFIED",
+  "controller": {
+    "path": "wave2-properties-related-build-custody/relocate_terminal_properties_builds.py",
+    "bytes": 31917,
+    "sha256": "4c6aec30a2d9bc57f50804f82a2ccbf99f9ce385c4cec5a7898c308ffd07e3a2"
+  },
+  "readme": {
+    "path": "wave2-properties-related-build-custody/README.md",
+    "bytes": 7414,
+    "sha256": "4ee48b907bc12ca8bbb5a27d5fc0ea6761dd0535c5a0495a5c479e8da30ef5ac"
+  },
+  "handoff": {
+    "path": "wave2-properties-related-build-custody/prepared-handoff.json",
+    "bytes": 3485,
+    "sha256": "2f0b70c5a021fd551035cad75a686070e8ae662953e4286cd4fe7e40faf6f357"
+  },
+  "survey": {
+    "path": "wave2-properties-related-build-custody/readonly-inventory.original.json",
+    "bytes": 3850,
+    "sha256": "c0afe84213f5539e5f6f41bcd7e7cee93cf2769be87785a08facafdb80915f5c"
+  },
+  "originalTerminalReceiptCopies": [
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-properties-related-component/actual-run/attempt1/receipt.json",
+      "bytes": 6276,
+      "sha256": "8fbaf3c6dd6b57bc577d7f91ba54403f2ee57ee350d37a0280da74d17c405ceb"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-properties-related-component/macro-repair1/actual-source2/attempt1/receipt.json",
+      "bytes": 9049,
+      "sha256": "05971770c170562bc9ab8d01efff29ad459c440f6901f19ca84c116f07d543b4"
+    }
+  ],
+  "scope": [
+    "/var/lib/pinkha-wave2-properties-related-lifetime-20261127/build",
+    "/var/lib/pinkha-wave2-properties-related-lifetime-source2-20261127/build"
+  ],
+  "destination": "/mnt/development/projects/evidence/wave2-properties-related-build-custody-20261127",
+  "findings": [],
+  "sourceChecks": [
+    "Fixed two source roots and exclusive destination; no CLI path override, historical PID argument, recursive delete, compiler or test invocation. Both original terminal receipts are hashed against the exact locally retained actual originals, including original failure8fb and success0597; their historical absence witnesses are retained, not re-probed.",
+    "Admission preserves physical/owner/permission checks, original4-input closure per component, eight actual artifact pins per run, controller/cleanup bytes, cross-filesystem requirement, fixed inventory and conservative measured copy bound. The only current-user census operates on present path/inode references, not retained historical group IDs.",
+    "Full tree capture includes hashes, portable metadata, xattrs, topology and only the known internal debug link. No nested mount/special entry accepted. Regular hardlink classes must be fully contained within the two roots and are preserved across both copies; external hardlinks fail admission.",
+    "Source/copy regular-file reads use no-follow/no-atime descriptors and inode/readback checks. Only newly copied metadata is restored; source trees are re-read exactly before exchange. Copy writes and containing directories are fsynced before the durable-copy phase.",
+    "Both stable aliases point to verified copies before any duplicate retirement. Linux renameat2 exchange retains the public build path; fixed temporary duplicate identities and portable content are rechecked. Retirement validates each original inode/metadata/hash and current hardlink count immediately before unlink, with leaf-first empty-directory removal.",
+    "One custody flock spans both scopes and finalization; exclusive destination/no-replay prevents an automatic retry after partial failure. Original failed/PASS receipts, component inputs and source remain in place. Phase receipts and restoration mapping retain partial boundary evidence.",
+    "First exceptions are retained; final-integrity, final-state or receipt-write failures cannot return successful status. Final reads verify retained copies, original aliases, owner traversal/protection and protected source/evidence. Signals interrupt the owned controller without targeting historical processes.",
+    "The operation keeps the original2GiB root live floor,2GiB+1MiB initial gate,512MiB destination reserve plus measured copy/evidence margin,300s operation and60s final-read limits. No relaxed gate or future compiler-warmness/acceptance claim is present."
+  ],
+  "executionBlock": {
+    "basis": "Root supplied actual W1 HQ1220956723454143 observation; reviewer did not probe host",
+    "reportedRootFreeBytes": 2110791680,
+    "initialRootRequiredBytes": 2148532224,
+    "shortfallBytes": 37740544,
+    "rootLiveFloorBytes": 2147483648,
+    "executionAuthorizedByThisReview": false,
+    "requiredNextStep": "W1/root may reconsider only after a separately coordinated slot and fresh actual admission satisfy the unchanged resource predicates. Anticipated reclaimed space is not initial free space."
+  },
+  "limits": [
+    "Source review is not a successful copy/relocation receipt. The surveyed93,413,376B allocation is historical and actual unique allocation/free delta must be measured by the admitted controller.",
+    "Current readers, source metadata drift, destination interference or any strict comparison failure stop the actual operation and require preserved evidence; this review does not waive those gates."
+  ],
+  "actions": {
+    "controllerExecuted": false,
+    "syntheticControlsRun": 0,
+    "hostCalls": 0,
+    "historicalProcessProbes": 0,
+    "signalsSent": 0,
+    "storageMutations": 0,
+    "compilerOrTests": 0,
+    "localWork": "Read exact source and retained JSON; hash/identity comparisons; write this review only"
+  }
+}
