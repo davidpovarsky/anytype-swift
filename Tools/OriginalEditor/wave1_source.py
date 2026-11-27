@@ -9,20 +9,31 @@ from pathlib import Path
 import subprocess
 
 BASE = "75a98ba98d6455eefc2c98113fa744b0f3c2e7bf"
-REVIEWED = "bfc80e5e85eabaa52f914e872f2da6c6888ca88c"
+REVIEWED = "25e55d5400a53246c0e39c49ddde82acd58f1b35"
 RELATIVE = "Tools/OriginalEditor/Wave1/product_source_adoption.json"
-SCHEMA = "anytype.original-wave1-product-source-adoption/1"
+SCHEMA = "anytype.original-wave1-product-source-adoption/2"
 PRODUCTS = ("Anytype/Sources", "Anytype/Resources", "Modules",
             "OriginalEditorFramework", "Dependencies/Middleware")
 FILES = (
-    "OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift",
-    "OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift",
-    "OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift",
-    "OriginalEditorFramework/OriginalAnnotationNativeArchiveComparison.swift",
-    "OriginalEditorFramework/OriginalEditorLocalAnnotationJournal.swift",
-    "OriginalEditorFramework/OriginalEditorLocalAnnotationMaterialization.swift",
-    "OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift",
+    'Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift',
+    'Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapStateManager.swift',
+    'Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift',
+    'Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView/PrimaryAuthView.swift',
+    'Anytype/Sources/PresentationLayer/Modules/ServerConfiguration/ServerConfigurationView.swift',
+    'Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift',
+    'Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaSpaceBootstrapEngine.swift',
+    'Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift',
+    'Modules/PinkhaKit/Tests/PinkhaKitTests/PinkhaBootstrapRecoveryTests.swift',
+    'OriginalEditorFramework/AnytypeOriginalAnnotationImport.swift',
+    'OriginalEditorFramework/AnytypeOriginalAnnotationRevision.swift',
+    'OriginalEditorFramework/AnytypeOriginalEditorLocalAnnotation.swift',
+    'OriginalEditorFramework/AnytypeOriginalEditorSnapshot.swift',
+    'OriginalEditorFramework/OriginalAnnotationNativeArchiveComparison.swift',
+    'OriginalEditorFramework/OriginalEditorLocalAnnotationJournal.swift',
+    'OriginalEditorFramework/OriginalEditorLocalAnnotationMaterialization.swift',
+    'OriginalEditorFramework/OriginalEditorLocalAnnotationRuntime.swift',
 )
+ADDED = frozenset({'Modules/PinkhaKit/Tests/PinkhaKitTests/PinkhaBootstrapRecoveryTests.swift'})
 
 
 def require(value, message):
@@ -52,7 +63,9 @@ def validate_document(value, binding):
             "Wave 1 product tree closure differs")
     rows = value["files"]
     require([row.get("path") for row in rows] == list(FILES)
-            and all(set(row) == {"path", "before_blob", "after_blob", "bytes", "sha256"}
+            and all(set(row) == {"path", "status", "before_blob", "after_blob", "bytes", "sha256"}
+                    and row["status"] == ("A" if row["path"] in ADDED else "M")
+                    and (row["before_blob"] is None) == (row["path"] in ADDED)
                     for row in rows),
             "Wave 1 exact source membership differs")
     return rows
@@ -81,10 +94,12 @@ def observe(root, binding, historical_trees=None):
             and (historical_trees is None or before == historical_trees)
             and after == value["reviewed_product_trees"],
             "Wave 1 recorded product trees differ from actual Git objects")
-    require(all(before[p] == after[p] for p in PRODUCTS if p != "OriginalEditorFramework"),
-            "Wave 1 continuation changed native, generated, module, resource or application input")
+    require(all(before[p] == after[p] for p in ("Anytype/Resources", "Dependencies/Middleware")),
+            "Wave 1 continuation changed original resource or native middleware input")
+    require(all(name.endswith(".swift") for name in FILES),
+            "Wave 1 exact continuation must contain reviewed Swift only")
     require(git(root, "diff", "--name-status", BASE, REVIEWED, "--", *PRODUCTS).splitlines()
-            == ["M\t" + name for name in FILES],
+            == [("A" if name in ADDED else "M") + "\t" + name for name in FILES],
             "Wave 1 product delta is not the exact reviewed Swift change")
     require({p: git(root, "rev-parse", "HEAD:" + p) for p in PRODUCTS} == after,
             "Current product tree differs from the exact Wave 1 continuation")
@@ -96,7 +111,7 @@ def observe(root, binding, historical_trees=None):
         require(source.is_file() and not source.is_symlink() and source.resolve() == source,
                 "Missing or aliased Wave 1 source: " + name)
         data = source.read_bytes()
-        require(row["before_blob"] == git(root, "rev-parse", BASE + ":" + name)
+        require(row["before_blob"] == (None if name in ADDED else git(root, "rev-parse", BASE + ":" + name))
                 and row["after_blob"] == git(root, "rev-parse", REVIEWED + ":" + name)
                 and git(root, "hash-object", "--", name) == row["after_blob"]
                 and len(data) == row["bytes"]

@@ -59,7 +59,9 @@ def main():
         if shallow.exists():
             (fixture / ".git/shallow").write_bytes(shallow.read_bytes())
         run("git", "sparse-checkout", "init", "--cone", cwd=fixture)
-        run("git", "sparse-checkout", "set", "OriginalEditorFramework", "Tools/OriginalEditor", cwd=fixture)
+        run("git", "sparse-checkout", "set", "OriginalEditorFramework", "Tools/OriginalEditor",
+            "Anytype/Sources/Pinkha/Bootstrap", "Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView",
+            "Anytype/Sources/PresentationLayer/Modules/ServerConfiguration", "Modules/PinkhaKit", cwd=fixture)
         run("git", "checkout", cwd=fixture)
         observe(fixture, binding)
         source = fixture / FILES[0]

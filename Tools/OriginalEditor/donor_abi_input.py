@@ -19,6 +19,7 @@ FRESH_DONOR = "1f90175b006be0a19a4e1804f858caaf59d6c174"
 FRESH_POLICY = "Tools/OriginalEditor/MiniApps/abi_donor_1f90175b.json"
 WAVE1_DONOR = "75a98ba98d6455eefc2c98113fa744b0f3c2e7bf"
 WAVE1_POLICY = "Tools/OriginalEditor/Wave1/abi_donor_75a98ba.json"
+WAVE1_SWIFT_TREES = ("Anytype/Sources", "Modules")
 CLOSURE = ("Anytype/Sources", "Anytype/Resources", "Modules", "Dependencies/Middleware",
            "Tools/OriginalEditor/ABIPinnedWrapper", "Tools/OriginalEditor/GeneratedImport",
            "Tools/PinkhaNativeDerived",
@@ -62,7 +63,8 @@ def validate_policy(policy, binding):
     expected = {
         (POLICY, DONOR): ("otzaria.native-abi-donor-policy/1", CLOSURE),
         (FRESH_POLICY, FRESH_DONOR): ("otzaria.native-abi-donor-policy/2", FRESH_CLOSURE),
-        (WAVE1_POLICY, WAVE1_DONOR): ("otzaria.native-abi-donor-policy/3", WAVE1_CLOSURE),
+        (WAVE1_POLICY, WAVE1_DONOR): ("otzaria.native-abi-donor-policy/4",
+            tuple(p for p in WAVE1_CLOSURE if p not in WAVE1_SWIFT_TREES)),
     }
     key = (binding.get("path"), binding.get("source_sha"))
     require(key in expected, "Unreviewed exact native donor policy identity")
@@ -70,6 +72,11 @@ def validate_policy(policy, binding):
     receipt_roles = {"execution", "source_before", "abi", "debug_qualification"}
     if key == (WAVE1_POLICY, WAVE1_DONOR):
         receipt_roles.add("shared_runtime_ownership")
+        require(set(policy) == {"schema", "source_sha", "unchanged_git_inputs",
+                                "reviewed_swift_inputs", "receipts", "native_tests_rerun",
+                                "new_sdk_acceptance_granted"}
+                and set(policy.get("reviewed_swift_inputs", {})) == set(WAVE1_SWIFT_TREES),
+                "Wave 1 permits only exact separately reviewed application/PinkhaKit Swift trees")
     require(policy.get("schema") == schema
             and policy.get("source_sha") == key[1]
             and set(policy.get("unchanged_git_inputs", {})) == set(closure)
@@ -168,12 +175,14 @@ def verify(root, path, digest, source, value=None):
                     == policy["receipts"]["debug_qualification"]["sha256"],
                 "Wave 1 ABI donor lost its original source, runtime or shared ownership proof")
     trees = policy["unchanged_git_inputs"]
+    reviewed_swift = policy.get("reviewed_swift_inputs", {})
     require(all(git(donor, "rev-parse", "HEAD:" + p) == expected
-                for p, expected in trees.items()),
+                for p, expected in {**trees, **reviewed_swift}.items()),
             "Original native donor source input closure changed")
     # The original Go mobile ABI does not compile application Swift. Permit
     # only the separately committed/reviewed Swift continuation, never changes
-    # to generated messages, native middleware, wrappers, Modules or resources.
+    # to generated messages, native middleware, wrappers or resources. Exact
+    # application/PinkhaKit Swift deltas are admitted separately, never as ABI tests.
     from framework_profile import read_manifest
     from generated_import_source import verify_generated_source
     current_source = verify_generated_source(root, read_manifest())
@@ -186,6 +195,13 @@ def verify(root, path, digest, source, value=None):
                 and wave1.get("sdk_compiler_and_runtime_acceptance")
                     == "NOT_GRANTED_BY_SOURCE_OBSERVATION",
                 "Wave 1 native reuse requires exact separately admitted current product source")
+        for relative, expected in reviewed_swift.items():
+            changed = [name for name in wave1["all_changed_paths"] if name.startswith(relative + "/")]
+            require(wave1["base_product_trees"].get(relative) == expected
+                    and git(root, "rev-parse", "HEAD:" + relative)
+                        == wave1["reviewed_product_trees"].get(relative)
+                    and changed and all(name.endswith(".swift") for name in changed),
+                    "Native reuse has an unreviewed application/PinkhaKit Swift delta: " + relative)
     for relative, expected in trees.items():
         actual = git(root, "rev-parse", "HEAD:" + relative)
         if relative == "Anytype/Sources" and actual != expected:
@@ -222,5 +238,6 @@ def verify(root, path, digest, source, value=None):
             "abi_reuse": {"status": "EXACT_NATIVE_INPUT_AND_ARTIFACT_EQUIVALENCE",
                          "donor_source_sha": donor_sha, "donor_root": str(donor),
                          "donor_receipts": policy["receipts"], "unchanged_git_inputs": trees,
+                         "separately_reviewed_swift_inputs": reviewed_swift,
                          "original_abi_installation": installation,
                          "native_tests_rerun": False, "new_sdk_acceptance_granted": False}}
