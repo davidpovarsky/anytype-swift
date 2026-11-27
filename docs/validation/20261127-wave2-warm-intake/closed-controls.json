@@ -1,0 +1,89 @@
+{
+  "actualProductAdmitted": false,
+  "additionalRuntimeSiblingPythonFiles": [],
+  "appleTestsExecuted": 0,
+  "applicationBuilds": 0,
+  "closedMaterialization": {
+    "bytes": 2118,
+    "file": "materialization.json",
+    "sha256": "7a64396a1114388655b0dac25937051bb04ebdb935cfbc308f2a72b6a184254d"
+  },
+  "controlExecution": {
+    "command": [
+      "python3",
+      "-B",
+      "wave2-editor-control/wave3-warm-retry/test_wave3_intake_preparation.py"
+    ],
+    "exitCode": 0,
+    "localExecSession": 13831,
+    "methods": 7,
+    "originalOutput": {
+      "bytes": 1262,
+      "file": "closed-controls.log",
+      "sha256": "7b295f05ac508a9b7a1901bbd7a56dbdd4ed1bdba43054be239046c1c1cca942"
+    },
+    "outputCustody": "Copied verbatim from the two original local exec outputs, initial chunk dccba7 and completion40af46; no Apple output is represented.",
+    "reportedSeconds": 1.863
+  },
+  "files": [
+    {
+      "bytes": 40753,
+      "file": "wave3_intake.py",
+      "sha256": "7ff8af54801d089fe6abad52fdd3c6fbec957c8f205be1d2299556a75d227ad5"
+    },
+    {
+      "bytes": 8901,
+      "file": "materialize_wave3_intake.py",
+      "sha256": "5d051b95ae8269ffd06b546cdc3e4a83988b1b381bbfe06c53454ebb98dbe348"
+    },
+    {
+      "bytes": 11932,
+      "file": "test_wave3_intake_preparation.py",
+      "sha256": "4845b112596379fefbbfaa521aedb2f7dacf1f3081996d4849ad89728b217d60"
+    },
+    {
+      "bytes": 796,
+      "file": "frozen-profile.closed.json",
+      "sha256": "3f4f203519975a2178966567cd188fd8e09602ad6c3db39ccdb4779b5c5b5818"
+    }
+  ],
+  "historical6aabIntakeUnchanged": true,
+  "independentSourceReviews": [
+    {
+      "file": "independent-custody-review.json",
+      "scope": "SOURCE_ONLY_NO_TEST_EXECUTION",
+      "sha256": "2c84649c9919b33e5dcddf8007052b8a6e5262a9164f127abb67d998e2cd560e"
+    },
+    {
+      "file": "root-cache-source-review.json",
+      "scope": "SOURCE_ONLY_NO_TEST_EXECUTION",
+      "sha256": "4925a5dbccee92ce9a5349f25bc1602403293c35084f54ac1dc073af1fde0f95"
+    }
+  ],
+  "missingActualPins": [
+    "staging receipt",
+    "cache receipt",
+    "staging plan",
+    "root-approved admission",
+    "executed expanded producer",
+    "executed delta",
+    "source bundle byte count/digest",
+    "successful App and UI receipt plus full product/source/compiler/log evidence"
+  ],
+  "nativeBuilds": 0,
+  "nativeManifestSHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+  "physicalDevice": "NOT_RUN",
+  "publicAPI": "source_proof, built, app = shared.admit_and_clone_products(admission, root, evidence, commands)",
+  "rejectedTypographicPinAttempt": {
+    "bytes": 420,
+    "file": "materialization-attempt0.json",
+    "sha256": "92db77573552c2b5018a05bb480dcd8cadaf5a642ee5f96be8225357e84898f0"
+  },
+  "schema": "pinkha-wave2-warm8f2-closed-intake-controls-v1",
+  "sdkCommit": "38528941720d9b4f2da8dce7afbc788c2e554a0c",
+  "simulatorCommands": 0,
+  "sourceCommit": "8f2c11713fb8a40ae13444104723666ffef68afe",
+  "sourceTree": "7bcaa6e1b6eadf42eaaaebcb75aab84686aa1f9a",
+  "sourceWasBuiltByThisWork": false,
+  "status": "PASS_PORTABLE_PREPARATION_CONTROLS_NOT_PRODUCT_ADMISSION"
+}

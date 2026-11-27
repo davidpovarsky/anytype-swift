@@ -1,0 +1,76 @@
+{
+  "schema": "pinkha-external-control-custody-review-v1",
+  "reviewer": "/root/torah_continue",
+  "status": "NO_CONCRETE_SOURCE_BLOCKER",
+  "scope": "Source custody only; post-build cache qualification is separately reviewed by root",
+  "reviewedFiles": {
+    "wave3_intake.py": "7ff8af54801d089fe6abad52fdd3c6fbec957c8f205be1d2299556a75d227ad5",
+    "materialize_wave3_intake.py": "5d051b95ae8269ffd06b546cdc3e4a83988b1b381bbfe06c53454ebb98dbe348",
+    "frozen-profile.closed.json": "3f4f203519975a2178966567cd188fd8e09602ad6c3db39ccdb4779b5c5b5818"
+  },
+  "verifiedRepositoryInputs": [
+    {
+      "repo": "davidpovarsky/anytype-swift",
+      "ref": "4d567c96b540aceff00b0e5908f9715ee9db8776",
+      "path": "Tools/PinkhaDualEngineRuntime/wave3_warm_retry.py",
+      "gitBlob": "300d720d87a2f9dbdfa6a5e1e29c09ea85f26c6b",
+      "characters": 15209,
+      "isError": false,
+      "sha256": "c4b67858674156894a29b326c2766d043ce0308c065029bd5c1a6ae1aa254fff",
+      "bytes": 15209,
+      "exactGitBlobMatched": true
+    },
+    {
+      "repo": "davidpovarsky/anytype-swift",
+      "ref": "4d567c96b540aceff00b0e5908f9715ee9db8776",
+      "path": "Tools/PinkhaDualEngineRuntime/stage_wave3_warm_retry.py",
+      "gitBlob": "e16acbc924ecd10e885d830fc9f165c0eb67c2df",
+      "characters": 17754,
+      "isError": false,
+      "sha256": "e6f71083caea861183dcfb14bb72942a652672864bb463f13adcceab1129b022",
+      "bytes": 17754,
+      "exactGitBlobMatched": true
+    },
+    {
+      "repo": "davidpovarsky/anytype-swift",
+      "ref": "4d567c96b540aceff00b0e5908f9715ee9db8776",
+      "path": "Tools/PinkhaDualEngineRuntime/preserve_failed_shared_build.py",
+      "gitBlob": "093ebaebadf1908d35961b17c0d77528a2fcfa2e",
+      "characters": 12404,
+      "isError": false,
+      "sha256": "d0d696f29cfabcafa08a9dc0e7b50fb240ffab119fda19843420060e4647780c",
+      "bytes": 12404,
+      "exactGitBlobMatched": true
+    },
+    {
+      "repo": "davidpovarsky/anytype-swift",
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Tools/MiniApps/receipt_admission.py",
+      "gitBlob": "8104fadf214a73534d177834d4330d5ea4b16b24",
+      "characters": 29552,
+      "isError": false,
+      "sha256": "9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d",
+      "bytes": 29552,
+      "exactGitBlobMatched": true
+    }
+  ],
+  "historicalCommonSHA256": "4ec8617c59da3183a68a53ea9f840e57738469f36f9a0bc5b5a00e806d73cd9c",
+  "actualMaterializedCommonSHA256": "c33adda572f3c7113be74ae39fa61b131ac3ab37b06f904a2c23513bf456ef70",
+  "exactOriginalCommonInverse": true,
+  "embeddedControlBytesMatchPhysicalReviewedInputs": true,
+  "findings": [],
+  "reasoning": [
+    "Original receipt gate9ce and original adapter47c/stager374 are required byte-identical at their physical frozen8f2 source paths; external c4b/e6f/d0 are not mislabeled as tracked App bytes.",
+    "External module reference passes original common pinned() canonical absolute-path, regular-file, read-stability, SHA256 and byte-count checks, then exact equality to fixed reviewed embedded bytes.",
+    "Actual warm producer contract references are closed by frozen profile equality; warm adapter and preservation paths must also equal the actual pinned staging-plan controls. Stager is bound through actual stagingScript pin, exact e6f bytes, stage controller hash and literal stage/plan receipt hashes.",
+    "Actually executed producer bytes must equal expansion of the preserved9b producer through original47c and fixed externalc4b, with full inverse back to original617; original lifecycle and source-state functions remain unchanged.",
+    "Materializer pins original4ec, additive fragment7ff and every input before composition, restores original4ec exactly and embeds controls without writing an overlay into the App source.",
+    "Closed profile rejects before product reads/commands. Setting readyForRuntimeAdmission alone cannot admit: seven literal runtime hash pins plus bundle byte count remain unresolved and must be supplied in a separately reviewed derivative."
+  ],
+  "AppleBuilds": 0,
+  "AppleTests": 0,
+  "simulatorActions": 0,
+  "portableTestsRepeated": 0,
+  "productAdmission": "NOT_PERFORMED",
+  "postBuildCacheQualification": "NOT_REVIEWED_BY_THIS_AGENT"
+}
