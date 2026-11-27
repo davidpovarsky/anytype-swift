@@ -1635,3 +1635,300 @@ enum PinkhaDisposableStartupWarning {
         testCase.add(screenshot)
     }
 }
+
+// Additive real-input coverage. The four original editor methods, native
+// preparation, fixture binding and startup warning implementation remain intact.
+extension PinkhaStage1AcceptanceUITests {
+    func testMiddleSplitMergeUndoRedoAndColdReopen() throws {
+        executionTimeAllowance = 1_200
+        defer { attachMutationState("middle-split-merge-final") }
+        XCTAssertNotEqual(appLanguage, deviceLanguage)
+
+        for kind in DocumentKind.allCases {
+            launch(document: kind)
+            openDocumentIfNeeded(kind)
+            let token = String(UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(8))
+            let guardText = "Guard_" + token
+            let (guardID, input) = try createMutationTarget(guardText: guardText)
+            // ASCII makes physical left-arrow traversal unambiguous within the
+            // selected run, including when the app and OS directions differ.
+            let prefix = "Left_" + token, suffix = "Right_" + token
+            let originalText = prefix + suffix
+            input.typeText(originalText)
+            let original = try mutationBody(text: originalText)
+            let originalID = original.identifier
+            try mutationRequire(originalID != guardID, "The typed target reused the guard block identity")
+            let joined = [guardID: guardText, originalID: originalText]
+            try waitForMutationSnapshot(joined, token: token)
+            try requireMutationFocus(original, tap: false)
+
+            for _ in 0..<suffix.utf16.count {
+                original.typeKey(.leftArrow, modifierFlags: [])
+            }
+            // No text view or app-process selection setter is used. The exact
+            // two resulting strings below prove where the real Return split.
+            original.typeText("\n")
+            let second = try mutationBody(text: suffix)
+            let secondID = second.identifier
+            try mutationRequire(secondID != originalID && secondID != guardID,
+                                "Split did not publish a distinct second block identity")
+            let split = [guardID: guardText, originalID: prefix, secondID: suffix]
+            try waitForMutationSnapshot(split, token: token)
+            try requireMutationFocus(second, tap: false)
+            try recordMutation("split", kind: kind, token: token, expected: split,
+                               rangeEvidence: "INFERRED_FROM_EXACT_PREFIX_SUFFIX_AFTER_REAL_RETURN")
+
+            try performMutationHistory("editor-undo", kind: kind)
+            try waitForMutationSnapshot(joined, token: token, absent: [secondID])
+            try recordMutation("split-undo", kind: kind, token: token, expected: joined)
+            try performMutationHistory("editor-redo", kind: kind)
+            try waitForMutationSnapshot(split, token: token)
+            try recordMutation("split-redo", kind: kind, token: token, expected: split)
+
+            let right = mutationBody(identifier: secondID)
+            try requireMutationFocus(right, tap: true)
+            right.typeKey("a", modifierFlags: .command)
+            right.typeKey(.leftArrow, modifierFlags: [])
+            right.typeText(XCUIKeyboardKey.delete.rawValue)
+            try waitForMutationSnapshot(joined, token: token, absent: [secondID])
+            try requireMutationFocus(mutationBody(identifier: originalID), tap: false)
+            try recordMutation("merge", kind: kind, token: token, expected: joined,
+                               rangeEvidence: "INFERRED_FROM_EXACT_MERGE_AFTER_REAL_COMMAND_A_LEFT_BACKSPACE")
+
+            try performMutationHistory("editor-undo", kind: kind)
+            try waitForMutationSnapshot(split, token: token)
+            try recordMutation("merge-undo", kind: kind, token: token, expected: split)
+            try performMutationHistory("editor-redo", kind: kind)
+            try waitForMutationSnapshot(joined, token: token, absent: [secondID])
+            try recordMutation("merge-redo", kind: kind, token: token, expected: joined)
+            try coldReadMutation(kind: kind, token: token, expected: joined,
+                                 absent: [secondID], phase: "split-merge-cold-readback")
+        }
+    }
+
+    func testPartialRangeReplacementUndoRedoAndColdReopen() throws {
+        executionTimeAllowance = 1_200
+        defer { attachMutationState("partial-replacement-final") }
+        XCTAssertNotEqual(appLanguage, deviceLanguage)
+
+        for kind in DocumentKind.allCases {
+            launch(document: kind)
+            openDocumentIfNeeded(kind)
+            let token = String(UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(8))
+            let guardText = "Guard_" + token
+            let (guardID, input) = try createMutationTarget(guardText: guardText)
+            let prefix = "Left_" + token, selected = "MIDDLE", suffix = "Right_" + token
+            let originalText = prefix + selected + suffix
+            input.typeText(originalText)
+            let original = try mutationBody(text: originalText)
+            let originalID = original.identifier
+            try mutationRequire(originalID != guardID, "The typed target reused the guard block identity")
+            let before = [guardID: guardText, originalID: originalText]
+            try waitForMutationSnapshot(before, token: token)
+            try requireMutationFocus(original, tap: false)
+
+            for _ in 0..<suffix.utf16.count {
+                original.typeKey(.leftArrow, modifierFlags: [])
+            }
+            for _ in 0..<selected.utf16.count {
+                original.typeKey(.leftArrow, modifierFlags: .shift)
+            }
+            attachMutationState(kind.rawValue + "-real-shift-selection")
+            // One ordinary replacement key keeps this edit distinct from a
+            // sequence of typing transactions. Prefix and suffix must survive.
+            original.typeText("Z")
+            let editedText = prefix + "Z" + suffix
+            let edited = [guardID: guardText, originalID: editedText]
+            try waitForMutationSnapshot(edited, token: token)
+            try recordMutation("partial-replacement", kind: kind, token: token, expected: edited,
+                               rangeEvidence: "INFERRED_FROM_EXACT_UNCHANGED_PREFIX_SUFFIX_AFTER_REAL_SHIFT_RANGE")
+
+            try performMutationHistory("editor-undo", kind: kind)
+            try waitForMutationSnapshot(before, token: token)
+            try recordMutation("replacement-undo", kind: kind, token: token, expected: before)
+            try performMutationHistory("editor-redo", kind: kind)
+            try waitForMutationSnapshot(edited, token: token)
+            try requireMutationFocus(mutationBody(identifier: originalID), tap: true)
+            try recordMutation("replacement-redo", kind: kind, token: token, expected: edited)
+            try coldReadMutation(kind: kind, token: token, expected: edited,
+                                 phase: "replacement-cold-readback")
+        }
+    }
+
+    private func createMutationTarget(guardText: String) throws -> (String, XCUIElement) {
+        let first = editableBody(startNewTrailingBlock: true)
+        first.tap()
+        first.typeText(guardText)
+        let guardRow = try mutationBody(text: guardText)
+        let guardID = guardRow.identifier
+        guardRow.typeText("\n")
+        let following = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND identifier != %@ AND label CONTAINS %@ AND value == %@",
+            "pinkha.stage1.body.", guardID, "first-responder-true", ""
+        )).firstMatch
+        try mutationRequire(following.waitForExistence(timeout: 30), "Return did not expose a distinct empty target")
+        try requireMutationFocus(following, tap: false)
+        return (guardID, following)
+    }
+
+    private func mutationBody(identifier: String) -> XCUIElement {
+        app.textViews.matching(NSPredicate(format: "identifier == %@", identifier)).firstMatch
+    }
+
+    private func mutationBody(text: String) throws -> XCUIElement {
+        let matches = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND value == %@", "pinkha.stage1.body.", text
+        ))
+        try mutationRequire(matches.firstMatch.waitForExistence(timeout: 30), "Exact edited text did not render")
+        try mutationRequire(matches.count == 1 && !matches.firstMatch.identifier.isEmpty,
+                            "The exact text must belong to one native block")
+        return matches.firstMatch
+    }
+
+    private func waitForMutationSnapshot(_ expected: [String: String], token: String,
+                                         absent: [String] = []) throws {
+        let rows = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND value CONTAINS %@", "pinkha.stage1.body.", token
+        ))
+        let settled = NSPredicate { _, _ in
+            let current = rows.allElementsBoundByIndex
+            return current.count == expected.count
+                && Set(current.map(\.identifier)) == Set(expected.keys)
+                && current.allSatisfy { ($0.value as? String) == expected[$0.identifier] }
+                && absent.allSatisfy { !self.mutationBody(identifier: $0).exists }
+        }
+        let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: settled, object: app)], timeout: 45)
+        try mutationRequire(result == .completed,
+                            "Mutation did not settle to the exact block IDs/text/count before the next history action")
+        // This is an observed UI state, not a native save acknowledgement.
+        // Storage acceptance is established separately by coldReadMutation.
+    }
+
+    private func requireMutationFocus(_ row: XCUIElement, tap: Bool) throws {
+        try mutationRequire(row.exists && row.isHittable, "The target block is not reachable")
+        if tap { row.tap() }
+        let focused = XCTNSPredicateExpectation(predicate: NSPredicate(
+            format: "label CONTAINS %@", "first-responder-true"), object: row)
+        try mutationRequire(XCTWaiter.wait(for: [focused], timeout: 20) == .completed,
+                            "The real target input did not acquire focus")
+        try mutationRequire(app.keyboards.firstMatch.waitForExistence(timeout: 20),
+                            "The real system keyboard did not appear")
+    }
+
+    private func performMutationHistory(_ identifier: String, kind: DocumentKind) throws {
+        try mutationRequire(identifier == "editor-undo" || identifier == "editor-redo", "Unsupported history action")
+        let more = app.buttons.matching(NSPredicate(format: "label == %@ OR label == %@", "More", "x24/More")).firstMatch
+        try mutationRequire(more.waitForExistence(timeout: 20) && more.isHittable, "Native document actions are unavailable")
+        more.tap()
+        let menu = app.buttons["editor-object-action-undoredo"]
+        if !menu.waitForExistence(timeout: 5) {
+            let nested = app.buttons.matching(NSPredicate(format: "label == %@", "More"))
+                .allElementsBoundByIndex.filter(\.isHittable)
+            try mutationRequire(nested.count == 1, "The original nested history menu is not unique")
+            nested[0].tap()
+        }
+        try mutationRequire(menu.waitForExistence(timeout: 20) && menu.isHittable, "Native Undo/Redo menu is unavailable")
+        menu.tap()
+        let action = app.buttons[identifier]
+        try mutationRequire(action.waitForExistence(timeout: 20) && action.isEnabled && action.isHittable,
+                            "The requested real history action is unavailable")
+        let actionTop = action.frame.minY
+        action.tap()
+        if action.exists {
+            let window = app.windows.firstMatch
+            let top = window.frame.minY + 80
+            try mutationRequire(actionTop > top + 40, "No safe native history-sheet dismissal background")
+            window.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(
+                dx: window.frame.width * 0.5, dy: (top + actionTop) * 0.5 - window.frame.minY
+            )).tap()
+        }
+        try mutationRequire(action.waitForNonExistence(timeout: 20), "Native history sheet did not dismiss")
+        let objectID = try XCTUnwrap(fixtureObjectIDs[kind])
+        let editor = app.otherElements["pinkha-ui27-editor:\(fixtureSpaceID):\(objectID)"]
+        try mutationRequire(editor.exists && editor.isHittable && app.alerts.count == 0,
+                            "History returned to a different or obscured document")
+    }
+
+    private func coldReadMutation(kind: DocumentKind, token: String, expected: [String: String],
+                                  absent: [String] = [], phase: String) throws {
+        let beforePID = try mutationProcessID()
+        app.terminate()
+        try mutationRequire(app.wait(for: .notRunning, timeout: 20), "The old editor process did not terminate")
+        launch(document: kind)
+        openDocumentIfNeeded(kind)
+        let afterPID = try mutationProcessID()
+        try mutationRequire(afterPID != beforePID, "Cold readback reused the previous app process")
+        try waitForMutationSnapshot(expected, token: token, absent: absent)
+        try recordMutation(phase, kind: kind, token: token, expected: expected,
+                           persistedReadback: true, previousPID: beforePID)
+    }
+
+    private func mutationProcessID() throws -> Int {
+        let text = app.debugDescription
+        let expression = try NSRegularExpression(pattern: "\\A\\s*(?:Attributes:\\s*)?Application,\\s*0x[0-9a-fA-F]+,\\s*pid:\\s*([0-9]+)")
+        let range = NSRange(text.startIndex..., in: text)
+        let match = try XCTUnwrap(expression.firstMatch(in: text, range: range), "Actual App PID is absent")
+        let digits = try XCTUnwrap(Range(match.range(at: 1), in: text))
+        let pid = try XCTUnwrap(Int(text[digits]))
+        try mutationRequire(pid > 0, "Actual App PID is invalid")
+        return pid
+    }
+
+    private func recordMutation(_ phase: String, kind: DocumentKind, token: String,
+                                expected: [String: String],
+                                rangeEvidence: String = "NO_PRE_EDIT_RANGE_CLAIM",
+                                persistedReadback: Bool = false, previousPID: Int? = nil) throws {
+        let env = ProcessInfo.processInfo.environment
+        let binding = try XCTUnwrap(env["PINKHA_UI27_STARTUP_BINDING_JSON"])
+        let objectID = try XCTUnwrap(fixtureObjectIDs[kind])
+        let editor = app.otherElements.matching(NSPredicate(
+            format: "identifier == %@", "pinkha-ui27-editor:\(fixtureSpaceID):\(objectID)"))
+        try mutationRequire(editor.count == 1 && editor.firstMatch.isHittable && app.alerts.count == 0,
+                            "Observation does not belong to the current unobscured fixture document")
+        let actualRows = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND value CONTAINS %@", "pinkha.stage1.body.", token
+        )).allElementsBoundByIndex
+        var observed: [String: String] = [:]
+        for row in actualRows {
+            let text = try XCTUnwrap(row.value as? String, "Observed block text is missing")
+            try mutationRequire(observed[row.identifier] == nil, "Duplicate observed block identity")
+            observed[row.identifier] = text
+        }
+        try mutationRequire(observed == expected, "Observed block state changed before evidence capture")
+        var value: [String: Any] = [
+            "schema": "pinkha-heart-editor-mutation-observation-v1", "phase": phase,
+            "documentKind": kind.rawValue, "spaceID": fixtureSpaceID, "objectID": objectID,
+            "token": token, "appLanguage": appLanguage, "requestedDeviceLanguage": deviceLanguage,
+            "appPID": try mutationProcessID(), "expectedBlocks": expected, "observedBlocks": observed,
+            "startupBindingSHA256": SHA256.hash(data: Data(binding.utf8)).map { String(format: "%02x", $0) }.joined(),
+            "rangeEvidence": rangeEvidence, "directNativeRangeObservation": false,
+            "programmaticSelectionChanges": 0, "persistedColdReadback": persistedReadback,
+            "saveEvidence": persistedReadback ? "DISTINCT_COLD_PROCESS_EXACT_ID_AND_TEXT_READBACK" : "UI_STATE_ONLY"
+        ]
+        if let previousPID { value["previousPID"] = previousPID }
+        let attachment = XCTAttachment(data: try JSONSerialization.data(withJSONObject: value, options: [.sortedKeys]),
+                                       uniformTypeIdentifier: "public.json")
+        attachment.name = "editor-mutation-" + kind.rawValue + "-" + phase
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        attachMutationState(kind.rawValue + "-" + phase)
+    }
+
+    private func attachMutationState(_ phase: String) {
+        let hierarchy = XCTAttachment(string: app.debugDescription)
+        hierarchy.name = "editor-mutation-" + phase + "-ax"
+        hierarchy.lifetime = .keepAlways
+        add(hierarchy)
+        if app.state == .runningForeground {
+            attachScreenshot(named: "editor-mutation-" + phase + "-visual")
+        }
+    }
+
+    private func mutationRequire(_ value: @autoclosure () -> Bool, _ reason: String) throws {
+        guard value() else {
+            XCTFail(reason)
+            throw NSError(domain: "PinkhaEditorMutationAcceptance", code: 1,
+                          userInfo: [NSLocalizedDescriptionKey: reason])
+        }
+    }
+}
