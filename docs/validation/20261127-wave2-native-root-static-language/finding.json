@@ -1,0 +1,246 @@
+{
+  "schema": "native-root-static-language-resource-finding/v1",
+  "status": "PROVEN_DECLARED_SOURCE_RESOURCE_GAP_NOT_RUNTIME_OBSERVATION",
+  "recordedAtUTC": "2026-11-27T23:51:32.097714+00:00",
+  "baseCommit": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+  "rootSource": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-rtl-current-audit/source/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+    "bytes": 22878,
+    "sha256": "f2d21c15f0da8a5d3ca72326078637b79134298b150985a6cfb89d4cc1743ef9",
+    "gitBlob": "4d13391adc0df3d0cb1cfb8abb7028fc708d3082"
+  },
+  "publishedSixMessageSuccessor": {
+    "commit": "770bc4e4a38ec299a8f0ebcc3cc5e8f0c170dabc",
+    "source": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-rtl-current-audit/candidate/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "bytes": 23642,
+      "sha256": "de2ab55e962ee7f17b6eb6ff8bc7e932b48eee6d03c6bca43a818b8c2fe68045",
+      "gitBlob": "001f22cccfeb5bb78f0ccfe2caa52449e57101eb"
+    },
+    "completeViewBodyEqualA72": true
+  },
+  "staticLookupSites": 27,
+  "distinctStaticHebrewKeys": 26,
+  "directUnnamedSpaceFallbackSites": 1,
+  "sites": [
+    {
+      "lineInA72And770bc": 48,
+      "hebrew": "פותחים את המרחב שלך",
+      "sourceLine": "ProgressView(\"פותחים את המרחב שלך\")",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 69,
+      "hebrew": "לא ניתן להשלים את הפעולה",
+      "sourceLine": ".alert(\"לא ניתן להשלים את הפעולה\", isPresented: Binding(",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 73,
+      "hebrew": "סגור",
+      "sourceLine": "Button(\"סגור\", role: .cancel) { model.errorMessage = nil }",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 104,
+      "hebrew": "הפעל מחדש את המנוע",
+      "sourceLine": "Button(\"הפעל מחדש את המנוע\", systemImage: \"arrow.clockwise\") { model.resume() }",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 108,
+      "hebrew": "החשבונות במכשיר",
+      "sourceLine": "Section(\"החשבונות במכשיר\") {",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 121,
+      "hebrew": "יצירת חשבון חדש",
+      "sourceLine": "Button(\"יצירת חשבון חדש\", systemImage: \"person.badge.plus\") { model.createAccount() }",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 126,
+      "hebrew": "ביטוי שחזור",
+      "sourceLine": "SecureField(\"ביטוי שחזור\", text: $model.restorePhrase)",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 131,
+      "hebrew": "מקור החשבון",
+      "sourceLine": "Picker(\"מקור החשבון\", selection: $model.restoreIndex) {",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 133,
+      "hebrew": "חשבון Anytype קודם",
+      "sourceLine": "Text(\"חשבון Anytype קודם\").tag(UInt32(0))",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 135,
+      "hebrew": "שחזור",
+      "sourceLine": "Button(\"שחזור\") { model.restoreAccount() }",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 139,
+      "hebrew": "שחזור חשבון",
+      "sourceLine": "Text(\"שחזור חשבון\")",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 141,
+      "hebrew": "שחזור החשבון פותח את הזהות שלך. העברת מסמכים מהגרסה הקודמת נעשית בתהליך ייבוא נפרד.",
+      "sourceLine": "Text(\"שחזור החשבון פותח את הזהות שלך. העברת מסמכים מהגרסה הקודמת נעשית בתהליך ייבוא נפרד.\")",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 152,
+      "hebrew": "שמור את ביטוי השחזור במקום פרטי. הוא מאפשר לשחזר את החשבון אם המכשיר אבד.",
+      "sourceLine": "Text(\"שמור את ביטוי השחזור במקום פרטי. הוא מאפשר לשחזר את החשבון אם המכשיר אבד.\")",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 160,
+      "hebrew": "הצגת ביטוי השחזור",
+      "sourceLine": "Button(\"הצגת ביטוי השחזור\") { model.showRecovery() }",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 165,
+      "hebrew": "שמרתי את ביטוי השחזור במקום בטוח",
+      "sourceLine": "Toggle(\"שמרתי את ביטוי השחזור במקום בטוח\", isOn: $model.backupAcknowledged)",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 167,
+      "hebrew": "המשך",
+      "sourceLine": "Button(\"המשך\") { model.acknowledgeBackup() }",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 172,
+      "hebrew": "גיבוי החשבון",
+      "sourceLine": ".navigationTitle(\"גיבוי החשבון\")",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 179,
+      "hebrew": "המרחבים שלי",
+      "sourceLine": "Section(\"המרחבים שלי\") {",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 184,
+      "hebrew": "ללא שם",
+      "sourceLine": "Label(space.name.isEmpty ? \"ללא שם\" : space.name, systemImage: \"books.vertical\")",
+      "kind": "direct String fallback"
+    },
+    {
+      "lineInA72And770bc": 188,
+      "hebrew": "אין עדיין מרחבים",
+      "sourceLine": "ContentUnavailableView(\"אין עדיין מרחבים\", systemImage: \"books.vertical\",",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 189,
+      "hebrew": "צור מרחב חדש כדי להתחיל.",
+      "sourceLine": "description: Text(\"צור מרחב חדש כדי להתחיל.\"))",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 192,
+      "hebrew": "מרחב חדש",
+      "sourceLine": "Section(\"מרחב חדש\") {",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 193,
+      "hebrew": "שם המרחב",
+      "sourceLine": "TextField(\"שם המרחב\", text: $model.newSpaceName)",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 195,
+      "hebrew": "יצירת מרחב",
+      "sourceLine": "Button(\"יצירת מרחב\") { model.createSpace() }",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 200,
+      "hebrew": "הצטרפות למרחב",
+      "sourceLine": "Button(\"הצטרפות למרחב\", systemImage: \"person.crop.circle.badge.plus\") { model.showingJoin = true }",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 202,
+      "hebrew": "רענון מרחבים",
+      "sourceLine": "Button(\"רענון מרחבים\", systemImage: \"arrow.clockwise\") { model.refreshSpaces() }",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 203,
+      "hebrew": "יציאה מהחשבון",
+      "sourceLine": "Button(\"יציאה מהחשבון\", role: .destructive) { model.signOut() }",
+      "kind": "static SwiftUI lookup"
+    },
+    {
+      "lineInA72And770bc": 207,
+      "hebrew": "המרחבים שלי",
+      "sourceLine": ".navigationTitle(\"המרחבים שלי\")",
+      "kind": "static SwiftUI lookup"
+    }
+  ],
+  "resourceCustody": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-native-root-static-language-audit/resource-source-custody.json",
+    "bytes": 9182,
+    "sha256": "7d1791d048d2ee355e95ce971acc5352db2e2e5adaac43095bb60b178f554961",
+    "gitBlob": "eaa6c64bcc59b04c0ae134db4cc023e57a14f136"
+  },
+  "officialAPI": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-native-root-static-language-audit/official-api-notes.json",
+    "bytes": 807,
+    "sha256": "43137ef467481ea29b3ba2edb4b37c316b39d63c25af3205ecad213f2d4cd0c3",
+    "gitBlob": "8609569fc4abfb8ca3b06e92310cd232455fe4e6"
+  },
+  "evidenceChain": [
+    "NativeRoot uses Hebrew literal title/label keys with no tableName/bundle argument or Loc calls.",
+    "PinkhaAnyNative Package has no resource declaration. Standalone NativeApp PBXResourcesBuildPhase file sets are empty; knownRegions/developmentRegion do not supply translations.",
+    "Shared Anytype target explicit Resources phase has only InfoPlist.strings and asset/icon catalogs. Its actual synchronized groups are Sources, Video and Preview Content.",
+    "Complete immutable Sources metadata contains only PinkhaSemanticAnchors.xcstrings and PinkhaTorahProperties.xcstrings. Their whole bodies are source-verified, are separate named tables, and contain none of these Hebrew keys. Video/Preview metadata supplies no string table.",
+    "The actual English main Strings directory contains only InfoPlist.strings with five permission-description keys. That named InfoPlist table is not the default Text table.",
+    "Loc has an en defaultLocalization and processes exactly Auth/UI/Workspace catalogs. Its generated resolver explicitly uses Bundle.module and named tables. NativeRoot does not invoke that resolver, and these package tables are not an implicit main/default lookup.",
+    "The current project shell phases only register Git hooks and copy the Google services plist; no localization-table copy/generation phase is declared."
+  ],
+  "conclusion": "These declared inputs provide no English translation path for the current Hebrew default-table keys. Standard SwiftUI fallback therefore keeps those label keys Hebrew even when English is requested; the unnamed-Space String fallback is independently Hebrew. This is a source/resource conclusion, not a readback of a compiled English bundle.",
+  "smallestExistingHelperCorrection": "On the separate published de2ab successor, replace only the 27 static literal arguments and the single unnamed-Space fallback with existing public AnyUIErrorText.text(originalHebrew, English). Preserve all original Hebrew strings, nonempty raw Space names, current 11 stable identifiers, view/actor/action/binding/permission/lifetime behavior, and explicit LTR/privacy treatment of the recovery phrase. No new locale resolver, global language override, Package/resource or test change is needed.",
+  "consumerCompatibility": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-native-root-static-language-audit/ui-consumer-compatibility.json",
+    "bytes": 8974,
+    "sha256": "40a084eb903870983768f748d9c35e12e8b2ca7703ba2366e11c690c08527bec",
+    "gitBlob": "42790a873eb02297e2f73c4faa8ad3c3eec0b3d3"
+  },
+  "wordingProposalReference": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-native-root-static-language/wording-proposal.json",
+    "bytes": 7172,
+    "sha256": "4ecf60fbfc2e4d20fa7bb083b2887b4475b7400b50c64ca4a0818ba81caebabf",
+    "gitBlob": "624e8954812e7d13cb95273f6a86400584486a3d"
+  },
+  "sixMessagePeerReview": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-native-root-static-language-audit/editor-six-message-source-review.json",
+    "bytes": 2210,
+    "sha256": "fd6bfeb8b34f48ab45f1a8a08b66657243dd05a9f3fed1bd6ff7249abb01bb4b",
+    "gitBlob": "c252a9dc0fb840d38de64070ea3e4168879c2e79"
+  },
+  "separateSixDynamicErrorsRemainPreserved": true,
+  "notClaimed": [
+    "Locale.autoupdatingCurrent being OS-only or incorrect",
+    "A compiled resource/bundle inspection",
+    "Actual English/Hebrew simulator, visual, VoiceOver or physical-device acceptance",
+    "Localization of unrelated modules or additional languages"
+  ],
+  "productionEdits": 0,
+  "testsOrControllersChanged": 0,
+  "hostOrRuntimeActions": 0
+}
