@@ -1,0 +1,326 @@
+{
+  "defaultBranch": "develop",
+  "freshDifferentBlobs": 5,
+  "listingEntries": 18,
+  "noCreateEvent": true,
+  "noPushRuleMatchesOwnBranch": true,
+  "noWorkflowDispatch": true,
+  "observedAt": "2026-11-27T11:12:35.283424+00:00",
+  "observedDefaultCommit": "1b1043b3a810f6f528ec5147aeb1b29e17b840e7",
+  "schema": "pinkha.wave2.docs-api.default-workflow-check.v1",
+  "scope": "Source trigger inspection; not an observation of global Actions inactivity.",
+  "transportExtraNewlineRemovedOnlyAfterExactGitBlobVerification": [
+    "branch_build.yaml",
+    "dev_build.yaml",
+    "ipa.yaml",
+    "live-activity-bridge.yml",
+    "release_build.yaml"
+  ],
+  "unmodifiedBlobsReused": 12,
+  "workflows": [
+    {
+      "bytes": 1111,
+      "gitBlob": "f6431cd77fbbcc9582810c11c7c10eef70972491",
+      "on": "pull_request_target",
+      "path": ".github/workflows/automerge.yaml",
+      "sha256": "3b493b9867514ff2531afeaa00e3cfd29f5d919080edcb3ed09192818ed60058",
+      "source": "exact unchanged blob from verified cee audit"
+    },
+    {
+      "bytes": 5075,
+      "gitBlob": "98a6c70b521feb5b5a720f3c14e2d097bf890da6",
+      "on": {
+        "workflow_dispatch": {
+          "inputs": {
+            "tf_comment": {
+              "default": "",
+              "description": "TestFlight Comment"
+            }
+          }
+        }
+      },
+      "path": ".github/workflows/branch_build.yaml",
+      "sha256": "bbf09cfa543b2b85e3f67f403682b0bf6ad32bbc5a851a2a86c7deb2dd35bc31",
+      "source": "fresh immutable default commit fetch"
+    },
+    {
+      "bytes": 331,
+      "gitBlob": "effe2846c316b350ee924fa7ff0f4af71d3985e7",
+      "on": {
+        "issue_comment": {
+          "types": [
+            "created"
+          ]
+        },
+        "pull_request_target": {
+          "types": [
+            "opened",
+            "closed",
+            "synchronize"
+          ]
+        }
+      },
+      "path": ".github/workflows/cla.yml",
+      "sha256": "976e548a3c60142b0d949185f39b05c41960161dfbd88c1e07c66a80fc429b8a",
+      "source": "exact unchanged blob from verified cee audit"
+    },
+    {
+      "bytes": 3315,
+      "gitBlob": "20cae5ec7b3891c4e78ee6f45ad38e29d9fb1dcb",
+      "on": {
+        "pull_request": {
+          "types": [
+            "opened",
+            "synchronize"
+          ]
+        }
+      },
+      "path": ".github/workflows/claude-code-review.yml",
+      "sha256": "f8ef06d82b175775663019a337d91935375d1ef94a5b9a0fcd8383bf07131804",
+      "source": "exact unchanged blob from verified cee audit"
+    },
+    {
+      "bytes": 2544,
+      "gitBlob": "3e5eca101463317678bc628da1d58204ebb78d8b",
+      "on": {
+        "issue_comment": {
+          "types": [
+            "created"
+          ]
+        },
+        "issues": {
+          "types": [
+            "opened",
+            "assigned"
+          ]
+        },
+        "pull_request_review": {
+          "types": [
+            "submitted"
+          ]
+        },
+        "pull_request_review_comment": {
+          "types": [
+            "created"
+          ]
+        }
+      },
+      "path": ".github/workflows/claude.yml",
+      "sha256": "9f9e3d0ecc50006c07a827dbcc40e285077bb2ac8ff6ba041db0a6535255d6f9",
+      "source": "exact unchanged blob from verified cee audit"
+    },
+    {
+      "bytes": 5614,
+      "gitBlob": "9b66174e55ea2d7676fe2a11b58593a0b20c491e",
+      "on": {
+        "schedule": [
+          {
+            "cron": "0 5 * * 1-5"
+          }
+        ],
+        "workflow_dispatch": ""
+      },
+      "path": ".github/workflows/dev_build.yaml",
+      "sha256": "1f742461de8144c28e10f9fa2e45e0c305e4ec69d9bfc8926635e6224bf352a1",
+      "source": "fresh immutable default commit fetch"
+    },
+    {
+      "bytes": 3082,
+      "gitBlob": "5a34d86e9f049eb7d2bb572f2e5e2ae140ebbf0b",
+      "on": {
+        "pull_request": "",
+        "workflow_dispatch": ""
+      },
+      "path": ".github/workflows/generator_checks.yaml",
+      "sha256": "e0e6869eaaf10609db623d2acf1429956a942115329f35e22e21c22dad2366a4",
+      "source": "exact unchanged blob from verified cee audit"
+    },
+    {
+      "bytes": 4580,
+      "gitBlob": "1f3f16c1b8f24d1fa0a2512cca16a6f9d99aaad6",
+      "on": {
+        "repository_dispatch": {
+          "types": [
+            "trigger-build"
+          ]
+        },
+        "workflow_dispatch": {
+          "inputs": {
+            "build_type": {
+              "description": "App build type",
+              "options": [
+                "dev",
+                "release"
+              ],
+              "required": "true",
+              "type": "choice"
+            }
+          }
+        }
+      },
+      "path": ".github/workflows/ipa.yaml",
+      "sha256": "4328861ce7f4ad390e7ba5f1931444da4053c740f3b6aee5fa7a247f4befc3f5",
+      "source": "fresh immutable default commit fetch"
+    },
+    {
+      "bytes": 3439,
+      "gitBlob": "09497d5483e8ba03a9945674c1826102e2d2af9e",
+      "on": {
+        "pull_request": "",
+        "workflow_dispatch": ""
+      },
+      "path": ".github/workflows/license-checks.yml",
+      "sha256": "25587c37dd532e6c0ddea4d61f1b0b108bdd674f9e5b0545739f9d52adb39871",
+      "source": "exact unchanged blob from verified cee audit"
+    },
+    {
+      "bytes": 10681,
+      "gitBlob": "0d06849b03a79b783e0be0065cc74d8327c4383b",
+      "on": {
+        "pull_request": {
+          "branches": [
+            "develop",
+            "release"
+          ],
+          "types": [
+            "closed"
+          ]
+        }
+      },
+      "path": ".github/workflows/link_issue_to_release.yaml",
+      "sha256": "2d212c5c31e7d67764234086d22696d43dd94962b72a9aa6ecf6241c8e1c9690",
+      "source": "exact unchanged blob from verified cee audit"
+    },
+    {
+      "bytes": 1646,
+      "gitBlob": "ea4ac0ac050db9dd7dda71e70d0e6dac0ed14164",
+      "on": {
+        "workflow_run": {
+          "types": [
+            "in_progress",
+            "completed"
+          ],
+          "workflows": [
+            "Auto-merge",
+            "Branch build",
+            "CLA Check",
+            "Claude Code Review",
+            "Claude Code",
+            "Anytype Dev",
+            "Check generated files",
+            "Build IPA",
+            "License Checks",
+            "Link merged PR to Linear release",
+            "Pinkha Tests",
+            "Unit Tests",
+            "Anytype",
+            "Fastlane test build",
+            "Update build cache",
+            "Update middleware version",
+            "Update middleware nightly"
+          ]
+        }
+      },
+      "path": ".github/workflows/live-activity-bridge.yml",
+      "sha256": "20f37c5a70600833a9bc1f9658ac3907eadae6d61a7230099d517417603067ae",
+      "source": "fresh immutable default commit fetch"
+    },
+    {
+      "bytes": 5118,
+      "gitBlob": "8178cefd864f3d97d38f6ddd34d447705ea3ba75",
+      "on": {
+        "pull_request": "",
+        "workflow_dispatch": ""
+      },
+      "path": ".github/workflows/pr_tests.yml",
+      "sha256": "723c88abe7f247bfeed2c2836abae1749585b23e996697afdd4b79664e4ee295",
+      "source": "exact unchanged blob from verified cee audit"
+    },
+    {
+      "bytes": 6023,
+      "gitBlob": "0601a8876c53997bf0b8d0e43eb75d66eaf305c7",
+      "on": {
+        "workflow_dispatch": ""
+      },
+      "path": ".github/workflows/release_build.yaml",
+      "sha256": "8e1894eac6af27914b102a6b58e13f4a724dc4b31ce95ce2c87ac6de60cf2e4b",
+      "source": "fresh immutable default commit fetch"
+    },
+    {
+      "bytes": 4739,
+      "gitBlob": "27f744e5cab1e0637278efd8bfeb778306841ac2",
+      "on": {
+        "workflow_dispatch": ""
+      },
+      "path": ".github/workflows/test_fastlane_build.yaml",
+      "sha256": "f7d2f094ee2bb755047a9e4332c4b75cf1854d31db1e0c86a12acedf302eb9d3",
+      "source": "exact unchanged blob from verified cee audit"
+    },
+    {
+      "bytes": 4467,
+      "gitBlob": "b25478e44b73d3b56760d497cf5539e939b7515f",
+      "on": {
+        "schedule": [
+          {
+            "cron": "0 5 * * 6"
+          }
+        ],
+        "workflow_dispatch": ""
+      },
+      "path": ".github/workflows/update_cache.yaml",
+      "sha256": "3b6fa3d3e30404757c1c5313b0c207d6cd4b2024cd9650775cec6019149bb91b",
+      "source": "exact unchanged blob from verified cee audit"
+    },
+    {
+      "bytes": 14733,
+      "gitBlob": "0e34a806c829c0279ab1c6ae850ddfcbcd3e5bed",
+      "on": {
+        "workflow_call": {
+          "inputs": {
+            "middle_version": {
+              "required": "true",
+              "type": "string"
+            },
+            "task_name": {
+              "required": "false",
+              "type": "string"
+            }
+          }
+        },
+        "workflow_dispatch": {
+          "inputs": {
+            "middle_version": {
+              "description": "Middleware version",
+              "required": "true",
+              "type": "string"
+            },
+            "task_name": {
+              "description": "Task name (e.g. IOS-123)",
+              "required": "false",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "path": ".github/workflows/update_middleware.yaml",
+      "sha256": "304ce59242b7d9ced368d819844cfde8d2d445a90a4b2394e6cd33880c04162e",
+      "source": "exact unchanged blob from verified cee audit"
+    },
+    {
+      "bytes": 2276,
+      "gitBlob": "c90696be1928137d450b6b4b3078b40ec25bcb4e",
+      "on": {
+        "schedule": [
+          {
+            "cron": "0 3 * * 1-5"
+          }
+        ],
+        "workflow_dispatch": ""
+      },
+      "path": ".github/workflows/update_middleware_nightly.yaml",
+      "sha256": "337fed366abd49474791b28375aa920d2fa1ffda515f9640bad6e3bba9532807",
+      "source": "exact unchanged blob from verified cee audit"
+    }
+  ],
+  "yamlWorkflows": 17
+}

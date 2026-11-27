@@ -1,0 +1,103 @@
+{
+  "schema": "pinkha.wave2.app10.profile-feasibility.independent-source-review.v1",
+  "reviewedAt": "2026-11-27 11:25:22 UTC",
+  "reviewer": "/root/interfaces",
+  "status": "PASS_SOURCE_FEASIBILITY_ONLY_RUNTIME_CLOSED",
+  "scope": "Read-only feasibility review of the exact proposed finite App10/18 profile. No execution adapter or product/source change exists in this reviewed proposal.",
+  "inputs": {
+    "proposal": {
+      "path": "closed-profile-proposal.json",
+      "sha256": "a0e1eeb9889939708ba64c35b33b73612aec3fb3e36c6a696d0837d8f1f76a3f"
+    },
+    "readme": {
+      "path": "README.md",
+      "sha256": "5352095752a491c8675eb005ad3dc214d952f7d92a9fc5ef7452d217dca82a7e"
+    },
+    "originalSourceReadback": {
+      "path": "source-readback.json",
+      "sha256": "41f092f0c51734e13910389ca0c45a622a3c8f495fd019309f9fdb4137265e8e"
+    },
+    "originalCore22": {
+      "sourceCommit": "a49003fd3a71712efa2cecb7f9bf991cca228fba",
+      "run": "cf16f08fefcc0d639e1f924a230c2fefb8bcc7af4f311e9e03191165908a29c8",
+      "originals": "aabcf1eec2643f331ed3ab3ae095e156c03de29c4a75ea32405819495af2c9cc",
+      "admission": "ea53a924a816c69ea8a21327d829bd54c5c26b5143d4a7dad4d3a6fb916e1bf6",
+      "manifest": "81d178d6d829dc2eff201b8b8dcd190db2da79dc68a6cc06f36ca0d8a90d2778",
+      "readme": "893e8311764e1751b107d503e13fdfd02f114f3f80e8ba5576958b88e93dc06b"
+    }
+  },
+  "sourceObservations": [
+    {
+      "source": "G05",
+      "sha256": "6ef0ad1ebd2dd41d05cc38dbceb0947456ad4d234aad3daf1eb8207fba401625",
+      "bytes": 30652,
+      "fullDeclarations": 15,
+      "newMethods": 6,
+      "newDeclaredCases": 13,
+      "originalTarget": "AnytypeTests",
+      "hostedTarget": "AnytypeTests",
+      "selection": "Only exact PropertyPickerReadOnlyLookupTests3/7 and PropertyPickerNativeLookupRevisionTests3/6; original9 are excluded."
+    },
+    {
+      "source": "G07",
+      "sha256": "4a2463e6e1ef7d7ade0686d41893e5ece3557dba0e811670c84c3dc25772305f",
+      "bytes": 73306,
+      "prefixBytes": 68698,
+      "prefixSHA256": "6132f4821a3e49bffe59f165f8a80d2bf3f91e2cd48e804866002f38565c88ab",
+      "appendBytes": 4608,
+      "appendSHA256": "402e3dcd35ff6d02f62e07950bfc3118a5a3e46d6d617f5356faaae62f16d21d",
+      "fullDeclarations": 35,
+      "newMethods": 2,
+      "newDeclaredCases": 2,
+      "originalTarget": "AnytypeTests",
+      "hostedTarget": "AnytypeTests",
+      "selection": "Only two exact newly appended parameterless sourceDropPreview methods; existing suite selection is prohibited.",
+      "declarationOnlyProjection": {
+        "removedExactLines": 2,
+        "exactLine": "    @MainActor\n",
+        "projectedFullTextSHA256": "8becc019bda1bfa9aba80c8040d33df3230a36d1679968d2f01ccb6374ac1473",
+        "swiftSourceModified": false,
+        "compilerWitnessUsesOriginalFullFile": true
+      }
+    },
+    {
+      "source": "Bin",
+      "sha256": "b242b8bdbe9f2c9c10c742d26ffe88b237b797b28dfd600e07b85f4e3c2a5494",
+      "bytes": 13860,
+      "fullDeclarations": 4,
+      "newMethods": 2,
+      "newDeclaredCases": 3,
+      "originalTarget": "PinkhaAnyUITests",
+      "hostedTarget": "AnytypeTests",
+      "selection": "Only exact new AnyLibraryBinPublicationTests; original two search methods are excluded."
+    }
+  ],
+  "checked": [
+    "Independently rehashed the exact proposal, README, original readback, five retained Core22 files and three actual Swift source files.",
+    "Independently verified G07 exact original prefix and published append; its only two intervening MainActor lines can be removed in memory for declaration analysis without touching compiled Swift.",
+    "Applied only the original pinned f5446196 require/inspect_declarations AST functions to the exact source text/in-memory G07 projection as static source analysis: complete inventories15/35/4 and every selected literal method/argument declaration match the proposal.",
+    "Read actual original same-job run/admission/Originals: five-lane dispatch, hardcoded22/26 receipts, non-RTL original-target label and exclusive Core13 output are real incompatibility seams and are explicitly left unimplemented.",
+    "Proposal preserves original Consumer.stage, descriptors, compiler/products/installed-code witnesses, result/argument/enumeration validators, process/lifecycle ownership and deadlines rather than introducing alternate execution authority.",
+    "Runtime readiness is false with actual producer/source-union/compilation/enumeration/admission absent; proposed gate must refuse before external runtime I/O and cannot be opened by a mutable ready field."
+  ],
+  "concreteBlockers": [],
+  "requiredAtImplementationReview": [
+    "Bind the complete exact sources and published inverse chains before selection or any projection; do not derive suite membership solely from the flat parser output.",
+    "Keep Core22 entry and its original five lanes byte-identical. Review a finite additive router/output/receipt specialization separately, with truthful per-lane origin labels and exact10/18 totals.",
+    "Keep G07 exact two-method filtering and require actual original enabled enumeration equality; preserve unknown/failing enumeration rather than widening to an old suite.",
+    "Retain old Properties15 and Library2 full-file compatibility gaps as separate scoped successors if those old methods are actually required.",
+    "No complete producer or current runtime acceptance can be inferred from this source-feasibility review."
+  ],
+  "exclusions": {
+    "adapterImplementationReviewed": false,
+    "runtimeReady": false,
+    "controlsOrPortableSuitesExecuted": false,
+    "staticSourceDeclarationAnalysisOnly": true,
+    "swiftTestsExecuted": false,
+    "compilerOrNativeCalls": 0,
+    "remoteHostCalls": 0,
+    "sourceEdits": 0,
+    "oracleWrites": 0,
+    "actualUIOrDeviceAcceptance": false
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "adapterOrProducerChanges": false,
+  "existingSourceFilesModified": [],
+  "files": {
+    "README.md": {
+      "bytes": 9246,
+      "sha256": "80de4f481afa32c8ed297ebb9a19cd5bba4255b442f2e3627501be76f2f786f2"
+    },
+    "controls-attempt1/original.log": {
+      "bytes": 1001,
+      "sha256": "16317d7790f706c0b7724db676606cac3f6024b37819939bc3c58eb4dbb693e9"
+    },
+    "controls-attempt1/receipt.json": {
+      "bytes": 852,
+      "sha256": "44ac1700798ad580cf6c598b0019796ce77649c4876936ca5ffccd456f051c8d"
+    },
+    "fixture-custody.json": {
+      "bytes": 9823,
+      "sha256": "15e03aaa94c17798497c6f3101393b361f29a4d6c1402b78a1888e497d0c0bb0"
+    },
+    "portable_controls.py": {
+      "bytes": 12373,
+      "sha256": "c639cff34189f2ad346a3cf4484315ff41ae72bd277562a5d8590ad96a0f98f8"
+    },
+    "profile/profile.json": {
+      "bytes": 16207,
+      "sha256": "99f81462cf589865af3224090215ab4ebf8e0c7275932f5b93629d1247b7daa8"
+    },
+    "profile/profile.py": {
+      "bytes": 17017,
+      "sha256": "f6100d0c1ce8d7b5fd38c6df5be74825d6e39a1bcc061f5b72be8771ca394d93"
+    },
+    "profile/source-inverse.json": {
+      "bytes": 3239,
+      "sha256": "0411d33ba693873c944cd8d1ce2a0203fbd0e17da8071cb1730737388b6da873"
+    }
+  },
+  "inverse": "Remove only the three newly added profile files; every existing Core22 and original validator file remains byte-identical. Actual Swift source inverse and declaration-only projection are separately pinned in source-inverse.json.",
+  "newRuntimeSourceFiles": [
+    "Tools/PinkhaDualEngineRuntime/hosted_app_product_delta10/profile.py",
+    "Tools/PinkhaDualEngineRuntime/hosted_app_product_delta10/profile.json",
+    "Tools/PinkhaDualEngineRuntime/hosted_app_product_delta10/source-inverse.json"
+  ],
+  "originalCompilerOrRuntimeCalls": 0,
+  "originalCore22Files": [
+    {
+      "bytes": 28729,
+      "gitBlob": "9a09729da05ab033a411075e78dfe8fc7101905f",
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_core13/run.py",
+      "sha256": "cf16f08fefcc0d639e1f924a230c2fefb8bcc7af4f311e9e03191165908a29c8"
+    },
+    {
+      "bytes": 11100,
+      "gitBlob": "166aa597c3de32e3453a355b91229a7d4dc26523",
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_core13/originals.py",
+      "sha256": "aabcf1eec2643f331ed3ab3ae095e156c03de29c4a75ea32405819495af2c9cc"
+    },
+    {
+      "bytes": 4234,
+      "gitBlob": "32cca9d9e212ddb9e7976ba4acefddcfd8e96955",
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_core13/original_sources.json",
+      "sha256": "81d178d6d829dc2eff201b8b8dcd190db2da79dc68a6cc06f36ca0d8a90d2778"
+    },
+    {
+      "bytes": 8916,
+      "gitBlob": "d3f57279ed327b5823299cd42d6b8b8ba2f06593",
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_core13/README.md",
+      "sha256": "893e8311764e1751b107d503e13fdfd02f114f3f80e8ba5576958b88e93dc06b"
+    },
+    {
+      "bytes": 18064,
+      "gitBlob": "60e75e541e8acb71d7bb4a136ef631663e7a9d02",
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_core13/admission.py",
+      "sha256": "ea53a924a816c69ea8a21327d829bd54c5c26b5143d4a7dad4d3a6fb916e1bf6"
+    }
+  ],
+  "runtimeGateOpened": false,
+  "schema": "pinkha-app-product-delta10-additive-source-proof-v1",
+  "status": "ADDITIVE_CLOSED_PROFILE_ORIGINAL_CORE22_UNCHANGED"
+}
