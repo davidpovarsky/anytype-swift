@@ -1,0 +1,492 @@
+{
+  "version": 1,
+  "repository": "davidpovarsky/anytype-swift",
+  "base": "eee40593bf2088fbf6168106f9d2c49248d3ce1f",
+  "status": "SOURCE_RECONSTRUCTION_PASS_RUNTIME_NOT_RUN",
+  "changedSwiftFiles": 11,
+  "literalInverseOperations": 45,
+  "files": [
+    {
+      "path": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinHeartSaveAcceptance.swift",
+      "before": {
+        "blob": "9d4b9f7dd3187d27ac39adc6e7934f9852dae7f6",
+        "sha256": "ef838b407d6bac28424a073495b12e6d65fdbd7d7009c821cd8706b7675f0930",
+        "bytes": 8471
+      },
+      "after": {
+        "blob": "16b599496e8fc30fee96dc63968f88441fcaee04",
+        "sha256": "4a25b9bb705d7b7d10e5f43a56a14c60f9c5039b3b88bbba3068583a7f077735",
+        "bytes": 10234
+      },
+      "literalInverse": [
+        {
+          "after_start_byte": 2959,
+          "after_end_byte": 3409,
+          "after": "                        presentation: presentation, controller: controller,\n                        verifyStoppedRoot: { [self, weak presentation] progress in\n                            guard let presentation else { throw HanlinHostError.staleContext }\n                            return try await verifyStoppedRoot(progress, typeID: typeID, host: host, presentation: presentation)\n                        }) { [self, weak presentation] snapshot in\n",
+          "before": "                        presentation: presentation, controller: controller) { [self, weak presentation] snapshot in\n"
+        },
+        {
+          "after_start_byte": 7073,
+          "after_end_byte": 8502,
+          "after": "    private func verifyStoppedRoot(_ progress: PinkhaHanlinSaveMessageProgress,\n        typeID: String, host: PinkhaHanlinReadWriteHost,\n        presentation: PinkhaHanlinChatPresentation) async throws -> PinkhaHanlinStoppedRootReadback {\n        guard let fixture, fixture.scenario == .stopAfterDurableRoot,\n              progress.manifest.identity.session == host.session,\n              progress.dispatchClosed, progress.manifest.bodyMode == nil,\n              progress.blocks.allSatisfy({ $0 == .pending }), progress.atomicBody == nil, progress.bodyReadback == nil,\n              let objectID = progress.root.reference,\n              !objectID.utf8.elementsEqual(sourceObjectID.utf8) else { throw HanlinHostError.resultMismatch }\n        try fixture.validate(session: host.session)\n        try progress.validate()\n        let view = try await read(objectID: objectID, typeID: typeID, host: host, presentation: presentation)\n        let actual = try PinkhaHanlinHeartSaveReadback(view: view, objectID: objectID, spaceID: spaceID, typeID: typeID)\n        let rootSHA256 = try PinkhaHanlinSaveMessageDocument.rootReadbackSHA256(title: actual.title)\n        guard actual.body.isEmpty, rootSHA256 == progress.manifest.expectedRootReadbackSHA256 else {\n            throw HanlinHostError.resultMismatch\n        }\n        return .init(objectReference: objectID, rootReadbackSHA256: rootSHA256, bodyRowCount: actual.body.count)\n    }\n\n",
+          "before": ""
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreateRunner.swift",
+      "before": {
+        "blob": "12bdd93bc89c430e7c660b70e15b8e0749481944",
+        "sha256": "046ee7ea32a2874cb0a46598e9b2bd15b0719bd9fa7c9c41d2d8166b4254f15a",
+        "bytes": 14572
+      },
+      "after": {
+        "blob": "ead38c85fc62b4dd61a24c428d66c26118ae36b9",
+        "sha256": "9e85c868d12678f0ff1be73ad6a99e09642eb30ef0c1a83e2665b1135209c105",
+        "bytes": 15624
+      },
+      "literalInverse": [
+        {
+          "after_start_byte": 2548,
+          "after_end_byte": 2793,
+          "after": "        #if DEBUG && targetEnvironment(simulator)\n        // Diagnostic identity of THIS actual Job, never a native mutation ID.\n        let acceptanceWorkerID = PinkhaHanlinSaveMessageNativeObservation.isRequested ? UUID() : nil\n        #endif\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 7542,
+          "after_end_byte": 7918,
+          "after": "            await withCheckedContinuation {\n                job.drainWaiters.append($0)\n                #if DEBUG && targetEnvironment(simulator)\n                if let workerID = job.acceptanceWorkerID {\n                    PinkhaHanlinSaveMessageNativeObservation.drainRegistered(job.plan.identity, workerID: workerID)\n                }\n                #endif\n            }\n",
+          "before": "            await withCheckedContinuation { job.drainWaiters.append($0) }\n"
+        },
+        {
+          "after_start_byte": 8224,
+          "after_end_byte": 8770,
+          "after": "        #if DEBUG && targetEnvironment(simulator)\n        if let workerID = job.acceptanceWorkerID {\n            PinkhaHanlinSaveMessageNativeObservation.workerEntered(job.plan.identity, workerID: workerID)\n        }\n        #endif\n        defer {\n            job.finishNativeWork()\n            #if DEBUG && targetEnvironment(simulator)\n            if let workerID = job.acceptanceWorkerID {\n                PinkhaHanlinSaveMessageNativeObservation.workerFinished(job.plan.identity, workerID: workerID)\n            }\n            #endif\n        }\n",
+          "before": "        defer { job.finishNativeWork() }\n"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessageLedger.swift",
+      "before": {
+        "blob": "258d26097f828373219a6d24632841f88ed9d536",
+        "sha256": "317245c38f807b1da3f7a619a38e10b012515dbda34ed75cd2780c158af8934d",
+        "bytes": 3057
+      },
+      "after": {
+        "blob": "89f3eeee45a20e59d1fd70ef885a9cae44bc6fd5",
+        "sha256": "af39d74013df53eababc581e7bc2321e4dea5d796fc8e3b2b28a2a7246968c80",
+        "bytes": 3567
+      },
+      "literalInverse": [
+        {
+          "after_start_byte": 1723,
+          "after_end_byte": 1978,
+          "after": "            #if DEBUG && targetEnvironment(simulator)\n            if PinkhaHanlinSaveMessageNativeObservation.isRequested {\n                await PinkhaHanlinSaveMessageNativeObservation.persisted(event, progress: result)\n            }\n            #endif\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 2960,
+          "after_end_byte": 3215,
+          "after": "            #if DEBUG && targetEnvironment(simulator)\n            if PinkhaHanlinSaveMessageNativeObservation.isRequested {\n                await PinkhaHanlinSaveMessageNativeObservation.persisted(event, progress: result)\n            }\n            #endif\n",
+          "before": ""
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessageNativeObservation.swift",
+      "before": null,
+      "after": {
+        "blob": "82949d4b6b37855012e0b3a036dcdedc3116eaed",
+        "sha256": "254919a4859fef6d1c84bf45a82cc6f9c3629f63b88dc8a849e62a2e68a1ea99",
+        "bytes": 3802
+      },
+      "literalInverse": []
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/AnyHanlinSaveMessageAcceptance.swift",
+      "before": {
+        "blob": "6098155a07a5dbafd10c9b380d8ccee8b8f0e8fd",
+        "sha256": "3e7ec17fb181dc243b9d4083d8e469be7eee258cee5b4b2a4a1f76e0df35be98",
+        "bytes": 11887
+      },
+      "after": {
+        "blob": "9ca43e435b2bb614ff3cc6a020e7a7369d94db95",
+        "sha256": "2bb80522feadb4cc2fe18eb624bff4426c50ab64018a188d0cd5095105156032",
+        "bytes": 16013
+      },
+      "literalInverse": [
+        {
+          "after_start_byte": 3119,
+          "after_end_byte": 3499,
+          "after": "                        presentation: presentation, controller: controller,\n                        verifyStoppedRoot: { progress in\n                            try await admission.verifyStoppedRoot(progress, fixture: fixture,\n                                native: native, documents: documents, client: client, sourceOwner: sourceOwner)\n                        }) { snapshot in\n",
+          "before": "                        presentation: presentation, controller: controller) { snapshot in\n"
+        },
+        {
+          "after_start_byte": 10955,
+          "after_end_byte": 14791,
+          "after": "    func verifyStoppedRoot(_ progress: PinkhaHanlinSaveMessageProgress,\n        fixture: PinkhaHanlinSaveMessageAcceptanceFixture, native: AnyApplicationSession,\n        documents: AnyEditorDocumentStore, client: AnyHTTPClient,\n        sourceOwner: any AnyHanlinSourcePresentationOwner) async throws -> PinkhaHanlinStoppedRootReadback {\n        try fixture.validate(session: progress.manifest.identity.session)\n        try Self.validate(scope, owner: sourceOwner, native: native)\n        try progress.validate()\n        guard fixture.scenario == .stopAfterDurableRoot, progress.dispatchClosed,\n              progress.manifest.bodyMode == .conditionalMarkdown,\n              progress.blocks.isEmpty, progress.atomicBody == nil, progress.bodyReadback == nil,\n              let objectID = progress.root.reference,\n              !objectID.utf8.elementsEqual(fixture.sourceObjectID.utf8),\n              fixture.anyRuntime?.generation == native.generation,\n              fixture.anyRuntime?.engineStartedAt.utf8.elementsEqual(native.engineStartedAt.utf8) == true else {\n            throw HanlinHostError.resultMismatch\n        }\n        let reference = try AnyNativeMarkdownReference(accountID: fixture.accountID,\n            spaceID: fixture.spaceID, objectID: objectID)\n        let scope = scope, body = AnyNativeMarkdownBody(client: client)\n        let result = try await native.perform { lease in\n            let authorize: @Sendable () async throws -> Void = {\n                try await lease.validate()\n                try await MainActor.run { try Self.validate(scope, owner: sourceOwner, native: native) }\n            }\n            let first = try await body.read(reference, authorize: authorize)\n            try await authorize()\n            let actual = try await documents.read(objectID: objectID, lease: lease)\n            try await authorize()\n            let response = try await client.requestJSON(method: \"GET\",\n                path: [\"v1\", \"spaces\", fixture.spaceID, \"objects\", objectID], authorize: authorize)\n            guard response[\"objectId\"]?.string?.utf8.elementsEqual(objectID.utf8) == true,\n                  let record = response[\"record\"] else { throw HanlinHostError.resultMismatch }\n            let last = try await body.read(reference, authorize: authorize)\n            guard actual.generation == native.generation,\n                  actual.engineStartedAt.utf8.elementsEqual(native.engineStartedAt.utf8),\n                  first.version.utf8.elementsEqual(last.version.utf8),\n                  actual.nativeVersion.utf8.elementsEqual(last.version.utf8),\n                  actual.markdown.utf8.elementsEqual(last.content.utf8), last.content.isEmpty else {\n                throw HanlinHostError.resultMismatch\n            }\n            let semantic = try AnyHanlinSaveMessageReadback(snapshot: actual.snapshot, rootRecord: record, workspace: lease.workspace)\n            guard semantic.blocks.isEmpty, semantic.blockReferences.isEmpty,\n                  semantic.rootReadbackSHA256 == progress.manifest.expectedRootReadbackSHA256 else {\n                throw HanlinHostError.resultMismatch\n            }\n            try await authorize()\n            return PinkhaHanlinStoppedRootReadback(objectReference: actual.snapshot.objectID,\n                rootReadbackSHA256: semantic.rootReadbackSHA256, bodyRowCount: actual.snapshot.blocks.count,\n                nativeVersionSHA256: PinkhaHanlinCreatePagePlan.digest(Data(last.version.utf8)),\n                nativeMarkdownSHA256: last.contentSHA256, nativeMarkdownUTF8Bytes: last.contentBytes,\n                nativeGeneration: actual.generation,\n                engineStartedAtSHA256: PinkhaHanlinCreatePagePlan.digest(Data(actual.engineStartedAt.utf8)))\n        }\n        try Self.validate(scope, owner: sourceOwner, native: native)\n        return result\n    }\n\n",
+          "before": ""
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift",
+      "before": {
+        "blob": "11cfab1994884d40b8a6cc0a21a6e9bb2538e17d",
+        "sha256": "854c17fbee910cdec74fcc963edcf884f4c392534b804b4b45bf7bfb60368381",
+        "bytes": 33228
+      },
+      "after": {
+        "blob": "0e27ed6a0696db35f95c30ad8249b9fa6730985e",
+        "sha256": "b950c4bd94d0d5553b842593ed8c7b11e805edb9b26a0e5e155db3488f6250a6",
+        "bytes": 33940
+      },
+      "literalInverse": [
+        {
+          "after_start_byte": 7358,
+          "after_end_byte": 7443,
+          "after": "    var saveMessageAcceptanceRequiresReconciliation: Bool { requiresReconciliation }\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 26341,
+          "after_end_byte": 26536,
+          "after": "                #if DEBUG && targetEnvironment(simulator)\n                self.saveAcceptanceDriver?.stopJoined(messageID: self.currentSaveMessageID, cancellation: result)\n                #endif\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 26966,
+          "after_end_byte": 27103,
+          "after": "                #if DEBUG && targetEnvironment(simulator)\n                self.saveAcceptanceDriver?.stopFailed()\n                #endif\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 27504,
+          "after_end_byte": 27799,
+          "after": "        #if DEBUG && targetEnvironment(simulator)\n        // Observe only after the real Stop task is retained, so an acceptance\n        // failure can synchronously close and still join this same task.\n        saveAcceptanceDriver?.stopRequested(messageID: currentSaveMessageID)\n        #endif\n",
+          "before": ""
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinSaveMessageAcceptanceDriver.swift",
+      "before": {
+        "blob": "95242538cbf6d293dd9dd2544f7efb592dacc505",
+        "sha256": "33af09b83bf1c9d50406616135955cf45733fba00c16e51ee28a7534f3cddecf",
+        "bytes": 15853
+      },
+      "after": {
+        "blob": "7ad725d5ea450d7f32671afe7a88c7d383ac3813",
+        "sha256": "161b09f5038b1d78a1b7a201fe9036c5728ab21e4e7b711b5c9b91044c347732",
+        "bytes": 18092
+      },
+      "literalInverse": [
+        {
+          "after_start_byte": 709,
+          "after_end_byte": 855,
+          "after": "    public typealias StoppedRootReadback = @MainActor @Sendable (PinkhaHanlinSaveMessageProgress) async throws -> PinkhaHanlinStoppedRootReadback\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 1703,
+          "after_end_byte": 1768,
+          "after": "        var stop: PinkhaHanlinSaveMessageStopAcceptance.Receipt?\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 1959,
+          "after_end_byte": 2015,
+          "after": "    private let verifyStoppedRoot: StoppedRootReadback?\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 2344,
+          "after_end_byte": 2415,
+          "after": "    private var stopAcceptance: PinkhaHanlinSaveMessageStopAcceptance?\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 2588,
+          "after_end_byte": 2643,
+          "after": "        verifyStoppedRoot: StoppedRootReadback? = nil,\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 2882,
+          "after_end_byte": 3004,
+          "after": "                controller: controller, verifyStoppedRoot: verifyStoppedRoot, verifyNativeReadback: verifyNativeReadback)\n",
+          "before": "                controller: controller, verifyNativeReadback: verifyNativeReadback)\n"
+        },
+        {
+          "after_start_byte": 3665,
+          "after_end_byte": 3714,
+          "after": "        verifyStoppedRoot: StoppedRootReadback?,\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 4272,
+          "after_end_byte": 4323,
+          "after": "        self.verifyStoppedRoot = verifyStoppedRoot\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 5694,
+          "after_end_byte": 6667,
+          "after": "            if fixture.scenario == .stopAfterDurableRoot {\n                guard let verifyStoppedRoot, let window = label.window else { throw HanlinHostError.invalidContext }\n                stopAcceptance = try .init(fixture: fixture, presentation: presentation, journal: original,\n                    window: window, verifyNativeReadback: verifyStoppedRoot, update: { [weak self] phase, value in\n                        guard let self, !self.ended else { throw HanlinHostError.staleContext }\n                        self.receipt.stop = value\n                        if value.finishedAt != nil { self.receipt.finishedAt = value.finishedAt }\n                        try self.emit(phase)\n                        if value.finishedAt != nil, value.failure == nil { self.ended = true }\n                    }, failure: { [weak self] code, value in\n                        self?.receipt.stop = value\n                        self?.fail(code)\n                    })\n            }\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 7862,
+          "after_end_byte": 7948,
+          "after": "            try emit(stopAcceptance == nil ? \"AWAIT_SEND_CANCEL\" : \"AWAIT_SEND_STOP\")\n",
+          "before": "            try emit(\"AWAIT_SEND_CANCEL\")\n"
+        },
+        {
+          "after_start_byte": 8565,
+          "after_end_byte": 8689,
+          "after": "            try emit(stopAcceptance == nil ? (ordinal == 0 ? \"AWAIT_SAVE_CANCEL\" : \"AWAIT_SAVE_ALLOW\") : \"AWAIT_SAVE_STOP\")\n",
+          "before": "            try emit(ordinal == 0 ? \"AWAIT_SAVE_CANCEL\" : \"AWAIT_SAVE_ALLOW\")\n"
+        },
+        {
+          "after_start_byte": 9371,
+          "after_end_byte": 9555,
+          "after": "            try stopAcceptance?.started(intent)\n            try emit(stopAcceptance == nil ? (ordinal == 0 ? \"AWAIT_NATIVE_CANCEL\" : \"AWAIT_NATIVE_ALLOW\") : \"AWAIT_NATIVE_ALLOW_STOP\")\n",
+          "before": "            try emit(ordinal == 0 ? \"AWAIT_NATIVE_CANCEL\" : \"AWAIT_NATIVE_ALLOW\")\n"
+        },
+        {
+          "after_start_byte": 10642,
+          "after_end_byte": 10724,
+          "after": "        if let stopAcceptance { stopAcceptance.consumerFinished(intent); return }\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 10796,
+          "after_end_byte": 11129,
+          "after": "\n    func stopRequested(messageID: UUID?) { stopAcceptance?.stopRequested(messageID: messageID) }\n\n    func stopJoined(messageID: UUID?, cancellation: HanlinAgentRunCancellation?) {\n        stopAcceptance?.joined(messageID: messageID, cancellation: cancellation)\n    }\n\n    func stopFailed() { stopAcceptance?.cancellationFailed() }\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 14056,
+          "after_end_byte": 14093,
+          "after": "        stopAcceptance?.invalidate()\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 14223,
+          "after_end_byte": 14318,
+          "after": "    func drain() async {\n        await task?.value\n        await stopAcceptance?.drain()\n    }\n",
+          "before": "    func drain() async { await task?.value }\n"
+        },
+        {
+          "after_start_byte": 15172,
+          "after_end_byte": 15213,
+          "after": "        stopAcceptance?.evidenceFailed()\n",
+          "before": ""
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinSaveMessageAcceptanceFixture.swift",
+      "before": {
+        "blob": "4f82f22a8adbc085b5a5182a9667925e83ca8603",
+        "sha256": "aab2dcff9b7e85cd383e13de306128a2a05436ce04ecfb274f210daf9d15de7b",
+        "bytes": 8241
+      },
+      "after": {
+        "blob": "23fdc7f202ba71e0ed615af13bc7c505c10d11ce",
+        "sha256": "ff5bc4565a575b3063324f5781cee0d6aaaf3d28735b8d706559fb5d4e2089f7",
+        "bytes": 8663
+      },
+      "literalInverse": [
+        {
+          "after_start_byte": 535,
+          "after_end_byte": 617,
+          "after": "    public enum Scenario: String, Codable, Sendable { case stopAfterDurableRoot }\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 969,
+          "after_end_byte": 1084,
+          "after": "    /// Nil preserves the original Cancel/Allow baseline and its encoded bytes.\n    public let scenario: Scenario?\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 1819,
+          "after_end_byte": 2058,
+          "after": "        if scenario == .stopAfterDurableRoot {\n            return \"Prepare Hanlin save stop-after-root \" + fixtureID.uuidString\n        }\n        return \"Prepare Hanlin save \" + (ordinal == 0 ? \"cancel \" : \"allow \") + fixtureID.uuidString\n",
+          "before": "        \"Prepare Hanlin save \" + (ordinal == 0 ? \"cancel \" : \"allow \") + fixtureID.uuidString\n"
+        },
+        {
+          "after_start_byte": 4100,
+          "after_end_byte": 4180,
+          "after": "              environment[\"PINKHA_HANLIN_SAVE_SCENARIO\"] == scenario?.rawValue,\n",
+          "before": ""
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinSaveMessageAcceptancePreparation.swift",
+      "before": {
+        "blob": "02768fbe1235e3acd0e45fc824efd34dbcb4177d",
+        "sha256": "d6e0c99f8591479e7a70d3cb78c68df857a722764b625b9008bbb8b1af5d0075",
+        "bytes": 8484
+      },
+      "after": {
+        "blob": "4580573273bf8fcc5543b4b33fa1bec13b099793",
+        "sha256": "b8f50ed881f348ad4a5f5009a11a8bd6267c96c692945baed6df0ee29a6e9310",
+        "bytes": 8694
+      },
+      "literalInverse": [
+        {
+          "after_start_byte": 764,
+          "after_end_byte": 844,
+          "after": "        public let scenario: PinkhaHanlinSaveMessageAcceptanceFixture.Scenario?\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 1996,
+          "after_end_byte": 2080,
+          "after": "                  environment[\"PINKHA_HANLIN_SAVE_SCENARIO\"] == scenario?.rawValue,\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 7121,
+          "after_end_byte": 7167,
+          "after": "              r.scenario == fixture.scenario,\n",
+          "before": ""
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinSaveMessageStopAcceptance.swift",
+      "before": null,
+      "after": {
+        "blob": "d2a0a05bb384855fb7c61156a72a33a0986fb0ea",
+        "sha256": "4444be9d7d70f2fd27097550e1901ad5b91d134a246ab28196621528f4e38cd0",
+        "bytes": 20286
+      },
+      "literalInverse": []
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/HanlinSaveMessageAcceptanceUITests.swift",
+      "before": {
+        "blob": "7edc5d4959b8f065ac82ffe6605b1560d02b47ef",
+        "sha256": "7be486a9580d6cbf437fecef1863246e1d67b527d7c1ccaf3be6b315f7a24885",
+        "bytes": 12793
+      },
+      "after": {
+        "blob": "6e923be96d7b4d2f4d88cc5263c08a582ca4d836",
+        "sha256": "5e692b4d5e09004add0dc8b4e882af620381cd61d830e54e2d6e60ae23704512",
+        "bytes": 21950
+      },
+      "literalInverse": [
+        {
+          "after_start_byte": 18,
+          "after_end_byte": 35,
+          "after": "import CryptoKit\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 1920,
+          "after_end_byte": 2005,
+          "after": "        XCTAssertEqual(fixture.scenario, environment[\"PINKHA_HANLIN_SAVE_SCENARIO\"])\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 2499,
+          "after_end_byte": 3187,
+          "after": "    }\n\n    override func tearDownWithError() throws {\n        try super.tearDownWithError()\n        guard let fixture, fixture.scenario == \"stopAfterDurableRoot\", let app,\n              app.state == .runningForeground else { return }\n        // Failure cleanup uses the original controls too. It neither asserts\n        // a completed native drain nor alters the failed original receipt.\n        let cancel = app.buttons[\"pinkha.hanlin.consent.save-message.cancel\"].firstMatch\n        if cancel.exists && cancel.isHittable { cancel.tap() }\n        let close = app.buttons[\"pinkha.hanlin.close\"].firstMatch\n        if close.waitForExistence(timeout: 2) && close.isHittable { close.tap() }\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 7653,
+          "after_end_byte": 14460,
+          "after": "    /// Separate fixture/account attempt. The hold follows the real native root\n    /// callback and protected journal append; this test presses the ORIGINAL\n    /// Composer Stop. The diagnostic release grants no effect permission.\n    func testOriginalSDKStopAfterDurableRootDrainsWithoutBody() throws {\n        XCTAssertEqual(fixture.scenario, \"stopAfterDurableRoot\")\n        try waitForPhase(\"AWAIT_SEND_STOP\", timeout: 30)\n        try requireFixture(try receipt())\n        try pressSend()\n        try waitForPhase(\"AWAIT_SAVE_STOP\", timeout: 45)\n        try pressOnlyEnabledSave()\n        try nativeConsent(action: \"allow\").tap()\n        try waitForPhase(\"NATIVE_ROOT_DURABLE_AWAIT_STOP\", timeout: 25)\n        let held = try receipt()\n        try requireFixture(held)\n        let heldStop = try XCTUnwrap(held.stop)\n        XCTAssertNotNil(heldStop.workerID)\n        XCTAssertNotNil(heldStop.rootKnownAt)\n        let root = try XCTUnwrap(heldStop.knownRootReference)\n        XCTAssertNotEqual(Data(root.utf8), Data(fixture.sourceObjectID.utf8))\n        XCTAssertEqual(heldStop.persisted.map(\\.event), [\"rootDispatched\", \"rootKnown\"])\n        XCTAssertGreaterThan(try XCTUnwrap(heldStop.identity).deadline.timeIntervalSinceNow, 1)\n        let stopButton = app.buttons[\"hanlin-chat-stop\"].firstMatch\n        try ready(stopButton, timeout: 3)\n        stopButton.tap()\n        try waitForPhase(\"ORIGINAL_DRAIN_WAITING_ROOT_HELD\", timeout: 10)\n        let draining = try receipt()\n        let drain = try XCTUnwrap(draining.stop)\n        XCTAssertEqual(drain.workerID, heldStop.workerID)\n        XCTAssertEqual(drain.knownRootReference, root)\n        XCTAssertGreaterThan(drain.drainWaitersObserved, 0)\n        XCTAssertNotNil(drain.drainRegisteredAt)\n        XCTAssertNil(drain.releaseAt)\n        XCTAssertNil(drain.workerFinishedAt)\n        XCTAssertNil(drain.sdkAndConsumerJoinedAt)\n        try assertNoBodyMetadata(in: rawReceipt(), key: \"closedProgress\", closed: true)\n        XCTAssertTrue(stopButton.exists)\n        XCTAssertFalse(stopButton.isEnabled, \"The original Stop control must remain stopping while its real native worker is held\")\n        XCTAssertEqual(app.buttons.matching(NSPredicate(format: \"label == %@ AND enabled == true\", \"Send\")).count, 0)\n        XCTAssertEqual(enabledSaves.count, 0)\n        attachScreenshot(\"hanlin-save-stop-original-drain-waiting\")\n        let release = app.buttons[\"pinkha.hanlin.save-acceptance-release-root\"].firstMatch\n        try ready(release, timeout: 3)\n        release.tap()\n        try waitForPhase(\"ORIGINAL_STOP_DRAIN_AND_EMPTY_ROOT_READBACK_PASS\", timeout: 90)\n        let result = try receipt()\n        try requireFixture(result)\n        XCTAssertNil(result.failure)\n        XCTAssertNotNil(result.finishedAt)\n        XCTAssertEqual(result.attempts.count, 1)\n        let attempt = try XCTUnwrap(result.attempts.first)\n        let stopped = try XCTUnwrap(result.stop)\n        let identity = try XCTUnwrap(stopped.identity)\n        XCTAssertEqual(stopped.workerID, heldStop.workerID)\n        XCTAssertEqual(identity.session, result.session)\n        XCTAssertEqual(identity.runID, attempt.executionRunID)\n        XCTAssertNotEqual(identity.runID, attempt.origin.runID)\n        let requestID = try XCTUnwrap(attempt.requestID)\n        let digest = SHA256.hash(data: Data(requestID.uuidString.utf8)).map { String(format: \"%02x\", $0) }.joined()\n        XCTAssertEqual(identity.providerCallDigest, digest)\n        XCTAssertEqual(stopped.knownRootReference, root)\n        XCTAssertEqual(stopped.bodyDispatchEventsObserved, 0)\n        XCTAssertEqual(stopped.finalEntry?.effect, \"uncertain\")\n        XCTAssertTrue([\"uncertain\", \"unconfirmed\"].contains(try XCTUnwrap(stopped.intentStatus)))\n        XCTAssertNil(stopped.failure)\n        let ordered = try [stopped.workerEnteredAt, stopped.rootKnownAt, stopped.stopRequestedAt,\n            stopped.drainRegisteredAt, stopped.releaseAt, stopped.workerFinishedAt,\n            stopped.sdkAndConsumerJoinedAt, stopped.finishedAt].map { try XCTUnwrap($0) }\n        XCTAssertEqual(ordered, ordered.sorted())\n        XCTAssertLessThan(try XCTUnwrap(stopped.stopRequestedAt), identity.deadline)\n        XCTAssertLessThanOrEqual(try XCTUnwrap(stopped.consumerFinishedAt), try XCTUnwrap(stopped.sdkAndConsumerJoinedAt))\n        try assertNoBodyMetadata(in: rawReceipt(), key: \"finalProgress\", closed: true)\n        let native = try XCTUnwrap(stopped.nativeReadback)\n        XCTAssertEqual(Data(native.objectReference.utf8), Data(root.utf8))\n        XCTAssertEqual(native.bodyRowCount, 0)\n        XCTAssertEqual(native.rootReadbackSHA256.utf8.count, 64)\n        if fixture.engine == \"any\" {\n            XCTAssertEqual(native.nativeGeneration, fixture.anyRuntime?.generation)\n            XCTAssertEqual(native.nativeMarkdownUTF8Bytes, 0)\n            XCTAssertEqual(native.nativeMarkdownSHA256, SHA256.hash(data: Data()).map { String(format: \"%02x\", $0) }.joined())\n            XCTAssertEqual(try XCTUnwrap(native.nativeVersionSHA256).utf8.count, 64)\n            XCTAssertEqual(try XCTUnwrap(native.engineStartedAtSHA256).utf8.count, 64)\n        } else {\n            XCTAssertNil(native.nativeVersionSHA256)\n            XCTAssertNil(native.nativeMarkdownSHA256)\n            XCTAssertNil(native.nativeGeneration)\n            XCTAssertNil(native.engineStartedAtSHA256)\n        }\n        if let effect = attempt.effect { XCTAssertEqual(effect, \"uncertain\") }\n        XCTAssertNil(result.nativeBodyReadback)\n        XCTAssertNil(result.atomicAcknowledgement)\n        XCTAssertEqual(enabledSaves.count, 0)\n        attachScreenshot(\"hanlin-save-stop-joined-empty-native-root\")\n        let attachment = XCTAttachment(data: try rawReceipt(), uniformTypeIdentifier: \"public.json\")\n        attachment.name = \"hanlin-save-original-stop-drain-native-result\"; attachment.lifetime = .keepAlways\n        add(attachment)\n        // Retain the known incomplete original page and both journals. The\n        // controller owns later reconciliation; this test never deletes/retries.\n        app.buttons[\"pinkha.hanlin.close\"].tap()\n    }\n\n    private func assertNoBodyMetadata(in data: Data, key: String, closed: Bool) throws {\n        let value = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])\n        let stop = try XCTUnwrap(value[\"stop\"] as? [String: Any])\n        let progress = try XCTUnwrap(stop[key] as? [String: Any])\n        XCTAssertEqual(progress[\"dispatchClosed\"] as? Bool, closed)\n        XCTAssertNil(progress[\"bodyReadback\"])\n        XCTAssertNil(progress[\"atomicBody\"])\n        let blocks = try XCTUnwrap(progress[\"blocks\"] as? [[String: Any]])\n        XCTAssertEqual(blocks.count, fixture.engine == \"heart\" ? 4 : 0)\n        XCTAssertTrue(blocks.allSatisfy { Set($0.keys) == [\"pending\"] })\n    }\n\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 17500,
+          "after_end_byte": 17567,
+          "after": "        XCTAssertEqual(receipt.fixture.scenario, fixture.scenario)\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 18477,
+          "after_end_byte": 18536,
+          "after": "        let scenario: String?; let anyRuntime: AnyRuntime?\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 18807,
+          "after_end_byte": 18900,
+          "after": "    private struct AnyRuntime: Codable { let generation: UUID; let engineStartedAt: String }\n",
+          "before": ""
+        },
+        {
+          "after_start_byte": 20601,
+          "after_end_byte": 21942,
+          "after": "        let stop: StopReceipt?\n    }\n\n    private struct StopIdentity: Codable {\n        let session: Session; let runID: UUID; let providerCallDigest: String; let deadline: Date\n    }\n    private struct StopEntry: Codable { let effect: String }\n    private struct PersistedObservation: Codable { let event: String; let sequence: Int; let progressSHA256: String }\n    private struct StoppedNativeReadback: Codable {\n        let objectReference: String; let rootReadbackSHA256: String; let bodyRowCount: Int\n        let nativeVersionSHA256: String?; let nativeMarkdownSHA256: String?; let nativeMarkdownUTF8Bytes: Int?\n        let nativeGeneration: UUID?; let engineStartedAtSHA256: String?\n    }\n    private struct StopReceipt: Codable {\n        let identity: StopIdentity?; let workerID: UUID?; let knownRootReference: String?\n        let workerEnteredAt: Date?; let rootKnownAt: Date?; let stopRequestedAt: Date?; let drainRegisteredAt: Date?\n        let releaseAt: Date?; let workerFinishedAt: Date?; let consumerFinishedAt: Date?; let sdkAndConsumerJoinedAt: Date?\n        let finishedAt: Date?; let drainWaitersObserved: Int; let bodyDispatchEventsObserved: Int\n        let persisted: [PersistedObservation]; let finalEntry: StopEntry?; let intentStatus: String?\n        let nativeReadback: StoppedNativeReadback?; let failure: String?\n",
+          "before": ""
+        }
+      ]
+    }
+  ],
+  "baselineMethod": {
+    "selector": "PinkhaStage1AcceptanceUITests/HanlinSaveMessageAcceptanceUITests/testOriginalSDKMessageSaveConsentAndNativeReadback",
+    "bytes": 4459,
+    "sha256": "cf979fd9595ba1f9d284239e90f733c05169d1fdd79b3ddf006312d3da6462f6",
+    "byteUnchanged": true
+  },
+  "newNativeSelector": "PinkhaStage1AcceptanceUITests/HanlinSaveMessageAcceptanceUITests/testOriginalSDKStopAfterDurableRootDrainsWithoutBody",
+  "nativeRuns": "NOT_RUN",
+  "compiler": "NOT_RUN",
+  "fixture": "NOT_PROVISIONED_OR_QUALIFIED",
+  "originalComposer": {
+    "repository": "davidpovarsky/hanlin-ai",
+    "source": "45d5d90512c304d3457774b185741b7ef7d801db",
+    "path": "Packages/HanlinPlatform/Sources/HanlinScriptUI/HanlinChatUIComponents.swift",
+    "blob": "11ac73b335fa72e300baf0cda8d467df196972b1",
+    "sha256": "30bfafd2261ebbeced35e00b58cb92f435438e5685444b900d2c9d0c648425a8",
+    "bytes": 8140,
+    "control": "hanlin-chat-stop",
+    "unchanged": true
+  },
+  "releaseSourceProjection": {
+    "scope": "Text-only conditional selection for explicit existing UIKit and DEBUG/simulator guards, then whitespace removal; NOT Swift preprocessing/typechecking or a compiler receipt.",
+    "files": [
+      {
+        "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreateRunner.swift",
+        "releaseConditionalWhitespaceProjectionEqual": true,
+        "projectionSHA256": "685c443e6d33c153d36668b14984b36c6c3352bb38978f5c1cf98a04ed551ae5"
+      },
+      {
+        "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessageLedger.swift",
+        "releaseConditionalWhitespaceProjectionEqual": true,
+        "projectionSHA256": "e6ab055c98fb2af7e3b528f2ee97dc8504c60499b2cbd83601112f6f22fe5527"
+      },
+      {
+        "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift",
+        "releaseConditionalWhitespaceProjectionEqual": true,
+        "projectionSHA256": "b0b9b8e9f2619b81adfaa1044b1756c28bcaf82e2849adca107bcc6d6712c6b1"
+      },
+      {
+        "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/AnyHanlinSaveMessageAcceptance.swift",
+        "releaseConditionalWhitespaceProjectionEqual": true,
+        "projectionSHA256": "a7c90901adc7eb6c832934cdfcdc9f4181f0084619e8180c3f4fa43eaa8cc6e2"
+      }
+    ]
+  },
+  "sourceReviewCorrections": [
+    {
+      "finding": "An asynchronously scheduled abort could return to native code before revocation when no root hold existed.",
+      "correction": "Abort now calls original presentation.invalidate synchronously. Passive stopRequested notification follows actual stopping Task retention in the same actor turn, preserving close/join ownership.",
+      "status": "SOURCE_FIXED_RUNTIME_NOT_RUN"
+    },
+    {
+      "finding": "stopFailed called helper.invalidate outside the documented original close path.",
+      "correction": "stopFailed now enters dedicated cancellationFailed -> synchronous original abort. invalidate remains only the actual owner close callback.",
+      "status": "SOURCE_FIXED_RUNTIME_NOT_RUN"
+    }
+  ]
+}

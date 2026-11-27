@@ -34,6 +34,11 @@ public actor PinkhaHanlinSaveMessageLedger {
             guard try result.canonicalBytes() == wanted.canonicalBytes() else {
                 throw PinkhaHanlinSaveMessageError.conflictingReceipt
             }
+            #if DEBUG && targetEnvironment(simulator)
+            if PinkhaHanlinSaveMessageNativeObservation.isRequested {
+                await PinkhaHanlinSaveMessageNativeObservation.persisted(event, progress: result)
+            }
+            #endif
             return result
         } catch PinkhaHanlinWriteError.conflict {
             // A close is the ONLY other writer permitted here. Byte equality
@@ -50,6 +55,11 @@ public actor PinkhaHanlinSaveMessageLedger {
             guard try result.canonicalBytes() == wantedAfterClose.canonicalBytes() else {
                 throw PinkhaHanlinSaveMessageError.conflictingReceipt
             }
+            #if DEBUG && targetEnvironment(simulator)
+            if PinkhaHanlinSaveMessageNativeObservation.isRequested {
+                await PinkhaHanlinSaveMessageNativeObservation.persisted(event, progress: result)
+            }
+            #endif
             return result
         }
     }

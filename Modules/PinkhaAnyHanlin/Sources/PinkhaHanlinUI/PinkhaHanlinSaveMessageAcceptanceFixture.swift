@@ -9,6 +9,7 @@ import PinkhaHanlinCore
 /// discover credentials, grant tool permission, or prove a native route exists.
 public struct PinkhaHanlinSaveMessageAcceptanceFixture: Codable, Sendable {
     public enum Engine: String, Codable, Sendable { case heart, any }
+    public enum Scenario: String, Codable, Sendable { case stopAfterDurableRoot }
     public struct AnyRuntime: Codable, Sendable {
         public let generation: UUID
         public let engineStartedAt: String
@@ -21,6 +22,8 @@ public struct PinkhaHanlinSaveMessageAcceptanceFixture: Codable, Sendable {
     public let runID: String
     public let runAttempt: String
     public let engine: Engine
+    /// Nil preserves the original Cancel/Allow baseline and its encoded bytes.
+    public let scenario: Scenario?
     public let accountID: String
     public let spaceID: String
     public let sourceObjectID: String
@@ -40,7 +43,10 @@ public struct PinkhaHanlinSaveMessageAcceptanceFixture: Codable, Sendable {
         "# Hanlin " + fixtureID.uuidString + "\n\nשלום **bold** and *italic* with `code`.\n\n- first\n- second"
     }
     public func prompt(_ ordinal: Int) -> String {
-        "Prepare Hanlin save " + (ordinal == 0 ? "cancel " : "allow ") + fixtureID.uuidString
+        if scenario == .stopAfterDurableRoot {
+            return "Prepare Hanlin save stop-after-root " + fixtureID.uuidString
+        }
+        return "Prepare Hanlin save " + (ordinal == 0 ? "cancel " : "allow ") + fixtureID.uuidString
     }
     public var hostApp: String {
         engine == .any ? PinkhaHanlinEngineNamespace.any : PinkhaHanlinEngineNamespace.heart
@@ -77,6 +83,7 @@ public struct PinkhaHanlinSaveMessageAcceptanceFixture: Codable, Sendable {
               environment["PINKHA_HANLIN_SAVE_SOURCE_SHA"] == sourceSHA,
               environment["PINKHA_HANLIN_SAVE_RUN_ID"] == runID,
               environment["PINKHA_HANLIN_SAVE_RUN_ATTEMPT"] == runAttempt,
+              environment["PINKHA_HANLIN_SAVE_SCENARIO"] == scenario?.rawValue,
               environment["PINKHA_HANLIN_SAVE_CUSTODY_SHA256"] == custodyReceiptSHA256,
               environment["PINKHA_HANLIN_SAVE_NATIVE_MANIFEST_SHA256"] == nativeManifestSHA256,
               environment["PINKHA_HANLIN_SAVE_NATIVE_BINARY_SHA256"] == nativeBinarySHA256,

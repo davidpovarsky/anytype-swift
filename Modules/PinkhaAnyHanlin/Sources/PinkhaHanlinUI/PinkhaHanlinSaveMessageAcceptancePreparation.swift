@@ -15,6 +15,7 @@ public enum PinkhaHanlinSaveMessageAcceptancePreparation {
         public let runID: String
         public let runAttempt: String
         public let engine: PinkhaHanlinSaveMessageAcceptanceFixture.Engine
+        public let scenario: PinkhaHanlinSaveMessageAcceptanceFixture.Scenario?
         public let accountID: String
         public let spaceID: String
         public let sourceObjectID: String
@@ -34,6 +35,7 @@ public enum PinkhaHanlinSaveMessageAcceptancePreparation {
                   environment["PINKHA_HANLIN_SAVE_SOURCE_SHA"] == sourceSHA,
                   environment["PINKHA_HANLIN_SAVE_RUN_ID"] == runID,
                   environment["PINKHA_HANLIN_SAVE_RUN_ATTEMPT"] == runAttempt,
+                  environment["PINKHA_HANLIN_SAVE_SCENARIO"] == scenario?.rawValue,
                   environment["PINKHA_HANLIN_SAVE_CUSTODY_SHA256"] == custodyReceiptSHA256,
                   environment["PINKHA_HANLIN_SAVE_NATIVE_MANIFEST_SHA256"] == nativeManifestSHA256,
                   environment["PINKHA_HANLIN_SAVE_NATIVE_BINARY_SHA256"] == nativeBinarySHA256,
@@ -109,6 +111,7 @@ public enum PinkhaHanlinSaveMessageAcceptancePreparation {
         try receipt.request.validate()
         let r = receipt.request
         guard r.fixtureID == fixture.fixtureID, r.engine == fixture.engine,
+              r.scenario == fixture.scenario,
               r.createdAt == fixture.createdAt, r.sourceSHA == fixture.sourceSHA,
               r.runID == fixture.runID, r.runAttempt == fixture.runAttempt,
               r.accountID.utf8.elementsEqual(fixture.accountID.utf8),

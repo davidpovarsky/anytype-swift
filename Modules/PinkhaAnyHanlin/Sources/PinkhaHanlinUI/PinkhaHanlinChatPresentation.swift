@@ -142,6 +142,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         guard saveAcceptanceDriver.matches(fixture: fixture, session: session) else { throw HanlinHostError.staleContext }
         return true
     }
+    var saveMessageAcceptanceRequiresReconciliation: Bool { requiresReconciliation }
     /// A mounted Heart preparation may await an original native read before
     /// installing the controlled model transport. This grants no capability.
     public func holdSaveMessageAcceptancePreparation() throws {
@@ -492,6 +493,9 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                 try self.validateInstallation(for: self.session)
                 if result?.requiresReconciliation == true { self.receiptState.requireReconciliation() }
                 if self.requiresReconciliation { self.errorMessage = PinkhaHanlinStrings.uncertain }
+                #if DEBUG && targetEnvironment(simulator)
+                self.saveAcceptanceDriver?.stopJoined(messageID: self.currentSaveMessageID, cancellation: result)
+                #endif
             } catch {
                 await consumer?.value
                 guard !self.closed, self.currentRunID == runID else { return }
@@ -499,6 +503,9 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                 // restore permission to retry the operation in this conversation.
                 self.receiptState.requireReconciliation()
                 self.errorMessage = PinkhaHanlinStrings.uncertain
+                #if DEBUG && targetEnvironment(simulator)
+                self.saveAcceptanceDriver?.stopFailed()
+                #endif
             }
             guard !self.closed, self.currentRunID == runID else { return }
             if let answerID { self.activities[answerID]?.finish(status: .cancelled) }
@@ -509,6 +516,11 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
             self.currentRunID = nil
             self.currentSaveMessageID = nil
         }
+        #if DEBUG && targetEnvironment(simulator)
+        // Observe only after the real Stop task is retained, so an acceptance
+        // failure can synchronously close and still join this same task.
+        saveAcceptanceDriver?.stopRequested(messageID: currentSaveMessageID)
+        #endif
     }
 
     private func receive(_ event: HanlinHostResultEvent) {

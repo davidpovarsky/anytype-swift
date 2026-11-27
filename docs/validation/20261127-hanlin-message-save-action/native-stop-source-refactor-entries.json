@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "status": "ROOT_REVIEW_REQUIRED_SOURCE_ONLY_NO_MAP_MUTATION",
+  "sourceBase": "eee40593bf2088fbf6168106f9d2c49248d3ce1f",
+  "map": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+  "instruction": "Root must review these exact shared-source replacements in its current map, preserving every original baseline, owner replacement, reason, kind and other shared source. This file is a handoff, not a successful source-retention gate.",
+  "changes": [
+    {
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageRunner.swift",
+      "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageRunner.swift",
+      "kind": "refactor",
+      "baselineBlob": "8ff879e4cf8ef04cb367be3b801829a047bebc80",
+      "sharedSource": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreateRunner.swift",
+      "sourceBaseBlob": "12bdd93bc89c430e7c660b70e15b8e0749481944",
+      "reviewedCandidateBlob": "ead38c85fc62b4dd61a24c428d66c26118ae36b9",
+      "scope": "DEBUG simulator observation of the actual original Job entry, appended drain waiter and finished native worker; no authority or receipt replacement. Release conditional text projection unchanged."
+    },
+    {
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
+      "kind": "refactor",
+      "baselineBlob": "810af73f1ecf45b3ea40827aa7549b12f7f3d1bc",
+      "sharedSource": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift",
+      "sourceBaseBlob": "11cfab1994884d40b8a6cc0a21a6e9bb2538e17d",
+      "reviewedCandidateBlob": "0e27ed6a0696db35f95c30ad8249b9fa6730985e",
+      "scope": "DEBUG simulator passive notifications for the real retained Stop task, original SDK cancellation plus consumer join, and failure; one internal read-only reconciliation getter. Production policy and original Stop order unchanged."
+    }
+  ],
+  "otherOriginalMapAnchors": "Retain unchanged. The Ledger and the new diagnostic/helper/test sources have no import/refactor entry in the inspected original map; root must run the current complete source-retention gate after actual merge.",
+  "inspectedMapSource": "be2b08abd891c52b398bf7afcc98713614fd1023"
+}
