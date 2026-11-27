@@ -1,0 +1,452 @@
+{
+  "MacOperations": 0,
+  "authorizedRootReadReceipt": "original-cache-archive-read-root.json",
+  "closedController": {
+    "candidateSHA256": "ff2d7fac35e17110aef47815e8c0f6524df9e612a9f24f55b791a51df993895c",
+    "everyOriginalByteReconstructed": true,
+    "literalInverseEdits": 8,
+    "nativeAdapterPresent": false,
+    "originalFinallyByteIdentical": true,
+    "originalSHA256": "2e57294dc7a00d4302a9dd5f316b2419e75d6a08a4f55b47451d6c822335ec44",
+    "runtimeGateUnconditionalBeforeCloneOrSimulator": true,
+    "stageOnlyTwoSelectorBudgetDelegation": true,
+    "unchangedFunctions": [
+      "exact_enumeration",
+      "freeze_helpers",
+      "host_validation_module",
+      "invocation_selectors",
+      "load_helpers",
+      "observe_owned_groups",
+      "result_selection",
+      "scoped_descriptor"
+    ],
+    "unchangedMethods": [
+      "__init__",
+      "appearance",
+      "command",
+      "container",
+      "create",
+      "freshness",
+      "installed",
+      "native_ui",
+      "pending",
+      "preserve",
+      "read_private",
+      "wave"
+    ]
+  },
+  "commits": [
+    "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+    "28bb60e4d4403251b1fde909ccfa1c84aa3966ba",
+    "d3530ad924aa76a95d642a1e756c4c2fa94b5f97"
+  ],
+  "engineOrUIEdits": 0,
+  "findings": [
+    {
+      "correction": "Retain every original prefix and unknown source field. Add an explicit original-source-bound cache/projection validation before excluding this derived key from unchanged-field comparison. Do not simply ignore the seal. Preserve raw canonical bytes, original binding generation/key, exact original protobuf JSON encoding, and account for smartblock post-seal null/attached-property presentation when reproducing the original proof. Propagate the corrected native source SHA through closed profile/controller and future compiler admission.",
+      "correctionOwner": "Wave2 native G02 source owner; root controls integration",
+      "field": "_pinkhaTorahCacheIntegrity",
+      "id": "G02-CACHE-INTEGRITY",
+      "nativeSealMember": {
+        "bytes": 3529,
+        "path": "heart/core/pinkha/torahindex/recovery_cache.go",
+        "sha256": "325fb4f2b2abcbaa9afdc5bd32dd42f1c95b8fa524641d624bed9c309fe13352"
+      },
+      "reason": "Original 8ac cacheProof covers changed canonical raw input and every derived projection output. The original LocalDetails/project/CopyOnlyKeys/smartblock path exposes the newly sealed value, but current stableFields comparison does not exclude or verify it as a changed derived field.",
+      "severity": "BLOCKS_NATIVE_POSTFLIGHT",
+      "source": "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift",
+      "symbol": "G02WritingPropertiesReadback.compare(_:_:unlink:)"
+    }
+  ],
+  "nativeCalls": 0,
+  "nativeMembersVerified": [
+    {
+      "bytes": 9013,
+      "path": "heart/core/pinkha/torah/projection.go",
+      "sha256": "4bc54b70a75d4c1dc5ae87cc85271d7304ee4f64216ce14150ed2bba3685e679"
+    },
+    {
+      "bytes": 1526,
+      "path": "heart/core/pinkha/torah/properties.go",
+      "sha256": "5985c43c4da7ef2baaabe6f0ee3e9606c0ee2b1af87563f2b2af4b9535a8a5d0"
+    },
+    {
+      "bytes": 1136,
+      "path": "heart/core/block/editor/smartblock/pinkha_torah.go",
+      "sha256": "32ee6f74b5fe63c8e2c5bb612d32ce532f8caf1c3059338cf97373d20db43174"
+    },
+    {
+      "bytes": 1360,
+      "path": "heart/core/block/detailservice/pinkha_torah.go",
+      "sha256": "d39dd006cb20dcbdd91a851a96faf82a42e277b80d0f190a4a7e532831a4768e"
+    },
+    {
+      "bytes": 1128,
+      "path": "heart/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go",
+      "sha256": "0c9bee77ecbc524a73311fc36431a64bdbc35d757db829b4df1a50813b002c02"
+    },
+    {
+      "bytes": 18430,
+      "path": "heart/core/pinkha/torahindex/index.go",
+      "sha256": "9873f508c27021157c17b28b04ee6f18c74a0cf1bea7028e355696f31c42f929"
+    },
+    {
+      "bytes": 3529,
+      "path": "heart/core/pinkha/torahindex/recovery_cache.go",
+      "sha256": "325fb4f2b2abcbaa9afdc5bd32dd42f1c95b8fa524641d624bed9c309fe13352"
+    }
+  ],
+  "originalNativeArchive": {
+    "archive": "/mnt/development/projects/evidence/native-d-final-20261125/native-permission-20261126/native-source-8ac407e75a4b.tar.gz",
+    "archiveBytes": 26130845,
+    "archiveSHA256": "c70592e4ae160cbb5cb8eda3cb1caed08f727476a5c9fac7c207593cd9315830"
+  },
+  "portableEvidenceReused": [
+    {
+      "bytes": 1116,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "observedSyntheticMethods": 2,
+      "path": "docs/validation/20261127-wave2-g02-closed-control/closed-consumer-portable-attempt1.json",
+      "rerun": false,
+      "sha256": "9982a51299e67b56f8096d778617c052408a9f3f17fe86a28e258ee5dd0f6d89"
+    },
+    {
+      "bytes": 1116,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "observedSyntheticMethods": 4,
+      "path": "docs/validation/20261127-wave2-g02-closed-control/ui-receipts-portable-attempt1.json",
+      "rerun": false,
+      "sha256": "debbeee1374045d7152962d7caccf8750f80ca75c1d86278706651e49c0ce346"
+    }
+  ],
+  "prefixInverses": [
+    {
+      "baseCommit": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "candidateBytes": 113975,
+      "candidateSHA256": "bd9888153f469583531951b4dcc74d64aed275de1e2142fc1cdda61d3fb1770a",
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "exactOriginalPrefixPreserved": true,
+      "name": "native",
+      "originalBytes": 84286,
+      "originalSHA256": "7ec7ef47c53c02e61b0cccb05ab7f4f58b3824368d84883aadee6767ff24ab85",
+      "path": "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift",
+      "sourceInverse": {
+        "bytes": 947,
+        "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+        "path": "docs/validation/20261127-wave2-g02-native-readback/source-inverse.json",
+        "sha256": "f7fabb7eacc4fb4ac1a928768170e32b91c13369717a124b568dab57446d3eb5"
+      },
+      "suffixBytes": 29689,
+      "suffixSHA256": "0f8623ee17de978b5c9994e0df63880755c879434f19ba90b07b1c238564b62a"
+    },
+    {
+      "baseCommit": "4c3f2f24771e13a366fc4915152c5fedfc7c21e3",
+      "candidateBytes": 78853,
+      "candidateSHA256": "d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3",
+      "commit": "28bb60e4d4403251b1fde909ccfa1c84aa3966ba",
+      "exactOriginalPrefixPreserved": true,
+      "name": "ui",
+      "originalBytes": 43356,
+      "originalSHA256": "e56a5f6839c9426bb0e70b274a3eaafbc3f850bc6343355bed92538723a28bb9",
+      "path": "PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift",
+      "sourceInverse": {
+        "bytes": 1952,
+        "commit": "28bb60e4d4403251b1fde909ccfa1c84aa3966ba",
+        "path": "docs/validation/20261127-wave2-torah-word-unlink-ui/source-inverse.json",
+        "sha256": "044e5e138f392b8e65207f3c114a8ef38a0529ee9b4efc3a5af1c76b87ab73b6"
+      },
+      "suffixBytes": 35497,
+      "suffixSHA256": "fe889e034c5ffe1a3b30e06b4915cbbc7381a8517fa4471d1dd8a3e7570c09e9"
+    }
+  ],
+  "readPermissionFailurePreserved": "original-cache-archive-read.json",
+  "remaining": [
+    "Correct and independently review the native cache integrity comparison",
+    "Publish and review the exact native phase adapter",
+    "Qualify future shared App/UI products and selected actual native/UI compiler inputs",
+    "Run original preparation, UI seed, native baseline, UI unlink/cold reopen, native postflight once under root ownership",
+    "Review retained screenshots/AX and real xcresult/native receipts; source-only scope is not complete Properties/T5 or physical-device acceptance"
+  ],
+  "reviewer": "/root/miniapps_otzaria",
+  "runtimeReady": false,
+  "schema": "pinkha-wave3-independent-g02-source-review-v1",
+  "sourceFilesVerified": 39,
+  "sourceIndex": [
+    {
+      "blob": "44e1bd7da863e537ba1c9b4a95571d39f71f7a8a",
+      "bytes": 113975,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift",
+      "sha256": "bd9888153f469583531951b4dcc74d64aed275de1e2142fc1cdda61d3fb1770a"
+    },
+    {
+      "blob": "24135b5070aaceec764e245a033c4b14bd58d059",
+      "bytes": 84286,
+      "commit": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift",
+      "sha256": "7ec7ef47c53c02e61b0cccb05ab7f4f58b3824368d84883aadee6767ff24ab85"
+    },
+    {
+      "blob": "38d8cb7a3c8891bd486bb179c3997acc61d514dc",
+      "bytes": 9587,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/README.md",
+      "sha256": "9b904603c244a9298f2852e769dc4088eb0924bdeaeb9db7ec32d0396a182c81"
+    },
+    {
+      "blob": "7b3d6cd85cd0bd377334e9db42522bdcbb4970c7",
+      "bytes": 947,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/source-inverse.json",
+      "sha256": "f7fabb7eacc4fb4ac1a928768170e32b91c13369717a124b568dab57446d3eb5"
+    },
+    {
+      "blob": "91d4924fcd0a845765de5353ba856840140fd06f",
+      "bytes": 4298,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/root-native-readback-source-review.json",
+      "sha256": "cb457ae7d62ff968f5e174d2e8356a180aa6bde52701b83e9a1954a2495ebdae"
+    },
+    {
+      "blob": "ab9e6de3a676143dcfb55f46130bd935775cb879",
+      "bytes": 1364,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/source-handoff.json",
+      "sha256": "ca6449cff7b3d1aadbf0b29af90192d6aeabc7df0720bbc6cb414b4d1d751838"
+    },
+    {
+      "blob": "0cc8fc6b9152c34963dd327c559e2c290a5e1905",
+      "bytes": 942,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/source-call-audit.json",
+      "sha256": "9dc3e24ff9431bb482cb92208e48b4b361dcae50931f02ef58f8d85dc73295c8"
+    },
+    {
+      "blob": "e2b0c2a75c5acf204f6c36990aa23be05e2d0d78",
+      "bytes": 822,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/swift-syntax-attempt2.json",
+      "sha256": "933c76134c6a9e07a07433ef15b3cfcf1bb311537d3c9d8fa7a5036d80c5830e"
+    },
+    {
+      "blob": "a11cbeb6e19d1ba3ab02478575e4f3881665b1c5",
+      "bytes": 78853,
+      "commit": "28bb60e4d4403251b1fde909ccfa1c84aa3966ba",
+      "path": "PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift",
+      "sha256": "d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3"
+    },
+    {
+      "blob": "ba1c971fc89ccd2c46831c051294e33befcaad83",
+      "bytes": 43356,
+      "commit": "4c3f2f24771e13a366fc4915152c5fedfc7c21e3",
+      "path": "PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift",
+      "sha256": "e56a5f6839c9426bb0e70b274a3eaafbc3f850bc6343355bed92538723a28bb9"
+    },
+    {
+      "blob": "440d568c855b588c3f632d65131bf00f184fd94e",
+      "bytes": 10236,
+      "commit": "28bb60e4d4403251b1fde909ccfa1c84aa3966ba",
+      "path": "docs/validation/20261127-wave2-torah-word-unlink-ui/README.md",
+      "sha256": "cbba9bb7b4a1787198c894f43c33662422fe58a3029d3d9861f7058b9ab42583"
+    },
+    {
+      "blob": "158df6d4c1258d261f73c52c73bc60e27d26e34f",
+      "bytes": 1952,
+      "commit": "28bb60e4d4403251b1fde909ccfa1c84aa3966ba",
+      "path": "docs/validation/20261127-wave2-torah-word-unlink-ui/source-inverse.json",
+      "sha256": "044e5e138f392b8e65207f3c114a8ef38a0529ee9b4efc3a5af1c76b87ab73b6"
+    },
+    {
+      "blob": "4b9956e03e54a19b65093eee6ad089f398ab71d9",
+      "bytes": 1861,
+      "commit": "28bb60e4d4403251b1fde909ccfa1c84aa3966ba",
+      "path": "docs/validation/20261127-wave2-torah-word-unlink-ui/interfaces-source-review.json",
+      "sha256": "03f985608830eb4cfc4de9ef3e757c474a1b0823bf804e1385afbd4741c19c79"
+    },
+    {
+      "blob": "cbc369dbe944d710c60b2460f0d5532426c972d3",
+      "bytes": 1968,
+      "commit": "28bb60e4d4403251b1fde909ccfa1c84aa3966ba",
+      "path": "docs/validation/20261127-wave2-torah-word-unlink-ui/native-readback-interface.json",
+      "sha256": "7f58e4b89e1d25320f45e647ca269fae6326a0fb75bb8988f6406765c67f049a"
+    },
+    {
+      "blob": "577724e4811bb094045661298297cdfdcecd57ed",
+      "bytes": 706,
+      "commit": "28bb60e4d4403251b1fde909ccfa1c84aa3966ba",
+      "path": "docs/validation/20261127-wave2-torah-word-unlink-ui/swift-syntax-attempt2.json",
+      "sha256": "56774de9681582306d0087cde8708a03ab13b7ffa21d60a3487340b696994b3d"
+    },
+    {
+      "blob": "e11f7273be9e862f035ad9ecde49bcceca1a7ecf",
+      "bytes": 1647,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/g02/g02-closed-profile.json",
+      "sha256": "133b47238d9fd6c3fbdcfa778d6e936defdb5c5a1da2b0539685dd3d294a6805"
+    },
+    {
+      "blob": "e1ddb337413f2a9e6ac825d35aba96e2f40dd229",
+      "bytes": 25148,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/g02/g02_ui_receipts.py",
+      "sha256": "a357c7b35c5a273d4e92c7ee9d7316c22074693d04b5145ef522072a2cfd7091"
+    },
+    {
+      "blob": "54e474d22733f47d226ae5f0d948e145ad790098",
+      "bytes": 13778,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/g02/g02_word_consumer.py",
+      "sha256": "374255c2301c2554585f0146ea921c0e3eab4d6b6f70de3b3dc2c9ce83785eef"
+    },
+    {
+      "blob": "e46d8b4ac3a222490869fd186bb91e61c9f4f002",
+      "bytes": 7163,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/g02/materialize_g02_control.py",
+      "sha256": "ecda51967413173c54e80771f1daf38ad820d0804766165c63f7f8ae18f9e182"
+    },
+    {
+      "blob": "c9a88b9fee8bd8a07b97168713bf8eb8b7c6c3c6",
+      "bytes": 9959,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "docs/validation/20261127-wave2-g02-closed-control/README.md",
+      "sha256": "a68f021d6da34d41a3b75453562b01bdccc44092faefe00a4051765b861e815f"
+    },
+    {
+      "blob": "cad3cdb24901463af8c0ebf3dff8bd9280a451a3",
+      "bytes": 3600,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "docs/validation/20261127-wave2-g02-closed-control/source-handoff.json",
+      "sha256": "4eff4394f066914b3f3657cbe9cace28d161e4459fee25b984563ca43886bdb1"
+    },
+    {
+      "blob": "97d8ae56c082a1e7440129fb36fcb08612e369c3",
+      "bytes": 2983,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "docs/validation/20261127-wave2-g02-closed-control/root-closed-controller-review.json",
+      "sha256": "6a25c304d3ce302d8a8252ddbc43d043f64ed7eb13f2c9310c31c8bd21da9fd8"
+    },
+    {
+      "blob": "cf245a813c39fd92b2705512241124758827a207",
+      "bytes": 1568,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "docs/validation/20261127-wave2-g02-closed-control/interfaces-ui-collector-review.json",
+      "sha256": "8074b72b7ff2f6b803e03c2bd6fe024730019453beee7098257aa14ce23aa478"
+    },
+    {
+      "blob": "9c060991bb7445d5c35fed3ba656612dafef8bdc",
+      "bytes": 1777,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "docs/validation/20261127-wave2-g02-closed-control/native-ui-interface-review.json",
+      "sha256": "433b9c63897e6db2587e9631f80d71c4f17e42a105ce7ac0aa33939e3a7dca93"
+    },
+    {
+      "blob": "c4a52f8eb9795acc62d5b30f66894e292adf6977",
+      "bytes": 1116,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "docs/validation/20261127-wave2-g02-closed-control/closed-consumer-portable-attempt1.json",
+      "sha256": "9982a51299e67b56f8096d778617c052408a9f3f17fe86a28e258ee5dd0f6d89"
+    },
+    {
+      "blob": "bd0ca7454e76617fdf4d26f9942bb1482070b955",
+      "bytes": 1116,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "docs/validation/20261127-wave2-g02-closed-control/ui-receipts-portable-attempt1.json",
+      "sha256": "debbeee1374045d7152962d7caccf8750f80ca75c1d86278706651e49c0ce346"
+    },
+    {
+      "blob": "d4dbc76dcf877eeab51855744ef9e07abe65c5fd",
+      "bytes": 1699,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "docs/validation/20261127-wave2-g02-closed-control/materialization-attempt1.json",
+      "sha256": "2585a2283f02d2e1ffc5b6c3e202145cf2751ec41ff35b116a6ef271bf033fd7"
+    },
+    {
+      "blob": "0d684dad2bab1d00095c42fc172e1a6255a7ba9e",
+      "bytes": 51491,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "docs/validation/20261127-wave2-g02-closed-control/original-f-host.py",
+      "sha256": "2e57294dc7a00d4302a9dd5f316b2419e75d6a08a4f55b47451d6c822335ec44"
+    },
+    {
+      "blob": "b0ad3230b7a49c90ac8381cc81ab6b10e60072bb",
+      "bytes": 52006,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "docs/validation/20261127-wave2-g02-closed-control/closed-f-host.py",
+      "sha256": "ff2d7fac35e17110aef47815e8c0f6524df9e612a9f24f55b791a51df993895c"
+    },
+    {
+      "blob": "56acdf485de26a54e3d4df6d13196f10f0dedf80",
+      "bytes": 2701,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "docs/validation/20261127-wave2-g02-closed-control/control-tests/test_g02_closed_consumer.py",
+      "sha256": "cecf2b916fb7793f26a1fc31c62fef4d82c08542aa469172b35456a4b1fcc9c9"
+    },
+    {
+      "blob": "b0d4d1afb5090abc11c972550b74095027f2ac2e",
+      "bytes": 13340,
+      "commit": "d3530ad924aa76a95d642a1e756c4c2fa94b5f97",
+      "path": "docs/validation/20261127-wave2-g02-closed-control/control-tests/test_g02_ui_receipts.py",
+      "sha256": "43c481152b16b34cd351ad2a41680b1c912413c5d8b2241b3005fbd669b5ec0f"
+    },
+    {
+      "blob": "fa4bff08b6adb2f416b17d65191f020bf1b18bde",
+      "bytes": 1061,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/native8ac/custody.json",
+      "sha256": "941d6c4f3f91e67d787af8d18684dcef43cf630974ffaad5412d356ec5f6b4b7"
+    },
+    {
+      "blob": "021fd90d601a7e7b9f07276b79b9d44c4a390297",
+      "bytes": 9013,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/native8ac/heart/core/pinkha/torah/projection.go",
+      "sha256": "4bc54b70a75d4c1dc5ae87cc85271d7304ee4f64216ce14150ed2bba3685e679"
+    },
+    {
+      "blob": "bdb0b7d0d62bc91e1c48895f4cd29ee5ee3f3a5f",
+      "bytes": 1526,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/native8ac/heart/core/pinkha/torah/properties.go",
+      "sha256": "5985c43c4da7ef2baaabe6f0ee3e9606c0ee2b1af87563f2b2af4b9535a8a5d0"
+    },
+    {
+      "blob": "4530bdcae1d0804d5cbc9733acb9f1323ae99cd5",
+      "bytes": 1727,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/native8ac/heart/core/block/editor/smartblock/pinkha_torah.go.base64.json",
+      "sha256": "9462137c81bd1c97e00ac08458861fe4ab764e7b8c1e173bdcaa41569d91724d"
+    },
+    {
+      "blob": "b3e7398c92498b73e6c0b16f517aebabc3b448ec",
+      "bytes": 1360,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/native8ac/heart/core/block/detailservice/pinkha_torah.go",
+      "sha256": "d39dd006cb20dcbdd91a851a96faf82a42e277b80d0f190a4a7e532831a4768e"
+    },
+    {
+      "blob": "2a357362af9b0c2cd6959042496a4186e34e0f04",
+      "bytes": 1128,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/native8ac/heart/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go",
+      "sha256": "0c9bee77ecbc524a73311fc36431a64bdbc35d757db829b4df1a50813b002c02"
+    },
+    {
+      "blob": "f25bd9f46f26ed14a03ac703e03a1b3a4b5b198b",
+      "bytes": 18430,
+      "commit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+      "path": "docs/validation/20261127-wave2-g02-native-readback/native8ac/heart/core/pinkha/torahindex/index.go",
+      "sha256": "9873f508c27021157c17b28b04ee6f18c74a0cf1bea7028e355696f31c42f929"
+    },
+    {
+      "blob": "60a9fb51183b553e56b2ed81f8bf89c5017aa9a1",
+      "bytes": 15844,
+      "commit": "28bb60e4d4403251b1fde909ccfa1c84aa3966ba",
+      "path": "docs/validation/20261127-wave2-torah-word-unlink-ui/source-references.json",
+      "sha256": "9e4662283aad8de4f0898590cf0b26d41da26c0c6e03283d164ee9e62814cc1d"
+    }
+  ],
+  "status": "BLOCKED_NATIVE_POSTFLIGHT_CACHE_INTEGRITY_INVARIANT_SOURCE_ONLY",
+  "swiftCompilerInvocations": 0,
+  "testsExecutedByReviewer": 0
+}

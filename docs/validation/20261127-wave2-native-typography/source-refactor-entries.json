@@ -1,0 +1,29 @@
+[
+  {
+    "baselineBlob": "aac4d8b633a14396a63f114f208fb1649757388b",
+    "from": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+    "kind": "refactor",
+    "reason": "Retain the separately reviewed Add block submenu and route native paragraph/heading/code font rendering through the original DesignKit catalog; preserve original body semibold, registered code faces, Dynamic Type, row type/category invalidation and existing marked-text deferral. Native text/style and contracts are unchanged.",
+    "replacementBlob": "29407373ed3ed0fe6e36ecc6365db0d6918b702d",
+    "sharedSources": [
+      {
+        "gitBlob": "6dc477e504f0b19441b4e28417b7a3783e1a9984",
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextBlockKind.swift"
+      },
+      {
+        "gitBlob": "83104ffda90a9287d347d845351505330cdb3e4b",
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeBlockCreationMenu.swift"
+      },
+      {
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextTypography.swift",
+        "gitBlob": "ae8dd9397659ea31bd62c7cbd629ef962f4d2d9d"
+      }
+    ],
+    "to": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+    "validation": [
+      "Exact source inverse in docs/validation/20261127-wave2-native-typography/editor-source-inverse.json restores separately published dc582 creation editor bytes 26a3876c.",
+      "Original DesignKit font APIs and actual MarkStyleModifier source are pinned in source-references.json; two UIKit methods are prepared but NOT_RUN.",
+      "No Apple compilation, UIKit execution, live trait-category refresh, visual or physical-device acceptance is claimed. Current shared8f2 source stays untouched."
+    ]
+  }
+]

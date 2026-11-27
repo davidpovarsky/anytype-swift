@@ -1,0 +1,453 @@
+{
+  "schema": "pinkha-wave3-independent-typography-source-review-v1",
+  "reviewer": "/root/miniapps_otzaria",
+  "reviewedAtUTC": "2026-11-27T05:11:31.340913+00:00",
+  "status": "NO_CONCRETE_SOURCE_BLOCKER_APPLE_AND_VISUAL_ACCEPTANCE_NOT_RUN",
+  "sourceCommit": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+  "sourceTree": "79eb9ea557a7f3f89ef778bd9ff9be723b8d060f",
+  "parentCommit": "dc582ba3239d6dcb66dbe1f7098b95349e4289f9",
+  "sourceProofSHA256": "447e8548c3760226b32b8b72a8ad31e3547e1d5b5d3f9fb9b48dc3d5703ab0d8",
+  "reusedWave2IndependentReviewSHA256": "1beae4206dedac74dd7a3855e1d96c5a8dec6070c45ee974053eda0973c1194e",
+  "changedFiles": [
+    {
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "status": "modified",
+      "gitBlob": "166d1db172057b25f82c4a67ddcac595cca43a59"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "status": "modified",
+      "gitBlob": "29407373ed3ed0fe6e36ecc6365db0d6918b702d"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextTypography.swift",
+      "status": "added",
+      "gitBlob": "ae8dd9397659ea31bd62c7cbd629ef962f4d2d9d"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextTypographyTests.swift",
+      "status": "added",
+      "gitBlob": "95f8db719f53dfa503d07bc998d8c9fa7a28cd06"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-native-typography/README.md",
+      "status": "added",
+      "gitBlob": "7e3d9d9ddca5a1e34a04eeeedeaf79f344e24f6a"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-native-typography/binary-evidence-index.json",
+      "status": "added",
+      "gitBlob": "c1c2802856532e1baa6809cb3a46657ffdeb19d5"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-native-typography/editor-source-inverse.json",
+      "status": "added",
+      "gitBlob": "f95489b6bf029bc59faa6324cff7cde88cb0161e"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-native-typography/editor-source.diff.gz",
+      "status": "added",
+      "gitBlob": "b7d75be644fd74f261302f35c36e007c11eb258f"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-native-typography/hanlin-present-preimage.json",
+      "status": "added",
+      "gitBlob": "7e77069026bcc51f9afe7a0b9f85bc9b7e65d678"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-native-typography/package-source.diff.gz",
+      "status": "added",
+      "gitBlob": "46d93bd188e0f27a9bc9d89bc9d16506dcf4462e"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-native-typography/root-source-review.json",
+      "status": "added",
+      "gitBlob": "8c901d236d949f9a49403b830513f608e301fd45"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-native-typography/source-proof.json",
+      "status": "added",
+      "gitBlob": "6380ec0b1135d3e80592263c6dea89546e6617bb"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-native-typography/source-refactor-entries.json",
+      "status": "added",
+      "gitBlob": "4ad48231cc22485aa03a5fece6008cf1ccd26a6e"
+    },
+    {
+      "path": "docs/validation/20261127-wave2-native-typography/source-references.json",
+      "status": "added",
+      "gitBlob": "492481714c87004e60eca5f6c8dffb4d41531250"
+    }
+  ],
+  "sourceAndOriginalReferenceFiles": [
+    {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "bytes": 2051,
+      "sha256": "298ef94254c6d8f17a389a5ff0efd02a5c03099e9a819b50886a5d9e8b3d9854",
+      "gitBlob": "166d1db172057b25f82c4a67ddcac595cca43a59"
+    },
+    {
+      "ref": "dc582ba3239d6dcb66dbe1f7098b95349e4289f9",
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "bytes": 1811,
+      "sha256": "cbd4abe9034c222c6049f0a2f706d1679f65592d6cc2e66f57cd1828d9389b70",
+      "gitBlob": "d7457e7e0508e0f077d1ff76dc274dc3a3f6c0df"
+    },
+    {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "bytes": 61122,
+      "sha256": "4b7a6feaa4557a63183789549ae9fe498ef2d988f0b7516f39947891a3c1dd3a",
+      "gitBlob": "29407373ed3ed0fe6e36ecc6365db0d6918b702d"
+    },
+    {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextTypography.swift",
+      "bytes": 3241,
+      "sha256": "5e14d63f52575461d43de7494b379ffd969194d89dbfb415ce75a51344a5d4d7",
+      "gitBlob": "ae8dd9397659ea31bd62c7cbd629ef962f4d2d9d"
+    },
+    {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextTypographyTests.swift",
+      "bytes": 8257,
+      "sha256": "fde5f3bd8da14f0f3e6502d60cacdf3304ea78aba9c41b35ca73317995cdff07",
+      "gitBlob": "95f8db719f53dfa503d07bc998d8c9fa7a28cd06"
+    },
+    {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "docs/validation/20261127-wave2-native-typography/README.md",
+      "bytes": 4558,
+      "sha256": "b7d79254dba84f2954007a4db7cb981d9a454cc6a7bd1caae8a94d843add53dd",
+      "gitBlob": "7e3d9d9ddca5a1e34a04eeeedeaf79f344e24f6a"
+    },
+    {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "docs/validation/20261127-wave2-native-typography/source-proof.json",
+      "bytes": 2893,
+      "sha256": "447e8548c3760226b32b8b72a8ad31e3547e1d5b5d3f9fb9b48dc3d5703ab0d8",
+      "gitBlob": "6380ec0b1135d3e80592263c6dea89546e6617bb"
+    },
+    {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "docs/validation/20261127-wave2-native-typography/root-source-review.json",
+      "bytes": 3365,
+      "sha256": "1beae4206dedac74dd7a3855e1d96c5a8dec6070c45ee974053eda0973c1194e",
+      "gitBlob": "8c901d236d949f9a49403b830513f608e301fd45"
+    },
+    {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "docs/validation/20261127-wave2-native-typography/editor-source-inverse.json",
+      "bytes": 4877,
+      "sha256": "1afd3086821d10a73536716bfd6f3807addf39deac63518ed761076cccc090f5",
+      "gitBlob": "f95489b6bf029bc59faa6324cff7cde88cb0161e"
+    },
+    {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "docs/validation/20261127-wave2-native-typography/hanlin-present-preimage.json",
+      "bytes": 2083,
+      "sha256": "00cea2dc29c4a1fb595626f686d1cb49c21655d252c4693f60a8e21491899ceb",
+      "gitBlob": "7e77069026bcc51f9afe7a0b9f85bc9b7e65d678"
+    },
+    {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "docs/validation/20261127-wave2-native-typography/source-refactor-entries.json",
+      "bytes": 1724,
+      "sha256": "0b8e214801f9420c2e84c78d01dbd8116afabfa0d850e80581b1513b904f24ac",
+      "gitBlob": "4ad48231cc22485aa03a5fece6008cf1ccd26a6e"
+    },
+    {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "docs/validation/20261127-wave2-native-typography/source-references.json",
+      "bytes": 4682,
+      "sha256": "5d2a240829cf7445c2ddb82a46101e5621bda1cf7bd45d2c9e5305a1ea6a18f9",
+      "gitBlob": "492481714c87004e60eca5f6c8dffb4d41531250"
+    },
+    {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "docs/validation/20261127-wave2-native-typography/binary-evidence-index.json",
+      "bytes": 974,
+      "sha256": "569e0dbe3af7c1c0ed0cfcf28283ba511bd87b2d169818d6cae931e4d353ff01",
+      "gitBlob": "c1c2802856532e1baa6809cb3a46657ffdeb19d5"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Modules/DesignKit/Sources/DesignKit/Fonts/Config/AnytypeFont.swift",
+      "bytes": 1250,
+      "sha256": "3c7ad1110c848283efc22377603da23a7fb2be011afde31543e26c64674ec6fe",
+      "gitBlob": "731b8fb2d716f4dc59bac2076abbabe9e32bdd96"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Modules/DesignKit/Sources/DesignKit/Fonts/Config/AnytypeFontConfig.swift",
+      "bytes": 10469,
+      "sha256": "70c67569888bc1cb5b89ecbd499e0b86077ea115bf2877d58c07a2384ddd8f27",
+      "gitBlob": "f2ce15f2138fd5683b38f31684448a0f170e6695"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift",
+      "bytes": 24130,
+      "sha256": "1c5794560e4323e2bb9424018bd485432e75530239a9304f714bfcc2fa67a31c",
+      "gitBlob": "69fba4c0e3c08a5a5648daeda094ddbd53f41de3"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Code/CodeBlockContentConfiguration.swift",
+      "bytes": 688,
+      "sha256": "e81abdba64ea8e1c02663a91826b1fb190a3af7be7b364fd4b8d77ab928c17b4",
+      "gitBlob": "11bc8ade9ab1beda60d6f198d1f443eefeb2c4fa"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Code/CodeBlockView.swift",
+      "bytes": 4920,
+      "sha256": "cfe7619392807980e945e4b4502288c7380b9430022ffb036fddb407e330d53f",
+      "gitBlob": "b2985fb47ef83401f20fce8812057d2c88149ce5"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Anytype/Sources/PresentationLayer/Common/TYPOGRAPHY_MAPPING.md",
+      "bytes": 9557,
+      "sha256": "a97b0b9808372972af684d0ede30e8de640092bc39f90df11fe6dcecbe0581f5",
+      "gitBlob": "f9b9505722e736a174a240667dd07aaffdf709cd"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Modules/DesignKit/Sources/DesignKit/Fonts/Config/UIKitFont.swift",
+      "bytes": 5570,
+      "sha256": "0bbb1e74fffa9360df76921f91c68b6aa3c502b8374bcd1a10349b92b37ddb67",
+      "gitBlob": "3eb7f0c8e948d0345c0b641ea12b1a674886078b"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Modules/DesignKit/Package.swift",
+      "bytes": 1265,
+      "sha256": "bea8e98b1f3020316c8d8e296812ff333f19a4a0aa6ce3063790e94ac0cbbb1c",
+      "gitBlob": "9665bb9200e11fc6b66acdd1724f3ff5acd8e74b"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Modules/DesignKit/Sources/DesignKit/Fonts/Generated/Fonts.swift",
+      "bytes": 6900,
+      "sha256": "14a5b94f5ca6df53aaefc5daba480941045cb86e609d809df90fb9df46027b4b",
+      "gitBlob": "808d8ce9b20c14520347717a01ff82eea219ceda"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Anytype/Sources/Design system/TextComponents/TextContent+Font.swift",
+      "bytes": 611,
+      "sha256": "b001239ea8113c96a0a315af1647c511f51fc4b76cfe67372237199b4fe02d58",
+      "gitBlob": "3b0e41a9d4be46511c09787218d612db2900d31d"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Anytype/Sources/Design system/TextComponents/Markup/MarkStyleModifier.swift",
+      "bytes": 9890,
+      "sha256": "ed51ecbcb58e04e132de82c3054fa40aab40e1795c652a607ab68a829f60db07",
+      "gitBlob": "6d363b547782c1efd576595848b83021300fd624"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Anytype/Sources/Design system/TextComponents/Markup/MarkupState/NSAttributedString+Markup.swift",
+      "bytes": 3005,
+      "sha256": "bd7248636f9a8fa4270176157de2df8a48dc1bfac0aec86bae0fde5b024e16dc",
+      "gitBlob": "147dd4ab2ca2d3c2053eaf823190c9313b16e992"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Anytype/Sources/Design system/TextComponents/UIKitAnytypeText.swift",
+      "bytes": 3142,
+      "sha256": "3a5a13d915c94139974dfe5a0a8373ddc59e5b3572287eadbfb96e4f3f99c987",
+      "gitBlob": "6f4500fcbf0acd6a9194bd885d6872b4a9d60c1d"
+    },
+    {
+      "ref": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "path": "Anytype/Sources/Models/Documents/Parsers/AttributedTextConverter.swift",
+      "bytes": 8930,
+      "sha256": "3e6b2e60cc6cc15c756467f992bf51120771610f27ac1b04be1646c740ba3ff6",
+      "gitBlob": "950f3525b0310234b23edf9e91141ff4ab4a0edf"
+    }
+  ],
+  "retainedBinaryDiffs": [
+    {
+      "encoded": {
+        "path": "docs/validation/20261127-wave2-native-typography/editor-source.diff.gz",
+        "bytes": 1748,
+        "sha256": "9699892d5a8997f52f7a8e129710e8f6b91915a3647c79b01ddf1382c88d1477",
+        "gitBlob": "b7d75be644fd74f261302f35c36e007c11eb258f"
+      },
+      "decoded": {
+        "path": "editor-source.diff",
+        "bytes": 5145,
+        "sha256": "cc9fbd3612801c49c477bfeda81b223a236b5c41ff6b370098c3bc16be87abff",
+        "gitBlob": "d9d1fe1006a01ea8a52436d976db5d2dc97b04f7"
+      }
+    },
+    {
+      "encoded": {
+        "path": "docs/validation/20261127-wave2-native-typography/package-source.diff.gz",
+        "bytes": 451,
+        "sha256": "4e5e03c4eed2fc8f1447363bf1c67e728e36fa93f91518c01314b14039af5bf2",
+        "gitBlob": "46d93bd188e0f27a9bc9d89bc9d16506dcf4462e"
+      },
+      "decoded": {
+        "path": "package-source.diff",
+        "bytes": 1421,
+        "sha256": "d7e5c6ba6f0e4700e4f98f6ff9596f2388db4e79fd7e6b57539ca947e028d308",
+        "gitBlob": "35665855f7f79c82bc8bc03cbf82db71c2e35731"
+      }
+    }
+  ],
+  "literalInverses": {
+    "editor": {
+      "operations": 15,
+      "forwardExactCandidate": true,
+      "reverseExactOriginal": true,
+      "before": {
+        "ref": "dc582ba3239d6dcb66dbe1f7098b95349e4289f9",
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+        "bytes": 60586,
+        "sha256": "26a3876cab8926445449c07542d5ebdda01e6eaf33ee0cc27fd03d072540ec61",
+        "gitBlob": "998963f82b9fc9bd68216d993fd63ea21018f6a6"
+      },
+      "after": {
+        "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+        "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+        "bytes": 61122,
+        "sha256": "4b7a6feaa4557a63183789549ae9fe498ef2d988f0b7516f39947891a3c1dd3a",
+        "gitBlob": "29407373ed3ed0fe6e36ecc6365db0d6918b702d"
+      }
+    },
+    "package": {
+      "operations": 3,
+      "forwardExactCandidate": true,
+      "reverseExactOriginal": true,
+      "before": {
+        "ref": "dc582ba3239d6dcb66dbe1f7098b95349e4289f9",
+        "path": "Modules/PinkhaAnyUI/Package.swift",
+        "bytes": 1811,
+        "sha256": "cbd4abe9034c222c6049f0a2f706d1679f65592d6cc2e66f57cd1828d9389b70",
+        "gitBlob": "d7457e7e0508e0f077d1ff76dc274dc3a3f6c0df"
+      },
+      "after": {
+        "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+        "path": "Modules/PinkhaAnyUI/Package.swift",
+        "bytes": 2051,
+        "sha256": "298ef94254c6d8f17a389a5ff0efd02a5c03099e9a819b50886a5d9e8b3d9854",
+        "gitBlob": "166d1db172057b25f82c4a67ddcac595cca43a59"
+      }
+    }
+  },
+  "hanlinPresentation": {
+    "unchangedExactFunction": {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "function": "presentHanlin",
+      "bytes": 1262,
+      "sha256": "350a4b1c22e61427b7cccd1c347a9df5e77df5304e4564cee46a9c60a4e5a3cc",
+      "gitBlob": "e27f6cdab29a912bc3fe9fb038d2f39ea5a9920a"
+    },
+    "futureHookOwner": "Wave2 editor owner coordinated with /root/sdk_hanlin",
+    "futureHookPreimage": {
+      "ref": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "bytes": 61122,
+      "sha256": "4b7a6feaa4557a63183789549ae9fe498ef2d988f0b7516f39947891a3c1dd3a",
+      "gitBlob": "29407373ed3ed0fe6e36ecc6365db0d6918b702d"
+    },
+    "hookImplementedInReviewedCommit": false
+  },
+  "semanticReview": [
+    {
+      "area": "Original font policy",
+      "result": "Original TextContent+Font maps header/header2/header3/code/default text to title/heading/subheading/codeBlock/bodyRegular. The actual DesignKit configurations are Inter Bold28/22/17, IBM Plex Mono15 and Inter Regular17. The stale prose typography table is not used as authority."
+    },
+    {
+      "area": "Scaling",
+      "result": "Each render calls original nominal UIKitFontBuilder then UIFontMetrics.scaledFont for the current trait collection. No already-scaled font is passed to the scaling API. Inline overrides retain the already-scaled base point size."
+    },
+    {
+      "area": "Body emphasis and inline code",
+      "result": "The original nominal UIFont.bold/italic policy is applied before restoring scaled size, preserving body semibold and heading bold. The exact original four IBM Plex Mono faces are explicitly registered by FontConvertible before font creation. An unmarked run returns its original base font."
+    },
+    {
+      "area": "Live refresh",
+      "result": "An iOS17+ trait registration on the controller rerenders on preferred content size change; current package minimum iOS27 covers availability. The cache includes source, native style, native block type and content-size category; type/category clear on cell reuse and advance only after original renderer success."
+    },
+    {
+      "area": "Composition and input preservation",
+      "result": "Original controller render/configure marked-composition guards, attribute-only renderer, paragraph direction/alignment, source ranges, link/strike, selection, focus, undo and native mutation flows survive the exact inverse. Original normal composition completion rerenders after marked state clears. New font refresh does not write native data."
+    },
+    {
+      "area": "Dependency and source boundary",
+      "result": "Only downstream PinkhaAnyUI source/tests/manifest and evidence change. DesignKit is an explicit local iOS-conditional target/test dependency. No engine, Host, native, SDK pin or lock changes occur in this tranche; final root must retain the reviewed original font sources for matching acceptance."
+    }
+  ],
+  "fontPolicy": [
+    {
+      "native": "heading level 1",
+      "original": "AnytypeFont.title / Inter Bold28",
+      "metrics": "title1"
+    },
+    {
+      "native": "heading level 2, legacy or unknown level",
+      "original": "AnytypeFont.heading / Inter Bold22",
+      "metrics": "title2"
+    },
+    {
+      "native": "heading level 3",
+      "original": "AnytypeFont.subheading / Inter Bold17",
+      "metrics": "headline"
+    },
+    {
+      "native": "code",
+      "original": "AnytypeFont.codeBlock / IBM Plex Mono Regular15",
+      "metrics": "body"
+    },
+    {
+      "native": "other rendered text",
+      "original": "AnytypeFont.bodyRegular / Inter Regular17",
+      "metrics": "body"
+    }
+  ],
+  "applePrimaryReferences": [
+    {
+      "url": "https://developer.apple.com/documentation/uikit/uifontmetrics/scaledfont(for:compatiblewith:).md",
+      "scope": "API signature, nominal input requirement, trait-specific scaling; not actual execution."
+    },
+    {
+      "url": "https://developer.apple.com/documentation/uikit/uitraitchangeobservable-67e94/registerfortraitchanges(_:handler:).md",
+      "scope": "iOS17 availability, observed object closure, registration lifetime; not actual execution."
+    }
+  ],
+  "testSources": {
+    "originalPath": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextTypographyTests.swift",
+    "authoredMethods": [
+      "AnyNativeTextTypographyTests/testNativeHeadingLevelsAndCodeUseOriginalAnytypeFacesAtBothSizes",
+      "AnyNativeTextTypographyTests/testFontRefreshRetainsHeadingEmphasisInlineCodeRTLSelectionAndMarkedBuffer"
+    ],
+    "status": "NOT_RUN",
+    "scope": "Two authored UIKit methods inspect actual bundled faces/sizes and original body-emphasis descriptors; the renderer check observes attribute-only update, UTF16 Hebrew/emoji selection, link/strike/direction/alignment and refusal while composing.",
+    "hostBinding": "PinkhaAnyUI package test source. It is not included merely by the existing AnytypeTests 43-source proof or the old shared8f2 product. A future actual package/hosted source reference, compiler FileList and compiled enumeration must bind this exact source before claiming execution."
+  },
+  "sourceRefactorClassification": "The supplied editor entry is an 8f2-relative downstream review mapping; it is not automatically a member of the original586c/upstream129 source map. Root owns map intake.",
+  "remainingAcceptance": [
+    "Actual matching Apple compiler and compiled enumeration of both authored UIKit methods.",
+    "Execute these two methods with the reviewed bundled font resources and source closure.",
+    "Actual controller trait-change notification while mounted, including retained marked composition and refresh on completion.",
+    "Real iPhone/iPad, RTL/LTR, light/dark and accessibility-category visual acceptance.",
+    "Physical-device acceptance remains NOT_RUN."
+  ],
+  "execution": {
+    "sourceMechanicalAudit": "PASS",
+    "swiftCompilerRuns": 0,
+    "UIKitRuns": 0,
+    "nativeServiceCalls": 0,
+    "MacOperations": 0,
+    "testsReplayed": 0,
+    "productionSourceEdits": 0,
+    "finalBranchWrites": 0
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "pinkha-native-hanlin-presentation-preimage-v1",
+  "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+  "publishedCreationCommit": "dc582ba3239d6dcb66dbe1f7098b95349e4289f9",
+  "publishedCreationBlob": "998963f82b9fc9bd68216d993fd63ea21018f6a6",
+  "publishedCreationSHA256": "26a3876cab8926445449c07542d5ebdda01e6eaf33ee0cc27fd03d072540ec61",
+  "typographyCandidateBlob": "29407373ed3ed0fe6e36ecc6365db0d6918b702d",
+  "typographyCandidateSHA256": "4b7a6feaa4557a63183789549ae9fe498ef2d988f0b7516f39947891a3c1dd3a",
+  "functionSHA256": "350a4b1c22e61427b7cccd1c347a9df5e77df5304e4564cee46a9c60a4e5a3cc",
+  "functionBytes": 1262,
+  "exactFunctionUnchangedAcrossTypography": true,
+  "function": "    public func presentHanlin() {\n        focus.cancel()\n        Task { [weak self] in\n            guard let self else { return }\n            await presentation.flush()\n            guard !presentation.hasPendingEdits else {\n                presentation.message = AnyUIErrorText.changedDocument; return\n            }\n            do {\n                let authority = try AnyHanlinCreationAuthority(client: presentation.client,\n                                                               workspace: presentation.workspace)\n                let creation = try AnyHanlinCreationServices(creator: presentation.objects,\n                                                             authority: authority)\n                let chat = try AnyHanlinPresentation.present(from: self, native: presentation.nativeSession,\n                    documents: presentation.documents, sourceOwner: presentation,\n                    conversationID: conversationID, creation: creation)\n                presentation.installPresentationLifecycle(revoke: { [weak chat] in chat?.revoke() },\n                                                           drain: { [weak chat] in await chat?.drain() })\n            } catch { presentation.message = AnyUIErrorText.describe(error) }\n        }\n    }\n",
+  "fixtureAPIContractReceived": false,
+  "hookImplemented": false
+}
