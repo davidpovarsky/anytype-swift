@@ -1,0 +1,283 @@
+{
+  "readOnly": true,
+  "files": [
+    {
+      "path": "/var/lib/pinkha-c-filesv2-20261126/lan-progress-unit2/baseline.log",
+      "bytes": 14486,
+      "sha256": "b88915b959c068d26933ebf441066459c101ea641f9851391560f251228bbb7a",
+      "terminalEvents": [
+        {
+          "Time": "2026-11-27T03:37:49.980182812Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressResponsiblePeersBoundNodeWait",
+          "Elapsed": 3
+        },
+        {
+          "Time": "2026-11-27T03:37:52.982199854Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressBroadcastPeersBoundNodeWait",
+          "Elapsed": 3
+        },
+        {
+          "Time": "2026-11-27T03:37:52.982248294Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressKeepAliveCoalescesQueuedSubscription",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:37:52.982266934Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressKeepAliveQueueRejectionAllowsRetry",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:37:53.98241448Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressKeepAliveBoundsConcurrentNodeLookup",
+          "Elapsed": 1
+        },
+        {
+          "Time": "2026-11-27T03:37:54.283096027Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressKeepAliveLeavesSharedWorkersAvailable",
+          "Elapsed": 0.3
+        },
+        {
+          "Time": "2026-11-27T03:37:54.283429669Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressNodeOnlyFailureStillSurfaces",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:37:54.290249747Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Elapsed": 8.513
+        }
+      ],
+      "diagnostics": []
+    },
+    {
+      "path": "/var/lib/pinkha-c-filesv2-20261126/lan-progress-unit2/corrected.log",
+      "bytes": 17562,
+      "sha256": "9b4fb84586ebfb93dc5443e4b622ad0a2246462dbfdd7635b0ba3a36d3188a06",
+      "terminalEvents": [
+        {
+          "Time": "2026-11-27T03:38:04.417316041Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestNoteNodeStateWakesOnTransition",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:04.417343161Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestGetResponsiblePeersFoldsLocalPeers",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:04.417361521Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestGetResponsiblePeersLocalOnlyWhenNodesDown",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:04.417470882Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestGetResponsiblePeersNodeErrorWhenNobodyReachable",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:04.417576522Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestGetLocalPeersRemovesUnreachableAfterStrikes",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:04.417591282Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestGetLocalPeersStrikeResetsOnSuccess",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:04.417611522Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestGetLocalPeersKeepsPeerOnCancelledContext",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:04.417709243Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestGetBroadcastPeersIsNodesPlusLocal",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:04.417865844Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestBroadcastPark_OverflowParksAndReportsSuccess",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:04.519097325Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestBroadcastPark_RetriesUntilDelivered",
+          "Elapsed": 0.1
+        },
+        {
+          "Time": "2026-11-27T03:38:05.520324722Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressResponsiblePeersBoundNodeWait",
+          "Elapsed": 1
+        },
+        {
+          "Time": "2026-11-27T03:38:06.520872474Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressBroadcastPeersBoundNodeWait",
+          "Elapsed": 1
+        },
+        {
+          "Time": "2026-11-27T03:38:06.520902074Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressKeepAliveCoalescesQueuedSubscription",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:06.520914875Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressKeepAliveQueueRejectionAllowsRetry",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:06.520927315Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressKeepAliveBoundsConcurrentNodeLookup",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:06.520945835Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressKeepAliveLeavesSharedWorkersAvailable",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:06.520960795Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressNodeOnlyFailureStillSurfaces",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:38:06.524683455Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Elapsed": 2.205
+        }
+      ],
+      "diagnostics": []
+    },
+    {
+      "path": "/var/lib/pinkha-c-filesv2-20261126/lan-progress-unit1/baseline.log",
+      "bytes": 19839,
+      "sha256": "39a214a530440f4dc50d5e922a94502ac95d7954f9bf12f395d07b61ef6a9d41",
+      "terminalEvents": [
+        {
+          "Time": "2026-11-27T03:33:42.232519288Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressResponsiblePeersBoundNodeWait",
+          "Elapsed": 3
+        },
+        {
+          "Time": "2026-11-27T03:33:45.235319569Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressBroadcastPeersBoundNodeWait",
+          "Elapsed": 3
+        },
+        {
+          "Time": "2026-11-27T03:33:45.236084854Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressKeepAliveCoalescesQueuedSubscription",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:33:45.236103934Z",
+          "Action": "pass",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressKeepAliveQueueRejectionAllowsRetry",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:33:46.238598983Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressKeepAliveBoundsConcurrentNodeLookup",
+          "Elapsed": 1
+        },
+        {
+          "Time": "2026-11-27T03:33:46.539804929Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressKeepAliveLeavesSharedWorkersAvailable",
+          "Elapsed": 0.3
+        },
+        {
+          "Time": "2026-11-27T03:33:46.551253275Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressNodeOnlyFailureStillSurfaces",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-11-27T03:33:46.551289475Z",
+          "Action": "fail",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Elapsed": 8.429
+        }
+      ],
+      "diagnostics": [
+        {
+          "Time": "2026-11-27T03:33:46.543586751Z",
+          "Action": "output",
+          "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+          "Test": "TestLANProgressNodeOnlyFailureStillSurfaces",
+          "Output": "panic: runtime error: invalid memory address or nil pointer dereference [recovered, repanicked]\n"
+        }
+      ]
+    }
+  ],
+  "eachOfSearch": {
+    "argv": [
+      "rg",
+      "-l",
+      "^func eachOf",
+      "/var/lib/pinkha-c-filesv2-20261126/lan-progress-unit2/sdk-source/internal/anysyncx"
+    ],
+    "exitCode": 0,
+    "stdout": "/var/lib/pinkha-c-filesv2-20261126/lan-progress-unit2/sdk-source/internal/anysyncx/treesyncer.go\n",
+    "stderr": ""
+  }
+}

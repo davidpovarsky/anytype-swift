@@ -1,0 +1,138 @@
+{
+  "accountWrites": 0,
+  "admissionFreeBytes": {
+    "development": 4467421184,
+    "root": 3588673536
+  },
+  "allOwnedGroupsPositivelyAbsent": true,
+  "baseline": [
+    {
+      "action": "fail",
+      "name": "TestLANProgressResponsiblePeersBoundNodeWait",
+      "seconds": 3
+    },
+    {
+      "action": "fail",
+      "name": "TestLANProgressBroadcastPeersBoundNodeWait",
+      "seconds": 3
+    },
+    {
+      "action": "fail",
+      "name": "TestLANProgressKeepAliveCoalescesQueuedSubscription",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestLANProgressKeepAliveQueueRejectionAllowsRetry",
+      "seconds": 0
+    },
+    {
+      "action": "fail",
+      "name": "TestLANProgressKeepAliveBoundsConcurrentNodeLookup",
+      "seconds": 1
+    },
+    {
+      "action": "fail",
+      "name": "TestLANProgressKeepAliveLeavesSharedWorkersAvailable",
+      "seconds": 0.3
+    },
+    {
+      "action": "fail",
+      "name": "TestLANProgressNodeOnlyFailureStillSurfaces",
+      "seconds": 0
+    }
+  ],
+  "baselineManifestSHA256": "0bb34287c04accc3ee4a62da97ba9a5a9aee256b8eef700835d9140eed00872d",
+  "controllerSHA256": "7c2e5848f00d819bb106962eb2af89e65605faf71c33f89dc510c39077dee834",
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOCACHE": "/var/lib/pinkha-root-t2-linux-20261126/go-cache",
+    "GOFLAGS": "-mod=readonly",
+    "GOMAXPROCS": "2",
+    "GOMEMLIMIT": "1GiB",
+    "GOMODCACHE": "/root/go/pkg/mod",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOTMPDIR": "/mnt/development/projects/caches/pinkha-w1-lan-progress-temp-20261127",
+    "GOTOOLCHAIN": "local",
+    "GOWORK": "off",
+    "TMPDIR": "/mnt/development/projects/caches/pinkha-w1-lan-progress-temp-20261127"
+  },
+  "errors": [
+    {
+      "message": "",
+      "type": "AssertionError"
+    }
+  ],
+  "freeBytesAfter": {
+    "development": 4590993408,
+    "root": 3471163392
+  },
+  "inputSHA256": "47fccb7b1f2cab1d9b9d7fb528951297c2aba5117d27f877664147191972c6cb",
+  "minimumFreeBytes": {
+    "development": 4466401280,
+    "root": 3469877248
+  },
+  "nativeAccountProcesses": 0,
+  "originalOverlayUnchanged": true,
+  "processes": [
+    {
+      "command": [
+        "/usr/local/bin/go",
+        "test",
+        "-json",
+        "-count=1",
+        "-p=2",
+        "-timeout=90s",
+        "-run",
+        "^TestLANProgress",
+        "./internal/anysyncx"
+      ],
+      "exitCode": 1,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "label": "baseline",
+      "logSHA256": "39a214a530440f4dc50d5e922a94502ac95d7954f9bf12f395d07b61ef6a9d41",
+      "pgid": 3053031,
+      "pid": 3053031,
+      "resourceStopped": false,
+      "seconds": 141.901
+    }
+  ],
+  "protocol": "pinkha-lan-node-progress-baseline-and-corrected-v1",
+  "resourcePolicy": {
+    "floors": {
+      "development": 536870912,
+      "root": 2147483648
+    },
+    "memAvailableBefore": 5037031424,
+    "reserves": {
+      "development": 268435456,
+      "root": 67108864
+    }
+  },
+  "seconds": 149.815,
+  "sourceAfter": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "sourceBefore": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "status": "FAIL_QUALIFICATION"
+}

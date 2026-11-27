@@ -1,0 +1,1257 @@
+{
+  "schema": "pinkha-wave3-independent-network-lan-progress-intake-v1",
+  "reviewer": "/root/miniapps_otzaria",
+  "reviewedAtUTC": "2026-11-27T05:23:37.568885+00:00",
+  "status": "READY_SOURCE_AND_SCOPED_ORIGINAL_LINUX_EVIDENCE_APPLE_INTEGRATION_NOT_ACCEPTED",
+  "concreteSourceBlockers": [],
+  "requestedHQStory": {
+    "gid": "1220943705820409",
+    "created_at": "2026-11-27T05:03:21.654Z",
+    "created_by": {
+      "gid": "1219597879016933",
+      "name": "דוד פוברסקי",
+      "resource_type": "user"
+    },
+    "resource_type": "story",
+    "text": "Wave1 → Wave3 READY: native FilesV2 original-account LAN completion and exact old-product custody, root independently reviewed.\n\nOwn branch codex/chatgpt-wave15-network-final-20261127, normal pushed/read back HEAD4a381db674fa1f011bff5d02d1a1e9badf253c1e. Dependencies in order: 8c4953a01c3b6c8025b2f6c78edd491e8be7ea08 (bounded peer progress fix), 988d057848087410dc6363b21fadea94ee759b52 (actual native acceptance), 4a381db674fa1f011bff5d02d1a1e9badf253c1e (old792 exact custody). Prior baa/02a/f2 remain as supplied; final integration remains your ownership.\n\nProduction delta is confined to existing SDK peer progress: coalesce each Space KeepAlive, use a worker-owned10s lookup budget, bound parallel node lookup to3, and cap dead-node fallback at1s only when a LAN/global alternative exists. Node-only behavior, ACL/signature/content semantics remain unchanged. Five actual new baseline failures plus2passes were preserved; corrected7new+10affected existing methods actually PASS17/0skip. No test assertion was weakened.\n\nActual original-account proof: /var/lib/pinkha-c-filesv2-20261126/original-files-lan-progress1/result.json SHA256 0c0d4622bff1075d7da331b3f2d393aa536ce688e05a92013defde153210c5da, 15.336s, job_a50faeb2eac0. Same retained Alice/Bob and four original attachments; no reinit/join/regrant/reattach. The previously blocked original image became404→200 in0.813s under unchanged90s gate; actual thumbnail and unique canary attachment each bound to exact returned metadata/plaintext hash. Original8MiB file: real206 partial read, sparseCAR custody, BobSIGKILL, fresh OS-denied partial reopen, LAN resume and exact complete hashes, then another fresh OS-denied cold reopen of all5 user-facing files plus native image variant. All7 owned process groups absent (six normal exits and one deliberateSIGKILL). Old154.893s/152.040s failures retained unchanged.\n\nExecuted native /var/lib/pinkha-c-filesv2-20261126/lan-progress-native1/any SHA0796b939145f98fd3436b40c3ae3c7c9daec239b54f8c1fa237fb20a349d0b07; exact1599 source manifest e785ed2faf1d0bf0d18e7be7f0090cdee4061bd714f3be1509927895b9df336a; SDK718manifest324f2136ecc953906549a2fe2963337bef4fcef03446e6604c8066299b1faf5c. Acceptance contract: Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/NATIVE_ACCEPTANCE.md.\n\nOld accepted792 executable was preserved byte-for-byte, fsynced, hash/size/mode/mtime verified and no-live-use checked before duplicate-only retirement at its old root path. Exact retained copy /mnt/development/projects/evidence/pinkha-w1-network-native792-raw-20261127/any-79248a63132a0146 (78074642B, SHA79248a63132a0146deff4e9fe1c4104a381a34d5c2ffcad536247a8429f98857). Receipt SHA378c4fe23d43c697ad475526b9687491d8f8c3fa29e74e93774e96574c140f2e. Restore-on-demand script adjacent restore.py SHA f4b368bdf8280caa52967585fd55be03a99b9c8ecf4aa9c50421bfd814f6b481. Historical receipts remain valid under their original source/path plus this explicit restore mapping. Failed partialxz archive remains retained, not relabeled complete.\n\nScope: this closes actual retained-account LAN file/thumbnail/range/crash/resume/cold transfer for this native. Production cloud quota restoration, remaining original-role revoked-read gate, Apple native packaging and other12-network source scopes are NOT implied. Original-role mutations have not started; uncached removal canary remains intact. C native8 and all W1 compiler/native queues are held at unchanged2GiB root floor;05:01 read-only census root1847369728B/dev2361696256B, no W1 process started. Source review and exact evidence publication continue.",
+    "type": "comment",
+    "resource_subtype": "comment_added"
+  },
+  "mergeOrder": [
+    "8c4953a01c3b6c8025b2f6c78edd491e8be7ea08",
+    "988d057848087410dc6363b21fadea94ee759b52",
+    "4a381db674fa1f011bff5d02d1a1e9badf253c1e"
+  ],
+  "parentSource": "f2b40968bd9347438b8fed432912f41944b43828",
+  "reviewedRootSnapshot": "e320b43d50f994579c327e9cb53038e4187b125b",
+  "rootPrerequisites": {
+    "originalNetworkDirectoryExactDonorEquality": true,
+    "entries": 17,
+    "closure": {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/root-predecessor-closure.json",
+      "bytes": 4716,
+      "sha256": "44991d77251f7372fc7796e5b332633688781f6e653649756c4d7e8200c6bc0a"
+    },
+    "requiredACLOverlaySHA256": "1d4213438a5d9e8024f5506309bd759ef6a72ef9d880ce9269392fc185f43f6c",
+    "rootACLOverlayMatches": true
+  },
+  "gitFiles": [
+    {
+      "commit": "8c4953a01c3b6c8025b2f6c78edd491e8be7ea08",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/EVIDENCE.md",
+      "bytes": 6371,
+      "gitBlob": "f7496e13cac5b972ca6f2937ea8fea323d24a4b0",
+      "sha256": "d860be03b5f18234f137ffa5f63f3f9f154e6690ca6674e67c865eef5b068208"
+    },
+    {
+      "commit": "8c4953a01c3b6c8025b2f6c78edd491e8be7ea08",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/apply.py",
+      "bytes": 3661,
+      "gitBlob": "5536f0174cc019ff234d57eb2193d0766f16efea",
+      "sha256": "b1d2c5d674d406fc99dfaa5f418b0f722507ae5e8251f473bb33a83461521098"
+    },
+    {
+      "commit": "8c4953a01c3b6c8025b2f6c78edd491e8be7ea08",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/lan-progress-unit1-result.json",
+      "bytes": 3987,
+      "gitBlob": "a20a303ed6daaebca28b441740d2e17884dbfe97",
+      "sha256": "77e1d1ebc5f8c19c0427fdad78f88aa912659f56882f05323522ce17ce58b984"
+    },
+    {
+      "commit": "8c4953a01c3b6c8025b2f6c78edd491e8be7ea08",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/lan-progress-unit2-result.json",
+      "bytes": 7878,
+      "gitBlob": "6f6f168d5a5046a1662c6a93fc4b6f511db0f36b",
+      "sha256": "5e9df7a7e9a3039938996d68108fab934f6b4fe1888ba3d34097843c0277a64c"
+    },
+    {
+      "commit": "8c4953a01c3b6c8025b2f6c78edd491e8be7ea08",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/manifest.json",
+      "bytes": 1783,
+      "gitBlob": "81e8e1e0a6e6ea061bd4ff04a2a28c6d9d23e176",
+      "sha256": "ac76106c77fbeb06e4b519ac41c0da1bfc30b30dc904ffe172af399e4135b55f"
+    },
+    {
+      "commit": "8c4953a01c3b6c8025b2f6c78edd491e8be7ea08",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/qualification-inputs2.json",
+      "bytes": 48102,
+      "gitBlob": "c323e3d8cd717a118378c484cfbe4de9d5240a51",
+      "sha256": "26dfe9c5dfff380af0e584f6094ffbcc0952565d2c12e91be631aca6928d9d29"
+    },
+    {
+      "commit": "8c4953a01c3b6c8025b2f6c78edd491e8be7ea08",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/qualify_lan_progress2.py",
+      "bytes": 9715,
+      "gitBlob": "8941ddf1c9d9c33a037d612878dd2a777ec181e1",
+      "sha256": "c8232a69a136b3977a36cbb0ebfa0706e1e47f358f96ed726ffb40f960f45d28"
+    },
+    {
+      "commit": "8c4953a01c3b6c8025b2f6c78edd491e8be7ea08",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/sdk-lan-progress.patch",
+      "bytes": 14790,
+      "gitBlob": "f83e77d46878a0086c4ea889430861ee86449ca8",
+      "sha256": "d6afca4fe2267c4b1da15b246619851fbbd31e19e91d6b42846e96096fc31c65"
+    },
+    {
+      "commit": "8c4953a01c3b6c8025b2f6c78edd491e8be7ea08",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/source-replay-result.json",
+      "bytes": 2583,
+      "gitBlob": "3b644a956084a7a482b4c3b9d197285fb8d980f0",
+      "sha256": "271248e4a09229cc52e7145625041be9aa052094a459f25d19753694ccd0527e"
+    },
+    {
+      "commit": "988d057848087410dc6363b21fadea94ee759b52",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/NATIVE_ACCEPTANCE.md",
+      "bytes": 7316,
+      "gitBlob": "b3414242334f56f04139e45140d3a427f9a5ddd6",
+      "sha256": "1bbead8fe6cf083d04f12f49ccfdd64951a76ebc81d9395acbc5def1a19ac4b0"
+    },
+    {
+      "commit": "988d057848087410dc6363b21fadea94ee759b52",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/build_lan_progress_native.py",
+      "bytes": 9527,
+      "gitBlob": "2b2af2601260f03aa3de82a53530050f541ee79a",
+      "sha256": "e347db2f977b38cbb0c6806e8f3387a1e84314f6ab6508825dab5aa1f5c84968"
+    },
+    {
+      "commit": "988d057848087410dc6363b21fadea94ee759b52",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/continue_original_files_with_sync_diagnostics.py",
+      "bytes": 39653,
+      "gitBlob": "ab636f8a9a54ca245a5155a9b3932bcdcaa7a313",
+      "sha256": "7c6e00d8f24c043eb442047a8eea484fe909ffd59f9a3fd3fd09392bcf988c0c"
+    },
+    {
+      "commit": "988d057848087410dc6363b21fadea94ee759b52",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/native-build-result.json",
+      "bytes": 4145,
+      "gitBlob": "2daa648fa602ad122329a47994a3e37a59ab0a2c",
+      "sha256": "c74e754d4f26b9ca9b3c9e681093e247fe2c54dd5360fe0677dca25c0282cda6"
+    },
+    {
+      "commit": "988d057848087410dc6363b21fadea94ee759b52",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/native-source-manifest.json",
+      "bytes": 266767,
+      "gitBlob": "051d82a64e2c18d72f9d3c69f6d214cac8e7425a",
+      "sha256": "e785ed2faf1d0bf0d18e7be7f0090cdee4061bd714f3be1509927895b9df336a"
+    },
+    {
+      "commit": "988d057848087410dc6363b21fadea94ee759b52",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/original-files-after-join2-result.json",
+      "bytes": 43836,
+      "gitBlob": "b2c9075ec8b3abced58db35847eb131678990de6",
+      "sha256": "85867ee6b4f2e586c11b9962dbccaf902e700b5757dc8d81023cc334a62178bb"
+    },
+    {
+      "commit": "988d057848087410dc6363b21fadea94ee759b52",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/original-files-lan-progress1-result.json",
+      "bytes": 41759,
+      "gitBlob": "7357aab118e6740717a4e72a5cb3eb1deed0405d",
+      "sha256": "0c0d4622bff1075d7da331b3f2d393aa536ce688e05a92013defde153210c5da"
+    },
+    {
+      "commit": "988d057848087410dc6363b21fadea94ee759b52",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/qualify_original_lan_progress.py",
+      "bytes": 45011,
+      "gitBlob": "f12a6ecbe4a5a744af2ab950903ebd08906ca193",
+      "sha256": "7241ca7bab77aca0baf3faed05cafbc8e1532af67eb219aec177326152f6f160"
+    },
+    {
+      "commit": "4a381db674fa1f011bff5d02d1a1e9badf253c1e",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody/README.md",
+      "bytes": 4573,
+      "gitBlob": "221e3e4da570d7c7b113caf01a190c845c809824",
+      "sha256": "61e7289ee28e46a1120cd15d710536c82c4458b237589c7a8e51118b9c4dba0b"
+    },
+    {
+      "commit": "4a381db674fa1f011bff5d02d1a1e9badf253c1e",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody/archive_superseded_native792.py",
+      "bytes": 9478,
+      "gitBlob": "693aa8272b690f0cbbce4d766495f180a78a052a",
+      "sha256": "aec21618777defa77bef67d6c75f85735f8172094ea3fd908343ad779456c3da"
+    },
+    {
+      "commit": "4a381db674fa1f011bff5d02d1a1e9badf253c1e",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody/failed-xz-result.json",
+      "bytes": 1916,
+      "gitBlob": "41005bbdfff923166f4d23ad6b9a8eafcef20c32",
+      "sha256": "473afc8999467fe8450264e2ece0bd135e16f9aed015d99180f0272f0a0e1d47"
+    },
+    {
+      "commit": "4a381db674fa1f011bff5d02d1a1e9badf253c1e",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody/receipt.json",
+      "bytes": 2707,
+      "gitBlob": "7f3f6688d47f27d45358f01c54344574a175fa80",
+      "sha256": "378c4fe23d43c697ad475526b9687491d8f8c3fa29e74e93774e96574c140f2e"
+    },
+    {
+      "commit": "4a381db674fa1f011bff5d02d1a1e9badf253c1e",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody/relocate_superseded_native792.py",
+      "bytes": 9244,
+      "gitBlob": "43bad82ff459acf6eaed5384f0f785282eba654b",
+      "sha256": "44206afae0a3ac48a44264afec0c9f7963f33975b3dcadc681f5bc9a367fee8a"
+    },
+    {
+      "commit": "4a381db674fa1f011bff5d02d1a1e9badf253c1e",
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody/restore.py",
+      "bytes": 1355,
+      "gitBlob": "5fb97d0fd185c1bc8fae7709d07d2721a55fa589",
+      "sha256": "f4b368bdf8280caa52967585fd55be03a99b9c8ecf4aa9c50421bfd814f6b481"
+    }
+  ],
+  "productionOverlay": {
+    "manifest": {
+      "protocol": "pinkha-bounded-node-lan-progress-overlay-v1",
+      "baseNativeAnyCommit": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "baseNativeSDKCommit": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9",
+      "requiresPatchSHA256": "1d4213438a5d9e8024f5506309bd759ef6a72ef9d880ce9269392fc185f43f6c",
+      "requiredSourcePins": {
+        "internal/anysyncx/aclrefresh.go": "9b825f844292472288725a75e017bfaadae951d2228a6821d97a65a4f634053c",
+        "internal/anysyncx/aclrefresh_test.go": "f2aac7e5cf69a7318ca46d6cdf29403a30f0fcaff80090f06c2ec91ecca8b639",
+        "internal/spaceimpl/members.go": "80d8b53444d44d690c4ecb1582169a2c4aad9d654de7886a0b1a624337f72a04",
+        "internal/spaceimpl/members_refresh.go": "b242c4a650c4e9cbb7f921298c42851055c99ff159601aafb799ec01001c6a4f"
+      },
+      "qualifiedBeforeSDKManifestSHA256": "81fb6bf29c672010f7fe98554ae562b7e75b6154f10e933ac5682fe3916c4a4a",
+      "qualifiedAfterSDKManifestSHA256": "324f2136ecc953906549a2fe2963337bef4fcef03446e6604c8066299b1faf5c",
+      "qualificationReceiptSHA256": "5e9df7a7e9a3039938996d68108fab934f6b4fe1888ba3d34097843c0277a64c",
+      "patchSHA256": "d6afca4fe2267c4b1da15b246619851fbbd31e19e91d6b42846e96096fc31c65",
+      "changes": [
+        {
+          "path": "internal/anysyncx/peermanager.go",
+          "beforeSHA256": "9f36dbde8afc47589a7420b2abd0ec5baf32badddf3f3853265d6b10e4e3f288",
+          "afterSHA256": "f4fafe3619ad6e487eef4e67ce24ede38341e193479d6e1b02cbba62e41c077d"
+        },
+        {
+          "path": "internal/anysyncx/peerprogress.go",
+          "beforeSHA256": null,
+          "afterSHA256": "9fb4d3e94dc3419c1e9bedb93a3dfb4a39c2a4c567fe3930e93dad4ea5e65c9b"
+        },
+        {
+          "path": "internal/anysyncx/peerprogress_test.go",
+          "beforeSHA256": null,
+          "afterSHA256": "2da1cd6150bb0da4c0e09bd11dd40dd046834ef5a48628b8820b4f7afa4cb4b8"
+        }
+      ]
+    },
+    "exactPatchForwardAndReverse": [
+      {
+        "path": "internal/anysyncx/peermanager.go",
+        "beforeSHA256": "9f36dbde8afc47589a7420b2abd0ec5baf32badddf3f3853265d6b10e4e3f288",
+        "afterSHA256": "f4fafe3619ad6e487eef4e67ce24ede38341e193479d6e1b02cbba62e41c077d",
+        "beforeBytes": 33553,
+        "afterBytes": 34394,
+        "hunks": 6,
+        "exactForward": true,
+        "exactReverse": true
+      },
+      {
+        "path": "internal/anysyncx/peerprogress.go",
+        "beforeSHA256": null,
+        "afterSHA256": "9fb4d3e94dc3419c1e9bedb93a3dfb4a39c2a4c567fe3930e93dad4ea5e65c9b",
+        "beforeBytes": 0,
+        "afterBytes": 1985,
+        "hunks": 1,
+        "exactForward": true,
+        "exactReverse": true
+      },
+      {
+        "path": "internal/anysyncx/peerprogress_test.go",
+        "beforeSHA256": null,
+        "afterSHA256": "2da1cd6150bb0da4c0e09bd11dd40dd046834ef5a48628b8820b4f7afa4cb4b8",
+        "beforeBytes": 0,
+        "afterBytes": 8796,
+        "hunks": 1,
+        "exactForward": true,
+        "exactReverse": true
+      }
+    ],
+    "originalQualificationInputDifference": "peermanager.go input has one extra trailing LF before the recorded gofmt; published patch, actual qualified source and native manifest use the exact canonical f4fafe bytes. No hash normalization is used for source admission."
+  },
+  "sourceReview": [
+    {
+      "area": "Per-Space coalescing",
+      "finding": "atomic.Bool admits one queued/resolving subscription per original spacePeerManager. sync.OnceFunc releases on getter completion or Send rejection. The original node-state notification still runs on a coalesced call. The same manager is not promised reusable after shutdown discards its queued getter."
+    },
+    {
+      "area": "Cancellation and dispatch ownership",
+      "finding": "Original KeepAlive already dispatched with m.runCtx rather than caller ctx. New code retains that original Space lifetime and refuses a cancelled owner. Discovery creates its10s context only inside the actual worker; cancellation still reaches the original pool.Get. Original Close/runCancel and unchanged StreamPool.Send remain authoritative. Original eachOf joins all at-most3 workers before publishing the ordered result slice."
+    },
+    {
+      "area": "Fallback and ACL boundary",
+      "finding": "Only the node leg gets1s when the original Space has known LAN/global candidate IDs. The LAN/global leg retains original caller ctx, preserving cancellation and dial-strike behavior. No-candidate GetResponsiblePeers retains original caller budget and node error. Public GetNodePeers stays unchanged/nodes-only. The overlay does not modify identity, membership, signed ACL/tree, cipher, content or file-storage code."
+    },
+    {
+      "area": "Scope of concurrency fix",
+      "finding": "This bounds one manager's discovery and coalesces its subscriptions; it is not a claim that every multi-Space scheduling or WAN topology is now exhaustively accepted."
+    },
+    {
+      "area": "Apply boundary",
+      "finding": "The overlay applies only to an isolated canonical SDK directory after exact ACL prerequisite pins, patch SHA and before hashes, then verifies exactly3 changed files and after hashes. Retained qualified exports are refused. Applying or checking the overlay is source-only, not native/app acceptance."
+    }
+  ],
+  "originalFocusedTests": {
+    "baseline": [
+      {
+        "action": "fail",
+        "name": "TestLANProgressResponsiblePeersBoundNodeWait",
+        "seconds": 3
+      },
+      {
+        "action": "fail",
+        "name": "TestLANProgressBroadcastPeersBoundNodeWait",
+        "seconds": 3
+      },
+      {
+        "action": "fail",
+        "name": "TestLANProgressKeepAliveCoalescesQueuedSubscription",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestLANProgressKeepAliveQueueRejectionAllowsRetry",
+        "seconds": 0
+      },
+      {
+        "action": "fail",
+        "name": "TestLANProgressKeepAliveBoundsConcurrentNodeLookup",
+        "seconds": 1
+      },
+      {
+        "action": "fail",
+        "name": "TestLANProgressKeepAliveLeavesSharedWorkersAvailable",
+        "seconds": 0.3
+      },
+      {
+        "action": "pass",
+        "name": "TestLANProgressNodeOnlyFailureStillSurfaces",
+        "seconds": 0
+      }
+    ],
+    "corrected": [
+      {
+        "action": "pass",
+        "name": "TestNoteNodeStateWakesOnTransition",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestGetResponsiblePeersFoldsLocalPeers",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestGetResponsiblePeersLocalOnlyWhenNodesDown",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestGetResponsiblePeersNodeErrorWhenNobodyReachable",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestGetLocalPeersRemovesUnreachableAfterStrikes",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestGetLocalPeersStrikeResetsOnSuccess",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestGetLocalPeersKeepsPeerOnCancelledContext",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestGetBroadcastPeersIsNodesPlusLocal",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestBroadcastPark_OverflowParksAndReportsSuccess",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestBroadcastPark_RetriesUntilDelivered",
+        "seconds": 0.1
+      },
+      {
+        "action": "pass",
+        "name": "TestLANProgressResponsiblePeersBoundNodeWait",
+        "seconds": 1
+      },
+      {
+        "action": "pass",
+        "name": "TestLANProgressBroadcastPeersBoundNodeWait",
+        "seconds": 1
+      },
+      {
+        "action": "pass",
+        "name": "TestLANProgressKeepAliveCoalescesQueuedSubscription",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestLANProgressKeepAliveQueueRejectionAllowsRetry",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestLANProgressKeepAliveBoundsConcurrentNodeLookup",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestLANProgressKeepAliveLeavesSharedWorkersAvailable",
+        "seconds": 0
+      },
+      {
+        "action": "pass",
+        "name": "TestLANProgressNodeOnlyFailureStillSurfaces",
+        "seconds": 0
+      }
+    ],
+    "rawLogReads": [
+      {
+        "path": "/var/lib/pinkha-c-filesv2-20261126/lan-progress-unit2/baseline.log",
+        "bytes": 14486,
+        "sha256": "b88915b959c068d26933ebf441066459c101ea641f9851391560f251228bbb7a",
+        "terminalEvents": [
+          {
+            "Time": "2026-11-27T03:37:49.980182812Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressResponsiblePeersBoundNodeWait",
+            "Elapsed": 3
+          },
+          {
+            "Time": "2026-11-27T03:37:52.982199854Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressBroadcastPeersBoundNodeWait",
+            "Elapsed": 3
+          },
+          {
+            "Time": "2026-11-27T03:37:52.982248294Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressKeepAliveCoalescesQueuedSubscription",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:37:52.982266934Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressKeepAliveQueueRejectionAllowsRetry",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:37:53.98241448Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressKeepAliveBoundsConcurrentNodeLookup",
+            "Elapsed": 1
+          },
+          {
+            "Time": "2026-11-27T03:37:54.283096027Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressKeepAliveLeavesSharedWorkersAvailable",
+            "Elapsed": 0.3
+          },
+          {
+            "Time": "2026-11-27T03:37:54.283429669Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressNodeOnlyFailureStillSurfaces",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:37:54.290249747Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Elapsed": 8.513
+          }
+        ],
+        "diagnostics": []
+      },
+      {
+        "path": "/var/lib/pinkha-c-filesv2-20261126/lan-progress-unit2/corrected.log",
+        "bytes": 17562,
+        "sha256": "9b4fb84586ebfb93dc5443e4b622ad0a2246462dbfdd7635b0ba3a36d3188a06",
+        "terminalEvents": [
+          {
+            "Time": "2026-11-27T03:38:04.417316041Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestNoteNodeStateWakesOnTransition",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:04.417343161Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestGetResponsiblePeersFoldsLocalPeers",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:04.417361521Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestGetResponsiblePeersLocalOnlyWhenNodesDown",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:04.417470882Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestGetResponsiblePeersNodeErrorWhenNobodyReachable",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:04.417576522Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestGetLocalPeersRemovesUnreachableAfterStrikes",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:04.417591282Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestGetLocalPeersStrikeResetsOnSuccess",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:04.417611522Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestGetLocalPeersKeepsPeerOnCancelledContext",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:04.417709243Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestGetBroadcastPeersIsNodesPlusLocal",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:04.417865844Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestBroadcastPark_OverflowParksAndReportsSuccess",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:04.519097325Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestBroadcastPark_RetriesUntilDelivered",
+            "Elapsed": 0.1
+          },
+          {
+            "Time": "2026-11-27T03:38:05.520324722Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressResponsiblePeersBoundNodeWait",
+            "Elapsed": 1
+          },
+          {
+            "Time": "2026-11-27T03:38:06.520872474Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressBroadcastPeersBoundNodeWait",
+            "Elapsed": 1
+          },
+          {
+            "Time": "2026-11-27T03:38:06.520902074Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressKeepAliveCoalescesQueuedSubscription",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:06.520914875Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressKeepAliveQueueRejectionAllowsRetry",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:06.520927315Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressKeepAliveBoundsConcurrentNodeLookup",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:06.520945835Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressKeepAliveLeavesSharedWorkersAvailable",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:06.520960795Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressNodeOnlyFailureStillSurfaces",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:38:06.524683455Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Elapsed": 2.205
+          }
+        ],
+        "diagnostics": []
+      },
+      {
+        "path": "/var/lib/pinkha-c-filesv2-20261126/lan-progress-unit1/baseline.log",
+        "bytes": 19839,
+        "sha256": "39a214a530440f4dc50d5e922a94502ac95d7954f9bf12f395d07b61ef6a9d41",
+        "terminalEvents": [
+          {
+            "Time": "2026-11-27T03:33:42.232519288Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressResponsiblePeersBoundNodeWait",
+            "Elapsed": 3
+          },
+          {
+            "Time": "2026-11-27T03:33:45.235319569Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressBroadcastPeersBoundNodeWait",
+            "Elapsed": 3
+          },
+          {
+            "Time": "2026-11-27T03:33:45.236084854Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressKeepAliveCoalescesQueuedSubscription",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:33:45.236103934Z",
+            "Action": "pass",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressKeepAliveQueueRejectionAllowsRetry",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:33:46.238598983Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressKeepAliveBoundsConcurrentNodeLookup",
+            "Elapsed": 1
+          },
+          {
+            "Time": "2026-11-27T03:33:46.539804929Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressKeepAliveLeavesSharedWorkersAvailable",
+            "Elapsed": 0.3
+          },
+          {
+            "Time": "2026-11-27T03:33:46.551253275Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressNodeOnlyFailureStillSurfaces",
+            "Elapsed": 0
+          },
+          {
+            "Time": "2026-11-27T03:33:46.551289475Z",
+            "Action": "fail",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Elapsed": 8.429
+          }
+        ],
+        "diagnostics": [
+          {
+            "Time": "2026-11-27T03:33:46.543586751Z",
+            "Action": "output",
+            "Package": "github.com/anyproto/any-sync-sdk/internal/anysyncx",
+            "Test": "TestLANProgressNodeOnlyFailureStillSurfaces",
+            "Output": "panic: runtime error: invalid memory address or nil pointer dereference [recovered, repanicked]\n"
+          }
+        ]
+      }
+    ],
+    "fiveBaselineFailuresTwoPasses": true,
+    "correctedPassCount": 17,
+    "correctedFailCount": 0,
+    "correctedSkipCount": 0,
+    "baselineProcessSeconds": 24.04,
+    "correctedProcessSeconds": 12.029,
+    "firstFixturePanicPreserved": true,
+    "priorFixtureSourceChanges": [
+      {
+        "line": 110,
+        "before": "\tm := newTestManager([]string{\"node1\"}, nil, map[string]peer.Peer{\"node1\": fakePeer{id: \"node1\"}})",
+        "after": "\tm := newTestManager([]string{\"node1\"}, &fakeLocalPeers{}, map[string]peer.Peer{\"node1\": fakePeer{id: \"node1\"}})"
+      },
+      {
+        "line": 127,
+        "before": "\tm := newTestManager(nil, nil, nil)",
+        "after": "\tm := newTestManager(nil, &fakeLocalPeers{}, nil)"
+      },
+      {
+        "line": 141,
+        "before": "\tm := newTestManager([]string{\"node1\", \"node2\", \"node3\"}, nil, nil)",
+        "after": "\tm := newTestManager([]string{\"node1\", \"node2\", \"node3\"}, &fakeLocalPeers{}, nil)"
+      },
+      {
+        "line": 214,
+        "before": "\tm := newTestManager([]string{\"node1\"}, nil, nil)",
+        "after": "\tm := newTestManager([]string{\"node1\"}, &fakeLocalPeers{}, nil)"
+      },
+      {
+        "line": 259,
+        "before": "\tm := newTestManager([]string{\"node1\"}, nil, nil)",
+        "after": "\tm := newTestManager([]string{\"node1\"}, &fakeLocalPeers{}, nil)"
+      }
+    ],
+    "fixtureAssertionsChanged": false,
+    "baselineAndCorrectedUseSameNewTestBytes": true,
+    "reviewerTestReruns": 0
+  },
+  "observedOriginalStall": {
+    "originalFailures": {
+      "firstStatus": "FAIL",
+      "firstSeconds": 154.893,
+      "secondStatus": "FAIL",
+      "secondSeconds": 152.04
+    },
+    "matchingOriginalWorkerStacks": [
+      {
+        "name": "alice-9DSkw6W3eqv-15-goroutines.txt",
+        "sha256": "57c1758f02f0b03e819ba2d5a96c367d2dab6542a222510bfbd16ca3239f57e6",
+        "matchingWorkerStacks": 4,
+        "matchingStackSHA256": [
+          "422627cadd81ba4e5db276c88f653092a16b3d20202e3f4844652564d919061c",
+          "c6bcf7626625075912a7d997807f40a855fd21cbaf78d05fe4d25b93919a6366",
+          "c73d85e8f1a1f08d9b87b932b3ffe6e7e5144fa43bb58d17109d74c20059b7ac",
+          "abcf32178564f440af4289fd674c1ec04dbc8fa2827ade925044bc7e319dbb50"
+        ]
+      },
+      {
+        "name": "alice-9DSkw6W3eqv-60-goroutines.txt",
+        "sha256": "88ad1261bd25b44cece24ba0a8dc54ee1d137449aad89d05c815be64bcbfc29d",
+        "matchingWorkerStacks": 4,
+        "matchingStackSHA256": [
+          "349b815ccbf85e21848485fe709597f0a059df62bc8b53344651b2f066d24576",
+          "c2e3a592240e6326396ddd9695f544fba59946c2c40006a2316049cf93cef5b3",
+          "a57ec836830537e87bcb5243ae720119f99a80b513d67c6d508287ad83ef6020",
+          "0572e1d304677c8a68349a3a68d4c62f812c3e5e894c68dbda0e73833b28cc68"
+        ]
+      },
+      {
+        "name": "alice-Bst4MGoLyBW-15-goroutines.txt",
+        "sha256": "c8c8d9d14d4ca141e660467d858534207424553ed194c8d250191990df9c894d",
+        "matchingWorkerStacks": 3,
+        "matchingStackSHA256": [
+          "757b20570d0a3d4d5501b89e57e8089f150c0c29a818b3696190d571e8b2f00a",
+          "36f3a31f18b613458fc883c949afd4d35abd6737fdbff4f09041da4d183cdd0e",
+          "2d2048f5922a901aadbc04840115aa7787debca6ca4e81105fd6070403e2df1b"
+        ]
+      },
+      {
+        "name": "bob-9DSkw6W3eqv-15-goroutines.txt",
+        "sha256": "9b3920489a992816446853186feb3a8a779d4b4f0d05ebac57efbb89768a6eed",
+        "matchingWorkerStacks": 4,
+        "matchingStackSHA256": [
+          "720ac9633d03996843b1e9ef999c2e4340691540d018f5b9b2ff6bfad5bf693a",
+          "17f924d6051dc4128492133dc35bffcc317a5e5d5202130282e0bdf54c2c16b8",
+          "8841eec7655fba941f2fb03bc0acbcce7fe5ffa9364d6a9dd4dc696b33d4a61a",
+          "2a22525aeb0e1a7f0cfd800d9fdb46c83fe026abf7ba19703ef3057835cbf0c7"
+        ]
+      },
+      {
+        "name": "bob-9DSkw6W3eqv-60-goroutines.txt",
+        "sha256": "8abc9ac5fab25eb1641ef757a0f6229ca5f92206d71a6bc059f70839331c6b00",
+        "matchingWorkerStacks": 4,
+        "matchingStackSHA256": [
+          "61255581e84e237fd5afbde938e639327b1383153ddedd965afdec3a2b843772",
+          "6c0c7e3a355fd4904d7eec9bdc857bd9444bc981f8deb5d7605f3bd946aeb42b",
+          "de34c684bcd98b405a6ed96be9604ee580e02fcde3ab7250a02f8482cbdac2bf",
+          "0e5036b1dcc796832f868a9a988b053b5a9fe4f09390b4ddcec4c90849cdfa75"
+        ]
+      },
+      {
+        "name": "bob-Bst4MGoLyBW-15-goroutines.txt",
+        "sha256": "5c95a4fdb96f7f2ca3998e3106e51cfaa652ec039c78901e2305b69ece83c05b",
+        "matchingWorkerStacks": 3,
+        "matchingStackSHA256": [
+          "c374edc7216e650a9b6cf6367dd5b3edea62f15982ba53d45bd0d430ab36e0b6",
+          "b39bed5b89c35df35ad47c17fcfa5154ca62e932ecdae5a7cadb4fb58974b6d0",
+          "ce4b9b3cbffe913c08b618ebcc66ef15c55c05613d0f043994d8e82369df6e97"
+        ]
+      }
+    ],
+    "finding": "The PNG15s and60s captures each contain four real KeepAlive/GetNodePeers/streampool worker stacks in both retained peers. These are hashes/readbacks of original captures, not new native observations."
+  },
+  "nativeIdentity": {
+    "binary": {
+      "bytes": 78079287,
+      "path": "/var/lib/pinkha-c-filesv2-20261126/lan-progress-native1/any",
+      "sha256": "0796b939145f98fd3436b40c3ae3c7c9daec239b54f8c1fa237fb20a349d0b07"
+    },
+    "sourceFiles": 1599,
+    "nativeManifestSHA256": "e785ed2faf1d0bf0d18e7be7f0090cdee4061bd714f3be1509927895b9df336a",
+    "sdkFiles": 718,
+    "sdkManifestSHA256": "324f2136ecc953906549a2fe2963337bef4fcef03446e6604c8066299b1faf5c",
+    "baseAnyCommit": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+    "baseAnySyncSDKCommit": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9",
+    "buildReceipt": {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/988d057848087410dc6363b21fadea94ee759b52/Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/native-build-result.json",
+      "bytes": 4145,
+      "sha256": "c74e754d4f26b9ca9b3c9e681093e247fe2c54dd5360fe0677dca25c0282cda6"
+    },
+    "sourceAndDeltaAudit": {
+      "oldFiles": 1597,
+      "newFiles": 1599,
+      "delta": [
+        ".runtime-artifacts/sdk-source/internal/anysyncx/peermanager.go",
+        ".runtime-artifacts/sdk-source/internal/anysyncx/peerprogress.go",
+        ".runtime-artifacts/sdk-source/internal/anysyncx/peerprogress_test.go"
+      ],
+      "allOtherSourceFieldsUnchanged": true,
+      "actual": {
+        "root": "/var/lib/pinkha-c-filesv2-20261126/lan-progress-native1/source",
+        "files": 1599,
+        "bytes": 17308697,
+        "exactManifestMatch": true
+      }
+    },
+    "actualSDKClosureAudit": {
+      "beforeFiles": 716,
+      "baselineFiles": 717,
+      "afterFiles": 718,
+      "delta": [
+        "internal/anysyncx/peermanager.go",
+        "internal/anysyncx/peerprogress.go",
+        "internal/anysyncx/peerprogress_test.go"
+      ],
+      "sameExactNewTestsBaselineAndCorrected": true,
+      "actualQualifiedSDKUnchanged": true
+    },
+    "compilerProcessSeconds": 80.47,
+    "wholeProducerSeconds": 100.129,
+    "compilerLogBytes": 0,
+    "compilerOutcome": "Original process exit0, exact binary and complete source manifest; not inferred merely from an empty log."
+  },
+  "originalRetainedNativeAcceptance": {
+    "status": "PASS_ORIGINAL_RETAINED_ACCOUNTS_LAN_PROGRESS_FIVE_FILES_CRASH_COLD_BYTES",
+    "receipt": {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/988d057848087410dc6363b21fadea94ee759b52/Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/original-files-lan-progress1-result.json",
+      "bytes": 41759,
+      "sha256": "0c0d4622bff1075d7da331b3f2d393aa536ce688e05a92013defde153210c5da"
+    },
+    "seconds": 15.336,
+    "sameOriginalAccountsSpaceObject": true,
+    "accountInitCalls": 0,
+    "joinCalls": 0,
+    "grantCalls": 0,
+    "inviteCreateCalls": 0,
+    "confirmedAttachmentsReissued": 0,
+    "existingConfirmedAttachments": 4,
+    "newAttachments": [
+      "thumb.png",
+      "acl-revocation-canary.bin"
+    ],
+    "unchangedMetadataDeadlineSeconds": 90,
+    "fiveFiles": [
+      {
+        "destinationSHA256": "5d72e36849884da3da3fe9ddde0a01f49a03cde3b417f49456e3558bea8db463",
+        "durable": false,
+        "fileId": "QZmWabwjqP3",
+        "inline": false,
+        "mime": "application/x-pinkha-heart-source",
+        "name": "historical-source.pinkha-heart-source",
+        "objectId": "bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e",
+        "plaintextBytes": 1634696,
+        "plaintextSHA256": "5d72e36849884da3da3fe9ddde0a01f49a03cde3b417f49456e3558bea8db463",
+        "range": {
+          "bytes": 32768,
+          "contentRange": "bytes 200000-232767/1634696",
+          "offset": 200000,
+          "sha256": "8de434364280248153cabe4c7e602cb005932feaee10a10631310357e40017c7"
+        },
+        "recipientComplete": true,
+        "recipientInitiallyCached": false,
+        "rootCid": "bafybeifc3gmowpv7cxrzha6yzihnh327ajxq5skljqnbg7655tai5uqfxu",
+        "storedMIME": "application/x-pinkha-heart-source"
+      },
+      {
+        "destinationSHA256": "0c333f13f0f51a3196fd64d8a6e7db65d8130ba19c5b9bc1ce4dfda954236dad",
+        "durable": false,
+        "fileId": "Bst4MGoLyBW",
+        "inline": false,
+        "mime": "application/octet-stream",
+        "name": "binary-8192.bin",
+        "objectId": "bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e",
+        "plaintextBytes": 8192,
+        "plaintextSHA256": "0c333f13f0f51a3196fd64d8a6e7db65d8130ba19c5b9bc1ce4dfda954236dad",
+        "range": {
+          "bytes": 5462,
+          "contentRange": "bytes 2730-8191/8192",
+          "offset": 2730,
+          "sha256": "3b21658bc1508db721eed93ded57995eef56e9e5096247db2866def9e1101e0a"
+        },
+        "recipientComplete": true,
+        "recipientInitiallyCached": false,
+        "rootCid": "bafybeicvht4newvfvui7bcgvl6rykaihodmpwqzahoadqr6zyai4pd5rnu",
+        "storedMIME": ""
+      },
+      {
+        "destinationSHA256": "5af945f5c5f111ab7594975dfc19766bd3d2ada43152fc9de8e7adc52acb2ec9",
+        "durable": false,
+        "fileId": "hs6LTsotxAY",
+        "inline": false,
+        "mime": "application/octet-stream",
+        "name": "partial-8388608.bin",
+        "objectId": "bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e",
+        "plaintextBytes": 8388608,
+        "plaintextSHA256": "5af945f5c5f111ab7594975dfc19766bd3d2ada43152fc9de8e7adc52acb2ec9",
+        "range": {
+          "bytes": 32768,
+          "contentRange": "bytes 200000-232767/8388608",
+          "offset": 200000,
+          "sha256": "003f42beb3a26aae613faf1db6c3bcd985dfaed52b3e1e7d1e3a005160660af8"
+        },
+        "recipientComplete": true,
+        "recipientInitiallyCached": false,
+        "rootCid": "bafybeihps52tmd3pbgge5hhzayuxvcx2wexnzirhzoshjd3jxnpxss3swu",
+        "storedMIME": ""
+      },
+      {
+        "destinationSHA256": "50e95923856fe08bff9629c22e65e9f49a8c96e46394a275320c5213a4e1300a",
+        "durable": false,
+        "fileId": "9DSkw6W3eqv",
+        "inline": false,
+        "mime": "image/png",
+        "name": "original-image.png",
+        "objectId": "bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e",
+        "plaintextBytes": 49363,
+        "plaintextSHA256": "50e95923856fe08bff9629c22e65e9f49a8c96e46394a275320c5213a4e1300a",
+        "range": {
+          "bytes": 32768,
+          "contentRange": "bytes 16454-49221/49363",
+          "offset": 16454,
+          "sha256": "f14b4f468bcdda999ba22cf94cd5bd29332ac1628d8665886ecaee0bb7571d65"
+        },
+        "recipientComplete": true,
+        "recipientInitiallyCached": false,
+        "rootCid": "bafybeid7w6hpvn22n2xjpmsmp6vdknsa22rqxazgudq6drau7tk5dr7xea",
+        "storedMIME": "image/png"
+      },
+      {
+        "destinationSHA256": "34ed913c4a7c7c151487e948b7568a1062e37cfdcb3c3eaf5247c83dec2219e3",
+        "durable": false,
+        "fileId": "SbLLxZDbq59",
+        "inline": false,
+        "mime": "image/png",
+        "name": "thumb.png",
+        "objectId": "bafyreicytuyyuw7nu6cklsgptni4k5xoyi3u4suijh6lp5moki2nvtpi7e",
+        "plaintextBytes": 12420,
+        "plaintextSHA256": "34ed913c4a7c7c151487e948b7568a1062e37cfdcb3c3eaf5247c83dec2219e3",
+        "range": {
+          "bytes": 8280,
+          "contentRange": "bytes 4140-12419/12420",
+          "offset": 4140,
+          "sha256": "b7ed9fefe655928e80d0c2b496d1fc5d53b0945426e433b9bd84b1b926794c90"
+        },
+        "recipientComplete": true,
+        "recipientInitiallyCached": false,
+        "rootCid": "bafybeiecav3ddyxokxuieiwnlhgjyzdqypj3sn3egf6dsxdm6knei52geu",
+        "variant": "thumb",
+        "variantOf": "9DSkw6W3eqv"
+      }
+    ],
+    "fiveColdReadbacks": [
+      {
+        "bytes": 1634696,
+        "fileId": "QZmWabwjqP3",
+        "sha256": "5d72e36849884da3da3fe9ddde0a01f49a03cde3b417f49456e3558bea8db463"
+      },
+      {
+        "bytes": 8192,
+        "fileId": "Bst4MGoLyBW",
+        "sha256": "0c333f13f0f51a3196fd64d8a6e7db65d8130ba19c5b9bc1ce4dfda954236dad"
+      },
+      {
+        "bytes": 8388608,
+        "fileId": "hs6LTsotxAY",
+        "sha256": "5af945f5c5f111ab7594975dfc19766bd3d2ada43152fc9de8e7adc52acb2ec9"
+      },
+      {
+        "bytes": 49363,
+        "fileId": "9DSkw6W3eqv",
+        "sha256": "50e95923856fe08bff9629c22e65e9f49a8c96e46394a275320c5213a4e1300a"
+      },
+      {
+        "bytes": 12420,
+        "fileId": "SbLLxZDbq59",
+        "sha256": "34ed913c4a7c7c151487e948b7568a1062e37cfdcb3c3eaf5247c83dec2219e3"
+      }
+    ],
+    "partialCrash": {
+      "actualOwnedCrash": true,
+      "cachedBeforeCrash": false,
+      "downloadedRange": {
+        "bytes": 32768,
+        "contentRange": "bytes 0-32767/8388608",
+        "offset": 0,
+        "sha256": "34b477ec21b6523db9dd7a858c6058a35b94f5669623a260da95179f3848e80b"
+      },
+      "partialEncryptedCAR": {
+        "allocatedBytes": 4202496,
+        "bytes": 8389979,
+        "hasSparseAllocation": true,
+        "relativePath": "AAFSi1CkNvwiTLAkKWQF9K5GnLcfFaqvfYYCa1zmJWETjuyR/sdk/files/bafyreigwbj5ipsthay6xcrt6xcw5hpuagje2jiupq4zhidbevd4miqbrmu.qhz8hrb21y1l/wu/bafybeihps52tmd3pbgge5hhzayuxvcx2wexnzirhzoshjd3jxnpxss3swu.car",
+        "sha256": "50e8f0fde9bba4bc6fbb58ad5ae16b6158f1854fda2877e08ee767f12bc9e989"
+      },
+      "receiverExitCode": -9
+    },
+    "partialColdSync": {
+      "globalPeers": 0,
+      "localPeers": 0,
+      "networkPeers": 0,
+      "state": "offline"
+    },
+    "fullColdSync": {
+      "globalPeers": 0,
+      "localPeers": 0,
+      "networkPeers": 0,
+      "state": "offline"
+    },
+    "nativeVariantReadback": {
+      "byteEquality": true,
+      "nativeVariantOf": "9DSkw6W3eqv",
+      "sha256": "34ed913c4a7c7c151487e948b7568a1062e37cfdcb3c3eaf5247c83dec2219e3",
+      "variantFileId": "SbLLxZDbq59"
+    },
+    "originalOSDenialProbe": {
+      "deniedSyscalls": [
+        "connect",
+        "sendto",
+        "sendmsg",
+        "sendmmsg",
+        "io_uring_setup",
+        "io_uring_enter",
+        "io_uring_register"
+      ],
+      "librarySHA256": "3d128123b494ca9e88f3c237b0912397145af1754e86ea99f460af6857441f19",
+      "noNewPrivileges": true,
+      "seccompFilterActive": true,
+      "tcpDenied": true,
+      "tcpErrno": 1,
+      "udpDenied": true,
+      "udpErrno": 1
+    },
+    "readerWriteDenial": {
+      "errorCode": "space.read_only",
+      "status": 403
+    },
+    "canaryRemainsUncached": true,
+    "processOutcome": {
+      "distinctOwnedPIDs": 7,
+      "normalExits": 6,
+      "intentionalSIGKILL": 1,
+      "allOriginalGroupsPositivelyAbsent": true
+    },
+    "controllerUnchangedSharedFunctions": [
+      "absent",
+      "actual",
+      "await_metadata",
+      "car_observation",
+      "complete",
+      "config",
+      "connected",
+      "diagnostic",
+      "discovery",
+      "encrypted_car",
+      "env_for",
+      "expect_info",
+      "file_path",
+      "guard",
+      "healthy",
+      "info",
+      "interrupted",
+      "js",
+      "mark",
+      "member",
+      "metadata_complete",
+      "native_admission",
+      "policy_probe",
+      "range_bytes",
+      "request",
+      "row_arrived",
+      "run_short",
+      "save",
+      "segment",
+      "spawn",
+      "start",
+      "sync",
+      "until",
+      "zero_network"
+    ],
+    "controllerChangedFunctions": [
+      "attach",
+      "main"
+    ],
+    "controllerReview": "34 original functions including request/start/member/metadata/until90/range/OS probe/CAR and cleanup are byte-identical to the failed predecessor. New main admits exactly4 confirmed IDs and old custody; attach permits only the missing thumbnail and unique canary. It persists dispatch before native POST, forbids duplicate confirmed attachments, then performs real range/crash/new-PID offline/LAN-resume/full-cold checks.",
+    "currentAccountDataReadByReviewer": false
+  },
+  "native792Custody": {
+    "receipt": {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/4a381db674fa1f011bff5d02d1a1e9badf253c1e/Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody/receipt.json",
+      "bytes": 2707,
+      "sha256": "378c4fe23d43c697ad475526b9687491d8f8c3fa29e74e93774e96574c140f2e"
+    },
+    "restoreSource": {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/4a381db674fa1f011bff5d02d1a1e9badf253c1e/Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody/restore.py",
+      "bytes": 1355,
+      "sha256": "f4b368bdf8280caa52967585fd55be03a99b9c8ecf4aa9c50421bfd814f6b481"
+    },
+    "rawPath": "/mnt/development/projects/evidence/pinkha-w1-network-native792-raw-20261127/any-79248a63132a0146",
+    "originalPath": "/var/lib/pinkha-c-filesv2-20261126/acl-refresh-native1/any",
+    "sha256": "79248a63132a0146deff4e9fe1c4104a381a34d5c2ffcad536247a8429f98857",
+    "bytes": 78074642,
+    "actualOriginalReadAudit": {
+      "rawCopyExact": true,
+      "metadataExact": true,
+      "formerPathExists": false,
+      "formerPathIsSymlink": false,
+      "restoreExecuted": false,
+      "originalPartialXZRemainsFailed": true
+    },
+    "review": "Actual raw bytes, size,0700 mode, uid/gid and originalmtime match. Relocation fsynced the copy, restore mapping and receipt before duplicate-only retirement after source identity/no-live-use checks. The separate partialxz failed at the unchanged2GiB floor and remains intact/failed. No restore, retirement or copy was executed by this reviewer.",
+    "restorePrerequisite": "Only a specific historical replay in the sole owner's exclusive slot should use the retained restore mapping. It checks source hash/size, destination absence and original resource floors, writes an exclusive temporary copy, verifies bytes/metadata, fsyncs and installs the historical path. It is not needed for current0796; old receipts keep their original content/source identity rather than being relabeled to0796."
+  },
+  "scopeNotAccepted": [
+    "Original-role revoked-read/removal/restoration; only Reader write refusal is proved and its canary remains uncached.",
+    "Production cloud quota/custody or a FilesV2 cloud fleet; durable=false is explicit.",
+    "Whole-Space migration, broad12-network/WAN or all multi-Space scheduling scenarios.",
+    "Apple native slice build/packaging, final consumer ABI and application execution, physical devices or TestFlight.",
+    "The frozen Apple8ac/Hanlin385 app is not this original Linux native0796. Any-sync SDKc1fd/718 and Hanlin SDK pins are separate source identities."
+  ],
+  "mergeAndBuildPrerequisites": [
+    "Root alone integrates8c4953 then988d057 then4a381 (23 added Tools/evidence files); the existing17-entry network directory at reviewed e320 exactly equals donorf2 and already includes the required1d421 ACL overlay.",
+    "Retain the first unit panic, five-failure baseline, both native-transfer failures, failed partialxz and explicit raw792 restore mapping with their original SHA scopes.",
+    "These commits publish an isolated Any-sync SDK overlay and Linux evidence; they do not modify the live Apple native framework or final product pins. Root/Wave1 must assemble the intended native union with the exact reviewed peer overlay and other ready changes, then qualify Apple slices/ABI/source manifests and bind the actual consumers.",
+    "Do not rerun already-qualified original17 or the retained native file journey merely to merge source. Additional execution must resolve an actual changed dependency or remaining acceptance gate."
+  ],
+  "retainedReceiptFiles": [
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/8c4953a01c3b6c8025b2f6c78edd491e8be7ea08/Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/lan-progress-unit1-result.json",
+      "bytes": 3987,
+      "sha256": "77e1d1ebc5f8c19c0427fdad78f88aa912659f56882f05323522ce17ce58b984"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/8c4953a01c3b6c8025b2f6c78edd491e8be7ea08/Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/lan-progress-unit2-result.json",
+      "bytes": 7878,
+      "sha256": "5e9df7a7e9a3039938996d68108fab934f6b4fe1888ba3d34097843c0277a64c"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/8c4953a01c3b6c8025b2f6c78edd491e8be7ea08/Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/source-replay-result.json",
+      "bytes": 2583,
+      "sha256": "271248e4a09229cc52e7145625041be9aa052094a459f25d19753694ccd0527e"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/988d057848087410dc6363b21fadea94ee759b52/Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/native-build-result.json",
+      "bytes": 4145,
+      "sha256": "c74e754d4f26b9ca9b3c9e681093e247fe2c54dd5360fe0677dca25c0282cda6"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/988d057848087410dc6363b21fadea94ee759b52/Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/native-source-manifest.json",
+      "bytes": 266767,
+      "sha256": "e785ed2faf1d0bf0d18e7be7f0090cdee4061bd714f3be1509927895b9df336a"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/988d057848087410dc6363b21fadea94ee759b52/Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/original-files-after-join2-result.json",
+      "bytes": 43836,
+      "sha256": "85867ee6b4f2e586c11b9962dbccaf902e700b5757dc8d81023cc334a62178bb"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/988d057848087410dc6363b21fadea94ee759b52/Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/original-files-lan-progress1-result.json",
+      "bytes": 41759,
+      "sha256": "0c0d4622bff1075d7da331b3f2d393aa536ce688e05a92013defde153210c5da"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/4a381db674fa1f011bff5d02d1a1e9badf253c1e/Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody/receipt.json",
+      "bytes": 2707,
+      "sha256": "378c4fe23d43c697ad475526b9687491d8f8c3fa29e74e93774e96574c140f2e"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/4a381db674fa1f011bff5d02d1a1e9badf253c1e/Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody/failed-xz-result.json",
+      "bytes": 1916,
+      "sha256": "473afc8999467fe8450264e2ece0bd135e16f9aed015d99180f0272f0a0e1d47"
+    }
+  ],
+  "originalReadEvidence": [
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/original-read1.json",
+      "bytes": 220,
+      "sha256": "8098600a875c3553d473eb04df978a486abe92e41d0e5b49bbb4730c78f1710b"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/original-read2.json",
+      "bytes": 18708,
+      "sha256": "1cc99fcb531db24488e39883e16917aa036944f674de3271b3bf2a1f3f0f205c"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/original-files2.json",
+      "bytes": 10407,
+      "sha256": "3f1d4d4f3cc075feb7ac6d2de20ef3ea22f3b7a7b1b4c7336227cb648cb52130"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/original-read3.json",
+      "bytes": 85686,
+      "sha256": "b393a47dbebfb479ca3f46c7d9560f93a79e9ca2d335ed67487c423fa5c71c7a"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/original-files3.json",
+      "bytes": 42738,
+      "sha256": "77e82bd451b98fa756159c92649f72e9dd02c7370d5b068cd5465d35e501a808"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/original-read4.json",
+      "bytes": 33280,
+      "sha256": "8db660f2c3f8f0d186ef0d2f59e43a8ba033985cd42b5c7716c258c370cfe7ea"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/original-files4.json",
+      "bytes": 17425,
+      "sha256": "9cf820152b0ef0504cdf612b1fc3fd55ab18a5ebb432ad1fbab3d9d72424a9c7"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/original-send-pool.json",
+      "bytes": 26059,
+      "sha256": "48ddb7d996b0d569f7a79dac1b261bd56e8a77ed646e32d124d0d16494e8b569"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-network-review/additional-prerequisites.json",
+      "bytes": 23115,
+      "sha256": "b8dd4be695c97b06e89d152d83b8dfbe5590000daa945e7a883f1c4ba75f2a70"
+    }
+  ],
+  "originalReadTransport": "First large readonly call returned MCP Internal error; exact failure preserved. Narrower readonly calls used the same authorized Sentinel artifact-reader identity. No permission/group/credential change or denied-read circumvention occurred.",
+  "reviewerExecution": {
+    "sourceAndEvidenceMechanicalAudit": "PASS",
+    "testsRerun": 0,
+    "compilersStarted": 0,
+    "nativeProcessesStarted": 0,
+    "accountDirectoriesOpened": 0,
+    "networkOrACLMutations": 0,
+    "signalsSent": 0,
+    "restoreExecuted": false,
+    "MacOperations": 0,
+    "finalBranchWrites": 0
+  }
+}

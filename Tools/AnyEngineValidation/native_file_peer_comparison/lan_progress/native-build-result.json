@@ -1,0 +1,117 @@
+{
+  "actualFilesV2Acceptance": false,
+  "allOwnedGroupsPositivelyAbsent": true,
+  "baseNativeSourceUnchanged": true,
+  "binary": {
+    "bytes": 78079287,
+    "path": "/var/lib/pinkha-c-filesv2-20261126/lan-progress-native1/any",
+    "sha256": "0796b939145f98fd3436b40c3ae3c7c9daec239b54f8c1fa237fb20a349d0b07"
+  },
+  "controllerSHA256": "e347db2f977b38cbb0c6806e8f3387a1e84314f6ab6508825dab5aa1f5c84968",
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOCACHE": "/var/lib/pinkha-root-t2-linux-20261126/go-cache",
+    "GOFLAGS": "-mod=readonly",
+    "GOMAXPROCS": "2",
+    "GOMEMLIMIT": "1GiB",
+    "GOMODCACHE": "/root/go/pkg/mod",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOTMPDIR": "/mnt/development/projects/caches/pinkha-w1-lan-native-temp-20261127",
+    "GOTOOLCHAIN": "local",
+    "GOWORK": "off",
+    "TMPDIR": "/mnt/development/projects/caches/pinkha-w1-lan-native-temp-20261127"
+  },
+  "errors": [],
+  "focusedTestReceiptSHA256": "5e9df7a7e9a3039938996d68108fab934f6b4fe1888ba3d34097843c0277a64c",
+  "freeBytesAfter": {
+    "development": 3696431104,
+    "root": 2755125248
+  },
+  "isolatedSourceUnchanged": true,
+  "minimumFreeBytes": {
+    "development": 3516760064,
+    "root": 2835378176
+  },
+  "nativeAccountRuns": 0,
+  "processes": [
+    {
+      "command": [
+        "/usr/local/bin/go",
+        "build",
+        "-p",
+        "2",
+        "-o",
+        "/var/lib/pinkha-c-filesv2-20261126/lan-progress-native1/any",
+        "./cmd/any"
+      ],
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "label": "native-build",
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pgid": 3130295,
+      "pid": 3130295,
+      "resourceStopped": false,
+      "seconds": 80.47
+    }
+  ],
+  "protocol": "pinkha-bounded-node-lan-qualified-native-build-v1",
+  "qualifiedSDKUnchanged": true,
+  "resourceEstimateEvidence": {
+    "cacheAndTempAreEstimatedNotMeasuredPeak": true,
+    "copiedSourceBytes": 17297075,
+    "previousNativeBuildSeconds": 86.205,
+    "previousQualifiedNativeBytes": 78074642
+  },
+  "resourcePolicy": {
+    "admissionFreeBytes": {
+      "development": 3828367360,
+      "root": 2858659840
+    },
+    "cachePath": "/var/lib/pinkha-root-t2-linux-20261126/go-cache",
+    "cacheResolvedPath": "/mnt/development/projects/caches/pinkha-w1-t2-go-cache-20261127",
+    "floors": {
+      "development": 536870912,
+      "root": 2147483648
+    },
+    "memAvailableBefore": 4121948160,
+    "reserves": {
+      "development": 402653184,
+      "root": 134217728
+    },
+    "temporaryWorkPath": "/mnt/development/projects/caches/pinkha-w1-lan-native-temp-20261127"
+  },
+  "sdkManifestSHA256": "324f2136ecc953906549a2fe2963337bef4fcef03446e6604c8066299b1faf5c",
+  "seconds": 100.129,
+  "sourceAfter": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "sourceBefore": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "sourceChanges": [
+    ".runtime-artifacts/sdk-source/internal/anysyncx/peermanager.go",
+    ".runtime-artifacts/sdk-source/internal/anysyncx/peerprogress.go",
+    ".runtime-artifacts/sdk-source/internal/anysyncx/peerprogress_test.go"
+  ],
+  "sourceFiles": 1599,
+  "sourceManifestSHA256": "e785ed2faf1d0bf0d18e7be7f0090cdee4061bd714f3be1509927895b9df336a",
+  "status": "PASS_BUILD_ONLY"
+}

@@ -1,0 +1,253 @@
+{
+  "accountWrites": 0,
+  "aclAndSignatureSourcesUnchanged": true,
+  "admissionFreeBytes": {
+    "development": 4386004992,
+    "root": 3433132032
+  },
+  "allOwnedGroupsPositivelyAbsent": true,
+  "baseline": [
+    {
+      "action": "fail",
+      "name": "TestLANProgressResponsiblePeersBoundNodeWait",
+      "seconds": 3
+    },
+    {
+      "action": "fail",
+      "name": "TestLANProgressBroadcastPeersBoundNodeWait",
+      "seconds": 3
+    },
+    {
+      "action": "fail",
+      "name": "TestLANProgressKeepAliveCoalescesQueuedSubscription",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestLANProgressKeepAliveQueueRejectionAllowsRetry",
+      "seconds": 0
+    },
+    {
+      "action": "fail",
+      "name": "TestLANProgressKeepAliveBoundsConcurrentNodeLookup",
+      "seconds": 1
+    },
+    {
+      "action": "fail",
+      "name": "TestLANProgressKeepAliveLeavesSharedWorkersAvailable",
+      "seconds": 0.3
+    },
+    {
+      "action": "pass",
+      "name": "TestLANProgressNodeOnlyFailureStillSurfaces",
+      "seconds": 0
+    }
+  ],
+  "baselineFailureReproduced": true,
+  "baselineManifestSHA256": "82916a8281136d351d76f3885b4d4b512bd0a7b51a310bcd384b9f74d82956d5",
+  "baselineTestSourcesUnchanged": true,
+  "controllerSHA256": "c8232a69a136b3977a36cbb0ebfa0706e1e47f358f96ed726ffb40f960f45d28",
+  "corrected": [
+    {
+      "action": "pass",
+      "name": "TestNoteNodeStateWakesOnTransition",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestGetResponsiblePeersFoldsLocalPeers",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestGetResponsiblePeersLocalOnlyWhenNodesDown",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestGetResponsiblePeersNodeErrorWhenNobodyReachable",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestGetLocalPeersRemovesUnreachableAfterStrikes",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestGetLocalPeersStrikeResetsOnSuccess",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestGetLocalPeersKeepsPeerOnCancelledContext",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestGetBroadcastPeersIsNodesPlusLocal",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestBroadcastPark_OverflowParksAndReportsSuccess",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestBroadcastPark_RetriesUntilDelivered",
+      "seconds": 0.1
+    },
+    {
+      "action": "pass",
+      "name": "TestLANProgressResponsiblePeersBoundNodeWait",
+      "seconds": 1
+    },
+    {
+      "action": "pass",
+      "name": "TestLANProgressBroadcastPeersBoundNodeWait",
+      "seconds": 1
+    },
+    {
+      "action": "pass",
+      "name": "TestLANProgressKeepAliveCoalescesQueuedSubscription",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestLANProgressKeepAliveQueueRejectionAllowsRetry",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestLANProgressKeepAliveBoundsConcurrentNodeLookup",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestLANProgressKeepAliveLeavesSharedWorkersAvailable",
+      "seconds": 0
+    },
+    {
+      "action": "pass",
+      "name": "TestLANProgressNodeOnlyFailureStillSurfaces",
+      "seconds": 0
+    }
+  ],
+  "correctedManifestSHA256": "324f2136ecc953906549a2fe2963337bef4fcef03446e6604c8066299b1faf5c",
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOCACHE": "/var/lib/pinkha-root-t2-linux-20261126/go-cache",
+    "GOFLAGS": "-mod=readonly",
+    "GOMAXPROCS": "2",
+    "GOMEMLIMIT": "1GiB",
+    "GOMODCACHE": "/root/go/pkg/mod",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOTMPDIR": "/mnt/development/projects/caches/pinkha-w1-lan-progress-temp2-20261127",
+    "GOTOOLCHAIN": "local",
+    "GOWORK": "off",
+    "TMPDIR": "/mnt/development/projects/caches/pinkha-w1-lan-progress-temp2-20261127"
+  },
+  "errors": [],
+  "fixtureCorrection": "Explicit empty fakeLocalPeers instead of typed nil pointer; all acceptance assertions unchanged.",
+  "freeBytesAfter": {
+    "development": 4341182464,
+    "root": 3414040576
+  },
+  "inputSHA256": "26dfe9c5dfff380af0e584f6094ffbcc0952565d2c12e91be631aca6928d9d29",
+  "minimumFreeBytes": {
+    "development": 4285956096,
+    "root": 3414163456
+  },
+  "nativeAccountProcesses": 0,
+  "originalOverlayUnchanged": true,
+  "priorFixtureFailureReceiptSHA256": "77e1d1ebc5f8c19c0427fdad78f88aa912659f56882f05323522ce17ce58b984",
+  "processes": [
+    {
+      "command": [
+        "/usr/local/bin/go",
+        "test",
+        "-json",
+        "-count=1",
+        "-p=2",
+        "-timeout=90s",
+        "-run",
+        "^TestLANProgress",
+        "./internal/anysyncx"
+      ],
+      "exitCode": 1,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "label": "baseline",
+      "logSHA256": "b88915b959c068d26933ebf441066459c101ea641f9851391560f251228bbb7a",
+      "pgid": 3074767,
+      "pid": 3074767,
+      "resourceStopped": false,
+      "seconds": 24.04
+    },
+    {
+      "command": [
+        "/usr/local/bin/go",
+        "test",
+        "-json",
+        "-count=1",
+        "-p=2",
+        "-timeout=90s",
+        "-run",
+        "^(TestBroadcastPark_OverflowParksAndReportsSuccess|TestBroadcastPark_RetriesUntilDelivered|TestGetBroadcastPeersIsNodesPlusLocal|TestGetLocalPeersKeepsPeerOnCancelledContext|TestGetLocalPeersRemovesUnreachableAfterStrikes|TestGetLocalPeersStrikeResetsOnSuccess|TestGetResponsiblePeersFoldsLocalPeers|TestGetResponsiblePeersLocalOnlyWhenNodesDown|TestGetResponsiblePeersNodeErrorWhenNobodyReachable|TestLANProgressBroadcastPeersBoundNodeWait|TestLANProgressKeepAliveBoundsConcurrentNodeLookup|TestLANProgressKeepAliveCoalescesQueuedSubscription|TestLANProgressKeepAliveLeavesSharedWorkersAvailable|TestLANProgressKeepAliveQueueRejectionAllowsRetry|TestLANProgressNodeOnlyFailureStillSurfaces|TestLANProgressResponsiblePeersBoundNodeWait|TestNoteNodeStateWakesOnTransition)$",
+        "./internal/anysyncx"
+      ],
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "label": "corrected",
+      "logSHA256": "9b4fb84586ebfb93dc5443e4b622ad0a2246462dbfdd7635b0ba3a36d3188a06",
+      "pgid": 3076445,
+      "pid": 3076445,
+      "resourceStopped": false,
+      "seconds": 12.029
+    }
+  ],
+  "protocol": "pinkha-lan-node-progress-baseline-and-corrected-v1",
+  "resourcePolicy": {
+    "floors": {
+      "development": 536870912,
+      "root": 2147483648
+    },
+    "memAvailableBefore": 4968693760,
+    "reserves": {
+      "development": 268435456,
+      "root": 67108864
+    }
+  },
+  "seconds": 41.058,
+  "sourceAfter": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "sourceBefore": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "sourceDelta": [
+    "internal/anysyncx/peermanager.go",
+    "internal/anysyncx/peerprogress.go",
+    "internal/anysyncx/peerprogress_test.go"
+  ],
+  "status": "PASS_BASELINE_FIVE_FAILURES_CORRECTED_SEVENTEEN_PASSES"
+}

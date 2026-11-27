@@ -1,0 +1,437 @@
+--- a/internal/anysyncx/peermanager.go
++++ b/internal/anysyncx/peermanager.go
+@@ -6,6 +6,7 @@
+ 	"slices"
+ 	"strconv"
+ 	"sync"
++	"sync/atomic"
+ 	"time"
+ 
+ 	"github.com/anyproto/any-sync/app"
+@@ -170,6 +171,9 @@
+ 	subs              globalSubSource
+ 	subscribeMsgRaw   []byte
+ 	unsubscribeMsgRaw []byte
++	// One queued or resolving node subscription per space. Without this,
++	// the churn loop can occupy every shared send worker with dead dials.
++	subscribeQueued atomic.Bool
+ 	// onClose unregisters the manager from its provider.
+ 	onClose func()
+ 
+@@ -368,13 +372,11 @@
+ 	return len(m.streamPool.Streams(nodeStreamTag)) > 0
+ }
+ 
+-// broadcastSubscribe is one Subscribe broadcast against m.runCtx with
+-// a 10s deadline. Best-effort: errors are swallowed because the
+-// subscribeLoop retries on a backoff.
++// broadcastSubscribe queues one subscription. Its discovery budget starts
++// inside the send worker, rather than expiring while waiting in the queue.
++// KeepAlive coalesces repeats until that queued lookup has completed.
+ func (m *spacePeerManager) broadcastSubscribe() {
+-	ctx, cancel := context.WithTimeout(m.runCtx, 10*time.Second)
+-	defer cancel()
+-	m.KeepAlive(ctx)
++	m.KeepAlive(m.runCtx)
+ }
+ 
+ func (m *spacePeerManager) Name() string { return peermanager.CName }
+@@ -394,7 +396,9 @@
+ 		nodeErr error
+ 	)
+ 	if nodeIds := m.nodeConf.NodeIds(m.spaceId); len(nodeIds) > 0 {
+-		p, err := m.pool.GetOneOf(ctx, nodeIds)
++		nodeCtx, release := m.nodeLookupContext(ctx)
++		p, err := m.pool.GetOneOf(nodeCtx, nodeIds)
++		release()
+ 		if err != nil {
+ 			nodeErr = err
+ 		} else {
+@@ -701,10 +705,9 @@
+ // nodes-only on purpose — callers asking for "the nodes" (e.g. the
+ // space-delete flow) must not get LAN devices.
+ func (m *spacePeerManager) getBroadcastPeers(ctx context.Context) ([]peer.Peer, error) {
+-	peers, err := m.GetNodePeers(ctx)
+-	if err != nil {
+-		return nil, err
+-	}
++	nodeCtx, release := m.nodeLookupContext(ctx)
++	peers := m.getNodePeersConcurrent(nodeCtx)
++	release()
+ 	return append(peers, m.getLocalPeers(ctx)...), nil
+ }
+ 
+@@ -884,15 +887,29 @@
+ // preamble when they open. Sending it to local peers would flood them
+ // on the fast churn cadence (which runs whenever no node stream is up —
+ // i.e. exactly the offline-LAN scenario) for no benefit.
+-func (m *spacePeerManager) KeepAlive(ctx context.Context) {
+-	if len(m.subscribeMsgRaw) == 0 {
++func (m *spacePeerManager) KeepAlive(_ context.Context) {
++	if len(m.subscribeMsgRaw) == 0 || m.runCtx.Err() != nil {
+ 		return
+ 	}
++	// Global ask transitions still need to be observed while a node
++	// subscription is queued. They never join the node audience.
++	defer m.noteNodeState()
++	if !m.subscribeQueued.CompareAndSwap(false, true) {
++		return
++	}
++	release := sync.OnceFunc(func() { m.subscribeQueued.Store(false) })
+ 	msg := &spacesyncproto.ObjectSyncMessage{Payload: m.subscribeMsgRaw}
+-	_ = m.streamPool.Send(m.runCtx, msg, func(ctx context.Context) ([]peer.Peer, error) {
+-		return m.GetNodePeers(ctx)
++	err := m.streamPool.Send(m.runCtx, msg, func(ctx context.Context) ([]peer.Peer, error) {
++		defer release()
++		lookupCtx, cancel := context.WithTimeout(ctx, nodeSubscribeTimeout)
++		defer cancel()
++		return m.getNodePeersConcurrent(lookupCtx), nil
+ 	})
+-	m.noteNodeState()
++	if err != nil {
++		// A rejected queue entry will never call its getter. Let the next
++		// cadence retry; don't leave the manager permanently coalesced.
++		release()
++	}
+ }
+ 
+ // noteNodeState re-plans the global ask when the node stream state no
+--- /dev/null
++++ b/internal/anysyncx/peerprogress.go
+@@ -0,0 +1,60 @@
++package anysyncx
++
++import (
++	"context"
++	"time"
++
++	"github.com/anyproto/any-sync/net/peer"
++)
++
++const (
++	// A discovered device must be reachable without waiting for an
++	// unavailable node's transport retry sequence. Node subscriptions
++	// retain a separate, longer budget to establish node connections.
++	nodeFallbackTimeout  = time.Second
++	nodeSubscribeTimeout = 10 * time.Second
++	nodeLookupWorkers    = 3
++)
++
++// nodeLookupContext bounds only the node leg when another device is
++// known for this space. The caller retains ctx for the LAN/global leg:
++// a node timeout is not a cancellation or a dial strike for that device.
++// No local/global candidates means the existing node-only budget stays
++// unchanged. These candidates still pass the usual secure peer, space
++// membership and signed tree/ACL validation when they exchange data.
++func (m *spacePeerManager) nodeLookupContext(ctx context.Context) (context.Context, context.CancelFunc) {
++	if (m.localPeers != nil && len(m.localPeers.LocalPeerIds(m.spaceId)) > 0) ||
++		(m.globalPeers != nil && len(m.globalPeers.GlobalPeerIds(m.spaceId)) > 0) {
++		return context.WithTimeout(ctx, nodeFallbackTimeout)
++	}
++	return ctx, func() {}
++}
++
++// getNodePeersConcurrent bounds concurrency and keeps nodeconf order.
++// A dead first node cannot consume the entire shared lookup deadline
++// before another node gets its first chance. GetNodePeers remains the
++// unchanged public nodes-only operation for its other callers.
++func (m *spacePeerManager) getNodePeersConcurrent(ctx context.Context) []peer.Peer {
++	ids := m.nodeConf.NodeIds(m.spaceId)
++	resolved := make([]peer.Peer, len(ids))
++	indices := make([]int, len(ids))
++	for i := range ids {
++		indices[i] = i
++	}
++	eachOf(indices, nodeLookupWorkers, func(i int) {
++		if ctx.Err() != nil {
++			return
++		}
++		p, err := m.pool.Get(ctx, ids[i])
++		if err == nil {
++			resolved[i] = p
++		}
++	})
++	peers := resolved[:0]
++	for _, p := range resolved {
++		if p != nil {
++			peers = append(peers, p)
++		}
++	}
++	return peers
++}
+--- /dev/null
++++ b/internal/anysyncx/peerprogress_test.go
+@@ -0,0 +1,273 @@
++package anysyncx
++
++import (
++	"context"
++	"errors"
++	"sync"
++	"sync/atomic"
++	"testing"
++	"time"
++
++	"github.com/anyproto/any-sync/commonspace/spacesyncproto"
++	"github.com/anyproto/any-sync/net/peer"
++	"github.com/anyproto/any-sync/net/streampool"
++	"github.com/cheggaaa/mb/v3"
++	"github.com/stretchr/testify/require"
++	"storj.io/drpc"
++)
++
++type progressPool struct {
++	*fakePool
++	get      func(context.Context, string) (peer.Peer, error)
++	getOneOf func(context.Context, []string) (peer.Peer, error)
++}
++
++func (p *progressPool) Get(ctx context.Context, id string) (peer.Peer, error) {
++	return p.get(ctx, id)
++}
++func (p *progressPool) GetOneOf(ctx context.Context, ids []string) (peer.Peer, error) {
++	if p.getOneOf != nil {
++		return p.getOneOf(ctx, ids)
++	}
++	return p.fakePool.GetOneOf(ctx, ids)
++}
++
++// These lookups model the observed live failure: a valid LAN peer is
++// already present, while node discovery waits until its context ends.
++// Neither test calls a new implementation-only helper.
++func TestLANProgressResponsiblePeersBoundNodeWait(t *testing.T) {
++	m := newTestManager([]string{"node1"}, &fakeLocalPeers{ids: []string{"lan"}}, nil)
++	t.Cleanup(m.runCancel)
++	m.pool = &progressPool{fakePool: &fakePool{},
++		get: func(_ context.Context, id string) (peer.Peer, error) { return fakePeer{id: id}, nil },
++		getOneOf: func(ctx context.Context, _ []string) (peer.Peer, error) {
++			<-ctx.Done()
++			return nil, ctx.Err()
++		},
++	}
++	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
++	defer cancel()
++	started := time.Now()
++	peers, err := m.GetResponsiblePeers(ctx)
++	require.NoError(t, err)
++	require.Equal(t, []string{"lan"}, peerIds(peers))
++	require.Less(t, time.Since(started), 2*time.Second, "a dead node must not consume the LAN caller's budget")
++	require.NoError(t, ctx.Err(), "the device leg retains the live caller context")
++}
++
++func TestLANProgressBroadcastPeersBoundNodeWait(t *testing.T) {
++	m := newTestManager([]string{"node1"}, &fakeLocalPeers{ids: []string{"lan"}}, nil)
++	t.Cleanup(m.runCancel)
++	m.pool = &progressPool{fakePool: &fakePool{}, get: func(ctx context.Context, id string) (peer.Peer, error) {
++		if id == "lan" {
++			return fakePeer{id: id}, nil
++		}
++		<-ctx.Done()
++		return nil, ctx.Err()
++	}}
++	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
++	defer cancel()
++	started := time.Now()
++	peers, err := m.getBroadcastPeers(ctx)
++	require.NoError(t, err)
++	require.Equal(t, []string{"lan"}, peerIds(peers))
++	require.Less(t, time.Since(started), 2*time.Second)
++	require.NoError(t, ctx.Err())
++}
++
++type progressQueuedSend struct {
++	mu       sync.Mutex
++	getters  []streampool.PeerGetter
++	contexts []context.Context
++	reject   bool
++}
++
++func (s *progressQueuedSend) Send(ctx context.Context, _ drpc.Message, get streampool.PeerGetter) error {
++	s.mu.Lock()
++	defer s.mu.Unlock()
++	if s.reject {
++		s.reject = false
++		return mb.ErrOverflowed
++	}
++	s.getters = append(s.getters, get)
++	s.contexts = append(s.contexts, ctx)
++	return nil
++}
++func (s *progressQueuedSend) Streams(...string) []drpc.Stream { return nil }
++func (s *progressQueuedSend) count() int {
++	s.mu.Lock()
++	defer s.mu.Unlock()
++	return len(s.getters)
++}
++func (s *progressQueuedSend) execute(i int) ([]peer.Peer, error) {
++	s.mu.Lock()
++	get, ctx := s.getters[i], s.contexts[i]
++	s.mu.Unlock()
++	return get(ctx)
++}
++
++func TestLANProgressKeepAliveCoalescesQueuedSubscription(t *testing.T) {
++	m := newTestManager([]string{"node1"}, &fakeLocalPeers{}, map[string]peer.Peer{"node1": fakePeer{id: "node1"}})
++	t.Cleanup(m.runCancel)
++	m.subscribeMsgRaw = []byte("retained-subscription")
++	send := &progressQueuedSend{}
++	m.streamPool = send
++	for i := 0; i < 64; i++ {
++		m.KeepAlive(context.Background())
++	}
++	require.Equal(t, 1, send.count(), "queued repeats must not consume shared send workers")
++	peers, err := send.execute(0)
++	require.NoError(t, err)
++	require.Equal(t, []string{"node1"}, peerIds(peers))
++	m.KeepAlive(context.Background())
++	require.Equal(t, 2, send.count(), "a completed lookup must allow the next renewal")
++}
++
++func TestLANProgressKeepAliveQueueRejectionAllowsRetry(t *testing.T) {
++	m := newTestManager(nil, &fakeLocalPeers{}, nil)
++	t.Cleanup(m.runCancel)
++	m.subscribeMsgRaw = []byte("retained-subscription")
++	send := &progressQueuedSend{reject: true}
++	m.streamPool = send
++	m.KeepAlive(context.Background())
++	require.Zero(t, send.count())
++	m.KeepAlive(context.Background())
++	require.Equal(t, 1, send.count())
++	_, err := send.execute(0)
++	require.NoError(t, err)
++}
++
++func TestLANProgressKeepAliveBoundsConcurrentNodeLookup(t *testing.T) {
++	m := newTestManager([]string{"node1", "node2", "node3"}, &fakeLocalPeers{}, nil)
++	t.Cleanup(m.runCancel)
++	m.subscribeMsgRaw = []byte("retained-subscription")
++	send := &progressQueuedSend{}
++	m.streamPool = send
++	started := make(chan time.Duration, 3)
++	release := make(chan struct{})
++	m.pool = &progressPool{fakePool: &fakePool{}, get: func(ctx context.Context, _ string) (peer.Peer, error) {
++		budget := time.Duration(-1)
++		if deadline, ok := ctx.Deadline(); ok {
++			budget = time.Until(deadline)
++		}
++		started <- budget
++		select {
++		case <-release:
++			return nil, errPeerUnreachable
++		case <-ctx.Done():
++			return nil, ctx.Err()
++		}
++	}}
++	caller, cancel := context.WithCancel(context.Background())
++	cancel()
++	m.KeepAlive(caller)
++	done := make(chan struct{})
++	go func() { _, _ = send.execute(0); close(done) }()
++	budgets := []time.Duration{}
++	deadline := time.NewTimer(time.Second)
++collect:
++	for len(budgets) < 3 {
++		select {
++		case d := <-started:
++			budgets = append(budgets, d)
++		case <-deadline.C:
++			break collect
++		}
++	}
++	deadline.Stop()
++	close(release)
++	select {
++	case <-done:
++	case <-time.After(time.Second):
++		m.runCancel()
++		t.Fatal("owned node discovery did not return")
++	}
++	require.Len(t, budgets, 3, "a dead first node must not block the other node lookups")
++	for _, budget := range budgets {
++		require.Greater(t, budget, time.Duration(0), "queued work needs its own live finite budget despite a cancelled caller")
++		require.LessOrEqual(t, budget, 10*time.Second)
++	}
++}
++
++// The original native stacks showed all four actual ExecPool workers in
++// repeated KeepAlive getters. This test uses that same queue implementation:
++// one stalled subscription must leave capacity for another peer's message.
++type progressExecSend struct {
++	exec     *streampool.ExecPool
++	wg       sync.WaitGroup
++	accepted atomic.Int32
++}
++
++func (s *progressExecSend) Send(ctx context.Context, _ drpc.Message, target streampool.PeerGetter) error {
++	s.wg.Add(1)
++	err := s.exec.TryAdd(func() { defer s.wg.Done(); _, _ = target(ctx) })
++	if err != nil {
++		s.wg.Done()
++	} else {
++		s.accepted.Add(1)
++	}
++	return err
++}
++func (s *progressExecSend) Streams(...string) []drpc.Stream { return nil }
++
++func TestLANProgressKeepAliveLeavesSharedWorkersAvailable(t *testing.T) {
++	m := newTestManager([]string{"node1"}, &fakeLocalPeers{}, nil)
++	m.subscribeMsgRaw = []byte("retained-subscription")
++	entered := make(chan struct{}, 64)
++	m.pool = &progressPool{fakePool: &fakePool{}, get: func(ctx context.Context, _ string) (peer.Peer, error) {
++		entered <- struct{}{}
++		<-ctx.Done()
++		return nil, ctx.Err()
++	}}
++	send := &progressExecSend{exec: streampool.NewExecPool(4, 64)}
++	send.exec.Run()
++	m.streamPool = send
++	t.Cleanup(func() {
++		m.runCancel()
++		done := make(chan struct{})
++		go func() { send.wg.Wait(); close(done) }()
++		select {
++		case <-done:
++		case <-time.After(2 * time.Second):
++			t.Error("owned queue tasks did not return on cancellation")
++		}
++		_ = send.exec.Close()
++	})
++	for i := 0; i < 12; i++ {
++		m.KeepAlive(context.Background())
++	}
++	select {
++	case <-entered:
++	case <-time.After(time.Second):
++		t.Fatal("subscription did not enter the real worker pool")
++	}
++	delivered := make(chan struct{})
++	err := send.Send(m.runCtx, &spacesyncproto.ObjectSyncMessage{}, func(context.Context) ([]peer.Peer, error) {
++		close(delivered)
++		return []peer.Peer{fakePeer{id: "lan"}}, nil
++	})
++	require.NoError(t, err)
++	select {
++	case <-delivered:
++	case <-time.After(300 * time.Millisecond):
++		t.Fatal("stalled node subscriptions starved an independent send")
++	}
++	require.Equal(t, int32(2), send.accepted.Load(), "one subscription and one independent send")
++}
++
++func TestLANProgressNodeOnlyFailureStillSurfaces(t *testing.T) {
++	m := newTestManager([]string{"node1"}, &fakeLocalPeers{}, nil)
++	t.Cleanup(m.runCancel)
++	want := errors.New("original node-only failure")
++	m.pool = &progressPool{fakePool: &fakePool{},
++		get: func(context.Context, string) (peer.Peer, error) { return nil, want },
++		getOneOf: func(ctx context.Context, _ []string) (peer.Peer, error) {
++			_, hasDeadline := ctx.Deadline()
++			require.False(t, hasDeadline, "a node-only lookup preserves its caller's budget")
++			return nil, want
++		},
++	}
++	peers, err := m.GetResponsiblePeers(context.Background())
++	require.Empty(t, peers)
++	require.ErrorIs(t, err, want)
++}
