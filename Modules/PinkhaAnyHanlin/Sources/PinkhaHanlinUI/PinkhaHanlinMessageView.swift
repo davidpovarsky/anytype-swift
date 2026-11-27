@@ -30,7 +30,7 @@ struct PinkhaHanlinMessageView: View {
 
     private var isAssistant: Bool { message.role == "assistant" }
     private var isResponding: Bool {
-        (presentation.isStreaming || presentation.isStopping) && message.id == presentation.messages.last?.id
+        presentation.isRespondingToMessage(message.id)
     }
     private var activity: PinkhaHanlinMessageActivity? { presentation.activities[message.id] }
     private var content: HanlinCitationProjection {
@@ -39,7 +39,9 @@ struct PinkhaHanlinMessageView: View {
     }
     private var actionState: HanlinMessageActionState {
         .init(isCopied: isCopied, copyFeedback: copyFeedback,
-              isSpeaking: presentation.isSpeaking(message.id), isResponding: isResponding)
+              isSpeaking: presentation.isSpeaking(message.id),
+              isPersonallySaved: presentation.isMessageSaved(message.id),
+              canSavePersonal: presentation.canSaveMessage(message.id), isResponding: isResponding)
     }
 
     private var actions: HanlinMessageActions {
@@ -55,9 +57,11 @@ struct PinkhaHanlinMessageView: View {
                 guard presentation.canAccessMessage(message.id) else { return }
                 showsTranslation = true
             } : nil,
-            // The existing page-creation tool accepts a title only. Until the
-            // host advertises real body persistence, no save action is shown.
-            savePersonal: nil, saveKnowledge: nil,
+            // Visibility requires the original body-capable catalog and a
+            // completed original SDK message; ordinary hosts keep it absent.
+            savePersonal: presentation.hasMessageSaveAction(message.id)
+                ? { presentation.saveMessage(message.id) } : nil,
+            saveKnowledge: nil,
             delete: presentation.canModifyTranscript ? { presentation.deleteMessage(message.id) } : nil,
             retry: presentation.canRepeatResponse(message.id) ? { presentation.retryMessage(message.id) } : nil,
             continueResponse: presentation.canContinueResponse(message.id) ? { presentation.continueResponse(message.id) } : nil)

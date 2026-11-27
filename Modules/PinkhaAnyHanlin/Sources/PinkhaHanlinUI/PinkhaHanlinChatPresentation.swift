@@ -37,6 +37,9 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     @ObservationIgnored private var running: Task<Void, Never>?
     @ObservationIgnored private var stopping: Task<Void, Never>?
     @ObservationIgnored private var currentRunID: UUID?
+    @ObservationIgnored private var currentSaveMessageID: UUID?
+    private var messageSaveIntents: PinkhaHanlinMessageSaveIntents
+    private var completedMessageOrigins: [UUID: HanlinHostInteractionOrigin] = [:]
     private var receiptState: PinkhaHanlinReceiptPresentationState
     private var requiresReconciliation: Bool { receiptState.requiresReconciliation }
     @ObservationIgnored private var closing: Task<Void, Never>?
@@ -63,6 +66,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         self.host = host
         self.session = host.session
         self.receiptState = .init(session: host.session)
+        self.messageSaveIntents = .init(session: host.session)
         self.scene = presenter.viewIfLoaded?.window?.windowScene
         self.appearance = appearance
         self.hooks = hooks
@@ -104,19 +108,26 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
             let configuration = try PinkhaHanlinModelConfiguration.make(endpoint: endpoint, model: model, credential: credential)
             let engine = try HanlinAISDKAgentEngine(configuration: configuration,
                 fetch: HanlinAISDKProviderFactory.makeFetch(sessionConfiguration: .ephemeral))
-            let agent = HanlinAgentSession(identity: session, host: host.integration, engine: engine,
-                store: HanlinInMemoryConversationStore())
-            agent.onHostResult = { [weak self] event in self?.receive(event) }
-            agent.onSessionInvalidated = { [weak self] _ in self?.invalidate() }
-            self.agent = agent
-            modelReference = .init(provider: HanlinAISDKProviderFactory.descriptor(for: configuration).kind.rawValue,
-                                   modelID: configuration.baseModelID)
-            isConfigured = true
-            errorMessage = nil
+            try install(configuration: configuration, engine: engine)
         } catch {
             errorMessage = PinkhaHanlinStrings.configurationFailed
         }
     }
+
+    private func install(configuration: HanlinChatModelConfiguration, engine: HanlinAISDKAgentEngine) throws {
+        guard !closed, !isConfigured, !isStreaming, !isStopping, agent == nil else { throw HanlinHostError.staleContext }
+        try validateInstallation(for: session)
+        let agent = HanlinAgentSession(identity: session, host: host.integration, engine: engine,
+            store: HanlinInMemoryConversationStore())
+        agent.onHostResult = { [weak self] event in self?.receive(event) }
+        agent.onSessionInvalidated = { [weak self] _ in self?.invalidate() }
+        self.agent = agent
+        modelReference = .init(provider: HanlinAISDKProviderFactory.descriptor(for: configuration).kind.rawValue,
+                               modelID: configuration.baseModelID)
+        isConfigured = true
+        errorMessage = nil
+    }
+
 
     public func requestContextReadConsent() {
         guard !closed, !isStreaming, !isStopping, hasSource else { return }
@@ -170,6 +181,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         if speech.messageID == id { speech.stop() }
         messages.removeAll { $0.id == id }
         activities[id] = nil
+        retireMessageOrigin(id)
         // Native effect receipts and the unresolved-write barrier are not
         // deleted with a transcript row and never imply native rollback.
     }
@@ -189,6 +201,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         if speech.messageID == id { speech.stop() }
         messages.removeLast()
         activities[id] = nil
+        retireMessageOrigin(id)
         // This explicit user action uses the same SDK and fresh native consent.
         // It never repeats an uncertain operation, and it preserves the draft.
         startRun()
@@ -204,6 +217,139 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         guard canAccessMessage(messageID), let sourceURL = source.url,
               activities[messageID]?.sources.contains(source) == true else { return }
         UIApplication.shared.open(sourceURL)
+    }
+
+    public func hasMessageSaveAction(_ id: UUID) -> Bool {
+        guard canAccessMessage(id), completedMessageOrigins[id] != nil,
+              let message = messages.first(where: { $0.id == id }), message.role == "assistant",
+              !message.content.isEmpty,
+              message.content.utf8.count <= PinkhaHanlinSaveMessagePlan.maximumMarkdownUTF8Bytes else { return false }
+        return messageSaveIntents.intent(for: id) != nil || messageSaveIntents.canReserve(messageID: id)
+    }
+
+    public func canSaveMessage(_ id: UUID) -> Bool {
+        canStartRun && hasMessageSaveAction(id) && messageSaveIntents.canReserve(messageID: id)
+    }
+
+    public func isMessageSaved(_ id: UUID) -> Bool {
+        messageSaveIntents.intent(for: id)?.status == .committed
+    }
+
+    public func isRespondingToMessage(_ id: UUID) -> Bool {
+        currentSaveMessageID == nil && (isStreaming || isStopping) && messages.last?.id == id
+    }
+
+    /// The original shared Hanlin message action enters the SAME SDK session.
+    /// Its completed message provenance does not bypass the original catalog,
+    /// native confirmation, one-use approval, protected journal or worker drain.
+    public func saveMessage(_ id: UUID) {
+        guard canSaveMessage(id), let origin = completedMessageOrigins[id], let agent,
+              let message = messages.first(where: { $0.id == id }) else { return }
+        do {
+            try validateInstallation(for: session)
+            let title = PinkhaHanlinStrings.savedMessageTitle
+            let intent = try messageSaveIntents.reserve(origin: origin, title: title, markdown: message.content)
+            let request = try intent.request(title: title, markdown: message.content)
+            let arguments = String(decoding: try request.arguments.canonicalJSONData(), as: UTF8.self)
+            let runID = UUID()
+            currentRunID = runID
+            currentSaveMessageID = id
+            isStreaming = true
+            errorMessage = nil
+            running = Task { @MainActor [weak self] in
+                guard let self, !self.closed, self.currentRunID == runID else { return }
+                defer {
+                    self.messageSaveIntents.finishWithoutReceipt(messageID: id, requestID: intent.requestID)
+                    if self.currentRunID == runID {
+                        self.isStreaming = false
+                        self.running = nil
+                        if !self.isStopping {
+                            self.currentRunID = nil
+                            self.currentSaveMessageID = nil
+                        }
+                    }
+                }
+                do {
+                    try Task.checkCancellation()
+                    try self.validateInstallation(for: self.session)
+                    guard self.completedMessageOrigins[id] == origin,
+                          self.messages.first(where: { $0.id == id })?.content.utf8.elementsEqual(message.content.utf8) == true else {
+                        throw HanlinHostError.staleContext
+                    }
+                    let output = try await agent.executePresentationTool(request,
+                        alias: PinkhaHanlinSaveMessagePlan.alias, argumentsJSON: arguments,
+                        presentationReference: "anytype.hanlin.save-message@1",
+                        onStarted: { [weak self] event in
+                            guard let self, !self.closed, !self.isStopping,
+                                  self.currentRunID == runID, event.session == self.session,
+                                  event.interactionOrigin == origin else { throw HanlinHostError.cancelled }
+                            try Task.checkCancellation()
+                            try self.validateInstallation(for: self.session)
+                            try self.messageSaveIntents.bindExecution(messageID: id,
+                                requestID: intent.requestID, runID: event.runID)
+                        })
+                    guard !self.closed, !self.isStopping, self.currentRunID == runID else { return }
+                    try self.validateInstallation(for: self.session)
+                    // Provider/model text is not displayed as a save receipt.
+                    if output.isError || !self.isMessageSaved(id) {
+                        self.errorMessage = self.requiresReconciliation
+                            ? PinkhaHanlinStrings.uncertain : PinkhaHanlinStrings.requestFailed
+                    }
+                } catch {
+                    guard !self.closed, !self.isStopping, self.currentRunID == runID else { return }
+                    if (error as? HanlinHostError) == .unresolvedWrite { self.receiptState.requireReconciliation() }
+                    do {
+                        let result = try await agent.cancelCurrentRun()
+                        if result?.requiresReconciliation == true { self.receiptState.requireReconciliation() }
+                    } catch { self.receiptState.requireReconciliation() }
+                    guard !self.closed, !self.isStopping, self.currentRunID == runID else { return }
+                    self.errorMessage = self.requiresReconciliation
+                        ? PinkhaHanlinStrings.uncertain : PinkhaHanlinStrings.requestFailed
+                }
+            }
+        } catch { errorMessage = PinkhaHanlinStrings.requestFailed }
+    }
+
+    private func retireMessageOrigin(_ id: UUID) {
+        if let origin = completedMessageOrigins.removeValue(forKey: id) { agent?.revokeInteraction(origin) }
+        // The bounded attempted-ID ledger deliberately survives row deletion.
+    }
+
+    private func admitCompletedMessageSave(_ id: UUID, consumerRunID: UUID, agent: HanlinAgentSession) async {
+        guard !closed, !isStopping, currentRunID == consumerRunID,
+              completedMessageOrigins.count < 256,
+              let message = messages.first(where: { $0.id == id }), message.role == "assistant",
+              !message.content.isEmpty,
+              message.content.utf8.count <= PinkhaHanlinSaveMessagePlan.maximumMarkdownUTF8Bytes,
+              let originalRun = activities[id]?.run?.id else { return }
+        do {
+            guard await PinkhaHanlinOriginalMarkdownSavePlanner.supportsCompletedMessage(
+                title: PinkhaHanlinStrings.savedMessageTitle, markdown: message.content) else { return }
+            try Task.checkCancellation()
+            try validateInstallation(for: session)
+            guard !isStopping, currentRunID == consumerRunID,
+                  messages.first(where: { $0.id == id })?.content.utf8.elementsEqual(message.content.utf8) == true,
+                  activities[id]?.run?.id == originalRun else { return }
+            let catalog = try await host.integration.catalog(for: session.context)
+            try Task.checkCancellation()
+            try validateInstallation(for: session)
+            guard !isStopping, currentRunID == consumerRunID, catalog.context == session.context else { return }
+            try catalog.validate()
+            let expected = try PinkhaHanlinSaveMessageTool.make()
+            guard catalog.tools.contains(where: {
+                $0.route.alias == expected.route.alias &&
+                $0.route.logicalToolID == expected.route.logicalToolID &&
+                $0.route.descriptorRevision == expected.route.descriptorRevision &&
+                $0.writeGuarantee == expected.writeGuarantee
+            }) else { return }
+            let origin = HanlinHostInteractionOrigin(session: session, runID: originalRun,
+                messageID: id, partID: UUID())
+            try agent.admitInlinePresentation(origin)
+            completedMessageOrigins[id] = origin
+        } catch {
+            // A missing/unavailable save capability does not convert an already
+            // completed model answer into a failed answer or confer authority.
+        }
     }
 
     private func startRun() {
@@ -248,6 +394,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                 }
                 if !self.closed, !self.isStopping, self.currentRunID == runID {
                     self.activities[answerID]?.finish(status: .completed)
+                    await self.admitCompletedMessageSave(answerID, consumerRunID: runID, agent: agent)
                 }
             } catch {
                 // Provider errors may contain request details. Never log or expose them verbatim.
@@ -276,7 +423,11 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         isStopping = true
         errorMessage = nil
         let consumer = running
-        let answerID = messages.last?.id
+        let answerID = currentSaveMessageID == nil ? messages.last?.id : nil
+        // executePresentationTool may still be awaiting original context before
+        // reserving an SDK run. Cancel THAT caller too, then join it below; the
+        // canonical dispatcher still owns every already-dispatched native write.
+        if currentSaveMessageID != nil { consumer?.cancel() }
         stopping = Task { @MainActor [weak self] in
             guard let self else { return }
             do {
@@ -301,12 +452,15 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
             self.running = nil
             self.stopping = nil
             self.currentRunID = nil
+            self.currentSaveMessageID = nil
         }
     }
 
     private func receive(_ event: HanlinHostResultEvent) {
         guard !closed else { return }
         let appendDisplayLabel = receiptState.observe(event)
+        let savedMessageID = messageSaveIntents.observe(event)
+        _ = savedMessageID
         if requiresReconciliation { errorMessage = PinkhaHanlinStrings.uncertain }
         guard appendDisplayLabel else { return }
         // The presentation owns only safe outcome labels; payloads never enter a receipt log.
@@ -388,6 +542,9 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         draft = ""
         messages.removeAll()
         activities.removeAll()
+        completedMessageOrigins.removeAll()
+        messageSaveIntents = .init(session: session)
+        currentSaveMessageID = nil
         receiptMessages.removeAll()
         isConfigured = false
         PinkhaHanlinAccountOwner.shared.unregister(session.id)
