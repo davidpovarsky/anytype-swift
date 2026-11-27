@@ -118,14 +118,21 @@ public struct PinkhaHanlinSaveMessageBodyReadback: Codable, Equatable, Sendable 
     /// Atomic mode binds the actual full-body readback to the opaque native
     /// version acknowledged by THAT original request. Nil retains v1 bytes.
     public let nativeVersionSHA256: String?
+    /// Actual same-version normalized Markdown read from Any. The request's
+    /// original byte digest stays in the manifest and need not equal this one.
+    public let nativeMarkdownSHA256: String?
+    public let nativeMarkdownUTF8Bytes: Int?
 
     public init(manifestSHA256: String, objectReference: String, blockReferences: [String],
-                nativeReadbackSHA256: String, nativeVersionSHA256: String? = nil) {
+                nativeReadbackSHA256: String, nativeVersionSHA256: String? = nil,
+                nativeMarkdownSHA256: String? = nil, nativeMarkdownUTF8Bytes: Int? = nil) {
         self.manifestSHA256 = manifestSHA256
         self.objectReference = objectReference
         self.blockReferences = blockReferences
         self.nativeReadbackSHA256 = nativeReadbackSHA256
         self.nativeVersionSHA256 = nativeVersionSHA256
+        self.nativeMarkdownSHA256 = nativeMarkdownSHA256
+        self.nativeMarkdownUTF8Bytes = nativeMarkdownUTF8Bytes
     }
 }
 
@@ -162,6 +169,7 @@ public struct PinkhaHanlinSaveMessageProgress: Codable, Equatable, Sendable {
         case atomicBodyDispatched(requestSHA256: String, expectedVersionSHA256: String)
         case atomicBodyUncertain
         case atomicBodyAcknowledged(requestSHA256: String, savedVersionSHA256: String, nativeReceiptSHA256: String)
+        case atomicBodyReceipt(PinkhaHanlinSaveMessageAtomicAcknowledgement)
         case closeDispatch
         case bodyVerified(PinkhaHanlinSaveMessageBodyReadback)
     }
@@ -250,6 +258,11 @@ public struct PinkhaHanlinSaveMessageProgress: Codable, Equatable, Sendable {
             }
             next.atomicBody = try atomicBody.acknowledged(requestSHA256: request, savedVersionSHA256: version,
                                                         nativeReceiptSHA256: receipt)
+        case .atomicBodyReceipt(let receipt):
+            guard manifest.bodyMode == .conditionalMarkdown, let atomicBody else {
+                throw PinkhaHanlinSaveMessageError.invalidTransition
+            }
+            next.atomicBody = try atomicBody.retaining(receipt)
         case .closeDispatch:
             next.dispatchClosed = true
         case .bodyVerified(let readback):
@@ -357,13 +370,22 @@ public struct PinkhaHanlinSaveMessageProgress: Codable, Equatable, Sendable {
         }
         if manifest.bodyMode == nil {
             guard blocks.allSatisfy(\.isVerified), value.nativeVersionSHA256 == nil,
+                  value.nativeMarkdownSHA256 == nil, value.nativeMarkdownUTF8Bytes == nil,
                   value.blockReferences.map({ Data($0.utf8) }) == blocks.compactMap(\.reference).map({ Data($0.utf8) }) else {
                 throw PinkhaHanlinSaveMessageError.invalidProgress
             }
         } else {
             guard let atomicBody,
                   case .acknowledged(let version, _) = atomicBody.outcome,
-                  value.nativeVersionSHA256 == version else {
+                  let acknowledgement = atomicBody.acknowledgement,
+                  acknowledgement.updatedReferences.isEmpty,
+                  acknowledgement.deletedReferences.isEmpty, acknowledgement.unchangedBlocks == 0,
+                  acknowledgement.insertedReferences.count == manifest.blockSHA256.count,
+                  Set(value.blockReferences.map { Data($0.utf8) }) ==
+                    Set(acknowledgement.insertedReferences.map { Data($0.utf8) }),
+                  value.nativeVersionSHA256 == version,
+                  value.nativeMarkdownSHA256.map(PinkhaHanlinWriteIdentity.isDigest) == true,
+                  value.nativeMarkdownUTF8Bytes.map({ (0...262_144).contains($0) }) == true else {
                 throw PinkhaHanlinSaveMessageError.invalidProgress
             }
         }

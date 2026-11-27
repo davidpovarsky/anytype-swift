@@ -304,8 +304,7 @@ final class PinkhaHanlinSaveMessageStateTests: XCTestCase {
         XCTAssertThrowsError(try state.applying(.blockDispatched(index: 0)))
         state = try state.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
                                                         expectedVersionSHA256: digest("empty-version")))
-        state = try state.applying(.atomicBodyAcknowledged(requestSHA256: digest("request"),
-            savedVersionSHA256: digest("saved-version"), nativeReceiptSHA256: digest("native-ack")))
+        state = try state.applying(.atomicBodyReceipt(acknowledgement(["native-one", "native-two"])))
         state = try state.applying(.bodyVerified(readback(state, references: ["native-one", "native-two"],
                                                           nativeVersionSHA256: digest("saved-version"))))
         XCTAssertTrue(state.isReadyForCommit)
@@ -331,8 +330,7 @@ final class PinkhaHanlinSaveMessageStateTests: XCTestCase {
             expectedVersionSHA256: digest("empty-version")))
         XCTAssertThrowsError(try dispatched.applying(.atomicBodyAcknowledged(requestSHA256: digest("foreign-request"),
             savedVersionSHA256: digest("saved-version"), nativeReceiptSHA256: digest("native-ack"))))
-        let acknowledged = try dispatched.applying(.atomicBodyAcknowledged(requestSHA256: digest("request"),
-            savedVersionSHA256: digest("saved-version"), nativeReceiptSHA256: digest("native-ack")))
+        let acknowledged = try dispatched.applying(.atomicBodyReceipt(acknowledgement(["native-one"])))
         for version in [nil, digest("different-version")] {
             XCTAssertThrowsError(try acknowledged.applying(.bodyVerified(readback(acknowledged,
                 references: ["native-one"], nativeVersionSHA256: version))))
@@ -347,8 +345,7 @@ final class PinkhaHanlinSaveMessageStateTests: XCTestCase {
             requestSHA256: digest("request"), expectedVersionSHA256: digest("empty-version"))))
         var state = try root.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
             expectedVersionSHA256: digest("empty-version"))).applying(.atomicBodyUncertain).applying(.closeDispatch)
-        state = try state.applying(.atomicBodyAcknowledged(requestSHA256: digest("request"),
-            savedVersionSHA256: digest("saved-version"), nativeReceiptSHA256: digest("native-ack")))
+        state = try state.applying(.atomicBodyReceipt(acknowledgement(["native-one"])))
         state = try state.applying(.bodyVerified(readback(state, references: ["native-one"],
             nativeVersionSHA256: digest("saved-version"))))
         XCTAssertTrue(state.isReadyForCommit)
@@ -361,10 +358,8 @@ final class PinkhaHanlinSaveMessageStateTests: XCTestCase {
         let root = try verifyRoot(Fixture().initial(blockDigests: [digest("one"), digest("two")],
                                                    bodyMode: .conditionalMarkdown))
         let state = try root.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
-            expectedVersionSHA256: digest("empty-version"))).applying(.atomicBodyAcknowledged(
-                requestSHA256: digest("request"), savedVersionSHA256: digest("saved-version"),
-                nativeReceiptSHA256: digest("native-ack")))
-        for references in [["one"], ["one", "one"], ["native-page", "two"], ["one", "two", "three"], ["one", "bad\n"]] {
+            expectedVersionSHA256: digest("empty-version"))).applying(.atomicBodyReceipt(acknowledgement(["one", "two"])))
+        for references in [["one"], ["one", "one"], ["native-page", "two"], ["one", "two", "three"], ["one", "bad\n"], ["foreign", "two"]] {
             XCTAssertThrowsError(try state.applying(.bodyVerified(readback(state, references: references,
                 nativeVersionSHA256: digest("saved-version")))))
         }
@@ -385,6 +380,8 @@ final class PinkhaHanlinSaveMessageStateTests: XCTestCase {
         XCTAssertNil(value["atomicBody"])
         XCTAssertNil(manifest["bodyMode"])
         XCTAssertNil(body["nativeVersionSHA256"])
+        XCTAssertNil(body["nativeMarkdownSHA256"])
+        XCTAssertNil(body["nativeMarkdownUTF8Bytes"])
         XCTAssertEqual(try PinkhaHanlinSaveMessageProgress.decodeCanonical(finished.canonicalBytes(),
             identity: fixture.plan().identity), finished)
         XCTAssertThrowsError(try state.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
@@ -421,6 +418,116 @@ final class PinkhaHanlinSaveMessageStateTests: XCTestCase {
         let dispatched = try root.applying(event)
         XCTAssertThrowsError(try dispatched.applying(.atomicBodyAcknowledged(requestSHA256: digest("request"),
             savedVersionSHA256: "unbound-version", nativeReceiptSHA256: digest("native-ack"))))
+    }
+
+    func testAtomicDigestOnlyACKCannotCertifyMatchingBodyOrLoseItsUncertainty() throws {
+        let root = try verifyRoot(Fixture().initial(bodyMode: .conditionalMarkdown))
+        let state = try root.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("empty-version"))).applying(.atomicBodyAcknowledged(
+                requestSHA256: digest("request"), savedVersionSHA256: digest("saved-version"),
+                nativeReceiptSHA256: digest("unadmitted-native-ack"))).applying(.closeDispatch)
+        XCTAssertNil(state.atomicBody?.acknowledgement)
+        XCTAssertFalse(state.isReadyForCommit)
+        XCTAssertThrowsError(try state.applying(.bodyVerified(readback(state, references: ["native-one"],
+            nativeVersionSHA256: digest("saved-version")))))
+        XCTAssertThrowsError(try state.applying(.atomicBodyReceipt(acknowledgement(["native-one"]))))
+        XCTAssertThrowsError(try state.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("current-version"))))
+    }
+
+    func testMaximumEscapedAtomicACKAndWholeProgressFitReservedEnvelopesAndReplay() throws {
+        let references = (0..<64).map { String(repeating: "\\", count: 252) + String(format: "%04d", $0) }
+        let fixture = try Fixture()
+        let root = try verifyRoot(fixture.initial(blockDigests: Array(repeating: digest("body"), count: 64),
+                                                  bodyMode: .conditionalMarkdown))
+        let dispatched = try root.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("empty-version")))
+        let receipt = try acknowledgement(references)
+        let event = try PinkhaHanlinSaveMessageProgressRecord(previous: dispatched, event: .atomicBodyReceipt(receipt))
+        let encoded = try event.canonicalBytes()
+        XCTAssertGreaterThan(encoded.count, 32_768)
+        XCTAssertLessThanOrEqual(encoded.count, 65_536)
+        let acknowledged = try PinkhaHanlinSaveMessageProgressRecord.decodeCanonical(encoded, previous: dispatched).replay(on: dispatched)
+        XCTAssertEqual(acknowledged.atomicBody?.acknowledgement?.insertedReferences, references)
+        let finished = try acknowledged.applying(.bodyVerified(readback(acknowledged, references: references,
+            nativeVersionSHA256: digest("saved-version"))))
+        let bytes = try finished.canonicalBytes()
+        XCTAssertLessThanOrEqual(bytes.count, 131_072)
+        XCTAssertTrue(finished.isReadyForCommit)
+        XCTAssertEqual(try PinkhaHanlinSaveMessageProgress.decodeCanonical(bytes, identity: fixture.plan().identity), finished)
+    }
+
+    func testAtomicACKRejectsCombinedOverflowDuplicateGroupsControlAndOversizedIDs() throws {
+        XCTAssertThrowsError(try acknowledgement((0..<65).map { "block-\($0)" }))
+        XCTAssertThrowsError(try acknowledgement(["same"], updated: ["same"]))
+        XCTAssertThrowsError(try acknowledgement([], updated: ["same"], deleted: ["same"]))
+        XCTAssertThrowsError(try acknowledgement(["bad\n"]))
+        XCTAssertThrowsError(try acknowledgement([String(repeating: "a", count: 257)]))
+        XCTAssertThrowsError(try acknowledgement(["one"], unchanged: 65))
+        let oversized = (0..<65).map { "block-\($0)" }
+        let unadmitted = try PinkhaHanlinSaveMessageAtomicAcknowledgement.digestUnadmittedNativeReceipt(
+            requestSHA256: digest("request"), savedVersionSHA256: digest("saved-version"),
+            insertedReferences: oversized, updatedReferences: [], deletedReferences: [], unchangedBlocks: 0)
+        XCTAssertTrue(PinkhaHanlinWriteIdentity.isDigest(unadmitted))
+    }
+
+    func testAtomicACKRetainsOriginalMutationGroupsButFreshPageCannotCommitTheirEffects() throws {
+        let root = try verifyRoot(Fixture().initial(bodyMode: .conditionalMarkdown))
+        let dispatched = try root.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("empty-version")))
+        for receipt in [try acknowledgement([], updated: ["native-one"]),
+                        try acknowledgement(["native-one"], deleted: ["old-block"]),
+                        try acknowledgement(["native-one"], unchanged: 1)] {
+            let retained = try dispatched.applying(.atomicBodyReceipt(receipt)).applying(.closeDispatch)
+            XCTAssertEqual(try retained.atomicBody?.acknowledgement?.canonicalBytes(), try receipt.canonicalBytes())
+            XCTAssertFalse(retained.isReadyForCommit)
+            XCTAssertThrowsError(try retained.applying(.bodyVerified(readback(retained,
+                references: ["native-one"], nativeVersionSHA256: digest("saved-version")))))
+        }
+    }
+
+    func testAtomicACKSurvivesClosedCanonicalReplayAndRejectsTamperedNativeIDs() throws {
+        let fixture = try Fixture()
+        let root = try verifyRoot(fixture.initial(bodyMode: .conditionalMarkdown))
+        let retained = try root.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("empty-version"))).applying(.closeDispatch)
+            .applying(.atomicBodyReceipt(acknowledgement(["native-one"])))
+        let bytes = try retained.canonicalBytes()
+        let reopened = try PinkhaHanlinSaveMessageProgress.decodeCanonical(bytes, identity: fixture.plan().identity)
+        XCTAssertEqual(reopened.atomicBody?.acknowledgement?.insertedReferences, ["native-one"])
+        XCTAssertTrue(reopened.dispatchClosed)
+        XCTAssertFalse(reopened.isReadyForCommit)
+        let tampered = Data(String(decoding: bytes, as: UTF8.self).replacingOccurrences(of: "native-one", with: "foreign-id").utf8)
+        XCTAssertThrowsError(try PinkhaHanlinSaveMessageProgress.decodeCanonical(tampered, identity: fixture.plan().identity))
+        let finished = try reopened.applying(.bodyVerified(readback(reopened, references: ["native-one"],
+            nativeVersionSHA256: digest("saved-version"))))
+        XCTAssertTrue(finished.isReadyForCommit)
+        XCTAssertTrue(finished.dispatchClosed)
+    }
+
+    func testAtomicNormalizedReadbackRetainsActualDigestAndRequiresBoundedNativeBytes() throws {
+        let root = try verifyRoot(Fixture().initial(bodyMode: .conditionalMarkdown))
+        let acknowledged = try root.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("empty-version"))).applying(.atomicBodyReceipt(acknowledgement(["native-one"])))
+        let good = try readback(acknowledged, references: ["native-one"], nativeVersionSHA256: digest("saved-version"))
+        XCTAssertNotEqual(good.nativeMarkdownSHA256, acknowledged.manifest.markdownSHA256)
+        let final = try acknowledged.applying(.bodyVerified(good))
+        XCTAssertTrue(final.isReadyForCommit)
+        XCTAssertEqual(final.bodyReadback?.nativeMarkdownSHA256, digest("normalized-native-markdown"))
+        for count in [nil, -1, 262_145] {
+            let bad = PinkhaHanlinSaveMessageBodyReadback(manifestSHA256: good.manifestSHA256,
+                objectReference: good.objectReference, blockReferences: good.blockReferences,
+                nativeReadbackSHA256: good.nativeReadbackSHA256, nativeVersionSHA256: good.nativeVersionSHA256,
+                nativeMarkdownSHA256: good.nativeMarkdownSHA256, nativeMarkdownUTF8Bytes: count)
+            XCTAssertThrowsError(try acknowledged.applying(.bodyVerified(bad)))
+        }
+    }
+
+    private func acknowledgement(_ inserted: [String], updated: [String] = [], deleted: [String] = [],
+                                 unchanged: Int64 = 0) throws -> PinkhaHanlinSaveMessageAtomicAcknowledgement {
+        try .init(requestSHA256: digest("request"), savedVersionSHA256: digest("saved-version"),
+                  insertedReferences: inserted, updatedReferences: updated,
+                  deletedReferences: deleted, unchangedBlocks: unchanged)
     }
 
     func testLedgerRetainsExactLateReceiptAcrossOneConcurrentDurableClose() async throws {
@@ -540,7 +647,9 @@ final class PinkhaHanlinSaveMessageStateTests: XCTestCase {
                           nativeVersionSHA256: String? = nil) throws -> PinkhaHanlinSaveMessageBodyReadback {
         .init(manifestSHA256: try state.manifest.canonicalSHA256(), objectReference: "native-page",
               blockReferences: references, nativeReadbackSHA256: digest("original-native-readback"),
-              nativeVersionSHA256: nativeVersionSHA256)
+              nativeVersionSHA256: nativeVersionSHA256,
+              nativeMarkdownSHA256: nativeVersionSHA256 == nil ? nil : digest("normalized-native-markdown"),
+              nativeMarkdownUTF8Bytes: nativeVersionSHA256 == nil ? nil : 26)
     }
 
     private struct Fixture {
