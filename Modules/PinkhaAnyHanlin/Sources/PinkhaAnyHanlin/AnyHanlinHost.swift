@@ -38,21 +38,38 @@ public final class AnyHanlinHost: HanlinHostCancellationDrainSource, PinkhaHanli
     public let access: AnyHanlinNativeAccess
     private let router: PinkhaHanlinHostRouter
     private let binding: AnyHanlinCreateBinding?
+    private let saveBinding: AnyHanlinSaveBinding?
     private var invalidated = false
     private var mountedOwnerWasBound = false
     private weak var mountedOwner: (any PinkhaHanlinOwnedPresentation)?
     private var invalidation: (@MainActor () -> Void)?
 
-    public init(native: AnyApplicationSession, documents: AnyEditorDocumentStore,
+    public convenience init(native: AnyApplicationSession, documents: AnyEditorDocumentStore,
                 owner: any AnyHanlinPresentationOwner, conversationID: UUID,
                 locale: Locale = .current, creation: AnyHanlinCreationServices? = nil) throws {
+        try self.init(native: native, documents: documents, owner: owner,
+            conversationID: conversationID, locale: locale, creation: creation, saveServices: nil)
+    }
+
+    private init(native: AnyApplicationSession, documents: AnyEditorDocumentStore,
+        owner: any AnyHanlinPresentationOwner, conversationID: UUID, locale: Locale,
+        creation: AnyHanlinCreationServices?, saveServices: AnyHanlinSaveMessageServices?) throws {
         guard PinkhaHanlinAccountOwner.shared.isAvailable(account: native.workspace.accountID,
             app: PinkhaHanlinEngineNamespace.any) else {
             throw HanlinHostError.staleContext
         }
+        // Reject a foreign body client or missing full-message UI capability
+        // before installing even the provisional original source presentation.
+        if let saveServices {
+            guard creation != nil, owner is any AnyHanlinSaveMessagePresentationOwner,
+                  saveServices.client.expectedAccountID.utf8.elementsEqual(native.workspace.accountID.utf8) else {
+                throw HanlinHostError.invalidContext
+            }
+        }
         let access = try AnyHanlinNativeAccess(native: native, documents: documents, owner: owner,
                                                conversationID: conversationID, locale: locale)
         let binding: AnyHanlinCreateBinding?
+        let saveBinding: AnyHanlinSaveBinding?
         if let creation {
             guard let writableOwner = owner as? any AnyHanlinCreationPresentationOwner else {
                 throw HanlinHostError.invalidContext
@@ -60,14 +77,31 @@ public final class AnyHanlinHost: HanlinHostCancellationDrainSource, PinkhaHanli
             let context = try AnyHanlinWriteContext(access: access, native: native,
                 creator: creation.creator, authority: creation.authority, owner: writableOwner)
             binding = try AnyHanlinCreateBinding(context: context)
-        } else { binding = nil }
+            if let saveServices {
+                saveBinding = try AnyHanlinSaveBinding(context: context, documents: documents, services: saveServices)
+            } else { saveBinding = nil }
+        } else { binding = nil; saveBinding = nil }
         let read = try PinkhaHanlinHostAdapter(access: access)
         self.session = access.session; self.access = access; self.binding = binding
-        self.router = try PinkhaHanlinHostRouter(read: read, session: access.session, write: binding)
+        self.saveBinding = saveBinding
+        self.router = try PinkhaHanlinHostRouter(read: read, session: access.session, write: binding, saveMessage: saveBinding)
         try PinkhaHanlinAccountOwner.shared.register(self)
         binding?.attach(self)
+        saveBinding?.attach(self)
         access.observeInvalidation { [weak self] in self?.invalidate() }
     }
+
+    #if DEBUG
+    /// Uncalled native acceptance assembly. Ordinary production initialization
+    /// keeps the save capability absent until real body/authority qualification.
+    public static func makeForSaveMessageAcceptance(native: AnyApplicationSession,
+        documents: AnyEditorDocumentStore, owner: any AnyHanlinPresentationOwner,
+        conversationID: UUID, locale: Locale = .current, creation: AnyHanlinCreationServices,
+        saveServices: AnyHanlinSaveMessageServices) throws -> AnyHanlinHost {
+        try .init(native: native, documents: documents, owner: owner, conversationID: conversationID,
+                  locale: locale, creation: creation, saveServices: saveServices)
+    }
+    #endif
 
     /// The real chat presentation replaces this host's provisional account-owner
     /// registration. Exactly one mounted owner can bind; dismissal cannot rearm
@@ -82,6 +116,7 @@ public final class AnyHanlinHost: HanlinHostCancellationDrainSource, PinkhaHanli
         mountedOwnerWasBound = true
         mountedOwner = presentation
         binding?.attach(presentation)
+        saveBinding?.attach(presentation)
     }
 
     public var missingWriteInstallation: [PinkhaHanlinWriteInstallationRequirement] {

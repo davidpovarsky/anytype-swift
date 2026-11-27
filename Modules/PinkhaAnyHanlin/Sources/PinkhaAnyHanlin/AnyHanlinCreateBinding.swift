@@ -193,6 +193,7 @@ protocol AnyHanlinWriteRunning: AnyObject {
 }
 
 typealias AnyHanlinCreateBinding = AnyHanlinWriteBinding<PinkhaHanlinCreatePagePlan, AnyHanlinCreatePageRunner>
+typealias AnyHanlinSaveBinding = AnyHanlinWriteBinding<PinkhaHanlinSaveMessagePlan, AnyHanlinSaveMessageRunner>
 
 @MainActor
 final class AnyHanlinWriteBinding<Plan: PinkhaHanlinNativeWritePlan,
@@ -302,6 +303,18 @@ extension AnyHanlinWriteBinding where Plan == PinkhaHanlinCreatePagePlan, Runner
             Data(("pinkha-any-hanlin-create/v1" + "\0" + identity.key).utf8)).prefix(32))
     }
 }
+
+extension AnyHanlinWriteBinding where Plan == PinkhaHanlinSaveMessagePlan, Runner == AnyHanlinSaveMessageRunner {
+    convenience init(context: AnyHanlinWriteContext, documents: AnyEditorDocumentStore,
+                     services: AnyHanlinSaveMessageServices) throws {
+        self.init(context: context, tool: try PinkhaHanlinSaveMessageTool.make(),
+            requestConfirmation: { try await context.requestConfirmation($0, eligibility: $1) },
+            makeRunner: { try AnyHanlinSaveMessageRunner(context: context, journal: $0,
+                documents: documents, services: services) })
+    }
+}
+
+extension AnyHanlinSaveMessageRunner: AnyHanlinWriteRunning {}
 
 private struct AnyHanlinPreparedCreation: Sendable {
     let intent: AnyNativeObjectCreationIntent

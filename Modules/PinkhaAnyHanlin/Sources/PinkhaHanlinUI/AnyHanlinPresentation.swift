@@ -4,6 +4,7 @@ import UIKit
 import HanlinHostContracts
 import PinkhaHanlinCore
 import PinkhaAnyHanlin
+import PinkhaAnyEngine
 import PinkhaAnyHost
 
 /// Implemented by the actual native editor/home coordinator. Scope validation
@@ -34,6 +35,38 @@ public enum AnyHanlinPresentation {
         conversationID: UUID, locale: Locale = .autoupdatingCurrent,
         creation: AnyHanlinCreationServices? = nil
     ) throws -> PinkhaHanlinChatController {
+        try present(from: presenter, sourceOwner: sourceOwner) { owner in
+            try AnyHanlinHost(native: native, documents: documents, owner: owner,
+                conversationID: conversationID, locale: locale, creation: creation)
+        }
+    }
+
+    #if DEBUG
+    /// Real original-parser/native acceptance path only. No production call,
+    /// settings switch, model argument or launch-argument can select this path.
+    @discardableResult
+    public static func presentForSaveMessageAcceptance(
+        from presenter: UIViewController, native: AnyApplicationSession,
+        documents: AnyEditorDocumentStore, client: AnyHTTPClient,
+        sourceOwner: any AnyHanlinSourcePresentationOwner,
+        conversationID: UUID, locale: Locale = .autoupdatingCurrent,
+        creation: AnyHanlinCreationServices
+    ) throws -> PinkhaHanlinChatController {
+        let services = AnyHanlinSaveMessageServices(client: client) {
+            try await PinkhaHanlinOriginalMarkdownSavePlanner.convert($0)
+        }
+        return try present(from: presenter, sourceOwner: sourceOwner) { owner in
+            try AnyHanlinHost.makeForSaveMessageAcceptance(native: native, documents: documents,
+                owner: owner, conversationID: conversationID, locale: locale,
+                creation: creation, saveServices: services)
+        }
+    }
+    #endif
+
+    private static func present(from presenter: UIViewController,
+        sourceOwner: any AnyHanlinSourcePresentationOwner,
+        makeHost: @MainActor (AnyHanlinUIKitOwner) throws -> AnyHanlinHost
+    ) throws -> PinkhaHanlinChatController {
         guard presenter.presentedViewController == nil,
               let scene = presenter.viewIfLoaded?.window?.windowScene,
               scene.activationState == .foregroundActive,
@@ -41,8 +74,7 @@ public enum AnyHanlinPresentation {
             throw HanlinHostError.staleContext
         }
         let owner = AnyHanlinUIKitOwner(source: sourceOwner, presenter: presenter, scene: scene)
-        let host = try AnyHanlinHost(native: native, documents: documents, owner: owner,
-            conversationID: conversationID, locale: locale, creation: creation)
+        let host = try makeHost(owner)
         do {
             let adapter = AnyHanlinUIPresentationHost(host: host, owner: owner)
             let presentation = try PinkhaHanlinChatPresentation(host: adapter, presenter: presenter)
