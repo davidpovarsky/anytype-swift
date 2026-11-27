@@ -14,7 +14,8 @@ On 2026-11-27, the closed, superseded ACL-refresh executable was moved as an exa
 | Original mode / uid / gid | 0700 / 0 / 0 |
 | Original mtime_ns | 1795743968115720063 |
 | Raw custody receipt SHA-256 | `378c4fe23d43c697ad475526b9687491d8f8c3fa29e74e93774e96574c140f2e` |
-| Restore script SHA-256 | `f4b368bdf8280caa52967585fd55be03a99b9c8ecf4aa9c50421bfd814f6b481` |
+| Original restore v1 SHA-256 (retained) | `f4b368bdf8280caa52967585fd55be03a99b9c8ecf4aa9c50421bfd814f6b481` |
+| Current exclusive restore SHA-256 | `00bb2666c2af282d70dcba8f6092b978f61744f1dcc94e58631ff19d3f8df64c` |
 
 The former path is absent. Earlier accepted receipts remain unchanged and continue to identify the same binary content. Any historical replay that requires that former path must first perform the guarded restoration below. New tests use current native0796; restoration is unnecessary for those tests.
 
@@ -28,9 +29,9 @@ Run only when a specific historical replay requires the old path:
 /usr/bin/python3 -B /mnt/development/projects/evidence/pinkha-w1-network-native792-raw-20261127/restore.py
 ```
 
-The script reads the original `receipt.json` beside it. It refuses to overwrite an existing destination, verifies the retained raw file's exact hash and size, requires 2 GiB plus the binary allocation and 4 MiB free on root, preserves the 512 MiB development floor, copies with a fresh exclusive temporary file, verifies the complete stream, restores original metadata, fsyncs and atomically installs the old path. The retained raw copy remains available. This command has been preserved and reviewed; restoration has not been run because no current test needs the superseded executable.
+The script reads the original `receipt.json` beside it. It refuses to overwrite an existing destination, verifies the retained raw file's exact hash and size, requires 2 GiB plus the binary allocation and 4 MiB free on root, preserves the 512 MiB development floor, copies with a fresh exclusive temporary file, verifies the complete stream, restores original metadata, fsyncs and atomically creates the old path with an exclusive hard link. If any regular file or symlink wins that name before installation, the kernel rejects this restore without replacing it. The installed directory entry is fsynced before the temporary link is retired. The retained raw copy remains available. This command has been preserved and reviewed; restoration has not been run because no current test needs the superseded executable.
 
-This directory carries byte-exact copies of the receipt and restore script for review. The operative persistent copy is the absolute Oracle evidence directory named above.
+This directory carries byte-exact copies of the original receipt, historical `restore-v1-before-exclusive.py`, current restore script and the separate `restore-exclusivity-update.json` addendum for review. The operative persistent copy is the absolute Oracle evidence directory named above.
 
 ## Failed compression remains evidence
 
@@ -46,3 +47,15 @@ The incomplete xz is not a qualified archive or restoration source. Its receipt 
 Both before and after relocation, the original base binary remained SHA-256 `1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636` and current LAN-progress binary remained SHA-256 `0796b939145f98fd3436b40c3ae3c7c9daec239b54f8c1fa237fb20a349d0b07`. No compiler, native account process or compression was started by the raw relocation. No unique binary bytes were deleted.
 
 The custody operation succeeded in 3.516 seconds. Root free space rose from 2,121,699,328 to 2,199,781,376 bytes; development free space changed from 1,224,847,360 to 1,146,757,120 bytes. These are operation-time observations, not a current resource admission for future work.
+
+## Exclusive-install race qualification
+
+Wave 3 QA identified a race in the original dormant helper: a final `exists()` check followed by `os.replace()` could overwrite a destination created between those operations. The current helper uses atomic `os.link(..., follow_symlinks=False)` for installation. The original custody receipt and historical helper bytes remain unchanged; the update addendum records the new helper hash and tested scope. The historical relocation controller is retained as original evidence; its embedded v1 helper is superseded by this update.
+
+Four actual disposable filesystem controls passed on Oracle Linux in 1.905 seconds: exact successful bytes and metadata, refusal of an existing regular file, refusal of an existing dangling symlink, and two concurrent installers with exactly one winner and no overwrite. The test module imports the installation function without running the real restore entry point. All fixtures were removed by their test owner, the Python process group exited cleanly and was positively absent, the raw792 and current0796 hashes stayed exact, and the original native792 path stayed absent. No compiler, account process or actual native restoration ran.
+
+- Actual receipt: `/mnt/development/projects/evidence/pinkha-w1-restore-exclusive-20261127/result.json`, SHA-256 `f8ccfc8e7b4ecb7a641ef904eb51d2502ed45406db352b6e6ee2eaa398f89be7`.
+- Raw log SHA-256: `05f6250962e2a09ecf1ca053bbcec59487c186ebc1bb27cb504ffbfc9a51f0ce`.
+- Test source SHA-256: `3525a82435a8791768582cef875c0bebf7e1820ec206e0d7c70f15a8889a120e`.
+
+The four controls qualify the exclusive filesystem installation boundary. Full restoration of the actual 78 MB product remains intentionally unexecuted because no pending validation requires it.
