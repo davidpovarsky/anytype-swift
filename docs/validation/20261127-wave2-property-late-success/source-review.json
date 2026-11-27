@@ -1,0 +1,78 @@
+{
+  "protocol": "wave2-property-late-success-review-v1",
+  "baseCommit": "15b0740c70b32f607c81d60d0b2be6069463e337",
+  "status": "SOURCE_READY_APPLE_EXECUTION_PENDING",
+  "changes": [
+    "Successful native outcome remains true after late completion even when the consumer was cancelled.",
+    "The synchronous publishSuccess callback runs only if the same task remains live after action settles.",
+    "The actual picker puts onRelationSelect and dismiss in that single guarded callback.",
+    "The original pending operation retains ownership until settlement; no rollback, automatic retry or duplicate mutation is introduced."
+  ],
+  "files": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSelection.swift",
+      "sha256": "f0f23222a325a5f21ec39bd795244ddac16ff877b1011f634630cb42accfedca"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+      "sha256": "fedb1107bfa4b2d79e33071fa37e6d5ce18c5f44119d9d1a7469c0728d7a096b"
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PropertyCreationSelectionTests.swift",
+      "sha256": "833ce32686d7daf2907eb796aca8a79aa3a099ec1d5361d53a2d5949c5193baf"
+    }
+  ],
+  "nativeMutationBodiesUnchangedAgainstA089": true,
+  "existingPublicAPIsChanged": false,
+  "nativeSchemaOrContractChanges": 0,
+  "tests": {
+    "suite": "PropertyCreationSelectionTests",
+    "methods": 6,
+    "newMethod": "cancelledLateSuccessRetainsOutcomeWithoutPublishing",
+    "newCase": "Suspend action; cancel consumer; assert still running; return success; outcome true, completed mutation1, publications0, no failure, no pending state.",
+    "existingMethodExtended": "failureAndRetry asserts successful live publication exactly once.",
+    "executed": 0,
+    "status": "NOT_RUN",
+    "allPropertiesAppleMethods": 15,
+    "searchMethods": 9,
+    "selectionMethods": 6
+  },
+  "sourceMap": {
+    "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+    "sha256": "4a61f17d8898c22cd66581320dd0fcab15e95a3f7750f3ad323bb70c58ca6a6c",
+    "rowCount": 127,
+    "original121RetainedFrom": "a82fa890a0114990e474b48830e4a2de3e32c79d",
+    "updatedRows": [
+      "SearchView",
+      "PropertyCreationView",
+      "PropertyCreationViewModel"
+    ],
+    "changes": "Only our appended rows update helper/VM blob pins, success-publication reason and pending test count."
+  },
+  "validation": {
+    "diffCheck": "PASS",
+    "SwiftGrammar": "PASS_3_CHANGED_FILES_ONLY",
+    "grammarReceiptSHA256": "1e8c47c0909a812c42ac712eabde90b11c45fc8700fe049c74562ca4a1767eb4",
+    "typeChecking": "NOT_RUN",
+    "AppleUI": "NOT_RUN",
+    "physicalDevice": "NOT_RUN",
+    "sourceRetention": "PASS127_SOURCE_PROVENANCE_ONLY",
+    "prospectiveTree": "45d45505041d8e8abb84c923df8a2760637f478f",
+    "prospectiveSourceCount": 13,
+    "sourceRetentionReceiptSHA256": "3d2529a64cef146fdf9115cd861f356aaff4690911886525319492da581516e9"
+  },
+  "preservedFailures": [
+    "Original45-second wrapper timeout job_e3d046be98ca after successful grammar, before source gate.",
+    "Continuation update-index exit128 due preserved original temporary-index lock; distinct temporary index used thereafter."
+  ],
+  "historicalT5NativeCallsRerun": 0,
+  "MacBuildsOrTestsStarted": 0,
+  "T5UIFileOrContinuationEdits": 0,
+  "sourceReviewScope": "Selection and related-identity source reviews from editor are recorded in their earlier envelopes. No later cancellation review or test execution is inferred.",
+  "knownRemaining": [
+    "Shared Apple build and15Properties methods.",
+    "Actual Properties and Set UI plus native postflight, visual Hebrew/English and physical-device acceptance.",
+    "Related identity5methods7cases and T5remainingUI/freshness contracts."
+  ],
+  "rollback": "Revert this isolated consumer-publication follow-up; successful native writes are not rolled back."
+}

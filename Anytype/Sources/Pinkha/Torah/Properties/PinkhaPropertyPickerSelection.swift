@@ -21,6 +21,7 @@ final class PinkhaPropertyPickerSelection {
         spaceID: String,
         objectID: String,
         propertyID: String,
+        publishSuccess: @MainActor () -> Void = {},
         action: @MainActor () async throws -> Void
     ) async -> Bool {
         guard !isRunning, !Task.isCancelled else { return false }
@@ -31,6 +32,9 @@ final class PinkhaPropertyPickerSelection {
 
         do {
             try await action()
+            // Cancellation cannot undo a completed mutation, but its former
+            // consumer must not publish selection or dismiss another screen.
+            if !Task.isCancelled { publishSuccess() }
             return true
         } catch is CancellationError {
             return false

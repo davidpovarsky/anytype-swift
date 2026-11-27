@@ -9,6 +9,7 @@ struct PropertyCreationSelectionTests {
     func failureAndRetry() async {
         let selection = PinkhaPropertyPickerSelection()
         var calls = 0
+        var publications = 0
         let failed = await selection.perform(spaceID: "space", objectID: "object", propertyID: "property") {
             calls += 1
             throw SelectionProbeFailure.native
@@ -17,11 +18,15 @@ struct PropertyCreationSelectionTests {
         #expect(selection.failed)
         #expect(!selection.isRunning)
 
-        let retried = await selection.perform(spaceID: "space", objectID: "object", propertyID: "property") {
+        let retried = await selection.perform(
+            spaceID: "space", objectID: "object", propertyID: "property",
+            publishSuccess: { publications += 1 }
+        ) {
             calls += 1
         }
         #expect(retried)
         #expect(calls == 2)
+        #expect(publications == 1)
         #expect(!selection.failed)
         #expect(!selection.isRunning)
     }
@@ -73,6 +78,34 @@ struct PropertyCreationSelectionTests {
         task.cancel()
         probe.finish(error: SelectionProbeFailure.native)
         #expect(!(await task.value))
+        #expect(!selection.failed)
+        #expect(!selection.isRunning)
+    }
+
+    @Test("A cancelled consumer cannot publish a late successful mutation")
+    func cancelledLateSuccessRetainsOutcomeWithoutPublishing() async {
+        let selection = PinkhaPropertyPickerSelection()
+        let probe = SuspendedPropertySelection()
+        var completedMutations = 0
+        var publications = 0
+        let task = Task {
+            await selection.perform(
+                spaceID: "space", objectID: "object", propertyID: "property",
+                publishSuccess: { publications += 1 }
+            ) {
+                try await probe.run()
+                completedMutations += 1
+            }
+        }
+        await probe.waitUntilStarted()
+        task.cancel()
+        #expect(selection.isRunning)
+        #expect(completedMutations == 0)
+        #expect(publications == 0)
+        probe.finish()
+        #expect(await task.value) // The operation completed; no rollback is claimed.
+        #expect(completedMutations == 1)
+        #expect(publications == 0)
         #expect(!selection.failed)
         #expect(!selection.isRunning)
     }

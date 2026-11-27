@@ -114,8 +114,13 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
         switch row {
         case .existing(let details):
             retryProperty = details
-            let succeeded = await propertySelection.perform(
-                spaceID: data.spaceId, objectID: data.objectId, propertyID: details.id
+            _ = await propertySelection.perform(
+                spaceID: data.spaceId, objectID: data.objectId, propertyID: details.id,
+                publishSuccess: {
+                    retryProperty = nil
+                    data.onRelationSelect(details, false) // isNew = false
+                    dismiss?()
+                }
             ) {
                 guard await PinkhaTorahPropertyPolicy.shared.canAddPropertyAsync(
                     propertyId: details.id, key: details.key, target: data.target, spaceId: data.spaceId
@@ -123,11 +128,6 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
                 try Task.checkCancellation()
                 try await onExistingPropertyTap(details)
                 try? await objectActionsService.updateBundledDetails(contextID: details.id, details: [ .lastUsedDate(Date.now)])
-            }
-            if succeeded {
-                retryProperty = nil
-                data.onRelationSelect(details, false) // isNew = false
-                dismiss?()
             }
         case .new(let format):
             propertySelection.clearFailure()
