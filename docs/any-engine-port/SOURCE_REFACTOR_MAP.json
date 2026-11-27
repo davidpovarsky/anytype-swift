@@ -323,17 +323,18 @@
       "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinConsentController.swift",
       "baselineBlob": "77a0f004e65614150cdf47052c7b32405f35d929",
       "replacementBlob": "bc724411115857868216661f1bcce06a673f2372",
-      "reason": "Keep original app aliases and share original UI/consent/localized-string implementation; only public API, injected styling and Bundle.module resource ownership change.",
+      "reason": "Keep original app aliases and share original UI/consent/localized-string implementation; only public API, injected styling and Bundle.module resource ownership change. Reviewed2026-11-27 Wave3 fe0: Add a native save-message purpose with exact full body in the original scroll area and fixed visible Allow/Cancel controls. Existing read/create-page layout and deny/revoke/dismiss behavior remain unchanged.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinConsentController.swift",
-          "gitBlob": "b78489726907708ac567a4d622e97589309961e3"
+          "gitBlob": "0becc97012a423d1c90ff5935f193e4cbc6a7f2f"
         }
       ],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+        "Root read complete Context, Router, Consent, Tool and seven authored test methods/ten cases at fe0. Preserve original failed four-diagnostic preview and verifier under docs/validation/20261127-wave3-hanlin-host-integration/original-preview. Original baseline/from/to unchanged; Context is accurately reclassified from import_only to refactor. Source review only; new Apple compilation/native body persistence/mounted confirmation/runtime tests NOT_RUN."
       ]
     },
     {
@@ -486,17 +487,18 @@
       ]
     },
     {
-      "kind": "import_only",
+      "kind": "refactor",
       "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
       "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
       "baselineBlob": "70b73f0c411d28e1cf91d3bab214a6e9e3e9c7d0",
-      "replacementBlob": "d9f00e352f1a774f1f5244286d4db8449547dd91",
-      "reason": "Import the extracted shared module; implementation and test bodies unchanged.",
+      "replacementBlob": "23499875b95265a216ec2c38223a49cbc6894668",
+      "reason": "Import the extracted shared module; implementation and test bodies unchanged. Reviewed2026-11-27 Wave3 fe0: This is an explicit reviewed implementation refactor, not import-only: reuse original native account/Space/mount authority and Page-type eligibility for a typed Save plan, one-use approval, exact body confirmation and cancellation. Preserve original create-page APIs. Post-ACK readback may ignore only deadline expiration; account/runtime/presentation/type and cancellation checks remain mandatory and it cannot authorize an effect.",
       "sharedSources": [],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+        "Root read complete Context, Router, Consent, Tool and seven authored test methods/ten cases at fe0. Preserve original failed four-diagnostic preview and verifier under docs/validation/20261127-wave3-hanlin-host-integration/original-preview. Original baseline/from/to unchanged; Context is accurately reclassified from import_only to refactor. Source review only; new Apple compilation/native body persistence/mounted confirmation/runtime tests NOT_RUN."
       ]
     },
     {
@@ -541,11 +543,11 @@
       "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
       "baselineBlob": "26c4b78b33caf7acf497bef95359fe2764404300",
       "replacementBlob": "1d7a80fc69529a51f5a56d226e08a48c83989be0",
-      "reason": "Keep UIKit/native mounting and write binding in app; extract exact router, bounded replay identity and tool contract for both native engines. Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c.",
+      "reason": "Keep UIKit/native mounting and write binding in app; extract exact router, bounded replay identity and tool contract for both native engines. Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c. Reviewed2026-11-27 Wave3 fe0: Add an optional nil-by-default Save binding with exact route/descriptor validation, bounded body replay fingerprint, shared original cancellation drain and account fences. A Save route cannot reach the title-only create delegate; no production factory installs Save in this candidate.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinHostRouter.swift",
-          "gitBlob": "2c090ee7616856d0a3daa4fe8255486015b999ca"
+          "gitBlob": "18f1d0498dd2c1e2935151fc1c1debff20df2a7e"
         },
         {
           "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreatePageTool.swift",
@@ -556,7 +558,8 @@
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
         "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
-        "Exact consumer4b1e79b4/87a3c57f and canonicalSDK0a24/385289 diffs reviewed. Original SDK5methods/7cases PASS at385 only; consumer Apple/native/UI tests remain NOT_RUN. No assertion or capability removed. See docs/validation/20261127-hanlin-cancellation/eof-drain-reviewed.json and docs/validation/20261127-wave3-upstream-integration/hanlin385-source-review.json."
+        "Exact consumer4b1e79b4/87a3c57f and canonicalSDK0a24/385289 diffs reviewed. Original SDK5methods/7cases PASS at385 only; consumer Apple/native/UI tests remain NOT_RUN. No assertion or capability removed. See docs/validation/20261127-hanlin-cancellation/eof-drain-reviewed.json and docs/validation/20261127-wave3-upstream-integration/hanlin385-source-review.json.",
+        "Root read complete Context, Router, Consent, Tool and seven authored test methods/ten cases at fe0. Preserve original failed four-diagnostic preview and verifier under docs/validation/20261127-wave3-hanlin-host-integration/original-preview. Original baseline/from/to unchanged; Context is accurately reclassified from import_only to refactor. Source review only; new Apple compilation/native body persistence/mounted confirmation/runtime tests NOT_RUN."
       ]
     },
     {

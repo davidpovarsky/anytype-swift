@@ -1,0 +1,63 @@
+{
+  "appleTypecheck": "NOT_RUN",
+  "authoredTestCases": 10,
+  "authoredTestMethods": 7,
+  "candidate": "fe0bb5a7dda6b6d37f8cd61ad7e8ea95e30d1b7c",
+  "contextMappingKindAfter": "refactor",
+  "factorySaveBindingInstalled": false,
+  "mapRows": [
+    {
+      "baselineBlob": "77a0f004e65614150cdf47052c7b32405f35d929",
+      "changes": [
+        {
+          "candidateBlob": "0becc97012a423d1c90ff5935f193e4cbc6a7f2f",
+          "field": "sharedSources.gitBlob",
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinConsentController.swift",
+          "reviewedBlob": "b78489726907708ac567a4d622e97589309961e3"
+        }
+      ],
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinConsentController.swift",
+      "kind": "refactor",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinConsentController.swift"
+    },
+    {
+      "baselineBlob": "70b73f0c411d28e1cf91d3bab214a6e9e3e9c7d0",
+      "changes": [
+        {
+          "candidateBlob": "23499875b95265a216ec2c38223a49cbc6894668",
+          "field": "replacementBlob",
+          "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
+          "reviewedBlob": "d9f00e352f1a774f1f5244286d4db8449547dd91"
+        }
+      ],
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
+      "kind": "import_only",
+      "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift"
+    },
+    {
+      "baselineBlob": "26c4b78b33caf7acf497bef95359fe2764404300",
+      "changes": [
+        {
+          "candidateBlob": "18f1d0498dd2c1e2935151fc1c1debff20df2a7e",
+          "field": "sharedSources.gitBlob",
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinHostRouter.swift",
+          "reviewedBlob": "2c090ee7616856d0a3daa4fe8255486015b999ca"
+        }
+      ],
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
+      "kind": "refactor",
+      "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift"
+    }
+  ],
+  "originalBaselinesPreserved": true,
+  "originalPreviewSHA256": "60635903cecde0609b670359d522d7925c9047f120086505d2299917527d4ba6",
+  "previewTree": "ea0fb6cc02cd01426886ecabc186885d360223f0",
+  "reviews": {
+    "Anytype/Sources/Pinkha/AI/PinkhaHanlinConsentController.swift": "Add a native save-message purpose with exact full body in the original scroll area and fixed visible Allow/Cancel controls. Existing read/create-page layout and deny/revoke/dismiss behavior remain unchanged.",
+    "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift": "This is an explicit reviewed implementation refactor, not import-only: reuse original native account/Space/mount authority and Page-type eligibility for a typed Save plan, one-use approval, exact body confirmation and cancellation. Preserve original create-page APIs. Post-ACK readback may ignore only deadline expiration; account/runtime/presentation/type and cancellation checks remain mandatory and it cannot authorize an effect.",
+    "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift": "Add an optional nil-by-default Save binding with exact route/descriptor validation, bounded body replay fingerprint, shared original cancellation drain and account fences. A Save route cannot reach the title-only create delegate; no production factory installs Save in this candidate."
+  },
+  "runtime": "NOT_RUN",
+  "sourceParent": "ec9d110dcdccc255672b334a39f883e1545e2c94",
+  "sourceReview": "COMPLETE"
+}

@@ -1,0 +1,15 @@
+# Save-message router and original native confirmation seam
+
+This source tranche adds a distinct, bounded save-message route to the existing original host router. The optional body-capable binding defaults to nil; current production factories continue to omit it. The descriptor and typed plan do not confer native authority. A save request can never fall through to the title-only create delegate, and both bound catalog routes are checked against their original logical ID, alias, descriptor and write guarantee.
+
+The router forwards the exact original invocation, retains one cross-route/provider-call replay claim and preserves the original synchronous cancellation fence. Cancellation, metadata and drain remain attached to the actual original save delegate even after another account becomes current. Readiness awaits are followed by the original current-context check before any route claim or dispatch. No business title or Markdown is persisted by the router.
+
+Heart's existing native context now validates either typed new-document plan using the same original account/Space/runtime/mount/permission and exact standard Page type. Its existing single-use in-memory approval remains bound to the full save identity (including exact title and Markdown digests) and original native type. The new save confirmation displays the complete exact body and original destination. Its native Allow and Cancel controls stay visible while the full body scrolls. Original read/create consent layout and decision revocation semantics are retained.
+
+Late native readback may bypass only the model deadline via the explicit internal identity validator; it still requires the original live authority. This is not permission for another write. The shared original worker's per-effect authorization is required before every effect. Known original native receipts may be journaled after cancellation without reconstructing them through a new account.
+
+The source-intake JSON retains exact before/after Git blobs, literal inverse operations for all three changed original files, and three source-map row updates for the integration owner. No shared map was edited by this tranche.
+
+Six real router test methods / eight cases are authored for absent-body capability, cross-route descriptor rejection, exact body/replay/provider identity, strict byte/schema refusal, cancel/invalidate original-worker drain and stale readiness. One native UIKit layout method / two Hebrew/English cases uses the full 64 KiB body to check visible controls, complete text, actual Cancel and late Allow refusal. All ten cases are NOT_RUN. The router tests use controlled write delegates and prove no native persistence. The detached native layout test is not mounted application or engine acceptance.
+
+The engine body bindings, complete original-parser conversion and native same-version semantic readback remain separate required inputs. Save is not advertised until they qualify. The current shared SDK385/native8ac build and compiled MiniApps producer are unchanged.

@@ -35,6 +35,7 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
     public let session: HanlinHostSession
     private let read: PinkhaHanlinHostAdapter
     private let write: (any PinkhaHanlinWriteBinding)?
+    private let saveMessage: (any PinkhaHanlinWriteBinding)?
     private let revision = HanlinCatalogRevision(1) // Both actual delegated validators consume revision1; no DTO rewriting.
     private let readLogical: HanlinLogicalToolID
     private let readDescriptor: HanlinDescriptorRevision
@@ -43,7 +44,7 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
     private var providerCalls: [ProviderCall: HanlinToolInvocationID] = [:]
     private var cancelled = Set<HanlinToolInvocationID>()
 
-    private enum Route: Sendable { case read, createPage }
+    private enum Route: Sendable { case read, createPage, saveMessage }
     private struct ProviderCall: Hashable {
         let run: UUID
         let step: Int
@@ -57,8 +58,9 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
     }
 
     public init(read: PinkhaHanlinHostAdapter, session: HanlinHostSession,
-                 write: (any PinkhaHanlinWriteBinding)?) throws {
-        self.read = read; self.session = session; self.write = write
+                 write: (any PinkhaHanlinWriteBinding)?,
+                 saveMessage: (any PinkhaHanlinWriteBinding)? = nil) throws {
+        self.read = read; self.session = session; self.write = write; self.saveMessage = saveMessage
         self.readLogical = .init(providerInstanceID: try .init(validating: "anytype.host"),
                                  localToolID: try .init(validating: "read-context-text"))
         self.readDescriptor = try .init(1)
@@ -66,17 +68,21 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
 
 
     public var missingWriteInstallation: [PinkhaHanlinWriteInstallationRequirement] {
-        write?.missingInstallation ?? PinkhaHanlinWriteInstallationRequirement.missing
+        guard write != nil || saveMessage != nil else { return PinkhaHanlinWriteInstallationRequirement.missing }
+        let missing = (write?.missingInstallation ?? []) + (saveMessage?.missingInstallation ?? [])
+        return PinkhaHanlinWriteInstallationRequirement.allCases.filter { missing.contains($0) }
     }
 
     public func observeInvalidation(_ callback: @escaping @MainActor () -> Void) {
         write?.observeInvalidation(callback)
+        saveMessage?.observeInvalidation(callback)
     }
 
     /// Synchronous revoke precedes cancellation's first await so no queued native write can start.
     public func revokePresentation() {
         invalidated = true
         write?.invalidate()
+        saveMessage?.invalidate()
         for call in calls.values { call.cancellation.revoke() }
     }
 
@@ -101,7 +107,14 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
                     && $0.writeGuarantee == .readOnly
               }) else { throw HanlinHostError.resultMismatch }
         var tools = original.tools
-        if let tool = try await write?.catalogTool() { tools.append(tool) }
+        if let tool = try await write?.catalogTool() {
+            try validateWriteTool(tool, route: .createPage)
+            tools.append(tool)
+        }
+        if let tool = try await saveMessage?.catalogTool() {
+            try validateWriteTool(tool, route: .saveMessage)
+            tools.append(tool)
+        }
         _ = try await self.context(for: session) // All delegated readiness operations are awaits.
         let result = HanlinHostCatalog(revision: revision, context: context, tools: tools)
         try result.validate()
@@ -132,10 +145,16 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
                     throw HanlinHostError.invalidArguments
                 }
                 route = .read
-            } else {
+            } else if tool.route.alias.utf8.elementsEqual(PinkhaHanlinCreatePagePlan.alias.utf8) {
                 _ = try PinkhaHanlinCreatePagePlan(invocation: invocation)
                 guard write != nil else { throw HanlinHostError.denied }
                 route = .createPage
+            } else if tool.route.alias.utf8.elementsEqual(PinkhaHanlinSaveMessagePlan.alias.utf8) {
+                _ = try PinkhaHanlinSaveMessagePlan(invocation: invocation)
+                guard saveMessage != nil else { throw HanlinHostError.denied }
+                route = .saveMessage
+            } else {
+                throw HanlinHostError.unknownTool
             }
         } catch {
             // catalog() awaited: another attempt may have claimed this identity while we suspended.
@@ -161,6 +180,9 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
             case .createPage:
                 guard let write else { throw HanlinHostError.denied }
                 result = try await write.execute(invocation, cancellation: fence, progress: progress)
+            case .saveMessage:
+                guard let saveMessage else { throw HanlinHostError.denied }
+                result = try await saveMessage.execute(invocation, cancellation: fence, progress: progress)
             }
             // Delegates preserve ORIGINAL metadata before this stale/cancelled delivery check.
             _ = try await context(for: invocation.session)
@@ -180,6 +202,7 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
         switch call.route {
         case .read: await read.cancel(id)
         case .createPage: await write?.cancel(id)
+        case .saveMessage: await saveMessage?.cancel(id)
         }
     }
 
@@ -190,6 +213,7 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
         switch call.route {
         case .read: return read.receipt(for: id)?.metadataReceipt()
         case .createPage: return await write?.drainCancelledInvocation(id)?.metadataReceipt()
+        case .saveMessage: return await saveMessage?.drainCancelledInvocation(id)?.metadataReceipt()
         }
     }
 
@@ -204,8 +228,8 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
 
     public func requestContextReadConsent() async throws {
         try validateLocal(session)
-        guard let write else { throw HanlinHostError.denied }
-        try await write.requestContextReadConsent()
+        guard let owner = write ?? saveMessage else { throw HanlinHostError.denied }
+        try await owner.requestContextReadConsent()
     }
 
     public func metadataReceipt(for id: HanlinToolInvocationID) -> HanlinHostExecutionResult? {
@@ -213,6 +237,7 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
         switch call.route {
         case .read: return read.receipt(for: id)?.metadataReceipt()
         case .createPage: return write?.metadataReceipt(for: id)
+        case .saveMessage: return saveMessage?.metadataReceipt(for: id)
         }
     }
 
@@ -223,6 +248,7 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
             switch call.route {
             case .read: await read.cancel(id)
             case .createPage: await write?.cancel(id)
+            case .saveMessage: await saveMessage?.cancel(id)
             }
         }
         for id in calls.keys { _ = await drainCancelledInvocation(id) }
@@ -259,7 +285,12 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
     /// Invalid changes to a known call become conflict without encoding arbitrary business arguments.
     private func boundedFingerprint(_ invocation: HanlinHostInvocation, route: Route) throws -> String {
         let request = invocation.request
-        let alias = route == .read ? "anytype_read_context_text" : PinkhaHanlinCreatePagePlan.alias
+        let alias: String
+        switch route {
+        case .read: alias = "anytype_read_context_text"
+        case .createPage: alias = PinkhaHanlinCreatePagePlan.alias
+        case .saveMessage: alias = PinkhaHanlinSaveMessagePlan.alias
+        }
         guard request.aliasUsed.utf8.elementsEqual(alias.utf8), invocation.expectedRevision == nil,
               invocation.writeGuarantee == (route == .read ? .readOnly : .independentObjectCreation),
               request.origin == .assistantModel, request.grantIDs.isEmpty,
@@ -272,9 +303,33 @@ public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
         case .createPage:
             guard members.count == 1, let value = members["title"], case .string(let title) = value,
                   title.utf8.count <= 512 else { throw HanlinHostError.invalidArguments }
+        case .saveMessage:
+            guard members.count == 2, case .string(let title)? = members["title"],
+                  case .string(let markdown)? = members["markdown"],
+                  title.utf8.count <= PinkhaHanlinSaveMessagePlan.maximumTitleUTF8Bytes,
+                  markdown.utf8.count <= PinkhaHanlinSaveMessagePlan.maximumMarkdownUTF8Bytes else {
+                throw HanlinHostError.invalidArguments
+            }
         }
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         return PinkhaHanlinCreatePagePlan.digest(try encoder.encode(request))
+    }
+
+    /// A binding can expose only its assigned original route. A save body must
+    /// never reach the title-only writer through a mismatched descriptor.
+    private func validateWriteTool(_ tool: HanlinHostTool, route: Route) throws {
+        let alias: String
+        let localToolID: String
+        switch route {
+        case .read: throw HanlinHostError.resultMismatch
+        case .createPage: alias = PinkhaHanlinCreatePagePlan.alias; localToolID = "create-page"
+        case .saveMessage: alias = PinkhaHanlinSaveMessagePlan.alias; localToolID = "save-message"
+        }
+        let logical = HanlinLogicalToolID(providerInstanceID: try .init(validating: "anytype.host"),
+                                         localToolID: try .init(validating: localToolID))
+        guard tool.route.alias.utf8.elementsEqual(alias.utf8), tool.route.logicalToolID == logical,
+              tool.route.descriptorRevision == (try HanlinDescriptorRevision(1)),
+              tool.writeGuarantee == .independentObjectCreation else { throw HanlinHostError.resultMismatch }
     }
 
     private func validateEnvelope(_ invocation: HanlinHostInvocation) throws {

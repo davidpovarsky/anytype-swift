@@ -9,6 +9,7 @@ public final class PinkhaHanlinConsentController: UIViewController {
     public enum Purpose: String {
         case readContext = "read-context"
         case createPage = "create-page"
+        case saveMessage = "save-message"
     }
 
     public let purpose: Purpose
@@ -78,7 +79,10 @@ public final class PinkhaHanlinConsentController: UIViewController {
         cancel.accessibilityIdentifier = identifier + ".cancel"
         cancel.addTarget(self, action: #selector(cancelPressed), for: .touchUpInside)
 
-        let stack = UIStackView(arrangedSubviews: [heading, message, allow, cancel])
+        // A complete message may be 64 KiB. Keep its exact text scrollable and
+        // both native decisions visible; reviewing it must not hide Cancel.
+        let fixedDecisions = purpose == .saveMessage
+        let stack = UIStackView(arrangedSubviews: fixedDecisions ? [heading, message] : [heading, message, allow, cancel])
         stack.axis = .vertical
         stack.spacing = 20
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -86,11 +90,10 @@ public final class PinkhaHanlinConsentController: UIViewController {
         scroll.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scroll)
         scroll.addSubview(stack)
-        NSLayoutConstraint.activate([
+        var constraints = [
             scroll.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scroll.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             scroll.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scroll.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             stack.leadingAnchor.constraint(equalTo: scroll.contentLayoutGuide.leadingAnchor, constant: 24),
             stack.trailingAnchor.constraint(equalTo: scroll.contentLayoutGuide.trailingAnchor, constant: -24),
             stack.topAnchor.constraint(equalTo: scroll.contentLayoutGuide.topAnchor, constant: 24),
@@ -98,7 +101,23 @@ public final class PinkhaHanlinConsentController: UIViewController {
             stack.widthAnchor.constraint(equalTo: scroll.frameLayoutGuide.widthAnchor, constant: -48),
             allow.heightAnchor.constraint(greaterThanOrEqualToConstant: 44),
             cancel.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
-        ])
+        ]
+        if fixedDecisions {
+            let decisions = UIStackView(arrangedSubviews: [allow, cancel])
+            decisions.axis = .vertical
+            decisions.spacing = 12
+            decisions.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(decisions)
+            constraints += [
+                decisions.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
+                decisions.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
+                decisions.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -24),
+                scroll.bottomAnchor.constraint(equalTo: decisions.topAnchor, constant: -16)
+            ]
+        } else {
+            constraints.append(scroll.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor))
+        }
+        NSLayoutConstraint.activate(constraints)
     }
 
     @objc private func allowPressed() {
