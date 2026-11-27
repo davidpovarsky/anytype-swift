@@ -1,0 +1,291 @@
+{
+  "foreignMutations": false,
+  "freeBytes": 11034107904,
+  "hanlin": {
+    "mini-build-repair-r5-capacity-queue.json": {
+      "fields": {
+        "controllerPID": 55400,
+        "freeAtDispatch": 8510771200,
+        "nativeControllerPID": 71398,
+        "nativePhaseBudgetBytes": 5673741824,
+        "queueDispatchThresholdBytes": 5973741824,
+        "startedAt": "2026-11-27T00:35:28.284649+00:00",
+        "status": "DISPATCHED_ONCE"
+      },
+      "keys": [
+        "status",
+        "controllerPID",
+        "startedAt",
+        "source",
+        "nativePhaseBudgetBytes",
+        "queueDispatchThresholdBytes",
+        "deadlineSeconds",
+        "noNativeReservationWhileWaiting",
+        "priorImmediateAdmissionRefusal",
+        "boundary",
+        "lastObservation",
+        "dispatchedAt",
+        "nativeControllerPID",
+        "freeAtDispatch"
+      ],
+      "mtime": 1795741449.9464438,
+      "path": "/Users/m1/builds/hanlin-two-wave-root-20261126/mini-build-repair-r5-capacity-queue.json",
+      "sha256": "7939e6cb372604d7f06a1557bac229785459d0003319035450ddf7a21b566704"
+    },
+    "native-759e5cf9-mini-build-repair-r5.json": {
+      "fields": {
+        "command": [
+          "/usr/bin/xcodebuild",
+          "-project",
+          "AI_HLY.xcodeproj",
+          "-destination",
+          "platform=iOS Simulator,id=233DB080-C913-4EE6-BF3D-99659F5CD475",
+          "-parallel-testing-enabled",
+          "NO",
+          "-derivedDataPath",
+          "/Users/m1/caches/DerivedData/hanlin-two-wave-root-20261126",
+          "-clonedSourcePackagesDirPath",
+          "/Users/m1/builds/hanlin-two-wave-root-20261126/source/build/SourcePackages",
+          "-skipPackagePluginValidation",
+          "-skipMacroValidation",
+          "CODE_SIGNING_ALLOWED=YES",
+          "CODE_SIGNING_REQUIRED=YES",
+          "CODE_SIGN_IDENTITY=-",
+          "-scheme",
+          "HanlinMiniApps",
+          "build-for-testing",
+          "-resultBundlePath",
+          "/Users/m1/builds/hanlin-two-wave-root-20261126/validation/759e5cf9-mini-build-repair-r5/MiniBuild.xcresult",
+          "-jobs",
+          "2"
+        ],
+        "controllerPID": 71398,
+        "finishedAt": "2026-11-27T01:11:43.487828+00:00",
+        "freeAfter": 31321112576,
+        "freeAtAdmission": 8888274944,
+        "freeBefore": 8612474880,
+        "nativeExitCode": 65,
+        "nativePID": 71434,
+        "originalCommand": [
+          "xcodebuild",
+          "-project",
+          "AI_HLY.xcodeproj",
+          "-destination",
+          "platform=iOS Simulator,id=1C68AF8C-91EA-4B73-88EC-47B702747AF8",
+          "-parallel-testing-enabled",
+          "NO",
+          "-derivedDataPath",
+          "/Users/m1/caches/DerivedData/hanlin-two-wave-root-20261126",
+          "-clonedSourcePackagesDirPath",
+          "/Users/m1/builds/hanlin-two-wave-root-20261126/source/build/SourcePackages",
+          "-skipPackagePluginValidation",
+          "-skipMacroValidation",
+          "CODE_SIGNING_ALLOWED=YES",
+          "CODE_SIGNING_REQUIRED=YES",
+          "CODE_SIGN_IDENTITY=-",
+          "-scheme",
+          "HanlinMiniApps",
+          "build-for-testing",
+          "-resultBundlePath",
+          "/Users/m1/builds/hanlin-two-wave-root-20261126/validation/759e5cf9-paired-r1/paired-product/MiniBuild.xcresult"
+        ],
+        "originalCommandReceiptSHA256": "aab830f18f5dbdaeacbaa8e5b54baa51b9a9cca78f0fc072e8254bc6adc3454c",
+        "phaseBudget": {
+          "OSMarginBytes": 1073741824,
+          "basis": "One warm original MiniApps target build only, existing Shutdown destination and supported jobs2 scheduling. No new simulator allocation/boot, second app, fixture preparation, Node authoring, install or tests. Current measured cache is4,658,232KiB Products +800,012KiB Intermediates +209,472KiB ModuleCache +1,051,896KiB explicitPCMs; the prior actual R1 added about282MB to these warm compiler leaves before the proven module import defect. Remaining2.6GB is an explicit planning estimate, not an observed peak or test gate. Preserve1.8GB short single-phase other-writer allowance and1GiB OS margin; stop only this owned process below1.5GiB. Full paired acceptance retains its separate12.50GB budget until current-build evidence permits further qualification.",
+          "buildResultBytes": 200000000,
+          "estimatedRemainingSingleAppGrowthBytes": 2600000000,
+          "otherWriterAllowanceForSingleCompilePhaseBytes": 1800000000,
+          "sum": 5673741824
+        },
+        "requiredFreeBytes": 5673741824,
+        "startedAt": "2026-11-27T01:04:10.020604+00:00",
+        "status": "FAILED"
+      },
+      "keys": [
+        "status",
+        "source",
+        "controllerPID",
+        "startedAt",
+        "scope",
+        "derivedData",
+        "evidence",
+        "requiredFreeBytes",
+        "phaseBudget",
+        "boundary",
+        "freeBefore",
+        "sourceBinding",
+        "simulatorBefore",
+        "buildSDK",
+        "originalCommandReceiptSHA256",
+        "originalCommand",
+        "command",
+        "scheduleOnlyChanges",
+        "originalTimeoutSeconds",
+        "freeAtAdmission",
+        "nativePID",
+        "lastObservation",
+        "nativeExitCode",
+        "logSHA256",
+        "firstErrors",
+        "actualDependencyMap",
+        "actualMiniAppCoreDependencyMap",
+        "error",
+        "traceback",
+        "finishedAt",
+        "freeAfter"
+      ],
+      "mtime": 1795741903.4885168,
+      "path": "/Users/m1/builds/hanlin-two-wave-root-20261126/native-759e5cf9-mini-build-repair-r5.json",
+      "sha256": "b37c8d4f5a69c92cf9c2c5d36068677d9d8f8ffc8046129b5bdd1f8a42e7565b"
+    },
+    "queueScripts": [
+      "/Users/m1/builds/hanlin-two-wave-root-20261126/queue-mini-build-repair-r5.py",
+      "/Users/m1/builds/hanlin-two-wave-root-20261126/queue-native-paired-r2-admission2.py",
+      "/Users/m1/builds/hanlin-two-wave-root-20261126/queue-original-mini-build-repair-r3.py",
+      "/Users/m1/builds/hanlin-two-wave-root-20261126/release-bundle-profile-readback-f103996c-20261127.py",
+      "/Users/m1/builds/hanlin-two-wave-root-20261126/release-bundle-profile-readback-f103996c-r2-20261127.py",
+      "/Users/m1/builds/hanlin-two-wave-root-20261126/release-queue-readback-9819697c-r2.py",
+      "/Users/m1/builds/hanlin-two-wave-root-20261126/release-readiness-9819697c-r1.py",
+      "/Users/m1/builds/hanlin-two-wave-root-20261126/release-readiness-9819697c-r2.py",
+      "/Users/m1/builds/hanlin-two-wave-root-20261126/release-readiness-9819697c-r3.py",
+      "/Users/m1/builds/hanlin-two-wave-root-20261126/release-readiness-e6b9630e-20261127.py",
+      "/Users/m1/builds/hanlin-two-wave-root-20261126/release-registration-9819697c.py"
+    ],
+    "release-queue-readback-9819697c-r2.json": {
+      "fields": {
+        "existingQueueFiles": [
+          "/Users/m1/builds/hanlin-two-wave-root-20261126/release-queue-readback-9819697c-r1.json"
+        ]
+      },
+      "keys": [
+        "at",
+        "scope",
+        "proposedBuildNumbers",
+        "jsonFilesInspected",
+        "truncated",
+        "existingQueueFiles",
+        "candidateMatches",
+        "liveCandidateReferences",
+        "readErrors",
+        "processReadFailures",
+        "protectedOtherOwnerNumber"
+      ],
+      "mtime": 1795717639.799209,
+      "path": "/Users/m1/builds/hanlin-two-wave-root-20261126/release-queue-readback-9819697c-r2.json",
+      "sha256": "5259fa7be7542fe98d760e5e2f9b146e4de6da0de5e1095d555979a21bffb29a"
+    },
+    "release-readiness-e6b9630e-20261127.json": {
+      "fields": {
+        "finishedAt": "2026-11-27T01:58:52.640981+00:00",
+        "newBundleResources": [],
+        "status": "READ_ONLY_RESOURCE_QUALIFICATION_PARTIAL"
+      },
+      "keys": [
+        "source",
+        "at",
+        "status",
+        "readOnly",
+        "certificateMutation",
+        "profileMutation",
+        "archive",
+        "upload",
+        "physicalAcceptance",
+        "products",
+        "ascBuildNumbers",
+        "newBundleResources",
+        "team",
+        "identity",
+        "decodedUniqueProfileCount",
+        "profileReadFailures",
+        "signingToolVersions",
+        "decoderScope",
+        "localReadyCount",
+        "errorKind",
+        "error",
+        "finishedAt"
+      ],
+      "mtime": 1795744732.644442,
+      "path": "/Users/m1/builds/hanlin-two-wave-root-20261126/release-readiness-e6b9630e-20261127.json",
+      "sha256": "98dd83f6a402769dc827051f3ad551a5fc4a5a14c56ee449de47e81e94b4a142"
+    }
+  },
+  "lorvex": {
+    "files": [
+      {
+        "bytes": 3880,
+        "mtime": 1795752042.11403,
+        "path": "/Users/m1/builds/lorvex-visual-173-final-20261126/evidence/xctest-export-probe-ce4c18ee-r1/capture_probe.py",
+        "sha256": "2cbae553fcb20c54222b5a354eebb1dad92428f429a464f68cedb3f1f43abc0c",
+        "text": "\nimport pathlib,json,subprocess,hashlib,os,fcntl,contextlib,datetime,traceback,xml.etree.ElementTree as ET\nbase=pathlib.Path(\"/Users/m1/builds/lorvex-visual-173-final-20261126\");source=base/\"source\";out=base/\"evidence/xctest-export-probe-ce4c18ee-r1\"\nscratch=pathlib.Path(\"/Users/m1/caches/DerivedData/lorvex-live-dependencies-r9-20261126/SwiftPM\")\nsha=\"ce4c18ee99892c1d029a07bd9f8669daefa3a173\";r={\"sourceSHA\":sha,\"scope\":\"HLC3 native XCTest XML exporter probe only; no final acceptance credit\",\"startedUTC\":datetime.datetime.now(datetime.timezone.utc).isoformat(),\"result\":\"running\"}\ndef git(*a):return subprocess.run([\"git\",\"-C\",str(source),*a],capture_output=True,text=True,check=True).stdout.strip()\ntry:\n with contextlib.ExitStack() as stack:\n  for p in [scratch.parent/\".lorvex-swiftpm-units.lock\",pathlib.Path(\"/Users/m1/caches/DerivedData/lorvex-visual-173-final-20261126/.lorvex-task-workspace-validation.lock\"),pathlib.Path(\"/Users/m1/caches/DerivedData/lorvex-core-migration-final-20261127/.lorvex-core-migration-units.lock\")]:\n   f=stack.enter_context(p.open());fcntl.flock(f,fcntl.LOCK_EX|fcntl.LOCK_NB)\n  assert git(\"rev-parse\",\"HEAD\")==sha and not git(\"status\",\"--porcelain=v1\",\"--untracked-files=all\")\n  r[\"sourceTree\"]=git(\"rev-parse\",\"HEAD^{tree}\")\n  original=json.loads((base/\"evidence/final95-ce4c18ee/app-migration5/unit-receipt.json\").read_text())\n  expected={k:v for k,v in original[\"expectedCaseCatalog\"].items() if v[\"framework\"]==\"xctest\"};assert len(expected)==3\n  r[\"expectedCaseCatalog\"]=expected\n  binary=scratch/\"out/Products/Debug/LorvexCoreServiceTests.xctest/Contents/MacOS/LorvexCoreServiceTests\"\n  r[\"builtTestProduct\"]={\"path\":str(binary),\"sha256\":hashlib.sha256(binary.read_bytes()).hexdigest()}\n  xml=out/\"native-xctest.xml\"\n  cmd=[\"xcrun\",\"swift\",\"test\",\"--package-path\",str(source/\"apps/apple\"),\"--scratch-path\",str(scratch),\"--disable-automatic-resolution\",\"--skip-update\",\"--skip-build\",\"--jobs\",\"2\",\"--enable-xctest\",\"--disable-swift-testing\",\"--parallel\",\"--num-workers\",\"1\",\"--filter\",r\"^LorvexCoreServiceTests\\.HlcSeedCoverageTests/\",\"--xunit-output\",str(xml),\"--verbose\"]\n  r[\"command\"]=cmd;log=out/\"native-xctest.log\";r[\"log\"]=str(log)\n  (out/\"receipt.json\").write_text(json.dumps(r,indent=2)+\"\\n\")\n  env=os.environ.copy();env[\"DEVELOPER_DIR\"]=\"/Applications/Xcode.app/Contents/Developer\";env[\"PATH\"]=\"/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin\"\n  with log.open(\"xb\") as f:p=subprocess.run(cmd,cwd=str(source),env=env,stdout=f,stderr=subprocess.STDOUT)\n  r[\"exitCode\"]=p.returncode;r[\"logSHA256\"]=hashlib.sha256(log.read_bytes()).hexdigest();r[\"nativeXMLExists\"]=xml.exists()\n  if xml.exists():\n   tree=ET.parse(xml);cases=tree.findall(\".//testcase\");ids=[c.attrib.get(\"classname\",\"\").replace(\".\",\"/\")+\"/\"+c.attrib.get(\"name\",\"\").split(\"(\",1)[0] for c in cases]\n   r[\"nativeXML\"]={\"path\":str(xml),\"sha256\":hashlib.sha256(xml.read_bytes()).hexdigest(),\"caseCount\":len(cases),\"cases\":[c.attrib for c in cases],\"identifiers\":ids,\"failureElements\":len(tree.findall(\".//failure\")),\"errorElements\":len(tree.findall(\".//error\")),\"skippedElements\":len(tree.findall(\".//skipped\"))}\n   assert len(ids)==len(set(ids))==3 and set(ids)==set(expected)\n   assert not tree.findall(\".//failure\") and not tree.findall(\".//error\") and not tree.findall(\".//skipped\")\n  assert p.returncode==0 and xml.exists()\n  assert git(\"rev-parse\",\"HEAD\")==sha and not git(\"status\",\"--porcelain=v1\",\"--untracked-files=all\")\n  r.update(result=\"passed\",sourceCleanAfter=True)\nexcept Exception as e:r.update(result=\"failed\",error=str(e),traceback=traceback.format_exc())\nfinally:\n r[\"finishedUTC\"]=datetime.datetime.now(datetime.timezone.utc).isoformat();(out/\"receipt.json\").write_text(json.dumps(r,indent=2)+\"\\n\")\n print(json.dumps({\"result\":r[\"result\"],\"receipt\":str(out/\"receipt.json\"),\"nativeXML\":r.get(\"nativeXML\"),\"error\":r.get(\"error\")}))\n"
+      },
+      {
+        "bytes": 4785,
+        "mtime": 1795752055.590581,
+        "path": "/Users/m1/builds/lorvex-visual-173-final-20261126/evidence/xctest-export-probe-ce4c18ee-r1/controller.log"
+      },
+      {
+        "bytes": 109809,
+        "mtime": 1795752055.5857189,
+        "path": "/Users/m1/builds/lorvex-visual-173-final-20261126/evidence/xctest-export-probe-ce4c18ee-r1/native-xctest.log"
+      },
+      {
+        "bytes": 2891,
+        "mtime": 1795752055.5834727,
+        "path": "/Users/m1/builds/lorvex-visual-173-final-20261126/evidence/xctest-export-probe-ce4c18ee-r1/native-xctest.xml"
+      },
+      {
+        "bytes": 9598,
+        "mtime": 1795752055.5904107,
+        "path": "/Users/m1/builds/lorvex-visual-173-final-20261126/evidence/xctest-export-probe-ce4c18ee-r1/receipt.json",
+        "sha256": "20c04add6c4f6cf577d31053c3078fb27852d974ca8f01464e4cbb00d0757dc1",
+        "text": "{\n  \"sourceSHA\": \"ce4c18ee99892c1d029a07bd9f8669daefa3a173\",\n  \"scope\": \"HLC3 native XCTest XML exporter probe only; no final acceptance credit\",\n  \"startedUTC\": \"2026-11-27T04:00:42.150043+00:00\",\n  \"result\": \"failed\",\n  \"sourceTree\": \"e4b3701b6f3336199b9e68a9bd6aee7b51c37c13\",\n  \"expectedCaseCatalog\": {\n    \"LorvexCoreServiceTests/HlcSeedCoverageTests/testSeedCoversNonTaskTablesAndIgnoresRemoteRows\": {\n      \"identifier\": \"LorvexCoreServiceTests/HlcSeedCoverageTests/testSeedCoversNonTaskTablesAndIgnoresRemoteRows\",\n      \"module\": \"LorvexCoreServiceTests\",\n      \"suite\": \"HlcSeedCoverageTests\",\n      \"function\": \"testSeedCoversNonTaskTablesAndIgnoresRemoteRows\",\n      \"framework\": \"xctest\",\n      \"sourcePath\": \"apps/apple/Tests/LorvexCoreServiceTests/HlcSeedCoverageTests.swift\",\n      \"displayLabel\": \"testSeedCoversNonTaskTablesAndIgnoresRemoteRows()\",\n      \"sourceSHA256\": \"626ebe16a2672674662db5fb6bfe58c2574bcd3d076e9398e36a8601b3b118f8\",\n      \"sourceGitObject\": \"b1979f02eadbe0ec8b5aa3ea924bab941f70d885\"\n    },\n    \"LorvexCoreServiceTests/HlcSeedCoverageTests/testTrustedNormalHighWaterIsRestoredWithoutForwardClamp\": {\n      \"identifier\": \"LorvexCoreServiceTests/HlcSeedCoverageTests/testTrustedNormalHighWaterIsRestoredWithoutForwardClamp\",\n      \"module\": \"LorvexCoreServiceTests\",\n      \"suite\": \"HlcSeedCoverageTests\",\n      \"function\": \"testTrustedNormalHighWaterIsRestoredWithoutForwardClamp\",\n      \"framework\": \"xctest\",\n      \"sourcePath\": \"apps/apple/Tests/LorvexCoreServiceTests/HlcSeedCoverageTests.swift\",\n      \"displayLabel\": \"testTrustedNormalHighWaterIsRestoredWithoutForwardClamp()\",\n      \"sourceSHA256\": \"626ebe16a2672674662db5fb6bfe58c2574bcd3d076e9398e36a8601b3b118f8\",\n      \"sourceGitObject\": \"b1979f02eadbe0ec8b5aa3ea924bab941f70d885\"\n    },\n    \"LorvexCoreServiceTests/HlcSeedCoverageTests/testSeedTableListCoversEverySchemaHlcVersionColumn\": {\n      \"identifier\": \"LorvexCoreServiceTests/HlcSeedCoverageTests/testSeedTableListCoversEverySchemaHlcVersionColumn\",\n      \"module\": \"LorvexCoreServiceTests\",\n      \"suite\": \"HlcSeedCoverageTests\",\n      \"function\": \"testSeedTableListCoversEverySchemaHlcVersionColumn\",\n      \"framework\": \"xctest\",\n      \"sourcePath\": \"apps/apple/Tests/LorvexCoreServiceTests/HlcSeedCoverageTests.swift\",\n      \"displayLabel\": \"testSeedTableListCoversEverySchemaHlcVersionColumn()\",\n      \"sourceSHA256\": \"626ebe16a2672674662db5fb6bfe58c2574bcd3d076e9398e36a8601b3b118f8\",\n      \"sourceGitObject\": \"b1979f02eadbe0ec8b5aa3ea924bab941f70d885\"\n    }\n  },\n  \"builtTestProduct\": {\n    \"path\": \"/Users/m1/caches/DerivedData/lorvex-live-dependencies-r9-20261126/SwiftPM/out/Products/Debug/LorvexCoreServiceTests.xctest/Contents/MacOS/LorvexCoreServiceTests\",\n    \"sha256\": \"dbad418c8854219f65e46b9cfe78275ab9b29e2d28f6aac0f0885871bd9a9ea3\"\n  },\n  \"command\": [\n    \"xcrun\",\n    \"swift\",\n    \"test\",\n    \"--package-path\",\n    \"/Users/m1/builds/lorvex-visual-173-final-20261126/source/apps/apple\",\n    \"--scratch-path\",\n    \"/Users/m1/caches/DerivedData/lorvex-live-dependencies-r9-20261126/SwiftPM\",\n    \"--disable-automatic-resolution\",\n    \"--skip-update\",\n    \"--skip-build\",\n    \"--jobs\",\n    \"2\",\n    \"--enable-xctest\",\n    \"--disable-swift-testing\",\n    \"--parallel\",\n    \"--num-workers\",\n    \"1\",\n    \"--filter\",\n    \"^LorvexCoreServiceTests\\\\.HlcSeedCoverageTests/\",\n    \"--xunit-output\",\n    \"/Users/m1/builds/lorvex-visual-173-final-20261126/evidence/xctest-export-probe-ce4c18ee-r1/native-xctest.xml\",\n    \"--verbose\"\n  ],\n  \"log\": \"/Users/m1/builds/lorvex-visual-173-final-20261126/evidence/xctest-export-probe-ce4c18ee-r1/native-xctest.log\",\n  \"exitCode\": 0,\n  \"logSHA256\": \"7185d34fb89bddf424f9634e9510fa0e2b4238a2964027301b08496d27b45aa9\",\n  \"nativeXMLExists\": true,\n  \"nativeXML\": {\n    \"path\": \"/Users/m1/builds/lorvex-visual-173-final-20261126/evidence/xctest-export-probe-ce4c18ee-r1/native-xctest.xml\",\n    \"sha256\": \"1b79e5026e71bc2b9452e5918ade6a96f9f32934d92672d55138cf2069b25c29\",\n    \"caseCount\": 17,\n    \"cases\": [\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testDetachedFutureNeverSeedsTheNormalLane\",\n        \"time\": \"0.142202416\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testDetachedLaneUsesTheSingleRemainingOperationalSuccessor\",\n        \"time\": \"0.116587167\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testDetachedTransactionsWithDifferentFloorsStayUniqueAndOrdered\",\n        \"time\": \"0.116846833\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testFallbackSeedIgnoresNoncanonicalValueWithoutHidingCanonicalFloor\",\n        \"time\": \"0.118770334\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testGlobalRetryCeilingIncludesPayloadShadowButExcludesOutboxHistory\",\n        \"time\": \"0.1141255\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testGlobalRetryCeilingRejectsParseableNoncanonicalStoredVersion\",\n        \"time\": \"0.115441542\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testMalformedDetachedHighWaterFailsClosed\",\n        \"time\": \"0.1154305\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testMalformedTrustedHighWaterFailsClosed\",\n        \"time\": \"0.11386625\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testOperationalWireCeilingCannotCrashAndRollsBackTransaction\",\n        \"time\": \"0.11888825\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testRotatedDeviceSuffixDoesNotTrustPriorInstallHighWater\",\n        \"time\": \"0.114013458\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testSeedBoundsForwardDriftFromAbsurdFuturePhysicalTime\",\n        \"time\": \"0.115669\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testSeedCoversNonTaskTablesAndIgnoresRemoteRows\",\n        \"time\": \"0.115425708\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testSeedFindsRetainedLocalCalendarGenerationUnderRemoteRegisterClocks\",\n        \"time\": \"0.114159708\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testSeedReturnsNilWithoutLocalHistory\",\n        \"time\": \"0.117109541\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testSeedTableListCoversEverySchemaHlcVersionColumn\",\n        \"time\": \"0.116243625\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testTaintedCeilingDetachedCheckpointFailsTypedWithoutMutation\",\n        \"time\": \"0.113936667\"\n      },\n      {\n        \"classname\": \"LorvexCoreServiceTests.HlcSeedCoverageTests\",\n        \"name\": \"testTrustedNormalHighWaterIsRestoredWithoutForwardClamp\",\n        \"time\": \"0.115362\"\n      }\n    ],\n    \"identifiers\": [\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testDetachedFutureNeverSeedsTheNormalLane\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testDetachedLaneUsesTheSingleRemainingOperationalSuccessor\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testDetachedTransactionsWithDifferentFloorsStayUniqueAndOrdered\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testFallbackSeedIgnoresNoncanonicalValueWithoutHidingCanonicalFloor\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testGlobalRetryCeilingIncludesPayloadShadowButExcludesOutboxHistory\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testGlobalRetryCeilingRejectsParseableNoncanonicalStoredVersion\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testMalformedDetachedHighWaterFailsClosed\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testMalformedTrustedHighWaterFailsClosed\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testOperationalWireCeilingCannotCrashAndRollsBackTransaction\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testRotatedDeviceSuffixDoesNotTrustPriorInstallHighWater\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testSeedBoundsForwardDriftFromAbsurdFuturePhysicalTime\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testSeedCoversNonTaskTablesAndIgnoresRemoteRows\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testSeedFindsRetainedLocalCalendarGenerationUnderRemoteRegisterClocks\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testSeedReturnsNilWithoutLocalHistory\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testSeedTableListCoversEverySchemaHlcVersionColumn\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testTaintedCeilingDetachedCheckpointFailsTypedWithoutMutation\",\n      \"LorvexCoreServiceTests/HlcSeedCoverageTests/testTrustedNormalHighWaterIsRestoredWithoutForwardClamp\"\n    ],\n    \"failureElements\": 0,\n    \"errorElements\": 0,\n    \"skippedElements\": 0\n  },\n  \"error\": \"\",\n  \"traceback\": \"Traceback (most recent call last):\\n  File \\\"/Users/m1/builds/lorvex-visual-173-final-20261126/evidence/xctest-export-probe-ce4c18ee-r1/capture_probe.py\\\", line 28, in <module>\\n    assert len(ids)==len(set(ids))==3 and set(ids)==set(expected)\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\nAssertionError\\n\",\n  \"finishedUTC\": \"2026-11-27T04:00:55.590198+00:00\"\n}\n"
+      }
+    ],
+    "root": "/Users/m1/builds/lorvex-visual-173-final-20261126/evidence/xctest-export-probe-ce4c18ee-r1"
+  },
+  "observedAt": 1795752132.385612,
+  "schema": "pinkha-foreign-resource-bounds-readonly-v1",
+  "smallCacheProof": {
+    "keys": [
+      "builds",
+      "caches",
+      "noDeletion",
+      "observedAt",
+      "originalProofs",
+      "ownerCoordination",
+      "processMatches",
+      "retirementAdmitted",
+      "schema",
+      "sourceHEAD86",
+      "tests"
+    ],
+    "provenance": {
+      "builds": 0,
+      "noDeletion": true,
+      "observedAt": 1795751275.44387,
+      "originalProofs": {
+        "keys": "<class 'list'>",
+        "omittedLargeValue": true
+      },
+      "ownerCoordination": "SDK lane explicitly reported no active/planned reuse of these compiler-only leaves; root decides retirement. Source, Products, checkouts/archives and all original evidence remain protected.",
+      "processMatches": [],
+      "retirementAdmitted": false,
+      "schema": "pinkha-owned-three-cache-leaves-readonly-v1",
+      "sourceHEAD86": {
+        "argv": [
+          "git",
+          "--no-replace-objects",
+          "-C",
+          "/Users/m1/development/anytype-root-active-20261125/miniapps-producer86-restore3/source",
+          "rev-parse",
+          "HEAD"
+        ],
+        "exitCode": 0,
+        "stderr": "",
+        "stdout": "86a6dde354947be9329fe1e8f4d45a433fe488c4\n"
+      },
+      "tests": 0
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "freeBytes": 10944184320,
+  "heavyCompilerOrCopyProcesses": [
+    {
+      "comm": "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+      "command": "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project Cherri.xcodeproj -clonedSourcePackagesDirPath .build/SourcePackages -disableAutomaticPackageResolution -scheme Cherri -configuration Debug -destination platform=iOS Simulator,id=D631D98E-2271-4948-B465-8EDBA9BD4D68 -derivedDataPath /Users/m1/caches/DerivedData/cherri-ui-296-fixed-five-xcode27-20261127-02 -resultBundlePath /Users/m1/builds/_preflight/cherri-ui-fixed-five-local-0fd3-20261127-01/execution-01/tests.xcresult CODE_SIGNING_ALLOWED=NO -only-testing:CherriTests/CherriWorkspacePresentationTests/testCompactPaneTransitionsKeepNativeViewsAndDocumentState -only-testing:CherriTests/CherriWorkspacePresentationTests/testCompactUncompiledDocumentsDoNotInstantiateWebKit -only-testing:CherriTests/CherriWorkspacePresentationTests/testDocumentationSearchUsesLiteralNativeInputTraits -only-testing:CherriUITests/CherriJoinedContractUITests/testRP39ActualCombinedEditorAndDelayedAnalysisUI -only-testing:CherriUITests/CherriPreviewDocumentUITests/testRP41ActualMappedAndGeneratedPreviewSourceUI test",
+      "pid": 99371,
+      "ppid": 99343
+    }
+  ],
+  "memoryPressure": {
+    "argv": [
+      "/usr/bin/memory_pressure",
+      "-Q"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "The system has 17179869184 (1048576 pages with a page size of 16384).\nSystem-wide memory free percentage: 52%\n"
+  },
+  "observedAt": 1795752537.5990558,
+  "originalProcessCensusSHA256": "a351b0395ab51279a09547a17a450461e695e18595e61348f5aad0bd2ad5bd26",
+  "otherObservedPythonOrSwiftProcesses": [
+    {
+      "comm": "/opt/local/Library/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python",
+      "command": "/opt/local/Library/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python /opt/local/Library/Frameworks/Python.framework/Versions/3.14/bin/fail2ban-server --async -b -s /opt/local/var/run/fail2ban/fail2ban.sock -p /opt/local/var/run/fail2ban/fail2ban.pid --loglevel INFO --logtarget /var/log/fail2ban.log --syslogsocket auto",
+      "pid": 416,
+      "ppid": 1
+    },
+    {
+      "comm": "/opt/homebrew/Cellar/python@3.12/3.12.16/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python",
+      "command": "/opt/homebrew/Cellar/python@3.12/3.12.16/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python /Users/m1/sentinelx/.venv/bin/sentinelx-cloud-core --hub https://mcp.sentinelx.app --identity /Users/m1/sentinelx/identity.json --config /Users/m1/sentinelx/config.yaml",
+      "pid": 65368,
+      "ppid": 1
+    },
+    {
+      "comm": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+      "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /Users/m1/builds/pureline-wireguard-lab-20261127/datagram_relay.py mac",
+      "pid": 73621,
+      "ppid": 1
+    },
+    {
+      "comm": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python",
+      "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -m http.server 18524 --bind 127.0.0.1 --directory /Users/m1/builds/pureline-wireguard-lab-20261127/gallery",
+      "pid": 95832,
+      "ppid": 1
+    },
+    {
+      "comm": "/opt/homebrew/Cellar/python@3.12/3.12.16/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python",
+      "command": "/opt/homebrew/Cellar/python@3.12/3.12.16/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python -I -B /Users/m1/builds/_preflight/cherri-ui-fixed-five-local-0fd3-20261127-01/qualified-owner-01/local_owner.py",
+      "pid": 99343,
+      "ppid": 1
+    }
+  ],
+  "queuedLaunchers": [],
+  "swap": {
+    "argv": [
+      "/usr/sbin/sysctl",
+      "vm.swapusage"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "vm.swapusage: total = 3072.00M  used = 2113.56M  free = 958.44M  (encrypted)\n"
+  }
+}
