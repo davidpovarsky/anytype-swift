@@ -1,0 +1,9 @@
+{
+  "schema": "independent-source-review-inspection-v1",
+  "status": "INSPECTION_SCRIPT_STOPPED_BEFORE_REVIEW_WRITE",
+  "error": "KeyError: 'replacements'",
+  "reason": "Reviewer initially assumed every literal edit record was a replacement list; the test-file record is an explicit hex append.",
+  "candidateChanged": false,
+  "compilerOrTestsRun": false,
+  "correction": "Inspect the actual append schema and verify its exact suffix and original prefix separately."
+}

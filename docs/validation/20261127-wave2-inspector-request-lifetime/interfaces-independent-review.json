@@ -1,0 +1,93 @@
+{
+  "schema": "inspector-queued-request-independent-source-review-v1",
+  "reviewer": "/root/interfaces",
+  "reviewedAtUTC": "2026-11-27T14:25:28.203536+00:00",
+  "status": "PASS_SOURCE_REVIEW_ONLY",
+  "candidateManifestSHA256": "896ebe09c0c616e2293c4f80db20ccd8ed86bc09cd72457371eb6213fd35d30e",
+  "sourceInverseSHA256": "e0ba7d5f2e8291b13b0a459730d2912c60300caee783b5c623090113a134e36f",
+  "sourceStructureProofSHA256": "5ec02b941290324ac7140998d55db5fcdcd36ddd71030cfdb340b0a66bf7fbca",
+  "sourceByteReview": {
+    "path": "interfaces-source-byte-review.json",
+    "sha256": "f0a2dee23e8c1b93e7efe24f41cee6af3220627d6e16778f5fc3fa8daf815d1e"
+  },
+  "reviewerInspectionStop": {
+    "path": "interfaces-review-attempt1.json",
+    "sha256": "d644c6ae740671cfdb5675a27160a672742ba565e0f9d09839d951315d653d02",
+    "productOrTestFailure": false
+  },
+  "retainedPrimaryBindings": [
+    {
+      "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift",
+      "ref": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+      "gitBlob": "0e9d22b56bca1176a67fa57c055cd9a5f2fb6db5",
+      "sha256": "2f56aafeb516497c30c13bff9ba2da5c9cf626586b5a67826f65813c29bc716a",
+      "retainedPrimaryContentExact": true
+    },
+    {
+      "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahSourcesSearchPresenter.swift",
+      "ref": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+      "gitBlob": "d90f1c04a5b8a977c4fcb8d717300a530aa6410e",
+      "sha256": "8b81677f5aa0d0111600d54e15967c217ed7a0f7692836d867933efd3e4b891f",
+      "retainedPrimaryContentExact": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+      "ref": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+      "gitBlob": "640bf7e0074d4db3e7a3cb6bc2c3af41a09b5ca7",
+      "sha256": "8b32cb43447a4c7cf423f3a5b2e9442255c89fc6e4811f14387b9ae789c46762",
+      "retainedPrimaryContentExact": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift",
+      "ref": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+      "gitBlob": "aa05299483402494da71e9e264b747ce80edaa06",
+      "sha256": "a35096bca030ea8f764ddbe5b8ba7ef1a9260fbf281ed7e1f4fe0ce1a01951af",
+      "retainedPrimaryContentExact": true
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/TorahSearchResolutionPublicationTests.swift",
+      "ref": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+      "gitBlob": "a21258bd87259e448dadf252da9e0991bbfe6325",
+      "sha256": "bf736097ed333279f80d0b2474211e301a191bd3613abd43808458428dc9fb12",
+      "retainedPrimaryContentExact": true
+    },
+    {
+      "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+      "ref": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+      "gitBlob": "3a29602f002d2365045a6ef332895fe2d6b50c45",
+      "sha256": "39c392b12a80bd8fb5327f2edd6d9e7de075e926a98246c018f99af44b63b311",
+      "retainedPrimaryContentExact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "ref": "1a890015578962bc6eab8c6e9bb70c51ce189cf3",
+      "gitBlob": "9f121c30ad7c8caeab114c83bcb8586270c21708",
+      "sha256": "beea22b4d19484f6dad508f819d874ece31d43a91d36fa0d03805c527c9332da",
+      "retainedPrimaryContentExact": true
+    }
+  ],
+  "scope": [
+    "Explicit MainActor operation factories and UI capture before Task/framework scheduling",
+    "Presentation retirement, caller cancellation and preserved original request guards",
+    "Actual shared-session authorization and controlled test repository/provider paths",
+    "Complete five-file inverse, original async method/test prefix and two source-map pins"
+  ],
+  "findings": [],
+  "conclusions": [
+    "All five factories synchronously capture the private presentation generation. Returned MainActor closures check exact generation and Task cancellation before entering the existing MainActor method; weak self prevents deferred work from extending presenter ownership before entry.",
+    "cancelPendingRequests rotates generation and retains all original epoch/request invalidations. It closes the identified pre-entry boundary without substituting presentation state for document, Space or write authority.",
+    "Both exact UI consumers capture purpose-specific button/query operations before creating Task. Heart search/refresh task modifiers and native refresh task await the captured operation directly, preserving structured caller cancellation. The Heart asynchronous Retry action is captured at body construction. No new Task.value bridge exists in product code.",
+    "Five complete original public async method declarations/bodies are byte-identical. Existing query/scope checks, mutation serialization, post-await publication guards, session validation and real write authorizers remain intact.",
+    "The exact shared session confirms current-action test expectations: reference search/resolve use the workspace provider, linking/unlinking invoke original authorization and canonical list readback, and segment Genesis 1:1 maps to section Genesis 1 with preferred segment preserved. The controlled repository invokes the supplied authorization closure rather than replacing it.",
+    "The test suite is MainActor-isolated. Its queued Task cannot start before the synchronous retirement/cancellation in the same test job; await occurs afterwards. Six action paths times two document-lifetime states declare 12 cases, and caller cancellation declares two more. A fresh current action is also required to reach the original session path, preventing an always-ignore implementation from satisfying the intended assertions.",
+    "The full original 6631-byte test prefix is exact. New source declares two methods/fourteen cases; entire file declares three methods/sixteen cases. Provider/repository observations are awaited into local values before Testing macros; no nested require or suspended macro expression was introduced.",
+    "The native UI inverse restores the entire independently published Retry1a donor, including its localized Retry path. All132 source-map rows remain; only existing shared presenter and Heart-view blobs change, and both match independently computed candidate Git blobs."
+  ],
+  "boundaries": [
+    "No Swift compiler, test enumeration, unit/component/UI test, Native operation, simulator or device was invoked for this review.",
+    "No runtime scheduling, mounted UI, visual, real provider/network or actual Native acceptance is claimed. These remain pending the coordinated matching App and hosted test selection.",
+    "The scope is the concrete presentation pre-entry ownership correction. Existing asynchronous methods and session semantics were reviewed as retained dependencies, not changed or exhaustively requalified.",
+    "No product/source file was modified by the reviewer. Only this review and its inspection/source-byte records were written locally. No remote or publication action was performed."
+  ],
+  "runtimeStatus": "NOT_RUN"
+}

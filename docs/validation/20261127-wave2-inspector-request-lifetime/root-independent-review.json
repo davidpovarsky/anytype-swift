@@ -1,0 +1,115 @@
+{
+  "schema": "wave2-root-inspector-lifetime-source-review-v1",
+  "status": "SOURCE_REVIEW_ACCEPTED_RUNTIME_NOT_RUN",
+  "reviewedAtUTC": "2026-11-27T14:22:14Z",
+  "candidateManifestSHA256": "896ebe09c0c616e2293c4f80db20ccd8ed86bc09cd72457371eb6213fd35d30e",
+  "files": [
+    {
+      "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahSourcesSearchPresenter.swift",
+      "after": {
+        "sha256": "e9af431a76a6c67fe251afcaa8be4c8a239b83090af6fa6585d3f0ca934afe9d",
+        "gitBlob": "b52b9f4652ba319816b178dbacc4afdd0aa726c4",
+        "bytes": 11516
+      },
+      "reversedOriginal": {
+        "sha256": "8b81677f5aa0d0111600d54e15967c217ed7a0f7692836d867933efd3e4b891f",
+        "gitBlob": "d90f1c04a5b8a977c4fcb8d717300a530aa6410e",
+        "bytes": 9564
+      }
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift",
+      "after": {
+        "sha256": "d25538f1cfd4f71b86b051693d2e0b2176481c9c45c2d3cc7c8d6409e1d3fa3c",
+        "gitBlob": "a0996697e49777c30e75206c9bec8737c92dfedb",
+        "bytes": 18673
+      },
+      "reversedOriginal": {
+        "sha256": "a35096bca030ea8f764ddbe5b8ba7ef1a9260fbf281ed7e1f4fe0ce1a01951af",
+        "gitBlob": "aa05299483402494da71e9e264b747ce80edaa06",
+        "bytes": 18382
+      }
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "after": {
+        "sha256": "31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db",
+        "gitBlob": "44418e9710c16412d3dced2e8ce53ae94eb264cc",
+        "bytes": 36414
+      },
+      "reversedOriginal": {
+        "sha256": "beea22b4d19484f6dad508f819d874ece31d43a91d36fa0d03805c527c9332da",
+        "gitBlob": "9f121c30ad7c8caeab114c83bcb8586270c21708",
+        "bytes": 35988
+      }
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/TorahSearchResolutionPublicationTests.swift",
+      "after": {
+        "sha256": "cbc620ee256f22f94fa5e5bebdc3f40c219e15a79a9bddf3761f6411fcfb3337",
+        "gitBlob": "3228aae6d3047a5c3fdf654a08f33457e4cc425f",
+        "bytes": 18265
+      },
+      "reversedOriginal": {
+        "sha256": "bf736097ed333279f80d0b2474211e301a191bd3613abd43808458428dc9fb12",
+        "gitBlob": "a21258bd87259e448dadf252da9e0991bbfe6325",
+        "bytes": 6631
+      }
+    },
+    {
+      "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+      "after": {
+        "sha256": "d1054f387c2459097a8b610f04a6c1f2d813ed77ef678bedaa3c8b0c50e76a13",
+        "gitBlob": "6341f2952adbbc489b92afb96291952b6b4f9dc2",
+        "bytes": 229148
+      },
+      "reversedOriginal": {
+        "sha256": "39c392b12a80bd8fb5327f2edd6d9e7de075e926a98246c018f99af44b63b311",
+        "gitBlob": "3a29602f002d2365045a6ef332895fe2d6b50c45",
+        "bytes": 229148
+      }
+    }
+  ],
+  "checks": {
+    "fullFiveFileLiteralInverse": true,
+    "presenterAllOriginalCodeRecoveredAfterOnlyFactoriesGenerationRemoved": true,
+    "originalAsyncBodiesAndPublicAPIsUnchanged": true,
+    "oldTestPrefix6631BytesExact": true,
+    "newMethods": 2,
+    "newDeclaredCases": 14,
+    "nativeRetry1aPreservedByExactDonorInverse": true,
+    "sourceMapOnlyTwoExistingValuesChanged": [
+      {
+        "path": "/changes/43/sharedSources/0/gitBlob",
+        "before": "d90f1c04a5b8a977c4fcb8d717300a530aa6410e",
+        "after": "b52b9f4652ba319816b178dbacc4afdd0aa726c4"
+      },
+      {
+        "path": "/changes/114/replacementBlob",
+        "before": "aa05299483402494da71e9e264b747ce80edaa06",
+        "after": "a0996697e49777c30e75206c9bec8737c92dfedb"
+      }
+    ]
+  },
+  "sourceReasoning": [
+    "Both actual UI consumers capture presentation generation synchronously before enqueuing the request; old generation is retired by original onDisappear cancellation.",
+    "Explicit MainActor closures call existing MainActor methods on the same task; same-isolation calls do not interleave at entry. Original per-operation request IDs continue to reject late completion.",
+    "Framework .task operations await the captured closure directly, preserving cancellation without an unstructured Task.value bridge.",
+    "Controlled tests exercise the original session authorization and canonical-record readback; they do not simulate a Native service or claim native authority.",
+    "Weak self avoids a retained action extending presenter lifetime; request token only rejects stale work and never grants write authority."
+  ],
+  "languageReference": {
+    "url": "https://github.com/swiftlang/swift-evolution/blob/main/proposals/0420-inheritance-of-actor-isolation.md",
+    "section": "Motivation",
+    "paraphrase": "Swift guarantees no task interleaving at calls and returns between functions with the same actor isolation; passing values within that isolation does not require crossing a Sendable boundary.",
+    "note": "Primary source read; no full source copy, no runtime inference."
+  },
+  "remaining": [
+    "Actual Apple Swift compilation, enumeration and new2/14 execution",
+    "Mounted search retirement/reopen/failure recovery and visual acceptance",
+    "Original Inspector source consumer still only selects older1/2 scope; new suite needs explicit matching App selection"
+  ],
+  "compilerInvocations": 0,
+  "runtimeTests": 0,
+  "nativeOrMacActions": 0
+}

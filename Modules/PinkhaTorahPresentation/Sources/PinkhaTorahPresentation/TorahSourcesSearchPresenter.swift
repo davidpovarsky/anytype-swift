@@ -25,6 +25,7 @@ public final class TorahSourcesSearchPresenter {
     private let onSelectValue: ((TorahAssociationItem) -> Void)?
     public let fixedScope: Bool
     public var isSelectionOnly: Bool { onSelectValue != nil }
+    private var presentationGeneration = UUID()
     private var searchEpoch: UInt = 0
     private var associationRequestID: UUID?
     private var openRequestID: UUID?
@@ -82,6 +83,53 @@ public final class TorahSourcesSearchPresenter {
         searchEpoch &+= 1
         openRequestID = nil
     }
+
+    // Capture while the button callback or view body still owns this picker.
+    // The returned operation is awaited directly, preserving caller cancellation.
+    public func makeSearchRequest(debounce: Duration = .zero) -> @MainActor () async -> Void {
+        let generation = presentationGeneration
+        return { [weak self] in
+            guard let self, self.ownsPresentation(generation) else { return }
+            await self.performSearch(debounce: debounce)
+        }
+    }
+
+    public func makeAssociationRefreshRequest() -> @MainActor () async -> Void {
+        let generation = presentationGeneration
+        return { [weak self] in
+            guard let self, self.ownsPresentation(generation) else { return }
+            await self.refreshAssociations()
+        }
+    }
+
+    public func makeOpenReferenceRequest(_ result: SearchResult) -> @MainActor () async -> Void {
+        let generation = presentationGeneration
+        return { [weak self] in
+            guard let self, self.ownsPresentation(generation) else { return }
+            await self.openReference(result)
+        }
+    }
+
+    public func makeLinkRequest(_ result: SearchResult) -> @MainActor () async -> Void {
+        let generation = presentationGeneration
+        return { [weak self] in
+            guard let self, self.ownsPresentation(generation) else { return }
+            await self.link(result)
+        }
+    }
+
+    public func makeUnlinkRequest(_ item: TorahAssociationItem) -> @MainActor () async -> Void {
+        let generation = presentationGeneration
+        return { [weak self] in
+            guard let self, self.ownsPresentation(generation) else { return }
+            await self.unlinkAssociation(item)
+        }
+    }
+
+    private func ownsPresentation(_ generation: UUID) -> Bool {
+        presentationGeneration == generation && !Task.isCancelled
+    }
+
 
     public func performSearch(debounce: Duration = .zero) async {
         searchEpoch &+= 1
@@ -225,6 +273,7 @@ public final class TorahSourcesSearchPresenter {
     }
 
     public func cancelPendingRequests() {
+        presentationGeneration = UUID()
         searchEpoch &+= 1
         associationRequestID = nil
         openRequestID = nil

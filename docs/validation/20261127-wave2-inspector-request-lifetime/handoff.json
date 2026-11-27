@@ -1,0 +1,64 @@
+{
+  "schema": "inspector-queued-request-source-handoff-v1",
+  "parentCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "retryDonorCommit": "1a890015578962bc6eab8c6e9bb70c51ce189cf3",
+  "ownedBranch": "codex/chatgpt-wave15-wave2-inspector-request-lifetime-20261127",
+  "sourceOnly": true,
+  "requiredNativeTestSource": {
+    "path": "AnyTypeTests/Pinkha/TorahSearchResolutionPublicationTests.swift",
+    "before": {
+      "sha256": "bf736097ed333279f80d0b2474211e301a191bd3613abd43808458428dc9fb12",
+      "gitBlob": "a21258bd87259e448dadf252da9e0991bbfe6325",
+      "bytes": 6631
+    },
+    "after": {
+      "sha256": "cbc620ee256f22f94fa5e5bebdc3f40c219e15a79a9bddf3761f6411fcfb3337",
+      "gitBlob": "3228aae6d3047a5c3fdf654a08f33457e4cc425f",
+      "bytes": 18265
+    }
+  },
+  "newSuite": "TorahSearchQueuedRequestTests",
+  "newMethods": [
+    {
+      "name": "queuedActionIsRetiredBeforeRepositoryEntry(operation:reopenDocument:)",
+      "cases": 12,
+      "arguments": {
+        "operation": [
+          "search",
+          "refresh",
+          "open",
+          "link",
+          "unlink",
+          "select"
+        ],
+        "reopenDocument": [
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "cancelledStructuredReadDoesNotEnterProvider(operation:)",
+      "cases": 2,
+      "arguments": {
+        "operation": [
+          "search",
+          "refresh"
+        ]
+      }
+    }
+  ],
+  "existingSuite": "TorahSearchResolutionPublicationTests",
+  "existingMethods": 1,
+  "existingCases": 2,
+  "existingTestPrefixBytes": 6631,
+  "oldInspectorHostedProfileDoesNotSelectNewSuite": true,
+  "actualCompileAndEnumerationRequired": true,
+  "sourceInputPathsAdded": 0,
+  "projectFileChanged": false,
+  "runtimeConsumerChanged": false,
+  "runtimeAdmission": false,
+  "T5HistoricalCallsRepeated": 0,
+  "originalRepositorySessionAndLeaseBodiesChanged": false,
+  "newControllerOrTimeoutChanges": false
+}

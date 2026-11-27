@@ -486,6 +486,7 @@ public struct AnyNativeSourceSearchView: View {
 
     @ViewBuilder private var searchContent: some View {
         @Bindable var presenter = presenter
+        let refreshRequest = presenter.makeAssociationRefreshRequest()
             List {
                 if !presenter.fixedScope {
                     Picker(Loc.Pinkha.Torah.sources, selection: $presenter.searchScope) {
@@ -515,7 +516,10 @@ public struct AnyNativeSourceSearchView: View {
                                     .accessibilityIdentifier("any-native-linked-source-\(item.id)")
                                     .accessibilityValue(Text(verbatim: item.canonicalKey))
                                 Spacer()
-                                Button(role: .destructive) { Task { await presenter.unlinkAssociation(item) } }
+                                Button(role: .destructive) {
+                                    let request = presenter.makeUnlinkRequest(item)
+                                    Task { await request() }
+                                }
                                     label: {
                                         Image(systemName: "minus.circle")
                                             .frame(width: 44, height: 44)
@@ -538,13 +542,15 @@ public struct AnyNativeSourceSearchView: View {
                     case .error(let message):
                         Text(message).foregroundStyle(.red)
                         Button(Loc.Pinkha.Home.retry) {
-                            Task { await presenter.performSearch() }
+                            let request = presenter.makeSearchRequest()
+                            Task { await request() }
                         }
                     case .results(let results):
                         ForEach(results) { result in
                             HStack(alignment: .top) {
                                 Button {
-                                    Task { await presenter.openReference(result) }
+                                    let request = presenter.makeOpenReferenceRequest(result)
+                                    Task { await request() }
                                 } label: {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(result.title(locale: locale))
@@ -558,7 +564,8 @@ public struct AnyNativeSourceSearchView: View {
                                     .accessibilityValue(Text(verbatim: result.providerValue))
                                 Spacer()
                                 Button {
-                                    Task { await presenter.link(result) }
+                                    let request = presenter.makeLinkRequest(result)
+                                    Task { await request() }
                                 } label: { Image(systemName: presenter.isSelectionOnly ? "checkmark.circle" : "plus.circle") }
                                     .disabled(!presenter.canEditAssociations)
                                     .buttonStyle(.plain)
@@ -592,9 +599,10 @@ public struct AnyNativeSourceSearchView: View {
                 }
             }
             .onChange(of: presenter.searchQuery) { _, _ in
-                Task { await presenter.performSearch(debounce: .milliseconds(300)) }
+                let request = presenter.makeSearchRequest(debounce: .milliseconds(300))
+                Task { await request() }
             }
-            .task { session.updateEffectiveLocale(locale); await presenter.refreshAssociations() }
+            .task { session.updateEffectiveLocale(locale); await refreshRequest() }
             .onDisappear { presenter.cancelPendingRequests() }
     }
 
