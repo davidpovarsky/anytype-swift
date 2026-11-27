@@ -1,0 +1,34 @@
+{
+  "schema": "wave2-properties-root-review-v2",
+  "status": "CORRECTION_REQUIRED_SOURCE_ONLY",
+  "candidate": {
+    "document": "f3b6b6bb5425d69d7eff09aecac9c82a5dfd125ed004c644126cb518e137c4a5",
+    "view": "47e04a0dedaebe5a0d6dc35e4b8d30b58a5f0c8eda0cb44fea6283ecf801465d",
+    "model": "4138a4c8226e4e274e00a932c62d0abd463b22dd6231164b4f64e5843f67b0be",
+    "tests": "520c4a24f7c1aa4a99d4979586a05b2de1209f9b44ed995d5cf511d79dd05da3"
+  },
+  "resolved": [
+    "Original public async showDocuments signature preserved with awaited child and forwarded cancellation",
+    "Synchronous tap reserves request before Task; retained View reservation is Properties-generation-owned",
+    "Original native read963 bytes unchanged"
+  ],
+  "finding": {
+    "id": "TRANSIENT_FOREGROUND_FALSE_LEAVES_REQUEST_RESERVED",
+    "detail": "The new model clears request/task/isLoading and calls didFinish only if it both owns the request and isOwnerCurrent(). The production guard includes requireMounted -> surface.isForegroundMounted. Current db7b editor defines this using windowScene.activationState == foregroundActive; its explicit unmount covers actual removal/dismissal rather than transient inactivity. A request may settle while the same sheet/request remains owned but foreground eligibility is temporarily false, skipping cleanup and blocking a later same-sheet retry.",
+    "limit": "Source inference, not an observed simulator reproduction; no claim of cross-Space leakage.",
+    "requestedCorrection": "Separate same-request owned completion cleanup from current-authority-gated result/error publication. Preserve replacement-generation protection and existing drain. Cover transient owner guard false, no result/feedback publication, then retry when current again."
+  },
+  "primaryEditor": {
+    "commit": "db7b1c8cc5be5950912b91b8cae4f6e5f19f3a16",
+    "blob": "81eec84bc476ce7d0c4835ebee912e57b35717c6",
+    "record": "root-current-editor.primary.json"
+  },
+  "operations": {
+    "compiler": 0,
+    "tests": 0,
+    "oracle": 0,
+    "mac": 0,
+    "native": 0
+  },
+  "productRuntimeAdmission": false
+}

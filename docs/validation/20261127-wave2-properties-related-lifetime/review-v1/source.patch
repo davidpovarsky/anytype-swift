@@ -1,0 +1,458 @@
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift
+@@ -68,15 +68,25 @@
+     public private(set) var contentRevision: UInt64 = 0
+     public private(set) var textHistoryEpochs: [String: UInt64] = [:]
+     public var message: String?
+-    public var showsProperties = false
++    public var showsProperties = false {
++        didSet {
++            if showsProperties != oldValue { updateSourceDocumentsPresentation() }
++        }
++    }
+     public var showsArchiveTransfer = false
+     public var showsDraftReview = false
+     public private(set) var requiresDraftReview = false
+     public private(set) var isComposing = false
+     public private(set) var isCreatingTextAnchor = false
+     public private(set) var isApplyingMiniApps = false
+-    public var sourceDocuments: [TorahRelatedDocument] = []
+-    public var sourceDocumentsTitle: String?
++    public var sourceDocuments: [TorahRelatedDocument] {
++        get { sourceDocumentsPresentation.documents }
++        set { sourceDocumentsPresentation.documents = newValue }
++    }
++    public var sourceDocumentsTitle: String? {
++        get { sourceDocumentsPresentation.title }
++        set { sourceDocumentsPresentation.title = newValue }
++    }
+     public private(set) var nativeProperties: AnyNativeDerivedDocumentProperties?
+     public var onOpenObject: ((String, String?) -> Void)?
+     private var navigation = AnyNativeDocumentNavigation()
+@@ -127,6 +137,7 @@
+     @ObservationIgnored private var scopeInvalidators: [@Sendable () -> Void] = []
+     @ObservationIgnored private var drainHandlers: [@MainActor () async -> Void] = []
+     @ObservationIgnored private var revokeHandlers: [@MainActor () -> Void] = []
++    @ObservationIgnored private let sourceDocumentsPresentation = AnyNativeSourceDocumentsPresentation()
+ 
+     public init(client: AnyHTTPClient, session: AnyApplicationSession,
+                 objects: AnyNativeObjectCreator, blocks: AnyNativeBlockCreator,
+@@ -230,11 +241,13 @@
+ 
+     public func mount(surface: any AnyEditorMountedSurface) {
+         guard lifetime.isActive, !isNavigating else { return }
++        let startsMountedOwner = !isMounted
+         if !isMounted {
+             epoch = UUID()
+             retireEditorReads()
+         }
+         self.surface = surface; isMounted = true
++        if startsMountedOwner, showsProperties { updateSourceDocumentsPresentation() }
+         torah.activateDocument()
+     }
+ 
+@@ -1042,13 +1055,13 @@
+         return result.0
+     }
+ 
+-    public func showDocuments(with item: TorahAssociationItem) async {
++    /// The tap enters synchronously; its owned request exists before its Task.
++    @discardableResult
++    public func showDocuments(with item: TorahAssociationItem,
++                              onFinish: @escaping @MainActor () -> Void = {}) -> Task<Void, Never>? {
+         let requestEpoch = epoch
+-        do {
+-            try requireMounted(requestEpoch)
+-            guard showsProperties, !isNavigating, torah.selection == nil,
+-                  !torah.isSearchPresented, sourceDocumentsTitle == nil else { return }
+-            let index = index, metadata = metadata
++        let index = index, metadata = metadata, nativeSession = nativeSession
++        return sourceDocumentsPresentation.load(documentOwner: requestEpoch, read: {
+             let output = try await nativeSession.perform { lease in
+                 let initial = try await index.documents(with: item)
+                 var rows: [TorahRelatedDocument] = []
+@@ -1065,13 +1078,39 @@
+                 try await lease.validate()
+                 return (rows, final.readiness.complete)
+             }
+-            try requireMounted(requestEpoch)
+-            guard showsProperties, !isNavigating, torah.selection == nil,
+-                  !torah.isSearchPresented, sourceDocumentsTitle == nil else { return }
+-            sourceDocuments = output.0
+-            sourceDocumentsTitle = TorahAssociationDisplayFormatter.label(for: item, locale: .autoupdatingCurrent)
+-            if !output.1 { message = AnyUIErrorText.incompleteIndex }
+-        } catch { message = AnyUIErrorText.describe(error) }
++            return .init(documents: output.0,
++                title: TorahAssociationDisplayFormatter.label(for: item, locale: .autoupdatingCurrent),
++                complete: output.1)
++        }, isOwnerCurrent: { [weak self] in
++            self?.ownsSourceDocumentsPresentation(requestEpoch) == true
++        }, canPresent: { [weak self] in
++            guard let self else { return false }
++            return !isNavigating && torah.selection == nil && !torah.isSearchPresented
++        }, didComplete: { [weak self] result in
++            guard let self else { return }
++            switch result {
++            case .success(let complete):
++                if !complete { message = AnyUIErrorText.incompleteIndex }
++            case .failure(let error):
++                message = AnyUIErrorText.describe(error)
++            }
++        }, didFinish: onFinish)
++    }
++
++    private func ownsSourceDocumentsPresentation(_ owner: UUID) -> Bool {
++        guard showsProperties else { return false }
++        do { try requireMounted(owner); return true }
++        catch { return false }
++    }
++
++    private func updateSourceDocumentsPresentation() {
++        let closing: Task<Void, Never>?
++        if showsProperties, isMounted, lifetime.isActive {
++            closing = sourceDocumentsPresentation.beginPresentation(documentOwner: epoch)
++        } else {
++            closing = sourceDocumentsPresentation.retire()
++        }
++        if let closing { closingObservers.append(closing) }
+     }
+ 
+     func refreshEditor(expectedEpoch: UUID) async {
+@@ -1203,6 +1242,7 @@
+         retainRecovery()
+         guard isMounted else { return }
+         isMounted = false; epoch = UUID()
++        updateSourceDocumentsPresentation()
+         semanticAnchorIntent = nil; semanticAnchorPreparationID = nil
+         semanticAnchorMutationID = nil; isCreatingTextAnchor = false
+         retireEditorReads()
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift
+@@ -305,8 +305,9 @@
+                         }
+                         Button(AnyUIErrorText.text("מסמכים מקושרים", "Related documents")) {
+                             guard reservePropertyChild() else { return }
+-                            Task {
+-                                await presentation.showDocuments(with: item)
++                            if case nil = presentation.showDocuments(with: item, onFinish: {
++                                releasePropertyChildIfAbsent()
++                            }) {
+                                 releasePropertyChildIfAbsent()
+                             }
+                         }.disabled(!canPresentPropertyChild)
+--- a/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift
++++ b/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift
+@@ -150,3 +150,208 @@
+         writes += 1
+     }
+ }
++
++/// Actual Properties result-state ownership with noncooperative typed reads.
++/// This does not replace or certify the native index, metadata or ACL checks.
++@MainActor
++@Suite("Native Properties related-document publication", .timeLimit(.minutes(1)))
++struct AnyNativeSourceDocumentsPublicationTests {
++    @Test
++    func queuedOldRequestCannotBorrowReopenedSheetAndCurrentFailureCanRetry() async throws {
++        let owner = SourceDocumentsTestOwner()
++        owner.open()
++        var oldReads = 0
++        let old = try #require(owner.load("old") {
++            oldReads += 1
++            return sourceDocumentsResult("old")
++        })
++        defer { old.cancel(); owner.close() }
++        // No suspension before this close/reopen: the old Task is queued, but
++        // the synchronous tap has already captured the old presentation ID.
++        owner.close()
++        owner.open()
++        let failed = try #require(owner.load("current-failure") {
++            throw SourceDocumentsTestFailure()
++        })
++        await failed.value
++        await old.value
++        #expect(oldReads == 0)
++        #expect(owner.feedback == ["current-failure:failure"])
++        #expect(owner.finished == ["current-failure"])
++        #expect(!owner.model.isLoading)
++        #expect(owner.model.documents.isEmpty)
++        #expect(owner.model.title == nil)
++
++        let retry = try #require(owner.load("retry") { sourceDocumentsResult("current") })
++        await retry.value
++        #expect(owner.model.documents.map(\.objectID) == ["current"])
++        #expect(owner.model.title == "Source current")
++        #expect(owner.feedback == ["current-failure:failure", "retry:success"])
++        #expect(owner.finished == ["current-failure", "retry"])
++        owner.close()
++    }
++
++    @Test(arguments: [false, true], [false, true])
++    func noncooperativeOldCompletionCannotReplaceReopenedRequest(
++        olderFails: Bool, changesDocumentOwner: Bool
++    ) async throws {
++        let owner = SourceDocumentsTestOwner()
++        let stale = SuspendedSourceDocumentsRead()
++        let current = SuspendedSourceDocumentsRead()
++        owner.open()
++        let old = try #require(owner.load("old") { try await stale.read() })
++        defer { old.cancel(); stale.cancelOutstanding(); current.cancelOutstanding(); owner.close() }
++        try await stale.waitUntilStarted()
++        owner.close()
++        if changesDocumentOwner { owner.documentOwner = UUID() }
++        owner.open()
++        let new = try #require(owner.load("new") { try await current.read() })
++        defer { new.cancel() }
++        try await current.waitUntilStarted()
++        #expect(old.isCancelled)
++        #expect(owner.model.isLoading)
++
++        if olderFails { try stale.complete(.failure(SourceDocumentsTestFailure())) }
++        else { try stale.complete(.success(sourceDocumentsResult("stale"))) }
++        await old.value
++        // The old success, error and defer must not publish or finish the new
++        // owner's still-pending request, even when the document UUID is equal.
++        #expect(owner.model.isLoading)
++        #expect(owner.model.documents.isEmpty)
++        #expect(owner.model.title == nil)
++        #expect(owner.feedback.isEmpty)
++        #expect(owner.finished.isEmpty)
++
++        try current.complete(.success(sourceDocumentsResult("current")))
++        await new.value
++        #expect(!owner.model.isLoading)
++        #expect(owner.model.documents.map(\.objectID) == ["current"])
++        #expect(owner.model.title == "Source current")
++        #expect(owner.feedback == ["new:success"])
++        #expect(owner.finished == ["new"])
++        #expect(stale.invocations == 1 && current.invocations == 1)
++    }
++
++    @Test(arguments: [false, true])
++    func retirementDiscardsRowsAndRejectsANoncooperativeCompletion(fails: Bool) async throws {
++        let owner = SourceDocumentsTestOwner()
++        owner.open()
++        let published = try #require(owner.load("published") { sourceDocumentsResult("visible") })
++        await published.value
++        #expect(owner.model.documents.map(\.objectID) == ["visible"])
++        // The real results sheet's Done binding clears only its title. The
++        // Properties owner still owns the old rows until its own retirement.
++        owner.model.title = nil
++        let pending = SuspendedSourceDocumentsRead()
++        let old = try #require(owner.load("retired") { try await pending.read() })
++        defer { old.cancel(); pending.cancelOutstanding(); owner.close() }
++        try await pending.waitUntilStarted()
++        owner.close()
++        #expect(owner.model.documents.isEmpty)
++        #expect(owner.model.title == nil)
++        #expect(!owner.model.isLoading)
++
++        if fails { try pending.complete(.failure(SourceDocumentsTestFailure())) }
++        else { try pending.complete(.success(sourceDocumentsResult("late"))) }
++        await old.value
++        #expect(owner.model.documents.isEmpty)
++        #expect(owner.model.title == nil)
++        #expect(!owner.model.isLoading)
++        #expect(owner.feedback == ["published:success"])
++        #expect(owner.finished == ["published"])
++        var closedReads = 0
++        if let forbidden = owner.load("closed", read: {
++            closedReads += 1
++            return sourceDocumentsResult("forbidden")
++        }) {
++            await forbidden.value
++            Issue.record("A retired Properties owner admitted a read")
++        }
++        #expect(closedReads == 0)
++    }
++}
++
++private func sourceDocumentsResult(_ id: String) -> AnyNativeSourceDocumentsRead {
++    .init(documents: [.init(id: id, spaceID: "source-space", objectID: id,
++                           title: id, sourceReference: "Genesis 1:1")],
++          title: "Source " + id, complete: true)
++}
++
++@MainActor
++private final class SourceDocumentsTestOwner {
++    let model = AnyNativeSourceDocumentsPresentation()
++    var documentOwner = UUID()
++    var active = false
++    var feedback: [String] = []
++    var finished: [String] = []
++
++    func open() {
++        active = true
++        model.beginPresentation(documentOwner: documentOwner)
++    }
++
++    func close() {
++        active = false
++        model.retire()
++    }
++
++    func load(_ label: String,
++              read: @escaping @MainActor () async throws -> AnyNativeSourceDocumentsRead) -> Task<Void, Never>? {
++        let expected = documentOwner
++        return model.load(documentOwner: expected, read: read,
++            isOwnerCurrent: { [self] in active && documentOwner == expected },
++            canPresent: { true },
++            didComplete: { [self] result in
++                switch result {
++                case .success: feedback.append(label + ":success")
++                case .failure: feedback.append(label + ":failure")
++                }
++            }, didFinish: { [self] in finished.append(label) })
++    }
++}
++
++private struct SourceDocumentsTestFailure: Error {}
++
++@MainActor
++private final class SuspendedSourceDocumentsRead {
++    private(set) var invocations = 0
++    private var pending: CheckedContinuation<AnyNativeSourceDocumentsRead, Error>?
++    private var started: CheckedContinuation<Void, Error>?
++
++    func read() async throws -> AnyNativeSourceDocumentsRead {
++        try Task.checkCancellation()
++        invocations += 1
++        // Deliberately no cancellation handler: a late provider must still be
++        // unable to publish after the owner has cancelled this consumer.
++        return try await withCheckedThrowingContinuation { continuation in
++            pending = continuation
++            let waiter = started; started = nil
++            waiter?.resume(returning: ())
++        }
++    }
++
++    func waitUntilStarted() async throws {
++        if invocations > 0 { return }
++        let deadline = Task { @MainActor [weak self] in
++            do { try await Task.sleep(for: .seconds(10)) } catch { return }
++            guard let self else { return }
++            let waiter = started; started = nil
++            waiter?.resume(throwing: SourceDocumentsTestFailure())
++        }
++        defer { deadline.cancel() }
++        try await withCheckedThrowingContinuation { started = $0 }
++    }
++
++    func complete(_ result: Result<AnyNativeSourceDocumentsRead, Error>) throws {
++        let continuation = try #require(pending)
++        pending = nil
++        continuation.resume(with: result)
++    }
++
++    func cancelOutstanding() {
++        let call = pending, waiter = started
++        pending = nil; started = nil
++        call?.resume(throwing: CancellationError())
++        waiter?.resume(throwing: CancellationError())
++    }
++}
+--- /dev/null
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift
+@@ -0,0 +1,102 @@
++import Foundation
++import Observation
++import TorahInspectorCore
++
++struct AnyNativeSourceDocumentsRead: Sendable {
++    let documents: [TorahRelatedDocument]
++    let title: String
++    let complete: Bool
++}
++
++/// Owns only the Properties result presentation. The caller retains the real
++/// native read, current permissions, account/run lease and mounted-document gate.
++@MainActor @Observable
++final class AnyNativeSourceDocumentsPresentation {
++    var documents: [TorahRelatedDocument] = []
++    var title: String?
++    private(set) var isLoading = false
++
++    private struct Request: Equatable {
++        let documentOwner: UUID
++        let presentation: UUID
++        let id: UUID
++    }
++    @ObservationIgnored private var documentOwner: UUID?
++    @ObservationIgnored private var presentation: UUID?
++    @ObservationIgnored private var request: Request?
++    @ObservationIgnored private var task: Task<Void, Never>?
++
++    /// A reopened Properties sheet is a new owner even on the same document.
++    /// The returned cancelled task joins the document's existing drain list.
++    @discardableResult
++    func beginPresentation(documentOwner: UUID) -> Task<Void, Never>? {
++        let closing = retire()
++        self.documentOwner = documentOwner
++        presentation = UUID()
++        return closing
++    }
++
++    @discardableResult
++    func retire() -> Task<Void, Never>? {
++        documentOwner = nil
++        presentation = nil
++        request = nil
++        isLoading = false
++        documents = []
++        title = nil
++        let closing = task
++        task = nil
++        closing?.cancel()
++        return closing
++    }
++
++    /// Called synchronously by the tap action. Ownership is captured before
++    /// creating the Task, so a queued old tap cannot borrow a reopened sheet.
++    @discardableResult
++    func load(
++        documentOwner: UUID,
++        read: @escaping @MainActor () async throws -> AnyNativeSourceDocumentsRead,
++        isOwnerCurrent: @escaping @MainActor () -> Bool,
++        canPresent: @escaping @MainActor () -> Bool,
++        didComplete: @escaping @MainActor (Result<Bool, Error>) -> Void,
++        didFinish: @escaping @MainActor () -> Void
++    ) -> Task<Void, Never>? {
++        guard self.documentOwner == documentOwner, let presentation,
++              request == nil, title == nil, isOwnerCurrent(), canPresent() else { return nil }
++        let captured = Request(documentOwner: documentOwner, presentation: presentation, id: UUID())
++        request = captured
++        isLoading = true
++        let started = Task { @MainActor [weak self] in
++            guard let self else { return }
++            defer {
++                if self.owns(captured), isOwnerCurrent() {
++                    self.request = nil
++                    self.task = nil
++                    self.isLoading = false
++                    didFinish()
++                }
++            }
++            guard self.owns(captured), isOwnerCurrent(), canPresent(), !Task.isCancelled else { return }
++            do {
++                let result = try await read()
++                guard self.owns(captured), isOwnerCurrent(), canPresent(),
++                      self.title == nil, !Task.isCancelled else { return }
++                self.documents = result.documents
++                self.title = result.title
++                didComplete(.success(result.complete))
++            } catch is CancellationError {
++                // Cancellation retires this consumer, not native authority.
++            } catch {
++                guard self.owns(captured), isOwnerCurrent(), canPresent(),
++                      self.title == nil, !Task.isCancelled else { return }
++                didComplete(.failure(error))
++            }
++        }
++        task = started
++        return started
++    }
++
++    private func owns(_ captured: Request) -> Bool {
++        documentOwner == captured.documentOwner && presentation == captured.presentation && request == captured
++    }
++}

@@ -68,15 +68,25 @@ public final class AnyDocumentPresentation: Sendable {
     public private(set) var contentRevision: UInt64 = 0
     public private(set) var textHistoryEpochs: [String: UInt64] = [:]
     public var message: String?
-    public var showsProperties = false
+    public var showsProperties = false {
+        didSet {
+            if showsProperties != oldValue { updateSourceDocumentsPresentation() }
+        }
+    }
     public var showsArchiveTransfer = false
     public var showsDraftReview = false
     public private(set) var requiresDraftReview = false
     public private(set) var isComposing = false
     public private(set) var isCreatingTextAnchor = false
     public private(set) var isApplyingMiniApps = false
-    public var sourceDocuments: [TorahRelatedDocument] = []
-    public var sourceDocumentsTitle: String?
+    public var sourceDocuments: [TorahRelatedDocument] {
+        get { sourceDocumentsPresentation.documents }
+        set { sourceDocumentsPresentation.documents = newValue }
+    }
+    public var sourceDocumentsTitle: String? {
+        get { sourceDocumentsPresentation.title }
+        set { sourceDocumentsPresentation.title = newValue }
+    }
     public private(set) var nativeProperties: AnyNativeDerivedDocumentProperties?
     public var onOpenObject: ((String, String?) -> Void)?
     private var navigation = AnyNativeDocumentNavigation()
@@ -127,6 +137,7 @@ public final class AnyDocumentPresentation: Sendable {
     @ObservationIgnored private var scopeInvalidators: [@Sendable () -> Void] = []
     @ObservationIgnored private var drainHandlers: [@MainActor () async -> Void] = []
     @ObservationIgnored private var revokeHandlers: [@MainActor () -> Void] = []
+    @ObservationIgnored private let sourceDocumentsPresentation = AnyNativeSourceDocumentsPresentation()
 
     public init(client: AnyHTTPClient, session: AnyApplicationSession,
                 objects: AnyNativeObjectCreator, blocks: AnyNativeBlockCreator,
@@ -198,6 +209,7 @@ public final class AnyDocumentPresentation: Sendable {
     }
 
     var mountedOwnerID: UUID { epoch }
+    var propertiesPresentationID: UUID? { sourceDocumentsPresentation.presentationID }
     var pendingDeferredEditorRead: Task<Void, Never>? { deferredReadTask }
     public var writeStatusAccessibilityValue: String {
         switch writeState {
@@ -230,11 +242,13 @@ public final class AnyDocumentPresentation: Sendable {
 
     public func mount(surface: any AnyEditorMountedSurface) {
         guard lifetime.isActive, !isNavigating else { return }
+        let startsMountedOwner = !isMounted
         if !isMounted {
             epoch = UUID()
             retireEditorReads()
         }
         self.surface = surface; isMounted = true
+        if startsMountedOwner, showsProperties { updateSourceDocumentsPresentation() }
         torah.activateDocument()
     }
 
@@ -1042,13 +1056,19 @@ public final class AnyDocumentPresentation: Sendable {
         return result.0
     }
 
+    /// Existing async callers still wait for the read and forward cancellation.
     public func showDocuments(with item: TorahAssociationItem) async {
+        guard !Task.isCancelled, let task = requestSourceDocuments(with: item) else { return }
+        await AnyNativeSourceDocumentsPresentation.waitForCompletion(of: task)
+    }
+
+    /// The real tap enters synchronously; its owned request exists before its Task.
+    @discardableResult
+    func requestSourceDocuments(with item: TorahAssociationItem,
+                                onFinish: @escaping @MainActor () -> Void = {}) -> Task<Void, Never>? {
         let requestEpoch = epoch
-        do {
-            try requireMounted(requestEpoch)
-            guard showsProperties, !isNavigating, torah.selection == nil,
-                  !torah.isSearchPresented, sourceDocumentsTitle == nil else { return }
-            let index = index, metadata = metadata
+        let index = index, metadata = metadata, nativeSession = nativeSession
+        return sourceDocumentsPresentation.load(documentOwner: requestEpoch, read: {
             let output = try await nativeSession.perform { lease in
                 let initial = try await index.documents(with: item)
                 var rows: [TorahRelatedDocument] = []
@@ -1065,13 +1085,39 @@ public final class AnyDocumentPresentation: Sendable {
                 try await lease.validate()
                 return (rows, final.readiness.complete)
             }
-            try requireMounted(requestEpoch)
-            guard showsProperties, !isNavigating, torah.selection == nil,
-                  !torah.isSearchPresented, sourceDocumentsTitle == nil else { return }
-            sourceDocuments = output.0
-            sourceDocumentsTitle = TorahAssociationDisplayFormatter.label(for: item, locale: .autoupdatingCurrent)
-            if !output.1 { message = AnyUIErrorText.incompleteIndex }
-        } catch { message = AnyUIErrorText.describe(error) }
+            return .init(documents: output.0,
+                title: TorahAssociationDisplayFormatter.label(for: item, locale: .autoupdatingCurrent),
+                complete: output.1)
+        }, isOwnerCurrent: { [weak self] in
+            self?.ownsSourceDocumentsPresentation(requestEpoch) == true
+        }, canPresent: { [weak self] in
+            guard let self else { return false }
+            return !isNavigating && torah.selection == nil && !torah.isSearchPresented
+        }, didComplete: { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let complete):
+                if !complete { message = AnyUIErrorText.incompleteIndex }
+            case .failure(let error):
+                message = AnyUIErrorText.describe(error)
+            }
+        }, didFinish: onFinish)
+    }
+
+    private func ownsSourceDocumentsPresentation(_ owner: UUID) -> Bool {
+        guard showsProperties else { return false }
+        do { try requireMounted(owner); return true }
+        catch { return false }
+    }
+
+    private func updateSourceDocumentsPresentation() {
+        let closing: Task<Void, Never>?
+        if showsProperties, isMounted, lifetime.isActive {
+            closing = sourceDocumentsPresentation.beginPresentation(documentOwner: epoch)
+        } else {
+            closing = sourceDocumentsPresentation.retire()
+        }
+        if let closing { closingObservers.append(closing) }
     }
 
     func refreshEditor(expectedEpoch: UUID) async {
@@ -1203,6 +1249,7 @@ public final class AnyDocumentPresentation: Sendable {
         retainRecovery()
         guard isMounted else { return }
         isMounted = false; epoch = UUID()
+        updateSourceDocumentsPresentation()
         semanticAnchorIntent = nil; semanticAnchorPreparationID = nil
         semanticAnchorMutationID = nil; isCreatingTextAnchor = false
         retireEditorReads()

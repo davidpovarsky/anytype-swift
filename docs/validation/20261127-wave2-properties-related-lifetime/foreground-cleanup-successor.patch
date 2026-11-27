@@ -1,0 +1,72 @@
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift
+@@ -92,7 +92,10 @@
+         let started = Task { @MainActor [weak self] in
+             guard let self else { return }
+             defer {
+-                if self.owns(captured), isOwnerCurrent() {
++                // Publication still requires current authority below. Finishing
++                // this exact request must not depend on temporary foreground
++                // eligibility, or a settled read can block the same sheet.
++                if self.owns(captured) {
+                     self.request = nil
+                     self.task = nil
+                     self.isLoading = false
+--- a/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift
++++ b/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift
+@@ -315,6 +315,55 @@
+         #expect(owner.feedback == (cancelCaller ? [] : ["request:success"]))
+         #expect(owner.finished == ["request"])
+     }
++
++    @Test(arguments: [false, true])
++    func temporarilyInactiveOwnerFinishesItsRequestAndCanRetry(fails: Bool) async throws {
++        let owner = SourceDocumentsTestOwner()
++        let pending = SuspendedSourceDocumentsRead()
++        owner.open()
++        let presentation = try #require(owner.model.presentationID)
++        let documentOwner = owner.documentOwner
++        var reservation = AnyNativePropertyChildReservation()
++        _ = reservation.reserve(in: presentation)
++        let request = try #require(owner.model.load(documentOwner: documentOwner,
++            read: { try await pending.read() },
++            isOwnerCurrent: { owner.active && owner.documentOwner == documentOwner },
++            canPresent: { true },
++            didComplete: { result in
++                switch result {
++                case .success: owner.feedback.append("inactive:success")
++                case .failure: owner.feedback.append("inactive:failure")
++                }
++            }, didFinish: {
++                owner.finished.append("inactive")
++                reservation.release(in: presentation, current: owner.model.presentationID)
++            }))
++        defer { request.cancel(); pending.cancelOutstanding(); owner.close() }
++        try await pending.waitUntilStarted()
++        // An inactive scene can fail the mounted foreground guard without
++        // closing Properties or replacing its document/presentation owner.
++        owner.active = false
++        if fails { try pending.complete(.failure(SourceDocumentsTestFailure())) }
++        else { try pending.complete(.success(sourceDocumentsResult("inactive"))) }
++        await request.value
++        #expect(owner.model.presentationID == presentation)
++        #expect(owner.model.documents.isEmpty)
++        #expect(owner.model.title == nil)
++        #expect(owner.feedback.isEmpty)
++        #expect(!owner.model.isLoading)
++        #expect(owner.finished == ["inactive"])
++        #expect(!reservation.isReserved(in: presentation))
++
++        owner.active = true
++        let retry = try #require(owner.load("retry") { sourceDocumentsResult("current") })
++        await retry.value
++        #expect(owner.model.presentationID == presentation)
++        #expect(owner.model.documents.map(\.objectID) == ["current"])
++        #expect(owner.model.title == "Source current")
++        #expect(owner.feedback == ["retry:success"])
++        #expect(owner.finished == ["inactive", "retry"])
++        #expect(!owner.model.isLoading)
++    }
+ }
+ 
+ private func sourceDocumentsResult(_ id: String) -> AnyNativeSourceDocumentsRead {

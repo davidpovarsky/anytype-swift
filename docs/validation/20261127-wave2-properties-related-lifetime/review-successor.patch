@@ -1,0 +1,380 @@
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift
+@@ -209,6 +209,7 @@
+     }
+ 
+     var mountedOwnerID: UUID { epoch }
++    var propertiesPresentationID: UUID? { sourceDocumentsPresentation.presentationID }
+     var pendingDeferredEditorRead: Task<Void, Never>? { deferredReadTask }
+     public var writeStatusAccessibilityValue: String {
+         switch writeState {
+@@ -1055,10 +1056,16 @@
+         return result.0
+     }
+ 
+-    /// The tap enters synchronously; its owned request exists before its Task.
++    /// Existing async callers still wait for the read and forward cancellation.
++    public func showDocuments(with item: TorahAssociationItem) async {
++        guard !Task.isCancelled, let task = requestSourceDocuments(with: item) else { return }
++        await AnyNativeSourceDocumentsPresentation.waitForCompletion(of: task)
++    }
++
++    /// The real tap enters synchronously; its owned request exists before its Task.
+     @discardableResult
+-    public func showDocuments(with item: TorahAssociationItem,
+-                              onFinish: @escaping @MainActor () -> Void = {}) -> Task<Void, Never>? {
++    func requestSourceDocuments(with item: TorahAssociationItem,
++                                onFinish: @escaping @MainActor () -> Void = {}) -> Task<Void, Never>? {
+         let requestEpoch = epoch
+         let index = index, metadata = metadata, nativeSession = nativeSession
+         return sourceDocumentsPresentation.load(documentOwner: requestEpoch, read: {
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift
+@@ -21,7 +21,7 @@
+     @State private var model: AnyNativePropertyPresentation
+     @State private var editing: AnyPropertyValueSelection?
+     @State private var showsCustomization = false
+-    @State private var propertyChildReserved = false
++    @State private var propertyChildReservation = AnyNativePropertyChildReservation()
+     @Environment(\.dismiss) private var dismiss
+     @Environment(\.locale) private var locale
+ 
+@@ -100,7 +100,7 @@
+                     Menu {
+                         Button(AnyUIErrorText.text("בחירת המאפיינים המוצגים", "Choose visible properties"),
+                                systemImage: "slider.horizontal.3") {
+-                            guard reservePropertyChild() else { return }
++                            guard reservePropertyChild() != nil else { return }
+                             showsCustomization = true
+                         }
+                             .disabled(!canPresentPropertyChild)
+@@ -117,17 +117,23 @@
+                 }
+             }
+             .modifier(AnyTorahInspectorLayer(session: presentation.torah, host: .properties,
+-                onInspectorDismissed: { [ownerID = presentation.mountedOwnerID] in
+-                    releasePropertyChildIfAbsent()
++                onInspectorDismissed: { [ownerID = presentation.mountedOwnerID,
++                                        propertiesID = presentation.propertiesPresentationID] in
++                    releasePropertyChildIfAbsent(in: propertiesID)
+                     presentation.ownedPresentationDidDismiss(.propertyInspector, ownerID: ownerID)
+-                }, onSearchDismissed: { [ownerID = presentation.mountedOwnerID] in
+-                    releasePropertyChildIfAbsent()
++                }, onSearchDismissed: { [ownerID = presentation.mountedOwnerID,
++                                        propertiesID = presentation.propertiesPresentationID] in
++                    releasePropertyChildIfAbsent(in: propertiesID)
+                     presentation.ownedPresentationDidDismiss(.propertySearch, ownerID: ownerID)
+                 }))
+             .sheet(isPresented: Binding(get: { presentation.sourceDocumentsTitle != nil },
+-                set: { if !$0 { presentation.sourceDocumentsTitle = nil } }),
+-                onDismiss: { [ownerID = presentation.mountedOwnerID] in
+-                    releasePropertyChildIfAbsent()
++                set: { [propertiesID = presentation.propertiesPresentationID] shown in
++                    guard propertiesID == presentation.propertiesPresentationID else { return }
++                    if !shown { presentation.sourceDocumentsTitle = nil }
++                }),
++                onDismiss: { [ownerID = presentation.mountedOwnerID,
++                              propertiesID = presentation.propertiesPresentationID] in
++                    releasePropertyChildIfAbsent(in: propertiesID)
+                     presentation.ownedPresentationDidDismiss(.sourceDocuments, ownerID: ownerID)
+                 }) {
+                 NavigationStack {
+@@ -143,15 +149,23 @@
+                     .accessibilityIdentifier("any-native-related-documents-list")
+                     .navigationTitle(presentation.sourceDocumentsTitle ?? "")
+                     .toolbar { ToolbarItem(placement: .confirmationAction) {
+-                        Button(AnyUIErrorText.text("סיום", "Done")) { presentation.sourceDocumentsTitle = nil }
++                        Button(AnyUIErrorText.text("סיום", "Done")) { [propertiesID = presentation.propertiesPresentationID] in
++                            guard propertiesID == presentation.propertiesPresentationID else { return }
++                            presentation.sourceDocumentsTitle = nil
++                        }
+                     }}
+                 }
+             }
+-            .sheet(item: $editing, onDismiss: { releasePropertyChildIfAbsent() }) { selection in
++            .sheet(item: $editing,
++                   onDismiss: { [propertiesID = presentation.propertiesPresentationID] in
++                       releasePropertyChildIfAbsent(in: propertiesID)
++                   }) { selection in
+                 AnyNativePropertyValueEditor(model: model, selection: selection)
+             }
+             .sheet(isPresented: $showsCustomization,
+-                   onDismiss: { releasePropertyChildIfAbsent() }) { customization }
++                   onDismiss: { [propertiesID = presentation.propertiesPresentationID] in
++                       releasePropertyChildIfAbsent(in: propertiesID)
++                   }) { customization }
+             .alert(AnyUIErrorText.text("מאפיינים", "Properties"),
+                    isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })) {
+                 Button(AnyUIErrorText.text("אישור", "OK"), role: .cancel) { model.message = nil }
+@@ -161,6 +175,7 @@
+             .onDisappear {
+                 // Owned child sheets keep this document policy alive.
+                 if !presentation.showsProperties {
++                    propertyChildReservation.retire()
+                     model.deactivate()
+                     presentation.torah.dismissPropertiesPresentation()
+                 }
+@@ -169,24 +184,25 @@
+     }
+ 
+     private var canPresentPropertyChild: Bool {
+-        AnyNativeDocumentNavigation.canBeginOwnedPresentation(
+-            isReserved: propertyChildReserved,
++        guard let propertiesID = presentation.propertiesPresentationID else { return false }
++        return AnyNativeDocumentNavigation.canBeginOwnedPresentation(
++            isReserved: propertyChildReservation.isReserved(in: propertiesID),
+             hasInspector: presentation.torah.selection != nil,
+             hasSearch: presentation.torah.isSearchPresented,
+             hasNativeChild: presentation.sourceDocumentsTitle != nil || editing != nil || showsCustomization,
+             isNavigating: presentation.isNavigating)
+     }
+ 
+-    private func reservePropertyChild() -> Bool {
+-        guard canPresentPropertyChild else { return false }
+-        propertyChildReserved = true
+-        return true
+-    }
+-
+-    private func releasePropertyChildIfAbsent() {
++    private func reservePropertyChild() -> UUID? {
++        guard let propertiesID = presentation.propertiesPresentationID,
++              canPresentPropertyChild else { return nil }
++        return propertyChildReservation.reserve(in: propertiesID)
++    }
++
++    private func releasePropertyChildIfAbsent(in propertiesID: UUID?) {
+         guard presentation.torah.selection == nil, !presentation.torah.isSearchPresented,
+               presentation.sourceDocumentsTitle == nil, editing == nil, !showsCustomization else { return }
+-        propertyChildReserved = false
++        propertyChildReservation.release(in: propertiesID, current: presentation.propertiesPresentationID)
+     }
+ 
+     @ViewBuilder private func propertyRow(_ row: AnyNativePropertyRow,
+@@ -199,7 +215,7 @@
+             Button {
+                 do {
+                     let text = try AnyNativePropertyValueCodec.text(row.value, kind: row.definition.kind)
+-                    guard reservePropertyChild() else { return }
++                    guard reservePropertyChild() != nil else { return }
+                     editing = .init(snapshot: snapshot, row: row,
+                         text: text)
+                 } catch { model.message = AnyUIErrorText.describe(error) }
+@@ -298,17 +314,17 @@
+                     Menu {
+                         if presentation.torah.canOpenAssociation(item) {
+                             Button(AnyUIErrorText.text("פתיחת מקור", "Open source")) {
+-                                guard reservePropertyChild() else { return }
++                                guard let propertiesID = reservePropertyChild() else { return }
+                                 presentation.torah.openDocumentAssociation(item)
+-                                releasePropertyChildIfAbsent()
++                                releasePropertyChildIfAbsent(in: propertiesID)
+                             }.disabled(!canPresentPropertyChild)
+                         }
+                         Button(AnyUIErrorText.text("מסמכים מקושרים", "Related documents")) {
+-                            guard reservePropertyChild() else { return }
+-                            if case nil = presentation.showDocuments(with: item, onFinish: {
+-                                releasePropertyChildIfAbsent()
++                            guard let propertiesID = reservePropertyChild() else { return }
++                            if case nil = presentation.requestSourceDocuments(with: item, onFinish: {
++                                releasePropertyChildIfAbsent(in: propertiesID)
+                             }) {
+-                                releasePropertyChildIfAbsent()
++                                releasePropertyChildIfAbsent(in: propertiesID)
+                             }
+                         }.disabled(!canPresentPropertyChild)
+                         Button(AnyUIErrorText.text("הסרת קישור", "Unlink"), role: .destructive) {
+@@ -332,9 +348,9 @@
+                 }
+             }
+             Button {
+-                guard reservePropertyChild() else { return }
++                guard let propertiesID = reservePropertyChild() else { return }
+                 presentation.torah.presentSearch(scope: .document, initialCategory: scope, host: .properties)
+-                releasePropertyChildIfAbsent()
++                releasePropertyChildIfAbsent(in: propertiesID)
+             } label: { Label(AnyUIErrorText.text("הוספה", "Add"), systemImage: "plus") }
+                 .disabled(!presentation.canMutate || !canPresentPropertyChild)
+         }
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift
+@@ -8,6 +8,29 @@
+     let complete: Bool
+ }
+ 
++/// The view's existing single-child reservation belongs to a Properties sheet,
++/// not to whatever sheet happens to be mounted when an old callback arrives.
++struct AnyNativePropertyChildReservation {
++    private var propertiesID: UUID?
++
++    func isReserved(in current: UUID?) -> Bool {
++        guard let current else { return false }
++        return propertiesID == current
++    }
++
++    mutating func reserve(in current: UUID) -> UUID {
++        propertiesID = current
++        return current
++    }
++
++    mutating func release(in expected: UUID?, current: UUID?) {
++        guard let expected, expected == current, propertiesID == expected else { return }
++        propertiesID = nil
++    }
++
++    mutating func retire() { propertiesID = nil }
++}
++
+ /// Owns only the Properties result presentation. The caller retains the real
+ /// native read, current permissions, account/run lease and mounted-document gate.
+ @MainActor @Observable
+@@ -15,6 +38,7 @@
+     var documents: [TorahRelatedDocument] = []
+     var title: String?
+     private(set) var isLoading = false
++    private(set) var presentationID: UUID?
+ 
+     private struct Request: Equatable {
+         let documentOwner: UUID
+@@ -22,7 +46,6 @@
+         let id: UUID
+     }
+     @ObservationIgnored private var documentOwner: UUID?
+-    @ObservationIgnored private var presentation: UUID?
+     @ObservationIgnored private var request: Request?
+     @ObservationIgnored private var task: Task<Void, Never>?
+ 
+@@ -32,14 +55,14 @@
+     func beginPresentation(documentOwner: UUID) -> Task<Void, Never>? {
+         let closing = retire()
+         self.documentOwner = documentOwner
+-        presentation = UUID()
++        presentationID = UUID()
+         return closing
+     }
+ 
+     @discardableResult
+     func retire() -> Task<Void, Never>? {
+         documentOwner = nil
+-        presentation = nil
++        presentationID = nil
+         request = nil
+         isLoading = false
+         documents = []
+@@ -61,7 +84,7 @@
+         didComplete: @escaping @MainActor (Result<Bool, Error>) -> Void,
+         didFinish: @escaping @MainActor () -> Void
+     ) -> Task<Void, Never>? {
+-        guard self.documentOwner == documentOwner, let presentation,
++        guard self.documentOwner == documentOwner, let presentation = presentationID,
+               request == nil, title == nil, isOwnerCurrent(), canPresent() else { return nil }
+         let captured = Request(documentOwner: documentOwner, presentation: presentation, id: UUID())
+         request = captured
+@@ -97,6 +120,15 @@
+     }
+ 
+     private func owns(_ captured: Request) -> Bool {
+-        documentOwner == captured.documentOwner && presentation == captured.presentation && request == captured
++        documentOwner == captured.documentOwner && presentationID == captured.presentation && request == captured
++    }
++
++    /// Preserve the async entry's await-to-completion and cancellation contract.
++    static func waitForCompletion(of task: Task<Void, Never>) async {
++        await withTaskCancellationHandler {
++            await task.value
++        } onCancel: {
++            task.cancel()
++        }
+     }
+ }
+--- a/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift
++++ b/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift
+@@ -160,6 +160,9 @@
+     func queuedOldRequestCannotBorrowReopenedSheetAndCurrentFailureCanRetry() async throws {
+         let owner = SourceDocumentsTestOwner()
+         owner.open()
++        var reservation = AnyNativePropertyChildReservation()
++        let firstPresentation = try #require(owner.model.presentationID)
++        _ = reservation.reserve(in: firstPresentation)
+         var oldReads = 0
+         let old = try #require(owner.load("old") {
+             oldReads += 1
+@@ -170,6 +173,14 @@
+         // the synchronous tap has already captured the old presentation ID.
+         owner.close()
+         owner.open()
++        let currentPresentation = try #require(owner.model.presentationID)
++        #expect(firstPresentation != currentPresentation)
++        // Retain the old View's reservation deliberately, instead of assuming
++        // SwiftUI destroyed its State. Reopening still permits a new child.
++        #expect(!reservation.isReserved(in: currentPresentation))
++        _ = reservation.reserve(in: currentPresentation)
++        reservation.release(in: firstPresentation, current: currentPresentation)
++        #expect(reservation.isReserved(in: currentPresentation))
+         let failed = try #require(owner.load("current-failure") {
+             throw SourceDocumentsTestFailure()
+         })
+@@ -181,6 +192,8 @@
+         #expect(!owner.model.isLoading)
+         #expect(owner.model.documents.isEmpty)
+         #expect(owner.model.title == nil)
++        reservation.release(in: currentPresentation, current: currentPresentation)
++        #expect(!reservation.isReserved(in: currentPresentation))
+ 
+         let retry = try #require(owner.load("retry") { sourceDocumentsResult("current") })
+         await retry.value
+@@ -269,6 +282,39 @@
+         }
+         #expect(closedReads == 0)
+     }
++
++    @Test(arguments: [false, true])
++    func asyncWaiterJoinsReadAndForwardsCallerCancellation(cancelCaller: Bool) async throws {
++        let owner = SourceDocumentsTestOwner()
++        let pending = SuspendedSourceDocumentsRead()
++        owner.open()
++        let request = try #require(owner.load("request") { try await pending.read() })
++        var waiterEntered = false
++        var waiterReturned = false
++        let waiter = Task { @MainActor in
++            waiterEntered = true
++            await AnyNativeSourceDocumentsPresentation.waitForCompletion(of: request)
++            waiterReturned = true
++        }
++        defer { waiter.cancel(); request.cancel(); pending.cancelOutstanding(); owner.close() }
++        try await pending.waitUntilStarted()
++        try await SourceDocumentsTestOwner.waitUntil { waiterEntered }
++        #expect(!waiterReturned)
++        if cancelCaller {
++            waiter.cancel()
++            try await SourceDocumentsTestOwner.waitUntil { request.isCancelled }
++        }
++        // Even the cancelled caller joins the noncooperative read; completion
++        // is not reported merely because the child Task has been created.
++        #expect(!waiterReturned)
++        try pending.complete(.success(sourceDocumentsResult("finished")))
++        await waiter.value
++        #expect(waiterReturned)
++        #expect(!owner.model.isLoading)
++        #expect(owner.model.documents.map(\.objectID) == (cancelCaller ? [] : ["finished"]))
++        #expect(owner.feedback == (cancelCaller ? [] : ["request:success"]))
++        #expect(owner.finished == ["request"])
++    }
+ }
+ 
+ private func sourceDocumentsResult(_ id: String) -> AnyNativeSourceDocumentsRead {
+@@ -293,6 +339,15 @@
+     func close() {
+         active = false
+         model.retire()
++    }
++
++    static func waitUntil(_ condition: @MainActor () -> Bool) async throws {
++        let deadline = ContinuousClock.now.advanced(by: .seconds(10))
++        while !condition() {
++            try Task.checkCancellation()
++            guard ContinuousClock.now < deadline else { throw SourceDocumentsTestFailure() }
++            try await Task.sleep(for: .milliseconds(5))
++        }
+     }
+ 
+     func load(_ label: String,
