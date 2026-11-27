@@ -1,0 +1,35 @@
+{
+  "AppleCommandsExecuted": 0,
+  "newContainer": {
+    "decodedUTF8BytesExactlyOriginal": true,
+    "path": "review-corrections.patch.json",
+    "sha256": "8e89da5b71f1f31ec9e00e422a339097ae6698697a64e392a7e77e6bf270002e"
+  },
+  "originalFailedPublication": {
+    "beforeCommit": true,
+    "jobID": "job_0ad179426a50",
+    "receipt": "publication-first-failure.receipt.json",
+    "sha256": "6acdb06c3122bbceabc78114ebd7f88ee46f75d32a85273c480636002b4107d9",
+    "stagedTree": "c473516ef3993caf9d39c28fc00db223aea735e4"
+  },
+  "originalFailureRetained": true,
+  "originalPatch": {
+    "bytes": 24836,
+    "filename": "review-corrections.patch",
+    "sha256": "c5aa28866ff1ceab233c988f6de6eb8da017a402f7b85199faee159815f5eb28"
+  },
+  "reason": "Full ordinary git diff --cached --check flagged the fifteen literal single-space context lines in the newly added original unified patch. No Python/source whitespace defect was present.",
+  "rootReview": {
+    "path": "root-independent-review.json",
+    "sha256": "3ec94af9e875698cd6ec60ac264f5199eb6488c6ff44ea6d1da8b39a4d2871a6"
+  },
+  "runtimeMethodsExecuted": 0,
+  "schema": "pinkha-core13-evidence-packaging-correction-v1",
+  "sixReviewedControlFilesChanged": false,
+  "sourceIntake": {
+    "path": "source-intake.json",
+    "sha256": "0b76727c2aef0e8adeb452a0b11333846c49fa26df0906ebc219c2965f9904d5"
+  },
+  "status": "EXACT_ORIGINAL_PATCH_RECONSTRUCTABLE_SOURCE_UNCHANGED",
+  "validatorSkippedOrSpecialCased": false
+}

@@ -1,0 +1,88 @@
+{
+  "AppleCommandsExecuted": 0,
+  "changedFiles": [
+    {
+      "after": {
+        "bytes": 27705,
+        "sha256": "0d814abb7abe81f05ebe0659c66a5e65443383f91e6489a9b7b791ed32f71aa0"
+      },
+      "before": {
+        "bytes": 21797,
+        "sha256": "955977441530b36cd7a8b8777bfb3f1a19819fca837c950fa3e42ae70fea8a1e"
+      },
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_core13/run.py"
+    },
+    {
+      "after": {
+        "bytes": 17422,
+        "sha256": "4f09906b509fc01215453796c228472b5afeae42397d86289651d16a8d627b61"
+      },
+      "before": {
+        "bytes": 10843,
+        "sha256": "28b54e96974b94760d17ffeef5362d3d4566a7ae89488e3644e9da3fe0c7c253"
+      },
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_core13/test_control.py"
+    },
+    {
+      "after": {
+        "bytes": 7667,
+        "sha256": "c8af48131a3b01c4514157854844dc2fb1a16f700b70c3fbc1daa027fab51bef"
+      },
+      "before": {
+        "bytes": 6781,
+        "sha256": "2761f8e37a59a0a6e27267bd02b021b148feb25ce14fb0cef65353ef23cedcf9"
+      },
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_core13/README.md"
+    }
+  ],
+  "documentationOnlyAfterPortableRun": {
+    "currentSHA256": "c8af48131a3b01c4514157854844dc2fb1a16f700b70c3fbc1daa027fab51bef",
+    "executedSHA256": "2761f8e37a59a0a6e27267bd02b021b148feb25ce14fb0cef65353ef23cedcf9",
+    "path": "README.md"
+  },
+  "executedPythonAndManifestSourcesIdentical": {
+    "admission.py": {
+      "bytes": 18064,
+      "sha256": "ea53a924a816c69ea8a21327d829bd54c5c26b5143d4a7dad4d3a6fb916e1bf6"
+    },
+    "original_sources.json": {
+      "bytes": 3822,
+      "sha256": "9a24ccea1e7d6568727e2bb2b28e27a5926d653f6b8dfbf037ca7ed658946034"
+    },
+    "originals.py": {
+      "bytes": 10933,
+      "sha256": "f3900819e4fdc5f2d8e90a9b422df70fc931355c99d1012116cd9d49c2ff57c9"
+    },
+    "run.py": {
+      "bytes": 27705,
+      "sha256": "0d814abb7abe81f05ebe0659c66a5e65443383f91e6489a9b7b791ed32f71aa0"
+    },
+    "test_control.py": {
+      "bytes": 17422,
+      "sha256": "4f09906b509fc01215453796c228472b5afeae42397d86289651d16a8d627b61"
+    }
+  },
+  "findings": [
+    {
+      "correction": "New adapter facade permanently closes later command/device admission; original Commands and original final observer remain byte-identical. No preserve/shutdown call is made while closed. Later positive absence does not reopen the latch.",
+      "id": "unresolved-owned-group-admission"
+    },
+    {
+      "correction": "Preserve original first error in memory; terminal/checkpoint/final receipt IO errors are separate. No partial file overwrite; original stdout retains final failed observation.",
+      "id": "receipt-write-first-error"
+    }
+  ],
+  "firstReviewIntakeSHA256": "d64b5dabecc06d5a8990ab718859b6a4af92a34632dd770ce9cc418db0c219b8",
+  "literalInverse": {
+    "actualGitApplyReverseExitCode": 0,
+    "everyBeforeByteRestored": true,
+    "patchSHA256": "c5aa28866ff1ceab233c988f6de6eb8da017a402f7b85199faee159815f5eb28"
+  },
+  "portableMethods": 8,
+  "portableReceiptSHA256": "95ae964c5d40c86a43319046bcdd248d905d2fa084afa9d66cb5f0634ad71d12",
+  "runtimeMethodsExecuted": 0,
+  "schema": "pinkha-hosted-core13-independent-review-corrections-v1",
+  "status": "SOURCE_CORRECTED_PORTABLE_CONTROLS_PASS_APPLE_NOT_RUN",
+  "unchangedLoadedOriginalDeclarations": 45,
+  "unchangedOriginalControls": 15
+}
