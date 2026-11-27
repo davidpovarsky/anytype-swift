@@ -1,0 +1,136 @@
+{
+  "allOwnedGroupsPositivelyAbsent": true,
+  "controllerSHA256": "0d0c6f676ade43665a534654e8f8f1235208a7fea5a62c1ee9e2861f0efd4394",
+  "developmentFreeAfter": 2957836288,
+  "errors": [],
+  "interpretation": {
+    "fileCipher": "Heart-compatible fresh per-file-key AES-256-CFB; integrity provided by ciphertext Merkle CIDs",
+    "metadataCipher": "AES-GCM with domain-separated object/read-key context",
+    "newOriginalTests": 9,
+    "priorSignedACLTestsRerun": 0,
+    "wholeNetworkFileTransferClaimed": false
+  },
+  "minimumDevelopmentFreeBytes": 2919960576,
+  "minimumRootFreeBytes": 2219524096,
+  "nativeAccountRuns": 0,
+  "nativeFileTransferAcceptance": false,
+  "overlayManifestSHA256": "81fb6bf29c672010f7fe98554ae562b7e75b6154f10e933ac5682fe3916c4a4a",
+  "overlaySourceUnchanged": true,
+  "processes": [
+    {
+      "command": [
+        "/usr/local/bin/go",
+        "test",
+        "-p=2",
+        "-count=1",
+        "-json",
+        "-timeout=120s",
+        "-run",
+        "^(TestCorruptBlockHeals|TestDeriveEncKey_DomainSeparated|TestEncryptFormat|TestLyingPeerFallsBackToHTTPAndBans|TestReadBlockDetectsCorruption|TestReaderSeek|TestSparseWriteRejects|TestUnseal_WrongKeyFails|TestWriteBlockVerifiesWhenNotPersistable)$",
+        "./internal/files/crypt",
+        "./internal/files/carfile",
+        "./internal/files/fetch",
+        "./internal/files/store",
+        "./internal/payloads"
+      ],
+      "exitCode": 0,
+      "groupPositivelyAbsent": true,
+      "label": "original-native-cipher-integrity-tests",
+      "logSHA256": "3e3446229ad0ac1214d7f804d0e6485d0c5cd944db5b4d3df61f7f6e6d50aea0",
+      "pgid": 2807460,
+      "pid": 2807460,
+      "seconds": 10.52
+    }
+  ],
+  "protocol": "unchanged-native-files-cipher-cid-integrity-v1",
+  "resourcePolicy": {
+    "cacheResolved": "/mnt/development/projects/caches/pinkha-w1-t2-go-cache-20261127",
+    "developmentEmergencyFloor": 536870912,
+    "developmentFreeBefore": 2964615168,
+    "developmentReserveBytes": 536870912,
+    "logCapBytes": 16777216,
+    "memoryBefore": {
+      "MemAvailable": 5032583168,
+      "SwapFree": 16384
+    },
+    "reason": "Existing qualified SDK source and offline module cache; all Go test binaries and temporary intermediates on development alongside unchanged GOCACHE. Root stores bounded evidence only. Both emergency floors unchanged.",
+    "rootDevice": 2049,
+    "rootEmergencyFloor": 2147483648,
+    "rootFreeBefore": 2258817024,
+    "rootReserveBytes": 67108864,
+    "tempDevice": 2064,
+    "tempResolved": "/mnt/development/projects/caches/pinkha-w1-files-crypto-temp-20261127",
+    "workers": 2
+  },
+  "rootFreeAfter": 2207838208,
+  "sourceAfter": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "sourceBefore": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "status": "PASS_ORIGINAL_NATIVE_CIPHER_CID_INTEGRITY_TESTS_ONLY",
+  "tests": [
+    {
+      "name": "TestEncryptFormat",
+      "package": "github.com/anyproto/any-sync-sdk/internal/files/crypt",
+      "seconds": 0
+    },
+    {
+      "name": "TestReaderSeek",
+      "package": "github.com/anyproto/any-sync-sdk/internal/files/crypt",
+      "seconds": 0.01
+    },
+    {
+      "name": "TestReadBlockDetectsCorruption",
+      "package": "github.com/anyproto/any-sync-sdk/internal/files/carfile",
+      "seconds": 0
+    },
+    {
+      "name": "TestSparseWriteRejects",
+      "package": "github.com/anyproto/any-sync-sdk/internal/files/carfile",
+      "seconds": 0.02
+    },
+    {
+      "name": "TestWriteBlockVerifiesWhenNotPersistable",
+      "package": "github.com/anyproto/any-sync-sdk/internal/files/store",
+      "seconds": 0.03
+    },
+    {
+      "name": "TestLyingPeerFallsBackToHTTPAndBans",
+      "package": "github.com/anyproto/any-sync-sdk/internal/files/fetch",
+      "seconds": 0.18
+    },
+    {
+      "name": "TestCorruptBlockHeals",
+      "package": "github.com/anyproto/any-sync-sdk/internal/files/store",
+      "seconds": 0.13
+    },
+    {
+      "name": "TestUnseal_WrongKeyFails",
+      "package": "github.com/anyproto/any-sync-sdk/internal/payloads",
+      "seconds": 0
+    },
+    {
+      "name": "TestDeriveEncKey_DomainSeparated",
+      "package": "github.com/anyproto/any-sync-sdk/internal/payloads",
+      "seconds": 0
+    }
+  ]
+}

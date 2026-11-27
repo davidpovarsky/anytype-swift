@@ -1,0 +1,173 @@
+{
+  "actualNativeSourceAndBinaryVerified": true,
+  "controllers": [
+    {
+      "bytes": 10782,
+      "executed": false,
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/build_acl_refresh_native.py",
+      "sha256": "4f4ec987bf8607f321698589810017e90a00c82dfce9e58a8b146e140c324536",
+      "syntax": "PASS_PARSE_ONLY"
+    },
+    {
+      "bytes": 5958,
+      "executed": false,
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/compare_retained_grant.py",
+      "sha256": "45ae955edde06bd13888df550a8cfcb84bf8e538427e69d237bcdda61adf887a",
+      "syntax": "PASS_PARSE_ONLY"
+    },
+    {
+      "bytes": 5475,
+      "executed": false,
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/copy_production_pair.py",
+      "sha256": "20bb3b2e73b697b8882e2eec387cb3a8ce24edc5c02965984b9fd25cf487f4f1",
+      "syntax": "PASS_PARSE_ONLY"
+    },
+    {
+      "bytes": 7976,
+      "executed": false,
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/qualify_files_crypto.py",
+      "sha256": "0d0c6f676ade43665a534654e8f8f1235208a7fea5a62c1ee9e2861f0efd4394",
+      "syntax": "PASS_PARSE_ONLY"
+    },
+    {
+      "bytes": 4364,
+      "executed": false,
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/qualify_recovery_process_gate.py",
+      "sha256": "9e8a9ed26ce4a138a35f62949f27ba3d600baabc0815b74585ae2ac4bd0b76f8",
+      "syntax": "PASS_PARSE_ONLY"
+    },
+    {
+      "bytes": 11229,
+      "executed": false,
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/recover_retained_acl.py",
+      "sha256": "c8989896c2898c99d999e8c91fcf9e57c4f995b85dbee90b62edb5ab8063b811",
+      "syntax": "PASS_PARSE_ONLY"
+    },
+    {
+      "bytes": 35412,
+      "executed": false,
+      "path": "Tools/AnyEngineValidation/native_file_peer_comparison/resume_production_lan_files.py",
+      "sha256": "1a4b1cda748aaccc022c19fdc69959217868fca8f0af87ac8b56b6facda6228b",
+      "syntax": "PASS_PARSE_ONLY"
+    }
+  ],
+  "nativeAccountStoresOpened": 0,
+  "originals": [
+    {
+      "actualDeniedAttachmentPOSTAttempts": 1,
+      "bytes": 29524,
+      "counterClarification": "Original attachmentCalls=0 is preserved, while offlineReaderWriteDenial records one real POST returning403; zero successful attachments does not mean zero attempts.",
+      "nativeInputs": {
+        "binarySHA256": "79248a63132a0146deff4e9fe1c4104a381a34d5c2ffcad536247a8429f98857",
+        "files": 1597,
+        "sourceManifestSHA256": "44abb44523e01b4631c8eff5f3ff183aca17f58b472fbb041e7a1e501028ca68"
+      },
+      "originalSourceInputs": {
+        "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+        "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+        "commits": {
+          "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+          "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+        },
+        "sourceFiles": 1594,
+        "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+        "sourceUnchanged": true
+      },
+      "path": "/var/lib/pinkha-c-filesv2-20261126/production-lan-files2/result.json",
+      "rawLogs": [
+        {
+          "bytes": 85453,
+          "name": "alice-lan.log",
+          "sha256": "470634f08adb58b0468fd13c77deaf3ce056dcdfcfa93e428d69a1fc94c9930f"
+        },
+        {
+          "bytes": 83288,
+          "name": "alice-resume-lan.log",
+          "sha256": "dc0bca24c5f98b46d932c25180b6af39c9da3aec120c18c23ee880830b6a163a"
+        },
+        {
+          "bytes": 58378,
+          "name": "bob-complete-offline.log",
+          "sha256": "b65c42f837e6f2f4686b4378099deab542b5c825b286a209b7faba5d16449ca0"
+        },
+        {
+          "bytes": 75664,
+          "name": "bob-lan.log",
+          "sha256": "52a50c4d4f1a37f01f292e5aab08b7b7fd7605c0c203bb57326b1cd7e1c7392f"
+        },
+        {
+          "bytes": 56622,
+          "name": "bob-partial-offline.log",
+          "sha256": "c8bea9b1342d1b201b01185ecf00535396be67bcb1a7567b1d2264f0b275e99b"
+        },
+        {
+          "bytes": 94131,
+          "name": "bob-resume-lan.log",
+          "sha256": "0ea1dcc4205d12536a7bdafabafddc17cf6f27a902b3286d54ea9ba2ec485e59"
+        },
+        {
+          "bytes": 329,
+          "name": "os-denial-probe.log",
+          "sha256": "0bdd98182968892fe0698c817d33fa13ff69d0932a505d4076fc7f8de2121f01"
+        }
+      ],
+      "sha256": "c23b78e312fa9efbe1a5fe7abd9e0061e131a0514fdb4fc07cf12ebe42376692",
+      "status": "PASS_COPIED_PRODUCTION_ACCOUNTS_LAN_PARTIAL_CRASH_COLD_FILE_BYTES",
+      "successfulAttachments": 0
+    },
+    {
+      "bytes": 5065,
+      "originalSourceInputs": {
+        "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+        "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+        "commits": {
+          "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+          "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+        },
+        "sourceFiles": 1594,
+        "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+        "sourceUnchanged": true
+      },
+      "path": "/var/lib/pinkha-c-filesv2-20261126/files-crypto-integrity1/result.json",
+      "rawLogs": [
+        {
+          "bytes": 11734,
+          "failedOrSkipped": 0,
+          "methodsPassed": 9,
+          "path": "/var/lib/pinkha-c-filesv2-20261126/files-crypto-integrity1/tests.log",
+          "sha256": "3e3446229ad0ac1214d7f804d0e6485d0c5cd944db5b4d3df61f7f6e6d50aea0"
+        }
+      ],
+      "sha256": "99ccdd67f5514a1eda4304decde8e5766453a339dfc667980b9a9398ba74d0ac",
+      "status": "PASS_ORIGINAL_NATIVE_CIPHER_CID_INTEGRITY_TESTS_ONLY"
+    },
+    {
+      "bytes": 3822,
+      "path": "/var/lib/pinkha-c-filesv2-20261126/production-lan-custody1/result.json",
+      "sha256": "2de21c6aefc8b6b2e79cf831bb8c5ee53c2eafb1454651402584f6cb09a32468",
+      "status": "PASS_EXACT_COPY_CUSTODY_NOT_LAN_ACCEPTANCE"
+    },
+    {
+      "bytes": 7687,
+      "path": "/var/lib/pinkha-c-filesv2-20261126/production-lan-files1/result.json",
+      "sha256": "eaca0b1c09dccf5930b03e2dd6c580658d4c5ce8ca8f7a7e98bb2a81542763be",
+      "status": "FAIL"
+    },
+    {
+      "bytes": 4592,
+      "path": "/var/lib/pinkha-c-filesv2-20261126/acl-refresh-native1/result.json",
+      "sha256": "bfafdf6d7304786726235fd1d2f3065dbf5782091123f03fbd6bb54b09328380",
+      "status": "PASS_BUILD_ONLY"
+    },
+    {
+      "bytes": 5269,
+      "path": "/var/lib/pinkha-c-filesv2-20261126/retained-acl-recovery1/result.json",
+      "sha256": "8793e1eb84315d793022b8f1ed6ea98247a94b5acfc67e37cbbe845696eb2e8d",
+      "status": "FAIL_RETAINED_ACL_RECOVERY"
+    }
+  ],
+  "sourceCommit": "02a5a16ea10f71959fcc733a9e41c7ca56d0219c",
+  "status": "PASS_ORIGINAL_EVIDENCE_INTAKE_NO_RERUN",
+  "testsExecuted": 0,
+  "timeUTC": "2026-11-27T03:54:55.359974+00:00"
+}

@@ -34,8 +34,18 @@ The combined controller correctly retained an overall failure when the separate 
 
 Both owned compiler groups were positively absent at finalization. The original 1,594 source files and the 716-file SDK overlay remained byte-identical. These tests did not start the retained native accounts or make network grants.
 
-## Pending native qualification
+## Actual native build and retained-owner recovery
 
-The native binary build, retained-account Reader acceptance and FilesV2 byte-level pipeline have not yet been qualified for this patch. The original 12 network scenarios, two permission-enforcement cases and two P2P cold-restore cases have not been rerun. They remain evidence for their recorded, unchanged original inputs.
+`acl-refresh-native1/result.json`, SHA-256 `bfafdf6d7304786726235fd1d2f3065dbf5782091123f03fbd6bb54b09328380`, records the actual 86.205-second build with exit zero and positive process-group absence. Binary SHA-256 is `79248a63132a0146deff4e9fe1c4104a381a34d5c2ffcad536247a8429f98857`. The exact 1,597-file source manifest has SHA-256 `44abb44523e01b4631c8eff5f3ff183aca17f58b472fbb041e7a1e501028ca68`; only the four SDK overlay files differ. The original 1,594-file source stayed unchanged.
 
-This package is not a claim of whole-space migration, cloud custody, FilesV2 completion, Apple or physical-device qualification, or release readiness. Wave 3 owns final integration.
+`retained-acl-recovery1/result.json`, SHA-256 `8793e1eb84315d793022b8f1ed6ea98247a94b5acfc67e37cbbe845696eb2e8d`, remains `FAIL_RETAINED_ACL_RECOVERY`. The fixed native binary returned the exact original Bob pending request on the first owner request-list read. Exactly one ordinary Reader grant returned HTTP 204. No initialization, replacement invitation or rejoin was performed. Bob still returned `space.not_accepted` for the bounded 90-second observation, so complete membership acceptance was not claimed. Both native processes exited zero with positive process-group absence. The latest private original-account custody inventory has SHA-256 `9e0719b6bf2837c9717de89e61e5d49cf9b7478458e34a2117a61fbf4e95025c`.
+
+`retained-grant-comparison1` reused the earlier qualified signed-chain reader. Its log SHA-256 is `c41f800b5fabbd280b725ec3adc260c42898558f10fe5563c73b5fffcf7491bf`. The stable copy of the owner's database contains a valid four-record chain whose last record is the grant, while the selected node snapshot contains the earlier three-record pending chain. Both roots and signatures validate. This node read is not a consensus-authority proof: the original NodeClient selects one available tree node. Per-node publication diagnosis is still open; no second grant or data-store injection has been attempted.
+
+## Separate native file and integrity qualification
+
+Exact custody copies of a genuinely granted independent production pair passed the four-file LAN transfer, large partial read, intentional SIGKILL, persisted partial offline read, resume, thumbnail and fresh OS-offline full-byte pipeline. Receipt SHA-256 is `c23b78e312fa9efbe1a5fe7abd9e0061e131a0514fdb4fc07cf12ebe42376692`. This proves those operations with the new native binary but does not repair or bypass the separately retained private invitation failure.
+
+Nine original unchanged crypto/CID-integrity methods also passed with no failures/skips, receipt SHA-256 `99ccdd67f5514a1eda4304decde8e5766453a339dfc667980b9a9398ba74d0ac`. Details, byte hashes, MIME-contract correction, source identity, crash/process gates and preserved failure are in `../FILES_V2_LAN_EVIDENCE.md`.
+
+The original 12 network scenarios, two permission-enforcement cases and two P2P cold-restore cases have not been rerun. They remain evidence for their recorded, unchanged original inputs. This package is not a claim of whole-space migration, all-four cloud custody, original private membership recovery, Apple or physical-device qualification, or release readiness. Wave 3 owns final integration.
