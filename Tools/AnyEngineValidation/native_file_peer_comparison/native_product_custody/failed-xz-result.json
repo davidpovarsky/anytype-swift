@@ -1,0 +1,70 @@
+{
+  "archive": "/mnt/development/projects/evidence/pinkha-w1-network-native792-archive-20261127/any-79248a63.xz",
+  "currentNativeUnchangedSHA256": "0796b939145f98fd3436b40c3ae3c7c9daec239b54f8c1fa237fb20a349d0b07",
+  "developmentFreeAfter": 1395470336,
+  "developmentFreeBefore": 1341841408,
+  "errors": [
+    {
+      "message": "2GiB root emergency floor",
+      "type": "AssertionError"
+    }
+  ],
+  "loadAverageBefore": [
+    5.53173828125,
+    15.701171875,
+    21.515625
+  ],
+  "memAvailableBefore": 3032551424,
+  "metadata": {
+    "allocatedBytes": 78082048,
+    "atime_ns": 1795743968380721596,
+    "bytes": 78074642,
+    "gid": 0,
+    "mode": 448,
+    "mtime_ns": 1795743968115720063,
+    "uid": 0
+  },
+  "minimumDevelopmentFreeBytes": 1341841408,
+  "minimumRootFreeBytes": 2130595840,
+  "processes": [
+    {
+      "command": [
+        "/usr/bin/nice",
+        "-n",
+        "10",
+        "/usr/bin/ionice",
+        "-c",
+        "3",
+        "/usr/bin/xz",
+        "--threads=1",
+        "-6",
+        "--stdout",
+        "/var/lib/pinkha-c-filesv2-20261126/acl-refresh-native1/any"
+      ],
+      "exitCode": -15,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "name": "compress",
+      "pgid": 3267445,
+      "pid": 3267445
+    }
+  ],
+  "protocol": "lossless-superseded-native792-archival-v1",
+  "resourcePolicy": {
+    "developmentFloor": 536870912,
+    "developmentInitialReserve": 83886080,
+    "ioClass": "idle",
+    "largeRootWrites": false,
+    "nice": 10,
+    "rootFloor": 2147483648,
+    "xzThreads": 1
+  },
+  "retiredDuplicateUncompressed": false,
+  "rootFreeAfter": 2125991936,
+  "rootFreeBefore": 2196533248,
+  "seconds": 115.68,
+  "source": "/var/lib/pinkha-c-filesv2-20261126/acl-refresh-native1/any",
+  "sourceSHA256": "79248a63132a0146deff4e9fe1c4104a381a34d5c2ffcad536247a8429f98857",
+  "status": "FAIL_ARCHIVAL",
+  "uniqueBinaryRetainedInVerifiedArchive": false
+}
