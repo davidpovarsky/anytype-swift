@@ -1,0 +1,228 @@
+--- original-host2/run_component.py
++++ property4/run_component.py
+@@ -1,8 +1,10 @@
+ #!/usr/bin/env python3
+-"""One reviewed Host readback component, two XCTest methods and four HTTP flows.
++"""One source-bound Property readback component, exactly four new XCTest methods.
+ 
+ Preparation is inert by default. This does not grant the coordinated runtime slot.
+-Every product/test source file is complete; this is not a full App/package build.
++All77 production files and the full17-method test file are complete. Only four
++new methods are selected; no Host2 HTTP fixture or accepted tests are replayed.
++This is not a full App/package build or Native/account/network acceptance.
+ """
+ from pathlib import Path
+ import argparse
+@@ -21,22 +23,21 @@
+ sys.dont_write_bytecode = True
+ import owned_process
+ 
+-ROOT = Path('/mnt/development/projects/evidence/pinkha-wave2-host-text-readback-source2-20261127')
++ROOT = Path('/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127')
+ INPUTS = ROOT / 'inputs'
+ COMPONENT = ROOT / 'component'
+ EVIDENCE = ROOT / 'attempt1'
+ SWIFT = Path('/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift')
+-PRODUCT_COMMIT = 'cde0b83a3f04f36232eed93e6ab2cb7be0e692a5'
++PRODUCT_COMMIT = '937a8167700481b71c3c2eeb8771634d2c6bbc4f'
+ CLEANUP_SHA = '58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924'
+ PROVENANCE_SHA = '4c2f95a4129fdb89125458c4a3a5874c97dbbf0ed9aaa3d1b15d638ccef734b1'
+ CRYPTO_SHA = '10c98c4192acba640c401586fb84ef9aa227e6d52bdde7198f251a0498146c2c'
+-SOURCE_CLOSURE_SHA = 'a70cf73dcb1ddda0767b36fa1046b2921ab7201aea154239d7e871b67e1ef6ad'
+-SOURCE_PINS = {'Package.swift': 'f66f3701c73d02788cff61f5c3d10b021975a9f40b4b865295e76b0538cda590', 'Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift': 'cc9ee5e3eb159ef5ea68e7a87928fd94f047a8668c2f2483890faffdac8d73a1', 'Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift': '048ebd2d82e3a22265c3fea4ead6ba406b4f8d7d8f00367ec0c7779fac1b0d8f', 'Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift': '7205b72e687975bfda695bcccbcdbdd486af45c13ef7f0ddd20fcf58c9d5a312', 'Sources/PinkhaAnyEngine/AnyHTTPClient.swift': '8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182', 'Sources/PinkhaAnyEngine/AnyJSON.swift': 'fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d', 'Sources/PinkhaAnyEngine/AnyLiveQuery.swift': '445930138f7aefe46f6d41995059acafad9363178da4bc17574d2a0e399c8cf4', 'Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift': 'c4635b23304e60b1d27b546c53e8901a841160bd79bd43a066b50bc02b2b0704', 'Sources/PinkhaAnyEngine/AnySSEParser.swift': '1b5b55f99d357418d0df7ec43bc61e8bac1e1f246c613019f8c8b025c03cbdad', 'Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift': 'cd11b4cc0e54b4593d5a9111ca37ef7556bf3bcaa71ddb1532e900dd94ac0145', 'Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift': 'd2cdada5bf2a639127e58dbbe7b422188df76cb145d32023d4b1011006fd69af', 'Sources/PinkhaAnyEngine/AnyTorahOperation.swift': 'c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980', 'Sources/PinkhaAnyHost/AnyApplicationSession.swift': 'ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd', 'Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift': '1ea82b556e9f16b7903de03bbe435a249c6c922ade9798a01d648c8394c2604d', 'Sources/PinkhaAnyHost/AnyEditorSnapshot.swift': 'd2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f', 'Sources/PinkhaAnyHost/AnyHostCanonical.swift': 'd234b3d87ab9ec8317f159d413eb140eb94c1ae0aa0b1e20f30391b4e51c4840', 'Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift': 'a4fa5fc4fc1185b1778ae960b60e39a03e3d4ce487c34bd4d69401946ff7e366', 'Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift': '7a51c02baafba146fac43ab0b5737ab3db6465ebdc142bce3d1a6ea33bf36c56', 'Sources/PinkhaKit/TorahAssociationModels.swift': '0007274a78d39fd4c8e0105eb50cec106c807cf53735caa0de1f4a85cd7fbde1', 'Sources/PinkhaKit/TorahAssociationRepository.swift': '63c789b1e14b85fb8032f2cf8fecb4fcb7e768453c03b9304e78ac77775fb66e', 'Sources/TorahInspectorCore/Models.swift': '59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0', 'Sources/TorahInspectorCore/ProviderProtocols.swift': '9f5f28f1d71a97831827dce5dfe2324a60460fc7760137b9527e4c3815d20273', 'Sources/TorahInspectorCore/TorahInspectorCoordinator.swift': 'fccfc25ee56e165c6559aba52a1ccec39d10db6fd6a94a91c867cd38dc693116', 'Sources/TorahInspectorCore/TorahInspectorRepository.swift': '519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040', 'Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift': '90173f3198133c6a746d00c9a6af9ad8cd854f5643f924d98e9095133da5bbdc', 'Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift': '0ff22bb5a56ddff0235e7b6c5188c737b110cb2848d7e17dcaefc3ca1d6df2e6', 'Sources/TorahInspectorCore/TorahSourceTransfer.swift': '994da5da2cb6b163083c7f3dea20cfe74c781211eea0f144b394a6d047affc97', 'Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift': '34dda44a571764ea98e43449422340ad7a00dbe4b0d43c0036d7d48ad8119729', 'Tests/Fixtures/editor_text_readback_server.py': 'd91554403d0fc9f84cd8792006ab150506923e0a003000fb4caff171a52800bd', 'Tests/PinkhaAnyHostTests/NativeHostTests.swift': '4cc5c251b525b36ab710d6fa05163ccb27a8e3c801c5e88eab44533253db13e5'}
+-METHODS = (
+-    'testCanonicalEquivalentTextReadbackCannotCertifyWriteOrMintUndo',
+-    'testExactUnicodeTextReadbackRetainsVerifiedReceiptAndExactInverse',
+-)
+-SUITE = 'NativeTextEditReadbackHTTPTests'
++SOURCE_CLOSURE_SHA = 'd70f949ee299e2b06d0120056cadae2b86e9e8aa84f23c564ed291140407bba4'
++SOURCE_PINS = {'Package.swift': '25f975e6448feb61044163468c676b0d2fa686e02af3481261a53e11fd905f1b', 'Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift': 'cc9ee5e3eb159ef5ea68e7a87928fd94f047a8668c2f2483890faffdac8d73a1', 'Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift': '048ebd2d82e3a22265c3fea4ead6ba406b4f8d7d8f00367ec0c7779fac1b0d8f', 'Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift': '7205b72e687975bfda695bcccbcdbdd486af45c13ef7f0ddd20fcf58c9d5a312', 'Sources/PinkhaAnyEngine/AnyHTTPClient.swift': '8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182', 'Sources/PinkhaAnyEngine/AnyJSON.swift': 'fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d', 'Sources/PinkhaAnyEngine/AnyLiveQuery.swift': '445930138f7aefe46f6d41995059acafad9363178da4bc17574d2a0e399c8cf4', 'Sources/PinkhaAnyEngine/AnyNativeFileDurability.swift': '364a1bea4e4cae6134c9bb5935c0432f257657f3ae0c889a669354de975c2dc6', 'Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift': '4e9cf26ed4344493a98a64556781215a4c34ee7d70fd41cdc59d6795668ba36a', 'Sources/PinkhaAnyEngine/AnyNativeFileUploadStaging.swift': 'd0a02b1be20973b87c9be01bbf04e40f734f9ccddc39d0c4e61b83d1212bc349', 'Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift': '83e4618ee93a04ce407a62926a0bffbb1752756a59b38e6e5e5d636bad9138a6', 'Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift': 'c4635b23304e60b1d27b546c53e8901a841160bd79bd43a066b50bc02b2b0704', 'Sources/PinkhaAnyEngine/AnySSEParser.swift': '1b5b55f99d357418d0df7ec43bc61e8bac1e1f246c613019f8c8b025c03cbdad', 'Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift': 'cd11b4cc0e54b4593d5a9111ca37ef7556bf3bcaa71ddb1532e900dd94ac0145', 'Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift': 'd2cdada5bf2a639127e58dbbe7b422188df76cb145d32023d4b1011006fd69af', 'Sources/PinkhaAnyEngine/AnyTorahOperation.swift': 'c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980', 'Sources/PinkhaAnyHost/AnyApplicationSession.swift': 'ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd', 'Sources/PinkhaAnyHost/AnyDestinationAnchoredText.swift': '519b06bac9334e8483895daa66e3028e51a55347c543be55d59604a083f030b5', 'Sources/PinkhaAnyHost/AnyDestinationDefinitionCoverage.swift': 'e2095c83e1fe238184db7adf0220db40a5521ee9dca31302a810af203d59fbd4', 'Sources/PinkhaAnyHost/AnyDestinationImmutableRecordChecks.swift': 'c61c901522875690a5d5178b5583cf3a5e136d1a6ba448d0f9187d6fad6a6889', 'Sources/PinkhaAnyHost/AnyDestinationMigrationPlan.swift': 'cb1f3d9be09caa0c19f1242a1c6917a6cbf6fc60d000c1d2044a85b20efba13f', 'Sources/PinkhaAnyHost/AnyDestinationNativeMigration.swift': 'bab9be2ae8767f70239386b58eed452e5ea5bfd024d6a9003bb68cc8785efdf6', 'Sources/PinkhaAnyHost/AnyDestinationSystemCoverage.swift': 'ffc3caca0ed71a6a68671f5a0f94c7722e8c78ef6ce4ed237ccea247630381a6', 'Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift': '1ea82b556e9f16b7903de03bbe435a249c6c922ade9798a01d648c8394c2604d', 'Sources/PinkhaAnyHost/AnyEditorSnapshot.swift': 'd2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f', 'Sources/PinkhaAnyHost/AnyHostCanonical.swift': 'd234b3d87ab9ec8317f159d413eb140eb94c1ae0aa0b1e20f30391b4e51c4840', 'Sources/PinkhaAnyHost/AnyInlineMarkdown.swift': 'c537820797785b9f4f3bd00533706c16145c91e5f6999936a9b97243c4d9a483', 'Sources/PinkhaAnyHost/AnyNativeBlockCreator.swift': '6bea1d2f1108cf737d68f91cf891c901e0140212b574aaf9e42fa63b392fd652', 'Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift': '78e5ecf7a1e1ad54225551a06a5616438a051befa0c9cfd5e113bd72daf26fee', 'Sources/PinkhaAnyHost/AnyNativeFilePropertyFormat.swift': 'd068f7dc5ca478788a3457e7114da87b154bac46efacc89fe7a81401b7d887a1', 'Sources/PinkhaAnyHost/AnyNativeFileReference.swift': '19babf809e1c6c7ec8f517f89a9eb19f6e7a67e6ec743a02a5d523ab3aa5308f', 'Sources/PinkhaAnyHost/AnyNativeImportedDefaultMetadata.swift': 'b8ac71373d973d19b8d452a6f994087f2b8aa20245ce018ca4b46d776e996adb', 'Sources/PinkhaAnyHost/AnyNativeImportedTypeOrder.swift': '4516a77ba08a02fdfb714d58629c03deb62856e8a250114bbc913d41f45be5a2', 'Sources/PinkhaAnyHost/AnyNativeImportedTypePresentation.swift': '9cc30290575197f7cc2b8f3c8fdd700b8967223b035726f314ea11b2e1991e1a', 'Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift': 'deb279cc959d535f4264072043069112403475bb1a300288f4628a959f4ce95a', 'Sources/PinkhaAnyHost/AnyNativePreparedDefinitionMigration.swift': '8d44ac127127a59dc1826f3716b41948ee89f846c42221e35e4f7171476af925', 'Sources/PinkhaAnyHost/AnyNativePreparedFileMigration.swift': '16b230914002ef5700397e6596671ee201852d6bb962e63a519521f3b2d15009', 'Sources/PinkhaAnyHost/AnyNativePreparedImmutableRecord.swift': '83e543085c6911be85076f097eb55f3b054e24422378c32e99e5ab7dc1693e30', 'Sources/PinkhaAnyHost/AnyNativePreparedInlineFileMigration.swift': '4c134d514014b021bfd346ca93fe11f2cbc4af12ee6c263e9b42276e0065591f', 'Sources/PinkhaAnyHost/AnyNativePreparedMigration.swift': 'e8c0e084b0a18a7c4892529054f9b9d393d8cdd72d357aef4d330ea2a4ae059d', 'Sources/PinkhaAnyHost/AnyNativePreparedPropertyUpdate.swift': 'd2265107059c571af533fe0996b29dfafc7bc0ec3d63f46e46158319b37e3c9c', 'Sources/PinkhaAnyHost/AnyNativePropertyStore.swift': 'c653fa8489f7f9dc7d835d57ab4ec27be0bc46e189a29d226524d81e70e6db48', 'Sources/PinkhaAnyHost/AnyProtectedCreationJournal.swift': '5f0c526fa4f88e530242198bb152c3e1840cc5396df771420bff64f4183de8d5', 'Sources/PinkhaAnyIntegration/AnyConditionalPropertyFence.swift': 'baec5f9838f1bdbf6d6aedb557998cd334b3a77bbc73ce42f0c1408e14d40129', 'Sources/PinkhaAnyIntegration/AnyHeartInlineProjection.swift': 'ecd9e751715263ab6c592be9d2cf22129d5e295c5b7510595ff5886d630529fe', 'Sources/PinkhaAnyIntegration/AnyHeartNativeBundledDefinition.swift': '524deb8119421132b0b802c7dfc40d0718a4e01235afc3e7697aa5c09ee79a3c', 'Sources/PinkhaAnyIntegration/AnyHeartNativeCompiledRelation.swift': 'abce8533e20f169fc431bd1d851d0c56fde878974d6eadef8a42fc1035de4096', 'Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift': '437131d2f7095af0a450e7c695aa9c9bed13ea290f576d49870c5224b60a3965', 'Sources/PinkhaAnyIntegration/AnyHeartNativeRecoveredDefinitions.swift': 'de4b8b0596954a3f476bfff2c3af63b15f789d6ed17d806e54a2cd221c9bd449', 'Sources/PinkhaAnyIntegration/AnyHeartNativeSnapshotView.swift': '8128c8e00ff10f4904ea1bf1638741a0de1d68565b8a2e30f9a8b5c97ebfc0d0', 'Sources/PinkhaAnyIntegration/AnyHeartNativeSpaceBundle.swift': '9f7aa90550b3ab54cd86928a5c254b6f4af13762e14ce80fb62199f444879977', 'Sources/PinkhaAnyIntegration/AnyHeartNativeStoreContext.swift': '42617085d07295f4eb8a67973380d6a5174ef29bba4b9b29b1e58105d99c6a81', 'Sources/PinkhaAnyIntegration/AnyHierarchyModels.swift': '0a594737c72b9f065cd4e70aff425f521a6d7ff86ce7b1ebd21dd1221d150700', 'Sources/PinkhaAnyIntegration/AnyLexicographicPosition.swift': '079984b4d7aabdb375ca7bb466337db3f6282e5cd3f535ad8f8ae90b4ad86c73', 'Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift': 'a4fa5fc4fc1185b1778ae960b60e39a03e3d4ce487c34bd4d69401946ff7e366', 'Sources/PinkhaAnyIntegration/AnyTorahSemanticAnchorMigration.swift': 'a8968f34c5f3af00537ba9b183ce0065ff7dadd31e55ca413dddc26fbe96728d', 'Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift': 'a40e49f4d3424e5625498e1a95baad171e22391a786d16c3f3e0c4c1ea926541', 'Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift': '7a51c02baafba146fac43ab0b5737ab3db6465ebdc142bce3d1a6ea33bf36c56', 'Sources/PinkhaKit/PinkhaHierarchyBuilder.swift': '7ac6eea3d287c43afd9849e82093466987764c518d81880208dd5452c4112b97', 'Sources/PinkhaKit/PinkhaHierarchyModels.swift': '7f201585eb76b34271e49fe686770302ece2d67d3e2ba4304167637ea0ddcb0b', 'Sources/PinkhaKit/PinkhaHierarchyMutationValidator.swift': '3f5f9e21035851c171ee5c64e4789048ce2fcf78163d839ef69155499fbf0d21', 'Sources/PinkhaKit/PinkhaHierarchyOrdering.swift': '7e33fc757c7c2888a8715fa7f110503bf9dc577ea06cf5bbbcd71e0793a9adf8', 'Sources/PinkhaKit/PinkhaSemanticTextAnchor.swift': 'bfefc94965cfe6dbdf910452eaec3a9530854a6d5b6a09a1a9b10339c6c30274', 'Sources/PinkhaKit/TorahAssociationIdentity.swift': '85738df63c9ae987c1180c20e661cd21cd4acc20afcd376592f87ca32dcdb626', 'Sources/PinkhaKit/TorahAssociationModels.swift': '0007274a78d39fd4c8e0105eb50cec106c807cf53735caa0de1f4a85cd7fbde1', 'Sources/PinkhaKit/TorahAssociationPayloadCodec.swift': '9956aa25174812c5878927b5c62cff5f5d1d16e8becb536e23dadb25a01422d1', 'Sources/PinkhaKit/TorahAssociationRepository.swift': '63c789b1e14b85fb8032f2cf8fecb4fcb7e768453c03b9304e78ac77775fb66e', 'Sources/PinkhaKit/TorahCanonicalAssociations.swift': 'e5c988ebb64572e5228592f8a833ca8e5c2638fd991d0f7fc7e9bb114e4e3f3d', 'Sources/PinkhaKit/TorahSemanticAnchorAssociation.swift': '17c469ea127bf01211c7e819c00a2e15ea07facbe2c6d86505a5f0fce82cb3f4', 'Sources/PinkhaKit/TorahSourceJSONGuard.swift': 'ad856a6ed49f645ec2d5cb6a0bc3c7b6e7566c5cd7ad2a3081ccd748849ab9f6', 'Sources/TorahInspectorCore/Models.swift': '59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0', 'Sources/TorahInspectorCore/ProviderProtocols.swift': '9f5f28f1d71a97831827dce5dfe2324a60460fc7760137b9527e4c3815d20273', 'Sources/TorahInspectorCore/TorahInspectorCoordinator.swift': 'fccfc25ee56e165c6559aba52a1ccec39d10db6fd6a94a91c867cd38dc693116', 'Sources/TorahInspectorCore/TorahInspectorRepository.swift': '519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040', 'Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift': '90173f3198133c6a746d00c9a6af9ad8cd854f5643f924d98e9095133da5bbdc', 'Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift': '0ff22bb5a56ddff0235e7b6c5188c737b110cb2848d7e17dcaefc3ca1d6df2e6', 'Sources/TorahInspectorCore/TorahSourceTransfer.swift': '994da5da2cb6b163083c7f3dea20cfe74c781211eea0f144b394a6d047affc97', 'Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift': '34dda44a571764ea98e43449422340ad7a00dbe4b0d43c0036d7d48ad8119729', 'Tests/PinkhaAnyHostTests/NativePropertyStoreTests.swift': '7ff24aed7ce350c368d9d5d5f31439c3c87566353842013948912001082492ca'}
++METHODS = ('testStringReadbackRequiresExactUTF8BeforeCreatingUndo', 'testNestedStringAndKeyReadbackRequiresExactUTF8BeforeCreatingUndo', 'testPropertyReceiptRetainsDocumentedNativeNormalizationAndUnsetRules', 'testPropertyValueComparisonUsesTheExistingCanonicalDepthLimit')
++SUITE = 'NativePropertyStoreTests'
++TEST_FILTER = '(' + '|'.join(METHODS) + ')'
++
+ ROOT_FLOOR = 2 * 1024**3
+ DEVELOPMENT_FLOOR = 512 * 1024**2
+ ALLOCATION_CAP = 256 * 1024**2
+@@ -170,7 +171,7 @@
+     # (4d4aaa998116af4ea4a31ba0ad9714a3dd4f56bc195632314f0fe2cd9ad9673d).
+     # Generated test inputs are named individually, never admitted by directory.
+     build = ROOT / 'build'
+-    project = build / 'out/Intermediates.noindex/HostTextReadbackProof.build/Debug-linux-aarch64'
++    project = build / 'out/Intermediates.noindex/PropertyTextReadbackProof.build/Debug-linux-aarch64'
+     swiftc = str(SWIFT.with_name('swiftc'))
+     test_module = 'PinkhaAnyHostTests'
+     runner_module = test_module + '_test_runner'
+@@ -193,7 +194,7 @@
+         parts = Path(relative).parts
+         if len(parts) == 3 and parts[0] in ('Sources', 'Tests') and relative.endswith('.swift'):
+             groups.setdefault(parts[1], set()).add(str(COMPONENT / relative))
+-    assert sum(len(x) for x in groups.values()) == 28 and len(groups) == 6
++    assert sum(len(x) for x in groups.values()) == 78 and len(groups) == 6
+     groups[test_module].add(str(anchor))
+     groups[runner_module] = {str(entry)}
+     anchor_raw = physical(anchor)
+@@ -258,7 +259,7 @@
+         assert value(argv, '-output-file-map') == str(map_path)
+         assert value(argv, '-target') == 'aarch64-unknown-linux-gnu'
+         assert value(argv, '-swift-version') == ('5' if module == runner_module else '6')
+-        assert value(argv, '-working-directory') == str(COMPONENT)
++        assert value(argv, '-working-directory') == str(ROOT)
+         assert '-j2' in argv and '-c' in argv and '-enable-testing' in argv
+         module_path = object_root / 'Modules' / (module + '.swiftmodule')
+         assert value(argv, '-emit-module-path') == str(module_path)
+@@ -290,81 +291,25 @@
+ 
+ 
+ def xctest_result(log):
+-    rows = re.findall(r"^Test Case '(?:[A-Za-z_][A-Za-z_0-9]*\.)*NativeTextEditReadbackHTTPTests\.([^']+)' (started|passed|failed|skipped)", log, re.M)
++    rows = re.findall(r"^Test Case '(?:[A-Za-z_][A-Za-z_0-9]*\.)*NativePropertyStoreTests\.([^']+)' (started|passed|failed|skipped)", log, re.M)
+     started = [name for name, status in rows if status == 'started']
+     passed = [name for name, status in rows if status == 'passed']
+-    assert sorted(started) == sorted(METHODS) and sorted(passed) == sorted(METHODS), 'Require exactly two actual selected XCTest methods'
++    assert sorted(started) == sorted(METHODS) and sorted(passed) == sorted(METHODS), 'Require exactly four actual selected XCTest methods'
+     assert all(status in ('started', 'passed') for _, status in rows)
+     all_started = re.findall(r"^Test Case '([^']+)' started", log, re.M)
+-    assert len(all_started) == 2 and all(SUITE + '.' in name for name in all_started), 'Unselected method ran'
+-    assert re.search(r'Executed 2 tests, with 0 failures(?: \(0 unexpected\))?', log)
+-    return {'actualXCTestMethods': list(METHODS), 'XCTestCases': 2, 'loopedHTTPFlows': 4,
++    assert len(all_started) == 4 and all(SUITE + '.' in name for name in all_started), 'Unselected method ran'
++    assert re.search(r'Executed 4 tests, with 0 failures(?: \(0 unexpected\))?', log)
++    return {'actualXCTestMethods': list(METHODS), 'XCTestCases': 4, 'HTTPFixturesInvoked': 0,
+             'oldMethodsExecuted': 0, 'SwiftTestingZeroTestFooterIsNotXCTestAuthority': True}
+ 
+ 
+-def fixture_directories():
+-    folder = ROOT / 'tmp'
+-    return sorted(folder.glob('pinkha-host-text-readback-*')) if folder.exists() else []
+-
+-
+-def retain_fixtures():
+-    rows = []
+-    for directory in fixture_directories():
+-        assert directory.is_dir() and not directory.is_symlink()
+-        assert directory.resolve(strict=True).parent == ROOT / 'tmp'
+-        item = {'directory': str(directory), 'files': []}
+-        for path in sorted(directory.iterdir()):
+-            assert path.is_file() and not path.is_symlink()
+-            raw = path.read_bytes()
+-            assert len(raw) <= 2 * 1024**2
+-            item['files'].append({'path': str(path), 'bytes': len(raw), 'sha256': sha(raw)})
+-        rows.append(item)
+-    return rows
+-
+-
+-def qualify_fixtures(log):
+-    directories = fixture_directories()
+-    printed = re.findall(r'^Host text readback fixture evidence: (.+)$', log, re.M)
+-    assert len(directories) == len(printed) == 4 and set(printed) == {str(x) for x in directories}
+-    marker = 'pinkha-anchor://v1/c3BhY2U/b2JqZWN0/00000000-0000-0000-0000-000000000001'
+-    source = lambda text: '[Before ' + text + ' after](' + marker + ')'
+-    pairs = [(source('\u00e9'), source('e\u0301')), (source('\u05e9\u05b8\u05c1'), source('\u05e9\u05c1\u05b8'))]
+-    expected = {(a.encode(), b.encode(), reply.encode()) for a, b in pairs for reply in (a, b)}
+-    observed = set()
+-    proof = []
+-    for directory in directories:
+-        assert stat.S_IMODE(directory.stat().st_mode) == 0o700 and directory.stat().st_uid == os.geteuid()
+-        read = lambda name: json.loads((directory / name).read_bytes())
+-        config, start, end = read('config.json'), read('fixture-start.json'), read('fixture-exit.json')
+-        assert set(config) == {'before', 'requested', 'reply'} and all(isinstance(x, str) for x in config.values())
+-        vector = tuple(config[x].encode() for x in ('before', 'requested', 'reply'))
+-        assert vector in expected and vector not in observed
+-        observed.add(vector)
+-        assert isinstance(start['pid'], int) and start['pid'] > 0 and end['pid'] == start['pid']
+-        assert start['scope'] == 'controlled-loopback-not-native' and end['stopReason'] == 'stdin-eof' and end['patches'] == 1
+-        port = read('port.json'); assert isinstance(port, int) and 1 <= port <= 65535
+-        requests = read('dispatch.json'); assert 0 < len(requests) <= 256
+-        patches = [row for row in requests if row['method'] == 'PATCH']; assert len(patches) == 1
+-        patch = patches[0]; body = patch['body']
+-        assert patch['path'] == '/v1/spaces/space/objects/object/editor/editor_blocks/blocks/block'
+-        assert set(body) == {'set', 'unset', 'ifVersion', 'ifStartedAt'} and set(body['set']) == {'text'}
+-        assert body['set']['text'].encode() == config['requested'].encode()
+-        assert patch['textUTF8'] == list(config['requested'].encode())
+-        assert body['unset'] == [] and body['ifVersion'] == 'editor-v1' and body['ifStartedAt'] == 'run1'
+-        markdown, query, acknowledgement = read('last-markdown-response.json'), read('last-query-response.json'), read('patch-acknowledgement.json')
+-        assert markdown['content'].encode() == config['reply'].encode() and markdown['version'] == 'editor-v2'
+-        assert query['total'] == 1 and query['hasNext'] is False and len(query['records']) == 1
+-        block = query['records'][0]
+-        assert block['id'] == 'block' and block['type'] == 'paragraph' and block['text'].encode() == config['reply'].encode()
+-        assert block['_ver']['text'] == 'editor-v2' and block['nav'] == {'parentId': '', 'pos': 'A'}
+-        assert acknowledgement == {'recordIds': ['block'], 'versionId': 'native-write-v2', 'engineStartedAt': 'run1', 'editorVersion': 'editor-v2'}
+-        assert (directory / 'stderr.log').read_bytes() == b'', 'Fixture emitted an unexpected server failure'
+-        proof.append({'directory': str(directory), 'pid': start['pid'], 'stopReason': end['stopReason'],
+-                      'beforeUTF8': list(vector[0]), 'requestedUTF8': list(vector[1]), 'replyUTF8': list(vector[2]),
+-                      'actualPatchCount': 1, 'nativeAcceptance': False,
+-                      'processExitAuthority': 'The two actual passed XCTest methods include the original Process.waitUntilExit/exit0 assertions; these raw EOF journals bind the same four PIDs. No historical PID probe.'})
+-    assert observed == expected
+-    return proof
++
++
++
++
++
++
++
+ 
+ 
+ def main():
+@@ -385,7 +330,7 @@
+     pinned(INPUTS / 'retained-crypto-closure.json', CRYPTO_SHA)
+     initial = resource_sample(); require_budget(initial, admission=True)
+     private_directory(EVIDENCE)
+-    receipt = {'schema': 'pinkha-host-text-readback-component/v1', 'status': 'FAIL',
++    receipt = {'schema': 'pinkha-property-text-readback-component/v1', 'status': 'FAIL',
+                'startedAtUTC': owned_process.now(), 'productCommit': PRODUCT_COMMIT,
+                'controllerSHA256': sha(Path(__file__).read_bytes()), 'sourceBodiesModifiedForComponent': 0,
+                'nativeCalls': 0, 'AppleCalls': 0, 'runtimeSlotGrantedByThisScript': False,
+@@ -413,7 +358,7 @@
+         argv = [str(SWIFT), 'test', '--package-path', str(COMPONENT), '--scratch-path', str(ROOT / 'build'),
+                 '--cache-path', str(ROOT / 'swift-cache'), '--config-path', str(ROOT / 'swift-config'),
+                 '--security-path', str(ROOT / 'swift-security'), '--disable-automatic-resolution',
+-                '--jobs', '2', '--no-parallel', '-v', '--filter', SUITE]
++                '--jobs', '2', '--no-parallel', '-v', '--filter', TEST_FILTER]
+         receipt['command'] = {'argv': argv, 'cwd': str(COMPONENT), 'environmentOverrides': {k: env[k] for k in
+             ('TMPDIR', 'CLANG_MODULE_CACHE_PATH', 'SWIFTPM_MODULECACHE_OVERRIDE', 'XDG_CACHE_HOME', 'XDG_CONFIG_HOME', 'PYTHONDONTWRITEBYTECODE', 'GIT_TERMINAL_PROMPT', 'PATH')}}
+         tool_binary = SWIFT.resolve(strict=True)
+@@ -430,7 +375,7 @@
+             while process.poll() is None:
+                 sample = resource_sample(); samples.append(sample); require_budget(sample)
+                 if time.monotonic() >= deadline:
+-                    raise TimeoutError('Owned Host command exceeded300 seconds')
++                    raise TimeoutError('Owned Property command exceeded 300 seconds')
+                 try:
+                     process.wait(timeout=1)
+                 except subprocess.TimeoutExpired:
+@@ -447,8 +392,7 @@
+         assert process.returncode == 0, 'Actual Swift compiler/test command failed'
+         receipt['testResult'] = xctest_result(log)
+         receipt['compilerInputs'] = compiler_inputs(log)
+-        receipt['fourControlledHTTPFlows'] = qualify_fixtures(log)
+-        receipt['status'] = 'PASS_TWO_XCTEST_METHODS_FOUR_HTTP_FLOWS_HOST_COMPONENT_ONLY'
++        receipt['status'] = 'PASS_FOUR_XCTEST_METHODS_PROPERTY_COMPONENT_ONLY'
+     except BaseException as error:
+         first = error
+         receipt['errors'].append({'phase': 'actual-component', 'type': type(error).__name__, 'traceback': traceback.format_exc()})
+@@ -462,13 +406,6 @@
+                 receipt['status'] = 'FAIL'
+                 receipt['errors'].append({'phase': 'original-owned-cleanup', 'type': type(error).__name__, 'traceback': traceback.format_exc()})
+         try:
+-            # A crashed Swift process still closes the fixture's sole stdin writer.
+-            # Wait only for this attempt's bounded raw end records; never probe/reuse recorded PIDs.
+-            end = time.monotonic() + 49
+-            while any((p / 'fixture-start.json').exists() and not (p / 'fixture-exit.json').exists() for p in fixture_directories()) and time.monotonic() < end:
+-                time.sleep(0.25)
+-            receipt['retainedFixtureFiles'] = retain_fixtures()
+-            write(EVIDENCE / 'fixture-artifacts.json', receipt['retainedFixtureFiles'])
+             write(EVIDENCE / 'source-inputs-final.json', {'inputs': source_inventory(INPUTS / 'component'),
+                   'compiledCopy': source_inventory(COMPONENT) if COMPONENT.exists() else None})
+             sample = resource_sample(); samples.append(sample); require_budget(sample)
+@@ -476,8 +413,7 @@
+             if copies:
+                 verify_crypto(copies)
+             receipt['safeToReleaseRuntimeSlot'] = (
+-                (process is None or receipt.get('ownedCleanup', {}).get('status') == 'PASS_OWNED_GROUP_ABSENT')
+-                and (not fixture_directories() or (receipt['status'].startswith('PASS_') and len(receipt.get('fourControlledHTTPFlows', [])) == 4)))
++                process is None or receipt.get('ownedCleanup', {}).get('status') == 'PASS_OWNED_GROUP_ABSENT')
+         except BaseException as error:
+             if first is None:
+                 first = error

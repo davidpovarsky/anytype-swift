@@ -1,0 +1,49 @@
+{
+  "schema": "pinkha-property4-root-stager-review/v1",
+  "status": "SOURCE_APPROVED_FOR_PUBLICATION_NOT_EXECUTION",
+  "reviewedAtUTC": "2026-11-27T19:02:13.008042+00:00",
+  "reviewer": "root",
+  "candidate": {
+    "bytes": 9982,
+    "sha256": "2a7ef1c0d7f5957ef1194b27d34a5456d254b1d077f6e3eceda628925f236a1b"
+  },
+  "original": {
+    "bytes": 6916,
+    "sha256": "e3c5f144126a35f40ebc78a75373baef73ab6877d7c1443c33caba167af59ebf"
+  },
+  "fullInverseHunksVerified": 115,
+  "unchangedHelpersVerified": [
+    "sha",
+    "now",
+    "physical",
+    "budget",
+    "mkdir_owned"
+  ],
+  "inputPacketSHA256": "66d0f3453087ac8df6a9bf54cf3bdcbc65f645934facfaaa91cc8fd703d81083",
+  "exactLocalPayloadFiles": 84,
+  "exactLocalPayloadBytes": 1098479,
+  "packedSHA256": "6ca564dc104259a8de2aa593ac28bad1b11e0059b8f52a1cdd4dee701449459a",
+  "encodedSHA256": "12e3d367b406481ced96b0fe5f85e127dd0290a74cd6141028a8e7c0e4cb9ab6",
+  "rawSHA256": "b6a0e1b7e267986dc55bf1e2fd941174613890c088115789d29624d3a3a3c4c3",
+  "runnerSHA256": "66f09e18e07cca8a2056d0c8b51ffa318433f28bf9cb7f255f7a0c9bd9db9ea8",
+  "sourceFindings": [
+    "Reviewed complete9982-byte stager source. Fixed exact-root and payload hashes; refuses existing root, duplicate/unexpected/traversal inputs and nonphysical new inputs; exact content, ownership and restrictive exclusive-create permissions.",
+    "Pinned Crypto102 alias/source/original checks read only. Existing identities are observed before and after; no invented historical inode/owner/nlink expectation. Full content hashes and physical-source resolution required. Only read atimes may change.",
+    "Payload contains exactly84 runtime inputs plus exact66d0 packet, not publication documentation. All84 decoded bodies independently compared with exact local reviewed inputs.",
+    "Explicit chdir and PWD ROOT precede unchanged execv into reviewed66f runner; no new child, manager, timer, signal or automatic retry. Actual compiler working-directory ROOT remains a runtime qualification requirement.",
+    "Existing300-second runner deadline, jobs2,256MiB allocation cap and original resource/cleanup helpers remain externally bound by reviewed runner; stager preserves original disk admission helpers.",
+    "Sixteen-digit coordination-story validation checks shape only. It does not grant scheduling or execution permission. Root must independently bind actual current W1 release, publication and exact upload/readback."
+  ],
+  "requiredBeforeRuntime": [
+    "Publish frozen preparation and verify exact content",
+    "Actual W1 scheduling release for this one bounded attempt",
+    "Upload exact stager/payload and read back both hashes",
+    "Fresh dependency/path/resource admission; runner proves actual compiler and four selected XCTest results"
+  ],
+  "runtimeExecuted": false,
+  "remoteMutations": false,
+  "slotGranted": false,
+  "swiftCompilationClaim": false,
+  "nativeAcceptanceClaim": false,
+  "concreteSourceBlockers": []
+}

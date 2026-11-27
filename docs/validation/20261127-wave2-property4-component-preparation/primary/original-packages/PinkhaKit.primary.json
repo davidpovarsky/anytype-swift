@@ -1,0 +1,16 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Action completed."
+    }
+  ],
+  "structuredContent": {
+    "content": "// swift-tools-version: 6.0\nimport PackageDescription\n\nlet package = Package(\n    name: \"PinkhaKit\",\n    defaultLocalization: \"en\",\n    platforms: [\n        .iOS(.v17),\n        .macOS(.v14)\n    ],\n    products: [\n        .library(\n            name: \"PinkhaKit\",\n            targets: [\"PinkhaKit\"]\n        ),\n    ],\n    dependencies: [\n        .package(\n            url: \"https://github.com/davidpovarsky/TorahInspectorKit.git\",\n            revision: \"9058b489e9acc271b4f8ef69e2ed24648f93b4ed\"\n        )\n    ],\n    targets: [\n        .target(\n            name: \"PinkhaKit\",\n            dependencies: [\n                .product(name: \"TorahInspectorCore\", package: \"TorahInspectorKit\")\n            ],\n            path: \"Sources/PinkhaKit\",\n            resources: [.process(\"Editor/Resources\")],\n            swiftSettings: [\n                .swiftLanguageMode(.v6)\n            ]\n        ),\n        .testTarget(\n            name: \"PinkhaKitTests\",\n            dependencies: [\n                \"PinkhaKit\",\n                .product(name: \"TorahInspectorCore\", package: \"TorahInspectorKit\")\n            ],\n            path: \"Tests/PinkhaKitTests\",\n            resources: [\n                .process(\"Torah/Fixtures\")\n            ],\n            swiftSettings: [\n                .swiftLanguageMode(.v6)\n            ]\n        ),\n    ]\n)\n",
+    "encoding": "utf-8",
+    "sha": "34a5ca9307e411919cb5a83ccdd80cecaa4aa97a",
+    "display_url": "https://github.com/davidpovarsky/anytype-swift/blob/af63f6209c38bddf6ed851f0b894e2f627a671af/Modules/PinkhaKit/Package.swift",
+    "display_title": "Package.swift"
+  },
+  "isError": false
+}

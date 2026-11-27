@@ -1,0 +1,16 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Action completed."
+    }
+  ],
+  "structuredContent": {
+    "content": "// swift-tools-version: 6.0\nimport PackageDescription\n\nlet package = Package(\n    name: \"PinkhaAnyEngine\",\n    platforms: [.iOS(.v17), .macOS(.v14)],\n    products: [\n        .library(name: \"PinkhaAnyEngine\", targets: [\"PinkhaAnyEngine\"]),\n        .executable(name: \"PinkhaAnyEngineProbe\", targets: [\"PinkhaAnyEngineProbe\"])\n    ],\n    dependencies: [\n        .package(url: \"https://github.com/apple/swift-crypto.git\", exact: \"3.12.3\")\n    ],\n    targets: [\n        .target(name: \"PinkhaAnyEngine\", dependencies: [\n            .product(name: \"Crypto\", package: \"swift-crypto\")\n        ]),\n        .executableTarget(name: \"PinkhaAnyEngineProbe\", dependencies: [\"PinkhaAnyEngine\"]),\n        .testTarget(name: \"PinkhaAnyEngineTests\", dependencies: [\"PinkhaAnyEngine\"])\n    ]\n)\n",
+    "encoding": "utf-8",
+    "sha": "4b5f21e56f8110acfcada98a740cc08eed2cbcdc",
+    "display_url": "https://github.com/davidpovarsky/anytype-swift/blob/af63f6209c38bddf6ed851f0b894e2f627a671af/Modules/PinkhaAnyEngine/Package.swift",
+    "display_title": "Package.swift"
+  },
+  "isError": false
+}

@@ -1,0 +1,16 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Action completed."
+    }
+  ],
+  "structuredContent": {
+    "content": "// swift-tools-version: 6.0\nimport PackageDescription\n\nlet package = Package(\n    name: \"PinkhaAnyHost\",\n    platforms: [.iOS(.v18), .macOS(.v14)],\n    products: [.library(name: \"PinkhaAnyHost\", targets: [\"PinkhaAnyHost\"]),\n               .executable(name: \"pinkha-any-host-probe\", targets: [\"PinkhaAnyHostProbe\"])],\n    dependencies: [\n        .package(path: \"../PinkhaAnyEngine\"),\n        .package(path: \"../PinkhaAnyIntegration\"),\n        .package(path: \"../PinkhaKit\"),\n        .package(url: \"https://github.com/apple/swift-crypto.git\", exact: \"3.12.3\")\n    ],\n    targets: [\n        .target(name: \"PinkhaAnyHost\", dependencies: [\n            \"PinkhaAnyEngine\", \"PinkhaAnyIntegration\", \"PinkhaKit\",\n            .product(name: \"Crypto\", package: \"swift-crypto\")\n        ]),\n        .testTarget(name: \"PinkhaAnyHostTests\", dependencies: [\"PinkhaAnyHost\"]),\n        .executableTarget(name: \"PinkhaAnyHostProbe\", dependencies: [\"PinkhaAnyHost\"])\n    ]\n)\n",
+    "encoding": "utf-8",
+    "sha": "eb84d17902d027f3c3791dd9e341facc5b919ef8",
+    "display_url": "https://github.com/davidpovarsky/anytype-swift/blob/af63f6209c38bddf6ed851f0b894e2f627a671af/Modules/PinkhaAnyHost/Package.swift",
+    "display_title": "Package.swift"
+  },
+  "isError": false
+}
