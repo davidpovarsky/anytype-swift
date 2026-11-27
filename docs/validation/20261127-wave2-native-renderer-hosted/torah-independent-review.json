@@ -1,0 +1,57 @@
+{
+  "schema": "wave2-independent-renderer3-source-review-v1",
+  "reviewer": "/root/torah_continue",
+  "status": "NO_CONCRETE_SOURCE_BLOCKER_FOUND",
+  "materializerSHA256": "534a13315e1c423ad6ccf3b79811e99b172b4f6004d25c155ccfdf95697f91ea",
+  "renderer": {
+    "sha256": "695c89e5c8d5ad8e41f8ec525486836e42338bcc063d13f0945080c169fd7eaa",
+    "gitBlob": "c8372f370ff3cba7bc6f9563c4e522f919081662",
+    "bytes": 3269,
+    "methods": 3,
+    "framework": "XCTest",
+    "signature": "parameterless nonthrowing"
+  },
+  "independentlyReversedFiles": {
+    "native_core_hosted_profile.py": {
+      "fullInverse": true,
+      "beforeSHA256": "b3dc895536c615c453f2856cd33c29b1394a6e954c218e4e7c67b59dfdb211ee",
+      "afterSHA256": "ebaf306487ba65e0119c728da676f22295e810806edc214237a31320322482e6",
+      "changedDeclarations": [
+        "require_runtime_ready",
+        "selected",
+        "declared_contract"
+      ]
+    },
+    "combined_host_acceptance_app15.py": {
+      "fullInverse": true,
+      "beforeSHA256": "c286f736483d78c7e066f0483f678b7d9deddd942e4734238d3f9e502d2dc7e3",
+      "afterSHA256": "8875e2b2a10ec5ba692bc37043c7260ac6d290df9208729be29b00d07071e566",
+      "changedDeclarations": []
+    },
+    "native-core-closed-profile.json": {
+      "fullInverse": true,
+      "beforeSHA256": "b9ff365cb71d8b44b45572f8dd806c4345fa8605f5777772c811977928fe8f0f",
+      "afterSHA256": "3b2b39ac596c1a0237a9f1bba1781490dd5e91af541bb9785d8e3fb54a5d16b7"
+    }
+  },
+  "reviewedSemantics": [
+    "Only whole-source-pinned Renderer3 and Typography2 XCTest signatures accepted; throwing Typography2 remains separate",
+    "Original source/compiler witness, exact enumeration and original result/argument validators retained",
+    "Native stage allowance300 and original host declarations/lifecycle unchanged; only plan/result slot literals appended",
+    "Closed profile retains all3 null future source/product/admission pins; runtime function still unconditionally raises",
+    "No App, Swift test, PBX, compiler inventory or product file edited by this control tranche"
+  ],
+  "controlsEvidenceReused": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-native-renderer-hosted/portable-controls1.json",
+    "sha256": "e802ef6e8460bc16473e481e6bb55df8868997cfd3929d5d5d40b4a8e6b72f95",
+    "rerunByReviewer": false
+  },
+  "limitations": [
+    "Independent source/inverse review only",
+    "No portable tests, Swift compilation, XCTest, Native, Mac or simulator execution",
+    "A successful matching producer/compiler witness and new reviewed admission are still required"
+  ],
+  "testsExecuted": 0,
+  "nativeCalls": 0,
+  "appleInvocations": 0
+}

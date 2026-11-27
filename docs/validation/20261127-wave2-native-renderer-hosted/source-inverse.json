@@ -1,0 +1,94 @@
+{
+  "schema": "pinkha-renderer3-core13-exact-inverse-v1",
+  "originalCoreCommit": "dc001f2f09c64997515b77147fca4bacbac31397",
+  "files": {
+    "native_core_hosted_profile.py": {
+      "originalSHA256": "b3dc895536c615c453f2856cd33c29b1394a6e954c218e4e7c67b59dfdb211ee",
+      "candidateSHA256": "ebaf306487ba65e0119c728da676f22295e810806edc214237a31320322482e6",
+      "edits": [
+        {
+          "label": "description-only",
+          "before": "Three exact future hosted suites;",
+          "after": "Four exact future hosted suites;"
+        },
+        {
+          "label": "fourth-exact-source-suite",
+          "before": "    },\n}\nPROFILES = {",
+          "after": "    },\n    \"AnyNativeTextRendererTests\": {\n        \"source_path\": \"Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift\",\n        \"source_sha256\": \"695c89e5c8d5ad8e41f8ec525486836e42338bcc063d13f0945080c169fd7eaa\",\n        \"framework\": \"XCTest\",\n        \"methods\": {name: single() for name in (\n            \"testEqualNativeTextChangesAttributesWithoutReplacingCharactersOrSelection\",\n            \"testChangedNativeTextReplacesCharactersAndKeepsValidSelection\",\n            \"testMarkedTextKeepsCharactersSelectionAndAttributesUntilCommit\",\n        )},\n    },\n}\nPROFILES = {"
+        },
+        {
+          "label": "one-finite-renderer-profile",
+          "before": "    \"native-typography-hosted\": {\"suite\": \"AnyNativeTextTypographyTests\", \"methods\": 2, \"cases\": 2},",
+          "after": "    \"native-typography-hosted\": {\"suite\": \"AnyNativeTextTypographyTests\", \"methods\": 2, \"cases\": 2},\n    \"native-renderer-hosted\": {\"suite\": \"AnyNativeTextRendererTests\", \"methods\": 3, \"cases\": 3},"
+        },
+        {
+          "label": "closed-plan-diagnostic",
+          "before": "Only the three fixed future native-core plans are supported",
+          "after": "Only the four fixed future native-core plans are supported"
+        },
+        {
+          "label": "suite-diagnostic",
+          "before": "Only the three fixed native-core suites are supported",
+          "after": "Only the four fixed native-core suites are supported"
+        },
+        {
+          "label": "two-finite-XCTest-signatures",
+          "before": "        # This is deliberately one pinned XCTest class, not a generic parser or\n        # a count waiver. The full source hash above binds helpers and assertions.\n        require(suite == \"AnyNativeTextTypographyTests\"\n                     and text.count(\"@MainActor\\nfinal class AnyNativeTextTypographyTests: XCTestCase {\") == 1\n                     and \"@Test\" not in text,\n                     \"Exact UIKit XCTest class declaration changed\")\n        methods = re.findall(r\"^    func (test[A-Za-z0-9_]+)\\(\\) throws \\{\", text, flags=re.M)\n        require(len(methods) == len(set(methods)) == 2\n                     and set(methods) == set(specification[\"methods\"])\n                     and len(re.findall(r\"\\bfunc\\s+test[A-Za-z0-9_]+\", text)) == 2,\n                     \"Exact two UIKit XCTest declarations changed\")",
+          "after": "        # Only these two exact whole-source-pinned UIKit XCTest classes are\n        # supported. Typography keeps its original throwing signature; the\n        # existing Renderer3 methods are parameterless and non-throwing.\n        exact_xctest = {\n            \"AnyNativeTextTypographyTests\": (2, \" throws\"),\n            \"AnyNativeTextRendererTests\": (3, \"\"),\n        }\n        require(suite in exact_xctest\n                     and text.count(\"@MainActor\\nfinal class \" + suite + \": XCTestCase {\") == 1\n                     and \"@Test\" not in text,\n                     \"Exact UIKit XCTest class declaration changed\")\n        count, signature_suffix = exact_xctest[suite]\n        methods = re.findall(r\"^    func (test[A-Za-z0-9_]+)\\(\\)\" + signature_suffix + r\" \\{\", text, flags=re.M)\n        require(len(methods) == len(set(methods)) == count\n                     and set(methods) == set(specification[\"methods\"])\n                     and len(re.findall(r\"\\bfunc\\s+test[A-Za-z0-9_]+\", text)) == count,\n                     \"Exact fixed UIKit XCTest declarations changed\")"
+        }
+      ]
+    },
+    "combined_host_acceptance_app15.py": {
+      "originalSHA256": "c286f736483d78c7e066f0483f678b7d9deddd942e4734238d3f9e502d2dc7e3",
+      "candidateSHA256": "8875e2b2a10ec5ba692bc37043c7260ac6d290df9208729be29b00d07071e566",
+      "edits": [
+        {
+          "label": "one-renderer-plan",
+          "before": "    'native-typography-hosted-only': ('native-typography-hosted',),",
+          "after": "    'native-typography-hosted-only': ('native-typography-hosted',),\n    'native-renderer-hosted-only': ('native-renderer-hosted',),"
+        },
+        {
+          "label": "one-renderer-result-slot",
+          "before": "ORIGINAL_SERIES += ('native-properties-hosted', 'native-block-creation-hosted', 'native-typography-hosted')",
+          "after": "ORIGINAL_SERIES += ('native-properties-hosted', 'native-block-creation-hosted', 'native-typography-hosted', 'native-renderer-hosted')"
+        }
+      ]
+    },
+    "native-core-closed-profile.json": {
+      "originalSHA256": "b9ff365cb71d8b44b45572f8dd806c4345fa8605f5777772c811977928fe8f0f",
+      "candidateSHA256": "3b2b39ac596c1a0237a9f1bba1781490dd5e91af541bb9785d8e3fb54a5d16b7",
+      "edits": [
+        {
+          "label": "existing-renderer-source",
+          "before": "    \"Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextTypographyTests.swift\": \"fde5f3bd8da14f0f3e6502d60cacdf3304ea78aba9c41b35ca73317995cdff07\"",
+          "after": "    \"Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextTypographyTests.swift\": \"fde5f3bd8da14f0f3e6502d60cacdf3304ea78aba9c41b35ca73317995cdff07\",\n    \"Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift\": \"695c89e5c8d5ad8e41f8ec525486836e42338bcc063d13f0945080c169fd7eaa\""
+        },
+        {
+          "label": "observed-renderer-source-commit",
+          "before": "    \"AnyNativeTextTypographyTests\": \"33e31c64ca9e35e258a4d64cfe8690b08a6cbc39\"",
+          "after": "    \"AnyNativeTextTypographyTests\": \"33e31c64ca9e35e258a4d64cfe8690b08a6cbc39\",\n    \"AnyNativeTextRendererTests\": \"6e3e25194bca7b117989135f3cc4c6d2dd1cf878\""
+        },
+        {
+          "label": "finite-method-total",
+          "before": "\"nativeMethods\": 13,",
+          "after": "\"nativeMethods\": 16,"
+        },
+        {
+          "label": "finite-case-total",
+          "before": "\"nativeDeclaredCases\": 13,",
+          "after": "\"nativeDeclaredCases\": 16,"
+        }
+      ]
+    }
+  },
+  "allOriginalFDefinitionsUnchanged": true,
+  "profileChangedDefinitions": [
+    "declared_contract",
+    "require_runtime_ready",
+    "selected"
+  ],
+  "originalCompilerWitnessStageValidatorsAndLifecycleUnchanged": true,
+  "noAppTestPBXGateOrCompilerInventoryChange": true,
+  "original13MethodsRetained": true,
+  "rendererMethodsAdded": 3
+}

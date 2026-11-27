@@ -1,0 +1,68 @@
+{
+  "schema": "pinkha-renderer3-affected-portable-controls-v1",
+  "status": "PASS_SYNTHETIC_CONTROLS_ONLY",
+  "controllerSHA256": "312dd6f8e5a58aeb336b543fd6df03640bbb92588fd862b2f9d6a59a1bdb9af1",
+  "profileSHA256": "ebaf306487ba65e0119c728da676f22295e810806edc214237a31320322482e6",
+  "materializationSHA256": "2502b75699759e7e845ef8686691c6449516dfe096b37b612e629af07e62d9a6",
+  "originalCore13ControlsSHA256": "babc802cb108d77eb3be8411c7a51372eeb7708d9c04320c6b766d76a2194940",
+  "originalSixCoreControlsReusedWithoutRerun": true,
+  "validatorSources": {
+    "wave15_core_profile.py": "f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a",
+    "run_host_tests.py": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d",
+    "shared_editor_existing_build.py": "b4573d61a6fadad7e266dfb88f7f6c25683d05552d99ab70acf86e7ef9715ae6"
+  },
+  "results": [
+    {
+      "name": "two_fixed_XCTest_signatures_and_exact_renderer_source_drift",
+      "status": "PASS",
+      "details": {
+        "actualSourcesParsed": [
+          "Renderer3 non-throwing",
+          "Typography2 throwing"
+        ],
+        "sourceDriftsRejected": 4,
+        "XCTestInvocations": 0
+      },
+      "seconds": 0.002690107998205349
+    },
+    {
+      "name": "original_enumeration_validator_on_new_exact_three_method_scope",
+      "status": "PASS",
+      "details": {
+        "syntheticExactMethods": 3,
+        "negativeControls": 5,
+        "actualCompilerProofValidated": false
+      },
+      "seconds": 0.015207771000859793
+    },
+    {
+      "name": "original_results_validator_rejects_extra_skip_duplicate_and_missing",
+      "status": "PASS",
+      "details": {
+        "syntheticCaseCount": 3,
+        "negativeControls": 4,
+        "actualXCTestMethods": 0
+      },
+      "seconds": 0.0009336580042145215
+    },
+    {
+      "name": "three_exact_inverses_and_new_lane_closed_before_external_IO",
+      "status": "PASS",
+      "details": {
+        "completeInverses": 3,
+        "originalFDefinitionsUnchanged": true,
+        "originalWitnessStageLifecycleValidatorsUnchanged": true,
+        "closedEvenWithReadyFlag": true,
+        "futureProductsAdmitted": 0
+      },
+      "seconds": 0.06191706300160149
+    }
+  ],
+  "controlsPassed": 4,
+  "controlsTotal": 4,
+  "durationSeconds": 0.08221485000103712,
+  "appleInvocations": 0,
+  "nativeCalls": 0,
+  "SwiftCompilations": 0,
+  "XCTestMethodsExecuted": 0
+}
