@@ -21,6 +21,7 @@ public protocol PinkhaHanlinWriteBinding: AnyObject, Sendable {
     func execute(_ invocation: HanlinHostInvocation, cancellation: PinkhaHanlinRevocationFence,
                  progress: @escaping HanlinHostProgressHandler) async throws -> HanlinHostExecutionResult
     func cancel(_ id: HanlinToolInvocationID) async
+    func drainCancelledInvocation(_ id: HanlinToolInvocationID) async -> HanlinHostExecutionResult?
     func invalidate()
     func requestContextReadConsent() async throws
     func metadataReceipt(for id: HanlinToolInvocationID) -> HanlinHostExecutionResult?
@@ -29,7 +30,7 @@ public protocol PinkhaHanlinWriteBinding: AnyObject, Sendable {
 /// Typed composition of the real reviewed host components. No SDK dispatcher/provider/authority fork.
 /// Writes require the real mounted SDK presentation and application account/metadata owner.
 @MainActor
-public final class PinkhaHanlinHostRouter: HanlinHostIntegration {
+public final class PinkhaHanlinHostRouter: HanlinHostCancellationDrainSource {
     public nonisolated let apiVersion = HanlinAPIVersion(major: 1, minor: 0)
     public let session: HanlinHostSession
     private let read: PinkhaHanlinHostAdapter
@@ -182,6 +183,16 @@ public final class PinkhaHanlinHostRouter: HanlinHostIntegration {
         }
     }
 
+    public func drainCancelledInvocation(_ id: HanlinToolInvocationID) async -> HanlinHostExecutionResult? {
+        guard let call = calls[id] else { return nil }
+        // Deliberately no current-account validation: only the worker retained
+        // by this original router can settle its original invocation metadata.
+        switch call.route {
+        case .read: return read.receipt(for: id)?.metadataReceipt()
+        case .createPage: return await write?.drainCancelledInvocation(id)?.metadataReceipt()
+        }
+    }
+
     public func open(_ destination: HanlinHostDestination) async throws -> HanlinHostNavigationResult {
         guard destination.context == session.context else { throw HanlinHostError.staleContext }
         _ = try await context(for: session)
@@ -214,6 +225,7 @@ public final class PinkhaHanlinHostRouter: HanlinHostIntegration {
             case .createPage: await write?.cancel(id)
             }
         }
+        for id in calls.keys { _ = await drainCancelledInvocation(id) }
     }
 
     public func validateCurrentSession(_ session: HanlinHostSession) throws { try validateLocal(session) }

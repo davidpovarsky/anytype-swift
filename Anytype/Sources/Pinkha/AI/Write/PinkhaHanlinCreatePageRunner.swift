@@ -44,6 +44,9 @@ final class PinkhaHanlinCreatePageRunner {
         try await core.execute(invocation, approval: approval)
     }
     func cancel(_ id: HanlinToolInvocationID) async { await core.cancel(id) }
+    func drainCancelledInvocation(_ id: HanlinToolInvocationID) async -> HanlinHostExecutionResult? {
+        await core.drainCancelledInvocation(id)
+    }
     func receipt(for id: HanlinToolInvocationID) -> HanlinHostExecutionResult? { core.receipt(for: id) }
     func validateCreationAvailability() throws { try core.validateCreationAvailability() }
 }

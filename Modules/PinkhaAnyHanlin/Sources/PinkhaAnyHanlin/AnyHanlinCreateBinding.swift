@@ -270,6 +270,10 @@ final class AnyHanlinCreateBinding: PinkhaHanlinWriteBinding {
         cancelConfirmation(id)
         await runner?.cancel(id)
     }
+    func drainCancelledInvocation(_ id: HanlinToolInvocationID) async -> HanlinHostExecutionResult? {
+        let retained = await runner?.drainCancelledInvocation(id)
+        return retained?.metadataReceipt() ?? preflight.receipt(for: id)?.metadataReceipt()
+    }
     func invalidate() {
         decision?.revoke(); owner?.dismissPendingPrompts(); access.invalidate()
     }

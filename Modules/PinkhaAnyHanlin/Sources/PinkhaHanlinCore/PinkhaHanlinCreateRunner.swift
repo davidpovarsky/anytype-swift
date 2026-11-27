@@ -33,6 +33,7 @@ public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
         var receivedNativeResult = false
         var continuation: CheckedContinuation<HanlinHostExecutionResult, any Error>?
         var timer: Task<Void, Never>?
+        var drainWaiters: [CheckedContinuation<Void, Never>] = []
 
         init(plan: PinkhaHanlinCreatePagePlan, approval: Approval, dispatchDeadline: Date) {
             self.plan = plan; self.approval = approval; self.dispatchDeadline = dispatchDeadline
@@ -42,6 +43,12 @@ public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
             self.continuation = nil
             timer?.cancel(); timer = nil
             continuation?.resume(with: result)
+        }
+        func finishNativeWork() {
+            ended = true
+            let waiters = drainWaiters
+            drainWaiters.removeAll()
+            for waiter in waiters { waiter.resume() }
         }
     }
 
@@ -69,7 +76,7 @@ public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
         active = job // One unfinished native worker per owner, including a timed-out worker.
         do { try await journal.reserve(plan.identity) }
         catch {
-            job.ended = true
+            job.finishNativeWork()
             throw HanlinHostError.unresolvedWrite // Sanitized; no native dispatch without a durable reservation.
         }
         let fence = job.cancellation
@@ -107,13 +114,23 @@ public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
 
     public func receipt(for id: HanlinToolInvocationID) -> HanlinHostExecutionResult? { receipts[id] }
 
+    /// Join the original unstructured worker, including after account revocation.
+    /// This reads only retained original-scope metadata; it never obtains current
+    /// services, validates a replacement account, retries or changes native work.
+    public func drainCancelledInvocation(_ id: HanlinToolInvocationID) async -> HanlinHostExecutionResult? {
+        if let job = active, job.plan.identity.invocationID == id, !job.ended {
+            await withCheckedContinuation { job.drainWaiters.append($0) }
+        }
+        return receipts[id]?.metadataReceipt()
+    }
+
     public func validateCreationAvailability() throws {
         guard active?.ended != false, receipts.count < 256 else { throw HanlinHostError.unresolvedWrite }
         try validateAvailable()
     }
 
     private func run(_ job: Job) async {
-        defer { job.ended = true }
+        defer { job.finishNativeWork() }
         do {
             // Last available host boundary after reservation's await and after MainActor queueing.
             guard !job.cancellation.isRevoked,

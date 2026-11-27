@@ -80,7 +80,9 @@ public struct PinkhaHanlinChatView: View {
         } composer: {
             HanlinChatComposer(text: $presentation.draft, canSend: presentation.canSend,
                 isStreaming: presentation.isStreaming, presentationMode: .full,
-                placeholder: PinkhaHanlinStrings.prompt, onSend: presentation.send)
+                placeholder: PinkhaHanlinStrings.prompt, isStopping: presentation.isStopping,
+                stopLabel: PinkhaHanlinStrings.stop, stoppingLabel: PinkhaHanlinStrings.stopping,
+                onStop: presentation.stop, onSend: presentation.send)
                 .accessibilityIdentifier("pinkha.hanlin.composer")
         }
     }

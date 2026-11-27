@@ -18,6 +18,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     public private(set) var messages: [HanlinChatMessage] = []
     public private(set) var receiptMessages: [String] = []
     public private(set) var isStreaming = false
+    public private(set) var isStopping = false
     public private(set) var isConfigured = false
     public private(set) var readAllowed = false
     public private(set) var isReturningToSource = false
@@ -31,13 +32,17 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     @ObservationIgnored private var agent: HanlinAgentSession?
     @ObservationIgnored private var modelReference: HanlinModelReference?
     @ObservationIgnored private var running: Task<Void, Never>?
+    @ObservationIgnored private var stopping: Task<Void, Never>?
+    @ObservationIgnored private var currentRunID: UUID?
+    @ObservationIgnored private var requiresReconciliation = false
     @ObservationIgnored private var closing: Task<Void, Never>?
     @ObservationIgnored private var closed = false
     @ObservationIgnored private var receiptIDs = Set<UUID>()
     @ObservationIgnored public private(set) var returnReceipt: PinkhaHanlinNavigationHandoff?
 
     public var canSend: Bool {
-        isConfigured && !closed && !isStreaming && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        isConfigured && !closed && !isStreaming && !isStopping && !requiresReconciliation
+            && currentRunID == nil && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             && draft.utf8.count <= 32_768 && messages.count < 256
     }
     public var hasSource: Bool { session.context.objectReference != nil }
@@ -103,7 +108,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     }
 
     public func requestContextReadConsent() {
-        guard !closed, !isStreaming, hasSource else { return }
+        guard !closed, !isStreaming, !isStopping, hasSource else { return }
         Task { @MainActor [weak self] in
             guard let self else { return }
             do {
@@ -124,12 +129,20 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         messages.append(.user(prompt))
         let history = messages.map { HanlinAISDKMessage(role: $0.role == "user" ? .user : .assistant, text: $0.content) }
         let answerID = UUID()
+        let runID = UUID()
+        currentRunID = runID
         messages.append(.init(id: answerID, role: "assistant", content: ""))
-        isStreaming = true
         errorMessage = nil
         running = Task { @MainActor [weak self] in
-            guard let self else { return }
-            defer { self.isStreaming = false; self.running = nil }
+            guard let self, !self.closed, self.currentRunID == runID else { return }
+            self.isStreaming = true
+            defer {
+                if self.currentRunID == runID {
+                    self.isStreaming = false
+                    self.running = nil
+                    if !self.isStopping { self.currentRunID = nil }
+                }
+            }
             do {
                 try self.validateInstallation(for: self.session)
                 let stream = try await agent.stream(messages: history, modelReference: modelReference,
@@ -137,7 +150,8 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                 for try await event in stream {
                     try Task.checkCancellation()
                     try self.validateInstallation(for: event.session)
-                    if case .textDelta(let delta) = event.event,
+                    if !self.isStopping, self.currentRunID == runID,
+                       case .textDelta(let delta) = event.event,
                        let index = self.messages.firstIndex(where: { $0.id == answerID }) {
                         guard self.messages[index].content.utf8.count + delta.utf8.count <= 262_144 else {
                             throw HanlinHostError.outputLimitExceeded
@@ -147,8 +161,41 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                 }
             } catch {
                 // Provider errors may contain request details. Never log or expose them verbatim.
-                if !self.closed { self.errorMessage = PinkhaHanlinStrings.requestFailed }
+                if !self.closed, !self.isStopping, self.currentRunID == runID {
+                    self.errorMessage = PinkhaHanlinStrings.requestFailed
+                }
             }
+        }
+    }
+
+    public func stop() {
+        guard !closed, isStreaming, !isStopping, let agent, let runID = currentRunID else { return }
+        isStopping = true
+        errorMessage = nil
+        let consumer = running
+        stopping = Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let result = try await agent.cancelCurrentRun()
+                await consumer?.value
+                guard !self.closed, self.currentRunID == runID else { return }
+                try self.validateInstallation(for: self.session)
+                self.requiresReconciliation = result?.requiresReconciliation ?? false
+                if self.requiresReconciliation { self.errorMessage = PinkhaHanlinStrings.uncertain }
+            } catch {
+                await consumer?.value
+                guard !self.closed, self.currentRunID == runID else { return }
+                // A failed metadata save or uncertain host outcome cannot silently
+                // restore permission to retry the operation in this conversation.
+                self.requiresReconciliation = true
+                self.errorMessage = PinkhaHanlinStrings.uncertain
+            }
+            guard !self.closed, self.currentRunID == runID else { return }
+            self.isStopping = false
+            self.isStreaming = false
+            self.running = nil
+            self.stopping = nil
+            self.currentRunID = nil
         }
     }
 
@@ -221,6 +268,9 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         closed = true
         host.revokePresentation()
         running?.cancel()
+        currentRunID = nil
+        isStreaming = false
+        isStopping = false
         let agent = agent
         self.agent = nil
         modelReference = nil
