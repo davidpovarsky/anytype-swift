@@ -1,0 +1,78 @@
+{
+  "protocol": "wave2-property-cancellation-followup-v1",
+  "baseCommit": "cfa622543feb620f8391030b52b482d8cda12d94",
+  "prerequisiteCommits": [
+    "33f316afd19d33036705b3839067cc2070e084f2",
+    "cfa622543feb620f8391030b52b482d8cda12d94"
+  ],
+  "status": "READY_FOR_INTEGRATION_APPLE_EXECUTION_PENDING",
+  "reviewRequest": "HQ51 comment1220940529260124: supplier CancellationError with caller Task.isCancelled=false must not complete picker with an empty result.",
+  "resolution": [
+    "Internal throwing nativePropertiesForPicker/searchNativePropertiesForPicker propagate CancellationError from provider search and bootstrap.",
+    "Original public nonthrowing nativeProperties and original internal nonthrowing searchNativeProperties signatures remain unchanged for current consumers.",
+    "Production picker loader uses throwing route and can inject existing policy/catalog/search dependencies for its focused regression.",
+    "ViewModel records requestCompleted only for actual results or ordinary failures. Provider cancellation never authorizes an empty-state completion or error publication.",
+    "Added actual catalog -> production loader -> picker regression with valid Space manifest, provider cancellation and explicitly uncancelled caller."
+  ],
+  "files": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+      "sha256": "e4f1b053139810570565a0000413fde89f82516513cddd1c4b5579d63e39ffce",
+      "gitBlob": "cc4f6c5fc96749fbe8cc06b3befe044be050d92d"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+      "sha256": "91d98b046f070d6c1b33eeb2db66fffb3bdbad9f4401d5b2200bf4c13271d45f",
+      "gitBlob": "d0667ecd5eb08dc8767ef5eef436c4cefa44c72c"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+      "sha256": "785e71358afb749b380cd930e80cbb693ebad2176235ce8b76e30e915b49ec15",
+      "gitBlob": "ac386aa0297d4703706b983914a8c241b4de17e4"
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift",
+      "sha256": "69d7afd02929d0a0f8a220acff3ada1ac156e7cbed70294861cb8481ae06e236",
+      "gitBlob": "1ce7aa189597a7601ee54c79125f1a00f178932e"
+    },
+    {
+      "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+      "sha256": "95f8408e72aa8148871cd5a106464ed433ad80de04a5fb8f15b0561465ff192f",
+      "gitBlob": "a87cd4113bfad57b3735ef15baebcbfd40419887"
+    }
+  ],
+  "sourceRetention": {
+    "integrationBase": "c44d5ea4dc9780ee1ae48bb9db7aa72287675cdc",
+    "original121MapSHA256": "fbbe0a83e1fbcce382c1ce40d511a23c2891b5d57c71aab6b909cdeca8a7091e",
+    "preservedOriginalRows": 121,
+    "addedPickerSeams": 3,
+    "addedDownstreamBaselineRows": 3,
+    "prospectiveTree": "63a3495e16a6b2f0dcdb6c8a70e157934a6f9507",
+    "result": "PASS_127_REVIEWED_ZERO_ERRORS_ZERO_UNREVIEWED",
+    "receiptSHA256": "9064b50a3bae800c6714a3f619212fda3f8a3b30c233ae04bd406576f050fe70",
+    "originalFailed124ReceiptSHA256": "aba9b3b2e56517d8dadd9b79ab608b4baa35beaf4c1969b4dc1bc6ab892016cc",
+    "finalBranchMutations": 0,
+    "scope": "Prospective source preservation only, not an application build or behavior acceptance."
+  },
+  "appleTests": {
+    "PropertyCreationSearchTests": {
+      "methods": 9,
+      "executed": 0
+    },
+    "PropertyCreationSelectionTests": {
+      "methods": 5,
+      "executed": 0
+    }
+  },
+  "independentSelectionReview": {
+    "reviewer": "/root/editor",
+    "sourceCommit": "cfa622543feb620f8391030b52b482d8cda12d94",
+    "scope": "Selection helper and VM/View mutation route only; no Apple execution",
+    "finding": "No concrete compile/actor-isolation blocker found. MainActor action, nested Observation and pending serialization consistent. Successful already-completed mutation remains success if cancellation arrives afterward; no unconditional post-write cancellation check."
+  },
+  "runtimeAndPhysicalAcceptance": "NOT_RUN",
+  "nativeSchemaChanges": 0,
+  "documentTypeChanges": 0,
+  "legacyFailuresPreserved": true,
+  "rollback": "Revert cancellation follow-up only, or all3Property commits if rolling back the complete picker tranche; no data migration."
+}

@@ -19,18 +19,30 @@ protocol PinkhaPropertyPickerSearchLoading {
 
 @MainActor
 final class PinkhaPropertyPickerSearchLoader: PinkhaPropertyPickerSearchLoading {
+    typealias ExistingSearch = @MainActor (String, [String], String) async throws -> [PropertyDetails]
+
     @Injected(\.searchService)
     private var searchService: any SearchServiceProtocol
 
+    private let policy: PinkhaTorahPropertyPolicy
+    private let catalog: PinkhaTorahNativePropertyCatalog
+    private let existingSearch: ExistingSearch?
+
+    init(policy: PinkhaTorahPropertyPolicy = .shared,
+         catalog: PinkhaTorahNativePropertyCatalog = .shared,
+         existingSearch: ExistingSearch? = nil) {
+        self.policy = policy
+        self.catalog = catalog
+        self.existingSearch = existingSearch
+    }
+
     func invalidate(spaceId: String) {
-        PinkhaTorahNativePropertyCatalog.shared.invalidate(spaceId: spaceId)
+        catalog.invalidate(spaceId: spaceId)
     }
 
     func load(text: String, data: PropertiesSearchData) async throws -> PinkhaPropertyPickerSearchResult {
         try Task.checkCancellation()
         let excluded = data.excludedRelationsIds.filter { !data.hiddenRelationsIds.contains($0) }
-        let policy = PinkhaTorahPropertyPolicy.shared
-        let catalog = PinkhaTorahNativePropertyCatalog.shared
         let identity = await policy.awaitInternalIdentity(spaceId: data.spaceId)
         try Task.checkCancellation()
 
@@ -43,9 +55,14 @@ final class PinkhaPropertyPickerSearchLoader: PinkhaPropertyPickerSearchLoading 
         var existing: [PropertyDetails] = []
         var existingFailed = false
         do {
-            let found = try await searchService.searchRelations(
-                text: text, excludedIds: excluded, spaceId: data.spaceId
-            )
+            let found: [PropertyDetails]
+            if let existingSearch {
+                found = try await existingSearch(text, excluded, data.spaceId)
+            } else {
+                found = try await searchService.searchRelations(
+                    text: text, excludedIds: excluded, spaceId: data.spaceId
+                )
+            }
             try Task.checkCancellation()
             // A failed manifest read cannot expose canonical/order rows whose
             // real IDs have not been resolved. Native format creation stays usable.
@@ -66,7 +83,7 @@ final class PinkhaPropertyPickerSearchLoader: PinkhaPropertyPickerSearchLoading 
 
         let native: [PropertyDetails]
         if eligible {
-            native = await catalog.searchNativeProperties(
+            native = try await catalog.searchNativePropertiesForPicker(
                 text: text, excludedIds: excluded, target: data.target, spaceId: data.spaceId
             )
         } else {

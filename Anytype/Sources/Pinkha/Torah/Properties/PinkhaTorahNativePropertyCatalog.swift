@@ -531,7 +531,14 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
     /// Resolves verified native PropertyDetails descriptors for the given Space.
     /// Strictly queries fixed native definitions, checks identity sourceObject, wireFormat=11, and readOnlyValue=true.
     public func nativeProperties(spaceId: String) async -> [PropertyDetails] {
-        guard !Task.isCancelled, PinkhaRuntime.enabled else {
+        (try? await nativePropertiesForPicker(spaceId: spaceId)) ?? []
+    }
+
+    /// The picker must distinguish provider cancellation from a completed empty query.
+    /// Keep the existing nonthrowing API for other catalog consumers.
+    func nativePropertiesForPicker(spaceId: String) async throws -> [PropertyDetails] {
+        try Task.checkCancellation()
+        guard PinkhaRuntime.enabled else {
             return []
         }
         guard !spaceId.isEmpty else {
@@ -553,8 +560,8 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
             }
         }
 
-        guard let firstAttempt = try? await resolveNativePropertiesOnce(spaceId: spaceId),
-              !Task.isCancelled else { return [] }
+        let firstAttempt = try await resolveNativePropertiesOnce(spaceId: spaceId)
+        try Task.checkCancellation()
         if firstAttempt.failures.isEmpty && firstAttempt.properties.count == TorahNativePropertyDefinition.all.count {
             cache.set(spaceId: spaceId, properties: firstAttempt.properties)
             cache.setDiagnostics(spaceId: spaceId, reasons: [:])
@@ -568,11 +575,19 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         }
 
         if !hasAmbiguousDuplicates && firstAttempt.properties.count < TorahNativePropertyDefinition.all.count {
-            let bootstrapped = try? await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: spaceId)
-            guard !Task.isCancelled else { return [] }
+            let bootstrapped: PinkhaSpaceManifest?
+            do {
+                bootstrapped = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: spaceId)
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch {
+                try Task.checkCancellation()
+                bootstrapped = nil
+            }
+            try Task.checkCancellation()
             if bootstrapped != nil {
-                guard let retryAttempt = try? await resolveNativePropertiesOnce(spaceId: spaceId),
-                      !Task.isCancelled else { return [] }
+                let retryAttempt = try await resolveNativePropertiesOnce(spaceId: spaceId)
+                try Task.checkCancellation()
                 cache.setDiagnostics(spaceId: spaceId, reasons: retryAttempt.failures)
                 if retryAttempt.failures.isEmpty && retryAttempt.properties.count == TorahNativePropertyDefinition.all.count {
                     cache.set(spaceId: spaceId, properties: retryAttempt.properties)
@@ -685,16 +700,27 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         target: PropertiesModuleTarget,
         spaceId: String
     ) async -> [PropertyDetails] {
+        (try? await searchNativePropertiesForPicker(
+            text: text, excludedIds: excludedIds, target: target, spaceId: spaceId
+        )) ?? []
+    }
+
+    func searchNativePropertiesForPicker(
+        text: String,
+        excludedIds: [String],
+        target: PropertiesModuleTarget,
+        spaceId: String
+    ) async throws -> [PropertyDetails] {
         guard PinkhaRuntime.enabled else { return [] }
         guard !spaceId.isEmpty else { return [] }
 
         // Cancellation is not target ineligibility and must not poison the
         // Space's diagnostics while the next picker query is already loading.
-        guard !Task.isCancelled else { return [] }
+        try Task.checkCancellation()
         let eligible = await policy.canAddPropertyAsync(
             propertyId: "", key: TorahNativePropertyDefinition.all[0].key, target: target, spaceId: spaceId
         )
-        guard !Task.isCancelled else { return [] }
+        try Task.checkCancellation()
         guard eligible else {
             var targetFailures: [String: NativePropertyLookupFailureReason] = [:]
             for def in TorahNativePropertyDefinition.all {
@@ -704,8 +730,8 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
             return []
         }
 
-        let allNative = await nativeProperties(spaceId: spaceId)
-        guard !Task.isCancelled else { return [] }
+        let allNative = try await nativePropertiesForPicker(spaceId: spaceId)
+        try Task.checkCancellation()
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
 
         return allNative.filter { property in

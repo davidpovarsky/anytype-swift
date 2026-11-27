@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Services
+import PinkhaKit
 import Testing
 @testable import Anytype
 
@@ -132,6 +133,34 @@ struct PropertyCreationSearchTests {
         #expect(catalog.lastLookupDiagnostics(spaceId: "pre-cancelled-catalog-space").isEmpty)
     }
 
+    @Test("Provider cancellation cannot complete the real loader and picker with empty results")
+    func providerCancellationPropagatesThroughLoaderAndPicker() async {
+        let manifest = PinkhaSpaceManifest(
+            spaceId: "picker-space", orderPropertyId: "order-id", orderPropertyKey: "order-key",
+            documentAssociationsPropertyId: "canonical-id", documentAssociationsPropertyKey: "canonical-key"
+        )
+        let policy = PinkhaTorahPropertyPolicy(bootstrapService: PickerBootstrapProbe(manifest: manifest))
+        let search = CancelledCatalogSearch()
+        let catalog = PinkhaTorahNativePropertyCatalog(
+            policy: policy, searchService: search, propertyDetailsStorage: EmptyPickerPropertyStorage()
+        )
+        let loader = PinkhaPropertyPickerSearchLoader(policy: policy, catalog: catalog,
+                                                      existingSearch: { _, _, _ in [] })
+        let model = PropertyCreationViewModel(data: .init(
+            objectId: "picker-object", spaceId: "picker-space", excludedRelationsIds: [],
+            target: .library, onRelationSelect: { _, _ in }
+        ), searchLoader: loader)
+
+        #expect(!Task.isCancelled)
+        await model.search(text: "source")
+        #expect(!Task.isCancelled)
+        #expect(await search.calls == 1)
+        #expect(existingIDs(model).isEmpty)
+        #expect(!model.hasLookupFailure)
+        #expect(model.isSearching) // Cancellation cannot authorize an empty-state completion.
+        #expect(catalog.lastLookupDiagnostics(spaceId: "picker-space").isEmpty)
+    }
+
     private func makeModel(_ loader: SuspendedPropertyPickerLoader) -> PropertyCreationViewModel {
         PropertyCreationViewModel(data: .init(
             objectId: "picker-object", spaceId: "picker-space", excludedRelationsIds: [],
@@ -206,4 +235,13 @@ private final class EmptyPickerPropertyStorage: PropertyDetailsStorageProtocol, 
     func startSubscription(spaceId: String) async {}
     func stopSubscription() async {}
     func prepareData(spaceId: String) async {}
+}
+
+private struct PickerBootstrapProbe: PinkhaSpaceBootstrapServiceProtocol {
+    let manifest: PinkhaSpaceManifest
+    func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest { manifest }
+    func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? {
+        manifest.spaceId == spaceId ? manifest : nil
+    }
+    func isBootstrapped(spaceId: String) -> Bool { manifest.spaceId == spaceId }
 }

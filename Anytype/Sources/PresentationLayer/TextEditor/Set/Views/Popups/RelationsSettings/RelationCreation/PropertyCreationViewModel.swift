@@ -62,9 +62,10 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
         nativeLookupFailed = false
         existingLookupFailed = false
         rows = makeRows(text: text, properties: [])
+        var requestCompleted = false
         defer {
             // A cancelled query has no authoritative empty result to display.
-            if activeSearch == request && !Task.isCancelled { isSearching = false }
+            if activeSearch == request && requestCompleted && !Task.isCancelled { isSearching = false }
         }
 
         do {
@@ -73,11 +74,13 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
             nativeLookupFailed = result.nativeLookupFailed
             existingLookupFailed = result.existingLookupFailed
             rows = makeRows(text: text, properties: result.properties)
+            requestCompleted = true
         } catch is CancellationError {
             return
         } catch {
             guard activeSearch == request, !Task.isCancelled else { return }
             existingLookupFailed = true
+            requestCompleted = true
         }
     }
 
