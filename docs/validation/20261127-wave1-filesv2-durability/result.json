@@ -1,0 +1,251 @@
+{
+  "schema": "pinkha-native-file-durability-consumer-proof-v1",
+  "status": "PASS_COMPONENT_BOUNDARY_ONLY",
+  "baseCommit": "4416ef1515dba0149a03d9a2f8441015d77e9da0",
+  "baseline": {
+    "methods": 15,
+    "failedMethods": 3,
+    "passedMethods": 12,
+    "skipped": 0,
+    "resultSHA256": "c27a415d3bab14eedf4b7d7eba3d1d2d43f9aa1f7021e6001ec88727ddb925b4",
+    "terminalMethods": [
+      [
+        "AnyNativeFileDurabilityHTTPTests.testAccountSwitchAfterRetryReturnsUncertainWithoutAnotherWrite",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testCanonicallyEquivalentDifferentAccountBytesAreDeniedBeforeStatusRead",
+        "failed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testForeignAccountScopeIsRejectedWithoutDispatch",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testMalformedSuccessfulRetryReceiptIsUncertainAfterOneDispatch",
+        "failed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testNativeLimitedStateIsReadWithoutAutomaticRetry",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testOversizedSuccessfulRetryReceiptIsUncertainAfterOneDispatch",
+        "failed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testPostDispatchRevocationReturnsUncertainWithoutConsumingApprovalAgain",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testRetryAcknowledgesOneDispatchAndDoesNotClaimDurability",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testRevokedReadCannotPublishQuotaOrAvailability",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testTypedAuthorityRefusalAndUnexpectedSuccessKeepNativeOutcomeDistinct",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testWrongObjectIsRejectedBeforeRetryApprovalOrPost",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityTests.testFileAndObjectIdentityRequireExactBytes",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityTests.testInvalidNativeScopeIsRefusedAtConstruction",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityTests.testMalformedAndUnknownStatusCannotBecomeAnOptimisticSuccess",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityTests.testNativeStatesDoNotConflateLocalAvailabilityWithCustody",
+        "passed"
+      ]
+    ]
+  },
+  "corrected": {
+    "methods": 28,
+    "newMethods": 15,
+    "affectedExistingMethods": 13,
+    "failures": 0,
+    "skipped": 0,
+    "resultSHA256": "e28880274419029bf4ceecc635e37e3d294678aceee49f201c7900871fce2a3d",
+    "terminalMethods": [
+      [
+        "AnyHTTPAuthorizationFenceTests.testAuthorizedStatusAndLegacyBodyBothRetainTheirSemantics",
+        "passed"
+      ],
+      [
+        "AnyHTTPAuthorizationFenceTests.testOneShotWriteDispatchApprovalIsNotConsumedAgain",
+        "passed"
+      ],
+      [
+        "AnyHTTPAuthorizationFenceTests.testReadRevokedDuringHTTPDoesNotDeliverPayloadFromSameAccount",
+        "passed"
+      ],
+      [
+        "AnyHTTPAuthorizationFenceTests.testRevokedAfterCommittedWriteReportsUncertainWithoutRetry",
+        "passed"
+      ],
+      [
+        "AnyHTTPAuthorizationFenceTests.testRevokedBeforeDispatchSendsNoMutation",
+        "passed"
+      ],
+      [
+        "AnyHTTPAuthorizationFenceTests.testRevokedCreateRetainsOnlyOriginalScopeRecoveryIdentity",
+        "passed"
+      ],
+      [
+        "AnyHTTPAuthorizationFenceTests.testSeparateReadResponseFencePreservesOneShotDispatchApproval",
+        "passed"
+      ],
+      [
+        "AnyHTTPResponseTests.testAcceptedHTTPStatusCannotHideNativePartialRejection",
+        "passed"
+      ],
+      [
+        "AnyHTTPResponseTests.testAccountSwitchAfterActualJoinResponseRemainsWriteUncertain",
+        "passed"
+      ],
+      [
+        "AnyHTTPResponseTests.testPendingAndCreatedStatusesSurviveActualHTTPAndLegacyBodyAPI",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testAccountSwitchAfterRetryReturnsUncertainWithoutAnotherWrite",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testCanonicallyEquivalentDifferentAccountBytesAreDeniedBeforeStatusRead",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testForeignAccountScopeIsRejectedWithoutDispatch",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testMalformedSuccessfulRetryReceiptIsUncertainAfterOneDispatch",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testNativeLimitedStateIsReadWithoutAutomaticRetry",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testOversizedSuccessfulRetryReceiptIsUncertainAfterOneDispatch",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testPostDispatchRevocationReturnsUncertainWithoutConsumingApprovalAgain",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testRetryAcknowledgesOneDispatchAndDoesNotClaimDurability",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testRevokedReadCannotPublishQuotaOrAvailability",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testTypedAuthorityRefusalAndUnexpectedSuccessKeepNativeOutcomeDistinct",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityHTTPTests.testWrongObjectIsRejectedBeforeRetryApprovalOrPost",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityTests.testFileAndObjectIdentityRequireExactBytes",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityTests.testInvalidNativeScopeIsRefusedAtConstruction",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityTests.testMalformedAndUnknownStatusCannotBecomeAnOptimisticSuccess",
+        "passed"
+      ],
+      [
+        "AnyNativeFileDurabilityTests.testNativeStatesDoNotConflateLocalAvailabilityWithCustody",
+        "passed"
+      ],
+      [
+        "ObjectCreationRecoveryTests.testExactNativePartialFailureCarriesOnlyValidatedRecoveryMetadata",
+        "passed"
+      ],
+      [
+        "ObjectCreationRecoveryTests.testLateAccountSwitchRetainsIDOnlyForDedicatedOriginalSpaceCreateRoute",
+        "passed"
+      ],
+      [
+        "ObjectCreationRecoveryTests.testMalformedOrDifferentFailureCannotInventRecoverableObjectIdentity",
+        "passed"
+      ]
+    ]
+  },
+  "sourceChangedBetweenRuns": [
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift"
+  ],
+  "componentSourceUnchangedDuringEachRun": true,
+  "originalNativeReceiptsRetained": true,
+  "sourceFiles": {
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift": "8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileDurability.swift": "364a1bea4e4cae6134c9bb5935c0432f257657f3ae0c889a669354de975c2dc6",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeFileDurabilityTests.swift": "8d01d47feca58eb554d84b0cbfbad2bedea65005f8f27523d5e579d8145375ee",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/file_durability_server.py": "4fb1e8983232a9c4fbabe5212072457dacb72642c1a539a443e5ec17bb056cb5",
+    "docs/architecture/native-filesv2-durability-contract-20261127.md": "bbbcb8dadace058e78e1f04e90da9b0ba420d61f3bdd0fa61823f62a8992e60b"
+  },
+  "artifacts": {
+    "docs/validation/20261127-wave1-filesv2-durability/baseline-result.json": {
+      "source": "/var/lib/pinkha-w1-engine-contracts-20261127/file-durability-baseline1/result.json",
+      "sha256": "c27a415d3bab14eedf4b7d7eba3d1d2d43f9aa1f7021e6001ec88727ddb925b4",
+      "bytes": 20851
+    },
+    "docs/validation/20261127-wave1-filesv2-durability/baseline-tests-swift-testing.xml": {
+      "source": "/var/lib/pinkha-w1-engine-contracts-20261127/file-durability-baseline1/tests-swift-testing.xml",
+      "sha256": "b5492f909c802e0cd2255c2a5782aa111109df8733533d9d615484f4f9d26eb9",
+      "bytes": 180
+    },
+    "docs/validation/20261127-wave1-filesv2-durability/corrected-result.json": {
+      "source": "/var/lib/pinkha-w1-engine-contracts-20261127/file-durability-corrected1/result.json",
+      "sha256": "e28880274419029bf4ceecc635e37e3d294678aceee49f201c7900871fce2a3d",
+      "bytes": 24963
+    },
+    "docs/validation/20261127-wave1-filesv2-durability/corrected-tests-swift-testing.xml": {
+      "source": "/var/lib/pinkha-w1-engine-contracts-20261127/file-durability-corrected1/tests-swift-testing.xml",
+      "sha256": "8a0c3ebe682717a527de13aeb1fe0d52a5b9e0ea24e91c77a4c0f08ece93c956",
+      "bytes": 180
+    },
+    "docs/validation/20261127-wave1-filesv2-durability/baseline-swift.log.gz": {
+      "source": "/var/lib/pinkha-w1-engine-contracts-20261127/file-durability-baseline1/swift.log",
+      "sha256": "450178949aa01d84f4da012f52bba4d40512eabd262a93ad223fc7fe615b8ab2",
+      "bytes": 1566,
+      "uncompressedSHA256": "b740fb1395eb0693855e1bb981a3016ce88fcd575a24938f8e263c9c0e8bddfe",
+      "uncompressedBytes": 7669,
+      "format": "gzip; exact original console bytes"
+    },
+    "docs/validation/20261127-wave1-filesv2-durability/corrected-swift.log.gz": {
+      "source": "/var/lib/pinkha-w1-engine-contracts-20261127/file-durability-corrected1/swift.log",
+      "sha256": "a46fd34ce18413493c54a85ed7af474e80d9d07c1f8ec2018e1ac8954e108ff2",
+      "bytes": 1765,
+      "uncompressedSHA256": "b04e7240cf0d6c72d20470aff4e255ad61b660907b0b7c244df0b49cdaa9a883",
+      "uncompressedBytes": 9314,
+      "format": "gzip; exact original console bytes"
+    }
+  },
+  "nativeQuotaRecoveryAccepted": false,
+  "cloudCustodyAccepted": false,
+  "appleRuntimeAccepted": false,
+  "boundary": "Typed scoped native status/retry and real loopback HTTP, not a synthetic native quota PASS",
+  "rawConsoleStorage": "Lossless gzip preserves original diagnostic trailing whitespace. No console line was normalized."
+}
