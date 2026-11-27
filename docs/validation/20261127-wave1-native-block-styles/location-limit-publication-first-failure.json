@@ -1,0 +1,30 @@
+{
+  "commitWasCreated": false,
+  "correction": "Remove one extra EOF blank line in the new unexecuted test source only; retain the strict diff-check gate and exact production two-guard delta.",
+  "originalJob": {
+    "created_at": 1795761384.3248973,
+    "duration_s": 0.27,
+    "error": null,
+    "exit_code": 1,
+    "finished_at": "2026-11-27T06:36:24.677216+00:00",
+    "host": "host_299cf75f6b338ecd",
+    "id": "job_13eb18153b3c",
+    "notified": {
+      "resend": null,
+      "telegram": null
+    },
+    "notify_spec": {},
+    "output": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyNativeBlockLocationLimitTests.swift:46: new blank line at EOF.\nTraceback (most recent call last):\n  File \"/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_444a272d8a5a445e96f509e777a6104f/script.py\", line 33, in <module>\n    subprocess.run(['git','-C',str(w),'diff','--cached','--check'],check=True)\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['git', '-C', '/mnt/development/projects/worktrees/anytype-engine-contracts-20261127', 'diff', '--cached', '--check']' returned non-zero exit status 2.",
+    "output_truncated": false,
+    "read": false,
+    "severity": "warning",
+    "source": "script_run@host_299cf75f6b338ecd",
+    "started_at": "2026-11-27T06:36:24.408779+00:00",
+    "status": "failed",
+    "timeout_s": 150,
+    "tool": "script_run",
+    "type": "job_result"
+  },
+  "scope": "source publication preflight, not a runtime test",
+  "testsWereExecuted": false
+}
