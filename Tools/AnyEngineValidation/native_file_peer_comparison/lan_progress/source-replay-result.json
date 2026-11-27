@@ -1,0 +1,48 @@
+{
+  "commands": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/mnt/development/projects/worktrees/anytype-network-final-20261127/Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/apply.py",
+        "--sdk-source",
+        "/var/lib/pinkha-c-filesv2-20261126/lan-progress-replay1/sdk-source",
+        "--check-only"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\"status\": \"PATCH_APPLICABLE_SOURCE_ONLY\", \"patchSHA256\": \"d6afca4fe2267c4b1da15b246619851fbbd31e19e91d6b42846e96096fc31c65\", \"runtimeAcceptance\": false}\n"
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/mnt/development/projects/worktrees/anytype-network-final-20261127/Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/apply.py",
+        "--sdk-source",
+        "/var/lib/pinkha-c-filesv2-20261126/lan-progress-replay1/sdk-source"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "{\"status\": \"APPLIED_SOURCE_ONLY\", \"patchSHA256\": \"d6afca4fe2267c4b1da15b246619851fbbd31e19e91d6b42846e96096fc31c65\", \"changedFiles\": [\"internal/anysyncx/peermanager.go\", \"internal/anysyncx/peerprogress.go\", \"internal/anysyncx/peerprogress_test.go\"], \"runtimeAcceptance\": false}\n"
+    }
+  ],
+  "errors": [],
+  "manifestSHA256": "ac76106c77fbeb06e4b519ac41c0da1bfc30b30dc904ffe172af399e4135b55f",
+  "original716SourceUnchanged": true,
+  "patchSHA256": "d6afca4fe2267c4b1da15b246619851fbbd31e19e91d6b42846e96096fc31c65",
+  "protocol": "pinkha-bounded-node-lan-overlay-replay-v1",
+  "publishedFiles": [
+    "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/EVIDENCE.md",
+    "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/apply.py",
+    "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/lan-progress-unit1-result.json",
+    "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/lan-progress-unit2-result.json",
+    "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/manifest.json",
+    "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/qualification-inputs2.json",
+    "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/qualify_lan_progress2.py",
+    "Tools/AnyEngineValidation/native_file_peer_comparison/lan_progress/sdk-lan-progress.patch"
+  ],
+  "qualifiedSDKManifestSHA256": "324f2136ecc953906549a2fe2963337bef4fcef03446e6604c8066299b1faf5c",
+  "runtimeAcceptance": false,
+  "sameQualified718Files": true,
+  "status": "PASS_SOURCE_REPLAY_ONLY"
+}
