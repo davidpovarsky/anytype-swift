@@ -1,0 +1,103 @@
+{
+  "appleUIPresentationAccepted": false,
+  "configRelocation": {
+    "change": "Only immutable nodeconf filesystem locator",
+    "nodeconfSHA256": "6554bc5841fbef2a1ee6ab65ac3b14a9117dbb762d8cc8d419633c8cd413b060",
+    "originalAccountConfigChanged": false
+  },
+  "errors": [
+    {
+      "message": "native test failed",
+      "type": "AssertionError"
+    }
+  ],
+  "historicalPreservationReexecuted": false,
+  "minimumFreeBytes": 6458679296,
+  "nativeBefore": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildReceiptSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "unchanged": true
+  },
+  "offlinePolicy": {
+    "baselineTCPReachable": true,
+    "baselineUDPReceived": true,
+    "controls": {
+      "deniedSyscalls": [
+        "connect",
+        "sendto",
+        "sendmsg",
+        "sendmmsg",
+        "io_uring_setup",
+        "io_uring_enter",
+        "io_uring_register"
+      ],
+      "librarySHA256": "3d128123b494ca9e88f3c237b0912397145af1754e86ea99f460af6857441f19",
+      "noNewPrivileges": true,
+      "seccompFilterActive": true,
+      "tcpDenied": true,
+      "tcpErrno": 1,
+      "udpDenied": true,
+      "udpErrno": 1
+    },
+    "helperSHA256": "6eaca8b9602f9c1c7fce4b8a176759ad1a10577c0ee74eddb3264992976e86b1",
+    "scope": "only each owned native child and descendants; no global network change"
+  },
+  "originalAccountAndPreservationReceiptUnchanged": true,
+  "phases": [
+    {
+      "compiledProducts": {
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner": "6cce2ef5a550f905c999a2c845a487ed8cfe46c7c834e0efa4b66267d50758d6",
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so": "7488bdc0c7c5226dda878d2a86f38dd4a379329ad7b3137c98a9294d455097cf"
+      },
+      "exitCode": 1,
+      "logSHA256": "2a05b8cd31c0bf2e31f9093f15b9ceffbfbc9769212890f68e201217ac65657a",
+      "nativePID": 2179622,
+      "phase": "execute",
+      "seconds": 6.509,
+      "testGroupPositivelyAbsent": true,
+      "testPID": 2179631
+    }
+  ],
+  "privateLogReceipts": [
+    {
+      "bytes": 603515,
+      "name": "execute.log",
+      "sha256": "9eb4f961e7ddfe1a63b65b73e71145d0bda69e764e8596ee22ffc16f1b1f34c9"
+    }
+  ],
+  "processes": [
+    {
+      "exitCode": 0,
+      "groupPositivelyAbsent": true,
+      "outboundDeniedByOS": true,
+      "phase": "execute",
+      "pid": 2179622
+    }
+  ],
+  "protocol": "pinkha-native-bookmark-linux-component-v1",
+  "retainedComponentReceiptSHA256": "ab275bc9a891c2b31b7ff7408d42eabff604623f5f35574d66d6281a9832d422",
+  "retainedInput": {
+    "accountInitialized": false,
+    "activeOriginalAccountProcesses": 0,
+    "controllerReceiptSHA256": "5925bd5a08c972e3dbe7666b77f9e230fe340b36b46289c870384e66c516a899",
+    "copyBytesAndModesEqual": true,
+    "entries": 26,
+    "inventorySHA256": "79e1d70540df9e8c493e231a6d0f5cae92b92bb331fc10b544aad29c6cafb8ba",
+    "preservationReceiptSHA256": "f7f4a5b34465907c3285229a266a488229a92eb1c3a7c04c5b4cdd162ed1b32b",
+    "spaceCreated": false
+  },
+  "scope": "Eight actual Bookmark component operations and two conditional URL edit/undo writes; new-process OS-offline readback",
+  "seconds": 9.143,
+  "sourceAdmissionPromoted": false,
+  "sourceCommit": "5e6e6e979e07e1ccf4505fa873dce103140b8e09",
+  "status": "FAIL",
+  "swiftBuildReceiptSHA256": "57df172a793e35720621e2afb1f9a49f770172cee0001dd40d1a03a705773ead",
+  "swiftSourcesUnchanged": true,
+  "wholeSpaceMigration": false
+}

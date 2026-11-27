@@ -1,0 +1,40 @@
+{
+  "command": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/tmp/pinkha-w1-migration-swift-20261127",
+    "--disable-automatic-resolution",
+    "--jobs",
+    "2",
+    "--filter",
+    "NativeImportedDerivedPresentationTests"
+  ],
+  "compiled": true,
+  "dependencies": {
+    "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+    "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+    "torahinspectorkit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed"
+  },
+  "errors": [],
+  "exitCode": 1,
+  "failLines": [
+    "Test Case 'NativeImportedDerivedPresentationTests.testDerivedRecommendationsReadNativeRootValuesAndRemainReadOnly' failed (0.01 seconds)",
+    "Test Case 'NativeImportedDerivedPresentationTests.testDerivedVisibilityDefaultsAndExplicitReopenPreserveNativeAuthority' failed (0.001 seconds)"
+  ],
+  "freeScratchBefore": 8282816512,
+  "logSHA256": "a1cd535f5c716cebf527510d68cb8697e1b7a3e6c4beeaf6e123032254bb3f25",
+  "ownedGroupAbsent": true,
+  "passLines": [
+    "Test Case 'NativeImportedDerivedPresentationTests.testDerivedRecommendationsRejectEveryChangedNativeDescriptor' passed (0.008 seconds)"
+  ],
+  "pid": 2083407,
+  "retainedBookmarkTestSHA256": "53c0497eaa402588362283539808cc65faafa1034059db22db6fdc275830ae7a",
+  "scope": "Three derived-presentation regression methods, before product fix; no native calls",
+  "seconds": 505.069,
+  "sourceCommit": "5e6e6e979e07e1ccf4505fa873dce103140b8e09",
+  "sourceUnchanged": true,
+  "status": "FAIL"
+}

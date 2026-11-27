@@ -739,6 +739,145 @@ final class NativeDefinitionPlanTests: XCTestCase {
             from: AnyDestinationDefinitionChecks.bytes(.object(encoded))))
     }
 
+
+    func testBookmarkDefinitionEmitsItsDistinctNativeLayoutAndExactMappedURLRole() throws {
+        let url = try relation("captured-url-e\u{301}", key: "source", format: 7, extra: ["relationMaxCount": .integer(1)])
+        let bookmark = try type("captured-bookmark", key: "bookmark", extra: [
+            "recommendedLayout": .integer(11),
+            "recommendedRelations": .array([.string(url.sourceObjectID)]),
+            "recommendedFeaturedRelations": .array([.string(url.sourceObjectID)]),
+        ])
+        let rows = [url, bookmark]
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog(rows))
+        XCTAssertTrue(mapper.issues.isEmpty, String(describing: mapper.issues))
+        XCTAssertNoThrow(try mapper.admittedSchemaItems())
+        XCTAssertFalse(mapper.permitsDestinationWrites)
+        let source = try XCTUnwrap(mapper.property(sourceKey: "source"))
+        XCTAssertNil(source.canonicalBinding)
+        XCTAssertEqual(source.kind, "string"); XCTAssertEqual(source.format, "url")
+        func allocated(_ reference: AnyDestinationReference) throws -> String {
+            if reference == source.owner { return "allocated-property-owner" }
+            if reference == source.record { return "allocated-property" }
+            return try AnyDestinationPlanChecks.placeholder(reference)
+        }
+        let typeItem = try XCTUnwrap(mapper.schemaItems.first { $0.sourceKey == mapper.types[0].sourceKey })
+        guard case .typeDefinition(let draft) = typeItem.operation else { return XCTFail("native type") }
+        let layout = try XCTUnwrap(draft.layout).resolved(allocated)
+        XCTAssertEqual(layout["type"], .string("bookmark"))
+        let descriptor = try XCTUnwrap(layout["config"]?["pinkhaHeart"])
+        let address = AnyJSON.object(["ownerId": .string("allocated-property-owner"),
+                                      "propertyId": .string("allocated-property")])
+        XCTAssertEqual(descriptor["contract"], .string(AnyNativeImportedTypePresentation.bookmarkContract))
+        XCTAssertEqual(descriptor["sourceRecommendedLayout"], .integer(11))
+        XCTAssertEqual(descriptor["sourceURL"], address)
+        XCTAssertEqual(descriptor["recommended"], .array([address]))
+        XCTAssertEqual(descriptor["featured"], .array([address]))
+        XCTAssertEqual(descriptor["propertyOwnerId"], .string("allocated-property-owner"))
+        let property = try AnyNativePropertyDefinition(ownerID: "allocated-property-owner",
+                                                       raw: defaultProperty(mapper, binding: source))
+        let nativeType = try AnyNativePropertyOwner(raw: .object([
+            "id": .string("allocated-bookmark"), "name": .string("Bookmark"),
+            "layout": layout,
+        ]), documentEligible: true)
+        let owner = try AnyNativePropertyOwner(raw: .object([
+            "id": .string("allocated-property-owner"), "name": .string("Properties"),
+        ]))
+        let nativeCatalog = try AnyNativePropertyCatalog(workspace: .init(accountID: "account", spaceID: "space"),
+            generation: UUID(), engineStartedAt: "native-run", types: [nativeType], collections: [owner])
+        let presentation = try XCTUnwrap(AnyNativeImportedTypePresentation(type: nativeType, catalog: nativeCatalog,
+            collectionIDs: [owner.id], definitions: [property],
+            raw: .object([owner.id: .object([property.key.propertyID: .string("https://example.org/")])])))
+        XCTAssertEqual(presentation.sourceURLKey, property.key)
+        let bound = try boundPlan(rows: rows, mapper: mapper)
+        XCTAssertEqual(try AnyDestinationMigrationPlan.decode(JSONEncoder().encode(bound)).canonicalBytes, bound.canonicalBytes)
+        let part = try XCTUnwrap(mapper.schemaItems.first { if case .partDefinition = $0.operation { return true }; return false })
+        guard case .partDefinition(let partOwner, .literal(let content)) = part.operation else {
+            return XCTFail("native editor module")
+        }
+        XCTAssertEqual(partOwner, mapper.types[0].object)
+        XCTAssertEqual(content["datasets"]?.array?.first?["module"], .string("editor"))
+    }
+
+    func testBookmarkDefinitionRefusesWrongSourceRoleFormatAndReadOnlyAuthority() throws {
+        let cases: [AnyHeartNativeSnapshotView] = try [
+            relation("candidate", key: "origin", format: 7, extra: ["relationMaxCount": .integer(1)]),
+            relation("candidate", key: "sourceObject", format: 7, extra: ["relationMaxCount": .integer(1)]),
+            relation("candidate", key: "source", format: 0, extra: ["relationMaxCount": .integer(1)]),
+            relation("candidate", key: "source", format: 7, extra: ["relationMaxCount": .integer(0)]),
+            relation("candidate", key: "source", format: 7, extra: ["relationMaxCount": .integer(2)]),
+            relation("candidate", key: "source", format: 7, extra: ["relationReadonlyValue": .bool(true), "relationMaxCount": .integer(1)]),
+            relation("candidate", key: "source", format: 7, extra: ["isReadonly": .bool(true), "relationMaxCount": .integer(1)]),
+        ]
+        for candidate in cases {
+            let bookmark = try type("bookmark", key: "bookmark", extra: [
+                "recommendedLayout": .integer(11),
+                "recommendedRelations": .array([.string(candidate.sourceObjectID)]),
+            ])
+            let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog([candidate, bookmark]))
+            XCTAssertThrowsError(try mapper.admittedSchemaItems())
+            XCTAssertTrue(mapper.issues.contains { $0.field == "sourceURL" })
+            let item = try XCTUnwrap(mapper.schemaItems.first { $0.sourceKey == mapper.types[0].sourceKey })
+            guard case .typeDefinition(let draft) = item.operation else { return XCTFail("native type") }
+            let layout = try XCTUnwrap(draft.layout).resolved(AnyDestinationPlanChecks.placeholder)
+            XCTAssertEqual(layout["type"], .string("bookmark"))
+            XCTAssertNil(layout["config"]?["pinkhaHeart"]?["sourceURL"])
+        }
+        let valid = try relation("candidate", key: "source", format: 7, extra: ["relationMaxCount": .integer(1)])
+        let impostor = try snapshot(valid.sourceObjectID, type: 521, key: "rel-sourceObject", details: valid.details)
+        let bookmark = try type(extra: ["recommendedLayout": .integer(11),
+                                       "recommendedRelations": .array([.string(valid.sourceObjectID)])])
+        XCTAssertThrowsError(try AnyHeartNativeDefinitionPlan(catalog: catalog([impostor, bookmark])).admittedSchemaItems())
+    }
+
+    func testBookmarkDefinitionRequiresVisibleRoleAndKeepsBasicAndOtherLayoutsSeparate() throws {
+        let url = try relation("url", key: "source", format: 7, extra: ["relationMaxCount": .integer(1)])
+        for changes: [String: AnyJSON] in [
+            [:], ["recommendedHiddenRelations": .array([.string(url.sourceObjectID)])],
+            ["recommendedFileRelations": .array([.string(url.sourceObjectID)])],
+        ] {
+            var fields = changes; fields["recommendedLayout"] = .integer(11)
+            let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog([url, type(extra: fields)]))
+            XCTAssertThrowsError(try mapper.admittedSchemaItems())
+            XCTAssertTrue(mapper.issues.contains { $0.field == "sourceURL" })
+        }
+        let basic = try AnyHeartNativeDefinitionPlan(catalog: catalog([url, type(extra: [
+            "recommendedRelations": .array([.string(url.sourceObjectID)]),
+        ])]))
+        XCTAssertNoThrow(try basic.admittedSchemaItems())
+        let item = try XCTUnwrap(basic.schemaItems.first { $0.sourceKey == basic.types[0].sourceKey })
+        guard case .typeDefinition(let draft) = item.operation else { return XCTFail("native type") }
+        let layout = try XCTUnwrap(draft.layout).resolved(AnyDestinationPlanChecks.placeholder)
+        XCTAssertEqual(layout["type"], .string("page"))
+        XCTAssertEqual(layout["config"]?["pinkhaHeart"]?["contract"], .string(AnyNativeImportedTypePresentation.contract))
+        XCTAssertNil(layout["config"]?["pinkhaHeart"]?["sourceURL"])
+        for value: Int64 in [1, 6, 8, 14, 22, 27] {
+            let unsupported = try AnyHeartNativeDefinitionPlan(catalog: catalog([url, type(extra: [
+                "recommendedLayout": .integer(value),
+                "recommendedRelations": .array([.string(url.sourceObjectID)]),
+            ])]))
+            XCTAssertThrowsError(try unsupported.admittedSchemaItems())
+            XCTAssertTrue(unsupported.issues.contains { $0.field == "recommendedLayout/recommendations" })
+        }
+    }
+
+    func testBookmarkDefinitionRetainsSourceURLValuesWithoutMakingURLActionsOrSourceObjectAliases() throws {
+        let url = try relation("url", key: "source", format: 7, extra: ["relationMaxCount": .integer(1)])
+        let bookmark = try type(extra: ["recommendedLayout": .integer(11),
+            "recommendedRelations": .array([.string(url.sourceObjectID)])])
+        let mapper = try AnyHeartNativeDefinitionPlan(catalog: catalog([url, bookmark]))
+        let binding = try XCTUnwrap(mapper.property(sourceKey: "source"))
+        for original in ["", "https://example.org/?q=e\u{301}", "file:///retained-value"] {
+            let row = try snapshot("bookmark-instance", type: 16, key: "page",
+                details: ["source": .string(original)], objectTypes: ["ot-owned"])
+            let values = try mapper.values(snapshot: row, relationKeys: ["source"], objects: [])
+            let mapped = try values.initialProperties.resolved(AnyDestinationPlanChecks.placeholder)
+            XCTAssertEqual(mapped[try AnyDestinationPlanChecks.placeholder(binding.owner)]?[
+                try AnyDestinationPlanChecks.placeholder(binding.record)], .string(original))
+            XCTAssertTrue(values.deferredGroups.isEmpty)
+            XCTAssertNil(mapped["any"]?["source"]); XCTAssertNil(mapped["any"]?["sourceObject"])
+        }
+    }
+
     func testCanonicalNameHasOneNativeAddressAndMixedOwnerValuesPreserveAbsence() throws {
         let name = try nativeName(), done = try relation("native-done", key: "done", format: 6)
         let sourceType = try type(extra: ["recommendedRelations": .array([.string(name.sourceObjectID), .string(done.sourceObjectID)]),
