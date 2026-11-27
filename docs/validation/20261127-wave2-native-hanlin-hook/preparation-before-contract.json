@@ -1,0 +1,31 @@
+{
+  "schema": "pinkha-native-hanlin-hook-preparation-v1",
+  "atUTC": "2026-11-27T04:57:22.355675+00:00",
+  "status": "WAITING_EXACT_PUBLISHED_SDK_FIXTURE_CONTRACT",
+  "baseCommit": "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+  "baseTree": "79eb9ea557a7f3f89ef778bd9ff9be723b8d060f",
+  "editorSHA256": "4b7a6feaa4557a63183789549ae9fe498ef2d988f0b7516f39947891a3c1dd3a",
+  "editorGitBlob": "29407373ed3ed0fe6e36ecc6365db0d6918b702d",
+  "functionPreimageSHA256": "350a4b1c22e61427b7cccd1c347a9df5e77df5304e4564cee46a9c60a4e5a3cc",
+  "functionPreimageBytes": 1262,
+  "functionPreimage": "    public func presentHanlin() {\n        focus.cancel()\n        Task { [weak self] in\n            guard let self else { return }\n            await presentation.flush()\n            guard !presentation.hasPendingEdits else {\n                presentation.message = AnyUIErrorText.changedDocument; return\n            }\n            do {\n                let authority = try AnyHanlinCreationAuthority(client: presentation.client,\n                                                               workspace: presentation.workspace)\n                let creation = try AnyHanlinCreationServices(creator: presentation.objects,\n                                                             authority: authority)\n                let chat = try AnyHanlinPresentation.present(from: self, native: presentation.nativeSession,\n                    documents: presentation.documents, sourceOwner: presentation,\n                    conversationID: conversationID, creation: creation)\n                presentation.installPresentationLifecycle(revoke: { [weak chat] in chat?.revoke() },\n                                                           drain: { [weak chat] in await chat?.drain() })\n            } catch { presentation.message = AnyUIErrorText.describe(error) }\n        }\n    }\n",
+  "asanaDLastModifiedAt": "2026-11-27T04:38:08.197Z",
+  "requestComment": "1220943467215063",
+  "ownershipAckComment": "1220943303729636",
+  "latestSDKCoordinationComment": "1220943799973591",
+  "SDKContractDeliveredInReadComments": false,
+  "SDKAPIGuessed": false,
+  "hookImplemented": false,
+  "newBranchCreated": false,
+  "MacCommands": 0,
+  "compilerInvocations": 0,
+  "cacheWrites": 0,
+  "requiredPreservation": [
+    "Original flush/pending-edit guard",
+    "Original creation authority/client/services",
+    "Original mounted lifetime revoke/drain",
+    "Ordinary production factory",
+    "Exact native fixture and DEBUG simulator-only eligibility supplied by SDK owner"
+  ],
+  "sourceMappingClarification": "Wave3 comment1220943799973591 verified these PinkhaAnyUI files are absent from the original586c/129-map. Published8f2/dc582 source-refactor entries are downstream review evidence only; canonical129-map remains unchanged."
+}

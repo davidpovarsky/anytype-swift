@@ -851,8 +851,9 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
                                                                workspace: presentation.workspace)
                 let creation = try AnyHanlinCreationServices(creator: presentation.objects,
                                                              authority: authority)
-                let chat = try AnyHanlinPresentation.present(from: self, native: presentation.nativeSession,
-                    documents: presentation.documents, sourceOwner: presentation,
+                let chat = try await AnyHanlinPresentation.presentFromNativeEditor(from: self,
+                    native: presentation.nativeSession, documents: presentation.documents,
+                    client: presentation.client, sourceOwner: presentation,
                     conversationID: conversationID, creation: creation)
                 presentation.installPresentationLifecycle(revoke: { [weak chat] in chat?.revoke() },
                                                            drain: { [weak chat] in await chat?.drain() })
