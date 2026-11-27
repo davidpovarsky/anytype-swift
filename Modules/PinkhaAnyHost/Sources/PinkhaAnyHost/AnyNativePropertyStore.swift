@@ -683,15 +683,22 @@ public struct AnyNativePropertyStore: Sendable {
         return nativeEquivalent(actual, requested, depth: 0)
     }
     private static func nativeEquivalent(_ lhs: AnyJSON, _ rhs: AnyJSON, depth: Int) -> Bool {
+        // Traverse containers before scalar equality so Unicode-equivalent text
+        // cannot bypass the wire-value check. The same ceiling now also bounds
+        // identical container traversal; prepared/read validation checks the full value.
         guard depth <= 32 else { return false }
-        if lhs == rhs { return true }
         switch (lhs, rhs) {
+        case (.string(let a), .string(let b)):
+            return a.utf8.elementsEqual(b.utf8)
         case (.integer(let integer), .number(let number)), (.number(let number), .integer(let integer)):
             return Int64(exactly: number) == integer
         case (.array(let a), .array(let b)):
             return a.count == b.count && zip(a, b).allSatisfy { nativeEquivalent($0.0, $0.1, depth: depth + 1) }
         case (.object(let a), .object(let b)):
-            guard Set(a.keys) == Set(b.keys) else { return false }
+            let aKeys = a.keys.sorted { $0.utf8.lexicographicallyPrecedes($1.utf8) }
+            let bKeys = b.keys.sorted { $0.utf8.lexicographicallyPrecedes($1.utf8) }
+            guard aKeys.count == bKeys.count,
+                  zip(aKeys, bKeys).allSatisfy({ $0.0.utf8.elementsEqual($0.1.utf8) }) else { return false }
             if Set(a.keys) == ["$date"], let aDate = a["$date"], let bDate = b["$date"],
                let first = nativeDateMilliseconds(aDate), let second = nativeDateMilliseconds(bDate) {
                 return first == second
@@ -700,7 +707,7 @@ public struct AnyNativePropertyStore: Sendable {
                 guard let other = b[key] else { return false }
                 return nativeEquivalent(value, other, depth: depth + 1)
             }
-        default: return false
+        default: return lhs == rhs
         }
     }
     private static func nativeDateMilliseconds(_ value: AnyJSON) -> Int64? {

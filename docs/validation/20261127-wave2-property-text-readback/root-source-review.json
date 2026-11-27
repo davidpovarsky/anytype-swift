@@ -1,0 +1,42 @@
+{
+  "schema": "pinkha-wave2-root-properties-unicode-review-v1",
+  "reviewedAtUTC": "2026-11-27T18:22:19.162624+00:00",
+  "status": "PASS_SOURCE_REVIEW_PENDING_INDEPENDENT_TEST_REVIEW_AND_RUNTIME",
+  "sourceCommit": "af63f6209c38bddf6ed851f0b894e2f627a671af",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "beforeSHA256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c",
+      "afterSHA256": "c653fa8489f7f9dc7d835d57ab4ec27be0bc46e189a29d226524d81e70e6db48",
+      "exactInverseVerified": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePropertyStoreTests.swift",
+      "beforeSHA256": "37f9a8976451a1cc05f7fbad957064b7da0367e1d04659993f0c5a79df6fcbcb",
+      "afterSHA256": "7ff24aed7ce350c368d9d5d5f31439c3c87566353842013948912001082492ca",
+      "exactInverseVerified": true
+    }
+  ],
+  "productionAssessment": [
+    "One private comparator replacement; all other production bytes restored exactly by inverse.",
+    "String UTF8 comparison precedes scalar equality; arrays and objects recurse without synthesized whole-container equality.",
+    "Raw UTF8-sorted key arrays must match before dictionary lookup; ordinary String lookup is safe only after this exact common key set has been established.",
+    "Existing integral number conversion, signed zero, RFC3339 date conversion and top-level absent-property unset behavior remain explicit.",
+    "Exact current acknowledged fence remains required by original receipt method. Wrong readback cannot create verified snapshot or Undo.",
+    "Original AnyHostCanonical depth 32 admission already applies in prepareSetValue and full raw materialize. The changed direct helper behavior for inadmissible deeper containers is disclosed."
+  ],
+  "testAssessment": [
+    "Full 15598-byte original and 13 methods preserved. Four appended XCTest declarations; fixture rows are not separately enumerated cases.",
+    "Real prepareSetValue/materialize/acceptedFence/receipt helpers are used; positives verify exact original inverse bytes.",
+    "Typed URL row does not establish native URL mapping or URL opening."
+  ],
+  "scopeLimits": [
+    "No Swift compiler, test, transport, Native, mounted Apple UI or physical device executed.",
+    "No Native contract, global AnyJSON, dispatch/authorization/fence or frozen App change.",
+    "Bookmark successor must compose this local comparator delta with its separate PropertyStore binding changes."
+  ],
+  "independentByteAssertionsPassed": true,
+  "blockersWithinReviewedSource": [],
+  "runtimeExecuted": false,
+  "publicationPerformed": false
+}

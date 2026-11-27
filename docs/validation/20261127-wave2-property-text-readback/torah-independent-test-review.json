@@ -1,0 +1,158 @@
+{
+  "schema": "wave2-properties-unicode-independent-test-source-review/v1",
+  "reviewer": "/root/torah_continue",
+  "reviewedAtUTC": "2026-11-27T18:23:05.900456+00:00",
+  "status": "PASS_SOURCE_REVIEW_ONLY_NO_CONCRETE_TEST_BLOCKER",
+  "scope": "Four appended XCTest methods and actual receipt/fence/setup/inverse semantics; root separately owns the production comparator/depth contract review.",
+  "base": "af63f6209c38bddf6ed851f0b894e2f627a671af",
+  "inputs": [
+    {
+      "path": "candidate/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "bytes": 44570,
+      "sha256": "c653fa8489f7f9dc7d835d57ab4ec27be0bc46e189a29d226524d81e70e6db48"
+    },
+    {
+      "path": "candidate/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePropertyStoreTests.swift",
+      "bytes": 24917,
+      "sha256": "7ff24aed7ce350c368d9d5d5f31439c3c87566353842013948912001082492ca"
+    },
+    {
+      "path": "property_unicode_tests_suffix.swift",
+      "bytes": 9319,
+      "sha256": "78fde68a6afecef9bd935cee80816203790f426832e0aa0bfb8078b7efb8cb8e"
+    }
+  ],
+  "retainedPrimarySourcesRead": [
+    {
+      "path": "source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "bytes": 43999,
+      "sha256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c",
+      "retainedPrimaryGitBlob": "7fee8b7ae36c626dd921e14024a6a5a0466d3a2d"
+    },
+    {
+      "path": "source/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePropertyStoreTests.swift",
+      "bytes": 15598,
+      "sha256": "37f9a8976451a1cc05f7fbad957064b7da0367e1d04659993f0c5a79df6fcbcb",
+      "retainedPrimaryGitBlob": "8172b30344f63fbd44c69f16a842db7e2adf69d2"
+    },
+    {
+      "path": "source/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePropertyFenceTests.swift",
+      "bytes": 14201,
+      "sha256": "a7eaf5d9214329ed601cf5fea174ea5cd88a8a238bf4f0b7986e8176a5a596a1",
+      "retainedPrimaryGitBlob": "26d87819a2ac95e7ea0871b7af6bd144f748f643"
+    },
+    {
+      "path": "source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHostCanonical.swift",
+      "bytes": 2773,
+      "sha256": "d234b3d87ab9ec8317f159d413eb140eb94c1ae0aa0b1e20f30391b4e51c4840",
+      "retainedPrimaryGitBlob": "899620bc83fda103efaa973e9bc8e58a9b0fb6d6"
+    },
+    {
+      "path": "source/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyJSON.swift",
+      "bytes": 2600,
+      "sha256": "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d",
+      "retainedPrimaryGitBlob": "398d20dbad32e139ff392370a12b2bcf84cee27c"
+    }
+  ],
+  "sourceEvidence": {
+    "originalTests": {
+      "bytes": 15598,
+      "sha256": "37f9a8976451a1cc05f7fbad957064b7da0367e1d04659993f0c5a79df6fcbcb",
+      "declaredMethods": 13,
+      "fullPrefixByteIdentical": true,
+      "methodNames": [
+        "testExactQualifiedKeysCannotCollideAtSeparatorsAndDerivedKeysAreDistinct",
+        "testRawUnknownNamespacesAndNativeDerivedMetadataSurviveProjection",
+        "testSingleValuePatchCapturesExactVersionAndInverseWithoutEchoingOtherNamespaces",
+        "testGenericSetCannotBypassTypeMembershipHierarchyOrUnsupportedScope",
+        "testReaderSnapshotCannotPrepareAnyMutation",
+        "testTypePickerUsesEligibilityAndPreservesOriginalNamespaces",
+        "testCollectionMembershipDoesNotDeleteValuesOrBypassManagedCollections",
+        "testVisibilityPreservesFutureKeysAndChangesOnlyPreferenceNamespace",
+        "testVisibilityAttachmentAndDerivedPanelRemainExplicit",
+        "testMalformedOrOverflowingVisibilityNeverSilentlyDropsValues",
+        "testCatalogRejectsDuplicatesButAllowsLegitimateCrossCatalogID",
+        "testNativeProofRequiresExactPolicyWorkspaceReadinessAndCapabilityVersion",
+        "testPropertyKindMismatchCannotBecomeAnUnconditionalOrWholeRecordWrite"
+      ]
+    },
+    "append": {
+      "bytes": 9319,
+      "sha256": "78fde68a6afecef9bd935cee80816203790f426832e0aa0bfb8078b7efb8cb8e",
+      "declaredMethods": 4,
+      "declaredCases": 4,
+      "selectors": [
+        "testStringReadbackRequiresExactUTF8BeforeCreatingUndo",
+        "testNestedStringAndKeyReadbackRequiresExactUTF8BeforeCreatingUndo",
+        "testPropertyReceiptRetainsDocumentedNativeNormalizationAndUnsetRules",
+        "testPropertyValueComparisonUsesTheExistingCanonicalDepthLimit"
+      ]
+    },
+    "fullTestInverse": "Removing only exact78fde suffix restores37f9 original.",
+    "productInverse": "Replacing only the one exact supplied function body restores fullbd78 original; all other product bytes identical.",
+    "artifactPins": {
+      "candidate-manifest.json": "ac7a131ab169c1cc54027e105e746ebe70fd712029054c31bbb7375483296ef7",
+      "source-inverse.json": "6e339b966fa9dd7c7870f9ebb2ccc3615dcc594afd491febdf6bc0a24040d950",
+      "source.patch": "f212184e464f1622c97dd0cb7e788057d1a63b6f1cb4815dbd5d6c3872324614",
+      "candidate-review-notes.md": "f5b3b0f36abf9dc3f5cb1380d3137494061d5f171dbb05ccd4ca711372ad9352"
+    }
+  },
+  "reviewFindings": [
+    {
+      "id": "SETUP-FENCE",
+      "result": "No blocker",
+      "detail": "Original snapshot/catalog/policy helpers are reused through a same-file extension. Added definitions target admitted any/name or attached collection-a, with writable synced kinds. Sequence17 is prepared; acceptedFence requires18; materialized readback uses18 with the same fixed generation/run/native version. The helper asserts readback.fence == accepted before calling the real receipt method."
+    },
+    {
+      "id": "UNICODE-NEGATIVE-POSITIVE",
+      "result": "No blocker",
+      "detail": "Three direct rows (Latin NFC/NFD, Hebrew combining-order, typed URL string) and three nested/key rows assert canonical equality plus different UTF8/AnyHostCanonical Data. Each supplies old bytes as the wrong readback, requires unverified/nil snapshot/nil Undo, then supplies exact requested bytes and requires verified snapshot + original inverse Data. No normalization helper replaces the production comparison."
+    },
+    {
+      "id": "UNDO",
+      "result": "No blocker",
+      "detail": "Positive fixtures unwrap the actual receipt.undo and compare its fence to current readback and its inverse patch via canonical Data to the original value. The negative cases explicitly forbid Undo. Definitions are constructed identically in original/readback snapshots, so an unrelated missing-definition gate cannot silently explain all failures; exact-positive rows also catch that fixture error."
+    },
+    {
+      "id": "COMPATIBILITY",
+      "result": "No blocker",
+      "detail": "Five receipt rows cover integer/Double equivalence in both directions, negative-zero/positive-zero compatibility, the original RFC3339 millisecond conversion, and null-request/absent-property unset. The helper preserves exact requested patch bytes and original inverse bytes. Explicit stored-null readback is separately rejected. Assignment of Optional<AnyJSON>.none removes the dictionary property; Optional.some(.null) retains an actual null value."
+    },
+    {
+      "id": "DEPTH",
+      "result": "No test setup blocker",
+      "detail": "Standalone nested32 is checked against both canonical byte admission and the comparison; nested33 is rejected. Separate preparation and whole raw materialization rejections are included. The comments correctly state that raw namespace containers also consume depth; the test does not claim a depth32 property value survives an enclosing raw document. Root owns final comparator policy review."
+    },
+    {
+      "id": "LIKELY-COMPILATION",
+      "result": "No concrete likely hazard found",
+      "detail": "The appended synchronous XCTest extension uses existing imports and same-file private helpers. Types/labels match the retained AnyJSON, AnyPreparedPropertyEdit, AnyPropertyEditReceipt and materialize/acceptedFence/receipt signatures. Standard XCTUnwrap/assertion calls introduce no async closure, actor handoff, Swift Testing macro or new production seam. Actual Swift typechecking remains required."
+    }
+  ],
+  "counting": {
+    "newXCTestMethods": 4,
+    "newDeclaredXCTestCases": 4,
+    "loopedRows": {
+      "directUnicode": 3,
+      "nestedUnicodeOrKey": 3,
+      "documentedCompatibility": 5,
+      "explicitStoredNull": 1
+    },
+    "unicodeRowsHaveAdditionalExactPositiveCounterparts": true,
+    "receiptConstructionCallsIfAllRowsExecute": 18,
+    "depthMethodDoesNotConstructReceipt": "It exercises comparison/canonicalization and rejects invalid preparation/materialization.",
+    "actualCompiledEnumeration": null
+  },
+  "limits": [
+    "No compiler, Swift test, component, Native, HTTP, Apple, UI, host or account execution.",
+    "No controls rerun and no candidate/source mutation by this reviewer. Only this independent review artifact is added.",
+    "The supplied accepted-fence response is a typed component fixture, not an actual POST acknowledgement.",
+    "The tests do not call apply/HTTP or prove mounted Properties, native imported-Type URL mapping, Native normalization behavior, permissions, or actual Undo execution.",
+    "The expected old-source counterexample is inferred from source; no baseline failure is claimed.",
+    "The full production comparator/contract approval remains root-owned."
+  ],
+  "blockers": [],
+  "runtimeExecuted": false,
+  "testsRun": 0,
+  "sourceMutated": false
+}
