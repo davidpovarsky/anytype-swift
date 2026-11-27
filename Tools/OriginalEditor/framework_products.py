@@ -286,6 +286,8 @@ def consumer_project(directory, exported, source, dynamic_frameworks, clang_iden
             'IPHONEOS_DEPLOYMENT_TARGET': '27.0', 'SDKROOT': 'iphoneos',
             'SUPPORTED_PLATFORMS': 'iphoneos iphonesimulator', 'SWIFT_VERSION': '5.0',
             'SWIFT_STRICT_CONCURRENCY': 'complete', 'TARGETED_DEVICE_FAMILY': '1,2',
+            'SWIFT_OBJC_INTEROP_MODE': 'objcxx',
+            'CLANG_CXX_LANGUAGE_STANDARD': 'gnu++20', 'CLANG_CXX_LIBRARY': 'libc++',
             'CODE_SIGN_STYLE': 'Automatic', 'CODE_SIGN_IDENTITY': '-', 'DEVELOPMENT_TEAM': '',
             'CODE_SIGNING_ALLOWED': 'YES', 'CODE_SIGNING_REQUIRED': 'YES', 'PROVISIONING_PROFILE_SPECIFIER': '',
             'ENABLE_USER_SCRIPT_SANDBOXING': 'YES', 'SWIFT_OPTIMIZATION_LEVEL': '-Onone',
