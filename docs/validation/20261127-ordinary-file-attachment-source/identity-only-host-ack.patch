@@ -1,0 +1,23 @@
+--- a/ordinary-upload-host/before-identity-only-ack/AnyNativeFileAttachmentCreator.swift
++++ b/ordinary-upload-host/AnyNativeFileAttachmentCreator.swift
+@@ -171,7 +171,7 @@
+                 expectedReceipt: receipt, authorizeRead: authorizeRead)
+         } catch let uncertain as AnyNativeFileUploadUncertain {
+             if let receipt = uncertain.knownReceipt,
+-               (try? Self.requireReceipt(receipt, specification: specification)) != nil {
++               (try? Self.requireAcknowledgement(receipt, specification: specification)) != nil {
+                 throw AnyNativeFileAttachmentError.knownFileUnverified(receipt.reference.fileID)
+             }
+             if let native = uncertain.underlying as? AnyEngineError,
+@@ -243,6 +243,11 @@
+ 
+     private static func requireReceipt(_ receipt: AnyNativeAttachedFile,
+         specification: AnyNativeFileUploadSpecification, fileID: String? = nil) throws {
++        try requireAcknowledgement(.init(receipt: receipt), specification: specification, fileID: fileID)
++    }
++
++    private static func requireAcknowledgement(_ receipt: AnyNativeFileUploadAcknowledgement,
++        specification: AnyNativeFileUploadSpecification, fileID: String? = nil) throws {
+         let reference = receipt.reference
+         guard same(reference.accountID, specification.accountID),
+               same(reference.spaceID, specification.spaceID),

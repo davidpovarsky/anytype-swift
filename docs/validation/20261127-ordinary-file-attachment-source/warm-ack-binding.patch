@@ -1,0 +1,69 @@
+--- a/ordinary-upload-host/before-ack-binding/AnyNativeFileAttachmentCreator.swift
++++ b/ordinary-upload-host/before-identity-only-ack/AnyNativeFileAttachmentCreator.swift
+@@ -167,7 +167,8 @@
+                 try await journal.record(.created(receipt.reference.fileID), identity: intent.identity)
+             })
+             try Self.requireReceipt(receipt, specification: specification)
+-            return try await verify(intent, fileID: receipt.reference.fileID, authorizeRead: authorizeRead)
++            return try await verify(intent, fileID: receipt.reference.fileID,
++                expectedReceipt: receipt, authorizeRead: authorizeRead)
+         } catch let uncertain as AnyNativeFileUploadUncertain {
+             if let receipt = uncertain.knownReceipt,
+                (try? Self.requireReceipt(receipt, specification: specification)) != nil {
+@@ -185,6 +186,10 @@
+     /// original file ID was retained. It never calls the native attachment route.
+     /// An unresolved reservation with no ID stays unresolved; matching filenames
+     /// or content among concurrent uploads cannot prove which one this call made.
++    /// The metadata journal retains the original ID and input fingerprint, not
++    /// the native-normalized 201 metadata. A resumed result proves current stable
++    /// metadata and the original content digest; it does not assert that metadata
++    /// has never changed since the original acknowledgement.
+     public func resume(_ intent: AnyNativeFileAttachmentIntent,
+                        authorizeRead: @escaping Check) async throws -> AnyNativeAttachedFile {
+         try requireScope(intent)
+@@ -198,6 +203,7 @@
+     }
+ 
+     private func verify(_ intent: AnyNativeFileAttachmentIntent, fileID: String,
++                        expectedReceipt: AnyNativeAttachedFile? = nil,
+                         authorizeRead: @escaping Check) async throws -> AnyNativeAttachedFile {
+         let specification = try intent.specification
+         do {
+@@ -205,6 +211,11 @@
+             try await authorizeRead()
+             let before = try await inspect(specification, fileID, authorizeRead)
+             try Self.requireReceipt(before, specification: specification, fileID: fileID)
++            if let expectedReceipt {
++                guard Self.sameMetadata(expectedReceipt, before) else {
++                    throw AnyNativeFileAttachmentError.knownFileUnverified(fileID)
++                }
++            }
+             let content = try await digest(before, authorizeRead)
+             guard content.byteCount == intent.byteCount,
+                   Self.same(content.sha256, intent.contentSHA256) else {
+@@ -212,8 +223,7 @@
+             }
+             let after = try await inspect(specification, fileID, authorizeRead)
+             try Self.requireReceipt(after, specification: specification, fileID: fileID)
+-            guard Self.same(before.name, after.name), Self.same(before.mime, after.mime),
+-                  before.rootCID == after.rootCID, before.inline == after.inline else {
++            guard Self.sameMetadata(before, after) else {
+                 throw AnyNativeFileAttachmentError.knownFileUnverified(fileID)
+             }
+             // Cached/durable may legitimately advance during the content read.
+@@ -244,6 +254,15 @@
+     }
+ 
+     private static func same(_ a: String, _ b: String) -> Bool { a.utf8.elementsEqual(b.utf8) }
++    private static func sameMetadata(_ a: AnyNativeAttachedFile, _ b: AnyNativeAttachedFile) -> Bool {
++        let sameRoot: Bool
++        switch (a.rootCID, b.rootCID) {
++        case (nil, nil): sameRoot = true
++        case (.some(let left), .some(let right)): sameRoot = same(left, right)
++        default: sameRoot = false
++        }
++        return same(a.name, b.name) && same(a.mime, b.mime) && sameRoot && a.inline == b.inline
++    }
+     private static func sameWorkspace(_ a: AnyTorahWorkspace, _ b: AnyTorahWorkspace) -> Bool {
+         same(a.accountID, b.accountID) && same(a.spaceID, b.spaceID)
+     }

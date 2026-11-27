@@ -1,0 +1,47 @@
+--- a/ordinary-upload-engine/before-identity-only-uncertainty/AnyNativeFileUploader.swift
++++ b/ordinary-upload-engine/AnyNativeFileUploader.swift
+@@ -160,11 +160,24 @@
+ /// retried automatically. A typed native HTTP/rejection error is retained in
+ /// `underlying`; even that error is not a rollback receipt. A known native file
+ /// ID remains available if durable journaling or the postflight lease failed.
++/// Resolved private metadata is deliberately absent after a failed lease.
++public struct AnyNativeFileUploadAcknowledgement: Sendable, CustomStringConvertible, CustomDebugStringConvertible {
++    public let reference: AnyNativeFileReference
++    public let byteCount: Int64
++
++    public init(receipt: AnyNativeAttachedFile) {
++        reference = receipt.reference; byteCount = receipt.byteCount
++    }
++
++    public var description: String { "AnyNativeFileUploadAcknowledgement(identity only, bytes: \(byteCount))" }
++    public var debugDescription: String { description }
++}
++
+ public struct AnyNativeFileUploadUncertain: Error, Sendable, CustomStringConvertible, CustomDebugStringConvertible {
+-    public let knownReceipt: AnyNativeAttachedFile?
++    public let knownReceipt: AnyNativeFileUploadAcknowledgement?
+     public let underlying: any Error
+ 
+-    public init(knownReceipt: AnyNativeAttachedFile?, underlying: any Error) {
++    public init(knownReceipt: AnyNativeFileUploadAcknowledgement?, underlying: any Error) {
+         self.knownReceipt = knownReceipt; self.underlying = underlying
+     }
+ 
+@@ -218,7 +231,7 @@
+         try await validateScope()
+         try Task.checkCancellation()
+         try staged.requireUnchangedSourceAndCopy()
+-        var knownReceipt: AnyNativeAttachedFile?
++        var knownReceipt: AnyNativeFileUploadAcknowledgement?
+         do {
+             // A callback may persist its reservation and then throw. Entering
+             // it is therefore the point after which we preserve uncertainty.
+@@ -231,7 +244,7 @@
+                 throw AnyEngineError.malformedResponse("file attachment HTTP status")
+             }
+             let receipt = try AnyNativeAttachedFile(native: native, specification: specification)
+-            knownReceipt = receipt
++            knownReceipt = .init(receipt: receipt)
+             // Do not check cancellation/account/consumer lifetime between the
+             // validated acknowledgement and this original-scope journal write.
+             try await retainReceipt(receipt)
