@@ -69,13 +69,16 @@ func (h *CutoverNativeHost) appendOriginal(ctx context.Context, v1 *NativeHost, 
 	if err == nil {
 		err = lease.ValidateTarget(ctx, op.Target)
 	}
+	if err == nil {
+		err = requireCurrentCutoverSource(snapshot.State)
+	}
 	if err != nil {
 		acl.RUnlock()
 		return NativeAppendResult{}, err
 	}
 	// A lost ACK reuses the original immutable bytes and every original receipt.
-	// Its retry result does not assert that the current cutover is still sealed;
-	// the consumer must reread current state before publishing a new UI snapshot.
+	// Current source/ACL/target authority was rechecked above. A valid Seal may
+	// follow the original commit without invalidating that exact frozen retry.
 	existing, err := v1.store.checkLocal(ctx, claim)
 	if err != nil || existing.Disposition != Created {
 		acl.RUnlock()
@@ -97,11 +100,8 @@ func (h *CutoverNativeHost) appendOriginal(ctx context.Context, v1 *NativeHost, 
 	})
 }
 func validateCutoverOriginalAppend(s CutoverNativeSnapshot, planID, factID string, op Operation, importing bool) error {
-	if s.State.Status == CutoverDiverged {
-		return cutover.ErrLegacyChanged
-	}
-	if len(s.State.Conflicts) > 0 {
-		return cutover.ErrConflict
+	if err := requireCurrentCutoverSource(s.State); err != nil {
+		return err
 	}
 	if s.State.Plan == nil || s.State.PlanID != planID {
 		return cutover.ErrIncomplete

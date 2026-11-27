@@ -403,12 +403,41 @@ final class NativeLaunchTests: XCTestCase {
 
 
     func testExplicitHebrewDirectionAndAlignmentSurviveColdReopen() {
+        let appLanguage = ProcessInfo.processInfo.environment["PINKHA_NATIVE_RTL_APP_LANGUAGE"] ?? "he"
+        guard appLanguage == "he" || appLanguage == "en" else {
+            XCTFail("The native RTL journey requires the exact app language he or en.")
+            return
+        }
+        let hebrewApp = appLanguage == "he"
+        let leftToRightStyle = hebrewApp
+            ? "העיצוב השמור: כתיבה משמאל לימין, יישור טבעי"
+            : "Saved style: Left to right, alignment Natural"
+        let rightToLeftStyle = hebrewApp
+            ? "העיצוב השמור: כתיבה מימין לשמאל, יישור טבעי"
+            : "Saved style: Right to left, alignment Natural"
+        let savedStyle = hebrewApp
+            ? "העיצוב השמור: כתיבה מימין לשמאל, יישור למרכז"
+            : "Saved style: Right to left, alignment Center"
+        let centerTitle = hebrewApp ? "למרכז" : "Center"
+        let naturalTitle = hebrewApp ? "טבעי" : "Natural"
         let scope = UUID()
         let suffix = String(scope.uuidString.prefix(8))
         let app = makeApplication(scope: scope)
+        if !hebrewApp {
+            app.launchArguments = [
+                "--native-ui-tests", "--native-ui-test-scope", scope.uuidString,
+                "-AppleLanguages", "(en,he)", "-AppleLocale", "en_US"
+            ]
+        }
         let spaceName = "Writing UI Space " + suffix
         let documentName = "Writing UI Document " + suffix
         let body = "שלום עולם, כיוון ויישור מפורשים 789"
+        func recordSavedParagraph(_ phase: String) {
+            let screenshot = XCTAttachment(screenshot: app.screenshot())
+            screenshot.name = "NATIVE_RTL_" + appLanguage + "_" + phase
+            screenshot.lifetime = .keepAlways
+            add(screenshot)
+        }
         app.launch()
         defer { app.terminate() }
         createOwnedWorkspace(app, spaceName: spaceName)
@@ -435,24 +464,24 @@ final class NativeLaunchTests: XCTestCase {
         tapWhenEnabled(options)
         tapWhenEnabled(app.buttons["any-native-writing-direction-ltr"])
         waitFor(NSPredicate(format: "exists == true AND value == %@",
-                            "העיצוב השמור: כתיבה משמאל לימין, יישור טבעי"),
+                            leftToRightStyle),
                 object: options, timeout: 45)
         tapWhenEnabled(options)
         tapWhenEnabled(app.buttons["any-native-writing-direction-rtl"])
         waitFor(NSPredicate(format: "exists == true AND value == %@",
-                            "העיצוב השמור: כתיבה מימין לשמאל, יישור טבעי"),
+                            rightToLeftStyle),
                 object: options, timeout: 45)
         tapWhenEnabled(options)
         tapWhenEnabled(app.buttons["any-native-text-alignment"])
         // UIKit exposes this nested menu by its visible localized title;
-        // the test app pins Hebrew. Native readback remains the assertion.
-        tapWhenEnabled(app.buttons["למרכז"])
-        let savedStyle = "העיצוב השמור: כתיבה מימין לשמאל, יישור למרכז"
+        // select the exact app-language title. Native readback remains the assertion.
+        tapWhenEnabled(app.buttons[centerTitle])
         // This value comes only from the current native readback snapshot;
         // choosing the menu action does not update it optimistically.
         waitFor(NSPredicate(format: "exists == true AND value == %@", savedStyle),
                 object: options, timeout: 45)
         XCTAssertEqual(app.textViews[blockIdentifier].value as? String, body)
+        recordSavedParagraph("center_before_reopen")
 
         reopenOwnedWorkspace(app, spaceName: spaceName)
         tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
@@ -465,16 +494,17 @@ final class NativeLaunchTests: XCTestCase {
         tapWhenEnabled(app.buttons["any-native-editor-done"])
         waitFor(NSPredicate(format: "exists == true AND value == %@", savedStyle),
                 object: options, timeout: 45)
+        recordSavedParagraph("center_after_reopen")
         tapWhenEnabled(options)
         let rtl = app.buttons["any-native-writing-direction-rtl"]
         waitUntilEnabled(rtl)
         XCTAssertTrue(rtl.isSelected, "The reopened native direction must be selected.")
         XCTAssertFalse(app.buttons["any-native-writing-direction-ltr"].isSelected)
         tapWhenEnabled(app.buttons["any-native-text-alignment"])
-        let center = app.buttons["למרכז"]
+        let center = app.buttons[centerTitle]
         waitUntilEnabled(center)
         XCTAssertTrue(center.isSelected, "The reopened explicit alignment must be selected.")
-        let natural = app.buttons["טבעי"]
+        let natural = app.buttons[naturalTitle]
         waitUntilEnabled(natural)
         XCTAssertFalse(natural.isSelected)
     }

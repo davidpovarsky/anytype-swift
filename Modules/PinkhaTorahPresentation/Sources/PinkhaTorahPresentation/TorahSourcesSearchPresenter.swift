@@ -145,7 +145,9 @@ public final class TorahSourcesSearchPresenter {
             onOpenSelection(selection)
         } catch is CancellationError {
         } catch {
-            guard openRequestID == requestID else { return }
+            guard openRequestID == requestID,
+                  searchQuery == query,
+                  searchScope == scope else { return }
             session.reportSearchError(error)
         }
     }

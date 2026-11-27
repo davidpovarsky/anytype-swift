@@ -1,0 +1,96 @@
+{
+  "appleBuilds": 0,
+  "appleUIAcceptance": false,
+  "matrix": "Refresh covers foreign engine/account/Space in both Heart and Any (six scope combinations in one XCTest method). Other methods cover mutation, invitation, valid response, late generation.",
+  "nativeCalls": 0,
+  "newMethods": 5,
+  "originalMapRowsPreserved": 121,
+  "productSourceBase": "a089ff29a5c0a7e415aac800844505f099a5561d",
+  "prospectiveTarget": "91368faea4873ee118e73626b2aa0ff7fb841007",
+  "prospectiveTree": "56395f9b43ed67208c360b0d77f048a37e85ff3d",
+  "records": {
+    "after-fix": {
+      "cases": [
+        [
+          "testCurrentScopeReadbackKeepsUpdatedMembersVisible",
+          "passed",
+          "0.004 seconds"
+        ],
+        [
+          "testInvitationReadbackRejectsForeignScopeWithoutRetry",
+          "passed",
+          "0.001 seconds"
+        ],
+        [
+          "testMutationReadbackRejectsForeignScopeWithoutRepeatingWrite",
+          "passed",
+          "0.002 seconds"
+        ],
+        [
+          "testOldGenerationCannotClearReopenedSharingState",
+          "passed",
+          "0.001 seconds"
+        ],
+        [
+          "testRefreshRejectsForeignEngineAccountAndSpace",
+          "passed",
+          "0.002 seconds"
+        ]
+      ],
+      "elapsedSeconds": 8.009531497955322,
+      "exitCode": 0,
+      "failedMethods": 0,
+      "logSHA256": "6f0c864d10cc60cd8a36f4e2d3eb3b3f07edf28b3c5c8a1209a703648f85dd11",
+      "ownedGroup": "ABSENT_ESRCH",
+      "passedMethods": 5,
+      "receiptSHA256": "b085491260ca9fe71ed4d79077bea9fb2a6db440e9c50b2837aee8a5248abf47",
+      "sourceInventorySHA256": "d36ee7733f142f88870693e42ca2df94dc799957eeeac0939f2348d0249d2cef"
+    },
+    "before-fix": {
+      "cases": [
+        [
+          "testCurrentScopeReadbackKeepsUpdatedMembersVisible",
+          "passed",
+          "0.008 seconds"
+        ],
+        [
+          "testInvitationReadbackRejectsForeignScopeWithoutRetry",
+          "failed",
+          "0.004 seconds"
+        ],
+        [
+          "testMutationReadbackRejectsForeignScopeWithoutRepeatingWrite",
+          "failed",
+          "0.002 seconds"
+        ],
+        [
+          "testOldGenerationCannotClearReopenedSharingState",
+          "passed",
+          "0.002 seconds"
+        ],
+        [
+          "testRefreshRejectsForeignEngineAccountAndSpace",
+          "failed",
+          "0.005 seconds"
+        ]
+      ],
+      "elapsedSeconds": 32.03371238708496,
+      "exitCode": 1,
+      "failedMethods": 3,
+      "logSHA256": "21a6d77a8b65bc3dee1729a1cc0fc473c9737a51a56c11d66be314090eed055a",
+      "ownedGroup": "ABSENT_ESRCH",
+      "passedMethods": 2,
+      "receiptSHA256": "97f17767339cd16eb36eda99a14edb5e7ac20657eb8b9a8740a303e5d362eaa8",
+      "sourceInventorySHA256": "0a737c6217696e85a607f2aa8db305cf72ba1273b9ef36f57eb0a5a79361e329"
+    }
+  },
+  "sourceBaselineMapping": "Presentation module did not exist at586c98 baseline; no map change is required. Exact current same-file implementation inverse and prospective target retention are separately proven.",
+  "sourceRetentionExitCode": 0,
+  "sourceRetentionPriorFailure": "prospective-source-retention-attempt1.json",
+  "sourceRetentionSHA256": "e9d2b3d3d6913deb391f1b2055f5860845f41c4d8abc5ac27bd3dc509fec37b6",
+  "sourceReview": "Independent interfaces review found no lifetime, API, native call or async cleanup change beyond the intended current-scope error route.",
+  "sourceSHA256": "55b9913dd3bd8c8eb712944a87d6bde5cae98bd4aa1bf8bc3d553a83e3fb820b",
+  "status": "ACTUAL_SHARING_PRESENTATION_REGRESSION_FIXED_APPLE_UI_PENDING",
+  "testSourceSHA256": "1e69732154269558df7514e4f5996bc3e8294c1c5940a772f67e0a1d6f77fa1d",
+  "wholeOriginalSourceInverseExact": true
+}

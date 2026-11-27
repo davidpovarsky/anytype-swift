@@ -1,0 +1,84 @@
+{
+  "appBuilds": 0,
+  "appleUI": false,
+  "cleanupFailures": [],
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "version"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt1/source/heart",
+      "exitCode": 0,
+      "groupState": "ABSENT_ESRCH",
+      "logSHA256": "9da111d509234fc14ad21a2b2e16353665c0614e7d3e8495c01f8cfa3398670e",
+      "pgid": 3343965,
+      "pid": 3343965,
+      "seconds": 0.009538375772535801,
+      "startedUTC": "2026-11-26T05:20:38.734463+00:00",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "env",
+        "-json",
+        "GOVERSION",
+        "GOROOT",
+        "GOTOOLDIR",
+        "GOOS",
+        "GOARCH",
+        "CGO_ENABLED",
+        "CC",
+        "CXX",
+        "GOMODCACHE",
+        "GOCACHE",
+        "GOWORK"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt1/source/heart",
+      "exitCode": 0,
+      "groupState": "ABSENT_ESRCH",
+      "logSHA256": "1b15b074794e8807530160f54c281d7ec0e6f3dd803b256d392bfed809417846",
+      "pgid": 3343969,
+      "pid": 3343969,
+      "seconds": 0.0069964006543159485,
+      "startedUTC": "2026-11-26T05:20:38.746672+00:00",
+      "status": "PASS"
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "list",
+        "-m",
+        "-json",
+        "all"
+      ],
+      "cwd": "/mnt/development/projects/evidence/page154-final-validation-20261125/heart-cutover-native-core/attempt1/source/heart",
+      "exitCode": 0,
+      "groupState": "ABSENT_ESRCH",
+      "logSHA256": "82c7951dfe840bc61196667cacc86ed8a6ba82eaf94c0da85a85f99248d2f085",
+      "pgid": 3343973,
+      "pid": 3343973,
+      "seconds": 23.12917624693364,
+      "startedUTC": "2026-11-26T05:20:38.756498+00:00",
+      "status": "PASS"
+    }
+  ],
+  "error": "ValueError: module metadata changed before compilation",
+  "generatedRPC": false,
+  "goToolSHA256": "59c65090beeda377c09007eb8fae1c6aadf0a7b551e65ee13d461092d29e8005",
+  "nativeSliceBuilds": 0,
+  "peerTransport": false,
+  "requestedMethods": [
+    "TestPinkhaTorahCutoverActualCoreRegistryAndReopen"
+  ],
+  "resourceAdmission": {
+    "emergencyFreeBytes": 2147483648,
+    "estimatedIncrementalBytes": 2147483648,
+    "initialFreeBytes": 5000957952,
+    "parallelism": 1
+  },
+  "scope": "actual LocalOnly core/account/private registry/native property and signed host qualification",
+  "sourceError": "whole source changed",
+  "status": "FAIL"
+}

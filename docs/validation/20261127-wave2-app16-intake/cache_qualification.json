@@ -1,0 +1,41 @@
+{
+  "applicationBuilds": 0,
+  "concurrentGrowthAllowanceBytes": 536870912,
+  "emergencyFloorBytes": 2147483648,
+  "estimateNewAppPhaseBytes": 6442450944,
+  "estimateReason": "Existing native framework, SDK explicit modules and complete Products remain. Prior complete App15 intermediates were 3.46 GiB. An additional 2.54 GiB allowance covers package checkout materialization and changed/relinked products. This is an estimate, not an observed peak; the unchanged owned build monitor records actual free bytes and terminates only its process group below the retained 2 GiB emergency floor. SourcePackages and compiler intermediates will be recreated, not claimed reused.",
+  "freeBytes": 7398600704,
+  "invalidatedStageMetadata": [
+    "originalIntermediatesAndPackagePathsReused"
+  ],
+  "observedAt": 1795736143.962142,
+  "observedPaths": {
+    "intermediates": {
+      "exists": false,
+      "path": "/Users/m1/development/anytype-d-active-20261125/main14/app-derived/Build/Intermediates.noindex",
+      "symlink": false
+    },
+    "products": {
+      "exists": true,
+      "path": "/Users/m1/development/anytype-d-active-20261125/main14/app-derived/Build/Products",
+      "symlink": false
+    },
+    "sdkModules": {
+      "exists": true,
+      "path": "/Users/m1/development/anytype-d-active-20261125/main14/app-derived/SDKExplicitPrecompiledModules",
+      "symlink": false
+    },
+    "sourcePackages": {
+      "exists": false,
+      "path": "/Users/m1/development/anytype-d-active-20261125/main14/app-derived/SourcePackages",
+      "symlink": false
+    }
+  },
+  "originalApp15IntermediatesBytes": 3713556480,
+  "originalIntermediatesAndPackagePathsReused": false,
+  "protocol": "app16-observed-cache-requalification-v1",
+  "sourceCommit": "a089ff29a5c0a7e415aac800844505f099a5561d",
+  "stageReceiptSHA256": "ed896be868e973f0bdd704612b641547f51b15509805d4d66b7461be88507d21",
+  "stageSourceAndNativePreservationRetained": true,
+  "testsExecuted": 0
+}

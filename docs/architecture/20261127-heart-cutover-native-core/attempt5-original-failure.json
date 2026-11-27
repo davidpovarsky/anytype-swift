@@ -1,0 +1,61 @@
+{
+  "appleUI": false,
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-overlay",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt5/go-overlay.json",
+        "-tags=pinkha_loaded_account_witness,pinkha_cutover_acceptance",
+        "-o",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt5/cutover-core.test",
+        "./core"
+      ],
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 2237445,
+      "processGroupAbsent": true,
+      "seconds": 152.34265041351318,
+      "stopReason": null
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "actual-core-cutover",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt5/cutover-core.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=540s",
+        "-test.run=^TestPinkhaTorahCutoverActualCoreRegistryAndReopen$"
+      ],
+      "exitCode": 1,
+      "logSHA256": "1fb621349538161f74bdeb3fa5e85757f6bb6a9b30081d977a07eec12818c3e0",
+      "pid": 2246115,
+      "processGroupAbsent": true,
+      "seconds": 10.00711703300476,
+      "stopReason": null
+    }
+  ],
+  "completedUTC": "2026-11-26T23:50:10Z",
+  "controllerSHA256": "e64951d372ebd568f445106ec4afda1b2fb1b8034de06409684702f4e2daac41",
+  "error": "AssertionError: core failed",
+  "generatedRPC": false,
+  "peerTransport": false,
+  "resourceAdmission": {
+    "cacheFreeBytes": 1846501376,
+    "rootFreeBytes": 1760976896,
+    "stopsBelowBytes": 536870912
+  },
+  "retainedBase": "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2",
+  "retainedSourceUnchanged": true,
+  "status": "FAIL"
+}

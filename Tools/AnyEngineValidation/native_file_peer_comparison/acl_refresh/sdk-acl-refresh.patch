@@ -1,0 +1,292 @@
+diff --git a/internal/anysyncx/aclrefresh.go b/internal/anysyncx/aclrefresh.go
+new file mode 100644
+--- /dev/null
++++ b/internal/anysyncx/aclrefresh.go
+@@ -0,0 +1,66 @@
++package anysyncx
++
++import (
++	"context"
++	"fmt"
++
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/consensus/consensusproto"
++)
++
++type aclRecordReader interface {
++	AclGetRecords(context.Context, string, string) ([]*consensusproto.RawRecordWithId, error)
++}
++
++// RefreshACL catches up a loaded space's signed ACL through the existing node
++// RPC. Tree-head synchronization can finish while a pending request is still
++// missing locally, so approval reads must be able to recover that gap without
++// replacing the account, invitation, or local space store.
++//
++// Applying through the original SyncAcl preserves signature, acceptor, chain,
++// storage, broadcast, and head-update checks. It never creates an ACL record.
++func (a *App) RefreshACL(ctx context.Context, spaceID string) error {
++	if a.localOnly != nil && a.localOnly.has(spaceID) {
++		return nil
++	}
++	if a.joining == nil {
++		return fmt.Errorf("anysyncx: refresh ACL %q: joining client unavailable", spaceID)
++	}
++	h, err := a.GetSpace(ctx, spaceID)
++	if err != nil {
++		return err
++	}
++	return refreshACLRecords(ctx, spaceID, h.Inner().Acl(), a.joining)
++}
++
++func refreshACLRecords(ctx context.Context, spaceID string, acl list.AclList, source aclRecordReader) error {
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	acl.RLock()
++	head := acl.Head().Id
++	acl.RUnlock()
++	// Never hold the ACL lock over network I/O. An inbound sync or a local
++	// permission change may advance the same list while this read is in flight.
++	records, err := source.AclGetRecords(ctx, spaceID, head)
++	if err != nil {
++		return fmt.Errorf("anysyncx: read ACL %q: %w", spaceID, err)
++	}
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	if len(records) == 0 {
++		return nil
++	}
++	acl.Lock()
++	defer acl.Unlock()
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	// AddRawRecords tolerates records already applied by the concurrent sync,
++	// while preserving the original validation and storage error semantics.
++	if err := acl.AddRawRecords(records); err != nil {
++		return fmt.Errorf("anysyncx: apply ACL %q: %w", spaceID, err)
++	}
++	return nil
++}
+diff --git a/internal/anysyncx/aclrefresh_test.go b/internal/anysyncx/aclrefresh_test.go
+new file mode 100644
+--- /dev/null
++++ b/internal/anysyncx/aclrefresh_test.go
+@@ -0,0 +1,148 @@
++package anysyncx
++
++import (
++	"context"
++	"errors"
++	"testing"
++	"time"
++
++	"github.com/anyproto/any-sync/commonspace/object/accountdata"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list/listtest"
++	"github.com/anyproto/any-sync/commonspace/object/acl/recordverifier"
++	"github.com/anyproto/any-sync/consensus/consensusproto"
++	"github.com/stretchr/testify/require"
++)
++
++type aclReadFunc func(context.Context, string, string) ([]*consensusproto.RawRecordWithId, error)
++
++func (f aclReadFunc) AclGetRecords(ctx context.Context, spaceID, head string) ([]*consensusproto.RawRecordWithId, error) {
++	return f(ctx, spaceID, head)
++}
++
++type refreshFixture struct {
++	local   list.AclList
++	request *consensusproto.RawRecordWithId
++	before  string
++	member  string
++}
++
++func newRefreshFixture(t *testing.T) refreshFixture {
++	t.Helper()
++	return newRefreshFixtureForSpace(t, "refresh-space")
++}
++
++func newRefreshFixtureForSpace(t *testing.T, spaceID string) refreshFixture {
++	t.Helper()
++	ownerKeys, err := accountdata.NewRandom()
++	require.NoError(t, err)
++	memberKeys, err := accountdata.NewRandom()
++	require.NoError(t, err)
++	owner, err := list.NewInMemoryDerivedAcl(spaceID, ownerKeys)
++	require.NoError(t, err)
++	inv, err := owner.RecordBuilder().BuildInvite()
++	require.NoError(t, err)
++	invite := listtest.WrapAclRecord(inv.InviteRec)
++	require.NoError(t, owner.AddRawRecord(invite))
++	storage, err := list.NewInMemoryStorage(owner.Id(), []*consensusproto.RawRecordWithId{owner.Root(), invite})
++	require.NoError(t, err)
++	member, err := list.BuildAclListWithIdentity(memberKeys, storage, recordverifier.NewValidateFull())
++	require.NoError(t, err)
++	request, err := member.RecordBuilder().BuildRequestJoin(list.RequestJoinPayload{InviteKey: inv.InviteKey, Metadata: []byte("refresh regression fixture")})
++	require.NoError(t, err)
++	return refreshFixture{local: owner, request: listtest.WrapAclRecord(request), before: invite.Id, member: memberKeys.SignKey.GetPublic().Account()}
++}
++
++func TestRefreshACLRecoversSignedPendingRequestExactlyOnce(t *testing.T) {
++	f := newRefreshFixture(t)
++	calls := 0
++	source := aclReadFunc(func(_ context.Context, spaceID, head string) ([]*consensusproto.RawRecordWithId, error) {
++		require.Equal(t, "refresh-space", spaceID)
++		if calls == 0 {
++			require.Equal(t, f.before, head)
++		} else {
++			require.Equal(t, f.request.Id, head)
++		}
++		calls++
++		return []*consensusproto.RawRecordWithId{f.request}, nil
++	})
++	require.NoError(t, refreshACLRecords(context.Background(), "refresh-space", f.local, source))
++	require.NoError(t, refreshACLRecords(context.Background(), "refresh-space", f.local, source))
++	require.Equal(t, 3, len(f.local.Records()))
++	require.Equal(t, f.request.Id, f.local.Head().Id)
++	requests, err := f.local.AclState().JoinRecords(false)
++	require.NoError(t, err)
++	require.Len(t, requests, 1)
++	require.Equal(t, f.request.Id, requests[0].RecordId)
++	require.Equal(t, f.member, requests[0].RequestIdentity.Account())
++	require.True(t, f.local.AclState().Permissions(requests[0].RequestIdentity).NoPermissions(), "refreshing a request must not grant membership")
++}
++
++func TestRefreshACLDoesNotHoldLockAcrossNetworkAndToleratesConcurrentSync(t *testing.T) {
++	f := newRefreshFixture(t)
++	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
++	defer cancel()
++	source := aclReadFunc(func(ctx context.Context, _, _ string) ([]*consensusproto.RawRecordWithId, error) {
++		applied := make(chan error, 1)
++		go func() {
++			f.local.Lock()
++			defer f.local.Unlock()
++			applied <- f.local.AddRawRecord(f.request)
++		}()
++		select {
++		case err := <-applied:
++			return []*consensusproto.RawRecordWithId{f.request}, err
++		case <-ctx.Done():
++			return nil, ctx.Err()
++		}
++	})
++	require.NoError(t, refreshACLRecords(ctx, "refresh-space", f.local, source))
++	require.Equal(t, 3, len(f.local.Records()))
++	require.Equal(t, f.request.Id, f.local.Head().Id)
++}
++
++func TestRefreshACLCancellationDoesNotApplyFetchedRecords(t *testing.T) {
++	f := newRefreshFixture(t)
++	ctx, cancel := context.WithCancel(context.Background())
++	source := aclReadFunc(func(context.Context, string, string) ([]*consensusproto.RawRecordWithId, error) {
++		cancel()
++		return []*consensusproto.RawRecordWithId{f.request}, nil
++	})
++	require.ErrorIs(t, refreshACLRecords(ctx, "refresh-space", f.local, source), context.Canceled)
++	require.Equal(t, f.before, f.local.Head().Id)
++	require.Len(t, f.local.Records(), 2)
++}
++
++func TestRefreshACLRefusesTamperedSignedRecord(t *testing.T) {
++	f := newRefreshFixture(t)
++	tampered := &consensusproto.RawRecordWithId{Id: f.request.Id, Payload: append([]byte(nil), f.request.Payload...)}
++	tampered.Payload[len(tampered.Payload)/2] ^= 1
++	source := aclReadFunc(func(context.Context, string, string) ([]*consensusproto.RawRecordWithId, error) {
++		return []*consensusproto.RawRecordWithId{tampered}, nil
++	})
++	require.Error(t, refreshACLRecords(context.Background(), "refresh-space", f.local, source))
++	require.Equal(t, f.before, f.local.Head().Id)
++	require.Len(t, f.local.Records(), 2)
++}
++
++func TestRefreshACLRefusesAnotherSpaceSignedChain(t *testing.T) {
++	f := newRefreshFixture(t)
++	foreign := newRefreshFixtureForSpace(t, "foreign-space")
++	source := aclReadFunc(func(context.Context, string, string) ([]*consensusproto.RawRecordWithId, error) {
++		return []*consensusproto.RawRecordWithId{foreign.request}, nil
++	})
++	require.Error(t, refreshACLRecords(context.Background(), "refresh-space", f.local, source))
++	require.Equal(t, f.before, f.local.Head().Id)
++	require.Len(t, f.local.Records(), 2)
++}
++
++func TestRefreshACLTransportFailurePreservesLocalSignedState(t *testing.T) {
++	f := newRefreshFixture(t)
++	unavailable := errors.New("test network unavailable")
++	source := aclReadFunc(func(context.Context, string, string) ([]*consensusproto.RawRecordWithId, error) {
++		return nil, unavailable
++	})
++	require.ErrorIs(t, refreshACLRecords(context.Background(), "refresh-space", f.local, source), unavailable)
++	require.Equal(t, f.before, f.local.Head().Id)
++	require.Len(t, f.local.Records(), 2)
++}
+diff --git a/internal/spaceimpl/members.go b/internal/spaceimpl/members.go
+--- a/internal/spaceimpl/members.go
++++ b/internal/spaceimpl/members.go
+@@ -51,6 +51,9 @@
+ 	watcherMu sync.Mutex
+ 	watcher   *memberWatcher
+ 
++	requestRefreshMu sync.Mutex
++	requestRefreshAt time.Time
++
+ 	collOnce sync.Once
+ 	collVal  anystore.Collection
+ 	collErr  error
+@@ -175,6 +178,7 @@
+ }
+ 
+ func (m *membersAPI) JoinRequests(ctx context.Context) ([]space.JoinRequestInfo, error) {
++	m.refreshJoinRequests(ctx)
+ 	acl, err := m.aclList(ctx)
+ 	if err != nil {
+ 		return nil, err
+diff --git a/internal/spaceimpl/members_refresh.go b/internal/spaceimpl/members_refresh.go
+new file mode 100644
+--- /dev/null
++++ b/internal/spaceimpl/members_refresh.go
+@@ -0,0 +1,42 @@
++package spaceimpl
++
++import (
++	"context"
++	"time"
++
++	"github.com/anyproto/any-sync/app/logger"
++	"go.uber.org/zap"
++)
++
++const joinRequestRefreshInterval = time.Second
++const joinRequestRefreshTimeout = 3 * time.Second
++
++var memberRefreshLog = logger.NewNamed("spaceimpl.members.refresh")
++
++// refreshJoinRequests repairs a missed ACL update before an online approval
++// read. Offline and LAN-only reads keep using the local signed ACL. Concurrent
++// readers share the existing cache while one bounded refresh runs; they never
++// queue behind a slow network call. Failures preserve the cached view and are
++// observable in the native log; accepting a request still goes through the
++// authoritative ACL mutation path and its unchanged permission checks.
++func (m *membersAPI) refreshJoinRequests(ctx context.Context) {
++	if m.s.app.SyncStatus().Status(m.s.id).NetworkPeers == 0 {
++		return
++	}
++	if !m.requestRefreshMu.TryLock() {
++		return
++	}
++	defer m.requestRefreshMu.Unlock()
++	if time.Since(m.requestRefreshAt) < joinRequestRefreshInterval {
++		return
++	}
++	if ctx.Err() != nil {
++		return
++	}
++	m.requestRefreshAt = time.Now()
++	refreshCtx, cancel := context.WithTimeout(ctx, joinRequestRefreshTimeout)
++	defer cancel()
++	if err := m.s.app.RefreshACL(refreshCtx, m.s.id); err != nil {
++		memberRefreshLog.Warn("could not refresh join requests; using the local signed ACL", zap.String("spaceId", m.s.id), zap.Error(err))
++	}
++}

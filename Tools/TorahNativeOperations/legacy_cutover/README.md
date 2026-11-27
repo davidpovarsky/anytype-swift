@@ -1,3 +1,9 @@
+# Current qualification — 2026-11-27
+
+The actual current8ac core registry, native signed Begin/import/Seal/unlink, account stop/reopen, and divergent-source retry refusal now pass. The exact 40-file source is in `native-core-current8ac-qualified.json`; the original receipt, complete native patch, failure history, and acceptance limits are in `docs/architecture/20261127-heart-cutover-native-core/README.md`. Generated RPC, new-process crash recovery, peer transport, and Apple activation remain separate gates. No application capability is enabled by this core qualification.
+
+The earlier design/candidate description below is retained for context. Its historical source and open-gate list are superseded only where the dated qualification provides actual evidence.
+
 # Heart legacy association cutover — typed protocol candidate
 
 This directory is an implementation candidate. Its byte/identity component tests do not establish native ACL, peer synchronization, Swift integration, migration, or application acceptance. The current production v1 association tree and wire remain unchanged. No application capability is enabled by these files.

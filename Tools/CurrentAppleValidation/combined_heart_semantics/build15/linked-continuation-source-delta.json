@@ -1,0 +1,182 @@
+{
+  "changes": [
+    {
+      "after": "\"\"\"Continue the three unrun methods after original prep, mounted and linked UI PASS.\n\nThe original JSON/PNG collector failure remains unchanged. Original successful\nmethods are independently requalified without replay; account and expiry stay exact.\n\"\"\"",
+      "before": "\"\"\"Continue five unrun original Heart methods on the exact sealed prepared account.\n\nThe original preparation PASS and enumeration interruption remain separate\noriginals. No account is created/restored and no fixture deadline is changed.\n\"\"\"",
+      "positions": [
+        0
+      ]
+    },
+    {
+      "after": "import traceback\nimport types\n",
+      "before": "import traceback\n",
+      "positions": [
+        431
+      ]
+    },
+    {
+      "after": "main15/fresh-app15-attempt2",
+      "before": "main15/fresh-app15-attempt1",
+      "positions": [
+        934
+      ]
+    },
+    {
+      "after": "f69519144707d12d6577d7300ae05caeaca514204c295a3652a16b17bdb993f7",
+      "before": "09fda0133f78f15e214ba59b9fcef0d27793da612764d7d7a08e47338ea40c4c",
+      "positions": [
+        983
+      ]
+    },
+    {
+      "after": "c11727897347e71a77ba560e21fed2961870a505c4f57f4b55c0303aacd2ee9c",
+      "before": "56338de76090096eaf31c72dd099eb43378f95bda11fb77d0057a47a4506fffc",
+      "positions": [
+        1065
+      ]
+    },
+    {
+      "after": "aa09c01d3b1a8640009f01d7a36ae2cb9fb18aec0c580271b3764afe354f955b",
+      "before": "bf0d6fada4f8f04b42b3fa05cc210d2dd335ef6b675593161cad4026e12d3051",
+      "positions": [
+        1151
+      ]
+    },
+    {
+      "after": "25d83d2d6a94986fd0b261175d00c2cd5750fcb57598db138ee07640a61c987c",
+      "before": "045ea9ca9bdf11d5feaf08e0e00387f66c174c129d6eeb1bfb3f6bb1725672f9",
+      "positions": [
+        1235
+      ]
+    },
+    {
+      "after": "98652CBB-F000-4A0F-AFBF-B8054D5F3876",
+      "before": "ABBFAAD0-25AE-4720-B917-CE7A814179B4",
+      "positions": [
+        1311
+      ]
+    },
+    {
+      "after": "# Original UI/native outcome functions remain owned by the unchanged core.\n# This controller resumes only the three methods that never ran.",
+      "before": "# These aliases let the entire five-stage execution/verification sequence remain\n# byte-exact to the reviewed original controller. No predicate is rewritten.",
+      "positions": [
+        1350
+      ]
+    },
+    {
+      "after": "def admit_prior(admission):\n    path = PRIOR / \"evidence/execution.json\"\n    prior_raw = c.raw(path)\n    require(sha(prior_raw) == PRIOR_EXECUTION, \"Exact original collector-failed execution required\")\n    prior = decode(prior_raw)\n    require(prior[\"status\"] == \"FAIL\" and prior[\"sourceCommit\"] == admission[\"sourceCommit\"] == SOURCE\n            and prior[\"controllerSHA256\"] == CORE and prior[\"nativeManifestSHA256\"] == c.MANIFEST\n            and prior[\"heartOverlaySHA256\"] == c.OVERLAY and prior[\"ownedSimulator\"] == DEVICE,\n            \"Original source/native/owned device identity differs\")\n    expected_failure = {\"type\": \"ValueError\", \"message\": \"bounded regular file required: \" + str(\n        PRIOR / \"evidence/linked-ui/private-attachments/9D74710B-BCB8-4D59-B9E0-FEAC8000D7F7.png\")}\n    require(prior[\"firstFailure\"] == expected_failure\n            and set(prior[\"stages\"]) == {\"preparation\", \"mounted\", \"linked-ui\"}\n            and all(row[\"status\"] == \"PASS\" and row[\"testInvoked\"] is True\n                    for row in prior[\"stages\"].values())\n            and prior[\"linkedUIProof\"][\"status\"] == \"PASS_UI_ONLY\"\n            and \"linkedRealLinkRouteProof\" not in prior\n            and prior[\"fullEAcceptance\"] is False,\n            \"Original three method outcomes and collector failure must remain separate\")\n    pins = {\n        \"preparation\": \"293964bd0dbbba0cec2174521ac3c24a4aa524789e4b0e4c9cd3b5db0a2ddfa7\",\n        \"mounted\": \"e5e288762a4519fd70b6413d307dea4e794b55666153f66da8f7b54c8e1433fd\",\n        \"linked-ui\": \"062cc88c2cb2a6bf558ee134fe5df8691f596144af4af0d3263ae61c11d9836b\",\n    }\n    for name, pin in pins.items():\n        folder = PRIOR / \"evidence\" / name\n        original = c.raw(folder / \"result.json\")\n        require(sha(original) == pin and decode(original) == prior[\"stages\"][name],\n                \"Original actual method result changed: \" + name)\n        log = PRIOR / \"commands\" / (name + \"-test\") / \"original.log\"\n        actual = c.qualify_execution(decode(c.raw(folder / \"summary.json\")),\n            decode(c.raw(folder / \"tests.json\")), STAGES[name], DEVICE, log)\n        row = prior[\"stages\"][name]\n        require(decode(json.dumps(actual).encode()) == row[\"actual\"]\n                and c.digest(log) == row[\"command\"][\"logSHA256\"]\n                and row[\"command\"][\"exitCode\"] == 0 and row[\"command\"][\"cleanupErrors\"] == []\n                and row[\"command\"][\"ownedGroupPresentAfterExit\"] is False\n                and row[\"command\"][\"ownedGroupObservationStatus\"] == \"ABSENT_ESRCH\",\n                \"Original actual method exports/stdout/exit changed: \" + name)\n        enumeration = c.qualify_enumeration(decode(c.raw(folder / \"enumeration.json\")), STAGES[name])\n        require(decode(json.dumps(enumeration).encode()) == row[\"enumeration\"],\n                \"Original compiled method enumeration changed: \" + name)\n    for name in (\"linked-native\", \"unlinked-ui\", \"unlinked-native\"):\n        require(not (PRIOR / \"evidence\" / name).exists()\n                and not (PRIOR / \"commands\" / (name + \"-test\")).exists()\n                and not (PRIOR / \"commands\" / (name + \"-enumerate\")).exists(),\n                \"A remaining method was already invoked\")\n    cleanup = prior[\"cleanup\"]\n    require(cleanup[\"status\"] == \"PASS\" and cleanup[\"errors\"] == []\n            and cleanup[\"ownedSimulatorDeleted\"] is False\n            and cleanup[\"ownedSimulatorRetainedForRecovery\"] == DEVICE\n            and all(row.get(\"absentAtOriginalExit\") is True or row.get(\"present\") is False\n                    for row in cleanup[\"groups\"]), \"Original owned cleanup is incomplete\")\n    require(c.digest(PRIOR / \"private/final-sandbox-originals\" / c.FIXTURE) == ORIGINAL_FIXTURE\n            and c.digest(PRIOR / \"private/owned-account-originals/device.plist\") == ORIGINAL_PLIST\n            and c.digest(PRIOR / \"evidence/linked-ui/private-attachments/manifest.json\")\n                == \"cdad51421bf0998fba284a6fd3c527b7c07ab81fd1b50edbc0689f4edf22afed\",\n            \"Original fixture, device metadata, or linked attachments changed\")\n    return prior\n",
+      "before": "def admit_prior(admission):\n    path = PRIOR / \"evidence/execution.json\"\n    prior_raw = c.raw(path)\n    require(sha(prior_raw) == PRIOR_EXECUTION, \"Exact original interrupted execution required\")\n    prior = decode(prior_raw)\n    require(prior[\"status\"] == \"FAIL\" and prior[\"sourceCommit\"] == admission[\"sourceCommit\"] == SOURCE\n            and prior[\"controllerSHA256\"] == CORE and prior[\"nativeManifestSHA256\"] == c.MANIFEST\n            and prior[\"heartOverlaySHA256\"] == c.OVERLAY and prior[\"ownedSimulator\"] == DEVICE,\n            \"Original source/native/owned device identity differs\")\n    require(set(prior[\"stages\"]) == {\"preparation\", \"mounted\"}\n            and prior[\"stages\"][\"preparation\"][\"status\"] == \"PASS\"\n            and prior[\"stages\"][\"preparation\"][\"testInvoked\"] is True\n            and prior[\"stages\"][\"mounted\"][\"status\"] == \"FAIL\"\n            and prior[\"stages\"][\"mounted\"][\"testInvoked\"] is False\n            and prior[\"stages\"][\"mounted\"][\"firstFailure\"] == {\"type\": \"ValueError\", \"message\": \"mounted-enumerate failed: OWNED_RESOURCE_FLOOR\"}\n            and not (PRIOR / \"commands/mounted-test\").exists(),\n            \"The original preparation and unrun mounted interruption may not be reclassified\")\n    started = PRIOR / \"commands/mounted-enumerate/started.json\"\n    log = PRIOR / \"commands/mounted-enumerate/original.log\"\n    started_raw, log_raw = c.raw(started), c.raw(log)\n    command_raw = c.raw(started.parent / \"result.json\")\n    exit_raw = c.raw(started.parent / \"process-exit.json\")\n    require(sha(started_raw) == \"9806fd89e8a30904cb43d7c9ad83144090789dd9df6718f90ae3fb3333021f0d\"\n            and sha(log_raw) == \"91fec452f9de17932a46e6ff14a66fa500d024446bd9737d99b374824b803fb9\"\n            and sha(command_raw) == \"a583ba10477b7686a436975362ca24875ffcc9460c9b2f30e66eb698aa5209e6\"\n            and sha(exit_raw) == \"16dfcd1b27777cb036b35e175ec47ed6ebddb04960208a802f46603fdf480bd3\",\n            \"Exact original enumeration interruption records required\")\n    command, exited = decode(command_raw), decode(exit_raw)\n    require(command[\"argv\"] == exited[\"argv\"] == decode(started_raw)[\"argv\"]\n            and \"-enumerate-tests\" in command[\"argv\"] and STAGES[\"mounted\"] in command[\"argv\"]\n            and command[\"status\"] == command[\"commandStatus\"] == \"FAIL_COMMAND\"\n            and command[\"exitCode\"] == exited[\"exitCode\"] == -15\n            and command[\"interruption\"] == {\"type\": \"TimeoutError\", \"message\": \"OWNED_RESOURCE_FLOOR\"}\n            and command[\"cleanupErrors\"] == [] and command[\"ownedGroupPresentAfterExit\"] is False\n            and command[\"ownedGroupObservationStatus\"] == \"ABSENT_ESRCH\"\n            and command[\"minimumFreeBytes\"] == 2136473600 < c.FLOOR\n            and command[\"logSHA256\"] == sha(log_raw)\n            and command[\"processExitReceipt\"][\"sha256\"] == sha(exit_raw)\n            and not (PRIOR / \"evidence/mounted/enumeration.json\").exists()\n            and log_raw.decode().strip().startswith(\"Command line invocation:\"),\n            \"Original disk-floor enumeration failure is not an invoked method\")\n    cleanup = prior[\"cleanup\"]\n    require(cleanup[\"status\"] == \"PASS\" and cleanup[\"errors\"] == []\n            and cleanup[\"ownedSimulatorDeleted\"] is False\n            and cleanup[\"ownedSimulatorRetainedForRecovery\"] == DEVICE\n            and all(row.get(\"absentAtOriginalExit\") is True or row.get(\"present\") is False\n                    for row in cleanup[\"groups\"]), \"Original owned cleanup is incomplete\")\n    folder = PRIOR / \"evidence/preparation\"\n    log = PRIOR / \"commands/preparation-test/original.log\"\n    actual = c.qualify_execution(decode(c.raw(folder / \"summary.json\")),\n        decode(c.raw(folder / \"tests.json\")), STAGES[\"preparation\"], DEVICE, log)\n    require(decode(json.dumps(actual).encode()) == prior[\"stages\"][\"preparation\"][\"actual\"]\n            and c.digest(log) == prior[\"stages\"][\"preparation\"][\"command\"][\"logSHA256\"]\n            and prior[\"stages\"][\"preparation\"][\"command\"][\"exitCode\"] == 0,\n            \"Original actual preparation exports/stdout changed\")\n    c.qualify_enumeration(decode(c.raw(folder / \"enumeration.json\")), STAGES[\"preparation\"])\n    require(c.digest(PRIOR / \"private/final-sandbox-originals\" / c.FIXTURE) == ORIGINAL_FIXTURE\n            and c.digest(PRIOR / \"private/owned-account-originals/device.plist\") == ORIGINAL_PLIST,\n            \"Original fixture/private device metadata changed\")\n    return prior",
+      "positions": [
+        1716
+      ]
+    },
+    {
+      "after": "route_helper = own / \"semantic_link_route_typed_attachments.py\"\n    require(c.digest(route_helper) == \"39cb1d84f78efb922b71dc55ccb371647c90296093e365452b1291ef854aacf6\",\n            \"Exact JSON/PNG route collector required\")",
+      "before": "route_helper = own / \"semantic_link_route_observation.py\"\n    require(c.digest(route_helper) == c.SEMANTIC_LINK_ROUTE_HELPER, \"Exact real-link route observer required\")",
+      "positions": [
+        12112
+      ]
+    },
+    {
+      "after": "\"pinkha-app15-original-three-methods-continuation-v1\"",
+      "before": "\"pinkha-app15-original-preparation-five-stage-continuation-v1\"",
+      "positions": [
+        13355
+      ]
+    },
+    {
+      "after": "\"originalMethodsReused\": {name: {\"path\": str(PRIOR), \"actual\": prior[\"stages\"][name][\"actual\"],\n                                              \"executedInThisContinuation\": False}\n                                        for name in (\"preparation\", \"mounted\", \"linked-ui\")},",
+      "before": "\"originalPreparationReused\": {\"path\": str(PRIOR), \"actual\": prior[\"stages\"][\"preparation\"][\"actual\"],\n                                            \"executedInThisContinuation\": False},",
+      "positions": [
+        13907
+      ]
+    },
+    {
+      "after": "c.write_bytes(evidence / \"original-three-method-execution.json\", c.raw(PRIOR / \"evidence/execution.json\"))",
+      "before": "c.write_bytes(evidence / \"original-preparation-execution.json\", c.raw(PRIOR / \"evidence/execution.json\"))",
+      "positions": [
+        13058
+      ]
+    },
+    {
+      "after": "        capture_raw = c.raw(PRIOR / \"private/final-sandbox-originals\" / CAPTURE, 65536)\n        reopen_raw = c.raw(PRIOR / \"private/final-sandbox-originals\" / REOPEN, 65536)\n        capture, reopen = decode(capture_raw), decode(reopen_raw)\n        result[\"mountedProof\"] = specialized.observations(fixture, capture, reopen, capture_raw, binding)\n        require(result[\"mountedProof\"] == prior[\"mountedProof\"], \"Original mounted proof changed\")\n        witness = capture.get(\"nativeBoundaryEvidence\")\n        require(isinstance(witness, dict) and witness.get(\"protocolVersion\") == 1 and witness.get(\"extraNativeCalls\") == 0\n                and witness.get(\"source\") == \"actual-client-call-results\" and set(witness[\"files\"]) == set(boundary.FILES),\n                \"Original three native boundaries required\")\n        boundaries = {}\n        for role, filename in boundary.FILES.items():\n            row = witness[\"files\"][role]\n            require(row[\"filename\"] == filename, \"Native boundary filename differs\")\n            payload = c.raw(PRIOR / \"private/final-sandbox-originals\" / filename, boundary.MAXIMUM)\n            require(len(payload) == row[\"bytes\"] and sha(payload) == row[\"sha256\"], \"Original native boundary changed\")\n            boundaries[role] = payload\n        result[\"nativeBoundaryComparison\"] = boundary.verify(boundaries, fixture, capture, native, mounted)\n        require(result[\"nativeBoundaryComparison\"] == prior[\"nativeBoundaryComparison\"]\n                and result[\"nativeBoundaryComparison\"][\"projectionFieldCount\"] == 9,\n                \"Original full nine-field native comparison changed\")\n        result[\"originalAttachments\"] = policy.mounted_attachments(\n            PRIOR / \"evidence/mounted/private-attachments\", device, capture, reopen, binding, warning)\n        require(result[\"originalAttachments\"] == prior[\"originalAttachments\"], \"Original mounted attachment proof changed\")\n        linked_raw, linked_origin = policy.attachment(PRIOR / \"evidence/linked-ui/private-attachments\",\n            \"heart-semantic-source-ui-linked\", STAGES[\"linked-ui\"], device, maximum=65536)\n        result[\"linkedUIProof\"] = continuation_ui(decode(linked_raw), \"linked\", fixture, capture, capture_raw, reopen_raw)\n        require(result[\"linkedUIProof\"] == prior[\"linkedUIProof\"], \"Original linked UI proof changed\")\n        import semantic_link_route_typed_attachments as route_observation\n        require(Path(route_observation.__file__).resolve() == route_helper.resolve(), \"Foreign typed route collector\")\n        result[\"linkedRealLinkRouteProof\"] = route_observation.qualify_routes(\n            c, policy, PRIOR / \"evidence/linked-ui/private-attachments\", STAGES[\"linked-ui\"], device, \"linked\", binding)\n        import replacement_selection_observation as selection_observation\n        require(Path(selection_observation.__file__).resolve() == selection_helper.resolve(),\n                \"Foreign passive selection observer\")\n        def original_selection_file(used_commands, used_device, target, filename, label, maximum):\n            require(used_commands is commands and used_device == device and target == private\n                    and label == \"preserve-real-replacement-native-selection\"\n                    and Path(filename).name == filename, \"Unscoped retained selection observation\")\n            row = prior[\"finalPrivateSandbox\"][\"sourceEntryObservers\"][filename]\n            raw = c.raw(PRIOR / \"private/final-sandbox-originals\" / filename, maximum)\n            require(row[\"status\"] == \"COPIED_ORIGINAL\" and row[\"bytes\"] == len(raw)\n                    and row[\"sha256\"] == sha(raw)\n                    and raw == c.raw(PRIOR / \"private/owned-account-originals/application-data/Library/Application Support\" / filename, maximum),\n                    \"Original UI process observation differs from full sealed account\")\n            c.write_bytes(target / filename, raw)\n            return raw\n        selection_context = types.SimpleNamespace(STAGES=STAGES, require=require, sha=sha,\n                                                  decode=decode, app_file=original_selection_file)\n        result[\"replacementSelectionProof\"] = selection_observation.qualify_selection(\n            selection_context, policy, commands, PRIOR / \"evidence\", private, device, fixture, binding)\n        result[\"replacementSelectionOrigin\"] = \"EXACT_ORIGINAL_FINAL_WITNESS_AND_FULL_ACCOUNT_COPY\"\n        # Claim cleanup ownership before boot; a post-exit infrastructure failure\n        # still requires shutdown and full retention of this admitted account.\n        boot_owned = True\n        commands.run([\"xcrun\", \"simctl\", \"boot\", DEVICE], \"boot-owned-device\", 60)\n        commands.run([\"xcrun\", \"simctl\", \"bootstatus\", DEVICE, \"-b\"], \"await-owned-boot\", 180)\n        witness_copy = private / \"admitted-original-witnesses\"\n        witness_copy.mkdir(mode=0o700)\n        log, _ = commands.run([\"xcrun\", \"simctl\", \"get_app_container\", DEVICE, c.BUNDLE, \"data\"],\n                              \"admit-original-continuation-sandbox\", 30)\n        container = Path(c.raw(log, 4096).decode().strip())\n        require(container.resolve() == container and container.is_relative_to(\n                Path.home() / \"Library/Developer/CoreSimulator/Devices\" / DEVICE), \"Wrong live account container\")\n        retained = dict(prior[\"finalPrivateSandbox\"][\"files\"])\n        retained.update(prior[\"finalPrivateSandbox\"][\"sourceEntryObservers\"])\n        for index, (filename, row) in enumerate(sorted(retained.items())):\n            require(Path(filename).name == filename, \"Original witness filename escaped\")\n            if row[\"status\"] == \"NOT_PRESENT\":\n                require(not (container / \"Library/Application Support\" / filename).exists()\n                        and not (container / \"Library/Application Support\" / filename).is_symlink(),\n                        \"A remaining native witness appeared before its first method\")\n            else:\n                current = c.app_file(commands, device, witness_copy, filename, \"admit-original-witness-\" + str(index))\n                require(row[\"status\"] == \"COPIED_ORIGINAL\" and len(current) == row[\"bytes\"]\n                        and sha(current) == row[\"sha256\"]\n                        and current == c.raw(PRIOR / \"private/final-sandbox-originals\" / filename),\n                        \"Live original witness changed after boot\")\n        mounted.fixture(fixture, binding)\n",
+      "before": "        # Claim cleanup ownership before boot: a post-exit infrastructure error\n        # must still shut down this positively admitted original device.\n        boot_owned = True\n        commands.run([\"xcrun\", \"simctl\", \"boot\", DEVICE], \"boot-owned-device\", 60)\n        commands.run([\"xcrun\", \"simctl\", \"bootstatus\", DEVICE, \"-b\"], \"await-owned-boot\", 180)\n        actual_fixture = c.app_file(commands, DEVICE, private, c.FIXTURE, \"original-live-fixture\", 65536)\n        require(actual_fixture == fixture_raw, \"Live original prepared fixture differs after boot\")\n        mounted.fixture(decode(actual_fixture), binding)\n        # An interrupted enumeration never invoked mounted. Native capture and\n        # cold-reopen witnesses must still be absent before its first execution.\n        log, _ = commands.run([\"xcrun\", \"simctl\", \"get_app_container\", DEVICE, c.BUNDLE, \"data\"],\n                              \"admit-original-unrun-sandbox\", 30)\n        container = Path(c.raw(log, 4096).decode().strip())\n        require(container.resolve() == container and container.is_relative_to(\n                Path.home() / \"Library/Developer/CoreSimulator/Devices\" / DEVICE), \"Wrong live account container\")\n        for filename in (c.CAPTURE, c.REOPEN, *boundary.FILES.values()):\n            require(prior[\"finalPrivateSandbox\"][\"files\"][filename][\"status\"] == \"NOT_PRESENT\"\n                    and not (container / \"Library/Application Support\" / filename).exists()\n                    and not (container / \"Library/Application Support\" / filename).is_symlink(),\n                    \"An unrun mounted native witness appeared\")\n",
+      "positions": [
+        16177
+      ]
+    },
+    {
+      "after": "require(name in (\"linked-native\", \"unlinked-ui\", \"unlinked-native\"),\n                    \"Only the three original unrun stages are allowed\")",
+      "before": "require(name in (\"mounted\", \"linked-ui\", \"linked-native\", \"unlinked-ui\", \"unlinked-native\"),\n                    \"Only the five original unrun stages are allowed\")",
+      "positions": [
+        22914
+      ]
+    },
+    {
+      "after": "",
+      "before": "        run(\"mounted\", ui_env)\n        capture_raw = app_file(commands, device, private, CAPTURE, \"preserve-capture\", 65536)\n        reopen_raw = app_file(commands, device, private, REOPEN, \"preserve-reopen\", 65536)\n        capture, reopen = decode(capture_raw), decode(reopen_raw)\n        result[\"mountedProof\"] = specialized.observations(fixture, capture, reopen, capture_raw, binding)\n        witness = capture.get(\"nativeBoundaryEvidence\")\n        require(isinstance(witness, dict) and witness.get(\"protocolVersion\") == 1 and witness.get(\"extraNativeCalls\") == 0\n                and witness.get(\"source\") == \"actual-client-call-results\" and set(witness[\"files\"]) == set(boundary.FILES), \"original three native boundaries required\")\n        boundaries = {}\n        for role, filename in boundary.FILES.items():\n            row = witness[\"files\"][role]\n            require(row[\"filename\"] == filename, \"native boundary filename differs\")\n            payload = app_file(commands, device, private, filename, \"preserve-boundary-\" + role.lower(), boundary.MAXIMUM)\n            require(len(payload) == row[\"bytes\"] and sha(payload) == row[\"sha256\"], \"native boundary original hash differs\")\n            boundaries[role] = payload\n        result[\"nativeBoundaryComparison\"] = boundary.verify(boundaries, fixture, capture, native, mounted)\n        require(result[\"nativeBoundaryComparison\"][\"projectionFieldCount\"] == 9, \"full original nine-field projection required\")\n        result[\"originalAttachments\"] = policy.mounted_attachments(evidence / \"mounted/private-attachments\", device, capture, reopen, binding, warning)\n        write(evidence / \"actual-mounted-qualified.json\", {\"binding\": binding, \"mounted\": result[\"mountedProof\"], \"boundary\": result[\"nativeBoundaryComparison\"]})\n",
+      "positions": [
+        23537
+      ]
+    },
+    {
+      "after": "            if phase == \"linked\":\n                ui_raw = linked_raw\n            else:\n                run(phase + \"-ui\", dict(ui_env, **source_env, PINKHA_SEMANTIC_SOURCE_UI_PHASE=phase))\n                ui_raw, ui_origin = policy.attachment(evidence / (phase + \"-ui\") / \"private-attachments\", \"heart-semantic-source-ui-\" + phase,\n                                                    STAGES[phase + \"-ui\"], device, maximum=65536)\n                result[phase + \"UIProof\"] = continuation_ui(decode(ui_raw), phase, fixture, capture, capture_raw, reopen_raw)\n                result[phase + \"RealLinkRouteProof\"] = route_observation.qualify_routes(\n                    c, policy, evidence / (phase + \"-ui\") / \"private-attachments\",\n                    STAGES[phase + \"-ui\"], device, phase, binding)\n",
+      "before": "            run(phase + \"-ui\", dict(ui_env, **source_env, PINKHA_SEMANTIC_SOURCE_UI_PHASE=phase))\n            ui_raw, ui_origin = policy.attachment(evidence / (phase + \"-ui\") / \"private-attachments\", \"heart-semantic-source-ui-\" + phase,\n                                                STAGES[phase + \"-ui\"], device, maximum=65536)\n            result[phase + \"UIProof\"] = continuation_ui(decode(ui_raw), phase, fixture, capture, capture_raw, reopen_raw)\n            import semantic_link_route_observation as route_observation\n            require(Path(route_observation.__file__).resolve() == route_helper.resolve(), \"Foreign real-link route observer\")\n            result[phase + \"RealLinkRouteProof\"] = route_observation.qualify_routes(\n                c, policy, evidence / (phase + \"-ui\") / \"private-attachments\",\n                STAGES[phase + \"-ui\"], device, phase, binding)\n            if phase == \"linked\":\n                import replacement_selection_observation as selection_observation\n                require(Path(selection_observation.__file__).resolve() == selection_helper.resolve(),\n                        \"Foreign passive selection observation module\")\n                result[\"replacementSelectionProof\"] = selection_observation.qualify_selection(\n                    c, policy, commands, evidence, private, device, fixture, binding)\n",
+      "positions": [
+        24093
+      ]
+    },
+    {
+      "after": "set(result[\"stages\"]) == {\"linked-native\", \"unlinked-ui\", \"unlinked-native\"}",
+      "before": "set(result[\"stages\"]) == {\"mounted\", \"linked-ui\", \"linked-native\", \"unlinked-ui\", \"unlinked-native\"}",
+      "positions": [
+        25968
+      ]
+    },
+    {
+      "after": "\"All three actual remaining methods are required\"",
+      "before": "\"All five actual continuation methods are required\"",
+      "positions": [
+        26179
+      ]
+    },
+    {
+      "after": "\"PASS_THREE_ACTUAL_METHODS_WITH_ORIGINAL_THREE\"",
+      "before": "\"PASS_FIVE_ACTUAL_METHODS_WITH_ORIGINAL_PREPARATION\"",
+      "count": 2,
+      "positions": [
+        26257,
+        30369
+      ]
+    },
+    {
+      "after": "\"SEALED_THREE_STAGE_CONTINUATION_ACCOUNT_NOT_FULL_E\"",
+      "before": "\"SEALED_FIVE_STAGE_CONTINUATION_ACCOUNT_NOT_FULL_E\"",
+      "count": 2,
+      "positions": [
+        29920,
+        30440
+      ]
+    },
+    {
+      "after": "for name in (\"linked-native\", \"unlinked-ui\", \"unlinked-native\"):\n            started =",
+      "before": "for name in (\"mounted\", \"linked-ui\", \"linked-native\", \"unlinked-ui\", \"unlinked-native\"):\n            started =",
+      "positions": [
+        28774
+      ]
+    },
+    {
+      "after": "\"originalThreeMethodExecutionSHA256\": PRIOR_EXECUTION",
+      "before": "\"originalPreparationExecutionSHA256\": PRIOR_EXECUTION",
+      "positions": [
+        29426
+      ]
+    }
+  ],
+  "controllerSHA256": "ee39f1b1fa21576cabc87a60f4cae1d8c1f27f1e359d57afa8c5607b1bfb7a4f",
+  "originalControllerSHA256": "6b9505ff5204ca20f6f809875861f449d6a3382b8a687c338079974b1db1e660",
+  "originalNativeStageBytesUnchanged": true,
+  "originalNativeStageSHA256": "0d3faa5d362b2cce377cd583153328fa4e88b37886582f216c07c5631122fe20",
+  "originalShutdownAccountASTUnchanged": true,
+  "protocol": "pinkha-app15-linked-three-stage-continuation-source-delta-v1"
+}

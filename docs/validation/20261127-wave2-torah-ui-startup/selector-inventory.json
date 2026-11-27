@@ -1,0 +1,160 @@
+{
+  "actualExecutions": 0,
+  "appBuildsByConsumer": 0,
+  "historicalT5NativeCallsSelected": 0,
+  "hostedCaseCount": 15,
+  "hostedMethodCount": 15,
+  "hostedProperties": [
+    {
+      "casesCount": 9,
+      "methods": [
+        "PropertyCreationSearchTests/latestQueryOwnsRowsAndErrors()",
+        "PropertyCreationSearchTests/cancelledRequestDoesNotPublish()",
+        "PropertyCreationSearchTests/preCancelledRequestDoesNotLoad()",
+        "PropertyCreationSearchTests/nativeFailurePreservesOrdinaryChoices()",
+        "PropertyCreationSearchTests/existingSearchFailureIsVisible()",
+        "PropertyCreationSearchTests/retryKeepsQueryAndSpace()",
+        "PropertyCreationSearchTests/catalogCancellationStopsAtTheSearchBoundary()",
+        "PropertyCreationSearchTests/preCancelledCatalogDoesNotSearch()",
+        "PropertyCreationSearchTests/providerCancellationPropagatesThroughLoaderAndPicker()"
+      ],
+      "methodsCount": 9,
+      "sha256": "69d7afd02929d0a0f8a220acff3ada1ac156e7cbed70294861cb8481ae06e236",
+      "source": "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift",
+      "status": "NOT_RUN",
+      "suite": "PropertyCreationSearchTests",
+      "target": "AnytypeTests"
+    },
+    {
+      "casesCount": 6,
+      "methods": [
+        "PropertyCreationSelectionTests/failureAndRetry()",
+        "PropertyCreationSelectionTests/pendingSelectionOwnsTheWrite()",
+        "PropertyCreationSelectionTests/cancellationDoesNotPublishFailure()",
+        "PropertyCreationSelectionTests/cancelledLateErrorDoesNotPublishFailure()",
+        "PropertyCreationSelectionTests/cancelledLateSuccessRetainsOutcomeWithoutPublishing()",
+        "PropertyCreationSelectionTests/preCancelledSelectionDoesNotWrite()"
+      ],
+      "methodsCount": 6,
+      "sha256": "833ce32686d7daf2907eb796aca8a79aa3a099ec1d5361d53a2d5949c5193baf",
+      "source": "AnyTypeTests/Pinkha/PropertyCreationSelectionTests.swift",
+      "status": "NOT_RUN",
+      "suite": "PropertyCreationSelectionTests",
+      "target": "AnytypeTests"
+    }
+  ],
+  "relatedPackage": {
+    "caseCount": 7,
+    "includedInAnytypeHostedProduct": false,
+    "methodCount": 5,
+    "methods": {
+      "currentReadOnlyMetadataCannotAuthorizeUnlink()": 1,
+      "matchingMetadataPreservesExactDocumentAndSource()": 1,
+      "mismatchedMetadataCannotAuthorizeUnlink(foreignSpace:)": 2,
+      "mismatchedMetadataCannotBeDisplayed(foreignSpace:)": 2,
+      "staleSourceRowCannotUnlinkTheCurrentSelection()": 1
+    },
+    "package": "Modules/PinkhaAnyUI",
+    "requiresSeparatelyQualifiedPackageTestProduct": true,
+    "sha256": "af7e3270f8b29d56ade52603e648d2ef36bb6a07dfea8bc07b9d7c2d448d8095",
+    "source": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift",
+    "status": "NOT_RUN",
+    "suite": "AnyNativeTorahRelatedIdentityTests",
+    "target": "PinkhaAnyUITests"
+  },
+  "requiredProduct": "Exact forthcoming shared Wave3 App + complete Stage1 UI; no old-source pin substitution",
+  "schema": "pinkha-wave2-torah-selector-inventory-v1",
+  "sourceDonor": "2a95ad12d6e58c4895583a871f9a07f8902ce34e",
+  "uiLanes": {
+    "canonical-properties": {
+      "appLanguage": "en",
+      "currentSharedProductStatus": "NOT_RUN",
+      "fixture": "pinkha-stage1-acceptance-state.json",
+      "methodCount": 1,
+      "methods": [
+        "PinkhaTorahPropertiesAcceptanceUITests/testOriginalPropertiesCanonicalLinkUnlinkAndRelaunchForAllWritingTypes"
+      ],
+      "preparation": "PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState",
+      "requiresIndependentNativeFixture": true,
+      "requiresOriginalPreparationConsoleParserAndHash": true,
+      "suite": "PinkhaTorahPropertiesAcceptanceUITests",
+      "target": "PinkhaStage1AcceptanceUITests"
+    },
+    "inspector": {
+      "appLanguage": "en",
+      "currentSharedProductStatus": "NOT_RUN",
+      "fixture": "pinkha-simulator-ui27-fixture.json",
+      "methodCount": 5,
+      "methods": [
+        "AnytypeComprehensiveAcceptanceUITests/testObjectAddPropertyButtonAndPickerSearch",
+        "AnytypeComprehensiveAcceptanceUITests/testDocumentSourceSearchPresentation",
+        "AnytypeComprehensiveAcceptanceUITests/testSourceChipOpensAndClosesInspector",
+        "AnytypeComprehensiveAcceptanceUITests/testDocumentSourceSearchEmptyAndClear",
+        "AnytypeComprehensiveAcceptanceUITests/testInspectorShowsIndexedRelatedDocument"
+      ],
+      "preparation": "SimulatorAcceptancePreparationTests/prepareRealUIFixture",
+      "requiresIndependentNativeFixture": true,
+      "requiresVerifiedPrelaunchPIDAndContinuity": true,
+      "suite": "AnytypeComprehensiveAcceptanceUITests",
+      "target": "PinkhaStage1AcceptanceUITests"
+    },
+    "inspector-search": {
+      "appLanguage": "en",
+      "currentSharedProductStatus": "NOT_RUN",
+      "fixture": "pinkha-simulator-ui27-fixture.json",
+      "methodCount": 1,
+      "methods": [
+        "AnytypeComprehensiveAcceptanceUITests/testInspectorEmbeddedSearchOpenReturnAndDocumentLink"
+      ],
+      "preparation": "SimulatorAcceptancePreparationTests/prepareRealUIFixture",
+      "requiresIndependentNativeFixture": true,
+      "requiresVerifiedPrelaunchPIDAndContinuity": true,
+      "suite": "AnytypeComprehensiveAcceptanceUITests",
+      "target": "PinkhaStage1AcceptanceUITests"
+    },
+    "properties": {
+      "appLanguage": "en",
+      "currentSharedProductStatus": "NOT_RUN",
+      "fixture": "pinkha-native-derived-ui-fixture.json",
+      "methodCount": 3,
+      "methods": [
+        "PinkhaNativeDerivedAcceptanceUITests/testNativePropertiesPickerChipsSetMembershipAndRelaunch",
+        "PinkhaNativeDerivedAcceptanceUITests/testSourceHeaderSelectionAndOverflow",
+        "PinkhaNativeDerivedAcceptanceUITests/testUniversalPageNoteCustomPropertiesAndMixedSet"
+      ],
+      "preparation": "TorahNativeDerivedProductIntegrationTests/originalProductPipeline",
+      "requiresIndependentNativeFixture": true,
+      "suite": "PinkhaNativeDerivedAcceptanceUITests",
+      "target": "PinkhaStage1AcceptanceUITests"
+    },
+    "properties-set": {
+      "appLanguage": "en",
+      "currentSharedProductStatus": "NOT_RUN",
+      "fixture": "pinkha-native-derived-ui-fixture.json",
+      "mandatoryNativePostflight": "AnytypeTests/TorahStage2TypePreservationTests/verifyExistingTypeRoundtrip()",
+      "methodCount": 2,
+      "methods": [
+        "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing",
+        "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet"
+      ],
+      "preparation": "TorahNativeDerivedProductIntegrationTests/originalProductPipeline",
+      "requiresIndependentNativeFixture": true,
+      "suite": "PinkhaNativeDerivedAcceptanceUITests",
+      "target": "PinkhaStage1AcceptanceUITests"
+    },
+    "quote-drop": {
+      "appLanguage": "en",
+      "currentSharedProductStatus": "NOT_RUN",
+      "fixture": "pinkha-simulator-ui27-fixture.json",
+      "methodCount": 1,
+      "methods": [
+        "PinkhaTorahQuoteAcceptanceUITests/testNativeQuoteUndoRedoDragAndRelaunch"
+      ],
+      "preparation": "SimulatorAcceptancePreparationTests/prepareRealUIFixture",
+      "requiresIndependentNativeFixture": true,
+      "suite": "PinkhaTorahQuoteAcceptanceUITests",
+      "target": "PinkhaStage1AcceptanceUITests"
+    }
+  },
+  "uiMethodCount": 13
+}

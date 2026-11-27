@@ -1,0 +1,94 @@
+{
+  "protocol": "wave2-prospective-integration-source-gate-v1",
+  "integrationBase": "c44d5ea4dc9780ee1ae48bb9db7aa72287675cdc",
+  "branchBase": "a089ff29a5c0a7e415aac800844505f099a5561d",
+  "branchParent": "cfa622543feb620f8391030b52b482d8cda12d94",
+  "prospectiveTree": "42def20760d3178f4f593cbb3abcf0d4c0c55f09",
+  "temporaryIndex": "/tmp/pinkha-wave2-property-map-sefz99tr/index",
+  "sourceEntries": [
+    {
+      "path": "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift",
+      "gitBlob": "1ce7aa189597a7601ee54c79125f1a00f178932e",
+      "sha256": "69d7afd02929d0a0f8a220acff3ada1ac156e7cbed70294861cb8481ae06e236"
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PropertyCreationSelectionTests.swift",
+      "gitBlob": "7bce181c914259d6d1570553e3b4d3fcd767a77e",
+      "sha256": "029f38d998c1f81f46805978093354cb477432bfafb0101ca3a46273e3059c55"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+      "gitBlob": "d0667ecd5eb08dc8767ef5eef436c4cefa44c72c",
+      "sha256": "91d98b046f070d6c1b33eeb2db66fffb3bdbad9f4401d5b2200bf4c13271d45f"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSelection.swift",
+      "gitBlob": "7bba549a8ebce34e3873137cd8b9a4af021178f1",
+      "sha256": "9f112a3524b3b39731f089b5d9f438d86a5438d71ccaac66790ce8ec459f3b0c"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+      "gitBlob": "cc4f6c5fc96749fbe8cc06b3befe044be050d92d",
+      "sha256": "e4f1b053139810570565a0000413fde89f82516513cddd1c4b5579d63e39ffce"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertyLocalization.swift",
+      "gitBlob": "6a1c41c3190aa7598558b6afef4b86bbce37dd93",
+      "sha256": "a7405dc5d8c55f65a9b8c99f85cf0d4095563bba8d0ca85dcd8255784ce49109"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/Resources/PinkhaTorahProperties.xcstrings",
+      "gitBlob": "daa6bc91e075b7405fa303bde504fcd976a90ff9",
+      "sha256": "0ac66bbd4bc89284dba77c211b105adadbc22faca4248080ae7d05ceaa45cf2e"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Common/SwiftUI/Search/Common/SearchView/SearchView.swift",
+      "gitBlob": "7bbb7ecd924dc3fe3b834be52b68353aedf13186",
+      "sha256": "a0340279b813416a68c9a1c0b2d049966947098c31620ab3127448a1bd9fddfe"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift",
+      "gitBlob": "8e61add3043f863396314485eefa76e5c07bf001",
+      "sha256": "cd9e6425dc7647b3e9eae240ccd6f449457f3c4c084b3fa991f545770f9d5501"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+      "gitBlob": "ac386aa0297d4703706b983914a8c241b4de17e4",
+      "sha256": "785e71358afb749b380cd930e80cbb693ebad2176235ce8b76e30e915b49ec15"
+    },
+    {
+      "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+      "gitBlob": "7dae9ba7cbc6af090bb4fd2c39962e7b50135ad6",
+      "sha256": "c30136a32d6d268c5a5919eeb1e9f4b11129847745b04b5793bab67facc95a81"
+    }
+  ],
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "-g",
+    "chatgpt-agent",
+    "--",
+    "python3",
+    "/mnt/development/projects/worktrees/anytype-wave2-torah-20261127/Tools/AnyEnginePort/verify_source_retention.py",
+    "--base",
+    "586c98bcc17dee425664224e508fc0e8df277678",
+    "--ref",
+    "42def20760d3178f4f593cbb3abcf0d4c0c55f09",
+    "--output",
+    "/tmp/pinkha-wave2-property-map-sefz99tr/source-retention.json"
+  ],
+  "returnCode": 1,
+  "durationSeconds": 1.004201889038086,
+  "sourceRetentionPassed": false,
+  "errors": [],
+  "unreviewed": [
+    "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+    "Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertyLocalization.swift",
+    "Anytype/Sources/Pinkha/Torah/UI/Resources/PinkhaTorahProperties.xcstrings"
+  ],
+  "reviewedCount": 124,
+  "nativeTestsRun": 0,
+  "appleTestsRun": 0,
+  "finalBranchMutations": 0
+}

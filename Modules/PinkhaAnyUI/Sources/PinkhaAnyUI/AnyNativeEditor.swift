@@ -259,6 +259,8 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         let projection = presentation.projection(for: block)
         let supported = ["paragraph", "heading", "list_item", "check_list_item", "code", "quote"].contains(block.type)
         cell.textView.blockID = block.id
+        cell.textView.configureEmptyParagraphPresentation(
+            presentationAttributes(for: "", block: block).attributes, blockID: block.id)
         let historyEpoch = presentation.textHistoryEpochs[block.id, default: 0]
         if cell.renderedHistoryEpoch != historyEpoch { cell.textView.editHistory.removeAllActions() }
         cell.renderedHistoryEpoch = historyEpoch
@@ -292,6 +294,9 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
                 cell.renderedSource = renderedSource; cell.renderedNativeStyle = block.native["style"]
             }
         }
+        rendering = true
+        cell.textView.restoreEmptyParagraphPresentation()
+        rendering = false
         var depth = 0, parent = block.parentID, seen = Set<String>()
         while !parent.isEmpty, let ancestor = blockByID[parent], seen.insert(parent).inserted {
             depth += 1; parent = ancestor.parentID
@@ -364,9 +369,9 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         }
     }
 
-    private func attributed(_ projection: AnyInlineMarkdown, block: AnyEditorBlock) -> NSAttributedString {
+    private func presentationAttributes(for display: String, block: AnyEditorBlock)
+        -> (font: UIFont, attributes: [NSAttributedString.Key: Any]) {
         let paragraph = NSMutableParagraphStyle()
-        let display = projection.isEditable ? projection.display : projection.source
         let detected: PinkhaLayoutDirection? = {
             guard !display.isEmpty,
                   let language = NLLanguageRecognizer.dominantLanguage(for: display)?.rawValue else { return nil }
@@ -388,8 +393,14 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         }
         paragraph.lineSpacing = 3
         let base = UIFont.preferredFont(forTextStyle: block.type == "heading" ? .title2 : .body)
-        let result = NSMutableAttributedString(string: display, attributes: [
-            .font: base, .foregroundColor: UIColor.label, .paragraphStyle: paragraph])
+        return (base, [.font: base, .foregroundColor: UIColor.label, .paragraphStyle: paragraph])
+    }
+
+    private func attributed(_ projection: AnyInlineMarkdown, block: AnyEditorBlock) -> NSAttributedString {
+        let display = projection.isEditable ? projection.display : projection.source
+        let style = presentationAttributes(for: display, block: block)
+        let base = style.font
+        let result = NSMutableAttributedString(string: display, attributes: style.attributes)
         guard projection.isEditable else { return result }
         for run in projection.runs {
             var traits: UIFontDescriptor.SymbolicTraits = []
@@ -623,13 +634,16 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
     public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool { presentation.canMutate }
 
     public func textViewDidBeginEditing(_ textView: UITextView) {
+        (textView as? AnyNativeTextView)?.restoreEmptyParagraphPresentation()
         focus.userInteraction()
         activeTextView = textView
         updateSelection(textView)
     }
 
     public func textViewDidChangeSelection(_ textView: UITextView) {
-        guard !rendering else { return }
+        guard !rendering,
+              (textView as? AnyNativeTextView)?.isRestoringEmptyParagraphPresentation != true else { return }
+        (textView as? AnyNativeTextView)?.restoreEmptyParagraphPresentation()
         if let input = textView as? AnyNativeTextView,
            let typing = input.semanticTyping, textView.selectedRange != typing.continuation.caret {
             input.semanticTyping = nil
@@ -706,6 +720,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         textView.attributedText = attributed(block.type == "code" ? AnyInlineMarkdown(literal: source) :
                                                AnyInlineMarkdown(source), block: block)
         textView.selectedRange = selection
+        textView.restoreEmptyParagraphPresentation()
         rendering = false
         if let path = dataSource.indexPath(for: block.id),
            let cell = table.cellForRow(at: path) as? AnyNativeBlockCell { cell.renderedSource = source }
@@ -887,8 +902,62 @@ fileprivate struct AnyNativeSemanticTyping {
 /// text inside a composition. Internal visibility permits actual UIKit tests.
 @MainActor
 final class AnyNativeTextView: UITextView {
-    var blockID: String?
+    var blockID: String? {
+        didSet {
+            if blockID != oldValue { emptyParagraphPresentation = nil }
+        }
+    }
     fileprivate var semanticTyping: AnyNativeSemanticTyping?
+    private var emptyParagraphPresentation: (blockID: String, attributes: [NSAttributedString.Key: Any])?
+    private(set) var isRestoringEmptyParagraphPresentation = false
+
+    /// An empty attributed string has no attribute run. Carry the same resolved
+    /// source presentation separately, without inserting characters or changing
+    /// the native block, text selection, marked buffer or focus request.
+    func configureEmptyParagraphPresentation(_ attributes: [NSAttributedString.Key: Any], blockID: String) {
+        guard self.blockID == blockID, !isComposingMarkedText, markedTextRange == nil else { return }
+        var frozen = attributes
+        if let paragraph = attributes[.paragraphStyle] as? NSParagraphStyle {
+            frozen[.paragraphStyle] = paragraph.copy()
+        }
+        emptyParagraphPresentation = (blockID, frozen)
+    }
+
+    override var typingAttributes: [NSAttributedString.Key: Any] {
+        get { super.typingAttributes }
+        set { super.typingAttributes = restoringEmptyParagraphAttributes(newValue) }
+    }
+
+    private func restoringEmptyParagraphAttributes(_ attributes: [NSAttributedString.Key: Any])
+        -> [NSAttributedString.Key: Any] {
+        guard let presentation = emptyParagraphPresentation, presentation.blockID == blockID,
+              !isComposingMarkedText, markedTextRange == nil, textStorage.length == 0 else { return attributes }
+        var restored = attributes
+        for (key, value) in presentation.attributes { restored[key] = value }
+        return restored
+    }
+
+    func restoreEmptyParagraphPresentation() {
+        guard !isRestoringEmptyParagraphPresentation,
+              let presentation = emptyParagraphPresentation, presentation.blockID == blockID,
+              !isComposingMarkedText, markedTextRange == nil, textStorage.length == 0 else { return }
+        isRestoringEmptyParagraphPresentation = true
+        defer { isRestoringEmptyParagraphPresentation = false }
+        let restored = restoringEmptyParagraphAttributes(super.typingAttributes)
+        if let paragraph = restored[.paragraphStyle] as? NSParagraphStyle,
+           super.textAlignment != paragraph.alignment {
+            super.textAlignment = paragraph.alignment
+        }
+        if !NSDictionary(dictionary: super.typingAttributes).isEqual(NSDictionary(dictionary: restored)) {
+            super.typingAttributes = restored
+        }
+    }
+
+    override func becomeFirstResponder() -> Bool {
+        let acquired = super.becomeFirstResponder()
+        if acquired { restoreEmptyParagraphPresentation() }
+        return acquired
+    }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         semanticTyping = nil
@@ -944,7 +1013,11 @@ final class AnyNativeTextView: UITextView {
     }
 
     override func insertText(_ text: String) {
-        guard isComposingMarkedText else { super.insertText(text); return }
+        guard isComposingMarkedText else {
+            restoreEmptyParagraphPresentation()
+            super.insertText(text)
+            return
+        }
         markedMutationDepth += 1
         super.insertText(text)
         markedMutationDepth -= 1

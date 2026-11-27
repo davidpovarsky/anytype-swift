@@ -13,6 +13,21 @@ final class TextBlockLeadingView: UIView {
     
     private var currentStyle: TextBlockLeadingStyle?
     private var currentBockId: String?
+
+    /// Configured off-window rows receive their final app direction on attachment.
+    /// The marker adapter also refreshes reused rows after a container direction change.
+    var onNumberedMarkerLayout: (@MainActor () -> Void)?
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        guard window != nil else { return }
+        onNumberedMarkerLayout?()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        onNumberedMarkerLayout?()
+    }
     
     func update(blockId: String, style: TextBlockLeadingStyle) {
         guard currentBockId != blockId || currentStyle != style else { return }

@@ -1,0 +1,10 @@
+space/spacecore/localdiscovery/localdiscovery.go:20:	"github.com/libp2p/zeroconf/v2"
+space/spacecore/localdiscovery/localdiscovery.go:167:				log.Warn("zeroconf server shutdown took too long", zap.Duration("spent", spent))
+space/spacecore/localdiscovery/localdiscovery.go:284:			log.Error("zeroconf query goroutines did not stop in time, proceeding with rebuild")
+space/spacecore/localdiscovery/localdiscovery.go:304:		return fmt.Errorf("starting mdns server: %w", err)
+space/spacecore/localdiscovery/localdiscovery.go:307:	log.Debug("mdns server started")
+space/spacecore/localdiscovery/localdiscovery.go:348:	log.Info("starting mdns server", zap.Strings("ips", l.ipv4), zap.Int("port", l.port), zap.String("peerId", l.peerId),
+space/spacecore/localdiscovery/select.go:21:	log.Info("local discovery: no native discovery proxy installed, using zeroconf")
+space/spacecore/localpeeraddrs.go:25:// Route sources: the inbound connection, and mDNS per cable ("mdns:" and the
+space/spacecore/localpeeraddrs.go:29:	routeMDNS    = "mdns:"
+space/spacecore/localpeeraddrs.go:229:	// "inbound" sorts before every "mdns:" source

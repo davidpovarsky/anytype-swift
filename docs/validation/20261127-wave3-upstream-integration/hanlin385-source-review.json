@@ -1,0 +1,73 @@
+{
+  "schema": "pinkha-wave3-reviewed-source-update-v1",
+  "base": "a19d4cf4f425ed347cb80835d0c80205b0c0de4a",
+  "consumerHead": "87a3c57f0cb588feea05de284664f0a6c4944408",
+  "canonicalSDK": "38528941720d9b4f2da8dce7afbc788c2e554a0c",
+  "changes": [
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift",
+      "field": "sharedSources.gitBlob",
+      "before": "0a6975eb6be58fba1e47ddd53d80981d01fc4ad1",
+      "after": "2c45217da8c3ad9dcd52cf323147d116412852a2"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift",
+      "field": "sharedSources.gitBlob",
+      "before": "bd78eb17d62fe2e03becc7db684fd57472e19e1e",
+      "after": "6a566a167cecd79a0b53134d11f30f43f5c872fe"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinStrings.swift",
+      "field": "sharedSources.gitBlob",
+      "before": "025ceec34afc10f03a261099247894ea67020245",
+      "after": "c6d796bc0c805f7a7089f89210febf08c2f92879"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/Resources/PinkhaHanlin.xcstrings",
+      "field": "replacementBlob",
+      "before": "52ba2e3fd9bc0709250538541d11154c0bd84707",
+      "after": "4891955273ad20cd75145e01026e9bda37db421a"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageRunner.swift",
+      "field": "replacementBlob",
+      "before": "ba462e58e2b1982d0dd3d826035a75c35146a7dd",
+      "after": "e94124b26ab84596536b85f320d31c8658448e1c"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreateRunner.swift",
+      "field": "sharedSources.gitBlob",
+      "before": "484ca0d7aed34d22538f09ac6520c9018e6f4883",
+      "after": "09260a88ddba54797092cbdbfc06b4e76b0f1e3d"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
+      "field": "replacementBlob",
+      "before": "a550b00c063733f292d9ca28207516bcb69fe8ff",
+      "after": "1d7a80fc69529a51f5a56d226e08a48c83989be0"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinHostRouter.swift",
+      "field": "sharedSources.gitBlob",
+      "before": "d4841a33c1fc5a7bb09122053e6c37764b22f263",
+      "after": "2c090ee7616856d0a3daa4fe8255486015b999ca"
+    },
+    {
+      "path": "Tools/Hanlin/source.json",
+      "field": "replacementBlob",
+      "before": "54ad143c98ad0feb08f39a036721eeb7d4fb1daa",
+      "after": "2febfdc45b794a468122739cf6263ff27e6a5754"
+    }
+  ],
+  "retainedMapEntries": 121,
+  "sourceReview": "Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c.",
+  "pinsReview": "Main SwiftAI pin unchanged; standalone module lock aligned to abf0921c6e89e6521cc2b510ff11016b45a0ef08. Native, Kit, Collections and companion pins unchanged.",
+  "actualPriorEvidence": {
+    "SDKMethods": 5,
+    "SDKCases": 7,
+    "reviewSHA256": "c5fd9839ee7e2d2675d1de644230a23703a718af35c30797d5f5b83e923e747b",
+    "testLogSHA256": "d9d13b209bfe28d7e682324fd1aead823caa3cc15fb567193e3d4b8c59017b79"
+  },
+  "currentConsumerAppleTests": "NOT_RUN",
+  "releaseAcceptance": false
+}

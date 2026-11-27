@@ -44,6 +44,7 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
     private let rowPrefix = "torah-inspector-related-row-"
     private var fixture: Fixture!
     private var observations: [[String: Any]] = []
+    private var currentCompiledBuild: [String: String]?
     private var appLanguage: String { ProcessInfo.processInfo.environment["PINKHA_UI27_APP_LANGUAGE"] ?? "en" }
 
     override func setUpWithError() throws {
@@ -65,6 +66,27 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
         try require(Set(fixture.targets.map(\.role)) == ["page", "note", "writing", "block", "quote"]
             && Set(fixture.targets.map(\.objectID)).count == 5 && Set(fixture.targets.map(\.resultID)).count == 5,
                     "Five distinct native targets are required")
+        // A continuation may install a newer, receipt-admitted App/UI on this
+        // same prepared account. Keep the original fixture source/run/token
+        // unchanged and report the current compiled origin separately.
+        let compiledSource = environment["PINKHA_T5_UI_COMPILED_SOURCE_SHA"]
+        let buildReceipt = environment["PINKHA_T5_UI_BUILD_RECEIPT_SHA256"]
+        let nativeManifest = environment["PINKHA_T5_UI_COMPILED_NATIVE_MANIFEST_SHA256"]
+        currentCompiledBuild = nil
+        if compiledSource != nil || buildReceipt != nil || nativeManifest != nil {
+            let source = try XCTUnwrap(compiledSource)
+            let receipt = try XCTUnwrap(buildReceipt)
+            let native = try XCTUnwrap(nativeManifest)
+            try require(source.count == 40 && receipt.count == 64 && native.count == 64
+                && source.range(of: #"^[0-9a-f]{40}$"#, options: .regularExpression) != nil
+                && receipt.range(of: #"^[0-9a-f]{64}$"#, options: .regularExpression) != nil
+                && native.range(of: #"^[0-9a-f]{64}$"#, options: .regularExpression) != nil,
+                "Current compiled App/UI source, build receipt and native identity must be exact")
+            currentCompiledBuild = ["compiledAppAndUISourceSHA": source,
+                "buildReceiptSHA256": receipt, "nativeSourceManifestSHA256": native,
+                "fixturePreparationAppSourceSHA": fixture.appSourceSHA,
+                "acceptanceScope": "current-product-with-retained-fixture-preparation"]
+        }
         app.launchEnvironment["PINKHA_STAGE1_ACCEPTANCE"] = "1"
         app.launchEnvironment["PINKHA_ACCEPTANCE_DOCUMENT_KIND"] = "pinkha"
         app.launchEnvironment["PINKHA_UI27_ROUTE_OBSERVATION"] = "1"
@@ -321,10 +343,53 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
     private func launch() throws {
         if app.state != .notRunning { app.terminate() }
         app.launch()
-        let ready = app.descendants(matching: .any).matching(NSPredicate(
+        let deadline = ProcessInfo.processInfo.systemUptime + 120
+        func remaining() throws -> TimeInterval {
+            let value = deadline - ProcessInfo.processInfo.systemUptime
+            try require(value > 0, "Native Home did not become ready")
+            return value
+        }
+        let home = NSPredicate(
             format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@ OR (elementType == %d AND (label == %@ OR label == %@))",
-            "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton", XCUIElement.ElementType.button.rawValue, "More", "x24/More")).firstMatch
-        try require(ready.waitForExistence(timeout: 120), "Native Home did not become ready")
+            "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton", XCUIElement.ElementType.button.rawValue, "More", "x24/More")
+        let ready = app.descendants(matching: .any).matching(home).firstMatch
+        let warningPredicate = NSPredicate(format: "elementType == %d AND label == %@",
+            XCUIElement.ElementType.alert.rawValue, "Warning")
+        let startup = app.descendants(matching: .any).matching(NSCompoundPredicate(
+            orPredicateWithSubpredicates: [home, warningPredicate])).firstMatch
+        try require(startup.waitForExistence(timeout: remaining()), "Native Home did not become ready")
+        let warnings = app.alerts.matching(NSPredicate(format: "label == %@", "Warning"))
+        if warnings.firstMatch.exists {
+            try acceptOriginalDisposableAccountWarning(warnings, deadline: deadline)
+        }
+        try require(ready.waitForExistence(timeout: remaining()), "Native Home did not become ready")
+        try require(!warnings.firstMatch.exists, "Native startup warning remained or returned")
+    }
+    private func acceptOriginalDisposableAccountWarning(_ warnings: XCUIElementQuery, deadline: TimeInterval) throws {
+        // Use the original visible action only for this controller-bound disposable
+        // account. Production warnings and native authentication remain unchanged.
+        let environment = ProcessInfo.processInfo.environment
+        try require(environment["PINKHA_NATIVE_UI_DISPOSABLE"] == "1"
+            && fixture.token == environment["PINKHA_T5_UI_TOKEN"]
+            && fixture.appSourceSHA == environment["PINKHA_T5_UI_APP_SHA"]
+            && fixture.runID == environment["PINKHA_T5_UI_RUN_ID"], "Disposable warning fixture source/run differs")
+        let warning = warnings.firstMatch
+        try require(warnings.count == 1 && app.alerts.count == 1, "Native startup warning is not unique")
+        let text = "You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken."
+        let messages = warning.staticTexts.matching(NSPredicate(format: "label == %@", text))
+        let proceed = warning.buttons.matching(NSPredicate(format: "label == %@", "Continue with current vault"))
+        let logout = warning.buttons.matching(NSPredicate(format: "label == %@", "Logout from current vault"))
+        try require(messages.count == 1 && messages.firstMatch.exists, "Native startup warning message differs")
+        try require(warning.buttons.count == 2 && proceed.count == 1 && logout.count == 1,
+                    "Native startup warning actions differ")
+        let button = proceed.firstMatch
+        try require(button.exists && button.isEnabled && button.isHittable, "Native startup Continue is not hittable")
+        attachEvidence("t5-native-startup-warning")
+        try require(deadline > ProcessInfo.processInfo.systemUptime, "Native Home did not become ready")
+        button.tap()
+        let remaining = deadline - ProcessInfo.processInfo.systemUptime
+        try require(remaining > 0, "Native Home did not become ready")
+        try require(warning.waitForNonExistence(timeout: remaining), "Native startup warning remained")
     }
     private func enterObject(_ id: String) throws {
         var url = URLComponents()
@@ -437,6 +502,9 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
             "token": fixture?.token ?? "", "appSourceSHA": fixture?.appSourceSHA ?? "", "runID": fixture?.runID ?? "",
             "spaceID": fixture?.spaceID ?? "", "observations": observations,
             "coverage": "indexedTargetsOnly", "productLookupFlag": "OFF", "physicalDeviceAccepted": false]
+        if let currentCompiledBuild {
+            receipt["currentCompiledBuild"] = currentCompiledBuild
+        }
         if name.hasPrefix("r08-") {
             receipt["requestedAppLanguage"] = appLanguage
             receipt["requestedAppearance"] = ProcessInfo.processInfo.environment["PINKHA_T5_UI_APPEARANCE"] ?? ""

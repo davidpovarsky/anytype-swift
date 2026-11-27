@@ -35,6 +35,7 @@ struct SearchView<SearchData: SearchDataProtocol>: View {
     let emptyViewMode: SearchViewEmptyViewMode
     
     var dismissOnSelect = true
+    var showsEmptyState = true
     
     var search: (_ text: String) async -> Void
     var onSelect: (_ searchData: SearchData) -> Void
@@ -63,7 +64,7 @@ struct SearchView<SearchData: SearchDataProtocol>: View {
     private var content: some View {
         Group {
             if searchData.isEmpty {
-                emptyState
+                if showsEmptyState { emptyState }
             } else {
                 searchResults
             }

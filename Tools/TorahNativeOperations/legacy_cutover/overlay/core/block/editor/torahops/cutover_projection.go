@@ -42,6 +42,19 @@ type CutoverLegacyValue struct {
 	Bytes   []byte
 }
 
+// A durable receipt is not current source authority. Even an exact lost-ACK
+// retry must refuse a changed retained property or conflicting cutover state.
+// Sealing itself does not invalidate a retry of the original immutable bytes.
+func requireCurrentCutoverSource(state CutoverState) error {
+	if state.Status == CutoverDiverged {
+		return cutover.ErrLegacyChanged
+	}
+	if len(state.Conflicts) > 0 {
+		return cutover.ErrConflict
+	}
+	return nil
+}
+
 // projectCutover consumes only native-host-verified histories. Shape/receipt
 // fields supplied by an RPC must never be passed to this internal function.
 // No source or claims are written; multiple facts/claims are not coalesced here.

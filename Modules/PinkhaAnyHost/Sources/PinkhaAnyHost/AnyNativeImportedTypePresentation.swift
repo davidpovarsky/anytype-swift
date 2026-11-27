@@ -63,6 +63,14 @@ public struct AnyNativeImportedTypePresentation: Sendable {
                                   AnyDestinationDefinitionChecks.bytes(expected) else {
                             throw AnyNativePropertyError.invalidCatalog
                         }
+                    } else if let role = AnyDestinationCanonicalPropertyBinding.DerivedRole(rawValue: property) {
+                        // Imported recommendations must resolve to the exact native
+                        // derived field, including its immutable scope and format.
+                        let expected = AnyDestinationCanonicalPropertyBinding.nativeDerivedDescriptor(role)
+                        guard try AnyDestinationDefinitionChecks.bytes(definition.raw) ==
+                                AnyDestinationDefinitionChecks.bytes(expected) else {
+                            throw AnyNativePropertyError.invalidCatalog
+                        }
                     } else {
                         guard ["name", "description"].contains(property), definition.kind == .string,
                               definition.scope == "synced" else {
