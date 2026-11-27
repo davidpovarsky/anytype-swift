@@ -1,0 +1,17 @@
+{
+  "schema": "pinkha-restore-qualification-exclusive-receipt-inverse/v1",
+  "baseCommit": "a70e94f9647df16ce8962894b1973ba5a5a35163",
+  "path": "Tools/AnyEngineValidation/native_file_peer_comparison/native_product_custody/qualify_restore_exclusive.py",
+  "beforeSHA256": "a3f75f19a7163a813d11d1d91d179ad3a2f5e357b170ab63bc5ac5859f08c317",
+  "afterSHA256": "e2b025dc9a48f547b4e87fcceb39b9d9185c3c6b8f8920946369979fe3e379e5",
+  "changes": [
+    {
+      "old": "try:\n    assert not (OUT/'result.json').exists(),'preserve prior receipt'\n",
+      "new": "# Claim the output before entering any cleanup or persistence path. A second\n# invocation must fail here without touching its predecessor's receipt or\n# reading native custody inputs. O_EXCL also rejects an existing symlink.\nreceipt_fd=os.open(OUT/'result.json',os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)\nos.close(receipt_fd)\n\ntry:\n"
+    }
+  ],
+  "entireOriginalWrapperRestored": true,
+  "originalReceiptSHA256": "f8ccfc8e7b4ecb7a641ef904eb51d2502ed45406db352b6e6ee2eaa398f89be7",
+  "originalFourCasesReplayed": false,
+  "actualNativeRestoreCalls": 0
+}

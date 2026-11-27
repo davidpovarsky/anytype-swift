@@ -1,0 +1,346 @@
+{
+  "accountsOpened": 0,
+  "archives": [
+    {
+      "bytes": 54616872,
+      "inventorySHA256": "9d1c291f873a2d1719e660a2d7e30e5eb0d1971df5abf2072b21054c4ba095a0",
+      "path": "/mnt/development/projects/evidence/pinkha-t2-mixed-originals-retained-20261126/original-t2-mixed-build-and-executions.tar.gz",
+      "selectedOriginalMembersVerified": 5,
+      "sha256": "8999a6a781ae416050c828e48b0d0d72e7b85e7f62511459f66a49d0d8ca0d7d"
+    },
+    {
+      "bytes": 213543961,
+      "inventorySHA256": "52ab4da287fcd19a6abd3aa2481e6523bbf056343d1c9acb10f410102f42517a",
+      "path": "/mnt/development/projects/evidence/pinkha-t2-fixed-originals-retained-20261126/t2-fixed-originals-private.tar.gz",
+      "selectedOriginalMembersVerified": 4,
+      "sha256": "eb56b9e55ef24aa87e6d732f36d112f9e7cbb1adca29309dc66d80b1cc2eb546"
+    }
+  ],
+  "controllerSHA256": "fdaebfee76dd9aa67d6924b1a60f918e64cf2602b0c0f2e40d6646e1b7e0ab8e",
+  "historicalAuthorityMethodCount": 2,
+  "historicalLinuxP2PMethodCount": 2,
+  "historicalNetworkMethodCount": 12,
+  "limits": [
+    "Historical passes retain their original versions and platforms.",
+    "The current transport/membership delta has separate signed-ACL, focused peer and original-file native receipts.",
+    "No current mixed-version rerun, current file-revocation acceptance, Apple UI, Heart/Any compatibility or full release acceptance is claimed."
+  ],
+  "newCompilers": 0,
+  "newNativeRuns": 0,
+  "newTestInvocations": 0,
+  "protocol": "pinkha-retained-t2-evidence-source-delta-v1",
+  "rawPrivateLogsPublished": false,
+  "retainedAuthorityProof": {
+    "acceptedMethods": {
+      "TestPinkhaMixedNewOwnerOldMember_RemoteRoleEnforcement": {
+        "elapsed": 13.64,
+        "status": "pass"
+      },
+      "TestPinkhaMixedOldOwnerNewMember_RemoteRoleEnforcement": {
+        "elapsed": 15.53,
+        "status": "pass"
+      }
+    },
+    "logMember": "fixed-permission/mixed-fixed-authority-attempt1/original-go-test.jsonl",
+    "logSHA256": "36aee08b83cdefc5a097f40defd23ba85664f966df37c485f8d752f19723892e",
+    "new": {
+      "buildReceiptSHA256": "3241e434144c399e52c1bd199f4b75a142d2ae62e8de82206721f65f993e94b1",
+      "bytes": 80951234,
+      "commits": {
+        "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+        "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+      },
+      "path": "/Users/m1/development/anytype-root-active-20261125/t2-fixed-permission-20261126/build-attempt3/current/any",
+      "sha256": "8df7897ee6f45cdcef28c42fe025ad6f69062f15db779a660660cdc4016b00f7"
+    },
+    "old": {
+      "buildReceiptSHA256": "b792cee4e9e6e19ee75e75e25f5d248f898d81896d7bd3b84e8a7cb89c5338c7",
+      "bytes": 80931346,
+      "commits": {
+        "any": "9a190eb8236f18da75e5d85c3d1db31cd558d098",
+        "sdk": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953"
+      },
+      "path": "/Users/m1/development/anytype-root-active-20261125/t2-fixed-permission-20261126/build-attempt3/legacy/any",
+      "sha256": "ab8b03dee941645eb1608f49f1611b56e0e62f5fafb0b0d82a996dab13eaa647"
+    },
+    "originalExitCode": 0,
+    "originalFailed": 0,
+    "originalForcedNativeStops": 0,
+    "originalGroupAbsent": true,
+    "originalGroupRemaining": null,
+    "originalPassed": 2,
+    "originalRunStatus": "PASS_TWO_REAL_FIXED_NATIVE_MIXED_VERSION_AUTHORITY_SCENARIOS",
+    "originalSkipped": 0,
+    "otherOriginalMethodResults": {},
+    "receiptMember": "fixed-permission/mixed-fixed-authority-attempt1/RESULT.json",
+    "receiptSHA256": "b8694dbd2ac3facce43771bdb7f206461d1b95924a5ccb1248114185a394ce1d",
+    "sourceAfterVerifiedByOriginalController": true
+  },
+  "retainedLinuxP2PProof": {
+    "acceptedMethods": {
+      "TestPinkhaMixedNewOwnerOldMember_P2PColdRestore": {
+        "elapsed": 65.25,
+        "status": "pass"
+      },
+      "TestPinkhaMixedOldOwnerNewMember_P2PColdRestore": {
+        "elapsed": 6.98,
+        "status": "pass"
+      }
+    },
+    "binaries": {
+      "current": {
+        "buildReceiptSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+        "bytes": 78072016,
+        "commits": {
+          "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+          "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+        },
+        "path": "/var/lib/pinkha-root-t2-linux-20261126/build1/current/any",
+        "sha256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636"
+      },
+      "legacy": {
+        "buildReceiptSHA256": "22e2a1c7b921b8f7fcb2c8295039ce35bdd810c79a945495c6992095de23826d",
+        "bytes": 77992092,
+        "commits": {
+          "any": "9a190eb8236f18da75e5d85c3d1db31cd558d098",
+          "sdk": "e195f6c07a053c6588e39ffe72ee4fc44cf3d953"
+        },
+        "path": "/var/lib/pinkha-root-t2-linux-20261126/build1/legacy/any",
+        "sha256": "29fb9c39bd5b18d1dfc52a116f5b1635ac636400a850ce2cfadb5db20afc2481"
+      }
+    },
+    "logSHA256": "55eb7f90b4c7214b645c5583c45218ac55ab9074853a86a0c1056575b0c607dd",
+    "originalForcedNativeStops": 0,
+    "originalGroupAbsent": true,
+    "originalRunStatus": "PASS_TWO_REAL_MIXED_VERSION_NATIVE_P2P_COLD_RESTORES_LINUX",
+    "path": "/var/lib/pinkha-root-t2-linux-20261126/p2p-cold-originals1",
+    "qualificationSHA256": "6ed8f71ba7a44a44e9a7fc48a1d4f714b913063a23abfed34368585bf49afb57",
+    "receiptSHA256": "13931e7aba8941b0d71113626ec9349e3495cd99ba1cc1bc79723b81e3cd410f"
+  },
+  "retainedNetworkProofs": [
+    {
+      "acceptedMethods": {
+        "TestPinkhaMixedNewOwnerOldMember_InviteAccept": {
+          "elapsed": 29.66,
+          "status": "pass"
+        },
+        "TestPinkhaMixedOldOwnerNewMember_InviteAccept": {
+          "elapsed": 16.55,
+          "status": "pass"
+        }
+      },
+      "logMember": "mixed-invite-network-recovery-attempt1/original-go-test.jsonl",
+      "logSHA256": "e5b3840ab6379525edb688e5a922f2ead7aef4730e8bb40b9cee629d90b0ff02",
+      "new": {
+        "path": "/Users/m1/development/anytype-c-active-20261125/immutable-cli-c1fd-41c07/any",
+        "reuse": "Exact qualified native CLI; no C account directories reused",
+        "sha256": "6ff900f1354f11044d8619e3ce1c0a20673d0608fd4bd3b50ff0bd4bb850f9ba"
+      },
+      "old": {
+        "bytes": 80931346,
+        "path": "/Users/m1/development/anytype-root-active-20261125/t2-mixed-versions-20261126/old-native-build/any548",
+        "sha256": "8d92bbfa55eaad625c814f27bd918d7b6f63d4bfb48c6e6fdf9d0b469a07f129"
+      },
+      "originalExitCode": 0,
+      "originalFailed": 0,
+      "originalForcedNativeStops": 0,
+      "originalGroupAbsent": null,
+      "originalGroupRemaining": null,
+      "originalPassed": 2,
+      "originalRunStatus": "FAIL",
+      "originalSkipped": 0,
+      "otherOriginalMethodResults": {},
+      "receiptMember": "mixed-invite-network-recovery-attempt1/RESULT.json",
+      "receiptSHA256": "138e97950b965088d55fb02ebf8e8819696d6c7766c37606a45d3efe53b99fd8",
+      "separateProcessQualification": {
+        "member": "mixed-invite-network-recovery-attempt1/process-observation-qualification.json",
+        "nativeGroupAbsentByKernelESRCH": true,
+        "newTestInvocations": 0,
+        "sha256": "e9969aa6cb019f7d47d6adb8bf78df48cf6cdc39f55936fada30036601bd4a8b",
+        "status": "PASS_TWO_REAL_NATIVE_MIXED_VERSION_INVITE_SCENARIOS"
+      },
+      "sourceAfterVerifiedByOriginalController": true
+    },
+    {
+      "acceptedMethods": {
+        "TestPinkhaMixedNewOwnerOldMember_CRDTConvergence": {
+          "elapsed": 10.67,
+          "status": "pass"
+        },
+        "TestPinkhaMixedNewOwnerOldMember_OverviewConcurrentEdits": {
+          "elapsed": 29.4,
+          "status": "pass"
+        },
+        "TestPinkhaMixedNewOwnerOldMember_PermissionChange": {
+          "elapsed": 11.86,
+          "status": "pass"
+        },
+        "TestPinkhaMixedNewOwnerOldMember_StopSharing": {
+          "elapsed": 13.88,
+          "status": "pass"
+        },
+        "TestPinkhaMixedOldOwnerNewMember_CRDTConvergence": {
+          "elapsed": 17.1,
+          "status": "pass"
+        },
+        "TestPinkhaMixedOldOwnerNewMember_OverviewConcurrentEdits": {
+          "elapsed": 19.64,
+          "status": "pass"
+        },
+        "TestPinkhaMixedOldOwnerNewMember_PermissionChange": {
+          "elapsed": 15.91,
+          "status": "pass"
+        },
+        "TestPinkhaMixedOldOwnerNewMember_StopSharing": {
+          "elapsed": 13.2,
+          "status": "pass"
+        }
+      },
+      "logMember": "mixed-network-remaining-attempt1/original-go-test.jsonl",
+      "logSHA256": "615e1be438541e5251560038e125710c39031f234b11da3046384293c730f1e9",
+      "new": {
+        "path": "/Users/m1/development/anytype-c-active-20261125/immutable-cli-c1fd-41c07/any",
+        "reuse": "Exact qualified native CLI; no C account directories reused",
+        "sha256": "6ff900f1354f11044d8619e3ce1c0a20673d0608fd4bd3b50ff0bd4bb850f9ba"
+      },
+      "old": {
+        "bytes": 80931346,
+        "path": "/Users/m1/development/anytype-root-active-20261125/t2-mixed-versions-20261126/old-native-build/any548",
+        "sha256": "8d92bbfa55eaad625c814f27bd918d7b6f63d4bfb48c6e6fdf9d0b469a07f129"
+      },
+      "originalExitCode": 0,
+      "originalFailed": 0,
+      "originalForcedNativeStops": 0,
+      "originalGroupAbsent": null,
+      "originalGroupRemaining": false,
+      "originalPassed": 8,
+      "originalRunStatus": "PASS_EIGHT_REAL_NATIVE_MIXED_VERSION_NETWORK_SCENARIOS",
+      "originalSkipped": 0,
+      "otherOriginalMethodResults": {},
+      "receiptMember": "mixed-network-remaining-attempt1/RESULT.json",
+      "receiptSHA256": "94cee86068682bbee962024f61b889130fe3eb8441803198ac749fd44f16414b",
+      "sourceAfterVerifiedByOriginalController": true
+    },
+    {
+      "acceptedMethods": {
+        "TestPinkhaMixedNewOwnerOldMember_InviteRefusals": {
+          "elapsed": 73.73,
+          "status": "pass"
+        },
+        "TestPinkhaMixedOldOwnerNewMember_InviteRefusals": {
+          "elapsed": 37.99,
+          "status": "pass"
+        }
+      },
+      "logMember": "original-failures/mixed-remote-authority-attempt1/original-go-test.jsonl",
+      "logSHA256": "e470eec23c9e60898fb622de6604daa53729d6b5cc9e5c76a874ccf1f1827a48",
+      "new": {
+        "path": "/Users/m1/development/anytype-c-active-20261125/immutable-cli-c1fd-41c07/any",
+        "reuse": "Exact qualified native CLI; no C account directories reused",
+        "sha256": "6ff900f1354f11044d8619e3ce1c0a20673d0608fd4bd3b50ff0bd4bb850f9ba"
+      },
+      "old": {
+        "bytes": 80931346,
+        "path": "/Users/m1/development/anytype-root-active-20261125/t2-mixed-versions-20261126/old-native-build/any548",
+        "sha256": "8d92bbfa55eaad625c814f27bd918d7b6f63d4bfb48c6e6fdf9d0b469a07f129"
+      },
+      "originalExitCode": 1,
+      "originalFailed": 2,
+      "originalForcedNativeStops": 0,
+      "originalGroupAbsent": null,
+      "originalGroupRemaining": false,
+      "originalPassed": 2,
+      "originalRunStatus": "FAIL",
+      "originalSkipped": 0,
+      "otherOriginalMethodResults": {
+        "TestPinkhaMixedNewOwnerOldMember_RemoteRoleEnforcement": {
+          "elapsed": 20.64,
+          "status": "fail"
+        },
+        "TestPinkhaMixedOldOwnerNewMember_RemoteRoleEnforcement": {
+          "elapsed": 105.57,
+          "status": "fail"
+        }
+      },
+      "receiptMember": "original-failures/mixed-remote-authority-attempt1/RESULT.json",
+      "receiptSHA256": "4592e388798000aaf62cf4833f67b15935661978a268aa3530ff18c8c0ea31da",
+      "sourceAfterVerifiedByOriginalController": true
+    }
+  ],
+  "seconds": 4.938,
+  "sourceBoundary": {
+    "allOriginalFilesOutsideDeltaMatchManifests": true,
+    "baseFiles": 1594,
+    "baseManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "currentFiles": 1599,
+    "currentManifestSHA256": "e785ed2faf1d0bf0d18e7be7f0090cdee4061bd714f3be1509927895b9df336a",
+    "currentNativeBinarySHA256": "0796b939145f98fd3436b40c3ae3c7c9daec239b54f8c1fa237fb20a349d0b07",
+    "delta": [
+      {
+        "after": {
+          "bytes": 2101,
+          "sha256": "9b825f844292472288725a75e017bfaadae951d2228a6821d97a65a4f634053c"
+        },
+        "before": null,
+        "path": ".runtime-artifacts/sdk-source/internal/anysyncx/aclrefresh.go"
+      },
+      {
+        "after": {
+          "bytes": 6033,
+          "sha256": "f2aac7e5cf69a7318ca46d6cdf29403a30f0fcaff80090f06c2ec91ecca8b639"
+        },
+        "before": null,
+        "path": ".runtime-artifacts/sdk-source/internal/anysyncx/aclrefresh_test.go"
+      },
+      {
+        "after": {
+          "bytes": 34394,
+          "sha256": "f4fafe3619ad6e487eef4e67ce24ede38341e193479d6e1b02cbba62e41c077d"
+        },
+        "before": {
+          "bytes": 33553,
+          "sha256": "9f36dbde8afc47589a7420b2abd0ec5baf32badddf3f3853265d6b10e4e3f288"
+        },
+        "path": ".runtime-artifacts/sdk-source/internal/anysyncx/peermanager.go"
+      },
+      {
+        "after": {
+          "bytes": 1985,
+          "sha256": "9fb4d3e94dc3419c1e9bedb93a3dfb4a39c2a4c567fe3930e93dad4ea5e65c9b"
+        },
+        "before": null,
+        "path": ".runtime-artifacts/sdk-source/internal/anysyncx/peerprogress.go"
+      },
+      {
+        "after": {
+          "bytes": 8796,
+          "sha256": "2da1cd6150bb0da4c0e09bd11dd40dd046834ef5a48628b8820b4f7afa4cb4b8"
+        },
+        "before": null,
+        "path": ".runtime-artifacts/sdk-source/internal/anysyncx/peerprogress_test.go"
+      },
+      {
+        "after": {
+          "bytes": 39001,
+          "sha256": "80d8b53444d44d690c4ecb1582169a2c4aad9d654de7886a0b1a624337f72a04"
+        },
+        "before": {
+          "bytes": 38915,
+          "sha256": "76c8cc67c19f6d507b8dd3216adc02160aa086efd89180d28e25affa4b1832ea"
+        },
+        "path": ".runtime-artifacts/sdk-source/internal/spaceimpl/members.go"
+      },
+      {
+        "after": {
+          "bytes": 1402,
+          "sha256": "b242c4a650c4e9cbb7f921298c42851055c99ff159601aafb799ec01001c6a4f"
+        },
+        "before": null,
+        "path": ".runtime-artifacts/sdk-source/internal/spaceimpl/members_refresh.go"
+      }
+    ],
+    "sameSourceClaimForOldNetworkRuns": false
+  },
+  "sourceEdits": 0,
+  "status": "PASS_READ_ONLY_RETAINED_EVIDENCE_AUDIT_NOT_NEW_NATIVE_ACCEPTANCE"
+}
