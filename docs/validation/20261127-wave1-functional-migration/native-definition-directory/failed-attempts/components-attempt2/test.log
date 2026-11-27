@@ -1,0 +1,97 @@
+Building for debugging...
+[Computing dependencies]
+[Constructing description]
+[Pre-planning 1 / 421]
+[Planning 1 / 421]
+[Planning 317 / 421]
+[Planning deferred tasks]
+[Constructing 106 / 1251]
+[Constructing 703 / 1251]
+[Starting]
+[1 / 7]
+[1 / 25] Crypto
+[11 / 37] PinkhaAnyEngine
+[14 / 40] PinkhaAnyEngine
+[15 / 40] PinkhaAnyEngine
+[19 / 42] PinkhaAnyIntegration
+[21 / 45] PinkhaAnyIntegration
+[22 / 46] PinkhaAnyIntegration
+[23 / 46] PinkhaAnyIntegration
+[24 / 46] PinkhaAnyIntegration
+[27 / 46] PinkhaAnyEngine
+[28 / 50] PinkhaAnyHost
+[29 / 50] PinkhaAnyHost
+[30 / 50] PinkhaAnyHost
+[32 / 51] PinkhaAnyHost
+[36 / 52] PinkhaAnyIntegration
+[38 / 52] PinkhaAnyIntegration
+[39 / 52] PinkhaAnyHostTests-product
+[39 / 53] PinkhaAnyHostTests-product
+[40 / 53] PinkhaAnyEngine
+[40 / 54] PinkhaAnyHost
+[42 / 54] PinkhaAnyHostTests-product
+[46 / 58] PinkhaAnyHostTests-product
+[47 / 58] PinkhaAnyHostTests-product
+[48 / 58] PinkhaAnyHostTests-product
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeBookmarkTests.swift:110:24: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m108 |[0;0m             guard current == component else { throw AnyDestinationMigrationError.changedSource }
+[0;36m109 |[0;0m         }
+[0;36m110 |[0;0m         let executor = try AnyDestinationMigrationExecutor(client: client, journalDirectory: journal)
+    [0;36m|[0;0m                        `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m111 |[0;0m         let progress = try await executor.execute(plan: plan,
+[0;36m112 |[0;0m             payloads: { _ in throw BookmarkNativeFailure.unexpectedPayload },
+
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeIdentityTests.swift:146:30: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m144 |[0;0m                 "spaceID": .string(space), "typeID": .string(type), "exactNativeQueryCount": .integer(1)]))
+[0;36m145 |[0;0m         }
+[0;36m146 |[0;0m         let descriptorRows = try bindings.map { binding -> AnyJSON in
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m147 |[0;0m             .object(["propertyID": .string(binding.propertyID), "nativeContract": .string(binding.nativeContract),
+[0;36m148 |[0;0m                      "nativeDescriptorSHA256": .string(binding.nativeDescriptorSHA256),
+
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeTypeOrderTests.swift:104:24: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m102 |[0;0m         }
+[0;36m103 |[0;0m         try require(plan.binding.workspace == workspace && plan.items.count == 6)
+[0;36m104 |[0;0m         let executor = try AnyDestinationMigrationExecutor(client: client, journalDirectory: journal)
+    [0;36m|[0;0m                        `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m105 |[0;0m         let progress = try await executor.execute(plan: plan,
+[0;36m106 |[0;0m             payloads: { _ in throw TypeOrderNativeFailure.unexpectedPayload },
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[49 / 58] PinkhaAnyHostTests-product
+[52 / 58] PinkhaAnyHost
+[52 / 58] PinkhaAnyHostTests-product
+[53 / 59] PinkhaAnyHostTests-product
+[55 / 59] PinkhaAnyHostTests-product
+[56 / 59] PinkhaAnyHostTests-product
+[57 / 59] PinkhaAnyHostTests-test-runner
+[58 / 60] PinkhaAnyHostTests-test-runner
+[60 / 62] PinkhaAnyHostTests-test-runner
+[64 / 64] PinkhaAnyHostTests-test-runner
+[67 / 72] PinkhaAnyHostTests-test-runner
+[67 / 73] pinkha-any-host-probe-product
+[71 / 73] pinkha-any-host-probe-product
+[71 / 73] PinkhaAnyHostTests-test-runner
+[72 / 75] pinkha-any-host-probe-product
+[75 / 75] pinkha-any-host-probe-product
+warning: no rule to process file '/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Editor/Resources/PinkhaSemanticAnchors.xcstrings' of type 'text.json.xcstrings' for architecture 'aarch64'
+Build complete! (117.68 secs)
+Test Suite 'Selected tests' started at 2026-11-27 03:00:05.877
+Test Suite 'NativeImportedDefinitionDirectoryTests' started at 2026-11-27 03:00:05.890
+Test Case 'NativeImportedDefinitionDirectoryTests.testArchiveTypeAndPropertyNamespaceCannotBecomeOriginalDefinitionEntries' started at 2026-11-27 03:00:05.890
+<EXPR>:0: error: NativeImportedDefinitionDirectoryTests.testArchiveTypeAndPropertyNamespaceCannotBecomeOriginalDefinitionEntries : threw error "invalidDefinition("first-option", "UniqueKey")"
+Test Case 'NativeImportedDefinitionDirectoryTests.testArchiveTypeAndPropertyNamespaceCannotBecomeOriginalDefinitionEntries' failed (0.022 seconds)
+Test Case 'NativeImportedDefinitionDirectoryTests.testChangedMappingJoinsAndIntentIdentityRefuseBeforeAnyNativeRead' started at 2026-11-27 03:00:05.912
+<EXPR>:0: error: NativeImportedDefinitionDirectoryTests.testChangedMappingJoinsAndIntentIdentityRefuseBeforeAnyNativeRead : threw error "invalidDefinition("first-option", "UniqueKey")"
+Test Case 'NativeImportedDefinitionDirectoryTests.testChangedMappingJoinsAndIntentIdentityRefuseBeforeAnyNativeRead' failed (0.006 seconds)
+Test Case 'NativeImportedDefinitionDirectoryTests.testRetainedOriginalDefinitionsResolveWithoutPromotingArchivedTypes' started at 2026-11-27 03:00:05.918
+Test Case 'NativeImportedDefinitionDirectoryTests.testRetainedOriginalDefinitionsResolveWithoutPromotingArchivedTypes' passed (2.508 seconds)
+Test Case 'NativeImportedDefinitionDirectoryTests.testTypePropertyOptionAndCanonicalAddressesKeepDistinctNativeIdentities' started at 2026-11-27 03:00:08.426
+<EXPR>:0: error: NativeImportedDefinitionDirectoryTests.testTypePropertyOptionAndCanonicalAddressesKeepDistinctNativeIdentities : threw error "invalidDefinition("first-option", "UniqueKey")"
+Test Case 'NativeImportedDefinitionDirectoryTests.testTypePropertyOptionAndCanonicalAddressesKeepDistinctNativeIdentities' failed (0.007 seconds)
+Test Suite 'NativeImportedDefinitionDirectoryTests' failed at 2026-11-27 03:00:08.433
+	 Executed 4 tests, with 3 failures (3 unexpected) in 2.543 (2.543) seconds
+Test Suite 'Selected tests' failed at 2026-11-27 03:00:08.433
+	 Executed 4 tests, with 3 failures (3 unexpected) in 2.543 (2.543) seconds
+Note: Some test targets reported failures:
+  - PinkhaAnyHostTests (XCTest)

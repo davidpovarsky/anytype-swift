@@ -1,0 +1,60 @@
+{
+  "cleanupForcedKill": false,
+  "cleanupRequired": false,
+  "command": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/tmp/pinkha-w1-migration-swift-20261127",
+    "--disable-automatic-resolution",
+    "--jobs",
+    "2",
+    "--filter",
+    "NativeImportedDefinitionDirectoryTests"
+  ],
+  "compiled": true,
+  "controllerSHA256": "ef93c49a785b50c615efc1561848972b1557bc664b40bb2646bec9bf60049e63",
+  "dependencies": {
+    "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+    "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+    "torahinspectorkit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed"
+  },
+  "dependencyLocatorRepairReceiptSHA256": "d2318aec75ba8eb2bcb8786009cb6af2b1f2ec99daf6fd68bdd8b4fdf779a300",
+  "errors": [
+    {
+      "message": "",
+      "type": "AssertionError"
+    }
+  ],
+  "exitCode": 1,
+  "failLines": [
+    "Test Case 'NativeImportedDefinitionDirectoryTests.testArchiveTypeAndPropertyNamespaceCannotBecomeOriginalDefinitionEntries' failed (0.022 seconds)",
+    "Test Case 'NativeImportedDefinitionDirectoryTests.testChangedMappingJoinsAndIntentIdentityRefuseBeforeAnyNativeRead' failed (0.006 seconds)",
+    "Test Case 'NativeImportedDefinitionDirectoryTests.testTypePropertyOptionAndCanonicalAddressesKeepDistinctNativeIdentities' failed (0.007 seconds)"
+  ],
+  "freeScratchBefore": 3877011456,
+  "logSHA256": "645fdd19e4011f574a28135860dc260e330a58e3ed63bceff7f57aebe5b3a49c",
+  "minimumFreeBytes": 3809198080,
+  "ownedGroupAbsent": true,
+  "passLines": [
+    "Test Case 'NativeImportedDefinitionDirectoryTests.testRetainedOriginalDefinitionsResolveWithoutPromotingArchivedTypes' passed (2.508 seconds)"
+  ],
+  "pid": 2933062,
+  "scope": "Four imported definition directory methods including the exact retained original 182-operation plan and mappings; compile the new native definition edit/crash fixture without executing it",
+  "seconds": 136.397,
+  "sourceCommit": "15dde16bdabf9dd3d9a2cf47e44150dc0bbee567",
+  "sourceDefinitionsAfter": {
+    "execute-mappings.json": "eabdf2e362189abd5a2e78f7c13f1f1d77d8339c27109d2a6ec19ccdbb2755a3",
+    "execute-verification.json": "fee4dc5cb8e689e01bf2d1fbe8bd262c42388fd706da4114be72af3e6cf97350",
+    "source-preservation-plan.json": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930"
+  },
+  "sourceDefinitionsBefore": {
+    "execute-mappings.json": "eabdf2e362189abd5a2e78f7c13f1f1d77d8339c27109d2a6ec19ccdbb2755a3",
+    "execute-verification.json": "fee4dc5cb8e689e01bf2d1fbe8bd262c42388fd706da4114be72af3e6cf97350",
+    "source-preservation-plan.json": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930"
+  },
+  "sourceUnchanged": true,
+  "status": "FAIL"
+}

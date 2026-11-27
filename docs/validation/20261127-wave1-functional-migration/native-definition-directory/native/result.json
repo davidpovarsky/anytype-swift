@@ -1,0 +1,264 @@
+{
+  "acceptedCoherenceEvidenceReusedWithoutReaudit": true,
+  "actualNativeDefinitionPatchWrites": 6,
+  "actualPreparedOperations": 0,
+  "allOwnedGroupsPositivelyAbsent": true,
+  "appleUIPresentationAccepted": false,
+  "conditionalSchemaConcurrencyClaim": false,
+  "configRelocation": {
+    "change": "Only immutable nodeconf filesystem locator",
+    "nodeconfSHA256": "6554bc5841fbef2a1ee6ab65ac3b14a9117dbb762d8cc8d419633c8cd413b060",
+    "originalAccountConfigChanged": false
+  },
+  "controllerSources": {
+    "bookmark": "a6bf0a82bd690d2e0edc3b1f2c3be812842b48c1d2e837ff556ee71b7a8b7941",
+    "definitionDirectory": "cc8b55561c066f332eff52e8f2be5c99fdce8048446c166295537ffaa4dfad8a"
+  },
+  "definitionCounts": {
+    "allEntries": 13,
+    "canonicalProperties": 1,
+    "embeddedOptions": 4,
+    "importedPropertyEntries": 7,
+    "typeEntries": 1,
+    "unresolvedSourceDefinitions": 137
+  },
+  "definitionInputSHA256": "4292f59800b2ab2310882665885cadf0127506b8f412c16ff85d8ff05e522342",
+  "errors": [],
+  "historicalPreservationReexecuted": false,
+  "intentionalNativeSIGKILLCount": 1,
+  "minimumFreeBytes": 3736330240,
+  "nativeAfter": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildReceiptSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "unchanged": true
+  },
+  "nativeBefore": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildReceiptSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "unchanged": true
+  },
+  "offlinePolicy": {
+    "baselineTCPReachable": true,
+    "baselineUDPReceived": true,
+    "controls": {
+      "deniedSyscalls": [
+        "connect",
+        "sendto",
+        "sendmsg",
+        "sendmmsg",
+        "io_uring_setup",
+        "io_uring_enter",
+        "io_uring_register"
+      ],
+      "librarySHA256": "3d128123b494ca9e88f3c237b0912397145af1754e86ea99f460af6857441f19",
+      "noNewPrivileges": true,
+      "seccompFilterActive": true,
+      "tcpDenied": true,
+      "tcpErrno": 1,
+      "udpDenied": true,
+      "udpErrno": 1
+    },
+    "helperSHA256": "6eaca8b9602f9c1c7fce4b8a176759ad1a10577c0ee74eddb3264992976e86b1",
+    "scope": "only each owned native child and descendants; no global network change"
+  },
+  "originalAccountAndAcceptedReceiptsUnchanged": true,
+  "originalAccountOpenedByController": false,
+  "originalCoherenceAuditReceiptSHA256": "68319ff3adca0da6191ce0a4df8ff9654bac6d5be745306922662da5d5454244",
+  "phases": [
+    {
+      "compiledProducts": {
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner": "513971e6d679bb38c7160fd85d9bff04b3f6a14b3bc913b6a562460e1f28ff39",
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so": "0fcf1cbcc4df60de0a4c1e2bcf3fefdc9e621d9893650fad41b21c1d2a341a42"
+      },
+      "exitCode": 0,
+      "logSHA256": "066b7aa91ae2080b7af2e75cbbe037a907f23d798d623171c9312a84322cd4ce",
+      "method": "testOriginalDefinitionIdentitiesEditsParentRefusalAndColdReopen",
+      "nativePID": 2975832,
+      "phase": "edit",
+      "result": "PASS",
+      "seconds": 31.863,
+      "testGroupPositivelyAbsent": true,
+      "testPID": 2976260
+    },
+    {
+      "compiledProducts": {
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner": "513971e6d679bb38c7160fd85d9bff04b3f6a14b3bc913b6a562460e1f28ff39",
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so": "0fcf1cbcc4df60de0a4c1e2bcf3fefdc9e621d9893650fad41b21c1d2a341a42"
+      },
+      "exitCode": 0,
+      "logSHA256": "9e4c9db86a540bdeaa724b532c8583111ff9bead65ad5ccce79529fe179f3734",
+      "method": "testOriginalDefinitionIdentitiesEditsParentRefusalAndColdReopen",
+      "nativePID": 2978228,
+      "phase": "edited-reopen",
+      "result": "PASS",
+      "seconds": 21.575,
+      "testGroupPositivelyAbsent": true,
+      "testPID": 2978354
+    },
+    {
+      "compiledProducts": {
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner": "513971e6d679bb38c7160fd85d9bff04b3f6a14b3bc913b6a562460e1f28ff39",
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so": "0fcf1cbcc4df60de0a4c1e2bcf3fefdc9e621d9893650fad41b21c1d2a341a42"
+      },
+      "exitCode": 0,
+      "logSHA256": "a35e81bf7d89af69e777b42288a878eff772bc31bc1120a164b40d8cb0608cc2",
+      "method": "testOriginalDefinitionIdentitiesEditsParentRefusalAndColdReopen",
+      "nativePID": 2980203,
+      "phase": "restored-reopen",
+      "result": "PASS",
+      "seconds": 30.262,
+      "testGroupPositivelyAbsent": true,
+      "testPID": 2980316
+    }
+  ],
+  "privateLogReceipts": [
+    {
+      "bytes": 663581,
+      "name": "edit.log",
+      "sha256": "6e68a1bfb261ae8a98e1ed29b14556beeed225c54f1275b8f99cf95d7aa7e887"
+    },
+    {
+      "bytes": 575433,
+      "name": "edited-reopen.log",
+      "sha256": "aae29cfe314166a0d9a402f34d15e61cbd1ab473dfb41461455f8d1740838f4e"
+    },
+    {
+      "bytes": 381322,
+      "name": "restored-reopen.log",
+      "sha256": "fb8f8381749a5f07f7099c79cae0c987699f094c2f036e044eb07bbc3e9e6bea"
+    }
+  ],
+  "processes": [
+    {
+      "actualExecutableSHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+      "actualInheritedNoNewPrivileges": true,
+      "actualInheritedSeccompFilter": true,
+      "exitCode": -9,
+      "groupPositivelyAbsent": true,
+      "intentionalCrashObserved": true,
+      "intentionalCrashRequested": "SIGKILL after four confirmed definition PATCHes",
+      "outboundDeniedByOS": true,
+      "phase": "edit",
+      "pid": 2975832
+    },
+    {
+      "actualExecutableSHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+      "actualInheritedNoNewPrivileges": true,
+      "actualInheritedSeccompFilter": true,
+      "exitCode": 0,
+      "groupPositivelyAbsent": true,
+      "outboundDeniedByOS": true,
+      "phase": "edited-reopen",
+      "pid": 2978228
+    },
+    {
+      "actualExecutableSHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+      "actualInheritedNoNewPrivileges": true,
+      "actualInheritedSeccompFilter": true,
+      "exitCode": 0,
+      "groupPositivelyAbsent": true,
+      "outboundDeniedByOS": true,
+      "phase": "restored-reopen",
+      "pid": 2980203
+    }
+  ],
+  "proofSHA256": {
+    "baseline-definitions.json": "158f557f7703dc44f7c64d65022df6679e56b371f561032178f806f1695ed426",
+    "cold-edited-definitions.json": "e9d2d1048fc41a2169f51aee71b91e1d04587ea1f59daa9f5509031d2f814423",
+    "cold-restored-definitions.json": "158f557f7703dc44f7c64d65022df6679e56b371f561032178f806f1695ed426",
+    "edit-result.json": "c92599a8951004805a342665493ae74647ba494016d1359cfea41e06d6871430",
+    "edited-definitions.json": "e9d2d1048fc41a2169f51aee71b91e1d04587ea1f59daa9f5509031d2f814423",
+    "edited-reopen-result.json": "fa7de8f96ecc2f940ecbc5e204463535a52dc486d6bca46312663b750ce2827c",
+    "negative-controls.json": "565d60d12eef50d0ea6687e07843806979d9c9ab65d5208d80025a567f294d9f",
+    "restored-definitions.json": "158f557f7703dc44f7c64d65022df6679e56b371f561032178f806f1695ed426",
+    "restored-reopen-result.json": "a7caab48b3c72bac33518ef7f744388d07d2dafbbc0d6606d2c148aa7c0c50d0",
+    "write-ledger.json": "6b9d6a1d11c8d56eff98fa4f844cb15e62f1958211765ea8a6992477003e7799"
+  },
+  "protocol": "pinkha-retained-original-definition-directory-linux-v1",
+  "retainedInput": {
+    "accountInitialized": false,
+    "activeOriginalAccountProcesses": 0,
+    "controllerReceiptSHA256": "5925bd5a08c972e3dbe7666b77f9e230fe340b36b46289c870384e66c516a899",
+    "copyBytesAndModesEqual": true,
+    "entries": 26,
+    "inventorySHA256": "79e1d70540df9e8c493e231a6d0f5cae92b92bb331fc10b544aad29c6cafb8ba",
+    "preservationReceiptSHA256": "f7f4a5b34465907c3285229a266a488229a92eb1c3a7c04c5b4cdd162ed1b32b",
+    "spaceCreated": false
+  },
+  "retainedPreservationReceiptSHA256": "f7f4a5b34465907c3285229a266a488229a92eb1c3a7c04c5b4cdd162ed1b32b",
+  "revokedSessionReadRefused": true,
+  "scope": "Scoped directory reads original native Type, Property, embedded Option and canonical Property identities; six definition PATCHes on an exact owned account copy with actual SIGKILL and cold restoration",
+  "seconds": 109.541,
+  "sourceAdmissionPromoted": false,
+  "sourceCommit": "15dde16bdabf9dd3d9a2cf47e44150dc0bbee567",
+  "sourceDefinitionMembersAfter": {
+    "execute-mappings.json": {
+      "bytes": 118718,
+      "path": "execute-mappings.json",
+      "sha256": "eabdf2e362189abd5a2e78f7c13f1f1d77d8339c27109d2a6ec19ccdbb2755a3"
+    },
+    "execute-verification.json": {
+      "bytes": 53661,
+      "path": "execute-verification.json",
+      "sha256": "fee4dc5cb8e689e01bf2d1fbe8bd262c42388fd706da4114be72af3e6cf97350"
+    },
+    "source-preservation-plan.json": {
+      "bytes": 1823803,
+      "path": "source-preservation-plan.json",
+      "sha256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930"
+    }
+  },
+  "sourceDefinitionMembersBefore": {
+    "execute-mappings.json": {
+      "bytes": 118718,
+      "path": "execute-mappings.json",
+      "sha256": "eabdf2e362189abd5a2e78f7c13f1f1d77d8339c27109d2a6ec19ccdbb2755a3"
+    },
+    "execute-verification.json": {
+      "bytes": 53661,
+      "path": "execute-verification.json",
+      "sha256": "fee4dc5cb8e689e01bf2d1fbe8bd262c42388fd706da4114be72af3e6cf97350"
+    },
+    "source-preservation-plan.json": {
+      "bytes": 1823803,
+      "path": "source-preservation-plan.json",
+      "sha256": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930"
+    }
+  },
+  "sourceDefinitionsUnchanged": true,
+  "status": "PASS",
+  "swiftBuildReceiptSHA256": "43b81919881037f6772ce4efd057158198e1e3722ecca150acf38f2da60f6853",
+  "swiftSourcesUnchanged": true,
+  "testInvocations": 3,
+  "testLaunches": [
+    {
+      "method": "testOriginalDefinitionIdentitiesEditsParentRefusalAndColdReopen",
+      "phase": "edit",
+      "pid": 2976260
+    },
+    {
+      "method": "testOriginalDefinitionIdentitiesEditsParentRefusalAndColdReopen",
+      "phase": "edited-reopen",
+      "pid": 2978354
+    },
+    {
+      "method": "testOriginalDefinitionIdentitiesEditsParentRefusalAndColdReopen",
+      "phase": "restored-reopen",
+      "pid": 2980316
+    }
+  ],
+  "uniqueTestMethods": 1,
+  "wholeSpaceMigration": false
+}
