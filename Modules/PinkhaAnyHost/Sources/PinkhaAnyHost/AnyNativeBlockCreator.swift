@@ -24,10 +24,11 @@ public struct AnyNativeBlockCreationIntent: Codable, Equatable, Sendable {
                 style: AnyJSON = .object([:]), parentID: String = "", position: String) throws {
         guard AnyNativeCreationIdentity.isHex(mutationID, count: 32),
               AnyEditorBlock.validID(objectID), AnyEditorBlock.validID(dataset),
+              parentID.utf8.count <= 256,
               parentID.isEmpty || AnyEditorBlock.validID(parentID),
               ["paragraph", "heading", "quote", "code", "list_item", "check_list_item"].contains(type),
               text.utf8.count <= 65_536, style.object != nil,
-              !position.isEmpty, position.utf8.count <= 1024,
+              !position.isEmpty, position.utf8.count <= 256,
               position.utf8.allSatisfy({ $0 >= 33 && $0 <= 126 && $0 != 34 && $0 != 92 }) else {
             throw AnyNativeCreationError.invalidIntent
         }
