@@ -2,21 +2,36 @@ import Foundation
 import HanlinHostContracts
 import HanlinPlatformContracts
 
+/// Strict host-private request plans share the same original worker. A plan is
+/// data, not native authority; its parser still validates the complete SDK envelope.
+public protocol PinkhaHanlinNativeWritePlan: Sendable {
+    static var localToolID: String { get }
+    var identity: PinkhaHanlinWriteIdentity { get }
+    init(invocation: HanlinHostInvocation) throws
+}
+
+extension PinkhaHanlinCreatePagePlan: PinkhaHanlinNativeWritePlan {
+    public static var localToolID: String { "create-page" }
+}
+
 /// Shared reservation/timeout/cancellation/late-receipt worker, extracted from
 /// the original Heart host. Native wrappers supply only current UI validation,
 /// single-use approval consumption and native object I/O. No SDK authority is
 /// delegated to the I/O callback. A native worker is never cancelled after
 /// dispatch because cancellation cannot prove rollback.
 @MainActor
-public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
+public final class PinkhaHanlinWriteRunner<Plan: PinkhaHanlinNativeWritePlan, Approval, Prepared> {
     public typealias Receipt = @MainActor @Sendable (String) async throws -> Void
-    public typealias Dispatch = @MainActor (PinkhaHanlinCreatePagePlan, Prepared, @escaping Receipt) async throws -> Void
+    public typealias EffectAuthorization = @MainActor @Sendable () throws -> Void
+    public typealias Dispatch = @MainActor (Plan, Prepared, @escaping EffectAuthorization, @escaping Receipt) async throws -> Void
     private let journal: PinkhaHanlinWriteJournal
     private let logicalToolID: HanlinLogicalToolID
-    private let validatePlan: @MainActor (PinkhaHanlinCreatePagePlan) throws -> Void
+    private let validatePlan: @MainActor (Plan) throws -> Void
     private let validateAvailable: @MainActor () throws -> Void
     private let invalidateContext: @MainActor () -> Void
-    private let prepareDispatch: @MainActor (PinkhaHanlinCreatePagePlan, Approval) throws -> Prepared
+    private let prepareDispatch: @MainActor (Plan, Approval) throws -> Prepared
+    private let reserveMetadata: @MainActor (Plan) async throws -> Void
+    private let closeDispatch: @MainActor (Plan) async throws -> Void
     private let dispatch: Dispatch
     private var active: Job?
     private var cancelled = Set<HanlinToolInvocationID>()
@@ -24,7 +39,7 @@ public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
 
     @MainActor
     private final class Job {
-        let plan: PinkhaHanlinCreatePagePlan
+        let plan: Plan
         let approval: Approval
         let dispatchDeadline: Date
         let cancellation = PinkhaHanlinRevocationFence()
@@ -35,7 +50,7 @@ public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
         var timer: Task<Void, Never>?
         var drainWaiters: [CheckedContinuation<Void, Never>] = []
 
-        init(plan: PinkhaHanlinCreatePagePlan, approval: Approval, dispatchDeadline: Date) {
+        init(plan: Plan, approval: Approval, dispatchDeadline: Date) {
             self.plan = plan; self.approval = approval; self.dispatchDeadline = dispatchDeadline
         }
         func complete(_ result: Result<HanlinHostExecutionResult, any Error>) {
@@ -53,21 +68,24 @@ public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
     }
 
     public init(journal: PinkhaHanlinWriteJournal,
-                validatePlan: @escaping @MainActor (PinkhaHanlinCreatePagePlan) throws -> Void,
+                validatePlan: @escaping @MainActor (Plan) throws -> Void,
                 validateAvailable: @escaping @MainActor () throws -> Void,
                 invalidate: @escaping @MainActor () -> Void,
-                prepareDispatch: @escaping @MainActor (PinkhaHanlinCreatePagePlan, Approval) throws -> Prepared,
+                prepareDispatch: @escaping @MainActor (Plan, Approval) throws -> Prepared,
+                reserveMetadata: @escaping @MainActor (Plan) async throws -> Void,
+                closeDispatch: @escaping @MainActor (Plan) async throws -> Void,
                 dispatch: @escaping Dispatch) throws {
         self.journal = journal; self.validatePlan = validatePlan
         self.validateAvailable = validateAvailable; self.invalidateContext = invalidate
         self.prepareDispatch = prepareDispatch; self.dispatch = dispatch
+        self.reserveMetadata = reserveMetadata; self.closeDispatch = closeDispatch
         self.logicalToolID = .init(providerInstanceID: try .init(validating: "anytype.host"),
-                                   localToolID: try .init(validating: "create-page"))
+                                   localToolID: try .init(validating: Plan.localToolID))
     }
 
     public func execute(_ invocation: HanlinHostInvocation,
                  approval: Approval) async throws -> HanlinHostExecutionResult {
-        let plan = try PinkhaHanlinCreatePagePlan(invocation: invocation)
+        let plan = try Plan(invocation: invocation)
         try validatePlan(plan)
         guard active?.ended != false, receipts.count < 256,
               !cancelled.contains(invocation.request.id) else { throw HanlinHostError.denied }
@@ -133,12 +151,14 @@ public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
         defer { job.finishNativeWork() }
         do {
             // Last available host boundary after reservation's await and after MainActor queueing.
-            guard !job.cancellation.isRevoked,
-                  !cancelled.contains(job.plan.identity.invocationID),
-                  job.dispatchDeadline > .now else { throw HanlinHostError.cancelled }
+            try authorizeNextEffect(job)
+            try await reserveMetadata(job.plan)
+            // The metadata await may race Stop, account invalidation or expiry.
+            // Approval remains single-use and is consumed only after this recheck.
+            try authorizeNextEffect(job)
             let prepared = try prepareDispatch(job.plan, job.approval)
             job.dispatched = true
-            try await dispatch(job.plan, prepared) { [self, job] objectID in
+            try await dispatch(job.plan, prepared, { [self, job] in try authorizeNextEffect(job) }) { [self, job] objectID in
                 // Native wrappers call this INSIDE their owned engine lease.
                 // Original-scope journal persistence precedes lease/result delivery.
                 guard !job.receivedNativeResult, !objectID.isEmpty, objectID.utf8.count <= 256 else {
@@ -162,6 +182,10 @@ public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
 
     private func retainOutcome(_ job: Job, effect: PinkhaHanlinWriteJournal.Effect) async {
         do {
+            // Close the same durable save dispatch state before a terminal
+            // metadata outcome. Native receipt/readback drain does not need this
+            // authority and may still refine the original uncertain aggregate.
+            try await closeDispatch(job.plan)
             let entry = try await journal.record(effect, identity: job.plan.identity)
             finish(job, entry: entry)
         } catch {
@@ -173,6 +197,14 @@ public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
             }
             job.complete(.failure(HanlinHostError.unresolvedWrite))
         }
+    }
+
+    private func authorizeNextEffect(_ job: Job) throws {
+        guard active === job, !job.ended, !job.cancellation.isRevoked,
+              !cancelled.contains(job.plan.identity.invocationID), job.dispatchDeadline > .now else {
+            throw HanlinHostError.cancelled
+        }
+        try validatePlan(job.plan)
     }
 
     private func finish(_ job: Job, entry: PinkhaHanlinWriteJournal.Entry) {
@@ -199,4 +231,38 @@ public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
             effectState: effect, context: identity.session.context, reconciliationReference: identity.key)
     }
 
+}
+
+/// Compatibility adapter for the existing title-only native bindings. There is
+/// exactly one worker implementation; existing APIs and single-use approvals
+/// remain unchanged, including original native drain and metadata-only receipts.
+@MainActor
+public final class PinkhaHanlinCreateRunner<Approval, Prepared> {
+    public typealias Receipt = @MainActor @Sendable (String) async throws -> Void
+    public typealias Dispatch = @MainActor (PinkhaHanlinCreatePagePlan, Prepared, @escaping Receipt) async throws -> Void
+    private let worker: PinkhaHanlinWriteRunner<PinkhaHanlinCreatePagePlan, Approval, Prepared>
+
+    public init(journal: PinkhaHanlinWriteJournal,
+                validatePlan: @escaping @MainActor (PinkhaHanlinCreatePagePlan) throws -> Void,
+                validateAvailable: @escaping @MainActor () throws -> Void,
+                invalidate: @escaping @MainActor () -> Void,
+                prepareDispatch: @escaping @MainActor (PinkhaHanlinCreatePagePlan, Approval) throws -> Prepared,
+                dispatch: @escaping Dispatch) throws {
+        worker = try .init(journal: journal, validatePlan: validatePlan, validateAvailable: validateAvailable,
+            invalidate: invalidate, prepareDispatch: prepareDispatch, reserveMetadata: { _ in }, closeDispatch: { _ in },
+            dispatch: { plan, prepared, authorizeNextEffect, receive in
+                try authorizeNextEffect()
+                try await dispatch(plan, prepared, receive)
+            })
+    }
+
+    public func execute(_ invocation: HanlinHostInvocation, approval: Approval) async throws -> HanlinHostExecutionResult {
+        try await worker.execute(invocation, approval: approval)
+    }
+    public func cancel(_ id: HanlinToolInvocationID) async { await worker.cancel(id) }
+    public func receipt(for id: HanlinToolInvocationID) -> HanlinHostExecutionResult? { worker.receipt(for: id) }
+    public func drainCancelledInvocation(_ id: HanlinToolInvocationID) async -> HanlinHostExecutionResult? {
+        await worker.drainCancelledInvocation(id)
+    }
+    public func validateCreationAvailability() throws { try worker.validateCreationAvailability() }
 }

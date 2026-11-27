@@ -330,8 +330,10 @@ public actor PinkhaHanlinWriteJournal: PinkhaHanlinSaveMessageProgressStore {
 
     /// Atomic metadata-only close used by the existing worker's cancellation
     /// fence. It races neither a stale expected state nor an independent owner.
-    /// A close before initial reservation is safe: that reservation then sees
-    /// the generic not-dispatched outcome and cannot authorize native work.
+    /// A close before initial reservation creates no effect authority. The
+    /// shared worker must recheck its synchronous cancellation fence after the
+    /// metadata await and close again on failure; close and terminal outcome
+    /// are separate actor calls and must not be described as one transaction.
     public func closeSaveMessageDispatch(for identity: PinkhaHanlinWriteIdentity) throws {
         guard !poisoned else { throw PinkhaHanlinWriteError.unavailable }
         guard identity.session.context.namespace == namespace,
@@ -420,7 +422,7 @@ private enum PinkhaHanlinSaveMetadataLayout {
     static let marker = ".save-message-v1."
     static let maximumReservedBytes = 64 * 1_048_576
     static let ordinaryEventBytes = 4_096
-    static let bodyEventBytes = 32_768
+    static let bodyEventBytes = 65_536
 
     static func name(key: String, sequence: Int) -> String {
         key + marker + String(format: "%03d", sequence)
