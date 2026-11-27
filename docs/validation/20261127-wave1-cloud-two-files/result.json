@@ -1,0 +1,116 @@
+{
+  "schema": "pinkha-cloud-two-files-qualification-v1",
+  "status": "PASS_TWO_DURABLE_CLOUD_FILES_AND_RECIPIENT_OFFLINE_ONLY",
+  "scope": "only the two already-durable originals; large/image quota remains open",
+  "originalReceipt": {
+    "path": "/var/lib/pinkha-w1-cloud-filesv2-20261127/attempt6-small-cloud/result.json",
+    "sha256": "e6446c4ff820e0dcdf80ba298a977368a7a5c19ada0eea9dab1280998a6937ba"
+  },
+  "controller": {
+    "path": "Tools/AnyEngineValidation/native_file_durability/run_cloud_two_durable_files6.py",
+    "sha256": "4abfea7545f5fbeea014ed0afe058a33a8e0619f29d2e4618bc288e688b94914"
+  },
+  "sourceBefore": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "sourceAfter": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "productionNodeconfSHA256": "6554bc5841fbef2a1ee6ab65ac3b14a9117dbb762d8cc8d419633c8cd413b060",
+  "configSHA256": "a441343df6def76ba2738f9e4fb722004bd54ad59dc4f7432df0ab3e8c37ad76",
+  "actualNativeProcesses": 2,
+  "distinctProcessIDs": true,
+  "senderStarted": false,
+  "directPeersEnabled": false,
+  "selectedFilesCloudCustodyAccepted": true,
+  "selectedFilesCrossAccountBytesAccepted": true,
+  "selectedFilesOfflineAccepted": true,
+  "readerWriteDenialAccepted": true,
+  "allFourFilesAccepted": false,
+  "partialCrashResumeAccepted": false,
+  "quotaFailureRecoveryAccepted": false,
+  "appleRuntimeAccepted": false,
+  "newNativeBuilds": 0,
+  "elapsedSeconds": 7.409,
+  "files": [
+    {
+      "bytes": 8192,
+      "cachedCAR": {
+        "allocatedBytes": 12288,
+        "bytes": 8421,
+        "relativePath": "A7zf8i42qUR8rZJwHrztRqFPifD3upr1fkyN9V3pF72AAaGi/sdk/files/bafyreiet62u77nehvmtgn45ltxrk6itepoighks3u4y2f3pjjotaczcsfi.361psf76ieku2/7i/bafybeibfvxnwxvg6mufc4lksm4t544hwm3233ph3asn4lgdhjjifmj567i.car",
+        "sha256": "6381c4b6acf43c0c0946c0a89a7c0e6a1f534910e3d2cfd0cdc6d67baae37734"
+      },
+      "durableBeforeRead": true,
+      "fileId": "BEaHYwGfZiM",
+      "initiallyCached": false,
+      "mime": "application/octet-stream",
+      "name": "cloud-binary.bin",
+      "nativeReadSeconds": 1.51,
+      "plaintextSHA256": "5b3ad191f3c210b61bd5d1ef5ffc838b7fbabe38e8b42207fa04bf2388831313",
+      "rootCid": "bafybeibfvxnwxvg6mufc4lksm4t544hwm3233ph3asn4lgdhjjifmj567i"
+    },
+    {
+      "bytes": 12420,
+      "cachedCAR": {
+        "allocatedBytes": 16384,
+        "bytes": 12649,
+        "relativePath": "A7zf8i42qUR8rZJwHrztRqFPifD3upr1fkyN9V3pF72AAaGi/sdk/files/bafyreiet62u77nehvmtgn45ltxrk6itepoighks3u4y2f3pjjotaczcsfi.361psf76ieku2/7e/bafybeighhcuudwqvbo36hmty4mrfdkp4cuuvzn3ddzspi7vjt7klnugg7e.car",
+        "sha256": "5b64ff278a3cd49158eebcfd2379f1073c10a2f965b0a6b8207d357c3e4fd57c"
+      },
+      "durableBeforeRead": true,
+      "fileId": "ahKeFKn7uta",
+      "initiallyCached": false,
+      "mime": "image/png",
+      "name": "cloud-thumb.png",
+      "nativeReadSeconds": 0.581,
+      "plaintextSHA256": "710df0c12429ecca0af68e5217edf5a1d82176869b0c4a30ee52082c858e21c1",
+      "rootCid": "bafybeighhcuudwqvbo36hmty4mrfdkp4cuuvzn3ddzspi7vjt7klnugg7e"
+    }
+  ],
+  "processes": [
+    {
+      "name": "bob-durable-cloud-read",
+      "pid": 2744949,
+      "exitCode": 0,
+      "groupPositivelyAbsent": true,
+      "forcedKill": false,
+      "offline": false
+    },
+    {
+      "name": "bob-durable-cold-offline",
+      "pid": 2745188,
+      "exitCode": 0,
+      "groupPositivelyAbsent": true,
+      "forcedKill": false,
+      "offline": true
+    }
+  ],
+  "offlineFence": {
+    "NoNewPrivs": 1,
+    "Seccomp": 2,
+    "networkPeers": 0
+  },
+  "priorQuotaFailure": {
+    "path": "/var/lib/pinkha-w1-cloud-filesv2-20261127/attempt5/result.json",
+    "sha256": "84810888ba0be79546278f90286ff4da9e0a6052daf83922e787132ad628b59c"
+  },
+  "retainedPrivatePairTouched": false,
+  "sourceOrAcceptanceChangedDuringRun": false
+}
