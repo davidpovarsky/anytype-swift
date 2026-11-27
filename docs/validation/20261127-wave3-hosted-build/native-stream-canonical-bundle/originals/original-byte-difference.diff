@@ -1,0 +1,49 @@
+--- /tmp/pinkha-native8ac-stream-primary339/upload-artifact-ea165f8.original.js
++++ /tmp/pinkha-native8ac-stream-primary339/canonical-bundle-correction1/upload-artifact-ea165f8.canonical.js
+@@ -93165,5 +93165,5 @@
+ 
+ function normalize(str) { // fix bug in v8
+-  return str.split('^@').map(function (s) { return s.normalize('NFC'); }).join('^@');
++  return str.split('\u0000').map(function (s) { return s.normalize('NFC'); }).join('\u0000');
+ }
+ 
+@@ -103105,5 +103105,5 @@
+  * @see https://mimesniff.spec.whatwg.org/#http-quoted-string-token-code-point
+  */
+-const HTTP_QUOTED_STRING_TOKENS = /[\u0009|\u0020-\u007E|^@-\u00FF]/ // eslint-disable-line
++const HTTP_QUOTED_STRING_TOKENS = /[\u0009|\u0020-\u007E|\u0080-\u00FF]/ // eslint-disable-line
+ 
+ // https://fetch.spec.whatwg.org/#data-url-processor
+@@ -103497,5 +103497,5 @@
+ function forgivingBase64 (data) {
+   // 1. Remove all ASCII whitespace from data.
+-  data = data.replace(/[\u0009\u000A^L\u000D\u0020]/g, '')  // eslint-disable-line
++  data = data.replace(/[\u0009\u000A\u000C\u000D\u0020]/g, '')  // eslint-disable-line
+ 
+   // 2. If data’s code point length divides by 4 leaving
+@@ -117397,5 +117397,5 @@
+ }
+ 
+-const cp437 = '^@☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ ';
++const cp437 = '\u0000☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ ';
+ 
+ UnzipStream.prototype._decodeString = function (buffer, isUtf8) {
+@@ -118875,9 +118875,9 @@
+ 
+ function containsForbiddenHostCodePoint(string) {
+-  return string.search(/^@|\u0009|\u000A|\u000D|\u0020|#|%|\/|:|\?|@|\[|\\|\]/) !== -1;
++  return string.search(/\u0000|\u0009|\u000A|\u000D|\u0020|#|%|\/|:|\?|@|\[|\\|\]/) !== -1;
+ }
+ 
+ function containsForbiddenHostCodePointExcludingPercent(string) {
+-  return string.search(/^@|\u0009|\u000A|\u000D|\u0020|#|\/|:|\?|@|\[|\\|\]/) !== -1;
++  return string.search(/\u0000|\u0009|\u000A|\u000D|\u0020|#|\/|:|\?|@|\[|\\|\]/) !== -1;
+ }
+ 
+@@ -119291,5 +119291,5 @@
+ 
+ function trimControlChars(url) {
+-  return url.replace(/^[^@-^_\u0020]+|[^@-^_\u0020]+$/g, "");
++  return url.replace(/^[\u0000-\u001F\u0020]+|[\u0000-\u001F\u0020]+$/g, "");
+ }
+ 

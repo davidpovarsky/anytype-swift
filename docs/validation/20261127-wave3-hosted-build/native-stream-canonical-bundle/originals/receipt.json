@@ -1,0 +1,32 @@
+{
+  "CRCounts": [
+    0,
+    0
+  ],
+  "LFCounts": [
+    135925,
+    135925
+  ],
+  "atUTC": "2026-11-27T08:38:30.786397+00:00",
+  "canonicalBytes": 5051718,
+  "canonicalGitBlob": "89238fa3eb49937ea82c5d82006ee1fc6c6abaae",
+  "canonicalPath": "/tmp/pinkha-native8ac-stream-primary339/canonical-bundle-correction1/upload-artifact-ea165f8.canonical.js",
+  "canonicalSHA256": "0165b8a75330f3228f2c7a234b4ff8a107b9139c2b519147f4c8e9fe99b262d8",
+  "canonicalTextCharacters": 5050015,
+  "diffBytes": 3034,
+  "diffPath": "/tmp/pinkha-native8ac-stream-primary339/canonical-bundle-correction1/original-byte-difference.diff",
+  "diffSHA256": "cb5e00bb1b3725e821f9af86db4a87ad82c4939039c746d779465f59f40e9be1",
+  "difference": "--- /tmp/pinkha-native8ac-stream-primary339/upload-artifact-ea165f8.original.js\n+++ /tmp/pinkha-native8ac-stream-primary339/canonical-bundle-correction1/upload-artifact-ea165f8.canonical.js\n@@ -93165,5 +93165,5 @@\n \n function normalize(str) { // fix bug in v8\n-  return str.split('^@').map(function (s) { return s.normalize('NFC'); }).join('^@');\n+  return str.split('\\u0000').map(function (s) { return s.normalize('NFC'); }).join('\\u0000');\n }\n \n@@ -103105,5 +103105,5 @@\n  * @see https://mimesniff.spec.whatwg.org/#http-quoted-string-token-code-point\n  */\n-const HTTP_QUOTED_STRING_TOKENS = /[\\u0009|\\u0020-\\u007E|^@-\\u00FF]/ // eslint-disable-line\n+const HTTP_QUOTED_STRING_TOKENS = /[\\u0009|\\u0020-\\u007E|\\u0080-\\u00FF]/ // eslint-disable-line\n \n // https://fetch.spec.whatwg.org/#data-url-processor\n@@ -103497,5 +103497,5 @@\n function forgivingBase64 (data) {\n   // 1. Remove all ASCII whitespace from data.\n-  data = data.replace(/[\\u0009\\u000A^L\\u000D\\u0020]/g, '')  // eslint-disable-line\n+  data = data.replace(/[\\u0009\\u000A\\u000C\\u000D\\u0020]/g, '')  // eslint-disable-line\n \n   // 2. If data\u2019s code point length divides by 4 leaving\n@@ -117397,5 +117397,5 @@\n }\n \n-const cp437 = '^@\u263a\u263b\u2665\u2666\u2663\u2660\u2022\u25d8\u25cb\u25d9\u2642\u2640\u266a\u266b\u263c\u25ba\u25c4\u2195\u203c\u00b6\u00a7\u25ac\u21a8\u2191\u2193\u2192\u2190\u221f\u2194\u25b2\u25bc !\"#$%&\\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u2302\u00c7\u00fc\u00e9\u00e2\u00e4\u00e0\u00e5\u00e7\u00ea\u00eb\u00e8\u00ef\u00ee\u00ec\u00c4\u00c5\u00c9\u00e6\u00c6\u00f4\u00f6\u00f2\u00fb\u00f9\u00ff\u00d6\u00dc\u00a2\u00a3\u00a5\u20a7\u0192\u00e1\u00ed\u00f3\u00fa\u00f1\u00d1\u00aa\u00ba\u00bf\u2310\u00ac\u00bd\u00bc\u00a1\u00ab\u00bb\u2591\u2592\u2593\u2502\u2524\u2561\u2562\u2556\u2555\u2563\u2551\u2557\u255d\u255c\u255b\u2510\u2514\u2534\u252c\u251c\u2500\u253c\u255e\u255f\u255a\u2554\u2569\u2566\u2560\u2550\u256c\u2567\u2568\u2564\u2565\u2559\u2558\u2552\u2553\u256b\u256a\u2518\u250c\u2588\u2584\u258c\u2590\u2580\u03b1\u00df\u0393\u03c0\u03a3\u03c3\u00b5\u03c4\u03a6\u0398\u03a9\u03b4\u221e\u03c6\u03b5\u2229\u2261\u00b1\u2265\u2264\u2320\u2321\u00f7\u2248\u00b0\u2219\u00b7\u221a\u207f\u00b2\u25a0 ';\n+const cp437 = '\\u0000\u263a\u263b\u2665\u2666\u2663\u2660\u2022\u25d8\u25cb\u25d9\u2642\u2640\u266a\u266b\u263c\u25ba\u25c4\u2195\u203c\u00b6\u00a7\u25ac\u21a8\u2191\u2193\u2192\u2190\u221f\u2194\u25b2\u25bc !\"#$%&\\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\u2302\u00c7\u00fc\u00e9\u00e2\u00e4\u00e0\u00e5\u00e7\u00ea\u00eb\u00e8\u00ef\u00ee\u00ec\u00c4\u00c5\u00c9\u00e6\u00c6\u00f4\u00f6\u00f2\u00fb\u00f9\u00ff\u00d6\u00dc\u00a2\u00a3\u00a5\u20a7\u0192\u00e1\u00ed\u00f3\u00fa\u00f1\u00d1\u00aa\u00ba\u00bf\u2310\u00ac\u00bd\u00bc\u00a1\u00ab\u00bb\u2591\u2592\u2593\u2502\u2524\u2561\u2562\u2556\u2555\u2563\u2551\u2557\u255d\u255c\u255b\u2510\u2514\u2534\u252c\u251c\u2500\u253c\u255e\u255f\u255a\u2554\u2569\u2566\u2560\u2550\u256c\u2567\u2568\u2564\u2565\u2559\u2558\u2552\u2553\u256b\u256a\u2518\u250c\u2588\u2584\u258c\u2590\u2580\u03b1\u00df\u0393\u03c0\u03a3\u03c3\u00b5\u03c4\u03a6\u0398\u03a9\u03b4\u221e\u03c6\u03b5\u2229\u2261\u00b1\u2265\u2264\u2320\u2321\u00f7\u2248\u00b0\u2219\u00b7\u221a\u207f\u00b2\u25a0 ';\n \n UnzipStream.prototype._decodeString = function (buffer, isUtf8) {\n@@ -118875,9 +118875,9 @@\n \n function containsForbiddenHostCodePoint(string) {\n-  return string.search(/^@|\\u0009|\\u000A|\\u000D|\\u0020|#|%|\\/|:|\\?|@|\\[|\\\\|\\]/) !== -1;\n+  return string.search(/\\u0000|\\u0009|\\u000A|\\u000D|\\u0020|#|%|\\/|:|\\?|@|\\[|\\\\|\\]/) !== -1;\n }\n \n function containsForbiddenHostCodePointExcludingPercent(string) {\n-  return string.search(/^@|\\u0009|\\u000A|\\u000D|\\u0020|#|\\/|:|\\?|@|\\[|\\\\|\\]/) !== -1;\n+  return string.search(/\\u0000|\\u0009|\\u000A|\\u000D|\\u0020|#|\\/|:|\\?|@|\\[|\\\\|\\]/) !== -1;\n }\n \n@@ -119291,5 +119291,5 @@\n \n function trimControlChars(url) {\n-  return url.replace(/^[^@-^_\\u0020]+|[^@-^_\\u0020]+$/g, \"\");\n+  return url.replace(/^[\\u0000-\\u001F\\u0020]+|[\\u0000-\\u001F\\u0020]+$/g, \"\");\n }\n \n",
+  "oldBytes": 5051674,
+  "oldGitBlob": "86e0e9105bd18fce9510128f538d164e1e325a07",
+  "oldPath": "/tmp/pinkha-native8ac-stream-primary339/upload-artifact-ea165f8.original.js",
+  "oldSHA256": "5591c3b579e3a6f4d947c3c1df80a219a1e061719368d4c4d6eb98f856f6d5e8",
+  "oldTextCharacters": 5049971,
+  "rawGET": {
+    "contentLength": "5051718",
+    "contentType": "text/plain; charset=utf-8",
+    "status": 200,
+    "url": "https://raw.githubusercontent.com/actions/upload-artifact/ea165f8d65b6e75b540449e92b4886f43607fa02/dist/upload/index.js"
+  },
+  "status": "CANONICAL_GIT_BLOB_EQUALS_MAC_CACHE_OLD_OFFLINE_BYTES_DIFFER"
+}

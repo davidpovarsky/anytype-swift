@@ -12,7 +12,7 @@ const cp = require('node:child_process');
 const {setTimeout: delay} = require('node:timers/promises');
 
 const ACTION = 'ea165f8d65b6e75b540449e92b4886f43607fa02';
-const BUNDLE_SHA = '5591c3b579e3a6f4d947c3c1df80a219a1e061719368d4c4d6eb98f856f6d5e8';
+const BUNDLE_SHA = '0165b8a75330f3228f2c7a234b4ff8a107b9139c2b519147f4c8e9fe99b262d8';
 const STARTUP = '/******/ \tvar __webpack_exports__ = __nccwpck_require__(36664);';
 const EXPOSE = '/******/ \tvar __webpack_exports__ = {' +
   'core:__nccwpck_require__(42186),' +
@@ -40,7 +40,7 @@ function jsonFile(name, value) {
 }
 function loadOriginal(bundlePath) {
   const raw = fs.readFileSync(bundlePath);
-  requireValue(raw.length === 5051674 && digest(raw) === BUNDLE_SHA, 'Exact original artifact action bundle required');
+  requireValue(raw.length === 5051718 && digest(raw) === BUNDLE_SHA, 'Exact original artifact action bundle required');
   const source = raw.toString('utf8');
   requireValue(source.split(STARTUP).length === 2 && !source.includes(EXPOSE), 'Exact original single bootstrap required');
   const exposed = source.replace(STARTUP, EXPOSE);

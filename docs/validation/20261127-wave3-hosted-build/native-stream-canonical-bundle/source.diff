@@ -1,0 +1,72 @@
+--- a/.github/workflows/torah-inspector-ipados27.yml
++++ b/.github/workflows/torah-inspector-ipados27.yml
+@@ -307,14 +307,14 @@
+         shell: bash
+         run: |
+           set -euo pipefail
+-          test ! -e "$GITHUB_WORKSPACE/control-native8ac-stream-20261127"
+-          test ! -L "$GITHUB_WORKSPACE/control-native8ac-stream-20261127"
++          test ! -e "$GITHUB_WORKSPACE/control-native8ac-stream-canonical-20261127"
++          test ! -L "$GITHUB_WORKSPACE/control-native8ac-stream-canonical-20261127"
+           printf 'EXPORT_ROOT=%s\n' "$RUNNER_TEMP/pinkha-native8ac-stream-export-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+       - name: Checkout only exact original streaming controls
+         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+         with:
+           ref: ${{ github.sha }}
+-          path: control-native8ac-stream-20261127
++          path: control-native8ac-stream-canonical-20261127
+           persist-credentials: false
+           set-safe-directory: false
+           clean: false
+@@ -340,15 +340,15 @@
+         env:
+           PINKHA_HOSTED_PLAN: ${{ inputs.shared_build_plan_json }}
+         run: |
+-          python3 -B "control-native8ac-stream-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py" inspect \
+-            --export --control "$GITHUB_WORKSPACE/control-native8ac-stream-20261127" \
++          python3 -B "control-native8ac-stream-canonical-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py" inspect \
++            --export --control "$GITHUB_WORKSPACE/control-native8ac-stream-canonical-20261127" \
+             --plan "$RUNNER_TEMP/pinkha-native8ac-root-plan-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json" \
+             --plan-sha256 "$PLAN_SHA256"
+       - name: Stream original source and framework directly into the current Actions artifact
+         id: stream
+-        uses: ./control-native8ac-stream-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_stream_action
+-        with:
+-          control: ${{ github.workspace }}/control-native8ac-stream-20261127
++        uses: ./control-native8ac-stream-canonical-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_stream_action
++        with:
++          control: ${{ github.workspace }}/control-native8ac-stream-canonical-20261127
+           plan: ${{ runner.temp }}/pinkha-native8ac-root-plan-${{ github.run_id }}-${{ github.run_attempt }}.json
+           plan_sha256: ${{ inputs.shared_build_plan_sha256 }}
+           output: ${{ env.EXPORT_ROOT }}
+--- a/Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_stream.py
++++ b/Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_stream.py
+@@ -37,7 +37,7 @@
+ SOURCE_COUNT = 4868
+ ARCHIVE_TOTAL = 90455638
+ ACTION_SHA = "ea165f8d65b6e75b540449e92b4886f43607fa02"
+-ACTION_BUNDLE_SHA = "5591c3b579e3a6f4d947c3c1df80a219a1e061719368d4c4d6eb98f856f6d5e8"
++ACTION_BUNDLE_SHA = "0165b8a75330f3228f2c7a234b4ff8a107b9139c2b519147f4c8e9fe99b262d8"
+ RECEIPT_BUDGET = 8 * 1024 ** 2
+ FIFO_SECONDS = 600
+ POLICY = {
+--- a/Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_stream_action/upload_stream.cjs
++++ b/Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_stream_action/upload_stream.cjs
+@@ -12,7 +12,7 @@
+ const {setTimeout: delay} = require('node:timers/promises');
+ 
+ const ACTION = 'ea165f8d65b6e75b540449e92b4886f43607fa02';
+-const BUNDLE_SHA = '5591c3b579e3a6f4d947c3c1df80a219a1e061719368d4c4d6eb98f856f6d5e8';
++const BUNDLE_SHA = '0165b8a75330f3228f2c7a234b4ff8a107b9139c2b519147f4c8e9fe99b262d8';
+ const STARTUP = '/******/ \tvar __webpack_exports__ = __nccwpck_require__(36664);';
+ const EXPOSE = '/******/ \tvar __webpack_exports__ = {' +
+   'core:__nccwpck_require__(42186),' +
+@@ -40,7 +40,7 @@
+ }
+ function loadOriginal(bundlePath) {
+   const raw = fs.readFileSync(bundlePath);
+-  requireValue(raw.length === 5051674 && digest(raw) === BUNDLE_SHA, 'Exact original artifact action bundle required');
++  requireValue(raw.length === 5051718 && digest(raw) === BUNDLE_SHA, 'Exact original artifact action bundle required');
+   const source = raw.toString('utf8');
+   requireValue(source.split(STARTUP).length === 2 && !source.includes(EXPOSE), 'Exact original single bootstrap required');
+   const exposed = source.replace(STARTUP, EXPOSE);
