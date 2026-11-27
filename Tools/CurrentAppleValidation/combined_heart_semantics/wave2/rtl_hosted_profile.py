@@ -21,7 +21,7 @@ CASE_COUNT = 10
 SUITES = {
     "PinkhaTextBlockLeadingMarkerTests": {
         "source_path": "AnyTypeTests/Pinkha/PinkhaTextBlockLeadingMarkerTests.swift",
-        "source_sha256": "d15fb567e603f426ae1e35cd4993bc816d53cb3f0fce35f5324b76dfaa8abdc5",
+        "source_sha256": "dafd3d25b80cfdec01f5b47f70adc59d52d03db36ac9a673b70059e46637ac21",
         "methods": {
             "oppositeDirectionAttachmentRefreshesMarker": {
                 "parameters": [{"name": "isRTL", "type": "Bool"}],
