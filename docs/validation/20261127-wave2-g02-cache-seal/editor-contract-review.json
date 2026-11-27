@@ -1,0 +1,67 @@
+{
+  "AppleBuilds": 0,
+  "NativeCalls": 0,
+  "XCTestInvocations": 0,
+  "atUTC": "2026-11-27T05:14:25.217524+00:00",
+  "exactSuccessorReviewed": false,
+  "nativeArchiveSHA256": "c70592e4ae160cbb5cb8eda3cb1caed08f727476a5c9fac7c207593cd9315830",
+  "nativeChain": [
+    "Projection.Project hashes actual canonical raw bytes and derives Source/Topic/Word/labels.",
+    "Index.clear removes prior LocalKeys; Index.project computes outputs and defers sealCache.",
+    "cacheProof hashes its prefixed manifest binding, selected eligibility/local fields and exact canonical raw bytes. hex.EncodeToString yields lowercase64hex.",
+    "LocalDetails returns the sealed local fields through LocalKeys, including CacheIntegrityKey.",
+    "Smartblock.injectTorahDetails can subsequently insert attached-property metadata and null-valued empty projections."
+  ],
+  "originalFullSourceSHA256": "bd9888153f469583531951b4dcc74d64aed275de1e2142fc1cdda61d3fb1770a",
+  "originalReviewSHA256": "cb457ae7d62ff968f5e174d2e8356a180aa6bde52701b83e9a1954a2495ebdae",
+  "originalSourceCommit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+  "probeReruns": 0,
+  "prohibitedInference": "Seal shape and change are opaque native observations. They do not independently prove cryptographic seal correctness, full index freshness, authentication, or whole-store retention. No Swift or cross-language checksum reconstruction is appropriate for the post-adapter ObjectShow JSON.",
+  "requiredSuccessor": [
+    "Read the actual raw seal field as a String in each validated baseline/postflight document.",
+    "Require exactly64 ASCII bytes drawn only from0-9 and a-f.",
+    "Retain both original seal values inside the unchanged raw NativeObject receipts.",
+    "Require the postflight seal to differ from baseline while independently proving the exact one-Word canonical removal, raw canonical hash, labels and projections.",
+    "Add only CacheIntegrityKey as the fifth specific derived-field exception to stable comparison.",
+    "Keep all other stable fields, Type/name/Tags/Source/Topic, unrelated and block-scoped records, clock validation, native directories, account/Space/fixture and invocation custody checks unchanged."
+  ],
+  "reviewer": "wave2-editor",
+  "schema": "pinkha-g02-cache-integrity-contract-source-review-v1",
+  "sourceMutation": false,
+  "sourcePins": {
+    "heart/core/block/detailservice/pinkha_torah.go": {
+      "bytes": 1360,
+      "sha256": "d39dd006cb20dcbdd91a851a96faf82a42e277b80d0f190a4a7e532831a4768e"
+    },
+    "heart/core/block/editor/smartblock/pinkha_torah.go": {
+      "bytes": 1136,
+      "sha256": "32ee6f74b5fe63c8e2c5bb612d32ce532f8caf1c3059338cf97373d20db43174"
+    },
+    "heart/core/pinkha/torah/projection.go": {
+      "bytes": 9013,
+      "sha256": "4bc54b70a75d4c1dc5ae87cc85271d7304ee4f64216ce14150ed2bba3685e679"
+    },
+    "heart/core/pinkha/torah/properties.go": {
+      "bytes": 1526,
+      "sha256": "5985c43c4da7ef2baaabe6f0ee3e9606c0ee2b1af87563f2b2af4b9535a8a5d0"
+    },
+    "heart/core/pinkha/torahindex/index.go": {
+      "bytes": 18430,
+      "sha256": "9873f508c27021157c17b28b04ee6f18c74a0cf1bea7028e355696f31c42f929"
+    },
+    "heart/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go": {
+      "bytes": 1128,
+      "sha256": "0c9bee77ecbc524a73311fc36431a64bdbc35d757db829b4df1a50813b002c02"
+    },
+    "recovery-cache-custody.json": {
+      "bytes": 490,
+      "sha256": "728245c340c3c14543654dc514f2514d684ddc11bea91dbf08c87ad35720adbb"
+    },
+    "recovery_cache.go": {
+      "bytes": 3529,
+      "sha256": "325fb4f2b2abcbaa9afdc5bd32dd42f1c95b8fa524641d624bed9c309fe13352"
+    }
+  },
+  "status": "PROPOSED_NARROW_CONTRACT_SUPPORTED_EXACT_SUCCESSOR_PENDING",
+  "supersedingScope": "Only the old assumption that _pinkhaTorahCacheIntegrity is stable across confirmed one-Word removal. Original source/review remain retained; no historical runtime failure is invented."
+}

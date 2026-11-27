@@ -1432,6 +1432,8 @@ private enum G02WritingPropertiesReadback {
     static let clockKeys: Set<String> = ["lastModifiedDate", "lastOpenedDate", "lastUsedDate"]
     // Exact8ac core/pinkha/torahindex/index.go derives this from canonical bytes.
     static let canonicalHashKey = "_pinkhaTorahCanonicalHash"
+    // Original8ac recovery_cache.go seals current canonical input and local outputs.
+    static let cacheIntegrityKey = "_pinkhaTorahCacheIntegrity"
     static let maximumReceiptBytes = 4 * 1_024 * 1_024
 
     struct Fixture: Decodable {
@@ -1637,6 +1639,19 @@ private enum G02WritingPropertiesReadback {
         return try JSONDecoder().decode([String: TorahJSONValue].self, from: Data(json.utf8))
     }
 
+    // Observe the opaque native seal; its shape/change does not establish
+    // cryptographic correctness, authentication, or full-index freshness.
+    static func cacheIntegritySeal(_ document: Document) throws -> String {
+        guard case .string(let seal)? = document.native.fields[cacheIntegrityKey] else {
+            throw NativeAcceptanceError.conditionTimeout("G02 native cache integrity string")
+        }
+        let isLowercaseASCIIHex = seal.utf8.count == 64 && seal.utf8.allSatisfy {
+            (48...57).contains($0) || (97...102).contains($0)
+        }
+        try #require(isLowercaseASCIIHex)
+        return seal
+    }
+
     static func stableFields(_ object: NativeObject, excluding keys: Set<String> = []) throws -> [String: TorahJSONValue] {
         let data = Data(object.protobufDetailsJSON.utf8)
         try #require(sha256(data) == object.protobufDetailsSHA256)
@@ -1721,6 +1736,7 @@ private enum G02WritingPropertiesReadback {
             try #require(native.fields[state.canonicalPropertyKey] == .string(document.canonicalRaw))
             _ = try stableFields(native)
             _ = try stableFields(document.tag)
+            _ = try cacheIntegritySeal(document)
             let source = try item(.ref, in: document)
             let topic = try item(.topic, in: document)
             try #require(source.canonicalKey == "Genesis 1:1" && topic.canonicalKey == "creation")
@@ -1785,7 +1801,7 @@ private enum G02WritingPropertiesReadback {
         try #require(expectedProperty == actualProperty)
         let wordDefinition = try #require(TorahNativePropertyDefinition.all.first { $0.kind == .word })
         let changedKeys: Set<String> = [baseline.canonicalPropertyKey, wordDefinition.key,
-                                       TorahNativePropertyDefinition.labelsKey, canonicalHashKey]
+                                       TorahNativePropertyDefinition.labelsKey, canonicalHashKey, cacheIntegrityKey]
         for role in roles {
             let before = try #require(baseline.documents[role])
             let after = try #require(actual.documents[role])
@@ -1828,6 +1844,14 @@ private enum G02WritingPropertiesReadback {
             try #require(expectedLabels.removeValue(forKey: identity) != nil)
             let actualLabels = try labels(after)
             try #require(actualLabels == expectedLabels)
+            // The exact one-Word canonical delta above changes the original
+            // native seal input. Retain both raw seals and require renewal;
+            // do not rehash post-adapter ObjectShow JSON as a Go cache proof.
+            try #require(before.canonicalRaw != after.canonicalRaw &&
+                         before.canonicalSHA256 != after.canonicalSHA256)
+            let beforeSeal = try cacheIntegritySeal(before)
+            let afterSeal = try cacheIntegritySeal(after)
+            try #require(beforeSeal != afterSeal)
         }
     }
 
