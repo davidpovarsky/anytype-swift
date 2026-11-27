@@ -69,6 +69,16 @@ public struct AnyHanlinCreatePagePrompt: Sendable {
     public let spaceID: String
 }
 
+/// Exact title and complete original Markdown shown by the native owner. This
+/// value carries no approval, native identifiers or choice of destination.
+public struct AnyHanlinSaveMessagePrompt: Sendable {
+    public let session: HanlinHostSession
+    public let invocationID: String
+    public let title: String
+    public let markdown: String
+    public let spaceID: String
+}
+
 /// The actual mounted SDK UI presents an exact title/original Space prompt.
 /// Each answer is revalidated by the native host; a model cannot mint approval.
 @MainActor
@@ -77,3 +87,11 @@ public protocol AnyHanlinCreationPresentationOwner: AnyHanlinPresentationOwner {
     func presentCreatePageConfirmation(_ prompt: AnyHanlinCreatePagePrompt,
                                       answer: @escaping @MainActor (Bool) -> Void) throws
 }
+
+/// Additive capability: original create-only hosts need not implement body save.
+@MainActor
+public protocol AnyHanlinSaveMessagePresentationOwner: AnyHanlinCreationPresentationOwner {
+    func presentSaveMessageConfirmation(_ prompt: AnyHanlinSaveMessagePrompt,
+                                       answer: @escaping @MainActor (Bool) -> Void) throws
+}
+

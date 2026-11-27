@@ -74,15 +74,18 @@ struct HanlinSaveMessageJournalTests {
         let identity = state.manifest.identity
         try await journal?.reserve(identity)
         try await journal?.reserveSaveMessage(state)
-        state = try #require(try await journal?.advanceSaveMessage(state, event: .rootDispatched))
+        let persistedProgress1 = try await journal?.advanceSaveMessage(state, event: .rootDispatched)
+        state = try #require(persistedProgress1)
         let beforeClose = state
         try await journal?.closeSaveMessageDispatch(for: identity)
         await #expect(throws: PinkhaHanlinWriteError.conflict) {
             _ = try await journal?.advanceSaveMessage(beforeClose, event: .rootKnown(reference: "root-original"))
         }
-        state = try #require(try await journal?.saveMessageProgress(for: identity))
+        let persistedProgress2 = try await journal?.saveMessageProgress(for: identity)
+        state = try #require(persistedProgress2)
         #expect(state == (try beforeClose.applying(.closeDispatch)))
-        state = try #require(try await journal?.advanceSaveMessage(state, event: .rootKnown(reference: "root-original")))
+        let persistedProgress3 = try await journal?.advanceSaveMessage(state, event: .rootKnown(reference: "root-original"))
+        state = try #require(persistedProgress3)
         _ = try await journal?.record(.uncertain, identity: identity)
         journal = nil
         let reopened = try await fixture.open()
@@ -111,7 +114,8 @@ struct HanlinSaveMessageJournalTests {
             readbackSHA256: state.manifest.expectedRootReadbackSHA256))
         state = try await journal.advanceSaveMessage(state, event: .blockDispatched(index: 0))
         try await journal.closeSaveMessageDispatch(for: identity)
-        state = try #require(try await journal.saveMessageProgress(for: identity))
+        let persistedProgress4 = try await journal.saveMessageProgress(for: identity)
+        state = try #require(persistedProgress4)
         _ = try await journal.record(.uncertain, identity: identity)
         state = try await journal.advanceSaveMessage(state, event: .blockVerified(index: 0, reference: "block-original",
             readbackSHA256: state.manifest.blockSHA256[0]))
@@ -130,8 +134,10 @@ struct HanlinSaveMessageJournalTests {
             var state = try fixture.initial()
             try await journal?.reserve(state.manifest.identity)
             try await journal?.reserveSaveMessage(state)
-            state = try #require(try await journal?.advanceSaveMessage(state, event: .rootDispatched))
-            state = try #require(try await journal?.advanceSaveMessage(state, event: .rootKnown(reference: "root-original")))
+            let persistedProgress5 = try await journal?.advanceSaveMessage(state, event: .rootDispatched)
+            state = try #require(persistedProgress5)
+            let persistedProgress6 = try await journal?.advanceSaveMessage(state, event: .rootKnown(reference: "root-original"))
+            state = try #require(persistedProgress6)
             journal = nil
             let first = fixture.record(sequence: 1)
             let second = fixture.record(sequence: 2)
@@ -157,9 +163,11 @@ struct HanlinSaveMessageJournalTests {
         var state = try fixture.initial()
         try await journal?.reserve(state.manifest.identity)
         try await journal?.reserveSaveMessage(state)
-        state = try #require(try await journal?.advanceSaveMessage(state, event: .rootDispatched))
-        state = try #require(try await journal?.advanceSaveMessage(state, event: .rootVerified(reference: "root-original",
-            readbackSHA256: state.manifest.expectedRootReadbackSHA256)))
+        let persistedProgress7 = try await journal?.advanceSaveMessage(state, event: .rootDispatched)
+        state = try #require(persistedProgress7)
+        let persistedProgress8 = try await journal?.advanceSaveMessage(state, event: .rootVerified(reference: "root-original",
+            readbackSHA256: state.manifest.expectedRootReadbackSHA256))
+        state = try #require(persistedProgress8)
         journal = nil
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         let forged = PinkhaHanlinWriteJournal.Entry(version: 1, identity: state.manifest.identity,
@@ -207,6 +215,78 @@ struct HanlinSaveMessageJournalTests {
             _ = try await journal.advanceSaveMessage(initial, event: .rootDispatched)
         }
         #expect(!FileManager.default.fileExists(atPath: fixture.scope.path))
+    }
+
+    @Test func maximumAtomicACKAndBodySurviveOriginalProtectedReopenAfterStop() async throws {
+        let fixture = try Fixture(app: "anytype-any")
+        defer { fixture.removeFiles() }
+        let plan = try PinkhaHanlinSaveMessagePlan(invocation: fixture.invocation)
+        let original = try fixture.initial()
+        let manifest = try PinkhaHanlinSaveMessageManifest(plan: plan,
+            bodyPlanSHA256: original.manifest.bodyPlanSHA256,
+            expectedRootReadbackSHA256: original.manifest.expectedRootReadbackSHA256,
+            expectedBodyReadbackSHA256: original.manifest.expectedBodyReadbackSHA256,
+            blockSHA256: (0..<64).map { PinkhaHanlinCreatePagePlan.digest(Data("semantic-block-\($0)".utf8)) },
+            bodyMode: .conditionalMarkdown)
+        let root = "root-" + String(repeating: "\\", count: 251)
+        let references = (0..<64).map { String(format: "%03d", $0) + String(repeating: "\"", count: 253) }
+        #expect(root.utf8.count == 256 && references.allSatisfy { $0.utf8.count == 256 })
+        let request = PinkhaHanlinCreatePagePlan.digest(Data("actual-request-fixture".utf8))
+        let version = PinkhaHanlinCreatePagePlan.digest(Data("actual-version-fixture".utf8))
+        let acknowledgement = try PinkhaHanlinSaveMessageAtomicAcknowledgement(requestSHA256: request,
+            savedVersionSHA256: version, insertedReferences: Array(references.reversed()),
+            updatedReferences: [], deletedReferences: [], unchangedBlocks: 0)
+        var journal: PinkhaHanlinWriteJournal? = try await fixture.open()
+        var state = try PinkhaHanlinSaveMessageProgress(manifest: manifest)
+        try await journal?.reserve(plan.identity)
+        let reservedURL = fixture.scope.appendingPathComponent(plan.identity.key + ".reserved")
+        let reservation = try Data(contentsOf: reservedURL)
+        try await journal?.reserveSaveMessage(state)
+        let dispatchedRoot = try await journal?.advanceSaveMessage(state, event: .rootDispatched)
+        state = try #require(dispatchedRoot)
+        let knownRoot = try await journal?.advanceSaveMessage(state, event: .rootKnown(reference: root))
+        state = try #require(knownRoot)
+        let verifiedRoot = try await journal?.advanceSaveMessage(state, event: .rootVerified(reference: root,
+            readbackSHA256: manifest.expectedRootReadbackSHA256))
+        state = try #require(verifiedRoot)
+        let dispatchedBody = try await journal?.advanceSaveMessage(state,
+            event: .atomicBodyDispatched(requestSHA256: request, expectedVersionSHA256: version))
+        state = try #require(dispatchedBody)
+        try await journal?.closeSaveMessageDispatch(for: plan.identity)
+        let closed = try await journal?.saveMessageProgress(for: plan.identity)
+        state = try #require(closed)
+        _ = try await journal?.record(.uncertain, identity: plan.identity)
+        let digestOnly = try await journal?.advanceSaveMessage(state, event: .atomicBodyAcknowledged(
+            requestSHA256: request, savedVersionSHA256: version, nativeReceiptSHA256: acknowledgement.nativeReceiptSHA256))
+        state = try #require(digestOnly)
+        let readback = PinkhaHanlinSaveMessageBodyReadback(manifestSHA256: try manifest.canonicalSHA256(),
+            objectReference: root, blockReferences: references, nativeReadbackSHA256: manifest.expectedBodyReadbackSHA256,
+            nativeVersionSHA256: version, nativeMarkdownSHA256: PinkhaHanlinCreatePagePlan.digest(Data("normalized-output".utf8)),
+            nativeMarkdownUTF8Bytes: "normalized-output".utf8.count)
+        await #expect(throws: PinkhaHanlinSaveMessageError.invalidProgress) {
+            _ = try await journal?.advanceSaveMessage(state, event: .bodyVerified(readback))
+        }
+        let acknowledged = try await journal?.advanceSaveMessage(state, event: .atomicBodyReceipt(acknowledgement))
+        state = try #require(acknowledged)
+        let acknowledgementSequence = state.sequence
+        let verifiedBody = try await journal?.advanceSaveMessage(state, event: .bodyVerified(readback))
+        state = try #require(verifiedBody)
+        let bodySequence = state.sequence
+        #expect(state.dispatchClosed && state.isReadyForCommit)
+        #expect(try state.canonicalBytes().count <= PinkhaHanlinSaveMessageProgress.maximumEncodedBytes)
+        _ = try await journal?.record(.committed, identity: plan.identity, createdObjectReference: root)
+        journal = nil
+        for sequence in [acknowledgementSequence, bodySequence] {
+            let bytes = try Data(contentsOf: fixture.record(sequence: sequence))
+            #expect(bytes.count > 32_768 && bytes.count <= 65_536)
+        }
+        let reopened = try await fixture.open()
+        let retained = try await reopened.saveMessageProgress(for: plan.identity)
+        #expect(retained == state)
+        #expect(retained?.atomicBody?.acknowledgement == acknowledgement)
+        #expect(retained?.bodyReadback?.blockReferences == references)
+        #expect(try await reopened.knownCreatedObjectReference(for: plan.identity) == root)
+        #expect(try Data(contentsOf: reservedURL) == reservation)
     }
 
     private struct Fixture {

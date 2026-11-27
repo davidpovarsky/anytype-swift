@@ -1,0 +1,82 @@
+{
+  "allBaselineMappingsPreserved": 129,
+  "authoredTests": {
+    "existingJournalCases": 12,
+    "existingJournalMethods": 8,
+    "journalCases": 13,
+    "journalMethods": 9,
+    "newApprovalCases": [
+      "Title-only and complete-body approval cannot authorize each other; exact approval consumes once.",
+      "Changed full body, original account or run cannot consume the saved-message approval; rejection does not consume the original."
+    ],
+    "newApprovalMethods": 2,
+    "newProtectedJournalCase": "Maximum 64 fully escaped 256-byte native IDs and 256-byte root survive Stop, digest-only refusal, full original ACK, complete body, committed receipt and protected reopen. Both actual canonical event envelopes must exceed 32 KiB and fit 64 KiB; whole state fits 128 KiB.",
+    "scope": "Metadata, consent identity and protected storage controls only. No native object/body write, original parser runtime or mounted UI acceptance.",
+    "status": "NOT_RUN",
+    "unchangedAssertionPreparation": "Eight existing awaited journal values are materialized before #require; original assertions and actor call order are preserved."
+  },
+  "candidate": "c5117ccfc031493d7fd32e30d5fb1c00be8acd2a",
+  "newAppleCompilationOrRuntime": 0,
+  "originalExpectedMappingFailureReusedWithoutRerun": true,
+  "originalFailedPreviewRetained": true,
+  "originalPreviewSource": "c5117ccfc031493d7fd32e30d5fb1c00be8acd2a",
+  "productionSaveInstalled": false,
+  "reviewedMapUpdates": [
+    {
+      "baselineBlob": "aca54480a6977009e1a1ac66806154964b51be29",
+      "baselineFromToKindUnchanged": true,
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinWriteJournal.swift",
+      "kind": "move",
+      "replacementBlobAfter": "dc3d1110e42022723433010f190d984427061a0e",
+      "replacementBlobBefore": "d68bdbe4fe1915fbc56a8e7422cd3d6f886ab7d5",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWriteJournal.swift"
+    }
+  ],
+  "rootMergePreviewOnlyExactNineCandidateFiles": "eced6face4e8304fa3582c80e3a4e5adda12ae89",
+  "rootParent": "1cb23cee4488b7d604426df6c0bd4042f33026ba",
+  "sourceReview": "Original Any creation I/O, immutable mutationID, scope/eligibility checks, mounted confirmation and cancellation drain retained. One shared context and one-use typed full invocation approval; same captured original client constructs body services. Ordinary host remains create-only; no unpublished Runner reference.",
+  "verifiedSources": [
+    {
+      "afterBlob": "0ce3a5de54fda7edc3e7087794a3d51aa1d86650",
+      "inverseOperations": 26,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinCreateBinding.swift",
+      "sha256": "d5ef296050e741be5d27fe1c5d33500e569b2309080235fdd7fe3ddf1aa9a83b"
+    },
+    {
+      "afterBlob": "943f6a6bbe72e3bf29e194f2bc11e71402ba1948",
+      "inverseOperations": 4,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinHost.swift",
+      "sha256": "c7f1840628ab065e6b591a64d51f4fb11105a5af12741e51692e45fe1f15b47a"
+    },
+    {
+      "afterBlob": "dbc24b4657e3d8e9a06cd2f149538d2dd8f42e12",
+      "inverseOperations": 2,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinCreationAuthority.swift",
+      "sha256": "164a93aca773cd9f65173cc20563178d194a2b459a50d8dd5940ef50b371f79a"
+    },
+    {
+      "afterBlob": "0c3714b92e7d41a36b384390c42e4414e87eafa3",
+      "inverseOperations": 2,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/AnyHanlinPresentation.swift",
+      "sha256": "50d34a1ada8b9dc43c2b05a3442378dbf24db727d7faab73be8399c9ba35c0ba"
+    },
+    {
+      "afterBlob": "dc3d1110e42022723433010f190d984427061a0e",
+      "inverseOperations": 2,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWriteJournal.swift",
+      "sha256": "cae55c09b0bfa9fb94c0d96bcfe4454f858040e122ae37a8f38c599605681c1f"
+    },
+    {
+      "afterBlob": "f3505cefef5ed3d23286c29c730b38a8ebe59421",
+      "inverseOperations": 7,
+      "path": "AnyTypeTests/Pinkha/HanlinSaveMessageJournalTests.swift",
+      "sha256": "022461a2186a54d4f2f8dacf5a4ade9fd1514227d2bf27d78667a21beaaf91d0"
+    },
+    {
+      "afterBlob": "eef73d270fc2c41adb579b45b433ba7eb5164e30",
+      "inverseOperations": 0,
+      "path": "AnyTypeTests/Pinkha/AnyHanlinWriteApprovalTests.swift",
+      "sha256": "dcc0a4a9389e898ce401654e4c2502dd0a90ac49eb8be62515c214b2a9d95f27"
+    }
+  ]
+}
