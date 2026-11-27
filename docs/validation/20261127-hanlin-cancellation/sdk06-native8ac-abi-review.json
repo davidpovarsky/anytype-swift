@@ -1,0 +1,224 @@
+{
+  "schema": "pinkha-sdk06-native8ac-abi-review-v1",
+  "status": "RETAINED_ABI_QUALIFICATION_ONLY",
+  "reviewedAtUTC": "2026-11-27",
+  "sourceManifestSHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+  "runtimeIdentity": {
+    "anyRuntimeVersion": "any v0.5.0-pinkha.dual.1-8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b (commit 8fbd1e819fb132ac0e0a848d2ddf5c5714189b81, built 2026-11-26)",
+    "anyVersion": "v0.5.0-pinkha.dual.1-8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+    "buildDate": "2026-11-26",
+    "heartVersion": "pinkha-dual-runtime-v1-8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+    "nativeVersionSourceSHA256": {
+      "any/internal/embedded/embedded.go": "a1b52dda8a4232d544242f27bf13bc8a6f4b4832be5d90be2baf0ffa222c2088",
+      "any/internal/version/version.go": "c0e23de416f43ba36e11f6defe7cb7aa4019888820c0158d97ae19423e8fb89c",
+      "any/mobile/android/mobile.go": "5b79bbb5cce7de5f820203604327d9d391bae989233d1aff4d899f9f1707ebc9"
+    },
+    "protocol": "pinkha-unified-runtime-full-identity-v1",
+    "sourceManifestSHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+    "sourcePins": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "heart": "ea796999d648e27dcb7ad23a0bbd849d35fadc5a",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9",
+      "sync": "c005bd6cde8d8f8a6007c35f06894f3d89f9f07c"
+    }
+  },
+  "originalAssemblyReceipt": {
+    "path": "/Users/m1/development/anytype-d-active-20261125/main16-wave2-20261127/native-materialization-8ac/receipt.json",
+    "sha256": "c9c90e3a12868bcedf5f0a4f116c4dc1c388bdcddd0e9f0170c047684c500231"
+  },
+  "slices": {
+    "simulator": {
+      "originalReceiptSHA256": "946fe141ee4fa1c1fa8ceafc9060d9d9eedb0d546360140eadaf5ecf1f264f9b",
+      "status": "SOURCE_VERIFIED_SINGLE_GO_RUNTIME_APPLE_SLICE_BUILT_NOT_ACCEPTED",
+      "binaries": {
+        "ios-arm64-simulator": {
+          "binaryBytes": 350401264,
+          "binarySHA256": "f94079de9eeb9e2e869f02bd1dda93fcd272e3191b2417ca4b4657cae5dc6763",
+          "rawGoArchiveSHA256": "95537d9d95502a57e73b529b0ae54c3e6af38a19fa77076732a967564b0a77f5",
+          "tantivyPlatform": "ios-arm64-sim"
+        }
+      },
+      "independentGoRuntimeCount": 1,
+      "generatedSwiftEntryCheckSHA256": "0b2685b772b616d1c09bb037bc9c98246bbe2ad0d8ae5fcfdb4ecced99eca692",
+      "typecheck": {
+        "argv": [
+          "xcrun",
+          "swiftc",
+          "-typecheck",
+          "-target",
+          "arm64-apple-ios27.0-simulator",
+          "-sdk",
+          "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+          "-F",
+          "/Users/m1/development/anytype-d-active-20261125/native-permission8ac/pinkha-dual-native-v1-8ac407e75a4b-simulator/Lib.xcframework/ios-arm64-simulator",
+          "-module-cache-path",
+          "/Users/m1/development/anytype-d-active-20261125/native-permission8ac/pinkha-dual-native-v1-8ac407e75a4b-simulator/swift-module-cache",
+          "/Users/m1/development/anytype-d-active-20261125/native-permission8ac/pinkha-dual-native-v1-8ac407e75a4b-simulator/generated-entry.swift"
+        ],
+        "cwd": "/Users/m1/development/anytype-d-active-20261125/native-permission8ac/pinkha-dual-native-v1-8ac407e75a4b-simulator",
+        "elapsedSeconds": 1.0172910690307617,
+        "exitCode": 0,
+        "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "minimumFreeBytes": 7610716160,
+        "name": "generated-actual-swift-entry-typecheck",
+        "pgid": 43960,
+        "pid": 43960,
+        "started": 1795667295.753013,
+        "status": "PASS_EXIT_0",
+        "timeoutSeconds": 180
+      },
+      "symbols": {
+        "argv": [
+          "xcrun",
+          "nm",
+          "--no-llvm-bc",
+          "-gU",
+          "/Users/m1/development/anytype-d-active-20261125/native-permission8ac/pinkha-dual-native-v1-8ac407e75a4b-simulator/Lib.xcframework/ios-arm64-simulator/Lib.framework/Lib"
+        ],
+        "cwd": "/Users/m1/development/anytype-d-active-20261125/native-permission8ac/pinkha-dual-native-v1-8ac407e75a4b-simulator",
+        "elapsedSeconds": 1.0122511386871338,
+        "exitCode": 0,
+        "logSHA256": "2c618047611941b065365569e918f58ca688f91077313813bd1420b41d00c0ce",
+        "minimumFreeBytes": 7614763008,
+        "name": "symbols-ios-arm64-simulator",
+        "pgid": 43956,
+        "pid": 43956,
+        "started": 1795667293.495795,
+        "status": "PASS_EXIT_0",
+        "timeoutSeconds": 120
+      }
+    },
+    "device": {
+      "originalReceiptSHA256": "c5237b26fe0a1ab7fe3c373aed50a34a0a6f65c306ed47918b4e4b54a9245208",
+      "status": "SOURCE_VERIFIED_SINGLE_GO_RUNTIME_APPLE_SLICE_BUILT_NOT_ACCEPTED",
+      "binaries": {
+        "ios-arm64": {
+          "binaryBytes": 350330992,
+          "binarySHA256": "8592fb526b8796b3e118f1a18bacc276e89894459207d5df294b17b0c3859c50",
+          "rawGoArchiveSHA256": "c761c39afdd794a8d24f43de4500c346825347297b41cc3f0d00ab6caf123f16",
+          "tantivyPlatform": "ios-arm64"
+        }
+      },
+      "independentGoRuntimeCount": 1,
+      "generatedSwiftEntryCheckSHA256": "0b2685b772b616d1c09bb037bc9c98246bbe2ad0d8ae5fcfdb4ecced99eca692",
+      "typecheck": {
+        "argv": [
+          "xcrun",
+          "swiftc",
+          "-typecheck",
+          "-target",
+          "arm64-apple-ios27.0",
+          "-sdk",
+          "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS27.0.sdk",
+          "-F",
+          "/Users/m1/development/anytype-d-active-20261125/native-permission8ac/pinkha-dual-native-v1-8ac407e75a4b-device/Lib.xcframework/ios-arm64",
+          "-module-cache-path",
+          "/Users/m1/development/anytype-d-active-20261125/native-permission8ac/pinkha-dual-native-v1-8ac407e75a4b-device/swift-module-cache",
+          "/Users/m1/development/anytype-d-active-20261125/native-permission8ac/pinkha-dual-native-v1-8ac407e75a4b-device/generated-entry.swift"
+        ],
+        "cwd": "/Users/m1/development/anytype-d-active-20261125/native-permission8ac/pinkha-dual-native-v1-8ac407e75a4b-device",
+        "elapsedSeconds": 2.0176477432250977,
+        "exitCode": 0,
+        "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "minimumFreeBytes": 9185734656,
+        "name": "generated-actual-swift-entry-typecheck",
+        "pgid": 57712,
+        "pid": 57712,
+        "started": 1795668478.695928,
+        "status": "PASS_EXIT_0",
+        "timeoutSeconds": 180
+      },
+      "symbols": {
+        "argv": [
+          "xcrun",
+          "nm",
+          "--no-llvm-bc",
+          "-gU",
+          "/Users/m1/development/anytype-d-active-20261125/native-permission8ac/pinkha-dual-native-v1-8ac407e75a4b-device/Lib.xcframework/ios-arm64/Lib.framework/Lib"
+        ],
+        "cwd": "/Users/m1/development/anytype-d-active-20261125/native-permission8ac/pinkha-dual-native-v1-8ac407e75a4b-device",
+        "elapsedSeconds": 1.0052847862243652,
+        "exitCode": 0,
+        "logSHA256": "a3fdbac9c29dda98f32429720e76687c083c97a947bd90cad4bed0af332aa072",
+        "minimumFreeBytes": 9202593792,
+        "name": "symbols-ios-arm64",
+        "pgid": 57698,
+        "pid": 57698,
+        "started": 1795668476.459799,
+        "status": "PASS_EXIT_0",
+        "timeoutSeconds": 120
+      }
+    }
+  },
+  "actualHeadersAndArchitecture": {
+    "ios-arm64-simulator": {
+      "headers": {
+        "Service.objc.h": {
+          "sha256": "1db8db1ae9153c993a64f794b5e8a49d37e36e8f82167effdead16c9d38be8ff",
+          "bytes": 149499
+        },
+        "Mobile.objc.h": {
+          "sha256": "68b421e6838f4f272d8ae8825112aced59b8e8fed358203ca7025b0e4f754b37",
+          "bytes": 4841
+        },
+        "Lib.h": {
+          "sha256": "601a094ad5767c6e27e61e07594d42da72831a222ce8d5e2359f53a2870d538d",
+          "bytes": 428
+        },
+        "Core.objc.h": {
+          "sha256": "033600bb0c53a41ff09a8f40c3e4f63cb9f424b1a8198dbbafdc5f80964f9648",
+          "bytes": 38090
+        },
+        "ref.h": {
+          "sha256": "d76b969941e61d61551ae1e6b7ddc674ac898d422f28cb5dbf8d640ba2ae8df6",
+          "bytes": 1163
+        },
+        "Universe.objc.h": {
+          "sha256": "61b1a0cd75801d2d8d1d82ef2accda4477966c691795473d696e45de05fcbc7b",
+          "bytes": 563
+        }
+      },
+      "modules": {
+        "module.modulemap": "framework module \"Lib\" {\n\theader \"ref.h\"\n    header \"Service.objc.h\"\n    header \"Core.objc.h\"\n    header \"Mobile.objc.h\"\n    header \"Universe.objc.h\"\n    header \"Lib.h\"\n\n    export *\n}"
+      },
+      "lipo": "Non-fat file: /Users/m1/development/anytype-d-active-20261125/main14/source/Dependencies/Middleware/Lib.xcframework/ios-arm64-simulator/Lib.framework/Lib is architecture: arm64\n"
+    },
+    "ios-arm64": {
+      "headers": {
+        "Service.objc.h": {
+          "sha256": "1db8db1ae9153c993a64f794b5e8a49d37e36e8f82167effdead16c9d38be8ff",
+          "bytes": 149499
+        },
+        "Mobile.objc.h": {
+          "sha256": "68b421e6838f4f272d8ae8825112aced59b8e8fed358203ca7025b0e4f754b37",
+          "bytes": 4841
+        },
+        "Lib.h": {
+          "sha256": "601a094ad5767c6e27e61e07594d42da72831a222ce8d5e2359f53a2870d538d",
+          "bytes": 428
+        },
+        "Core.objc.h": {
+          "sha256": "033600bb0c53a41ff09a8f40c3e4f63cb9f424b1a8198dbbafdc5f80964f9648",
+          "bytes": 38090
+        },
+        "ref.h": {
+          "sha256": "d76b969941e61d61551ae1e6b7ddc674ac898d422f28cb5dbf8d640ba2ae8df6",
+          "bytes": 1163
+        },
+        "Universe.objc.h": {
+          "sha256": "61b1a0cd75801d2d8d1d82ef2accda4477966c691795473d696e45de05fcbc7b",
+          "bytes": 563
+        }
+      },
+      "modules": {
+        "module.modulemap": "framework module \"Lib\" {\n\theader \"ref.h\"\n    header \"Service.objc.h\"\n    header \"Core.objc.h\"\n    header \"Mobile.objc.h\"\n    header \"Universe.objc.h\"\n    header \"Lib.h\"\n\n    export *\n}"
+      },
+      "lipo": "Non-fat file: /Users/m1/development/anytype-d-active-20261125/main14/source/Dependencies/Middleware/Lib.xcframework/ios-arm64/Lib.framework/Lib is architecture: arm64\n"
+    }
+  },
+  "limits": [
+    "Original ABI qualification is source-specific to native8ac, not later native cutover.",
+    "Current shared App compilation and real host engine acceptance remain separate.",
+    "No physical-device execution, Apple Distribution or TestFlight qualification is inferred."
+  ]
+}
