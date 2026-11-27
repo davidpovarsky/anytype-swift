@@ -1,0 +1,107 @@
+{
+  "baseCommit": "c95395aec96214dfabd73d55755baa95689cc6d3",
+  "derivedVisibility": "Active and no pending review; configured store requires current snapshot; source-only no-store fallback retained.",
+  "files": {
+    "AnyNativePropertyPresentation.swift": {
+      "candidateSHA256": "aa40239c5ba749b20974735337c0af11ba477c9aac870261f4ae5ae76f76c731",
+      "changes": [
+        {
+          "candidateStart": 9083,
+          "new": "guard isActive, !needsReview else { return false }\n        // A native read failure must not turn a previously hidden derived field\n        // visible. Source-only workspaces without this store keep their existing\n        // projection, while a configured store must first load current values.\n        guard let ",
+          "old": "",
+          "originalStart": 9083
+        },
+        {
+          "candidateStart": 9403,
+          "new": " else { return operations == nil }\n        return !snapshot",
+          "old": "?",
+          "originalStart": 9091
+        },
+        {
+          "candidateStart": 9547,
+          "new": "",
+          "old": " != true",
+          "originalStart": 9177
+        },
+        {
+          "candidateStart": 9965,
+          "new": "()\n        discardDisplayedSnapshot",
+          "old": "",
+          "originalStart": 9603
+        },
+        {
+          "candidateStart": 11167,
+          "new": "\n            // A failed current read cannot keep an earlier owner's values or\n            // Undo available. Retain any uncertain write until explicit review.\n            discardDisplayedSnapshot()\n            needsReview = true",
+          "old": "",
+          "originalStart": 10770
+        },
+        {
+          "candidateStart": 15396,
+          "new": "discardDisplayedSnapshot() {\n        snapshot = nil\n        undo = nil\n    }\n\n    private func ",
+          "old": "",
+          "originalStart": 14770
+        }
+      ],
+      "exactInverseRestoresAllOriginalBytes": true,
+      "originalSHA256": "c5935470e1c515461ad11b764e0169297eeb645a3ba4a522d0a7111070437dfb"
+    },
+    "AnyNativePropertyPresentationTests.swift": {
+      "candidateSHA256": "7df1a45aa85cd71bc7ec8353b98150609bc2d2fb07a2aa1ebf08f7fb40fdab61",
+      "changes": [
+        {
+          "candidateStart": 8034,
+          "new": "",
+          "old": "?.fence",
+          "originalStart": 8034
+        },
+        {
+          "candidateStart": 8038,
+          "new": "n",
+          "old": "f",
+          "originalStart": 8045
+        },
+        {
+          "candidateStart": 8040,
+          "new": "l",
+          "old": "rst.fence",
+          "originalStart": 8047
+        },
+        {
+          "candidateStart": 10524,
+          "new": ")\n        }\n    }\n\n    @Test\n    func currentReadFailureDiscardsDisplayedValuesAndUndoUntilReviewed() async throws {\n        let failures: [any Error] = [\n            AnyEngineError.http(status: 403, code: \"space.read_only\"),\n            AnyHostError.changedDocument\n        ]\n        for failure in failures {\n            let fixture = try PropertyPresentationFixture()\n            defer { fixture.cancelOutstandingCalls() }\n            let first = try fixture.snapshot(sequence: 17)\n            let changed = try fixture.snapshot(type: \"custom\", sequence: 18,\n                hidden: [AnyNativePropertyVisibilityKey(derived: .sources).rawValue])\n            let reviewed = try fixture.snapshot(type: \"custom\", sequence: 19,\n                hidden: [AnyNativePropertyVisibilityKey(derived: .words).rawValue])\n            let subject = try await fixture.loaded(first)\n            let change = Task { await subject.setType(\"custom\") }\n            try await fixture.writes.waitUntilStarted(0)\n            let inverse = try fixture.store.prepareSetType(changed, typeID: \"page\")\n            try fixture.writes.succeed(0, fixture.receipt(changed, undo: inverse))\n            await change.value\n            #expect(subject.canUndo)\n            #expect(!subject.derivedIsVisible(.sources))\n            #expect(subject.derivedIsVisible(.topics))\n            #expect(subject.derivedIsVisible(.words))\n\n            let failedRead = Task { await subject.load(reviewCurrent: true) }\n            try await fixture.reads.waitUntilStarted(1)\n            try fixture.reads.fail(1, failure)\n            await failedRead.value\n            #expect(subject.snapshot == nil)\n            #expect(subject.visibleRows.isEmpty)\n            #expect(subject.hiddenRows.isEmpty)\n            #expect(subject.attachableCollections.isEmpty)\n            #expect(subject.removableCollections.isEmpty)\n            #expect(!subject.canWrite)\n            #expect(!subject.canUndo)\n            #expect(subject.needsReview)\n            #expect(subject.message != nil)\n            for field in [AnyNativePropertyVisibilityKey.DerivedField.sources, .topics, .words] {\n                #expect(!subject.derivedIsVisible(field))\n            }\n            // A failed disabled-state assertion must not hang this regression\n            // by deliberately dispatching a suspended write on the old model.\n            guard !subject.canWrite, !subject.canUndo else { continue }\n            await subject.setType(\"page\")\n            await subject.undoLastChange()\n            #expect(fixture.writes.invocationCount == 1)\n\n            let review = Task { await subject.load(reviewCurrent: true) }\n            try await fixture.reads.waitUntilStarted(2)\n            try fixture.reads.succeed(2, reviewed)\n            await review.value\n            #expect(subject.snapshot?.fence == reviewed.fence)\n            #expect(subject.canWrite)\n            #expect(!subject.canUndo)\n            #expect(!subject.needsReview)\n            #expect(subject.derivedIsVisible(.sources))\n            #expect(subject.derivedIsVisible(.topics))\n            #expect(!subject.derivedIsVisible(.words))\n        }\n    }\n\n    @Test\n    func deactivationDiscardsDisplayedValuesAndUndoBeforeNewOwnerRead() async throws {\n        let fixture = try PropertyPresentationFixture()\n        defer { fixture.cancelOutstandingCalls() }\n        let first = try fixture.snapshot(sequence: 17)\n        let changed = try fixture.snapshot(type: \"custom\", sequence: 18,\n            hidden: [AnyNativePropertyVisibilityKey(derived: .sources).rawValue])\n        let current = try fixture.snapshot(type: \"custom-two\", sequence: 19)\n        let subject = try await fixture.loaded(first)\n        let change = Task { await subject.setType(\"custom\") }\n        try await fixture.writes.waitUntilStarted(0)\n        let inverse = try fixture.store.prepareSetType(changed, typeID: \"page\")\n        try fixture.writes.succeed(0, fixture.receipt(changed, undo: inverse))\n        await change.value\n        #expect(subject.canUndo)\n\n        subject.deactivate()\n        #expect(subject.snapshot == nil)\n        #expect(subject.visibleRows.isEmpty)\n        #expect(subject.hiddenRows.isEmpty)\n        #expect(subject.attachableCollections.isEmpty)\n        #expect(subject.removableCollections.isEmpty)\n        #expect(!subject.canWrite)\n        #expect(!subject.canUndo)\n        for field in [AnyNativePropertyVisibilityKey.DerivedField.sources, .topics, .words] {\n            #expect(!subject.derivedIsVisible(field))\n        }\n        fixture.mountedOwner = UUID()\n        subject.activate()\n        let nextRead = Task { await subject.load() }\n        try await fixture.reads.waitUntilStarted(1)\n        #expect(subject.snapshot == nil)\n        #expect(!subject.canWrite)\n        #expect(!subject.canUndo)\n        #expect(subject.isLoading)\n        for field in [AnyNativePropertyVisibilityKey.DerivedField.sources, .topics, .words] {\n            #expect(!subject.derivedIsVisible(field))\n        }\n        try fixture.reads.succeed(1, current)\n        await nextRead.value\n        #expect(subject.snapshot?.fence == current.fence)\n        #expect(subject.canWrite)\n        #expect(!subject.canUndo)\n        #expect(!subject.isLoading)\n        for field in [AnyNativePropertyVisibilityKey.DerivedField.sources, .topics, .words] {\n            #expect(subject.derivedIsVisible(field)",
+          "old": "",
+          "originalStart": 10539
+        }
+      ],
+      "exactInverseRestoresAllOriginalBytes": true,
+      "originalSHA256": "9b9ed54de6f915f8e5347d04b32960af525c120703ba01edaf4dbceecda4371a"
+    }
+  },
+  "nativeContractChanged": false,
+  "pendingUncertainWriteRetained": true,
+  "runtimeStatus": "NOT_RUN",
+  "schema": "pinkha.wave2.property-lifecycle-source-inverse.v1",
+  "testPreservation": {
+    "allOriginalBytesRetainedExceptOneCorrectedExpectation": true,
+    "changedExpectation": {
+      "method": "oldReadCannotPublishOrClearLoadingAfterOwnerReactivation",
+      "new": "subject.snapshot == nil",
+      "old": "subject.snapshot?.fence == first.fence",
+      "reason": "Deactivation invalidates the previous owner snapshot before a new owner read completes."
+    },
+    "newCases": 3,
+    "newMethods": [
+      "currentReadFailureDiscardsDisplayedValuesAndUndoUntilReviewed",
+      "deactivationDiscardsDisplayedValuesAndUndoBeforeNewOwnerRead"
+    ],
+    "originalMethods": [
+      "delayedReviewCannotRestoreOldTypeOrEraseAcknowledgedUndo",
+      "delayedReadFailureCannotReplaceAcknowledgedWriteFeedbackOrUndo",
+      "delayedRefreshCannotRevealAnAcknowledgedHiddenProperty",
+      "refreshDuringWriteDoesNotDispatchOrReportMissingWorkspace",
+      "supersededReadFailureCannotClearNewerReadSpinnerOrFeedback",
+      "oldReadCannotPublishOrClearLoadingAfterOwnerReactivation",
+      "oldWriteCompletionCannotClearNewOwnerSavingStateOrPublishFailure"
+    ]
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "AppleInvocations": 0,
+  "MacActions": 0,
+  "OracleActions": 0,
+  "SwiftInvocations": 0,
+  "actualGroupCalls": [
+    {
+      "group": 6,
+      "result": "PRESENT",
+      "signal": 0
+    },
+    {
+      "group": 6,
+      "result": "SIGNAL_DELIVERED",
+      "signal": 15
+    },
+    {
+      "group": 6,
+      "result": "PRESENT",
+      "signal": 0
+    },
+    {
+      "errno": 3,
+      "group": 6,
+      "result": "OS_ERROR",
+      "signal": 0
+    }
+  ],
+  "actualOwnedIdentity": {
+    "childPID": 7,
+    "group": 6,
+    "leaderPID": 6
+  },
+  "cachedCleanup": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T05:06:41.507825+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 6,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "errors": [],
+    "groupObservations": [
+      {
+        "atUTC": "2026-11-27T05:06:41.407635+00:00",
+        "processGroup": 6,
+        "signal": 0,
+        "status": "PRESENT"
+      },
+      {
+        "atUTC": "2026-11-27T05:06:41.407709+00:00",
+        "processGroup": 6,
+        "signal": 0,
+        "status": "PRESENT"
+      },
+      {
+        "atUTC": "2026-11-27T05:06:41.507825+00:00",
+        "errno": 3,
+        "error": "[Errno 3] No such process",
+        "processGroup": 6,
+        "signal": 0,
+        "status": "ABSENT_ESRCH"
+      }
+    ],
+    "historicalGroupReprobed": false,
+    "processExit": 0,
+    "processGroup": 6,
+    "signals": [],
+    "status": "PASS_OWNED_GROUP_ABSENT",
+    "terminationRequired": false
+  },
+  "cachedObservation": {
+    "atUTC": "2026-11-27T05:06:41.507825+00:00",
+    "errno": 3,
+    "error": "[Errno 3] No such process",
+    "processGroup": 6,
+    "signal": 0,
+    "status": "ABSENT_ESRCH"
+  },
+  "childAdoptedByProbe": true,
+  "elapsedSeconds": 0.15096207299939124,
+  "leaderReapedBeforeFailure": true,
+  "noSyscallOrDiagnosticAfterAbsence": true,
+  "originalFailureRetained": true,
+  "phaseReceipt": {
+    "failure": "Traceback (most recent call last):\n  File \"/workspace/scratch/1d35894f12d5/wave2-property-lifecycle/probe_owned_cleanup.py\", line 115, in main\n    raise RuntimeError(\"CONTROLLED_POST_POPEN_EXCEPTION_WITH_SURVIVING_CHILD\")\nRuntimeError: CONTROLLED_POST_POPEN_EXCEPTION_WITH_SURVIVING_CHILD\n",
+    "ownedCleanup": {
+      "absenceEvidence": {
+        "atUTC": "2026-11-27T05:06:41.507825+00:00",
+        "errno": 3,
+        "error": "[Errno 3] No such process",
+        "processGroup": 6,
+        "signal": 0,
+        "status": "ABSENT_ESRCH"
+      },
+      "errors": [],
+      "groupObservations": [
+        {
+          "atUTC": "2026-11-27T05:06:41.407635+00:00",
+          "processGroup": 6,
+          "signal": 0,
+          "status": "PRESENT"
+        },
+        {
+          "atUTC": "2026-11-27T05:06:41.407709+00:00",
+          "processGroup": 6,
+          "signal": 0,
+          "status": "PRESENT"
+        },
+        {
+          "atUTC": "2026-11-27T05:06:41.507825+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 6,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        }
+      ],
+      "historicalGroupReprobed": false,
+      "initialMembersDiagnosticOnly": [
+        7
+      ],
+      "processExit": 0,
+      "processGroup": 6,
+      "signals": [
+        "SIGTERM"
+      ],
+      "status": "PASS_OWNED_GROUP_ABSENT",
+      "terminationRequired": true
+    },
+    "processExit": 0,
+    "status": "FAIL"
+  },
+  "probeSHA256": "c8dd6f6718d73f7c4393f7b1757e1043168cc61eeccca58b127bdd022ee8f2e9",
+  "productAdmission": false,
+  "projectCacheMutations": 0,
+  "reapedChild": {
+    "pid": 7,
+    "terminatingSignal": 15,
+    "waitStatus": 15
+  },
+  "runnerSHA256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+  "schema": "pinkha-properties-owned-cleanup-probe-v1",
+  "scope": "Actual cleanup/finalization helper with a newly owned local Python process group",
+  "startedAtUTC": "2026-11-27T05:06:41.372360+00:00",
+  "status": "PASS_REAL_OWNED_CLEANUP_AND_ORIGINAL_FAILURE_RETAINED",
+  "subreaperSettingRestored": true
+}

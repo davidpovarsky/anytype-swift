@@ -170,7 +170,7 @@ struct AnyNativePropertyPresentationTests {
             else { try fixture.reads.succeed(1, staleValue) }
             await old.value
             #expect(subject.isLoading)
-            #expect(subject.snapshot?.fence == first.fence)
+            #expect(subject.snapshot == nil)
             #expect(subject.message == "New mounted owner")
             try fixture.reads.succeed(2, current)
             await new.value
@@ -221,6 +221,117 @@ struct AnyNativePropertyPresentationTests {
             #expect(!subject.isSaving)
             #expect(subject.snapshot?.fence == newest.fence)
             #expect(subject.canUndo)
+        }
+    }
+
+    @Test
+    func currentReadFailureDiscardsDisplayedValuesAndUndoUntilReviewed() async throws {
+        let failures: [any Error] = [
+            AnyEngineError.http(status: 403, code: "space.read_only"),
+            AnyHostError.changedDocument
+        ]
+        for failure in failures {
+            let fixture = try PropertyPresentationFixture()
+            defer { fixture.cancelOutstandingCalls() }
+            let first = try fixture.snapshot(sequence: 17)
+            let changed = try fixture.snapshot(type: "custom", sequence: 18,
+                hidden: [AnyNativePropertyVisibilityKey(derived: .sources).rawValue])
+            let reviewed = try fixture.snapshot(type: "custom", sequence: 19,
+                hidden: [AnyNativePropertyVisibilityKey(derived: .words).rawValue])
+            let subject = try await fixture.loaded(first)
+            let change = Task { await subject.setType("custom") }
+            try await fixture.writes.waitUntilStarted(0)
+            let inverse = try fixture.store.prepareSetType(changed, typeID: "page")
+            try fixture.writes.succeed(0, fixture.receipt(changed, undo: inverse))
+            await change.value
+            #expect(subject.canUndo)
+            #expect(!subject.derivedIsVisible(.sources))
+            #expect(subject.derivedIsVisible(.topics))
+            #expect(subject.derivedIsVisible(.words))
+
+            let failedRead = Task { await subject.load(reviewCurrent: true) }
+            try await fixture.reads.waitUntilStarted(1)
+            try fixture.reads.fail(1, failure)
+            await failedRead.value
+            #expect(subject.snapshot == nil)
+            #expect(subject.visibleRows.isEmpty)
+            #expect(subject.hiddenRows.isEmpty)
+            #expect(subject.attachableCollections.isEmpty)
+            #expect(subject.removableCollections.isEmpty)
+            #expect(!subject.canWrite)
+            #expect(!subject.canUndo)
+            #expect(subject.needsReview)
+            #expect(subject.message != nil)
+            for field in [AnyNativePropertyVisibilityKey.DerivedField.sources, .topics, .words] {
+                #expect(!subject.derivedIsVisible(field))
+            }
+            // A failed disabled-state assertion must not hang this regression
+            // by deliberately dispatching a suspended write on the old model.
+            guard !subject.canWrite, !subject.canUndo else { continue }
+            await subject.setType("page")
+            await subject.undoLastChange()
+            #expect(fixture.writes.invocationCount == 1)
+
+            let review = Task { await subject.load(reviewCurrent: true) }
+            try await fixture.reads.waitUntilStarted(2)
+            try fixture.reads.succeed(2, reviewed)
+            await review.value
+            #expect(subject.snapshot?.fence == reviewed.fence)
+            #expect(subject.canWrite)
+            #expect(!subject.canUndo)
+            #expect(!subject.needsReview)
+            #expect(subject.derivedIsVisible(.sources))
+            #expect(subject.derivedIsVisible(.topics))
+            #expect(!subject.derivedIsVisible(.words))
+        }
+    }
+
+    @Test
+    func deactivationDiscardsDisplayedValuesAndUndoBeforeNewOwnerRead() async throws {
+        let fixture = try PropertyPresentationFixture()
+        defer { fixture.cancelOutstandingCalls() }
+        let first = try fixture.snapshot(sequence: 17)
+        let changed = try fixture.snapshot(type: "custom", sequence: 18,
+            hidden: [AnyNativePropertyVisibilityKey(derived: .sources).rawValue])
+        let current = try fixture.snapshot(type: "custom-two", sequence: 19)
+        let subject = try await fixture.loaded(first)
+        let change = Task { await subject.setType("custom") }
+        try await fixture.writes.waitUntilStarted(0)
+        let inverse = try fixture.store.prepareSetType(changed, typeID: "page")
+        try fixture.writes.succeed(0, fixture.receipt(changed, undo: inverse))
+        await change.value
+        #expect(subject.canUndo)
+
+        subject.deactivate()
+        #expect(subject.snapshot == nil)
+        #expect(subject.visibleRows.isEmpty)
+        #expect(subject.hiddenRows.isEmpty)
+        #expect(subject.attachableCollections.isEmpty)
+        #expect(subject.removableCollections.isEmpty)
+        #expect(!subject.canWrite)
+        #expect(!subject.canUndo)
+        for field in [AnyNativePropertyVisibilityKey.DerivedField.sources, .topics, .words] {
+            #expect(!subject.derivedIsVisible(field))
+        }
+        fixture.mountedOwner = UUID()
+        subject.activate()
+        let nextRead = Task { await subject.load() }
+        try await fixture.reads.waitUntilStarted(1)
+        #expect(subject.snapshot == nil)
+        #expect(!subject.canWrite)
+        #expect(!subject.canUndo)
+        #expect(subject.isLoading)
+        for field in [AnyNativePropertyVisibilityKey.DerivedField.sources, .topics, .words] {
+            #expect(!subject.derivedIsVisible(field))
+        }
+        try fixture.reads.succeed(1, current)
+        await nextRead.value
+        #expect(subject.snapshot?.fence == current.fence)
+        #expect(subject.canWrite)
+        #expect(!subject.canUndo)
+        #expect(!subject.isLoading)
+        for field in [AnyNativePropertyVisibilityKey.DerivedField.sources, .topics, .words] {
+            #expect(subject.derivedIsVisible(field))
         }
     }
 }

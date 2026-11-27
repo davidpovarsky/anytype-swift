@@ -1,0 +1,121 @@
+{
+  "schema": "pinkha-page154-original-enumeration-timeout-readonly-review-v1",
+  "status": "SEALED_ORIGINAL_TIMEOUT_BOUNDARY_VERIFIED_INTERNAL_CAUSE_NOT_ESTABLISHED",
+  "originalStageReceipt": {
+    "path": "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1/evidence/linked-native/result.json",
+    "bytes": 406,
+    "sha256": "bcfa06bea94cc0ce89541dc3e165160d6574ce1c9f551c56857102a24d00a5e0"
+  },
+  "originalCommand": {
+    "argv": [
+      "xcodebuild",
+      "test-without-building",
+      "-xctestrun",
+      "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1/app-products/E-Combined-Heart-linked-native.xctestrun",
+      "-destination",
+      "platform=iOS Simulator,id=98652CBB-F000-4A0F-AFBF-B8054D5F3876",
+      "-parallel-testing-enabled",
+      "NO",
+      "-only-testing",
+      "AnytypeTests/SemanticAnchorPage154MountedPreparationTests/testReadBackExistingSemanticSourceAfterActualUIEditAndColdReopen",
+      "-enumerate-tests",
+      "-test-enumeration-style",
+      "flat",
+      "-test-enumeration-format",
+      "json",
+      "-test-enumeration-output-path",
+      "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1/evidence/linked-native/enumeration.json"
+    ],
+    "startedUTC": "2026-11-26T09:07:32.401094+00:00",
+    "finishedUTC": "2026-11-26T09:10:32.601224+00:00",
+    "elapsedSeconds": 180.20012998580933,
+    "timeoutSeconds": 180,
+    "pid": 93901,
+    "pgid": 93901,
+    "exitCode": -15,
+    "interruption": {
+      "message": "OWNED_TIMEOUT",
+      "type": "TimeoutError"
+    },
+    "termination": [
+      {
+        "at": 1795684232.5544991,
+        "pid": 93901,
+        "signal": 15,
+        "status": "SIGNAL_SENT_TO_OWNED_LIVE_CHILD_GROUP",
+        "waitStatus": "CHILD_REAPED"
+      }
+    ],
+    "ownedGroupObservationStatus": "ABSENT_ESRCH",
+    "ownedGroupPresentAfterExit": false,
+    "cleanupErrors": [],
+    "freeBytesBefore": 80878493696,
+    "minimumFreeBytes": 79299567616,
+    "logBytes": 757,
+    "logSHA256": "7e1a4431fb2342fc9bb69d40abaf5f07f3b34dc173af6cd19f4c87fb04afffcf"
+  },
+  "diagnosis": {
+    "observed": "Original xcodebuild test-without-building test enumeration did not produce its enumeration JSON before the original180-second deadline. The original supervisor interrupted only its owned live child group withSIGTERM, reaped it and recorded group absence. The757-byte original log contains the full invocation and BUILD INTERRUPTED, with no Xcode/simulator error or stack trace.",
+    "boundary": "The selected Page154 readback method was not invoked. The whole continuation reports0 actual methods, and product integrity had verified6308entries plus1bounddescriptor. This is not a failed semantic assertion or a passed Page154 native readback.",
+    "internalCause": "Not established by retained original stdout/process receipts. No disk-exhaustion evidence: the original minimum observed free space was79,299,567,616bytes. No unsupported attribution to fixture expiry, a test deadlock, an account defect or current host state.",
+    "enumerationOutput": "The original exact evidence/linked-native directory listing contains only bound.xctestrun, descriptor-binding.json and result.json; enumeration.json is absent.",
+    "source": "379ca3568f247d2fc218ed63df24796d461713c0",
+    "fixtureDeadlineChanges": 0,
+    "originalFixtureCreatedAt": 817374770.211263,
+    "originalFixtureExpiryUnix": 1795689170.211263
+  },
+  "futureAcceptance": {
+    "timeoutSecondsPreserved": 180,
+    "fixtureMaximumAgeSecondsPreserved": 7200,
+    "oldFixtureReused": false,
+    "closedSuccessor": "897687a02defdc8a69603a5a27c561839db26bf4",
+    "scope": "Fresh six-stage runtime must use the current admitted shared build, genuine fixture requalification and original ordering. No current test acceptance or underlying hang fix follows from this historical read."
+  },
+  "originalEvidence": [
+    {
+      "path": "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1/commands/linked-native-enumerate/interruption.json",
+      "bytes": 160,
+      "sha256": "12eb8eede7bb3856c518a841d08ec1cf567f0eaaefe6943141f6f9cfd0a43a0d",
+      "local": "linked-native-enumerate/interruption.json"
+    },
+    {
+      "path": "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1/commands/linked-native-enumerate/original.log",
+      "bytes": 757,
+      "sha256": "7e1a4431fb2342fc9bb69d40abaf5f07f3b34dc173af6cd19f4c87fb04afffcf",
+      "local": "linked-native-enumerate/original.log"
+    },
+    {
+      "path": "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1/commands/linked-native-enumerate/process-exit.json",
+      "bytes": 1596,
+      "sha256": "99f770e024a6c0d35781234415d2f05a60483645777ffa96ee64b8224ae33d70",
+      "local": "linked-native-enumerate/process-exit.json"
+    },
+    {
+      "path": "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1/commands/linked-native-enumerate/result.json",
+      "bytes": 2045,
+      "sha256": "5cc4b2168ac3211ff4fe913d1b8a957cf581e45315a91fbbd5e41671a827311b",
+      "local": "linked-native-enumerate/result.json"
+    },
+    {
+      "path": "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1/commands/linked-native-enumerate/started.json",
+      "bytes": 1072,
+      "sha256": "11b221c82dc82c27ae8854fc14c8364dab4358af8a0fbb214541c55d867fb8bf",
+      "local": "linked-native-enumerate/started.json"
+    }
+  ],
+  "originalExecutionRecord": [
+    {
+      "path": "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1/evidence/execution.json",
+      "bytes": 23325,
+      "sha256": "6cd7287d7c2c49e7880bc03cc81a1c26a2b81af9c09ff0320331127dcc96773e"
+    },
+    {
+      "path": "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1/evidence/retention-completion.json",
+      "bytes": 2958,
+      "sha256": "3ba4ebd609c09946278413d6b7204e58d9ace3ed977ed6ea69bf9055436a6681"
+    }
+  ],
+  "readScope": "Exact original receipt, bounded names-only same-continuation directories, original enumeration command/log/process custody and descriptor-binding metadata; private account contents were not opened. No simulator/build/account action or historical process reprobe.",
+  "newNativeOrTestExecutions": 0,
+  "sourceEdits": 0
+}

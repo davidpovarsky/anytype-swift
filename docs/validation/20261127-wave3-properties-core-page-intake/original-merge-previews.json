@@ -1,0 +1,257 @@
+{
+  "observedAt": "2026-11-27T07:32:34.533760+00:00",
+  "base": "ba7d491211f13984795df8c6ddfcc74e19a3963e",
+  "status": "PASS_PREVIEW_ONLY_SOURCE_UNCHANGED",
+  "commands": [
+    {
+      "args": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "merge-tree",
+        "--write-tree",
+        "ba7d491211f13984795df8c6ddfcc74e19a3963e",
+        "dc001f2f09c64997515b77147fca4bacbac31397"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "show",
+        "-s",
+        "--format=%P",
+        "dc001f2f09c64997515b77147fca4bacbac31397"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "rev-parse",
+        "dc001f2f09c64997515b77147fca4bacbac31397^{tree}"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "merge-base",
+        "ba7d491211f13984795df8c6ddfcc74e19a3963e",
+        "dc001f2f09c64997515b77147fca4bacbac31397"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "diff-tree",
+        "--no-commit-id",
+        "--name-status",
+        "-r",
+        "dc001f2f09c64997515b77147fca4bacbac31397"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "diff",
+        "--name-status",
+        "ba7d491211f13984795df8c6ddfcc74e19a3963e",
+        "2e3fd40a75851cd3689ee69cf0db0ba554f7c08d"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "merge-tree",
+        "--write-tree",
+        "ba7d491211f13984795df8c6ddfcc74e19a3963e",
+        "897687a02defdc8a69603a5a27c561839db26bf4"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "show",
+        "-s",
+        "--format=%P",
+        "897687a02defdc8a69603a5a27c561839db26bf4"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "rev-parse",
+        "897687a02defdc8a69603a5a27c561839db26bf4^{tree}"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "merge-base",
+        "ba7d491211f13984795df8c6ddfcc74e19a3963e",
+        "897687a02defdc8a69603a5a27c561839db26bf4"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "diff-tree",
+        "--no-commit-id",
+        "--name-status",
+        "-r",
+        "897687a02defdc8a69603a5a27c561839db26bf4"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "diff",
+        "--name-status",
+        "ba7d491211f13984795df8c6ddfcc74e19a3963e",
+        "015b3a5bb7f3c861eae8cc58467435211af85eed"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "merge-tree",
+        "--write-tree",
+        "ba7d491211f13984795df8c6ddfcc74e19a3963e",
+        "54079356628487f7ecedf5cfe87434c8cc57ea36"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "show",
+        "-s",
+        "--format=%P",
+        "54079356628487f7ecedf5cfe87434c8cc57ea36"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "rev-parse",
+        "54079356628487f7ecedf5cfe87434c8cc57ea36^{tree}"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "merge-base",
+        "ba7d491211f13984795df8c6ddfcc74e19a3963e",
+        "54079356628487f7ecedf5cfe87434c8cc57ea36"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "diff-tree",
+        "--no-commit-id",
+        "--name-status",
+        "-r",
+        "54079356628487f7ecedf5cfe87434c8cc57ea36"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "diff",
+        "--name-status",
+        "ba7d491211f13984795df8c6ddfcc74e19a3963e",
+        "5b55c04d99fe7dc74e1c695cc4a29fc2131b2272"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exit": 0,
+      "stderr": ""
+    }
+  ],
+  "beforeStatus": "?? Tools/Hanlin/__pycache__/prepare_sdk.cpython-312.pyc\n?? Tools/Hanlin/__pycache__/wave15_core_profile.cpython-312.pyc\n?? Tools/MiniApps/__pycache__/owner_signing.cpython-312.pyc\n?? Tools/PinkhaSimulatorGate/__pycache__/retain_current_composition_controls.cpython-312.pyc\n",
+  "donors": [
+    {
+      "sha": "dc001f2f09c64997515b77147fca4bacbac31397",
+      "parents": [
+        "ff6836a6d4db7f1a19b94280d3b2f548e8d7d622"
+      ],
+      "tree": "e7a6fe4a55771d86381959cd273338d597309544",
+      "mergeBase": "ff6836a6d4db7f1a19b94280d3b2f548e8d7d622",
+      "previewExit": 0,
+      "previewTree": "2e3fd40a75851cd3689ee69cf0db0ba554f7c08d",
+      "previewDiagnostic": "\n",
+      "commitDelta": "M\tAnytype.xcodeproj/project.pbxproj\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/combined_host_acceptance_app15.py\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/future-compiler-inputs.closed.json\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/native-core-closed-profile.json\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/native_core_hosted_profile.py\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/prepare_native_core_hosted.py\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/receipt_admission_native_core.py\nA\tdocs/validation/20261127-wave2-native-core-hosted/README.md\nA\tdocs/validation/20261127-wave2-native-core-hosted/binary-evidence-index.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/current-source-readback.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materialization.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materialization1-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materialization1.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materialization2-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materializer.prereview-a2f3.py.gz\nA\tdocs/validation/20261127-wave2-native-core-hosted/native-core-profile-review.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-controls1-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-controls1.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-controls2-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-controls2.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-source-inputs.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable_controls.py\nA\tdocs/validation/20261127-wave2-native-core-hosted/precommit-whitespace-diagnostic.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/profile.prereview-83a3.py.gz\nA\tdocs/validation/20261127-wave2-native-core-hosted/project-source-transfer.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/project.diff.gz\nA\tdocs/validation/20261127-wave2-native-core-hosted/publication-commit-attempt1.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/publication-commit-attempt2.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/published-source-readback.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/readiness-audit.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/root-bridge-review.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/source-inverse.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/source-staging-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/worktree-preparation-tool-result.json\n",
+      "mergeDelta": "M\tAnytype.xcodeproj/project.pbxproj\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/combined_host_acceptance_app15.py\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/future-compiler-inputs.closed.json\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/native-core-closed-profile.json\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/native_core_hosted_profile.py\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/prepare_native_core_hosted.py\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/receipt_admission_native_core.py\nA\tdocs/validation/20261127-wave2-native-core-hosted/README.md\nA\tdocs/validation/20261127-wave2-native-core-hosted/binary-evidence-index.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/current-source-readback.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materialization.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materialization1-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materialization1.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materialization2-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materializer.prereview-a2f3.py.gz\nA\tdocs/validation/20261127-wave2-native-core-hosted/native-core-profile-review.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-controls1-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-controls1.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-controls2-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-controls2.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-source-inputs.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable_controls.py\nA\tdocs/validation/20261127-wave2-native-core-hosted/precommit-whitespace-diagnostic.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/profile.prereview-83a3.py.gz\nA\tdocs/validation/20261127-wave2-native-core-hosted/project-source-transfer.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/project.diff.gz\nA\tdocs/validation/20261127-wave2-native-core-hosted/publication-commit-attempt1.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/publication-commit-attempt2.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/published-source-readback.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/readiness-audit.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/root-bridge-review.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/source-inverse.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/source-staging-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/worktree-preparation-tool-result.json\n"
+    },
+    {
+      "sha": "897687a02defdc8a69603a5a27c561839db26bf4",
+      "parents": [
+        "dc001f2f09c64997515b77147fca4bacbac31397"
+      ],
+      "tree": "46a24a5a0098db0071e7e52dd6729418f7a97ade",
+      "mergeBase": "ff6836a6d4db7f1a19b94280d3b2f548e8d7d622",
+      "previewExit": 0,
+      "previewTree": "015b3a5bb7f3c861eae8cc58467435211af85eed",
+      "previewDiagnostic": "\n",
+      "commitDelta": "A\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/page154-future-intake/prepare_wave2_page154_shared_profile_closed.py\nA\tdocs/validation/20261127-wave2-page154-closed-intake/README.md\nA\tdocs/validation/20261127-wave2-page154-closed-intake/evidence-index.json\nA\tdocs/validation/20261127-wave2-page154-closed-intake/original-continuation-audit.json\nA\tdocs/validation/20261127-wave2-page154-closed-intake/original4005-preparer.py.gz\nA\tdocs/validation/20261127-wave2-page154-closed-intake/portable-controls1-tool-result.json\nA\tdocs/validation/20261127-wave2-page154-closed-intake/portable-controls1.json\nA\tdocs/validation/20261127-wave2-page154-closed-intake/portable_controls.py\nA\tdocs/validation/20261127-wave2-page154-closed-intake/root-source-review.json\nA\tdocs/validation/20261127-wave2-page154-closed-intake/source-inverse.json\n",
+      "mergeDelta": "M\tAnytype.xcodeproj/project.pbxproj\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/combined_host_acceptance_app15.py\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/future-compiler-inputs.closed.json\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/native-core-closed-profile.json\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/native_core_hosted_profile.py\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/prepare_native_core_hosted.py\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/receipt_admission_native_core.py\nA\tTools/CurrentAppleValidation/combined_heart_semantics/wave2/page154-future-intake/prepare_wave2_page154_shared_profile_closed.py\nA\tdocs/validation/20261127-wave2-native-core-hosted/README.md\nA\tdocs/validation/20261127-wave2-native-core-hosted/binary-evidence-index.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/current-source-readback.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materialization.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materialization1-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materialization1.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materialization2-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/materializer.prereview-a2f3.py.gz\nA\tdocs/validation/20261127-wave2-native-core-hosted/native-core-profile-review.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-controls1-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-controls1.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-controls2-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-controls2.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable-source-inputs.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/portable_controls.py\nA\tdocs/validation/20261127-wave2-native-core-hosted/precommit-whitespace-diagnostic.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/profile.prereview-83a3.py.gz\nA\tdocs/validation/20261127-wave2-native-core-hosted/project-source-transfer.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/project.diff.gz\nA\tdocs/validation/20261127-wave2-native-core-hosted/publication-commit-attempt1.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/publication-commit-attempt2.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/published-source-readback.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/readiness-audit.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/root-bridge-review.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/source-inverse.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/source-staging-tool-result.json\nA\tdocs/validation/20261127-wave2-native-core-hosted/worktree-preparation-tool-result.json\nA\tdocs/validation/20261127-wave2-page154-closed-intake/README.md\nA\tdocs/validation/20261127-wave2-page154-closed-intake/evidence-index.json\nA\tdocs/validation/20261127-wave2-page154-closed-intake/original-continuation-audit.json\nA\tdocs/validation/20261127-wave2-page154-closed-intake/original4005-preparer.py.gz\nA\tdocs/validation/20261127-wave2-page154-closed-intake/portable-controls1-tool-result.json\nA\tdocs/validation/20261127-wave2-page154-closed-intake/portable-controls1.json\nA\tdocs/validation/20261127-wave2-page154-closed-intake/portable_controls.py\nA\tdocs/validation/20261127-wave2-page154-closed-intake/root-source-review.json\nA\tdocs/validation/20261127-wave2-page154-closed-intake/source-inverse.json\n"
+    },
+    {
+      "sha": "54079356628487f7ecedf5cfe87434c8cc57ea36",
+      "parents": [
+        "c95395aec96214dfabd73d55755baa95689cc6d3"
+      ],
+      "tree": "ad664f3246731b3b4a83e1db483b5d51021c6572",
+      "mergeBase": "c95395aec96214dfabd73d55755baa95689cc6d3",
+      "previewExit": 0,
+      "previewTree": "5b55c04d99fe7dc74e1c695cc4a29fc2131b2272",
+      "previewDiagnostic": "\n",
+      "commitDelta": "M\tModules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertyPresentation.swift\nM\tModules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift\nA\tTools/PinkhaDualEngineRuntime/property_lifecycle/prepare_component_sources.py\nA\tTools/PinkhaDualEngineRuntime/property_lifecycle/probe_owned_cleanup.py\nA\tTools/PinkhaDualEngineRuntime/property_lifecycle/run_component.py\nA\tdocs/validation/20261127-wave2-property-lifecycle/README.md\nA\tdocs/validation/20261127-wave2-property-lifecycle/diff-check.original.log.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/diff-custody.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/error-text-source.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/final-source-gate/log-custody.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/final-source-gate/receipt.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/final-source-gate/source-retention.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/final-source-gate/stderr.original.log.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/final-source-gate/stdout.original.log.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/independent-source-review.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/model.diff.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-attempt2/controller.py\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-attempt2/failure.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-attempt2/post-failure-readonly-diagnostic.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-attempt2/predispatch-errors.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-attempt2/tool-result.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-commit-attempt1/commit.stderr.original.log\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-commit-attempt1/commit.stdout.original.log\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-commit-attempt1/receipt.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/qualification.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/editor-runner-rereview-5817.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/editor-runner-source-review.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-cleanup-probe1.stderr\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-cleanup-probe1.stdout\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-cleanup-probe1/leader.stderr\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-cleanup-probe1/leader.stdout\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-cleanup-probe1/receipt.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-group-absence-inverse.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-group-review-closure.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/run_component.prereview-4c6.py.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/run_component.prereview-5817.py.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/source-gate-log-custody.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/source-gate-receipt.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/source-inverse.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/source-retention.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/source-retention.stderr.original.log.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/source-retention.stdout.original.log.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/tests.diff.gz\n",
+      "mergeDelta": "M\tModules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertyPresentation.swift\nM\tModules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift\nA\tTools/PinkhaDualEngineRuntime/property_lifecycle/prepare_component_sources.py\nA\tTools/PinkhaDualEngineRuntime/property_lifecycle/probe_owned_cleanup.py\nA\tTools/PinkhaDualEngineRuntime/property_lifecycle/run_component.py\nA\tdocs/validation/20261127-wave2-property-lifecycle/README.md\nA\tdocs/validation/20261127-wave2-property-lifecycle/diff-check.original.log.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/diff-custody.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/error-text-source.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/final-source-gate/log-custody.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/final-source-gate/receipt.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/final-source-gate/source-retention.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/final-source-gate/stderr.original.log.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/final-source-gate/stdout.original.log.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/independent-source-review.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/model.diff.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-attempt2/controller.py\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-attempt2/failure.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-attempt2/post-failure-readonly-diagnostic.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-attempt2/predispatch-errors.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-attempt2/tool-result.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-commit-attempt1/commit.stderr.original.log\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-commit-attempt1/commit.stdout.original.log\nA\tdocs/validation/20261127-wave2-property-lifecycle/publication-commit-attempt1/receipt.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/qualification.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/editor-runner-rereview-5817.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/editor-runner-source-review.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-cleanup-probe1.stderr\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-cleanup-probe1.stdout\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-cleanup-probe1/leader.stderr\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-cleanup-probe1/leader.stdout\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-cleanup-probe1/receipt.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-group-absence-inverse.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/owned-group-review-closure.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/run_component.prereview-4c6.py.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/runner-review/run_component.prereview-5817.py.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/source-gate-log-custody.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/source-gate-receipt.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/source-inverse.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/source-retention.json\nA\tdocs/validation/20261127-wave2-property-lifecycle/source-retention.stderr.original.log.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/source-retention.stdout.original.log.gz\nA\tdocs/validation/20261127-wave2-property-lifecycle/tests.diff.gz\n"
+    }
+  ]
+}

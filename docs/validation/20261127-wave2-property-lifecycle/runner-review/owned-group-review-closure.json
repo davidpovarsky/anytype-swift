@@ -1,0 +1,77 @@
+{
+  "MacActions": 0,
+  "OracleActions": 0,
+  "SwiftInvocations": 0,
+  "actualProbe": {
+    "durationSeconds": 0.15096207299939124,
+    "leaderExitedAndReapedBeforeInjectedFailure": true,
+    "noSyscallOrDiagnosticAfterAbsence": true,
+    "observedSignal": "SIGTERM",
+    "originalPhaseStatus": "FAIL",
+    "ownedCleanupStatus": "PASS_OWNED_GROUP_ABSENT",
+    "signalZeroESRCH": true,
+    "subreaperSettingRestored": true,
+    "survivingOwnedChildReaped": true
+  },
+  "artifacts": {
+    "owned-cleanup-probe1.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "owned-cleanup-probe1.stdout": {
+      "bytes": 4072,
+      "sha256": "a9b97a624b8940d8ba609aa5595af9e8ad5a913ce41cfb14563c73b888d68319"
+    },
+    "owned-cleanup-probe1/leader.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "owned-cleanup-probe1/leader.stdout": {
+      "bytes": 44,
+      "sha256": "d30b9c83a1c6608b5d981f2ba574beb8fdf7ca82ee937431e2a3b0e4755c578b"
+    },
+    "owned-cleanup-probe1/receipt.json": {
+      "bytes": 4072,
+      "sha256": "a9b97a624b8940d8ba609aa5595af9e8ad5a913ce41cfb14563c73b888d68319"
+    },
+    "owned-group-absence-inverse.json": {
+      "bytes": 13356,
+      "sha256": "1c19fc5dc11a37f64e08e884387d3f40ef0ba13d8584365ee17cce2f069e6468"
+    },
+    "probe_owned_cleanup.py": {
+      "bytes": 7453,
+      "sha256": "c8dd6f6718d73f7c4393f7b1757e1043168cc61eeccca58b127bdd022ee8f2e9"
+    },
+    "run_component.prereview-5817.py": {
+      "bytes": 19410,
+      "sha256": "5817fa9e5ab7af9f55d254158a2d4fa56fed37a4c9c2aacf069572cc1e9cfb72"
+    },
+    "run_component.py": {
+      "bytes": 22467,
+      "sha256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2"
+    }
+  },
+  "atUTC": "2026-11-27T05:08:12.830227+00:00",
+  "limits": [
+    "SIGKILL escalation and EPERM/unknown branches were source-reviewed, not exercised in the single probe.",
+    "This probe does not execute runner.main or any Properties test. It exercises the exact finish_owned_process and drain_owned_process helpers used by main.",
+    "No Apple, Native, UI, component or product acceptance is inferred."
+  ],
+  "parentOwnsPublicationAndAnyActualComponentExecution": true,
+  "priorReviewSHA256": "cf997c9ffa0c27690250503696a87f101afb3c545cd77cd1319c21aea7dede84",
+  "projectCacheMutations": 0,
+  "reviewFinding": "P-RUN-05",
+  "schema": "pinkha-properties-owned-group-review-closure-v1",
+  "sourceChecks": {
+    "absenceLatchPreventsFutureGroupSyscallsAndDiagnostics": true,
+    "allSourceDependencyTestAndResourceGatesUnchanged": true,
+    "nonzeroSignalESRCHRetiresGroupWithFailedStrictProof": true,
+    "originalAddBlockHistoricalPGIDNoLongerReadOrProbed": true,
+    "originalFailureIsPreserved": true,
+    "permissionOrUnknownCannotBecomeAbsence": true,
+    "positiveAbsenceRequiresSignalZeroESRCH": true,
+    "processReapRequiredForCleanupPass": true,
+    "retainedOriginalHandoffReportedAsHistoricalEvidence": true
+  },
+  "status": "P_RUN_05_RESOLVED_SOURCE_AND_ONE_REAL_OWNED_PROCESS_PROBE"
+}

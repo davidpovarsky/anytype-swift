@@ -1,0 +1,48 @@
+{
+  "argv": [
+    "xcodebuild",
+    "test-without-building",
+    "-xctestrun",
+    "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1/app-products/E-Combined-Heart-linked-native.xctestrun",
+    "-destination",
+    "platform=iOS Simulator,id=98652CBB-F000-4A0F-AFBF-B8054D5F3876",
+    "-parallel-testing-enabled",
+    "NO",
+    "-only-testing",
+    "AnytypeTests/SemanticAnchorPage154MountedPreparationTests/testReadBackExistingSemanticSourceAfterActualUIEditAndColdReopen",
+    "-enumerate-tests",
+    "-test-enumeration-style",
+    "flat",
+    "-test-enumeration-format",
+    "json",
+    "-test-enumeration-output-path",
+    "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1/evidence/linked-native/enumeration.json"
+  ],
+  "cleanupErrors": [],
+  "commandStatus": "FAIL_COMMAND",
+  "cwd": "/Users/m1/development/anytype-e-active-20261125/main15/linked-three-continuation1",
+  "exitCode": -15,
+  "finishedAt": 1795684232.601224,
+  "freeBytesBefore": 80878493696,
+  "interruption": {
+    "message": "OWNED_TIMEOUT",
+    "type": "TimeoutError"
+  },
+  "logBytes": 757,
+  "logSHA256": "7e1a4431fb2342fc9bb69d40abaf5f07f3b34dc173af6cd19f4c87fb04afffcf",
+  "minimumFreeBytes": 79299567616,
+  "pgid": 93901,
+  "pid": 93901,
+  "startedAt": 1795684052.401094,
+  "status": "EXIT_RECORDED_PENDING_GROUP_OBSERVATION",
+  "termination": [
+    {
+      "at": 1795684232.5544991,
+      "pid": 93901,
+      "signal": 15,
+      "status": "SIGNAL_SENT_TO_OWNED_LIVE_CHILD_GROUP",
+      "waitStatus": "CHILD_REAPED"
+    }
+  ],
+  "timeoutSeconds": 180
+}

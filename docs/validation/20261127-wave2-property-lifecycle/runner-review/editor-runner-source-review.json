@@ -1,0 +1,160 @@
+{
+  "correctedReadOnlyObservation": "An initial Git read ran under the wrong user and was rejected for repository ownership. Retried with the existing ubuntu/chatgpt-agent identity; no Git configuration changed.",
+  "counts": {
+    "baselineSelectedFrameworkMethods": 2,
+    "cacheMutationsByThisReview": 0,
+    "compilerInvocationsByThisReview": 0,
+    "fixedSelectedFrameworkMethods": 9,
+    "nativeCallsByThisReview": 0,
+    "newInternalScenarios": 3,
+    "testExecutionsByThisReview": 0
+  },
+  "executionQualification": "Source-only review. Existing Add-block result is reused as its original scope; no Properties, Apple, UI or Native acceptance claimed.",
+  "findings": [
+    {
+      "finding": "Cleanup is not guaranteed in finally. A post-Popen write or resource-sample exception may leave the compiler process running; residual group members after parent exit are only asserted, not drained.",
+      "id": "P-RUN-01",
+      "required": "Guarantee bounded termination/reap and group-drain verification on every exit after launch. Preserve cleanup failures independently and do not relabel a failed run as success.",
+      "scope": "run_component.main owned process lifetime",
+      "severity": "blocker"
+    },
+    {
+      "finding": "The exact production Error enum and its provenance document are not pinned by the execution gate. The preparer records the supplied enum hash as unchanged without comparing the known original.",
+      "id": "P-RUN-02",
+      "required": "Bind enum25d49 and provenancee125 before preparation and after completion. The original enum has independently been verified as one exact substring of c953 source6d0c7e91.",
+      "scope": "pinned_inputs / prepare_component_sources error formatter",
+      "severity": "blocker"
+    },
+    {
+      "finding": "Nonzero exit, a two-test failed summary and both named failed-method lines also accept fixture/setup throws or rendezvous timeouts. They do not alone prove the intended state regression assertions failed.",
+      "id": "P-RUN-03",
+      "required": "Treat those observations as two actual method failures pending issue review, then inspect and bind the intended expectation diagnostics before claiming regression reproduction; reject infrastructure/setup-only failure as regression proof.",
+      "scope": "baseline outcome classification",
+      "severity": "blocker"
+    },
+    {
+      "finding": "The current dependency manifest is hashed only into before/after records, not bound to the already-pinned original receipt's67c6696b artifact. Listed-file checks do not reject added inputs; remote checkout status explicitly ignores untracked files.",
+      "id": "P-RUN-04",
+      "required": "Read the exact dependency artifact through pinned original receiptbbf101c3, compare its complete finite physical file set with the retained370 rows, and reject added compiler/resource inputs in remote checkouts as well as tracked changes. Preserve private cache/metadata paths outside this input boundary.",
+      "scope": "dependency closure custody and complete input set",
+      "severity": "blocker"
+    }
+  ],
+  "originalCustody": {
+    "completeLocalInputObservation": {
+      "PinkhaAnyEngine": {
+        "extensions": {
+          ".json": 20,
+          ".log": 5,
+          ".md": 1,
+          ".py": 15,
+          ".resolved": 1,
+          ".swift": 31,
+          "<none>": 2
+        },
+        "files": 75,
+        "missingPhysicalFiles": [],
+        "physicalExtraFilesExcludingPrivateMetadata": [],
+        "topLevel": {
+          ".gitignore": 1,
+          "Evidence": 26,
+          "Package.resolved": 1,
+          "Package.swift": 1,
+          "README.md": 1,
+          "Sources": 16,
+          "Tests": 21,
+          "Tools": 8
+        }
+      },
+      "PinkhaAnyHost": {
+        "extensions": {
+          ".json": 3,
+          ".md": 4,
+          ".resolved": 1,
+          ".swift": 111,
+          "<none>": 2
+        },
+        "files": 121,
+        "missingPhysicalFiles": [],
+        "physicalExtraFilesExcludingPrivateMetadata": [],
+        "topLevel": {
+          ".gitignore": 1,
+          "Evidence": 4,
+          "INLINE_TEXT_CONTRACT.md": 1,
+          "PROPERTY_CONTRACT.md": 1,
+          "Package.resolved": 1,
+          "Package.swift": 1,
+          "README.md": 1,
+          "Sources": 58,
+          "TORAH_WORKFLOW_VALIDATION.md": 1,
+          "Tests": 52
+        }
+      },
+      "PinkhaAnyIntegration": {
+        "extensions": {
+          ".md": 2,
+          ".resolved": 1,
+          ".swift": 55,
+          "<none>": 1
+        },
+        "files": 59,
+        "missingPhysicalFiles": [],
+        "physicalExtraFilesExcludingPrivateMetadata": [],
+        "topLevel": {
+          ".gitignore": 1,
+          "CONDITIONAL_HIERARCHY_REVIEW.md": 1,
+          "Package.resolved": 1,
+          "Package.swift": 1,
+          "README.md": 1,
+          "Sources": 40,
+          "Tests": 14
+        }
+      },
+      "PinkhaKit": {
+        "extensions": {
+          ".json": 12,
+          ".swift": 102,
+          ".xcstrings": 1
+        },
+        "files": 115,
+        "missingPhysicalFiles": [],
+        "physicalExtraFilesExcludingPrivateMetadata": [],
+        "topLevel": {
+          "Package.swift": 1,
+          "Sources": 62,
+          "Tests": 52
+        }
+      }
+    },
+    "dependencyManifestBytes": 78696,
+    "dependencyManifestSHA256": "67c6696b3d3e760553acd6a9d493cb6190c8093e702fef1d8c2a8ae96a5f9f08",
+    "finiteBoundary": "Walk the four exact package roots, retaining files under Sources, Tests, manifests, resources, Evidence, Tools and documentation; prune only private .git, .build and .swiftpm metadata/cache directories. Current physical set equals all370 retained rows with no additions or missing files.",
+    "handoffSHA256": "493a7d628bdce5642f54b3b3f99deedfe24b28f6d8e68267c18c7629f227367b",
+    "originalComponentSources": "Package.swift, Package.resolved and all four original Add-block Swift copies are already pinned by handoff493 and separately retained under attempt1/compiled-source.",
+    "priorAddBlockTestsRerunByThisReview": 0,
+    "receiptSHA256": "bbf101c3821fafca51f6d6e9a0bef009f1f415ff935ab4e2606ca0feb599e231",
+    "sharedCacheMutationByThisReview": false
+  },
+  "reviewedAtUTC": "2026-11-27T04:52:49.174025+00:00",
+  "reviewedFiles": {
+    "AnyUIErrorText.exact.swift": "25d49c71f60b613cf3131b9e31d8c2a29b2743ff62d332873835e5a3341a42bb",
+    "error-text-source.json": "e1257b04a74d8e68d3ff9e596e26b2d1b087764787ebf471bf304dcdb961e29e",
+    "prepare_component_sources.py": "ef7b3195584ee599737ec86cef5da49bff1946f2fc0bc0a4d491915f1a829cff",
+    "run_component.py": "4c6bc70fe7bfaa82453dbf4a0cf4d07889decb9be5786b876c9e7f27cf43493a"
+  },
+  "reviewer": "wave2-editor",
+  "schema": "pinkha-wave2-properties-component-runner-source-review-v1",
+  "sourceEnvelope": {
+    "errorEnum": {
+      "enumBytes": 2648,
+      "enumSHA256": "25d49c71f60b613cf3131b9e31d8c2a29b2743ff62d332873835e5a3341a42bb",
+      "exactOriginalOccurrences": 1,
+      "originalSourceBytes": 70436,
+      "originalSourceSHA256": "6d0c7e914670c5a4ec640bf330bbaed3dec0419830615e5ed1d690238405d2d1"
+    },
+    "finding": "No removal beyond the declared SwiftUI availability/import envelope and the two document-bound native construction spans.",
+    "intact": "Actual Foundation/Observation state-machine bodies, internal typed-operation constructor, production typed dependencies and all nine test method bodies.",
+    "previewQualification": "The existing local component-preview is an earlier source preview; it was not credited as a current compiled or executed artifact."
+  },
+  "status": "CHANGES_REQUESTED_BEFORE_COMPONENT_EXECUTION"
+}

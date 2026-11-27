@@ -1,0 +1,577 @@
+{
+  "addedDeclarations": [
+    "observe_owned_group",
+    "finish_owned_process"
+  ],
+  "changedDeclarations": [
+    "drain_owned_process",
+    "main"
+  ],
+  "changes": [
+    {
+      "new": "\nimport errno",
+      "newOffset": 147,
+      "old": ""
+    },
+    {
+      "new": "observe_owned_group(process, state):\n    \"\"\"Observe only this new owned group; an absence latch is irreversible.\"\"\"\n    assert state.setdefault('processGroup', process.pid) == process.pid\n    if state.get('absence') is not None:\n        return state['absence']\n    observation = {'atUTC': now(), 'processGroup': process.pid, 'signal': 0}\n    try:\n        os.killpg(process.pid, 0)\n        observation['status'] = 'PRESENT'\n    except OSError as error:\n        observation.update(errno=error.errno, error=str(error))\n        observation['status'] = 'ABSENT_ESRCH' if error.errno == errno.ESRCH else 'UNKNOWN_ERROR'\n        if error.errno == errno.ESRCH:\n            state['absence'] = observation\n    state.setdefault('observations', []).append(observation)\n    return observation\n\n\ndef ",
+      "newOffset": 2872,
+      "old": ""
+    },
+    {
+      "new": ", state",
+      "newOffset": 3685,
+      "old": ""
+    },
+    {
+      "new": "process.poll()  # Reap only this Popen child when it has already exited.\n        if state.get('absence') is None:\n            try:\n                result['initialM",
+      "newOffset": 3865,
+      "old": "m"
+    },
+    {
+      "new": "DiagnosticOnly']",
+      "newOffset": 4034,
+      "old": ""
+    },
+    {
+      "new": "    except Exception:\n                ",
+      "newOffset": 4088,
+      "old": ""
+    },
+    {
+      "new": "",
+      "newOffset": 4134,
+      "old": "initialMembers'] = "
+    },
+    {
+      "new": "Diagno",
+      "newOffset": 4140,
+      "old": ""
+    },
+    {
+      "new": "ticFailure'] = traceback.format_exc()\n        observation = observe_owned_group(process, state)",
+      "newOffset": 4147,
+      "old": ""
+    },
+    {
+      "new": "o",
+      "newOffset": 4283,
+      "old": ""
+    },
+    {
+      "new": "s",
+      "newOffset": 4285,
+      "old": "ool(memb"
+    },
+    {
+      "new": "vation['",
+      "newOffset": 4288,
+      "old": ""
+    },
+    {
+      "new": "tatus'] == 'PRESENT'",
+      "newOffset": 4297,
+      "old": ")"
+    },
+    {
+      "new": "returnc",
+      "newOffset": 4329,
+      "old": "p"
+    },
+    {
+      "new": "de",
+      "newOffset": 4337,
+      "old": "ll()"
+    },
+    {
+      "new": "state.get('abse",
+      "newOffset": 4438,
+      "old": ""
+    },
+    {
+      "new": "",
+      "newOffset": 4454,
+      "old": "ot members and pro"
+    },
+    {
+      "new": "'",
+      "newOffset": 4456,
+      "old": "ss.poll("
+    },
+    {
+      "new": "\n            assert observation['status'] == 'PRESENT', 'Owned group observation is unknown; absence is not established'",
+      "newOffset": 4493,
+      "old": ""
+    },
+    {
+      "new": "OSEr",
+      "newOffset": 4745,
+      "old": "P"
+    },
+    {
+      "new": "r as ",
+      "newOffset": 4751,
+      "old": "c"
+    },
+    {
+      "new": "",
+      "newOffset": 4757,
+      "old": "ssLookupE"
+    },
+    {
+      "new": "if error.errno != errno.ESRCH:\n                    raise\n                # An intervening exit retires this grou",
+      "newOffset": 4779,
+      "old": ""
+    },
+    {
+      "new": " ID immedi",
+      "newOffset": 4892,
+      "old": ""
+    },
+    {
+      "new": "tely. Do not\n                # probe it again to manufacture a signal-zero proof after reuse\n                # could become po",
+      "newOffset": 4903,
+      "old": ""
+    },
+    {
+      "new": "ible. This race remains a failed strict proof.\n                observation = {'atUTC': now(), 'processGroup': process.pid,\n                    'signal': int(sig), 'errno': error.errno, 'status': 'ABSENT_DURING_SIGNAL_WITHOUT_ZERO_PROOF'}\n                state['absence'] = observation\n                state.setdefault('observations', []).append(observation)\n                break",
+      "newOffset": 5031,
+      "old": ""
+    },
+    {
+      "new": "o",
+      "newOffset": 5658,
+      "old": "mem"
+    },
+    {
+      "new": "s",
+      "newOffset": 5660,
+      "old": ""
+    },
+    {
+      "new": "vation",
+      "newOffset": 5663,
+      "old": "s"
+    },
+    {
+      "new": "observe_owned_",
+      "newOffset": 5672,
+      "old": ""
+    },
+    {
+      "new": "",
+      "newOffset": 5691,
+      "old": "_members"
+    },
+    {
+      "new": ", state",
+      "newOffset": 5699,
+      "old": ".pid"
+    },
+    {
+      "new": "state.get('abse",
+      "newOffset": 5727,
+      "old": ""
+    },
+    {
+      "new": "",
+      "newOffset": 5743,
+      "old": "ot members and pro"
+    },
+    {
+      "new": "'",
+      "newOffset": 5745,
+      "old": "ss.poll("
+    },
+    {
+      "new": "\n                assert observation['status'] == 'PRESENT', 'Owned group observation is unknown; absence is not established'",
+      "newOffset": 5786,
+      "old": ""
+    },
+    {
+      "new": "try:\n            process.wait(timeout=1)\n        except subprocess.TimeoutExpired:\n            ",
+      "newOffset": 6002,
+      "old": ""
+    },
+    {
+      "new": "e",
+      "newOffset": 6105,
+      "old": ""
+    },
+    {
+      "new": "ro",
+      "newOffset": 6107,
+      "old": "emainingMembe"
+    },
+    {
+      "new": ".append('Owned",
+      "newOffset": 6113,
+      "old": ""
+    },
+    {
+      "new": "Popen",
+      "newOffset": 6128,
+      "old": "="
+    },
+    {
+      "new": "child did not r",
+      "newOffset": 6134,
+      "old": "m"
+    },
+    {
+      "new": "ap within the final one-second ",
+      "newOffset": 6150,
+      "old": "m"
+    },
+    {
+      "new": "ound')",
+      "newOffset": 6182,
+      "old": "ers"
+    },
+    {
+      "new": "absence = state.get('absence')\n        ",
+      "newOffset": 6244,
+      "old": ""
+    },
+    {
+      "new": "(",
+      "newOffset": 6302,
+      "old": ""
+    },
+    {
+      "new": "\n           ",
+      "newOffset": 6328,
+      "old": ""
+    },
+    {
+      "new": " absence is",
+      "newOffset": 6343,
+      "old": ""
+    },
+    {
+      "new": "Non",
+      "newOffset": 6359,
+      "old": "m"
+    },
+    {
+      "new": " and a",
+      "newOffset": 6363,
+      "old": "m"
+    },
+    {
+      "new": "s",
+      "newOffset": 6370,
+      "old": ""
+    },
+    {
+      "new": "nce['",
+      "newOffset": 6372,
+      "old": "r"
+    },
+    {
+      "new": "tatus'] == 'ABSENT_ESRCH'\n            and absence['signal'] == 0",
+      "newOffset": 6378,
+      "old": ""
+    },
+    {
+      "new": "\n           ",
+      "newOffset": 6477,
+      "old": ""
+    },
+    {
+      "new": "ABSENCE_NOT_P",
+      "newOffset": 6513,
+      "old": ""
+    },
+    {
+      "new": "OV",
+      "newOffset": 6527,
+      "old": ""
+    },
+    {
+      "new": "",
+      "newOffset": 6530,
+      "old": "MAI"
+    },
+    {
+      "new": "",
+      "newOffset": 6531,
+      "old": "S"
+    },
+    {
+      "new": ")",
+      "newOffset": 6532,
+      "old": ""
+    },
+    {
+      "new": "sult['absenceEvidence'] = state.get('absence')\n    result['groupObservations'] = list(state.get('observations', []))\n    result['historicalGroupReprobed'] = False\n    re",
+      "newOffset": 6676,
+      "old": ""
+    },
+    {
+      "new": "\n\n\ndef finish_owned_process(process, state, receipt):\n    \"\"\"Preserve the original failure while resolving this owned process once.\"\"\"\n    if state.get('absence') is not None and state['absence']['status'] == 'ABSENT_ESRCH' and process.poll() is not None:\n        receipt['ownedCleanup'] = {'status': 'PASS_OWNED_GROUP_ABSENT',\n            'processGroup': process.pid, 'absenceEvidence': state['absence'],\n            'historicalGroupReprobed': False}\n    else:\n        receipt['ownedCleanup'] = drain_owned_process(process, state)\n        if receipt['ownedCleanup']['status'] != 'PASS_OWNED_GROUP_ABSENT' or receipt['ownedCleanup'].get('terminationRequired'):\n            receipt['status'] = 'FAIL'\n    receipt['processExit'] = process.poll()",
+      "newOffset": 6856,
+      "old": ""
+    },
+    {
+      "new": "st",
+      "newOffset": 14016,
+      "old": ""
+    },
+    {
+      "new": "t",
+      "newOffset": 14019,
+      "old": "bs"
+    },
+    {
+      "new": "",
+      "newOffset": 14021,
+      "old": "nt"
+    },
+    {
+      "new": "{}",
+      "newOffset": 14024,
+      "old": "False"
+    },
+    {
+      "new": "receipt['",
+      "newOffset": 14273,
+      "old": ""
+    },
+    {
+      "new": "rigina",
+      "newOffset": 14283,
+      "old": ""
+    },
+    {
+      "new": "A",
+      "newOffset": 14290,
+      "old": ""
+    },
+    {
+      "new": "dBlockP",
+      "newOffset": 14292,
+      "old": "_p"
+    },
+    {
+      "new": "Custody']",
+      "newOffset": 14305,
+      "old": ""
+    },
+    {
+      "new": "{",
+      "newOffset": 14317,
+      "old": "json.loads((SHARED / 'attempt1/process.json').read_bytes())"
+    },
+    {
+      "new": "    'h",
+      "newOffset": 14327,
+      "old": ""
+    },
+    {
+      "new": "ndoffSHA256': HANDOFF_SHA, 'originalReceiptSHA256': ORIGINAL_RESULT_SHA,\n            'ab",
+      "newOffset": 14334,
+      "old": "s"
+    },
+    {
+      "new": "nceRepo",
+      "newOffset": 14424,
+      "old": ""
+    },
+    {
+      "new": "edByOriginalOwner':",
+      "newOffset": 14433,
+      "old": ""
+    },
+    {
+      "new": "handoff['",
+      "newOffset": 14453,
+      "old": ""
+    },
+    {
+      "new": "Own",
+      "newOffset": 14464,
+      "old": "t group_m"
+    },
+    {
+      "new": "",
+      "newOffset": 14468,
+      "old": "mbers(ol"
+    },
+    {
+      "new": "P",
+      "newOffset": 14469,
+      "old": "_process['p"
+    },
+    {
+      "new": "Remains",
+      "newOffset": 14481,
+      "old": ""
+    },
+    {
+      "new": ",\n            'scope': 'Retained exact owner handoff; no current historical-PGID observation',\n            'historicalGroupReprobed': False}",
+      "newOffset": 14490,
+      "old": ")"
+    },
+    {
+      "new": "receipt['memberListIsDia",
+      "newOffset": 18678,
+      "old": ""
+    },
+    {
+      "new": "n",
+      "newOffset": 18703,
+      "old": "r"
+    },
+    {
+      "new": "",
+      "newOffset": 18705,
+      "old": "up_ab"
+    },
+    {
+      "new": "ticO",
+      "newOffset": 18706,
+      "old": "e"
+    },
+    {
+      "new": "ly']",
+      "newOffset": 18711,
+      "old": "t"
+    },
+    {
+      "new": "True\n       ",
+      "newOffset": 18718,
+      "old": "not"
+    },
+    {
+      "new": "o",
+      "newOffset": 18740,
+      "old": "remainingO"
+    },
+    {
+      "new": "GroupAtExit'] = observe_owned_group(p",
+      "newOffset": 18745,
+      "old": "P"
+    },
+    {
+      "new": ", g",
+      "newOffset": 18788,
+      "old": "G"
+    },
+    {
+      "new": "_state)",
+      "newOffset": 18795,
+      "old": "']"
+    },
+    {
+      "new": "",
+      "newOffset": 18818,
+      "old": "not "
+    },
+    {
+      "new": "o",
+      "newOffset": 18827,
+      "old": "remainingO"
+    },
+    {
+      "new": "",
+      "newOffset": 18832,
+      "old": "Process"
+    },
+    {
+      "new": "AtExit",
+      "newOffset": 18837,
+      "old": ""
+    },
+    {
+      "new": "['status'] == 'ABSENT_ESRCH'",
+      "newOffset": 18845,
+      "old": ""
+    },
+    {
+      "new": "",
+      "newOffset": 18891,
+      "old": "process "
+    },
+    {
+      "new": "",
+      "newOffset": 18897,
+      "old": "h"
+    },
+    {
+      "new": "bsence i",
+      "newOffset": 18898,
+      "old": ""
+    },
+    {
+      "new": "est",
+      "newOffset": 18912,
+      "old": "dr"
+    },
+    {
+      "new": "bl",
+      "newOffset": 18916,
+      "old": ""
+    },
+    {
+      "new": "sh",
+      "newOffset": 18919,
+      "old": "n"
+    },
+    {
+      "new": " by signal-zero ESRCH",
+      "newOffset": 18923,
+      "old": ""
+    },
+    {
+      "new": "",
+      "newOffset": 20878,
+      "old": "i"
+    },
+    {
+      "new": "",
+      "newOffset": 20879,
+      "old": " group_absent:\n                receipt['ownedCleanup'] = {'status': 'PASS_OWNED_GROUP_ABSENT',\n                    'processGroup': process.pid, 'absentAtOrig"
+    },
+    {
+      "new": "",
+      "newOffset": 20881,
+      "old": "alExit': True, 'h"
+    },
+    {
+      "new": "h",
+      "newOffset": 20883,
+      "old": "toricalGroupReprobed': False}\n            else:\n                receipt['ownedCleanup'] = drain"
+    },
+    {
+      "new": ",",
+      "newOffset": 20906,
+      "old": ")\n"
+    },
+    {
+      "new": "group_state,",
+      "newOffset": 20908,
+      "old": "               if"
+    },
+    {
+      "new": "",
+      "newOffset": 20928,
+      "old": "['ownedCleanup']['status'] != 'PASS_OWNED_GROUP_ABSENT' or receipt['ownedCleanup'].get('terminationRequired'):\n                    receipt['status'] = 'FAIL'\n            receipt['processExit'] = process.poll("
+    }
+  ],
+  "inverseRestoresEveryOriginalByte": true,
+  "newSHA256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+  "oldSHA256": "5817fa9e5ab7af9f55d254158a2d4fa56fed37a4c9c2aacf069572cc1e9cfb72",
+  "schema": "pinkha-properties-owned-group-absence-inverse-v1",
+  "scope": "Only owned-group absence/lifetime/retained-handoff handling; no source, dependency, test selection or resource-threshold changes",
+  "unchangedDeclarations": [
+    "sha",
+    "now",
+    "write",
+    "group_members",
+    "resource_sample",
+    "physical_files",
+    "checkout_custody",
+    "pinned_inputs"
+  ]
+}

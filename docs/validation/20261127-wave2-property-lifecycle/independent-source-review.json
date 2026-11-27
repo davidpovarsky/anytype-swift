@@ -1,0 +1,32 @@
+{
+  "schema": "pinkha-independent-source-review-v1",
+  "reviewer": "/root/torah_continue",
+  "reviewedAtUTC": "2026-11-27T04:03:38.677913+00:00",
+  "sourceSHA256": {
+    "AnyNativePropertyPresentation.swift": "aa40239c5ba749b20974735337c0af11ba477c9aac870261f4ae5ae76f76c731",
+    "AnyNativePropertyPresentationTests.swift": "7df1a45aa85cd71bc7ec8353b98150609bc2d2fb07a2aa1ebf08f7fb40fdab61",
+    "source-inverse.json": "6710884face49fb40db7e527586469c69b253b7ff6d80da77c5d3372e9172a80"
+  },
+  "status": "SOURCE_REVIEWED_NOT_RUNTIME_ACCEPTANCE",
+  "scope": "Current-read failure and deactivation discard displayed native Properties values/Undo; derived field visibility follows valid model ownership/current authority",
+  "resolvedFinding": {
+    "issue": "Discarding snapshot would make the prior nil!=true derived visibility predicate reveal hidden Source/Topic/Word sections outside the view snapshot guard.",
+    "correction": "Current predicate requires active and no pending review; configured native stores require a real snapshot; only the previous source-only/no-store fallback remains."
+  },
+  "findings": [],
+  "verifiedBySource": [
+    "Epoch/read-request guards still reject superseded read errors and old-owner results before any state clearing.",
+    "Current read failure clears only snapshot/Undo, marks needsReview, and retains uncertain pendingEdit. Explicit successful review clears review state; stale or ordinary successful reads cannot silently discard pending review.",
+    "Deactivation invalidates reads/ownership and clears prior snapshot/Undo before a new owner loads; a pending write remains review-required.",
+    "Derived Source/Topic/Word sections remain hidden during failed/currently invalid state and reactivate only from actual current visibility preferences.",
+    "Regression assertions cover forbidden and changed-document read failures, all3 derived fields, inactive and pending-new-owner phases, exact successful-review restoration, and no additional suspended write dispatch.",
+    "The old owner-reactivation test changes its expected retained snapshot to nil explicitly; no other original method assertion is weakened."
+  ],
+  "execution": {
+    "testsRunByReviewer": false,
+    "AppleTypecheck": false,
+    "UI": false,
+    "NativeRuntime": false
+  },
+  "countBoundary": "Two new @Test methods; the failure method contains two loop scenarios. Do not infer three separately enumerated test cases from the loop."
+}
