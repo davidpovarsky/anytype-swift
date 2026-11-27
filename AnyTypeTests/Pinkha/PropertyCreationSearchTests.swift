@@ -164,7 +164,7 @@ struct PropertyCreationSearchTests {
     private func makeModel(_ loader: SuspendedPropertyPickerLoader) -> PropertyCreationViewModel {
         PropertyCreationViewModel(data: .init(
             objectId: "picker-object", spaceId: "picker-space", excludedRelationsIds: [],
-            target: .object("picker-object"), onRelationSelect: { _, _ in }
+            target: .object(objectId: "picker-object"), onRelationSelect: { _, _ in }
         ), searchLoader: loader)
     }
 
