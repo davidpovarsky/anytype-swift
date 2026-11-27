@@ -1,0 +1,63 @@
+{
+  "schema": "wave2-attachment-tier-independent-source-review/v1",
+  "reviewer": "/root/torah_continue",
+  "status": "PASS_SOURCE_REVIEW_NO_CONCRETE_BLOCKER_FOUND",
+  "baseCommit": "bd684a8ad5b12cc2eef3b14d4fb64a34bd98f304",
+  "candidateManifestSHA256": "a20e2b8b377a008c709a03d1c76e61eee5e642033b60f05d270bfdb6e95f40e4",
+  "sourceInverseSHA256": "66a78ae8635a37e670e3c37995c3a515d57d792844a340608a62041d1ae5467c",
+  "sourceChecks": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "originalSHA256": "75cac2b2b7ffe0d84e0f461d80c94e3be48d804896170a2b67e895e006977631",
+      "candidateSHA256": "0a120812b5f8bc5d9280a42f6a7bde597cb64a9154c10c7ff04204cfb2862de5",
+      "literalChanges": 7,
+      "fullInverseToOriginal": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift",
+      "originalSHA256": "b9d0f1b8c72e503d4e4952b33f519fc93680d54a8384e828f001d498ddd71a91",
+      "candidateSHA256": "253f84cf90dc93684b701407b93d3317775c599bac7c1d142406f5a650174f19",
+      "literalChanges": 2,
+      "fullInverseToOriginal": true
+    }
+  ],
+  "wireSourcesIndependentlyRead": {
+    "files.go": "c9aa3e006f8fcc24bd129fbe9e41eabe7bd6b3d3c3675125370d83d75ddf65ea",
+    "handlers_files.go": "a7e299282612adcdb76f2b8f3c64553a92770edcf6ba2bab4ab91e3bb9786658"
+  },
+  "wireContractComment": "1220953422154846",
+  "sourceFindings": [
+    {
+      "scope": "Required inline and root shape",
+      "result": "Exact FileInfo inline is bool without omitempty, including false. Present rootCid must decode as String; inline requires absent/empty root and cached+durable, full tier requires nonempty root. No CID parser, normalization or transport change."
+    },
+    {
+      "scope": "Content and progress",
+      "result": "sameContent adds immutable tier identity while retaining its original exclusion of cached/durable. Full-tier false/true combinations remain valid; status/retry before/after brackets may observe availability/custody progress without content rejection. Host/list reconciliation now compares the existing file.inline."
+    },
+    {
+      "scope": "Original source retention",
+      "result": "All seven product literal changes reverse to the complete original75cac source; two test insertions reverse to b9d0. Existing3method/13declaredcase prefix4167B is exact; only fixture inline:false is added after that prefix."
+    },
+    {
+      "scope": "Swift/test source",
+      "result": "New2methods/11declaredcases exercise actual decoder, finite invalid row types/tier contradictions, raw root spelling and mutable cached/durable combinations. No nested closure inside #require or actor-crossing API was introduced. No concrete compile/API blocker found by source inspection."
+    }
+  ],
+  "limits": [
+    "SDK rowToInfo behavior is supported by the explicit W1 exact-source report, not independently refetched by this reviewer.",
+    "No Swift compilation, test enumeration, runtime, Native, network-custody, mounted UI or transport-drain acceptance.",
+    "No new tests or controls were executed; local source hash/full-inverse checks only.",
+    "Original source/uncertain-upload/authority/MiniApps/lifecycle behavior outside the seven exact edits was preserved, not requalified."
+  ],
+  "testScope": {
+    "newMethods": 2,
+    "newDeclaredCases": 11,
+    "totalMethods": 5,
+    "totalDeclaredCases": 24,
+    "actualEnumeration": null,
+    "actualExecution": null
+  },
+  "productEditsByReviewer": 0,
+  "hostCalls": 0
+}

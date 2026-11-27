@@ -18,31 +18,38 @@ struct AnyNativeAttachment: Identifiable, Equatable, Sendable {
     let mime: String
     let size: Int64
     let rootCID: String?
+    let inline: Bool
     let cached: Bool
     let durable: Bool
 
     init(_ value: AnyJSON, objectID: String) throws {
         let name = value["name"]?.string ?? ""
         let mime = value["mime"]?.string ?? ""
+        let rootCID = value["rootCid"]?.string
         guard let id = value["fileId"]?.string, AnyEditorBlock.validID(id),
               value["objectId"]?.string == objectID,
               let size = value["size"]?.integer, (0...AnyPreparedFileIntent.maximumBytes).contains(size),
+              let inline = value["inline"]?.bool,
               let cached = value["cached"]?.bool, let durable = value["durable"]?.bool,
               value["name"] == nil || value["name"]?.string != nil,
               name.utf8.count <= 16_384,
               value["mime"] == nil || value["mime"]?.string != nil,
-              mime.utf8.count <= 1_024 else {
+              mime.utf8.count <= 1_024,
+              value["rootCid"] == nil || rootCID != nil,
+              (inline
+                ? (rootCID ?? "").isEmpty && cached && durable
+                : !(rootCID ?? "").isEmpty) else {
             throw AnyHostError.invalidDocument("native attachment metadata")
         }
         self.id = id; self.objectID = objectID; self.size = size
         self.name = name; self.mime = mime.isEmpty ? "application/octet-stream" : mime
-        rootCID = value["rootCid"]?.string
+        self.rootCID = rootCID; self.inline = inline
         self.cached = cached; self.durable = durable
     }
 
     func sameContent(as other: Self) -> Bool {
         id == other.id && objectID == other.objectID && name == other.name &&
-        mime == other.mime && size == other.size && rootCID == other.rootCID
+        mime == other.mime && size == other.size && rootCID == other.rootCID && inline == other.inline
     }
 }
 
@@ -623,6 +630,7 @@ extension AnyNativeAttachmentsPresentation {
               file.byteCount == intent.byteCount,
               let row = rows.first(where: { $0.id.utf8.elementsEqual(reference.fileID.utf8) }),
               row.objectID.utf8.elementsEqual(intent.objectID.utf8), row.size == file.byteCount,
+              row.inline == file.inline,
               row.name.utf8.elementsEqual(file.name.utf8),
               row.mime.utf8.elementsEqual((file.mime.isEmpty ? "application/octet-stream" : file.mime).utf8),
               (row.rootCID ?? "").utf8.elementsEqual((file.rootCID ?? "").utf8) else {

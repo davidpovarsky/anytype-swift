@@ -1,0 +1,36 @@
+{
+  "task": "1220541349302681",
+  "selected": [
+    {
+      "gid": "1220953422154846",
+      "created_at": "2026-11-27T13:04:00.505Z",
+      "created_by": {
+        "gid": "1219597879016933",
+        "name": "דוד פוברסקי",
+        "resource_type": "user"
+      },
+      "resource_type": "story",
+      "text": "Wave1 → Wave2 exact original Files wire answer (request1220952851606691). Fresh read-only source verification joba94c873a26b1 at13:02:50UTC matched all five public files to complete1599 manifest e785ed2faf1d0bf0d18e7be7f0090cdee4061bd714f3be1509927895b9df336a under /var/lib/pinkha-c-filesv2-20261126/lan-progress-native1/source. Base Any8fbd1e819fb132ac0e0a848d2ddf5c5714189b81 / SDKc1fd59bd8f0ed62471234ec1a65a402d22eab6a9; same retained native0796 lineage. No archive recovery or runtime call was needed.\n\ninternal/api/files.go,4489B,SHA c9aa3e006f8fcc24bd129fbe9e41eabe7bd6b3d3c3675125370d83d75ddf65ea: FileInfo fields fileId/objectId/size/inline/durable/cached have NO omitempty; inline is bool json:\"inline\" and therefore is emitted including false. rootCid/name/mime/variant/variantOf are string fields WITH omitempty. Missing name/MIME are legitimate member-metadata projections, not invalid identity. Wrong JSON types should still be rejected; empty and missing optional strings can normalize under the existing bounded contract.\n\ninternal/server/handlers_files.go,23427B,SHA a7e299282612adcdb76f2b8f3c64553a92770edcf6ba2bab4ab91e3bb9786658: fileAttach201, fileGet200 and fileList200 all use the SAME fileInfoToAPI copy of all11 fields. GET /v1/spaces/{space}/files is {\"files\":[]}; its slice is explicitly initialized, so empty list is []. Query parameters objectId and nonnegative limit; zero means unlimited. objectId is resolved before SDK List. List is not the generic files/query cleartext projection. The server does not synthesize name/MIME defaults in FileInfo.\n\nSDK space/files.go,10255B,SHA384651b2a841766e4beb48616a8afd349addc92af06c407fcf5a174412b53287; internal/spaceimpl/files.go,19470B,SHA8967e9fca7540912a02ee01c9b91b44ede113e7e060c207712c7078ac3dbe56c: Get/List share rowToInfo. RootCid copied from row; Inline=row.Inline(); Durable=Inline||networkSign!=\"\"; Cached=Inline, then full-tier becomes true only if the local store reports StateComplete. Inline is documented as empty RootCid, locally cached/durable by construction. Full-tier can legitimately be cached=true,durable=false while backup is pending/limited. Tier/source authority checks remain required; name/MIME presence must not be used as identity or custody evidence. This is exact source-contract evidence, not acceptance of an App decoder or newly corrected native binary. Source files and raw readback are retained locally for the next scoped handoff.",
+      "type": "comment",
+      "resource_subtype": "comment_added"
+    },
+    {
+      "gid": "1220953721620190",
+      "created_at": "2026-11-27T13:14:43.587Z",
+      "created_by": {
+        "gid": "1219597879016933",
+        "name": "דוד פוברסקי",
+        "resource_type": "user"
+      },
+      "resource_type": "story",
+      "text": "W3 accepted W2 f731 ordinary-upload UI for SOURCE integration after complete49primaryGitblobs/772526B, root13literal inverses restoring3wholeoriginals, fullnewstore/UI/accessor/recovery/test read, and independent peer reviewc00c3599753c1d0c9aad3fb2bc167f85666e2033ec5942d1f7f4fac971fb568b. Root final source review140a3e741a7dbda143febb4521695f8fc0b6924be790f74cb95ed0cf222a8391. Current wrong/noRecorded outcomes remain conservative; no Check re-POST/newID or new stale-publication finding. Source3/4tests NOT_RUN. Separate metadata2f9 successor is under intake; Propertiesf334 actualmacrocompileFAIL8fbaf remains unchanged and W2 owns its narrow test-onlyfix/wiring.\n\nW1 ENGINE ACTION: inherited full transport drain is not proven by current Swift join. Exact e96 Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift SHA4e9cf26ed4344493a98a64556781215a4c34ee7d70fd41cdc59d6795668ba36a lines124–134 calls task.cancel()+session.invalidateAndCancel(), then immediately resumes continuation. Actual f731 Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift SHAff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd/blob1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0 tracks/joins Task.value and has no later delegate completion barrier. Root and peer independently read both exact bodies. Please supply a coherent original transport/delegate/account-handoff correction or positive existing proof before final upload cancellation/account-engine-switch acceptance. Preserve caller snapshot/single-dispatch journal/known201+uncertainACK and original cancellation; do not infer an actual late write or duplicatePOST from this source finding. UI source remains ready; its claim join is accurately limited to the original Swift operation.\n\nIndependent UIKit20 App job140499955134 has ACTUAL compileFAIL at ExtractAppIntentsMetadata: two AppIntentsPackage conformances in AI_Hanlin; product34/tests42 skipped. Original14,508,691B buildlog42bdde2a andZIP15199148273/2eaf6408 retained. Root is using the original f768 complete3-file repair (including companion reference closure), plus originalPromise2production andCoreSpotlight1producer delta, not inventing/removing intent features. No retry/dispatchedreplacement or runtimePASS claim.",
+      "type": "comment",
+      "resource_subtype": "comment_added"
+    }
+  ],
+  "requested": [
+    "1220953422154846",
+    "1220953721620190"
+  ],
+  "sourceOnly": true
+}
