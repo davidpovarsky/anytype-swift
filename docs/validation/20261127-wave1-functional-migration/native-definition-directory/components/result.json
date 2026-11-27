@@ -1,0 +1,58 @@
+{
+  "cleanupForcedKill": false,
+  "cleanupRequired": false,
+  "command": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/tmp/pinkha-w1-migration-swift-20261127",
+    "--disable-automatic-resolution",
+    "--jobs",
+    "2",
+    "--filter",
+    "NativeImportedDefinitionDirectoryTests"
+  ],
+  "compiled": true,
+  "compiledProducts": {
+    "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner": "513971e6d679bb38c7160fd85d9bff04b3f6a14b3bc913b6a562460e1f28ff39",
+    "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so": "0fcf1cbcc4df60de0a4c1e2bcf3fefdc9e621d9893650fad41b21c1d2a341a42"
+  },
+  "controllerSHA256": "112db73b80ef02e1809ec854078310f9b6e200ab501ae83bec60066685bc2261",
+  "dependencies": {
+    "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+    "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+    "torahinspectorkit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed"
+  },
+  "dependencyLocatorRepairReceiptSHA256": "d2318aec75ba8eb2bcb8786009cb6af2b1f2ec99daf6fd68bdd8b4fdf779a300",
+  "errors": [],
+  "exitCode": 0,
+  "failLines": [],
+  "freeScratchBefore": 3805782016,
+  "logSHA256": "2cc764bbe195df50a34a31e926a63eb9178a960b434f9a39eb4c9a7a5cd497be",
+  "minimumFreeBytes": 3805167616,
+  "ownedGroupAbsent": true,
+  "passLines": [
+    "Test Case 'NativeImportedDefinitionDirectoryTests.testArchiveTypeAndPropertyNamespaceCannotBecomeOriginalDefinitionEntries' passed (0.078 seconds)",
+    "Test Case 'NativeImportedDefinitionDirectoryTests.testChangedMappingJoinsAndIntentIdentityRefuseBeforeAnyNativeRead' passed (0.035 seconds)",
+    "Test Case 'NativeImportedDefinitionDirectoryTests.testRetainedOriginalDefinitionsResolveWithoutPromotingArchivedTypes' passed (2.318 seconds)",
+    "Test Case 'NativeImportedDefinitionDirectoryTests.testTypePropertyOptionAndCanonicalAddressesKeepDistinctNativeIdentities' passed (0.034 seconds)"
+  ],
+  "pid": 2964487,
+  "scope": "Four imported definition directory methods including the exact retained original 182-operation plan and mappings; compile the new native definition edit/crash fixture without executing it",
+  "seconds": 17.69,
+  "sourceCommit": "15dde16bdabf9dd3d9a2cf47e44150dc0bbee567",
+  "sourceDefinitionsAfter": {
+    "execute-mappings.json": "eabdf2e362189abd5a2e78f7c13f1f1d77d8339c27109d2a6ec19ccdbb2755a3",
+    "execute-verification.json": "fee4dc5cb8e689e01bf2d1fbe8bd262c42388fd706da4114be72af3e6cf97350",
+    "source-preservation-plan.json": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930"
+  },
+  "sourceDefinitionsBefore": {
+    "execute-mappings.json": "eabdf2e362189abd5a2e78f7c13f1f1d77d8339c27109d2a6ec19ccdbb2755a3",
+    "execute-verification.json": "fee4dc5cb8e689e01bf2d1fbe8bd262c42388fd706da4114be72af3e6cf97350",
+    "source-preservation-plan.json": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930"
+  },
+  "sourceUnchanged": true,
+  "status": "PASS"
+}
