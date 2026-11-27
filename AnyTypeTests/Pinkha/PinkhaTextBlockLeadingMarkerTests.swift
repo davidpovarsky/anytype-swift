@@ -12,7 +12,8 @@ struct PinkhaTextBlockLeadingMarkerTests {
         let marker = TextBlockLeadingView(frame: CGRect(x: 20, y: 80, width: 48, height: 40))
         marker.semanticContentAttribute = isRTL ? .forceLeftToRight : .forceRightToLeft
         configure(marker, number: 20, followsAppDirection: true)
-        let label = try #require(firstLabel(in: try #require(marker.numberedView)))
+        let numberedView = try #require(marker.numberedView)
+        let label = try #require(firstLabel(in: numberedView))
         let initialAlignment = label.textAlignment
         let originalText = label.text
         let originalFont = label.font
@@ -40,7 +41,8 @@ struct PinkhaTextBlockLeadingMarkerTests {
             let marker = TextBlockLeadingView(frame: CGRect(x: 20, y: 80, width: 48, height: 40))
             controller.view.addSubview(marker)
             configure(marker, number: number, followsAppDirection: true)
-            let label = try #require(firstLabel(in: try #require(marker.numberedView)))
+            let numberedView = try #require(marker.numberedView)
+            let label = try #require(firstLabel(in: numberedView))
             let originalText = label.text
 
             controller.view.semanticContentAttribute = .forceRightToLeft
