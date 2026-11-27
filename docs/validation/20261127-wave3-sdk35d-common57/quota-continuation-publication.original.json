@@ -1,0 +1,640 @@
+{
+  "schema": "hanlin-quota-continuation-normal-publication-v1",
+  "repository": "davidpovarsky/hanlin-ai",
+  "branch": "codex/hanlin-sdk-hosted-validation-20261127",
+  "expectedPreviousHead": "68151b7344645f1831e7683906e0d45e276cfd17",
+  "head": "bd41cf7878c5f4df117af7bfcb67636bdff2eafa",
+  "tree": "d80225ed071cb28712cbc7aaf18e8382b1ff8cc0",
+  "index": {
+    "baseControlSHA": "68151b7344645f1831e7683906e0d45e276cfd17",
+    "source": "35d26911f70794a41361cee710b1fed24a35e269",
+    "snapshot": "/workspace/scratch/ae335eba85e3/hanlin-hosted-sdk-control/quota-continuation-after",
+    "files": [
+      {
+        "path": "Scripts/CI/SDKSourceValidation/Fixtures/original-45954793309-source-files.json",
+        "bytes": 305259,
+        "sha256": "75c8afbdff3bb555c1d285843fb6f071cee8471f7c0398e875a294bb3c75dacb",
+        "gitBlob": "195378c4c9610fed0f442a86818869d412da4f49"
+      },
+      {
+        "path": "Scripts/CI/SDKSourceValidation/README.md",
+        "bytes": 16599,
+        "sha256": "b6b1661f605f0cdc842746b69e8f71bbc5896088c0183b33d53fc1da62d7e943",
+        "gitBlob": "645b1f918bda178105e049c1d6a30bb48e892df4"
+      },
+      {
+        "path": "Scripts/CI/SDKSourceValidation/continuation.py",
+        "bytes": 17320,
+        "sha256": "9fd78bf1886e7fda6789a488fb84512c08b6a9826572332f620b9105613c3243",
+        "gitBlob": "c109231b6fa4aac18640657ff17b4d5d4d458645"
+      },
+      {
+        "path": "Scripts/CI/SDKSourceValidation/obligations.json",
+        "bytes": 13147,
+        "sha256": "5f159ffa4cd590acdc7d7279ff9240dd2c27106e11ab4249c476d1df75561297",
+        "gitBlob": "8dff8a841704e2cede14263337e4a0edd2937ee5"
+      },
+      {
+        "path": "Scripts/CI/SDKSourceValidation/run.py",
+        "bytes": 34643,
+        "sha256": "75060da01b718fdb469127c21cb70baa1418b86f2edb09e2a9ce47e6d3f05501",
+        "gitBlob": "33ead3cec5f2edb365716074709c9647b8266b64"
+      },
+      {
+        "path": "Scripts/CI/SDKSourceValidation/test_control.py",
+        "bytes": 19067,
+        "sha256": "f422b4597289d13ad5190537386999dc7b53d6b96b22466941e5466c3aa81287",
+        "gitBlob": "d20f7a0adb4a7d3fc2f904533f8dfd8153df86a2"
+      },
+      {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/actual-original-admission-receipt.json",
+        "bytes": 655,
+        "sha256": "856692c5a3d96388bbaedcd940122ea89488e8327e69c5b66805dcaf010a9165",
+        "gitBlob": "61de7c07cf3320a1925dd1e0bb148095cf7f43c6"
+      },
+      {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/actual-original-admission.json",
+        "bytes": 54663,
+        "sha256": "a80d33feed9f3fe0fd7daa9978712c4d8622f3466e5553023a70feecc33f9aa1",
+        "gitBlob": "2468bd8a94509bef124e056fc18c350e55ff28c6"
+      },
+      {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/literal-inverse-proof.json",
+        "bytes": 43236,
+        "sha256": "453e0b5e2948edcf59254a71fd08c94291662cf18e9d873a12147175f843f409",
+        "gitBlob": "09be72ea251aec56915953a94415b9a6f349fe9b"
+      },
+      {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/local-control-receipt.json",
+        "bytes": 593,
+        "sha256": "3891e5b3fd529d7699d7b3157ff9aa19c67ea2a8f1b569bc0b2bbedf3a2f8138",
+        "gitBlob": "300eb3baffbef9ad918cac53a13ecf603b432d60"
+      },
+      {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/local-control-tests.log",
+        "bytes": 2541,
+        "sha256": "de0f5f0105219862b94bd3c5029d7435b9f01365f5e547bd288968f5190caea5",
+        "gitBlob": "e12e815f776bd0b7bf0da6d5ff2a8068dc6eb5e4"
+      },
+      {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/original681-actual-failed-result.json",
+        "bytes": 40139,
+        "sha256": "2bbf071b8252ae8f3d6f0664bbdce746352d2945d6787aba4dd2486a8703aac2",
+        "gitBlob": "6a43d7f87e6ddd5c45668aeb52ccf755ed446263"
+      },
+      {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/original681-root-independent-review.json",
+        "bytes": 5241,
+        "sha256": "04ee48c57dba5876762a3aa49aa96452f36266397eb32e63bdd7156e9b2d9a82",
+        "gitBlob": "1721b198ea7a730b815eb7ada6d0aace73b080a9"
+      },
+      {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/primary-source-delta-derivation.json",
+        "bytes": 490092,
+        "sha256": "ce567638397f8e14685332c047b8208e1dbb96213a7ae4fa0c202a95f17dddc2",
+        "gitBlob": "6c2153131451f7a25dcde40f70b8f56efcf4b432"
+      },
+      {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/source-intake.json",
+        "bytes": 8037,
+        "sha256": "ff0fb18288133fcceec41ca5d89cde18051c21aee4a1d8d1f259fd8ce9e471f0",
+        "gitBlob": "3b186d58b52d8b919c9e9fc7941cfbd28320fe08"
+      }
+    ],
+    "unchangedWorkflow": {
+      "path": ".github/workflows/build-ios26-unsigned-ipa.yml",
+      "bytes": 219117,
+      "sha256": "e1c50b40b2c93f77c22243c755cb8bcb0f9447b44199f5f2ec2518a1640dc423",
+      "gitBlob": "b819f3a8634a8466f821c7d33f3ba11ba03e8a59"
+    },
+    "sourceIntake": {
+      "bytes": 8037,
+      "sha256": "ff0fb18288133fcceec41ca5d89cde18051c21aee4a1d8d1f259fd8ce9e471f0",
+      "gitBlob": "3b186d58b52d8b919c9e9fc7941cfbd28320fe08"
+    },
+    "proposedDispatchPayload": {
+      "bytes": 1180,
+      "sha256": "a081e92754c036337ae47f906a16c1abaa55a6b7c044e25a51a27a3841428491",
+      "gitBlob": "faaaf4be021dc7e6ee3926052bd26e752081d207"
+    }
+  },
+  "leaseResponse": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "success": true
+    },
+    "isError": false
+  },
+  "primaryRefReadback": {
+    "ref": "refs/heads/codex/hanlin-sdk-hosted-validation-20261127",
+    "node_id": "REF_kwDOTTRem9oANnJlZnMvaGVhZHMvY29kZXgvaGFubGluLXNkay1ob3N0ZWQtdmFsaWRhdGlvbi0yMDI2MTEyNw",
+    "url": "https://api.github.com/repos/davidpovarsky/hanlin-ai/git/refs/heads/codex/hanlin-sdk-hosted-validation-20261127",
+    "object": {
+      "sha": "bd41cf7878c5f4df117af7bfcb67636bdff2eafa",
+      "type": "commit",
+      "url": "https://api.github.com/repos/davidpovarsky/hanlin-ai/git/commits/bd41cf7878c5f4df117af7bfcb67636bdff2eafa"
+    }
+  },
+  "primaryCommitReadback": {
+    "sha": "bd41cf7878c5f4df117af7bfcb67636bdff2eafa",
+    "node_id": "C_kwDOTTRem9oAKGJkNDFjZjc4NzhjNWY0ZGYxMTdhZjdiZmNiNjc2MzZiZGZmMmVhZmE",
+    "url": "https://api.github.com/repos/davidpovarsky/hanlin-ai/git/commits/bd41cf7878c5f4df117af7bfcb67636bdff2eafa",
+    "html_url": "https://github.com/davidpovarsky/hanlin-ai/commit/bd41cf7878c5f4df117af7bfcb67636bdff2eafa",
+    "author": {
+      "name": "davidpovarsky",
+      "email": "davidpovarski1@gmail.com",
+      "date": "2026-11-27T08:02:31Z"
+    },
+    "committer": {
+      "name": "davidpovarsky",
+      "email": "davidpovarski1@gmail.com",
+      "date": "2026-11-27T08:02:31Z"
+    },
+    "tree": {
+      "sha": "d80225ed071cb28712cbc7aaf18e8382b1ff8cc0",
+      "url": "https://api.github.com/repos/davidpovarsky/hanlin-ai/git/trees/d80225ed071cb28712cbc7aaf18e8382b1ff8cc0"
+    },
+    "message": "ci: admit exact reviewed quota-test successor without rerunning Agent\n\nPreserve both actual failed runs and all original artifact/source guards. Allow only the published one-file test delta from caa0 to 35d, with the complete original inventory, Agent graph and actual dependency/product evidence still bound separately. Keep the workflow and 25 inputs unchanged; portable controls 14 PASS, corrected Swift tests pending.",
+    "parents": [
+      {
+        "sha": "68151b7344645f1831e7683906e0d45e276cfd17",
+        "url": "https://api.github.com/repos/davidpovarsky/hanlin-ai/git/commits/68151b7344645f1831e7683906e0d45e276cfd17",
+        "html_url": "https://github.com/davidpovarsky/hanlin-ai/commit/68151b7344645f1831e7683906e0d45e276cfd17"
+      }
+    ],
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "primaryComparison": {
+    "url": "https://api.github.com/repos/davidpovarsky/hanlin-ai/compare/68151b7344645f1831e7683906e0d45e276cfd17...bd41cf7878c5f4df117af7bfcb67636bdff2eafa",
+    "status": "ahead",
+    "ahead_by": 1,
+    "behind_by": 0,
+    "total_commits": 1,
+    "base_commit": "68151b7344645f1831e7683906e0d45e276cfd17",
+    "merge_base_commit": "68151b7344645f1831e7683906e0d45e276cfd17",
+    "files": [
+      {
+        "filename": "Scripts/CI/SDKSourceValidation/Fixtures/original-45954793309-source-files.json",
+        "sha": "195378c4c9610fed0f442a86818869d412da4f49",
+        "status": "added",
+        "additions": 7037,
+        "deletions": 0,
+        "changes": 7037,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/Scripts%2FCI%2FSDKSourceValidation%2FFixtures%2Foriginal-45954793309-source-files.json"
+      },
+      {
+        "filename": "Scripts/CI/SDKSourceValidation/README.md",
+        "sha": "645b1f918bda178105e049c1d6a30bb48e892df4",
+        "status": "modified",
+        "additions": 52,
+        "deletions": 4,
+        "changes": 56,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/Scripts%2FCI%2FSDKSourceValidation%2FREADME.md"
+      },
+      {
+        "filename": "Scripts/CI/SDKSourceValidation/continuation.py",
+        "sha": "c109231b6fa4aac18640657ff17b4d5d4d458645",
+        "status": "modified",
+        "additions": 43,
+        "deletions": 2,
+        "changes": 45,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/Scripts%2FCI%2FSDKSourceValidation%2Fcontinuation.py"
+      },
+      {
+        "filename": "Scripts/CI/SDKSourceValidation/obligations.json",
+        "sha": "8dff8a841704e2cede14263337e4a0edd2937ee5",
+        "status": "modified",
+        "additions": 33,
+        "deletions": 0,
+        "changes": 33,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/Scripts%2FCI%2FSDKSourceValidation%2Fobligations.json"
+      },
+      {
+        "filename": "Scripts/CI/SDKSourceValidation/run.py",
+        "sha": "33ead3cec5f2edb365716074709c9647b8266b64",
+        "status": "modified",
+        "additions": 14,
+        "deletions": 6,
+        "changes": 20,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/Scripts%2FCI%2FSDKSourceValidation%2Frun.py"
+      },
+      {
+        "filename": "Scripts/CI/SDKSourceValidation/test_control.py",
+        "sha": "d20f7a0adb4a7d3fc2f904533f8dfd8153df86a2",
+        "status": "modified",
+        "additions": 56,
+        "deletions": 1,
+        "changes": 57,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/Scripts%2FCI%2FSDKSourceValidation%2Ftest_control.py"
+      },
+      {
+        "filename": "docs/validation/20261127-original-sdk-quota-continuation/actual-original-admission-receipt.json",
+        "sha": "61de7c07cf3320a1925dd1e0bb148095cf7f43c6",
+        "status": "added",
+        "additions": 13,
+        "deletions": 0,
+        "changes": 13,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/docs%2Fvalidation%2F20261127-original-sdk-quota-continuation%2Factual-original-admission-receipt.json"
+      },
+      {
+        "filename": "docs/validation/20261127-original-sdk-quota-continuation/actual-original-admission.json",
+        "sha": "2468bd8a94509bef124e056fc18c350e55ff28c6",
+        "status": "added",
+        "additions": 1157,
+        "deletions": 0,
+        "changes": 1157,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/docs%2Fvalidation%2F20261127-original-sdk-quota-continuation%2Factual-original-admission.json"
+      },
+      {
+        "filename": "docs/validation/20261127-original-sdk-quota-continuation/literal-inverse-proof.json",
+        "sha": "09be72ea251aec56915953a94415b9a6f349fe9b",
+        "status": "added",
+        "additions": 164,
+        "deletions": 0,
+        "changes": 164,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/docs%2Fvalidation%2F20261127-original-sdk-quota-continuation%2Fliteral-inverse-proof.json"
+      },
+      {
+        "filename": "docs/validation/20261127-original-sdk-quota-continuation/local-control-receipt.json",
+        "sha": "300eb3baffbef9ad918cac53a13ecf603b432d60",
+        "status": "added",
+        "additions": 17,
+        "deletions": 0,
+        "changes": 17,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/docs%2Fvalidation%2F20261127-original-sdk-quota-continuation%2Flocal-control-receipt.json"
+      },
+      {
+        "filename": "docs/validation/20261127-original-sdk-quota-continuation/local-control-tests.log",
+        "sha": "e12e815f776bd0b7bf0da6d5ff2a8068dc6eb5e4",
+        "status": "added",
+        "additions": 19,
+        "deletions": 0,
+        "changes": 19,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/docs%2Fvalidation%2F20261127-original-sdk-quota-continuation%2Flocal-control-tests.log"
+      },
+      {
+        "filename": "docs/validation/20261127-original-sdk-quota-continuation/original681-actual-failed-result.json",
+        "sha": "6a43d7f87e6ddd5c45668aeb52ccf755ed446263",
+        "status": "added",
+        "additions": 1305,
+        "deletions": 0,
+        "changes": 1305,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/docs%2Fvalidation%2F20261127-original-sdk-quota-continuation%2Foriginal681-actual-failed-result.json"
+      },
+      {
+        "filename": "docs/validation/20261127-original-sdk-quota-continuation/original681-root-independent-review.json",
+        "sha": "1721b198ea7a730b815eb7ada6d0aace73b080a9",
+        "status": "added",
+        "additions": 119,
+        "deletions": 0,
+        "changes": 119,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/docs%2Fvalidation%2F20261127-original-sdk-quota-continuation%2Foriginal681-root-independent-review.json"
+      },
+      {
+        "filename": "docs/validation/20261127-original-sdk-quota-continuation/primary-source-delta-derivation.json",
+        "sha": "6c2153131451f7a25dcde40f70b8f56efcf4b432",
+        "status": "added",
+        "additions": 7531,
+        "deletions": 0,
+        "changes": 7531,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/docs%2Fvalidation%2F20261127-original-sdk-quota-continuation%2Fprimary-source-delta-derivation.json"
+      },
+      {
+        "filename": "docs/validation/20261127-original-sdk-quota-continuation/source-intake.json",
+        "sha": "3b186d58b52d8b919c9e9fc7941cfbd28320fe08",
+        "status": "added",
+        "additions": 182,
+        "deletions": 0,
+        "changes": 182,
+        "blob_url": "https://github.com/davidpovarsky/hanlin-ai/blob/bd41cf7878c5f4df117af7bfcb67636bdff2eafa/docs%2Fvalidation%2F20261127-original-sdk-quota-continuation%2Fsource-intake.json"
+      }
+    ]
+  },
+  "blobCreationReceipts": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "Scripts/CI/SDKSourceValidation/Fixtures/original-45954793309-source-files.json",
+        "expectedBlob": "195378c4c9610fed0f442a86818869d412da4f49",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "195378c4c9610fed0f442a86818869d412da4f49"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "Scripts/CI/SDKSourceValidation/README.md",
+        "expectedBlob": "645b1f918bda178105e049c1d6a30bb48e892df4",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "645b1f918bda178105e049c1d6a30bb48e892df4"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "Scripts/CI/SDKSourceValidation/continuation.py",
+        "expectedBlob": "c109231b6fa4aac18640657ff17b4d5d4d458645",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "c109231b6fa4aac18640657ff17b4d5d4d458645"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "Scripts/CI/SDKSourceValidation/obligations.json",
+        "expectedBlob": "8dff8a841704e2cede14263337e4a0edd2937ee5",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "8dff8a841704e2cede14263337e4a0edd2937ee5"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "Scripts/CI/SDKSourceValidation/run.py",
+        "expectedBlob": "33ead3cec5f2edb365716074709c9647b8266b64",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "33ead3cec5f2edb365716074709c9647b8266b64"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "Scripts/CI/SDKSourceValidation/test_control.py",
+        "expectedBlob": "d20f7a0adb4a7d3fc2f904533f8dfd8153df86a2",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "d20f7a0adb4a7d3fc2f904533f8dfd8153df86a2"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/actual-original-admission-receipt.json",
+        "expectedBlob": "61de7c07cf3320a1925dd1e0bb148095cf7f43c6",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "61de7c07cf3320a1925dd1e0bb148095cf7f43c6"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/actual-original-admission.json",
+        "expectedBlob": "2468bd8a94509bef124e056fc18c350e55ff28c6",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "2468bd8a94509bef124e056fc18c350e55ff28c6"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/literal-inverse-proof.json",
+        "expectedBlob": "09be72ea251aec56915953a94415b9a6f349fe9b",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "09be72ea251aec56915953a94415b9a6f349fe9b"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/local-control-receipt.json",
+        "expectedBlob": "300eb3baffbef9ad918cac53a13ecf603b432d60",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "300eb3baffbef9ad918cac53a13ecf603b432d60"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/local-control-tests.log",
+        "expectedBlob": "e12e815f776bd0b7bf0da6d5ff2a8068dc6eb5e4",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "e12e815f776bd0b7bf0da6d5ff2a8068dc6eb5e4"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/original681-actual-failed-result.json",
+        "expectedBlob": "6a43d7f87e6ddd5c45668aeb52ccf755ed446263",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "6a43d7f87e6ddd5c45668aeb52ccf755ed446263"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/original681-root-independent-review.json",
+        "expectedBlob": "1721b198ea7a730b815eb7ada6d0aace73b080a9",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "1721b198ea7a730b815eb7ada6d0aace73b080a9"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/primary-source-delta-derivation.json",
+        "expectedBlob": "6c2153131451f7a25dcde40f70b8f56efcf4b432",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "6c2153131451f7a25dcde40f70b8f56efcf4b432"
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "path": "docs/validation/20261127-original-sdk-quota-continuation/source-intake.json",
+        "expectedBlob": "3b186d58b52d8b919c9e9fc7941cfbd28320fe08",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "Action completed."
+            }
+          ],
+          "structuredContent": {
+            "sha": "3b186d58b52d8b919c9e9fc7941cfbd28320fe08"
+          },
+          "isError": false
+        }
+      }
+    }
+  ],
+  "createdTree": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "sha": "d80225ed071cb28712cbc7aaf18e8382b1ff8cc0"
+    },
+    "isError": false
+  },
+  "createdCommit": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "sha": "bd41cf7878c5f4df117af7bfcb67636bdff2eafa"
+    },
+    "isError": false
+  },
+  "force": false,
+  "workflowChanged": false,
+  "dispatches": 0,
+  "swiftRuns": 0,
+  "unpublishedMessageTypoCommit": "44d362a8079310508090c8384149e30060f848fe"
+}
