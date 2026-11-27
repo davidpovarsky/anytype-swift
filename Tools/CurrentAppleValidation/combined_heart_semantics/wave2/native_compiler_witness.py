@@ -16,7 +16,7 @@ import shlex
 import subprocess
 from types import SimpleNamespace
 
-RTL_PROFILE_SHA256 = "40429e43abf2ea22874b6a9d3c796a64888581be18ae7868f3066880817b5d5b"
+RTL_PROFILE_SHA256 = "80ebc56005110ee78615322f56b876b5b6fd4fae23975b86d249ae05ebcac8ea"
 WITNESS_FUNCTIONS = ("sha", "_pinned_bytes", "source_contract")
 
 
