@@ -71,6 +71,8 @@ struct TorahSourcesSearchContentView: View {
     @Environment(\.locale) private var locale
 
     var body: some View {
+        let searchRequest = presenter.makeSearchRequest(debounce: .milliseconds(300))
+        let refreshRequest = presenter.makeAssociationRefreshRequest()
         VStack(spacing: 0) {
             if showsSearchBar {
                 SearchBar(
@@ -102,9 +104,9 @@ struct TorahSourcesSearchContentView: View {
         .onChange(of: presenter.searchScope) { presenter.categoryDidChange() }
         .onChange(of: presenter.canonicalSnapshot) { presenter.synchronizeSnapshot() }
         .task(id: SearchTaskID(scope: presenter.searchScope, query: presenter.searchQuery)) {
-            await presenter.performSearch(debounce: .milliseconds(300))
+            await searchRequest()
         }
-        .task(id: presenter.context.id) { await presenter.refreshAssociations() }
+        .task(id: presenter.context.id) { await refreshRequest() }
         .onAppear {
             if showsSearchBar { searchFieldIsFocused = true }
         }
@@ -134,7 +136,8 @@ struct TorahSourcesSearchContentView: View {
             canOpen: presenter.canOpenAssociation,
             onOpen: presenter.openAssociation,
             onUnlink: { item in
-                Task { await presenter.unlinkAssociation(item) }
+                let request = presenter.makeUnlinkRequest(item)
+                Task { await request() }
             },
             canUnlink: presenter.canEditAssociations,
             title: presenter.searchScope.title
@@ -174,7 +177,7 @@ struct TorahSourcesSearchContentView: View {
                 style: .error,
                 buttonData: EmptyStateView.ButtonData(
                     title: Loc.Pinkha.Home.retry,
-                    action: { await presenter.performSearch() }
+                    action: presenter.makeSearchRequest()
                 )
             )
             .accessibilityElement(children: .contain)
@@ -197,16 +200,19 @@ struct TorahSourcesSearchContentView: View {
             result: result,
             locale: locale,
             onSelect: presenter.isSelectionOnly ? {
-                Task { await presenter.link(result) }
+                let request = presenter.makeLinkRequest(result)
+                Task { await request() }
             } : result.scope == .references ? {
-                Task { await presenter.openReference(result) }
+                let request = presenter.makeOpenReferenceRequest(result)
+                Task { await request() }
             } : nil,
             primaryAccessibilityLabel: result.title(locale: locale),
             primaryAccessibilityHint: result.scope == .references
                 ? Loc.Pinkha.Torah.openInspector
                 : nil,
             onLink: {
-                Task { await presenter.link(result) }
+                let request = presenter.makeLinkRequest(result)
+                Task { await request() }
             },
             linkAccessibilityLabel: linkTitle,
             canLink: presenter.canEditAssociations
