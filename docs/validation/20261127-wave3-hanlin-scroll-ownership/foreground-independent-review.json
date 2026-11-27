@@ -1,0 +1,72 @@
+{
+  "actions": {
+    "SwiftCompilerInvocations": 0,
+    "remoteOperations": 0,
+    "sourceEdits": false,
+    "testsExecuted": 0,
+    "workflowDispatches": 0
+  },
+  "candidate": {
+    "bytes": 20726,
+    "gitBlob": "00108593ef058d881b522f606c8818bbaf974f0e",
+    "path": "/workspace/scratch/ae335eba85e3/hanlin-anytype-scroll-foreground-successor/snapshot3/after/Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift",
+    "sha256": "7942241949bb2f6b0ff7639e093791033712c88f2882856daab95f670eb05dec"
+  },
+  "frozenIndex": {
+    "bytes": 1625,
+    "gitBlob": "f2c8194a06458fabee89f9a8e1900a6b662c7fe3",
+    "path": "/workspace/scratch/ae335eba85e3/hanlin-anytype-scroll-foreground-successor/snapshot3/source-index.json",
+    "sha256": "cc69d15de36e9f73b02043f156d82cc243de7e735f68a04e6c6d2fb18c2a6012"
+  },
+  "fullInverse": {
+    "completeOriginalRestored": true,
+    "operations": 9,
+    "preimage": {
+      "bytes": 17991,
+      "gitBlob": "8afe8ca4b863bb1231a4c98a6a697b45d44be916",
+      "path": "/workspace/scratch/ae335eba85e3/hanlin-anytype-scroll-composition/after/Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift",
+      "sha256": "14236aca75304080ea854fe5fad69dc9254c9067065ee54d3733196ac6879afb"
+    }
+  },
+  "originalFinding": {
+    "bytes": 12586,
+    "gitBlob": "349aa9ed12c7276c3482fdf91c98d90af456e138",
+    "path": "/workspace/scratch/ae335eba85e3/hanlin-anytype-scroll-independent-review/review1.json",
+    "sha256": "c94ce3cf0a27f02b6e026cacc3a380cb27a507bd3624bae8e1e97e407302232c"
+  },
+  "patch": {
+    "bytes": 5940,
+    "gitBlob": "dc52d671ba838157ad5fb91a91e059b6e15a6bd9",
+    "path": "/workspace/scratch/ae335eba85e3/hanlin-anytype-scroll-foreground-successor/snapshot3/foreground.patch",
+    "sha256": "ad533c35c52dda1567058a0e825038749e3b3d73ab3d3dbe5b371148648392ec"
+  },
+  "reasoning": [
+    "The host distinguishes actual observed idle from synthetic interrupted completion, retaining the original observed-idle near-bottom/userInteractionEnded behavior.",
+    "The weak, non-observable witness is updated synchronously only after the sole nativeViewport.bind call returns true. Ignored old producer detach cannot overwrite its accepted binding. It schedules no work and does not alter scroll or SDK follow policy.",
+    "Interrupted completion requires the same original handle object/session, a retained accepted producer, an attached weak UIScrollView and current SDK generation. Native isTracking/isDragging/isDecelerating must all be false before and after the original same-owner position read.",
+    "The witness and completion run synchronously on MainActor, with no await between checks, fresh position and original userInteractionEnded. A known active phase clears pending completion; no ready callback alone is treated as evidence of idle.",
+    "The final near-bottom value is recomputed from that admitted native sample before the unchanged original SDK method chooses following versus pausedByUser.",
+    "Fresh viewport/account/session authority and original teardown/worker drain remain in the frozen surrounding source. The complete literal inverse retains the original14236 source and rejected readiness-only draft."
+  ],
+  "remainingAcceptance": [
+    "Actual Anytype SwiftUI compilation against the exact promoted SDK remains NOT_RUN in this review.",
+    "Actual foreground during drag/deceleration, continued streaming, manual pause/resume and account invalidation require the matching application product; SDK UIKit18 is a separate owner test scope."
+  ],
+  "schema": "pinkha-hanlin-host-foreground-independent-closure-review-v1",
+  "scope": "Only snapshot3 foreground reconciliation and weak native idle witness; no compilation or runtime qualification.",
+  "sdkSourcesUnchanged": [
+    {
+      "bytes": 12163,
+      "gitBlob": "b5c9b7a2374672906d9550714cdb36a8fde785f7",
+      "path": "/workspace/scratch/ae335eba85e3/hanlin-scroll-producer-ownership-review/candidate/Packages/HanlinPresentationSDK/Sources/HanlinChatUI/Scrolling/ChatScrollViewHandle.swift",
+      "sha256": "6a43ca9ea760bfb695e0cc81a16a6d9fd25d229f09695a43d9fbb14671f30398"
+    },
+    {
+      "bytes": 5766,
+      "gitBlob": "e23d538e0f1b6b14b098c08e3d6eb37f4b8399ed",
+      "path": "/workspace/scratch/ae335eba85e3/hanlin-scroll-producer-ownership-review/candidate/Packages/HanlinPresentationSDK/Sources/HanlinChatUI/Scrolling/ChatScrollImmediateContentTouches.swift",
+      "sha256": "a1d02f4bf1edea1e3e6361797dd75415cb2ba1638ff3af0a158dbc188f535618"
+    }
+  ],
+  "status": "SOURCE_FINDING_CLOSED_NO_CONCRETE_REMAINING_DEFECT_IN_SCOPED_SUCCESSOR"
+}

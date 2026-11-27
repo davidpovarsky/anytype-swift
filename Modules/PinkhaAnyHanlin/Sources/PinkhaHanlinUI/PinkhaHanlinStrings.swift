@@ -8,6 +8,9 @@ public enum PinkhaHanlinStrings {
     public static var stop: String { String(localized: "pinkha.hanlin.stop", table: "PinkhaHanlin", bundle: .module) }
     public static var stopping: String { String(localized: "pinkha.hanlin.stopping", table: "PinkhaHanlin", bundle: .module) }
     public static var returnToSource: String { String(localized: "pinkha.hanlin.returnToSource", table: "PinkhaHanlin", bundle: .module) }
+    public static func followLatest(locale: Locale) -> String {
+        String(localized: "pinkha.hanlin.followLatest", table: "PinkhaHanlin", bundle: .module, locale: locale)
+    }
     public static var returnFailed: String { String(localized: "pinkha.hanlin.returnFailed", table: "PinkhaHanlin", bundle: .module) }
     public static var prompt: String { String(localized: "pinkha.hanlin.prompt", table: "PinkhaHanlin", bundle: .module) }
     public static var shareContext: String { String(localized: "pinkha.hanlin.shareContext", table: "PinkhaHanlin", bundle: .module) }

@@ -1,0 +1,134 @@
+[
+  {
+    "operations": [
+      {
+        "newEndByte": 454,
+        "newLiteral": "    @State private var composerHeight: CGFloat = 96\n    @ScaledMetric(relativeTo: .body) private var followControlSide: CGFloat = 44\n",
+        "newStartByte": 321,
+        "originalLiteral": "    @State private var transcriptWidth: CGFloat = 320\n"
+      },
+      {
+        "newEndByte": 3287,
+        "newLiteral": "        .hanlinFollowLatestOverlayHost(selectedConversationID: Binding(\n            get: { activeConversationID }, set: { _ in }\n        )) { request in\n            Button(action: request.perform) {\n                Image(systemName: \"arrow.down\")\n                    .font(.body.weight(.semibold))\n                    .frame(width: followControlSide, height: followControlSide)\n            }\n            .buttonStyle(.plain)\n            .foregroundStyle(.tint)\n            .background(.regularMaterial, in: Circle())\n            .contentShape(.interaction, Circle())\n            .accessibilityLabel(Text(PinkhaHanlinStrings.followLatest(\n                locale: Locale(identifier: presentation.session.context.localeIdentifier))))\n            .accessibilityIdentifier(\"pinkha.hanlin.follow-latest\")\n        }\n",
+        "newStartByte": 2478,
+        "originalLiteral": ""
+      },
+      {
+        "newEndByte": 3724,
+        "newLiteral": "    private var activeConversationID: UUID? {\n        guard presentation.isConfigured else { return nil }\n        do {\n            try presentation.validateInstallation(for: presentation.session)\n            return presentation.session.id\n        } catch { return nil }\n    }\n\n",
+        "newStartByte": 3447,
+        "originalLiteral": ""
+      },
+      {
+        "newEndByte": 6240,
+        "newLiteral": "            PinkhaHanlinTranscriptView(presentation: presentation,\n                composerHeight: composerHeight, followControlSide: followControlSide)\n                .id(presentation.session.id)\n        } composer: {\n            HanlinChatComposer(text: $presentation.draft, canSend: presentation.canSend,\n                isStreaming: presentation.isStreaming, presentationMode: .full,\n                placeholder: PinkhaHanlinStrings.prompt, isStopping: presentation.isStopping,\n                stopLabel: PinkhaHanlinStrings.stop, stoppingLabel: PinkhaHanlinStrings.stopping,\n                onStop: presentation.stop, onSend: presentation.send)\n                .accessibilityIdentifier(\"pinkha.hanlin.composer\")\n                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in\n                    if height.isFinite, height > 0, composerHeight != height { composerHeight = height }\n                }\n        }\n    }\n}\n\n/// The original SDK owns follow policy, coalescing, native sampling and probe\n/// generations. This host binds those owners to one mounted, authorized session.\nprivate struct PinkhaHanlinTranscriptView: View {\n    let presentation: PinkhaHanlinChatPresentation\n    let composerHeight: CGFloat\n    let followControlSide: CGFloat\n    @Environment(\\.scenePhase) private var scenePhase\n    @Environment(\\.accessibilityReduceMotion) private var reduceMotion\n    @State private var autoFollow = ChatAutoFollowController()\n    @State private var nativeViewport = ChatScrollViewHandle()\n    @State private var nativeIdleWitness = PinkhaHanlinNativeIdleWitness()\n    @State private var overlayOwner = UUID()\n    @State private var transcriptSize = CGSize(width: 320, height: 0)\n    @State private var mounted = false\n    @State private var pendingNativeIdle: PendingNativeIdle?\n\n    private enum PendingNativeIdle {\n        case observed(UUID)\n        case interrupted(UUID)\n    }\n\n    private struct BottomTarget: Hashable { let sessionID: UUID }\n\n    private var isCurrent: Bool {\n        guard mounted, presentation.isConfigured else { return false }\n        do {\n            try presentation.validateInstallation(for: presentation.session)\n            return true\n        } catch { return false }\n    }\n\n    var body: some View {\n        ScrollViewReader { reader in\n            ScrollView {\n                VStack(spacing: 0) {\n",
+        "newStartByte": 3863,
+        "originalLiteral": "            ScrollViewReader { reader in\n                ScrollView {\n"
+      },
+      {
+        "newEndByte": 6462,
+        "newLiteral": "                            PinkhaHanlinMessageView(message: message, containerWidth: transcriptSize.width,\n",
+        "newStartByte": 6354,
+        "originalLiteral": "                            PinkhaHanlinMessageView(message: message, containerWidth: transcriptWidth,\n"
+      },
+      {
+        "newEndByte": 7333,
+        "newLiteral": "                    .padding(.bottom, composerHeight)\n                    // The anchor follows receipts and the actual composer\n                    // clearance, so a completed tool result remains visible.\n                    Color.clear.frame(height: 1)\n                        .id(BottomTarget(sessionID: presentation.session.id))\n                        .accessibilityHidden(true)\n",
+        "newStartByte": 6948,
+        "originalLiteral": "                    .padding(.bottom, 96)\n"
+      },
+      {
+        "newEndByte": 9855,
+        "newLiteral": "                .chatScrollImmediateContentTouches(onOwnedScrollViewChanged: { scrollView, producerID in\n                    guard nativeViewport.bind(scrollView, conversationID: presentation.session.id,\n                                              producerID: producerID) else { return }\n                    nativeIdleWitness.acceptedBinding(scrollView, owner: nativeViewport,\n                        conversationID: presentation.session.id, producerID: producerID)\n                    // These SDK callbacks are deferred; no observable state is\n                    // mutated inside UIKit's attachment/layout callback.\n                    scheduleNativePositionRead()\n                    scheduleWhenReady(using: reader)\n                })\n            }\n            .onGeometryChange(for: CGSize.self) { $0.size } action: { size in\n                if size.width.isFinite, size.height.isFinite, size.width > 0, size.height > 0,\n                   transcriptSize != size { transcriptSize = size }\n            }\n            .onScrollGeometryChange(for: ChatAutoFollowPosition.self) { geometry in\n                ChatAutoFollowPosition(\n                    layout: ChatAutoFollowLayout(contentHeight: Double(geometry.contentSize.height).rounded(),\n                        viewportHeight: Double(geometry.containerSize.height).rounded(),\n                        topInset: Double(geometry.contentInsets.top).rounded(),\n                        bottomInset: Double(geometry.contentInsets.bottom).rounded()),\n                    contentOffsetY: Double(geometry.contentOffset.y).rounded())\n            } action: { previous, position in\n                guard isCurrent else { return }\n                autoFollow.updateLayout(position.layout)\n                scheduleNativePositionRead()\n                guard previous.layout != position.layout else { return }\n                scheduleFollow(using: reader, measuredLayout: position.layout)\n            }\n            .onScrollPhaseChange { _, phase in\n                guard isCurrent else { return }\n                switch phase {\n                case .tracking, .interacting, .decelerating:\n                    pendingNativeIdle = nil\n                    autoFollow.userInteractionBegan()\n                case .idle:\n                    pendingNativeIdle = autoFollow.state.isUserInteracting ? .observed(presentation.session.id) : nil\n                    scheduleNativePositionRead()\n                case .animating: break\n                @unknown default: break\n",
+        "newStartByte": 7351,
+        "originalLiteral": "                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in\n                    if width.isFinite, width > 0 { transcriptWidth = width }\n                }\n                .onChange(of: presentation.messages.last?.content) { _, _ in\n                    if let last = presentation.messages.last { reader.scrollTo(last.id, anchor: .bottom) }\n"
+      },
+      {
+        "newEndByte": 10610,
+        "newLiteral": "            .overlay(alignment: .bottomTrailing) { followAnchor(using: reader) }\n            .onAppear {\n                mounted = true\n                activateViewport(using: reader)\n            }\n            .onChange(of: scenePhase) { _, phase in\n                if phase == .active { activateViewport(using: reader) }\n                else { deactivateViewport() }\n            }\n            .onChange(of: presentation.isStreaming) { _, isStreaming in\n                guard isCurrent, isStreaming else { return }\n                autoFollow.beginRun()\n                scheduleFollow(using: reader)\n            }\n            .onDisappear {\n                mounted = false\n                deactivateViewport()\n            }\n",
+        "newStartByte": 9887,
+        "originalLiteral": "        } composer: {\n            HanlinChatComposer(text: $presentation.draft, canSend: presentation.canSend,\n                isStreaming: presentation.isStreaming, presentationMode: .full,\n                placeholder: PinkhaHanlinStrings.prompt, isStopping: presentation.isStopping,\n                stopLabel: PinkhaHanlinStrings.stop, stoppingLabel: PinkhaHanlinStrings.stopping,\n                onStop: presentation.stop, onSend: presentation.send)\n                .accessibilityIdentifier(\"pinkha.hanlin.composer\")\n"
+      },
+      {
+        "newEndByte": 17103,
+        "newLiteral": "    }\n\n    @ViewBuilder\n    private func followAnchor(using reader: ScrollViewProxy) -> some View {\n        if isCurrent, autoFollow.showsScrollToBottomButton,\n           transcriptSize.width >= followControlSide + 32,\n           transcriptSize.height >= composerHeight + followControlSide + 16 {\n            Color.clear\n                .frame(width: followControlSide, height: followControlSide)\n                .anchorPreference(key: HanlinFollowLatestOverlayPreferenceKey.self, value: .bounds) { bounds in\n                    [HanlinFollowLatestOverlayRequest(conversationID: presentation.session.id,\n                        ownerToken: overlayOwner, bounds: bounds, isTemporaryRecord: false) {\n                        guard isCurrent else { return }\n                        autoFollow.resumeFollowing()\n                        scheduleFollow(using: reader, animated: true, force: true)\n                    }]\n                }\n                .padding(.trailing, 16)\n                .padding(.bottom, composerHeight + 8)\n                .allowsHitTesting(false)\n                .accessibilityHidden(true)\n        }\n    }\n\n    private func activateViewport(using reader: ScrollViewProxy) {\n        guard isCurrent else { return }\n        // An interrupted gesture may lose its SwiftUI idle callback. Completion\n        // still requires a fresh same-owner native idle witness after activation.\n        pendingNativeIdle = autoFollow.state.isUserInteracting ? .interrupted(presentation.session.id) : nil\n        nativeViewport.activate(conversationID: presentation.session.id)\n        autoFollow.invalidateLayout()\n        scheduleWhenReady(using: reader)\n    }\n\n    private func deactivateViewport() {\n        pendingNativeIdle = nil\n        _ = nativeViewport.deactivate(conversationID: presentation.session.id)\n        autoFollow.invalidateLayout()\n    }\n\n    private func scheduleWhenReady(using reader: ScrollViewProxy) {\n        guard isCurrent else { return }\n        let sessionID = presentation.session.id\n        nativeViewport.whenReady(conversationID: sessionID) {\n            guard isCurrent, presentation.session.id == sessionID else { return }\n            if let position = nativeViewport.position(conversationID: sessionID) {\n                autoFollow.updatePosition(position)\n                finishPendingNativeIdle(for: sessionID)\n            }\n            scheduleFollow(using: reader)\n        }\n    }\n\n    private func scheduleNativePositionRead() {\n        guard isCurrent else { return }\n        let sessionID = presentation.session.id\n        nativeViewport.readPositionAfterLayout(conversationID: sessionID) { position in\n            guard isCurrent, presentation.session.id == sessionID,\n                  let isNearBottom = position.isNearBottom else { return }\n            // Keep SwiftUI's newer growth measurement while the native owner\n            // supplies the current position and finishes the actual gesture.\n            autoFollow.updateNearBottom(isNearBottom)\n            finishPendingNativeIdle(for: sessionID)\n        }\n    }\n\n    private func finishPendingNativeIdle(for sessionID: UUID) {\n        guard isCurrent, presentation.session.id == sessionID,\n              let completion = pendingNativeIdle else { return }\n        switch completion {\n        case .observed(let pendingID) where pendingID == sessionID:\n            break\n        case .interrupted(let pendingID) where pendingID == sessionID:\n            guard let position = nativeIdleWitness.idlePosition(owner: nativeViewport, conversationID: sessionID),\n                  let isNearBottom = position.isNearBottom else { return }\n            autoFollow.updateNearBottom(isNearBottom)\n        default:\n            return\n        }\n        pendingNativeIdle = nil\n        autoFollow.userInteractionEnded()\n    }\n\n    private func scheduleFollow(using reader: ScrollViewProxy, animated: Bool = false,\n                                force: Bool = false, measuredLayout: ChatAutoFollowLayout? = nil) {\n        guard isCurrent else { return }\n        let sessionID = presentation.session.id\n        guard let attachedLayout = nativeViewport.layout(conversationID: sessionID) else {\n            autoFollow.invalidateLayout()\n            return\n        }\n        autoFollow.updateLayout(measuredLayout ?? attachedLayout)\n        let generation = nativeViewport.generation\n        autoFollow.scheduleScroll(animated: animated, force: force) { requestedAnimation in\n            guard isCurrent, presentation.session.id == sessionID,\n                  nativeViewport.layout(conversationID: sessionID,\n                                        expectedGeneration: generation)?.hasScrollableContent == true else { return }\n            let target = BottomTarget(sessionID: sessionID)\n            if requestedAnimation && !reduceMotion {\n                withAnimation(.easeOut(duration: 0.18)) { reader.scrollTo(target, anchor: .bottom) }\n            } else {\n                reader.scrollTo(target, anchor: .bottom)\n            }\n            scheduleNativePositionRead()\n        }\n    }\n}\n\n/// Mirrors only a binding accepted by the original SDK owner. This weak,\n/// non-observable witness neither schedules work nor owns follow policy.\n@MainActor\nprivate final class PinkhaHanlinNativeIdleWitness {\n    private weak var scrollView: UIScrollView?\n    private weak var owner: ChatScrollViewHandle?\n    private var conversationID: UUID?\n    private var producerID: UUID?\n\n    func acceptedBinding(_ scrollView: UIScrollView?, owner: ChatScrollViewHandle,\n                         conversationID: UUID, producerID: UUID) {\n        self.scrollView = scrollView\n        self.owner = owner\n        self.conversationID = conversationID\n        self.producerID = scrollView == nil ? nil : producerID\n    }\n\n    func idlePosition(owner: ChatScrollViewHandle, conversationID: UUID) -> ChatAutoFollowPosition? {\n        guard self.owner === owner, self.conversationID == conversationID, producerID != nil,\n              let scrollView, scrollView.window != nil,\n              !scrollView.isTracking, !scrollView.isDragging, !scrollView.isDecelerating else { return nil }\n        let generation = owner.generation\n        guard let position = owner.position(conversationID: conversationID, expectedGeneration: generation),\n              owner.generation == generation,\n              !scrollView.isTracking, !scrollView.isDragging, !scrollView.isDecelerating else { return nil }\n        return position\n",
+        "newStartByte": 10620,
+        "originalLiteral": ""
+      }
+    ],
+    "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift"
+  },
+  {
+    "operations": [
+      {
+        "newEndByte": 966,
+        "newLiteral": "    public static func followLatest(locale: Locale) -> String {\n        String(localized: \"pinkha.hanlin.followLatest\", table: \"PinkhaHanlin\", bundle: .module, locale: locale)\n    }\n",
+        "newStartByte": 784,
+        "originalLiteral": ""
+      }
+    ],
+    "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinStrings.swift"
+  },
+  {
+    "operations": [
+      {
+        "newEndByte": 428,
+        "newLiteral": "    \"pinkha.hanlin.followLatest\": {\n      \"localizations\": {\n        \"en\": {\n          \"stringUnit\": {\n            \"state\": \"translated\",\n            \"value\": \"Scroll to latest message\"\n          }\n        },\n        \"he\": {\n          \"stringUnit\": {\n            \"state\": \"translated\",\n            \"value\": \"גלילה להודעה האחרונה\"\n          }\n        }\n      }\n    },\n",
+        "newStartByte": 43,
+        "originalLiteral": ""
+      }
+    ],
+    "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/Resources/PinkhaHanlin.xcstrings"
+  },
+  {
+    "operations": [
+      {
+        "newEndByte": 123,
+        "newLiteral": "4cb6454c1c6e110ead73179c06ada9e909bf250b",
+        "newStartByte": 83,
+        "originalLiteral": "0ae1920d316b9592cbad0462bea96a07fd1ca351"
+      }
+    ],
+    "path": "Tools/Hanlin/source.json"
+  },
+  {
+    "operations": [
+      {
+        "newEndByte": 36136,
+        "newLiteral": "00108593ef058d881b522f606c8818bbaf974f0e",
+        "newStartByte": 36096,
+        "originalLiteral": "c8dc5c1c492467037341d941d74605e84614c9f2"
+      },
+      {
+        "newEndByte": 48553,
+        "newLiteral": "5ec41e6fc776f875b6e8ae3c4d34554d8acd4f5d",
+        "newStartByte": 48513,
+        "originalLiteral": "f0db777a31170df03cb016acb338003d89c92eea"
+      },
+      {
+        "newEndByte": 50378,
+        "newLiteral": "b54643471bd98fd457e3cf2592e7982b1b1b7218",
+        "newStartByte": 50338,
+        "originalLiteral": "9d45063cfcc8776898c0affe757b9d726105da53"
+      },
+      {
+        "newEndByte": 181910,
+        "newLiteral": "86db75794ca300a42548c40183f4ee698573d27f",
+        "newStartByte": 181870,
+        "originalLiteral": "e8231064ee8a74a72a1b4d6a6c63da6ad1863410"
+      }
+    ],
+    "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json"
+  },
+  {
+    "operations": [
+      {
+        "newEndByte": 94800,
+        "newLiteral": "\n\n## 2026-11-27 — Original Hanlin viewport ownership and shared host follow controls\n\nThe owner's Wave3 integration authorization covers the common Hanlin SDK and both engine consumers. This source tranche advances only Tools/Hanlin/source.json from original 0ae1920d316b9592cbad0462bea96a07fd1ca351 to the isolated, normally published 4cb6454c1c6e110ead73179c06ada9e909bf250b (tree 500ece4e329fe325d0bb699fcb383fb7fc0ea6e5). The four original package roots, SwiftAI pin, minimum iOS version, materializer and package manifests/locks remain unchanged. Across all 1,009 package blobs only the original UIKit scroll probe and native viewport handle change; the separate original App test file retains its sixteen method bodies and adds two producer-ownership regressions. Agent cancellation/drain, retained renderer payload accounting, Widgets, NativeScript handler logic and companion source identities are not replaced by a parallel branch.\n\nThe shared downstream PinkhaHanlinChatView now uses the original HanlinChatUI follow controller, native viewport/probe and HanlinFollowLatestOverlay. Its small localized host Button delegates to that original follow owner. A mounted, current account/session/engine scope and original viewport generation fence every deferred scroll; manual reading pauses, explicit resume and newer producer ownership remain with the original SDK. The native weak idle witness is used only to complete an interrupted foreground gesture after the same original binding and generation are positively idle before and after the original position read. Geometry/readiness alone cannot end that gesture. The original Composer invocation, streaming/Save/Stop/context/permission/journal worker behavior and navigation/controller lifecycle remain exact. Composer clearance is measured once inside the original bottom-overlay shell, and all twenty-seven existing localization rows are retained with one English/Hebrew accessibility label added.\n\nAll UI changes remain in the existing downstream shared module. No new upstream editor hook, alternate follow policy, native engine mutation or storage schema is introduced. The source map changes only the exact current shared-source/replacement hashes in rows 17, 27, 28 and 102; all 128 other rows, all baseline/from/to/kind values and the complete previous register prefix are preserved. Full-file literal inverses, immutable source identities, the rejected readiness-only draft and the independent corrected foreground review are retained in docs/validation/20261127-wave3-hanlin-scroll-ownership.\n\nThis is source integration, not Apple or product acceptance. Original Agent seven cases, payload quota six cases and Widget two methods keep their exact earlier source/dependency scopes. The still-pending original iOS-hosted scroll obligation comprises eighteen viewport methods plus two AutoFollow observation methods; a compiled file or an old cache is not an execution receipt. The separate Anytype host requires its matching shared App compile and actual manual-scroll, foreground, keyboard/Dynamic Type, English/Hebrew, iPhone/iPad and account/engine replacement checks. NativeScript explicit-handler/JavaScript-state and no-handler rejection, external companion/MiniApps runtime, SDK06 native ABI, Release signing and TestFlight gates remain separate.\n\nRollback reverses only these three downstream UI files, the one common SDK revision, four map hashes and this appended record using the retained complete originals. It does not remove or relabel prior receipts, alter upstream baselines, reset native accounts, or weaken the materialization/source-retention gates.\n",
+        "newStartByte": 91161,
+        "originalLiteral": ""
+      }
+    ],
+    "path": "docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md"
+  }
+]

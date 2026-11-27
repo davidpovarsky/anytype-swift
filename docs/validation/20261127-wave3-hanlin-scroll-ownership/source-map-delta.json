@@ -1,0 +1,216 @@
+{
+  "allBaselineFromToKindValuesPreserved": true,
+  "allOtherFieldsInFourRowsPreserved": true,
+  "allTopLevelFieldsPreserved": true,
+  "base": "db7b1c8cc5be5950912b91b8cae4f6e5f19f3a16",
+  "candidateRows": 132,
+  "changedRowIndices": [
+    17,
+    27,
+    28,
+    102
+  ],
+  "originalRows": 132,
+  "rows": [
+    {
+      "keyPath": [
+        "sharedSources",
+        0,
+        "gitBlob"
+      ],
+      "newBlob": "00108593ef058d881b522f606c8818bbaf974f0e",
+      "oldBlob": "c8dc5c1c492467037341d941d74605e84614c9f2",
+      "originalRow": {
+        "baselineBlob": "0ddff522e7645ea19c3d4c319396177e355c4172",
+        "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
+        "kind": "refactor",
+        "reason": "Keep original app aliases and share original UI/consent/localized-string implementation; only public API, injected styling and Bundle.module resource ownership change. The same shared endpoint/model/SecureField now have explicit localized accessibility labels and stable identifiers, preserving native controls and all consent/provider/session behavior. Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c. Reviewed2026-11-27 Wave3 candidate32: retain the original SDK view, session/context/run/sequence fences and Composer; add original UI activity and Retry/Continue with a sticky uncertain-write barrier. Preserve one original worker and protected, account-bound journal while reserving bounded metadata before effects and closing dispatch before terminal outcomes. Canonical SDK45 adds bounded renderer-issued payload retention without changing original AgentSDK or explicit-handler semantics. No native body-save binding is installed by this candidate.",
+        "replacementBlob": "8a1129ab3e5a7aa64fe07c71ea8fd6667bd72164",
+        "sharedSources": [
+          {
+            "gitBlob": "c8dc5c1c492467037341d941d74605e84614c9f2",
+            "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift"
+          }
+        ],
+        "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
+        "validation": [
+          "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
+          "Existing app test bodies are retained; import-only edits are mechanically checked.",
+          "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+          "Original450382 mounted failure exposed empty field accessibility labels. Root source diff changes labels/identifiers only; current actual Hanlin mounted acceptance remains required. See docs/validation/20261122-any-ui-continuation. No old passing tests were rerun for this source review.",
+          "Exact consumer4b1e79b4/87a3c57f and canonicalSDK0a24/385289 diffs reviewed. Original SDK5methods/7cases PASS at385 only; consumer Apple/native/UI tests remain NOT_RUN. No assertion or capability removed. See docs/validation/20261127-hanlin-cancellation/eof-drain-reviewed.json and docs/validation/20261127-wave3-upstream-integration/hanlin385-source-review.json.",
+          "Root reviewed original f8/b24/653/5e/7f2/32 source and canonical45 patches. Seven exact mapping hashes updated with unchanged baseline/from/to/kind; original failed preview and gate bytes retained in docs/validation/20261127-wave3-hanlin45-integration/original-preview. New consumer, journal, Save and SDK45 Apple compilation/runtime are NOT_RUN. Original SDK385 results retain their exact historical scope; Mac8f2 remains frozen separately."
+        ]
+      },
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift",
+      "replacementRow": {
+        "baselineBlob": "0ddff522e7645ea19c3d4c319396177e355c4172",
+        "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
+        "kind": "refactor",
+        "reason": "Keep original app aliases and share original UI/consent/localized-string implementation; only public API, injected styling and Bundle.module resource ownership change. The same shared endpoint/model/SecureField now have explicit localized accessibility labels and stable identifiers, preserving native controls and all consent/provider/session behavior. Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c. Reviewed2026-11-27 Wave3 candidate32: retain the original SDK view, session/context/run/sequence fences and Composer; add original UI activity and Retry/Continue with a sticky uncertain-write barrier. Preserve one original worker and protected, account-bound journal while reserving bounded metadata before effects and closing dispatch before terminal outcomes. Canonical SDK45 adds bounded renderer-issued payload retention without changing original AgentSDK or explicit-handler semantics. No native body-save binding is installed by this candidate.",
+        "replacementBlob": "8a1129ab3e5a7aa64fe07c71ea8fd6667bd72164",
+        "sharedSources": [
+          {
+            "gitBlob": "00108593ef058d881b522f606c8818bbaf974f0e",
+            "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift"
+          }
+        ],
+        "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
+        "validation": [
+          "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
+          "Existing app test bodies are retained; import-only edits are mechanically checked.",
+          "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+          "Original450382 mounted failure exposed empty field accessibility labels. Root source diff changes labels/identifiers only; current actual Hanlin mounted acceptance remains required. See docs/validation/20261122-any-ui-continuation. No old passing tests were rerun for this source review.",
+          "Exact consumer4b1e79b4/87a3c57f and canonicalSDK0a24/385289 diffs reviewed. Original SDK5methods/7cases PASS at385 only; consumer Apple/native/UI tests remain NOT_RUN. No assertion or capability removed. See docs/validation/20261127-hanlin-cancellation/eof-drain-reviewed.json and docs/validation/20261127-wave3-upstream-integration/hanlin385-source-review.json.",
+          "Root reviewed original f8/b24/653/5e/7f2/32 source and canonical45 patches. Seven exact mapping hashes updated with unchanged baseline/from/to/kind; original failed preview and gate bytes retained in docs/validation/20261127-wave3-hanlin45-integration/original-preview. New consumer, journal, Save and SDK45 Apple compilation/runtime are NOT_RUN. Original SDK385 results retain their exact historical scope; Mac8f2 remains frozen separately."
+        ]
+      },
+      "zeroBasedIndex": 17
+    },
+    {
+      "keyPath": [
+        "sharedSources",
+        0,
+        "gitBlob"
+      ],
+      "newBlob": "5ec41e6fc776f875b6e8ae3c4d34554d8acd4f5d",
+      "oldBlob": "f0db777a31170df03cb016acb338003d89c92eea",
+      "originalRow": {
+        "baselineBlob": "657037395091ea052a863058aca1d9c2d8566d57",
+        "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinStrings.swift",
+        "kind": "refactor",
+        "reason": "Keep original app aliases and share original UI/consent/localized-string implementation; only public API, injected styling and Bundle.module resource ownership change. Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c. Reviewed2026-11-27 Wave3 candidate32: retain the original SDK view, session/context/run/sequence fences and Composer; add original UI activity and Retry/Continue with a sticky uncertain-write barrier. Preserve one original worker and protected, account-bound journal while reserving bounded metadata before effects and closing dispatch before terminal outcomes. Canonical SDK45 adds bounded renderer-issued payload retention without changing original AgentSDK or explicit-handler semantics. No native body-save binding is installed by this candidate. Reviewed2026-11-27 Wave3 original message-Save action: retain one canonical AgentSession and completed-live-run provenance; shared original Save menu calls executePresentationTool with exact complete body/request identity and original host confirmation/journal/worker. A bounded256-attempt ledger survives row deletion. Stop cancels and joins an early caller; no model-text receipt or automatic retry. Ordinary catalogs remain unchanged.",
+        "replacementBlob": "e10a6b62d7b462176c627640104437a60f14c2b7",
+        "sharedSources": [
+          {
+            "gitBlob": "f0db777a31170df03cb016acb338003d89c92eea",
+            "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinStrings.swift"
+          }
+        ],
+        "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinStrings.swift",
+        "validation": [
+          "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
+          "Existing app test bodies are retained; import-only edits are mechanically checked.",
+          "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+          "Exact consumer4b1e79b4/87a3c57f and canonicalSDK0a24/385289 diffs reviewed. Original SDK5methods/7cases PASS at385 only; consumer Apple/native/UI tests remain NOT_RUN. No assertion or capability removed. See docs/validation/20261127-hanlin-cancellation/eof-drain-reviewed.json and docs/validation/20261127-wave3-upstream-integration/hanlin385-source-review.json.",
+          "Root reviewed original f8/b24/653/5e/7f2/32 source and canonical45 patches. Seven exact mapping hashes updated with unchanged baseline/from/to/kind; original failed preview and gate bytes retained in docs/validation/20261127-wave3-hanlin45-integration/original-preview. New consumer, journal, Save and SDK45 Apple compilation/runtime are NOT_RUN. Original SDK385 results retain their exact historical scope; Mac8f2 remains frozen separately.",
+          "Root read all8932source changes and actual canonical45HanlinAgentSession27d430b8. Seventeen exact inverses and26original localization entries retained. Five intent component methods and Apple/native/UI remain NOT_RUN. See docs/validation/20261127-wave3-message-action-intake/root-source-review.json."
+        ]
+      },
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinStrings.swift",
+      "replacementRow": {
+        "baselineBlob": "657037395091ea052a863058aca1d9c2d8566d57",
+        "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinStrings.swift",
+        "kind": "refactor",
+        "reason": "Keep original app aliases and share original UI/consent/localized-string implementation; only public API, injected styling and Bundle.module resource ownership change. Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c. Reviewed2026-11-27 Wave3 candidate32: retain the original SDK view, session/context/run/sequence fences and Composer; add original UI activity and Retry/Continue with a sticky uncertain-write barrier. Preserve one original worker and protected, account-bound journal while reserving bounded metadata before effects and closing dispatch before terminal outcomes. Canonical SDK45 adds bounded renderer-issued payload retention without changing original AgentSDK or explicit-handler semantics. No native body-save binding is installed by this candidate. Reviewed2026-11-27 Wave3 original message-Save action: retain one canonical AgentSession and completed-live-run provenance; shared original Save menu calls executePresentationTool with exact complete body/request identity and original host confirmation/journal/worker. A bounded256-attempt ledger survives row deletion. Stop cancels and joins an early caller; no model-text receipt or automatic retry. Ordinary catalogs remain unchanged.",
+        "replacementBlob": "e10a6b62d7b462176c627640104437a60f14c2b7",
+        "sharedSources": [
+          {
+            "gitBlob": "5ec41e6fc776f875b6e8ae3c4d34554d8acd4f5d",
+            "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinStrings.swift"
+          }
+        ],
+        "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinStrings.swift",
+        "validation": [
+          "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
+          "Existing app test bodies are retained; import-only edits are mechanically checked.",
+          "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+          "Exact consumer4b1e79b4/87a3c57f and canonicalSDK0a24/385289 diffs reviewed. Original SDK5methods/7cases PASS at385 only; consumer Apple/native/UI tests remain NOT_RUN. No assertion or capability removed. See docs/validation/20261127-hanlin-cancellation/eof-drain-reviewed.json and docs/validation/20261127-wave3-upstream-integration/hanlin385-source-review.json.",
+          "Root reviewed original f8/b24/653/5e/7f2/32 source and canonical45 patches. Seven exact mapping hashes updated with unchanged baseline/from/to/kind; original failed preview and gate bytes retained in docs/validation/20261127-wave3-hanlin45-integration/original-preview. New consumer, journal, Save and SDK45 Apple compilation/runtime are NOT_RUN. Original SDK385 results retain their exact historical scope; Mac8f2 remains frozen separately.",
+          "Root read all8932source changes and actual canonical45HanlinAgentSession27d430b8. Seventeen exact inverses and26original localization entries retained. Five intent component methods and Apple/native/UI remain NOT_RUN. See docs/validation/20261127-wave3-message-action-intake/root-source-review.json."
+        ]
+      },
+      "zeroBasedIndex": 27
+    },
+    {
+      "keyPath": [
+        "replacementBlob"
+      ],
+      "newBlob": "b54643471bd98fd457e3cf2592e7982b1b1b7218",
+      "oldBlob": "9d45063cfcc8776898c0affe757b9d726105da53",
+      "originalRow": {
+        "baselineBlob": "52ba2e3fd9bc0709250538541d11154c0bd84707",
+        "from": "Anytype/Sources/Pinkha/AI/Resources/PinkhaHanlin.xcstrings",
+        "kind": "move",
+        "reason": "Move exact byte-identical Hanlin localized resources into the single shared UI bundle; retain every existing translation. Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c. Reviewed2026-11-27 Wave3 candidate32: retain the original SDK view, session/context/run/sequence fences and Composer; add original UI activity and Retry/Continue with a sticky uncertain-write barrier. Preserve one original worker and protected, account-bound journal while reserving bounded metadata before effects and closing dispatch before terminal outcomes. Canonical SDK45 adds bounded renderer-issued payload retention without changing original AgentSDK or explicit-handler semantics. No native body-save binding is installed by this candidate. Reviewed2026-11-27 Wave3 message-Save localization: preserve all26 existing localized entries byte-for-byte and add only the original shared saved-message title in English and Hebrew.",
+        "replacementBlob": "9d45063cfcc8776898c0affe757b9d726105da53",
+        "sharedSources": [],
+        "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/Resources/PinkhaHanlin.xcstrings",
+        "validation": [
+          "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
+          "Existing app test bodies are retained; import-only edits are mechanically checked.",
+          "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+          "Exact consumer4b1e79b4/87a3c57f and canonicalSDK0a24/385289 diffs reviewed. Original SDK5methods/7cases PASS at385 only; consumer Apple/native/UI tests remain NOT_RUN. No assertion or capability removed. See docs/validation/20261127-hanlin-cancellation/eof-drain-reviewed.json and docs/validation/20261127-wave3-upstream-integration/hanlin385-source-review.json.",
+          "Root reviewed original f8/b24/653/5e/7f2/32 source and canonical45 patches. Seven exact mapping hashes updated with unchanged baseline/from/to/kind; original failed preview and gate bytes retained in docs/validation/20261127-wave3-hanlin45-integration/original-preview. New consumer, journal, Save and SDK45 Apple compilation/runtime are NOT_RUN. Original SDK385 results retain their exact historical scope; Mac8f2 remains frozen separately.",
+          "Original gate3448ce78 correctly rejected the missing third localization mapping; preserved failed map/source-review/controller/full staged diff and actual gate output. Only reviewed replacement7eff883a→9d45063c and explanation were updated. No test or source gate was weakened; new Apple/native acceptance remains NOT_RUN."
+        ]
+      },
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/Resources/PinkhaHanlin.xcstrings",
+      "replacementRow": {
+        "baselineBlob": "52ba2e3fd9bc0709250538541d11154c0bd84707",
+        "from": "Anytype/Sources/Pinkha/AI/Resources/PinkhaHanlin.xcstrings",
+        "kind": "move",
+        "reason": "Move exact byte-identical Hanlin localized resources into the single shared UI bundle; retain every existing translation. Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c. Reviewed2026-11-27 Wave3 candidate32: retain the original SDK view, session/context/run/sequence fences and Composer; add original UI activity and Retry/Continue with a sticky uncertain-write barrier. Preserve one original worker and protected, account-bound journal while reserving bounded metadata before effects and closing dispatch before terminal outcomes. Canonical SDK45 adds bounded renderer-issued payload retention without changing original AgentSDK or explicit-handler semantics. No native body-save binding is installed by this candidate. Reviewed2026-11-27 Wave3 message-Save localization: preserve all26 existing localized entries byte-for-byte and add only the original shared saved-message title in English and Hebrew.",
+        "replacementBlob": "b54643471bd98fd457e3cf2592e7982b1b1b7218",
+        "sharedSources": [],
+        "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/Resources/PinkhaHanlin.xcstrings",
+        "validation": [
+          "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
+          "Existing app test bodies are retained; import-only edits are mechanically checked.",
+          "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+          "Exact consumer4b1e79b4/87a3c57f and canonicalSDK0a24/385289 diffs reviewed. Original SDK5methods/7cases PASS at385 only; consumer Apple/native/UI tests remain NOT_RUN. No assertion or capability removed. See docs/validation/20261127-hanlin-cancellation/eof-drain-reviewed.json and docs/validation/20261127-wave3-upstream-integration/hanlin385-source-review.json.",
+          "Root reviewed original f8/b24/653/5e/7f2/32 source and canonical45 patches. Seven exact mapping hashes updated with unchanged baseline/from/to/kind; original failed preview and gate bytes retained in docs/validation/20261127-wave3-hanlin45-integration/original-preview. New consumer, journal, Save and SDK45 Apple compilation/runtime are NOT_RUN. Original SDK385 results retain their exact historical scope; Mac8f2 remains frozen separately.",
+          "Original gate3448ce78 correctly rejected the missing third localization mapping; preserved failed map/source-review/controller/full staged diff and actual gate output. Only reviewed replacement7eff883a→9d45063c and explanation were updated. No test or source gate was weakened; new Apple/native acceptance remains NOT_RUN."
+        ]
+      },
+      "zeroBasedIndex": 28
+    },
+    {
+      "keyPath": [
+        "replacementBlob"
+      ],
+      "newBlob": "86db75794ca300a42548c40183f4ee698573d27f",
+      "oldBlob": "e8231064ee8a74a72a1b4d6a6c63da6ad1863410",
+      "originalRow": {
+        "baselineBlob": "0ac43dc444fa2234c2eb11fb9bebf129dbe4fb94",
+        "from": "Tools/Hanlin/source.json",
+        "kind": "refactor",
+        "reason": "Pin the shared Hanlin SDK to the reviewed tool-continuation race repair 6bd6036dbca16c969689a5722550a54bebc1e851. Both adapters consume the same dependency source. Pin both engine consumers and shared MiniApps bridge/picker to combined Hanlin44bcebf687206a37893cb584cf72c6aafbc5ca48 and SwiftAI3f38. Preserve original catalog continuation/cancellation repairs while merging ready MiniApps62a work; standalone runtimes remain in their original companion. Reviewed2026-11-25 final integration: Advance the common four-package source to86a6 and SwiftAIabf. Independent Git comparison proves all959 package files/four trees identical to qualified30e; standalone producer changes remain outside Pinkha. Reviewed2026-11-26: advance the same four shared packages to9565a9e4775901a4cee6f0402d7fd2978fab6612, preserving959 files and all existing pins/capabilities; the exact additive composition changes only notification ingress and its original tests. Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c. Reviewed2026-11-27 Wave3 candidate32: retain the original SDK view, session/context/run/sequence fences and Composer; add original UI activity and Retry/Continue with a sticky uncertain-write barrier. Preserve one original worker and protected, account-bound journal while reserving bounded metadata before effects and closing dispatch before terminal outcomes. Canonical SDK45 adds bounded renderer-issued payload retention without changing original AgentSDK or explicit-handler semantics. No native body-save binding is installed by this candidate.",
+        "replacementBlob": "e8231064ee8a74a72a1b4d6a6c63da6ad1863410",
+        "sharedSources": [],
+        "to": "Tools/Hanlin/source.json",
+        "validation": [
+          "Reviewed original source diff against the protected baseline on 2026-11-25; no capability removed. Current App/native and UI runner compiled in 45535451242 at406fd73. That run stopped in controller selection before F product tests.",
+          "For the Hanlin pin, preserve the two original race/cancellation controls and actual new-engine UI pass in45531686517. This source map does not claim full release or physical-device acceptance.",
+          "2026-11-25 final integration: reviewed additive original-source diff, shared UI extraction and exact replacement blobs. Five Swift grammar checks and original 32 owner configuration hashes pass; native app, current MiniApps five methods and genuine device profile grants remain required. Source retention does not establish UI/product parity.",
+          "Root reviewed the exact previous-to-current Git delta at9c957c01. Source preservation only: immutable prior receipts retain their own source/closure. App0c5 build12 compiled before MiniApps86 integration; changed original app/Collections1.3, native410b, callback diagnostics and final UI acceptance require their own actual run. No existing assertion, capability gate or ACK is weakened. Current owner expressly authorizes integration and these fixes.",
+          "SDK9565 actual original notification suite:11 methods/12 parameter cases PASS,0fail/skip; original collector failure and exact XML supplement98703fb3f5c79cf01275d6c9692bb18c87b58638a41dd37fe8c00e1c6d4c38da retained. Scope is package regression, not app/OS delivery acceptance. GitHub commit/ref independently read back26Nov00:34; current Apple app integration remains required.",
+          "Exact consumer4b1e79b4/87a3c57f and canonicalSDK0a24/385289 diffs reviewed. Original SDK5methods/7cases PASS at385 only; consumer Apple/native/UI tests remain NOT_RUN. No assertion or capability removed. See docs/validation/20261127-hanlin-cancellation/eof-drain-reviewed.json and docs/validation/20261127-wave3-upstream-integration/hanlin385-source-review.json.",
+          "Root reviewed original f8/b24/653/5e/7f2/32 source and canonical45 patches. Seven exact mapping hashes updated with unchanged baseline/from/to/kind; original failed preview and gate bytes retained in docs/validation/20261127-wave3-hanlin45-integration/original-preview. New consumer, journal, Save and SDK45 Apple compilation/runtime are NOT_RUN. Original SDK385 results retain their exact historical scope; Mac8f2 remains frozen separately."
+        ]
+      },
+      "path": "Tools/Hanlin/source.json",
+      "replacementRow": {
+        "baselineBlob": "0ac43dc444fa2234c2eb11fb9bebf129dbe4fb94",
+        "from": "Tools/Hanlin/source.json",
+        "kind": "refactor",
+        "reason": "Pin the shared Hanlin SDK to the reviewed tool-continuation race repair 6bd6036dbca16c969689a5722550a54bebc1e851. Both adapters consume the same dependency source. Pin both engine consumers and shared MiniApps bridge/picker to combined Hanlin44bcebf687206a37893cb584cf72c6aafbc5ca48 and SwiftAI3f38. Preserve original catalog continuation/cancellation repairs while merging ready MiniApps62a work; standalone runtimes remain in their original companion. Reviewed2026-11-25 final integration: Advance the common four-package source to86a6 and SwiftAIabf. Independent Git comparison proves all959 package files/four trees identical to qualified30e; standalone producer changes remain outside Pinkha. Reviewed2026-11-26: advance the same four shared packages to9565a9e4775901a4cee6f0402d7fd2978fab6612, preserving959 files and all existing pins/capabilities; the exact additive composition changes only notification ingress and its original tests. Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c. Reviewed2026-11-27 Wave3 candidate32: retain the original SDK view, session/context/run/sequence fences and Composer; add original UI activity and Retry/Continue with a sticky uncertain-write barrier. Preserve one original worker and protected, account-bound journal while reserving bounded metadata before effects and closing dispatch before terminal outcomes. Canonical SDK45 adds bounded renderer-issued payload retention without changing original AgentSDK or explicit-handler semantics. No native body-save binding is installed by this candidate.",
+        "replacementBlob": "86db75794ca300a42548c40183f4ee698573d27f",
+        "sharedSources": [],
+        "to": "Tools/Hanlin/source.json",
+        "validation": [
+          "Reviewed original source diff against the protected baseline on 2026-11-25; no capability removed. Current App/native and UI runner compiled in 45535451242 at406fd73. That run stopped in controller selection before F product tests.",
+          "For the Hanlin pin, preserve the two original race/cancellation controls and actual new-engine UI pass in45531686517. This source map does not claim full release or physical-device acceptance.",
+          "2026-11-25 final integration: reviewed additive original-source diff, shared UI extraction and exact replacement blobs. Five Swift grammar checks and original 32 owner configuration hashes pass; native app, current MiniApps five methods and genuine device profile grants remain required. Source retention does not establish UI/product parity.",
+          "Root reviewed the exact previous-to-current Git delta at9c957c01. Source preservation only: immutable prior receipts retain their own source/closure. App0c5 build12 compiled before MiniApps86 integration; changed original app/Collections1.3, native410b, callback diagnostics and final UI acceptance require their own actual run. No existing assertion, capability gate or ACK is weakened. Current owner expressly authorizes integration and these fixes.",
+          "SDK9565 actual original notification suite:11 methods/12 parameter cases PASS,0fail/skip; original collector failure and exact XML supplement98703fb3f5c79cf01275d6c9692bb18c87b58638a41dd37fe8c00e1c6d4c38da retained. Scope is package regression, not app/OS delivery acceptance. GitHub commit/ref independently read back26Nov00:34; current Apple app integration remains required.",
+          "Exact consumer4b1e79b4/87a3c57f and canonicalSDK0a24/385289 diffs reviewed. Original SDK5methods/7cases PASS at385 only; consumer Apple/native/UI tests remain NOT_RUN. No assertion or capability removed. See docs/validation/20261127-hanlin-cancellation/eof-drain-reviewed.json and docs/validation/20261127-wave3-upstream-integration/hanlin385-source-review.json.",
+          "Root reviewed original f8/b24/653/5e/7f2/32 source and canonical45 patches. Seven exact mapping hashes updated with unchanged baseline/from/to/kind; original failed preview and gate bytes retained in docs/validation/20261127-wave3-hanlin45-integration/original-preview. New consumer, journal, Save and SDK45 Apple compilation/runtime are NOT_RUN. Original SDK385 results retain their exact historical scope; Mac8f2 remains frozen separately."
+        ]
+      },
+      "zeroBasedIndex": 102
+    }
+  ],
+  "schema": "pinkha-hanlin-scroll-map-four-exact-hashes-v1",
+  "unchangedWholeRows": 128
+}
