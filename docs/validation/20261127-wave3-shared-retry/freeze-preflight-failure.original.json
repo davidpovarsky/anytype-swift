@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "job": {
+    "id": "job_4ff1da020949",
+    "type": "job_result",
+    "source": "exec@host_299cf75f6b338ecd",
+    "severity": "warning",
+    "tool": "exec",
+    "host": "host_299cf75f6b338ecd",
+    "status": "failed",
+    "exit_code": 1,
+    "created_at": 1795747824.5973616,
+    "started_at": "2026-11-27T02:50:24.671031+00:00",
+    "finished_at": "2026-11-27T02:50:56.693793+00:00",
+    "duration_s": 32.02,
+    "error": null,
+    "output_truncated": false,
+    "timeout_s": 120,
+    "read": true,
+    "notified": {
+      "telegram": null,
+      "resend": null
+    },
+    "notify_spec": {},
+    "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"<frozen runpy>\", line 286, in run_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/var/lib/sentinelx/uploads/pinkha-root-warm-retry-freeze-37e76cb5e6f7.py\", line 55, in <module>\n    assert len(candidates)==1,candidates\n           ^^^^^^^^^^^^^^^^^^\nAssertionError: ['NativeApp/UITests/NativeLaunchTests.swift', 'Tools/PinkhaDualEngineRuntime/native-sharing-dec2-source/NativeLaunchTests.swift', 'docs/any-engine-port/evidence/20261119/native-rtl-drag-ui-source-v1-artifacts/sources/NativeApp/UITests/NativeLaunchTests.swift', 'docs/any-engine-port/evidence/20261120/apple57-patched-runtime-v1/pinned-source/NativeApp/UITests/NativeLaunchTests.swift', 'docs/any-engine-port/evidence/20261120/native-hanlin-ci-orchestration-v1/inputs/NativeApp/UITests/NativeLaunchTests.swift']"
+  }
+}

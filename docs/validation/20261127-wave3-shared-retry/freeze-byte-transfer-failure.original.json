@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "job": {
+    "id": "job_fd3f9cdf0e52",
+    "type": "job_result",
+    "source": "exec@host_299cf75f6b338ecd",
+    "severity": "warning",
+    "tool": "exec",
+    "host": "host_299cf75f6b338ecd",
+    "status": "failed",
+    "exit_code": 1,
+    "created_at": 1795748078.044014,
+    "started_at": "2026-11-27T02:54:38.125522+00:00",
+    "finished_at": "2026-11-27T02:54:41.823012+00:00",
+    "duration_s": 3.7,
+    "error": null,
+    "output_truncated": false,
+    "timeout_s": 150,
+    "read": false,
+    "notified": {
+      "telegram": null,
+      "resend": null
+    },
+    "notify_spec": {},
+    "output": "Traceback (most recent call last):\n  File \"/var/lib/sentinelx/uploads/pinkha-root-warm-retry-freeze-ba641d0d7724.py\", line 56, in <module>\n    assert h(preservation)=='ec5d9fd6979144eb452e0ba99c38653eb1b32dfdd1686a2eef48b580731cb0f3'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError"
+  }
+}
