@@ -1,0 +1,46 @@
+{
+  "allOriginalReusableReferencesUnchanged": true,
+  "appleBuildsAndTestsNow": 0,
+  "bashSyntaxChecks": 2,
+  "candidateDispatcherSHA256": "0217e727e466fd4e642a8e7edec70345676f61fc1118bdeabbe7da69d75039ad",
+  "chainedInverseRestoresOriginal654EveryByte": true,
+  "controllerHashesUnchanged": {
+    "native_inputs.py": "e8aaf254140c06410813d5ab6f3b9168b71c1722dfe2ecdac8155a1bdc9d4d3c",
+    "retain.py": "04f2c622cc97260d0bbf17fe3b0273e40e2ac3434ba04a189f3628dab631d9d9",
+    "run.py": "c87c344eb3eb3ed8a02412fdc8ef07d4a1bb63bed2f004e178f9e2a9113a0a41",
+    "test_controls.py": "22135b0329f0485dbc8acf55c6507f6c3b9e54f73f287635c41e17068633a75b"
+  },
+  "inverseRestoresEveryParentByte": true,
+  "newPythonControlRuns": 0,
+  "onlyMovedJobEnvironmentKeys": [
+    "EXPORT_ROOT",
+    "BUILD_ROOT",
+    "RETAIN_ROOT"
+  ],
+  "original422": {
+    "bytes": 1218,
+    "path": "/tmp/pinkha-root-native8ac-exporte98-dispatch-stdin1-20261127/response.json",
+    "sha256": "eb889ec8290b13cc02137478ba86e3fe8d14033e507e448b6054134685f5c0f5"
+  },
+  "originalDispatcherSHA256": "b08e6d697a2a799573e6bf88b335b667f5ac8ae229273a27ea4f28eff07973c6",
+  "originalStepsUnchangedAndInSameOrder": true,
+  "parentCommit": "e98a923fa9388c530aae2c95b0a69f226c8c5cc8",
+  "parentDispatcherSHA256": "e5ce2583d1dda9015467b4c616a12a646afecab2b79788bcc8d989d572a48fb6",
+  "priorFullInverseProofSHA256": "578b34038434b4b756458fdcb5e043ab4a14ee57435d4e130fea4fcb8b55d5d8",
+  "priorPortableControlReceiptSHA256": "099851d1ab9ad45aa810e7f952edb064c07b1368b3760546573d04389cbd0cab",
+  "recursiveUniqueReusableWorkflowCount": 50,
+  "replacements": [
+    {
+      "after": "    steps:\n      - name: Bind exact export output path from runner environment\n        shell: bash\n        run: |\n          set -euo pipefail\n          printf 'EXPORT_ROOT=%s\\n' \"$RUNNER_TEMP/pinkha-native8ac-export-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT\" >> \"$GITHUB_ENV\"\n",
+      "before": "      EXPORT_ROOT: ${{ runner.temp }}/pinkha-native8ac-export-${{ github.run_id }}-${{ github.run_attempt }}\n    steps:\n"
+    },
+    {
+      "after": "    steps:\n      - name: Bind exact build and retention paths from runner environment\n        shell: bash\n        run: |\n          set -euo pipefail\n          printf 'BUILD_ROOT=%s\\n' \"$RUNNER_TEMP/pinkha-hosted-shared-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT\" >> \"$GITHUB_ENV\"\n          printf 'RETAIN_ROOT=%s\\n' \"$RUNNER_TEMP/pinkha-hosted-shared-retained-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT\" >> \"$GITHUB_ENV\"\n",
+      "before": "      BUILD_ROOT: ${{ runner.temp }}/pinkha-hosted-shared-${{ github.run_id }}-${{ github.run_attempt }}\n      RETAIN_ROOT: ${{ runner.temp }}/pinkha-hosted-shared-retained-${{ github.run_id }}-${{ github.run_attempt }}\n    steps:\n"
+    }
+  ],
+  "schema": "pinkha-hosted-job-environment-context-repair-v1",
+  "shellValuesMatchOriginalRunnerTempRunIDAndAttempt": true,
+  "status": "PASS_SOURCE_INVERSE_AND_BASH_SYNTAX_NOT_GITHUB_ACCEPTANCE",
+  "workflowDispatchesNow": 0
+}

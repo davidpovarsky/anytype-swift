@@ -1,0 +1,32 @@
+--- e98a923f/.github/workflows/torah-inspector-ipados27.yml
++++ candidate/.github/workflows/torah-inspector-ipados27.yml
+@@ -203,8 +203,12 @@
+       PYTHONDONTWRITEBYTECODE: '1'
+       GIT_OPTIONAL_LOCKS: '0'
+       PLAN_SHA256: ${{ inputs.shared_build_plan_sha256 }}
+-      EXPORT_ROOT: ${{ runner.temp }}/pinkha-native8ac-export-${{ github.run_id }}-${{ github.run_attempt }}
+     steps:
++      - name: Bind exact export output path from runner environment
++        shell: bash
++        run: |
++          set -euo pipefail
++          printf 'EXPORT_ROOT=%s\n' "$RUNNER_TEMP/pinkha-native8ac-export-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+       - name: Checkout only exact read-only export controls
+         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+         with:
+@@ -299,9 +303,13 @@
+       GIT_OPTIONAL_LOCKS: '0'
+       PYTHONDONTWRITEBYTECODE: '1'
+       PLAN_SHA256: ${{ inputs.shared_build_plan_sha256 }}
+-      BUILD_ROOT: ${{ runner.temp }}/pinkha-hosted-shared-${{ github.run_id }}-${{ github.run_attempt }}
+-      RETAIN_ROOT: ${{ runner.temp }}/pinkha-hosted-shared-retained-${{ github.run_id }}-${{ github.run_attempt }}
+     steps:
++      - name: Bind exact build and retention paths from runner environment
++        shell: bash
++        run: |
++          set -euo pipefail
++          printf 'BUILD_ROOT=%s\n' "$RUNNER_TEMP/pinkha-hosted-shared-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
++          printf 'RETAIN_ROOT=%s\n' "$RUNNER_TEMP/pinkha-hosted-shared-retained-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+       - name: Checkout exact downstream controls without persistent credentials
+         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+         with:
