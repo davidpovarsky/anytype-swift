@@ -1,0 +1,97 @@
+{
+  "XCTestMethodsExecuted": 0,
+  "allThreePlansUseNewOwnedSimulatorAndOriginalPreparation": true,
+  "appleInvocations": 0,
+  "closureFileCount": 16,
+  "combinedCommandAllowanceSeconds": 2700,
+  "commonIntakeCopiedOrRepinned": false,
+  "host": {
+    "candidateHostSHA256": "7160a2ce277584eac81c7b79061aa96ed511cb90e20e68ee17a9829943a312cd",
+    "edits": [
+      {
+        "after": "import torah_ui_consumer as torah_ui\nimport heart_editor_control as heart_editor\n",
+        "before": "import torah_ui_consumer as torah_ui\n"
+      },
+      {
+        "after": "PLANS = {\n    'heart-mutations-only': ('heart-editor-mutations',),\n    'heart-split-merge-only': ('heart-editor-split-merge',),\n    'heart-range-replacement-only': ('heart-editor-range-replacement',),\n",
+        "before": "PLANS = {\n"
+      },
+      {
+        "after": "ORIGINAL_SERIES += ('heart-editor-mutations', 'heart-editor-split-merge', 'heart-editor-range-replacement')\nEXPECTED_TEST_PROFILES = {\n",
+        "before": "EXPECTED_TEST_PROFILES = {\n"
+      },
+      {
+        "after": "budget = heart_editor.ui_budget(self, target, methods)",
+        "before": "budget = self.helpers[\"run_ui27\"].selection_time_budget(target, methods)"
+      },
+      {
+        "after": "    def execute_lane(self, lane):\n        heart_editor.require_runtime_ready(self.admission, Path(__file__).resolve().parent)\n",
+        "before": "    def execute_lane(self, lane):\n"
+      },
+      {
+        "after": "            udid, language = self.create(heart_editor.STARTUP_LANE if lane in heart_editor.LANES else lane, directory, editor=lane == \"editor\" or lane in heart_editor.LANES)\n",
+        "before": "            udid, language = self.create(lane, directory, editor=lane == \"editor\")\n"
+      },
+      {
+        "after": "            if lane in heart_editor.LANES:\n                result[\"actual\"] = heart_editor.run_lane(self, lane, directory, udid, language)\n            elif lane in torah_ui.UI_LANES:\n",
+        "before": "            if lane in torah_ui.UI_LANES:\n"
+      },
+      {
+        "after": "'native_compiler_witness.py', 'heart_editor_control.py', 'heart_editor_observations.py', 'heart-editor-closed-profile.json'}\n",
+        "before": "'native_compiler_witness.py'}\n"
+      },
+      {
+        "after": "    heart_editor.require_runtime_ready(admission, parent)\n    require(args.root.is_absolute() and args.root.parent.resolve() == args.root.parent and not args.root.exists(), \"Fresh owned execution root required\")\n",
+        "before": "    require(args.root.is_absolute() and args.root.parent.resolve() == args.root.parent and not args.root.exists(), \"Fresh owned execution root required\")\n"
+      }
+    ],
+    "fullInverse": true,
+    "originalCreateFreshnessAndActualOppositeLanguageChecksUnchanged": true,
+    "originalHostSHA256": "2e57294dc7a00d4302a9dd5f316b2419e75d6a08a4f55b47451d6c822335ec44",
+    "originalMainAndOwnedLaneFinallyUnchanged": true,
+    "originalStageOnlyTwoSelectorBudgetDelegationChanged": true,
+    "originalThirteenTorahAndFourEditorSelectionsUnchanged": true,
+    "unchangedOriginalFunctions": [
+      "exact_enumeration",
+      "freeze_helpers",
+      "host_validation_module",
+      "invocation_selectors",
+      "load_helpers",
+      "observe_owned_groups",
+      "result_selection",
+      "scoped_descriptor"
+    ],
+    "unchangedOriginalMethods": [
+      "__init__",
+      "appearance",
+      "command",
+      "container",
+      "create",
+      "freshness",
+      "installed",
+      "native_ui",
+      "pending",
+      "preserve",
+      "read_private",
+      "wave"
+    ]
+  },
+  "materializerSHA256": "0e0dc7969b2f1abf87b68f48871553cc5bfa5636921b7b3dbf079b5e061fcfd5",
+  "nativeCalls": 0,
+  "newDocumentFlows": 6,
+  "newMethods": 2,
+  "newProcessManager": false,
+  "newXCTestCases": 2,
+  "originalF13AndOtherDerivativesUnchangedInPlace": true,
+  "payloadSHA256": {
+    "heart-editor-closed-profile.json": "1fd8ab33fe4b55d07f66f1c0c1b8290a72aeb433198241cb7516520609a23d23",
+    "heart_editor_control.py": "7701368077ee2dac305574b5559546e04f5db6a653d15919a9294a9feff351e3",
+    "heart_editor_observations.py": "693afa112eb0f2c54f89b1b2ba1b7f5f9b39bbbd811887a02993d39ae2534915"
+  },
+  "runtimeReady": false,
+  "schema": "pinkha-heart-editor-closed-materialization-v1",
+  "singleMethodCommandAllowanceSeconds": 1500,
+  "startupProfilePublishedCommit": "a5ce10b1c73223906d102b6d4f08dcc381d9a34d",
+  "startupProfileSHA256": "6960a4f74aa6b582e783addf358cc1806728dffd520483336c877e473b63aeb9",
+  "status": "SOURCE_ONLY_RUNTIME_CLOSED"
+}
