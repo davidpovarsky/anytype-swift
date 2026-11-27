@@ -295,15 +295,252 @@ final class PinkhaHanlinSaveMessageStateTests: XCTestCase {
         }
     }
 
+    func testConditionalBodyIsOneOperationWithoutSyntheticBlockEffects() throws {
+        let initial = try Fixture().initial(blockDigests: [digest("one"), digest("two")],
+                                            bodyMode: .conditionalMarkdown)
+        XCTAssertTrue(initial.blocks.isEmpty)
+        XCTAssertThrowsError(try initial.manifest.blockMutationID(at: 0))
+        var state = try verifyRoot(initial)
+        XCTAssertThrowsError(try state.applying(.blockDispatched(index: 0)))
+        state = try state.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+                                                        expectedVersionSHA256: digest("empty-version")))
+        state = try state.applying(.atomicBodyAcknowledged(requestSHA256: digest("request"),
+            savedVersionSHA256: digest("saved-version"), nativeReceiptSHA256: digest("native-ack")))
+        state = try state.applying(.bodyVerified(readback(state, references: ["native-one", "native-two"],
+                                                          nativeVersionSHA256: digest("saved-version"))))
+        XCTAssertTrue(state.isReadyForCommit)
+        XCTAssertTrue(state.blocks.isEmpty)
+        XCTAssertEqual(state.sequence, 5) // Two root observations, one dispatch, one ACK, one full readback.
+    }
+
+    func testConditionalLostACKNeverCommitsMatchingBodyOrRedispatches() throws {
+        let root = try verifyRoot(Fixture().initial(bodyMode: .conditionalMarkdown))
+        let state = try root.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("empty-version"))).applying(.atomicBodyUncertain)
+        XCTAssertThrowsError(try state.applying(.bodyVerified(readback(state, references: ["native-one"],
+            nativeVersionSHA256: digest("saved-version")))))
+        XCTAssertThrowsError(try state.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("new-current-version"))))
+        XCTAssertFalse(state.isReadyForCommit)
+        XCTAssertEqual(try state.applying(.atomicBodyUncertain), state)
+    }
+
+    func testConditionalACKAndReadbackMustMatchOriginalRequestAndSameNativeVersion() throws {
+        let root = try verifyRoot(Fixture().initial(bodyMode: .conditionalMarkdown))
+        let dispatched = try root.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("empty-version")))
+        XCTAssertThrowsError(try dispatched.applying(.atomicBodyAcknowledged(requestSHA256: digest("foreign-request"),
+            savedVersionSHA256: digest("saved-version"), nativeReceiptSHA256: digest("native-ack"))))
+        let acknowledged = try dispatched.applying(.atomicBodyAcknowledged(requestSHA256: digest("request"),
+            savedVersionSHA256: digest("saved-version"), nativeReceiptSHA256: digest("native-ack")))
+        for version in [nil, digest("different-version")] {
+            XCTAssertThrowsError(try acknowledged.applying(.bodyVerified(readback(acknowledged,
+                references: ["native-one"], nativeVersionSHA256: version))))
+        }
+        XCTAssertThrowsError(try acknowledged.applying(.atomicBodyAcknowledged(requestSHA256: digest("request"),
+            savedVersionSHA256: digest("other-ack-version"), nativeReceiptSHA256: digest("native-ack"))))
+    }
+
+    func testConditionalCloseBlocksNewWriteButAllowsOriginalLateAcknowledgementAndReadback() throws {
+        let root = try verifyRoot(Fixture().initial(bodyMode: .conditionalMarkdown))
+        XCTAssertThrowsError(try root.applying(.closeDispatch).applying(.atomicBodyDispatched(
+            requestSHA256: digest("request"), expectedVersionSHA256: digest("empty-version"))))
+        var state = try root.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("empty-version"))).applying(.atomicBodyUncertain).applying(.closeDispatch)
+        state = try state.applying(.atomicBodyAcknowledged(requestSHA256: digest("request"),
+            savedVersionSHA256: digest("saved-version"), nativeReceiptSHA256: digest("native-ack")))
+        state = try state.applying(.bodyVerified(readback(state, references: ["native-one"],
+            nativeVersionSHA256: digest("saved-version"))))
+        XCTAssertTrue(state.isReadyForCommit)
+        XCTAssertTrue(state.dispatchClosed)
+        XCTAssertThrowsError(try state.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("empty-version"))))
+    }
+
+    func testConditionalReadbackRequiresCompleteDistinctOrderedNativeReferences() throws {
+        let root = try verifyRoot(Fixture().initial(blockDigests: [digest("one"), digest("two")],
+                                                   bodyMode: .conditionalMarkdown))
+        let state = try root.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("empty-version"))).applying(.atomicBodyAcknowledged(
+                requestSHA256: digest("request"), savedVersionSHA256: digest("saved-version"),
+                nativeReceiptSHA256: digest("native-ack")))
+        for references in [["one"], ["one", "one"], ["native-page", "two"], ["one", "two", "three"], ["one", "bad\n"]] {
+            XCTAssertThrowsError(try state.applying(.bodyVerified(readback(state, references: references,
+                nativeVersionSHA256: digest("saved-version")))))
+        }
+        let wrongBody = PinkhaHanlinSaveMessageBodyReadback(manifestSHA256: try state.manifest.canonicalSHA256(),
+            objectReference: "native-page", blockReferences: ["one", "two"], nativeReadbackSHA256: digest("different-body"),
+            nativeVersionSHA256: digest("saved-version"))
+        XCTAssertThrowsError(try state.applying(.bodyVerified(wrongBody)))
+    }
+
+    func testLegacyOrderedRecordsOmitEveryNewOptionalWireField() throws {
+        let fixture = try Fixture()
+        let state = try verifyRoot(fixture.initial()).applying(.blockDispatched(index: 0))
+            .applying(.blockVerified(index: 0, reference: "native-one", readbackSHA256: digest("body")))
+        let finished = try state.applying(.bodyVerified(readback(state, references: ["native-one"])))
+        let value = try XCTUnwrap(JSONSerialization.jsonObject(with: finished.canonicalBytes()) as? [String: Any])
+        let manifest = try XCTUnwrap(value["manifest"] as? [String: Any])
+        let body = try XCTUnwrap(value["bodyReadback"] as? [String: Any])
+        XCTAssertNil(value["atomicBody"])
+        XCTAssertNil(manifest["bodyMode"])
+        XCTAssertNil(body["nativeVersionSHA256"])
+        XCTAssertEqual(try PinkhaHanlinSaveMessageProgress.decodeCanonical(finished.canonicalBytes(),
+            identity: fixture.plan().identity), finished)
+        XCTAssertThrowsError(try state.applying(.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("empty-version"))))
+    }
+
+    func testConditionalOrdinaryEventsFitOriginalJournalBudgetAndReplay() throws {
+        var state = try verifyRoot(Fixture().initial(bodyMode: .conditionalMarkdown))
+        let events: [PinkhaHanlinSaveMessageProgress.Event] = [
+            .atomicBodyDispatched(requestSHA256: digest("request"), expectedVersionSHA256: digest("empty-version")),
+            .atomicBodyUncertain, .closeDispatch,
+            .atomicBodyAcknowledged(requestSHA256: digest("request"), savedVersionSHA256: digest("saved-version"),
+                                    nativeReceiptSHA256: digest("native-ack"))
+        ]
+        for event in events {
+            let record = try PinkhaHanlinSaveMessageProgressRecord(previous: state, event: event)
+            let bytes = try record.canonicalBytes()
+            XCTAssertLessThanOrEqual(bytes.count, 4_096)
+            state = try PinkhaHanlinSaveMessageProgressRecord.decodeCanonical(bytes, previous: state).replay(on: state)
+        }
+        XCTAssertFalse(state.isReadyForCommit)
+        XCTAssertTrue(state.dispatchClosed)
+    }
+
+    func testConditionalDispatchRequiresVerifiedRootAndValidOriginalVersion() throws {
+        let initial = try Fixture().initial(bodyMode: .conditionalMarkdown)
+        let event = PinkhaHanlinSaveMessageProgress.Event.atomicBodyDispatched(requestSHA256: digest("request"),
+            expectedVersionSHA256: digest("empty-version"))
+        XCTAssertThrowsError(try initial.applying(event))
+        XCTAssertThrowsError(try initial.applying(.rootDispatched).applying(event))
+        let root = try verifyRoot(initial)
+        XCTAssertThrowsError(try root.applying(.atomicBodyDispatched(requestSHA256: "unbound",
+            expectedVersionSHA256: digest("empty-version"))))
+        let dispatched = try root.applying(event)
+        XCTAssertThrowsError(try dispatched.applying(.atomicBodyAcknowledged(requestSHA256: digest("request"),
+            savedVersionSHA256: "unbound-version", nativeReceiptSHA256: digest("native-ack"))))
+    }
+
+    func testLedgerRetainsExactLateReceiptAcrossOneConcurrentDurableClose() async throws {
+        let initial = try Fixture().initial().applying(.rootDispatched)
+        let store = LedgerStore(initial, mode: .closeBeforeFirstAdvance)
+        let ledger = try PinkhaHanlinSaveMessageLedger(manifest: initial.manifest, store: store)
+        let result = try await ledger.observe(.rootKnown(reference: "original-native-page"))
+        let recorded = await store.observed()
+        XCTAssertTrue(result.dispatchClosed)
+        XCTAssertEqual(result.root.reference, "original-native-page")
+        XCTAssertFalse(result.isReadyForCommit)
+        XCTAssertEqual(recorded.advances, 2)
+        XCTAssertEqual(try recorded.value.canonicalBytes(), try result.canonicalBytes())
+        XCTAssertEqual(try result.canonicalBytes(),
+                       try initial.applying(.closeDispatch).applying(.rootKnown(reference: "original-native-page")).canonicalBytes())
+    }
+
+    func testLedgerCloseRaceNeverRetriesANewNativeDispatch() async throws {
+        let initial = try Fixture().initial()
+        let store = LedgerStore(initial, mode: .closeBeforeFirstAdvance)
+        let ledger = try PinkhaHanlinSaveMessageLedger(manifest: initial.manifest, store: store)
+        do { _ = try await ledger.observe(.rootDispatched); XCTFail("Closed dispatch reopened") }
+        catch { XCTAssertEqual(error as? PinkhaHanlinSaveMessageError, .invalidTransition) }
+        let recorded = await store.observed()
+        XCTAssertEqual(recorded.advances, 1)
+        XCTAssertTrue(recorded.value.isNotDispatched)
+        XCTAssertTrue(recorded.value.dispatchClosed)
+    }
+
+    func testLedgerDoesNotRetryAConflictWithDifferentNativeProgress() async throws {
+        let initial = try Fixture().initial().applying(.rootDispatched)
+        let store = LedgerStore(initial, mode: .uncertainBeforeFirstAdvance)
+        let ledger = try PinkhaHanlinSaveMessageLedger(manifest: initial.manifest, store: store)
+        do { _ = try await ledger.observe(.rootKnown(reference: "observed-page")); XCTFail("Unrelated state change retried") }
+        catch { XCTAssertEqual(error as? PinkhaHanlinSaveMessageError, .conflictingReceipt) }
+        let recorded = await store.observed()
+        XCTAssertEqual(recorded.advances, 1)
+        XCTAssertEqual(recorded.value.root, .uncertain(knownReference: nil))
+        XCTAssertNil(recorded.value.root.reference)
+    }
+
+    func testLedgerDoesNotRetryAnIOFailureOrInventPersistence() async throws {
+        let initial = try Fixture().initial().applying(.rootDispatched)
+        let store = LedgerStore(initial, mode: .ioFailure)
+        let ledger = try PinkhaHanlinSaveMessageLedger(manifest: initial.manifest, store: store)
+        do { _ = try await ledger.observe(.rootKnown(reference: "observed-page")); XCTFail("IO failure became a receipt") }
+        catch { XCTAssertTrue(error is LedgerStore.StorageFailure) }
+        let recorded = await store.observed()
+        XCTAssertEqual(recorded.advances, 1)
+        XCTAssertEqual(try recorded.value.canonicalBytes(), try initial.canonicalBytes())
+    }
+
+    func testLedgerRefusesStoreAcknowledgementForAnotherKnownObject() async throws {
+        let initial = try Fixture().initial().applying(.rootDispatched)
+        let store = LedgerStore(initial, mode: .wrongAcknowledgement)
+        let ledger = try PinkhaHanlinSaveMessageLedger(manifest: initial.manifest, store: store)
+        do { _ = try await ledger.observe(.rootKnown(reference: "observed-page")); XCTFail("Foreign acknowledgement became success") }
+        catch { XCTAssertEqual(error as? PinkhaHanlinSaveMessageError, .conflictingReceipt) }
+        let recorded = await store.observed()
+        XCTAssertEqual(recorded.advances, 1)
+        XCTAssertEqual(recorded.value.root.reference, "different-native-page")
+        XCTAssertFalse(recorded.value.isReadyForCommit)
+    }
+
+    /// Controlled metadata concurrency only. The original protected journal has
+    /// separate filesystem tests; this fake grants no native write authority.
+    private actor LedgerStore: PinkhaHanlinSaveMessageProgressStore {
+        enum Mode: Sendable { case closeBeforeFirstAdvance, uncertainBeforeFirstAdvance, ioFailure, wrongAcknowledgement }
+        struct StorageFailure: Error {}
+        private var value: PinkhaHanlinSaveMessageProgress
+        private let mode: Mode
+        private var advances = 0
+
+        init(_ value: PinkhaHanlinSaveMessageProgress, mode: Mode) { self.value = value; self.mode = mode }
+        func observed() -> (value: PinkhaHanlinSaveMessageProgress, advances: Int) { (value, advances) }
+        func saveMessageProgress(for identity: PinkhaHanlinWriteIdentity) throws -> PinkhaHanlinSaveMessageProgress? {
+            try value.validate(identity: identity)
+            return value
+        }
+        func reserveSaveMessage(_ initial: PinkhaHanlinSaveMessageProgress) throws {
+            guard try initial.canonicalBytes() == value.canonicalBytes() else { throw PinkhaHanlinWriteError.conflict }
+        }
+        func advanceSaveMessage(_ expected: PinkhaHanlinSaveMessageProgress,
+                                event: PinkhaHanlinSaveMessageProgress.Event) throws -> PinkhaHanlinSaveMessageProgress {
+            advances += 1
+            guard try value.canonicalBytes() == expected.canonicalBytes() else { throw PinkhaHanlinWriteError.conflict }
+            if advances == 1 {
+                switch mode {
+                case .closeBeforeFirstAdvance:
+                    value = try value.applying(.closeDispatch)
+                    throw PinkhaHanlinWriteError.conflict
+                case .uncertainBeforeFirstAdvance:
+                    value = try value.applying(.rootUncertain)
+                    throw PinkhaHanlinWriteError.conflict
+                case .ioFailure: throw StorageFailure()
+                case .wrongAcknowledgement:
+                    value = try value.applying(.rootKnown(reference: "different-native-page"))
+                    return value
+                }
+            }
+            value = try value.applying(event)
+            return value
+        }
+        func closeSaveMessageDispatch(for identity: PinkhaHanlinWriteIdentity) throws {
+            try value.validate(identity: identity)
+            value = try value.applying(.closeDispatch)
+        }
+    }
+
     private func digest(_ value: String) -> String { PinkhaHanlinCreatePagePlan.digest(Data(value.utf8)) }
 
     private func verifyRoot(_ initial: PinkhaHanlinSaveMessageProgress) throws -> PinkhaHanlinSaveMessageProgress {
         try initial.applying(.rootDispatched).applying(.rootVerified(reference: "native-page", readbackSHA256: digest("page")))
     }
 
-    private func readback(_ state: PinkhaHanlinSaveMessageProgress, references: [String]) throws -> PinkhaHanlinSaveMessageBodyReadback {
+    private func readback(_ state: PinkhaHanlinSaveMessageProgress, references: [String],
+                          nativeVersionSHA256: String? = nil) throws -> PinkhaHanlinSaveMessageBodyReadback {
         .init(manifestSHA256: try state.manifest.canonicalSHA256(), objectReference: "native-page",
-              blockReferences: references, nativeReadbackSHA256: digest("original-native-readback"))
+              blockReferences: references, nativeReadbackSHA256: digest("original-native-readback"),
+              nativeVersionSHA256: nativeVersionSHA256)
     }
 
     private struct Fixture {
@@ -338,17 +575,19 @@ final class PinkhaHanlinSaveMessageStateTests: XCTestCase {
             try .init(invocation: invocation(arguments: .object(["title": .string(title), "markdown": .string(markdown)])))
         }
 
-        func manifest(blockDigests: [String]? = nil) throws -> PinkhaHanlinSaveMessageManifest {
+        func manifest(blockDigests: [String]? = nil,
+                      bodyMode: PinkhaHanlinSaveMessageBodyMode? = nil) throws -> PinkhaHanlinSaveMessageManifest {
             let blocks = blockDigests ?? [PinkhaHanlinCreatePagePlan.digest(Data("body".utf8))]
             let bodyDigest = PinkhaHanlinCreatePagePlan.digest(try JSONEncoder().encode(blocks))
             return try .init(plan: plan(), bodyPlanSHA256: bodyDigest,
                 expectedRootReadbackSHA256: PinkhaHanlinCreatePagePlan.digest(Data("page".utf8)),
                 expectedBodyReadbackSHA256: PinkhaHanlinCreatePagePlan.digest(Data("original-native-readback".utf8)),
-                blockSHA256: blocks)
+                blockSHA256: blocks, bodyMode: bodyMode)
         }
 
-        func initial(blockDigests: [String]? = nil) throws -> PinkhaHanlinSaveMessageProgress {
-            try .init(manifest: manifest(blockDigests: blockDigests))
+        func initial(blockDigests: [String]? = nil,
+                     bodyMode: PinkhaHanlinSaveMessageBodyMode? = nil) throws -> PinkhaHanlinSaveMessageProgress {
+            try .init(manifest: manifest(blockDigests: blockDigests, bodyMode: bodyMode))
         }
     }
 }

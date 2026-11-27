@@ -11,10 +11,12 @@ public enum PinkhaHanlinSaveMessageError: Error, Equatable, Sendable {
 }
 
 /// An in-memory request for a NEW document. This type grants no write authority
-/// and is not installed in the catalog. Native confirmation and conversion must
-/// finish before the original invocation may reserve or dispatch any effect.
-public struct PinkhaHanlinSaveMessagePlan: Sendable {
+/// and is not installed in the catalog. Native confirmation and complete
+/// conversion must finish before any native effect. The original generic
+/// metadata reservation alone never confers authority or proves persistence.
+public struct PinkhaHanlinSaveMessagePlan: PinkhaHanlinNativeWritePlan {
     public static let alias = "anytype_save_message"
+    public static let localToolID = "save-message"
     public static let maximumTitleUTF8Bytes = 512
     public static let maximumMarkdownUTF8Bytes = 65_536
     public static let maximumBlocks = 64
@@ -26,7 +28,7 @@ public struct PinkhaHanlinSaveMessagePlan: Sendable {
     public init(invocation: HanlinHostInvocation) throws {
         let request = invocation.request
         let logical = HanlinLogicalToolID(providerInstanceID: try .init(validating: "anytype.host"),
-                                         localToolID: try .init(validating: "save-message"))
+                                         localToolID: try .init(validating: Self.localToolID))
         guard invocation.writeGuarantee == .independentObjectCreation, invocation.expectedRevision == nil,
               request.logicalToolID == logical,
               request.aliasUsed.utf8.elementsEqual(Self.alias.utf8),
