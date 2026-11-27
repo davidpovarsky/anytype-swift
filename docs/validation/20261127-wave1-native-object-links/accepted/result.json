@@ -1,0 +1,230 @@
+{
+  "status": "PASS_COMPONENT_13_METHODS_ZERO_SKIPS",
+  "sourceBefore": {
+    "Modules/PinkhaAnyEngine/Package.resolved": "50ddc3fc5398afb197e62f3cd8aa251315dbdd8d9d1d67e0dc665862ef3258af",
+    "Modules/PinkhaAnyEngine/Package.swift": "2bfbf014cbfb6ce37764a2900743783fe3af2535ad4809aa4fc9ea67d16d2e5f",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift": "cc9ee5e3eb159ef5ea68e7a87928fd94f047a8668c2f2483890faffdac8d73a1",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift": "048ebd2d82e3a22265c3fea4ead6ba406b4f8d7d8f00367ec0c7779fac1b0d8f",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahLiveQuery.swift": "057a177fd338967f98484936e9e192a76da6a3f853dcc5666eca283715b349f4",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift": "7205b72e687975bfda695bcccbcdbdd486af45c13ef7f0ddd20fcf58c9d5a312",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift": "f92c0811a83acc6a6642245367e3c0badaa0321dd297e6dae28bb2383154f748",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyJSON.swift": "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyLiveQuery.swift": "445930138f7aefe46f6d41995059acafad9363178da4bc17574d2a0e399c8cf4",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeObjectLinks.swift": "d402ca99e4aecc6d379ba35c1e59c8a7b6a8c4db570a871565164370f224f410",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift": "c4635b23304e60b1d27b546c53e8901a841160bd79bd43a066b50bc02b2b0704",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnySSEParser.swift": "1b5b55f99d357418d0df7ec43bc61e8bac1e1f246c613019f8c8b025c03cbdad",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift": "cd11b4cc0e54b4593d5a9111ca37ef7556bf3bcaa71ddb1532e900dd94ac0145",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift": "d2cdada5bf2a639127e58dbbe7b422188df76cb145d32023d4b1011006fd69af",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahOperation.swift": "c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngineProbe/NativeObjectProbe.swift": "803d059aa506da02ed9106ed990a26e3b7fe6c7cdcf13284931579cb750ab505",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngineProbe/Probe.swift": "6432eac796b559fea0efcf23e27a87b0d4e3ed842b6db450de77f211d4ea19d5",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/authorization_fence_server.py": "2ed60fe43357ad0cf841e85d8cac71d4bf3c2fec0f422262e27efd963d3a1c49",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/check_redirect.py": "ca8c491aadaecc088c12ecde6aa32c0621372ff0e7dc3109a9ac930a19c3f969",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/check_sse_transport.py": "c89b5cb56b4c3623c23581b7fca8607785bca9f580f9ead597dc63b6394872fc",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/file_readback_server.py": "3c713cec89dd77f41c3fa58366395de2f41fae797d568003aad7301fa1d006ca",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/native_links_server.py": "10ae4f8c8da109cc8ae43ae9d231804dffc329a634a29a6a912962053c2e964e",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/status_transition_server.py": "cea7414a1143d508c5e49c80a7f47b689de283a2230cd40e8d8aeeb1488dc0eb",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyGuardedObjectSnapshotTests.swift": "3589621b43a00e686ad8b8ee19ea63c599ea081cfbd0dfe861f98c24454932a2",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyGuardedOperationReadTests.swift": "acef013f4578f942b4ba839c3df962ae88b11f76e07922efe017ad183f520ff6",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyGuardedTorahTests.swift": "8d3958148f7084c448faab21853453ddce8f1eee9b8713eea04dd57f880d4462",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPAuthorizationFenceTests.swift": "ddf5ffd3bf4009ca1d735874b1e831ac5477641e6b14c6e0878b638f033c5cfb",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPClientTests.swift": "60f46e80c1ac14713c7ea4f1bf4f9fe47cae24ec2a0727372d273d9dfe349aee",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPFileReadbackTests.swift": "d1190caaf2244084a9719702777a8a743477aad36aae15de090382ab085f6487",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPPreparedFileTests.swift": "f05cf044fba47deee1eb91cd4e7697c28129e972446f16b98514638d0cbb0fc4",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPResponseTests.swift": "2a112af1762e22b5ed3eea18295a870f63f0c2616a6be4f1255be832dc4bbae7",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyLiveQueryTests.swift": "46c203d6438799e63f6bc96d2be4b50e9eefa74a95835269e9e2f8fffa858356",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeObjectLinksTests.swift": "ae8af273cd3db53ba96ea2f067c3b2715c9c91fd772fa0107fa19b9c939cf586",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyTorahOperationTests.swift": "d909e34b297b31e4aadca20989fb1edef6112eb3fba840c80e9ae6f8a7786166",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/ManagedAuthorizationTests.swift": "9d68ad4bfef45e0e93cfbd67402bfaf4f38841d42bc15a57f3098bbbe1b47ca9",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/ObjectCreationRecoveryTests.swift": "9cfc5d9b2acde94700bd8a60542e3481fc95fc9bd45d946116643bf92024d97a",
+    "Modules/PinkhaAnyEngine/Tools/run_guarded_runtime_probe.py": "d99d7da64b86156ea63c0682dd39640258b0541cdc9887e8579fd11be72ea039",
+    "Modules/PinkhaAnyEngine/Tools/run_native_contract_validation.py": "03e83383eb728bd4db8c2b1b7b41197a68b850485e0ddcbe2ab9fd54844ae47f",
+    "Modules/PinkhaAnyEngine/Tools/run_native_creation_probe.py": "b1b1a68208bdea0e5488fff817d01a2e58f5f600eccd338e80ec5f78ac5f2d04",
+    "Modules/PinkhaAnyEngine/Tools/run_native_object_probe.py": "a82a785367d2bb91b54cc418181ea80e9a0fd402fb4e76ec1e94557c5a6ce229",
+    "Modules/PinkhaAnyEngine/Tools/run_native_object_validation.py": "c9ad19d6d99506c25ba277e9e30383e4b44d8aabb48159a5492c7855b3123f6e",
+    "Modules/PinkhaAnyEngine/Tools/run_native_property_probe.py": "fb50e4ba72ab7ff542a9c568240084f3d8d9c8062d28f13703861e6dc4cfc5f5",
+    "Modules/PinkhaAnyEngine/Tools/run_partial_creation_regressions.py": "d996e095e3a6c2cd233cf5260cdca0713cd5a62d3a574aea16bb5dd2f272eaaf",
+    "Modules/PinkhaAnyEngine/Tools/run_property_regressions.py": "346da38aec810c4df4a915b42b331f97387b91d42762f2983ae818a1f887066a"
+  },
+  "controllerSHA256": "b6531985f9db84662d1ec0327551891b57e1a8d0ad934aa6e660597e42c34f82",
+  "started": 1795739116.1891284,
+  "freeBefore": 2612330496,
+  "componentScope": "native API parser, loopback HTTP and lifetime; not native index-delivery or ACL acceptance",
+  "nativeAcceptance": false,
+  "original182Rerun": false,
+  "command": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-engine-contracts-20261127/Modules/PinkhaAnyEngine",
+    "--scratch-path",
+    "/tmp/pinkha-w1-engine-contracts-indexed-20261127",
+    "--cache-path",
+    "/tmp/pinkha-w1-engine-contracts-cache-20261127",
+    "--skip-update",
+    "--enable-index-store",
+    "--jobs",
+    "2",
+    "--filter",
+    "AnyNativeObjectLinksTests|AnyNativeObjectLinksHTTPTests",
+    "--skip-build",
+    "--xunit-output",
+    "/var/lib/pinkha-w1-engine-contracts-20261127/native-links-components2/tests.xml"
+  ],
+  "reusedBuild": {
+    "result": "/var/lib/pinkha-w1-engine-contracts-20261127/native-links-components1/result.json",
+    "sha256": "9459a18b0de0843527762cd26c171b35a3abb97a2f11f70140ee3af9f16e7380",
+    "runner": "/tmp/pinkha-w1-engine-contracts-indexed-20261127/out/Products/Debug-linux-aarch64/PinkhaAnyEngineTests-test-runner",
+    "runnerSHA256": "2634e4dc46f32d328fff0b644589b4d321ed089429e90933e9f6cf180127aede",
+    "onlyRuntimeFixtureChanged": [
+      "Modules/PinkhaAnyEngine/Tests/Fixtures/native_links_server.py"
+    ],
+    "originalCompilerSeconds": 24.9,
+    "newBuilds": 0
+  },
+  "expectedMethods": [
+    "AnyNativeObjectLinksHTTPTests.testAccountSwitchCannotPublishOriginalAccountSnapshot",
+    "AnyNativeObjectLinksHTTPTests.testInvalidBacklinkDatasetDoesNotDispatch",
+    "AnyNativeObjectLinksHTTPTests.testNativeIndexDisabledPropagatesInsteadOfBecomingEmpty",
+    "AnyNativeObjectLinksHTTPTests.testRevokedReadCannotPublishAComputedSnapshot",
+    "AnyNativeObjectLinksHTTPTests.testScopedReadUsesNativeRouteAndRetainsAuthorizationThroughPublication",
+    "AnyNativeObjectLinksTests.testBacklinksRejectDifferentSourceSpaceTargetObjectAndProperty",
+    "AnyNativeObjectLinksTests.testBacklinksRetainObjectAndPartGroupsAndNarrowToTheExactPart",
+    "AnyNativeObjectLinksTests.testMalformedOrFutureTargetKindsFailWithoutDiscardingEdges",
+    "AnyNativeObjectLinksTests.testNativeSelectionsAndReadCapsArePreserved",
+    "AnyNativeObjectLinksTests.testOutgoingScopeUsesExactBytesAndCanonicalURIHasNoSecondIdentity",
+    "AnyNativeObjectLinksTests.testPropertySourceRetainsDeclaringTypeAndRecordSourceRetainsField",
+    "AnyNativeObjectLinksTests.testRetainsCanonicalObjectRecordPropertyIdentityFileAndOpenEdgeKinds",
+    "AnyNativeObjectLinksTests.testTruncationAndNullArraysNeverBecomeCompleteEmptyReads"
+  ],
+  "pid": 2379539,
+  "returncode": 0,
+  "startedMethods": [
+    "AnyNativeObjectLinksHTTPTests.testAccountSwitchCannotPublishOriginalAccountSnapshot",
+    "AnyNativeObjectLinksHTTPTests.testInvalidBacklinkDatasetDoesNotDispatch",
+    "AnyNativeObjectLinksHTTPTests.testNativeIndexDisabledPropagatesInsteadOfBecomingEmpty",
+    "AnyNativeObjectLinksHTTPTests.testRevokedReadCannotPublishAComputedSnapshot",
+    "AnyNativeObjectLinksHTTPTests.testScopedReadUsesNativeRouteAndRetainsAuthorizationThroughPublication",
+    "AnyNativeObjectLinksTests.testBacklinksRejectDifferentSourceSpaceTargetObjectAndProperty",
+    "AnyNativeObjectLinksTests.testBacklinksRetainObjectAndPartGroupsAndNarrowToTheExactPart",
+    "AnyNativeObjectLinksTests.testMalformedOrFutureTargetKindsFailWithoutDiscardingEdges",
+    "AnyNativeObjectLinksTests.testNativeSelectionsAndReadCapsArePreserved",
+    "AnyNativeObjectLinksTests.testOutgoingScopeUsesExactBytesAndCanonicalURIHasNoSecondIdentity",
+    "AnyNativeObjectLinksTests.testPropertySourceRetainsDeclaringTypeAndRecordSourceRetainsField",
+    "AnyNativeObjectLinksTests.testRetainsCanonicalObjectRecordPropertyIdentityFileAndOpenEdgeKinds",
+    "AnyNativeObjectLinksTests.testTruncationAndNullArraysNeverBecomeCompleteEmptyReads"
+  ],
+  "terminalMethods": [
+    [
+      "AnyNativeObjectLinksHTTPTests.testAccountSwitchCannotPublishOriginalAccountSnapshot",
+      "passed"
+    ],
+    [
+      "AnyNativeObjectLinksHTTPTests.testInvalidBacklinkDatasetDoesNotDispatch",
+      "passed"
+    ],
+    [
+      "AnyNativeObjectLinksHTTPTests.testNativeIndexDisabledPropagatesInsteadOfBecomingEmpty",
+      "passed"
+    ],
+    [
+      "AnyNativeObjectLinksHTTPTests.testRevokedReadCannotPublishAComputedSnapshot",
+      "passed"
+    ],
+    [
+      "AnyNativeObjectLinksHTTPTests.testScopedReadUsesNativeRouteAndRetainsAuthorizationThroughPublication",
+      "passed"
+    ],
+    [
+      "AnyNativeObjectLinksTests.testBacklinksRejectDifferentSourceSpaceTargetObjectAndProperty",
+      "passed"
+    ],
+    [
+      "AnyNativeObjectLinksTests.testBacklinksRetainObjectAndPartGroupsAndNarrowToTheExactPart",
+      "passed"
+    ],
+    [
+      "AnyNativeObjectLinksTests.testMalformedOrFutureTargetKindsFailWithoutDiscardingEdges",
+      "passed"
+    ],
+    [
+      "AnyNativeObjectLinksTests.testNativeSelectionsAndReadCapsArePreserved",
+      "passed"
+    ],
+    [
+      "AnyNativeObjectLinksTests.testOutgoingScopeUsesExactBytesAndCanonicalURIHasNoSecondIdentity",
+      "passed"
+    ],
+    [
+      "AnyNativeObjectLinksTests.testPropertySourceRetainsDeclaringTypeAndRecordSourceRetainsField",
+      "passed"
+    ],
+    [
+      "AnyNativeObjectLinksTests.testRetainsCanonicalObjectRecordPropertyIdentityFileAndOpenEdgeKinds",
+      "passed"
+    ],
+    [
+      "AnyNativeObjectLinksTests.testTruncationAndNullArraysNeverBecomeCompleteEmptyReads",
+      "passed"
+    ]
+  ],
+  "groupAbsent": true,
+  "ownedFixtureAndRunnerProcessesAfter": [],
+  "sourceAfter": {
+    "Modules/PinkhaAnyEngine/Package.resolved": "50ddc3fc5398afb197e62f3cd8aa251315dbdd8d9d1d67e0dc665862ef3258af",
+    "Modules/PinkhaAnyEngine/Package.swift": "2bfbf014cbfb6ce37764a2900743783fe3af2535ad4809aa4fc9ea67d16d2e5f",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift": "cc9ee5e3eb159ef5ea68e7a87928fd94f047a8668c2f2483890faffdac8d73a1",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift": "048ebd2d82e3a22265c3fea4ead6ba406b4f8d7d8f00367ec0c7779fac1b0d8f",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahLiveQuery.swift": "057a177fd338967f98484936e9e192a76da6a3f853dcc5666eca283715b349f4",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift": "7205b72e687975bfda695bcccbcdbdd486af45c13ef7f0ddd20fcf58c9d5a312",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift": "f92c0811a83acc6a6642245367e3c0badaa0321dd297e6dae28bb2383154f748",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyJSON.swift": "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyLiveQuery.swift": "445930138f7aefe46f6d41995059acafad9363178da4bc17574d2a0e399c8cf4",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeObjectLinks.swift": "d402ca99e4aecc6d379ba35c1e59c8a7b6a8c4db570a871565164370f224f410",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift": "c4635b23304e60b1d27b546c53e8901a841160bd79bd43a066b50bc02b2b0704",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnySSEParser.swift": "1b5b55f99d357418d0df7ec43bc61e8bac1e1f246c613019f8c8b025c03cbdad",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift": "cd11b4cc0e54b4593d5a9111ca37ef7556bf3bcaa71ddb1532e900dd94ac0145",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift": "d2cdada5bf2a639127e58dbbe7b422188df76cb145d32023d4b1011006fd69af",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahOperation.swift": "c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngineProbe/NativeObjectProbe.swift": "803d059aa506da02ed9106ed990a26e3b7fe6c7cdcf13284931579cb750ab505",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngineProbe/Probe.swift": "6432eac796b559fea0efcf23e27a87b0d4e3ed842b6db450de77f211d4ea19d5",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/authorization_fence_server.py": "2ed60fe43357ad0cf841e85d8cac71d4bf3c2fec0f422262e27efd963d3a1c49",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/check_redirect.py": "ca8c491aadaecc088c12ecde6aa32c0621372ff0e7dc3109a9ac930a19c3f969",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/check_sse_transport.py": "c89b5cb56b4c3623c23581b7fca8607785bca9f580f9ead597dc63b6394872fc",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/file_readback_server.py": "3c713cec89dd77f41c3fa58366395de2f41fae797d568003aad7301fa1d006ca",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/native_links_server.py": "10ae4f8c8da109cc8ae43ae9d231804dffc329a634a29a6a912962053c2e964e",
+    "Modules/PinkhaAnyEngine/Tests/Fixtures/status_transition_server.py": "cea7414a1143d508c5e49c80a7f47b689de283a2230cd40e8d8aeeb1488dc0eb",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyGuardedObjectSnapshotTests.swift": "3589621b43a00e686ad8b8ee19ea63c599ea081cfbd0dfe861f98c24454932a2",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyGuardedOperationReadTests.swift": "acef013f4578f942b4ba839c3df962ae88b11f76e07922efe017ad183f520ff6",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyGuardedTorahTests.swift": "8d3958148f7084c448faab21853453ddce8f1eee9b8713eea04dd57f880d4462",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPAuthorizationFenceTests.swift": "ddf5ffd3bf4009ca1d735874b1e831ac5477641e6b14c6e0878b638f033c5cfb",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPClientTests.swift": "60f46e80c1ac14713c7ea4f1bf4f9fe47cae24ec2a0727372d273d9dfe349aee",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPFileReadbackTests.swift": "d1190caaf2244084a9719702777a8a743477aad36aae15de090382ab085f6487",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPPreparedFileTests.swift": "f05cf044fba47deee1eb91cd4e7697c28129e972446f16b98514638d0cbb0fc4",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPResponseTests.swift": "2a112af1762e22b5ed3eea18295a870f63f0c2616a6be4f1255be832dc4bbae7",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyLiveQueryTests.swift": "46c203d6438799e63f6bc96d2be4b50e9eefa74a95835269e9e2f8fffa858356",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeObjectLinksTests.swift": "ae8af273cd3db53ba96ea2f067c3b2715c9c91fd772fa0107fa19b9c939cf586",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyTorahOperationTests.swift": "d909e34b297b31e4aadca20989fb1edef6112eb3fba840c80e9ae6f8a7786166",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/ManagedAuthorizationTests.swift": "9d68ad4bfef45e0e93cfbd67402bfaf4f38841d42bc15a57f3098bbbe1b47ca9",
+    "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/ObjectCreationRecoveryTests.swift": "9cfc5d9b2acde94700bd8a60542e3481fc95fc9bd45d946116643bf92024d97a",
+    "Modules/PinkhaAnyEngine/Tools/run_guarded_runtime_probe.py": "d99d7da64b86156ea63c0682dd39640258b0541cdc9887e8579fd11be72ea039",
+    "Modules/PinkhaAnyEngine/Tools/run_native_contract_validation.py": "03e83383eb728bd4db8c2b1b7b41197a68b850485e0ddcbe2ab9fd54844ae47f",
+    "Modules/PinkhaAnyEngine/Tools/run_native_creation_probe.py": "b1b1a68208bdea0e5488fff817d01a2e58f5f600eccd338e80ec5f78ac5f2d04",
+    "Modules/PinkhaAnyEngine/Tools/run_native_object_probe.py": "a82a785367d2bb91b54cc418181ea80e9a0fd402fb4e76ec1e94557c5a6ce229",
+    "Modules/PinkhaAnyEngine/Tools/run_native_object_validation.py": "c9ad19d6d99506c25ba277e9e30383e4b44d8aabb48159a5492c7855b3123f6e",
+    "Modules/PinkhaAnyEngine/Tools/run_native_property_probe.py": "fb50e4ba72ab7ff542a9c568240084f3d8d9c8062d28f13703861e6dc4cfc5f5",
+    "Modules/PinkhaAnyEngine/Tools/run_partial_creation_regressions.py": "d996e095e3a6c2cd233cf5260cdca0713cd5a62d3a574aea16bb5dd2f272eaaf",
+    "Modules/PinkhaAnyEngine/Tools/run_property_regressions.py": "346da38aec810c4df4a915b42b331f97387b91d42762f2983ae818a1f887066a"
+  },
+  "sourceUnchanged": true,
+  "finished": 1795739120.217014,
+  "freeAfter": 2612187136,
+  "logSHA256": "2f534ef0239462521d38d603cdb23463b778fb64efabbccad53f9314b9c8dd6d",
+  "xunitArtifacts": {
+    "tests-swift-testing.xml": {
+      "sha256": "584b376edfacdcd818d1009e85306bdd0b05c821747264a69db64327a61d457e",
+      "bytes": 180
+    }
+  },
+  "xunitNote": "XCTest names and terminal status are qualified from original console; Swift Testing XML is not substituted."
+}
