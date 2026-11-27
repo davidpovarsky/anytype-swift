@@ -1,0 +1,57 @@
+{
+  "AppleUIOrNativeAcceptance": false,
+  "actualCompilerBuildSeconds": 163.14,
+  "actualIssueCount": 30,
+  "actualMethodsFailed": 2,
+  "actualTestDurationSeconds": 0.524,
+  "additionalTestRunsForThisReview": 0,
+  "baselineReceiptSHA256": "850a3636b3f6d94b0aa9bf9ae5733869c783d0ad442af198670992d0e5ccbfe6",
+  "fullSourceAndDependencyCustodyBeforeAfterEqual": true,
+  "historicalGroupReprobed": false,
+  "interpretation": [
+    "Two current-read failures (403 and changed document) retain stale snapshot/rows/derived visibility and Undo/write authorization on original model",
+    "Deactivation and new owner read retain stale displayed data/Undo on original model"
+  ],
+  "issueKinds": [
+    "Expectation failed"
+  ],
+  "issuesBySourceLine": {
+    "currentReadFailureDiscardsDisplayedValuesAndUndoUntilReviewed": {
+      "255": 2,
+      "256": 2,
+      "257": 2,
+      "259": 2,
+      "260": 2,
+      "261": 2,
+      "262": 2,
+      "265": 4
+    },
+    "deactivationDiscardsDisplayedValuesAndUndoBeforeNewOwnerRead": {
+      "305": 1,
+      "306": 1,
+      "307": 1,
+      "309": 1,
+      "313": 2,
+      "319": 1,
+      "320": 1,
+      "321": 1,
+      "324": 2,
+      "330": 1
+    }
+  },
+  "originalBaselineModelSHA256": "c5935470e1c515461ad11b764e0169297eeb645a3ba4a522d0a7111070437dfb",
+  "originalBaselineReceiptUnmodified": true,
+  "ownedGroupAbsenceReusedFromOriginalReceiptOnly": true,
+  "rawReflectionOutputRetainedPrivatelyAtOriginalPath": true,
+  "regressionReproduced": true,
+  "reviewedAtUTC": "2026-11-27T09:39:10.311975+00:00",
+  "runnerSHA256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+  "schema": "pinkha-properties-baseline-intended-regression-review-v1",
+  "scope": "Exact actual production presentation logic in Foundation component; Apple/App/native acceptance remains separate",
+  "setupThrowsOrRendezvousTimeoutsObserved": false,
+  "status": "PASS_INTENDED_COMPONENT_REGRESSIONS_REPRODUCED",
+  "stderrOriginalSHA256": "9a595a8fda92a16f39b7aecd6ea8e5f29cccc194a5d7a086fecf17aea798dfab",
+  "stdoutOriginalSHA256": "87f9d4bf621cc393fb95bc777d14ca6f9da36df64bae055bc55a70d712275d11",
+  "successfulBuildAndActualTwoMethodCompletion": true,
+  "testsSourceSHA256": "7df1a45aa85cd71bc7ec8353b98150609bc2d2fb07a2aa1ebf08f7fb40fdab61"
+}

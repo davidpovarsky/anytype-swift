@@ -1,0 +1,79 @@
+{
+  "candidateSHA256": "e23ce44595880121bfd5359e4d6714ae4134589df20df2507a2015d1afa09121",
+  "edits": [
+    {
+      "candidate": "\"\"\"Read-only original 99dc qualification after exact failed-custody recovery.\n",
+      "candidateEnd": 2,
+      "candidateStart": 1,
+      "original": "\"\"\"Read-only original 99dc input qualification after completed cache custody.\n",
+      "originalEnd": 2,
+      "originalStart": 1
+    },
+    {
+      "candidate": "RECOVERY=OUT/'recovery1'\nCUSTODY_SHA='1204322b44c6f29a9fe08a2009460e5f596349267b8c3ae67ad62725ee59ad51'\nFAILED_CUSTODY_SHA='3f34a5660153431980012d1bd6f88c27727eb62e2067ada4e47426ace618210b'\nORIGINAL_CUSTODY_SHA='897cb0a96f82d9fe079059088e847c0fe81ab32fe8ea483f4f9d0aced3acd5b9'\nORIGINAL_CLAIM_SHA='61a99b41950f9975b630cde3c82ebc68399ebff15a295c2e416ad78551accccc'\n",
+      "candidateEnd": 28,
+      "candidateStart": 23,
+      "original": "CUSTODY_SHA='897cb0a96f82d9fe079059088e847c0fe81ab32fe8ea483f4f9d0aced3acd5b9'\n",
+      "originalEnd": 24,
+      "originalStart": 23
+    },
+    {
+      "candidate": "    assert not os.path.lexists(CLAIM) and not os.path.lexists(RECOVERY/'active-recovery.json'),'unresolved preservation/recovery claim'\n    evidence=RECOVERY/'source-qualification1';assert evidence.resolve()==evidence and not evidence.is_symlink()\n",
+      "candidateEnd": 72,
+      "candidateStart": 70,
+      "original": "    assert not os.path.lexists(CLAIM),'unresolved preservation claim'\n    evidence=OUT/'source-qualification1';assert evidence.resolve()==evidence and not evidence.is_symlink()\n",
+      "originalEnd": 68,
+      "originalStart": 66
+    },
+    {
+      "candidate": "        raw=pinned(RECOVERY/'result.json',sys.argv[1]);custody=json.loads(raw)\n        assert custody['protocol']=='pinkha-exact-failed-component-cache-custody-continuation-v1'\n        assert custody['status']=='PASS_EXACT_THREE_CACHE_CUSTODY_RECOVERED_ORIGINAL_FAILURE_RETAINED_NO_COMPILER_ACCEPTANCE'\n",
+      "candidateEnd": 86,
+      "candidateStart": 83,
+      "original": "        raw=pinned(OUT/'result.json',sys.argv[1]);custody=json.loads(raw)\n        assert custody['status']=='PASS_EXACT_THREE_OWNED_COMPONENT_CACHE_ROOTS_RELOCATED_STABLE_ALIASES_NO_COMPILER_ACCEPTANCE'\n",
+      "originalEnd": 81,
+      "originalStart": 79
+    },
+    {
+      "candidate": "        assert custody['originalControllerSHA256']==ORIGINAL_CUSTODY_SHA\n        assert custody['originalFailedReceiptSHA256']==FAILED_CUSTODY_SHA\n        assert custody['originalClaimSHA256']==ORIGINAL_CLAIM_SHA\n        assert custody['originalFailureRetained'] is True and custody['originalFailureOverwritten'] is False\n        assert custody['protectedOriginalInputsUnchanged'] is True and custody['originalSourceMetadataRepaired'] is False\n        assert custody['observedExternalAtimeCounts']=={'build':1012,'cache':33,'clang-module-cache':3}\n        assert custody['copiedBytes']==0 and custody['recoveredRootAllocatedBytes']==401940480\n        assert custody['token']=='42c71f7f1a754e0da0ac5033fce320bf'\n",
+      "candidateEnd": 95,
+      "candidateStart": 87,
+      "original": "        assert custody['controllerSourceUnchanged'] and custody['protectedOriginalComponentReceiptsDependencySourcesAnd99dcUnchanged']\n        assert custody['componentAndAttempt1RemainPhysicalOnRoot'] and custody['entryCount']==6315\n",
+      "originalEnd": 84,
+      "originalStart": 82
+    },
+    {
+      "candidate": "        assert custody['originalInputPins']=={\n            'result.json':FAILED_CUSTODY_SHA,\n            'restoration-map.json':'95d9488413158c0da62338e277eeca0a0333f740ea8e3375219a214b8fa0c880',\n            'protected-files-before.json':'0fff4d81264fbd2d7c9f566dd57fd750f4ea97cec70340b7df19071565bb4180',\n            'private-protected-trees-before.json':'ca219c922e1aec624df2a4c17185f8f9f74530d585bbf91b119e7d808c773c49',\n            'private-source-manifests.json':'f0a895e98d7693a264486867f613447fb7fae5c5b2183b58eb1090912fff9a98',\n            'private-copied-manifests.json':'437ec66425f021dedf51eb4d52ede0a098fd96ba6aea27006af19ab944910c0b'}\n        claim=json.loads(pinned(RECOVERY/'original-active-claim.json',ORIGINAL_CLAIM_SHA))\n        assert claim['controllerSHA256']==ORIGINAL_CUSTODY_SHA and claim['token']==custody['token']\n        copied=json.loads(pinned(RECOVERY/'private-final-manifests.json',custody['finalManifestsSHA256']))\n        assert set(copied)==set(SCOPES) and sum(len(rows) for rows in copied.values())==6315\n",
+      "candidateEnd": 107,
+      "candidateStart": 96,
+      "original": "        mapping=json.loads(pinned(OUT/'restoration-map.json',custody['restorationMapSHA256']))\n        assert mapping['controllerSHA256']==CUSTODY_SHA and mapping['unchangedCompilerControllerSHA256']==ORIGINAL_SHA\n        assert mapping['handoffSHA256']==HANDOFF_SHA and set(mapping['directories'])==set(SCOPES)\n        copied=json.loads(pinned(OUT/'private-copied-manifests.json',custody['copiedManifestsSHA256']))\n        assert mapping['copiedManifestsSHA256']==custody['copiedManifestsSHA256']\n",
+      "originalEnd": 90,
+      "originalStart": 85
+    },
+    {
+      "candidate": "        pinned(RECOVERY/'result.json',sys.argv[1]);assert not os.path.lexists(CLAIM) and not os.path.lexists(RECOVERY/'active-recovery.json')\n",
+      "candidateEnd": 128,
+      "candidateStart": 127,
+      "original": "        pinned(OUT/'result.json',sys.argv[1]);assert not os.path.lexists(CLAIM)\n",
+      "originalEnd": 111,
+      "originalStart": 110
+    },
+    {
+      "candidate": "            custodyRecoveryReceiptSHA256=sys.argv[1],originalFailedCustodyReceiptSHA256=FAILED_CUSTODY_SHA,\n            unchanged99dcSHA256=ORIGINAL_SHA,\n",
+      "candidateEnd": 132,
+      "candidateStart": 130,
+      "original": "            custodyReceiptSHA256=sys.argv[1],unchanged99dcSHA256=ORIGINAL_SHA,\n",
+      "originalEnd": 114,
+      "originalStart": 113
+    }
+  ],
+  "exactInverse": true,
+  "originalSHA256": "b67018c772fb699631d493688cd253f7e57b2b77661b7c70f50d9de08a71053a",
+  "runtimeExecuted": false,
+  "sourceOnly": true,
+  "unchanged99dcSHA256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+  "unchangedDeclarations": [
+    "sha",
+    "pinned",
+    "aliases"
+  ]
+}
