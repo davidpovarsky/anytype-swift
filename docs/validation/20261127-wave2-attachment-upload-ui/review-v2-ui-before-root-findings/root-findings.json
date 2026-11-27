@@ -1,0 +1,21 @@
+{
+  "status": "ROOT_SOURCE_FINDINGS_RETAINED",
+  "sourceSHA256": "60b7c21b4ab084edce4a00ab953ee2f969fd70eb16522e47be8e7317442b5b15",
+  "findings": [
+    {
+      "id": "UPLOAD-01",
+      "detail": "One-shot approval consumption awaited after final authority checks; move before final write/lease/mounted fences."
+    },
+    {
+      "id": "UPLOAD-02",
+      "detail": "Claim/lookup failure before mayHaveSavedIntent becomes true could incorrectly re-enable Add; default must be conservative until positive no-pending observation under held claim."
+    },
+    {
+      "id": "UPLOAD-03",
+      "detail": "Original journal can create an empty namespace on reopen; noRecordedAttachment does not prove cold dispatch never started. Do not expose unstarted cancellation or clear original intent on that evidence alone."
+    }
+  ],
+  "tests": "NOT_RUN",
+  "native": "NOT_RUN",
+  "Apple": "NOT_RUN"
+}

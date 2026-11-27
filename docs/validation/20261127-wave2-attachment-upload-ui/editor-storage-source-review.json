@@ -1,0 +1,68 @@
+{
+  "findings": [],
+  "inputs": [
+    {
+      "bytes": 21506,
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "sha256": "bd91c48c0dc408e04f054d2e7dd2bd3cdd0a73e9df751edba15be4348b43ffce"
+    },
+    {
+      "bytes": 9912,
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+      "sha256": "f646eed644d128c30057011ddd384154f5d6a2bd7082bca52e44488bf19fa758"
+    },
+    {
+      "bytes": 8725,
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "sha256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809"
+    }
+  ],
+  "limitations": [
+    "No Swift typecheck, component test, Apple protection check, native upload, UI or abrupt-process durability execution occurred in this review.",
+    "Simulator allowance for missing data-protection metadata remains explicit; this source review does not certify physical-device protection.",
+    "Incomplete temporary or invalid records are retained and can fail closed; no crash-recovery success is inferred from the happy-path test declarations.",
+    "The caller snapshot remains separate from the native creation journal. The W1 known-ACK/journal-failure reconciliation contract and final document accessor are outside this review."
+  ],
+  "manifestSHA256": "479c9e5edd12613aeef97eb2f1e6dfcae3bd94d558f4bea046af938e7d0bf92b",
+  "namespaceCorrectionSHA256": "1929a270ec7b1fe65bfdcb701f1631859fc19ab3a41f1c859a8cd28bc5e10235",
+  "observations": [
+    "The store actor exposes synchronous isolated I/O methods with no suspension inside file read/create/remove. Its private descriptor owner cannot escape; claim UUID ownership excludes same-actor replacement and a stale release cannot drop a later claim.",
+    "The existing MainActor recovery owner creates one shared store only after workspace validation plus exact UTF8 account/Space equality. Its original navigation and text-recovery bodies restore exactly under the retained two-insertion inverse.",
+    "A separately opened nonblocking exclusive flock on the same protected owner.lock excludes a second store instance. The lock file is retained instead of unlinking it on release; descriptor ownership ends only when the exact owned value is released.",
+    "Reads and creates use descriptor-relative no-follow opens, bounded regular-file/owner/mode/link checks and descriptor-to-name identity validation. Stored records decode through the actual Host intent validator, re-encode canonically and match the exact claim account/Space/object. No native receipt or selected URL is supplied by this file.",
+    "Creation writes and synchronizes an exclusively created temporary inode, links it atomically only if the final name is absent, removes its own temporary name, synchronizes the directory/file and reads back exact bytes. Existing pending intents are compared and durability-confirmed rather than overwritten. A failed operation is not reported as successful storage.",
+    "The reviewed withUploadClaim seam awaits its supplied operation on both success and error before releasing. The fingerprint child is awaited through cancellation forwarding, and the existing close waits the owned task before removing its temporary directories. Root independently owns the complete UI/Host authorization and reconciliation review.",
+    "The suite exercises exact intent persistence through a replacement store, no-overwrite behavior, concurrent replacement exclusion and stale release, and malformed/foreign canonical snapshots. Tests assert the restricted stored field schema and no invented native receipt. These are source cases, not executed results.",
+    "The sole namespace correction explicitly chooses PinkhaAnyEngine.AnyNativeFileReference, matching the existing original Attachments qualifier. Its exact inverse restores604a79ea; no semantics or storage schema changed."
+  ],
+  "observedAt": "2026-11-27T12:23:51.899695+00:00",
+  "operations": {
+    "mac": 0,
+    "native": 0,
+    "oracle": 0,
+    "portableControls": 0,
+    "productEdits": 0,
+    "simulator": 0,
+    "swiftCompiler": 0,
+    "tests": 0
+  },
+  "requiredHostEngineCommit": "e96ba072887e7581ed6de20fdd81e0897c83763d",
+  "reviewer": "/root/editor",
+  "runtimeAdmission": false,
+  "schema": "wave2-attachment-caller-intent-storage-editor-review-v1",
+  "scope": [
+    "Store actor isolation, claim/descriptor lifetime and bounded caller snapshot I/O",
+    "Existing MainActor library recovery ownership of one store per exact account/Space",
+    "New three-method/four-case storage test source and limited claim/join caller seam"
+  ],
+  "sourceInverseSHA256": "40cd7c8678c887de82f065c40aabfde6f5f6c6e5d394af9552faf84382e24da7",
+  "status": "PASS_SOURCE_REVIEW_ONLY",
+  "testScope": {
+    "actualEnumeration": null,
+    "declaredCases": 4,
+    "declaredMethods": 3,
+    "executed": 0,
+    "originTarget": "PinkhaAnyUITests",
+    "suite": "AnyNativeAttachmentIntentStoreTests"
+  }
+}

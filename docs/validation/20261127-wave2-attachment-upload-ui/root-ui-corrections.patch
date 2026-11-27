@@ -1,0 +1,177 @@
+--- reviewed60b/AnyNativeAttachments.swift
++++ corrected/AnyNativeAttachments.swift
+@@ -69,7 +69,7 @@
+ 
+ private enum AnyNativeAttachmentResume: Sendable {
+     case verified(AnyNativeFileAttachmentIntent, [AnyNativeAttachment])
+-    case notDispatched(AnyNativeFileAttachmentIntent, [AnyNativeAttachment])
++    case notRecorded(AnyNativeFileAttachmentIntent, [AnyNativeAttachment])
+     case noPending([AnyNativeAttachment])
+ }
+ 
+@@ -104,7 +104,6 @@
+     var filePicker: AnyNativeAttachmentPicker?
+     var pendingAttachment: AnyNativeFileAttachmentIntent?
+     var uploadNotice: String?
+-    var canDiscardPendingAttachment = false
+     private var uploadRecoveryReady = false
+     private var active = true
+     @ObservationIgnored private var task: Task<Void, Never>?
+@@ -328,7 +327,6 @@
+         filePicker = nil
+         pendingAttachment = nil
+         uploadNotice = nil
+-        canDiscardPendingAttachment = false
+         uploadRecoveryReady = false
+     }
+ 
+@@ -393,7 +391,6 @@
+                 }
+                 try requireActive()
+                 pendingAttachment = pending
+-                canDiscardPendingAttachment = false
+                 uploadRecoveryReady = true
+                 uploadNotice = pending == nil ? nil : Self.pendingUploadMessage
+             } catch { presentUploadFailure(error) }
+@@ -405,19 +402,19 @@
+         busy = true
+         uploadRecoveryReady = false
+         uploadNotice = nil
+-        canDiscardPendingAttachment = false
+         task = Task { [weak self] in
+             guard let self else { return }
+             defer { task = nil; busy = false }
+             let scoped = url.startAccessingSecurityScopedResource()
+             defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+-            var mayHaveSavedIntent = false
++            var mayHaveSavedIntent = true
+             do {
+                 try requireUploadWrite()
+                 let rows = try await withUploadClaim { store, claim in
+                     guard try await store.pending(claim) == nil else {
+                         throw AnyNativeAttachmentRecoveryError.conflictingIntent
+                     }
++                    mayHaveSavedIntent = false
+                     let fingerprint = try await Self.fingerprint(url)
+                     try requireUploadWrite()
+                     let intent = try AnyNativeFileAttachmentIntent(workspace: document.workspace,
+@@ -451,12 +448,9 @@
+         }
+     }
+ 
+-    func checkPendingAttachment(discardIfNotDispatched: Bool = false) {
++    func checkPendingAttachment() {
+         guard active, !busy, task == nil else { return }
+-        let expected = discardIfNotDispatched ? pendingAttachment : nil
+-        guard !discardIfNotDispatched || (canDiscardPendingAttachment && expected != nil) else { return }
+         busy = true
+-        canDiscardPendingAttachment = false
+         task = Task { [weak self] in
+             guard let self else { return }
+             defer { task = nil; busy = false }
+@@ -465,13 +459,7 @@
+                     let result = try await performAttachment { operation in
+                         try await operation.authorizeRead()
+                         guard let intent = try await store.pending(claim) else {
+-                            guard expected == nil else { throw AnyNativeAttachmentRecoveryError.conflictingIntent }
+                             return AnyNativeAttachmentResume.noPending(try await operation.files())
+-                        }
+-                        if let expected {
+-                            guard Self.sameIntent(intent, expected) else {
+-                                throw AnyNativeAttachmentRecoveryError.conflictingIntent
+-                            }
+                         }
+                         do {
+                             // No selected URL and no new mutation ID exists on
+@@ -482,18 +470,13 @@
+                             return AnyNativeAttachmentResume.verified(intent, rows)
+                         } catch AnyNativeFileAttachmentError.noRecordedAttachment {
+                             try await operation.authorizeRead()
+-                            return AnyNativeAttachmentResume.notDispatched(intent, try await operation.files())
++                            return AnyNativeAttachmentResume.notRecorded(intent, try await operation.files())
+                         }
+                     }
+                     try requireActive()
+                     switch result {
+                     case .verified(let intent, _): try await store.remove(intent, claim: claim)
+-                    case .notDispatched(let intent, _) where discardIfNotDispatched:
+-                        // Acquiring this exclusive claim proves the prior owned
+-                        // operation drained. The original no-record response and
+-                        // fresh read authority were just rechecked above.
+-                        try await store.remove(intent, claim: claim)
+-                    case .notDispatched, .noPending: break
++                    case .notRecorded, .noPending: break
+                     }
+                     try requireActive()
+                     return result
+@@ -503,16 +486,13 @@
+                 case .verified(_, let rows):
+                     publishUploadRows(rows)
+                     uploadNotice = AnyUIErrorText.text("הקובץ המצורף אומת.", "The original attachment was verified.")
+-                case .notDispatched(let intent, let rows):
++                case .notRecorded(let intent, let rows):
+                     publishUploadRows(rows)
+-                    if discardIfNotDispatched {
+-                        uploadNotice = AnyUIErrorText.text("הצירוף שלא התחיל בוטל.", "The attachment that had not started was cancelled.")
+-                    } else {
+-                        pendingAttachment = intent
+-                        canDiscardPendingAttachment = true
+-                        uploadNotice = AnyUIErrorText.text("הצירוף לא התחיל. אפשר לבטל את הבקשה השמורה.",
+-                            "The attachment did not start. You can cancel the saved request.")
+-                    }
++                    pendingAttachment = intent
++                    // A missing/replaced journal can also return no record.
++                    // That does not prove the original native POST never ran.
++                    uploadNotice = AnyUIErrorText.text("אין רישום שמאפשר לאמת את בקשת הצירוף. הבקשה המקורית נשמרה ולא תישלח שוב.",
++                        "No record is available to verify this attachment request. The original request is retained and will not be sent again.")
+                 case .noPending(let rows): publishUploadRows(rows)
+                 }
+             } catch { presentUploadFailure(error) }
+@@ -562,10 +542,10 @@
+                 try await lease.validate()
+             }
+             let authorizeAttachment: AnyNativeFileAttachmentCreator.Check = {
++                try await approval.consume()
+                 try await access.validate(.object(objectId: objectID), intent: .write)
+                 try await lease.validate()
+                 try await writable()
+-                try await approval.consume()
+             }
+             let readFiles: @Sendable () async throws -> [AnyNativeAttachment] = {
+                 _ = try await documents.read(objectID: objectID, lease: lease)
+@@ -598,7 +578,6 @@
+     private func publishUploadRows(_ rows: [AnyNativeAttachment]) {
+         files = rows.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+         pendingAttachment = nil
+-        canDiscardPendingAttachment = false
+         uploadRecoveryReady = true
+         storageStatuses = [:]
+         storageNotice = nil
+@@ -631,15 +610,6 @@
+             "You can check the saved attachment request without sending it again.")
+     }
+ 
+-    nonisolated private static func sameIntent(_ left: AnyNativeFileAttachmentIntent,
+-                                               _ right: AnyNativeFileAttachmentIntent) -> Bool {
+-        left.workspace.accountID.utf8.elementsEqual(right.workspace.accountID.utf8) &&
+-        left.workspace.spaceID.utf8.elementsEqual(right.workspace.spaceID.utf8) &&
+-        left.objectID.utf8.elementsEqual(right.objectID.utf8) &&
+-        left.mutationID.utf8.elementsEqual(right.mutationID.utf8) &&
+-        left.fingerprint.utf8.elementsEqual(right.fingerprint.utf8)
+-    }
+-
+     nonisolated private static func requireReturnedFile(_ file: AnyNativeAttachedFile,
+         in rows: [AnyNativeAttachment], intent: AnyNativeFileAttachmentIntent) throws {
+         let reference = file.reference
+@@ -689,11 +659,6 @@
+                                    systemImage: "arrow.clockwise") { model.checkPendingAttachment() }
+                                 .disabled(model.busy)
+                                 .accessibilityIdentifier("any-native-upload-check")
+-                        }
+-                        if model.canDiscardPendingAttachment {
+-                            Button(AnyUIErrorText.text("ביטול בקשה שלא התחילה", "Cancel unstarted attachment"), role: .destructive) {
+-                                model.checkPendingAttachment(discardIfNotDispatched: true)
+-                            }.disabled(model.busy).accessibilityIdentifier("any-native-upload-cancel-unstarted")
+                         }
+                     }
+                 }

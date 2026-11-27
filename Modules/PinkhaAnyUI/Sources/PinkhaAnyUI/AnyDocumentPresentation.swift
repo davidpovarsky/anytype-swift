@@ -1228,6 +1228,11 @@ public final class AnyDocumentPresentation: Sendable {
         }
     }
 
+    func attachmentIntentStore(for owner: UUID) throws -> AnyNativeAttachmentIntentStore {
+        try requireMounted(owner)
+        return try recovery.attachmentIntentStore(workspace: workspace)
+    }
+
     func installSourceInvalidator(_ invalidate: @escaping @Sendable () -> Void) throws {
         try requireMounted(epoch)
         scopeInvalidators.append(invalidate)

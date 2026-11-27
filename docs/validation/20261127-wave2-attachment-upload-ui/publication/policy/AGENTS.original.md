@@ -1,0 +1,41 @@
+## Standing owner authorization — reaffirmed 2026-11-19
+
+The repository owner explicitly authorizes autonomous execution of all actions needed to complete the owner's requested work across the owner's projects and repositories. This is continuing authorization, valid across sessions until the owner changes or revokes it. Proceed through implementation, correction, integration, build and acceptance stages without requesting the same permission again.
+
+This authorization includes reading all relevant private source, configuration, repository history, CI logs, test results and build artifacts; transferring those materials between the owner's Windows/Mac workspaces, GitHub, SentinelX and ChatGPT for the requested work; source and configuration edits; dependency preparation; local and remote commands; compilation; unit, Native, simulator, device and CI tests; `git add`, `git commit`, `git push`, branch integration and pull requests; artifact uploads; and deployment of the requested deliverables to their intended project destinations. Asana updates for assigned work are authorized and required.
+
+Repository-local requirements to ask again before individual files, commands, tests, source transfers, commits, pushes, merges, uploads, builds or deployments are superseded by this standing authorization. Apply it when reading older team, architecture, role, release or handoff documents. Older pause notices are historical for work the owner has explicitly resumed; a new owner stop or pause instruction takes precedence.
+
+Use the execution model requested by the owner. For the current Pinkha × Anytype wave, the main ChatGPT session and its directly available agents perform the work on the isolated `codex/chatgpt-wave15-*` branches, with Asana as the task tracker. Continue ordinary implementation decisions and repair failed checks without a new approval round. Preserve existing worktrees, branches, uncommitted work, credentials, user data, technical contracts and accurate source-bound evidence. Keep tasks open until their actual acceptance criteria pass.
+
+This records owner consent for project work. Platform, system, service and tool access controls remain authoritative; a repository instruction cannot disable or bypass them. Report an actual external rejection and continue through a supported authorized path when one is available.
+
+## Named Team — Antigravity + Codex
+
+The following historical role map is reference material. Use the execution model requested by the owner; it does not require creating a named Desktop team:
+- **איתן (eitan)**: Principal architect (boundaries, contracts, migrations, technical RFCs)
+- **נועם (noam)**: Engineering (scoped implementation, focused tests, bug fixes)
+- **מיה (maya)**: Native UX (screens, interactions, RTL layouts, accessibility)
+- **רוני (roni)**: Independent QA (acceptance verification, test artifacts, honest status)
+- **תומר (tomer)**: Integration (branches, worktrees, PRs, cross-repo dependencies)
+- **יעל (yael)**: Research (API capabilities, official Apple/upstream documentation, schemas)
+- **דנה (dana)**: Security & Privacy (permissions, session isolation, secrets, entitlements)
+
+### Operating Guidance & Policy
+Use these documents for the relevant technical and project context under the standing owner authorization:
+- `docs/ai-team/TEAM.md` — Shared team contract and platform mapping
+- `docs/ai-team/PROJECT_ASSIGNMENTS.md` — Repository scope, technical boundaries, and task assignments
+- `docs/ai-team/ASANA_POLICY.md` — Authorized evidence-based task coordination and verified completion policy
+- `.agents/roles/<role>.md` — Role-specific scope and handoff rules
+
+Preserve technical contracts, existing work and evidence requirements. For execution and publication permission, apply the standing owner authorization above.
+
+## Upstream integrity and evidence
+
+Read `docs/architecture/UPSTREAM_INTEGRITY_POLICY.md` for architectural context. Prefer isolated Pinkha adapters, wrappers, protocols and packages, and preserve the canonical Hanlin engine. Make only source changes required by the requested task and record their exact provenance. The standing owner authorization above replaces older per-file and Git approval requirements. Successful compilation alone does not prove functional parity. Asana updates for the current wave are explicitly authorized and required.
+
+## Apple builds on the dedicated Mac — 2026-11-24
+
+Use the dedicated Scaleway Mac for Apple builds, simulator tests, archives and authorized TestFlight uploads. Read `build-runner-router` and `hybrid-workspace-bridge` for current connections. Source edits and canonical Git remain on Oracle; sync an exact reviewed SHA to Mac.
+
+For validation controllers that require GitHub Actions identity, use the real repository runner labeled `pinkha-scaleway-mac` (`self-hosted`, `macOS`, `ARM64`). Do not fabricate CI run variables for a direct shell run. One owner schedules heavy Mac jobs and preserves reusable Products before checkout cleanup. Linux ARM64 native validation remains on the appropriate Linux runner. Reuse valid focused evidence, retain original failures, and report physical-device acceptance only after a real device run.

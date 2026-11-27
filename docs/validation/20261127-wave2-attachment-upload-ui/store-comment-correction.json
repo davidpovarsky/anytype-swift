@@ -1,0 +1,11 @@
+{
+  "status": "COMMENT_ONLY_CONTRACT_CORRECTION",
+  "beforeSHA256": "bd91c48c0dc408e04f054d2e7dd2bd3cdd0a73e9df751edba15be4348b43ffce",
+  "afterSHA256": "0032c6be0f667e5082afd4e0e2dfa03a37ac43438141034358ee95a1d6e4c325",
+  "oldComment": "    /// The presentation invokes this only after verified Host/list reconciliation,\n    /// or explicit user cancellation with a fresh original noRecordedAttachment.\n    /// Neither a native error, missing ACK nor a reserved entry is that proof.\n",
+  "newComment": "    /// The presentation invokes this only after verified Host/list reconciliation.\n    /// A missing/replaced journal cannot certify non-dispatch. Neither a native\n    /// error, no-record result, missing ACK nor a reserved entry is that proof.\n",
+  "inverseRestoresReviewedStore": true,
+  "authority": "W1 HQ51 comment1220952869906550 and root current task message: noRecorded is absence in supplied journal, not original namespace continuity or negative-dispatch proof",
+  "sourceBehaviorChanged": false,
+  "runtime": "NOT_RUN"
+}

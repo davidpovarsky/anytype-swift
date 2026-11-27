@@ -129,10 +129,25 @@ public final class AnyNativeLibraryRecovery {
     public private(set) var navigation: [AnyNativeLibraryDestination] = []
     @ObservationIgnored private var documents: [String: AnyNativeDocumentRecoverySnapshot] = [:]
     @ObservationIgnored private var sizes: [String: Int] = [:]
+    @ObservationIgnored private var attachmentIntents: AnyNativeAttachmentIntentStore?
     private static let maximumDocuments = 128
     private static let maximumBytes = 16_777_216
 
     public init(workspace: AnyTorahWorkspace) { self.workspace = workspace }
+
+    /// Only attachment caller intents use protected process-persistent storage.
+    /// The original navigation/text recovery above keeps its existing lifetime.
+    func attachmentIntentStore(workspace expected: AnyTorahWorkspace) throws -> AnyNativeAttachmentIntentStore {
+        try requireWorkspace(expected)
+        guard workspace.accountID.utf8.elementsEqual(expected.accountID.utf8),
+              workspace.spaceID.utf8.elementsEqual(expected.spaceID.utf8) else {
+            throw AnyNativeRecoveryError.wrongWorkspace
+        }
+        if let attachmentIntents { return attachmentIntents }
+        let store = AnyNativeAttachmentIntentStore(workspace: workspace)
+        attachmentIntents = store
+        return store
+    }
 
     public func requireWorkspace(_ expected: AnyTorahWorkspace) throws {
         guard workspace == expected else { throw AnyNativeRecoveryError.wrongWorkspace }

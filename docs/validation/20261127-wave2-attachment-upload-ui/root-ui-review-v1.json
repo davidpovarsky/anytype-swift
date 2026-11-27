@@ -1,0 +1,53 @@
+{
+  "schema": "wave2-ordinary-attachment-root-ui-review/v1",
+  "status": "CORRECTIONS_REQUIRED_SOURCE_ONLY",
+  "input": {
+    "uiSHA256": "60b7c21b4ab084edce4a00ab953ee2f969fd70eb16522e47be8e7317442b5b15",
+    "originalUI": "9e88bb9abd3536b76ccde71a102ba88ca82e3a9dd0c27e28850ae79359cfde73",
+    "hostCommit": "e96ba072887e7581ed6de20fdd81e0897c83763d"
+  },
+  "findings": [
+    {
+      "id": "APPROVAL_SUSPENSION_AFTER_FINAL_AUTHORITY",
+      "detail": "authorizeAttachment awaits its separate approval actor after Native write ACL, lease, and mounted/mutation checks. Consume the one-shot operation before the final authority/cancellation fences, retaining the last mounted/write eligibility check at the dispatch boundary."
+    },
+    {
+      "id": "UNKNOWN_PENDING_CLAIM_REENABLED_ADD",
+      "detail": "mayHaveSavedIntent begins false. If another presentation saves a pending intent after recovery load, the later claim or pending lookup can fail before it becomes true; presentUploadFailure then marks recovery ready without a pending request, enabling Add instead of offering Check. Treat absence conservatively until a held claim has positively observed no pending intent."
+    },
+    {
+      "id": "NO_RECORDED_IS_NOT_NEGATIVE_DISPATCH_PROOF",
+      "detail": "Published e96 resume maps journal.lookup nil to noRecordedAttachment. Original AnyProtectedCreationJournal.load creates a new empty namespace when no files exist. The result cannot prove no prior dispatch or the same original physical journal. Cold caller intent must remain unresolved; remove only after verified Host plus actual FilesV2 reconciliation. Picker cancellation before selection remains unchanged.",
+      "primaryConfirmation": {
+        "asanaTask": "1220541349302681",
+        "story": "1220952869906550",
+        "date": "2026-11-27T12:22:34.643Z",
+        "owner": "Wave1"
+      },
+      "supersedes": "Earlier design approval for noRecorded-only discard was based on incomplete journal-continuity evidence. This correction does not request new user permission or a duplicate journal."
+    }
+  ],
+  "retainedPositiveBoundaries": [
+    "Exact Codable original intent saved before Host.attach; one original mutation ID per user selection",
+    "Creator obtained only through original document.objects factory and current nativeSession",
+    "Selected URL security scope covers bounded detached fingerprint plus Host staging; awaited children retain filesystem claim through cancellation/drain",
+    "Resume has no URL, new mutation ID or POST; known error IDs do not override journal reservation",
+    "Host verification followed by actual bounded FilesV2 list and exact returned identity/content metadata check before local intent removal",
+    "Existing status/retry/open/QuickLook/MiniApps source bodies remain separate; 201/204 are not cloud durability claims"
+  ],
+  "limitations": [
+    "Storage/actor/test independent review delegated to Editor",
+    "The separately owned document accessor is not yet included",
+    "Optional native metadata projection repair is separate",
+    "No Swift, component, Native, Apple, simulator, visual or physical-device execution"
+  ],
+  "operations": {
+    "compiler": 0,
+    "tests": 0,
+    "oracle": 0,
+    "mac": 0,
+    "native": 0,
+    "sourceReview": true
+  },
+  "productRuntimeAdmission": false
+}
