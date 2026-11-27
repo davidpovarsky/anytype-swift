@@ -37,7 +37,7 @@ class HostedCore13ControlTests(unittest.TestCase):
 
     def test_exact_original_declarations_and_thirteen_method_scope(self):
         self.assertEqual(len(self.originals.sources), 15)
-        self.assertEqual(len(self.originals.proof["declarations"]), 45)
+        self.assertEqual(len(self.originals.proof["declarations"]), 46)
         methods = []
         for lane, count in zip(run.LANES, (9, 2, 2)):
             contract = self.originals.native_core.fixed_contract(lane)
@@ -53,6 +53,53 @@ class HostedCore13ControlTests(unittest.TestCase):
         self.assertEqual(self.originals.shared.Commands._termination_waits,
                          ((self.originals.shared.signal.SIGTERM, 15),
                           (self.originals.shared.signal.SIGKILL, 5)))
+
+    def test_finite_core16_rtl_scope_and_published_witness_pair_routes(self):
+        expected = {"native-properties-hosted": (9, 9), "native-block-creation-hosted": (2, 2),
+                    "native-typography-hosted": (2, 2), "native-renderer-hosted": (3, 3), "rtl-hosted": (6, 10)}
+        self.assertEqual(run.LANE_SCOPE, expected)
+        self.assertEqual(tuple(expected), run.LANES)
+        self.assertEqual((sum(value[0] for value in expected.values()), sum(value[1] for value in expected.values())), (22, 26))
+        renderer = self.originals.native_core.fixed_contract("native-renderer-hosted")
+        self.assertEqual((renderer["expected_methods"], renderer["declared_cases"], renderer["framework"]), (3, 3, "XCTest"))
+        self.assertEqual(renderer["source_hashes"], {
+            "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift":
+                "695c89e5c8d5ad8e41f8ec525486836e42338bcc063d13f0945080c169fd7eaa"})
+        self.assertEqual((self.originals.rtl.METHOD_COUNT, self.originals.rtl.CASE_COUNT), (6, 10))
+        rtl_methods = [method for suite in self.originals.rtl.SUITES.values() for method in suite["methods"].values()]
+        self.assertEqual((len(rtl_methods), sum(method["case_count"] for method in rtl_methods)), (6, 10))
+        actual_rtl_path = self.source / "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/rtl-current-editor-profile/rtl_hosted_profile.py"
+        native_witness_path = self.source / "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/rtl-witness-current/native_compiler_witness.py"
+        self.assertEqual(Path(self.originals.rtl.__file__), actual_rtl_path)
+        self.assertEqual(Path(self.originals.witness.__file__), native_witness_path)
+        self.assertEqual(admission.sha(actual_rtl_path), "f16a16071fadf66ca0b1cd8a0583e41aadf7439e567a7c51daf72d56ad83885c")
+        self.assertEqual(admission.sha(native_witness_path), "60fbe9557ad82cd9ee33016e7bd264ac55843c9b27b2eb3862a35481c0741967")
+        self.assertEqual(self.originals.witness.RTL_PROFILE_SHA256, admission.sha(actual_rtl_path))
+        calls = []
+        def core(*args, **kwargs):
+            calls.append(("core", args, kwargs))
+            return "original-core-fixture"
+        def rtl(*args, **kwargs):
+            calls.append(("rtl", args, kwargs))
+            return "original-rtl-fixture"
+        selected = SimpleNamespace(source=self.source, native_core=SimpleNamespace(source_contract=core),
+                                   rtl=SimpleNamespace(source_contract=rtl))
+        consumer = SimpleNamespace(source=self.source, binding={"sourceSHA": "1" * 40})
+        proof = {"portableFixtureOnly": True}
+        for lane in run.LANES:
+            run.source_contract_for_lane(consumer, lane, selected, proof)
+        self.assertEqual([row[0] for row in calls], ["core", "core", "core", "core", "rtl"])
+        for role, args, kwargs in calls:
+            self.assertIs(kwargs["native_compilation_proof"], proof)
+            self.assertEqual(kwargs["source_commit"], consumer.binding["sourceSHA"])
+            self.assertEqual(args[0], self.source)
+            if role == "core":
+                self.assertEqual(kwargs["rtl_profile_path"], actual_rtl_path)
+            else:
+                self.assertNotIn("rtl_profile_path", kwargs)
+        with self.assertRaises(ValueError):
+            run.source_contract_for_lane(consumer, "unreviewed-extra-lane", selected, proof)
+        self.assertEqual(len(calls), 5)
 
     def test_one_changed_original_byte_is_rejected_before_loading(self):
         with tempfile.TemporaryDirectory(prefix="pinkha-core13-portable-originals-") as temporary:

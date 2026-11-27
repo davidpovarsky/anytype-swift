@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Execute only the original Core13 in the live successful producer's GitHub job.
+"""Execute original Core16 and RTL6/10 in the live successful producer's GitHub job.
 
 No build, account preparation, cross-host relocation, source override or old
 Mac entry point is used. Runtime evidence is recorded separately from producer
@@ -21,7 +21,10 @@ sys.dont_write_bytecode = True
 import admission
 from originals import Originals, require
 
-LANES = ("native-properties-hosted", "native-block-creation-hosted", "native-typography-hosted")
+LANES = ("native-properties-hosted", "native-block-creation-hosted", "native-typography-hosted",
+         "native-renderer-hosted", "rtl-hosted")
+LANE_SCOPE = {"native-properties-hosted": (9, 9), "native-block-creation-hosted": (2, 2),
+              "native-typography-hosted": (2, 2), "native-renderer-hosted": (3, 3), "rtl-hosted": (6, 10)}
 DEVICE_TYPE = "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB"
 
 
@@ -181,25 +184,36 @@ def verify_created_device(consumer, lane, udid, runtime, device_type, *, state="
     return {"runtime": key, "device": row, "originalInventory": admission.ref(log)}
 
 
+def source_contract_for_lane(consumer, lane, originals, producer_pin):
+    """Route only the five reviewed lanes to their exact original validators."""
+    require(lane in LANES, "Only the finite original Core16 and RTL lanes are permitted")
+    if lane == "rtl-hosted":
+        return originals.rtl.source_contract(consumer.source, source_commit=consumer.binding["sourceSHA"],
+                                              native_compilation_proof=producer_pin)
+    # The published 60fbe witness and live RTL lane both pin this exact f16a
+    # profile; no legacy or alternate witness source is admitted.
+    rtl_witness = originals.source / "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/rtl-current-editor-profile/rtl_hosted_profile.py"
+    return originals.native_core.source_contract(consumer.source, lane,
+        source_commit=consumer.binding["sourceSHA"], native_compilation_proof=producer_pin, rtl_profile_path=rtl_witness)
+
+
 def execute_lane(consumer, lane, originals, context, runtime, device_type):
-    require(lane in LANES, "Only the three fixed original Core13 suites are permitted")
+    require(lane in LANES, "Only the five fixed original Core16 and RTL lanes are permitted")
     shared = originals.shared
     directory = consumer.root / "evidence/lanes" / lane
     directory.mkdir(parents=True, mode=0o700)
     result = {"status": "FAIL", "lane": lane, "sourceCommit": consumer.binding["sourceSHA"],
-              "originalTarget": "PinkhaAnyUITests", "executedTarget": "AnytypeTests",
+              "originalTarget": "AnytypeTests" if lane == "rtl-hosted" else "PinkhaAnyUITests", "executedTarget": "AnytypeTests",
               "errors": [], "actualNativeACLAccepted": False, "actualNativePersistenceAccepted": False,
               "applicationUIAccepted": False, "physicalDeviceAccepted": False, "releaseAccepted": False}
     udid, devices_before = None, set(consumer.devices)
-    rtl = originals.source / "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/rtl_hosted_profile.py"
     producer_pin = context["build"]["nativeCompilationProof"]
     def source_contract():
-        return originals.native_core.source_contract(consumer.source, lane,
-            source_commit=consumer.binding["sourceSHA"], native_compilation_proof=producer_pin, rtl_profile_path=rtl)
+        return source_contract_for_lane(consumer, lane, originals, producer_pin)
     try:
         before = source_contract()
-        require(before["expected_methods"] == {LANES[0]: 9, LANES[1]: 2, LANES[2]: 2}[lane]
-                and before["declared_cases"] == before["expected_methods"], "Original exact Core13 scope differs")
+        require((before["expected_methods"], before["declared_cases"]) == LANE_SCOPE[lane],
+                "Original exact Core16/RTL method and argument scope differs")
         result["sourceContract"] = before
         udid, _ = consumer.create(lane, directory, editor=False)
         result["actualDevice"] = verify_created_device(consumer, lane, udid, runtime, device_type)
@@ -327,10 +341,10 @@ def run(args, originals):
     commands.environment["DEVELOPER_DIR"] = job["developerDir"]
     for name in ("GH_TOKEN", "GITHUB_TOKEN", "ACTIONS_RUNTIME_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_TOKEN"):
         commands.environment.pop(name, None)
-    result = {"schema": "pinkha-hosted-core13-runtime-v1", "status": "FAIL", "startedAt": time.time(),
+    result = {"schema": "pinkha-hosted-core16-rtl-runtime-v1", "status": "FAIL", "startedAt": time.time(),
               "job": job, "sourceIdentity": source_before, "controlIdentity": control_before,
               "rootPlan": context["planRef"], "originalBuildReceipt": context["buildRef"],
-              "expectedMethods": 13, "expectedCases": 13, "series": {lane: {"status": "NOT_RUN"} for lane in LANES},
+              "expectedMethods": 22, "expectedCases": 26, "series": {lane: {"status": "NOT_RUN"} for lane in LANES},
               "qualifiedMethodsPassed": 0, "qualifiedCasesPassed": 0, "testCommandsInvoked": 0,
               "appBuilds": 0, "nativeBuilds": 0, "uiTestMethodsInvoked": 0,
               "nativePersistenceAccepted": False, "nativeACLAccepted": False, "appUIAccepted": False,
@@ -379,9 +393,9 @@ def run(args, originals):
                 require(result["series"][lane]["status"] == "PASS_ORIGINAL_CORE13_SUITE",
                         "Original Core13 suite failed: " + lane)
             require(all(row["status"] == "PASS_ORIGINAL_CORE13_SUITE" for row in result["series"].values())
-                    and result["qualifiedMethodsPassed"] == 13 and result["qualifiedCasesPassed"] == 13,
-                    "Every original Core13 method/case must actually pass")
-            result.update(status="PASS_ORIGINAL_HOSTED_CORE13_METHODS", actualMethodsPassed=13, actualCasesPassed=13)
+                    and result["qualifiedMethodsPassed"] == 22 and result["qualifiedCasesPassed"] == 26,
+                    "Every original Core16 and RTL method/argument case must actually pass")
+            result.update(status="PASS_ORIGINAL_HOSTED_CORE16_AND_RTL_METHODS", actualMethodsPassed=22, actualCasesPassed=26)
         except BaseException as error:
             result.setdefault("firstFailure", commands.first_exception or shared.error(error))
         finally:
@@ -426,7 +440,7 @@ def run(args, originals):
         # retain a complete terminal receipt. Never overwrite a partial file.
         summary.update(firstFailure=result.get("firstFailure"), receiptFailures=result["receiptFailures"])
     print(json.dumps(summary, sort_keys=True))
-    return 0 if result["status"] == "PASS_ORIGINAL_HOSTED_CORE13_METHODS" else 1
+    return 0 if result["status"] == "PASS_ORIGINAL_HOSTED_CORE16_AND_RTL_METHODS" else 1
 
 
 def main():

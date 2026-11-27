@@ -25,11 +25,12 @@ import sys
 import time
 from types import ModuleType, SimpleNamespace
 
-PIN_MANIFEST_SHA256 = "9a24ccea1e7d6568727e2bb2b28e27a5926d653f6b8dfbf037ca7ed658946034"
+PIN_MANIFEST_SHA256 = "81d178d6d829dc2eff201b8b8dcd190db2da79dc68a6cc06f36ca0d8a90d2778"
 CORE_ROOT = "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/"
 SHARED_PATH = "Tools/CurrentAppleValidation/combined_heart_semantics/build15/combined_heart_semantics_current.py"
-HOST_PATH = CORE_ROOT + "native-core-hosted/combined_host_acceptance_app15.py"
-CORE_PATH = CORE_ROOT + "native-core-hosted/native_core_hosted_profile.py"
+HOST_PATH = CORE_ROOT + "native-renderer-hosted/combined_host_acceptance_app15.py"
+CORE_PATH = CORE_ROOT + "native-renderer-hosted/native_core_hosted_profile.py"
+RTL_PATH = CORE_ROOT + "rtl-current-editor-profile/rtl_hosted_profile.py"
 
 
 def require(value, reason):
@@ -50,7 +51,7 @@ class Originals:
         data = manifest_path.read_bytes()
         require(sha(data) == PIN_MANIFEST_SHA256, "Original control source manifest changed")
         self.manifest = json.loads(data)
-        require(self.manifest["schema"] == "pinkha-hosted-core13-original-control-sources-v1",
+        require(self.manifest["schema"] == "pinkha-hosted-core16-rtl-original-control-sources-v1",
                 "Unknown original control source manifest")
         self.sources = {}
         self.proof = {"manifestSHA256": PIN_MANIFEST_SHA256,
@@ -141,8 +142,9 @@ class Originals:
             ("HostTestProfile", "require", "test_cases", "validate_results"))
         self.enumeration = self.selected("shared_editor_existing_build", "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py",
             ("enumerated_identifiers",), bindings={"host": self.host_results})
-        self.witness = self.full("native_compiler_witness", CORE_ROOT + "native_compiler_witness.py")
+        self.witness = self.full("native_compiler_witness", CORE_ROOT + "rtl-witness-current/native_compiler_witness.py")
         self.native_core = self.full("native_core_hosted_profile", CORE_PATH)
+        self.rtl = self.full("rtl_hosted_profile", RTL_PATH)
         self.paths = self.selected("core13_original_product_paths", "Tools/CurrentAppleValidation/contracts.py",
             ("require", "product_path"))
         self.shared = self.selected("core13_original_shared", SHARED_PATH,

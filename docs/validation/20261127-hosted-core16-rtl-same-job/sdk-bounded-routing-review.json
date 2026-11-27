@@ -1,0 +1,37 @@
+{
+  "executedDonorImports": false,
+  "findings": [
+    "Originals.install registers run_host_tests, wave15_core_profile and shared_editor_existing_build before the full RTL module; native_compiler_witness has its exact original import name before native_core is used.",
+    "Four Core lanes route through the unchanged ebaf source_contract into the current60fbe witness with the exact f16a physical profile path. The RTL lane uses original f16a source_contract directly.",
+    "Original host invocation_selectors and host_validation_module explicitly recognize both native_core.HOSTED_LANES and rtl-hosted. Fixed five-lane guards prevent reaching unrelated legacy imports.",
+    "The four inspected original controls match full retained bytes, SHA256 and Git blob identities in the snapshot manifest.",
+    "The inherited per-lane PASS_ORIGINAL_CORE13_SUITE marker is cosmetic; explicit lane selection/counts are Core16 plus RTL6/10. Future integrated source/tree and loader manifest literal remain NOT_READY in this reviewed snapshot."
+  ],
+  "mutations": 0,
+  "nativeActions": 0,
+  "reviewer": "/root/sdk_hanlin",
+  "schema": "bounded-core22-routing-source-review-v1",
+  "scope": "Only source_contract_for_lane, Originals.install, their original imported API/selector bindings and exact four source identities. Root owns complete review, source publication and runtime admission.",
+  "snapshotFiles": {
+    "original_sources.json": {
+      "bytes": 4234,
+      "sha256": "d47041fade3dca19495f01e4282271cd630ee3ec5b51370843f99febea3916a2"
+    },
+    "originals.py": {
+      "bytes": 11100,
+      "sha256": "7a24a9f8cfe08ca4d3f2048b81621a0b6eb51852c3777f4e23e334e071bd7bba"
+    },
+    "run.py": {
+      "bytes": 28729,
+      "sha256": "cf16f08fefcc0d639e1f924a230c2fefb8bcc7af4f311e9e03191165908a29c8"
+    }
+  },
+  "status": "NO_CONCRETE_ROUTING_BLOCKER_FOUND_SOURCE_ONLY",
+  "testsExecuted": 0,
+  "verifiedOriginalSHA256": {
+    "host": "8875e2b2a10ec5ba692bc37043c7260ac6d290df9208729be29b00d07071e566",
+    "nativeCore": "ebaf306487ba65e0119c728da676f22295e810806edc214237a31320322482e6",
+    "rtl": "f16a16071fadf66ca0b1cd8a0583e41aadf7439e567a7c51daf72d56ad83885c",
+    "witness": "60fbe9557ad82cd9ee33016e7bd264ac55843c9b27b2eb3862a35481c0741967"
+  }
+}

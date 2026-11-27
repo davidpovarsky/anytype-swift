@@ -1,8 +1,10 @@
-# Original Core13 on the live hosted producer
+# Original Core16 and RTL6/10 on the live hosted producer
 
-This is a new runtime entry point for the same GitHub job that compiled the
-original App and complete Stage1 UI products. It runs no compiler, prepares no
-native account and changes no old Mac, T5 or closed-profile entry point.
+This is the finite successor of the published Core13 adapter for the same
+GitHub job that compiled the original App and complete Stage1 UI products. It
+preserves the original 13 methods and adds original Renderer3 plus RTL6/10,
+for 22 methods and 26 cases. It runs no compiler, prepares no native account and
+changes no old Mac, T5 or closed-profile entry point.
 
 ## Executed interface
 
@@ -23,6 +25,10 @@ The owner of the hosted build workflow adds that step. This directory does not
 modify the workflow or its original producer. An unsuccessful admission exits
 before simulator creation. Re-running over the same execution directory is
 refused; an old result is never overwritten.
+The six-file CLI directory, output path and internal per-suite success marker
+remain stable for the existing workflow hook. The new final receipt schema,
+success status, five source contracts and exact 22/26 totals identify this
+successor explicitly; they cannot be confused with historical Core13 execution.
 
 ## Exact admission
 
@@ -49,8 +55,8 @@ blob in `original_sources.json`. The loader retains the exact original selected
 AST declarations, decorators/defaults and the complete original `Commands`
 class. The emitted declaration proof identifies every original function/method.
 Swift tests are neither copied nor projected: the original hosted source and
-actual compiler witness bind the exact three package files directly compiled
-into `AnytypeTests`.
+actual compiler witness bind the four original package files directly compiled
+into `AnytypeTests`, plus its two original RTL source files.
 
 ## Runtime scope
 
@@ -59,18 +65,28 @@ into `AnytypeTests`.
 | AnyNativePropertyPresentationTests | AnytypeTests | 9 / 9 |
 | AnyNativeTextBlockCreationTests | AnytypeTests | 2 / 2 |
 | AnyNativeTextTypographyTests | AnytypeTests | 2 / 2 |
+| AnyNativeTextRendererTests | AnytypeTests | 3 / 3 |
+| PinkhaTextBlockLeadingMarkerTests + AnyNativeEmptyParagraphDirectionTests | AnytypeTests | 6 / 10 |
 
-The exact method names and source hashes come from the unchanged original
-`native_core_hosted_profile.fixed_contract` and `source_contract`; there is no
-caller-supplied suite/method list. The separately owned Renderer3 successor can
-extend that original finite profile only after publication and review. This
-entry point remains Core13 and will reject any changed pinned profile bytes.
+The four Core suites use the published Core16 profile's original
+`fixed_contract`, `source_contract` and validators. The RTL lane uses the
+separately reviewed current-editor RTL profile, including its exact named
+parameter cases. There is no caller-supplied suite/method list. Both profile
+sources are pinned exactly and drift is rejected.
+
+The published current `native_compiler_witness` (60fbe) and live RTL lane both
+use only the exact current-editor f16a profile. The witness successor changes
+one literal source pin; its two functions and three extracted RTL function
+bodies are identical to the original. The old 80eb file is not admitted by
+this closure. Source, compiler FileList, enumeration and real xcresult
+validators are the original upstream functions; no validator or Swift body
+is rewritten.
 
 `simctl list --json` must report one available OS27 runtime and the original
 iPad Pro 13-inch M5 type. Missing or ambiguous runtime information fails closed.
 The three producer toolchain commands are repeated read-only under the same
 selected Xcode and compared with their original output. A fresh owned iPad is
-created for each original suite; its actual UUID, name, runtime, device type and
+created for each of the five original lanes; its actual UUID, name, runtime, device type and
 boot state are checked before executing tests. No retained account or old
 fixture is admitted.
 
@@ -118,8 +134,9 @@ in memory and report the later IO failure separately. No partial receipt is
 overwritten. If the final receipt cannot be retained, original process stdout
 contains the failure/retention observation and the adapter exits unsuccessfully.
 
-`PASS_ORIGINAL_HOSTED_CORE13_METHODS` requires all 13 original methods/cases and
-successful owned cleanup/custody checks. It provides no native persistence, ACL,
+`PASS_ORIGINAL_HOSTED_CORE16_AND_RTL_METHODS` and schema
+`pinkha-hosted-core16-rtl-runtime-v1` require all 22 original methods/26 cases
+and successful owned cleanup/custody checks. They provide no native persistence, ACL,
 network, MiniApps, app UI, physical-device, Release or TestFlight acceptance.
 This source checkpoint itself has **not executed Apple runtime tests**.
 
@@ -130,10 +147,11 @@ PINKHA_CORE13_ORIGINAL_SOURCE=/absolute/original/source \
   python3 -B Tools/PinkhaDualEngineRuntime/hosted_core13/test_control.py
 ```
 
-The eight portable methods check exact original declarations/scope, byte-tamper
+The nine portable methods check exact original declarations/scope, byte-tamper
 rejection, same-job source/plan authority, observed runtime ambiguity, owned
 device/shutdown identity, failed-lane/cleanup reporting, closed command admission
 after unresolved ownership, and preservation of the first failure despite
-receipt IO failure. Their temporary
+receipt IO failure, and the finite Core16/RTL dispatch with exact published
+60fbe witness and f16a RTL pair. Their temporary
 fixtures never invoke Apple commands, create simulators or open accounts. They
-do not substitute for real Core13 execution.
+do not substitute for real original Core16/RTL execution.
