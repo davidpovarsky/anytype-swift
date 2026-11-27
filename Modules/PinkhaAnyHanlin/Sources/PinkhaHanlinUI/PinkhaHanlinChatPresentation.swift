@@ -267,7 +267,9 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         hooks.invalidated(session.id, "explicitCloseOrOwner")
         closed = true
         host.revokePresentation()
-        running?.cancel()
+        let consumer = running
+        let stop = stopping
+        consumer?.cancel()
         currentRunID = nil
         isStreaming = false
         isStopping = false
@@ -284,6 +286,10 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         closing = Task { [host] in
             await agent?.invalidate()
             await host.invalidate()
+            // A close during Stop joins the same original stream/persistence
+            // boundary before the account owner may release this presentation.
+            await stop?.value
+            await consumer?.value
         }
     }
 }

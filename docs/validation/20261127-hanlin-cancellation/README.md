@@ -1,6 +1,14 @@
 # Original Hanlin run cancellation — Wave 3
 
-## Source and behavior
+## Qualified EOF drain follow-up
+
+Current original SDK pin is `38528941720d9b4f2da8dce7afbc788c2e554a0c`, the child of the initial 0a24 cancellation milestone. Normal EOF now retains its run identity until the original producer, SDK tool callbacks and native workers finish. Normal completion and Stop share the same per-run worker-drain task; a confirmed receipt alone cannot release an unfinished worker. Consumer close also joins an already running Stop and its original stream consumer before the account owner releases the presentation.
+
+Actual Apple host run at `/Users/m1/builds/hanlin-wave3-cancellation-0a24e2c13b9b/eof-drain-385289`: **5 methods, 7 cases PASS**. It reran the original cancellation cases and added both normal-EOF and Stop-at-EOF held-worker cases. All 513 AgentSDK/Platform staged blobs matched canonical Git commit 385289 before and after the run; the six dependency checkout HEADs remained exact. The adjacent original `eof-drain-reviewed.json` SHA-256 is `c5fd9839ee7e2d2675d1de644230a23703a718af35c30797d5f5b83e923e747b`; raw `tests.log` SHA-256 is `d9d13b209bfe28d7e682324fd1aead823caa3cc15fb567193e3d4b8c59017b79`.
+
+This is original SDK completion/cancellation evidence with controlled native-worker fixtures. The original 0a24 evidence below remains scoped to its own source. The final consumer still requires the shared iOS App compile and four controlled runner/journal cases; neither those nor real engine/UI/Release acceptance are claimed here. The companion producer pin is separate and unchanged.
+
+## Initial 0a24 milestone
 
 Consumer branch starts at Anytype `a089ff29a5c0a7e415aac800844505f099a5561d`.
 Original SDK source is `davidpovarsky/hanlin-ai` commit `0a24e2c13b9b54f8dd8db63e6a2221b352d6ed23`, branch `codex/hanlin-pinkha-run-cancellation-20261127`, based on `a86f52f890bfd1f327b6e27cb49c53358a4ae740` (the original 9565 SDK plus the explicit-handler fix).
@@ -37,7 +45,7 @@ Selector: `AnytypeTests/HanlinHostCancellationTests`. These are shared runner/pr
 
 | Consumer identity | Exact source | Scope |
 | --- | --- | --- |
-| Original Hanlin | `0a24e2c13b9b54f8dd8db63e6a2221b352d6ed23` | Qualified focused SDK source; consumer app pending |
+| Original Hanlin | `38528941720d9b4f2da8dce7afbc788c2e554a0c` | Qualified focused SDK source; consumer app pending |
 | swift-ai-sdk | `abf0921c6e89e6521cc2b510ff11016b45a0ef08` | SDK actual checkout and existing Xcode pin; stale standalone module pin aligned manually |
 | swift-collections | `7b847a3b7008b2dc2f47ca3110d8c782fb2e5c7e` / 1.3.0 | Existing Xcode pin unchanged |
 | TorahInspectorKit | `9058b489e9acc271b4f8ef69e2ed24648f93b4ed` | Base consumer pin, Wave 2 owns replacement/qualification |
@@ -46,6 +54,6 @@ The module lock alignment is not a new whole-module resolution receipt. Root App
 
 ## Original explicit-handler proof reuse
 
-Actual prior iPad/iOS 27 test `HanlinUnifiedHostServicesE2ETests/nativeScriptActionDeclarationsPreserveRegisteredJavaScriptState()` passed at original Hanlin `c34dd6ae752b3ab3ebc001743fc62c72fc48a203`. Its test and native bridge blobs are identical in a86 and 0a24. The test preserves registered JavaScript state across three declaration paths (40 → 41 → 42) and rejects three declarations without handlers. Reuse is limited to these exact bridge/test behaviors; the entire c34 runtime graph differs and is not substituted for the complete consumer packages.
+Actual prior iPad/iOS 27 test `HanlinUnifiedHostServicesE2ETests/nativeScriptActionDeclarationsPreserveRegisteredJavaScriptState()` passed at original Hanlin `c34dd6ae752b3ab3ebc001743fc62c72fc48a203`. Its test and native bridge blobs are identical in a86, 0a24 and 385289. The test preserves registered JavaScript state across three declaration paths (40 → 41 → 42) and rejects three declarations without handlers. Reuse is limited to these exact bridge/test behaviors; the entire c34 runtime graph differs and is not substituted for the complete consumer packages.
 
 Original proof: `/Users/m1/builds/hanlin-native-action-handler-fix-20261126/validation/paired52-r4-v8/original/paired-product/handler-registration-review.json`, SHA-256 `abb657d1773db427b9fc73fb0d1bd4223198aac5f49478b225eec3276d80b284`. Original `.xcresult`, summary and test log remain at that root.
