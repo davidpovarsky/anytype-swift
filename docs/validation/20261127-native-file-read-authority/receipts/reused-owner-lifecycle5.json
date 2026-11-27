@@ -1,0 +1,197 @@
+{
+  "allOwnedGroupsPositivelyAbsent": true,
+  "commands": [
+    {
+      "absenceObservedAtSeconds": 0.2365983808413148,
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "import signal; s=signal.pthread_sigmask(signal.SIG_BLOCK, []); assert signal.SIGTERM not in s and signal.SIGINT not in s; print(\"child signals unblocked\")"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/swift-lifecycle-controls1",
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "logSHA256": "1e18b82f1bcaaf9b5ffdf4d84a0a6f27c88d1ce433e647657d3f39a6e496cada",
+      "pgid": 139946,
+      "pid": 139946,
+      "processGroupAbsent": true,
+      "seconds": 0.23660018015652895,
+      "signals": [],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    },
+    {
+      "absenceObservedAtSeconds": 0.08228699956089258,
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "import time; time.sleep(60)"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/swift-lifecycle-controls1",
+      "exitCode": -15,
+      "forcedCleanup": true,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalError": {
+        "message": "injected started journal failure",
+        "type": "OSError"
+      },
+      "pgid": 139981,
+      "pid": 139981,
+      "processGroupAbsent": true,
+      "seconds": 0.08228883985430002,
+      "signals": [
+        15
+      ],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    },
+    {
+      "absenceObservedAtSeconds": 0.24030740093439817,
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "import os, subprocess, sys; subprocess.Popen([sys.executable,\"-c\",\"import time; time.sleep(60)\"]); os._exit(0)"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/swift-lifecycle-controls1",
+      "exitCode": 0,
+      "forcedCleanup": true,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalError": {
+        "message": "owned descendants outlived command leader",
+        "type": "RuntimeError"
+      },
+      "pgid": 139982,
+      "pid": 139982,
+      "processGroupAbsent": true,
+      "residualMembersAfterLeaderExit": [
+        140001
+      ],
+      "seconds": 0.24030856136232615,
+      "signals": [
+        15
+      ],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    },
+    {
+      "absenceObservedAtSeconds": 0.10113338939845562,
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "import time; time.sleep(60)"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/swift-lifecycle-controls1",
+      "exitCode": -15,
+      "forcedCleanup": true,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalError": {
+        "message": "owned Swift controller interrupted by signal 15",
+        "type": "RuntimeError"
+      },
+      "pgid": 140005,
+      "pid": 140005,
+      "processGroupAbsent": true,
+      "seconds": 0.10113462898880243,
+      "signals": [
+        15
+      ],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    },
+    {
+      "absenceObservedAtSeconds": 0.08558669872581959,
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "import time; time.sleep(60)"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/swift-lifecycle-controls1",
+      "exitCode": -15,
+      "forcedCleanup": true,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "originalError": {
+        "message": "owned Swift controller interrupted by signal 2",
+        "type": "RuntimeError"
+      },
+      "pgid": 140026,
+      "pid": 140026,
+      "processGroupAbsent": true,
+      "seconds": 0.0855879383161664,
+      "signals": [
+        15
+      ],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    }
+  ],
+  "compilerInvocations": 0,
+  "controllerSHA256": "f5042c929585423076559d846a493bb1ecfad5d8822a04da8b49d8f5748b548a",
+  "errors": [],
+  "freeAfter": {
+    "/": 2415157248,
+    "/mnt/development": 1141858304
+  },
+  "helperSHA256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56",
+  "methods": [
+    {
+      "expectedFailure": null,
+      "groupPositivelyAbsent": true,
+      "name": "normal",
+      "retainedOriginalError": null,
+      "status": "PASS"
+    },
+    {
+      "expectedFailure": "injected started journal failure",
+      "groupPositivelyAbsent": true,
+      "name": "started-journal-failure",
+      "retainedOriginalError": {
+        "message": "injected started journal failure",
+        "type": "OSError"
+      },
+      "status": "PASS"
+    },
+    {
+      "expectedFailure": "owned descendants outlived command leader",
+      "groupPositivelyAbsent": true,
+      "name": "leader-exits-with-descendant",
+      "retainedOriginalError": {
+        "message": "owned descendants outlived command leader",
+        "type": "RuntimeError"
+      },
+      "status": "PASS"
+    },
+    {
+      "expectedFailure": "owned Swift controller interrupted by signal 15",
+      "groupPositivelyAbsent": true,
+      "name": "controller-SIGTERM",
+      "retainedOriginalError": {
+        "message": "owned Swift controller interrupted by signal 15",
+        "type": "RuntimeError"
+      },
+      "status": "PASS"
+    },
+    {
+      "expectedFailure": "owned Swift controller interrupted by signal 2",
+      "groupPositivelyAbsent": true,
+      "name": "controller-SIGINT",
+      "retainedOriginalError": {
+        "message": "owned Swift controller interrupted by signal 2",
+        "type": "RuntimeError"
+      },
+      "status": "PASS"
+    }
+  ],
+  "nativeInvocations": 0,
+  "seconds": 0.7780617764219642,
+  "status": "PASS_FIVE_ACTUAL_OWNED_PROCESS_LIFECYCLE_CONTROLS"
+}
