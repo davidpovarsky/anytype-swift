@@ -1,0 +1,93 @@
+{
+  "atUTC": "2026-11-27T21:56:06.808605+00:00",
+  "finding": {
+    "actualRetainedSizeBoundary": "Existing Property4/Hierarchy receipts retain individual source-object sizes but not final test-library sizes; no actual final .so bound failure can be asserted. Retained four Crypto aggregate sizes are 6069624,868224,8808440,22832 bytes, all below 16 MiB.",
+    "author": "Root raised the focused risk; peer independently confirmed both callsites and available retained size evidence.",
+    "classification": "source qualifier consistency / possible false rejection; no actual Bookmark build failure observed",
+    "description": "An enumerated expected_products artifact is accepted as an output with maximum=ALLOCATION_CAP, but re-read as a link input with physical() default 16 MiB. The same exact product can therefore satisfy one witness and be rejected by another solely because its role changed.",
+    "id": "BOOKMARK6-LINK-PRODUCT-BOUND-01",
+    "paths": [
+      "compiler_inputs linked_files loop",
+      "compiler_inputs extraInputs loop"
+    ],
+    "proposedNarrowCorrection": "Only exact membership in already-enumerated expected_products may use unchanged ALLOCATION_CAP on these two rereads; all other source/object/module/map/Crypto paths retain the original default. Keep all resource limits and identity checks unchanged.",
+    "state": "Await separately frozen source successor; no reviewer edit."
+  },
+  "independentStaticCustody": {
+    "bytes": 10072,
+    "path": "wave2-bookmark6-component/execution-preparation/torah-static-source-custody-review.json",
+    "sha256": "6a02af0d78cecbbb02cfccd46dd47a86d7154de609ce75dd7338aad39d2eb8f5"
+  },
+  "inspectionStops": "Two reviewer-only local inspection stops (wrong filename and terminal-newline source-hash convention) are retained in the independent static-custody record; neither modified source or ran a control.",
+  "limits": {
+    "actualBookmarkExecution": "NOT_RUN",
+    "allFourAuthorControls": "Retained as reported synthetic only; not rerun or treated as runtime.",
+    "candidateFunctionExecution": 0,
+    "compilerTypecheck": "NOT_RUN",
+    "historicalRuntimeAcceptanceTransferred": false,
+    "hostOrNativeOrAppleCalls": 0,
+    "runnerImports": 0,
+    "runtimeSlotGranted": false,
+    "stager": "NOT_CREATED_BY_REVIEWER",
+    "syntheticControlsReplayed": 0
+  },
+  "metadataPrecision": {
+    "actual": 36172,
+    "actualWholeFileSHA256": "0a216a3fe771bc5057f899f1e64473eb0833d044a1beb93c2118c0a2486eca38",
+    "field": "originalUTF8Bytes",
+    "file": "toolchain-source/PackagePIFBuilder.swift.primary.json",
+    "gitBlob": "e505e3cddebe0421877a162e19d8d1efbb906a0e",
+    "impact": "Main source-proof bytes/hash and primary Git identity are correct. Preserve original metadata and clarify the count without changing the source body.",
+    "recorded": 36142
+  },
+  "remainingConcreteBlockersExceptFinding": [],
+  "reviewedInverse": {
+    "bytes": 64331,
+    "path": "wave2-bookmark6-component/execution-preparation/review-v1/source-inverse.json",
+    "sha256": "3c9d9f4984bd8a3c12ffc0ec823b55657ee05ae752a7547dfbd38cc6ab82f6f8"
+  },
+  "reviewedPackage": {
+    "bytes": 6987,
+    "path": "wave2-bookmark6-component/execution-preparation/review-v1/inputs/component/Package.swift",
+    "sha256": "e030600787c19dee1002c8223b34fe499e5832d213259c8796eb164fb3ed83be"
+  },
+  "reviewedPacket": {
+    "bytes": 28662,
+    "path": "wave2-bookmark6-component/execution-preparation/review-v1/input-packet.json",
+    "sha256": "6f120769bd969a23521f92bcf88ae32ff42aaaf61cb216df6c0a9679ec433357"
+  },
+  "reviewedRunner": {
+    "bytes": 47967,
+    "path": "wave2-bookmark6-component/execution-preparation/review-v1/inputs/run_component.py",
+    "sha256": "937530b3497bf26f0a6a10e99390e7e7b4f3a95ae0b61c419b034e0eeea0df22"
+  },
+  "reviewedScope": [
+    "Independent complete runner and Package reverse edits restore exact executed Hierarchy originals. All 11 named helper functions are byte-identical; main changes only receipt schema, deadline message, result-call name and success status text.",
+    "All 90 staged input bodies and their byte/SHA/Git-blob inventory were independently recomputed. The 84 complete Swift files equal the earlier frozen 82-production/two-test closure byte-for-byte; no stubs, extracted declarations or rewritten original test bodies.",
+    "All seven retained SwiftPM 6.4.3 primary source bodies were independently Git-blob rehashed. SwiftCommandState selects multiple test products for swiftbuild; PackageBuilder constructs one product per test module. PIF generates one named runner per root test product, forwards original user linker settings, and the package aggregate depends on both. SwiftBuildSystem lists both non-support test products.",
+    "SwiftTestCommand runs enabled XCTest and Swift Testing over the products, passes method filtering into the framework paths, treats other-product no-matching-tests distinctly, and returns failure if a product fails. No multi-target actual execution is inferred from this source.",
+    "Nine expected compiler modules and link products are a finite composition of observed Property4 Host and Hierarchy Integration formats. Actual retained stderr confirms driver/list paths, production/test Swift 6 versus runner Swift 5, ROOT working directory, clang aggregate objects, test .so and generated runner links, exact four Crypto objects and one -lstdc++ per test/runner link.",
+    "Expected Integration generated entry is exactly the retained actual Hierarchy bytes. Host generated entry independently reconstructs from the actual Property4 entry by exactly one whole discovery-tuple replacement; all remaining template bytes are unchanged. Neither prediction is staged as a compiler source.",
+    "Result qualification requires the exact four XCTest start/pass pairs, native suite ordering and two four-case summaries, plus exact two nonparameterized Swift Testing start/pass pairs, their original named suite and one positive two-test footer. Unknown/failed/skipped/duplicate method or suite events fail. At most one other-product empty framework output contributes no positive credit. Main separately requires actual command exit zero and exact compiler/link evidence.",
+    "No original Host seven or Integration 27 method names are selected by the finite six-name filter. Four Host methods contain 17 literal scenarios; those are not separately enumerated cases.",
+    "Original owned-process helper 58624, first-failure retention, final cleanup, source/dependency final rechecks, one command, jobs=2, 300 seconds, cwd/PWD behavior and fixed resource limits remain unchanged. Preparation grants no runtime slot and does not forecast fit under the unchanged 256 MiB cap."
+  ],
+  "reviewer": "/root/torah_continue",
+  "rootWholeSourceReview": {
+    "bytes": 1170,
+    "path": "wave2-bookmark6-component/root-source-closure-review.json",
+    "sha256": "39312d1456cd342e2e038736fefaf57377f54e79f7e9e39e8b215e474a9e02a5"
+  },
+  "schema": "pinkha-bookmark6-independent-execution-source-review/v1",
+  "status": "ONE_NARROW_PRODUCT_BOUND_CORRECTION_REQUIRED_SOURCE_ONLY",
+  "twoTargetPrimaryProof": {
+    "bytes": 9481,
+    "path": "wave2-bookmark6-component/execution-preparation/two-target-source-proof.json",
+    "sha256": "48eb0b6b96e9e5e3f3a8e892072402f1315edc3d0f7752b6db9ee332af5a5cfe"
+  },
+  "wholeSourceClosure": {
+    "bytes": 179044,
+    "path": "wave2-bookmark6-component/source-preparation/whole-source-closure.json",
+    "sha256": "38e924728ec19aedb3eda251d7cc2f60d538c46e553ee5dcb06a607d6c4947ce"
+  }
+}

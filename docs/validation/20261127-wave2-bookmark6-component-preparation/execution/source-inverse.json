@@ -1,0 +1,331 @@
+{
+  "candidatePackage": {
+    "bytes": 6987,
+    "gitBlob": "735685e09fb81dc65d1f60f5930d19b21214f785",
+    "path": "wave2-bookmark6-component/execution-preparation/inputs/component/Package.swift",
+    "sha256": "e030600787c19dee1002c8223b34fe499e5832d213259c8796eb164fb3ed83be"
+  },
+  "candidateRunner": {
+    "bytes": 48105,
+    "gitBlob": "7acffd501928ce64c2eb70728a1fdddcf0bd7d99",
+    "path": "wave2-bookmark6-component/execution-preparation/inputs/run_component.py",
+    "sha256": "3729eed7d91e3400c19137420df96465d4785c0bd9587d81553864e1041f176c"
+  },
+  "changedFunctions": [
+    "compiler_inputs",
+    "main"
+  ],
+  "completeOldRunnerAndPackageRestored": true,
+  "hostTargetDonorPackage": {
+    "bytes": 6091,
+    "gitBlob": "e783d712709e50c040f13806a780c86333056c16",
+    "path": "wave2-property-unicode-audit/component-preparation/execution-preparation/inputs/component/Package.swift",
+    "sha256": "25f975e6448feb61044163468c676b0d2fa686e02af3481261a53e11fd905f1b"
+  },
+  "originalPackage": {
+    "bytes": 4958,
+    "gitBlob": "9813859a445c9b96da9c284d17bbb0f84e4bc2e9",
+    "path": "wave2-hierarchy-rename-component/execution-preparation/inputs/component/Package.swift",
+    "sha256": "bf6b4e867ea96c9fe8a51fb148867c33885b2c5ee335c07070cacb53d3ac305c"
+  },
+  "originalRunner": {
+    "bytes": 36251,
+    "gitBlob": "b9f0658339f5a2a47faf2e3d30d13c7feff76c72",
+    "path": "wave2-hierarchy-rename-component/execution-preparation/inputs/run_component.py",
+    "sha256": "f63adbdfde8bfa5d1779371e1c046f196e617f2f286181dc6c8c7768414e3628"
+  },
+  "packageReverseEdits": [
+    {
+      "newEndLine": 10,
+      "newStartLine": 2,
+      "newText": "let package = Package(name: \"BookmarkCreationProof\", targets: [\n        .target(name: \"TorahInspectorCore\", dependencies: [], swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags([\"-I\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-imports\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include\"])]),\n        .target(name: \"PinkhaKit\", dependencies: [\"TorahInspectorCore\"], swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags([\"-I\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-imports\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include\"])]),\n        .target(name: \"PinkhaAnyEngine\", dependencies: [], swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags([\"-I\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-imports\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include\"])]),\n        .target(name: \"PinkhaAnyIntegration\", dependencies: [\"PinkhaKit\", \"PinkhaAnyEngine\"], swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags([\"-I\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-imports\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include\"])]),\n        .target(name: \"PinkhaAnyHost\", dependencies: [\"PinkhaAnyEngine\", \"PinkhaAnyIntegration\", \"PinkhaKit\"], swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags([\"-I\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-imports\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include\"])]),\n        .testTarget(name: \"PinkhaAnyIntegrationTests\", dependencies: [\"PinkhaAnyIntegration\"], swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags([\"-I\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-imports\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include\"])], linkerSettings: [.unsafeFlags([\"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-objects/Crypto.o\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-objects/CryptoBoringWrapper.o\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-objects/CCryptoBoringSSL.o\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-objects/CCryptoBoringSSLShims.o\", \"-lstdc++\"])]),\n        .testTarget(name: \"PinkhaAnyHostTests\", dependencies: [\"PinkhaAnyEngine\", \"PinkhaAnyIntegration\", \"PinkhaAnyHost\"], swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags([\"-I\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-imports\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSL/include\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include\"])], linkerSettings: [.unsafeFlags([\"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-objects/Crypto.o\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-objects/CryptoBoringWrapper.o\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-objects/CCryptoBoringSSL.o\", \"/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/retained-crypto-objects/CCryptoBoringSSLShims.o\", \"-lstdc++\"])])\n",
+      "oldEndLine": 8,
+      "oldStartLine": 2,
+      "oldText": "let package = Package(name: \"HierarchyRawTitleProof\", targets: [\n        .target(name: \"TorahInspectorCore\", dependencies: [], swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags([\"-I\", \"/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include\"])]),\n        .target(name: \"PinkhaKit\", dependencies: [\"TorahInspectorCore\"], swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags([\"-I\", \"/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include\"])]),\n        .target(name: \"PinkhaAnyEngine\", dependencies: [], swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags([\"-I\", \"/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include\"])]),\n        .target(name: \"PinkhaAnyIntegration\", dependencies: [\"PinkhaKit\", \"PinkhaAnyEngine\"], swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags([\"-I\", \"/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include\"])]),\n        .testTarget(name: \"PinkhaAnyIntegrationTests\", dependencies: [\"PinkhaAnyIntegration\"], swiftSettings: [.swiftLanguageMode(.v6), .unsafeFlags([\"-I\", \"/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-imports\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSL/include\", \"-Xcc\", \"-fmodule-map-file=/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include/module.modulemap\", \"-Xcc\", \"-I/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-headers/CCryptoBoringSSLShims/include\"])], linkerSettings: [.unsafeFlags([\"/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-objects/Crypto.o\", \"/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-objects/CryptoBoringWrapper.o\", \"/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-objects/CCryptoBoringSSL.o\", \"/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127/retained-crypto-objects/CCryptoBoringSSLShims.o\", \"-lstdc++\"])])\n"
+    }
+  ],
+  "productionBodiesChanged": 0,
+  "replacedResultFunction": {
+    "new": "mixed_test_result",
+    "old": "swift_testing_result"
+  },
+  "runnerReverseEdits": [
+    {
+      "newEndLine": 2,
+      "newStartLine": 1,
+      "newText": "\"\"\"One source-bound Bookmark component: four XCTest and two Swift Testing cases.\n",
+      "oldEndLine": 2,
+      "oldStartLine": 1,
+      "oldText": "\"\"\"One source-bound hierarchy rename component, four methods/eight argument cases.\n"
+    },
+    {
+      "newEndLine": 7,
+      "newStartLine": 3,
+      "newText": "Preparation is inert and never grants a coordinated runtime slot. All82 production\nbodies and both complete original test files are exact. Old7/27 methods are not\nselected. Typed fixtures and the original controlled repository are not Native,\nHTTP, account, hosted UI, or Apple acceptance. There is one owned Swift command.\n",
+      "oldEndLine": 7,
+      "oldStartLine": 3,
+      "oldText": "Preparation is inert by default and does not grant a coordinated runtime slot.\nAll54 production bodies and the full27-method Integration test file are exact.\nOnly AnyHierarchyRawTitleTests is selected; old23 tests and Host2 are not replayed.\nThis is controlled-store Integration coverage, not HTTP/Native/Apple/account UI.\n"
+    },
+    {
+      "newEndLine": 26,
+      "newStartLine": 25,
+      "newText": "ROOT = Path('/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127')\n",
+      "oldEndLine": 26,
+      "oldStartLine": 25,
+      "oldText": "ROOT = Path('/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127')\n"
+    },
+    {
+      "newEndLine": 31,
+      "newStartLine": 30,
+      "newText": "PRODUCT_COMMIT = '3d2abbf8b1017204e2b93b53ea83ff6f053e67b3'\n",
+      "oldEndLine": 31,
+      "oldStartLine": 30,
+      "oldText": "PRODUCT_COMMIT = '9e4aa3f1b88d8f6bfec27cdf2cb47d07ffd416ce'\n"
+    },
+    {
+      "newEndLine": 41,
+      "newStartLine": 34,
+      "newText": "SOURCE_CLOSURE_SHA = '38e924728ec19aedb3eda251d7cc2f60d538c46e553ee5dcb06a607d6c4947ce'\nSOURCE_PINS = {'Package.swift': 'e030600787c19dee1002c8223b34fe499e5832d213259c8796eb164fb3ed83be', 'Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift': 'cc9ee5e3eb159ef5ea68e7a87928fd94f047a8668c2f2483890faffdac8d73a1', 'Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift': '048ebd2d82e3a22265c3fea4ead6ba406b4f8d7d8f00367ec0c7779fac1b0d8f', 'Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift': '7205b72e687975bfda695bcccbcdbdd486af45c13ef7f0ddd20fcf58c9d5a312', 'Sources/PinkhaAnyEngine/AnyHTTPClient.swift': '8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182', 'Sources/PinkhaAnyEngine/AnyJSON.swift': 'fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d', 'Sources/PinkhaAnyEngine/AnyLiveQuery.swift': '445930138f7aefe46f6d41995059acafad9363178da4bc17574d2a0e399c8cf4', 'Sources/PinkhaAnyEngine/AnyNativeFileDurability.swift': '364a1bea4e4cae6134c9bb5935c0432f257657f3ae0c889a669354de975c2dc6', 'Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift': '08635cd324835923b713674c359694a380005585cadd1de3075270f41ed0f6d2', 'Sources/PinkhaAnyEngine/AnyNativeFileUploadStaging.swift': 'd0a02b1be20973b87c9be01bbf04e40f734f9ccddc39d0c4e61b83d1212bc349', 'Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift': '83e4618ee93a04ce407a62926a0bffbb1752756a59b38e6e5e5d636bad9138a6', 'Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift': 'c4635b23304e60b1d27b546c53e8901a841160bd79bd43a066b50bc02b2b0704', 'Sources/PinkhaAnyEngine/AnySSEParser.swift': '1b5b55f99d357418d0df7ec43bc61e8bac1e1f246c613019f8c8b025c03cbdad', 'Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift': 'cd11b4cc0e54b4593d5a9111ca37ef7556bf3bcaa71ddb1532e900dd94ac0145', 'Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift': 'd2cdada5bf2a639127e58dbbe7b422188df76cb145d32023d4b1011006fd69af', 'Sources/PinkhaAnyEngine/AnyTorahOperation.swift': 'c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980', 'Sources/PinkhaAnyHost/AnyApplicationSession.swift': 'ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd', 'Sources/PinkhaAnyHost/AnyDestinationAnchoredText.swift': '519b06bac9334e8483895daa66e3028e51a55347c543be55d59604a083f030b5', 'Sources/PinkhaAnyHost/AnyDestinationDefinitionCoverage.swift': 'e2095c83e1fe238184db7adf0220db40a5521ee9dca31302a810af203d59fbd4', 'Sources/PinkhaAnyHost/AnyDestinationImmutableRecordChecks.swift': 'c61c901522875690a5d5178b5583cf3a5e136d1a6ba448d0f9187d6fad6a6889', 'Sources/PinkhaAnyHost/AnyDestinationMigrationPlan.swift': 'cb1f3d9be09caa0c19f1242a1c6917a6cbf6fc60d000c1d2044a85b20efba13f', 'Sources/PinkhaAnyHost/AnyDestinationNativeMigration.swift': 'bab9be2ae8767f70239386b58eed452e5ea5bfd024d6a9003bb68cc8785efdf6', 'Sources/PinkhaAnyHost/AnyDestinationSystemCoverage.swift': 'ffc3caca0ed71a6a68671f5a0f94c7722e8c78ef6ce4ed237ccea247630381a6', 'Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift': '1ea82b556e9f16b7903de03bbe435a249c6c922ade9798a01d648c8394c2604d', 'Sources/PinkhaAnyHost/AnyEditorSnapshot.swift': 'd2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f', 'Sources/PinkhaAnyHost/AnyHostCanonical.swift': 'd234b3d87ab9ec8317f159d413eb140eb94c1ae0aa0b1e20f30391b4e51c4840', 'Sources/PinkhaAnyHost/AnyInlineMarkdown.swift': 'c537820797785b9f4f3bd00533706c16145c91e5f6999936a9b97243c4d9a483', 'Sources/PinkhaAnyHost/AnyNativeBlockCreator.swift': '6bea1d2f1108cf737d68f91cf891c901e0140212b574aaf9e42fa63b392fd652', 'Sources/PinkhaAnyHost/AnyNativeBookmarkCreationFrame.swift': '498f37384519cc638a16b23d5c1f2b615d3228abb109dd7677a8006e15a9b116', 'Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift': '704a3a50613129d966729e56491bdf17349bcbb9e0f977d5666867f39bf2d010', 'Sources/PinkhaAnyHost/AnyNativeFilePropertyFormat.swift': 'd068f7dc5ca478788a3457e7114da87b154bac46efacc89fe7a81401b7d887a1', 'Sources/PinkhaAnyHost/AnyNativeFileReference.swift': '19babf809e1c6c7ec8f517f89a9eb19f6e7a67e6ec743a02a5d523ab3aa5308f', 'Sources/PinkhaAnyHost/AnyNativeImportedDefaultMetadata.swift': 'b8ac71373d973d19b8d452a6f994087f2b8aa20245ce018ca4b46d776e996adb', 'Sources/PinkhaAnyHost/AnyNativeImportedTypeOrder.swift': '4516a77ba08a02fdfb714d58629c03deb62856e8a250114bbc913d41f45be5a2', 'Sources/PinkhaAnyHost/AnyNativeImportedTypePresentation.swift': '9cc30290575197f7cc2b8f3c8fdd700b8967223b035726f314ea11b2e1991e1a', 'Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift': 'ae8faf092774401c595a63e389517aa2777fa83c9b2b9ffa31cc054355ed02f6', 'Sources/PinkhaAnyHost/AnyNativePreparedDefinitionMigration.swift': '8d44ac127127a59dc1826f3716b41948ee89f846c42221e35e4f7171476af925', 'Sources/PinkhaAnyHost/AnyNativePreparedFileMigration.swift': '16b230914002ef5700397e6596671ee201852d6bb962e63a519521f3b2d15009', 'Sources/PinkhaAnyHost/AnyNativePreparedImmutableRecord.swift': '83e543085c6911be85076f097eb55f3b054e24422378c32e99e5ab7dc1693e30', 'Sources/PinkhaAnyHost/AnyNativePreparedInlineFileMigration.swift': '4c134d514014b021bfd346ca93fe11f2cbc4af12ee6c263e9b42276e0065591f', 'Sources/PinkhaAnyHost/AnyNativePreparedMigration.swift': 'e8c0e084b0a18a7c4892529054f9b9d393d8cdd72d357aef4d330ea2a4ae059d', 'Sources/PinkhaAnyHost/AnyNativePreparedPropertyUpdate.swift': 'd2265107059c571af533fe0996b29dfafc7bc0ec3d63f46e46158319b37e3c9c', 'Sources/PinkhaAnyHost/AnyNativePropertyStore.swift': 'b91ed64c54ec552caa68a3b49c272ff8f008722b3a41fc76d9eadf4eaf9ef93b', 'Sources/PinkhaAnyHost/AnyProtectedCreationJournal.swift': '5f0c526fa4f88e530242198bb152c3e1840cc5396df771420bff64f4183de8d5', 'Sources/PinkhaAnyIntegration/AnyConditionalPropertyFence.swift': 'baec5f9838f1bdbf6d6aedb557998cd334b3a77bbc73ce42f0c1408e14d40129', 'Sources/PinkhaAnyIntegration/AnyGuardedHTTPHierarchyRecordStore.swift': 'e07269b03f4ed48bea10db4cc237f4017aef30eab283192d1615c7b0696861bc', 'Sources/PinkhaAnyIntegration/AnyHTTPHierarchyRecordStore.swift': '7ede044c02fffbd4c0d9c9f81b78993af2ffce12ee9816e5703264200d82e963', 'Sources/PinkhaAnyIntegration/AnyHeartInlineProjection.swift': 'ecd9e751715263ab6c592be9d2cf22129d5e295c5b7510595ff5886d630529fe', 'Sources/PinkhaAnyIntegration/AnyHeartNativeBundledDefinition.swift': '524deb8119421132b0b802c7dfc40d0718a4e01235afc3e7697aa5c09ee79a3c', 'Sources/PinkhaAnyIntegration/AnyHeartNativeCompiledRelation.swift': 'abce8533e20f169fc431bd1d851d0c56fde878974d6eadef8a42fc1035de4096', 'Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift': '437131d2f7095af0a450e7c695aa9c9bed13ea290f576d49870c5224b60a3965', 'Sources/PinkhaAnyIntegration/AnyHeartNativeRecoveredDefinitions.swift': 'de4b8b0596954a3f476bfff2c3af63b15f789d6ed17d806e54a2cd221c9bd449', 'Sources/PinkhaAnyIntegration/AnyHeartNativeSnapshotView.swift': '8128c8e00ff10f4904ea1bf1638741a0de1d68565b8a2e30f9a8b5c97ebfc0d0', 'Sources/PinkhaAnyIntegration/AnyHeartNativeSpaceBundle.swift': '9f7aa90550b3ab54cd86928a5c254b6f4af13762e14ce80fb62199f444879977', 'Sources/PinkhaAnyIntegration/AnyHeartNativeStoreContext.swift': '42617085d07295f4eb8a67973380d6a5174ef29bba4b9b29b1e58105d99c6a81', 'Sources/PinkhaAnyIntegration/AnyHierarchyArchiveRequest.swift': 'df4bf42404eaeed6be85dfe32779683e991a392dfa39c1726d58cfbefd255f5b', 'Sources/PinkhaAnyIntegration/AnyHierarchyModels.swift': '0a594737c72b9f065cd4e70aff425f521a6d7ff86ce7b1ebd21dd1221d150700', 'Sources/PinkhaAnyIntegration/AnyHierarchyRepository.swift': '59e3404dc4553bb842ed81a9cc39b7739fab47091e480f52e753653712405135', 'Sources/PinkhaAnyIntegration/AnyLexicographicPosition.swift': '079984b4d7aabdb375ca7bb466337db3f6282e5cd3f535ad8f8ae90b4ad86c73', 'Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift': 'a4fa5fc4fc1185b1778ae960b60e39a03e3d4ce487c34bd4d69401946ff7e366', 'Sources/PinkhaAnyIntegration/AnyTorahSemanticAnchorMigration.swift': 'a8968f34c5f3af00537ba9b183ce0065ff7dadd31e55ca413dddc26fbe96728d', 'Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift': 'a40e49f4d3424e5625498e1a95baad171e22391a786d16c3f3e0c4c1ea926541', 'Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift': '7a51c02baafba146fac43ab0b5737ab3db6465ebdc142bce3d1a6ea33bf36c56', 'Sources/PinkhaKit/PinkhaHierarchyBuilder.swift': '7ac6eea3d287c43afd9849e82093466987764c518d81880208dd5452c4112b97', 'Sources/PinkhaKit/PinkhaHierarchyModels.swift': '7f201585eb76b34271e49fe686770302ece2d67d3e2ba4304167637ea0ddcb0b', 'Sources/PinkhaKit/PinkhaHierarchyMutationValidator.swift': '3f5f9e21035851c171ee5c64e4789048ce2fcf78163d839ef69155499fbf0d21', 'Sources/PinkhaKit/PinkhaHierarchyOrdering.swift': '7e33fc757c7c2888a8715fa7f110503bf9dc577ea06cf5bbbcd71e0793a9adf8', 'Sources/PinkhaKit/PinkhaSemanticTextAnchor.swift': 'bfefc94965cfe6dbdf910452eaec3a9530854a6d5b6a09a1a9b10339c6c30274', 'Sources/PinkhaKit/TorahAssociationIdentity.swift': '85738df63c9ae987c1180c20e661cd21cd4acc20afcd376592f87ca32dcdb626', 'Sources/PinkhaKit/TorahAssociationModels.swift': '0007274a78d39fd4c8e0105eb50cec106c807cf53735caa0de1f4a85cd7fbde1', 'Sources/PinkhaKit/TorahAssociationPayloadCodec.swift': '9956aa25174812c5878927b5c62cff5f5d1d16e8becb536e23dadb25a01422d1', 'Sources/PinkhaKit/TorahAssociationRepository.swift': '63c789b1e14b85fb8032f2cf8fecb4fcb7e768453c03b9304e78ac77775fb66e', 'Sources/PinkhaKit/TorahCanonicalAssociations.swift': 'e5c988ebb64572e5228592f8a833ca8e5c2638fd991d0f7fc7e9bb114e4e3f3d', 'Sources/PinkhaKit/TorahSemanticAnchorAssociation.swift': '17c469ea127bf01211c7e819c00a2e15ea07facbe2c6d86505a5f0fce82cb3f4', 'Sources/PinkhaKit/TorahSourceJSONGuard.swift': 'ad856a6ed49f645ec2d5cb6a0bc3c7b6e7566c5cd7ad2a3081ccd748849ab9f6', 'Sources/TorahInspectorCore/Models.swift': '59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0', 'Sources/TorahInspectorCore/ProviderProtocols.swift': '9f5f28f1d71a97831827dce5dfe2324a60460fc7760137b9527e4c3815d20273', 'Sources/TorahInspectorCore/TorahInspectorCoordinator.swift': 'fccfc25ee56e165c6559aba52a1ccec39d10db6fd6a94a91c867cd38dc693116', 'Sources/TorahInspectorCore/TorahInspectorRepository.swift': '519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040', 'Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift': '90173f3198133c6a746d00c9a6af9ad8cd854f5643f924d98e9095133da5bbdc', 'Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift': '0ff22bb5a56ddff0235e7b6c5188c737b110cb2848d7e17dcaefc3ca1d6df2e6', 'Sources/TorahInspectorCore/TorahSourceTransfer.swift': '994da5da2cb6b163083c7f3dea20cfe74c781211eea0f144b394a6d047affc97', 'Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift': '34dda44a571764ea98e43449422340ad7a00dbe4b0d43c0036d7d48ad8119729', 'Tests/PinkhaAnyHostTests/NativeBookmarkPresentationTests.swift': 'b80f20ccf77b4b0bb42043d18449f2b63d8001757e389a047011e6e3b43ba3b0', 'Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift': '4274837b7e8176bc7f768149f842b31e56765716f5219c2a7e6412378c43e75c'}\nXCTEST_METHODS = ('testBookmarkCreationRetainsEmptyNameAndOneExactMappedURL', 'testBookmarkCreationRefusesHiddenManagedAndChangedBindings', 'testBookmarkCreationReadbackRequiresExactSourceAndOriginalIdentity', 'testBookmarkCreationRefusesFramesOutsideTheSelectedBinding')\nSWIFT_TESTING_METHODS = ('creationOverrideRejectsAnotherWorkspaceBeforeDispatch', 'creationOverrideAndDefaultCreatorShareTheExistingMutationQueue')\nMETHODS = XCTEST_METHODS + SWIFT_TESTING_METHODS\nGENERATED_ENTRY_SHA256 = {'PinkhaAnyHostTests': '3ba4486f07a26bb0c71f7003aaa14f49954be57f5a3cd988ecb1c082e8487904', 'PinkhaAnyIntegrationTests': 'ef1ea588c48abfb9df451d79abb95237c2380da8b15cc97422bbfcccd532993b'}\nTEST_FILTER = '(?:' + '|'.join(re.escape(name) for name in METHODS) + r')(?:\\(\\))?$'\n",
+      "oldEndLine": 39,
+      "oldStartLine": 34,
+      "oldText": "SOURCE_CLOSURE_SHA = '510a00d5fb0065bcc5292d83443b9e4b6774f9dda4a7fd1d1d0ef4cfddeb8ca0'\nSOURCE_PINS = {'Package.swift': 'bf6b4e867ea96c9fe8a51fb148867c33885b2c5ee335c07070cacb53d3ac305c', 'Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift': 'cc9ee5e3eb159ef5ea68e7a87928fd94f047a8668c2f2483890faffdac8d73a1', 'Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift': '048ebd2d82e3a22265c3fea4ead6ba406b4f8d7d8f00367ec0c7779fac1b0d8f', 'Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift': '7205b72e687975bfda695bcccbcdbdd486af45c13ef7f0ddd20fcf58c9d5a312', 'Sources/PinkhaAnyEngine/AnyHTTPClient.swift': '8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182', 'Sources/PinkhaAnyEngine/AnyJSON.swift': 'fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d', 'Sources/PinkhaAnyEngine/AnyLiveQuery.swift': '445930138f7aefe46f6d41995059acafad9363178da4bc17574d2a0e399c8cf4', 'Sources/PinkhaAnyEngine/AnyNativeFileDurability.swift': '364a1bea4e4cae6134c9bb5935c0432f257657f3ae0c889a669354de975c2dc6', 'Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift': '08635cd324835923b713674c359694a380005585cadd1de3075270f41ed0f6d2', 'Sources/PinkhaAnyEngine/AnyNativeFileUploadStaging.swift': 'd0a02b1be20973b87c9be01bbf04e40f734f9ccddc39d0c4e61b83d1212bc349', 'Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift': '83e4618ee93a04ce407a62926a0bffbb1752756a59b38e6e5e5d636bad9138a6', 'Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift': 'c4635b23304e60b1d27b546c53e8901a841160bd79bd43a066b50bc02b2b0704', 'Sources/PinkhaAnyEngine/AnySSEParser.swift': '1b5b55f99d357418d0df7ec43bc61e8bac1e1f246c613019f8c8b025c03cbdad', 'Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift': 'cd11b4cc0e54b4593d5a9111ca37ef7556bf3bcaa71ddb1532e900dd94ac0145', 'Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift': 'd2cdada5bf2a639127e58dbbe7b422188df76cb145d32023d4b1011006fd69af', 'Sources/PinkhaAnyEngine/AnyTorahOperation.swift': 'c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980', 'Sources/PinkhaAnyIntegration/AnyConditionalPropertyFence.swift': 'baec5f9838f1bdbf6d6aedb557998cd334b3a77bbc73ce42f0c1408e14d40129', 'Sources/PinkhaAnyIntegration/AnyGuardedHTTPHierarchyRecordStore.swift': 'e07269b03f4ed48bea10db4cc237f4017aef30eab283192d1615c7b0696861bc', 'Sources/PinkhaAnyIntegration/AnyHTTPHierarchyRecordStore.swift': '7ede044c02fffbd4c0d9c9f81b78993af2ffce12ee9816e5703264200d82e963', 'Sources/PinkhaAnyIntegration/AnyHeartInlineProjection.swift': 'ecd9e751715263ab6c592be9d2cf22129d5e295c5b7510595ff5886d630529fe', 'Sources/PinkhaAnyIntegration/AnyHeartNativeBundledDefinition.swift': '524deb8119421132b0b802c7dfc40d0718a4e01235afc3e7697aa5c09ee79a3c', 'Sources/PinkhaAnyIntegration/AnyHeartNativeCompiledRelation.swift': 'abce8533e20f169fc431bd1d851d0c56fde878974d6eadef8a42fc1035de4096', 'Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift': '437131d2f7095af0a450e7c695aa9c9bed13ea290f576d49870c5224b60a3965', 'Sources/PinkhaAnyIntegration/AnyHeartNativeRecoveredDefinitions.swift': 'de4b8b0596954a3f476bfff2c3af63b15f789d6ed17d806e54a2cd221c9bd449', 'Sources/PinkhaAnyIntegration/AnyHeartNativeSnapshotView.swift': '8128c8e00ff10f4904ea1bf1638741a0de1d68565b8a2e30f9a8b5c97ebfc0d0', 'Sources/PinkhaAnyIntegration/AnyHeartNativeSpaceBundle.swift': '9f7aa90550b3ab54cd86928a5c254b6f4af13762e14ce80fb62199f444879977', 'Sources/PinkhaAnyIntegration/AnyHeartNativeStoreContext.swift': '42617085d07295f4eb8a67973380d6a5174ef29bba4b9b29b1e58105d99c6a81', 'Sources/PinkhaAnyIntegration/AnyHierarchyArchiveRequest.swift': 'df4bf42404eaeed6be85dfe32779683e991a392dfa39c1726d58cfbefd255f5b', 'Sources/PinkhaAnyIntegration/AnyHierarchyModels.swift': '0a594737c72b9f065cd4e70aff425f521a6d7ff86ce7b1ebd21dd1221d150700', 'Sources/PinkhaAnyIntegration/AnyHierarchyRepository.swift': '7a1af6090a300a17e1427abb97423a49fbd26031d0578d17e6cba5f719016463', 'Sources/PinkhaAnyIntegration/AnyLexicographicPosition.swift': '079984b4d7aabdb375ca7bb466337db3f6282e5cd3f535ad8f8ae90b4ad86c73', 'Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift': 'a4fa5fc4fc1185b1778ae960b60e39a03e3d4ce487c34bd4d69401946ff7e366', 'Sources/PinkhaAnyIntegration/AnyTorahSemanticAnchorMigration.swift': 'a8968f34c5f3af00537ba9b183ce0065ff7dadd31e55ca413dddc26fbe96728d', 'Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift': 'a40e49f4d3424e5625498e1a95baad171e22391a786d16c3f3e0c4c1ea926541', 'Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift': '7a51c02baafba146fac43ab0b5737ab3db6465ebdc142bce3d1a6ea33bf36c56', 'Sources/PinkhaKit/PinkhaHierarchyBuilder.swift': '7ac6eea3d287c43afd9849e82093466987764c518d81880208dd5452c4112b97', 'Sources/PinkhaKit/PinkhaHierarchyModels.swift': '7f201585eb76b34271e49fe686770302ece2d67d3e2ba4304167637ea0ddcb0b', 'Sources/PinkhaKit/PinkhaHierarchyMutationValidator.swift': '3f5f9e21035851c171ee5c64e4789048ce2fcf78163d839ef69155499fbf0d21', 'Sources/PinkhaKit/PinkhaHierarchyOrdering.swift': '7e33fc757c7c2888a8715fa7f110503bf9dc577ea06cf5bbbcd71e0793a9adf8', 'Sources/PinkhaKit/PinkhaSemanticTextAnchor.swift': 'bfefc94965cfe6dbdf910452eaec3a9530854a6d5b6a09a1a9b10339c6c30274', 'Sources/PinkhaKit/TorahAssociationIdentity.swift': '85738df63c9ae987c1180c20e661cd21cd4acc20afcd376592f87ca32dcdb626', 'Sources/PinkhaKit/TorahAssociationModels.swift': '0007274a78d39fd4c8e0105eb50cec106c807cf53735caa0de1f4a85cd7fbde1', 'Sources/PinkhaKit/TorahAssociationPayloadCodec.swift': '9956aa25174812c5878927b5c62cff5f5d1d16e8becb536e23dadb25a01422d1', 'Sources/PinkhaKit/TorahAssociationRepository.swift': '63c789b1e14b85fb8032f2cf8fecb4fcb7e768453c03b9304e78ac77775fb66e', 'Sources/PinkhaKit/TorahCanonicalAssociations.swift': 'e5c988ebb64572e5228592f8a833ca8e5c2638fd991d0f7fc7e9bb114e4e3f3d', 'Sources/PinkhaKit/TorahSemanticAnchorAssociation.swift': '17c469ea127bf01211c7e819c00a2e15ea07facbe2c6d86505a5f0fce82cb3f4', 'Sources/PinkhaKit/TorahSourceJSONGuard.swift': 'ad856a6ed49f645ec2d5cb6a0bc3c7b6e7566c5cd7ad2a3081ccd748849ab9f6', 'Sources/TorahInspectorCore/Models.swift': '59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0', 'Sources/TorahInspectorCore/ProviderProtocols.swift': '9f5f28f1d71a97831827dce5dfe2324a60460fc7760137b9527e4c3815d20273', 'Sources/TorahInspectorCore/TorahInspectorCoordinator.swift': 'fccfc25ee56e165c6559aba52a1ccec39d10db6fd6a94a91c867cd38dc693116', 'Sources/TorahInspectorCore/TorahInspectorRepository.swift': '519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040', 'Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift': '90173f3198133c6a746d00c9a6af9ad8cd854f5643f924d98e9095133da5bbdc', 'Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift': '0ff22bb5a56ddff0235e7b6c5188c737b110cb2848d7e17dcaefc3ca1d6df2e6', 'Sources/TorahInspectorCore/TorahSourceTransfer.swift': '994da5da2cb6b163083c7f3dea20cfe74c781211eea0f144b394a6d047affc97', 'Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift': '34dda44a571764ea98e43449422340ad7a00dbe4b0d43c0036d7d48ad8119729', 'Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift': '3a11428238fabc27fc93f8cfb98535864dfbb7c2b09ae501c14f699d47b292c1'}\nMETHODS = ('canonicallyEquivalentRequestedRenameReachesTheOriginalStore', 'canonicallyEquivalentStaleExpectedTitleRefusesBeforeDispatch', 'canonicallyEquivalentSuccessfulReadbackCannotCertifyRename', 'canonicallyEquivalentReadbackPreservesTheOriginalWriteError')\nSUITE = 'AnyHierarchyRawTitleTests'\nTEST_FILTER = SUITE\n"
+    },
+    {
+      "newEndLine": 174,
+      "newStartLine": 171,
+      "newText": "    # The retained single-target runs establish this backend's actual format.\n    # Exact 6.4.3 SwiftPM source establishes one product/runner per test target.\n    # Both must produce the fixed layout below; another backend is not admitted.\n",
+      "oldEndLine": 172,
+      "oldStartLine": 169,
+      "oldText": "    # Exact layout observed with this same 6.4.3 compiler in retained source2\n    # (4d4aaa998116af4ea4a31ba0ad9714a3dd4f56bc195632314f0fe2cd9ad9673d).\n    # Generated test inputs are named individually, never admitted by directory.\n"
+    },
+    {
+      "newEndLine": 177,
+      "newStartLine": 175,
+      "newText": "    project = build / 'out/Intermediates.noindex/BookmarkCreationProof.build/Debug-linux-aarch64'\n    products = build / 'out/Products/Debug-linux-aarch64'\n",
+      "oldEndLine": 174,
+      "oldStartLine": 173,
+      "oldText": "    project = build / 'out/Intermediates.noindex/HierarchyRawTitleProof.build/Debug-linux-aarch64'\n"
+    },
+    {
+      "newEndLine": 184,
+      "newStartLine": 178,
+      "newText": "    clang = str(SWIFT.with_name('clang'))\n    test_modules = ('PinkhaAnyHostTests', 'PinkhaAnyIntegrationTests')\n    production_modules = ('TorahInspectorCore', 'PinkhaKit', 'PinkhaAnyEngine', 'PinkhaAnyIntegration', 'PinkhaAnyHost')\n    runner_modules = {module + '_test_runner': module for module in test_modules}\n    anchors = {module: project / (module + '-p.build/DerivedSources/test_anchor.swift') for module in test_modules}\n    entries = {module: project / (module + '-test-runner.build/DerivedSources/test_entry_point.swift') for module in test_modules}\n",
+      "oldEndLine": 179,
+      "oldStartLine": 175,
+      "oldText": "    test_module = 'PinkhaAnyIntegrationTests'\n    runner_module = test_module + '_test_runner'\n    anchor = project / (test_module + '-p.build/DerivedSources/test_anchor.swift')\n    entry = project / (test_module + '-test-runner.build/DerivedSources/test_entry_point.swift')\n"
+    },
+    {
+      "newEndLine": 218,
+      "newStartLine": 201,
+      "newText": "    assert sum(len(x) for x in groups.values()) == 84 and set(groups) == set(production_modules + test_modules)\n    generated = {}\n    for module in test_modules:\n        groups[module].add(str(anchors[module]))\n        groups[module + '_test_runner'] = {str(entries[module])}\n        anchor_raw = physical(anchors[module])\n        assert anchor_raw == ('public func __test_anchor_' + module + '() {}').encode('utf-8')\n        entry_raw = physical(entries[module])\n        entry_text = entry_raw.decode('utf-8')\n        assert 'import ' + module in entry_text and '__test_anchor_' + module + '()' in entry_text\n        assert 'struct __SwiftPMGeneratedTestRunner' in entry_text and 'XCTMain(__allDiscoveredTests())' in entry_text\n        assert 'await Testing.__swiftPMEntryPoint() as Never' in entry_text\n        # These are fixed byte expectations derived from retained actual generated\n        # source. They are not compiled inputs or evidence of future execution.\n        assert sha(entry_raw) == GENERATED_ENTRY_SHA256[module], module\n        generated[str(anchors[module])] = anchor_raw\n        generated[str(entries[module])] = entry_raw\n",
+      "oldEndLine": 210,
+      "oldStartLine": 196,
+      "oldText": "    assert sum(len(x) for x in groups.values()) == 55 and len(groups) == 5\n    groups[test_module].add(str(anchor))\n    groups[runner_module] = {str(entry)}\n    anchor_raw = physical(anchor)\n    assert anchor_raw == b'public func __test_anchor_PinkhaAnyIntegrationTests() {}'\n    entry_raw = physical(entry)\n    entry_text = entry_raw.decode('utf-8')\n    assert 'import PinkhaAnyIntegrationTests' in entry_text and '__test_anchor_PinkhaAnyIntegrationTests()' in entry_text\n    assert 'struct __SwiftPMGeneratedTestRunner' in entry_text and 'XCTMain(__allDiscoveredTests())' in entry_text\n    # The retained actual G04 run uses the same Swift6.4.3 Swift Testing entry\n    # point with empty XCTest discovery. Only its two module-name literals vary.\n    assert sha(entry_raw) == 'ef1ea588c48abfb9df451d79abb95237c2380da8b15cc97422bbfcccd532993b'\n    assert 'await Testing.__swiftPMEntryPoint() as Never' in entry_text\n    generated = {str(anchor): anchor_raw, str(entry): entry_raw}\n"
+    },
+    {
+      "newEndLine": 228,
+      "newStartLine": 221,
+      "newText": "    anchor_writes = {module: [] for module in test_modules}\n    entry_generators = {module: [] for module in test_modules}\n    link_commands = {}\n    expected_products = {module: products / (module + '.o') for module in production_modules}\n    expected_products.update({module: products / (module + '.so') for module in test_modules})\n    expected_products.update({runner: products / (module + '-test-runner') for runner, module in runner_modules.items()})\n    product_modules = {str(path): module for module, path in expected_products.items()}\n",
+      "oldEndLine": 215,
+      "oldStartLine": 213,
+      "oldText": "    anchor_writes = []\n    entry_generators = []\n"
+    },
+    {
+      "newEndLine": 241,
+      "newStartLine": 237,
+      "newText": "            argv = shlex.split(stripped)\n            for module, anchor in anchors.items():\n                if argv == ['write-file', str(anchor)]:\n                    anchor_writes[module].append(line)\n",
+      "oldEndLine": 226,
+      "oldStartLine": 224,
+      "oldText": "            if shlex.split(stripped) == ['write-file', str(anchor)]:\n                anchor_writes.append(line)\n"
+    },
+    {
+      "newEndLine": 247,
+      "newStartLine": 243,
+      "newText": "            module = value(argv, '--test-anchor-module')\n            assert module in test_modules\n            assert value(argv, '--output') == str(entries[module])\n            assert argv.count('--discover-tests') == 1\n",
+      "oldEndLine": 231,
+      "oldStartLine": 228,
+      "oldText": "            assert value(argv, '--output') == str(entry)\n            assert '--discover-tests' in argv\n            assert value(argv, '--test-anchor-module') == test_module\n"
+    },
+    {
+      "newEndLine": 253,
+      "newStartLine": 252,
+      "newText": "            assert link_list == project / (module + '-p.build/Objects-normal/aarch64/' + module + '.LinkFileList')\n",
+      "oldEndLine": 237,
+      "oldStartLine": 236,
+      "oldText": "            assert link_list == project / (test_module + '-p.build/Objects-normal/aarch64/' + test_module + '.LinkFileList')\n"
+    },
+    {
+      "newEndLine": 268,
+      "newStartLine": 254,
+      "newText": "            entry_generators[module].append({'actualCommandLine': line, 'linkerFileList': str(link_list),\n                                            'linkerFileListSHA256': sha(raw), 'linkerFileListText': raw.decode('utf-8')})\n        elif stripped.startswith((swiftc + ' ', clang + ' ')):\n            argv = shlex.split(stripped)\n            if '-o' not in argv:\n                continue\n            output = value(argv, '-o')\n            if Path(output).is_relative_to(products):\n                assert output in product_modules, 'Unexpected linked component product'\n                module = product_modules[output]\n                assert module not in link_commands, 'Duplicate product link command'\n                link_commands[module] = (line, argv)\n    assert set(driver_lines) == set(groups) == set(link_commands) and len(groups) == 9\n    assert all(len(anchor_writes[module]) == len(entry_generators[module]) == 1 for module in test_modules)\n",
+      "oldEndLine": 241,
+      "oldStartLine": 238,
+      "oldText": "            entry_generators.append({'actualCommandLine': line, 'linkerFileList': str(link_list),\n                                     'linkerFileListSHA256': sha(raw), 'linkerFileListText': raw.decode('utf-8')})\n    assert set(driver_lines) == set(groups) and len(anchor_writes) == len(entry_generators) == 1\n"
+    },
+    {
+      "newEndLine": 274,
+      "newStartLine": 271,
+      "newText": "    qualified_link_lists = set()\n    crypto_objects = [str(ROOT / 'retained-crypto-objects' / (name + '.o')) for name in\n                      ('Crypto', 'CryptoBoringWrapper', 'CCryptoBoringSSL', 'CCryptoBoringSSLShims')]\n",
+      "oldEndLine": 244,
+      "oldStartLine": 244,
+      "oldText": ""
+    },
+    {
+      "newEndLine": 278,
+      "newStartLine": 275,
+      "newText": "        if module in runner_modules:\n            stem = runner_modules[module] + '-test-runner'\n            target = stem + '.build'\n",
+      "oldEndLine": 247,
+      "oldStartLine": 245,
+      "oldText": "        if module == runner_module:\n            stem, target = test_module + '-test-runner', test_module + '-test-runner.build'\n"
+    },
+    {
+      "newEndLine": 280,
+      "newStartLine": 279,
+      "newText": "            stem, target = module, module + ('-p.build' if module in test_modules else '-t.build')\n",
+      "oldEndLine": 249,
+      "oldStartLine": 248,
+      "oldText": "            stem, target = module, module + ('-p.build' if module == test_module else '-t.build')\n"
+    },
+    {
+      "newEndLine": 295,
+      "newStartLine": 294,
+      "newText": "        assert value(argv, '-swift-version') == ('5' if module in runner_modules else '6')\n",
+      "oldEndLine": 264,
+      "oldStartLine": 263,
+      "oldText": "        assert value(argv, '-swift-version') == ('5' if module == runner_module else '6')\n"
+    },
+    {
+      "newEndLine": 369,
+      "newStartLine": 313,
+      "newText": "\n        # Actual link closure is separate from compiler source-list custody.\n        # Each of the two products/runners links its own fixed dependency tuple.\n        module_object = object_root / 'Modules' / (module + '.o')\n        module_object_raw = physical(module_object)\n        expected_link = {row['object'] for row in objects} | {str(module_object)}\n        if module in test_modules:\n            linked_modules = production_modules if module == 'PinkhaAnyHostTests' else production_modules[:-1]\n            expected_link |= {str(expected_products[name]) for name in linked_modules}\n        link_list = object_root / (stem + '.LinkFileList')\n        link_raw = physical(link_list)\n        linked = shlex.split(link_raw.decode('utf-8'))\n        assert len(linked) == len(set(linked)) and set(linked) == expected_link, module\n        qualified_link_lists.add(link_list)\n        linked_files = []\n        for path in linked:\n            raw = physical(Path(path), maximum=ALLOCATION_CAP if path in product_modules else 16 * 1024**2)\n            linked_files.append({'path': path, 'bytes': len(raw), 'sha256': sha(raw)})\n        link_line, link_argv = link_commands[module]\n        assert value(link_argv, '-o') == str(expected_products[module])\n        assert value(link_argv, '-target') == 'aarch64-unknown-linux-gnu'\n        at_files = [arg for arg in link_argv if arg.startswith('@')]\n        link_extras = []\n        if module in production_modules:\n            assert link_argv[0] == clang and '-r' in link_argv and '-nostdlib' in link_argv\n            assert at_files == ['@' + str(link_list)]\n            assert not [arg for arg in link_argv if arg.endswith(('.o', '.so')) and arg != str(expected_products[module])]\n        else:\n            autolink = object_root / (module + '-swiftbuild.autolink')\n            autolink_raw = physical(autolink)\n            assert link_argv[0] == swiftc\n            assert at_files == ['@' + str(link_list), '@' + str(autolink)]\n            assert link_argv.count('-lstdc++') == 1\n            assert all(link_argv.count(path) == 1 for path in crypto_objects)\n            object_tokens = [arg for arg in link_argv if arg.endswith(('.o', '.so')) and arg != str(expected_products[module])]\n            relative_tokens = [arg for arg in object_tokens if not Path(arg).is_absolute()]\n            if module in test_modules:\n                assert relative_tokens == [module + '.so']\n                soname = link_argv.index(module + '.so')\n                assert link_argv[soname - 3:soname] == ['-Xlinker', '-soname', '-Xlinker']\n            else:\n                assert not relative_tokens\n            explicit_objects = [arg for arg in object_tokens if Path(arg).is_absolute()]\n            expected_explicit = crypto_objects[:]\n            if module in runner_modules:\n                assert '-emit-executable' in link_argv and '-emit-library' not in link_argv\n                expected_explicit.append(str(expected_products[runner_modules[module]]))\n            else:\n                assert '-emit-library' in link_argv and '-emit-executable' not in link_argv\n            assert len(explicit_objects) == len(expected_explicit) and set(explicit_objects) == set(expected_explicit)\n            for path in expected_explicit:\n                raw = physical(Path(path), maximum=ALLOCATION_CAP if path in product_modules else 16 * 1024**2)\n                link_extras.append({'path': path, 'bytes': len(raw), 'sha256': sha(raw)})\n            link_extras.append({'path': str(autolink), 'bytes': len(autolink_raw),\n                                'sha256': sha(autolink_raw), 'text': autolink_raw.decode('utf-8')})\n        product_raw = physical(expected_products[module], maximum=ALLOCATION_CAP)\n",
+      "oldEndLine": 282,
+      "oldStartLine": 282,
+      "oldText": ""
+    },
+    {
+      "newEndLine": 380,
+      "newStartLine": 373,
+      "newText": "                      'emittedModule': str(module_path), 'emittedModuleSHA256': sha(module_raw), 'objects': objects,\n                      'actualLink': {'commandLine': link_line, 'argv': link_argv,\n                                     'linkFileList': str(link_list), 'linkFileListSHA256': sha(link_raw),\n                                     'linkFileListText': link_raw.decode('utf-8'), 'linkedFiles': linked_files,\n                                     'moduleObject': str(module_object), 'moduleObjectSHA256': sha(module_object_raw),\n                                     'extraInputs': link_extras, 'product': str(expected_products[module]),\n                                     'productBytes': len(product_raw), 'productSHA256': sha(product_raw)},\n",
+      "oldEndLine": 288,
+      "oldStartLine": 286,
+      "oldText": "                      'emittedModule': str(module_path), 'emittedModuleSHA256': sha(module_raw),\n                      'objects': objects,\n"
+    },
+    {
+      "newEndLine": 383,
+      "newStartLine": 381,
+      "newText": "                                           'actualGeneration': anchor_writes[module] if source == str(anchors.get(module))\n                                           else entry_generators[runner_modules[module]]}\n",
+      "oldEndLine": 290,
+      "oldStartLine": 289,
+      "oldText": "                                           'actualGeneration': anchor_writes if source == str(anchor) else entry_generators}\n"
+    },
+    {
+      "newEndLine": 386,
+      "newStartLine": 385,
+      "newText": "    assert set(build.rglob('*.LinkFileList')) == qualified_link_lists, 'Unexpected product linker list'\n",
+      "oldEndLine": 292,
+      "oldStartLine": 292,
+      "oldText": ""
+    },
+    {
+      "newEndLine": 392,
+      "newStartLine": 389,
+      "newText": "def mixed_test_result(log):\n    # XCTest grammar is retained from actual Property4; Swift Testing grammar\n    # is retained from actual G04/Hierarchy. Each positive framework is required.\n",
+      "oldEndLine": 299,
+      "oldStartLine": 295,
+      "oldText": "def swift_testing_result(log):\n    # Event grammar comes from retained, actually executed G04 Swift Testing6.4.3\n    # stdout. Runtime descriptions of the private enum are retained as observed;\n    # their exact spelling is not fabricated as a pre-execution compiled ID.\n"
+    },
+    {
+      "newEndLine": 397,
+      "newStartLine": 393,
+      "newText": "    case_re = re.compile(r\"^Test Case '(?:[A-Za-z_][A-Za-z_0-9]*\\.)*NativeBookmarkPresentationTests\\.([^']+)' (started at .+|passed \\([0-9.]+ seconds\\))$\")\n    starts = {}; passes = {}; xctest_events = []\n    for index, line in enumerate(lines):\n        if not line.startswith('Test Case '):\n",
+      "oldEndLine": 313,
+      "oldStartLine": 300,
+      "oldText": "    assert not re.search(r\"^Test Case '[^']+' started\", log, re.M), 'Unexpected XCTest execution'\n    assert not re.search(r'^.*(?:Test|Suite) .*\\b(?:failed|skipped)\\b', log, re.M), 'Failed or skipped test event'\n    method_start = re.compile(r'^◇ Test ([A-Za-z_][A-Za-z_0-9]*)\\(([^()\\n]*)\\) started\\.$')\n    method_pass = re.compile(r'^✔ Test ([A-Za-z_][A-Za-z_0-9]*)\\(([^()\\n]*)\\) with 2 test cases passed after [0-9.]+ seconds\\.$')\n    case_event = re.compile(r'^(◇|✔) Test case passing 1 argument (.+) to ([A-Za-z_][A-Za-z_0-9]*)\\(([^()\\n]*)\\) (started\\.|passed after [0-9.]+ seconds\\.)$')\n    starts = {}; passes = {}; cases = {}; retained = []\n    for offset, line in enumerate(lines):\n        event = method_start.fullmatch(line)\n        if event:\n            name, signature = event.groups()\n            assert name in METHODS and name not in starts, 'Unselected or duplicate method start'\n            starts[name] = (signature, offset)\n            retained.append(line)\n"
+    },
+    {
+      "newEndLine": 446,
+      "newStartLine": 398,
+      "newText": "        match = case_re.fullmatch(line)\n        assert match, 'Unknown, failed, skipped or unselected XCTest event: ' + line\n        name, outcome = match.groups()\n        assert name in XCTEST_METHODS\n        target = starts if outcome.startswith('started') else passes\n        assert name not in target, 'Duplicate XCTest event'\n        target[name] = index\n        xctest_events.append(line)\n    assert set(starts) == set(passes) == set(XCTEST_METHODS), 'All four selected XCTest cases must pass'\n    assert all(starts[name] < passes[name] for name in XCTEST_METHODS)\n    suite_start = [(i, line) for i, line in enumerate(lines)\n                   if re.fullmatch(r\"Test Suite 'NativeBookmarkPresentationTests' started at .+\", line)]\n    suite_pass = [(i, line) for i, line in enumerate(lines)\n                  if re.fullmatch(r\"Test Suite 'NativeBookmarkPresentationTests' passed at .+\", line)]\n    assert len(suite_start) == len(suite_pass) == 1\n    assert suite_start[0][0] < min(starts.values()) <= max(passes.values()) < suite_pass[0][0]\n    xctest_suites = [line for line in lines if line.startswith('Test Suite ')]\n    assert all(re.fullmatch(r\"Test Suite '(Selected tests|NativeBookmarkPresentationTests)' (started|passed) at .+\", line)\n               for line in xctest_suites), 'Unknown, failed or skipped XCTest suite'\n    summaries = [line.strip() for line in lines if line.strip().startswith('Executed ')]\n    summary_re = re.compile(r'Executed (0|4) tests, with 0 failures(?: \\(0 unexpected\\))? in [0-9.]+ \\([0-9.]+\\) seconds')\n    counts = []\n    for line in summaries:\n        match = summary_re.fullmatch(line)\n        assert match, 'Unknown XCTest result summary'\n        counts.append(int(match.group(1)))\n    assert counts.count(4) == 2 and counts.count(0) <= 1\n\n    method_start = re.compile(r'^◇ Test ([A-Za-z_][A-Za-z_0-9]*)\\(\\) started\\.$')\n    method_pass = re.compile(r'^✔ Test ([A-Za-z_][A-Za-z_0-9]*)\\(\\) passed after [0-9.]+ seconds\\.$')\n    swift_starts = {}; swift_passes = {}; swift_events = []\n    for index, line in enumerate(lines):\n        start = method_start.fullmatch(line)\n        passed = method_pass.fullmatch(line)\n        if start or passed:\n            name = (start or passed).group(1)\n            assert name in SWIFT_TESTING_METHODS, 'Unselected Swift Testing method'\n            target = swift_starts if start else swift_passes\n            assert name not in target, 'Duplicate Swift Testing event'\n            target[name] = index\n            swift_events.append(line)\n        elif re.match(r'^[◇✔✘↷] Test (?!run )', line):\n            raise AssertionError('Unknown, failed, skipped or parameterized Swift Testing event: ' + line)\n    assert set(swift_starts) == set(swift_passes) == set(SWIFT_TESTING_METHODS), 'Both selected Swift Testing cases must pass'\n    assert all(swift_starts[name] < swift_passes[name] for name in SWIFT_TESTING_METHODS)\n    suite_name = 'Native wiki hierarchy preserves the original tree domain'\n    swift_suite_start = '◇ Suite \"' + suite_name + '\" (aka \\'AnyHierarchyTests\\') started.'\n    swift_suite_pass = re.escape('✔ Suite \"' + suite_name + '\" (aka \\'AnyHierarchyTests\\')') + r' passed after [0-9.]+ seconds\\.'\n",
+      "oldEndLine": 352,
+      "oldStartLine": 314,
+      "oldText": "        event = method_pass.fullmatch(line)\n        if event:\n            name, signature = event.groups()\n            assert name in METHODS and name not in passes, 'Unselected or duplicate method PASS'\n            passes[name] = (signature, offset)\n            retained.append(line)\n            continue\n        event = case_event.fullmatch(line)\n        if event:\n            marker, argument, name, signature, outcome = event.groups()\n            assert name in METHODS and argument.startswith('example → ') and len(argument) <= 2048\n            assert (marker == '◇') == (outcome == 'started.'), 'Argument event status mismatch'\n            assert name in starts and signature == starts[name][0]\n            key = (name, argument)\n            state = 'started' if marker == '◇' else 'passed'\n            row = cases.setdefault(key, {})\n            assert state not in row, 'Duplicate argument event'\n            row[state] = offset\n            retained.append(line)\n            continue\n        if re.match(r'^[◇✔✘↷] Test (?!run )', line):\n            raise AssertionError('Unknown or unselected Swift Testing event: ' + line)\n    assert set(starts) == set(passes) == set(METHODS), 'Require exactly the four selected actual method passes'\n    assert len(cases) == 8, 'Require eight distinct actual argument cases, not declared count alone'\n    actual = []\n    for name in METHODS:\n        assert starts[name][0] == passes[name][0]\n        observed = [(argument, row) for (method, argument), row in cases.items() if method == name]\n        assert len(observed) == 2, 'Each selected method must execute both distinct argument cases'\n        for argument, row in observed:\n            assert set(row) == {'started', 'passed'}\n            assert starts[name][1] < row['started'] < row['passed'] < passes[name][1]\n            actual.append({'method': name, 'actualEventSignature': name + '(' + starts[name][0] + ')',\n                           'observedArgumentDescription': argument,\n                           'startedLogLine': row['started'] + 1, 'passedLogLine': row['passed'] + 1})\n    suite_name = 'Hierarchy rename preserves exact requested title bytes'\n    suite_start = '◇ Suite \"' + suite_name + '\" (aka \\'' + SUITE + '\\') started.'\n    suite_pass = re.escape('✔ Suite \"' + suite_name + '\" (aka \\'' + SUITE + '\\')') + r' passed after [0-9.]+ seconds\\.'\n"
+    },
+    {
+      "newEndLine": 450,
+      "newStartLine": 447,
+      "newText": "    assert len(suite_lines) == 2 and suite_lines[0][1] == swift_suite_start\n    assert re.fullmatch(swift_suite_pass, suite_lines[1][1])\n    assert suite_lines[0][0] < min(swift_starts.values()) <= max(swift_passes.values()) < suite_lines[1][0]\n",
+      "oldEndLine": 357,
+      "oldStartLine": 353,
+      "oldText": "    assert len(suite_lines) == 2 and suite_lines[0][1] == suite_start\n    assert re.fullmatch(suite_pass, suite_lines[1][1])\n    assert suite_lines[0][0] < min(v[1] for v in starts.values())\n    assert suite_lines[1][0] > max(v[1] for v in passes.values())\n"
+    },
+    {
+      "newEndLine": 477,
+      "newStartLine": 451,
+      "newText": "    positive = []; empty = []\n    for index, line in totals:\n        if re.fullmatch(r'✔ Test run with 2 tests in 1 suite passed after [0-9.]+ seconds\\.', line):\n            positive.append((index, line))\n        elif re.fullmatch(r'✔ Test run with 0 tests passed after [0-9.]+ seconds\\.', line):\n            empty.append((index, line))\n        else:\n            raise AssertionError('Unknown Swift Testing total: ' + line)\n    assert len(positive) == 1 and len(empty) <= 1 and positive[0][0] > suite_lines[1][0]\n    assert all(index < suite_lines[0][0] or index > positive[0][0] for index, _ in empty)\n    # A toolchain may omit the other product's empty-framework output. A retained\n    # empty footer is bounded to that one other product and grants no test credit.\n    run_starts = [i for i, line in enumerate(lines) if line == '◇ Test run started.']\n    assert len(run_starts) == len(totals)\n    assert run_starts and run_starts[0] < totals[0][0]\n    return {'actualXCTestMethods': list(XCTEST_METHODS), 'actualXCTestCaseCount': 4,\n            'actualSwiftTestingMethods': list(SWIFT_TESTING_METHODS), 'actualSwiftTestingCaseCount': 2,\n            'actualMethodCount': 6, 'actualCaseCount': 6,\n            'hostLiteralScenarios': 17, 'literalScenariosAreEnumeratedTests': False,\n            'oldHostMethodsExecuted': 0, 'oldIntegrationMethodsExecuted': 0,\n            'HTTPFixturesInvoked': 0, 'nativeCalls': 0,\n            'observedXCTestLines': xctest_events + xctest_suites + summaries,\n            'observedSwiftTestingLines': swift_events + [line for _, line in suite_lines] + [line for _, line in totals],\n            'emptyFrameworkOutputsObserved': {'XCTestSummaries': counts.count(0), 'SwiftTestingFooters': len(empty)},\n            'zeroFrameworkFooterIsNotAcceptance': True,\n            'actualEventNamesAreObservedNotPreclaimedCompiledEnumeration': True}\n",
+      "oldEndLine": 367,
+      "oldStartLine": 358,
+      "oldText": "    assert len(totals) == 1 and re.fullmatch(r'✔ Test run with 4 tests in 1 suite passed after [0-9.]+ seconds\\.', totals[0][1])\n    assert totals[0][0] > suite_lines[1][0]\n    return {'actualSwiftTestingMethods': list(METHODS), 'actualMethodCount': 4,\n            'actualPassedArgumentCaseCount': 8, 'argumentCases': actual,\n            'declaredSourceArgumentValues': ['latin', 'hebrew'],\n            'argumentDescriptionSpellingIsObservedNotAnInventedCompiledSelector': True,\n            'oldMethodsExecuted': 0, 'XCTestCases': 0, 'HTTPFixturesInvoked': 0,\n            'observedTestOutcomeLines': retained + [line for _, line in suite_lines] + [totals[0][1]],\n            'zeroXCTestOrSwiftTestingFooterIsNotAcceptance': True}\n"
+    },
+    {
+      "newEndLine": 508,
+      "newStartLine": 507,
+      "newText": "    receipt = {'schema': 'pinkha-bookmark-six-component/v1', 'status': 'FAIL',\n",
+      "oldEndLine": 398,
+      "oldStartLine": 397,
+      "oldText": "    receipt = {'schema': 'pinkha-hierarchy-raw-title-component/v1', 'status': 'FAIL',\n"
+    },
+    {
+      "newEndLine": 553,
+      "newStartLine": 552,
+      "newText": "                    raise TimeoutError('Owned Bookmark six-method command exceeded 300 seconds')\n",
+      "oldEndLine": 443,
+      "oldStartLine": 442,
+      "oldText": "                    raise TimeoutError('Owned hierarchy rename command exceeded 300 seconds')\n"
+    },
+    {
+      "newEndLine": 568,
+      "newStartLine": 567,
+      "newText": "        receipt['testResult'] = mixed_test_result(log)\n",
+      "oldEndLine": 458,
+      "oldStartLine": 457,
+      "oldText": "        receipt['testResult'] = swift_testing_result(log)\n"
+    },
+    {
+      "newEndLine": 570,
+      "newStartLine": 569,
+      "newText": "        receipt['status'] = 'PASS_FOUR_XCTEST_AND_TWO_SWIFT_TESTING_CASES_BOOKMARK_COMPONENT_ONLY'\n",
+      "oldEndLine": 460,
+      "oldStartLine": 459,
+      "oldText": "        receipt['status'] = 'PASS_FOUR_SWIFT_TESTING_METHODS_EIGHT_ARGUMENT_CASES_HIERARCHY_COMPONENT_ONLY'\n"
+    }
+  ],
+  "runtimeInvocations": 0,
+  "schema": "pinkha-bookmark6-execution-full-source-inverse/v1",
+  "testBodiesChanged": 0,
+  "unchangedFunctionNames": [
+    "sha",
+    "write",
+    "pinned",
+    "source_inventory",
+    "cleanup_custody",
+    "allocated_bytes",
+    "resource_sample",
+    "require_budget",
+    "private_directory",
+    "copy_crypto",
+    "verify_crypto"
+  ],
+  "unchangedFunctionSHA256": {
+    "allocated_bytes": "2bbd4e653ae2420617571253aedd17c509225315da536d67af8b8e493c27b88b",
+    "cleanup_custody": "2f568150bd84f02be92350b5a6ffc44f89f55b07d42366b09424e0429b4bf66a",
+    "copy_crypto": "ccf9751329111442c078d259f456029e916da13774b7bb5baab8527d51ba04b8",
+    "pinned": "6cdc427d4660b21b4046aef1f106c2834a0504e25c1cfa17124140f7d590e767",
+    "private_directory": "d0634ce119baf4e39b11672d16ab95dc4b3c1cc5e6b5c036837bcfb09c2eddac",
+    "require_budget": "18b166a27f874329deba696d8961f64e12ed091a09306837b6fc7afe21be6ff3",
+    "resource_sample": "cc02a74739da1b6a481bd2ce9cb5575924afff9cb5fb6a86135a7c0ee30947f4",
+    "sha": "166ad903d6d1b4f98706f40c535e6a84f4a6268f81640d32bb1d0f02c6857de1",
+    "source_inventory": "d6a578cef064e1ae21726630e07f105a2b929c8bd8006156e2230b48f32d334a",
+    "verify_crypto": "bedf311323a1a87a8433d694da2db5337aa31d8ded1df230252e448e137f9f09",
+    "write": "63cb2c721e5123e19a3e433d79f78eec533eec0f9fead99691056c8bdf064682"
+  }
+}

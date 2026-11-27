@@ -1,0 +1,128 @@
+{
+  "SwiftOrHostOrRuntimeInvocations": 0,
+  "actualLargeProductObserved": false,
+  "controlMethods": 1,
+  "controlSourceSHA256": "e3c40802d1657bb5bfa3540619de1699cec87863988f368e5f8b84afe908edb0",
+  "controllerSHA256": "3729eed7d91e3400c19137420df96465d4785c0bd9587d81553864e1041f176c",
+  "largeFilesAllocated": false,
+  "observations": [
+    {
+      "actualAcceptance": true,
+      "callSite": 1,
+      "case": "expected-aggregate-over-default",
+      "expectedAcceptance": true,
+      "syntheticBytes": 16777217
+    },
+    {
+      "actualAcceptance": true,
+      "callSite": 1,
+      "case": "expected-test-product-over-default",
+      "expectedAcceptance": true,
+      "syntheticBytes": 16777217
+    },
+    {
+      "actualAcceptance": true,
+      "callSite": 1,
+      "case": "expected-product-at-existing-cap",
+      "expectedAcceptance": true,
+      "syntheticBytes": 268435456
+    },
+    {
+      "actualAcceptance": false,
+      "callSite": 1,
+      "case": "expected-product-above-existing-cap",
+      "expectedAcceptance": false,
+      "syntheticBytes": 268435457
+    },
+    {
+      "actualAcceptance": false,
+      "callSite": 1,
+      "case": "crypto-over-default",
+      "expectedAcceptance": false,
+      "syntheticBytes": 16777217
+    },
+    {
+      "actualAcceptance": false,
+      "callSite": 1,
+      "case": "source-over-default",
+      "expectedAcceptance": false,
+      "syntheticBytes": 16777217
+    },
+    {
+      "actualAcceptance": false,
+      "callSite": 1,
+      "case": "unlisted-product-over-default",
+      "expectedAcceptance": false,
+      "syntheticBytes": 16777217
+    },
+    {
+      "actualAcceptance": true,
+      "callSite": 1,
+      "case": "nonproduct-at-original-default",
+      "expectedAcceptance": true,
+      "syntheticBytes": 16777216
+    },
+    {
+      "actualAcceptance": true,
+      "callSite": 2,
+      "case": "expected-aggregate-over-default",
+      "expectedAcceptance": true,
+      "syntheticBytes": 16777217
+    },
+    {
+      "actualAcceptance": true,
+      "callSite": 2,
+      "case": "expected-test-product-over-default",
+      "expectedAcceptance": true,
+      "syntheticBytes": 16777217
+    },
+    {
+      "actualAcceptance": true,
+      "callSite": 2,
+      "case": "expected-product-at-existing-cap",
+      "expectedAcceptance": true,
+      "syntheticBytes": 268435456
+    },
+    {
+      "actualAcceptance": false,
+      "callSite": 2,
+      "case": "expected-product-above-existing-cap",
+      "expectedAcceptance": false,
+      "syntheticBytes": 268435457
+    },
+    {
+      "actualAcceptance": false,
+      "callSite": 2,
+      "case": "crypto-over-default",
+      "expectedAcceptance": false,
+      "syntheticBytes": 16777217
+    },
+    {
+      "actualAcceptance": false,
+      "callSite": 2,
+      "case": "source-over-default",
+      "expectedAcceptance": false,
+      "syntheticBytes": 16777217
+    },
+    {
+      "actualAcceptance": false,
+      "callSite": 2,
+      "case": "unlisted-product-over-default",
+      "expectedAcceptance": false,
+      "syntheticBytes": 16777217
+    },
+    {
+      "actualAcceptance": true,
+      "callSite": 2,
+      "case": "nonproduct-at-original-default",
+      "expectedAcceptance": true,
+      "syntheticBytes": 16777216
+    }
+  ],
+  "runnerImportedOrMainInvoked": false,
+  "schema": "pinkha-bookmark6-product-read-bound-control/v1",
+  "scope": "Exact AST physical helper and both corrected call-site expressions; length-only synthetic read values, not compiler artifact evidence.",
+  "seconds": 0.000456,
+  "status": "PASS_SYNTHETIC_BOUNDARY_CONTROL_ONLY",
+  "syntheticBoundaryRows": 16
+}

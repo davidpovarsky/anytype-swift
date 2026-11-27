@@ -1,0 +1,20 @@
+--- review-v1/run_component.py
++++ v2/run_component.py
+@@ -327,7 +327,7 @@
+         qualified_link_lists.add(link_list)
+         linked_files = []
+         for path in linked:
+-            raw = physical(Path(path))
++            raw = physical(Path(path), maximum=ALLOCATION_CAP if path in product_modules else 16 * 1024**2)
+             linked_files.append({'path': path, 'bytes': len(raw), 'sha256': sha(raw)})
+         link_line, link_argv = link_commands[module]
+         assert value(link_argv, '-o') == str(expected_products[module])
+@@ -362,7 +362,7 @@
+                 assert '-emit-library' in link_argv and '-emit-executable' not in link_argv
+             assert len(explicit_objects) == len(expected_explicit) and set(explicit_objects) == set(expected_explicit)
+             for path in expected_explicit:
+-                raw = physical(Path(path))
++                raw = physical(Path(path), maximum=ALLOCATION_CAP if path in product_modules else 16 * 1024**2)
+                 link_extras.append({'path': path, 'bytes': len(raw), 'sha256': sha(raw)})
+             link_extras.append({'path': str(autolink), 'bytes': len(autolink_raw),
+                                 'sha256': sha(autolink_raw), 'text': autolink_raw.decode('utf-8')})

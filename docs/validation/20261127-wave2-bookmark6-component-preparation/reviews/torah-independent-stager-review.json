@@ -1,0 +1,145 @@
+{
+  "atUTC": "2026-11-27T22:12:29.164598+00:00",
+  "checks": [
+    {
+      "boundary": "Complete source inverse",
+      "result": "Independently applied all 13 byte-offset hunks in both directions and all 18 literal rules / 19 occurrence sites forward. Each reconstructs the entire exact donor b3cfea8 (9998 B) or candidate 0a4d0154 (9969 B). Six original helper bodies are byte-identical; their recorded hashes include the terminal newline."
+    },
+    {
+      "boundary": "Payload and transport",
+      "result": "Independently SHA-checked the 389854 B gzip and decoded its exact 1839657 B JSON. The 519809 B base64 transport decodes to precisely that gzip, whose mtime is zero. No payload content was executed or staged."
+    },
+    {
+      "boundary": "Full input closure",
+      "result": "The embedded 28662 B packet is byte-equal to frozen2341. All 90 unique canonical relative inputs, totaling1344177 B, were independently decoded and compared to the exact existing files, byte lengths, SHA-256 and Git blob IDs. Runner3729, Packagee030, complete 84 whole Swift sources, original58624 helper and Crypto102 manifest are unchanged. Outer docs/reviews and Crypto artifact bodies are not runtime input entries."
+    },
+    {
+      "boundary": "Fresh physical namespace",
+      "result": "Original physical parent check and absent ROOT including dangling-symlink rejection remain exact. Only the fixed approved new root and content-bound upload paths differ from the donor. Finite packet paths reject absolute, traversal, normalized-spelling, duplicate, missing and extra entries before any root creation."
+    },
+    {
+      "boundary": "Original immutable source/dependency custody",
+      "result": "Compressed payload requires exact physical regular one-link file, stable read identity, exact lengths and hashes. Crypto sources and aliases are checked read-only before root creation and again after staging; identity/content and alias resolution must remain equal. No current physical availability, alias/copy result or cache warmth was observed by this review."
+    },
+    {
+      "boundary": "Exclusive materialization",
+      "result": "Original newly owned0700 directory creation, fresh0600 exclusive file creation, one-link/owner checks, fsync and full byte readback remain unchanged. Final root must contain only the exact inputs tree with no symlink. Failure retains the partial owned namespace; no overwrite, cleanup or retry was added."
+    },
+    {
+      "boundary": "Execution and result scope",
+      "result": "Original actual cwd/PWD normalization to ROOT and exact os.execv argv are unchanged. The stager replaces its own interpreter and introduces no child/process manager. Its staging-only PASS remains explicitly pending exec; the separately reviewed runner owns the sole Swift command and final qualification. A sixteen-digit story records external coordination and cannot grant a slot."
+    },
+    {
+      "boundary": "Admission and limits",
+      "result": "The original before/after staging floors, runner resource limits, fixed deadline, jobs and zero-retry policy remain exact. Root alone owns any publication/upload/readback/coordination/one actual launch. No heavy-resource admission or projected build fit is implied."
+    }
+  ],
+  "concreteBlockers": [],
+  "fixedLimits": {
+    "SwiftCommandSeconds": 300,
+    "automaticRetries": 0,
+    "developmentAdmissionBytes": 838860800,
+    "developmentLiveFloorBytes": 536870912,
+    "finalEvidenceReserveBytes": 1048576,
+    "jobs": 2,
+    "memoryFloorBytes": 536870912,
+    "originalOuterEnvelopeSeconds": 360,
+    "ownedAllocationCapBytes": 268435456,
+    "rootAdmissionBytes": 2181038080,
+    "rootLiveFloorBytes": 2147483648
+  },
+  "independentDecodedPayload": {
+    "allFileSHAAndGitBlobsMatched": true,
+    "compressedBytes": 389854,
+    "compressedSHA256": "14e9844ac5959bb70537d4b366c9a64cc7f7f9f955c7ccb5b28ed2ae52b60a23",
+    "inputBytes": 1344177,
+    "inputFiles": 90,
+    "newUncompressedTreeCreated": false,
+    "packetSHA256": "2341bdb226521d368b37f37c402c83b6bb20ae1db6efe4d7f65938198f5f1353",
+    "rawJSONBytes": 1839657,
+    "rawJSONSHA256": "8d37c7881f66b902f7f7c137a981eff1e2073e627b9e2739ee96d6c149aeef2e"
+  },
+  "originalExecutedStager": {
+    "bytes": 9998,
+    "path": "/workspace/scratch/1d35894f12d5/wave2-hierarchy-rename-component/staging-preparation/materialize_and_exec.py",
+    "sha256": "b3cfea8a789c4abae7f2f2b8aa3202dc7cf2725a5fae2438eb5c5c9d6342f7eb"
+  },
+  "originalPublishedPreparationCommit": "8b70497157758f3ae8148842f1236d215d6d2d50",
+  "originalResultEvidenceCommit": "0b748192d230966160df010b93987638f5e161b9",
+  "reviewedFrozenBytes": 976562,
+  "reviewedFrozenFileCount": 9,
+  "reviewedFrozenFiles": [
+    {
+      "bytes": 7667,
+      "path": "wave2-bookmark6-component/staging-preparation/README.md",
+      "sha256": "531e2fb22dc2910217be246bf9bad88149571c2cf8ef5479bb96d65e744fa678"
+    },
+    {
+      "bytes": 389854,
+      "path": "wave2-bookmark6-component/staging-preparation/bookmark6-inputs.json.gz",
+      "sha256": "14e9844ac5959bb70537d4b366c9a64cc7f7f9f955c7ccb5b28ed2ae52b60a23"
+    },
+    {
+      "bytes": 519809,
+      "path": "wave2-bookmark6-component/staging-preparation/bookmark6-inputs.json.gz.base64",
+      "sha256": "6054954a308a8e7584dac640f1ced00a7cb49ab52f273171e3f5a798616077f7"
+    },
+    {
+      "bytes": 9969,
+      "path": "wave2-bookmark6-component/staging-preparation/materialize_and_exec.py",
+      "sha256": "0a4d01543136969aeb363bd56d0b87716fc25dab302b5580932740cefc28a548"
+    },
+    {
+      "bytes": 2201,
+      "path": "wave2-bookmark6-component/staging-preparation/one-shot-invocation.json",
+      "sha256": "0bb5d9bfbcb869b3ce27f02c640aa600ff5fba1daf84ed1cabba30db73bb490f"
+    },
+    {
+      "bytes": 26602,
+      "path": "wave2-bookmark6-component/staging-preparation/payload-readback.json",
+      "sha256": "7292cf8ba947e69edb75a64a54398b14e406bb2398761720dee9df9f3c9ae1e6"
+    },
+    {
+      "bytes": 5868,
+      "path": "wave2-bookmark6-component/staging-preparation/source.patch",
+      "sha256": "173f940cd0b344449755c473239e2023354e3e15c607b9cec234d6f2f9f204c1"
+    },
+    {
+      "bytes": 12972,
+      "path": "wave2-bookmark6-component/staging-preparation/stager-derivation.json",
+      "sha256": "d995018c6ffd1821d41be0678678479406ca7df033d6cb1f02c0991c56445ac4"
+    },
+    {
+      "bytes": 1620,
+      "path": "wave2-bookmark6-component/staging-preparation/transport-manifest.json",
+      "sha256": "0c9bf26dac72e6c63f8becd48ab78df19f4c582a595231b780557f055efd0d1f"
+    }
+  ],
+  "reviewer": "/root/torah_continue",
+  "runtimeAndCoverageBoundary": {
+    "GitWrites": 0,
+    "actualBookmarkCompilerAndSixTests": "NOT_RUN",
+    "controlsOrTestsReplayed": false,
+    "currentRuntimeLease": null,
+    "historicalAcceptanceTransferred": false,
+    "hostOrNativeOrAppleCalls": 0,
+    "runnerOrQualifierImportedOrExecuted": false,
+    "runtimeReadinessObserved": false,
+    "selectedScope": "Future four XCTest methods plus two Swift Testing methods. Seventeen Host literal scenarios are not separately enumerated cases. Old seven Host and27 Integration methods remain unselected.",
+    "stagerExecuted": false,
+    "stagerImported": false,
+    "uploads": 0
+  },
+  "schema": "pinkha-bookmark6-independent-stager-payload-source-review/v1",
+  "sourceRunnerPeerReview": {
+    "bytes": 5896,
+    "path": "wave2-bookmark6-component/execution-preparation/torah-independent-review-v2.json",
+    "sha256": "b9b104c5f9ab799c0f191746b50a745821607d55f4b29e1146c148fd30291329"
+  },
+  "sourceRunnerRootReview": {
+    "bytes": 2692,
+    "path": "wave2-bookmark6-component/execution-preparation/root-execution-source-review-v2.json",
+    "sha256": "4e829323bf17271712bfbb8696ed832d621be8ca3a6e794c2bcae5b21d44e8f0"
+  },
+  "status": "PASS_SOURCE_REVIEW_ONLY_NOT_ADMITTED_UPLOADED_OR_EXECUTED"
+}
