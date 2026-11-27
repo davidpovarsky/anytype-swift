@@ -1,0 +1,45 @@
+{
+  "ComprehensiveSHA256": "d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3",
+  "G02RuntimeGateAndAllFunctionBodiesUnchanged": true,
+  "Stage1SHA256": "d4ffc25ee659e03bd4dd76b7847faf4fecf343630edf094c0bc02fe060f00850",
+  "addedReadOnlyFunction": "reviewed_original_ui_inverse",
+  "alternateC1eAccepted": false,
+  "candidateProfileSHA256": "16e65f6a5fe338e384c45f67bde3a294bc49dbf4346d6d300f70aa735a025549",
+  "changedOriginalFunctions": [
+    "reviewed_ui_sources"
+  ],
+  "exactProfileInverse": true,
+  "g02CandidateConsumerSHA256": "08ee113ec4c96d2072252d9a83c41e420a67dc3815ad9533c11771455766580b",
+  "g02ExactSingleLiteralInverse": true,
+  "g02OriginalConsumerSHA256": "7bc7c513cbaa0bcfcb98af6fd48c2fa4f391f15708c404fb2a7ef00ca91e55ac",
+  "observedCommitIsProductAdmission": false,
+  "observedFinalSourceCommit": "3559f6010d1ae837d12e4eda9fd7cbcb40870a3d",
+  "originalProfileSHA256": "188fd2470d720a350718969c6bdd17250c107cbe2ceab2a1c72aa2508d00e0b3",
+  "originalStartupConsoleAndEnvironmentFunctionsUnchanged": true,
+  "profileEdits": [
+    {
+      "after": "        \"d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3\",\n",
+      "before": "        \"066d45e4ba7198c878bb457f2c2c9f6423609451f4a85ac07da4d5d3657c30ad\",\n"
+    },
+    {
+      "after": "def reviewed_original_ui_inverse(app):\n    \"\"\"Exact published appends only; no arbitrary future suffix acceptance.\"\"\"\n    relative = \"PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift\"\n    raw = (app / relative).read_bytes()\n    require(len(raw) == 78853\n            and sha(raw) == \"d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3\"\n            and sha(raw[:28068]) == \"066d45e4ba7198c878bb457f2c2c9f6423609451f4a85ac07da4d5d3657c30ad\"\n            and sha(raw[28068:43356]) == \"f9f932463270a6e417e05ddd5819307d2ace8d5bc70bb4e7c0c0bbe8806283aa\"\n            and sha(raw[:43356]) == \"e56a5f6839c9426bb0e70b274a3eaafbc3f850bc6343355bed92538723a28bb9\"\n            and sha(raw[43356:]) == \"fe889e034c5ffe1a3b30e06b4915cbbc7381a8517fa4471d1dd8a3e7570c09e9\",\n            \"Exact original Inspector/G03/G02 complete append inverse required\")\n    stage1 = (app / \"PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift\").read_bytes()\n    require(len(stage1) == 86201\n            and sha(stage1) == \"d4ffc25ee659e03bd4dd76b7847faf4fecf343630edf094c0bc02fe060f00850\",\n            \"The currently observed original Stage1 source must remain exact; no alternate suffix is admitted\")\n    return {\"originalComprehensiveSHA256\": sha(raw[:28068]),\n            \"G03SuffixSHA256\": sha(raw[28068:43356]), \"G02SuffixSHA256\": sha(raw[43356:]),\n            \"stage1UnchangedSHA256\": sha(stage1), \"originalThirteenUISelectorsUnchanged\": True,\n            \"sourceOnly\": True, \"testsExecuted\": 0}\n\n\ndef reviewed_ui_sources(app, *, source_commit):\n",
+      "before": "def reviewed_ui_sources(app, *, source_commit):\n"
+    },
+    {
+      "after": "    inverse = reviewed_original_ui_inverse(app)\n    return {\"source_commit\": source_commit, \"source_hashes\": UI_SOURCE_HASHES, \"tests_executed\": 0,\n            \"preservedOriginalUI\": inverse,\n",
+      "before": "    return {\"source_commit\": source_commit, \"source_hashes\": UI_SOURCE_HASHES, \"tests_executed\": 0,\n"
+    }
+  ],
+  "runtimeReady": false,
+  "schema": "pinkha-future-torah-source-profile-inverse-v1",
+  "status": "SOURCE_PREPARATION_NOT_RUNTIME",
+  "unchangedOriginalFunctions": [
+    "decode",
+    "encode",
+    "inspect_original_lanes",
+    "require",
+    "sha",
+    "startup_environment",
+    "validate_startup_environment"
+  ]
+}
