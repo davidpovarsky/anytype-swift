@@ -1,0 +1,34 @@
+{
+  "schema": "pinkha-g02-native-failure-retention-source-review-v1",
+  "reviewer": "/root/interfaces",
+  "atUTC": "2026-11-27T04:52:03.970780+00:00",
+  "scope": "Only run_native_phase original-stage failure, raw receipt retention, terminal qualification and shared final-save boundary. Root owns native source/input/schema contract review.",
+  "reviewed": [
+    {
+      "name": "g02_native_phase.py",
+      "bytes": 20900,
+      "sha256": "072c57365a60ed812df8dfe6eb95d542194dbefa2069bb965a3633c9878faa63"
+    },
+    {
+      "name": "g02_word_consumer.py",
+      "bytes": 14450,
+      "sha256": "9ac283adf9148cfaf6020e1744b7104909fef8bdb638f8c074b89be3128d7355"
+    }
+  ],
+  "checked": [
+    "The original Consumer.stage writes its selected test/result evidence and raises on failure; run_native_phase preserves that first exception.",
+    "Observed native receipt bytes are retained through read_private before JSON qualification, including malformed actual emitted bytes. No decoding is required to retain failed observations.",
+    "Missing or later unreadable outputs cannot turn a failed stage into PASS, and later retention exceptions are secondary to the original XCTest failure.",
+    "Semantic qualification runs only when no earlier failure exists; observed status is explicitly non-acceptance and cannot stand in for a successful original XCTest/accepted receipt.",
+    "Shared save_result now also preserves the original exception when final directory creation or receipt writing fails; it appends/chains the later error and otherwise fails directly when no earlier failure exists.",
+    "Both native phase and enclosing four-stage consumer call the same final-save helper; failure is raised rather than returned as a successful result."
+  ],
+  "findingClosed": "Initial 30c71df9 native adapter allowed final stage.mkdir/c.write to mask the earlier XCTest failure. Current shared save_result corrects that specific boundary.",
+  "status": "NO_REMAINING_CONCRETE_BLOCKER_IN_REVIEWED_FAILURE_RETENTION_SCOPE",
+  "testsRunByReviewer": 0,
+  "nativeCalls": 0,
+  "AppleCompilation": "NOT_RUN",
+  "runtime": "NOT_RUN",
+  "sourceMutationsByReviewer": 0,
+  "boundary": "This review does not qualify the native schema, Apple producer, runtime adapter admission, XCTest results, UI semantics, or physical-device acceptance."
+}

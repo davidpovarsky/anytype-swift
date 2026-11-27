@@ -1,0 +1,34 @@
+{
+  "AppSourceChanged": false,
+  "AppleBuilds": 0,
+  "NativeSourceChanged": false,
+  "OriginalFChangedBeyondPreviouslyReviewedBudgetAndLaneDispatch": false,
+  "XCTestInvocations": 0,
+  "changes": [
+    "One shared save_result helper preserves the original exception through final directory/write failure",
+    "Native adapter delegates its final write and original exception to that helper",
+    "Four-stage controller delegates its final write and original exception to the same helper",
+    "Comment now describes the separately pinned source adapter; unconditional runtime gate body unchanged"
+  ],
+  "consumerAfterSHA256": "9ac283adf9148cfaf6020e1744b7104909fef8bdb638f8c074b89be3128d7355",
+  "consumerBeforeSHA256": "374255c2301c2554585f0146ea921c0e3eab4d6b6f70de3b3dc2c9ce83785eef",
+  "consumerInverseExact": true,
+  "finding": "Final mkdir/receipt write could mask the original stage failure",
+  "nativeAfterSHA256": "072c57365a60ed812df8dfe6eb95d542194dbefa2069bb965a3633c9878faa63",
+  "nativeBeforeSHA256": "30c71df91e9fa2860ac98d8991fb31f2690bc239df64c3e718afa3ae3055f177",
+  "nativeCalls": 0,
+  "nativeInverseExact": true,
+  "proofPreparationAttempts": [
+    {
+      "attempt": 1,
+      "cause": "Proof script removed two of three separator newlines after new helper; actual source unchanged",
+      "status": "FAILED_INVERSE_SCRIPT"
+    },
+    {
+      "attempt": 2,
+      "correction": "Remove the complete appended helper and its three original separator newlines; no normalization of donor bytes",
+      "status": "PASS_FULL_BYTE_INVERSE"
+    }
+  ],
+  "schema": "pinkha-g02-final-save-fix-source-inverse-v1"
+}

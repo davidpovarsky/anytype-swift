@@ -15,7 +15,8 @@ import json
 from pathlib import Path
 
 ORIGINAL_HOST_SHA = "2e57294dc7a00d4302a9dd5f316b2419e75d6a08a4f55b47451d6c822335ec44"
-NEW_FILES = ("g02_word_consumer.py", "g02_ui_receipts.py", "g02-closed-profile.json")
+NEW_FILES = ("g02_word_consumer.py", "g02_ui_receipts.py", "g02_native_phase.py", "g02-closed-profile.json")
+NATIVE_ADAPTER_SHA = "072c57365a60ed812df8dfe6eb95d542194dbefa2069bb965a3633c9878faa63"
 
 
 def require(value, reason):
@@ -91,7 +92,7 @@ def compose(original):
              "unchangedStageExceptTwoSelectorBudgetDispatch": True, "unchangedOriginalBudgetHelper": True,
              "newPlan": {"g02-word-only": ["g02-word"]}, "startupLane": "properties",
              "newControllerFiles": list(NEW_FILES), "original13FileClosureChangedInPlace": False,
-             "commonProductAdmissionChanged": False, "nativeAdapterPresent": False, "runtimeReady": False,
+             "commonProductAdmissionChanged": False, "nativeAdapterRequired": True, "runtimeReady": False,
              "AppBuilds": 0, "UIBuilds": 0, "XCTestInvocations": 0, "nativeCalls": 0}
     return current.encode(), proof
 
@@ -106,13 +107,16 @@ def main():
     here = Path(__file__).resolve().parent
     copies = {name: (here / name).read_bytes() for name in NEW_FILES}
     profile = json.loads(copies["g02-closed-profile.json"])
-    require(profile.get("runtimeReady") is False and profile.get("nativeAdapter") == "PENDING_EXACT_REVIEWED_PUBLICATION"
+    require(profile.get("runtimeReady") is False
+            and profile.get("nativeAdapter") == {"path": "g02_native_phase.py", "sha256": NATIVE_ADAPTER_SHA}
+            and sha(copies["g02_native_phase.py"]) == NATIVE_ADAPTER_SHA
             and profile.get("actualFutureProducer") == "PENDING_SOURCE_FREEZE_AND_SUCCESSFUL_APP_AND_COMPLETE_UI",
             "Only the explicit closed future preparation may be materialized here")
     args.output.mkdir(parents=True, mode=0o700)
     (args.output / "combined_host_acceptance_app15.py").write_bytes(current)
     for name, data in copies.items(): (args.output / name).write_bytes(data)
     proof["newControllerHashes"] = {name: sha(raw) for name, raw in copies.items()}
+    proof["nativeAdapterPresent"] = True
     (args.output / "materialization.json").write_text(json.dumps(proof, indent=2, sort_keys=True) + "\n")
     print(json.dumps(proof, sort_keys=True))
 

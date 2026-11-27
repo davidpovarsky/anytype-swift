@@ -46,6 +46,23 @@ def ui_budget(consumer, target, methods):
     return consumer.helpers["run_ui27"].selection_time_budget(target, methods)
 
 
+def save_result(c, path, result, first=None):
+    """A later receipt/directory failure must not mask the first stage failure."""
+    try:
+        path.parent.mkdir(parents=True, mode=0o700, exist_ok=True)
+        c.write(path, result)
+    except BaseException as exc:
+        if first is None:
+            raise
+        result.setdefault("retentionErrors", []).append({"phase": "final-receipt-save", **c.error(exc)})
+        if hasattr(first, "add_note"):
+            first.add_note("G02 final receipt could not be saved: " + type(exc).__name__ + ": " + str(exc))
+        raise first from exc
+    if first is not None:
+        raise first
+    return result
+
+
 def source_contract(consumer):
     """Read exact selected bytes after the future common gate; never admit products."""
     import torah_ui_profile
@@ -134,8 +151,8 @@ def lifecycle_boundary(consumer, directory, udid, label, fixture_raw, prior=None
 def run_word_lane(consumer, directory, udid):
     """One original preparation then four stages; no accepted historical replay."""
     require_runtime_ready(consumer.admission, Path(__file__).resolve().parent)
-    # The reviewed future derivative supplies exactly this fixed module. Its
-    # pin is intentionally absent from today's closed preparation.
+    # The source adapter is pinned by the reviewed future control closure;
+    # actual matching product admission remains a separate closed prerequisite.
     import g02_native_phase
     import torah_ui_consumer
     c, original = consumer.shared_module, consumer.helpers["run_wave15_acceptance"]
@@ -145,6 +162,7 @@ def run_word_lane(consumer, directory, udid):
               "boundaries": {}, "builds": 0, "nativeEngineContractChanges": False,
               "physicalDevice": "NOT_RUN", "visualReview": "PENDING", "fullPropertiesAcceptance": False}
     private = directory / "private"; private.mkdir(mode=0o700)
+    first = None
     try:
         environment = original.preparation_environment(STARTUP_LANE, consumer.binding["sourceSHA"], consumer.binding["runID"], consumer.binding["runAttempt"])
         prep, prep_path = consumer.stage(directory, "preparation", udid, [PREPARATION + "()"], environment)
@@ -189,8 +207,5 @@ def run_word_lane(consumer, directory, udid):
         c.require(source_contract(consumer) == before, "G02 admitted source/compiler witnesses changed during execution")
         result["status"] = "PASS_G02_FOUR_STAGE_FUNCTIONAL_SCOPE_VISUAL_REVIEW_PENDING"
     except BaseException as exc:
-        result["firstFailure"] = c.error(exc)
-        raise
-    finally:
-        c.write(directory / "g02-four-stage.json", result)
-    return result
+        first = exc; result["firstFailure"] = c.error(exc)
+    return save_result(c, directory / "g02-four-stage.json", result, first)

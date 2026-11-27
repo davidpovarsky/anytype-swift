@@ -11,14 +11,25 @@
   "uiSourceSHA256": "d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3",
   "nativeSourceCommit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
   "nativeSourceSHA256": "bd9888153f469583531951b4dcc74d64aed275de1e2142fc1cdda61d3fb1770a",
-  "phaseOrder": ["ui-seed", "native-baseline", "ui-unlink", "native-postflight"],
+  "phaseOrder": [
+    "ui-seed",
+    "native-baseline",
+    "ui-unlink",
+    "native-postflight"
+  ],
   "uiMethods": {
     "seed": "PinkhaStage1AcceptanceUITests/PinkhaTorahWordUnlinkAcceptanceUITests/testSeedOriginalWordUnlinkFixturesThroughProperties",
     "unlink": "PinkhaStage1AcceptanceUITests/PinkhaTorahWordUnlinkAcceptanceUITests/testChangedQueryPickerCancelThenWordUnlinkAndColdReopenForAllWritingTypes"
   },
-  "uiAllowancesSeconds": {"seed": 900, "unlink": 600},
+  "uiAllowancesSeconds": {
+    "seed": 900,
+    "unlink": 600
+  },
   "nativeMethod": "AnytypeTests/TorahWritingPropertiesReadbackTests/observeOriginalWritingProperties",
-  "nativeAdapter": "PENDING_EXACT_REVIEWED_PUBLICATION",
+  "nativeAdapter": {
+    "path": "g02_native_phase.py",
+    "sha256": "072c57365a60ed812df8dfe6eb95d542194dbefa2069bb965a3633c9878faa63"
+  },
   "actualFutureProducer": "PENDING_SOURCE_FREEZE_AND_SUCCESSFUL_APP_AND_COMPLETE_UI",
   "current8f2ProductsEligible": false,
   "commonIntakeRepinAllowed": false,
@@ -27,5 +38,7 @@
   "AppleTypecheck": "NOT_RUN",
   "XCTest": "NOT_RUN",
   "visualReview": "NOT_RUN",
-  "physicalDevice": "NOT_RUN"
+  "physicalDevice": "NOT_RUN",
+  "nativeAllowanceSeconds": 300,
+  "nativeAdapterStatus": "REVIEWED_SOURCE_PREPARATION_PENDING_ACTUAL_APPLE_EXECUTION"
 }
