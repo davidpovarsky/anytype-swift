@@ -2182,6 +2182,39 @@
         "Provider cancellation regression traverses actual catalog, loader and picker with an uncancelled caller.14new Apple methods are written but NOT_RUN.",
         "Preserves3originaldocumenttypes and original canonical identity/Tag/link behavior; native schema and protocol unchanged. No broad functional acceptance inferred."
       ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/Stylers/TextBlockLeadingView.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/Stylers/TextBlockLeadingView.swift",
+      "baselineBlob": "d0c64468638028a34f9b64bb6224f1e814465238",
+      "replacementBlob": "86231d2298b2fa611318bc97184f3acf6c59fcd2",
+      "reason": "Keep the original Anytype numbered marker, text, font and small-number alignment. Add a weak downstream callback on window attachment and layout so actual app direction is applied after off-window configuration; the adapter avoids repeated layout invalidation and clears non-numbered reuse. Original update body is unchanged.",
+      "sharedSources": [
+        {
+          "path": "Anytype/Sources/Pinkha/RTL/PinkhaTextBlockLeadingMarkerAdapter.swift",
+          "gitBlob": "0931b7c4c65e521378387ac2f9a4f41fa8ef2605"
+        }
+      ],
+      "validation": [
+        "Exact original fifteen-line additive lifecycle seam and original shared adapter diff reviewed by Wave3. No native or text mutation path changed.",
+        "Original UIKit tests PinkhaTextBlockLeadingMarkerTests:2methods/4cases are written and NOT_RUN. Native empty paragraph4methods/6cases and original focus22methods/34cases require the shared Apple build.",
+        "Source provenance only; no runtime, visual, physical-device or Release acceptance is claimed. See docs/validation/20261127-wave2-numbered-marker and docs/validation/20261127-wave2-editor-rtl."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/RTL/PinkhaTextBlockLeadingMarkerAdapter.swift",
+      "to": "Anytype/Sources/Pinkha/RTL/PinkhaTextBlockLeadingMarkerAdapter.swift",
+      "baselineBlob": "66bbab551ad611e557cc69758d699d4f1d17ae1e",
+      "replacementBlob": "0931b7c4c65e521378387ac2f9a4f41fa8ef2605",
+      "reason": "Retain original large-number left/natural and small-number center policy. Install a weak numbered-marker callback so the same UIKit label is refreshed on actual window attachment and layout; clear it on non-numbered reuse and assign alignment only when changed. No original text/font/color or native write path is replaced.",
+      "sharedSources": [],
+      "validation": [
+        "Wave3 reviewed the complete original4d3e2a8c adapter delta and the paired TextBlockLeadingView lifecycle seam.",
+        "The first prospective gate correctly identified this separately protected original adapter; its failed receipt is retained at /tmp/pinkha-wave3-editor-rtl-retention.json.",
+        "Two original UIKit methods/four cases are written and NOT_RUN. Source retention is provenance only; shared App compile/runtime/visual acceptance remains required."
+      ]
     }
   ],
   "integration": {
