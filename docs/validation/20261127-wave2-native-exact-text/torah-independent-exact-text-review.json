@@ -1,0 +1,84 @@
+{
+  "schema": "torah-independent-exact-text-source-review-v1",
+  "reviewer": "/root/torah_continue",
+  "reviewedAtUTC": "2026-11-27T14:37:27.016886+00:00",
+  "status": "PASS_SOURCE_REVIEW_ONLY",
+  "sourceCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "sourceSHA256": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",
+      "candidateSHA256": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",
+      "candidateBytes": 73179,
+      "literalComparisons": 7,
+      "completeInverseExact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+      "sourceSHA256": "f646eed644d128c30057011ddd384154f5d6a2bd7082bca52e44488bf19fa758",
+      "candidateSHA256": "2abe0317ede786772c8fb1f427f476d24605031fb7f929394f548cd9196e1155",
+      "candidateBytes": 9956,
+      "literalComparisons": 2,
+      "completeInverseExact": true
+    }
+  ],
+  "sourceEditsSHA256": "4c968b6354200c006e3e63811060988e1c8d22358af8b7ea96565aff6683350d",
+  "byteReview": {
+    "path": "torah-exact-text-byte-review.json",
+    "sha256": "f8fbbe88f61602f41baf350d56ab4f3a5147d893789a6e9aef90bd6582307773"
+  },
+  "languageSemanticsSource": {
+    "path": "torah-equality-semantics-source.json",
+    "sha256": "83133232244b9123f699d923a95fbc6b6fd2c73caeaad3a08ece75e9fe1c1851",
+    "url": "https://raw.githubusercontent.com/swiftlang/swift-book/main/TSPL.docc/LanguageGuide/StringsAndCharacters.md"
+  },
+  "scope": [
+    "Seven exact persisted-text, rendered-base, draft no-op, composition and native readback comparisons in AnyDocumentPresentation",
+    "Two recovered-draft classification comparisons in AnyNativeDraftReconciliation.evaluate",
+    "Whole-file inverse to exact independently primary-read275 sources, preserving f731 attachment owner and21d Properties lifetime"
+  ],
+  "findings": [],
+  "conclusions": [
+    "Each replacement compares UInt8 UTF-8 code units with elementsEqual, so canonical equivalence alone can no longer discard a different accepted text buffer or classify it as already stored. There is no normalization, locale-sensitive comparison or new representation conversion.",
+    "The two draft-removal conditions now retain a canonically equivalent but byte-distinct pending source. The original captureRecovery, selection, revision, marked-text and save scheduling statements remain unchanged.",
+    "Rendered/base, accept and flush preconditions are stricter only for text representation; all original reachability, block identity, version, mounted lifetime, write policy, native lease and dispatch authorization checks remain exact.",
+    "The post-write text check cannot report successful exact persistence for merely canonically equivalent native readback. A mismatch takes the original writeUncertain path and retains pending recovery. This is source reasoning, not a claim that Native changes normalization in an actual run.",
+    "Recovery alreadyStored now requires the exact target text representation. Otherwise the existing exact-base/version review path applies; version policy, unreachable/type checks, conflict behavior and prohibition on automatic recovery writes are unchanged.",
+    "Full reverse substitution restores both original files exactly. Independently verified the preserved204-byte document attachment accessor,575-byte recovery attachment owner, mounted authorizer and original source-document lifetime region. No private NoteMarker verification, injected reader, authority or fixture seam was added.",
+    "The existing AnyNativeTextComposition source path and retained PinkhaNativeTextAcknowledgementTests already express exact UTF-8 policy; these source references were read only. No prior test or source-only Unicode witness was counted as new acceptance."
+  ],
+  "protectedOriginalBodies": {
+    "documentAttachmentAccessor": {
+      "sha256": "063261f5ec386de7d8a9d54f62b4590e975948a2eef91f33b92bbf9b417eb982",
+      "bytes": 204,
+      "unchanged": true
+    },
+    "sourceDocumentLifetime": {
+      "sha256": "0b2129f6d3345c54d823a4307332e2b5770446be6c6a8e0c6ceb165895b243da",
+      "bytes": 7348,
+      "unchanged": true
+    },
+    "mountedAuthorization": {
+      "sha256": "31cd47a962beaff5f17863da8b5d10fa5b71aff16f0f791cf24469f1886e18a6",
+      "bytes": 489,
+      "unchanged": true
+    },
+    "recoveryAttachmentIntentOwner": {
+      "sha256": "6aa0b2ac6bb8f38fcb327877383202a04940da26c05f711fbeb41a155667cd1a",
+      "bytes": 575,
+      "unchanged": true
+    }
+  },
+  "remaining": [
+    "Compile and execute on the coordinated matching product.",
+    "Exercise real owned Native document edit/readback/recovery with the existing accepted fixture; no comparison-only or fabricated Native acceptance is supplied by this review.",
+    "Any separately appended UI regression source is outside this two-file review until independently frozen and reviewed."
+  ],
+  "candidateFilesEdited": false,
+  "compilerInvocations": 0,
+  "testExecutions": 0,
+  "NativeCalls": 0,
+  "MacActions": 0,
+  "OracleCalls": 0,
+  "runtimeAdmission": false
+}

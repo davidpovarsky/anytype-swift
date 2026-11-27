@@ -1,0 +1,12 @@
+{
+  "status": "SOURCE_INVENTORY_ASSUMPTION_REJECTED",
+  "failedAssertion": "len(original test declarations) == 23",
+  "actualOriginalMethodDeclarations": 19,
+  "sourceSHA256": "8d58c41e8907019bf67088900bb5c35843562edd669422573c1280f800500e86",
+  "compilerCalls": 0,
+  "nativeCalls": 0,
+  "note": "Existing Native23 naming is not assumed to equal all declaration occurrences. Exact declarations will be reconciled before source proof is sealed.",
+  "productCandidateModified": false,
+  "fullTestCandidateCreatedBeforeAssertion": true,
+  "cause": "Initial text-only inventory regex omitted four existing @objc declarations; original source and product candidate were unchanged."
+}

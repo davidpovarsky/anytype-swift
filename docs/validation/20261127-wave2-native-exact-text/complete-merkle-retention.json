@@ -1,0 +1,97 @@
+{
+  "schema": "pinkha-native-exact-text-complete-merkle-retention-v1",
+  "status": "PASS_SOURCE_TREE_CUSTODY_ONLY",
+  "baseCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "baseTree": "2d8db7a1585d48b857578920fa19b3730dde488b",
+  "candidateTreeBeforeThisProof": "1588b47ed192db565940dd3909173f12cfc5c521",
+  "completeComparison": [
+    {
+      "before": "baseRoot",
+      "after": "candidateRoot",
+      "originalEntries": 41,
+      "newEntries": 41,
+      "changedAncestors": [
+        "Modules",
+        "NativeApp",
+        "docs"
+      ],
+      "added": [],
+      "allOtherModesTypesAndHashesExact": true
+    },
+    {
+      "before": "baseModules",
+      "after": "candidateModules",
+      "originalEntries": 29,
+      "newEntries": 29,
+      "changedAncestors": [
+        "PinkhaAnyUI"
+      ],
+      "added": [],
+      "allOtherModesTypesAndHashesExact": true
+    },
+    {
+      "before": "baseDocs",
+      "after": "candidateDocs",
+      "originalEntries": 14,
+      "newEntries": 14,
+      "changedAncestors": [
+        "validation"
+      ],
+      "added": [],
+      "allOtherModesTypesAndHashesExact": true
+    },
+    {
+      "before": "baseValidation",
+      "after": "candidateValidation",
+      "originalEntries": 645,
+      "newEntries": 646,
+      "changedAncestors": [],
+      "added": [
+        "20261127-wave2-native-exact-text"
+      ],
+      "allOtherModesTypesAndHashesExact": true
+    },
+    {
+      "before": "baseAnyUI",
+      "after": "candidateAnyUI",
+      "completeOriginalLeafCount": 71,
+      "completeCandidateLeafCount": 71,
+      "changedExistingLeaves": [
+        "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+        "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift"
+      ],
+      "allOtherModesTypesAndHashesExact": true
+    },
+    {
+      "before": "baseNativeApp",
+      "after": "candidateNativeApp",
+      "completeOriginalLeafCount": 11,
+      "completeCandidateLeafCount": 11,
+      "changedExistingLeaves": [
+        "NativeApp/UITests/NativeLaunchTests.swift"
+      ],
+      "allOtherModesTypesAndHashesExact": true
+    }
+  ],
+  "newEvidenceLeafCountBeforeThisProof": 30,
+  "newEvidenceAllFullLocalBytesMatchActualGitBlobs": true,
+  "sourceChangesExactly": [
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+    "NativeApp/UITests/NativeLaunchTests.swift"
+  ],
+  "unchangedBoundaries": [
+    "Anytype/ and AnyTypeTests/ complete root subtree identity",
+    "All other Modules siblings and their package/history/Native contents via exact tree identity",
+    "All original docs/validation645 children",
+    "All root paths other than three listed ancestors",
+    "AnyUI Package.swift, source/test memberships and every noncandidate leaf",
+    "NativeApp project and all other sources/helpers outside the exact appended suffix",
+    "Tools, .github/workflows, Native contract/protobuf and SDK controls"
+  ],
+  "postProofClosure": "Final create_tree may only add this proof and update the new packet-manifest.json. A final source/evidence tree readback rechecks the complete accepted candidate and every exact final payload blob before a new branch is created.",
+  "sourceRetentionCommandRun": false,
+  "runtimeAdmission": false,
+  "compilerCalls": 0,
+  "nativeCalls": 0
+}

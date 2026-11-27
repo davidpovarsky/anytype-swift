@@ -1,0 +1,25 @@
+{
+  "schema": "pinkha-unicode-ui-evidence-order-correction-v1",
+  "status": "SOURCE_ONLY_NOT_EXECUTED",
+  "predecessorSuffixSHA256": "b38b35d12d036ed4c262055448b47840680985bec1b0e0f5a47b740b56e9ce7b",
+  "predecessorFullSHA256": "5f1fc0bc9b0e794f5fce8340384d3e81a4c632ac1859d21a2a60ee43aafc5100",
+  "candidateSuffixSHA256": "9a0880aebe30b7e2ac89794b75cdf049a792d3576bbfa1945c50693d9f78bcb1",
+  "candidateFullSHA256": "7d7d60d61cabaf7e8c968c4d30cd584100e9d90217f6b1b66441146cbf5d943b",
+  "assertions": "        XCTAssertEqual(actualBytes, expectedBytes)\n        XCTAssertEqual(Array(actual.utf16), Array(expected.utf16))\n        XCTAssertEqual(Array(actualBytes.prefix(prefix.utf8.count)), Array(prefix.utf8))\n        XCTAssertEqual(Array(actualBytes.suffix(suffix.utf8.count)), Array(suffix.utf8))\n",
+  "oldTail": "        screen.lifetime = .keepAlways; add(screen)\n    }\n}\n// END_NATIVE_UNICODE_ANCHOR_REGRESSION_V1\n",
+  "newTail": "        screen.lifetime = .keepAlways; add(screen)\n        XCTAssertEqual(actualBytes, expectedBytes)\n        XCTAssertEqual(Array(actual.utf16), Array(expected.utf16))\n        XCTAssertEqual(Array(actualBytes.prefix(prefix.utf8.count)), Array(prefix.utf8))\n        XCTAssertEqual(Array(actualBytes.suffix(suffix.utf8.count)), Array(suffix.utf8))\n    }\n}\n// END_NATIVE_UNICODE_ANCHOR_REGRESSION_V1\n",
+  "inverse": "Replace newTail with oldTail, then insert the exact assertions immediately before the sole let evidence dictionary declaration.",
+  "exactInverse": true,
+  "originalPrefixUnchanged": true,
+  "unchanged": [
+    "Original capture guard",
+    "Actual-value read",
+    "Four exact assertions",
+    "Typed JSON values",
+    "Screenshot",
+    "Original23 helpers and observer",
+    "Both1800s allowances"
+  ],
+  "compilerCalls": 0,
+  "tests": 0
+}

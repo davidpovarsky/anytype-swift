@@ -422,7 +422,7 @@ public final class AnyDocumentPresentation: Sendable {
         let byID = Dictionary(uniqueKeysWithValues: value.snapshot.blocks.map { ($0.id, $0) })
         for (id, draft) in drafts {
             guard let native = byID[id], native.native["_ver"] == draft.base.native["_ver"],
-                  native.text == draft.base.text else {
+                  native.text.utf8.elementsEqual(draft.base.text.utf8) else {
                 if !saving { writeState = .conflict(AnyUIErrorText.changedDocument) }
                 continue
             }
@@ -617,7 +617,7 @@ public final class AnyDocumentPresentation: Sendable {
               renderedBlock.id == blockID,
               (block.type == "code" || AnyInlineMarkdown(source).isEditable) else { throw AnyHostError.invalidSelection }
         if drafts[blockID] == nil {
-            guard renderedBlock.native["_ver"] == block.native["_ver"], renderedBlock.text == block.text else {
+            guard renderedBlock.native["_ver"] == block.native["_ver"], renderedBlock.text.utf8.elementsEqual(block.text.utf8) else {
                 throw AnyHostError.changedDocument
             }
         }
@@ -625,7 +625,7 @@ public final class AnyDocumentPresentation: Sendable {
                                              selection: displaySelection, revision: 0)
         draft.inlineMarkdown = source; draft.selection = displaySelection; draft.revision &+= 1
         var candidate = drafts
-        if source == draft.base.text, inFlightTextBlockID != blockID {
+        if source.utf8.elementsEqual(draft.base.text.utf8), inFlightTextBlockID != blockID {
             candidate.removeValue(forKey: blockID)
         }
         else { candidate[blockID] = draft }
@@ -662,7 +662,7 @@ public final class AnyDocumentPresentation: Sendable {
             throw AnyHostError.invalidSelection
         }
         if drafts[current.id] == nil {
-            guard current.native["_ver"] == renderedBlock.native["_ver"], current.text == renderedBlock.text else {
+            guard current.native["_ver"] == renderedBlock.native["_ver"], current.text.utf8.elementsEqual(renderedBlock.text.utf8) else {
                 throw AnyHostError.changedDocument
             }
         }
@@ -722,7 +722,7 @@ public final class AnyDocumentPresentation: Sendable {
         }
         composition = nil; isComposing = false
         if unmappedDrafts[blockID] == nil, let draft = drafts[blockID],
-           draft.inlineMarkdown == draft.base.text, inFlightTextBlockID != blockID {
+           draft.inlineMarkdown.utf8.elementsEqual(draft.base.text.utf8), inFlightTextBlockID != blockID {
             drafts.removeValue(forKey: blockID)
         }
         let output = unmappedDrafts[blockID] == nil ? drafts[blockID]?.inlineMarkdown ?? active.text.baseline.source : nil
@@ -758,14 +758,14 @@ public final class AnyDocumentPresentation: Sendable {
                     guard let native = current.snapshot.blocks.first(where: { $0.id == id }),
                           current.snapshot.depthFirstIDs.contains(id),
                           native.native["_ver"] == draft.base.native["_ver"],
-                          native.text == draft.base.text else { throw AnyHostError.changedDocument }
+                          native.text.utf8.elementsEqual(draft.base.text.utf8) else { throw AnyHostError.changedDocument }
                     let edit = try documents.prepareTextEdit(current, blockID: id,
                                                               inlineMarkdown: draft.inlineMarkdown)
                     let receipt = try await documents.apply(edit, lease: lease, authorize: authorize)
                     guard receipt.readback == .verifiedCurrent else { throw AnyHostError.writeUncertain }
                     let readback = try await readOperation(.mutationReadback, documents, objectID, lease)
                     guard let saved = readback.snapshot.blocks.first(where: { $0.id == id }),
-                          saved.text == draft.inlineMarkdown else { throw AnyHostError.writeUncertain }
+                          saved.text.utf8.elementsEqual(draft.inlineMarkdown.utf8) else { throw AnyHostError.writeUncertain }
                     return (receipt, readback, saved)
                 }
                 try requireMounted(requestEpoch)

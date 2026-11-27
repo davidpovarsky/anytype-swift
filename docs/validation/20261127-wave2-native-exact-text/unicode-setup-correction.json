@@ -1,0 +1,21 @@
+{
+  "schema": "pinkha-unicode-ui-setup-correction-v1",
+  "status": "SOURCE_ONLY_NOT_EXECUTED",
+  "finding": "Reuse existing observed creation transition and hit-point readiness; avoid the already-documented enabled-but-not-hittable overlay.",
+  "predecessorSuffixSHA256": "666d52ecc258b9d0e7e6974ecfa46d7d73c90546dbf3608715d5d6af9fed7519",
+  "candidateSuffixSHA256": "b38b35d12d036ed4c262055448b47840680985bec1b0e0f5a47b740b56e9ce7b",
+  "predecessorFullSHA256": "080a6ad3e5a7fdc5a956d6f6b65682a827fec966da4001cc70be6ae8c9bba986",
+  "candidateFullSHA256": "5f1fc0bc9b0e794f5fce8340384d3e81a4c632ac1859d21a2a60ee43aafc5100",
+  "changes": [
+    {
+      "before": "        createNamedItem(app, action: \"any-native-new-document\", title: documentName)\n        tapWhenEnabled(app.buttons[\"any-native-add-paragraph\"], timeout: 60)\n",
+      "after": "        try createNamedItemWithObservedTransition(app, action: \"any-native-new-document\", title: documentName)\n        let addParagraph = app.buttons[\"any-native-add-paragraph\"]\n        waitFor(NSPredicate(format: \"exists == true AND enabled == true AND hittable == true\"),\n                object: addParagraph, timeout: 60)\n        addParagraph.tap()\n",
+      "count": 1
+    }
+  ],
+  "exactInverse": true,
+  "originalPrefixUnchanged": true,
+  "UIActionsAdded": "No new product action: existing creation flow and one Add paragraph tap; only original readiness/diagnostic helper reused.",
+  "tests": 0,
+  "compilerCalls": 0
+}

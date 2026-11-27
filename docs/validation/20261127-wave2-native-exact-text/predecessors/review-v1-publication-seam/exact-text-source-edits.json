@@ -1,0 +1,70 @@
+{
+  "sourceCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "status": "UNPUBLISHED_CANDIDATE_NOT_COMPILED",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "gitBlob": "0585f7031c638d97ae3d8f28b6a748e8e6eedc7a",
+      "changes": [
+        {
+          "before": "native.text == draft.base.text",
+          "after": "native.text.utf8.elementsEqual(draft.base.text.utf8)",
+          "count": 2
+        },
+        {
+          "before": "renderedBlock.text == block.text",
+          "after": "renderedBlock.text.utf8.elementsEqual(block.text.utf8)",
+          "count": 1
+        },
+        {
+          "before": "source == draft.base.text",
+          "after": "source.utf8.elementsEqual(draft.base.text.utf8)",
+          "count": 1
+        },
+        {
+          "before": "current.text == renderedBlock.text",
+          "after": "current.text.utf8.elementsEqual(renderedBlock.text.utf8)",
+          "count": 1
+        },
+        {
+          "before": "draft.inlineMarkdown == draft.base.text",
+          "after": "draft.inlineMarkdown.utf8.elementsEqual(draft.base.text.utf8)",
+          "count": 1
+        },
+        {
+          "before": "saved.text == draft.inlineMarkdown",
+          "after": "saved.text.utf8.elementsEqual(draft.inlineMarkdown.utf8)",
+          "count": 1
+        },
+        {
+          "before": "accept(result.0); canWrite = result.1",
+          "after": "publishLoadedRead(result.0, writable: result.1)",
+          "count": 1
+        },
+        {
+          "before": "    private func mayPublishRead(_ requestID: UUID, owner: UUID) -> Bool {",
+          "after": "    /// The native load publishes here only after its lease and request-owner checks.\n    /// Internal typed model fixtures use this same state transition; they do not\n    /// verify Native authority or dispatch any document operation.\n    func publishLoadedRead(_ value: AnyEditorRead, writable: Bool) {\n        accept(value); canWrite = writable\n    }\n\n    private func mayPublishRead(_ requestID: UUID, owner: UUID) -> Bool {",
+          "count": 1
+        }
+      ],
+      "exactInverse": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+      "gitBlob": "41cd23c7ae9704197babaa7378fa1b357e833a16",
+      "changes": [
+        {
+          "before": "current.text == draft.inlineMarkdown",
+          "after": "current.text.utf8.elementsEqual(draft.inlineMarkdown.utf8)",
+          "count": 1
+        },
+        {
+          "before": "current.text == (draft.baseNative[\"text\"]?.string ?? \"\")",
+          "after": "current.text.utf8.elementsEqual((draft.baseNative[\"text\"]?.string ?? \"\").utf8)",
+          "count": 1
+        }
+      ],
+      "exactInverse": true
+    }
+  ]
+}

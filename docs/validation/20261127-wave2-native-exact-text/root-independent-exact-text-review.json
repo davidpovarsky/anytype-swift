@@ -1,0 +1,165 @@
+{
+  "schema": "wave2-root-exact-native-text-review-v1",
+  "status": "SOURCE_ONLY_ACCEPTED_UI_TEST_DELTA_SEPARATE",
+  "base": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "changes": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "originalSHA256": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",
+      "candidateSHA256": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",
+      "exactFullInverse": true,
+      "comparisonOccurrences": 7,
+      "contexts": [
+        {
+          "line": 425,
+          "context": [
+            "        restoreRecoveryIfNeeded(value.snapshot)",
+            "        let byID = Dictionary(uniqueKeysWithValues: value.snapshot.blocks.map { ($0.id, $0) })",
+            "        for (id, draft) in drafts {",
+            "            guard let native = byID[id], native.native[\"_ver\"] == draft.base.native[\"_ver\"],",
+            "                  native.text == draft.base.text else {",
+            "                if !saving { writeState = .conflict(AnyUIErrorText.changedDocument) }",
+            "                continue",
+            "            }",
+            "        }"
+          ]
+        },
+        {
+          "line": 620,
+          "context": [
+            "              read?.snapshot.depthFirstIDs.contains(blockID) == true,",
+            "              renderedBlock.id == blockID,",
+            "              (block.type == \"code\" || AnyInlineMarkdown(source).isEditable) else { throw AnyHostError.invalidSelection }",
+            "        if drafts[blockID] == nil {",
+            "            guard renderedBlock.native[\"_ver\"] == block.native[\"_ver\"], renderedBlock.text == block.text else {",
+            "                throw AnyHostError.changedDocument",
+            "            }",
+            "        }",
+            "        var draft = drafts[blockID] ?? .init(base: block, inlineMarkdown: block.text,"
+          ]
+        },
+        {
+          "line": 628,
+          "context": [
+            "        var draft = drafts[blockID] ?? .init(base: block, inlineMarkdown: block.text,",
+            "                                             selection: displaySelection, revision: 0)",
+            "        draft.inlineMarkdown = source; draft.selection = displaySelection; draft.revision &+= 1",
+            "        var candidate = drafts",
+            "        if source == draft.base.text, inFlightTextBlockID != blockID {",
+            "            candidate.removeValue(forKey: blockID)",
+            "        }",
+            "        else { candidate[blockID] = draft }",
+            "        // Retain the exact source/base before accepting the visible edit."
+          ]
+        },
+        {
+          "line": 665,
+          "context": [
+            "              source.utf8.elementsEqual(self.source(for: renderedBlock).utf8) else {",
+            "            throw AnyHostError.invalidSelection",
+            "        }",
+            "        if drafts[current.id] == nil {",
+            "            guard current.native[\"_ver\"] == renderedBlock.native[\"_ver\"], current.text == renderedBlock.text else {",
+            "                throw AnyHostError.changedDocument",
+            "            }",
+            "        }",
+            "        let text = try AnyNativeTextComposition(source: source, literal: current.type == \"code\", selection: selection)"
+          ]
+        },
+        {
+          "line": 725,
+          "context": [
+            "            message = AnyUIErrorText.describe(error)",
+            "        }",
+            "        composition = nil; isComposing = false",
+            "        if unmappedDrafts[blockID] == nil, let draft = drafts[blockID],",
+            "           draft.inlineMarkdown == draft.base.text, inFlightTextBlockID != blockID {",
+            "            drafts.removeValue(forKey: blockID)",
+            "        }",
+            "        let output = unmappedDrafts[blockID] == nil ? drafts[blockID]?.inlineMarkdown ?? active.text.baseline.source : nil",
+            "        if !unmappedDrafts.isEmpty {"
+          ]
+        },
+        {
+          "line": 761,
+          "context": [
+            "                    let current = try await documents.read(objectID: objectID, lease: lease)",
+            "                    guard let native = current.snapshot.blocks.first(where: { $0.id == id }),",
+            "                          current.snapshot.depthFirstIDs.contains(id),",
+            "                          native.native[\"_ver\"] == draft.base.native[\"_ver\"],",
+            "                          native.text == draft.base.text else { throw AnyHostError.changedDocument }",
+            "                    let edit = try documents.prepareTextEdit(current, blockID: id,",
+            "                                                              inlineMarkdown: draft.inlineMarkdown)",
+            "                    let receipt = try await documents.apply(edit, lease: lease, authorize: authorize)",
+            "                    guard receipt.readback == .verifiedCurrent else { throw AnyHostError.writeUncertain }"
+          ]
+        },
+        {
+          "line": 768,
+          "context": [
+            "                    let receipt = try await documents.apply(edit, lease: lease, authorize: authorize)",
+            "                    guard receipt.readback == .verifiedCurrent else { throw AnyHostError.writeUncertain }",
+            "                    let readback = try await readOperation(.mutationReadback, documents, objectID, lease)",
+            "                    guard let saved = readback.snapshot.blocks.first(where: { $0.id == id }),",
+            "                          saved.text == draft.inlineMarkdown else { throw AnyHostError.writeUncertain }",
+            "                    return (receipt, readback, saved)",
+            "                }",
+            "                try requireMounted(requestEpoch)",
+            "                guard ownsNativeMutation(mutationID, owner: requestEpoch) else { return }"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+      "originalSHA256": "f646eed644d128c30057011ddd384154f5d6a2bd7082bca52e44488bf19fa758",
+      "candidateSHA256": "2abe0317ede786772c8fb1f427f476d24605031fb7f929394f548cd9196e1155",
+      "exactFullInverse": true,
+      "comparisonOccurrences": 2,
+      "contexts": [
+        {
+          "line": 116,
+          "context": [
+            "        guard reachable, let current, current.id == draft.blockID,",
+            "              current.type == draft.baseNative[\"type\"]?.string else { return .conflict }",
+            "        // A late native confirmation may outlive its old mounted UI owner.",
+            "        // Matching current text is accepted without issuing another mutation.",
+            "        if current.text == draft.inlineMarkdown { return .alreadyStored }",
+            "        guard current.text == (draft.baseNative[\"text\"]?.string ?? \"\"),",
+            "              current.native[\"_ver\"] == draft.baseNative[\"_ver\"] else { return .conflict }",
+            "        return .requiresReview",
+            "    }"
+          ]
+        },
+        {
+          "line": 117,
+          "context": [
+            "              current.type == draft.baseNative[\"type\"]?.string else { return .conflict }",
+            "        // A late native confirmation may outlive its old mounted UI owner.",
+            "        // Matching current text is accepted without issuing another mutation.",
+            "        if current.text == draft.inlineMarkdown { return .alreadyStored }",
+            "        guard current.text == (draft.baseNative[\"text\"]?.string ?? \"\"),",
+            "              current.native[\"_ver\"] == draft.baseNative[\"_ver\"] else { return .conflict }",
+            "        return .requiresReview",
+            "    }",
+            "}"
+          ]
+        }
+      ]
+    }
+  ],
+  "scope": "Only9 storage-identity comparisons in existing draft baseline, composition, acknowledgement and recovery paths change from canonical String equality to exact UTF8 equality.",
+  "checks": [
+    "Complete original files reconstructed exactly, including f731 attachment accessor and recovery actor ownership.",
+    "No new initializer, publication fixture seam, HTTP transport or private NoteMarker verifier.",
+    "All existing lease/mount/version/mutation guards and user-facing search/title comparisons remain unchanged.",
+    "An acknowledged save or replay decision must match exact stored source; a canonically equivalent different representation remains pending or conflicted rather than falsely clean."
+  ],
+  "risksAndRemaining": [
+    "These9 comparisons are stricter by design; previously canonically equivalent recovery content can now require review.",
+    "Pending new owned-native UI cases must prove exact input bytes and persistence, anchor identity and cold reopening.",
+    "No marked-input IME, Native persistence or compiler acceptance is established by source inspection."
+  ],
+  "compilerInvocations": 0,
+  "runtimeTests": 0
+}

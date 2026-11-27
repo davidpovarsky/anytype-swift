@@ -1,0 +1,146 @@
+{
+  "schema": "pinkha-unicode-ui-independent-source-review/v1",
+  "reviewer": "/root/torah_continue",
+  "reviewedAtUTC": "2026-11-27 14:44:57 UTC",
+  "status": "PASS_SOURCE_REVIEW_ONLY_RUNTIME_NOT_RUN",
+  "baseCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "scope": "Two appended owned-native Unicode anchor UI methods only. No review-driven production edit, controller, authority, fixture protocol or timeout change.",
+  "candidate": {
+    "path": "wave2-semantic-anchor-audit/candidate/NativeApp/UITests/NativeLaunchTests.swift",
+    "bytes": 281769,
+    "sha256": "5f1fc0bc9b0e794f5fce8340384d3e81a4c632ac1859d21a2a60ee43aafc5100",
+    "gitBlob": "d419e6ef94ece32baa67a50ec6e094678a695e0f"
+  },
+  "suffix": {
+    "path": "wave2-semantic-anchor-audit/unicode_anchor_addition.swift",
+    "bytes": 10425,
+    "sha256": "b38b35d12d036ed4c262055448b47840680985bec1b0e0f5a47b740b56e9ce7b",
+    "gitBlob": "8faeb057c040d026701eab4a15c0fece8211da1a"
+  },
+  "sourceByteProof": {
+    "path": "wave2-semantic-anchor-audit/torah-unicode-ui-byte-review.json",
+    "bytes": 2572,
+    "sha256": "14ce82bdccc1cc22531db3f48b90e4e201e2f133102d59d89fc210f2f3d2e3af",
+    "gitBlob": "b747a607eda2a6a606ecd135c11335fa4634dc32"
+  },
+  "authorSourceProof": {
+    "path": "wave2-semantic-anchor-audit/unicode-anchor-source-inverse.json",
+    "bytes": 4658,
+    "sha256": "2a679c50babb7c0c4fb507a786263ad3a97cd34dec57d674a314835506491082",
+    "gitBlob": "33967ad3b0c2cf44d344a9bf6f1e289159be8d5e"
+  },
+  "setupCorrection": {
+    "finding": "The predecessor reused enabled-only creation/Add paragraph helpers despite the original source documenting a transition overlay without a usable hit point. This was a source-observed setup risk, not a new executed failure.",
+    "resolvedBy": "Only the new helper now calls existing createNamedItemWithObservedTransition and waits the original 60-second exists/enabled/hittable Add paragraph predicate before one tap.",
+    "predecessorFullSHA256": "080a6ad3e5a7fdc5a956d6f6b65682a827fec966da4001cc70be6ae8c9bba986",
+    "predecessorSuffixSHA256": "666d52ecc258b9d0e7e6974ecfa46d7d73c90546dbf3608715d5d6af9fed7519",
+    "proof": {
+      "path": "wave2-semantic-anchor-audit/unicode-setup-correction.json",
+      "bytes": 1484,
+      "sha256": "98a991baf20a2ad831647ca4f5687861e4da2c9c2b22083a83a4b2fa0c42c29e",
+      "gitBlob": "3ced566e5a7502a38982fecedafb7189a717223a"
+    },
+    "retainedPredecessorDirectory": "wave2-semantic-anchor-audit/review-v2-unicode-setup"
+  },
+  "checks": [
+    {
+      "area": "Source custody and finite discovery",
+      "finding": "Exact 271344-byte Native23 prefix is retained, so every old method/helper body remains unchanged. Removing only the pinned 10425-byte suffix restores the original. Two unique XCTest methods are declared, each retains its 1800-second allowance; source regex inventory is not XCTest enumeration."
+    },
+    {
+      "area": "Actor and API surface",
+      "finding": "New extension methods inherit the existing MainActor NativeLaunchTests isolation, call existing same-file private helpers, and declare throws for the observed-transition helper. XCTest assertions and Foundation byte-array/JSON operations expose no concrete source-level API blocker. Apple typechecking remains unperformed."
+    },
+    {
+      "area": "Ordinary input and exact bytes",
+      "finding": "Both declared before/after forms have distinct UTF-8 and canonically equal normalized bytes. Real UIKit typeText and original actual-selection witness are used. New captures assert complete actual XCUI UTF-8 and UTF-16 arrays, exact ASCII guard bytes, exact block identifier bytes and native observer text hash/UTF-16 length. Canonical String equality in the unchanged semanticCommit wait cannot by itself satisfy these later exact checks."
+    },
+    {
+      "area": "Native/read-render comparison",
+      "finding": "Primary observer requires mounted/nonloading/no pending edits/no anchor creation and a complete unique native/rendered block set. It compares native projection with actual rendered PinkhaSemanticText; primary PinkhaSemanticText equality uses exact UTF-8 plus marks. All reported hashes use raw UTF-8. The existing observer adds zero engine calls/mutations/selection changes; these assertions depend on the actual document read, not an injected expected snapshot."
+    },
+    {
+      "area": "Anchor and mutation evidence",
+      "finding": "Capture requires one full-range anchor and equal native/rendered marks. Ordinary full-range replacement must preserve its exact identity hash and block/Space/object identity while changing native version and raw source hash to the requested exact text and new UTF-16 length. The Latin case changes length; the Hebrew reordered-mark case keeps length while changing raw bytes."
+    },
+    {
+      "area": "Cold persistence",
+      "finding": "Existing reopenOwnedWorkspace performs terminate then launch in the same owned namespace. Cold assertions require a different PID and read generation, exact same Space/object/block identity, raw source hash equal to the edited acknowledged read, same anchor identity/range/text hash and actual XCUI byte arrays. This prevents optimistic UI state alone from passing the intended completed run."
+    },
+    {
+      "area": "Artifact and ownership boundaries",
+      "finding": "Original observer retains native-semantic-anchor JSON; new native-unicode-anchor JSON and screen attachments use a distinct prefix and run only after the original post-onboarding capture guard. The test does not inspect backup phrases or introduce a data writer. Screenshots still require later visual review."
+    }
+  ],
+  "primarySourceBindings": [
+    {
+      "repositoryPath": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnySemanticAnchorObservation.swift",
+      "source": {
+        "path": "wave2-semantic-anchor-audit/torah-ui-observer.swift",
+        "bytes": 12721,
+        "sha256": "b141d6ba3f78bcddc4b35cbe0a7afb107b09ab38c067b2222ccf14787b699b48",
+        "gitBlob": "2049af655b538c1aea6eea614fda64ea4f21ca92"
+      },
+      "primaryReceipt": {
+        "path": "wave2-semantic-anchor-audit/torah-ui-observer.primary.json",
+        "bytes": 13857,
+        "sha256": "977ab012aa8cdb871527071b5ee08eb7d273ec2b79048c3c4c634d1aca1c357b",
+        "gitBlob": "72fa64c0ada6ce216adb9d391afe7fc254f5d562"
+      },
+      "gitBlob": "2049af655b538c1aea6eea614fda64ea4f21ca92",
+      "semanticChecks": [
+        "lines85-96 owned mounted/no pending/complete rendered set",
+        "lines107-138 native projection/exact semantic equality and raw hashes",
+        "lines231-238 exact UTF-8 hash of text and marker identity"
+      ]
+    },
+    {
+      "repositoryPath": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTextAnchor.swift",
+      "source": {
+        "path": "wave2-semantic-anchor-audit/source/Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTextAnchor.swift",
+        "bytes": 16150,
+        "sha256": "bfefc94965cfe6dbdf910452eaec3a9530854a6d5b6a09a1a9b10339c6c30274",
+        "gitBlob": "494f878ad9901d8ea07874ec6727732521e7c27e"
+      },
+      "primaryReceipt": {
+        "path": "wave2-semantic-anchor-audit/torah-ui-semantic-text.primary.json",
+        "bytes": 17249,
+        "sha256": "5cda598242fc9d2e4b16fbecd0e0921027b7736d8ee53517af3bb0bbfafad746",
+        "gitBlob": "a1a59ddf17741d8539cc35b4b398163d5d3f1ebd"
+      },
+      "gitBlob": "494f878ad9901d8ea07874ec6727732521e7c27e",
+      "semanticChecks": [
+        "lines161-163 explicit exact UTF-8 equality plus marks"
+      ]
+    }
+  ],
+  "productionReviewUnchanged": {
+    "path": "wave2-semantic-anchor-audit/torah-independent-exact-text-review.json",
+    "bytes": 5170,
+    "sha256": "c2ff25aef12755ed0979516be425259ffc9ca0054a10199b8526588f69456048",
+    "gitBlob": "c08d22a9332515527c8eac19bf417d4553f023fe"
+  },
+  "remainingBlockers": [],
+  "execution": {
+    "SwiftOrAppleCompilerCalls": 0,
+    "XCTestMethodsExecuted": 0,
+    "NativeCalls": 0,
+    "OracleCalls": 0,
+    "MacCalls": 0,
+    "UIActions": 0,
+    "portableAcceptanceTests": 0
+  },
+  "notClaimed": [
+    "Runtime or simulator acceptance",
+    "Visual screenshot review",
+    "Marked-input IME behavior",
+    "Partial-range anchor behavior",
+    "Recovered pending-draft lifecycle",
+    "Stale native source rejection",
+    "Linked source associations",
+    "Anchor split/merge or copy/paste/cut",
+    "Undo/Redo",
+    "Physical-device input"
+  ],
+  "handoff": "Original Native23 profiles and compiled-source gates remain unchanged. Native25 requires a separately admitted matching source/App/runner/compiler inventory, exact finite selectors and actual results; this source review opens no runtime gate."
+}
