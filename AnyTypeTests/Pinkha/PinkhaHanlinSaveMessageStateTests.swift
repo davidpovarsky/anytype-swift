@@ -261,6 +261,40 @@ final class PinkhaHanlinSaveMessageStateTests: XCTestCase {
         }
     }
 
+    func testMaximumEscapedNativeReferencesFitBoundedFinalRecordAndReplayExactly() throws {
+        let fixture = try Fixture()
+        let root = String(repeating: "\\", count: 256)
+        let references = (0..<64).map { index in
+            let prefix = "block-\(index):"
+            return prefix + String(repeating: "\\", count: 256 - prefix.utf8.count)
+        }
+        var state = try fixture.initial(blockDigests: Array(repeating: digest("body"), count: 64))
+        state = try state.applying(.rootDispatched).applying(.rootVerified(reference: root, readbackSHA256: digest("page")))
+        for index in references.indices {
+            state = try state.applying(.blockDispatched(index: index))
+                .applying(.blockVerified(index: index, reference: references[index], readbackSHA256: digest("body")))
+        }
+        let readback = PinkhaHanlinSaveMessageBodyReadback(manifestSHA256: try state.manifest.canonicalSHA256(),
+            objectReference: root, blockReferences: references, nativeReadbackSHA256: digest("original-native-readback"))
+        let record = try PinkhaHanlinSaveMessageProgressRecord(previous: state, event: .bodyVerified(readback))
+        let bytes = try record.canonicalBytes()
+        XCTAssertGreaterThan(bytes.count, 32_768)
+        XCTAssertLessThanOrEqual(bytes.count, 65_536)
+        let restored = try PinkhaHanlinSaveMessageProgressRecord.decodeCanonical(bytes, previous: state)
+        let complete = try restored.replay(on: state)
+        XCTAssertTrue(complete.isReadyForCommit)
+        XCTAssertEqual(try complete.canonicalBytes(), try state.applying(.bodyVerified(readback)).canonicalBytes())
+        XCTAssertThrowsError(try PinkhaHanlinSaveMessageProgressRecord.decodeCanonical(
+            Data(repeating: 0x20, count: 65_537), previous: state))
+    }
+
+    func testControlBearingNativeReferencesAreRefusedBeforeReceiptEncoding() throws {
+        let state = try Fixture().initial().applying(.rootDispatched)
+        for scalar in ["\u{0}", "\u{1}", "\t", "\n", "\u{7f}", "\u{85}"] {
+            XCTAssertThrowsError(try state.applying(.rootKnown(reference: "native" + scalar + "id")))
+        }
+    }
+
     private func digest(_ value: String) -> String { PinkhaHanlinCreatePagePlan.digest(Data(value.utf8)) }
 
     private func verifyRoot(_ initial: PinkhaHanlinSaveMessageProgress) throws -> PinkhaHanlinSaveMessageProgress {
