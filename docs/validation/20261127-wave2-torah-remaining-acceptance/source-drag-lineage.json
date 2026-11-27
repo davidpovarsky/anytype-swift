@@ -1,0 +1,46 @@
+{
+  "sources": [
+    {
+      "commit": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
+      "fileSHA256": "69e841cf6ea3f4af46fa6a51e20e645702710e70d14a330f42601ec467bc0371",
+      "fileGitBlob": "5870d91beaf7885231edd757147b686ee2e7d3c5",
+      "methodSHA256": "186a7ed804f81cb23228be0abb1ea326399bc6e3568d390601412ace492c4009"
+    },
+    {
+      "commit": "5625e28193812f07b2bcbc54da4c2a1a8e0053e3",
+      "fileSHA256": "3210efaafdf950706148261f2bbbbb8619ebb4aa7d3db9cbbce6639cc383d6eb",
+      "fileGitBlob": "12cc150bd795b6169f691f983e897afc15578f3c",
+      "methodSHA256": "c73236fc790e53d32b3b5495b3cc3823a89f9d4be091255d3c3f12844fc037d9"
+    },
+    {
+      "commit": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+      "fileSHA256": "1404b6e70e03015aa208ce285c392a4353578b540ff5071548c3158c5e53a04a",
+      "fileGitBlob": "c72092f0af20a1057dcd6b8ceb42587dbb5cf74a",
+      "methodSHA256": "c73236fc790e53d32b3b5495b3cc3823a89f9d4be091255d3c3f12844fc037d9",
+      "failureLine1389": "        add(frames)\n        control.tap()\n        waitFor(NSPredicate(format: \"value == %@\", \"1\"), object: control, timeout: 10)\n        waitFor(NSPredicate(format: \"value == %@\", \"1\"), object: row, timeout: 10)\n    }\n\n    private func createNamedItem(_ app: XCUIApplication, action: String, title: String) {\n        tapWhenEnabled(app.buttons[\"any-native-create-menu\"], timeout: 60)\n        tapWhenEnabled(app.buttons[action])\n        let field = app.descendants(matching: .any).matching(identifier: \"any-native-name-input\").firstMatch\n        waitUntilEnabled(field)\n        field.tap(); field.typeText(title)\n        tapWhenEnabled(app.buttons[\"any-native-name-confirm\"])\n    }\n\n    private func reopenOwnedWorkspace(_ app: XCUIApplication, spaceName: String) {"
+    },
+    {
+      "commit": "6aab20344fcf1c645d7c96e0b9ec034ef07003a9",
+      "fileSHA256": "e32f68676df1330c0255aa7ffa93b71c16f158570250013c607084f440c54375",
+      "fileGitBlob": "a623b6404aa21f109fdf5fac209cc266c2b93061",
+      "methodSHA256": "53b207a8ab5dc48936e33d8d708c91945ccaa329589812ace52ee8a66ef4de4d"
+    }
+  ],
+  "diffs": [
+    {
+      "from": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
+      "to": "5625e28193812f07b2bcbc54da4c2a1a8e0053e3",
+      "diff": "--- 7293e4fd0bcabdcdb643d5768b777b8e87ff1b73\n+++ 5625e28193812f07b2bcbc54da4c2a1a8e0053e3\n@@ -123,7 +123,8 @@\n         XCTAssertEqual(target.value as? String, targetText, \"A source transfer must not replace the target text.\")\n         XCTAssertLessThan(quote.frame.minY, target.frame.minY, \"A targeted drop inserts before its native target.\")\n         XCTAssertEqual(app.keyboards.count, 0, \"Dragging a source must not acquire editor focus.\")\n-        tapWhenEnabled(app.buttons[\"torah-inspector-close\"])\n+        // The header collapse may dismiss the inspector completely. The cold\n+        // reopen below terminates the app from either supported collapsed state.\n \n         // Reopen only after the separate canonical association badge appears.\n         // The new quote, its source metadata and the original target must all\n"
+    },
+    {
+      "from": "5625e28193812f07b2bcbc54da4c2a1a8e0053e3",
+      "to": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+      "diff": ""
+    },
+    {
+      "from": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+      "to": "6aab20344fcf1c645d7c96e0b9ec034ef07003a9",
+      "diff": "--- 4b09cc5478c60c1c6728a54f2a27a115637a835b\n+++ 6aab20344fcf1c645d7c96e0b9ec034ef07003a9\n@@ -1,4 +1,4 @@\n-    func testSourceDragIntoNativeEditorPreservesTargetAndColdReopens() {\n+    func testSourceDragIntoNativeEditorPreservesTargetAndColdReopens() throws {\n         let scope = UUID()\n         let suffix = String(scope.uuidString.prefix(8))\n         let app = makeApplication(scope: scope)\n@@ -9,7 +9,7 @@\n         app.launch()\n         defer { app.terminate() }\n         createOwnedWorkspace(app, spaceName: spaceName)\n-        createNamedItem(app, action: \"any-native-new-document\", title: documentName)\n+        try createNamedItemWithObservedTransition(app, action: \"any-native-new-document\", title: documentName)\n         tapWhenEnabled(app.buttons[\"any-native-add-paragraph\"], timeout: 60)\n \n         let blocks = app.textViews.matching(NSPredicate(\n"
+    }
+  ]
+}

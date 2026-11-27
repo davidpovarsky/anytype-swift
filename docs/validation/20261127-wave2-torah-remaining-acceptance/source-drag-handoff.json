@@ -1,0 +1,159 @@
+{
+  "schema": "pinkha-source-drag-missing-acceptance-handoff-v1",
+  "status": "SOURCE_AND_RETAINED_EVIDENCE_AUDIT_NOT_NEW_EXECUTION",
+  "auditedSourceCommit": "6aab20344fcf1c645d7c96e0b9ec034ef07003a9",
+  "source": {
+    "path": "NativeApp/UITests/NativeLaunchTests.swift",
+    "fileSHA256": "e32f68676df1330c0255aa7ffa93b71c16f158570250013c607084f440c54375",
+    "methodSHA256": "53b207a8ab5dc48936e33d8d708c91945ccaa329589812ace52ee8a66ef4de4d",
+    "methodHashScope": "exact member declaration through closing brace plus one newline",
+    "libraryAdditionPreservesMethod": true,
+    "libraryCandidateSHA256": "31c64474cebf4890050f9077d3c44fac63264d878a77bd6f55811cc407e02422"
+  },
+  "selection": {
+    "stage": "source-drag",
+    "target": "PinkhaAnyNativeUITests",
+    "method": "NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+    "methods": 1,
+    "defaultTestExecutionTimeAllowanceSeconds": 360,
+    "maximumTestExecutionTimeAllowanceSeconds": 360,
+    "testTimeoutsEnabled": true,
+    "parallelTestingEnabled": false,
+    "budgetSourceCommit": "9cafd32811e50f4e883efb034888d7ce1e349c02",
+    "budgetSourcePath": "Tools/AnyEnginePort/native_ui_original_products_contract.py",
+    "budgetSourceSHA256": "4e31edb56b0446cea77e95dc2e61f8c706ebe3a2d7c85f2957651f73e645812f",
+    "budgetDeclarations": [
+      "STAGES",
+      "plan"
+    ],
+    "requiresActualSharedProducerReceiptAndExactCompiledSelection": true
+  },
+  "historicalFailures": [
+    {
+      "run": "45087682296",
+      "source": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
+      "seconds": 146.67450594902039,
+      "result": "Failed",
+      "failureLine": 618,
+      "failureStep": "wait for torah-inspector-close after collapseInspectorForBackgroundRead had legitimately dismissed the Inspector",
+      "passedBeforeFailure": [
+        "actual source drag",
+        "provider body equality",
+        "distinct native quote/target identities",
+        "canonical source badge",
+        "exactly two blocks",
+        "unchanged target body",
+        "insertion before target",
+        "zero keyboard"
+      ],
+      "notReached": [
+        "cold reopen assertions"
+      ],
+      "testMethodsPath": "docs/validation/20261123-nativeui-source-drag/native-ui-continuation-test-methods.json",
+      "testMethodsSHA256": "9093c9842a74d2f188eb5e4fdbc704454d870585dce4a522dbab605877d65ef5",
+      "methodLogPath": "docs/validation/20261123-nativeui-source-drag/original-source-drag-method.log.gz",
+      "compressedLogSHA256": "0ac05f405e2229a45ae26c522a1db3cc5b7f984475e826d442c2e8c51350237c",
+      "uncompressedLogSHA256": "5ff68606ee7ff56bf38195d09164d84eb19f986f18a047e3a3dd88284b8bb758"
+    },
+    {
+      "run": "45148353071",
+      "applicationSource": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+      "controlSource": "9cafd32811e50f4e883efb034888d7ce1e349c02",
+      "seconds": 85.04402792453766,
+      "result": "Failed",
+      "failureLine": 1389,
+      "failureStep": "createNamedItem waiting for any-native-name-input, before source drag",
+      "notReached": [
+        "source drag",
+        "cold reopen assertions"
+      ],
+      "evidencePath": "docs/validation/20261123-native-ui-transition-candidate/original-failure-audit/audit-original-output.json",
+      "evidenceSHA256": "1ca94bd094e168f0b2158de4d31afe0163f936db6009b62c6b85ef33cf525c91",
+      "wholeBatchPasses": 0,
+      "wholeBatchFailures": 5
+    },
+    {
+      "run": "45174286335",
+      "attempt": 2,
+      "producerSource": "e4edea19ce716280f4087f8b9571ad2b4f6f94c5",
+      "applicationSource": "4b09cc5478c60c1c6728a54f2a27a115637a835b",
+      "result": "Failed",
+      "failureStep": "No target application path specified via test configuration",
+      "scope": "XCTest runner configuration failure before application interaction",
+      "evidencePath": "docs/validation/20261123-native-ui-runner-continuation/originals/INDEPENDENT_AUDIT.json",
+      "evidenceSHA256": "3e06b15bfbddcaf5fc7f92a1eb76842fc4d2e7f54eb35c0859ea79ac2b3135f2"
+    }
+  ],
+  "sourceRepairs": [
+    {
+      "commit": "5625e28193812f07b2bcbc54da4c2a1a8e0053e3",
+      "change": "remove only redundant Inspector close after the accepted collapse/dismiss gesture",
+      "beforeFileSHA256": "69e841cf6ea3f4af46fa6a51e20e645702710e70d14a330f42601ec467bc0371",
+      "afterFileSHA256": "3210efaafdf950706148261f2bbbbb8619ebb4aa7d3db9cbbce6639cc383d6eb",
+      "methodSHA256": "c73236fc790e53d32b3b5495b3cc3823a89f9d4be091255d3c3f12844fc037d9",
+      "evidencePath": "docs/validation/20261123-nativeui-source-drag/source-bound-repair.json",
+      "evidenceSHA256": "9ffd88a4a860ffec6a2ad87c44990275c5719866848351eddc2b40feaf314969"
+    },
+    {
+      "integrationCommit": "64ffab92a48c61956816890b9206271c3ea909a5",
+      "change": "method becomes throws; ordinary createNamedItem call uses the existing observed-transition helper with try",
+      "scope": "only these two lines differ between repaired4b method and frozen6aab method",
+      "sourceInversePath": "docs/validation/20261123-native-ui-transition-candidate/test-source-inverse.json",
+      "sourceInverseSHA256": "8f0ba3e6be24ad6d3c19b55a968a432104c3a4e76fc716196dc982a77ad09a59"
+    }
+  ],
+  "noLaterPassAudit": {
+    "scope": "exact selector-bearing docs/validation evidence at frozen source6aab; not a claim about unexamined external artifacts",
+    "paths": [
+      "docs/validation/20261121-shared-engines/NATIVE_UI_ORIGINAL_COUNTS.json",
+      "docs/validation/20261122-any-native-ui-continuation-controller/reviewed-candidate-declaration-check.json",
+      "docs/validation/20261122-any-native-ui-continuation-controller/workflow-check.json",
+      "docs/validation/20261122-any-ui-continuation/HIERARCHY_ORIGINAL_ACTIVITY_INDEX.json",
+      "docs/validation/20261122-any-ui-continuation/ORIGINAL_RESULT_AUDIT.json",
+      "docs/validation/20261123-native-ui-runner-continuation/originals/INDEPENDENT_AUDIT.json",
+      "docs/validation/20261123-native-ui-terminal/INDEPENDENT_AUDIT.json",
+      "docs/validation/20261123-native-ui-terminal/originals/native-continuation-retained.json",
+      "docs/validation/20261123-native-ui-transition-candidate/original-failure-audit/audit-original-output.json",
+      "docs/validation/20261123-native-ui-transition-candidate/original-failure-audit/visual-observations.json",
+      "docs/validation/20261123-native-ui-transition-candidate/root-review/source-review-ec5c008.json",
+      "docs/validation/20261123-native-ui-transition-candidate/test-source-inverse.json",
+      "docs/validation/20261123-native-ui-transition-candidate/unexecuted-final-components.json",
+      "docs/validation/20261123-native-ui-transition-candidate/unexecuted-runtime-components.json",
+      "docs/validation/20261123-nativeui-source-drag/native-ui-continuation-test-counts.json",
+      "docs/validation/20261123-nativeui-source-drag/native-ui-continuation-test-methods.json",
+      "docs/validation/20261123-nativeui-source-drag/source-bound-repair.json",
+      "docs/validation/20261123-nativeui-source-drag/source-drag-syntax.json",
+      "docs/validation/20261125-unified-hanlin6f-ui-pass/enumeration.json",
+      "docs/validation/20261126-native-hierarchy-drag-app15/actual/enumeration.json"
+    ],
+    "actualPassLocated": false,
+    "laterNov25And26Matches": "enumeration only; cannot count as actual execution"
+  },
+  "retainedDistinctPasses": [
+    {
+      "method": "NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen",
+      "evidenceDirectory": "docs/validation/20261126-native-hierarchy-drag-app15",
+      "reuse": "retain accepted hierarchy-drag scope; not source drag"
+    },
+    {
+      "method": "NativeLaunchTests/testSourceInspectorQuoteAndNoteSurviveColdReopen",
+      "run": "45038244641",
+      "source": "07c3568f9f9cf4044dd81163cd374d4ad35330cb"
+    },
+    {
+      "method": "NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen",
+      "run": "45087682296",
+      "source": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73"
+    }
+  ],
+  "originalRetainedPassReceipt": {
+    "path": "docs/validation/20261123-native-ui-terminal/originals/native-continuation-retained.json",
+    "sha256": "86308e62d31375be5b5f241be391cd65a8860a070a11f2026f3a4ccf1a634b9d"
+  },
+  "observerBoundary": "Existing SourceDrag produces live-geometry text and before-gesture PNG only. Final drag, canonical association and cold-reopen behavior require the original one-case XCTest result. No post-drag screenshot is claimed.",
+  "newAppBuilds": 0,
+  "newXCTestInvocations": 0,
+  "newNativeCalls": 0,
+  "physicalDevice": "NOT_RUN",
+  "freshSharedAcceptance": "PENDING"
+}
