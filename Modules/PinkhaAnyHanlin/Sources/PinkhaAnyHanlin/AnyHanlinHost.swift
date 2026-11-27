@@ -2,6 +2,7 @@ import Foundation
 import HanlinHostContracts
 import HanlinPlatformContracts
 import PinkhaHanlinCore
+import PinkhaAnyEngine
 import PinkhaAnyHost
 
 public struct AnyHanlinCreationServices: Sendable {
@@ -10,6 +11,20 @@ public struct AnyHanlinCreationServices: Sendable {
     public init(creator: AnyNativeObjectCreator, authority: AnyHanlinCreationAuthority) throws {
         guard creator.workspace == authority.workspace else { throw HanlinHostError.invalidContext }
         self.creator = creator; self.authority = authority
+    }
+}
+
+/// Pure original-parser conversion plus one original native HTTP client. The
+/// Markdown adapter is constructed from that same client, so a separate account
+/// endpoint cannot be hidden in a caller-supplied body adapter.
+public struct AnyHanlinSaveMessageServices: Sendable {
+    public let client: AnyHTTPClient
+    public let body: AnyNativeMarkdownBody
+    public let convert: @MainActor @Sendable (PinkhaHanlinSaveMessagePlan) async throws -> PinkhaHanlinMarkdownSaveConversion
+
+    public init(client: AnyHTTPClient,
+        convert: @escaping @MainActor @Sendable (PinkhaHanlinSaveMessagePlan) async throws -> PinkhaHanlinMarkdownSaveConversion) {
+        self.client = client; self.body = AnyNativeMarkdownBody(client: client); self.convert = convert
     }
 }
 
@@ -42,8 +57,9 @@ public final class AnyHanlinHost: HanlinHostCancellationDrainSource, PinkhaHanli
             guard let writableOwner = owner as? any AnyHanlinCreationPresentationOwner else {
                 throw HanlinHostError.invalidContext
             }
-            binding = try AnyHanlinCreateBinding(access: access, native: native,
+            let context = try AnyHanlinWriteContext(access: access, native: native,
                 creator: creation.creator, authority: creation.authority, owner: writableOwner)
+            binding = try AnyHanlinCreateBinding(context: context)
         } else { binding = nil }
         let read = try PinkhaHanlinHostAdapter(access: access)
         self.session = access.session; self.access = access; self.binding = binding

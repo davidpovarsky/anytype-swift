@@ -88,7 +88,7 @@ private final class AnyHanlinUIPresentationHost: PinkhaHanlinPresentationHost {
 /// Owns only UIKit presentation and per-sheet completion. The shared native
 /// access/binding revalidates every answer; this controller cannot grant a tool.
 @MainActor
-private final class AnyHanlinUIKitOwner: AnyHanlinCreationPresentationOwner {
+private final class AnyHanlinUIKitOwner: AnyHanlinSaveMessagePresentationOwner {
     private weak var source: (any AnyHanlinSourcePresentationOwner)?
     private weak var presenter: UIViewController?
     private weak var scene: UIWindowScene?
@@ -178,6 +178,24 @@ private final class AnyHanlinUIKitOwner: AnyHanlinCreationPresentationOwner {
             title: hebrew ? "ליצור דף חדש?" : "Create a new page?",
             explanation: prompt.title + "\n\n" + destination,
             allowTitle: hebrew ? "יצירת דף" : "Create page",
+            cancelTitle: hebrew ? "ביטול" : "Cancel", answer: answer)
+    }
+
+    func presentSaveMessageConfirmation(_ prompt: AnyHanlinSaveMessagePrompt,
+                                       answer: @escaping @MainActor (Bool) -> Void) throws {
+        guard installedSession == prompt.session,
+              prompt.spaceID.utf8.elementsEqual(prompt.session.context.namespace.space.utf8),
+              (1...PinkhaHanlinSaveMessagePlan.maximumTitleUTF8Bytes).contains(prompt.title.utf8.count),
+              (1...PinkhaHanlinSaveMessagePlan.maximumMarkdownUTF8Bytes).contains(prompt.markdown.utf8.count) else {
+            throw HanlinHostError.staleContext
+        }
+        let hebrew = Locale(identifier: prompt.session.context.localeIdentifier).language.languageCode?.identifier == "he"
+        let destination = [source?.spaceDisplayName, prompt.spaceID]
+            .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: "\n")
+        try presentDecision(session: prompt.session, purpose: .saveMessage,
+            title: hebrew ? "לשמור את ההודעה בדף חדש?" : "Save the message in a new page?",
+            explanation: prompt.title + "\n\n" + destination + "\n\n" + prompt.markdown,
+            allowTitle: hebrew ? "שמירת ההודעה" : "Save message",
             cancelTitle: hebrew ? "ביטול" : "Cancel", answer: answer)
     }
 

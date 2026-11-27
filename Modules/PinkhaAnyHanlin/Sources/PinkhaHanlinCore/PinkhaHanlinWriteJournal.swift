@@ -438,8 +438,10 @@ private enum PinkhaHanlinSaveMetadataLayout {
     }
 
     static func maximumBytes(for event: PinkhaHanlinSaveMessageProgress.Event) -> Int {
-        if case .bodyVerified = event { return bodyEventBytes }
-        return ordinaryEventBytes
+        switch event {
+        case .bodyVerified, .atomicBodyReceipt: return bodyEventBytes
+        default: return ordinaryEventBytes
+        }
     }
 
     static func maximumFileBytes(_ name: String) throws -> Int {
@@ -450,6 +452,9 @@ private enum PinkhaHanlinSaveMetadataLayout {
     static func reservationBytes(for progress: PinkhaHanlinSaveMessageProgress) -> Int {
         PinkhaHanlinSaveMessageProgress.maximumEncodedBytes
             + (4 * (progress.manifest.blockSHA256.count + 1) + 1) * ordinaryEventBytes + bodyEventBytes
+            // Only atomic mode can retain a second complete ID envelope: the
+            // original ACK, independent of the later full semantic readback.
+            + (progress.manifest.bodyMode == .conditionalMarkdown ? bodyEventBytes : 0)
     }
 }
 
