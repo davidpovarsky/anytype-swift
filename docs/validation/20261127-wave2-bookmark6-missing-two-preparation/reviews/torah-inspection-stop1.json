@@ -1,0 +1,13 @@
+{
+  "schema": "reviewer-only-static-inspection-stop/v1",
+  "reviewer": "/root/torah_continue",
+  "candidateSHA256": "0e8fa19767222fef6f954bf4bfdb34e58a77986251e69cf461b29f7311f01627",
+  "status": "LOCAL_REVIEW_INSPECTION_STOP_NOT_PRODUCT_OR_RUNTIME_FAILURE",
+  "cause": "The reviewer attempted ast.literal_eval on TEST_FILTER, which is a literal-fragment concatenation with re.escape/name join, not an AST literal. Python raised ValueError: malformed node or string on line52: ast.BinOp.",
+  "progress": "Full39-hunk inverse and ten unchanged function comparisons had completed; no review file had been written.",
+  "correction": "Inspect the exact expression AST and independently construct its two safe ASCII identifier alternatives from the literal method tuple; never execute candidate code.",
+  "candidateModified": false,
+  "candidateImportedOrExecuted": false,
+  "controlsOrRuntime": false,
+  "hostOrProcessActions": false
+}

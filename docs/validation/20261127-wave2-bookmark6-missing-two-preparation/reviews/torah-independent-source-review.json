@@ -1,0 +1,231 @@
+{
+  "schema": "bookmark6-missing-two-independent-source-review/v1",
+  "reviewer": "/root/torah_continue",
+  "atUTC": "2026-11-27T23:32:28.170227+00:00",
+  "status": "PASS_SOURCE_REVIEW_ONLY_NOT_RUNTIME_ADMISSION",
+  "noConcreteSourceBlockerFound": true,
+  "scope": "Frozen direct continuation for only two missing Swift Testing methods; static source/AST and retained local-byte comparisons. No candidate function imported or invoked.",
+  "candidate": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-preparation/run_missing_two.py",
+    "bytes": 34063,
+    "sha256": "0e8fa19767222fef6f954bf4bfdb34e58a77986251e69cf461b29f7311f01627"
+  },
+  "originalController": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/execution-preparation/inputs/run_component.py",
+    "bytes": 48105,
+    "sha256": "3729eed7d91e3400c19137420df96465d4785c0bd9587d81553864e1041f176c"
+  },
+  "fullInverse": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-preparation/source-inverse.json",
+    "bytes": 58455,
+    "sha256": "0f2444ffda79e6d43a00a0ee8da43205dde7b7b91990047a6ba0ba8eb293f404"
+  },
+  "plan": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-preparation/continuation-plan.json",
+    "bytes": 7544,
+    "sha256": "a37f7252bf2d54d150711e67a2c03e8708726d9059f87fe5e2af5d7f9035b060"
+  },
+  "authorStaticPredicateReview": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-preparation/result-predicate-static-review.json",
+    "bytes": 2682,
+    "sha256": "237f877979c138ade9032161ed7f2af2faaece813c313fac6562be1c0141af84"
+  },
+  "rootReview": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-preparation/root-source-review.json",
+    "bytes": 1784,
+    "sha256": "a624c64fe82de5e2bc46c2f0eeab93e4462981f36782d04815478ff2515810e3"
+  },
+  "independentByteChecks": {
+    "fullForwardAndReverseHunks": 39,
+    "wholeOriginalRecovered": true,
+    "originalFunctionBodiesExact": {
+      "allocated_bytes": {
+        "bytes": 978,
+        "sha256": "2bbd4e653ae2420617571253aedd17c509225315da536d67af8b8e493c27b88b"
+      },
+      "cleanup_custody": {
+        "bytes": 432,
+        "sha256": "2f568150bd84f02be92350b5a6ffc44f89f55b07d42366b09424e0429b4bf66a"
+      },
+      "pinned": {
+        "bytes": 310,
+        "sha256": "6cdc427d4660b21b4046aef1f106c2834a0504e25c1cfa17124140f7d590e767"
+      },
+      "private_directory": {
+        "bytes": 261,
+        "sha256": "d0634ce119baf4e39b11672d16ab95dc4b3c1cc5e6b5c036837bcfb09c2eddac"
+      },
+      "require_budget": {
+        "bytes": 503,
+        "sha256": "18b166a27f874329deba696d8961f64e12ed091a09306837b6fc7afe21be6ff3"
+      },
+      "resource_sample": {
+        "bytes": 553,
+        "sha256": "cc02a74739da1b6a481bd2ce9cb5575924afff9cb5fb6a86135a7c0ee30947f4"
+      },
+      "sha": {
+        "bytes": 56,
+        "sha256": "166ad903d6d1b4f98706f40c535e6a84f4a6268f81640d32bb1d0f02c6857de1"
+      },
+      "source_inventory": {
+        "bytes": 340,
+        "sha256": "d6a578cef064e1ae21726630e07f105a2b929c8bd8006156e2230b48f32d334a"
+      },
+      "verify_crypto": {
+        "bytes": 359,
+        "sha256": "bedf311323a1a87a8433d694da2db5337aa31d8ded1df230252e448e137f9f09"
+      },
+      "write": {
+        "bytes": 95,
+        "sha256": "63cb2c721e5123e19a3e433d79f78eec533eec0f9fead99691056c8bdf064682"
+      }
+    },
+    "sourcePins": 85,
+    "actualInputRows": 90,
+    "all90LocalInputBodiesMatchQualifiedCompletion": true,
+    "all10OriginalLocalArtifactBodiesMatchCompletion": true,
+    "actualGeneratedIntegrationEntrypointMatchesExpectedWholeBody": true
+  },
+  "entrypointAndCommand": {
+    "selectedMethods": [
+      "creationOverrideRejectsAnotherWorkspaceBeforeDispatch",
+      "creationOverrideAndDefaultCreatorShareTheExistingMutationQueue"
+    ],
+    "command": [
+      "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner",
+      "--testing-library",
+      "swift-testing",
+      "--no-parallel",
+      "--filter",
+      "(?:creationOverrideRejectsAnotherWorkspaceBeforeDispatch|creationOverrideAndDefaultCreatorShareTheExistingMutationQueue)(?:\\(\\))?$"
+    ],
+    "actualRunner": {
+      "product": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests-test-runner",
+      "productBytes": 10805344,
+      "productSHA256": "c5334175861cc165de9751240d4532e2eea73d4ac850756074f7ffb150d91b34"
+    },
+    "actualTestLibrary": {
+      "product": "/mnt/development/projects/evidence/pinkha-wave2-bookmark6-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyIntegrationTests.so",
+      "productBytes": 21171736,
+      "productSHA256": "5eac396345bc469d9712ec7a776e10671652cc1366aa6f08b4269ff49f8f70ab"
+    },
+    "actualGeneratedEntrypoint": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/execution-preparation/expected-generated/PinkhaAnyIntegrationTests-test_entry_point.swift",
+      "bytes": 18980,
+      "sha256": "ef1ea588c48abfb9df451d79abb95237c2380da8b15cc97422bbfcccd532993b"
+    },
+    "findings": [
+      "Actual generated entrypoint recognizes --testing-library and dispatches swift-testing to Testing.__swiftPMEntryPoint; XCTest is separately conditional on xctest.",
+      "Exact SwiftPM release forwards original filter/parallel arguments and TestRunner appends the same library pair. Two unparameterized source declarations and original suite title match the fixed expected events.",
+      "One fixed Integration runner avoids the Host test product and SwiftPM/package/build dispatch. Original automatic-dispatch omission cause remains unproven."
+    ]
+  },
+  "environment": {
+    "primarySource": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-preparation/primary/TestingSupport.swift",
+      "bytes": 52269,
+      "sha256": "3996284a9b32d12f63a8869d9f25d5f30ff88c29bb659cd61e39e42e193d2513"
+    },
+    "primaryResponse": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-preparation/primary/TestingSupport.swift.response.json",
+      "bytes": 54538,
+      "sha256": "6486796b90ec1dd079557421eec3e87d5ede4c9216503653e999b12d5035abf4"
+    },
+    "gitBlob": "6132b8b7b7b2fb3a2c020ef8b02c45f8e1298875",
+    "primaryURL": "https://github.com/swiftlang/swift-package-manager/blob/swift-6.4.3-RELEASE/Sources/Commands/Utilities/TestingSupport.swift",
+    "reviewedDeclarations": [
+      "TestingSupport.constructTestEnvironment",
+      "ToolsVersion.defaultInteropMode",
+      "SwiftTestCommand.runTestProductsInSingleInvocation",
+      "TestRunner.args(forTestAt:)"
+    ],
+    "findings": [
+      "Linux adds test-product parents to library path and NO_COLOR for captured streams. Package tools6.0 has no default interop override.",
+      "Candidate explicitly supplies qualified product/original-link Swift-runtime paths, fresh local TMPDIR and fixed toolchain PATH; nonempty LD_PRELOAD and interop override reject.",
+      "Full original inherited environment and every system runtime-library byte are not claimed recorded."
+    ]
+  },
+  "positiveResultBoundary": {
+    "methods": 2,
+    "cases": 2,
+    "XCTestReplay": 0,
+    "old27IntegrationReplay": 0,
+    "old7HostReplay": 0,
+    "requires": [
+      "Two exact starts/passes, unique and ordered",
+      "Original named suite surrounds both methods",
+      "One positive two-test/one-suite summary following finish and one preceding run-start",
+      "New child exit0 plus full pre/post/final custody/resource qualification"
+    ],
+    "rejects": [
+      "Empty output",
+      "Unselected/duplicate/skipped/failed/parameterized method events",
+      "Other suite or summary counts",
+      "XCTest/build output"
+    ],
+    "candidatePredicateExecuted": false,
+    "retainedGrammarReference": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-hierarchy-rename-component/runtime-attempt1-root-custody/original-attempt/stdout.original.log",
+      "bytes": 4471,
+      "sha256": "21ee8d308fafe51351ec9c1ccf93b052ec877edf4ad92c86f37090f5301fc0e3"
+    },
+    "grammarReferenceMeaning": "Existing toolchain suite/summary formatting only; no old result promoted to Bookmark acceptance."
+  },
+  "custodyAndLifecycle": {
+    "completion": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/runtime-attempt1-root-custody/completion1.json",
+      "bytes": 589557,
+      "sha256": "ac38377da08aac68629d2ae04f8d4878a52eb8b28ee3e1009700c810902302d7"
+    },
+    "sourceScope": "All90 inputs,85 Package/source copies, actual compiler/generated/object/module/link/product paths, original10 artifacts and102 Crypto original/alias/private copies remain pinned.",
+    "snapshotScope": "Fixed ROOT physical-file identity and bytes sampled before/after/final. Cross-snapshot changes reject. This reviewer read local original evidence only.",
+    "output": "Fresh ROOT/continuation1; original attempt1/completion are inputs.",
+    "helper": {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/execution-preparation/inputs/owned_process.py",
+      "bytes": 5529,
+      "sha256": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924"
+    },
+    "newChildOnly": true,
+    "oldGroup2634766": "Historical absence metadata only; never queried or passed to helper.",
+    "cleanup": "Only new Popen start_new_session is owned; exact absence latch/finish helper and first-error handling retained. Final receipt-write failure preserves preceding exception.",
+    "specialization": "Changed entry/witness/result paths are source-reviewed, not claimed already executed."
+  },
+  "exactLimits": {
+    "rootAdmissionBytes": 2181038080,
+    "developmentAdmissionBytes": 838860800,
+    "rootLiveFloorBytes": 2147483648,
+    "developmentLiveFloorBytes": 536870912,
+    "admissionMarginBytes": 33554432,
+    "wholeOwnedAllocationCapBytes": 268435456,
+    "maximumBeforeFinalEvidenceBytes": 267386880,
+    "finalEvidenceReserveBytes": 1048576,
+    "availableMemoryFloorBytes": 536870912,
+    "newOwnedCommandSeconds": 300,
+    "outerDispatchSeconds": 360
+  },
+  "unchangedOutcomes": {
+    "originalReceipt": "FAIL 4441afb94ce64ef8656dd001ec040bee2cb69201eaddba16d2fc8e7a3d4fb556",
+    "fourXCTest": "Already observed passed; not selected here.",
+    "twoSwiftTesting": "Not yet observed; source review gives no acceptance.",
+    "compilerCompletion": "Custody only.",
+    "combinedSixMethodAcceptance": false,
+    "NativeOrAppleAcceptance": false
+  },
+  "reviewActions": {
+    "localReadHashAndASTOnly": true,
+    "candidateImports": 0,
+    "candidateFunctionsExecuted": 0,
+    "portableControlsOrTests": 0,
+    "SwiftCompilerInvocations": 0,
+    "hostCalls": 0,
+    "processQueriesOrSignals": 0,
+    "GitMutations": 0,
+    "runtimeGrant": false
+  },
+  "retainedReviewerInspectionStop": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-bookmark6-component/missing-two-preparation/torah-inspection-stop1.json",
+    "bytes": 932,
+    "sha256": "b10ea0ae4658c1630fcf8474b743d9dc25e773d61a5e6f70eaf8c33c91dfbd3b"
+  },
+  "publicationBoundary": "May be packaged for root complete-packet review. No runtime grant; resource/coordination hold remains."
+}

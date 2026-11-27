@@ -1,0 +1,45 @@
+{
+  "controllerOrPredicateInvocations": 0,
+  "controls": 0,
+  "exactSelectedNames": [
+    "creationOverrideRejectsAnotherWorkspaceBeforeDispatch",
+    "creationOverrideAndDefaultCreatorShareTheExistingMutationQueue"
+  ],
+  "findings": [
+    {
+      "boundary": "positive method evidence",
+      "sourceBehavior": "Start and pass dictionaries reject duplicate and unselected names; both complete key sets must equal the two selected names. Each start must precede its own positive finish."
+    },
+    {
+      "boundary": "suite",
+      "sourceBehavior": "Exactly two suite lines are permitted: the original named AnyHierarchyTests suite start then positive suite finish. Both selected starts/finishes must be contained between those boundaries."
+    },
+    {
+      "boundary": "run total",
+      "sourceBehavior": "Exactly one Test run with line must be the positive two-tests/one-suite summary after the suite finish. Exactly one run-start banner must precede the suite. Zero-test, other totals and extra run summaries cannot satisfy the predicate."
+    },
+    {
+      "boundary": "XCTest and old methods",
+      "sourceBehavior": "Any Test Case, Test Suite or Executed substring rejects the log. Any recognized Swift Testing method event outside the two exact names raises; unknown/failed/skipped/parameterized Test event forms raise. Additional suites or a total above two also reject. The four Host XCTest methods are additionally absent from the chosen Integration executable/product closure."
+    },
+    {
+      "boundary": "failure and dispatch separation",
+      "sourceBehavior": "The caller requires direct child exit0 and original new-owned-group absence before parsing. Product/source witness equality and final original lifecycle/resource checks remain outside and after the parser. No old receipt is modified; missing-two PASS is separate from combined six-method acceptance."
+    }
+  ],
+  "hostCalls": 0,
+  "limits": [
+    "This is static inspection of actual source, not parser execution, a synthetic control, or observed test dispatch.",
+    "Actual future event names are required for a positive receipt; the prepared selected names alone are not enumeration or acceptance.",
+    "The exact original omission cause remains unresolved."
+  ],
+  "predicate": {
+    "bytes": 3007,
+    "sha256": "5d25236c62b2fc61c6e73289f9f03688d9ba9aa1038c4a724d20dce654c98b27"
+  },
+  "reviewedAtUTC": "2026-11-27T23:19:49.977251+00:00",
+  "schema": "bookmark-missing-two-result-predicate-static-review/v1",
+  "sourceEdits": 0,
+  "sourceSHA256": "0e8fa19767222fef6f954bf4bfdb34e58a77986251e69cf461b29f7311f01627",
+  "status": "NO_CONCRETE_PREDICATE_BLOCKER_SOURCE_ONLY_NOT_EXECUTED"
+}
