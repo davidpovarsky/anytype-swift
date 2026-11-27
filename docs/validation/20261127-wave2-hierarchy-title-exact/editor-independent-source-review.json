@@ -1,0 +1,143 @@
+{
+  "schema": "wave2-hierarchy-raw-title-independent-source-review/v1",
+  "decision": "PASS_SOURCE_REVIEW_ONLY_NOT_COMPILED_NOT_RUN",
+  "reviewedAtUTC": "2026-11-27T19:57:39.774223+00:00",
+  "reviewer": "editor",
+  "baseCommit": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+  "candidateManifestSHA256": "176079186d071b5095e9de92aa6805598eefdcf98a502be4ac3c33b20d3a9f9b",
+  "sourceInverseSHA256": "91bf2ce542d39195c3b12634d61eade3dcd5c1a270b25e99a62c3ed176b5791c",
+  "sourcePatchSHA256": "0e83857dbe2bb46a0ebc1cd872ba337486ef27e8af8edbbb5ef1d596e12d86a0",
+  "callerProofReferenceSHA256": "d3a0cefd58857c3e152a010cd380b0dd3963ff56167cc3d195c4ee286b9722fb",
+  "byteInspectionSHA256": "563cdf22cc28c711e0c24b0ac6c6676ea8132b8dbea4fe68d235c6cd3babdd72",
+  "files": [
+    {
+      "candidate": {
+        "bytes": 22565,
+        "gitBlob": "89bca79a5e1c5753006af364ddb0d9ef6967fd49",
+        "sha256": "7a1af6090a300a17e1427abb97423a49fbd26031d0578d17e6cba5f719016463"
+      },
+      "original": {
+        "bytes": 22477,
+        "gitBlob": "41bb8ecb03a5930b24d465448939dfdb4be444a9",
+        "sha256": "42986d1384446edea4b1c685eed305612aa0e8629bc7d6284f086ca87e27939a"
+      },
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyRepository.swift"
+    },
+    {
+      "candidate": {
+        "bytes": 38951,
+        "gitBlob": "64925976aca576d2542ebab82ba8bd4475ae7481",
+        "sha256": "3a11428238fabc27fc93f8cfb98535864dfbb7c2b09ae501c14f699d47b292c1"
+      },
+      "original": {
+        "bytes": 30174,
+        "gitBlob": "b11d9e0cb64b91bded003c1a4059df3adef2e789",
+        "sha256": "306aaa783a635eba2123c3403f572ccc104f951f4ce11574f6700cea28b5eaec"
+      },
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift"
+    }
+  ],
+  "scope": "Independent whole repository/test source inspection, exact four-predicate and append inverses, original conditional-store callback behavior, actor/macro compatibility and regression counterexamples. Root separately owns the current UI caller/source-transition review. No source edit or Swift/runtime execution.",
+  "independentCustody": {
+    "twoCompletePrimaryBodiesMatchOriginals": true,
+    "originalPrimaryGitBlobs": [
+      "41bb8ecb03a5930b24d465448939dfdb4be444a9",
+      "b11d9e0cb64b91bded003c1a4059df3adef2e789"
+    ],
+    "productionReplacementCount": 4,
+    "completeBidirectionalProductInverse": true,
+    "originalTestPrefixBytes": 30174,
+    "originalTestPrefixSHA256": "306aaa783a635eba2123c3403f572ccc104f951f4ce11574f6700cea28b5eaec",
+    "originalFullTestPrefixAndFixturesExact": true,
+    "originalDeclaredMethods": 23,
+    "newSuffixBytes": 8777,
+    "newSuffixSHA256": "2d00953acad46f6a99fe13cac7968b0cdfb7e99aafaf2e42974176df45218484",
+    "fullDeclaredMethods": 27,
+    "declaredCountsAreNotCompiledEnumeration": true
+  },
+  "productFindings": [
+    "Only rename changes. Its no-op requires exact requested UTF-8 bytes, so canonical equality cannot suppress the representation change. The existing already-applied retry remains before expectedTitle validation: an exact requested result still returns without a second patch even when the original expected title is old.",
+    "The expected-title check now compares the captured title bytes. A canonical-equivalent but byte-different expected title is rejected as stalePlan before fence capture or dispatch, preserving the original stale-error ordering.",
+    "Both post-dispatch boundaries compare exact requested bytes. A successful modeled write with differing readback remains incompleteWrite; a lost-reply write with differing readback rethrows the original write error. Existing authorization or readback-read failures can still supersede the write error according to the unchanged code; the new test claim is limited to a successful readback.",
+    "The original serial mutationTail, public signatures, title length/NUL guard, membership and authorize calls, snapshot scope, native version/apply-sequence fence, conditional-only dispatch, patch payload and readback order are unchanged. No global AnyJSON equality, creation/placement comparator, Native API, Property Unicode path or Bookmark proposal is changed by this two-file candidate."
+  ],
+  "fixtureAndActorFindings": [
+    "The two first methods use ConditionalHierarchyFixtureStore directly. Its original readRows/readObject and captured AnyConditionalPropertyFence equality feed the unchanged repository; its base HierarchyFixtureStore applies the requested owner values, updates version/apply sequence, counts patches and enforces the passed authorization callback.",
+    "The readback wrapper is a private actor with immutable Sendable workspace/schema/run and private per-instance state. It forwards membership, rows, object reads, archiving, the original fence and the original @Sendable authorize closure. Its unguarded patch overload refuses, so it cannot silently fall back to generic property writes.",
+    "The wrapper records the actual requested name bytes before selecting the modeled stored title. It then calls the original conditional store to perform that controlled patch and only afterward optionally throws writeUncertain. Readback therefore comes from the mutated original fixture, not a fabricated result returned directly to the repository.",
+    "All observations of actor state are awaited. Nested actor base references are immutable actor values, matching the existing fixture usage in the unchanged file. Each parameterized case creates fresh repositories and actors; no shared mutable test state, task spawning, server, sleeps, continuation, timer or asynchronous cleanup owner is introduced.",
+    "The new @Test methods use the existing asynchronous error-expectation form. Callback values are passed outside #require; the new #require expressions unwrap only already-read optional strings. No nested requirement macro or Sendable closure is routed through the previously problematic macro expression shape."
+  ],
+  "sourceCounterexamplesNotExecuted": [
+    {
+      "method": "canonicallyEquivalentRequestedRenameReachesTheOriginalStore",
+      "parameters": [
+        "latin",
+        "hebrew"
+      ],
+      "oldBehavior": "Canonical no-op returns original bytes with zero patches.",
+      "newAssertions": "Exact returned/stored UTF-8 equals requested; one patch, one original fence, no unguarded call; exact retry leaves count one."
+    },
+    {
+      "method": "canonicallyEquivalentStaleExpectedTitleRefusesBeforeDispatch",
+      "parameters": [
+        "latin",
+        "hebrew"
+      ],
+      "oldBehavior": "Canonical expectedTitle equality admits the stale representation and dispatches Replacement.",
+      "newAssertions": "Existing stalePlan error, zero patches/fences and original stored bytes."
+    },
+    {
+      "method": "canonicallyEquivalentSuccessfulReadbackCannotCertifyRename",
+      "parameters": [
+        "latin",
+        "hebrew"
+      ],
+      "oldBehavior": "Canonical post-success equality accepts the controlled wrong-byte readback.",
+      "newAssertions": "Existing incompleteWrite error, actual requested byte trace, one modeled patch and exact controlled stored bytes."
+    },
+    {
+      "method": "canonicallyEquivalentReadbackPreservesTheOriginalWriteError",
+      "parameters": [
+        "latin",
+        "hebrew"
+      ],
+      "oldBehavior": "Canonical catch readback equality replaces the modeled writeUncertain error with success.",
+      "newAssertions": "Original writeUncertain preserved with actual requested byte trace, one modeled patch and exact controlled stored bytes."
+    }
+  ],
+  "unicodeAssertionPrecision": "Each case first asserts canonical String equality and unequal UTF-8 arrays for its literal pair. Latin uses NFC/NFD; Hebrew swaps the qamats/shin-dot order. Actual requested, stored and returned title assertions use UTF-8 arrays, not String equality. Error/object identities remain fixed ASCII values.",
+  "selectionBoundary": {
+    "newSuite": "AnyHierarchyRawTitleTests",
+    "newMethods": [
+      "canonicallyEquivalentRequestedRenameReachesTheOriginalStore",
+      "canonicallyEquivalentStaleExpectedTitleRefusesBeforeDispatch",
+      "canonicallyEquivalentSuccessfulReadbackCannotCertifyRename",
+      "canonicallyEquivalentReadbackPreservesTheOriginalWriteError"
+    ],
+    "sourceDeclaredMethods": 4,
+    "sourceDeclaredCases": 8,
+    "original23SelectedForReplay": false,
+    "compiledEnumeration": null,
+    "actualResults": null
+  },
+  "remainingConcreteSourceBlockers": [],
+  "acceptanceLimits": [
+    "This is source review plus local byte/provenance inspection, not Swift syntax/typecheck, compiler or test acceptance.",
+    "The eight cases are controlled Integration dependency fixtures; they do not establish actual Native/HTTP/account/mounted UI persistence.",
+    "Any future execution must bind the complete matching source/dependency closure and enumerate/select only these four methods/eight argument cases. Existing accepted tests receive no new credit or replay from this review.",
+    "No publication, runtime admission or change to W3 first Apple queue is authorized by this review artifact."
+  ],
+  "actions": {
+    "candidateSourceWrites": 0,
+    "SwiftCompilerInvocations": 0,
+    "testInvocations": 0,
+    "portableControlInvocations": 0,
+    "NativeCalls": 0,
+    "AppleCalls": 0,
+    "OracleCalls": 0,
+    "remoteReads": 0,
+    "runtimeExecuted": false,
+    "publicationPerformed": false
+  }
+}

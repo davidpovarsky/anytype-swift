@@ -1,0 +1,39 @@
+{
+  "UIOrNativeExecution": false,
+  "baseCommit": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+  "earlierCanonicalEqualitySkipFound": false,
+  "flow": [
+    "AnyNativeNameForm Save invokes commit(value); only UTF8 length >4096 or NUL disables Save. No text-equality no-op or normalization.",
+    "finishNaming retains title in the original owned pendingNameSubmission. Dismissal consumes it once, preserves lifetime/canWrite checks, and passes title unchanged to model.rename.",
+    "AnyLibraryPresentation.rename performs the existing pending/ownership checks; calls hierarchyPresentation.rename and then original repository.rename(expectedTitle:item.title,newTitle:title) under session/lease/authorization.",
+    "AnyHierarchyPresentationState.rename assigns names[objectID]=title unconditionally. Its receive path replaces the snapshot without a title comparison.",
+    "The production change is only the four original String comparisons inside repository.rename. Original queue, current membership, version/apply-sequence fence, authorization, patch, catch/rethrow and read order remain byte-identical."
+  ],
+  "ordinaryCreationComparisonOutOfScope": true,
+  "schema": "pinkha-hierarchy-title-exact-caller-review/v1",
+  "sources": [
+    {
+      "actualCompleteLocalOriginalMatchesCurrentBlob": true,
+      "bytes": 29436,
+      "currentGitDirectoryRef": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+      "gitBlob": "00999518ec3aa6180ecda8c357635ec14e5ad4bb",
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "sha256": "3791fe7ccadbf5caf4d1a82b1f6cc8d497b5562db1c58ba346803a9ebf43fec1"
+    },
+    {
+      "actualCompleteLocalOriginalMatchesCurrentBlob": true,
+      "bytes": 33946,
+      "currentGitDirectoryRef": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+      "gitBlob": "70849e7476816de1a2f4673f127a81e71a45067f",
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "sha256": "3dd7517d2ecba44fe7568b16ed005a97489929f4a248c1899ad3d1c1864e66d4"
+    },
+    {
+      "bytes": 4654,
+      "fullPrimaryReadAt": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+      "gitBlob": "9dcbe70b6a8e9dc7cbc9e34204b5957b24411d12",
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyHierarchyPresentationState.swift",
+      "sha256": "1b2bced966f411efc532e535d03f1daf456f1e8c222e13baa64d8822b82a6b72"
+    }
+  ]
+}
