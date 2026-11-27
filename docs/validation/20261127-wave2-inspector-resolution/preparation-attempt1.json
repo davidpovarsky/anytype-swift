@@ -1,0 +1,8 @@
+{
+  "status": "FAIL_RELOCATE_OWNED_BACKUP_BEFORE_GRAMMAR",
+  "error": "OSError EXDEV from Path.rename across /mnt/development and /var/lib",
+  "grammarExecuted": false,
+  "testsExecuted": 0,
+  "sourceMapAppliedBeforeFailure": true,
+  "correction": "Copy exact owned backups, verify SHA256 equality, then unlink only the original backup paths; no product source removed."
+}
