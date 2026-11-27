@@ -1,0 +1,80 @@
+{
+  "schema": "wave2-properties-source-documents-root-review-v3",
+  "status": "PASS_SOURCE_REVIEW_ONLY",
+  "observedAt": "2026-11-27T12:18:04.252898+00:00",
+  "baseCommit": "d8a2c67b6dae09a7b769e803a319de3d3080019c",
+  "inputs": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "bytes": 72821,
+      "sha256": "f3b6b6bb5425d69d7eff09aecac9c82a5dfd125ed004c644126cb518e137c4a5"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+      "bytes": 25348,
+      "sha256": "47e04a0dedaebe5a0d6dc35e4b8d30b58a5f0c8eda0cb44fea6283ecf801465d"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift",
+      "bytes": 20809,
+      "sha256": "f334ce278537413df7ef7b508db8bd250135f002f3b6dfa65a306459e4b807c6"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift",
+      "bytes": 5157,
+      "sha256": "1cf8d0790e949b7592d4298dff0e788982ad3b0959c838350fe587d2c80e48c1"
+    }
+  ],
+  "sourceInverseSHA256": "43b7c54c50412cb85f6626d189d5c86779b20e9a5e6d74c93b9356e40239a67b",
+  "findings": [],
+  "resolved": [
+    {
+      "id": "ASYNC_API_AND_CALLER_CANCELLATION",
+      "detail": "The public async entry is unchanged; it rejects pre-cancellation, awaits its own synchronously reserved task, forwards caller cancellation, and joins a noncooperative provider. The button calls a distinctly named synchronous entry."
+    },
+    {
+      "id": "PROPERTIES_GENERATION_AND_VIEW_RESERVATION",
+      "detail": "The observable Properties UUID owns retained View reservation and captured callbacks. Closing/reopening, unmount/revoke, and fresh mount retire prior request/result state and cancellation joins the existing document drain. No assumption that SwiftUI destroys State is required."
+    },
+    {
+      "id": "TRANSIENT_FOREGROUND_FALSE_LEAVES_REQUEST_RESERVED",
+      "detail": "Independent byte comparison confirms only the exact owned request cleanup predicate/comment changed from v2. Success/error publication guards retain current authority, modal eligibility, request/presentation/document generation and cancellation. Same-request completion releases reservation even if foreground eligibility is transiently false; replacement requests remain protected."
+    }
+  ],
+  "retainedContracts": {
+    "nativeRead": {
+      "unchanged": true,
+      "sha256": "d87529a209c6942cb1c77ee0e36c956a5c992ea14210238ddc12c46916768f14",
+      "bytes": 963,
+      "scope": "original typed query, metadata, second query/readiness comparison and lease validation"
+    },
+    "originalTestPrefixSHA256": "af7e3270f8b29d56ade52603e648d2ef36bb6a07dfea8bc07b9d7c2d448d8095",
+    "originalTestPrefixBytes": 7010,
+    "originalTests": "5 methods / 7 declared cases, unchanged",
+    "newTests": "5 methods / 11 declared cases, NOT_RUN",
+    "newTestSuffixSHA256": "ebd009a1cd8af9f768192d699f9af2c9dd977c939a4154773ebf5a4397402136",
+    "sourceRetentionMap": "unchanged, no new gate execution"
+  },
+  "reviewLimits": [
+    "No Swift compilation/typecheck or test execution",
+    "Actual AnyDocumentPresentation, SwiftUI sheet/navigation and inactive-scene behavior require shared-App acceptance",
+    "Native account/Space/readiness/ACL/index checks are unchanged; no cross-Space disclosure is asserted",
+    "The attachment accessor is excluded from this tranche"
+  ],
+  "predecessorsRetained": [
+    "review-v1",
+    "review-v2",
+    "root-review-v2-finding.json",
+    "editor-foreground-cleanup-finding.json"
+  ],
+  "operations": {
+    "sourceByteInspection": true,
+    "productSourceEdits": 0,
+    "compiler": 0,
+    "testExecution": 0,
+    "oracle": 0,
+    "mac": 0,
+    "native": 0
+  },
+  "productRuntimeAdmission": false
+}

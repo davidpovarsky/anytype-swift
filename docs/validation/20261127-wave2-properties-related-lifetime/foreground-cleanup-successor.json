@@ -1,0 +1,65 @@
+{
+  "schema": "wave2-properties-foreground-cleanup-successor/v1",
+  "status": "PASS_SOURCE_BYTE_INVERSE_ONLY",
+  "finding": "TRANSIENT_FOREGROUND_FALSE_LEAVES_REQUEST_RESERVED",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "beforeSHA256": "f3b6b6bb5425d69d7eff09aecac9c82a5dfd125ed004c644126cb518e137c4a5",
+      "afterSHA256": "f3b6b6bb5425d69d7eff09aecac9c82a5dfd125ed004c644126cb518e137c4a5",
+      "changed": false
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+      "beforeSHA256": "47e04a0dedaebe5a0d6dc35e4b8d30b58a5f0c8eda0cb44fea6283ecf801465d",
+      "afterSHA256": "47e04a0dedaebe5a0d6dc35e4b8d30b58a5f0c8eda0cb44fea6283ecf801465d",
+      "changed": false
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift",
+      "beforeSHA256": "4138a4c8226e4e274e00a932c62d0abd463b22dd6231164b4f64e5843f67b0be",
+      "afterSHA256": "1cf8d0790e949b7592d4298dff0e788982ad3b0959c838350fe587d2c80e48c1",
+      "changed": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift",
+      "beforeSHA256": "520c4a24f7c1aa4a99d4979586a05b2de1209f9b44ed995d5cf511d79dd05da3",
+      "afterSHA256": "f334ce278537413df7ef7b508db8bd250135f002f3b6dfa65a306459e4b807c6",
+      "changed": true
+    }
+  ],
+  "patchSHA256": "985e29355913e4af499c20f3cf9e20a75b403dffc046a2eff3c88478a5c770dc",
+  "allFourV2FilesRestored": true,
+  "documentAndViewUnchangedFromV2": true,
+  "nativeReadBodyUnchanged": true,
+  "cleanup": "owns(captured) only; success/error keep existing current-authority predicates",
+  "addedMethods": 1,
+  "addedDeclaredCases": 2,
+  "totalNewMethods": 5,
+  "totalNewDeclaredCases": 11,
+  "originalIdentityMethods": 5,
+  "originalIdentityDeclaredCases": 7,
+  "inverseCommand": {
+    "argv": [
+      "git",
+      "apply",
+      "--reverse",
+      "/workspace/scratch/1d35894f12d5/torah-acceptance-prep/t5-properties-publication/foreground-cleanup-successor.patch"
+    ],
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "previousRootFindingSHA256": "50533f4fe6d1502802a5d0c47c3baffd66057e960387c603152bb223b874db96",
+  "previousEditorFindingSHA256": "45c569b3b8d5ed224d94c9b0eddb0c9b4ae8b3cecad15906de5c3f95f21da97d",
+  "previousEditorReviewSHA256": "5e65dfa4bc67288a2dfbf7cda3f651c204569fbd07b3f2810f9a6b79aa3a9cc0",
+  "validation": {
+    "swiftSyntax": "NOT_RUN",
+    "typecheck": "NOT_RUN",
+    "componentTests": "NOT_RUN",
+    "native": "NOT_RUN",
+    "appleUI": "NOT_RUN",
+    "visual": "NOT_RUN"
+  },
+  "productRuntimeAdmission": false
+}

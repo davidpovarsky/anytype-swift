@@ -1,0 +1,87 @@
+{
+  "additionalObservations": [
+    "Both success and failure publication retain document owner, presentation UUID, request UUID, mounted-owner, current-modal and cancellation fences. An old defer cannot finish a newer request.",
+    "Closing Properties, actual unmount/revoke and a new mounted owner retire the old model state; cancelled owned tasks join the existing closingObservers drain. No new native session, write or process manager is introduced.",
+    "The original navigation/dismissal implementation (requestOpenObject, ownedPresentationDidDismiss, continueNavigation) is byte-identical; View callback changes are limited to reservation/source-sheet generation custody.",
+    "The new four-method/nine-declared-case suite retains bounded rendezvous waits and deferred continuation cleanup. Await-helper cases verify join versus early return and cancellation forwarding in both modes; retained-reservation assertions explicitly avoid assuming SwiftUI destroys State."
+  ],
+  "baseCommit": "d8a2c67b6dae09a7b769e803a319de3d3080019c",
+  "findings": [],
+  "independentByteObservations": {
+    "nativeRead": {
+      "bytes": 963,
+      "sha256": "d87529a209c6942cb1c77ee0e36c956a5c992ea14210238ddc12c46916768f14",
+      "unchanged": true
+    },
+    "navigationImplementation": {
+      "bytes": 2693,
+      "sha256": "ca6305493dec1e15d58e48043f659b7b0fca65237ad6668769b3de2921623b5e",
+      "unchanged": true
+    },
+    "originalTestPrefix": {
+      "bytes": 7010,
+      "sha256": "af7e3270f8b29d56ade52603e648d2ef36bb6a07dfea8bc07b9d7c2d448d8095",
+      "unchanged": true
+    }
+  },
+  "inputs": [
+    {
+      "bytes": 72821,
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "sha256": "f3b6b6bb5425d69d7eff09aecac9c82a5dfd125ed004c644126cb518e137c4a5"
+    },
+    {
+      "bytes": 25348,
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+      "sha256": "47e04a0dedaebe5a0d6dc35e4b8d30b58a5f0c8eda0cb44fea6283ecf801465d"
+    },
+    {
+      "bytes": 4940,
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeSourceDocumentsPresentation.swift",
+      "sha256": "4138a4c8226e4e274e00a932c62d0abd463b22dd6231164b4f64e5843f67b0be"
+    },
+    {
+      "bytes": 18344,
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift",
+      "sha256": "520c4a24f7c1aa4a99d4979586a05b2de1209f9b44ed995d5cf511d79dd05da3"
+    }
+  ],
+  "inverseProofSHA256": "728121eb5dc645aa659ac6b571b6d6e83842b855ea711f1f55b06962b96c95b9",
+  "observedAt": "2026-11-27T12:11:22.671882+00:00",
+  "operations": {
+    "apple": 0,
+    "native": 0,
+    "oracle": 0,
+    "portableControls": 0,
+    "productSourceEdits": 0,
+    "simulator": 0,
+    "swiftCompiler": 0,
+    "tests": 0
+  },
+  "resolvedBoundaries": [
+    {
+      "detail": "The exact public async showDocuments(with:) signature is retained. A pre-cancelled caller is rejected before starting work; the separate synchronous requestSourceDocuments tap entry captures request ownership before Task creation. The async wrapper awaits the same returned task through withTaskCancellationHandler; onCancel cancels that exact task. A noncooperative provider remains joined rather than reporting early completion.",
+      "id": "ASYNC_API_AND_CALLER_CANCELLATION",
+      "result": "No remaining source blocker"
+    },
+    {
+      "detail": "The model exposes an observable presentationID renewed on beginPresentation and cleared on retirement. The View reservation stores this same ID; a retained reservation from a closed sheet is not reserved in the new generation. Release requires expected==current and matching stored ID. Related completion, synchronous failure release, all dismissal release callbacks, and source-sheet Binding/Done captures carry generation. onDisappear retires local reservation only when Properties itself is closed, preserving the original child-sheet policy.",
+      "id": "PROPERTIES_GENERATION_AND_VIEW_RESERVATION",
+      "result": "No remaining source blocker"
+    }
+  ],
+  "reviewer": "/root/editor",
+  "runtimeAdmission": false,
+  "schema": "wave2-properties-source-documents-editor-review-v2",
+  "status": "PASS_SOURCE_REVIEW_ONLY",
+  "supersededScope": "Root predecessor findings on public async API semantics and retained View reservation; all original review-v1 bytes and findings remain retained.",
+  "testScope": {
+    "actualEnumeration": null,
+    "actualExecution": null,
+    "appendedDeclaredCases": 9,
+    "appendedMethods": 4,
+    "coverageLimit": "Regression source exercises the production result model, reservation value and async wait helper; actual AnyDocumentPresentation/native wiring and SwiftUI sheet lifecycle remain source-reviewed only until compiled and exercised.",
+    "originalDeclaredCases": 7,
+    "originalMethods": 5
+  }
+}
