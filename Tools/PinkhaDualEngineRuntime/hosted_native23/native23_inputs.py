@@ -8,10 +8,10 @@ import types
 from control import load_json, regular, require
 
 HELPER = "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native23_build.py"
-HELPER_SHA256 = "6fc91062b62ec657fb13cf0a2548b1d6d95b255e96c59c1ee9d58285f4a493ee"
+HELPER_SHA256 = "9d6d8410507955d340ffc7c6fceb52477965ec8ec380255dce7d936b30fb643d"
 CONTRACT = "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native23_build_contract.json"
-CONTRACT_SHA256 = "8a3b7ce78bb88bee34604aeead52375a2eb7c74ea1a0a0d7089230d23768cf49"
-OWNER_SHA256 = "34d9b19f4d34f8f441fc13a79bb615deb7676413cb33862d00629ed2f64871b0"
+CONTRACT_SHA256 = "dc228b291736fa472c852232e09e79e27a70720ff235a762512ba4337b7d77e0"
+OWNER_SHA256 = "45901e48763ed480fc9bd9789026a3fad35b44115c89f51ae7c312c433b50aa3"
 
 
 def pinned(row, expected_path):
@@ -30,7 +30,7 @@ def product_entries(inventory):
 def admit(context, control, plan, owner, helper, common, profile):
     root, source = context["root"], context["source"]
     counts = owner.validate_compiler_inputs(plan["compilerInputs"])
-    require(counts == {"native": 61, "stage1UI": 10, "native23UI": 2},
+    require(counts == {"native": 62, "stage1UI": 10, "native23UI": 2},
             "Exact reviewed producer membership is required for the separate two-source runner")
     output = root / "native23-ui"
     evidence = output / "evidence"

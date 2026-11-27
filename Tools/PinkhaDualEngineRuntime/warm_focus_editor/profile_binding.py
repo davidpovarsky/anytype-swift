@@ -12,8 +12,8 @@ from pathlib import Path
 from originals import require
 
 LANES = ("focus-lifecycle", "editor")
-ACTIVATION_SHA256 = "e674b6e534b46cc6bfde2201a4c7731f9be5b66afcf4e3f962b71c0759b52f0c"
-MEMBERSHIP_SHA256 = "5c4711f1b50498d9c2babcb4593795c7b14e5aa7867d6ebbeffdcb6948fc33ee"
+ACTIVATION_SHA256 = "8a5cd51c6bee5ce92deaf84a4062fba73baedc94f8f09ebe66bea14c47b5d747"
+MEMBERSHIP_SHA256 = "cf0ef3114f0abc5ecdbd27fbf3f6e322ad8987a04d40b1d50b5ea8b647aa256d"
 SELECTION_SHA256 = "9d4ec5c867a9d03f6d0d41d5c52c7faaafc6116e09c0c135cd3790c76940d170"
 READY_FOR_EXECUTION = False
 FINAL_SOURCE_SDK_NATIVE_PRODUCT_TUPLE = None
@@ -36,7 +36,7 @@ def require_runtime_ready():
             and activation["finalSourceSDKNativeProductTuple"] is None
             and activation["originalSelectionSHA256"] == SELECTION_SHA256
             and (activation["declaredFocusMethods"], activation["declaredFocusCases"]) == (22, 34)
-            and (activation["requiredAppCompilerSources"], activation["requiredStage1UICompilerSources"]) == (61, 10)
+            and (activation["requiredAppCompilerSources"], activation["requiredStage1UICompilerSources"]) == (62, 10)
             and activation["separateNativeUIReceiptRequired"] is False
             and activation["original8acAssemblyReuseOnly"] is True
             and READY_FOR_EXECUTION is False and FINAL_SOURCE_SDK_NATIVE_PRODUCT_TUPLE is None,
@@ -47,11 +47,11 @@ def require_runtime_ready():
 def source_membership():
     value = local_json("source-membership.json", MEMBERSHIP_SHA256)
     require(value["schema"] == "pinkha-priority-warm-source-membership-v1"
-            and len(value["native"]) == len(set(value["native"])) == 61
+            and len(value["native"]) == len(set(value["native"])) == 62
             and len(value["ui"]) == len(set(value["ui"])) == 10
             and len(value["externalPackageSources"]) == 9
             and value["NativeUIReceiptRequired"] is False,
-            "Exact finite App61/Stage1UI10 source membership required")
+            "Exact finite App62/Stage1UI10 source membership required")
     return value
 
 
@@ -116,7 +116,7 @@ class RuntimeBindings:
             "actualBuildReceipt": context["buildRef"],
             "actualNativeCompilationProof": context["build"]["nativeCompilationProof"],
             "actualStage1CompilationProof": context["build"]["uiCompilationProof"],
-            "requiredCompilerSources": {"app": 61, "stage1UI": 10},
+            "requiredCompilerSources": {"app": 62, "stage1UI": 10},
             "nativeUICompilerAdmissionRequired": False, "focusMethods": 22, "focusCases": 34,
             "editorPreparationMethods": 1, "editorUIMethods": 4,
             "startupProfileSHA256": "6960a4f74aa6b582e783addf358cc1806728dffd520483336c877e473b63aeb9",

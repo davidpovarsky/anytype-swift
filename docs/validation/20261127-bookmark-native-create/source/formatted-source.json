@@ -1,0 +1,220 @@
+{
+  "beforeImageJoinSHA256": "7ec513bb431b3171ec8bfb0b4b1938d7739b47c9a62a541817ff975b2bafbead",
+  "canonicalFormatting": {
+    "allOwnedGroupsPositivelyAbsent": true,
+    "changedFiles": 11,
+    "confirmedInvocations": 17,
+    "controllerSHA256": "980d8a9edb6b67f054fde7bc55db50b943244ed66f69d39fc3f2caa3c58353e6",
+    "diffSHA256": "f65df1fd19d8e57845ec9ee8f39dcafb653d7bef43fbb6bbf4e3361703243d67",
+    "receiptPath": "/mnt/development/projects/evidence/pinkha-c-bookmark-format-20261127/attempt1/result.json",
+    "receiptSHA256": "74f095ea5ff1aa4216fc06fba5aa559afc306a3106f4d9570a09b2d42f580bf0",
+    "toolSHA256": "3ca5e23c92e957338205edb7c8a19a0c4f211b2cf606e21171925f3001d12825",
+    "unchangedFiles": 6,
+    "workerReceiptSHA256": "54c8dfb8cf88b4b80a5c06958f1196eb1c99f3dbe39ac5a75e5550d98eac7db1"
+  },
+  "composition": {
+    "composedBytes": 17479549,
+    "composedFiles": 1625,
+    "composedManifestSHA256": "f45556ad8a93f7adfe2a9ff02bf19ae1536080695f23c13370882df7771a0bd3",
+    "newProduction": 5,
+    "newTestFiles": 4,
+    "overlayBytes": 141606,
+    "overlayFiles": 17,
+    "productionPaths": 13,
+    "replacements": 8
+  },
+  "expectedActualPassEvents": 13,
+  "expectedActualRunEvents": 13,
+  "expectedMethods": 13,
+  "expectedSubtests": 0,
+  "files": {
+    ".runtime-artifacts/sdk-source/internal/bookmarkcreate/frame.go": {
+      "beforeSHA256": null,
+      "bytes": 7359,
+      "role": "production",
+      "sha256": "d28dee6d85e232333b5924e97d1f72455103e452d683bb17b4efca6222c6ae81",
+      "unformattedSHA256": "c9b919c203568189cafe8ecec40a95eb6fb63950844835f5863970c610d2a219"
+    },
+    ".runtime-artifacts/sdk-source/internal/bookmarkcreate/frame_test.go": {
+      "beforeSHA256": null,
+      "bytes": 5823,
+      "role": "test",
+      "sha256": "adfb92fcf8d3f6806d679177e590b25261e3ef9b4412faf0eaf578a44a1f4eb9",
+      "unformattedSHA256": "105b8b0c6789c68c60cf460c56c74182a50ca2d46a23654b31e58b9027660c7e"
+    },
+    ".runtime-artifacts/sdk-source/internal/crdt/op.go": {
+      "beforeSHA256": "7fbd91316cbcd820ea0937449dc204f86f09dfa53e13f9464e71c02ccfb02371",
+      "bytes": 10245,
+      "role": "production",
+      "sha256": "fd12a85594b8698c33123d8638341802b9268d6ef8737ae6fd6cc2b13a1524ed",
+      "unformattedSHA256": "943bfec90d406734a32941fb3cb5b850e549b065816cb5a290474200cde7666a"
+    },
+    ".runtime-artifacts/sdk-source/internal/spaceimpl/object_create_bookmark.go": {
+      "beforeSHA256": null,
+      "bytes": 1739,
+      "role": "production",
+      "sha256": "c63bc79da2af93bad6e54e810f9c3a34c86ad1e34814aefbae47c17d031255af",
+      "unformattedSHA256": "9dd63ee6387ef973e312c2d043220b487f12e007cc8501e49a0a6018a2695be4"
+    },
+    ".runtime-artifacts/sdk-source/internal/spaceimpl/object_create_current_writer.go": {
+      "beforeSHA256": "cde13d3a1d2da002093b59dd68f68fd96c2a5a4ae0389d7f0e22ac4fde328a59",
+      "bytes": 2425,
+      "role": "production",
+      "sha256": "002df2801a3e0c298364b7a4d2c98bdac9f93df2773caece694a55aa0a8e1f9a",
+      "unformattedSHA256": "002df2801a3e0c298364b7a4d2c98bdac9f93df2773caece694a55aa0a8e1f9a"
+    },
+    ".runtime-artifacts/sdk-source/internal/spaceimpl/objects.go": {
+      "beforeSHA256": "188b1b52a9234b76f8909b1a1c3a9b05a26f4a9e0b554452d448f7d06e65a333",
+      "bytes": 19357,
+      "role": "production",
+      "sha256": "567501b1bdc1edfa8cb6b6ec8077995fcb6992f30ee5688e87265e5ef7814415",
+      "unformattedSHA256": "f5814f08c27e12347fe971db182f9fcfb5befcf3b9ce13c2aef9e07b4c56d0c2"
+    },
+    ".runtime-artifacts/sdk-source/internal/spaceobjects/bookmark_create.go": {
+      "beforeSHA256": null,
+      "bytes": 15523,
+      "role": "production",
+      "sha256": "8a9b580b92772f738ca5d87a6978334a674f3e01d2a47ee455c5a64d296d815f",
+      "unformattedSHA256": "518f7cb8647b07bdee7bbcd25407ea1da153279a7055b2a1d2da1180a9418f8a"
+    },
+    ".runtime-artifacts/sdk-source/internal/spaceobjects/bookmark_create_test.go": {
+      "beforeSHA256": null,
+      "bytes": 18720,
+      "role": "test",
+      "sha256": "7df39eef494957ba6213346641711a2479459f3c2c658206c4329804de6fddf8",
+      "unformattedSHA256": "72ce1401e6ed7c91f70574f9321a5179d9bfd732743b880039156703db981d23"
+    },
+    ".runtime-artifacts/sdk-source/internal/spaceobjects/localguard.go": {
+      "beforeSHA256": "ced015c721d800b4416e600ad2e4ebd18f00f43b5a40a787495960abd6b9cdf3",
+      "bytes": 11556,
+      "role": "production",
+      "sha256": "e4f1baad8fb823264059add3e62f5b1147c4c43c17b9adbdd8aab29afe403d1a",
+      "unformattedSHA256": "e4f1baad8fb823264059add3e62f5b1147c4c43c17b9adbdd8aab29afe403d1a"
+    },
+    ".runtime-artifacts/sdk-source/internal/spaceobjects/native_definitions.go": {
+      "beforeSHA256": "bc09041f7e55dd6a56f1569bb4426c6619e431c5a5a425e39810488e77069c52",
+      "bytes": 9910,
+      "role": "production",
+      "sha256": "2e74ff9361d1b93103f0794582959183014c02e791ed5debd7620ecb5fa72a8a",
+      "unformattedSHA256": "2e74ff9361d1b93103f0794582959183014c02e791ed5debd7620ecb5fa72a8a"
+    },
+    ".runtime-artifacts/sdk-source/space/bookmark_create.go": {
+      "beforeSHA256": null,
+      "bytes": 2073,
+      "role": "production",
+      "sha256": "a555676400f864bb1fd7f41786dc0d0ba61ed89290c57ccc1acb7d88dcf1fa60",
+      "unformattedSHA256": "851f1d4bc47017a7de8e4c460b4a08585d21c3c2ae22288110f1a9ddc86f7f93"
+    },
+    "internal/server/handlers_objects.go": {
+      "beforeSHA256": "509be58130afb88687381e1e89704d4c5681752bdd284c3d22d0556dfcc182af",
+      "bytes": 12767,
+      "role": "production",
+      "sha256": "a2b8fe869d2d541c122e10c75dbe53564f19a31400e5b071f6e9a438025a3690",
+      "unformattedSHA256": "a2b8fe869d2d541c122e10c75dbe53564f19a31400e5b071f6e9a438025a3690"
+    },
+    "internal/server/handlers_pinkha.go": {
+      "beforeSHA256": "696798e85fabd864cbde840743f18360710f176cb99ddac533dbe9cd4cc18e09",
+      "bytes": 8686,
+      "role": "production",
+      "sha256": "45293dd3cd0b77fd154d28385db75e35cec93663b30fd6aeeac8b8a1b4c5e996",
+      "unformattedSHA256": "45293dd3cd0b77fd154d28385db75e35cec93663b30fd6aeeac8b8a1b4c5e996"
+    },
+    "internal/server/handlers_pinkha_bookmark_create.go": {
+      "beforeSHA256": null,
+      "bytes": 4332,
+      "role": "production",
+      "sha256": "c391671d36a0cfe6b2f712054a78de6a0e656e4acdf00c6287361bad1227b4ab",
+      "unformattedSHA256": "37711e9e735e56b04a4bb1248b252dfeacafdd01ce5d8f255e54139ca37eb2d1"
+    },
+    "internal/server/handlers_pinkha_bookmark_json_test.go": {
+      "beforeSHA256": null,
+      "bytes": 1211,
+      "role": "test",
+      "sha256": "aab63a211e4cca939914f8b3052350a684a44eba9a8b0ebcd74a07a308e4939a",
+      "unformattedSHA256": "40ae5d82c3abc82998e003bdb8d39e7b71486ef84e95a682e53f6ffb68c00f8b"
+    },
+    "internal/server/handlers_pinkha_bookmark_native_test.go": {
+      "beforeSHA256": null,
+      "bytes": 8641,
+      "role": "test",
+      "sha256": "9bd089087a2ee5c2dc9163a1fa597ca0d532e8e56ca32cadd12dedc4444a37e0",
+      "unformattedSHA256": "86c16922e7e43c77cd36519ba9d200a8fc7a3ba354ce940bd1114cee1283f0d3"
+    },
+    "internal/server/pinkha_create.go": {
+      "beforeSHA256": "37683e528016534dbce23629c66e3641c9a80e9ff3439f3269831a3654f3a403",
+      "bytes": 1239,
+      "role": "production",
+      "sha256": "079622072e4921de40c7ee566db5dc817b69d62c20da900324524fec5d4d9cf6",
+      "unformattedSHA256": "079622072e4921de40c7ee566db5dc817b69d62c20da900324524fec5d4d9cf6"
+    }
+  },
+  "latestQualifiedBase": {
+    "nativeBinarySHA256": "cac96a8ab3edb6a2e908f423c45726818bcf3cc223d57aa4018869702be0ee21",
+    "nativeReceiptSHA256": "9282a20d65d2dc3006a9a256e6fbeda926089b84efc770609d4e32b54cb89602",
+    "sourceBytes": 17411109,
+    "sourceFiles": 1616,
+    "sourceManifestSHA256": "773f0a25422b3460a375182fb6f839fd71d7246ad8b489b6c20418bfab3b2471",
+    "sourceRoot": "/var/lib/pinkha-c-filesv2-20261126/final-authority-native1/source"
+  },
+  "originalDraft1SHA256": "6cf55eb2ed8e223f9a23feaf30ce4eb1a6f48c62514f1fafd648f01e53d25333",
+  "originalDraft2SHA256": "a66b7a3a7add141ec67eb9a6fde40820283a9733ec34b837281514be07533464",
+  "priorTestsReplayed": 0,
+  "protocol": "pinkha-native-bookmark-optional-create-source-v1",
+  "qualificationLimits": {
+    "actualNativeAccountRuns": 0,
+    "actualTests": 0,
+    "compiled": false,
+    "formattingRun": true,
+    "fullSourceMigrationQualified": false,
+    "originalHistoryDecrypted": false,
+    "sourceAdmissionPromoted": false,
+    "sourceOnly": true
+  },
+  "runtimePublicConfig": {
+    "bytes": 1137,
+    "outsideComposedSourceInventory": true,
+    "sha256": "a3fe3c21144c2c82afa03b58014752c6bca6e5a9f3e69a1bc1b2b38415434756",
+    "sourceRelativePath": "internal/pinkha/migrationnative/testdata/local.yml",
+    "testDestination": "staging.yml"
+  },
+  "sourceReviews": {
+    "definitionLocksCurrentWriterAndEpoch": "E reviewed production draft1; no lock-order/authority blocker",
+    "fixtureAuthorityBoundary": "E reviewed original native post-signing/pre-AddAll seam and complete prepared-CID/no-storage assertions",
+    "fixtureCleanup": "E accepted aa594: actual done latch and bounded LIFO join; fixture TMPDIR must be owned and capped",
+    "fixtureCleanupPatchSHA256": "aa594fc0a871f8c5f588ca3a85c1686955f80d8a9904dc39ba8a0d8b96f67664"
+  },
+  "status": "SOURCE_ONLY_FORMATTED_NOT_COMPILED_NOT_RUN",
+  "tests": {
+    ".runtime-artifacts/sdk-source/internal/bookmarkcreate/frame_test.go": [
+      "TestBookmarkFrameCanonicalClosedEncoding",
+      "TestBookmarkFrameRequiresCompleteUniqueDependencySet",
+      "TestBookmarkFrameBoundsAndExactUTF8Identity",
+      "TestBookmarkFrameCollectionUnionIsReadOnlyNormalization"
+    ],
+    ".runtime-artifacts/sdk-source/internal/spaceobjects/bookmark_create_test.go": [
+      "TestBookmarkLockedConditionRefusesForeignEpochAndDependencyFrames",
+      "TestBookmarkLockedConditionFencesConcurrentDefinitionWrite",
+      "TestBookmarkGenerationPeekCannotRecreateMissingEpoch",
+      "TestBookmarkConditionRechecksCurrentWriterAtDurableAppend"
+    ],
+    "internal/server/handlers_pinkha_bookmark_json_test.go": [
+      "TestBookmarkCreateJSONRefusesDuplicateNestedAndUnboundedInputs",
+      "TestBookmarkCreateDoesNotWidenStockCreateVocabulary"
+    ],
+    "internal/server/handlers_pinkha_bookmark_native_test.go": [
+      "TestPinkhaBookmarkReadAndBodylessConditionalCreate",
+      "TestPinkhaBookmarkFrameRefusesForeignIdentityAndDefinitionDrift",
+      "TestPinkhaBookmarkKnownRootConditionErrorRetainsOriginalIdentity"
+    ]
+  },
+  "wire": {
+    "capability": "nativeBookmarkObjectCreate",
+    "capabilityVersion": 1,
+    "contract": "pinkha-native-bookmark-create-v1",
+    "createRoute": "/v1/spaces/{spaceId}/pinkha/objects",
+    "frameRawMaximum": 65536,
+    "frameTokenMaximum": 87382,
+    "optionalCreateField": "bookmarkDefinitionFrame",
+    "readOnlyPOST": "/v1/spaces/{spaceId}/pinkha/bookmark-create-frame"
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "actualBase": "5a45fe4af2c4601faad181f81d391057c1237654",
+  "actualBaseTree": "13578db08a5e215fd70e88209e6ec409135440e2",
+  "byteProof": {
+    "bytes": 46135,
+    "gitBlob": "3320b0eb46181cba7bc861ed3a4eed2ef5d1f3c2",
+    "gitMode": "100644",
+    "path": "/workspace/scratch/ae335eba85e3/wave1-c13-e833-intake/prepared1/independent-byte-proof.json",
+    "sha256": "fdb6c1a932a52a2bf63f6e8a607f37c8fbc9549ee2125463e1482ece363ac1bd"
+  },
+  "composition": {
+    "baseLeaves": 23217,
+    "c13OnlyLeaves": 23278,
+    "c13OnlyTree": "2db7b40a507faba6bcc408ca0c12bb482d2499ed",
+    "combined121Leaves": 23300,
+    "combined121TreeWithoutRootIntake": "2b77d1395a6a9897da29d256420c7df721755a7c",
+    "compatibility60Tree": "3ba2c3108503e39b661704e11db7694cd5cd5906",
+    "pathOverlap": []
+  },
+  "concreteSourceBlockers": [],
+  "donor": "e8331a3943db99cc8c73b9c61c6120b4ecf5ee7d",
+  "donorParent": "6b91db33d325f22b62d829051db203121c6cdb8e",
+  "donorTree": "c78246b891799d5583b204c1bef6337e5fc0b19a",
+  "findings": [
+    {
+      "anchors": [
+        "overlay/sdk/internal/spaceobjects/bookmark_create.go:25,88,190,412",
+        "overlay/sdk/internal/spaceobjects/native_definitions.go:347",
+        "overlay/sdk/internal/spaceimpl/object_create_current_writer.go:14"
+      ],
+      "finding": "The new optional definition frame is admitted only through the Pinkha current-writer create route. Stock create vocabulary is unchanged. Pre-root checking is an optimization; native_definitions invokes the final frame check under the original complete dependency-lock set, and original signed current-writer verification still gates the durable append. No account, ACL, store generation or replacement authority is synthesized.",
+      "topic": "original authority"
+    },
+    {
+      "anchors": [
+        "overlay/sdk/internal/bookmarkcreate/frame.go",
+        "overlay/sdk/internal/spaceobjects/bookmark_create.go"
+      ],
+      "finding": "The canonical bounded frame binds account/space/existing generation, selected Type and owner/property digests, exact complete dependency heads and collection set. The final check permits one upsert carrier and the expected string URL, with the canonical editor dataset present; it does not invent an editor block. Read-only generation lookup cannot recreate a missing epoch.",
+      "topic": "definition/frame closure"
+    },
+    {
+      "anchors": [
+        "overlay/sdk/internal/spaceimpl/object_create_current_writer.go",
+        "overlay/any/internal/server/pinkha_create.go"
+      ],
+      "finding": "Creation can retain a known native root before bootstrap fails. The original outcome/creationStage/cleanup carrier is preserved, and the original known-root error branch still precedes definition-condition classification. This does not claim a multi-request CAS pair is atomic or authorize another POST after an uncertain ACK.",
+      "topic": "known root and uncertainty"
+    },
+    {
+      "finding": "Exact original Go JSONL contains8 retained SDK and5 later server run/pass pairs, no failed/skipped/extra methods. The original cache-cap failure remains failed with its SIGTERM/closed group and empty compile log. The continuation retains the old two normal process rows and runs only four new normal groups, yielding one standalone native binary. Historical C/CXX/PATH observations remain explicitly unavailable for the retained SDK8.",
+      "topic": "actual original13"
+    },
+    {
+      "finding": "The published original receipt records one fresh account, six setup mutations, one conditional bodyless Bookmark,37 HTTP records, a gated real SIGKILL and a new-process read-only cold reopen. All three owned groups are positively closed. Warm/cold identity, URL bytes, empty editor rows and empty markdown/version match. The first KeyError schema attempt remains separate with no children/requests/effects. Private raw HTTP bodies/account storage were not fetched by this review; published receipt and source/response digests were joined.",
+      "topic": "actual bodyless scope"
+    },
+    {
+      "finding": "The bodyless fixture creates a new layout11/Type/property definition. It is not an original captured Type migration, and the source explicitly leaves original-Type migration and whole migration unqualified. W2 retains ownership of that mounted-provider review.",
+      "topic": "migration boundary"
+    },
+    {
+      "finding": "e833 publishes the C13 17-file native overlay and its1616→1625→1626 source chain. The separate f832 Runtime18 receipt reuses those C13 originals but identifies15 additional source changes,1638 compiled inputs/750 SDK inputs and another native binary. That15-path source is absent from this61-file donor. HTTP4 and Apple remain unqualified here; the sibling original18-log review is evidence of separate tests, not publication of their source.",
+      "topic": "Runtime18 boundary"
+    },
+    {
+      "finding": "All61 paths are additions absent from actual5a45 and disjoint from the60-row62/99 source packet. Normal e833 ancestry may join current5a45 without replacing its App, package pins, controls or native product. No installed native or current Apple runtime tuple changes through this evidence/source addition.",
+      "topic": "merge compatibility"
+    }
+  ],
+  "fullInverse": {
+    "bytes": 15919,
+    "gitBlob": "312cd3f462c1d988257a59c1468bd5bb371b5ddb",
+    "gitMode": "100644",
+    "path": "/workspace/scratch/ae335eba85e3/wave1-c13-e833-intake/prepared1/native-full-inverses.json",
+    "sha256": "8cc1e50f4be3b30d0c613808f46c925d1928236e7a11758ee1200d131228030d"
+  },
+  "historicalControllerInverse": {
+    "bytes": 54352,
+    "gitBlob": "55355b1c02ec9ec3e47668d67ced7115e06b9554",
+    "gitMode": "100644",
+    "path": "/workspace/scratch/ae335eba85e3/wave1-c13-e833-intake/prepared1/controller-lineage-full-inverses.json",
+    "sha256": "63a497ad6c9f7ab47202c29bb1c55b6b9ca645696d7b9670a988b81659cf5ac8"
+  },
+  "read": [
+    "Complete new native Bookmark frame, dependency snapshot, selected-definition and exact current-writer bootstrap implementation; all eight whole native before/after differences; all four Go test files.",
+    "Complete bodyless controller, owner successor, whole-request deadline provenance and complete completion qualifier. The publication validator was read as source, never imported or executed.",
+    "All61 primary raw bytes were Git-verified against both immutable compare results and the two complete original subtrees. Full current5a45 and frozen3ba2 path/tree projections were reconstructed locally."
+  ],
+  "remainingRequirements": [
+    "Root must use normal donor ancestry, preserve current5a45 and the exact reviewed62/99 guard successor, then qualify its own complete staged tree and normal publication.",
+    "The donor controllers retain historical fixed Oracle paths and original bounds. Retaining them in Git is not new authorization to replay a qualifier, a fixture/account mutation or a crash.",
+    "Any Apple producer must admit an actual complete native source/product tuple separately. Linux C13 receipts do not qualify the current shared App, HTTP4 or original Type migration.",
+    "The separate Runtime18 source manifest/15changed paths remain outside this donor and require their own published source intake."
+  ],
+  "schema": "pinkha-w1-c13-e833-independent-source-review/v1",
+  "scope": {
+    "bytes": 1804377,
+    "candidateImports": 0,
+    "compilerInvocations": 0,
+    "existingAppFilesModified": 0,
+    "hostActions": 0,
+    "publishedAdditions": 61,
+    "runtimeActivation": false,
+    "testsExecuted": 0
+  },
+  "separateRuntime18OriginalReview": {
+    "bytes": 4165,
+    "gitBlob": "ea594447bba86d90280a803f49d6833a5501ee2c",
+    "gitMode": "100644",
+    "path": "/workspace/scratch/ae335eba85e3/wave1-runtime18-independent-qualification/independent-review.json",
+    "sha256": "e1663a1f93f8251f50e80b1e89227926804c7f62a1bc4e5da3f9151f98401417"
+  },
+  "sourceInputs": {
+    "bytes": 2431094,
+    "gitBlob": "1fc85c91bc67b550a7c213558cfcaddfdfde111a",
+    "gitMode": "100644",
+    "path": "/workspace/scratch/ae335eba85e3/wave1-c13-e833-intake/prepared1/source-inputs.json",
+    "sha256": "e83cf6db8769ff955b0f1b7b096b3e9195e58748c0d559a2d40f7433b5264268"
+  },
+  "status": "PASS_SOURCE_AND_ORIGINAL_EVIDENCE_INTAKE_ONLY"
+}

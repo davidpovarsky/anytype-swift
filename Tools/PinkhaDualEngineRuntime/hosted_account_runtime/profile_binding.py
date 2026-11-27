@@ -16,7 +16,7 @@ import sys
 
 from originals import require
 
-DEPENDENCY_SHA256 = "1a8c1d4f29ea960d351ed795dba5733736a045c823df732a586577efeea818f5"
+DEPENDENCY_SHA256 = "588e0f1061e542b3dc7a3c3f44b1fbceb8dc4eb2e6dba681378e367620376bc9"
 ACTIVATION_SHA256 = "42e8cc2fcfca712db222ad849db823c73f863f5004373437dd361a22995d9130"
 W2_PREFIX = "Tools/PinkhaDualEngineRuntime/hosted_account_runtime/"
 W2_MODULE_NAME = "hosted_account_runtime_original_profile"

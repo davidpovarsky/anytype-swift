@@ -2,7 +2,7 @@
 
 This is a same-host consumer of an actually completed phase-bound forward warm build. It does
 not stage, resolve, compile, revive App15, or require the separate Native UI
-target. The complete original common validator still admits App61/Stage1UI10.
+target. The complete original common validator still admits App62/Stage1UI10.
 """
 from __future__ import annotations
 
@@ -166,18 +166,18 @@ def selected_sources(source, root_admission, stage_plan, gate):
     native.update(membership["externalPackageSources"])
     ui = {p for p in paths if p.startswith("PinkhaStage1Acceptance/") and p.endswith(".swift")}
     require(native == set(membership["native"]) and ui == set(membership["ui"])
-            and len(native) == 61 and len(ui) == 10
+            and len(native) == 62 and len(ui) == 10
             and set(membership["externalPackageSources"]).issubset(paths),
-            "Actual original61/10 tracked source membership differs")
+            "Actual original62/10 tracked source membership differs")
     inventory_ref = stage_plan["compilerInputInventory"]
     inventory = gate.json_ref(inventory_ref)
     require(set(inventory["selectedNativeTestSources"]) == native
             and set(inventory["selectedUITestSources"]) == ui
             and inventory["selectedNativeTestSources"] == root_admission["selectedNativeTestSources"]
             and inventory["selectedUITestSources"] == root_admission["selectedUITestSources"],
-            "Root's actual compiler inventory must select every61/10 input")
+            "Root's actual compiler inventory must select every62/10 input")
     rows = {row["path"]: row for row in inventory["sources"]}
-    require(len(rows) == len(inventory["sources"]) == 71 and set(rows) == native | ui,
+    require(len(rows) == len(inventory["sources"]) == 72 and set(rows) == native | ui,
             "Complete unique original compiler source rows required")
     for relative, row in rows.items():
         path = canonical(source / relative)
@@ -187,9 +187,9 @@ def selected_sources(source, root_admission, stage_plan, gate):
     require(proof["sourceCommit"] == root_admission["appSourceSHA"]
             and proof["sourceTree"] == stage_plan["appSourceTree"]
             and proof["sha256"] == inventory_ref["sha256"]
-            and (proof["nativeCount"], proof["uiSwiftCount"]) == (61, 10),
+            and (proof["nativeCount"], proof["uiSwiftCount"]) == (62, 10),
             "Exact original compiler inventory identity differs")
-    return {"inventory": inventory_ref, "native": 61, "stage1UI": 10,
+    return {"inventory": inventory_ref, "native": 62, "stage1UI": 10,
             "native26UIRequired": False, "sourceRows": rows}
 
 

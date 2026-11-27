@@ -15,9 +15,9 @@ from originals import require
 
 PREFIX = "Tools/PinkhaDualEngineRuntime/hosted_native23/"
 READERS = (
-    ("control", "control.py", "fa6a1dbf53cf5e37b03e191d3a053ae62122bd7dab8f2aee66bda1b338ed4935"),
-    ("native23_inputs", "native23_inputs.py", "44cf16d1d2de363ab60c6d59d327e5cb57db4663976d83253ddfc203586ed849"),
-    ("cache_bin_original_native23_reader_definitions", "run.py", "05cdcef460b918c20508ca69afd2aa543c63d92642bb735e9777bdbadc8f3663"),
+    ("control", "control.py", "7038b28af7dd25642ebe814497fb12d41b4175d74956c73b0db813b30de8152f"),
+    ("native23_inputs", "native23_inputs.py", "b647e040e5de250d020fb026d8e88d2017592d229b6378330b18ca48dd59f7bf"),
+    ("cache_bin_original_native23_reader_definitions", "run.py", "13f9260e9f09705f3ced5c7494cbf1b33e71d8dbe5326c4590704cde2fc513f0"),
 )
 
 
@@ -41,7 +41,7 @@ class Native23Receipts:
         loaded = [load_pinned(self.control / PREFIX / path, name, digest, originals)
                   for name, path, digest in READERS]
         self.reader_control, self.inputs, definitions = loaded
-        require(definitions.CORE_ADMISSION_SHA == "11dc47753d6011de6fba8955239a6b63f5fde919b8a7d8edbb2dec75ccfaeb76"
+        require(definitions.CORE_ADMISSION_SHA == "ef6e573cb2a74a6dcb758a572c4de29137f66a847d19b5c180be31a4bb75c66a"
                 and definitions.CORE_ORIGINALS_SHA == "adc29fa18b2bd64dce6bca3cf6ded88ae6203246a12fa7e781229fda41b1f326",
                 "Approved original shared reader lineage changed")
         self.helper = load_pinned(self.control / self.inputs.HELPER,
@@ -70,9 +70,9 @@ class Native23Receipts:
         self.profile.check_source(self.source)
         proof, record, inventory = self.inputs.admit(self.context, self.control, self.plan,
             self.owner, self.helper, self.originals.shared, self.profile)
-        require(proof["producerInputCounts"] == {"native": 61, "stage1UI": 10, "native23UI": 2}
+        require(proof["producerInputCounts"] == {"native": 62, "stage1UI": 10, "native23UI": 2}
                 and proof["runtimeAcceptance"] is False,
-                "Actual61 App, 10 Stage1 and two separate Native23 compiler inputs are all required")
+                "Actual62 App, 10 Stage1 and two separate Native23 compiler inputs are all required")
         return {"proof": proof, "record": record, "inventory": inventory}
 
     def proof(self):
