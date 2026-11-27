@@ -1,0 +1,90 @@
+{
+  "result": {
+    "schema": "wave2-g05-source-commit-v1",
+    "status": "PUBLISHED_SOURCE_ONLY_ACCEPTANCE_PENDING",
+    "observedAt": "2026-11-27T10:03:36.737471+00:00",
+    "branch": "codex/chatgpt-wave15-wave2-property-picker-readonly-20261127",
+    "worktree": "/mnt/development/projects/worktrees/anytype-wave2-property-picker-readonly-20261127",
+    "commit": "1cc7f696cfa01790c90c6d29273147d07da71b65",
+    "parent": "6581508faffa748ca51d97e6ea51ecf6400fef35",
+    "tree": "4a6236febe784b786890134ab10c58e6fbe97db6",
+    "originalSourceRetention": {
+      "schema": "wave2-g05-staged-source-retention-v1",
+      "status": "PASS_ORIGINAL_SOURCE_RETENTION_NOT_RUNTIME_ACCEPTANCE",
+      "observedAt": "2026-11-27T10:03:09.678208+00:00",
+      "branch": "codex/chatgpt-wave15-wave2-property-picker-readonly-20261127",
+      "worktree": "/mnt/development/projects/worktrees/anytype-wave2-property-picker-readonly-20261127",
+      "parent": "6581508faffa748ca51d97e6ea51ecf6400fef35",
+      "checkedTree": "cc702f00abd961cd18b659781fa38f7cf9891524",
+      "reviewedRows": 130,
+      "sourceFiles": [
+        "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift",
+        "Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift",
+        "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+        "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift",
+        "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+        "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+        "docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md"
+      ],
+      "packetFiles": 30,
+      "packetBytes": 622775,
+      "gateEvidenceBytes": 93147,
+      "gate": {
+        "path": "/mnt/development/projects/evidence/wave2-property-picker-readonly-20261127/source-retention/prospective1.json",
+        "sha256": "c2fc85a737fa26c7589ebf9b5093a2ff2d33b4f6bf85cb59d4bdce6981f37c6c"
+      },
+      "durationSeconds": 0.30600038170814514,
+      "capacityAfter": {
+        "/": 2413486080,
+        "/mnt/development": 1041174528
+      },
+      "actualSwiftCompilerOrNativeCalls": 0
+    },
+    "gateEvidence": [
+      {
+        "path": "docs/validation/20261127-wave2-property-picker-readonly/source-retention/prospective1.command.json",
+        "bytes": 963,
+        "sha256": "cf7f748af419cf39086ffba9fa5ed3af8561bf0f4e4165d71b4fe23a569196c2"
+      },
+      {
+        "path": "docs/validation/20261127-wave2-property-picker-readonly/source-retention/prospective1.json",
+        "bytes": 46092,
+        "sha256": "c2fc85a737fa26c7589ebf9b5093a2ff2d33b4f6bf85cb59d4bdce6981f37c6c"
+      },
+      {
+        "path": "docs/validation/20261127-wave2-property-picker-readonly/source-retention/prospective1.log",
+        "bytes": 46092,
+        "sha256": "c2fc85a737fa26c7589ebf9b5093a2ff2d33b4f6bf85cb59d4bdce6981f37c6c"
+      }
+    ],
+    "finalFiles": 33,
+    "finalPayloadBytes": 715922,
+    "actualSwiftCompilerOrNativeCalls": 0,
+    "capacityAfter": {
+      "/": 2413355008,
+      "/mnt/development": 1015963648
+    },
+    "publishedAt": "2026-11-27T10:03:56.820390+00:00",
+    "remoteRefReadback": "1cc7f696cfa01790c90c6d29273147d07da71b65\trefs/heads/codex/chatgpt-wave15-wave2-property-picker-readonly-20261127",
+    "normalPush": true,
+    "forcePush": false,
+    "capacityAfterPush": {
+      "/": 2413248512,
+      "/mnt/development": 1015914496
+    },
+    "runtimeGateOpened": false,
+    "statusLabelClarification": {
+      "originalReceipt": {
+        "path": "/mnt/development/projects/evidence/wave2-property-picker-readonly-20261127/publication-result.json",
+        "sha256": "046f284b0a2833c5e6b49ba5605566d588a88df9842017d7a89658fb3b575420"
+      },
+      "reason": "Original status label G05_RUNTIME_OPEN meant acceptance remains open, not permission to run or an opened runtime gate. Original receipt is retained unchanged; source/commit/push/result facts are unchanged.",
+      "clarifiedAt": "2026-11-27T10:04:19.714083+00:00"
+    }
+  },
+  "receipt": {
+    "path": "/mnt/development/projects/evidence/wave2-property-picker-readonly-20261127/publication-result-precision2.json",
+    "sha256": "471125e8945b53fe935c03b0c018aa2725a3cf206c18253ceeb6b6552b64e4df",
+    "bytes": 3904
+  }
+}

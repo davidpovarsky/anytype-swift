@@ -1,0 +1,486 @@
+{
+  "schema": "pinkha-wave2-editor-dispatch-inventory-v1",
+  "status": "READ_ONLY_QUEUE_NOT_EXECUTION_OR_ADMISSION",
+  "preparedDateUTC": "2026-11-27",
+  "scope": "F/editor/RTL; D and full Torah tables remain owned by sibling agents",
+  "newTestsExecuted": 0,
+  "newControlsExecuted": 0,
+  "hostCalls": 0,
+  "runtimeReady": false,
+  "sourceInventoryReportedByRoot": {
+    "nativeSourceInputs": 57,
+    "stage1UISourceInputs": 10,
+    "nativeLaunchMethods": 23,
+    "countsAreNotInterchangeable": true,
+    "actualSuccessfulProducerPin": null
+  },
+  "historical": {
+    "app15Source": "379ca3568f247d2fc218ed63df24796d461713c0",
+    "nativeManifestSHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+    "focus": {
+      "methods": 21,
+      "cases": 32,
+      "status": "RETAINED_PASS_OLD_SOURCE_ONLY"
+    },
+    "originalPreparation": "FAIL_WAITING_PRESENTATION",
+    "originalEditorUI4": "NOT_RUN_AFTER_PREPARATION_FAILURE",
+    "rawHistoricalReceiptPins": "Not reloaded by this queue; retain original Asana/source evidence rather than invent pins",
+    "failed6aab": "FAIL_APP_BEFORE_UI; no UI/XCTest execution"
+  },
+  "focus": {
+    "plan": "focus-lifecycle-only",
+    "lane": "focus-lifecycle",
+    "stage": "native",
+    "target": "AnytypeTests",
+    "sourcePath": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+    "sourceSHA256": "2b1d3dbe3ad8c1e6e262eeea15a99e0c292dd693118f926c893f7bf9dfc8ac0b",
+    "profileSHA256": "c495985b9afc278c13ec8900049f9835cee5fd74fc368e2e7b264ecf718c5812",
+    "invocationSelector": "AnytypeTests/TextBlockFocusLifecycleTests",
+    "methods": [
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)",
+        "parameters": [
+          {
+            "name": "composing",
+            "type": "Bool"
+          }
+        ],
+        "argument_collections": [
+          [
+            false,
+            true
+          ]
+        ],
+        "case_count": 2
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition()",
+        "parameters": [],
+        "argument_collections": [],
+        "case_count": 1
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/pendingLocalTextSurvivesNativeReconfiguration()",
+        "parameters": [],
+        "argument_collections": [],
+        "case_count": 1
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/completedLocalTextAcceptsRemoteReplacement()",
+        "parameters": [],
+        "argument_collections": [],
+        "case_count": 1
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/nativeFocusObservationDistinguishesOutcomes(outcome:)",
+        "parameters": [
+          {
+            "name": "outcome",
+            "type": "String"
+          }
+        ],
+        "argument_collections": [
+          [
+            "ineligible",
+            "refused",
+            "accepted"
+          ]
+        ],
+        "case_count": 3
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)",
+        "parameters": [
+          {
+            "name": "editing",
+            "type": "Bool"
+          }
+        ],
+        "argument_collections": [
+          [
+            false,
+            true
+          ]
+        ],
+        "case_count": 2
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)",
+        "parameters": [
+          {
+            "name": "newLocked",
+            "type": "Bool"
+          }
+        ],
+        "argument_collections": [
+          [
+            false,
+            true
+          ]
+        ],
+        "case_count": 2
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/initialFocusWaitsForAttachment()",
+        "parameters": [],
+        "argument_collections": [],
+        "case_count": 1
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/pendingFocusWaitsForVisibleLayout(superseded:)",
+        "parameters": [
+          {
+            "name": "superseded",
+            "type": "Bool"
+          }
+        ],
+        "argument_collections": [
+          [
+            false,
+            true
+          ]
+        ],
+        "case_count": 2
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/visibleLayoutsDoNotRetryNativeRefusal()",
+        "parameters": [],
+        "argument_collections": [],
+        "case_count": 1
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/pendingFocusWaitsForKeyWindow()",
+        "parameters": [],
+        "argument_collections": [],
+        "case_count": 1
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/refusedFocusWaitsForWindowReadiness()",
+        "parameters": [],
+        "argument_collections": [],
+        "case_count": 1
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/explicitHandoffDoesNotReplayInitialCaret()",
+        "parameters": [],
+        "argument_collections": [],
+        "case_count": 1
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)",
+        "parameters": [
+          {
+            "name": "change",
+            "type": "String"
+          }
+        ],
+        "argument_collections": [
+          [
+            "rebind",
+            "detach",
+            "editorContext"
+          ]
+        ],
+        "case_count": 3
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/laterFocusSupersedesDetachedRequest(useNativeEditing:)",
+        "parameters": [
+          {
+            "name": "useNativeEditing",
+            "type": "Bool"
+          }
+        ],
+        "argument_collections": [
+          [
+            false,
+            true
+          ]
+        ],
+        "case_count": 2
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/editingDenialCancelsPendingFocus(locked:)",
+        "parameters": [
+          {
+            "name": "locked",
+            "type": "Bool"
+          }
+        ],
+        "argument_collections": [
+          [
+            false,
+            true
+          ]
+        ],
+        "case_count": 2
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/focusedTextViewDoesNotReplayResponderAcquisition()",
+        "parameters": [],
+        "argument_collections": [],
+        "case_count": 1
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/consumedAndNewerFocusSurviveOldCallbacks()",
+        "parameters": [],
+        "argument_collections": [],
+        "case_count": 1
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/requestIdentityParticipatesInCellConfigurationEquality()",
+        "parameters": [],
+        "argument_collections": [],
+        "case_count": 1
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/collectionPresentationResumesOnlyCurrentUnattemptedFocus(superseded:)",
+        "parameters": [
+          {
+            "name": "superseded",
+            "type": "Bool"
+          }
+        ],
+        "argument_collections": [
+          [
+            false,
+            true
+          ]
+        ],
+        "case_count": 2
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/collectionPresentationDoesNotReplayNativeRefusal()",
+        "parameters": [],
+        "argument_collections": [],
+        "case_count": 1
+      },
+      {
+        "selector": "AnytypeTests/TextBlockFocusLifecycleTests/collectionLayoutResumesOnlyCurrentUnattemptedFocus(superseded:)",
+        "parameters": [
+          {
+            "name": "superseded",
+            "type": "Bool"
+          }
+        ],
+        "argument_collections": [
+          [
+            false,
+            true
+          ]
+        ],
+        "case_count": 2
+      }
+    ],
+    "expectedMethods": 22,
+    "expectedLiteralCases": 34,
+    "enumerationSeconds": 180,
+    "methodAllowanceSeconds": 300,
+    "wholeSuiteCommandSeconds": 600,
+    "status": "NOT_RUN_ON_MATCHING_NEW_PRODUCT"
+  },
+  "originalEditor": {
+    "plan": "first-editor",
+    "lane": "editor",
+    "stages": [
+      "preparation",
+      "ui"
+    ],
+    "preparationSelector": "AnytypeTests/PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState()",
+    "fixture": "pinkha-stage1-acceptance-state.json",
+    "target": "PinkhaStage1AcceptanceUITests",
+    "selectors": [
+      "PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testAppWideDirectionPersistenceAndInteractiveBack",
+      "PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testMultiBlockEnterCreationAndTypingLifecycle",
+      "PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testDocumentSourcesEntryOpensExistingSearch",
+      "PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testUnifiedEngineSwitchRetainsHeartDocumentAndColdReopen"
+    ],
+    "note": "Original run_wave15 editor list contains first3; combined F adds engine-switch fourth",
+    "enumerationSeconds": 180,
+    "budgetAuthority": "Original run_ui27.selection_time_budget",
+    "status": "NOT_RUN_AFTER_ORIGINAL_PREPARATION_FAIL"
+  },
+  "rtlHosted": {
+    "plan": "rtl-hosted-only",
+    "methods": 6,
+    "cases": 10,
+    "status": "NOT_RUN",
+    "exactRepairedProfile": "80ebc56005110ee78615322f56b876b5b6fd4fae23975b86d249ae05ebcac8ea",
+    "currentSourceCompatibility": "Historical profile also pins AnyNativeEditor e25deb24; later Add-block/Typography/hook source requires separately reviewed exact successor, never an arbitrary source override"
+  },
+  "futureHeartMutation": {
+    "selectors": [
+      "PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testMiddleSplitMergeUndoRedoAndColdReopen",
+      "PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testPartialRangeReplacementUndoRedoAndColdReopen"
+    ],
+    "methods": 2,
+    "documentFlows": 6,
+    "methodAllowanceSeconds": 1200,
+    "sourceSHA256": "c1e37371ce061cfec1ec6d30fc2f55a0df0e477f9727ffd96d635f46e91e0906",
+    "originalPrefixSHA256": "d4ffc25ee659e03bd4dd76b7847faf4fecf343630edf094c0bc02fe060f00850",
+    "appendSHA256": "68ad800228afbbb8520151fd9991cd68f52dd3442a5b6984e1e9c5012adc7332",
+    "status": "SOURCE_READY_NOT_RUN; finite source-bound selection/attachment consumer not supplied by this tranche",
+    "rangeEvidence": "Inferred physical key selection plus exact prefix/suffix; no native selectedRange claim",
+    "saveEvidence": "Distinct-PID cold exact object/block/text readback only"
+  },
+  "rtlMatrix": [
+    {
+      "appLanguage": "he",
+      "systemLanguage": "en",
+      "deviceFamily": "iPhone",
+      "appearance": "light",
+      "status": "ACTUAL_MATCHING_RESULT_REQUIRED"
+    },
+    {
+      "appLanguage": "he",
+      "systemLanguage": "en",
+      "deviceFamily": "iPhone",
+      "appearance": "dark",
+      "status": "ACTUAL_MATCHING_RESULT_REQUIRED"
+    },
+    {
+      "appLanguage": "he",
+      "systemLanguage": "en",
+      "deviceFamily": "iPad",
+      "appearance": "light",
+      "status": "ACTUAL_MATCHING_RESULT_REQUIRED"
+    },
+    {
+      "appLanguage": "he",
+      "systemLanguage": "en",
+      "deviceFamily": "iPad",
+      "appearance": "dark",
+      "status": "ACTUAL_MATCHING_RESULT_REQUIRED"
+    },
+    {
+      "appLanguage": "en",
+      "systemLanguage": "he",
+      "deviceFamily": "iPhone",
+      "appearance": "light",
+      "status": "ACTUAL_MATCHING_RESULT_REQUIRED"
+    },
+    {
+      "appLanguage": "en",
+      "systemLanguage": "he",
+      "deviceFamily": "iPhone",
+      "appearance": "dark",
+      "status": "ACTUAL_MATCHING_RESULT_REQUIRED"
+    },
+    {
+      "appLanguage": "en",
+      "systemLanguage": "he",
+      "deviceFamily": "iPad",
+      "appearance": "light",
+      "status": "ACTUAL_MATCHING_RESULT_REQUIRED"
+    },
+    {
+      "appLanguage": "en",
+      "systemLanguage": "he",
+      "deviceFamily": "iPad",
+      "appearance": "dark",
+      "status": "ACTUAL_MATCHING_RESULT_REQUIRED"
+    }
+  ],
+  "accessibility": {
+    "exactMethods": [
+      "NativeLaunchTests/testNativeLibraryAndEditorAccessibilityAuditAtRequestedContentSize",
+      "NativeLaunchTests/testNativeVoiceOverTraversalSpeaksCurrentNativeContent"
+    ],
+    "target": "PinkhaAnyNativeUITests",
+    "status": "SOURCE_ONLY; finite plan/helper handoff pending, no current executable lane",
+    "physicalDevicesObserved": 0,
+    "physicalManualVoiceOver": "NOT_RUN",
+    "simulatorVoiceOver": "NOT_RUN; public Xcode27 API exists; no unsupported-unavailability claim"
+  },
+  "receiptReuseExclusions": [
+    "Do not rerun historical T5 36 or accepted9 calls",
+    "Do not rerun accepted hierarchy drag",
+    "Return-focus3 only with original explicit reason gate",
+    "Do not relabel failed6aab or a089/8f2 preparation as current product acceptance"
+  ],
+  "sources": [
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-editor-control/focus_lifecycle_profile.py",
+      "bytes": 6213,
+      "sha256": "c495985b9afc278c13ec8900049f9835cee5fd74fc368e2e7b264ecf718c5812"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-editor-control/handoff.json",
+      "bytes": 2697,
+      "sha256": "1f6b584e2025fc732d318b5086b6e6649fce16ea37ae18273d8dbec3d46e8aa9"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-editor-control/wave3-compatibility/rtl_hosted_profile.py",
+      "bytes": 12708,
+      "sha256": "80ebc56005110ee78615322f56b876b5b6fd4fae23975b86d249ae05ebcac8ea"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-editor-control/wave3-compatibility/native_compiler_witness.py",
+      "bytes": 5156,
+      "sha256": "aaa408805488d0d15646569359d698527f58bfa597ad82177ab6c06a6986e4dd"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/torah-acceptance-prep/materialized-control-attempt2/combined_host_acceptance_app15.py",
+      "bytes": 51491,
+      "sha256": "2e57294dc7a00d4302a9dd5f316b2419e75d6a08a4f55b47451d6c822335ec44"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/torah-acceptance-prep/source/Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+      "bytes": 53943,
+      "sha256": "f99b1c04efeee2be45459b49d8c71fd8207039c97be4578cd6f2dfc8d29bb283"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-editor-rtl/coverage-audit/README.md",
+      "bytes": 14227,
+      "sha256": "432a59c8a1faf4384443b9081890b53b6c413af031a45a3dacc400a4f092eebb"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-editor-rtl/coverage-audit/source-audit.json",
+      "bytes": 1858,
+      "sha256": "da8b04672f0f292419d040f812bb0c306db2fa50f7af1ea997407caf35159bff"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-editor-rtl/coverage-audit/MUTATION_HANDOFF.md",
+      "bytes": 4608,
+      "sha256": "7e3bdd8037071de8ed0b7f8132c897057210909a9383e323f5db4221bd60cbe7"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-editor-rtl/coverage-audit/mutation-source-proof.json",
+      "bytes": 3042,
+      "sha256": "2cd96c0ad7a2ca02708920fd85259a8429175b25ab26aa460c022e0e49572fa8"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-native-core-hosted/README.md",
+      "bytes": 7932,
+      "sha256": "fa49992ca9172cb646ae513395010a82d4de6966f2cc1aea6de0ebf9bdd4f057"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/wave2-native-core-hosted/native_core_hosted_profile.py",
+      "bytes": 11401,
+      "sha256": "b3dc895536c615c453f2856cd33c29b1394a6e954c218e4e7c67b59dfdb211ee"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/interfaces_work/accessibility-sdk/native_accessibility_addition.swift",
+      "bytes": 22773,
+      "sha256": "98c68f7e1d9ab0617218ae38e290cc6ddf1842d42f41bda680001e7c752d4317"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/interfaces_work/native-styled-ui/source-proof.json",
+      "bytes": 5491,
+      "sha256": "63cadf150de799d104d8fb769b08578b3ddad3bb05f21fba232617ef2e550cf1"
+    },
+    {
+      "path": "/workspace/scratch/1d35894f12d5/interfaces_work/native-styled-control/native_styled_observations.py",
+      "bytes": 48859,
+      "sha256": "71c376659d34b7065d152f22c41f2ded731d4527d0231375a3e688a31e7f4f02"
+    }
+  ],
+  "remainingUnmapped": [
+    "Heart styled list/heading/quote visual geometry in mixed scripts",
+    "Direct real bidi range geometry and long-press/general editing-menu scope",
+    "Generic block reorder beyond retained hierarchy drag and specific source drops",
+    "Landscape/keyboard-sheet overlap and real compact iPad window/orientation transition",
+    "Controlled editor UI error/cancel/retry and unsaved-draft recovery",
+    "Whole-app/custom keyboard/physical-device and manual VoiceOver coverage"
+  ]
+}

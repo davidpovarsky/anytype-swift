@@ -1,0 +1,73 @@
+{
+  "apiPublication": true,
+  "branch": "refs/heads/codex/chatgpt-wave15-wave2-reader-lifetime-20261127",
+  "commit": "26beca175d64a4d34e3567f2bbb4bf308d714478",
+  "docs": "docs/validation/20261127-reader-document-lifetime",
+  "files": [
+    {
+      "bytes": 3987,
+      "gitBlob": "24fe50c0e54c51a3534b0bc2d591c09d08aa3f3a",
+      "path": "PROJECT_BOARD.md",
+      "sha256": "c66d2d931a5b42a3006258b0c86536c61e0ead070d573c88f0c3bda8a9a63db8"
+    },
+    {
+      "bytes": 1858,
+      "gitBlob": "2a48b998f1d520fcc22f3aad0082b9e66d862373",
+      "path": "Sources/TorahInspectorUI/TorahDocumentLoadLifetime.swift",
+      "sha256": "517de18756e2443d59a622b867bf56681f45adc0a24b7cbb12204f18b22c7fe7"
+    },
+    {
+      "bytes": 26545,
+      "gitBlob": "e3679c662649aef41294fb965d5eb4db21430a58",
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift",
+      "sha256": "d68b95a931f2dedec125a50e233c6844d518895e49d13c6d520bd448cac55655"
+    },
+    {
+      "bytes": 56161,
+      "gitBlob": "c9e7b0fa676f13350fb9f04560b8d2fc3f344ed0",
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift",
+      "sha256": "5ac7fad544a637c5e0ae0e2c497ac7e4c6fb0cde3bc232a620e44f390dab8464"
+    },
+    {
+      "bytes": 23576,
+      "gitBlob": "929bc16744dfd0eb53278e70b3f7a2419d8bccd1",
+      "path": "Sources/TorahInspectorUI/TorahSourceReaderView.swift",
+      "sha256": "1c85e7e11d2b62b05beb68e83e835691a343c5bdf30321678b0d5241a6b54d89"
+    },
+    {
+      "bytes": 6211,
+      "gitBlob": "b78b37b9cc0e430402ff18d6e4ba7eebceb03c6b",
+      "path": "Tests/TorahInspectorUITests/TorahDocumentLoadLifetimeTests.swift",
+      "sha256": "ab57d50c8173faebe2a716ef232aae9031ef4d5a187c8e2b3b6070f87d97e36c"
+    }
+  ],
+  "integration": {
+    "actualAppleCompilerInputsRequired": true,
+    "appPackagePin": "UNCHANGED; Wave3 owns next qualified pin/source",
+    "componentDoesNotCompileSwiftUICallers": true,
+    "newSourceAutomaticallyBelongsToExistingPackageTarget": true,
+    "packageManifestChanged": false
+  },
+  "oracleWorktreeCreated": false,
+  "parent": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "repository": "davidpovarsky/TorahInspectorKit",
+  "schema": "pinkha.wave2.g04.source-test-handoff.v1",
+  "sourcePublicationReceiptSHA256": "dc4726e05299b5a7567331ff4378f093f002078a91e3dc0520770a9b480ad463",
+  "tests": {
+    "actualEnumeration": null,
+    "declaredCases": 9,
+    "declaredMethods": 6,
+    "execution": "NOT_RUN",
+    "methods": [
+      "newerSelectionRejectsLateProviderCompletion(providerFails:)",
+      "sameSelectionRetryOrReactivationRejectsItsPriorLifetime(disappears:)",
+      "callerCancellationRejectsANonCooperativeProvider(providerFails:)",
+      "preCancelledCallerDoesNotDispatchAProviderRead()",
+      "invalidatedOwnerCannotDispatchOrScheduleARetry()",
+      "currentProviderFailureRemainsAnActualFailure()"
+    ],
+    "packageTarget": "TorahInspectorUITests",
+    "suite": "TorahDocumentLoadLifetimeTests"
+  },
+  "tree": "91b2132ff8e55fbc0c3df2b14d0ad6ddf1626a41"
+}
