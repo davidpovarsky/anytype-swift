@@ -1,0 +1,62 @@
+{
+  "schema": "pinkha.wave2.native-styled-runtime-delta-review/1",
+  "reviewedAtUTC": "2026-11-27T07:14:57.395782+00:00",
+  "reviewer": "ChatGPT Wave2 editor",
+  "status": "ORIGINAL_WORKER_PATH_RESOLVED_REMAINING_LIVE_COMMAND_PATH_REQUIRES_CORRECTION",
+  "runtimeSHA256": "342a6a7b5a7e0e72ad139b46a3201e05a9d86a3e4a0a8d78d565f33d43c52c12",
+  "runtimeBytes": 36182,
+  "deltaSHA256": "343d92e32a59fdab981dbec083b689dbc08c13c63bffd5e6927f3bb57dcc1df9",
+  "priorReviewSHA256": "5b875561818d28ef03cfff335b2d923eb400cd4b6b9b0bd0cf23d35c447d98f3",
+  "resolvedScope": [
+    "The exact original run declaration is source/materialization pinned and evaluated with a separate globals dictionary and private subprocess/lifecycle proxies; no shared globals are patched.",
+    "The actual worker Popen is captured before its first original ledger write. Its exceptional path attempts finite original cleanup, reap and positive group absence before signaling worker return.",
+    "Positive absence is latched as soon as the original observer returns it, before subsequent original receipt I/O. It is not re-probed or signaled by the finally path.",
+    "The initial exception object or original failed command result remains primary over closure-save errors. Unresolved worker custody withholds settings/readbacks/sandbox/shutdown and explicitly retains the device."
+  ],
+  "findings": [
+    {
+      "id": "STYLED-RUN-01-LIVE-COMMANDS",
+      "severity": "blocking-before-execution",
+      "problem": "The same original run post-Popen exception path is still reachable by the live session runner lookup, requested content_size setter/readback and final restoration setter/readback. These self.run calls do not pass through OwnedExecutionBoundary. A setter may remain alive after its ledger/disk exception, while process_closed considers only the XCTest execution boundary and can authorize restoration/shutdown once xcodebuild closes.",
+      "directUnwrappedCallSites": [
+        {
+          "method": "runner_directory",
+          "line": 378
+        },
+        {
+          "method": "runner_directory",
+          "line": 395
+        },
+        {
+          "method": "request",
+          "line": 445
+        },
+        {
+          "method": "request",
+          "line": 447
+        },
+        {
+          "method": "finish",
+          "line": 536
+        },
+        {
+          "method": "finish",
+          "line": 542
+        }
+      ],
+      "requiredChange": "Apply the same isolated capture/cleanup boundary only to the new live-session helper calls and aggregate unresolved custody into the existing finalization/device guard. Preserve original run bytes, command argv/labels, original exception objects and the absence latch. Do not broaden old source/product acceptance."
+    }
+  ],
+  "collectorSchema": "The current correction preserves the reviewed71c collector schema and uses a separate owned-execution closure sidecar. Collector review16baba remains valid for that frozen schema; future sidecar changes require their own binding.",
+  "executionByReviewer": {
+    "sourceReadAndASTComparison": true,
+    "portableControlsRerun": 0,
+    "processProbes": 0,
+    "Swift": 0,
+    "XCTest": 0,
+    "Native": 0,
+    "Oracle": 0,
+    "Mac": 0
+  },
+  "retainedEvidence": "Original2d87 review and342a correction/control evidence stay retained; no source was mutated by reviewer."
+}

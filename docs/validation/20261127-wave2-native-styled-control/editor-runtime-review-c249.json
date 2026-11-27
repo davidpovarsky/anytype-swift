@@ -1,0 +1,82 @@
+{
+  "schema": "pinkha.wave2.native-styled-runtime-delta-review/1",
+  "reviewer": "ChatGPT Wave2 editor",
+  "reviewedAtUTC": "2026-11-27T07:53:06.687953+00:00",
+  "status": "PASS_SOURCE_ONLY_STYLED_RUN_01_RESOLVED",
+  "scope": "Independent narrow runtime registry/capture, original lifecycle reuse, aggregate custody, first-exception and finalization review. Final profile/materializer cross-wiring remains separately covered by root.",
+  "inputs": {
+    "runtime": {
+      "path": "/workspace/scratch/1d35894f12d5/interfaces_work/native-styled-control/native_styled_runtime.py",
+      "sha256": "c249ab9d04b4f8014475cf1eb8b81cf0371cab40a3f98a77b2938a2a0f2b6714",
+      "bytes": 40172
+    },
+    "priorRuntime": {
+      "path": "/workspace/scratch/1d35894f12d5/interfaces_work/native-styled-control/retained-runtime-review2/native_styled_runtime.py",
+      "sha256": "342a6a7b5a7e0e72ad139b46a3201e05a9d86a3e4a0a8d78d565f33d43c52c12"
+    },
+    "runtimeDeltaSHA256": "65ed965010bf8d379ffe8d4457270525375c3ccc44954b2f2e9f7b4af26e97b1",
+    "generatedRunner": {
+      "path": "/workspace/scratch/1d35894f12d5/interfaces_work/native-styled-control/materialized-closed3/run_prebuilt_native_ui16.py",
+      "sha256": "36c3c0e91616a0fdeb94dc7691c8b105ef75a46fba7b4c8c3607c733704284a0"
+    },
+    "generatedMainDeltaSHA256": "68f85d851ae2a1164256861ecc3e1f01bb12064178b00a34dfca5709d47a344c",
+    "profileSHA256": "a499920e54468a8a81b5d86ec16aa809a2b99d9bd7cee66df6d615b43ab1f5b5",
+    "rootCrosswireReviewSHA256": "aadfc5ab9fc19d63922bc0b1661e384acd2bbdde3ab8015007095514bb1f3093"
+  },
+  "supersededFindingScopes": [
+    {
+      "finding": "STYLED-RUN-01",
+      "priorReviewSHA256": "5b875561818d28ef03cfff335b2d923eb400cd4b6b9b0bd0cf23d35c447d98f3",
+      "resolution": "The exact actual Popen is captured before original post-spawn ledger/disk I/O and all exceptional return paths cross bounded owned cleanup before worker return."
+    },
+    {
+      "finding": "STYLED-RUN-01-LIVE-COMMANDS",
+      "priorReviewSHA256": "c9325dcec669de5f0d977122c85a76d3785173f3f340c18002febf516d195212",
+      "resolution": "One registry now wraps all original run calls for both new styled stages, including setup, runner lookup, size setter/readback, catalog/live XCTest, result extraction and final cleanup; aggregate custody includes all of them."
+    }
+  ],
+  "findings": [],
+  "verifiedBoundaries": [
+    "Registry activation is local to main(run=run), after exact original73bb lifecycle initialization and before any new-stage run invocation. There is no shared-global subprocess/lifecycle monkeypatch or second LiveSession boundary.",
+    "Each registry call captures at most one actual Popen with exactly the original argv and start_new_session=True through the preserved run code object and isolated globals. Original command labels/output directory remain fixed.",
+    "Every captured command reaches the same reviewed original cleanup, bounded wait and positive group observation path on post-Popen exceptions. First exception objects and original failed allow_failure results remain primary over cleanup/closure-save failures.",
+    "The exact original observer latches positive ABSENT_ESRCH before later bookkeeping. Already absent historical PGIDs are not observed or signaled again; Popen reaping uses its owned child identity.",
+    "A command with failure cleanup in progress or finished unresolved custody prevents subsequent commands. Aggregate closed requires every captured boundary to be finished and actually closed; completed xcodebuild cannot conceal an unresolved simctl setter.",
+    "Both catalog and live methods use the same registry. Catalog does not demand live-size requests. LiveSession.process_closed derives from aggregate command custody, and all six formerly direct helper calls now invoke the registry-bound self.run.",
+    "Unresolved custody withholds new commands, settings restoration/readback, sandbox/device shutdown actions and records RetainedUnresolvedOwnedCommands. Final result authority remains failed; no thread completion is substituted for actual process closure.",
+    "The final registry receipt is attempted after the last original result/cleanup command. Per-command closure sidecars and aggregate errors remain distinct from original XCTest result authority. Source hashes for the runtime adapter and original controller are revalidated.",
+    "Original run/bind/result validator bodies remain exact; runtime behavior is explicitly adapted through isolated globals, not represented as unchanged execution. Closed future source/product gates and collector71c schema remain unchanged."
+  ],
+  "originalSourceReuse": {
+    "runDeclarationSHA256": "5ea092b2a4d7159e8dec45b264224811e24e64265493a1e4958e4937b5fecaad",
+    "lifecycleSHA256": "73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a",
+    "unchangedOriginalRunnerDeclarations": 16,
+    "changedOriginalRunnerDeclarations": [
+      "native8ac_module",
+      "main"
+    ],
+    "retainedPriorBoundaryBodiesByteIdentical": [
+      "original_execution_binding",
+      "OwnedExecutionBoundary.observe",
+      "OwnedExecutionBoundary.adapted",
+      "OwnedExecutionBoundary.finish"
+    ]
+  },
+  "existingControlReceipt": {
+    "path": "/workspace/scratch/1d35894f12d5/interfaces_work/native-styled-control/registry-controls4.json",
+    "sha256": "c2a3beac6a5286822efff67ce44f54865edee5b731f187d7324d568b22513a7e",
+    "reusedWithoutRerun": true,
+    "scope": "Four author-run targeted synthetic methods; not actual OS/Apple/UI execution"
+  },
+  "executionByReviewer": {
+    "sourceReadAndASTComparison": true,
+    "portableControlsRerun": 0,
+    "processProbes": 0,
+    "Swift": 0,
+    "XCTest": 0,
+    "Native": 0,
+    "Oracle": 0,
+    "Mac": 0
+  },
+  "limitations": "Source-only closure of the two concrete runtime findings. No producer/admission, real process execution, simulator compatibility, actual UIKit result or visual acceptance is established."
+}
