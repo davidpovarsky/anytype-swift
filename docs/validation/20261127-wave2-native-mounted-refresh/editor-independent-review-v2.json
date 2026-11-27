@@ -1,0 +1,30 @@
+{
+  "schema": "pinkha-mounted-refresh-independent-source-review/v1",
+  "atUTC": "2026-11-27T16:33:31.783041+00:00",
+  "status": "BLOCKED_TWO_NARROW_OWNERSHIP_FINDINGS_SOURCE_ONLY",
+  "reviewer": "Wave2 editor agent",
+  "reviewedFullSource": {
+    "path": "interfaces_work/native-mounted-refresh-ui/review-v2/candidate/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+    "sha256": "e0d8a4beda394ac90ee594cc10c4e7b954535ffa0f37f3cd414a5cf34f5b7da0",
+    "bytes": 40984
+  },
+  "findings": [
+    {
+      "id": "EDITOR-MOUNT-01",
+      "scope": "MountedRefreshHTTPFixture.accept connection state handler",
+      "finding": "The stored stateUpdateHandler closure strongly captures the same NWConnection in the failed branch. Removing its dictionary entry on cancellation does not itself break that own-handler reference cycle.",
+      "requestedCorrection": "Cancel through the existing queue-owned connections[id] lookup or a weak connection capture; no new process or socket manager."
+    },
+    {
+      "id": "EDITOR-MOUNT-02",
+      "scope": "exerciseMountedRefresh previous key window custody",
+      "finding": "The previous key window is chosen across all connected scenes, but the mounted foreground scene is selected separately. With multiple scenes restoration can target an unrelated window.",
+      "requestedCorrection": "Capture the prior key window from the exact selected scene immediately before creating its test window."
+    }
+  ],
+  "otherSourceInspection": "The MainActor UIKit path, serial Network callback confinement, original public-load/current-read counterexample and finite failure reporting had no other concrete source blocker in this review. HTTP route/authority decoder coverage is root review scope.",
+  "runtimeCalls": 0,
+  "compilerCalls": 0,
+  "tests": 0,
+  "findingsSentBeforeSuccessor": true
+}

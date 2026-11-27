@@ -1,0 +1,147 @@
+{
+  "schema": "wave2-mounted-renderer-hosted-selection-delta/v1",
+  "status": "SOURCE_ONLY_RUNTIME_SELECTION_NOT_IMPLEMENTED_OR_ADMITTED",
+  "sourceParent": "6eecb62f3bb101306b6036fbc04cc08257c3425f",
+  "testPath": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+  "source": {
+    "original": {
+      "bytes": 3269,
+      "sha256": "695c89e5c8d5ad8e41f8ec525486836e42338bcc063d13f0945080c169fd7eaa",
+      "gitBlob": "c8372f370ff3cba7bc6f9563c4e522f919081662"
+    },
+    "candidate": {
+      "bytes": 40984,
+      "sha256": "e0d8a4beda394ac90ee594cc10c4e7b954535ffa0f37f3cd414a5cf34f5b7da0",
+      "gitBlob": "e59f62c40445239eee6cca7120a0de429c124e26"
+    },
+    "append": {
+      "bytes": 37715,
+      "sha256": "60f4ecf8348e7fe561dce4f5deb2e0495907bd40a9d54956388f128026214687",
+      "gitBlob": "e8f1ad58f45b946c55954fe1f42ae8c41e590742"
+    },
+    "entireOriginalPrefixPreserved": true
+  },
+  "hostedTarget": "AnytypeTests",
+  "suite": "AnyNativeTextRendererTests",
+  "originalMethods": [
+    "testEqualNativeTextChangesAttributesWithoutReplacingCharactersOrSelection",
+    "testChangedNativeTextReplacesCharactersAndKeepsValidSelection",
+    "testMarkedTextKeepsCharactersSelectionAndAttributesUntilCommit"
+  ],
+  "newMethods": [
+    "testMountedControllerRefreshesCanonicalEquivalentLatinTextInTheSameCell",
+    "testMountedControllerRefreshesHebrewCombiningOrderInTheSameCell"
+  ],
+  "sourceDeclaredCounts": {
+    "originalMethods": 3,
+    "originalCases": 3,
+    "newMethods": 2,
+    "newCases": 2,
+    "completeClassMethods": 5,
+    "completeClassCases": 5
+  },
+  "proposedNewOnlySelectors": [
+    "AnytypeTests/AnyNativeTextRendererTests/testMountedControllerRefreshesCanonicalEquivalentLatinTextInTheSameCell",
+    "AnytypeTests/AnyNativeTextRendererTests/testMountedControllerRefreshesHebrewCombiningOrderInTheSameCell"
+  ],
+  "originalMethodSelectorsForSeparatelyReviewedFilter": [
+    "AnytypeTests/AnyNativeTextRendererTests/testEqualNativeTextChangesAttributesWithoutReplacingCharactersOrSelection",
+    "AnytypeTests/AnyNativeTextRendererTests/testChangedNativeTextReplacesCharactersAndKeepsValidSelection",
+    "AnytypeTests/AnyNativeTextRendererTests/testMarkedTextKeepsCharactersSelectionAndAttributesUntilCommit"
+  ],
+  "compiledSelectorsVerified": false,
+  "existingBridge": {
+    "primaryCommit": "6eecb62f3bb101306b6036fbc04cc08257c3425f",
+    "pbxPath": "Anytype.xcodeproj/project.pbxproj",
+    "pbx": {
+      "bytes": 162179,
+      "sha256": "39b5ebb5f24ae107bea0b7c85d3fce51ff12c333a28ff43c01415dc87a04cbb4",
+      "gitBlob": "d0749db7a666a14c3ac3d8d94d98d20f0d07a91e"
+    },
+    "fileReference": "FA9C00012F112700006805CC",
+    "buildFile": "FA9C01012F112700006805CC",
+    "sourcesPhase": "03C5C53C22DFD90C00DD91DE",
+    "target": "03C5C53F22DFD90C00DD91DE",
+    "sourceTree": "SOURCE_ROOT",
+    "memberships": [
+      {
+        "line": 13,
+        "text": "\t\tFA9C01012F112700006805CC /* AnyNativeTextRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9C00012F112700006805CC /* AnyNativeTextRendererTests.swift */; };"
+      },
+      {
+        "line": 223,
+        "text": "\t\tFA9C00012F112700006805CC /* AnyNativeTextRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AnyNativeTextRendererTests.swift; path = Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift; sourceTree = SOURCE_ROOT; };"
+      },
+      {
+        "line": 460,
+        "text": "\t\t\t\tFA9C00012F112700006805CC /* AnyNativeTextRendererTests.swift */,"
+      },
+      {
+        "line": 968,
+        "text": "\t\t\t\tFA9C01012F112700006805CC /* AnyNativeTextRendererTests.swift in Sources */,"
+      }
+    ],
+    "admissionAllowlistPath": "Tools/MiniApps/receipt_admission.py",
+    "admissionSource": {
+      "bytes": 29816,
+      "sha256": "d63b8a04bd424a92bf852449c2ecbf8a22bd5ccae95b61ae32feb6be63e6b901",
+      "gitBlob": "46653086aa8294ea9056459509190b166ac9d805"
+    },
+    "allowlist": "HOSTED_PACKAGE_TEST_SOURCES",
+    "existingEntryRetained": true,
+    "newPBXEntries": 0,
+    "newSourcePaths": 0,
+    "newModuleDependencies": 0
+  },
+  "originalCore22": {
+    "sourceCommit": "a49003fd3a71712efa2cecb7f9bf991cca228fba",
+    "integrationCommit": "2cb6c678adcb283f3f5d6953dc8bdbe5812265a2",
+    "methods": 22,
+    "cases": 26,
+    "rendererLane": "native-renderer-hosted",
+    "rendererMethods": 3,
+    "rendererCases": 3,
+    "retainedLocalProfile": "wave2-native-renderer-hosted/materialized1/native_core_hosted_profile.py",
+    "profile": {
+      "bytes": 12325,
+      "sha256": "ebaf306487ba65e0119c728da676f22295e810806edc214237a31320322482e6",
+      "gitBlob": "82f08a638b6befb454dcbafa65681ba7c34ac31d"
+    },
+    "invocationFunction": {
+      "name": "invocation_selectors",
+      "sha256": "9bb5fb244b158c67dead4fcddf55dea973dcfa62863847b7788847a6102862c2",
+      "source": "def invocation_selectors(selectors, contract):\n    kind = contract.get(\"kind\")\n    expected = fixed_contract(kind)\n    require(all(contract.get(key) == value for key, value in expected.items())\n                 and sorted(selectors) == expected[\"compiled_identifiers\"]\n                 and len(selectors) == len(set(selectors)) == expected[\"expected_methods\"]\n                 and contract.get(\"actual_native_compiler_witnesses\")\n                 and contract.get(\"native_compilation_proof\")\n                 and contract.get(\"hosted_original_source_directly_compiled\") is True,\n                 \"Complete exact source/compiler-qualified native-core contract required\")\n    # Retain the existing suite-selection workaround and exact enumeration gate.\n    # It also avoids changing native XCTest method spelling on the command line.\n    return [TARGET + \"/\" + PROFILES[kind][\"suite\"]]\n"
+    },
+    "actualSelectionBehavior": "The reviewed original function returns the whole AnytypeTests/AnyNativeTextRendererTests suite after exact original source/compiler/declaration validation. Its old whole-file source pin and three-method contract correctly reject this new five-method source.",
+    "unchangedRuntimeAdmitted": false
+  },
+  "requiredFutureSelectionDecision": [
+    "A separately reviewed source-bound successor may select exactly the two new methods and preserve a separately reviewed explicit three-method filter for historical renderer coverage.",
+    "Alternatively W3 may qualify a new Core24-method/28-case aggregate, only if the exact other source and case inventories are unchanged and the real compiler/enumeration/result witnesses establish that aggregate.",
+    "Do not pass the old whole-class selector while retaining the old3-method count; do not silently repin the old Core22 profile or admit current products."
+  ],
+  "unaffectedScopes": {
+    "heartFocusMethods": 22,
+    "heartFocusCases": 34,
+    "nativeLaunchMethods": 26,
+    "nativeLaunchChanged": false,
+    "stage1UIChanged": false,
+    "acceptedHierarchyDragSelected": false
+  },
+  "remainingGates": [
+    "Independent source review of the complete fixture and append",
+    "Actual matching Apple source compilation with the retained direct-source bridge and actual consumed compiler inputs",
+    "Actual hosted enumeration of both new methods",
+    "Selected original validator-compatible invocation/result contract",
+    "Actual two-case mounted UIKit execution and retained failure/trace evidence"
+  ],
+  "operations": {
+    "profileEdits": 0,
+    "controllerEdits": 0,
+    "PBXEdits": 0,
+    "SwiftCompilerInvocations": 0,
+    "testsRun": 0,
+    "NativeCalls": 0,
+    "MacOrOracleOperations": 0
+  }
+}
