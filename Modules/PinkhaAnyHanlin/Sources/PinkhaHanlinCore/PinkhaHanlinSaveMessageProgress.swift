@@ -4,6 +4,7 @@ import Foundation
 /// block plan; its bytes stay in memory. Hashes are bindings, not native proof.
 public struct PinkhaHanlinSaveMessageManifest: Codable, Equatable, Sendable {
     public static let conversionContract = "pinkha-hanlin-markdown-native-blocks-v1"
+    public static let conditionalMarkdownContract = "pinkha-hanlin-conditional-markdown-v1"
     public let version: Int
     public let identity: PinkhaHanlinWriteIdentity
     public let identitySHA256: String
@@ -12,6 +13,9 @@ public struct PinkhaHanlinSaveMessageManifest: Codable, Equatable, Sendable {
     public let markdownSHA256: String
     public let markdownUTF8Bytes: Int
     public let conversion: String
+    /// Nil is the original ordered native-block contract. Optional encoding
+    /// preserves all original v1 manifests and their canonical digest.
+    public let bodyMode: PinkhaHanlinSaveMessageBodyMode?
     public let bodyPlanSHA256: String
     public let expectedRootReadbackSHA256: String
     public let expectedBodyReadbackSHA256: String
@@ -21,7 +25,7 @@ public struct PinkhaHanlinSaveMessageManifest: Codable, Equatable, Sendable {
 
     public init(plan: PinkhaHanlinSaveMessagePlan, bodyPlanSHA256: String,
                 expectedRootReadbackSHA256: String, expectedBodyReadbackSHA256: String,
-                blockSHA256: [String]) throws {
+                blockSHA256: [String], bodyMode: PinkhaHanlinSaveMessageBodyMode? = nil) throws {
         version = 1
         identity = plan.identity
         identitySHA256 = try Self.digest(plan.identity)
@@ -29,7 +33,8 @@ public struct PinkhaHanlinSaveMessageManifest: Codable, Equatable, Sendable {
         titleUTF8Bytes = plan.title.utf8.count
         markdownSHA256 = plan.markdownSHA256
         markdownUTF8Bytes = plan.markdown.utf8.count
-        conversion = Self.conversionContract
+        self.bodyMode = bodyMode
+        conversion = bodyMode == nil ? Self.conversionContract : Self.conditionalMarkdownContract
         self.bodyPlanSHA256 = bodyPlanSHA256
         self.expectedRootReadbackSHA256 = expectedRootReadbackSHA256
         self.expectedBodyReadbackSHA256 = expectedBodyReadbackSHA256
@@ -41,11 +46,19 @@ public struct PinkhaHanlinSaveMessageManifest: Codable, Equatable, Sendable {
     /// plus the complete converted plan. Restart/reconciliation cannot mint IDs.
     public var rootMutationID: String {
         String(PinkhaHanlinSaveMessagePlan.materialDigest(
-            ["pinkha-hanlin-save-root/v1", identitySHA256, bodyPlanSHA256]).prefix(32))
+            ["pinkha-hanlin-save-root/v1", identitySHA256, bodyPlanSHA256] +
+            (bodyMode == nil ? [] : [Self.conditionalMarkdownContract])).prefix(32))
+    }
+
+    public var conditionalBodyRequestID: String {
+        String(PinkhaHanlinSaveMessagePlan.materialDigest(
+            ["pinkha-hanlin-save-conditional-body/v1", identitySHA256, bodyPlanSHA256]).prefix(32))
     }
 
     public func blockMutationID(at index: Int) throws -> String {
-        guard blockSHA256.indices.contains(index) else { throw PinkhaHanlinSaveMessageError.invalidProgress }
+        guard bodyMode == nil, blockSHA256.indices.contains(index) else {
+            throw PinkhaHanlinSaveMessageError.invalidProgress
+        }
         return String(PinkhaHanlinSaveMessagePlan.materialDigest(
             ["pinkha-hanlin-save-block/v1", identitySHA256, bodyPlanSHA256,
              String(index), blockSHA256[index]]).prefix(32))
@@ -63,7 +76,8 @@ public struct PinkhaHanlinSaveMessageManifest: Codable, Equatable, Sendable {
 
     public func validate() throws {
         try identity.validate()
-        guard version == 1, conversion == Self.conversionContract,
+        guard version == 1,
+              conversion == (bodyMode == nil ? Self.conversionContract : Self.conditionalMarkdownContract),
               identitySHA256 == (try Self.digest(identity)),
               PinkhaHanlinWriteIdentity.isDigest(titleSHA256),
               PinkhaHanlinWriteIdentity.isDigest(markdownSHA256),
@@ -76,8 +90,12 @@ public struct PinkhaHanlinSaveMessageManifest: Codable, Equatable, Sendable {
               blockSHA256.allSatisfy(PinkhaHanlinWriteIdentity.isDigest) else {
             throw PinkhaHanlinSaveMessageError.invalidProgress
         }
-        let ids = try blockSHA256.indices.map { try blockMutationID(at: $0) }
-        guard Set(ids).count == ids.count, !ids.contains(rootMutationID) else {
+        if bodyMode == nil {
+            let ids = try blockSHA256.indices.map { try blockMutationID(at: $0) }
+            guard Set(ids).count == ids.count, !ids.contains(rootMutationID) else {
+                throw PinkhaHanlinSaveMessageError.invalidProgress
+            }
+        } else if conditionalBodyRequestID == rootMutationID {
             throw PinkhaHanlinSaveMessageError.invalidProgress
         }
     }
@@ -97,13 +115,17 @@ public struct PinkhaHanlinSaveMessageBodyReadback: Codable, Equatable, Sendable 
     public let objectReference: String
     public let blockReferences: [String]
     public let nativeReadbackSHA256: String
+    /// Atomic mode binds the actual full-body readback to the opaque native
+    /// version acknowledged by THAT original request. Nil retains v1 bytes.
+    public let nativeVersionSHA256: String?
 
     public init(manifestSHA256: String, objectReference: String, blockReferences: [String],
-                nativeReadbackSHA256: String) {
+                nativeReadbackSHA256: String, nativeVersionSHA256: String? = nil) {
         self.manifestSHA256 = manifestSHA256
         self.objectReference = objectReference
         self.blockReferences = blockReferences
         self.nativeReadbackSHA256 = nativeReadbackSHA256
+        self.nativeVersionSHA256 = nativeVersionSHA256
     }
 }
 
@@ -137,6 +159,9 @@ public struct PinkhaHanlinSaveMessageProgress: Codable, Equatable, Sendable {
         case blockKnown(index: Int, reference: String)
         case blockVerified(index: Int, reference: String, readbackSHA256: String)
         case blockUncertain(index: Int)
+        case atomicBodyDispatched(requestSHA256: String, expectedVersionSHA256: String)
+        case atomicBodyUncertain
+        case atomicBodyAcknowledged(requestSHA256: String, savedVersionSHA256: String, nativeReceiptSHA256: String)
         case closeDispatch
         case bodyVerified(PinkhaHanlinSaveMessageBodyReadback)
     }
@@ -146,6 +171,7 @@ public struct PinkhaHanlinSaveMessageProgress: Codable, Equatable, Sendable {
     public private(set) var sequence: Int
     public private(set) var root: NativeEffect
     public private(set) var blocks: [NativeEffect]
+    public private(set) var atomicBody: PinkhaHanlinSaveMessageAtomicBody?
     public private(set) var dispatchClosed: Bool
     public private(set) var bodyReadback: PinkhaHanlinSaveMessageBodyReadback?
 
@@ -154,7 +180,8 @@ public struct PinkhaHanlinSaveMessageProgress: Codable, Equatable, Sendable {
         self.manifest = manifest
         sequence = 0
         root = .pending
-        blocks = Array(repeating: .pending, count: manifest.blockSHA256.count)
+        blocks = manifest.bodyMode == nil ? Array(repeating: .pending, count: manifest.blockSHA256.count) : []
+        atomicBody = nil
         dispatchClosed = false
         bodyReadback = nil
         try validate()
@@ -206,6 +233,23 @@ public struct PinkhaHanlinSaveMessageProgress: Codable, Equatable, Sendable {
         case .blockUncertain(let index):
             try requireBlock(index)
             next.blocks[index] = try Self.markUncertain(blocks[index])
+        case .atomicBodyDispatched(let request, let version):
+            guard manifest.bodyMode == .conditionalMarkdown, !dispatchClosed,
+                  root.isVerified, atomicBody == nil else {
+                throw PinkhaHanlinSaveMessageError.invalidTransition
+            }
+            next.atomicBody = try .init(requestSHA256: request, expectedVersionSHA256: version)
+        case .atomicBodyUncertain:
+            guard manifest.bodyMode == .conditionalMarkdown, let atomicBody else {
+                throw PinkhaHanlinSaveMessageError.invalidTransition
+            }
+            next.atomicBody = try atomicBody.markedUncertain()
+        case .atomicBodyAcknowledged(let request, let version, let receipt):
+            guard manifest.bodyMode == .conditionalMarkdown, let atomicBody else {
+                throw PinkhaHanlinSaveMessageError.invalidTransition
+            }
+            next.atomicBody = try atomicBody.acknowledged(requestSHA256: request, savedVersionSHA256: version,
+                                                        nativeReceiptSHA256: receipt)
         case .closeDispatch:
             next.dispatchClosed = true
         case .bodyVerified(let readback):
@@ -225,8 +269,13 @@ public struct PinkhaHanlinSaveMessageProgress: Codable, Equatable, Sendable {
     public func validate() throws {
         try manifest.validate()
         guard version == 1, (0...Self.maximumEvents).contains(sequence),
-              blocks.count == manifest.blockSHA256.count else {
+              blocks.count == (manifest.bodyMode == nil ? manifest.blockSHA256.count : 0),
+              manifest.bodyMode != nil || atomicBody == nil else {
             throw PinkhaHanlinSaveMessageError.invalidProgress
+        }
+        if let atomicBody {
+            guard root.isVerified else { throw PinkhaHanlinSaveMessageError.invalidProgress }
+            try atomicBody.validate()
         }
         try Self.validateEffect(root)
         if case .verified(_, let digest) = root, digest != manifest.expectedRootReadbackSHA256 {
@@ -255,7 +304,8 @@ public struct PinkhaHanlinSaveMessageProgress: Codable, Equatable, Sendable {
             throw PinkhaHanlinSaveMessageError.conflictingReceipt
         }
         if let bodyReadback { try validateReadback(bodyReadback) }
-        let ranges = ([root] + blocks).map(Self.transitionRange)
+        var ranges = ([root] + blocks).map(Self.transitionRange)
+        if let atomicBody { ranges.append(atomicBody.transitionRange) }
         let extra = (dispatchClosed ? 1 : 0) + (bodyReadback == nil ? 0 : 1)
         let minimum = ranges.reduce(extra) { $0 + $1.lowerBound }
         let maximum = ranges.reduce(extra) { $0 + $1.upperBound }
@@ -289,16 +339,33 @@ public struct PinkhaHanlinSaveMessageProgress: Codable, Equatable, Sendable {
     }
 
     private func requireBlock(_ index: Int) throws {
-        guard blocks.indices.contains(index) else { throw PinkhaHanlinSaveMessageError.invalidProgress }
+        guard manifest.bodyMode == nil, blocks.indices.contains(index) else {
+            throw PinkhaHanlinSaveMessageError.invalidProgress
+        }
     }
 
     private func validateReadback(_ value: PinkhaHanlinSaveMessageBodyReadback) throws {
-        guard root.isVerified, let rootReference = root.reference, blocks.allSatisfy(\.isVerified),
+        guard root.isVerified, let rootReference = root.reference,
               value.manifestSHA256 == (try manifest.canonicalSHA256()),
               value.objectReference.utf8.elementsEqual(rootReference.utf8),
-              value.blockReferences.map({ Data($0.utf8) }) == blocks.compactMap(\.reference).map({ Data($0.utf8) }),
+              value.blockReferences.count == manifest.blockSHA256.count,
+              value.blockReferences.allSatisfy(PinkhaHanlinSaveMessagePlan.validReference),
+              Set(value.blockReferences.map { Data($0.utf8) }).count == value.blockReferences.count,
+              !value.blockReferences.contains(where: { $0.utf8.elementsEqual(rootReference.utf8) }),
               value.nativeReadbackSHA256 == manifest.expectedBodyReadbackSHA256 else {
             throw PinkhaHanlinSaveMessageError.invalidProgress
+        }
+        if manifest.bodyMode == nil {
+            guard blocks.allSatisfy(\.isVerified), value.nativeVersionSHA256 == nil,
+                  value.blockReferences.map({ Data($0.utf8) }) == blocks.compactMap(\.reference).map({ Data($0.utf8) }) else {
+                throw PinkhaHanlinSaveMessageError.invalidProgress
+            }
+        } else {
+            guard let atomicBody,
+                  case .acknowledged(let version, _) = atomicBody.outcome,
+                  value.nativeVersionSHA256 == version else {
+                throw PinkhaHanlinSaveMessageError.invalidProgress
+            }
         }
     }
 

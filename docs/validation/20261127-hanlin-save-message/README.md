@@ -1,20 +1,26 @@
 # Hanlin message save: original-scope preparation and progress
 
 Status: **SOURCE_ONLY_NOT_COMPILED_OR_EXECUTED**. No save tool is advertised.
-This tranche adds a strict request plan and the aggregate metadata state needed
-by a real save binding. It does not claim native body persistence, filesystem
-durability, Markdown conversion, a complete application build or acceptance.
+The current source includes the strict request plan, original-parser conversion,
+canonical semantic readback, original protected-journal aggregate, and a Heart
+body worker using the original native RPC/protobuf APIs. It does not claim that
+these new Swift files compile or that a real native body has been saved.
 
-Base branch: `codex/chatgpt-wave15-miniapps-return-20261127` at
-`769b676a42123745dc4f6903ac321b474aec7116`. The audited host/native APIs were
-read at `e5bc1e78b904475ea5988df88a2cb83134933006`. Existing files are unchanged.
+The original plan/state source is `29b0761947099f7961106fbc6d0c738f53cc9573`;
+the bounded journal-envelope follow-up is
+`7f2fc9fe105357f54ebc2fe3b6bf6c90004faa28`. Their original receipts remain
+separate. The current tranche is based on the normal fast-forward of the owned
+`codex/chatgpt-wave15-miniapps-return-20261127` branch to the SDK companion
+`fe0bb5a7dda6b6d37f8cd61ad7e8ea95e30d1b7c`. That companion contains the
+original protected journal, one shared cancellation worker, typed native consent
+and an optional save route whose production binding remains absent.
 
 ## Input and identity
 
 `PinkhaHanlinSaveMessagePlan` accepts exactly `title` and `markdown` strings for
 the `anytype_save_message` / `anytype.host:save-message` route. Title is nonblank
 and at most 512 UTF-8 bytes. Markdown is nonempty and at most 65,536 UTF-8 bytes.
-The conversion plan permits at most 64 native blocks. Over-limit or unsupported
+The conversion plan permits at most 64 semantic body blocks. Over-limit or unsupported
 content must fail before any native effect; no truncation or implicit splitting
 is permitted. Original title, Markdown, Unicode normalization and line-ending
 bytes remain unchanged in memory.
@@ -62,7 +68,8 @@ to the original protected journal's tighter per-type cap. The store protocol
 also requires atomic `closeSaveMessageDispatch(for:)` under the same original
 owner; late observations can settle, while dispatch can never reopen.
 
-Required journal integration, owned by the SDK lane:
+The original protected-journal integration is owned by the SDK lane and is
+present in the source companion, with its own NOT_RUN filesystem/worker cases:
 
 1. Retain the original generic `PinkhaHanlinWriteJournal` reservation first.
 2. Reserve a matching aggregate initial state under that same namespace, file
@@ -90,27 +97,88 @@ The parser can preprocess LaTeX and rewrite partial markup/images; a persistence
 adapter must explicitly retain or reject those constructs, not silently save
 the rewritten display as ordinary text. The original inline renderer displays
 both soft and hard breaks as newline and has formatting/link/citation semantics.
-The next adapter must map supported AST nodes into native block semantics and
-verify their original renderer projection before dispatch.
+`PinkhaHanlinOriginalMarkdownSavePlanner` calls that exact original parser with
+`speculativeRewrite: false`. It retains the non-Sendable AST within the helper
+and returns only the converted Sendable value. The source text must still match
+the exact request. `PinkhaHanlinMarkdownSaveConversion` walks that AST, preserving
+UTF-16 text ranges and bold, italic, strike, inline code and ordinary HTTP(S) links.
+The original `AnyInlineMarkdown` projection verifies complete text and formatting;
+it is not used as a substitute parser for the original message.
+
+Supported structure is a flat sequence of paragraphs, headings 1–3, single
+paragraph quotes, code blocks, unordered items, ordered items starting at 1, and
+checkboxes. Ordered-list restart, nested containers, tables, thematic breaks,
+images, HTML, citations, math, unknown nodes, and links requiring normalization or
+unqualified schemes are explicitly refused before native effects. Heart code
+languages must also be accepted by the original `CodeLanguage` enumeration.
+The planner never truncates, splits an over-limit block or flattens an unsupported
+structure. The complete semantic document has a 4,096-run bound in addition to
+the 64 KiB input/body and 64-block bounds.
 
 No native conversion output is fabricated from `AnyHeartInlineProjection`:
 that type binds actual original native codec output and is not a general-purpose
 constructor for newly authored Markdown.
 
-## Native seams and remaining binding work
+## Original Heart body worker
 
-Any has original `AnyNativeObjectCreator`, `AnyNativeBlockCreator`, and the
-native prepared-migration object/block protocol. Object and block effects are
-separate; block text is bounded at 65,536 UTF-8 bytes. The block writer retains
-returned IDs and verified readback before its original session lease drains.
-`AnyEditorDocumentStore` provides CAS for existing blocks, not an aggregate new
-document transaction.
+`PinkhaHanlinHeartSaveBody` converts the completed semantic plan through original
+`BlockInformation`, `BlockText`, `BlockInformationConverter` and native protobuf
+marks. A preflight round trip must preserve every semantic byte and attribute.
+The native serialization has its own hash. Each body block carries an immutable
+plan/index marker; this is correlation and reconciliation metadata, not a claim
+that native `Object.Create` supports deduplication.
 
-Heart has original `objectCreate` and separate `blockCreate` / `blockPaste`.
-The generated `Object.Create.Request` has no body input. Body conversion and
-native readback/reconciliation must be implemented with the current native
-account owner, not a synthetic MiniApps request or an arbitrary UI closure.
-No atomic page-plus-body guarantee is claimed for either engine.
+`PinkhaHanlinHeartSaveMessageOperation` uses original `objectActionsService`,
+`blockService.addFirstBlock/add` and `objectLifecycleService.openForPreview`.
+The operations are separate native effects. The actual created ID is durably
+retained in aggregate progress and the original known-incomplete sidecar before
+the first Object.Show. Every new effect is fenced both before and after its
+durable dispatch event. Each prefix is read from actual original protobuf rows;
+the entire body is read again before a final receipt. Title, style, marks,
+language, hierarchy, order, native IDs, original Space/type, and unexpected rows
+are checked. No expected text is copied into an actual-readback witness.
+
+`PinkhaHanlinSaveMessageRunner` uses the single original generic worker and
+the companion's one-use full-body approval. Every effect and late original read
+revalidates the exact prepared Page type as well as current original authority.
+Stop, timeout or authority loss durably closes future dispatch; late original
+receipts may settle metadata without reopening it or delivering through another
+account. The metadata ledger retries only one exact concurrent close CAS race,
+and never retries native effects, unrelated state changes or I/O failures.
+
+The fresh Page precondition is deliberately strict: native header, no body rows.
+It does not discard or overwrite a native placeholder paragraph. A real standard
+Page may not satisfy this shape; that is an explicit native qualification gate.
+An unknown root-create result stays uncertain, with no title-based search or new
+object on retry. Final `receive(objectID)` occurs only after durable full-body
+verification. No atomic page-plus-body guarantee is claimed.
+
+## Any conditional body mode and required native handoff
+
+Wave 1 owns the original conditional Markdown adapter for
+`/v1/spaces/{space}/objects/{object}/editor/editor_blocks/markdown`. Its proposed
+contract is a fresh GET with opaque version, one PUT with `ifVersion`, an actual
+native ACK, and readback at that saved version. Wave 1 has now published that
+primitive as `2619d5b144b23eb80247df613d5d128aa2efbfb6`, with its separate
+component and original local native crash/offline evidence. Its accepted source
+SHA-256 is `7097c7c5f7bbf67eba21a961986a892064a1833425ff74b053917a0d4e11e4af`.
+This source tranche does not yet consume the adapter or transfer that native
+acceptance to Hanlin. No per-block Any writer is included or installed.
+
+The aggregate's explicit optional `conditionalMarkdown` mode represents ONE body
+effect, not fabricated per-block operations. Its immutable request digest,
+expected version digest, real ACK receipt and saved-version digest remain bound
+separately from the raw input hash and expected normalized semantic body hash.
+The request ID is host correlation, not native deduplication. Lost ACK remains
+uncertain even if current Markdown looks equal. Body verification requires the
+ACK, same-version readback, all ordered actual native IDs and complete matching
+semantics. Opaque versions are not assumed to change on every write.
+
+The absent optional mode/version/state fields retain the original ordered-block
+wire shape; authored source tests check omission and canonical replay. The pure
+`AnyHanlinSaveMessageReadback` projects an actual bounded original editor snapshot
+for semantic fixtures; it is not a qualified replacement for Wave 1's native
+ACK/version adapter or an installed Any save binding.
 
 The SDK lane retains ownership of existing router/catalog/UI, shared runner and
 protected journal files. This lane owns new save planner, aggregate, conversion,
@@ -119,14 +187,34 @@ integration worktree changes are part of this tranche.
 
 ## Verification
 
-`PinkhaHanlinSaveMessageStateTests` adds 23 real Swift XCTest methods against the
-production plan/state/record implementations. They cover exact input bytes,
+`PinkhaHanlinSaveMessageStateTests` now has 36 authored Swift XCTest methods
+against the production plan/state/record/ledger implementations. The original
+23 methods are retained. They cover exact input bytes,
 UTF-8 boundaries, strict schema, immutable scope/IDs, root-only incompleteness,
 serial effects, pre/post-dispatch cancellation, late original receipts,
 uncertain-effect no-retry, conflicting references, complete ordered readback,
 canonical event replay, maximum escaped-reference receipt/replay, control-character
-reference refusal, and metadata-only retention.
+reference refusal, and metadata-only retention. Eight additive methods cover
+atomic operation/ACK/version/no-redispatch semantics and legacy optional-field
+omission. Five additive methods exercise controlled metadata close conflicts,
+unrelated changes, I/O failure and wrong acknowledgements.
 
-All 23 methods are **NOT_RUN**. No Oracle compiler, Mac build, native operation
+`PinkhaHanlinSaveMessageConversionTests` has 15 authored methods using the exact
+original parser, production conversion and synthetic Any native-row fixtures.
+`PinkhaHanlinHeartSaveBodyTests` has 10 authored methods using the original
+parser/converter and synthetic native protobuf fixtures. Their checks include
+Hebrew/Unicode, all supported styles, literal code, native mark segmentation,
+unsupported structure, wrong body/title/style/order/scope, and refusal to hide
+placeholder or orphan content. These fixtures prove no real native operation.
+
+All 61 methods are **NOT_RUN**. No Oracle compiler, Mac build, native operation
 or simulator test was started. Mechanical source/diff evidence is recorded
 separately and must not be promoted to a Swift compilation or application pass.
+
+Remaining gates are an original Apple compile/test of these exact files and
+dependency closure; actual standard Page/header/body shape; native custom-field,
+mark and ordered-content preservation; live cancellation/account switch/drain;
+consumer integration of the qualified Wave 1 Any atomic adapter and its
+normalization contract; and real
+both-engine end-to-end body readback. No production save factory or catalog
+installation is part of this source milestone.

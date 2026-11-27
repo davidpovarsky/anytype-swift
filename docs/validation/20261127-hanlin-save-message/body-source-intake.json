@@ -1,0 +1,517 @@
+{
+  "anyPerBlockWriterIncluded": false,
+  "authoredTests": [
+    {
+      "methods": 36,
+      "path": "AnyTypeTests/Pinkha/PinkhaHanlinSaveMessageStateTests.swift",
+      "scope": "Pure metadata/parser/semantic/native-protobuf fixtures; no live native acceptance",
+      "status": "NOT_RUN"
+    },
+    {
+      "methods": 15,
+      "path": "AnyTypeTests/Pinkha/PinkhaHanlinSaveMessageConversionTests.swift",
+      "scope": "Pure metadata/parser/semantic/native-protobuf fixtures; no live native acceptance",
+      "status": "NOT_RUN"
+    },
+    {
+      "methods": 10,
+      "path": "AnyTypeTests/Pinkha/PinkhaHanlinHeartSaveBodyTests.swift",
+      "scope": "Pure metadata/parser/semantic/native-protobuf fixtures; no live native acceptance",
+      "status": "NOT_RUN"
+    }
+  ],
+  "base": "fe0bb5a7dda6b6d37f8cd61ad7e8ea95e30d1b7c",
+  "bounds": {
+    "heartReadbackBlocksIncludingNativeHeader": 256,
+    "heartReadbackBytes": 2097152,
+    "heartSerializedPreflightBytes": 1048576,
+    "markdownUTF8Bytes": 65536,
+    "metadataFinalEventBytes": 65536,
+    "normalizedRuns": 4096,
+    "semanticBlocks": 64,
+    "titleUTF8Bytes": 512
+  },
+  "compilationMembership": {
+    "app": "Existing Anytype PBXFileSystemSynchronizedRootGroup Sources; no project edit",
+    "hostedTests": "Existing AnytypeTests PBXFileSystemSynchronizedRootGroup (repository spelling AnyTypeTests); test-host required for Heart sources",
+    "mustBindActualCompilerListsAndEnumeration": true,
+    "packages": "Existing PinkhaHanlinCore, PinkhaAnyHanlin and PinkhaHanlinUI target source directories; no new products/pins"
+  },
+  "existingContextRouterConsentUnchanged": true,
+  "existingGenericWorkerUnchanged": true,
+  "existingProtectedStoreUnchanged": true,
+  "externalAnyBodyHandoff": {
+    "consumerUsesAdapterInThisTranche": false,
+    "contractGitBlob": "3a037a79c8bd8d2b3aa4b369367fb63e2e0f2652",
+    "contractPath": "docs/architecture/native-markdown-body-contract-20261127.md",
+    "nativeEvidenceNotTransferredToHanlin": true,
+    "sourceCommit": "2619d5b144b23eb80247df613d5d128aa2efbfb6",
+    "sourcePath": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeMarkdownBody.swift",
+    "sourceSHA256": "7097c7c5f7bbf67eba21a961986a892064a1833425ff74b053917a0d4e11e4af"
+  },
+  "macMutation": false,
+  "nativeWrites": 0,
+  "notClaimed": [
+    "Native root/body atomicity",
+    "Native mutation-ID deduplication",
+    "Lost ACK resolved by equal current text",
+    "Old Debug producer as new source or Release/TestFlight acceptance"
+  ],
+  "originalDependencies": {
+    "hanlinPresentationOriginal": "6a6638c314fe04c481eb0a2e29fbeaaafcbb0908",
+    "hanlinSourceUnion": "f3afac65296e843ced1f7ddd7a55c2452e90b270",
+    "hanlinStreamingMarkdown": "5cbb4b6c950051f98f02a0b0ae56756f5174a9b8",
+    "originalAnyInlineMarkdownBlob": "c3f41e3e7c445a55176fdf7beaf5de6fb0356f8b",
+    "originalAnySnapshotBlob": "566b6ece7bb01570b1f2f0278becbeebb43dbd53",
+    "originalContextBlob": "23499875b95265a216ec2c38223a49cbc6894668",
+    "originalHeartBlockInformationBlob": "ac2af74481be084641d2634661587345040c6e9c",
+    "originalHeartBlockServiceBlob": "5ae50b48f5fa1ffc5792f4f3aa84d69bf19e1cdd",
+    "originalHeartConverterBlob": "a122f20141284439d5ebe4f189f5c1fb50fe9bf8",
+    "originalHeartLifecycleBlob": "873529966d21f53f5ba35bf61fb70021f4456320",
+    "originalParserBlob": "17c3e2302f18d183048f38ab200c0d6c5824e9aa",
+    "originalSharedWorkerBlob": "12bdd93bc89c430e7c660b70e15b8e0749481944",
+    "packageBlob": "dde137ab5451d47a2098a5bcba23e7d247184e61",
+    "projectBlob": "339748472b7c4f013aeba0705832fb79cd3cc2ef",
+    "swiftMarkdown": "25cb61d3482054b09ae76ca4f281b1bfe7fe5a43"
+  },
+  "originalStateMethodsRetainedByteForByte": [
+    "testExactTitleAndMarkdownBytesArePreserved",
+    "testBoundsUseUTF8BytesWithoutTruncation",
+    "testOnlyExactTwoStringArgumentsAreAccepted",
+    "testReadOnlyCASAndOldCreateAliasCannotBecomeMessageSave",
+    "testInputIdentityDoesNotNormalizeUnicodeOrConfuseTitleBodyBoundaries",
+    "testOriginalMutationIDsSurviveReplayAndDistinctIdenticalBlocksDoNotCollide",
+    "testManifestRejectsUnsupportedSizeAndChangedContent",
+    "testKnownOrVerifiedRootAloneNeverCompletesMessageSave",
+    "testOnlySequentialPreflightedBodyEffectsMayDispatch",
+    "testCancellationBeforeDispatchIsTerminalWithoutInventingAWrite",
+    "testCancellationKeepsLateNativeReceiptButCannotStartAnotherEffect",
+    "testLastDispatchedEffectMaySettleOriginalAggregateAfterCancellation",
+    "testUncertaintyNeverAuthorizesRootOrBlockRedispatch",
+    "testDuplicateNativeConfirmationIsMetadataNoOpAndCannotChangeDigest",
+    "testCompleteReadbackBindsManifestRootAndOrderedExactBlockReferences",
+    "testNativeReferenceCannotBeReusedForAnotherBodyBlockOrRoot",
+    "testKnownIDsWithWrongRootOrBlockContentCannotBecomeVerified",
+    "testSyntacticallyValidButWrongCompleteBodyDigestCannotCommit",
+    "testCanonicalEventReplayRejectsMissingReorderedOrForeignHistory",
+    "testCanonicalDecodeRejectsUnknownFieldsAndForeignOriginalIdentity",
+    "testProgressAndEventsDoNotPersistBusinessTitleOrMarkdown",
+    "testMaximumEscapedNativeReferencesFitBoundedFinalRecordAndReplayExactly",
+    "testControlBearingNativeReferencesAreRefusedBeforeReceiptEncoding"
+  ],
+  "ownerBranch": "codex/chatgpt-wave15-miniapps-return-20261127",
+  "productionSaveBindingInstalled": false,
+  "projectAndAllPackagePinsUnchanged": true,
+  "requiredQualification": [
+    "Apple compilation and actual selected original test enumeration/execution",
+    "Fresh standard Heart Page native header and zero-body shape",
+    "Original Heart custom-field/mark/style/order preservation",
+    "Live original authority, cancellation, account/engine switch and worker drain",
+    "Consumer integration of published Wave1 original Any conditional Markdown adapter, native ACK and same-version normalization contract",
+    "Real full-body save/readback in both original engines before production installation"
+  ],
+  "schema": "pinkha-hanlin-save-body-source-intake-v1",
+  "sources": [
+    {
+      "afterBlob": "6561e472090e3e9bc767bad8afd67ba141ae8d4e",
+      "beforeBlob": null,
+      "bytes": 10954,
+      "inverseOperations": [],
+      "inverseRestoresEveryOriginalByte": null,
+      "path": "AnyTypeTests/Pinkha/PinkhaHanlinHeartSaveBodyTests.swift",
+      "sha256": "9abd96a2819974b8df3922d9839c2262b9e8b40f10efd41fc6f93960404bee59"
+    },
+    {
+      "afterBlob": "7f6badb5a109239a2d99bffdc02f64617cc2cfbc",
+      "beforeBlob": null,
+      "bytes": 13643,
+      "inverseOperations": [],
+      "inverseRestoresEveryOriginalByte": null,
+      "path": "AnyTypeTests/Pinkha/PinkhaHanlinSaveMessageConversionTests.swift",
+      "sha256": "baab13206f3b80e9e79516de7f737b9323ac29ea147eca30d518727c56c4d4f0"
+    },
+    {
+      "afterBlob": "f24e3540e4c6f55bc3ae20c9a264a470e337b3ca",
+      "beforeBlob": "f3614c036ecce910367a0938335a0117b7f949a1",
+      "bytes": 37670,
+      "inverseOperations": [
+        {
+          "afterLineEnd": 532,
+          "afterLineStart": 298,
+          "expectedAfterSHA256": "51e10853ba1621faed2493fb796d3afb17379b046990a4d5ad6e6cbdb2e1798b",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 540,
+          "afterLineStart": 539,
+          "expectedAfterSHA256": "ea918884f1ab8edfe5d0eede2f1ebcc2fd1b211e20ec1011af7436f78103086f",
+          "replacementOriginalBase64": "ICAgIHByaXZhdGUgZnVuYyByZWFkYmFjayhfIHN0YXRlOiBQaW5raGFIYW5saW5TYXZlTWVzc2FnZVByb2dyZXNzLCByZWZlcmVuY2VzOiBbU3RyaW5nXSkgdGhyb3dzIC0+IFBpbmtoYUhhbmxpblNhdmVNZXNzYWdlQm9keVJlYWRiYWNrIHsK"
+        },
+        {
+          "afterLineEnd": 543,
+          "afterLineStart": 542,
+          "expectedAfterSHA256": "0a2718cda164eeb46881b83e1bbf9de3e7224909cab6211c5e4dc932f8ac1f73",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgICBibG9ja1JlZmVyZW5jZXM6IHJlZmVyZW5jZXMsIG5hdGl2ZVJlYWRiYWNrU0hBMjU2OiBkaWdlc3QoIm9yaWdpbmFsLW5hdGl2ZS1yZWFkYmFjayIpKQo="
+        },
+        {
+          "afterLineEnd": 579,
+          "afterLineStart": 578,
+          "expectedAfterSHA256": "59699d7cb1bf02d5a53e7ac43a94faf17c99530cacf1911f8b6834eb254786a4",
+          "replacementOriginalBase64": "ICAgICAgICBmdW5jIG1hbmlmZXN0KGJsb2NrRGlnZXN0czogW1N0cmluZ10/ID0gbmlsKSB0aHJvd3MgLT4gUGlua2hhSGFubGluU2F2ZU1lc3NhZ2VNYW5pZmVzdCB7Cg=="
+        },
+        {
+          "afterLineEnd": 585,
+          "afterLineStart": 585,
+          "expectedAfterSHA256": "baa2ee85745d3f00052c4bad6effd8786209b73537854870011c52e16ef7ce3f",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgICAgIGJsb2NrU0hBMjU2OiBibG9ja3MpCg=="
+        },
+        {
+          "afterLineEnd": 590,
+          "afterLineStart": 588,
+          "expectedAfterSHA256": "f87863a80e1801890966c366131530be9cb9b90d247b2ff187284e1874ae1ced",
+          "replacementOriginalBase64": "ICAgICAgICBmdW5jIGluaXRpYWwoYmxvY2tEaWdlc3RzOiBbU3RyaW5nXT8gPSBuaWwpIHRocm93cyAtPiBQaW5raGFIYW5saW5TYXZlTWVzc2FnZVByb2dyZXNzIHsKICAgICAgICAgICAgdHJ5IC5pbml0KG1hbmlmZXN0OiBtYW5pZmVzdChibG9ja0RpZ2VzdHM6IGJsb2NrRGlnZXN0cykpCg=="
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "path": "AnyTypeTests/Pinkha/PinkhaHanlinSaveMessageStateTests.swift",
+      "sha256": "f2c8bef222b16f4ca637fa8bffdab36cff3e80385af5b24db1d74320bff9c763"
+    },
+    {
+      "afterBlob": "1abb97064ce5c85f451b0cdc02c68bfcb546ecf3",
+      "beforeBlob": null,
+      "bytes": 19130,
+      "inverseOperations": [],
+      "inverseRestoresEveryOriginalByte": null,
+      "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinHeartSaveBody.swift",
+      "sha256": "dbfc51d0f120977b0dd59a160fb038ccf91479569837b77b5fc1a990977a47fe"
+    },
+    {
+      "afterBlob": "c96adf5be92b592bff51ed2c914d044355a05679",
+      "beforeBlob": null,
+      "bytes": 7685,
+      "inverseOperations": [],
+      "inverseRestoresEveryOriginalByte": null,
+      "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinHeartSaveMessageOperation.swift",
+      "sha256": "825f23cf66d10992d9885f0f800066fd626baacf6734a0bc81d8f247079afebf"
+    },
+    {
+      "afterBlob": "6eec820279ed6b64682159b9c1b6f5eb92c96508",
+      "beforeBlob": null,
+      "bytes": 3785,
+      "inverseOperations": [],
+      "inverseRestoresEveryOriginalByte": null,
+      "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinSaveMessageRunner.swift",
+      "sha256": "63ce14ee38aa5dd00890412af6c422c92c50ccd1ba3bc98d4f3e64cb90e16126"
+    },
+    {
+      "afterBlob": "1e699a8aeb534821915849757c40989dc70f00f2",
+      "beforeBlob": null,
+      "bytes": 6565,
+      "inverseOperations": [],
+      "inverseRestoresEveryOriginalByte": null,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinSaveMessageReadback.swift",
+      "sha256": "af9632161d041c41fb9fd970d91456787d01037b43191034d051e2f87b80620e"
+    },
+    {
+      "afterBlob": "65880f64d134060a5d434c4e9855336a5bc4ab00",
+      "beforeBlob": null,
+      "bytes": 14105,
+      "inverseOperations": [],
+      "inverseRestoresEveryOriginalByte": null,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/PinkhaHanlinMarkdownSaveConversion.swift",
+      "sha256": "3ded5e25eb4721a11c445ca4c3838d66831699111f9a4d7de46cf2eb02ba5f84"
+    },
+    {
+      "afterBlob": "9b3159d1259ccf760fdb77bd5b2a9b1fcb563568",
+      "beforeBlob": null,
+      "bytes": 2905,
+      "inverseOperations": [],
+      "inverseRestoresEveryOriginalByte": null,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessageAtomicBody.swift",
+      "sha256": "1e08a25fa552fb16427e56debefb52d3d9bf33dd9644e79743e51169e5f9aee7"
+    },
+    {
+      "afterBlob": "40d41f19fb4a8d2a63971dcb3e0a4149d74f664e",
+      "beforeBlob": null,
+      "bytes": 12328,
+      "inverseOperations": [],
+      "inverseRestoresEveryOriginalByte": null,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessageDocument.swift",
+      "sha256": "bcc193ffa78c1631b35463b8fe0770b50f51344e5656defd0aa39109563aad09"
+    },
+    {
+      "afterBlob": "258d26097f828373219a6d24632841f88ed9d536",
+      "beforeBlob": null,
+      "bytes": 3057,
+      "inverseOperations": [],
+      "inverseRestoresEveryOriginalByte": null,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessageLedger.swift",
+      "sha256": "317245c38f807b1da3f7a619a38e10b012515dbda34ed75cd2780c158af8934d"
+    },
+    {
+      "afterBlob": "31705a940a164b72129b62f0d2bfa00a9320952b",
+      "beforeBlob": "a43600231f2acbed9713bd039d9f623c0e97a28f",
+      "bytes": 4389,
+      "inverseOperations": [
+        {
+          "afterLineEnd": 17,
+          "afterLineStart": 14,
+          "expectedAfterSHA256": "9460caddd4dacbb9adeb2d2457cd87fffb5db33f918982014a4b0d6bce346870",
+          "replacementOriginalBase64": "Ly8vIGFuZCBpcyBub3QgaW5zdGFsbGVkIGluIHRoZSBjYXRhbG9nLiBOYXRpdmUgY29uZmlybWF0aW9uIGFuZCBjb252ZXJzaW9uIG11c3QKLy8vIGZpbmlzaCBiZWZvcmUgdGhlIG9yaWdpbmFsIGludm9jYXRpb24gbWF5IHJlc2VydmUgb3IgZGlzcGF0Y2ggYW55IGVmZmVjdC4KcHVibGljIHN0cnVjdCBQaW5raGFIYW5saW5TYXZlTWVzc2FnZVBsYW46IFNlbmRhYmxlIHsK"
+        },
+        {
+          "afterLineEnd": 19,
+          "afterLineStart": 19,
+          "expectedAfterSHA256": "1724417d087d087dc0d35386f0254875dea0eb88eab4b89959efbe25710bc627",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 31,
+          "afterLineStart": 31,
+          "expectedAfterSHA256": "6440b8dc369cc4c5c93e4f3be750c4e828fa7ee8f79750846522618276e90547",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsb2NhbFRvb2xJRDogdHJ5IC5pbml0KHZhbGlkYXRpbmc6ICJzYXZlLW1lc3NhZ2UiKSkK"
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessagePlan.swift",
+      "sha256": "8703314d9b26374ba0b02b44e8cda2e41f8b890da2c7cd9cf82377fdcb8a5410"
+    },
+    {
+      "afterBlob": "9899633d19290729e07241c5a525a906db53109a",
+      "beforeBlob": "232d57259397f552d561a4de0585ebde84d6bf9e",
+      "bytes": 20249,
+      "inverseOperations": [
+        {
+          "afterLineEnd": 7,
+          "afterLineStart": 7,
+          "expectedAfterSHA256": "bafac1879ff80df5d69d907563a5329f055b2e9aa6013a8b643d9e38efd94947",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 18,
+          "afterLineStart": 16,
+          "expectedAfterSHA256": "1e8f2938eb86bdaf814bcb7ee1129021d405ddfbbef6ceaef52fc089331414e9",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 28,
+          "afterLineStart": 28,
+          "expectedAfterSHA256": "369f893dfc231aeaa2960b01636cd77563cc9623050aed73e13325ecdb59060b",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgICAgIGJsb2NrU0hBMjU2OiBbU3RyaW5nXSkgdGhyb3dzIHsK"
+        },
+        {
+          "afterLineEnd": 37,
+          "afterLineStart": 36,
+          "expectedAfterSHA256": "41a24579957e47253be786f22744e09cd31bd6038628f342b0daf35011fb636d",
+          "replacementOriginalBase64": "ICAgICAgICBjb252ZXJzaW9uID0gU2VsZi5jb252ZXJzaW9uQ29udHJhY3QK"
+        },
+        {
+          "afterLineEnd": 55,
+          "afterLineStart": 49,
+          "expectedAfterSHA256": "21f34127735f61464c59e339e973a19628fc9dcb0d0ea8ab5099a7eae404b173",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgWyJwaW5raGEtaGFubGluLXNhdmUtcm9vdC92MSIsIGlkZW50aXR5U0hBMjU2LCBib2R5UGxhblNIQTI1Nl0pLnByZWZpeCgzMikpCg=="
+        },
+        {
+          "afterLineEnd": 61,
+          "afterLineStart": 59,
+          "expectedAfterSHA256": "9806c0e3670ff836c77f8789ee82bfd98191a9c1fe0cfff87666d743227cc1ad",
+          "replacementOriginalBase64": "ICAgICAgICBndWFyZCBibG9ja1NIQTI1Ni5pbmRpY2VzLmNvbnRhaW5zKGluZGV4KSBlbHNlIHsgdGhyb3cgUGlua2hhSGFubGluU2F2ZU1lc3NhZ2VFcnJvci5pbnZhbGlkUHJvZ3Jlc3MgfQo="
+        },
+        {
+          "afterLineEnd": 80,
+          "afterLineStart": 79,
+          "expectedAfterSHA256": "de285ee0d477bc89da466e197cd65f2d2ae5a6b5f3c01723bdc4bd8212b5e8b9",
+          "replacementOriginalBase64": "ICAgICAgICBndWFyZCB2ZXJzaW9uID09IDEsIGNvbnZlcnNpb24gPT0gU2VsZi5jb252ZXJzaW9uQ29udHJhY3QsCg=="
+        },
+        {
+          "afterLineEnd": 98,
+          "afterLineStart": 93,
+          "expectedAfterSHA256": "dde94604a9f943f7b9bceef9593b3c317694c1740571410f4833dc41ebbc3c53",
+          "replacementOriginalBase64": "ICAgICAgICBsZXQgaWRzID0gdHJ5IGJsb2NrU0hBMjU2LmluZGljZXMubWFwIHsgdHJ5IGJsb2NrTXV0YXRpb25JRChhdDogJDApIH0KICAgICAgICBndWFyZCBTZXQoaWRzKS5jb3VudCA9PSBpZHMuY291bnQsICFpZHMuY29udGFpbnMocm9vdE11dGF0aW9uSUQpIGVsc2Ugewo="
+        },
+        {
+          "afterLineEnd": 120,
+          "afterLineStart": 118,
+          "expectedAfterSHA256": "b5c9e7c721f6539692e98bc40c46e3943476a28fa9b5b6e81ea54a6731d04b98",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 123,
+          "afterLineStart": 123,
+          "expectedAfterSHA256": "a90423c56bfc8428645e39450b98b55e77a884b5567c4b0ca6aafbd67cd11fcb",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgICAgIG5hdGl2ZVJlYWRiYWNrU0hBMjU2OiBTdHJpbmcpIHsK"
+        },
+        {
+          "afterLineEnd": 128,
+          "afterLineStart": 128,
+          "expectedAfterSHA256": "f1192139c69b71b9b46cdf747901fdfb01940021a077980a2ce01c15e5425142",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 164,
+          "afterLineStart": 162,
+          "expectedAfterSHA256": "41c2b6f111bf97846c92fe4039a027188e4883b02128d8e32ec42b6fe1a890f0",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 174,
+          "afterLineStart": 174,
+          "expectedAfterSHA256": "7f35a4ba155d5885590d5afe0ba2514bdc4c863ac3f05dd0f71ed10e58b168d5",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 184,
+          "afterLineStart": 183,
+          "expectedAfterSHA256": "e032ff63903adf9d2c6a64864bfe1451e44af6ad685f156a61d7b15a3f307a84",
+          "replacementOriginalBase64": "ICAgICAgICBibG9ja3MgPSBBcnJheShyZXBlYXRpbmc6IC5wZW5kaW5nLCBjb3VudDogbWFuaWZlc3QuYmxvY2tTSEEyNTYuY291bnQpCg=="
+        },
+        {
+          "afterLineEnd": 252,
+          "afterLineStart": 236,
+          "expectedAfterSHA256": "29ec719a6dab8d15834e089fe580d322fa841355ea464af901030701353eb3a4",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 273,
+          "afterLineStart": 272,
+          "expectedAfterSHA256": "3d86cb5e27e14674773e6942b17ae8536067b4cff2690ca6804cb60e3d11b63d",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgICBibG9ja3MuY291bnQgPT0gbWFuaWZlc3QuYmxvY2tTSEEyNTYuY291bnQgZWxzZSB7Cg=="
+        },
+        {
+          "afterLineEnd": 278,
+          "afterLineStart": 275,
+          "expectedAfterSHA256": "f631410b50e45dc62a70eb3653cd30ca0fa844ffbf5e50db1ecf384ba297b291",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 308,
+          "afterLineStart": 307,
+          "expectedAfterSHA256": "a5fd391d8a43d2a310517b0ba7b9a70deefa33427c75079760f9be6a6a488b0b",
+          "replacementOriginalBase64": "ICAgICAgICBsZXQgcmFuZ2VzID0gKFtyb290XSArIGJsb2NrcykubWFwKFNlbGYudHJhbnNpdGlvblJhbmdlKQo="
+        },
+        {
+          "afterLineEnd": 344,
+          "afterLineStart": 342,
+          "expectedAfterSHA256": "21c0c04f545ba0be8bd1b234f4c0584826edb139566316190495053a04553de7",
+          "replacementOriginalBase64": "ICAgICAgICBndWFyZCBibG9ja3MuaW5kaWNlcy5jb250YWlucyhpbmRleCkgZWxzZSB7IHRocm93IFBpbmtoYUhhbmxpblNhdmVNZXNzYWdlRXJyb3IuaW52YWxpZFByb2dyZXNzIH0K"
+        },
+        {
+          "afterLineEnd": 348,
+          "afterLineStart": 348,
+          "expectedAfterSHA256": "ad18e814089b6eb2146aa854f95c031723a3172bf39ac99148941e55a9696a2f",
+          "replacementOriginalBase64": "ICAgICAgICBndWFyZCByb290LmlzVmVyaWZpZWQsIGxldCByb290UmVmZXJlbmNlID0gcm9vdC5yZWZlcmVuY2UsIGJsb2Nrcy5hbGxTYXRpc2Z5KFwuaXNWZXJpZmllZCksCg=="
+        },
+        {
+          "afterLineEnd": 354,
+          "afterLineStart": 351,
+          "expectedAfterSHA256": "d0127515ecd7adf26133d08ef1d627ec6ef6fe918a899b55a0c528d5d445e8bc",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgICB2YWx1ZS5ibG9ja1JlZmVyZW5jZXMubWFwKHsgRGF0YSgkMC51dGY4KSB9KSA9PSBibG9ja3MuY29tcGFjdE1hcChcLnJlZmVyZW5jZSkubWFwKHsgRGF0YSgkMC51dGY4KSB9KSwK"
+        },
+        {
+          "afterLineEnd": 368,
+          "afterLineStart": 357,
+          "expectedAfterSHA256": "a2687d2041e51abcdeaa0d809af1e84220862a8ce3d1a723f35bac9c54446822",
+          "replacementOriginalBase64": ""
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessageProgress.swift",
+      "sha256": "aaf78ffe54572616aeaf7d119770aff938fb340c4137d3e17ce0679c5dfac00d"
+    },
+    {
+      "afterBlob": "277b4a4e3113e1d2e6129c6f8dfa5591746e233f",
+      "beforeBlob": null,
+      "bytes": 1144,
+      "inverseOperations": [],
+      "inverseRestoresEveryOriginalByte": null,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinOriginalMarkdownSavePlanner.swift",
+      "sha256": "f82d40b30c66765da1d532eda8c36e0d332877da64f17c78c617803e1490baa6"
+    },
+    {
+      "afterBlob": "aac0dafda3df7a4ecf02dbb5b32e5fd3aa6b3da5",
+      "beforeBlob": "715152c26970e39440f0db2e33bd9adda3ca55e6",
+      "bytes": 13888,
+      "inverseOperations": [
+        {
+          "afterLineEnd": 7,
+          "afterLineStart": 4,
+          "expectedAfterSHA256": "3a109f9e58be1501bad329424b5f5cb43d7a904be642c9e16c97fafdeb094b47",
+          "replacementOriginalBase64": "VGhpcyB0cmFuY2hlIGFkZHMgYSBzdHJpY3QgcmVxdWVzdCBwbGFuIGFuZCB0aGUgYWdncmVnYXRlIG1ldGFkYXRhIHN0YXRlIG5lZWRlZApieSBhIHJlYWwgc2F2ZSBiaW5kaW5nLiBJdCBkb2VzIG5vdCBjbGFpbSBuYXRpdmUgYm9keSBwZXJzaXN0ZW5jZSwgZmlsZXN5c3RlbQpkdXJhYmlsaXR5LCBNYXJrZG93biBjb252ZXJzaW9uLCBhIGNvbXBsZXRlIGFwcGxpY2F0aW9uIGJ1aWxkIG9yIGFjY2VwdGFuY2UuCg=="
+        },
+        {
+          "afterLineEnd": 16,
+          "afterLineStart": 9,
+          "expectedAfterSHA256": "491755b5e673d9efc9d60050a78c737807ef34a548d0ceed02fee52caf9bfe9f",
+          "replacementOriginalBase64": "QmFzZSBicmFuY2g6IGBjb2RleC9jaGF0Z3B0LXdhdmUxNS1taW5pYXBwcy1yZXR1cm4tMjAyNjExMjdgIGF0CmA3NjliNjc2YTQyMTIzNzQ1ZGM0ZjY5MDNhYzMyMWI0NzRhZWM3MTE2YC4gVGhlIGF1ZGl0ZWQgaG9zdC9uYXRpdmUgQVBJcyB3ZXJlCnJlYWQgYXQgYGU1YmMxZTc4YjkwNDQ3NWVhNTk4OGRmODhhMmNiODMxMzQ5MzMwMDZgLiBFeGlzdGluZyBmaWxlcyBhcmUgdW5jaGFuZ2VkLgo="
+        },
+        {
+          "afterLineEnd": 23,
+          "afterLineStart": 23,
+          "expectedAfterSHA256": "ed9f49f0b3938e1cb73721b6e240aa408aa10d1854aa5ed633f3092f05817009",
+          "replacementOriginalBase64": "VGhlIGNvbnZlcnNpb24gcGxhbiBwZXJtaXRzIGF0IG1vc3QgNjQgbmF0aXZlIGJsb2Nrcy4gT3Zlci1saW1pdCBvciB1bnN1cHBvcnRlZAo="
+        },
+        {
+          "afterLineEnd": 72,
+          "afterLineStart": 71,
+          "expectedAfterSHA256": "52c7f7650b1ccbe2bc47ac9649630d5f0f22a1ad0aa9d7b270c1946978323940",
+          "replacementOriginalBase64": "UmVxdWlyZWQgam91cm5hbCBpbnRlZ3JhdGlvbiwgb3duZWQgYnkgdGhlIFNESyBsYW5lOgo="
+        },
+        {
+          "afterLineEnd": 116,
+          "afterLineStart": 100,
+          "expectedAfterSHA256": "6280a57042cc5f44f411cd46206531b730c24945eb7cf40ef55921344a1262c7",
+          "replacementOriginalBase64": "VGhlIG5leHQgYWRhcHRlciBtdXN0IG1hcCBzdXBwb3J0ZWQgQVNUIG5vZGVzIGludG8gbmF0aXZlIGJsb2NrIHNlbWFudGljcyBhbmQKdmVyaWZ5IHRoZWlyIG9yaWdpbmFsIHJlbmRlcmVyIHByb2plY3Rpb24gYmVmb3JlIGRpc3BhdGNoLgo="
+        },
+        {
+          "afterLineEnd": 122,
+          "afterLineStart": 122,
+          "expectedAfterSHA256": "ec94f648c5779cc438e352445ee9270cb52214c328dc614346a4fcf19f9995d2",
+          "replacementOriginalBase64": "IyMgTmF0aXZlIHNlYW1zIGFuZCByZW1haW5pbmcgYmluZGluZyB3b3JrCg=="
+        },
+        {
+          "afterLineEnd": 129,
+          "afterLineStart": 124,
+          "expectedAfterSHA256": "528b28e5b6c8fee74803cfd69bc186602f0c209af2ba8487f54cf61afecd3756",
+          "replacementOriginalBase64": "QW55IGhhcyBvcmlnaW5hbCBgQW55TmF0aXZlT2JqZWN0Q3JlYXRvcmAsIGBBbnlOYXRpdmVCbG9ja0NyZWF0b3JgLCBhbmQgdGhlCm5hdGl2ZSBwcmVwYXJlZC1taWdyYXRpb24gb2JqZWN0L2Jsb2NrIHByb3RvY29sLiBPYmplY3QgYW5kIGJsb2NrIGVmZmVjdHMgYXJlCnNlcGFyYXRlOyBibG9jayB0ZXh0IGlzIGJvdW5kZWQgYXQgNjUsNTM2IFVURi04IGJ5dGVzLiBUaGUgYmxvY2sgd3JpdGVyIHJldGFpbnMKcmV0dXJuZWQgSURzIGFuZCB2ZXJpZmllZCByZWFkYmFjayBiZWZvcmUgaXRzIG9yaWdpbmFsIHNlc3Npb24gbGVhc2UgZHJhaW5zLgpgQW55RWRpdG9yRG9jdW1lbnRTdG9yZWAgcHJvdmlkZXMgQ0FTIGZvciBleGlzdGluZyBibG9ja3MsIG5vdCBhbiBhZ2dyZWdhdGUgbmV3CmRvY3VtZW50IHRyYW5zYWN0aW9uLgo="
+        },
+        {
+          "afterLineEnd": 181,
+          "afterLineStart": 131,
+          "expectedAfterSHA256": "42cc494c0f47d91e1f993a43d781cd35b9ee074381ec374bcd03d6226a34a545",
+          "replacementOriginalBase64": "SGVhcnQgaGFzIG9yaWdpbmFsIGBvYmplY3RDcmVhdGVgIGFuZCBzZXBhcmF0ZSBgYmxvY2tDcmVhdGVgIC8gYGJsb2NrUGFzdGVgLgpUaGUgZ2VuZXJhdGVkIGBPYmplY3QuQ3JlYXRlLlJlcXVlc3RgIGhhcyBubyBib2R5IGlucHV0LiBCb2R5IGNvbnZlcnNpb24gYW5kCm5hdGl2ZSByZWFkYmFjay9yZWNvbmNpbGlhdGlvbiBtdXN0IGJlIGltcGxlbWVudGVkIHdpdGggdGhlIGN1cnJlbnQgbmF0aXZlCmFjY291bnQgb3duZXIsIG5vdCBhIHN5bnRoZXRpYyBNaW5pQXBwcyByZXF1ZXN0IG9yIGFuIGFyYml0cmFyeSBVSSBjbG9zdXJlLgpObyBhdG9taWMgcGFnZS1wbHVzLWJvZHkgZ3VhcmFudGVlIGlzIGNsYWltZWQgZm9yIGVpdGhlciBlbmdpbmUuCg=="
+        },
+        {
+          "afterLineEnd": 192,
+          "afterLineStart": 190,
+          "expectedAfterSHA256": "0af68c92c0fbdd913ff132d3dcd3e93f37ae620c49817d5a7ea21070118e5aaf",
+          "replacementOriginalBase64": "YFBpbmtoYUhhbmxpblNhdmVNZXNzYWdlU3RhdGVUZXN0c2AgYWRkcyAyMyByZWFsIFN3aWZ0IFhDVGVzdCBtZXRob2RzIGFnYWluc3QgdGhlCnByb2R1Y3Rpb24gcGxhbi9zdGF0ZS9yZWNvcmQgaW1wbGVtZW50YXRpb25zLiBUaGV5IGNvdmVyIGV4YWN0IGlucHV0IGJ5dGVzLAo="
+        },
+        {
+          "afterLineEnd": 200,
+          "afterLineStart": 197,
+          "expectedAfterSHA256": "b6534664bcc45398b7207a5b869b8b9aa5aa7543fcac2346c1f94715b88d980f",
+          "replacementOriginalBase64": "cmVmZXJlbmNlIHJlZnVzYWwsIGFuZCBtZXRhZGF0YS1vbmx5IHJldGVudGlvbi4K"
+        },
+        {
+          "afterLineEnd": 210,
+          "afterLineStart": 202,
+          "expectedAfterSHA256": "06e3e60579ad6a843499ab0226e4d8cef6900eef696cedf8daa33049ddca30dd",
+          "replacementOriginalBase64": "QWxsIDIzIG1ldGhvZHMgYXJlICoqTk9UX1JVTioqLiBObyBPcmFjbGUgY29tcGlsZXIsIE1hYyBidWlsZCwgbmF0aXZlIG9wZXJhdGlvbgo="
+        },
+        {
+          "afterLineEnd": 220,
+          "afterLineStart": 213,
+          "expectedAfterSHA256": "f6ae5a93f598629fc12b235bdd604bb6c4de51b86df9e15d6af056879dc05e07",
+          "replacementOriginalBase64": ""
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "path": "docs/validation/20261127-hanlin-save-message/README.md",
+      "sha256": "c780030f78a29c4fae040a5588b163e892d0f3e28b0a8a754ad5cdbfb02c5ec3"
+    }
+  ],
+  "status": "SOURCE_ONLY_NOT_COMPILED_OR_EXECUTED",
+  "swiftCompilerInvocations": 0,
+  "swiftFiles": 14,
+  "testsExecuted": 0
+}
