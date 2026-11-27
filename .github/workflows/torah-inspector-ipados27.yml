@@ -86,6 +86,7 @@ on:
           - wave15-component-tests
           - wave15-acceptance
           - wave3-native8ac-export
+          - wave3-native8ac-stream-export
           - wave3-hosted-shared-build
       shared_build_plan_json:
         description: Exact root-reviewed JSON for the original native8ac export or hosted shared App build
@@ -284,6 +285,82 @@ jobs:
             ${{ runner.temp }}/pinkha-native8ac-root-plan-${{ github.run_id }}-${{ github.run_attempt }}.json
             ${{ runner.temp }}/pinkha-native8ac-export-${{ github.run_id }}-${{ github.run_attempt }}.original.log
             ${{ env.EXPORT_ROOT }}/*.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+
+  wave3-native8ac-stream-export:
+    if: ${{ inputs.route == 'wave3-native8ac-stream-export' }}
+    permissions:
+      contents: read
+    concurrency:
+      group: pinkha-original-native8ac-export
+      cancel-in-progress: false
+    runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_OPTIONAL_LOCKS: '0'
+      PLAN_SHA256: ${{ inputs.shared_build_plan_sha256 }}
+    steps:
+      - name: Require one fresh stream control checkout and bind evidence root
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e "$GITHUB_WORKSPACE/control-native8ac-stream-20261127"
+          test ! -L "$GITHUB_WORKSPACE/control-native8ac-stream-20261127"
+          printf 'EXPORT_ROOT=%s\n' "$RUNNER_TEMP/pinkha-native8ac-stream-export-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
+      - name: Checkout only exact original streaming controls
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: control-native8ac-stream-20261127
+          persist-credentials: false
+          set-safe-directory: false
+          clean: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Tools/PinkhaDualEngineRuntime/hosted_shared_build/
+      - name: Select already installed native ARM64 Python 3.12
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          candidates=("$(command -v python3)" "${RUNNER_TOOL_CACHE:-/nonexistent}"/Python/3.12.*/arm64/bin/python3 /opt/homebrew/opt/python@3.12/libexec/bin/python3)
+          selected=''
+          for candidate in "${candidates[@]}"; do
+            if [ -x "$candidate" ] && "$candidate" -I -B -c 'import platform,sys; assert sys.version_info[:2] == (3,12) and platform.machine() == "arm64"' >/dev/null 2>&1; then
+              selected="$candidate"
+              break
+            fi
+          done
+          test -n "$selected"
+          dirname "$selected" >> "$GITHUB_PATH"
+      - name: Admit the exact original native stream plan
+        env:
+          PINKHA_HOSTED_PLAN: ${{ inputs.shared_build_plan_json }}
+        run: |
+          python3 -B "control-native8ac-stream-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py" inspect \
+            --export --control "$GITHUB_WORKSPACE/control-native8ac-stream-20261127" \
+            --plan "$RUNNER_TEMP/pinkha-native8ac-root-plan-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json" \
+            --plan-sha256 "$PLAN_SHA256"
+      - name: Stream original source and framework directly into the current Actions artifact
+        id: stream
+        uses: ./control-native8ac-stream-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_stream_action
+        with:
+          control: ${{ github.workspace }}/control-native8ac-stream-20261127
+          plan: ${{ runner.temp }}/pinkha-native8ac-root-plan-${{ github.run_id }}-${{ github.run_attempt }}.json
+          plan_sha256: ${{ inputs.shared_build_plan_sha256 }}
+          output: ${{ env.EXPORT_ROOT }}
+      - name: Preserve every original stream receipt and failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Pinkha-Native8ac-Export-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/pinkha-native8ac-root-plan-${{ github.run_id }}-${{ github.run_attempt }}.json
+            ${{ env.EXPORT_ROOT }}/*.json
+            ${{ env.EXPORT_ROOT }}/*.log
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 30

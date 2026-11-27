@@ -1,0 +1,23 @@
+name: Pinkha exact native8ac bounded stream
+description: Upload the original qualified native payload without a local Mac archive
+inputs:
+  control:
+    required: true
+    description: Exact immutable control checkout
+  plan:
+    required: true
+    description: Original root plan path
+  plan_sha256:
+    required: true
+    description: Original root plan SHA256
+  output:
+    required: true
+    description: Exclusive run-owned evidence and FIFO root
+outputs:
+  artifact-id:
+    description: Actual finalized Actions artifact ID
+  artifact-digest:
+    description: SHA256 of the actual uploaded ZIP
+runs:
+  using: node20
+  main: upload_stream.cjs
