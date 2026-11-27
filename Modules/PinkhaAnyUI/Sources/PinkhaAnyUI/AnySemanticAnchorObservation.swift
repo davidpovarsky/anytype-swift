@@ -15,6 +15,8 @@ final class AnySemanticAnchorObservation {
         let text: NSAttributedString
         let selection: NSRange
         let isFirstResponder: Bool
+        let typingAttributes: [NSAttributedString.Key: Any]
+        let contentSizeCategory: UIContentSizeCategory
     }
 
     private struct Mark: Codable, Equatable {
@@ -25,6 +27,16 @@ final class AnySemanticAnchorObservation {
     }
 
     let label: UILabel
+
+    private var observesTextPresentation: Bool {
+        #if targetEnvironment(simulator)
+        let process = ProcessInfo.processInfo
+        return process.arguments.contains("--native-ui-tests")
+            && process.environment["PINKHA_NATIVE_TYPOGRAPHY_OBSERVATION"] == "1"
+        #else
+        return false
+        #endif
+    }
 
     static func makeIfEnabled() -> AnySemanticAnchorObservation? {
         let process = ProcessInfo.processInfo
@@ -124,6 +136,9 @@ final class AnySemanticAnchorObservation {
                     "selectionLocation": actual.selection.location, "selectionLength": actual.selection.length,
                     "isFirstResponder": actual.isFirstResponder
                 ])
+                if observesTextPresentation {
+                    blocks[blocks.count - 1]["textPresentation"] = try Self.textPresentation(block, actual: actual)
+                }
             }
             // Canonical records already came from the engine adapter's
             // verified list read. Observation adds no engine call or mutation.
@@ -160,6 +175,55 @@ final class AnySemanticAnchorObservation {
         } catch {
             result["state"] = "REFUSED_INVALID_SNAPSHOT"
         }
+    }
+
+    /// Read existing snapshot values and mounted UIKit attributes only. These
+    /// observations do not select a font, normalize native style, or write data.
+    private static func textPresentation(_ block: AnyEditorBlock, actual: RenderedBlock) throws -> [String: Any] {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        let style = try encoder.encode(block.native["style"])
+        guard style.count <= 8_192 else { throw TextPresentationObservationError.bounds }
+        var result: [String: Any] = [
+            "schema": "native-mounted-text-presentation/v1",
+            "nativeType": block.type,
+            "nativeStylePresent": block.native["style"] != nil,
+            "nativeStyleJSON": String(decoding: style, as: UTF8.self),
+            "contentSizeCategory": actual.contentSizeCategory.rawValue,
+            "fontReadOrigin": "mounted-UITextView-attributedText-and-typingAttributes",
+            "nativeReadOrigin": "AnyDocumentPresentation.read.snapshot.blocks",
+            "assignedUIFontOnly": true
+        ]
+        var fonts: [[String: Any]] = []
+        var exceededBounds = false
+        actual.text.enumerateAttributes(in: NSRange(location: 0, length: actual.text.length)) { attributes, range, stop in
+            guard fonts.count < 128 else { exceededBounds = true; stop.pointee = true; return }
+            var row: [String: Any] = ["location": range.location, "length": range.length]
+            if let value = attributes[.font] as? UIFont { row["font"] = Self.font(value) }
+            if let value = attributes[.paragraphStyle] as? NSParagraphStyle { row["paragraph"] = Self.paragraph(value) }
+            fonts.append(row)
+        }
+        guard !exceededBounds else { throw TextPresentationObservationError.bounds }
+        // Existing whole-observation 24 KiB and all-visible guards remain the
+        // authority. This opt-in never weakens them to accept partial rendering.
+        result["fontRuns"] = fonts
+        if let value = actual.typingAttributes[.font] as? UIFont { result["typingFont"] = Self.font(value) }
+        if let value = actual.typingAttributes[.paragraphStyle] as? NSParagraphStyle {
+            result["typingParagraph"] = Self.paragraph(value)
+        }
+        return result
+    }
+
+    private enum TextPresentationObservationError: Error { case bounds }
+
+    private static func font(_ value: UIFont) -> [String: Any] {
+        ["name": value.fontName, "family": value.familyName, "pointSize": value.pointSize,
+         "bold": value.fontDescriptor.symbolicTraits.contains(.traitBold),
+         "italic": value.fontDescriptor.symbolicTraits.contains(.traitItalic)]
+    }
+
+    private static func paragraph(_ value: NSParagraphStyle) -> [String: Any] {
+        ["baseWritingDirection": value.baseWritingDirection.rawValue, "alignment": value.alignment.rawValue]
     }
 
     private static func marks(_ text: PinkhaSemanticText) -> [Mark] {
