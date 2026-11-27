@@ -1,0 +1,31 @@
+{
+  "artifactWritesOnly": "write(_:to:) to fixed token-bound App Support evidence names",
+  "directClientCommands": [
+    "objectShow"
+  ],
+  "forbiddenMutationCallSubstringsAbsent": [
+    "objectSetDetails",
+    "objectCreate",
+    "createAccount(",
+    "restoreAccount(",
+    "selectAccount(",
+    "bootstrapSpace(",
+    "bootstrapCanonical",
+    "addAssociation(",
+    "removeAssociation(",
+    "updateProperty(",
+    "installProperty(",
+    "engineVersion("
+  ],
+  "notWholeAppSideEffectAnalysis": true,
+  "reviewedReadOnlyAdapters": [
+    "PinkhaSpaceManifestStore.loadManifest(spaceId:)",
+    "AnytypeTorahNativePropertyProvisioningStore.property(key:spaceId:)",
+    "Container.shared.accountManager().account.id"
+  ],
+  "runtimeExecuted": false,
+  "schema": "pinkha.wave2.g02.source-call-audit.v1",
+  "sourceSHA256": "bd9888153f469583531951b4dcc74d64aed275de1e2142fc1cdda61d3fb1770a",
+  "suiteCountAdded": 1,
+  "testMethodsAdded": 1
+}

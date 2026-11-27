@@ -1,0 +1,47 @@
+{
+  "AppleCompilation": "NOT_RUN",
+  "NativeCalls": 0,
+  "SwiftSyntaxRuns": 0,
+  "XCTestInvocations": 0,
+  "atUTC": "2026-11-27T05:17:15.794733+00:00",
+  "contractReviewSHA256": "4e0e3028a51d4500c2a6970f08284aef4c35acc4173c9093eb1b68eab0dea876",
+  "independentInverse": {
+    "allExistingAssertionsRestored": true,
+    "exactFiveReverseEdits": [
+      "one exact native seal key",
+      "bounded ASCII String helper",
+      "both-phase existing validation call",
+      "fifth exact changed-field exception",
+      "canonical/seal change requirements after exact unlink comparison"
+    ],
+    "restoresAllOriginalBytes": true
+  },
+  "newSelectors": 0,
+  "originalCommit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+  "originalFullSHA256": "bd9888153f469583531951b4dcc74d64aed275de1e2142fc1cdda61d3fb1770a",
+  "originalSuffixSHA256": "0f8623ee17de978b5c9994e0df63880755c879434f19ba90b07b1c238564b62a",
+  "probeReruns": 0,
+  "reviewedBehavior": [
+    "Both baseline and postflight pass the existing per-document validate boundary, which now requires an actual String containing exactly64 ASCII lowercase hexadecimal bytes.",
+    "The full NativeObject raw fields/Protobuf JSON/SHA remain stored before validation, including both actual seals. No receipt schema or export removes the seal.",
+    "Only _pinkhaTorahCacheIntegrity is added to the four existing derived-field comparison exceptions. The three finite clock allowances are unchanged.",
+    "Exact one-selected-document-Word canonical deletion, unknown fields, block-only records, actual raw canonical SHA, labels-minus-one, empty Word form, Source/Topic/Tag/Type/name and all other stable fields remain checked.",
+    "The additional guard requires canonical raw string and SHA to change, then requires the two validated native seal strings to differ.",
+    "The helper is synchronous and read-only and adds no actor, service, import, mutation or source-overlay path. It uses no nested require macro."
+  ],
+  "reviewer": "wave2-editor",
+  "runtimeReadinessChanged": false,
+  "schema": "pinkha-g02-cache-integrity-successor-source-review-v1",
+  "schemaOrAPIChanged": false,
+  "scopeBoundary": "Opaque native seal shape/change is observed. This does not compute or authenticate the native cache proof, prove general index freshness or whole-store retention. The source comments explicitly retain this limitation.",
+  "selector": "TorahWritingPropertiesReadbackTests/observeOriginalWritingProperties",
+  "sourceMutationsByReviewer": 0,
+  "status": "NO_SOURCE_LEVEL_BLOCKER_FOR_NARROW_SUCCESSOR",
+  "successorFullSHA256": "b453fafed2e5e5737ef04524b6add7c4bf0019cf99a03c6137151039f38171ed",
+  "successorInverseSHA256": "e7f62bcdef706ed8d0b58c5e4bf391212526cd58bffff9e7e6c2934a39b0a886",
+  "successorSuffixSHA256": "1363c0f8679dab6b4d1feeeaabac63abce7a9fe733f7e15d3b4b2f3ed857afd9",
+  "supersededReviewSHA256": "cb457ae7d62ff968f5e174d2e8356a180aa6bde52701b83e9a1954a2495ebdae",
+  "supersedingScope": "Only the original assumption that _pinkhaTorahCacheIntegrity remains stable after exact confirmed Word removal. Preserve the original63fb source/review and all other qualified boundaries.",
+  "unchangedPrefixBytes": 84286,
+  "unchangedPrefixSHA256": "7ec7ef47c53c02e61b0cccb05ab7f4f58b3824368d84883aadee6767ff24ab85"
+}
