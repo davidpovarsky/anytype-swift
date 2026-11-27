@@ -1,0 +1,48 @@
+{
+  "schema": "pinkha-native-accessibility-closed-plan-v1",
+  "status": "FROZEN_SOURCE_REVIEW_PENDING",
+  "runtimeReady": false,
+  "activeSourceCommit": null,
+  "activeProducerReceipt": null,
+  "activeNativeUIReceipt": null,
+  "commonAdmission": null,
+  "runtimeEntry": "require_runtime_ready always rejects; no ready-flag override",
+  "consumerOwner": "wave2-interfaces sole Native23 successor",
+  "executionOwner": "root and Wave3 coordinated Mac",
+  "source": {
+    "nativeLaunchSHA256": "8d58c41e8907019bf67088900bb5c35843562edd669422573c1280f800500e86",
+    "centralInverseHelperSHA256": "71c376659d34b7065d152f22c41f2ded731d4527d0231375a3e688a31e7f4f02",
+    "sourceProofSHA256": "63cadf150de799d104d8fb769b08578b3ddad3bb05f21fba232617ef2e550cf1",
+    "twoMethodSuffixSHA256": "98c68f7e1d9ab0617218ae38e290cc6ddf1842d42f41bda680001e7c752d4317"
+  },
+  "plans": {
+    "accessibility-audit-large": {
+      "method": "testNativeLibraryAndEditorAccessibilityAuditAtRequestedContentSize",
+      "contentSize": "large",
+      "allowanceSeconds": 900
+    },
+    "accessibility-audit-expanded": {
+      "method": "testNativeLibraryAndEditorAccessibilityAuditAtRequestedContentSize",
+      "contentSize": "accessibility-extra-extra-extra-large",
+      "allowanceSeconds": 900
+    },
+    "accessibility-voiceover-large": {
+      "method": "testNativeVoiceOverTraversalSpeaksCurrentNativeContent",
+      "contentSize": "large",
+      "allowanceSeconds": 900
+    }
+  },
+  "distinctMethods": 2,
+  "finitePlans": 3,
+  "sharedSourceOrProductChanges": 0,
+  "runtimeProcessesOrSettings": 0,
+  "AppleTests": 0,
+  "pureControls": {
+    "newMethods": 4,
+    "result": "PASS",
+    "existingControlsRerun": 0,
+    "originalPrelaunchInterpreterFailureRetained": true
+  },
+  "physicalDevice": "NOT_RUN",
+  "visualReview": "PENDING"
+}

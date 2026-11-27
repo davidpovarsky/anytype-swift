@@ -1,0 +1,342 @@
+{
+  "AppleBuilds": 0,
+  "XCTestRuns": 0,
+  "accessibilityMethods": {
+    "accessibility-audit-expanded": {
+      "allowanceSeconds": 900,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeLibraryAndEditorAccessibilityAuditAtRequestedContentSize"
+    },
+    "accessibility-audit-large": {
+      "allowanceSeconds": 900,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeLibraryAndEditorAccessibilityAuditAtRequestedContentSize"
+    },
+    "accessibility-voiceover-large": {
+      "allowanceSeconds": 900,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeVoiceOverTraversalSpeaksCurrentNativeContent"
+    }
+  },
+  "accessibilityUniqueMethods": 2,
+  "additionalAccessibilityPlans": 3,
+  "allowedStages": [
+    "sharing-owner",
+    "archive",
+    "rtl",
+    "library-search",
+    "source-drag",
+    "styled-blocks",
+    "styled-live-type",
+    "accessibility-audit-large",
+    "accessibility-audit-expanded",
+    "accessibility-voiceover-large"
+  ],
+  "applicationFilesChanged": 0,
+  "branch": "codex/chatgpt-wave15-wave2-native23-accessibility-20261127",
+  "classification": {
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/": "DOWNSTREAM_OWNED tools only",
+    "docs/validation/20261127-wave2-native23-accessibility-control/": "DOWNSTREAM_OWNED evidence only"
+  },
+  "commonAPI": "admit_and_clone_products(admission, root, evidence, commands)",
+  "context": "Exact13 original string fields; two descriptor variables with complete inverse; actual selected before-record SHA",
+  "createdAtUTC": "2026-11-27T09:17:35.200627+00:00",
+  "currentFiles": {
+    "native23_profile_closed.py": {
+      "bytes": 56268,
+      "sha256": "3fd3049737f4be72f4257a04e5ca94085e6d9e11cd3916257ced4bf2e8943aa6"
+    },
+    "native_accessibility_observations.py": {
+      "bytes": 28005,
+      "sha256": "a0e4a67a21594023537e830124272be23312afd9b3b5158fe7f0e6e5df543336"
+    },
+    "native_accessibility_runtime.py": {
+      "bytes": 13001,
+      "sha256": "8001c3efc0003ce659a7d5b9e97656b801e6d59a45972589904652f7de55f9d2"
+    },
+    "native_library_search.py": {
+      "bytes": 13929,
+      "sha256": "7f2af4c63464ae3ce9e088cf923d314b0bbb58b94bdc94ff871190a8b205d8f0"
+    },
+    "native_rtl_matrix.py": {
+      "bytes": 13850,
+      "sha256": "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae"
+    },
+    "native_styled_observations.py": {
+      "bytes": 48859,
+      "sha256": "71c376659d34b7065d152f22c41f2ded731d4527d0231375a3e688a31e7f4f02"
+    },
+    "native_styled_runtime.py": {
+      "bytes": 40172,
+      "sha256": "c249ab9d04b4f8014475cf1eb8b81cf0371cab40a3f98a77b2938a2a0f2b6714"
+    },
+    "prepare_native23_controllers_closed.py": {
+      "bytes": 34335,
+      "sha256": "a7d8fbe1a47266ef07381972fbae7190b4bc97c3f4633c5460e41dae54a143ef"
+    }
+  },
+  "evidenceRelocation": "Original executed local harness paths retained exactly; packaging is not relocated execution",
+  "files": {
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/README.md": {
+      "bytes": 11135,
+      "sha256": "be1d20c0dbb059c252b895732a1b2a843747705542f3b74723542fa90afd881c"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/build_prebuilt_native_ui16.py": {
+      "bytes": 45722,
+      "sha256": "01433ea86c3dcb7f86c1c31a90139805a9407fa34b6fd25e8918dee4af87e25a"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native16_profile.py": {
+      "bytes": 56268,
+      "sha256": "3fd3049737f4be72f4257a04e5ca94085e6d9e11cd3916257ced4bf2e8943aa6"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native_accessibility_observations.py": {
+      "bytes": 28005,
+      "sha256": "a0e4a67a21594023537e830124272be23312afd9b3b5158fe7f0e6e5df543336"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native_accessibility_runtime.py": {
+      "bytes": 13001,
+      "sha256": "8001c3efc0003ce659a7d5b9e97656b801e6d59a45972589904652f7de55f9d2"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native_library_search.py": {
+      "bytes": 13929,
+      "sha256": "7f2af4c63464ae3ce9e088cf923d314b0bbb58b94bdc94ff871190a8b205d8f0"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native_rtl_matrix.py": {
+      "bytes": 13850,
+      "sha256": "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native_styled_observations.py": {
+      "bytes": 48859,
+      "sha256": "71c376659d34b7065d152f22c41f2ded731d4527d0231375a3e688a31e7f4f02"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native_styled_runtime.py": {
+      "bytes": 40172,
+      "sha256": "c249ab9d04b4f8014475cf1eb8b81cf0371cab40a3f98a77b2938a2a0f2b6714"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/nativeui16-materialization.json": {
+      "bytes": 38493,
+      "sha256": "f64e2ae359237a0b5c4ede43a49ae04bbce12cd97c4ccaaa8004c54149eca5b1"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/run_prebuilt_native_ui16.py": {
+      "bytes": 72356,
+      "sha256": "e4515cc6cd36424c607ee1e986ea9f0cfdcb0db516bf6e91276eef685ba29a22"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/native23_profile_closed.py": {
+      "bytes": 56268,
+      "sha256": "3fd3049737f4be72f4257a04e5ca94085e6d9e11cd3916257ced4bf2e8943aa6"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/native_accessibility_observations.py": {
+      "bytes": 28005,
+      "sha256": "a0e4a67a21594023537e830124272be23312afd9b3b5158fe7f0e6e5df543336"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/native_accessibility_runtime.py": {
+      "bytes": 13001,
+      "sha256": "8001c3efc0003ce659a7d5b9e97656b801e6d59a45972589904652f7de55f9d2"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/native_library_search.py": {
+      "bytes": 13929,
+      "sha256": "7f2af4c63464ae3ce9e088cf923d314b0bbb58b94bdc94ff871190a8b205d8f0"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/native_rtl_matrix.py": {
+      "bytes": 13850,
+      "sha256": "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/native_styled_observations.py": {
+      "bytes": 48859,
+      "sha256": "71c376659d34b7065d152f22c41f2ded731d4527d0231375a3e688a31e7f4f02"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/native_styled_runtime.py": {
+      "bytes": 40172,
+      "sha256": "c249ab9d04b4f8014475cf1eb8b81cf0371cab40a3f98a77b2938a2a0f2b6714"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/prepare_native23_controllers_closed.py": {
+      "bytes": 34335,
+      "sha256": "a7d8fbe1a47266ef07381972fbae7190b4bc97c3f4633c5460e41dae54a143ef"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/choreography-controls1.json": {
+      "bytes": 886,
+      "sha256": "066d9112fb8e365f6336fe986d5cb608fa56ce770a3b5e2b2d55207960d87b8e"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/choreography-controls1.log": {
+      "bytes": 736,
+      "sha256": "ee4c2b79cfe5d345115016783a2deae0ef4150fd8068d0d10bd127e3b5004604"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/closed-accessibility-entry.json": {
+      "bytes": 1469,
+      "sha256": "bb77517af6806efa8f0130c20a6ce44793c1bd2e8bedf9ac66e1e947010d3b2b"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/closed-accessibility-entry.stderr": {
+      "bytes": 867,
+      "sha256": "593d2c98322f03ebe255bc1ac84bb094e6cfc5e8a241753cf257428fb343491b"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/closed-accessibility-entry.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/d-queue-addendum.json": {
+      "bytes": 1804,
+      "sha256": "18c7a52356cc62db3da67583826102ebd6ca472ae8980aacb2488a098a5708e9"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/helper-originals/README.md": {
+      "bytes": 11813,
+      "sha256": "9d73c2bd99a7ac64cec8204db3f70e22b5065d057011b2fc314f98be79218db4"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/helper-originals/closed-profile.json": {
+      "bytes": 1815,
+      "sha256": "583bf420665a5f6d2d93ba4706e6b9a6d654dd3839e2d4adc23036fd7d919bae"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/helper-originals/file-custody.json": {
+      "bytes": 1152,
+      "sha256": "f53bd1ca7fba90ec08236ecaa9a3b4841d76c638865c16f0b581dd0c1b4a4a26"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/helper-originals/native_accessibility_observations.py": {
+      "bytes": 28005,
+      "sha256": "a0e4a67a21594023537e830124272be23312afd9b3b5158fe7f0e6e5df543336"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/helper-originals/portable-controls-launch-error.json": {
+      "bytes": 455,
+      "sha256": "648384465b87447579535fb818881138140aea0466e45b2cf13dd591790e9e26"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/helper-originals/portable-controls1.json": {
+      "bytes": 807,
+      "sha256": "28361990e2f46f2208f3f4c2e61aa3e99ad6d0fb5b80e29c2bb24b16c117ef7b"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/helper-originals/portable-controls1.log": {
+      "bytes": 612,
+      "sha256": "fd9a422f4d0f5711cf0f573d5923e53dfda90a0eaf2e817c0d3f1092d46ec385"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/helper-originals/portable_boundaries.py": {
+      "bytes": 11723,
+      "sha256": "3a669a2a865b1be38f26b10d18b97b8663ddffc375fab1f3f4e28edd88951a63"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/helper-originals/torah-independent-review.json": {
+      "bytes": 2504,
+      "sha256": "0f81e86965add59a9173c5582eea9ffe804a79840b889d910cba65d2b827cbd0"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/prepare_publication_packet.py": {
+      "bytes": 9450,
+      "sha256": "a93da43db04a221ffdcd502adba1a92aaa5e04bd740374fa4c1ed7880f4800f0"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/publish_native23_accessibility.py": {
+      "bytes": 9734,
+      "sha256": "ba802588af2a25bcd9d92928955de0c1b9434f2a1cf465d3c346033aa4867ce8"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/root-independent-review.json": {
+      "bytes": 5658,
+      "sha256": "b333bd4c64cdf7233741b91a994e6042fd50e8e69441bb277035b5a4345e2e1c"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/source-derivative.json": {
+      "bytes": 37415,
+      "sha256": "c476e4bd1418bd42f7c885299babd05d27e877a880447e641726ff9485649ec3"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/torah-runtime-compatibility-review.json": {
+      "bytes": 2354,
+      "sha256": "783ea3f9179efa3735b008ea96ea8d9170599409a6f6be77c65af04f2142c954"
+    },
+    "docs/validation/20261127-wave2-native23-accessibility-control/validate_accessibility_choreography.py": {
+      "bytes": 12597,
+      "sha256": "50b4daff3e9af305716a691d0e8a6d8b17c2a5c567ecce3a5e72a97e08cb7a53"
+    }
+  },
+  "futureCanonicalAdmissionSHA256": null,
+  "futureSharedControllerSHA256": null,
+  "futureSourceCommit": null,
+  "historicalAcceptedStagesSelectable": false,
+  "historicalT5Replayed": false,
+  "materialized": {
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/build_prebuilt_native_ui16.py": {
+      "bytes": 45722,
+      "sha256": "01433ea86c3dcb7f86c1c31a90139805a9407fa34b6fd25e8918dee4af87e25a"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native16_profile.py": {
+      "bytes": 56268,
+      "sha256": "3fd3049737f4be72f4257a04e5ca94085e6d9e11cd3916257ced4bf2e8943aa6"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native_accessibility_observations.py": {
+      "bytes": 28005,
+      "sha256": "a0e4a67a21594023537e830124272be23312afd9b3b5158fe7f0e6e5df543336"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native_accessibility_runtime.py": {
+      "bytes": 13001,
+      "sha256": "8001c3efc0003ce659a7d5b9e97656b801e6d59a45972589904652f7de55f9d2"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native_library_search.py": {
+      "bytes": 13929,
+      "sha256": "7f2af4c63464ae3ce9e088cf923d314b0bbb58b94bdc94ff871190a8b205d8f0"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native_rtl_matrix.py": {
+      "bytes": 13850,
+      "sha256": "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native_styled_observations.py": {
+      "bytes": 48859,
+      "sha256": "71c376659d34b7065d152f22c41f2ded731d4527d0231375a3e688a31e7f4f02"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/native_styled_runtime.py": {
+      "bytes": 40172,
+      "sha256": "c249ab9d04b4f8014475cf1eb8b81cf0371cab40a3f98a77b2938a2a0f2b6714"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/nativeui16-materialization.json": {
+      "bytes": 38493,
+      "sha256": "f64e2ae359237a0b5c4ede43a49ae04bbce12cd97c4ccaaa8004c54149eca5b1"
+    },
+    "Tools/CurrentAppleValidation/native23_accessibility_closed/materialized/run_prebuilt_native_ui16.py": {
+      "bytes": 72356,
+      "sha256": "e4515cc6cd36424c607ee1e986ea9f0cfdcb0db516bf6e91276eef685ba29a22"
+    }
+  },
+  "methodAllowanceSeconds": 900,
+  "nativeCalls": 0,
+  "nativeContractChanges": 0,
+  "nativeManifest": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+  "newNativeTupleAdmitted": false,
+  "originalAttachmentExportSeconds": 180,
+  "originalCommandGraceSeconds": 300,
+  "originalControllerDefinitionCounts": {
+    "builder": 5,
+    "runner": 16
+  },
+  "originalEnumerationSeconds": 360,
+  "ownedRegistry": "One unchanged c249 registry for all10 plans; original73bb lifecycle, first error and positive absence retained",
+  "passedHierarchyDragSelected": false,
+  "physicalAcceptance": "NOT_RUN",
+  "previousSevenPlansUnchanged": true,
+  "publicVoiceOverAPIProbe": "Prior compile-only bbc7a3 retained by its original owner; not rerun and not UI/VoiceOver runtime acceptance",
+  "queue": "Addendum changes references to the three prepared plans only; prior D accepted/pending/unmapped obligations remain",
+  "readyForExecution": false,
+  "reviews": [
+    {
+      "bytes": 5658,
+      "path": "root-independent-review.json",
+      "sha256": "b333bd4c64cdf7233741b91a994e6042fd50e8e69441bb277035b5a4345e2e1c"
+    },
+    {
+      "bytes": 2354,
+      "path": "torah-runtime-compatibility-review.json",
+      "sha256": "783ea3f9179efa3735b008ea96ea8d9170599409a6f6be77c65af04f2142c954"
+    },
+    {
+      "bytes": 2504,
+      "path": "helper-originals/torah-independent-review.json",
+      "sha256": "0f81e86965add59a9173c5582eea9ffe804a79840b889d910cba65d2b827cbd0"
+    }
+  ],
+  "schema": "pinkha.wave2.native23-accessibility-closed-control-handoff/1",
+  "settings": "Original explicit baseline RTL cell; expanded audit changes size and restores large only after positive aggregate process closure",
+  "simulatorOperations": 0,
+  "sourceClosure": "No actual future App/UI/source or new Native tuple admitted",
+  "sourceDependency": "c7111ad400e9737ac3d35c54d9dcd6454e9a63b6",
+  "sourceInverseAuthority": "Unchanged71c exact23→21→19, then unchanged Library/RTL/title inverse chain",
+  "sourceMethods": 23,
+  "sourceOnlyVerification": {
+    "closedExpandedEntrypoint": "Expected refusal before external input reads/output creation",
+    "earlierHelperCustodyPendingStatusPreserved": true,
+    "newChoreographyPortableMethods": 4,
+    "newHelperPortableMethods": 4,
+    "oldRegistryCollectorOrUIControlsRerun": 0,
+    "originalMissingInterpreterFailurePreserved": true,
+    "portableErrors": 0,
+    "portableFailures": 0,
+    "scope": "Synthetic commands, settings and source-observation boundaries only; no runtime admission"
+  },
+  "sourcePathPinsUnchanged": 27,
+  "status": "SOURCE_REVIEWED_RUNTIME_CLOSED",
+  "visualAcceptance": "NOT_RUN"
+}
