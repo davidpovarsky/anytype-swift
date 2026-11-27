@@ -1,0 +1,75 @@
+{
+  "AppleCommandsExecuted": 0,
+  "finalAffectedMethodsExecuted": 2,
+  "finalAffectedRun": {
+    "bytes": 1575,
+    "path": "affected-controls.receipt.json",
+    "sha256": "dd490dde4fafa041e81fc3e45c5ff98aba081978222563540ce8a165d9b11282"
+  },
+  "finalWholeNineMethodSuiteReexecuted": false,
+  "initialDraftRun": {
+    "bytes": 1152,
+    "path": "first-dual-role-draft/portable-controls.receipt.json",
+    "sha256": "a739e5cd161b1accf9eb68ca5e36cab97f398e6f76ac61f143bd962e64c789ef"
+  },
+  "initialMethodsExecuted": 9,
+  "original13SourceContractsUnchanged": true,
+  "runtimeTestsExecuted": 0,
+  "sameAdmissionAndLifecycleDeclarations": true,
+  "schema": "pinkha-hosted-core22-portable-evidence-reuse-v1",
+  "sdkLoaderChangeOnlyManifestHash": {
+    "after": "81d178d6d829dc2eff201b8b8dcd190db2da79dc68a6cc06f36ca0d8a90d2778",
+    "before": "d47041fade3dca19495f01e4282271cd630ee3ec5b51370843f99febea3916a2",
+    "fullInverseExact": true
+  },
+  "sdkManifestSourceFilesUnchanged": true,
+  "sdkRoutingReview": {
+    "bytes": 2259,
+    "path": "sdk-bounded-routing-review.json",
+    "sha256": "c97ea57d19f3f5786ce5d5fbaf7ff56cd0fc5ec2dd2d5a24954dfa8f54bad6e8"
+  },
+  "sdkSnapshotUnchangedFiles": [
+    "README.md",
+    "admission.py",
+    "run.py",
+    "test_control.py"
+  ],
+  "sevenUnchangedMethodBodies": {
+    "HostedCore13ControlTests.test_actual_runtime_discovery_rejects_missing_or_ambiguous_scope": {
+      "bytes": 1123,
+      "gitBlob": "9f8e729d7111e8bf7c34b4318621c0d22325c08f",
+      "sha256": "916f8199454a6f012d31ab71666351a80239d1f1676c8782053d45eaf3309a35"
+    },
+    "HostedCore13ControlTests.test_failed_suite_receipts_and_cleanup_cannot_be_reported_as_pass_or_not_run": {
+      "bytes": 2233,
+      "gitBlob": "d9188424af84fe9c757546dc328df5196281bc32",
+      "sha256": "5220b7db070bc808681bf982469e3925b1630c5dc1746d372b144afb47130fe8"
+    },
+    "HostedCore13ControlTests.test_group_failure_skips_device_cleanup_and_receipt_errors_preserve_first_failure": {
+      "bytes": 4155,
+      "gitBlob": "42ce36334922629927d457e43867dd988433fe94",
+      "sha256": "454568f97cc114257fd4c0f6ead8a236a9b33b72ac522f39274bcf5623b3a618"
+    },
+    "HostedCore13ControlTests.test_one_changed_original_byte_is_rejected_before_loading": {
+      "bytes": 685,
+      "gitBlob": "d37bf28b0817fcf5d3f1855cbf1f5198ff40ca90",
+      "sha256": "76f8168434bc4ec42f0f07ebfd004e203ced4f27ffb73fe9e2ce62eb28ff4a83"
+    },
+    "HostedCore13ControlTests.test_only_actual_owned_device_and_shutdown_state_are_accepted": {
+      "bytes": 1894,
+      "gitBlob": "65c8b2096e13fe5d8538d49fededd8f77223b940",
+      "sha256": "6a2aa6ec43400fff0b122950eb58e1f5963b0ad4083146de7544e9e7baf2c63a"
+    },
+    "HostedCore13ControlTests.test_same_job_paths_and_root_authority_are_required": {
+      "bytes": 2463,
+      "gitBlob": "aba5d483302f4d3f44ccaa8845c32608f2b7439b",
+      "sha256": "69d73eb59c363bb61705612d2d8a5f93de2bd7dca5ff2cd1e66a8831a8686db9"
+    },
+    "HostedCore13ControlTests.test_unresolved_original_group_closes_every_later_spawn_even_after_final_absence": {
+      "bytes": 1677,
+      "gitBlob": "a8b00e93aa423d2692e6b7f953d84b34fa52deee",
+      "sha256": "c2d76deff2317058dde7aa9a90d301b953a98239a875ce5eb1ffd76c583d2c74"
+    }
+  },
+  "status": "PASS_SOURCE_IDENTITY_AND_ORIGINAL_RESULT_REUSE_NOT_APPLE"
+}
