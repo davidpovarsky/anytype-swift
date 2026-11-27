@@ -30,8 +30,43 @@ public struct PinkhaHanlinMarkdownSaveConversion: Sendable {
     public init(plan: PinkhaHanlinSaveMessagePlan, originalDocument: Markdown.Document,
                 originalSourceText: String?, speculativeRewritten: Bool,
                 citationMarker: String, citationMarkerQueryParam: String) throws {
+        let content = try Self.completedContent(title: plan.title, markdown: plan.markdown,
+            originalDocument: originalDocument, originalSourceText: originalSourceText,
+            speculativeRewritten: speculativeRewritten, citationMarker: citationMarker,
+            citationMarkerQueryParam: citationMarkerQueryParam)
+        self.manifest = try content.document.manifest(for: plan,
+            nativeSerializationSHA256: content.nativeSerializationSHA256)
+        self.document = content.document; self.blocks = content.blocks
+    }
+
+    /// Validate the same completed AST and native content representation without
+    /// manufacturing a host invocation, write manifest, permission or receipt.
+    /// Engine-specific capability checks still belong to native preflight.
+    public static func validateCompletedMessageContent(
+        title: String, markdown: String, originalDocument: Markdown.Document,
+        originalSourceText: String?, speculativeRewritten: Bool,
+        citationMarker: String, citationMarkerQueryParam: String
+    ) throws {
+        _ = try completedContent(title: title, markdown: markdown,
+            originalDocument: originalDocument, originalSourceText: originalSourceText,
+            speculativeRewritten: speculativeRewritten, citationMarker: citationMarker,
+            citationMarkerQueryParam: citationMarkerQueryParam)
+    }
+
+    private struct CompletedContent {
+        let document: PinkhaHanlinSaveMessageDocument
+        let blocks: [NativeBlock]
+        let nativeSerializationSHA256: String
+    }
+
+    private static func completedContent(
+        title: String, markdown: String, originalDocument: Markdown.Document,
+        originalSourceText: String?, speculativeRewritten: Bool,
+        citationMarker: String, citationMarkerQueryParam: String
+    ) throws -> CompletedContent {
+        try PinkhaHanlinSaveMessagePlan.validateContent(title: title, markdown: markdown)
         guard !speculativeRewritten,
-              let originalSourceText, originalSourceText.utf8.elementsEqual(plan.markdown.utf8),
+              let originalSourceText, originalSourceText.utf8.elementsEqual(markdown.utf8),
               !citationMarker.isEmpty, citationMarker.utf8.count <= 256,
               !citationMarkerQueryParam.isEmpty, citationMarkerQueryParam.utf8.count <= 256 else {
             // In particular, original LaTeX preprocessing changes source bytes.
@@ -40,7 +75,7 @@ public struct PinkhaHanlinMarkdownSaveConversion: Sendable {
         }
         var builder = Builder(citationMarker: citationMarker, citationMarkerQueryParam: citationMarkerQueryParam)
         for child in originalDocument.children { try builder.append(child) }
-        let document = try PinkhaHanlinSaveMessageDocument(title: plan.title, blocks: builder.rows.map(\.semantic))
+        let document = try PinkhaHanlinSaveMessageDocument(title: title, blocks: builder.rows.map(\.semantic))
         let serialization: AnyJSON = .object([
             "contract": .string(PinkhaHanlinSaveMessageManifest.conversionContract),
             "hanlinMarkdownRevision": .string(Self.hanlinMarkdownRevision),
@@ -55,9 +90,8 @@ public struct PinkhaHanlinMarkdownSaveConversion: Sendable {
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         let bytes = try encoder.encode(serialization)
         guard bytes.count <= 262_144 else { throw PinkhaHanlinSaveMessageError.unsupportedDocument }
-        self.manifest = try document.manifest(for: plan,
+        return .init(document: document, blocks: builder.rows,
             nativeSerializationSHA256: PinkhaHanlinCreatePagePlan.digest(bytes))
-        self.document = document; self.blocks = builder.rows
     }
 
     private struct Inline {

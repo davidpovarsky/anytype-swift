@@ -167,6 +167,68 @@ final class PinkhaHanlinSaveMessageConversionTests: XCTestCase {
         XCTAssertThrowsError(try root.applying(.bodyVerified(witness)))
     }
 
+    func testPureCompletedMessageSupportMatchesOriginalConversionAndKeepsManifestIdentity() async throws {
+        let bodies = [
+            "# כותרת\n\n**שלום** e\u{301} 👩🏽‍💻 [link](https://example.test/path?q=1)",
+            "> Quote\n\n- one\n- two\n\n1. first\n2. second\n\n- [x] done\n",
+            "```swift\nlet value = 1\n```\n"
+        ]
+        for body in bodies {
+            let original = try plan(body)
+            let before = try await PinkhaHanlinOriginalMarkdownSavePlanner.convert(original)
+            let supported = await PinkhaHanlinOriginalMarkdownSavePlanner.supportsCompletedMessage(
+                title: original.title, markdown: body)
+            XCTAssertTrue(supported)
+            let after = try await PinkhaHanlinOriginalMarkdownSavePlanner.convert(original)
+            XCTAssertEqual(before.manifest, after.manifest)
+            XCTAssertEqual(before.blocks.map(\.type), after.blocks.map(\.type))
+            XCTAssertEqual(before.blocks.map { Data($0.text.utf8) }, after.blocks.map { Data($0.text.utf8) })
+            XCTAssertEqual(before.blocks.map(\.style), after.blocks.map(\.style))
+            XCTAssertEqual(before.blocks.map(\.position), after.blocks.map(\.position))
+        }
+    }
+
+    func testPureCompletedMessageSupportRefusesTheSameUnsupportedStructures() async throws {
+        let bodies = [
+            "| A | B |\n| --- | --- |\n| one | two |",
+            "![image](https://example.test/image.png)",
+            "<div>HTML</div>", "---", "- parent\n  - nested",
+            "3. restarted list", "$x^2$",
+            Array(repeating: "paragraph", count: 65).joined(separator: "\n\n")
+        ]
+        for body in bodies {
+            let supported = await PinkhaHanlinOriginalMarkdownSavePlanner.supportsCompletedMessage(
+                title: "TITLE", markdown: body)
+            XCTAssertFalse(supported)
+            try await requireUnsupported(body)
+        }
+    }
+
+    func testPureCompletedMessageContentBoundsUseExactUTF8WithoutAnInvocation() async {
+        let title = String(repeating: "א", count: 256)
+        let body = String(repeating: "א", count: 32_768)
+        XCTAssertEqual(title.utf8.count, PinkhaHanlinSaveMessagePlan.maximumTitleUTF8Bytes)
+        XCTAssertEqual(body.utf8.count, PinkhaHanlinSaveMessagePlan.maximumMarkdownUTF8Bytes)
+        let exact = await PinkhaHanlinOriginalMarkdownSavePlanner.supportsCompletedMessage(title: title, markdown: body)
+        XCTAssertTrue(exact)
+        for (title, markdown) in [("", "body"), (" \n", "body"), (title + "x", "body"),
+                                  ("TITLE", ""), ("TITLE", body + "x")] {
+            let supported = await PinkhaHanlinOriginalMarkdownSavePlanner.supportsCompletedMessage(
+                title: title, markdown: markdown)
+            XCTAssertFalse(supported)
+        }
+    }
+
+    func testCancelledPureCompletedMessageSupportNeverOffersAnAction() async {
+        let task = Task { () -> Bool in
+            withUnsafeCurrentTask { $0?.cancel() }
+            return await PinkhaHanlinOriginalMarkdownSavePlanner.supportsCompletedMessage(
+                title: "TITLE", markdown: "supported paragraph")
+        }
+        let supported = await task.value
+        XCTAssertFalse(supported)
+    }
+
     private func convert(_ markdown: String) async throws -> PinkhaHanlinMarkdownSaveConversion {
         try await PinkhaHanlinOriginalMarkdownSavePlanner.convert(plan(markdown))
     }
