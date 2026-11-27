@@ -1,0 +1,117 @@
+{
+  "schema": "pinkha-native-keyboard-structural-gap-v1",
+  "finding": "ANCHOR-NATIVE-STRUCTURE-01",
+  "status": "SOURCE_PROVEN_MISSING_UI_ROUTE",
+  "sourceCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "sourceTree": "2d8db7a1585d48b857578920fa19b3730dde488b",
+  "inputs": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "bytes": 61374,
+      "sha256": "8b461efe44868904b826da7b601c1537fd1c164705f861b15920143a556caac5",
+      "gitBlob": "81eec84bc476ce7d0c4835ebee912e57b35717c6"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "bytes": 73025,
+      "sha256": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",
+      "gitBlob": "0585f7031c638d97ae3d8f28b6a748e8e6eedc7a"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+      "bytes": 11425,
+      "sha256": "de35930cd2689caaaa1195576073a117fa917b5ff078fccb24baba98eac68c43",
+      "gitBlob": "a482992af95970d2516eabdea6133a35192c7c05"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBlockCreator.swift",
+      "bytes": 12014,
+      "sha256": "6bea1d2f1108cf737d68f91cf891c901e0140212b574aaf9e42fa63b392fd652",
+      "gitBlob": "353e8ed40134888e20884f0627b48c0d628fc14f"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/KeyboardActionHandler/KeyboardActionHandler.swift",
+      "bytes": 11418,
+      "sha256": "7a95f4ae207366ae9deb604614cd3ebd2d932fc23f13872db52dcf0c29456c02",
+      "gitBlob": "9b5a8c36d7f5b766717c436abf0a1b393b023881"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "symbols": [
+        "textView(_:shouldChangeTextIn:replacementText:)",
+        "AnyNativeTextView.insertText(_:)",
+        "AnyNativeTextView.deleteBackward()"
+      ],
+      "observation": "Ordinary Return is passed into the literal inline replacement route. The UITextView overrides specialize marked-text composition only. No native keyboard structural dispatch exists in this complete file."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "symbols": [
+        "changeText(blockID:source:displaySelection:renderedBlock:)",
+        "addTextBlock(_:before:)",
+        "createBlock(kind:text:before:direction:untargetedPlacement:diagnosticRequest:)"
+      ],
+      "observation": "The mounted presentation has a per-block text draft and independent block creation, but no split or merge mutation entry."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+      "symbols": [
+        "prepareTextEdit(_:blockID:inlineMarkdown:)",
+        "prepareWritingStyle(_:blockID:direction:alignment:)",
+        "apply(_:lease:authorize:)"
+      ],
+      "observation": "The exact Host editor API applies one existing-block conditional PATCH with document version and engine-run conditions, then verifies readback and an inverse. It cannot atomically create/delete a second block."
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBlockCreator.swift",
+      "symbols": [
+        "ensureBlock(_:authorize:onNativeConfirmed:)"
+      ],
+      "observation": "The independent current-writer block POST has its own creation journal and uncertain-result handling. Combining it with a text PATCH is not an atomic structural operation."
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/KeyboardActionHandler/KeyboardActionHandler.swift",
+      "symbols": [
+        "handle(info:textView:action:)",
+        "onDelete(text:info:parent:textView:)"
+      ],
+      "observation": "Heart already dispatches original setAndSplit and merge operations. This finding does not remove, replace or reimplement those paths."
+    }
+  ],
+  "requiredCapabilityBoundary": {
+    "owner": "Wave1 Native/Host capability coordinated by root; Wave2 downstream input/presentation only after a reviewed supported operation exists",
+    "operations": [
+      "Atomic split: replace one selected display range with a block boundary while retaining prefix/suffix native inline content, anchor identity fragments and all unrelated fields.",
+      "Atomic merge: join the exact current adjacent blocks, preserve semantic fragments/formatting and valid children/order, and retire the consumed block in one native change."
+    ],
+    "conditions": [
+      "Exact account, Space, object, native dataset, engine-run and current version/read authority; current write permission at dispatch.",
+      "Explicit source block identities and topology, exact original native content, Unicode-valid range and unambiguous ordering.",
+      "Native-generated or prepared creation identity with an idempotent recovery/receipt route; no blind retry after lost create reply.",
+      "One verified post-state and precise inverse for Undo/Redo, current-version refusal on stale history, all unaffected fields/blocks preserved."
+    ],
+    "forbiddenFallbacks": [
+      "No separate add plus delete or text PATCH sequence presented as atomic.",
+      "No whole-document Markdown rewrite.",
+      "No local-only offset anchor, synthesized native receipt, silent identity clone or optimistic save success."
+    ]
+  },
+  "heart2Existing": {
+    "sourceCommit": "a892500cfc552c9b975a49440fcf2f19fc1a6659",
+    "integratedAt": "2cb70379375a751a8e19eaa24efbba830da1b424",
+    "currentStage1SHA256": "c1e37371ce061cfec1ec6d30fc2f55a0df0e477f9727ffd96d635f46e91e0906",
+    "closedConsumerCommit": "ee0986954f92861904130ea4e443b5ccb08594ae",
+    "methods": [
+      "testMiddleSplitMergeUndoRedoAndColdReopen",
+      "testPartialRangeReplacementUndoRedoAndColdReopen"
+    ],
+    "newAnchorCoverageClaimed": false,
+    "compiledOrExecutedByThisAudit": false
+  },
+  "runtimeCalls": 0,
+  "testsExecuted": 0,
+  "productionEdits": 0,
+  "nativeContractChanges": 0
+}

@@ -1,0 +1,184 @@
+
+#if os(macOS) || os(Linux)
+#if canImport(Darwin)
+import Darwin
+#else
+import Glibc
+#endif
+
+/// Actual Host apply/readback through the original HTTP client and target checks.
+/// The loopback server is a controlled reply fixture, not native-engine evidence.
+@MainActor
+final class NativeTextEditReadbackHTTPTests: XCTestCase {
+    func testCanonicalEquivalentTextReadbackCannotCertifyWriteOrMintUndo() async throws {
+        for (before, requested) in Self.unicodeInputs {
+            let result = try await apply(before: before, requested: requested, exactReply: false)
+            XCTAssertEqual(result.readback, .nativeAcceptedButCurrentStateUnverified)
+            XCTAssertNil(result.undo)
+        }
+    }
+
+    func testExactUnicodeTextReadbackRetainsVerifiedReceiptAndExactInverse() async throws {
+        for (before, requested) in Self.unicodeInputs {
+            let result = try await apply(before: before, requested: requested, exactReply: true)
+            XCTAssertEqual(result.readback, .verifiedCurrent)
+            let undo = try XCTUnwrap(result.undo)
+            XCTAssertEqual(undo.expectedVersion, "editor-v2")
+            XCTAssertEqual(undo.blockID, "block")
+            XCTAssertEqual(Set(undo.set.keys), ["text"])
+            XCTAssertTrue(undo.unset.isEmpty)
+            let inverse = try XCTUnwrap(undo.set["text"]?.string)
+            XCTAssertEqual(Array(inverse.utf8), Array(before.utf8))
+            let redo = try XCTUnwrap(undo.inverseSet["text"]?.string)
+            XCTAssertEqual(Array(redo.utf8), Array(requested.utf8))
+        }
+    }
+
+    private static var unicodeInputs: [(String, String)] {
+        let marker = "pinkha-anchor://v1/c3BhY2U/b2JqZWN0/00000000-0000-0000-0000-000000000001"
+        func source(_ body: String) -> String { "[Before " + body + " after](" + marker + ")" }
+        return [
+            (source("\u{00e9}"), source("e\u{0301}")),
+            (source("\u{05e9}\u{05b8}\u{05c1}"), source("\u{05e9}\u{05c1}\u{05b8}"))
+        ]
+    }
+
+    private func apply(before: String, requested: String, exactReply: Bool) async throws -> AnyBlockEditReceipt {
+        XCTAssertFalse(before.utf8.elementsEqual(requested.utf8))
+        XCTAssertEqual(before, requested, "The fixture must exercise canonical equivalence with different raw bytes")
+        let reply = exactReply ? requested : before
+        let fixture = try TextReadbackHTTPFixture(before: before, requested: requested, reply: reply)
+        defer { fixture.stop() }
+        let workspace = try AnyTorahWorkspace(accountID: "account", spaceID: "space")
+        let store = try AnyEditorDocumentStore(client: fixture.client(), workspace: workspace, allowedTypeIDs: ["page"])
+        let owner = try AnyApplicationSession(workspace: workspace, engineStartedAt: "run1", verifyRun: { "run1" })
+        let values: (AnyEditorRead, AnyPreparedBlockEdit, AnyBlockEditReceipt, AnyEditorRead)
+        do {
+            values = try await owner.perform { lease in
+                let initial = try await store.read(objectID: "object", lease: lease)
+                let edit = try store.prepareTextEdit(initial, blockID: "block", inlineMarkdown: requested)
+                let receipt = try await store.apply(edit, lease: lease)
+                let observed = try await store.read(objectID: "object", lease: lease)
+                return (initial, edit, receipt, observed)
+            }
+        } catch {
+            await owner.revokeAndDrain()
+            throw error
+        }
+        await owner.revokeAndDrain()
+        let originalText = try XCTUnwrap(values.0.snapshot.blocks.first?.text)
+        let preparedText = try XCTUnwrap(values.1.set["text"]?.string)
+        let observedText = try XCTUnwrap(values.3.snapshot.blocks.first?.text)
+        XCTAssertEqual(Array(originalText.utf8), Array(before.utf8))
+        XCTAssertEqual(Array(preparedText.utf8), Array(requested.utf8))
+        XCTAssertEqual(values.1.expectedVersion, "editor-v1")
+        XCTAssertEqual(values.3.nativeVersion, "editor-v2")
+        XCTAssertEqual(Array(observedText.utf8), Array(reply.utf8))
+        XCTAssertEqual(values.2.nativeVersionID, "native-write-v2")
+        let patches = try fixture.rows().filter { $0["method"]?.string == "PATCH" }
+        XCTAssertEqual(patches.count, 1, "The real HTTP client must send the raw change exactly once")
+        let patch = try XCTUnwrap(patches.first)
+        XCTAssertEqual(patch["path"]?.string, "/v1/spaces/space/objects/object/editor/editor_blocks/blocks/block")
+        let dispatched = try XCTUnwrap(patch["body"]?["set"]?["text"]?.string)
+        XCTAssertEqual(Array(dispatched.utf8), Array(requested.utf8))
+        XCTAssertEqual(patch["textUTF8"]?.array?.compactMap(\.integer), requested.utf8.map(Int64.init))
+        XCTAssertEqual(patch["body"]?["ifVersion"]?.string, "editor-v1")
+        XCTAssertEqual(patch["body"]?["ifStartedAt"]?.string, "run1")
+        XCTAssertEqual(patch["body"]?["unset"], .array([]))
+        return values.2
+    }
+}
+
+private enum TextReadbackFixtureFailure: Error { case invalidFixture }
+
+/// Same owned Python/loopback and stdin-EOF pattern as the existing Engine HTTP tests.
+/// Each new private directory and every raw reply/dispatch remain available for review.
+private final class TextReadbackHTTPFixture: @unchecked Sendable {
+    private let directory: URL
+    private let process = Process()
+    private let control = Pipe()
+    private var stderr: FileHandle?
+    private var port = 0
+    private var stopped = false
+
+    init(before: String, requested: String, reply: String) throws {
+        directory = FileManager.default.temporaryDirectory.resolvingSymlinksInPath()
+            .appendingPathComponent("pinkha-host-text-readback-" + UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false,
+                                                attributes: [.posixPermissions: 0o700])
+        // A setgid parent can add02000. Normalize only this newly created owned
+        // directory, then retain the existing exact mode/owner admission.
+        try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: directory.path)
+        let attributes = try FileManager.default.attributesOfItem(atPath: directory.path)
+        guard directory.resolvingSymlinksInPath().path == directory.path,
+              attributes[.type] as? FileAttributeType == .typeDirectory,
+              (attributes[.posixPermissions] as? NSNumber)?.intValue == 0o700,
+              (attributes[.ownerAccountID] as? NSNumber)?.uint32Value == geteuid() else {
+            throw TextReadbackFixtureFailure.invalidFixture
+        }
+        let config: AnyJSON = .object(["before": .string(before), "requested": .string(requested), "reply": .string(reply)])
+        try JSONEncoder().encode(config).write(to: directory.appendingPathComponent("config.json"))
+        let script = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Fixtures/editor_text_readback_server.py")
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+        process.arguments = ["python3", "-B", script.path, directory.path]
+        process.standardInput = control
+        guard fcntl(control.fileHandleForWriting.fileDescriptor, F_SETFD, FD_CLOEXEC) == 0 else {
+            throw TextReadbackFixtureFailure.invalidFixture
+        }
+        let log = directory.appendingPathComponent("stderr.log")
+        guard FileManager.default.createFile(atPath: log.path, contents: nil,
+            attributes: [.posixPermissions: 0o600]) else { throw TextReadbackFixtureFailure.invalidFixture }
+        stderr = try FileHandle(forWritingTo: log)
+        process.standardOutput = FileHandle.nullDevice
+        process.standardError = stderr
+        print("Host text readback fixture evidence: " + directory.path)
+        do {
+            try process.run()
+            try control.fileHandleForReading.close()
+            let deadline = Date().addingTimeInterval(5)
+            let ready = directory.appendingPathComponent("port.json")
+            while !FileManager.default.fileExists(atPath: ready.path) {
+                guard process.isRunning, Date() < deadline else { throw TextReadbackFixtureFailure.invalidFixture }
+                Thread.sleep(forTimeInterval: 0.01)
+            }
+            port = try JSONDecoder().decode(Int.self, from: Data(contentsOf: ready))
+            guard (1...65_535).contains(port) else { throw TextReadbackFixtureFailure.invalidFixture }
+        } catch { stop(); throw error }
+    }
+
+    deinit { try? control.fileHandleForWriting.close() }
+
+    func client() throws -> AnyHTTPClient {
+        try .init(baseURL: URL(string: "http://127.0.0.1:\(port)")!, expectedAccountID: "account")
+    }
+
+    func rows() throws -> [AnyJSON] {
+        try JSONDecoder().decode([AnyJSON].self, from: Data(contentsOf: directory.appendingPathComponent("dispatch.json")))
+    }
+
+    func stop(file: StaticString = #filePath, line: UInt = #line) {
+        guard !stopped else { return }
+        stopped = true
+        do { try control.fileHandleForWriting.close() }
+        catch { XCTFail("Owned fixture stdin close failed; evidence: " + directory.path, file: file, line: line) }
+        let deadline = Date().addingTimeInterval(3)
+        while process.isRunning && Date() < deadline { Thread.sleep(forTimeInterval: 0.01) }
+        guard process.processIdentifier > 0, !process.isRunning else {
+            XCTFail("Owned fixture did not exit after EOF; evidence retained: " + directory.path, file: file, line: line)
+            return
+        }
+        process.waitUntilExit()
+        XCTAssertEqual(process.terminationReason, .exit, file: file, line: line)
+        XCTAssertEqual(process.terminationStatus, 0, file: file, line: line)
+        do {
+            try stderr?.synchronize(); try stderr?.close()
+            let start = try JSONDecoder().decode(AnyJSON.self, from: Data(contentsOf: directory.appendingPathComponent("fixture-start.json")))
+            let end = try JSONDecoder().decode(AnyJSON.self, from: Data(contentsOf: directory.appendingPathComponent("fixture-exit.json")))
+            XCTAssertEqual(start["pid"]?.integer, Int64(process.processIdentifier), file: file, line: line)
+            XCTAssertEqual(end["pid"]?.integer, Int64(process.processIdentifier), file: file, line: line)
+            XCTAssertEqual(end["stopReason"]?.string, "stdin-eof", file: file, line: line)
+        } catch { XCTFail("Owned fixture closure evidence unavailable: " + directory.path, file: file, line: line) }
+    }
+}
+#endif

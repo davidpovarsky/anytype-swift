@@ -26,7 +26,10 @@
     "testNativeLibraryAndEditorAccessibilityAuditAtRequestedContentSize",
     "testNativeVoiceOverTraversalSpeaksCurrentNativeContent",
     "testTypedBlockMenusPersistAllNineKindsAndColdReopen",
-    "testNativeStyledTypographyRefreshesLiveAtAccessibilitySize"
+    "testNativeStyledTypographyRefreshesLiveAtAccessibilitySize",
+    "testCanonicallyEquivalentLatinTypingPreservesNativeAnchorAndColdReopen",
+    "testCanonicallyEquivalentHebrewTypingPreservesNativeAnchorAndColdReopen",
+    "testNativePropertyValueCancelAndUndoSurviveColdReopen"
   ],
   "nativeLibraryBuildsInThisPhase": 0,
   "originalCompilerProfile": {
@@ -84,57 +87,224 @@
   "scheme": "PinkhaAnyNativeTransitionUI",
   "scope": "UI_RUNNER_COMPILATION_ONLY_NOT_RUNTIME_ADMISSION",
   "sourceCompatibilitySuccessor": {
-    "actualReviewedRoot": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
-    "allOriginalFunctionBodiesUnchanged": true,
-    "allOriginalSwiftTestsUnchanged": true,
-    "finalSourceSDKNativeTuple": null,
-    "originalContract": {
-      "bytes": 8335,
-      "gitBlob": "d7426d4c8ec557621632ea8c6a2b33b8e9185be3",
-      "sha256": "930cfd8cd6bd0dcc8a6db94d02df1a03fab8f5acd0868c60ec28bc291e328e11"
+    "actualCompilerUsesCompleteNative26Swift": true,
+    "allOriginal25DeclarationsRetained": true,
+    "allOtherOriginalFunctionBodiesUnchanged": true,
+    "allPreviousCompilerReceiptsRequireNewExactContractAndInputs": true,
+    "changedPreviousNative25Pins": [
+      "NativeApp/UITests/NativeLaunchTests.swift"
+    ],
+    "completeNewSource": {
+      "bytes": 295880,
+      "gitBlob": "83fd25121f27f789dcce4cde088dd29e3df738a2",
+      "sha256": "e2979e777dd61f7eb8be06bd38028b15cc6f7e2d944fe6adce9603a3f7817358"
     },
-    "other25SourcePathPinsUnchanged": true,
-    "sourceChanges": {
-      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift": {
-        "compatibleBytes": 73025,
-        "compatibleGitBlob": "0585f7031c638d97ae3d8f28b6a748e8e6eedc7a",
-        "compatibleSHA256": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",
-        "origin": {
-          "commit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
-          "kind": "publishedRoot"
-        },
-        "originalSHA256": "422eed9e20b72f673e7b2b3fed303a314c2bd402ae2fd3cf74bd2d4f7727b67a"
+    "completeOriginalNative25Prefix": {
+      "bytes": 281769,
+      "gitBlob": "81c6406e99f4d92d23ccb72feae44114ac5a1058",
+      "sha256": "7d7d60d61cabaf7e8c968c4d30cd584100e9d90217f6b1b66441146cbf5d943b"
+    },
+    "currentSourcePinCount": 28,
+    "currentSourceProjectionSHA256": "e277f7b9f2aca1f3987b3fc46e40af0791c3d0facd6ceac45c5c3ad3553d33ac",
+    "exactNewPropertiesSuffix": {
+      "bytes": 14111,
+      "gitBlob": "705a640b6f07fef60fb861136a768c9a03eed82a",
+      "sha256": "511ea437a499605d148720d992958fa71df89e14c5bfa7b864a6169b1546a386"
+    },
+    "finalSourceSDKNativeTuple": null,
+    "fullOriginalProfileRestorable": true,
+    "legacyProtocolAndProductPathNamesRetained": true,
+    "newMethod": {
+      "allowanceSeconds": 900,
+      "completeDeclaration": {
+        "bytes": 13830,
+        "gitBlob": "aa0a4841a8755988f2f9214e7a1b7a27f6d6ae4f",
+        "sha256": "770eb4be938f567b2faaece00b47a88332eac5e849b7727a01a0bde41ea76617"
       },
-      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": {
-        "compatibleBytes": 35988,
-        "compatibleGitBlob": "9f121c30ad7c8caeab114c83bcb8586270c21708",
-        "compatibleSHA256": "beea22b4d19484f6dad508f819d874ece31d43a91d36fa0d03805c527c9332da",
-        "origin": {
-          "actualLocalSource": {
+      "enumerationCommandTimeoutSeconds": 360,
+      "executionCommandTimeoutSeconds": 1200,
+      "name": "testNativePropertyValueCancelAndUndoSurviveColdReopen",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativePropertyValueCancelAndUndoSurviveColdReopen",
+      "stage": "properties-undo"
+    },
+    "onlyExtendedOriginalFunction": "check_source",
+    "originalCompilerResourcePolicyUnchanged": true,
+    "previousNative25Compatibility": {
+      "actualCompilerUsesCompleteNative25Swift": true,
+      "allOtherOriginalFunctionBodiesUnchanged": true,
+      "changedPreviousPrepared2Pins": [
+        "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+        "NativeApp/UITests/NativeLaunchTests.swift"
+      ],
+      "currentSourcePinCount": 28,
+      "currentSourceProjectionSHA256": "e25b32b9bc28bd346ed6a629ad559a9f779a86ee53be85e6240708d86a24ed79",
+      "finalSourceSDKNativeTuple": null,
+      "fullOriginalProfileRestorable": true,
+      "newSourcePin": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+      "onlyExtendedOriginalFunction": "check_source",
+      "previousPrepared2Compatibility": {
+        "actualReviewedRoot": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+        "allOriginalFunctionBodiesUnchanged": true,
+        "allOriginalSwiftTestsUnchanged": true,
+        "finalSourceSDKNativeTuple": null,
+        "inspectorCurrentPinSuccessor": {
+          "allOriginalFunctionBodiesUnchanged": true,
+          "finalSourceSDKNativeTuple": null,
+          "nextSource": {
+            "bytes": 36414,
+            "gitBlob": "44418e9710c16412d3dced2e8ce53ae94eb264cc",
+            "sha256": "31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db"
+          },
+          "originalCurrentContract": {
+            "bytes": 10949,
+            "gitBlob": "f7ffe00a84001334e81b35db448bc7f925753c0d",
+            "sha256": "0b961a96cf76145662ba749c905bccdbcdc4f7971820ce5b682bf0a844da4444"
+          },
+          "other26CurrentSourcePinsUnchanged": true,
+          "previousSource": {
             "bytes": 35988,
             "gitBlob": "9f121c30ad7c8caeab114c83bcb8586270c21708",
-            "path": "/workspace/scratch/ae335eba85e3/w2-search-retry-1a890-review/source/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
             "sha256": "beea22b4d19484f6dad508f819d874ece31d43a91d36fa0d03805c527c9332da"
           },
-          "donor": "1a890015578962bc6eab8c6e9bb70c51ce189cf3",
-          "donorTree": "544e38af0893c86eeaffa72aa9053c302d5e09c7",
-          "kind": "reviewedProposedUnionNotApplied",
-          "union": {
-            "bytes": 224677,
-            "gitBlob": "7f51d030c5338836c98bcfe3b30c9143eb61be69",
-            "path": "/workspace/scratch/ae335eba85e3/w2-attachment-tier-9986-review/successor-210-source-union.json",
-            "sha256": "e5ad45b418fb6b8b658f688038dcc49cb6a8bb8f6dcd299540c2cfb47740413c"
+          "runtimeReady": false
+        },
+        "originalContract": {
+          "bytes": 8335,
+          "gitBlob": "d7426d4c8ec557621632ea8c6a2b33b8e9185be3",
+          "sha256": "930cfd8cd6bd0dcc8a6db94d02df1a03fab8f5acd0868c60ec28bc291e328e11"
+        },
+        "other25SourcePathPinsUnchanged": true,
+        "sourceChanges": {
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift": {
+            "compatibleBytes": 73025,
+            "compatibleGitBlob": "0585f7031c638d97ae3d8f28b6a748e8e6eedc7a",
+            "compatibleSHA256": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",
+            "origin": {
+              "commit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+              "kind": "publishedRoot"
+            },
+            "originalSHA256": "422eed9e20b72f673e7b2b3fed303a314c2bd402ae2fd3cf74bd2d4f7727b67a"
+          },
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": {
+            "compatibleBytes": 36414,
+            "compatibleGitBlob": "44418e9710c16412d3dced2e8ce53ae94eb264cc",
+            "compatibleSHA256": "31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db",
+            "origin": {
+              "donor": "c3f2b562f32540f7ba1e1d3d43601b6699ea676a",
+              "donorTree": "1073992216c6ab0c132624112af9214ef20d1e29",
+              "kind": "reviewedPublishedInspectorDonorNotApplied",
+              "previousRetryOrigin": {
+                "actualLocalSource": {
+                  "bytes": 35988,
+                  "gitBlob": "9f121c30ad7c8caeab114c83bcb8586270c21708",
+                  "path": "/workspace/scratch/ae335eba85e3/w2-search-retry-1a890-review/source/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+                  "sha256": "beea22b4d19484f6dad508f819d874ece31d43a91d36fa0d03805c527c9332da"
+                },
+                "donor": "1a890015578962bc6eab8c6e9bb70c51ce189cf3",
+                "donorTree": "544e38af0893c86eeaffa72aa9053c302d5e09c7",
+                "kind": "reviewedProposedUnionNotApplied",
+                "union": {
+                  "bytes": 224677,
+                  "gitBlob": "7f51d030c5338836c98bcfe3b30c9143eb61be69",
+                  "path": "/workspace/scratch/ae335eba85e3/w2-attachment-tier-9986-review/successor-210-source-union.json",
+                  "sha256": "e5ad45b418fb6b8b658f688038dcc49cb6a8bb8f6dcd299540c2cfb47740413c"
+                }
+              },
+              "sourceReview": {
+                "bytes": 7824,
+                "gitBlob": "bdf76a561de2598cf3052a6db5607a4e8032fab8",
+                "path": "w2-inspector-c3-independent-review/independent-review.json",
+                "sha256": "f816cad4a151579df92277dde28f13f2162e48f9b2c180a515709259db6d66e8"
+              }
+            },
+            "originalSHA256": "8a2a18ad56ac7fde85223bf24bc8c104204e2031eddf9548ad810832aa8a673f"
           }
         },
-        "originalSHA256": "8a2a18ad56ac7fde85223bf24bc8c104204e2031eddf9548ad810832aa8a673f"
+        "sourcePinAudit": {
+          "bytes": 24058,
+          "gitBlob": "3ea00a74eb239db645829045238af53414edd548",
+          "sha256": "a6c24a065b0579fa3af4d1c8a46755a829430901457cbbd9093d03db40093a1c"
+        },
+        "status": "EXACT_REVIEWED_PRODUCT_SOURCE_ONLY_RUNTIME_CLOSED"
+      },
+      "previousPrepared2Contract": {
+        "bytes": 12364,
+        "gitBlob": "7ff3932e59af7fb0d7cf8c1575c652de6bd61cd6",
+        "sha256": "31357742ce4d03758ab05f7b5501b5fa0e3e385098ffbab0948f17490c53ea10"
+      },
+      "runtimeReady": false,
+      "status": "EXACT_REVIEWED_INSPECTOR_AND_NATIVE25_SOURCE_ONLY_RUNTIME_CLOSED",
+      "unchangedPreviousPrepared2PinCount": 25,
+      "unicodeNative25Successor": {
+        "actualCompilerUsesCompleteNative25Swift": true,
+        "allPreviousCompilerReceiptsRequireNewExactContractAndInputs": true,
+        "completeNewSource": {
+          "bytes": 281769,
+          "gitBlob": "81c6406e99f4d92d23ccb72feae44114ac5a1058",
+          "sha256": "7d7d60d61cabaf7e8c968c4d30cd584100e9d90217f6b1b66441146cbf5d943b"
+        },
+        "completeOriginalPrefix": {
+          "bytes": 271344,
+          "gitBlob": "faa1d9a78c52a126f01eb2d001aec919424dd07f",
+          "sha256": "8d58c41e8907019bf67088900bb5c35843562edd669422573c1280f800500e86"
+        },
+        "exactNewSuffix": {
+          "bytes": 10425,
+          "gitBlob": "ef9ba83a7e2e322849bf9b09e7cdd33530380b93",
+          "sha256": "9a0880aebe30b7e2ac89794b75cdf049a792d3576bbfa1945c50693d9f78bcb1"
+        },
+        "finalSourceSDKNativeTuple": null,
+        "legacyProtocolAndProductPathNamesRetained": true,
+        "methods": [
+          {
+            "allowanceSeconds": 1800,
+            "completeDeclaration": {
+              "bytes": 273,
+              "gitBlob": "e8c9866bbd62fdb2d4e0157b2c48a6d1e292223f",
+              "sha256": "b3f62586aa335e0ee5d633c07d89bdd26ce8cd59605032adefe1ccbdb192ed15"
+            },
+            "enumerationCommandTimeoutSeconds": 360,
+            "executionCommandTimeoutSeconds": 2100,
+            "name": "testCanonicallyEquivalentLatinTypingPreservesNativeAnchorAndColdReopen",
+            "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicallyEquivalentLatinTypingPreservesNativeAnchorAndColdReopen",
+            "stage": "unicode-latin"
+          },
+          {
+            "allowanceSeconds": 1800,
+            "completeDeclaration": {
+              "bytes": 321,
+              "gitBlob": "cf8931a4bb59480f13a6b0ab8f1e5afeca7bd716",
+              "sha256": "cbbe54a1f36ec92dd928cddf024dd29c0a3f2709773d9ec0ae26cab59f8807be"
+            },
+            "enumerationCommandTimeoutSeconds": 360,
+            "executionCommandTimeoutSeconds": 2100,
+            "name": "testCanonicallyEquivalentHebrewTypingPreservesNativeAnchorAndColdReopen",
+            "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicallyEquivalentHebrewTypingPreservesNativeAnchorAndColdReopen",
+            "stage": "unicode-hebrew"
+          }
+        ],
+        "original23DeclarationsRetained": true,
+        "originalCompilerResourcePolicyUnchanged": true,
+        "originalPrepared2Contract": {
+          "bytes": 12364,
+          "gitBlob": "7ff3932e59af7fb0d7cf8c1575c652de6bd61cd6",
+          "sha256": "31357742ce4d03758ab05f7b5501b5fa0e3e385098ffbab0948f17490c53ea10"
+        },
+        "publishedSource": "13dc5b060c23527aeaedb1d1e250a86c9a2fc17c",
+        "publishedTree": "79fd8ae0d576c3c854642acd1bde44b6fc08fd1a",
+        "runtimeReady": false
       }
     },
-    "sourcePinAudit": {
-      "bytes": 24058,
-      "gitBlob": "3ea00a74eb239db645829045238af53414edd548",
-      "sha256": "a6c24a065b0579fa3af4d1c8a46755a829430901457cbbd9093d03db40093a1c"
+    "previousNative25Contract": {
+      "bytes": 16608,
+      "gitBlob": "6fbd8bfa9a9b81a3af02480f3814335025fdaeda",
+      "sha256": "4608ebd5903008074fc43c55aee238804a28839e2e2441fe000051c4d9f8733a"
     },
-    "status": "EXACT_REVIEWED_PRODUCT_SOURCE_ONLY_RUNTIME_CLOSED"
+    "publishedNative26Source": "d528e5413c72320c423ce9ccdbd4fbe423ca4a4a",
+    "publishedNative26Tree": "afea5b145a8f18d96d8dfea3e6e302c8a9287ab9",
+    "runtimeReady": false,
+    "status": "EXACT_REVIEWED_INSPECTOR_UNICODE_AND_PROPERTIES_SOURCE_ONLY_RUNTIME_CLOSED",
+    "unchangedPreviousNative25PinCount": 27
   },
   "sourcePathPins": {
     "Anytype/Sources/Design system/TextComponents/TextContent+Font.swift": "b001239ea8113c96a0a315af1647c511f51fc4b76cfe67372237199b4fe02d58",
@@ -142,10 +312,11 @@
     "Modules/DesignKit/Sources/DesignKit/Fonts/Config/UIKitFont.swift": "0bbb1e74fffa9360df76921f91c68b6aa3c502b8374bcd1a10349b92b37ddb67",
     "Modules/DesignKit/Sources/DesignKit/Fonts/Generated/Fonts.swift": "14a5b94f5ca6df53aaefc5daba480941045cb86e609d809df90fb9df46027b4b",
     "Modules/PinkhaAnyUI/Package.swift": "298ef94254c6d8f17a389a5ff0efd02a5c03099e9a819b50886a5d9e8b3d9854",
-    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",
     "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeBlockCreationMenu.swift": "4e76920ba0d9bc24aba432c681c771ed90b77bda1497bde3f70f1ccc6401a512",
-    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": "beea22b4d19484f6dad508f819d874ece31d43a91d36fa0d03805c527c9332da",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": "31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db",
     "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift": "8b461efe44868904b826da7b601c1537fd1c164705f861b15920143a556caac5",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift": "2abe0317ede786772c8fb1f427f476d24605031fb7f929394f548cd9196e1155",
     "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextBlockKind.swift": "61f1fe2d2d2a282dd846279db9be519c00628bf6d2b2f4771bb52350ec889275",
     "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextTypography.swift": "5e14d63f52575461d43de7494b379ffd969194d89dbfb415ce75a51344a5d4d7",
     "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnySemanticAnchorObservation.swift": "b141d6ba3f78bcddc4b35cbe0a7afb107b09ab38c067b2222ccf14787b699b48",
@@ -153,7 +324,7 @@
     "NativeApp/AnyNative.xcodeproj/project.pbxproj": "7282befe3104df28a3e0f5feef05a018bc515c68cf443307de65dbe977e33532",
     "NativeApp/AnyNative.xcodeproj/xcshareddata/xcschemes/PinkhaAnyNativeApp.xcscheme": "f208c605b78e849e18defc7c759f3588dc9ab9b3f3bdd7502257c605da9db308",
     "NativeApp/UITests/NativeHistoryTests.swift": "2772d790979de88a3b622f17453a91ca792114292016f01e31386de7f4f614ca",
-    "NativeApp/UITests/NativeLaunchTests.swift": "8d58c41e8907019bf67088900bb5c35843562edd669422573c1280f800500e86",
+    "NativeApp/UITests/NativeLaunchTests.swift": "e2979e777dd61f7eb8be06bd38028b15cc6f7e2d944fe6adce9603a3f7817358",
     "Tools/AnyEnginePort/native_ui_transition_contract.py": "42d56e2193643fde5ae6f329b63a123fee89a2ef22d858e3bea8aeb94cd0d3d5",
     "Tools/AnyEnginePort/native_ui_transition_project.py": "3c666726a42f9e42b481f82e45d90362079c0c0ff062192e4b5c3461ea1f02ec",
     "Tools/AnyEnginePort/verify_native_test_execution.py": "af126a59d47fec07b0d465c0077c812fb5f52cfcadf71a2da22cebb969e21b91",
@@ -177,8 +348,8 @@
       "sha256": "2772d790979de88a3b622f17453a91ca792114292016f01e31386de7f4f614ca"
     },
     "NativeApp/UITests/NativeLaunchTests.swift": {
-      "bytes": 271344,
-      "sha256": "8d58c41e8907019bf67088900bb5c35843562edd669422573c1280f800500e86"
+      "bytes": 295880,
+      "sha256": "e2979e777dd61f7eb8be06bd38028b15cc6f7e2d944fe6adce9603a3f7817358"
     }
   },
   "target": "PinkhaAnyNativeUITests",

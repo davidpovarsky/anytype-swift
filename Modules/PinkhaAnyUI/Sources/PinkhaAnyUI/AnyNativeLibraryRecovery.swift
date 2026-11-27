@@ -113,8 +113,8 @@ public enum AnyNativeDraftReconciliation: Sendable, Equatable {
               current.type == draft.baseNative["type"]?.string else { return .conflict }
         // A late native confirmation may outlive its old mounted UI owner.
         // Matching current text is accepted without issuing another mutation.
-        if current.text == draft.inlineMarkdown { return .alreadyStored }
-        guard current.text == (draft.baseNative["text"]?.string ?? ""),
+        if current.text.utf8.elementsEqual(draft.inlineMarkdown.utf8) { return .alreadyStored }
+        guard current.text.utf8.elementsEqual((draft.baseNative["text"]?.string ?? "").utf8),
               current.native["_ver"] == draft.baseNative["_ver"] else { return .conflict }
         return .requiresReview
     }

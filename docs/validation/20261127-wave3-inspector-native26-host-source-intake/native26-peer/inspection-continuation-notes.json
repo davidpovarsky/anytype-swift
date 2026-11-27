@@ -1,0 +1,19 @@
+{
+  "candidateChanged": false,
+  "candidateImports": 0,
+  "entries": [
+    {
+      "explanation": "Prepared2 static-proof structure differs from prepared1. The final independent verifier reads the original declaration identities from preserved prepared1 and independently compares actual prepared2 bytes.",
+      "originalOutput": "Traceback (most recent call last):\n  File \"<stdin>\", line 8, in <module>\nKeyError: 'unchangedOriginalProfileDeclarations'\n",
+      "status": "REVIEWER_SCHEMA_LOOKUP_STOP"
+    },
+    {
+      "explanation": "The original failure/custody declarations are in control.py, while SameJobBridge is in run.py. Final independent verification used their actual files and passed. Neither candidate nor historical source was edited.",
+      "originalOutput": "Traceback (most recent call last):\n  File \"<stdin>\", line 39, in <module>\nKeyError: 'exclusive'\n",
+      "status": "REVIEWER_DECLARATION_LOCATION_STOP"
+    }
+  ],
+  "hostActions": 0,
+  "schema": "pinkha-independent-reviewer-inspection-notes-v1",
+  "testsExecuted": 0
+}

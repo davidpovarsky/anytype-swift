@@ -4716,3 +4716,413 @@ private enum NativeStyledFailure: Error {
     case staleRendezvous, rendezvousBounds, controllerDidNotRespond(String), invalidControllerResponse
 }
 // END_NATIVE_STYLED_BLOCK_ACCEPTANCE_FUTURE_V1
+
+// BEGIN_NATIVE_UNICODE_ANCHOR_REGRESSION_V1
+extension NativeLaunchTests {
+    /// Ordinary UIKit typing must not discard a raw NFC-to-NFD change as a
+    /// canonically equal no-op. This does not exercise marked-input IME.
+    func testCanonicallyEquivalentLatinTypingPreservesNativeAnchorAndColdReopen() throws {
+        executionTimeAllowance = 1_800
+        try assertUnicodeAnchorTypingAndColdReopen(
+            caseID: "latin-nfc-nfd", beforeBody: "\u{00e9}", afterBody: "e\u{0301}")
+    }
+
+    /// Hebrew combining marks can change exact stored bytes without changing
+    /// canonical String equality or the UTF-16 length.
+    func testCanonicallyEquivalentHebrewTypingPreservesNativeAnchorAndColdReopen() throws {
+        executionTimeAllowance = 1_800
+        try assertUnicodeAnchorTypingAndColdReopen(
+            caseID: "hebrew-mark-order", beforeBody: "\u{05e9}\u{05b8}\u{05c1}",
+            afterBody: "\u{05e9}\u{05c1}\u{05b8}")
+    }
+
+    private func assertUnicodeAnchorTypingAndColdReopen(
+        caseID: String, beforeBody: String, afterBody: String
+    ) throws {
+        let prefix = "Before ", suffix = " after"
+        let before = prefix + beforeBody + suffix, after = prefix + afterBody + suffix
+        XCTAssertFalse(before.utf8.elementsEqual(after.utf8))
+        XCTAssertTrue(before.precomposedStringWithCanonicalMapping.utf8.elementsEqual(
+            after.precomposedStringWithCanonicalMapping.utf8))
+        let scope = UUID(), nameSuffix = String(scope.uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION"] = "1"
+        let spaceName = "Unicode Anchor Space " + nameSuffix
+        let documentName = "Unicode Anchor Document " + nameSuffix
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        try createNamedItemWithObservedTransition(app, action: "any-native-new-document", title: documentName)
+        let addParagraph = app.buttons["any-native-add-paragraph"]
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: addParagraph, timeout: 60)
+        addParagraph.tap()
+        let editors = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        let editor = editors.firstMatch
+        waitForNativeEditorInput(app, editor)
+        editor.tap(); editor.typeText(before)
+        semanticCommit(app, editor: editor, text: before)
+        let blockIdentifier = editor.identifier
+        XCTAssertEqual(editors.count, 1)
+        let initial = try semanticObservation(app, phase: caseID + "-before") {
+            $0.nativeMarkCount == 0 && $0.blocks.count == 1 &&
+            $0.blocks[0].textSHA256 == Self.semanticHash(before) &&
+            $0.blocks[0].utf16Length == before.utf16.count
+        }
+
+        // The guard text belongs to this one selected anchor. Both guards must
+        // retain their exact bytes when the canonically equivalent body changes.
+        // This full-range regression does not claim partial-range acceptance.
+        try semanticSelectAll(app, editor: editor, length: before.utf16.count)
+        tapWhenEnabled(app.buttons["pinkha.semanticAnchor.capture"])
+        let confirmation = app.alerts.firstMatch
+        waitUntilEnabled(confirmation)
+        XCTAssertEqual(app.alerts.count, 1)
+        tapWhenEnabled(confirmation.buttons.matching(NSPredicate(
+            format: "label IN %@", ["Create text anchor", "יצירת עוגן טקסט"])).firstMatch)
+        waitUntilEnabled(app.alerts.staticTexts.matching(NSPredicate(format: "label IN %@", [
+            "The selected text now has an anchor.", "נוסף עוגן לטקסט שנבחר."
+        ])).firstMatch, timeout: 60)
+        tapWhenEnabled(app.alerts.buttons.matching(NSPredicate(
+            format: "label IN %@", ["Done", "סיום"])).firstMatch)
+        waitFor(NSPredicate(format: "exists == false"), object: app.alerts.firstMatch, timeout: 15)
+        let captured = try semanticObservation(app, phase: caseID + "-captured") {
+            $0.nativeMarkCount == 1 && $0.blocks.count == 1 &&
+            $0.blocks[0].textSHA256 == Self.semanticHash(before) &&
+            $0.blocks[0].utf16Length == before.utf16.count &&
+            $0.blocks[0].nativeMarks.count == 1 &&
+            $0.blocks[0].nativeMarks[0].location == 0 &&
+            $0.blocks[0].nativeMarks[0].length == before.utf16.count &&
+            $0.blocks[0].nativeMarks[0].textSHA256 == Self.semanticHash(before)
+        }
+        let mark = try XCTUnwrap(captured.blocks.first?.nativeMarks.first)
+        XCTAssertEqual(captured.blocks[0].nativeMarks, captured.blocks[0].renderedMarks)
+        XCTAssertNotEqual(captured.nativeVersionSHA256, initial.nativeVersionSHA256)
+        XCTAssertEqual(captured.blocks[0].blockSHA256, initial.blocks[0].blockSHA256)
+        try attachExactUnicodeAnchorValue(app, editor: editor, phase: caseID + "-captured",
+            expected: before, prefix: prefix, suffix: suffix)
+
+        // Use the original actual UIKit selection witness and keyboard path.
+        // A visible value alone is not an acknowledgement: the following
+        // observer refuses pending drafts and compares the native read to the
+        // rendered text using exact semantic-text bytes.
+        try semanticSelectAll(app, editor: editor, length: before.utf16.count)
+        editor.typeText(after)
+        semanticCommit(app, editor: editor, text: after)
+        let edited = try semanticObservation(app, phase: caseID + "-edited-native") {
+            $0.nativeMarkCount == 1 && $0.blocks.count == 1 &&
+            $0.blocks[0].textSHA256 == Self.semanticHash(after) &&
+            $0.blocks[0].utf16Length == after.utf16.count &&
+            $0.blocks[0].nativeMarks.count == 1 &&
+            $0.blocks[0].nativeMarks[0].identitySHA256 == mark.identitySHA256 &&
+            $0.blocks[0].nativeMarks[0].location == 0 &&
+            $0.blocks[0].nativeMarks[0].length == after.utf16.count &&
+            $0.blocks[0].nativeMarks[0].textSHA256 == Self.semanticHash(after)
+        }
+        XCTAssertNotEqual(edited.nativeVersionSHA256, captured.nativeVersionSHA256)
+        XCTAssertNotEqual(edited.blocks[0].sourceSHA256, captured.blocks[0].sourceSHA256)
+        XCTAssertEqual(edited.blocks[0].blockSHA256, captured.blocks[0].blockSHA256)
+        XCTAssertEqual(edited.spaceSHA256, captured.spaceSHA256)
+        XCTAssertEqual(edited.objectSHA256, captured.objectSHA256)
+        XCTAssertEqual(edited.blocks[0].nativeMarks, edited.blocks[0].renderedMarks)
+        XCTAssertEqual(Array(editor.identifier.utf8), Array(blockIdentifier.utf8))
+        try attachExactUnicodeAnchorValue(app, editor: editor, phase: caseID + "-edited-native",
+            expected: after, prefix: prefix, suffix: suffix)
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
+        waitForNativeEditorInput(app, editor)
+        let reopened = try semanticObservation(app, phase: caseID + "-cold-native") {
+            $0.nativeMarkCount == 1 && $0.blocks.count == 1 &&
+            $0.blocks[0].textSHA256 == Self.semanticHash(after) &&
+            $0.blocks[0].utf16Length == after.utf16.count &&
+            $0.blocks[0].nativeMarks.count == 1 &&
+            $0.blocks[0].nativeMarks[0].identitySHA256 == mark.identitySHA256 &&
+            $0.blocks[0].nativeMarks[0].location == 0 &&
+            $0.blocks[0].nativeMarks[0].length == after.utf16.count &&
+            $0.blocks[0].nativeMarks[0].textSHA256 == Self.semanticHash(after)
+        }
+        XCTAssertNotEqual(reopened.pid, edited.pid)
+        XCTAssertNotEqual(reopened.generation, edited.generation)
+        XCTAssertEqual(reopened.spaceSHA256, initial.spaceSHA256)
+        XCTAssertEqual(reopened.objectSHA256, initial.objectSHA256)
+        XCTAssertEqual(reopened.blocks[0].blockSHA256, initial.blocks[0].blockSHA256)
+        XCTAssertEqual(reopened.blocks[0].sourceSHA256, edited.blocks[0].sourceSHA256)
+        XCTAssertEqual(reopened.blocks[0].nativeMarks, edited.blocks[0].nativeMarks)
+        XCTAssertEqual(reopened.blocks[0].nativeMarks, reopened.blocks[0].renderedMarks)
+        XCTAssertEqual(Array(editor.identifier.utf8), Array(blockIdentifier.utf8))
+        XCTAssertEqual(editors.count, 1)
+        try attachExactUnicodeAnchorValue(app, editor: editor, phase: caseID + "-cold-native",
+            expected: after, prefix: prefix, suffix: suffix)
+    }
+
+    private func attachExactUnicodeAnchorValue(
+        _ app: XCUIApplication, editor: XCUIElement, phase: String,
+        expected: String, prefix: String, suffix: String
+    ) throws {
+        try requireArchiveObservationPastOnboarding(app)
+        let actual = try XCTUnwrap(editor.value as? String)
+        let actualBytes = Array(actual.utf8), expectedBytes = Array(expected.utf8)
+        let evidence: [String: Any] = [
+            "schema": "native-unicode-anchor-exact-ui/v1", "phase": phase,
+            "expectedUTF8": expectedBytes, "actualUTF8": actualBytes,
+            "expectedUTF16": Array(expected.utf16), "actualUTF16": Array(actual.utf16),
+            "prefixUTF8": Array(prefix.utf8), "suffixUTF8": Array(suffix.utf8),
+            "blockIdentifierSHA256": Self.semanticHash(editor.identifier),
+            "observationOrigin": "actual-XCUIElement-value-after-original-native-observation",
+            "inputPath": "ordinary-UIKit-typing", "markedInputIMEVerified": false
+        ]
+        let data = try JSONSerialization.data(withJSONObject: evidence, options: [.sortedKeys])
+        let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+        attachment.name = "native-unicode-anchor-" + phase
+        attachment.lifetime = .keepAlways; add(attachment)
+        let screen = XCTAttachment(screenshot: app.screenshot())
+        screen.name = "native-unicode-anchor-" + phase + "-screen"
+        screen.lifetime = .keepAlways; add(screen)
+        XCTAssertEqual(actualBytes, expectedBytes)
+        XCTAssertEqual(Array(actual.utf16), Array(expected.utf16))
+        XCTAssertEqual(Array(actualBytes.prefix(prefix.utf8.count)), Array(prefix.utf8))
+        XCTAssertEqual(Array(actualBytes.suffix(suffix.utf8.count)), Array(suffix.utf8))
+    }
+}
+// END_NATIVE_UNICODE_ANCHOR_REGRESSION_V1
+
+// BEGIN_NATIVE_PROPERTIES_CANCEL_UNDO_UI_V1
+extension NativeLaunchTests {
+    /// Real Name-property cancellation, native commit/Undo and cold readback.
+    /// Reuses the original owned account, document and read-only body observer.
+    @objc func testNativePropertyValueCancelAndUndoSurviveColdReopen() throws {
+        executionTimeAllowance = 900
+        let scope = UUID(), suffix = String(scope.uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        app.launchEnvironment["PINKHA_NATIVE_ANCHOR_OBSERVATION"] = "1"
+        let spaceName = "Property Undo Space " + suffix
+        let originalName = "Property Original " + suffix
+        let cancelledName = "Property Cancelled " + suffix
+        let savedName = "Property Saved " + suffix
+        let finalName = "Property Final " + suffix
+        let body = "שלום מאפיינים 726 " + suffix
+        var phase = "startup"
+        var safeDocumentFixture = false
+        var complete = false
+
+        enum JourneyError: Error { case missingIdentity, unexpectedValue, captureUnavailable }
+
+        func labels(_ values: [String]) -> NSPredicate {
+            NSPredicate(format: "label IN %@", values)
+        }
+        func uniqueButton(_ query: XCUIElementQuery) throws -> XCUIElement {
+            var selected: XCUIElement?
+            let ready = NSPredicate { _, _ in
+                let leaves = query.allElementsBoundByIndex.filter {
+                    $0.exists && $0.isEnabled && $0.isHittable &&
+                    $0.descendants(matching: .button).count == 0
+                }
+                guard leaves.count == 1 else { return false }
+                selected = leaves[0]; return true
+            }
+            let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)], timeout: 30)
+            XCTAssertEqual(result, .completed, "One actual enabled Properties action is required at " + phase)
+            guard result == .completed, let selected else { throw JourneyError.unexpectedValue }
+            return selected
+        }
+        func byteValue(_ element: XCUIElement, expected: String) throws -> String {
+            let ready = NSPredicate { _, _ in
+                element.exists && element.isEnabled && element.isHittable &&
+                (element.value as? String).map { Array($0.utf8) == Array(expected.utf8) } == true
+            }
+            waitFor(ready, object: element, timeout: 60)
+            guard let value = element.value as? String, Array(value.utf8) == Array(expected.utf8) else {
+                throw JourneyError.unexpectedValue
+            }
+            return value
+        }
+        let nameRow = app.buttons["any-native-property-name"]
+        let typeRow = app.descendants(matching: .any).matching(identifier: "any-native-property-type").firstMatch
+        let valueInput = app.descendants(matching: .any).matching(identifier: "any-native-property-value-input").firstMatch
+
+        func openProperties() {
+            tapWhenEnabled(app.buttons["any-native-document-properties"], timeout: 60)
+            waitUntilEnabled(app.descendants(matching: .any).matching(identifier: "any-native-properties-list").firstMatch)
+            waitUntilEnabled(typeRow)
+        }
+        func currentType() throws -> String {
+            revealNativeProperty(app, typeRow, scrollDown: true)
+            waitUntilEnabled(typeRow)
+            guard let value = typeRow.value as? String, !value.isEmpty, value.utf8.count <= 1024 else {
+                throw JourneyError.unexpectedValue
+            }
+            return value
+        }
+        func expectName(_ expected: String) throws {
+            waitFor(NSPredicate(format: "exists == false"), object: valueInput, timeout: 60)
+            guard !valueInput.exists else { throw JourneyError.unexpectedValue }
+            revealNativeProperty(app, nameRow)
+            _ = try byteValue(nameRow, expected: expected)
+            XCTAssertFalse(valueInput.exists, "The real value editor must have dismissed.")
+            XCTAssertFalse(app.alerts.firstMatch.exists)
+        }
+        func editName(from old: String, to new: String) throws {
+            try expectName(old)
+            nameRow.tap()
+            _ = try byteValue(valueInput, expected: old)
+            valueInput.tap()
+            valueInput.typeKey("a", modifierFlags: .command)
+            valueInput.typeText(XCUIKeyboardKey.delete.rawValue)
+            valueInput.typeText(new)
+            _ = try byteValue(valueInput, expected: new)
+        }
+        func capture(_ phaseName: String, expectedName: String, expectedType: String,
+                     context: SemanticAnchorUIObservation) throws {
+            phase = phaseName
+            try expectName(expectedName)
+            let observedType = try currentType()
+            XCTAssertEqual(Array(observedType.utf8), Array(expectedType.utf8))
+            try expectName(expectedName)
+            guard safeDocumentFixture, app.state == .runningForeground,
+                  !app.buttons["any-native-backup-continue"].exists,
+                  !app.secureTextFields["any-native-account-restore-phrase"].exists else {
+                throw JourneyError.captureUnavailable
+            }
+            let observedName = try byteValue(nameRow, expected: expectedName)
+            let data = try JSONSerialization.data(withJSONObject: [
+                "schema": "native-properties-cancel-undo-ui-v1", "phase": phaseName,
+                "method": "testNativePropertyValueCancelAndUndoSurviveColdReopen",
+                "ownedScope": scope.uuidString, "expectedName": expectedName, "observedName": observedName,
+                "expectedType": expectedType, "observedType": observedType,
+                "contextOrigin": "latest-original-read-only-native-body-observation-in-this-process",
+                "appPID": context.pid, "documentGeneration": context.generation,
+                "spaceSHA256": context.spaceSHA256, "objectSHA256": context.objectSHA256,
+                "bodySHA256": Self.semanticHash(body), "valueEditorAbsent": !valueInput.exists,
+                "testOnlyFixtureOrBypassMutations": 0, "directEngineCallsByTest": 0
+            ], options: [.sortedKeys])
+            let observation = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+            observation.name = "native-properties-undo-" + phaseName + "-observation"
+            observation.lifetime = .keepAlways; add(observation)
+            let tree = app.debugDescription
+            guard tree.utf8.count <= 262_144 else { throw JourneyError.captureUnavailable }
+            let ax = XCTAttachment(string: tree)
+            ax.name = "native-properties-undo-" + phaseName + "-accessibility"
+            ax.lifetime = .keepAlways; add(ax)
+            let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            screenshot.name = "native-properties-undo-" + phaseName + "-screenshot"
+            screenshot.lifetime = .keepAlways; add(screenshot)
+        }
+
+        app.launch()
+        defer {
+            let marker = XCTAttachment(string: "phase=\(phase); complete=\(complete)")
+            marker.name = "native-properties-undo-final-state"; marker.lifetime = .keepAlways; add(marker)
+            // Never capture the recovery phrase or an account gate. This new
+            // journey creates only its own document and never opens ShareLink.
+            if safeDocumentFixture && app.state == .runningForeground &&
+                !app.buttons["any-native-backup-continue"].exists &&
+                !app.secureTextFields["any-native-account-restore-phrase"].exists {
+                let tree = app.debugDescription
+                if tree.utf8.count <= 262_144 {
+                    let ax = XCTAttachment(string: tree)
+                    ax.name = "native-properties-undo-final-accessibility"; ax.lifetime = .keepAlways; add(ax)
+                } else {
+                    XCTFail("Final owned Properties accessibility evidence exceeded the fixed bound.")
+                }
+                let shot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+                shot.name = "native-properties-undo-final-screenshot"; shot.lifetime = .keepAlways; add(shot)
+            }
+            app.terminate()
+        }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        try createNamedItemWithObservedTransition(app, action: "any-native-new-document", title: originalName)
+        let addParagraph = app.buttons["any-native-add-paragraph"]
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: addParagraph, timeout: 60)
+        addParagraph.tap()
+        let editors = app.textViews.matching(NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-"))
+        let editor = editors.firstMatch
+        waitForNativeEditorInput(app, editor)
+        editor.tap(); editor.typeText(body)
+        semanticCommit(app, editor: editor, text: body)
+        let initial = try semanticObservation(app, phase: "property-undo-initial-body") {
+            $0.nativeMarkCount == 0 && $0.blocks.count == 1 && $0.blocks[0].textSHA256 == Self.semanticHash(body)
+        }
+        XCTAssertEqual(editors.count, 1)
+        let blockIdentifier = editor.identifier
+        guard blockIdentifier.hasPrefix("any-native-block-"),
+              blockIdentifier.count > "any-native-block-".count else { throw JourneyError.missingIdentity }
+        XCTAssertEqual(initial.blocks[0].blockSHA256, Self.semanticHash(String(blockIdentifier.dropFirst("any-native-block-".count))))
+        safeDocumentFixture = true
+
+        func sameBody(_ phaseName: String) throws -> SemanticAnchorUIObservation {
+            phase = phaseName
+            let actual = try semanticObservation(app, phase: phaseName) {
+                $0.nativeMarkCount == 0 && $0.blocks.count == 1 &&
+                $0.spaceSHA256 == initial.spaceSHA256 && $0.objectSHA256 == initial.objectSHA256 &&
+                $0.blocks[0].blockSHA256 == initial.blocks[0].blockSHA256 &&
+                $0.blocks[0].textSHA256 == Self.semanticHash(body) &&
+                $0.blocks[0].sourceSHA256 == initial.blocks[0].sourceSHA256
+            }
+            XCTAssertEqual(editors.count, 1)
+            XCTAssertEqual(editor.identifier, blockIdentifier)
+            _ = try byteValue(editor, expected: body)
+            return actual
+        }
+        func libraryDocument(expectedName: String, expectedIdentifier: String? = nil) throws -> XCUIElement {
+            let query = app.buttons.matching(NSPredicate(
+                format: "identifier BEGINSWITH %@ AND label == %@", "any-native-hierarchy-row-", expectedName))
+            let row = try uniqueButton(query)
+            if let expectedIdentifier { XCTAssertEqual(row.identifier, expectedIdentifier) }
+            let objectID = String(row.identifier.dropFirst("any-native-hierarchy-row-".count))
+            guard !objectID.isEmpty else { throw JourneyError.missingIdentity }
+            XCTAssertEqual(Self.semanticHash(objectID), initial.objectSHA256)
+            return row
+        }
+
+        openProperties()
+        let typeName = try currentType()
+        phase = "cancel-edited-name"
+        try editName(from: originalName, to: cancelledName)
+        try uniqueButton(app.navigationBars.buttons.matching(labels(["Cancel", "ביטול"]))).tap()
+        try capture("cancel-restores-original-value", expectedName: originalName, expectedType: typeName, context: initial)
+
+        phase = "save-name"
+        try editName(from: originalName, to: savedName)
+        tapWhenEnabled(app.buttons["any-native-property-save"])
+        try capture("saved-name-readback", expectedName: savedName, expectedType: typeName, context: initial)
+        phase = "undo-name"
+        tapWhenEnabled(app.buttons["any-native-property-menu"])
+        try uniqueButton(app.buttons.matching(labels(["Undo property change", "ביטול שינוי במאפיינים"]))).tap()
+        try capture("undo-restores-original-value", expectedName: originalName, expectedType: typeName, context: initial)
+        tapWhenEnabled(app.buttons["any-native-property-close"])
+        let afterUndo = try sameBody("property-undo-before-cold")
+
+        try uniqueButton(app.navigationBars.buttons.matching(labels(["Library", "ספרייה"]))).tap()
+        let firstRow = try libraryDocument(expectedName: originalName)
+        let documentIdentifier = firstRow.identifier
+        phase = "cold-after-undo"
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        try libraryDocument(expectedName: originalName, expectedIdentifier: documentIdentifier).tap()
+        let coldUndo = try sameBody("property-undo-cold-body")
+        XCTAssertNotEqual(coldUndo.pid, afterUndo.pid)
+        XCTAssertNotEqual(coldUndo.generation, afterUndo.generation)
+        openProperties()
+        try capture("cold-undo-persisted", expectedName: originalName, expectedType: typeName, context: coldUndo)
+
+        // A newly mounted panel still admits a deliberate subsequent edit.
+        phase = "save-after-cold-undo"
+        try editName(from: originalName, to: finalName)
+        tapWhenEnabled(app.buttons["any-native-property-save"])
+        try capture("subsequent-save-readback", expectedName: finalName, expectedType: typeName, context: coldUndo)
+        tapWhenEnabled(app.buttons["any-native-property-close"])
+        let afterSave = try sameBody("property-subsequent-save-before-cold")
+        phase = "cold-after-subsequent-save"
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        try libraryDocument(expectedName: finalName, expectedIdentifier: documentIdentifier).tap()
+        let coldSave = try sameBody("property-subsequent-save-cold-body")
+        XCTAssertNotEqual(coldSave.pid, afterSave.pid)
+        XCTAssertNotEqual(coldSave.generation, afterSave.generation)
+        openProperties()
+        try capture("cold-subsequent-save-persisted", expectedName: finalName, expectedType: typeName, context: coldSave)
+        complete = true
+    }
+}
+// END_NATIVE_PROPERTIES_CANCEL_UNDO_UI_V1

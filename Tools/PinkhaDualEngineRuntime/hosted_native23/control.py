@@ -23,9 +23,11 @@ RUNTIME_SHA = "e4515cc6cd36424c607ee1e986ea9f0cfdcb0db516bf6e91276eef685ba29a22"
 PROFILE = ORIGINAL_PREFIX + "native23_profile_closed.py"
 PROFILE_SHA = "3fd3049737f4be72f4257a04e5ca94085e6d9e11cd3916257ced4bf2e8943aa6"
 # Fixed reviewed product-source compatibility only; the original profile file stays immutable.
-PROFILE_COMPATIBLE_SHA256 = '4bef306e554cacb216af82fe1eb94ab068884fb35358735d5907e3dbab84e6f5'
-PROFILE_COMPATIBLE_BYTES = 56268
-PROFILE_SOURCE_COMPATIBILITY = ({'path': 'Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift', 'beforeUTF8': '    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift": "422eed9e20b72f673e7b2b3fed303a314c2bd402ae2fd3cf74bd2d4f7727b67a",', 'afterUTF8': '    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",', 'sourceBeforeSHA256': '422eed9e20b72f673e7b2b3fed303a314c2bd402ae2fd3cf74bd2d4f7727b67a', 'sourceAfterSHA256': '7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f', 'sourceAfterBytes': 73025}, {'path': 'Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift', 'beforeUTF8': '    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": "8a2a18ad56ac7fde85223bf24bc8c104204e2031eddf9548ad810832aa8a673f",', 'afterUTF8': '    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": "beea22b4d19484f6dad508f819d874ece31d43a91d36fa0d03805c527c9332da",', 'sourceBeforeSHA256': '8a2a18ad56ac7fde85223bf24bc8c104204e2031eddf9548ad810832aa8a673f', 'sourceAfterSHA256': 'beea22b4d19484f6dad508f819d874ece31d43a91d36fa0d03805c527c9332da', 'sourceAfterBytes': 35988})
+PROFILE_COMPATIBLE_SHA256 = 'e277f7b9f2aca1f3987b3fc46e40af0791c3d0facd6ceac45c5c3ad3553d33ac'
+PROFILE_COMPATIBLE_BYTES = 57360
+PROFILE_SOURCE_COMPATIBILITY = ({'path': 'Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift', 'beforeUTF8': '    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift": "422eed9e20b72f673e7b2b3fed303a314c2bd402ae2fd3cf74bd2d4f7727b67a",', 'afterUTF8': '    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",', 'sourceBeforeSHA256': '422eed9e20b72f673e7b2b3fed303a314c2bd402ae2fd3cf74bd2d4f7727b67a', 'sourceAfterSHA256': '82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb', 'sourceAfterBytes': 73179}, {'path': 'Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift', 'beforeUTF8': '    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": "8a2a18ad56ac7fde85223bf24bc8c104204e2031eddf9548ad810832aa8a673f",', 'afterUTF8': '    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": "31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db",', 'sourceBeforeSHA256': '8a2a18ad56ac7fde85223bf24bc8c104204e2031eddf9548ad810832aa8a673f', 'sourceAfterSHA256': '31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db', 'sourceAfterBytes': 36414}, {'path': 'NativeApp/UITests/NativeLaunchTests.swift', 'beforeUTF8': '    "NativeApp/UITests/NativeLaunchTests.swift": "8d58c41e8907019bf67088900bb5c35843562edd669422573c1280f800500e86",', 'afterUTF8': '    "NativeApp/UITests/NativeLaunchTests.swift": "e2979e777dd61f7eb8be06bd38028b15cc6f7e2d944fe6adce9603a3f7817358",', 'sourceBeforeSHA256': '8d58c41e8907019bf67088900bb5c35843562edd669422573c1280f800500e86', 'sourceAfterSHA256': 'e2979e777dd61f7eb8be06bd38028b15cc6f7e2d944fe6adce9603a3f7817358', 'sourceAfterBytes': 295880}, {'path': 'Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift', 'beforeUTF8': '    "Modules/PinkhaAnyUI/Package.swift": "298ef94254c6d8f17a389a5ff0efd02a5c03099e9a819b50886a5d9e8b3d9854",', 'afterUTF8': '    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift": "2abe0317ede786772c8fb1f427f476d24605031fb7f929394f548cd9196e1155",\n    "Modules/PinkhaAnyUI/Package.swift": "298ef94254c6d8f17a389a5ff0efd02a5c03099e9a819b50886a5d9e8b3d9854",', 'sourceBeforeSHA256': None, 'sourceAfterSHA256': '2abe0317ede786772c8fb1f427f476d24605031fb7f929394f548cd9196e1155', 'sourceAfterBytes': 9956})
+
+PROFILE_DECLARATION_COMPATIBILITY = ({'label': 'three-additive-original-native-stage-identities', 'beforeUTF8': 'ALLOWED_STAGES = PENDING_ORIGINAL_STAGES + STYLED_STAGES + ACCESSIBILITY_STAGES', 'afterUTF8': 'ALLOWED_STAGES = PENDING_ORIGINAL_STAGES + STYLED_STAGES + ACCESSIBILITY_STAGES + ("unicode-latin", "unicode-hebrew") + ("properties-undo",)'}, {'label': 'full-Native26-and-both-original-prefixes-before-historical-validation', 'beforeUTF8': '    current = c.raw(source / "NativeApp/UITests/NativeLaunchTests.swift")\n', 'afterUTF8': '    current = c.raw(source / "NativeApp/UITests/NativeLaunchTests.swift")\n    # Authenticate the COMPLETE compiled source before the historical inverse witnesses.\n    # Only this local value is reduced; projected_files reads the complete Native26 file.\n    require(len(current) == 295880\n            and sha(current) == "e2979e777dd61f7eb8be06bd38028b15cc6f7e2d944fe6adce9603a3f7817358"\n            and sha(current[:281769]) == "7d7d60d61cabaf7e8c968c4d30cd584100e9d90217f6b1b66441146cbf5d943b"\n            and sha(current[281769:]) == "511ea437a499605d148720d992958fa71df89e14c5bfa7b864a6169b1546a386"\n            and sha(current[:271344]) == "8d58c41e8907019bf67088900bb5c35843562edd669422573c1280f800500e86"\n            and sha(current[271344:281769]) == "9a0880aebe30b7e2ac89794b75cdf049a792d3576bbfa1945c50693d9f78bcb1",\n            "Exact Native23 prefix, Native25 Unicode suffix and Native26 Properties suffix required")\n    current = current[:271344]\n'})
 
 RUN_SHA = "5ea092b2a4d7159e8dec45b264224811e24e64265493a1e4958e4937b5fecaad"
 PLANS = ("sharing-owner", "archive", "rtl", "library-search", "source-drag",
@@ -176,60 +178,91 @@ def materialize(source, destination):
 
 
 def compatible_profile_source(raw):
-    """Derive only two reviewed SOURCE_FILES literals; preserve all original code."""
+    """Authenticate Native26, then preserve the original historical validators."""
     require(sha(raw) == PROFILE_SHA, "Exact original closed profile required")
     text = raw.decode()
     candidate = text
-    expected_paths = {
+    expected_changed = {
         "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
         "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+        "NativeApp/UITests/NativeLaunchTests.swift",
     }
-    require(len(PROFILE_SOURCE_COMPATIBILITY) == 2
-            and {row["path"] for row in PROFILE_SOURCE_COMPATIBILITY} == expected_paths,
-            "Only the two reviewed product-source pins may change")
+    expected_added = {"Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift"}
+    require(len(PROFILE_SOURCE_COMPATIBILITY) == 4
+            and {row["path"] for row in PROFILE_SOURCE_COMPATIBILITY} == expected_changed | expected_added,
+            "Only the exact reviewed Inspector/Unicode source pins may change")
     for row in PROFILE_SOURCE_COMPATIBILITY:
         require(candidate.count(row["beforeUTF8"]) == 1,
-                "One exact original source-pin line required")
+                "One exact original source-pin context required")
+        candidate = candidate.replace(row["beforeUTF8"], row["afterUTF8"], 1)
+    require(len(PROFILE_DECLARATION_COMPATIBILITY) == 2,
+            "Only the original allowed-stage tuple and full-source admission may change")
+    for row in PROFILE_DECLARATION_COMPATIBILITY:
+        require(candidate.count(row["beforeUTF8"]) == 1,
+                "One exact historical validation context required")
         candidate = candidate.replace(row["beforeUTF8"], row["afterUTF8"], 1)
     changed = candidate.encode()
     require(len(changed) == PROFILE_COMPATIBLE_BYTES and sha(changed) == PROFILE_COMPATIBLE_SHA256,
-            "Exact source-compatible profile bytes differ")
+            "Exact combined source-compatible profile bytes differ")
     restored = candidate
+    for row in reversed(PROFILE_DECLARATION_COMPATIBILITY):
+        require(restored.count(row["afterUTF8"]) == 1, "One exact declaration inverse required")
+        restored = restored.replace(row["afterUTF8"], row["beforeUTF8"], 1)
     for row in reversed(PROFILE_SOURCE_COMPATIBILITY):
-        require(restored.count(row["afterUTF8"]) == 1, "One exact inverse source-pin line required")
+        require(restored.count(row["afterUTF8"]) == 1, "One exact source-pin inverse required")
         restored = restored.replace(row["afterUTF8"], row["beforeUTF8"], 1)
     require(restored.encode() == raw, "Every original profile byte must be restored by the finite inverse")
     original_tree, changed_tree = ast.parse(text), ast.parse(candidate)
     require(len(original_tree.body) == len(changed_tree.body), "Original top-level source closure changed")
-    source_maps = 0
+    source_maps, source_checks, allowed_stages = 0, 0, 0
     for original, revised in zip(original_tree.body, changed_tree.body):
-        if (isinstance(original, ast.Assign)
-                and any(isinstance(target, ast.Name) and target.id == "SOURCE_FILES" for target in original.targets)):
+        names = ({target.id for target in original.targets if isinstance(target, ast.Name)}
+                 if isinstance(original, ast.Assign) else set())
+        if "SOURCE_FILES" in names:
             source_maps += 1
             before, after = ast.literal_eval(original.value), ast.literal_eval(revised.value)
-            require(set(before) == set(after) and len(before) == 27
-                    and {path for path in before if before[path] != after[path]} == expected_paths,
-                    "Only the two reviewed map entries may differ")
+            require(set(before) | expected_added == set(after) and len(before) == 27 and len(after) == 28
+                    and {path for path in before if before[path] != after[path]} == expected_changed,
+                    "Only three reviewed map values and one additional native recovery pin may differ")
+        elif "ALLOWED_STAGES" in names:
+            allowed_stages += 1
+            before, after = ast.get_source_segment(text, original), ast.get_source_segment(candidate, revised)
+            row = PROFILE_DECLARATION_COMPATIBILITY[0]
+            require(before == row["beforeUTF8"] and after == row["afterUTF8"],
+                    "The three reviewed native stages must be exact additions to the original allowed tuple")
+        elif isinstance(original, ast.FunctionDef) and original.name == "check_source":
+            source_checks += 1
+            before, after = ast.get_source_segment(text, original), ast.get_source_segment(candidate, revised)
+            row = PROFILE_DECLARATION_COMPATIBILITY[1]
+            require(after.count(row["afterUTF8"]) == 1
+                    and after.replace(row["afterUTF8"], row["beforeUTF8"], 1) == before,
+                    "Only full-file admission and the exact historical-prefix witness may extend check_source")
         else:
             require(ast.dump(original, include_attributes=False) == ast.dump(revised, include_attributes=False)
                     and ast.get_source_segment(text, original) == ast.get_source_segment(candidate, revised),
-                    "Original profile declarations, assertions and other constants must remain byte-identical")
-    require(source_maps == 1, "One original source guard map is required")
-    return changed, {"schema": "pinkha-native23-two-source-compatibility-v1",
+                    "Every other original profile declaration and assertion must remain byte-identical")
+    require((source_maps, source_checks, allowed_stages) == (1, 1, 1),
+            "One original source map, admission function and allowed-stage tuple required")
+    return changed, {"schema": "pinkha-native26-inspector-unicode-properties-source-compatibility-v1",
         "status": "SOURCE_DERIVATIVE_NOT_RUNTIME_ACCEPTANCE", "originalSHA256": sha(raw),
         "compatibleSHA256": sha(changed), "compatibleBytes": len(changed),
         "sourcePinChanges": list(PROFILE_SOURCE_COMPATIBILITY),
-        "fullInverseRestoresEveryOriginalByte": True, "allOriginalFunctionBodiesUnchanged": True,
-        "runtimeAdmission": False}
+        "declarationChanges": list(PROFILE_DECLARATION_COMPATIBILITY),
+        "fullInverseRestoresEveryOriginalByte": True,
+        "historicalValidationOnlyUsesExactOriginalPrefix": True,
+        "actualCompilerUsesCompleteNative26Swift": True, "runtimeAdmission": False}
 
 
 def selected_profile(source):
-    """Reuse original collectors and source guards, not the closed Mac admission."""
+    """Reuse original collectors; retain both original and derived declaration identities."""
     path = Path(source) / PROFILE
     raw = path.read_bytes()
     require(regular(path)["sha256"] == PROFILE_SHA, "Exact closed original profile differs")
     compatible, source_compatibility = compatible_profile_source(raw)
-    tree = ast.parse(compatible.decode())
+    original_text, candidate_text = raw.decode(), compatible.decode()
+    original_tree, tree = ast.parse(original_text), ast.parse(candidate_text)
+    original_declarations = {node.name: node for node in original_tree.body
+                             if isinstance(node, (ast.FunctionDef, ast.ClassDef))}
     omitted = {"configure", "qualify_main", "qualify_runtime_inputs", "admit",
                "compile_sharing_source", "bind_source", "reviewed_builder", "seal_ui_build"}
     nodes = [node for node in tree.body if not isinstance(node, ast.FunctionDef) or node.name not in omitted]
@@ -243,8 +276,15 @@ def selected_profile(source):
     declarations = {}
     for node in nodes:
         if isinstance(node, (ast.FunctionDef, ast.ClassDef)):
-            body = ast.get_source_segment(raw.decode(), node).encode()
-            declarations[node.name] = {"bytes": len(body), "sha256": sha(body)}
+            original = original_declarations[node.name]
+            body = ast.get_source_segment(original_text, original).encode()
+            candidate_body = ast.get_source_segment(candidate_text, node).encode()
+            require(body == candidate_body or node.name == "check_source",
+                    "Only the authenticated full-source admission declaration may differ")
+            declarations[node.name] = {"bytes": len(body), "sha256": sha(body),
+                "selectedBytes": len(candidate_body), "selectedSHA256": sha(candidate_body),
+                "originalDeclarationUnchanged": body == candidate_body}
     return module, {"source": regular(path), "sourceCompatibility": source_compatibility,
                     "reusedDeclarations": declarations,
-                    "omittedHistoricalEntries": sorted(omitted), "historicalReadyFlagUnchanged": True, "historicalReadyFlag": False}
+                    "omittedHistoricalEntries": sorted(omitted),
+                    "historicalReadyFlagUnchanged": True, "historicalReadyFlag": False}

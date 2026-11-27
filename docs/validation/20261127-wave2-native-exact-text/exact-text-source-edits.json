@@ -1,0 +1,71 @@
+{
+  "sourceCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "status": "UNPUBLISHED_CANDIDATE_NOT_COMPILED",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "gitBlob": "0585f7031c638d97ae3d8f28b6a748e8e6eedc7a",
+      "changes": [
+        {
+          "before": "native.text == draft.base.text",
+          "after": "native.text.utf8.elementsEqual(draft.base.text.utf8)",
+          "count": 2
+        },
+        {
+          "before": "renderedBlock.text == block.text",
+          "after": "renderedBlock.text.utf8.elementsEqual(block.text.utf8)",
+          "count": 1
+        },
+        {
+          "before": "source == draft.base.text",
+          "after": "source.utf8.elementsEqual(draft.base.text.utf8)",
+          "count": 1
+        },
+        {
+          "before": "current.text == renderedBlock.text",
+          "after": "current.text.utf8.elementsEqual(renderedBlock.text.utf8)",
+          "count": 1
+        },
+        {
+          "before": "draft.inlineMarkdown == draft.base.text",
+          "after": "draft.inlineMarkdown.utf8.elementsEqual(draft.base.text.utf8)",
+          "count": 1
+        },
+        {
+          "before": "saved.text == draft.inlineMarkdown",
+          "after": "saved.text.utf8.elementsEqual(draft.inlineMarkdown.utf8)",
+          "count": 1
+        }
+      ],
+      "exactInverse": true,
+      "originalSHA256": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",
+      "candidateSHA256": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",
+      "originalBytes": 73025,
+      "candidateBytes": 73179,
+      "comparisonOccurrences": 7
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+      "gitBlob": "41cd23c7ae9704197babaa7378fa1b357e833a16",
+      "changes": [
+        {
+          "before": "current.text == draft.inlineMarkdown",
+          "after": "current.text.utf8.elementsEqual(draft.inlineMarkdown.utf8)",
+          "count": 1
+        },
+        {
+          "before": "current.text == (draft.baseNative[\"text\"]?.string ?? \"\")",
+          "after": "current.text.utf8.elementsEqual((draft.baseNative[\"text\"]?.string ?? \"\").utf8)",
+          "count": 1
+        }
+      ],
+      "exactInverse": true,
+      "originalSHA256": "f646eed644d128c30057011ddd384154f5d6a2bd7082bca52e44488bf19fa758",
+      "candidateSHA256": "2abe0317ede786772c8fb1f427f476d24605031fb7f929394f548cd9196e1155",
+      "originalBytes": 9912,
+      "candidateBytes": 9956,
+      "comparisonOccurrences": 2
+    }
+  ],
+  "removedUnpublishedSeam": "The previous local candidate is retained under review-v1-publication-seam. Neither it nor the private NoteMarker verification boundary is part of this correction."
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "pinkha-exact-native-text-counterexamples-v1",
+  "sourceCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "status": "SOURCE_AND_RAW_VALUE_WITNESSES_NOT_EXECUTED_SWIFT_TESTS",
+  "cases": [
+    {
+      "case": "nfc-to-nfd",
+      "beforeScalars": [
+        "U+00E9"
+      ],
+      "afterScalars": [
+        "U+0065",
+        "U+0301"
+      ],
+      "beforeUTF8Hex": "c3a9",
+      "afterUTF8Hex": "65cc81",
+      "beforeSelectedUTF16Length": 1,
+      "afterSelectedUTF16Length": 2,
+      "beforeRawNativeInlineMarkdown": "prefix [é](pinkha-anchor://v1/ZXhhY3Qtc3BhY2U/ZXhhY3QtZG9jdW1lbnQ/00112233-4455-6677-8899-aabbccddeeff) suffix",
+      "afterRawNativeInlineMarkdown": "prefix [é](pinkha-anchor://v1/ZXhhY3Qtc3BhY2U/ZXhhY3QtZG9jdW1lbnQ/00112233-4455-6677-8899-aabbccddeeff) suffix",
+      "beforeRawSHA256": "69e0df79c202b07f88195f1caa41596cfb72b2fae5f316670c472ae8e72d44b2",
+      "afterRawSHA256": "9be593efb678da09bda5a97e8d4136381b14f7166810e125f2e84a508e6a678b",
+      "canonicalEquivalence": true,
+      "exactUTF8Equality": false,
+      "anchorIdentityExpectedUnchanged": "pinkha-anchor://v1/ZXhhY3Qtc3BhY2U/ZXhhY3QtZG9jdW1lbnQ/00112233-4455-6677-8899-aabbccddeeff"
+    },
+    {
+      "case": "hebrew-combining-order",
+      "beforeScalars": [
+        "U+05E9",
+        "U+05B8",
+        "U+05C1"
+      ],
+      "afterScalars": [
+        "U+05E9",
+        "U+05C1",
+        "U+05B8"
+      ],
+      "beforeUTF8Hex": "d7a9d6b8d781",
+      "afterUTF8Hex": "d7a9d781d6b8",
+      "beforeSelectedUTF16Length": 3,
+      "afterSelectedUTF16Length": 3,
+      "beforeRawNativeInlineMarkdown": "prefix [שָׁ](pinkha-anchor://v1/ZXhhY3Qtc3BhY2U/ZXhhY3QtZG9jdW1lbnQ/00112233-4455-6677-8899-aabbccddeeff) suffix",
+      "afterRawNativeInlineMarkdown": "prefix [שָׁ](pinkha-anchor://v1/ZXhhY3Qtc3BhY2U/ZXhhY3QtZG9jdW1lbnQ/00112233-4455-6677-8899-aabbccddeeff) suffix",
+      "beforeRawSHA256": "49d38d7958f1186c7aff9959e0134b5bb37aee6e0f74980327cc16a7b703982e",
+      "afterRawSHA256": "627fd279b6d3c1e7403253706a2d6f137937ad8b2f3deda5cac879778336eafe",
+      "canonicalEquivalence": true,
+      "exactUTF8Equality": false,
+      "anchorIdentityExpectedUnchanged": "pinkha-anchor://v1/ZXhhY3Qtc3BhY2U/ZXhhY3QtZG9jdW1lbnQ/00112233-4455-6677-8899-aabbccddeeff"
+    }
+  ],
+  "actualModelPath": [
+    "AnyInlineMarkdown.replacing validates exact requested replacement and retains the anchor.",
+    "AnyDocumentPresentation.changeText assigns the requested source to its draft, then source == draft.base.text treats both counterexamples as unchanged and removes it when no write is in flight.",
+    "AnyNativeTextComposition.source already uses exact UTF-8. finishTextComposition later repeats the canonical equality and can discard that valid result.",
+    "AnyNativeDraftReconciliation.evaluate can also classify the different raw pending value as alreadyStored."
+  ],
+  "scope": "Native presentation raw persisted text/draft/ack comparisons only; no search/title/label equality, identifiers, native/protobuf or Heart model changes.",
+  "existingExactPolicySource": "PinkhaSemanticText equality, AnyNativeTextComposition.source(display:selection:) and existing PinkhaNativeTextAcknowledgementTests.canonicallyEquivalentUTF8RequiresNativeWrite use utf8.elementsEqual.",
+  "compilerInvocations": 0,
+  "runtimeCalls": 0
+}

@@ -1,0 +1,73 @@
+{
+  "schema": "pinkha-host-text-readback-candidate/v1",
+  "status": "FROZEN_FOR_SOURCE_REVIEW_NOT_RUN",
+  "baseCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "files": [
+    {
+      "repositoryPath": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+      "original": {
+        "path": "torah-acceptance-prep/native-text-readback/source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+        "bytes": 11425,
+        "sha256": "de35930cd2689caaaa1195576073a117fa917b5ff078fccb24baba98eac68c43",
+        "gitBlob": "a482992af95970d2516eabdea6133a35192c7c05"
+      },
+      "candidate": {
+        "path": "torah-acceptance-prep/native-text-readback/candidate/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+        "bytes": 11711,
+        "sha256": "1ea82b556e9f16b7903de03bbe435a249c6c922ade9798a01d648c8394c2604d",
+        "gitBlob": "5963c98988416bec1a1761466a3fb21f1cc3f66b"
+      }
+    },
+    {
+      "repositoryPath": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHostTests.swift",
+      "original": {
+        "path": "torah-acceptance-prep/native-text-readback/source/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHostTests.swift",
+        "bytes": 13015,
+        "sha256": "9d0a20192f68afb43878a591c332399b373902839d6dc18cc08b0ef65b9c3000",
+        "gitBlob": "77f71200007910a29dd38bb1f6f5829ed3efc980"
+      },
+      "candidate": {
+        "path": "torah-acceptance-prep/native-text-readback/candidate/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHostTests.swift",
+        "bytes": 23666,
+        "sha256": "4cc5c251b525b36ab710d6fa05163ccb27a8e3c801c5e88eab44533253db13e5",
+        "gitBlob": "a906253cb86dc64e2befa4d0991e105b6b3a8472"
+      }
+    },
+    {
+      "repositoryPath": "Modules/PinkhaAnyHost/Tests/Fixtures/editor_text_readback_server.py",
+      "original": null,
+      "candidate": {
+        "path": "torah-acceptance-prep/native-text-readback/candidate/Modules/PinkhaAnyHost/Tests/Fixtures/editor_text_readback_server.py",
+        "bytes": 6125,
+        "sha256": "d91554403d0fc9f84cd8792006ab150506923e0a003000fb4caff171a52800bd",
+        "gitBlob": "bb8db3836745353c49cc4681b7beae3aa59c92f0"
+      }
+    }
+  ],
+  "productScope": "Exact UTF-8 only for requested string field text. No non-text/global JSON/API/native/transport/authorization/Undo contract changes.",
+  "tests": {
+    "suite": "NativeTextEditReadbackHTTPTests",
+    "target": "PinkhaAnyHostTests",
+    "methods": [
+      "testCanonicalEquivalentTextReadbackCannotCertifyWriteOrMintUndo",
+      "testExactUnicodeTextReadbackRetainsVerifiedReceiptAndExactInverse"
+    ],
+    "XCTestMethods": 2,
+    "loopedVectors": 4,
+    "nativeAcceptance": false,
+    "AppleUIAcceptance": false
+  },
+  "publication": "Not authorized by source preparation alone; requires root/peer source review and current-parent custody.",
+  "sourceFinding": {
+    "path": "torah-acceptance-prep/native-text-readback/source-finding.json",
+    "bytes": 6491,
+    "sha256": "1340f485ead4de11cd42d95baa6bde6a5c7e88a54ae09414f537d7cff296879f",
+    "gitBlob": "76df69fd0711a70f138bf224e03459e06bb70a9a"
+  },
+  "preservation": {
+    "path": "torah-acceptance-prep/native-text-readback/source-preservation.json",
+    "bytes": 2971,
+    "sha256": "9d585435955f89bce47e99b197d5ffbb1a86970795dd37eccd7ba6190c656b19",
+    "gitBlob": "7c5841e30a1ea4d2f60e0fdd06d674d30a979d15"
+  }
+}

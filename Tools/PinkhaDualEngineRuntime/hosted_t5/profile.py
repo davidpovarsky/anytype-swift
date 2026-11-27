@@ -27,12 +27,12 @@ METHODS = (
     "AnytypeTests/TorahT5RemainingFreshnessTests/nativeQuoteMoveAndBlockDeletion()",
 )
 DEPENDENCIES = {
-    "admission": ("Tools/PinkhaDualEngineRuntime/hosted_core13/admission.py", "983ea0db628f3ff81f677c2a91822d72843de4fb94cfd374f418a1c2fcf86849"),
+    "admission": ("Tools/PinkhaDualEngineRuntime/hosted_core13/admission.py", "fd0748fbbf7cef165e7b0a4e837473deeb56eb9efb11bf89d96ddbee2e102593"),
     "originals": ("Tools/PinkhaDualEngineRuntime/hosted_core13/originals.py", "adc29fa18b2bd64dce6bca3cf6ded88ae6203246a12fa7e781229fda41b1f326"),
     "hosted_t5_core_lifetime": ("Tools/PinkhaDualEngineRuntime/hosted_core13/run.py", "cf16f08fefcc0d639e1f924a230c2fefb8bcc7af4f311e9e03191165908a29c8"),
     # This exact shared file-only reader is a pending root-reviewed dependency;
     # it never configures or executes the separate Native23 runner.
-    "hosted_t5_native23_receipts": ("Tools/PinkhaDualEngineRuntime/hosted_property_cache_bin/native23_receipts.py", "db5bb39b9dfbd6f990b0563bb8a7a7c1172f80ceefe7fc0efcdcccb4562e419e"),
+    "hosted_t5_native23_receipts": ("Tools/PinkhaDualEngineRuntime/hosted_property_cache_bin/native23_receipts.py", "f6760c71f3d55ba1a00c9817ece96ba7e31e5005b7f24d9a051600661f2860f7"),
 }
 
 

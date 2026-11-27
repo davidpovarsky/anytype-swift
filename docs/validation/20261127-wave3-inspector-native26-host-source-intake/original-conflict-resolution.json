@@ -1,0 +1,41 @@
+{
+  "schema": "pinkha-inspector-retry-single-conflict-resolution/v1",
+  "start": null,
+  "startTree": null,
+  "originalConflictOutput": {
+    "bytes": 36849,
+    "sha256": "9764f3d63bfcdc486825a5f7b73942e471ca9658fcb25591f593a62ee37ae9df",
+    "gitBlob": "1902b0b25c62dc312ac0b372165643c86cee5292",
+    "gitMode": "100644"
+  },
+  "conflictCount": 1,
+  "replacement": {
+    "offset": 31795,
+    "originalBytes": 748,
+    "originalSpan": {
+      "bytes": 748,
+      "sha256": "1786fc6a42992c5cc4c524f4e337149128e34c37fd004533984cc8718761a0d4",
+      "gitBlob": "e1a173ec4bdac1481f2e558ea1aef64cc45da289",
+      "gitMode": "100644"
+    },
+    "originalSpanBase64": "PDw8PDw8PCBjdXJyZW50Mjg4LXVucHVibGlzaGVkLXNvdXJjZS1wcm9qZWN0aW9uCiAgICAgICAgICAgICAgICAgICAgY2FzZSAuZXJyb3IobGV0IG1lc3NhZ2UpOgogICAgICAgICAgICAgICAgICAgICAgICBUZXh0KG1lc3NhZ2UpLmZvcmVncm91bmRTdHlsZSgucmVkKQogICAgICAgICAgICAgICAgICAgICAgICBCdXR0b24oTG9jLlBpbmtoYS5Ib21lLnJldHJ5KSB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICBUYXNrIHsgYXdhaXQgcHJlc2VudGVyLnBlcmZvcm1TZWFyY2goKSB9CiAgICAgICAgICAgICAgICAgICAgICAgIH0KfHx8fHx8fCBjb21tb24yNzUKICAgICAgICAgICAgICAgICAgICBjYXNlIC5lcnJvcihsZXQgbWVzc2FnZSk6IFRleHQobWVzc2FnZSkuZm9yZWdyb3VuZFN0eWxlKC5yZWQpCj09PT09PT0KICAgICAgICAgICAgICAgICAgICBjYXNlIC5lcnJvcihsZXQgbWVzc2FnZSk6CiAgICAgICAgICAgICAgICAgICAgICAgIFRleHQobWVzc2FnZSkuZm9yZWdyb3VuZFN0eWxlKC5yZWQpCiAgICAgICAgICAgICAgICAgICAgICAgIEJ1dHRvbihMb2MuUGlua2hhLkhvbWUucmV0cnkpIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxldCByZXF1ZXN0ID0gcHJlc2VudGVyLm1ha2VTZWFyY2hSZXF1ZXN0KCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRhc2sgeyBhd2FpdCByZXF1ZXN0KCkgfQogICAgICAgICAgICAgICAgICAgICAgICB9Cj4+Pj4+Pj4gcHVibGlzaGVkLWMzCg==",
+    "replacementBase64": "ICAgICAgICAgICAgICAgICAgICBjYXNlIC5lcnJvcihsZXQgbWVzc2FnZSk6CiAgICAgICAgICAgICAgICAgICAgICAgIFRleHQobWVzc2FnZSkuZm9yZWdyb3VuZFN0eWxlKC5yZWQpCiAgICAgICAgICAgICAgICAgICAgICAgIEJ1dHRvbihMb2MuUGlua2hhLkhvbWUucmV0cnkpIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxldCByZXF1ZXN0ID0gcHJlc2VudGVyLm1ha2VTZWFyY2hSZXF1ZXN0KCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRhc2sgeyBhd2FpdCByZXF1ZXN0KCkgfQogICAgICAgICAgICAgICAgICAgICAgICB9Cg==",
+    "replacement": {
+      "bytes": 313,
+      "sha256": "1d2eb2fc4eb867c77ea913a76d96fde5ae2d31e8efdec158728c46f58d03f0eb",
+      "gitBlob": "8dc9bf1c480d1a899e9f4f0c572d7bec24533c71",
+      "gitMode": "100644"
+    }
+  },
+  "resolvedWholeSource": {
+    "bytes": 36414,
+    "sha256": "31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db",
+    "gitBlob": "44418e9710c16412d3dced2e8ce53ae94eb264cc",
+    "gitMode": "100644"
+  },
+  "allBytesOutsideConflictUnchanged": true,
+  "matchesExactPublishedC3": true,
+  "strategy": "EXPLICIT_SINGLE_SPAN_NOT_OURS_OR_THEIRS",
+  "reason": "Retain the original Retry label/error display and deliberately capture the original request before its Task, matching the reviewed presenter lifetime fix.",
+  "sourceApplied": false
+}

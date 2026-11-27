@@ -1,0 +1,52 @@
+{
+  "schema": "pinkha-unicode-ui-evidence-order-independent-review/v1",
+  "reviewer": "/root/torah_continue",
+  "status": "PASS_SOURCE_DELTA_REVIEW_ONLY",
+  "predecessorReview": {
+    "path": "wave2-semantic-anchor-audit/torah-independent-unicode-ui-review.json",
+    "bytes": 8705,
+    "sha256": "f77db83b5b560a5b24f9d17db42e2dd25dcb5d2e7c355536792eb2756b874328"
+  },
+  "candidate": {
+    "path": "wave2-semantic-anchor-audit/candidate/NativeApp/UITests/NativeLaunchTests.swift",
+    "bytes": 281769,
+    "sha256": "7d7d60d61cabaf7e8c968c4d30cd584100e9d90217f6b1b66441146cbf5d943b"
+  },
+  "suffix": {
+    "path": "wave2-semantic-anchor-audit/unicode_anchor_addition.swift",
+    "bytes": 10425,
+    "sha256": "9a0880aebe30b7e2ac89794b75cdf049a792d3576bbfa1945c50693d9f78bcb1"
+  },
+  "correction": {
+    "path": "wave2-semantic-anchor-audit/unicode-evidence-order-correction.json",
+    "bytes": 1805,
+    "sha256": "795ae82b5e384497a072ead9ce778e46d01259411453de52f39c4ccf4d1275db"
+  },
+  "exactInverseToReviewedPredecessor": true,
+  "original271344ByteNative23PrefixExact": true,
+  "scope": "Only the four unchanged raw-byte assertions move after the already-existing actual-value JSON and screenshot attachments. Capture guard, value read, typed values, all actions and all deadlines remain exact.",
+  "reason": "The original XCTest case has continueAfterFailure=false. Saving the actual mismatch artifacts first avoids losing these artifacts at the first failing raw-byte assertion. This changes evidence ordering, not the success criteria.",
+  "findings": [],
+  "priorReviewAppliesThroughExactInverse": true,
+  "unchangedBoundaries": [
+    "Both original method declarations and 1800-second allowances",
+    "Exact UTF-8/UTF-16/native hashes and anchor assertions",
+    "Changed native version/source plus distinct-PID cold evidence",
+    "Original23 source/helpers and observer",
+    "No new controller or authority seam"
+  ],
+  "execution": {
+    "compilerCalls": 0,
+    "tests": 0,
+    "NativeCalls": 0,
+    "OracleCalls": 0,
+    "MacCalls": 0,
+    "UIActions": 0
+  },
+  "notClaimed": [
+    "Apple compilation or runtime acceptance",
+    "Native25 product admission",
+    "Visual review",
+    "IME/partial-range/recovery acceptance"
+  ]
+}

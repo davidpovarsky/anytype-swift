@@ -25,7 +25,7 @@ from types import SimpleNamespace
 sys.dont_write_bytecode = True
 PREFIX = "Tools/PinkhaDualEngineRuntime/hosted_shared_build/"
 CONTRACT_NAME = "native23_build_contract.json"
-CONTRACT_SHA256 = "0b961a96cf76145662ba749c905bccdbcdc4f7971820ce5b682bf0a844da4444"
+CONTRACT_SHA256 = "ac95cf3256a6629236652b3baa0bb5b4318f347e83e9faabca6161a0e2795b2a"
 TARGET = "PinkhaAnyNativeUITests"
 PHASE = "native23-ui"
 LOCK = "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
@@ -73,8 +73,8 @@ def contract():
     value = json.loads(path.read_bytes())
     require(value["schema"] == "pinkha-original-native23-ui-compiler-contract-v1"
             and value["runtimeAdmission"] is False and value["testsExecuted"] == 0
-            and len(value["sourcePathPins"]) == 27 and len(value["swiftSources"]) == 2
-            and len(value["declaredOriginalLaunchMethods"]) == 23
+            and len(value["sourcePathPins"]) == 28 and len(value["swiftSources"]) == 2
+            and len(value["declaredOriginalLaunchMethods"]) == 26
             and len(value["declaredOriginalHistoryMethods"]) == 1,
             "Fixed original two-source compiler scope changed")
     return value

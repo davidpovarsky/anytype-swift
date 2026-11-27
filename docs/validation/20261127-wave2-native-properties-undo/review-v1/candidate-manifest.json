@@ -1,0 +1,75 @@
+{
+  "schema": "native-properties-cancel-undo-ui-source-v1",
+  "status": "SOURCE_CANDIDATE_REVIEW_PENDING_RUNTIME_NOT_RUN",
+  "baseAppRead": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "native25DonorCommit": "13dc5b060c23527aeaedb1d1e250a86c9a2fc17c",
+  "native25DonorStatus": "PUBLISHED_IMMUTABLE_PRIMARY_READBACK_VERIFIED",
+  "sourceFiles": [
+    {
+      "path": "source/AnyNativePropertiesView.swift",
+      "bytes": 25348,
+      "sha256": "47e04a0dedaebe5a0d6dc35e4b8d30b58a5f0c8eda0cb44fea6283ecf801465d",
+      "gitBlob": "333cf9157b49853526fc1e5edee963b272423e60"
+    },
+    {
+      "path": "source/AnyNativePropertyPresentation.swift",
+      "bytes": 16259,
+      "sha256": "aa40239c5ba749b20974735337c0af11ba477c9aac870261f4ae5ae76f76c731",
+      "gitBlob": "b8d482b1e9a51923bfc49c9714087cad7fcd021e"
+    },
+    {
+      "path": "source/AnyNativePropertyStore.swift",
+      "bytes": 43999,
+      "sha256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c",
+      "gitBlob": "7fee8b7ae36c626dd921e14024a6a5a0466d3a2d"
+    },
+    {
+      "path": "source/AnySemanticAnchorObservation.swift",
+      "bytes": 12721,
+      "sha256": "b141d6ba3f78bcddc4b35cbe0a7afb107b09ab38c067b2222ccf14787b699b48",
+      "gitBlob": "2049af655b538c1aea6eea614fda64ea4f21ca92"
+    },
+    {
+      "path": "source/NativeLaunch25.swift",
+      "bytes": 281769,
+      "sha256": "7d7d60d61cabaf7e8c968c4d30cd584100e9d90217f6b1b66441146cbf5d943b",
+      "gitBlob": "81c6406e99f4d92d23ccb72feae44114ac5a1058"
+    }
+  ],
+  "append": {
+    "suffixPath": "properties_undo_suffix.swift",
+    "suffixSHA256": "e9d61f6b03d31fb346a426681924c57fc718821dc3b957d35466fe7404c84c2c",
+    "suffixBytes": 13947,
+    "candidatePath": "candidate/NativeApp/UITests/NativeLaunchTests.swift",
+    "candidateSHA256": "9c3d58f9b606fcd69aa1f35618741120cc8fb5383f53cf54fa31243b69732480",
+    "candidateGitBlob": "a85a40c220db9b805ad66d8062db5d9c7f798fcc",
+    "candidateBytes": 295716,
+    "originalPrefixBytes": 281769,
+    "originalPrefixSHA256": "7d7d60d61cabaf7e8c968c4d30cd584100e9d90217f6b1b66441146cbf5d943b",
+    "fullInverseExact": true
+  },
+  "methods": {
+    "old": 25,
+    "new": 26,
+    "appended": [
+      "testNativePropertyValueCancelAndUndoSurviveColdReopen"
+    ],
+    "allOriginalDeclarationsRetained": true,
+    "newDeclaredCases": 1
+  },
+  "executionTimeAllowanceSeconds": 900,
+  "runtime": {
+    "compiled": false,
+    "enumerated": false,
+    "executed": false,
+    "visualReviewed": false,
+    "nativeAcceptance": false
+  },
+  "productionChanges": 0,
+  "newProductObservers": 0,
+  "newControllers": 0,
+  "actualProducerPin": null,
+  "existingNative23And25ConsumerAdmissionUnchanged": true,
+  "native25DonorGitBlob": "81c6406e99f4d92d23ccb72feae44114ac5a1058",
+  "native25DonorPrimaryReadSHA256": "d951cf183b78da79ea8a7e7cff7c0943eff42795e19c4617fba6b26fd438b74c"
+}

@@ -1,0 +1,54 @@
+{
+  "schema": "pinkha-root-host-text-readback-review/v1",
+  "status": "SOURCE_REVIEW_ACCEPTED_COMPILATION_AND_EXECUTION_PENDING",
+  "baseCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "ownerCoordination": "W1 assigned W2 this exact matcher/regression in Asana1220956399195998; C has no competing published edit and will compose the successor once.",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+      "sha256": "1ea82b556e9f16b7903de03bbe435a249c6c922ade9798a01d648c8394c2604d",
+      "bytes": 11711
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHostTests.swift",
+      "sha256": "4cc5c251b525b36ab710d6fa05163ccb27a8e3c801c5e88eab44533253db13e5",
+      "bytes": 23666
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/Fixtures/editor_text_readback_server.py",
+      "sha256": "d91554403d0fc9f84cd8792006ab150506923e0a003000fb4caff171a52800bd",
+      "bytes": 6125
+    }
+  ],
+  "productReview": [
+    "Exact single literal matcher inverse restores the entire original11425-byte Host source",
+    "Only top-level requested string field text changes from canonical AnyJSON equality to exact UTF8; non-text and unset semantics unchanged",
+    "prepare, conditional PATCH, lease/current run/account/Space/permission checks and native response requirements remain exact",
+    "Current-state receipt and optional Undo use the corrected existing readback matcher; no new Native API or global JSON comparison change",
+    "The already published UI82b5 independent exact reread remains an additional check; no observed silent save is claimed"
+  ],
+  "testReview": [
+    "Complete original13015-byte NativeHostTests prefix retained",
+    "Two XCTest methods, two Unicode input pairs in each: four looped controlled HTTP flows, not four XCTest cases",
+    "Actual Host read/prepare/apply/read plus real AnyHTTPClient and AnyApplicationSession lease are used",
+    "A single exact PATCH is required with current version/run, full raw text and no unset",
+    "Version-matching canonical-only reply must return unverified and nil Undo",
+    "Exact reply must retain verified receipt, original exact inverse text and exact redo text",
+    "Private fresh fixture directory normalized0700 then exact owner/mode/path checked; no existing directory or guard relaxation",
+    "Loopback Python source handles only fixed routes, bounded request/body/lifetime; raw dispatch, replies and start/exit evidence retained",
+    "Original-owner stdin EOF and actual process-exit/PID receipt are required; no historical process probes or native account operations"
+  ],
+  "fixtureSourceAST": "Parsed locally only; server not started",
+  "runtime": {
+    "compilerCalls": 0,
+    "testMethodsRun": 0,
+    "nativeAcceptance": false,
+    "AppleUIAcceptance": false
+  },
+  "remaining": [
+    "Actual admitted Swift compile with real input files/dependency source pins",
+    "Only the two new XCTest methods selected and original result/dispatch/closure evidence qualified",
+    "Keep previous failures and accepted methods intact"
+  ],
+  "blockingSourceFindings": []
+}

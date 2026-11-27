@@ -434,7 +434,7 @@ def download_native(root, item):
 
 def native23_module():
     path = Path(__file__).with_name("native23_build.py")
-    require(sha(path) == "49c97d6f653308354c6d0d47e98d70d4591df612c16b9c86ea45f68ce14b8438",
+    require(sha(path) == "8145210d07cc8ed0e7e1f656c6a56b1c2417e3940078001569da34e5b92bf440",
             "Exact separately reviewed Native23 compiler helper required")
     name = "pinkha_hosted_native23_compiler"
     require(name not in sys.modules, "Native23 compiler module name is already occupied")

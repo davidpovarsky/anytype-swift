@@ -1,0 +1,237 @@
+{
+  "actualRuntimeTests": 0,
+  "declaredCases": 14,
+  "finalSDKAndNativeTuple": null,
+  "lanes": {
+    "inspector-queued-requests-hosted": {
+      "declaredCases": 14,
+      "expectedMethods": 2,
+      "invocationScope": "exact-methods",
+      "invocationSelectors": [
+        "AnytypeTests/TorahSearchQueuedRequestTests/cancelledStructuredReadDoesNotEnterProvider(operation:)",
+        "AnytypeTests/TorahSearchQueuedRequestTests/queuedActionIsRetiredBeforeRepositoryEntry(operation:reopenDocument:)"
+      ],
+      "methods": {
+        "cancelledStructuredReadDoesNotEnterProvider": {
+          "argument_collections": [
+            [
+              "search",
+              "refresh"
+            ]
+          ],
+          "case_count": 2,
+          "parameters": [
+            {
+              "name": "operation",
+              "type": "SearchQueuedOperation"
+            }
+          ]
+        },
+        "queuedActionIsRetiredBeforeRepositoryEntry": {
+          "argument_collections": [
+            [
+              "search",
+              "refresh",
+              "open",
+              "link",
+              "unlink",
+              "select"
+            ],
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 12,
+          "parameters": [
+            {
+              "name": "operation",
+              "type": "SearchQueuedOperation"
+            },
+            {
+              "name": "reopenDocument",
+              "type": "Bool"
+            }
+          ]
+        }
+      },
+      "originalSelectors": [
+        "AnytypeTests/TorahSearchQueuedRequestTests/cancelledStructuredReadDoesNotEnterProvider(operation:)",
+        "AnytypeTests/TorahSearchQueuedRequestTests/queuedActionIsRetiredBeforeRepositoryEntry(operation:reopenDocument:)"
+      ],
+      "source": "inspector",
+      "suite": "TorahSearchQueuedRequestTests"
+    }
+  },
+  "methods": 2,
+  "originalMethodBodiesAndAssertionsUnchanged": true,
+  "runtimeReady": false,
+  "schema": "pinkha-hosted-inspector14-closed-profile-v1",
+  "scope": "Only the two published queued-request component methods/14 enum and Boolean cases. The original one-method/two-case resolution suite stays historical and unselected. No mounted UI, native persistence, account replacement, physical device or Release acceptance is supplied.",
+  "sourceInverse": {
+    "bytes": 196,
+    "file": "source-inverse.json",
+    "gitBlob": "968944a8062b9d71281d224c411f46e1276ed6dc",
+    "sha256": "89689c094cfaf2c03042c82a9fd5148e42fcdf804559a7ee630d3e7b35f07ec6"
+  },
+  "sources": {
+    "inspector": {
+      "bytes": 18265,
+      "completeDeclarations": {
+        "cancelledStructuredReadDoesNotEnterProvider": {
+          "argument_collections": [
+            [
+              "search",
+              "refresh"
+            ]
+          ],
+          "case_count": 2,
+          "parameters": [
+            {
+              "name": "operation",
+              "type": "SearchQueuedOperation"
+            }
+          ]
+        },
+        "queuedActionIsRetiredBeforeRepositoryEntry": {
+          "argument_collections": [
+            [
+              "search",
+              "refresh",
+              "open",
+              "link",
+              "unlink",
+              "select"
+            ],
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 12,
+          "parameters": [
+            {
+              "name": "operation",
+              "type": "SearchQueuedOperation"
+            },
+            {
+              "name": "reopenDocument",
+              "type": "Bool"
+            }
+          ]
+        },
+        "referenceResolutionErrorBelongsToTheCurrentQuery": {
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2,
+          "parameters": [
+            {
+              "name": "replaceQuery",
+              "type": "Bool"
+            }
+          ]
+        }
+      },
+      "enumDeclarationAdapter": {
+        "enum": {
+          "cases": [
+            "search",
+            "refresh",
+            "open",
+            "link",
+            "unlink",
+            "select"
+          ],
+          "declarationUTF8": "enum SearchQueuedOperation: CaseIterable, Sendable {\n    case search, refresh, open, link, unlink, select\n}\n",
+          "name": "SearchQueuedOperation",
+          "sha256": "1245cb366734aed58533146254a77bcc8307338844c8b72050750f974f1b9191"
+        },
+        "methods": {
+          "cancelledStructuredReadDoesNotEnterProvider": {
+            "declarationBytes": 1172,
+            "declarationSHA256": "b2bbccd34c56e265789bbd7a74f61e2ce6ade03e0dfb5b222e94151f92a6a8d7",
+            "headerUTF8": "    @Test(\"An awaited SwiftUI read retains caller cancellation before entry\",\n          arguments: [SearchQueuedOperation.search, .refresh])\n    func cancelledStructuredReadDoesNotEnterProvider(operation: SearchQueuedOperation) async throws {\n"
+          },
+          "queuedActionIsRetiredBeforeRepositoryEntry": {
+            "declarationBytes": 3923,
+            "declarationSHA256": "56e44707cf3b704a1977a88f4e2ba42d7c00c2589695bf833dd5945d85858247",
+            "headerUTF8": "    @Test(\"A queued picker action cannot acquire a retired or reopened presentation\",\n          arguments: SearchQueuedOperation.allCases, [false, true])\n    func queuedActionIsRetiredBeforeRepositoryEntry(\n        operation: SearchQueuedOperation, reopenDocument: Bool\n    ) async throws {\n"
+          }
+        },
+        "originalDeclarations": {
+          "referenceResolutionErrorBelongsToTheCurrentQuery": {
+            "argument_collections": [
+              [
+                false,
+                true
+              ]
+            ],
+            "case_count": 2,
+            "parameters": [
+              {
+                "name": "replaceQuery",
+                "type": "Bool"
+              }
+            ]
+          }
+        },
+        "originalPrefix": {
+          "bytes": 6631,
+          "gitBlob": "a21258bd87259e448dadf252da9e0991bbfe6325",
+          "sha256": "bf736097ed333279f80d0b2474211e301a191bd3613abd43808458428dc9fb12"
+        },
+        "suffixSHA256": "2ec956013cf6b2e3d80c06e1cf0b0d7b5da3dbe347f3dbcf6b3aa8da19f0116a",
+        "suiteHeaderUTF8": "@Suite(\"Inspector queued request presentation ownership\")\n@MainActor\nstruct TorahSearchQueuedRequestTests {\n"
+      },
+      "gitBlob": "3228aae6d3047a5c3fdf654a08f33457e4cc425f",
+      "inverseSteps": [],
+      "originalSource": {
+        "bytes": 18265,
+        "gitBlob": "3228aae6d3047a5c3fdf654a08f33457e4cc425f",
+        "path": "AnyTypeTests/Pinkha/TorahSearchResolutionPublicationTests.swift",
+        "publishedSource": "c3f2b562f32540f7ba1e1d3d43601b6699ea676a",
+        "publishedSourceTree": "1073992216c6ab0c132624112af9214ef20d1e29",
+        "repository": "davidpovarsky/anytype-swift",
+        "sha256": "cbc620ee256f22f94fa5e5bebdc3f40c219e15a79a9bddf3761f6411fcfb3337",
+        "target": "AnytypeTests"
+      },
+      "originalTarget": "AnytypeTests",
+      "path": "AnyTypeTests/Pinkha/TorahSearchResolutionPublicationTests.swift",
+      "restoredOriginalBytes": 18265,
+      "restoredOriginalGitBlob": "3228aae6d3047a5c3fdf654a08f33457e4cc425f",
+      "restoredOriginalSHA256": "cbc620ee256f22f94fa5e5bebdc3f40c219e15a79a9bddf3761f6411fcfb3337",
+      "sha256": "cbc620ee256f22f94fa5e5bebdc3f40c219e15a79a9bddf3761f6411fcfb3337"
+    }
+  },
+  "supportSources": {
+    "Anytype.xcodeproj/project.pbxproj": {
+      "bytes": 163764,
+      "gitBlob": "6e7ae670ef561985588bc8c283109f64299befde",
+      "sha256": "8c7cbf3ca73482202fcb58d494e306956d989b0d85cc1ee91c87675f4ebcc127"
+    },
+    "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift": {
+      "bytes": 18673,
+      "gitBlob": "a0996697e49777c30e75206c9bec8737c92dfedb",
+      "sha256": "d25538f1cfd4f71b86b051693d2e0b2176481c9c45c2d3cc7c8d6409e1d3fa3c"
+    },
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": {
+      "bytes": 36414,
+      "gitBlob": "44418e9710c16412d3dced2e8ce53ae94eb264cc",
+      "sha256": "31f5200514b239b777679568c215a0ddb89fb0af9c41987d178deb2a06c408db"
+    },
+    "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift": {
+      "bytes": 54690,
+      "gitBlob": "0e9d22b56bca1176a67fa57c055cd9a5f2fb6db5",
+      "sha256": "2f56aafeb516497c30c13bff9ba2da5c9cf626586b5a67826f65813c29bc716a"
+    },
+    "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahSourcesSearchPresenter.swift": {
+      "bytes": 11516,
+      "gitBlob": "b52b9f4652ba319816b178dbacc4afdd0aa726c4",
+      "sha256": "e9af431a76a6c67fe251afcaa8be4c8a239b83090af6fa6585d3f0ca934afe9d"
+    }
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "actualCompilerEvidenceRetained": "native23_inputs.admit requires actual full compiler proof and returns its qualified declaration counts independently; no consumer of the old top-level runtime summary names exists among these92 files.",
+  "callOrder": [
+    "main constructs FAIL_OR_NOT_RUN summary and initializes compiledLaunchMethods26/compiledHistoryMethods1",
+    "lane materializes the original runtime and selects the exact source-compatible profile",
+    "SameJobBridge constructor initializes compiler=None; it does not admit the third compiler receipt",
+    "the original runtime invokes SameJobBridge.configure",
+    "configure validates the full source, then native23_inputs.admit checks the actual third compiler receipt/products and returns actual qualified counts"
+  ],
+  "exactOldKeyOccurrences": [
+    {
+      "fields": [
+        "compiledLaunchMethods",
+        "compiledHistoryMethods"
+      ],
+      "line": 314,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native23/run.py",
+      "sha256": "b9fef131f26896e1f8f923ca518edd99d22a9efe8cc0304d409d543888be9ffe",
+      "text": "\"compiledLaunchMethods\": 26, \"compiledHistoryMethods\": 1, \"availablePlans\": list(control.PLANS),"
+    },
+    {
+      "fields": [
+        "compiledLaunchMethods",
+        "compiledHistoryMethods"
+      ],
+      "line": 314,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native25/run.py",
+      "sha256": "e030d5b51041148c8ee2ccdb68a321f69da6eb3d35f32e42888eb4a82aa8d2cb",
+      "text": "\"compiledLaunchMethods\": 26, \"compiledHistoryMethods\": 1, \"availablePlans\": list(control.PLANS),"
+    },
+    {
+      "fields": [
+        "compiledLaunchMethods",
+        "compiledHistoryMethods"
+      ],
+      "line": 314,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native26_properties/run.py",
+      "sha256": "b67773074147c1380af9e6e0bf94469e631ac9156aa55860d5740d989592de23",
+      "text": "\"compiledLaunchMethods\": 26, \"compiledHistoryMethods\": 1, \"availablePlans\": list(control.PLANS),"
+    }
+  ],
+  "execution": {
+    "candidateImports": 0,
+    "compilerCalls": 0,
+    "hostCalls": 0,
+    "sourceEdits": 0,
+    "tests": 0
+  },
+  "existingDeclaredKeyOccurrences": [
+    {
+      "line": 127,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native23/native23_inputs.py",
+      "text": "and compiled[\"declaredLaunchMethods\"] == contract[\"declaredOriginalLaunchMethods\"]"
+    },
+    {
+      "line": 128,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native23/native23_inputs.py",
+      "text": "and compiled[\"declaredHistoryMethods\"] == contract[\"declaredOriginalHistoryMethods\"],"
+    },
+    {
+      "line": 156,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native23/native23_inputs.py",
+      "text": "\"compiledLaunchMethodDeclarations\": len(compiled[\"declaredLaunchMethods\"]),"
+    },
+    {
+      "line": 157,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native23/native23_inputs.py",
+      "text": "\"compiledHistoryMethodDeclarations\": len(compiled[\"declaredHistoryMethods\"]),"
+    },
+    {
+      "line": 127,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native25/native23_inputs.py",
+      "text": "and compiled[\"declaredLaunchMethods\"] == contract[\"declaredOriginalLaunchMethods\"]"
+    },
+    {
+      "line": 128,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native25/native23_inputs.py",
+      "text": "and compiled[\"declaredHistoryMethods\"] == contract[\"declaredOriginalHistoryMethods\"],"
+    },
+    {
+      "line": 156,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native25/native23_inputs.py",
+      "text": "\"compiledLaunchMethodDeclarations\": len(compiled[\"declaredLaunchMethods\"]),"
+    },
+    {
+      "line": 157,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native25/native23_inputs.py",
+      "text": "\"compiledHistoryMethodDeclarations\": len(compiled[\"declaredHistoryMethods\"]),"
+    },
+    {
+      "line": 127,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native26_properties/native23_inputs.py",
+      "text": "and compiled[\"declaredLaunchMethods\"] == contract[\"declaredOriginalLaunchMethods\"]"
+    },
+    {
+      "line": 128,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native26_properties/native23_inputs.py",
+      "text": "and compiled[\"declaredHistoryMethods\"] == contract[\"declaredOriginalHistoryMethods\"],"
+    },
+    {
+      "line": 156,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native26_properties/native23_inputs.py",
+      "text": "\"compiledLaunchMethodDeclarations\": len(compiled[\"declaredLaunchMethods\"]),"
+    },
+    {
+      "line": 157,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_native26_properties/native23_inputs.py",
+      "text": "\"compiledHistoryMethodDeclarations\": len(compiled[\"declaredHistoryMethods\"]),"
+    },
+    {
+      "line": 383,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native23_build.py",
+      "text": "\"declaredLaunchMethods\": value[\"declaredOriginalLaunchMethods\"],"
+    },
+    {
+      "line": 384,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native23_build.py",
+      "text": "\"declaredHistoryMethods\": value[\"declaredOriginalHistoryMethods\"],"
+    },
+    {
+      "line": 119,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_shared_build/test_native23_build.py",
+      "text": "self.assertEqual(len(proof[\"declaredLaunchMethods\"]), 23)"
+    },
+    {
+      "line": 120,
+      "path": "Tools/PinkhaDualEngineRuntime/hosted_shared_build/test_native23_build.py",
+      "text": "self.assertEqual(len(proof[\"declaredHistoryMethods\"]), 1)"
+    }
+  ],
+  "failureEffect": "A failure before configure/admit can retain the summary with labels claiming compilation that this runtime has not yet admitted. No test/process/source guard bypass was found.",
+  "filesIndependentlyRehashed": 92,
+  "full92Index": {
+    "bytes": 26413,
+    "path": "/workspace/scratch/ae335eba85e3/hosted-inspector14-native26-source/prepared1/full-after-index.json",
+    "sha256": "374eb5d23a8b340583dbdf2dc4af22c3caaef6898fc2d648906b760fec5ebc2b"
+  },
+  "minimalCorrection": {
+    "dependentBindings": "Only exact source hashes/inverses that depend on the three modified run files need their explicit successor.",
+    "doNotChange": [
+      "actual helper compiler proof fields compiledLaunchMethodDeclarations/compiledHistoryMethodDeclarations",
+      "compiler receipt declared method lists or checks",
+      "any runner/custody/selection/deadline function",
+      "original prepared1 input bytes or source review evidence"
+    ],
+    "keyRenames": 6,
+    "literalAfter": "\"declaredLaunchMethods\": 26, \"declaredHistoryMethods\": 1",
+    "literalBefore": "\"compiledLaunchMethods\": 26, \"compiledHistoryMethods\": 1",
+    "paths": [
+      "Tools/PinkhaDualEngineRuntime/hosted_native23/run.py",
+      "Tools/PinkhaDualEngineRuntime/hosted_native25/run.py",
+      "Tools/PinkhaDualEngineRuntime/hosted_native26_properties/run.py"
+    ]
+  },
+  "oldKeyConsumers": [],
+  "reviewedHandoff": {
+    "bytes": 10447,
+    "path": "/workspace/scratch/ae335eba85e3/hosted-inspector14-native26-source/prepared1/handoff.json",
+    "sha256": "d0f5cb316552b457245b11bdf5f9f9b15c7181dc20fad42f474acbc0ca7d5e99"
+  },
+  "schema": "apple-native26-pre-admission-count-consumer-review/v1",
+  "scopeLimits": [
+    "All candidate controls remain unimported/unexecuted.",
+    "This consumer census covers the complete92-file sealed control snapshot; it is not a claim about unknown external consumers.",
+    "Root explicitly authorized one prepared2 successor after this concrete census."
+  ],
+  "status": "CONCRETE_FAILURE_EVIDENCE_REPORTING_GAP_SOURCE_ONLY"
+}

@@ -1,0 +1,122 @@
+{
+  "authorReviewsRetained": [
+    {
+      "bytes": 5913,
+      "gitBlob": "fbaba304e039f5ba309ade95f21e1e8aa78660e7",
+      "path": "/workspace/scratch/ae335eba85e3/w2-host-utf8-cde0-review/source/docs/validation/20261127-wave2-host-text-readback/interfaces-independent-review.json",
+      "sha256": "0e3f391656b4bbd5804c61a8cc3ce3ec6ee8cd8e97ee3ca6c7cc4ef59b353eb3"
+    },
+    {
+      "bytes": 3146,
+      "gitBlob": "96d13444056f11d7662411b5d6c5adb7da00a7b1",
+      "path": "/workspace/scratch/ae335eba85e3/w2-host-utf8-cde0-review/source/docs/validation/20261127-wave2-host-text-readback/root-independent-review.json",
+      "sha256": "00b8024846881a07aab619f3c2add3d7f7aa4658f4c3a008786d82d99fd9e782"
+    }
+  ],
+  "blockingFindings": [],
+  "compatibility": {
+    "bytes": 42072,
+    "gitBlob": "4e4b9698a8cc230958acf65883b002ab84de643e",
+    "path": "/workspace/scratch/ae335eba85e3/w2-host-utf8-cde0-review/integration-compatibility.json",
+    "sha256": "d4d8605e5d65a59232719aee5cfa4812e64ea9fe631e514dd79afe8be0c191d2"
+  },
+  "execution": {
+    "HTTPFixtureStarts": 0,
+    "MacCalls": 0,
+    "OracleCalls": 0,
+    "SwiftCompilers": 0,
+    "XCTestRuns": 0,
+    "candidateImports": 0,
+    "localByteAndSourceInspection": true,
+    "nativeCalls": 0,
+    "repositoryWrites": 0
+  },
+  "findings": [
+    {
+      "conclusion": "The sole product replacement changes the top-level requested string text comparison to exact UTF-8. AnyJSON.string is a typed getter, not a coercion. Missing or non-string actual text is rejected. Non-text and requested non-string values retain the original equality; the unset path remains exact.",
+      "id": "TEXT-ONLY-UTF8",
+      "proof": "One literal inverse restores the entire primary 11,425-byte original; all bytes outside matches are unchanged."
+    },
+    {
+      "conclusion": "Original permission checks, account/Space/lease/generation/run checks, conditional PATCH and version logic, conflict/uncertain handling, final lease validation and inverse/Undo construction remain byte-identical. The corrected matcher can withhold verifiedCurrent/Undo after a mismatching readback; it adds no request/retry/permission or native route.",
+      "id": "ORIGINAL-AUTHORITY-DISPATCH-UNDO",
+      "scope": "No transport-drain fix or native acceptance inferred."
+    },
+    {
+      "conclusion": "Two XCTest methods each loop over two raw-different canonically equivalent Unicode pairs. They use the actual store and HTTP client through original session ownership; require one exact conditional PATCH, unchanged versions/run guards, mismatched readback unverified/nil Undo, and exact readback verified with exact inverse/redo text.",
+      "controlledHTTPJourneys": 4,
+      "declaredXCTestCases": 2,
+      "id": "REAL-HOST-CONTROLLED-HTTP",
+      "newMethods": 2,
+      "original23TestDeclarationsPreserved": true,
+      "runtime": "NOT_RUN_BY_THIS_REVIEW"
+    },
+    {
+      "conclusion": "The newly created private directory is checked for physical identity, owner and mode0700. A single original-owner Process runs the fixed Python source; stdin EOF, the exact current PID, positive exit0 and terminal evidence are required. The fixture is loopback-only with45s lifetime,3s request timeout,256 request and16KiB body limits; it spawns no descendants. Missing closure or timeout fails the XCTest and retains evidence.",
+      "id": "BOUNDED-OWNED-FIXTURE",
+      "limits": "Source review does not assert actual process closure, execution or compiler compatibility."
+    },
+    {
+      "conclusion": "All21 new paths are disjoint from both sealed288 and the99-path c3/13dc/d528 source proposal. No protected mapping row references the three Host paths and the checked strict Native23/T5/Core source pins do not name their old hashes. The runtime/compiler counts61/10/2 are not incremented by these package tests.",
+      "id": "SOURCE-AND-PROFILE-COMPATIBILITY"
+    }
+  ],
+  "fullInverse": {
+    "bytes": 19262,
+    "gitBlob": "13539c0dbe17766a0097da75b13e5e0d77594e4f",
+    "path": "/workspace/scratch/ae335eba85e3/w2-host-utf8-cde0-review/independent-full-inverses.json",
+    "sha256": "482974cda9698e11853c9419c8ebaa102033cda76bbc734110d6d1d994bbc892"
+  },
+  "heldWork": "The separately approved df81 six-member evidence reader has not been uploaded or executed during the Oracle maintenance hold.",
+  "inventory": {
+    "bytes": 18966,
+    "gitBlob": "00a1c71ba4e45e68e9157b8f168e06a1c1361959",
+    "path": "/workspace/scratch/ae335eba85e3/w2-host-utf8-cde0-review/complete-primary-source-index.json",
+    "sha256": "2a01dbc601855a3245a00f720918a13be3040a1f9f290df40ee6440b0a783af2"
+  },
+  "parent": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "remaining": [
+    "Actual W2-owned compile/execution of the two methods and four controlled journeys.",
+    "Root exact source integration/retention gate on the chosen final tree.",
+    "Independent native/Apple/runtime qualification remains closed."
+  ],
+  "retainedOriginalStops": [
+    {
+      "bytes": 792,
+      "gitBlob": "4a4d30044204f350ff248c3a17050d2947533c7a",
+      "path": "/workspace/scratch/ae335eba85e3/w2-host-utf8-cde0-review/source/docs/validation/20261127-wave2-host-text-readback/interfaces-review-attempt1.json",
+      "sha256": "b39dac3e2c1f8f8c1169c9fa01bc8cf8ac892f412b4eef43170d6a83bed70303"
+    },
+    {
+      "bytes": 289,
+      "gitBlob": "75aab9972dd33d9a5a0dd013d52cc21ae59fdd8f",
+      "path": "/workspace/scratch/ae335eba85e3/w2-host-utf8-cde0-review/source/docs/validation/20261127-wave2-host-text-readback/publication/preparation-attempt1.json",
+      "sha256": "e04c4e94b045208a572f48e4e8fd891ec816a862c96bfa0b28eff1671aec803b"
+    }
+  ],
+  "schema": "apple-independent-host-utf8-source-review/v1",
+  "scope": "Primary cde0 product matcher, appended original Host HTTP tests, controlled fixture and integration compatibility only.",
+  "sourceCommit": "cde0b83a3f04f36232eed93e6ab2cb7be0e692a5",
+  "sourceFiles": [
+    {
+      "bytes": 11711,
+      "gitBlob": "5963c98988416bec1a1761466a3fb21f1cc3f66b",
+      "path": "/workspace/scratch/ae335eba85e3/w2-host-utf8-cde0-review/source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+      "sha256": "1ea82b556e9f16b7903de03bbe435a249c6c922ade9798a01d648c8394c2604d"
+    },
+    {
+      "bytes": 23666,
+      "gitBlob": "a906253cb86dc64e2befa4d0991e105b6b3a8472",
+      "path": "/workspace/scratch/ae335eba85e3/w2-host-utf8-cde0-review/source/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHostTests.swift",
+      "sha256": "4cc5c251b525b36ab710d6fa05163ccb27a8e3c801c5e88eab44533253db13e5"
+    },
+    {
+      "bytes": 6125,
+      "gitBlob": "bb8db3836745353c49cc4681b7beae3aa59c92f0",
+      "path": "/workspace/scratch/ae335eba85e3/w2-host-utf8-cde0-review/source/Modules/PinkhaAnyHost/Tests/Fixtures/editor_text_readback_server.py",
+      "sha256": "d91554403d0fc9f84cd8792006ab150506923e0a003000fb4caff171a52800bd"
+    }
+  ],
+  "status": "PASS_SOURCE_REVIEW_ONLY_NOT_COMPILED_NOT_RUN",
+  "tree": "d49c3aca52744a228e776211a4967f64f3da9b6b"
+}

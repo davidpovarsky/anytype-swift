@@ -1,0 +1,147 @@
+{
+  "schema": "pinkha-heart-semantic-clipboard-gap-v1",
+  "finding": "ANCHOR-HEART-CLIPBOARD-01",
+  "status": "SOURCE_PROVEN_RESERVED_MARKER_IDENTITY_COPIED",
+  "appCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "nativeManifestSHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+  "nativeSourceBasis": "Exact composed-source files, every byte/hash checked against the original4868-member manifest; not current upstream.",
+  "nativeFiles": [
+    {
+      "path": "heart/core/block/editor/clipboard/clipboard.go",
+      "bytes": 31025,
+      "sha256": "fceec95ee1e58c9067291ac9e206c0bed8b29d558a1fe818d37d08fc5b614957",
+      "retainedPath": "wave2-native8ac-manifest-intake/anchor-source/heart/core/block/editor/clipboard/clipboard.go"
+    },
+    {
+      "path": "heart/core/block/editor/clipboard/paste.go",
+      "bytes": 21058,
+      "sha256": "cf3de77896b07a00cc7dbd13804749f39af95e3b0d84d9bba8d2d8773b685145",
+      "retainedPath": "wave2-native8ac-manifest-intake/anchor-source/heart/core/block/editor/clipboard/paste.go"
+    },
+    {
+      "path": "heart/core/block/editor/state/normalize.go",
+      "bytes": 11616,
+      "sha256": "15b7aed2df95ac90175bee67d5b567a9049a8ceaca257bd961862e5f19298b6f",
+      "retainedPath": "wave2-native8ac-manifest-intake/anchor-source/heart/core/block/editor/state/normalize.go"
+    },
+    {
+      "path": "heart/core/block/editor/stext/pinkha_semantic_anchor.go",
+      "bytes": 6505,
+      "sha256": "42f8f04a7ab19ed23b5a231248762ad1fed22679b21c3adf7f0e047f32092e09",
+      "retainedPath": "wave2-native8ac-manifest-intake/anchor-source/heart/core/block/editor/stext/pinkha_semantic_anchor.go"
+    },
+    {
+      "path": "heart/core/block/editor/stext/pinkha_semantic_anchor_test.go",
+      "bytes": 9934,
+      "sha256": "072597c372d2101b0a0ffa966ca9a5b45011361c5eed536d2ce3d23d5a25316a",
+      "retainedPath": "wave2-native8ac-manifest-intake/anchor-source/heart/core/block/editor/stext/pinkha_semantic_anchor_test.go"
+    },
+    {
+      "path": "heart/core/block/editor/stext/text.go",
+      "bytes": 18630,
+      "sha256": "0011fd70c414a6422fb7962e3e7097730d74c9ed03e265ceaa22ab457c5fc2ce",
+      "retainedPath": "wave2-native8ac-manifest-intake/anchor-source/heart/core/block/editor/stext/text.go"
+    },
+    {
+      "path": "heart/core/block/simple/base/base.go",
+      "bytes": 3288,
+      "sha256": "a840e66a5cb704bb3cfa591d6d70db984bd315ea13507ce875c5265710fa5d54",
+      "retainedPath": "wave2-native8ac-manifest-intake/anchor-source/heart/core/block/simple/base/base.go"
+    },
+    {
+      "path": "heart/core/block/simple/text/text.go",
+      "bytes": 26013,
+      "sha256": "11f793bb9ebb4d22dc5f57b84d5b5ab42c8dfe4626217213f30e958b4f13abcc",
+      "retainedPath": "wave2-native8ac-manifest-intake/anchor-source/heart/core/block/simple/text/text.go"
+    }
+  ],
+  "appFiles": [
+    {
+      "path": "Modules/Services/Sources/Services/PasteboardMiddleService/PasteboardMiddleService.swift",
+      "bytes": 5569,
+      "sha256": "6bd8e31d366d739df4f417731c1cdff43fc51bbe90f9f49d3c1725e0c97c0a24",
+      "gitBlob": "1f3df93ea80edb10b851bfc7831287e462e4aa49"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/Pastboard/PasteboardBlockService.swift",
+      "bytes": 3842,
+      "sha256": "400ff2580fdf064906ed6542892b69139239f58772c639aea5f259f39e6e2639",
+      "gitBlob": "07dc6eee4e5873e4b7dcc2dd47e74cd176aefaa4"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/Pastboard/PasteboardHelper.swift",
+      "bytes": 6258,
+      "sha256": "1edd18bf419c01fb88f72dcbca367e3417b2b8993394d1d0a3190dcb685b7eb0",
+      "gitBlob": "995df1ccf9a3131919d89bb398bed38594cb47f8"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTextAnchor.swift",
+      "bytes": 16150,
+      "sha256": "bfefc94965cfe6dbdf910452eaec3a9530854a6d5b6a09a1a9b10339c6c30274",
+      "gitBlob": "494f878ad9901d8ea07874ec6727732521e7c27e"
+    }
+  ],
+  "sourceRoute": [
+    {
+      "step": "Mounted Heart copy/cut",
+      "symbols": [
+        "TextBlockContentView.copy(range:)",
+        "TextBlockActionHandler.makeActions",
+        "PasteboardBlockService.copy/cut",
+        "PasteboardMiddleService.copy/cut"
+      ],
+      "observation": "The real path sends native block models and range to BlockCopy/BlockCut and forwards returned text/html/block slots to the original pasteboard helper. It does not invoke shared PinkhaSemanticText.clipboardText."
+    },
+    {
+      "step": "Native export",
+      "symbols": [
+        "clipboard.Copy",
+        "clipboard.Cut",
+        "clipboard.blocksToState",
+        "clipboard.stateToBlocks"
+      ],
+      "observation": "Ordinary copy/cut exports the supplied native text mark parameters; ranged export uses RangeCut then offsets the same marks. No reserved semantic-marker filter exists."
+    },
+    {
+      "step": "Text/base normalization",
+      "symbols": [
+        "text.Text.Copy",
+        "text.Text.RangeCut",
+        "text.Text.splitMarks",
+        "state.State.Normalize",
+        "state.State.doCustomBlockNormalizations",
+        "base.Base"
+      ],
+      "observation": "Text copying and range splitting retain mark Type and Param. State normalization handles tree/layout/details and optional Normalize implementers; neither Text nor embedded Base implements a semantic-marker normalization."
+    },
+    {
+      "step": "Native paste",
+      "symbols": [
+        "clipboard.pasteAny",
+        "clipboard.sanitizeMarks",
+        "pasteCtrl.intoBlock",
+        "text.Text.RangeTextPaste",
+        "text.Text.SplitMarks"
+      ],
+      "observation": "Paste sanitizes mark ranges only, remaps block IDs/children, and retains valid link Params. Inline insertion also carries copied mark Params into the target. A valid pinkha-anchor URL is not retired or reminted."
+    }
+  ],
+  "consequence": "A copied anchored text/block can carry the original durable identity into another native text location. In the same document this can produce duplicate/noncontiguous fragments and resolver ambiguity; in a different document the marker retains the old owner instead of becoming ordinary pasted text. The resolver safely refuses foreign/ambiguous state, but that refusal does not satisfy the specified clipboard no-cloning behavior.",
+  "scopeLimits": [
+    "This is source reachability and exact8ac data-flow evidence, not an executed clipboard/native/UI test.",
+    "This audit does not claim Heart before/inside/after UIKit typing is broken; it forwards real marks and remains a separate mounted acceptance obligation.",
+    "Existing native capture/CAS evidence and old accepted tests remain unchanged."
+  ],
+  "requiredOwner": "Wave1 for the existing native clipboard behavior; coordinate any Native source change. No Wave2 UI-only stripping or duplicate contract.",
+  "minimalRegressionRequirements": [
+    "Copy and cut full/partial anchored text: clipboard payload has no reserved marker identity while actual document preservation and cut Undo use the original native history.",
+    "Paste copied native slots in same and different document: preserve ordinary text/formatting/links, never clone the original anchor.",
+    "Paste supplied reserved-marker slots: no untrusted marker identity injection, including future/malformed reserved shapes under the agreed existing contract.",
+    "Keep ordinary nonsemantic link/mark and code-paste behavior unchanged; retain explicit actual source/inverse and run only affected tests."
+  ],
+  "productionEdits": 0,
+  "nativeContractChanges": 0,
+  "compilerInvocations": 0,
+  "testsExecuted": 0,
+  "macOrOracleCallsByThisAudit": 0
+}

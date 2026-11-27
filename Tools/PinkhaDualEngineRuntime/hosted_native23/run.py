@@ -27,7 +27,7 @@ import native23_inputs
 from control import exclusive, load_json, load_module, regular, require, sha
 
 CORE = "Tools/PinkhaDualEngineRuntime/hosted_core13/"
-CORE_ADMISSION_SHA = "983ea0db628f3ff81f677c2a91822d72843de4fb94cfd374f418a1c2fcf86849"
+CORE_ADMISSION_SHA = "fd0748fbbf7cef165e7b0a4e837473deeb56eb9efb11bf89d96ddbee2e102593"
 CORE_ORIGINALS_SHA = "adc29fa18b2bd64dce6bca3cf6ded88ae6203246a12fa7e781229fda41b1f326"
 DEFAULT_DEVICE = "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB"
 LEGACY_DEVELOPER = Path("/Applications/Xcode.app/Contents/Developer")
@@ -311,7 +311,7 @@ def main():
         "plans": activation["plans"], "testsExecuted": 0, "status": "INTAKE_NOT_RUNTIME_ACCEPTANCE"})
     summary = {"schema": "pinkha-hosted-native23-runtime-v1", "status": "FAIL_OR_NOT_RUN", "job": job,
                "sourceCommit": plan["appSourceSHA"], "started": time.time(), "lanes": [],
-               "compiledLaunchMethods": 23, "compiledHistoryMethods": 1, "availablePlans": list(control.PLANS),
+               "declaredLaunchMethods": 26, "declaredHistoryMethods": 1, "availablePlans": list(control.PLANS),
                "visualReview": "PENDING", "physicalDevice": "NOT_RUN"}
     first = None
     try:

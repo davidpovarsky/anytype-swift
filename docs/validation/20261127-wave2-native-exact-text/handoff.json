@@ -1,0 +1,203 @@
+{
+  "schema": "pinkha-wave2-native-exact-text-handoff-v1",
+  "status": "REVIEWED_SOURCE_ONLY_ACCEPTANCE_PENDING",
+  "baseCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "baseTree": "2d8db7a1585d48b857578920fa19b3730dde488b",
+  "ownBranch": "codex/chatgpt-wave15-wave2-native-exact-text-20261127",
+  "classification": "Three existing downstream-owned Pinkha AnyUI / NativeApp test paths; no original Anytype, Native engine/protobuf, SDK, PBX, Package or controller path changes.",
+  "productChanges": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "gitBlob": "0585f7031c638d97ae3d8f28b6a748e8e6eedc7a",
+      "changes": [
+        {
+          "before": "native.text == draft.base.text",
+          "after": "native.text.utf8.elementsEqual(draft.base.text.utf8)",
+          "count": 2
+        },
+        {
+          "before": "renderedBlock.text == block.text",
+          "after": "renderedBlock.text.utf8.elementsEqual(block.text.utf8)",
+          "count": 1
+        },
+        {
+          "before": "source == draft.base.text",
+          "after": "source.utf8.elementsEqual(draft.base.text.utf8)",
+          "count": 1
+        },
+        {
+          "before": "current.text == renderedBlock.text",
+          "after": "current.text.utf8.elementsEqual(renderedBlock.text.utf8)",
+          "count": 1
+        },
+        {
+          "before": "draft.inlineMarkdown == draft.base.text",
+          "after": "draft.inlineMarkdown.utf8.elementsEqual(draft.base.text.utf8)",
+          "count": 1
+        },
+        {
+          "before": "saved.text == draft.inlineMarkdown",
+          "after": "saved.text.utf8.elementsEqual(draft.inlineMarkdown.utf8)",
+          "count": 1
+        }
+      ],
+      "exactInverse": true,
+      "originalSHA256": "7582d4ee5f6ae5a9ba06e371b4143a1f8db10afda7c213a7263559fe30559a1f",
+      "candidateSHA256": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",
+      "originalBytes": 73025,
+      "candidateBytes": 73179,
+      "comparisonOccurrences": 7
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+      "gitBlob": "41cd23c7ae9704197babaa7378fa1b357e833a16",
+      "changes": [
+        {
+          "before": "current.text == draft.inlineMarkdown",
+          "after": "current.text.utf8.elementsEqual(draft.inlineMarkdown.utf8)",
+          "count": 1
+        },
+        {
+          "before": "current.text == (draft.baseNative[\"text\"]?.string ?? \"\")",
+          "after": "current.text.utf8.elementsEqual((draft.baseNative[\"text\"]?.string ?? \"\").utf8)",
+          "count": 1
+        }
+      ],
+      "exactInverse": true,
+      "originalSHA256": "f646eed644d128c30057011ddd384154f5d6a2bd7082bca52e44488bf19fa758",
+      "candidateSHA256": "2abe0317ede786772c8fb1f427f476d24605031fb7f929394f548cd9196e1155",
+      "originalBytes": 9912,
+      "candidateBytes": 9956,
+      "comparisonOccurrences": 2
+    }
+  ],
+  "nativeUI": {
+    "schema": "pinkha-native-unicode-anchor-source-v1",
+    "status": "UNPUBLISHED_SOURCE_NOT_COMPILED_OR_EXECUTED",
+    "sourceCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+    "path": "NativeApp/UITests/NativeLaunchTests.swift",
+    "original": {
+      "gitBlob": "faa1d9a78c52a126f01eb2d001aec919424dd07f",
+      "bytes": 271344,
+      "sha256": "8d58c41e8907019bf67088900bb5c35843562edd669422573c1280f800500e86",
+      "declaredMethods": 23,
+      "methodNames": [
+        "testFreshNativeExecutableShowsAccountAndRecoveryEntryPoints",
+        "testBackgroundAndForegroundReopenTheOwnedRuntime",
+        "testCreateEditHanlinConsentBackgroundAndColdReopen",
+        "testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+        "testSourceInspectorQuoteAndNoteSurviveColdReopen",
+        "testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+        "testHierarchyDragIntoFolderPersistsAfterColdReopen",
+        "testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+        "testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen",
+        "testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
+        "testObserveCanonicalArchiveSystemPickers",
+        "testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",
+        "testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen",
+        "testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen",
+        "testLibrarySearchReplacementAndColdReopenUseCurrentQuery",
+        "testActualSemanticSelectionCancelCreateEditAndColdReopen",
+        "testSemanticSourceLinkSurvivesEditAndColdReopen",
+        "testNativeSharingInvitationConfirmationCancellationAndColdReopen",
+        "testAnyMiniAppsTextStudioWarmAndColdReturnPersistInNativeDocument",
+        "testNativeLibraryAndEditorAccessibilityAuditAtRequestedContentSize",
+        "testNativeVoiceOverTraversalSpeaksCurrentNativeContent",
+        "testTypedBlockMenusPersistAllNineKindsAndColdReopen",
+        "testNativeStyledTypographyRefreshesLiveAtAccessibilitySize"
+      ]
+    },
+    "addition": {
+      "path": "unicode_anchor_addition.swift",
+      "bytes": 10425,
+      "sha256": "9a0880aebe30b7e2ac89794b75cdf049a792d3576bbfa1945c50693d9f78bcb1",
+      "methods": [
+        "testCanonicallyEquivalentLatinTypingPreservesNativeAnchorAndColdReopen",
+        "testCanonicallyEquivalentHebrewTypingPreservesNativeAnchorAndColdReopen"
+      ],
+      "declaredMethods": 2,
+      "declaredCases": 2,
+      "executionTimeAllowanceSecondsPerMethod": 1800
+    },
+    "candidate": {
+      "bytes": 281769,
+      "sha256": "7d7d60d61cabaf7e8c968c4d30cd584100e9d90217f6b1b66441146cbf5d943b",
+      "declaredMethods": 25
+    },
+    "exactPrefixRetained": true,
+    "exactInverse": "Remove only the exact pinned appended suffix; original 271344 bytes remain unchanged.",
+    "originalHelperBodiesRetained": true,
+    "nativeObserver": {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnySemanticAnchorObservation.swift",
+      "gitBlob": "2049af655b538c1aea6eea614fda64ea4f21ca92",
+      "sha256": "b141d6ba3f78bcddc4b35cbe0a7afb107b09ab38c067b2222ccf14787b699b48",
+      "unchanged": true
+    },
+    "readback": "Original observer requires no pending edits, complete reachable block/render set and exact native/rendered semantic text. New methods require exact UTF-8 SHA, UTF-16 count, one identity/range, native version/source change and cold distinct PID/generation with same block/Space/object/source hashes.",
+    "guardText": "Before / after are exact ASCII guard text inside the one selected full-paragraph anchor; this does not claim partial-range coverage.",
+    "notCovered": [
+      "marked-input IME",
+      "recovered pending-draft lifecycle",
+      "stale native source rejection",
+      "source-link association",
+      "anchor split/merge",
+      "clipboard copy/paste/cut",
+      "anchor Undo/Redo",
+      "physical-device input"
+    ],
+    "execution": {
+      "swiftCompilerCalls": 0,
+      "tests": 0,
+      "nativeCalls": 0,
+      "macCalls": 0
+    },
+    "consumer": "Existing Native23 producers/profiles remain untouched and reject this unknown full-source hash. Future Native25 requires W3 source/compiler/enumeration/result admission and explicit finite selectors; there is no selector expansion or runtime gate opening here.",
+    "sourceOnlyInventoryCorrection": "Retained attempt1 omitted four @objc declarations in its regex. Corrected finite source inventory includes those four unchanged declarations; no test enumeration or execution is claimed.",
+    "setupCorrection": "New extension reuses original creation-transition observer and actual enabled/hittable Add paragraph readiness, with original helper budgets and unchanged methods. Predecessor080a/666d retained under review-v2-unicode-setup.",
+    "evidenceOrderCorrection": "After the original capture guard and actual value read, explicit raw JSON and screenshot are attached before the four unchanged exact assertions. This preserves a raw mismatch under original continueAfterFailure=false. Original helpers and observer are unchanged."
+  },
+  "reviews": {
+    "root-independent-exact-text-review.json": "0690cb804455370378415a59187764f523376238a415eb5bd9c18042c8ec0d42",
+    "torah-independent-exact-text-review.json": "c2ff25aef12755ed0979516be425259ffc9ca0054a10199b8526588f69456048",
+    "torah-exact-text-byte-review.json": "f8fbbe88f61602f41baf350d56ab4f3a5147d893789a6e9aef90bd6582307773",
+    "root-independent-unicode-ui-review.json": "d98887dd6382472de55bd7d8d11a5e5a45512d387a8ec6e55e693aabee05adee",
+    "torah-independent-unicode-ui-review.json": "f77db83b5b560a5b24f9d17db42e2dd25dcb5d2e7c355536792eb2756b874328",
+    "torah-unicode-ui-byte-review.json": "14ce82bdccc1cc22531db3f48b90e4e201e2f133102d59d89fc210f2f3d2e3af",
+    "torah-independent-unicode-evidence-order-review.json": "e2edc8b156b210534b654e06e197de0ed59e6496e3cd79a06512fef88a944c32"
+  },
+  "priorFailuresRetained": [
+    "Original source inventory regex omission",
+    "First UI creation/readiness preparation",
+    "UI exact-value evidence-order predecessor",
+    "Rejected unpublished fixture/publication seam"
+  ],
+  "runtime": {
+    "gateOpened": false,
+    "AppleCompile": "NOT_RUN",
+    "newNativeMethods": "NOT_RUN",
+    "newMethods": 2,
+    "newDeclaredCases": 2,
+    "actualEnumeration": null,
+    "existingNative23Replayed": false,
+    "compilerInvocations": 0,
+    "nativeCalls": 0,
+    "MacActions": 0,
+    "OracleActions": 0
+  },
+  "integration": "Wave3 owns ordinary source merge and explicit same-product Native25 producer/source-proof/enumeration/result successor. CurrentNative23 controls remain unchanged; no new execution allowance or selector is implied by this publication.",
+  "nativeContractDependencies": [
+    "Root/Wave1 owns atomic structural split/merge capability per sealed native-keyboard-structural-finding.json",
+    "Root/Wave1 owns original8ac Heart semantic clipboard no-cloning correction per sealed heart-clipboard-finding.json"
+  ],
+  "openAcceptance": [
+    "marked-input IME",
+    "recovered pending-draft lifecycle",
+    "stale native source rejection",
+    "source-link association",
+    "anchor split/merge",
+    "clipboard copy/paste/cut",
+    "anchor Undo/Redo",
+    "physical-device input"
+  ],
+  "rollback": "Revert this source commit or apply the exact two product inverses and remove the exact pinned UI suffix; never discard earlier failures or returned accepted evidence."
+}

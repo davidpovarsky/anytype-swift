@@ -1,0 +1,12 @@
+{
+  "schema": "interfaces-source-review-inspection-stop-v1",
+  "status": "REVIEWER_ONLY_HASH_ASSERTION_STOP",
+  "candidateChanged": false,
+  "productOrTestExecution": false,
+  "actualManifestSHA256": "149c10f0e5be928857572eb4bb66a1f778bf0775d5c9e98dfe9e900fe8f1b8e7",
+  "suppliedManifestPrefix": "149c10f0",
+  "incorrectInspectionLiteral": "149c10f0e323910e58cf4257055dcdb2b83d7d1e40cc158ba5dce3d6431779ec",
+  "cause": "Reviewer incorrectly expanded a supplied digest prefix without first computing the full local digest. Assertion stopped before review artifact creation; source is unchanged. Successor binds the actual full digest and every actual file hash.",
+  "rawExit": 1,
+  "rawOutput": "Traceback (most recent call last):\n  File \"<stdin>\", line 4, in <module>\nAssertionError\n"
+}

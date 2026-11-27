@@ -1,0 +1,63 @@
+{
+  "schema": "pinkha-unicode-ui-independent-byte-review/v1",
+  "reviewer": "/root/torah_continue",
+  "status": "SOURCE_BYTE_CHECK_ONLY",
+  "original": {
+    "path": "wave2-semantic-anchor-audit/source/NativeApp/UITests/NativeLaunchTests.swift",
+    "bytes": 271344,
+    "sha256": "8d58c41e8907019bf67088900bb5c35843562edd669422573c1280f800500e86",
+    "gitBlob": "faa1d9a78c52a126f01eb2d001aec919424dd07f"
+  },
+  "candidate": {
+    "path": "wave2-semantic-anchor-audit/candidate/NativeApp/UITests/NativeLaunchTests.swift",
+    "bytes": 281769,
+    "sha256": "5f1fc0bc9b0e794f5fce8340384d3e81a4c632ac1859d21a2a60ee43aafc5100",
+    "gitBlob": "d419e6ef94ece32baa67a50ec6e094678a695e0f"
+  },
+  "suffix": {
+    "path": "wave2-semantic-anchor-audit/unicode_anchor_addition.swift",
+    "bytes": 10425,
+    "sha256": "b38b35d12d036ed4c262055448b47840680985bec1b0e0f5a47b740b56e9ce7b",
+    "gitBlob": "8faeb057c040d026701eab4a15c0fece8211da1a"
+  },
+  "predecessorFull": {
+    "path": "wave2-semantic-anchor-audit/review-v2-unicode-setup/NativeApp/UITests/NativeLaunchTests.swift",
+    "bytes": 281579,
+    "sha256": "080a6ad3e5a7fdc5a956d6f6b65682a827fec966da4001cc70be6ae8c9bba986",
+    "gitBlob": "7cacf3cfdc4ceb36bacb2c3da6c1b1fc88702ce4"
+  },
+  "predecessorSuffix": {
+    "path": "wave2-semantic-anchor-audit/review-v2-unicode-setup/unicode_anchor_addition.swift",
+    "bytes": 10235,
+    "sha256": "666d52ecc258b9d0e7e6974ecfa46d7d73c90546dbf3608715d5d6af9fed7519",
+    "gitBlob": "7480a6d50eeb604d476c2ddfc3601a8a17c73bbc"
+  },
+  "originalPrefixExact": true,
+  "original23MethodsAndHelpersByteIdentical": true,
+  "finiteSetupCorrectionExactInverse": true,
+  "setupCorrection": {
+    "path": "wave2-semantic-anchor-audit/unicode-setup-correction.json",
+    "bytes": 1484,
+    "sha256": "98a991baf20a2ad831647ca4f5687861e4da2c9c2b22083a83a4b2fa0c42c29e",
+    "gitBlob": "3ced566e5a7502a38982fecedafb7189a717223a"
+  },
+  "authorSourceProof": {
+    "path": "wave2-semantic-anchor-audit/unicode-anchor-source-inverse.json",
+    "bytes": 4658,
+    "sha256": "2a679c50babb7c0c4fb507a786263ad3a97cd34dec57d674a314835506491082",
+    "gitBlob": "33967ad3b0c2cf44d344a9bf6f1e289159be8d5e"
+  },
+  "newMethods": [
+    "testCanonicallyEquivalentLatinTypingPreservesNativeAnchorAndColdReopen",
+    "testCanonicallyEquivalentHebrewTypingPreservesNativeAnchorAndColdReopen"
+  ],
+  "sourceDeclaredCounts": {
+    "originalMethods": 23,
+    "candidateMethods": 25,
+    "newMethods": 2,
+    "newCases": 2
+  },
+  "XCTestEnumerationPerformed": false,
+  "testsExecuted": 0,
+  "compilerCalls": 0
+}

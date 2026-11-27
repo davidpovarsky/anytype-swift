@@ -1,0 +1,21 @@
+{
+  "schema": "pinkha-host-exact-text-readback-inverse/v1",
+  "before": {
+    "path": "torah-acceptance-prep/native-text-readback/source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+    "bytes": 11425,
+    "sha256": "de35930cd2689caaaa1195576073a117fa917b5ff078fccb24baba98eac68c43",
+    "gitBlob": "a482992af95970d2516eabdea6133a35192c7c05"
+  },
+  "candidate": {
+    "path": "torah-acceptance-prep/native-text-readback/candidate/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+    "bytes": 11711,
+    "sha256": "1ea82b556e9f16b7903de03bbe435a249c6c922ade9798a01d648c8394c2604d",
+    "gitBlob": "5963c98988416bec1a1761466a3fb21f1cc3f66b"
+  },
+  "literalBefore": "        set.allSatisfy { field(native, path: $0.key) == $0.value } &&\n        unset.allSatisfy { field(native, path: $0) == nil }\n",
+  "literalAfter": "        set.allSatisfy { entry in\n            let actual = field(native, path: entry.key)\n            if entry.key == \"text\", let expected = entry.value.string {\n                guard let value = actual?.string else { return false }\n                return value.utf8.elementsEqual(expected.utf8)\n            }\n            return actual == entry.value\n        } && unset.allSatisfy { field(native, path: $0) == nil }\n",
+  "exactInverse": true,
+  "scope": "Only the top-level text field with a requested string uses exact UTF-8. All non-text fields, non-string values and unset semantics remain original. No transport, authority, API or Undo shape change.",
+  "compiled": false,
+  "tested": false
+}

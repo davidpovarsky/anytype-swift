@@ -16,7 +16,7 @@ from originals import require
 REPOSITORY = "davidpovarsky/anytype-swift"
 CONTROL_PREFIX = "Tools/PinkhaDualEngineRuntime/hosted_core13/"
 HOSTED_OWNER = "Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py"
-HOSTED_OWNER_SHA256 = "3940542e154c83ee4c8e433381449b6ff35a9fda702e8b9bd02af3b5c1d1d4c1"
+HOSTED_OWNER_SHA256 = "bb38feb19f8adfcf8407a7fae4868af601a26ef1293474077556a3a8a215dfe7"
 NATIVE_INPUTS = "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_inputs.py"
 NATIVE_INPUTS_SHA256 = "e8aaf254140c06410813d5ab6f3b9168b71c1722dfe2ecdac8155a1bdc9d4d3c"
 LOCK = "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
