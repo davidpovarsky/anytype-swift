@@ -1,0 +1,78 @@
+{
+  "retrievedTask": "1219604770637161",
+  "task": {
+    "gid": "1219604770637161",
+    "completed": false,
+    "name": "[P0][PARTIAL] T4 Quote/drop — locale-safe new quote CI PASS; iPad drop/Undo/focus OPEN",
+    "notes": "[CURRENT_VERIFIED 2026-11-21 | SHARED EDITOR FIX INTEGRATED; QUOTE UI RUNNING]\nShared queued text snapshots/input ownership and native acknowledgement correction integrated. The original quote/drop/Undo/Redo/relaunch method is now running in retained-heart-release44948101231 @c6ecc8ae with corrected r15-attachment-v1 from44943967103. One Release build is shared with editor/Properties, but each lane has its own disposable fixture. Earlier44594932364 anchor/text-loss failure remains preserved. Do not infer quote/drop success from source, component tests or a successful build. T4 and physical iPad remain OPEN pending actual original method evidence and remaining acceptance.\nhttps://github.com/davidpovarsky/anytype-swift/actions/runs/44948101231\n[/CURRENT_VERIFIED]\n\n[CURRENT_VERIFIED 2026-11-20 | QUOTE UI BLOCKED BY EDITOR]\nOriginal native quote/anchor UI run 44594932364 failed after native typing retained only fragments of input instead of the complete typed string. The test could not reach meaningful native quote/drop/Undo/Redo assertions. This is not a quote-specific PASS/FAIL of downstream behavior; upstream editor input ownership/lost echo is blocking. After editor fix, rerun real source selection→quote, system-side-sheet drag/drop, focus, Undo/Redo, strict readonly, cross-window, first-block, relaunch and physical iPad. Keep T4 OPEN.\nhttps://github.com/davidpovarsky/anytype-swift/actions/runs/44594932364\n[/CURRENT_VERIFIED]\n\n[CURRENT_VERIFIED | 2026-11-19 | NATIVE PREPARATION PASS; UI INPUT FAILURE BEFORE QUOTE ACTIONS]\nהרצת Quote המקורית44594932364, ניסיון1, על40789dc97176bfa2a7166d2345e6b0dd3de9cada הסתיימה FAILURE. בחירה מקורית: quote-drop / iPad / en / runtime source44203168617. בניית Native ובניית UI עברו.\nהכנה Native בפועל: SimulatorAcceptancePreparationTests/prepareRealUIFixture — 1 PASS / 0 FAIL / 0 SKIP, 5.1025078297 שניות. בדיקת UI היחידה testNativeQuoteUndoRedoDragAndRelaunch — 0 PASS / 1 FAIL / 0 SKIP, 60.1400289536 שניות, exit65, בלי expected failures. מכשיר: arm64 iPad Pro 13-inch(M5), iOS27.0/24A434.\nהכשל הוא ב-createAnchor, לפני פתיחת ה-reader או פעולת ציטוט. הבדיקה הקלידה \"Wave15 drop anchor <UUID>\" אבל צילום המסך המקורי מציג \"W <UUID>\"; 20 קובצי query מקוריים שומרים את הערך המלא שציפתה הבדיקה למצוא. נגישות המקור מוכיחה בלוק body Native בעל מזהה יציב, עם keyboard focus/first responder באפליקציה PID84178, אך לא את העוגן המלא. טקסט הכשל \"Typing did not create the native anchor block\" אינו אומר שלא נוצר שום בלוק: נוצר טקסט חלקי. ה-assertion נקרא בשורה191; דיווח XCTest מצביע על helper הזריקה בשורה313.\nיצירת ציטוט/citation, Undo/Redo, שתי גרירות, background/foreground ו-relaunch — NOT_REACHED. אין להסיק מהם PASS או כשל מוצר ייעודי. רצף ה-callbacks שגרם לאובדן הטקסט לא נשמר; סיבת ה-echo המדויקת טרם הוכחה בהרצה זו.\nartifact14569948710, 36,260,951 בתים, SHA256:8a0f8a0cee3c67d84c4590308998ee54d1dc89aee993500365a180a79931cb85. שני ZIP/CRC וכל1,447 החברים הייחודיים אומתו. אומתו 5,612 זהויות Git קנוניות ו-17 קובצי מקור ממוקדים מול מקור40789 ומלאי הקבצים שנשמר לאחר הביצוע.\nמגבלת runtime: המיפוי המקורי לפני UI אומת ל-PID83230; צילום/AX של בדיקת UI שייכים ל-PID84178. אין מיפוי Native שמור של אותו תהליך UI, ואין טענת every-launch/full-bundle equivalence. מלאי compiled-products מוגדר במקור OBSERVED_PRODUCTS_INVENTORY_NOT_BUILD_PROVENANCE.\nReport: quote-44594932364/VERIFIED_QUOTE_ANCHOR_FAILURE_44594932364.json\nSHA256:6db35dba21c32eedd11873679d6aab0a2c32e24b4e6048c5ff92b972ea28119f.\nhttps://github.com/davidpovarsky/anytype-swift/actions/runs/44594932364\nהמשימה נשארת OPEN. יש להשלים את תיקון/אימות הקלט הרגיל בעורך ואז לבצע מחדש את מסלול Quote המקורי במלואו; אין קבלת מכשיר פיזי או release. המקור והארכיונים נשמרו, ולא שוגרה ריצה נוספת במסגרת אימות זה.\n[/CURRENT_VERIFIED]\n\nCURRENT 2026-10-20 — new quotes now keep provider body without frozen English citation suffix; source reference rendered via localized association-backed badge. Existing edited quotes unchanged, exact insertion remains via native quote and setFocus:false on normal block add. External Torah drop copy/internal block reorder move code paths preserved; gate removed and code/test CI green: e58516b113f00d067472772493dee033bb2f97bf, run 39469048720. No evidence yet for actual system sheet-to-editor drag on owner iPad, Undo/Redo, focus/keyboard crash, first-block fallback, multi-window or strict quote readonly. User reports unspecified issues in updated app; await detailed follow-up. Keep OPEN.\n\n--- HISTORICAL (earlier state; superseded above) ---\nUPDATE 2026-10-20. Source shows TorahSourceTransfer -> Anytype native quote via BlockActionService.add(...setFocus:false) plus metadata association keyed to created block; existing internal block MOVE and external Torah COPY drop code paths preserved. See EditorPageViewModel.swift + EditorPageController+DragNDrop.swift, Anytype commit d38538f9d1945a9746f9572c8dd87de90f8c5967. App build/test CI SUCCESS https://github.com/davidpovarsky/anytype-swift/actions/runs/39346286078 .\nNOT VERIFIED on iPad: actual quote insertion/no UIKit inputAccessory crash, system-side-sheet drag into editor, undo/redo, strict read-only, cross-window, partial association rollback. Current trial DISPOSABLE gate blocks unconfirmed writes, and user asked removal; tracked in delegated UI fix. The first-block addFirstBlock path must be checked separately for no-autofocus. Keep OPEN until real device + regressions are evidenced. Full multi-client T2 remains blocked.",
+    "permalink_url": "https://app.asana.com/1/1219597879016953/project/1219604672449660/task/1219604770637161",
+    "comments": [
+      {
+        "gid": "1220652081372812",
+        "created_at": "2026-11-18T09:36:54.916Z",
+        "created_by": {
+          "gid": "1219597879016933",
+          "name": "דוד פוברסקי",
+          "resource_type": "user"
+        },
+        "resource_type": "story",
+        "text": "בדיקות הרכיב של ציטוט/גרירה נכללות כעת בהרצת wave15-components44277416380 על10fb06193d17aca43bd020094beaaf61d466d031: חוזה Editor10methods/12cases כולל סמכות אחרי await, ביטול/שינוי מסמך, כפילות מחווה ומטא־דאטה מאושר. בדיקת UI המקורית quote-drop44271573446 נפרדת ועדיין בתור לפי קריאת ה־milestone האחרונה. שתי התוצאות עדיין לא התקבלו; לא נספרת הרצה שנשלחה כהצלחה.",
+        "type": "comment",
+        "resource_subtype": "comment_added"
+      },
+      {
+        "gid": "1220663495645047",
+        "created_at": "2026-11-18T11:43:14.683Z",
+        "created_by": {
+          "gid": "1219597879016933",
+          "name": "דוד פוברסקי",
+          "resource_type": "user"
+        },
+        "resource_type": "story",
+        "text": "Run44271573446 על2ad30656790930e7b1ba222014c6e1f77f35e0c7 הסתיים CANCELLED. הארטיפקט המקורי14420541226 אומת (SHA256ff37b592f37d36b64a395540a648075c15c613d626518b9bf781f3def7429279). נשמרו preflight/התקנתRuntime/תוכניתquote-drop ופקודותboot, אך אין xcresult או הכנתNative/הרצתUI. שדהFAIL הראשוני ב־execution הוא מצב ביניים ואינו כישלון פונקציונלי מוכח; אין קבלת Quote/Drag. נבדק זמן וסיבת עצירתJob לפני שיגור נוסף.\nhttps://github.com/davidpovarsky/anytype-swift/actions/runs/44271573446",
+        "type": "comment",
+        "resource_subtype": "comment_added"
+      },
+      {
+        "gid": "1220656874597723",
+        "created_at": "2026-11-18T11:45:37.898Z",
+        "created_by": {
+          "gid": "1219597879016933",
+          "name": "דוד פוברסקי",
+          "resource_type": "user"
+        },
+        "resource_type": "story",
+        "text": "אבחון הביטול המקורי הושלם:44271573446 בוטל בזמןשלבBUILD/המתנה לסימולטור, לאחר כ־11דקות בשלב עצמו; לא נמצאה ראיה שמדובר במגבלת זמן שלJob או בכשל מוצר. המקור לא שונה על סמך הביטול. שוגרה כעת בדיקת Quote/Drag ממוקדת בלבד, בסימולטור חדש, על91b6be659c59da27a342218626b855f1acb34733 עםr14 המקורי44203168617: https://github.com/davidpovarsky/anytype-swift/actions/runs/44297431357 . הקבלה עדיין ממתינה ל־Native fixture ול־xcresult המקורי.",
+        "type": "comment",
+        "resource_subtype": "comment_added"
+      },
+      {
+        "gid": "1220658858604514",
+        "created_at": "2026-11-18T12:35:24.135Z",
+        "created_by": {
+          "gid": "1219597879016933",
+          "name": "דוד פוברסקי",
+          "resource_type": "user"
+        },
+        "resource_type": "story",
+        "text": "עדכון ראיות בלבד: הרצת Quote/Drag ממוקדת44297431357 על91b6be659c59da27a342218626b855f1acb34733 הסתיימה CANCELLED, עדכון GitHub האחרון12:16:50UTC.\nhttps://github.com/davidpovarsky/anytype-swift/actions/runs/44297431357\nהביטול הוא בשלב Execute the selected existing Wave-15 acceptance lane. מטא־נתונים אלה אינם מוכיחים כשל פונקציונלי, timeout מסוים או גורם מבטל; אין כרגע ספירת Native/UI מקורית מאומתת. גם ההרצה הקודמת44271573446 הייתה מבוטלת. לא משוגרת ריצה נוספת ללא אבחון ראיות המקור. משימת הקבלה נשארת פתוחה. היכולת לקרוא ארכיוני CI פרטיים דרך SentinelX חסומה כרגע בבדיקת אישור אוטומטית הדורשת אישור יעד מפורש.",
+        "type": "comment",
+        "resource_subtype": "comment_added"
+      },
+      {
+        "gid": "1220722299411769",
+        "created_at": "2026-11-19T20:39:52.809Z",
+        "created_by": {
+          "gid": "1219597879016933",
+          "name": "דוד פוברסקי",
+          "resource_type": "user"
+        },
+        "resource_type": "story",
+        "text": "[ChatGPT | independent original qualification | 2026-11-19] Quote lane reached real UI typing but failed before the first quote operation.\n\nOriginal run 44594932364 / attempt 1 at exact 40789dc97176bfa2a7166d2345e6b0dd3de9cada is terminal FAILURE. The original selection is quote-drop / iPad / English, using runtime source44203168617. Both native and UI test builds succeeded.\n\nExecuted outcomes:\n• SimulatorAcceptancePreparationTests/prepareRealUIFixture: 1 PASS / 0 FAIL / 0 SKIP, 5.102507829666138 seconds.\n• PinkhaTorahQuoteAcceptanceUITests/testNativeQuoteUndoRedoDragAndRelaunch: 0 PASS / 1 FAIL / 0 SKIP, 60.140028953552246 seconds, exit65, no expected failures or runtime warnings.\nActual destination: owned arm64 iPad Pro13-inch(M5), iOS27.0 / 24A434.\n\nThe failure is the ordinary editor anchor input prerequisite. Exact source calls createAnchor before openSourceReader. XCUI types \"Wave15 drop anchor <UUID>\"; twenty original query-debug attachments retain that full expected value. I independently inspected the original final PNG: it displays only \"W <UUID>\". The original accessibility tree identifies a partial native body block, active keyboard focus and first-responder state in app PID84178, in the exact fixture Space/document. The missing exact-text anchor fails at callsite191; XCTest reports the shared throw helper at313.\n\nThe later source-reader quote insertion/citation, two-step Undo, two-step Redo, two source-drag gestures, quote background/foreground preservation and relaunch identity checks are all NOT_REACHED. The final screenshot was attached by defer; its existence is not evidence that those phases ran. The exact callback/mutation interleaving was not retained, so this result does not by itself establish the precise text-loss root cause or a quote/drop-specific product defect.\n\nOriginal artifact14569948710: 36,260,951 bytes; GitHub digest and local SHA256 8a0f8a0cee3c67d84c4590308998ee54d1dc89aee993500365a180a79931cb85. Both ZIP CRC checks, all1,447 unique member hashes and every retained small export match. Authenticated immutable Git reads verified all5,612 canonical source identities and17 focused source files against the original retained after-execution source-input snapshot. The focused set includes the actual UI test, native fixture, input handlers, virtual trailing session, quote/drop source and controllers.\n\nProvenance is scoped: the original before-UI native mapping succeeded for PID83230; the actual UI screenshot/AX belongs to PID84178, for which this archive has no native mapping. No every-launch or full-bundle-equivalence acceptance is claimed. The compiled-products manifest explicitly remains OBSERVED_PRODUCTS_INVENTORY_NOT_BUILD_PROVENANCE.\n\nFrozen report: quote-44594932364/VERIFIED_QUOTE_ANCHOR_FAILURE_44594932364.json\nSHA256 6db35dba21c32eedd11873679d6aab0a2c32e24b4e6048c5ff92b972ea28119f.\nReproducible verifier: quote-44594932364/qualify_original.py\nSHA256 2629ecb0981abad88eb14ca013128f65779cd5134db7b4ccfff1e7f26e309791.\nhttps://github.com/davidpovarsky/anytype-swift/actions/runs/44594932364\n\nTask remains OPEN. The ordinary editor input prerequisite must pass before the unchanged full Quote/Undo/Redo/drop/relaunch gate can qualify. Earlier cancellation records and source-level CI remain distinct. No retry, source edit or CI dispatch was performed by this qualification.",
+        "type": "comment",
+        "resource_subtype": "comment_added"
+      }
+    ]
+  },
+  "scope": "Original Asana task/returned comments, retained as retrieved; not a claim of latest runtime acceptance."
+}

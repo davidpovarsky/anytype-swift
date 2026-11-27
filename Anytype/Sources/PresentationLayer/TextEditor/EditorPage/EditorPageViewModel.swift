@@ -107,9 +107,11 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
 
         torahSession?.installInsertionEditingPolicy { [weak document] in
             guard let document else { return false }
-            return document.permissions.canEditBlocks
-                && document.permissions.canEditRelationValues
-                && document.details?.isReadonly == false
+            return TorahEditorSafetyPolicy.canInsertSource(
+                canEditBlocks: document.permissions.canEditBlocks,
+                canEditRelationValues: document.permissions.canEditRelationValues,
+                isReadonly: document.details?.isReadonly
+            )
         }
         torahSession?.installInsertionHandler { [weak self] transfer, targetBlockId in
             guard let self else { throw CancellationError() }
@@ -146,8 +148,11 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
         targetBlockId: String?
     ) async throws -> String {
         try Task.checkCancellation()
-        guard document.permissions.canEditBlocks, document.permissions.canEditRelationValues,
-              document.details?.isReadonly == false else {
+        guard TorahEditorSafetyPolicy.canInsertSource(
+            canEditBlocks: document.permissions.canEditBlocks,
+            canEditRelationValues: document.permissions.canEditRelationValues,
+            isReadonly: document.details?.isReadonly
+        ) else {
             throw TorahAssociationRepositoryError.permissionDenied
         }
         let text = TorahQuoteContentPolicy.editableBody(for: transfer)

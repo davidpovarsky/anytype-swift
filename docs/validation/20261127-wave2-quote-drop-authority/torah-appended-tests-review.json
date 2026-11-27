@@ -1,0 +1,31 @@
+{
+  "schema": "wave2-g07-appended-test-source-review/v1",
+  "reviewer": "/root/torah_continue",
+  "reviewedAtUTC": "2026-11-27T10:24:43.735077+00:00",
+  "status": "PASS_SOURCE_REVIEW_NOT_COMPILED",
+  "testFile": {
+    "path": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+    "candidateSHA256": "4a2463e6e1ef7d7ade0686d41893e5ece3557dba0e811670c84c3dc25772305f",
+    "originalSHA256": "6132f4821a3e49bffe59f165f8a80d2bf3f91e2cd48e804866002f38565c88ab",
+    "originalPrefixBytes": 68698,
+    "originalPrefixUnchanged": true,
+    "suffixSHA256": "402e3dcd35ff6d02f62e07950bfc3118a5a3e46d6d617f5356faaae62f16d21d"
+  },
+  "overloadSourceSHA256": "427d1eff6b84291dba01b4190867f34b16862ba0d99800e777bd18e8f1aeaab7",
+  "objectPermissionsSourceSHA256": "3e696ada8ddc0a2d175f6f238d06bf5e3d97c492ae6c10ad5f512fbc8e615968",
+  "newMethods": 2,
+  "unparameterizedTestCases": 2,
+  "matrixRows": 7,
+  "findings": [],
+  "reasoning": [
+    "Both appended methods are synchronous MainActor tests in a same-file extension, with legal access to the suite private objectId and all required existing Services/SwiftProtobuf imports. No new asynchronous actor crossing or stored callback is introduced.",
+    "ObjectPermissions initializer labels match the original production declaration. With unlocked, non-archived, editable and non-version details, .details disables relation-value edits while .blocks independently disables text edits; the four restriction states are asserted before policy calls.",
+    "The second method deliberately holds writable permissions constant while independently testing present-writable, present-readonly and absent ObjectDetails. Optional Bool arguments select the five-argument policy overload; canPlace=false is checked for both source and internal move routes.",
+    "All old test source is an exact byte prefix. New tests call the shared policy with actual ObjectPermissions/ObjectDetails construction rather than reproducing the policy in a replacement model. Their expected internal-move behavior preserves the existing policy contract."
+  ],
+  "limits": [
+    "This is source/API review only; no Swift compiler, tests, Mac, Native or UI operations were run.",
+    "Root owns production call-site, rollback/cancel/quote behavior and source-map review. These two policy cases do not certify an actual drag, quote insertion, rollback or mounted UI.",
+    "The ObjectDetails convenience-property runtime defaults are explicitly asserted by the tests; no runtime result for those assertions is claimed."
+  ]
+}

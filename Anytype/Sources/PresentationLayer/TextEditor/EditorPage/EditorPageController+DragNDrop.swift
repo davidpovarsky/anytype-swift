@@ -45,7 +45,9 @@ extension EditorPageController: UICollectionViewDropDelegate {
         )
         let operation = TorahEditorSafetyPolicy.dropOperation(
             containsTorahSource: containsTorahSource,
-            canMutate: viewModel.document.permissions.canEditBlocks,
+            canEditBlocks: viewModel.document.permissions.canEditBlocks,
+            canEditRelationValues: viewModel.document.permissions.canEditRelationValues,
+            isReadonly: viewModel.document.details?.isReadonly,
             canPlace: viewModel.blocksStateManager.canPlaceDividerAtIndexPath(indexPath)
         )
 
