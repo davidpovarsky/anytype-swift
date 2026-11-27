@@ -298,6 +298,12 @@ actor ActiveSpaceManager: ActiveSpaceManagerProtocol, Sendable {
             let value = try await setActiveSpaceTask.value
             try Task.checkCancellation()
             try selectionAttempt.validate()
+            // A successful cached WorkspaceOpen does not imply that the later
+            // asynchronous Bootstrap succeeded. An explicit selection retries
+            // its failed claim; ready/in-flight Bootstrap remains single-owner.
+            if let spaceId {
+                PinkhaBootstrapHook.handleSpaceActivated(spaceId: spaceId)
+            }
             return value
         }
 
