@@ -1,0 +1,33 @@
+{
+  "XCTestInvocations": 0,
+  "actualOriginalFreezeSHA256": "fad25bdcc2d9562027e36cf35bb82fe5056d7ef58758b882332e25d8a28a73ab",
+  "admission": {
+    "bytes": 9804,
+    "path": "/Users/m1/development/anytype-e-active-20261125/main15/control-import-dependency1/admission379ca.json",
+    "sha256": "87c47c356e591ee7f51e6c3fa21a4fe0cd903821cceec357ed11cfbfc582a366"
+  },
+  "admissionInverse": "only controllerSHA256",
+  "builds": 0,
+  "commonSHA256": "1dcd02a4413b26c201e8a38772484eff48e448ae4398af2fd4ee1fc6a5675736",
+  "controls": [
+    {
+      "exitCode": 0,
+      "name": "original-missing-import",
+      "status": "EXPECTED_ORIGINAL_MISSING_IMPORT_FAILURE",
+      "stdoutSHA256": "7afeb73704b6ae7806f6234b65b0a102aa58ea91299a89c575cb0d2e10d0bbbc"
+    },
+    {
+      "exitCode": 0,
+      "name": "explicit-import-runtime",
+      "status": "PASS_FRESH_BARE_INTERPRETER_RUNTIME_SOURCE_QUALIFICATION",
+      "stdoutSHA256": "2a31ee0b79a0c39714a78037b9d9e46d36156d7cb7f7cd430fcc6c482a114ea6"
+    }
+  ],
+  "finishedAt": 1795678909.5399182,
+  "nativeCalls": 0,
+  "oldAdmissionSHA256": "7bc72cfffcd1e21abf572162fc2844dce30cefe6e58635e07199b0edbb42202a",
+  "oldCommonSHA256": "f31cf1b3ae3f7b03618165db5f61cef1fa813ffe047d268a8050ea040a626221",
+  "protocol": "app15-explicit-common-import-dependency-v1",
+  "sourceProductMutations": 0,
+  "status": "PASS_SOURCE_DEPENDENCY_AND_ACTUAL_RUNTIME_INPUTS_NOT_ACCEPTANCE"
+}

@@ -299,6 +299,9 @@ func (h *CutoverNativeHost) Append(ctx context.Context, v1 *NativeHost, record c
 	if err == nil {
 		err = lease.Validate(ctx)
 	}
+	if err == nil {
+		err = requireCurrentCutoverSource(snapshot.State)
+	}
 	if err != nil {
 		acl.RUnlock()
 		return CutoverNativeAppendResult{}, err
@@ -371,11 +374,8 @@ func (h *CutoverNativeHost) candidatePropertyLocked(ctx context.Context, objectI
 	return key, nil
 }
 func validateCutoverAppend(record cutover.Record, s CutoverNativeSnapshot) error {
-	if s.State.Status == CutoverDiverged {
-		return cutover.ErrLegacyChanged
-	}
-	if len(s.State.Conflicts) > 0 {
-		return cutover.ErrConflict
+	if err := requireCurrentCutoverSource(s.State); err != nil {
+		return err
 	}
 	switch record.Kind {
 	case cutover.Begin:

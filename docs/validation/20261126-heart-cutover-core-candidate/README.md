@@ -1,0 +1,11 @@
+# Native cutover registry and typed core candidate
+
+This checkpoint is source-only. It has not been compiled, exposed through generated RPC, inserted into a native slice, or activated by either Swift repository.
+
+The registered private metadata tree uses the separate cutover wire type and deterministic root. The ordinary v1 claims tree and validator remain unchanged. Generic object editing, Show, reset, export and unrelated object paths refuse the metadata capability. The factory binds the actual application Space, signed tree, key and separate projection storage. Pairing with v1 requires the concrete current registered objects, the same Space/key/current ACL and current cache identity.
+
+Typed core methods derive the current signer from the existing application lease. They accept no key, private root, caller ACL verdict or substitute host. They acquire the real current settings/document source lease and validate exact retained property presence/key/bytes. Source and cutover reads never create either root. An explicit Begin validates complete shared-codec source coverage before authorized root installation; the signed host validates the retained source again under its native lease. Import and Seal retain every real claim/change/author/ACL binding and do not pretend the two trees commit atomically.
+
+The new acceptance method creates one real private LocalOnly account through the existing application, creates its actual document and property, and obtains canonical source bytes from the source-bound shared Swift codec executable. It checks read-side noncreation, omitted-fact refusal, explicit Begin/import/metadata/Seal, exact retries, interrupted-import refusal, ordinary v1 compatibility, final unlink without legacy resurrection, stopped-account refusal, actual account reopen in the same OS process, and explicit divergence after an old-style property write. It does not claim peer transport, separate-process recovery, generated RPC or Apple UI.
+
+The complete candidate manifest records every overlay file and exact original replacement against the retained full native source. Actual build/runtime receipts will be separate; no source review or parsed source is an acceptance pass.
