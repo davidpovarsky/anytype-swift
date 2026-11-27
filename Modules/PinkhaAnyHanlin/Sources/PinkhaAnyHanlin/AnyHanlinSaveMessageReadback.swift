@@ -54,10 +54,17 @@ public struct AnyHanlinSaveMessageReadback: Sendable {
         return try PinkhaHanlinSaveMessageDocument.blockReadbackSHA256(blocks[index], at: index)
     }
 
-    public func verifiedBody(manifest: PinkhaHanlinSaveMessageManifest) throws -> PinkhaHanlinSaveMessageBodyReadback {
+    public func verifiedBody(manifest: PinkhaHanlinSaveMessageManifest,
+                             nativeVersionSHA256: String? = nil,
+                             nativeMarkdownSHA256: String? = nil,
+                             nativeMarkdownUTF8Bytes: Int? = nil) throws -> PinkhaHanlinSaveMessageBodyReadback {
         let document = try PinkhaHanlinSaveMessageDocument(title: snapshot.title, blocks: blocks)
-        return try document.verifiedReadback(manifest: manifest, objectReference: snapshot.objectID,
-                                             blockReferences: blockReferences)
+        let semantic = try document.verifiedReadback(manifest: manifest, objectReference: snapshot.objectID,
+            blockReferences: blockReferences, nativeVersionSHA256: nativeVersionSHA256)
+        return .init(manifestSHA256: semantic.manifestSHA256, objectReference: semantic.objectReference,
+            blockReferences: semantic.blockReferences, nativeReadbackSHA256: semantic.nativeReadbackSHA256,
+            nativeVersionSHA256: semantic.nativeVersionSHA256, nativeMarkdownSHA256: nativeMarkdownSHA256,
+            nativeMarkdownUTF8Bytes: nativeMarkdownUTF8Bytes)
     }
 
     public static func semanticBlock(_ row: AnyEditorBlock) throws -> PinkhaHanlinSavedBlock {
