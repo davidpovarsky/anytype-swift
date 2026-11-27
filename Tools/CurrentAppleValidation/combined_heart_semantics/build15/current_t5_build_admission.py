@@ -14,7 +14,7 @@ NATIVE_MANIFEST = '8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a
 NATIVE_BINARY = 'f94079de9eeb9e2e869f02bd1dda93fcd272e3191b2417ca4b4657cae5dc6763'
 UI_SOURCE_PATH = 'PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift'
 UI_SOURCE_SHA256 = '698f4ed7f1f81fe567b94b531f43e14259d08e6acbf79d72e132a5b9b6b941a7'
-ADMISSION_MODULE_SHA256 = 'e56571d5f367f207d5ca586dfaa0cb35028abe1a29d67e8680c79c33eb3d1c49'
+ADMISSION_MODULE_SHA256 = '9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d'
 ACTUAL_PREVIOUS = Path('/Users/m1/development/anytype-root-active-20261125/app15-t5-retained-core-r08-fa4b3ff-20261127-02')
 PREVIOUS_EXECUTION_SHA256 = '2062159a6a9b2d9c6646bfa68cefc36b1fb44167001e32ebf91dab7f11e748ad'
 PREVIOUS_RESULT_SHA256 = 'f3f9922fad3f593c950582d3d3c57653dfe051fb5e98dbafc3b00f932eb74f93'
@@ -88,7 +88,7 @@ def admit_build(path, expected_sha256):
     require(root.is_absolute() and root.resolve(strict=True) == root
             and module_path.resolve(strict=True) == module_path
             and digest(module_path) == ADMISSION_MODULE_SHA256,
-            'The exact independently reviewed e2e7 build admission module is required')
+            'The exact independently reviewed 769b build admission module is required')
     spec = importlib.util.spec_from_file_location('pinkha_current_t5_product_admission', module_path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

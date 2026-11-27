@@ -17,8 +17,8 @@ renewed or substituted. The native source manifest `8ac407e…` and native binar
 `f94079de…` must remain exact.
 
 The new App and complete UI runner are admitted independently by the unchanged
-published `e2e7cddc6e50bfd9310e550acf45a80495c60ed4` receipt module, SHA256
-`e56571d5f367f207d5ca586dfaa0cb35028abe1a29d67e8680c79c33eb3d1c49`.
+published `769b676a42123745dc4f6903ac321b474aec7116` receipt module, SHA256
+`9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d`.
 Its full original Tools closure is separate from the T5 control directory.
 Its prospective MiniApps method list remains in the original product admission
 proof and confers no T5 execution credit. The new shared receipt must bind the
