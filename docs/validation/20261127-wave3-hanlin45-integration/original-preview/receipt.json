@@ -1,0 +1,139 @@
+{
+  "schema": "pinkha.sdk.candidate32-rootfeb-preservation.v1",
+  "recordedAt": "2026-11-27T03:14:57.747144+00:00",
+  "candidate": "32bccdc2d5633d6da6b784add340b2ae5aa2d9a0",
+  "root": "febfff2e20aef75c3f5c1df34722f9fc98aff727",
+  "mergedTree": "2e49a9c6c46cd176ca9a7d7d24893661d2cdf178",
+  "mergeTreeConflicts": 0,
+  "gateSourceCommit": "febfff2e20aef75c3f5c1df34722f9fc98aff727",
+  "gateSourceBlob": "5b579e9bbb5a82981b5aef7d649f2caf88e998b6",
+  "gateSourceSHA256": "f69d6a465db0517c5b41143c9b54aa275ecc6cbc63de6e9d20bc074d98feabf0",
+  "originalGateArgv": [
+    "/mnt/development/projects/worktrees/anytype-wave3-sdk-final-20261127/Tools/AnyEnginePort/verify_source_retention.py",
+    "--base",
+    "586c98bcc17dee425664224e508fc0e8df277678",
+    "--ref",
+    "2e49a9c6c46cd176ca9a7d7d24893661d2cdf178",
+    "--output",
+    "/tmp/hanlin-wave3-candidate32-rootfeb-20261127/source-retention.json"
+  ],
+  "execution": "Execute immutable original gate bytes with original owned-worktree __file__; no gate source modifications and no checkout/index/branch change.",
+  "gateExecutions": 1,
+  "exitCode": 1,
+  "sourceRetentionPassed": false,
+  "sourceRetentionSHA256": "1e18e8472b97917323ea84a3aca9841266d13e900b6e89fb5cfb171ce204cd4d",
+  "errors": [
+    "Shared extracted source blob mismatch: Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift",
+    "Shared extracted source blob mismatch: Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift",
+    "Shared extracted source blob mismatch: Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinStrings.swift",
+    "Replacement blob mismatch: Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/Resources/PinkhaHanlin.xcstrings",
+    "Shared extracted source blob mismatch: Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreateRunner.swift",
+    "Replacement blob mismatch: Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWriteJournal.swift",
+    "Replacement blob mismatch: Tools/Hanlin/source.json"
+  ],
+  "unreviewedChangedExistingFiles": [],
+  "sourceMapUpdatesRequired": [
+    {
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
+      "kind": "refactor",
+      "baselineBlob": "810af73f1ecf45b3ea40827aa7549b12f7f3d1bc",
+      "changes": [
+        {
+          "field": "sharedSources.gitBlob",
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift",
+          "reviewedBlob": "2c45217da8c3ad9dcd52cf323147d116412852a2",
+          "candidateBlob": "30477d2770d2fee1869d8cd55fbf5657f876cc69"
+        }
+      ]
+    },
+    {
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
+      "kind": "refactor",
+      "baselineBlob": "0ddff522e7645ea19c3d4c319396177e355c4172",
+      "changes": [
+        {
+          "field": "sharedSources.gitBlob",
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift",
+          "reviewedBlob": "6a566a167cecd79a0b53134d11f30f43f5c872fe",
+          "candidateBlob": "c8dc5c1c492467037341d941d74605e84614c9f2"
+        }
+      ]
+    },
+    {
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinStrings.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinStrings.swift",
+      "kind": "refactor",
+      "baselineBlob": "657037395091ea052a863058aca1d9c2d8566d57",
+      "changes": [
+        {
+          "field": "sharedSources.gitBlob",
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinStrings.swift",
+          "reviewedBlob": "c6d796bc0c805f7a7089f89210febf08c2f92879",
+          "candidateBlob": "dbca7d93f63c97cfe94b84c6053938926be5f072"
+        }
+      ]
+    },
+    {
+      "from": "Anytype/Sources/Pinkha/AI/Resources/PinkhaHanlin.xcstrings",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/Resources/PinkhaHanlin.xcstrings",
+      "kind": "move",
+      "baselineBlob": "52ba2e3fd9bc0709250538541d11154c0bd84707",
+      "changes": [
+        {
+          "field": "replacementBlob",
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/Resources/PinkhaHanlin.xcstrings",
+          "reviewedBlob": "4891955273ad20cd75145e01026e9bda37db421a",
+          "candidateBlob": "7eff883a40b0ea8dc20a097f77135acab712a70a"
+        }
+      ]
+    },
+    {
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageRunner.swift",
+      "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageRunner.swift",
+      "kind": "refactor",
+      "baselineBlob": "8ff879e4cf8ef04cb367be3b801829a047bebc80",
+      "changes": [
+        {
+          "field": "sharedSources.gitBlob",
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreateRunner.swift",
+          "reviewedBlob": "09260a88ddba54797092cbdbfc06b4e76b0f1e3d",
+          "candidateBlob": "12bdd93bc89c430e7c660b70e15b8e0749481944"
+        }
+      ]
+    },
+    {
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinWriteJournal.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWriteJournal.swift",
+      "kind": "move",
+      "baselineBlob": "aca54480a6977009e1a1ac66806154964b51be29",
+      "changes": [
+        {
+          "field": "replacementBlob",
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWriteJournal.swift",
+          "reviewedBlob": "829c8e1a2733e06e33298506da50c83e5cba133c",
+          "candidateBlob": "d68bdbe4fe1915fbc56a8e7422cd3d6f886ab7d5"
+        }
+      ]
+    },
+    {
+      "from": "Tools/Hanlin/source.json",
+      "to": "Tools/Hanlin/source.json",
+      "kind": "refactor",
+      "baselineBlob": "0ac43dc444fa2234c2eb11fb9bebf129dbe4fb94",
+      "changes": [
+        {
+          "field": "replacementBlob",
+          "path": "Tools/Hanlin/source.json",
+          "reviewedBlob": "2febfdc45b794a468122739cf6263ff27e6a5754",
+          "candidateBlob": "f4bade779b51eadcc4e5601e4d3215844831514b"
+        }
+      ]
+    }
+  ],
+  "newConsumerAndNativeAcceptance": "NOT_RUN",
+  "swiftNativeCompilerInvocations": 0,
+  "ownedHeadAfter": "32bccdc2d5633d6da6b784add340b2ae5aa2d9a0",
+  "trackedStatusAfter": ""
+}

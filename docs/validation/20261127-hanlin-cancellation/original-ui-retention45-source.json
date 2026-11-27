@@ -1,0 +1,154 @@
+{
+  "schema": "pinkha.hanlin.original-ui-retention-delta.v1",
+  "recordedAt": "2026-11-27T03:01:32.101238+00:00",
+  "source": "45d5d90512c304d3457774b185741b7ef7d801db",
+  "tree": "13bef39d97d2b953e1f972efcc87d82ac3771b14",
+  "parent": "f3afac65296e843ced1f7ddd7a55c2452e90b270",
+  "priorFullProvenance": {
+    "path": "docs/validation/20261127-hanlin-cancellation/original-ui-source-provenance.json",
+    "sha256": "2814ea9ee1b90228d03ab6d1d791f243a986db8b628a88ad874c4319c0dcb20c",
+    "packageFiles": 1006
+  },
+  "packageFiles": 1008,
+  "packageInventorySHA256": "f20fdd48fccba3b2324223578e852bafd62924b643668978b297e2e21abb8896",
+  "inventoryEncoding": "UTF-8 JSON sortedKeys compact separators; ordered git ls-tree recursive paths; path/mode/kind/blob fields",
+  "packageTrees": {
+    "Packages/HanlinAgentSDK": {
+      "before": "bbe6a0e4387f3f33d6592e24c1927182a1aceb22",
+      "after": "bbe6a0e4387f3f33d6592e24c1927182a1aceb22"
+    },
+    "Packages/HanlinPlatform": {
+      "before": "4088ca93db16429cda7a07251047c52632be3041",
+      "after": "4088ca93db16429cda7a07251047c52632be3041"
+    },
+    "Packages/HanlinPresentationSDK": {
+      "before": "711b6c97867dd928afd5b11035d5d5a42e00b004",
+      "after": "3096459e793e32293ba145cb1f595181ad0d38a5"
+    },
+    "Packages/HanlinMiniAppsBridge": {
+      "before": "98ef5d2b47c03f4ea98319a851abae183f500a40",
+      "after": "98ef5d2b47c03f4ea98319a851abae183f500a40"
+    }
+  },
+  "packageDelta": [
+    {
+      "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFenceDocument.swift",
+      "before": {
+        "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFenceDocument.swift",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "3c3a19c4c4c363bbef2eefea08fab87d32ad2433"
+      },
+      "after": {
+        "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFenceDocument.swift",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "3035f918160aaf205ade268f7984fc46f4967e94"
+      }
+    },
+    {
+      "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFenceEngine.swift",
+      "before": {
+        "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFenceEngine.swift",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "b021a0ec556eaf71cb02d43c3978848723289ea9"
+      },
+      "after": {
+        "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFenceEngine.swift",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "fb3d299c8ecd0b8ff09ec56edb36b46c773a2048"
+      }
+    },
+    {
+      "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFencePayloadRetention.swift",
+      "before": null,
+      "after": {
+        "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFencePayloadRetention.swift",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "9ca4020fb047fb09dd6cf8a6d3a527107dfc624d"
+      }
+    },
+    {
+      "path": "Packages/HanlinPresentationSDK/Tests/HanlinChatUITests/ChatCodeFencePayloadRetentionTests.swift",
+      "before": null,
+      "after": {
+        "path": "Packages/HanlinPresentationSDK/Tests/HanlinChatUITests/ChatCodeFencePayloadRetentionTests.swift",
+        "mode": "100644",
+        "kind": "blob",
+        "blob": "45baf575d666c580c8e7b79cfe6591adb82aac7e"
+      }
+    }
+  ],
+  "unchangedPackages": [
+    "Packages/HanlinAgentSDK",
+    "Packages/HanlinPlatform",
+    "Packages/HanlinMiniAppsBridge"
+  ],
+  "preservedOriginalProofFiles": [
+    {
+      "path": "Packages/HanlinAgentSDK/Sources/HanlinAgentCore/HanlinAgentSession.swift",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "27d430b8b3ad8c159c3874cd96cd29694321cf13",
+      "baseBlob": "27d430b8b3ad8c159c3874cd96cd29694321cf13"
+    },
+    {
+      "path": "Packages/HanlinAgentSDK/Sources/HanlinAgentCore/HanlinHostDispatcher.swift",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "912fbb41d3053f85a01cf6d3556f534a13e83fa8",
+      "baseBlob": "912fbb41d3053f85a01cf6d3556f534a13e83fa8"
+    },
+    {
+      "path": "Packages/HanlinAgentSDK/Tests/HanlinAgentCoreTests/AgentSessionTests.swift",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "2428a9af588a64b40f0016e84e5ee8f6b3b93fdf",
+      "baseBlob": "2428a9af588a64b40f0016e84e5ee8f6b3b93fdf"
+    },
+    {
+      "path": "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinAISDKAgentEngine.swift",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "fe1c500c0ff6c20637f3d04dea38a876866c0a52",
+      "baseBlob": "fe1c500c0ff6c20637f3d04dea38a876866c0a52"
+    },
+    {
+      "path": "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinAISDKRunControl.swift",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "5b6ccf8a27601905e24c442be73d47400133957c",
+      "baseBlob": "5b6ccf8a27601905e24c442be73d47400133957c"
+    },
+    {
+      "path": "Packages/HanlinPlatform/Sources/HanlinScriptUI/HanlinChatUIComponents.swift",
+      "mode": "100644",
+      "kind": "blob",
+      "blob": "11ac73b335fa72e300baf0cda8d467df196972b1",
+      "baseBlob": "11ac73b335fa72e300baf0cda8d467df196972b1"
+    }
+  ],
+  "dependencyLockChanges": [],
+  "retentionLimit": {
+    "issuedPayloadUTF8Bytes": 50331648,
+    "distinctRetainedPayloads": 64,
+    "quantity": "HTML plus CSS plus static display HTML when the original engine publishes a payload; copies share one immutable lease until final release",
+    "notMeasured": [
+      "WebKit RSS",
+      "process peak memory",
+      "transient JavaScript rendering",
+      "arbitrary trusted caller mutations"
+    ]
+  },
+  "fallback": "Own-engine cache references may be evicted to attempt admission; exhausted quota throws the existing busy failure, retaining the original complete-source fallback/copy/share/expand/retry.",
+  "authoredNewTests": 6,
+  "testStatus": "NOT_RUN",
+  "compilerInvocations": 0,
+  "nativeRuntimeAcceptance": "NOT_RUN",
+  "priorEvidenceScope": "Original385 cancellation7cases and explicit-handler proof retain exact original source/dependency scope; changed presentation and consumer sources require their own actual Apple compile/runtime.",
+  "companionProducerPinChanged": false,
+  "sourceMapChanged": false
+}

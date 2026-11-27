@@ -1,0 +1,86 @@
+{
+  "schema": "pinkha-save-message-source-intake-v1",
+  "status": "PASS_SCOPED_NEW_SOURCE_AND_DIFF_CHECK_NOT_COMPILATION_OR_ACCEPTANCE",
+  "at": "2026-11-27T01:48:50.737386+00:00",
+  "baseCommit": "769b676a42123745dc4f6903ac321b474aec7116",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessagePlan.swift",
+      "sha256": "53c3643452a5b2cd4997ea400e969774b61a849d3d63525fb0e9b442f9ccc63c",
+      "bytes": 4250
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessageProgress.swift",
+      "sha256": "44cdea8ad1adb2cbbbc12c60224b1fd599accf1d00166a6407206ab5283c7c23",
+      "bytes": 16287
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessageProgressStore.swift",
+      "sha256": "e20fe18725820e75927191a2489c9c92fc8088db9c7cc15ae479249f79fb384d",
+      "bytes": 3989
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PinkhaHanlinSaveMessageStateTests.swift",
+      "sha256": "6e47063cf01a80320a5a253f14fa893055b9b98c8c26a7c694d276a0a5025c0b",
+      "bytes": 19845
+    },
+    {
+      "path": "docs/validation/20261127-hanlin-save-message/README.md",
+      "sha256": "3e0edabe8b39a7b94eed9ecb63419e597134adf21944207a2d284781628f3c61",
+      "bytes": 7220
+    }
+  ],
+  "existingTrackedFilesChanged": 0,
+  "diffCheck": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "authoredTestClass": "PinkhaHanlinSaveMessageStateTests",
+  "authoredTestMethods": [
+    "testExactTitleAndMarkdownBytesArePreserved",
+    "testBoundsUseUTF8BytesWithoutTruncation",
+    "testOnlyExactTwoStringArgumentsAreAccepted",
+    "testReadOnlyCASAndOldCreateAliasCannotBecomeMessageSave",
+    "testInputIdentityDoesNotNormalizeUnicodeOrConfuseTitleBodyBoundaries",
+    "testOriginalMutationIDsSurviveReplayAndDistinctIdenticalBlocksDoNotCollide",
+    "testManifestRejectsUnsupportedSizeAndChangedContent",
+    "testKnownOrVerifiedRootAloneNeverCompletesMessageSave",
+    "testOnlySequentialPreflightedBodyEffectsMayDispatch",
+    "testCancellationBeforeDispatchIsTerminalWithoutInventingAWrite",
+    "testCancellationKeepsLateNativeReceiptButCannotStartAnotherEffect",
+    "testLastDispatchedEffectMaySettleOriginalAggregateAfterCancellation",
+    "testUncertaintyNeverAuthorizesRootOrBlockRedispatch",
+    "testDuplicateNativeConfirmationIsMetadataNoOpAndCannotChangeDigest",
+    "testCompleteReadbackBindsManifestRootAndOrderedExactBlockReferences",
+    "testNativeReferenceCannotBeReusedForAnotherBodyBlockOrRoot",
+    "testKnownIDsWithWrongRootOrBlockContentCannotBecomeVerified",
+    "testSyntacticallyValidButWrongCompleteBodyDigestCannotCommit",
+    "testCanonicalEventReplayRejectsMissingReorderedOrForeignHistory",
+    "testCanonicalDecodeRejectsUnknownFieldsAndForeignOriginalIdentity",
+    "testProgressAndEventsDoNotPersistBusinessTitleOrMarkdown"
+  ],
+  "testStatus": "NOT_RUN",
+  "compilersRun": 0,
+  "testsExecuted": 0,
+  "nativeWritesExecuted": 0,
+  "toolAdvertised": false,
+  "parserSource": {
+    "repository": "davidpovarsky/hanlin-streaming-markdown",
+    "revision": "5cbb4b6c950051f98f02a0b0ae56756f5174a9b8",
+    "parserBlob": "17c3e2302f18d183048f38ab200c0d6c5824e9aa",
+    "resultBlob": "83009c4743fb18b32802263f61df5cb0c193a653"
+  },
+  "pending": [
+    "original protected-journal sidecar implementation",
+    "original-parser to native supported-block conversion",
+    "shared worker and real native body bindings",
+    "Swift compilation and 21 authored source tests",
+    "real native body readback and UI acceptance"
+  ],
+  "independentSourceReview": {
+    "owner": "sdk_hanlin",
+    "finding": "Require expected root/block/complete-body semantic readback digests, not merely valid digest strings.",
+    "resolution": "Manifest explicitly retains expected root and complete-body digests; verified transitions require those exact digests and ordered expected block semantic digests.",
+    "runtimeValidation": "NOT_RUN"
+  }
+}

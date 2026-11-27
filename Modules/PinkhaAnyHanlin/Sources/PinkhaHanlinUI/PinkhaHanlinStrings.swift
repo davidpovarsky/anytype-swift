@@ -21,6 +21,9 @@ public enum PinkhaHanlinStrings {
     public static var sessionPrivacy: String { String(localized: "pinkha.hanlin.sessionPrivacy", table: "PinkhaHanlin", bundle: .module) }
     public static var configurationFailed: String { String(localized: "pinkha.hanlin.configurationFailed", table: "PinkhaHanlin", bundle: .module) }
     public static var requestFailed: String { String(localized: "pinkha.hanlin.requestFailed", table: "PinkhaHanlin", bundle: .module) }
+    public static var continuePrompt: String { String(localized: "pinkha.hanlin.continuePrompt", table: "PinkhaHanlin", bundle: .module) }
+    public static var thinking: String { String(localized: "pinkha.hanlin.thinking", table: "PinkhaHanlin", bundle: .module) }
+    public static var sources: String { String(localized: "pinkha.hanlin.sources", table: "PinkhaHanlin", bundle: .module) }
     public static var pageCreated: String { String(localized: "pinkha.hanlin.pageCreated", table: "PinkhaHanlin", bundle: .module) }
     public static var uncertain: String { String(localized: "pinkha.hanlin.uncertain", table: "PinkhaHanlin", bundle: .module) }
     public static var notDispatched: String { String(localized: "pinkha.hanlin.notDispatched", table: "PinkhaHanlin", bundle: .module) }

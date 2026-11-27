@@ -24,7 +24,9 @@ let package = Package(
         .package(path: "../PinkhaAnyIntegration"),
         .package(url: "https://github.com/apple/swift-crypto.git", exact: "3.12.3"),
         .package(url: "https://github.com/swiftlang/swift-markdown.git",
-                 revision: "25cb61d3482054b09ae76ca4f281b1bfe7fe5a43")
+                 revision: "25cb61d3482054b09ae76ca4f281b1bfe7fe5a43"),
+        .package(url: "https://github.com/davidpovarsky/hanlin-streaming-markdown",
+                 revision: "5cbb4b6c950051f98f02a0b0ae56756f5174a9b8")
     ],
     targets: [
         .target(name: "PinkhaHanlinCore", dependencies: [
@@ -46,7 +48,10 @@ let package = Package(
             .product(name: "HanlinChatCore", package: "HanlinPlatform", condition: .when(platforms: [.iOS])),
             .product(name: "HanlinScriptUI", package: "HanlinPlatform", condition: .when(platforms: [.iOS])),
             .product(name: "HanlinChatUI", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS])),
+            .product(name: "HanlinAgentActivityCore", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS])),
+            .product(name: "HanlinAgentActivityUI", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS])),
             .product(name: "HanlinPresentationKit", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS])),
+            .product(name: "SwiftStreamingMarkdown", package: "hanlin-streaming-markdown", condition: .when(platforms: [.iOS])),
             .product(name: "HanlinMiniAppsBridge", package: "HanlinMiniAppsBridge", condition: .when(platforms: [.iOS])),
             .product(name: "HanlinMiniAppsPicker", package: "HanlinMiniAppsBridge", condition: .when(platforms: [.iOS]))
         ], resources: [.process("Resources")]),

@@ -7,7 +7,7 @@ import Darwin
 /// App-owned, append-only metadata. This is NOT a native transaction, CAS or permission service.
 /// Reserve is durable before dispatch. A reservation without a terminal receipt is unresolved forever
 /// until an explicit original-scope reconciliation owner supplies evidence; never retry or erase it.
-public actor PinkhaHanlinWriteJournal {
+public actor PinkhaHanlinWriteJournal: PinkhaHanlinSaveMessageProgressStore {
     public enum Effect: String, Codable, Sendable { case reserved, uncertain, notDispatched, committed }
     public struct Entry: Codable, Equatable, Sendable {
         public let version: Int
@@ -20,14 +20,17 @@ public actor PinkhaHanlinWriteJournal {
     private let namespace: HanlinConversationNamespace
     private var entries: [String: Entry]
     private var knownObjects: [String: PinkhaHanlinKnownObjectRecovery]
+    private var saveMessages: [String: PinkhaHanlinSaveMessageProgress]
     private var poisoned = false
     private var removed = false
     private static let maximumEntries = 256
 
     private init(store: PinkhaHanlinProtectedMetadataFiles, namespace: HanlinConversationNamespace,
-                 entries: [String: Entry], knownObjects: [String: PinkhaHanlinKnownObjectRecovery]) {
+                 entries: [String: Entry], knownObjects: [String: PinkhaHanlinKnownObjectRecovery],
+                 saveMessages: [String: PinkhaHanlinSaveMessageProgress]) {
         self.store = store; self.namespace = namespace; self.entries = entries
         self.knownObjects = knownObjects
+        self.saveMessages = saveMessages
     }
 
     /// Uses the real host's Application Support/Anytype ownership pattern, never middleware-go,
@@ -60,16 +63,44 @@ public actor PinkhaHanlinWriteJournal {
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         let scope = PinkhaHanlinCreatePagePlan.digest(try encoder.encode(namespace))
         let store = try PinkhaHanlinProtectedMetadataFiles(parent: parent, scope: scope)
-        let files = try store.readAll(maximumFiles: maximumEntries * 4)
         var reservations: [String: Entry] = [:]
         var outcomes: [String: [Entry]] = [:]
         var knownObjects: [String: PinkhaHanlinKnownObjectRecovery] = [:]
-        for (name, bytes) in files {
+        var saveMessages: [String: PinkhaHanlinSaveMessageProgress] = [:]
+        // Sorted, one-record-at-a-time reads keep event histories off the heap.
+        // Every save reserves its complete bounded metadata budget before dispatch.
+        try store.readAll(maximumFiles: maximumEntries * (6 + PinkhaHanlinSaveMessageProgress.maximumEvents),
+                          maximumBytes: maximumEntries * 5 * 16_384 + PinkhaHanlinSaveMetadataLayout.maximumReservedBytes) { name, bytes in
+            if let saveRecord = try PinkhaHanlinSaveMetadataLayout.parse(name) {
+                guard let reservation = reservations[saveRecord.key], reservation.effect == .reserved else {
+                    throw PinkhaHanlinWriteError.corruptJournal
+                }
+                do {
+                    if saveRecord.sequence == 0 {
+                        let initial = try PinkhaHanlinSaveMessageProgress.decodeCanonical(bytes, identity: reservation.identity)
+                        guard saveMessages[saveRecord.key] == nil,
+                              initial == (try PinkhaHanlinSaveMessageProgress(manifest: initial.manifest)) else {
+                            throw PinkhaHanlinWriteError.corruptJournal
+                        }
+                        saveMessages[saveRecord.key] = initial
+                    } else {
+                        guard let previous = saveMessages[saveRecord.key],
+                              saveRecord.sequence == previous.sequence + 1 else { throw PinkhaHanlinWriteError.corruptJournal }
+                        let record = try PinkhaHanlinSaveMessageProgressRecord.decodeCanonical(bytes, previous: previous)
+                        guard record.sequence == saveRecord.sequence,
+                              bytes.count <= PinkhaHanlinSaveMetadataLayout.maximumBytes(for: record.event) else {
+                            throw PinkhaHanlinWriteError.corruptJournal
+                        }
+                        saveMessages[saveRecord.key] = try record.replay(on: previous)
+                    }
+                } catch { throw PinkhaHanlinWriteError.corruptJournal }
+                return
+            }
             if name.hasSuffix(PinkhaHanlinKnownObjectRecovery.suffix) {
                 let recovery = try PinkhaHanlinKnownObjectRecovery.decode(
                     bytes, fileName: name, namespace: namespace)
                 knownObjects[recovery.identity.key] = recovery
-                continue
+                return
             }
             let entry = try JSONDecoder().decode(Entry.self, from: bytes)
             try entry.identity.validate()
@@ -106,8 +137,21 @@ public actor PinkhaHanlinWriteJournal {
             do { try recovery.validate(against: entry) }
             catch { throw PinkhaHanlinWriteError.corruptJournal }
         }
+        guard saveMessages.values.reduce(0, { $0 + PinkhaHanlinSaveMetadataLayout.reservationBytes(for: $1) })
+                <= PinkhaHanlinSaveMetadataLayout.maximumReservedBytes else { throw PinkhaHanlinWriteError.corruptJournal }
+        for (key, progress) in saveMessages {
+            guard let entry = reservations[key] else { throw PinkhaHanlinWriteError.corruptJournal }
+            do {
+                try validateSaveMessage(progress, against: entry)
+                if let recovery = knownObjects[key], let reference = progress.root.reference,
+                   !reference.utf8.elementsEqual(recovery.createdObjectReference.utf8) {
+                    throw PinkhaHanlinWriteError.corruptJournal
+                }
+            } catch { throw PinkhaHanlinWriteError.corruptJournal }
+        }
         try store.recordNamespace(namespace)
-        return .init(store: store, namespace: namespace, entries: reservations, knownObjects: knownObjects)
+        return .init(store: store, namespace: namespace, entries: reservations,
+                     knownObjects: knownObjects, saveMessages: saveMessages)
     }
 
     /// Current actor/owner state only; no permission grant, cleanup, reservation or native I/O.
@@ -154,6 +198,11 @@ public actor PinkhaHanlinWriteJournal {
             }
             return previous
         }
+        if let progress = saveMessages[identity.key] {
+            // A title/root callback cannot irreversibly commit an incomplete body.
+            try Self.validateSaveMessage(progress, against: Entry(version: 1, identity: identity, effect: effect,
+                                                                  createdObjectReference: createdObjectReference))
+        }
         if let recovery = knownObjects[identity.key] {
             try recovery.validate(against: Entry(version: 1, identity: identity, effect: effect,
                                                  createdObjectReference: createdObjectReference))
@@ -185,6 +234,8 @@ public actor PinkhaHanlinWriteJournal {
         let recovery = PinkhaHanlinKnownObjectRecovery(version: 1, identity: identity,
                                                         createdObjectReference: objectID)
         try recovery.validate(against: previous)
+        if let reference = saveMessages[identity.key]?.root.reference,
+           !reference.utf8.elementsEqual(objectID.utf8) { throw PinkhaHanlinWriteError.conflict }
         if let existing = knownObjects[identity.key] {
             guard existing == recovery else { throw PinkhaHanlinWriteError.conflict }
             return
@@ -207,7 +258,88 @@ public actor PinkhaHanlinWriteJournal {
         guard identity.session.context.namespace == namespace else { throw PinkhaHanlinWriteError.invalidPlan }
         guard let entry = entries[identity.key] else { return nil }
         guard entry.identity == identity else { throw PinkhaHanlinWriteError.conflict }
-        return knownObjects[identity.key]?.createdObjectReference ?? entry.createdObjectReference
+        return knownObjects[identity.key]?.createdObjectReference
+            ?? saveMessages[identity.key]?.root.reference ?? entry.createdObjectReference
+    }
+
+    /// Metadata-only recovery under the ORIGINAL account owner, including after a
+    /// poisoned write. It grants no current-account access and never starts native I/O.
+    public func saveMessageProgress(for identity: PinkhaHanlinWriteIdentity) throws -> PinkhaHanlinSaveMessageProgress? {
+        guard !removed else { throw PinkhaHanlinWriteError.unavailable }
+        guard identity.session.context.namespace == namespace else { throw PinkhaHanlinWriteError.invalidPlan }
+        guard let entry = entries[identity.key] else { return nil }
+        guard entry.identity == identity else { throw PinkhaHanlinWriteError.conflict }
+        return saveMessages[identity.key]
+    }
+
+    public func reserveSaveMessage(_ initial: PinkhaHanlinSaveMessageProgress) throws {
+        guard !poisoned else { throw PinkhaHanlinWriteError.unavailable }
+        let identity = initial.manifest.identity
+        try initial.validate(identity: identity)
+        guard identity.session.context.namespace == namespace,
+              let entry = entries[identity.key], entry.identity == identity, entry.effect == .reserved,
+              initial == (try PinkhaHanlinSaveMessageProgress(manifest: initial.manifest)) else {
+            throw PinkhaHanlinWriteError.invalidPlan
+        }
+        // No implicit resume/re-dispatch after a repeated reservation call.
+        guard saveMessages[identity.key] == nil else { throw PinkhaHanlinWriteError.duplicate }
+        let reserved = saveMessages.values.reduce(0) { $0 + PinkhaHanlinSaveMetadataLayout.reservationBytes(for: $1) }
+        guard reserved + PinkhaHanlinSaveMetadataLayout.reservationBytes(for: initial)
+                <= PinkhaHanlinSaveMetadataLayout.maximumReservedBytes else { throw PinkhaHanlinWriteError.journalFull }
+        let bytes = try initial.canonicalBytes()
+        do {
+            try store.append(name: PinkhaHanlinSaveMetadataLayout.name(key: identity.key, sequence: 0), bytes: bytes)
+            saveMessages[identity.key] = initial
+        } catch {
+            poisoned = true
+            throw PinkhaHanlinWriteError.unavailable
+        }
+    }
+
+    public func advanceSaveMessage(_ expected: PinkhaHanlinSaveMessageProgress,
+                                   event: PinkhaHanlinSaveMessageProgress.Event) throws -> PinkhaHanlinSaveMessageProgress {
+        guard !poisoned else { throw PinkhaHanlinWriteError.unavailable }
+        let identity = expected.manifest.identity
+        guard identity.session.context.namespace == namespace,
+              let entry = entries[identity.key], entry.identity == identity,
+              let current = saveMessages[identity.key], current == expected,
+              try current.canonicalSHA256() == expected.canonicalSHA256() else {
+            throw PinkhaHanlinWriteError.conflict
+        }
+        let next = try current.applying(event)
+        if next == current { return current }
+        // Late original receipts may refine uncertainty. A known not-dispatched
+        // operation, or a committed complete body, cannot acquire new effects.
+        guard entry.effect == .reserved || entry.effect == .uncertain else { throw PinkhaHanlinWriteError.conflict }
+        if let recovery = knownObjects[identity.key], let reference = next.root.reference,
+           !reference.utf8.elementsEqual(recovery.createdObjectReference.utf8) { throw PinkhaHanlinWriteError.conflict }
+        let record = try PinkhaHanlinSaveMessageProgressRecord(previous: current, event: event)
+        let bytes = try record.canonicalBytes()
+        guard bytes.count <= PinkhaHanlinSaveMetadataLayout.maximumBytes(for: event) else {
+            throw PinkhaHanlinWriteError.invalidPlan
+        }
+        do {
+            try store.append(name: PinkhaHanlinSaveMetadataLayout.name(key: identity.key, sequence: record.sequence), bytes: bytes)
+            saveMessages[identity.key] = next
+            return next
+        } catch {
+            poisoned = true
+            throw PinkhaHanlinWriteError.unavailable
+        }
+    }
+
+    /// Atomic metadata-only close used by the existing worker's cancellation
+    /// fence. It races neither a stale expected state nor an independent owner.
+    /// A close before initial reservation creates no effect authority. The
+    /// shared worker must recheck its synchronous cancellation fence after the
+    /// metadata await and close again on failure; close and terminal outcome
+    /// are separate actor calls and must not be described as one transaction.
+    public func closeSaveMessageDispatch(for identity: PinkhaHanlinWriteIdentity) throws {
+        guard !poisoned else { throw PinkhaHanlinWriteError.unavailable }
+        guard identity.session.context.namespace == namespace,
+              let entry = entries[identity.key], entry.identity == identity else { throw PinkhaHanlinWriteError.conflict }
+        guard let current = saveMessages[identity.key], entry.effect != .committed else { return }
+        _ = try advanceSaveMessage(current, event: .closeDispatch)
     }
 
     public func receipt(for identity: PinkhaHanlinWriteIdentity) throws -> Entry? {
@@ -225,6 +357,7 @@ public actor PinkhaHanlinWriteJournal {
         removed = true
         entries.removeAll()
         knownObjects.removeAll()
+        saveMessages.removeAll()
         store.releaseOwnershipForRemoval()
     }
 
@@ -243,8 +376,9 @@ public actor PinkhaHanlinWriteJournal {
     }
 
     #if DEBUG
-    static func removeAccountDataInTestDirectory(_ account: String, parent: URL) throws {
-        try PinkhaHanlinProtectedMetadataFiles.removeAccountData(account, parent: parent)
+    static func removeAccountDataInTestDirectory(_ account: String, parent: URL,
+                                                 app: String = PinkhaHanlinEngineNamespace.heart) throws {
+        try PinkhaHanlinProtectedMetadataFiles.removeAccountData(account, parent: parent, app: app)
     }
     #endif
 
@@ -264,6 +398,58 @@ public actor PinkhaHanlinWriteJournal {
                 throw PinkhaHanlinWriteError.corruptJournal
             }
         } else if entry.createdObjectReference != nil { throw PinkhaHanlinWriteError.corruptJournal }
+    }
+
+    private static func validateSaveMessage(_ progress: PinkhaHanlinSaveMessageProgress, against entry: Entry) throws {
+        try progress.validate(identity: entry.identity)
+        switch entry.effect {
+        case .committed:
+            guard progress.isReadyForCommit, let reference = progress.bodyReadback?.objectReference,
+                  entry.createdObjectReference.map({ Data($0.utf8) }) == Data(reference.utf8) else {
+                throw PinkhaHanlinWriteError.unresolved
+            }
+        case .notDispatched:
+            guard progress.isNotDispatched else { throw PinkhaHanlinWriteError.conflict }
+        case .reserved, .uncertain: break
+        }
+    }
+}
+
+/// Only these exact private names receive larger bounds. Existing v1 entries
+/// keep their original 16 KiB limit and bytes. All limits are reserved before
+/// the first native effect; no event overwrites a record or changes ownership.
+private enum PinkhaHanlinSaveMetadataLayout {
+    static let marker = ".save-message-v1."
+    static let maximumReservedBytes = 64 * 1_048_576
+    static let ordinaryEventBytes = 4_096
+    static let bodyEventBytes = 65_536
+
+    static func name(key: String, sequence: Int) -> String {
+        key + marker + String(format: "%03d", sequence)
+    }
+
+    static func parse(_ name: String) throws -> (key: String, sequence: Int)? {
+        guard name.contains(marker) else { return nil }
+        let parts = name.components(separatedBy: marker)
+        guard parts.count == 2, PinkhaHanlinWriteIdentity.isDigest(parts[0]), parts[1].utf8.count == 3,
+              let sequence = Int(parts[1]), (0...PinkhaHanlinSaveMessageProgress.maximumEvents).contains(sequence),
+              name == self.name(key: parts[0], sequence: sequence) else { throw PinkhaHanlinWriteError.corruptJournal }
+        return (parts[0], sequence)
+    }
+
+    static func maximumBytes(for event: PinkhaHanlinSaveMessageProgress.Event) -> Int {
+        if case .bodyVerified = event { return bodyEventBytes }
+        return ordinaryEventBytes
+    }
+
+    static func maximumFileBytes(_ name: String) throws -> Int {
+        guard let record = try parse(name) else { return 16_384 }
+        return record.sequence == 0 ? PinkhaHanlinSaveMessageProgress.maximumEncodedBytes : bodyEventBytes
+    }
+
+    static func reservationBytes(for progress: PinkhaHanlinSaveMessageProgress) -> Int {
+        PinkhaHanlinSaveMessageProgress.maximumEncodedBytes
+            + (4 * (progress.manifest.blockSHA256.count + 1) + 1) * ordinaryEventBytes + bodyEventBytes
     }
 }
 
@@ -336,11 +522,16 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
         #endif
     }
 
-    func readAll(maximumFiles: Int) throws -> [(String, Data)] {
+    func readAll(maximumFiles: Int, maximumBytes: Int,
+                 visit: (String, Data) throws -> Void) throws {
         #if os(iOS)
         let urls = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
         guard urls.count <= maximumFiles + 2 else { throw PinkhaHanlinWriteError.corruptJournal }
-        return try urls.filter { $0.lastPathComponent != "owner.lock" && $0.lastPathComponent != "namespace.json" }.map { url in
+        var totalBytes = 0
+        for url in urls.sorted(by: { $0.lastPathComponent < $1.lastPathComponent }) {
+            let name = url.lastPathComponent
+            if name == "owner.lock" || name == "namespace.json" { continue }
+            let limit = try PinkhaHanlinSaveMetadataLayout.maximumFileBytes(name)
             let fd = Darwin.open(url.path, O_RDONLY | O_NOFOLLOW | O_CLOEXEC)
             guard fd >= 0 else { throw PinkhaHanlinWriteError.corruptJournal }
             let handle = FileHandle(fileDescriptor: fd, closeOnDealloc: true)
@@ -348,15 +539,17 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
             var info = stat()
             guard fstat(fd, &info) == 0, (info.st_mode & S_IFMT) == S_IFREG,
                   info.st_mode & 0o777 == 0o600,
-                  info.st_size > 0, info.st_size <= 16_384,
-                  let bytes = try handle.read(upToCount: 16_385), bytes.count <= 16_384 else {
+                  info.st_size > 0, info.st_size <= Int64(limit),
+                  info.st_size <= Int64(maximumBytes - totalBytes),
+                  let bytes = try handle.read(upToCount: limit + 1), bytes.count == Int(info.st_size) else {
                 throw PinkhaHanlinWriteError.corruptJournal
             }
+            totalBytes += bytes.count
             let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
             guard PinkhaHanlinMetadataProtection.acceptsReadback(attributes) else {
                 throw PinkhaHanlinWriteError.corruptJournal
             }
-            return (url.lastPathComponent, bytes)
+            try visit(name, bytes)
         }
         #else
         throw PinkhaHanlinWriteError.unavailable
@@ -419,7 +612,8 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
 
     func append(name: String, bytes: Data) throws {
         #if os(iOS)
-        guard bytes.count <= 16_384, !name.contains("/"), !name.contains("\\") else { throw PinkhaHanlinWriteError.unavailable }
+        guard !bytes.isEmpty, bytes.count <= (try PinkhaHanlinSaveMetadataLayout.maximumFileBytes(name)),
+              !name.contains("/"), !name.contains("\\") else { throw PinkhaHanlinWriteError.unavailable }
         let url = directory.appendingPathComponent(name)
         let fd = Darwin.open(url.path, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, mode_t(0o600))
         guard fd >= 0 else { throw PinkhaHanlinWriteError.unavailable }
