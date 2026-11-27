@@ -4,6 +4,7 @@ import Testing
 import HanlinChatCore
 import HanlinHostContracts
 import HanlinAgentActivityCore
+import HanlinPlatformContracts
 
 #if os(iOS) && DEBUG
 /// Controlled original SDK events exercise the consumer projection. These do
@@ -93,6 +94,45 @@ struct HanlinOriginalMessageProjectionTests {
                 session: identity, runID: UUID(), sequence: 1)
         }
         #expect(projection.run?.steps.isEmpty == true)
+    }
+
+    @Test(arguments: ["anytype", "anytype-any"])
+    func fullDisplayReceiptHistoryStillClosesTheSharedRunGate(app: String) throws {
+        let identity = try session(app: app)
+        var state = PinkhaHanlinReceiptPresentationState(session: identity)
+        let first = try result(session: identity, effect: .confirmedNoEffect)
+        #expect(state.observe(first))
+        #expect(!state.observe(first))
+        for _ in 1..<PinkhaHanlinReceiptPresentationState.maximumDisplayReceipts {
+            #expect(state.observe(try result(session: identity, effect: .confirmedNoEffect)))
+        }
+        #expect(state.displayReceiptCount == 256 && state.permitsNewRun)
+        let foreign = try result(session: session(app: app, account: "other-account"), effect: .uncertain)
+        #expect(!state.observe(foreign))
+        #expect(state.permitsNewRun)
+
+        let uncertain = try result(session: identity, effect: .uncertain)
+        #expect(!state.observe(uncertain)) // Display remains bounded.
+        #expect(state.displayReceiptCount == 256)
+        // Send, Retry and Continue all use this exact shared presentation gate.
+        #expect(state.requiresReconciliation && !state.permitsNewRun)
+        #expect(!state.observe(uncertain))
+        #expect(!state.observe(try result(session: identity, effect: .confirmedCommitted)))
+        #expect(state.displayReceiptCount == 256 && !state.permitsNewRun)
+    }
+
+    private func result(session: HanlinHostSession, effect: HanlinHostEffectState) throws -> HanlinHostResultEvent {
+        let invocation = try HanlinToolInvocationID(validating: UUID().uuidString.lowercased())
+        let tool = HanlinLogicalToolID(providerInstanceID: try .init(validating: "anytype.host"),
+                                      localToolID: try .init(validating: "create-page"))
+        let call = HanlinHostCallIdentity(session: session, runID: UUID(), step: 0,
+            providerCallID: UUID().uuidString, invocationID: invocation, logicalToolID: tool)
+        let result = HanlinHostExecutionResult(result: .init(invocationID: invocation,
+            logicalToolID: tool, outcome: effect == .uncertain
+                ? .failed(.init(code: .operationUnavailable, userMessage: "Original scope is uncertain."))
+                : .completed([]), completedAt: .now),
+            effectState: effect, context: session.context, reconciliationReference: "opaque-original-receipt")
+        return try .init(resultID: UUID(), call: call, result: result)
     }
 
     private func session(app: String, account: String = "disposable-account") throws -> HanlinHostSession {

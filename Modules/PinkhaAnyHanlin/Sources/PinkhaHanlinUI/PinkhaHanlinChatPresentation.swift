@@ -37,15 +37,15 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     @ObservationIgnored private var running: Task<Void, Never>?
     @ObservationIgnored private var stopping: Task<Void, Never>?
     @ObservationIgnored private var currentRunID: UUID?
-    @ObservationIgnored private var requiresReconciliation = false
+    private var receiptState: PinkhaHanlinReceiptPresentationState
+    private var requiresReconciliation: Bool { receiptState.requiresReconciliation }
     @ObservationIgnored private var closing: Task<Void, Never>?
     @ObservationIgnored private var closed = false
-    @ObservationIgnored private var receiptIDs = Set<UUID>()
     private let speech = PinkhaHanlinMessageSpeech()
     @ObservationIgnored public private(set) var returnReceipt: PinkhaHanlinNavigationHandoff?
 
     private var canStartRun: Bool {
-        isConfigured && !closed && !isStreaming && !isStopping && !requiresReconciliation
+        isConfigured && !closed && !isStreaming && !isStopping && receiptState.permitsNewRun
             && currentRunID == nil
     }
     public var canSend: Bool {
@@ -62,6 +62,7 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                 hooks: PinkhaHanlinPresentationHooks = .init()) throws {
         self.host = host
         self.session = host.session
+        self.receiptState = .init(session: host.session)
         self.scene = presenter.viewIfLoaded?.window?.windowScene
         self.appearance = appearance
         self.hooks = hooks
@@ -254,12 +255,12 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                     // A local projection/output limit can end the consumer before
                     // producer EOF. Retain the run fence until the original SDK
                     // and native workers have drained, just as the Stop path does.
-                    if (error as? HanlinHostError) == .unresolvedWrite { self.requiresReconciliation = true }
+                    if (error as? HanlinHostError) == .unresolvedWrite { self.receiptState.requireReconciliation() }
                     do {
                         let result = try await agent.cancelCurrentRun()
-                        self.requiresReconciliation = self.requiresReconciliation || (result?.requiresReconciliation ?? false)
+                        if result?.requiresReconciliation == true { self.receiptState.requireReconciliation() }
                     } catch {
-                        self.requiresReconciliation = true
+                        self.receiptState.requireReconciliation()
                     }
                     guard !self.closed, !self.isStopping, self.currentRunID == runID else { return }
                     self.activities[answerID]?.finish(status: .failed)
@@ -283,14 +284,14 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                 await consumer?.value
                 guard !self.closed, self.currentRunID == runID else { return }
                 try self.validateInstallation(for: self.session)
-                self.requiresReconciliation = self.requiresReconciliation || (result?.requiresReconciliation ?? false)
+                if result?.requiresReconciliation == true { self.receiptState.requireReconciliation() }
                 if self.requiresReconciliation { self.errorMessage = PinkhaHanlinStrings.uncertain }
             } catch {
                 await consumer?.value
                 guard !self.closed, self.currentRunID == runID else { return }
                 // A failed metadata save or uncertain host outcome cannot silently
                 // restore permission to retry the operation in this conversation.
-                self.requiresReconciliation = true
+                self.receiptState.requireReconciliation()
                 self.errorMessage = PinkhaHanlinStrings.uncertain
             }
             guard !self.closed, self.currentRunID == runID else { return }
@@ -304,13 +305,14 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     }
 
     private func receive(_ event: HanlinHostResultEvent) {
-        guard !closed, event.call.session == session, receiptIDs.count < 256,
-              receiptIDs.insert(event.resultID).inserted else { return }
+        guard !closed else { return }
+        let appendDisplayLabel = receiptState.observe(event)
+        if requiresReconciliation { errorMessage = PinkhaHanlinStrings.uncertain }
+        guard appendDisplayLabel else { return }
         // The presentation owns only safe outcome labels; payloads never enter a receipt log.
         switch event.result.effectState {
         case .confirmedCommitted: receiptMessages.append(PinkhaHanlinStrings.pageCreated)
         case .uncertain:
-            requiresReconciliation = true
             receiptMessages.append(PinkhaHanlinStrings.uncertain)
         case .notDispatched: receiptMessages.append(PinkhaHanlinStrings.notDispatched)
         case .confirmedNoEffect:
@@ -387,7 +389,6 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         messages.removeAll()
         activities.removeAll()
         receiptMessages.removeAll()
-        receiptIDs.removeAll()
         isConfigured = false
         PinkhaHanlinAccountOwner.shared.unregister(session.id)
         if dismissController { controller?.dismiss(animated: true, completion: completion) }
