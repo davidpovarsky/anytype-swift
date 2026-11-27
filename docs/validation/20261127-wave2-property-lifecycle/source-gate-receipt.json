@@ -1,0 +1,42 @@
+{
+  "atUTC": "2026-11-27T04:46:57.263174+00:00",
+  "command": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "-g",
+    "chatgpt-agent",
+    "--",
+    "python3",
+    "Tools/AnyEnginePort/verify_source_retention.py",
+    "--base",
+    "586c98bcc17dee425664224e508fc0e8df277678",
+    "--ref",
+    "90ca181f2cb16fa0d48ee31e8ab74af88817f923",
+    "--output",
+    "/var/lib/pinkha-wave2-property-lifecycle-20261127/source-publication1/source-retention.json"
+  ],
+  "compilerInvocations": 0,
+  "componentTests": "NOT_RUN",
+  "exitCode": 0,
+  "nativeCalls": 0,
+  "retentionSHA256": "b83920ce6d980f372e7c24796b8d27ff6d6232f4cb0fbe62b45ef0ccab7cd77b",
+  "stagedFiles": [
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertyPresentation.swift",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift",
+    "Tools/PinkhaDualEngineRuntime/property_lifecycle/prepare_component_sources.py",
+    "Tools/PinkhaDualEngineRuntime/property_lifecycle/run_component.py",
+    "docs/validation/20261127-wave2-property-lifecycle/README.md",
+    "docs/validation/20261127-wave2-property-lifecycle/diff-custody.json",
+    "docs/validation/20261127-wave2-property-lifecycle/error-text-source.json",
+    "docs/validation/20261127-wave2-property-lifecycle/independent-source-review.json",
+    "docs/validation/20261127-wave2-property-lifecycle/model.diff.gz",
+    "docs/validation/20261127-wave2-property-lifecycle/qualification.json",
+    "docs/validation/20261127-wave2-property-lifecycle/source-inverse.json",
+    "docs/validation/20261127-wave2-property-lifecycle/tests.diff.gz"
+  ],
+  "status": "PASS_STAGED_SOURCE_RETENTION",
+  "stderr": "",
+  "stdout": "h/UI/PinkhaTorahPropertyLocalization.swift\",\n      \"baselineBlob\": \"236c5e662b84d1818a54271517c3cf512b43660d\",\n      \"replacementBlob\": \"6a1c41c3190aa7598558b6afef4b86bbce37dd93\"\n    },\n    {\n      \"kind\": \"refactor\",\n      \"from\": \"Anytype/Sources/Pinkha/Torah/UI/Resources/PinkhaTorahProperties.xcstrings\",\n      \"to\": \"Anytype/Sources/Pinkha/Torah/UI/Resources/PinkhaTorahProperties.xcstrings\",\n      \"baselineBlob\": \"d1b57e2612840f23cdaf14b47aaeaa8943abd289\",\n      \"replacementBlob\": \"daa6bc91e075b7405fa303bde504fcd976a90ff9\"\n    },\n    {\n      \"kind\": \"refactor\",\n      \"from\": \"Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/Stylers/TextBlockLeadingView.swift\",\n      \"to\": \"Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/Stylers/TextBlockLeadingView.swift\",\n      \"baselineBlob\": \"d0c64468638028a34f9b64bb6224f1e814465238\",\n      \"replacementBlob\": \"86231d2298b2fa611318bc97184f3acf6c59fcd2\"\n    },\n    {\n      \"kind\": \"refactor\",\n      \"from\": \"Anytype/Sources/Pinkha/RTL/PinkhaTextBlockLeadingMarkerAdapter.swift\",\n      \"to\": \"Anytype/Sources/Pinkha/RTL/PinkhaTextBlockLeadingMarkerAdapter.swift\",\n      \"baselineBlob\": \"66bbab551ad611e557cc69758d699d4f1d17ae1e\",\n      \"replacementBlob\": \"0931b7c4c65e521378387ac2f9a4f41fa8ef2605\"\n    }\n  ],\n  \"unreviewedChangedExistingFiles\": [],\n  \"inventoryCapabilityCount\": 38,\n  \"inventorySourceCount\": 320,\n  \"inventoryErrors\": [],\n  \"sourceRetentionPassed\": true,\n  \"semanticEquivalence\": \"REQUIRES_INDEPENDENT_TEST_AND_REVIEW_EVIDENCE\",\n  \"productParity\": \"NOT_PROVEN_BY_SOURCE_RETENTION\"\n}\n",
+  "tree": "90ca181f2cb16fa0d48ee31e8ab74af88817f923"
+}

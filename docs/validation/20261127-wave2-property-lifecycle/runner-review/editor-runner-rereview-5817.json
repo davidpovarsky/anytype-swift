@@ -1,0 +1,26 @@
+{
+  "cacheMutations": 0,
+  "compilerInvocations": 0,
+  "otherScope": "No new product/model/test-source change; resource floors and jobs1 remain unchanged. Git and preparer waits are bounded. No unreviewed source stripping found.",
+  "priorReviewSHA256": "35b6858a3813eb390183356b706dfcc4fb1e6861ef097e59bb0559c2d85ba2d1",
+  "priorRunnerSHA256": "4c6bc70fe7bfaa82453dbf4a0cf4d07889decb9be5786b876c9e7f27cf43493a",
+  "recommendedSingleProbe": "One real owned process probe covering a post-Popen exception or exited leader with surviving child, with positive absence and original failure retained.",
+  "remainingFinding": {
+    "finding": "Empty non-zombie /proc member list is labeled positive group absence. The scanner omits Z processes and suppresses observation errors, so it does not establish that the owned process group no longer exists.",
+    "id": "P-RUN-05",
+    "required": "Only an owned killpg(pgid,0) ESRCH/ProcessLookupError result may mark original group absence; treat EPERM/unknown as failure. Retain the member scan for diagnostics and never re-probe or signal an already-observed-absent historical group.",
+    "scope": "group_members callers in main and drain_owned_process"
+  },
+  "resolvedFindings": {
+    "P-RUN-01": "Guaranteed finally calls owned cleanup after every post-Popen exception, retains first failure and separately records finalization errors. Bounded TERM10/KILL5 and reap are present.",
+    "P-RUN-02": "Exact production enum25d49 and provenancee125 are pinned before and after.",
+    "P-RUN-03": "Baseline two method failures now have an explicitly pending issue-review status and regressionReproduced=false.",
+    "P-RUN-04": "Original67c/78696-byte manifest is bound through exactbbf artifact row. All370 local physical files are bounded, remote checkouts compare exact Git blob contents and physical sets, and component compiler sources are restricted to original4 plus own3."
+  },
+  "reviewedAtUTC": "2026-11-27T04:58:14.269861+00:00",
+  "reviewedRunnerSHA256": "5817fa9e5ab7af9f55d254158a2d4fa56fed37a4c9c2aacf069572cc1e9cfb72",
+  "reviewer": "wave2-editor",
+  "schema": "pinkha-wave2-properties-component-runner-rereview-v1",
+  "status": "ONE_ABSENCE_PROOF_ISSUE_REMAINS",
+  "testExecutions": 0
+}

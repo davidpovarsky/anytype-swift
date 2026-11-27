@@ -174,7 +174,12 @@ public final class AnyNativePropertyPresentation {
     }
 
     public func derivedIsVisible(_ field: AnyNativePropertyVisibilityKey.DerivedField) -> Bool {
-        snapshot?.hiddenPropertyKeys.contains(AnyNativePropertyVisibilityKey(derived: field).rawValue) != true
+        guard isActive, !needsReview else { return false }
+        // A native read failure must not turn a previously hidden derived field
+        // visible. Source-only workspaces without this store keep their existing
+        // projection, while a configured store must first load current values.
+        guard let snapshot else { return operations == nil }
+        return !snapshot.hiddenPropertyKeys.contains(AnyNativePropertyVisibilityKey(derived: field).rawValue)
     }
 
     public func activate() {
@@ -187,6 +192,7 @@ public final class AnyNativePropertyPresentation {
         if isSaving { needsReview = true }
         isActive = false; epoch = UUID()
         invalidateReads()
+        discardDisplayedSnapshot()
         isSaving = false
     }
 
@@ -213,6 +219,10 @@ public final class AnyNativePropertyPresentation {
             if reviewCurrent { needsReview = false; pendingEdit = nil; undo = nil }
         } catch {
             guard expected == epoch, request == readRequest, isActive else { return }
+            // A failed current read cannot keep an earlier owner's values or
+            // Undo available. Retain any uncertain write until explicit review.
+            discardDisplayedSnapshot()
+            needsReview = true
             message = AnyUIErrorText.describe(error)
         }
     }
@@ -306,6 +316,11 @@ public final class AnyNativePropertyPresentation {
             return
         }
         snapshot = value; undo = receipt.undo; pendingEdit = nil; needsReview = false
+    }
+
+    private func discardDisplayedSnapshot() {
+        snapshot = nil
+        undo = nil
     }
 
     private func invalidateReads() {

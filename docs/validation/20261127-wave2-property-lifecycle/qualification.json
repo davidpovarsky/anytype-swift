@@ -1,0 +1,95 @@
+{
+  "AppleCompilation": "NOT_RUN",
+  "UIAcceptance": "NOT_RUN",
+  "actualOwnedCleanupProbe": {
+    "KILLAndPermissionBranches": "SOURCE_REVIEW_ONLY",
+    "elapsedSeconds": 0.15096207299939124,
+    "modelTestsExecuted": 0,
+    "originalPhaseStatus": "FAIL",
+    "receipt": "runner-review/owned-cleanup-probe1/receipt.json",
+    "sha256": "a9b97a624b8940d8ba609aa5595af9e8ad5a913ce41cfb14563c73b888d68319",
+    "status": "PASS_REAL_OWNED_CLEANUP_AND_ORIGINAL_FAILURE_RETAINED",
+    "terminatingSignal": "SIGTERM"
+  },
+  "baseCommit": "c95395aec96214dfabd73d55755baa95689cc6d3",
+  "candidateFrameworkMethods": 9,
+  "componentCustody": {
+    "componentResolvedSHA256": "dd338df7aba015276d48f10bba2f6ad2487a21417e4e5b23116db94366926a4e",
+    "dependencyClosureSHA256": "67c6696b3d3e760553acd6a9d493cb6190c8093e702fef1d8c2a8ae96a5f9f08",
+    "observedAtUTC": "2026-11-27T04:35:33.616735+00:00",
+    "originalAddBlockReceiptSHA256": "bbf101c3821fafca51f6d6e9a0bef009f1f415ff935ab4e2606ca0feb599e231",
+    "sourceFileCount": 370,
+    "testsExecutedByCustodyRead": 0
+  },
+  "componentTests": "NOT_RUN",
+  "currentFrozenAppChanged": false,
+  "files": {
+    "AnyNativePropertyPresentation.swift": {
+      "bytes": 16259,
+      "sha256": "aa40239c5ba749b20974735337c0af11ba477c9aac870261f4ae5ae76f76c731"
+    },
+    "AnyNativePropertyPresentationTests.swift": {
+      "bytes": 24061,
+      "sha256": "7df1a45aa85cd71bc7ec8353b98150609bc2d2fb07a2aa1ebf08f7fb40fdab61"
+    },
+    "independent-source-review.json": {
+      "bytes": 2458,
+      "sha256": "8127fbf661596a5b2865f8969c01cb791bebce4f08ef4445a79648c600d42973"
+    },
+    "prepare_component_sources.py": {
+      "bytes": 4692,
+      "sha256": "ef7b3195584ee599737ec86cef5da49bff1946f2fc0bc0a4d491915f1a829cff"
+    },
+    "run_component.py": {
+      "bytes": 22467,
+      "sha256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2"
+    },
+    "source-inverse.json": {
+      "bytes": 9705,
+      "sha256": "6710884face49fb40db7e527586469c69b253b7ff6d80da77c5d3372e9172a80"
+    }
+  },
+  "nativeServiceCalls": 0,
+  "newFrameworkMethods": 2,
+  "newInternalScenarios": 3,
+  "originalFrameworkMethods": 7,
+  "pendingUncertainWriteRetained": true,
+  "physicalDevice": "NOT_RUN",
+  "priorSourceGate": {
+    "baselineCommit": "586c98bcc17dee425664224e508fc0e8df277678",
+    "receipt": "source-retention.json",
+    "sha256": "b83920ce6d980f372e7c24796b8d27ff6d6232f4cb0fbe62b45ef0ccab7cd77b",
+    "status": "PASS_SOURCE_RETENTION_NOT_SEMANTIC_ACCEPTANCE",
+    "unchangedMappingCount": 129,
+    "verifiedSourceTree": "90ca181f2cb16fa0d48ee31e8ab74af88817f923"
+  },
+  "productionContractsChanged": false,
+  "publicationAttempt2": {
+    "causeConfirmedByFreshDryRun": "New owned probe path outside existing sparse-checkout definition",
+    "correction": "Explicit --sparse add for the two owned runner/probe paths; sparse rules unchanged",
+    "failure": "publication-attempt2/failure.json",
+    "freshReadonlyDiagnostic": "publication-attempt2/post-failure-readonly-diagnostic.json",
+    "originalCommandStderrRetained": false,
+    "status": "FAIL_BEFORE_SOURCE_GATE"
+  },
+  "runnerReview": {
+    "allFiveFindingsResolved": true,
+    "baselineFailureRequiresManualIntendedIssueReview": true,
+    "finalClosure": "runner-review/owned-group-review-closure.json",
+    "finalClosureSHA256": "790703dfa506d6e97df1dd4e1c57cdff263e59015745e42bccd62dea1145ae79",
+    "firstRevisionReview": "runner-review/editor-runner-rereview-5817.json",
+    "initialFindings": "runner-review/editor-runner-source-review.json"
+  },
+  "schema": "pinkha-wave2-properties-source-qualification-v1",
+  "sourceGate": {
+    "baselineCommit": "586c98bcc17dee425664224e508fc0e8df277678",
+    "receipt": "final-source-gate/source-retention.json",
+    "sha256": "abfb3efce694da51f08f58132360328a338eb5e239ab06ca245f0c7c90d3aee9",
+    "status": "PASS_SOURCE_RETENTION_NOT_SEMANTIC_ACCEPTANCE",
+    "unchangedMappingCount": 129,
+    "verifiedSourceTree": "44947fae3b2de05722a59282c74f535a8b2670c3"
+  },
+  "sourceOnlyReview": "independent-source-review.json",
+  "status": "SOURCE_REVIEWED_COMPONENT_PENDING_HOST_DISK_ADMISSION",
+  "visual": "NOT_RUN"
+}

@@ -1,0 +1,17 @@
+{
+  "cleanup": true,
+  "command": [
+    "python3",
+    "/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_2b6d89e380fd4c2680920a577f138556/script.py",
+    "/var/lib/pinkha-wave2-property-lifecycle-20261127/inputs/runner-publication2-transport/packet.b64",
+    "635aa17958ee19450a827588c25342013b206775c68cc441175c20b2bae6fcbe"
+  ],
+  "cwd": null,
+  "duration": 0.35,
+  "hub_request_id": "hreq_94cf18e285aa46f9",
+  "interpreter": "python3",
+  "ok": false,
+  "output": "{\"atUTC\": \"2026-11-27T05:15:56.106644+00:00\", \"status\": \"FAIL\", \"compilerInvocations\": 0, \"componentTests\": \"NOT_RUN\", \"nativeCalls\": 0, \"AppleCompilation\": \"NOT_RUN\", \"failure\": \"Traceback (most recent call last):\\n  File \\\"/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_2b6d89e380fd4c2680920a577f138556/script.py\\\", line 55, in <module>\\n    run(git+['add','--',tools,docs])\\n  File \\\"/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_2b6d89e380fd4c2680920a577f138556/script.py\\\", line 13, in run\\n    def run(args,timeout=15):return subprocess.run(args,cwd=root,check=True,capture_output=True,timeout=timeout)\\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"/usr/lib/python3.12/subprocess.py\\\", line 571, in run\\n    raise CalledProcessError(retcode, process.args,\\nsubprocess.CalledProcessError: Command '['runuser', '-u', 'ubuntu', '-g', 'chatgpt-agent', '--', 'git', '-C', '/mnt/development/projects/worktrees/anytype-wave2-property-lifecycle-20261127', 'add', '--', 'Tools/PinkhaDualEngineRuntime/property_lifecycle/', 'docs/validation/20261127-wave2-property-lifecycle/']' returned non-zero exit status 1.\\n\"}\nTraceback (most recent call last):\n  File \"/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_2b6d89e380fd4c2680920a577f138556/script.py\", line 55, in <module>\n    run(git+['add','--',tools,docs])\n  File \"/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_2b6d89e380fd4c2680920a577f138556/script.py\", line 13, in run\n    def run(args,timeout=15):return subprocess.run(args,cwd=root,check=True,capture_output=True,timeout=timeout)\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/subprocess.py\", line 571, in run\n    raise CalledProcessError(retcode, process.args,\nsubprocess.CalledProcessError: Command '['runuser', '-u', 'ubuntu', '-g', 'chatgpt-agent', '--', 'git', '-C', '/mnt/development/projects/worktrees/anytype-wave2-property-lifecycle-20261127', 'add', '--', 'Tools/PinkhaDualEngineRuntime/property_lifecycle/', 'docs/validation/20261127-wave2-property-lifecycle/']' returned non-zero exit status 1.",
+  "returncode": 1,
+  "sudo": false
+}

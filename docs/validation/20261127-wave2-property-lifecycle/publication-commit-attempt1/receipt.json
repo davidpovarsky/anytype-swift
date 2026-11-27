@@ -1,0 +1,89 @@
+{
+  "AppleCompilation": "NOT_RUN",
+  "artifacts": [
+    {
+      "bytes": 0,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/publication-final1/base.stderr.original.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 41,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/publication-final1/base.stdout.original.log",
+      "sha256": "c214e73f434637815e153489c61516b72c2116bb17cecceaeb792b500d779440"
+    },
+    {
+      "bytes": 0,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/publication-final1/branch.stderr.original.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 55,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/publication-final1/branch.stdout.original.log",
+      "sha256": "dc3c7b906cf1c4e072059de6718e9fc7090acf29259d832a314527e90bd28d2a"
+    },
+    {
+      "bytes": 337,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/publication-final1/commit.stderr.original.log",
+      "sha256": "7892e01b19bebc1d5edba7ac2b348875359b281560d0841ef9538d7e6fb8830a"
+    },
+    {
+      "bytes": 0,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/publication-final1/commit.stdout.original.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/publication-final1/diff-check.stderr.original.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/publication-final1/diff-check.stdout.original.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/publication-final1/staged.stderr.original.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 3371,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/publication-final1/staged.stdout.original.log",
+      "sha256": "c3d8538a21b4ffe5ecebdf934d808665a6d73809f05e661846d61630ab4d2b6c"
+    },
+    {
+      "bytes": 0,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/publication-final1/unstaged.stderr.original.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/publication-final1/unstaged.stdout.original.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "atUTC": "2026-11-27T05:18:28.168367+00:00",
+  "commandExit": 128,
+  "componentTests": "NOT_RUN",
+  "failedCommand": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "-g",
+    "chatgpt-agent",
+    "--",
+    "git",
+    "-C",
+    "/mnt/development/projects/worktrees/anytype-wave2-property-lifecycle-20261127",
+    "-c",
+    "gc.auto=0",
+    "commit",
+    "-m",
+    "fix: clear stale native Properties values after owner loss"
+  ],
+  "failure": "Traceback (most recent call last):\n  File \"/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_33321e73e2354e9d8c1a396d32b36172/script.py\", line 18, in <module>\n    run(g+['-c','gc.auto=0','commit','-m','fix: clear stale native Properties values after owner loss'],'commit',25)\n  File \"/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_33321e73e2354e9d8c1a396d32b36172/script.py\", line 9, in run\n    if p.returncode:raise subprocess.CalledProcessError(p.returncode,args,p.stdout,p.stderr)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsubprocess.CalledProcessError: Command '['runuser', '-u', 'ubuntu', '-g', 'chatgpt-agent', '--', 'git', '-C', '/mnt/development/projects/worktrees/anytype-wave2-property-lifecycle-20261127', '-c', 'gc.auto=0', 'commit', '-m', 'fix: clear stale native Properties values after owner loss']' returned non-zero exit status 128.\n",
+  "nativeCalls": 0,
+  "originalStderr": "Author identity unknown\n\n*** Please tell me who you are.\n\nRun\n\n  git config --global user.email \"you@example.com\"\n  git config --global user.name \"Your Name\"\n\nto set your account's default identity.\nOmit --global to set the identity only in this repository.\n\nfatal: unable to auto-detect email address (got 'ubuntu@torah-social.(none)')\n",
+  "originalStdout": "",
+  "status": "FAIL"
+}
