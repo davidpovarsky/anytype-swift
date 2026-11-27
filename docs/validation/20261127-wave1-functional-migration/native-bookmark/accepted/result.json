@@ -1,0 +1,187 @@
+{
+  "actualConditionalURLWrites": 2,
+  "actualPreparedOperations": 8,
+  "appleUIPresentationAccepted": false,
+  "comparisonSHA256": "2b6966b8be58168f97df607be127f2c4f9bf007c6c8df45976c868826d74f4d3",
+  "configRelocation": {
+    "change": "Only immutable nodeconf filesystem locator",
+    "nodeconfSHA256": "6554bc5841fbef2a1ee6ab65ac3b14a9117dbb762d8cc8d419633c8cd413b060",
+    "originalAccountConfigChanged": false
+  },
+  "editedColdComparisonSHA256": "ba0fe636fd90f53d4b9713a826881ded6e2bb92739ef125fb0fae5be9999c452",
+  "errors": [],
+  "historicalPreservationReexecuted": false,
+  "minimumFreeBytes": 3025588224,
+  "modifiedOriginalMigrationReceiptRefused": true,
+  "nativeAfter": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildReceiptSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "unchanged": true
+  },
+  "nativeBefore": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildReceiptSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "unchanged": true
+  },
+  "offlinePolicy": {
+    "baselineTCPReachable": true,
+    "baselineUDPReceived": true,
+    "controls": {
+      "deniedSyscalls": [
+        "connect",
+        "sendto",
+        "sendmsg",
+        "sendmmsg",
+        "io_uring_setup",
+        "io_uring_enter",
+        "io_uring_register"
+      ],
+      "librarySHA256": "3d128123b494ca9e88f3c237b0912397145af1754e86ea99f460af6857441f19",
+      "noNewPrivileges": true,
+      "seccompFilterActive": true,
+      "tcpDenied": true,
+      "tcpErrno": 1,
+      "udpDenied": true,
+      "udpErrno": 1
+    },
+    "helperSHA256": "6eaca8b9602f9c1c7fce4b8a176759ad1a10577c0ee74eddb3264992976e86b1",
+    "scope": "only each owned native child and descendants; no global network change"
+  },
+  "originalAccountAndPreservationReceiptUnchanged": true,
+  "phases": [
+    {
+      "compiledProducts": {
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner": "5e53f4e19080c548d2328721044664b02a94016f85820164412fbc3df3206f0f",
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so": "8e352b8bdd5e363a6a88b677feb8c6ff218c646cee7f805b67ad740dad29aeac"
+      },
+      "exitCode": 0,
+      "logSHA256": "03daea52688df39905c734374f9442e30b5fe868053f718b0dca2ff61b8be257",
+      "method": "testActualNativeBookmarkURLAndEditorNotesColdReopen",
+      "nativePID": 2309154,
+      "phase": "execute",
+      "result": "PASS",
+      "seconds": 6.505,
+      "testGroupPositivelyAbsent": true,
+      "testPID": 2309202
+    },
+    {
+      "compiledProducts": {
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner": "5e53f4e19080c548d2328721044664b02a94016f85820164412fbc3df3206f0f",
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so": "8e352b8bdd5e363a6a88b677feb8c6ff218c646cee7f805b67ad740dad29aeac"
+      },
+      "exitCode": 0,
+      "logSHA256": "75f0b75fe2124fca016e62abeea1caa049322289af8a182d09bafe20590ad7df",
+      "method": "testActualNativeBookmarkURLAndEditorNotesColdReopen",
+      "nativePID": 2310039,
+      "phase": "reopen",
+      "result": "PASS",
+      "seconds": 5.008,
+      "testGroupPositivelyAbsent": true,
+      "testPID": 2310110
+    },
+    {
+      "compiledProducts": {
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner": "5e53f4e19080c548d2328721044664b02a94016f85820164412fbc3df3206f0f",
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so": "8e352b8bdd5e363a6a88b677feb8c6ff218c646cee7f805b67ad740dad29aeac"
+      },
+      "exitCode": 0,
+      "logSHA256": "1afc7e8f5fe8f171c3fb7587e178219d802023f027453cab2d72eb621a1bfd5c",
+      "method": "testNativeBookmarkEditUndoAndEditedColdReopen",
+      "nativePID": 2310039,
+      "phase": "edit",
+      "result": "PASS",
+      "seconds": 4.006,
+      "testGroupPositivelyAbsent": true,
+      "testPID": 2310784
+    },
+    {
+      "compiledProducts": {
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner": "5e53f4e19080c548d2328721044664b02a94016f85820164412fbc3df3206f0f",
+        "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so": "8e352b8bdd5e363a6a88b677feb8c6ff218c646cee7f805b67ad740dad29aeac"
+      },
+      "exitCode": 0,
+      "logSHA256": "433b35f6fc58c3c0bd9765e93684ee6e16b41971a7dd7d21875be85d26b87e51",
+      "method": "testNativeBookmarkEditUndoAndEditedColdReopen",
+      "nativePID": 2311413,
+      "phase": "reopen-edited",
+      "result": "PASS",
+      "seconds": 3.506,
+      "testGroupPositivelyAbsent": true,
+      "testPID": 2311420
+    }
+  ],
+  "privateLogReceipts": [
+    {
+      "bytes": 577090,
+      "name": "execute.log",
+      "sha256": "42c1dc788a7a5cdbe3878ab5a597452c3abb92d2d0457d60202e0b9c4c45fe66"
+    },
+    {
+      "bytes": 168376,
+      "name": "reopen-edited.log",
+      "sha256": "39a74348933cc89b0219acc60caad3cc4fa1793c32ee31085aec36caf9bc6f85"
+    },
+    {
+      "bytes": 629942,
+      "name": "reopen.log",
+      "sha256": "c8cb60a4708472c8f857a26bf7683d9b92d6e051f1d78f1bcae2474dda163a8c"
+    }
+  ],
+  "processes": [
+    {
+      "exitCode": 0,
+      "groupPositivelyAbsent": true,
+      "outboundDeniedByOS": true,
+      "phase": "execute",
+      "pid": 2309154
+    },
+    {
+      "exitCode": 0,
+      "groupPositivelyAbsent": true,
+      "outboundDeniedByOS": true,
+      "phase": "reopen",
+      "pid": 2310039
+    },
+    {
+      "exitCode": 0,
+      "groupPositivelyAbsent": true,
+      "outboundDeniedByOS": true,
+      "phase": "reopen-edited",
+      "pid": 2311413
+    }
+  ],
+  "protocol": "pinkha-native-bookmark-linux-component-v1",
+  "retainedComponentReceiptSHA256": "ab275bc9a891c2b31b7ff7408d42eabff604623f5f35574d66d6281a9832d422",
+  "retainedInput": {
+    "accountInitialized": false,
+    "activeOriginalAccountProcesses": 0,
+    "controllerReceiptSHA256": "5925bd5a08c972e3dbe7666b77f9e230fe340b36b46289c870384e66c516a899",
+    "copyBytesAndModesEqual": true,
+    "entries": 26,
+    "inventorySHA256": "79e1d70540df9e8c493e231a6d0f5cae92b92bb331fc10b544aad29c6cafb8ba",
+    "preservationReceiptSHA256": "f7f4a5b34465907c3285229a266a488229a92eb1c3a7c04c5b4cdd162ed1b32b",
+    "spaceCreated": false
+  },
+  "scope": "Eight actual Bookmark component operations and two conditional URL edit/undo writes; new-process OS-offline readback",
+  "seconds": 24.691,
+  "sourceAdmissionPromoted": false,
+  "sourceCommit": "b5bef37d5a4f96ce1cfad4c7d02159414eb2020f",
+  "status": "PASS",
+  "swiftBuildReceiptSHA256": "3f1b6f46197715bf23cf3d7783b308e371b55bd1123f3811eeb95d537d72f7e4",
+  "swiftSourcesUnchanged": true,
+  "testInvocations": 4,
+  "uniqueTestMethods": 2,
+  "wholeSpaceMigration": false
+}
