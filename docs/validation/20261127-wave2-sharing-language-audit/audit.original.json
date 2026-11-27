@@ -1,0 +1,102 @@
+{
+  "schema": "sharing-language-bounded-source-audit/v1",
+  "status": "NO_NEW_PROVEN_PRODUCTION_LANGUAGE_DEFECT_IN_INSPECTED_SHARED_VIEWS",
+  "atUTC": "2026-11-27T23:53:08.815192+00:00",
+  "baseCommit": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+  "sourceManifest": {
+    "localPath": "/workspace/scratch/1d35894f12d5/wave2-sharing-language-audit/source-manifest.json",
+    "bytes": 6690,
+    "sha256": "500fe8fce24ffafff5028705d5b74853e0300d9172a3766ec4efcefe727bcc00",
+    "gitBlob": "8030d5d43b413a3c32531be9c1e13088bfff51b0"
+  },
+  "keyCoverage": {
+    "localPath": "/workspace/scratch/1d35894f12d5/wave2-sharing-language-audit/key-coverage.json",
+    "bytes": 21090,
+    "sha256": "1d97b224e98a93c4180ff8c91b12e6349061f44ac5b071a5eee7cfc7c57a62a8",
+    "gitBlob": "0ac4899fcfb65eeda293ae5340c36c4664b339df"
+  },
+  "scope": [
+    "PinkhaSpaceMembersView",
+    "PinkhaJoinSpaceView",
+    "PinkhaSharingViewModel error-key handoff",
+    "Local confirmation role helper",
+    "PinkhaSharing Package resource declaration and actual en/he tables",
+    "Existing shared sheet callers and sharing-owner selector"
+  ],
+  "findings": [
+    {
+      "id": "SHARING-LANGUAGE-01",
+      "conclusion": "All50 unique required UI/model/role/status keys have nonempty English and Hebrew entries; four interpolated confirmation formats retain matching String placeholder counts.",
+      "source": "PinkhaSpaceMembersView.swift; Resources/en.lproj and he.lproj/Localizable.strings",
+      "productionChangeWarranted": false
+    },
+    {
+      "id": "SHARING-LANGUAGE-02",
+      "conclusion": "The three model problem strings are English localization keys rendered explicitly as LocalizedStringKey(problem) with bundle.module. They are not the NativeRoot direct dynamic String display defect.",
+      "productionChangeWarranted": false
+    },
+    {
+      "id": "SHARING-LANGUAGE-03",
+      "conclusion": "The sharing target owns processed Resources and defaultLocalization en. It has no Loc target dependency. Static Text, dynamic roles/status and the local NSLocalizedString role helper explicitly select bundle.module; no new Loc bridge is needed on this source evidence.",
+      "productionChangeWarranted": false
+    },
+    {
+      "id": "SHARING-ACCEPTANCE-01",
+      "conclusion": "The existing900-second owner method calls the original makeApplication helper with AppleLanguages(he,en)/AppleLocalehe_IL and accepts either English or Hebrew controls/title/roles/messages. That source does not certify exact app-language labels or both mixed App/OS directions.",
+      "source": "NativeLaunchTests.swift makeApplication2732-2739; sharing method3420-3575",
+      "classification": "Existing acceptance-scope limitation, not a production defect or invalidation of its original invitation-state assertions.",
+      "testChangesInThisAudit": false
+    }
+  ],
+  "existingAcceptance": {
+    "ownerSelector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeSharingInvitationConfirmationCancellationAndColdReopen",
+    "allowanceSeconds": 900,
+    "flow": "Create cancel/confirm and revoke cancel/confirm with original cold reopen",
+    "startup": "Original Hebrew-app makeApplication; no independently changed OS language in this method",
+    "languagePredicate": "Either English or Hebrew accepted",
+    "otherExistingExactSelectorsMapped": {
+      "recipientJoin": null,
+      "approveOrDecline": null,
+      "roleChange": null,
+      "snapshotErrorRefresh": null,
+      "joinError": null
+    },
+    "priorReadinessLocator": {
+      "localPath": "/workspace/scratch/1d35894f12d5/interfaces_work/sharing-readiness/acceptance-rows.json",
+      "bytes": 4826,
+      "sha256": "b6692d252b83bb41498dac9e17f1672a6bb1ab80041cc534bdbb70a37d36d5e8",
+      "gitBlob": "05607e81e688e485f5709656ff055ea73281b6c8"
+    }
+  },
+  "remainingRuntimeObservation": [
+    {
+      "direction": "English App / Hebrew OS",
+      "status": "PENDING",
+      "observe": "Actual English title, controls, role/status, confirmation and error labels; actual rendered direction and layout.",
+      "fixture": "Fresh existing W1-owned current account/Space/member/invitation handoff appropriate to the exercised original case; no consumed invitation or invented recipient."
+    },
+    {
+      "direction": "Hebrew App / English OS",
+      "status": "PENDING",
+      "observe": "Actual Hebrew module-resource labels, interpolated role text and rendered direction/layout; the old bilingual predicate alone does not qualify these.",
+      "fixture": "Fresh matching existing W1-owned fixture and exact admitted App; preserve current authority and cancellation checks."
+    }
+  ],
+  "localeBoundary": "Source presence and explicit bundle paths do not certify the compiled localization bundle or actual mixed-language resolution. No claim of OS-only locale selection, per-app selection failure, or mixed-locale role mismatch is inferred without runtime evidence. No speculative locale correction proposed.",
+  "outOfScope": [
+    "NativeRoot dynamic/static language fixes owned by Interfaces/Editor",
+    "Permission/Native/API contract changes",
+    "Actual sharing operations or recipient/account data",
+    "New tests/controllers/profiles or selector replacement"
+  ],
+  "actions": {
+    "productEdits": 0,
+    "testEdits": 0,
+    "testsOrCompiler": 0,
+    "hostOrMacOrNative": 0,
+    "accountOrInviteOperations": 0,
+    "publicMessages": 0,
+    "processQueriesOrSignals": 0
+  },
+  "inspectionPrecision": "An initial local locator grep included escaped Git JSON and produced truncated output; it supplied no semantic/source proof. Final conclusions use only the four exact fresh primary bodies and explicitly pinned retained whole sources."
+}
