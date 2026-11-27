@@ -1,0 +1,50 @@
+{
+  "sourceBase": "a82fa890a0114990e474b48830e4a2de3e32c79d",
+  "entryBefore": {
+    "kind": "refactor",
+    "from": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchPresenter.swift",
+    "to": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchPresenter.swift",
+    "baselineBlob": "78ffb0306652b260c4aa130da45e48ee436264c8",
+    "replacementBlob": "744fef52142f93425f1e1f3c78e8c2f73dd0af3f",
+    "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state. Reviewed unified integration: Expose exact semantic anchor context and pass the active mutation request fence into unlink; retain existing selection and persistence state behavior.",
+    "sharedSources": [
+      {
+        "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahSourcesSearchPresenter.swift",
+        "gitBlob": "f5f1d4cacf679eb82bb6c00dfeb30a6e92be3af0"
+      }
+    ],
+    "validation": [
+      "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
+      "Existing app test bodies are retained; import-only edits are mechanically checked.",
+      "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+      "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending."
+    ]
+  },
+  "entryAfter": {
+    "kind": "refactor",
+    "from": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchPresenter.swift",
+    "to": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchPresenter.swift",
+    "baselineBlob": "78ffb0306652b260c4aa130da45e48ee436264c8",
+    "replacementBlob": "744fef52142f93425f1e1f3c78e8c2f73dd0af3f",
+    "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state. Reviewed unified integration: Expose exact semantic anchor context and pass the active mutation request fence into unlink; retain existing selection and persistence state behavior.",
+    "sharedSources": [
+      {
+        "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahSourcesSearchPresenter.swift",
+        "gitBlob": "d90f1c04a5b8a977c4fcb8d717300a530aa6410e"
+      }
+    ],
+    "validation": [
+      "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
+      "Existing app test bodies are retained; import-only edits are mechanically checked.",
+      "Independent source-bound package and UIKit/native gates are required; this map does not mark parity.",
+      "2026-11-25 explicit integration review against0999d4fe and staged ce2aa421/5362a58. Only reviewed replacement/shared blobs were updated; source-retention is provenance, not semantic or UI acceptance. Shared source-link5 and prior anchor UI are scoped in original evidence; the new sources UI and combined app remain separately pending.",
+      "2026-11-27 Wave2 review: late reference-resolution errors require the original request ID, query and scope, matching the success path. Full original shared-controller bytes restored by the recorded inverse. One suspended-provider test method/two cases added; Apple execution remains pending."
+    ]
+  },
+  "mapRows": 121,
+  "unchangedRows": 120,
+  "newRows": 0,
+  "originalPresenterSHA256": "e1c15c3e0828c3772946bd1bba9a92f591efa25200a410e3122c50f917f8ffb5",
+  "currentPresenterSHA256": "8b81677f5aa0d0111600d54e15967c217ed7a0f7692836d867933efd3e4b891f",
+  "wholeOriginalInverseExact": true
+}
