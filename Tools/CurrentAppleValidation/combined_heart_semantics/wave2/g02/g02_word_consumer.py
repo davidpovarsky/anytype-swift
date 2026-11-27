@@ -17,7 +17,7 @@ SUPPORT = Path("Library/Application Support")
 FIXTURE = "pinkha-native-derived-ui-fixture.json"
 PREPARATION = "TorahNativeDerivedProductIntegrationTests/originalProductPipeline"
 NATIVE_SOURCE_PATH = "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift"
-NATIVE_SOURCE_SHA = "bd9888153f469583531951b4dcc74d64aed275de1e2142fc1cdda61d3fb1770a"
+NATIVE_SOURCE_SHA = "b453fafed2e5e5737ef04524b6add7c4bf0019cf99a03c6137151039f38171ed"
 NATIVE_ORIGINAL_SHA = "7ec7ef47c53c02e61b0cccb05ab7f4f58b3824368d84883aadee6767ff24ab85"
 NATIVE_ORIGINAL_BYTES = 84286
 STARTUP_SOURCE_PATH = "PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift"
@@ -35,7 +35,7 @@ PHASE_ORDER = ("ui-seed", "native-baseline", "ui-unlink", "native-postflight")
 def require_runtime_ready(admission, control_root):
     """Intentionally closed before common cloning, simulator creation or XCTest."""
     raise ValueError("G02_RUNTIME_CLOSED: native phase adapter pin and an actual common-admitted future "
-                     "App/complete UI producer containing d7e512 + bd988 are required; current 8f2 is not eligible")
+                     "App/complete UI producer containing d7e512 + b453fa are required; current 8f2 is not eligible")
 
 
 def ui_budget(consumer, target, methods):

@@ -16,7 +16,7 @@ from pathlib import Path
 
 ORIGINAL_HOST_SHA = "2e57294dc7a00d4302a9dd5f316b2419e75d6a08a4f55b47451d6c822335ec44"
 NEW_FILES = ("g02_word_consumer.py", "g02_ui_receipts.py", "g02_native_phase.py", "g02-closed-profile.json")
-NATIVE_ADAPTER_SHA = "072c57365a60ed812df8dfe6eb95d542194dbefa2069bb965a3633c9878faa63"
+NATIVE_ADAPTER_SHA = "bccc446085987c881d6ed21aa6317a570947492c652682500d8ac9b61cff1f11"
 
 
 def require(value, reason):
