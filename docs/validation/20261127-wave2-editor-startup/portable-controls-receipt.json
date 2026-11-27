@@ -1,0 +1,26 @@
+{
+  "status": "PASS_SYNTHETIC_PYTHON_CONTROLS_NOT_APPLE",
+  "argv": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "-g",
+    "chatgpt-agent",
+    "--",
+    "env",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/mnt/development/projects/worktrees/anytype-wave2-torah-20261127/Tools/CurrentAppleValidation/combined_heart_semantics/wave2",
+    "-p",
+    "test_torah_ui_profile.py",
+    "-v"
+  ],
+  "returncode": 0,
+  "methods": 10,
+  "logSHA256": "fa995addd2da44669df2c00ece7c009bbbc41f0135a515321d5f3698b02f882a",
+  "appleTestsExecuted": 0
+}

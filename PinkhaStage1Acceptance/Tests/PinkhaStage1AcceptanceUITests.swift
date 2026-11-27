@@ -2,15 +2,22 @@ import CryptoKit
 import XCTest
 
 @MainActor
-private func waitForPinkhaNativeNavigation(_ app: XCUIApplication) -> Bool {
-    // A restored Home or an existing native editor must be mounted before the
-    // OS route is sent. A foreground launch screen alone is not readiness.
-    let ready = app.descendants(matching: .any).matching(NSPredicate(
-        format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@ OR (elementType == %d AND (label == %@ OR label == %@))",
-        "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton",
-        XCUIElement.ElementType.button.rawValue, "More", "x24/More"
-    )).firstMatch
-    let observed = ready.waitForExistence(timeout: 120)
+private func waitForPinkhaNativeNavigation(_ app: XCUIApplication, testCase: XCTestCase, spaceID: String) -> Bool {
+    // Preserve the editor's original Boolean/assertion contract. The shared
+    // helper owns the same 120-second deadline and exact disposable warning.
+    let observed: Bool
+    do {
+        try PinkhaDisposableStartupWarning.waitForNavigation(
+            app, testCase: testCase, spaceID: spaceID, allowedLanes: ["editor"]
+        )
+        observed = true
+    } catch {
+        let attachment = XCTAttachment(string: String(describing: error))
+        attachment.name = "editor-native-startup-error"
+        attachment.lifetime = .keepAlways
+        testCase.add(attachment)
+        observed = false
+    }
     XCTAssertTrue(observed, "The restored native navigation must be ready before opening a fixture")
     return observed
 }
@@ -1239,7 +1246,7 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             format: "identifier == %@", "pinkha-ui27-editor:\(fixtureSpaceID):\(objectID)"
         ))
         let editor = editorMatches.firstMatch
-        if identity.exists && editor.exists {
+        if identity.exists && editor.exists && app.alerts.count == 0 {
             XCTAssertEqual(editorMatches.count, 1)
             XCTAssertTrue(editor.isHittable)
             return
@@ -1256,7 +1263,7 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             return
         }
         print("PINKHA_ACCEPTANCE_OPEN kind=\(kind.rawValue) space=\(fixtureSpaceID) object=\(objectID)")
-        guard waitForPinkhaNativeNavigation(app) else { return }
+        guard waitForPinkhaNativeNavigation(app, testCase: self, spaceID: fixtureSpaceID) else { return }
         XCUIDevice.shared.system.open(url)
         XCTAssertTrue(editor.waitForExistence(timeout: 45), "The exact native Space and document must be mounted")
         XCTAssertEqual(editorMatches.count, 1)
@@ -1440,22 +1447,22 @@ enum PinkhaDisposableStartupWarning {
         let deadline = ProcessInfo.processInfo.systemUptime + 120
         do {
             let binding = try validateBinding(spaceID: spaceID, allowedLanes: allowedLanes)
+            let words = try warningStrings(language: try XCTUnwrap(binding.uiEnvironment["PINKHA_UI27_APP_LANGUAGE"]))
             let warningPredicate = NSPredicate(format: "elementType == %d AND label == %@",
-                XCUIElement.ElementType.alert.rawValue, "Warning")
+                XCUIElement.ElementType.alert.rawValue, words.title)
             let ready = app.descendants(matching: .any).matching(navigationPredicate).firstMatch
             let startup = app.descendants(matching: .any).matching(NSCompoundPredicate(
                 orPredicateWithSubpredicates: [navigationPredicate, warningPredicate])).firstMatch
             try require(startup.waitForExistence(timeout: remaining(deadline)),
                         "Restored native navigation did not become ready")
-            let warnings = app.alerts.matching(NSPredicate(format: "label == %@", "Warning"))
+            let warnings = app.alerts.matching(NSPredicate(format: "label == %@", words.title))
             if warnings.firstMatch.exists {
                 let warning = warnings.firstMatch
                 try require(warnings.count == 1 && app.alerts.count == 1,
                             "Original startup warning is not unique")
-                let text = "You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken."
-                let messages = warning.staticTexts.matching(NSPredicate(format: "label == %@", text))
-                let proceed = warning.buttons.matching(NSPredicate(format: "label == %@", "Continue with current vault"))
-                let logout = warning.buttons.matching(NSPredicate(format: "label == %@", "Logout from current vault"))
+                let messages = warning.staticTexts.matching(NSPredicate(format: "label == %@", words.message))
+                let proceed = warning.buttons.matching(NSPredicate(format: "label == %@", words.proceed))
+                let logout = warning.buttons.matching(NSPredicate(format: "label == %@", words.logout))
                 try require(messages.count == 1 && messages.firstMatch.exists,
                             "Original startup warning message differs")
                 try require(warning.buttons.count == 2 && proceed.count == 1 && logout.count == 1,
@@ -1519,7 +1526,7 @@ enum PinkhaDisposableStartupWarning {
             expectedPreparation = ("SimulatorAcceptancePreparationTests/prepareRealUIFixture", "pinkha-simulator-ui27-fixture.json")
         case "properties", "properties-set":
             expectedPreparation = ("TorahNativeDerivedProductIntegrationTests/originalProductPipeline", "pinkha-native-derived-ui-fixture.json")
-        case "canonical-properties":
+        case "canonical-properties", "editor":
             expectedPreparation = ("PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState", "pinkha-stage1-acceptance-state.json")
         default:
             throw failure("Unsupported startup fixture lane")
@@ -1536,10 +1543,11 @@ enum PinkhaDisposableStartupWarning {
         try require(!binding.uiEnvironment.isEmpty && binding.uiEnvironment.allSatisfy {
             !$0.key.hasPrefix("PINKHA_UI27_STARTUP_") && environment[$0.key] == $0.value
         }, "Original fixture UI environment changed")
+        let language = binding.uiEnvironment["PINKHA_UI27_APP_LANGUAGE"]
         try require(binding.uiEnvironment["PINKHA_NATIVE_UI_DISPOSABLE"] == "1"
-                    && binding.uiEnvironment["PINKHA_UI27_APP_LANGUAGE"] == "en"
+                    && (language == "en" || (binding.lane == "editor" && language == "he"))
                     && binding.uiEnvironment["PINKHA_UI27_SELECTION_SCOPE"] == "WAVE15_ACCEPTANCE",
-                    "Original disposable English UI scope is missing")
+                    "Original disposable UI language scope is missing")
         if binding.lane == "canonical-properties" {
             try require(matches(binding.canonicalPreparationConsoleSHA256, "[0-9a-f]{64}"),
                         "Original canonical preparation console evidence is missing")
@@ -1554,16 +1562,47 @@ enum PinkhaDisposableStartupWarning {
         } else {
             try require(binding.canonicalPreparationConsoleSHA256.isEmpty,
                         "Unexpected canonical preparation console in another lane")
-            let uiJSON = try XCTUnwrap(binding.uiEnvironment["PINKHA_NATIVE_UI_FIXTURE_JSON"])
-            let uiFixture = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(uiJSON.utf8)) as? [String: Any])
-            try require(NSDictionary(dictionary: native).isEqual(to: uiFixture),
-                        "UI fixture IDs differ from the original native fixture")
+            if binding.lane == "editor" {
+                try require(binding.uiEnvironment["PINKHA_ACCEPTANCE_SPACE_ID"] == spaceID,
+                            "Editor fixture Space differs")
+                let fields = [("pinkhaObjectId", "PINKHA"), ("noteObjectId", "NOTE"), ("pageObjectId", "PAGE")]
+                let ids = try fields.map { field, suffix in
+                    let id = try XCTUnwrap(native[field] as? String)
+                    try require(!id.isEmpty && binding.uiEnvironment["PINKHA_ACCEPTANCE_" + suffix + "_ID"] == id,
+                                "Editor document differs from the original native fixture")
+                    return id
+                }
+                try require(Set(ids).count == 3, "Editor requires three distinct original documents")
+                try require(binding.uiEnvironment["PINKHA_ACCEPTANCE_DIRECTION"] == (language == "he" ? "rtl" : "ltr")
+                            && binding.uiEnvironment["PINKHA_ACCEPTANCE_DEVICE_LANGUAGE"] == (language == "he" ? "en" : "he"),
+                            "Editor app direction and opposite device language differ")
+            } else {
+                let uiJSON = try XCTUnwrap(binding.uiEnvironment["PINKHA_NATIVE_UI_FIXTURE_JSON"])
+                let uiFixture = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(uiJSON.utf8)) as? [String: Any])
+                try require(NSDictionary(dictionary: native).isEqual(to: uiFixture),
+                            "UI fixture IDs differ from the original native fixture")
+            }
         }
         if binding.lane == "inspector" || binding.lane == "inspector-search" {
             let pid = binding.uiEnvironment["PINKHA_UI27_EXPECTED_APP_PID"].flatMap(Int.init)
             try require((pid ?? 0) > 0, "Inspector requires the controller's verified prelaunch PID")
         }
         return binding
+    }
+
+    // Exact Auth.xcstrings values, selected by the bound App language; never
+    // accept either language opportunistically or dismiss a different alert.
+    private static func warningStrings(language: String) throws -> (title: String, message: String, proceed: String, logout: String) {
+        switch language {
+        case "en":
+            return ("Warning", "You launch app with a unstable middleware. Don't use your production vault. Your vault may be broken.",
+                    "Continue with current vault", "Logout from current vault")
+        case "he":
+            return ("אזהרה", "הפעלת את האפליקציה עם תווכה (middleware) לא יציבה. אל תשתמש בכספת הייצור שלך. הכספת עלולה להיפגם.",
+                    "המשך עם הכספת הנוכחית", "התנתק מהכספת הנוכחית")
+        default:
+            throw failure("Unsupported original startup warning language")
+        }
     }
 
     private static func matches(_ value: String, _ pattern: String) -> Bool {
