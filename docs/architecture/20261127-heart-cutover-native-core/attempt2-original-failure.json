@@ -1,0 +1,74 @@
+{
+  "appleUI": false,
+  "baseManifestSHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+  "candidateSHA256": "498d428d81a0b8146d22c6aec433f0cdc4d3da348fb9129747c860b39f83a9c4",
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "version"
+      ],
+      "exitCode": 0,
+      "logSHA256": "9da111d509234fc14ad21a2b2e16353665c0614e7d3e8495c01f8cfa3398670e",
+      "pid": 2098739,
+      "processGroupAbsent": true,
+      "seconds": 1.0059340000152588,
+      "stopReason": null
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-tags=pinkha_loaded_account_witness,pinkha_cutover_acceptance",
+        "-o",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/cutover-core.test",
+        "./core"
+      ],
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 2098839,
+      "processGroupAbsent": true,
+      "seconds": 717.797449350357,
+      "stopReason": null
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "actual-core-cutover",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/cutover-core.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=540s",
+        "-test.run=^TestPinkhaTorahCutoverActualCoreRegistryAndReopen$"
+      ],
+      "exitCode": 1,
+      "logSHA256": "65972857ddeae31d2e7ca8d0b523df5f4a26e7aa019ca4fee613eca91f39851f",
+      "pid": 2144207,
+      "processGroupAbsent": true,
+      "seconds": 10.025240898132324,
+      "stopReason": null
+    }
+  ],
+  "completedUTC": "2026-11-26T23:24:54Z",
+  "error": "AssertionError: core failed",
+  "generatedRPC": false,
+  "peerTransport": false,
+  "resourceAdmission": {
+    "cacheEstimateBytes": 402653184,
+    "cacheFreeBytes": 2439258112,
+    "rootFreeBytes": 7875706880,
+    "scratchEstimateBytes": 1610612736,
+    "stopsBelowBytes": 536870912
+  },
+  "sourceUnchanged": true,
+  "status": "FAIL",
+  "toolchainSHA256": "59c65090beeda377c09007eb8fae1c6aadf0a7b551e65ee13d461092d29e8005"
+}

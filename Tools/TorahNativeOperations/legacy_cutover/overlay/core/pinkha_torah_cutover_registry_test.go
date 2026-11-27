@@ -16,18 +16,21 @@ import (
 	"testing"
 	"time"
 
+	"github.com/anyproto/any-sync/app"
 	"github.com/gogo/protobuf/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/anyproto/anytype-heart/core/block/editor/torahops"
+	"github.com/anyproto/anytype-heart/core/domain"
 	"github.com/anyproto/anytype-heart/core/event"
 	"github.com/anyproto/anytype-heart/metrics"
 	"github.com/anyproto/anytype-heart/pb"
+	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
 	cutover "github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahcutovercontract"
 	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahcutoverroot"
 	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahopscontract"
-	"github.com/anyproto/anytype-heart/space/spacecore"
+	"github.com/anyproto/anytype-heart/space"
 )
 
 // This is one real LocalOnly account using the actual application, Space,
@@ -70,14 +73,14 @@ func TestPinkhaTorahCutoverActualCoreRegistryAndReopen(t *testing.T) {
 	require.NotEmpty(t, account.Id)
 	require.NotEmpty(t, account.Info.AccountSpaceId)
 	accountID, spaceID := account.Id, account.Info.AccountSpaceId
-	spaceService, ok := mw.GetApp().Component(spacecore.CName).(spacecore.SpaceCoreService)
-	require.True(t, ok)
+	spaceService, err := app.GetComponent[space.Service](mw.GetApp())
+	require.NoError(t, err)
 	spc, err := spaceService.Get(ctx, spaceID)
 	require.NoError(t, err)
 
 	textValue := func(s string) *types.Value { return &types.Value{Kind: &types.Value_StringValue{StringValue: s}} }
 	create := mw.ObjectCreate(ctx, &pb.RpcObjectCreateRequest{
-		SpaceId: spaceID, ObjectTypeUniqueKey: "page",
+		SpaceId: spaceID, ObjectTypeUniqueKey: domain.MustUniqueKey(coresb.SmartBlockTypeObjectType, "page").Marshal(),
 		Details: &types.Struct{Fields: map[string]*types.Value{"name": textValue("Cutover source")}},
 	})
 	require.NotNil(t, create)
@@ -337,6 +340,21 @@ func TestPinkhaTorahCutoverActualCoreRegistryAndReopen(t *testing.T) {
 	refused, err := mw.NativeTorahCutoverAssociationAppend(ctx, remove)
 	require.ErrorIs(t, err, cutover.ErrLegacyChanged)
 	require.Equal(t, torahops.NativeAppendResult{}, refused)
+	metadataRetry, err := mw.NativeTorahCutoverAppend(ctx, begin)
+	require.ErrorIs(t, err, cutover.ErrLegacyChanged)
+	require.Equal(t, torahops.CutoverNativeAppendResult{}, metadataRetry)
+	firstFact := plan.Facts[0]
+	firstFactID, err := firstFact.ID(spaceID, create.ObjectId)
+	require.NoError(t, err)
+	firstOperationID, err := cutover.ImportOperationID(planID, firstFactID, accountID)
+	require.NoError(t, err)
+	importRetry, err := mw.NativeTorahCutoverImport(ctx, PinkhaTorahCutoverOperationRequest{
+		PinkhaTorahCutoverReadRequest: req, PlanID: planID, FactID: firstFactID,
+		OperationID: firstOperationID, Kind: torahops.Add, BlockID: firstFact.BlockID,
+		Source:  torahops.Source{ProviderID: firstFact.ProviderID, CanonicalRef: firstFact.CanonicalRef},
+		Payload: bytes.Clone(firstFact.Payload)})
+	require.ErrorIs(t, err, cutover.ErrLegacyChanged)
+	require.Equal(t, torahops.NativeAppendResult{}, importRetry)
 	after, err := mw.NativeTorahCutoverRead(ctx, req)
 	require.NoError(t, err)
 	require.Equal(t, diverged, after)
@@ -350,6 +368,7 @@ func TestPinkhaTorahCutoverActualCoreRegistryAndReopen(t *testing.T) {
 		"incompleteImportSealsRefused": 2, "ordinaryV1ReaderRemainsCompatible": true,
 		"actualAccountStoppedAndReopened": true, "reopenUsesSameOSProcess": true,
 		"stoppedAccountReadAndWriteRefused": true, "olderPropertyWriterDivergenceVisible": true,
+		"divergedMetadataRetryRefused": true, "divergedImportRetryRefused": true,
 		"legacyPropertyRetained": true, "peerTransport": false, "generatedRPC": false, "appleUI": false,
 	}, "", "  ")
 	require.NoError(t, err)

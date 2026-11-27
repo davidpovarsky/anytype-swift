@@ -1,0 +1,89 @@
+{
+  "appleUI": false,
+  "binarySHA256": "2c3481861959cbb26f486617c25709e5781575b574593349dedc5fac0f55811f",
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-overlay",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt6/go-overlay.json",
+        "-tags=pinkha_loaded_account_witness,pinkha_cutover_acceptance",
+        "-o",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt6/cutover-core.test",
+        "./core"
+      ],
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 2316370,
+      "processGroupAbsent": true,
+      "seconds": 175.14618062973022,
+      "stopReason": null
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "actual-core-cutover",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt6/cutover-core.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=540s",
+        "-test.run=^TestPinkhaTorahCutoverActualCoreRegistryAndReopen$"
+      ],
+      "exitCode": 0,
+      "logSHA256": "8be39b75d2414543d649f2db8c3ed572ec99fcfcecc4307d54119efad9cba486",
+      "pid": 2328827,
+      "processGroupAbsent": true,
+      "seconds": 9.02873969078064,
+      "stopReason": null
+    }
+  ],
+  "completedUTC": "2026-11-27T00:12:34Z",
+  "controllerSHA256": "a628c87719170d2cc8fe05f92bb9cbf3ef4ada6ab849218cb30b6029e145b005",
+  "generatedRPC": false,
+  "methods": [
+    "TestPinkhaTorahCutoverActualCoreRegistryAndReopen"
+  ],
+  "nativeProof": {
+    "actualAccountStoppedAndReopened": true,
+    "appleUI": false,
+    "contract": "pinkha-actual-core-cutover-registry-v1",
+    "divergedImportRetryRefused": true,
+    "divergedMetadataRetryRefused": true,
+    "exactFrozenRetries": 4,
+    "finalUnlinkRetainsSeal": true,
+    "generatedRPC": false,
+    "incompleteImportSealsRefused": 2,
+    "legacyPropertyRetained": true,
+    "missingSourceReadCreatesNoRoots": true,
+    "olderPropertyWriterDivergenceVisible": true,
+    "omittedFactCreatesNoRoots": true,
+    "ordinaryV1ReaderRemainsCompatible": true,
+    "peerTransport": false,
+    "realAccounts": 1,
+    "realLegacyFacts": 2,
+    "reopenUsesSameOSProcess": true,
+    "signedMetadataRecords": 4,
+    "signedV1ImportClaims": 2,
+    "stoppedAccountReadAndWriteRefused": true
+  },
+  "nativeProofSHA256": "674c67e4837217686bcdc0c8ecc116212baeedbf323a8e5180aa8dd28d4475b1",
+  "peerTransport": false,
+  "resourceAdmission": {
+    "cacheFreeBytes": 1516240896,
+    "cacheStopsBelowBytes": 536870912,
+    "rootFreeBytes": 3008159744,
+    "rootStopsBelowBytes": 2147483648
+  },
+  "retainedBase": "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2",
+  "retainedSourceUnchanged": true,
+  "status": "PASS_ACTUAL_CORE_REGISTRY_NOT_RPC_PEER_OR_APPLE"
+}

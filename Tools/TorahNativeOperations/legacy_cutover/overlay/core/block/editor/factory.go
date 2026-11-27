@@ -305,7 +305,8 @@ func (f *ObjectFactory) New(space smartblock.Space, sbType coresb.SmartBlockType
 		if keys == nil {
 			return nil, fmt.Errorf("missing native account keys")
 		}
-		if sb.Type() == coresb.SmartBlockTypePinkhaTorahCutover {
+		// The SmartBlock source is assigned by Init; Type() is not available here.
+		if sbType == coresb.SmartBlockTypePinkhaTorahCutover {
 			return torahopsobject.NewCutover(sb, space, crdtDb, keys.SignKey), nil
 		}
 		return torahopsobject.New(sb, space, crdtDb, keys.SignKey), nil

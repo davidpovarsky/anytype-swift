@@ -123,8 +123,8 @@ func (mw *Middleware) NativeTorahCutoverSourceRead(ctx context.Context, req Pink
 	acl := spc.CommonSpace().Acl()
 	acl.RLock()
 	defer acl.RUnlock()
-	if !acl.AclState().Permissions(scope.key.GetPublic()).CanRead() {
-		return PinkhaTorahCutoverSourceSnapshot{}, list.ErrInsufficientPermissions
+	if err := torahops.AuthorizeHeldCurrentReadACL(acl, scope.key); err != nil {
+		return PinkhaTorahCutoverSourceSnapshot{}, err
 	}
 	value, heads, err := torahopsobject.ReadNativeCutoverSource(held, spc, req.ObjectID, req.PropertyKey)
 	if err = errors.Join(err, scope.current(held)); err != nil {
