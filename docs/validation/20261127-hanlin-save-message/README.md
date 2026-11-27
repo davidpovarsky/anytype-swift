@@ -54,6 +54,14 @@ references fail closed. Duplicate identical metadata is a no-op, not another
 append or native retry. The 262-event ceiling follows from four monotonic
 transitions for each of at most 65 effects, plus dispatch closure and readback.
 
+The final event envelope is bounded to 65,536 bytes. The accepted 64 native
+references of up to 256 UTF-8 bytes can expand past 32 KiB through JSON escaping;
+the larger bound includes the original root/reference/hash envelope without
+truncating a valid readback after native effects. Ordinary events remain subject
+to the original protected journal's tighter per-type cap. The store protocol
+also requires atomic `closeSaveMessageDispatch(for:)` under the same original
+owner; late observations can settle, while dispatch can never reopen.
+
 Required journal integration, owned by the SDK lane:
 
 1. Retain the original generic `PinkhaHanlinWriteJournal` reservation first.
@@ -111,13 +119,14 @@ integration worktree changes are part of this tranche.
 
 ## Verification
 
-`PinkhaHanlinSaveMessageStateTests` adds 21 real Swift XCTest methods against the
+`PinkhaHanlinSaveMessageStateTests` adds 23 real Swift XCTest methods against the
 production plan/state/record implementations. They cover exact input bytes,
 UTF-8 boundaries, strict schema, immutable scope/IDs, root-only incompleteness,
 serial effects, pre/post-dispatch cancellation, late original receipts,
 uncertain-effect no-retry, conflicting references, complete ordered readback,
-canonical event replay and metadata-only retention.
+canonical event replay, maximum escaped-reference receipt/replay, control-character
+reference refusal, and metadata-only retention.
 
-All 21 methods are **NOT_RUN**. No Oracle compiler, Mac build, native operation
+All 23 methods are **NOT_RUN**. No Oracle compiler, Mac build, native operation
 or simulator test was started. Mechanical source/diff evidence is recorded
 separately and must not be promoted to a Swift compilation or application pass.

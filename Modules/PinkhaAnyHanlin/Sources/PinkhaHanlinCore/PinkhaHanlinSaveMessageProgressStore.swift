@@ -9,6 +9,10 @@ public protocol PinkhaHanlinSaveMessageProgressStore: Actor {
     func reserveSaveMessage(_ initial: PinkhaHanlinSaveMessageProgress) async throws
     func advanceSaveMessage(_ expected: PinkhaHanlinSaveMessageProgress,
                             event: PinkhaHanlinSaveMessageProgress.Event) async throws -> PinkhaHanlinSaveMessageProgress
+    /// Atomically close the currently persisted aggregate under the ORIGINAL
+    /// journal lock. A pending cancellation cannot race a stale expected value.
+    /// Closing is irreversible; late original observations may still settle.
+    func closeSaveMessageDispatch(for identity: PinkhaHanlinWriteIdentity) async throws
 }
 
 /// A bounded, append-only metadata event. The store checks the expected state
@@ -16,6 +20,9 @@ public protocol PinkhaHanlinSaveMessageProgressStore: Actor {
 /// Loading replays every contiguous event against the retained initial manifest;
 /// missing/reordered/foreign/tampered bytes fail closed without rewriting history.
 public struct PinkhaHanlinSaveMessageProgressRecord: Codable, Equatable, Sendable {
+    /// The final witness may contain 64 exact 256-byte references. JSON escaping
+    /// can double those bytes before the envelope/root/hash fields are included.
+    public static let maximumEncodedBytes = 65_536
     public let version: Int
     public let identitySHA256: String
     public let manifestSHA256: String
@@ -62,13 +69,13 @@ public struct PinkhaHanlinSaveMessageProgressRecord: Codable, Equatable, Sendabl
             throw PinkhaHanlinSaveMessageError.invalidProgress
         }
         let bytes = try PinkhaHanlinSaveMessagePlan.canonicalBytes(self)
-        guard bytes.count <= 32_768 else { throw PinkhaHanlinSaveMessageError.invalidProgress }
+        guard bytes.count <= Self.maximumEncodedBytes else { throw PinkhaHanlinSaveMessageError.invalidProgress }
         return bytes
     }
 
     public static func decodeCanonical(_ bytes: Data,
                                       previous: PinkhaHanlinSaveMessageProgress) throws -> Self {
-        guard bytes.count <= 32_768 else { throw PinkhaHanlinSaveMessageError.invalidProgress }
+        guard bytes.count <= maximumEncodedBytes else { throw PinkhaHanlinSaveMessageError.invalidProgress }
         let result = try JSONDecoder().decode(Self.self, from: bytes)
         guard try result.canonicalBytes() == bytes else { throw PinkhaHanlinSaveMessageError.invalidProgress }
         _ = try result.replay(on: previous)
