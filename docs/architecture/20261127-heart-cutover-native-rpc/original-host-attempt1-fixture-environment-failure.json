@@ -1,0 +1,70 @@
+{
+  "appleUI": false,
+  "binaryPath": "/mnt/development/projects/caches/pinkha-e-cutover-rpc-host-attempt1-20261127/cutover-host.test",
+  "binarySHA256": "6cae941b74a4e6bc5187610e4c52ab8325c1ad4ad5bbb409f14c39c99ca502da",
+  "buildRoot": "/mnt/development/projects/caches/pinkha-e-cutover-rpc-host-attempt1-20261127",
+  "commands": [
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-overlay",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-host-attempt1/go-overlay.json",
+        "-tags=pinkha_loaded_account_witness,pinkha_cutover_acceptance",
+        "-o",
+        "/mnt/development/projects/caches/pinkha-e-cutover-rpc-host-attempt1-20261127/cutover-host.test",
+        "./core/block/editor/torahops"
+      ],
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 3023183,
+      "processGroupAbsent": true,
+      "seconds": 19.24917459487915,
+      "stopReason": null
+    },
+    {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "cutover-host",
+        "/mnt/development/projects/caches/pinkha-e-cutover-rpc-host-attempt1-20261127/cutover-host.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=540s",
+        "-test.run=^(TestCutoverNativeSignedPhasesUnlinkAndReopen|TestCutoverNativeTwoAuthorsRetainAllBindingsAndOlderWriterDiverges|TestCutoverNativeCurrentACLAndRetiredLeaseRefuseReadAndRetry|TestCutoverNativeLostACKRetainsOneSignedBeginAndLeaseBoundary)$"
+      ],
+      "exitCode": 1,
+      "logSHA256": "09b4cd71dad73977441a4f49db3609dd5dc3a7930433cfffdc52b9e969216fed",
+      "pid": 3024265,
+      "processGroupAbsent": true,
+      "seconds": 1.810032606124878,
+      "stopReason": null
+    }
+  ],
+  "completedUTC": "2026-11-27T03:23:38Z",
+  "controllerSHA256": "5f8ee0851af230a3239dadaacc93c9497e12ef358aebee4abab5ab15a279648c",
+  "error": "AssertionError: host failed",
+  "manifestSHA256": "b98c93ff11e492e173ca2a0b93548ed4cdfb275bb4b345bd82468e55c6e481ac",
+  "mode": "host",
+  "peerTransport": false,
+  "resourceAdmission": {
+    "buildFreeBytes": 5347409920,
+    "buildMustExceedBytes": 1610612736,
+    "cacheFreeBytes": 5347409920,
+    "cacheMustExceedBytes": 671088640,
+    "cacheStopsBelowBytes": 536870912,
+    "rootFreeBytes": 3633004544,
+    "rootMustExceedBytes": 2684354560,
+    "rootStopsBelowBytes": 2147483648
+  },
+  "retainedSource": "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/source",
+  "retainedSourceUnchanged": true,
+  "status": "FAIL"
+}

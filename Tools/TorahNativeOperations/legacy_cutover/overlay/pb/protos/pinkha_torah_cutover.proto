@@ -1,0 +1,209 @@
+syntax = "proto3";
+package anytype;
+option go_package = "cutoverpb";
+import "pb/protos/commands.proto";
+
+// Additive versioned native capability; no UI activation and no v1 replacement.
+// No request accepts an account key, author, root or permission as authority.
+message PinkhaTorahCutover {
+    message Scope {
+        uint32 protocolVersion = 1;
+        string spaceId = 2;
+        string objectId = 3;
+        string propertyKey = 4;
+    }
+    message SourceValue {
+        string key = 1;
+        bool present = 2;
+        bytes value = 3;
+    }
+    message SourceSnapshot {
+        SourceValue source = 1;
+        repeated string sourceHeads = 2;
+    }
+    message Fact {
+        string blockId = 1;
+        string providerId = 2;
+        string canonicalRef = 3;
+        bytes payload = 4;
+    }
+    message Plan {
+        uint32 version = 1;
+        string spaceId = 2;
+        string objectId = 3;
+        string propertyKey = 4;
+        bool valuePresent = 5;
+        bytes legacyValue = 6;
+        repeated Fact facts = 7;
+    }
+    message Binding {
+        string factId = 1;
+        string claimId = 2;
+    }
+    message NativeWitness {
+        string changeId = 1;
+        string creator = 2;
+        string aclHeadId = 3;
+    }
+    enum Kind {
+        KIND_UNSPECIFIED = 0;
+        BEGIN = 1;
+        IMPORT = 2;
+        SEAL = 3;
+    }
+    message RecordRequest {
+        Scope scope = 1;
+        string recordId = 2;
+        Kind kind = 3;
+        string planId = 4;
+        Plan plan = 5;
+        string factId = 6;
+        string importClaimId = 7;
+        repeated Binding imported = 8;
+        repeated string sourceHeads = 9;
+        // References only: native re-reads and verifies the actual signed v1
+        // changes under the current account/source/ACL lease before commit.
+        repeated NativeWitness nativeChanges = 10;
+        repeated string importRecords = 11;
+    }
+    message OperationRequest {
+        Scope scope = 1;
+        string planId = 2;
+        string factId = 3;
+        string operationId = 4;
+        Rpc.Pinkha.TorahOperations.Kind kind = 5;
+        string blockId = 6;
+        Rpc.Pinkha.TorahOperations.Source source = 7;
+        bytes payload = 8;
+        repeated string observedClaimIds = 9;
+    }
+    // Output only: the signer is always derived by native code.
+    message Record {
+        uint32 version = 1;
+        string spaceId = 2;
+        string objectId = 3;
+        string recordId = 4;
+        string authorId = 5;
+        Kind kind = 6;
+        string planId = 7;
+        Plan plan = 8;
+        string factId = 9;
+        string importClaimId = 10;
+        repeated Binding imported = 11;
+        repeated string sourceHeads = 12;
+        repeated NativeWitness nativeChanges = 13;
+        repeated string importRecords = 14;
+    }
+    message MetadataClaim {
+        string claimId = 1;
+        string digest = 2;
+        Record record = 3;
+    }
+    message MetadataResolution {
+        string recordId = 1;
+        bool conflict = 2;
+        repeated MetadataClaim claims = 3;
+    }
+    message NativeReceipt {
+        string id = 1;
+        string claimId = 2;
+        string changeId = 3;
+        string creator = 4;
+        string aclHeadId = 5;
+    }
+    message Issue {
+        string reason = 1;
+        string reference = 2;
+    }
+    message ImportBinding {
+        string factId = 1;
+        string claimId = 2;
+        repeated string metadataClaimIds = 3;
+    }
+    enum Status {
+        STATUS_UNSPECIFIED = 0;
+        LEGACY = 1;
+        PENDING = 2;
+        SEALED = 3;
+        DIVERGED = 4;
+        CONFLICTED = 5;
+    }
+    message State {
+        Status status = 1;
+        string planId = 2;
+        Plan plan = 3;
+        repeated ImportBinding imports = 4;
+        repeated string seals = 5;
+        repeated Issue pending = 6;
+        repeated Issue conflicts = 7;
+    }
+    message Snapshot {
+        State state = 1;
+        SourceValue source = 2;
+        repeated string sourceHeads = 3;
+        repeated string metadataHeads = 4;
+        repeated string operationHeads = 5;
+        uint64 metadataAppliedSeq = 6;
+        uint64 operationAppliedSeq = 7;
+        repeated MetadataClaim metadataClaims = 8;
+        repeated MetadataResolution metadataConflicts = 9;
+        repeated NativeReceipt metadataReceipts = 10;
+        repeated Rpc.Pinkha.TorahOperations.Claim originalClaims = 11;
+        repeated NativeReceipt originalReceipts = 12;
+        // Complete LOCAL native snapshot only; no acknowledgment of unseen peers.
+        bool completeLocal = 13;
+    }
+    message Error {
+        enum Code {
+            NULL = 0;
+            UNKNOWN_ERROR = 1;
+            BAD_INPUT = 2;
+            UNSUPPORTED_VERSION = 3;
+            PERMISSION_DENIED = 4;
+            NOT_LOGGED_IN = 5;
+            ACCOUNT_CHANGED = 6;
+            TARGET_STATE_UNAVAILABLE = 7;
+            HISTORY_UNAVAILABLE = 8;
+            PROJECTION_BEHIND = 9;
+            READ_LIMIT = 10;
+            CANCELLED = 11;
+            DEADLINE_EXCEEDED = 12;
+            COLLISION = 13;
+            INCOMPLETE = 14;
+            LEGACY_CHANGED = 15;
+            ALREADY_SEALED = 16;
+        }
+        Code code = 1;
+        // Constant labels: native errors may contain private identifiers.
+        string description = 2;
+        repeated Code issues = 3;
+    }
+    message SourceReadResponse {
+        Error error = 1;
+        uint32 protocolVersion = 2;
+        SourceSnapshot snapshot = 3;
+    }
+    message ReadResponse {
+        Error error = 1;
+        uint32 protocolVersion = 2;
+        Snapshot snapshot = 3;
+    }
+    message AppendReceipt {
+        Rpc.Pinkha.TorahOperations.Disposition disposition = 1;
+        string claimId = 2;
+        string changeId = 3;
+        MetadataResolution resolution = 4;
+    }
+    message AppendResponse {
+        Error error = 1;
+        uint32 protocolVersion = 2;
+        // Only durable identity/disposition may survive an error. Private
+        // resolution is absent after every failed native authority fence.
+        AppendReceipt receipt = 3;
+    }
+    message OperationResponse {
+        Error error = 1;
+        uint32 protocolVersion = 2;
+        Rpc.Pinkha.TorahOperations.AppendReceipt receipt = 3;
+    }
+}

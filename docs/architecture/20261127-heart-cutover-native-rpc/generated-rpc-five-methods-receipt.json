@@ -1,0 +1,269 @@
+{
+  "appleUI": false,
+  "binary": "/mnt/development/projects/caches/pinkha-e-cutover-rpc-core-attempt4-20261127/cutover-core.test",
+  "binaryRow": {
+    "bytes": 169023464,
+    "sha256": "7fad134ff4276fdd750df996bccd4a7d34472a213d9128b280cc8057f9278f51"
+  },
+  "commands": {
+    "compile": {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-c",
+        "-mod=readonly",
+        "-p",
+        "1",
+        "-overlay",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-core-attempt4/go-overlay.json",
+        "-tags=pinkha_loaded_account_witness,pinkha_cutover_acceptance",
+        "-o",
+        "/mnt/development/projects/caches/pinkha-e-cutover-rpc-core-attempt4-20261127/cutover-core.test",
+        "./core"
+      ],
+      "exitCode": 0,
+      "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "pid": 2888931,
+      "processGroupAbsent": true,
+      "seconds": 436.5738613605499,
+      "stopReason": null
+    },
+    "core": {
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "tool",
+        "test2json",
+        "-t",
+        "-p",
+        "cutover-core",
+        "/mnt/development/projects/caches/pinkha-e-cutover-rpc-core-attempt4-20261127/cutover-core.test",
+        "-test.v",
+        "-test.count=1",
+        "-test.timeout=540s",
+        "-test.run=^(TestPinkhaTorahCutoverWirePreservesFrozenIdentityAndCopies|TestPinkhaTorahCutoverGeneratedRPCRefusesUnloadedAccountAndVersions|TestPinkhaTorahCutoverWireFailureRetainsReceiptWithoutPrivateHistory|TestPinkhaTorahCutoverWireBoundRefusesWholeSnapshot|TestPinkhaTorahCutoverActualGeneratedRPCAndReopen)$"
+      ],
+      "exitCode": 0,
+      "logSHA256": "4d1837938270c0d851bf75a5527efc6f840401a7e269e806741e35dec11139f9",
+      "pid": 2906220,
+      "processGroupAbsent": true,
+      "seconds": 6.6479432582855225,
+      "stopReason": null
+    }
+  },
+  "completedUTC": "2026-11-27T03:06:36Z",
+  "controllerSHA256": "4f7bb323c6b9725c7f82716a15632113445dd023a17589edb31fd7c46109c24f",
+  "executedAgain": false,
+  "generatedRPCProof": {
+    "accountStopAndReopen": true,
+    "allFiveGeneratedMethodsExecuted": true,
+    "appleUI": false,
+    "contract": "pinkha-cutover-generated-grpc-v1",
+    "generatedGRPC": true,
+    "nativeSignersVerified": true,
+    "newProcessReopen": false,
+    "peerTransport": false,
+    "realAccounts": 1,
+    "realLegacyFacts": 2,
+    "sealedImportRetryIdempotent": true,
+    "signedMetadataRecords": 4,
+    "signedV1ImportClaims": 2,
+    "signedV1RemovalClaims": 1,
+    "sourceBytesRetained": true
+  },
+  "generatedRPCProofSHA256": "beaa21ed5a3fb3afdd9a52ee790331a17670a2eb49f215c8060550cb1a2a3d65",
+  "manifest": "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-crash-expectation-revision1/rpc-source-candidate.json",
+  "manifestSHA256": "75f44277c8c5b3f89c5f9e1ed28e443658dd38a72bd573edc18a95f61e42dd48",
+  "methodEventsSHA256": "7c23d57d4b6fe1bb2bc7e44422388aef45872e1669f8fba130e270fb5bdeba86",
+  "methods": [
+    "TestPinkhaTorahCutoverWirePreservesFrozenIdentityAndCopies",
+    "TestPinkhaTorahCutoverGeneratedRPCRefusesUnloadedAccountAndVersions",
+    "TestPinkhaTorahCutoverWireFailureRetainsReceiptWithoutPrivateHistory",
+    "TestPinkhaTorahCutoverWireBoundRefusesWholeSnapshot",
+    "TestPinkhaTorahCutoverActualGeneratedRPCAndReopen"
+  ],
+  "nativeCoreManifestSHA256": "0ea2bbfff9fd1faef02337ae247bb6706c5517c971d1346b762467b854782a20",
+  "nativeFrames": {
+    "association-append-request.pb": {
+      "bytes": 533,
+      "sha256": "05d90cca0ae661257632d1c236830b9ea41d13eb70041c9b469e0584ce02dfa1"
+    },
+    "association-append-response.pb": {
+      "bytes": 935,
+      "sha256": "66935104678f341548d3365eb3a664604558f163374c61aa66acb8466bf22b2a"
+    },
+    "begin-request.pb": {
+      "bytes": 4026,
+      "sha256": "c250fe01ef8f3f2785edc416f66b1503896fc54d05aa0f3328a82345f475f15b"
+    },
+    "begin-response.pb": {
+      "bytes": 4490,
+      "sha256": "56619dc6316cecfe13256d983a6dea164b1309b25311842862c9b6ee19eefa51"
+    },
+    "frozen-import-request.pb": {
+      "bytes": 1245,
+      "sha256": "0174229c7189c6ec08e931086c1b2eda12e54de659374645c7b9e536a9b65751"
+    },
+    "frozen-import-response.pb": {
+      "bytes": 1518,
+      "sha256": "ebfac1902422cca9b5a74586443c4f2d15b4bd6212502b5e0b00dac9bea4d3a9"
+    },
+    "sealed-unlinked-read-response.pb": {
+      "bytes": 19632,
+      "sha256": "b96ae4533991bb520916a9c5ec574ce5fe06173c1a66427026e3794f41ac5d59"
+    },
+    "source-read-response.pb": {
+      "bytes": 1805,
+      "sha256": "94b5d44ca40a3f01168436e7bf107bc894b470a6112805d6a5711f64bd36bef0"
+    }
+  },
+  "nativeFramesRoot": "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-core-attempt4/private/TestPinkhaTorahCutoverActualGeneratedRPCAndReopen",
+  "nativeGeneratedGRPC": true,
+  "originalOverallReceipt": "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-core-attempt4/receipt.json",
+  "originalOverallReceiptSHA256": "8dca23e931f9ae6d786008bf5ae7c0072331ffc7c17c500fd0ee86b2d3bf3a59",
+  "originalOverallStatus": "FAIL",
+  "originalSourcesAndFrozenInputsVerified": true,
+  "peerTransport": false,
+  "processCrashAcceptance": false,
+  "sameProcessAccountReopen": true,
+  "skips": 0,
+  "sourceBeforeManifestSHA256": "ccd8659be20d4f7e45ec311195be9211be79b1af17aa9f031374de4ca53ada28",
+  "sourceInputs": {
+    "clientlibrary/service/pinkha_torah_cutover_rpc_wire_test.go": {
+      "after": {
+        "bytes": 5424,
+        "sha256": "98d00608347c2d3ab3c954a585be1d542f178e92a759db4ebe8dfaeffa130af8"
+      },
+      "before": null
+    },
+    "clientlibrary/service/service.pb.go": {
+      "after": {
+        "bytes": 612495,
+        "sha256": "340c8834744f95b5476743e11b58818383893bd17d22f43dce94395762847237"
+      },
+      "before": {
+        "bytes": 603028,
+        "sha256": "59dcea52be20f141c5b54f895475a86842025c8c9ddeca727499b0e40c1b8b91"
+      }
+    },
+    "core/block/editor/factory.go": {
+      "after": {
+        "bytes": 13353,
+        "sha256": "f6a7f7e1e7187731229f8095f5980cc5bef46ece38271f11067b3a2a9436cd4b"
+      },
+      "before": {
+        "bytes": 13278,
+        "sha256": "1dd988a0727518ea91ac8cf25fee7e7e2c18937814f5739ca6ef7af378816882"
+      }
+    },
+    "core/block/editor/torahops/cutover_native_host.go": {
+      "after": {
+        "bytes": 16757,
+        "sha256": "2c5c0ea752139a14d75365702c9552d6bb3d683ae8c8ea118a8a0607d76682da"
+      },
+      "before": {
+        "bytes": 16749,
+        "sha256": "96874282e4e332cfee1207911c4e37d5a1bcae5c370ce3753088404e90237647"
+      }
+    },
+    "core/block/editor/torahops/cutover_native_operations.go": {
+      "after": {
+        "bytes": 5768,
+        "sha256": "cf8ffc3c87eea4d1beb0f8b078c7ec3ee6bae3a0722c998c1a215c21c58f99f8"
+      },
+      "before": {
+        "bytes": 5764,
+        "sha256": "dac1af78a7542b6f2d9d72bb9297af58199140bad65c590f9405de783e24d7da"
+      }
+    },
+    "core/block/editor/torahops/cutover_projection.go": {
+      "after": {
+        "bytes": 11830,
+        "sha256": "bf5f8452b2f52ac459938d34c97833e5059081238b9608e9a8bd0269e8164615"
+      },
+      "before": {
+        "bytes": 11381,
+        "sha256": "0804326995989deb461b1eba8f8b9e25ca4c3e4e7b9d3b90901b70b200f77858"
+      }
+    },
+    "core/pinkha_torah_cutover_crash_acceptance_test.go": {
+      "after": {
+        "bytes": 17520,
+        "sha256": "979f7d52cdd81250f89c204f52c8fe74cf0dcaa6a00b608126ad1af5a84756cc"
+      },
+      "before": null
+    },
+    "core/pinkha_torah_cutover_registry_test.go": {
+      "after": {
+        "bytes": 19646,
+        "sha256": "bd265a1f498448fd61426ca78165722c545044817aff8998c9b96087c01bc87d"
+      },
+      "before": {
+        "bytes": 18478,
+        "sha256": "aff39523e149eebbe40d405c7e4faca9a8b72c9bbf34ee2d9f345f1d79a07e52"
+      }
+    },
+    "core/pinkha_torah_cutover_rpc.go": {
+      "after": {
+        "bytes": 22072,
+        "sha256": "6a0ca15096120e383effec2d80813d17a3868f8a39d35940076ecf1b1ef9c945"
+      },
+      "before": null
+    },
+    "core/pinkha_torah_cutover_rpc_acceptance_test.go": {
+      "after": {
+        "bytes": 14562,
+        "sha256": "20f540c4b21d6ea4ffd4173a5698d67e5852eb23c4562021e1db0e7274d008ec"
+      },
+      "before": null
+    },
+    "core/pinkha_torah_cutover_rpc_test.go": {
+      "after": {
+        "bytes": 13302,
+        "sha256": "03cb900103da77e8c30d8bc7c109e1d69930237d291b1bec4bbf0a8c8e625290"
+      },
+      "before": null
+    },
+    "pb/cutoverpb/pinkha_torah_cutover.pb.go": {
+      "after": {
+        "bytes": 241921,
+        "sha256": "1583fb29dbfa061c3b0a7b2f4aae54eb0c32e2a43c4bf6c3968d349fd2459d05"
+      },
+      "before": null
+    },
+    "pb/cutoverpb/pinkha_torah_cutover_gomobile_aliases.go": {
+      "after": {
+        "bytes": 1321,
+        "sha256": "931e657c74668ff9937c488a803d1d9eac2cb5abae5685575ff0e8e80cee9f17"
+      },
+      "before": null
+    },
+    "pb/protos/pinkha_torah_cutover.proto": {
+      "after": {
+        "bytes": 6237,
+        "sha256": "e858be46d913b6ef209dfe2e86e839bf4d4b13dcd38757476c7990c8dc96e333"
+      },
+      "before": null
+    },
+    "pb/protos/service/service.proto": {
+      "after": {
+        "bytes": 48660,
+        "sha256": "5fb5bb7dc8da1eecd3d9264ecd381451c135be3f6b80a4c245709215e63e56af"
+      },
+      "before": {
+        "bytes": 47875,
+        "sha256": "76fb0fea3dc1e77e48853810ebb4521ed8c41965bea3761da3a5115d8ffb738e"
+      }
+    },
+    "pb/service/service.pb.go": {
+      "after": {
+        "bytes": 640863,
+        "sha256": "3f0aca03b16bfa7332148d630231dcddb2266263ab48850c72c1ee4900cfcac4"
+      },
+      "before": {
+        "bytes": 631025,
+        "sha256": "a901be3a394553934a5aebb80343de68ebf507643ba646e0cba0ac9fcc676ccc"
+      }
+    }
+  },
+  "status": "PASS_ACTUAL_GENERATED_GRPC_FIVE_METHODS_CRASH_PENDING"
+}

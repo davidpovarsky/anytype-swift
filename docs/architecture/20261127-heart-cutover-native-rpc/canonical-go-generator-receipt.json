@@ -1,0 +1,185 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/bin/protoc",
+        "--plugin=protoc-gen-gogofaster=/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation1/protoc-gen-gogofaster",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation2-isolated/inputs",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/source/heart",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/include",
+        "-I",
+        "/root/go/pkg/mod/github.com/anyproto/protobuf@v1.3.3-0.20240201225420-6e325cf0ac38",
+        "--gogofaster_out=Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/descriptor.proto=github.com/gogo/protobuf/protoc-gen-gogo/descriptor,Mmodel/protos/models.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mmodel/protos/export_report.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mmodel/protos/localstore.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mpb/protos/commands.proto=github.com/anyproto/anytype-heart/pb,Mpb/protos/events.proto=github.com/anyproto/anytype-heart/pb,Mpb/protos/pinkha_authorized_operation_read.proto=github.com/anyproto/anytype-heart/pb,Mpb/protos/pinkha_torah_cutover.proto=github.com/anyproto/anytype-heart/pb/cutoverpb:/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation2-isolated/messages",
+        "pb/protos/pinkha_torah_cutover.proto"
+      ],
+      "exitCode": 0,
+      "seconds": 1.022531270980835,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/bin/protoc",
+        "--plugin=protoc-gen-gogofaster=/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation1/protoc-gen-gogofaster",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation2-isolated/inputs",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/source/heart",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/include",
+        "-I",
+        "/root/go/pkg/mod/github.com/anyproto/protobuf@v1.3.3-0.20240201225420-6e325cf0ac38",
+        "--gogofaster_out=Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/descriptor.proto=github.com/gogo/protobuf/protoc-gen-gogo/descriptor,Mmodel/protos/models.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mmodel/protos/export_report.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mmodel/protos/localstore.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mpb/protos/commands.proto=github.com/anyproto/anytype-heart/pb,Mpb/protos/events.proto=github.com/anyproto/anytype-heart/pb,Mpb/protos/pinkha_authorized_operation_read.proto=github.com/anyproto/anytype-heart/pb,Mpb/protos/pinkha_torah_cutover.proto=github.com/anyproto/anytype-heart/pb/cutoverpb,plugins=grpc:/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation2-isolated/grpc",
+        "pb/protos/service/service.proto"
+      ],
+      "exitCode": 0,
+      "seconds": 1.1521353721618652,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/bin/protoc",
+        "--plugin=protoc-gen-gogofaster=/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation1/protoc-gen-gogofaster",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation2-isolated/inputs",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/source/heart",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/include",
+        "-I",
+        "/root/go/pkg/mod/github.com/anyproto/protobuf@v1.3.3-0.20240201225420-6e325cf0ac38",
+        "--gogofaster_out=Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/struct.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/descriptor.proto=github.com/gogo/protobuf/protoc-gen-gogo/descriptor,Mmodel/protos/models.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mmodel/protos/export_report.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mmodel/protos/localstore.proto=github.com/anyproto/anytype-heart/pkg/lib/pb/model,Mpb/protos/commands.proto=github.com/anyproto/anytype-heart/pb,Mpb/protos/events.proto=github.com/anyproto/anytype-heart/pb,Mpb/protos/pinkha_authorized_operation_read.proto=github.com/anyproto/anytype-heart/pb,Mpb/protos/pinkha_torah_cutover.proto=github.com/anyproto/anytype-heart/pb/cutoverpb,plugins=gomobile:/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation2-isolated/gomobile",
+        "pb/protos/service/service.proto"
+      ],
+      "exitCode": 0,
+      "seconds": 1.2030715942382812,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/bin/protoc",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-package-boundary-revision1/source",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/source/heart",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/include",
+        "-I",
+        "/root/go/pkg/mod/github.com/anyproto/protobuf@v1.3.3-0.20240201225420-6e325cf0ac38",
+        "--descriptor_set_out=/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation2-isolated/before.descriptor",
+        "pb/protos/pinkha_torah_cutover.proto"
+      ],
+      "exitCode": 0,
+      "seconds": 0.15845513343811035,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/bin/protoc",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/include",
+        "--decode=google.protobuf.FileDescriptorSet",
+        "google/protobuf/descriptor.proto"
+      ],
+      "exitCode": 0,
+      "seconds": 0.005594968795776367,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSHA256": "0d3d668b3a3813c7e0e203fd30fdcfd9c6818f3bf1b24b0ad5e5be69ba0b26bd"
+    },
+    {
+      "argv": [
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/bin/protoc",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation2-isolated/inputs",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/attempt2/source/heart",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/include",
+        "-I",
+        "/root/go/pkg/mod/github.com/anyproto/protobuf@v1.3.3-0.20240201225420-6e325cf0ac38",
+        "--descriptor_set_out=/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-generation2-isolated/after.descriptor",
+        "pb/protos/pinkha_torah_cutover.proto"
+      ],
+      "exitCode": 0,
+      "seconds": 0.09199285507202148,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/bin/protoc",
+        "-I",
+        "/var/tmp/pinkha-e-cutover-current8ac-20261127/rpc-toolchain/include",
+        "--decode=google.protobuf.FileDescriptorSet",
+        "google/protobuf/descriptor.proto"
+      ],
+      "exitCode": 0,
+      "seconds": 0.00714564323425293,
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdoutSHA256": "72dfdfb720162ba10e570cdf702601a66ee792528edd8799b30f3ca8ab719431"
+    }
+  ],
+  "completedUTC": "2026-11-27T01:59:02Z",
+  "controllerSHA256": "99c75b010d5f03507df18af6f8e5691ebaa4abc1cf62de7105ed2baafe13c7c6",
+  "descriptorIdentityPreservedExceptGoPackage": true,
+  "generatedFiles": {
+    "clientlibrary/service/service.pb.go": {
+      "bytes": 612495,
+      "sha256": "340c8834744f95b5476743e11b58818383893bd17d22f43dce94395762847237"
+    },
+    "pb/cutoverpb/pinkha_torah_cutover.pb.go": {
+      "bytes": 241921,
+      "sha256": "1583fb29dbfa061c3b0a7b2f4aae54eb0c32e2a43c4bf6c3968d349fd2459d05"
+    },
+    "pb/service/service.pb.go": {
+      "bytes": 640863,
+      "sha256": "3f0aca03b16bfa7332148d630231dcddb2266263ab48850c72c1ee4900cfcac4"
+    }
+  },
+  "generatorSHA256": "161c3a76448ad17ee12db3829179cdd7eeae0f5427d0042aadaa4ffdb7268b6d",
+  "goPackage": "github.com/anyproto/anytype-heart/pb/cutoverpb",
+  "nativeAcceptance": false,
+  "noOriginalPBImportCycle": true,
+  "originalPBPackageUnchanged": {
+    "pb/changes.pb.go": {
+      "bytes": 251298,
+      "sha256": "8cd42aca2e459f4f56cfd9e62f3cc757b41efe418463a01ad1ede42bcde58f7d"
+    },
+    "pb/commands.pb.go": {
+      "bytes": 8573392,
+      "sha256": "d4a4edbf0aabe1ad027bc43605961b512ef66265c6ac1e1ddc8479e98b10f111"
+    },
+    "pb/events.pb.go": {
+      "bytes": 1745048,
+      "sha256": "193176bcb802bf4ddee2184d32db05d51d9adcc6fc3965c84da0da8419b20e2e"
+    },
+    "pb/pinkha_authorized_operation_read.pb.go": {
+      "bytes": 81293,
+      "sha256": "ef1c19cc36146bfc3a3765881fb7df4aecede93af525383ff0d38d1e40f7266e"
+    },
+    "pb/snapshot.pb.go": {
+      "bytes": 28683,
+      "sha256": "1f7db6d8380e6ed78cae661da45771d70604ef56ac330a73140ecff538c534d0"
+    }
+  },
+  "protocSHA256": "aa609ec1d4b08375a140b1a42340684932cd2cd0cd56ffe8d791a72f9f3894bc",
+  "reusedCanonicalGeneratorReceiptSHA256": "0f8f5c1589eb9e37c327f883892b85c85b99ba40c4bade82441798c119de3b33",
+  "sourceInputs": {
+    "pb/protos/pinkha_torah_cutover.proto": {
+      "bytes": 6237,
+      "sha256": "e858be46d913b6ef209dfe2e86e839bf4d4b13dcd38757476c7990c8dc96e333"
+    },
+    "pb/protos/service/service.proto": {
+      "bytes": 48660,
+      "sha256": "5fb5bb7dc8da1eecd3d9264ecd381451c135be3f6b80a4c245709215e63e56af"
+    }
+  },
+  "status": "GENERATED_ISOLATED_GO_PACKAGE_NOT_NATIVE_ACCEPTANCE",
+  "supersededManifestSHA256": "74b2efd9a679a69e57e9a1d8b7e9288e1bdaab228c3b20b80e4193a72a1178e5"
+}
