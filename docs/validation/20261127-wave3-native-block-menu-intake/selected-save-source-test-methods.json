@@ -1,0 +1,193 @@
+{
+  "sourceCommit": "78ddc75fc23e39b96f75b0ed894c0b66152e5173",
+  "status": "SOURCE_ENUMERATION_ONLY_NOT_COMPILED_OR_EXECUTED",
+  "suites": [
+    {
+      "path": "AnyTypeTests/Pinkha/AnyHanlinAtomicSaveBodyTests.swift",
+      "suite": "AnyHanlinAtomicSaveBodyTests",
+      "sha256": "a3c93bdf05ac5815ba425820eb4341cbd4e718cee1866f1ca898bfec95c72c12",
+      "blob": "8d764769f7826792619e979e092381a4a810627d",
+      "methods": [
+        "testCompletedOriginalParserPlanUsesOneAtomicBodyAndExactRequestedBytes",
+        "testOriginalCorrelationBindsPageVersionNativeGenerationAndBodyWithoutRetryIdentity",
+        "testNativeACKMustBelongToExactOriginalRequestAndRetainsAllActualGroups",
+        "testOverLimitActualACKRemainsUnadmittedWithoutTruncatingItsFingerprint",
+        "testNormalizedNativeBytesAreDistinctFromInputButFullSemanticAndACKIdentityStillRequired"
+      ],
+      "count": 5
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/AnyHanlinWriteApprovalTests.swift",
+      "suite": "AnyHanlinWriteApprovalTests",
+      "sha256": "dcc0a4a9389e898ce401654e4c2502dd0a90ac49eb8be62515c214b2a9d95f27",
+      "blob": "eef73d270fc2c41adb579b45b433ba7eb5164e30",
+      "methods": [
+        "testTitleOnlyApprovalCannotAuthorizeBodyAndIsConsumedExactlyOnce",
+        "testBodyApprovalRejectsChangedBodyAccountAndRunBeforeConsumption"
+      ],
+      "count": 2
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/HanlinHostCancellationTests.swift",
+      "suite": "HanlinHostCancellationTests",
+      "sha256": "f04ceb44461c9d65cb014272b81c42bfda2ed101db7075f12f93e3104d2b10c9",
+      "blob": "85b239fb3cce56b41eb3489b48b7455882e9aa34",
+      "methods": [
+        "cancelledWorkerDrainsOriginalReceiptAfterAccountRevocation",
+        "committedReceiptDoesNotReleaseAnUnfinishedNativeWorker"
+      ],
+      "count": 2
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/HanlinSaveMessageConsentLayoutTests.swift",
+      "suite": "HanlinSaveMessageConsentLayoutTests",
+      "sha256": "5ff428642776f07d990e939ea86926ce67ad5da5c4f5871b44da7b4b8176bc96",
+      "blob": "2dfd8f343d630d8b1a855a851b81046b4fa7632c",
+      "methods": [
+        "maximumBodyKeepsOriginalCancelAndAllowVisible"
+      ],
+      "count": 1
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/HanlinSaveMessageJournalTests.swift",
+      "suite": "HanlinSaveMessageJournalTests",
+      "sha256": "022461a2186a54d4f2f8dacf5a4ade9fd1514227d2bf27d78667a21beaaf91d0",
+      "blob": "f3505cefef5ed3d23286c29c730b38a8ebe59421",
+      "methods": [
+        "originalReservationAndNamespaceAreRequired",
+        "rootAndIndividualBlocksCannotPrematurelyCommitBody",
+        "closeRaceRetainsLateOriginalReceiptWithoutReopeningDispatch",
+        "fullBodyReceiptAfterStopMayRefineOnlyTheOriginalJournal",
+        "missingOrTamperedEventFailsReopenWithoutRepairingEvidence",
+        "forgedRootOnlyCommittedFileCannotBypassAggregateOnReopen",
+        "exactKnownRootIdentityCannotChangeAcrossSidecars",
+        "accountRemovalRevokesProgressOwnerBeforeLateWrites",
+        "maximumAtomicACKAndBodySurviveOriginalProtectedReopenAfterStop"
+      ],
+      "count": 9
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/HanlinSaveMessageRouterTests.swift",
+      "suite": "HanlinSaveMessageRouterTests",
+      "sha256": "d0861a279c70473120b944668182fe4d35b76c949a97a2da6c1bfce865a9043c",
+      "blob": "ed982eb46b4791fff93094d61daa331d7dd977f2",
+      "methods": [
+        "absentBodyBindingNeverRoutesSaveToTitleOnlyCreation",
+        "bindingsCannotAdvertiseTheOtherWriteRoute",
+        "exactBodyReplayAndCrossRouteProviderIdentityStayBoundAfterCapabilityLoss",
+        "invalidOrOversizedBodyNeverReachesEitherWriteDelegate",
+        "cancelOrInvalidateJoinsOnlyOriginalSaveWorkerAfterAccountChange",
+        "accountChangeDuringSaveReadinessPreventsRouteClaim"
+      ],
+      "count": 6
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/HanlinSaveMessageWorkerTests.swift",
+      "suite": "HanlinSaveMessageWorkerTests",
+      "sha256": "d7efcbb4cd985b8126740c3c02f6dfe22b9340cd473eaaed17056b61f49c7dc3",
+      "blob": "fe53335c850334871c4990368133e7d16f83ac1f",
+      "methods": [
+        "stopDuringMetadataPreparationJoinsBeforeReleasingWorker",
+        "initialRecordRacingFirstCloseStillCannotAcquireNativeAuthority",
+        "stopAfterKnownRootPreventsAnotherEffectAndRetainsUncertainty",
+        "aggregateReceiptStillWaitsForOriginalNativeLease",
+        "failedMetadataPreparationConsumesNoApprovalAndDispatchesNothing"
+      ],
+      "count": 5
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PinkhaHanlinHeartSaveBodyTests.swift",
+      "suite": "PinkhaHanlinHeartSaveBodyTests",
+      "sha256": "9abd96a2819974b8df3922d9839c2262b9e8b40f10efd41fc6f93960404bee59",
+      "blob": "6561e472090e3e9bc767bad8afd67ba141ae8d4e",
+      "methods": [
+        "testOriginalHeartConverterPreservesStylesHebrewMarksListsAndCode",
+        "testEmptyCodeDoesNotInventCharactersOrFailNativeAttributeSegmentation",
+        "testNativeEquivalentMarkSegmentationPassesButSurrogateSplitFails",
+        "testActualChangedTextStyleMarksAndTitleCannotBecomeSuccessfulReceipt",
+        "testUnknownNativeFormattingForeignMarkerAndDifferentCodeLanguageRefuse",
+        "testNativeRootSpaceTypeAndSmartBlockKindRemainExact",
+        "testCompleteBodyRefusesExtraMissingReorderedOrphanAndDuplicateRows",
+        "testFreshPagePreconditionDoesNotHidePlaceholderOrBodyInHeader",
+        "testUnrepresentableHeartLanguageIsRefusedBeforeAnyNativeDispatch",
+        "testCanonicallyEquivalentButByteDifferentActualTextDoesNotPassReadback"
+      ],
+      "count": 10
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PinkhaHanlinSaveMessageConversionTests.swift",
+      "suite": "PinkhaHanlinSaveMessageConversionTests",
+      "sha256": "baab13206f3b80e9e79516de7f737b9323ac29ea147eca30d518727c56c4d4f0",
+      "blob": "7f6badb5a109239a2d99bffdc02f64617cc2cfbc",
+      "methods": [
+        "testOriginalParserPreservesHebrewFormattingUnicodeAndOrdinaryLink",
+        "testNativeRowsRoundTripAllSupportedBlockKindsAndCodeLanguage",
+        "testOriginalSoftAndHardBreakPresentationIsOneNewlineEach",
+        "testLiteralEscapesDoNotBecomeFormattingOrHTML",
+        "testUnsupportedStructuresFailBeforeAnyNativePlanCanEscape",
+        "testOriginalMathAndCitationAreRefusedRatherThanFlattened",
+        "testExactOriginalPlanProducesSameManifestAndMutationIDsTwice",
+        "testBlockCountRefusesWholeDocumentInsteadOfTruncating",
+        "testLongPlainSourceCoalescesRealNativeCharacterRunsWithoutLosingBytes",
+        "testWrongBodySameVisibleTextAndChangedStyleCannotVerify",
+        "testWrongTitleOrderAndExtraNativeBlockCannotVerify",
+        "testNativeHierarchyUnknownMetadataAndWrongSpaceAreNotFlattened",
+        "testExactUTF8SemanticDigestRejectsCanonicallyEquivalentChangedBody",
+        "testStyleRunSegmentationCoalescesButGapsAndSurrogateSplitsRefuse",
+        "testCompleteNativeReadbackIsStillNotACommittedAggregateWithoutEffects"
+      ],
+      "count": 15
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PinkhaHanlinSaveMessageStateTests.swift",
+      "suite": "PinkhaHanlinSaveMessageStateTests",
+      "sha256": "2529e62124010eb5c605bd275dc51f0fb47e2cd5dc164d6d17a191a334f3d810",
+      "blob": "bfa3ff9498b444f5c36b3195e4621d9dc8c29f8d",
+      "methods": [
+        "testExactTitleAndMarkdownBytesArePreserved",
+        "testBoundsUseUTF8BytesWithoutTruncation",
+        "testOnlyExactTwoStringArgumentsAreAccepted",
+        "testReadOnlyCASAndOldCreateAliasCannotBecomeMessageSave",
+        "testInputIdentityDoesNotNormalizeUnicodeOrConfuseTitleBodyBoundaries",
+        "testOriginalMutationIDsSurviveReplayAndDistinctIdenticalBlocksDoNotCollide",
+        "testManifestRejectsUnsupportedSizeAndChangedContent",
+        "testKnownOrVerifiedRootAloneNeverCompletesMessageSave",
+        "testOnlySequentialPreflightedBodyEffectsMayDispatch",
+        "testCancellationBeforeDispatchIsTerminalWithoutInventingAWrite",
+        "testCancellationKeepsLateNativeReceiptButCannotStartAnotherEffect",
+        "testLastDispatchedEffectMaySettleOriginalAggregateAfterCancellation",
+        "testUncertaintyNeverAuthorizesRootOrBlockRedispatch",
+        "testDuplicateNativeConfirmationIsMetadataNoOpAndCannotChangeDigest",
+        "testCompleteReadbackBindsManifestRootAndOrderedExactBlockReferences",
+        "testNativeReferenceCannotBeReusedForAnotherBodyBlockOrRoot",
+        "testKnownIDsWithWrongRootOrBlockContentCannotBecomeVerified",
+        "testSyntacticallyValidButWrongCompleteBodyDigestCannotCommit",
+        "testCanonicalEventReplayRejectsMissingReorderedOrForeignHistory",
+        "testCanonicalDecodeRejectsUnknownFieldsAndForeignOriginalIdentity",
+        "testProgressAndEventsDoNotPersistBusinessTitleOrMarkdown",
+        "testMaximumEscapedNativeReferencesFitBoundedFinalRecordAndReplayExactly",
+        "testControlBearingNativeReferencesAreRefusedBeforeReceiptEncoding",
+        "testConditionalBodyIsOneOperationWithoutSyntheticBlockEffects",
+        "testConditionalLostACKNeverCommitsMatchingBodyOrRedispatches",
+        "testConditionalACKAndReadbackMustMatchOriginalRequestAndSameNativeVersion",
+        "testConditionalCloseBlocksNewWriteButAllowsOriginalLateAcknowledgementAndReadback",
+        "testConditionalReadbackRequiresCompleteDistinctOrderedNativeReferences",
+        "testLegacyOrderedRecordsOmitEveryNewOptionalWireField",
+        "testConditionalOrdinaryEventsFitOriginalJournalBudgetAndReplay",
+        "testConditionalDispatchRequiresVerifiedRootAndValidOriginalVersion",
+        "testAtomicDigestOnlyACKCannotCertifyMatchingBodyOrLoseItsUncertainty",
+        "testMaximumEscapedAtomicACKAndWholeProgressFitReservedEnvelopesAndReplay",
+        "testAtomicACKRejectsCombinedOverflowDuplicateGroupsControlAndOversizedIDs",
+        "testAtomicACKRetainsOriginalMutationGroupsButFreshPageCannotCommitTheirEffects",
+        "testAtomicACKSurvivesClosedCanonicalReplayAndRejectsTamperedNativeIDs",
+        "testAtomicNormalizedReadbackRetainsActualDigestAndRequiresBoundedNativeBytes",
+        "testLedgerRetainsExactLateReceiptAcrossOneConcurrentDurableClose",
+        "testLedgerCloseRaceNeverRetriesANewNativeDispatch",
+        "testLedgerDoesNotRetryAConflictWithDifferentNativeProgress",
+        "testLedgerDoesNotRetryAnIOFailureOrInventPersistence",
+        "testLedgerRefusesStoreAcknowledgementForAnotherKnownObject"
+      ],
+      "count": 42
+    }
+  ]
+}

@@ -958,19 +958,29 @@ public final class AnyDocumentPresentation: Sendable {
     }
 
     public func addParagraph(before targetID: String? = nil) async {
+        await addTextBlock(.paragraph, before: targetID)
+    }
+
+    public func addTextBlock(_ kind: AnyNativeTextBlockKind, before targetID: String? = nil) async {
         let requestEpoch = epoch, diagnosticRequest = UUID()
-        recordEditorDiagnostic(.addParagraphEntered, request: diagnosticRequest, expectedOwner: requestEpoch)
+        if kind == .paragraph {
+            recordEditorDiagnostic(.addParagraphEntered, request: diagnosticRequest, expectedOwner: requestEpoch)
+        }
         do {
-            let id = try await createBlock(type: "paragraph", text: "", before: targetID,
+            let id = try await createBlock(kind: kind, text: "", before: targetID,
                                            direction: .natural, diagnosticRequest: diagnosticRequest)
             try requireMounted(requestEpoch)
             focusedBlockID = id; selectedBlockIDs = [id]; selectedTextRange = .init(location: 0, length: 0)
             surface?.reveal(blockID: id, selection: selectedTextRange)
-            AnyNativeEditorDiagnostics.record(.addParagraphCompleted, request: diagnosticRequest,
-                ownerMatches: requestEpoch == epoch, mounted: isMounted, active: lifetime.isActive, saving: saving)
+            if kind == .paragraph {
+                AnyNativeEditorDiagnostics.record(.addParagraphCompleted, request: diagnosticRequest,
+                    ownerMatches: requestEpoch == epoch, mounted: isMounted, active: lifetime.isActive, saving: saving)
+            }
         } catch {
-            recordEditorDiagnostic(.addParagraphFailed, request: diagnosticRequest, expectedOwner: requestEpoch,
-                                   errorType: String(reflecting: type(of: error)))
+            if kind == .paragraph {
+                recordEditorDiagnostic(.addParagraphFailed, request: diagnosticRequest, expectedOwner: requestEpoch,
+                                       errorType: String(reflecting: type(of: error)))
+            }
             guard requestEpoch == epoch, lifetime.isActive else { return }
             message = AnyUIErrorText.describe(error)
         }
@@ -982,11 +992,11 @@ public final class AnyDocumentPresentation: Sendable {
         // Markdown escaping changes storage syntax only. The visible editable
         // quote remains precisely the provider's text; citation is metadata.
         let text = AnyInlineMarkdown.escapeLiteral(transfer.text)
-        return try await createBlock(type: "quote", text: text, before: targetID, direction: direction,
+        return try await createBlock(kind: .quote, text: text, before: targetID, direction: direction,
                                      untargetedPlacement: .afterLastVisibleBlock)
     }
 
-    private func createBlock(type: String, text: String, before targetID: String?,
+    private func createBlock(kind: AnyNativeTextBlockKind, text: String, before targetID: String?,
                              direction: AnyWritingDirection,
                              untargetedPlacement: AnyNativeBlockInsertionPolicy = .endOfRoot,
                              diagnosticRequest: UUID = UUID()) async throws -> String {
@@ -1011,9 +1021,8 @@ public final class AnyDocumentPresentation: Sendable {
                 policy: targetID.map(AnyNativeBlockInsertionPolicy.beforeBlock) ?? untargetedPlacement)
             let intent = try AnyNativeBlockCreationIntent(workspace: lease.workspace,
                 mutationID: UUID().uuidString.replacingOccurrences(of: "-", with: "").lowercased(),
-                objectID: objectID, type: type, text: text,
-                style: .object(["pinkhaWritingDirection": .string(direction.rawValue),
-                                "pinkhaTextAlignment": .string("natural")]),
+                objectID: objectID, type: kind.nativeType, text: text,
+                style: kind.initialNativeStyle(direction: direction),
                 parentID: placement.parentID, position: placement.position)
             let id = try await blocks.ensureBlock(intent) {
                 try await lease.validate(); try await authorize()

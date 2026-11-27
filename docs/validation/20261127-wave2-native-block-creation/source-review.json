@@ -1,0 +1,32 @@
+{
+  "schema": "pinkha-independent-source-review-v1",
+  "reviewer": "/root/torah_continue",
+  "reviewedAtUTC": "2026-11-27T03:48:00.280601+00:00",
+  "scope": "Six-file UI-only native Add block candidate; actor/API/lifecycle and Inspector quote preservation",
+  "candidateSHA256": {
+    "AnyDocumentPresentation.swift": "422eed9e20b72f673e7b2b3fed303a314c2bd402ae2fd3cf74bd2d4f7727b67a",
+    "AnyNativeBlockCreationMenu.swift": "4e76920ba0d9bc24aba432c681c771ed90b77bda1497bde3f70f1ccc6401a512",
+    "AnyNativeDocumentView.swift": "8a2a18ad56ac7fde85223bf24bc8c104204e2031eddf9548ad810832aa8a673f",
+    "AnyNativeEditor.swift": "26a3876cab8926445449c07542d5ebdda01e6eaf33ee0cc27fd03d072540ec61",
+    "AnyNativeTextBlockCreationTests.swift": "e36af9a049013d2e19453849170ee2deac65d189d1c9603cf75c3f47b71a037e",
+    "AnyNativeTextBlockKind.swift": "61f1fe2d2d2a282dd846279db9be519c00628bf6d2b2f4771bb52350ec889275"
+  },
+  "additionalSources": [
+    "source/AnyNativeBlockCreator.swift",
+    "source/AnyNativeBlockMarkerPolicy.swift",
+    "source/AnyHeartTextBlockPlan.swift",
+    "source/AnyNativeTextRenderer.swift",
+    "source/AnyEditorSnapshot.swift"
+  ],
+  "blockers": [],
+  "observations": [
+    "AnyNativeTextBlockKind is Sendable and maps only native types admitted by the unchanged creation intent.",
+    "Document/per-block menus call the same guarded mutation path; actual authority checks, protected creator journal, current snapshot placement and native readback remain intact.",
+    "Paragraph diagnostics retain original conditions and payload; quote retains exact escaped provider text, provider direction, natural alignment and afterLastVisibleBlock placement.",
+    "Native marker/import field keys agree with the new catalog. Distinct heading levels and list variants have distinct intent fingerprints."
+  ],
+  "limitations": [
+    "Source review only; no Apple typecheck, Swift/XCTest, simulator, native service or visual execution.",
+    "Existing AnyNativeEditor.attributed selects title2 for every heading regardless of style.level; new stored heading levels do not yet have different base font sizes in this renderer. Code also starts at the existing body font before run traits. This is a source-observed presentation limitation, not a runtime finding."
+  ]
+}

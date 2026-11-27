@@ -1,0 +1,144 @@
+{
+  "status": "PASS_SOURCE_REVIEW_AND_RETAINED_COMPONENT_EVIDENCE_NOT_APP_NATIVE_OR_UI",
+  "commit": "dc582ba3239d6dcb66dbe1f7098b95349e4289f9",
+  "base": "8f2c11713fb8a40ae13444104723666ffef68afe",
+  "sourceFiles": [
+    {
+      "bytes": 70688,
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "sha256": "422eed9e20b72f673e7b2b3fed303a314c2bd402ae2fd3cf74bd2d4f7727b67a"
+    },
+    {
+      "bytes": 2965,
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeBlockCreationMenu.swift",
+      "sha256": "4e76920ba0d9bc24aba432c681c771ed90b77bda1497bde3f70f1ccc6401a512"
+    },
+    {
+      "bytes": 35813,
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "sha256": "8a2a18ad56ac7fde85223bf24bc8c104204e2031eddf9548ad810832aa8a673f"
+    },
+    {
+      "bytes": 60586,
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "sha256": "26a3876cab8926445449c07542d5ebdda01e6eaf33ee0cc27fd03d072540ec61"
+    },
+    {
+      "bytes": 3728,
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextBlockCreationTests.swift",
+      "sha256": "e36af9a049013d2e19453849170ee2deac65d189d1c9603cf75c3f47b71a037e"
+    },
+    {
+      "bytes": 1837,
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextBlockKind.swift",
+      "sha256": "61f1fe2d2d2a282dd846279db9be519c00628bf6d2b2f4771bb52350ec889275"
+    }
+  ],
+  "mapDeltas": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "beforeBlob": "20a13dc636cd2ecb87728b372f354dff62283ab5",
+      "afterBlob": "f9cc5b324ec9e3d965aac5ea185beb7a1296c08a",
+      "literalInverseHunks": 3
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "beforeBlob": "c17d56043c72a9b761a2ec85ebd8584c4a66df08",
+      "afterBlob": "1c7a14c636e2908012fdac88e1264f164d212b3e",
+      "literalInverseHunks": 1
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "beforeBlob": "aac4d8b633a14396a63f114f208fb1649757388b",
+      "afterBlob": "998963f82b9fc9bd68216d993fd63ea21018f6a6",
+      "literalInverseHunks": 1
+    }
+  ],
+  "componentReceiptSHA256": "bbf101c3821fafca51f6d6e9a0bef009f1f415ff935ab4e2606ca0feb599e231",
+  "originalEightArtifactHashesMatch": true,
+  "compilerLogSHA256": "8bb77a450e3799dc35d240354d356aff75d3b8c62c54d217481c749380c5568d",
+  "compilerInputReferences": [
+    {
+      "lineNumber": 4621,
+      "lineSHA256": "f0f28e03cc070dae09bb245e8a65575f0b7703b5a328c4b5c12918663750d248",
+      "fileList": [
+        "/var/lib/pinkha-wave2-native-block-menu-20261127/build/out/Intermediates.noindex/PinkhaNativeBlockCreationComponent.build/Debug-linux-aarch64/PinkhaAnyUI-t.build/Objects-normal/aarch64/PinkhaAnyUI.SwiftFileList"
+      ],
+      "module": "PinkhaAnyUI"
+    },
+    {
+      "lineNumber": 4685,
+      "lineSHA256": "19d06dfe9d0aed74a2fbe5b198f52b2ae0fc3627a739f8335bd5947568a4bb10",
+      "fileList": [
+        "/var/lib/pinkha-wave2-native-block-menu-20261127/build/out/Intermediates.noindex/PinkhaNativeBlockCreationComponent.build/Debug-linux-aarch64/PinkhaAnyUITests-p.build/Objects-normal/aarch64/PinkhaAnyUITests.SwiftFileList"
+      ],
+      "module": "PinkhaAnyUITests"
+    }
+  ],
+  "componentMethods": [
+    "existingParagraphAndInspectorQuoteKeepTheirOriginalStyleCarrier",
+    "distinctChoicesRoundTripThroughNativeIntentAndExistingDisplayPolicies"
+  ],
+  "scope": "LINUX_ACTUAL_MODEL_WITH_COMPLETE_ORIGINAL_DEPENDENCIES",
+  "resolvedPackages": {
+    "originHash": "53d8a7d55d88531271b0d830cecda060ac0499eedbf848ab1ad211ab7dc287df",
+    "pins": [
+      {
+        "identity": "swift-asn1",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-asn1.git",
+        "state": {
+          "revision": "97fd57437fc94cfa6b62f2b8f84c50f433534e17",
+          "version": "1.7.5"
+        }
+      },
+      {
+        "identity": "swift-crypto",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-crypto.git",
+        "state": {
+          "revision": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+          "version": "3.12.3"
+        }
+      },
+      {
+        "identity": "torahinspectorkit",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/davidpovarsky/TorahInspectorKit.git",
+        "state": {
+          "revision": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed"
+        }
+      }
+    ],
+    "version": 3
+  },
+  "newCompilerCalls": 0,
+  "newNativeCalls": 0,
+  "newTestsExecuted": 0,
+  "AppleCompilation": "NOT_RUN",
+  "native8ac": "NOT_RUN",
+  "UI": "NOT_RUN",
+  "readonlyOriginalDependencyAudit": {
+    "path": "original-readonly-dependency-audit.json",
+    "sha256": "f88f8b379ae4afd92de5a4de36294411233d4e54ec8545b9a51553b45e97c2ad",
+    "result": {
+      "status": "PASS_READ_ONLY_EXACT_370_DEPENDENCY_GIT_BLOBS",
+      "donor": "dc582ba3239d6dcb66dbe1f7098b95349e4289f9",
+      "base": "8f2c11713fb8a40ae13444104723666ffef68afe",
+      "manifestSHA256": "67c6696b3d3e760553acd6a9d493cb6190c8093e702fef1d8c2a8ae96a5f9f08",
+      "closedFileCount": 370,
+      "bytesRead": 3562204,
+      "compilerCalls": 0,
+      "nativeCalls": 0,
+      "mutations": 0
+    }
+  },
+  "reviewFindings": [
+    "No concrete source blocker found in the six-file product/test delta.",
+    "All original paragraph/Inspector quote style carriers, escaping, direction, placement, lease, mounted-owner, write capability, journal and full readback flow retained.",
+    "Three modified file literal inverses restore exact8f2 preimages; all shared catalog blobs match source map.",
+    "Actual original component has two passed methods, zero native calls; four Apple UI files explicitly excluded.",
+    "Crypto3.12.3/ASN1 1.7.5 component resolution is not asserted equal to the Apple lock.",
+    "Native8ac styled creation/menu/focus/save/cold/visual behavior remains unqualified."
+  ]
+}

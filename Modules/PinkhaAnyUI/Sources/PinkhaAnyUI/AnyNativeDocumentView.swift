@@ -106,6 +106,7 @@ public struct AnyNativeDocumentView: View {
                         presentation.recordEditorDiagnostic(.menuButtonTapped)
                         Task { await presentation.addParagraph() }
                     }.disabled(!presentation.canMutate)
+                    AnyNativeBlockCreationMenu(presentation: presentation)
                     Button(AnyUIErrorText.text("כתיבה מימין לשמאל", "Right to left")) {
                         Task { await presentation.setWritingStyle(direction: .rightToLeft, alignment: .natural) }
                     }.disabled(presentation.selectedBlockIDs.isEmpty || !presentation.canMutate)

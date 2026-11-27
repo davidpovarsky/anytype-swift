@@ -1,0 +1,140 @@
+{
+  "AppleCompilation": "NOT_RUN",
+  "UIAcceptance": "NOT_RUN",
+  "argv": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/var/lib/pinkha-wave2-native-block-menu-20261127/component",
+    "--scratch-path",
+    "/var/lib/pinkha-wave2-native-block-menu-20261127/build",
+    "--cache-path",
+    "/var/lib/pinkha-wave2-native-block-menu-20261127/cache",
+    "--jobs",
+    "2",
+    "--no-parallel",
+    "--disable-experimental-prebuilts",
+    "-v",
+    "--filter",
+    "AnyNativeTextBlockCreationTests"
+  ],
+  "artifacts": [
+    {
+      "bytes": 915,
+      "path": "/var/lib/pinkha-wave2-native-block-menu-20261127/attempt1/Package.resolved",
+      "sha256": "dd338df7aba015276d48f10bba2f6ad2487a21417e4e5b23116db94366926a4e"
+    },
+    {
+      "bytes": 2135,
+      "path": "/var/lib/pinkha-wave2-native-block-menu-20261127/attempt1/component-source-envelope.json",
+      "sha256": "bb4433aa90612a0fe478b99bd4fe8e06a6c274686497be8b73a8c9a5bea5be48"
+    },
+    {
+      "bytes": 78696,
+      "path": "/var/lib/pinkha-wave2-native-block-menu-20261127/attempt1/dependency-sources-after.json",
+      "sha256": "67c6696b3d3e760553acd6a9d493cb6190c8093e702fef1d8c2a8ae96a5f9f08"
+    },
+    {
+      "bytes": 78696,
+      "path": "/var/lib/pinkha-wave2-native-block-menu-20261127/attempt1/dependency-sources-before.json",
+      "sha256": "67c6696b3d3e760553acd6a9d493cb6190c8093e702fef1d8c2a8ae96a5f9f08"
+    },
+    {
+      "bytes": 632,
+      "path": "/var/lib/pinkha-wave2-native-block-menu-20261127/attempt1/invocation.json",
+      "sha256": "ce148a3d896b55582954d0105c390814807e4c2def8d81e5350b60374da4c562"
+    },
+    {
+      "bytes": 102,
+      "path": "/var/lib/pinkha-wave2-native-block-menu-20261127/attempt1/process.json",
+      "sha256": "cf563e6b3b4f35de874a7312ccc1c359f5e29ece840aa358d9530e3cf535ce5d"
+    },
+    {
+      "bytes": 1180676,
+      "path": "/var/lib/pinkha-wave2-native-block-menu-20261127/attempt1/stderr.log",
+      "sha256": "8bb77a450e3799dc35d240354d356aff75d3b8c62c54d217481c749380c5568d"
+    },
+    {
+      "bytes": 1033,
+      "path": "/var/lib/pinkha-wave2-native-block-menu-20261127/attempt1/stdout.log",
+      "sha256": "15912778ae3cb7febb75cdee55db19e7fe0040b81f736040ffcbfd52bbcc555f"
+    }
+  ],
+  "baseCommit": "8f2c11713fb8a40ae13444104723666ffef68afe",
+  "cachePath": "/var/lib/pinkha-wave2-native-block-menu-20261127/cache",
+  "componentPackage": "/var/lib/pinkha-wave2-native-block-menu-20261127/component",
+  "dependencyCheckouts": [
+    {
+      "head": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+      "path": "/var/lib/pinkha-wave2-native-block-menu-20261127/build/checkouts/TorahInspectorKit",
+      "trackedClean": true
+    },
+    {
+      "head": "97fd57437fc94cfa6b62f2b8f84c50f433534e17",
+      "path": "/var/lib/pinkha-wave2-native-block-menu-20261127/build/checkouts/swift-asn1",
+      "trackedClean": true
+    },
+    {
+      "head": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+      "path": "/var/lib/pinkha-wave2-native-block-menu-20261127/build/checkouts/swift-crypto",
+      "trackedClean": true
+    }
+  ],
+  "dependencyTransformations": [],
+  "diskFreeBytes": 2261323776,
+  "elapsedSeconds": 379.55,
+  "finishedAtUTC": "2026-11-27T04:11:05.301934+00:00",
+  "methodNames": [
+    "existingParagraphAndInspectorQuoteKeepTheirOriginalStyleCarrier",
+    "distinctChoicesRoundTripThroughNativeIntentAndExistingDisplayPolicies"
+  ],
+  "native8acRuntime": "NOT_RUN",
+  "observedTestPassLines": [
+    "\u2714 Test existingParagraphAndInspectorQuoteKeepTheirOriginalStyleCarrier() passed after 0.002 seconds.",
+    "\u2714 Test distinctChoicesRoundTripThroughNativeIntentAndExistingDisplayPolicies() passed after 0.106 seconds."
+  ],
+  "processExit": 0,
+  "productSourceMutatedByRunner": false,
+  "resolvedPackages": {
+    "originHash": "53d8a7d55d88531271b0d830cecda060ac0499eedbf848ab1ad211ab7dc287df",
+    "pins": [
+      {
+        "identity": "swift-asn1",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-asn1.git",
+        "state": {
+          "revision": "97fd57437fc94cfa6b62f2b8f84c50f433534e17",
+          "version": "1.7.5"
+        }
+      },
+      {
+        "identity": "swift-crypto",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/apple/swift-crypto.git",
+        "state": {
+          "revision": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+          "version": "3.12.3"
+        }
+      },
+      {
+        "identity": "torahinspectorkit",
+        "kind": "remoteSourceControl",
+        "location": "https://github.com/davidpovarsky/TorahInspectorKit.git",
+        "state": {
+          "revision": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed"
+        }
+      }
+    ],
+    "version": 3
+  },
+  "runnerPath": "/var/lib/sentinelx/uploads/wave2-native-block-menu-component-20261127.py",
+  "runnerSHA256": "dd2d6047f4affbe17b18600daf7638ea154bb447df9167c3cd288637fcd9c7c4",
+  "schema": "pinkha-native-block-creation-component-v1",
+  "scope": "LINUX_ACTUAL_MODEL_WITH_COMPLETE_ORIGINAL_DEPENDENCIES",
+  "scratchPath": "/var/lib/pinkha-wave2-native-block-menu-20261127/build",
+  "sourceTransformations": [],
+  "startedAtUTC": "2026-11-27T04:04:45.751640+00:00",
+  "status": "PASS_COMPONENT_2_METHODS_NOT_APP_OR_NATIVE_ACCEPTANCE",
+  "toolchain": "Swift version 6.4.3 (swift-6.4.3-RELEASE)\nTarget: aarch64-unknown-linux-gnu",
+  "worktree": "/mnt/development/projects/worktrees/anytype-wave2-native-block-menu-20261127"
+}

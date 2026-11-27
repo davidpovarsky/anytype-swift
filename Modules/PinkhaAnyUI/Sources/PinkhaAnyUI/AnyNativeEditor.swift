@@ -808,7 +808,8 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
             },
             UIAction(title: AnyUIErrorText.text("הוספת פסקה לפני", "Add paragraph before"), image: UIImage(systemName: "plus")) { [weak presentation] _ in
                 Task { await presentation?.addParagraph(before: id) }
-            }
+            },
+            AnyNativeBlockCreationMenu.before(id, presentation: presentation)
         ])
     }
 
