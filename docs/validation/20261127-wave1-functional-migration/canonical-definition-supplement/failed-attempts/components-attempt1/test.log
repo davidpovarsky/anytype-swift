@@ -1,0 +1,92 @@
+Building for debugging...
+[Computing dependencies]
+[Provisioning 1 / 20]
+[Constructing description]
+[Pre-planning 1 / 421]
+[Planning 127 / 421]
+[Planning 296 / 421]
+[Planning deferred tasks]
+[Constructing 102 / 1251]
+[Constructing 399 / 1251]
+[Starting]
+[1 / 5] PinkhaAnyHostTests-product
+[1 / 14] PinkhaKit
+[3 / 32] TorahInspectorCore
+[5 / 21] PinkhaKit_PinkhaKit
+[5 / 19] PinkhaAnyHost
+[7 / 21] PinkhaAnyHost
+[9 / 25] PinkhaAnyHost
+[11 / 25] PinkhaAnyHost
+[12 / 25] PinkhaAnyHost
+[15 / 28] PinkhaAnyHostTests-product
+[17 / 32] PinkhaAnyHostTests-product
+[18 / 32] PinkhaAnyHostTests-product
+[19 / 32] PinkhaAnyHostTests-product
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeBookmarkTests.swift:110:24: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m108 |[0;0m             guard current == component else { throw AnyDestinationMigrationError.changedSource }
+[0;36m109 |[0;0m         }
+[0;36m110 |[0;0m         let executor = try AnyDestinationMigrationExecutor(client: client, journalDirectory: journal)
+    [0;36m|[0;0m                        `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m111 |[0;0m         let progress = try await executor.execute(plan: plan,
+[0;36m112 |[0;0m             payloads: { _ in throw BookmarkNativeFailure.unexpectedPayload },
+
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeIdentityTests.swift:146:30: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m144 |[0;0m                 "spaceID": .string(space), "typeID": .string(type), "exactNativeQueryCount": .integer(1)]))
+[0;36m145 |[0;0m         }
+[0;36m146 |[0;0m         let descriptorRows = try bindings.map { binding -> AnyJSON in
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m147 |[0;0m             .object(["propertyID": .string(binding.propertyID), "nativeContract": .string(binding.nativeContract),
+[0;36m148 |[0;0m                      "nativeDescriptorSHA256": .string(binding.nativeDescriptorSHA256),
+
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeTypeOrderTests.swift:104:24: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m102 |[0;0m         }
+[0;36m103 |[0;0m         try require(plan.binding.workspace == workspace && plan.items.count == 6)
+[0;36m104 |[0;0m         let executor = try AnyDestinationMigrationExecutor(client: client, journalDirectory: journal)
+    [0;36m|[0;0m                        `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m105 |[0;0m         let progress = try await executor.execute(plan: plan,
+[0;36m106 |[0;0m             payloads: { _ in throw TypeOrderNativeFailure.unexpectedPayload },
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[23 / 32] PinkhaAnyHostTests-product
+[24 / 32] PinkhaAnyHost
+[26 / 32] PinkhaAnyHost
+[26 / 32] PinkhaAnyHostTests-product
+[26 / 33] PinkhaAnyHostTests-product
+[29 / 33] PinkhaAnyHostTests-product
+[30 / 33] PinkhaAnyHostTests-product
+[31 / 33] PinkhaAnyHostTests-test-runner
+[32 / 34] PinkhaAnyHostTests-test-runner
+[34 / 36] PinkhaAnyHostTests-test-runner
+[37 / 38] PinkhaAnyHostTests-test-runner
+[38 / 38] PinkhaAnyHostTests-test-runner
+[40 / 46] pinkha-any-host-probe-product
+[41 / 46] PinkhaAnyHostTests-test-runner
+[43 / 47] PinkhaAnyHostTests-test-runner
+[45 / 47] pinkha-any-host-probe-product
+[45 / 47] PinkhaAnyHostTests-test-runner
+[46 / 49] pinkha-any-host-probe-product
+[49 / 49] pinkha-any-host-probe-product
+warning: no rule to process file '/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Editor/Resources/PinkhaSemanticAnchors.xcstrings' of type 'text.json.xcstrings' for architecture 'aarch64'
+Build complete! (168.66 secs)
+Test Suite 'Selected tests' started at 2026-11-27 03:47:27.747
+Test Suite 'NativeCanonicalDefinitionSupplementTests' started at 2026-11-27 03:47:27.750
+Test Case 'NativeCanonicalDefinitionSupplementTests.testEightOriginalCanonicalDefinitionsRetainEvidenceAndDistinctValueSemantics' started at 2026-11-27 03:47:27.750
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift:26: error: NativeCanonicalDefinitionSupplementTests.testEightOriginalCanonicalDefinitionsRetainEvidenceAndDistinctValueSemantics : XCTAssertEqual failed: ("object(["description": PinkhaAnyEngine.AnyJSON.string("Display description."), "required": PinkhaAnyEngine.AnyJSON.array([]), "name": PinkhaAnyEngine.AnyJSON.string("Description"), "scope": PinkhaAnyEngine.AnyJSON.string("synced"), "id": PinkhaAnyEngine.AnyJSON.string("description"), "meta": PinkhaAnyEngine.AnyJSON.object([:]), "xKey": PinkhaAnyEngine.AnyJSON.string(""), "xFormat": PinkhaAnyEngine.AnyJSON.object(["type": PinkhaAnyEngine.AnyJSON.string("longtext")]), "properties": PinkhaAnyEngine.AnyJSON.array([]), "kind": PinkhaAnyEngine.AnyJSON.string("string")])") is not equal to ("object(["id": PinkhaAnyEngine.AnyJSON.string("description"), "kind": PinkhaAnyEngine.AnyJSON.string("string"), "scope": PinkhaAnyEngine.AnyJSON.string("synced"), "description": PinkhaAnyEngine.AnyJSON.string("Display description."), "name": PinkhaAnyEngine.AnyJSON.string("Description"), "xFormat": PinkhaAnyEngine.AnyJSON.object(["type": PinkhaAnyEngine.AnyJSON.string("longtext")])])") - 
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift:26: error: NativeCanonicalDefinitionSupplementTests.testEightOriginalCanonicalDefinitionsRetainEvidenceAndDistinctValueSemantics : XCTAssertEqual failed: ("object(["description": PinkhaAnyEngine.AnyJSON.string("Object id; derived, never written."), "required": PinkhaAnyEngine.AnyJSON.array([]), "name": PinkhaAnyEngine.AnyJSON.string("Id"), "scope": PinkhaAnyEngine.AnyJSON.string("derived"), "id": PinkhaAnyEngine.AnyJSON.string("id"), "meta": PinkhaAnyEngine.AnyJSON.object([:]), "xKey": PinkhaAnyEngine.AnyJSON.string(""), "xFormat": PinkhaAnyEngine.AnyJSON.object([:]), "properties": PinkhaAnyEngine.AnyJSON.array([]), "kind": PinkhaAnyEngine.AnyJSON.string("string")])") is not equal to ("object(["name": PinkhaAnyEngine.AnyJSON.string("Id"), "scope": PinkhaAnyEngine.AnyJSON.string("derived"), "id": PinkhaAnyEngine.AnyJSON.string("id"), "description": PinkhaAnyEngine.AnyJSON.string("Object id; derived, never written."), "kind": PinkhaAnyEngine.AnyJSON.string("string")])") - 
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift:26: error: NativeCanonicalDefinitionSupplementTests.testEightOriginalCanonicalDefinitionsRetainEvidenceAndDistinctValueSemantics : XCTAssertEqual failed: ("object(["description": PinkhaAnyEngine.AnyJSON.string("Id of the space the object lives in; derived."), "required": PinkhaAnyEngine.AnyJSON.array([]), "name": PinkhaAnyEngine.AnyJSON.string("Space"), "scope": PinkhaAnyEngine.AnyJSON.string("derived"), "id": PinkhaAnyEngine.AnyJSON.string("spaceId"), "meta": PinkhaAnyEngine.AnyJSON.object([:]), "xKey": PinkhaAnyEngine.AnyJSON.string(""), "xFormat": PinkhaAnyEngine.AnyJSON.object([:]), "properties": PinkhaAnyEngine.AnyJSON.array([]), "kind": PinkhaAnyEngine.AnyJSON.string("string")])") is not equal to ("object(["name": PinkhaAnyEngine.AnyJSON.string("Space"), "scope": PinkhaAnyEngine.AnyJSON.string("derived"), "id": PinkhaAnyEngine.AnyJSON.string("spaceId"), "description": PinkhaAnyEngine.AnyJSON.string("Id of the space the object lives in; derived."), "kind": PinkhaAnyEngine.AnyJSON.string("string")])") - 
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift:26: error: NativeCanonicalDefinitionSupplementTests.testEightOriginalCanonicalDefinitionsRetainEvidenceAndDistinctValueSemantics : XCTAssertEqual failed: ("object(["description": PinkhaAnyEngine.AnyJSON.string("Id of the object\'s type; a definition object carries its marker here."), "required": PinkhaAnyEngine.AnyJSON.array([]), "name": PinkhaAnyEngine.AnyJSON.string("Type"), "scope": PinkhaAnyEngine.AnyJSON.string("synced"), "id": PinkhaAnyEngine.AnyJSON.string("type"), "meta": PinkhaAnyEngine.AnyJSON.object([:]), "xKey": PinkhaAnyEngine.AnyJSON.string(""), "xFormat": PinkhaAnyEngine.AnyJSON.object([:]), "properties": PinkhaAnyEngine.AnyJSON.array([]), "kind": PinkhaAnyEngine.AnyJSON.string("string")])") is not equal to ("object(["name": PinkhaAnyEngine.AnyJSON.string("Type"), "scope": PinkhaAnyEngine.AnyJSON.string("synced"), "id": PinkhaAnyEngine.AnyJSON.string("type"), "description": PinkhaAnyEngine.AnyJSON.string("Id of the object\'s type; a definition object carries its marker here."), "kind": PinkhaAnyEngine.AnyJSON.string("string")])") - 
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift:26: error: NativeCanonicalDefinitionSupplementTests.testEightOriginalCanonicalDefinitionsRetainEvidenceAndDistinctValueSemantics : XCTAssertEqual failed: ("object(["description": PinkhaAnyEngine.AnyJSON.string("Account identity that created the object; derived."), "required": PinkhaAnyEngine.AnyJSON.array([]), "name": PinkhaAnyEngine.AnyJSON.string("Author"), "scope": PinkhaAnyEngine.AnyJSON.string("derived"), "id": PinkhaAnyEngine.AnyJSON.string("author"), "meta": PinkhaAnyEngine.AnyJSON.object([:]), "xKey": PinkhaAnyEngine.AnyJSON.string(""), "xFormat": PinkhaAnyEngine.AnyJSON.object([:]), "properties": PinkhaAnyEngine.AnyJSON.array([]), "kind": PinkhaAnyEngine.AnyJSON.string("string")])") is not equal to ("object(["name": PinkhaAnyEngine.AnyJSON.string("Author"), "scope": PinkhaAnyEngine.AnyJSON.string("derived"), "id": PinkhaAnyEngine.AnyJSON.string("author"), "description": PinkhaAnyEngine.AnyJSON.string("Account identity that created the object; derived."), "kind": PinkhaAnyEngine.AnyJSON.string("string")])") - 
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift:26: error: NativeCanonicalDefinitionSupplementTests.testEightOriginalCanonicalDefinitionsRetainEvidenceAndDistinctValueSemantics : XCTAssertEqual failed: ("object(["description": PinkhaAnyEngine.AnyJSON.string("Instant of the creating change (author\'s clock); derived."), "required": PinkhaAnyEngine.AnyJSON.array([]), "name": PinkhaAnyEngine.AnyJSON.string("Created at"), "scope": PinkhaAnyEngine.AnyJSON.string("derived"), "id": PinkhaAnyEngine.AnyJSON.string("createdAt"), "meta": PinkhaAnyEngine.AnyJSON.object([:]), "xKey": PinkhaAnyEngine.AnyJSON.string(""), "xFormat": PinkhaAnyEngine.AnyJSON.object(["type": PinkhaAnyEngine.AnyJSON.string("datetime")]), "properties": PinkhaAnyEngine.AnyJSON.array([]), "kind": PinkhaAnyEngine.AnyJSON.string("datetime")])") is not equal to ("object(["name": PinkhaAnyEngine.AnyJSON.string("Created at"), "scope": PinkhaAnyEngine.AnyJSON.string("derived"), "id": PinkhaAnyEngine.AnyJSON.string("createdAt"), "description": PinkhaAnyEngine.AnyJSON.string("Instant of the creating change (author\'s clock); derived."), "kind": PinkhaAnyEngine.AnyJSON.string("datetime"), "xFormat": PinkhaAnyEngine.AnyJSON.object(["type": PinkhaAnyEngine.AnyJSON.string("datetime")])])") - 
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift:26: error: NativeCanonicalDefinitionSupplementTests.testEightOriginalCanonicalDefinitionsRetainEvidenceAndDistinctValueSemantics : XCTAssertEqual failed: ("object(["description": PinkhaAnyEngine.AnyJSON.string("Instant of the latest valid synced change (author\'s clock); derived."), "required": PinkhaAnyEngine.AnyJSON.array([]), "name": PinkhaAnyEngine.AnyJSON.string("Modified at"), "scope": PinkhaAnyEngine.AnyJSON.string("derived"), "id": PinkhaAnyEngine.AnyJSON.string("modifiedAt"), "meta": PinkhaAnyEngine.AnyJSON.object([:]), "xKey": PinkhaAnyEngine.AnyJSON.string(""), "xFormat": PinkhaAnyEngine.AnyJSON.object(["type": PinkhaAnyEngine.AnyJSON.string("datetime")]), "properties": PinkhaAnyEngine.AnyJSON.array([]), "kind": PinkhaAnyEngine.AnyJSON.string("datetime")])") is not equal to ("object(["name": PinkhaAnyEngine.AnyJSON.string("Modified at"), "scope": PinkhaAnyEngine.AnyJSON.string("derived"), "id": PinkhaAnyEngine.AnyJSON.string("modifiedAt"), "description": PinkhaAnyEngine.AnyJSON.string("Instant of the latest valid synced change (author\'s clock); derived."), "kind": PinkhaAnyEngine.AnyJSON.string("datetime"), "xFormat": PinkhaAnyEngine.AnyJSON.object(["type": PinkhaAnyEngine.AnyJSON.string("datetime")])])") - 
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift:26: error: NativeCanonicalDefinitionSupplementTests.testEightOriginalCanonicalDefinitionsRetainEvidenceAndDistinctValueSemantics : XCTAssertEqual failed: ("object(["description": PinkhaAnyEngine.AnyJSON.string("Account identity that signed the change modifiedAt names; derived."), "required": PinkhaAnyEngine.AnyJSON.array([]), "name": PinkhaAnyEngine.AnyJSON.string("Modified by"), "scope": PinkhaAnyEngine.AnyJSON.string("derived"), "id": PinkhaAnyEngine.AnyJSON.string("modifiedBy"), "meta": PinkhaAnyEngine.AnyJSON.object([:]), "xKey": PinkhaAnyEngine.AnyJSON.string(""), "xFormat": PinkhaAnyEngine.AnyJSON.object([:]), "properties": PinkhaAnyEngine.AnyJSON.array([]), "kind": PinkhaAnyEngine.AnyJSON.string("string")])") is not equal to ("object(["name": PinkhaAnyEngine.AnyJSON.string("Modified by"), "scope": PinkhaAnyEngine.AnyJSON.string("derived"), "id": PinkhaAnyEngine.AnyJSON.string("modifiedBy"), "description": PinkhaAnyEngine.AnyJSON.string("Account identity that signed the change modifiedAt names; derived."), "kind": PinkhaAnyEngine.AnyJSON.string("string")])") - 
+Test Case 'NativeCanonicalDefinitionSupplementTests.testEightOriginalCanonicalDefinitionsRetainEvidenceAndDistinctValueSemantics' failed (4.314 seconds)
+Test Case 'NativeCanonicalDefinitionSupplementTests.testSupplementRefusesDuplicateExistingAndCallerChosenAliases' started at 2026-11-27 03:47:32.064
+Test Case 'NativeCanonicalDefinitionSupplementTests.testSupplementRefusesDuplicateExistingAndCallerChosenAliases' passed (8.343 seconds)
+Test Case 'NativeCanonicalDefinitionSupplementTests.testSupplementRefusesSelfConsistentChangedWireAndForeignSourceSpace' started at 2026-11-27 03:47:40.407
+Test Case 'NativeCanonicalDefinitionSupplementTests.testSupplementRefusesSelfConsistentChangedWireAndForeignSourceSpace' passed (8.61 seconds)
+Test Suite 'NativeCanonicalDefinitionSupplementTests' failed at 2026-11-27 03:47:49.017
+	 Executed 3 tests, with 8 failures (0 unexpected) in 21.267 (21.267) seconds
+Test Suite 'Selected tests' failed at 2026-11-27 03:47:49.018
+	 Executed 3 tests, with 8 failures (0 unexpected) in 21.267 (21.267) seconds
+Note: Some test targets reported failures:
+  - PinkhaAnyHostTests (XCTest)

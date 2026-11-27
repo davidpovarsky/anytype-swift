@@ -1,0 +1,57 @@
+--- prior-fde9-controller.py
++++ cache-fenced-controller.py
+@@ -41,6 +41,9 @@
+ ALLOCATION_RECEIPT = Path("/var/lib/pinkha-w1-functional-migration-20261127/canonical-native-allocation-measurement1/result.json")
+ ALLOCATION_SHA = "023e19116534d131b38553c979920602eb179be1d7d57b57e5b5e576816bb261"
+ MIB = 1024**2
++CACHE_CUSTODY = Path("/var/lib/pinkha-w1-functional-migration-20261127/swift-cache-relocation-continuation1/result.json")
++CACHE_CUSTODY_SHA = "a049e79aa6e185cd2721cf1b18a61a268474275a3b2d00cb187fe41ef8f8d8e8"
++CACHE_TARGET = Path("/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127")
+ 
+ 
+ def source_members():
+@@ -102,14 +105,18 @@
+     controller_before = {"canonicalDefinitions": sha(Path(__file__)), "bookmark": sha(COMMON)}
+     minimum_free = shutil.disk_usage(args.output).free
+     prior_native_receipt = None
++    minimum_cache_free = shutil.disk_usage(SCRATCH).free
+ 
+     def save():
+         result["seconds"] = round(time.monotonic() - started, 3)
+         result["minimumFreeBytes"] = minimum_free
++        result["minimumDevelopmentCacheFreeBytes"] = minimum_cache_free
+         write(args.output / "result.json", result)
+ 
+     def guard():
+-        nonlocal minimum_free
++        nonlocal minimum_free, minimum_cache_free
++        minimum_cache_free = min(minimum_cache_free, shutil.disk_usage(SCRATCH).free)
++        assert minimum_cache_free >= 512 * MIB, "development cache emergency reserve"
+         minimum_free = min(minimum_free, shutil.disk_usage(args.output).free)
+         assert minimum_free > 2 * 1024**3, "runtime disk emergency"
+         assert time.monotonic() - started < 1100, "bounded component timeout"
+@@ -311,6 +318,16 @@
+ 
+     try:
+         guard()
++        assert sha(CACHE_CUSTODY) == CACHE_CUSTODY_SHA
++        custody = json.loads(CACHE_CUSTODY.read_bytes())
++        assert custody["status"] == "PASS_EXACT_OWNED_SWIFT_CACHE_RELOCATED_STABLE_PATH_RETAINED"
++        assert custody["allExactPortableMetadataAndBytesRetained"] and custody["productsAndDependencyClosureUnchanged"]
++        assert custody["originalDuplicateRemoved"] and custody["stableSymlinkInstalled"]
++        assert SCRATCH.is_symlink() and SCRATCH.resolve() == CACHE_TARGET
++        result["cacheCustodyReceiptSHA256"] = CACHE_CUSTODY_SHA
++        result["stableCachePath"] = str(SCRATCH)
++        result["physicalCachePath"] = str(CACHE_TARGET)
++        (args.output / "cache-custody-result.json").write_bytes(CACHE_CUSTODY.read_bytes())
+         assert sha(ALLOCATION_RECEIPT) == ALLOCATION_SHA
+         allocation = json.loads(ALLOCATION_RECEIPT.read_text())
+         assert allocation["status"] == "MEASURED_ALLOCATION_BUDGET_ONLY_NOT_NATIVE_QUALIFICATION"
+@@ -404,6 +421,7 @@
+         for row in reused["retainedMethods"]:
+             assert row["method"] in row["startLine"] and " started" in row["startLine"]
+             assert row["method"] in row["passLine"] and " passed " in row["passLine"]
++        assert build["compiledProducts"] == custody["qualifiedProducts"]
+         result["componentQualification"] = qualification
+         assert before_swift == json.loads(args.swift_receipt.with_name("source-after.json").read_text())
+         assert build["sourceCommit"] == result["sourceCommit"]
