@@ -1,0 +1,514 @@
+import pathlib,os,subprocess,json,time,hashlib,signal,shutil,traceback,ast,re,sys,importlib.util,xml.etree.ElementTree as ET
+ROOT=pathlib.Path('/Users/m1/development/anytype-d-active-20261125/main16-wave3-8f2c11713fb8')
+SOURCE=ROOT.parent/"main14/source"
+APP_DERIVED=ROOT.parent/"main14/app-derived"
+EVIDENCE=ROOT/"build16"
+EXPECTED='8f2c11713fb8a40ae13444104723666ffef68afe'
+assert EXPECTED=='8f2c11713fb8a40ae13444104723666ffef68afe'
+FLOOR=2*1024**3
+PHASE_GROWTH={"app":int(6*1024**3),"ui":int(1*1024**3)}
+CONCURRENT_GROWTH=512*1024**2
+LIFECYCLE=None
+FLAGS="$(inherited) -D DEBUG -D PINKHA_DUAL_ENGINE_RUNTIME -D PINKHA_NATIVE_DERIVED -D PINKHA_NATIVE_T5_LOOKUP_V1 -D PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 -D PINKHA_NATIVE_SEMANTIC_ANCHOR_PAGE154_V1"
+ENV=dict(os.environ,DEVELOPER_DIR="/Applications/Xcode.app/Contents/Developer",PINKHA_ANY_NATIVE_ARTIFACT="verified-unified-v1",PINKHA_NATIVE_T2_AUTHORIZED_READ_V1="1")
+ENV["PATH"]="/opt/homebrew/bin:/usr/local/bin:"+ENV.get("PATH","/usr/bin:/bin")
+def write(path,data):
+ temp=path.with_suffix(path.suffix+".new");temp.write_text(json.dumps(data,indent=2,sort_keys=True)+"\n");temp.replace(path)
+def sha(path):
+ h=hashlib.sha256()
+ with path.open("rb") as f:
+  for b in iter(lambda:f.read(1024*1024),b""):h.update(b)
+ return h.hexdigest()
+def git(*a):
+ return subprocess.run(["git","-C",str(SOURCE),*a],capture_output=True,text=True,check=True).stdout
+def source_state():
+ files=git("ls-files","-z").split("\0")
+ suffixes={".swift",".m",".mm",".h",".c",".cpp",".pbxproj",".xcconfig",".xcscheme",".xctestplan",".plist",".entitlements"}
+ rows={}
+ for name in files:
+  if not name:continue
+  p=SOURCE/name
+  if p.suffix in suffixes or name.endswith("Package.resolved"):
+   rows[name]={"bytes":p.stat().st_size,"sha256":sha(p)}
+ return {"commit":git("rev-parse","HEAD").strip(),"status":git("status","--porcelain"),"tree":git("rev-parse","HEAD^{tree}").strip(),"files":rows}
+def run_phase(name,argv,timeout=7200):
+ d=EVIDENCE/name;d.mkdir()
+ log=d/"original.log";start=time.time();minfree=shutil.disk_usage(ROOT).free
+ if minfree<FLOOR+PHASE_GROWTH[name]+CONCURRENT_GROWTH:raise RuntimeError("Warm phase allowance, concurrent growth and 2 GiB emergency floor are unavailable")
+ with log.open("wb") as f:
+  p=subprocess.Popen(argv,cwd=SOURCE,env=ENV,stdout=f,stderr=subprocess.STDOUT,start_new_session=True)
+  result={"phase":name,"sourceCommit":EXPECTED,"argv":argv,"cwd":str(SOURCE),"started":start,"pid":p.pid,"pgid":p.pid,"status":"RUNNING","freeBytesBefore":minfree,"minimumFreeBytes":minfree,"timeoutSeconds":timeout,"jobs":4,"cleanupErrors":[],"termination":[],"environment":{"DEVELOPER_DIR":ENV["DEVELOPER_DIR"],"PINKHA_ANY_NATIVE_ARTIFACT":ENV["PINKHA_ANY_NATIVE_ARTIFACT"],"PINKHA_NATIVE_T2_AUTHORIZED_READ_V1":"1"}}
+  write(d/"command.json",result);write(EVIDENCE/"active.json",result)
+  stop=None
+  while p.poll() is None:
+   free=shutil.disk_usage(ROOT).free;minfree=min(minfree,free)
+   if free<FLOOR:stop="RESOURCE_DISK_FLOOR"
+   elif time.time()-start>timeout:stop="TIMEOUT"
+   if stop:
+    LIFECYCLE._terminate_owned_process(p,result)
+    break
+   write(d/"monitor.json",{"time":time.time(),"elapsedSeconds":time.time()-start,"freeBytes":free,"minimumFreeBytes":minfree,"pid":p.pid})
+   time.sleep(2)
+  try:code=p.wait(timeout=1)
+  except BaseException as exc:code=None;result["cleanupErrors"].append({"phase":"final-owned-wait","type":type(exc).__name__,"reason":str(exc)})
+ result.update(exitCode=code,finished=time.time(),elapsedSeconds=time.time()-start,minimumFreeBytes=minfree,freeBytesAfter=shutil.disk_usage(ROOT).free,status=stop or ("PASS_BUILD_EXIT_0" if code==0 else "FAIL_BUILD"),logSHA256=sha(log),logBytes=log.stat().st_size)
+ # Original exit and log evidence is persisted before bounded read-only observation.
+ write(d/"process-exit.json",result)
+ observed=LIFECYCLE._observe_exited_group(p.pid)
+ result["ownedProcessGroup"]=observed["status"]
+ result["ownedGroupObservations"]=observed["observations"]
+ result["processExitReceiptSHA256"]=sha(d/"process-exit.json")
+ write(d/"result.json",result);write(EVIDENCE/"active.json",result)
+ if code!=0 or stop or result["cleanupErrors"]:raise RuntimeError(name+" "+result["status"])
+ if result["ownedProcessGroup"]!="ABSENT_ESRCH":raise RuntimeError(name+" process group is not positively absent")
+ return result
+
+def verify_runtime_identity(stage):
+ helper=SOURCE/"Tools/PinkhaDualEngineRuntime/runtime_identity.py"
+ assert sha(helper)=="306c0cabcf39c6de55470d642cf5b9e6e9176d73351966330b90cf333b9359b0"
+ spec=importlib.util.spec_from_file_location("app15_exact_runtime_identity",helper)
+ runtime=importlib.util.module_from_spec(spec);spec.loader.exec_module(runtime)
+ manifest=(SOURCE/"Tools/PinkhaDualEngineRuntime/source-permission-manifest.json").read_bytes()
+ assert hashlib.sha256(manifest).hexdigest()=="8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b"
+ inputs={}
+ pins={
+  "simulator":("946fe141ee4fa1c1fa8ceafc9060d9d9eedb0d546360140eadaf5ecf1f264f9b","efb1df9248d52f4ff69eb08e9a1ce9eeaed58b3b746960d86907fe7fc85fd903"),
+  "device":("c5237b26fe0a1ab7fe3c373aed50a34a0a6f65c306ed47918b4e4b54a9245208","fc251187ea1be539d41501da7b4e00ae2a249662684c1a5c6069235dacaee546")}
+ for kind,(receipt_sha,command_sha) in pins.items():
+  base=pathlib.Path('/Users/m1/development/anytype-d-active-20261125/main16-wave2-20261127/native-materialization-8ac')/kind
+  values={key:(base/name).read_bytes() for key,name in (("receipt","receipt.json"),("command","combined-gomobile-bind.command.json"),("log","combined-gomobile-bind.log"))}
+  receipt=json.loads(values["receipt"]);command=json.loads(values["command"])
+  assert [row for row in receipt["commands"] if row["name"]=="combined-gomobile-bind"]==[command]
+  inputs[kind]=dict(values,expectedReceiptSHA256=receipt_sha,expectedCommandSHA256=command_sha)
+ result=runtime.qualify_application(manifest,'2026-11-26',(SOURCE/"Modules/ProtobufMessages/Sources/PinkhaAnyEmbeddedBridge.swift").read_bytes(),inputs)
+ assembly=pathlib.Path('/Users/m1/development/anytype-d-active-20261125/main16-wave2-20261127/native-materialization-8ac/receipt.json')
+ assert sha(assembly)=="c9c90e3a12868bcedf5f0a4f116c4dc1c388bdcddd0e9f0170c047684c500231"
+ original=json.loads(assembly.read_bytes())
+ assert original["status"]=="PASS_ASSEMBLED_TWO_QUALIFIED_SLICES_NOT_APP_ACCEPTANCE" and result["identity"]==original["runtimeIdentity"]
+ for kind,identifier in (("simulator","ios-arm64-simulator"),("device","ios-arm64")):
+  binary=SOURCE/"Dependencies/Middleware/Lib.xcframework"/identifier/"Lib.framework/Lib"
+  assert sha(binary)==result["slices"][kind]["binarySHA256"]==original["inputs"][kind]["binarySHA256"]
+  assert binary.stat().st_size==result["slices"][kind]["binaryBytes"]==original["inputs"][kind]["binaryBytes"]
+ write(EVIDENCE/("runtime-identity-"+stage+".json"),result)
+ return result
+
+def verify_new_test_compiler_inputs():
+ required=[SOURCE/"AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+           SOURCE/"AnyTypeTests/Pinkha/TextViewLinkGestureArbitrationTests.swift"]
+ lists=[p for p in (APP_DERIVED/"Build/Intermediates.noindex").rglob("*SwiftFileList")
+        if any(part.casefold()=="anytypetests.build" for part in p.parts) and p.is_file()]
+ matched=[]
+ for path in lists:
+  data=path.read_text()
+  compiler_paths=[line.strip().strip('"').casefold() for line in data.splitlines()]
+  if all(compiler_paths.count(str(item).casefold())==1 for item in required):
+   matched.append({"path":str(path),"sha256":sha(path)})
+ assert matched,"The actual AnytypeTests compiler input list must contain both new UIKit test sources"
+ write(EVIDENCE/"new-uikit-compiler-inputs.json",{"status":"PASS_ACTUAL_COMPILED_TEST_SOURCE_INPUTS_NOT_TEST_EXECUTION",
+       "sourceFiles":[{"path":str(p.relative_to(SOURCE)),"sha256":sha(p)} for p in required],
+       "actualCompilerFileLists":matched,"testsExecuted":0})
+
+def verify_dependencies(stage):
+ inventory_path=pathlib.Path('/Users/m1/development/anytype-d-active-20261125/main16-wave2-20261127/native-materialization-8ac/framework-files.json')
+ assert sha(inventory_path)=="fa999a27c00bfb572cf91ddd65b30e1b7618827c75631f0ee0546748c83f7dbf"
+ expected=json.loads(inventory_path.read_text())
+ base=SOURCE/"Dependencies/Middleware/Lib.xcframework"
+ assert not base.is_symlink()
+ actual={}
+ for p in sorted(base.rglob("*")):
+  assert not p.is_symlink(),"Unexpected native symlink"
+  if p.is_file():actual[str(p.relative_to(base))]={"bytes":p.stat().st_size,"sha256":sha(p)}
+ assert actual==expected,"Native framework bytes changed"
+ verify_runtime_identity(stage)
+ command=["python3",str(SOURCE/"Tools/Hanlin/prepare_sdk.py"),"--check"]
+ result=subprocess.run(command,cwd=SOURCE,env=ENV,capture_output=True,text=True,timeout=60)
+ (EVIDENCE/("sdk-"+stage+".log")).write_text(result.stdout+result.stderr)
+ assert result.returncode==0,"Canonical SDK verification failed: "+result.stderr
+ write(EVIDENCE/("dependencies-"+stage+".json"),{"status":"PASS_EXACT_NATIVE_AND_SDK_CONTENT","nativeInventorySHA256":sha(inventory_path),"nativeFiles":len(actual),"sdkCommand":command,"sdkExitCode":result.returncode,"sdkLogSHA256":sha(EVIDENCE/("sdk-"+stage+".log"))})
+
+import shlex,stat
+WAVE3_ADMISSION={'appDerived': '/Users/m1/development/anytype-d-active-20261125/main14/app-derived', 'appSourceSHA': '8f2c11713fb8a40ae13444104723666ffef68afe', 'buildRoot': '/Users/m1/development/anytype-d-active-20261125/main16-wave3-8f2c11713fb8', 'cacheQualification': {'path': '/Users/m1/development/anytype-root-active-20261125/shared-build-inputs-385289-20261127/warm-retry-8f2c11713fb8-inputs/resource-reassessment-original512-1/cache-requalification.json', 'sha256': '11575f9d03aaa36c2bddcc12ba2c01b1614631c73bedabc598c3abf57e4d8a7d'}, 'compilerInputEnumeration': {'nativeCount': 43, 'path': '/Users/m1/development/anytype-d-active-20261125/main14/source/docs/validation/20261127-wave3-shared-retry/warm-retry-compiler-inputs.json', 'runtimeSelection': 'Independent and scoped; compilation proof grants no test acceptance.', 'sha256': '18cdc4b1d90898db1f054fb8ca0446be0e33c6d548010820c854dc649e0f44e0', 'sourceBeforeDocumentation': 'c95395aec96214dfabd73d55755baa95689cc6d3', 'sourceCommit': '8f2c11713fb8a40ae13444104723666ffef68afe', 'sourceTree': '7bcaa6e1b6eadf42eaaaebcb75aab84686aa1f9a', 'uiSwiftCount': 9}, 'deviceIntake': {'path': '/Users/m1/development/anytype-root-active-20261125/shared-build-inputs-385289-20261127/device-intake-20261127T013233Z/receipt.json', 'sha256': '40dbd522d048c19576a7db0bc9b1246d08f52c6a94d724cc869f86057bfba82e'}, 'nativeBuildDate': '2026-11-26', 'nativeMaterializationRoot': '/Users/m1/development/anytype-d-active-20261125/main16-wave2-20261127/native-materialization-8ac', 'notes': ['Root frozen warm retry source8f2, native8ac, canonical Hanlin385289 and Kit9058. Build is disabled until actual forward staging and independent root dispatch review.', 'All43 native and9 original UI inputs are bound to committed inventory18cdc4b1. Three diagnosed native test source repairs changed. NativeLaunch31c is separate from the9 original shared UI inputs.', 'First failed6aab source, Products, logs, xcresult and dispatch/controller bytes remain retained with full node/mode/link/content proofec5d. Original App15 separate copies and T5 account remain protected.', 'Resource-only successor: own6GiB App and live2GiB floor remain; original512MiB concurrent minimum yields8.5GiB (9126805504 bytes) for the finite root-owned App then UI window. Original4GiB cache cf181 and draft cf48 remain immutable. Fresh all-host heavy-writer/queued-launcher census is mandatory immediately before root dispatch. Resource basis /Users/m1/development/anytype-root-active-20261125/shared-build-inputs-385289-20261127/warm-retry-8f2c11713fb8-inputs/resource-reassessment-original512-1/resource-reassessment.json SHA256 e1507aac15ddd17c4fee7201b5ad06603cbb9c98da701e6de65fc5eb7428bc5a.', 'The actual package guard now rejects nonignored untracked sources and verifies all56 pinned checkout HEADs plus4 canonical local SDK roots. Original tracked-only observations remain separately retained.', 'This intermediate acceptance build is not Release, fullSDK/companion/RPC acceptance or TestFlight. Source and generated UI project remain frozen through all consumers.'], 'originalRetention': {'path': '/Users/m1/development/anytype-d-active-20261125/main16-wave2-20261127/source-staging1/original-preservation.json', 'sha256': '11ab2f45511d8b7917709c1706475538b9ea4ed228e1dc908dfa55a331cacc74'}, 'pins': {'deviceCommandSHA256': 'fc251187ea1be539d41501da7b4e00ae2a249662684c1a5c6069235dacaee546', 'deviceReceiptSHA256': 'c5237b26fe0a1ab7fe3c373aed50a34a0a6f65c306ed47918b4e4b54a9245208', 'hanlinSourcePinSHA256': '9efdf2add1a472c289d9c349fe9733ac888cacf399a248d9bae7f788045a336f', 'nativeAssemblyReceiptSHA256': 'c9c90e3a12868bcedf5f0a4f116c4dc1c388bdcddd0e9f0170c047684c500231', 'nativeFrameworkInventorySHA256': 'fa999a27c00bfb572cf91ddd65b30e1b7618827c75631f0ee0546748c83f7dbf', 'nativeSimulatorBinarySHA256': 'f94079de9eeb9e2e869f02bd1dda93fcd272e3191b2417ca4b4657cae5dc6763', 'nativeSourceManifestSHA256': '8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b', 'packageResolvedSHA256': 'e22368e522ac795253935b0a31e39d1b36bd9043ef2ed1014845927914527ccd', 'page154UITestSHA256': '8834541f5a47da80b460ecb96b20c930813b743d94f285fc1efba8a93f65ee4d', 'runtimeIdentityHelperSHA256': '306c0cabcf39c6de55470d642cf5b9e6e9176d73351966330b90cf333b9359b0', 'sdkMaterializationReceiptSHA256': 'b10eb0805789a04f9f48721230961e45ba6a93ceb5d95cb90437a59c87ae9528', 'sdkMaterializerSHA256': '234f597c629da30045392f74e2b6d204f2bbc6349b70bdccd5562dc0db491fe2', 'simulatorCommandSHA256': 'efb1df9248d52f4ff69eb08e9a1ce9eeaed58b3b746960d86907fe7fc85fd903', 'simulatorReceiptSHA256': '946fe141ee4fa1c1fa8ceafc9060d9d9eedb0d546360140eadaf5ecf1f264f9b', 'uiGeneratorSHA256': '7bf69636b42875aa7dd0fa39c11393e02e6760ef502cf68ef47b740f3bd066c0'}, 'readyForBuild': True, 'schema': 'pinkha-root-frozen-build-admission-v1', 'selectedNativeTestSources': ['AnyTypeTests/Pinkha/AnyNativeEmptyParagraphDirectionTests.swift', 'AnyTypeTests/Pinkha/HanlinHostAdapterTests.swift', 'AnyTypeTests/Pinkha/HanlinHostCancellationTests.swift', 'AnyTypeTests/Pinkha/HanlinHostReadWriteTests.swift', 'AnyTypeTests/Pinkha/HanlinHostWriteTests.swift', 'AnyTypeTests/Pinkha/HanlinNativeAcceptancePreparationTests.swift', 'AnyTypeTests/Pinkha/HanlinSDKConsumerTests.swift', 'AnyTypeTests/Pinkha/HanlinSelectionAcceptancePreparationTests.swift', 'AnyTypeTests/Pinkha/PinkhaBootstrapStateManagerTests.swift', 'AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift', 'AnyTypeTests/Pinkha/PinkhaNativeTextAcknowledgementTests.swift', 'AnyTypeTests/Pinkha/PinkhaNavigationGestureBridgeTests.swift', 'AnyTypeTests/Pinkha/PinkhaStage1AcceptancePreparationTests.swift', 'AnyTypeTests/Pinkha/PinkhaTextBlockLeadingMarkerAdapterTests.swift', 'AnyTypeTests/Pinkha/PinkhaTextBlockLeadingMarkerTests.swift', 'AnyTypeTests/Pinkha/PinkhaTextDirectionPersistenceTests.swift', 'AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift', 'AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift', 'AnyTypeTests/Pinkha/PropertyCreationSelectionTests.swift', 'AnyTypeTests/Pinkha/SDK06PendingSelectionTag.swift', 'AnyTypeTests/Pinkha/SemanticAnchorPage154MountedPreparationTests.swift', 'AnyTypeTests/Pinkha/SemanticAnchorPage154NativeAcceptanceTests.swift', 'AnyTypeTests/Pinkha/SimpleTableTextPersistenceTests.swift', 'AnyTypeTests/Pinkha/SimulatorAcceptancePreparationTests.swift', 'AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift', 'AnyTypeTests/Pinkha/TextViewLinkGestureArbitrationTests.swift', 'AnyTypeTests/Pinkha/TorahAssociationNativeMiddlewareProbeTests.swift', 'AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift', 'AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift', 'AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift', 'AnyTypeTests/Pinkha/TorahQuoteInsertionTests.swift', 'AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift', 'AnyTypeTests/Pinkha/TorahRelatedReadAuthorityMappingTests.swift', 'AnyTypeTests/Pinkha/TorahSearchLayoutTests.swift', 'AnyTypeTests/Pinkha/TorahSearchResolutionPublicationTests.swift', 'AnyTypeTests/Pinkha/TorahT5NativePaginationTests.swift', 'AnyTypeTests/Pinkha/TorahT5RuntimePairTests.swift', 'AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift', 'AnyTypeTests/Pinkha/TorahWave1IntegrationTests.swift', 'Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeDocumentPublicationTests.swift', 'Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift', 'Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift', 'Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyLibrarySearchPublicationTests.swift'], 'selectedUITestSources': ['PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift', 'PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift', 'PinkhaStage1Acceptance/Tests/HanlinSelectionAcceptanceUITests.swift', 'PinkhaStage1Acceptance/Tests/HeartSourceCaptureAcceptanceUITests.swift', 'PinkhaStage1Acceptance/Tests/MiniAppsNativeAcceptanceUITests.swift', 'PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift', 'PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift', 'PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift', 'PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift'], 'sourceRoot': '/Users/m1/development/anytype-d-active-20261125/main14/source', 'sourceStaging': {'path': '/Users/m1/development/anytype-d-active-20261125/main16-wave3-8f2c11713fb8/source-staging1/receipt.json', 'sha256': '506620e9c9cb2aafe0c89076269c2a7d3a4cb6fa7334924a18dda4dff1b2f6bb'}, 'toolchainIntake': {'path': '/Users/m1/development/anytype-root-active-20261125/shared-build-inputs-385289-20261127/toolchain-intake-20261127T013054Z/receipt.json', 'sha256': 'b573adcab09d9e856f05f66878db34a5ea42408c76554e67c10ebe3f6c53fd2b'}, 'warmRetry': {'concurrentGrowthAllowanceBytes': 536870912, 'failedPreservation': {'path': '/Users/m1/development/anytype-d-active-20261125/main16-wave3-6aab20344fcf/failed-preservation1/receipt.json', 'sha256': 'ec5d9fd6979144eb452e0ba99c38653eb1b32dfdd1686a2eef48b580731cb0f3'}, 'priorBuildRoot': '/Users/m1/development/anytype-d-active-20261125/main16-wave3-6aab20344fcf', 'priorFailedSourceCommit': '6aab20344fcf1c645d7c96e0b9ec034ef07003a9', 'schema': 'pinkha-terminal-failure-warm-retry-v1'}}
+WAVE3_CONTROL={'schema': 'pinkha-root-build-control-binding-v1', 'appSourceSHA': '8f2c11713fb8a40ae13444104723666ffef68afe', 'admission': {'path': '/Users/m1/development/anytype-d-active-20261125/main16-wave3-8f2c11713fb8/build-admission.approved.json', 'sha256': 'e40ccaabe400abda4800e9a065e094e7d2ffbd8969eb776e173bb04c2e24752a'}, 'adapterSHA256': 'c4b67858674156894a29b326c2766d043ce0308c065029bd5c1a6ae1aa254fff', 'originalProducerCommit': '204f8fbb25c3b21f419fc1a8818eb46ed492e561', 'originalProducerSHA256': '9b1405ea44ba9cce3fca47a88127fc798fedab3d1b05f6e3728da3597d19929c', 'originalRetention': {'path': '/Users/m1/development/anytype-d-active-20261125/main16-wave2-20261127/source-staging1/original-preservation.json', 'sha256': '11ab2f45511d8b7917709c1706475538b9ea4ed228e1dc908dfa55a331cacc74'}}
+
+def w3_require(value, message):
+    if not value:
+        raise ValueError(message)
+
+def w3_sha(path):
+    digest = hashlib.sha256()
+    with pathlib.Path(path).open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+def w3_write(path, value):
+    path = pathlib.Path(path)
+    with path.open("x") as stream:
+        stream.write(json.dumps(value, indent=2, sort_keys=True) + "\n")
+
+def w3_file(path):
+    path = pathlib.Path(path)
+    w3_require(path.is_file() and not path.is_symlink(), "Expected an original regular file: " + str(path))
+    return {"bytes": path.stat().st_size, "sha256": w3_sha(path)}
+
+def w3_project_inventory(project):
+    project = pathlib.Path(project)
+    w3_require(project.is_dir() and not project.is_symlink(), "Generated project is not a physical directory")
+    entries = {}
+    for path in sorted(project.rglob("*")):
+        w3_require(not path.is_symlink(), "Unexpected generated project symlink")
+        mode = stat.S_IMODE(path.stat().st_mode)
+        relative = str(path.relative_to(project))
+        if path.is_file():
+            entries[relative] = dict(kind="file", mode=mode, **w3_file(path))
+        elif path.is_dir():
+            entries[relative] = {"kind": "directory", "mode": mode}
+        else:
+            raise ValueError("Unexpected generated project node: " + relative)
+    w3_require("project.pbxproj" in entries and
+               "xcshareddata/xcschemes/PinkhaPrebuiltUI.xcscheme" in entries,
+               "Generated UI project and exact scheme are required")
+    return {"schema": "pinkha-generated-ui-project-inventory-v1", "root": str(project), "entries": entries}
+
+def w3_sources(relative_paths, source_root, compiled_root, source_before):
+    source_root, compiled_root = pathlib.Path(source_root), pathlib.Path(compiled_root)
+    w3_require(relative_paths and len(relative_paths) == len(set(relative_paths)), "Selected source paths must be unique")
+    rows = []
+    for relative in relative_paths:
+        path = pathlib.PurePosixPath(relative)
+        w3_require(not path.is_absolute() and ".." not in path.parts and path.suffix == ".swift", "Invalid selected Swift source")
+        expected = source_before["files"][relative]
+        original, compiled = source_root / relative, compiled_root / relative
+        w3_require(w3_file(original) == expected == w3_file(compiled), "Compiled source differs: " + relative)
+        rows.append(dict(repositoryPath=relative, compiledPath=str(compiled), **expected))
+    return rows
+
+def w3_compiler_invocations(log, module, filelist):
+    witnesses = []
+    with pathlib.Path(log).open(errors="strict") as stream:
+        for number, line in enumerate(stream, 1):
+            if ".SwiftFileList" not in line or "swiftc" not in line:
+                continue
+            try:
+                tokens = shlex.split(line)
+            except ValueError:
+                continue
+            if not any(pathlib.Path(token).name == "swiftc" for token in tokens):
+                continue
+            names = [tokens[i + 1] for i, token in enumerate(tokens[:-1]) if token == "-module-name"]
+            lists = [token[1:] for token in tokens if token.startswith("@")]
+            if names == [module] and any(item.casefold() == str(filelist).casefold() for item in lists):
+                witnesses.append({"lineNumber": number,
+                                  "lineSHA256": hashlib.sha256(line.rstrip("\r\n").encode()).hexdigest(),
+                                  "moduleName": module})
+    w3_require(witnesses, "No actual swiftc invocation uses selected FileList in original build log")
+    return witnesses
+
+def w3_compiler_lists(derived, module, required_sources, log, evidence, phase):
+    derived, evidence = pathlib.Path(derived), pathlib.Path(evidence)
+    expected_paths = [row["compiledPath"] for row in required_sources]
+    folded = [path.casefold() for path in expected_paths]
+    w3_require(len(folded) == len(set(folded)), "Case-colliding source paths cannot qualify")
+    inventory = []
+    for path in sorted((derived / "Build/Intermediates.noindex").rglob("*SwiftFileList")):
+        if not any(part.casefold() == (module + ".build").casefold() for part in path.parts):
+            continue
+        if not path.is_file() or path.is_symlink():
+            continue
+        lines = [line.strip().strip('"') for line in path.read_text().splitlines()]
+        normalized = [line.casefold() for line in lines]
+        if not all(normalized.count(item) == 1 for item in folded):
+            continue
+        # Case normalization is permitted only for the same actual APFS source.
+        for expected, source_row in zip(expected_paths, required_sources):
+            actual = pathlib.Path(lines[normalized.index(expected.casefold())])
+            w3_require(actual.is_file() and actual.samefile(expected) and
+                       w3_file(actual) == {key: source_row[key] for key in ("bytes", "sha256")},
+                       "Compiler source path is not the exact selected source")
+        witnesses = w3_compiler_invocations(log, module, path)
+        retained = evidence / (phase + "-compiler-" + str(len(inventory)) + ".SwiftFileList")
+        with retained.open("xb") as stream:
+            stream.write(path.read_bytes())
+        w3_require(w3_sha(retained) == w3_sha(path), "Original compiler input retention differs")
+        inventory.append({"path": str(retained), "originalPath": str(path),
+                          "sha256": w3_sha(path), "requiredSourcePaths": expected_paths,
+                          "compilerInvocation": witnesses[0], "compilerInvocations": witnesses})
+    w3_require(inventory, "Actual selected target compiler FileList is absent or incomplete")
+    return inventory
+
+def w3_native_proof():
+    rows = w3_sources(WAVE3_ADMISSION["selectedNativeTestSources"], SOURCE, SOURCE, before)
+    log = EVIDENCE / "app/original.log"
+    proof = {"schema": "pinkha-exact-native-compiler-inputs-v1",
+             "status": "PASS_EXACT_NATIVE_COMPILER_INPUTS_NOT_TEST_EXECUTION",
+             "sourceCommit": EXPECTED, "requiredSources": rows,
+             "buildLog": {"path": str(log), "sha256": w3_sha(log)},
+             "actualCompilerFileLists": w3_compiler_lists(APP_DERIVED, "AnytypeTests", rows, log, EVIDENCE, "native"),
+             "originalCompilerQualificationSHA256": w3_sha(EVIDENCE / "new-uikit-compiler-inputs.json"),
+             "testsExecuted": 0}
+    w3_write(EVIDENCE / "native-selected-compiler-inputs.json", proof)
+
+def w3_ui_before(ui_source, project, selected):
+    copy_path = EVIDENCE / "original-ui-copy.json"
+    copy = json.loads(copy_path.read_text())
+    w3_require(copy["generatorSHA256"] == WAVE3_ADMISSION["pins"]["uiGeneratorSHA256"], "UI generator changed")
+    w3_require(copy["generatedProject"] == str(project), "Generated UI project identity changed")
+    expected = {row["path"]: row["sha256"] for row in copy["copiedFiles"]}
+    w3_require(len(expected) == len(copy["copiedFiles"]) and set(expected) == set(selected), "UI copied source inventory differs")
+    for relative in selected:
+        w3_require(w3_sha(SOURCE / relative) == expected[relative] == w3_sha(ui_source / relative),
+                   "Original UI copy bytes differ before compilation")
+    selected_swift = sorted(path for path in selected if path.endswith(".swift"))
+    w3_require(set(WAVE3_ADMISSION["selectedUITestSources"]).issubset(selected_swift), "Selected UI sources are missing")
+    rows = w3_sources(selected_swift, SOURCE, ui_source, before)
+    inventory = w3_project_inventory(project)
+    inventory_path = EVIDENCE / "generated-ui-project-before.json"
+    w3_write(inventory_path, inventory)
+    return {"requiredSources": rows, "copiedFiles": expected, "generatedProject": inventory,
+            "originalUICopySHA256": w3_sha(copy_path),
+            "generatedProjectBefore": {"path": str(inventory_path), "sha256": w3_sha(inventory_path)}}
+
+def w3_ui_after(snapshot, ui_source, project):
+    for relative, expected in snapshot["copiedFiles"].items():
+        w3_require(w3_sha(SOURCE / relative) == expected == w3_sha(ui_source / relative),
+                   "Original UI copy changed while building")
+    rows = w3_sources([row["repositoryPath"] for row in snapshot["requiredSources"]], SOURCE, ui_source, before)
+    w3_require(rows == snapshot["requiredSources"], "Compiled UI source bytes changed while building")
+    inventory = w3_project_inventory(project)
+    w3_require(inventory == snapshot["generatedProject"], "Generated project or scheme changed while building")
+    inventory_path = EVIDENCE / "generated-ui-project-after.json"
+    w3_write(inventory_path, inventory)
+    copy_path = EVIDENCE / "original-ui-copy.json"
+    w3_require(w3_sha(copy_path) == snapshot["originalUICopySHA256"], "UI copy receipt changed")
+    log = EVIDENCE / "ui/original.log"
+    proof = {"schema": "pinkha-exact-ui-compiler-inputs-v1",
+             "status": "PASS_EXACT_UI_COPY_PROJECT_AND_COMPILER_INPUTS_NOT_TEST_EXECUTION",
+             "sourceCommit": EXPECTED, "originalUICopySHA256": w3_sha(copy_path),
+             "generatorSHA256": WAVE3_ADMISSION["pins"]["uiGeneratorSHA256"],
+             "requiredSources": rows, "generatedProjectBefore": snapshot["generatedProjectBefore"],
+             "generatedProjectAfter": {"path": str(inventory_path), "sha256": w3_sha(inventory_path)},
+             "buildLog": {"path": str(log), "sha256": w3_sha(log)},
+             "actualCompilerFileLists": w3_compiler_lists(ROOT / "ui-derived", "PinkhaStage1AcceptanceUITests", rows, log, EVIDENCE, "ui"),
+             "testsExecuted": 0}
+    w3_write(EVIDENCE / "ui-compiled-inputs.json", proof)
+
+def w3_final_bindings():
+    w3_control_admission()
+    return {"originalUICopySHA256": w3_sha(EVIDENCE / "original-ui-copy.json"),
+            "uiCompilationProof": {"path": str(EVIDENCE / "ui-compiled-inputs.json"),
+                                   "sha256": w3_sha(EVIDENCE / "ui-compiled-inputs.json")},
+            "nativeCompilationProof": {"path": str(EVIDENCE / "native-selected-compiler-inputs.json"),
+                                       "sha256": w3_sha(EVIDENCE / "native-selected-compiler-inputs.json")},
+            "sourceBeforeSHA256": w3_sha(EVIDENCE / "source-before.json"),
+            "sourceAfterSHA256": w3_sha(EVIDENCE / "source-after.json"),
+            "controlAdmission": WAVE3_CONTROL}
+
+def w3_control_admission():
+    manifest = WAVE3_CONTROL["admission"]
+    w3_require(w3_sha(manifest["path"]) == manifest["sha256"], "Root build admission changed")
+    retention = WAVE3_CONTROL["originalRetention"]
+    w3_require(w3_sha(retention["path"]) == retention["sha256"], "Original preservation receipt changed")
+    w3_require(json.loads(pathlib.Path(manifest["path"]).read_text()) == WAVE3_ADMISSION,
+               "Root build admission content differs")
+
+
+def wr_require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+def wr_sha(path):
+    with pathlib.Path(path).open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+def wr_packages(source, derived):
+    source, derived = pathlib.Path(source), pathlib.Path(derived)
+    lock = source / 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved'
+    workspace = derived / 'SourcePackages/workspace-state.json'
+    wr_require(workspace.is_file() and not workspace.is_symlink(), 'Original warm SwiftPM workspace is missing')
+    pins = json.loads(lock.read_text())['pins']
+    expected = {row['identity']: row['state'] for row in pins}
+    wr_require(len(expected) == len(pins), 'Duplicate package lock identities')
+    observed = json.loads(workspace.read_text())
+    rows, local = {}, {}
+    for dependency in observed['object']['dependencies']:
+        name = dependency['packageRef']['identity']
+        state = dependency['state']
+        if state['name'] == 'fileSystem':
+            path = pathlib.Path(state['path'])
+            wr_require(path.is_relative_to(source / 'Dependencies/Hanlin/Packages') and path.is_dir()
+                       and not path.is_symlink(), 'Unreviewed local package path')
+            local[name] = str(path)
+            continue
+        wr_require(state['name'] == 'sourceControlCheckout' and name in expected and name not in rows,
+                   'Unexpected or duplicate warm package checkout')
+        wr_require(state['checkoutState'] == expected[name], 'Workspace state differs from exact package lock: ' + name)
+        subpath = pathlib.PurePosixPath(dependency['subpath'])
+        wr_require(not subpath.is_absolute() and '..' not in subpath.parts, 'Invalid package checkout path')
+        checkout = derived / 'SourcePackages/checkouts' / subpath
+        wr_require(checkout.is_dir() and not checkout.is_symlink(), 'Physical checkout missing: ' + name)
+        git = ['/usr/bin/git', '--no-replace-objects', '-C', str(checkout)]
+        head = subprocess.run(git + ['rev-parse', 'HEAD'], capture_output=True, text=True, timeout=30,
+                              env=dict(os.environ, GIT_OPTIONAL_LOCKS='0'))
+        status = subprocess.run(git + ['status', '--porcelain', '--untracked-files=all'], capture_output=True, text=True,
+                                timeout=30, env=dict(os.environ, GIT_OPTIONAL_LOCKS='0'))
+        wr_require(head.returncode == status.returncode == 0 and head.stdout.strip() == expected[name]['revision']
+                   and status.stdout == '', 'Actual pinned package checkout differs: ' + name)
+        rows[name] = {'path': str(checkout), 'revision': head.stdout.strip(), 'trackedStatus': '',
+                      'state': state['checkoutState']}
+    wr_require(set(rows) == set(expected), 'Warm checkout set differs from complete package lock')
+    wr_require(set(local) == {'hanlinagentsdk', 'hanlinminiappsbridge', 'hanlinplatform', 'hanlinpresentationsdk'},
+               'Canonical four-package SDK set differs')
+    return {'packageResolvedSHA256': wr_sha(lock), 'workspaceStatePath': str(workspace),
+            'workspaceStateSHA256': wr_sha(workspace), 'checkouts': rows, 'localSDKPackages': local}
+
+def wr_no_shared_writer(source, derived):
+    source, derived = pathlib.Path(source), pathlib.Path(derived)
+    processes = subprocess.check_output(['/bin/ps', '-axo', 'pid=,ppid=,args='], text=True)
+    for line in processes.splitlines():
+        parts = line.strip().split(None, 2)
+        if len(parts) != 3 or int(parts[0]) == os.getpid():
+            continue
+        cmd = parts[2]
+        compiler = any(item in cmd for item in ('xcodebuild', 'swift-frontend', '/swiftc', '/clang', 'XCBBuildService'))
+        wr_require(not (compiler and (str(source) in cmd or str(derived) in cmd)), 'Shared source/cache compiler is active')
+        wr_require('main16-wave2-20261127/control/launch_app16_when_compiler_admitted.py' not in cmd,
+                   'Obsolete queued launcher is active')
+    database = derived / 'Build/Intermediates.noindex/XCBuildData/build.db'
+    wr_require(database.is_file() and not database.is_symlink(), 'Warm build database is absent')
+    opened = subprocess.run(['/usr/sbin/lsof', '-nP', str(database)], capture_output=True, text=True, timeout=30)
+    wr_require(opened.returncode == 1 and opened.stdout == opened.stderr == '', 'Warm build database has an owner')
+
+def wr_validate_cache(cache, staging):
+    retry = WAVE3_ADMISSION['warmRetry']
+    wr_require(cache['protocol'] == 'pinkha-post-failure-warm-cache-qualification-v1'
+               and cache['sourceCommit'] == EXPECTED, 'Fresh post-failure warm-cache qualification required')
+    wr_require(cache['stageReceiptSHA256'] == sha(pathlib.Path(WAVE3_ADMISSION['sourceStaging']['path']))
+               and cache['stageSourceAndNativePreservationRetained'] is True, 'Warm staging receipt differs')
+    wr_require(cache['priorFailedSourceCommit'] == retry['priorFailedSourceCommit'], 'Prior failed source differs')
+    wr_require(cache['originalIntermediatesAndPackagePathsReused'] is True
+               and cache['invalidatedStageMetadata'] == [], 'Warm retry cannot reuse stale absence metadata')
+    wr_require(cache['applicationBuilds'] == 0 and cache['testsExecuted'] == 0, 'Cache observation cannot claim a build/test')
+    wr_require(cache['estimateNewAppPhaseBytes'] == PHASE_GROWTH['app'] and cache['emergencyFloorBytes'] == FLOOR
+               and cache['concurrentGrowthAllowanceBytes'] == CONCURRENT_GROWTH, 'Resource allowance differs')
+    preservation = retry['failedPreservation']
+    wr_require(wr_sha(preservation['path']) == preservation['sha256'] == cache['failedPreservationSHA256']
+               == staging['failedPreservationSHA256'], 'Failed build preservation differs')
+    retained = json.loads(pathlib.Path(preservation['path']).read_text())
+    wr_require(retained['status'] == 'PASS_FAILED_SOURCE_PRODUCTS_AND_ORIGINAL_EVIDENCE_RETAINED'
+               and retained['sourceCommit'] == retry['priorFailedSourceCommit']
+               and retained['originalFailure'] == {'exitCode': 65, 'uiPhaseRun': False, 'applicationAccepted': False},
+               'Terminal failed build preservation is required')
+    wr_require(not retained['sourceMutated'] and not retained['currentProductsMutated'] and not retained['cacheMutated'],
+               'Preservation mutated original source/cache/products')
+    wr_require(set(retained['trees']) == {'source', 'app-derived-Products', 'build16', 'root-dispatch1', 'control-dispatch1'},
+               'Complete failed source/products/original evidence retention required')
+    for row in retained['trees'].values():
+        path = pathlib.Path(row['retained'])
+        wr_require(path.is_dir() and not path.is_symlink(), 'Failed retained physical tree missing')
+        for name in ('before', 'retainedManifest', 'after'):
+            wr_require(wr_sha(row[name]['path']) == row[name]['sha256'], 'Failed retained manifest changed')
+    for relative, expected in retained['originalEvidence'].items():
+        wr_require(wr_sha(pathlib.Path(retry['priorBuildRoot']) / relative) == expected,
+                   'Original terminal failed evidence changed')
+    for name, path in [('intermediates', APP_DERIVED / 'Build/Intermediates.noindex'),
+                       ('sourcePackages', APP_DERIVED / 'SourcePackages'),
+                       ('sdkModules', APP_DERIVED / 'SDKExplicitPrecompiledModules'),
+                       ('products', APP_DERIVED / 'Build/Products')]:
+        wr_require(cache['observedPaths'][name] == {'path': str(path), 'exists': True, 'symlink': False}
+                   and path.is_dir() and not path.is_symlink(), 'Warm cache root changed')
+    wr_no_shared_writer(SOURCE, APP_DERIVED)
+    wr_require(wr_packages(SOURCE, APP_DERIVED) == cache['packageState'], 'Pinned warm package checkout identity changed')
+
+try:
+ w3_control_admission()
+ EVIDENCE.mkdir(exist_ok=False)
+ core_path=ROOT/"source-inputs/combined_heart_semantics_owned_outcomes.py"
+ assert sha(core_path)=="73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a"
+ core_spec=importlib.util.spec_from_file_location("app15_original_owned_outcomes",core_path)
+ core=importlib.util.module_from_spec(core_spec);core_spec.loader.exec_module(core)
+ LIFECYCLE=core.Commands(EVIDENCE/"owned-builder-lifecycle",SOURCE)
+ assert sha(pathlib.Path('/Users/m1/development/anytype-d-active-20261125/main16-wave3-8f2c11713fb8/source-staging1/receipt.json'))=="506620e9c9cb2aafe0c89076269c2a7d3a4cb6fa7334924a18dda4dff1b2f6bb"
+ staging=json.loads((pathlib.Path('/Users/m1/development/anytype-d-active-20261125/main16-wave3-8f2c11713fb8/source-staging1/receipt.json')).read_bytes())
+ assert staging["status"]=="PASS_EXACT_APP16_SOURCE_AND_NATIVE_REUSED_ORIGINALS_RETAINED" and staging["sourceCommit"]==EXPECTED
+ assert staging["sourceRoot"]==str(SOURCE) and staging["appDerived"]==str(APP_DERIVED)
+ cache_receipt=pathlib.Path('/Users/m1/development/anytype-root-active-20261125/shared-build-inputs-385289-20261127/warm-retry-8f2c11713fb8-inputs/resource-reassessment-original512-1/cache-requalification.json')
+ assert sha(cache_receipt)=="11575f9d03aaa36c2bddcc12ba2c01b1614631c73bedabc598c3abf57e4d8a7d"
+ cache=json.loads(cache_receipt.read_bytes())
+ wr_validate_cache(cache,staging)
+ write(EVIDENCE/"cache-requalification.json",dict(cache,receiptSHA256=sha(cache_receipt),freshFreeBytes=shutil.disk_usage(ROOT).free))
+ before=source_state()
+ assert before["commit"]==EXPECTED and before["status"]=="",before["status"]
+ write(EVIDENCE/"source-before.json",before)
+ verify_dependencies("before")
+ assembly=pathlib.Path('/Users/m1/development/anytype-d-active-20261125/main16-wave2-20261127/native-materialization-8ac/receipt.json')
+ assert sha(assembly)=="c9c90e3a12868bcedf5f0a4f116c4dc1c388bdcddd0e9f0170c047684c500231"
+ assert json.loads(assembly.read_text())["status"]=="PASS_ASSEMBLED_TWO_QUALIFIED_SLICES_NOT_APP_ACCEPTANCE"
+ lock=SOURCE/"Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+ sdk=SOURCE/"Dependencies/Hanlin/.pinkha-source.json"
+ native=SOURCE/"Dependencies/Middleware/Lib.xcframework/ios-arm64-simulator/Lib.framework/Lib"
+ assert sha(lock)=="e22368e522ac795253935b0a31e39d1b36bd9043ef2ed1014845927914527ccd"
+ assert sha(sdk)=="b10eb0805789a04f9f48721230961e45ba6a93ceb5d95cb90437a59c87ae9528"
+ assert sha(native)=="f94079de9eeb9e2e869f02bd1dda93fcd272e3191b2417ca4b4657cae5dc6763"
+ baseline={"freeBytes":shutil.disk_usage(ROOT).free,"memsize":subprocess.run(["sysctl","-n","hw.memsize"],capture_output=True,text=True).stdout.strip(),"cpus":subprocess.run(["sysctl","-n","hw.ncpu"],capture_output=True,text=True).stdout.strip(),"vmStat":subprocess.run(["vm_stat"],capture_output=True,text=True).stdout,"cacheSizes":subprocess.run(["du","-sk",str(APP_DERIVED/"Build/Products"),str(APP_DERIVED/"Build/Intermediates.noindex")],capture_output=True,text=True).stdout,"reasonForJobs4":"Measured 16 GiB/10 CPU host. The released existing physical source, exact native framework, SDK explicit modules and complete Products remain. Compiler intermediates and SourcePackages are absent and will be recreated in the existing DerivedData path. Original App15 source and complete Products were separately preserved byte/mode/link exactly before update. Four jobs retain the prior qualified scheduling; the new measured cache admission and a live 2 GiB own-process floor remain explicit.","phaseGrowthAllowanceBytes":PHASE_GROWTH,"phaseBudgetEvidence":{"previousMeasuredGlobalPeakDropsBytes":[2239700992,1799016448,375001088],"interpretation":"Previous global samples include unrelated activity. Intermediates and SourcePackages are absent. Prior complete App15 intermediates occupied 3.46 GiB; the 6 GiB App allowance adds 2.54 GiB for package checkouts and changed or relinked products. This is an estimate, not an observed peak. Native, SDK explicit modules and Products remain. UI has 1 GiB, concurrent unrelated growth has 512 MiB, and the unchanged live emergency floor remains 2 GiB. The separately pinned cache qualification invalidates only the earlier staging metadata claiming all compiler and package paths were retained."},"lockSHA256":sha(lock),"sdkReceiptSHA256":sha(sdk),"nativeSHA256":sha(native),"nativeSourceManifestSHA256":"8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b","stagingReceiptSHA256":sha(pathlib.Path('/Users/m1/development/anytype-d-active-20261125/main16-wave3-8f2c11713fb8/source-staging1/receipt.json')),"cacheRequalificationReceiptSHA256":sha(cache_receipt),"originalIntermediatesAndPackagePathsReused":False,"sourceRoot":str(SOURCE),"appDerived":str(APP_DERIVED),"concurrentGrowthAllowanceBytes":CONCURRENT_GROWTH}
+ baseline.update(originalIntermediatesAndPackagePathsReused=True,
+                 reasonForJobs4="Warm incremental retry from the retained terminal failed build. The same physical source and DerivedData retain actual compiler intermediates, all locked package checkouts, SDK explicit modules and Products. Original App15 and failed6aab source/Products/evidence remain separately preserved. Original four-job scheduling, 6 GiB App estimate and 2 GiB live own-process floor remain.",
+                 phaseBudgetEvidence={"warmCacheObservedSizes":cache["observedSizes"],
+                                     "interpretation":"The 6 GiB App allowance is retained conservatively; it is not a measured future incremental peak. Current post-failure compiler/package paths are physically present and qualified. The exact root-approved concurrent growth allowance remains additional."})
+ write(EVIDENCE/"input-and-resource-admission.json",baseline)
+ settings=["OTHER_SWIFT_FLAGS="+FLAGS,"ENABLE_TESTABILITY=YES","ONLY_ACTIVE_ARCH=YES","ARCHS=arm64","SWIFT_OPTIMIZATION_LEVEL=-Onone","CODE_SIGN_IDENTITY=-","CODE_SIGNING_ALLOWED=YES","CODE_SIGNING_REQUIRED=YES","PROVISIONING_PROFILE_SPECIFIER="]
+ app=["xcodebuild","build-for-testing","-project",str(SOURCE/"Anytype.xcodeproj"),"-scheme","Anytype","-configuration","Debug-Anytype","-destination","generic/platform=iOS Simulator","-derivedDataPath",str(APP_DERIVED),"-clonedSourcePackagesDirPath",str(APP_DERIVED/"SourcePackages"),"-resultBundlePath",str(EVIDENCE/"App.xcresult"),"-onlyUsePackageVersionsFromResolvedFile","-disableAutomaticPackageResolution","-jobs","4"]+settings
+ appresult=run_phase("app",app)
+ verify_new_test_compiler_inputs()
+ w3_native_proof()
+ verify_dependencies("after-app")
+ after=source_state();assert before==after,"Source changed during original app build"
+ assert sha(sdk)==baseline["sdkReceiptSHA256"] and sha(native)==baseline["nativeSHA256"]
+ ui_source=ROOT/"ui-source-build16";ui_source.mkdir()
+ selected=[n for n in git("ls-files","-z","PinkhaStage1Acceptance").split("\0") if n]
+ for name in selected:
+  source=SOURCE/name;dest=ui_source/name;dest.parent.mkdir(parents=True,exist_ok=True)
+  assert not source.is_symlink()
+  shutil.copy2(source,dest)
+  assert sha(source)==sha(dest)
+ helper=SOURCE/"Tools/PinkhaNativeDerived/rerun_original_ui.py"
+ assert sha(helper)=="7bf69636b42875aa7dd0fa39c11393e02e6760ef502cf68ef47b740f3bd066c0"
+ assert sha(SOURCE/"PinkhaStage1Acceptance/Tests/SemanticAnchorPage154MountedUITests.swift")=="8834541f5a47da80b460ecb96b20c930813b743d94f285fc1efba8a93f65ee4d"
+ nodes=[n for n in ast.parse(helper.read_text()).body if isinstance(n,ast.FunctionDef) and n.name=="ui_only_project"]
+ assert len(nodes)==1
+ function=ast.get_source_segment(helper.read_text(),nodes[0])
+ namespace={"shutil":shutil,"re":re,"ET":ET}
+ exec(compile(function,str(helper),"exec"),namespace)
+ ui_project=namespace["ui_only_project"](ui_source)
+ write(EVIDENCE/"original-ui-copy.json",{"generatorSHA256":sha(helper),"copiedFiles":[{"path":n,"sha256":sha(SOURCE/n)} for n in selected],"generatedProject":str(ui_project)})
+ ui=["xcodebuild","build-for-testing","-project",str(ui_project),"-scheme","PinkhaPrebuiltUI","-configuration","Debug-Anytype","-destination","generic/platform=iOS Simulator","-derivedDataPath",str(ROOT/"ui-derived"),"-resultBundlePath",str(EVIDENCE/"UI.xcresult"),"-jobs","4"]+settings
+ ui_snapshot=w3_ui_before(ui_source,ui_project,selected)
+ uiresult=run_phase("ui",ui)
+ w3_ui_after(ui_snapshot,ui_source,ui_project)
+ verify_dependencies("after-ui")
+ after=source_state();write(EVIDENCE/"source-after.json",after);assert before==after
+ products={}
+ for kind in ["app-derived","ui-derived"]:
+  base=(APP_DERIVED if kind=="app-derived" else ROOT/kind)/"Build/Products"
+  rows=[]
+  for p in base.rglob("*"):
+   if p.is_file() and (p.name in ["Info.plist","Anytype","PinkhaStage1AcceptanceUITests","PinkhaStage1AcceptanceUITests-Runner"] or p.suffix==".xctestrun"):
+    rows.append({"path":str(p),"bytes":p.stat().st_size,"sha256":sha(p)})
+  products[kind]=rows
+ write(EVIDENCE/"products.json",products)
+ inventories={}
+ for kind in ["app-derived","ui-derived"]:
+  base=(APP_DERIVED if kind=="app-derived" else ROOT/kind)/"Build/Products"
+  rows=[]
+  for p in sorted(base.rglob("*")):
+   rel=str(p.relative_to(base))
+   if p.is_symlink():rows.append({"path":rel,"kind":"symlink","target":os.readlink(p)})
+   elif p.is_file():rows.append({"path":rel,"kind":"file","bytes":p.stat().st_size,"sha256":sha(p)})
+  inventories[kind]={"base":str(base),"entries":rows}
+ write(EVIDENCE/"products-all.json",inventories)
+ write(EVIDENCE/"receipt.json",{"status":"PASS_COMBINED_MAIN_AND_COMPLETE_UI_BUILD_NOT_ACCEPTANCE","sourceCommit":EXPECTED,"app":appresult,"ui":uiresult,"inputs":baseline,"sourceUnchanged":True,"testsExecuted":0,"controllerSHA256":sha(pathlib.Path(__file__)),"assemblyReceiptSHA256":sha(assembly),"products":products,"completeProductsInventory":{"path":str(EVIDENCE/"products-all.json"),"sha256":sha(EVIDENCE/"products-all.json"),"entries":sum(len(v["entries"]) for v in inventories.values())},**w3_final_bindings()})
+except BaseException as exc:
+ EVIDENCE.mkdir(exist_ok=True)
+ try:write(EVIDENCE/"source-after.json",source_state())
+ except BaseException:pass
+ write(EVIDENCE/"failure.json",{"status":"FAIL","error":str(exc),"traceback":traceback.format_exc(),"time":time.time(),"sourceCommit":EXPECTED,"freeBytes":shutil.disk_usage(ROOT).free})
+ raise

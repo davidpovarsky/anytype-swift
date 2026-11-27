@@ -1,0 +1,42 @@
+{
+  "original6687Job": {
+    "ok": true,
+    "job": {
+      "id": "job_a25fa263f01f",
+      "type": "job_result",
+      "source": "exec@host_4b47bdb65d00e49d",
+      "severity": "warning",
+      "tool": "exec",
+      "host": "host_4b47bdb65d00e49d",
+      "status": "failed",
+      "exit_code": 1,
+      "created_at": 1795754038.006693,
+      "started_at": "2026-11-27T04:33:58.061797+00:00",
+      "finished_at": "2026-11-27T04:33:58.485956+00:00",
+      "duration_s": 0.42,
+      "error": null,
+      "output_truncated": false,
+      "timeout_s": 180,
+      "read": false,
+      "notified": {
+        "telegram": null,
+        "resend": null
+      },
+      "notify_spec": {},
+      "output": "Traceback (most recent call last):\n  File \"/Users/m1/sentinelx/uploads/pinkha-root-warm8f2-dispatch-6687b221f272.py\", line 333, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/Users/m1/sentinelx/uploads/pinkha-root-warm8f2-dispatch-6687b221f272.py\", line 329, in main\n    return execute_once()\n           ^^^^^^^^^^^^^^\n  File \"/Users/m1/sentinelx/uploads/pinkha-root-warm8f2-dispatch-6687b221f272.py\", line 200, in execute_once\n    initial_resource = global_admission(helper)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/m1/sentinelx/uploads/pinkha-root-warm8f2-dispatch-6687b221f272.py\", line 165, in global_admission\n    require(not observed['heavyCompilerOrCopyProcesses'] and not observed['queuedLaunchers'],\n  File \"/Users/m1/sentinelx/uploads/pinkha-root-warm8f2-dispatch-6687b221f272.py\", line 54, in require\n    raise ValueError(reason)\nValueError: Foreign heavy compiler/copy or queued launcher is present"
+    }
+  },
+  "blockedCensus1": {
+    "ok": true,
+    "output": "{\"receiptPath\": \"/Users/m1/development/anytype-root-active-20261125/shared-build-inputs-385289-20261127/warm-retry-8f2c11713fb8-inputs/root-blocked-predispatch-census1.json\", \"sha256\": \"d1cac138e90864bd7d16740ddf9a98f3adec8074b1f8bf0dd61bf3bcff6bc9a7\", \"freeBytes\": 5168197632, \"heavy\": [], \"queued\": [], \"admissionAndOutputs\": {\"root-dispatch1\": false, \"build-admission.approved.json\": false, \"control-dispatch1\": false, \"build16\": false}}",
+    "duration": 6.35,
+    "returncode": 0
+  },
+  "lowCapacityOwnerCensus": {
+    "ok": true,
+    "output": "{\"path\": \"/Users/m1/development/anytype-root-active-20261125/shared-build-inputs-385289-20261127/warm-retry-8f2c11713fb8-inputs/root-low-capacity-owner-census1.json\", \"sha256\": \"b5238b285af3e91e273009c52c8c5ee600f9e9ad935710d418dc4c3e310a2be5\", \"freeBytes\": 1486675968, \"heavy\": [], \"queued\": [], \"other\": [{\"pid\": 416, \"ppid\": 1, \"comm\": \"/opt/local/Library/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python\", \"command\": \"/opt/local/Library/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python /opt/local/Library/Frameworks/Python.framework/Versions/3.14/bin/fail2ban-server --async -b -s /opt/local/var/run/fail2ban/fail2ban.sock -p /opt/local/var/run/fail2ban/fail2ban.pid --loglevel INFO --logtarget /var/log/fail2ban.log --syslogsocket auto\"}, {\"pid\": 73621, \"ppid\": 1, \"comm\": \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python\", \"command\": \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /Users/m1/builds/pureline-wireguard-lab-20261127/datagram_relay.py mac\"}, {\"pid\": 95832, \"ppid\": 1, \"comm\": \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python\", \"command\": \"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -m http.server 18524 --bind 127.0.0.1 --directory /Users/m1/builds/pureline-wireguard-lab-20261127/gallery\"}]}",
+    "duration": 0.25,
+    "returncode": 0,
+    "_notice": "You have 3 unread SentinelX notification(s) (job results and/or announcements). Call notifications_check to read them."
+  }
+}

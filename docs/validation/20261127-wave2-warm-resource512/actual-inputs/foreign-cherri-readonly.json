@@ -1,0 +1,256 @@
+{
+  "controller": {
+    "bytes": 20421,
+    "path": "/Users/m1/builds/_preflight/cherri-ui-fixed-five-local-0fd3-20261127-01/qualified-owner-01/local_owner.py",
+    "sha256": "bec9662f8a11c11da5082556721040d8a361adbf9068a82aa30d99fd3ebc8834"
+  },
+  "foreignMutations": false,
+  "jsonArtifacts": [
+    {
+      "bytes": 455,
+      "keys": [
+        "attempt",
+        "destinationUDID",
+        "executionKind",
+        "githubRunId",
+        "githubWorkflow",
+        "host",
+        "localRunId",
+        "nativeAcceptanceGranted",
+        "repository",
+        "source",
+        "tree"
+      ],
+      "mtime": 1795752437.0705857,
+      "path": "/Users/m1/builds/_preflight/cherri-ui-fixed-five-local-0fd3-20261127-01/execution-01/context.original.json",
+      "sha256": "6380d91155edd4680e6d01ee0668542e85e5abf940bd047d457964b20c7f3624",
+      "stateFields": {}
+    },
+    {
+      "bytes": 720,
+      "keys": [
+        "DEVELOPER_DIR",
+        "GIT_OPTIONAL_LOCKS",
+        "GIT_TERMINAL_PROMPT",
+        "GOCACHE",
+        "GOFLAGS",
+        "GOMODCACHE",
+        "GOPATH",
+        "GOROOT",
+        "GOTMPDIR",
+        "GOTOOLCHAIN",
+        "PATH",
+        "TMPDIR"
+      ],
+      "mtime": 1795752437.07071,
+      "path": "/Users/m1/builds/_preflight/cherri-ui-fixed-five-local-0fd3-20261127-01/execution-01/environment.original.json",
+      "sha256": "4baa23cc9bffe9d01e2dd52969e7932c08ae2b8b8bdd17218388933d5a2f285e",
+      "stateFields": {}
+    },
+    {
+      "bytes": 574,
+      "keys": [
+        "device",
+        "runtime"
+      ],
+      "mtime": 1795752437.5134084,
+      "path": "/Users/m1/builds/_preflight/cherri-ui-fixed-five-local-0fd3-20261127-01/execution-01/owned-device.original.json",
+      "sha256": "31d566aae7cbb870b362d497a45d557c699821fc2c1335df4980467bd33811d4",
+      "stateFields": {}
+    },
+    {
+      "bytes": 987,
+      "keys": [
+        "completedCommands",
+        "consumerSource",
+        "derivedDataPath",
+        "generatedUntrackedStatusSHA256",
+        "manifest",
+        "nativeAcceptanceGranted",
+        "prerequisiteBuildsRerun",
+        "previousExecution",
+        "priorXcodebuildExitCode",
+        "producerSource",
+        "sha256",
+        "verifiedProductFiles"
+      ],
+      "mtime": 1795752439.0625048,
+      "path": "/Users/m1/builds/_preflight/cherri-ui-fixed-five-local-0fd3-20261127-01/execution-01/prerequisite-reuse.original.json",
+      "sha256": "e18f6010bf97db6ea0715dc37963128fc4960eb7c312a88153ae51b7110903d5",
+      "stateFields": {
+        "generatedUntrackedStatusSHA256": "196fcafd5a35bdc51390b3379dfba0db1c6f4535713f634f164bcd974d33f18b",
+        "priorXcodebuildExitCode": 65
+      }
+    },
+    {
+      "bytes": 6564,
+      "keys": [
+        "context",
+        "methods",
+        "nativeAcceptanceGranted",
+        "schema",
+        "scope",
+        "source"
+      ],
+      "mtime": 1795752437.1840646,
+      "path": "/Users/m1/builds/_preflight/cherri-ui-fixed-five-local-0fd3-20261127-01/execution-01/source-before.original.json",
+      "sha256": "dcee0d7870c0bef66b449019c4a7c5caebd90fd32032021ffb2a66d50ad2b9a3",
+      "stateFields": {}
+    },
+    {
+      "bytes": 700,
+      "keys": [
+        "actualSourceAdmissionSHA256",
+        "historicalTransportQualificationSource",
+        "nativeTestsRun",
+        "onlyChange",
+        "prerequisiteReuseSHA256",
+        "qualificationSHA256",
+        "sealedSHA256",
+        "source",
+        "sourceSHA256"
+      ],
+      "mtime": 1795752436.9944677,
+      "path": "/Users/m1/builds/_preflight/cherri-ui-fixed-five-local-0fd3-20261127-01/qualified-owner-01/seal.original.json",
+      "sha256": "116cfb2630900c87c990d3f173614c7f6ac40fbca2879921f09363f55874592a",
+      "stateFields": {}
+    }
+  ],
+  "knownOwnerProcesses": {
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "99343     1 05:14 /opt/homebrew/Cellar/python@3.12/3.12.16/Frameworks/Python.framework/Versions/3.12/Resources/Python.app/Contents/MacOS/Python -I -B /Users/m1/builds/_preflight/cherri-ui-fixed-five-local-0fd3-20261127-01/qualified-owner-01/local_owner.py\n99371 99343 05:12 /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project Cherri.xcodeproj -clonedSourcePackagesDirPath .build/SourcePackages -disableAutomaticPackageResolution -scheme Cherri -configuration Debug -destination platform=iOS Simulator,id=D631D98E-2271-4948-B465-8EDBA9BD4D68 -derivedDataPath /Users/m1/caches/DerivedData/cherri-ui-296-fixed-five-xcode27-20261127-02 -resultBundlePath /Users/m1/builds/_preflight/cherri-ui-fixed-five-local-0fd3-20261127-01/execution-01/tests.xcresult CODE_SIGNING_ALLOWED=NO -only-testing:CherriTests/CherriWorkspacePresentationTests/testCompactPaneTransitionsKeepNativeViewsAndDocumentState -only-testing:CherriTests/CherriWorkspacePresentationTests/testCompactUncompiledDocumentsDoNotInstantiateWebKit -only-testing:CherriTests/CherriWorkspacePresentationTests/testDocumentationSearchUsesLiteralNativeInputTraits -only-testing:CherriUITests/CherriJoinedContractUITests/testRP39ActualCombinedEditorAndDelayedAnalysisUI -only-testing:CherriUITests/CherriPreviewDocumentUITests/testRP41ActualMappedAndGeneratedPreviewSourceUI test\n"
+  },
+  "observedAt": 1795752751.785353,
+  "schema": "pinkha-foreign-cherri-phase-readonly-v1",
+  "selectedControllerLines": [
+    {
+      "line": 91,
+      "text": "        signal.setitimer(signal.ITIMER_REAL, 0)"
+    },
+    {
+      "line": 92,
+      "text": "        raise TimeoutError(reason)"
+    },
+    {
+      "line": 93,
+      "text": ""
+    },
+    {
+      "line": 113,
+      "text": "            'EXACT_COMPLETED_PREREQUISITES')"
+    },
+    {
+      "line": 114,
+      "text": "    for row in reuse['originalReceipts']:"
+    },
+    {
+      "line": 115,
+      "text": "        require(digest(read_owned(Path(row['path']))) == row['sha256'],"
+    },
+    {
+      "line": 157,
+      "text": "            '47e00f4bcb5b5eda8d2b74a4bd4f1aef294f064e43e0dc3a250195e6731a943a',"
+    },
+    {
+      "line": 158,
+      "text": "            'SOURCE_ADMISSION_RECEIPT')"
+    },
+    {
+      "line": 159,
+      "text": "    require(digest(read_owned(GO_ROOT / 'bin/go')) == GO_SHA, 'GO_BINARY')"
+    },
+    {
+      "line": 192,
+      "text": "    start = time.monotonic()"
+    },
+    {
+      "line": 193,
+      "text": "    deadline = start + WHOLE_SECONDS"
+    },
+    {
+      "line": 194,
+      "text": "    records = []"
+    },
+    {
+      "line": 207,
+      "text": "            interruption.interrupt('LOCAL_OWNER_SIGNAL_' + str(sig))"
+    },
+    {
+      "line": 208,
+      "text": "        if time.monotonic() >= deadline:"
+    },
+    {
+      "line": 209,
+      "text": "            interruption.interrupt('LOCAL_OWNER_75_MINUTE_DEADLINE')"
+    },
+    {
+      "line": 210,
+      "text": "        disk = os.statvfs('/System/Volumes/Data')"
+    },
+    {
+      "line": 242,
+      "text": "        try:"
+    },
+    {
+      "line": 243,
+      "text": "            stage_deadline = deadline if postflight else deadline - POSTFLIGHT_RESERVE"
+    },
+    {
+      "line": 244,
+      "text": "            allowance = max(0, stage_deadline - time.monotonic())"
+    },
+    {
+      "line": 245,
+      "text": "            if seconds is not None:"
+    },
+    {
+      "line": 248,
+      "text": "                observed, details = capture(invoked, allowance, output=out,"
+    },
+    {
+      "line": 249,
+      "text": "                    error_output=err, hard_deadline=deadline,"
+    },
+    {
+      "line": 250,
+      "text": "                    execution_deadline=stage_deadline, journal=journal)"
+    },
+    {
+      "line": 251,
+      "text": "            require(details['cleanupParentReaped'] and"
+    },
+    {
+      "line": 322,
+      "text": "        command('verify-documentation', [sys.executable, '-I', '-B',"
+    },
+    {
+      "line": 323,
+      "text": "            W / 'ios/scripts/build_documentation_index.py', '--verify-output', '--receipt',"
+    },
+    {
+      "line": 324,
+      "text": "            W / 'ios/.build/documentation-receipt.json'], W, 20)"
+    },
+    {
+      "line": 325,
+      "text": "        command('verify-editor', [sys.executable, '-I', '-B', 'scripts/prepare_editor_dependency.py',"
+    },
+    {
+      "line": 368,
+      "text": "                 'sourceBeforeAfterEqual': source_before is not None and source_before == source_after,"
+    },
+    {
+      "line": 369,
+      "text": "                 'resourceProfile': 'VERIFIED_INCREMENTAL/1', 'admissionBytes': ADMISSION_BYTES, 'liveReserveBytes': LIVE_RESERVE,"
+    },
+    {
+      "line": 370,
+      "text": "                 'wholeBudgetSeconds': WHOLE_SECONDS, 'elapsedSeconds': time.monotonic() - start,"
+    },
+    {
+      "line": 371,
+      "text": "                 'commands': len(records), 'dataAvailableBytes': disk.f_bavail * disk.f_frsize,"
+    }
+  ]
+}

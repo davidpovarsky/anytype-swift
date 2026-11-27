@@ -1,0 +1,74 @@
+{
+  "actualMacInvocations": 0,
+  "effectiveAdmissionCreated": false,
+  "fixtureOnlyControls": [
+    {
+      "actualCensusRetained": true,
+      "case": "heavy",
+      "claimOrDispatch": false,
+      "exitCode": 1
+    },
+    {
+      "actualCensusRetained": true,
+      "case": "queue",
+      "claimOrDispatch": false,
+      "exitCode": 1
+    },
+    {
+      "actualCensusRetained": true,
+      "case": "capacity",
+      "claimOrDispatch": false,
+      "exitCode": 1
+    },
+    {
+      "actualForeignObservationRetained": true,
+      "case": "foreign-terminal",
+      "censusInvoked": false,
+      "claimOrDispatch": false,
+      "exitCode": 1
+    },
+    {
+      "buildInvoked": false,
+      "case": "original-envelope-boundary",
+      "sameObservedObjectReturned": true
+    }
+  ],
+  "guardsAndBudgetUnchanged": true,
+  "inverseExact": true,
+  "inverseReplacements": [
+    {
+      "new": "    try:\n        require(not observed['heavyCompilerOrCopyProcesses'] and not observed['queuedLaunchers'],\n                'Foreign heavy compiler/copy or queued launcher is present')\n        require(observed['freeBytes'] >= ENVELOPE, 'Original finite-window phase allowance is unavailable')\n    except BaseException as exc:\n        exc.resource_census = observed\n        raise\n    return observed\n",
+      "old": "    require(not observed['heavyCompilerOrCopyProcesses'] and not observed['queuedLaunchers'],\n            'Foreign heavy compiler/copy or queued launcher is present')\n    require(observed['freeBytes'] >= ENVELOPE, 'Original finite-window phase allowance is unavailable')\n    return observed\n"
+    },
+    {
+      "new": "    foreign = None\n    try:\n        foreign = cherri_terminal()\n        require(foreign['status'].startswith('PASS_'), 'Foreign terminal resource check is blocked: ' + json.dumps(foreign.get('blocker')))\n        initial_resource = global_admission(helper)\n    except BaseException as exc:\n        print(json.dumps({'schema': 'pinkha-root-warm8f2-blocked-before-claim-v1',\n            'status': 'BLOCKED_BEFORE_CLAIM_AND_DISPATCH', 'observedAt': time.time(),\n            'launcherSHA256': digest(__file__), 'sourceCommit': SOURCE_SHA,\n            'foreignTerminal': foreign, 'initialResource': getattr(exc, 'resource_census', None),\n            'error': {'type': type(exc).__name__, 'message': str(exc)},\n            'rootClaimCreated': False, 'effectiveAdmissionCreated': False,\n            'supervisorStarted': False}, sort_keys=True), flush=True)\n        return 1\n",
+      "old": "    foreign = cherri_terminal()\n    require(foreign['status'].startswith('PASS_'), 'Foreign terminal resource check is blocked: ' + json.dumps(foreign.get('blocker')))\n    initial_resource = global_admission(helper)\n"
+    }
+  ],
+  "original": {
+    "bytes": 21048,
+    "path": "/workspace/scratch/ae335eba85e3/pinkha-wave3-build-control/root_dispatch_warm8f2.py",
+    "sha256": "6687b221f27293956c9a3f5092d47aa3784058d25e1730d036339b1a71ca895c"
+  },
+  "originalEnvelopeBytes": 9126805504,
+  "originalFailurePreserved": "root original job_a25fa263f01f unchanged; successor adds no historical observation",
+  "schema": "pinkha-dispatch-census-only-successor-review-v1",
+  "successor": {
+    "bytes": 21805,
+    "path": "/workspace/scratch/ae335eba85e3/pinkha-wave3-build-control/root_dispatch_warm8f2_census_retained.py",
+    "sha256": "ec8566a265b301775d766a742b34158e9b2dec234596bd9e82032a55a6c21cea"
+  },
+  "unchangedFunctions": [
+    "require",
+    "digest",
+    "reference",
+    "original_json",
+    "command",
+    "cherri_terminal",
+    "write_bytes",
+    "write",
+    "load_module",
+    "native_preflight",
+    "main"
+  ]
+}
