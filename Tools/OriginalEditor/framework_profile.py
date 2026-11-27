@@ -92,6 +92,53 @@ def verify_complete_source(profile, continuation):
             'framework_facade_sources': facades, 'native_qualified': False}
 
 
+
+ASSISTANT_CAPABILITY_ROUTE = {
+    "package_id": "656317E261FEB6E8F0B504E0",
+    "product_id": "66C53E67789D89F6AEA6AD38",
+    "build_file_id": "1FB69AB809D9F78201546380",
+    "framework_phase_id": "F4E9B92EDBC5AFFFB8F097CC",
+    "target_id": "83B785D0C457FE3CCBAB196E",
+    "package_path": "Dependencies/Hanlin",
+    "product_name": "HanlinAssistantCapabilities",
+}
+
+
+def verify_assistant_capability_route(candidate, added, profile):
+    route = profile.get("assistant_capability_route")
+    if route is None:
+        return None
+    require(route == ASSISTANT_CAPABILITY_ROUTE,
+            "Unreviewed original Hanlin capability composition")
+    objects = candidate["objects"]
+    package, product, build = route["package_id"], route["product_id"], route["build_file_id"]
+    expected_product = {"isa": "XCSwiftPackageProductDependency", "package": package,
+                        "productName": "HanlinAssistantCapabilities"}
+    require({package, product, build} <= set(added)
+            and objects[package] == {"isa": "XCLocalSwiftPackageReference",
+                                     "relativePath": "Dependencies/Hanlin"}
+            and objects[product] == expected_product
+            and objects[build] == {"isa": "PBXBuildFile", "productRef": product},
+            "Original Hanlin package, product or build binding differs")
+    target = objects[route["target_id"]]
+    phase = objects[route["framework_phase_id"]]
+    require(target["name"] == TARGET
+            and target["packageProductDependencies"].count(product) == 1
+            and target["buildPhases"].count(route["framework_phase_id"]) == 1
+            and phase["isa"] == "PBXFrameworksBuildPhase"
+            and phase["files"].count(build) == 1
+            and objects[candidate["rootObject"]]["packageReferences"].count(package) == 1,
+            "Original Hanlin capability is not linked exactly once by its original framework owner")
+    owners = [key for key, obj in objects.items()
+              if obj.get("isa") == "PBXNativeTarget"
+              and product in obj.get("packageProductDependencies", [])]
+    phases = [key for key, obj in objects.items()
+              if obj.get("isa") == "PBXFrameworksBuildPhase" and build in obj.get("files", [])]
+    require(owners == [route["target_id"]] and phases == [route["framework_phase_id"]],
+            "Original Hanlin capability acquired another implementation owner")
+    return expected_product
+
+
 def verify_project(raw, baseline, profile):
     require(blob(baseline) == profile['baseline_project_blob'], 'Original project snapshot differs')
     require(hashlib.sha256(raw).hexdigest() == profile['candidate_project_sha256'],
@@ -163,7 +210,11 @@ def verify_project(raw, baseline, profile):
     products = [new[key] for key in target['packageProductDependencies']]
     require(products.count(route['runtime_product']) == 1,
             'Shared runtime is missing or repeated')
-    original_products = [route['original_product'] if p == route['runtime_product'] else p for p in products]
+    assistant = verify_assistant_capability_route(candidate, added, profile)
+    if assistant is not None:
+        require(products.count(assistant) == 1, 'Original Hanlin capability product is missing or repeated')
+    original_products = [route['original_product'] if p == route['runtime_product'] else p
+                         for p in products if p != assistant]
     require(original_products == [old[key] for key in original_target['packageProductDependencies']],
             'Original package product closure differs')
     framework_configurations = new[target['buildConfigurationList']]['buildConfigurations']
@@ -192,7 +243,7 @@ def verify_project(raw, baseline, profile):
             'new_objects': len(added), 'complete_facade_compiler_inputs': len(child_ids),
             'original_explicit_compiler_inputs': len(original_source_refs),
             'original_package_products': len(target['packageProductDependencies']),
-            'shared_runtime_route': route,
+            'shared_runtime_route': route, 'assistant_capability_route': profile.get('assistant_capability_route'),
             'framework_target_id': targets[0], 'only_excluded_source': 'ApplicationLayer/AppScene.swift',
             'reviewed_shared_dependency_objects': sorted(dependencies),
             'target_only_full_public_spi_graph': True, 'whole_project_inverse_exact': True,
