@@ -1,0 +1,85 @@
+{
+  "schema": "pinkha.wave2.native-styled-runtime-source-review/1",
+  "reviewedAtUTC": "2026-11-27T06:55:06.741191+00:00",
+  "reviewer": "ChatGPT Wave2 editor",
+  "status": "CHANGES_REQUIRED_BEFORE_RUNTIME_OPENING",
+  "scope": "Command/lifecycle/source binding, exact executable-specialization inverse, same owned simulator rendezvous, final settings restoration and first-failure custody; collector semantic and broader source-profile review remain root-owned",
+  "inputs": {
+    "runtime": {
+      "path": "/workspace/scratch/1d35894f12d5/interfaces_work/native-styled-control/native_styled_runtime.py",
+      "sha256": "2d87c4f7daac314db9f6955e7e52c13ea4c6d4d8e5715ff7b353e1d245719ff8",
+      "bytes": 26669
+    },
+    "materializedRunner": {
+      "path": "/workspace/scratch/1d35894f12d5/interfaces_work/native-styled-control/materialized-closed1/run_prebuilt_native_ui16.py",
+      "sha256": "3cf37621c9257447c75ac1a935d142933491f61e74f96287c716f086d441777e"
+    },
+    "originalRunner": {
+      "path": "/workspace/scratch/1d35894f12d5/interfaces_work/library-search-ui/materialized3/run_prebuilt_native_ui16.py",
+      "sha256": "9ec947cd3020339f9c732052dbf04eab380ebc820f35c69901578c07cdc2dafa"
+    },
+    "originalExecutableReader": {
+      "path": "/workspace/scratch/1d35894f12d5/interfaces_work/native-rtl/run_ui27.py",
+      "sha256": "87e0972ee6852d1fdb34d82afa5dde346baf836afaa8419203b647e7d3e21ca7",
+      "functionSHA256": "9173ba8198b3ae2a47ecb8f9be33cc2d015f31fe0a5315fb7d88c0cdf1225fcb"
+    }
+  },
+  "findings": [
+    {
+      "id": "STYLED-RUN-01",
+      "severity": "blocking-before-execution",
+      "location": "native_styled_runtime.py LiveSession.execute.original_execution and unchanged materialized run_prebuilt_native_ui16.py run, post-Popen lines98–132",
+      "problem": "worker_finished proves that the Python call/thread ended, not that an exception after spawning reaped the xcodebuild process or closed its group. The original run function has no guaranteed post-Popen finally: command-receipt write, disk sampling, log flush or evidence failure can raise before its ordinary timeout cleanup and group observation. LiveSession catches the exception, sets worker_finished, joins the thread, and rethrows; main then enters styled restoration and simulator shutdown with no actual process-group terminal proof. This can leave the owned xcodebuild alive and race final settings/device actions.",
+      "requiredBoundary": "Retain this exact original source and add a separately reviewed, finite post-Popen exception-cleanup boundary for commands used by this future live path. Resolve the owned process/group before treating worker completion as lifecycle completion; preserve the initiating exception separately from cleanup errors and never infer absence from thread completion. No need to rerun any old UI/native tests."
+    }
+  ],
+  "verifiedSourceBoundaries": [
+    "Exact two-substitution executable-reader specialization restores every original byte; original Anytype app reader remains unchanged; actual runner executable derives only from admitted descriptor and Info.plist.",
+    "Fresh private owned scope, exact 13-field context and source/UDID/settings readback pins, actual installed runner code-carrier equality and owned data-container path remain required.",
+    "Exactly two ordered size requests require matching invocation, nonces, runner/App identities and stable original read-only native projection; responses bind retained exact request/readback bytes.",
+    "The setting-may-have-changed latch precedes the setter; session.finish attempts restoration and independent actual readback using cleanup commands; evidence failures remain separate.",
+    "Main invokes finalization in its finally before simulator shutdown and retains original first failure plus diagnostic failures. Actual XCTest result qualification remains separate from coordination PASS.",
+    "Generated runner retains all 16 original declarations outside loader/main, including run/bind and original result validators; current profile remains literal None/False closed."
+  ],
+  "declarationDelta": {
+    "changedOriginal": [
+      "native8ac_module",
+      "main"
+    ],
+    "unchangedOriginal": [
+      "require",
+      "digest",
+      "write",
+      "inventory",
+      "original_module",
+      "run",
+      "bind",
+      "admit_miniapps_runner",
+      "admit_current_runner",
+      "admit_current_menu_runner",
+      "native11619_module",
+      "bin_confirmation_module",
+      "admit_410b_runner",
+      "companion86_module",
+      "admit_real_companion",
+      "qualify_miniapps_report"
+    ],
+    "added": []
+  },
+  "readerSpecializationInverse": {
+    "verifiedBySourceComparison": true,
+    "candidateFunctionSHA256": "5bc0eb5de86e921cf7345a71aa7f517c7e6e4fa7fbef8487b7bfc8e5f693a8bb",
+    "changes": 2
+  },
+  "executionByReviewer": {
+    "sourceReadAndASTComparison": true,
+    "portableControlsRerun": false,
+    "subprocessProbe": 0,
+    "Swift": 0,
+    "XCTest": 0,
+    "Native": 0,
+    "Mac": 0,
+    "Oracle": 0
+  },
+  "evidenceLimits": "Five existing portable controls were not rerun and do not establish actual xcodebuild exception closure or UI acceptance."
+}

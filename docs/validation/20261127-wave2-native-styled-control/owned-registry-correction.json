@@ -1,0 +1,55 @@
+{
+  "AppleBuilds": 0,
+  "UIRuns": 0,
+  "activation": "Local main(run=run) parameter is rebound once after original LIFECYCLE73bb initialization; no shared-global monkeypatch",
+  "backendProcessesSpawned": 0,
+  "closure": "Aggregate includes every captured command; an exited xcode process cannot hide an unresolved simctl group",
+  "collectorSchemaChanged": false,
+  "controlResult": "4 focused portable methods PASS, original run body + synthetic Popen + actual generated guards; no old broad rerun",
+  "files": {
+    "materialized-closed3/build_prebuilt_native_ui16.py": {
+      "bytes": 45722,
+      "sha256": "b884c8d950d4ae7c1f658b1e4930d3632442c3ccd89996ffbbf8a4887053665a"
+    },
+    "materialized-closed3/nativeui16-materialization.json": {
+      "bytes": 25688,
+      "sha256": "26d0a394133f27a0f6703c15f6ab0c4448c9ab6757b70b3018a30935ff3d1593"
+    },
+    "materialized-closed3/run_prebuilt_native_ui16.py": {
+      "bytes": 67813,
+      "sha256": "36c3c0e91616a0fdeb94dc7691c8b105ef75a46fba7b4c8c3607c733704284a0"
+    },
+    "native16_profile_closed.py": {
+      "bytes": 48896,
+      "sha256": "a499920e54468a8a81b5d86ec16aa809a2b99d9bd7cee66df6d615b43ab1f5b5"
+    },
+    "native_styled_observations.py": {
+      "bytes": 48859,
+      "sha256": "71c376659d34b7065d152f22c41f2ded731d4527d0231375a3e688a31e7f4f02"
+    },
+    "native_styled_runtime.py": {
+      "bytes": 40172,
+      "sha256": "c249ab9d04b4f8014475cf1eb8b81cf0371cab40a3f98a77b2938a2a0f2b6714"
+    },
+    "prepare_native_styled_controllers_closed.py": {
+      "bytes": 23964,
+      "sha256": "57f2b7ec59923fe8ce8f37694a2eeae1582bd9251d67d70dc3bf59207a6ca9c5"
+    },
+    "registry-controls4.json": {
+      "bytes": 707,
+      "sha256": "c2a3beac6a5286822efff67ce44f54865edee5b731f187d7324d568b22513a7e"
+    }
+  },
+  "finding": "STYLED-RUN-01",
+  "firstException": "Exact first exception object is preserved across owned cleanup and closure-save failure",
+  "nativeCalls": 0,
+  "originalLifecycleSHA256": "73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a",
+  "originalRunDeclarationSHA256": "5ea092b2a4d7159e8dec45b264224811e24e64265493a1e4958e4937b5fecaad",
+  "previousRuntimeSHA256": "342a6a7b5a7e0e72ad139b46a3201e05a9d86a3e4a0a8d78d565f33d43c52c12",
+  "registry": "One source-qualified registry wraps exact original run with isolated globals for every command, including setter/readback, both XCTest methods and final cleanup",
+  "schema": "native-styled-all-owned-command-correction/v1",
+  "scope": "Both newly introduced styled stages only; original historical profiles unchanged",
+  "sidecars": "Per-command owned closure plus final styled-owned-commands.json pinned after last command",
+  "status": "SOURCE_PREPARED_PENDING_INDEPENDENT_REVIEW",
+  "unresolvedAction": "Reject new commands, skip settings/readback/sandbox/shutdown, retain exact owned device and FAIL"
+}

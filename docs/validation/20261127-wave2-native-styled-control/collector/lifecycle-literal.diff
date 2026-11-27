@@ -1,0 +1,19 @@
+--- da471/native_styled_observations.py
++++ exact73bb/native_styled_observations.py
+@@ -24,6 +24,7 @@
+ PREFIX19_BYTES = 214858
+ PREFIX19_SHA = "31c64474cebf4890050f9077d3c44fac63264d878a77bd6f55811cc407e02422"
+ ADDITION_SHA = "b97c6ad4910088bae310914010a494981569becac0cffb0cf3ccd9018690828a"
++OWNED_OUTCOMES_SHA = "73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a"
+ CHOICES = ("paragraph", "heading-1", "heading-2", "heading-3", "bulleted-list",
+            "numbered-list", "checklist", "quote", "code")
+ CATALOG_PHASES = tuple(phase for choice in CHOICES for phase in (
+@@ -492,7 +493,7 @@
+               and (argv is None or command["argv"] == argv)
+               and _positive(command.get("pid")) and command.get("pgid") == command["pid"]
+               and type(command.get("pgid")) is int and _number(command.get("started"))
+-              and command["started"] > 0 and _hex(command.get("lifecycleSHA256"))
++              and command["started"] > 0 and command.get("lifecycleSHA256") == OWNED_OUTCOMES_SHA
+               and command.get("cleanupErrors") == [] and command.get("termination") == [],
+               "Original command argv/owned process/initial lifecycle record differs")
+     for value in (result, process):
