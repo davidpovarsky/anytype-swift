@@ -1,0 +1,90 @@
+{
+  "schema": "pinkha-host-text-readback-interfaces-independent-review/v1",
+  "reviewer": "interfaces",
+  "status": "PASS_SOURCE_REVIEW_ONLY_RUNTIME_NOT_RUN",
+  "manifestSHA256": "149c10f0e5be928857572eb4bb66a1f778bf0775d5c9e98dfe9e900fe8f1b8e7",
+  "candidateFiles": [
+    {
+      "path": "torah-acceptance-prep/native-text-readback/candidate/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+      "bytes": 11711,
+      "sha256": "1ea82b556e9f16b7903de03bbe435a249c6c922ade9798a01d648c8394c2604d",
+      "gitBlob": "5963c98988416bec1a1761466a3fb21f1cc3f66b"
+    },
+    {
+      "path": "torah-acceptance-prep/native-text-readback/candidate/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHostTests.swift",
+      "bytes": 23666,
+      "sha256": "4cc5c251b525b36ab710d6fa05163ccb27a8e3c801c5e88eab44533253db13e5",
+      "gitBlob": "a906253cb86dc64e2befa4d0991e105b6b3a8472"
+    },
+    {
+      "path": "torah-acceptance-prep/native-text-readback/candidate/Modules/PinkhaAnyHost/Tests/Fixtures/editor_text_readback_server.py",
+      "bytes": 6125,
+      "sha256": "d91554403d0fc9f84cd8792006ab150506923e0a003000fb4caff171a52800bd",
+      "gitBlob": "bb8db3836745353c49cc4681b7beae3aa59c92f0"
+    }
+  ],
+  "scope": [
+    "Exact top-level requested string text matcher and preservation of original dispatch/lease/ACL/version/Undo path",
+    "Actual Host read/prepare/apply/readback exercised by the new source, with one conditional HTTP PATCH and explicit raw-byte request/response checks",
+    "Controlled route shapes against original member/object/reachable-block/query/version requirements",
+    "Fixture ownership, actor captures, response mismatch versus positive verification, retained closure and private evidence"
+  ],
+  "findings": [],
+  "verifications": {
+    "productCompleteInverseExact": true,
+    "originalTestPrefixBytes": 13015,
+    "originalTestPrefixExact": true,
+    "newXCTestMethods": 2,
+    "declaredLoopedHTTPFlows": 4,
+    "controlledFixtureIsNotNativeAcceptance": true,
+    "globalAnyJSONEqualityUnchanged": true,
+    "actualReadbackResultAndUndoAreAsserted": true,
+    "rawPatchTextUTF8AndSameVersionPrerequisiteAreAsserted": true
+  },
+  "reasoning": [
+    "The sole product replacement changes only requested key text when its expected value is a string. Exact UTF-8 comparison rejects a canonical-equivalent mismatch; every non-text/non-string and unset branch retains its original comparison.",
+    "The new methods build the actual Sendable store and original AnyApplicationSession, perform original read/prepareTextEdit/apply/read, and drain the owner on success or error. The controlled fixture is confined to the test target and does not inject a product receipt.",
+    "The server supplies the exact same-scope member/object and complete reachable block shapes consumed by the inspected production access validator. Its conditional PATCH validates requested text bytes, expected version/start and single dispatch before changing the version; the two negative vectors retain old bytes with that new version, exercising the actual matcher boundary.",
+    "The positive vectors inspect verifiedCurrent, original inverse raw bytes, redo requested bytes and expected new version. These are two XCTest methods with two looped vectors each; no four-leaf enumeration is claimed.",
+    "Each fixture owns a fresh0700 directory, bounded loopback-only server, current Process and stdin-EOF lifetime. The server does not spawn children. The caller closes its unused reader, owns the writer through the entire call, drains the application session before stop, and requires process exit0 plus matching PID/EOF evidence. Timeout/closure evidence failure adds XCTest failure; the source makes no successful-cleanup claim on that path.",
+    "MainActor test helpers pass only Sendable store/input values into the original session closure; the private unchecked-Sendable fixture is not captured by that operation and has no independently scheduled mutation. No concrete actor/API or obvious source compile blocker was found."
+  ],
+  "inspectedDependencyFiles": [
+    {
+      "path": "torah-acceptance-prep/native-text-readback/source/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift",
+      "sha256": "7a51c02baafba146fac43ab0b5737ab3db6465ebdc142bce3d1a6ea33bf36c56"
+    },
+    {
+      "path": "wave2-semantic-anchor-audit/source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd"
+    },
+    {
+      "path": "wave2-semantic-anchor-audit/source/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "sha256": "8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182"
+    },
+    {
+      "path": "torah-acceptance-prep/native-text-readback/source/Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPAuthorizationFenceTests.swift",
+      "sha256": "ddf5ffd3bf4009ca1d735874b1e831ac5477641e6b14c6e0878b638f033c5cfb"
+    }
+  ],
+  "limits": [
+    "No Swift compilation, test enumeration or execution; test-source compatibility remains an actual compiler gate.",
+    "No server invocation, Native engine/account/ACL/storage acceptance, Apple UI or simulator action.",
+    "The controlled run must still produce its actual raw dispatch/response/process evidence; source review is not the runtime result.",
+    "No new actual transport closure or Native25 result is inferred."
+  ],
+  "retainedInspectionStop": {
+    "path": "interfaces-review-attempt1.json",
+    "sha256": "b39dac3e2c1f8f8c1169c9fa01bc8cf8ac892f412b4eef43170d6a83bed70303",
+    "kind": "Reviewer-only incorrect expanded digest assertion; no source or execution changed"
+  },
+  "execution": {
+    "Swift": 0,
+    "XCTest": 0,
+    "HTTPFixture": 0,
+    "Native": 0,
+    "Oracle": 0,
+    "Mac": 0,
+    "sourceByteInspectionOnly": true
+  }
+}

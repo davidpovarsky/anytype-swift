@@ -1,0 +1,62 @@
+{
+  "schema": "pinkha-host-text-readback-source-preservation/v1",
+  "status": "SOURCE_ONLY_NOT_COMPILED_OR_EXECUTED",
+  "baseCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "productInverse": {
+    "path": "torah-acceptance-prep/native-text-readback/product-inverse.json",
+    "bytes": 1581,
+    "sha256": "a164e3f690c75687d5339ca00adfcf86f26f072c50784d503cc1c282cd42647a",
+    "gitBlob": "f0d5032f0930148bffb64f5e2057ccaf07d1824a"
+  },
+  "testOriginal": {
+    "path": "torah-acceptance-prep/native-text-readback/source/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHostTests.swift",
+    "bytes": 13015,
+    "sha256": "9d0a20192f68afb43878a591c332399b373902839d6dc18cc08b0ef65b9c3000",
+    "gitBlob": "77f71200007910a29dd38bb1f6f5829ed3efc980"
+  },
+  "testCandidate": {
+    "path": "torah-acceptance-prep/native-text-readback/candidate/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHostTests.swift",
+    "bytes": 23666,
+    "sha256": "4cc5c251b525b36ab710d6fa05163ccb27a8e3c801c5e88eab44533253db13e5",
+    "gitBlob": "a906253cb86dc64e2befa4d0991e105b6b3a8472"
+  },
+  "testAddition": {
+    "path": "torah-acceptance-prep/native-text-readback/http-readback-tests.swift",
+    "bytes": 10651,
+    "sha256": "93ad7ee654291c341542d2240bdbb44c26ea4fbfbdab48aeab1140cba62f5698",
+    "gitBlob": "7720c9deb1783c80ea498dc21d42a576935644c3"
+  },
+  "completeTestPrefixUnchanged": true,
+  "oldMethodDeclarations": 23,
+  "newMethodDeclarations": [
+    "testCanonicalEquivalentTextReadbackCannotCertifyWriteOrMintUndo",
+    "testExactUnicodeTextReadbackRetainsVerifiedReceiptAndExactInverse"
+  ],
+  "newXCTestMethods": 2,
+  "loopedVectorsPerMethod": 2,
+  "controlledHTTPApplyFlows": 4,
+  "declaredXCTestLeaves": 2,
+  "fixture": {
+    "path": "torah-acceptance-prep/native-text-readback/candidate/Modules/PinkhaAnyHost/Tests/Fixtures/editor_text_readback_server.py",
+    "bytes": 6125,
+    "sha256": "d91554403d0fc9f84cd8792006ab150506923e0a003000fb4caff171a52800bd",
+    "gitBlob": "bb8db3836745353c49cc4681b7beae3aa59c92f0"
+  },
+  "fixturePythonASTParse": "PASS_SOURCE_PARSE_ONLY",
+  "sourcePatch": {
+    "path": "torah-acceptance-prep/native-text-readback/source.patch",
+    "bytes": 18412,
+    "sha256": "81c87ecbacd0b9d3603a8a886790bcc5bafc2c16e246ea0965bd2003f6bb6776",
+    "gitBlob": "e1c298366c99399b1af398b7ec4729100dbb04b8"
+  },
+  "sourceFixturePattern": "Existing Engine AnyHTTPAuthorizationFenceTests and AnyNativeFileUploadHTTPTests own a Python loopback server; new test reuses that pattern, not their previously accepted result. Original Engine tests and fixtures are unmodified.",
+  "ownership": "Root reports W1 acceptance HQ1220956399195998 at14:58; W2 owns this exact Host matcher and regression, C has no competing published change. No structural editor/Undo topology work.",
+  "execution": {
+    "SwiftCompilerCalls": 0,
+    "XCTestExecuted": 0,
+    "HTTPFixtureInvocations": 0,
+    "NativeCalls": 0,
+    "OracleCalls": 0,
+    "MacCalls": 0
+  }
+}

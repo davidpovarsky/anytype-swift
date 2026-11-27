@@ -1,0 +1,20 @@
+--- a/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift
++++ b/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift
+@@ -209,7 +209,13 @@
+         path.split(separator: ".").reduce(Optional(value)) { $0?[$1.description] }
+     }
+     static func matches(_ native: AnyJSON, set: [String: AnyJSON], unset: [String]) -> Bool {
+-        set.allSatisfy { field(native, path: $0.key) == $0.value } &&
+-        unset.allSatisfy { field(native, path: $0) == nil }
+-    }
+-}
++        set.allSatisfy { entry in
++            let actual = field(native, path: entry.key)
++            if entry.key == "text", let expected = entry.value.string {
++                guard let value = actual?.string else { return false }
++                return value.utf8.elementsEqual(expected.utf8)
++            }
++            return actual == entry.value
++        } && unset.allSatisfy { field(native, path: $0) == nil }
++    }
++}

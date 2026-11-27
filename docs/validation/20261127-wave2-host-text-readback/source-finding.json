@@ -1,0 +1,101 @@
+{
+  "schema": "pinkha-host-text-readback-source-finding/v1",
+  "status": "PROVEN_SOURCE_COMPARISON_GAP_NOT_RUNTIME_REPRODUCED",
+  "baseCommit": "2752229aacf72f468f32a4bfe5fe0a91142f5dbe",
+  "ownerCoordination": "Root coordinating W1/C ownership; local candidate only, no publication or remote mutation.",
+  "callPath": [
+    "AnyDocumentPresentation.flush -> AnyEditorDocumentStore.prepareTextEdit",
+    "AnyEditorDocumentStore.prepare -> AnyPreparedBlockEdit(set.text: AnyJSON.string)",
+    "AnyEditorDocumentStore.apply -> AnyHTTPClient.requestJSON(method: PATCH)",
+    "AnyHTTPClient.makeRequest -> JSONEncoder.encode(AnyJSON)",
+    "AnyEditorDocumentStore.apply -> read -> Self.matches -> verifiedCurrent + optional Undo",
+    "AnyDocumentPresentation.flush -> independent mutationReadback -> exact saved.text.utf8"
+  ],
+  "dispatchConclusion": "No canonical-equality no-op filter found in prepareTextEdit/prepare/apply or the HTTP request construction. The exact requested string remains in set.text and the original apply dispatches PATCH after its existing authorization fences.",
+  "sourceSerializationConclusion": "UI AnyInlineMarkdown is a typealias to the Host implementation. Replacement operates on original NSString ranges, escapes only listed ASCII Unicode scalars, reconstructs original fragments with an exact UTF-8 guard, and requires exact projected display/semantic text. Marker identities are retained from original wrappers. No normalization/no-op suppression found in this inspected typing/marker route.",
+  "finding": {
+    "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+    "lines": [
+      142,
+      151,
+      211,
+      213
+    ],
+    "comparison": "Self.matches uses synthesized AnyJSON Equatable for each requested field, including text. Exact primary AnyJSON has a String associated value and no custom equality implementation. Swift canonical String equality therefore permits raw UTF-8-different equivalents.",
+    "effect": "A version-matching readback with a canonically equal but byte-different text value can satisfy this Host field check and return verifiedCurrent plus an Undo value. This is a source-demonstrable verification weakness; no claim is made that the native engine actually normalized a response in a retained run.",
+    "illustrativeInput": "requested e\\u{0301}, returned \\u{00e9}; likewise the new Hebrew combining-order case. No synthetic Swift/native execution was performed.",
+    "UIBoundary": "The reviewed82b5 UI flush independently performs another readback and saved.text.utf8.elementsEqual(draft.inlineMarkdown.utf8); it rejects the mismatch. This finding does not revoke that UI guard or claim silently accepted wrong text through fixed flush."
+  },
+  "proposedNarrowChange": "Only requested string field text uses exact UTF-8 in the existing Host matcher. Preserve non-text equality, unset semantics, lease/ACL/version/dispatch flow, receipt structure and Undo construction. Do not change global AnyJSON equality.",
+  "regressionRequirement": "Use actual AnyEditorDocumentStore.apply, its real HTTP client and read path with a controlled loopback HTTP response. Check raw requested PATCH bytes, canonically equal mismatched readback -> unverified/no Undo, and exact readback -> verified/Undo. A helper-equality-only test is insufficient.",
+  "inputs": [
+    {
+      "path": "torah-acceptance-prep/native-text-readback/source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+      "bytes": 11425,
+      "sha256": "de35930cd2689caaaa1195576073a117fa917b5ff078fccb24baba98eac68c43",
+      "gitBlob": "a482992af95970d2516eabdea6133a35192c7c05"
+    },
+    {
+      "path": "wave2-semantic-anchor-audit/source/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyJSON.swift",
+      "bytes": 2600,
+      "sha256": "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d",
+      "gitBlob": "398d20dbad32e139ff392370a12b2bcf84cee27c"
+    },
+    {
+      "path": "wave2-semantic-anchor-audit/source/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "bytes": 27831,
+      "sha256": "8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182",
+      "gitBlob": "c584a72be3fb60b7870ff89630eb26f6fa931986"
+    },
+    {
+      "path": "wave2-semantic-anchor-audit/source/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyInlineMarkdown.swift",
+      "bytes": 41061,
+      "sha256": "c537820797785b9f4f3bd00533706c16145c91e5f6999936a9b97243c4d9a483",
+      "gitBlob": "c3f41e3e7c445a55176fdf7beaf5de6fb0356f8b"
+    },
+    {
+      "path": "wave2-semantic-anchor-audit/source/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyInlineMarkdown.swift",
+      "bytes": 436,
+      "sha256": "8f72a09509d5ec3376f074ebff8510e593bbe0e6fd0d5da0035ea3183e3e91b7",
+      "gitBlob": "ebf6e503a7c266efce44285ce609fc8fb11403c5"
+    },
+    {
+      "path": "wave2-semantic-anchor-audit/source/Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSemanticTextAnchor.swift",
+      "bytes": 16150,
+      "sha256": "bfefc94965cfe6dbdf910452eaec3a9530854a6d5b6a09a1a9b10339c6c30274",
+      "gitBlob": "494f878ad9901d8ea07874ec6727732521e7c27e"
+    },
+    {
+      "path": "wave2-semantic-anchor-audit/candidate/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "bytes": 73179,
+      "sha256": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",
+      "gitBlob": "475624e12bbb9c97dc96295b107e21611a798639"
+    }
+  ],
+  "AnyJSONPrimary": {
+    "path": "wave2-semantic-anchor-audit/torah-downstream-anyjson.primary.json",
+    "bytes": 3343,
+    "sha256": "6cad44ebd35a7bc00f6c5ca83fb0a8528a85933ea45f2e55910b13a373e2799a",
+    "gitBlob": "f85c76afff2e5cd03789f91d9f854cd2b670c52a"
+  },
+  "languageSemanticsReference": {
+    "path": "wave2-semantic-anchor-audit/torah-equality-semantics-source.json",
+    "bytes": 812,
+    "sha256": "83133232244b9123f699d923a95fbc6b6fd2c73caeaad3a08ece75e9fe1c1851",
+    "gitBlob": "a3dea3d07b7b25ef10629e9093abdbef5a4077c5"
+  },
+  "candidate": {
+    "path": "torah-acceptance-prep/native-text-readback/candidate/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+    "bytes": 11711,
+    "sha256": "1ea82b556e9f16b7903de03bbe435a249c6c922ade9798a01d648c8394c2604d",
+    "gitBlob": "5963c98988416bec1a1761466a3fb21f1cc3f66b"
+  },
+  "execution": {
+    "compilerCalls": 0,
+    "tests": 0,
+    "NativeCalls": 0,
+    "OracleCalls": 0,
+    "MacCalls": 0,
+    "HTTPFixtureRuns": 0
+  }
+}
