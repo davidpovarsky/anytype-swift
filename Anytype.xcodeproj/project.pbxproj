@@ -376,6 +376,10 @@
 			"isa" = "PBXBuildFile";
 			"fileRef" = "56DF25A0E0687BDEF152DE22";
 		};
+		1FB69AB809D9F78201546380 /* HanlinAssistantCapabilities */ = {
+			isa = "PBXBuildFile";
+			productRef = "66C53E67789D89F6AEA6AD38";
+		};
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -831,6 +835,7 @@
 				"6A1EA4147495659B9D10ED68",
 				"EF667ADC8D3E6906D873C9F9",
 				"8021AB574D9A9C0133D90B8C",
+				"1FB69AB809D9F78201546380",
 			);
 			"runOnlyForDeploymentPostprocessing" = "0";
 		};
@@ -1222,6 +1227,7 @@
 				"747B0D8680860C02D02D5364",
 				"1E0BDDE5704C97149159B5FC",
 				"EA7D4A3CC4EEB309BDFD699F",
+				"66C53E67789D89F6AEA6AD38",
 			);
 			"productName" = "AnytypeOriginalEditor";
 			"productReference" = "7E6AE79280903DE4CEB69CDB";
@@ -1304,6 +1310,7 @@
 				74819CB22E169F5D0042D5EC /* XCRemoteSwiftPackageReference "Amplitude-Swift" */,
 				FA1000002F000001006805CC /* XCRemoteSwiftPackageReference "TorahInspectorKit" */,
 				C4EDE9CCA3640AFF9A42B62C /* OriginalEditorSharedFirebase */,
+				656317E261FEB6E8F0B504E0 /* HanlinAssistantCapabilities */ ,
 			);
 			preferredProjectObjectVersion = 52;
 			productRefGroup = 0303ECFC22D8EDAA005C552B /* Products */;
@@ -2628,6 +2635,9 @@
 		6D481F737200B98383C5B313 /* EditorConfig_Debug */ = {
 			"isa" = "XCBuildConfiguration";
 			"buildSettings" = {
+				SWIFT_OBJC_INTEROP_MODE = "objcxx";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LIBRARY = "libc++";
 				"CODE_SIGN_IDENTITY" = "-";
 				"CODE_SIGN_STYLE" = "Automatic";
 				"CURRENT_PROJECT_VERSION" = "0";
@@ -2677,6 +2687,9 @@
 		7C3BCE4EF856B0B6A02240AB /* EditorConfig_Release-Anytype */ = {
 			"isa" = "XCBuildConfiguration";
 			"buildSettings" = {
+				SWIFT_OBJC_INTEROP_MODE = "objcxx";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LIBRARY = "libc++";
 				"CODE_SIGN_IDENTITY" = "-";
 				"CODE_SIGN_STYLE" = "Automatic";
 				"CURRENT_PROJECT_VERSION" = "0";
@@ -2726,6 +2739,9 @@
 		7B34B94A980226257449D4B8 = {
 			"isa" = "XCBuildConfiguration";
 			"buildSettings" = {
+				SWIFT_OBJC_INTEROP_MODE = "objcxx";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LIBRARY = "libc++";
 				"CODE_SIGN_IDENTITY" = "-";
 				"CODE_SIGN_STYLE" = "Automatic";
 				"CURRENT_PROJECT_VERSION" = "0";
@@ -2776,6 +2792,9 @@
 		8700862BD1C8E01DCD589227 /* EditorConfig_Release-Nightly */ = {
 			"isa" = "XCBuildConfiguration";
 			"buildSettings" = {
+				SWIFT_OBJC_INTEROP_MODE = "objcxx";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_CXX_LIBRARY = "libc++";
 				"CODE_SIGN_IDENTITY" = "-";
 				"CODE_SIGN_STYLE" = "Automatic";
 				"CURRENT_PROJECT_VERSION" = "0";
@@ -2920,6 +2939,10 @@
 		C4EDE9CCA3640AFF9A42B62C = {
 			"isa" = "XCLocalSwiftPackageReference";
 			"relativePath" = "Tools/OriginalEditor/SharedRuntime";
+		};
+		656317E261FEB6E8F0B504E0 /* HanlinAssistantCapabilities */ = {
+			isa = "XCLocalSwiftPackageReference";
+			relativePath = "Dependencies/Hanlin";
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -3577,6 +3600,11 @@
 			"isa" = "XCSwiftPackageProductDependency";
 			"package" = "74819CB22E169F5D0042D5EC";
 			"productName" = "AmplitudeSwift";
+		};
+		66C53E67789D89F6AEA6AD38 /* HanlinAssistantCapabilities */ = {
+			isa = "XCSwiftPackageProductDependency";
+			package = "656317E261FEB6E8F0B504E0";
+			productName = "HanlinAssistantCapabilities";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

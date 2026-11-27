@@ -1,11 +1,27 @@
 {
   "repository": "https://github.com/davidpovarsky/hanlin-ai.git",
-  "revision": "9565a9e4775901a4cee6f0402d7fd2978fab6612",
+  "revision": "9bcdecfc829d446a773a78b249e894e204b1bcaa",
   "packages": [
     "Packages/HanlinAgentSDK",
     "Packages/HanlinPlatform",
-    "Packages/HanlinPresentationSDK"
+    "Packages/HanlinPresentationSDK",
+    "Packages/HanlinSkillFormat",
+    "Packages/IOSSystemLite"
   ],
   "swiftAISDKRevision": "abf0921c6e89e6521cc2b510ff11016b45a0ef08",
-  "minimumIOS": "27.0"
+  "minimumIOS": "27.0",
+  "assistantCapabilities": {
+    "product": "HanlinAssistantCapabilities",
+    "layout": "nested",
+    "manifestPath": "Scripts/SDK/Generated/HanlinAssistantCapabilities.Package.swift",
+    "receiptPath": "Scripts/SDK/Generated/HanlinAssistantCapabilities.Package.receipt.json",
+    "nativeCatalogPath": "Scripts/SDK/Generated/HanlinAssistantCapabilities.native-artifacts.json",
+    "profilePath": "Scripts/SDK/assistant_capabilities.json",
+    "generatedFiles": {
+      "Scripts/SDK/Generated/HanlinAssistantCapabilities.Package.swift": "ea08445a563d2fe9f97e55621fae602e4626ac8b3defa32b2ed2633fbd665d97",
+      "Scripts/SDK/Generated/HanlinAssistantCapabilities.Package.receipt.json": "35ccb6025210659f4f9a977f7f5963754980ae76b5b779df99aa9d61aada0351",
+      "Scripts/SDK/Generated/HanlinAssistantCapabilities.native-artifacts.json": "8f360d298fb1a8351f573e746a7731a38ed1fff1169161ab18103e9f216d0da7"
+    },
+    "nativeCatalogSHA256": "8f360d298fb1a8351f573e746a7731a38ed1fff1169161ab18103e9f216d0da7"
+  }
 }
