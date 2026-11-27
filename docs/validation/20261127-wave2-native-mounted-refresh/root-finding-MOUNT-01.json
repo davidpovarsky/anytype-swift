@@ -1,0 +1,9 @@
+{
+  "finding": "ROOT-MOUNT-01",
+  "reviewedCandidateSHA256": "81ade54385e5e362ad82ecae44ca1d9d4fa07e2fa471225a4c2d7a671587db70",
+  "issue": "NWListener.newConnectionLimit is a cumulative remaining acceptance count, not a concurrency cap. Closing every ordinary HTTP response would exhaust16 before complete public setup/read.",
+  "primaryAPI": "https://developer.apple.com/documentation/network/nwlistener/newconnectionlimit",
+  "approvedCorrection": "Set cumulative acceptance allowance to the pre-existing512 request budget. Keep actual tracked concurrent guard16, all other bounds unchanged. Each accepted connection receives at most one request; the two held SSE requests count within512.",
+  "runtimeFailure": false,
+  "testsExecuted": 0
+}

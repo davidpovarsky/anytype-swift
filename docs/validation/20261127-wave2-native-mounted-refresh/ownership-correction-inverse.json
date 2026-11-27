@@ -1,0 +1,44 @@
+{
+  "schema": "wave2-mounted-refresh-owned-lifecycle-correction/v1",
+  "status": "SOURCE_CORRECTION_NOT_COMPILED_NOT_RUN",
+  "findings": [
+    {
+      "id": "PEER-MOUNT-02",
+      "meaning": "A connection-owned stateUpdateHandler retained that same connection through its failure branch. Use the existing queue-owned dictionary entry to cancel by UUID; the handler no longer captures its own connection."
+    },
+    {
+      "id": "PEER-MOUNT-03",
+      "meaning": "Capture the previous key window only from the exact selected foreground UIWindowScene, immediately before mounting the owned window."
+    }
+  ],
+  "reviewedPredecessor": {
+    "path": "interfaces_work/native-mounted-refresh-ui/review-v2/mounted_refresh_suffix.swift",
+    "bytes": 37715,
+    "sha256": "60f4ecf8348e7fe561dce4f5deb2e0495907bd40a9d54956388f128026214687",
+    "gitBlob": "e8f1ad58f45b946c55954fe1f42ae8c41e590742"
+  },
+  "successor": {
+    "path": "interfaces_work/native-mounted-refresh-ui/mounted_refresh_suffix.swift",
+    "bytes": 37670,
+    "sha256": "bfea1ec58fab97894593addd6ab0d8c0ca26782874be182650eed1bfa6acd634",
+    "gitBlob": "e73f21287db7a35f31af93d70d01fb9b138f1055"
+  },
+  "replacements": [
+    {
+      "beforeBase64": "ICAgICAgICBsZXQgcHJldmlvdXNLZXkgPSBVSUFwcGxpY2F0aW9uLnNoYXJlZC5jb25uZWN0ZWRTY2VuZXMuY29tcGFjdE1hcCB7ICQwIGFzPyBVSVdpbmRvd1NjZW5lIH0KICAgICAgICAgICAgLmZsYXRNYXAoXC53aW5kb3dzKS5maXJzdCh3aGVyZTogXC5pc0tleVdpbmRvdykK",
+      "afterBase64": "ICAgICAgICB2YXIgcHJldmlvdXNLZXk6IFVJV2luZG93Pwo="
+    },
+    {
+      "beforeBase64": "ICAgICAgICAgICAgbGV0IG1vdW50ZWRXaW5kb3cgPSBVSVdpbmRvdyh3aW5kb3dTY2VuZTogc2NlbmUpCg==",
+      "afterBase64": "ICAgICAgICAgICAgcHJldmlvdXNLZXkgPSBzY2VuZS53aW5kb3dzLmZpcnN0KHdoZXJlOiBcLmlzS2V5V2luZG93KQogICAgICAgICAgICBsZXQgbW91bnRlZFdpbmRvdyA9IFVJV2luZG93KHdpbmRvd1NjZW5lOiBzY2VuZSkK"
+    },
+    {
+      "beforeBase64": "ICAgICAgICAgICAgICAgIGNvbm5lY3Rpb24uY2FuY2VsKCkKICAgICAgICAgICAgY2FzZSAuY2FuY2VsbGVkOgo=",
+      "afterBase64": "ICAgICAgICAgICAgICAgIHNlbGYuY29ubmVjdGlvbnNbaWRdPy5jYW5jZWwoKQogICAgICAgICAgICBjYXNlIC5jYW5jZWxsZWQ6Cg=="
+    }
+  ],
+  "reverseInListedReverseOrderRestoresEntirePredecessor": true,
+  "original3269BytePrefixPreserved": true,
+  "allOtherSwiftBytesUnchanged": true,
+  "runtimeInvocations": 0
+}

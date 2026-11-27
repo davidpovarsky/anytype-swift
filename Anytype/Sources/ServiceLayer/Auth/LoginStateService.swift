@@ -1,26 +1,29 @@
+import Foundation
+import ProtobufMessages
 import AnytypeCore
 import Services
 
 protocol LoginStateServiceProtocol: AnyObject, Sendable {
     var isFirstLaunchAfterRegistration: Bool { get }
     var isFirstLaunchAfterAuthorization: Bool { get }
-    func setupStateAfterLoginOrAuth(account: AccountData) async
-    func setupStateAfterAuth() async
-    func setupStateAfterRegistration(account: AccountData) async
+    func setupStateAfterLoginOrAuth(account: AccountData, source: OriginalAuthStartupSource) async throws
+    func setupStateAfterAuth(attempt: OriginalAuthAttempt) async throws
+    func setupStateAfterRegistration(account: AccountData, source: OriginalAuthStartupSource) async throws
     func cleanStateAfterLogout() async
-    func setupStateBeforeLoginOrAuth() async
+    func setupStateBeforeLoginOrAuth(attempt: OriginalAuthAttempt) async throws
+    func cancelStartup(attempt: OriginalAuthAttempt) async
 }
 
-final class LoginStateService: LoginStateServiceProtocol, Sendable {
+actor LoginStateService: LoginStateServiceProtocol, Sendable {
     
     private let isFirstLaunchAfterRegistrationStorage = AtomicStorage(false)
     private let isFirstLaunchAfterAuthorizationStorage = AtomicStorage(false)
     
-    var isFirstLaunchAfterRegistration: Bool {
+    nonisolated var isFirstLaunchAfterRegistration: Bool {
         isFirstLaunchAfterRegistrationStorage.value
     }
     
-    var isFirstLaunchAfterAuthorization: Bool {
+    nonisolated var isFirstLaunchAfterAuthorization: Bool {
         isFirstLaunchAfterAuthorizationStorage.value
     }
     
@@ -53,79 +56,304 @@ final class LoginStateService: LoginStateServiceProtocol, Sendable {
     private let memoryPressureProfilerTrigger: any MemoryPressureProfilerTriggerProtocol = Container.shared.memoryPressureProfilerTrigger()
     private let debugProfileEventHandler: any DebugProfileEventHandlerProtocol = Container.shared.debugProfileEventHandler()
         
-    // MARK: - LoginStateServiceProtocol
-    
-    func setupStateAfterLoginOrAuth(account: AccountData) async {
-        middlewareConfigurationProvider.setupConfiguration(account: account)
-        WidgetSwipeTip.isFirstSession = false
+    // Every compound startup/stop state below is owned by this original actor.
+    private var startup: Startup?
+    private var accountSource: OriginalAuthStartupSource?
+    private var stopping: Stopping?
+    private var primaryRunning = false
 
-        await startSubscriptions()
+    private final class Startup: Sendable {
+        let attempt: OriginalAuthAttempt
+        let tasks = StartupTasks()
+        private let retirements: [EditorDocumentWriteLifetime.Observation]
+
+        init(attempt: OriginalAuthAttempt) {
+            self.attempt = attempt
+            let tasks = self.tasks
+            retirements = attempt.captures.map { value in
+                value.source.observe(value.token) { tasks.cancel() }
+            }
+        }
+        func retire() {
+            attempt.retire()
+            tasks.cancel()
+        }
+        deinit { tasks.cancel() }
     }
 
-    func setupStateAfterAuth() async {
+    /// Only handles/cancellation are shared with synchronous lifetime callbacks.
+    /// Installation observes cancellation under the same lock; no await is held.
+    private final class StartupTasks: @unchecked Sendable {
+        private let lock = NSLock()
+        private var cancelled = false
+        private var primary: Task<Void, Error>?
+        private var membership: Task<Void, Error>?
+
+        func installPrimary(_ task: Task<Void, Error>) {
+            lock.lock()
+            primary = task
+            let shouldCancel = cancelled
+            lock.unlock()
+            if shouldCancel { task.cancel() }
+        }
+        func installMembership(_ task: Task<Void, Error>) {
+            lock.lock()
+            membership = task
+            let shouldCancel = cancelled
+            lock.unlock()
+            if shouldCancel { task.cancel() }
+        }
+        func cancel() {
+            lock.lock()
+            cancelled = true
+            let primary = primary
+            let membership = membership
+            lock.unlock()
+            primary?.cancel()
+            membership?.cancel()
+        }
+        private func primaryTask() -> Task<Void, Error>? {
+            lock.lock()
+            defer { lock.unlock() }
+            return primary
+        }
+        private func membershipTask() -> Task<Void, Error>? {
+            lock.lock()
+            defer { lock.unlock() }
+            return membership
+        }
+        func drain() async {
+            _ = try? await primaryTask()?.value
+            // Primary may have installed the owned membership task before it
+            // ended; read that handle only after actual primary completion.
+            _ = try? await membershipTask()?.value
+        }
+    }
+
+    /// Mutable fields are exclusively accessed on LoginStateService's actor.
+    private final class Stopping: @unchecked Sendable {
+        var clearAccountData: Bool
+        var task: Task<Void, Never>?
+        init(clearAccountData: Bool) { self.clearAccountData = clearAccountData }
+    }
+
+    private enum StartupPhase: Sendable {
+        case before
+        case login(AccountData, OriginalAuthStartupSource)
+        case registration(AccountData, OriginalAuthStartupSource)
+        var source: OriginalAuthStartupSource? {
+            switch self {
+            case .before: return nil
+            case let .login(_, source), let .registration(_, source): return source
+            }
+        }
+    }
+
+    func setupStateBeforeLoginOrAuth(attempt: OriginalAuthAttempt) async throws {
+        try attempt.validate()
+        guard stopping == nil else { throw OriginalAuthFlowError.busy }
+        if let previous = startup {
+            guard previous.attempt !== attempt else { throw OriginalAuthFlowError.busy }
+            await stopOwnedSubscriptions(clearAccountData: false)
+            try attempt.validate()
+        }
+        guard startup == nil, stopping == nil else { throw OriginalAuthFlowError.busy }
+        let owner = Startup(attempt: attempt)
+        startup = owner
+        try await runPrimary(owner, phase: .before)
+    }
+
+    func setupStateAfterLoginOrAuth(account: AccountData, source: OriginalAuthStartupSource) async throws {
+        try await startAccountSubscriptions(account: account, source: source, registration: false)
+    }
+
+    func setupStateAfterRegistration(account: AccountData, source: OriginalAuthStartupSource) async throws {
+        try await startAccountSubscriptions(account: account, source: source, registration: true)
+    }
+
+    private func startAccountSubscriptions(account: AccountData, source: OriginalAuthStartupSource, registration: Bool) async throws {
+        try source.validate()
+        guard let owner = startup, owner.attempt === source.attempt, accountSource == nil,
+              account.id.utf8.elementsEqual(source.accountID.utf8), stopping == nil else {
+            throw EditorDocumentWriteError.rejected(.retired)
+        }
+        accountSource = source
+        try await runPrimary(owner, phase: registration ? .registration(account, source) : .login(account, source))
+    }
+
+    func setupStateAfterAuth(attempt: OriginalAuthAttempt) async throws {
+        try attempt.validate()
+        guard stopping == nil else { throw OriginalAuthFlowError.busy }
         isFirstLaunchAfterAuthorizationStorage.value = true
         WidgetSwipeTip.isFirstSession = false
     }
-    
-    func setupStateAfterRegistration(account: AccountData) async {
-        isFirstLaunchAfterRegistrationStorage.value = true
-        WidgetSwipeTip.isFirstSession = true
-        middlewareConfigurationProvider.setupConfiguration(account: account)
 
-        await startSubscriptions()
+    func cancelStartup(attempt: OriginalAuthAttempt) async {
+        guard startup?.attempt === attempt else { return }
+        await stopOwnedSubscriptions(clearAccountData: false)
     }
-    
+
     func cleanStateAfterLogout() async {
+        await stopOwnedSubscriptions(clearAccountData: true)
+    }
+
+    private func validate(_ owner: Startup, source: OriginalAuthStartupSource? = nil) throws {
+        guard startup === owner, stopping == nil else { throw EditorDocumentWriteError.rejected(.retired) }
+        try owner.attempt.validate()
+        try source?.validate()
+    }
+
+    private func runPrimary(_ owner: Startup, phase: StartupPhase) async throws {
+        try validate(owner, source: phase.source)
+        guard !primaryRunning else { throw OriginalAuthFlowError.busy }
+        primaryRunning = true
+        let task = Task { [weak self] in
+            guard let self else { throw EditorDocumentWriteError.rejected(.retired) }
+            let admissions = try owner.attempt.admitStage()
+            defer { for admission in admissions { admission.cancel() } }
+            let binding = phase.source?.binding ?? owner.attempt.startupBinding()
+            try await InvocationDispatchContext.$binding.withValue(binding) {
+                try await self.runPhase(owner, phase: phase)
+            }
+        }
+        owner.tasks.installPrimary(task)
+        do {
+            try await withTaskCancellationHandler {
+                try await task.value
+            } onCancel: { owner.retire() }
+            if startup === owner { primaryRunning = false }
+            try validate(owner, source: phase.source)
+        } catch {
+            if startup === owner { primaryRunning = false }
+            throw error
+        }
+    }
+
+    private func runPhase(_ owner: Startup, phase: StartupPhase) async throws {
+        try validate(owner, source: phase.source)
+        switch phase {
+        case .before:
+            await syncStatusStorage.startSubscription()
+            try validate(owner)
+            await p2pStatusStorage.startSubscription()
+            try validate(owner)
+        case let .login(account, source):
+            middlewareConfigurationProvider.setupConfiguration(account: account)
+            WidgetSwipeTip.isFirstSession = false
+            try await startSubscriptions(owner, source: source)
+        case let .registration(account, source):
+            isFirstLaunchAfterRegistrationStorage.value = true
+            WidgetSwipeTip.isFirstSession = true
+            middlewareConfigurationProvider.setupConfiguration(account: account)
+            try await startSubscriptions(owner, source: source)
+        }
+    }
+
+    private func startSubscriptions(_ owner: Startup, source: OriginalAuthStartupSource) async throws {
+        try validate(owner, source: source)
+        await workspacesStorage.startSubscription()
+        try validate(owner, source: source)
+        await chatDetailsStorage.startSubscription()
+        try validate(owner, source: source)
+        await chatMessagesPreviewsStorage.startSubscription()
+        try validate(owner, source: source)
+        await accountParticipantsStorage.startSubscription()
+        try validate(owner, source: source)
+        await objectsWithUnreadDiscussionsSubscription.startSubscription()
+        try validate(owner, source: source)
+        await participantSpacesStorage.startSubscription()
+        try validate(owner, source: source)
+        if FeatureFlags.unifiedSearch {
+            await crossSpaceTypesStorage.startSubscription()
+            try validate(owner, source: source)
+            await crossSpaceParticipantsStorage.startSubscription()
+            try validate(owner, source: source)
+        }
+        await networkConnectionStatusDaemon.start()
+        try validate(owner, source: source)
+        await storeKitService.startListenForTransactions()
+        try validate(owner, source: source)
+        await profileStorage.startSubscription()
+        try validate(owner, source: source)
+        await activeSpaceManager.startSubscription()
+        try validate(owner, source: source)
+        await spaceIconForNotificationsHandler.startUpdating()
+        try validate(owner, source: source)
+        await appIconBadgeService.startUpdating()
+        try validate(owner, source: source)
+        await thermalProfilerTrigger.startSubscription()
+        try validate(owner, source: source)
+        await memoryPressureProfilerTrigger.startSubscription()
+        try validate(owner, source: source)
+        await debugProfileEventHandler.startSubscription()
+        try validate(owner, source: source)
+
+        // Preserve the original asynchronous membership startup, now retaining
+        // and draining its actual task before the original stop/clean methods.
+        let task = Task { [weak self] in
+            guard let self else { throw EditorDocumentWriteError.rejected(.retired) }
+            let admissions = try owner.attempt.admitStage()
+            defer { for admission in admissions { admission.cancel() } }
+            try await InvocationDispatchContext.$binding.withValue(source.binding) {
+                try await self.validate(owner, source: source)
+                await self.membershipStatusStorage.startSubscription()
+                try await self.validate(owner, source: source)
+            }
+        }
+        owner.tasks.installMembership(task)
+    }
+
+    private func stopOwnedSubscriptions(clearAccountData: Bool) async {
+        if let stop = stopping {
+            if clearAccountData { stop.clearAccountData = true }
+            await stop.task?.value
+            return
+        }
+        let owner = startup
+        owner?.retire()
+        let stop = Stopping(clearAccountData: clearAccountData)
+        stopping = stop
+        let task = Task { [weak self] in
+            guard let self else { return }
+            await self.completeOwnedStop(owner: owner, stop: stop)
+        }
+        stop.task = task
+        await task.value
+    }
+
+    // Actor isolation remains explicit after the unstructured task's awaits.
+    // Mutable Stopping fields and the startup/account state belong to this actor.
+    private func completeOwnedStop(owner: Startup?, stop: Stopping) async {
+        await owner?.tasks.drain()
+        // Auth's outer startup lease is finished before its error cleanup
+        // requests this drain; native Stop is dispatched before logout joins.
+        await owner?.attempt.waitForDrain()
+        await stopSubscriptions()
+        if stop.clearAccountData {
+            await clearOriginalStateAfterLogout()
+        }
+        if startup === owner {
+            startup = nil
+            accountSource = nil
+            primaryRunning = false
+        }
+        if stopping === stop { stopping = nil }
+    }
+
+    private func clearOriginalStateAfterLogout() async {
+        // No old startup or membership start can write these values back after
+        // its native drain and the original subscription stop sequence.
         basicUserInfoStorage.cleanUserIdAfterLogout()
         expandedService.clearData()
         middlewareConfigurationProvider.removeCachedConfiguration()
         pushNotificationsPermissionService.unregisterForRemoteNotifications()
         spaceFileUploadService.cancelAllUploads()
-        // Live activity is memory-only and per account
         await MainActor.run {
             Container.shared.chatActivityStore().clearAll()
         }
-        await stopSubscriptions()
-        // After the subscriptions stop nothing can write the old account's state back.
         userDefaults.cleanStateAfterLogout()
     }
-    
-    func setupStateBeforeLoginOrAuth() async {
-        await syncStatusStorage.startSubscription()
-        await p2pStatusStorage.startSubscription()
-    }
-    
-    // MARK: - Private
-    
-    private func startSubscriptions() async {
-        await workspacesStorage.startSubscription()
-        await chatDetailsStorage.startSubscription()
-        await chatMessagesPreviewsStorage.startSubscription()
-        await accountParticipantsStorage.startSubscription()
-        await objectsWithUnreadDiscussionsSubscription.startSubscription()
-        await participantSpacesStorage.startSubscription()
-        if FeatureFlags.unifiedSearch {
-            // Search deps (type captions, person chips, author attribution) - kept
-            // alive for the account lifetime, updates are rare
-            await crossSpaceTypesStorage.startSubscription()
-            await crossSpaceParticipantsStorage.startSubscription()
-        }
-        await networkConnectionStatusDaemon.start()
-        await storeKitService.startListenForTransactions()
-        await profileStorage.startSubscription()
-        await activeSpaceManager.startSubscription()
-        await spaceIconForNotificationsHandler.startUpdating()
 
-        await appIconBadgeService.startUpdating()
-        await thermalProfilerTrigger.startSubscription()
-        await memoryPressureProfilerTrigger.startSubscription()
-        await debugProfileEventHandler.startSubscription()
-
-        Task {
-            await membershipStatusStorage.startSubscription()
-        }
-    }
-    
     private func stopSubscriptions() async {
         await workspacesStorage.stopSubscription()
         await chatDetailsStorage.stopSubscription()

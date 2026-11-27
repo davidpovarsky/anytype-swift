@@ -1,0 +1,22 @@
+--- before-b038/files_readguard_fresh_linux_test.go
++++ fresh-signed-serving-api/files_readguard_fresh_linux_test.go
+@@ -337,8 +337,18 @@
+ 	t.Helper()
+ 	f.localACL.RLock()
+ 	id := f.localACL.Id()
+-	records := append([]*consensusproto.RawRecordWithId(nil), f.localACL.Records()...)
++	head := f.localACL.Head().Id
++	count := len(f.localACL.Records())
++	// Records() is the decoded, compacted view. The original serving API
++	// returns the complete signed bytes from this new fixture's own storage.
++	// Nothing is re-marshalled from a view or read from a retained account.
++	records, err := f.localACL.RecordsAfter(f.ctx, "")
+ 	f.localACL.RUnlock()
++	require.NoError(t, err)
++	require.NotEmpty(t, records)
++	require.Len(t, records, count)
++	require.Equal(t, id, records[0].Id, "fresh signed chain starts at its original root")
++	require.Equal(t, head, records[len(records)-1].Id, "fresh signed chain ends at the captured head")
+ 	storage, err := list.NewInMemoryStorage(id, records)
+ 	require.NoError(t, err)
+ 	verified, err := list.BuildAclListWithIdentity(keys, storage, recordverifier.NewValidateFull())

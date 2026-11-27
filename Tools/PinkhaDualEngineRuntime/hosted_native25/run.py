@@ -27,7 +27,7 @@ import native23_inputs
 from control import exclusive, load_json, load_module, regular, require, sha
 
 CORE = "Tools/PinkhaDualEngineRuntime/hosted_core13/"
-CORE_ADMISSION_SHA = "fd0748fbbf7cef165e7b0a4e837473deeb56eb9efb11bf89d96ddbee2e102593"
+CORE_ADMISSION_SHA = "11dc47753d6011de6fba8955239a6b63f5fde919b8a7d8edbb2dec75ccfaeb76"
 CORE_ORIGINALS_SHA = "adc29fa18b2bd64dce6bca3cf6ded88ae6203246a12fa7e781229fda41b1f326"
 DEFAULT_DEVICE = "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB"
 LEGACY_DEVELOPER = Path("/Applications/Xcode.app/Contents/Developer")

@@ -1,0 +1,68 @@
+{
+  "schema": "pinkha-native-live-cache-uikit-reachability-source-review/v1",
+  "atUTC": "2026-11-27T16:17:45.318253+00:00",
+  "reviewer": "Wave2 editor agent",
+  "status": "SOURCE_REACHABILITY_REVIEW_ONLY_NO_TEST_IMPLEMENTATION_OR_EXECUTION",
+  "publishedProductCommit": "6eecb62f3bb101306b6036fbc04cc08257c3425f",
+  "scope": "UIKit mounting, real public load/render route, same-cell counterexample assertions and owned cleanup only. Interfaces owns the HTTP closure and two test implementations.",
+  "sources": [
+    {
+      "path": "wave2-native-render-cache/candidate/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "sha256": "ec8f72a34e9823c7ba84ab8dbb013d9827c9302fc6143436de3ec8a3bfdf2f37",
+      "gitBlob": "45144274ff51800b21d608d2a2df8f1db8b11477",
+      "bytes": 61405
+    },
+    {
+      "path": "wave2-semantic-anchor-audit/candidate/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "sha256": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",
+      "gitBlob": "475624e12bbb9c97dc96295b107e21611a798639",
+      "bytes": 73179
+    },
+    {
+      "path": "interfaces_work/native-styled-rtl/source/AnyNativeTextRenderer.swift",
+      "sha256": "adf318945d89600fec59a99eb2e16dab2ef9f2f7f30d974afbbca0f99a8dcb34",
+      "gitBlob": "6516f0744f06854ac02141d94ed88106c564c99f",
+      "bytes": 1541
+    },
+    {
+      "path": "interfaces_work/native-styled-rtl/source/AnyNativeEmptyParagraphDirectionTests.swift",
+      "sha256": "656ab17484da23139005fb84a36376802f23c5fdf66c9766c7860a895c27e999",
+      "gitBlob": "0e281c40f2bc620d8386db96bcfabd4e6405290f",
+      "bytes": 8582
+    }
+  ],
+  "lifecycleSequence": [
+    "Use a genuine foregroundActive UIWindowScene and a retained UIWindow with AnyNativeEditorController as the actual visible controller. Require controller.view.window === window and controller.isForegroundMounted. Preserve the previous key window for final restoration.",
+    "Actual viewDidAppear calls presentation.mount(surface: self), render(), then schedules a public presentation.load() Task. Do not also invoke viewDidAppear manually. Before changing the fixture, wait for a genuine first published read with expected version and exact source bytes, isLoading=false, isMounted=true and no pending edits. isLoading=false alone is not an initial-load completion witness.",
+    "Call the existing public controller.render() and layout after the first load. A raw UIKit fixture has no SwiftUI updateUIViewController to perform this render automatically. Locate the UITableView through accessibilityIdentifier any-native-editor-blocks and the target UITextView through any-native-block-<blockID>. Retain the actual public UITableViewCell and UITextView references.",
+    "After the initial snapshot has settled, keep all ordered block IDs and their order fixed. Make the actual editable target first responder and place a nonempty NSRange entirely in a common unchanged ASCII prefix. Capture the actual range after focus/layout, both raw text encodings, target version, visible index path, window and content-size category.",
+    "Change only the controlled current source and legitimate native revision/version, then await the real public presentation.load() after the initial read is settled. Confirm the new exact source and version reached the model without drafts/composition. Call public render() and layout; same IDs select configureVisibleCells directly rather than replacing the diffable snapshot.",
+    "Require identical UITableViewCell and UITextView references, same target identifier/window, current visible row, first-responder status and chosen valid selection. Compare model source and UIKit text/attributed text via actual UTF-8 and UTF-16 arrays to the expected new values. Retain actual observations before throwing assertions where the chosen test framework stops on the first failure."
+  ],
+  "counterexampleInvariants": [
+    "The chosen old/new pair must be canonically equal as Swift Strings but have distinct UTF-8 arrays; Latin NFC/NFD should also expose the expected UTF-16 length difference. Hebrew reordered combining marks may retain UTF-16 length while differing in exact code units.",
+    "Initial model and rendered text must be exactly the old bytes. The second model read must be exactly the new bytes before the rendered-value assertion. Neither phase may set UITextView.text/attributedText or private cache state directly.",
+    "Keep target block type, native style value, preferredContentSizeCategory and interface direction unchanged. applyInterfaceDirection explicitly clears cached source, which would allow the old predicate to pass and invalidate this regression.",
+    "Keep the same target visible without navigation, reparenting, scrolling offscreen, explicit reload or source-order changes. Object identity alone does not prove absence of prepareForReuse; the unchanged-ID direct-render path and continuously mounted visible row provide the required source/lifecycle constraint.",
+    "The old predicate sees canonical-equal cached/new source and unchanged style/type/category, so it skips rendering while the model holds new raw text. The corrected predicate reaches the already exact shared renderer; its replace path saves and restores a selection valid in both strings.",
+    "Do not require old Undo retention. An external native version change deliberately increments textHistoryEpochs and clears stale edit history. That behavior is independent of this cache defect."
+  ],
+  "cleanupRisks": [
+    "viewWillDisappear only unmounts on actual removal/dismissal conditions. Hiding an owned test window or clearing rootViewController alone must not be treated as proof that presentation observations drained.",
+    "Every success and throwing assertion path must perform the fixture owner's async cleanup, including presentation.drain(), original session/lifetime closure and joining the in-process HTTP/observation tasks; then restore the prior key window. Do not launch a detached cleanup Task from defer and claim it joined.",
+    "Actual canMutate/shouldBeginEditing requires the original mounted lifetime, writable read and foreground surface. A real UIKit window may test these fixture conditions, but fixture member/permissions are not verified Native production authority."
+  ],
+  "existingCoverage": "The hosted empty-paragraph suite mounts only AnyNativeTextView under a plain UIViewController. Renderer3 calls AnyNativeTextRenderer directly. Neither provides an existing complete public-load presentation fixture or exercises configure's cached-source predicate.",
+  "pending": "Interfaces must implement and source-review its exact original-route HTTP fixture and two full controller tests. Apple compilation and execution remain necessary; this document makes no mounted PASS claim.",
+  "actions": {
+    "sourceEdits": 0,
+    "testAuthoring": 0,
+    "portableControls": 0,
+    "compilerCalls": 0,
+    "UIExecutions": 0,
+    "HTTPServers": 0,
+    "NativeCalls": 0,
+    "OracleCalls": 0,
+    "MacCalls": 0
+  }
+}

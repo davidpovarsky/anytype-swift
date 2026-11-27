@@ -1,0 +1,14 @@
+{
+  "affectedSource": {
+    "bytes": 13101,
+    "gitBlob": "59fe107ef840074fec4cd5a34b09c2674be7a84d",
+    "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+    "sha256": "1e15c9bf2e3e87ca2e88979ceecae6f9c1cc8444168514bc17056b9aa134eccc"
+  },
+  "correction": "V5 restores donor MainActor validation and registers the actual Hanlin+Sharing publication task before suspension. Stop captures its exact previous-attempt record, retires that parent and joins only this publication task before the first owner closes.",
+  "finding": "Stage checks before and after an awaited actor hop do not prevent the owner's synchronous open from executing after parent retirement. The v4 composition dropped the donor's same-turn MainActor validation. Sharing.didOpen has no supplied attempt validation, so an admitted queued open could occur after Stop's first close; a final reclose restores only terminal state.",
+  "mutationsByReviewer": 0,
+  "observedRuntimeFailure": false,
+  "schema": "pinkha-auth-v4-queued-publication-peer-finding/v1",
+  "status": "CLOSED_BY_DISTINCT_PROPOSAL5_SOURCE_ONLY"
+}

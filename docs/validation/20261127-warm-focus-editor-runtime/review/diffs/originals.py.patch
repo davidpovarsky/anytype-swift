@@ -1,0 +1,175 @@
+--- original/originals.py
++++ warm_focus_editor/originals.py
+@@ -7,6 +7,9 @@
+ from __future__ import annotations
+ 
+ import ast
++import base64
++from datetime import datetime, timezone
++import uuid
+ from contextlib import contextmanager
+ import copy
+ from enum import Enum
+@@ -25,7 +28,7 @@
+ import time
+ from types import ModuleType, SimpleNamespace
+ 
+-PIN_MANIFEST_SHA256 = "b0afbd53aef99cc44adc77432c6fba6b7b060faf4808e81ec01799df3d2e627c"
++PIN_MANIFEST_SHA256 = "fccdd0205c1f9047241754fe739994f7baa92def857fa8495faf3fec83abb10c"
+ CORE_ROOT = "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/"
+ SHARED_PATH = "Tools/CurrentAppleValidation/combined_heart_semantics/build15/combined_heart_semantics_current.py"
+ HOST_PATH = CORE_ROOT + "native-renderer-hosted/combined_host_acceptance_app15.py"
+@@ -51,7 +54,7 @@
+         data = manifest_path.read_bytes()
+         require(sha(data) == PIN_MANIFEST_SHA256, "Original control source manifest changed")
+         self.manifest = json.loads(data)
+-        require(self.manifest["schema"] == "pinkha-hosted-core16-rtl-original-control-sources-v1",
++        require(self.manifest["schema"] == "pinkha-warm-focus-editor-original-control-sources-v1",
+                 "Unknown original control source manifest")
+         self.sources = {}
+         self.proof = {"manifestSHA256": PIN_MANIFEST_SHA256,
+@@ -80,6 +83,7 @@
+             "Path": Path, "PurePosixPath": PurePosixPath, "plistlib": plistlib,
+             "re": re, "shutil": shutil, "signal": signal, "stat": stat,
+             "subprocess": subprocess, "sys": sys, "time": time,
++            "base64": base64, "datetime": datetime, "timezone": timezone, "uuid": uuid,
+         })
+         module.__dict__.update(bindings or {})
+         sys.modules[name] = module
+@@ -132,45 +136,114 @@
+                 "lastLine": node.end_lineno, "bytes": len(data), "sha256": sha(data),
+                 "originalASTNodeUnchanged": True}
+ 
++    def project(self, name, path, *, bindings=None, constants=None, functions=None):
++        """Select unchanged top-level original nodes with finite explicit globals.
++
++        Imports are supplied by this isolated namespace; the functions, data
++        assignments, decorators and defaults are original AST nodes. This lets
++        source-only Git reads use the owned 60-second command adapter without
++        globally replacing subprocess or changing an original validator body.
++        """
++        text = self.sources[path].decode()
++        tree = ast.parse(text)
++        module = self._module(name, path, bindings)
++        nodes = []
++        for node in tree.body:
++            if isinstance(node, ast.FunctionDef):
++                if functions is None or node.name in functions:
++                    nodes.append(node)
++                    self.proof["declarations"].append(self._observation(path, text, node, node.name))
++            elif isinstance(node, ast.Assign):
++                require(all(isinstance(target, ast.Name) for target in node.targets),
++                        "Only exact original named module bindings are supported")
++                names = {target.id for target in node.targets}
++                if constants is None or names <= set(constants):
++                    nodes.append(node)
++                    raw = "".join(text.splitlines(keepends=True)[node.lineno - 1:node.end_lineno]).encode()
++                    self.proof.setdefault("moduleAssignments", []).append({"path": path,
++                        "names": sorted(names), "sha256": sha(raw), "originalASTNodeUnchanged": True})
++        if functions is not None:
++            require({node.name for node in nodes if isinstance(node, ast.FunctionDef)} == set(functions),
++                    "Exact finite original function closure differs")
++        if constants is not None:
++            require({target.id for node in nodes if isinstance(node, ast.Assign) for target in node.targets}
++                    == set(constants), "Exact finite original constant closure differs")
++        future = ast.ImportFrom(module="__future__", names=[ast.alias(name="annotations")], level=0)
++        body = ast.fix_missing_locations(ast.Module(body=[future, *nodes], type_ignores=[]))
++        exec(compile(body, module.__file__, "exec"), module.__dict__)
++        return module
++
+     def install(self):
+         self.gate = self.full("receipt_admission", "Tools/MiniApps/receipt_admission.py")
+-        self.preparation = self.full("core13_original_receipt_preparation", "Tools/MiniApps/prepare_receipt_input.py")
+-        self.products = self.selected("core13_original_products", "Tools/MiniApps/run_receipt_acceptance.py",
++        self.preparation = self.full("warm_original_receipt_preparation", "Tools/MiniApps/prepare_receipt_input.py")
++        self.products = self.selected("warm_original_products", "Tools/MiniApps/run_receipt_acceptance.py",
+             ("bundle_executable", "entries", "resolve_product"), bindings={"gate": self.gate})
+         self.core_declarations = self.full("wave15_core_profile", "Tools/Hanlin/wave15_core_profile.py")
+         self.host_results = self.selected("run_host_tests", "Tools/Hanlin/run_host_tests.py",
+             ("HostTestProfile", "require", "test_cases", "validate_results"))
+         self.enumeration = self.selected("shared_editor_existing_build", "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py",
+             ("enumerated_identifiers",), bindings={"host": self.host_results})
+-        self.witness = self.full("native_compiler_witness", CORE_ROOT + "rtl-witness-current/native_compiler_witness.py")
+-        self.native_core = self.full("native_core_hosted_profile", CORE_PATH)
+-        self.rtl = self.full("rtl_hosted_profile", RTL_PATH)
+-        self.paths = self.selected("core13_original_product_paths", "Tools/CurrentAppleValidation/contracts.py",
++        self.paths = self.selected("warm_original_product_paths", "Tools/CurrentAppleValidation/contracts.py",
+             ("require", "product_path"))
+-        self.shared = self.selected("core13_original_shared", SHARED_PATH,
++        self.shared = self.selected("warm_original_shared", SHARED_PATH,
+             ("require", "sha", "digest", "raw", "decode", "write", "write_bytes", "error",
+              "inventory", "pinned", "Commands", "product_integrity", "bind_descriptor"),
+-            bindings={"FLOOR": 2 * 1024 ** 3, "common": self.paths})
+-        self.carriers = self.selected("core13_original_code_carriers", "Tools/PinkhaSimulatorGate/run_ui27.py",
+-            ("code_carriers",), bindings={"digest": self.shared.digest})
+-        self.settings = self.selected("core13_original_simulator_setting", "Tools/PinkhaSimulatorGate/t5_native_ui_r08.py",
++            bindings={"FLOOR": 2 * 1024 ** 3, "common": self.paths,
++                "MANIFEST": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
++                "VERSION": "pinkha-dual-runtime-v1-8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b"})
++        self.results = self.selected("warm_original_method_results", "Tools/PinkhaSimulatorGate/validate_release.py",
++            ("require", "method_results"))
++        self.carriers = self.project("warm_original_ui_helpers", "Tools/PinkhaSimulatorGate/run_ui27.py",
++            constants=("SMOKE", "DEFAULT_METHOD_SECONDS", "PROPERTIES_METHOD_SECONDS", "LONG_PROPERTIES_METHODS"),
++            functions=("code_carriers", "selection_time_budget"),
++            bindings={"digest": self.shared.digest, "method_results": self.results.method_results})
++        self.settings = self.selected("warm_original_simulator_setting", "Tools/PinkhaSimulatorGate/t5_native_ui_r08.py",
+             ("actual_setting",), bindings={"core": self.core_declarations})
+-        self.signals = self.selected("core13_original_signals", "Tools/Hanlin/host_command.py",
++        self.signals = self.selected("warm_original_signals", "Tools/Hanlin/host_command.py",
+             ("CommandCancelled", "cancellation_signals"))
+-        bindings = {"shared": self.shared, "native_core": self.native_core,
+-                    "NATIVE": "AnytypeTests", "UI": "PinkhaStage1AcceptanceUITests",
+-                    "SUPPORT": Path("Library/Application Support")}
++        self.ui_results = self.selected("warm_original_ui_results", "Tools/PinkhaSimulatorGate/t5_native_ui_evidence.py",
++            ("require", "validate_selection"))
++        self.host_functions = self.selected("warm_original_owned_observer", HOST_PATH,
++            ("observe_owned_groups",), bindings={"shared": self.shared})
++        return self
++
++    def install_runtime(self, commands):
++        from profile_binding import BoundSourceQueries, UnselectedRoute
++        require(commands.is_open and not hasattr(self, "focus"), "One open original runtime binding required")
++        queries = BoundSourceQueries(self.source, commands, self)
++        self.focus = self.project("focus_lifecycle_profile", CORE_ROOT.replace("wave2/", "build16/") + "focus_lifecycle_profile.py",
++            bindings={"host": self.host_results, "core": self.core_declarations,
++                      "existing": self.enumeration, "subprocess": queries})
++        unused = UnselectedRoute()
++        self.wave15 = self.project("warm_original_wave15", "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
++            constants=("LANES", "HANLIN_LANES", "EDITOR_DEVICE_PREFERENCES_TIMEOUT_SECONDS"),
++            functions=("require", "preparation_environment", "nonempty", "fixture_environment",
++                       "validate_device_language", "source_methods"),
++            bindings={"shared": self.carriers, "hanlin": unused, "hanlin_selection": unused})
++        self.startup_profile = self.project("torah_ui_profile", CORE_ROOT + "torah-future/torah_ui_profile.py",
++            bindings={"subprocess": queries})
++        self.startup = self.project("torah_ui_consumer", CORE_ROOT + "torah_ui_consumer.py",
++            bindings={"profile": self.startup_profile})
++        bindings = {"shared": self.shared, "native_core": SimpleNamespace(HOSTED_LANES=frozenset()),
++                    "torah_ui": self.startup, "NATIVE": "AnytypeTests", "UI": "PinkhaStage1AcceptanceUITests",
++                    "SUPPORT": Path("Library/Application Support"),
++                    "SWITCH": "PinkhaStage1AcceptanceUITests/testUnifiedEngineSwitchRetainsHeartDocumentAndColdReopen"}
+         for name in ("require", "raw", "decode", "write", "write_bytes", "sha", "digest"):
+             bindings[name] = getattr(self.shared, name)
+-        self.host_functions = self.selected("core13_original_host_functions", HOST_PATH,
+-            ("invocation_selectors", "scoped_descriptor", "exact_enumeration",
++        self.host_functions = self.selected("warm_original_host_functions", HOST_PATH,
++            ("invocation_selectors", "scoped_descriptor", "exact_enumeration", "result_selection",
+              "host_validation_module", "observe_owned_groups"), bindings=bindings)
+         bindings.update({name: getattr(self.host_functions, name) for name in
+-                         ("invocation_selectors", "scoped_descriptor", "exact_enumeration", "host_validation_module")})
+-        self.host = self.selected("core13_original_host_methods", HOST_PATH, ("Consumer",),
+-            methods=("__init__", "command", "container", "installed", "create", "appearance", "stage", "preserve"),
+-            bindings=bindings)
+-        self.helpers = {"run_ui27": self.carriers, "t5_native_ui_r08": self.settings}
++            ("invocation_selectors", "scoped_descriptor", "exact_enumeration", "result_selection", "host_validation_module")})
++        self.host = self.selected("warm_original_host_methods", HOST_PATH, ("Consumer",),
++            methods=("__init__", "command", "container", "installed", "create", "appearance", "stage",
++                     "read_private", "preserve", "wave"), bindings=bindings)
++        self.helpers = {"run_ui27": self.carriers, "t5_native_ui_r08": self.settings,
++                        "run_wave15_acceptance": self.wave15, "t5_native_ui_evidence": self.ui_results,
++                        "type_preservation": unused, "focus_lifecycle_profile": self.focus}
++        self.proof["finiteRuntimeBinding"] = {"lanes": ["focus-lifecycle", "editor"],
++            "separateCoreRTLOrNativeUIInvoked": False, "sourceQueries": "original owned60s command barrier",
++            "otherWave15Branches": "not selected; an accidental unsupported helper access fails closed"}
+         return self
+ 
+     def configure_runtime(self, *, runtime, bundle_id):

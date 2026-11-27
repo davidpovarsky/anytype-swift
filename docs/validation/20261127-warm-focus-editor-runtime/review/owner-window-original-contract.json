@@ -1,0 +1,68 @@
+{
+  "callOrder": [
+    {
+      "declaration": "main",
+      "observation": "Requires exact ROOT_REVIEWED_FINITE_OWNER_WINDOW status and original hash-bound evidence. It does not parse a duration, expiry or TTL.",
+      "source": "stager"
+    },
+    {
+      "declaration": "census/main",
+      "observation": "Fresh all-host compiler/copy and queued-launcher census, original source/cache writer checks and the staging2GiB+512MiB floor run before source operations and after staging.",
+      "source": "stager"
+    },
+    {
+      "declaration": "execute_once/global_admission",
+      "observation": "Historical implementation reads terminal foreign evidence and fresh all-host census before creating any claim. Four output paths must be absent, then CLAIM.mkdir is exclusive. This is a scoped once-only claim, not an atomic host-wide lock.",
+      "source": "historicalOnceOnlyLauncher"
+    },
+    {
+      "declaration": "execute_once",
+      "observation": "It verifies exact source/package/native/receipt/expanded producer inputs, creates complete approved preview bytes, then rechecks shared writers, foreign terminal evidence and global census immediately before the no-overwrite os.link effective admission and original supervisor Popen.",
+      "source": "historicalOnceOnlyLauncher"
+    },
+    {
+      "declaration": "wr_forward_cache",
+      "observation": "The actual forward producer reuses the original hash-pinned all-host census and refuses any heavy compiler/copy or queued launcher. The warm App envelope remains6GiB+2GiB+512MiB,9,126,805,504 bytes.",
+      "source": "adapter"
+    },
+    {
+      "declaration": "module",
+      "observation": "Records actual adapter exit and actual expanded producer/build-receipt hashes. It does not provide a lease or positive supervisor group-absence claim. Original App/UI run_phase receipts provide their own positive compiler-group absence.",
+      "source": "originalSupervisor"
+    }
+  ],
+  "currentResourceOrLeaseObservation": null,
+  "forwardLauncherStillRequired": "Historical ec856 has fixed8f2 paths/source and foreign identifiers; it is provenance only and cannot be executed as the new forward launcher without an explicit reviewed successor.",
+  "historicalGroupReprobes": 0,
+  "newHostOperations": 0,
+  "noRuntimeOrBuildAdmissionByThisNote": true,
+  "rootDecision": "Root explicitly accepted once-only admission plus fresh coordination/census as the original finite window. No additional TTL requirement is introduced.",
+  "schema": "pinkha-forward-warm-owner-window-source-note-v1",
+  "sourceInputs": {
+    "adapter": {
+      "bytes": 20944,
+      "originalPath": "/workspace/scratch/ae335eba85e3/warm-forward-8f2-source/after/wave3_forward_warm.py",
+      "retainedPath": "originals/dispatch-source/adapter.py",
+      "sha256": "80c9d213ba95072125bf863917b1f98e4db24fa174cf170e743c66c124d2f245"
+    },
+    "historicalOnceOnlyLauncher": {
+      "bytes": 21805,
+      "originalPath": "/workspace/scratch/ae335eba85e3/pinkha-wave3-build-control/root_dispatch_warm8f2_census_retained.py",
+      "retainedPath": "originals/dispatch-source/historicalOnceOnlyLauncher.py",
+      "sha256": "ec8566a265b301775d766a742b34158e9b2dec234596bd9e82032a55a6c21cea"
+    },
+    "originalSupervisor": {
+      "bytes": 1734,
+      "originalPath": "/workspace/scratch/ae335eba85e3/pinkha-wave3-build-control/root-dispatch-review-original512-1/original-1-supervisor.py",
+      "retainedPath": "originals/dispatch-source/originalSupervisor.py",
+      "sha256": "bd0ee535786b2a7c95b4da1b6dfdbd1b1f409438a6214cb4252d0c386cebf42e"
+    },
+    "stager": {
+      "bytes": 30450,
+      "originalPath": "/workspace/scratch/ae335eba85e3/warm-forward-8f2-source/after/stage_wave3_forward_warm.py",
+      "retainedPath": "originals/dispatch-source/stager.py",
+      "sha256": "f7ff8cc492918d7e77686d408f430ee0c39647ee3fb3bdd353f14168fc84bec7"
+    }
+  },
+  "status": "SOURCE_CITED_ORIGINAL_CONTRACT_NO_NEW_TTL"
+}

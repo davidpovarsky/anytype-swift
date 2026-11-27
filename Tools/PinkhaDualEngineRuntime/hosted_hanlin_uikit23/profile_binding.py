@@ -16,7 +16,7 @@ import sys
 
 from originals import HOST_PATH, require
 
-DEPENDENCY_SHA256 = "698f82318f971f2e0f3de707fcd721388707197a746309f4a555e2f09004f58d"
+DEPENDENCY_SHA256 = "eea5d136719a8e73c1942cdd8216f1b8c540536d692558aa46147de8f7a54c95"
 ACTIVATION_SHA256 = "2a6d9b503a49c156a1dc6dc6d110c2008386eee18a9c4021af18c7c24655fa23"
 W2_PREFIX = "Tools/PinkhaDualEngineRuntime/hosted_hanlin_uikit23/"
 W2_MODULE_NAME = "hosted_hanlin_uikit23_original_profile"

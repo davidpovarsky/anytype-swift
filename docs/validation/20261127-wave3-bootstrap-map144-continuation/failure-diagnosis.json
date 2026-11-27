@@ -1,0 +1,25 @@
+{
+  "actualExit": 1,
+  "actualFailedGateSHA256": "0b28cf80d1924a570170bba2c7ceb292c866a868800b73b815d9fae2d07991be",
+  "actualFailedReceiptSHA256": "d8d4087e01b0040c5fe60dbab6b750b1f7401224f1e41022a82943695a41d382",
+  "actualInventoryErrors": [],
+  "actualVerifiedRows": 140,
+  "cause": "Four changed baseline files had no own-path mapping; the existing row129 shared-source witness does not register its referenced file as a baseline refactor.",
+  "correction": "Append only four exact586-to-already-staged Bootstrap5 mappings and an exception note, retaining all existing140 rows, product/control source and the original pending normal merge.",
+  "failedPhase": "ORIGINAL140_RETENTION_GATE",
+  "missingOwnPathMappings": [
+    "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapStateManager.swift",
+    "Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift"
+  ],
+  "newCompilerInvocations": 0,
+  "newGateExecuted": false,
+  "newGateRequiredRows": 144,
+  "newHostActions": 0,
+  "newMaterializations": 0,
+  "newTestsExecuted": 0,
+  "originalFailedGateRemainsFailed": true,
+  "schema": "pinkha-bootstrap-retention-failure-diagnosis/v1",
+  "scope": "ACTUAL_FAILURE_SOURCE_METADATA_CORRECTION_ONLY"
+}

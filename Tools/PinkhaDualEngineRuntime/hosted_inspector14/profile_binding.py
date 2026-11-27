@@ -16,7 +16,7 @@ import sys
 
 from originals import HOST_PATH, require
 
-DEPENDENCY_SHA256 = "d700de9e5208a3dfcf60f3deb828bcc7b2a4b302815d33716c485855bd722248"
+DEPENDENCY_SHA256 = "feadf226f718744e20021fb2bafa8bca0ce194aafc55b9ba24c776e836704220"
 ACTIVATION_SHA256 = "61228a0dde1d86ddd8fd9b3ed95196f4e7b4d28b00fdda0ab4c36ed70a8278be"
 W2_PREFIX = "Tools/PinkhaDualEngineRuntime/hosted_inspector14/"
 W2_MODULE_NAME = "hosted_inspector14_original_profile"

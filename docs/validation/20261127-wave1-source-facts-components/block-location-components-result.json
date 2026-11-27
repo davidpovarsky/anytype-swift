@@ -1,0 +1,51 @@
+{
+  "cleanupForcedKill": false,
+  "cleanupRequired": false,
+  "command": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/tmp/pinkha-w1-migration-swift-20261127",
+    "--disable-automatic-resolution",
+    "--skip-build",
+    "--filter",
+    "AnyNativeBlockLocationLimitTests"
+  ],
+  "compiledProducts": {
+    "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner": "9ce9d63f94e0f7a47bf3ec1e046337a3ef1d3d184c46b16acda32fe6835d548f",
+    "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so": "f191ad7f505d7526f27fcbe8db6a3bc843eccc3411cd55cf3ab31f435f94646b"
+  },
+  "compiledProductsUnchanged": true,
+  "controllerSHA256": "598ea28ddd5c2d6c13f8d276f065b815786cfc907750d45d9114d2a586ca6431",
+  "errors": [],
+  "exitCode": 0,
+  "failLines": [],
+  "logSHA256": "65ce0520b6f83084a0f3d51b15231dc4b6ff66feb374725b7746c7e17c9d62ad",
+  "members": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBlockCreator.swift": "6bea1d2f1108cf737d68f91cf891c901e0140212b574aaf9e42fa63b392fd652",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyNativeBlockLocationLimitTests.swift": "e6cff2307e52553701cc9559b04b87f07f07b6d471b816714b739102f6a91a60"
+  },
+  "minimumDevelopmentFreeBytes": 36330119168,
+  "minimumRootFreeBytes": 2848432128,
+  "nativeProcessesLaunched": false,
+  "ownedGroupAbsent": true,
+  "passLines": [
+    "\u2714 Test oversizedLocationsAreRefusedBeforeAnIntentCanBeDispatched() passed after 0.008 seconds.",
+    "\u2714 Test inclusiveNativeParentAndPositionLimitsSurviveEncoding() passed after 0.010 seconds."
+  ],
+  "pid": 650435,
+  "scope": "Exactly two new public block-location boundary methods, reusing the qualified source-facts compilation; no compiler or native process is dispatched",
+  "seconds": 3.726,
+  "sourceClosureSHA256": "ca0dd9bb060b738c71bf6d84b992a09b7cb4c5c3182e6a7234cb690e6b9a9eaa",
+  "sourceCommit": "12e49ea69efdde499a6b5343cbe77139073dfbd8",
+  "sourceFactsBuildReceiptSHA256": "437fab26265b371180016caae6fc87c72a9b471deecc70d6d99b92309d51959f",
+  "sourceUnchanged": true,
+  "startLines": [
+    "\u25c7 Test oversizedLocationsAreRefusedBeforeAnIntentCanBeDispatched() started.",
+    "\u25c7 Test inclusiveNativeParentAndPositionLimitsSurviveEncoding() started."
+  ],
+  "status": "PASS",
+  "testFramework": "SwiftTesting"
+}

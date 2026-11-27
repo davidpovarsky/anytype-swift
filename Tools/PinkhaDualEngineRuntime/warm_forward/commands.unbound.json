@@ -1,0 +1,60 @@
+{
+  "actualBuild": {
+    "command": null,
+    "dispatcher": "root only",
+    "effectiveAdmission": null,
+    "supervisor": null
+  },
+  "producerPreview": {
+    "arguments": [
+      "-B",
+      null,
+      "--admission",
+      null,
+      "--admission-sha256",
+      null,
+      "--accepted-source",
+      null,
+      "--original-adapter",
+      null,
+      "--original-producer",
+      null,
+      "--output",
+      null
+    ],
+    "controller": {
+      "preparedLocalPath": "/workspace/scratch/ae335eba85e3/warm-forward-8f2-source/after/wave3_forward_warm.py",
+      "sha256": "80c9d213ba95072125bf863917b1f98e4db24fa174cf170e743c66c124d2f245"
+    },
+    "executable": null,
+    "executeArgumentIncluded": false,
+    "requiresActualBoundAdmissionPreviewAndFullInverseReview": true
+  },
+  "ready": false,
+  "runtime": {
+    "consumer": null,
+    "finalProductTuple": null,
+    "ready": false,
+    "selectionPreparedLocalPath": "/workspace/scratch/ae335eba85e3/warm-forward-8f2-source/after/priority-runtime-selection.closed.json"
+  },
+  "schema": "pinkha-forward-warm-command-interface-v1",
+  "stage": {
+    "arguments": [
+      "-B",
+      null,
+      "--plan",
+      null,
+      "--plan-sha256",
+      null,
+      "--accepted-source",
+      null
+    ],
+    "controller": {
+      "preparedLocalPath": "/workspace/scratch/ae335eba85e3/warm-forward-8f2-source/after/stage_wave3_forward_warm.py",
+      "sha256": "f7ff8cc492918d7e77686d408f430ee0c39647ee3fb3bdd353f14168fc84bec7"
+    },
+    "executable": null,
+    "requiresRootReviewedEffectivePlan": true
+  },
+  "status": "UNBOUND_NOT_INVOKED"
+}

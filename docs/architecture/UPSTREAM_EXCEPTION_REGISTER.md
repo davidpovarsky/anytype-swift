@@ -632,3 +632,53 @@ Preserve the original SDK63 checkpoint, canonical cancellation and Composer beha
 The61 native source inputs,10 Stage1 UI inputs and separate2 Native23 UI inputs require their real common compiler receipts. Every existing false/null/empty activation remains closed. All56 original Package.resolved pins, Kit26 source, original ProtobufMessages package, original materializer, existing native8ac gate and protected T5 custody remain unchanged. No SDK materialization, native or Apple compile, fixture preparation, runtime, signing or delivery is authorized by this source record. Historical failures and receipts retain their original source and execution scope. Pending Inspector changes are outside this payload.
 
 Only existing retention-map row17's shared host blob and row102's SDK-manifest replacement blob change; all other132-row metadata and the complete original exception-register prefix remain exact. Pasteboard has the separate reviewed row133 and exception above. Full source inputs, literal inverses and original publication evidence are retained under `docs/validation/20261127-wave3-w2-sdk61-source-intake/`.
+
+
+## 2026-11-27 coherent SDK, Kit, renderer and account source integration
+
+Promote the four-package Hanlin source revision from 5fffe60fbcec8b12ae2cc14bcb092884677f19b0 to the actual published c0b118f4de28e6ca1e71219237d1ae1c7fabefd8. Its unchanged original materializer and all other manifest fields remain exact. The actual SDK source receipt qualifies 1011 files and 39,812,364 source bytes; no installation, compiler or runtime result is supplied by this source merge.
+
+Align only the ten reviewed inner Kit revision literals with the already selected 26beca175d64a4d34e3567f2bbb4bf308d714478. Preserve all 56 main lock records, other package pins, public APIs, Xcode target membership and existing module-lock originHash values. Those lock metadata fields have not been newly resolved and require the original selected-toolchain resolver.
+
+Retain the original N53/C21 evidence and failure boundaries through normal ancestry. Adopt the exact 6eec renderer UTF8 comparison and 78cc mounted UIKit fixtures, preserving the three original methods. The distinct closed Core24 profile selects 24 methods / 28 cases with the original compiler, enumeration, result and custody validators; its two additional methods use controlled HTTP and mounted UIKit, not a real Native account. Existing Core22, Inspector14, Native26, UIKit23, attachment and priority focus selections remain separately scoped.
+
+Add only the reviewed warm-forward and current-product consumer controls and their original evidence. All build, staging and runtime admission flags remain false, all final product tuples remain null, and no old product is relabelled as a current build.
+
+2026-11-27 original account/Space/Bootstrap authority integration (source only)
+
+Reuse the original supplier selected-Space/account/SpaceView permission and actual
+Invocation permit/drain source, with the original pre-E2 Auth/Login flow. Keep
+current original T2 native-read transition blocks, private-network error propagation,
+widget-before-subscription ordering, analytics, preview, public APIs and source pins.
+No supplier-only embedded framework facade, native writer or new account generation
+is introduced. The selected-Space Bootstrap retry retains the exact original
+account capture through scheduling, its entire cache/manifest operation and actual
+native dispatch. The owned subscription clears its temporary inherited startup
+binding; external bound selection remains denied.
+
+The current Hanlin decorator now uses the original attempt/parent/owned Stop path.
+Stop retires a pending non-destructive startup before suspension; only its actual
+Hanlin/Sharing publication task is joined before their first close. Native Stop
+still precedes the retired startup and Bootstrap drain. Destructive overlap remains
+rejected, a failed Stop retains its original retry boundary and real MiniApps holds,
+and all current Sharing, Hanlin, engine, Bootstrap and T5 stages are preserved.
+
+Update only replacementBlob on existing map rows15/63/115 and append the seven
+baseline-proven paths in the separate map-prerequisites record. Preserve all other
+current metadata and descendant map changes, including SDK, Kit, Native and prior
+Pasteboard entries. Bootstrap5 row129 is a separate accepted source composition.
+
+Original selected-Space10 and release6 receipts retain their actual narrower
+portable scope and original failures. New source/inverse/Git whitespace checks and
+peer review are not a Swift compiler, current native account, UI or TestFlight
+result. Original queued-publication v4 finding and its distinct v5 correction remain
+retained. Final descendant preimages, Hook caller census, whole App compilation
+and the actual cancellation/account/engine scenarios remain required.
+
+## 2026-11-27 Bootstrap baseline mapping continuation
+
+The original source346 retention gate checked staged tree7504e4063ffdd279bda2ead91201abbe1a930e7c and failed before commit or push: all140 existing mappings verified, inventoryErrors was empty, and the four already-reviewed Bootstrap baseline files lacked their own map entries. The original failed receipt and gate remain retained unchanged.
+
+Append only four refactor mappings for PinkhaBootstrapStateManager.swift, PinkhaSpaceManifestStore.swift, PinkhaBootstrapProtocols.swift and PinkhaSpaceManifest.swift. Their immutable586 baseline bytes equal the actual af63 preimages, and their replacement blobs are the already-staged reviewed Bootstrap5 bytes. Keep the complete140-row map, all shared-source witnesses including row129, the exception-register prefix, every product/control byte, all package/native/SDK pins and closed runtime fields unchanged.
+
+Continue the same pending normal four-parent merge only after exact HEAD, index, MERGE_HEAD, original untracked files and remote checks. Run the unchanged original retention gate for144 mappings, then make the ordinary merge commit and one non-force push with exact readback. No remerge, reset, compiler, test, resolver, SDK materialization or runtime acceptance is part of this correction.

@@ -289,7 +289,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         cell.marker.text = AnyNativeBlockMarkerPolicy.marker(for: block)
         let selected = presentation.selectedBlockIDs.contains(block.id)
         cell.contentView.backgroundColor = selected ? UIColor.systemBlue.withAlphaComponent(0.045) : .clear
-        if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native["style"]
+        if cell.renderedSource?.utf8.elementsEqual(renderedSource.utf8) != true || cell.renderedNativeStyle != block.native["style"]
             || cell.renderedBlockType != block.type
             || cell.renderedContentSizeCategory != traitCollection.preferredContentSizeCategory {
             rendering = true

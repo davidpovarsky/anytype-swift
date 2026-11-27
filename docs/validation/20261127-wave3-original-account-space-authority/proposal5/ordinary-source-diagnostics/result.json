@@ -1,0 +1,105 @@
+{
+  "scope": "Ordinary local full16-source partial-Git whitespace check; no Swift/test/runtime",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "init",
+        "--quiet"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "add",
+        "--",
+        "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+        "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
+        "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+        "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+        "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+        "Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift",
+        "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+        "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift",
+        "Modules/ProtobufMessages/Sources/Invocation.swift",
+        "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "user.name=Source Retention Review",
+        "-c",
+        "user.email=source-review@localhost",
+        "commit",
+        "--quiet",
+        "-m",
+        "Exact partial root275 source preimages"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "add",
+        "--",
+        "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+        "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
+        "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+        "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOperation.swift",
+        "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+        "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageDocument.swift",
+        "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+        "Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift",
+        "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+        "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+        "Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift",
+        "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+        "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift",
+        "Modules/ProtobufMessages/Sources/Invocation.swift",
+        "Modules/ProtobufMessages/Sources/InvocationDispatchBinding.swift",
+        "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "--no-optional-locks",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "check": {
+    "argv": [
+      "git",
+      "--no-optional-locks",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+}

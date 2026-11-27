@@ -1,0 +1,55 @@
+{
+  "activeSpaceSource": {
+    "bytes": 16784,
+    "gitBlob": "145f418680103ea26962a1ee2f8677a48f902557",
+    "path": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+    "sha256": "22d02c37d53a877aff201b48375a9a4230e18d0b02dbaa17391f98e01848b0aa"
+  },
+  "byteProof": {
+    "bytes": 11757,
+    "gitBlob": "71d2bb3b101e28a5551992f61adbdf354fd88b9a",
+    "path": "/workspace/scratch/ae335eba85e3/sdk-auth-publication-peer-review/independent-byte-proof.json",
+    "sha256": "8a3ef34cbc238559bac3a5acb4d420de10d3c391e3a193eea7643016130fe774"
+  },
+  "compilerAssessment": "Source inspection only: immutable AccountPublication fields and actual Task handle are Sendable, original accounts dependency is Sendable, stage results retain Value: Sendable, and mutable wrapper state stays actor-isolated. No selected-toolchain typecheck was executed.",
+  "compilerInvocations": 0,
+  "conclusions": [
+    "No remaining concrete source-level concurrency, circular-drain or Swift isolation blocker found in this bounded v5 composition.",
+    "The accepted Stop is an owned unstructured task. It retires the original parent synchronously; later cancellation of the UI caller is reported only after the real cleanup task completes.",
+    "The only pre-close join is the exact immutable AccountPublication record's task. Its body contains two existing owner-open stages and no Bootstrap or native-startup wait. Actor reentrancy can complete that task while Stop awaits it.",
+    "Publication registration contains no suspension and requires the current attempt before creating its record. Its defer clears only the identical record. Once stopping is set, another publication cannot register.",
+    "Hanlin accountDidOpen again validates the original attempt inside the same synchronous MainActor turn as the owner mutation. The Sharing call is joined before Stop's first close; its post-admission completion cannot reopen after that close.",
+    "Actual base Stop still precedes the retired startup and Bootstrap drains. Failed Stop retains the successful-stop-required latch and real MiniApps holds while permitting a later original Stop retry; it does not deadlock by awaiting an unresolved startup first.",
+    "Parent task-local propagation remains limited to original Auth calls. The native attempt's outer lease is finished before LoginState's owned startup drain; parent-stage and actual native admissions remain on the original lifetimes.",
+    "Each actual MiniApps hold is retained even when its await returns after retirement. Deferred release removes only the collected UUID tokens. A newer account/engine hold survives either scheduling order of the MainActor release task.",
+    "The ActiveSpace task-local change clears only the temporary inherited Invocation binding for its long-lived subscription. Exact subscription identity plus account, SpaceView and selection captures remain the authority; it does not install a replacement account or native session.",
+    "Original native removal-before-erasure, Sharing/Hanlin drains, MiniApps/engine preparation and source-review cleanup APIs are retained. No new authority, synthetic result or journal-erasure permission was introduced."
+  ],
+  "hostActions": 0,
+  "limits": [
+    "Stop during queued publication, failed Stop then retry, startup cancellation, independent engine holds and account replacement still require actual matching compilation/runtime evidence.",
+    "This review does not promote original donor tests to the v5/current App source or claim the wider account/selection source packet was executed.",
+    "Known current dependency locators were supplied by their owner and their exact local bytes were read. No new primary fetch, host read, import, test or native/account operation occurred."
+  ],
+  "preservedV4Finding": {
+    "bytes": 1101,
+    "gitBlob": "ae85ae6d4076bbbaefd935c45d343005c1e6976c",
+    "path": "/workspace/scratch/ae335eba85e3/sdk-auth-publication-peer-review/proposal4-finding.original.json",
+    "sha256": "e41ed9b28a893df38ce733d9c03b28660ba2c8e325f86fe1666d38a854281366"
+  },
+  "schema": "pinkha-auth-publication-v5-bounded-peer-review/v1",
+  "scope": "Complete current Hanlin Auth wrapper, exact ActiveSpace task-local successor, and original attempt/drain/token/owner dependencies. No wider source packet or native-runtime qualification.",
+  "source": {
+    "bytes": 14654,
+    "gitBlob": "15de50a91b793bee20db3505e6b3bd4dc46974a4",
+    "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+    "sha256": "9573b90cdb321e3a538574828c08b250177682ffd5587e1c7171d63a5d11e87f"
+  },
+  "sourceInputs": {
+    "bytes": 290634,
+    "gitBlob": "1354ecfcb6153042a68d66edad5b0802e1cae45a",
+    "sha256": "8117deba71707607ca2971e3278ce675a8495ebb74cd9335c2532eb16ac6c875"
+  },
+  "status": "SOURCE_READY_RUNTIME_NOT_RUN",
+  "testsExecuted": 0
+}

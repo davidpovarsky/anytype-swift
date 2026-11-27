@@ -1,0 +1,82 @@
+{
+  "schema": "pinkha-native-render-cache-complete-merkle-retention/v1",
+  "status": "PASS_SOURCE_TREE_CUSTODY_ONLY",
+  "baseCommit": "d528e5413c72320c423ce9ccdbd4fbe423ca4a4a",
+  "baseTree": "afea5b145a8f18d96d8dfea3e6e302c8a9287ab9",
+  "candidateTreeBeforeThisProof": "5ff2c3eb4f87db81f32931678b28fd5fd1c698ee",
+  "completeComparison": [
+    {
+      "before": "baseRoot",
+      "after": "candidateRoot",
+      "originalEntries": 41,
+      "candidateEntries": 41,
+      "changedAncestors": [
+        "Modules",
+        "docs"
+      ],
+      "added": [],
+      "allOtherModesTypesHashesExact": true
+    },
+    {
+      "before": "baseModules",
+      "after": "candidateModules",
+      "originalEntries": 29,
+      "candidateEntries": 29,
+      "changedAncestors": [
+        "PinkhaAnyUI"
+      ],
+      "added": [],
+      "allOtherModesTypesHashesExact": true
+    },
+    {
+      "before": "baseDocs",
+      "after": "candidateDocs",
+      "originalEntries": 14,
+      "candidateEntries": 14,
+      "changedAncestors": [
+        "validation"
+      ],
+      "added": [],
+      "allOtherModesTypesHashesExact": true
+    },
+    {
+      "before": "baseValidation",
+      "after": "candidateValidation",
+      "originalEntries": 647,
+      "candidateEntries": 648,
+      "changedAncestors": [],
+      "added": [
+        "20261127-wave2-native-render-cache"
+      ],
+      "allOtherModesTypesHashesExact": true
+    },
+    {
+      "before": "baseAnyUI",
+      "after": "candidateAnyUI",
+      "originalLeaves": 71,
+      "candidateLeaves": 71,
+      "changedExistingLeaves": [
+        "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift"
+      ],
+      "allOtherModesTypesHashesExact": true
+    }
+  ],
+  "newEvidenceLeafCountBeforeProof": 6,
+  "allNewEvidenceBlobsMatchFullLocalBytes": true,
+  "exactProductChanges": [
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift"
+  ],
+  "preserved": [
+    "Complete NativeApp subtree, including Native26 source and project",
+    "Anytype and AnyTypeTests subtrees",
+    "All other Modules siblings",
+    "PinkhaAnyUI Package and all other source/test leaves",
+    "Every existing docs/validation child",
+    "Tools/.github/workflows/Native/SDK/consumer/source-manifest paths"
+  ],
+  "postProofClosure": "Final tree may only add this proof and packet-manifest.json inside the new evidence folder. Before new-branch creation, the complete final path/mode/type/blob inventory and changed ancestor paths must be checked again.",
+  "sourceRetentionCommandRun": false,
+  "runtimeAdmission": false,
+  "compilerCalls": 0,
+  "testCalls": 0
+}

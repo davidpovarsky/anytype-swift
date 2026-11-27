@@ -1,0 +1,38 @@
+{
+  "schema": "pinkha-root-mounted-refresh-source-review/v1",
+  "atUTC": "2026-11-27T16:27:53.735505+00:00",
+  "status": "SOURCE_REVIEW_ACCEPTED_APPLE_COMPILATION_AND_EXECUTION_PENDING",
+  "parent": "6eecb62f3bb101306b6036fbc04cc08257c3425f",
+  "sourceSHA256": "e0d8a4beda394ac90ee594cc10c4e7b954535ffa0f37f3cd414a5cf34f5b7da0",
+  "sourceBytes": 40984,
+  "originalPrefixSHA256": "695c89e5c8d5ad8e41f8ec525486836e42338bcc063d13f0945080c169fd7eaa",
+  "originalPrefixBytes": 3269,
+  "suffixSHA256": "60f4ecf8348e7fe561dce4f5deb2e0495907bd40a9d54956388f128026214687",
+  "newMethods": 2,
+  "newCases": 2,
+  "wholeClassMethods": 5,
+  "resolvedFinding": {
+    "id": "ROOT-MOUNT-01",
+    "predecessorSHA256": "81ade54385e5e362ad82ecae44ca1d9d4fa07e2fa471225a4c2d7a671587db70",
+    "primaryAPI": "https://developer.apple.com/documentation/network/nwlistener/newconnectionlimit",
+    "finding": "The16 accepted-connection allowance was cumulative, not concurrent; repeated Connection-close public reads could exhaust it.",
+    "correction": "Finite512 cumulative allowance is tied to the already fixed512 request ceiling. Independent concurrent accepted-connection guard16 is unchanged; no unlimited allowance was introduced.",
+    "exactInverse": "listener-limit-correction.json"
+  },
+  "reviewScope": [
+    "Read the complete candidate test and private listener/request/response/stream/lifetime code. Verified exact original3-method prefix and current full candidate hash.",
+    "Read original public load, session/capability/Note-marker/read-source and derived-properties parser context. All route responses remain controlled fixture data; no native/account acceptance is inferred. Unexpected methods/routes, body/framing/host/count, decoder or unrelated load errors are rejected and retained.",
+    "Actual foreground UIKit window and public load/render exercise the outer configure cache gate. Same block/order/type/style/category/interface direction and same cell/textView/window/indexPath prevent cache invalidation or cell replacement from masking the regression.",
+    "Both canonical pairs must be byte-distinct. ExactUTF8/UTF16 model/plain/attributed strings, first responder and valid nonempty unchanged-ASCII selection prove the tested distinction; no typing path or direct renderer invocation substitutes.",
+    "Queue-confined bounded Network fixture sends only finite JSON or two explicitly held SSE comments; no live snapshot acceptance is claimed. Actual owners drain and listener/connections must cancel before successful fixture stop; retained trace records failures and open counts.",
+    "Both tests use no creation operation: a private protocol implementation rejects and counts every unexpected creation-journal call. This is only a read/render fixture, not a native creation or signature authority.",
+    "Original Core22/26 whole-renderer-class consumer must reject this5-method source until W3 supplies reviewed explicit3+2 selections or a proven revised aggregate. Original Heart22/34 and Native26 are unchanged."
+  ],
+  "limits": [
+    "No Swift typecheck, UIKit run, Native account, real transport server or Mac call was performed by this review.",
+    "No Apple API availability/concurrency compiler acceptance is claimed; independent Editor review and actual matching hosted execution remain required.",
+    "No fullRTL, split/merge, native freshness, anchor or physical-device acceptance is supplied by these two controlled refresh cases."
+  ],
+  "runtimeActions": 0,
+  "peerActorLifecycleReview": "pending at time of this root review"
+}

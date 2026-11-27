@@ -1,0 +1,1357 @@
+--- a/internal/anysyncx/app.go
++++ b/internal/anysyncx/app.go
+@@ -40,6 +40,7 @@
+ 	filestore "github.com/anyproto/any-sync-sdk/internal/files/store"
+ 	"github.com/anyproto/any-sync-sdk/internal/p2p"
+ 	"github.com/anyproto/any-sync-sdk/internal/p2p/account"
++	"github.com/anyproto/any-sync-sdk/internal/readlifetime"
+ 	"github.com/anyproto/any-sync-sdk/internal/syncstatus"
+ 	sdkp2p "github.com/anyproto/any-sync-sdk/p2p"
+ 	"github.com/anyproto/any-sync-sdk/space"
+@@ -49,6 +50,9 @@
+ // packages need to reach. Constructed by New, torn down by Close.
+ type App struct {
+ 	a *app.App
++	// Retired before any cache/component teardown. Final plaintext copies use
++	// this token only after acquiring their ACL read lock, never across I/O.
++	fileReadLifetime readlifetime.Token
+ 
+ 	spaceService commonspace.SpaceService
+ 	coord        coordinatorclient.CoordinatorClient
+@@ -492,6 +496,7 @@
+ // cache is closed first so per-space goroutines wind down before the
+ // app's components; the space stores close last.
+ func (a *App) Close(ctx context.Context) error {
++	a.fileReadLifetime.Retire()
+ 	if a.spaceCache != nil {
+ 		_ = a.spaceCache.Close()
+ 	}
+--- /dev/null
++++ b/internal/anysyncx/file_read_lifetime.go
+@@ -0,0 +1,14 @@
++package anysyncx
++
++import "github.com/anyproto/any-sync-sdk/internal/readlifetime"
++
++// FileReadLifetimes captures this exact App run and loaded Space instance.
++// It does not load/wait on the cache and is called before the ACL lock. The
++// returned tokens are checked again inside the final bounded plaintext copy.
++func (a *App) FileReadLifetimes(handle SpaceHandle) (account, loadedSpace *readlifetime.Token, err error) {
++	wrapped, ok := handle.(*spaceWrapper)
++	if a == nil || !ok || wrapped == nil || wrapped.app != a {
++		return nil, nil, readlifetime.ErrRetired
++	}
++	return &a.fileReadLifetime, &wrapped.fileReadLifetime, nil
++}
+--- /dev/null
++++ b/internal/anysyncx/file_read_lifetime_test.go
+@@ -0,0 +1,105 @@
++package anysyncx
++
++import (
++	"context"
++	"errors"
++	"testing"
++	"time"
++
++	"github.com/anyproto/any-sync-sdk/internal/readlifetime"
++	"github.com/anyproto/any-sync/app"
++	"github.com/anyproto/any-sync/commonspace"
++	"github.com/stretchr/testify/require"
++)
++
++// Only the teardown boundary is replaced. These tests call the real App.Close
++// and spaceWrapper Close/TryClose methods and inspect their real lifetime gate.
++type lifetimeCloseCache struct {
++	spaceCache
++	closeFn func() error
++}
++
++func (c *lifetimeCloseCache) Close() error { return c.closeFn() }
++
++type lifetimeCloseSpace struct {
++	commonspace.Space
++	closeFn    func() error
++	tryCloseFn func(time.Duration) (bool, error)
++}
++
++func (s *lifetimeCloseSpace) Close() error                             { return s.closeFn() }
++func (s *lifetimeCloseSpace) TryClose(ttl time.Duration) (bool, error) { return s.tryCloseFn(ttl) }
++
++func TestFileReadLifetimeAppCloseRetiresBeforeCacheTeardown(t *testing.T) {
++	a := &App{a: &app.App{}}
++	wrapper := &spaceWrapper{id: "same-space", app: a}
++	account, _, err := a.FileReadLifetimes(wrapper)
++	require.NoError(t, err)
++	require.NoError(t, account.WithActive(nil))
++	calls := 0
++	a.spaceCache = &lifetimeCloseCache{closeFn: func() error {
++		calls++
++		// This read gate must return, not deadlock behind a write gate held
++		// over cache teardown; retirement is already permanent here.
++		require.ErrorIs(t, account.WithActive(nil), readlifetime.ErrRetired)
++		return nil
++	}}
++	require.NoError(t, a.Close(context.Background()))
++	require.Equal(t, 1, calls)
++	require.ErrorIs(t, account.WithActive(nil), readlifetime.ErrRetired)
++}
++
++func TestFileReadLifetimeWrapperCloseAndTryCloseBoundaries(t *testing.T) {
++	for _, operation := range []string{"close", "try-declined", "try-committed"} {
++		t.Run(operation, func(t *testing.T) {
++			a := &App{sync: newSpaceSyncHandler()}
++			wrapper := &spaceWrapper{id: "same-space", app: a}
++			account, space, err := a.FileReadLifetimes(wrapper)
++			require.NoError(t, err)
++			calls := 0
++			errSentinel := errors.New("original underlying close result")
++			wrapper.cs = &lifetimeCloseSpace{
++				closeFn: func() error {
++					calls++
++					require.ErrorIs(t, space.WithActive(nil), readlifetime.ErrRetired)
++					return errSentinel
++				},
++				tryCloseFn: func(ttl time.Duration) (bool, error) {
++					calls++
++					require.Equal(t, time.Minute, ttl)
++					var pending *readlifetime.Pending
++					called := false
++					require.ErrorAs(t, space.WithActive(func() error { called = true; return nil }), &pending)
++					require.False(t, called, "no plaintext callback may run inside underlying TryClose's decision/teardown interval")
++					return operation == "try-committed", errSentinel
++				},
++			}
++			if operation == "close" {
++				require.ErrorIs(t, wrapper.Close(), errSentinel)
++			} else {
++				closed, err := wrapper.TryClose(time.Minute)
++				require.Equal(t, operation == "try-committed", closed)
++				require.ErrorIs(t, err, errSentinel)
++			}
++			require.Equal(t, 1, calls)
++			currentAccount, currentSpace, err := a.FileReadLifetimes(wrapper)
++			require.NoError(t, err)
++			require.Same(t, account, currentAccount)
++			require.Same(t, space, currentSpace)
++			require.NoError(t, account.WithActive(nil))
++			if operation == "try-declined" {
++				require.NoError(t, space.WithActive(nil), "failed TryClose must resume the SAME token")
++			} else {
++				require.ErrorIs(t, space.WithActive(nil), readlifetime.ErrRetired)
++			}
++			// A loaded wrapper for the same account and exact space ID owns a
++			// distinct token even though both public identities are unchanged.
++			reloaded := &spaceWrapper{id: wrapper.id, app: a}
++			reloadedAccount, reloadedSpace, err := a.FileReadLifetimes(reloaded)
++			require.NoError(t, err)
++			require.Same(t, account, reloadedAccount)
++			require.NotSame(t, space, reloadedSpace)
++			require.NoError(t, reloadedSpace.WithActive(nil))
++		})
++	}
++}
+--- a/internal/anysyncx/spacecache.go
++++ b/internal/anysyncx/spacecache.go
+@@ -7,6 +7,7 @@
+ 	"sync/atomic"
+ 	"time"
+ 
++	"github.com/anyproto/any-sync-sdk/internal/readlifetime"
+ 	"github.com/anyproto/any-sync/app/logger"
+ 	"github.com/anyproto/any-sync/app/ocache"
+ 	"github.com/anyproto/any-sync/commonspace"
+@@ -53,9 +54,10 @@
+ // commonspace.Space and tags itself for sync-handler register /
+ // unregister on load / close.
+ type spaceWrapper struct {
+-	id  string
+-	cs  commonspace.Space
+-	app *App
++	id               string
++	cs               commonspace.Space
++	app              *App
++	fileReadLifetime readlifetime.Token
+ }
+ 
+ func (s *spaceWrapper) Id() string               { return s.id }
+@@ -67,6 +69,7 @@
+ // closing the commonspace. Called by ocache on Remove/shutdown and
+ // after a successful TryClose.
+ func (s *spaceWrapper) Close() error {
++	s.fileReadLifetime.Retire()
+ 	s.app.sync.UnregisterSpace(s.id)
+ 	if s.app.global != nil {
+ 		s.app.global.SpaceUnloaded(s.id)
+@@ -77,7 +80,11 @@
+ // TryClose forwards to commonspace.Space — it knows whether the space
+ // has unfinished sync work and refuses to close while busy.
+ func (s *spaceWrapper) TryClose(ttl time.Duration) (bool, error) {
++	// Quiesce before the underlying TryClose can commit to teardown; never
++	// keep a lifetime/ACL lock across it. A decline preserves the SAME token.
++	s.fileReadLifetime.BeginCloseAttempt()
+ 	closed, err := s.cs.TryClose(ttl)
++	s.fileReadLifetime.FinishCloseAttempt(closed)
+ 	if closed {
+ 		s.app.sync.UnregisterSpace(s.id)
+ 		if s.app.global != nil {
+--- /dev/null
++++ b/internal/files/readguard/readguard.go
+@@ -0,0 +1,232 @@
++// Package readguard fences plaintext readers with the loaded space's current
++// signed ACL. It does not fetch or fabricate ACL records.
++package readguard
++
++import (
++	"context"
++	"errors"
++	"io"
++	"sync"
++	"sync/atomic"
++
++	"github.com/anyproto/any-sync-sdk/internal/readlifetime"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++)
++
++// Reader is the existing file reader contract, without a dependency on the
++// fetching implementation or a particular storage tier.
++type Reader interface {
++	io.Reader
++	io.Seeker
++	io.Closer
++	Size() int64
++}
++
++// Scope binds the ACL to one captured account run and loaded Space generation.
++// Tokens are immutable identities: retirement never reactivates an old token.
++type Scope struct {
++	ACL     list.AclList
++	Account *readlifetime.Token
++	Space   *readlifetime.Token
++}
++
++// LoadACL must resolve the captured account's exact space. It must not consult
++// a later globally active account or reuse an ACL after that space is retired.
++// Loading and all file I/O take place outside the ACL read lock.
++type LoadACL func(context.Context) (Scope, error)
++
++const maxReadChunk = 64 * 1024
++
++// Open checks authority before opening content and again after opening returns.
++// A held reader repeats the check at every read and seek boundary. Authority
++// failure or any signed ACL generation change invalidates that reader: a later
++// grant requires a fresh Open even when removal and restoration both happened
++// while the caller was awaiting I/O. No old plaintext reader crosses that fence.
++func Open(ctx context.Context, load LoadACL, open func() (Reader, error)) (Reader, error) {
++	var admitted authority
++	if err := withAuthority(ctx, load, nil, func(current authority) error {
++		admitted = current
++		return nil
++	}); err != nil {
++		return nil, err
++	}
++	inner, err := open()
++	if err != nil {
++		return nil, err
++	}
++	if err = withAuthority(ctx, load, &admitted, nil); err != nil {
++		_ = inner.Close()
++		return nil, err
++	}
++	// The reader owns cancellation for lifecycle waits even when Open's caller
++	// supplied context.Background. Close must wake a pending TryClose wait.
++	readCtx, cancel := context.WithCancel(ctx)
++	return &reader{ctx: readCtx, cancel: cancel, load: load, inner: inner, admitted: admitted}, nil
++}
++
++// authority names one actual signed generation of the loaded ACL. Only public
++// identifiers are retained; no private key or payload is copied into this fence.
++type authority struct {
++	aclID    string
++	identity string
++	headID   string
++	account  *readlifetime.Token
++	space    *readlifetime.Token
++}
++
++func withAuthority(ctx context.Context, load LoadACL, expected *authority, deliver func(authority) error) error {
++	for {
++		err := withAuthorityOnce(ctx, load, expected, deliver)
++		var pending *readlifetime.Pending
++		if !errors.As(err, &pending) {
++			return err
++		}
++		// withAuthorityOnce has released every lock. Never wait for a close
++		// decision (which may need the ACL lock) while holding the ACL lock.
++		if err := pending.Wait(ctx); err != nil {
++			return err
++		}
++	}
++}
++
++func withAuthorityOnce(ctx context.Context, load LoadACL, expected *authority, deliver func(authority) error) error {
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	scope, err := load(ctx)
++	if err != nil {
++		return err
++	}
++	acl := scope.ACL
++	if acl == nil || scope.Account == nil || scope.Space == nil {
++		return list.ErrInsufficientPermissions
++	}
++	acl.RLock()
++	defer acl.RUnlock()
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	state := acl.AclState()
++	if state == nil || state.Identity() == nil || state.Permissions(state.Identity()).NoPermissions() {
++		return list.ErrInsufficientPermissions
++	}
++	head := acl.Head()
++	if head == nil {
++		return list.ErrInsufficientPermissions
++	}
++	current := authority{aclID: acl.Id(), identity: state.Identity().Account(), headID: head.Id,
++		account: scope.Account, space: scope.Space}
++	if current.aclID == "" || current.identity == "" || current.headID == "" || (expected != nil && current != *expected) {
++		return list.ErrInsufficientPermissions
++	}
++	// GetSpace may have returned before retirement while this goroutine waited
++	// for the ACL lock. Check both captured lifecycle tokens now, atomically
++	// with the final bounded memory copy. Retirement releases its token lock
++	// before closing the cache/Space, so it never waits on ACL while holding it.
++	err = scope.Account.WithActive(func() error {
++		return scope.Space.WithActive(func() error {
++			if err := ctx.Err(); err != nil {
++				return err
++			}
++			if deliver != nil {
++				return deliver(current)
++			}
++			return nil
++		})
++	})
++	if errors.Is(err, readlifetime.ErrRetired) {
++		return list.ErrInsufficientPermissions
++	}
++	return err
++}
++
++type reader struct {
++	ctx      context.Context
++	cancel   context.CancelFunc
++	load     LoadACL
++	inner    Reader
++	admitted authority
++
++	// Serializes stream position, not ACL updates or Close. In particular, a
++	// network read never prevents the signed ACL from observing a removal.
++	mu       sync.Mutex
++	terminal error
++	closed   atomic.Bool
++	close    sync.Once
++	closeErr error
++}
++
++func (r *reader) check(deliver func() error) error {
++	if r.terminal != nil {
++		return r.terminal
++	}
++	if r.closed.Load() {
++		return io.ErrClosedPipe
++	}
++	err := withAuthority(r.ctx, r.load, &r.admitted, func(authority) error {
++		if r.closed.Load() {
++			return io.ErrClosedPipe
++		}
++		if deliver != nil {
++			return deliver()
++		}
++		return nil
++	})
++	if err != nil && r.closed.Load() {
++		err = io.ErrClosedPipe
++	}
++	if err != nil {
++		r.terminal = err
++	}
++	return err
++}
++
++func (r *reader) Read(p []byte) (int, error) {
++	r.mu.Lock()
++	defer r.mu.Unlock()
++	if err := r.check(nil); err != nil {
++		return 0, err
++	}
++	if len(p) == 0 {
++		return 0, nil
++	}
++	// Never let an awaited fetch write directly into caller-owned memory.
++	// Data fetched after the initial check stays private until current signed
++	// authority is checked again. Already released plaintext cannot be recalled.
++	private := make([]byte, min(len(p), maxReadChunk))
++	defer clear(private)
++	n, readErr := r.inner.Read(private)
++	if n < 0 || n > len(private) {
++		return 0, io.ErrUnexpectedEOF
++	}
++	if err := r.check(func() error { copy(p, private[:n]); return nil }); err != nil {
++		return 0, err
++	}
++	return n, readErr
++}
++
++func (r *reader) Seek(offset int64, whence int) (int64, error) {
++	r.mu.Lock()
++	defer r.mu.Unlock()
++	if err := r.check(nil); err != nil {
++		return 0, err
++	}
++	position, seekErr := r.inner.Seek(offset, whence)
++	if err := r.check(nil); err != nil {
++		return 0, err
++	}
++	return position, seekErr
++}
++
++// Size is the existing metadata-only method and cannot return an authority
++// error. All operations that deliver or position plaintext remain guarded.
++func (r *reader) Size() int64 { return r.inner.Size() }
++
++// Close may interrupt an awaited underlying read; it never waits for the
++// position mutex or requires permission that may already have been revoked.
++func (r *reader) Close() error {
++	r.closed.Store(true)
++	r.cancel()
++	r.close.Do(func() { r.closeErr = r.inner.Close() })
++	return r.closeErr
++}
+--- /dev/null
++++ b/internal/files/readguard/readguard_lifetime_test.go
+@@ -0,0 +1,246 @@
++package readguard
++
++import (
++	"bytes"
++	"context"
++	"io"
++	"sync"
++	"sync/atomic"
++	"testing"
++	"time"
++
++	"github.com/anyproto/any-sync-sdk/internal/readlifetime"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/stretchr/testify/require"
++)
++
++// These barriers decorate the real signed ACL mutex, never its permissions,
++// identity or signed head. They locate the post-fetch delivery boundary.
++type observedACL struct {
++	list.AclList
++	locks       atomic.Int32
++	unlocks     atomic.Int32
++	beforeLock  func(int32)
++	afterUnlock func(int32)
++}
++
++func (a *observedACL) RLock() {
++	n := a.locks.Add(1)
++	if a.beforeLock != nil {
++		a.beforeLock(n)
++	}
++	a.AclList.RLock()
++}
++
++func (a *observedACL) RUnlock() {
++	a.AclList.RUnlock()
++	n := a.unlocks.Add(1)
++	if a.afterUnlock != nil {
++		a.afterUnlock(n)
++	}
++}
++
++type readOutcome struct {
++	n   int
++	err error
++}
++
++func awaitRead(t *testing.T, done <-chan readOutcome) readOutcome {
++	t.Helper()
++	select {
++	case got := <-done:
++		return got
++	case <-time.After(2 * time.Second):
++		t.Fatal("held reader did not settle")
++		return readOutcome{}
++	}
++}
++
++func TestReadGuardRetirementAfterLoadBeforeFinalACLLock(t *testing.T) {
++	for _, target := range []string{"account", "space"} {
++		t.Run(target, func(t *testing.T) {
++			f := newSignedFixture(t, list.AclPermissionsReader)
++			originalHead := f.local.Head().Id
++			atFinalLock := make(chan struct{})
++			acl := &observedACL{AclList: f.local, beforeLock: func(n int32) {
++				if n == 4 {
++					close(atFinalLock)
++				}
++			}}
++			load := func(ctx context.Context) (Scope, error) { scope, _ := f.load(ctx); scope.ACL = acl; return scope, nil }
++			var release sync.Once
++			source := &trackedReader{Reader: bytes.NewReader(nil), readFn: func(p []byte) (int, error) {
++				f.local.Lock()
++				return copy(p, "private bytes fetched before retirement"), nil
++			}}
++			r, err := Open(context.Background(), load, func() (Reader, error) { return source, nil })
++			require.NoError(t, err)
++			defer r.Close()
++			buffer := bytes.Repeat([]byte{0xa5}, 64)
++			done := make(chan readOutcome, 1)
++			go func() { n, err := r.Read(buffer); done <- readOutcome{n, err} }()
++			select {
++			case <-atFinalLock:
++			case <-time.After(2 * time.Second):
++				t.Fatal("final read did not reach the captured ACL lock")
++			}
++			defer release.Do(f.local.Unlock)
++			retired := make(chan struct{})
++			go func() {
++				if target == "account" {
++					f.accountLifetime.Retire()
++				} else {
++					f.spaceLifetime.Retire()
++				}
++				close(retired)
++			}()
++			select {
++			case <-retired:
++			case <-time.After(2 * time.Second):
++				t.Fatal("retirement waited for the ACL lock")
++			}
++			release.Do(f.local.Unlock)
++			got := awaitRead(t, done)
++			require.ErrorIs(t, got.err, list.ErrInsufficientPermissions)
++			require.Zero(t, got.n)
++			require.Equal(t, bytes.Repeat([]byte{0xa5}, 64), buffer)
++			require.Equal(t, originalHead, f.local.Head().Id, "retirement test must keep the signed generation unchanged")
++			require.Equal(t, int32(1), source.reads.Load())
++		})
++	}
++}
++
++func TestReadGuardPendingCloseWaitRevalidatesOrCancels(t *testing.T) {
++	for _, outcome := range []string{"declined", "committed", "declined-then-close", "caller-cancel", "reader-close"} {
++		t.Run(outcome, func(t *testing.T) {
++			f := newSignedFixture(t, list.AclPermissionsReader)
++			originalHead := f.local.Head().Id
++			ctx, cancel := context.WithCancel(context.Background())
++			defer cancel()
++			pendingReached := make(chan struct{})
++			acl := &observedACL{AclList: f.local, afterUnlock: func(n int32) {
++				if n == 4 {
++					close(pendingReached)
++				}
++			}}
++			load := func(ctx context.Context) (Scope, error) { scope, _ := f.load(ctx); scope.ACL = acl; return scope, nil }
++			source := &trackedReader{Reader: bytes.NewReader(nil), readFn: func(p []byte) (int, error) {
++				f.spaceLifetime.BeginCloseAttempt()
++				return copy(p, "fetched pending bytes"), nil
++			}}
++			// The reader-close case deliberately receives Background, so only
++			// its own Close can wake the outstanding lifetime wait.
++			openCtx := ctx
++			if outcome == "reader-close" {
++				openCtx = context.Background()
++			}
++			r, err := Open(openCtx, load, func() (Reader, error) { return source, nil })
++			require.NoError(t, err)
++			defer r.Close()
++			buffer := bytes.Repeat([]byte{0xa5}, 64)
++			done := make(chan readOutcome, 1)
++			go func() { n, err := r.Read(buffer); done <- readOutcome{n, err} }()
++			select {
++			case <-pendingReached:
++			case <-time.After(2 * time.Second):
++				t.Fatal("post-fetch close barrier was not reached")
++			}
++			var settled sync.Once
++			defer settled.Do(func() { f.spaceLifetime.FinishCloseAttempt(false) })
++			// Taking the real ACL write lock while the reader waits proves the
++			// pending wait dropped it. FinishCloseAttempt additionally takes the
++			// token write gate; that must also complete while ACL is held here.
++			aclHeld := make(chan struct{})
++			releaseACL := make(chan struct{})
++			aclReleased := make(chan struct{})
++			var release sync.Once
++			defer release.Do(func() { close(releaseACL) })
++			go func() { f.local.Lock(); close(aclHeld); <-releaseACL; f.local.Unlock(); close(aclReleased) }()
++			select {
++			case <-aclHeld:
++			case <-time.After(2 * time.Second):
++				t.Fatal("pending reader retained the ACL lock")
++			}
++			var want error
++			switch outcome {
++			case "declined":
++				settled.Do(func() { f.spaceLifetime.FinishCloseAttempt(false) })
++			case "committed":
++				settled.Do(func() { f.spaceLifetime.FinishCloseAttempt(true) })
++				want = list.ErrInsufficientPermissions
++			case "declined-then-close":
++				settled.Do(func() { f.spaceLifetime.FinishCloseAttempt(false) })
++				f.spaceLifetime.Retire()
++				want = list.ErrInsufficientPermissions
++			case "caller-cancel":
++				cancel()
++				want = context.Canceled
++			case "reader-close":
++				require.NoError(t, r.Close())
++				want = io.ErrClosedPipe
++			}
++			if outcome == "caller-cancel" || outcome == "reader-close" {
++				// Require cancellation before resolving the pending TryClose or
++				// releasing ACL. Neither event is allowed to rescue a stuck wait.
++				got := awaitRead(t, done)
++				require.ErrorIs(t, got.err, want)
++				require.Zero(t, got.n)
++				require.Equal(t, bytes.Repeat([]byte{0xa5}, 64), buffer)
++			} else {
++				release.Do(func() { close(releaseACL) })
++				got := awaitRead(t, done)
++				if want == nil {
++					require.NoError(t, got.err)
++					require.Equal(t, "fetched pending bytes", string(buffer[:got.n]))
++					require.Same(t, &f.spaceLifetime, r.(*reader).admitted.space, "declined TryClose must preserve the existing reader's exact token")
++				} else {
++					require.ErrorIs(t, got.err, want)
++					require.Zero(t, got.n)
++					require.Equal(t, bytes.Repeat([]byte{0xa5}, 64), buffer)
++				}
++			}
++			release.Do(func() { close(releaseACL) })
++			select {
++			case <-aclReleased:
++			case <-time.After(2 * time.Second):
++				t.Fatal("ACL barrier did not close")
++			}
++			require.Equal(t, originalHead, f.local.Head().Id)
++			require.Equal(t, int32(1), source.reads.Load())
++		})
++	}
++}
++
++func TestReadGuardSameSpaceReloadRequiresNewReaderWithUnchangedACL(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	originalHead := f.local.Head().Id
++	current := &f.spaceLifetime
++	load := func(ctx context.Context) (Scope, error) {
++		scope, _ := f.load(ctx)
++		scope.Space = current
++		return scope, nil
++	}
++	source := &trackedReader{Reader: bytes.NewReader(nil), readFn: func(p []byte) (int, error) {
++		current.Retire()
++		current = &readlifetime.Token{}
++		return copy(p, "prior loaded-space bytes"), nil
++	}}
++	r, err := Open(context.Background(), load, func() (Reader, error) { return source, nil })
++	require.NoError(t, err)
++	defer r.Close()
++	buffer := bytes.Repeat([]byte{0xa5}, 64)
++	n, err := r.Read(buffer)
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, n)
++	require.Equal(t, bytes.Repeat([]byte{0xa5}, 64), buffer)
++	require.Equal(t, originalHead, f.local.Head().Id)
++	require.NotSame(t, r.(*reader).admitted.space, current)
++	fresh, err := Open(context.Background(), load, func() (Reader, error) {
++		return &trackedReader{Reader: bytes.NewReader([]byte("current loaded-space bytes"))}, nil
++	})
++	require.NoError(t, err)
++	defer fresh.Close()
++	got, err := io.ReadAll(fresh)
++	require.NoError(t, err)
++	require.Equal(t, "current loaded-space bytes", string(got))
++}
+--- /dev/null
++++ b/internal/files/readguard/readguard_test.go
+@@ -0,0 +1,494 @@
++package readguard
++
++import (
++	"bytes"
++	"context"
++	"errors"
++	"io"
++	"sync/atomic"
++	"testing"
++	"time"
++
++	"github.com/anyproto/any-sync-sdk/internal/readlifetime"
++	"github.com/anyproto/any-sync/commonspace/object/accountdata"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list/listtest"
++	"github.com/anyproto/any-sync/commonspace/object/acl/recordverifier"
++	"github.com/anyproto/any-sync/consensus/consensusproto"
++	"github.com/anyproto/any-sync/util/crypto"
++	"github.com/stretchr/testify/require"
++)
++
++// These fixtures apply actual signed ACL records through the unmodified full
++// verifier. They do not substitute a role boolean for native ACL state.
++type signedFixture struct {
++	owner           list.AclList
++	local           list.AclList
++	memberKeys      *accountdata.AccountKeys
++	permission      list.AclPermissions
++	accountLifetime readlifetime.Token
++	spaceLifetime   readlifetime.Token
++}
++
++func newSignedFixture(t *testing.T, permission list.AclPermissions) *signedFixture {
++	t.Helper()
++	ownerKeys, err := accountdata.NewRandom()
++	require.NoError(t, err)
++	memberKeys, err := accountdata.NewRandom()
++	require.NoError(t, err)
++	owner, err := list.NewInMemoryDerivedAcl("file-read-authority-space", ownerKeys)
++	require.NoError(t, err)
++	f := &signedFixture{owner: owner, memberKeys: memberKeys, permission: permission}
++	grant, err := owner.RecordBuilder().BuildAccountsAdd(list.AccountsAddPayload{Additions: []list.AccountAdd{{
++		Identity: memberKeys.SignKey.GetPublic(), Permissions: permission, Metadata: []byte("file reader fixture"),
++	}}})
++	require.NoError(t, err)
++	raw := listtest.WrapAclRecord(grant)
++	require.NoError(t, owner.AddRawRecord(raw))
++	storage, err := list.NewInMemoryStorage(owner.Id(), []*consensusproto.RawRecordWithId{owner.Root(), raw})
++	require.NoError(t, err)
++	f.local, err = list.BuildAclListWithIdentity(memberKeys, storage, recordverifier.NewValidateFull())
++	require.NoError(t, err)
++	require.Equal(t, permission, f.local.AclState().Permissions(f.local.AclState().Identity()))
++	require.True(t, f.local.AclState().Identity().Equals(memberKeys.SignKey.GetPublic()))
++	return f
++}
++
++func (f *signedFixture) load(context.Context) (Scope, error) {
++	return Scope{ACL: f.local, Account: &f.accountLifetime, Space: &f.spaceLifetime}, nil
++}
++
++func (f *signedFixture) revoke() error {
++	metadataKey, _, err := crypto.GenerateRandomEd25519KeyPair()
++	if err != nil {
++		return err
++	}
++	f.owner.Lock()
++	raw, err := f.owner.RecordBuilder().BuildAccountRemove(list.AccountRemovePayload{
++		Identities: []crypto.PubKey{f.memberKeys.SignKey.GetPublic()},
++		Change:     list.ReadKeyChangePayload{MetadataKey: metadataKey, ReadKey: crypto.NewAES()},
++	})
++	if err != nil {
++		f.owner.Unlock()
++		return err
++	}
++	record := listtest.WrapAclRecord(raw)
++	err = f.owner.AddRawRecord(record)
++	f.owner.Unlock()
++	if err != nil {
++		return err
++	}
++	f.local.Lock()
++	defer f.local.Unlock()
++	return f.local.AddRawRecord(record)
++}
++
++func (f *signedFixture) restore() error {
++	f.owner.Lock()
++	raw, err := f.owner.RecordBuilder().BuildAccountsAdd(list.AccountsAddPayload{Additions: []list.AccountAdd{{
++		Identity: f.memberKeys.SignKey.GetPublic(), Permissions: f.permission, Metadata: []byte("explicit fixture restoration"),
++	}}})
++	if err != nil {
++		f.owner.Unlock()
++		return err
++	}
++	record := listtest.WrapAclRecord(raw)
++	err = f.owner.AddRawRecord(record)
++	f.owner.Unlock()
++	if err != nil {
++		return err
++	}
++	f.local.Lock()
++	defer f.local.Unlock()
++	return f.local.AddRawRecord(record)
++}
++
++func (f *signedFixture) advanceUnrelatedInvite() error {
++	f.owner.Lock()
++	invite, err := f.owner.RecordBuilder().BuildInvite()
++	if err != nil {
++		f.owner.Unlock()
++		return err
++	}
++	record := listtest.WrapAclRecord(invite.InviteRec)
++	err = f.owner.AddRawRecord(record)
++	f.owner.Unlock()
++	if err != nil {
++		return err
++	}
++	f.local.Lock()
++	defer f.local.Unlock()
++	return f.local.AddRawRecord(record)
++}
++
++type trackedReader struct {
++	*bytes.Reader
++	readFn     func([]byte) (int, error)
++	seekFn     func(int64, int) (int64, error)
++	reads      atomic.Int32
++	seeks      atomic.Int32
++	closes     atomic.Int32
++	maxRequest atomic.Int64
++}
++
++func (r *trackedReader) Read(p []byte) (int, error) {
++	r.reads.Add(1)
++	for old := r.maxRequest.Load(); int64(len(p)) > old; old = r.maxRequest.Load() {
++		if r.maxRequest.CompareAndSwap(old, int64(len(p))) {
++			break
++		}
++	}
++	if r.readFn != nil {
++		return r.readFn(p)
++	}
++	return r.Reader.Read(p)
++}
++
++func (r *trackedReader) Seek(offset int64, whence int) (int64, error) {
++	r.seeks.Add(1)
++	if r.seekFn != nil {
++		return r.seekFn(offset, whence)
++	}
++	return r.Reader.Seek(offset, whence)
++}
++
++func (r *trackedReader) Close() error { r.closes.Add(1); return nil }
++
++func openFixture(t *testing.T, ctx context.Context, f *signedFixture, source *trackedReader) Reader {
++	t.Helper()
++	r, err := Open(ctx, f.load, func() (Reader, error) { return source, nil })
++	require.NoError(t, err)
++	t.Cleanup(func() { require.NoError(t, r.Close()) })
++	return r
++}
++
++func TestReadGuardPreservesCurrentSignedReaderAndGuest(t *testing.T) {
++	for _, role := range []struct {
++		name       string
++		permission list.AclPermissions
++	}{{"reader", list.AclPermissionsReader}, {"guest", list.AclPermissionsGuest}} {
++		t.Run(role.name, func(t *testing.T) {
++			f := newSignedFixture(t, role.permission)
++			source := &trackedReader{Reader: bytes.NewReader([]byte("exact allowed plaintext"))}
++			r := openFixture(t, context.Background(), f, source)
++			got, err := io.ReadAll(r)
++			require.NoError(t, err)
++			require.Equal(t, "exact allowed plaintext", string(got))
++			require.Equal(t, int64(len(got)), r.Size())
++		})
++	}
++}
++
++func TestReadGuardUsesLoadedGuestIdentityAfterItsSignedRemoval(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsGuest)
++	source := &trackedReader{Reader: bytes.NewReader([]byte("guest-visible cached plaintext"))}
++	r := openFixture(t, context.Background(), f, source)
++	require.NoError(t, f.revoke())
++	// The owner's account remains authorized; the loaded Guest key does not.
++	require.True(t, f.owner.AclState().Permissions(f.owner.AclState().Identity()).IsOwner())
++	n, err := r.Read(make([]byte, 16))
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, n)
++	require.Zero(t, source.reads.Load())
++}
++
++func TestReadGuardRefusesRevokedOpenBeforeContentLookup(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	require.NoError(t, f.revoke())
++	called := false
++	r, err := Open(context.Background(), f.load, func() (Reader, error) { called = true; return nil, nil })
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Nil(t, r)
++	require.False(t, called)
++}
++
++func TestReadGuardHeldCachedReaderStopsAfterCurrentSignedRemoval(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	source := &trackedReader{Reader: bytes.NewReader([]byte("previously cached secret"))}
++	r := openFixture(t, context.Background(), f, source)
++	first := make([]byte, 3)
++	n, err := r.Read(first)
++	require.NoError(t, err)
++	require.Equal(t, "pre", string(first[:n]))
++	require.NoError(t, f.revoke())
++	buffer := bytes.Repeat([]byte{0xa5}, 32)
++	n, err = r.Read(buffer)
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, n)
++	require.Equal(t, bytes.Repeat([]byte{0xa5}, 32), buffer)
++	require.Equal(t, int32(1), source.reads.Load(), "revoked read must not touch cached plaintext")
++}
++
++func TestReadGuardRechecksSignedAuthorityAfterAwaitedFetch(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	entered, release := make(chan struct{}), make(chan struct{})
++	source := &trackedReader{Reader: bytes.NewReader(nil), readFn: func(p []byte) (int, error) {
++		close(entered)
++		<-release
++		return copy(p, "downloaded private plaintext"), nil
++	}}
++	r := openFixture(t, context.Background(), f, source)
++	buffer := bytes.Repeat([]byte{0xa5}, 64)
++	type outcome struct {
++		n   int
++		err error
++	}
++	done := make(chan outcome, 1)
++	go func() { n, err := r.Read(buffer); done <- outcome{n, err} }()
++	select {
++	case <-entered:
++	case <-time.After(time.Second):
++		t.Fatal("fetch was not entered")
++	}
++	revoked := make(chan error, 1)
++	go func() { revoked <- f.revoke() }()
++	var revokeErr error
++	select {
++	case revokeErr = <-revoked:
++	case <-time.After(time.Second):
++		close(release)
++		t.Fatal("file I/O held the ACL lock and blocked signed removal")
++	}
++	require.NoError(t, revokeErr)
++	close(release)
++	select {
++	case got := <-done:
++		require.ErrorIs(t, got.err, list.ErrInsufficientPermissions)
++		require.Zero(t, got.n)
++	case <-time.After(time.Second):
++		t.Fatal("guarded fetch did not finish")
++	}
++	require.Equal(t, bytes.Repeat([]byte{0xa5}, 64), buffer)
++}
++
++func TestReadGuardClosesOpenedReaderWhenAuthorityChangedDuringOpen(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	source := &trackedReader{Reader: bytes.NewReader([]byte("never released"))}
++	r, err := Open(context.Background(), f.load, func() (Reader, error) {
++		require.NoError(t, f.revoke())
++		return source, nil
++	})
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Nil(t, r)
++	require.Equal(t, int32(1), source.closes.Load())
++	require.Zero(t, source.reads.Load())
++}
++
++func TestReadGuardSeekThenReadRechecksCurrentSignedPermission(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	source := &trackedReader{Reader: bytes.NewReader([]byte("range secret"))}
++	r := openFixture(t, context.Background(), f, source)
++	position, err := r.Seek(6, io.SeekStart)
++	require.NoError(t, err)
++	require.Equal(t, int64(6), position)
++	require.NoError(t, f.revoke())
++	n, err := r.Read(make([]byte, 6))
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, n)
++	_, err = r.Seek(0, io.SeekStart)
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Equal(t, int32(1), source.seeks.Load())
++	require.Zero(t, source.reads.Load())
++}
++
++func TestReadGuardRechecksAfterAnAwaitedSeek(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	source := &trackedReader{Reader: bytes.NewReader([]byte("range secret")), seekFn: func(int64, int) (int64, error) {
++		require.NoError(t, f.revoke())
++		return 6, nil
++	}}
++	r := openFixture(t, context.Background(), f, source)
++	position, err := r.Seek(6, io.SeekStart)
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, position)
++	require.Zero(t, source.reads.Load())
++}
++
++func TestReadGuardLateContextCancellationDiscardsFetchedPlaintext(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	ctx, cancel := context.WithCancel(context.Background())
++	defer cancel()
++	source := &trackedReader{Reader: bytes.NewReader(nil), readFn: func(p []byte) (int, error) {
++		cancel()
++		return copy(p, "must remain private"), nil
++	}}
++	r := openFixture(t, ctx, f, source)
++	buffer := bytes.Repeat([]byte{0xa5}, 32)
++	n, err := r.Read(buffer)
++	require.ErrorIs(t, err, context.Canceled)
++	require.Zero(t, n)
++	require.Equal(t, bytes.Repeat([]byte{0xa5}, 32), buffer)
++}
++
++func TestReadGuardCannotReadWithRetiredAuthorityLoader(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	retired := errors.New("captured account space cache closed")
++	var loadErr error
++	loads := 0
++	load := func(ctx context.Context) (Scope, error) { loads++; scope, _ := f.load(ctx); return scope, loadErr }
++	source := &trackedReader{Reader: bytes.NewReader([]byte("retired account plaintext"))}
++	r, err := Open(context.Background(), load, func() (Reader, error) { return source, nil })
++	require.NoError(t, err)
++	defer r.Close()
++	require.Equal(t, 2, loads)
++	loadErr = retired
++	n, err := r.Read(make([]byte, 16))
++	require.ErrorIs(t, err, retired)
++	require.Zero(t, n)
++	require.Equal(t, 3, loads)
++	require.Zero(t, source.reads.Load())
++}
++
++func TestReadGuardPreservesByteRangesEOFAndBoundedPrivateMemory(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	data := bytes.Repeat([]byte("native-file-range-contract"), 65537)
++	source := &trackedReader{Reader: bytes.NewReader(data)}
++	r := openFixture(t, context.Background(), f, source)
++	largeCallerBuffer := make([]byte, 3*maxReadChunk)
++	n, err := r.Read(largeCallerBuffer)
++	require.NoError(t, err)
++	require.Equal(t, maxReadChunk, n)
++	require.Equal(t, data[:n], largeCallerBuffer[:n])
++	position, err := r.Seek(12345, io.SeekStart)
++	require.NoError(t, err)
++	require.Equal(t, int64(12345), position)
++	got, err := io.ReadAll(r)
++	require.NoError(t, err)
++	require.Equal(t, data[12345:], got)
++	require.LessOrEqual(t, source.maxRequest.Load(), int64(maxReadChunk))
++	n, err = r.Read(largeCallerBuffer)
++	require.Zero(t, n)
++	require.ErrorIs(t, err, io.EOF)
++}
++
++func TestReadGuardCloseDoesNotWaitForFetchOrReleasePendingBytes(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	entered, release := make(chan struct{}), make(chan struct{})
++	source := &trackedReader{Reader: bytes.NewReader(nil), readFn: func(p []byte) (int, error) {
++		close(entered)
++		<-release
++		return copy(p, "pending plaintext"), nil
++	}}
++	r := openFixture(t, context.Background(), f, source)
++	buffer := bytes.Repeat([]byte{0xa5}, 32)
++	done := make(chan error, 1)
++	go func() {
++		n, err := r.Read(buffer)
++		if n != 0 {
++			done <- errors.New("closed reader released bytes")
++			return
++		}
++		done <- err
++	}()
++	select {
++	case <-entered:
++	case <-time.After(time.Second):
++		t.Fatal("fetch was not entered")
++	}
++	closed := make(chan error, 1)
++	go func() { closed <- r.Close() }()
++	select {
++	case err := <-closed:
++		require.NoError(t, err)
++	case <-time.After(time.Second):
++		close(release)
++		t.Fatal("Close waited for a network fetch")
++	}
++	close(release)
++	select {
++	case err := <-done:
++		require.ErrorIs(t, err, io.ErrClosedPipe)
++	case <-time.After(time.Second):
++		t.Fatal("fetch did not finish")
++	}
++	require.Equal(t, bytes.Repeat([]byte{0xa5}, 32), buffer)
++	require.Equal(t, int32(1), source.closes.Load())
++}
++
++func TestReadGuardInvalidatedReaderRequiresFreshOpenAfterExplicitGrant(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	source := &trackedReader{Reader: bytes.NewReader([]byte("old held plaintext"))}
++	r := openFixture(t, context.Background(), f, source)
++	require.NoError(t, f.revoke())
++	_, err := r.Read(make([]byte, 4))
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.NoError(t, f.restore())
++	_, err = r.Read(make([]byte, 4))
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	fresh := openFixture(t, context.Background(), f, &trackedReader{Reader: bytes.NewReader([]byte("fresh allowed plaintext"))})
++	got, err := io.ReadAll(fresh)
++	require.NoError(t, err)
++	require.Equal(t, "fresh allowed plaintext", string(got))
++}
++
++func TestReadGuardRejectsSignedRevokeRestoreABA(t *testing.T) {
++	for _, boundary := range []string{"open", "read"} {
++		t.Run(boundary, func(t *testing.T) {
++			f := newSignedFixture(t, list.AclPermissionsReader)
++			source := &trackedReader{Reader: bytes.NewReader([]byte("old generation plaintext"))}
++			change := func() {
++				require.NoError(t, f.revoke())
++				require.NoError(t, f.restore())
++				require.Equal(t, list.AclPermissionsReader, f.local.AclState().Permissions(f.local.AclState().Identity()))
++			}
++			if boundary == "open" {
++				r, err := Open(context.Background(), f.load, func() (Reader, error) {
++					change()
++					return source, nil
++				})
++				require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++				require.Nil(t, r)
++				require.Equal(t, int32(1), source.closes.Load())
++			} else {
++				source.readFn = func(p []byte) (int, error) {
++					change()
++					return copy(p, "old generation plaintext"), nil
++				}
++				r := openFixture(t, context.Background(), f, source)
++				buffer := bytes.Repeat([]byte{0xa5}, 64)
++				n, err := r.Read(buffer)
++				require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++				require.Zero(t, n)
++				require.Equal(t, bytes.Repeat([]byte{0xa5}, 64), buffer)
++			}
++			fresh := openFixture(t, context.Background(), f, &trackedReader{Reader: bytes.NewReader([]byte("fresh generation plaintext"))})
++			got, err := io.ReadAll(fresh)
++			require.NoError(t, err)
++			require.Equal(t, "fresh generation plaintext", string(got))
++		})
++	}
++}
++
++func TestReadGuardSignedHeadChangeRequiresFreshOpenEvenWithSameRole(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	source := &trackedReader{Reader: bytes.NewReader([]byte("still allowed through a fresh reader"))}
++	r := openFixture(t, context.Background(), f, source)
++	require.NoError(t, f.advanceUnrelatedInvite())
++	require.Equal(t, list.AclPermissionsReader, f.local.AclState().Permissions(f.local.AclState().Identity()))
++	n, err := r.Read(make([]byte, 16))
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, n)
++	require.Zero(t, source.reads.Load())
++	fresh := openFixture(t, context.Background(), f, &trackedReader{Reader: bytes.NewReader([]byte("fresh current authority"))})
++	got, err := io.ReadAll(fresh)
++	require.NoError(t, err)
++	require.Equal(t, "fresh current authority", string(got))
++}
++
++func TestReadGuardCannotSwitchSignedAccountOrSpaceDuringFetch(t *testing.T) {
++	f := newSignedFixture(t, list.AclPermissionsReader)
++	other := newSignedFixture(t, list.AclPermissionsReader)
++	active := f
++	source := &trackedReader{Reader: bytes.NewReader(nil), readFn: func(p []byte) (int, error) {
++		active = other
++		return copy(p, "original account plaintext"), nil
++	}}
++	r, err := Open(context.Background(), func(ctx context.Context) (Scope, error) { return active.load(ctx) }, func() (Reader, error) { return source, nil })
++	require.NoError(t, err)
++	defer r.Close()
++	buffer := bytes.Repeat([]byte{0xa5}, 64)
++	n, err := r.Read(buffer)
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Zero(t, n)
++	require.Equal(t, bytes.Repeat([]byte{0xa5}, 64), buffer)
++}
+--- /dev/null
++++ b/internal/readlifetime/lifetime.go
+@@ -0,0 +1,99 @@
++// Package readlifetime linearizes bounded plaintext delivery with retirement.
++// It contains no cache, storage, network or ACL operations.
++package readlifetime
++
++import (
++	"context"
++	"errors"
++	"sync"
++)
++
++var ErrRetired = errors.New("plaintext read lifetime retired")
++
++// Token is one account run or one loaded-space generation. Its zero value is
++// active. A retired token is never reactivated and must not be copied after use.
++type Token struct {
++	mu      sync.RWMutex
++	retired bool
++	closing int
++	settled chan struct{}
++}
++
++// Pending means a TryClose decision is in flight. A caller must release its
++// ACL lock before waiting. A declined close resumes this very token.
++type Pending struct{ done <-chan struct{} }
++
++func (p *Pending) Error() string { return "plaintext read lifetime close pending" }
++
++func (p *Pending) Wait(ctx context.Context) error {
++	select {
++	case <-ctx.Done():
++		return ctx.Err()
++	case <-p.done:
++		return nil
++	}
++}
++
++// WithActive protects only a bounded synchronous validation/memory-copy step.
++// The callback must not load a cache entry, wait on I/O, or acquire an ACL lock.
++// Callers acquire their ACL lock before entering this method. Retirement drops
++// its write lock before beginning any teardown that might acquire an ACL lock.
++func (t *Token) WithActive(deliver func() error) error {
++	if t == nil {
++		return ErrRetired
++	}
++	t.mu.RLock()
++	defer t.mu.RUnlock()
++	if t.retired {
++		return ErrRetired
++	}
++	if t.closing != 0 {
++		return &Pending{done: t.settled}
++	}
++	if deliver != nil {
++		return deliver()
++	}
++	return nil
++}
++
++// Retire is the linearization point, before cache/component teardown. It waits
++// only for bounded copies already admitted by this token, never for file I/O.
++func (t *Token) Retire() {
++	if t == nil {
++		return
++	}
++	t.mu.Lock()
++	t.retired = true
++	if t.settled != nil {
++		close(t.settled)
++		t.settled = nil
++	}
++	t.mu.Unlock()
++}
++
++// BeginCloseAttempt quiesces delivery before TryClose's private committed-close
++// decision. It does not retire the token. No lock remains held during TryClose.
++func (t *Token) BeginCloseAttempt() {
++	t.mu.Lock()
++	defer t.mu.Unlock()
++	if t.closing == 0 && !t.retired {
++		t.settled = make(chan struct{})
++	}
++	t.closing++
++}
++
++func (t *Token) FinishCloseAttempt(closed bool) {
++	t.mu.Lock()
++	defer t.mu.Unlock()
++	if t.closing == 0 {
++		panic("readlifetime: close attempt was not begun")
++	}
++	t.closing--
++	if closed {
++		t.retired = true
++	}
++	if (t.closing == 0 || t.retired) && t.settled != nil {
++		close(t.settled)
++		t.settled = nil
++	}
++}
+--- a/internal/spaceimpl/files.go
++++ b/internal/spaceimpl/files.go
+@@ -12,6 +12,7 @@
+ 	"github.com/ipfs/go-cid"
+ 	"go.uber.org/zap"
+ 
++	"github.com/anyproto/any-sync-sdk/internal/files/readguard"
+ 	"github.com/anyproto/any-sync-sdk/internal/files/status"
+ 	filestore "github.com/anyproto/any-sync-sdk/internal/files/store"
+ 	"github.com/anyproto/any-sync-sdk/internal/files/upload"
+@@ -131,20 +132,22 @@
+ // Open returns a seekable plaintext reader over the file (or one of
+ // its variants). See space.Files.
+ func (f *filesAPI) Open(ctx context.Context, fileId string, variant space.Variant) (space.FileReader, error) {
+-	fetchSvc := f.s.parent.fetch
+-	if fetchSvc == nil {
+-		return nil, errors.New("files: not configured")
+-	}
+-	row, err := f.s.PayloadsInternal().FindRow(ctx, fileId)
+-	if err != nil {
+-		return nil, err
+-	}
+-	if variant != space.VariantOriginal {
+-		if row, err = f.resolveVariant(ctx, row, variant); err != nil {
++	return readguard.Open(ctx, f.s.fileReadACL, func() (readguard.Reader, error) {
++		fetchSvc := f.s.parent.fetch
++		if fetchSvc == nil {
++			return nil, errors.New("files: not configured")
++		}
++		row, err := f.s.PayloadsInternal().FindRow(ctx, fileId)
++		if err != nil {
+ 			return nil, err
+ 		}
+-	}
+-	return f.openRow(ctx, row)
++		if variant != space.VariantOriginal {
++			if row, err = f.resolveVariant(ctx, row, variant); err != nil {
++				return nil, err
++			}
++		}
++		return f.openRow(ctx, row)
++	})
+ }
+ 
+ // openRow builds the reader pipeline for one resolved row.
+--- /dev/null
++++ b/internal/spaceimpl/files_read_authority.go
+@@ -0,0 +1,29 @@
++package spaceimpl
++
++import (
++	"context"
++	"fmt"
++
++	"github.com/anyproto/any-sync-sdk/internal/files/readguard"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++)
++
++// fileReadACL resolves the same captured account and space for every delivery
++// boundary. The current loaded signed ACL is authoritative; the cached members
++// table and a later globally active account are not used here. GetSpace also
++// refuses an account whose space cache has closed. No network refresh is added
++// to offline reads, and a loaded Guest identity keeps its original permission.
++func (s *spaceImpl) fileReadACL(ctx context.Context) (readguard.Scope, error) {
++	handle, err := s.app.GetSpace(ctx, s.id)
++	if err != nil {
++		return readguard.Scope{}, fmt.Errorf("files: load space authority: %w", err)
++	}
++	if handle.Id() != s.id {
++		return readguard.Scope{}, list.ErrInsufficientPermissions
++	}
++	account, loadedSpace, err := s.app.FileReadLifetimes(handle)
++	if err != nil {
++		return readguard.Scope{}, list.ErrInsufficientPermissions
++	}
++	return readguard.Scope{ACL: handle.Inner().Acl(), Account: account, Space: loadedSpace}, nil
++}

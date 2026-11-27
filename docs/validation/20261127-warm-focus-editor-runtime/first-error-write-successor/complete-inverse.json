@@ -1,0 +1,84 @@
+{
+  "files": {
+    "originals.py": {
+      "after": {
+        "bytes": 18007,
+        "gitBlob": "012e79dff166af2fbca6c9b019d16f3b3248d87a",
+        "localPath": "/workspace/scratch/ae335eba85e3/warm-focus-editor-write-successor/after/Tools/PinkhaDualEngineRuntime/warm_focus_editor/originals.py",
+        "sha256": "41a6b0773d81a4b31b2d0b4ef92d047a49c3cb2d8a95569534c8b80f43e2c5c7"
+      },
+      "before": {
+        "bytes": 16356,
+        "gitBlob": "940f8332d8a2fc664dca084e5a0b3d0894d5aac1",
+        "localPath": "/workspace/scratch/ae335eba85e3/warm-focus-editor-runtime-source/after/Tools/PinkhaDualEngineRuntime/warm_focus_editor/originals.py",
+        "sha256": "a79172c4b87de3c100bc2cf2e3fbc43c424cd7474f56e57b0534b1c6069b85f0"
+      },
+      "fullInverseEqualsOriginal": true,
+      "literalOperations": [
+        {
+          "after": "\n\n\nclass StageResultWrites:\n    \"\"\"Preserve only the three selected original stage outcomes before receipt IO.\n\n    The isolated Consumer namespace receives this callable. Original shared\n    writes, other modules, every Consumer AST body and every command stay exact.\n    A failed write cannot replace the already observed original stage cause.\n    \"\"\"\n    def __init__(self, original_write, error_formatter, output):\n        self.original_write, self.error = original_write, error_formatter\n        root = Path(output) / \"evidence/lanes\"\n        self.paths = frozenset((root / \"focus-lifecycle/focus-lifecycle/result.json\",\n                                root / \"editor/preparation/result.json\",\n                                root / \"editor/ui/result.json\"))\n        self.first_failure = None\n        self.io_failures = []\n\n    def __call__(self, path, value):\n        selected = Path(path) in self.paths and isinstance(value, dict)\n        if selected and value.get(\"status\") == \"FAIL\":\n            first = value.get(\"firstFailure\")\n            if first is None and value.get(\"errors\"):\n                first = value[\"errors\"][0]\n            if self.first_failure is None and isinstance(first, dict):\n                self.first_failure = copy.deepcopy(first)\n        try:\n            return self.original_write(path, value)\n        except BaseException as error:\n            if selected:\n                self.io_failures.append({\"path\": str(path), **self.error(error)})\n            raise",
+          "afterOffset": 1399,
+          "before": "",
+          "beforeOffset": 1399
+        },
+        {
+          "after": "stage_result_writes = StageResultWrites(self.shared.write, self.shared.error, commands.cwd)\n        bindings[\"write\"] = self.stage_result_writes\n        self.",
+          "afterOffset": 15657,
+          "before": "",
+          "beforeOffset": 14164
+        }
+      ]
+    },
+    "run.py": {
+      "after": {
+        "bytes": 32804,
+        "gitBlob": "cf32a9d935146005f7aca69f9c562264586a183b",
+        "localPath": "/workspace/scratch/ae335eba85e3/warm-focus-editor-write-successor/after/Tools/PinkhaDualEngineRuntime/warm_focus_editor/run.py",
+        "sha256": "6ccbfe8c4a45ffd2f298c13db02af8e5f1c728f7355347fc4bda475b5900991c"
+      },
+      "before": {
+        "bytes": 32562,
+        "gitBlob": "1cbf6850ef9dad21dbe7181e19c29008bb16358f",
+        "localPath": "/workspace/scratch/ae335eba85e3/warm-focus-editor-runtime-source/after/Tools/PinkhaDualEngineRuntime/warm_focus_editor/run.py",
+        "sha256": "2bed28197943a15d260e56f0fd327650344fa7ac09a61d8957bd470f9a4f3f7a"
+      },
+      "fullInverseEqualsOriginal": true,
+      "literalOperations": [
+        {
+          "after": "(originals.stage_result_writes.first_failure\n                                  or ",
+          "afterOffset": 12664,
+          "before": "",
+          "beforeOffset": 12664
+        },
+        {
+          "after": "))\n        if originals.stage_result_writes.io_failures:\n            result[\"originalStageResultWriteFailures\"] = list(originals.stage_result_writes.io_failures",
+          "afterOffset": 12801,
+          "before": "",
+          "beforeOffset": 12719
+        }
+      ]
+    }
+  },
+  "originalConsumerStageWaveBodiesChanged": false,
+  "schema": "pinkha-warm-stage-write-successor-full-inverse-v1",
+  "sourceOrRuntimeTestsExecuted": 0,
+  "unchangedTopLevelDeclarations": {
+    "originals.py": [
+      "require",
+      "sha"
+    ],
+    "run.py": [
+      "CommandAdmission",
+      "clone_products",
+      "fresh_toolchain",
+      "include_lane_cleanup",
+      "lane_summary",
+      "main",
+      "retain_receipt",
+      "run",
+      "select_runtime",
+      "source_contract_for_lane",
+      "verify_created_device"
+    ]
+  }
+}

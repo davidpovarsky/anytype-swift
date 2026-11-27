@@ -1,0 +1,141 @@
+{
+  "baseAnyCommit": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+  "baseCurrentNativeSHA256": "0796b939145f98fd3436b40c3ae3c7c9daec239b54f8c1fa237fb20a349d0b07",
+  "baseCurrentSourceManifestSHA256": "e785ed2faf1d0bf0d18e7be7f0090cdee4061bd714f3be1509927895b9df336a",
+  "baseSDKCommit": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9",
+  "compilerInvocations": 0,
+  "design": {
+    "bytes": 9196,
+    "sha256": "52b6adab0751bda0d0662337171b7416ac7bf520080e706dc59b8317d80ca7ec"
+  },
+  "formatter": {
+    "bytes": 3027672,
+    "sha256": "3ca5e23c92e957338205edb7c8a19a0c4f211b2cf606e21171925f3001d12825"
+  },
+  "formatterInvocations": 1,
+  "formatterSeconds": 0.045,
+  "nativeInvocations": 0,
+  "patch": {
+    "bytes": 46980,
+    "sha256": "874220977c12a789d77acbd7a86fa4889693a5196c32ef52effac20207dcc32f"
+  },
+  "paths": {
+    "internal/anysyncx/app.go": {
+      "after": {
+        "bytes": 41920,
+        "sha256": "c2cb2d1e6c353a84895fb3095902813086d509fe6e99cb6a23be264853c0361e"
+      },
+      "before": {
+        "bytes": 41645,
+        "sha256": "b96e0a409306f4e244bf802fb132a4540055b3945a7c24d557fbd31cc1de610c"
+      }
+    },
+    "internal/anysyncx/file_read_lifetime.go": {
+      "after": {
+        "bytes": 629,
+        "sha256": "2fe10e00d6b20ef3a5e35b9f3e3c2fb5d7d5ac343427882f97ce2123aeb84bfe"
+      },
+      "before": null
+    },
+    "internal/anysyncx/file_read_lifetime_test.go": {
+      "after": {
+        "bytes": 3845,
+        "sha256": "ba77f19e19bcc820518aa7beea93272602fec12cc915d70856b1019aac61ae93"
+      },
+      "before": null
+    },
+    "internal/anysyncx/spacecache.go": {
+      "after": {
+        "bytes": 12048,
+        "sha256": "0542f2675042f94fdf5963d95ae3092e0462775b43471c1be8e0a14d1ce49f66"
+      },
+      "before": {
+        "bytes": 11649,
+        "sha256": "8c9088d100c6bf1d529bc1f4a8298cc2a0f79c3212ad0603144706e333e6b9fc"
+      }
+    },
+    "internal/files/readguard/readguard.go": {
+      "after": {
+        "bytes": 6985,
+        "sha256": "23de4921b633d3ad2011dd24551aff65a776a0aa972e43ae54ce78b7a7757c7d"
+      },
+      "before": null
+    },
+    "internal/files/readguard/readguard_lifetime_test.go": {
+      "after": {
+        "bytes": 8262,
+        "sha256": "e74ccdbfaa9a8bd9b7fce425ab95c5436600253cb813c3e8ac614a33679e5119"
+      },
+      "before": null
+    },
+    "internal/files/readguard/readguard_test.go": {
+      "after": {
+        "bytes": 17648,
+        "sha256": "e00ed13b8c362939185c2856497328838b674e7dde310f83738f6197da18752b"
+      },
+      "before": null
+    },
+    "internal/readlifetime/lifetime.go": {
+      "after": {
+        "bytes": 2497,
+        "sha256": "233ee49b367a91d9e73b143d8ed1a39b482bb6d2e273744e59287695e7a56dd7"
+      },
+      "before": null
+    },
+    "internal/spaceimpl/files.go": {
+      "after": {
+        "bytes": 19629,
+        "sha256": "69dd05826620abacf640712efd01116756331f33b37f9cf9ad979cc0f1fbce16"
+      },
+      "before": {
+        "bytes": 19470,
+        "sha256": "8967e9fca7540912a02ee01c9b91b44ede113e7e060c207712c7078ac3dbe56c"
+      }
+    },
+    "internal/spaceimpl/files_read_authority.go": {
+      "after": {
+        "bytes": 1116,
+        "sha256": "54c19ef7f23cad279840a6b100ca00c36f8585ea001004686b67e9dc1e0bd28a"
+      },
+      "before": null
+    }
+  },
+  "productionPaths": 7,
+  "rejectedPrecursorPatchSHA256": "a5386bbad205517348adadd96deb848db80185c76c09671ddb9b33b502e0a502",
+  "retainedSourceFilesModified": 0,
+  "sourceController": {
+    "bytes": 80442,
+    "sha256": "cf7e87e11e8107887987a8cfcf325e1193961755f4f1538d3aa617f08533a2ff"
+  },
+  "status": "UNCOMPILED_SOURCE_DRAFT_NOT_PRODUCT_ACCEPTANCE",
+  "successorDelta": {
+    "bytes": 27358,
+    "sha256": "c6ad942dbbaebe9a067a6cd5f4a33a3ce196787dfe82ac04a6eb0abe3111c5ac"
+  },
+  "testMethodCount": 21,
+  "testPaths": 3,
+  "testsRun": 0,
+  "topLevelMethods": [
+    "TestFileReadLifetimeAppCloseRetiresBeforeCacheTeardown",
+    "TestFileReadLifetimeWrapperCloseAndTryCloseBoundaries",
+    "TestReadGuardRetirementAfterLoadBeforeFinalACLLock",
+    "TestReadGuardPendingCloseWaitRevalidatesOrCancels",
+    "TestReadGuardSameSpaceReloadRequiresNewReaderWithUnchangedACL",
+    "TestReadGuardPreservesCurrentSignedReaderAndGuest",
+    "TestReadGuardUsesLoadedGuestIdentityAfterItsSignedRemoval",
+    "TestReadGuardRefusesRevokedOpenBeforeContentLookup",
+    "TestReadGuardHeldCachedReaderStopsAfterCurrentSignedRemoval",
+    "TestReadGuardRechecksSignedAuthorityAfterAwaitedFetch",
+    "TestReadGuardClosesOpenedReaderWhenAuthorityChangedDuringOpen",
+    "TestReadGuardSeekThenReadRechecksCurrentSignedPermission",
+    "TestReadGuardRechecksAfterAnAwaitedSeek",
+    "TestReadGuardLateContextCancellationDiscardsFetchedPlaintext",
+    "TestReadGuardCannotReadWithRetiredAuthorityLoader",
+    "TestReadGuardPreservesByteRangesEOFAndBoundedPrivateMemory",
+    "TestReadGuardCloseDoesNotWaitForFetchOrReleasePendingBytes",
+    "TestReadGuardInvalidatedReaderRequiresFreshOpenAfterExplicitGrant",
+    "TestReadGuardRejectsSignedRevokeRestoreABA",
+    "TestReadGuardSignedHeadChangeRequiresFreshOpenEvenWithSameRole",
+    "TestReadGuardCannotSwitchSignedAccountOrSpaceDuringFetch"
+  ]
+}

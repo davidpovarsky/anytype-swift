@@ -16,7 +16,7 @@ import sys
 
 from originals import HOST_PATH, require
 
-DEPENDENCY_SHA256 = "8256f12150ebbc92fe3af8263283d13ac292831124664e943e0f1003e46e956f"
+DEPENDENCY_SHA256 = "ed12ab3f36baa1070a41560667c70af4e64bc544d7f732917be4a98250d8a493"
 ACTIVATION_SHA256 = "7e8241372b2c7c63b4edc3709807a7fa1575b4f96271fd1b9f82c88015b29820"
 W2_PREFIX = "Tools/PinkhaDualEngineRuntime/hosted_attachment_components/"
 W2_MODULE_NAME = "hosted_attachment_components_original_profile"

@@ -1,0 +1,14 @@
+--- original/run.py
++++ successor/run.py
+@@ -224,7 +224,10 @@
+         consumer.profile_bindings.unchanged()
+         originals.unchanged()
+     except BaseException as error:
+-        result["firstFailure"] = consumer.commands.first_exception or shared.error(error)
++        result["firstFailure"] = (originals.stage_result_writes.first_failure
++                                  or consumer.commands.first_exception or shared.error(error))
++        if originals.stage_result_writes.io_failures:
++            result["originalStageResultWriteFailures"] = list(originals.stage_result_writes.io_failures)
+         if result["firstFailure"] != shared.error(error):
+             result["laterFailure"] = shared.error(error)
+     finally:

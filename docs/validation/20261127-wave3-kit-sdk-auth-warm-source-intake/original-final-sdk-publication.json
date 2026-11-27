@@ -1,0 +1,5532 @@
+{
+  "actualPackageByteInventory": {
+    "files": 1011,
+    "gitInventorySHA256": "ce82b072db824b0fbd4cdbab19a745c46349f53ee06874e23355c9c0c5058125",
+    "sourceBytes": 39812364
+  },
+  "base": "5fffe60fbcec8b12ae2cc14bcb092884677f19b0",
+  "baseTree": "a52fdb359190930d23a76877baf2fe8fa25101d6",
+  "candidateCommit": "c0b118f4de28e6ca1e71219237d1ae1c7fabefd8",
+  "candidateTree": "89485be6fc9db276c4359726a33b51284835b23b",
+  "commandCustodyBlocked": false,
+  "commands": [
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0^{tree}"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798673.663514,
+      "label": "base-identities",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435184,
+      "pid": 1435184,
+      "startedAt": 1795798673.6473253,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-001-base-identities.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 82,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-001-base-identities.stdout",
+        "sha256": "aadf20e9065d907376d26f903aeb51a73e13ca44c9795d3019480040980b0f1d"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "for-each-ref",
+        "--format=%(refname) %(objectname)"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798673.6826644,
+      "label": "refs-before",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435186,
+      "pid": 1435186,
+      "startedAt": 1795798673.6665452,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-002-refs-before.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 93660,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-002-refs-before.stdout",
+        "sha256": "93720580e563a4247e4d2faae2ecc51770d46966e58229745d555ae1f0f96fd2"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "-c",
+        "remote.origin.mirror=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "ls-remote",
+        "--heads",
+        "origin",
+        "refs/heads/codex/pinkha-sdk-native-follow-binding-20261127",
+        "refs/heads/codex/pinkha-sdk-mcp-title-window-20261127"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.1533632,
+      "label": "remote-preflight",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435188,
+      "pid": 1435188,
+      "startedAt": 1795798673.687392,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-003-remote-preflight.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 100,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-003-remote-preflight.stdout",
+        "sha256": "fbb4027a07d6f99a069ad11a1980bdb0aff9a13d820bb072a0d5fceec1806e1f"
+      },
+      "timeoutSeconds": 45
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/hanlin-pinkha-original-sdk-union-20261127",
+        "rev-parse",
+        "HEAD",
+        "HEAD^{tree}"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.1883352,
+      "label": "source-before-head",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435223,
+      "pid": 1435223,
+      "startedAt": 1795798674.1562107,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-004-source-before-head.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 82,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-004-source-before-head.stdout",
+        "sha256": "c5459ea64bb089c2ba0ddb0c5e4dc60f0dc681a1a4001b4ea73912f8d22eb4f1"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/hanlin-pinkha-original-sdk-union-20261127",
+        "status",
+        "--porcelain=v1",
+        "-z",
+        "--untracked-files=all"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.3557184,
+      "label": "source-before-status",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435225,
+      "pid": 1435225,
+      "startedAt": 1795798674.1909368,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-005-source-before-status.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-005-source-before-status.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/hanlin-pinkha-original-sdk-union-20261127",
+        "rev-parse",
+        "--path-format=absolute",
+        "--git-path",
+        "index",
+        "--git-path",
+        "info/sparse-checkout",
+        "--git-path",
+        "HEAD"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.3750818,
+      "label": "source-before-admin-paths",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435247,
+      "pid": 1435247,
+      "startedAt": 1795798674.3587768,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-006-source-before-admin-paths.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 344,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-006-source-before-admin-paths.stdout",
+        "sha256": "053021bf6f95fa27345ce872e3ba23bfb3b30e39be9989029321bd8423bb215a"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "ls-tree",
+        "-r",
+        "-z",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.4982495,
+      "label": "complete-base-leaves",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435249,
+      "pid": 1435249,
+      "startedAt": 1795798674.382609,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-007-complete-base-leaves.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 2972333,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-007-complete-base-leaves.stdout",
+        "sha256": "42d7d83f157acb0ec16590c7be27e817d14f84a38a5718cd93f290065b7ff2f6"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "cat-file",
+        "--batch"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.5536287,
+      "label": "six-original-byte-readback",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435251,
+      "pid": 1435251,
+      "startedAt": 1795798674.5347817,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-008-six-original-byte-readback.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 246,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-008-six-original-byte-readback.stdin",
+        "sha256": "ddead422f9ba39771ecb854ca446c1a01ec5d119fac2aa724b1a0de5a6675051"
+      },
+      "stdout": {
+        "bytes": 128001,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-008-six-original-byte-readback.stdout",
+        "sha256": "b594569839567c5629fd646a322adc4625efd06e69bc17f3c9b9ed6e33800d6d"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0:.github"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.5732672,
+      "label": "protected-base-8",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435253,
+      "pid": 1435253,
+      "startedAt": 1795798674.5571742,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-009-protected-base-8.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-009-protected-base-8.stdout",
+        "sha256": "32961cae28c885121192c92bf3f783f55f625abfbab128ae10690289b2d15833"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0:Packages/HanlinAgentSDK/Vendor/Swift-JSON"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.5920722,
+      "label": "protected-base-9",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435255,
+      "pid": 1435255,
+      "startedAt": 1795798674.5760415,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-010-protected-base-9.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-010-protected-base-9.stdout",
+        "sha256": "35c87d7998b9c5f561fce91e58d43e3430c313cc52cba5761db0537b1e67b53a"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0:Packages/HanlinAppExtensionsSDK"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.61084,
+      "label": "protected-base-10",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435257,
+      "pid": 1435257,
+      "startedAt": 1795798674.5947485,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-011-protected-base-10.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-011-protected-base-10.stdout",
+        "sha256": "720e758ef8a0edf73f11265803999e71d3b651290fbf8beff02d927bc22f9d10"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0:Packages/HanlinMiniAppsBridge"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.629628,
+      "label": "protected-base-11",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435259,
+      "pid": 1435259,
+      "startedAt": 1795798674.6136127,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-012-protected-base-11.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-012-protected-base-11.stdout",
+        "sha256": "72639978fffbd5de06ea76b2c1a1ee21981143035f554b14a84fb63ffec7fa29"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0:Packages/HanlinNativeScriptRuntime"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.6486285,
+      "label": "protected-base-12",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435261,
+      "pid": 1435261,
+      "startedAt": 1795798674.6324332,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-013-protected-base-12.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-013-protected-base-12.stdout",
+        "sha256": "b312f292cbdb798d8e60f2fac5ea5bd717176450a94da13121f0b38970292fc4"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0:Packages/HanlinPlatform"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.6675055,
+      "label": "protected-base-13",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435263,
+      "pid": 1435263,
+      "startedAt": 1795798674.6515145,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-014-protected-base-13.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-014-protected-base-13.stdout",
+        "sha256": "90988ff29454ef99eba1e8eaa2833bede75b9ca6f7f461a836b066e7597ad194"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "python3",
+        "-B",
+        "-c",
+        "import os,sys;os.mkdir(sys.argv[1],0o700)",
+        "/tmp/pinkha-root-sdk-mcp-title-window-index-20261127"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.7357483,
+      "label": "create-exclusive-private-index-directory",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435265,
+      "pid": 1435265,
+      "startedAt": 1795798674.7034488,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-015-create-exclusive-private-index-directory.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-015-create-exclusive-private-index-directory.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "GIT_INDEX_FILE=/tmp/pinkha-root-sdk-mcp-title-window-index-20261127/index",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "read-tree",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.8534212,
+      "label": "read-full-original-tree-into-private-index",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435267,
+      "pid": 1435267,
+      "startedAt": 1795798674.7386463,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-016-read-full-original-tree-into-private-index.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-016-read-full-original-tree-into-private-index.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.8758776,
+      "label": "write-reviewed-blob-001",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435269,
+      "pid": 1435269,
+      "startedAt": 1795798674.8576405,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-017-write-reviewed-blob-001.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 7251,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-017-write-reviewed-blob-001.stdin",
+        "sha256": "3b331e200237598147def7fed0875b3b5ae62a5581ba85da09a4d6c4b058fc13"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-017-write-reviewed-blob-001.stdout",
+        "sha256": "5ceab4c538a1b7bbc1c68c6317419331a943ed7d6807acbd3a3a3f513504ff83"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.897912,
+      "label": "write-reviewed-blob-002",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435271,
+      "pid": 1435271,
+      "startedAt": 1795798674.879027,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-018-write-reviewed-blob-002.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 66879,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-018-write-reviewed-blob-002.stdin",
+        "sha256": "06fbe72f889da3befe00c2dfe9b286f062decd59a50c1df9c961df3bcb46b745"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-018-write-reviewed-blob-002.stdout",
+        "sha256": "85a46fb74f791dec654dac39ab93bd0fd49fd3de426103d64ed9cac2cb121d1a"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.9190207,
+      "label": "write-reviewed-blob-003",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435273,
+      "pid": 1435273,
+      "startedAt": 1795798674.9009564,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-019-write-reviewed-blob-003.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 18257,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-019-write-reviewed-blob-003.stdin",
+        "sha256": "4b1a651c7acf911b23ddd6056fdddd06f5e552eaf41e026f9723237dc3b5bcb6"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-019-write-reviewed-blob-003.stdout",
+        "sha256": "0c78f6de8f95410290f432b514a4a2a3c5be4340fd5850e70648dc4be8f58f59"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.9403021,
+      "label": "write-reviewed-blob-004",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435275,
+      "pid": 1435275,
+      "startedAt": 1795798674.922153,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-020-write-reviewed-blob-004.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 12292,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-020-write-reviewed-blob-004.stdin",
+        "sha256": "622c7380bb066002a48bb46e6c76a6f919c41060392d891ac17c34f411b1a040"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-020-write-reviewed-blob-004.stdout",
+        "sha256": "09d88e509ece51fec24a4bf962ac088e7f558ea6d99c781d860c0bf80810bc5f"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.9622638,
+      "label": "write-reviewed-blob-005",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435277,
+      "pid": 1435277,
+      "startedAt": 1795798674.9442005,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-021-write-reviewed-blob-005.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 9813,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-021-write-reviewed-blob-005.stdin",
+        "sha256": "bbcae5565bdcbc7eba72c7d5c272eac5227af9106f00c50589901013f22830c7"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-021-write-reviewed-blob-005.stdout",
+        "sha256": "b58943e6e91dbac330b5243fe31d1a6d59025dcc64c474ede6e05a11781d7606"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798674.9831107,
+      "label": "write-reviewed-blob-006",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435279,
+      "pid": 1435279,
+      "startedAt": 1795798674.9651284,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-022-write-reviewed-blob-006.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 4935,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-022-write-reviewed-blob-006.stdin",
+        "sha256": "ad7094967bad20ff7a703dc233df2d3b4222b9777f3749caeeeca91ec983956e"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-022-write-reviewed-blob-006.stdout",
+        "sha256": "17f9099e3224cdd87b59ac2f0e4a31cc1c1f115a7783e2b710eb9132b2758cd7"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.0042944,
+      "label": "write-reviewed-blob-007",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435281,
+      "pid": 1435281,
+      "startedAt": 1795798674.9859443,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-023-write-reviewed-blob-007.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 27535,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-023-write-reviewed-blob-007.stdin",
+        "sha256": "60b6b9496330d4605f60f56587170b06c7eced31a6b3d79ef04aa8faa548022c"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-023-write-reviewed-blob-007.stdout",
+        "sha256": "c1ca383c21c6f4ad32c84dcb32dcb1222759c319d4f8d5f2fb78ae77389da0df"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.0260556,
+      "label": "write-reviewed-blob-008",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435283,
+      "pid": 1435283,
+      "startedAt": 1795798675.007307,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-024-write-reviewed-blob-008.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 1403,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-024-write-reviewed-blob-008.stdin",
+        "sha256": "e49b3bdc6b1b0b8a378c14b857a60ddc6716a55edfba11d518aeb8982677eb27"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-024-write-reviewed-blob-008.stdout",
+        "sha256": "34397e028897cb8f42820970aa994a09a5b54666fbb71961c8b55f82b8027969"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.0478108,
+      "label": "write-reviewed-blob-009",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435286,
+      "pid": 1435286,
+      "startedAt": 1795798675.0295029,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-025-write-reviewed-blob-009.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 1862,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-025-write-reviewed-blob-009.stdin",
+        "sha256": "4ccfa6258a41ccefa2de54eb0c27e551fd54939ecf19a76e742e9e5b47c13ad2"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-025-write-reviewed-blob-009.stdout",
+        "sha256": "772417e2dff79de99e62855b19096dce680ef5915bc02ccc39d2b5cdd038299e"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.0693645,
+      "label": "write-reviewed-blob-010",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435288,
+      "pid": 1435288,
+      "startedAt": 1795798675.050741,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-026-write-reviewed-blob-010.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 456,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-026-write-reviewed-blob-010.stdin",
+        "sha256": "b5e69893fcd1fd4964915a555097d2ca826836d4f9e591a4da34dfcefc9e1054"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-026-write-reviewed-blob-010.stdout",
+        "sha256": "64dce8fd7f88b33073cd4a89425ff6ca2fbe177888b52b5999b734bf4d0d31f5"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.0920737,
+      "label": "write-reviewed-blob-011",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435304,
+      "pid": 1435304,
+      "startedAt": 1795798675.0728786,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-027-write-reviewed-blob-011.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 1541,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-027-write-reviewed-blob-011.stdin",
+        "sha256": "493c4e3b7ad8584129a5d0d1bf35ec03ca8ae12a3a02ef1e684e7f44fd69e8dc"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-027-write-reviewed-blob-011.stdout",
+        "sha256": "6503158962624b18efdde721462f264b6b2bfc45dc6a06f0b55fb72308c15368"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.1173105,
+      "label": "write-reviewed-blob-012",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435313,
+      "pid": 1435313,
+      "startedAt": 1795798675.0971622,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-028-write-reviewed-blob-012.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 8020,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-028-write-reviewed-blob-012.stdin",
+        "sha256": "11fdd79a2f226a2e883414dcfc846e37d4dee2a3c0532580fac8f8563e4d3262"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-028-write-reviewed-blob-012.stdout",
+        "sha256": "e816889f504bc578599857fffd792721398275d7d611bd0c1dd4c7cff8558702"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.1376548,
+      "label": "write-reviewed-blob-013",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435315,
+      "pid": 1435315,
+      "startedAt": 1795798675.1199381,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-029-write-reviewed-blob-013.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 1000,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-029-write-reviewed-blob-013.stdin",
+        "sha256": "77d45dd9dbe9fa2dfcbb6106930d566cfa005760be8540a695dd8492d7f7e3e6"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-029-write-reviewed-blob-013.stdout",
+        "sha256": "ae35c70e3e7577b28aa8f236b6fae6239cf51d16a73eaaada582ee308b7f054e"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.1591723,
+      "label": "write-reviewed-blob-014",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435317,
+      "pid": 1435317,
+      "startedAt": 1795798675.1405096,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-030-write-reviewed-blob-014.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 3221,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-030-write-reviewed-blob-014.stdin",
+        "sha256": "965397b9f11667a10c2d7aeae80e534c992b202ae35ff8411cb57c45b0353fe1"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-030-write-reviewed-blob-014.stdout",
+        "sha256": "b3028b7a1c40cd6f37922fc3126a255a2654eee2563a0b58a27b34befca93bd9"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.1798787,
+      "label": "write-reviewed-blob-015",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435319,
+      "pid": 1435319,
+      "startedAt": 1795798675.1619587,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-031-write-reviewed-blob-015.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 2607,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-031-write-reviewed-blob-015.stdin",
+        "sha256": "c86de832d9733714d3af463f1f00a319d5a7933c9d02ebb6e807a6fb60855d14"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-031-write-reviewed-blob-015.stdout",
+        "sha256": "88326139a1d6a318549adab7d3ba21c8f113482b419bf61f9af3379362ccb8e7"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.200411,
+      "label": "write-reviewed-blob-016",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435321,
+      "pid": 1435321,
+      "startedAt": 1795798675.1824634,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-032-write-reviewed-blob-016.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 3856,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-032-write-reviewed-blob-016.stdin",
+        "sha256": "faac6181c75f5d9a24b38b928032caf096d4cd7ed4add44c3b8fbfdf45254252"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-032-write-reviewed-blob-016.stdout",
+        "sha256": "a52da7fb064fe4f2dc9904349a10b9d3fdb5c7ab1ebd082eca144012ffe36b1f"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.2212842,
+      "label": "write-reviewed-blob-017",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435323,
+      "pid": 1435323,
+      "startedAt": 1795798675.203115,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-033-write-reviewed-blob-017.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 692,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-033-write-reviewed-blob-017.stdin",
+        "sha256": "042967ac4dcf3ce326ec4afa1c0eb0b81da6d48903020c0b01376d0bebd63ec1"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-033-write-reviewed-blob-017.stdout",
+        "sha256": "1d5c9d95f1193a9beab068b96b11a44f5f0a9109c24c4f5b06e0b5bf07e0737e"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.2427318,
+      "label": "write-reviewed-blob-018",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435325,
+      "pid": 1435325,
+      "startedAt": 1795798675.2245126,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-034-write-reviewed-blob-018.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 3226,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-034-write-reviewed-blob-018.stdin",
+        "sha256": "a48cba425e4ccac2b67db28d39357da69aeade2bb4fdb4c9ba6109761c142817"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-034-write-reviewed-blob-018.stdout",
+        "sha256": "2a72cd68dbe082c37d045b661b6a0b6cdae5bc55a76f51fb5658861c8baea5f5"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.2637765,
+      "label": "write-reviewed-blob-019",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435327,
+      "pid": 1435327,
+      "startedAt": 1795798675.2455904,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-035-write-reviewed-blob-019.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 2263,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-035-write-reviewed-blob-019.stdin",
+        "sha256": "97a2cae05c24d7024ca9d61c4086e8401fa2f8dd1c435b802cc06898303dc094"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-035-write-reviewed-blob-019.stdout",
+        "sha256": "fb2d2957439c17e4e9369e68235cbdcc4ae932210de0ca45bc65ee0575ccc39f"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.2856257,
+      "label": "write-reviewed-blob-020",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435329,
+      "pid": 1435329,
+      "startedAt": 1795798675.267301,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-036-write-reviewed-blob-020.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 1590,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-036-write-reviewed-blob-020.stdin",
+        "sha256": "0afddc15cf859f1b8bceb071a88320ceeb25b5bd78876ddeaf0fe997e06459ef"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-036-write-reviewed-blob-020.stdout",
+        "sha256": "f35ba030f97e83c5fbd89e8add999a128717954326283ce1365549bf21ff7d9a"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.306487,
+      "label": "write-reviewed-blob-021",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435331,
+      "pid": 1435331,
+      "startedAt": 1795798675.2884593,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-037-write-reviewed-blob-021.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 4426,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-037-write-reviewed-blob-021.stdin",
+        "sha256": "ba2f397a8b44aed6ec2290fae258ae625a2d149f590973e12744e1b64408cc7e"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-037-write-reviewed-blob-021.stdout",
+        "sha256": "cb0b5244cb39c5367477b53ccb3241f0a85e88ac649cec9ca7c582dcb668dac8"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.32766,
+      "label": "write-reviewed-blob-022",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435333,
+      "pid": 1435333,
+      "startedAt": 1795798675.3094335,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-038-write-reviewed-blob-022.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 902,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-038-write-reviewed-blob-022.stdin",
+        "sha256": "8e9db050b03a080353eb8b9e12f23270cb00ce4d9f4c6010d6e94adebb2117ec"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-038-write-reviewed-blob-022.stdout",
+        "sha256": "30706e2deab01fe518a43f2db87045c9bae3e009309ee9eee29a5c42b84fc02e"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.3655202,
+      "label": "write-reviewed-blob-023",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435335,
+      "pid": 1435335,
+      "startedAt": 1795798675.3307047,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-039-write-reviewed-blob-023.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 1242,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-039-write-reviewed-blob-023.stdin",
+        "sha256": "02e13ddbd1b3858c4680d4342b4b0ddd1a84a9859a69f44139689bd6b2dfd095"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-039-write-reviewed-blob-023.stdout",
+        "sha256": "a00bc7676a251818b4fedc747a03d96683b7e598e08b3cb9a7323b97944249a1"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.4037797,
+      "label": "write-reviewed-blob-024",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435337,
+      "pid": 1435337,
+      "startedAt": 1795798675.3683121,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-040-write-reviewed-blob-024.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 132696,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-040-write-reviewed-blob-024.stdin",
+        "sha256": "5907ed360e8021f031a909051e492e1236eaad33226ffeb81fc953125a26b3d2"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-040-write-reviewed-blob-024.stdout",
+        "sha256": "e1b4b5a27a183920e55e78272ba9a39d1834b9941163ec75ecb1499bdaabf701"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.4257634,
+      "label": "write-reviewed-blob-025",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435340,
+      "pid": 1435340,
+      "startedAt": 1795798675.4068441,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-041-write-reviewed-blob-025.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 4680,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-041-write-reviewed-blob-025.stdin",
+        "sha256": "ce9341bf542a328e920da57f81667dbb9b880bf25c501404e2af630eb35042d9"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-041-write-reviewed-blob-025.stdout",
+        "sha256": "662cb4c50c1eb82bc5d64153216f2ebabfd62c8fdfa01cc5a70608128e7f4a6c"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.4508553,
+      "label": "write-reviewed-blob-026",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435342,
+      "pid": 1435342,
+      "startedAt": 1795798675.4292274,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-042-write-reviewed-blob-026.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 179072,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-042-write-reviewed-blob-026.stdin",
+        "sha256": "5c1c9a5de6632945f0ff7d85fa7723f17b4eb66e4360cea4d46405a8ea676bc9"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-042-write-reviewed-blob-026.stdout",
+        "sha256": "abe9fc8904ca072099f080f9a21210641e3c28530bf60eeda1f9b8f2d3bd0510"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.537171,
+      "label": "write-reviewed-blob-027",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435348,
+      "pid": 1435348,
+      "startedAt": 1795798675.4547439,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-043-write-reviewed-blob-027.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 2500802,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-043-write-reviewed-blob-027.stdin",
+        "sha256": "bf3abf99798e11ed06d3189d5fda105839400d03b39fda5169e358a2cd4d9bd5"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-043-write-reviewed-blob-027.stdout",
+        "sha256": "1adc9eba894b8ba89622503e8da581b1fa1cd4f0cba6a58dbc3f6e150ba308f0"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.5747008,
+      "label": "write-reviewed-blob-028",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435352,
+      "pid": 1435352,
+      "startedAt": 1795798675.5403538,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-044-write-reviewed-blob-028.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 35913,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-044-write-reviewed-blob-028.stdin",
+        "sha256": "e03bf9046ed18e4a72958c7067666dc600534fd9c707ed909ef501b408408a13"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-044-write-reviewed-blob-028.stdout",
+        "sha256": "13aa24643e1f2113c4fefdbb52a73bb45523572cb31767cf38c7cfc6f68c2f29"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.596759,
+      "label": "write-reviewed-blob-029",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435354,
+      "pid": 1435354,
+      "startedAt": 1795798675.5781114,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-045-write-reviewed-blob-029.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 19424,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-045-write-reviewed-blob-029.stdin",
+        "sha256": "c368afa4961f9378b4baddeae740751c809acf8b7c66f731a7becad93173cc02"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-045-write-reviewed-blob-029.stdout",
+        "sha256": "612934858d0e00d255ce9d414ff114145a7e36bafa255a0baf0735c1e6f484f1"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.618099,
+      "label": "write-reviewed-blob-030",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435356,
+      "pid": 1435356,
+      "startedAt": 1795798675.5997195,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-046-write-reviewed-blob-030.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 15785,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-046-write-reviewed-blob-030.stdin",
+        "sha256": "8b37536552a43f1085123b2d5a16bad6b61f6bd5fd7177e4b46edcfb454c1c94"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-046-write-reviewed-blob-030.stdout",
+        "sha256": "9b7090c359e2f178d905418329b3397e733d0d4057c178041d78bb735a1418bc"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.6566427,
+      "label": "write-reviewed-blob-031",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435358,
+      "pid": 1435358,
+      "startedAt": 1795798675.6209116,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-047-write-reviewed-blob-031.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 210182,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-047-write-reviewed-blob-031.stdin",
+        "sha256": "1e1caa977c24cf6f727a03a4d202f8eb9762066b6bd6562644794b0b45cf7fd1"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-047-write-reviewed-blob-031.stdout",
+        "sha256": "bedb64bb6bc61faebbcc37e2c2c1a531ce262529cedf26b4fe6168665709f9ab"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.6774092,
+      "label": "write-reviewed-blob-032",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435360,
+      "pid": 1435360,
+      "startedAt": 1795798675.6593297,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-048-write-reviewed-blob-032.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 2331,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-048-write-reviewed-blob-032.stdin",
+        "sha256": "302b0a26167aeacc3b15506523b10ea83736a888758441ea02cd623b80bed5e7"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-048-write-reviewed-blob-032.stdout",
+        "sha256": "30e3b315648dafd70d783ffb90e8a4c89acdd900618054236ce9414dcfc564db"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.6986597,
+      "label": "write-reviewed-blob-033",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435362,
+      "pid": 1435362,
+      "startedAt": 1795798675.680525,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-049-write-reviewed-blob-033.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 15574,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-049-write-reviewed-blob-033.stdin",
+        "sha256": "28573bb41363374a1d9f654752af6d6a09a6cc29ba0761f05b3654d0a3228b40"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-049-write-reviewed-blob-033.stdout",
+        "sha256": "bcc1abd4df575142b8481d19e1f2f313072e8abd9000697763b03f483ab18c42"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.7201195,
+      "label": "write-reviewed-blob-034",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435364,
+      "pid": 1435364,
+      "startedAt": 1795798675.7013748,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-050-write-reviewed-blob-034.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 489,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-050-write-reviewed-blob-034.stdin",
+        "sha256": "4994d00cffd97487448ab884860fcdf28d50d33032cbac98905e60deb8e454b7"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-050-write-reviewed-blob-034.stdout",
+        "sha256": "d19dfacd9e0ef90b527ffb7de43b180e2327df1f62dfa506b2d586e082d3e8d7"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.7421293,
+      "label": "write-reviewed-blob-035",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435366,
+      "pid": 1435366,
+      "startedAt": 1795798675.7230997,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-051-write-reviewed-blob-035.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 12626,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-051-write-reviewed-blob-035.stdin",
+        "sha256": "e13fd14cb56be47eb7586c49aeb59f131eda32af52125ab02185f45259b1b0e9"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-051-write-reviewed-blob-035.stdout",
+        "sha256": "ec33c0c9a534aa52d31b5aea90d4e806bc7d416ee3fe44b50ee79cead25a1701"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.7647247,
+      "label": "write-reviewed-blob-036",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435368,
+      "pid": 1435368,
+      "startedAt": 1795798675.7458198,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-052-write-reviewed-blob-036.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 73519,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-052-write-reviewed-blob-036.stdin",
+        "sha256": "93538fe9b30d2652b320ee57b6e95463f838c4e0f4b090ca70ed1a9eb4e8118b"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-052-write-reviewed-blob-036.stdout",
+        "sha256": "b3274142e4dfc5df488a4b0107f2a60e5be57adae164136500f000431f7c7ec3"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.8049297,
+      "label": "write-reviewed-blob-037",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435370,
+      "pid": 1435370,
+      "startedAt": 1795798675.767854,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-053-write-reviewed-blob-037.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 263303,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-053-write-reviewed-blob-037.stdin",
+        "sha256": "1515118b70f7a323845a35767cbdcb191d6d74fbff648071200f5f2018712ee9"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-053-write-reviewed-blob-037.stdout",
+        "sha256": "07d5d5dffd6d193ee6400a2abc052aebff0be0d7eaacdc28bb66247924a59d0c"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.826393,
+      "label": "write-reviewed-blob-038",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435372,
+      "pid": 1435372,
+      "startedAt": 1795798675.8080456,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-054-write-reviewed-blob-038.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 20445,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-054-write-reviewed-blob-038.stdin",
+        "sha256": "6085c25804ee0ab42502cd452f633cad32fab5b68117bc095360c494add74896"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-054-write-reviewed-blob-038.stdout",
+        "sha256": "1eea8cffb5f38126bcf5bf72048aa5c5141fe2d789ff121ece563de38c321aa2"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.8693652,
+      "label": "write-reviewed-blob-039",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435374,
+      "pid": 1435374,
+      "startedAt": 1795798675.8294973,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-055-write-reviewed-blob-039.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 650589,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-055-write-reviewed-blob-039.stdin",
+        "sha256": "a86f50c2226eb5dae2e5a61f7d19eebabc2623835e8a952b6e929103d9f140ad"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-055-write-reviewed-blob-039.stdout",
+        "sha256": "108ccd8db3f7566d5a2d5d5eda6e5c4adad27c816928ea409589423ceb194e88"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.8923872,
+      "label": "write-reviewed-blob-040",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435376,
+      "pid": 1435376,
+      "startedAt": 1795798675.8728218,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-056-write-reviewed-blob-040.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 218019,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-056-write-reviewed-blob-040.stdin",
+        "sha256": "36225e8e3c768ce9a4fd8aa0aa06526ec7e1bb9bc5eb2a010ff9518775fbe8fb"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-056-write-reviewed-blob-040.stdout",
+        "sha256": "53e098ba69f71e8820a121974b424e068c5cefb962c82df38000bba323261e9a"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.9138613,
+      "label": "write-reviewed-blob-041",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435378,
+      "pid": 1435378,
+      "startedAt": 1795798675.8950393,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-057-write-reviewed-blob-041.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 12543,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-057-write-reviewed-blob-041.stdin",
+        "sha256": "e46948da5e47bc167450a3c174739df4fa7c31a32742c91b7928d089f6435dc9"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-057-write-reviewed-blob-041.stdout",
+        "sha256": "4f50aaddd5badb952c2c08e3e917badac4c5d1dfa98ec58d28b0d1aed8d6be7c"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.9348683,
+      "label": "write-reviewed-blob-042",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435380,
+      "pid": 1435380,
+      "startedAt": 1795798675.9165978,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-058-write-reviewed-blob-042.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 8122,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-058-write-reviewed-blob-042.stdin",
+        "sha256": "7033d1e485a083c33d4ef10ff040923e9b873bd5a69917ad1b4a5fe73dd631db"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-058-write-reviewed-blob-042.stdout",
+        "sha256": "55cb5f5923178a6022003b9c5f59a83beb80f9cfbf496f1d9dd16b1286b97aeb"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.9576547,
+      "label": "write-reviewed-blob-043",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435382,
+      "pid": 1435382,
+      "startedAt": 1795798675.9377363,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-059-write-reviewed-blob-043.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 15314,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-059-write-reviewed-blob-043.stdin",
+        "sha256": "c3847a0ba64300665e00594753d450f77b650c72264207f86ad08f0323f2f148"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-059-write-reviewed-blob-043.stdout",
+        "sha256": "4561328b09b8ff1aac54d59dad53ef31a1f52dd3bb13b163c0844b037ce1167a"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798675.9800253,
+      "label": "write-reviewed-blob-044",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435384,
+      "pid": 1435384,
+      "startedAt": 1795798675.9605002,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-060-write-reviewed-blob-044.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 55486,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-060-write-reviewed-blob-044.stdin",
+        "sha256": "745ff66e01f5b9fe6968a6259e263ab57660f2cd20e4f0d89e98be6df11249eb"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-060-write-reviewed-blob-044.stdout",
+        "sha256": "2d8278fee0ab363617ece01be5ef3967a6f797100771c52fab2057c42bff69f2"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.0055144,
+      "label": "write-reviewed-blob-045",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435386,
+      "pid": 1435386,
+      "startedAt": 1795798675.985016,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-061-write-reviewed-blob-045.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 12276,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-061-write-reviewed-blob-045.stdin",
+        "sha256": "08d8bc46f087a3e1cca4ca7ac135556a9e63fb32cfb7cf8d46147efbdf8ae41f"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-061-write-reviewed-blob-045.stdout",
+        "sha256": "20b1392ad4e1e89575cfcf0adf0ddba2040db6efa363e084cf4f6c9fc91d7570"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.026589,
+      "label": "write-reviewed-blob-046",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435388,
+      "pid": 1435388,
+      "startedAt": 1795798676.0083215,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-062-write-reviewed-blob-046.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 20022,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-062-write-reviewed-blob-046.stdin",
+        "sha256": "996a3b49cd660ad4881b6d1f828a93e31671c8a955b365b1028008f46b251922"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-062-write-reviewed-blob-046.stdout",
+        "sha256": "1e78b2a7305e12690f97f9a3ad8776c0d91a45a199924babbd2e4cf3c9b97c2b"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.0484657,
+      "label": "write-reviewed-blob-047",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435390,
+      "pid": 1435390,
+      "startedAt": 1795798676.0303216,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-063-write-reviewed-blob-047.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 4553,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-063-write-reviewed-blob-047.stdin",
+        "sha256": "00bfa29e2c549aeede6202dc0f5b8832d954b6f7b4e725118cbb696fb7e9afa6"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-063-write-reviewed-blob-047.stdout",
+        "sha256": "adc38c460bab66e0ed5b22ebf7c9be1cba23f4c2e8133ecfd9f6b7596429f2aa"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.090271,
+      "label": "write-reviewed-blob-048",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435392,
+      "pid": 1435392,
+      "startedAt": 1795798676.051255,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-064-write-reviewed-blob-048.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 778543,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-064-write-reviewed-blob-048.stdin",
+        "sha256": "8734ff86ae7a0b7d8de850a292f729a27327664b94f8aa9b14506dabd2e56aca"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-064-write-reviewed-blob-048.stdout",
+        "sha256": "b25671a97fd93a38d12119d179f8064ae401216c34258f5baed335fd63e04a23"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.1115854,
+      "label": "write-reviewed-blob-049",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435394,
+      "pid": 1435394,
+      "startedAt": 1795798676.0934048,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-065-write-reviewed-blob-049.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 1405,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-065-write-reviewed-blob-049.stdin",
+        "sha256": "56f4fd588142880246beb92f040679b346eac6eb45fd39419c9dcbd492289fac"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-065-write-reviewed-blob-049.stdout",
+        "sha256": "7697ab1b6af8baf415ab916f8a49978097ae414b9b482d2072444ead3c0eaad6"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.1340747,
+      "label": "write-reviewed-blob-050",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435396,
+      "pid": 1435396,
+      "startedAt": 1795798676.114934,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-066-write-reviewed-blob-050.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 16591,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-066-write-reviewed-blob-050.stdin",
+        "sha256": "3e055caebecdcf318689dccd6200b117928073d24b4311b5a9af85e105fc36a6"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-066-write-reviewed-blob-050.stdout",
+        "sha256": "7c2e797c8455072b5cfb5e014bccf958dc6726d152ffd36241fee8fa0342d5d3"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.159828,
+      "label": "write-reviewed-blob-051",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435417,
+      "pid": 1435417,
+      "startedAt": 1795798676.1382961,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-067-write-reviewed-blob-051.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 33531,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-067-write-reviewed-blob-051.stdin",
+        "sha256": "94165a7d938c70d52690ccac0af77fa78d8d7453e910e658d619a7c5a6e3cf3c"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-067-write-reviewed-blob-051.stdout",
+        "sha256": "297adc61e9f0604cc93b43dbdf8cb40aff5e46055a5dac3204e7b4f735565096"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.181608,
+      "label": "write-reviewed-blob-052",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435420,
+      "pid": 1435420,
+      "startedAt": 1795798676.1628544,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-068-write-reviewed-blob-052.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 63729,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-068-write-reviewed-blob-052.stdin",
+        "sha256": "fce091a7e094badd52266ba9b4a6151f4fb381d8e6b3a73fdd4e7e7ba6709db4"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-068-write-reviewed-blob-052.stdout",
+        "sha256": "bb4dcea58cf50b98d49c854cef4ea707444032add2bf0c94a760294cd805776f"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.2035239,
+      "label": "write-reviewed-blob-053",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435422,
+      "pid": 1435422,
+      "startedAt": 1795798676.1844077,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-069-write-reviewed-blob-053.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 154463,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-069-write-reviewed-blob-053.stdin",
+        "sha256": "79c22d23b97edd6edbd74449d02d5799f8a1c6d1af94bb12bf30093c94080e82"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-069-write-reviewed-blob-053.stdout",
+        "sha256": "b859264bdb9b62329f953bbbe818004ff25dcb490a5137d2a0553b1dca9f4ba8"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "hash-object",
+        "-w",
+        "--stdin"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.2247326,
+      "label": "write-reviewed-blob-054",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435424,
+      "pid": 1435424,
+      "startedAt": 1795798676.2063258,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-070-write-reviewed-blob-054.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 16116,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-070-write-reviewed-blob-054.stdin",
+        "sha256": "f93eee3455fda1a633c5b4f2f73527e462473b91bb0ec1e40999b7ced0a02d5b"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-070-write-reviewed-blob-054.stdout",
+        "sha256": "ec80e0404eb6c4dae1f4ff5c0ef8cd6de5ace44edd84d3094f6335b696f616e1"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "GIT_INDEX_FILE=/tmp/pinkha-root-sdk-mcp-title-window-index-20261127/index",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "update-index",
+        "-z",
+        "--index-info"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.2948475,
+      "label": "apply-only54-private-index-entries",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435426,
+      "pid": 1435426,
+      "startedAt": 1795798676.2282894,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-071-apply-only54-private-index-entries.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 7600,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-071-apply-only54-private-index-entries.stdin",
+        "sha256": "02c9053f9fa6b5c54b819fa1521579a1958fe5631ea0f1ea4c649556f9b3f36b"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-071-apply-only54-private-index-entries.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "GIT_INDEX_FILE=/tmp/pinkha-root-sdk-mcp-title-window-index-20261127/index",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "write-tree"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.3629966,
+      "label": "write-private-full-tree",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435428,
+      "pid": 1435428,
+      "startedAt": 1795798676.2983553,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-072-write-private-full-tree.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-072-write-private-full-tree.stdout",
+        "sha256": "0f1edb1d071ae07e348d9d6bfecb273d85872e2ed1adddd5f8a749e0f3ef4e5e"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "ls-tree",
+        "-r",
+        "-z",
+        "89485be6fc9db276c4359726a33b51284835b23b"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.4372413,
+      "label": "complete-candidate-leaves",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435430,
+      "pid": 1435430,
+      "startedAt": 1795798676.372899,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-073-complete-candidate-leaves.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 2979493,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-073-complete-candidate-leaves.stdout",
+        "sha256": "95ef3161769cac3f681ef495aa039c3772d46a2a78f99acccdfab012c3825434"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "diff",
+        "--name-status",
+        "--no-renames",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0",
+        "89485be6fc9db276c4359726a33b51284835b23b"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.515083,
+      "label": "exact54-path-diff",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435432,
+      "pid": 1435432,
+      "startedAt": 1795798676.4977677,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-074-exact54-path-diff.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 5116,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-074-exact54-path-diff.stdout",
+        "sha256": "80f2ff03743c31dbe48a5e28e63e3e238cb173518b08f15267c5b987f61789f9"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "diff",
+        "--check",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0",
+        "89485be6fc9db276c4359726a33b51284835b23b"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.5824387,
+      "label": "ordinary-whole-diff-check",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435434,
+      "pid": 1435434,
+      "startedAt": 1795798676.5181472,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-075-ordinary-whole-diff-check.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-075-ordinary-whole-diff-check.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "diff",
+        "--check",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0",
+        "89485be6fc9db276c4359726a33b51284835b23b",
+        "--",
+        "AI_HLY/Downstream/MCP/Runtime/MCPClientSession.swift",
+        "AI_HLY/Downstream/RuntimeCore/Node/Host/miniapp-authoring.mjs",
+        "AI_HLYTests/ChatCanonicalPresentationSurvivalTests.swift",
+        "Packages/HanlinAgentSDK/Sources/HanlinAgentCore/HanlinHostSchemaValidation.swift",
+        "Packages/HanlinAgentSDK/Tests/HanlinAgentCoreTests/HostMCPWireComparisonTests.swift",
+        "Packages/HanlinPresentationSDK/Sources/HanlinAgentActivityCore/Presentation/AgentActivityTitleBuilder.swift",
+        "Scripts/MiniApps/stage-sdk.mjs"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.6177135,
+      "label": "actual-seven-source-diff-check",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435436,
+      "pid": 1435436,
+      "startedAt": 1795798676.5855322,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-076-actual-seven-source-diff-check.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-076-actual-seven-source-diff-check.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "ls-tree",
+        "-r",
+        "-l",
+        "-z",
+        "89485be6fc9db276c4359726a33b51284835b23b",
+        "--",
+        "Packages/HanlinAgentSDK",
+        "Packages/HanlinPlatform",
+        "Packages/HanlinPresentationSDK",
+        "Packages/HanlinMiniAppsBridge"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.6856806,
+      "label": "exact1011-package-byte-inventory",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435438,
+      "pid": 1435438,
+      "startedAt": 1795798676.6206577,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-077-exact1011-package-byte-inventory.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 164555,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-077-exact1011-package-byte-inventory.stdout",
+        "sha256": "ce82b072db824b0fbd4cdbab19a745c46349f53ee06874e23355c9c0c5058125"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "89485be6fc9db276c4359726a33b51284835b23b:.github"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.7297416,
+      "label": "protected-candidate-77",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435464,
+      "pid": 1435464,
+      "startedAt": 1795798676.6933203,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-078-protected-candidate-77.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-078-protected-candidate-77.stdout",
+        "sha256": "32961cae28c885121192c92bf3f783f55f625abfbab128ae10690289b2d15833"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "89485be6fc9db276c4359726a33b51284835b23b:Packages/HanlinAgentSDK/Vendor/Swift-JSON"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.7704186,
+      "label": "protected-candidate-78",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435471,
+      "pid": 1435471,
+      "startedAt": 1795798676.7329285,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-079-protected-candidate-78.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-079-protected-candidate-78.stdout",
+        "sha256": "35c87d7998b9c5f561fce91e58d43e3430c313cc52cba5761db0537b1e67b53a"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "89485be6fc9db276c4359726a33b51284835b23b:Packages/HanlinAppExtensionsSDK"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.7924488,
+      "label": "protected-candidate-79",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435478,
+      "pid": 1435478,
+      "startedAt": 1795798676.774399,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-080-protected-candidate-79.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-080-protected-candidate-79.stdout",
+        "sha256": "720e758ef8a0edf73f11265803999e71d3b651290fbf8beff02d927bc22f9d10"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "89485be6fc9db276c4359726a33b51284835b23b:Packages/HanlinMiniAppsBridge"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.8346412,
+      "label": "protected-candidate-80",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435480,
+      "pid": 1435480,
+      "startedAt": 1795798676.8006284,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-081-protected-candidate-80.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-081-protected-candidate-80.stdout",
+        "sha256": "72639978fffbd5de06ea76b2c1a1ee21981143035f554b14a84fb63ffec7fa29"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "89485be6fc9db276c4359726a33b51284835b23b:Packages/HanlinNativeScriptRuntime"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.870299,
+      "label": "protected-candidate-81",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435482,
+      "pid": 1435482,
+      "startedAt": 1795798676.8377323,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-082-protected-candidate-81.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-082-protected-candidate-81.stdout",
+        "sha256": "b312f292cbdb798d8e60f2fac5ea5bd717176450a94da13121f0b38970292fc4"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "89485be6fc9db276c4359726a33b51284835b23b:Packages/HanlinPlatform"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.9122026,
+      "label": "protected-candidate-82",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435484,
+      "pid": 1435484,
+      "startedAt": 1795798676.878626,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-083-protected-candidate-82.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-083-protected-candidate-82.stdout",
+        "sha256": "90988ff29454ef99eba1e8eaa2833bede75b9ca6f7f461a836b066e7597ad194"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "89485be6fc9db276c4359726a33b51284835b23b:Packages/HanlinAgentSDK"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.9298549,
+      "label": "package-root-83",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435486,
+      "pid": 1435486,
+      "startedAt": 1795798676.915772,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-084-package-root-83.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-084-package-root-83.stdout",
+        "sha256": "19c9f4c19b2766afd86e13d5b8c217d7551c9f818014541b69528bd3a8a2a2c3"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "89485be6fc9db276c4359726a33b51284835b23b:Packages/HanlinPlatform"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.9494593,
+      "label": "package-root-84",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435488,
+      "pid": 1435488,
+      "startedAt": 1795798676.933056,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-085-package-root-84.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-085-package-root-84.stdout",
+        "sha256": "90988ff29454ef99eba1e8eaa2833bede75b9ca6f7f461a836b066e7597ad194"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "89485be6fc9db276c4359726a33b51284835b23b:Packages/HanlinPresentationSDK"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.9684465,
+      "label": "package-root-85",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435490,
+      "pid": 1435490,
+      "startedAt": 1795798676.9524002,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-086-package-root-85.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-086-package-root-85.stdout",
+        "sha256": "a889dd4f3075405a90505c18787d4691d7d63bbaf72db8250fd79736fe20dd97"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "89485be6fc9db276c4359726a33b51284835b23b:Packages/HanlinMiniAppsBridge"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798676.987304,
+      "label": "package-root-86",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435492,
+      "pid": 1435492,
+      "startedAt": 1795798676.9712746,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-087-package-root-86.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-087-package-root-86.stdout",
+        "sha256": "72639978fffbd5de06ea76b2c1a1ee21981143035f554b14a84fb63ffec7fa29"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/hanlin-pinkha-original-sdk-union-20261127",
+        "rev-parse",
+        "HEAD",
+        "HEAD^{tree}"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798677.0069423,
+      "label": "source-precommit-head",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435494,
+      "pid": 1435494,
+      "startedAt": 1795798676.9905825,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-088-source-precommit-head.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 82,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-088-source-precommit-head.stdout",
+        "sha256": "c5459ea64bb089c2ba0ddb0c5e4dc60f0dc681a1a4001b4ea73912f8d22eb4f1"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/hanlin-pinkha-original-sdk-union-20261127",
+        "status",
+        "--porcelain=v1",
+        "-z",
+        "--untracked-files=all"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798677.1246796,
+      "label": "source-precommit-status",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435496,
+      "pid": 1435496,
+      "startedAt": 1795798677.010111,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-089-source-precommit-status.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-089-source-precommit-status.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/hanlin-pinkha-original-sdk-union-20261127",
+        "rev-parse",
+        "--path-format=absolute",
+        "--git-path",
+        "index",
+        "--git-path",
+        "info/sparse-checkout",
+        "--git-path",
+        "HEAD"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798677.143795,
+      "label": "source-precommit-admin-paths",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435518,
+      "pid": 1435518,
+      "startedAt": 1795798677.1274676,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-090-source-precommit-admin-paths.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 344,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-090-source-precommit-admin-paths.stdout",
+        "sha256": "053021bf6f95fa27345ce872e3ba23bfb3b30e39be9989029321bd8423bb215a"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "for-each-ref",
+        "--format=%(refname) %(objectname)"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798677.1663709,
+      "label": "refs-precommit",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435520,
+      "pid": 1435520,
+      "startedAt": 1795798677.1503384,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-091-refs-precommit.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 93660,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-091-refs-precommit.stdout",
+        "sha256": "93720580e563a4247e4d2faae2ecc51770d46966e58229745d555ae1f0f96fd2"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "commit-tree",
+        "89485be6fc9db276c4359726a33b51284835b23b",
+        "-p",
+        "5fffe60fbcec8b12ae2cc14bcb092884677f19b0",
+        "-F",
+        "-"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798677.1886873,
+      "label": "create-sole-parent-source-commit",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435522,
+      "pid": 1435522,
+      "startedAt": 1795798677.1704588,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-092-create-sole-parent-source-commit.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdin": {
+        "bytes": 794,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-092-create-sole-parent-source-commit.stdin",
+        "sha256": "375587d47d71149eca7e6f33383a5ad2b90b7458e86c610aec6e3e780c7762f0"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-092-create-sole-parent-source-commit.stdout",
+        "sha256": "0a9e5403d711884966815febb39103e99048cee1f0fbe49ce3a2abdd65c7de54"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-list",
+        "--parents",
+        "-n",
+        "1",
+        "c0b118f4de28e6ca1e71219237d1ae1c7fabefd8"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798677.2077436,
+      "label": "created-commit-readback",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435524,
+      "pid": 1435524,
+      "startedAt": 1795798677.1913257,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-093-created-commit-readback.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 82,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-093-created-commit-readback.stdout",
+        "sha256": "da2d444b27b3eae1c277858be92a2e504f6c9b4066d0774bfe4d3bcdb5a987cb"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "rev-parse",
+        "c0b118f4de28e6ca1e71219237d1ae1c7fabefd8^{tree}"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798677.2280533,
+      "label": "created-tree-readback",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435531,
+      "pid": 1435531,
+      "startedAt": 1795798677.2110116,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-094-created-tree-readback.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 41,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-094-created-tree-readback.stdout",
+        "sha256": "0f1edb1d071ae07e348d9d6bfecb273d85872e2ed1adddd5f8a749e0f3ef4e5e"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "-c",
+        "remote.origin.mirror=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "ls-remote",
+        "--heads",
+        "origin",
+        "refs/heads/codex/pinkha-sdk-native-follow-binding-20261127",
+        "refs/heads/codex/pinkha-sdk-mcp-title-window-20261127"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798677.704489,
+      "label": "remote-before-new-ref",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435536,
+      "pid": 1435536,
+      "startedAt": 1795798677.2334611,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-095-remote-before-new-ref.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 100,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-095-remote-before-new-ref.stdout",
+        "sha256": "fbb4027a07d6f99a069ad11a1980bdb0aff9a13d820bb072a0d5fceec1806e1f"
+      },
+      "timeoutSeconds": 45
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "update-ref",
+        "refs/heads/codex/pinkha-sdk-mcp-title-window-20261127",
+        "c0b118f4de28e6ca1e71219237d1ae1c7fabefd8",
+        "0000000000000000000000000000000000000000"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798677.733605,
+      "label": "create-exclusive-new-local-ref",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435596,
+      "pid": 1435596,
+      "startedAt": 1795798677.7150176,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-096-create-exclusive-new-local-ref.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-096-create-exclusive-new-local-ref.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "for-each-ref",
+        "--format=%(refname) %(objectname)"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798677.7713652,
+      "label": "new-local-ref-readback",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435609,
+      "pid": 1435609,
+      "startedAt": 1795798677.7369275,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-097-new-local-ref-readback.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 93755,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-097-new-local-ref-readback.stdout",
+        "sha256": "aa0a89f149e052a126804962cf4153ee14fa9bc1b8cfc631f5e62f454122e6eb"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "-c",
+        "remote.origin.mirror=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "push",
+        "--porcelain",
+        "--no-follow-tags",
+        "origin",
+        "c0b118f4de28e6ca1e71219237d1ae1c7fabefd8:refs/heads/codex/pinkha-sdk-mcp-title-window-20261127"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798681.8598878,
+      "label": "normal-new-ref-push",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435613,
+      "pid": 1435613,
+      "startedAt": 1795798677.7762432,
+      "stderr": {
+        "bytes": 244,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-098-normal-new-ref-push.stderr",
+        "sha256": "a0f106dadcf0079536c8cc60cec4ca3b2a2f39dbf283d542103a70f7d0ea5a1d"
+      },
+      "stdout": {
+        "bytes": 165,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-098-normal-new-ref-push.stdout",
+        "sha256": "df810cb64d465174f1fa3389c49be05ef9f9583aeb86a25f5125a4876ed074fc"
+      },
+      "timeoutSeconds": 90
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "-c",
+        "remote.origin.mirror=false",
+        "-c",
+        "credential.helper=!gh auth git-credential",
+        "ls-remote",
+        "--heads",
+        "origin",
+        "refs/heads/codex/pinkha-sdk-native-follow-binding-20261127",
+        "refs/heads/codex/pinkha-sdk-mcp-title-window-20261127"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798682.335787,
+      "label": "remote-exact-readback",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435838,
+      "pid": 1435838,
+      "startedAt": 1795798681.865123,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-099-remote-exact-readback.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 195,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-099-remote-exact-readback.stdout",
+        "sha256": "bedfde0972a70c57c1f1004672742cca186deef2c9424536aa753ca412b758f9"
+      },
+      "timeoutSeconds": 45
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "for-each-ref",
+        "--format=%(refname) %(objectname)"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798682.3547392,
+      "label": "final-local-refs",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435870,
+      "pid": 1435870,
+      "startedAt": 1795798682.338757,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-100-final-local-refs.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 93755,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-100-final-local-refs.stdout",
+        "sha256": "aa0a89f149e052a126804962cf4153ee14fa9bc1b8cfc631f5e62f454122e6eb"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/hanlin-pinkha-original-sdk-union-20261127",
+        "rev-parse",
+        "HEAD",
+        "HEAD^{tree}"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798682.3751683,
+      "label": "source-final-head",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435872,
+      "pid": 1435872,
+      "startedAt": 1795798682.3591013,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-101-source-final-head.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 82,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-101-source-final-head.stdout",
+        "sha256": "c5459ea64bb089c2ba0ddb0c5e4dc60f0dc681a1a4001b4ea73912f8d22eb4f1"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/hanlin-pinkha-original-sdk-union-20261127",
+        "status",
+        "--porcelain=v1",
+        "-z",
+        "--untracked-files=all"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798682.4434676,
+      "label": "source-final-status",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435875,
+      "pid": 1435875,
+      "startedAt": 1795798682.3779807,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-102-source-final-status.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-102-source-final-status.stdout",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "timeoutSeconds": 25
+    },
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "chatgpt-agent",
+        "env",
+        "GIT_TERMINAL_PROMPT=0",
+        "GIT_OPTIONAL_LOCKS=0",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "git",
+        "--no-optional-locks",
+        "--no-replace-objects",
+        "-c",
+        "gc.auto=0",
+        "-C",
+        "/mnt/development/projects/worktrees/hanlin-pinkha-original-sdk-union-20261127",
+        "rev-parse",
+        "--path-format=absolute",
+        "--git-path",
+        "index",
+        "--git-path",
+        "info/sparse-checkout",
+        "--git-path",
+        "HEAD"
+      ],
+      "cleanupSignals": [],
+      "exitCode": 0,
+      "finishedAt": 1795798682.4627323,
+      "label": "source-final-admin-paths",
+      "originalGroupAbsentAfterLeader": true,
+      "originalProcessGroupAbsent": true,
+      "pgid": 1435905,
+      "pid": 1435905,
+      "startedAt": 1795798682.4465055,
+      "stderr": {
+        "bytes": 0,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-103-source-final-admin-paths.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 344,
+        "path": "/mnt/development/projects/evidence/pinkha-root-sdk-mcp-title-window-publication-20261127/command-103-source-final-admin-paths.stdout",
+        "sha256": "053021bf6f95fa27345ce872e3ba23bfb3b30e39be9989029321bd8423bb215a"
+      },
+      "timeoutSeconds": 25
+    }
+  ],
+  "compilerInvocations": 0,
+  "controllerSHA256": "3e9267b716d80bfa139972d5fb1b2bab54ac21453a61bf2cc189d9cd6ff343a2",
+  "expectedTree": "89485be6fc9db276c4359726a33b51284835b23b",
+  "files": {
+    "AI_HLY/Downstream/MCP/Runtime/MCPClientSession.swift": {
+      "after": {
+        "bytes": 7251,
+        "gitBlob": "3c24eb83459673eea7a5df2a47d81f3bd538fde8",
+        "mode": "100644",
+        "sha256": "3b331e200237598147def7fed0875b3b5ae62a5581ba85da09a4d6c4b058fc13"
+      },
+      "beforeGitBlob": "097cabdf4b33890a8c94d65f6f541b6e8760d7ef",
+      "status": "M"
+    },
+    "AI_HLY/Downstream/RuntimeCore/Node/Host/miniapp-authoring.mjs": {
+      "after": {
+        "bytes": 66879,
+        "gitBlob": "b7f39bb5a702c85949b042f6c96ff06221f71ec9",
+        "mode": "100644",
+        "sha256": "06fbe72f889da3befe00c2dfe9b286f062decd59a50c1df9c961df3bcb46b745"
+      },
+      "beforeGitBlob": "fb2057587517d1a1ad444a245f75b802f1cbd108",
+      "status": "M"
+    },
+    "AI_HLYTests/ChatCanonicalPresentationSurvivalTests.swift": {
+      "after": {
+        "bytes": 18257,
+        "gitBlob": "e7e88142af68c11a43bd6af1e07903c1a31778c3",
+        "mode": "100644",
+        "sha256": "4b1a651c7acf911b23ddd6056fdddd06f5e552eaf41e026f9723237dc3b5bcb6"
+      },
+      "beforeGitBlob": "42bfcc5f720dc6e24334e27ef5bf77b2049cb1c3",
+      "status": "M"
+    },
+    "Packages/HanlinAgentSDK/Sources/HanlinAgentCore/HanlinHostSchemaValidation.swift": {
+      "after": {
+        "bytes": 12292,
+        "gitBlob": "7ddbfa20d5fb7463b7885c4b4ca30d2427bd1b5b",
+        "mode": "100644",
+        "sha256": "622c7380bb066002a48bb46e6c76a6f919c41060392d891ac17c34f411b1a040"
+      },
+      "beforeGitBlob": "099e4be2b44523ef0cad4635be519be3fde10414",
+      "status": "M"
+    },
+    "Packages/HanlinAgentSDK/Tests/HanlinAgentCoreTests/HostMCPWireComparisonTests.swift": {
+      "after": {
+        "bytes": 9813,
+        "gitBlob": "5d5965f3e718499215b7333444d47c8ba6d44d4c",
+        "mode": "100644",
+        "sha256": "bbcae5565bdcbc7eba72c7d5c272eac5227af9106f00c50589901013f22830c7"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "Packages/HanlinPresentationSDK/Sources/HanlinAgentActivityCore/Presentation/AgentActivityTitleBuilder.swift": {
+      "after": {
+        "bytes": 4935,
+        "gitBlob": "0b4668f652e5c75373fccaed49795cc338534c2b",
+        "mode": "100644",
+        "sha256": "ad7094967bad20ff7a703dc233df2d3b4222b9777f3749caeeeca91ec983956e"
+      },
+      "beforeGitBlob": "d3445bf15024b19728f1ba2686e06d6730d62cff",
+      "status": "M"
+    },
+    "Scripts/MiniApps/stage-sdk.mjs": {
+      "after": {
+        "bytes": 27535,
+        "gitBlob": "98882a8ce4fe6e5eb2208897e0c1f962826da2be",
+        "mode": "100644",
+        "sha256": "60b6b9496330d4605f60f56587170b06c7eced31a6b3d79ef04aa8faa548022c"
+      },
+      "beforeGitBlob": "5376d912d8d39b38481d6f4eada7e3fe492c6d77",
+      "status": "M"
+    },
+    "docs/two-wave-integration/20261127/failed-terminal-activity-title/README.md": {
+      "after": {
+        "bytes": 1403,
+        "gitBlob": "20dee079c523610639664979d309c26f4b249885",
+        "mode": "100644",
+        "sha256": "e49b3bdc6b1b0b8a378c14b857a60ddc6716a55edfba11d518aeb8982677eb27"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/failed-terminal-activity-title/independent-w2-source-review.json": {
+      "after": {
+        "bytes": 1862,
+        "gitBlob": "4e5ba5f85f99c7267e46d2ef2392a3512cd740d6",
+        "mode": "100644",
+        "sha256": "4ccfa6258a41ccefa2de54eb0c27e551fd54939ecf19a76e742e9e5b47c13ad2"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/failed-terminal-activity-title/sdk-input-impact.json": {
+      "after": {
+        "bytes": 456,
+        "gitBlob": "fd54bc614d4dad0975b45302c9d5dc5c595a89fb",
+        "mode": "100644",
+        "sha256": "b5e69893fcd1fd4964915a555097d2ca826836d4f9e591a4da34dfcefc9e1054"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/failed-terminal-activity-title/source-validation.json": {
+      "after": {
+        "bytes": 1541,
+        "gitBlob": "2e97665158492877a9c1641053b087c208ad2ad9",
+        "mode": "100644",
+        "sha256": "493c4e3b7ad8584129a5d0d1bf35ec03ca8ae12a3a02ef1e684e7f44fd69e8dc"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/mcp-exact-wire/COST_DERIVATION.md": {
+      "after": {
+        "bytes": 8020,
+        "gitBlob": "0d444e51cd21aaa97075d1573c2707aff0043cd2",
+        "mode": "100644",
+        "sha256": "11fdd79a2f226a2e883414dcfc846e37d4dee2a3c0532580fac8f8563e4d3262"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/mcp-exact-wire/base-and-sdk-identity.json": {
+      "after": {
+        "bytes": 1000,
+        "gitBlob": "58d6b444f88bf7b18e662d6de23732f27c2e6a35",
+        "mode": "100644",
+        "sha256": "77d45dd9dbe9fa2dfcbb6106930d566cfa005760be8540a695dd8492d7f7e3e6"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/mcp-exact-wire/independent-w1-source-review.json": {
+      "after": {
+        "bytes": 3221,
+        "gitBlob": "0b21597eba512ab4748de9d8dd1119784cfa3cd6",
+        "mode": "100644",
+        "sha256": "965397b9f11667a10c2d7aeae80e534c992b202ae35ff8411cb57c45b0353fe1"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/mcp-exact-wire/pinned-source-costs.json": {
+      "after": {
+        "bytes": 2607,
+        "gitBlob": "619a11cabafdfa564e9812536e665c3d21c45052",
+        "mode": "100644",
+        "sha256": "c86de832d9733714d3af463f1f00a319d5a7933c9d02ebb6e807a6fb60855d14"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/mcp-exact-wire/portable-policy-checks.json": {
+      "after": {
+        "bytes": 3856,
+        "gitBlob": "4759f3b1087f444f250ccb5e1be445113ecd0f45",
+        "mode": "100644",
+        "sha256": "faac6181c75f5d9a24b38b928032caf096d4cd7ed4add44c3b8fbfdf45254252"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/mcp-exact-wire/root-source-review.json": {
+      "after": {
+        "bytes": 692,
+        "gitBlob": "b59d85bb8e36206c9b3aa5bf9c6db686888c79fc",
+        "mode": "100644",
+        "sha256": "042967ac4dcf3ce326ec4afa1c0eb0b81da6d48903020c0b01376d0bebd63ec1"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/mcp-exact-wire/source-validation.json": {
+      "after": {
+        "bytes": 3226,
+        "gitBlob": "97da8989b84ebb437f90d23d7de9bfcd5ce98ba2",
+        "mode": "100644",
+        "sha256": "a48cba425e4ccac2b67db28d39357da69aeade2bb4fdb4c9ba6109761c142817"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/mcp-exact-wire/source.json": {
+      "after": {
+        "bytes": 2263,
+        "gitBlob": "6af3c27d7047964f22b1c680792f63e3f1e88db3",
+        "mode": "100644",
+        "sha256": "97a2cae05c24d7024ca9d61c4086e8401fa2f8dd1c435b802cc06898303dc094"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/nativescript-window-factory-sdk/README.md": {
+      "after": {
+        "bytes": 1590,
+        "gitBlob": "98a08fc880d4a2bee4ab6ad109f1b2f2d1493cf6",
+        "mode": "100644",
+        "sha256": "0afddc15cf859f1b8bceb071a88320ceeb25b5bd78876ddeaf0fe997e06459ef"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/nativescript-window-factory-sdk/independent-mac-source-review.json": {
+      "after": {
+        "bytes": 4426,
+        "gitBlob": "7243fdd6a71adfb40e9b7541583e24860a4a94ec",
+        "mode": "100644",
+        "sha256": "ba2f397a8b44aed6ec2290fae258ae625a2d149f590973e12744e1b64408cc7e"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/nativescript-window-factory-sdk/sdk-input-impact.json": {
+      "after": {
+        "bytes": 902,
+        "gitBlob": "e195e0880d2f2dd68ef6c18f4e92d12a77b3241e",
+        "mode": "100644",
+        "sha256": "8e9db050b03a080353eb8b9e12f23270cb00ce4d9f4c6010d6e94adebb2117ec"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/nativescript-window-factory-sdk/source.json": {
+      "after": {
+        "bytes": 1242,
+        "gitBlob": "43682267484e5620a5f970c1a9ba5315c4951552",
+        "mode": "100644",
+        "sha256": "02e13ddbd1b3858c4680d4342b4b0ddd1a84a9859a69f44139689bd6b2dfd095"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/actual5fff-publication/controller-full-inverse.json": {
+      "after": {
+        "bytes": 132696,
+        "gitBlob": "3cb6aa382b9b8af6d4c0354f4d737f14d2b85193",
+        "mode": "100644",
+        "sha256": "5907ed360e8021f031a909051e492e1236eaad33226ffeb81fc953125a26b3d2"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/actual5fff-publication/handoff.json": {
+      "after": {
+        "bytes": 4680,
+        "gitBlob": "a3dfe0b2a19d247f1957b8fa9b1d2f22ec8f1eac",
+        "mode": "100644",
+        "sha256": "ce9341bf542a328e920da57f81667dbb9b880bf25c501404e2af630eb35042d9"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/actual5fff-publication/integration.original.json": {
+      "after": {
+        "bytes": 179072,
+        "gitBlob": "b3b7b73bfa8a71ed4da42cc3645750c2d27a3d72",
+        "mode": "100644",
+        "sha256": "5c1c9a5de6632945f0ff7d85fa7723f17b4eb66e4360cea4d46405a8ea676bc9"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/actual5fff-publication/payload.json": {
+      "after": {
+        "bytes": 2500802,
+        "gitBlob": "9cc12c4710320727a2e4f542e290d9ea3ad09908",
+        "mode": "100644",
+        "sha256": "bf3abf99798e11ed06d3189d5fda105839400d03b39fda5169e358a2cd4d9bd5"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/actual5fff-publication/publish_once.py": {
+      "after": {
+        "bytes": 35913,
+        "gitBlob": "318ea8aa8a88b0e1992d28705ab135c18449a88a",
+        "mode": "100644",
+        "sha256": "e03bf9046ed18e4a72958c7067666dc600534fd9c707ed909ef501b408408a13"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/actual5fff-publication/source-files.json": {
+      "after": {
+        "bytes": 19424,
+        "gitBlob": "f82904ec462385e62823a1b0ae17af726b5c91e7",
+        "mode": "100644",
+        "sha256": "c368afa4961f9378b4baddeae740751c809acf8b7c66f731a7becad93173cc02"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/all-prior47-source-evidence-preserved.json": {
+      "after": {
+        "bytes": 15785,
+        "gitBlob": "9a6e1d557dcf3bbea9902bb47d31f178a17567ba",
+        "mode": "100644",
+        "sha256": "8b37536552a43f1085123b2d5a16bad6b61f6bd5fd7177e4b46edcfb454c1c94"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/complete-four-package-projection.json": {
+      "after": {
+        "bytes": 210182,
+        "gitBlob": "46d432a7645f30ce9ae971e626cf55e94fcca750",
+        "mode": "100644",
+        "sha256": "1e1caa977c24cf6f727a03a4d202f8eb9762066b6bd6562644794b0b45cf7fd1"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/independent-review/handoff.json": {
+      "after": {
+        "bytes": 2331,
+        "gitBlob": "7b33fd32c21ec7d68913ed54e361902ccb23a9e2",
+        "mode": "100644",
+        "sha256": "302b0a26167aeacc3b15506523b10ea83736a888758441ea02cd623b80bed5e7"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/independent-review/independent-source-review.json": {
+      "after": {
+        "bytes": 15574,
+        "gitBlob": "580bd6bc09d663f80ebcbbe533f7fe834c77e828",
+        "mode": "100644",
+        "sha256": "28573bb41363374a1d9f654752af6d6a09a6cc29ba0761f05b3654d0a3228b40"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/independent-review/ordinary-complete-diff-check.json": {
+      "after": {
+        "bytes": 489,
+        "gitBlob": "42408488ec9f5c44b968d931f192bbfb6f172b23",
+        "mode": "100644",
+        "sha256": "4994d00cffd97487448ab884860fcdf28d50d33032cbac98905e60deb8e454b7"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/independent-review/ordinary-diff-checks.json": {
+      "after": {
+        "bytes": 12626,
+        "gitBlob": "52726093e8c3248a776ebd50742ef22646fa0b6a",
+        "mode": "100644",
+        "sha256": "e13fd14cb56be47eb7586c49aeb59f131eda32af52125ab02185f45259b1b0e9"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/independent-review/source-diffs.lossless.json": {
+      "after": {
+        "bytes": 73519,
+        "gitBlob": "9a839714c079ce8c63b998a3db371f5692a96f74",
+        "mode": "100644",
+        "sha256": "93538fe9b30d2652b320ee57b6e95463f838c4e0f4b090ca70ed1a9eb4e8118b"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/independent-review/source-inputs.json": {
+      "after": {
+        "bytes": 263303,
+        "gitBlob": "0d07e8ad900a7ecf96233726244fc65728b07730",
+        "mode": "100644",
+        "sha256": "1515118b70f7a323845a35767cbdcb191d6d74fbff648071200f5f2018712ee9"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/independent-review/source-inverses.json": {
+      "after": {
+        "bytes": 20445,
+        "gitBlob": "9b9ebf953d144911b3ff963843e23667e9729e74",
+        "mode": "100644",
+        "sha256": "6085c25804ee0ab42502cd452f633cad32fab5b68117bc095360c494add74896"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/independent-review/whole-tree-preservation.json": {
+      "after": {
+        "bytes": 650589,
+        "gitBlob": "9456976e0aa9910b4cd4a42396c19bdfc8f12aab",
+        "mode": "100644",
+        "sha256": "a86f50c2226eb5dae2e5a61f7d19eebabc2623835e8a952b6e929103d9f140ad"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/base5fff-four-package-tree.json": {
+      "after": {
+        "bytes": 218019,
+        "gitBlob": "5fdf8d9c3a937ae95cba6574997ff30fb23f7f08",
+        "mode": "100644",
+        "sha256": "36225e8e3c768ce9a4fd8aa0aa06526ec7e1bb9bc5eb2a010ff9518775fbe8fb"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/commit-583620ff16205eaf79e31fe178b0e8f11fe404d4.json": {
+      "after": {
+        "bytes": 12543,
+        "gitBlob": "7e44eb4c9c251d73acb5b9b94532ce2ecef99ce2",
+        "mode": "100644",
+        "sha256": "e46948da5e47bc167450a3c174739df4fa7c31a32742c91b7928d089f6435dc9"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/commit-5b25ba653df0f4c1bc0d678d9fb6d8a90f651898.json": {
+      "after": {
+        "bytes": 8122,
+        "gitBlob": "f91c7a68c1cb0ac37acba6df7fa06441c858d0a7",
+        "mode": "100644",
+        "sha256": "7033d1e485a083c33d4ef10ff040923e9b873bd5a69917ad1b4a5fe73dd631db"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/commit-5b66a4911e2354968575f7ca46d178c26f8b6540.json": {
+      "after": {
+        "bytes": 15314,
+        "gitBlob": "3ed3009f55a18b3bce713d204da7d7078300b212",
+        "mode": "100644",
+        "sha256": "c3847a0ba64300665e00594753d450f77b650c72264207f86ad08f0323f2f148"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/commit-764ed325b3b3bbf1be4ce471b3a7574db2c44bc7.json": {
+      "after": {
+        "bytes": 55486,
+        "gitBlob": "cfd9b71dbe77a2af047079c65f41ffb9ad166f8b",
+        "mode": "100644",
+        "sha256": "745ff66e01f5b9fe6968a6259e263ab57660f2cd20e4f0d89e98be6df11249eb"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/commit-b1cab938d08af6eb3a544192699797bbbe70ca99.json": {
+      "after": {
+        "bytes": 12276,
+        "gitBlob": "c96b72b427d771e4a0023456f1a20a0da631b533",
+        "mode": "100644",
+        "sha256": "08d8bc46f087a3e1cca4ca7ac135556a9e63fb32cfb7cf8d46147efbdf8ae41f"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/dependency-source-index.json": {
+      "after": {
+        "bytes": 20022,
+        "gitBlob": "42277962a6eb1626eab30456d49633617a7a2b1b",
+        "mode": "100644",
+        "sha256": "996a3b49cd660ad4881b6d1f828a93e31671c8a955b365b1028008f46b251922"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/donor-evidence-index.json": {
+      "after": {
+        "bytes": 4553,
+        "gitBlob": "b8406ebe3dd0edfca242297027b5f4d76a9e6f16",
+        "mode": "100644",
+        "sha256": "00bfa29e2c549aeede6202dc0f5b8832d954b6f7b4e725118cbb696fb7e9afa6"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/nativescript-tree.json": {
+      "after": {
+        "bytes": 778543,
+        "gitBlob": "80499971d34dc2f4b43221528420d295b4777743",
+        "mode": "100644",
+        "sha256": "8734ff86ae7a0b7d8de850a292f729a27327664b94f8aa9b14506dabd2e56aca"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/preparation1-observed-failure.json": {
+      "after": {
+        "bytes": 1405,
+        "gitBlob": "f8bee760277e619de3fdce088a5773c5cfb73f55",
+        "mode": "100644",
+        "sha256": "56f4fd588142880246beb92f040679b346eac6eb45fd39419c9dcbd492289fac"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/primary-source-index.json": {
+      "after": {
+        "bytes": 16591,
+        "gitBlob": "8bb2c6ba557c8374a48c4017a9ebfcabc1b94430",
+        "mode": "100644",
+        "sha256": "3e055caebecdcf318689dccd6200b117928073d24b4311b5a9af85e105fc36a6"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/tree-mcp.json": {
+      "after": {
+        "bytes": 33531,
+        "gitBlob": "efbc9ca2a9f2cd760c69a68f49662aa9763babfe",
+        "mode": "100644",
+        "sha256": "94165a7d938c70d52690ccac0af77fa78d8d7453e910e658d619a7c5a6e3cf3c"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/tree-miniapps.json": {
+      "after": {
+        "bytes": 63729,
+        "gitBlob": "e056e880a9b8e93328676152e0b5db09c7a5e0d1",
+        "mode": "100644",
+        "sha256": "fce091a7e094badd52266ba9b4a6151f4fb381d8e6b3a73fdd4e7e7ba6709db4"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/primary-review/tree-runtimecore.json": {
+      "after": {
+        "bytes": 154463,
+        "gitBlob": "43090feaeca072427ae85ddc7134787e581e9125",
+        "mode": "100644",
+        "sha256": "79c22d23b97edd6edbd74449d02d5799f8a1c6d1af94bb12bf30093c94080e82"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    },
+    "docs/two-wave-integration/20261127/pinkha-mcp-title-window/root-source-intake.json": {
+      "after": {
+        "bytes": 16116,
+        "gitBlob": "03657479e86c3f64bf2f5e31a56991d907c0d402",
+        "mode": "100644",
+        "sha256": "f93eee3455fda1a633c5b4f2f73527e462473b91bb0ec1e40999b7ced0a02d5b"
+      },
+      "beforeGitBlob": null,
+      "status": "A"
+    }
+  },
+  "finishedAt": 1795798682.4783034,
+  "firstFailure": null,
+  "localNewRefCreated": true,
+  "materializations": 0,
+  "normalPushCompleted": true,
+  "normalPushReadback": "c0b118f4de28e6ca1e71219237d1ae1c7fabefd8",
+  "ordinaryDiffCheck": {
+    "classification": "ALL54_NEW_SOURCE_AND_EVIDENCE_PATHS_CLEAN",
+    "exitCode": 0
+  },
+  "originalBareConfigurationSHA256": "feb1626092bdce59501f618272c38cdb2fa8a096399683288a488ff8e286f236",
+  "originalBareHEADSHA256": "28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80",
+  "originalBareIndexBefore": {
+    "absent": true,
+    "path": "/mnt/development/projects/git-mirrors/hanlin-ai.git/index"
+  },
+  "originalGitModePreservation": [],
+  "originalSourceWorktreeBefore": {
+    "admin": {
+      "HEAD": {
+        "bytes": 57,
+        "ctime_ns": 1795759213556321103,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 6090271,
+        "mode": 33204,
+        "mtime_ns": 1795759213556321103,
+        "path": "/mnt/development/projects/git-mirrors/hanlin-ai.git/worktrees/hanlin-pinkha-original-sdk-union-20261127/HEAD",
+        "sha256": "ae5a24e09b43c5d00e8c4719cd505bd4883c290428ff7ee51db2aea79ad17777",
+        "uid": 1002
+      },
+      "index": {
+        "bytes": 3484848,
+        "ctime_ns": 1795768384927093099,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 6029417,
+        "mode": 33204,
+        "mtime_ns": 1795768384925723132,
+        "path": "/mnt/development/projects/git-mirrors/hanlin-ai.git/worktrees/hanlin-pinkha-original-sdk-union-20261127/index",
+        "sha256": "19402eee6f22f4ab7b75df004fa89437cd392c02ca33433f453cdefd857ef14b",
+        "uid": 1002
+      },
+      "sparse": {
+        "bytes": 428,
+        "ctime_ns": 1795761585908459449,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 6090456,
+        "mode": 33204,
+        "mtime_ns": 1795761585908459449,
+        "path": "/mnt/development/projects/git-mirrors/hanlin-ai.git/worktrees/hanlin-pinkha-original-sdk-union-20261127/info/sparse-checkout",
+        "sha256": "2a903e8591fabe7720217e0c89b58d4980c155932cd10e93b4925c42ee8696ed",
+        "uid": 1002
+      }
+    },
+    "head": "0ae1920d316b9592cbad0462bea96a07fd1ca351",
+    "statusBytes": 0,
+    "statusSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tree": "761851ab3909f8b419a0459a2e4739afa2776f7d"
+  },
+  "originalSourceWorktreePreserved": true,
+  "packedPayloadSHA256": "71d24955f5a9a0d0ffb94ac313d3b5aa3f15f86c1473ebc9aa1754a3f5f15d90",
+  "payloadSHA256": "cc6c62661713f6cfd0c589286eb0cdbdd066149a33235c371d0f4179a5715b13",
+  "positiveBasePublicationReceiptSHA256": "5c1c9a5de6632945f0ff7d85fa7723f17b4eb66e4360cea4d46405a8ea676bc9",
+  "productDiffCheck": {
+    "exitCode": 0,
+    "scope": "Seven exact original source paths: six modified files and one new MCP test"
+  },
+  "protectedTrees": {
+    ".github": "b961cc81df44b18062bf8297c6260c89d2ef30e0",
+    "Packages/HanlinAgentSDK/Vendor/Swift-JSON": "708bdb044c16fb962411560c704c0fd5434a3288",
+    "Packages/HanlinAppExtensionsSDK": "686aad16f099b5c75b6ef84073a0a10557281628",
+    "Packages/HanlinMiniAppsBridge": "98ef5d2b47c03f4ea98319a851abae183f500a40",
+    "Packages/HanlinNativeScriptRuntime": "14373dc81171600079e458087872d4e8ea7bbc1c",
+    "Packages/HanlinPlatform": "4c82574ed393dca14a4a99ca9ef67a3b0be58417"
+  },
+  "ref": "refs/heads/codex/pinkha-sdk-mcp-title-window-20261127",
+  "resourceBeforeNormalPush": {
+    "development": {
+      "floorBytes": 536870912,
+      "freeBytes": 12829200384,
+      "growthAllowanceBytes": 67108864
+    },
+    "memoryAvailableBytes": 4434939904,
+    "root": {
+      "floorBytes": 2147483648,
+      "freeBytes": 2581037056,
+      "growthAllowanceBytes": 16777216
+    }
+  },
+  "resourceBeforeObjectWrites": {
+    "development": {
+      "floorBytes": 536870912,
+      "freeBytes": 12840374272,
+      "growthAllowanceBytes": 67108864
+    },
+    "memoryAvailableBytes": 4468944896,
+    "root": {
+      "floorBytes": 2147483648,
+      "freeBytes": 2584580096,
+      "growthAllowanceBytes": 16777216
+    }
+  },
+  "resourcesBefore": {
+    "development": {
+      "floorBytes": 536870912,
+      "freeBytes": 12843884544,
+      "growthAllowanceBytes": 67108864
+    },
+    "memoryAvailableBytes": 4455292928,
+    "root": {
+      "floorBytes": 2147483648,
+      "freeBytes": 2584596480,
+      "growthAllowanceBytes": 16777216
+    }
+  },
+  "schema": "pinkha-root-mcp-title-window-new-ref-publication/v1",
+  "scope": "Source-only seven-source/47-evidence new-ref publication: six modified originals and one new MCP test. Four-package source1011; original NativeScript runtime and handler unchanged. All new Swift/native/ABI/authoring producer qualification remains NOT_RUN; all prior failures retain their original scope.",
+  "sourcePreflight": {
+    "added": 48,
+    "candidatePackages": 1011,
+    "fullBaseLeaves": 17975,
+    "modified": 6,
+    "originalPackages": 1010,
+    "provenanceHashChanges": 0,
+    "provenanceRows": 227
+  },
+  "startedAt": 1795798673.637505,
+  "state": "PASS_SOURCE_ONLY_NEW_REF_PUBLISHED",
+  "testsExecuted": 0,
+  "workflowDispatches": 0
+}

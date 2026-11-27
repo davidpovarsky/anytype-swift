@@ -1,0 +1,187 @@
+{
+  "schema": "pinkha-original-selection-auth-authority-map-prerequisites/v2",
+  "state": "UNBOUND_ROOT_INTAKE_INSTRUCTIONS_NOT_APPLIED",
+  "base133Map": {
+    "bytes": 230961,
+    "sha256": "20bbd947621a03113ab84e82abb70b39482bc03d135876e1629bb4cccacad4db",
+    "gitBlob": "7af401f80cf9bc138da0b151821ee9d17ba73ebf",
+    "gitMode": "100644"
+  },
+  "actualRootHead": null,
+  "updates": [
+    {
+      "index": 15,
+      "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "beforeRow": {
+        "kind": "refactor",
+        "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+        "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+        "baselineBlob": "d3820631ef1b344babf116ca8766e7c0dcf853df",
+        "replacementBlob": "10bfbd82afdd6986da3d1940915bc6c8995a8cdc",
+        "reason": "Retain the original Hanlin account decorator and simulator postflight hook. Add independent Heart sharing owner drain before account transitions and reopen only after the original account operation succeeds. The Any engine has a separate existing workspace lease; no Heart logout is used to switch engines. Add the unified host pre-native account-change drain in all eight mutating auth entry points. Preserve original account serialization, sharing/Hanlin ownership and native auth; a capture close failure prevents transfer. Acquire and drain an independently owned shared MiniApps admission hold before native auth; retain native outcome, original serialization and replay journal, then release only that transition hold. Revoked callbacks and result ACK are refused.",
+        "sharedSources": [
+          {
+            "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaMiniAppsLifetime.swift",
+            "gitBlob": "3999b9edb63eef26264cc643f41686b8c76540c9"
+          }
+        ],
+        "validation": [
+          "Original implementation and additive adapter/lifetime changes reviewed; source map is not a semantic or UI acceptance proof.",
+          "See docs/validation/20261125-t2-shared-permissions for 4 shared controls, 3 actual HTTP controls, the actual Apple SwiftUI package compile, and explicit remaining adapter/native/UI acceptance.",
+          "2026-11-25 final integration: reviewed additive original-source diff, shared UI extraction and exact replacement blobs. Five Swift grammar checks and original 32 owner configuration hashes pass; native app, current MiniApps five methods and genuine device profile grants remain required. Source retention does not establish UI/product parity.",
+          "Four actual Mac Swift6 ownership controls pass; Heart native adapter, account transition UI and final shared app acceptance remain required. See docs/validation/20261125-miniapps-operation-lifetime."
+        ]
+      },
+      "field": "replacementBlob",
+      "before": "10bfbd82afdd6986da3d1940915bc6c8995a8cdc",
+      "after": "15de50a91b793bee20db3505e6b3bd4dc46974a4",
+      "reasonAndValidationRequireAppendOnlyRegisterExplanation": true
+    },
+    {
+      "index": 63,
+      "path": "Modules/ProtobufMessages/Sources/Invocation.swift",
+      "beforeRow": {
+        "kind": "refactor",
+        "from": "Modules/ProtobufMessages/Sources/Invocation.swift",
+        "to": "Modules/ProtobufMessages/Sources/Invocation.swift",
+        "baselineBlob": "75147606621653a013e2995570b22fd93cd29e2d",
+        "replacementBlob": "d71dca5c6ab8e7518c3c24128b2bc63860b59084",
+        "reason": "Candidate-only lifecycle observation retires verified account/Space read leases before native transitions and fences late or overlapping completions. Existing scheduling, cancellation and native invocation bodies remain unchanged.",
+        "sharedSources": [
+          {
+            "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAuthorizedOperationRead.swift",
+            "gitBlob": "c63665796d822b3eb0196e2572a500973fb3def8"
+          }
+        ],
+        "validation": [
+          "Reviewed exact candidate-only source, immutable request/typed response ownership, all generated native lifecycle callers, overlapping transition refusal and bounded byte bridge. Nine focused owner/byte controls and the actual iOS Lib journey are authored but NOT_RUN; no previous pass is relabelled and default capability remains OFF."
+        ]
+      },
+      "field": "replacementBlob",
+      "before": "d71dca5c6ab8e7518c3c24128b2bc63860b59084",
+      "after": "edc1e5ea79a2153068d80f8b7df1d7b906621e64",
+      "reasonAndValidationRequireAppendOnlyRegisterExplanation": true
+    },
+    {
+      "index": 115,
+      "path": "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "beforeRow": {
+        "kind": "refactor",
+        "from": "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+        "to": "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+        "baselineBlob": "ade7ff354296f5d627c1b3743d556a05d4ca0e1b",
+        "sharedSources": [],
+        "validation": [
+          "Root reviewed the exact previous-to-current Git delta at9c957c01. Source preservation only: immutable prior receipts retain their own source/closure. App0c5 build12 compiled before MiniApps86 integration; changed original app/Collections1.3, native410b, callback diagnostics and final UI acceptance require their own actual run. No existing assertion, capability gate or ACK is weakened. Current owner expressly authorizes integration and these fixes."
+        ],
+        "replacementBlob": "62e23f1166907ea5fbc5477e7cb14284ddbf607e",
+        "reason": " Reviewed2026-11-25 final integration: Propagate the selected private-network configuration error at original create/select boundaries; do not silently fall back to the public network."
+      },
+      "field": "replacementBlob",
+      "before": "62e23f1166907ea5fbc5477e7cb14284ddbf607e",
+      "after": "41b75d84ae99a78c8cbb8410ca414f610646039b",
+      "reasonAndValidationRequireAppendOnlyRegisterExplanation": true
+    }
+  ],
+  "appendAfterCurrentRows": [
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+      "to": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+      "baselineBlob": "a0b729b10e80067cd94466295b2296d56c4931ba",
+      "replacementBlob": "145f418680103ea26962a1ee2f8677a48f902557",
+      "sharedSources": [],
+      "reason": "Reuse original selected-Space/account/SpaceView authority and native dispatch drain; retry a failed asynchronous Bootstrap only through the exact frozen original account capture. Preserve widget-before-subscription ordering, preview and analytics. The owned original subscription clears only the inherited temporary startup dispatch binding; the public unbound-selection guard and exact subscription identity remain intact.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+      "to": "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+      "baselineBlob": "42a82dcf057e70cab678781c62590be0e946938f",
+      "replacementBlob": "8b5d3d362f2c73b248b8b5b68e6ecda9a62f09e2",
+      "sharedSources": [],
+      "reason": "Reuse the original AccountManager-owned lifetime; retire old account captures before replacement and confirm availability only after the original transition releases.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift",
+      "to": "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift",
+      "baselineBlob": "8edc79af958ed16f47a7e2dd4fe0ef394bbee17b",
+      "replacementBlob": "57e247b98ef5d8898154794a4121a6b9ff69b931",
+      "sharedSources": [],
+      "reason": "Reuse original callback-minted SpaceView authority, captured account/subscription identity, synchronous retirement and owned subscribe/stop drain.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "to": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "baselineBlob": "9ce06e356d2201e261250bd5ca07b4438a8b3517",
+      "replacementBlob": "21085b9a22f05d44ce4199005122a0a7e41e5d05",
+      "sharedSources": [],
+      "reason": "Retain the original participant/role capture types required by the unchanged original owner and their actual callback/stop lifecycle; no fabricated caller permissions.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift",
+      "to": "Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift",
+      "baselineBlob": "4d5b6095a53b108a4e72382b4281e4dc135e4beb",
+      "replacementBlob": "4f86624cc4f6c98de39811b818eadf32cf2ddf4a",
+      "sharedSources": [],
+      "reason": "Reuse the original pre-framework startup/cleanup actor with attempt-bound subscriptions and retained primary/membership tasks. Preserve standalone services and original stop sequence.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+      "to": "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+      "baselineBlob": "be38e9ba3d84f989e658c10c84c9f3fb59bac590",
+      "replacementBlob": "cdf22c38b3f647bcd83ab89af29ae4d9f5b5c317",
+      "sharedSources": [],
+      "reason": "Admit selected-Space opens only through the original concrete WorkspaceService and its unchanged native WorkspaceOpen method.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
+      "to": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
+      "baselineBlob": "865126d851cc3401b20e8eb917799230f032f414",
+      "replacementBlob": "507a5e7861e433d85362b4934d25150b4d57b255",
+      "sharedSources": [],
+      "reason": "Propagate the original selected-account capture across the queued Bootstrap task, admit its full original account operation before cache/manifest work, and bind actual native dispatch; retain the legacy public entry and state claim behavior.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    }
+  ],
+  "expectedRowCountIfOnlyThisTrancheFollows133": 140,
+  "mustPreserveAllOtherCurrentRowsAndDescendantUpdates": true,
+  "noMapFileWrittenOrSourceGateExecuted": true,
+  "bootstrap5ManifestStoreRow129AndFutureKitPinsSeparate": true,
+  "proposal5SourceInputs": {
+    "path": "/workspace/scratch/ae335eba85e3/otzaria-selection-authority-review/proposal5/source-inputs.json",
+    "identity": {
+      "bytes": 290634,
+      "sha256": "8117deba71707607ca2971e3278ce675a8495ebb74cd9335c2532eb16ac6c875",
+      "gitBlob": "1354ecfcb6153042a68d66edad5b0802e1cae45a",
+      "gitMode": "100644"
+    }
+  },
+  "newOriginalWrapperScope": "Retain original attempt/parent cancellation and metadata publication-only join while preserving all current MiniApps/Sharing/engine/Hanlin/Bootstrap/T5 stages.",
+  "rootCurrentDescendantRequirement": "Apply only to the independently verified actual descendant. Preserve all root158/Kit/N+C/SDK map edits, reasons, validation arrays, 133 original rows and register prefix. The listed indices describe the retained original133 map, not a replacement current map."
+}

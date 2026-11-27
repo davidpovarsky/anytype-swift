@@ -1,0 +1,21 @@
+{
+  "actualAfterMapSHA256": "73c7fdd94f05256a1c7a1311bf4dfba7e64b1055738ab1a1dbc3dab58d6f7b35",
+  "actualBeforeMapSHA256": "4d71a25b43bbbd5b9129e9514c7b5e7be97a0391dbaba9750c9344ee26e5cbb4",
+  "actualFailure": "c660a580a7b1 before any Git/source/index/evidence creation",
+  "afterBytes": 243028,
+  "all140OriginalMapObjectsAndTopMetadataUnchanged": true,
+  "beforeBytes": 237242,
+  "candidateImports": 0,
+  "cause": "sort_keys payload serialization changed key order of additions/sharedSources; json.dumps(row) in original guard reconstructs a different order from the actual correct map",
+  "discardedWrongOrderSerializationSHA256": "3df407a2b1221e1b577109ebbdd19b133e0bfe7459a61097a8770c55506bd2a1",
+  "exact4NewRowsMatchPayload": true,
+  "hostActions": 0,
+  "insertionBytes": 5786,
+  "insertionSHA256": "9821706caeabbda40306fb2b3db9337a4f4107ef52b683e39453aaf1de161bbb",
+  "originalBytesExactlyRestoredByRemovingOnlyInsertion": true,
+  "requires": "Preserve both original140 byte ranges directly and retain full parsed144 constraints; do not change actual map or product",
+  "schema": "pinkha-map144-preflight-original-byte-proof/v1",
+  "testsExecuted": 0,
+  "wholeOriginalPrefixBytes": 236905,
+  "wholeOriginalSuffixBytes": 337
+}

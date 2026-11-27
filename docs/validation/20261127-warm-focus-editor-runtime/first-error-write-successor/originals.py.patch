@@ -1,0 +1,50 @@
+--- original/originals.py
++++ successor/originals.py
+@@ -43,6 +43,38 @@
+ 
+ def sha(value):
+     return hashlib.sha256(value).hexdigest()
++
++
++class StageResultWrites:
++    """Preserve only the three selected original stage outcomes before receipt IO.
++
++    The isolated Consumer namespace receives this callable. Original shared
++    writes, other modules, every Consumer AST body and every command stay exact.
++    A failed write cannot replace the already observed original stage cause.
++    """
++    def __init__(self, original_write, error_formatter, output):
++        self.original_write, self.error = original_write, error_formatter
++        root = Path(output) / "evidence/lanes"
++        self.paths = frozenset((root / "focus-lifecycle/focus-lifecycle/result.json",
++                                root / "editor/preparation/result.json",
++                                root / "editor/ui/result.json"))
++        self.first_failure = None
++        self.io_failures = []
++
++    def __call__(self, path, value):
++        selected = Path(path) in self.paths and isinstance(value, dict)
++        if selected and value.get("status") == "FAIL":
++            first = value.get("firstFailure")
++            if first is None and value.get("errors"):
++                first = value["errors"][0]
++            if self.first_failure is None and isinstance(first, dict):
++                self.first_failure = copy.deepcopy(first)
++        try:
++            return self.original_write(path, value)
++        except BaseException as error:
++            if selected:
++                self.io_failures.append({"path": str(path), **self.error(error)})
++            raise
+ 
+ 
+ class Originals:
+@@ -235,6 +267,8 @@
+              "host_validation_module", "observe_owned_groups"), bindings=bindings)
+         bindings.update({name: getattr(self.host_functions, name) for name in
+             ("invocation_selectors", "scoped_descriptor", "exact_enumeration", "result_selection", "host_validation_module")})
++        self.stage_result_writes = StageResultWrites(self.shared.write, self.shared.error, commands.cwd)
++        bindings["write"] = self.stage_result_writes
+         self.host = self.selected("warm_original_host_methods", HOST_PATH, ("Consumer",),
+             methods=("__init__", "command", "container", "installed", "create", "appearance", "stage",
+                      "read_private", "preserve", "wave"), bindings=bindings)

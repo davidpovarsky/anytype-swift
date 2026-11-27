@@ -1,0 +1,36 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"ok\":true,\"job\":{\"id\":\"job_c660a580a7b1\",\"type\":\"job_result\",\"source\":\"exec@host_299cf75f6b338ecd\",\"severity\":\"warning\",\"tool\":\"exec\",\"host\":\"host_299cf75f6b338ecd\",\"status\":\"failed\",\"exit_code\":1,\"created_at\":1795803050.9493623,\"started_at\":\"2026-11-27T18:10:51.032001+00:00\",\"finished_at\":\"2026-11-27T18:10:51.303107+00:00\",\"duration_s\":0.27,\"error\":null,\"output_truncated\":false,\"timeout_s\":360,\"read\":false,\"notified\":{\"telegram\":null,\"resend\":null},\"notify_spec\":{},\"output\":\"Traceback (most recent call last):\\n  File \\\"<string>\\\", line 1, in <module>\\n  File \\\"<frozen runpy>\\\", line 286, in run_path\\n  File \\\"<frozen runpy>\\\", line 98, in _run_module_code\\n  File \\\"<frozen runpy>\\\", line 88, in _run_code\\n  File \\\"/var/lib/sentinelx/uploads/pinkha-root-bootstrap-map144-continuation.py\\\", line 975, in <module>\\n    main()\\n  File \\\"/var/lib/sentinelx/uploads/pinkha-root-bootstrap-map144-continuation.py\\\", line 909, in main\\n    raw, packed, payload, rows, values, evidence_values = source_payload()\\n                                                          ^^^^^^^^^^^^^^^^\\n  File \\\"/var/lib/sentinelx/uploads/pinkha-root-bootstrap-map144-continuation.py\\\", line 624, in source_payload\\n    require(before_raw.count(needle) == 1 and values[MAP_PATH] == before_raw.replace(needle, insertion + needle, 1),\\n  File \\\"/var/lib/sentinelx/uploads/pinkha-root-bootstrap-map144-continuation.py\\\", line 76, in require\\n    raise ValueError(message)\\nValueError: The complete original map byte ranges must remain exact\"}}"
+    }
+  ],
+  "structuredContent": {
+    "ok": true,
+    "job": {
+      "id": "job_c660a580a7b1",
+      "type": "job_result",
+      "source": "exec@host_299cf75f6b338ecd",
+      "severity": "warning",
+      "tool": "exec",
+      "host": "host_299cf75f6b338ecd",
+      "status": "failed",
+      "exit_code": 1,
+      "created_at": 1795803050.9493623,
+      "started_at": "2026-11-27T18:10:51.032001+00:00",
+      "finished_at": "2026-11-27T18:10:51.303107+00:00",
+      "duration_s": 0.27,
+      "error": null,
+      "output_truncated": false,
+      "timeout_s": 360,
+      "read": false,
+      "notified": {
+        "telegram": null,
+        "resend": null
+      },
+      "notify_spec": {},
+      "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"<frozen runpy>\", line 286, in run_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/var/lib/sentinelx/uploads/pinkha-root-bootstrap-map144-continuation.py\", line 975, in <module>\n    main()\n  File \"/var/lib/sentinelx/uploads/pinkha-root-bootstrap-map144-continuation.py\", line 909, in main\n    raw, packed, payload, rows, values, evidence_values = source_payload()\n                                                          ^^^^^^^^^^^^^^^^\n  File \"/var/lib/sentinelx/uploads/pinkha-root-bootstrap-map144-continuation.py\", line 624, in source_payload\n    require(before_raw.count(needle) == 1 and values[MAP_PATH] == before_raw.replace(needle, insertion + needle, 1),\n  File \"/var/lib/sentinelx/uploads/pinkha-root-bootstrap-map144-continuation.py\", line 76, in require\n    raise ValueError(message)\nValueError: The complete original map byte ranges must remain exact"
+    }
+  },
+  "isError": false
+}

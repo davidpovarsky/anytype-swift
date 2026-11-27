@@ -1,0 +1,99 @@
+{
+  "schema": "pinkha-mounted-refresh-independent-source-review/v2",
+  "atUTC": "2026-11-27T16:33:31.783041+00:00",
+  "status": "NO_CONCRETE_REMAINING_SOURCE_BLOCKER_COMPILE_AND_UI_NOT_RUN",
+  "reviewer": "Wave2 editor agent",
+  "reviewedFullSource": {
+    "path": "interfaces_work/native-mounted-refresh-ui/candidate/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+    "sha256": "30de75af908469666c19ef37ecc830dee6305e6ca6f7a937cc68862cd15369ca",
+    "bytes": 40939
+  },
+  "newSuffix": {
+    "path": "interfaces_work/native-mounted-refresh-ui/mounted_refresh_suffix.swift",
+    "sha256": "bfea1ec58fab97894593addd6ab0d8c0ca26782874be182650eed1bfa6acd634",
+    "bytes": 37670
+  },
+  "originalPrefix": {
+    "path": "interfaces_work/native-mounted-refresh-ui/source/AnyNativeTextRendererTests.swift",
+    "sha256": "695c89e5c8d5ad8e41f8ec525486836e42338bcc063d13f0945080c169fd7eaa",
+    "bytes": 3269
+  },
+  "reviewedProductCommit": "6eecb62f3bb101306b6036fbc04cc08257c3425f",
+  "priorReview": {
+    "path": "interfaces_work/native-mounted-refresh-ui/editor-independent-review-v2.json",
+    "sha256": "a76b350cda1cdab57caa12e016a9863fb1250a5ec80ff43126bf6db968a9a53b",
+    "bytes": 1856
+  },
+  "reviewedOwnershipInverse": {
+    "path": "interfaces_work/native-mounted-refresh-ui/ownership-correction-inverse.json",
+    "sha256": "855a7c9ff981e22392ac655f478a28d5d5ff33301a2cbcb16c2b52adb0e74073",
+    "bytes": 2261
+  },
+  "independentInverse": {
+    "exactThreeReplacements": 3,
+    "reconstructedPredecessorSHA256": "e0d8a4beda394ac90ee594cc10c4e7b954535ffa0f37f3cd414a5cf34f5b7da0",
+    "fullOriginalPrefixByteIdentical": true,
+    "originalMethods": 3,
+    "newMethods": 2,
+    "newCases": 2,
+    "totalDeclaredXCTestMethods": 5,
+    "compiledEnumeration": null
+  },
+  "selectedNewDeclarations": [
+    "testMountedControllerRefreshesCanonicalEquivalentLatinTextInTheSameCell",
+    "testMountedControllerRefreshesHebrewCombiningOrderInTheSameCell"
+  ],
+  "findingsResolved": [
+    {
+      "id": "EDITOR-MOUNT-01",
+      "disposition": "The persistent handler captures weak fixture plus value UUID only; the failed branch retrieves the connection from queue-owned connections[id]. Actual cancelled callback removes that owned entry."
+    },
+    {
+      "id": "EDITOR-MOUNT-02",
+      "disposition": "previousKey is captured from the same foreground scene selected for the actual UIWindow, before mounting; pre-window failures leave it nil."
+    }
+  ],
+  "remainingFindings": [],
+  "checkedSourceSemantics": [
+    "UIKit test owner and helper methods inherit or explicitly use MainActor from the original XCTest class. The new fixture is an unchecked-Sendable reference whose mutable state and continuations are confined to its one serial queue; external inspections use queue.sync. Listener/connection callbacks run on that queue, and no UIKit object is touched in those callbacks.",
+    "The real controller is installed in a real foreground-scene UIWindow. Its actual viewDidAppear mounts the presentation and starts the initial public load. The readiness condition requires an actual read, !isLoading, mounted/foreground state and both bounded held observation connections before the explicit baseline public load and render.",
+    "Every baseline model/source/plain/attributed string is compared by UTF-8 and UTF-16 arrays. The new vectors are deliberately canonically equal and byte-distinct. The second public load must provide the exact new text and changed native-shaped version while generation/run/object/block IDs, type/style, category and direction remain stable.",
+    "After public render, tests require the same public UITableViewCell and the same identified AnyNativeTextView, index path, visible row, window and mounted owner. A real first responder and a nonempty selection over the unchanged ASCII prefix are preserved. No direct text setter, private cell access or production load/state seam is used.",
+    "The old canonical cache condition skips the renderer for these unchanged cache dimensions and keeps old UI bytes while the model holds new bytes. The corrected product reaches the existing exact renderer. No old Undo-retention assertion conflicts with external-version history retirement.",
+    "Listener acceptance is cumulatively bounded512 with the separate tracked simultaneous16 guard, request512/body/header limits, initial readiness5s, fixture lifetime45s and stop5s. Late/over-budget accepted sockets are tracked through their real cancellation callbacks. Terminal closure requires the listener cancellation state and empty connection ledger; a timeout records failure and cannot qualify success.",
+    "Catch paths retain the first thrown error, mark expected drainage before revoking model lifetime, await original lifetime/session drainage, and await listener stop. Additional cleanup/trace errors remain XCTest failures. The trace states controlled-loopback scope and retains unresolved listener/connection counts; no Native account or unobserved runtime closure is claimed.",
+    "Both the original3-method file and all unaffected new-test/fixture bytes are retained by exact append and three-hunk inverse. No controls, Package/PBX, product source, native contract, original method or consumer is edited by this test source."
+  ],
+  "primaryAPIBoundary": [
+    {
+      "url": "https://developer.apple.com/documentation/network/nwconnection/start(queue:).md",
+      "usedFor": "The queue supplied at start receives connection events."
+    },
+    {
+      "url": "https://developer.apple.com/documentation/network/nwconnection/stateupdatehandler.md",
+      "usedFor": "Stored optional Sendable state handler; explicit code now avoids self-retaining connection capture."
+    },
+    {
+      "url": "https://developer.apple.com/documentation/network/nwconnection/cancel().md",
+      "usedFor": "Graceful protocol disconnection request; terminal callback remains required by fixture stop."
+    }
+  ],
+  "scopeLimits": [
+    "Root independently owns full HTTP route/shape/authorization decoder closure; this review inspected callback/control ownership and UIKit counterexample rather than repeating that mapping.",
+    "The two methods are hosted controlled-HTTP component regressions. They are not real Native-account, whole App end-to-end, physical-device, IME or semantic-anchor acceptance.",
+    "Existing renderer whole-class selection changes from3 to5 methods. Its old full-file hash/count must keep rejecting the new source until a separately reviewed exact compiler/enumeration/selection successor exists. No runtime adapter was changed here.",
+    "Apple imports, Swift concurrency typechecking, Network/URLSession behavior, actual window/keyboard timing and final XCTest results remain NOT_RUN."
+  ],
+  "actions": {
+    "productSourceEdits": 0,
+    "testSourceEdits": 0,
+    "compilerCalls": 0,
+    "SwiftSyntaxChecks": 0,
+    "portableControlsRerun": 0,
+    "UIExecutions": 0,
+    "HTTPServerExecutions": 0,
+    "NativeCalls": 0,
+    "OracleCalls": 0,
+    "MacCalls": 0
+  }
+}

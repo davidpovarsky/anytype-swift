@@ -8,10 +8,10 @@ import types
 from control import load_json, regular, require
 
 HELPER = "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native23_build.py"
-HELPER_SHA256 = "8145210d07cc8ed0e7e1f656c6a56b1c2417e3940078001569da34e5b92bf440"
+HELPER_SHA256 = "6fc91062b62ec657fb13cf0a2548b1d6d95b255e96c59c1ee9d58285f4a493ee"
 CONTRACT = "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native23_build_contract.json"
-CONTRACT_SHA256 = "ac95cf3256a6629236652b3baa0bb5b4318f347e83e9faabca6161a0e2795b2a"
-OWNER_SHA256 = "bb38feb19f8adfcf8407a7fae4868af601a26ef1293474077556a3a8a215dfe7"
+CONTRACT_SHA256 = "8a3b7ce78bb88bee34604aeead52375a2eb7c74ea1a0a0d7089230d23768cf49"
+OWNER_SHA256 = "34d9b19f4d34f8f441fc13a79bb615deb7676413cb33862d00629ed2f64871b0"
 
 
 def pinned(row, expected_path):

@@ -250,7 +250,7 @@
       "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
       "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
       "baselineBlob": "d3820631ef1b344babf116ca8766e7c0dcf853df",
-      "replacementBlob": "10bfbd82afdd6986da3d1940915bc6c8995a8cdc",
+      "replacementBlob": "15de50a91b793bee20db3505e6b3bd4dc46974a4",
       "reason": "Retain the original Hanlin account decorator and simulator postflight hook. Add independent Heart sharing owner drain before account transitions and reopen only after the original account operation succeeds. The Any engine has a separate existing workspace lease; no Heart logout is used to switch engines. Add the unified host pre-native account-change drain in all eight mutating auth entry points. Preserve original account serialization, sharing/Hanlin ownership and native auth; a capture close failure prevents transfer. Acquire and drain an independently owned shared MiniApps admission hold before native auth; retain native outcome, original serialization and replay journal, then release only that transition hold. Revoked callbacks and result ACK are refused.",
       "sharedSources": [
         {
@@ -1054,7 +1054,7 @@
       "from": "Modules/PinkhaKit/Package.swift",
       "to": "Modules/PinkhaKit/Package.swift",
       "baselineBlob": "eb19331cb8b675b0271f2252a5453463e3f50b88",
-      "replacementBlob": "34a5ca9307e411919cb5a83ccdd80cecaa4aa97a",
+      "replacementBlob": "e558479f8e34e2f98971cbd2970fc3328100804c",
       "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
       "inheritedSourceBlob": "5f39dae4261c8dc93ff2832f19f7508e6d84e0e0",
       "reason": "Preserve the retained PinkhaKit package and converge its sole TorahInspectorKit exact dependency revision to 511454e49450cb2581ddf77f644146ff3e30dbef for both active engines. No product or test source is changed by this dependency declaration. Reviewed unified integration: Retain all products/dependencies/test targets and exact TorahInspectorKit511454 pin; add default localization and processed shared semantic-anchor string resources. Reviewed2026-11-25 final integration: Advance the single shared TorahInspectorKit pin from511454 to reviewed9058b489e9acc271b4f8ef69e2ed24648f93b4ed, preserving products, resources and targets.",
@@ -1163,7 +1163,7 @@
       "from": "Modules/ProtobufMessages/Sources/Invocation.swift",
       "to": "Modules/ProtobufMessages/Sources/Invocation.swift",
       "baselineBlob": "75147606621653a013e2995570b22fd93cd29e2d",
-      "replacementBlob": "d71dca5c6ab8e7518c3c24128b2bc63860b59084",
+      "replacementBlob": "edc1e5ea79a2153068d80f8b7df1d7b906621e64",
       "reason": "Candidate-only lifecycle observation retires verified account/Space read leases before native transitions and fences late or overlapping completions. Existing scheduling, cancellation and native invocation bodies remain unchanged.",
       "sharedSources": [
         {
@@ -1814,7 +1814,7 @@
       "from": "Tools/Hanlin/source.json",
       "to": "Tools/Hanlin/source.json",
       "baselineBlob": "0ac43dc444fa2234c2eb11fb9bebf129dbe4fb94",
-      "replacementBlob": "650f54779f997352cc8bbbf18eb2d0a701d3b341",
+      "replacementBlob": "a39f3f506f8279c5acca6f74e7c7140710af9c65",
       "reason": "Pin the shared Hanlin SDK to the reviewed tool-continuation race repair 6bd6036dbca16c969689a5722550a54bebc1e851. Both adapters consume the same dependency source. Pin both engine consumers and shared MiniApps bridge/picker to combined Hanlin44bcebf687206a37893cb584cf72c6aafbc5ca48 and SwiftAI3f38. Preserve original catalog continuation/cancellation repairs while merging ready MiniApps62a work; standalone runtimes remain in their original companion. Reviewed2026-11-25 final integration: Advance the common four-package source to86a6 and SwiftAIabf. Independent Git comparison proves all959 package files/four trees identical to qualified30e; standalone producer changes remain outside Pinkha. Reviewed2026-11-26: advance the same four shared packages to9565a9e4775901a4cee6f0402d7fd2978fab6612, preserving959 files and all existing pins/capabilities; the exact additive composition changes only notification ingress and its original tests. Reviewed2026-11-27 Wave3 cancellation: preserve the canonical SDK/session, original native worker, journal, permission/dispatch gates and shared Composer. Stop/close/normal EOF drain the original task before account release; late UI is fenced and uncertain results do not permit automatic retry. Add Hebrew/English Stop labels and optional shared host drain. Pin the same original packages to38528941720d9b4f2da8dce7afbc788c2e554a0c. Reviewed2026-11-27 Wave3 candidate32: retain the original SDK view, session/context/run/sequence fences and Composer; add original UI activity and Retry/Continue with a sticky uncertain-write barrier. Preserve one original worker and protected, account-bound journal while reserving bounded metadata before effects and closing dispatch before terminal outcomes. Canonical SDK45 adds bounded renderer-issued payload retention without changing original AgentSDK or explicit-handler semantics. No native body-save binding is installed by this candidate.",
       "sharedSources": [],
       "validation": [
@@ -1983,7 +1983,7 @@
       "validation": [
         "Root reviewed the exact previous-to-current Git delta at9c957c01. Source preservation only: immutable prior receipts retain their own source/closure. App0c5 build12 compiled before MiniApps86 integration; changed original app/Collections1.3, native410b, callback diagnostics and final UI acceptance require their own actual run. No existing assertion, capability gate or ACK is weakened. Current owner expressly authorizes integration and these fixes."
       ],
-      "replacementBlob": "62e23f1166907ea5fbc5477e7cb14284ddbf607e",
+      "replacementBlob": "41b75d84ae99a78c8cbb8410ca414f610646039b",
       "reason": " Reviewed2026-11-25 final integration: Propagate the selected private-network configuration error at original create/select boundaries; do not silently fall back to the public network."
     },
     {
@@ -2278,7 +2278,7 @@
         },
         {
           "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift",
-          "gitBlob": "b712657e45feea1f05ca68a3aa2098fb9d053e5b"
+          "gitBlob": "74058e7b343365446b93db12395db7d2f948997a"
         },
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahDocumentPropertyProjection.swift",
@@ -2330,6 +2330,147 @@
         "2026-11-27 Wave3: exact original586c98 and current2752229 source are byte-identical (6258 bytes, Git blob995df1ccf9a3131919d89bb398bed38594cb47f8, SHA2561edd18bf419c01fb88f72dcbca367e3417b2b8993394d1d0a3190dcb685b7eb0). One13-byte insertion of options:[] produces6271 bytes/Git blobe7d115cd681318953bc669a436b72a730114f7ea/SHA2560eee42f7036e43d74d82088b2bd21696dc3b248f4430e4c9dfc887bbbc1a60d9. The full literal inverse restores the entire original file.",
         "The candidate equals the original Otzaria SDK owner d609 cutover result published as Maktabah1b9a917b: CUTOVER_RESULT.json SHA256277a572634499e1498614d9c7a313a2853cea0884f881e3b81edfe6934176e88. That receipt records a source-only fast-forward and builds_run0; full framework ancestry/ABI adoption remains separate.",
         "Root authorized independent reuse against the exact current preimage. No framework target, SDK/native pin, account, storage, permission or public product API is changed. Apple compilation and native/runtime acceptance of this shared App delta remain NOT_RUN. See docs/validation/20261127-wave3-pasteboard-options/source-intake.json and literal-inverse.json."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+      "to": "Anytype/Sources/ServiceLayer/ActiveSpaceManager/ActiveSpaceManager.swift",
+      "baselineBlob": "a0b729b10e80067cd94466295b2296d56c4931ba",
+      "replacementBlob": "145f418680103ea26962a1ee2f8677a48f902557",
+      "sharedSources": [],
+      "reason": "Reuse original selected-Space/account/SpaceView authority and native dispatch drain; retry a failed asynchronous Bootstrap only through the exact frozen original account capture. Preserve widget-before-subscription ordering, preview and analytics. The owned original subscription clears only the inherited temporary startup dispatch binding; the public unbound-selection guard and exact subscription identity remain intact.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+      "to": "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+      "baselineBlob": "42a82dcf057e70cab678781c62590be0e946938f",
+      "replacementBlob": "8b5d3d362f2c73b248b8b5b68e6ecda9a62f09e2",
+      "sharedSources": [],
+      "reason": "Reuse the original AccountManager-owned lifetime; retire old account captures before replacement and confirm availability only after the original transition releases.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift",
+      "to": "Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift",
+      "baselineBlob": "8edc79af958ed16f47a7e2dd4fe0ef394bbee17b",
+      "replacementBlob": "57e247b98ef5d8898154794a4121a6b9ff69b931",
+      "sharedSources": [],
+      "reason": "Reuse original callback-minted SpaceView authority, captured account/subscription identity, synchronous retirement and owned subscribe/stop drain.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "to": "Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift",
+      "baselineBlob": "9ce06e356d2201e261250bd5ca07b4438a8b3517",
+      "replacementBlob": "21085b9a22f05d44ce4199005122a0a7e41e5d05",
+      "sharedSources": [],
+      "reason": "Retain the original participant/role capture types required by the unchanged original owner and their actual callback/stop lifecycle; no fabricated caller permissions.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift",
+      "to": "Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift",
+      "baselineBlob": "4d5b6095a53b108a4e72382b4281e4dc135e4beb",
+      "replacementBlob": "4f86624cc4f6c98de39811b818eadf32cf2ddf4a",
+      "sharedSources": [],
+      "reason": "Reuse the original pre-framework startup/cleanup actor with attempt-bound subscriptions and retained primary/membership tasks. Preserve standalone services and original stop sequence.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+      "to": "Modules/Services/Sources/Services/Workspace/WorkspaceService.swift",
+      "baselineBlob": "be38e9ba3d84f989e658c10c84c9f3fb59bac590",
+      "replacementBlob": "cdf22c38b3f647bcd83ab89af29ae4d9f5b5c317",
+      "sharedSources": [],
+      "reason": "Admit selected-Space opens only through the original concrete WorkspaceService and its unchanged native WorkspaceOpen method.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
+      "to": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
+      "baselineBlob": "865126d851cc3401b20e8eb917799230f032f414",
+      "replacementBlob": "507a5e7861e433d85362b4934d25150b4d57b255",
+      "sharedSources": [],
+      "reason": "Propagate the original selected-account capture across the queued Bootstrap task, admit its full original account operation before cache/manifest work, and bind actual native dispatch; retain the legacy public entry and state claim behavior.",
+      "validation": [
+        "Static whole-source/inverse and source-closure review only. Historical original selected-Space 10 and account-release 6 portable controls retain their exact narrower projections and original wrapper failure; no current Apple/Auth/Bootstrap native runtime acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapStateManager.swift",
+      "to": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapStateManager.swift",
+      "baselineBlob": "0d71e0cf034f4671998f5210f2c1e655c2588512",
+      "replacementBlob": "5235e8fec6bc6bda21442751a662291a1c3f68d0",
+      "reason": "Reuse the original shared PinkhaBootstrapStateStorage for claim/state ownership and explicit failed-state retry, retaining the original public manager methods, logging and stale-claim/account-reset checks.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift",
+          "gitBlob": "c2e0b92df6fe5912c7e0452a1d866fd58942e676"
+        }
+      ],
+      "validation": [
+        "2026-11-27: original586 primary bytes equal the retained af63 preimage. The exact already-reviewed Bootstrap5 source and full inverse are retained under docs/validation/20261127-wave3-kit-sdk-auth-warm-source-intake/bootstrap/; the source-only root review remains9d9a4338a69e5e21ac83045ccecdea543c3cbee472bf5bfb18b55db76ec6ebe7.",
+        "The actual original140 retention gate failed only because these four existing baseline paths lacked their own mapping. Preserve the failed receipt, all140 prior rows and the pending normal four-parent merge. This mapping adds no product source, compiler, native, UI, account, resolver or materialization acceptance. See docs/validation/20261127-wave3-bootstrap-map144-continuation/."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift",
+      "to": "Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift",
+      "baselineBlob": "b712657e45feea1f05ca68a3aa2098fb9d053e5b",
+      "replacementBlob": "74058e7b343365446b93db12395db7d2f948997a",
+      "reason": "Preserve the original native manifest discovery, persistence and RPC bodies; reject an already-discovered manifest with unreadable details/body and delegate exact stored object/Space identity validation to the original shared decoder. Supplier-only framework facade remains excluded.",
+      "sharedSources": [],
+      "validation": [
+        "2026-11-27: original586 primary bytes equal the retained af63 preimage. The exact already-reviewed Bootstrap5 source and full inverse are retained under docs/validation/20261127-wave3-kit-sdk-auth-warm-source-intake/bootstrap/; the source-only root review remains9d9a4338a69e5e21ac83045ccecdea543c3cbee472bf5bfb18b55db76ec6ebe7.",
+        "The actual original140 retention gate failed only because these four existing baseline paths lacked their own mapping. Preserve the failed receipt, all140 prior rows and the pending normal four-parent merge. This mapping adds no product source, compiler, native, UI, account, resolver or materialization acceptance. See docs/validation/20261127-wave3-bootstrap-map144-continuation/."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift",
+      "to": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift",
+      "baselineBlob": "52a209301aebac5f365543de7d3966b021dd611f",
+      "replacementBlob": "c2e0b92df6fe5912c7e0452a1d866fd58942e676",
+      "reason": "Retain the original Bootstrap protocols and expose the original locked state/claim storage in PinkhaKit, including failed-state retry and exact-claim completion. This is the shared implementation used by the existing app manager.",
+      "sharedSources": [],
+      "validation": [
+        "2026-11-27: original586 primary bytes equal the retained af63 preimage. The exact already-reviewed Bootstrap5 source and full inverse are retained under docs/validation/20261127-wave3-kit-sdk-auth-warm-source-intake/bootstrap/; the source-only root review remains9d9a4338a69e5e21ac83045ccecdea543c3cbee472bf5bfb18b55db76ec6ebe7.",
+        "The actual original140 retention gate failed only because these four existing baseline paths lacked their own mapping. Preserve the failed receipt, all140 prior rows and the pending normal four-parent merge. This mapping adds no product source, compiler, native, UI, account, resolver or materialization acceptance. See docs/validation/20261127-wave3-bootstrap-map144-continuation/."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+      "to": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+      "baselineBlob": "69220b20ad4a55b9b4d10c62793c66b9521ce1af",
+      "replacementBlob": "d42050a84d5f232d05493c3f1787390c094db0fc",
+      "reason": "Retain the complete original manifest schema and APIs while adding the original stored-payload decoder that checks exact UTF8 Space/self identity, binds legacy absent self identity to the observed native object and preserves original version migration ownership.",
+      "sharedSources": [],
+      "validation": [
+        "2026-11-27: original586 primary bytes equal the retained af63 preimage. The exact already-reviewed Bootstrap5 source and full inverse are retained under docs/validation/20261127-wave3-kit-sdk-auth-warm-source-intake/bootstrap/; the source-only root review remains9d9a4338a69e5e21ac83045ccecdea543c3cbee472bf5bfb18b55db76ec6ebe7.",
+        "The actual original140 retention gate failed only because these four existing baseline paths lacked their own mapping. Preserve the failed receipt, all140 prior rows and the pending normal four-parent merge. This mapping adds no product source, compiler, native, UI, account, resolver or materialization acceptance. See docs/validation/20261127-wave3-bootstrap-map144-continuation/."
       ]
     }
   ],

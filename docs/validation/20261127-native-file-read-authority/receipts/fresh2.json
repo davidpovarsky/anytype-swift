@@ -1,0 +1,214 @@
+{
+  "OSExecPython": {
+    "bytes": 7845048,
+    "path": "/usr/bin/python3.12",
+    "sha256": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960"
+  },
+  "OSPolicy": {
+    "helperSHA256": "6eaca8b9602f9c1c7fce4b8a176759ad1a10577c0ee74eddb3264992976e86b1",
+    "installedBeforeSDKInitialization": true,
+    "librarySHA256": "3d128123b494ca9e88f3c237b0912397145af1754e86ea99f460af6857441f19",
+    "newProcessConnectAndSendtoMustReturnEPERM": true
+  },
+  "actualMethods": {
+    "names": [
+      "TestFilesOpenFreshAwaitedFetchDiscardsAfterSignedRemoval",
+      "TestFilesOpenFreshCachedReaderStopsAtSignedRemoval"
+    ],
+    "skips": 0,
+    "totalPasses": 2,
+    "totalRuns": 2
+  },
+  "actualOSDenialVerified": true,
+  "admissionFreeBytes": {
+    "development": 34661326848,
+    "root": 2716438528
+  },
+  "allOwnedGroupsPositivelyAbsent": true,
+  "baseSourceManifestSHA256": "e785ed2faf1d0bf0d18e7be7f0090cdee4061bd714f3be1509927895b9df336a",
+  "completionErrors": [],
+  "controller": {
+    "bytes": 21655,
+    "sha256": "b1c488714b2c995be76f8467797490997d8a35e7d0d1bd5310e7a908a47a7841"
+  },
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOCACHE": "/var/lib/pinkha-root-t2-linux-20261126/go-cache",
+    "GOFLAGS": "-mod=readonly",
+    "GOMAXPROCS": "2",
+    "GOMEMLIMIT": "1GiB",
+    "GOMODCACHE": "/root/go/pkg/mod",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOTMPDIR": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt2/go-tmp",
+    "GOTOOLCHAIN": "local",
+    "GOWORK": "off",
+    "PINKHA_FRESH_FILES_FIXTURE_ROOT": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt2/fixtures",
+    "TMPDIR": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt2/go-tmp"
+  },
+  "errors": [],
+  "events": [
+    {
+      "Action": "run",
+      "Package": "github.com/anyproto/any-sync-sdk",
+      "Test": "TestFilesOpenFreshCachedReaderStopsAtSignedRemoval"
+    },
+    {
+      "Action": "pass",
+      "Elapsed": 0.6,
+      "Package": "github.com/anyproto/any-sync-sdk",
+      "Test": "TestFilesOpenFreshCachedReaderStopsAtSignedRemoval"
+    },
+    {
+      "Action": "run",
+      "Package": "github.com/anyproto/any-sync-sdk",
+      "Test": "TestFilesOpenFreshAwaitedFetchDiscardsAfterSignedRemoval"
+    },
+    {
+      "Action": "pass",
+      "Elapsed": 0.27,
+      "Package": "github.com/anyproto/any-sync-sdk",
+      "Test": "TestFilesOpenFreshAwaitedFetchDiscardsAfterSignedRemoval"
+    },
+    {
+      "Action": "pass",
+      "Elapsed": 2.296,
+      "Package": "github.com/anyproto/any-sync-sdk"
+    }
+  ],
+  "fixtureSource": {
+    "bytes": 19710,
+    "sha256": "b7d91dd885239f0b5c7cad99d22985affd3d20cc554b9f097487ce2be6dfc76b"
+  },
+  "freeAfter": {
+    "development": 34553221120,
+    "root": 2711810048
+  },
+  "goToolchain": {
+    "driver": {
+      "bytes": 15863091,
+      "path": "/mnt/development/toolchains/go1.27.4/go/bin/go",
+      "sha256": "59c65090beeda377c09007eb8fae1c6aadf0a7b551e65ee13d461092d29e8005"
+    },
+    "metadata": {
+      "GOARCH": "arm64",
+      "GOHOSTARCH": "arm64",
+      "GOHOSTOS": "linux",
+      "GOOS": "linux",
+      "GOROOT": "/mnt/development/toolchains/go1.27.4/go",
+      "GOTOOLDIR": "/mnt/development/toolchains/go1.27.4/go/pkg/tool/linux_arm64",
+      "GOVERSION": "go1.27.4"
+    },
+    "tools": {
+      "compile": {
+        "bytes": 26606430,
+        "path": "/mnt/development/toolchains/go1.27.4/go/pkg/tool/linux_arm64/compile",
+        "sha256": "4070e0e743ba23672219a3687a1f9bfb489fa5c95bfb6584b4f33932339f92ef"
+      },
+      "link": {
+        "bytes": 6852809,
+        "path": "/mnt/development/toolchains/go1.27.4/go/pkg/tool/linux_arm64/link",
+        "sha256": "c119b682a4c1ba107279fe3ec0f0317518e5d21900f1f75941528b65b8d47590"
+      }
+    }
+  },
+  "memAvailableBefore": 4364128256,
+  "minimumFreeBytes": {
+    "development": 34437156864,
+    "root": 2711810048
+  },
+  "nativeCLIServers": 0,
+  "originalRoleMutations": 0,
+  "peakOwnedBytes": 146650321,
+  "processes": [
+    {
+      "absenceObservedAtSeconds": 0.29675931110978127,
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "env",
+        "-json",
+        "GOVERSION",
+        "GOROOT",
+        "GOTOOLDIR",
+        "GOHOSTOS",
+        "GOHOSTARCH",
+        "GOOS",
+        "GOARCH"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt2/sdk-source",
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "logSHA256": "865117f0fe0f842b406e0a216c4f9c249a7a2df9b66e478067066f5ef3485c1d",
+      "pgid": 717408,
+      "pid": 717408,
+      "processGroupAbsent": true,
+      "seconds": 0.2967611514031887,
+      "signals": [],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    },
+    {
+      "absenceObservedAtSeconds": 33.873986101709306,
+      "argv": [
+        "/mnt/development/toolchains/go1.27.4/go/bin/go",
+        "test",
+        "-json",
+        "-count=1",
+        "-p=2",
+        "-timeout=90s",
+        "-exec",
+        "/usr/bin/python3.12 -B /mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Tools/AnyEngineValidation/native_source_preservation/linux_outbound_denial.py --exec",
+        "-run",
+        "^(TestFilesOpenFreshAwaitedFetchDiscardsAfterSignedRemoval|TestFilesOpenFreshCachedReaderStopsAtSignedRemoval)$",
+        "."
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-w1-fresh-files-open-20261127/attempt2/sdk-source",
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "logSHA256": "591d666b13b749aff81dbca436e87aaef78eb79d6c1535747b5d2cfe71376fa7",
+      "pgid": 717431,
+      "pid": 717431,
+      "processGroupAbsent": true,
+      "seconds": 33.87398746237159,
+      "signals": [],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    }
+  ],
+  "protocol": "pinkha-fresh-files-open-signed-authority-v1",
+  "qualifiedSignedUnitSourceUnchanged": true,
+  "rawLog": {
+    "bytes": 82010,
+    "sha256": "591d666b13b749aff81dbca436e87aaef78eb79d6c1535747b5d2cfe71376fa7"
+  },
+  "resourcePolicy": {
+    "allocationEstimateNotMeasuredPeak": true,
+    "compileAndTwoMethodCommandSeconds": 360,
+    "controllerDeadlineSeconds": 420,
+    "developmentAdmissionReserveBytes": 536870912,
+    "developmentFloorBytes": 536870912,
+    "entireOwnedOutputCapBytes": 402653184,
+    "estimateBasis": "Existing qualified native binary is78MB and SDK source6.6MB; source/product/freshCARs/logs plus bounded compiler temporary output cap384MiB, separate128MiB shared-cache growth allowance. No cache deletion/relocation. Full SDK-root test compilation has not yet been measured.",
+    "goMemoryLimit": "1GiB",
+    "logCapBytes": 8388608,
+    "metadataCommandSeconds": 15,
+    "requiredOuterTimeoutSeconds": 480,
+    "rootAdmissionReserveBytes": 33554432,
+    "rootFloorBytes": 2147483648,
+    "testBinaryTimeoutSeconds": 90,
+    "workers": 2
+  },
+  "retainedAccountOpens": 0,
+  "retainedPrivateInputs": 0,
+  "reusedOwnershipReceiptSHA256": "040ffa3fcf93094369e24928732aeba9eb10fdb673db76ab7540a887748aa27d",
+  "reusedSignedUnitReceiptSHA256": "68964e6db8802065ba69edad5614ec52cde3603b14f9628d65d808aa76563766",
+  "sdkReadguardCandidateSHA256": "ac2f849e1ca2d7bda725c9c10b46af58d2ac39876a4abf26fa3ce37479d0d896",
+  "sdkReadguardPatchSHA256": "874220977c12a789d77acbd7a86fa4889693a5196c32ef52effac20207dcc32f",
+  "seconds": 37.568601205945015,
+  "sourceManifestSHA256": "8f572975bb767e6eb573d30061015382a2c4133c0065f84a635e44e276ca8d34",
+  "sourceUnchanged": true,
+  "status": "PASS_FRESH_SYNTHETIC_ACTUAL_FILES_OPEN2",
+  "usedPublicInputsUnchanged": true
+}

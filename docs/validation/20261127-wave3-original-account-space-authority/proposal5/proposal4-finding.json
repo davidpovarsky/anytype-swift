@@ -1,0 +1,25 @@
+{
+  "status": "SOURCE_REVIEW_FINDING_CORRECTED_IN_DISTINCT_PROPOSAL5_NOT_RUNTIME_PROOF",
+  "priorWrapper": {
+    "bytes": 13101,
+    "sha256": "1e15c9bf2e3e87ca2e88979ceecae6f9c1cc8444168514bc17056b9aa134eccc",
+    "gitBlob": "59fe107ef840074fec4cd5a34b09c2674be7a84d",
+    "gitMode": "100644"
+  },
+  "newWrapper": {
+    "bytes": 14654,
+    "sha256": "9573b90cdb321e3a538574828c08b250177682ffd5587e1c7171d63a5d11e87f",
+    "gitBlob": "15de50a91b793bee20db3505e6b3bd4dc46974a4",
+    "gitMode": "100644"
+  },
+  "reviewers": [
+    "owner self-review",
+    "root source review",
+    "sdk_hanlin independent source review"
+  ],
+  "finding": "A pre/post stage check cannot prevent a queued cross-actor didOpen from running after retirement. A final reclose alone leaves an intermediate reopening window.",
+  "correction": "Original Hanlin validation occurs within its MainActor turn. An actually owned publication-only task is registered before suspension; Stop retires parent before awaiting only that task, then closes both owners before actual native Stop. Exact record identity clears the handle.",
+  "testsExecuted": 0,
+  "compilerExecuted": false,
+  "hostActions": 0
+}

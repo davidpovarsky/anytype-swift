@@ -1,0 +1,98 @@
+{
+  "allocationMeasurementSHA256": "371ab5bf4514da06aeade29ee43e6aa118aec3f116b461953174a4c75108437e",
+  "allocationPolicy": {
+    "developmentBudgetMiB": {
+      "allAffectedProductReplacementUpper": 176,
+      "compilerTemporary": 32,
+      "objectsModulesIndex": 32,
+      "slack": 16
+    },
+    "developmentInitialRequiredBytes": 805306368,
+    "developmentRuntimeEmergencyFloorBytes": 536870912,
+    "rootControlOutputCapBytes": 16777216,
+    "rootInitialHeadroomBytes": 33554432,
+    "rootInitialRequiredBytes": 2181038080,
+    "rootRuntimeEmergencyFloorBytes": 2147483648
+  },
+  "cacheAllocatedBefore": 535183360,
+  "cacheCustodyReceiptSHA256": "a049e79aa6e185cd2721cf1b18a61a268474275a3b2d00cb187fe41ef8f8d8e8",
+  "cleanupForcedKill": false,
+  "cleanupRequired": false,
+  "command": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost",
+    "--scratch-path",
+    "/tmp/pinkha-w1-migration-swift-20261127",
+    "--disable-automatic-resolution",
+    "--jobs",
+    "2",
+    "--filter",
+    "NativeImportedSourceFactsTests"
+  ],
+  "compiled": true,
+  "compiledProducts": {
+    "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner": "9ce9d63f94e0f7a47bf3ec1e046337a3ef1d3d184c46b16acda32fe6835d548f",
+    "out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so": "f191ad7f505d7526f27fcbe8db6a3bc843eccc3411cd55cf3ab31f435f94646b"
+  },
+  "compilerTemporaryDirectory": "/tmp/pinkha-w1-migration-swift-20261127/source-facts-temporary-source-facts-components-attempt2",
+  "controllerSHA256": "9d3760733b3388ed596f2fefb9bbc5f1b2e7e2dc9d593978b8d7726dc144a82a",
+  "dependencies": {
+    "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+    "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+    "torahinspectorkit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed"
+  },
+  "dependencyLocatorRepairReceiptSHA256": "d2318aec75ba8eb2bcb8786009cb6af2b1f2ec99daf6fd68bdd8b4fdf779a300",
+  "errors": [],
+  "exitCode": 0,
+  "failLines": [],
+  "freeRootBefore": 2873315328,
+  "freeScratchBefore": 36354830336,
+  "logSHA256": "0ce75905a10aba4803fd599f760aab970a7adde71aff10673154891ed3b8042e",
+  "maximumOwnedDevelopmentGrowthBytes": 13144064,
+  "maximumOwnedRootOutputBytes": 86016,
+  "minimumDevelopmentFreeBytes": 36334288896,
+  "minimumRootFreeBytes": 2848591872,
+  "ownedGroupAbsent": true,
+  "passLines": [
+    "Test Case 'NativeImportedSourceFactsTests.testHistoricalBindingsRequireCompleteOriginalDerivedValues' passed (0.038 seconds)",
+    "Test Case 'NativeImportedSourceFactsTests.testSourceFactsRefuseChangedEvidenceAndInvalidMappings' passed (2.469 seconds)",
+    "Test Case 'NativeImportedSourceFactsTests.testTwoRetainedSourceFactsKeepCompleteOriginalBytesAndStructure' passed (2.398 seconds)"
+  ],
+  "pid": 640299,
+  "preparedSwiftSourceClosureSHA256": "ca0dd9bb060b738c71bf6d84b992a09b7cb4c5c3182e6a7234cb690e6b9a9eaa",
+  "scope": "Three new source-facts methods: exact retained two-row originals, complete historical values, changed-source refusals. Compile source-facts and prepared-association native fixtures without executing them; no182 replay.",
+  "seconds": 162.044,
+  "sourceAfterSHA256": "ca0dd9bb060b738c71bf6d84b992a09b7cb4c5c3182e6a7234cb690e6b9a9eaa",
+  "sourceBeforeSHA256": "ca0dd9bb060b738c71bf6d84b992a09b7cb4c5c3182e6a7234cb690e6b9a9eaa",
+  "sourceCommit": "12e49ea69efdde499a6b5343cbe77139073dfbd8",
+  "sourceDefinitionsAfter": {
+    "bundle/manifest.json": "cbfb3aa1fd89707138adeccbce7389c40dc0a993f2285f6e517120e4e4239ed4",
+    "bundle/snapshot-617c89bab14769f612a69d726a58fc070c60f07a4304dcc2d52df3bb90a07bdc.json": "446ea7a576da16df88afe7db69af02298d03ee7c62638e7521c71d71624a1688",
+    "bundle/snapshot-617c89bab14769f612a69d726a58fc070c60f07a4304dcc2d52df3bb90a07bdc.pb": "0d7cd8275af5381fecdf3bbda8bda877e2497aa63e7fffe547855986fb661a04",
+    "bundle/snapshot-8942e51b1fb58736a486dd484502614e9668b4ec48f5c794ac633feea7af0d34.json": "77967d7d28e099d7f5ede0a5496e4abe9cc5c525dd9733f088463e51c9651ea6",
+    "bundle/snapshot-8942e51b1fb58736a486dd484502614e9668b4ec48f5c794ac633feea7af0d34.pb": "6f447ac2abc53b80e2f6f476b00e7124dc0436998c546d7d2c2f6d347d795ed2",
+    "execute-mappings.json": "eabdf2e362189abd5a2e78f7c13f1f1d77d8339c27109d2a6ec19ccdbb2755a3",
+    "execute-verification.json": "fee4dc5cb8e689e01bf2d1fbe8bd262c42388fd706da4114be72af3e6cf97350",
+    "source-preservation-plan.json": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930"
+  },
+  "sourceDefinitionsBefore": {
+    "bundle/manifest.json": "cbfb3aa1fd89707138adeccbce7389c40dc0a993f2285f6e517120e4e4239ed4",
+    "bundle/snapshot-617c89bab14769f612a69d726a58fc070c60f07a4304dcc2d52df3bb90a07bdc.json": "446ea7a576da16df88afe7db69af02298d03ee7c62638e7521c71d71624a1688",
+    "bundle/snapshot-617c89bab14769f612a69d726a58fc070c60f07a4304dcc2d52df3bb90a07bdc.pb": "0d7cd8275af5381fecdf3bbda8bda877e2497aa63e7fffe547855986fb661a04",
+    "bundle/snapshot-8942e51b1fb58736a486dd484502614e9668b4ec48f5c794ac633feea7af0d34.json": "77967d7d28e099d7f5ede0a5496e4abe9cc5c525dd9733f088463e51c9651ea6",
+    "bundle/snapshot-8942e51b1fb58736a486dd484502614e9668b4ec48f5c794ac633feea7af0d34.pb": "6f447ac2abc53b80e2f6f476b00e7124dc0436998c546d7d2c2f6d347d795ed2",
+    "execute-mappings.json": "eabdf2e362189abd5a2e78f7c13f1f1d77d8339c27109d2a6ec19ccdbb2755a3",
+    "execute-verification.json": "fee4dc5cb8e689e01bf2d1fbe8bd262c42388fd706da4114be72af3e6cf97350",
+    "source-preservation-plan.json": "4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930"
+  },
+  "sourcePreparationManifestSHA256": "69193fa50ae65abad284fd6d5d83df76d0de9c04909605a8e20fda765db04a4e",
+  "sourceUnchanged": true,
+  "startLines": [
+    "Test Case 'NativeImportedSourceFactsTests.testHistoricalBindingsRequireCompleteOriginalDerivedValues' started at 2026-11-27 12:45:04.320",
+    "Test Case 'NativeImportedSourceFactsTests.testSourceFactsRefuseChangedEvidenceAndInvalidMappings' started at 2026-11-27 12:45:04.358",
+    "Test Case 'NativeImportedSourceFactsTests.testTwoRetainedSourceFactsKeepCompleteOriginalBytesAndStructure' started at 2026-11-27 12:45:06.827"
+  ],
+  "status": "PASS"
+}

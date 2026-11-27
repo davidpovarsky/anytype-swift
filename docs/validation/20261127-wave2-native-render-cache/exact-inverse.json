@@ -1,0 +1,25 @@
+{
+  "schema": "pinkha-native-render-cache-exact-inverse/v1",
+  "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+  "parentCommit": "d528e5413c72320c423ce9ccdbd4fbe423ca4a4a",
+  "before": {
+    "sha256": "8b461efe44868904b826da7b601c1537fd1c164705f861b15920143a556caac5",
+    "gitBlob": "81eec84bc476ce7d0c4835ebee912e57b35717c6",
+    "bytes": 61374
+  },
+  "after": {
+    "sha256": "ec8f72a34e9823c7ba84ab8dbb013d9827c9302fc6143436de3ec8a3bfdf2f37",
+    "gitBlob": "45144274ff51800b21d608d2a2df8f1db8b11477",
+    "bytes": 61405
+  },
+  "replacements": [
+    {
+      "before": "if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native[\"style\"]",
+      "after": "if cell.renderedSource?.utf8.elementsEqual(renderedSource.utf8) != true || cell.renderedNativeStyle != block.native[\"style\"]",
+      "count": 1
+    }
+  ],
+  "inverseReconstructedSHA256": "8b461efe44868904b826da7b601c1537fd1c164705f861b15920143a556caac5",
+  "allOtherBytesExact": true,
+  "sourceTransformationOnly": true
+}

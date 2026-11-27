@@ -1,0 +1,332 @@
+--- original/run.py
++++ warm_focus_editor/run.py
+@@ -1,9 +1,9 @@
+ #!/usr/bin/env python3
+-"""Closed original G05/G07/Bin10/18 in the same successful producer's GitHub job.
+-
+-No build, account preparation, cross-host relocation, source override or old
+-Mac entry point is used. Runtime evidence is recorded separately from producer
+-evidence; an admitted build is never called a passing test run.
++"""Closed current warm App61/Stage1UI10 consumer: original focus22/34 + editor4.
++
++Original first-editor preparation creates its own disposable native account and
++fixture only after actual product admission. No old App15 or retained fixture
++is relabelled. No compiler, Native UI Launch phase or release action is invoked.
+ """
+ from __future__ import annotations
+ 
+@@ -21,10 +21,8 @@
+ import admission
+ from originals import Originals, require
+ import profile_binding
+-from native23_receipts import Native23Receipts
+ 
+ LANES = profile_binding.LANES
+-LANE_SCOPE = profile_binding.LANE_SCOPE
+ DEVICE_TYPE = "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB"
+ 
+ 
+@@ -185,41 +183,46 @@
+ 
+ 
+ def source_contract_for_lane(consumer, lane, originals, producer_pin):
+-    """Delegate to one real W2 lane instance under the original command barrier."""
+-    require(lane in LANES and consumer.profile_bindings.originals is originals,
+-            "Only the four fixed lanes and actual original Core22 loader are permitted")
+-    return consumer.profile_bindings.source_contract(lane,
+-        source_commit=consumer.binding["sourceSHA"], native_compilation_proof=producer_pin)
++    require(lane == "focus-lifecycle" and consumer.profile_bindings.originals is originals,
++            "Only the exact original focus22/34 source contract is selected")
++    require(producer_pin == consumer.profile_bindings.context["build"]["nativeCompilationProof"],
++            "Original focus source is bound to this actual current App compiler")
++    return consumer.profile_bindings.focus_contract()
+ 
+ 
+ def execute_lane(consumer, lane, originals, context, runtime, device_type):
+-    require(lane in LANES, "Only the four fixed original G05/G07/Bin lanes are permitted")
++    require(lane in LANES, "Only original focus-lifecycle and first-editor are permitted")
+     shared = originals.shared
+     directory = consumer.root / "evidence/lanes" / lane
+     directory.mkdir(parents=True, mode=0o700)
+     result = {"status": "FAIL", "lane": lane, "sourceCommit": consumer.binding["sourceSHA"],
+-              "originalTarget": None, "executedTarget": "AnytypeTests",
+-              "errors": [], "actualNativeACLAccepted": False, "actualNativePersistenceAccepted": False,
+-              "applicationUIAccepted": False, "physicalDeviceAccepted": False, "releaseAccepted": False}
++              "errors": [], "actualNativeACLAccepted": False, "physicalDeviceAccepted": False,
++              "releaseAccepted": False, "visualReview": "PENDING"}
+     udid, devices_before = None, set(consumer.devices)
+-    producer_pin = context["build"]["nativeCompilationProof"]
+-    def source_contract():
+-        return source_contract_for_lane(consumer, lane, originals, producer_pin)
+     try:
+-        before = source_contract()
+-        require((before["expected_methods"], before["declared_cases"]) == LANE_SCOPE[lane],
+-                "Original exact G05/G07/Bin method and argument scope differs")
+-        require(before["original_target"] == profile_binding.ORIGINAL_TARGETS[lane]
+-                and before["selected_target"] == "AnytypeTests", "Original source target identity differs")
+-        result["originalTarget"] = before["original_target"]
+-        result["sourceContract"] = before
+-        udid, _ = consumer.create(lane, directory, editor=False)
++        consumer.profile_bindings.command_gate()
++        before = (source_contract_for_lane(consumer, lane, originals, context["build"]["nativeCompilationProof"])
++                  if lane == "focus-lifecycle" else None)
++        if before is not None:
++            result["sourceContract"] = before
++        udid, language = consumer.create(lane, directory, editor=lane == "editor")
+         result["actualDevice"] = verify_created_device(consumer, lane, udid, runtime, device_type)
+-        methods = [name.removeprefix("AnytypeTests/") for name in before["expected_compiled_identifiers"]]
+-        actual, _ = consumer.stage(directory, "native", udid, methods, {}, allowance=300, host_contract=before)
+-        require(source_contract() == before, "Original source/compiler witness changed during runtime")
++        if lane == "focus-lifecycle":
++            methods = [name.removeprefix("AnytypeTests/") for name in before["compiled_identifiers"]]
++            actual, _ = consumer.stage(directory, "focus-lifecycle", udid, methods, {}, allowance=300,
++                                        host_contract=before)
++            require(consumer.profile_bindings.focus_contract() == before,
++                    "Original focus source/compiler witness changed during runtime")
++            result.update(status="PASS_ORIGINAL_FOCUS_22_METHODS_34_CASES", actual=actual)
++        else:
++            actual = consumer.wave("editor", directory, udid, language)
++            require(actual["preparation"]["status"] == actual["ui"]["status"] == "PASS"
++                    and actual["preparation"]["passed"] == 1 and actual["ui"]["passed"] == 4
++                    and actual["visualReview"] == "PENDING",
++                    "Original preparation and every exact UI method must pass; visual review remains separate")
++            result.update(status="PASS_ORIGINAL_EDITOR_PREPARATION_AND_FOUR_UI_METHODS_VISUAL_PENDING", actual=actual)
++        consumer.profile_bindings.unchanged()
+         originals.unchanged()
+-        result.update(status="PASS_ORIGINAL_APP_CACHE_BIN_SUITE", actual=actual)
+     except BaseException as error:
+         result["firstFailure"] = consumer.commands.first_exception or shared.error(error)
+         if result["firstFailure"] != shared.error(error):
+@@ -244,7 +247,7 @@
+                 try:
+                     consumer.command(["xcrun", "simctl", "shutdown", udid], lane + "-shutdown", 60, capacity=False)
+                     observed = verify_created_device(consumer, lane, udid, runtime, device_type, state="Shutdown")
+-                    result["ownedSimulator"] = {"udid": udid, "status": "SHUTDOWN_RETAINED_UNTIL_JOB_TEARDOWN",
++                    result["ownedSimulator"] = {"udid": udid, "status": "SHUTDOWN_RETAINED_FOR_ROOT_REVIEW",
+                                                  "deleted": False, "originalObservation": observed}
+                 except BaseException as error:
+                     result["errors"].append({"phase": "owned-shutdown", **shared.error(error)})
+@@ -266,43 +269,62 @@
+ 
+ 
+ def lane_summary(directory, originals, *, execution=None):
+-    """Retain failed original runtime evidence without relabeling it NOT_RUN."""
++    """Never turn a real failed preparation into NOT_RUN or a visual PASS."""
+     shared = originals.shared
+-    execution_path, native = directory / "execution.json", directory / "native/result.json"
+     row = {"status": "FAIL_NO_TERMINAL_LANE_RECEIPT", "testInvoked": bool(execution and execution.get("testInvoked")),
+-           "qualifiedMethods": 0, "qualifiedCases": 0}
++           "qualifiedFocusMethods": 0, "qualifiedFocusCases": 0,
++           "qualifiedPreparationMethods": 0, "qualifiedEditorUIMethods": 0, "visualReview": "PENDING"}
+     if execution is not None:
+         for key in ("firstFailure", "receiptFailures", "ownedSimulator"):
+             if key in execution:
+                 row[key] = execution[key]
+         row["cleanupErrors"] = execution["errors"]
+-    if execution_path.is_file():
++    path = directory / "execution.json"
++    if path.is_file():
+         try:
+-            value = shared.decode(shared.raw(execution_path))
++            value = shared.decode(shared.raw(path))
+             require(execution is None or value == execution, "Original terminal lane receipt is incomplete or changed")
+-            row.update(status=value["status"], receipt=admission.ref(execution_path), cleanupErrors=value["errors"])
+-            if "ownedSimulator" in value:
+-                row["ownedSimulator"] = value["ownedSimulator"]
++            row.update(status=value["status"], receipt=admission.ref(path), cleanupErrors=value["errors"])
+         except BaseException as error:
+             row["terminalReceiptError"] = shared.error(error)
+-    if native.is_file():
+-        try:
+-            value = shared.decode(shared.raw(native))
+-            require(type(value["testInvoked"]) is bool, "Original native invocation observation is missing")
+-            require(execution is None or "actual" not in execution or value == execution["actual"],
+-                    "Original native result differs from the observed suite outcome")
+-            row.update(nativeResult=admission.ref(native), nativeStatus=value["status"], testInvoked=value["testInvoked"])
+-            if "firstFailure" in value:
+-                row["originalNativeFirstFailure"] = value["firstFailure"]
+-            if value["status"] == "PASS":
+-                observed = value["actualHostCases"]
+-                row["originalValidatorCounts"] = {"methods": observed["actual_method_count"],
+-                                                   "cases": observed["declared_case_count"]}
+-                if row["status"] == "PASS_ORIGINAL_APP_CACHE_BIN_SUITE":
+-                    row.update(qualifiedMethods=observed["actual_method_count"],
+-                               qualifiedCases=observed["declared_case_count"])
+-        except BaseException as error:
+-            row.update(status="FAIL", nativeReceiptError=shared.error(error))
++    names = ("focus-lifecycle",) if directory.name == "focus-lifecycle" else ("preparation", "ui")
++    row["stages"] = {}
++    for name in names:
++        path = directory / name / "result.json"
++        stage = {"status": "NOT_RUN", "testInvoked": False}
++        row["stages"][name] = stage
++        if path.is_file():
++            try:
++                value = shared.decode(shared.raw(path))
++                require(type(value["testInvoked"]) is bool, "Original invocation observation is missing")
++                stage.update(status=value["status"], testInvoked=value["testInvoked"], receipt=admission.ref(path))
++                if "firstFailure" in value:
++                    stage["firstFailure"] = value["firstFailure"]
++                if name == "focus-lifecycle" and value["status"] == "PASS":
++                    counts = value["actualHostCases"]
++                    stage["originalValidatorCounts"] = {"methods": counts["actual_method_count"],
++                                                          "cases": counts["declared_case_count"]}
++                    require(stage["originalValidatorCounts"] == {"methods": 22, "cases": 34},
++                            "Original focus validator counts differ")
++                    if row["status"] == "PASS_ORIGINAL_FOCUS_22_METHODS_34_CASES":
++                        row.update(qualifiedFocusMethods=22, qualifiedFocusCases=34)
++                elif value["status"] == "PASS":
++                    expected = 1 if name == "preparation" else 4
++                    require((value["passed"], value["failed"], value["skipped"]) == (expected, 0, 0),
++                            "Original editor result selection differs")
++                    stage["originalValidatorPassedMethods"] = expected
++                    if row["status"] == "PASS_ORIGINAL_EDITOR_PREPARATION_AND_FOUR_UI_METHODS_VISUAL_PENDING":
++                        row["qualifiedPreparationMethods" if name == "preparation" else "qualifiedEditorUIMethods"] = expected
++            except BaseException as error:
++                stage.update(status="FAIL_INVALID_ORIGINAL_RESULT", testInvoked=None,
++                             originalReceiptError=shared.error(error))
++                row.update(status="FAIL", originalReceiptError=shared.error(error))
++        elif (directory / name / "invocation.json").is_file() or (directory / name / "original.xcresult").exists():
++            stage.update(status="FAIL_INVOKED_WITHOUT_TERMINAL_RESULT", testInvoked=True)
++            row["status"] = "FAIL"
++        elif (directory / name).exists():
++            stage["status"] = "FAIL_BEFORE_TEST_INVOCATION"
++            row["status"] = "FAIL"
+     return row
+ 
+ 
+@@ -327,9 +349,8 @@
+     require(Path(__file__).resolve() == args.control / admission.CONTROL_PREFIX / "run.py",
+             "Runtime entry point must be the original admitted control file")
+     source_before = admission.identity(args.source, plan["appSourceSHA"], plan["appSourceTree"])
+-    owner = admission.load_hosted_owner(args.control)
++    owner = admission.load_warm_owner(plan, originals)
+     context = admission.producer_context(args, plan, originals, owner)
+-    native23_reader = Native23Receipts(args.control, args.source, context, plan, owner, originals)
+     output = args.output
+     require(output.is_absolute() and output.parent.resolve() == output.parent and not output.exists()
+             and not output.is_symlink(), "Fresh exclusive same-job execution output required")
+@@ -341,21 +362,28 @@
+     commands.environment["DEVELOPER_DIR"] = job["developerDir"]
+     for name in ("GH_TOKEN", "GITHUB_TOKEN", "ACTIONS_RUNTIME_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_TOKEN"):
+         commands.environment.pop(name, None)
+-    result = {"schema": "pinkha-hosted-property-cache-bin-runtime-v1", "status": "FAIL", "startedAt": time.time(),
++    result = {"schema": "pinkha-forward-warm-focus-editor-runtime-v1", "status": "FAIL", "startedAt": time.time(),
+               "job": job, "sourceIdentity": source_before, "controlIdentity": control_before,
+               "rootPlan": context["planRef"], "originalBuildReceipt": context["buildRef"],
+-              "native23CompilerAdmission": native23_reader.proof(),
+-              "expectedMethods": 10, "expectedCases": 18, "series": {lane: {"status": "NOT_RUN"} for lane in LANES},
+-              "qualifiedMethodsPassed": 0, "qualifiedCasesPassed": 0, "testCommandsInvoked": 0,
+-              "appBuilds": 0, "nativeBuilds": 0, "uiTestMethodsInvoked": 0,
++              "declaredFocusMethods": 22, "declaredFocusCases": 34,
++              "declaredEditorPreparationMethods": 1, "declaredEditorUIMethods": 4, "series": {lane: {"status": "NOT_RUN"} for lane in LANES},
++              "qualifiedFocusMethods": 0, "qualifiedFocusCases": 0,
++              "qualifiedPreparationMethods": 0, "qualifiedEditorUIMethods": 0, "visualReview": "PENDING", "originalTestInvocationFlags": 0,
++              "appBuilds": 0, "nativeBuilds": 0, "separateNativeUICompilerOrRuntimeInvoked": False,
+               "nativePersistenceAccepted": False, "nativeACLAccepted": False, "appUIAccepted": False,
+               "releaseAccepted": False, "testFlightAccepted": False, "physicalDevice": "NOT_RUN"}
+     built, contract, consumer, clone_progress = {}, None, None, {}
+     profile_bindings = None
++    package_state = None
+     with originals.signals.cancellation_signals():
+         try:
+             shared.write(output / "evidence/job-admission.json", result)
+             result["runtimeToolchain"] = fresh_toolchain(commands, originals, context)
++            require(commands.is_open, "Owned command barrier must open before original package queries")
++            package_state = owner["warmAdapter"].wr_packages(args.source, admission.APP_DERIVED)
++            require(package_state == context["originalPackageState"],
++                    "Actual locked dependency checkouts changed after the warm build")
++            shared.write(output / "evidence/runtime-package-state.json", package_state)
+             log, _ = commands.run(["xcodebuild", "-help"], "xcode-help", 30)
+             help_text = shared.raw(log).decode()
+             require("-collect-test-diagnostics" in help_text and "never" in help_text,
+@@ -365,15 +393,19 @@
+             result["runtimeDiscovery"] = {"originalInventory": admission.ref(log), "runtime": runtime, "deviceType": device_type}
+             contract, proof, products, contract_ref = admission.receipt_contract(context, output, originals, runtime, device_type)
+             result.update(receiptContract=contract_ref, commonBuildAdmission=proof)
+-            profile_bindings = profile_binding.RuntimeBindings(originals, commands)
+-            result["publishedW2ProfileBinding"] = profile_bindings.proof
++            profile_bindings = profile_binding.RuntimeBindings(originals, commands, context)
++            result["originalPriorityProfileBinding"] = profile_bindings.proof
+             app, bundle_id = clone_products(contract, products, output, originals, commands, built, clone_progress)
++            require(bundle_id == "io.anytype.app", "The unchanged original editor UI targets io.anytype.app")
+             originals.configure_runtime(runtime=runtime, bundle_id=bundle_id)
+             shared.write(output / "evidence/original-controller-declarations.json", originals.proof)
+             binding = {"sourceSHA": plan["appSourceSHA"], "runID": job["runID"],
+                        "runAttempt": job["runAttempt"], "nonce": uuid.uuid4().hex}
+             settings = {"sourceRoot": str(args.source), "deviceType": device_type["identifier"],
+-                        "deviceFamily": "ipad", "appLanguage": "en", "appearance": "light"}
++                        "deviceFamily": "ipad", "appLanguage": plan["configuration"]["appLanguage"],
++                        "appearance": plan["configuration"]["appearance"]}
++            shared.write(output / "evidence/admission.json",
++                         profile_bindings.startup_admission(settings, binding, contract_ref))
+             consumer = profile_bindings.host.Consumer(output, settings, commands, built, app, originals.helpers, binding)
+             consumer.profile_bindings = profile_bindings
+             consumer.source_admission = source_before
+@@ -389,18 +421,20 @@
+                     if execution is not None and "firstFailure" in execution:
+                         result.setdefault("firstFailure", {"lane": lane, **execution["firstFailure"]})
+                     result["series"][lane] = lane_summary(output / "evidence/lanes" / lane, originals, execution=execution)
+-                    result["qualifiedMethodsPassed"] = sum(row.get("qualifiedMethods", 0) for row in result["series"].values())
+-                    result["qualifiedCasesPassed"] = sum(row.get("qualifiedCases", 0) for row in result["series"].values())
+-                    result["testCommandsInvoked"] = sum(row.get("testInvoked", False) for row in result["series"].values())
++                    for key in ("qualifiedFocusMethods", "qualifiedFocusCases", "qualifiedPreparationMethods", "qualifiedEditorUIMethods"):
++                        result[key] = sum(row.get(key, 0) for row in result["series"].values())
++                    result["originalTestInvocationFlags"] = sum(stage.get("testInvoked") is True
++                        for row in result["series"].values() for stage in row.get("stages", {}).values())
+                     retained = retain_receipt(shared, output / "evidence" / (lane + "-checkpoint.json"),
+                                               result, "lane-checkpoint-receipt")
+-                require(retained, "G05/G07/Bin checkpoint retention failed; no later suite may start")
+-                require(result["series"][lane]["status"] == "PASS_ORIGINAL_APP_CACHE_BIN_SUITE",
+-                        "Original G05/G07/Bin suite failed: " + lane)
+-            require(all(row["status"] == "PASS_ORIGINAL_APP_CACHE_BIN_SUITE" for row in result["series"].values())
+-                    and result["qualifiedMethodsPassed"] == 10 and result["qualifiedCasesPassed"] == 18,
+-                    "Every original G05/G07/Bin method/argument case must actually pass")
+-            result.update(status="PASS_ORIGINAL_HOSTED_G05_G07_BIN_10_METHODS_18_CASES", actualMethodsPassed=10, actualCasesPassed=18)
++                require(retained, "Original priority checkpoint retention failed; no later lane may start")
++                expected = ("PASS_ORIGINAL_FOCUS_22_METHODS_34_CASES" if lane == "focus-lifecycle" else
++                            "PASS_ORIGINAL_EDITOR_PREPARATION_AND_FOUR_UI_METHODS_VISUAL_PENDING")
++                require(result["series"][lane]["status"] == expected, "Original priority lane failed: " + lane)
++            require((result["qualifiedFocusMethods"], result["qualifiedFocusCases"],
++                     result["qualifiedPreparationMethods"], result["qualifiedEditorUIMethods"]) == (22, 34, 1, 4),
++                    "Original focus22/34, fresh preparation and all4 UI methods must actually pass")
++            result.update(status="PASS_ORIGINAL_FOCUS22_34_AND_EDITOR4_METHODS_VISUAL_PENDING")
+         except BaseException as error:
+             result.setdefault("firstFailure", commands.first_exception or shared.error(error))
+         finally:
+@@ -414,11 +448,15 @@
+                 originals.unchanged()
+                 if profile_bindings is not None:
+                     profile_bindings.unchanged()  # File-only after any owned-command closure.
+-                result["native23CompilerFinal"] = native23_reader.recheck()
+-                # File-only third-compiler/product/source readback remains safe
++                for reference in plan["producerControls"].values():
++                    admission.pinned(reference)  # File-only after an unresolved group.
++                # File-only current-product/source readback remains safe
+                 # after a blocked original command. Do not start unmanaged Git
+                 # or admission subprocesses while owned custody is unresolved.
+                 if commands.is_open:
++                    if package_state is not None:
++                        require(owner["warmAdapter"].wr_packages(args.source, admission.APP_DERIVED) == package_state,
++                                "Original locked package state changed during tests")
+                     require(admission.identity(args.source, plan["appSourceSHA"], plan["appSourceTree"]) == source_before,
+                             "Original compiled source identity changed during tests")
+                     require(admission.control_identity(args.control, plan["controlCommit"]) == control_before,
+@@ -457,7 +495,7 @@
+         # retain a complete terminal receipt. Never overwrite a partial file.
+         summary.update(firstFailure=result.get("firstFailure"), receiptFailures=result["receiptFailures"])
+     print(json.dumps(summary, sort_keys=True))
+-    return 0 if result["status"] == "PASS_ORIGINAL_HOSTED_G05_G07_BIN_10_METHODS_18_CASES" else 1
++    return 0 if result["status"] == "PASS_ORIGINAL_FOCUS22_34_AND_EDITOR4_METHODS_VISUAL_PENDING" else 1
+ 
+ 
+ def main():
+@@ -468,7 +506,7 @@
+     args = parser.parse_args()
+     profile_binding.require_runtime_ready()
+     require(platform.system() == "Darwin" and platform.machine() == "arm64",
+-            "Actual hosted Apple Silicon runtime is required")
++            "Actual original Apple Silicon Mac runtime is required")
+     require(admission.sha(admission.canonical(args.plan)) == args.plan_sha256,
+             "Root-reviewed original plan bytes changed")
+     # Decode through the unchanged original duplicate-key/nonfinite JSON guard.

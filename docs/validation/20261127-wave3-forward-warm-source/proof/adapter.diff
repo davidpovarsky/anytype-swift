@@ -1,0 +1,127 @@
+--- original/wave3_warm_retry.py
++++ after/wave3_forward_warm.py
+@@ -1,4 +1,4 @@
+-"""Add explicit terminal-failure warm-cache admission to the original producer.
++"""Admit a forward source/SDK/Kit transition on the retained 8f2 warm cache.
+ 
+ The original d77 adapter and 204f producer remain immutable inputs. Every new
+ substitution is reversible; run_phase and source_state remain byte identical.
+@@ -96,8 +96,8 @@
+ 
+ def wr_validate_cache(cache, staging):
+     retry = WAVE3_ADMISSION['warmRetry']
+-    wr_require(cache['protocol'] == 'pinkha-post-failure-warm-cache-qualification-v1'
+-               and cache['sourceCommit'] == EXPECTED, 'Fresh post-failure warm-cache qualification required')
++    wr_require(cache['protocol'] == 'pinkha-forward-warm-cache-qualification-v1'
++               and cache['sourceCommit'] == EXPECTED, 'Fresh forward warm-cache qualification required')
+     wr_require(cache['stageReceiptSHA256'] == sha(pathlib.Path(WAVE3_ADMISSION['sourceStaging']['path']))
+                and cache['stageSourceAndNativePreservationRetained'] is True, 'Warm staging receipt differs')
+     wr_require(cache['priorFailedSourceCommit'] == retry['priorFailedSourceCommit'], 'Prior failed source differs')
+@@ -134,6 +134,87 @@
+                    and path.is_dir() and not path.is_symlink(), 'Warm cache root changed')
+     wr_no_shared_writer(SOURCE, APP_DERIVED)
+     wr_require(wr_packages(SOURCE, APP_DERIVED) == cache['packageState'], 'Pinned warm package checkout identity changed')
++    wr_forward_cache(cache, staging)
++
++
++def wr_forward_cache(cache, staging):
++    forward = WAVE3_ADMISSION['forwardWarm']
++    wr_require(forward['schema'] == 'pinkha-forward-warm-lineage-v1', 'Exact forward lineage required')
++    wr_require(cache['baselineSourceSHA'] == staging['priorSource'] == forward['baselineSourceSHA']
++               == '8f2c11713fb8a40ae13444104723666ffef68afe', 'Actual clean8f2 baseline required')
++    ref = forward['currentBaselinePreservation']
++    wr_require(set(ref) == {'path', 'sha256'} and wr_sha(ref['path']) == ref['sha256']
++               == cache['baselinePreservationSHA256'] == staging['baselinePreservationSHA256'],
++               'Fresh full8f2 custody differs')
++    preserved = json.loads(pathlib.Path(ref['path']).read_text())
++    wr_require(preserved['status'] == 'PASS_FORWARD_BASELINE_SOURCE_PRODUCTS_AND_KIT_RETAINED'
++               and preserved['sourceCommit'] == forward['baselineSourceSHA']
++               and preserved['sourceTree'] == forward['baselineSourceTree']
++               and preserved['sourceMutated'] is False and preserved['testsExecuted'] == 0,
++               'Actual pre-transition preservation is required')
++    wr_require(set(preserved['trees']) == {'source', 'app-derived-Products', 'prior-kit-checkout'},
++               'Complete source, current Products and prior Kit checkout custody required')
++    for row in preserved['trees'].values():
++        root = pathlib.Path(row['retained'])
++        wr_require(root.is_dir() and not root.is_symlink(), 'Physical retained forward baseline is absent')
++        for key in ('before', 'retainedManifest', 'after'):
++            wr_require(wr_sha(row[key]['path']) == row[key]['sha256'], 'Forward retention manifest changed')
++    transition = cache['packageTransition']
++    wr_require(transition['status'] == 'PASS_EXACT_KIT_ONLY_LOCK_AND_CHECKOUT_TRANSITION'
++               and transition['changedIdentity'] == 'torahinspectorkit'
++               and transition['beforeRevision'] == '9058b489e9acc271b4f8ef69e2ed24648f93b4ed'
++               and transition['afterRevision'] == '26beca175d64a4d34e3567f2bbb4bf308d714478'
++               and transition['unchangedCount'] == 55 and transition['pinCount'] == 56,
++               'Only the exact reviewed Kit transition is admitted')
++    wr_require(transition['afterPackageState'] == cache['packageState']
++               and transition['afterLockSHA256'] == WAVE3_ADMISSION['pins']['packageResolvedSHA256']
++               and transition['beforeLockSHA256'] == forward['baselinePackageResolvedSHA256'],
++               'Forward package receipt differs')
++    wr_require(staging['canonicalSDKRevision'] == forward['targetSDKRevision']
++               and staging['sdkReceiptSHA256'] == WAVE3_ADMISSION['pins']['sdkMaterializationReceiptSHA256'],
++               'Final SDK source/marker differs')
++    wr_require(cache['historicalProcessGroupReprobes'] == 0
++               and staging['historicalProcessGroupReprobes'] == 0,
++               'Historical groups are receipt evidence only')
++    census_ref = forward['resourceCensusControl']
++    census_path = pathlib.Path(census_ref['path'])
++    wr_require(census_path.resolve() == census_path and not census_path.is_symlink()
++               and wr_sha(census_path) == census_ref['sha256']
++               == '229222b72fd01aa515aef502aa8f8c889344f9e4cd60981421f49f53ecf3bd2a',
++               'Exact original all-host resource observer required')
++    spec = importlib.util.spec_from_file_location('forward_original_resource_observer', census_path)
++    observer = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(observer)
++    observed = observer.census()
++    w3_write(EVIDENCE / 'forward-global-census.json', observed)
++    wr_require(not observed['heavyCompilerOrCopyProcesses'] and not observed['queuedLaunchers'],
++               'A fresh all-host heavy writer or queue blocks the finite build window')
++    wr_require(observed['freeBytes'] >= PHASE_GROWTH['app'] + FLOOR + CONCURRENT_GROWTH,
++               'The original6GiB+2GiB+512MiB warm App envelope is unavailable')
++
++
++
++def validate_forward(data):
++    forward = data['forwardWarm']
++    wr_require(forward['schema'] == 'pinkha-forward-warm-lineage-v1'
++               and forward['baselineSourceSHA'] == '8f2c11713fb8a40ae13444104723666ffef68afe'
++               and forward['baselineSourceTree'] == '7bcaa6e1b6eadf42eaaaebcb75aab84686aa1f9a',
++               'This source successor starts only from the actual clean8f2 checkpoint')
++    wr_require(forward['baselineSDKMarkerSHA256'] == 'b10eb0805789a04f9f48721230961e45ba6a93ceb5d95cb90437a59c87ae9528'
++               and forward['baselinePackageResolvedSHA256'] == 'e22368e522ac795253935b0a31e39d1b36bd9043ef2ed1014845927914527ccd',
++               'Observed baseline SDK/lock differs')
++    wr_require(re.fullmatch('[0-9a-f]{40}', forward['targetSDKRevision'] or '') is not None
++               and forward['targetSDKRevision'] != '38528941720d9b4f2da8dce7afbc788c2e554a0c',
++               'Explicit published target SDK required; an unbound plan cannot run')
++    wr_require(re.fullmatch('[0-9a-f]{40}', data['appSourceSHA'] or '') is not None
++               and data['appSourceSHA'] != forward['baselineSourceSHA'], 'Exact forward App source required')
++    for key in ('sdkMaterializationReceiptSHA256', 'packageResolvedSHA256', 'nativeSourceManifestSHA256'):
++        wr_require(re.fullmatch('[0-9a-f]{64}', data['pins'].get(key) or '') is not None,
++                   'Exact final source dependency required: ' + key)
++    wr_require(data['warmRetry']['concurrentGrowthAllowanceBytes'] == 512 * 1024 ** 2,
++               'This finite-window source successor retains the exact512MiB estimate')
++    wr_require(forward['buildsDuringStaging'] == 0 and forward['testsDuringStaging'] == 0,
++               'Staging and runtime admission are separate')
+ 
+ 
+ def validate_retry(data):
+@@ -144,9 +225,7 @@
+     wr_require(retry['failedPreservation'] == {'path': FAILED_ROOT + '/failed-preservation1/receipt.json',
+                                               'sha256': PRESERVATION_SHA}, 'Exact original failed retention required')
+     wr_require(data['appSourceSHA'] != FAILED_SOURCE and data['buildRoot'] != FAILED_ROOT, 'Fresh source/output required')
+-    wr_require(data['pins']['sdkMaterializationReceiptSHA256'] == SDK_MARKER_SHA
+-               and data['pins']['nativeSourceManifestSHA256'] == '8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b',
+-               'This retry preserves SDK385/native8ac')
++    validate_forward(data)
+     wr_require(type(retry['concurrentGrowthAllowanceBytes']) is int and retry['concurrentGrowthAllowanceBytes'] >= 512 * 1024 ** 2,
+                'Concurrent growth allowance cannot be reduced')
+ 
+@@ -178,7 +257,7 @@
+         replace('CONCURRENT_GROWTH=512*1024**2', 'CONCURRENT_GROWTH=' + str(concurrent))
+     before_write = ' write(EVIDENCE/"input-and-resource-admission.json",baseline)'
+     correct_metadata = (' baseline.update(originalIntermediatesAndPackagePathsReused=True,\n'
+-                        '                 reasonForJobs4="Warm incremental retry from the retained terminal failed build. The same physical source and DerivedData retain actual compiler intermediates, all locked package checkouts, SDK explicit modules and Products. Original App15 and failed6aab source/Products/evidence remain separately preserved. Original four-job scheduling, 6 GiB App estimate and 2 GiB live own-process floor remain.",\n'
++                        '                 reasonForJobs4="Forward warm build from preserved clean8f2 using the same physical source and DerivedData. The full baseline source, current Products and changed Kit checkout are separately retained by actual APFS clones before the source/SDK/one-lock-pin transition. All55 other locked checkout revisions remain exact; all56 final checkout HEADs and untracked-source status are requalified. Original App15 and failed6aab custody remains separate. Original four-job scheduling, 6 GiB App estimate and 2 GiB live own-process floor remain.",\n'
+                         '                 phaseBudgetEvidence={"warmCacheObservedSizes":cache["observedSizes"],\n'
+                         '                                     "interpretation":"The 6 GiB App allowance is retained conservatively; it is not a measured future incremental peak. Current post-failure compiler/package paths are physically present and qualified. The exact root-approved concurrent growth allowance remains additional."})\n')
+     replace(before_write, correct_metadata + before_write)

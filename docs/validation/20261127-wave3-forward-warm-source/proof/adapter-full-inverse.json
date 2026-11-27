@@ -1,0 +1,53 @@
+{
+  "afterSHA256": "80c9d213ba95072125bf863917b1f98e4db24fa174cf170e743c66c124d2f245",
+  "candidateImported": false,
+  "changes": [
+    {
+      "count": 1,
+      "label": "scope-docstring",
+      "new": "\"\"\"Admit a forward source/SDK/Kit transition on the retained 8f2 warm cache.",
+      "old": "\"\"\"Add explicit terminal-failure warm-cache admission to the original producer."
+    },
+    {
+      "count": 1,
+      "label": "distinct-forward-cache-schema",
+      "new": "cache['protocol'] == 'pinkha-forward-warm-cache-qualification-v1'",
+      "old": "cache['protocol'] == 'pinkha-post-failure-warm-cache-qualification-v1'"
+    },
+    {
+      "count": 1,
+      "label": "distinct-qualification-scope",
+      "new": "'Fresh forward warm-cache qualification required'",
+      "old": "'Fresh post-failure warm-cache qualification required'"
+    },
+    {
+      "count": 1,
+      "label": "additional-forward-custody",
+      "new": "    wr_require(wr_packages(SOURCE, APP_DERIVED) == cache['packageState'], 'Pinned warm package checkout identity changed')\n    wr_forward_cache(cache, staging)",
+      "old": "    wr_require(wr_packages(SOURCE, APP_DERIVED) == cache['packageState'], 'Pinned warm package checkout identity changed')"
+    },
+    {
+      "count": 1,
+      "label": "explicit-new-sdk-native-input-binding",
+      "new": "    validate_forward(data)",
+      "old": "    wr_require(data['pins']['sdkMaterializationReceiptSHA256'] == SDK_MARKER_SHA\n               and data['pins']['nativeSourceManifestSHA256'] == '8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b',\n               'This retry preserves SDK385/native8ac')"
+    },
+    {
+      "count": 1,
+      "label": "truthful-forward-resource-metadata",
+      "new": "Forward warm build from preserved clean8f2 using the same physical source and DerivedData. The full baseline source, current Products and changed Kit checkout are separately retained by actual APFS clones before the source/SDK/one-lock-pin transition. All55 other locked checkout revisions remain exact; all56 final checkout HEADs and untracked-source status are requalified. Original App15 and failed6aab custody remains separate. Original four-job scheduling, 6 GiB App estimate and 2 GiB live own-process floor remain.",
+      "old": "Warm incremental retry from the retained terminal failed build. The same physical source and DerivedData retain actual compiler intermediates, all locked package checkouts, SDK explicit modules and Products. Original App15 and failed6aab source/Products/evidence remain separately preserved. Original four-job scheduling, 6 GiB App estimate and 2 GiB live own-process floor remain."
+    },
+    {
+      "count": 1,
+      "label": "forward-lineage-and-resource-guards",
+      "new": "def wr_forward_cache(cache, staging):\n    forward = WAVE3_ADMISSION['forwardWarm']\n    wr_require(forward['schema'] == 'pinkha-forward-warm-lineage-v1', 'Exact forward lineage required')\n    wr_require(cache['baselineSourceSHA'] == staging['priorSource'] == forward['baselineSourceSHA']\n               == '8f2c11713fb8a40ae13444104723666ffef68afe', 'Actual clean8f2 baseline required')\n    ref = forward['currentBaselinePreservation']\n    wr_require(set(ref) == {'path', 'sha256'} and wr_sha(ref['path']) == ref['sha256']\n               == cache['baselinePreservationSHA256'] == staging['baselinePreservationSHA256'],\n               'Fresh full8f2 custody differs')\n    preserved = json.loads(pathlib.Path(ref['path']).read_text())\n    wr_require(preserved['status'] == 'PASS_FORWARD_BASELINE_SOURCE_PRODUCTS_AND_KIT_RETAINED'\n               and preserved['sourceCommit'] == forward['baselineSourceSHA']\n               and preserved['sourceTree'] == forward['baselineSourceTree']\n               and preserved['sourceMutated'] is False and preserved['testsExecuted'] == 0,\n               'Actual pre-transition preservation is required')\n    wr_require(set(preserved['trees']) == {'source', 'app-derived-Products', 'prior-kit-checkout'},\n               'Complete source, current Products and prior Kit checkout custody required')\n    for row in preserved['trees'].values():\n        root = pathlib.Path(row['retained'])\n        wr_require(root.is_dir() and not root.is_symlink(), 'Physical retained forward baseline is absent')\n        for key in ('before', 'retainedManifest', 'after'):\n            wr_require(wr_sha(row[key]['path']) == row[key]['sha256'], 'Forward retention manifest changed')\n    transition = cache['packageTransition']\n    wr_require(transition['status'] == 'PASS_EXACT_KIT_ONLY_LOCK_AND_CHECKOUT_TRANSITION'\n               and transition['changedIdentity'] == 'torahinspectorkit'\n               and transition['beforeRevision'] == '9058b489e9acc271b4f8ef69e2ed24648f93b4ed'\n               and transition['afterRevision'] == '26beca175d64a4d34e3567f2bbb4bf308d714478'\n               and transition['unchangedCount'] == 55 and transition['pinCount'] == 56,\n               'Only the exact reviewed Kit transition is admitted')\n    wr_require(transition['afterPackageState'] == cache['packageState']\n               and transition['afterLockSHA256'] == WAVE3_ADMISSION['pins']['packageResolvedSHA256']\n               and transition['beforeLockSHA256'] == forward['baselinePackageResolvedSHA256'],\n               'Forward package receipt differs')\n    wr_require(staging['canonicalSDKRevision'] == forward['targetSDKRevision']\n               and staging['sdkReceiptSHA256'] == WAVE3_ADMISSION['pins']['sdkMaterializationReceiptSHA256'],\n               'Final SDK source/marker differs')\n    wr_require(cache['historicalProcessGroupReprobes'] == 0\n               and staging['historicalProcessGroupReprobes'] == 0,\n               'Historical groups are receipt evidence only')\n    census_ref = forward['resourceCensusControl']\n    census_path = pathlib.Path(census_ref['path'])\n    wr_require(census_path.resolve() == census_path and not census_path.is_symlink()\n               and wr_sha(census_path) == census_ref['sha256']\n               == '229222b72fd01aa515aef502aa8f8c889344f9e4cd60981421f49f53ecf3bd2a',\n               'Exact original all-host resource observer required')\n    spec = importlib.util.spec_from_file_location('forward_original_resource_observer', census_path)\n    observer = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(observer)\n    observed = observer.census()\n    w3_write(EVIDENCE / 'forward-global-census.json', observed)\n    wr_require(not observed['heavyCompilerOrCopyProcesses'] and not observed['queuedLaunchers'],\n               'A fresh all-host heavy writer or queue blocks the finite build window')\n    wr_require(observed['freeBytes'] >= PHASE_GROWTH['app'] + FLOOR + CONCURRENT_GROWTH,\n               'The original6GiB+2GiB+512MiB warm App envelope is unavailable')\n\n\n\ndef validate_forward(data):\n    forward = data['forwardWarm']\n    wr_require(forward['schema'] == 'pinkha-forward-warm-lineage-v1'\n               and forward['baselineSourceSHA'] == '8f2c11713fb8a40ae13444104723666ffef68afe'\n               and forward['baselineSourceTree'] == '7bcaa6e1b6eadf42eaaaebcb75aab84686aa1f9a',\n               'This source successor starts only from the actual clean8f2 checkpoint')\n    wr_require(forward['baselineSDKMarkerSHA256'] == 'b10eb0805789a04f9f48721230961e45ba6a93ceb5d95cb90437a59c87ae9528'\n               and forward['baselinePackageResolvedSHA256'] == 'e22368e522ac795253935b0a31e39d1b36bd9043ef2ed1014845927914527ccd',\n               'Observed baseline SDK/lock differs')\n    wr_require(re.fullmatch('[0-9a-f]{40}', forward['targetSDKRevision'] or '') is not None\n               and forward['targetSDKRevision'] != '38528941720d9b4f2da8dce7afbc788c2e554a0c',\n               'Explicit published target SDK required; an unbound plan cannot run')\n    wr_require(re.fullmatch('[0-9a-f]{40}', data['appSourceSHA'] or '') is not None\n               and data['appSourceSHA'] != forward['baselineSourceSHA'], 'Exact forward App source required')\n    for key in ('sdkMaterializationReceiptSHA256', 'packageResolvedSHA256', 'nativeSourceManifestSHA256'):\n        wr_require(re.fullmatch('[0-9a-f]{64}', data['pins'].get(key) or '') is not None,\n                   'Exact final source dependency required: ' + key)\n    wr_require(data['warmRetry']['concurrentGrowthAllowanceBytes'] == 512 * 1024 ** 2,\n               'This finite-window source successor retains the exact512MiB estimate')\n    wr_require(forward['buildsDuringStaging'] == 0 and forward['testsDuringStaging'] == 0,\n               'Staging and runtime admission are separate')\n\n\ndef validate_retry(data):",
+      "old": "def validate_retry(data):"
+    }
+  ],
+  "fullInverseRestoresOriginal": true,
+  "hostActions": 0,
+  "originalSHA256": "c4b67858674156894a29b326c2766d043ce0308c065029bd5c1a6ae1aa254fff",
+  "schema": "pinkha-forward-warm-adapter-full-inverse-v1",
+  "testsExecuted": 0
+}

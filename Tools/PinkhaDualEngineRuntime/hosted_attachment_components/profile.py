@@ -13,7 +13,7 @@ from pathlib import Path
 import re
 import sys
 
-PROFILE_SHA256 = "260b4ad6b97e9012df7c0d97fb3d73aab94533e6a39b1aa3fd9edf08b89399ef"
+PROFILE_SHA256 = "2b0e1e1c842843af346307c570fda9fad6cafaa0716ab89c1789c964ef4bdd61"
 ORIGINALS_SHA256 = "adc29fa18b2bd64dce6bca3cf6ded88ae6203246a12fa7e781229fda41b1f326"
 ORIGINAL_MANIFEST_SHA256 = "b0afbd53aef99cc44adc77432c6fba6b7b060faf4808e81ec01799df3d2e627c"
 TARGET = "AnytypeTests"

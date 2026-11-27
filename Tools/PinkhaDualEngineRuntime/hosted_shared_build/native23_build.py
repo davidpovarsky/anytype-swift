@@ -25,7 +25,7 @@ from types import SimpleNamespace
 sys.dont_write_bytecode = True
 PREFIX = "Tools/PinkhaDualEngineRuntime/hosted_shared_build/"
 CONTRACT_NAME = "native23_build_contract.json"
-CONTRACT_SHA256 = "ac95cf3256a6629236652b3baa0bb5b4318f347e83e9faabca6161a0e2795b2a"
+CONTRACT_SHA256 = "8a3b7ce78bb88bee34604aeead52375a2eb7c74ea1a0a0d7089230d23768cf49"
 TARGET = "PinkhaAnyNativeUITests"
 PHASE = "native23-ui"
 LOCK = "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"

@@ -1,0 +1,83 @@
+{
+  "scope": "LOCAL_SOURCE_WHITESPACE_ONLY_NOT_COMPILER_OR_TEST",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "init",
+        "--quiet"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "add",
+        "--all"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-c",
+        "user.name=Source Review",
+        "-c",
+        "user.email=source-review@local.invalid",
+        "-c",
+        "commit.gpgsign=false",
+        "commit",
+        "--quiet",
+        "-m",
+        "Exact partial source preimages only"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "add",
+        "--all"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "exit": 0,
+      "stdout": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapStateManager.swift\nAnytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift\nModules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift\nModules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift\nModules/PinkhaKit/Tests/PinkhaKitTests/PinkhaBootstrapRecoveryTests.swift\n",
+      "stderr": ""
+    }
+  ],
+  "changedPaths": [
+    "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapStateManager.swift",
+    "Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceManifestStore.swift",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+    "Modules/PinkhaKit/Tests/PinkhaKitTests/PinkhaBootstrapRecoveryTests.swift"
+  ],
+  "pass": true
+}

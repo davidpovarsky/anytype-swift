@@ -1,0 +1,116 @@
+{
+  "accountInputs": 0,
+  "actualControls": {
+    "accountInputs": 0,
+    "actualMethods": {
+      "errors": 0,
+      "failures": 0,
+      "runs": 2,
+      "skips": 0
+    },
+    "callerOwnedGroupRequired": true,
+    "compilerInvocations": 0,
+    "controllerSHA256": "26ed736be9e5ddb8def2af26de6648bba4ab8ad85f55be91bc045dc215de4b84",
+    "controls": [
+      {
+        "deliberatelyPreblockedAlarmWasUnblocked": true,
+        "expectedAbsoluteSeconds": 0.35,
+        "name": "slow-body",
+        "ownedTimerCleared": true,
+        "peerErrors": [],
+        "pendingAlarmAfter": false,
+        "previousHandlerRestored": true,
+        "previousMaskRestored": true,
+        "seconds": 0.35035502444952726,
+        "socketOperationTimeoutSeconds": 0.1,
+        "status": "PASS",
+        "successfulDripWrites": 11,
+        "threadJoined": true
+      },
+      {
+        "deliberatelyPreblockedAlarmWasUnblocked": true,
+        "expectedAbsoluteSeconds": 0.35,
+        "name": "slow-header",
+        "ownedTimerCleared": true,
+        "peerErrors": [],
+        "pendingAlarmAfter": false,
+        "previousHandlerRestored": true,
+        "previousMaskRestored": true,
+        "seconds": 0.3503478653728962,
+        "socketOperationTimeoutSeconds": 0.1,
+        "status": "PASS",
+        "successfulDripWrites": 11,
+        "threadJoined": true
+      }
+    ],
+    "errors": [],
+    "nativeProcesses": 0,
+    "seconds": 0.7125590397045016,
+    "sourceUnchanged": true,
+    "status": "PASS_TWO_FRESH_ABSOLUTE_HTTP_DEADLINE_CONTROLS"
+  },
+  "actualControlsSHA256": "c4f82233c59a4025cf5236cc8f0c601fb72c2084beaa4e220fc30ad03b793213",
+  "admissionFreeBytes": {
+    "development": 641859584,
+    "root": 3355525120
+  },
+  "allOwnedGroupsPositivelyAbsent": true,
+  "commandDeadlineSeconds": 15,
+  "commands": [
+    {
+      "absenceObservedAtSeconds": 1.042102225124836,
+      "argv": [
+        "/usr/bin/python3.12",
+        "-B",
+        "/mnt/development/projects/evidence/pinkha-current-authority-http-controls-20261127-source1/http_deadline_controls.py",
+        "--controller",
+        "/mnt/development/projects/evidence/pinkha-current-authority-http-controls-20261127-source1/verify_current_authority_http.py",
+        "--controller-sha256",
+        "26ed736be9e5ddb8def2af26de6648bba4ab8ad85f55be91bc045dc215de4b84",
+        "--output",
+        "/mnt/development/projects/evidence/pinkha-current-authority-http-controls-20261127/attempt1/controls"
+      ],
+      "cleanupErrors": [],
+      "cwd": "/mnt/development/projects/evidence/pinkha-current-authority-http-controls-20261127/attempt1",
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "logSHA256": "b9ce51c1fb0859f12d55ee6680bfd4511e5fae602c1b86a8a1b180f50313d196",
+      "pgid": 468217,
+      "pid": 468217,
+      "processGroupAbsent": true,
+      "seconds": 1.042106544598937,
+      "signals": [],
+      "stopReason": null,
+      "unreapedLeaderDuringGroupCleanup": true
+    }
+  ],
+  "compilerInvocations": 0,
+  "completionErrors": [],
+  "controllerDeadlineSeconds": 60,
+  "developmentAdmissionReserveBytes": 8388608,
+  "developmentFloorBytes": 536870912,
+  "errors": [],
+  "freeAfter": {
+    "development": 641830912,
+    "root": 3355525120
+  },
+  "minimumFreeBytes": {
+    "development": 641830912,
+    "root": 3355525120
+  },
+  "nativeProcesses": 0,
+  "outputCapBytes": 8388608,
+  "peakOwnedBytes": 20480,
+  "previousLifecycleControlsRerun": 0,
+  "publicInputsUnchanged": true,
+  "pythonDriver": {
+    "path": "/usr/bin/python3.12",
+    "sha256": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960",
+    "version": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "requiredOuterTimeoutSeconds": 120,
+  "rootAdmissionReserveBytes": 4194304,
+  "rootFloorBytes": 2147483648,
+  "seconds": 1.0840146271511912,
+  "status": "PASS_TWO_ACTUAL_HTTP_DEADLINES_AND_OWNED_CLOSURE"
+}

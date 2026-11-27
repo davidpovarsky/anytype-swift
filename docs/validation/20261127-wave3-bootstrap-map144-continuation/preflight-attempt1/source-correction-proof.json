@@ -1,0 +1,68 @@
+{
+  "actualAfterMap": {
+    "bytes": 243028,
+    "gitBlob": "487ea7dcc15b1ff6356ba067c974af89083e0e3b",
+    "gitMode": "100644",
+    "sha256": "73c7fdd94f05256a1c7a1311bf4dfba7e64b1055738ab1a1dbc3dab58d6f7b35"
+  },
+  "actualBeforeMap": {
+    "bytes": 237242,
+    "gitBlob": "f16caaee951241b4ccc7cf15eadaaf01e478e80a",
+    "gitMode": "100644",
+    "sha256": "4d71a25b43bbbd5b9129e9514c7b5e7be97a0391dbaba9750c9344ee26e5cbb4"
+  },
+  "actualDurationSeconds": 0.27,
+  "actualFirstError": "ValueError: The complete original map byte ranges must remain exact",
+  "actualJob": "job_c660a580a7b1",
+  "actualPreflightFailure": {
+    "bytes": 3486,
+    "gitBlob": "0d4fffa9454b4a3fe20ac8cde53cf86e57c05b0d",
+    "gitMode": "100644",
+    "sha256": "66ff81659ab6f3a1559951f879940a0d4d724f1f8555627e55ae20884f2de82e"
+  },
+  "all140ParsedRowsAndTopMetadataPreserved": true,
+  "allFiveOriginalPendingFilesExact": true,
+  "allOldBytesPreserved": true,
+  "candidateImports": 0,
+  "cause": "Sorted payload dictionary keys differ from the original inserted map key order. Re-serializing them made a false byte comparison; the retained map bytes were correct.",
+  "compilerInvocations": 0,
+  "correction": "Compare the entire original raw prefix and suffix, then parse only the inserted comma-prefixed array fragment and require the same exact four objects. Retain all full144, baseline and identity guards.",
+  "exactFourInsertedObjectsMatchPayload": true,
+  "exactInsertedBytes": {
+    "bytes": 5786,
+    "gitBlob": "f9a8887b273b7f6e92d2f844857887814066b2e5",
+    "gitMode": "100644",
+    "sha256": "9821706caeabbda40306fb2b3db9337a4f4107ef52b683e39453aaf1de161bbb"
+  },
+  "failureBeforeResourcesEvidenceOrOwnedCommands": true,
+  "freshPendingReadback": {
+    "bytes": 2348,
+    "gitBlob": "297be9b5bf6ca16d5585d3a034c2630947103354",
+    "gitMode": "100644",
+    "sha256": "41fab85c77bac84f8c8fa45a37e47ace6bf0cc2a6590d672e5af70f805053ce2"
+  },
+  "hostActions": 0,
+  "metadataAndProductChangesFromPrepared2": 0,
+  "originalController": {
+    "bytes": 54734,
+    "gitBlob": "3400110811ec99070401ddae50e75ccaf4eed2bf",
+    "gitMode": "100644",
+    "sha256": "d42031f635da0e0f0d7443e0de5a6e8cd7df650c09ead7981da03439f98fad23"
+  },
+  "originalPayload": {
+    "bytes": 2240645,
+    "gitBlob": "a81e8d42c3fbc17ebb304174b1cebe336b88a8a5",
+    "gitMode": "100644",
+    "sha256": "a2f02db05359ef7e28fffbc89e0c26365b3fb495c8435025a67188cafb0b7120"
+  },
+  "originalPrefixBytes": 236905,
+  "originalSuffixBytes": 337,
+  "pendingGitFilesUnchanged": true,
+  "precisionNote": "Earlier rendered JavaScript numbers rounded nanoseconds; direct Python parsing proves the original frozen payload and fresh lossless witness already agree exactly. No timestamp guard or value is changed.",
+  "runtimeAcceptance": false,
+  "schema": "pinkha-map144-preflight-key-order-correction/v1",
+  "scope": "STATIC_ORIGINAL_BYTES_AND_ACTUAL_FAILURE_NO_CANDIDATE_EXECUTION",
+  "testsExecuted": 0,
+  "timestampsRemainExactOriginalIntegers": true,
+  "wholeMapRestoredByRemovingOnlyInsertion": true
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "pinkha-native-live-render-source-gate/v1",
+  "status": "SOURCE_FIX_NOT_COMPILED_OR_RUN",
+  "parentCommit": "d528e5413c72320c423ce9ccdbd4fbe423ca4a4a",
+  "primaryReadRef": "13dc5b060c23527aeaedb1d1e250a86c9a2fc17c",
+  "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+  "before": {
+    "bytes": 61374,
+    "sha256": "8b461efe44868904b826da7b601c1537fd1c164705f861b15920143a556caac5",
+    "gitBlob": "81eec84bc476ce7d0c4835ebee912e57b35717c6"
+  },
+  "after": {
+    "bytes": 61405,
+    "sha256": "ec8f72a34e9823c7ba84ab8dbb013d9827c9302fc6143436de3ec8a3bfdf2f37",
+    "gitBlob": "45144274ff51800b21d608d2a2df8f1db8b11477"
+  },
+  "literalReplacements": 1,
+  "inverseRestoresOriginal": true,
+  "newPredicate": "if cell.renderedSource?.utf8.elementsEqual(renderedSource.utf8) != true || cell.renderedNativeStyle != block.native[\"style\"]",
+  "preserved": "All other input, composition, rendering-policy, style, block type, DynamicType, focus, history, authority, source and transport bodies are byte-identical. Nil cache still requests initial rendering.",
+  "sourceFinding": "Canonical String equality in the configure cache gate bypassed the already UTF8-exact shared rendering policy on a live same-cell refresh. Local applyText sets cell text/cache directly; typing+cold and renderer-only tests do not cover this gate.",
+  "runtimeStatus": "NOT_RUN",
+  "testCoverage": "Existing renderer3 and Native25 typing/cold remain unchanged and are not claimed for this live-refresh gate; hosted controller fixture feasibility in progress."
+}

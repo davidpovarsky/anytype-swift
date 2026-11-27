@@ -15,9 +15,9 @@ from originals import require
 
 PREFIX = "Tools/PinkhaDualEngineRuntime/hosted_native23/"
 READERS = (
-    ("control", "control.py", "efc8291b7d5e7df7f3381df3ed61ba1e75cae209e8d86e8d433b187d117c19f2"),
-    ("native23_inputs", "native23_inputs.py", "87276b53b378c4d305f782d5664106c76331276b78eb413795042af98e5f0a9d"),
-    ("inspector14_original_native23_reader_definitions", "run.py", "27576bb6c8ee8bebe618f05bcaee95e7c0fa21b2090d0f449e9b1593961d82fa"),
+    ("control", "control.py", "fa6a1dbf53cf5e37b03e191d3a053ae62122bd7dab8f2aee66bda1b338ed4935"),
+    ("native23_inputs", "native23_inputs.py", "44cf16d1d2de363ab60c6d59d327e5cb57db4663976d83253ddfc203586ed849"),
+    ("inspector14_original_native23_reader_definitions", "run.py", "05cdcef460b918c20508ca69afd2aa543c63d92642bb735e9777bdbadc8f3663"),
 )
 
 
@@ -41,7 +41,7 @@ class Native23Receipts:
         loaded = [load_pinned(self.control / PREFIX / path, name, digest, originals)
                   for name, path, digest in READERS]
         self.reader_control, self.inputs, definitions = loaded
-        require(definitions.CORE_ADMISSION_SHA == "fd0748fbbf7cef165e7b0a4e837473deeb56eb9efb11bf89d96ddbee2e102593"
+        require(definitions.CORE_ADMISSION_SHA == "11dc47753d6011de6fba8955239a6b63f5fde919b8a7d8edbb2dec75ccfaeb76"
                 and definitions.CORE_ORIGINALS_SHA == "adc29fa18b2bd64dce6bca3cf6ded88ae6203246a12fa7e781229fda41b1f326",
                 "Approved original shared reader lineage changed")
         self.helper = load_pinned(self.control / self.inputs.HELPER,
