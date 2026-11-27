@@ -1,0 +1,281 @@
+--- qualified-source-only-a45b
++++ completion-eight-retained-five-new
+@@ -1,10 +1,10 @@
+ #!/usr/bin/env python3
+-"""Qualify only 13 new Bookmark methods and one standalone Any product.
+-
+-All source, temporary, fixture and product outputs belong to a new development
+-directory. The qualified N1616 input, C313 worktree and C3 cache are never edited.
+-The source is the separately qualified canonical gofmt17 output. Compilation,
+-test execution and later native warm/cold acceptance remain separate obligations.
++"""Complete 13 Bookmark methods: eight retained SDK passes and five new server tests.
++
++Reuse the byte-exact original 1,626-file materialized source; new temporary,
++fixture, evidence and one product outputs belong to a new development directory.
++The original cap failure, qualified N1616 input, C313 worktree and C3 cache stay
++unchanged. No retained test runs again; native warm/cold remains a separate proof.
+ """
+ import argparse
+ import hashlib
+@@ -20,8 +20,15 @@
+ import types
+ 
+ sys.dont_write_bytecode = True
+-HERE = Path(__file__).absolute().parent
+ PARENT = Path('/mnt/development/projects/evidence/pinkha-c-bookmark-create-20261127')
++HERE = PARENT/'prepared1'
++RETAINED = PARENT/'qualification-attempt1'
++RETAINED_RECEIPT_SHA = '2a453fd5aa39caddbbded6056be7b94eab5978fc3d12391b5caca4a73d38443b'
++RETAINED_CONTROLLER_SHA = 'a45b10800f1ea89530e38b1c6a5b7e34ee3e2ded5bc9d326ccc98762186ed712'
++RETAINED_INPUTS_SHA = '1bad7f2ca0bdee3d5957e8bb8647417aef8e823257c36e57ec9ea022f5659ca0'
++RETAINED_SDK_LOG_SHA = 'f6b1fdbd7308d2c3875a3465821b8ccb5dea339917d33fe314548d5d21cbdbc1'
++RETAINED_ENV_LOG_SHA = '865117f0fe0f842b406e0a216c4f9c249a7a2df9b66e478067066f5ef3485c1d'
++EMPTY_SHA = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+ BASE = Path('/var/lib/pinkha-c-filesv2-20261126/final-authority-native1')
+ BASE_SOURCE_SHA = '773f0a25422b3460a375182fb6f839fd71d7246ad8b489b6c20418bfab3b2471'
+ BASE_RECEIPT_SHA = '9282a20d65d2dc3006a9a256e6fbeda926089b84efc770609d4e32b54cb89602'
+@@ -46,7 +53,7 @@
+ CONFIG_SHA = 'a3fe3c21144c2c82afa03b58014752c6bca6e5a9f3e69a1bc1b2b38415434756'
+ MIB, GIB = 1024**2, 1024**3
+ ROOT_FLOOR, DEV_FLOOR = 2*GIB, 512*MIB
+-OUTPUT_CAP, CACHE_CAP, LOG_CAP = GIB, 192*MIB, 16*MIB
++OUTPUT_CAP, CACHE_CAP, LOG_CAP = GIB, 512*MIB, 16*MIB
+ CONTROLLER_SECONDS, FINAL_SECONDS = 1260, 90
+ 
+ 
+@@ -206,7 +213,7 @@
+     args = parser.parse_args()
+     output = args.output
+     require(os.geteuid() == 0 and os.uname().nodename == 'torah-social', 'authorized Oracle host')
+-    require(output.parent == PARENT and re.fullmatch(r'qualification-attempt[1-9][0-9]{0,2}', output.name), 'fixed exclusive output scope')
++    require(output.parent == PARENT and re.fullmatch(r'qualification-completion-attempt[1-9][0-9]{0,2}', output.name), 'fixed exclusive output scope')
+     physical(PARENT, True)
+     require(not os.path.lexists(output), 'preserve every previous attempt')
+     os.umask(0o077)
+@@ -214,14 +221,15 @@
+     exclusive(output/'result.json', b'{}\n')
+     began = time.monotonic()
+     serial, final_deadline = 0, None
+-    source, temporary = output/'source', output/'temporary'
++    source, temporary = RETAINED/'source', output/'temporary'
+     cache_before = None
+     baseline = candidate_before = None
+     baseline_files = candidate_files = None
+     admitted = {}
+-    result = {'protocol': 'pinkha-native-bookmark-conditional-create-qualification-v1', 'status': 'RUNNING',
++    result = {'protocol': 'pinkha-native-bookmark-conditional-create-completion-v1', 'status': 'RUNNING',
+         'processes': [], 'errors': [], 'completionErrors': [], 'mutations': [],
+-        'priorTestMethodsReexecuted': 0, 'originalAccountInputs': 0, 'nativeCLIAccountProcesses': 0,
++        'priorTestMethodsReexecuted': 0, 'retainedActualMethodCount': 0, 'newActualMethodCount': 0,
++        'newSourceMaterializations': 0, 'sourceRoot': str(source), 'originalAccountInputs': 0, 'nativeCLIAccountProcesses': 0,
+         'C313SourceWrites': 0, 'C3CacheWrites': 0, 'nativeProductBuilds': 0,
+         'runtimeBodylessWarmColdStatus': 'NOT_RUN_SEPARATE_CONSUMER',
+         'resourcePolicy': {'rootFloorBytes': ROOT_FLOOR, 'developmentFloorBytes': DEV_FLOOR,
+@@ -264,8 +272,8 @@
+         if cache_before is not None:
+             require(CACHE.is_symlink() and CACHE.resolve() == CACHE_TARGET, 'original admitted shared cache alias')
+             growth = max(0, allocation(CACHE_TARGET, mutable=True)-cache_before)
++            result['peakObservedCacheGrowthBytes'] = max(growth, result.get('peakObservedCacheGrowthBytes', 0))
+             require(growth <= CACHE_CAP, 'measured shared cache incremental cap')
+-            result['peakObservedCacheGrowthBytes'] = max(growth, result.get('peakObservedCacheGrowthBytes', 0))
+         checkpoint()
+         return free
+ 
+@@ -391,37 +399,57 @@
+         physical(CACHE_TARGET, True)
+         cache_before = allocation(CACHE_TARGET, mutable=True)
+         result['cacheAllocationBefore'] = cache_before
+-        source.mkdir(mode=0o700)
+-        result['mutations'].append({'operation': 'materialize-new-owned-source', 'state': 'dispatching', 'expectedFiles': 1625})
+-        save()
+-        for index, (name, wanted) in enumerate(sorted(candidate_files.items())):
+-            checkpoint()
+-            relative(name)
+-            if index % 64 == 0:
+-                guard()
+-            raw = overlay[name] if name in overlay else frozen(BASE/'source'/name, 32*MIB)
+-            require(identity(raw) == wanted, 'each materialized member exact')
+-            target = source/name
+-            target.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+-            exclusive(target, raw, baseline['modes'].get(name, 0o600))
+-        actual = source_inventory(source, checkpoint)
+-        require(actual['files'] == candidate_files, 'full 1625 source before any compiler')
++        # Reuse exactly the already materialized 1,626-file source. Nothing is
++        # rebuilt or re-run merely to replace the failed resource receipt.
++        retained = json.loads(pin(RETAINED/'result.json', RETAINED_RECEIPT_SHA))
++        pin(HERE/'qualify_bookmark_native.py', RETAINED_CONTROLLER_SHA)
++        require(retained['status'] == 'FAIL_BOOKMARK_QUALIFICATION_PRESERVED' and
++                retained['controller'] == {'bytes': 30227, 'sha256': RETAINED_CONTROLLER_SHA} and
++                retained['errors'] == [{'type': 'RuntimeError', 'message': 'RuntimeError: measured shared cache incremental cap'}] and
++                retained['completionErrors'] == [{'boundary': 'acceptanceAndResources', 'type': 'RuntimeError', 'message': 'measured shared cache incremental cap'}],
++                'only the exact retained cache-cap failure is eligible')
++        require(retained['allOwnedGroupsPositivelyAbsent'] is True and len(retained['processes']) == 3 and
++                retained['finalIntegrity'] == {'compiledSource': True, 'declaredInputsAndProducts': True, 'originalSource': True} and
++                retained['sourceDraftSHA256'] == DRAFT_SHA and retained['sourceManifestSHA256'] == COMPOSED_SHA and
++                retained['compiledSourceInputSHA256'] == RETAINED_INPUTS_SHA and retained['sourceFiles'] == 1625 and
++                retained['nativeProductBuilds'] == retained['priorTestMethodsReexecuted'] == retained['originalAccountInputs'] ==
++                retained['nativeCLIAccountProcesses'] == retained['C313SourceWrites'] == retained['C3CacheWrites'] == 0 and
++                retained['runtimeBodylessWarmColdStatus'] == 'NOT_RUN_SEPARATE_CONSUMER', 'retained source/effect boundary')
++        retained_rows = retained['processes']
++        require(all(row['exitCode'] == 0 and row['processGroupAbsent'] is True and row['forcedCleanup'] is False and
++                    row['signals'] == row['cleanupErrors'] == [] and row['stopReason'] is None and
++                    row['unreapedLeaderDuringGroupCleanup'] is True for row in retained_rows[:2]),
++                'two retained normal owned commands')
++        interrupted_row = retained_rows[2]
++        require(interrupted_row['exitCode'] == -signal.SIGTERM and interrupted_row['processGroupAbsent'] is True and
++                interrupted_row['forcedCleanup'] is True and interrupted_row['signals'] == [signal.SIGTERM] and
++                interrupted_row['cleanupErrors'] == [] and interrupted_row['unreapedLeaderDuringGroupCleanup'] is True and
++                interrupted_row['logSHA256'] == EMPTY_SHA and
++                interrupted_row['stopReason'] == 'RuntimeError: measured shared cache incremental cap',
++                'retain the interrupted server compile as failure, never a qualified command')
++        pin(RETAINED/'server-five'/'original.log', EMPTY_SHA, LOG_CAP)
++        retained_source_raw = pin(RETAINED/'compiled-source-inputs.json', RETAINED_INPUTS_SHA)
++        retained_source = json.loads(retained_source_raw)
+         config_raw = frozen(source/CONFIG_NAME, 65536)
+-        require(identity(config_raw) == {'bytes': 1137, 'sha256': CONFIG_SHA} and 'staging.yml' not in candidate_files, 'original public local fixture config separately declared')
+-        exclusive(source/'staging.yml', config_raw)
++        require(identity(config_raw) == {'bytes': 1137, 'sha256': CONFIG_SHA} and 'staging.yml' not in candidate_files,
++                'exact separately declared public runtime config')
+         candidate_files = dict(candidate_files, **{'staging.yml': identity(config_raw)})
+         candidate_before = source_inventory(source, checkpoint)
+-        require(candidate_before['files'] == candidate_files and len(candidate_files) == 1626, '1625 product source plus one exact runtime fixture config')
++        require(candidate_before == retained_source and candidate_before['files'] == candidate_files and len(candidate_files) == 1626,
++                'all original producer source bytes and modes remain identical')
+         exclusive(output/'source-manifest.json', expected_raw)
+-        save_json(output/'compiled-source-inputs.json', candidate_before)
+-        compiled_input_sha = identity(frozen(output/'compiled-source-inputs.json'))['sha256']
++        exclusive(output/'compiled-source-inputs.json', retained_source_raw)
+         pin(output/'source-manifest.json', COMPOSED_SHA)
+-        pin(output/'compiled-source-inputs.json', compiled_input_sha)
+-        result['compiledSourceInputSHA256'] = compiled_input_sha
++        pin(output/'compiled-source-inputs.json', RETAINED_INPUTS_SHA)
++        result['compiledSourceInputSHA256'] = RETAINED_INPUTS_SHA
+         result['sourceManifestSHA256'] = COMPOSED_SHA
+         result['sourceFiles'] = 1625
+         result['separatelyDeclaredRuntimeConfig'] = {'path': 'staging.yml', **identity(config_raw)}
+-        result['mutations'][-1]['state'] = 'completed'
++        result['retainedQualification'] = {'receiptPath': str(RETAINED/'result.json'), 'receiptSHA256': RETAINED_RECEIPT_SHA,
++            'sourceRoot': str(source), 'compiledSourceInputsSHA256': RETAINED_INPUTS_SHA,
++            'qualifiedProcesses': retained_rows[:2], 'failedCompileProcess': interrupted_row,
++            'originalFailureStatusUnchanged': True, 'historicalProcessIDsNeverProbedOrSignaled': True}
++        save()
+         temporary.mkdir(mode=0o700)
+         environment = {key: value for key, value in os.environ.items() if not key.startswith(('GO', 'CGO_', 'ANY_', 'PINKHA_', 'PYTHON'))}
+         environment.update(GOTOOLCHAIN='local', GOMAXPROCS='2', GOMEMLIMIT='1GiB', GOCACHE=str(CACHE),
+@@ -431,8 +459,58 @@
+         for row in [known_go['driver']]+list(known_go['tools'].values()):
+             require(identity(pin(Path(row['path']), row['sha256'], 128*MIB)) == {key: row[key] for key in ('bytes', 'sha256')}, 'same actual Go driver/compiler/linker')
+         driver = known_go['driver']['path']
+-        metadata_log, _ = command('go-environment', [driver, 'env', '-json', 'GOVERSION', 'GOROOT', 'GOTOOLDIR', 'GOHOSTOS', 'GOHOSTARCH', 'GOOS', 'GOARCH'], source, environment, 15)
+-        require(json.loads(frozen(metadata_log, 65536)) == known_go['metadata'], 'same qualified Linux arm64 Go metadata')
++        retained_env_raw = pin(RETAINED/'go-environment'/'original.log', RETAINED_ENV_LOG_SHA, 65536)
++        require(retained['goToolchain'] == known_go and json.loads(retained_env_raw) == known_go['metadata'] and
++                retained_rows[0]['logSHA256'] == RETAINED_ENV_LOG_SHA and retained_rows[0]['cwd'] == str(source) and
++                retained_rows[0]['argv'] == [driver, 'env', '-json', 'GOVERSION', 'GOROOT', 'GOTOOLDIR', 'GOHOSTOS', 'GOHOSTARCH', 'GOOS', 'GOARCH'],
++                'exact retained metadata command and freshly pinned driver/compiler/linker')
++        for key, value in retained['environment'].items():
++            if key not in ('GOTMPDIR', 'TMPDIR'):
++                require(environment.get(key) == value, 'same retained non-temporary compiler environment')
++        result['permittedEnvironmentChange'] = {'GOTMPDIR': str(temporary), 'TMPDIR': str(temporary)}
++        # The historical receipt never observed CC/CXX/AR or PATH. Keep that
++        # limit explicit rather than reconstructing or relabeling old evidence.
++        result['retainedCompilerEvidenceScope'] = {
++            'originalGoDriverCompilerLinkerSourceAndRecordedEnvironmentOnly': True,
++            'historicalNativeCompilerExecutablesObserved': False,
++            'historicalPATHObserved': False, 'retainedSDKMethodsReexecuted': 0}
++        default_environment = dict(environment)
++        for key in ('CC', 'CXX', 'AR'):
++            default_environment.pop(key, None)
++        compiler_log, _ = command('current-native-compiler-environment',
++            [driver, 'env', '-json', 'GOVERSION', 'GOROOT', 'GOTOOLDIR', 'GOHOSTOS', 'GOHOSTARCH',
++             'GOOS', 'GOARCH', 'CGO_ENABLED', 'GOMODCACHE', 'GOCACHE', 'CC', 'CXX', 'AR'],
++            source, default_environment, 15)
++        native_environment = json.loads(frozen(compiler_log, 65536))
++        require({key: native_environment.get(key) for key in known_go['metadata']} == known_go['metadata'] and
++                native_environment.get('CGO_ENABLED') == '1' and native_environment.get('GOMODCACHE') == '/root/go/pkg/mod' and
++                native_environment.get('GOCACHE') == str(CACHE), 'current original Go defaults and original cache/module placement')
++        native_tools = {}
++        current_path = environment.get('PATH', os.defpath)
++        require(all(part and Path(part).is_absolute() for part in current_path.split(os.pathsep)), 'explicit absolute compiler lookup PATH')
++        for key in ('CC', 'CXX', 'AR'):
++            default_name = native_environment.get(key)
++            require(isinstance(default_name, str) and re.fullmatch(r'[A-Za-z0-9_./+-]+', default_name),
++                    'one original default native compiler executable')
++            found = shutil.which(default_name, path=current_path)
++            require(found is not None, 'original native compiler executable present')
++            executable = Path(found).resolve()
++            require(environment.get(key, default_name) in (default_name, str(executable)),
++                    'conflicting inherited native compiler override refused: '+key)
++            compiler_bytes = frozen(executable, 128*MIB)
++            wanted = identity(compiler_bytes)
++            pin(executable, wanted['sha256'], 128*MIB)
++            mode = stat.S_IMODE(physical(executable).st_mode)
++            require(mode & 0o111, 'current native compiler executable mode')
++            admitted[str(executable)]['mode'] = mode
++            native_tools[key] = {'observedDefault': default_name, 'path': str(executable), **wanted, 'mode': mode}
++            environment[key] = str(executable)
++        environment['PATH'] = current_path
++        result['currentNativeCompilerObservation'] = {'metadata': native_environment, 'tools': native_tools,
++            'PATH': current_path, 'explicitEnvironment': {key: environment[key] for key in ('CC', 'CXX', 'AR')},
++            'appliesTo': ['five-new-server-methods', 'one-new-native-product'],
++            'historicalCompilerEqualityClaimed': False}
++
+         result['goToolchain'] = known_go
+         result['environment'] = {key: environment[key] for key in ('GOTOOLCHAIN', 'GOMAXPROCS', 'GOMEMLIMIT', 'GOCACHE', 'GOMODCACHE', 'GOTMPDIR', 'TMPDIR', 'CGO_ENABLED', 'GOWORK', 'GOFLAGS', 'GOPROXY', 'GOSUMDB')}
+         sdk_expected, server_expected = set(), set()
+@@ -441,11 +519,29 @@
+             target = sdk_expected if name.startswith(SDK_PREFIX) else server_expected
+             target.update((package, method) for method in methods)
+         require(len(sdk_expected) == 8 and len(server_expected) == 5, 'exact eight/five new methods')
+-        for label, expected, cwd, packages in [('sdk-eight', sdk_expected, source/SDK_PREFIX, ['./internal/bookmarkcreate', './internal/spaceobjects']), ('server-five', server_expected, source, ['./internal/server'])]:
++        retained_sdk_raw = pin(RETAINED/'sdk-eight'/'original.log', RETAINED_SDK_LOG_SHA, LOG_CAP)
++        sdk_pattern = '^('+'|'.join(sorted(name for _, name in sdk_expected))+')$'
++        retained_sdk_argv = [sys.executable, '-B', str(offline), '--exec', driver, 'test', '-json', '-p', '2',
++            '-count=1', '-timeout=300s', '-run', sdk_pattern, './internal/bookmarkcreate', './internal/spaceobjects']
++        retained_server_pattern = '^('+'|'.join(sorted(name for _, name in server_expected))+')$'
++        require(retained_rows[1]['argv'] == retained_sdk_argv and retained_rows[1]['cwd'] == str(source/SDK_PREFIX) and
++                retained_rows[1]['logSHA256'] == RETAINED_SDK_LOG_SHA and interrupted_row['cwd'] == str(source) and
++                interrupted_row['argv'] == [sys.executable, '-B', str(offline), '--exec', driver, 'test', '-json', '-p', '2',
++                    '-count=1', '-timeout=300s', '-run', retained_server_pattern, './internal/server'],
++                'exact retained SDK invocation and failed server invocation')
++        retained_sdk_events = parse_test_events(retained_sdk_raw, sdk_expected)
++        require(retained_sdk_events == retained['sdk-eight'], 'eight exact actual SDK events independently parsed')
++        result['sdk-eight'] = retained_sdk_events
++        result['retainedActualMethodCount'] = 8
++        result['retainedQualification']['sdkLogSHA256'] = RETAINED_SDK_LOG_SHA
++        result['retainedQualification']['environmentLogSHA256'] = RETAINED_ENV_LOG_SHA
++        save()
++        for label, expected, cwd, packages in [('server-five', server_expected, source, ['./internal/server'])]:
+             pattern = '^('+ '|'.join(sorted(name for _, name in expected))+')$'
+             argv = [sys.executable, '-B', str(offline), '--exec', driver, 'test', '-json', '-p', '2', '-count=1', '-timeout=300s', '-run', pattern]+packages
+             log, _ = command(label, argv, cwd, environment, 420)
+             result[label] = parse_test_events(frozen(log, LOG_CAP), expected)
++            result['newActualMethodCount'] = result[label]['passes']
+             save()
+         binary = output/'any'
+         result['mutations'].append({'operation': 'build-one-native-product', 'state': 'dispatching'})
+@@ -464,7 +560,7 @@
+                 '\tdep\tgithub.com/anyproto/any-sync\tv0.13.8\t' in metadata and
+                 '.runtime-artifacts/sdk-source' in metadata and known_go['metadata']['GOVERSION'] in metadata, 'same standalone module graph with local SDK overlay')
+         result['binaryModuleMetadata'] = identity(metadata.encode())
+-        result['status'] = 'PASS_13_NEW_BOOKMARK_METHODS_AND_ONE_NATIVE_PRODUCT'
++        result['status'] = 'PASS_13_BOOKMARK_METHODS_8_RETAINED_5_NEW_AND_ONE_NATIVE_PRODUCT'
+     except BaseException as error:
+         result['status'] = 'FAIL_BOOKMARK_QUALIFICATION_PRESERVED'
+         result['errors'].append({'type': type(error).__name__, 'message': str(error)})
+@@ -491,9 +587,12 @@
+                 result['completionErrors'].append({'boundary': label, 'type': type(error).__name__, 'message': str(error)})
+         try:
+             if result['status'].startswith('PASS_'):
+-                require(len(result['processes']) == 5 and result['allOwnedGroupsPositivelyAbsent'] and
+-                        all(row['exitCode'] == 0 and not row['forcedCleanup'] and not row['cleanupErrors'] and not row['signals'] for row in result['processes']), 'five normal owned groups')
+-                require(result['sdk-eight']['passes'] == 8 and result['server-five']['passes'] == 5 and result['nativeProductBuilds'] == 1, 'actual exact qualification counts')
++                require(len(result['processes']) == 4 and result['allOwnedGroupsPositivelyAbsent'] and
++                        all(row['exitCode'] == 0 and not row['forcedCleanup'] and not row['cleanupErrors'] and not row['signals'] for row in result['processes']), 'four new normal owned groups')
++                require(result['sdk-eight']['passes'] == result['retainedActualMethodCount'] == 8 and
++                        result['server-five']['passes'] == result['newActualMethodCount'] == 5 and result['nativeProductBuilds'] == 1 and
++                        result['priorTestMethodsReexecuted'] == 0 and len(result['retainedQualification']['qualifiedProcesses']) == 2,
++                        'eight retained plus five new methods; two retained plus four new qualified commands')
+             result['finalFreeBytes'] = guard()
+         except BaseException as error:
+             result['status'] = 'FAIL_BOOKMARK_QUALIFICATION_PRESERVED'

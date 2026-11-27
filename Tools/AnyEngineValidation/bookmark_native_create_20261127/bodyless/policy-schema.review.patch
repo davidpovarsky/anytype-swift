@@ -1,0 +1,54 @@
+--- actual-failed-consumer-99b132
++++ actual-policy-controls-schema-successor
+@@ -43,6 +43,10 @@
+ OFFLINE_SHA = '6eaca8b9602f9c1c7fce4b8a176759ad1a10577c0ee74eddb3264992976e86b1'
+ OFFLINE_PROOF = Path('/var/lib/pinkha-w1-functional-migration-20261127/canonical-definition-native-attempt3/result.json')
+ OFFLINE_PROOF_SHA = 'afef209a66b65edf14dd2acff2d53b073e2bb37d1937928592af3f9378d0f3ab'
++PRIOR_CONSUMER = PARENT/'bodyless-native-attempt1/result.json'
++PRIOR_CONSUMER_SHA = '6995033934f702d28af0611dab8535d6dc51d3069a32f43626182e73422ba9f3'
++PRIOR_CONSUMER_SOURCE = Path('/mnt/development/projects/evidence/pinkha-c-bookmark-bodyless-completion-source-20261127-attempt1/run_bodyless_bookmark.py')
++PRIOR_CONSUMER_SOURCE_SHA = '99b132dd1ab0436cdb3b6639831e161d7e07c5eb962c71a0021b63140a01ed4e'
+ LIBRARY = Path('/usr/lib/aarch64-linux-gnu/libseccomp.so.2.5.5')
+ LIBRARY_SHA = '3d128123b494ca9e88f3c237b0912397145af1754e86ea99f460af6857441f19'
+ NODECONF = 'internal/pinkha/migrationnative/testdata/local.yml'
+@@ -271,6 +275,23 @@
+         require(available >= GIB, 'one native process memory admission')
+         result['memAvailableBefore'] = available
+         result['controller'] = identity(pin(Path(__file__).absolute()))
++        previous_source = pin(PRIOR_CONSUMER_SOURCE, PRIOR_CONSUMER_SOURCE_SHA)
++        previous = closed_json(pin(PRIOR_CONSUMER, PRIOR_CONSUMER_SHA))
++        require(previous['status'] == 'FAIL_BODYLESS_BOOKMARK_PRESERVED' and
++                previous['controller'] == identity(previous_source) and
++                previous['commands'] == previous['requests'] == previous['mutations'] == previous['phases'] == [] and
++                previous['errors'] == [{'type': 'KeyError', 'message': "'actual'"}] and
++                previous['completionErrors'] == [] and previous['allStartedOwnedGroupsPositivelyAbsent'] is False and
++                previous['accountInitializations'] == previous['nativeBodylessCreates'] == 0 and
++                previous['compilerInvocations'] == previous['priorTestMethodsReexecuted'] == 0 and
++                previous['finalIntegrity'] == {'compiledSource': True, 'originalResponses': True,
++                    'ownedLifetimeInputs': True, 'publicInputsAndNativeProduct': True},
++                'original receipt-schema failure preserved with zero commands, requests or effects')
++        result['priorNoChildFailure'] = {'receiptPath': str(PRIOR_CONSUMER), 'receiptSHA256': PRIOR_CONSUMER_SHA,
++            'controllerSHA256': PRIOR_CONSUMER_SOURCE_SHA, 'status': previous['status'],
++            'errors': previous['errors'], 'startedCommands': 0, 'requests': 0, 'mutations': 0,
++            'accountInitializations': 0, 'originalAggregateAbsenceFlag': False,
++            'historicalProcessIDsProbedOrSignaled': False}
+         actual_install = closed_json(pin(PARENT/'installation-attempt1/result.json', INSTALL_SHA))
+         require(actual_install['status'] == 'PASS_EXACT_FORMATTED_BOOKMARK_SOURCE_INSTALLATION_ONLY' and
+                 actual_install['publicControlsUnchanged'] is True and actual_install['errors'] == actual_install['completionErrors'] == [] and
+@@ -413,9 +434,14 @@
+         policy = closed_json(pin(OFFLINE_PROOF, OFFLINE_PROOF_SHA))
+         require(policy['status'] == 'PASS' and policy['allOwnedGroupsPositivelyAbsent'] is True and
+                 policy['offlinePolicy']['helperSHA256'] == OFFLINE_SHA and
+-                policy['offlinePolicy']['actual']['librarySHA256'] == LIBRARY_SHA, 'same actual prior OS-denial policy')
++                policy['offlinePolicy']['controls']['librarySHA256'] == LIBRARY_SHA and
++                policy['offlinePolicy']['baselineTCPReachable'] is True and
++                policy['offlinePolicy']['baselineUDPReceived'] is True and
++                all(policy['offlinePolicy']['controls'][key] is True for key in
++                    ('tcpDenied', 'udpDenied', 'noNewPrivileges', 'seccompFilterActive')),
++                'same actual prior OS-denial controls and positive baselines')
+         result['offlinePolicy'] = {'helperSHA256': OFFLINE_SHA, 'librarySHA256': LIBRARY_SHA,
+-            'priorActualReceiptSHA256': OFFLINE_PROOF_SHA, 'priorControlsReexecuted': 0}
++            'priorActualReceiptSHA256': OFFLINE_PROOF_SHA, 'priorActualControls': policy['offlinePolicy'], 'priorControlsReexecuted': 0}
+         nodeconf = producer_source/NODECONF
+         require(identity(pin(nodeconf, NODECONF_SHA, 65536)) == {'bytes': 1137, 'sha256': NODECONF_SHA}, 'original public local network configuration')
+         for name in ('private', 'commands', 'temporary'):

@@ -1,0 +1,68 @@
+--- 458e-historical-native-compilers-unobserved
++++ 1939-separate-current-native-compiler-observation
+@@ -468,6 +468,49 @@
+             if key not in ('GOTMPDIR', 'TMPDIR'):
+                 require(environment.get(key) == value, 'same retained non-temporary compiler environment')
+         result['permittedEnvironmentChange'] = {'GOTMPDIR': str(temporary), 'TMPDIR': str(temporary)}
++        # The historical receipt never observed CC/CXX/AR or PATH. Keep that
++        # limit explicit rather than reconstructing or relabeling old evidence.
++        result['retainedCompilerEvidenceScope'] = {
++            'originalGoDriverCompilerLinkerSourceAndRecordedEnvironmentOnly': True,
++            'historicalNativeCompilerExecutablesObserved': False,
++            'historicalPATHObserved': False, 'retainedSDKMethodsReexecuted': 0}
++        default_environment = dict(environment)
++        for key in ('CC', 'CXX', 'AR'):
++            default_environment.pop(key, None)
++        compiler_log, _ = command('current-native-compiler-environment',
++            [driver, 'env', '-json', 'GOVERSION', 'GOROOT', 'GOTOOLDIR', 'GOHOSTOS', 'GOHOSTARCH',
++             'GOOS', 'GOARCH', 'CGO_ENABLED', 'GOMODCACHE', 'GOCACHE', 'CC', 'CXX', 'AR'],
++            source, default_environment, 15)
++        native_environment = json.loads(frozen(compiler_log, 65536))
++        require({key: native_environment.get(key) for key in known_go['metadata']} == known_go['metadata'] and
++                native_environment.get('CGO_ENABLED') == '1' and native_environment.get('GOMODCACHE') == '/root/go/pkg/mod' and
++                native_environment.get('GOCACHE') == str(CACHE), 'current original Go defaults and original cache/module placement')
++        native_tools = {}
++        current_path = environment.get('PATH', os.defpath)
++        require(all(part and Path(part).is_absolute() for part in current_path.split(os.pathsep)), 'explicit absolute compiler lookup PATH')
++        for key in ('CC', 'CXX', 'AR'):
++            default_name = native_environment.get(key)
++            require(isinstance(default_name, str) and re.fullmatch(r'[A-Za-z0-9_./+-]+', default_name),
++                    'one original default native compiler executable')
++            found = shutil.which(default_name, path=current_path)
++            require(found is not None, 'original native compiler executable present')
++            executable = Path(found).resolve()
++            require(environment.get(key, default_name) in (default_name, str(executable)),
++                    'conflicting inherited native compiler override refused: '+key)
++            compiler_bytes = frozen(executable, 128*MIB)
++            wanted = identity(compiler_bytes)
++            pin(executable, wanted['sha256'], 128*MIB)
++            mode = stat.S_IMODE(physical(executable).st_mode)
++            require(mode & 0o111, 'current native compiler executable mode')
++            admitted[str(executable)]['mode'] = mode
++            native_tools[key] = {'observedDefault': default_name, 'path': str(executable), **wanted, 'mode': mode}
++            environment[key] = str(executable)
++        environment['PATH'] = current_path
++        result['currentNativeCompilerObservation'] = {'metadata': native_environment, 'tools': native_tools,
++            'PATH': current_path, 'explicitEnvironment': {key: environment[key] for key in ('CC', 'CXX', 'AR')},
++            'appliesTo': ['five-new-server-methods', 'one-new-native-product'],
++            'historicalCompilerEqualityClaimed': False}
++
+         result['goToolchain'] = known_go
+         result['environment'] = {key: environment[key] for key in ('GOTOOLCHAIN', 'GOMAXPROCS', 'GOMEMLIMIT', 'GOCACHE', 'GOMODCACHE', 'GOTMPDIR', 'TMPDIR', 'CGO_ENABLED', 'GOWORK', 'GOFLAGS', 'GOPROXY', 'GOSUMDB')}
+         sdk_expected, server_expected = set(), set()
+@@ -544,12 +587,12 @@
+                 result['completionErrors'].append({'boundary': label, 'type': type(error).__name__, 'message': str(error)})
+         try:
+             if result['status'].startswith('PASS_'):
+-                require(len(result['processes']) == 3 and result['allOwnedGroupsPositivelyAbsent'] and
+-                        all(row['exitCode'] == 0 and not row['forcedCleanup'] and not row['cleanupErrors'] and not row['signals'] for row in result['processes']), 'three new normal owned groups')
++                require(len(result['processes']) == 4 and result['allOwnedGroupsPositivelyAbsent'] and
++                        all(row['exitCode'] == 0 and not row['forcedCleanup'] and not row['cleanupErrors'] and not row['signals'] for row in result['processes']), 'four new normal owned groups')
+                 require(result['sdk-eight']['passes'] == result['retainedActualMethodCount'] == 8 and
+                         result['server-five']['passes'] == result['newActualMethodCount'] == 5 and result['nativeProductBuilds'] == 1 and
+                         result['priorTestMethodsReexecuted'] == 0 and len(result['retainedQualification']['qualifiedProcesses']) == 2,
+-                        'eight retained plus five new methods; two retained plus three new qualified commands')
++                        'eight retained plus five new methods; two retained plus four new qualified commands')
+             result['finalFreeBytes'] = guard()
+         except BaseException as error:
+             result['status'] = 'FAIL_BOOKMARK_QUALIFICATION_PRESERVED'

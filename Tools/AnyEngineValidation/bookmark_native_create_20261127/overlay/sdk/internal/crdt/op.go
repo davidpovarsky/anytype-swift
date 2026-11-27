@@ -1,0 +1,205 @@
+package crdt
+
+import (
+	"github.com/anyproto/any-store/v2/anyenc"
+	"github.com/anyproto/any-sync-sdk/internal/bookmarkcreate"
+)
+
+// OpType is one of the operation kinds defined in spec §5.
+//
+// There is no `insert` op. Records are auto-created by the first modify that
+// targets a non-existent id (the record starts empty with `_ver = {}` and the
+// op then runs as normal). This eliminates the dual-insert convergence
+// problem and the "skip if exists" footgun. See the spec divergence memory
+// note and docs/crdt-spec.md §5 for rationale.
+type OpType string
+
+const (
+	OpSet      OpType = "$set"
+	OpUnset    OpType = "$unset"
+	OpAddToSet OpType = "$addToSet"
+	OpPull     OpType = "$pull"
+	OpInc      OpType = "$inc"
+	OpIncGated OpType = "$incGated"
+	OpDelete   OpType = "delete"
+)
+
+// Op is one operation inside a RecordChange.
+//
+// Path is the dotted field path the op applies to. For $set and $unset, an
+// empty Path activates the multi-field form: Payload is interpreted as an
+// object whose keys are dot-separated field paths and whose values are
+// applied as parallel $set/$unset ops sharing the change's versionId.
+//
+// Payload is op-specific (see spec §5):
+//   - $set:       value to assign at Path, OR a multi-field object when Path is empty
+//   - $unset:     unused for single-path; multi-field form uses an object whose values are ignored
+//   - $addToSet:  the element to add to the set at Path
+//   - $pull:      the element to remove from the set at Path
+//   - $inc:       a number value, the delta
+//   - $incGated:  same as $inc
+//   - delete:     unused (nil); the record id comes from RecordChange.Id
+type Op struct {
+	Type    OpType
+	Path    []string
+	Payload *anyenc.Value
+}
+
+// RecordChange groups all ops applied to one record inside a single change.
+//
+// Upsert toggles the create-on-absent behavior for the modify ops in this
+// batch:
+//
+//   - false (default, strict): if the target id has no record, every modify
+//     in Ops is skipped and reported as an ErrStrictSkipAbsent rejection. Use
+//     this for "update if exists" semantics —
+//     the safe default that prevents accidental record creation from typos
+//     or stale ids.
+//
+//   - true: an empty record `{id, _ver:{}}` is created when the target id is
+//     absent, and the ops then run normally. This is the explicit "create
+//     or update" mode and is how callers create records (there is no
+//     separate insert op). The first creating change is typically a
+//     multi-field $set with Upsert=true.
+//
+// Tombstones are sticky in both modes: a delete'd record never resurrects
+// regardless of the flag.
+//
+// `delete` ops ignore the flag — they always produce a tombstone (creating
+// one on absent records too, so deletes that race ahead of creates still
+// give "delete wins absolutely").
+type RecordChange struct {
+	Id     string
+	Ops    []Op
+	Upsert bool
+}
+
+// Change is one batch — exactly one any-sync DAG change. Every op in the batch
+// shares the same VersionId and targets the same Dataset inside the same
+// (SpaceId, ObjectId) tree.
+//
+// Three identifiers travel with each change, playing three different roles:
+//
+//   - VersionId (= any-sync orderId) — lexicographically sortable DAG order
+//     used for gating. Scoped to one object tree. See VersionId docs.
+//   - ChangeId — content-addressable, immutable DAG change hash. Used for
+//     observability and as the seed for the "empty record id → ChangeId"
+//     sugar on RecordChange. Distinct from VersionId.
+//   - AddSeq — monotonic local delivery sequence assigned by any-sync's
+//     spacestorage as changes are received. VersionId says "where in the DAG
+//     did this happen"; AddSeq says "when did we receive it locally". The
+//     Controller tracks the max AddSeq it has observed so the space layer
+//     can efficiently ask any-sync "give me everything with seq > max" on
+//     restore or reindex.
+type Change struct {
+	// Local-only native definition fence. These fields are never encoded or
+	// accepted from replicated changes; only compiled SDK routes set them.
+	// NativeConditionalNoop is local-only and set only by the validated
+	// conditional property route. It never travels in encoded changes.
+	NativeConditionalNoop      bool                           `json:"-"`
+	NativeDefinitionPolicy     string                         `json:"-"`
+	NativeObjectPolicy         bool                           `json:"-"`
+	NativeDefinitionOwners     []string                       `json:"-"`
+	NativeDefinitionValidation func() error                   `json:"-"`
+	NativeTypeDatasets         []NativeTypeDatasetRequirement `json:"-"`
+	NativeBookmarkCreateFrame  *bookmarkcreate.Frame          `json:"-"`
+
+	// Immutable root and signer metadata, filled only from the native tree.
+	// Never decoded from the CRDT payload. Native extension handlers use the
+	// root seed to bind a canonical carrier and the ACL head for receipts.
+	ObjectDerived     bool
+	ObjectRootPayload []byte
+	ACLHeadId         string
+	// NativeAlreadyApplied is an in-process decision set only by the compiled
+	// local guard after exact persisted-claim checks. Never decoded from wire.
+	NativeAlreadyApplied bool
+	SpaceId              string
+	ObjectId             string
+	Dataset              string
+	ChangeId             string
+	VersionId            VersionId
+	AddSeq               uint64
+	// PrevIds are the DAG parents of this change (the any-sync change's
+	// PreviousIds), stamped by the apply pipeline next to Creator. Empty
+	// on Local/Injected changes (no DAG) and on hand-built test changes.
+	// Consumed by read tracking: unread entries persist them so the
+	// mark-read ancestor closure never needs the tree.
+	PrevIds []string
+	// ApplySeq is the per-space apply sequence the Controller allocates
+	// inside the apply transaction (never set by callers, never on the
+	// wire). Stamped on every written record as _applySeq and persisted
+	// as the per-object maxApplySeq — the consumer-feed watermark that,
+	// unlike AddSeq, also covers non-DAG applies (account mirror,
+	// device-local writes). Zero when the Controller has no allocator.
+	ApplySeq uint64
+	Records  []RecordChange
+	// DataVersion pins the change to the schema or handler state its writer
+	// used: `typeId:shortId` pairs for schema state, or a handler version
+	// string. The per-dataset mapping is in
+	// docs/types-properties-proposal.md § "Change-level DataVersion".
+	//
+	// The string is opaque to the CRDT layer — only equality matters, not
+	// ordering. Empty is invalid and causes ApplyChange to reject the change.
+	DataVersion string
+	// Timestamp carried alongside the change for tombstones (delete writes a
+	// `deletedAt` field). The CRDT layer treats it as advisory metadata; it is
+	// not used for conflict resolution.
+	Timestamp int64
+	// ObjectAuthor is the StrKey-encoded identity (PubKey.Account()) of
+	// the peer that created the OBJECT — i.e. the signer of the tree's
+	// root change. Constant across every change in a tree; the apply
+	// pipeline stamps it before calling Controller.ApplyChange. Used by
+	// SystemPropertiesHandler to auto-stamp `author` at row root on
+	// first record creation. Empty on hand-built changes (tests) where
+	// no tree is wired.
+	//
+	// Distinct from Creator below: ObjectAuthor is the constant root
+	// signer (object creator); Creator is the per-change signer (who
+	// wrote THIS change). They coincide for the root change but diverge
+	// for subsequent changes in shared / multi-author objects.
+	ObjectAuthor string
+	// Creator is the StrKey-encoded identity (PubKey.Account()) of the
+	// peer that signed THIS change — i.e. the per-change author. Stamped
+	// by Object.stampObjectMeta from the underlying any-sync change's
+	// Identity (looked up via tree.GetChange by ChangeId). Empty on
+	// hand-built changes (tests) where no tree is wired.
+	Creator string
+	// ObjectCreatedAt is the Unix-seconds timestamp of the tree's root
+	// change — the moment the object was created. Constant across every
+	// change in a tree. Used by SystemPropertiesHandler to auto-stamp
+	// `createdAt` at row root on first record creation.
+	ObjectCreatedAt int64
+	// TraceIds are opaque correlation tokens attached by the originating
+	// caller (e.g. a UI session id, an AI operation id). They travel with the
+	// change through any-sync (stored in a dedicated, non-encrypted field on
+	// the wire) so the whole space can be queried by trace. On the record
+	// side, the CRDT stamps them into `_traces[versionId]` for any fields
+	// this change actually landed, so per-record queries can map a field's
+	// `_ver` entry back to the traces that produced it. An empty slice means
+	// "no trace for this change" — any prior `_traces[versionId]` entry for
+	// this versionId is cleared.
+	TraceIds []string
+	// Local marks a device-local materialization that does NOT flow
+	// through the any-sync DAG. Set by Object.LocalSet; never by a
+	// synced write or replay. When true the apply path: (1) skips the
+	// dataset handler (local fields are handler-exclusive), (2) only
+	// admits local-class fields (classifyFieldWrite), and the VersionId
+	// is locally allocated (NextVersion of the field's current version)
+	// rather than an any-sync OrderId. When false, the apply path
+	// rejects any op targeting a local-class field. The field classes
+	// are disjoint by construction — see version.go.
+	Local bool
+	// Injected marks the account mirror's materialization: like Local
+	// it does NOT flow through this object's DAG and skips the dataset
+	// handler, but the VersionId is CALLER-SUPPLIED — the tech-space
+	// carrier tree's orderId for the change that produced the value —
+	// rather than locally minted. Set by Object.InjectedSet; never by
+	// a synced write, replay, or LocalSet (Local and Injected are
+	// mutually exclusive). Only account-class fields (and undeclared
+	// heads of DynamicScopeByKey datasets, whose per-key scopes the
+	// mirror resolves itself) are writable on this route. Safe because
+	// account paths are written by exactly one writer per device (the
+	// mirror) sourcing one tech tree — versions stay monotonic per
+	// path. See docs/scoped-properties-proposal.md § Account transport.
+	Injected bool
+}
