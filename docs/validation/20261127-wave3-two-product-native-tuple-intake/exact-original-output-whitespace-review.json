@@ -1,0 +1,25 @@
+{
+  "exactLines": [
+    3,
+    10,
+    11,
+    113
+  ],
+  "ordinaryDiffCheckPassed": false,
+  "originalBytes": 13266,
+  "originalObservation": {
+    "exit": 2,
+    "from": "a70e94f9647df16ce8962894b1973ba5a5a35163",
+    "stderr": "",
+    "stdoutBytes": 667,
+    "stdoutFirst": "Tools/AnyEngineValidation/native_file_peer_comparison/two_product_source_tuple/manifests/current-any-go-build-info.txt:3: trailing whitespace.\n+\tmod\tgithub.com/anyproto/any\t(devel)\t\nTools/AnyEngineValidation/native_file_peer_comparison/two_product_source_tuple/manifests/current-any-go-build-info.txt:10: trailing whitespace.\n+\t=>\t./.runtime-artifacts/sdk-source\t(devel)\t\nTools/AnyEngineValidation/native_file_peer_comparison/two_product_source_tuple/manifests/current-any-go-build-info.txt:11: trailing whitespace.\n+\t\nTools/AnyEngineValidation/native_file_peer_comparison/two_product_source_tuple/manifests/current-any-go-build-info.txt:113: trailing whitespace.\n+\t\n",
+    "stdoutSHA256": "4ffa0b3aff54dea06446b68b0416c7e31596d28459e5f27c66c3ccca5ca6274c",
+    "to": "9ebba26e903f4a3942afc22c1c9f9bb0b4393b6e"
+  },
+  "originalSHA256": "8188763655d6a41fd07477e4ca655dcd1f9ef50930475ce1da4f1dd8d522b7af",
+  "path": "Tools/AnyEngineValidation/native_file_peer_comparison/two_product_source_tuple/manifests/current-any-go-build-info.txt",
+  "reason": "These four trailing tab records are byte-exact output of the already executed Go version -m metadata command, preserved by W1 in its hashed original evidence. No application or executable source has a whitespace finding. Rewriting the actual output would break its original receipt hash. The integration will require this exact whole diff-check output and exact artifact hash, not a path-wide or general whitespace waiver.",
+  "schema": "pinkha-exact-original-tool-output-whitespace-review/v1",
+  "status": "RETAIN_EXACT_ORIGINAL_GO_BUILD_INFO_BYTES",
+  "testsOrRuntimeExecuted": 0
+}

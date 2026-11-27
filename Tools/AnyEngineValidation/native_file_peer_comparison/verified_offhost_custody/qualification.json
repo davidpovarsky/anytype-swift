@@ -1,0 +1,84 @@
+{
+  "actualSFTPBoundary": {
+    "borrowedShortReadMaximumBytes": 4093,
+    "bytes": 1048840,
+    "callerOwnedProducerClose": true,
+    "cleanOwnedSSHGroups": 9,
+    "existingWritableDestinationOpenRefused": true,
+    "jobId": "job_c6328aa17a26",
+    "negativeRawTransportStatusPreserved": "FAIL",
+    "negativeSourceBytesRead": 0,
+    "negativeWriteBytesAcknowledged": 0,
+    "oracleReceipt": "/var/lib/pinkha-w1-offhost-custody-20261127/sftp-boundary-probe1/result.json",
+    "receiptSHA256": "6638a02f48556922a22e9481fbd80d6bc44f4d1bba289f6772762e9fd8955206",
+    "seconds": 22.458
+  },
+  "closedOracleDirectoryRelocation": {
+    "directories": 4,
+    "entries": 1579,
+    "files": 1457,
+    "historicalReplayRequiresIndependentPhysicalCopyOrRestoration": true,
+    "jobId": "job_42494ac8621c",
+    "oracleReceipt": "/mnt/development/projects/evidence/pinkha-w1-network-closed-diagnostics-relocated-20261127/result.json",
+    "originalAccountsAndHelperSourceUnchanged": true,
+    "privateDataPublished": false,
+    "receiptSHA256": "caf9736e0e1f05a9abc8ff4a313baa19dd32552325946b3cedb745ca8d1233c0",
+    "recoveredRootAllocatedBytes": 100773888,
+    "seconds": 28.75,
+    "stableOriginalAliases": true
+  },
+  "fourFrozenBlobs": {
+    "allocatedDevelopmentBytesRecovered": 271761408,
+    "blobCount": 4,
+    "cleanOwnedSSHGroups": 41,
+    "jobId": "job_7f58250e4832",
+    "oracleReceipt": "/var/lib/pinkha-w1-offhost-custody-20261127/four-frozen-e-attempt3/result.json",
+    "receiptSHA256": "bfc0895098b9d60d350c5dc446dde5c36852e4e4b636e6a7199bf2cbdd691b20",
+    "restorationMapSHA256": "072ac0d3e9d06b05c534780aa2fde6c3639e55d40a33ddc5fdb7826cfb20ab06",
+    "seconds": 258.442
+  },
+  "frozenPrimitiveBoundary": "four_frozen_e uses 6586; original156 deliberately retains 15cb to match its actual receipt/map/import closure. Do not substitute one for the other.",
+  "original156Duplicate": {
+    "allocatedRootBytesRecovered": 106041344,
+    "bytes": 106036361,
+    "cleanOwnedSSHGroups": 14,
+    "existingWindowsArchiveWrites": 0,
+    "existingWindowsReadAccessObservationRecorded": true,
+    "fullWindowsMetadataUnchangedClaim": false,
+    "oracleReceipt": "/var/lib/pinkha-w1-original156-retirement-20261127/attempt2/result.json",
+    "originalAccessTimeFailureRetained": true,
+    "receiptSHA256": "5d0dc7beab578f61d40eab4e9f466e936ca7f97903d5062fcb2844432d55303b",
+    "restorationMapSHA256": "f18df0bf23d585e31941d62910ee55ea673d51882c290260ad9f3d55832e82b5",
+    "seconds": 49.724
+  },
+  "preservedFailures": [
+    {
+      "path": "four_frozen_e/retained_failures/attempt1-result.json",
+      "sha256": "f68e76c3341d670932957be7c95c1c622c293f2e990aa5eb63ce91fe5114fc1c"
+    },
+    {
+      "path": "four_frozen_e/retained_failures/attempt2-result.json",
+      "sha256": "4f5c3c6371f2a74245e6c4ba2a0c75deb3e116778101b4c2d2a98a9ab1b014bc"
+    },
+    {
+      "path": "original156/retained_failures/attempt1-result.json",
+      "sha256": "96053effc5cdd099508b6213d96bffd0bd4c0a996f9dcb1964dfbab0e4805f23"
+    }
+  ],
+  "protocol": "pinkha-verified-offhost-custody-publication-v1",
+  "purpose": "Preserve exact dormant/duplicate bytes on the existing Windows host and recover Oracle capacity without deleting unique evidence or changing product acceptance gates.",
+  "restoration": "Old compressed blob paths are absent after verified duplicate retirement. Restore the exact compressed bytes exclusively using the retained original map/helper before invoking an old consumer. Actual restoration is not claimed here.",
+  "scopeLimits": {
+    "FilesV2ProductAcceptanceAdded": false,
+    "T2ProductAcceptanceAdded": false,
+    "accountOpens": 0,
+    "actualBlobRestorationsPerformed": 0,
+    "archiveExtractions": 0,
+    "compilerRuns": 0,
+    "existingNativeDevelopmentFloorBytes": 536870912,
+    "existingNativeRootFloorBytes": 2147483648,
+    "nativeRuns": 0,
+    "originalTestReruns": 0
+  },
+  "status": "ACTUAL_CUSTODY_PASS_NO_NATIVE_ACCEPTANCE"
+}

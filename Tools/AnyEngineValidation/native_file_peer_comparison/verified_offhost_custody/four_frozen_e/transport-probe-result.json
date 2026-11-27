@@ -1,0 +1,692 @@
+{
+  "accountOpens": 0,
+  "allOwnedSSHGroupsAbsent": true,
+  "borrowedStreamClosedOnlyByCaller": true,
+  "commands": [
+    {
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "groupPositivelyAbsent": true,
+      "label": "create-owned-probe-root",
+      "pid": 3962849,
+      "powershellSHA256": "8482d6e5c091accd472593f54726f7553497d0c567a4fc9c442040e46eba65f3",
+      "seconds": 1.14,
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "groupPositivelyAbsent": true,
+      "label": "admit-exclusive-probe",
+      "pid": 3962896,
+      "powershellSHA256": "a0a49340aefb185fced7e709973f0104409995c1f7f4b276feae247807adf000",
+      "seconds": 4.994,
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "actualMaximumOutstandingWrites": 8,
+      "advertisedExtensionNames": [
+        "posix-rename@openssh.com",
+        "statvfs@openssh.com",
+        "hardlink@openssh.com",
+        "fsync@openssh.com",
+        "lsetstat@openssh.com",
+        "limits@openssh.com",
+        "expand-path@openssh.com",
+        "copy-data",
+        "home-directory"
+      ],
+      "closeConfirmed": true,
+      "exclusiveOpenConfirmed": true,
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "groupPositivelyAbsent": true,
+      "inputBytes": 1048840,
+      "inputSHA256": "23c2a9a4e4420a0026e3b0a97c6fd564023830bfdd88df44777d5a59b8397fa0",
+      "label": "positive-borrowed-short-read-upload",
+      "lastWriteOffset": 1048576,
+      "lastWriteRequestId": 34,
+      "maximumOutstandingWrites": 8,
+      "maximumWriteBytes": 32768,
+      "negotiatedVersion": 3,
+      "openFlags": 42,
+      "phase": "closed",
+      "pid": 3963258,
+      "producerLifecycleOwnedByCaller": true,
+      "seconds": 0.589,
+      "sourceBytesRead": 1048840,
+      "sourceKind": "borrowed-bounded-read-stream",
+      "sourceSHA256Observed": "23c2a9a4e4420a0026e3b0a97c6fd564023830bfdd88df44777d5a59b8397fa0",
+      "status": "PASS",
+      "stderr": "",
+      "transport": "sftp-v3",
+      "unacknowledgedWriteRequests": 0,
+      "writeBytesAcknowledged": 1048840,
+      "writeBytesDispatched": 1048840,
+      "writeStatusesAcknowledged": 33
+    },
+    {
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "groupPositivelyAbsent": true,
+      "label": "unsealed-positive-full-readback",
+      "pid": 3963302,
+      "powershellSHA256": "599aaa0a0aa63a845221728e2c1ecc78434082f14c170b7bd5cf2c77baf9468a",
+      "readbackBytes": 1048840,
+      "readbackSHA256": "23c2a9a4e4420a0026e3b0a97c6fd564023830bfdd88df44777d5a59b8397fa0",
+      "seconds": 1.087,
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "groupPositivelyAbsent": true,
+      "label": "prove-existing-probe-writable-before-refusal",
+      "pid": 3963306,
+      "powershellSHA256": "108b29102914f01f5962a6672fc1afd9719cfb1cb4bf40dc7faf696514346f2a",
+      "seconds": 3.475,
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "advertisedExtensionNames": [
+        "posix-rename@openssh.com",
+        "statvfs@openssh.com",
+        "hardlink@openssh.com",
+        "fsync@openssh.com",
+        "lsetstat@openssh.com",
+        "limits@openssh.com",
+        "expand-path@openssh.com",
+        "copy-data",
+        "home-directory"
+      ],
+      "closeConfirmed": false,
+      "error": "SFTP exclusive OPEN refused with status 4",
+      "errorType": "RuntimeError",
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "groupPositivelyAbsent": true,
+      "label": "expected-existing-writable-file-refusal",
+      "lastServerError": {
+        "code": 4,
+        "language": "",
+        "message": "Failure",
+        "requestId": 1
+      },
+      "maximumOutstandingWrites": 8,
+      "maximumWriteBytes": 32768,
+      "negotiatedVersion": 3,
+      "openFlags": 42,
+      "pid": 3963499,
+      "seconds": 0.483,
+      "sourceBytesRead": 0,
+      "sourceKind": "in-memory-bytes",
+      "sourceSHA256Observed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "FAIL",
+      "stderr": "",
+      "transport": "sftp-v3",
+      "unacknowledgedWriteRequests": 0,
+      "writeBytesAcknowledged": 0,
+      "writeStatusesAcknowledged": 0
+    },
+    {
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "groupPositivelyAbsent": true,
+      "label": "post-refusal-exact-original-readback",
+      "pid": 3963520,
+      "powershellSHA256": "599aaa0a0aa63a845221728e2c1ecc78434082f14c170b7bd5cf2c77baf9468a",
+      "readbackBytes": 1048840,
+      "readbackSHA256": "23c2a9a4e4420a0026e3b0a97c6fd564023830bfdd88df44777d5a59b8397fa0",
+      "seconds": 1.009,
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "groupPositivelyAbsent": true,
+      "label": "flush-and-seal-verified-probe",
+      "pid": 3963552,
+      "powershellSHA256": "289972b43bceec5a945a4cb0b86f899c33d39a20bc7a1ba56ea86e3b9cccbf61",
+      "seconds": 2.825,
+      "status": "PASS",
+      "stderr": ""
+    },
+    {
+      "exitCode": 0,
+      "forcedCleanup": false,
+      "groupPositivelyAbsent": true,
+      "label": "sealed-full-readback",
+      "pid": 3963638,
+      "powershellSHA256": "599aaa0a0aa63a845221728e2c1ecc78434082f14c170b7bd5cf2c77baf9468a",
+      "readbackBytes": 1048840,
+      "readbackSHA256": "23c2a9a4e4420a0026e3b0a97c6fd564023830bfdd88df44777d5a59b8397fa0",
+      "seconds": 0.969,
+      "status": "PASS",
+      "stderr": ""
+    }
+  ],
+  "compilerRuns": 0,
+  "errors": [],
+  "existingArtifactWrites": 0,
+  "expectedRefusalCommandIndex": 5,
+  "expectedRefusalException": "SFTP exclusive OPEN refused with status 4",
+  "moduleSHA256": "6586c7f33defb342167fa4e31cf04fd361536d05e3b2908a2c20efe0cb357bbb",
+  "nativePinsAfter": {
+    "/mnt/development/projects/caches/pinkha-e-cutover-rpc-core-attempt5-20261127/cutover-core.test": "bbd8d9f28d7a948684d9771c5b0effe25abb00570ac0383b0324a56cb6ce1f75",
+    "/var/lib/pinkha-c-filesv2-20261126/lan-progress-native1/any": "0796b939145f98fd3436b40c3ae3c7c9daec239b54f8c1fa237fb20a349d0b07",
+    "/var/lib/pinkha-root-t2-linux-20261126/build1/current/any": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636"
+  },
+  "nativePinsBefore": {
+    "/mnt/development/projects/caches/pinkha-e-cutover-rpc-core-attempt5-20261127/cutover-core.test": "bbd8d9f28d7a948684d9771c5b0effe25abb00570ac0383b0324a56cb6ce1f75",
+    "/var/lib/pinkha-c-filesv2-20261126/lan-progress-native1/any": "0796b939145f98fd3436b40c3ae3c7c9daec239b54f8c1fa237fb20a349d0b07",
+    "/var/lib/pinkha-root-t2-linux-20261126/build1/current/any": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636"
+  },
+  "nativeRuns": 0,
+  "originalControlsAfter": {
+    "/mnt/development/projects/evidence/pinkha-e-core40-binary-custody-20261127/gzip-original.log": {
+      "metadata": {
+        "allocatedBytes": 0,
+        "atime_ns": 1795760830724216899,
+        "bytes": 0,
+        "ctime_ns": 1795754390317060588,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 67544,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795754390317060588,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-core40-binary-custody-20261127/receipt.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795754430347087607,
+        "bytes": 1707,
+        "ctime_ns": 1795754398310046814,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 67548,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795754398310046814,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "b9fb7c110d2d619522c418122e7d6d582cf754e63b59c4bb5774434966df4d30"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-core40-binary-custody-20261127/restore.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795760830726216910,
+        "bytes": 962,
+        "ctime_ns": 1795754398143736529,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 67546,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795754398143736529,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "6378a655ec0a8c96c22010e7fef473c597b6fd4c15d0a54c157e2595c545485f"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-core40-binary-custody-20261127/started.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795760830726216910,
+        "bytes": 247,
+        "ctime_ns": 1795754390319922844,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 67545,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795754390319922844,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "85cf81a5e28eb3efa5209ea9988911c6a164c8a72d9693ea90ae991a606f4eae"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-core40-binary-custody-20261127/verified-custody-before-retirement.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795760830727216916,
+        "bytes": 1447,
+        "ctime_ns": 1795754398148799998,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 67547,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795754398148799998,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "ba0e83a20c9e46ac045180f6a6a2d258ecb0aa59abe733c840c6fdff51f44bc5"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/relocation-receipt.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757089348677481,
+        "bytes": 1067,
+        "ctime_ns": 1795757075479470918,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 67625,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795757075479470918,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "f05188217a3b6b4c554dfc4ed88112bd12ac73562bcbb017759f77b3d5e04f2e"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/attempt2-completed.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757061305516544,
+        "bytes": 1081,
+        "ctime_ns": 1795757061304516538,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67611,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744057168235388,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "9d19390881cd014be2f10b483a778eabaaad6644dde4b38b0120c3bb41f6c73b"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/attempt2-verified-custody.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757062692524502,
+        "bytes": 908,
+        "ctime_ns": 1795757062691524496,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67613,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744057140309386,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "1da7e4578ffb0c95e4494f816cdd4de09c90a790fdfca9210347cb232804e3c8"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/attempt4-completed.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757062696524525,
+        "bytes": 1080,
+        "ctime_ns": 1795757062695524519,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67614,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744155935095727,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "3704640d6567bdab3ecd62ea59cf7a086343ea24156fcf0c9d0ec5ca1ba58371"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/attempt4-verified-custody.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757064038532225,
+        "bytes": 907,
+        "ctime_ns": 1795757064037532220,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67616,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744155890263467,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "acc2c13983d4aca3c7f3cedb1f3f8b757f636e9b0c50ef3bddfa9da78b3151c6"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/attempt5-completed.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757064042532248,
+        "bytes": 1081,
+        "ctime_ns": 1795757064041532243,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67617,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744263742779655,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "62ca183b4ce52282bd689ed01eb1bf5b4ec92f8edb3c4686ad878a71d01fd7cc"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/attempt5-verified-custody.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757065183538795,
+        "bytes": 908,
+        "ctime_ns": 1795757065182538790,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67619,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744263359733879,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "e89748c16bec709ac46d6b21456e552eb44dd56a3d2e791cbebbada1fc8d36cc"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/original-manifest.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757065188538824,
+        "bytes": 1629,
+        "ctime_ns": 1795757065186538813,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67620,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795743921350244090,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "8534bda6cdd579b7f294f7679bb59899c37dc58486296c44999e1f64d001bea7"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/receipt.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757065192538847,
+        "bytes": 3398,
+        "ctime_ns": 1795757065191538841,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67621,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744268740913288,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "5e1843f8943a8c88c82e1b53b97dacc3a6bf5b4cf60923bab083f6d6c4df7ee9"
+    }
+  },
+  "originalControlsBefore": {
+    "/mnt/development/projects/evidence/pinkha-e-core40-binary-custody-20261127/gzip-original.log": {
+      "metadata": {
+        "allocatedBytes": 0,
+        "atime_ns": 1795760830724216899,
+        "bytes": 0,
+        "ctime_ns": 1795754390317060588,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 67544,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795754390317060588,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-core40-binary-custody-20261127/receipt.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795754430347087607,
+        "bytes": 1707,
+        "ctime_ns": 1795754398310046814,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 67548,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795754398310046814,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "b9fb7c110d2d619522c418122e7d6d582cf754e63b59c4bb5774434966df4d30"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-core40-binary-custody-20261127/restore.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795760830726216910,
+        "bytes": 962,
+        "ctime_ns": 1795754398143736529,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 67546,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795754398143736529,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "6378a655ec0a8c96c22010e7fef473c597b6fd4c15d0a54c157e2595c545485f"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-core40-binary-custody-20261127/started.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795760830726216910,
+        "bytes": 247,
+        "ctime_ns": 1795754390319922844,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 67545,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795754390319922844,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "85cf81a5e28eb3efa5209ea9988911c6a164c8a72d9693ea90ae991a606f4eae"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-core40-binary-custody-20261127/verified-custody-before-retirement.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795760830727216916,
+        "bytes": 1447,
+        "ctime_ns": 1795754398148799998,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 67547,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795754398148799998,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "ba0e83a20c9e46ac045180f6a6a2d258ecb0aa59abe733c840c6fdff51f44bc5"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/relocation-receipt.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757089348677481,
+        "bytes": 1067,
+        "ctime_ns": 1795757075479470918,
+        "device": 2064,
+        "gid": 1002,
+        "inode": 67625,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795757075479470918,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "f05188217a3b6b4c554dfc4ed88112bd12ac73562bcbb017759f77b3d5e04f2e"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/attempt2-completed.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757061305516544,
+        "bytes": 1081,
+        "ctime_ns": 1795757061304516538,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67611,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744057168235388,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "9d19390881cd014be2f10b483a778eabaaad6644dde4b38b0120c3bb41f6c73b"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/attempt2-verified-custody.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757062692524502,
+        "bytes": 908,
+        "ctime_ns": 1795757062691524496,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67613,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744057140309386,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "1da7e4578ffb0c95e4494f816cdd4de09c90a790fdfca9210347cb232804e3c8"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/attempt4-completed.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757062696524525,
+        "bytes": 1080,
+        "ctime_ns": 1795757062695524519,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67614,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744155935095727,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "3704640d6567bdab3ecd62ea59cf7a086343ea24156fcf0c9d0ec5ca1ba58371"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/attempt4-verified-custody.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757064038532225,
+        "bytes": 907,
+        "ctime_ns": 1795757064037532220,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67616,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744155890263467,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "acc2c13983d4aca3c7f3cedb1f3f8b757f636e9b0c50ef3bddfa9da78b3151c6"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/attempt5-completed.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757064042532248,
+        "bytes": 1081,
+        "ctime_ns": 1795757064041532243,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67617,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744263742779655,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "62ca183b4ce52282bd689ed01eb1bf5b4ec92f8edb3c4686ad878a71d01fd7cc"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/attempt5-verified-custody.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757065183538795,
+        "bytes": 908,
+        "ctime_ns": 1795757065182538790,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67619,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744263359733879,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "e89748c16bec709ac46d6b21456e552eb44dd56a3d2e791cbebbada1fc8d36cc"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/original-manifest.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757065188538824,
+        "bytes": 1629,
+        "ctime_ns": 1795757065186538813,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67620,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795743921350244090,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "8534bda6cdd579b7f294f7679bb59899c37dc58486296c44999e1f64d001bea7"
+    },
+    "/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/retained/receipt.json": {
+      "metadata": {
+        "allocatedBytes": 4096,
+        "atime_ns": 1795757065192538847,
+        "bytes": 3398,
+        "ctime_ns": 1795757065191538841,
+        "device": 2064,
+        "gid": 0,
+        "inode": 67621,
+        "links": 1,
+        "mode": 384,
+        "mtime_ns": 1795744268740913288,
+        "uid": 0,
+        "xattrs": {}
+      },
+      "sha256": "5e1843f8943a8c88c82e1b53b97dacc3a6bf5b4cf60923bab083f6d6c4df7ee9"
+    }
+  },
+  "probe": {
+    "bytes": 1048840,
+    "sha256": "23c2a9a4e4420a0026e3b0a97c6fd564023830bfdd88df44777d5a59b8397fa0",
+    "shortReadMaximumBytes": 4093
+  },
+  "protocol": "sftp-exclusive-upload-actual-boundary-controls-v1",
+  "retirements": 0,
+  "sealedAcknowledgement": {
+    "bytes": 1048840,
+    "flushToDisk": true,
+    "host": "DAVID_AND_GOLDY",
+    "name": "exclusive-probe.bin",
+    "readOnly": true,
+    "root": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\pinkha-frozen-e-20261127-cb71e0f06dbd4691ae3536ceba2fa41e",
+    "sealedClosedSFTPFile": true,
+    "sha256": "23c2a9a4e4420a0026e3b0a97c6fd564023830bfdd88df44777d5a59b8397fa0",
+    "token": "cb71e0f06dbd4691ae3536ceba2fa41e"
+  },
+  "seconds": 22.458,
+  "status": "PASS_ACTUAL_SFTP_BORROWED_STREAM_AND_EXCLUSIVE_EXISTING_WRITABLE_FILE_REFUSAL",
+  "token": "cb71e0f06dbd4691ae3536ceba2fa41e",
+  "windowsRoot": "C:\\Users\\DAVID\\AppData\\Local\\SentinelX\\anytapy-immutable-evidence\\pinkha-frozen-e-20261127-cb71e0f06dbd4691ae3536ceba2fa41e"
+}
