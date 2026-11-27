@@ -11,14 +11,20 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     var rows: [SearchDataSection<PropertySearchData>] = []
     var newPropertyData: PropertyInfoData?
     var nativeLookupFailed = false
+    var existingLookupFailed = false
+    var isSearching = true
+    var hasLookupFailure: Bool { nativeLookupFailed || existingLookupFailed }
     private var lastSearchText = ""
+    private var activeSearch: UUID?
+    let propertySelection = PinkhaPropertyPickerSelection()
+    private var retryProperty: PropertyDetails?
+
+    @ObservationIgnored
+    private let searchLoader: any PinkhaPropertyPickerSearchLoading
 
     @ObservationIgnored
     var dismiss: DismissAction?
 
-    @ObservationIgnored
-    @Injected(\.searchService)
-    private var searchService: any SearchServiceProtocol
     @ObservationIgnored
     @Injected(\.workspaceService)
     private var workspaceService: any WorkspaceServiceProtocol
@@ -38,12 +44,9 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     @Injected(\.propertyDetailsStorage)
     private var propertyDetailsStorage: any PropertyDetailsStorageProtocol
     
-    init(data: PropertiesSearchData) {
+    init(data: PropertiesSearchData, searchLoader: (any PinkhaPropertyPickerSearchLoading)? = nil) {
         self.data = data
-    }
-
-    private var searchExcludedIds: [String] {
-        data.excludedRelationsIds.filter { !data.hiddenRelationsIds.contains($0) }
+        self.searchLoader = searchLoader ?? PinkhaPropertyPickerSearchLoader()
     }
 
     func isInstalledButHidden(_ relationId: String) -> Bool {
@@ -51,69 +54,50 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     }
     
     func search(text: String) async {
+        guard !Task.isCancelled else { return }
+        let request = UUID()
+        activeSearch = request
         lastSearchText = text
-        let propertyFormats = SupportedPropertyFormat.allCases.filter {
-            if text.isEmpty { return true }
-            return $0.title.lowercased().contains(text.lowercased())
+        isSearching = true
+        nativeLookupFailed = false
+        existingLookupFailed = false
+        rows = makeRows(text: text, properties: [])
+        var requestCompleted = false
+        defer {
+            // A cancelled query has no authoritative empty result to display.
+            if activeSearch == request && requestCompleted && !Task.isCancelled { isSearching = false }
         }
 
-        // Await settled internal identity (canonical + order) before filtering to prevent leaks on cold start
-        let internalIdentity = await PinkhaTorahPropertyPolicy.shared.awaitInternalIdentity(spaceId: data.spaceId)
-
-        let isEligibleForNative = await PinkhaTorahPropertyPolicy.shared.canAddPropertyAsync(
-            propertyId: "", key: TorahNativePropertyDefinition.all[0].key, target: data.target, spaceId: data.spaceId
-        )
-
-        let rawExistingProperties = (try? await searchService.searchRelations(text: text, excludedIds: searchExcludedIds, spaceId: data.spaceId)) ?? []
-        let existingProperties = rawExistingProperties.filter {
-            if PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: $0.id, key: $0.key, spaceId: data.spaceId) {
-                return false
-            }
-            if TorahNativePropertyDefinition.definition(for: $0.key) != nil {
-                return false
-            }
-            return true
+        do {
+            let result = try await searchLoader.load(text: text, data: data)
+            guard activeSearch == request, !Task.isCancelled else { return }
+            nativeLookupFailed = result.nativeLookupFailed
+            existingLookupFailed = result.existingLookupFailed
+            rows = makeRows(text: text, properties: result.properties)
+            requestCompleted = true
+        } catch is CancellationError {
+            return
+        } catch {
+            guard activeSearch == request, !Task.isCancelled else { return }
+            existingLookupFailed = true
+            requestCompleted = true
         }
+    }
 
-        let nativeProperties = await PinkhaTorahNativePropertyCatalog.shared.searchNativeProperties(
-            text: text,
-            excludedIds: searchExcludedIds,
-            target: data.target,
-            spaceId: data.spaceId
-        )
-
-        if case .unavailable = internalIdentity {
-            nativeLookupFailed = true
-        } else {
-            nativeLookupFailed = isEligibleForNative && !PinkhaTorahNativePropertyCatalog.shared.lastLookupDiagnostics(spaceId: data.spaceId).isEmpty
+    private func makeRows(text: String, properties: [PropertyDetails]) -> [SearchDataSection<PropertySearchData>] {
+        let formats = SupportedPropertyFormat.allCases.filter {
+            text.isEmpty || $0.title.localizedCaseInsensitiveContains(text)
         }
-
-        // Deduplicate by real Property ID and key so native descriptors and existing properties do not collide
-        var seenIds = Set<String>()
-        var seenKeys = Set<String>()
-        var deduplicated: [PropertyDetails] = []
-
-        for prop in (nativeProperties + existingProperties) {
-            if seenIds.contains(prop.id) || (!prop.key.isEmpty && seenKeys.contains(prop.key)) {
-                continue
-            }
-            seenIds.insert(prop.id)
-            if !prop.key.isEmpty { seenKeys.insert(prop.key) }
-            deduplicated.append(prop)
-        }
-        let combinedExisting = deduplicated
-        
-        rows = .builder {
-            if propertyFormats.isNotEmpty {
+        return .builder {
+            if formats.isNotEmpty {
                 SearchDataSection(
-                    searchData: propertyFormats.map{ PropertySearchData.new($0) },
+                    searchData: formats.map { PropertySearchData.new($0) },
                     sectionName: Loc.propertiesFormats
                 )
             }
-            
-            if combinedExisting.isNotEmpty {
+            if properties.isNotEmpty {
                 SearchDataSection(
-                    searchData: combinedExisting.map{ PropertySearchData.existing($0) },
+                    searchData: properties.map { PropertySearchData.existing($0) },
                     sectionName: Loc.existingProperties
                 )
             }
@@ -121,36 +105,53 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     }
     
     func retryNativeLookup() async {
-        PinkhaTorahNativePropertyCatalog.shared.invalidate(spaceId: data.spaceId)
+        searchLoader.invalidate(spaceId: data.spaceId)
         await search(text: lastSearchText)
     }
 
-    func onRowTap(_ row: PropertySearchData) {
-        Task {
-            switch row {
-            case .existing(let details):
+    func onRowTap(_ row: PropertySearchData) async {
+        guard !propertySelection.isRunning else { return }
+        switch row {
+        case .existing(let details):
+            retryProperty = details
+            _ = await propertySelection.perform(
+                spaceID: data.spaceId, objectID: data.objectId, propertyID: details.id,
+                publishSuccess: {
+                    retryProperty = nil
+                    data.onRelationSelect(details, false) // isNew = false
+                    dismiss?()
+                }
+            ) {
                 guard await PinkhaTorahPropertyPolicy.shared.canAddPropertyAsync(
                     propertyId: details.id, key: details.key, target: data.target, spaceId: data.spaceId
-                ) else { return }
+                ) else { throw PinkhaPropertyPickerSelectionError.propertyUnavailable }
+                try Task.checkCancellation()
                 try await onExistingPropertyTap(details)
                 try? await objectActionsService.updateBundledDetails(contextID: details.id, details: [ .lastUsedDate(Date.now)])
-                
-                data.onRelationSelect(details, false) // isNew = false
-                dismiss?()
-            case .new(let format):
-                newPropertyData = PropertyInfoData(
-                    name: "",
-                    objectId: data.objectId,
-                    spaceId: data.spaceId,
-                    target: data.target,
-                    mode: .create(format: format),
-                    isReadOnly: false
-                )
             }
+        case .new(let format):
+            propertySelection.clearFailure()
+            retryProperty = nil
+            newPropertyData = PropertyInfoData(
+                name: "",
+                objectId: data.objectId,
+                spaceId: data.spaceId,
+                target: data.target,
+                mode: .create(format: format),
+                isReadOnly: false
+            )
         }
+    }
+
+    func retryPropertySelection() async {
+        guard propertySelection.failed, let retryProperty else { return }
+        await onRowTap(.existing(retryProperty))
     }
     
     func onNewPropertyTap(name: String) {
+        guard !propertySelection.isRunning else { return }
+        propertySelection.clearFailure()
+        retryProperty = nil
         newPropertyData = PropertyInfoData(
             name: name,
             objectId: data.objectId,

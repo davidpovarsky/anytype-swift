@@ -10,4 +10,16 @@ extension Loc.Pinkha.Torah {
         case .word: String(localized: "Word / entry", table: "PinkhaTorahProperties", bundle: .main, locale: locale)
         }
     }
+
+    static func nativePropertiesUnavailable(locale: Locale) -> String {
+        String(localized: "Torah properties could not be loaded.", table: "PinkhaTorahProperties", bundle: .main, locale: locale)
+    }
+
+    static func existingPropertiesUnavailable(locale: Locale) -> String {
+        String(localized: "Existing properties could not be loaded.", table: "PinkhaTorahProperties", bundle: .main, locale: locale)
+    }
+
+    static func propertyCouldNotBeAdded(locale: Locale) -> String {
+        String(localized: "The property could not be added. Try again.", table: "PinkhaTorahProperties", bundle: .main, locale: locale)
+    }
 }

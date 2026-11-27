@@ -1,0 +1,71 @@
+{
+  "protocol": "wave2-related-presentation-identity-review-v1",
+  "baseCommit": "61f9b403d6c38154196b348ab94881aa2ecc6ea0",
+  "status": "SOURCE_READY_COMPONENT_EXECUTION_PENDING",
+  "productFile": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTorahRelatedPresentation.swift",
+  "originalProductSHA256": "cf8c4e4f04513accb24adafd865c9e7cf2df77b1b27455da22a77e637a169fc5",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTorahRelatedPresentation.swift",
+      "sha256": "46a43e439a879d662c66ef3336caf92b6112527d9804ca2cea091cbc193e88c9",
+      "gitBlob": "7d7d4087af2ef3c1c2a12a26a794c621e34e0089"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTorahRelatedIdentityTests.swift",
+      "sha256": "af7e3270f8b29d56ade52603e648d2ef36bb6a07dfea8bc07b9d7c2d448d8095",
+      "gitBlob": "5c2f413005d9e2252f97f6a6b3b46f5f7c81d14d"
+    }
+  ],
+  "changes": [
+    "Bind displayed metadata to both the indexed objectID and currentSpace.",
+    "Before unlink, match the row sourceReference against the requested canonical source.",
+    "Require current metadata objectID, Space and canUnlink before any association read or mutation.",
+    "Internal query protocol supports exercising actual production snapshot/unlink methods; the original public initializer still requires AnyGuardedTorahIndex and keeps the1000-target default."
+  ],
+  "nativeSchemaAndAPIChanges": 0,
+  "existingGenerationAndAuthorityChecksRetained": true,
+  "tests": {
+    "suite": "AnyNativeTorahRelatedIdentityTests",
+    "methods": 5,
+    "argumentCases": 7,
+    "executed": 0,
+    "status": "NOT_RUN",
+    "scenarios": [
+      "matching metadata retains exact object/Space/source",
+      "foreign object metadata cannot display",
+      "foreign Space metadata cannot display",
+      "foreign object metadata cannot authorize unlink",
+      "foreign Space metadata cannot authorize unlink",
+      "stale source row cannot unlink current selection",
+      "current readonly metadata cannot authorize unlink"
+    ],
+    "scope": "Component tests call actual presentation methods with injected query/metadata and repository test peers; they are not native RPC or UI acceptance."
+  },
+  "validation": {
+    "diffCheck": "PASS",
+    "SwiftGrammar": "PASS_11_FILES_ONLY",
+    "grammarReceiptSHA256": "44f7ac5dd34f9a71eb282b64d14adccf40b0c86504b0f636b24c169d9bb8fd6f",
+    "typeChecking": "NOT_RUN",
+    "AppleUI": "NOT_RUN",
+    "physicalDevice": "NOT_RUN"
+  },
+  "resourceObservation": {
+    "oracleFreeBytesObserved": 1049296896,
+    "qualifiedCurrentDependencyClosure": false,
+    "decision": "No heavy full-package build launched. Focused component execution remains required via coordinated available source-bound dependencies."
+  },
+  "sourceMap": {
+    "changedProductAbsentFrom586c98Baseline": true,
+    "notReferencedByCurrent127Map": true,
+    "mapUnchanged": true,
+    "prior127ProspectiveSourceGateScope": "Remains exactly recorded for the Properties tranche; no broader equivalence claim."
+  },
+  "T5HistoricalNativeReruns": 0,
+  "T5UIFileOrContinuationEdits": 0,
+  "knownRemaining": [
+    "Full T5 index completeness/freshness and ACL/Space native acceptance remain Wave1 dependency.",
+    "T5 core UI/R08 must consume Wave3 middleware-warning fix.",
+    "New component tests still require execution; source parse is not compilation."
+  ],
+  "rollback": "Revert this isolated two-source follow-up; Properties tranche and original native index implementation remain unchanged."
+}
