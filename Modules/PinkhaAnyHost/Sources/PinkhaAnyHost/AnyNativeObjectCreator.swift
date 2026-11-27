@@ -132,9 +132,10 @@ public actor AnyNativeObjectCreator {
             throw AnyHostError.wrongWorkspace
         }
         self.workspace = workspace; self.journal = journal
-        self.fileAttachmentFactory = {
-            try AnyNativeFileAttachmentCreator(client: client, workspace: workspace, journal: journal)
-        }
+        // One attachment owner per existing object/journal owner. Reopening an
+        // attachment sheet must not discard a real, not-yet-durable native ACK.
+        let attachments = try AnyNativeFileAttachmentCreator(client: client, workspace: workspace, journal: journal)
+        self.fileAttachmentFactory = { attachments }
         self.validateContract = {
             let value = try await client.requestJSON(method: "GET", path: ["v1", "pinkha", "capabilities"])
             guard value["contract"]?.string == "pinkha-torah-native-v1",

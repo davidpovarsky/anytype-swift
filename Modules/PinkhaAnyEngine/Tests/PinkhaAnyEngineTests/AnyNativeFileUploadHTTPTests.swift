@@ -1,6 +1,9 @@
 import Foundation
 import XCTest
 @testable import PinkhaAnyEngine
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 #if canImport(Darwin)
 import Darwin
 #elseif canImport(Glibc)
@@ -258,6 +261,48 @@ final class AnyNativeFileUploadHTTPTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(posts[0]["sha256"]?.string, source.sha256)
     }
 
+    func testCancelledTransportCannotFinishBeforeItsSerialDelegateDrains() async throws {
+        let fixture = try UploadHTTPFixture(body: uploadBody(size: 8_193, inline: false), mode: "hold-ack")
+        defer { fixture.stop() }
+        let source = try fixture.files.write(byteCount: 8_193)
+        let request = try fixture.rawUploadRequest(byteCount: 8_193)
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        defer { queue.isSuspended = false }
+        let response = AnyNativeFileUploadResponse(delegateQueue: queue)
+        let state = UploadDrainState()
+        let operation = Task {
+            let outcome: Result<Void, any Error>
+            do {
+                _ = try await response.perform(request, fileURL: source.url)
+                outcome = .success(())
+            } catch { outcome = .failure(error) }
+            await state.complete()
+            try outcome.get()
+        }
+        defer { operation.cancel() }
+        // The real server has received all bytes, but withholds its ACK.
+        // The deliberately suspended serial delegate cannot deliver either
+        // completion callback. Merely asking URLSession to cancel is not drain.
+        try await fixture.waitFor("body-accepted")
+        queue.isSuspended = true
+        operation.cancel()
+        try await Task.sleep(for: .milliseconds(200))
+        let finishedWhileCallbacksBlocked = await state.isComplete()
+        XCTAssertFalse(finishedWhileCallbacksBlocked, "Task.value must retain ownership while its delegate is blocked")
+        XCTAssertFalse(fixture.has("post-responded"))
+        XCTAssertEqual(try fixture.files.digest(source.url), source.sha256)
+        queue.isSuspended = false
+        do { try await operation.value; XCTFail("Cancellation became a success") }
+        catch { XCTAssertTrue(error is CancellationError) }
+        let completedAfterRelease = await state.isComplete()
+        XCTAssertTrue(completedAfterRelease)
+        let posts = try fixture.posts()
+        XCTAssertEqual(posts.count, 1)
+        XCTAssertEqual(posts[0]["byteCount"]?.integer, 8_193)
+        XCTAssertEqual(posts[0]["sha256"]?.string, source.sha256)
+    }
+
     func testLostAcknowledgementAfterCompleteBodyDoesNotReplayTheUpload() async throws {
         let fixture = try UploadHTTPFixture(body: uploadBody(size: 8_193, inline: false), mode: "drop-ack")
         defer { fixture.stop() }
@@ -315,6 +360,12 @@ private actor UploadEvents {
         guard fileIDs == ["file"] else { throw UploadTestFailure.receiptMissing }
     }
     func snapshot() -> (approvals: Int, fileIDs: [String]) { (approvals, fileIDs) }
+}
+
+private actor UploadDrainState {
+    private var completed = false
+    func complete() { completed = true }
+    func isComplete() -> Bool { completed }
 }
 
 private final class UploadHTTPFixture: @unchecked Sendable {
@@ -385,6 +436,19 @@ private final class UploadHTTPFixture: @unchecked Sendable {
     func client() throws -> AnyHTTPClient {
         guard let url = URL(string: "http://127.0.0.1:\(port)") else { throw UploadTestFailure.fixtureFailed }
         return try .init(baseURL: url, expectedAccountID: "account", authorization: AnyHTTPAuthorization(token: token))
+    }
+
+    func rawUploadRequest(byteCount: Int) throws -> URLRequest {
+        guard let url = URL(string: "http://127.0.0.1:\(port)/v1/spaces/space/objects/object/files") else {
+            throw UploadTestFailure.fixtureFailed
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.timeoutInterval = 5
+        request.setValue(token, forHTTPHeaderField: "X-Any-Control-Token")
+        request.setValue(String(byteCount), forHTTPHeaderField: "Content-Length")
+        request.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
+        return request
     }
 
     func has(_ name: String) -> Bool { FileManager.default.fileExists(atPath: directory.appendingPathComponent(name + ".json").path) }

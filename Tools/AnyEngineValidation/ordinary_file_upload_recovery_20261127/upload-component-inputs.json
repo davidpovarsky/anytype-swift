@@ -1,0 +1,390 @@
+{
+  "delegateDrainChange": {
+    "actualControlStatus": "NOT_RUN",
+    "newHTTPTest": "testCancelledTransportCannotFinishBeforeItsSerialDelegateDrains",
+    "newResponseSHA256": "08635cd324835923b713674c359694a380005585cadd1de3075270f41ed0f6d2",
+    "originalResponseSHA256": "4e9cf26ed4344493a98a64556781215a4c34ee7d70fd41cdc59d6795668ba36a",
+    "sourceOnly": true
+  },
+  "dependencySourcePins": {
+    "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+    "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed"
+  },
+  "excludedNativeMethods": {
+    "AnyNativeFileUploadNativeRouteTests": [
+      "testOriginalNativeAttachResolvesMetadataAndVerifiesInlineAndFullTierBytes"
+    ]
+  },
+  "expectedCounts": {
+    "compiledTestFiles": 4,
+    "excludedNativeMethods": 1,
+    "hostMethods": 17,
+    "httpFixtureInstances": 26,
+    "httpMethods": 12,
+    "methods": 35,
+    "originalCoreCompiledFiles": 8,
+    "originalProjectCompiledFiles": 19,
+    "originalProjectReadFiles": 20,
+    "preparedProductionCompiledFiles": 5,
+    "productionCompiledFiles": 32,
+    "pureMethods": 6,
+    "testFiles": 3
+  },
+  "methods": {
+    "AnyNativeFileAttachmentCreatorTests": [
+      "testUnknownAcknowledgementSurvivesNewCreatorWithoutSecondDispatch",
+      "testKnownReceiptPersistsBeforeLifetimeFailureAndResumesWithReads",
+      "testDigestMismatchRetainsOriginalIDWithoutVerificationOrResend",
+      "testConcurrentCallsConsumeOneApprovalAndOneNativePOST",
+      "testRevocationWhileUploadIsInFlightPreservesOriginalReceiptWithoutDelivery",
+      "testFailedReceiptJournalReportsKnownIDAndNeverCreatesReplacement",
+      "testRememberedReceiptRequiresOriginalIntentAuthorityAndMetadata",
+      "testOriginalAcknowledgementRequiresOriginalReservationAcrossJournalOwners",
+      "testBoundedReceiptMemoryRefusesOverflowAndReleasesVerifiedSlots",
+      "testCancelledCallerRetainsLateKnownReceiptAndCannotReceiveSuccess",
+      "testFinalDeliveryRechecksCancellationAndAuthorityAfterVerifiedJournal",
+      "testDeniedMutationApprovalSendsNothingAndRetainsConservativeReservation",
+      "testNativeRejectionIsTypedButDoesNotClearReservation",
+      "testReadbackMetadataDriftDoesNotVerifyEvenWithMatchingContent",
+      "testStableReadbackMetadataMustMatchTheOriginalWarmAcknowledgement",
+      "testIntentMismatchAndForeignScopeFailBeforeNativeDispatch",
+      "testJournalIdentityContainsNoNamePayloadOrLocalURLAndRejectsForgedFingerprint"
+    ],
+    "AnyNativeFileUploadHTTPTests": [
+      "testEmptyAndStreamedAttachmentsHaveOneApprovalAndRetainNativeMetadataBeforePostflight",
+      "testForeignAccountWrongDigestAndChangedSourceAreRefusedBeforeApprovalOrPost",
+      "testFailedOneShotCallbackPreservesUncertaintyWithoutSendingTheBody",
+      "testKnownReceiptPrecedesRevokedScopeAndAccountPostflight",
+      "testFailedReceiptJournalAndCancellationAfterAcknowledgementKeepKnownIdentity",
+      "testMalformedAcknowledgementsAndNativeErrorsNeverBecomeReceiptsOrAutomaticRetries",
+      "testResponseCeilingIncludesExactChunkedBoundaryAndRefusesBothOversizeForms",
+      "testRedirectCannotForwardThePrivateBodyOrConsumeAnotherDispatch",
+      "testCancellationAfterBodyDispatchKeepsUnknownOutcomeAndDoesNotResend",
+      "testCancelledTransportCannotFinishBeforeItsSerialDelegateDrains",
+      "testLostAcknowledgementAfterCompleteBodyDoesNotReplayTheUpload",
+      "testKnownFileInfoRequiresCurrentScopeAndExactObjectWithoutWriting"
+    ],
+    "AnyNativeFileUploadTests": [
+      "testPublicFingerprintBuildsAnIntentWithoutWholeFileLoadingAndChangedSelectionIsRefused",
+      "testSpecificationIncludesEmptyInlineFilesAndRejectsUnsafeOrUnboundedInputs",
+      "testNativeReceiptPreservesResolvedMetadataAndKeepsInlineCustodyDistinct",
+      "testReceiptRejectsForeignIdentityVariantsAndMalformedStorage",
+      "testVerifiedStagingStreamsSeveralChunksAndCleansOnlyItsOwnPrivateCopy",
+      "testSourceSymlinkWrongDigestReplacementAndChangedCopyCannotBeDispatched"
+    ]
+  },
+  "nativeMethodExecutionByThisController": "NOT_REQUESTED",
+  "nativeSourceReferenceOnly": {
+    "files": [
+      {
+        "path": "internal/api/files.go",
+        "sha256": "c9aa3e006f8fcc24bd129fbe9e41eabe7bd6b3d3c3675125370d83d75ddf65ea"
+      },
+      {
+        "path": "internal/server/files_mime.go",
+        "sha256": "ddcafb82fe7d21f6165bbaa62bf98fd77fbddd3db56d6a5dd0ae6440289d570b"
+      },
+      {
+        "path": "internal/server/handlers_files.go",
+        "sha256": "a7e299282612adcdb76f2b8f3c64553a92770edcf6ba2bab4ab91e3bb9786658"
+      }
+    ],
+    "root": "/var/lib/pinkha-root-t2-linux-20261126/build1/current/source"
+  },
+  "noNativeStorageOrCloudDurabilityClaim": true,
+  "noOriginalAccountOpen": true,
+  "originalCoreCommit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+  "originalCoreFiles": [
+    {
+      "bytes": 24592,
+      "path": "Sources/TorahInspectorCore/Models.swift",
+      "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0"
+    },
+    {
+      "bytes": 510,
+      "path": "Sources/TorahInspectorCore/ProviderProtocols.swift",
+      "sha256": "9f5f28f1d71a97831827dce5dfe2324a60460fc7760137b9527e4c3815d20273"
+    },
+    {
+      "bytes": 461,
+      "path": "Sources/TorahInspectorCore/TorahInspectorCoordinator.swift",
+      "sha256": "fccfc25ee56e165c6559aba52a1ccec39d10db6fd6a94a91c867cd38dc693116"
+    },
+    {
+      "bytes": 17499,
+      "path": "Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+      "sha256": "519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040"
+    },
+    {
+      "bytes": 3444,
+      "path": "Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift",
+      "sha256": "90173f3198133c6a746d00c9a6af9ad8cd854f5643f924d98e9095133da5bbdc"
+    },
+    {
+      "bytes": 355,
+      "path": "Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+      "sha256": "0ff22bb5a56ddff0235e7b6c5188c737b110cb2848d7e17dcaefc3ca1d6df2e6"
+    },
+    {
+      "bytes": 3410,
+      "path": "Sources/TorahInspectorCore/TorahSourceTransfer.swift",
+      "sha256": "994da5da2cb6b163083c7f3dea20cfe74c781211eea0f144b394a6d047affc97"
+    },
+    {
+      "bytes": 2005,
+      "path": "Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift",
+      "sha256": "34dda44a571764ea98e43449422340ad7a00dbe4b0d43c0036d7d48ad8119729"
+    }
+  ],
+  "originalCoreRoot": "/mnt/development/projects/caches/pinkha-w1-migration-swift-20261127/checkouts/TorahInspectorKit",
+  "originalProjectCommit": "12e49ea69efdde499a6b5343cbe77139073dfbd8",
+  "originalProjectFiles": [
+    {
+      "bytes": 9870,
+      "compile": true,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift",
+      "sha256": "cc9ee5e3eb159ef5ea68e7a87928fd94f047a8668c2f2483890faffdac8d73a1",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 11996,
+      "compile": true,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift",
+      "sha256": "048ebd2d82e3a22265c3fea4ead6ba406b4f8d7d8f00367ec0c7779fac1b0d8f",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 6644,
+      "compile": true,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift",
+      "sha256": "7205b72e687975bfda695bcccbcdbdd486af45c13ef7f0ddd20fcf58c9d5a312",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 27831,
+      "compile": true,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "sha256": "8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 2600,
+      "compile": true,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyJSON.swift",
+      "sha256": "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 12640,
+      "compile": true,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyLiveQuery.swift",
+      "sha256": "445930138f7aefe46f6d41995059acafad9363178da4bc17574d2a0e399c8cf4",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 6439,
+      "compile": true,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileDurability.swift",
+      "sha256": "364a1bea4e4cae6134c9bb5935c0432f257657f3ae0c889a669354de975c2dc6",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 2695,
+      "compile": true,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift",
+      "sha256": "c4635b23304e60b1d27b546c53e8901a841160bd79bd43a066b50bc02b2b0704",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 10163,
+      "compile": true,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnySSEParser.swift",
+      "sha256": "1b5b55f99d357418d0df7ec43bc61e8bac1e1f246c613019f8c8b025c03cbdad",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 13237,
+      "compile": true,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift",
+      "sha256": "cd11b4cc0e54b4593d5a9111ca37ef7556bf3bcaa71ddb1532e900dd94ac0145",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 3828,
+      "compile": true,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift",
+      "sha256": "d2cdada5bf2a639127e58dbbe7b422188df76cb145d32023d4b1011006fd69af",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 12417,
+      "compile": true,
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahOperation.swift",
+      "sha256": "c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 5633,
+      "compile": true,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 8318,
+      "compile": true,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorSnapshot.swift",
+      "sha256": "d2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 2773,
+      "compile": true,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHostCanonical.swift",
+      "sha256": "d234b3d87ab9ec8317f159d413eb140eb94c1ae0aa0b1e20f30391b4e51c4840",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 14656,
+      "compile": false,
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "sha256": "0273ca566d58456569eeff7d90e6e582791fcf33aa2c6b2e48c280fe53dcb723",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 6882,
+      "compile": true,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift",
+      "sha256": "a4fa5fc4fc1185b1778ae960b60e39a03e3d4ce487c34bd4d69401946ff7e366",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 10327,
+      "compile": true,
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift",
+      "sha256": "7a51c02baafba146fac43ab0b5737ab3db6465ebdc142bce3d1a6ea33bf36c56",
+      "target": "PinkhaAnyIntegration"
+    },
+    {
+      "bytes": 15128,
+      "compile": true,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationModels.swift",
+      "sha256": "0007274a78d39fd4c8e0105eb50cec106c807cf53735caa0de1f4a85cd7fbde1",
+      "target": "PinkhaKit"
+    },
+    {
+      "bytes": 2445,
+      "compile": true,
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift",
+      "sha256": "63c789b1e14b85fb8032f2cf8fecb4fcb7e768453c03b9304e78ac77775fb66e",
+      "target": "PinkhaKit"
+    }
+  ],
+  "originalProjectRoot": "/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127",
+  "preparedSources": [
+    {
+      "bytes": 14691,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift",
+      "sha256": "83e4618ee93a04ce407a62926a0bffbb1752756a59b38e6e5e5d636bad9138a6",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 15355,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadStaging.swift",
+      "sha256": "d0a02b1be20973b87c9be01bbf04e40f734f9ccddc39d0c4e61b83d1212bc349",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 9648,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift",
+      "sha256": "08635cd324835923b713674c359694a380005585cadd1de3075270f41ed0f6d2",
+      "target": "PinkhaAnyEngine"
+    },
+    {
+      "bytes": 23257,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeFileAttachmentCreator.swift",
+      "sha256": "704a3a50613129d966729e56491bdf17349bcbb9e0f977d5666867f39bf2d010",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 15590,
+      "kind": "production",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "sha256": "7a641b9693803360603cb2df554eaa316fbeb1c59127795a6592404d437444f3",
+      "target": "PinkhaAnyHost"
+    },
+    {
+      "bytes": 13514,
+      "kind": "test",
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeFileUploadTests.swift",
+      "sha256": "22da3355e5d03cdc82be1ef3d472910603e6b4ad8ef7c37813f30888aad9a462",
+      "target": "OrdinaryFileUploadTests"
+    },
+    {
+      "bytes": 29787,
+      "kind": "test",
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyNativeFileUploadHTTPTests.swift",
+      "sha256": "6c6d0be36ad6930a675f5296bc907ec52a0a30b69f7dafebbe23648b2295a6ff",
+      "target": "OrdinaryFileUploadTests"
+    },
+    {
+      "bytes": 32317,
+      "kind": "test",
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyNativeFileAttachmentCreatorTests.swift",
+      "sha256": "a542a47feb24a04818abb857da68cea98b369dc35d53dd5c4815e51f2d021f35",
+      "target": "OrdinaryFileUploadTests"
+    },
+    {
+      "bytes": 10600,
+      "kind": "fixture",
+      "path": "Modules/PinkhaAnyEngine/Tests/Fixtures/file_upload_server.py",
+      "sha256": "0abb449e43aa17d2b883427ee6a448765f645e3fc60087bdf33c53bb7da5f0f7"
+    },
+    {
+      "bytes": 11079,
+      "kind": "excluded-native-test",
+      "path": "Tools/AnyEngineValidation/ordinary_file_upload/NativeTests/AnyNativeFileUploadNativeRouteTests.swift",
+      "sha256": "b6d071a48fe112fe1bd5ecda788dd1eb1a89f42b89d168dfd5b25e3098b11237",
+      "target": "OrdinaryFileUploadTests"
+    }
+  ],
+  "retainedCryptoProducer": {
+    "allFourOriginalModuleAndDocumentationBytesRequired": true,
+    "changedOldInputRows": 451,
+    "currentObservationSHA256": "d93433b85ab53b941cde27af52d3612d21b2a93af3d5e838cff2126607f3af17",
+    "currentProducerSHA256": "437fab26265b371180016caae6fc87c72a9b471deecc70d6d99b92309d51959f",
+    "historicalApplicationSourceRows": 313,
+    "linkedIntermediateObjects": 448,
+    "newHelperExecutionStatus": "NOT_RUN_SOURCE_ONLY",
+    "previousHelperSHA256": "6a4e00ff18e90a0fea100306e70eb220d85129f0e9d322010872d83464a5d309",
+    "producerTestsReplayed": false,
+    "sharedAdmissionHelperSHA256": "206bbf988fe28657ada7eb98079fad951d9cee66146da6a9204e7279fe845ad0",
+    "unchangedDependencyFiles": 1130
+  },
+  "schema": 1,
+  "scope": "ISOLATED_ORDINARY_UPLOAD_COMPONENT_SOURCE_CLOSURE_ONLY",
+  "sourceClosureRepair": {
+    "actualFailedCompilerLogSHA256": "037f5e82734fdcf91f2fd6c7607ff70a20b54f5ed43617f97d1e0d0453889edf",
+    "actualFailedReceiptSHA256": "56f31707416679ebfdebb603a5888fc0d82638f8d02e56fd5b6874bee830d56e",
+    "actualPriorTestEvents": 0,
+    "addedOriginalFullSourceFiles": [
+      "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyLiveQuery.swift",
+      "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnySSEParser.swift",
+      "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift"
+    ],
+    "originalC3CompiledSourceManifestSHA256": "ca0dd9bb060b738c71bf6d84b992a09b7cb4c5c3182e6a7234cb690e6b9a9eaa",
+    "preparedProductionAndTestFilesUnchanged": true,
+    "reason": "Include original Self.project extension and its complete original live-query/parser dependencies.",
+    "status": "SOURCE_ONLY_PENDING_ACTUAL_COMPONENT35"
+  },
+  "sourceOnlyUntilActualControllerReceipt": true,
+  "sourcePredecessor": {
+    "historicalUnexecutedMethodCount": 34,
+    "inputManifestSHA256": "e4f2d987d40a8035b7d5a584fffb8aa7a13d02dafa7b30ca07d036afcf4cfc55",
+    "status": "NOT_RUN_SOURCE_ONLY"
+  }
+}

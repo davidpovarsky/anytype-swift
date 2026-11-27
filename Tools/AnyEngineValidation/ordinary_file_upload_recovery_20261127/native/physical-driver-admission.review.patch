@@ -1,0 +1,13 @@
+--- actual-preflight-9c7829
++++ physical-driver-successor
+@@ -511,8 +511,8 @@
+         argv=list(original_argv)
+         index=argv.index('--filter');argv[index+1]='AnyNativeFileUploadNativeRouteTests'
+         argv.append('--skip-build')
+-        require(str(expected_driver) in component_source['originalInputs'],'original compiler input is present')
+-        driver_identity=component_source['originalInputs'][str(expected_driver)]
++        require(str(physical_driver) in component_source['originalInputs'],'original physical compiler input is present')
++        driver_identity=component_source['originalInputs'][str(physical_driver)]
+         require(driver_identity['sha256']=='39d41b0dc9eba623b0e37cea42c3145720168214ba4349d6fa3bd9db9b1e651a','original compiler fixed identity')
+         require(identity(pin(physical_driver,driver_identity['sha256'],128*MIB))==driver_identity,'exact original Swift driver bytes')
+         report['originalSwiftDriverAlias']={'path':str(expected_driver),'target':str(physical_driver)}
