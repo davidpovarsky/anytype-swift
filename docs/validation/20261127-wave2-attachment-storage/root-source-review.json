@@ -1,0 +1,58 @@
+{
+  "schema": "pinkha.wave2.attachment-storage.root-source-review.v1",
+  "reviewer": "root",
+  "base": "6581508faffa748ca51d97e6ea51ecf6400fef35",
+  "sourcePath": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+  "original": {
+    "sha256": "b9d51cc5d71665f853e8601585013880a7dcfe1a600ddc7b84b5647f96fcda41",
+    "gitBlob": "b7fe89170a9b90fe39fb4f4479ac052bd7a8980d",
+    "bytes": 11302,
+    "primaryConnectorReadbackMatchedLocal": true
+  },
+  "candidate": {
+    "sha256": "9e88bb9abd3536b76ccde71a102ba88ca82e3a9dd0c27e28850ae79359cfde73",
+    "bytes": 20337
+  },
+  "fullInverseSHA256": "22cb583bace82a41c275f85601f460b634d22c4fea357b90ce585628bf7adf27",
+  "independentTorahReviewSHA256": "f58f179dfadc28e2a517d89506c9149a57fe236672164d74f6c3da42656501cd",
+  "existingProductionDependenciesRead": [
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeFileDurability.swift",
+      "sha256": "364a1bea4e4cae6134c9bb5935c0432f257657f3ae0c889a669354de975c2dc6"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift",
+      "sha256": "7a51c02baafba146fac43ab0b5737ab3db6465ebdc142bce3d1a6ea33bf36c56"
+    }
+  ],
+  "findings": [],
+  "reviewedBehavior": [
+    "Preserves native Anytype List, existing attachment identity, Open and MiniApps flows; separate borderless controls prevent whole-row multiple-button activation.",
+    "All new user-visible labels use the existing Hebrew/English text helper; status and local availability are separate; durable label does not assert cloud custody for inline files.",
+    "Fresh chosen-row GET binds native file/object/account identity, unchanged metadata bracket, mounted document, current lease and live read ACL. No background polling or implicit attachment creation.",
+    "Explicit Retry requires an observed non-durable status, current mutation availability and no pending edits; actual dispatch also rechecks live write ACL and consumes exactly one approval.",
+    "Concrete AnyHTTPTorahTargetAccess checks active members/me identity, current nativeCanonicalEditorV1 target and bin/template exclusion; write allows only owner/admin/writer. The candidate does not alter those bodies.",
+    "Native204 is only acknowledgement; later separate status is required. Successful acknowledgement survives a later read failure without inventing durable state or automatically repeating an uncertain write.",
+    "Failures and close preserve existing visible-file discard/cancellation, adding status discard. Native private diagnostic is not displayed or logged.",
+    "Original open/close/requireActive/authorization and preexisting426f stale-state correction are retained by exact-body/full-file inverse evidence."
+  ],
+  "approval": "Publish this exact source-scoped candidate on its isolated Wave2 branch after the existing source-retention gate. Wave3 owns integration and Apple product admission; do not silently refresh frozen consumer pins.",
+  "actualExecution": {
+    "swiftCompilation": "NOT_RUN",
+    "native": "NOT_RUN",
+    "ui": "NOT_RUN",
+    "visual": "NOT_RUN",
+    "testsRepeated": 0
+  },
+  "remainingAcceptance": [
+    "Current Apple compilation and real chosen-row status presentation.",
+    "Visible durable/inflight/limited and independent cached states using the corresponding native fixture.",
+    "One explicit retry with native status readback; lost-ack/read failure and close/Space/account/member-revocation handling.",
+    "Hebrew/English, RTL/LTR, iPhone/iPad, light/dark and accessibility review on the shared App."
+  ],
+  "excludedScope": [
+    "Ordinary file upload/add contract is owned by Wave1 and requested separately.",
+    "No Native/engine route, Hanlin/MiniApps contract, final integration branch or historical accepted test changed."
+  ],
+  "status": "PASS_SOURCE_AND_UI_SCOPE_REVIEW_RUNTIME_ACCEPTANCE_PENDING"
+}
