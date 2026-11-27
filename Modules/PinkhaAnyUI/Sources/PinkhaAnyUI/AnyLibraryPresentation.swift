@@ -480,40 +480,30 @@ public final class AnyLibraryPresentation {
     }
 
     public func searchChanged() {
+        _ = searchChanged { [weak self] query in
+            guard let self else { throw AnyHostError.sessionClosed }
+            return try await self.searchDocuments(query)
+        }
+    }
+
+    /// Typed read boundary for publication tests; production always uses the
+    /// original native search and metadata authorization below.
+    @discardableResult
+    func searchChanged(read: @escaping @MainActor (String) async throws -> [AnyLibraryDocument]) -> Task<Void, Never>? {
         searchTask?.cancel(); searchEpoch &+= 1
         let request = searchEpoch, expected = epoch
         let query = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !query.isEmpty else { searchResults = []; isSearching = false; return }
+        guard !query.isEmpty else { searchResults = []; isSearching = false; return nil }
+        // The displayed rows belong to the previous query. Retire them before
+        // the replacement read so a failure cannot relabel them as new results.
+        searchResults = []
         isSearching = true
         searchTask = Task { [weak self] in
             do { try await Task.sleep(for: .milliseconds(300)) } catch { return }
             guard let self else { return }
             defer { if request == searchEpoch { isSearching = false } }
             do {
-                let client = client, marker = marker, allowed = eligibleDocumentTypeIDs
-                let rows = try await session.perform { lease in
-                    let output = try await client.requestJSON(method: "POST",
-                        path: ["v1", "spaces", lease.workspace.spaceID, "search"],
-                        body: .object(["query": .string(query), "mode": .string("fts"),
-                                       "limit": .integer(100), "maxData": .integer(512),
-                                       "filter": .object(["any.collections":
-                                            .object(["$nin": .array([.string("bin"), .string("template")])])])]))
-                    guard let hits = output["hits"]?.array, hits.count <= 100 else { throw AnyEngineError.readLimit }
-                    let reader = try AnyHTTPTorahRelatedDocumentReader(client: client, workspace: lease.workspace,
-                        allowedTypeIDs: allowed, noteCollectionIDs: marker.map { [$0.collectionID] } ?? [],
-                        documentTypePolicy: .nativeCanonicalEditorV1)
-                    var seen = Set<String>(), result: [AnyLibraryDocument] = []
-                    for hit in hits {
-                        guard let id = hit["objectId"]?.string, !id.isEmpty else { throw AnyHostError.incompleteDocument }
-                        guard seen.insert(id).inserted else { continue }
-                        do {
-                            let metadata = try await reader.metadata(objectID: id)
-                            result.append(.init(id: id, title: metadata.title, isNote: metadata.isNote,
-                                                snippet: hit["data"]?.string))
-                        } catch TorahAssociationRepositoryError.targetNotFound { continue }
-                    }
-                    try await lease.validate(); return result
-                }
+                let rows = try await read(query)
                 try validate(expected)
                 guard request == searchEpoch else { return }
                 searchResults = rows
@@ -521,6 +511,34 @@ public final class AnyLibraryPresentation {
                 guard request == searchEpoch, expected == epoch, lifetime.isActive, !Task.isCancelled else { return }
                 message = AnyUIErrorText.describe(error)
             }
+        }
+        return searchTask
+    }
+
+    private func searchDocuments(_ query: String) async throws -> [AnyLibraryDocument] {
+        let client = client, marker = marker, allowed = eligibleDocumentTypeIDs
+        return try await session.perform { lease in
+            let output = try await client.requestJSON(method: "POST",
+                path: ["v1", "spaces", lease.workspace.spaceID, "search"],
+                body: .object(["query": .string(query), "mode": .string("fts"),
+                               "limit": .integer(100), "maxData": .integer(512),
+                               "filter": .object(["any.collections":
+                                    .object(["$nin": .array([.string("bin"), .string("template")])])])]))
+            guard let hits = output["hits"]?.array, hits.count <= 100 else { throw AnyEngineError.readLimit }
+            let reader = try AnyHTTPTorahRelatedDocumentReader(client: client, workspace: lease.workspace,
+                allowedTypeIDs: allowed, noteCollectionIDs: marker.map { [$0.collectionID] } ?? [],
+                documentTypePolicy: .nativeCanonicalEditorV1)
+            var seen = Set<String>(), result: [AnyLibraryDocument] = []
+            for hit in hits {
+                guard let id = hit["objectId"]?.string, !id.isEmpty else { throw AnyHostError.incompleteDocument }
+                guard seen.insert(id).inserted else { continue }
+                do {
+                    let metadata = try await reader.metadata(objectID: id)
+                    result.append(.init(id: id, title: metadata.title, isNote: metadata.isNote,
+                                        snippet: hit["data"]?.string))
+                } catch TorahAssociationRepositoryError.targetNotFound { continue }
+            }
+            try await lease.validate(); return result
         }
     }
 

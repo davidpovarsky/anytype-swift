@@ -1,0 +1,33 @@
+{
+  "kind": "source_review_not_execution",
+  "baselineCommit": "a82fa890a0114990e474b48830e4a2de3e32c79d",
+  "baselineAlsoMatches": "a089ff29a5c0a7e415aac800844505f099a5561d",
+  "baselineGitBlob": "52aa0232a27ac571340bbc1e088b3669b525f56f",
+  "classification": "DOWNSTREAM_OWNED",
+  "baselineSourceSHA256": "790b63de535dd44aa02925a5df93a42a2b52928a1a4e5390e33eee6bd4f09bbe",
+  "fixedSourceSHA256": "f0675b0d2a0842ad87670640d5242da82c354aab96056c1b6d23ca8540b3dc17",
+  "testSourceSHA256": "e46dc67553d9e050c7955958cff56aac559c4d51eaa3b75e379029dd83f8d839",
+  "productionNativeReadBodyPreserved": true,
+  "nativeReadBodySHA256": "95ecd2c0ed0be77950f2b196b1cc9aace21dea66a251017dedea9844763b4610",
+  "outsideSearchMethodsByteIdentical": true,
+  "preservedGuards": [
+    "searchTask?.cancel(); searchEpoch &+= 1",
+    "let request = searchEpoch, expected = epoch",
+    "Task.sleep(for: .milliseconds(300))",
+    "defer { if request == searchEpoch { isSearching = false } }",
+    "try validate(expected)",
+    "guard request == searchEpoch else { return }",
+    "guard request == searchEpoch, expected == epoch, lifetime.isActive, !Task.isCancelled else { return }"
+  ],
+  "publicAPIUnchanged": true,
+  "newInternalTypedReadBoundary": true,
+  "observedFailure": "Source shows old rows retained across a changed nonempty query and its failed read; no mounted UI reproduction claimed.",
+  "tests": {
+    "methodCount": 2,
+    "status": "NOT_RUN_APPLE_REQUIRED",
+    "nativeCalls": 0,
+    "appBuilds": 0,
+    "uiBuilds": 0
+  },
+  "baselinePreservationMap": "File absent from original baseline 586c98; no existing SOURCE_REFACTOR_MAP entries edited."
+}
