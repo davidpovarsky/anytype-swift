@@ -307,14 +307,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test ! -e "$GITHUB_WORKSPACE/control-native8ac-stream-canonical-20261127"
-          test ! -L "$GITHUB_WORKSPACE/control-native8ac-stream-canonical-20261127"
+          test ! -e "$GITHUB_WORKSPACE/control-native8ac-stream-diagnostics-20261127"
+          test ! -L "$GITHUB_WORKSPACE/control-native8ac-stream-diagnostics-20261127"
           printf 'EXPORT_ROOT=%s\n' "$RUNNER_TEMP/pinkha-native8ac-stream-export-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_ENV"
       - name: Checkout only exact original streaming controls
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           ref: ${{ github.sha }}
-          path: control-native8ac-stream-canonical-20261127
+          path: control-native8ac-stream-diagnostics-20261127
           persist-credentials: false
           set-safe-directory: false
           clean: false
@@ -340,15 +340,15 @@ jobs:
         env:
           PINKHA_HOSTED_PLAN: ${{ inputs.shared_build_plan_json }}
         run: |
-          python3 -B "control-native8ac-stream-canonical-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py" inspect \
-            --export --control "$GITHUB_WORKSPACE/control-native8ac-stream-canonical-20261127" \
+          python3 -B "control-native8ac-stream-diagnostics-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py" inspect \
+            --export --control "$GITHUB_WORKSPACE/control-native8ac-stream-diagnostics-20261127" \
             --plan "$RUNNER_TEMP/pinkha-native8ac-root-plan-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json" \
             --plan-sha256 "$PLAN_SHA256"
       - name: Stream original source and framework directly into the current Actions artifact
         id: stream
-        uses: ./control-native8ac-stream-canonical-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_stream_action
+        uses: ./control-native8ac-stream-diagnostics-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_stream_action
         with:
-          control: ${{ github.workspace }}/control-native8ac-stream-canonical-20261127
+          control: ${{ github.workspace }}/control-native8ac-stream-diagnostics-20261127
           plan: ${{ runner.temp }}/pinkha-native8ac-root-plan-${{ github.run_id }}-${{ github.run_attempt }}.json
           plan_sha256: ${{ inputs.shared_build_plan_sha256 }}
           output: ${{ env.EXPORT_ROOT }}

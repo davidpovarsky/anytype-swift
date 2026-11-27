@@ -1,0 +1,94 @@
+{
+  "actual": {
+    "appleTests": 0,
+    "artifactCalls": 0,
+    "drained": true,
+    "finishedAt": "2026-11-27T09:12:28.073Z",
+    "group": {
+      "indeterminateEncountered": true,
+      "observations": [
+        {
+          "status": "PRESENT",
+          "time": 1795770747970
+        },
+        {
+          "status": "PRESENT",
+          "time": 1795770747970
+        },
+        {
+          "status": "PRESENT",
+          "time": 1795770747970
+        },
+        {
+          "error": {
+            "code": "EPERM",
+            "errno": -1,
+            "message": "kill EPERM",
+            "name": "Error",
+            "syscall": "kill"
+          },
+          "status": "INDETERMINATE_NOT_ABSENCE",
+          "time": 1795770747970
+        },
+        {
+          "status": "ABSENT_ESRCH_LATCHED",
+          "time": 1795770748073
+        }
+      ],
+      "ownedGroupID": 44798,
+      "signals": [
+        {
+          "signal": "SIGTERM",
+          "status": "SENT_TO_EXACT_OWNED_GROUP",
+          "time": 1795770747970
+        }
+      ],
+      "status": "ABSENT_ESRCH_LATCHED"
+    },
+    "historicalGroupsProbed": false,
+    "node": "/Users/m1/actions-runner-anytype/externals/node24/bin/node",
+    "nodeVersion": "v24.22.1",
+    "ownedPID": 44798,
+    "sourceOrCacheWrites": 0,
+    "sourceSHA256": "3d8b949047ce66303f2b0bf519d5209c11a76a4a9321e899f54fcbb0dfd7ad04",
+    "startedAt": "2026-11-27T09:12:27.965Z",
+    "status": "PASS_ACTUAL_NODE24_SUCCESSOR_OWNED_DRAIN_ONLY",
+    "terminal": {
+      "code": null,
+      "signal": "SIGTERM"
+    }
+  },
+  "originalResult": {
+    "bytes": 4838,
+    "encoding": "utf-8",
+    "gitBlob": "578f2fd21762fda1392ccd6267404e3bd58aa5d0",
+    "sha256": "31f0a1becadf2ff5b2735d92f1cb4584ef51cb46845876428c83989a0b398fd5"
+  },
+  "preservedPriorQualification": {
+    "bytes": 2063,
+    "encoding": "utf-8",
+    "gitBlob": "3602c0fff689ae130167cc21979501351b0e0dc3",
+    "sha256": "d8244742d094cd0fc0a5e4f403dd63a646f646924da23e26fe7dd8f45255eaa3"
+  },
+  "probeSource": {
+    "bytes": 3017,
+    "encoding": "utf-8",
+    "gitBlob": "0bed22a5a6f4dc011e439aea9cfdfbc5953e96a9",
+    "sha256": "1e1c5bcc3045535611587abdef00c89b154de215ec9bcb7cf6927f6df45556d2"
+  },
+  "relayInvocationsNow": 0,
+  "rootReview": {
+    "bytes": 2517,
+    "encoding": "utf-8",
+    "gitBlob": "98394173727e8f9a885de82f3afa79969c2b3feb",
+    "sha256": "59bdc9f744bb306ab6e255f531ef1c63d28cc32fefe8e192fa93fb91a7cbf727"
+  },
+  "sourceIndex": {
+    "bytes": 11317,
+    "encoding": "utf-8",
+    "gitBlob": "e4e0e9d569bc1fb338556f058354d77e6c5c5fef",
+    "sha256": "3230867d9f247efc1743f9d8a554b50cb2a4de128f8b4058dff360510805f51b"
+  },
+  "status": "PASS_ACTUAL_NODE24_CUSTODY_CONTROL_NOT_NATIVE_STREAM_OR_APP_ACCEPTANCE",
+  "workflowDispatchesNow": 0
+}

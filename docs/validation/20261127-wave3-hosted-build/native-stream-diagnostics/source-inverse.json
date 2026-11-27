@@ -1,0 +1,691 @@
+{
+  ".github/workflows/torah-inspector-ipados27.yml": {
+    "fullByteInverseSHA256": "5959f8581f382bc7a94783039dbaa855f796e30c7f1d177d25e98b11c68f388e",
+    "hunks": [
+      {
+        "after": [
+          "          test ! -e \"$GITHUB_WORKSPACE/control-native8ac-stream-diagnostics-20261127\"\n",
+          "          test ! -L \"$GITHUB_WORKSPACE/control-native8ac-stream-diagnostics-20261127\"\n"
+        ],
+        "afterEnd": 311,
+        "afterStart": 309,
+        "before": [
+          "          test ! -e \"$GITHUB_WORKSPACE/control-native8ac-stream-canonical-20261127\"\n",
+          "          test ! -L \"$GITHUB_WORKSPACE/control-native8ac-stream-canonical-20261127\"\n"
+        ],
+        "beforeEnd": 311,
+        "beforeStart": 309
+      },
+      {
+        "after": [
+          "          path: control-native8ac-stream-diagnostics-20261127\n"
+        ],
+        "afterEnd": 317,
+        "afterStart": 316,
+        "before": [
+          "          path: control-native8ac-stream-canonical-20261127\n"
+        ],
+        "beforeEnd": 317,
+        "beforeStart": 316
+      },
+      {
+        "after": [
+          "          python3 -B \"control-native8ac-stream-diagnostics-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py\" inspect \\\n",
+          "            --export --control \"$GITHUB_WORKSPACE/control-native8ac-stream-diagnostics-20261127\" \\\n"
+        ],
+        "afterEnd": 344,
+        "afterStart": 342,
+        "before": [
+          "          python3 -B \"control-native8ac-stream-canonical-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py\" inspect \\\n",
+          "            --export --control \"$GITHUB_WORKSPACE/control-native8ac-stream-canonical-20261127\" \\\n"
+        ],
+        "beforeEnd": 344,
+        "beforeStart": 342
+      },
+      {
+        "after": [
+          "        uses: ./control-native8ac-stream-diagnostics-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_stream_action\n"
+        ],
+        "afterEnd": 349,
+        "afterStart": 348,
+        "before": [
+          "        uses: ./control-native8ac-stream-canonical-20261127/Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_stream_action\n"
+        ],
+        "beforeEnd": 349,
+        "beforeStart": 348
+      },
+      {
+        "after": [
+          "          control: ${{ github.workspace }}/control-native8ac-stream-diagnostics-20261127\n"
+        ],
+        "afterEnd": 351,
+        "afterStart": 350,
+        "before": [
+          "          control: ${{ github.workspace }}/control-native8ac-stream-canonical-20261127\n"
+        ],
+        "beforeEnd": 351,
+        "beforeStart": 350
+      }
+    ],
+    "original": {
+      "bytes": 64729,
+      "gitBlob": "c8d741615bf7e378774b2747b78dc12754e8d5b8",
+      "sha256": "5959f8581f382bc7a94783039dbaa855f796e30c7f1d177d25e98b11c68f388e"
+    },
+    "successor": {
+      "bytes": 64743,
+      "gitBlob": "0e94f598c29bc3dbf1c4449769d1953c73481b8d",
+      "sha256": "ca9ae80f30c08604a23e56bf1d443448f8d8e5aec057be21e01377e7b61a6248"
+    }
+  },
+  "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_stream_action/upload_stream.cjs": {
+    "fullByteInverseSHA256": "3e9e40a1cf09cca6a79e3b5b4f677884f6619ef8b2aaed34f9fd2ef8665abde3",
+    "hunks": [
+      {
+        "after": [
+          "}\n",
+          "function safeMessage(value) {\n",
+          "  return String(value).replaceAll(process.env.ACTIONS_RUNTIME_TOKEN || 'NO_RUNTIME_CAPABILITY', '<runtime-capability>')\n",
+          "    .replace(/https?:\\/\\/[^\\s\"'<>]+/g, '<redacted-url>').slice(0, 16384);\n",
+          "}\n",
+          "function errorDetails(error) {\n",
+          "  const result = {name: safeMessage(error?.name || 'Error'), message: safeMessage(error?.message || error)};\n",
+          "  for (const key of ['code', 'errno', 'syscall', 'status', 'signal', 'killed', 'pid']) {\n",
+          "    const value = error?.[key];\n",
+          "    if (value === null || typeof value === 'number' || typeof value === 'boolean') result[key] = value;\n",
+          "    else if (typeof value === 'string') result[key] = safeMessage(value);\n",
+          "  }\n",
+          "  return result;\n",
+          "}\n",
+          "function psOutput(value) {\n",
+          "  const raw = Buffer.from(value || '', 'utf8');\n",
+          "  return {text: raw.subarray(0, 65536).toString('utf8'), bytes: raw.length, sha256: digest(raw), truncated: raw.length > 65536};\n",
+          "}\n",
+          "class FailureJournal {\n",
+          "  constructor(root) {\n",
+          "    this.root = root;\n",
+          "    this.firstError = null;\n",
+          "    this.first = null;\n",
+          "    this.later = [];\n",
+          "    this.laterCount = 0;\n",
+          "    this.receiptErrors = [];\n",
+          "    this.lastPS = null;\n",
+          "  }\n",
+          "  record(error, context) {\n",
+          "    const event = {time: Date.now(), ...context, error: errorDetails(error)};\n",
+          "    if (this.first !== null) {\n",
+          "      this.laterCount += 1;\n",
+          "      if (this.later.length < 32) this.later.push(event);\n",
+          "      return false;\n",
+          "    }\n",
+          "    this.firstError = error instanceof Error ? error : new Error(String(error));\n",
+          "    this.first = event; // Latched before any receipt I/O or cleanup can fail.\n",
+          "    try {\n",
+          "      if (this.root && fs.existsSync(this.root)) jsonFile(path.join(this.root, 'first-stream-failure.json'), {\n",
+          "        status: 'FIRST_OBSERVED_STREAM_FAILURE_NOT_HISTORICAL_CAUSE_INFERENCE', first: this.first,\n",
+          "      });\n",
+          "    } catch (receiptError) { this.receiptErrors.push({origin: 'first-receipt', error: errorDetails(receiptError)}); }\n",
+          "    try { process.stderr.write(JSON.stringify({status: 'FIRST_OBSERVED_STREAM_FAILURE', first: this.first}) + '\\n'); }\n",
+          "    catch (receiptError) { this.receiptErrors.push({origin: 'first-stderr', error: errorDetails(receiptError)}); }\n",
+          "    return true;\n",
+          "  }\n",
+          "  proof() {\n",
+          "    return {first: this.first, later: this.later, laterCount: this.laterCount,\n",
+          "      laterTruncated: this.laterCount > this.later.length, receiptErrors: this.receiptErrors, lastPS: this.lastPS};\n",
+          "  }\n",
+          "}\n",
+          "async function createArtifactWhenHealthy(journal, client, request) {\n",
+          "  if (journal.firstError) throw journal.firstError;\n",
+          "  const created = await client.CreateArtifact(request);\n",
+          "  if (journal.firstError) throw journal.firstError;\n",
+          "  return created;\n"
+        ],
+        "afterEnd": 95,
+        "afterStart": 39,
+        "before": [],
+        "beforeEnd": 39,
+        "beforeStart": 39
+      },
+      {
+        "after": [
+          "    this.indeterminate = false;\n"
+        ],
+        "afterEnd": 158,
+        "afterStart": 157,
+        "before": [],
+        "beforeEnd": 101,
+        "beforeStart": 101
+      },
+      {
+        "after": [
+          "      if (error.code !== 'ESRCH') {\n",
+          "        this.indeterminate = true;\n",
+          "        this.observations.push({time: Date.now(), status: 'INDETERMINATE_NOT_ABSENCE', error: errorDetails(error)});\n",
+          "        throw error;\n",
+          "      }\n"
+        ],
+        "afterEnd": 171,
+        "afterStart": 166,
+        "before": [
+          "      requireValue(error.code === 'ESRCH', 'Owned group absence could not be established');\n"
+        ],
+        "beforeEnd": 110,
+        "beforeStart": 109
+      },
+      {
+        "after": [
+          "    requireValue(!this.indeterminate, 'Signals withheld after indeterminate owned-group custody');\n"
+        ],
+        "afterEnd": 179,
+        "afterStart": 178,
+        "before": [],
+        "beforeEnd": 117,
+        "beforeStart": 117
+      },
+      {
+        "after": [
+          "      if (error.code !== 'ESRCH') {\n",
+          "        this.indeterminate = true;\n",
+          "        this.signals.push({time: Date.now(), signal: name, status: 'INDETERMINATE_NOT_CONFIRMED_SIGNAL', error: errorDetails(error)});\n",
+          "        throw error;\n",
+          "      }\n"
+        ],
+        "afterEnd": 188,
+        "afterStart": 183,
+        "before": [
+          "      requireValue(error.code === 'ESRCH', 'Could not signal the exact owned group');\n"
+        ],
+        "beforeEnd": 122,
+        "beforeStart": 121
+      },
+      {
+        "after": [
+          "    while (true) {\n",
+          "      try { if (!this.probe()) return true; }\n",
+          "      catch (error) { if (error.code !== 'EPERM') throw error; }\n"
+        ],
+        "afterEnd": 197,
+        "afterStart": 194,
+        "before": [
+          "    while (this.probe()) {\n"
+        ],
+        "beforeEnd": 129,
+        "beforeStart": 128
+      },
+      {
+        "after": [],
+        "afterEnd": 200,
+        "afterStart": 200,
+        "before": [
+          "    return true;\n"
+        ],
+        "beforeEnd": 133,
+        "beforeStart": 132
+      },
+      {
+        "after": [
+          "    if (this.indeterminate) return this.waitAbsent(3000);\n",
+          "    try {\n",
+          "      if (!this.probe()) return true;\n",
+          "      this.signal('SIGTERM');\n",
+          "    } catch (error) {\n",
+          "      if (error.code !== 'EPERM') throw error;\n",
+          "      return this.waitAbsent(3000); // Read-only; EPERM never establishes absence.\n",
+          "    }\n"
+        ],
+        "afterEnd": 210,
+        "afterStart": 202,
+        "before": [
+          "    if (!this.probe()) return true;\n",
+          "    this.signal('SIGTERM');\n"
+        ],
+        "beforeEnd": 137,
+        "beforeStart": 135
+      },
+      {
+        "after": [
+          "    if (this.indeterminate) return false; // No signals while original custody is uncertain.\n",
+          "    try { this.signal('SIGKILL'); }\n",
+          "    catch (error) { if (error.code !== 'EPERM') throw error; }\n"
+        ],
+        "afterEnd": 214,
+        "afterStart": 211,
+        "before": [
+          "    this.signal('SIGKILL');\n"
+        ],
+        "beforeEnd": 139,
+        "beforeStart": 138
+      },
+      {
+        "after": [
+          "      observations: this.observations, signals: this.signals, indeterminateEncountered: this.indeterminate};\n"
+        ],
+        "afterEnd": 219,
+        "afterStart": 218,
+        "before": [
+          "      observations: this.observations, signals: this.signals};\n"
+        ],
+        "beforeEnd": 144,
+        "beforeStart": 143
+      },
+      {
+        "after": [
+          "  let primaryFailure = null, fifoCleaned = false, finalizedArtifactID = null;\n",
+          "  const journal = new FailureJournal(root);\n",
+          "  let phase = 'await-original-source';\n",
+          "  function interrupt(error, context) {\n",
+          "    if (!journal.record(error, {phase, ...context})) return;\n",
+          "    try { if (uploadStream) uploadStream.destroy(error); }\n",
+          "    catch (later) { journal.record(later, {origin: 'interrupt-upload', phase}); }\n",
+          "    try { if (zip) zip.abort(); }\n",
+          "    catch (later) { journal.record(later, {origin: 'interrupt-zip', phase}); }\n",
+          "    try { owner.signal('SIGTERM'); }\n",
+          "    catch (later) { journal.record(later, {origin: 'interrupt-owned-group', phase}); }\n",
+          "  }\n"
+        ],
+        "afterEnd": 288,
+        "afterStart": 276,
+        "before": [
+          "  let primaryFailure = null, fifoCleaned = false;\n"
+        ],
+        "beforeEnd": 202,
+        "beforeStart": 201
+      },
+      {
+        "after": [
+          "    python.once('error', error => {\n",
+          "      childTerminal = {code: null, signal: null, errorType: error.name};\n",
+          "      interrupt(error, {origin: 'producer-error', terminal: childTerminal});\n",
+          "      resolve(childTerminal);\n",
+          "    });\n",
+          "    python.once('close', (code, signal) => {\n",
+          "      childTerminal = {code, signal};\n",
+          "      if (code !== 0 || signal !== null) journal.record(new Error('Original producer closed unsuccessfully'),\n",
+          "        {origin: 'producer-close', phase, terminal: childTerminal});\n",
+          "      resolve(childTerminal);\n",
+          "    });\n"
+        ],
+        "afterEnd": 300,
+        "afterStart": 289,
+        "before": [
+          "    python.once('error', error => {childTerminal = {code: null, signal: null, errorType: error.name}; resolve(childTerminal);});\n",
+          "    python.once('close', (code, signal) => {childTerminal = {code, signal}; resolve(childTerminal);});\n"
+        ],
+        "beforeEnd": 205,
+        "beforeStart": 203
+      },
+      {
+        "after": [
+          "      interrupt(new Error('Original producer stderr exceeded its existing bounded capture'), {origin: 'producer-stderr-limit'});\n"
+        ],
+        "afterEnd": 307,
+        "afterStart": 306,
+        "before": [
+          "      try { owner.signal('SIGTERM'); } catch (_) {}\n"
+        ],
+        "beforeEnd": 212,
+        "beforeStart": 211
+      },
+      {
+        "after": [
+          "  const onTERM = () => interrupt(new Error('Owned action received termination'), {origin: 'action-signal', signal: 'SIGTERM'});\n",
+          "  const onINT = () => interrupt(new Error('Owned action received termination'), {origin: 'action-signal', signal: 'SIGINT'});\n",
+          "  process.on('SIGTERM', onTERM);\n",
+          "  process.on('SIGINT', onINT);\n"
+        ],
+        "afterEnd": 314,
+        "afterStart": 310,
+        "before": [
+          "  let watchdogFailure = null;\n",
+          "  const onSignal = () => {\n",
+          "    watchdogFailure = new Error('Owned action received termination');\n",
+          "    if (uploadStream) uploadStream.destroy(watchdogFailure);\n",
+          "    if (zip) zip.abort();\n",
+          "    try { owner.signal('SIGTERM'); } catch (_) {}\n",
+          "  };\n",
+          "  process.on('SIGTERM', onSignal);\n",
+          "  process.on('SIGINT', onSignal);\n"
+        ],
+        "beforeEnd": 224,
+        "beforeStart": 215
+      },
+      {
+        "after": [
+          "    if (journal.first !== null) return; // Preserve the first observation and stop repeated interruption.\n",
+          "    const measuredPIDs = owner.absent ? String(process.pid) : `${process.pid},${python.pid}`;\n",
+          "    const argv = ['-o', 'rss=', '-p', measuredPIDs];\n",
+          "    const observedAt = Date.now();\n"
+        ],
+        "afterEnd": 319,
+        "afterStart": 315,
+        "before": [],
+        "beforeEnd": 225,
+        "beforeStart": 225
+      },
+      {
+        "after": [
+          "      const rssText = cp.execFileSync('/bin/ps', argv, {encoding: 'utf8', timeout: 3000});\n",
+          "      journal.lastPS = {executable: '/bin/ps', argv, timeoutMilliseconds: 3000, observedAt,\n",
+          "        elapsedMilliseconds: Date.now() - observedAt, status: 0, signal: null, stdout: psOutput(rssText)};\n"
+        ],
+        "afterEnd": 323,
+        "afterStart": 320,
+        "before": [
+          "      const measuredPIDs = owner.absent ? String(process.pid) : `${process.pid},${python.pid}`;\n",
+          "      const rssText = cp.execFileSync('/bin/ps', ['-o', 'rss=', '-p', measuredPIDs], {encoding: 'utf8', timeout: 3000});\n"
+        ],
+        "beforeEnd": 228,
+        "beforeStart": 226
+      },
+      {
+        "after": [
+          "      if (!journal.lastPS || journal.lastPS.observedAt !== observedAt) journal.lastPS = {\n",
+          "        executable: '/bin/ps', argv, timeoutMilliseconds: 3000, observedAt,\n",
+          "        elapsedMilliseconds: Date.now() - observedAt, error: errorDetails(error),\n",
+          "        stdout: psOutput(error.stdout), stderr: psOutput(error.stderr),\n",
+          "      };\n",
+          "      interrupt(error, {origin: 'watchdog', ps: journal.lastPS});\n"
+        ],
+        "afterEnd": 334,
+        "afterStart": 328,
+        "before": [
+          "      watchdogFailure = error;\n",
+          "      if (uploadStream) uploadStream.destroy(error);\n",
+          "      if (zip) zip.abort();\n",
+          "      try { owner.signal('SIGTERM'); } catch (_) {}\n"
+        ],
+        "beforeEnd": 237,
+        "beforeStart": 233
+      },
+      {
+        "after": [
+          "      if (journal.firstError) throw journal.firstError;\n"
+        ],
+        "afterEnd": 340,
+        "afterStart": 339,
+        "before": [
+          "      requireValue(!watchdogFailure, 'Owned stream watchdog failed before upload');\n"
+        ],
+        "beforeEnd": 243,
+        "beforeStart": 242
+      },
+      {
+        "after": [
+          "    if (journal.firstError) throw journal.firstError;\n"
+        ],
+        "afterEnd": 344,
+        "afterStart": 343,
+        "before": [],
+        "beforeEnd": 246,
+        "beforeStart": 246
+      },
+      {
+        "after": [
+          "    phase = 'create-original-artifact';\n",
+          "    const create = await createArtifactWhenHealthy(journal, client,\n",
+          "      {...ids, name, version: 4, expiresAt: library.retention.getExpiration(30)});\n"
+        ],
+        "afterEnd": 356,
+        "afterStart": 353,
+        "before": [
+          "    const create = await client.CreateArtifact({...ids, name, version: 4, expiresAt: library.retention.getExpiration(30)});\n"
+        ],
+        "beforeEnd": 256,
+        "beforeStart": 255
+      },
+      {
+        "after": [
+          "    zip.on('error', error => interrupt(error, {origin: 'zip-error'}));\n",
+          "    zip.on('warning', error => interrupt(error, {origin: 'zip-warning'}));\n",
+          "    python.stdout.on('error', error => interrupt(error, {origin: 'producer-stdout-error'}));\n"
+        ],
+        "afterEnd": 365,
+        "afterStart": 362,
+        "before": [
+          "    zip.on('error', error => uploadStream.destroy(error));\n",
+          "    zip.on('warning', error => uploadStream.destroy(error));\n",
+          "    python.stdout.on('error', error => uploadStream.destroy(error));\n"
+        ],
+        "beforeEnd": 265,
+        "beforeStart": 262
+      },
+      {
+        "after": [
+          "    // Attach rejection handling immediately; do not lose an early async failure\n",
+          "    // while awaiting the original transport promise.\n",
+          "    finalizedZip.catch(error => interrupt(error, {origin: 'zip-finalize'}));\n",
+          "    phase = 'upload-original-artifact';\n"
+        ],
+        "afterEnd": 372,
+        "afterStart": 368,
+        "before": [],
+        "beforeEnd": 268,
+        "beforeStart": 268
+      },
+      {
+        "after": [
+          "    if (journal.firstError) throw journal.firstError;\n"
+        ],
+        "afterEnd": 374,
+        "afterStart": 373,
+        "before": [],
+        "beforeEnd": 269,
+        "beforeStart": 269
+      },
+      {
+        "after": [
+          "    phase = 'wait-original-producer';\n"
+        ],
+        "afterEnd": 376,
+        "afterStart": 375,
+        "before": [],
+        "beforeEnd": 270,
+        "beforeStart": 270
+      },
+      {
+        "after": [
+          "    if (journal.firstError) throw journal.firstError;\n",
+          "    requireValue(!stderrTruncated && terminal.code === 0 && terminal.signal === null,\n"
+        ],
+        "afterEnd": 379,
+        "afterStart": 377,
+        "before": [
+          "    requireValue(!watchdogFailure && !stderrTruncated && terminal.code === 0 && terminal.signal === null,\n"
+        ],
+        "beforeEnd": 272,
+        "beforeStart": 271
+      },
+      {
+        "after": [
+          "    phase = 'drain-exact-owned-group';\n"
+        ],
+        "afterEnd": 382,
+        "afterStart": 381,
+        "before": [],
+        "beforeEnd": 274,
+        "beforeStart": 274
+      },
+      {
+        "after": [
+          "    if (journal.firstError) throw journal.firstError;\n",
+          "    phase = 'finalize-original-artifact';\n"
+        ],
+        "afterEnd": 395,
+        "afterStart": 393,
+        "before": [],
+        "beforeEnd": 285,
+        "beforeStart": 285
+      },
+      {
+        "after": [
+          "    finalizedArtifactID = String(final.artifactId);\n",
+          "    if (journal.firstError) throw journal.firstError;\n"
+        ],
+        "afterEnd": 400,
+        "afterStart": 398,
+        "before": [],
+        "beforeEnd": 288,
+        "beforeStart": 288
+      },
+      {
+        "after": [
+          "    journal.record(error, {origin: 'main', phase});\n"
+        ],
+        "afterEnd": 414,
+        "afterStart": 413,
+        "before": [],
+        "beforeEnd": 301,
+        "beforeStart": 301
+      },
+      {
+        "after": [
+          "    const sanitizedMessage = safeMessage(journal.firstError.message);\n"
+        ],
+        "afterEnd": 416,
+        "afterStart": 415,
+        "before": [
+          "    const sanitizedMessage = String(error.message).replaceAll(process.env.ACTIONS_RUNTIME_TOKEN || 'NO_RUNTIME_CAPABILITY', '<runtime-capability>')\n",
+          "      .replace(/https?:\\/\\/[^\\s\"'<>]+/g, '<redacted-url>');\n"
+        ],
+        "beforeEnd": 304,
+        "beforeStart": 302
+      },
+      {
+        "after": [
+          "      status: 'FAIL_OR_INCOMPLETE_NATIVE_ARTIFACT_STREAM', errorType: journal.firstError.name,\n"
+        ],
+        "afterEnd": 418,
+        "afterStart": 417,
+        "before": [
+          "      status: 'FAIL_OR_INCOMPLETE_NATIVE_ARTIFACT_STREAM', errorType: error.name,\n"
+        ],
+        "beforeEnd": 306,
+        "beforeStart": 305
+      },
+      {
+        "after": [
+          "      finalizedArtifactID, diagnostics: journal.proof(),\n",
+          "    }); } catch (receiptError) { journal.record(receiptError, {origin: 'failure-receipt-write', phase}); }\n"
+        ],
+        "afterEnd": 424,
+        "afterStart": 422,
+        "before": [
+          "    }); } catch (_) { /* Preserve the primary failure even if evidence storage failed. */ }\n"
+        ],
+        "beforeEnd": 311,
+        "beforeStart": 310
+      },
+      {
+        "after": [
+          "    phase = 'cleanup';\n"
+        ],
+        "afterEnd": 428,
+        "afterStart": 427,
+        "before": [
+          "    process.removeListener('SIGTERM', onSignal);\n",
+          "    process.removeListener('SIGINT', onSignal);\n"
+        ],
+        "beforeEnd": 316,
+        "beforeStart": 314
+      },
+      {
+        "after": [
+          "    const cleanupError = (origin, error) => {\n",
+          "      cleanupErrors.push({origin, error: errorDetails(error)});\n",
+          "      journal.record(error, {origin, phase});\n",
+          "    };\n",
+          "    try { if (zip) zip.abort(); } catch (error) { cleanupError('cleanup-zip', error); }\n",
+          "    try { if (uploadStream) uploadStream.destroy(); } catch (error) { cleanupError('cleanup-upload', error); }\n",
+          "    try {\n",
+          "      if (!await owner.stopAndDrain()) cleanupError('cleanup-owned-group', new Error('Original owned group remains unresolved after its bounded drain'));\n",
+          "    } catch (error) { cleanupError('cleanup-owned-group', error); }\n"
+        ],
+        "afterEnd": 438,
+        "afterStart": 429,
+        "before": [
+          "    try { if (zip) zip.abort(); } catch (error) { cleanupErrors.push(error.name); }\n",
+          "    try { if (uploadStream) uploadStream.destroy(); } catch (error) { cleanupErrors.push(error.name); }\n",
+          "    try { await owner.stopAndDrain(); } catch (error) { cleanupErrors.push(error.name); }\n"
+        ],
+        "beforeEnd": 320,
+        "beforeStart": 317
+      },
+      {
+        "after": [
+          "      catch (error) { cleanupError('cleanup-stderr-receipt', error); }\n"
+        ],
+        "afterEnd": 442,
+        "afterStart": 441,
+        "before": [
+          "      catch (error) { cleanupErrors.push(error.name); }\n"
+        ],
+        "beforeEnd": 324,
+        "beforeStart": 323
+      },
+      {
+        "after": [
+          "        try { cleanupFIFO(root, owner); fifoCleaned = true; } catch (error) { cleanupError('cleanup-fifo', error); }\n"
+        ],
+        "afterEnd": 444,
+        "afterStart": 443,
+        "before": [
+          "        try { cleanupFIFO(root, owner); fifoCleaned = true; } catch (error) { cleanupErrors.push(error.name); }\n"
+        ],
+        "beforeEnd": 326,
+        "beforeStart": 325
+      },
+      {
+        "after": [
+          "        runtimeCredentialsPassedToProducer: false, finalizedArtifactID, diagnostics: journal.proof()}); }\n",
+          "      catch (error) { cleanupError('cleanup-terminal-receipt', error); }\n"
+        ],
+        "afterEnd": 450,
+        "afterStart": 448,
+        "before": [
+          "        runtimeCredentialsPassedToProducer: false}); } catch (error) { cleanupErrors.push(error.name); }\n"
+        ],
+        "beforeEnd": 331,
+        "beforeStart": 330
+      },
+      {
+        "after": [
+          "    if (journal.first) try { process.stderr.write(JSON.stringify({status: 'STREAM_TERMINAL_DIAGNOSTIC_NOT_ACCEPTANCE',\n",
+          "      diagnostics: journal.proof(), ownedGroup: owner.proof(), fifoCleanedAfterGroupAbsence: fifoCleaned}) + '\\n'); }\n",
+          "    catch (_) { /* Receipt and prior failure remain authoritative; never replace the first error. */ }\n",
+          "    process.removeListener('SIGTERM', onTERM);\n",
+          "    process.removeListener('SIGINT', onINT);\n",
+          "    if (!primaryFailure && (!owner.absent || cleanupErrors.length || journal.first)) throw new Error('Original export cleanup/custody remains incomplete.');\n"
+        ],
+        "afterEnd": 457,
+        "afterStart": 451,
+        "before": [
+          "    if (!primaryFailure && (!owner.absent || cleanupErrors.length)) throw new Error('Original export cleanup/custody remains incomplete.');\n"
+        ],
+        "beforeEnd": 333,
+        "beforeStart": 332
+      },
+      {
+        "after": [
+          "module.exports = {loadOriginal, digest, STARTUP, EXPOSE, OwnedGroup, FailureJournal, errorDetails, psOutput, createArtifactWhenHealthy};\n"
+        ],
+        "afterEnd": 465,
+        "afterStart": 464,
+        "before": [
+          "module.exports = {loadOriginal, digest, STARTUP, EXPOSE, OwnedGroup};\n"
+        ],
+        "beforeEnd": 341,
+        "beforeStart": 340
+      }
+    ],
+    "original": {
+      "bytes": 20229,
+      "gitBlob": "5987a2982ebe5c728b215df091684e4eb93a15d9",
+      "sha256": "3e9e40a1cf09cca6a79e3b5b4f677884f6619ef8b2aaed34f9fd2ef8665abde3"
+    },
+    "successor": {
+      "bytes": 26895,
+      "gitBlob": "60ee9c7314dc73f7dded8a2af6747da8038c2389",
+      "sha256": "3d8b949047ce66303f2b0bf519d5209c11a76a4a9321e899f54fcbb0dfd7ad04"
+    }
+  }
+}
