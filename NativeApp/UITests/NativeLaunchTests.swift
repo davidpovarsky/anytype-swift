@@ -5126,3 +5126,371 @@ extension NativeLaunchTests {
     }
 }
 // END_NATIVE_PROPERTIES_CANCEL_UNDO_UI_V1
+
+// BEGIN_NATIVE_BOOKMARK_MOUNTED_UI_V1
+extension NativeLaunchTests {
+    /// Standalone NativeApp only. Synthetic definitions; real UI frame/create,
+    /// Properties edits and external Link. No fixture object or body writes.
+    @objc func testNativeBookmarkCancelCreateEditOpenAndColdReopen() throws {
+        enum JourneyError: Error { case standaloneRequired, fixture, identity, value, control, capture, externalURL }
+        guard ProcessInfo.processInfo.environment["PINKHA_NATIVE_UI_UNIFIED_HOST"] != "1" else {
+            XCTFail("The combined App Bookmark fixture hook is not qualified.")
+            throw JourneyError.standaloneRequired
+        }
+        let scope = UUID(), suffix = String(scope.uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        let prepareFlag = "--native-ui-bookmark-fixture-v1", coldFlag = "--native-ui-bookmark-audit-v1"
+        let contract = "pinkha-native-bookmark-mounted-fixture-v1"
+        let spaceName = "Bookmark UI Space " + suffix
+        let initialURL = "https://example.com/?pinkha_bookmark=" + scope.uuidString + "#created"
+        let editedURL = "https://example.com/?pinkha_bookmark=" + scope.uuidString + "&stage=edited#native-source"
+        let editedName = "Bookmark edited " + suffix
+        var phase = "startup", safeWorkspace = false, complete = false
+        var observations: [[String: Any]] = []
+        var originalSeed: [String: Any]?
+
+        func json(_ value: Any) throws -> Data {
+            let bytes = try JSONSerialization.data(withJSONObject: value, options: [.sortedKeys, .withoutEscapingSlashes])
+            guard bytes.count <= 262_144 else { throw JourneyError.capture }
+            return bytes
+        }
+        func attachJSON(_ value: Any, name: String) throws {
+            let attachment = XCTAttachment(data: try json(value), uniformTypeIdentifier: "public.json")
+            attachment.name = "native-bookmark-" + name; attachment.lifetime = .keepAlways; add(attachment)
+        }
+        func safeCapture(_ name: String) throws {
+            guard safeWorkspace, app.state == .runningForeground,
+                  !app.buttons["any-native-backup-continue"].exists,
+                  !app.secureTextFields["any-native-account-restore-phrase"].exists else { throw JourneyError.capture }
+            let tree = app.debugDescription
+            guard tree.utf8.count <= 262_144 else { throw JourneyError.capture }
+            let ax = XCTAttachment(string: tree)
+            ax.name = "native-bookmark-" + name + "-accessibility"; ax.lifetime = .keepAlways; add(ax)
+            let screen = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            screen.name = "native-bookmark-" + name + "-screenshot"; screen.lifetime = .keepAlways; add(screen)
+        }
+        func ready(_ control: XCUIElement, timeout: TimeInterval = 60) throws {
+            waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"), object: control, timeout: timeout)
+            guard control.exists, control.isEnabled, control.isHittable else { throw JourneyError.control }
+        }
+        func onlyButton(_ labels: [String]) throws -> XCUIElement {
+            let query = app.buttons.matching(NSPredicate(format: "label IN %@", labels))
+            var selected: XCUIElement?
+            let predicate = NSPredicate { _, _ in
+                let controls = query.allElementsBoundByIndex.filter {
+                    $0.exists && $0.isEnabled && $0.isHittable && $0.descendants(matching: .button).count == 0
+                }
+                guard controls.count == 1 else { return false }
+                selected = controls[0]; return true
+            }
+            waitFor(predicate, object: app, timeout: 30)
+            guard let selected else { throw JourneyError.control }
+            return selected
+        }
+        func exactValue(_ element: XCUIElement, _ expected: String) throws -> String {
+            let predicate = NSPredicate { _, _ in
+                element.exists && (element.value as? String).map { Array($0.utf8) == Array(expected.utf8) } == true
+            }
+            waitFor(predicate, object: element, timeout: 60)
+            guard let actual = element.value as? String, Array(actual.utf8) == Array(expected.utf8) else { throw JourneyError.value }
+            return actual
+        }
+        func identity(_ value: [String: Any], _ key: String) throws -> String {
+            guard let text = value[key] as? String, !text.isEmpty, text.utf8.count <= 1024,
+                  text.utf8.allSatisfy({ (33...126).contains($0) }) else { throw JourneyError.identity }
+            return text
+        }
+        let fixtureRow = app.descendants(matching: .any).matching(identifier: "any-native-ui-bookmark-fixture").firstMatch
+        let checkpoint = app.buttons["any-native-ui-bookmark-read-checkpoint"]
+        let library = app.descendants(matching: .any).matching(identifier: "any-native-library").firstMatch
+        let urlInput = app.descendants(matching: .any).matching(identifier: "any-native-bookmark-url-input").firstMatch
+        let valueInput = app.descendants(matching: .any).matching(identifier: "any-native-property-value-input").firstMatch
+        let typeRow = app.descendants(matching: .any).matching(identifier: "any-native-property-type").firstMatch
+        let nameRow = app.buttons["any-native-property-name"]
+        let editors = app.textViews.matching(NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-"))
+
+        func observation(_ expectedPhase: String) throws -> [String: Any] {
+            phase = expectedPhase
+            let terminal = NSPredicate { _, _ in
+                guard fixtureRow.exists, let value = fixtureRow.value as? String, value.utf8.count <= 32_774 else { return false }
+                if value.hasPrefix("failed|") { return true }
+                guard value.hasPrefix("ready|"),
+                      let decoded = try? JSONSerialization.jsonObject(with: Data(value.dropFirst(6).utf8)) as? [String: Any] else { return false }
+                return decoded["phase"] as? String == expectedPhase
+            }
+            waitFor(terminal, object: fixtureRow, timeout: 120)
+            // Preserve the actual terminal payload before any assertions can stop
+            // this test under the original continueAfterFailure=false policy.
+            let rawValue = fixtureRow.value as? String ?? ""
+            guard rawValue.utf8.count <= 32_774 else { throw JourneyError.capture }
+            let raw = XCTAttachment(string: rawValue)
+            raw.name = "native-bookmark-" + expectedPhase + "-fixture-value"; raw.lifetime = .keepAlways; add(raw)
+            try safeCapture(expectedPhase)
+            guard rawValue.hasPrefix("ready|"),
+                  let result = try JSONSerialization.jsonObject(with: Data(rawValue.dropFirst(6).utf8)) as? [String: Any],
+                  result["contract"] as? String == contract, result["phase"] as? String == expectedPhase,
+                  let seed = result["seed"] as? [String: Any], seed["scopeUUID"] as? String == scope.uuidString,
+                  seed["syntheticInstalledDefinitions"] as? Bool == true,
+                  seed["fixtureDefinitionWrites"] as? Int == 5, seed["fixtureObjectWrites"] as? Int == 0,
+                  seed["fixtureBodyWrites"] as? Int == 0, seed["fixtureMembershipWrites"] as? Int == 0,
+                  let definitions = seed["definitions"] as? [String: Any],
+                  definitions["acknowledgedStatuses"] as? [Int] == [201, 201, 201, 201, 204],
+                  result["nativeDefinitionWritesThisProcess"] as? Int == (expectedPhase == "cold" ? 0 : 5),
+                  let pid = result["processID"] as? Int, pid > 0 else { throw JourneyError.fixture }
+            if let originalSeed {
+                guard try json(seed) == json(originalSeed) else { throw JourneyError.fixture }
+            } else { originalSeed = seed }
+            observations.append(result)
+            try attachJSON(result, name: expectedPhase + "-observation")
+            return result
+        }
+        func readCheckpoint(_ expectedPhase: String) throws -> [String: Any] {
+            try ready(checkpoint); checkpoint.tap()
+            return try observation(expectedPhase)
+        }
+        func readback(_ value: [String: Any]) throws -> [String: Any] {
+            guard let result = value["readback"] as? [String: Any],
+                  let census = result["census"] as? [[String: Any]], census.count <= 128,
+                  result["total"] as? Int == census.count, result["hasNext"] as? Bool == false,
+                  result["memberStatus"] as? String == "active", result["memberPermission"] as? String == "owner",
+                  let seed = value["seed"] as? [String: Any],
+                  result["memberIdentity"] as? String == seed["accountID"] as? String else { throw JourneyError.fixture }
+            let ids = try census.map { try identity($0, "objectID") }
+            guard Set(ids).count == ids.count else { throw JourneyError.fixture }
+            return result
+        }
+        func document(_ value: [String: Any], name: String, url: String) throws -> [String: Any] {
+            let actualReadback = try readback(value)
+            guard let actual = actualReadback["document"] as? [String: Any],
+                  let actualName = actual["rawName"] as? String, let actualURL = actual["rawSourceURL"] as? String,
+                  Array(actualName.utf8) == Array(name.utf8), Array(actualURL.utf8) == Array(url.utf8),
+                  actual["nameUTF8"] as? [Int] == Array(name.utf8).map(Int.init), actual["sourceURLUTF8"] as? [Int] == Array(url.utf8).map(Int.init),
+                  actual["editorRows"] as? Int == 0, actual["editorTotal"] as? Int == 0,
+                  actual["editorHasNext"] as? Bool == false, actual["markdownUTF8"] as? [Int] == [] else { throw JourneyError.value }
+            return actual
+        }
+        func openURLForm(typeID: String) throws {
+            let menu = app.buttons["any-native-create-menu"]
+            try ready(menu); menu.tap()
+            let bookmark = app.buttons["any-native-new-bookmark"]
+            try ready(bookmark); bookmark.tap()
+            // The production picker is optional only when it really renders one
+            // eligible Type. Never substitute a fabricated/default Type ID.
+            let choice = app.buttons["any-native-bookmark-type-" + typeID]
+            waitFor(NSPredicate { _, _ in urlInput.exists || choice.exists }, object: app, timeout: 60)
+            if choice.exists { try ready(choice); choice.tap() }
+            try ready(urlInput)
+            urlInput.tap(); urlInput.typeText(initialURL)
+            _ = try exactValue(urlInput, initialURL)
+        }
+        func openProperties() throws {
+            let button = app.buttons["any-native-document-properties"]
+            try ready(button); button.tap()
+            waitUntilEnabled(app.descendants(matching: .any).matching(identifier: "any-native-properties-list").firstMatch)
+            waitUntilEnabled(typeRow)
+        }
+        func closeProperties() throws {
+            let close = app.buttons["any-native-property-close"]
+            try ready(close); close.tap()
+            waitFor(NSPredicate(format: "exists == false"), object: close, timeout: 60)
+            try ready(app.buttons["any-native-document-properties"])
+        }
+        func edit(_ row: XCUIElement, from old: String, to new: String) throws {
+            revealNativeProperty(app, row)
+            try ready(row); row.tap()
+            try ready(valueInput)
+            if !old.isEmpty { _ = try exactValue(valueInput, old) }
+            valueInput.tap(); valueInput.typeKey("a", modifierFlags: .command)
+            valueInput.typeText(XCUIKeyboardKey.delete.rawValue); valueInput.typeText(new)
+            _ = try exactValue(valueInput, new)
+            let save = app.buttons["any-native-property-save"]
+            try ready(save); save.tap()
+            waitFor(NSPredicate(format: "exists == false"), object: valueInput, timeout: 60)
+            revealNativeProperty(app, row)
+            _ = try exactValue(row, new)
+        }
+
+        app.launchArguments.append(prepareFlag)
+        app.launch()
+        defer {
+            let marker = XCTAttachment(string: "phase=\(phase); complete=\(complete); observedCheckpoints=\(observations.count)")
+            marker.name = "native-bookmark-final-state"; marker.lifetime = .keepAlways; add(marker)
+            if safeWorkspace && app.state == .runningForeground &&
+                !app.buttons["any-native-backup-continue"].exists &&
+                !app.secureTextFields["any-native-account-restore-phrase"].exists {
+                try? safeCapture("final")
+            }
+            app.terminate()
+        }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        try ready(library)
+        safeWorkspace = true
+        let prepared = try observation("prepare")
+        guard let seed = prepared["seed"] as? [String: Any], let definitions = seed["definitions"] as? [String: Any],
+              let typeName = definitions["typeName"] as? String else { throw JourneyError.fixture }
+        let typeID = try identity(definitions, "typeID"), ownerID = try identity(definitions, "propertyOwnerID")
+        let propertyID = try identity(definitions, "propertyID")
+        let sourceRow = app.buttons["any-native-property-property:v1:\(ownerID.utf8.count):\(ownerID):\(propertyID.utf8.count):\(propertyID)"]
+
+        // Existing pull-to-refresh discovers the real installed definitions.
+        // A definition fixture never hands the Library its importedTypes/frame.
+        library.swipeDown()
+        let before = try readCheckpoint("baseline")
+        let beforeReadback = try readback(before)
+        try openURLForm(typeID: typeID)
+        try safeCapture("cancel-form")
+        let cancel = try onlyButton(["ביטול", "Cancel"])
+        cancel.tap()
+        waitFor(NSPredicate(format: "exists == false"), object: urlInput, timeout: 60)
+        try ready(library)
+        let cancelled = try readCheckpoint("cancelled")
+        guard try json(beforeReadback) == json(readback(cancelled)) else { throw JourneyError.fixture }
+
+        try openURLForm(typeID: typeID)
+        let create = app.buttons["any-native-bookmark-create"]
+        try ready(create); create.tap() // exactly one normal UI submission
+        waitFor(NSPredicate(format: "exists == false"), object: urlInput, timeout: 60)
+        try ready(app.buttons["any-native-document-properties"])
+        XCTAssertEqual(editors.count, 0)
+        let created = try readCheckpoint("created")
+        let initialDocument = try document(created, name: "", url: initialURL)
+        let objectID = try identity(initialDocument, "objectID")
+        guard initialDocument["typeID"] as? String == typeID,
+              initialDocument["propertyOwnerID"] as? String == ownerID,
+              initialDocument["sourcePropertyID"] as? String == propertyID else { throw JourneyError.identity }
+        let rowID = "any-native-hierarchy-row-" + objectID
+
+        try openProperties()
+        _ = try exactValue(typeRow, typeName)
+        revealNativeProperty(app, sourceRow)
+        _ = try exactValue(sourceRow, initialURL)
+        try edit(nameRow, from: "", to: editedName)
+        try edit(sourceRow, from: initialURL, to: editedURL)
+        try safeCapture("properties-edited")
+        try closeProperties()
+        XCTAssertEqual(editors.count, 0)
+        let edited = try readCheckpoint("edited")
+        let editedDocument = try document(edited, name: editedName, url: editedURL)
+        guard editedDocument["objectID"] as? String == objectID else { throw JourneyError.identity }
+
+        try openProperties()
+        let external = app.descendants(matching: .any).matching(identifier: "any-native-bookmark-open-source").firstMatch
+        revealNativeProperty(app, external, scrollDown: true)
+        _ = try exactValue(external, editedURL)
+        phase = "external-open"
+        try ready(external); external.tap()
+        let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
+        let browserForeground = safari.wait(for: .runningForeground, timeout: 60)
+        let appBackground = app.wait(for: .runningBackground, timeout: 30)
+        try attachJSON(["phase": phase, "browserForeground": browserForeground,
+                        "appBackground": appBackground], name: "external-transition")
+        guard browserForeground, appBackground else { throw JourneyError.externalURL }
+        // Observe the browser's focused address; never type/paste the URL into
+        // Safari. The unique query+fragment must originate from the real Link.
+        phase = "external-address"
+        safari.typeKey("l", modifierFlags: .command)
+        var browserAddress: String?
+        let addressReady = NSPredicate { _, _ in
+            let matches = safari.textFields.allElementsBoundByIndex.compactMap { field -> String? in
+                guard field.exists, field.isHittable, let value = field.value as? String,
+                      Array(value.utf8) == Array(editedURL.utf8) else { return nil }
+                return value
+            }
+            guard matches.count == 1 else { return false }
+            browserAddress = matches[0]; return true
+        }
+        let addressWait = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: addressReady, object: safari)], timeout: 60)
+        // Retain an actual mismatch before the original stop-on-failure policy.
+        // Only an address carrying this unpredictable owned scope is retained
+        // verbatim; unrelated browser field values contribute bounds/hash only.
+        var observedAddressFields: [[String: Any]] = []
+        for (index, field) in safari.textFields.allElementsBoundByIndex.filter({ $0.exists && $0.isHittable }).prefix(16).enumerated() {
+            guard let value = field.value as? String else { continue }
+            let bytes = Data(value.utf8)
+            var observation: [String: Any] = ["index": index, "utf8Count": bytes.count,
+                "sha256": SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()]
+            if bytes.count <= 8192 && value.contains(scope.uuidString) {
+                observation["ownedRawValue"] = value
+                let screen = XCTAttachment(screenshot: field.screenshot())
+                screen.name = "native-bookmark-observed-owned-address-\(index)-screenshot"
+                screen.lifetime = .keepAlways; add(screen)
+            }
+            observedAddressFields.append(observation)
+        }
+        try attachJSON(["phase": phase, "waitResult": String(describing: addressWait),
+            "expectedAddress": editedURL, "observedFields": observedAddressFields,
+            "exactAddressObserved": browserAddress != nil], name: "external-address-attempt")
+        XCTAssertEqual(addressWait, .completed, "The real external browser must expose this exact owned URL.")
+        guard addressWait == .completed, let browserAddress, Array(browserAddress.utf8) == Array(editedURL.utf8),
+              let parts = URLComponents(string: browserAddress), parts.scheme == "https", parts.host == "example.com",
+              parts.percentEncodedQuery == "pinkha_bookmark=" + scope.uuidString + "&stage=edited",
+              parts.fragment == "native-source" else { throw JourneyError.externalURL }
+        try attachJSON(["phase": "external-browser", "observedBundleID": "com.apple.mobilesafari",
+            "observedAddress": browserAddress, "addressUTF8": Array(browserAddress.utf8),
+            "foreground": safari.state == .runningForeground, "URLTypedIntoBrowser": false], name: "external-address")
+        // Capture only the selected known address element, never a browser tree
+        // containing unrelated tabs/history. Browser navigation remains pending
+        // until this actual exact-address assertion executes successfully.
+        let addressElement = safari.textFields.allElementsBoundByIndex.first {
+            ($0.value as? String).map { Array($0.utf8) == Array(editedURL.utf8) } == true
+        }
+        guard let addressElement else { throw JourneyError.externalURL }
+        let addressScreen = XCTAttachment(screenshot: addressElement.screenshot())
+        addressScreen.name = "native-bookmark-external-address-screenshot"; addressScreen.lifetime = .keepAlways; add(addressScreen)
+        phase = "external-return"
+        app.activate()
+        guard app.wait(for: .runningForeground, timeout: 60) else { throw JourneyError.control }
+        if !app.buttons["any-native-property-close"].exists { try openProperties() }
+        revealNativeProperty(app, nameRow)
+        _ = try exactValue(nameRow, editedName)
+        revealNativeProperty(app, sourceRow)
+        _ = try exactValue(sourceRow, editedURL)
+        try closeProperties()
+        let returned = try readCheckpoint("returned")
+        guard try json(readback(returned)) == json(readback(edited)) else { throw JourneyError.value }
+
+        // Back to the real Library and its actual native object-ID row before
+        // the cold process. No object ID or account is fabricated by the test.
+        let back = app.navigationBars.buttons.matching(NSPredicate(format: "label == %@ OR label == %@", "ספרייה", "Library")).firstMatch
+        try ready(back); back.tap()
+        let libraryRow = app.buttons[rowID]
+        try ready(libraryRow)
+        guard libraryRow.label.contains(editedName) else { throw JourneyError.value }
+        app.terminate()
+        app.launchArguments.removeAll { $0 == prepareFlag }
+        app.launchArguments.append(coldFlag)
+        guard !app.launchArguments.contains(prepareFlag), app.launchArguments.filter({ $0 == coldFlag }).count == 1 else { throw JourneyError.fixture }
+        app.launch()
+        tapWhenEnabled(app.buttons["any-native-saved-account"].firstMatch, timeout: 60)
+        tapWhenEnabled(app.buttons[spaceName].firstMatch, timeout: 60)
+        try ready(library)
+        let cold = try observation("cold")
+        guard let warmPID = returned["processID"] as? Int, let coldPID = cold["processID"] as? Int, warmPID != coldPID,
+              let warmGeneration = returned["ownerGeneration"] as? String,
+              let coldGeneration = cold["ownerGeneration"] as? String, warmGeneration != coldGeneration,
+              try json(readback(cold)) == json(readback(returned)) else { throw JourneyError.fixture }
+        let coldDocument = try document(cold, name: editedName, url: editedURL)
+        guard coldDocument["objectID"] as? String == objectID else { throw JourneyError.identity }
+        try ready(libraryRow); libraryRow.tap()
+        try ready(app.buttons["any-native-document-properties"])
+        XCTAssertEqual(editors.count, 0)
+        try openProperties()
+        _ = try exactValue(typeRow, typeName)
+        revealNativeProperty(app, nameRow); _ = try exactValue(nameRow, editedName)
+        revealNativeProperty(app, sourceRow); _ = try exactValue(sourceRow, editedURL)
+        try safeCapture("cold-properties")
+        try closeProperties()
+        XCTAssertEqual(editors.count, 0)
+        try attachJSON(["contract": "pinkha-native-bookmark-mounted-ui-journey-v1",
+            "method": "NativeLaunchTests/testNativeBookmarkCancelCreateEditOpenAndColdReopen",
+            "scopeUUID": scope.uuidString, "objectID": objectID, "typeID": typeID,
+            "propertyOwnerID": ownerID, "propertyID": propertyID,
+            "syntheticInstalledDefinitions": true, "originalNineteenTypeMigrationQualified": false,
+            "combinedHostQualified": false, "fixtureObjectWrites": 0, "fixtureBodyWrites": 0,
+            "cancellationEvidence": "unchanged complete bounded native object census; not a request-count claim",
+            "externalAddress": browserAddress, "distinctWarmAndColdPIDs": [warmPID, coldPID],
+            "nativeObservations": observations, "visibleColdEditorRows": editors.count], name: "journey-receipt")
+        complete = true
+    }
+}
+// END_NATIVE_BOOKMARK_MOUNTED_UI_V1

@@ -1,0 +1,15 @@
+--- review-v1-app-init/AnyNativeApp.swift
++++ candidate/NativeApp/Sources/AnyNativeApp.swift
+@@ -22,9 +22,10 @@
+             #if DEBUG
+             let fixture = try NativeCustomTypeFixture.configured(arguments: ProcessInfo.processInfo.arguments,
+                 dataDirectory: directory, credentialService: service)
++            let bookmark = try NativeBookmarkFixture.configured(arguments: ProcessInfo.processInfo.arguments,
++                dataDirectory: directory, credentialService: service)
+             customTypeFixture = fixture
+-            bookmarkFixture = try NativeBookmarkFixture.configured(arguments: ProcessInfo.processInfo.arguments,
+-                dataDirectory: directory, credentialService: service)
++            bookmarkFixture = bookmark
+             #endif
+             application = prepared
+         } catch {

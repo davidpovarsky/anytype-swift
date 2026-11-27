@@ -1,0 +1,168 @@
+{
+  "schema": "native-bookmark-mounted-source-candidate-v1",
+  "status": "SOURCE_ONLY_NOT_RUN",
+  "repository": "davidpovarsky/anytype-swift",
+  "baseCommit": "5a45fe4af2c4601faad181f81d391057c1237654",
+  "changedExistingFiles": [
+    {
+      "path": "candidate/NativeApp/Sources/NativeCustomTypeFixture.swift",
+      "bytes": 55393,
+      "sha256": "fdac35c51f6a2af10c75230360c3c2c5032e9a2c9c898625f78afc405778aab6",
+      "gitBlob": "fe9074dded02e833bc8eea5af9697e89c9bc9a26"
+    },
+    {
+      "path": "candidate/NativeApp/UITests/NativeLaunchTests.swift",
+      "bytes": 319986,
+      "sha256": "e06c55a6ed9dd6153f8aabd528f0c225246ec08da96bb515431477c234bdc03c",
+      "gitBlob": "b0cb22635c7b908b27b9013c7615926790308bad"
+    },
+    {
+      "path": "candidate/NativeApp/Sources/AnyNativeApp.swift",
+      "bytes": 3768,
+      "sha256": "081230a8b5b2c4c032f379a03e7a29076d4c7c3f044e1d6361d52e3cd48065e0",
+      "gitBlob": "5ccd7d976a41079e6dbd4b89f0364d482d6df1db"
+    }
+  ],
+  "sourceInverse": {
+    "path": "source-inverse.json",
+    "bytes": 5190,
+    "sha256": "94980e1d4fd593e313d1f9725d11fdf8ac13bcf012ece7d1010eb54ddf80baa2",
+    "gitBlob": "03f7cdd4ee68fd4a72cdcd4983239379331f742b"
+  },
+  "sourceBindings": {
+    "path": "source-bindings.json",
+    "bytes": 21540,
+    "sha256": "d0dc41bb8d7f74b4ea84ef45ca9ee23e34819b4865312e627cae133f384c7b71",
+    "gitBlob": "d4b79708b40b4f91f746faeda90c4ed56fb9ccef"
+  },
+  "declarations": {
+    "originalMethods": [
+      "testFreshNativeExecutableShowsAccountAndRecoveryEntryPoints",
+      "testBackgroundAndForegroundReopenTheOwnedRuntime",
+      "testCreateEditHanlinConsentBackgroundAndColdReopen",
+      "testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+      "testSourceInspectorQuoteAndNoteSurviveColdReopen",
+      "testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+      "testHierarchyDragIntoFolderPersistsAfterColdReopen",
+      "testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+      "testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen",
+      "testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
+      "testObserveCanonicalArchiveSystemPickers",
+      "testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",
+      "testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen",
+      "testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen",
+      "testLibrarySearchReplacementAndColdReopenUseCurrentQuery",
+      "testActualSemanticSelectionCancelCreateEditAndColdReopen",
+      "testSemanticSourceLinkSurvivesEditAndColdReopen",
+      "testNativeSharingInvitationConfirmationCancellationAndColdReopen",
+      "testAnyMiniAppsTextStudioWarmAndColdReturnPersistInNativeDocument",
+      "testNativeLibraryAndEditorAccessibilityAuditAtRequestedContentSize",
+      "testNativeVoiceOverTraversalSpeaksCurrentNativeContent",
+      "testTypedBlockMenusPersistAllNineKindsAndColdReopen",
+      "testNativeStyledTypographyRefreshesLiveAtAccessibilitySize",
+      "testCanonicallyEquivalentLatinTypingPreservesNativeAnchorAndColdReopen",
+      "testCanonicallyEquivalentHebrewTypingPreservesNativeAnchorAndColdReopen",
+      "testNativePropertyValueCancelAndUndoSurviveColdReopen"
+    ],
+    "originalMethodCount": 26,
+    "candidateMethodCount": 27,
+    "newSelector": "NativeLaunchTests/testNativeBookmarkCancelCreateEditOpenAndColdReopen",
+    "newXCTestMethods": 1,
+    "newUnparameterizedCases": 1,
+    "original26SelectionUnchanged": true,
+    "compiledEnumeration": null,
+    "newExecutionTimeAllowanceOverride": null
+  },
+  "fixture": {
+    "definitions": "SYNTHETIC_INSTALLED",
+    "publicDefinitionWritesOnSuccessfulPrepare": 5,
+    "acknowledgedHTTPStatuses": [
+      201,
+      201,
+      201,
+      201,
+      204
+    ],
+    "fixtureObjectWrites": 0,
+    "fixtureBodyWrites": 0,
+    "fixtureMembershipWrites": 0,
+    "fixtureFrameRequests": 0,
+    "warmReadCheckpoints": [
+      "baseline",
+      "cancelled",
+      "created",
+      "edited",
+      "returned"
+    ],
+    "coldReadOnly": true,
+    "coldRequiresSameActualSeedAccountSpaceObject": true,
+    "coldRequiresDistinctPIDAndOwnerGeneration": true,
+    "census": {
+      "maximumRecords": 128,
+      "queryLimit": 129,
+      "requiresTotalEqualsUniqueCount": true,
+      "requiresHasNextFalse": true,
+      "acceptsPartialPage": false,
+      "paginationClaim": false,
+      "cancellationClaim": "No additional or changed native census records; no HTTP-count claim"
+    },
+    "observationMaximumBytes": 32768,
+    "nativeQueryMaximumResponseBytes": 1048576
+  },
+  "predecessors": [
+    {
+      "path": "review-v1-app-init/AnyNativeApp.swift",
+      "bytes": 3732,
+      "sha256": "a5f195ea7f487aa536a974969ce2950389aeef511475b052220d076f009f5532",
+      "gitBlob": "ee2fbeeb0e09af5b4b933f0a28941c3fa700c785"
+    },
+    {
+      "path": "review-v1-ui-evidence/NativeLaunchTests.swift",
+      "bytes": 318010,
+      "sha256": "b05173b654d60d31bd9a72aec81af6af8780ee64ac4cc32c6a5f355125a414d8",
+      "gitBlob": "eedeb679990f05440ed4d0363166971443f83845"
+    }
+  ],
+  "corrections": [
+    {
+      "path": "app-initialization-correction.json",
+      "bytes": 1409,
+      "sha256": "c283f6fb12c1bb3f6413d86718c0f2acc2c076eac731e5e836971a2b062e3ee9",
+      "gitBlob": "d8de92714c5da4fe6f8ee7aa003b44d033890343"
+    },
+    {
+      "path": "external-evidence-order-correction.json",
+      "bytes": 4444,
+      "sha256": "7a495bd9f973a360a7fbc772f2a282cf38438b59b31ce8ab07bc19bbbc8462f1",
+      "gitBlob": "1a2896c04c57c11d33eede73b11c1421dcf25547"
+    }
+  ],
+  "compilation": {
+    "existingNativeAppProject": {
+      "path": "source/NativeApp/AnyNative.xcodeproj/project.pbxproj",
+      "bytes": 23165,
+      "sha256": "7a149b93087e0ebc14416b184708de4897e39c183d05e2f02241d5e59dd858ea",
+      "gitBlob": "b7ee3fb02db7059d132c1804cda91630abf80c74"
+    },
+    "newInputPaths": [],
+    "PBXChanges": 0,
+    "PackageChanges": 0,
+    "compilerFileListProof": null,
+    "standaloneHookSourceOnly": true,
+    "combinedHookQualified": false
+  },
+  "runtimeReady": false,
+  "matchingProducerAdmission": null,
+  "swiftOrAppleCompilation": "NOT_RUN",
+  "uiExecution": "NOT_RUN",
+  "externalBrowserExactAddress": "NOT_RUN",
+  "coldNativeReadback": "NOT_RUN",
+  "visualOrPhysicalAcceptance": "NOT_RUN",
+  "originalNineteenTypeMigration": "NOT_QUALIFIED_BY_SYNTHETIC_FIXTURE",
+  "controllersChanged": 0,
+  "firstAppleOrderUnchanged": [
+    "original22methods34cases",
+    "originalRealApplicationPreparation",
+    "original4UIselectors"
+  ]
+}

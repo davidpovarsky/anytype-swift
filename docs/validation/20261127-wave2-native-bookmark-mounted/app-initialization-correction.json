@@ -1,0 +1,27 @@
+{
+  "schema": "native-bookmark-app-initialization-correction-v1",
+  "status": "SOURCE_ONLY_NOT_COMPILED",
+  "finding": "Initialize both throwing local fixtures before assigning either stored let; the catch can then initialize both to nil.",
+  "predecessor": {
+    "path": "review-v1-app-init/AnyNativeApp.swift",
+    "bytes": 3732,
+    "sha256": "a5f195ea7f487aa536a974969ce2950389aeef511475b052220d076f009f5532"
+  },
+  "successor": {
+    "path": "candidate/NativeApp/Sources/AnyNativeApp.swift",
+    "bytes": 3768,
+    "sha256": "081230a8b5b2c4c032f379a03e7a29076d4c7c3f044e1d6361d52e3cd48065e0"
+  },
+  "forward": {
+    "old": "            customTypeFixture = fixture\n            bookmarkFixture = try NativeBookmarkFixture.configured(arguments: ProcessInfo.processInfo.arguments,\n                dataDirectory: directory, credentialService: service)\n",
+    "new": "            let bookmark = try NativeBookmarkFixture.configured(arguments: ProcessInfo.processInfo.arguments,\n                dataDirectory: directory, credentialService: service)\n            customTypeFixture = fixture\n            bookmarkFixture = bookmark\n",
+    "count": 1
+  },
+  "fullInverseVerified": true,
+  "unchangedSuffixes": [
+    "fdac35c51f6a2af10c75230360c3c2c5032e9a2c9c898625f78afc405778aab6",
+    "b05173b654d60d31bd9a72aec81af6af8780ee64ac4cc32c6a5f355125a414d8"
+  ],
+  "runtimeActions": 0,
+  "swiftInvocations": 0
+}
