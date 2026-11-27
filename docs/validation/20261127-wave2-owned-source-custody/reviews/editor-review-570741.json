@@ -1,0 +1,46 @@
+{
+  "schema": "pinkha-owned-source-retirement-independent-review-v1",
+  "at": "2026-11-27T06:38:43.880626+00:00",
+  "status": "CHANGES_REQUIRED_BEFORE_ARCHIVE_CONTROLLER_IS_SEALED",
+  "controllerSHA256": "570741ca68c737785c3ea0b761bbd1453f972e67f54dc4575f4d03e632e4cea8",
+  "controllerBytes": 16012,
+  "reviewScope": "Read-only source review; no archive or retirement run",
+  "findings": [
+    {
+      "id": "CUSTODY-01",
+      "severity": "blocking",
+      "location": "main operation_lock (phase and attempt scoped)",
+      "finding": "The lock pathname includes both attempt directory and phase, so archive/retire or different attempts on one physical source do not exclude one another. active_users is a bounded observation and cannot replace that lock.",
+      "requiredClosure": "Acquire one stable per-source or one global custody lock before phase-directory creation; hold it through terminal command cleanup and receipt persistence."
+    },
+    {
+      "id": "CUSTODY-02",
+      "severity": "blocking",
+      "location": "git subprocess.run timeout and retirement worktree-remove call",
+      "finding": "The bounded subprocess is the runuser wrapper. Its timeout guarantees termination/reaping only for that direct child, not that the actual destructive Git process and descendants have stopped. A mutation can outlive a failed phase and released lock.",
+      "requiredClosure": "Guarantee the actual mutation process/owned process group has terminated and been reaped before writing terminal failure or releasing custody; retain first failure and lifecycle outcome. Reuse a reviewed scoped cleanup boundary where applicable."
+    }
+  ],
+  "reviewedWithoutAdditionalBlocker": [
+    "Exact fixed three lane roots/commits/branches",
+    "Clean and untracked checks plus physical ignored-file rejection",
+    "Published remote branch readback",
+    "Full source and Git metadata manifests",
+    "Regular-file hashes, symlink targets, modes, uid/gid and exact ns mtime archive readback",
+    "Full archive members verified without extraction",
+    "Prepared receipt SHA and same-controller binding",
+    "No-force Git worktree remove rather than direct recursive deletion",
+    "Branch ref check and original archive retained after removal",
+    "Source-archive reserve is distinct from build admission"
+  ],
+  "limits": [
+    "No actual process or archive execution performed",
+    "No restored worktree or runtime evidence claimed",
+    "No broader adversarial filesystem or hostile root-user guarantee claimed"
+  ],
+  "testsRun": 0,
+  "archivesCreated": 0,
+  "worktreesRetired": 0,
+  "MacOperations": 0,
+  "nativeCalls": 0
+}

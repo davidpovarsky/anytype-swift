@@ -1,0 +1,45 @@
+{
+  "branchesDeleted": 0,
+  "buildAdmissionChanged": false,
+  "compilerStarts": 0,
+  "controllerSHA256": "fdcac8721a432ce8846d76e30e21d482023e41922e644c25a00a3481166f189b",
+  "developmentFreeBefore": 532234240,
+  "failure": "Traceback (most recent call last):\n  File \"/mnt/development/projects/evidence/wave2-owned-source-retirement-20261127/retire_owned_source_v2.py\", line 339, in main\n    result['removalStdout'] = remove_closed_worktree(root, directory)\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/development/projects/evidence/wave2-owned-source-retirement-20261127/retire_owned_source_v2.py\", line 137, in remove_closed_worktree\n    require(outcome['status'] == 'PASS_NORMAL_GIT_WORKTREE_REMOVAL',\n  File \"/mnt/development/projects/evidence/wave2-owned-source-retirement-20261127/retire_owned_source_v2.py\", line 37, in require\n    raise RuntimeError(message)\nRuntimeError: Original Git removal failed; see retained first failure and separate cleanup result\n",
+  "finishedAt": "2026-11-27T06:58:48.992592+00:00",
+  "foreignPathsChanged": 0,
+  "identity": {
+    "branch": "codex/chatgpt-wave15-wave2-torah-20261127",
+    "commit": "3406906e27c0f2c2d71abba52f30d20b7b612bc6",
+    "remoteReadback": "3406906e27c0f2c2d71abba52f30d20b7b612bc6\trefs/heads/codex/chatgpt-wave15-wave2-torah-20261127",
+    "tree": "56351d4fbdb1b0868dce84473b46a464941a3c73"
+  },
+  "lane": "torah",
+  "lastProcessObservation": {
+    "observedMatches": [],
+    "scope": "Current diagnostic plus explicit lane-owner cold-source handoff; not historical process-group proof",
+    "transientOrInaccessibleProcesses": 5
+  },
+  "nativeStarts": 0,
+  "phase": "retire",
+  "preparedReceiptSHA256": "fc080063c19e9c8585c7a359d9bcc28ddb5014f684f672e6bbb4b74dab3b2d66",
+  "processObservation": {
+    "observedMatches": [],
+    "scope": "Current diagnostic plus explicit lane-owner cold-source handoff; not historical process-group proof",
+    "transientOrInaccessibleProcesses": 5
+  },
+  "removalCommand": [
+    "git",
+    "-C",
+    "/mnt/development/projects/worktrees/anytype-wave2-property-lifecycle-20261127",
+    "worktree",
+    "remove",
+    "/mnt/development/projects/worktrees/anytype-wave2-torah-20261127"
+  ],
+  "rootFreeBefore": 1725501440,
+  "schema": "pinkha.wave2.cold-source-custody/1",
+  "source": "/mnt/development/projects/worktrees/anytype-wave2-torah-20261127",
+  "sourceCommit": "3406906e27c0f2c2d71abba52f30d20b7b612bc6",
+  "sourceEntries": 13740,
+  "startedAt": "2026-11-27T06:58:39.693687+00:00",
+  "status": "FAIL"
+}

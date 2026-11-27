@@ -1,0 +1,681 @@
+{
+  "cleanupHelperSHA256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+  "commands": [
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "--",
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "-C",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d",
+        "--version"
+      ],
+      "exit": 0,
+      "ownedCleanup": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T07:29:45.564815+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 3876270,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "errors": [],
+        "groupObservations": [
+          {
+            "atUTC": "2026-11-27T07:29:45.564815+00:00",
+            "errno": 3,
+            "error": "[Errno 3] No such process",
+            "processGroup": 3876270,
+            "signal": 0,
+            "status": "ABSENT_ESRCH"
+          }
+        ],
+        "historicalGroupReprobed": false,
+        "initialMembersDiagnosticOnly": [],
+        "processExit": 0,
+        "processGroup": 3876270,
+        "signals": [],
+        "status": "PASS_OWNED_GROUP_ABSENT",
+        "terminationRequired": false
+      },
+      "pid": 3876270,
+      "processExit": 0,
+      "processGroup": 3876270,
+      "status": "PASS_EXIT0",
+      "stderr": "",
+      "stdout": "git version 2.43.0\n"
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "--",
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "-C",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d",
+        "init",
+        "--initial-branch=probe-main",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository"
+      ],
+      "exit": 0,
+      "ownedCleanup": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T07:29:45.599717+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 3876272,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "errors": [],
+        "groupObservations": [
+          {
+            "atUTC": "2026-11-27T07:29:45.599717+00:00",
+            "errno": 3,
+            "error": "[Errno 3] No such process",
+            "processGroup": 3876272,
+            "signal": 0,
+            "status": "ABSENT_ESRCH"
+          }
+        ],
+        "historicalGroupReprobed": false,
+        "initialMembersDiagnosticOnly": [],
+        "processExit": 0,
+        "processGroup": 3876272,
+        "signals": [],
+        "status": "PASS_OWNED_GROUP_ABSENT",
+        "terminationRequired": false
+      },
+      "pid": 3876272,
+      "processExit": 0,
+      "processGroup": 3876272,
+      "status": "PASS_EXIT0",
+      "stderr": "",
+      "stdout": "Initialized empty Git repository in /tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository/.git/\n"
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "--",
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "-C",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository",
+        "add",
+        "--",
+        "probe.txt"
+      ],
+      "exit": 0,
+      "ownedCleanup": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T07:29:45.623352+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 3876274,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "errors": [],
+        "groupObservations": [
+          {
+            "atUTC": "2026-11-27T07:29:45.623352+00:00",
+            "errno": 3,
+            "error": "[Errno 3] No such process",
+            "processGroup": 3876274,
+            "signal": 0,
+            "status": "ABSENT_ESRCH"
+          }
+        ],
+        "historicalGroupReprobed": false,
+        "initialMembersDiagnosticOnly": [],
+        "processExit": 0,
+        "processGroup": 3876274,
+        "signals": [],
+        "status": "PASS_OWNED_GROUP_ABSENT",
+        "terminationRequired": false
+      },
+      "pid": 3876274,
+      "processExit": 0,
+      "processGroup": 3876274,
+      "status": "PASS_EXIT0",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "--",
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "-C",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository",
+        "commit",
+        "-m",
+        "Create disposable source custody probe"
+      ],
+      "exit": 0,
+      "ownedCleanup": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T07:29:45.648210+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 3876276,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "errors": [],
+        "groupObservations": [
+          {
+            "atUTC": "2026-11-27T07:29:45.648210+00:00",
+            "errno": 3,
+            "error": "[Errno 3] No such process",
+            "processGroup": 3876276,
+            "signal": 0,
+            "status": "ABSENT_ESRCH"
+          }
+        ],
+        "historicalGroupReprobed": false,
+        "initialMembersDiagnosticOnly": [],
+        "processExit": 0,
+        "processGroup": 3876276,
+        "signals": [],
+        "status": "PASS_OWNED_GROUP_ABSENT",
+        "terminationRequired": false
+      },
+      "pid": 3876276,
+      "processExit": 0,
+      "processGroup": 3876276,
+      "status": "PASS_EXIT0",
+      "stderr": "",
+      "stdout": "[probe-main (root-commit) 932150e] Create disposable source custody probe\n 1 file changed, 1 insertion(+)\n create mode 100644 probe.txt\n"
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "--",
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "-C",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "ownedCleanup": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T07:29:45.669307+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 3876279,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "errors": [],
+        "groupObservations": [
+          {
+            "atUTC": "2026-11-27T07:29:45.669307+00:00",
+            "errno": 3,
+            "error": "[Errno 3] No such process",
+            "processGroup": 3876279,
+            "signal": 0,
+            "status": "ABSENT_ESRCH"
+          }
+        ],
+        "historicalGroupReprobed": false,
+        "initialMembersDiagnosticOnly": [],
+        "processExit": 0,
+        "processGroup": 3876279,
+        "signals": [],
+        "status": "PASS_OWNED_GROUP_ABSENT",
+        "terminationRequired": false
+      },
+      "pid": 3876279,
+      "processExit": 0,
+      "processGroup": 3876279,
+      "status": "PASS_EXIT0",
+      "stderr": "",
+      "stdout": "932150ef3ce38c146349bb0aff8ec8c994457188\n"
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "--",
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "-C",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository",
+        "worktree",
+        "add",
+        "--detach",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/missing-worktree",
+        "HEAD"
+      ],
+      "exit": 0,
+      "ownedCleanup": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T07:29:45.696078+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 3876281,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "errors": [],
+        "groupObservations": [
+          {
+            "atUTC": "2026-11-27T07:29:45.696078+00:00",
+            "errno": 3,
+            "error": "[Errno 3] No such process",
+            "processGroup": 3876281,
+            "signal": 0,
+            "status": "ABSENT_ESRCH"
+          }
+        ],
+        "historicalGroupReprobed": false,
+        "initialMembersDiagnosticOnly": [],
+        "processExit": 0,
+        "processGroup": 3876281,
+        "signals": [],
+        "status": "PASS_OWNED_GROUP_ABSENT",
+        "terminationRequired": false
+      },
+      "pid": 3876281,
+      "processExit": 0,
+      "processGroup": 3876281,
+      "status": "PASS_EXIT0",
+      "stderr": "Preparing worktree (detached HEAD 932150e)\n",
+      "stdout": "HEAD is now at 932150e Create disposable source custody probe\n"
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "--",
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "-C",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository",
+        "worktree",
+        "list",
+        "--porcelain"
+      ],
+      "exit": 0,
+      "ownedCleanup": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T07:29:45.717537+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 3876285,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "errors": [],
+        "groupObservations": [
+          {
+            "atUTC": "2026-11-27T07:29:45.717537+00:00",
+            "errno": 3,
+            "error": "[Errno 3] No such process",
+            "processGroup": 3876285,
+            "signal": 0,
+            "status": "ABSENT_ESRCH"
+          }
+        ],
+        "historicalGroupReprobed": false,
+        "initialMembersDiagnosticOnly": [],
+        "processExit": 0,
+        "processGroup": 3876285,
+        "signals": [],
+        "status": "PASS_OWNED_GROUP_ABSENT",
+        "terminationRequired": false
+      },
+      "pid": 3876285,
+      "processExit": 0,
+      "processGroup": 3876285,
+      "status": "PASS_EXIT0",
+      "stderr": "",
+      "stdout": "worktree /tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository\nHEAD 932150ef3ce38c146349bb0aff8ec8c994457188\nbranch refs/heads/probe-main\n\nworktree /tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/missing-worktree\nHEAD 932150ef3ce38c146349bb0aff8ec8c994457188\ndetached\n\n"
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "--",
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "-C",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository",
+        "worktree",
+        "remove",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/missing-worktree"
+      ],
+      "exit": 0,
+      "ownedCleanup": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T07:29:45.739693+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 3876287,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "errors": [],
+        "groupObservations": [
+          {
+            "atUTC": "2026-11-27T07:29:45.739693+00:00",
+            "errno": 3,
+            "error": "[Errno 3] No such process",
+            "processGroup": 3876287,
+            "signal": 0,
+            "status": "ABSENT_ESRCH"
+          }
+        ],
+        "historicalGroupReprobed": false,
+        "initialMembersDiagnosticOnly": [],
+        "processExit": 0,
+        "processGroup": 3876287,
+        "signals": [],
+        "status": "PASS_OWNED_GROUP_ABSENT",
+        "terminationRequired": false
+      },
+      "pid": 3876287,
+      "processExit": 0,
+      "processGroup": 3876287,
+      "status": "PASS_EXIT0",
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "--",
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "-C",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository",
+        "worktree",
+        "list",
+        "--porcelain"
+      ],
+      "exit": 0,
+      "ownedCleanup": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T07:29:45.762174+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 3876289,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "errors": [],
+        "groupObservations": [
+          {
+            "atUTC": "2026-11-27T07:29:45.762174+00:00",
+            "errno": 3,
+            "error": "[Errno 3] No such process",
+            "processGroup": 3876289,
+            "signal": 0,
+            "status": "ABSENT_ESRCH"
+          }
+        ],
+        "historicalGroupReprobed": false,
+        "initialMembersDiagnosticOnly": [],
+        "processExit": 0,
+        "processGroup": 3876289,
+        "signals": [],
+        "status": "PASS_OWNED_GROUP_ABSENT",
+        "terminationRequired": false
+      },
+      "pid": 3876289,
+      "processExit": 0,
+      "processGroup": 3876289,
+      "status": "PASS_EXIT0",
+      "stderr": "",
+      "stdout": "worktree /tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository\nHEAD 932150ef3ce38c146349bb0aff8ec8c994457188\nbranch refs/heads/probe-main\n\n"
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "--",
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "-C",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit": 0,
+      "ownedCleanup": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T07:29:45.783761+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 3876291,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "errors": [],
+        "groupObservations": [
+          {
+            "atUTC": "2026-11-27T07:29:45.783761+00:00",
+            "errno": 3,
+            "error": "[Errno 3] No such process",
+            "processGroup": 3876291,
+            "signal": 0,
+            "status": "ABSENT_ESRCH"
+          }
+        ],
+        "historicalGroupReprobed": false,
+        "initialMembersDiagnosticOnly": [],
+        "processExit": 0,
+        "processGroup": 3876291,
+        "signals": [],
+        "status": "PASS_OWNED_GROUP_ABSENT",
+        "terminationRequired": false
+      },
+      "pid": 3876291,
+      "processExit": 0,
+      "processGroup": 3876291,
+      "status": "PASS_EXIT0",
+      "stderr": "",
+      "stdout": "932150ef3ce38c146349bb0aff8ec8c994457188\n"
+    },
+    {
+      "argv": [
+        "runuser",
+        "-u",
+        "ubuntu",
+        "-g",
+        "chatgpt-agent",
+        "--",
+        "git",
+        "--no-optional-locks",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "core.hooksPath=/dev/null",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "-C",
+        "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d/repository",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "exit": 0,
+      "ownedCleanup": {
+        "absenceEvidence": {
+          "atUTC": "2026-11-27T07:29:45.805658+00:00",
+          "errno": 3,
+          "error": "[Errno 3] No such process",
+          "processGroup": 3876293,
+          "signal": 0,
+          "status": "ABSENT_ESRCH"
+        },
+        "errors": [],
+        "groupObservations": [
+          {
+            "atUTC": "2026-11-27T07:29:45.805658+00:00",
+            "errno": 3,
+            "error": "[Errno 3] No such process",
+            "processGroup": 3876293,
+            "signal": 0,
+            "status": "ABSENT_ESRCH"
+          }
+        ],
+        "historicalGroupReprobed": false,
+        "initialMembersDiagnosticOnly": [],
+        "processExit": 0,
+        "processGroup": 3876293,
+        "signals": [],
+        "status": "PASS_OWNED_GROUP_ABSENT",
+        "terminationRequired": false
+      },
+      "pid": 3876293,
+      "processExit": 0,
+      "processGroup": 3876293,
+      "status": "PASS_EXIT0",
+      "stderr": "",
+      "stdout": ""
+    }
+  ],
+  "compilerStarts": 0,
+  "controllerSHA256": "c2dfa66859a4bd823b81061645e279ec4aae049b9b13310dbabb751abd1cf585",
+  "finishedAt": "2026-11-27T07:29:45.805726+00:00",
+  "gitVersion": "git version 2.43.0",
+  "globalGitConfigurationChanges": 0,
+  "historicalProcessGroupReprobed": false,
+  "mainClean": true,
+  "mainCommitUnchanged": true,
+  "nativeStarts": 0,
+  "normalRemoveExit": 0,
+  "normalRemoveStderr": "",
+  "normalRemoveStdout": "",
+  "productionRepositoryChanges": 0,
+  "registrationRemoved": true,
+  "schema": "pinkha.wave2.normal-git-missing-worktree-probe/1",
+  "scratch": "/tmp/pinkha-wave2-missing-worktree-probe-s2foi85d",
+  "startedAt": "2026-11-27T07:29:45.542598+00:00",
+  "status": "PASS_NORMAL_GIT_REMOVE_ALREADY_MISSING_WORKTREE"
+}

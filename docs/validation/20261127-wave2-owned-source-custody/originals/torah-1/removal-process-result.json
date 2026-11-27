@@ -1,0 +1,43 @@
+{
+  "claimSHA256": "b99ba6d261b50fd5f9a82db9613f3fbbd881e11aa41de4642da20191dd51ccc6",
+  "cleanupHelperSHA256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+  "custodyMayBeReleased": true,
+  "exit": 255,
+  "failure": "Traceback (most recent call last):\n  File \"/mnt/development/projects/evidence/wave2-owned-source-retirement-20261127/retire_owned_source_v2.py\", line 105, in remove_closed_worktree\n    require(process.returncode == 0, 'Normal Git worktree removal returned nonzero')\n  File \"/mnt/development/projects/evidence/wave2-owned-source-retirement-20261127/retire_owned_source_v2.py\", line 37, in require\n    raise RuntimeError(message)\nRuntimeError: Normal Git worktree removal returned nonzero\n",
+  "finishedAt": "2026-11-27T06:58:48.973007+00:00",
+  "ownedCleanup": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T06:58:48.972928+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 3774377,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "errors": [],
+    "groupObservations": [
+      {
+        "atUTC": "2026-11-27T06:58:48.972928+00:00",
+        "errno": 3,
+        "error": "[Errno 3] No such process",
+        "processGroup": 3774377,
+        "signal": 0,
+        "status": "ABSENT_ESRCH"
+      }
+    ],
+    "historicalGroupReprobed": false,
+    "initialMembersDiagnosticOnly": [],
+    "processExit": 255,
+    "processGroup": 3774377,
+    "signals": [],
+    "status": "PASS_OWNED_GROUP_ABSENT",
+    "terminationRequired": false
+  },
+  "persistentHoldRetained": false,
+  "processExit": 255,
+  "startedAt": "2026-11-27T06:58:48.657397+00:00",
+  "status": "FAIL",
+  "stderr": "error: failed to delete '/mnt/development/projects/worktrees/anytype-wave2-torah-20261127': Permission denied\n",
+  "stdout": "",
+  "timeoutSeconds": 60
+}

@@ -1,0 +1,78 @@
+{
+  "schema": "pinkha.wave2.source-custody-scoped-review/1",
+  "reviewer": "ChatGPT Wave2 editor",
+  "reviewedAtUTC": "2026-11-27T06:51:01.813274+00:00",
+  "status": "PASS_SOURCE_ONLY_TWO_PRIOR_BLOCKERS_RESOLVED",
+  "controller": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-source-custody/retire_owned_source.py",
+    "sha256": "fdcac8721a432ce8846d76e30e21d482023e41922e644c25a00a3481166f189b",
+    "bytes": 20850
+  },
+  "supersedesScopeOnly": {
+    "reviewPath": "/workspace/scratch/1d35894f12d5/wave2-source-custody/editor-review-570741.json",
+    "reviewSHA256": "bb459e81a89747f53aff22e96c2951bc0b0385e06192d94c9cae37b29fb5dabc",
+    "originalControllerSHA256": "570741ca68c737785c3ea0b761bbd1453f972e67f54dc4575f4d03e632e4cea8",
+    "scope": "The two prior lock/process-closure findings; original source/archive validation review retained unchanged"
+  },
+  "declarationDelta": {
+    "changedOriginalDeclarations": [
+      "git",
+      "main"
+    ],
+    "newDeclarations": [
+      "remove_closed_worktree"
+    ],
+    "unchangedOriginalDeclarations": [
+      "active_users",
+      "digest",
+      "identity",
+      "manifest",
+      "now",
+      "pack",
+      "require",
+      "source_state",
+      "sync_directory",
+      "verify_archive",
+      "write_new"
+    ]
+  },
+  "findings": [],
+  "resolvedFindings": [
+    {
+      "id": "CUSTODY-LOCK",
+      "evidence": "One stable EVIDENCE/source-custody-operation.lock is acquired before any per-lane/per-attempt phase directory and kept open through the final phase receipt. Every phase also refuses the durable active-removal claim."
+    },
+    {
+      "id": "CUSTODY-PROCESS",
+      "evidence": "The sole destructive Git command now has a separate Popen(start_new_session=True) boundary. The claim is durably written before Popen; every post-Popen write/communicate/return-code failure enters finally and calls the exact pinned 99dc process cleanup. The original failure remains separate from cleanup and pipe-finalization outcomes. A claim is removed only after the result receipt is durable, Popen is terminal, and cleanup reports signal-zero ESRCH absence. An unresolved/exceptional cleanup leaves the claim so subsequent invocations refuse even after the global lock is released by process exit."
+    }
+  ],
+  "helper": {
+    "path": "wave2-property-lifecycle/run_component.py",
+    "sha256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+    "identity": "Exact already-reviewed cleanup functions; no helper modification, no full runner execution"
+  },
+  "probeEvidence": {
+    "sha256SuppliedByRoot": "88e92a3d11343b19c45d78dc81aa1db881bc21a81566f841219dff3409b73b6e",
+    "scope": "Root-reported actual nonmutating runuser/Git group probe; not rerun by reviewer; runtime receipt custody remains root-owned"
+  },
+  "retainedBoundaries": [
+    "Exactly three fixed cold source paths and commits",
+    "Normal git worktree remove without force from stable current worktree",
+    "Exact archive/member hashes and metadata plus prepared receipt/controller binding unchanged",
+    "Branch/history preservation and source/archive postconditions unchanged",
+    "64 MiB archive reserve does not change any build-resource admission"
+  ],
+  "executionByReviewer": {
+    "localSourceReadsAndASTComparison": true,
+    "archive": 0,
+    "retirement": 0,
+    "processProbe": 0,
+    "tests": 0,
+    "Swift": 0,
+    "Native": 0,
+    "Mac": 0,
+    "Oracle": 0
+  },
+  "limitation": "Source-only approval to proceed to actual receipt-bound archive/retirement. It is not an archive, removal, process-runtime or capacity success claim."
+}

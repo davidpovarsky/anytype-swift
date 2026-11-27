@@ -1,0 +1,41 @@
+{
+  "schema": "pinkha.wave2.partial-source-recovery-review/1",
+  "reviewer": "ChatGPT Wave2 editor",
+  "reviewedAtUTC": "2026-11-27T07:12:07.497017+00:00",
+  "status": "PASS_NARROW_SOURCE_ONLY",
+  "controller": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-source-custody/finish_partial_torah_source.py",
+    "sha256": "21043e4eef5043f1dcbb1d5e7c4dd91764bb563684eccd9f8fc32559e3a2561c",
+    "bytes": 7712
+  },
+  "originalControllerSHA256": "fdcac8721a432ce8846d76e30e21d482023e41922e644c25a00a3481166f189b",
+  "scope": "Finish only the fixed already-archived Torah materialization remainder after the exact original permission failure; no archive, recovery, process probe or host observation by this reviewer.",
+  "findings": [],
+  "verifiedBoundaries": [
+    "Fixed single Torah source path, exact commit/branch, original archive receipt fc080, failed retirement receipt3ebe7 and terminal process receipt746bb are pinned. Original failure remains intact.",
+    "Exact original fdcac helper source is loaded; its full tar member bytes/type/mode/uid/gid/ns-mtime validation is reused for both source and Git metadata archives.",
+    "One global FLOCK is acquired before creating the recovery output and held through the final durable receipt and claim handling. Existing unresolved custody prevents entry.",
+    "Git registration and .git pointer/old metadata must already be absent. The branch must retain its exact published commit. Historical PGID is never probed or signaled.",
+    "Every remaining entry must occur in the original manifest. Every regular-file and symlink field is exact; only directory mtime may differ due to the already-completed partial unlink. Unknown paths, changed file bytes, changed modes/owners/types or changed links fail before mutation.",
+    "Canonical root and full remaining manifest are rechecked, including root device/inode identity, immediately after the durable recovery claim and before descriptor-safe standard shutil.rmtree. rmtree.avoids_symlink_attacks must be true.",
+    "Only that fixed source root is removed. No force Git option, Git config change, ownership change, branch deletion, foreign cache or other source deletion is introduced.",
+    "After mutation, source absence, branch identity and full retained source archive hash must pass. The recovery receipt is durably written before the claim is cleared; any failure after the claim leaves an explicit persistent custody hold."
+  ],
+  "actualOriginalPinsSuppliedByRoot": {
+    "archive": "fc080063c19e9c8585c7a359d9bcc28ddb5014f684f672e6bbb4b74dab3b2d66",
+    "failedRetirement": "3ebe7ec7f41da2e03ed047fc82dc56a89abd8212b53c1b6b340e6e442a561e14",
+    "terminalProcess": "746bb78c24bc05b0cdb83e1ddbdcb35b3362277babc50a07fada73ddb47b2f68"
+  },
+  "executionByReviewer": {
+    "sourceRead": true,
+    "archive": 0,
+    "retirementOrRecovery": 0,
+    "processProbe": 0,
+    "tests": 0,
+    "Native": 0,
+    "Swift": 0,
+    "Oracle": 0,
+    "Mac": 0
+  },
+  "limitations": "This is source review of the bounded recovery path, not a successful cleanup or capacity receipt. Actual pinned receipt/member custody is revalidated by the controller at execution."
+}

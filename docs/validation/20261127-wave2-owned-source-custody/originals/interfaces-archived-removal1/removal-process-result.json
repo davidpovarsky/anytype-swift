@@ -1,0 +1,58 @@
+{
+  "argv": [
+    "runuser",
+    "-u",
+    "ubuntu",
+    "-g",
+    "chatgpt-agent",
+    "--",
+    "git",
+    "--no-optional-locks",
+    "-c",
+    "gc.auto=0",
+    "-C",
+    "/mnt/development/projects/worktrees/anytype-wave2-property-lifecycle-20261127",
+    "worktree",
+    "remove",
+    "/mnt/development/projects/worktrees/anytype-wave2-interfaces-20261127"
+  ],
+  "claimSHA256": "72eb2a3b1fe5f7fddbabe2023fa278cc95d410a8ce0836a4c4f95d30c5ece248",
+  "cleanupHelperSHA256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+  "exit": 0,
+  "finishedAt": "2026-11-27T07:51:30.626372+00:00",
+  "ownedChildTerminal": true,
+  "ownedCleanup": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T07:51:30.626303+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 3942181,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "errors": [],
+    "groupObservations": [
+      {
+        "atUTC": "2026-11-27T07:51:30.626303+00:00",
+        "errno": 3,
+        "error": "[Errno 3] No such process",
+        "processGroup": 3942181,
+        "signal": 0,
+        "status": "ABSENT_ESRCH"
+      }
+    ],
+    "historicalGroupReprobed": false,
+    "initialMembersDiagnosticOnly": [],
+    "processExit": 0,
+    "processGroup": 3942181,
+    "signals": [],
+    "status": "PASS_OWNED_GROUP_ABSENT",
+    "terminationRequired": false
+  },
+  "processExit": 0,
+  "startedAt": "2026-11-27T07:51:30.599102+00:00",
+  "status": "PASS_NORMAL_GIT_MISSING_WORKTREE_REMOVAL",
+  "stderr": "",
+  "stdout": "",
+  "timeoutSeconds": 60
+}
