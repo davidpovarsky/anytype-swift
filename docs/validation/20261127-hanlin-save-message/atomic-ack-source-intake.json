@@ -1,0 +1,296 @@
+{
+  "authoredTests": {
+    "methods": 42,
+    "newMethods": 6,
+    "path": "AnyTypeTests/Pinkha/PinkhaHanlinSaveMessageStateTests.swift",
+    "status": "NOT_RUN"
+  },
+  "base": "b2d3943c6650d2da49a9d70e032ec3a12fda13c5",
+  "bounds": {
+    "acknowledgementEventBytes": 65536,
+    "bodyEventBytes": 65536,
+    "combinedNativeACKReferences": 64,
+    "controlCharactersAllowed": false,
+    "normalizedNativeMarkdownUTF8Bytes": 262144,
+    "progressBytes": 131072,
+    "rawRequestedMarkdownUTF8Bytes": 65536,
+    "referenceUTF8Bytes": 256
+  },
+  "engineAdapterChanged": false,
+  "existingContextConsentRouterChanged": false,
+  "existingFilesModified": 3,
+  "macMutation": false,
+  "nativeWrites": 0,
+  "newFiles": 2,
+  "newStateMethods": [
+    "testAtomicDigestOnlyACKCannotCertifyMatchingBodyOrLoseItsUncertainty",
+    "testMaximumEscapedAtomicACKAndWholeProgressFitReservedEnvelopesAndReplay",
+    "testAtomicACKRejectsCombinedOverflowDuplicateGroupsControlAndOversizedIDs",
+    "testAtomicACKRetainsOriginalMutationGroupsButFreshPageCannotCommitTheirEffects",
+    "testAtomicACKSurvivesClosedCanonicalReplayAndRejectsTamperedNativeIDs",
+    "testAtomicNormalizedReadbackRetainsActualDigestAndRequiresBoundedNativeBytes"
+  ],
+  "notClaimed": [
+    "Unknown native ACK recovered by equal text",
+    "Request ID is native deduplication",
+    "Raw Markdown is byte-identical to native normalization",
+    "Root-only outcome is complete save",
+    "Metadata fixture tests are native acceptance",
+    "Production Save installed"
+  ],
+  "originalEngine": {
+    "commit": "2619d5b144b23eb80247df613d5d128aa2efbfb6",
+    "gitBlob": "f66c21cec23712d4f820308c2c5c96c39e42a593",
+    "nativeEvidenceNotTransferredToHanlin": true,
+    "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyNativeMarkdownBody.swift",
+    "sha256": "7097c7c5f7bbf67eba21a961986a892064a1833425ff74b053917a0d4e11e4af"
+  },
+  "originalOwnedCheckpoint": "ca4d93e48dca616ab119739d71a1c4ffe7eddfa8",
+  "originalStateMethodsRetainedByteForByte": [
+    "testExactTitleAndMarkdownBytesArePreserved",
+    "testBoundsUseUTF8BytesWithoutTruncation",
+    "testOnlyExactTwoStringArgumentsAreAccepted",
+    "testReadOnlyCASAndOldCreateAliasCannotBecomeMessageSave",
+    "testInputIdentityDoesNotNormalizeUnicodeOrConfuseTitleBodyBoundaries",
+    "testOriginalMutationIDsSurviveReplayAndDistinctIdenticalBlocksDoNotCollide",
+    "testManifestRejectsUnsupportedSizeAndChangedContent",
+    "testKnownOrVerifiedRootAloneNeverCompletesMessageSave",
+    "testOnlySequentialPreflightedBodyEffectsMayDispatch",
+    "testCancellationBeforeDispatchIsTerminalWithoutInventingAWrite",
+    "testCancellationKeepsLateNativeReceiptButCannotStartAnotherEffect",
+    "testLastDispatchedEffectMaySettleOriginalAggregateAfterCancellation",
+    "testUncertaintyNeverAuthorizesRootOrBlockRedispatch",
+    "testDuplicateNativeConfirmationIsMetadataNoOpAndCannotChangeDigest",
+    "testCompleteReadbackBindsManifestRootAndOrderedExactBlockReferences",
+    "testNativeReferenceCannotBeReusedForAnotherBodyBlockOrRoot",
+    "testKnownIDsWithWrongRootOrBlockContentCannotBecomeVerified",
+    "testSyntacticallyValidButWrongCompleteBodyDigestCannotCommit",
+    "testCanonicalEventReplayRejectsMissingReorderedOrForeignHistory",
+    "testCanonicalDecodeRejectsUnknownFieldsAndForeignOriginalIdentity",
+    "testProgressAndEventsDoNotPersistBusinessTitleOrMarkdown",
+    "testMaximumEscapedNativeReferencesFitBoundedFinalRecordAndReplayExactly",
+    "testControlBearingNativeReferencesAreRefusedBeforeReceiptEncoding"
+  ],
+  "ownerBranch": "codex/chatgpt-wave15-miniapps-return-20261127",
+  "previousStateMethodNamesRetained": [
+    "testExactTitleAndMarkdownBytesArePreserved",
+    "testBoundsUseUTF8BytesWithoutTruncation",
+    "testOnlyExactTwoStringArgumentsAreAccepted",
+    "testReadOnlyCASAndOldCreateAliasCannotBecomeMessageSave",
+    "testInputIdentityDoesNotNormalizeUnicodeOrConfuseTitleBodyBoundaries",
+    "testOriginalMutationIDsSurviveReplayAndDistinctIdenticalBlocksDoNotCollide",
+    "testManifestRejectsUnsupportedSizeAndChangedContent",
+    "testKnownOrVerifiedRootAloneNeverCompletesMessageSave",
+    "testOnlySequentialPreflightedBodyEffectsMayDispatch",
+    "testCancellationBeforeDispatchIsTerminalWithoutInventingAWrite",
+    "testCancellationKeepsLateNativeReceiptButCannotStartAnotherEffect",
+    "testLastDispatchedEffectMaySettleOriginalAggregateAfterCancellation",
+    "testUncertaintyNeverAuthorizesRootOrBlockRedispatch",
+    "testDuplicateNativeConfirmationIsMetadataNoOpAndCannotChangeDigest",
+    "testCompleteReadbackBindsManifestRootAndOrderedExactBlockReferences",
+    "testNativeReferenceCannotBeReusedForAnotherBodyBlockOrRoot",
+    "testKnownIDsWithWrongRootOrBlockContentCannotBecomeVerified",
+    "testSyntacticallyValidButWrongCompleteBodyDigestCannotCommit",
+    "testCanonicalEventReplayRejectsMissingReorderedOrForeignHistory",
+    "testCanonicalDecodeRejectsUnknownFieldsAndForeignOriginalIdentity",
+    "testProgressAndEventsDoNotPersistBusinessTitleOrMarkdown",
+    "testMaximumEscapedNativeReferencesFitBoundedFinalRecordAndReplayExactly",
+    "testControlBearingNativeReferencesAreRefusedBeforeReceiptEncoding",
+    "testConditionalBodyIsOneOperationWithoutSyntheticBlockEffects",
+    "testConditionalLostACKNeverCommitsMatchingBodyOrRedispatches",
+    "testConditionalACKAndReadbackMustMatchOriginalRequestAndSameNativeVersion",
+    "testConditionalCloseBlocksNewWriteButAllowsOriginalLateAcknowledgementAndReadback",
+    "testConditionalReadbackRequiresCompleteDistinctOrderedNativeReferences",
+    "testLegacyOrderedRecordsOmitEveryNewOptionalWireField",
+    "testConditionalOrdinaryEventsFitOriginalJournalBudgetAndReplay",
+    "testConditionalDispatchRequiresVerifiedRootAndValidOriginalVersion",
+    "testLedgerRetainsExactLateReceiptAcrossOneConcurrentDurableClose",
+    "testLedgerCloseRaceNeverRetriesANewNativeDispatch",
+    "testLedgerDoesNotRetryAConflictWithDifferentNativeProgress",
+    "testLedgerDoesNotRetryAnIOFailureOrInventPersistence",
+    "testLedgerRefusesStoreAcknowledgementForAnotherKnownObject"
+  ],
+  "productionSaveBindingInstalled": false,
+  "projectAndAllPackagePinsUnchanged": true,
+  "protectedJournalChanged": false,
+  "requiredBeforeAtomicExecution": [
+    "SDK-owned original protected journal admits atomicBodyReceipt as second reserved 64KiB event only in conditionalMarkdown mode",
+    "Immutable shared original Any authority/consent seam and new native operation/runner",
+    "Apple compilation, exact actual test enumeration and execution",
+    "Real same-version native body semantics/readback and original account/engine-switch draining"
+  ],
+  "schema": "pinkha-hanlin-atomic-ack-source-intake-v1",
+  "sharedWorkerChanged": false,
+  "sources": [
+    {
+      "afterBlob": "bfa3ff9498b444f5c36b3195e4621d9dc8c29f8d",
+      "beforeBlob": "f24e3540e4c6f55bc3ae20c9a264a470e337b3ca",
+      "bytes": 45522,
+      "inverseOperations": [
+        {
+          "afterLineEnd": 307,
+          "afterLineStart": 307,
+          "expectedAfterSHA256": "4c4d74045fef04f8c63274c96e1fb20b2608fcb8ae871353bd6dc3021aec1bdb",
+          "replacementOriginalBase64": "ICAgICAgICBzdGF0ZSA9IHRyeSBzdGF0ZS5hcHBseWluZyguYXRvbWljQm9keUFja25vd2xlZGdlZChyZXF1ZXN0U0hBMjU2OiBkaWdlc3QoInJlcXVlc3QiKSwKICAgICAgICAgICAgc2F2ZWRWZXJzaW9uU0hBMjU2OiBkaWdlc3QoInNhdmVkLXZlcnNpb24iKSwgbmF0aXZlUmVjZWlwdFNIQTI1NjogZGlnZXN0KCJuYXRpdmUtYWNrIikpKQo="
+        },
+        {
+          "afterLineEnd": 333,
+          "afterLineStart": 333,
+          "expectedAfterSHA256": "23f2b54ac28c724ff805690f5150c8bc6f3bf42e02520cf4539c55152814846c",
+          "replacementOriginalBase64": "ICAgICAgICBsZXQgYWNrbm93bGVkZ2VkID0gdHJ5IGRpc3BhdGNoZWQuYXBwbHlpbmcoLmF0b21pY0JvZHlBY2tub3dsZWRnZWQocmVxdWVzdFNIQTI1NjogZGlnZXN0KCJyZXF1ZXN0IiksCiAgICAgICAgICAgIHNhdmVkVmVyc2lvblNIQTI1NjogZGlnZXN0KCJzYXZlZC12ZXJzaW9uIiksIG5hdGl2ZVJlY2VpcHRTSEEyNTY6IGRpZ2VzdCgibmF0aXZlLWFjayIpKSkK"
+        },
+        {
+          "afterLineEnd": 348,
+          "afterLineStart": 348,
+          "expectedAfterSHA256": "bfed5068951f4b1183ed06f40d3b359ad393615251e8266d28c23fdd77b84826",
+          "replacementOriginalBase64": "ICAgICAgICBzdGF0ZSA9IHRyeSBzdGF0ZS5hcHBseWluZyguYXRvbWljQm9keUFja25vd2xlZGdlZChyZXF1ZXN0U0hBMjU2OiBkaWdlc3QoInJlcXVlc3QiKSwKICAgICAgICAgICAgc2F2ZWRWZXJzaW9uU0hBMjU2OiBkaWdlc3QoInNhdmVkLXZlcnNpb24iKSwgbmF0aXZlUmVjZWlwdFNIQTI1NjogZGlnZXN0KCJuYXRpdmUtYWNrIikpKQo="
+        },
+        {
+          "afterLineEnd": 362,
+          "afterLineStart": 361,
+          "expectedAfterSHA256": "4abc6ee206d215be71f7c1ba4a95f3443a6617609e388fd12e42be59ce0d04d8",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgZXhwZWN0ZWRWZXJzaW9uU0hBMjU2OiBkaWdlc3QoImVtcHR5LXZlcnNpb24iKSkpLmFwcGx5aW5nKC5hdG9taWNCb2R5QWNrbm93bGVkZ2VkKAogICAgICAgICAgICAgICAgcmVxdWVzdFNIQTI1NjogZGlnZXN0KCJyZXF1ZXN0IiksIHNhdmVkVmVyc2lvblNIQTI1NjogZGlnZXN0KCJzYXZlZC12ZXJzaW9uIiksCiAgICAgICAgICAgICAgICBuYXRpdmVSZWNlaXB0U0hBMjU2OiBkaWdlc3QoIm5hdGl2ZS1hY2siKSkpCiAgICAgICAgZm9yIHJlZmVyZW5jZXMgaW4gW1sib25lIl0sIFsib25lIiwgIm9uZSJdLCBbIm5hdGl2ZS1wYWdlIiwgInR3byJdLCBbIm9uZSIsICJ0d28iLCAidGhyZWUiXSwgWyJvbmUiLCAiYmFkXG4iXV0gewo="
+        },
+        {
+          "afterLineEnd": 384,
+          "afterLineStart": 383,
+          "expectedAfterSHA256": "59e659399293db1bf1769772b29ffc9a78b63f9e8f9678863f825adbdc2a45b1",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 530,
+          "afterLineStart": 421,
+          "expectedAfterSHA256": "0d78900c038e78a16a29470a0a76532b66f56f81f9d38ade7accf9c7f13bf2db",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 652,
+          "afterLineStart": 650,
+          "expectedAfterSHA256": "936f569fb46cb54781b33cfa06f4b8ce7da8ce3e2a68355e3a1b97e5f23a5835",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgICBuYXRpdmVWZXJzaW9uU0hBMjU2OiBuYXRpdmVWZXJzaW9uU0hBMjU2KQo="
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "path": "AnyTypeTests/Pinkha/PinkhaHanlinSaveMessageStateTests.swift",
+      "sha256": "2529e62124010eb5c605bd275dc51f0fb47e2cd5dc164d6d17a191a334f3d810"
+    },
+    {
+      "afterBlob": "48632ac91df2fd48376df3597dfad4d3a74aaa37",
+      "beforeBlob": "9b3159d1259ccf760fdb77bd5b2a9b1fcb563568",
+      "bytes": 8718,
+      "inverseOperations": [
+        {
+          "afterLineEnd": 86,
+          "afterLineStart": 8,
+          "expectedAfterSHA256": "e007f8dd9f0f061a0e272b5bb1c26bc8472d9726ba21b4ebf9c8c06fe937594c",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 103,
+          "afterLineStart": 102,
+          "expectedAfterSHA256": "300878839f917bd2da51ecd4224d3cbac70f18988882f0a07113a26c546a9a24",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 109,
+          "afterLineStart": 109,
+          "expectedAfterSHA256": "db711ac067634f2e7d97f449abaa93a2e3cbf29d0cffdeeef32c8e361d6916dd",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 131,
+          "afterLineStart": 124,
+          "expectedAfterSHA256": "a65b8a165be471f15c5fab55dd907c1085cd58169c4e3cd5eeb344026af4e1c5",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 150,
+          "afterLineStart": 138,
+          "expectedAfterSHA256": "3f1c324aca3a3913953ab326797f3acb0733e5ff737f5210d57cd9a93c3a20c2",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 175,
+          "afterLineStart": 175,
+          "expectedAfterSHA256": "2fe91da09a149035f2b28f5420d187391d9f96cb907c5f02e4a1301c12de2396",
+          "replacementOriginalBase64": "ICAgICAgICBjYXNlIC5hY2tub3dsZWRnZWQ6IDIuLi4zCg=="
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessageAtomicBody.swift",
+      "sha256": "d61a8b6cea462fcebc9f41e9de305f5c54f70cd963cae619f8532d9cac61accd"
+    },
+    {
+      "afterBlob": "78017c34b1404b0adf9e556d4ba6f91b0143353b",
+      "beforeBlob": "9899633d19290729e07241c5a525a906db53109a",
+      "bytes": 21808,
+      "inverseOperations": [
+        {
+          "afterLineEnd": 124,
+          "afterLineStart": 121,
+          "expectedAfterSHA256": "4344781effacc0659421f2266cb923998fd3f939327e13eaf44c03771aad63bd",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 128,
+          "afterLineStart": 127,
+          "expectedAfterSHA256": "a79f1c37c5c964ecad1d2aac1346e4dd3fba2fd3692e4a897d8c421617d73907",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgICAgIG5hdGl2ZVJlYWRiYWNrU0hBMjU2OiBTdHJpbmcsIG5hdGl2ZVZlcnNpb25TSEEyNTY6IFN0cmluZz8gPSBuaWwpIHsK"
+        },
+        {
+          "afterLineEnd": 135,
+          "afterLineStart": 134,
+          "expectedAfterSHA256": "28741921093c0ffaaad9a9fd3874c2d00aed4c0ad192a167efac40eb8ded7e30",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 172,
+          "afterLineStart": 172,
+          "expectedAfterSHA256": "1e14747d3e01bb477844de910220705163a032b4515492c1c4bae208487bec21",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 265,
+          "afterLineStart": 261,
+          "expectedAfterSHA256": "b1b751302e44e597bec3ca7d74bdf26f879fa630a42d8f01e2b5ef1281a47651",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 373,
+          "afterLineStart": 373,
+          "expectedAfterSHA256": "fa2eef55ccb62e893e4bbc80e63d6f942d7ca0daa51f2b23fd8812d2b962911b",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 388,
+          "afterLineStart": 380,
+          "expectedAfterSHA256": "9181c2f002fc3b352f16abdff0a6c6537eed473732cfda3420de5e8c629da81d",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgICAgICAgdmFsdWUubmF0aXZlVmVyc2lvblNIQTI1NiA9PSB2ZXJzaW9uIGVsc2Ugewo="
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessageProgress.swift",
+      "sha256": "e6842a1d4a8d37abf1d0b0ba341eac4a4e9117c401aa340190200f3f3e00f020"
+    },
+    {
+      "afterBlob": "d995efbfd2dd46b2d8d38b1c4dcf2c188495c401",
+      "beforeBlob": null,
+      "bytes": 3990,
+      "inverseOperations": [],
+      "inverseRestoresEveryOriginalByte": null,
+      "path": "docs/validation/20261127-hanlin-save-message/atomic-ack-handoff.md",
+      "sha256": "3af47cc10d12f83f5c06a8353243c6d60159cca3ee4dcce8a6fc901388c98156"
+    }
+  ],
+  "status": "SOURCE_ONLY_NOT_COMPILED_OR_EXECUTED",
+  "strengthenedAtomicMethodNames": [
+    "testConditionalBodyIsOneOperationWithoutSyntheticBlockEffects",
+    "testConditionalACKAndReadbackMustMatchOriginalRequestAndSameNativeVersion",
+    "testConditionalCloseBlocksNewWriteButAllowsOriginalLateAcknowledgementAndReadback",
+    "testConditionalReadbackRequiresCompleteDistinctOrderedNativeReferences",
+    "testLegacyOrderedRecordsOmitEveryNewOptionalWireField"
+  ],
+  "swiftCompilerInvocations": 0,
+  "swiftFiles": 3,
+  "testsExecuted": 0
+}
