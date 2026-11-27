@@ -1,0 +1,38 @@
+{
+  "schema": "pinkha-source-review-v1",
+  "reviewer": "Wave2 root",
+  "status": "NO_CONCRETE_SOURCE_BLOCKER",
+  "candidateSHA256": "e56a5f6839c9426bb0e70b274a3eaafbc3f850bc6343355bed92538723a28bb9",
+  "additionSHA256": "f9f932463270a6e417e05ddd5819307d2ace8d5bc70bb4e7c0c0bbe8806283aa",
+  "scope": "One future G03 UI selector; source review only",
+  "verified": [
+    "Original NativeDerived source intentionally uses chipsDocument for the count12 sourceHeaderCases row and binds exact Genesis2:1-12 identities.",
+    "Selected row is one of ten previously hidden references, unique and hittable; prior Inspector and reader elements are refused.",
+    "Exact selected canonical navigation title is required before full-source action, preventing an arbitrary same-chapter verse from substituting for selected route identity.",
+    "App TorahEditorSession maps a segment association to section canonicalRef plus preferredSegmentRef; pinned Kit9058 resolves the preferred segment and exposes segmentDisplayRef in the nonlegacy native navigation title.",
+    "The original document Space/object/title and two visible chip identities/labels plus ten-overflow count are rechecked after native dismissal.",
+    "Owned App teardown and actual JSON/AX/PNG observations are retained; no source mutation or whole-index/persistence claim."
+  ],
+  "sources": [
+    {
+      "repo": "davidpovarsky/anytype-swift",
+      "ref": "c95395aec96214dfabd73d55755baa95689cc6d3",
+      "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift"
+    },
+    {
+      "repo": "davidpovarsky/TorahInspectorKit",
+      "ref": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+      "path": "Sources/TorahInspectorUI/TorahInspectorView.swift"
+    },
+    {
+      "repo": "davidpovarsky/TorahInspectorKit",
+      "ref": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+      "path": "Sources/TorahInspectorUI/TorahSegmentDetailView.swift"
+    }
+  ],
+  "appleTypecheck": "NOT_RUN",
+  "XCTest": "NOT_RUN",
+  "nativeExecution": "NOT_RUN",
+  "visualReview": "NOT_RUN",
+  "physicalDevice": "NOT_RUN"
+}
