@@ -1,0 +1,97 @@
+Building for debugging...
+[Computing dependencies]
+[Constructing description]
+[Pre-planning 1 / 421]
+[Planning 1 / 421]
+[Planning 221 / 421]
+[Planning 336 / 421]
+[Planning deferred tasks]
+[Constructing 2 / 1251]
+[Constructing 112 / 1251]
+[Constructing 310 / 1251]
+[Constructing 806 / 1251]
+[Constructing 1105 / 1251]
+[Starting]
+[1 / 5] PinkhaAnyHostTests-product
+[1 / 13] PinkhaKit
+[1 / 23] CCryptoBoringSSL
+[1 / 34] CCryptoBoringSSLShims
+[11 / 37] PinkhaAnyEngine
+[14 / 40] PinkhaAnyEngine
+[15 / 40] PinkhaAnyEngine
+[17 / 39] PinkhaAnyEngine
+[19 / 42] PinkhaAnyEngine
+[22 / 48] PinkhaAnyIntegration
+[22 / 48] PinkhaAnyEngine
+[24 / 47] PinkhaAnyIntegration
+[25 / 48] PinkhaAnyHost
+[26 / 48] PinkhaAnyHost
+[27 / 48] PinkhaAnyEngine
+[28 / 51] PinkhaAnyHost
+[29 / 51] PinkhaAnyHost
+[29 / 51] PinkhaAnyIntegration
+[31 / 51] PinkhaAnyHost
+[35 / 51] PinkhaAnyHost
+[38 / 51] PinkhaAnyHostTests-product
+[39 / 52] PinkhaAnyEngine
+[41 / 56] PinkhaAnyIntegration
+[42 / 56] PinkhaAnyHostTests-product
+[43 / 57] PinkhaAnyHostTests-product
+[44 / 57] PinkhaAnyHostTests-product
+[45 / 57] PinkhaAnyHostTests-product
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeBookmarkTests.swift:110:24: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m108 |[0;0m             guard current == component else { throw AnyDestinationMigrationError.changedSource }
+[0;36m109 |[0;0m         }
+[0;36m110 |[0;0m         let executor = try AnyDestinationMigrationExecutor(client: client, journalDirectory: journal)
+    [0;36m|[0;0m                        `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m111 |[0;0m         let progress = try await executor.execute(plan: plan,
+[0;36m112 |[0;0m             payloads: { _ in throw BookmarkNativeFailure.unexpectedPayload },
+
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeIdentityTests.swift:146:30: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m144 |[0;0m                 "spaceID": .string(space), "typeID": .string(type), "exactNativeQueryCount": .integer(1)]))
+[0;36m145 |[0;0m         }
+[0;36m146 |[0;0m         let descriptorRows = try bindings.map { binding -> AnyJSON in
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m147 |[0;0m             .object(["propertyID": .string(binding.propertyID), "nativeContract": .string(binding.nativeContract),
+[0;36m148 |[0;0m                      "nativeDescriptorSHA256": .string(binding.nativeDescriptorSHA256),
+
+/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyDestinationNativeTypeOrderTests.swift:104:24: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m102 |[0;0m         }
+[0;36m103 |[0;0m         try require(plan.binding.workspace == workspace && plan.items.count == 6)
+[0;36m104 |[0;0m         let executor = try AnyDestinationMigrationExecutor(client: client, journalDirectory: journal)
+    [0;36m|[0;0m                        `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+[0;36m105 |[0;0m         let progress = try await executor.execute(plan: plan,
+[0;36m106 |[0;0m             payloads: { _ in throw TypeOrderNativeFailure.unexpectedPayload },
+
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[49 / 57] PinkhaAnyHostTests-product
+[51 / 57] PinkhaAnyHost
+[51 / 57] PinkhaAnyHostTests-product
+[54 / 58] PinkhaAnyHostTests-product
+[55 / 58] PinkhaAnyHostTests-product
+[56 / 58] PinkhaAnyHostTests-test-runner
+[57 / 59] PinkhaAnyHostTests-test-runner
+[59 / 61] PinkhaAnyHostTests-test-runner
+[63 / 63] PinkhaAnyHostTests-test-runner
+[66 / 71] PinkhaAnyHostTests-test-runner
+[68 / 72] PinkhaAnyHostTests-test-runner
+[70 / 72] PinkhaAnyHostTests-test-runner
+[71 / 74] pinkha-any-host-probe-product
+[74 / 75] pinkha-any-host-probe-product
+[75 / 75] pinkha-any-host-probe-product
+warning: no rule to process file '/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127/Modules/PinkhaKit/Sources/PinkhaKit/Editor/Resources/PinkhaSemanticAnchors.xcstrings' of type 'text.json.xcstrings' for architecture 'aarch64'
+Build complete! (198.22 secs)
+Test Suite 'Selected tests' started at 2026-11-27 01:40:38.020
+Test Suite 'NativeComputedRelationBindingTests' started at 2026-11-27 01:40:38.032
+Test Case 'NativeComputedRelationBindingTests.testComputedRelationsRejectChangedSourceSemantics' started at 2026-11-27 01:40:38.032
+Test Case 'NativeComputedRelationBindingTests.testComputedRelationsRejectChangedSourceSemantics' passed (0.127 seconds)
+Test Case 'NativeComputedRelationBindingTests.testComputedRelationsRetainSourceIdentityAndNeverBecomeWritableProperties' started at 2026-11-27 01:40:38.159
+Test Case 'NativeComputedRelationBindingTests.testComputedRelationsRetainSourceIdentityAndNeverBecomeWritableProperties' passed (0.007 seconds)
+Test Case 'NativeComputedRelationBindingTests.testDecodingRevalidatesRoleAndReadContract' started at 2026-11-27 01:40:38.166
+Test Case 'NativeComputedRelationBindingTests.testDecodingRevalidatesRoleAndReadContract' passed (0.005 seconds)
+Test Case 'NativeComputedRelationBindingTests.testExactOriginal156LinkDefinitionsUseTheReadContract' started at 2026-11-27 01:40:38.171
+Test Case 'NativeComputedRelationBindingTests.testExactOriginal156LinkDefinitionsUseTheReadContract' passed (0.041 seconds)
+Test Suite 'NativeComputedRelationBindingTests' passed at 2026-11-27 01:40:38.212
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.18 (0.18) seconds
+Test Suite 'Selected tests' passed at 2026-11-27 01:40:38.212
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.18 (0.18) seconds
