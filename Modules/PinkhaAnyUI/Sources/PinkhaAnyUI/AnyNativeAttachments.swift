@@ -73,6 +73,7 @@ private actor AnyNativeAttachmentUploadApproval {
 
 private struct AnyNativeAttachmentOperation: Sendable {
     let creator: AnyNativeFileAttachmentCreator
+    let lease: AnyHostLease
     let authorizeRead: AnyNativeFileAttachmentCreator.Check
     let authorizeAttachment: AnyNativeFileAttachmentCreator.Check
     let files: @Sendable () async throws -> [AnyNativeAttachment]
@@ -440,9 +441,23 @@ extension AnyNativeAttachmentsPresentation {
                         // reserve its one original native POST.
                         try await store.save(intent, claim: claim)
                         try await operation.authorizeRead()
-                        let file = try await operation.creator.attach(intent, fileURL: url,
-                            authorizeRead: operation.authorizeRead,
-                            authorizeAttachment: operation.authorizeAttachment)
+                        // Keep the exact original actor before dispatch, even
+                        // if later cancellation prevents a live token export.
+                        try await store.retainOriginalCreator(for: intent, from: operation.creator,
+                            lease: operation.lease, claim: claim)
+                        let file: AnyNativeAttachedFile
+                        do {
+                            file = try await operation.creator.attach(intent, fileURL: url,
+                                authorizeRead: operation.authorizeRead,
+                                authorizeAttachment: operation.authorizeAttachment)
+                        } catch {
+                            await Self.retainLiveAttachmentReceipt(intent, operation: operation,
+                                store: store, claim: claim)
+                            throw error
+                        }
+                        // A returned Host result has durably verified its ID.
+                        // Keep the caller intent until the separate FilesV2 check.
+                        try await store.consumeRecoveryReceipt(for: intent, claim: claim)
                         let rows = try await operation.files()
                         try Self.requireReturnedFile(file, in: rows, intent: intent)
                         return rows
@@ -475,7 +490,27 @@ extension AnyNativeAttachmentsPresentation {
                         do {
                             // No selected URL and no new mutation ID exists on
                             // this path. Unknown or reserved outcomes never POST.
-                            let file = try await operation.creator.resume(intent, authorizeRead: operation.authorizeRead)
+                            let retained = try await store.recoveryReceipt(for: intent,
+                                currentCreator: operation.creator, lease: operation.lease,
+                                authorizeRead: operation.authorizeRead, claim: claim)
+                            let file: AnyNativeAttachedFile
+                            do {
+                                if let retained {
+                                    file = try await operation.creator.resume(intent, recoveryReceipt: retained,
+                                        authorizeRead: operation.authorizeRead)
+                                } else {
+                                    file = try await operation.creator.resume(intent, authorizeRead: operation.authorizeRead)
+                                }
+                            } catch AnyNativeFileAttachmentError.noRecordedAttachment {
+                                // An opaque token never substitutes for the
+                                // original journal reservation or permits POST.
+                                throw AnyNativeFileAttachmentError.noRecordedAttachment
+                            } catch {
+                                await Self.retainLiveAttachmentReceipt(intent, operation: operation,
+                                    store: store, claim: claim)
+                                throw error
+                            }
+                            try await store.consumeRecoveryReceipt(for: intent, claim: claim)
                             let rows = try await operation.files()
                             try Self.requireReturnedFile(file, in: rows, intent: intent)
                             return AnyNativeAttachmentResume.verified(intent, rows)
@@ -508,6 +543,19 @@ extension AnyNativeAttachmentsPresentation {
                 }
             } catch { presentUploadFailure(error) }
         }
+    }
+
+    /// Best-effort retention happens inside the original awaited operation and
+    /// claim. The real Host rechecks current scope/read authority before minting
+    /// its opaque token. A cancelled or revoked owner cannot be rescued here;
+    /// retain the original failure and unresolved intent in that case.
+    nonisolated private static func retainLiveAttachmentReceipt(
+        _ intent: AnyNativeFileAttachmentIntent, operation: AnyNativeAttachmentOperation,
+        store: AnyNativeAttachmentIntentStore, claim: AnyNativeAttachmentIntentClaim
+    ) async {
+        guard !Task.isCancelled else { return }
+        _ = try? await store.recoveryReceipt(for: intent, currentCreator: operation.creator,
+            lease: operation.lease, authorizeRead: operation.authorizeRead, claim: claim)
     }
 
     private func withUploadClaim<Value: Sendable>(
@@ -574,7 +622,7 @@ extension AnyNativeAttachmentsPresentation {
             }
             try await authorizeRead()
             let creator = try await objects.makeFileAttachmentCreator()
-            let result = try await operation(.init(creator: creator, authorizeRead: authorizeRead,
+            let result = try await operation(.init(creator: creator, lease: lease, authorizeRead: authorizeRead,
                 authorizeAttachment: authorizeAttachment, files: readFiles))
             try await authorizeRead()
             return result

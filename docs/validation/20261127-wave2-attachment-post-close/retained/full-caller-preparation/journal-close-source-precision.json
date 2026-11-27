@@ -1,0 +1,30 @@
+{
+  "schema": "wave2-attachment-caller-journal-close-source-precision/v1",
+  "atUTC": "2026-11-27T19:13:53.871659+00:00",
+  "status": "METADATA_ONLY_CORRECTION_SOURCE_APPROVED_NOT_RUN",
+  "reportedBy": "torah_continue",
+  "reviewedBy": "root",
+  "base": "9b510b5ea80fba508d01314cefb646682943f7a9",
+  "unchangedCandidateManifestSHA256": "12db1ccf18cf685f5e5e24dc61184c1e9e2815247a9f27bfb8a34845eb0e171d",
+  "originalProofSHA256": "b2ac684c24d7c8c9c60a971f809b95b04a74fca5329d2f22675c5dfd4eb43467",
+  "currentProofSHA256": "b07634b5d33c72cb831fbe07a9d4212c5ff7ddfb111d4dde64ab297b7ae3abf5",
+  "sourceSHA256": "5f0c526fa4f88e530242198bb152c3e1840cc5396df771420bff64f4183de8d5",
+  "exactReplacement": {
+    "before": "Original close releases protected-journal descriptors/claim only after owner drained; no caller changes to this function.",
+    "after": "Original close poisons this actor and calls the existing exclusive-claim release (flock LOCK_UN) after owner drain; descriptors may remain open until deinit. A successful original reopen supplies actual lock acquisition. No caller changes to this function.",
+    "occurrences": 1,
+    "inverseRestoresOriginalProof": true
+  },
+  "originalRootReviewSHA256": "631a67a702699c55783c7f95a83baef216bb4c296bf833651f7e3a60e12804a8",
+  "independentSwiftReviewSHA256": "d253bd1d1e9907bf3d514e7864bb7eabacb93578f6fd33d4007cca33e3c7ea4a",
+  "meaning": [
+    "Logical poisoned closure and releaseOwnership are the existing owner boundary; physical descriptors can stay alive with the retained original creator.",
+    "No candidate product/test byte, Host contract, protected filesystem behavior, lease, claim or scope check changes. All15 declaration bodies and their hashes remain exact.",
+    "The original source proof and reviews remain verbatim historical evidence. This one wording correction takes precedence over the original descriptors/claim phrase.",
+    "Actual successful reopening must still acquire the original journal exclusive claim. No runtime close/reopen result is inferred from source inspection."
+  ],
+  "productChanges": 0,
+  "testChanges": 0,
+  "runtimeExecuted": false,
+  "publicationPerformed": false
+}

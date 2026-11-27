@@ -1,0 +1,48 @@
+{
+  "schema": "wave2-live-authorized-attachment-recovery-ui-inverse/v1",
+  "base": "2e312d361f6782ca7365d4bacc1e231b27571cd4",
+  "fullUIInverse": true,
+  "uiEdits": [
+    {
+      "before": "                        let file = try await operation.creator.attach(intent, fileURL: url,\n                            authorizeRead: operation.authorizeRead,\n                            authorizeAttachment: operation.authorizeAttachment)\n",
+      "after": "                        let file: AnyNativeAttachedFile\n                        do {\n                            file = try await operation.creator.attach(intent, fileURL: url,\n                                authorizeRead: operation.authorizeRead,\n                                authorizeAttachment: operation.authorizeAttachment)\n                        } catch {\n                            await Self.retainLiveAttachmentReceipt(intent, operation: operation,\n                                store: store, claim: claim)\n                            throw error\n                        }\n                        // A returned Host result has durably verified its ID.\n                        // Keep the caller intent until the separate FilesV2 check.\n                        try await store.consumeRecoveryReceipt(for: intent, claim: claim)\n"
+    },
+    {
+      "before": "                            let file = try await operation.creator.resume(intent, authorizeRead: operation.authorizeRead)\n",
+      "after": "                            let retained = try await store.recoveryReceipt(for: intent, claim: claim)\n                            let file: AnyNativeAttachedFile\n                            do {\n                                if let retained {\n                                    file = try await operation.creator.resume(intent, recoveryReceipt: retained,\n                                        authorizeRead: operation.authorizeRead)\n                                } else {\n                                    file = try await operation.creator.resume(intent, authorizeRead: operation.authorizeRead)\n                                }\n                            } catch AnyNativeFileAttachmentError.noRecordedAttachment {\n                                // An opaque token never substitutes for the\n                                // original journal reservation or permits POST.\n                                throw AnyNativeFileAttachmentError.noRecordedAttachment\n                            } catch {\n                                await Self.retainLiveAttachmentReceipt(intent, operation: operation,\n                                    store: store, claim: claim)\n                                throw error\n                            }\n                            try await store.consumeRecoveryReceipt(for: intent, claim: claim)\n"
+    },
+    {
+      "before": "    private func withUploadClaim<Value: Sendable>(\n",
+      "after": "    /// Best-effort retention happens inside the original awaited operation and\n    /// claim. The real Host rechecks current scope/read authority before minting\n    /// its opaque token. A cancelled or revoked owner cannot be rescued here;\n    /// retain the original failure and unresolved intent in that case.\n    nonisolated private static func retainLiveAttachmentReceipt(\n        _ intent: AnyNativeFileAttachmentIntent, operation: AnyNativeAttachmentOperation,\n        store: AnyNativeAttachmentIntentStore, claim: AnyNativeAttachmentIntentClaim\n    ) async {\n        guard !Task.isCancelled else { return }\n        _ = try? await store.retainRecoveryReceipt(for: intent, from: operation.creator,\n            authorizeRead: operation.authorizeRead, claim: claim)\n    }\n\n    private func withUploadClaim<Value: Sendable>(\n"
+    }
+  ],
+  "carrierPrecursorUnchanged": true,
+  "carrierInverseSHA256": "c563d7085ad0c4a1b80ca4a994498cb78ac6c0359ab34734cbe21fa0dbc63f5d",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "originalBytes": 39091,
+      "originalSHA256": "0a120812b5f8bc5d9280a42f6a7bde597cb64a9154c10c7ff04204cfb2862de5",
+      "candidateBytes": 41693,
+      "candidateSHA256": "c63745bb67bc98b45fb944cb39a7f56a87cba3dd3ea506c2ead7903a1a0f3cb9",
+      "sameAsReviewedCarrierPrecursor": false
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "originalBytes": 21506,
+      "originalSHA256": "0032c6be0f667e5082afd4e0e2dfa03a37ac43438141034358ee95a1d6e4c325",
+      "candidateBytes": 26048,
+      "candidateSHA256": "ff24dab542c153ad6e9dcd87e27f39d7cc2ec0f1e8a6a02f3de43f07ea17fb98",
+      "sameAsReviewedCarrierPrecursor": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "originalBytes": 8725,
+      "originalSHA256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809",
+      "candidateBytes": 32593,
+      "candidateSHA256": "c6abeef1c9bfc83e60f364d5a1598d15dfa371642bc7ee1c8d16779fdd78f85f",
+      "sameAsReviewedCarrierPrecursor": true
+    }
+  ],
+  "runtimeExecuted": false
+}

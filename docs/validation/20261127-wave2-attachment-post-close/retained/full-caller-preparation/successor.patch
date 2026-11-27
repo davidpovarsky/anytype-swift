@@ -1,0 +1,515 @@
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift
+@@ -73,6 +73,7 @@
+ 
+ private struct AnyNativeAttachmentOperation: Sendable {
+     let creator: AnyNativeFileAttachmentCreator
++    let lease: AnyHostLease
+     let authorizeRead: AnyNativeFileAttachmentCreator.Check
+     let authorizeAttachment: AnyNativeFileAttachmentCreator.Check
+     let files: @Sendable () async throws -> [AnyNativeAttachment]
+@@ -440,6 +441,10 @@
+                         // reserve its one original native POST.
+                         try await store.save(intent, claim: claim)
+                         try await operation.authorizeRead()
++                        // Keep the exact original actor before dispatch, even
++                        // if later cancellation prevents a live token export.
++                        try await store.retainOriginalCreator(for: intent, from: operation.creator,
++                            lease: operation.lease, claim: claim)
+                         let file: AnyNativeAttachedFile
+                         do {
+                             file = try await operation.creator.attach(intent, fileURL: url,
+@@ -485,7 +490,9 @@
+                         do {
+                             // No selected URL and no new mutation ID exists on
+                             // this path. Unknown or reserved outcomes never POST.
+-                            let retained = try await store.recoveryReceipt(for: intent, claim: claim)
++                            let retained = try await store.recoveryReceipt(for: intent,
++                                currentCreator: operation.creator, lease: operation.lease,
++                                authorizeRead: operation.authorizeRead, claim: claim)
+                             let file: AnyNativeAttachedFile
+                             do {
+                                 if let retained {
+@@ -547,8 +554,8 @@
+         store: AnyNativeAttachmentIntentStore, claim: AnyNativeAttachmentIntentClaim
+     ) async {
+         guard !Task.isCancelled else { return }
+-        _ = try? await store.retainRecoveryReceipt(for: intent, from: operation.creator,
+-            authorizeRead: operation.authorizeRead, claim: claim)
++        _ = try? await store.recoveryReceipt(for: intent, currentCreator: operation.creator,
++            lease: operation.lease, authorizeRead: operation.authorizeRead, claim: claim)
+     }
+ 
+     private func withUploadClaim<Value: Sendable>(
+@@ -615,7 +622,7 @@
+             }
+             try await authorizeRead()
+             let creator = try await objects.makeFileAttachmentCreator()
+-            let result = try await operation(.init(creator: creator, authorizeRead: authorizeRead,
++            let result = try await operation(.init(creator: creator, lease: lease, authorizeRead: authorizeRead,
+                 authorizeAttachment: authorizeAttachment, files: readFiles))
+             try await authorizeRead()
+             return result
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift
+@@ -41,6 +41,16 @@
+         let encodedIntent: Data
+         let receipt: AnyNativeFileAttachmentRecoveryReceipt
+     }
++    private struct RetainedOriginalCreator: Sendable {
++        let encodedIntent: Data
++        let intent: AnyNativeFileAttachmentIntent
++        let creator: AnyNativeFileAttachmentCreator
++        let generation: UUID
++    }
++    private struct RecoveryReadFailure: Error {
++        let cause: any Error
++    }
++    private var originalCreators: [String: RetainedOriginalCreator] = [:]
+     private var recoveryReceipts: [String: RetainedRecoveryReceipt] = [:]
+     private static let maximumRecoveryReceipts = 128
+ 
+@@ -93,6 +103,123 @@
+             return
+         }
+         try files.create(name: Self.name(claim.objectID), bytes: Self.encode(AnyNativeAttachmentIntentRecord(intent: intent)))
++    }
++
++    /// Retain the exact original creator before its one possible dispatch.
++    /// Only process-local state is added; the original intent is already durable.
++    func retainOriginalCreator(for intent: AnyNativeFileAttachmentIntent,
++                               from creator: AnyNativeFileAttachmentCreator,
++                               lease: AnyHostLease,
++                               claim: AnyNativeAttachmentIntentClaim) async throws {
++        let encoded = try requirePendingIntent(intent, claim: claim)
++        let key = Self.name(claim.objectID)
++        try requireCurrentCreator(creator, lease: lease, intent: intent, key: key)
++        try requireRecoveryCapacity(key: key, encodedIntent: encoded)
++        try await lease.validate()
++        try Task.checkCancellation()
++        guard try requirePendingIntent(intent, claim: claim) == encoded else {
++            throw AnyNativeAttachmentRecoveryError.conflictingIntent
++        }
++        try requireCurrentCreator(creator, lease: lease, intent: intent, key: key)
++        try requireRecoveryCapacity(key: key, encodedIntent: encoded)
++        if let original = originalCreators[key] {
++            // A replacement owner may only read the original memory. It must
++            // never replace the original actor before a recovered verification.
++            guard original.creator === creator, original.generation == lease.generation else {
++                throw AnyNativeAttachmentRecoveryError.conflictingIntent
++            }
++        } else {
++            originalCreators[key] = .init(encodedIntent: encoded, intent: intent,
++                creator: creator, generation: lease.generation)
++        }
++    }
++
++    /// The production caller obtains this current lease/creator pair only after
++    /// connectSpace has completed its serialized previous-owner drain/close and
++    /// unchanged protected-journal open. Session generations cannot reactivate.
++    /// A changed creator alone is not a completed owner-transition witness.
++    func recoveryReceipt(for intent: AnyNativeFileAttachmentIntent,
++                         currentCreator: AnyNativeFileAttachmentCreator,
++                         lease: AnyHostLease,
++                         authorizeRead: @escaping AnyNativeFileAttachmentCreator.Check,
++                         claim: AnyNativeAttachmentIntentClaim) async throws -> AnyNativeFileAttachmentRecoveryReceipt? {
++        let encoded = try requirePendingIntent(intent, claim: claim)
++        let key = Self.name(claim.objectID)
++        try requireCurrentCreator(currentCreator, lease: lease, intent: intent, key: key)
++        try await lease.validate()
++        try Task.checkCancellation()
++        guard try requirePendingIntent(intent, claim: claim) == encoded else {
++            throw AnyNativeAttachmentRecoveryError.conflictingIntent
++        }
++        try requireCurrentCreator(currentCreator, lease: lease, intent: intent, key: key)
++        if let retained = try recoveryReceipt(for: intent, claim: claim) { return retained }
++        guard let original = originalCreators[key] else { return nil }
++        let currentRead: AnyNativeFileAttachmentCreator.Check = {
++            do {
++                try await lease.validate()
++                try await authorizeRead()
++                try await lease.validate()
++            } catch {
++                // Distinguish an authorization error even if its type happens
++                // to equal the Host's no-private-ACK writeUncertain outcome.
++                throw RecoveryReadFailure(cause: error)
++            }
++        }
++        let receipt: AnyNativeFileAttachmentRecoveryReceipt
++        do {
++            // This is the sole call on the retired actor: no old read, resume,
++            // journal access or POST. Both callbacks use the NEW current lease.
++            receipt = try await original.creator.retainedRecoveryReceipt(
++                for: original.intent, authorizeRead: currentRead)
++        } catch let failure as RecoveryReadFailure {
++            throw failure.cause
++        } catch AnyNativeFileAttachmentError.writeUncertain {
++            // Only absence of a private ACK may fall through to the current
++            // creator's original read-only journal resume (an ID may be durable).
++            do { try await currentRead() }
++            catch let failure as RecoveryReadFailure { throw failure.cause }
++            try Task.checkCancellation()
++            guard try requirePendingIntent(intent, claim: claim) == encoded else {
++                throw AnyNativeAttachmentRecoveryError.conflictingIntent
++            }
++            try requireOriginalCreator(original, key: key)
++            return nil
++        }
++        try Task.checkCancellation()
++        guard try requirePendingIntent(intent, claim: claim) == encoded else {
++            throw AnyNativeAttachmentRecoveryError.conflictingIntent
++        }
++        try requireOriginalCreator(original, key: key)
++        try requireRecoveryCapacity(key: key, encodedIntent: encoded)
++        if recoveryReceipts[key] == nil {
++            recoveryReceipts[key] = .init(encodedIntent: encoded, receipt: receipt)
++        }
++        return try recoveryReceipt(for: intent, claim: claim)
++    }
++
++    private func requireCurrentCreator(_ creator: AnyNativeFileAttachmentCreator,
++                                       lease: AnyHostLease,
++                                       intent: AnyNativeFileAttachmentIntent,
++                                       key: String) throws {
++        guard lease.workspace.accountID.utf8.elementsEqual(intent.workspace.accountID.utf8),
++              lease.workspace.spaceID.utf8.elementsEqual(intent.workspace.spaceID.utf8),
++              creator.workspace.accountID.utf8.elementsEqual(intent.workspace.accountID.utf8),
++              creator.workspace.spaceID.utf8.elementsEqual(intent.workspace.spaceID.utf8) else {
++            throw AnyHostError.wrongWorkspace
++        }
++        if let original = originalCreators[key] {
++            guard original.encodedIntent == (try Self.encode(intent)),
++                  (original.generation == lease.generation) == (original.creator === creator) else {
++                throw AnyNativeAttachmentRecoveryError.conflictingIntent
++            }
++        }
++    }
++
++    private func requireOriginalCreator(_ expected: RetainedOriginalCreator, key: String) throws {
++        guard let current = originalCreators[key], current.creator === expected.creator,
++              current.generation == expected.generation, current.encodedIntent == expected.encodedIntent else {
++            throw AnyNativeAttachmentRecoveryError.conflictingIntent
++        }
+     }
+ 
+     /// The token is minted by the original Host while this task still holds
+@@ -143,7 +270,11 @@
+         if let retained = recoveryReceipts[key], retained.encodedIntent != encoded {
+             throw AnyNativeAttachmentRecoveryError.conflictingIntent
+         }
++        if let original = originalCreators[key], original.encodedIntent != encoded {
++            throw AnyNativeAttachmentRecoveryError.conflictingIntent
++        }
+         recoveryReceipts.removeValue(forKey: key)
++        originalCreators.removeValue(forKey: key)
+     }
+ 
+     private func requirePendingIntent(_ intent: AnyNativeFileAttachmentIntent,
+@@ -158,13 +289,15 @@
+     }
+ 
+     private func requireRecoveryCapacity(key: String, encodedIntent: Data) throws {
+-        if let retained = recoveryReceipts[key] {
+-            guard retained.encodedIntent == encodedIntent else {
+-                throw AnyNativeAttachmentRecoveryError.conflictingIntent
+-            }
+-            return
+-        }
+-        guard recoveryReceipts.count < Self.maximumRecoveryReceipts else {
++        if let retained = recoveryReceipts[key], retained.encodedIntent != encodedIntent {
++            throw AnyNativeAttachmentRecoveryError.conflictingIntent
++        }
++        if let original = originalCreators[key], original.encodedIntent != encodedIntent {
++            throw AnyNativeAttachmentRecoveryError.conflictingIntent
++        }
++        if recoveryReceipts[key] != nil || originalCreators[key] != nil { return }
++        let occupied = Set(recoveryReceipts.keys).union(originalCreators.keys)
++        guard occupied.count < Self.maximumRecoveryReceipts else {
+             throw AnyNativeAttachmentRecoveryError.capacityExceeded
+         }
+     }
+@@ -182,8 +315,12 @@
+         if let retained = recoveryReceipts[key], retained.encodedIntent != (try Self.encode(intent)) {
+             throw AnyNativeAttachmentRecoveryError.conflictingIntent
+         }
++        if let original = originalCreators[key], original.encodedIntent != (try Self.encode(intent)) {
++            throw AnyNativeAttachmentRecoveryError.conflictingIntent
++        }
+         try files.remove(name: Self.name(claim.objectID), expected: Self.encode(AnyNativeAttachmentIntentRecord(intent: intent)))
+         recoveryReceipts.removeValue(forKey: key)
++        originalCreators.removeValue(forKey: key)
+     }
+ 
+     private func requireClaim(_ claim: AnyNativeAttachmentIntentClaim) throws -> AnyAttachmentIntentFiles {
+--- a/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift
++++ b/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift
+@@ -580,3 +580,269 @@
+         continuation?.resume()
+     }
+ }
++
++// Consumer/lease coverage for the W1 post-close memory-export contract. These
++// tests use the real session, Host and caller store, with the preceding modeled
++// journal/native callbacks. They do not prove a mounted or protected-journal
++// failure on Apple, real HTTP, Native engine, or process-death recovery.
++@Suite("Original attachment creator caller ownership", .timeLimit(.minutes(2)))
++struct AnyNativeAttachmentOriginalCreatorTests {
++    @Test
++    func registeredOriginalCreatorSurvivesDrainedOwnerAndClaimReopen() async throws {
++        let fixture = try AttachmentIntentStoreFixture()
++        defer { fixture.removeOwnedDirectory() }
++        let workspace = fixture.workspace
++        let intent = try fixture.intent()
++        let store = AnyNativeAttachmentIntentStore(workspace: workspace, parent: fixture.parent)
++        let oldSession = Self.session(workspace)
++        let oldJournal = ReceiptCarrierJournal(workspace, poisonCreated: true)
++        let native = ReceiptCarrierNative()
++        let original = try native.creator(oldJournal)
++        let first = try await store.claim(objectID: intent.objectID)
++        var activeClaim = first
++        var replacementSession: AnyApplicationSession?
++        var replacementJournal: ReceiptCarrierJournal?
++        do {
++            try await store.save(intent, claim: first)
++            let originalJSON = try Data(contentsOf: fixture.recordURL(objectID: intent.objectID))
++            try await oldSession.perform { lease in
++                try await store.retainOriginalCreator(for: intent, from: original, lease: lease, claim: first)
++                try await Self.leaveAcknowledgement(intent, creator: original, lease: lease)
++            }
++            // No live token export occurred. The consumer retained the exact
++            // creator BEFORE the genuine Host callback populated its memory.
++            let notExported = try await store.recoveryReceipt(for: intent, claim: first)
++            #expect(notExported == nil)
++            await store.release(first)
++            await oldSession.revokeAndDrain()
++            await oldJournal.close()
++            let journal = try await oldJournal.reopenOriginalEntries()
++            replacementJournal = journal
++            let current = try native.creator(journal)
++            let session = Self.session(workspace)
++            replacementSession = session
++            #expect(session.generation != oldSession.generation)
++            let second = try await store.claim(objectID: intent.objectID)
++            activeClaim = second
++            let verified = try await session.perform { lease in
++                let retained = try await store.recoveryReceipt(for: intent, currentCreator: current,
++                    lease: lease, authorizeRead: { try await lease.validate() }, claim: second)
++                let token = try #require(retained)
++                return try await current.resume(intent, recoveryReceipt: token,
++                    authorizeRead: { try await lease.validate() })
++            }
++            #expect(verified.reference.fileID == ReceiptCarrierNative.fileID)
++            #expect(verified.byteCount == intent.byteCount)
++            let state = try await journal.lookup(intent.identity)
++            #expect(state == .verified(ReceiptCarrierNative.fileID))
++            let counts = await native.counts()
++            #expect(counts.uploads == 1 && counts.metadataReads == 2 && counts.contentReads == 1)
++            try await store.consumeRecoveryReceipt(for: intent, claim: second)
++            let consumed = try await store.recoveryReceipt(for: intent, claim: second)
++            let pending = try await store.pending(second)
++            #expect(consumed == nil && pending == intent)
++            #expect(try Data(contentsOf: fixture.recordURL(objectID: intent.objectID)) == originalJSON)
++            // Only the actual UI's later FilesV2/final-authority reconciliation
++            // may remove this pending file. This component leaves it intact.
++            await store.release(second)
++            await session.revokeAndDrain()
++            await journal.close()
++        } catch {
++            await store.release(activeClaim)
++            await replacementSession?.revokeAndDrain()
++            await replacementJournal?.close()
++            await oldSession.revokeAndDrain()
++            await oldJournal.close()
++            throw error
++        }
++    }
++
++    @Test
++    func originalPairCannotBeReplacedAndAuthorityErrorsAreNotMissingACK() async throws {
++        let fixture = try AttachmentIntentStoreFixture()
++        defer { fixture.removeOwnedDirectory() }
++        let workspace = fixture.workspace
++        let intent = try fixture.intent()
++        let store = AnyNativeAttachmentIntentStore(workspace: workspace, parent: fixture.parent)
++        let oldSession = Self.session(workspace)
++        let oldJournal = ReceiptCarrierJournal(workspace)
++        let native = ReceiptCarrierNative()
++        let original = try native.creator(oldJournal)
++        let wrongSameOwnerCreator = try native.creator(oldJournal)
++        let first = try await store.claim(objectID: intent.objectID)
++        var activeClaim = first
++        var replacementSession: AnyApplicationSession?
++        var replacementJournal: ReceiptCarrierJournal?
++        do {
++            try await store.save(intent, claim: first)
++            try await oldSession.perform { lease in
++                try await store.retainOriginalCreator(for: intent, from: original, lease: lease, claim: first)
++                do {
++                    _ = try await store.recoveryReceipt(for: intent, currentCreator: wrongSameOwnerCreator,
++                        lease: lease, authorizeRead: {}, claim: first)
++                    Issue.record("The same generation accepted a different creator")
++                } catch let error as AnyNativeAttachmentRecoveryError { #expect(error == .conflictingIntent) }
++                do {
++                    try await store.retainOriginalCreator(for: intent, from: wrongSameOwnerCreator,
++                        lease: lease, claim: first)
++                    Issue.record("A second creator replaced the original before dispatch")
++                } catch let error as AnyNativeAttachmentRecoveryError { #expect(error == .conflictingIntent) }
++            }
++            await store.release(first)
++            await oldSession.revokeAndDrain()
++            await oldJournal.close()
++            let journal = try await oldJournal.reopenOriginalEntries()
++            replacementJournal = journal
++            let current = try native.creator(journal)
++            let session = Self.session(workspace)
++            replacementSession = session
++            let second = try await store.claim(objectID: intent.objectID)
++            activeClaim = second
++            try await session.perform { lease in
++                do {
++                    _ = try await store.recoveryReceipt(for: intent, currentCreator: original,
++                        lease: lease, authorizeRead: {}, claim: second)
++                    Issue.record("A replacement generation presented the retired creator as current")
++                } catch let error as AnyNativeAttachmentRecoveryError { #expect(error == .conflictingIntent) }
++                do {
++                    try await store.retainOriginalCreator(for: intent, from: current, lease: lease, claim: second)
++                    Issue.record("A new current creator replaced the original unresolved actor")
++                } catch let error as AnyNativeAttachmentRecoveryError { #expect(error == .conflictingIntent) }
++                do {
++                    _ = try await store.recoveryReceipt(for: intent, currentCreator: current,
++                        lease: lease, authorizeRead: { throw AnyNativeFileAttachmentError.writeUncertain }, claim: second)
++                    Issue.record("An authority failure with the missing-ACK error type fell through")
++                } catch let error as AnyNativeFileAttachmentError { #expect(error == .writeUncertain) }
++                // The original actor has no ACK because no attach was called.
++                // Only that precise private-memory absence returns nil.
++                let missing = try await store.recoveryReceipt(for: intent, currentCreator: current,
++                    lease: lease, authorizeRead: { try await lease.validate() }, claim: second)
++                #expect(missing == nil)
++                do {
++                    _ = try await current.resume(intent, authorizeRead: { try await lease.validate() })
++                    Issue.record("A missing original reservation became a verified result")
++                } catch let error as AnyNativeFileAttachmentError { #expect(error == .noRecordedAttachment) }
++            }
++            let counts = await native.counts()
++            #expect(counts.uploads == 0 && counts.metadataReads == 0 && counts.contentReads == 0)
++            let pending = try await store.pending(second)
++            #expect(pending == intent)
++            await store.release(second)
++            await session.revokeAndDrain()
++            await journal.close()
++        } catch {
++            await store.release(activeClaim)
++            await replacementSession?.revokeAndDrain()
++            await replacementJournal?.close()
++            await oldSession.revokeAndDrain()
++            await oldJournal.close()
++            throw error
++        }
++    }
++
++    @Test(arguments: [true, false])
++    func retiredClaimOrCurrentLeaseCannotPublishLateOriginalExport(retireClaim: Bool) async throws {
++        let fixture = try AttachmentIntentStoreFixture()
++        defer { fixture.removeOwnedDirectory() }
++        let workspace = fixture.workspace
++        let intent = try fixture.intent()
++        let store = AnyNativeAttachmentIntentStore(workspace: workspace, parent: fixture.parent)
++        let oldSession = Self.session(workspace)
++        let oldJournal = ReceiptCarrierJournal(workspace, poisonCreated: true)
++        let native = ReceiptCarrierNative()
++        let original = try native.creator(oldJournal)
++        let first = try await store.claim(objectID: intent.objectID)
++        var activeClaim = first
++        var replacementSession: AnyApplicationSession?
++        var replacementJournal: ReceiptCarrierJournal?
++        var capture: Task<AnyNativeFileAttachmentRecoveryReceipt?, any Error>?
++        var shutdown: Task<Void, Never>?
++        let gate = ReceiptCarrierReadGate()
++        do {
++            try await store.save(intent, claim: first)
++            try await oldSession.perform { lease in
++                try await store.retainOriginalCreator(for: intent, from: original, lease: lease, claim: first)
++                try await Self.leaveAcknowledgement(intent, creator: original, lease: lease)
++            }
++            await store.release(first)
++            await oldSession.revokeAndDrain()
++            await oldJournal.close()
++            let journal = try await oldJournal.reopenOriginalEntries()
++            replacementJournal = journal
++            let current = try native.creator(journal)
++            let session = Self.session(workspace)
++            replacementSession = session
++            let second = try await store.claim(objectID: intent.objectID)
++            activeClaim = second
++            let pending: Task<AnyNativeFileAttachmentRecoveryReceipt?, any Error> = Task {
++                try await session.perform { lease in
++                    try await store.recoveryReceipt(for: intent, currentCreator: current,
++                        lease: lease, authorizeRead: { try await gate.check() }, claim: second)
++                }
++            }
++            capture = pending
++            try await gate.waitUntilStarted()
++            if retireClaim {
++                await store.release(second)
++                activeClaim = try await store.claim(objectID: intent.objectID)
++            } else {
++                shutdown = Task { await session.revokeAndDrain() }
++                let deadline = ContinuousClock.now.advanced(by: .seconds(5))
++                while await session.isActive {
++                    guard ContinuousClock.now < deadline else { throw ReceiptCarrierFixtureError.waitExpired }
++                    try await Task.sleep(for: .milliseconds(10))
++                }
++            }
++            await gate.open()
++            do {
++                _ = try await pending.value
++                Issue.record("Retired current ownership published an original token")
++            } catch let error as AnyNativeAttachmentRecoveryError {
++                #expect(retireClaim && error == .operationInProgress)
++            } catch is CancellationError {
++                #expect(!retireClaim)
++            } catch let error as AnyHostError {
++                #expect(!retireClaim && error == .sessionClosed)
++            }
++            await shutdown?.value
++            let cached = try await store.recoveryReceipt(for: intent, claim: activeClaim)
++            let stillPending = try await store.pending(activeClaim)
++            #expect(cached == nil && stillPending == intent)
++            let counts = await native.counts()
++            #expect(counts.uploads == 1 && counts.metadataReads == 0 && counts.contentReads == 0)
++            await store.release(activeClaim)
++            await session.revokeAndDrain()
++            await journal.close()
++        } catch {
++            capture?.cancel()
++            await gate.open()
++            _ = try? await capture?.value
++            await shutdown?.value
++            await store.release(activeClaim)
++            await replacementSession?.revokeAndDrain()
++            await replacementJournal?.close()
++            await oldSession.revokeAndDrain()
++            await oldJournal.close()
++            throw error
++        }
++    }
++
++    private static func session(_ workspace: AnyTorahWorkspace) -> AnyApplicationSession {
++        .init(workspace: workspace, engineStartedAt: "receipt-caller-component-run",
++              verifyRun: { "receipt-caller-component-run" })
++    }
++
++    private static func leaveAcknowledgement(_ intent: AnyNativeFileAttachmentIntent,
++                                            creator: AnyNativeFileAttachmentCreator,
++                                            lease: AnyHostLease) async throws {
++        do {
++            _ = try await creator.attach(intent,
++                fileURL: URL(fileURLWithPath: "/not-opened-by-this-Host-component"),
++                authorizeRead: { try await lease.validate() },
++                authorizeAttachment: { try await lease.validate() })
++            Issue.record("The controlled ACK unexpectedly completed durable verification")
++        } catch let error as AnyNativeFileAttachmentError {
++            #expect(error == .knownFileUnverified(ReceiptCarrierNative.fileID))
++        }
++    }
++}

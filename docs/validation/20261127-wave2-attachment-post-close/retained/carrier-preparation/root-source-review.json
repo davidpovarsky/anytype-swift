@@ -1,0 +1,38 @@
+{
+  "schema": "pinkha-wave2-root-attachment-carrier-review-v1",
+  "reviewedAtUTC": "2026-11-27T18:22:19.165715+00:00",
+  "status": "PASS_SCOPED_SOURCE_REVIEW_NOT_UI_OR_POST_CLOSE_ACCEPTANCE",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "beforeSHA256": "0032c6be0f667e5082afd4e0e2dfa03a37ac43438141034358ee95a1d6e4c325",
+      "afterSHA256": "ff24dab542c153ad6e9dcd87e27f39d7cc2ec0f1e8a6a02f3de43f07ea17fb98",
+      "exactInverseVerified": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "beforeSHA256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809",
+      "afterSHA256": "c6abeef1c9bfc83e60f364d5a1598d15dfa371642bc7ee1c8d16779fdd78f85f",
+      "exactInverseVerified": true
+    }
+  ],
+  "assessment": [
+    "Three exact insertions only; all original protected filesystem, durable record and test prefix bytes restored.",
+    "Every access requires exact current claim and durable encoded intent. Capture checks again after awaited original Host authorization and before insertion.",
+    "Only the original Host can mint the opaque token. Memory is bounded to 128 without unresolved eviction or replacement; token is never serialized.",
+    "Claim retirement, authority revocation and canonical-equivalent byte-different intent are refused; capture failure does not clear the original retained token.",
+    "Consumption remains an internal caller obligation after current Host verification. Durable removal clears matching volatile state only after successful original CAS.",
+    "Four appended methods use real Host token APIs with controlled transport/journal fixtures. The capacity method covers 128 entries as one case and the original disk limit at 129; it does not claim direct defensive carrier-overflow coverage.",
+    "The held authorization task is released and joined on failure; normal scope joins it before releasing replacement claim."
+  ],
+  "blockersWithinReviewedCarrierSource": [],
+  "outstandingIntegration": [
+    "Requires actual W1 Host063d source.",
+    "No caller UI is wired; existing consume boundary must be enforced by that successor.",
+    "No original creator retention or export after owner close is implemented. W1 contract answer remains pending.",
+    "Process death without durable known ID remains unresolved; modeled journal reopening is not Apple protected-journal evidence."
+  ],
+  "runtimeExecuted": false,
+  "publicationPerformed": false,
+  "independentPeerReviewSHA256": "320c84a38b62aeafce8b06ce3cf5c29987a4dd389640d4ae307d214256a4f2e2"
+}

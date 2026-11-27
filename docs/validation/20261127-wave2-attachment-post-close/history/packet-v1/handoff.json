@@ -1,0 +1,150 @@
+{
+  "schema": "wave2-attachment-post-close-source-handoff/v1",
+  "status": "SOURCE_REVIEWED_PACKET_FROZEN_PENDING_ROOT_PACKET_REVIEW",
+  "base": "9b510b5ea80fba508d01314cefb646682943f7a9",
+  "baseTree": "5e473fcc6c5d744fb27e75c402bd4dca35cf9cd1",
+  "branch": "codex/chatgpt-wave15-wave2-attachment-post-close-20261127",
+  "requiredHostCommit": "063d3ef0b16392f67e5044faa81cf8689a75dab2",
+  "requiredHostAlreadyPresentInBase": true,
+  "sourceFiles": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+      "bytes": 42250,
+      "sha256": "bba403bfe183ffed00709c973549043980eed52e478c840bb613bbd1cc8673d8",
+      "gitBlob": "0a8772af7f70fb22665ee4eac2e8470af5554f79",
+      "baseBytes": 39091,
+      "baseSHA256": "0a120812b5f8bc5d9280a42f6a7bde597cb64a9154c10c7ff04204cfb2862de5",
+      "baseGitBlob": "603e3d179343a57ff2af82e7e0dd6234a00fd46e"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachmentIntentStore.swift",
+      "bytes": 33731,
+      "sha256": "949651cb362238b713a626164f95eb378d0e54de47b7c84d7bca5821e1122480",
+      "gitBlob": "a43b1f745570aec8b3777215df9adfcf75a3dfb5",
+      "baseBytes": 21506,
+      "baseSHA256": "0032c6be0f667e5082afd4e0e2dfa03a37ac43438141034358ee95a1d6e4c325",
+      "baseGitBlob": "dc2059f3d93a1274bf3913ee32238d06e0c958b5"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+      "bytes": 47302,
+      "sha256": "a02e081d56d58b3fa964c601e712fd969901096755daf67bffb22499b5c7aa25",
+      "gitBlob": "290284dd21b3fe9ec17814b865819b03d6c6a6f0",
+      "baseBytes": 8725,
+      "baseSHA256": "c0b7afacfaf2803cea214281e104b9a17a790dd2b1523e8f2e675510c6cef809",
+      "baseGitBlob": "f481d9a198904fb57aba4e49e2076743855776c0"
+    }
+  ],
+  "testOriginTarget": "PinkhaAnyUITests",
+  "testSourcePath": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+  "testScopes": [
+    {
+      "scope": "original",
+      "suite": "AnyNativeAttachmentIntentStoreTests",
+      "methods": 3,
+      "declaredCases": 4,
+      "status": "NOT_RUN_BY_THIS_TRANCHE",
+      "sourceStatus": "EXACT_8725_BYTE_PREFIX",
+      "selectors": [
+        {
+          "method": "originalIntentSurvivesNewStoreWithoutASelectedURLOrNativeReceipt",
+          "declaredCases": 1
+        },
+        {
+          "method": "replacementStoreCannotAcquireOrOverwriteTheOriginalPendingIntent",
+          "declaredCases": 1
+        },
+        {
+          "method": "malformedOrForeignSnapshotCannotBecomeARecoveryIntent(foreignWorkspace:)",
+          "declaredCases": 2
+        }
+      ]
+    },
+    {
+      "scope": "carrier-precursor",
+      "suite": "AnyNativeAttachmentReceiptCarrierTests",
+      "methods": 4,
+      "declaredCases": 4,
+      "status": "NOT_RUN",
+      "sourceStatus": "EXACT_REVIEWED_PRECURSOR_WITHIN_32593_BYTE_PREFIX",
+      "selectors": [
+        {
+          "method": "originalOpaqueReceiptSurvivesClaimReopenWithoutEnteringDurableJSON",
+          "declaredCases": 1
+        },
+        {
+          "method": "currentClaimExactIntentAndFreshHostAuthorityRemainRequired",
+          "declaredCases": 1
+        },
+        {
+          "method": "claimRetirementDuringHostAuthorizationCannotInsertALateToken",
+          "declaredCases": 1
+        },
+        {
+          "method": "fullPendingCapacityPreservesAllOpaqueReceiptsWithoutEviction",
+          "declaredCases": 1
+        }
+      ]
+    },
+    {
+      "scope": "original-creator-successor",
+      "suite": "AnyNativeAttachmentOriginalCreatorTests",
+      "methods": 3,
+      "declaredCases": 4,
+      "status": "NOT_RUN",
+      "sourceStatus": "NEW_14709_BYTE_SUFFIX",
+      "selectors": [
+        {
+          "method": "registeredOriginalCreatorSurvivesDrainedOwnerAndClaimReopen",
+          "declaredCases": 1
+        },
+        {
+          "method": "originalPairCannotBeReplacedAndAuthorityErrorsAreNotMissingACK",
+          "declaredCases": 1
+        },
+        {
+          "method": "retiredClaimOrCurrentLeaseCannotPublishLateOriginalExport(retireClaim:)",
+          "declaredCases": 2,
+          "arguments": [
+            true,
+            false
+          ]
+        }
+      ]
+    }
+  ],
+  "combinedSourceDeclarations": {
+    "methods": 10,
+    "cases": 12,
+    "compiledEnumeration": null
+  },
+  "actualRuntime": "NOT_RUN",
+  "actualNativeAcceptance": "NOT_RUN",
+  "mountedAppleAcceptance": "NOT_RUN",
+  "w3IntegrationOwner": "W3",
+  "newTestInputPaths": [],
+  "noChangesTo": [
+    "Package.swift",
+    "project.pbxproj",
+    "receipt gates",
+    "producer",
+    "consumer profiles",
+    "shared App61 inventory",
+    "Stage1UI10 inventory",
+    "NativeUI selectors",
+    "Host APIs",
+    "Native contracts"
+  ],
+  "futureAdmission": [
+    "Bind the eventual combined source commit and actual full three-file bytes; these declarations are not compiler inputs or executed IDs.",
+    "Use the existing original-target test seam only after actual compiler input/enumeration proof. This packet does not alter a profile or select any tests.",
+    "Keep the original3/4, carrier4/4 and successor3/4 scopes separate; no whole-suite replay is authorized by this handoff.",
+    "The modeled journal/native callbacks do not establish mounted protected-journal failure, actual HTTP/Native recovery or process-death durability.",
+    "Retain all original failures and successful evidence under their exact source. No result is repinned by this publication packet."
+  ],
+  "rootSourceReviewSHA256": "631a67a702699c55783c7f95a83baef216bb4c296bf833651f7e3a60e12804a8",
+  "independentSourceReviewSHA256": "d253bd1d1e9907bf3d514e7864bb7eabacb93578f6fd33d4007cca33e3c7ea4a",
+  "unfinishedMountedFixtureIncluded": false,
+  "publicationPerformed": false,
+  "freshWorkflowRefAndCompleteMerkleChecks": "REQUIRED_AFTER_ROOT_PACKET_REVIEW_BEFORE_ANY_GIT_WRITE"
+}
