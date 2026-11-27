@@ -1,0 +1,73 @@
+{
+  "guidance": [
+    {
+      "path": "AGENTS.md",
+      "blob": "908d94f93d40ca5994d9ef8e7a280f5ebc4a560b",
+      "sha256": "05f90af9fb8707f28f710bd1e3e941a5cebedd26cbfe80fd50d0726bfec0f017",
+      "sameAsPreviouslyReadA70": true,
+      "contentIfChanged": null
+    },
+    {
+      "path": "CLAUDE.md",
+      "blob": "8c60d6d172fdc79de9c585aafccf3070c0dcc30a",
+      "sha256": "8810144b299d2ef4a2fd8b15d3ae03bcc7c38ac942e4692dd72e5805ee0f58d1",
+      "sameAsPreviouslyReadA70": true,
+      "contentIfChanged": null
+    },
+    {
+      "path": "docs/ai-team/ASANA_POLICY.md",
+      "blob": "b3f3f1cc58e5a009e545e23e1bd69b8440cc37d4",
+      "sha256": "5761adb6d8cb501f98458f90c0346f865d01eb73d006529853f60d07fbd372a3",
+      "sameAsPreviouslyReadA70": true,
+      "contentIfChanged": null
+    },
+    {
+      "path": "docs/ai-team/PROJECT_ASSIGNMENTS.md",
+      "blob": "2a51f088990747823f2386ffe5cf370de9302a87",
+      "sha256": "1bb312f45c71ea28d6dc1f77515f96ec47815b19fc21b6c1cb588464c6281145",
+      "sameAsPreviouslyReadA70": true,
+      "contentIfChanged": null
+    },
+    {
+      "path": "docs/ai-team/TEAM.md",
+      "blob": "a08fa943ade8866ea757887831b26f70674829df",
+      "sha256": "a6378e8dbb666c3f0db193b8476e256d6b07c17a643cdb7a6301b638892840e0",
+      "sameAsPreviouslyReadA70": true,
+      "contentIfChanged": null
+    },
+    {
+      "path": "docs/architecture/UPSTREAM_INTEGRITY_POLICY.md",
+      "blob": "fd8ffbf9f8ea203085b93f49c6fb6b83034f90db",
+      "sha256": "089408931f69cfd7845086df57c5d3052bc2720fe0d9a506ad16a38f719cc9c9",
+      "sameAsPreviouslyReadA70": true,
+      "contentIfChanged": null
+    }
+  ],
+  "consumers": [
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/build15/CURRENT_T5_RETAINED_ACCOUNT.md:21:`9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d`.",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/build15/current_t5_build_admission.py:17:ADMISSION_MODULE_SHA256 = '9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d'",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/build15/current_t5_build_admission.py:87:    module_path = root / 'Tools/MiniApps/receipt_admission.py'",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/prepare_native_core_hosted.py:13:    \"gate\": \"9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d\",",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/prepare_native_core_hosted.py:176:        \"receipt_admission_native_core.py\": gate.encode(),",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/receipt_admission_native_core.py:40:    \"Tools/MiniApps/receipt_admission.py\", \"Tools/MiniApps/run_receipt_acceptance.py\",",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3-warm-resource512/materialize_wave3_intake.py:27:    \"receipt_admission\": (\"receipt_admission.py\", \"9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d\"),",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3-warm-resource512/wave3_intake.py:19:W3_GATE_SHA = \"9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d\"",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3-warm-resource512/wave3_intake.py:57:    \"receipt_admission\": (\"Tools/MiniApps/receipt_admission.py\", W3_GATE_SHA),",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3-warm-resource512/wave3_intake.py:635:    gate = w3_module(\"receipt_admission\", source)",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3-warm-staged/materialize_wave3_intake.py:27:    \"receipt_admission\": (\"receipt_admission.py\", \"9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d\"),",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3-warm-staged/wave3_intake.py:19:W3_GATE_SHA = \"9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d\"",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3-warm-staged/wave3_intake.py:57:    \"receipt_admission\": (\"Tools/MiniApps/receipt_admission.py\", W3_GATE_SHA),",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3-warm-staged/wave3_intake.py:506:    gate = w3_module(\"receipt_admission\", source)",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3/materialize_wave3_intake.py:24:    \"receipt_admission\": (\"receipt_admission.py\", \"9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d\"),",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3/test_wave3_intake_preparation.py:74:        changed[\"receipt_admission\"] += \"\\n\"",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3/wave3_intake.py:19:W3_GATE_SHA = \"9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d\"",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3/wave3_intake.py:51:    \"receipt_admission\": (\"Tools/MiniApps/receipt_admission.py\", W3_GATE_SHA),",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3/wave3_intake.py:328:    gate = w3_module(\"receipt_admission\", source)",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/MiniApps/prepare_receipt_input.py:17:import receipt_admission as gate",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/MiniApps/receipt_admission.py:37:    \"Tools/MiniApps/receipt_admission.py\", \"Tools/MiniApps/run_receipt_acceptance.py\",",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/MiniApps/run_receipt_acceptance.py:24:import receipt_admission as gate",
+    "6e3e25194bca7b117989135f3cc4c6d2dd1cf878:Tools/MiniApps/test_receipt_admission.py:11:import receipt_admission as gate"
+  ],
+  "matchingLines": 23,
+  "head": "6e3e25194bca7b117989135f3cc4c6d2dd1cf878"
+}

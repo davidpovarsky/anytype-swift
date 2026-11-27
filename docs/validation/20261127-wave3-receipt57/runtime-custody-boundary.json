@@ -1,0 +1,142 @@
+{
+  "consumerPinFollowups": [
+    {
+      "constant": "ADMISSION_MODULE_SHA256",
+      "currentSHA256": "5f8b05b256fc4739d6901963f74cca80e7f7b311e03283523dcbccc2e655f09c",
+      "note": "Owner must prepare exact successor if using the new common module; unchanged historical control must keep its old pin.",
+      "oldValue": "9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d",
+      "path": "Tools/CurrentAppleValidation/combined_heart_semantics/build15/current_t5_build_admission.py"
+    },
+    {
+      "note": "Historical closed source materializers embed/pin9ce and original compiled sources. Preserve them; select a reviewed successor for a different source/producer.",
+      "paths": [
+        "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3",
+        "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3-warm-staged",
+        "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3-warm-resource512",
+        "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/prepare_native_core_hosted.py"
+      ]
+    }
+  ],
+  "core13": {
+    "claimsExcluded": [
+      "standalone PinkhaAnyUITests package runner",
+      "native ACL",
+      "native persistence",
+      "application UI",
+      "physical device"
+    ],
+    "plans": {
+      "native-block-creation-hosted-only": {
+        "cases": 2,
+        "framework": "Swift Testing",
+        "methods": 2,
+        "sourceSHA256": "e36af9a049013d2e19453849170ee2deac65d189d1c9603cf75c3f47b71a037e",
+        "suite": "AnyNativeTextBlockCreationTests"
+      },
+      "native-properties-hosted-only": {
+        "cases": 9,
+        "framework": "Swift Testing",
+        "methods": 9,
+        "sourceSHA256": "7df1a45aa85cd71bc7ec8353b98150609bc2d2fb07a2aa1ebf08f7fb40fdab61",
+        "suite": "AnyNativePropertyPresentationTests"
+      },
+      "native-typography-hosted-only": {
+        "cases": 2,
+        "framework": "XCTest",
+        "methods": 2,
+        "sourceSHA256": "fde5f3bd8da14f0f3e6502d60cacdf3304ea78aba9c41b35ca73317995cdff07",
+        "suite": "AnyNativeTextTypographyTests"
+      }
+    },
+    "target": "AnytypeTests",
+    "totalCases": 13,
+    "totalMethods": 13
+  },
+  "currentBlockers": [
+    {
+      "finding": "Unconditionally raises after basic plan/directory checks; no ready boolean or successful App receipt can activate this published closed profile.",
+      "function": "require_runtime_ready",
+      "source": {
+        "blob": "c3abd52fc43b8c65569e7d4ed3b32a0ec7cef6a2",
+        "bytes": 11401,
+        "path": "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/native_core_hosted_profile.py",
+        "sha256": "b3dc895536c615c453f2856cd33c29b1394a6e954c218e4e7c67b59dfdb211ee"
+      }
+    },
+    {
+      "finding": "Requires executionEnvironment exactly SentinelX-owned-Mac, original platform/runtime constants and exact controller closure; it calls the closed Core13 gate before allocating the execution root.",
+      "function": "main",
+      "source": {
+        "blob": "b316d3418cb8436b69cfc7c6f8c58079bfecb624",
+        "bytes": 52423,
+        "path": "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/native-core-hosted/combined_host_acceptance_app15.py",
+        "sha256": "c286f736483d78c7e066f0483f678b7d9deddd942e4734238d3f9e502d2dc7e3"
+      }
+    },
+    {
+      "finding": "Binds original source8f2 and fixed main14 Mac source/app-derived locations plus warm-cache/retention proofs. Those are not the upcoming fresh GitHub runner source, products or source/native transport receipts.",
+      "functions": [
+        "w3_freeze",
+        "w3_stage_proof",
+        "qualify_app16_producer",
+        "admit_and_clone_products"
+      ],
+      "source": {
+        "blob": "be51ae94326f01af7798fb2d21e01bc551ef092a",
+        "bytes": 54783,
+        "path": "Tools/CurrentAppleValidation/combined_heart_semantics/wave2/wave3-warm-resource512/wave3_intake.py",
+        "sha256": "cd66d442acccbbc29758561f771a565f73a6fc2e805db65f6f0ea36dba9eb27b"
+      }
+    },
+    {
+      "finding": "Builds App and complete Stage1UI at actual GitHub workspace/temp paths and emits original build16 receipt plus exact source/native/SDK/compiler proofs; explicitly executes zero tests. The reviewed existing workflow performs retention/upload after build and contains no Core13 runtime stage.",
+      "functions": [
+        "stage_and_build",
+        "execute"
+      ],
+      "source": {
+        "localCandidatePath": "/workspace/scratch/ae335eba85e3/pinkha-wave3-hosted-control/future-xcode27-path-correction/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py",
+        "path": "Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py",
+        "publishedCommitBound": false,
+        "sha256": "079ec77f508ce508096d8534f66a4d5164efbde26b49b67075999dce3e32d47a"
+      }
+    },
+    {
+      "finding": "Every actual source/product/proof path must physically exist canonically and match original Git/producer/source bytes; selected compiler source paths must be the actual source-root-relative files and samefile identity from the real Swift invocation. A downloaded artifact or rewritten absolute-path prefix is not equivalent original custody.",
+      "functions": [
+        "canonical",
+        "verify_source",
+        "verify_project_inventory",
+        "verify_compilation",
+        "verify_build",
+        "admit"
+      ],
+      "source": {
+        "candidateSHA256": "d63b8a04bd424a92bf852449c2ecbf8a22bd5ccae95b61ae32feb6be63e6b901",
+        "path": "Tools/MiniApps/receipt_admission.py"
+      }
+    }
+  ],
+  "executed": {
+    "MacOperations": 0,
+    "accountOperations": 0,
+    "builds": 0,
+    "runtimeInvocations": 0,
+    "simulatorOperations": 0,
+    "tests": 0
+  },
+  "laterMacImportBoundary": "A later Mac run would require separately reviewed transport+relocation custody that preserves immutable original receipts and explicitly proves relocated source/Git/generated project/products/compiler witness mappings. No such accepted layer is present. This tranche neither fabricates old hosted paths nor weakens canonical/samefile checks.",
+  "minimalSameHostContinuationRequirements": [
+    "Prepare and review a narrow runtime controller successor before dispatch; leave this published closed historical profile intact. Bind the actual final source, actual successful producer receipt and new common-module hash; do not accept a mutable ready flag alone.",
+    "Run that successor in the SAME hosted workflow job while original GITHUB_WORKSPACE/app/source, native/SDK witnesses, generated UI, complete app/ui Products, original build16 receipts/logs and original compiler FileLists still exist. A separate hosted job has a different filesystem and is not same-host custody.",
+    "Construct the complete original receipt-input contract from actual producer output, root admission, three actual toolchain logs, source-before/after, compiler witnesses, original native assembly/framework and SDK materialization, complete Products and exact control closure. Call the unchanged common gate and original native compiler witness; do not import old fixed-Mac W3 source/cache assertions.",
+    "Bind the actual GitHub run/attempt and owned execution root; use truthful hosted execution-environment labeling instead of SentinelX-owned-Mac. Admit the real installed arm64 iPad OS/runtime/build and matching original toolchain observations; do not infer runtime availability from successful compilation.",
+    "Reuse the exact original Core13 declared source hashes and methods, source_contract/invocation_selectors, exact enumeration and original result/argument validation. Preserve original Consumer.stage deadlines: 180-second enumeration, 300-second native per-method allowance and 600-second entire hosted suite; preserve owned process cleanup and original XCTest/Swift Testing counts.",
+    "Retain original xcresult, raw log/summary/node tree, actual device identity, descriptor binding, post-run original product/source integrity and owned-process exit observations. Run only after real App/UI producer PASS; failure or absent receipt never implies runtime acceptance."
+  ],
+  "schema": "pinkha-core13-current-hosted-runtime-custody-boundary-v1",
+  "sourceChangesInThisTranche": "Only the common module explicit three-path addition; all runtime profiles/materializers/consumer pins remain unchanged.",
+  "sourceCommit": "6e3e25194bca7b117989135f3cc4c6d2dd1cf878",
+  "sourceTree": "789b3b146ca95a4d3f284e917fdb87009e108f7b",
+  "status": "SOURCE_BOUNDARY_IDENTIFIED_RUNTIME_NOT_ACTIVATED"
+}
