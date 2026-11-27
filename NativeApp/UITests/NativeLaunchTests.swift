@@ -2508,6 +2508,227 @@ final class NativeLaunchTests: XCTestCase {
     }
     // END_NATIVE_BIN_CONFIRMATION_AX_PREPARATION_V1
 
+    // BEGIN_NATIVE_LIBRARY_SEARCH_UI_V1
+    func testLibrarySearchReplacementAndColdReopenUseCurrentQuery() throws {
+        executionTimeAllowance = 900
+        let scope = UUID()
+        let suffix = scope.uuidString.replacingOccurrences(of: "-", with: "").lowercased()
+        let app = makeApplication(scope: scope)
+        let spaceName = "Library search UI " + String(suffix.prefix(8))
+        let alpha = (key: "alpha", query: "libraryalpha" + suffix,
+                     title: "Library Alpha " + suffix,
+                     body: "מסמך ראשון לחיפוש libraryalpha" + suffix)
+        let beta = (key: "beta", query: "librarybeta" + suffix,
+                    title: "Library Beta " + suffix,
+                    body: "מסמך שני לחיפוש librarybeta" + suffix)
+        let absentQuery = "libraryabsent" + suffix
+        let library = app.descendants(matching: .any).matching(identifier: "any-native-library").firstMatch
+        let blocks = app.textViews.matching(NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-"))
+        var identities: [String: [String: String]] = [:]
+        var queryExpected = ""
+        var phase = "setup"
+        var completedColdReopens = 0
+        var complete = false
+
+        func hash(_ text: String) -> String {
+            SHA256.hash(data: Data(text.utf8)).map { String(format: "%02x", $0) }.joined()
+        }
+        func rows(_ title: String) -> XCUIElementQuery {
+            // Search rows include the original title plus a native FTS snippet.
+            // Scope the visible title query to the actual Library list.
+            library.descendants(matching: .button).matching(NSPredicate(format: "label BEGINSWITH %@", title))
+        }
+        func capture(_ name: String) throws {
+            try requireArchiveObservationPastOnboarding(app)
+            let field = app.searchFields.firstMatch
+            var record: [String: Any] = [
+                "schema": "any-native-library-search-ui/v1", "phase": name,
+                "ownedScope": scope.uuidString, "spaceName": spaceName,
+                "requestedAppLanguage": "he", "queryExpected": queryExpected,
+                "queryFieldExists": field.exists, "completedColdReopens": completedColdReopens,
+                "nativeIdentityOrigin": "actual-mounted-hierarchy-and-editor-accessibility",
+                "nativeReadExtraCallsByObserver": 0, "testStorageOverrides": false,
+                "identities": identities
+            ]
+            if field.exists { record["queryObserved"] = field.value as? String ?? "" }
+            else { record["queryObserved"] = NSNull() }
+            if library.exists {
+                record["visibleFixtureRows"] = [alpha.title, beta.title].flatMap { title in
+                    rows(title).allElementsBoundByIndex.map { row in
+                        ["label": row.label, "identifier": row.identifier, "hittable": row.isHittable] as [String: Any]
+                    }
+                }
+            }
+            record["visibleNativeBlocks"] = blocks.allElementsBoundByIndex.map { block in
+                ["identifier": block.identifier, "bodySHA256": hash(block.value as? String ?? "")] as [String: Any]
+            }
+            let data = try JSONSerialization.data(withJSONObject: record, options: [.sortedKeys])
+            XCTAssertLessThanOrEqual(data.count, 65_536)
+            let metadata = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+            metadata.name = "native-library-search-" + name
+            metadata.lifetime = .keepAlways; add(metadata)
+            let tree = String(decoding: Data(app.debugDescription.utf8).prefix(131_072), as: UTF8.self)
+            try requireArchiveObservationPastOnboarding(app)
+            let ax = XCTAttachment(string: tree)
+            ax.name = "native-library-search-" + name + "-private-ax"
+            ax.lifetime = .keepAlways; add(ax)
+            let image = XCTAttachment(screenshot: app.screenshot())
+            image.name = "native-library-search-" + name
+            image.lifetime = .keepAlways; add(image)
+        }
+        func returnToLibrary() {
+            let back = app.navigationBars.buttons.matching(NSPredicate(
+                format: "label == %@ OR label == %@", "ספרייה", "Library")).firstMatch
+            tapWhenEnabled(back)
+            waitUntilEnabled(app.buttons["any-native-create-menu"], timeout: 60)
+            waitFor(NSPredicate(format: "exists == true"), object: library, timeout: 30)
+        }
+        func createDocument(_ item: (key: String, query: String, title: String, body: String)) throws {
+            try createNamedItemWithObservedTransition(app, action: "any-native-new-document", title: item.title)
+            let addParagraph = app.buttons["any-native-add-paragraph"]
+            waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                    object: addParagraph, timeout: 60)
+            addParagraph.tap()
+            let editor = blocks.firstMatch
+            waitForNativeEditorInput(app, editor)
+            editor.tap(); editor.typeText(item.body)
+            tapWhenEnabled(app.buttons["any-native-editor-done"])
+            let status = app.descendants(matching: .any).matching(identifier: "any-native-save-status").firstMatch
+            waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"), object: status, timeout: 45)
+            XCTAssertEqual(editor.value as? String, item.body)
+            XCTAssertEqual(blocks.count, 1)
+            let blockIdentifier = editor.identifier
+            XCTAssertTrue(blockIdentifier.hasPrefix("any-native-block-"))
+            returnToLibrary()
+            let row = app.buttons.matching(NSPredicate(
+                format: "identifier BEGINSWITH %@ AND label == %@", "any-native-hierarchy-row-", item.title))
+            waitUntilEnabled(row.firstMatch, timeout: 45)
+            XCTAssertEqual(row.count, 1)
+            let hierarchyIdentifier = row.firstMatch.identifier
+            XCTAssertGreaterThan(hierarchyIdentifier.count, "any-native-hierarchy-row-".count)
+            identities[item.key] = ["title": item.title, "query": item.query,
+                "hierarchyRowIdentifier": hierarchyIdentifier,
+                "objectIDFromHierarchy": String(hierarchyIdentifier.dropFirst("any-native-hierarchy-row-".count)),
+                "blockIdentifier": blockIdentifier, "bodySHA256": hash(item.body)]
+        }
+        func replaceQuery(_ value: String) {
+            queryExpected = value
+            waitFor(NSPredicate(format: "exists == true"), object: library, timeout: 30)
+            let field = app.searchFields.firstMatch
+            if !field.exists || !field.isHittable { library.swipeDown() }
+            waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                    object: field, timeout: 30)
+            field.tap()
+            field.typeKey("a", modifierFlags: .command)
+            field.typeText(XCUIKeyboardKey.delete.rawValue)
+            if !value.isEmpty {
+                field.typeText(value)
+                waitFor(NSPredicate(format: "value == %@", value), object: field, timeout: 30)
+            }
+        }
+        func expectResult(_ item: (key: String, query: String, title: String, body: String),
+                          excluding other: (key: String, query: String, title: String, body: String)) throws -> XCUIElement {
+            let matching = rows(item.title)
+            waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                    object: matching.firstMatch, timeout: 60)
+            XCTAssertEqual(matching.count, 1)
+            XCTAssertEqual(app.searchFields.firstMatch.value as? String, item.query)
+            XCTAssertEqual(app.alerts.count, 0, "The current Library query must not be covered by an error alert.")
+            XCTAssertFalse(rows(other.title).firstMatch.exists, "The previous or unrelated query must not supply displayed rows.")
+            let identity = try XCTUnwrap(identities[item.key])
+            let hierarchyIdentifier = try XCTUnwrap(identity["hierarchyRowIdentifier"])
+            XCTAssertFalse(app.buttons[hierarchyIdentifier].exists,
+                           "The actual search result must replace the ordinary hierarchy section.")
+            return matching.firstMatch
+        }
+        func verifyOpened(_ item: (key: String, query: String, title: String, body: String)) throws {
+            let identity = try XCTUnwrap(identities[item.key])
+            let blockIdentifier = try XCTUnwrap(identity["blockIdentifier"])
+            let expectedBodySHA256 = try XCTUnwrap(identity["bodySHA256"])
+            let editor = app.textViews[blockIdentifier]
+            waitFor(NSPredicate(format: "exists == true AND value == %@", item.body), object: editor, timeout: 60)
+            XCTAssertEqual(blocks.count, 1)
+            XCTAssertEqual(hash(editor.value as? String ?? ""), expectedBodySHA256)
+            let title = app.navigationBars.staticTexts.matching(NSPredicate(format: "label == %@", item.title)).firstMatch
+            waitFor(NSPredicate(format: "exists == true"), object: title, timeout: 30)
+            let status = app.descendants(matching: .any).matching(identifier: "any-native-save-status").firstMatch
+            waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"), object: status, timeout: 45)
+        }
+        func expectClearedHierarchy() throws {
+            for item in [alpha, beta] {
+                let identity = try XCTUnwrap(identities[item.key])
+                let identifier = try XCTUnwrap(identity["hierarchyRowIdentifier"])
+                waitUntilEnabled(app.buttons[identifier], timeout: 45)
+            }
+            XCTAssertFalse(app.staticTexts["תוצאות חיפוש"].exists)
+            XCTAssertFalse(app.staticTexts["לא נמצאו תוצאות"].exists)
+        }
+
+        app.launch()
+        defer { app.terminate() }
+        defer {
+            if !complete {
+                do { try capture("FAILED_" + phase) }
+                catch {
+                    let refusal = XCTAttachment(string: "Post-onboarding diagnostic unavailable: " + String(describing: error))
+                    refusal.name = "native-library-search-diagnostic-unavailable"
+                    refusal.lifetime = .keepAlways; add(refusal)
+                }
+            }
+        }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        try createDocument(alpha)
+        try createDocument(beta)
+
+        phase = "alpha-result"
+        replaceQuery(alpha.query)
+        _ = try expectResult(alpha, excluding: beta)
+        try capture(phase)
+
+        phase = "replacement-beta-result"
+        replaceQuery(beta.query)
+        _ = try expectResult(beta, excluding: alpha)
+        try capture(phase)
+
+        phase = "no-match"
+        replaceQuery(absentQuery)
+        waitFor(NSPredicate(format: "exists == true AND hittable == true"),
+                object: app.staticTexts["לא נמצאו תוצאות"], timeout: 60)
+        XCTAssertEqual(app.alerts.count, 0, "A failed search must not be accepted as the empty-result UI.")
+        XCTAssertFalse(rows(alpha.title).firstMatch.exists)
+        XCTAssertFalse(rows(beta.title).firstMatch.exists)
+        try capture(phase)
+
+        phase = "cleared-hierarchy"
+        replaceQuery("")
+        try expectClearedHierarchy()
+        try capture(phase)
+
+        phase = "opened-alpha"
+        replaceQuery(alpha.query)
+        try expectResult(alpha, excluding: beta).tap()
+        try verifyOpened(alpha)
+        try capture(phase)
+        returnToLibrary()
+        replaceQuery("")
+        try expectClearedHierarchy()
+
+        phase = "cold-beta-result"
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        completedColdReopens += 1
+        try expectClearedHierarchy()
+        replaceQuery(beta.query)
+        _ = try expectResult(beta, excluding: alpha)
+        try capture(phase)
+
+        phase = "cold-opened-beta"
+        try expectResult(beta, excluding: alpha).tap()
+        try verifyOpened(beta)
+        try capture(phase)
+        complete = true
+    }
+    // END_NATIVE_LIBRARY_SEARCH_UI_V1
+
     private func makeApplication(scope: UUID = UUID()) -> XCUIApplication {
         let app = NativeApplicationUnderTest()
         app.launchArguments = [
