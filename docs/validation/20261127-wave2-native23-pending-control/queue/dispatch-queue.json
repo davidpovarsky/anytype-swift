@@ -1,0 +1,351 @@
+{
+  "schema": "pinkha.wave2.d-acceptance-queue/1",
+  "preparedDateUTC": "2026-11-27",
+  "status": "SOURCE_AND_EVIDENCE_QUEUE_NO_RUNTIME_ADMISSION",
+  "newTestsExecuted": 0,
+  "newControlsExecuted": 0,
+  "hostWrites": 0,
+  "builds": 0,
+  "runtimeReady": false,
+  "latestDReportedSource": {
+    "commit": "6e3e25194bca7b117989135f3cc4c6d2dd1cf878",
+    "comment": "1220946439741801",
+    "meaning": "SOURCE_INTEGRATION_ONLY",
+    "actualSuccessfulProducerPin": null
+  },
+  "families": {
+    "NativeUI19": {
+      "nativeLaunchSHA256": "31c64474cebf4890050f9077d3c44fac63264d878a77bd6f55811cc407e02422",
+      "nativeLaunchMethods": 19,
+      "separateNativeHistoryMethods": 1,
+      "target": "PinkhaAnyNativeUITests",
+      "controlCommit": "80d82adf44450e83969dda7ca21028dce93e6836",
+      "allowedStages": [
+        "sharing-owner",
+        "archive",
+        "rtl",
+        "library-search",
+        "source-drag"
+      ],
+      "acceptsNative23": false
+    },
+    "NativeUI23": {
+      "nativeLaunchSHA256": "8d58c41e8907019bf67088900bb5c35843562edd669422573c1280f800500e86",
+      "nativeLaunchMethods": 23,
+      "separateNativeHistoryMethods": 1,
+      "sourceCommit": "7380a797d13b279b6d19e43ade7af1929089b8ef",
+      "closedStyledControlCommit": "1f8a19ab4ec87490d6a17ae8470224f39bc48596",
+      "allowedStages": [
+        "styled-blocks",
+        "styled-live-type"
+      ],
+      "original19PrefixPreserved": true,
+      "sourceInverseHelperSHA256": "71c376659d34b7065d152f22c41f2ded731d4527d0231375a3e688a31e7f4f02",
+      "fiveLaneSuccessor": "ASSIGNED_TO_INTERFACES_CLOSED_IMPLEMENTATION_REQUIRED",
+      "accessibilityPlanHelper": "ASSIGNED_TO_EDITOR_PROPOSED_NOT_YET_REVIEWED"
+    },
+    "Stage1UI": {
+      "target": "PinkhaStage1AcceptanceUITests",
+      "nativeSourceInputCount": 57,
+      "stage1UISourceInputCount": 10,
+      "countsAreNotMethodCounts": true,
+      "FQueueSHA256": "55486639642fdf24a02f963b79683941fb46f4229884d1e0ecde90b417aec00b"
+    }
+  },
+  "productGate": [
+    "Actual fixed shared source/native/SDK/lock and successful App+complete Stage1UI producer; no failed6aab or cancelleda089 substitution",
+    "Reviewed exact common admit_and_clone_products admission",
+    "One same-source NativeUI runner with actual swiftc consuming its two-source FileList",
+    "Original one-method enumeration/result/product/descriptor/owned lifecycle authority; actual screenshots require visual review"
+  ],
+  "retained": [
+    {
+      "id": "hierarchy-move",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+      "run": "45472843335",
+      "source": "fb5b40a5e91c68520d0f2921600a9f04b1e25439",
+      "receipt": "d2d91e2cdaba5a9283cb53e080eab639593d1e07352f065aa7aec346cf1247c6",
+      "seconds": 310.56,
+      "evidenceComment": "1220879407207013",
+      "action": "RETAIN_ORIGINAL_NO_AUTOMATIC_RERUN"
+    },
+    {
+      "id": "hierarchy-drag",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen",
+      "source": "379ca3568f247d2fc218ed63df24796d461713c0",
+      "native": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b",
+      "receiptPrefix": "a74fa451",
+      "seconds": 136.28,
+      "path": "docs/validation/20261126-native-hierarchy-drag-app15/actual/execution.json",
+      "action": "RETAIN_NO_DRAG_STAGE",
+      "accountCustody": "FULL_FOUR_SCOPE_BACKUP_NOT_ESTABLISHED; ORIGINAL_FAILURE_RETAINED"
+    },
+    {
+      "id": "custom-type",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen",
+      "run": "45531686517",
+      "source": "dc29b540e76222bf89c5ac863916f66793acfda6",
+      "receipt": "750bacd17d89056d960d0dea57969393e967ce5dcd839e409ff2123b765e8585",
+      "evidenceComment": "1220887133996201",
+      "action": "RETAIN_ORIGINAL; CURRENT_PROPERTIES_DELTA_NEEDS_NARROW_DEPENDENCY_SCOPE"
+    },
+    {
+      "id": "history",
+      "selector": "PinkhaAnyNativeUITests/NativeHistoryTests/testSavedHebrewVersionsRemainReadOnlyAcrossCloseBackgroundAndColdReopen",
+      "source": "6f1194f9b8c9540dea1187826dda6a256777dbbf",
+      "nativePrefix": "70f0b2a6",
+      "sdkPrefix": "30e5f09f",
+      "receipt": "3e22505eafa804f4f603e6df3b0345ceb154c5847837493a2db0d627f8a25b9c",
+      "seconds": 296.297,
+      "evidenceComment": "1220904784667313",
+      "action": "RETAIN_ORIGINAL_NO_AUTOMATIC_HISTORY_STAGE"
+    },
+    {
+      "id": "bin",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen",
+      "source": "e540cd7e01b497f1b3173ae2e68b43ade0b00b6f",
+      "nativePrefix": "410b441e",
+      "receipt": "5454534733ae7b9a76fe03a9b0f171d5470069067dc09eb4eb16d200e167c5b0",
+      "seconds": 210.791,
+      "evidenceComment": "1220916861488804",
+      "action": "RETAIN_ORIGINAL_NO_AUTOMATIC_BIN_STAGE"
+    },
+    {
+      "id": "quote-note",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testSourceInspectorQuoteAndNoteSurviveColdReopen",
+      "run": "45038244641",
+      "source": "07c3568f9f9cf4044dd81163cd374d4ad35330cb",
+      "evidence": "docs/validation/20261123-native-ui-terminal/originals/native-continuation-retained.json",
+      "action": "RETAIN_ORIGINAL"
+    },
+    {
+      "id": "topic-word",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen",
+      "run": "45087682296",
+      "source": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
+      "evidence": "docs/validation/20261123-native-ui-terminal/originals/native-continuation-retained.json",
+      "action": "RETAIN_ORIGINAL"
+    },
+    {
+      "id": "plain-hebrew-rtl",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+      "run": "45087682296",
+      "source": "7293e4fd0bcabdcdb643d5768b777b8e87ff1b73",
+      "action": "RETAIN_ORIGINAL; DOES_NOT_PROVE_EIGHT_CROSS_LANGUAGE_CELLS"
+    },
+    {
+      "id": "earlier-hanlin",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
+      "source": "6f1194f9b8c9540dea1187826dda6a256777dbbf",
+      "nativePrefix": "70f0",
+      "sdkPrefix": "30e",
+      "receipt": "0828bfe9986709194a6bdd36969f41d7a2fd154a2c5079e588fbde7524b8a2c0",
+      "seconds": 239.317,
+      "evidenceComment": "1220902356945354",
+      "action": "RETAIN_ORIGINAL; CURRENT_SDK_ACCEPTANCE_SEPARATELY_WAVE3_OWNED"
+    }
+  ],
+  "diagnosticOnly": {
+    "stage": "archive-picker-observe",
+    "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testObserveCanonicalArchiveSystemPickers",
+    "receipt": "8e473704e866860d605a69753d82699ea8403d2a7ea9539e9edc994dec692166",
+    "evidenceComment": "1220913922727962",
+    "noSaveNoImportNoRoundtrip": true,
+    "doNotReplayJustForGreen": true
+  },
+  "nativePending": [
+    {
+      "id": "D1",
+      "stage": "sharing-owner",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeSharingInvitationConfirmationCancellationAndColdReopen",
+      "seconds": 900,
+      "status": "PENDING_REAL_UI_AND_NATIVE23_COMPATIBILITY",
+      "sourcePrerequisites": [
+        "dd25107377bae3146600e29c19cbaba458b14e7b",
+        "f6cb0c23c217eee60e0b8901d350f95dfb24b8c6"
+      ],
+      "scope": "Owner create/revoke with cancellation/confirmation and cold reopening only",
+      "notCovered": [
+        "accepted member joining",
+        "existing member role changes",
+        "deliberate denied/error recovery UI"
+      ]
+    },
+    {
+      "id": "D2",
+      "stage": "library-search",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testLibrarySearchReplacementAndColdReopenUseCurrentQuery",
+      "seconds": 900,
+      "status": "NOT_RUN",
+      "sourcePrerequisites": [
+        "03dae6742dec6279b8329991d435a7562918a278",
+        "5e55ec2aa927e3cdfb2e6b6bf8ad4e88741120d3"
+      ],
+      "groups": 7,
+      "scope": "Replacement/no-match/clear/exact target/cold requery"
+    },
+    {
+      "id": "D3",
+      "stage": "source-drag",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+      "seconds": 360,
+      "status": "NO_QUALIFIED_PASS_IN_BOUNDED_ORIGINAL_AUDIT",
+      "methodSHA256": "53b207a8ab5dc48936e33d8d708c91945ccaa329589812ace52ee8a66ef4de4d",
+      "preservedFailedRuns": [
+        "45087682296",
+        "45148353071",
+        "45174286335"
+      ],
+      "scope": "Original source drag and target/canonical association/cold assertions"
+    },
+    {
+      "id": "D4",
+      "stage": "rtl",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+      "seconds": 360,
+      "status": "EIGHT_CELLS_PENDING",
+      "scope": "Plain direction/alignment and cold reopen; original large size"
+    },
+    {
+      "id": "D5",
+      "stage": "archive",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",
+      "seconds": 1800,
+      "status": "FULL_ACCEPTANCE_FAIL_REMAINS_OPEN",
+      "scope": "Real Files Save/import, canonical mapping, bodies/links and reopen"
+    },
+    {
+      "id": "D6",
+      "stage": "styled-blocks",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testTypedBlockMenusPersistAllNineKindsAndColdReopen",
+      "seconds": 1800,
+      "status": "SOURCE_REVIEWED_RUNTIME_CLOSED",
+      "sourcePrerequisites": [
+        "dc582ba3239d6dcb66dbe1f7098b95349e4289f9",
+        "33e31c64ca9e35e258a4d64cfe8690b08a6cbc39",
+        "dfbb481102226e5484b5b8e4dd730661f9b03d14",
+        "7380a797d13b279b6d19e43ade7af1929089b8ef"
+      ],
+      "groups": 29
+    },
+    {
+      "id": "D7",
+      "stage": "styled-live-type",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeStyledTypographyRefreshesLiveAtAccessibilitySize",
+      "seconds": 900,
+      "status": "SOURCE_REVIEWED_RUNTIME_CLOSED",
+      "groups": 6,
+      "scope": "large→accessibility-extra-extra-extra-large→large; mounted all-run/empty fonts and same identity/selection"
+    }
+  ],
+  "accessibilityProposed": [
+    {
+      "stage": "accessibility-audit-large",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeLibraryAndEditorAccessibilityAuditAtRequestedContentSize",
+      "seconds": 900,
+      "contentSize": "large"
+    },
+    {
+      "stage": "accessibility-audit-expanded",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeLibraryAndEditorAccessibilityAuditAtRequestedContentSize",
+      "seconds": 900,
+      "contentSize": "accessibility-extra-extra-extra-large"
+    },
+    {
+      "stage": "accessibility-voiceover-large",
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeVoiceOverTraversalSpeaksCurrentNativeContent",
+      "seconds": 900,
+      "contentSize": "large"
+    }
+  ],
+  "accessibilityStatus": "EDITOR_PROPOSED_CLOSED_PLAN_HELPER_NOT_YET_REVIEWED_OR_ADMITTED",
+  "rtlMatrix": {
+    "appAndOSPairs": [
+      {
+        "app": "he",
+        "os": "en"
+      },
+      {
+        "app": "en",
+        "os": "he"
+      }
+    ],
+    "deviceFamilies": [
+      "iphone",
+      "ipad"
+    ],
+    "appearances": [
+      "light",
+      "dark"
+    ],
+    "contentSize": "large",
+    "cells": 8,
+    "actualCurrentProductPasses": 0,
+    "actualReadbacksRequired": true
+  },
+  "stage1": {
+    "plan": "first-editor",
+    "lane": "editor",
+    "stages": [
+      "preparation",
+      "ui"
+    ],
+    "preparation": "AnytypeTests/PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState()",
+    "fixture": "pinkha-stage1-acceptance-state.json",
+    "enumerationSeconds": 180,
+    "budgetAuthority": "Original run_ui27.selection_time_budget",
+    "status": "FOUR_UI_METHODS_NOT_RUN_AFTER_ORIGINAL_PREPARATION_FAIL",
+    "selectors": [
+      "PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testAppWideDirectionPersistenceAndInteractiveBack",
+      "PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testMultiBlockEnterCreationAndTypingLifecycle",
+      "PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testDocumentSourcesEntryOpensExistingSearch",
+      "PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testUnifiedEngineSwitchRetainsHeartDocumentAndColdReopen"
+    ],
+    "startupWarningSourcePrefix": "183bfdb",
+    "queuePath": "wave2-editor-rtl/acceptance-queue/dispatch-queue.json"
+  },
+  "unknownObligations": [
+    {
+      "feature": "files/attachments",
+      "productFix": "426f17d2f1c491e8aec2535fd114ffa006af7730",
+      "gap": "Dedicated add/open/download/preview/failure/revoke UI selector not mapped; Archive picker is different"
+    },
+    {
+      "feature": "bookmarks",
+      "gap": "17 portable controls do not qualify native layout11/URL/ACL/visibility or mounted opening; no Native19/23 UI selector mapped"
+    },
+    {
+      "feature": "sharing",
+      "gap": "Real accepted-member/role-change/denied/error recovery fixtures and UI plan need Wave1 coordination after adapter"
+    },
+    {
+      "feature": "custom types/properties",
+      "productFix": "54079356628487f7ecedf5cfe87434c8cc57ea36",
+      "gap": "Mounted failed-read/stale authority and all imported layouts remain outside original happy-path Type proof"
+    },
+    {
+      "feature": "hierarchy/archive/navigation",
+      "gap": "General folder/cycle/denied-move/permanent-delete/global navigation coverage not inferred from bounded retained document journeys"
+    },
+    {
+      "feature": "current Hanlin/MiniApps",
+      "gap": "Wave3 exact SDK/companion plan mapping remains separate; historical hanlin/miniapps stages exist but are deliberately not admitted by five-lane/Styled profiles"
+    },
+    {
+      "feature": "physical device",
+      "gap": "No physical iPhone/iPad/hardware keyboard/manual VoiceOver result established by this audit"
+    }
+  ],
+  "excludedAutomaticReruns": [
+    "hierarchy drag",
+    "hierarchy move",
+    "history",
+    "custom-type",
+    "bin",
+    "quote-note",
+    "topic-word",
+    "36 historical T5 calls",
+    "9 newer T5 calls"
+  ],
+  "visualStatus": "ACTUAL_PIXEL_REVIEW_PENDING_PER_NEW_EXECUTED_CELL; TYPED_ATTACHMENTS_ALONE_ARE_NOT_VISUAL_ACCEPTANCE"
+}

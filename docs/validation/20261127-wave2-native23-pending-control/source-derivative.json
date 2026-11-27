@@ -1,0 +1,485 @@
+{
+  "actualAppleBuilds": 0,
+  "actualNativeCalls": 0,
+  "actualUIRuns": 0,
+  "baseCommit": "1f8a19ab4ec87490d6a17ae8470224f39bc48596",
+  "deltas": {
+    "builder": {
+      "addedDefinitions": [],
+      "candidateSHA256": "61ab8c1ed0a4420a277312f69fc82452a0b3f61e6751971382fdae0cb92110b7",
+      "changedDefinitions": [
+        "native8ac_module"
+      ],
+      "changes": [
+        {
+          "linePosition": 46,
+          "new": [
+            "    require(hashlib.sha256(original).hexdigest() == \"54ec0671be6bd88eadc795ae25ff24d8b46e968e8c61b8da23934536f3e2275f\",\n"
+          ],
+          "old": [
+            "    require(hashlib.sha256(original).hexdigest() == \"a499920e54468a8a81b5d86ec16aa809a2b99d9bd7cee66df6d615b43ab1f5b5\",\n"
+          ]
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "originalSHA256": "b884c8d950d4ae7c1f658b1e4930d3632442c3ccd89996ffbbf8a4887053665a",
+      "unchangedDefinitions": [
+        "bin_confirmation_module",
+        "digest",
+        "main",
+        "native11619_module",
+        "require",
+        "write"
+      ]
+    },
+    "materializer": {
+      "addedDefinitions": [
+        "pending_original_runner_changes"
+      ],
+      "candidateSHA256": "d54988593a1191b5e255b6a0961723a2d7d7aaeb23e9880cbe8cc5ab0399c09b",
+      "changedDefinitions": [
+        "prepare"
+      ],
+      "changes": [
+        {
+          "linePosition": 1,
+          "new": [
+            "\"\"\"Materialize a CLOSED NativeLaunch23 continuation of the pending original lanes.\n"
+          ],
+          "old": [
+            "\"\"\"Materialize a CLOSED styled derivative of the original NativeUI controllers.\n"
+          ]
+        },
+        {
+          "linePosition": 19,
+          "new": [
+            "PENDING_ORIGINAL_PLANS = {\n",
+            "    \"sharing-owner\": (\"NativeLaunchTests/testNativeSharingInvitationConfirmationCancellationAndColdReopen\", 900),\n",
+            "    \"archive\": (\"NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies\", 1800),\n",
+            "    \"rtl\": (\"NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen\", 360),\n",
+            "    \"library-search\": (\"NativeLaunchTests/testLibrarySearchReplacementAndColdReopenUseCurrentQuery\", 900),\n",
+            "    \"source-drag\": (\"NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens\", 360),\n",
+            "}\n",
+            "ALLOWED_STAGES = tuple(PENDING_ORIGINAL_PLANS) + (\"styled-blocks\", \"styled-live-type\")\n"
+          ],
+          "old": []
+        },
+        {
+          "linePosition": 222,
+          "new": [
+            "def pending_original_runner_changes():\n",
+            "    \"\"\"Reuse the c249 registry; do not change any original selector or method budget.\"\"\"\n",
+            "    styled = '(\"styled-blocks\", \"styled-live-type\")'\n",
+            "    allowed = repr(ALLOWED_STAGES)\n",
+            "    return [\n",
+            "        ('    parser.add_argument(\"--stage\", choices=tuple(STAGES), required=True)',\n",
+            "         '    parser.add_argument(\"--stage\", choices=' + allowed + ', required=True)'),\n",
+            "        ('            if args.stage in ' + styled + ':\\n                run = current8ac.styled_owned_commands(run, out)',\n",
+            "         '            if args.stage in ' + allowed + ':\\n                run = current8ac.styled_owned_commands(run, out)'),\n",
+            "        ('        if args.stage in ' + styled + ' and not native8ac_module().styled_process_closed():',\n",
+            "         '        if args.stage in ' + allowed + ' and not native8ac_module().styled_process_closed():'),\n",
+            "        ('        if udid is not None and (args.stage not in ' + styled + ' or native8ac_module().styled_process_closed()):',\n",
+            "         '        if udid is not None and (args.stage not in ' + allowed + ' or native8ac_module().styled_process_closed()):'),\n",
+            "        ('        if args.stage in ' + styled + ':\\n            try:\\n                receipt[\"styledOwnedCommands\"] = native8ac_module().styled_owned_final_receipt()',\n",
+            "         '        if args.stage in ' + allowed + ':\\n            try:\\n                key = \"styledOwnedCommands\" if args.stage in ' + styled + ' else \"nativeOwnedCommands\"\\n                receipt[key] = native8ac_module().styled_owned_final_receipt()'),\n",
+            "        ('                           args.stage in ' + styled + ' and not native8ac_module().styled_process_closed()',\n",
+            "         '                           args.stage in ' + allowed + ' and not native8ac_module().styled_process_closed()'),\n",
+            "    ]\n",
+            "\n",
+            "\n"
+          ],
+          "old": []
+        },
+        {
+          "linePosition": 284,
+          "new": [
+            "    require(namespace[\"PENDING_ORIGINAL_STAGES\"] == tuple(PENDING_ORIGINAL_PLANS)\n",
+            "            and namespace[\"ALLOWED_STAGES\"] == ALLOWED_STAGES,\n",
+            "            \"The profile and materializer must agree on the finite pending original and styled lanes\")\n"
+          ],
+          "old": []
+        },
+        {
+          "linePosition": 329,
+          "new": [
+            "            changes += pending_original_runner_changes()\n"
+          ],
+          "old": []
+        },
+        {
+          "linePosition": 336,
+          "new": [
+            "        if name.startswith(\"run_\"):\n",
+            "            declarations = [node for node in ast.parse(candidate).body if isinstance(node, ast.Assign)\n",
+            "                            and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name)\n",
+            "                            and node.targets[0].id == \"STAGES\"]\n",
+            "            require(len(declarations) == 1, \"One original stage declaration required\")\n",
+            "            actual_plans = ast.literal_eval(declarations[0].value)\n",
+            "            require(all(actual_plans.get(stage) == plan for stage, plan in PENDING_ORIGINAL_PLANS.items()),\n",
+            "                    \"A pending original selector or allowance changed\")\n"
+          ],
+          "old": []
+        },
+        {
+          "linePosition": 353,
+          "new": [
+            "        \"allowedExecutionStages\": list(ALLOWED_STAGES),\n",
+            "        \"pendingOriginalMethods\": {stage: {\"selector\": \"PinkhaAnyNativeUITests/\" + plan[0],\n",
+            "                                            \"allowanceSeconds\": plan[1]}\n",
+            "                                   for stage, plan in PENDING_ORIGINAL_PLANS.items()},\n",
+            "        \"pendingOriginalControllerCommit\": \"80d82adf44450e83969dda7ca21028dce93e6836\",\n",
+            "        \"sourceInverseAndOwnedRegistryCommit\": \"1f8a19ab4ec87490d6a17ae8470224f39bc48596\",\n",
+            "        \"allSelectedCommandsUseOneUnchangedC249Registry\": True,\n",
+            "        \"historicalAcceptedStagesSelectable\": False,\n",
+            "        \"pendingOriginalLanguageDeviceScope\": {\n",
+            "            \"rtl\": \"Original eight explicit app-language/opposite-OS/device/appearance cells; large only\",\n",
+            "            \"otherFour\": \"Original iOS27.0 iPad Pro 13-inch M5 12GB plan; no language/device/appearance cell override\"},\n"
+          ],
+          "old": [
+            "        \"allowedExecutionStages\": [\"styled-blocks\", \"styled-live-type\"],\n"
+          ]
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "originalSHA256": "57f2b7ec59923fe8ce8f37694a2eeae1582bd9251d67d70dc3bf59207a6ca9c5",
+      "unchangedDefinitions": [
+        "functions",
+        "library_runner_changes",
+        "main",
+        "require",
+        "rtl_runner_changes",
+        "sha",
+        "styled_runner_changes",
+        "substitute"
+      ]
+    },
+    "profile": {
+      "addedDefinitions": [
+        "execution_configuration"
+      ],
+      "candidateSHA256": "54ec0671be6bd88eadc795ae25ff24d8b46e968e8c61b8da23934536f3e2275f",
+      "changedDefinitions": [
+        "configure",
+        "styled_owned_commands"
+      ],
+      "changes": [
+        {
+          "linePosition": 0,
+          "new": [
+            "\"\"\"CLOSED NativeLaunch23 continuation of five pending original and two styled lanes.\n"
+          ],
+          "old": [
+            "\"\"\"CLOSED future styled NativeUI continuation through exact shared admission.\n"
+          ]
+        },
+        {
+          "linePosition": 92,
+          "new": [
+            "PENDING_ORIGINAL_STAGES = (\"sharing-owner\", \"archive\", \"rtl\", \"library-search\", \"source-drag\")\n",
+            "ALLOWED_STAGES = PENDING_ORIGINAL_STAGES + STYLED_STAGES\n"
+          ],
+          "old": []
+        },
+        {
+          "linePosition": 149,
+          "new": [
+            "def execution_configuration(args, common, matrix):\n",
+            "    \"\"\"Keep the original five-lane language/device boundary; cells are not overrides.\"\"\"\n",
+            "    rtl_cell, rtl_sha = getattr(args, \"rtl_cell\", None), getattr(args, \"rtl_cell_sha256\", None)\n",
+            "    styled_cell, styled_sha = getattr(args, \"styled_cell\", None), getattr(args, \"styled_cell_sha256\", None)\n",
+            "    stage = getattr(args, \"stage\", None)\n",
+            "    if stage == \"rtl\":\n",
+            "        require(styled_cell is None and styled_sha is None, \"Styled cells cannot change the original RTL plan\")\n",
+            "        return matrix.cell(common, rtl_cell, rtl_sha)\n",
+            "    if stage in STYLED_STAGES:\n",
+            "        require(rtl_cell is None and rtl_sha is None, \"RTL cells cannot change a styled plan\")\n",
+            "        return matrix.cell(common, styled_cell, styled_sha)\n",
+            "    require(rtl_cell is None and rtl_sha is None and styled_cell is None and styled_sha is None,\n",
+            "            \"Only the original RTL and styled plans accept an explicit device/language cell\")\n",
+            "    return None\n",
+            "\n",
+            "\n"
+          ],
+          "old": []
+        },
+        {
+          "linePosition": 178,
+          "new": [
+            "            \"CLOSED_NATIVE23_FUTURE_PRODUCT_HAS_NO_REVIEWED_SOURCE_AND_ACTUAL_ADMISSION\")\n"
+          ],
+          "old": [
+            "            \"CLOSED_STYLED_FUTURE_PRODUCT_HAS_NO_REVIEWED_SOURCE_AND_ACTUAL_ADMISSION\")\n"
+          ]
+        },
+        {
+          "linePosition": 185,
+          "new": [
+            "        require(args.stage in ALLOWED_STAGES and args.retain_owned_simulator,\n",
+            "                \"Only five pending original and two styled methods may run, retaining their owned account\")\n"
+          ],
+          "old": [
+            "        require(args.stage in STYLED_STAGES and args.retain_owned_simulator,\n",
+            "                \"Only the two missing styled methods may run, retaining their owned account\")\n"
+          ]
+        },
+        {
+          "linePosition": 221,
+          "new": [],
+          "old": [
+            "    require(rtl_cell is None and rtl_cell_sha is None, \"The original RTL selector is not replayed by this derivative\")\n"
+          ]
+        },
+        {
+          "linePosition": 223,
+          "new": [
+            "    configuration = execution_configuration(args, module, matrix)\n"
+          ],
+          "old": [
+            "    if hasattr(args, \"stage\"):\n",
+            "        # Reuse the exact six-key original cell and preference validators.\n",
+            "        configuration = matrix.cell(module, styled_cell, styled_cell_sha)\n",
+            "    else:\n",
+            "        require(styled_cell is None and styled_cell_sha is None, \"No device cell belongs to compilation\")\n",
+            "        configuration = None\n"
+          ]
+        },
+        {
+          "linePosition": 248,
+          "new": [
+            "                   native23PendingOriginalStages=list(PENDING_ORIGINAL_STAGES),\n",
+            "                   native23OwnedRegistryAllSelectedCommands=True,\n",
+            "                   native23HistoricalAcceptedStagesSelectable=False,\n"
+          ],
+          "old": []
+        },
+        {
+          "linePosition": 704,
+          "new": [
+            "    # Retain the reviewed c249 adapter and its historical sidecar names unchanged.\n",
+            "    # This successor also uses that one registry for each pending original lane.\n",
+            "    require(_state[\"args\"].stage in ALLOWED_STAGES and _state[\"styledOwned\"] is None,\n",
+            "            \"Only one registry may own all commands in a selected Native23 invocation\")\n"
+          ],
+          "old": [
+            "    require(_state[\"args\"].stage in STYLED_STAGES and _state[\"styledOwned\"] is None,\n",
+            "            \"Only one registry may own all commands in an original styled invocation\")\n"
+          ]
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "originalSHA256": "a499920e54468a8a81b5d86ec16aa809a2b99d9bd7cee66df6d615b43ab1f5b5",
+      "unchangedDefinitions": [
+        "admit",
+        "bind_source",
+        "check_source",
+        "compile_sharing_source",
+        "compiled_swift_sources",
+        "compiler_invocations",
+        "library_attachments",
+        "library_module",
+        "owned_lifecycle",
+        "projected_files",
+        "qualify_main",
+        "qualify_runtime_inputs",
+        "require",
+        "reviewed_builder",
+        "rtl_after",
+        "rtl_attachments",
+        "rtl_bind",
+        "rtl_device",
+        "rtl_environment",
+        "rtl_installed",
+        "rtl_module",
+        "rtl_prepare",
+        "seal_ui_build",
+        "sha",
+        "source_drag_attachments",
+        "styled_attachments",
+        "styled_bind",
+        "styled_device",
+        "styled_environment",
+        "styled_execute",
+        "styled_finalize",
+        "styled_installed",
+        "styled_module",
+        "styled_owned_final_receipt",
+        "styled_prepare",
+        "styled_process_closed",
+        "styled_runtime_module"
+      ]
+    },
+    "runner": {
+      "addedDefinitions": [],
+      "candidateSHA256": "3aff24c73606a2b071c00616866a606aa0f92c0433f3eec8e019c868fd85ef4f",
+      "changedDefinitions": [
+        "main",
+        "native8ac_module"
+      ],
+      "changes": [
+        {
+          "linePosition": 393,
+          "new": [
+            "    require(hashlib.sha256(original).hexdigest() == \"54ec0671be6bd88eadc795ae25ff24d8b46e968e8c61b8da23934536f3e2275f\",\n"
+          ],
+          "old": [
+            "    require(hashlib.sha256(original).hexdigest() == \"a499920e54468a8a81b5d86ec16aa809a2b99d9bd7cee66df6d615b43ab1f5b5\",\n"
+          ]
+        },
+        {
+          "linePosition": 561,
+          "new": [
+            "    parser.add_argument(\"--stage\", choices=('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type'), required=True)\n"
+          ],
+          "old": [
+            "    parser.add_argument(\"--stage\", choices=tuple(STAGES), required=True)\n"
+          ]
+        },
+        {
+          "linePosition": 645,
+          "new": [
+            "            if args.stage in ('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type'):\n"
+          ],
+          "old": [
+            "            if args.stage in (\"styled-blocks\", \"styled-live-type\"):\n"
+          ]
+        },
+        {
+          "linePosition": 952,
+          "new": [
+            "        if args.stage in ('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type') and not native8ac_module().styled_process_closed():\n"
+          ],
+          "old": [
+            "        if args.stage in (\"styled-blocks\", \"styled-live-type\") and not native8ac_module().styled_process_closed():\n"
+          ]
+        },
+        {
+          "linePosition": 954,
+          "new": [
+            "        if udid is not None and (args.stage not in ('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type') or native8ac_module().styled_process_closed()):\n"
+          ],
+          "old": [
+            "        if udid is not None and (args.stage not in (\"styled-blocks\", \"styled-live-type\") or native8ac_module().styled_process_closed()):\n"
+          ]
+        },
+        {
+          "linePosition": 1022,
+          "new": [
+            "        if args.stage in ('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type'):\n"
+          ],
+          "old": [
+            "        if args.stage in (\"styled-blocks\", \"styled-live-type\"):\n"
+          ]
+        },
+        {
+          "linePosition": 1024,
+          "new": [
+            "                key = \"styledOwnedCommands\" if args.stage in (\"styled-blocks\", \"styled-live-type\") else \"nativeOwnedCommands\"\n",
+            "                receipt[key] = native8ac_module().styled_owned_final_receipt()\n"
+          ],
+          "old": [
+            "                receipt[\"styledOwnedCommands\"] = native8ac_module().styled_owned_final_receipt()\n"
+          ]
+        },
+        {
+          "linePosition": 1031,
+          "new": [
+            "                           args.stage in ('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type') and not native8ac_module().styled_process_closed()\n"
+          ],
+          "old": [
+            "                           args.stage in (\"styled-blocks\", \"styled-live-type\") and not native8ac_module().styled_process_closed()\n"
+          ]
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "originalSHA256": "36c3c0e91616a0fdeb94dc7691c8b105ef75a46fba7b4c8c3607c733704284a0",
+      "unchangedDefinitions": [
+        "admit_410b_runner",
+        "admit_current_menu_runner",
+        "admit_current_runner",
+        "admit_miniapps_runner",
+        "admit_real_companion",
+        "bin_confirmation_module",
+        "bind",
+        "companion86_module",
+        "digest",
+        "inventory",
+        "native11619_module",
+        "original_module",
+        "qualify_miniapps_report",
+        "require",
+        "run",
+        "write"
+      ]
+    }
+  },
+  "fullOriginalControllerInverses": {
+    "build_prebuilt_native_ui16.py": {
+      "candidateSHA256": "61ab8c1ed0a4420a277312f69fc82452a0b3f61e6751971382fdae0cb92110b7",
+      "inverseRestoresEveryOriginalByte": true,
+      "originalSHA256": "e6c4c506cf893b2dc495fdc4b76c686f09a108c9980e05d19590d92acab804f9",
+      "unchangedDefinitions": [
+        "bin_confirmation_module",
+        "digest",
+        "native11619_module",
+        "require",
+        "write"
+      ]
+    },
+    "run_prebuilt_native_ui16.py": {
+      "candidateSHA256": "3aff24c73606a2b071c00616866a606aa0f92c0433f3eec8e019c868fd85ef4f",
+      "inverseRestoresEveryOriginalByte": true,
+      "originalSHA256": "18c7cc5722a856782d454a11db11ea172c9d718cecd17cd6dc54ffcc2a256d2b",
+      "unchangedDefinitions": [
+        "admit_410b_runner",
+        "admit_current_menu_runner",
+        "admit_current_runner",
+        "admit_miniapps_runner",
+        "admit_real_companion",
+        "bin_confirmation_module",
+        "bind",
+        "companion86_module",
+        "digest",
+        "inventory",
+        "native11619_module",
+        "original_module",
+        "qualify_miniapps_report",
+        "require",
+        "run",
+        "write"
+      ]
+    }
+  },
+  "legacyControllerSHA256": "9ec947cd3020339f9c732052dbf04eab380ebc820f35c69901578c07cdc2dafa",
+  "originalPendingPlansCommit": "80d82adf44450e83969dda7ca21028dce93e6836",
+  "pendingOriginalMethods": {
+    "archive": {
+      "allowanceSeconds": 1800,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies"
+    },
+    "library-search": {
+      "allowanceSeconds": 900,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testLibrarySearchReplacementAndColdReopenUseCurrentQuery"
+    },
+    "rtl": {
+      "allowanceSeconds": 360,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen"
+    },
+    "sharing-owner": {
+      "allowanceSeconds": 900,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeSharingInvitationConfirmationCancellationAndColdReopen"
+    },
+    "source-drag": {
+      "allowanceSeconds": 360,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens"
+    }
+  },
+  "productAdmission": "CLOSED",
+  "schema": "native23-pending-original-lane-source-derivative/v1",
+  "status": "SOURCE_PREPARED_PENDING_INDEPENDENT_REVIEW_AND_FUTURE_PRODUCT",
+  "unchangedHelpers": {
+    "native_library_search.py": "7f2af4c63464ae3ce9e088cf923d314b0bbb58b94bdc94ff871190a8b205d8f0",
+    "native_rtl_matrix.py": "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae",
+    "native_styled_observations.py": "71c376659d34b7065d152f22c41f2ded731d4527d0231375a3e688a31e7f4f02",
+    "native_styled_runtime.py": "c249ab9d04b4f8014475cf1eb8b81cf0371cab40a3f98a77b2938a2a0f2b6714"
+  }
+}

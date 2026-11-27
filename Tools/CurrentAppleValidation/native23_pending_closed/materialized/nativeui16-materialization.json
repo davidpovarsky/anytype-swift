@@ -1,0 +1,370 @@
+{
+  "actualNativeCompilerInvocationRequired": true,
+  "allSelectedCommandsUseOneUnchangedC249Registry": true,
+  "allowedExecutionStages": [
+    "sharing-owner",
+    "archive",
+    "rtl",
+    "library-search",
+    "source-drag",
+    "styled-blocks",
+    "styled-live-type"
+  ],
+  "builds": 0,
+  "controllers": {
+    "build_prebuilt_native_ui16.py": {
+      "candidateSHA256": "61ab8c1ed0a4420a277312f69fc82452a0b3f61e6751971382fdae0cb92110b7",
+      "changes": [
+        {
+          "new": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native16_profile.py\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() == \"54ec0671be6bd88eadc795ae25ff24d8b46e968e8c61b8da23934536f3e2275f\",\n            \"exact_reviewed_shared_app_NativeUI_profile_required\")\n    cached = getattr(native8ac_module, \"qualified\", None)\n    if cached is not None:\n        return cached\n    module = type(sys)(\"qualified_native16\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    native8ac_module.qualified = module\n    return module",
+          "old": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native8ac_profile.py\")\n    require(digest(path) == \"ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332\",\n            \"exact_App15_NativeUI_profile_required\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() ==\n            \"ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332\",\n            \"App15_profile_changed_during_admission\")\n    module = type(sys)(\"qualified_native8ac\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    return module",
+          "position": 967
+        },
+        {
+          "new": "    parser.add_argument(\"--shared-admission\", type=Path, required=True)\n    parser.add_argument(\"--shared-admission-sha256\", required=True)\n    parser.add_argument(\"--shared-controller-sha256\", required=True)\n    args = parser.parse_args()\n    native8ac_module().configure(args)",
+          "old": "    args = parser.parse_args()",
+          "position": 3756
+        },
+        {
+          "new": "    require(code == 0 and stopped is None, \"original_native_ui_runner_build_failed\")\n    current8ac.seal_ui_build(output, record, Path(__file__).resolve())",
+          "old": "    require(code == 0 and stopped is None, \"original_native_ui_runner_build_failed\")",
+          "position": 45526
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "originalSHA256": "e6c4c506cf893b2dc495fdc4b76c686f09a108c9980e05d19590d92acab804f9",
+      "unchangedDefinitions": [
+        "bin_confirmation_module",
+        "digest",
+        "native11619_module",
+        "require",
+        "write"
+      ]
+    },
+    "run_prebuilt_native_ui16.py": {
+      "candidateSHA256": "3aff24c73606a2b071c00616866a606aa0f92c0433f3eec8e019c868fd85ef4f",
+      "changes": [
+        {
+          "new": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native16_profile.py\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() == \"54ec0671be6bd88eadc795ae25ff24d8b46e968e8c61b8da23934536f3e2275f\",\n            \"exact_reviewed_shared_app_NativeUI_profile_required\")\n    cached = getattr(native8ac_module, \"qualified\", None)\n    if cached is not None:\n        return cached\n    module = type(sys)(\"qualified_native16\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    native8ac_module.qualified = module\n    return module",
+          "old": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native8ac_profile.py\")\n    require(digest(path) == \"ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332\",\n            \"exact_App15_NativeUI_profile_required\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() ==\n            \"ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332\",\n            \"App15_profile_changed_during_admission\")\n    module = type(sys)(\"qualified_native8ac\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    return module",
+          "position": 21970
+        },
+        {
+          "new": "    parser.add_argument(\"--shared-admission\", type=Path, required=True)\n    parser.add_argument(\"--shared-admission-sha256\", required=True)\n    parser.add_argument(\"--shared-controller-sha256\", required=True)\n    parser.add_argument(\"--native-ui-proof-sha256\", required=True)\n    parser.add_argument(\"--rtl-cell\", type=Path)\n    parser.add_argument(\"--rtl-cell-sha256\")\n    parser.add_argument(\"--styled-cell\", type=Path)\n    parser.add_argument(\"--styled-cell-sha256\")\n    args = parser.parse_args()\n    native8ac_module().configure(args)",
+          "old": "    args = parser.parse_args()",
+          "position": 33212
+        },
+        {
+          "new": "STAGES = {\n    \"rtl\": (\"NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen\", 360),",
+          "old": "STAGES = {",
+          "position": 653
+        },
+        {
+          "new": "        if args.stage == \"rtl\":\n            _, runtimes_raw = run([\"xcrun\", \"simctl\", \"list\", \"runtimes\", \"--json\"], out, \"runtimes\")\n            _, types_raw = run([\"xcrun\", \"simctl\", \"list\", \"devicetypes\", \"--json\"], out, \"device-types\")\n            runtime, actual_type = current8ac.rtl_device(runtimes_raw, types_raw)\n            types = [actual_type]\n            receipt[\"rtlActualDevice\"] = {\"runtime\": runtime, \"deviceType\": actual_type}\n        else:\n            _, raw = run([\"xcrun\", \"simctl\", \"list\", \"runtimes\", \"--json\"], out, \"runtimes\")\n            runtimes = [x for x in json.loads(raw)[\"runtimes\"] if\n                        x.get(\"isAvailable\") is True and x.get(\"version\") == \"27.0\"\n                        and \"iOS\" in x.get(\"name\", \"\")]\n            require(len(runtimes) == 1, \"one_available_original_ios27_runtime_required\")\n            _, raw = run([\"xcrun\", \"simctl\", \"list\", \"devicetypes\", \"--json\"], out, \"device-types\")\n            types = [x for x in json.loads(raw)[\"devicetypes\"] if\n                     x.get(\"identifier\") == \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB\"]\n            require(len(types) == 1, \"one_available_ipad_pro_m5_device_type_required\")\n            runtime = runtimes[0]",
+          "old": "        _, raw = run([\"xcrun\", \"simctl\", \"list\", \"runtimes\", \"--json\"], out, \"runtimes\")\n        runtimes = [x for x in json.loads(raw)[\"runtimes\"] if\n                    x.get(\"isAvailable\") is True and x.get(\"version\") == \"27.0\"\n                    and \"iOS\" in x.get(\"name\", \"\")]\n        require(len(runtimes) == 1, \"one_available_original_ios27_runtime_required\")\n        _, raw = run([\"xcrun\", \"simctl\", \"list\", \"devicetypes\", \"--json\"], out, \"device-types\")\n        types = [x for x in json.loads(raw)[\"devicetypes\"] if\n                 x.get(\"identifier\") == \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB\"]\n        require(len(types) == 1, \"one_available_ipad_pro_m5_device_type_required\")\n        runtime = runtimes[0]",
+          "position": 46403
+        },
+        {
+          "new": "        run([\"xcrun\", \"simctl\", \"bootstatus\", udid, \"-b\"], out, \"bootstatus\", timeout=180)\n        if args.stage == \"rtl\":\n            receipt[\"nativeRTL\"] = current8ac.rtl_prepare(run, out, udid)",
+          "old": "        run([\"xcrun\", \"simctl\", \"bootstatus\", udid, \"-b\"], out, \"bootstatus\", timeout=180)",
+          "position": 48160
+        },
+        {
+          "new": "        run([\"xcrun\", \"simctl\", \"install\", udid, str(app)], out, \"install-unified-app\", timeout=120)\n        if args.stage == \"rtl\":\n            receipt[\"nativeRTL\"][\"installedBefore\"] = current8ac.rtl_installed(run, out, udid, app, \"before\")",
+          "old": "        run([\"xcrun\", \"simctl\", \"install\", udid, str(app)], out, \"install-unified-app\", timeout=120)",
+          "position": 48608
+        },
+        {
+          "new": "        if args.stage == \"rtl\":\n            configured, binding[\"nativeRTL\"] = current8ac.rtl_bind(configured)\n            fixture_environment = current8ac.rtl_environment()\n        else:\n            fixture_environment = {}",
+          "old": "        fixture_environment = {}",
+          "position": 49250
+        },
+        {
+          "new": "        require(record[\"status\"] == \"PASS\", \"actual_original_ui_execution_failed\")\n        if args.stage == \"rtl\":\n            receipt[\"nativeRTL\"][\"after\"] = current8ac.rtl_after(run, out, udid, app)",
+          "old": "        require(record[\"status\"] == \"PASS\", \"actual_original_ui_execution_failed\")",
+          "position": 52884
+        },
+        {
+          "new": "        if args.stage == \"rtl\" and not first_error and not cleanup_errors:\n            try:\n                receipt[\"nativeRTL\"][\"screenshots\"] = current8ac.rtl_attachments(run, out, udid)\n            except BaseException as exc:\n                cleanup_errors.append({\"phase\": \"original-rtl-screenshots\", \"reason\": str(exc)})\n        if args.stage == \"miniapps\" and not first_error and not cleanup_errors:",
+          "old": "        if args.stage == \"miniapps\" and not first_error and not cleanup_errors:",
+          "position": 56052
+        },
+        {
+          "new": "        if args.stage == \"rtl\" and receipt[\"status\"] == \"PASS\":\n            receipt[\"status\"] = \"PASS_NATIVE_RTL_METHOD_VISUAL_REVIEW_PENDING\"\n        if args.stage == \"archive-picker-observe\" and receipt[\"status\"] == \"PASS\":",
+          "old": "        if args.stage == \"archive-picker-observe\" and receipt[\"status\"] == \"PASS\":",
+          "position": 62066
+        },
+        {
+          "new": "    expected_status = (\"PASS_NATIVE_RTL_METHOD_VISUAL_REVIEW_PENDING\" if args.stage == \"rtl\" else\n                       \"PASS_DIAGNOSTIC_ONLY_NOT_ARCHIVE_ACCEPTANCE\"\n                       if args.stage == \"archive-picker-observe\" else \"PASS\")",
+          "old": "    expected_status = (\"PASS_DIAGNOSTIC_ONLY_NOT_ARCHIVE_ACCEPTANCE\"\n                       if args.stage == \"archive-picker-observe\" else \"PASS\")",
+          "position": 62415
+        },
+        {
+          "new": "STAGES = {\n    \"library-search\": (\"NativeLaunchTests/testLibrarySearchReplacementAndColdReopenUseCurrentQuery\", 900),\n    \"source-drag\": (\"NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens\", 360),",
+          "old": "STAGES = {",
+          "position": 653
+        },
+        {
+          "new": "        if args.stage == \"library-search\" and not first_error and not cleanup_errors:\n            try:\n                receipt[\"nativeLibrarySearch\"] = current8ac.library_attachments(run, out, udid)\n            except BaseException as exc:\n                cleanup_errors.append({\"phase\": \"original-library-observations\", \"reason\": str(exc)})\n        if args.stage == \"source-drag\" and not first_error and not cleanup_errors:\n            try:\n                receipt[\"nativeSourceDrag\"] = current8ac.source_drag_attachments(run, out, udid)\n            except BaseException as exc:\n                cleanup_errors.append({\"phase\": \"original-source-drag-observations\", \"reason\": str(exc)})\n        if args.stage == \"miniapps\" and not first_error and not cleanup_errors:",
+          "old": "        if args.stage == \"miniapps\" and not first_error and not cleanup_errors:",
+          "position": 56593
+        },
+        {
+          "new": "        if args.stage == \"library-search\" and receipt[\"status\"] == \"PASS\":\n            receipt[\"status\"] = \"PASS_NATIVE_LIBRARY_SEARCH_METHOD_VISUAL_REVIEW_PENDING\"\n        if args.stage == \"source-drag\" and receipt[\"status\"] == \"PASS\":\n            receipt[\"status\"] = \"PASS_NATIVE_SOURCE_DRAG_METHOD_VISUAL_REVIEW_PENDING\"\n        if args.stage == \"archive-picker-observe\" and receipt[\"status\"] == \"PASS\":",
+          "old": "        if args.stage == \"archive-picker-observe\" and receipt[\"status\"] == \"PASS\":",
+          "position": 63109
+        },
+        {
+          "new": "    expected_status = (\"PASS_NATIVE_LIBRARY_SEARCH_METHOD_VISUAL_REVIEW_PENDING\" if args.stage == \"library-search\" else\n                       \"PASS_NATIVE_SOURCE_DRAG_METHOD_VISUAL_REVIEW_PENDING\" if args.stage == \"source-drag\" else\n                       \"PASS_NATIVE_RTL_METHOD_VISUAL_REVIEW_PENDING\" if args.stage == \"rtl\" else",
+          "old": "    expected_status = (\"PASS_NATIVE_RTL_METHOD_VISUAL_REVIEW_PENDING\" if args.stage == \"rtl\" else",
+          "position": 63639
+        },
+        {
+          "new": "def main(run=run):\n    global LIFECYCLE",
+          "old": "def main():\n    global LIFECYCLE",
+          "position": 32764
+        },
+        {
+          "new": "            LIFECYCLE = current8ac.owned_lifecycle(source, out, out / \"owned-command-lifecycle\")\n            if args.stage in (\"styled-blocks\", \"styled-live-type\"):\n                run = current8ac.styled_owned_commands(run, out)",
+          "old": "            LIFECYCLE = current8ac.owned_lifecycle(source, out, out / \"owned-command-lifecycle\")",
+          "position": 38645
+        },
+        {
+          "new": "STAGES = {\n    \"styled-blocks\": (\"NativeLaunchTests/testTypedBlockMenusPersistAllNineKindsAndColdReopen\", 1800),\n    \"styled-live-type\": (\"NativeLaunchTests/testNativeStyledTypographyRefreshesLiveAtAccessibilitySize\", 900),",
+          "old": "STAGES = {",
+          "position": 653
+        },
+        {
+          "new": "            receipt[\"rtlActualDevice\"] = {\"runtime\": runtime, \"deviceType\": actual_type}\n        elif args.stage in (\"styled-blocks\", \"styled-live-type\"):\n            _, runtimes_raw = run([\"xcrun\", \"simctl\", \"list\", \"runtimes\", \"--json\"], out, \"runtimes\")\n            _, types_raw = run([\"xcrun\", \"simctl\", \"list\", \"devicetypes\", \"--json\"], out, \"device-types\")\n            runtime, actual_type = current8ac.styled_device(runtimes_raw, types_raw)\n            types = [actual_type]\n            receipt[\"styledActualDevice\"] = {\"runtime\": runtime, \"deviceType\": actual_type}\n        else:",
+          "old": "            receipt[\"rtlActualDevice\"] = {\"runtime\": runtime, \"deviceType\": actual_type}\n        else:",
+          "position": 47326
+        },
+        {
+          "new": "        run([\"xcrun\", \"simctl\", \"bootstatus\", udid, \"-b\"], out, \"bootstatus\", timeout=180)\n        if args.stage in (\"styled-blocks\", \"styled-live-type\"):\n            receipt[\"nativeStyled\"] = current8ac.styled_prepare(run, out, udid)",
+          "old": "        run([\"xcrun\", \"simctl\", \"bootstatus\", udid, \"-b\"], out, \"bootstatus\", timeout=180)",
+          "position": 49212
+        },
+        {
+          "new": "        run([\"xcrun\", \"simctl\", \"install\", udid, str(app)], out, \"install-unified-app\", timeout=120)\n        if args.stage in (\"styled-blocks\", \"styled-live-type\"):\n            receipt[\"nativeStyled\"][\"installedBefore\"] = current8ac.styled_installed(run, out, udid, app, \"before\")",
+          "old": "        run([\"xcrun\", \"simctl\", \"install\", udid, str(app)], out, \"install-unified-app\", timeout=120)",
+          "position": 49804
+        },
+        {
+          "new": "            fixture_environment = current8ac.rtl_environment()\n        elif args.stage in (\"styled-blocks\", \"styled-live-type\"):\n            configured, binding[\"nativeStyled\"] = current8ac.styled_bind(configured, out, products)\n            fixture_environment = current8ac.styled_environment()\n        else:",
+          "old": "            fixture_environment = current8ac.rtl_environment()\n        else:",
+          "position": 50737
+        },
+        {
+          "new": "        if args.stage in (\"styled-blocks\", \"styled-live-type\"):\n            record, _ = current8ac.styled_execute(run, out, udid,\n                plan + [\"-resultBundlePath\", str(out / \"Original.xcresult\")],\n                allowance + 300, fixture_environment)\n        else:\n            record, _ = run(plan + [\"-resultBundlePath\", str(out / \"Original.xcresult\")],\n                            out, \"execute\", timeout=allowance + 300,\n                            environment=fixture_environment, allow_failure=True)",
+          "old": "        record, _ = run(plan + [\"-resultBundlePath\", str(out / \"Original.xcresult\")],\n                        out, \"execute\", timeout=allowance + 300,\n                        environment=fixture_environment, allow_failure=True)",
+          "position": 54224
+        },
+        {
+          "new": "    finally:\n        if args.stage in (\"styled-blocks\", \"styled-live-type\"):\n            try:\n                receipt[\"styledFinalization\"] = native8ac_module().styled_finalize(run, out, udid, app)\n            except BaseException as exc:\n                cleanup_errors.append({\"phase\": \"styled-restoration-and-final-readback\", \"reason\": str(exc)})\n        # Only the original xcresult may establish completed test counts.",
+          "old": "    finally:\n        # Only the original xcresult may establish completed test counts.",
+          "position": 55444
+        },
+        {
+          "new": "        if args.stage in (\"styled-blocks\", \"styled-live-type\") and not native8ac_module().styled_process_closed():\n            cleanup_errors.append({\"phase\": \"owned-device-custody\", \"reason\": \"Unresolved captured process/group; settings, sandbox and shutdown operations withheld\"})\n        if udid is not None and (args.stage not in (\"styled-blocks\", \"styled-live-type\") or native8ac_module().styled_process_closed()):\n            sandbox = None",
+          "old": "        if udid is not None:\n            sandbox = None",
+          "position": 60088
+        },
+        {
+          "new": "                       ownedSimulatorRetention=(\"RetainedUnresolvedOwnedCommands\" if\n                           args.stage in (\"styled-blocks\", \"styled-live-type\") and not native8ac_module().styled_process_closed()\n                           else \"Shutdown\" if args.retain_owned_simulator else \"Deleted\"),",
+          "old": "                       ownedSimulatorRetention=(\"Shutdown\" if args.retain_owned_simulator\n                                                else \"Deleted\"),",
+          "position": 65014
+        },
+        {
+          "new": "        if args.stage in (\"styled-blocks\", \"styled-live-type\"):\n            try:\n                receipt[\"styledOwnedCommands\"] = native8ac_module().styled_owned_final_receipt()\n            except BaseException as exc:\n                cleanup_errors.append({\"phase\": \"final-owned-command-custody\", \"reason\": str(exc)})\n        receipt.update(firstFailure=first_error, diagnosticFailures=cleanup_errors,",
+          "old": "        receipt.update(firstFailure=first_error, diagnosticFailures=cleanup_errors,",
+          "position": 64886
+        },
+        {
+          "new": "        if args.stage in (\"styled-blocks\", \"styled-live-type\") and not first_error and not cleanup_errors:\n            try:\n                receipt[\"nativeStyled\"][\"observations\"] = current8ac.styled_attachments(run, out, udid)\n            except BaseException as exc:\n                cleanup_errors.append({\"phase\": \"original-styled-observations\", \"reason\": str(exc)})\n        if args.stage == \"miniapps\" and not first_error and not cleanup_errors:",
+          "old": "        if args.stage == \"miniapps\" and not first_error and not cleanup_errors:",
+          "position": 59297
+        },
+        {
+          "new": "        if args.stage in (\"styled-blocks\", \"styled-live-type\") and receipt[\"status\"] == \"PASS\":\n            receipt[\"status\"] = \"PASS_NATIVE_STYLED_METHOD_VISUAL_REVIEW_PENDING\"\n        if args.stage == \"archive-picker-observe\" and receipt[\"status\"] == \"PASS\":",
+          "old": "        if args.stage == \"archive-picker-observe\" and receipt[\"status\"] == \"PASS\":",
+          "position": 66682
+        },
+        {
+          "new": "    expected_status = (\"PASS_NATIVE_STYLED_METHOD_VISUAL_REVIEW_PENDING\" if args.stage in (\"styled-blocks\", \"styled-live-type\") else\n                       \"PASS_NATIVE_LIBRARY_SEARCH_METHOD_VISUAL_REVIEW_PENDING\" if args.stage == \"library-search\" else",
+          "old": "    expected_status = (\"PASS_NATIVE_LIBRARY_SEARCH_METHOD_VISUAL_REVIEW_PENDING\" if args.stage == \"library-search\" else",
+          "position": 67066
+        },
+        {
+          "new": "    parser.add_argument(\"--stage\", choices=('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type'), required=True)",
+          "old": "    parser.add_argument(\"--stage\", choices=tuple(STAGES), required=True)",
+          "position": 33387
+        },
+        {
+          "new": "            if args.stage in ('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type'):\n                run = current8ac.styled_owned_commands(run, out)",
+          "old": "            if args.stage in (\"styled-blocks\", \"styled-live-type\"):\n                run = current8ac.styled_owned_commands(run, out)",
+          "position": 39047
+        },
+        {
+          "new": "        if args.stage in ('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type') and not native8ac_module().styled_process_closed():",
+          "old": "        if args.stage in (\"styled-blocks\", \"styled-live-type\") and not native8ac_module().styled_process_closed():",
+          "position": 60618
+        },
+        {
+          "new": "        if udid is not None and (args.stage not in ('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type') or native8ac_module().styled_process_closed()):",
+          "old": "        if udid is not None and (args.stage not in (\"styled-blocks\", \"styled-live-type\") or native8ac_module().styled_process_closed()):",
+          "position": 60969
+        },
+        {
+          "new": "        if args.stage in ('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type'):\n            try:\n                key = \"styledOwnedCommands\" if args.stage in (\"styled-blocks\", \"styled-live-type\") else \"nativeOwnedCommands\"\n                receipt[key] = native8ac_module().styled_owned_final_receipt()",
+          "old": "        if args.stage in (\"styled-blocks\", \"styled-live-type\"):\n            try:\n                receipt[\"styledOwnedCommands\"] = native8ac_module().styled_owned_final_receipt()",
+          "position": 65552
+        },
+        {
+          "new": "                           args.stage in ('sharing-owner', 'archive', 'rtl', 'library-search', 'source-drag', 'styled-blocks', 'styled-live-type') and not native8ac_module().styled_process_closed()",
+          "old": "                           args.stage in (\"styled-blocks\", \"styled-live-type\") and not native8ac_module().styled_process_closed()",
+          "position": 66260
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "originalSHA256": "18c7cc5722a856782d454a11db11ea172c9d718cecd17cd6dc54ffcc2a256d2b",
+      "unchangedDefinitions": [
+        "admit_410b_runner",
+        "admit_current_menu_runner",
+        "admit_current_runner",
+        "admit_miniapps_runner",
+        "admit_real_companion",
+        "bin_confirmation_module",
+        "bind",
+        "companion86_module",
+        "digest",
+        "inventory",
+        "native11619_module",
+        "original_module",
+        "qualify_miniapps_report",
+        "require",
+        "run",
+        "write"
+      ]
+    }
+  },
+  "executionReadiness": "CLOSED_NO_FUTURE_SOURCE_COMMON_OR_ACTUAL_ADMISSION",
+  "files": {
+    "build_prebuilt_native_ui16.py": {
+      "bytes": 45722,
+      "sha256": "61ab8c1ed0a4420a277312f69fc82452a0b3f61e6751971382fdae0cb92110b7"
+    },
+    "native16_profile.py": {
+      "bytes": 50044,
+      "sha256": "54ec0671be6bd88eadc795ae25ff24d8b46e968e8c61b8da23934536f3e2275f"
+    },
+    "native_library_search.py": {
+      "bytes": 13929,
+      "sha256": "7f2af4c63464ae3ce9e088cf923d314b0bbb58b94bdc94ff871190a8b205d8f0"
+    },
+    "native_rtl_matrix.py": {
+      "bytes": 13850,
+      "sha256": "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae"
+    },
+    "native_styled_observations.py": {
+      "bytes": 48859,
+      "sha256": "71c376659d34b7065d152f22c41f2ded731d4527d0231375a3e688a31e7f4f02"
+    },
+    "native_styled_runtime.py": {
+      "bytes": 40172,
+      "sha256": "c249ab9d04b4f8014475cf1eb8b81cf0371cab40a3f98a77b2938a2a0f2b6714"
+    },
+    "run_prebuilt_native_ui16.py": {
+      "bytes": 68353,
+      "sha256": "3aff24c73606a2b071c00616866a606aa0f92c0433f3eec8e019c868fd85ef4f"
+    }
+  },
+  "futureCanonicalAdmissionSHA256": null,
+  "futureSharedControllerSHA256": null,
+  "futureSourceCommit": null,
+  "historicalAcceptedStagesSelectable": false,
+  "liveSettingScope": "exact fresh owned simulator content_size; two source-bound runner requests plus unconditional final restore after any attempted write",
+  "nativeCalls": 0,
+  "nativeLibraryHelperSHA256": "7f2af4c63464ae3ce9e088cf923d314b0bbb58b94bdc94ff871190a8b205d8f0",
+  "nativeLibraryMethod": "PinkhaAnyNativeUITests/NativeLaunchTests/testLibrarySearchReplacementAndColdReopenUseCurrentQuery",
+  "nativeLibraryObservations": {
+    "actualMethodsExecuted": 0,
+    "typedPhaseGroupsRequired": 7,
+    "visualReview": "PENDING"
+  },
+  "nativeLibrarySourceRequirement": "Fixed reviewed31c644 insertion must already be integrated in the exact shared App source",
+  "nativeRTLHelperSHA256": "58c240a703a757291822073f82d84627ac5e3fedd9a0a8daf60c961a33c384ae",
+  "nativeRTLMatrix": {
+    "appLanguages": [
+      "he",
+      "en"
+    ],
+    "appearances": [
+      "light",
+      "dark"
+    ],
+    "cellsExecuted": 0,
+    "contentSize": "large",
+    "deviceFamilies": [
+      "iphone",
+      "ipad"
+    ],
+    "oppositeOSLanguageRequired": true
+  },
+  "nativeRTLMethod": "PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+  "nativeSourceDragAllowanceSeconds": 360,
+  "nativeSourceDragMethod": "PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+  "nativeSourceDragMethodChanged": false,
+  "nativeUIProfileSHA256": "54ec0671be6bd88eadc795ae25ff24d8b46e968e8c61b8da23934536f3e2275f",
+  "nextIntegratedSource": "BLOCKED_UNTIL_SEPARATELY_REVIEWED_COMMON_QUALIFIER_AND_ACTUAL_BUILD_RECEIPT",
+  "originalProfilesModified": false,
+  "originalRunAndBindFunctionsUnchanged": true,
+  "originalXCTestResultAuthorityUnchanged": true,
+  "passedHierarchyDragSelected": false,
+  "pendingOriginalControllerCommit": "80d82adf44450e83969dda7ca21028dce93e6836",
+  "pendingOriginalLanguageDeviceScope": {
+    "otherFour": "Original iOS27.0 iPad Pro 13-inch M5 12GB plan; no language/device/appearance cell override",
+    "rtl": "Original eight explicit app-language/opposite-OS/device/appearance cells; large only"
+  },
+  "pendingOriginalMethods": {
+    "archive": {
+      "allowanceSeconds": 1800,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies"
+    },
+    "library-search": {
+      "allowanceSeconds": 900,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testLibrarySearchReplacementAndColdReopenUseCurrentQuery"
+    },
+    "rtl": {
+      "allowanceSeconds": 360,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen"
+    },
+    "sharing-owner": {
+      "allowanceSeconds": 900,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeSharingInvitationConfirmationCancellationAndColdReopen"
+    },
+    "source-drag": {
+      "allowanceSeconds": 360,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens"
+    }
+  },
+  "schema": "pinkha-nativeui-shared-app-controller-preparation-v1",
+  "sharedProducerAdmitted": false,
+  "sourceInverseAndOwnedRegistryCommit": "1f8a19ab4ec87490d6a17ae8470224f39bc48596",
+  "sourcePinAuthority": "Exact reviewed shared controller APP16_SOURCE plus its immutable successful producer admission",
+  "status": "PREPARED_NATIVEUI_CONTROLLERS_NOT_APP_OR_UI_ACCEPTANCE",
+  "styledHelpers": {
+    "native_styled_observations.py": "71c376659d34b7065d152f22c41f2ded731d4527d0231375a3e688a31e7f4f02",
+    "native_styled_runtime.py": "c249ab9d04b4f8014475cf1eb8b81cf0371cab40a3f98a77b2938a2a0f2b6714"
+  },
+  "styledMethods": {
+    "styled-blocks": {
+      "allowanceSeconds": 1800,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testTypedBlockMenusPersistAllNineKindsAndColdReopen"
+    },
+    "styled-live-type": {
+      "allowanceSeconds": 900,
+      "selector": "PinkhaAnyNativeUITests/NativeLaunchTests/testNativeStyledTypographyRefreshesLiveAtAccessibilitySize"
+    }
+  },
+  "tests": 0
+}
