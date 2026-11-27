@@ -65,7 +65,7 @@ struct HanlinAssistantComponentTests {
         let current = try await host.catalog(for: host.identity.context)
         let tool = try #require(current.tools.first { $0.route.alias == alias })
         let bytes = Data(json.utf8)
-        let request = try HanlinToolInvocationRequest(id: .init(validating: UUID().uuidString),
+        let request = try HanlinToolInvocationRequest(id: .init(validating: UUID().uuidString.lowercased()),
             logicalToolID: tool.route.logicalToolID, aliasUsed: alias,
             descriptorRevision: tool.route.descriptorRevision, routingTableRevision: current.revision,
             arguments: portable ?? HanlinJSONValue.decodeCanonicalJSON(bytes), origin: .assistantModel,
