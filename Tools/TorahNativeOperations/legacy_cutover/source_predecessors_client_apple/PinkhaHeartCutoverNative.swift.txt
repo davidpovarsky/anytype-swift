@@ -1,0 +1,34 @@
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1 && PINKHA_NATIVE_TORAH_CUTOVER_V1
+import Foundation
+import Lib
+
+public extension PinkhaHeartCutoverClient {
+    /// Compiles only with the newly generated native exports. Wave3 binds the
+    /// exact coherent manifest/runtime in its integration product. There is no
+    /// dynamic symbol lookup, JSON fallback, or use of an earlier native method.
+    static func native(profile: PinkhaHeartCutoverProfile) -> PinkhaHeartCutoverClient {
+        .init(io: .init(
+            runtimeVersion: {
+                try await ClientCommands.appGetVersion(.init()).invoke(qos: .userInitiated).version
+            },
+            invoke: { method, request in
+                // Source/history bytes deliberately bypass Invocation's body
+                // logger, as the original authorized-read bridge already does.
+                await withCheckedContinuation { continuation in
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        let result: Data?
+                        switch method {
+                        case .sourceRead: result = Lib.ServicePinkhaTorahCutoverSourceRead(request)
+                        case .read: result = Lib.ServicePinkhaTorahCutoverRead(request)
+                        case .append: result = Lib.ServicePinkhaTorahCutoverAppend(request)
+                        case .importFact: result = Lib.ServicePinkhaTorahCutoverImport(request)
+                        case .associationAppend: result = Lib.ServicePinkhaTorahCutoverAssociationAppend(request)
+                        }
+                        continuation.resume(returning: result ?? Data())
+                    }
+                }
+            }
+        ), profile: profile)
+    }
+}
+#endif

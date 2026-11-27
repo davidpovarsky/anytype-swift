@@ -1,0 +1,413 @@
+{
+  "appleAcceptance": false,
+  "appleFactoryExcludedFromLinuxQualification": "Modules/ProtobufMessages/Sources/PinkhaHeartCutoverNative.swift",
+  "controllerSHA256": {
+    "cutover_retained_location.py": "8ee6831c07fe912cbd2d63541862a8ec20b42ca5dc1937ac1070e86509dc6059",
+    "generate_cutover_swift_relocated.py": "e12dc150343c13ef2bc5d087442ecd1cf83d2e5fc88d93c919472cb9fd07b4a8",
+    "owned_swift_commands.py": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56",
+    "qualify_cutover_swift_relocated.py": "80488d446e2c5e61f36411e79767520504f59d5de976fab5674bd6afa8915315",
+    "qualify_cutover_swift_relocated_alloc192.py": "c0c4c9a16f84bba0db3df5068a2670e9de49584d39843d19b98bc11bd0ce7939",
+    "qualify_cutover_swift_relocated_alloc320.py": "dbc986b06f29cc0c6a47918c18d103d32da15d5832e47b9ba07d2922fdb0b5b3",
+    "qualify_cutover_swift_reuse_physical.py": "6d23b1c2de1e3e425dfdecdf1cf646b1d283be4e6b6d0e852a9a29442199ac4b"
+  },
+  "copiedFiles": {
+    "Modules/ProtobufMessages/Sources/PinkhaHeartCutoverNative.swift": {
+      "bytes": 2059,
+      "sha256": "3d4beab93fa232a223985f22005adc28240995cf8a67ba360b06e5f7503e1057"
+    },
+    "Tools/TorahNativeOperations/legacy_cutover/source_predecessors_client_apple/PinkhaHeartCutoverNative.swift.txt": {
+      "bytes": 1750,
+      "sha256": "4e20eb640fa485296717795b9ac2479dbd2f53aabb71c0b33848765041fb2d56"
+    },
+    "Tools/TorahNativeOperations/legacy_cutover/source_predecessors_client_closure/qualify_cutover_swift_relocated.py.txt": {
+      "bytes": 17851,
+      "sha256": "b88576e9acc694135905aeeea8b1c0d2175cd3c3bf9a4f105ec13cae3a3581b1"
+    },
+    "Tools/TorahNativeOperations/legacy_cutover/source_predecessors_client_shadow/PinkhaHeartCutoverClient.swift.txt.gz": {
+      "bytes": 5381,
+      "encoding": "gzip",
+      "originalBytes": 25353,
+      "originalSHA256": "cad18c20151add006eb0997dfbb6d3ff04b1b1e5bbb88c22ff2f090cac72b6c8",
+      "sha256": "29e6fee98c682fcd4fa8c8f290f98d1c494ada8ef95aa78a5f186d1a138848ca"
+    },
+    "Tools/TorahNativeOperations/legacy_cutover/swift/source-review/client-allocation192.patch.gz": {
+      "bytes": 1422,
+      "sha256": "05a3c14f8b267afc1e1303ef76b56e984524294c51c660cf5fae9116ef7da44b"
+    },
+    "Tools/TorahNativeOperations/legacy_cutover/swift/source-review/client-allocation320.patch.gz": {
+      "bytes": 1661,
+      "sha256": "9acdcf5fb350ff11f24d969341b99e364deaf4fb1f94b59debe1a06dac73cdee"
+    },
+    "Tools/TorahNativeOperations/legacy_cutover/swift/source-review/client-closure-discovery.patch.gz": {
+      "bytes": 1414,
+      "sha256": "45133fa4f45fbbe6acc708ad2530ba4799b8ab3678b23e8752a920c113090610"
+    },
+    "Tools/TorahNativeOperations/legacy_cutover/swift/source-review/client-shadowed-native-error.patch.gz": {
+      "bytes": 528,
+      "sha256": "7e90e7cc2a024a3dd42f5a7b56ab4f423848d74480693366d7a306989f73cd8f"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/ProtobufMessages.Package.cutover.full-context.patch.gz": {
+      "bytes": 604,
+      "sha256": "e79e7bcd6ad9ba537958801e1c03060f2d45f759d1c1ade712006566b06364a9"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/ProtobufMessages.Package.cutover.patch": {
+      "bytes": 706,
+      "sha256": "9661528d4af9d6960219765598e3673804134022a00bc911c815994df734722b"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/README.md": {
+      "bytes": 8911,
+      "sha256": "6acaf70a738460daeefe1138713154f86a3045e4fa3dbbbb431b8c5786aea7ef"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/delivery-manifest.before-whitespace.json": {
+      "bytes": 20042,
+      "sha256": "f6eaa3ce91997a9031c706ae67f13be75bf0b35c4befc5a3cfdfd94b19a0d0e1"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/client-physical1-original.log.gz": {
+      "bytes": 3415,
+      "sha256": "bc1160fab57dabe62c7a75cdcf1f0e4e9c476e6b183ac117e0fad4ee0e6ea813"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/client-physical1-receipt.json": {
+      "bytes": 5598,
+      "sha256": "61752ab18445a625012edc63844b8e358b44f28f6ddf5c500934fba326765e8d"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/client-physical2-original.log.gz": {
+      "bytes": 2300,
+      "sha256": "4f04be9d7cfdba46cd503b0713c6f741e16afdae39dd88f90c3d4c1d9a83c7ee"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/client-physical2-receipt.json": {
+      "bytes": 6377,
+      "sha256": "7b3c8ddcff00ac071dc4b331d7e8ae6aefa5fc85f148734d2d0859786e04f203"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/client-physical3-final-inputs.json": {
+      "bytes": 1647,
+      "sha256": "793f3da4ec4bd9414f1c6996e093076d85ba7228cf6ef1f7256e9204cb3d8d58"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/client-physical3-original.log.gz": {
+      "bytes": 174,
+      "sha256": "9c327ae98333c4a36e8338e23021052f1be38b33a75f44a1fc7af15375b654b6"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/client-physical3-receipt.json": {
+      "bytes": 6513,
+      "sha256": "de50efc7cfb94ace6bc6b502fb1653ea1beeabc36043f5e7191e0c8a355a7047"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/client-physical4-final-inputs.json": {
+      "bytes": 1692,
+      "sha256": "9500e879c47ab3f64c0b9630576d9da6c896a8bcf77651cc91688836d3e30f7e"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/client-physical4-original.log.gz": {
+      "bytes": 211,
+      "sha256": "cb4bdff17733dd4171f669cd6b135bf5e7c4f015460302467b939c820f35504a"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/client-physical4-receipt.json": {
+      "bytes": 7412,
+      "sha256": "b460fadc9c970e6b846420561f384d7599a303bd79c7debc05e416c971cd3738"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/client-physical5-original.log.gz": {
+      "bytes": 1173,
+      "sha256": "7bb14801c1bf393fdeadd008022afa57df9151048e49ee5177bbd17d2ed96b46"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/client-physical5-receipt.json": {
+      "bytes": 62564,
+      "sha256": "caae8ef5c4056a0b3137b07f35093297414a450259f19dc44d1fab75b1554fe3"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/dependency-before.json": {
+      "bytes": 348196,
+      "sha256": "de8b4f95209e29366c7a59995d622f4c6f34288a575e4b4b13a48324890533b6"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/generation-receipt.json": {
+      "bytes": 150227,
+      "sha256": "2ff5021a3795448300a5062f474e3bdc40d8925382831fd4f3eef9548a2304a5"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/native-wire-manifest.json": {
+      "bytes": 1102,
+      "sha256": "47cf5589ece09ca34e6a11586f0e3e5a5918f43c8fcb300b1d5e3bbbb46e4024"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/package-before.json": {
+      "bytes": 45661,
+      "sha256": "90eb9c9813d62d3227d6ebc6cdf0ae64df883ca8630a5df694dcd9ec0f8edb71"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/retained-dependency-products.json": {
+      "bytes": 434243,
+      "sha256": "da72939a5b20da7b417f85d00a689c245f59516d3ae94ddaef31c2c7a50f65f0"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/source-inputs.json": {
+      "bytes": 49460,
+      "sha256": "ca7620b4b32357dce1e2ba8e13804e56c17ea179a41d263a42f348870ac8f5d8"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/evidence/tests-swift-testing.xml": {
+      "bytes": 180,
+      "sha256": "5837a8549976a621be9a367e861ae4a2aa837843b09f449893c7d2c97ad65ef4"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/product-identities-after-pass.json": {
+      "bytes": 998,
+      "sha256": "8ec38a7232ab301fa4665c346436c58b78b8a988877b609d2f0eb59afe8b07ec"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/publication-whitespace-gate-original.json": {
+      "bytes": 1362,
+      "sha256": "0d9a374175ade269b585307ab39380a3ea1471ac317096695f445a71cf045cb9"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/qualified-original-sources/Anytype_Rpc.Pinkha.TorahOperations.swift.gz": {
+      "bytes": 6361,
+      "sha256": "dd0ab2986cc400a629ee9b7197ba1e4f6d7e15999ae391e6952ba31030854d35"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/qualified-original-sources/Anytype_Rpc.Pinkha.swift.gz": {
+      "bytes": 960,
+      "sha256": "4c8a1e887c4b83b9b31e953469f2454277e9b82fb6930270dbae9afba969803e"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/qualified-original-sources/PinkhaHeartCutoverClient.swift.gz": {
+      "bytes": 5389,
+      "sha256": "5aae59ecfb3fd3f471b603a629faa82cd68ab3a28997cb8cecde97bef648ec89"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/qualified-original-sources/PinkhaHeartCutoverClientTests.swift.gz": {
+      "bytes": 5874,
+      "sha256": "19b7b5f43b26e2151f7fd38ce548b60858392dc27d1fd5756288b796eed3b607"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/qualified-original-sources/PinkhaHeartCutoverInteropTests.swift.gz": {
+      "bytes": 2530,
+      "sha256": "5de36526bce79f0d190e80265e6d82b3a62d3a8471ed61b1f00218f47313d2b8"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/receipt-locations.json": {
+      "bytes": 6880,
+      "sha256": "a41fbde6cbd1435bf2e7d92b2f73010736c8f9804560b5c3922128139f73f24f"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/whitespace-equivalence.json": {
+      "bytes": 4633,
+      "sha256": "db970e6ec021fc033568ab668a71059a35d1167ca38c866a6d50161737504d49"
+    }
+  },
+  "evidence": {
+    "client-physical1-original.log": {
+      "bytes": 57166,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical1/commands/exact-swift-client-tests/original.log",
+      "publishedBytes": 3415,
+      "publishedEncoding": "gzip",
+      "publishedPath": "evidence/client-physical1-original.log.gz",
+      "publishedSHA256": "bc1160fab57dabe62c7a75cdcf1f0e4e9c476e6b183ac117e0fad4ee0e6ea813",
+      "sha256": "ab13fd54cef95975e73af8f50f4db20666a08e73211efa3c6fb297ad59687602"
+    },
+    "client-physical1-receipt.json": {
+      "bytes": 5598,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical1/receipt.json",
+      "sha256": "61752ab18445a625012edc63844b8e358b44f28f6ddf5c500934fba326765e8d"
+    },
+    "client-physical2-original.log": {
+      "bytes": 23746,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical2/commands/exact-swift-client-tests/original.log",
+      "publishedBytes": 2300,
+      "publishedEncoding": "gzip",
+      "publishedPath": "evidence/client-physical2-original.log.gz",
+      "publishedSHA256": "4f04be9d7cfdba46cd503b0713c6f741e16afdae39dd88f90c3d4c1d9a83c7ee",
+      "sha256": "56d02e3c307ee41b287a60a094b4effd344b5b7a5ca2539fd4655a4b62713d35"
+    },
+    "client-physical2-receipt.json": {
+      "bytes": 6377,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical2/receipt.json",
+      "sha256": "7b3c8ddcff00ac071dc4b331d7e8ae6aefa5fc85f148734d2d0859786e04f203"
+    },
+    "client-physical3-final-inputs.json": {
+      "bytes": 1647,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/controls/client-physical3-final-inputs1/result.json",
+      "sha256": "793f3da4ec4bd9414f1c6996e093076d85ba7228cf6ef1f7256e9204cb3d8d58"
+    },
+    "client-physical3-original.log": {
+      "bytes": 418,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical3/commands/exact-swift-client-tests/original.log",
+      "publishedBytes": 174,
+      "publishedEncoding": "gzip",
+      "publishedPath": "evidence/client-physical3-original.log.gz",
+      "publishedSHA256": "9c327ae98333c4a36e8338e23021052f1be38b33a75f44a1fc7af15375b654b6",
+      "sha256": "74f8d9999062addc5a82b9b91ab4462435935b2cd1098809925555ed869fa058"
+    },
+    "client-physical3-receipt.json": {
+      "bytes": 6513,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical3/receipt.json",
+      "sha256": "de50efc7cfb94ace6bc6b502fb1653ea1beeabc36043f5e7191e0c8a355a7047"
+    },
+    "client-physical4-final-inputs.json": {
+      "bytes": 1692,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/controls/client-physical4-final-inputs1/result.json",
+      "sha256": "9500e879c47ab3f64c0b9630576d9da6c896a8bcf77651cc91688836d3e30f7e"
+    },
+    "client-physical4-original.log": {
+      "bytes": 737,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical4/commands/exact-swift-client-tests/original.log",
+      "publishedBytes": 211,
+      "publishedEncoding": "gzip",
+      "publishedPath": "evidence/client-physical4-original.log.gz",
+      "publishedSHA256": "cb4bdff17733dd4171f669cd6b135bf5e7c4f015460302467b939c820f35504a",
+      "sha256": "b5276d3a7001568d635cbaa2acb39cf8049d91c2d9dfbd6257a9c65c0865fde1"
+    },
+    "client-physical4-receipt.json": {
+      "bytes": 7412,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical4/receipt.json",
+      "sha256": "b460fadc9c970e6b846420561f384d7599a303bd79c7debc05e416c971cd3738"
+    },
+    "client-physical5-original.log": {
+      "bytes": 6021,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical5/commands/exact-swift-client-tests/original.log",
+      "publishedBytes": 1173,
+      "publishedEncoding": "gzip",
+      "publishedPath": "evidence/client-physical5-original.log.gz",
+      "publishedSHA256": "7bb14801c1bf393fdeadd008022afa57df9151048e49ee5177bbd17d2ed96b46",
+      "sha256": "62a9e4430e3f58c37c1ff8af426a3034257faadd54fb9abeb594fc62528cc0d5"
+    },
+    "client-physical5-receipt.json": {
+      "bytes": 62564,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical5/receipt.json",
+      "sha256": "caae8ef5c4056a0b3137b07f35093297414a450259f19dc44d1fab75b1554fe3"
+    },
+    "dependency-before.json": {
+      "bytes": 348196,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical5/dependency-before.json",
+      "sha256": "de8b4f95209e29366c7a59995d622f4c6f34288a575e4b4b13a48324890533b6"
+    },
+    "generation-receipt.json": {
+      "bytes": 150227,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-generation-physical1/receipt.json",
+      "sha256": "2ff5021a3795448300a5062f474e3bdc40d8925382831fd4f3eef9548a2304a5"
+    },
+    "native-wire-manifest.json": {
+      "bytes": 1102,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical5/native-wire-manifest.json",
+      "sha256": "47cf5589ece09ca34e6a11586f0e3e5a5918f43c8fcb300b1d5e3bbbb46e4024"
+    },
+    "package-before.json": {
+      "bytes": 45661,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical5/package-before.json",
+      "sha256": "90eb9c9813d62d3227d6ebc6cdf0ae64df883ca8630a5df694dcd9ec0f8edb71"
+    },
+    "retained-dependency-products.json": {
+      "bytes": 434243,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical5/retained-dependency-products.json",
+      "sha256": "da72939a5b20da7b417f85d00a689c245f59516d3ae94ddaef31c2c7a50f65f0"
+    },
+    "source-inputs.json": {
+      "bytes": 49460,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical5/source-inputs.json",
+      "sha256": "ca7620b4b32357dce1e2ba8e13804e56c17ea179a41d263a42f348870ac8f5d8"
+    },
+    "tests-swift-testing.xml": {
+      "bytes": 180,
+      "path": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/successor-runs/swift-client-physical5/tests-swift-testing.xml",
+      "sha256": "5837a8549976a621be9a367e861ae4a2aa837843b09f449893c7d2c97ad65ef4"
+    }
+  },
+  "fullSpaceAcceptance": false,
+  "methods": [
+    "PinkhaHeartCutoverClientTests.testAllFiveMethodsDispatchWithTheOwnedFrozenScope",
+    "PinkhaHeartCutoverClientTests.testBareAcknowledgementsBindFullFrozenAuthorAndPayloadDigest",
+    "PinkhaHeartCutoverClientTests.testBothReadsRefuseOwnerRetirementWithoutReleasingPrivateResponse",
+    "PinkhaHeartCutoverClientTests.testCancellationAfterDispatchRetainsEachNativeAcknowledgement",
+    "PinkhaHeartCutoverClientTests.testCancellationBeforeValidatedHandoffNeverDispatches",
+    "PinkhaHeartCutoverClientTests.testForeignOrMismatchedAcknowledgementsNeverBecomeDurableReceipts",
+    "PinkhaHeartCutoverClientTests.testForeignSpaceAndReplacementCannotReuseOldOwner",
+    "PinkhaHeartCutoverClientTests.testMalformedOversizedAndVersionlessRepliesNeverInventCommitReceipts",
+    "PinkhaHeartCutoverClientTests.testNativeChangeIDGrammarRefusesNoncanonicalRepresentations",
+    "PinkhaHeartCutoverClientTests.testOwnedTaskKeepsOriginalRequestBytesWhileCallerValueChanges",
+    "PinkhaHeartCutoverClientTests.testPrivateOrMalformedChangeIDsCannotCrossRetirementOrCancellation",
+    "PinkhaHeartCutoverClientTests.testRuntimeChangeAndRetiredLeaseRefuseBeforeNativeDispatch",
+    "PinkhaHeartCutoverClientTests.testThreeWritesPreserveNativeFailureReceiptsWithoutRetry",
+    "PinkhaHeartCutoverClientTests.testThreeWritesRetainCommitAndAllNativeIssuesAfterOwnerRetirement",
+    "PinkhaHeartCutoverClientTests.testTransportFailureIsUncertainAndNeverAutomaticallyRetried",
+    "PinkhaHeartCutoverInteropTests.testAllFiveSwiftMethodsDecodeExactCapturedNativeFrames",
+    "PinkhaHeartCutoverInteropTests.testCanonicalIdentityMatchesEveryCapturedSignedClaim"
+  ],
+  "nativeProofReusedFromCommit": "834a6bced7b922a18f291add1bcc6e82d5bba61f",
+  "newlyWrittenBytes": 1233574,
+  "noPrivateFramesCopied": true,
+  "publicationParent": "1aaff678cb75c86f356626817244c57529b36f4f",
+  "reviewedAssetIdentities": {
+    "Modules/ProtobufMessages/Sources/PinkhaHeartCutoverNative.swift": {
+      "bytes": 2059,
+      "expectedBefore": "4e20eb640fa485296717795b9ac2479dbd2f53aabb71c0b33848765041fb2d56",
+      "preserveBefore": "Tools/TorahNativeOperations/legacy_cutover/source_predecessors_client_apple/PinkhaHeartCutoverNative.swift.txt",
+      "sha256": "3d4beab93fa232a223985f22005adc28240995cf8a67ba360b06e5f7503e1057"
+    },
+    "Tools/TorahNativeOperations/legacy_cutover/swift/source-review/client-allocation192.patch.gz": {
+      "bytes": 1422,
+      "sha256": "05a3c14f8b267afc1e1303ef76b56e984524294c51c660cf5fae9116ef7da44b",
+      "uncompressedBytes": 3184,
+      "uncompressedSHA256": "370ccd0ff034289d094d4890932ed3706ef135bb8a4ba15a2a0a42252fe04461"
+    },
+    "Tools/TorahNativeOperations/legacy_cutover/swift/source-review/client-allocation320.patch.gz": {
+      "bytes": 1661,
+      "sha256": "9acdcf5fb350ff11f24d969341b99e364deaf4fb1f94b59debe1a06dac73cdee",
+      "uncompressedBytes": 3847,
+      "uncompressedSHA256": "cfd6c9851997221335970500ba94d723e0294459a560032bf89f0602c5834781"
+    },
+    "Tools/TorahNativeOperations/legacy_cutover/swift/source-review/client-closure-discovery.patch.gz": {
+      "bytes": 1414,
+      "sha256": "45133fa4f45fbbe6acc708ad2530ba4799b8ab3678b23e8752a920c113090610",
+      "uncompressedBytes": 2822,
+      "uncompressedSHA256": "5e5a6a43e9b1cd87a5ed701a436ab530ebd4ef1a921b310ee31b8e976f933245"
+    },
+    "Tools/TorahNativeOperations/legacy_cutover/swift/source-review/client-shadowed-native-error.patch.gz": {
+      "bytes": 528,
+      "sha256": "7e90e7cc2a024a3dd42f5a7b56ab4f423848d74480693366d7a306989f73cd8f",
+      "uncompressedBytes": 1538,
+      "uncompressedSHA256": "2b5754e2c7576426f059d79f7c6250d6acb43842be22aed6d5363bf2e8df4d1f"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/ProtobufMessages.Package.cutover.full-context.patch.gz": {
+      "bytes": 604,
+      "sha256": "e79e7bcd6ad9ba537958801e1c03060f2d45f759d1c1ade712006566b06364a9"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/ProtobufMessages.Package.cutover.patch": {
+      "bytes": 706,
+      "sha256": "9661528d4af9d6960219765598e3673804134022a00bc911c815994df734722b"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/README.md": {
+      "bytes": 7680,
+      "sha256": "02e4d3e60618b6751ae158dfd2da6968d98fb15f0e3b9be972140fb5d943f237"
+    },
+    "docs/validation/20261127-heart-cutover-swift-client/product-identities-after-pass.json": {
+      "bytes": 998,
+      "sha256": "8ec38a7232ab301fa4665c346436c58b78b8a988877b609d2f0eb59afe8b07ec"
+    }
+  },
+  "skips": 0,
+  "sourceBaseCommit": "4488a43443cbb09e25f02ae593d8cc8cb3d2b470",
+  "sourceFiles": {
+    "Modules/ProtobufMessages/Sources/PinkhaHeartCutoverClient.swift": {
+      "bytes": 25382,
+      "sha256": "8e1ada6f785e5a3286c46f2ab88329052c7354e6ba57483ed18f17c4f13739a8"
+    },
+    "Modules/ProtobufMessages/Sources/PinkhaHeartCutoverIdentity.swift": {
+      "bytes": 5395,
+      "sha256": "2ecdc2db2c9183f7fa66a93ea152a1aceb0f749763208b8aa9e6fac05fc8fe20"
+    },
+    "Modules/ProtobufMessages/Sources/PinkhaHeartCutoverNative.swift": {
+      "bytes": 2059,
+      "sha256": "3d4beab93fa232a223985f22005adc28240995cf8a67ba360b06e5f7503e1057"
+    },
+    "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Pinkha.TorahOperations.swift": {
+      "bytes": 65682,
+      "sha256": "b26778d47c508ff7d9c78212eb768f16439893c95c97d0331ad99092304f38f6"
+    },
+    "Modules/ProtobufMessages/Sources/Protocol/Commands/Anytype_Rpc.Pinkha.swift": {
+      "bytes": 2105,
+      "sha256": "1c6df346371e3fff968533e1ea00702e56147f1c8896d4058aa9c4fd3c812f5b"
+    },
+    "Modules/ProtobufMessages/Sources/Protocol/pinkha_torah_cutover.pb.swift": {
+      "bytes": 103467,
+      "sha256": "c24f3aa88fda64b04c9f041e9147a78b6845c2e56d5440dd77e2754ac811b2d8"
+    },
+    "Modules/ProtobufMessages/Tests/ProtobufMessagesTests/PinkhaHeartCutoverClientTests.swift": {
+      "bytes": 32951,
+      "sha256": "a1eb40355f7b0cc42db069660a6e95aca20c8cd66dffe7769d2c89cb7141c7d9"
+    },
+    "Tools/TorahNativeOperations/legacy_cutover/swift/Tests/PinkhaHeartCutoverInteropTests.swift": {
+      "bytes": 10278,
+      "sha256": "981d55372a074704d0a8828f123fec4af43d7bf3d8d47f721f8d3dc44103f9a4"
+    }
+  },
+  "sourceQualification": "Actual17 on exact retained original inputs; published copies differ only by the five proven reversible whitespace transformations.",
+  "status": "ACTUAL_17_LINUX_METHODS_PASS_APPLE_FACTORY_SOURCE_ONLY",
+  "whitespaceQualification": {
+    "actualTestsRepeated": false,
+    "beforeManifestSHA256": "f6eaa3ce91997a9031c706ae67f13be75bf0b35c4befc5a3cfdfd94b19a0d0e1",
+    "exactOriginalSourcesRetained": true,
+    "path": "docs/validation/20261127-heart-cutover-swift-client/whitespace-equivalence.json",
+    "removedBytes": 11,
+    "sha256": "db970e6ec021fc033568ab668a71059a35d1167ca38c866a6d50161737504d49"
+  }
+}
