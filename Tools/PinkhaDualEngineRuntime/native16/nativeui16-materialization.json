@@ -1,0 +1,96 @@
+{
+  "allowedExecutionStages": [
+    "sharing-owner",
+    "archive"
+  ],
+  "builds": 0,
+  "controllers": {
+    "build_prebuilt_native_ui16.py": {
+      "candidateSHA256": "3fa869dac9dead5e516fc4ca9c1a0fee065ee911a0870b4b5dcc9dc5a2ea3a08",
+      "changes": [
+        {
+          "new": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native16_profile.py\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() == \"b97e9fd3fff73b92326f88937f63360275463a9ef6bceb78bb0f9d70dfd65c5b\",\n            \"exact_reviewed_shared_app_NativeUI_profile_required\")\n    cached = getattr(native8ac_module, \"qualified\", None)\n    if cached is not None:\n        return cached\n    module = type(sys)(\"qualified_native16\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    native8ac_module.qualified = module\n    return module",
+          "old": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native8ac_profile.py\")\n    require(digest(path) == \"ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332\",\n            \"exact_App15_NativeUI_profile_required\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() ==\n            \"ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332\",\n            \"App15_profile_changed_during_admission\")\n    module = type(sys)(\"qualified_native8ac\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    return module",
+          "position": 967
+        },
+        {
+          "new": "    parser.add_argument(\"--shared-admission\", type=Path, required=True)\n    parser.add_argument(\"--shared-admission-sha256\", required=True)\n    parser.add_argument(\"--shared-controller-sha256\", required=True)\n    args = parser.parse_args()\n    native8ac_module().configure(args)",
+          "old": "    args = parser.parse_args()",
+          "position": 3756
+        },
+        {
+          "new": "    require(code == 0 and stopped is None, \"original_native_ui_runner_build_failed\")\n    current8ac.seal_ui_build(output, record, Path(__file__).resolve())",
+          "old": "    require(code == 0 and stopped is None, \"original_native_ui_runner_build_failed\")",
+          "position": 45526
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "originalSHA256": "e6c4c506cf893b2dc495fdc4b76c686f09a108c9980e05d19590d92acab804f9",
+      "unchangedDefinitions": [
+        "bin_confirmation_module",
+        "digest",
+        "native11619_module",
+        "require",
+        "write"
+      ]
+    },
+    "run_prebuilt_native_ui16.py": {
+      "candidateSHA256": "a9fb1c54195fcc3a8e6843d9a3f4b2d7b7a1918a8dd421f611fe87f6f37c4934",
+      "changes": [
+        {
+          "new": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native16_profile.py\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() == \"b97e9fd3fff73b92326f88937f63360275463a9ef6bceb78bb0f9d70dfd65c5b\",\n            \"exact_reviewed_shared_app_NativeUI_profile_required\")\n    cached = getattr(native8ac_module, \"qualified\", None)\n    if cached is not None:\n        return cached\n    module = type(sys)(\"qualified_native16\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    native8ac_module.qualified = module\n    return module",
+          "old": "def native8ac_module():\n    path = Path(__file__).resolve().with_name(\"native8ac_profile.py\")\n    require(digest(path) == \"ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332\",\n            \"exact_App15_NativeUI_profile_required\")\n    sys.dont_write_bytecode = True\n    original = path.read_bytes()\n    require(hashlib.sha256(original).hexdigest() ==\n            \"ebc1a0584195be30cab96c8185d13e1b791c4475bfca9d92aab6fe9c282cd332\",\n            \"App15_profile_changed_during_admission\")\n    module = type(sys)(\"qualified_native8ac\")\n    module.__file__ = str(path)\n    exec(compile(original, str(path), \"exec\"), module.__dict__)\n    return module",
+          "position": 21970
+        },
+        {
+          "new": "    parser.add_argument(\"--shared-admission\", type=Path, required=True)\n    parser.add_argument(\"--shared-admission-sha256\", required=True)\n    parser.add_argument(\"--shared-controller-sha256\", required=True)\n    parser.add_argument(\"--native-ui-proof-sha256\", required=True)\n    args = parser.parse_args()\n    native8ac_module().configure(args)",
+          "old": "    args = parser.parse_args()",
+          "position": 33212
+        }
+      ],
+      "inverseRestoresEveryOriginalByte": true,
+      "originalSHA256": "18c7cc5722a856782d454a11db11ea172c9d718cecd17cd6dc54ffcc2a256d2b",
+      "unchangedDefinitions": [
+        "admit_410b_runner",
+        "admit_current_menu_runner",
+        "admit_current_runner",
+        "admit_miniapps_runner",
+        "admit_real_companion",
+        "bin_confirmation_module",
+        "bind",
+        "companion86_module",
+        "digest",
+        "inventory",
+        "native11619_module",
+        "original_module",
+        "qualify_miniapps_report",
+        "require",
+        "run",
+        "write"
+      ]
+    }
+  },
+  "files": {
+    "build_prebuilt_native_ui16.py": {
+      "bytes": 45722,
+      "sha256": "3fa869dac9dead5e516fc4ca9c1a0fee065ee911a0870b4b5dcc9dc5a2ea3a08"
+    },
+    "native16_profile.py": {
+      "bytes": 22442,
+      "sha256": "b97e9fd3fff73b92326f88937f63360275463a9ef6bceb78bb0f9d70dfd65c5b"
+    },
+    "run_prebuilt_native_ui16.py": {
+      "bytes": 60880,
+      "sha256": "a9fb1c54195fcc3a8e6843d9a3f4b2d7b7a1918a8dd421f611fe87f6f37c4934"
+    }
+  },
+  "nativeCalls": 0,
+  "nativeUIProfileSHA256": "b97e9fd3fff73b92326f88937f63360275463a9ef6bceb78bb0f9d70dfd65c5b",
+  "nextIntegratedSource": "BLOCKED_UNTIL_SEPARATELY_REVIEWED_COMMON_QUALIFIER_AND_ACTUAL_BUILD_RECEIPT",
+  "originalProfilesModified": false,
+  "schema": "pinkha-nativeui-shared-app-controller-preparation-v1",
+  "sharedProducerAdmitted": false,
+  "sourcePinAuthority": "Exact reviewed shared controller APP16_SOURCE plus its immutable successful producer admission",
+  "status": "PREPARED_NATIVEUI_CONTROLLERS_NOT_APP_OR_UI_ACCEPTANCE",
+  "tests": 0
+}
