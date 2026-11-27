@@ -1,0 +1,50 @@
+{
+  "schema": "pinkha-hanlin-source-union-independent-execution-review-v1",
+  "status": "READY_ROOT_EXECUTION_AFTER_THREE_BOUNDED_CORRECTIONS",
+  "atUTC": "2026-11-27T05:58:56.146875+00:00",
+  "reviewer": "/root/miniapps_otzaria",
+  "controller": {
+    "path": "/workspace/scratch/ae335eba85e3/root-hanlin-original-sdk-union.py",
+    "snapshot": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/root-execution-preflight/controller-d43942a2db53c28893ebe419020fb7b7f11b8f13dcd8a3f985a226077dd7fd2f.py",
+    "bytes": 11423,
+    "sha256": "d43942a2db53c28893ebe419020fb7b7f11b8f13dcd8a3f985a226077dd7fd2f"
+  },
+  "executedByReviewer": false,
+  "remoteMutationsByReviewer": 0,
+  "remainingConcreteBlockers": [],
+  "sourceUnionReviewSHA256": "41bc26ccbea8ad4f6ac504cec19357cd9f8b5894f4bdb3c7921dcf30360d793d",
+  "expectedTree": "14e860ce3f7d2b8623085f16d99d34b8b347a48c",
+  "checked": [
+    "The new branch and worktree must be absent; both immutable parent IDs and merge-base are checked. No existing checkout or foreign branch is reset, cleaned or forced.",
+    "All 12 left and221 right changed paths are disjoint; all17827 union leaves and six exact package trees are checked before commit; commit parent order and final tree are checked again before publication.",
+    "Sparse paths cover only chosen original instructions and four SDK packages. Capacity is measured from actual Git object sizes rounded to4KiB plus64MiB metadata allowance and512MiB remaining floor; root filesystem has its own128MiB minimum. No build/cache/account cleanup is performed.",
+    "The new no-checkout worktree is configured sparse then explicitly initialized with read-tree -m -u LEFT; existing and foreign worktrees are not materialized or altered.",
+    "Receipt O_EXCL claim is protected by receipt_claimed; claim failure never rewrites an older receipt. Each update uses unique same-directory tempfile.mkstemp, which is0600, followed by fdopen/fsync and replace of only this claimed receipt.",
+    "Foreign HEAD/status observations use --no-optional-locks, avoiding Git status index-refresh writes. A foreign owner may independently change its files; the script records equality rather than rolling anything back.",
+    "Only ordinary explicitly scoped commit:refs/heads/branch push is issued, with remote.origin.mirror=false and no force. Exact remote readback is required; failures leave owned state for inspection.",
+    "All published statuses remain source-only and do not claim SDK/paired runtime/consumer/Apple acceptance."
+  ],
+  "correctedFindings": [
+    {
+      "id": "unborn-index",
+      "original": "worktree add --no-checkout followed only by sparse-checkout set may leave an unborn index and fail the clean-status check.",
+      "correction": "read-tree -m -u LEFT only inside the newly created ownedROOT, after sparse patterns and before HEAD/clean assertions.",
+      "basis": "git/git builtin/sparse-checkout.c v2.43.0 blob5c8ffb1f7598b056fadcdd8fb98182d34928e6f3 update_working_directory returns success without materialization for is_index_unborn; current2.56 retains that check."
+    },
+    {
+      "id": "fixed-temp-preservation",
+      "original": "persist opened a fixed temporary name with wb, risking truncation of a pre-existing temporary artifact and replacing0600 with default-umask mode.",
+      "correction": "Unique same-directory0600 mkstemp +fdopen/fsync+replace."
+    },
+    {
+      "id": "foreign-optional-index-write",
+      "original": "Ordinary foreign git status can refresh its index despite source-only intent.",
+      "correction": "status uses git --no-optional-locks."
+    }
+  ],
+  "earlierRootCorrectionObserved": "The initial509702 version also lacked guarded exception persistence after receipt claim failure; root had already added receipt_claimed in868811 before the full immutable review.",
+  "limits": [
+    "No live capacity, Git repository or remote branch was queried by this review. Execution-time preflight remains authoritative.",
+    "Reviewer ran no merge, checkout, compiler, test, build, native/account operation or controller."
+  ]
+}

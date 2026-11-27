@@ -1,0 +1,35 @@
+{
+  "schema": "pinkha-hanlin-source-union-independent-execution-review-v2",
+  "status": "SOURCE_SUCCESSOR_REVIEWED_PRIOR_ACCESS_FAILURE_PRESERVED",
+  "atUTC": "2026-11-27T06:00:40.420553+00:00",
+  "reviewer": "/root/miniapps_otzaria",
+  "controller": {
+    "path": "/workspace/scratch/ae335eba85e3/root-hanlin-original-sdk-union.py",
+    "snapshot": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/root-execution-preflight/controller-d0899ef779f55feec2d5d048bb15907eec65ccd381530e22cb72c196e71b79c3.py",
+    "bytes": 12048,
+    "sha256": "d0899ef779f55feec2d5d048bb15907eec65ccd381530e22cb72c196e71b79c3"
+  },
+  "executedByReviewer": false,
+  "remoteMutationsByReviewer": 0,
+  "priorReview": {
+    "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/root-execution-preflight/independent-review.json",
+    "sha256": "68b098ea52dfa55bd8bdd86d2ec8373dfb8d493dee3d5e02c75fc94dcc83f3b4"
+  },
+  "firstAttempt": {
+    "controllerSHA256": "d43942a2db53c28893ebe419020fb7b7f11b8f13dcd8a3f985a226077dd7fd2f",
+    "reportedBy": "/root",
+    "actualReportedFailure": "Bare mirror -C context under chatgpt-agent rejected as dubious ownership, exit128 after0.26s, before any source/ref/new-worktree mutation. Root independently observed new branch/worktree absent.",
+    "originalReceiptSHA256": "fd3ef56d9b6dd987ae12ffb4fb60a13f2dfc1e9b5fd2d19f727d662227e158b8",
+    "reviewerReran": false,
+    "reportedJobPrefix": "f0ac"
+  },
+  "successorCorrection": [
+    "Use already-authorized existing FOREIGN worktree context for object/ref/new-worktree Git operations, under its original chatgpt-agent owner.",
+    "Assert its resolved --git-common-dir is exactly the expected mirror before any source operation.",
+    "All Git invocations disable optional locks; required explicit new-branch/worktree/merge/commit/push operations remain unchanged.",
+    "A new exclusive attempt2 receipt binds the preserved first failure; no permission, group, ownership, credential or safe.directory change.",
+    "Exact source union/tree/six package gates, sparse capacity and read-tree initialization, unique0600 receipt temp and ordinary scoped non-force push/readback remain unchanged."
+  ],
+  "remainingConcreteSourceBlockers": [],
+  "limit": "Access and capacity remain execution-time predicates. This is source review of the successor; no success of its actual execution is inferred."
+}

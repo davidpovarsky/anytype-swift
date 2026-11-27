@@ -1,0 +1,20 @@
+--- pinkha-w1-canonical-definition-review/originals/failed-attempts/components-attempt2/controller.py
++++ pinkha-w1-canonical-definition-review/git/0925ff79df8f70be288f96ea117dbd7059e24219/Tools/AnyEngineValidation/native_canonical_definition/run_canonical_definition_components.py
+@@ -2,7 +2,7 @@
+ import hashlib,json,os,shutil,subprocess,time,signal
+ ROOT=Path("/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127")
+ CACHE=Path("/tmp/pinkha-w1-migration-swift-20261127")
+-OUT=Path("/var/lib/pinkha-w1-functional-migration-20261127/canonical-definition-components-attempt2")
++OUT=Path("/var/lib/pinkha-w1-functional-migration-20261127/canonical-definition-components-attempt3")
+ PRIOR=OUT.with_name("canonical-definition-components-attempt1")
+ PRIOR_SHA="77d727e8ce35c23f0a0ea82edb7e86c66aec977d32bb9b90cfcabe7a9916a37e"
+ PRIOR_LOG_SHA="9b4f04fec020fd89c7705dd0536f57a2730455202aa8128be8e5ccd5ee3a0886"
+@@ -100,6 +100,8 @@
+ child=None
+ before=None
+ controller_sha=sha(Path(__file__))
++(OUT/"controller.py").write_bytes(Path(__file__).read_bytes())
++(OUT/"NativeCanonicalDefinitionSupplementTests.swift").write_bytes((ROOT/FIXTURE).read_bytes())
+ def interrupted(*_):raise RuntimeError("owned definition directory build interrupted")
+ signal.signal(signal.SIGTERM,interrupted);signal.signal(signal.SIGINT,interrupted)
+ signal.pthread_sigmask(signal.SIG_UNBLOCK,{signal.SIGTERM,signal.SIGINT})

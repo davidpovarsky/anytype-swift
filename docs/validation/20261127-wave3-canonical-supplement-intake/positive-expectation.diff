@@ -1,0 +1,19 @@
+--- pinkha-w1-canonical-definition-review/git/0925ff79df8f70be288f96ea117dbd7059e24219/docs/validation/20261127-wave1-functional-migration/canonical-definition-supplement/failed-attempts/components-attempt1/NativeCanonicalDefinitionSupplementTests.swift
++++ pinkha-w1-canonical-definition-review/git/0925ff79df8f70be288f96ea117dbd7059e24219/Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCanonicalDefinitionSupplementTests.swift
+@@ -23,7 +23,15 @@
+             XCTAssertEqual(entry.sourceSnapshotSHA256, canonical.evidence.snapshotSHA256)
+             XCTAssertEqual(entry.sourceJSONViewSHA256, canonical.evidence.viewSHA256)
+             XCTAssertEqual(entry.sourceUniqueKey, "rel-" + canonical.sourceRelationKey)
+-            XCTAssertEqual(entry.originalDescriptor, try canonical.expectedNativeDescriptor)
++            // The directory keeps the established complete content projection;
++            // the native HTTP declaration omits empty optional fields. Compare
++            // every field after adding only those documented empty defaults.
++            var expected = try XCTUnwrap(canonical.expectedNativeDescriptor.object)
++            for (key, value) in ["xKey": AnyJSON.string(""), "meta": .object([:]),
++                                 "properties": .array([]), "required": .array([]), "xFormat": .object([:])] {
++                if expected[key] == nil { expected[key] = value }
++            }
++            XCTAssertEqual(entry.originalDescriptor, .object(expected))
+             XCTAssertEqual(entry.canonicalValueSemantics, NativeCanonicalSupplementFixture.meaning(canonical.propertyID))
+             XCTAssertNil(entry.intent)
+             XCTAssertNil(entry.mapping)

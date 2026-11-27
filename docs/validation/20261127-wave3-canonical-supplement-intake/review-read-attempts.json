@@ -1,0 +1,25 @@
+{
+  "notes": [
+    {
+      "attempt": "Local initial bulk materialization",
+      "correction": "Split exact saved source materialization into bounded independent batches",
+      "result": "OS_ARGUMENT_LIST_TOO_LONG_BEFORE_PROCESS_CREATION",
+      "sourceOrProductMutation": false
+    },
+    {
+      "attempt": "Recorded cache manifest shape read",
+      "correction": "Bounded read-only original manifest join returned only hashes, counts and actual differences; receipt retained-dependency-custody-join.json",
+      "providerTruncation": {
+        "continuation_available": false,
+        "delivered_bytes": 125469,
+        "execution_status": "completed",
+        "original_bytes": 2441629,
+        "response_truncated": true
+      },
+      "result": "RESPONSE_TRUNCATED_NOT_USED_FOR_JOIN",
+      "sourceOrProductMutation": false
+    }
+  ],
+  "productTestsExecuted": 0,
+  "protocol": "independent-review-read-attempt-notes-v1"
+}

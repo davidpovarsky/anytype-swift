@@ -1,0 +1,127 @@
+--- migration-relay/run_native_canonical_definition_linux-unexecuted-256m.py	2026-11-27 06:41:29.743541422 +0200
++++ migration-relay/run_native_canonical_definition_linux.py	2026-11-27 06:43:22.167164852 +0200
+@@ -6,6 +6,7 @@
+ read path performs no domain writes or historical-value restamping.
+ """
+ import argparse
++import hashlib
+ import importlib.util
+ import json
+ import os
+@@ -13,6 +14,7 @@
+ import shutil
+ import signal
+ import socket
++import stat
+ import subprocess
+ import sys
+ import time
+@@ -20,6 +22,8 @@
+ 
+ ROOT = Path("/mnt/development/projects/worktrees/anytype-w1-functional-migration-20261127")
+ COMMON = ROOT / "Tools/AnyEngineValidation/native_bookmark/run_native_bookmark_linux.py"
++COMMON_SHA = "a6bf0a82bd690d2e0edc3b1f2c3be812842b48c1d2e837ff556ee71b7a8b7941"
++assert hashlib.sha256(COMMON.read_bytes()).hexdigest() == COMMON_SHA
+ spec = importlib.util.spec_from_file_location("qualified_native_bookmark", COMMON)
+ assert spec is not None and spec.loader is not None
+ qualified = importlib.util.module_from_spec(spec)
+@@ -34,6 +38,9 @@
+ AUDIT_SHA = "68319ff3adca0da6191ce0a4df8ff9654bac6d5be745306922662da5d5454244"
+ SOURCE_KEYS = {"rel-" + key for key in ["name", "description", "id", "spaceId", "type", "creator", "createdDate", "lastModifiedDate", "lastModifiedBy"]} | {"ot-space", "ot-objectType", "ot-participant"}
+ SOURCE_MANIFEST_SHA = "cbfb3aa1fd89707138adeccbce7389c40dc0a993f2285f6e517120e4e4239ed4"
++ALLOCATION_RECEIPT = Path("/var/lib/pinkha-w1-functional-migration-20261127/canonical-native-allocation-measurement1/result.json")
++ALLOCATION_SHA = "023e19116534d131b38553c979920602eb179be1d7d57b57e5b5e576816bb261"
++MIB = 1024**2
+ 
+ 
+ def source_members():
+@@ -107,12 +114,41 @@
+         assert minimum_free > 2 * 1024**3, "runtime disk emergency"
+         assert time.monotonic() - started < 1100, "bounded component timeout"
+         assert not (args.output / "abort").exists(), "owned canonical definition controller abort"
++        usage = {"privateAccount": 0, "logs": 0, "otherOutput": 0, "wholeOutput": 0}
++        entries = 0
++        for base, folders, files in os.walk(args.output, followlinks=False):
++            for name in [None] + files:
++                path = Path(base) if name is None else Path(base) / name
++                try:
++                    info = path.lstat()
++                except FileNotFoundError:
++                    continue  # A native SQLite temporary file was retired.
++                assert stat.S_ISDIR(info.st_mode) or stat.S_ISREG(info.st_mode), "owned output contains a non-regular entry"
++                entries += 1
++                assert entries <= 512, "bounded owned output inventory"
++                allocated = info.st_blocks * 512
++                usage["wholeOutput"] += allocated
++                if path == private or private in path.parents:
++                    usage["privateAccount"] += allocated
++                if name is not None and path.suffix == ".log":
++                    usage["logs"] += allocated
++                elif path != private and private not in path.parents:
++                    usage["otherOutput"] += allocated
++            assert all(not (Path(base) / name).is_symlink() for name in folders)
++        peak = result.setdefault("maxObservedAllocationBytes", {key: 0 for key in usage})
++        for key, value in usage.items():
++            peak[key] = max(peak[key], value)
++        assert usage["privateAccount"] <= 73 * MIB, "copied native account/WAL allocation cap"
++        assert usage["logs"] <= 16 * MIB, "owned log allocation cap"
++        assert usage["otherOutput"] <= 4 * MIB, "owned receipt/manifest allocation cap"
++        assert usage["wholeOutput"] <= 96 * MIB, "owned total allocation cap"
+ 
+     def interrupted(*_):
+         raise RuntimeError("owned canonical definition controller interrupted")
+ 
+     signal.signal(signal.SIGTERM, interrupted)
+     signal.signal(signal.SIGINT, interrupted)
++    signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGTERM, signal.SIGINT})
+ 
+     def absent(pid):
+         if pid in known_absent:
+@@ -275,7 +311,20 @@
+ 
+     try:
+         guard()
+-        assert minimum_free > 2 * 1024**3 + 256 * 1024**2, "original native initialization reserve"
++        assert sha(ALLOCATION_RECEIPT) == ALLOCATION_SHA
++        allocation = json.loads(ALLOCATION_RECEIPT.read_text())
++        assert allocation["status"] == "MEASURED_ALLOCATION_BUDGET_ONLY_NOT_NATIVE_QUALIFICATION"
++        assert allocation["copyBlockRoundedUpperBoundBytes"] == 8_637_368
++        assert allocation["priorUnexecutedControllerSHA256"] == "994dc8a11c5e5d413e87d6a46fbb0af655da7920de9098e47eca2f91402d63a0"
++        assert sha(ALLOCATION_RECEIPT.with_name("previous-unexecuted-controller.py")) == allocation["priorUnexecutedControllerSHA256"]
++        assert allocation["resourcePolicy"]["initialReserveMiB"] == 128
++        assert allocation["resourcePolicy"]["liveRootEmergencyFloorMiB"] == 2048
++        result["measuredAllocationReceiptSHA256"] = ALLOCATION_SHA
++        result["allocationControllerDeltaSHA256"] = sha(ALLOCATION_RECEIPT.with_name("controller.diff"))
++        result["resourcePolicy"] = allocation["resourcePolicy"]
++        (args.output / "allocation-measurement.json").write_bytes(ALLOCATION_RECEIPT.read_bytes())
++        (args.output / "controller.py").write_bytes(Path(__file__).read_bytes())
++        assert minimum_free > 2 * 1024**3 + 128 * MIB, "measured native initialization reserve"
+         result["nativeBefore"] = qualify_native()
+         assert sha(RETAINED / "result.json") == PRESERVATION_SHA
+         previous = json.loads((RETAINED / "result.json").read_text())
+@@ -312,6 +361,16 @@
+                 pass
+         assert not active, "retained account has an active process"
+         before_account = inventory(original_account)
++        block_bytes = os.statvfs(args.output).f_frsize
++        copy_upper_bound = 0
++        for base, folders, files in os.walk(original_account, followlinks=False):
++            copy_upper_bound += block_bytes
++            for name in files:
++                info = (Path(base) / name).lstat()
++                assert stat.S_ISREG(info.st_mode)
++                copy_upper_bound += ((info.st_size + block_bytes - 1) // block_bytes) * block_bytes
++        assert copy_upper_bound <= 9 * MIB, "measured source-account copy bound changed"
++        result["sourceAccountCopyRoundedUpperBytes"] = copy_upper_bound
+         write(args.output / "retained-account-inventory.json", before_account[0])
+         shutil.copytree(original_account, private, copy_function=shutil.copy2)
+         assert inventory(private)[0] == before_account[0]
+@@ -439,6 +498,8 @@
+         try:
+             result["privateLogReceipts"] = [{"name": p.name, "bytes": p.stat().st_size, "sha256": sha(p)}
+                                             for p in sorted(logs.iterdir()) if p.is_file()]
++            if result["status"] == "PASS":
++                guard()
+         except Exception as error:
+             result["status"] = "FAIL"
+             result["errors"].append({"privateLogInventory": str(error)})

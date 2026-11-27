@@ -1,0 +1,45 @@
+{
+  "schema": "pinkha-original-hanlin-pure-union-v1",
+  "startedAt": 1795759108.7442088,
+  "sourceOnly": true,
+  "runtimeAcceptance": "NOT_RUN",
+  "worktree": "/mnt/development/projects/worktrees/hanlin-pinkha-original-sdk-union-20261127",
+  "branch": "codex/pinkha-original-sdk-union-20261127",
+  "base": "6a6638c314fe04c481eb0a2e29fbeaaafcbb0908",
+  "parents": [
+    "45d5d90512c304d3457774b185741b7ef7d801db",
+    "866d2d3c60525e32eae27564869e6dba024e625c"
+  ],
+  "expectedTree": "14e860ce3f7d2b8623085f16d99d34b8b347a48c",
+  "independentReviewSHA256": "41bc26ccbea8ad4f6ac504cec19357cd9f8b5894f4bdb3c7921dcf30360d793d",
+  "steps": [
+    {
+      "argv": [
+        "sudo",
+        "-n",
+        "-u",
+        "chatgpt-agent",
+        "git",
+        "-c",
+        "gc.auto=0",
+        "-c",
+        "user.name=ChatGPT",
+        "-c",
+        "user.email=chatgpt@openai.com",
+        "-C",
+        "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+        "show-ref",
+        "--verify",
+        "--quiet",
+        "refs/heads/codex/pinkha-original-sdk-union-20261127"
+      ],
+      "returncode": 128,
+      "elapsedSeconds": 0.016522,
+      "stdout": "",
+      "stderr": "fatal: detected dubious ownership in repository at '/mnt/development/projects/git-mirrors/hanlin-ai.git'\nTo add an exception for this directory, call:\n\n\tgit config --global --add safe.directory /mnt/development/projects/git-mirrors/hanlin-ai.git\n"
+    }
+  ],
+  "status": "FAILED_PRESERVED_FOR_INSPECTION",
+  "controllerSHA256": "d43942a2db53c28893ebe419020fb7b7f11b8f13dcd8a3f985a226077dd7fd2f",
+  "failure": "command exit 128: ['sudo', '-n', '-u', 'chatgpt-agent', 'git', '-c', 'gc.auto=0', '-c', 'user.name=ChatGPT', '-c', 'user.email=chatgpt@openai.com', '-C', '/mnt/development/projects/git-mirrors/hanlin-ai.git', 'show-ref', '--verify', '--quiet', 'refs/heads/codex/pinkha-original-sdk-union-20261127']"
+}

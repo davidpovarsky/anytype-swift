@@ -1,0 +1,2286 @@
+{
+  "schema": "pinkha-wave3-independent-hanlin-union-review-v1",
+  "reviewer": "/root/miniapps_otzaria",
+  "reviewedAtUTC": "2026-11-27T05:45:15.337904+00:00",
+  "status": "SOURCE_UNION_READY_NOT_A_QUALIFIED_CONSUMER_PIN",
+  "repository": "davidpovarsky/hanlin-ai",
+  "sourceScope": {
+    "canonical": "45d5d90512c304d3457774b185741b7ef7d801db",
+    "publishedCompanion": "866d2d3c60525e32eae27564869e6dba024e625c",
+    "mergeBase": "6a6638c314fe04c481eb0a2e29fbeaaafcbb0908",
+    "rightAhead": 47,
+    "rightBehind": 6,
+    "baseToCanonicalPaths": 12,
+    "baseToPublishedPaths": 221,
+    "overlappingPaths": [],
+    "independentSourceFilesAndDocumentsFetchedAndBlobVerified": 76,
+    "allTrackedTreesRead": [
+      17655,
+      17659,
+      17823,
+      17827
+    ],
+    "prospectiveUnion": {
+      "schema": "pure-readonly-git-tree-union-v1",
+      "base": "6a6638c314fe04c481eb0a2e29fbeaaafcbb0908",
+      "left": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "right": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "pathCounts": [
+        17655,
+        17659,
+        17823,
+        17827
+      ],
+      "conflicts": [],
+      "expectedUnionTree": "14e860ce3f7d2b8623085f16d99d34b8b347a48c",
+      "packages": {
+        "HanlinAgentSDK": {
+          "tree": "bbe6a0e4387f3f33d6592e24c1927182a1aceb22",
+          "leafEntries": 167
+        },
+        "HanlinPlatform": {
+          "tree": "db6e9533242f08bb1bb7accdf6970a436aa953d1",
+          "leafEntries": 371
+        },
+        "HanlinPresentationSDK": {
+          "tree": "3096459e793e32293ba145cb1f595181ad0d38a5",
+          "leafEntries": 454
+        },
+        "HanlinAppExtensionsSDK": {
+          "tree": "686aad16f099b5c75b6ef84073a0a10557281628",
+          "leafEntries": 20
+        },
+        "HanlinNativeScriptRuntime": {
+          "tree": "14373dc81171600079e458087872d4e8ea7bbc1c",
+          "leafEntries": 966
+        },
+        "HanlinMiniAppsBridge": {
+          "tree": "98ef5d2b47c03f4ea98319a851abae183f500a40",
+          "leafEntries": 16
+        }
+      },
+      "changedPackageLeaves": [
+        {
+          "path": "Packages/HanlinAgentSDK/Sources/HanlinAgentCore/HanlinAgentSession.swift",
+          "left": "27d430b8b3ad8c159c3874cd96cd29694321cf13",
+          "right": "09048fd681e386e0a8dfaed647c54ec83eaf3761",
+          "union": "27d430b8b3ad8c159c3874cd96cd29694321cf13"
+        },
+        {
+          "path": "Packages/HanlinAgentSDK/Sources/HanlinAgentCore/HanlinHostDispatcher.swift",
+          "left": "912fbb41d3053f85a01cf6d3556f534a13e83fa8",
+          "right": "889fd8071ee18fd3fe9ccb611094e6273d54c4b9",
+          "union": "912fbb41d3053f85a01cf6d3556f534a13e83fa8"
+        },
+        {
+          "path": "Packages/HanlinAgentSDK/Sources/HanlinHostContracts/HanlinHostIntegration.swift",
+          "left": "a43fab2862f70897a69372cd6a1eb103dd70723d",
+          "right": "99ac76dd17204176df3a9d56b5b1a235707db1e8",
+          "union": "a43fab2862f70897a69372cd6a1eb103dd70723d"
+        },
+        {
+          "path": "Packages/HanlinAgentSDK/Tests/HanlinAgentCoreTests/AgentSessionTests.swift",
+          "left": "2428a9af588a64b40f0016e84e5ee8f6b3b93fdf",
+          "right": "6a5d8c504aa417318ec7dcd46eae53c67ecdcb5e",
+          "union": "2428a9af588a64b40f0016e84e5ee8f6b3b93fdf"
+        },
+        {
+          "path": "Packages/HanlinAppExtensionsSDK/Sources/HanlinNotificationContentUI/HanlinNotificationContentViewController.swift",
+          "left": "c134c30d38f8a1722826852ab5033e39053b50d0",
+          "right": "83f31625a0215e848eba0dcf0597b37af31728ad",
+          "union": "83f31625a0215e848eba0dcf0597b37af31728ad"
+        },
+        {
+          "path": "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinAISDKAgentEngine.swift",
+          "left": "fe1c500c0ff6c20637f3d04dea38a876866c0a52",
+          "right": "e8dcad54894df7198b54039950a905a8f53d9e16",
+          "union": "fe1c500c0ff6c20637f3d04dea38a876866c0a52"
+        },
+        {
+          "path": "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinAISDKRunControl.swift",
+          "left": "5b6ccf8a27601905e24c442be73d47400133957c",
+          "right": null,
+          "union": "5b6ccf8a27601905e24c442be73d47400133957c"
+        },
+        {
+          "path": "Packages/HanlinPlatform/Sources/HanlinScriptExtensions/HanlinPreparedWidget.swift",
+          "left": "421b7628e7fc6569d80db9cde6d515316db289e6",
+          "right": "662a9dd7a4dcebd8a2cb9f8b010497aead35f834",
+          "union": "662a9dd7a4dcebd8a2cb9f8b010497aead35f834"
+        },
+        {
+          "path": "Packages/HanlinPlatform/Sources/HanlinScriptExtensions/HanlinScriptExtensionStore.swift",
+          "left": "c19d2df998f8b6fd367d2ae758855e786b858d0a",
+          "right": "476381c9157e83d704e9ec9410e3098542451905",
+          "union": "476381c9157e83d704e9ec9410e3098542451905"
+        },
+        {
+          "path": "Packages/HanlinPlatform/Sources/HanlinScriptUI/HanlinChatUIComponents.swift",
+          "left": "11ac73b335fa72e300baf0cda8d467df196972b1",
+          "right": "e3867a14f493cd7cadd43b20d5b6753c48e5331a",
+          "union": "11ac73b335fa72e300baf0cda8d467df196972b1"
+        },
+        {
+          "path": "Packages/HanlinPlatform/Tests/HanlinScriptExtensionsTests/HanlinDualWidgetEnginesTests.swift",
+          "left": "0221b922d19d734b66c71aa4342f35af13f0640d",
+          "right": "c108823a9409264882e7870cc822cccf569bac3c",
+          "union": "c108823a9409264882e7870cc822cccf569bac3c"
+        },
+        {
+          "path": "Packages/HanlinPlatform/Tests/HanlinScriptExtensionsTests/HanlinInvocationQueueTests.swift",
+          "left": "357df717b03320b2ebb47c642970fe2b14e9ef0e",
+          "right": "477b432835a9dba0c0b9aa4220604845d61efba2",
+          "union": "477b432835a9dba0c0b9aa4220604845d61efba2"
+        },
+        {
+          "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFenceDocument.swift",
+          "left": "3035f918160aaf205ade268f7984fc46f4967e94",
+          "right": "3c3a19c4c4c363bbef2eefea08fab87d32ad2433",
+          "union": "3035f918160aaf205ade268f7984fc46f4967e94"
+        },
+        {
+          "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFenceEngine.swift",
+          "left": "fb3d299c8ecd0b8ff09ec56edb36b46c773a2048",
+          "right": "b021a0ec556eaf71cb02d43c3978848723289ea9",
+          "union": "fb3d299c8ecd0b8ff09ec56edb36b46c773a2048"
+        },
+        {
+          "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFencePayloadRetention.swift",
+          "left": "9ca4020fb047fb09dd6cf8a6d3a527107dfc624d",
+          "right": null,
+          "union": "9ca4020fb047fb09dd6cf8a6d3a527107dfc624d"
+        },
+        {
+          "path": "Packages/HanlinPresentationSDK/Tests/HanlinChatUITests/ChatCodeFencePayloadRetentionTests.swift",
+          "left": "45baf575d666c580c8e7b79cfe6591adb82aac7e",
+          "right": null,
+          "union": "45baf575d666c580c8e7b79cfe6591adb82aac7e"
+        }
+      ],
+      "explicitHandler": {
+        "AI_HLYTests/NativeScriptRuntimeWireTests.swift": {
+          "6a6638c314fe04c481eb0a2e29fbeaaafcbb0908": "ab113355ec8b87b34bc07216806b08f005dc1c36",
+          "45d5d90512c304d3457774b185741b7ef7d801db": "ab113355ec8b87b34bc07216806b08f005dc1c36",
+          "866d2d3c60525e32eae27564869e6dba024e625c": "ab113355ec8b87b34bc07216806b08f005dc1c36"
+        },
+        "Packages/HanlinNativeScriptRuntime/Sources/HanlinNativeScriptCoreSupport/HanlinNativeServicesBridge.m": {
+          "6a6638c314fe04c481eb0a2e29fbeaaafcbb0908": "7bbc804da241fe31d6e860eaedd064a192b97e49",
+          "45d5d90512c304d3457774b185741b7ef7d801db": "7bbc804da241fe31d6e860eaedd064a192b97e49",
+          "866d2d3c60525e32eae27564869e6dba024e625c": "7bbc804da241fe31d6e860eaedd064a192b97e49"
+        }
+      },
+      "repositoryModified": false,
+      "objectWrites": 0
+    },
+    "note": "Computed exact candidate tree in memory from original Git modes/object IDs. Verified the same Merkle implementation reconstructs all three actual Git root trees. No merge, object write, ref update or foreign-source edit occurred."
+  },
+  "sourceMergeDecision": {
+    "concreteBlockers": [],
+    "recommendedAction": "Root-owned normal merge of the two exact heads in a new isolated Hanlin branch/worktree; retain all12 canonical paths and all221 published paths, including original evidence. Do not replace canonical45 with866.",
+    "requiredResultTree": "14e860ce3f7d2b8623085f16d99d34b8b347a48c",
+    "packageDecision": {
+      "HanlinAgentSDK": {
+        "tree": "bbe6a0e4387f3f33d6592e24c1927182a1aceb22",
+        "leafEntries": 167
+      },
+      "HanlinPlatform": {
+        "tree": "db6e9533242f08bb1bb7accdf6970a436aa953d1",
+        "leafEntries": 371
+      },
+      "HanlinPresentationSDK": {
+        "tree": "3096459e793e32293ba145cb1f595181ad0d38a5",
+        "leafEntries": 454
+      },
+      "HanlinAppExtensionsSDK": {
+        "tree": "686aad16f099b5c75b6ef84073a0a10557281628",
+        "leafEntries": 20
+      },
+      "HanlinNativeScriptRuntime": {
+        "tree": "14373dc81171600079e458087872d4e8ea7bbc1c",
+        "leafEntries": 966
+      },
+      "HanlinMiniAppsBridge": {
+        "tree": "98ef5d2b47c03f4ea98319a851abae183f500a40",
+        "leafEntries": 16
+      }
+    },
+    "preservedCanonicalFiles": [
+      "Packages/HanlinAgentSDK/Sources/HanlinAgentCore/HanlinAgentSession.swift",
+      "Packages/HanlinAgentSDK/Sources/HanlinAgentCore/HanlinHostDispatcher.swift",
+      "Packages/HanlinAgentSDK/Sources/HanlinHostContracts/HanlinHostIntegration.swift",
+      "Packages/HanlinAgentSDK/Tests/HanlinAgentCoreTests/AgentSessionTests.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinAISDKAgentEngine.swift",
+      "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinAISDKRunControl.swift",
+      "Packages/HanlinPlatform/Sources/HanlinScriptUI/HanlinChatUIComponents.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFenceDocument.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFenceEngine.swift",
+      "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFencePayloadRetention.swift",
+      "Packages/HanlinPresentationSDK/Tests/HanlinChatUITests/ChatCodeFencePayloadRetentionTests.swift",
+      "docs/validation/pinkha-code-fence-retention-20261127.md"
+    ],
+    "independentProductionReview": [
+      {
+        "area": "Original SDK cancellation and normal EOF",
+        "source": "45d5d90512c304d3457774b185741b7ef7d801db",
+        "finding": "Preserve AgentSession, HostDispatcher, HostIntegration, AISDKAgentEngine and AISDKRunControl exactly. Current run identity remains fenced until original engine, tool executions and host workers finish. Normal EOF uses drainOriginalWorkers without issuing cancellation; explicit Stop is run-scoped and joins one cancellation task, retains original metadata receipts and unresolved effects. A wholesale866 pin removes these public APIs/semantics."
+      },
+      {
+        "area": "Original Composer",
+        "source": "45d5d90512c304d3457774b185741b7ef7d801db",
+        "finding": "Preserve additive isStopping/onStop/labels and the native Stop control with accessibility ID hanlin-chat-stop. Defaults preserve the existing Send path; no alternative composer is introduced.866 lacks this canonical delta."
+      },
+      {
+        "area": "Original renderer quota",
+        "source": "45d5d90512c304d3457774b185741b7ef7d801db",
+        "finding": "Preserve Document/Engine plus newPayloadRetention and six authored tests. The immutable shared lease counts original engine-issued UTF8 html/css/displayHTML across cache/view/task copies,48MiB/64payloads, releases on last owner and retains original full-source fallback. It is not RSS/WebKit/transient-JS measurement. Apple compilation, six tests and visible/memory acceptance remain NOT_RUN."
+      },
+      {
+        "area": "Historical V1 shadow projection",
+        "source": "866d2d3c60525e32eae27564869e6dba024e625c",
+        "path": "Packages/HanlinPlatform/Sources/HanlinScriptExtensions/HanlinScriptExtensionStore.swift",
+        "finding": "New explicit snapshot/identity/record key sets exactly match frozen original37ba V1 Codable fields. Removes newer native presentation metadata only from the legacy shadow, retains current v2 snapshot, keeps nondefault variant omission and original digest integrity. Existing added regression checks old reader fields, full current roundtrip and tamper rejection; it is included in original16b79 invocation proof."
+      },
+      {
+        "area": "Qualified Expo fallback diagnostic",
+        "source": "866d2d3c60525e32eae27564869e6dba024e625c",
+        "path": "Packages/HanlinPlatform/Sources/HanlinScriptExtensions/HanlinPreparedWidget.swift",
+        "finding": "Only two imports, private logger/hash helper and post-qualification observation were added. Existing active identity/instance/engine/family/program/settings/verified-artifact checks and returned snapshot/node remain unchanged. No error/raw user text/settings/props are logged. Current variant/generation and native process evidence remain part of later OS recovery acceptance."
+      },
+      {
+        "area": "Notification conformance",
+        "source": "866d2d3c60525e32eae27564869e6dba024e625c",
+        "path": "Packages/HanlinAppExtensionsSDK/Sources/HanlinNotificationContentUI/HanlinNotificationContentViewController.swift",
+        "finding": "The existing MainActor class adds explicit MainActor conformance isolation only; bodies/imports/receipt path are unchanged. The original SDK diagnostic explicitly requested this. The source auditor updates the exact expected declaration and remains fail closed. Later full product compile/runtime remains separate from this source correction."
+      },
+      {
+        "area": "Spotlight conformance",
+        "source": "866d2d3c60525e32eae27564869e6dba024e625c",
+        "path": "AI_HLY/Downstream/ScriptingPlatform/HanlinInstalledMiniAppEntity.swift",
+        "finding": "Nonisolated protocol witnesses keep non-Sendable CSSearchableIndexDescription on caller side, then await the original private MainActor catalog/index reconciliation. They do not transfer that object across actors or weaken actor checking."
+      },
+      {
+        "area": "Studio error assignment",
+        "source": "866d2d3c60525e32eae27564869e6dba024e625c",
+        "path": "HanlinMiniAppsApp/MiniAppsDeveloperStudio.swift",
+        "finding": "The sole product-line correction uses self.error instead of assigning to catch error; original workspace read and displayed localizedDescription remain intact."
+      },
+      {
+        "area": "Companion iCloud Documents entitlement",
+        "source": "866d2d3c60525e32eae27564869e6dba024e625c",
+        "path": "HanlinMiniAppsApp/HanlinMiniApps.entitlements",
+        "finding": "Adds the same existing iCloud.com.itorah.chavrusachat to ubiquity container identifiers while retaining CloudKit+CloudDocuments. Original seven profile-module tests passed with injected Apple operations; retained selected companion profile read grants that identifier. This is not Pinkha final BundleID/entitlement approval or signed app execution."
+      }
+    ]
+  },
+  "hostSDKInputQualification": {
+    "originalHostSource": "2a0b19b79f3da0fef092ca8b0762b9b0e7001caa",
+    "nativeSeal": "4cb2211276b269fa43eff27e468b9a44fff57fc5",
+    "files": 392,
+    "originalDigest": "821d74235aac47e6be3d35c834a6eff85c63dd27e6a15994ac89601ae6046e5d",
+    "actualDifferences": {
+      "45d5d90512c304d3457774b185741b7ef7d801db": {
+        "changed": [
+          {
+            "path": "AI_HLY/Downstream/ScriptingPlatform/HanlinInstalledMiniAppEntity.swift",
+            "before": "114cdb71d067a0cf3139fe373af2b25617e275fa5aa040a0be71a0801e1283f8",
+            "after": "40ace8e3c451e344576f2187bb961bac73ced97e8a504a8e85d7395db28eaab7",
+            "blob": "736985e8a0d42509c2d189de7ecdd1f88dd2c2d2"
+          },
+          {
+            "path": "docs/miniapp-sdk/extension-reachability.json",
+            "before": "0eac8d75c906988fb121cb8849a08432ca43c04fdff03d4f0f959fe8891a8909",
+            "after": "e10d24062fd7e96e712224733122c555d2bf578468e954f5b53c6aba90e821f2",
+            "blob": "1166d1960fa8f7bfcc83f255e55e0b1382148762"
+          },
+          {
+            "path": "docs/miniapp-sdk/extension-reachability.md",
+            "before": "49ae9bbe4b46e879867754c8fc43c1bb676e33435bfb3eda8049fe9d44234816",
+            "after": "9eb6a4115d59ae72323aa7e76229bcf2008e5ee63da1e3646b6034c3164f5a1a",
+            "blob": "3372c045e4c07b7b212e543c8e0b6bb5c0daa214"
+          },
+          {
+            "path": "docs/miniapp-sdk/MANIFEST_REFERENCE.md",
+            "before": "c8311ef65300e6085ce91bcaf74143b470f1a083eae65dc5651f13370450687f",
+            "after": "a7c304738af363e9b786ddf8d90d4d7124089e22ce04a468814f7ce3cf4502c1",
+            "blob": "75976e8a379b34e0b5f001e0e2997f42d95d141d"
+          },
+          {
+            "path": "docs/miniapp-sdk/source-inventory.json",
+            "before": "de076aec3a55b3b4666ad1d53c7aa44a7a05ee1a98a6f02ba62404656fd6426b",
+            "after": "6eff7cc0c77a44660a839d226a165cb18fba9b12ecf31b20bbd79afce9c11a2a",
+            "blob": "08b91b010f29fd1724a7abddfbab315399915266"
+          },
+          {
+            "path": "Packages/HanlinAppExtensionsSDK/Sources/HanlinNotificationContentUI/HanlinNotificationContentViewController.swift",
+            "before": "51d2d6ebb03b74cbcc26ba1449a70c16ba778c102a814e1cf18683f7d04a4eef",
+            "after": "82c29170477e865e4ce610ecaa1381058e2e4f22bd4c8db2f501b238fd179a88",
+            "blob": "c134c30d38f8a1722826852ab5033e39053b50d0"
+          },
+          {
+            "path": "Packages/HanlinPlatform/Sources/HanlinScriptExtensions/HanlinScriptExtensionStore.swift",
+            "before": "0085600e6e48bb8e40565a85e081403854639279e82f2bc72664cf7f56e69248",
+            "after": "24edbaf3728be1b88d09f0734b9208a9e56641117c45949e4042b3418176f8b0",
+            "blob": "c19d2df998f8b6fd367d2ae758855e786b858d0a"
+          }
+        ],
+        "missing": []
+      },
+      "866d2d3c60525e32eae27564869e6dba024e625c": {
+        "changed": [
+          {
+            "path": "Packages/HanlinPlatform/Sources/HanlinScriptExtensions/HanlinPreparedWidget.swift",
+            "before": "2d6151c0b5fbda807db99b874c1d8601aa86d7fcc1df2a9bf24c0c403cb3404a",
+            "after": "c6de1ead190c0228ea9cb9a842ecbe4d840c53f7bffaa69bf1770fef71d14115",
+            "blob": "662a9dd7a4dcebd8a2cb9f8b010497aead35f834"
+          }
+        ],
+        "missing": []
+      }
+    },
+    "prospectiveUnionInputDifferenceSameAs866": true,
+    "cancellationAndQuotaAreOutsideThis392InputSet": true,
+    "qualification": "All392 actual file bytes were compared by Git show against both exact heads.866 differs in exactly HanlinPreparedWidget.swift; no files missing. This old Host/SDK392 fingerprint therefore cannot be assigned to866 or the prospective union. The AgentSDK cancellation/Presentation quota are not covered by the392-input gate at all. Preserve original Host188 as scoped historical evidence; any reuse must bind its complete unchanged host/test/runtime closure and original producer contract, separately from a new SDK export/source fingerprint."
+  },
+  "explicitHandler": {
+    "identities": {
+      "AI_HLYTests/NativeScriptRuntimeWireTests.swift": {
+        "6a6638c314fe04c481eb0a2e29fbeaaafcbb0908": "ab113355ec8b87b34bc07216806b08f005dc1c36",
+        "45d5d90512c304d3457774b185741b7ef7d801db": "ab113355ec8b87b34bc07216806b08f005dc1c36",
+        "866d2d3c60525e32eae27564869e6dba024e625c": "ab113355ec8b87b34bc07216806b08f005dc1c36"
+      },
+      "Packages/HanlinNativeScriptRuntime/Sources/HanlinNativeScriptCoreSupport/HanlinNativeServicesBridge.m": {
+        "6a6638c314fe04c481eb0a2e29fbeaaafcbb0908": "7bbc804da241fe31d6e860eaedd064a192b97e49",
+        "45d5d90512c304d3457774b185741b7ef7d801db": "7bbc804da241fe31d6e860eaedd064a192b97e49",
+        "866d2d3c60525e32eae27564869e6dba024e625c": "7bbc804da241fe31d6e860eaedd064a192b97e49"
+      }
+    },
+    "nativeScriptTree": {
+      "tree": "14373dc81171600079e458087872d4e8ea7bbc1c",
+      "leafEntries": 966
+    },
+    "bridgeSemantics": "registerAction declares through the provider and never installs a synthetic response or replaces the package registeredRequestHandler. Native test invokes the real session JavaScript closure twice and requires counters41/42, exact source/caller/request/name, no manufactured status; declared action with no handler must be absent and throw routeNotFound.",
+    "test": "AI_HLYTests/NativeScriptRuntimeWireTests/nativeScriptActionDeclarationsPreserveRegisteredJavaScriptState()",
+    "sourceVersions": {
+      "NativeScriptRuntime": "9.1.1",
+      "NativeScriptCore": "9.1.4",
+      "NativeScriptSwiftUI": "4.0.2"
+    },
+    "artifactsNotStoredInTrackedRuntimeTree": [
+      "Artifacts/TNSWidgets.xcframework",
+      "Artifacts/NSCWinterTC.xcframework"
+    ],
+    "artifactBoundary": "Exact NativeScriptRuntime and MiniAppsBridge source trees, handler and handler test are identical in base6a,45 and866. They retain the full common source graph. That proves source preservation, not a newly built/installed companion or current handler test. Generated framework/metadata/Host products require original producer manifests and actual artifact digests.",
+    "retainedOlderConsumerFromSibling": {
+      "scope": "Previously retained context only; not independently re-read on Mac in this review",
+      "path": "/Users/m1/builds/hanlin-miniapps-native-recovery-86a6-20261125/build/native-final-evidence/attempt-86a6dde3-build04/consumer-build/producer-manifest.json",
+      "sha256": "a46fa7e5196e2a66ad7c0126302b390d400cbc6dca84e96d697fa9bf3cb10b25",
+      "notASuccessorFor866": true
+    }
+  },
+  "originalEvidence": {
+    "archiveVerification": {
+      "totalOriginalPayloads": 154,
+      "nativePackage": {
+        "archiveSHA256": "6414b9d7552b4c0b0fc7ee4d7c6ee6ed0d852d41e415a176e43b5789240cfe7b",
+        "allFilesVerified": [
+          {
+            "member": "stage/build-platform-native-16b4af44-r1.py",
+            "bytes": 11737,
+            "sha256": "334ce3216ca7ebe0e3180dd1e46c970dfd7c2ff136718974734692b0758593c4"
+          },
+          {
+            "member": "stage/build-platform-native-16b4af44-r2.py",
+            "bytes": 11665,
+            "sha256": "a11d31bfc44bf109a1a09ea0367e61457bfea4418a9eebbeaccbcdce76d3c5d6"
+          },
+          {
+            "member": "stage/owned-simulator-idle-shutdown-2138.json",
+            "bytes": 729,
+            "sha256": "5bb25d8f4d9821742820b3fdfe45047979016c9caeda6eaff4c12d052e36c2fd"
+          },
+          {
+            "member": "stage/platform-cache-presence-16b4af44-readback.json",
+            "bytes": 2094,
+            "sha256": "8416c178ae02d7048f06ef4edbd6913758a9ffbd790bd37a976de701e5591df7"
+          },
+          {
+            "member": "stage/platform-independent-compatibility-review-16b4af44.json",
+            "bytes": 15335,
+            "sha256": "6474b813c1a524d1261219c8f3a0ff8b5e1883ad65ba9c66637f739b30fd05fb"
+          },
+          {
+            "member": "stage/platform-native-build-16b4af44-r1.json",
+            "bytes": 1289,
+            "sha256": "19abb9ea1f343d690b39eb79a3c8bf31eb33f9b3156df5d2451512a8fb089f54"
+          },
+          {
+            "member": "stage/platform-native-build-16b4af44-r2.json",
+            "bytes": 33062,
+            "sha256": "5cf867d6e92fb889e954f830adbd32b00dc746efa546ff0af7f23cc8b91edfab"
+          },
+          {
+            "member": "stage/platform-native-preparation-16b4af44-fresh.json",
+            "bytes": 4352,
+            "sha256": "6ed30ad6eae5bec037c1a7e7eb2d6a3ab23d31cd56ab006f9703e860528f1120"
+          },
+          {
+            "member": "stage/platform-native-test-16b4af44-r1.json",
+            "bytes": 68343,
+            "sha256": "7aaf7d5464d3f317f623672bf6eda2e2ed2964234f1e4bdbd9acf9aae7a3eee8"
+          },
+          {
+            "member": "stage/platform-test-inventory-16b4af44-provisional.json",
+            "bytes": 38243,
+            "sha256": "26a62f67d1c80018f3b0a53351fca6ed79067b2ce3c8548f5ccbc702e2a4d9e1"
+          },
+          {
+            "member": "stage/prepare-platform-native-16b4af44-fresh.py",
+            "bytes": 4203,
+            "sha256": "3bca2d65a1e278a88e176792a9e4b1527cc1905b30915249e342152762aa31a3"
+          },
+          {
+            "member": "stage/reconcile-platform-native-16b4af44-r1.py",
+            "bytes": 7045,
+            "sha256": "157eed397a0289975c8d4444d236eb3e12af220573c230a5ac9fdd1386e7ea85"
+          },
+          {
+            "member": "stage/run-platform-native-16b4af44-test-r1.py",
+            "bytes": 14712,
+            "sha256": "6e4f128954254805369af24887804a5257e313a2bab21f66fe7ba696338f1f10"
+          },
+          {
+            "member": "stage/source-update-16b4af44-package-proof/checkout-reviewed-candidate.log",
+            "bytes": 188,
+            "sha256": "ac498a35254b30ad9fcddb4fb9c1ee7331fc4549454b2b2d2442fef9eba649ab"
+          },
+          {
+            "member": "stage/source-update-16b4af44-package-proof/fetch-reviewed-candidate.log",
+            "bytes": 166,
+            "sha256": "3d3324249775ae66b14f1747ca48129f2cfe6de8db58fe6dd4e3bfe9892cccb9"
+          },
+          {
+            "member": "stage/source-update-16b4af44-package.json",
+            "bytes": 8478,
+            "sha256": "6deb8e4f221d6bc6c55a20e33148abd0598d5a13889bc702f8f7057edb221ebb"
+          },
+          {
+            "member": "stage/stage-reviewed-package-16b4af44.py",
+            "bytes": 10637,
+            "sha256": "166e42f5fe53c97adab577ff1a7f69f031feea3ddae5f4e574df0909923f4994"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/build-r2/original-package-build-for-testing.log",
+            "bytes": 3223687,
+            "sha256": "cbc945cae49178a7eb7ce594647864c8e3d9ca0ec93001803e4edd326cbbd43c"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/build-r2/original-package-build-for-testing.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/build-r2/original-package-scheme-discovery.log",
+            "bytes": 540,
+            "sha256": "2db829f1cb61eaf750ba73f8369586e87e86f37f18a52d6192752ccec77f44ff"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/build-r2/original-package-scheme-discovery.stderr.log",
+            "bytes": 146,
+            "sha256": "8a71838e0b3ddb7f2bbe41d95fc7b7aef54496c5fb1a059980d9e40a39a9daf1"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/build-r2/owned-device-inventory.log",
+            "bytes": 23957,
+            "sha256": "9884145c20d5c5517fd79f8984a9f16ecfd94ab39e956cf463af3e5ba8958ce4"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/build-r2/owned-device-inventory.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/build-r2/sdk.log",
+            "bytes": 5,
+            "sha256": "7b01c549928398a045692f24bcac7803b348524cdd76f21265b02984b2ba556a"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/build-r2/sdk.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/build-r2/toolchain.log",
+            "bytes": 33,
+            "sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/build-r2/toolchain.stderr.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/test-r1/native-result-summary.log",
+            "bytes": 1346,
+            "sha256": "3072083b1a9ecbc9801a7154ef02ae5d336cbaf995f55d24c67b459867c57bf9"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/test-r1/native-result-tests.log",
+            "bytes": 56370,
+            "sha256": "cbcd5ef19aaab42cf8157305c97913ceab04ca0f1698f531e781946309f60b42"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/test-r1/original-native-test-without-building.log",
+            "bytes": 32640,
+            "sha256": "49e260b13373b5b8ad76ab0dd76069a9d4b39fb64943870692cc85628c642ace"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/test-r1/owned-device-readback.log",
+            "bytes": 23957,
+            "sha256": "8f6aabe47356c06c20db5b5b89f26d9010517bb9aff18065db5771aceccead19"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/test-r1/owned-simulator-boot.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/test-r1/owned-simulator-ready.log",
+            "bytes": 702,
+            "sha256": "8031797797eb1e3d7ab1eecb8cbae651a7646fe6d908da5db23ef7715a5eea8d"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/test-r1/raster-evidence/image-center-rotation-0.png",
+            "bytes": 1181,
+            "sha256": "6a8b0d42dbbe3a765994e2c41ebdd73a2ae4e96fbdda53c6e23c495cd5941a6d"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/test-r1/raster-evidence/image-center-rotation-180.png",
+            "bytes": 1225,
+            "sha256": "3b49f9b460a69018261d7fba64a3d1a77b93534a8ecbdaf2c521203948a956af"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/test-r1/raster-evidence/image-center-rotation-45.png",
+            "bytes": 1758,
+            "sha256": "f6e2d26e82415d4282259e4df9a73cdbffac1683bf611f608b9674db175da72b"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/test-r1/raster-evidence/image-center-rotation-90.png",
+            "bytes": 1286,
+            "sha256": "893bd5fc0ea027a7781e5f9222b95ddb2e2fe62346c78de3abd8b19396a79069"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/test-r1/raster-evidence/visual-reuse-qualification.json",
+            "bytes": 2585,
+            "sha256": "3bbbbce7936adeeeb6540c573b871814ad8a36529b202226e000ad4145c91d9d"
+          },
+          {
+            "member": "stage/validation/platform-16b4af44/test-r1/required-scope-reconciliation.json",
+            "bytes": 41427,
+            "sha256": "7ad10028a450e27cc112b9bac8c90c115a7e2c15932a896ca296ee669fbe7f35"
+          }
+        ],
+        "extraManifestIdentical": true
+      },
+      "hostAndPair": {
+        "schema": "original-git-archive-read-v1",
+        "identity": {
+          "uid": 1002,
+          "gid": 1002
+        },
+        "repository": "/mnt/development/projects/worktrees/hanlin-miniapps-widget-recovery-os-20261127",
+        "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+        "archives": [
+          {
+            "name": "host-2a0b19b7-pass-and-native-seal",
+            "archiveBytes": 4478618,
+            "archiveSHA256": "935b1117d5afd61e9836cbcb2f6bed7a88128b184178becf0e24fae9b2aef2be",
+            "archiveGitBlob": "b136688552b35f731c3854085295025813a98b3a",
+            "manifestSHA256": "4de2cfd0a522d2432dc7fce754809b65fe0c25b3b4e3717f2b3131f52ce268a4",
+            "verifiedFiles": [
+              {
+                "path": "stage/host-preparation-2a0b19b7-original-phases-r1.json",
+                "bytes": 17773,
+                "sha256": "4879d45ed351f9b1d9b76f7e13fe734552b53bd1e505c6212596426d62025362"
+              },
+              {
+                "path": "stage/source-stage-2a0b19b7.json",
+                "bytes": 6103,
+                "sha256": "e7a02de7cfe187c420daaf5ac398247854a794b36e6df792bf9b748ffcba47b3"
+              },
+              {
+                "path": "stage/source-seal-4cb22112.json",
+                "bytes": 2420,
+                "sha256": "3aa549457bd15e6cecd00934977fe3ad7d51a1b85b1f845d7851742b235d35db"
+              },
+              {
+                "path": "stage/mac-native-sealed-4cb22112.bundle",
+                "bytes": 1015,
+                "sha256": "f810bb01e4299d1e99ce442c51efdf0fb7634890fb3cc5419788b7d88d07497f"
+              },
+              {
+                "path": "stage/root-spotlight-2a0b19b7-receipt.json",
+                "bytes": 815,
+                "sha256": "4dd8007ea0435a2ca89fc63a084de994e57c3efea69a6971150eb27fb1ddbf28"
+              },
+              {
+                "path": "stage/host-2a0b19b7-detached-dispatch-r1.json",
+                "bytes": 1817,
+                "sha256": "3adb654f17d7c83fa1d0ee973c9d56d15f144c7ecf58ed1cd5f1c0dc5a050ab0"
+              },
+              {
+                "path": "stage/prepare-host-integrated-20261127.py",
+                "bytes": 16074,
+                "sha256": "1dc574ca6da582ec6fe09f3349b684acb577d70e26a87f8686a5c8c47d272170"
+              },
+              {
+                "path": "stage/run-native-paired-integrated-20261127.py",
+                "bytes": 9087,
+                "sha256": "984b0d277d616d9ff155fbcf52142b106aadfa163cf6029222a38ddc46b19c19"
+              },
+              {
+                "path": "stage/paired-4cb22112-detached-dispatch-r1.json",
+                "bytes": 2037,
+                "sha256": "75ff6f34113d74e0ec62e0cd54dce41aecb90f29ac5f7380d66cb130da5f2ae8"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/complete-original-test-set.log",
+                "bytes": 18953,
+                "sha256": "42a5323342adbb9855a6f6b7495fc08490da2db58ad2690436ba2787b68dfdcd"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/current-reachability-audit.log",
+                "bytes": 73,
+                "sha256": "231e3ea5da8cd01dfdc112d6cb7466ce2b2e6f38070dd193d6bbea0e17f7f39b"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/current-sdk-audit.log",
+                "bytes": 77,
+                "sha256": "6d938ed7d69471fb67d14ac1b2beae53a4383c809514a5f10888d2b14cfb1b06"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/current-sdk-fingerprint.log",
+                "bytes": 66409,
+                "sha256": "5e6da01bbc27f82aa8015d3e4da321fd12e17c73bc96c4d465caf64a2bdcec36"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/grammar-closure-before.json",
+                "bytes": 6378,
+                "sha256": "71c4a92b5ec0d156b2b01959f3657eb932db24103d8892384d4ec72c9cffa9bc"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/host-input-fingerprint-after.log",
+                "bytes": 65,
+                "sha256": "6e66e30f48e0138ab7e1984533692406adecde9e5836b3c120bc010426fdf58a"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/host-input-fingerprint-before.log",
+                "bytes": 65,
+                "sha256": "6e66e30f48e0138ab7e1984533692406adecde9e5836b3c120bc010426fdf58a"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/node-fingerprint.log",
+                "bytes": 518,
+                "sha256": "5d9368cd4b939d652aab8afbd31375396f6312d3f7b6b30c4843c40aab2f32fe"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/node-version.log",
+                "bytes": 8,
+                "sha256": "2f30156cd7f9137514ea68d53554f583cf6541fd107dbc8ae8a19253379a735a"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/original-archive-reuse-validation.log",
+                "bytes": 0,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/original-packed-validation-jitless-and-seal.log",
+                "bytes": 387,
+                "sha256": "927eb0d8bf62c41607e1ee8f1c5aa41d0b26c9801b1224fe88c78c3761b5ac41"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/original-packed-verification-and-seal.sh",
+                "bytes": 1410,
+                "sha256": "8e4bc5c4a631ea51588ecd0686a468f41d61898647de1f60f9429ca737b696a5"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/original-post-test-packing.log",
+                "bytes": 0,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/original-post-test-packing.sh",
+                "bytes": 130,
+                "sha256": "911a4622f94eef57be7952c184f623cebaa1bad9c8a47ad3bddeb4016b7d91c3"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/original-pretest-phases.log",
+                "bytes": 1759,
+                "sha256": "b39d6f631cd1cfdc521af6c0e78c7f9c45babef18dd02a45b52622670df4b600"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/original-pretest-phases.sh",
+                "bytes": 3565,
+                "sha256": "9dc21bb949e54e7830c5dc06e1556e63ade9fc6a1f1ce8c27d95dc4da520f059"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/original-test-source-manifest.json",
+                "bytes": 19301,
+                "sha256": "9028657cebf5404853474d2e3a8900e48aefdc7cb109496bae43417409598711"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/staged-complete-closure-after.json",
+                "bytes": 6673646,
+                "sha256": "46be5666b3eaecbcff30b4638428504eeec6deeab81308a798f15357dc890f2a"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/staged-complete-closure-before.json",
+                "bytes": 6673646,
+                "sha256": "46be5666b3eaecbcff30b4638428504eeec6deeab81308a798f15357dc890f2a"
+              },
+              {
+                "path": "source-stage-2a0b19b7-proof/bundle-admission.json",
+                "bytes": 2757,
+                "sha256": "62a5378b2bb4130aad7ba7a6afc8c9e66a3808b0f0225ba0602a8949af5d1b58"
+              },
+              {
+                "path": "source-stage-2a0b19b7-proof/checkout-reviewed-integrated-source.log",
+                "bytes": 84,
+                "sha256": "ff9aec947608165ea9909f0607783cf1327d5d59703c3c8ac4f9ce7ad127baaf"
+              },
+              {
+                "path": "source-stage-2a0b19b7-proof/fetch-reviewed-integrated-source.log",
+                "bytes": 161,
+                "sha256": "b3ae68391e88d7c25e42aecce77a168bae41f25d51f1e588fa9849f4bf8293e1"
+              },
+              {
+                "path": "source-stage-2a0b19b7-proof/verify-bundle.log",
+                "bytes": 322,
+                "sha256": "22498605bdf3fc811fb9c46dedf87d9ab62ff5867ba285a3d311aed4d8b0c292"
+              },
+              {
+                "path": "source-seal-2a0b19b7-proof/bundle-verify.log",
+                "bytes": 279,
+                "sha256": "936bf7986e74eb2e32ed0b34086a135dbe94eb23bd921621586dd1f8a2ea00a8"
+              },
+              {
+                "path": "source-seal-2a0b19b7-proof/generated-documents-commit.log",
+                "bytes": 167,
+                "sha256": "777410cace49d3956b1611ef1242c5789aaed861f12ba26954485439462f9ed9"
+              },
+              {
+                "path": "source-seal-2a0b19b7-proof/local-author-default-recovery.json",
+                "bytes": 499,
+                "sha256": "3d9651f9c9d54684073d38ce106fb294c3e12f3ac48abf68a7f8e4e4e7972b76"
+              },
+              {
+                "path": "source-seal-2a0b19b7-proof/original-generated-documents.diff",
+                "bytes": 19271,
+                "sha256": "aac4bfb3c143e72dc2d03de70ca24a8b6fbdf2859ba191ed02ed121c0476b6c5"
+              },
+              {
+                "path": "source-seal-2a0b19b7-proof/sdk-input-refresh-delta.json",
+                "bytes": 2893,
+                "sha256": "9bb6c23ba73322b426f533db57d3dcc316cc657c8645c584e0598cc4aaa30215"
+              },
+              {
+                "path": "source-seal-2a0b19b7-proof/sdk-inputs-after-original-inventory-refresh.json",
+                "bytes": 76669,
+                "sha256": "de4f43819aafc39ddfd9cbc24793a8929ed80151ca6f00916fd0bd458e823e9c"
+              },
+              {
+                "path": "source-seal-2a0b19b7-proof/sdk-inputs-before-original-inventory-refresh.json",
+                "bytes": 76669,
+                "sha256": "8dcb5179c9ef59e1b9b4d118cbcaedacbb34dc0a0bf767542c1bd9ac9c7d8f96"
+              },
+              {
+                "path": "source/docs/miniapp-sdk/source-inventory.json",
+                "bytes": 569738,
+                "sha256": "de076aec3a55b3b4666ad1d53c7aa44a7a05ee1a98a6f02ba62404656fd6426b"
+              },
+              {
+                "path": "source/docs/miniapp-sdk/extension-reachability.json",
+                "bytes": 213340,
+                "sha256": "0eac8d75c906988fb121cb8849a08432ca43c04fdff03d4f0f959fe8891a8909"
+              },
+              {
+                "path": "source/docs/miniapp-sdk/extension-reachability.md",
+                "bytes": 37881,
+                "sha256": "49ae9bbe4b46e879867754c8fc43c1bb676e33435bfb3eda8049fe9d44234816"
+              },
+              {
+                "path": "source/docs/miniapp-sdk/MANIFEST_REFERENCE.md",
+                "bytes": 145496,
+                "sha256": "c8311ef65300e6085ce91bcaf74143b470f1a083eae65dc5651f13370450687f"
+              },
+              {
+                "path": "source/AI_HLY/Downstream/ScriptingPlatform/HanlinInstalledMiniAppEntity.swift",
+                "bytes": 4392,
+                "sha256": "114cdb71d067a0cf3139fe373af2b25617e275fa5aa040a0be71a0801e1283f8"
+              },
+              {
+                "path": "sdk/miniapp-sdk.json",
+                "bytes": 5266087,
+                "sha256": "0433011cae7beb42504e4bb29b18bb722e21d9a31cc5aae7324eba67b70afcc7"
+              },
+              {
+                "path": "host-output/host-metadata.json",
+                "bytes": 358,
+                "sha256": "6339c567c797cc635ef9c6e5f6c9a0396782a05a5ca888bd2f0e247265f85da0"
+              },
+              {
+                "path": "host-output/runtime-host.sha256",
+                "bytes": 91,
+                "sha256": "79e0c33983e65ebb23df89b3fdae62a734461ad2bc89e0cf8e9abb93c42403b0"
+              }
+            ],
+            "originalPayloads": [
+              {
+                "path": "stage/host-preparation-2a0b19b7-original-phases-r1.json",
+                "bytes": 17773,
+                "sha256": "4879d45ed351f9b1d9b76f7e13fe734552b53bd1e505c6212596426d62025362"
+              },
+              {
+                "path": "stage/source-seal-4cb22112.json",
+                "bytes": 2420,
+                "sha256": "3aa549457bd15e6cecd00934977fe3ad7d51a1b85b1f845d7851742b235d35db"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/complete-original-test-set.log",
+                "bytes": 18953,
+                "sha256": "42a5323342adbb9855a6f6b7495fc08490da2db58ad2690436ba2787b68dfdcd"
+              },
+              {
+                "path": "host-resume-2a0b19b7-original-phases-r1/original-packed-validation-jitless-and-seal.log",
+                "bytes": 387,
+                "sha256": "927eb0d8bf62c41607e1ee8f1c5aa41d0b26c9801b1224fe88c78c3761b5ac41"
+              },
+              {
+                "path": "source-seal-2a0b19b7-proof/sdk-inputs-after-original-inventory-refresh.json",
+                "bytes": 76669,
+                "sha256": "de4f43819aafc39ddfd9cbc24793a8929ed80151ca6f00916fd0bd458e823e9c"
+              },
+              {
+                "path": "host-output/host-metadata.json",
+                "bytes": 358,
+                "sha256": "6339c567c797cc635ef9c6e5f6c9a0396782a05a5ca888bd2f0e247265f85da0"
+              }
+            ],
+            "extraEmbeddedManifestIdentical": false
+          },
+          {
+            "name": "paired-f103996c-index-conformance-failure",
+            "archiveBytes": 5634240,
+            "archiveSHA256": "7571b84f6efe3f78d8862882a201119926c0e7e2a23a0813c0b920ac781486c1",
+            "archiveGitBlob": "b59a8ee690bfa23906e639b46998b42cce7cdd5c",
+            "manifestSHA256": "23623cfae0e3416811bc5d9b80beabef9ef53b5dbaff7bc460cb20bc4cf0694a",
+            "verifiedFiles": [
+              {
+                "path": "f103996c-index-description-conformance-diagnostic.json",
+                "bytes": 16033,
+                "sha256": "e363c4dd683e330833b2454819f9b23b0054f04ac0094d8d1851bde202ec081f"
+              },
+              {
+                "path": "native-paired-f103996c-paired-r1.json",
+                "bytes": 8663,
+                "sha256": "cf604a7522d3f7ec4939ad140d705452bc82119fda02614cc61390631270740d"
+              },
+              {
+                "path": "native-paired-f103996c-paired-r1.log",
+                "bytes": 6179,
+                "sha256": "12383543ae1eca89d226761b63243d398bfe16637e5bbfcf38d1b317455e22c2"
+              },
+              {
+                "path": "paired-f103996c-detached-supervisor-r1.log",
+                "bytes": 7829,
+                "sha256": "59ec8bd577b4eb9cc3ba496c8bad30dc53e11700341edff0e0b3971856da5660"
+              },
+              {
+                "path": "run-native-paired-integrated-20261127.py",
+                "bytes": 9087,
+                "sha256": "984b0d277d616d9ff155fbcf52142b106aadfa163cf6029222a38ddc46b19c19"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/MiniBuild.xcresult/Data/data.0~9XDk34j86LV8fOSwRdflVHEs-9L2HbEqMt76tuk8ndc_sumhRLnBpVbCdCsWGL58KfSTqaK0vBHPn5NoCcuZtg==",
+                "bytes": 313,
+                "sha256": "35543ce4e5add3cfa12e5e9926a7134fae104636bbcd67c86128eeb31d36e78e"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/MiniBuild.xcresult/Data/data.0~ObNLuDtb73d3YsTSBAVkNvzsGMgnV5-R02MwOtOkyVNqX5Hsqpk5MWYVNM6g3orPPyf2XDFPWbXUvBNxXUF-tQ==",
+                "bytes": 30888,
+                "sha256": "05c5433c9f63ffa121037ff4f94c7134c5d63b2b242366e7066cbcf4df365c48"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/MiniBuild.xcresult/Data/data.0~SuDphleiKHvqJoY2903rJoqoc4A6mXLSoghuib_-vBlr3dahgln-q6wLFjrvhn3tNqz7I6TmGqhVUJaVesZ8wA==",
+                "bytes": 280847,
+                "sha256": "3c87532fae7525313fcea95056b19fca012f19633ab4e417d95944411cfc93b2"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/MiniBuild.xcresult/Data/refs.0~9XDk34j86LV8fOSwRdflVHEs-9L2HbEqMt76tuk8ndc_sumhRLnBpVbCdCsWGL58KfSTqaK0vBHPn5NoCcuZtg==",
+                "bytes": 1,
+                "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/MiniBuild.xcresult/Data/refs.0~ObNLuDtb73d3YsTSBAVkNvzsGMgnV5-R02MwOtOkyVNqX5Hsqpk5MWYVNM6g3orPPyf2XDFPWbXUvBNxXUF-tQ==",
+                "bytes": 133,
+                "sha256": "44e0876223773e3c3b722101947c9bf330ad1557a9f19ca59eea412dbd41a434"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/MiniBuild.xcresult/Data/refs.0~SuDphleiKHvqJoY2903rJoqoc4A6mXLSoghuib_-vBlr3dahgln-q6wLFjrvhn3tNqz7I6TmGqhVUJaVesZ8wA==",
+                "bytes": 1,
+                "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/MiniBuild.xcresult/Info.plist",
+                "bytes": 776,
+                "sha256": "47b75d74b869123957034a4003b8fcebba5b29f5bf59f0ce58363c61573a93bc"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/acceptance.json",
+                "bytes": 2891,
+                "sha256": "69068579a8b271702ae08a32a7f46d76a8471b1d8b1e5ed780a3c7ee2c46cc8f"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/active-command.json",
+                "bytes": 527,
+                "sha256": "82fca1b3c916cda90295064191553694dfc703215a81280047f84f66840a943f"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/before-boot-host-resources.txt",
+                "bytes": 36,
+                "sha256": "383b4760df6e18f59de559f86adfb83243b7d86268ace6242ce6f80f85f8c68d"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/before-boot-memory.txt",
+                "bytes": 1247,
+                "sha256": "852ed92d2f51f04639c5257721996c440011c28d52fe15c6d550b87c82845545"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/before-boot-processes.txt",
+                "bytes": 330182,
+                "sha256": "d1fcd1a87db40af06b4d2c9467361567b32852a5194bc6ec4211ab0d05ed80f6"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/boot.log",
+                "bytes": 0,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/bootstatus.log",
+                "bytes": 6671,
+                "sha256": "478f502fd93b2bbfa1d0c9e337e6d652d95257447702659e463d96cef2b1c68a"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/command-events.jsonl",
+                "bytes": 30482,
+                "sha256": "4280f0b2bffac1c259e67e6f8f4fbc252481b0702f80ba2673c54be937d78584"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/commands.jsonl",
+                "bytes": 4432,
+                "sha256": "10bab752c9de9a64e06ffc187027e8fa400ced5190e233d03c43074a5c19e1cf"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/container-command-help.txt",
+                "bytes": 386,
+                "sha256": "62b5b30225c28644c70945a598f2385b4414e2f11c75c4ec2d134d6822f0053b"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/created-simulator.txt",
+                "bytes": 37,
+                "sha256": "32e0feacc1399174830c42c287ebdcf88251bc229dd7d1ea1876bf81528ed4e8"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/device-types.json",
+                "bytes": 64328,
+                "sha256": "96d335258081671854ac94ea0afb6ae77b8b7efc5892942fc8856d1e6f31be0f"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/failure-device-state.json",
+                "bytes": 31184,
+                "sha256": "6287dc50bd35449e3ebb121a9280873f4a8657247bd03a35ae91c7b138725e35"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/failure-installed-apps.plist",
+                "bytes": 54845,
+                "sha256": "d4872768e80edc7bae96df0935ce47ad0347f91c333f57c70e7b785f410e0201"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/failure-memory.txt",
+                "bytes": 1247,
+                "sha256": "5c57bff538464dd08e74c45a7ead3d0a446b93222deca72aaa699c1b47bfa3a1"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/failure-processes.txt",
+                "bytes": 404304,
+                "sha256": "2e428db090d82e1dedb0017575d6a328d7ea75ace470a7ec4763a2210c18307d"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/failure.png",
+                "bytes": 5089680,
+                "sha256": "2492026a85d4e78581cbb14ccfc3762da42b3752ad045256b26aab87f8c8573e"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/mini-build.log",
+                "bytes": 3734097,
+                "sha256": "8d44067de553df8ad801e48517d2001e2df6100dae9079ed3fa4c5eddfc14cf2"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/runtimes.json",
+                "bytes": 45201,
+                "sha256": "7d7b8804de6356de2d00a28b5288de3d4d5a3ec739e2ab33c9f4f32f0ad2f749"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/screenshot.log",
+                "bytes": 277,
+                "sha256": "954cb646bf1f9680ab3d0a20f319727e496155cf31f521c0d9d97ad92c1e1b4e"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/sdk.txt",
+                "bytes": 5,
+                "sha256": "7b01c549928398a045692f24bcac7803b348524cdd76f21265b02984b2ba556a"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/source-sha.txt",
+                "bytes": 41,
+                "sha256": "797167cc651192ac97117f4aded41d0570cca2b132b48889c18fcb509e30b414"
+              }
+            ],
+            "originalPayloads": [
+              {
+                "path": "native-paired-f103996c-paired-r1.json",
+                "bytes": 8663,
+                "sha256": "cf604a7522d3f7ec4939ad140d705452bc82119fda02614cc61390631270740d"
+              },
+              {
+                "path": "native-paired-f103996c-paired-r1.log",
+                "bytes": 6179,
+                "sha256": "12383543ae1eca89d226761b63243d398bfe16637e5bbfcf38d1b317455e22c2"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/acceptance.json",
+                "bytes": 2891,
+                "sha256": "69068579a8b271702ae08a32a7f46d76a8471b1d8b1e5ed780a3c7ee2c46cc8f"
+              },
+              {
+                "path": "validation/f103996c-paired-r1/paired-product/commands.jsonl",
+                "bytes": 4432,
+                "sha256": "10bab752c9de9a64e06ffc187027e8fa400ced5190e233d03c43074a5c19e1cf"
+              }
+            ],
+            "originalCompilerDiagnostics": {
+              "path": "validation/f103996c-paired-r1/paired-product/mini-build.log",
+              "sha256": "8d44067de553df8ad801e48517d2001e2df6100dae9079ed3fa4c5eddfc14cf2",
+              "bytes": 3734097,
+              "matchingLines": [
+                {
+                  "line": 47588,
+                  "text": "/Users/m1/builds/hanlin-two-wave-root-20261126/source/AI_HLY/Downstream/ScriptingPlatform/HanlinInstalledMiniAppEntity.swift:66:17: error: non-Sendable parameter type 'CSSearchableIndexDescription' cannot be sent from caller of protocol requirement 'reindexEntities(for:indexDescription:)' into main actor-isolated implementation [#NonSendableInAsyncConformanceOrOverride]",
+                  "sha256": "3850631d5c75821a957d3213e8ed9a56854e20154a091207ba0c75fb4720adda"
+                },
+                {
+                  "line": 47643,
+                  "text": "/Users/m1/builds/hanlin-two-wave-root-20261126/source/AI_HLY/Downstream/ScriptingPlatform/HanlinInstalledMiniAppEntity.swift:66:17: error: non-Sendable parameter type 'CSSearchableIndexDescription' cannot be sent from caller of protocol requirement 'reindexEntities(for:indexDescription:)' into main actor-isolated implementation [#NonSendableInAsyncConformanceOrOverride]",
+                  "sha256": "3850631d5c75821a957d3213e8ed9a56854e20154a091207ba0c75fb4720adda"
+                },
+                {
+                  "line": 47659,
+                  "text": "/Users/m1/builds/hanlin-two-wave-root-20261126/source/AI_HLY/Downstream/ScriptingPlatform/HanlinInstalledMiniAppEntity.swift:74:17: error: non-Sendable parameter type 'CSSearchableIndexDescription' cannot be sent from caller of protocol requirement 'reindexAllEntities(indexDescription:)' into main actor-isolated implementation [#NonSendableInAsyncConformanceOrOverride]",
+                  "sha256": "85274498613192570a57d79dbcb85c1b39b0774f44cdb2ad8ca01ff3721d061d"
+                }
+              ]
+            },
+            "extraEmbeddedManifestIdentical": false
+          },
+          {
+            "name": "paired-4cb22112-studio-shadow-failure",
+            "archiveBytes": 5299214,
+            "archiveSHA256": "ec17e3197a9cced46300dc31ea7b5ae6f275d4bc03a8bb3d0518f278e4778dfd",
+            "archiveGitBlob": "7bf3d83fcc014621a07e401a3d683624f4ecf3f3",
+            "manifestSHA256": "1ba100f368326e7cfdff759d5e88303d19c12e7a4969c3fcfa69607bd6e7ab8d",
+            "verifiedFiles": [
+              {
+                "path": "4cb22112-studio-catch-shadow-diagnostic.json",
+                "bytes": 38286,
+                "sha256": "76535b9bfb2acee25b1f84d5d1818a2189e7c208e0b7882862b1cc09a874b6a3"
+              },
+              {
+                "path": "native-paired-4cb22112-paired-r1.json",
+                "bytes": 8660,
+                "sha256": "a1c74d5fd78eb61b7ae1cb4a7340f20d4fcd85e736797c4be5ff1690a0ace94f"
+              },
+              {
+                "path": "native-paired-4cb22112-paired-r1.log",
+                "bytes": 5866,
+                "sha256": "16d2449c06c5f758d4dfa284a56a639bb4c06e7e7927eb29fddeb363cc29b2ae"
+              },
+              {
+                "path": "paired-4cb22112-detached-supervisor-r1.log",
+                "bytes": 7826,
+                "sha256": "f4926eb28e6a4d743410692c246960fbf1068cc56d148ab31d4abe8821243c0a"
+              },
+              {
+                "path": "run-native-paired-integrated-20261127.py",
+                "bytes": 9087,
+                "sha256": "984b0d277d616d9ff155fbcf52142b106aadfa163cf6029222a38ddc46b19c19"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/MiniBuild.xcresult/Data/data.0~HWHkpfBu6qa2_aTWJYks-6iySPEs59vLYMji4qwQ2EdNEzAnMA40JEO_b0iV4K3lKsnsryNENwacx95dJO8HjQ==",
+                "bytes": 5025,
+                "sha256": "6bed328e67e72ee485bc045c0dc2c2ba32bbde30c8d58541d1488f350e36c59f"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/MiniBuild.xcresult/Data/data.0~KWY86Pc0snge7-VycvhpqLPOmtv29YEI7fDZBniF4nKIQ0aSnis0xoz-6mlL_t9OEqeW07tLVc7S_bCiUMflMA==",
+                "bytes": 62476,
+                "sha256": "c6a4ff414c634c78a799462f07ca063cc3a76bce968058e9f39f84ddcbb48b77"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/MiniBuild.xcresult/Data/data.0~aT2t4SH_qPtecvqwBrKLc3MJS6vF2QuqUR-BbW8-GrbCvCOqS9zxFLlr212AJgaueEg8SlBjtgGYk7tMKmETDA==",
+                "bytes": 314,
+                "sha256": "89529fa4e4541f0fb2d23904fdaaf93c0b6237c77c03bcfb76a689dedbcc7b6b"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/MiniBuild.xcresult/Data/refs.0~HWHkpfBu6qa2_aTWJYks-6iySPEs59vLYMji4qwQ2EdNEzAnMA40JEO_b0iV4K3lKsnsryNENwacx95dJO8HjQ==",
+                "bytes": 133,
+                "sha256": "98625b4b48b159689452d555546d1f9b8ab9f88324303ed1b71230dc6ebc5065"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/MiniBuild.xcresult/Data/refs.0~KWY86Pc0snge7-VycvhpqLPOmtv29YEI7fDZBniF4nKIQ0aSnis0xoz-6mlL_t9OEqeW07tLVc7S_bCiUMflMA==",
+                "bytes": 1,
+                "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/MiniBuild.xcresult/Data/refs.0~aT2t4SH_qPtecvqwBrKLc3MJS6vF2QuqUR-BbW8-GrbCvCOqS9zxFLlr212AJgaueEg8SlBjtgGYk7tMKmETDA==",
+                "bytes": 1,
+                "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/MiniBuild.xcresult/Info.plist",
+                "bytes": 776,
+                "sha256": "99d0d5baab5870df25d3a34dddbdcf527b575a34a4f78c1ab39e49cb2bc14706"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/acceptance.json",
+                "bytes": 2891,
+                "sha256": "68af17d2b8b00ff9f68ce261d4a5e8a6850e0fd45f5099ad132b118cdde3cc82"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/active-command.json",
+                "bytes": 526,
+                "sha256": "a187375c94cfd9ebbe080fa6b4da536fe975a60ba5cfd2759b301120ddbd1886"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/before-boot-host-resources.txt",
+                "bytes": 36,
+                "sha256": "383b4760df6e18f59de559f86adfb83243b7d86268ace6242ce6f80f85f8c68d"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/before-boot-memory.txt",
+                "bytes": 1247,
+                "sha256": "95ad7e986f5beace3f37fbbde15671dd62eca6c4c9a40185ad4f3dc005f513b1"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/before-boot-processes.txt",
+                "bytes": 335079,
+                "sha256": "1b0a46d12c06fa8c395fa980d8afbf394cbd76eddca500af63b06d881806377d"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/boot.log",
+                "bytes": 0,
+                "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/bootstatus.log",
+                "bytes": 7334,
+                "sha256": "223c16f0a6870392638961a1500460e40772b486c270c206874f446cd1b2d4ca"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/command-events.jsonl",
+                "bytes": 27449,
+                "sha256": "519705d3630b9245495f137406bc41fcad33ad217fa22a63dc1b71484570a618"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/commands.jsonl",
+                "bytes": 4432,
+                "sha256": "c3ad2910ee8574899c562866d909479570667a553f525d1ea5a232122d300526"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/container-command-help.txt",
+                "bytes": 386,
+                "sha256": "62b5b30225c28644c70945a598f2385b4414e2f11c75c4ec2d134d6822f0053b"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/created-simulator.txt",
+                "bytes": 37,
+                "sha256": "f3972df0d2d157769c1a30b299253a2c410fcf8f49b4421d30fce1fbb0b59f03"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/device-types.json",
+                "bytes": 64328,
+                "sha256": "96d335258081671854ac94ea0afb6ae77b8b7efc5892942fc8856d1e6f31be0f"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/failure-device-state.json",
+                "bytes": 31793,
+                "sha256": "1315fac294bf4db20e849dca745ec0791dd70793c9940e2b96966f2792c31947"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/failure-installed-apps.plist",
+                "bytes": 54845,
+                "sha256": "56b0afdc11095740aa908a0976a1f36292d1507d0538d2b3d6a7714ae2708ec2"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/failure-memory.txt",
+                "bytes": 1247,
+                "sha256": "93d779d34c9536aed17847fdd2531dea93b30b88397dd623d7ba6a024c64a2cb"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/failure-processes.txt",
+                "bytes": 392482,
+                "sha256": "eac0c674ddf8744a617b62a94081dd201a388f2257f8e6d0706848d8bb370677"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/failure.png",
+                "bytes": 5090069,
+                "sha256": "7a9cfb86f24e91c0a1057ca40d3fa0299fc7c2aae37df3316ee9754aa7d0c281"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/mini-build.log",
+                "bytes": 635022,
+                "sha256": "68a3b8e6b93106cd3c514209753b26df90cbf0ef61e5288f7898b6c00f807fe2"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/runtimes.json",
+                "bytes": 45201,
+                "sha256": "5d2eb22c42ebe30591348d915a858f7a43fc1a25199632c5ff1af8286d604ef9"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/screenshot.log",
+                "bytes": 277,
+                "sha256": "de72d77a1aa8cf0d7da0a56cf87b5672ea064cc7680ebf2c362bd6591d7f005d"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/sdk.txt",
+                "bytes": 5,
+                "sha256": "7b01c549928398a045692f24bcac7803b348524cdd76f21265b02984b2ba556a"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/source-sha.txt",
+                "bytes": 41,
+                "sha256": "b74517bf0ae3f2219450835d0220628d25e2ba8950f4945c33289f2ee051da3e"
+              }
+            ],
+            "originalPayloads": [
+              {
+                "path": "native-paired-4cb22112-paired-r1.json",
+                "bytes": 8660,
+                "sha256": "a1c74d5fd78eb61b7ae1cb4a7340f20d4fcd85e736797c4be5ff1690a0ace94f"
+              },
+              {
+                "path": "native-paired-4cb22112-paired-r1.log",
+                "bytes": 5866,
+                "sha256": "16d2449c06c5f758d4dfa284a56a639bb4c06e7e7927eb29fddeb363cc29b2ae"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/acceptance.json",
+                "bytes": 2891,
+                "sha256": "68af17d2b8b00ff9f68ce261d4a5e8a6850e0fd45f5099ad132b118cdde3cc82"
+              },
+              {
+                "path": "validation/4cb22112-paired-r1/paired-product/commands.jsonl",
+                "bytes": 4432,
+                "sha256": "c3ad2910ee8574899c562866d909479570667a553f525d1ea5a232122d300526"
+              }
+            ],
+            "originalCompilerDiagnostics": {
+              "path": "validation/4cb22112-paired-r1/paired-product/mini-build.log",
+              "sha256": "68a3b8e6b93106cd3c514209753b26df90cbf0ef61e5288f7898b6c00f807fe2",
+              "bytes": 635022,
+              "matchingLines": [
+                {
+                  "line": 2616,
+                  "text": "/Users/m1/builds/hanlin-two-wave-root-20261126/source/HanlinMiniAppsApp/MiniAppsDeveloperStudio.swift:203:17: error: cannot assign to value: 'error' is immutable",
+                  "sha256": "92f4a64c196332fab6188efcc2ed4c8cec52a3e7628a1141c402f71024513488"
+                },
+                {
+                  "line": 2624,
+                  "text": "/Users/m1/builds/hanlin-two-wave-root-20261126/source/HanlinMiniAppsApp/MiniAppsDeveloperStudio.swift:203:31: error: cannot assign value of type 'String' to type 'any Error'",
+                  "sha256": "2e8178caf9227b5ebf817e9051f9df5fe1ab6d2a2c737ccec323b5a206170976"
+                }
+              ]
+            },
+            "extraEmbeddedManifestIdentical": false
+          }
+        ],
+        "elapsedSeconds": 0.34010934829711914
+      }
+    },
+    "host": {
+      "status": "EXECUTED_PASS_ON_ORIGINAL_2a0b19b7",
+      "source": "2a0b19b79f3da0fef092ca8b0762b9b0e7001caa",
+      "tests": 188,
+      "passed": 188,
+      "failed": 0,
+      "skipped": 0,
+      "originalPhases": 12,
+      "allOriginalPhaseExitCodesZero": true,
+      "longJob": {
+        "proof": "actual-node-job-over-300-seconds",
+        "elapsedMilliseconds": 305023.61754199996,
+        "executionID": "0e7e6a1a-4355-445f-a9ef-c2599d252b85"
+      },
+      "nodeVersion": "v24.5.0",
+      "nodeBinarySHA256": "336b5b3ebc5deb86df842102b20b6e4761605b7a667823e68dda7761b91a161b",
+      "originalHostTestsSHA256": "3a48396dfcf27155074296d19b56ebd03eaebe5387e56f4eb76e1c34865bf96c",
+      "receipt": {
+        "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/originals/host-2a0b19b7-pass-and-native-seal/stage/host-preparation-2a0b19b7-original-phases-r1.json",
+        "bytes": 17773,
+        "sha256": "4879d45ed351f9b1d9b76f7e13fe734552b53bd1e505c6212596426d62025362"
+      },
+      "rawLog": {
+        "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/originals/host-2a0b19b7-pass-and-native-seal/host-resume-2a0b19b7-original-phases-r1/complete-original-test-set.log",
+        "bytes": 18953,
+        "sha256": "42a5323342adbb9855a6f6b7495fc08490da2db58ad2690436ba2787b68dfdcd"
+      },
+      "notNewUnionHostAcceptance": true
+    },
+    "nativePackage": {
+      "status": "EXECUTED_PASS_ON_ORIGINAL_16b4af44",
+      "source": "16b4af4490d96c41cb76ed185a1e6d4e828899e7",
+      "definitions": 58,
+      "invocations": 79,
+      "originalDefinitions": 57,
+      "originalInvocations": 78,
+      "newV1RegressionInvocations": 1,
+      "failed": 0,
+      "skipped": 0,
+      "collateral": 0,
+      "buildSDK": "27.0",
+      "device": {
+        "architecture": "arm64",
+        "deviceId": "233DB080-C913-4EE6-BF3D-99659F5CD475",
+        "deviceName": "HanlinMiniApps-08ed647b-20261126",
+        "modelName": "iPad Pro 13-inch (M5)",
+        "osBuildNumber": "24B8117",
+        "osVersion": "27.2",
+        "platform": "iOS Simulator"
+      },
+      "rawXcresultSummary": {
+        "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/originals/native-package-16b4af44-pass/stage/validation/platform-16b4af44/test-r1/native-result-summary.log",
+        "bytes": 1346,
+        "sha256": "3072083b1a9ecbc9801a7154ef02ae5d336cbaf995f55d24c67b459867c57bf9"
+      },
+      "retainedRawBundle": "/Users/m1/builds/hanlin-two-wave-root-20261126/validation/platform-16b4af44/test-r1/PlatformTests.xcresult",
+      "latestPreparedWidgetAndMatrixChangesNotCoveredAsFreshPass": true
+    },
+    "pairedFailures": [
+      {
+        "name": "paired-f103996c-index-conformance-failure",
+        "source": "f103996cc03d2cc5321c7e83b6cdf77c3b60e509",
+        "started": "2026-11-27T02:11:21.494814+00:00",
+        "finished": "2026-11-27T02:16:28.294097+00:00",
+        "wrapperExitCode": 1,
+        "nativeExitCode": 65,
+        "originalAcceptance": "BUILD_FAILED",
+        "ui": "NOT_RUN",
+        "aiBuild": "NOT_RUN",
+        "physicalDevice": "NOT_RUN",
+        "provisionedDistribution": "NOT_RUN",
+        "receipt": {
+          "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/originals/paired-f103996c-index-conformance-failure/native-paired-f103996c-paired-r1.json",
+          "bytes": 8663,
+          "sha256": "cf604a7522d3f7ec4939ad140d705452bc82119fda02614cc61390631270740d"
+        },
+        "acceptance": {
+          "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/originals/paired-f103996c-index-conformance-failure/validation/f103996c-paired-r1/paired-product/acceptance.json",
+          "bytes": 2891,
+          "sha256": "69068579a8b271702ae08a32a7f46d76a8471b1d8b1e5ed780a3c7ee2c46cc8f"
+        },
+        "compilerDiagnostics": {
+          "path": "validation/f103996c-paired-r1/paired-product/mini-build.log",
+          "sha256": "8d44067de553df8ad801e48517d2001e2df6100dae9079ed3fa4c5eddfc14cf2",
+          "bytes": 3734097,
+          "matchingLines": [
+            {
+              "line": 47588,
+              "text": "/Users/m1/builds/hanlin-two-wave-root-20261126/source/AI_HLY/Downstream/ScriptingPlatform/HanlinInstalledMiniAppEntity.swift:66:17: error: non-Sendable parameter type 'CSSearchableIndexDescription' cannot be sent from caller of protocol requirement 'reindexEntities(for:indexDescription:)' into main actor-isolated implementation [#NonSendableInAsyncConformanceOrOverride]",
+              "sha256": "3850631d5c75821a957d3213e8ed9a56854e20154a091207ba0c75fb4720adda"
+            },
+            {
+              "line": 47643,
+              "text": "/Users/m1/builds/hanlin-two-wave-root-20261126/source/AI_HLY/Downstream/ScriptingPlatform/HanlinInstalledMiniAppEntity.swift:66:17: error: non-Sendable parameter type 'CSSearchableIndexDescription' cannot be sent from caller of protocol requirement 'reindexEntities(for:indexDescription:)' into main actor-isolated implementation [#NonSendableInAsyncConformanceOrOverride]",
+              "sha256": "3850631d5c75821a957d3213e8ed9a56854e20154a091207ba0c75fb4720adda"
+            },
+            {
+              "line": 47659,
+              "text": "/Users/m1/builds/hanlin-two-wave-root-20261126/source/AI_HLY/Downstream/ScriptingPlatform/HanlinInstalledMiniAppEntity.swift:74:17: error: non-Sendable parameter type 'CSSearchableIndexDescription' cannot be sent from caller of protocol requirement 'reindexAllEntities(indexDescription:)' into main actor-isolated implementation [#NonSendableInAsyncConformanceOrOverride]",
+              "sha256": "85274498613192570a57d79dbcb85c1b39b0774f44cdb2ad8ca01ff3721d061d"
+            }
+          ]
+        }
+      },
+      {
+        "name": "paired-4cb22112-studio-shadow-failure",
+        "source": "4cb2211276b269fa43eff27e468b9a44fff57fc5",
+        "started": "2026-11-27T02:45:08.629750+00:00",
+        "finished": "2026-11-27T02:48:44.080765+00:00",
+        "wrapperExitCode": 1,
+        "nativeExitCode": 65,
+        "originalAcceptance": "BUILD_FAILED",
+        "ui": "NOT_RUN",
+        "aiBuild": "NOT_RUN",
+        "physicalDevice": "NOT_RUN",
+        "provisionedDistribution": "NOT_RUN",
+        "receipt": {
+          "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/originals/paired-4cb22112-studio-shadow-failure/native-paired-4cb22112-paired-r1.json",
+          "bytes": 8660,
+          "sha256": "a1c74d5fd78eb61b7ae1cb4a7340f20d4fcd85e736797c4be5ff1690a0ace94f"
+        },
+        "acceptance": {
+          "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/originals/paired-4cb22112-studio-shadow-failure/validation/4cb22112-paired-r1/paired-product/acceptance.json",
+          "bytes": 2891,
+          "sha256": "68af17d2b8b00ff9f68ce261d4a5e8a6850e0fd45f5099ad132b118cdde3cc82"
+        },
+        "compilerDiagnostics": {
+          "path": "validation/4cb22112-paired-r1/paired-product/mini-build.log",
+          "sha256": "68a3b8e6b93106cd3c514209753b26df90cbf0ef61e5288f7898b6c00f807fe2",
+          "bytes": 635022,
+          "matchingLines": [
+            {
+              "line": 2616,
+              "text": "/Users/m1/builds/hanlin-two-wave-root-20261126/source/HanlinMiniAppsApp/MiniAppsDeveloperStudio.swift:203:17: error: cannot assign to value: 'error' is immutable",
+              "sha256": "92f4a64c196332fab6188efcc2ed4c8cec52a3e7628a1141c402f71024513488"
+            },
+            {
+              "line": 2624,
+              "text": "/Users/m1/builds/hanlin-two-wave-root-20261126/source/HanlinMiniAppsApp/MiniAppsDeveloperStudio.swift:203:31: error: cannot assign value of type 'String' to type 'any Error'",
+              "sha256": "2e8178caf9227b5ebf817e9051f9df5fe1ab6d2a2c737ccec323b5a206170976"
+            }
+          ]
+        }
+      }
+    ],
+    "historicalR5": {
+      "source": "759e5cf9ba4c7dac88b0ec80f652e6ba4e37e676",
+      "status": "FAILED_NATIVE_EXIT65_NO_SUCCESSOR_BINARY",
+      "logSHA256": "815c31f3a9849d86342dc85557c73557a1f0132d5260697fd5612d13d28f31c7",
+      "evidence": "docs/two-wave-integration/20261127/notification-conformance/original-compiler-diagnostic.json",
+      "correction": "d7d10dff56e9b19b87ee6058ac491987f00b48e6",
+      "notLatestPassingProduct": true
+    },
+    "nativeScriptCI": {
+      "run": 45927192346,
+      "job": 140271518817,
+      "source": "3c3bbb955bc79733607e90c719fc95a454d6b387",
+      "status": "EXECUTED_PASS_GENERIC_NATIVE_RUNTIME_PACKAGE_ONLY",
+      "destinations": [
+        "generic/platform=iOS Simulator",
+        "generic/platform=iOS"
+      ],
+      "toolchain": {
+        "xcode": "27.2 (27B52)",
+        "swift": "6.4.2",
+        "SDK": "27.2",
+        "strictConcurrency": "complete",
+        "CODE_SIGNING_ALLOWED": "NO"
+      },
+      "originalPackageBuildLog": {
+        "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/originals/ci-45927192346-phase1/phase1/08-nativescript-package.log",
+        "bytes": 649828,
+        "sha256": "d11fe920528bd9753e8b5c89ba3ac2e417b292010923afa27b525e5e1dd21f60"
+      },
+      "originalArtifacts": [
+        {
+          "path": "docs/two-wave-integration/20261127/ci-45927192346-phase1/phase1.zip",
+          "sha256": "c6bff2cb9b2fac6cf2f6c173ebe9ea5991d1c132ac87100cb13f41efd54981a3",
+          "bytes": 43589,
+          "members": [
+            {
+              "path": "00-cache-mode.log",
+              "bytes": 86,
+              "sha256": "8a8927602e80981f7796cb8108a314c6440c8364fe169c351a48732657a342eb"
+            },
+            {
+              "path": "00-environment.log",
+              "bytes": 1840,
+              "sha256": "ca0ded02531de59a90cd1e124b6bb2ddc2a6ed72d153b4abe71bfad91e11f2c5"
+            },
+            {
+              "path": "08-nativescript-package.log",
+              "bytes": 649828,
+              "sha256": "d11fe920528bd9753e8b5c89ba3ac2e417b292010923afa27b525e5e1dd21f60"
+            },
+            {
+              "path": "09-warnings.log",
+              "bytes": 13890,
+              "sha256": "89d20cedbb9ffe82e4bc039e950515da91d071ce63fe375beb5bc75cc1fa4311"
+            }
+          ]
+        },
+        {
+          "path": "docs/two-wave-integration/20261127/ci-45927192346-phase1/plan.zip",
+          "sha256": "31d62b8a8ff1516b68364d664fb89a7ca06b780d3ae5b41c4209237f278fb600",
+          "bytes": 52094,
+          "members": [
+            {
+              "path": "ci-validation-plan.json",
+              "bytes": 924173,
+              "sha256": "4aa093faee75a73d23077a2897e15c974594a5cac178b8ecb439a9708d91be45"
+            }
+          ]
+        }
+      ],
+      "otherPhase1Gates": "SKIPPED",
+      "fullApplication90": "NOT_RUN_AFTER_SPOTLIGHT_COMPILE_FAILURE",
+      "doesNotProvePairedMiniAppsOrExplicitHandlerRuntime": true
+    },
+    "widgetPortable": {
+      "source": "fb1e15992eaddfde42c88b20738ae8d543d48ba0",
+      "proofCommit": "8ec36373651c8cdb28a62cbdfd202d2a0bc09b13",
+      "proofSHA256": "8cb2f624c68b89aced0ab59363b814f8756885c1d416f76e13f70fb044f41520",
+      "node": "v24.5.0",
+      "tests": 10,
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "embeddedOriginalStdoutDigestsVerified": true,
+      "earlierFullRun": "8PASS/2FAIL retained; affected2 then PASS; later pinned full10 actualPASS",
+      "native": "NOT_RUN",
+      "WidgetKitOS": "NOT_RUN"
+    },
+    "profileControls": {
+      "originalTests": 7,
+      "status": "EXECUTED_PASS_PORTABLE_WITH_INJECTED_APPLE_OPERATIONS",
+      "originalLog": {
+        "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/originals/miniapps-icloud-documents-20261127/focused.stderr.log",
+        "bytes": 1433,
+        "sha256": "55bb9829f58cb3c91d666a928b39509852f210ab4d3ea34acce26374872a389f"
+      },
+      "profileAndCredentialMutations": 0,
+      "signedAppExecution": false
+    },
+    "testsExecutedByThisReviewer": 0,
+    "compilersExecutedByThisReviewer": 0
+  },
+  "consumerPinPrerequisites": [
+    "Create and normally publish an immutable source union preserving exact expected tree14e860ce3f7d2b8623085f16d99d34b8b347a48c. If additional owner changes arrive, review that new delta separately rather than calling this tree their qualification.",
+    "Use the original SDK/Host producer and source-inventory contracts to bind the current full input/dependency/toolchain closure. The old821d SDK392 digest and RuntimeHostResources.zip cannot be relabeled after PreparedWidget changes. Reuse only demonstrated unaffected original test scopes; do not repeat passing tests merely for a new SHA.",
+    "Qualify new Apple compile/affected renderer-retention and widget fallback/fixture obligations; retain385 worker/cancellation source and exact original test proof separately. Source merge safety does not prove Swift/ABI/runtime compatibility.",
+    "Produce or locate an original compatible companion product with exact full source identity, generated NativeScript frameworks/metadata, Host archive and export manifest. Generic NativeScript package builds and older86/c34 receipts do not themselves prove the new complete companion graph.",
+    "Execute/reuse only genuinely source-compatible original handler state test and complete original paired MiniApps/Anytype request/result/ACK/file/warm/cold/account-engine isolation obligations against the exact admitted companion binary and new Anytype build receipt. Pair54 and extras26 remain unexecuted in the reviewed failure packets.",
+    "Keep current immutable Anytype8f2/SDK385/native8ac build and its original tests separate from the future SDK union. Root owns the source pin/project lock update and shared build. No SDK pin or Mac file was changed in this review.",
+    "Apple signing, actual WidgetKit/Notification/Shortcuts OS surfaces, physical device and final TestFlight remain distinct open acceptance scopes. Do not transplant the companion iCloud identifier into Pinkha final signing map or treat source entitlements as signed-product proof."
+  ],
+  "sourceEvidenceInventory": [
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinPlatform/Sources/HanlinScriptExtensions/HanlinPreparedWidget.swift",
+      "bytes": 12268,
+      "blob": "662a9dd7a4dcebd8a2cb9f8b010497aead35f834",
+      "sha256": "c6de1ead190c0228ea9cb9a842ecbe4d840c53f7bffaa69bf1770fef71d14115"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinPlatform/Sources/HanlinScriptExtensions/HanlinScriptExtensionStore.swift",
+      "bytes": 57913,
+      "blob": "476381c9157e83d704e9ec9410e3098542451905",
+      "sha256": "0085600e6e48bb8e40565a85e081403854639279e82f2bc72664cf7f56e69248"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinPlatform/Tests/HanlinScriptExtensionsTests/HanlinDualWidgetEnginesTests.swift",
+      "bytes": 83986,
+      "blob": "c108823a9409264882e7870cc822cccf569bac3c",
+      "sha256": "53bc610452297522b67593dc6a63e201aa5287acc8ed5b0e5769d94f381b7b5f"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinAppExtensionsSDK/Sources/HanlinNotificationContentUI/HanlinNotificationContentViewController.swift",
+      "bytes": 9040,
+      "blob": "83f31625a0215e848eba0dcf0597b37af31728ad",
+      "sha256": "51d2d6ebb03b74cbcc26ba1449a70c16ba778c102a814e1cf18683f7d04a4eef"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "AI_HLY/Downstream/ScriptingPlatform/HanlinInstalledMiniAppEntity.swift",
+      "bytes": 4392,
+      "blob": "bae6bdefe86ea93e50638c6a881f478caf3456c1",
+      "sha256": "114cdb71d067a0cf3139fe373af2b25617e275fa5aa040a0be71a0801e1283f8"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "HanlinMiniAppsApp/HanlinMiniApps.entitlements",
+      "bytes": 1250,
+      "blob": "a242e2d4ef1639de4544e5dcc383e2e1e2b941b6",
+      "sha256": "3b41191835437afb791dd7d9bfc9287e2051c059ef8c2c368377e8063f31292e"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "HanlinMiniAppsApp/MiniAppsDeveloperStudio.swift",
+      "bytes": 34289,
+      "blob": "0347074b8d3fe2b5af7d7e3c1874bb2ac5ea97bd",
+      "sha256": "ee4df962e7f05b3cf402ae366c50582f70342133b783d625f4d6cc0766d786ea"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/widget-recovery-pinned-independent-review.json",
+      "bytes": 878,
+      "blob": "44cd80b9e1bb6f58ff98e57fb37bc7f82e744768",
+      "sha256": "f3d6faddf7c418cbeab1628fe039b899c887981f4e33d813de8b2067ab72efdf"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/widget-recovery-pinned-node-validation.json",
+      "bytes": 7238,
+      "blob": "5b1c5031b4eda594b0ea2d91e8fb026164e657a6",
+      "sha256": "8cb2f624c68b89aced0ab59363b814f8756885c1d416f76e13f70fb044f41520"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/widget-recovery-source-validation.json",
+      "bytes": 15998,
+      "blob": "366ce5155974accb6410610aa304a580a1da4ce0",
+      "sha256": "9a396d98788eb939c9521ca55f68526b87928db5cb855976c492a693e6109129"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/widget-recovery-independent-review.json",
+      "bytes": 4261,
+      "blob": "824446f6491be79922d72dc5ee21d9571c484e0e",
+      "sha256": "f91233ffeeec1d3d88fc571bba5a6d212aace0ec71aaecf7bcef808e2dc92b13"
+    },
+    {
+      "ref": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "path": "Packages/HanlinAgentSDK/Sources/HanlinAgentCore/HanlinAgentSession.swift",
+      "bytes": 41688,
+      "blob": "27d430b8b3ad8c159c3874cd96cd29694321cf13",
+      "sha256": "b535b7e362b2b8c84b75fe9bfa6367c6905cc259efb1dc3dc2700c568f4dc775"
+    },
+    {
+      "ref": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "path": "Packages/HanlinAgentSDK/Sources/HanlinAgentCore/HanlinHostDispatcher.swift",
+      "bytes": 20452,
+      "blob": "912fbb41d3053f85a01cf6d3556f534a13e83fa8",
+      "sha256": "1fdebf5bfd0b08d35b68a7f3103a5a8addfe3c780aa491e28ba56e147e552796"
+    },
+    {
+      "ref": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "path": "Packages/HanlinAgentSDK/Sources/HanlinHostContracts/HanlinHostIntegration.swift",
+      "bytes": 9826,
+      "blob": "a43fab2862f70897a69372cd6a1eb103dd70723d",
+      "sha256": "caf7beba523d9e462ef8b173b814308d22047cc666aa47a19e1e564162916124"
+    },
+    {
+      "ref": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "path": "Packages/HanlinAgentSDK/Tests/HanlinAgentCoreTests/AgentSessionTests.swift",
+      "bytes": 82770,
+      "blob": "2428a9af588a64b40f0016e84e5ee8f6b3b93fdf",
+      "sha256": "f8ed531a2468be34cf16323c97e89e870912d93c9f2b2b068a06f9f0287f95ef"
+    },
+    {
+      "ref": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "path": "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinAISDKAgentEngine.swift",
+      "bytes": 47666,
+      "blob": "fe1c500c0ff6c20637f3d04dea38a876866c0a52",
+      "sha256": "26b29f02ce571eec9431a424c955b010dd324da0768aa3a2f83637581e629136"
+    },
+    {
+      "ref": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "path": "Packages/HanlinPlatform/Sources/HanlinChatCore/HanlinAISDKRunControl.swift",
+      "bytes": 1389,
+      "blob": "5b6ccf8a27601905e24c442be73d47400133957c",
+      "sha256": "271bebe38767759adac2a49914b8aef4a85c01823232784797ee8055e26aea07"
+    },
+    {
+      "ref": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "path": "Packages/HanlinPlatform/Sources/HanlinScriptUI/HanlinChatUIComponents.swift",
+      "bytes": 8140,
+      "blob": "11ac73b335fa72e300baf0cda8d467df196972b1",
+      "sha256": "30bfafd2261ebbeced35e00b58cb92f435438e5685444b900d2c9d0c648425a8"
+    },
+    {
+      "ref": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFenceDocument.swift",
+      "bytes": 5048,
+      "blob": "3035f918160aaf205ade268f7984fc46f4967e94",
+      "sha256": "d0697232f0e0be61bee17cac86323709f71cd3461bbec14293bc50c906e0302d"
+    },
+    {
+      "ref": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFenceEngine.swift",
+      "bytes": 10124,
+      "blob": "fb3d299c8ecd0b8ff09ec56edb36b46c773a2048",
+      "sha256": "6315493e9f32898274c3e2663abf19ce8dd4483e92b2e6db2ce7d943972b4977"
+    },
+    {
+      "ref": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "path": "Packages/HanlinPresentationSDK/Sources/HanlinChatUI/CodeFences/ChatCodeFencePayloadRetention.swift",
+      "bytes": 2078,
+      "blob": "9ca4020fb047fb09dd6cf8a6d3a527107dfc624d",
+      "sha256": "e41b2bb16fe36dbece8fff2bf0c7074244a7ab8c13244d0a1571f60044e79b4c"
+    },
+    {
+      "ref": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "path": "Packages/HanlinPresentationSDK/Tests/HanlinChatUITests/ChatCodeFencePayloadRetentionTests.swift",
+      "bytes": 7001,
+      "blob": "45baf575d666c580c8e7b79cfe6591adb82aac7e",
+      "sha256": "5781153ac5b7b85476b0c8b1e6f1d73df409a728657d247ad78a9584e46d75dd"
+    },
+    {
+      "ref": "45d5d90512c304d3457774b185741b7ef7d801db",
+      "path": "docs/validation/pinkha-code-fence-retention-20261127.md",
+      "bytes": 3630,
+      "blob": "33aff15a80010d0785ef85d0052e635414963958",
+      "sha256": "642cee7a41903ab9cbf29e0efba1af864b64415a3f44888f9d5fd8d7eb9739a6"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/ci-45927192346-app-build-failure/artifact-manifest.json",
+      "bytes": 13151,
+      "blob": "dab11786bba2a1dffe68dfde94273804855e5d81",
+      "sha256": "bb68893f02ad10fe299982b90a8822081e2662bbddf2d036af0569399e6fd665"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/ci-45927192346-app-build-failure/root-verification.json",
+      "bytes": 420,
+      "blob": "720c27535f4c9c43f29a9a73884fe4fd661231e1",
+      "sha256": "32e2d1dc6114c166783ccf91ce064092a789824bee81581ed4cda72849b2f739"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/ci-45927192346-phase1/README.md",
+      "bytes": 351,
+      "blob": "2bad1aec02023182af7e39ee4d95b6bfa624b21d",
+      "sha256": "2e9a30d6a5c4dc200c1de3cf2f1303b8d042638f1af424ae27da493e5607945f"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/ci-45927192346-phase1/root-review.json",
+      "bytes": 314,
+      "blob": "7c8804aedf0b99c59b9598fa4e4b28030c977033",
+      "sha256": "5cd12f3bec45085c990d1d4d3730ad7ff74775c9799f63f1a70224bcde3aa067"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/host-2a0b19b7-pass-and-native-seal/README.md",
+      "bytes": 400,
+      "blob": "8ada499fa4a45b0ca9fc45077e09ed3e145a0466",
+      "sha256": "e19f6d85beb657a63e6874c4f7a3e04bcbb38efa1654ef64de0e88fa91d759ba"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/host-2a0b19b7-pass-and-native-seal/manifest.json",
+      "bytes": 9876,
+      "blob": "89a14aabc1307f6e0c90c85705800aa8f35d704c",
+      "sha256": "4de2cfd0a522d2432dc7fce754809b65fe0c25b3b4e3717f2b3131f52ce268a4"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/host-2a0b19b7-pass-and-native-seal/root-verification.json",
+      "bytes": 1138,
+      "blob": "a049113d14c93f6d6253d6f0cb0f10d0980b28b6",
+      "sha256": "fc4d0db7515aa27ed128ebb4f2d1e87ec34ed5c21c56a31fff6f0c0474b3afb8"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/host-e6b9630e-pass/README.md",
+      "bytes": 772,
+      "blob": "82d8667d657d52ba2cb344105c7226a1dd1f0d5d",
+      "sha256": "af2221988716ec23b11fc2d232e4e5efebcb66bd7547f40fb72383b3c4418e9f"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/host-e6b9630e-pass/manifest.json",
+      "bytes": 13181,
+      "blob": "c6208d7d9bf4580107d6b93cea660ba901c02f11",
+      "sha256": "ab7ed9bdcf2ea24d671ade8cb468c86a2a5122837f4717090b95e8018bc6aa6b"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/host-e6b9630e-pass/root-review.json",
+      "bytes": 891,
+      "blob": "c175316865bce99477077a9a246c982a41ff69e6",
+      "sha256": "12f96694a52ea4d22127a9f9dbd4c4f77488b8dc87ddcb1c19253f9b9af4de07"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/host-sdk-0456adbe-pass/README.md",
+      "bytes": 885,
+      "blob": "2a5d25d21e81da514816e2a5dee7811276558d88",
+      "sha256": "c68cd9da001d31ee27dd82b2ab2f4e32895b80945032f58c6bb142129b7c2799"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/host-sdk-0456adbe-pass/manifest.json",
+      "bytes": 14013,
+      "blob": "155f5c13a396f87865c86e458c21cca3e24ded3c",
+      "sha256": "1695ce91cd613a38a244596b4b23d7164d568421f3668a820c4591b5f32fe149"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/host-sdk-0456adbe-pass/root-review.json",
+      "bytes": 780,
+      "blob": "45965364c199073cb8819595cdb3e3be1a71fb88",
+      "sha256": "d35748969df7fd061330c44bc2d9d95af004bcebebf8181cd44fc57291a235e1"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/native-package-16b4af44-pass/README.md",
+      "bytes": 879,
+      "blob": "0cd3e8e45c0657ee0361d532012a0b059f151e4b",
+      "sha256": "bf1056ead8a27b63c692ec9c80494f673c80a4b06e31ed70dadaa878d4e5f3fb"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/native-package-16b4af44-pass/manifest.json",
+      "bytes": 13883,
+      "blob": "f30360dc4d126f8690cbbfffedfff215dbfa6512",
+      "sha256": "fda0480944888c94b1a03027f349c4eb100b7a6c4f753ed5e9248de4ccb24ebd"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/native-package-16b4af44-pass/root-review.json",
+      "bytes": 778,
+      "blob": "01a4e77c155037913fc4a61c6743af71bcddce7d",
+      "sha256": "7f74121f8ddd12a643c5be83fe25d6b2d10dbdd20726ab9def8ccf73d725ba7a"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/notification-conformance/README.md",
+      "bytes": 1226,
+      "blob": "164bed9ce9ec132b7b2901bece6f76462e39b1ae",
+      "sha256": "1e6162ee3350c671d8854687e43e3fff1d94f9da898f69c807da23265f866850"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/notification-conformance/original-compiler-diagnostic.json",
+      "bytes": 54664,
+      "blob": "13de982a5ca0de0ee79439bbdcc6446e620c3e4a",
+      "sha256": "d23388c3298f7dececeda034123f4a796b5d5bf2dc1faa5f7a8559cca9366df2"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/notification-conformance/receipt.json",
+      "bytes": 4569,
+      "blob": "e51aea39da79ffcc1e7d32626a2f03c79f9ba572",
+      "sha256": "8995578ff9d4c26667a9c1edc435f01790a2412038e892e129c4ff7c7b0c816c"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/paired-4cb22112-studio-shadow-failure/README.md",
+      "bytes": 400,
+      "blob": "8ada499fa4a45b0ca9fc45077e09ed3e145a0466",
+      "sha256": "e19f6d85beb657a63e6874c4f7a3e04bcbb38efa1654ef64de0e88fa91d759ba"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/paired-4cb22112-studio-shadow-failure/manifest.json",
+      "bytes": 7708,
+      "blob": "747a5418f9e36ff3d5b7dc1f41772a00cc004c7e",
+      "sha256": "1ba100f368326e7cfdff759d5e88303d19c12e7a4969c3fcfa69607bd6e7ab8d"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/paired-4cb22112-studio-shadow-failure/root-verification.json",
+      "bytes": 735,
+      "blob": "6239480bea2d92a4bcc32c87baa61fe0bce42b3f",
+      "sha256": "c944821b042370c836f49cfb90c4d48e4ac09d894c277934cb3bb78353c4aefe"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/paired-f103996c-index-conformance-failure/README.md",
+      "bytes": 463,
+      "blob": "2fa6e917ac5d3b9662019941fe2671e5ae2609b4",
+      "sha256": "38c398109bf048d9274a4f5c0d754e8cf5fe5145f6c367b44798003e088fd691"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/paired-f103996c-index-conformance-failure/manifest.json",
+      "bytes": 7730,
+      "blob": "f5de879e680048457bd0092b8aea595af44b1423",
+      "sha256": "23623cfae0e3416811bc5d9b80beabef9ef53b5dbaff7bc460cb20bc4cf0694a"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/paired-f103996c-index-conformance-failure/root-review.json",
+      "bytes": 833,
+      "blob": "b0e0fc9309cf96fed07cd5c2f83c674d8e00cc3d",
+      "sha256": "2e2ffa6b4a5e126d39f1ccb8f21d83a2b91a32287b695d1b24a9048c1a959e6b"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/paired-f103996c-launch-correction/README.md",
+      "bytes": 454,
+      "blob": "301af5aa7763dbd72fd0666268290227bd6255e1",
+      "sha256": "c4787d204d83a53acc7e19b6b27f653b149e9efe36b2c41b88e7b14a0acce2d5"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/paired-f103996c-launch-correction/manifest.json",
+      "bytes": 714,
+      "blob": "2bb9b053a0aee987b8903e55b147e1ee570454e6",
+      "sha256": "84563778187ea34d6135e467403bf868e53a9fc8f06c550b97ca0a3a0b434457"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/paired-f103996c-launch-correction/root-review.json",
+      "bytes": 795,
+      "blob": "cdf4b6fde290b0692ec947289314909735e940d4",
+      "sha256": "16ef5a4799f26e091f8af3db157cbf9097826a2cff6b9a8ff51b12178a577d87"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/widget-fixture-routing/README.md",
+      "bytes": 815,
+      "blob": "8c778e419c20f5c8ea069494c3104ef4fa7ad73f",
+      "sha256": "8eb4ae5c1dbf8d93687b5f481725b1293b9058b61ae019c0162b94da07cb5fa2"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/widget-fixture-routing/original-test-receipt.json",
+      "bytes": 1017,
+      "blob": "11df898ba04bf96ca303ac821b75f1b274ed639a",
+      "sha256": "e1b2f5375c6f5dbe4acd06738fd79680c442579a72f3f398833cef532926991d"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinNativeScriptRuntime/Sources/HanlinNativeScriptCoreSupport/HanlinNativeServicesBridge.m",
+      "bytes": 35889,
+      "blob": "7bbc804da241fe31d6e860eaedd064a192b97e49",
+      "sha256": "28909ea2c10145989c4605613f0ac6cc0185a5b34397bab70f8253291a004b3d"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinNativeScriptRuntime/Sources/HanlinNativeScriptRuntime/HanlinNativeScriptHostVersions.swift",
+      "bytes": 236,
+      "blob": "4967c0af4a8c47fdb64c4bff61a68e98300c8337",
+      "sha256": "caee618f90412968d0390d1cee3c9938417de019fa64a372f70a3ac2682e8d78"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinNativeScriptRuntime/Package.swift",
+      "bytes": 1695,
+      "blob": "8c8005bb9c821c4f99e9739755225c8717890629",
+      "sha256": "88a4926e884e6804246a7d077efed3837271886a9825585b1e561b4ce1576120"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinPlatform/Package.swift",
+      "bytes": 10823,
+      "blob": "2d4e529c825939fbc302539852da52cdf7cbbaf9",
+      "sha256": "78d7081d0e197c3e99746e5b3e476b41280fc5b32110035fab31a3e949cb4dab"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinAgentSDK/Package.swift",
+      "bytes": 3056,
+      "blob": "fcf99a97a6fab9fa5885c44521e950da37467405",
+      "sha256": "16becff5f9e626f171d21f0277684c249c773f3169334fc9a63a37876c44a36e"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinAppExtensionsSDK/Package.swift",
+      "bytes": 3120,
+      "blob": "ff5b710bca4d92dc87ac623abeff0a7847e7d4b5",
+      "sha256": "55a32b484dfecced9c96546063ce5f207c186add846fbc47711b2fb93d77cd86"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinPresentationSDK/Package.swift",
+      "bytes": 4077,
+      "blob": "ef1e46be07c7b0cba7b5796b3395e6cabdb89484",
+      "sha256": "951afd5b85422e7d6ed99cf497602e7122b988c1d956132bd9c00e04c695b4c3"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Scripts/ProductSplit/run_paired_acceptance.py",
+      "bytes": 57577,
+      "blob": "1f2ac1ad08231a3cd3ce9f9717b53f31d0333d53",
+      "sha256": "872a7f6e7f786e2d578a54e3107bbe00e42a8dd2238e23f10fd656a63d9ab3f7"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/native-union-16b4af44.json",
+      "bytes": 60562,
+      "blob": "e51005071347c574ecf487d91fac6a479a9eb02e",
+      "sha256": "f6ab65b8a897238f52cecefa2cdfe43f38bf359bbd82bbf0251fc7a7f34d3f5e"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinPlatform/Tests/Fixtures/LegacyWidgetStore/HanlinScriptExtensionContracts.swift",
+      "bytes": 10670,
+      "blob": "de9574023203fa460fe73b12bf489daa5cbda876",
+      "sha256": "da5f1877fc9ce1a1f5b49e67429935c2514bb6b00e977302679107bc0413c28e"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinPlatform/Tests/Fixtures/LegacyWidgetStore/HanlinScriptExtensionStore.swift",
+      "bytes": 5562,
+      "blob": "daf503528209735803973871aa283805ed3c77e1",
+      "sha256": "c44d53ad45e2b0b42ad2eb488cf971c814ca8ffa9a8acf415a369504d9944ab4"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinPlatform/Tests/Fixtures/LegacyWidgetStore/PROVENANCE.txt",
+      "bytes": 123,
+      "blob": "7d7328062c5d7b68059bfb9744fe9857ca5c2c39",
+      "sha256": "f25ad5faf038b5e38d4530e1c1d3d6dd1449fdf0be3b9a4061a1a1ec1d981487"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinPlatform/Sources/HanlinScriptExtensions/HanlinWidgetLastSuccessfulRender.swift",
+      "bytes": 4838,
+      "blob": "e23de4909d0b48589f4f806fa17cd0740dc58c3f",
+      "sha256": "60f21b8917461d7b1b4db94034644d08f11c433bb1b4c1f774388adc0b267787"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "AI_HLYTests/NativeScriptRuntimeWireTests.swift",
+      "bytes": 23501,
+      "blob": "ab113355ec8b87b34bc07216806b08f005dc1c36",
+      "sha256": "c184923313576d396bbf3ee44759a42905145990011352383ca9935f134597db"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "AI_HLYTests/NativeScriptEnvironmentOwnershipTests.swift",
+      "bytes": 4292,
+      "blob": "de9a1934ac75698850c8a729999953f13712ce1b",
+      "sha256": "1444d7ec786b3a9a0688b37058187dd02fb88006ced60e8c641cbc3d72dc8578"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "AI_HLYTests/NativeScriptShareDeliveryTests.swift",
+      "bytes": 7290,
+      "blob": "42d342a514dbf5589004b524a7cbf30b34183d5c",
+      "sha256": "6aa9c15d739096aaf8ec7f0e929cbde37996de50a8a9178288d3cd2e9812a4ad"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "AI_HLYTests/NativeScriptSharedModuleLinksTests.swift",
+      "bytes": 4435,
+      "blob": "10831a8c576e5c0e8f208b181ac50f60930b22f8",
+      "sha256": "ac912366f4be2987454daceeb03c1251b42ddaeaf7f6d3519893ab2eb1061862"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "Packages/HanlinPlatform/Tests/HanlinScriptExtensionsTests/HanlinInvocationQueueTests.swift",
+      "bytes": 25447,
+      "blob": "477b432835a9dba0c0b9aa4220604845d61efba2",
+      "sha256": "e6ae932f6fd5fbbd8fe6c605b26d7a3221cea4feb68999d1d1edab2c8abe638e"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/ci-45927192346-phase1/independent-phase1-review.json",
+      "bytes": 8203,
+      "blob": "2bc973026bc1a2668112e4f462bee01d367e8317",
+      "sha256": "b8bc1a86024943e85d48c521d914c829ad00d65277945c0d307bea4911ca8bc9"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/miniapps-icloud-documents-20261127/focused-test-receipt.json",
+      "bytes": 2227,
+      "blob": "6567a8b9d13b4e13a79d44c74cd53926c4650e8e",
+      "sha256": "65ce92526321a06e933baa1408d70988516a10a7e58206544217baf713edd4fb"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/miniapps-icloud-documents-20261127/miniapps-selected-profile-icloud-grants-20261127.json",
+      "bytes": 1108,
+      "blob": "c94ee308f9098d3382f804f53ba7e0e217cd7bca",
+      "sha256": "131ac0520b26d7215231112b14231fd068c464656a1195a63757fce4f36e406b"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/miniapps-icloud-documents-20261127/source.json",
+      "bytes": 4435,
+      "blob": "6fc0bc830da61d7ffeeb6e9b6e6c16b01c426037",
+      "sha256": "7ce652afb21fc2de65fbc4bfcf3ff5a71299b3b2850f23cdc90199d8fb773f5a"
+    },
+    {
+      "ref": "866d2d3c60525e32eae27564869e6dba024e625c",
+      "path": "docs/two-wave-integration/20261127/miniapps-icloud-documents-20261127/root-retention.json",
+      "bytes": 1431,
+      "blob": "a0e334e968fdfd28f8ca35e297ae4ea198608561",
+      "sha256": "1f8ad839bfd10759f49d34238d5340c4b3ce474fa4565d28fb1b66e939a33fb0"
+    }
+  ],
+  "instructionsAndOwner": {
+    "reader": "sudo -n -u chatgpt-agent; actual worktree uid1002/gid1002 verified",
+    "commonGitDir": "/mnt/development/projects/git-mirrors/hanlin-ai.git",
+    "foreignWorktree": "/mnt/development/projects/worktrees/hanlin-miniapps-widget-recovery-os-20261127",
+    "foreignHead": "5ce4d1263c48e24e3d8858a10b3cb9125f2c99b1",
+    "foreignBranch": "codex/hanlin-miniapps-studio-os-20261127",
+    "untrackedToPreserve": "docs/two-wave-integration/20261127/STUDIO_OS_ACCEPTANCE_GAPS.md",
+    "rootAGENTSBlob": "9b44996af167f35c6e660695f651e4cfb20bd82b",
+    "ancestorAGENTSSHA256": "215f6288bbe7882123ceeedb9bceb31abe74fed93afeb68da49d0b92bf09cb68",
+    "read": "Standing owner authorization, one writer/native job/cache owner, exact impact-based evidence reuse and source/build/simulator/device distinction. PROJECT_AGENT_GUIDANCE, authorization record, TEAM/PROJECT_ASSIGNMENTS/ASANA_POLICY, project board relevant entries and roni/tomer role files retained. Root alone can create the proposed isolated union worktree; foreign dirty state remains unchanged.",
+    "noNewPermissionGate": true
+  },
+  "readFailuresRetained": [
+    "github fetch_file returned empty content for >1MiB archive; generic fetch rejected binary UTF8 and fetch_blob raised UnicodeDecodeError. Exact failures retained; no invented binary content.",
+    "Initial ubuntu/chatgpt-agent Git read rejected dubious ownership. Stat established actual chatgpt-agent owner; subsequent readonly Git used that existing owner. No safe.directory/chmod/chown/credential/group changes.",
+    "First archive reader had a local syntax error before any Git or artifact access. Two subsequent complete reads exceeded Sentinel output budget; original truncated outputs retained and not accepted as full proof. Bounded v4 output is complete, hashes validated locally; no native/compiler/test execution occurred."
+  ],
+  "artifacts": [
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/git-intake.json",
+      "bytes": 1492620,
+      "sha256": "2ae497007ba42da73c83d0d7bfc9523cfdbfb9785d63935a8ab5f0ea62ddb8b5"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/package-trees.json",
+      "bytes": 2244839,
+      "sha256": "fbf8c5952b0a7c15aef14d4cb4cae5c21a196341c3d731cc4289bd4b4e1a5ac0"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/source-index1.json",
+      "bytes": 3444,
+      "sha256": "41cb8bfc10d14720b89f406f4a03b42547f10f5ec7b4785b551f988df6d251a4"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/source-index2.json",
+      "bytes": 13233,
+      "sha256": "6d5eb450f5c2cfd181816e743066f78b21d3056c20f14a3873e3ca566fcb2c6f"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/source-index3.json",
+      "bytes": 2653,
+      "sha256": "36823013e29b1e96c4f25c8f9db7f56f629c5735f5c22811c659eb1f6de9cd37"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/source-index4.json",
+      "bytes": 1293,
+      "sha256": "1656163883961e5934d53679b786ed3d4d063e2f014466d0a3385ddcfc0de936"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/source-index5.json",
+      "bytes": 1476,
+      "sha256": "0358b3c5cc0320c566319a1cde8e4c49731570a5b725e1e6ce1a84d729a2bd88"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/source-index6.json",
+      "bytes": 1658,
+      "sha256": "3436e74b5feca5d5b5d7410e8eaa62b3924f80e63a038607de95406d3744f05e"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/expected-union.json",
+      "bytes": 6492,
+      "sha256": "a9a9d2a6af6afd8a43158ec3f2f7e0603a00e9e04ae221ff124e337910702bcc"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/pure-union-original-read.json",
+      "bytes": 13037,
+      "sha256": "1cd211b0228bf038432fbddfcca8e48c47ffd2f6df02a20b9233a68961d5f124"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/compute_pure_union.py",
+      "bytes": 2797,
+      "sha256": "30d2af5f8d47f089baf5683e3ef089cff4835e7cc0e558dd255128ae41e2e6d9"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/union-closure.json",
+      "bytes": 23979,
+      "sha256": "0af35f40dedafa591fb56e3e50d0edad0f20bcbb114f2640bcfeec9cd32229b6"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/original-union-closure-read.json",
+      "bytes": 47699,
+      "sha256": "5e11d009eb2eb340a3653c032eab2b618455ce62c3e38cc6187b59fa2f6dca62"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/read_union_closure.py",
+      "bytes": 1853,
+      "sha256": "019bb89df890a3e5aa5ed76bd75f9ff9c0b3d059b37361f87bdfd2fc7732f31e"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/native-archive-verification.json",
+      "bytes": 7983,
+      "sha256": "21832db6a331f43039fa34be48dc80531c51becd140c26d551f651b3b22e45f5"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/original-archive-verification.json",
+      "bytes": 33249,
+      "sha256": "216554c561ef667f8c35c36bca84a7aa13b257ece7c492262b716e20e0f0835d"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/original-archive-read-v4.json",
+      "bytes": 195507,
+      "sha256": "7a3deb9f1a0e5480203ea10596a191aaa7b7aa28a07de2117f13bff938f7abbc"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/read_original_archives_v4.py",
+      "bytes": 3523,
+      "sha256": "ed5be444cbf0da234f1ecdd71ca705757d7955f7cf921262d119524c21f94a1a"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/ci-artifacts-verification.json",
+      "bytes": 1583,
+      "sha256": "be1fc3074dfdeac3d7535e552373f808b93a27b0324dd9d3ecc599d8b657ab03"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/oracle-owner-instructions.json",
+      "bytes": 13849,
+      "sha256": "687222564a1431c418fef6b1628aa084f8d9da5d7cd1fc56d95e9d21a5e504bd"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/repository-agents.json",
+      "bytes": 14590,
+      "sha256": "983fcee3b47862f486d45a01bd47fc8bf738c270a9dc8af4a0e0b13441f1bfaa"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/project-guidance-read.json",
+      "bytes": 116848,
+      "sha256": "f5d838e26e2e17530ae25625edf32dc3dac9335eaa1905342b2c1fa8fcbfe6d6"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/role-guidance-read.json",
+      "bytes": 2542,
+      "sha256": "027eb5b79a0798823ede52d13a53d9251b1386aea2a17c32da3ce8571c80731e"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/oracle-read-preflight.json",
+      "bytes": 1373,
+      "sha256": "628c2c2b4deb2393fe260b1c00fbddc38d49df99cf9d1fc598e6281e70b266c7"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/oracle-artifact-stat.json",
+      "bytes": 3484,
+      "sha256": "e03cde6ffbeee36502488524ad02d6a857c8af7baf12c7bb76217611440be569"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/oracle-owner-read-preflight.json",
+      "bytes": 451,
+      "sha256": "9d59b46c9aaee4f6d18d3784941f4e8e773a058afbbb4fb42f836c68df4c8ffc"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/archive-host2a-read-attempts.json",
+      "bytes": 701,
+      "sha256": "cfd245281fffb9f4a52fdc843abd81c57386a19e616378a33c96e72776706b77"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/original-archive-read.json",
+      "bytes": 1582,
+      "sha256": "d1b8a67b87f51e3be44d121f08d3e3f33b61f4b6596a3d56c5c48ae17e286ddd"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/original-archive-read-v2.json",
+      "bytes": 248587,
+      "sha256": "d66841a662584650cbb29d01a4e0ffc5d0ab15dc5537050220ca478eed779011"
+    },
+    {
+      "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-union-review/original-archive-read-v3.json",
+      "bytes": 248613,
+      "sha256": "7e1ea4b5cb916621a6fe32f26c04fab7d82586a6d69d027aea9ad856e59deabc"
+    }
+  ],
+  "actions": {
+    "gitSourceMutations": 0,
+    "gitObjectWrites": 0,
+    "tests": 0,
+    "builds": 0,
+    "macCalls": 0,
+    "accountMutations": 0,
+    "appActivations": 0,
+    "requestedFinalPinChanged": false
+  }
+}

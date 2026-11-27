@@ -1,0 +1,15 @@
+--- pinkha-w1-canonical-definition-review/originals/failed-attempts/native-attempt2/controller.py
++++ pinkha-w1-canonical-definition-review/git/0925ff79df8f70be288f96ea117dbd7059e24219/Tools/AnyEngineValidation/native_canonical_definition/run_native_canonical_definition_linux.py
+@@ -380,10 +380,10 @@
+         before_account = inventory(original_account)
+         block_bytes = os.statvfs(args.output).f_frsize
+         copy_upper_bound = 0
+-        for base, folders, files in os.walk(original_account, followlinks=False):
++        for copy_walk_dir, folders, files in os.walk(original_account, followlinks=False):
+             copy_upper_bound += block_bytes
+             for name in files:
+-                info = (Path(base) / name).lstat()
++                info = (Path(copy_walk_dir) / name).lstat()
+                 assert stat.S_ISREG(info.st_mode)
+                 copy_upper_bound += ((info.st_size + block_bytes - 1) // block_bytes) * block_bytes
+         assert copy_upper_bound <= 9 * MIB, "measured source-account copy bound changed"

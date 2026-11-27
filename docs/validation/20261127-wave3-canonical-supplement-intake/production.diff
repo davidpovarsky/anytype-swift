@@ -1,0 +1,80 @@
+--- pinkha-w1-canonical-definition-review/git/5235bf902f8820fdc41fe802265ff5444407b363/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift
++++ pinkha-w1-canonical-definition-review/git/0925ff79df8f70be288f96ea117dbd7059e24219/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeImportedDefinitionDirectory.swift
+@@ -12,6 +12,14 @@
+ 
+ public enum AnyNativeImportedDefinitionOwnerKind: String, Sendable {
+     case type = "types", collection = "collections"
++}
++
++/// A canonical schema correspondence does not equate source and destination
++/// values. In particular, destination signers/clocks remain destination facts.
++public enum AnyNativeCanonicalValueSemantics: String, Sendable {
++    case ordinaryProperty
++    case translatedIdentity
++    case destinationDerived
+ }
+ 
+ /// These addresses are deliberately different. An embedded choice option is
+@@ -43,6 +51,16 @@
+     public let sourceJSONViewSHA256: String
+     public let address: AnyNativeImportedDefinitionAddress
+     public let originalDescriptor: AnyJSON
++    public var canonicalValueSemantics: AnyNativeCanonicalValueSemantics? {
++        guard canonical, case .property(.type, let key) = address,
++              Data(key.ownerID.utf8) == Data("any".utf8) else { return nil }
++        switch key.propertyID {
++        case "name", "description": return .ordinaryProperty
++        case "id", "spaceId", "type": return .translatedIdentity
++        case "author", "createdAt", "modifiedAt", "modifiedBy": return .destinationDerived
++        default: return nil
++        }
++    }
+     /// The source binding and current native status still own their respective
+     /// authority. Resolving an address cannot admit a whole source migration.
+     public var permitsDestinationWrites: Bool { false }
+@@ -62,12 +80,18 @@
+     public let binding: AnyPreparedMigrationPlanBinding
+     public let source: AnyDestinationSourceBinding
+     public let entries: [AnyNativeImportedDefinitionEntry]
++    /// Full original protobuf/JSON provenance for newly resolved canonical
++    /// definitions outside the saved plan's current-content selection. This
++    /// material is retained separately from the current native descriptor.
++    public let supplementalCanonicalDefinitions: [AnyDestinationCanonicalPropertyBinding]
+     public let unresolvedSourceDefinitionIDs: [String]
+     public var permitsSourceAdmission: Bool { false }
+     private let byID: [Data: AnyNativeImportedDefinitionEntry]
+ 
+-    public init(plan: AnyDestinationMigrationPlan, mappings: [AnyDestinationMigrationMapping]) throws {
+-        guard mappings.count == plan.items.count, !plan.source.definitionMembers.isEmpty else {
++    public init(plan: AnyDestinationMigrationPlan, mappings: [AnyDestinationMigrationMapping],
++                supplementalCanonicalDefinitions: [AnyDestinationCanonicalPropertyBinding] = []) throws {
++        guard mappings.count == plan.items.count, !plan.source.definitionMembers.isEmpty,
++              supplementalCanonicalDefinitions.count <= 9 else {
+             throw AnyNativeImportedDefinitionError.invalidMappings
+         }
+         var keyed: [Data: AnyDestinationMigrationMapping] = [:]
+@@ -212,6 +236,24 @@
+             default: continue
+             }
+         }
++        for canonical in supplementalCanonicalDefinitions {
++            // The strict binding has a closed native mapping. Callers supply
++            // exact captured evidence, never a chosen native alias or value.
++            try canonical.validate()
++            let evidence = canonical.evidence
++            try canonical.requireSource(plan.source, objectID: evidence.sourceObjectID)
++            let address = AnyNativeImportedDefinitionAddress.property(ownerKind: .type,
++                key: try .init(ownerID: canonical.ownerID, propertyID: canonical.propertyID))
++            guard !entries.values.contains(where: { $0.canonical && $0.address == address }) else {
++                throw AnyNativeImportedDefinitionError.invalidOrigin(evidence.sourceObjectID)
++            }
++            try add(.init(sourceSpaceID: evidence.sourceSpaceID, sourceObjectID: evidence.sourceObjectID,
++                sourceUniqueKey: evidence.snapshot.uniqueKey, sourceSnapshotSHA256: evidence.snapshotSHA256,
++                sourceJSONViewSHA256: evidence.viewSHA256, address: address,
++                originalDescriptor: try AnyDestinationContentProjection.property(canonical.expectedNativeDescriptor),
++                intent: nil, mapping: nil, expectedProvenance: nil, expectedParentProvenance: nil, canonical: true))
++        }
++        self.supplementalCanonicalDefinitions = supplementalCanonicalDefinitions
+         binding = plan.binding; source = plan.source; byID = entries
+         self.entries = entries.values.sorted { Data($0.sourceObjectID.utf8).lexicographicallyPrecedes(Data($1.sourceObjectID.utf8)) }
+         unresolvedSourceDefinitionIDs = plan.source.sourceObjectIDs.filter {
