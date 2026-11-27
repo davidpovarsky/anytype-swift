@@ -87,6 +87,7 @@ on:
           - wave15-acceptance
           - wave3-native8ac-export
           - wave3-native8ac-stream-export
+          - wave3-native-dependencies-export
           - wave3-hosted-shared-build
       shared_build_plan_json:
         description: Exact root-reviewed JSON for the original native8ac export or hosted shared App build
@@ -191,6 +192,89 @@ permissions:
   actions: read
 
 jobs:
+  wave3-native-dependencies-export:
+    if: ${{ inputs.route == 'wave3-native-dependencies-export' }}
+    permissions:
+      contents: read
+    concurrency:
+      group: pinkha-original-native-dependency-export
+      cancel-in-progress: false
+    runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_OPTIONAL_LOCKS: '0'
+      PLAN_SHA256: ${{ inputs.shared_build_plan_sha256 }}
+    steps:
+      - name: Admit fresh run-owned checkout and receipt paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e "$GITHUB_WORKSPACE/control-native-dependencies-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          test ! -L "$GITHUB_WORKSPACE/control-native-dependencies-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          test ! -e "$RUNNER_TEMP/pinkha-original-native-dependencies-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          test ! -L "$RUNNER_TEMP/pinkha-original-native-dependencies-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          printf 'CONTROL_ROOT=%s\n' "$GITHUB_WORKSPACE/control-native-dependencies-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_ENV"
+          printf 'EXPORT_ROOT=%s\n' "$RUNNER_TEMP/pinkha-original-native-dependencies-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_ENV"
+          printf 'PLAN_FILE=%s\n' "$RUNNER_TEMP/pinkha-native-dependencies-plan-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json" >> "$GITHUB_ENV"
+      - name: Checkout only immutable dependency ingress controls
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: control-native-dependencies-${{ github.run_id }}-${{ github.run_attempt }}
+          persist-credentials: false
+          set-safe-directory: false
+          clean: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Tools/PinkhaDualEngineRuntime/native_dependency_ingress/
+            /.github/workflows/torah-inspector-ipados27.yml
+      - name: Read exact checkout identity and original archive before upload
+        shell: bash
+        env:
+          PINKHA_HOSTED_PLAN: ${{ inputs.shared_build_plan_json }}
+        run: |
+          set -euo pipefail
+          /opt/homebrew/bin/python3.12 -I -B -c 'import platform,sys; assert sys.version_info[:2] == (3,12) and platform.machine() == "arm64"'
+          git -C "$CONTROL_ROOT" rev-parse HEAD | tee "$RUNNER_TEMP/pinkha-native-dependencies-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.git-head.log"
+          test "$(git -C "$CONTROL_ROOT" rev-parse HEAD)" = "$GITHUB_SHA"
+          git -C "$CONTROL_ROOT" status --porcelain=v1 --untracked-files=all | tee "$RUNNER_TEMP/pinkha-native-dependencies-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.git-status.log"
+          test ! -s "$RUNNER_TEMP/pinkha-native-dependencies-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.git-status.log"
+          /opt/homebrew/bin/python3.12 -B "$CONTROL_ROOT/Tools/PinkhaDualEngineRuntime/native_dependency_ingress/ingress.py" before \
+            --control "$CONTROL_ROOT" --plan "$PLAN_FILE" --plan-sha256 "$PLAN_SHA256" --output "$EXPORT_ROOT" \
+            2>&1 | tee "$RUNNER_TEMP/pinkha-native-dependencies-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.before.log"
+      - name: Stream the one existing original compressed archive into an Actions artifact
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Pinkha-Original-Native-Dependencies-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /Users/m1/development/anytype-d-active-20261125/native-immutable/inputs-11619a9928d6-8393d79/native-dependencies.tar.gz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 30
+      - name: Requalify all original bytes and metadata and bind the actual artifact
+        shell: bash
+        env:
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          set -euo pipefail
+          /opt/homebrew/bin/python3.12 -B "$CONTROL_ROOT/Tools/PinkhaDualEngineRuntime/native_dependency_ingress/ingress.py" after \
+            --control "$CONTROL_ROOT" --plan "$PLAN_FILE" --plan-sha256 "$PLAN_SHA256" --output "$EXPORT_ROOT" \
+            2>&1 | tee "$RUNNER_TEMP/pinkha-native-dependencies-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.after.log"
+      - name: Preserve exact original ingress receipts on success or failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Pinkha-Original-Native-Dependency-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/pinkha-native-dependencies-plan-${{ github.run_id }}-${{ github.run_attempt }}.json
+            ${{ runner.temp }}/pinkha-native-dependencies-${{ github.run_id }}-${{ github.run_attempt }}.*.log
+            ${{ runner.temp }}/pinkha-original-native-dependencies-${{ github.run_id }}-${{ github.run_attempt }}/
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 30
+
   wave3-native8ac-export:
     if: ${{ inputs.route == 'wave3-native8ac-export' }}
     permissions:

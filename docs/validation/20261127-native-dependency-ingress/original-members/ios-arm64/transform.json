@@ -1,0 +1,27 @@
+{
+  "contract": "pinkha-native-embedded-llvm-removal-v2",
+  "verified": true,
+  "tool": "Ubuntu LLVM objcopy18.1.3",
+  "toolSHA256": "76638bb89898a6d51c7c2c6ca2ac89bc23c38f74a4124f51e56805204de1d604",
+  "command": [
+    "/mnt/development/projects/evidence/migration-final-20261125/llvm-native-bitcode-tools/llvm-objcopy",
+    "--remove-section=__LLVM,__bitcode",
+    "--remove-section=__LLVM,__cmdline",
+    "/tmp/pinkha-dual-native-b745-composition-20261125/original-ios-arm64.a",
+    "/tmp/pinkha-dual-native-b745-composition-20261125/native-dependencies/ios-arm64/libtantivy_go.a"
+  ],
+  "sourceSHA256": "ee38c4bda5cd84be9f859cba8436f4c71367a74c9f9b83d79c1367f47f1cf56a",
+  "nativeSHA256": "598f4d40afa384f5364a234bffd07133a31f80c2bb4228491382fd95ff6e3e0e",
+  "sourceBytes": 45478536,
+  "nativeBytes": 37144736,
+  "memberCount": 791,
+  "nativeCodeDataSymbolsRelocationTargetsUnchanged": true,
+  "nativeSemanticInventorySHA256": "5a7d46dbecb89887fd9d61502b9c01e29d3d4db42b7439406ca74f88d47d2154",
+  "nativeExternalSymbolCount": 50260,
+  "removedLegacyLLVMSections": 474,
+  "goLTOGuardDisabled": false,
+  "symbolRecheckOnMacRequired": true,
+  "nativeRuntimeTestsRequired": true,
+  "originalPinnedReleaseRetained": true,
+  "normalization": "Native symbol identities and relocation targets resolved through actual Mach-O tables; no IR symbols used"
+}
