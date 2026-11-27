@@ -44,6 +44,7 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
     private let rowPrefix = "torah-inspector-related-row-"
     private var fixture: Fixture!
     private var observations: [[String: Any]] = []
+    private var currentCompiledBuild: [String: String]?
     private var appLanguage: String { ProcessInfo.processInfo.environment["PINKHA_UI27_APP_LANGUAGE"] ?? "en" }
 
     override func setUpWithError() throws {
@@ -65,6 +66,27 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
         try require(Set(fixture.targets.map(\.role)) == ["page", "note", "writing", "block", "quote"]
             && Set(fixture.targets.map(\.objectID)).count == 5 && Set(fixture.targets.map(\.resultID)).count == 5,
                     "Five distinct native targets are required")
+        // A continuation may install a newer, receipt-admitted App/UI on this
+        // same prepared account. Keep the original fixture source/run/token
+        // unchanged and report the current compiled origin separately.
+        let compiledSource = environment["PINKHA_T5_UI_COMPILED_SOURCE_SHA"]
+        let buildReceipt = environment["PINKHA_T5_UI_BUILD_RECEIPT_SHA256"]
+        let nativeManifest = environment["PINKHA_T5_UI_COMPILED_NATIVE_MANIFEST_SHA256"]
+        currentCompiledBuild = nil
+        if compiledSource != nil || buildReceipt != nil || nativeManifest != nil {
+            let source = try XCTUnwrap(compiledSource)
+            let receipt = try XCTUnwrap(buildReceipt)
+            let native = try XCTUnwrap(nativeManifest)
+            try require(source.count == 40 && receipt.count == 64 && native.count == 64
+                && source.range(of: #"^[0-9a-f]{40}$"#, options: .regularExpression) != nil
+                && receipt.range(of: #"^[0-9a-f]{64}$"#, options: .regularExpression) != nil
+                && native.range(of: #"^[0-9a-f]{64}$"#, options: .regularExpression) != nil,
+                "Current compiled App/UI source, build receipt and native identity must be exact")
+            currentCompiledBuild = ["compiledAppAndUISourceSHA": source,
+                "buildReceiptSHA256": receipt, "nativeSourceManifestSHA256": native,
+                "fixturePreparationAppSourceSHA": fixture.appSourceSHA,
+                "acceptanceScope": "current-product-with-retained-fixture-preparation"]
+        }
         app.launchEnvironment["PINKHA_STAGE1_ACCEPTANCE"] = "1"
         app.launchEnvironment["PINKHA_ACCEPTANCE_DOCUMENT_KIND"] = "pinkha"
         app.launchEnvironment["PINKHA_UI27_ROUTE_OBSERVATION"] = "1"
@@ -480,6 +502,9 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
             "token": fixture?.token ?? "", "appSourceSHA": fixture?.appSourceSHA ?? "", "runID": fixture?.runID ?? "",
             "spaceID": fixture?.spaceID ?? "", "observations": observations,
             "coverage": "indexedTargetsOnly", "productLookupFlag": "OFF", "physicalDeviceAccepted": false]
+        if let currentCompiledBuild {
+            receipt["currentCompiledBuild"] = currentCompiledBuild
+        }
         if name.hasPrefix("r08-") {
             receipt["requestedAppLanguage"] = appLanguage
             receipt["requestedAppearance"] = ProcessInfo.processInfo.environment["PINKHA_T5_UI_APPEARANCE"] ?? ""
