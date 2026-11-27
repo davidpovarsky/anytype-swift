@@ -1,0 +1,7 @@
+{
+  "content": "import Foundation\n\npublic struct SearchRequest: Sendable {\n    public let spaceId: String\n    public let filters: [DataviewFilter]\n    public let sorts: [DataviewSort]\n    public let fullText: String\n    public let keys: [String]\n    public let offset: Int\n    public let limit: Int\n\n    public init(spaceId: String, filters: [DataviewFilter], sorts: [DataviewSort], fullText: String, keys: [String], offset: Int = 0, limit: Int) {\n        self.spaceId = spaceId\n        self.filters = filters\n        self.sorts = sorts\n        self.fullText = fullText\n        self.keys = keys\n        self.offset = offset\n        self.limit = limit\n    }\n}\n",
+  "encoding": "utf-8",
+  "sha": "1020f9e960ee823dd5ce28e986e25162ddcf1d25",
+  "display_url": "https://github.com/davidpovarsky/anytype-swift/blob/1cc7f696cfa01790c90c6d29273147d07da71b65/Modules/Services/Sources/Services/SearchService/SearchRequest.swift",
+  "display_title": "SearchRequest.swift"
+}

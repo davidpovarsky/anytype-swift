@@ -1,0 +1,44 @@
+{
+  "schema": "wave2-bin-source-independent-review/v1",
+  "reviewer": "/root/torah_continue",
+  "status": "PASS_SOURCE_REVIEW_NOT_COMPILED",
+  "reviewedAtUTC": "2026-11-27T10:20:48.619224+00:00",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "originalSHA256": "f0675b0d2a0842ad87670640d5242da82c354aab96056c1b6d23ca8540b3dc17",
+      "candidateSHA256": "3dd7517d2ecba44fe7568b16ed005a97489929f4a248c1899ad3d1c1864e66d4",
+      "bytes": 33946
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "originalSHA256": "af2b406c5cf80f126e9684a0cc4bb673658329925188e264aa9746eeba4926c0",
+      "candidateSHA256": "3791fe7ccadbf5caf4d1a82b1f6cc8d497b5562db1c58ba346803a9ebf43fec1",
+      "bytes": 29436
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyLibrarySearchPublicationTests.swift",
+      "originalSHA256": "e46dc67553d9e050c7955958cff56aac559c4d51eaa3b75e379029dd83f8d839",
+      "candidateSHA256": "b242b8bdbe9f2c9c10c742d26ffe88b237b797b28dfd600e07b85f4e3c2a5494",
+      "bytes": 13860
+    }
+  ],
+  "independentChecks": {
+    "modelFullInverse": true,
+    "originalAuthorizedReadStatementSHA256": "63fcd33e2dddc2b6ad6743f8a4567fed18551a4f1bcfbf9c309c9daa66e4e9cd",
+    "originalTestPrefixAndTerminalConditionalRetained": true,
+    "explicitNonescapingMainActorRead": true
+  },
+  "findings": [],
+  "reasoning": [
+    "The public wrapper retains store/schema and captures epoch before awaiting the private publication boundary; the boundary checks lifetime and expected epoch before executing that original authorized read.",
+    "Current success/failure/loading state is guarded by request and ownership epochs. Late older failures and successes cannot clear or replace newer results or failure state. Revoke advances epochs and clears all Bin publication state.",
+    "Current failure removes stale actionable rows and exposes a separate failed-read state. The existing List empty-state guard excludes that state; Retry uses the original public method and current lifetime/loading guard. This is source inspection, not visual acceptance.",
+    "Both new tests use the original production model fixture and the actual publication method, exercise current failure/retry/revoke and opposite older-completion outcomes, and preserve all original search methods. The controlled helper checks cancellation before installing its continuation."
+  ],
+  "scopeLimits": [
+    "Root owns full UI/scope approval.",
+    "No Swift compilation, test execution, native request, mounted UI, Mac operation or result re-run was performed.",
+    "Earlier 33bd and e7 isolation drafts and b119 pre-failure-state draft are retained inputs, not final source acceptance."
+  ]
+}

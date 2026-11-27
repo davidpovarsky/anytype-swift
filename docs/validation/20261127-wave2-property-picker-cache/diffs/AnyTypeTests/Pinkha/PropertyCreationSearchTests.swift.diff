@@ -1,0 +1,224 @@
+--- a/AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift
++++ b/AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift
+@@ -414,3 +414,221 @@
+         return []
+     }
+ }
++
++import SwiftProtobuf
++
++@MainActor
++@Suite("Property picker native lookup invalidation", .timeLimit(.minutes(1)))
++struct PropertyPickerNativeLookupRevisionTests {
++    @Test("A late native read cannot replace a retry's descriptors or diagnostics", arguments: [
++        "space-success", "space-failure", "all-success", "all-failure"
++    ])
++    func invalidatedNativeReadCannotCompleteTheProductionLoader(mode: String) async throws {
++        let search = ControlledPickerNativeSearch(olderFails: mode.hasSuffix("failure"))
++        let bootstrap = ReadOnlyPickerProbe()
++        let policy = PinkhaTorahPropertyPolicy(bootstrapService: PickerBootstrapProbe(manifest: manifest()))
++        let catalog = makeCatalog(policy: policy, search: search, bootstrap: bootstrap)
++        let loader = PinkhaPropertyPickerSearchLoader(policy: policy, catalog: catalog,
++                                                      existingSearch: { _, _, _ in [] })
++        let data = PropertiesSearchData(objectId: "picker-object", spaceId: "picker-space",
++            excludedRelationsIds: [], target: .library, onRelationSelect: { _, _ in })
++        let older = Task { try await loader.load(text: "", data: data) }
++        defer { older.cancel(); search.cancelOutstanding() }
++        try await search.waitUntilOlderStarted()
++
++        if mode.hasPrefix("all") { catalog.invalidate() }
++        else { loader.invalidate(spaceId: data.spaceId) }
++        let current = try await loader.load(text: "", data: data)
++        #expect(current.properties.map(\.id) == freshIDs)
++        #expect(!current.nativeLookupFailed && !current.existingLookupFailed)
++        let accepted = try await catalog.nativePropertyLookupForReadOnlyPicker(spaceId: data.spaceId)
++        #expect(accepted.properties.map(\.id) == freshIDs)
++        #expect(accepted.failures.isEmpty)
++
++        // The old provider is deliberately not cancelled. Its completed values
++        // must be rejected by the catalog revision, not by the VM's query guard.
++        #expect(!older.isCancelled)
++        try search.completeOlder()
++        do {
++            _ = try await older.value
++            Issue.record("An invalidated native read completed the actual picker loader")
++        } catch is CancellationError {
++            #expect(!older.isCancelled)
++        } catch {
++            Issue.record("Unexpected error from the invalidated picker lookup")
++        }
++        #expect(catalog.cachedNativeProperties(spaceId: data.spaceId).map(\.id) == freshIDs)
++        #expect(catalog.lastLookupDiagnostics(spaceId: data.spaceId).isEmpty)
++        #expect(accepted.properties.map(\.id) == freshIDs && accepted.failures.isEmpty)
++        #expect(search.calls == 6)
++        #expect(await bootstrap.bootstrapCalls == 0)
++    }
++
++    @Test("A bootstrap refresh already in flight cannot repopulate an invalidated native cache")
++    func invalidatedBootstrapRefreshCannotReplaceTheRetry() async throws {
++        let search = ControlledPickerNativeSearch(olderFails: false)
++        let bootstrap = ReadOnlyPickerProbe()
++        let policy = PinkhaTorahPropertyPolicy(bootstrapService: PickerBootstrapProbe(manifest: manifest()))
++        let catalog = makeCatalog(policy: policy, search: search, bootstrap: bootstrap)
++        let prepared = manifest()
++        let older = Task { await catalog.refreshAfterBootstrap(manifest: prepared) }
++        defer { older.cancel(); search.cancelOutstanding() }
++        try await search.waitUntilOlderStarted()
++        catalog.invalidate(spaceId: prepared.spaceId)
++        let current = try await catalog.nativePropertyLookupForReadOnlyPicker(spaceId: prepared.spaceId)
++        #expect(current.properties.map(\.id) == freshIDs && current.failures.isEmpty)
++
++        try search.completeOlder()
++        await older.value
++        #expect(catalog.cachedNativeProperties(spaceId: prepared.spaceId).map(\.id) == freshIDs)
++        #expect(catalog.lastLookupDiagnostics(spaceId: prepared.spaceId).isEmpty)
++        #expect(search.calls == 6)
++        #expect(await bootstrap.bootstrapCalls == 0)
++    }
++
++    @Test("Storage fallback cannot cache rows captured before a reentrant Space invalidation")
++    func invalidatedSynchronousStorageReadCannotRepopulateCache() {
++        let old = descriptors(prefix: "stale")
++        let current = descriptors(prefix: "fresh")
++        let storage = InvalidatingPickerPropertyStorage(older: old, current: current)
++        let catalog = PinkhaTorahNativePropertyCatalog(propertyDetailsStorage: storage)
++        storage.onFirstRead { catalog.invalidate(spaceId: "picker-space") }
++
++        #expect(catalog.cachedNativeProperties(spaceId: "picker-space").isEmpty)
++        #expect(catalog.cachedNativeProperties(spaceId: "picker-space") == current)
++        #expect(catalog.cachedNativeProperties(spaceId: "picker-space") == current)
++        #expect(storage.reads == 2)
++        #expect(catalog.lastLookupDiagnostics(spaceId: "picker-space").isEmpty)
++    }
++
++    private var freshIDs: [String] { TorahNativePropertyDefinition.all.map { "fresh-" + $0.key } }
++
++    private func manifest() -> PinkhaSpaceManifest {
++        .init(spaceId: "picker-space", orderPropertyId: "order-id", orderPropertyKey: "order-key",
++              documentAssociationsPropertyId: "canonical-id", documentAssociationsPropertyKey: "canonical-key")
++    }
++
++    private func makeCatalog(policy: PinkhaTorahPropertyPolicy, search: ControlledPickerNativeSearch,
++                             bootstrap: ReadOnlyPickerProbe) -> PinkhaTorahNativePropertyCatalog {
++        .init(policy: policy, searchService: search, propertyDetailsStorage: EmptyPickerPropertyStorage(),
++              objectDetails: { _, _ in Issue.record("Descriptor reads must not fetch writing Types"); return nil },
++              bootstrapSpace: { _ in await bootstrap.didBootstrap(); throw PickerProbeFailure.lookup })
++    }
++
++    private func descriptors(prefix: String) -> [PropertyDetails] {
++        TorahNativePropertyDefinition.all.map {
++            .init(id: prefix + "-" + $0.key, key: $0.key, name: $0.name, format: .tag,
++                  isHidden: false, isReadOnly: false, isReadOnlyValue: true, objectTypes: [],
++                  maxCount: 0, sourceObject: "_br" + $0.key, isDeleted: false, spaceId: "picker-space")
++        }
++    }
++}
++
++private struct PickerNativeReadDeadline: Error {}
++
++/// Only the actual SearchMiddleService read is held. The production catalog
++/// still decodes and validates real ObjectDetails for each native definition.
++@MainActor
++private final class ControlledPickerNativeSearch: SearchMiddleServiceProtocol {
++    private let olderFails: Bool
++    private(set) var calls = 0
++    private var olderReleased = false
++    private var olderDefinition: TorahNativePropertyDefinition?
++    private var pending: CheckedContinuation<[ObjectDetails], any Error>?
++    private var started: CheckedContinuation<Void, any Error>?
++
++    init(olderFails: Bool) { self.olderFails = olderFails }
++
++    func search(data: SearchRequest) async throws -> [ObjectDetails] {
++        try Task.checkCancellation()
++        #expect(data.spaceId == "picker-space")
++        let filter = try #require(data.filters.first { $0.relationKey == "relationKey" })
++        let definition = try #require(TorahNativePropertyDefinition.definition(for: filter.value.stringValue))
++        calls += 1
++        if calls == 1 {
++            olderDefinition = definition
++            return try await withCheckedThrowingContinuation { continuation in
++                pending = continuation
++                let waiter = started
++                started = nil
++                waiter?.resume(returning: ())
++            }
++        }
++        if olderReleased && olderFails { throw PickerProbeFailure.lookup }
++        return [record(definition, prefix: olderReleased ? "stale" : "fresh")]
++    }
++
++    func waitUntilOlderStarted() async throws {
++        if pending != nil { return }
++        // A failure deadline only; the test advances at the actual provider read.
++        let deadline = Task { @MainActor [weak self] in
++            do { try await Task.sleep(for: .seconds(10)) } catch { return }
++            guard let self else { return }
++            let waiter = self.started
++            self.started = nil
++            waiter?.resume(throwing: PickerNativeReadDeadline())
++        }
++        defer { deadline.cancel() }
++        try await withCheckedThrowingContinuation { started = $0 }
++    }
++
++    func completeOlder() throws {
++        let continuation = try #require(pending)
++        let definition = try #require(olderDefinition)
++        pending = nil
++        olderReleased = true
++        if olderFails { continuation.resume(throwing: PickerProbeFailure.lookup) }
++        else { continuation.resume(returning: [record(definition, prefix: "stale")]) }
++    }
++
++    func cancelOutstanding() {
++        let call = pending, waiter = started
++        pending = nil
++        started = nil
++        call?.resume(throwing: CancellationError())
++        waiter?.resume(throwing: CancellationError())
++    }
++
++    private func record(_ definition: TorahNativePropertyDefinition, prefix: String) -> ObjectDetails {
++        .init(id: prefix + "-" + definition.key, values: [
++            "spaceId": .with { $0.stringValue = "picker-space" },
++            "relationKey": .with { $0.stringValue = definition.key },
++            "name": .with { $0.stringValue = definition.name },
++            "relationFormat": .with { $0.numberValue = Double(TorahNativePropertyDefinition.wireFormat) },
++            "relationReadonlyValue": .with { $0.boolValue = true },
++            "sourceObject": .with { $0.stringValue = "_br" + definition.key }
++        ])
++    }
++}
++
++private final class InvalidatingPickerPropertyStorage: PropertyDetailsStorageProtocol, @unchecked Sendable {
++    private let lock = NSLock()
++    private let older: [PropertyDetails]
++    private let current: [PropertyDetails]
++    private var firstRead: (@Sendable () -> Void)?
++    private var readCount = 0
++
++    init(older: [PropertyDetails], current: [PropertyDetails]) { self.older = older; self.current = current }
++    var reads: Int { lock.lock(); defer { lock.unlock() }; return readCount }
++    func onFirstRead(_ action: @escaping @Sendable () -> Void) {
++        lock.lock(); defer { lock.unlock() }; firstRead = action
++    }
++    func relationsDetails(spaceId: String) -> [PropertyDetails] {
++        lock.lock()
++        readCount += 1
++        let action = firstRead
++        firstRead = nil
++        let rows = action == nil ? current : older
++        lock.unlock()
++        action?()
++        return rows
++    }
++    var syncPublisher: AnyPublisher<Void, Never> { Empty().eraseToAnyPublisher() }
++    func relationsDetails(keys: [String], spaceId: String) -> [PropertyDetails] { [] }
++    func relationsDetails(key: String, spaceId: String) throws -> PropertyDetails { throw PickerProbeFailure.lookup }
++    func relationsDetails(bundledKey: BundledPropertyKey, spaceId: String) throws -> PropertyDetails { throw PickerProbeFailure.lookup }
++    func relationsDetails(ids: [String], spaceId: String) -> [PropertyDetails] { [] }
++    func startSubscription(spaceId: String) async {}
++    func stopSubscription() async {}
++    func prepareData(spaceId: String) async {}
++}

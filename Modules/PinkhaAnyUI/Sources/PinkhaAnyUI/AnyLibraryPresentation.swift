@@ -37,6 +37,7 @@ public final class AnyLibraryPresentation {
     public private(set) var allDocuments: [AnyLibraryDocument] = []
     public private(set) var binItems: [AnyLibraryBinItem] = []
     public private(set) var isLoadingBin = false
+    public private(set) var binReadFailed = false
     public private(set) var pendingRestores: Set<String> = []
     public private(set) var searchResults: [AnyLibraryDocument] = []
     public private(set) var pendingCreations: [AnyLibraryPendingCreation] = []
@@ -336,11 +337,7 @@ public final class AnyLibraryPresentation {
     public func refreshBin() async {
         guard lifetime.isActive, let store else { return }
         let expected = epoch, schema = store.schema
-        binReadEpoch &+= 1
-        let request = binReadEpoch
-        isLoadingBin = true
-        defer { if request == binReadEpoch { isLoadingBin = false } }
-        do {
+        await refreshBin(expected: expected) {
             let rows = try await session.perform { lease in
                 let rows = try await store.readArchivedRows()
                 try await lease.validate()
@@ -355,11 +352,37 @@ public final class AnyLibraryPresentation {
                         isFolder: row[schema.collectionID]?[schema.folderPropertyID]?.bool ?? false)
                 }
             }
+            return rows
+        }
+    }
+
+    /// The production caller supplies the existing authorized native read.
+    /// Keep its publication separate so a completed failure cannot retain rows
+    /// from an earlier read, while older completions still cannot clear new ones.
+    func refreshBin(read: @MainActor () async throws -> [AnyLibraryBinItem]) async {
+        let expected = epoch
+        await refreshBin(expected: expected, read: read)
+    }
+
+    private func refreshBin(expected: UUID, read: @MainActor () async throws -> [AnyLibraryBinItem]) async {
+        // The epoch belongs to the caller's original store capture, before any
+        // await. A revoked owner cannot stamp an older store with a newer epoch.
+        guard lifetime.isActive, expected == epoch else { return }
+        binReadEpoch &+= 1
+        let request = binReadEpoch
+        isLoadingBin = true
+        binReadFailed = false
+        defer { if request == binReadEpoch { isLoadingBin = false } }
+        do {
+            let rows = try await read()
             try validate(expected)
             guard request == binReadEpoch else { return }
             binItems = rows
+            binReadFailed = false
         } catch {
             guard expected == epoch, request == binReadEpoch, lifetime.isActive else { return }
+            binItems = []
+            binReadFailed = true
             message = AnyUIErrorText.describe(error)
         }
     }
@@ -605,7 +628,7 @@ public final class AnyLibraryPresentation {
 
     public func revoke() {
         epoch = UUID(); canWrite = false
-        binReadEpoch &+= 1; binItems = []; isLoadingBin = false
+        binReadEpoch &+= 1; binItems = []; isLoadingBin = false; binReadFailed = false
         _ = replaceObservationFeed(); searchTask?.cancel(); catalogRefreshTask?.cancel()
         for editor in editors.values { editor.revoke() }
     }

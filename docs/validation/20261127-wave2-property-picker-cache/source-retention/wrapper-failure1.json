@@ -1,0 +1,21 @@
+{
+  "schema": "wave2-source-retention-receipt-wrapper-failure/v1",
+  "status": "ORIGINAL_GATE_PASSED_POST_GATE_RECEIPT_WRAPPER_FAILED",
+  "originalToolStructuredResult": {
+    "ok": false,
+    "interpreter": "python3",
+    "sudo": false,
+    "cwd": null,
+    "cleanup": true,
+    "command": [
+      "python3",
+      "/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_299fb6fb4fe24040ac7490db5c598791/script.py"
+    ],
+    "output": "Traceback (most recent call last):\n  File \"/var/lib/sentinelx/uploads/.sentinelx_uploads/script_job_299fb6fb4fe24040ac7490db5c598791/script.py\", line 44, in <module>\n    gate_result=json.loads((G/'prospective1.json').read_text());assert gate_result['sourceRetentionPassed'] is True;assert not gate_result['errors'] and not gate_result['unreviewed']\n                                                                                                                               ~~~~~~~~~~~^^^^^^^^^^\nKeyError: 'errors'",
+    "duration": 1.26,
+    "returncode": 1,
+    "hub_request_id": "hreq_2ac1652a696c4b57"
+  },
+  "reason": "Receipt wrapper accessed nonexistent errors/unreviewed keys after original source gate exited0. Original schema uses inventoryErrors/unreviewedChangedExistingFiles.",
+  "originalGateRerun": false
+}

@@ -1,0 +1,398 @@
+{
+  "candidateBytes": 33239,
+  "candidateSHA256": "de76ee9545e54b43e45d479cf4c5bceb340fc41f1f0e23419a2a47dc5cd0b820",
+  "compilerInvocations": 0,
+  "edits": [
+    {
+      "candidate": "\"\"\"Preserve exactly three handed-off component cache roots behind stable paths.\n",
+      "candidateEnd": 2,
+      "candidateStart": 1,
+      "original": "\"\"\"Preserve four closed diagnostic directories behind stable original paths.\n",
+      "originalEnd": 2,
+      "originalStart": 1
+    },
+    {
+      "candidate": "Storage custody only: no compiler, test, Native operation, source preparation,\nGit mutation, or historical process probe. Source/receipt directories stay on\nroot. The unchanged 99dc compiler controller retains its root resource floor.\nA distinct later read-only 99dc input qualification is mandatory; compiler\nwarmness is unproven. All new bulk data and evidence live on development.\n",
+      "candidateEnd": 8,
+      "candidateStart": 3,
+      "original": "Recovery only: no native process, compiler, account open, ACL mutation or test.\nThe old private diagnostic DB/wallet and failed receipts remain private, intact\nat the destination. All source duplicates remain until independent destination\nverification and atomic directory/symlink exchange. An interrupted transition\nkeeps the verified destination and any remaining original duplicate.\n",
+      "originalEnd": 8,
+      "originalStart": 3
+    },
+    {
+      "candidate": "import fcntl\n",
+      "candidateEnd": 13,
+      "candidateStart": 12,
+      "original": "",
+      "originalEnd": 12,
+      "originalStart": 12
+    },
+    {
+      "candidate": "ROOT = Path('/var/lib/pinkha-wave2-native-block-menu-20261127')\nPROPERTY_ROOT = Path('/var/lib/pinkha-wave2-property-lifecycle-20261127')\nOUT = Path('/mnt/development/projects/evidence/pinkha-wave2-component-cache-preserved-20261127')\nLOCK = OUT.parent / '.pinkha-wave2-component-cache-custody.lock'\nCLAIM = OUT.parent / '.pinkha-wave2-component-cache-custody-active.json'\n",
+      "candidateEnd": 28,
+      "candidateStart": 23,
+      "original": "ROOT = Path('/var/lib/pinkha-c-filesv2-20261126')\nOUT = Path('/mnt/development/projects/evidence/pinkha-w1-network-closed-diagnostics-relocated-20261127')\n",
+      "originalEnd": 24,
+      "originalStart": 22
+    },
+    {
+      "candidate": "    'build': {'allocated':339099648, 'entries':6191, 'inode':2933637},\n    'cache': {'allocated':27303936, 'entries':100, 'inode':2933636},\n    'clang-module-cache': {'allocated':35536896, 'entries':24, 'inode':2933647},\n",
+      "candidateEnd": 32,
+      "candidateStart": 29,
+      "original": "    'acl-verified-comparison8': {'allocated': 53841920, 'entries': 21, 'receipt': 'bcf18655d1b6cbca2c0916e097d5b6dc9a6e45a1d65ca97af2ec68d73dbfa8ad'},\n    'acl-storage-diagnostic7': {'allocated': 30093312, 'entries': 11, 'receipt': 'de4d90f4a46e1724cdca4bed6b05facf0dfc8a13a51e951a357cc5563e4d1396'},\n    'lan-progress-unit1': {'allocated': 8466432, 'entries': 774, 'receipt': '77e1d1ebc5f8c19c0427fdad78f88aa912659f56882f05323522ce17ce58b984'},\n    'lan-progress-replay1': {'allocated': 8372224, 'entries': 773, 'receipt': '271248e4a09229cc52e7145625041be9aa052094a459f25d19753694ccd0527e'},\n",
+      "originalEnd": 29,
+      "originalStart": 25
+    },
+    {
+      "candidate": "NATIVE_PINS = {}  # No Native input or service is touched by this storage task.\nCONTROL_PINS = {\n    str(ROOT/'attempt1/cache-handoff.json'): '493a7d628bdce5642f54b3b3f99deedfe24b28f6d8e68267c18c7629f227367b',\n    str(ROOT/'attempt1/receipt.json'): 'bbf101c3821fafca51f6d6e9a0bef009f1f415ff935ab4e2606ca0feb599e231',\n    str(ROOT/'attempt1/dependency-sources-after.json'): '67c6696b3d3e760553acd6a9d493cb6190c8093e702fef1d8c2a8ae96a5f9f08',\n    str(ROOT/'component/Package.swift'): '53d8a7d55d88531271b0d830cecda060ac0499eedbf848ab1ad211ab7dc287df',\n    str(ROOT/'component/Package.resolved'): 'dd338df7aba015276d48f10bba2f6ad2487a21417e4e5b23116db94366926a4e',\n    str(PROPERTY_ROOT/'inputs/run_component.py'): '99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2',\n    str(PROPERTY_ROOT/'inputs/AnyNativePropertyPresentation.swift'): 'aa40239c5ba749b20974735337c0af11ba477c9aac870261f4ae5ae76f76c731',\n    str(PROPERTY_ROOT/'inputs/AnyNativePropertyPresentation.original.swift'): 'c5935470e1c515461ad11b764e0169297eeb645a3ba4a522d0a7111070437dfb',\n    str(PROPERTY_ROOT/'inputs/AnyNativePropertyPresentationTests.swift'): '7df1a45aa85cd71bc7ec8353b98150609bc2d2fb07a2aa1ebf08f7fb40fdab61',\n    str(PROPERTY_ROOT/'inputs/prepare_component_sources.py'): 'ef7b3195584ee599737ec86cef5da49bff1946f2fc0bc0a4d491915f1a829cff',\n    str(PROPERTY_ROOT/'inputs/AnyUIErrorText.exact.swift'): '25d49c71f60b613cf3131b9e31d8c2a29b2743ff62d332873835e5a3341a42bb',\n    str(PROPERTY_ROOT/'inputs/error-text-source.json'): 'e1257b04a74d8e68d3ff9e596e26b2d1b087764787ebf471bf304dcdb961e29e',\n",
+      "candidateEnd": 47,
+      "candidateStart": 33,
+      "original": "NATIVE_PINS = {\n    '/var/lib/pinkha-root-t2-linux-20261126/build1/current/any': '1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636',\n    str(ROOT/'lan-progress-native1/any'): '0796b939145f98fd3436b40c3ae3c7c9daec239b54f8c1fa237fb20a349d0b07',\n    '/mnt/development/projects/caches/pinkha-e-cutover-rpc-core-attempt5-20261127/cutover-core.test': 'bbd8d9f28d7a948684d9771c5b0effe25abb00570ac0383b0324a56cb6ce1f75',\n",
+      "originalEnd": 34,
+      "originalStart": 30
+    },
+    {
+      "candidate": "DEPENDENCY_ROOT = Path('/mnt/development/projects/worktrees/anytype-wave2-native-block-menu-20261127/Modules')\nDEPENDENCIES = ('PinkhaAnyEngine','PinkhaAnyHost','PinkhaAnyIntegration','PinkhaKit')\nPROTECTED_TREES = [ROOT/'component', ROOT/'attempt1', PROPERTY_ROOT/'inputs'] + [DEPENDENCY_ROOT/name for name in DEPENDENCIES]\n",
+      "candidateEnd": 51,
+      "candidateStart": 48,
+      "original": "CONTROL_PINS = {\n    str(ROOT/'retained-node-grant-comparison1/diagnostic-source-manifest.json'): '92e8799325e308a2c94db4a17482b3aecf726e145a2f8de82d297bc342215d87',\n    str(ROOT/'retained-node-grant-comparison1/result.json'): 'b4ea294a8090cd867bae1246a635d0afba8a48e12ee073a9362f2598591321c6',\n    str(ROOT/'original-native-authority1/result.json'): '70f6dd9f6ae6eb24e6d6eaced2387bdea8511a396981d66888dd7338a02a59bf',\n    str(ROOT/'original-native-authority-continuation1/result.json'): '24d00c2cad87b9943050f453288c132406cf56267b145c83cbabeb2be7bc5c94',\n    str(ROOT/'original-native-authority-continuation1/private-current-accounts.json'): '2d74afd5fc9ca535a357ae102d44df2519e391a4a4c7930ca965f228cb08c14a',\n    str(ROOT/'lan-progress-native1/result.json'): 'c74e754d4f26b9ca9b3c9e681093e247fe2c54dd5360fe0677dca25c0282cda6',\n    str(ROOT/'lan-progress-native1/source-manifest.json'): 'e785ed2faf1d0bf0d18e7be7f0090cdee4061bd714f3be1509927895b9df336a',\n}\nPROTECTED_TREES = [ROOT/'attempt1/alice', ROOT/'attempt1/bob', ROOT/'retained-node-grant-comparison1/sdk-source']\n",
+      "originalEnd": 45,
+      "originalStart": 35
+    },
+    {
+      "candidate": "ROOT_EMERGENCY = 256*MIB  # Storage recovery only; not compiler admission.\n",
+      "candidateEnd": 53,
+      "candidateStart": 52,
+      "original": "ROOT_EMERGENCY = 256*MIB\n",
+      "originalEnd": 47,
+      "originalStart": 46
+    },
+    {
+      "candidate": "FURTHER_COMPONENT_BUDGET = 256*MIB\nTOTAL_ALLOCATION = 401940480\n",
+      "candidateEnd": 56,
+      "candidateStart": 54,
+      "original": "TOTAL_ALLOCATION = 100773888\n",
+      "originalEnd": 49,
+      "originalStart": 48
+    },
+    {
+      "candidate": "BUILD_LINK = 'out/Products/Debug-linux-aarch64'\nCOPIED_LINK_READ_RESTORATIONS = []\n",
+      "candidateEnd": 59,
+      "candidateStart": 57,
+      "original": "",
+      "originalEnd": 50,
+      "originalStart": 50
+    },
+    {
+      "candidate": "    kind = ('directory' if stat.S_ISDIR(s.st_mode) else 'file' if stat.S_ISREG(s.st_mode)\n            else 'symlink' if stat.S_ISLNK(s.st_mode) else 'unsupported')\n    assert kind != 'unsupported', 'special entries are outside the exact cache custody'\n    if kind == 'symlink': assert s.st_nlink == 1, 'no hardlinked symlink'\n",
+      "candidateEnd": 84,
+      "candidateStart": 80,
+      "original": "    kind = 'directory' if stat.S_ISDIR(s.st_mode) else 'file' if stat.S_ISREG(s.st_mode) else 'unsupported'\n    assert kind != 'unsupported', 'symlink or special entry is outside the four admitted ordinary trees'\n",
+      "originalEnd": 73,
+      "originalStart": 71
+    },
+    {
+      "candidate": "    if kind in ('file','symlink'): row['bytes'] = s.st_size\n",
+      "candidateEnd": 91,
+      "candidateStart": 90,
+      "original": "    if kind == 'file': row['bytes'] = s.st_size\n",
+      "originalEnd": 80,
+      "originalStart": 79
+    },
+    {
+      "candidate": "def inventory(root, guard=lambda:None, limit=10000, *, scope=None, copied=False):\n",
+      "candidateEnd": 96,
+      "candidateStart": 95,
+      "original": "def inventory(root, guard=lambda:None, limit=5000):\n",
+      "originalEnd": 85,
+      "originalStart": 84
+    },
+    {
+      "candidate": "        elif before['kind']=='symlink':\n            assert scope=='build' and relative=='debug', 'only the observed internal build/debug link is admitted'\n            assert before['mode']==0o777 and before['uid']==1001 and before['gid']==1002\n            target=os.readlink(path)\n            assert target==BUILD_LINK and before['bytes']==len(os.fsencode(target))\n            after_read=metadata(path)\n            if copied and after_read['atime_ns']!=before['atime_ns']:\n                # Linux readlink may advance relatime on the newly copied link.\n                # Restore only the just-observed access change on OUR copy, not\n                # prior drift or any original node. Ctime is nonportable.\n                assert {k:v for k,v in after_read.items() if k!='atime_ns'}=={k:v for k,v in before.items() if k!='atime_ns'}\n                os.utime(path,ns=(before['atime_ns'],before['mtime_ns']),follow_symlinks=False)\n                restored=metadata(path)\n                assert {k:v for k,v in restored.items() if k!='ctime_ns'}=={k:v for k,v in before.items() if k!='ctime_ns'}\n                COPIED_LINK_READ_RESTORATIONS.append({'path':str(path),'inode':before['inode'],\n                    'atimeBeforeReadNS':before['atime_ns'],'atimeAfterReadNS':after_read['atime_ns'],\n                    'atimeRestoredNS':restored['atime_ns']})\n                before=restored\n            else: assert after_read==before, 'original link metadata changed during capture'\n            row=dict(before,target=target,sha256=hashlib.sha256(os.fsencode(target)).hexdigest())\n",
+      "candidateEnd": 122,
+      "candidateStart": 102,
+      "original": "",
+      "originalEnd": 91,
+      "originalStart": 91
+    },
+    {
+      "candidate": "    if scope=='build':\n        assert rows['debug']['kind']=='symlink' and rows[BUILD_LINK]['kind']=='directory'\n        # Every ancestor is represented in the same physical inventory.\n        assert all(rows[str(p)]['kind']=='directory' for p in Path(BUILD_LINK).parents)\n",
+      "candidateEnd": 133,
+      "candidateStart": 129,
+      "original": "",
+      "originalEnd": 98,
+      "originalStart": 98
+    },
+    {
+      "candidate": "    if row['kind']=='symlink':\n        assert row['mode']==0o777 and stat.S_IMODE(os.lstat(path).st_mode)==0o777\n    else: os.chmod(path,row['mode'],follow_symlinks=False)\n",
+      "candidateEnd": 164,
+      "candidateStart": 161,
+      "original": "    os.chmod(path,row['mode'],follow_symlinks=False)\n",
+      "originalEnd": 127,
+      "originalStart": 126
+    },
+    {
+      "candidate": "def read_json_noatime(path):\n    fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NOATIME)\n    try:\n        data=b''\n        while part:=os.read(fd,MIB):\n            data+=part;assert len(data)<=4*MIB\n    finally:os.close(fd)\n    return json.loads(data)\n\n\ndef input_closure(manifests):\n    handoff=read_json_noatime(ROOT/'attempt1/cache-handoff.json')\n    assert handoff['status']=='TERMINAL_PASS_CACHE_RELEASED_TO_ROOT'\n    assert handoff['nextOwner']=='wave2-root-properties' and handoff['noOwnedProcessGroupRemains'] is True\n    assert handoff['sourceDependencyRoot']==str(DEPENDENCY_ROOT)\n    assert handoff['componentRoot']==str(ROOT/'component')\n    for field,name in [('scratchPath','build'),('cachePath','cache'),('clangModuleCachePath','clang-module-cache')]:\n        assert handoff[field]==str(ROOT/name)\n    closure=read_json_noatime(ROOT/'attempt1/dependency-sources-after.json')\n    assert closure['baseCommit']=='8f2c11713fb8a40ae13444104723666ffef68afe'\n    assert closure['dependencies']==list(DEPENDENCIES) and len(closure['files'])==370\n    expected={row['path']:row for row in closure['files']};assert len(expected)==370\n    actual={}\n    for name in DEPENDENCIES:\n        for relative,row in manifests[str(DEPENDENCY_ROOT/name)].items():\n            if row['kind']!='directory':\n                assert row['kind']=='file'\n                actual['Modules/'+name+'/'+relative]=row\n    assert set(actual)==set(expected), 'full 370-source physical input set must be exact'\n    for path,want in expected.items():\n        assert actual[path]['bytes']==want['bytes'] and actual[path]['sha256']==want['sha256'],path\n    for row in handoff['originalComponentSourceCopies']:\n        for tree,relative in [(ROOT/'component',row['path']),(ROOT/'attempt1','compiled-source/'+row['path'])]:\n            got=manifests[str(tree)][relative]\n            assert got['kind']=='file' and got['sha256']==row['sha256'] and got['bytes']==row['bytes']\n    return {'exactLocalSourceFiles':370,'historicalHandoffAbsenceRetained':True,\n            'historicalProcessGroupReprobed':False,'sourceDependencyRoot':str(DEPENDENCY_ROOT),\n            'compilerInputQualificationAfterRelocation':'REQUIRED_UNCHANGED_99DC_370_AND_THREE_GIT_PHYSICAL_SETS',\n            'compilerWarmness':'UNPROVEN'}\n\n\n",
+      "candidateEnd": 262,
+      "candidateStart": 221,
+      "original": "",
+      "originalEnd": 184,
+      "originalStart": 184
+    },
+    {
+      "candidate": "    if sys.flags.optimize:raise RuntimeError('acceptance assertions must remain enabled')\n    assert os.geteuid()==0 and os.uname().nodename=='torah-social'\n    assert ROOT.resolve()==ROOT and OUT.parent.resolve()==OUT.parent\n    lock=os.open(LOCK,os.O_RDWR|os.O_CREAT|os.O_NOFOLLOW,0o600)\n    try:\n        assert stat.S_ISREG(os.fstat(lock).st_mode) and os.fstat(lock).st_nlink==1\n        fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)\n        assert not os.path.lexists(CLAIM), 'retained unresolved custody claim; no automatic replay'\n        return relocate_locked()\n    finally:os.close(lock)\n\n\ndef relocate_locked():\n",
+      "candidateEnd": 276,
+      "candidateStart": 263,
+      "original": "",
+      "originalEnd": 185,
+      "originalStart": 185
+    },
+    {
+      "candidate": "    OUT.mkdir(mode=0o750,exist_ok=False)\n    os.chown(OUT,0,1002);os.chmod(OUT,0o750)\n",
+      "candidateEnd": 284,
+      "candidateStart": 282,
+      "original": "    OUT.mkdir(mode=0o700,exist_ok=False)\n",
+      "originalEnd": 192,
+      "originalStart": 191
+    },
+    {
+      "candidate": "    result={'protocol':'pinkha-three-owned-component-cache-directories-relocation-v1',\n",
+      "candidateEnd": 288,
+      "candidateStart": 287,
+      "original": "    result={'protocol':'pinkha-four-closed-network-diagnostic-directories-relocation-v1',\n",
+      "originalEnd": 196,
+      "originalStart": 195
+    },
+    {
+      "candidate": "            'protectedOriginalSourceAndReceiptDirectories':[str(p) for p in PROTECTED_TREES],\n",
+      "candidateEnd": 292,
+      "candidateStart": 291,
+      "original": "            'protectedOriginalAccountDirectories':[str(p) for p in PROTECTED_TREES[:2]],\n",
+      "originalEnd": 200,
+      "originalStart": 199
+    },
+    {
+      "candidate": "                'furtherComponentDestinationReserveBytes':FURTHER_COMPONENT_BUDGET,\n                'compilerRootAdmissionUnchangedBytes':2*1024**3+256*MIB,\n                'compilerResourcePathUnchanged':str(ROOT),\n                'compilerWarmness':'UNPROVEN',\n                'postCustodySourceQualificationRequired':True,\n",
+      "candidateEnd": 302,
+      "candidateStart": 297,
+      "original": "                'nativeDevelopmentFloorUnchangedBytes':512*MIB,\n",
+      "originalEnd": 206,
+      "originalStart": 205
+    },
+    {
+      "candidate": "                'reason':'Only the three handed-off cache roots. The component and original receipts stay physically on root; 99dc is unchanged. No compiler admission or warm-cache credit is supplied.'}}\n",
+      "candidateEnd": 304,
+      "candidateStart": 303,
+      "original": "                'reason':'Only exact dormant-directory custody. Every bulk copy/control manifest is on development; original root holds bounded alias/rename metadata. This does not admit a native or compiler run.'}}\n",
+      "originalEnd": 208,
+      "originalStart": 207
+    },
+    {
+      "candidate": "        assert dev>=DEVELOPMENT_EMERGENCY+FURTHER_COMPONENT_BUDGET,'development reserve including further component budget'\n",
+      "candidateEnd": 316,
+      "candidateStart": 315,
+      "original": "        assert dev>=DEVELOPMENT_EMERGENCY,'development emergency floor'\n",
+      "originalEnd": 220,
+      "originalStart": 219
+    },
+    {
+      "candidate": "        assert result['developmentFreeBefore']>=DEVELOPMENT_EMERGENCY+FURTHER_COMPONENT_BUDGET+16*MIB\n",
+      "candidateEnd": 329,
+      "candidateStart": 328,
+      "original": "        assert result['developmentFreeBefore']>=DEVELOPMENT_EMERGENCY+16*MIB\n",
+      "originalEnd": 233,
+      "originalStart": 232
+    },
+    {
+      "candidate": "        result['sourceInputCustody']=input_closure(protected_trees)\n",
+      "candidateEnd": 334,
+      "candidateStart": 333,
+      "original": "",
+      "originalEnd": 237,
+      "originalStart": 237
+    },
+    {
+      "candidate": "            rows=inventory(source,guard,scope=name);assert len(rows)==expected['entries']\n",
+      "candidateEnd": 337,
+      "candidateStart": 336,
+      "original": "            rows=inventory(source,guard);assert len(rows)==expected['entries']\n",
+      "originalEnd": 240,
+      "originalStart": 239
+    },
+    {
+      "candidate": "            assert rows['.']['device']==2049 and rows['.']['inode']==expected['inode']\n",
+      "candidateEnd": 339,
+      "candidateStart": 338,
+      "original": "            assert rows['result.json']['sha256']==expected['receipt']\n            assert rows['.']['mode']==0o700 and rows['.']['uid']==rows['.']['gid']==0\n",
+      "originalEnd": 243,
+      "originalStart": 241
+    },
+    {
+      "candidate": "        assert result['measuredDevelopmentFreeBeforeCopy']>=DEVELOPMENT_EMERGENCY+FURTHER_COMPONENT_BUDGET+upper+16*MIB\n",
+      "candidateEnd": 350,
+      "candidateStart": 349,
+      "original": "        assert result['measuredDevelopmentFreeBeforeCopy']>=DEVELOPMENT_EMERGENCY+upper+16*MIB\n",
+      "originalEnd": 254,
+      "originalStart": 253
+    },
+    {
+      "candidate": "        retained=OUT/'retained';retained.mkdir(mode=0o750)\n        os.chown(retained,0,1002);os.chmod(retained,0o750);durable_directory(OUT)\n",
+      "candidateEnd": 356,
+      "candidateStart": 354,
+      "original": "        retained=OUT/'retained';retained.mkdir(mode=0o700);durable_directory(OUT)\n",
+      "originalEnd": 259,
+      "originalStart": 258
+    },
+    {
+      "candidate": "                if row['kind']=='symlink':\n                    assert name=='build' and relative=='debug' and os.readlink(src)==BUILD_LINK\n                    assert metadata(src)=={k:v for k,v in row.items() if k not in ('sha256','target')}\n                    os.symlink(row['target'],dst);restore_metadata(dst,row)\n                    result['copiedInternalSymlinks']=result.get('copiedInternalSymlinks',0)+1\n                    continue\n",
+      "candidateEnd": 371,
+      "candidateStart": 365,
+      "original": "",
+      "originalEnd": 268,
+      "originalStart": 268
+    },
+    {
+      "candidate": "            copied=inventory(destination,guard,scope=name,copied=True);assert portable(copied)==portable(rows)\n            assert inventory(source,guard,scope=name)==rows,'original changed during exact copy'\n",
+      "candidateEnd": 394,
+      "candidateStart": 392,
+      "original": "            copied=inventory(destination,guard);assert portable(copied)==portable(rows)\n            assert inventory(source,guard)==rows,'original changed during exact copy'\n",
+      "originalEnd": 291,
+      "originalStart": 289
+    },
+    {
+      "candidate": "        restore={'protocol':'three-owned-component-cache-stable-custody-map-v1',\n",
+      "candidateEnd": 401,
+      "candidateStart": 400,
+      "original": "        restore={'protocol':'four-closed-network-directories-stable-custody-map-v1',\n",
+      "originalEnd": 298,
+      "originalStart": 297
+    },
+    {
+      "candidate": "                 'copiedManifestsSHA256':result['copiedManifestsSHA256'],\n",
+      "candidateEnd": 404,
+      "candidateStart": 403,
+      "original": "",
+      "originalEnd": 300,
+      "originalStart": 300
+    },
+    {
+      "candidate": "                 'directories':{name:{'original':str(ROOT/name),'retained':str(retained/name),\n                      'entries':SCOPES[name]['entries'],'originalAllocatedBytes':SCOPES[name]['allocated']} for name in SCOPES},\n                 'handoffSHA256':CONTROL_PINS[str(ROOT/'attempt1/cache-handoff.json')],\n                 'unchangedCompilerControllerSHA256':CONTROL_PINS[str(PROPERTY_ROOT/'inputs/run_component.py')],\n                 'compilerWarmness':'UNPROVEN','noCompilerOrNativeAcceptance':True,\n                 'postCustodyQualification':'Run only unchanged 99dc pinned_inputs as the original ubuntu/chatgpt-agent user. Retain separate source-location receipt for all 370 local and 135/211/919 Git/physical inputs, original component/lock/handoff, and stable alias identities. Ordinary reads may subsequently advance atime; they do not rewrite this completed custody proof.',\n                 'physicalRestoration':'Under fresh storage capacity/no-live admission, make an exclusive exact copy beside each original alias, fsync and independently verify bytes/link target/mode/owner/timestamps/xattrs/topology against the immutable source manifest; atomically exchange only with that still-exact alias. Never delete the sole retained destination. No automatic restore is executed.',\n                 'privateDataMustNotBePublished':True}\n",
+      "candidateEnd": 413,
+      "candidateStart": 405,
+      "original": "                 'directories':{name:{'original':str(ROOT/name),'retained':str(retained/name),'receiptSHA256':SCOPES[name]['receipt']} for name in SCOPES},\n                 'privateDataMustNotBePublished':True,'noNativeAcceptance':True,\n                 'historicalReplayPhysicalPathPrerequisite':'lan-progress-replay1/sdk-source becomes reachable through a stable alias. The completed source-replay receipt stays unchanged. apply.py requires resolve()==supplied source, so any future replay must use a fresh independent physical copy verified against this manifest, or restore the original physical directory before that old command. No current queued consumer invokes it.',\n                 'physicalRestoration':'Under fresh original native/build capacity gates, require no inode/FD/cwd/maps users, make an exclusive exact copy beside the original alias, fsync and independently verify every file/hash/mode/uid/gid/atime/mtime/xattr and entry topology against the immutable manifest, then atomically exchange the copy with the still-exact alias. Never remove or overwrite the sole retained destination. Do not rerun the completed controllers or replay account/ACL operations.'}\n",
+      "originalEnd": 305,
+      "originalStart": 301
+    },
+    {
+      "candidate": "        immutable_json(CLAIM,{'protocol':'pinkha-three-owned-cache-active-claim-v1',\n            'controllerSHA256':result['controllerSHA256'],'output':str(OUT),'token':token,\n            'restorationMapSHA256':result['restorationMapSHA256'],\n            'sourceManifestsSHA256':result['sourceManifestsSHA256']})\n        result['activeClaim']=str(CLAIM)\n",
+      "candidateEnd": 420,
+      "candidateStart": 415,
+      "original": "",
+      "originalEnd": 307,
+      "originalStart": 307
+    },
+    {
+      "candidate": "            assert not os.path.lexists(exchange) and inventory(source,guard,scope=name)==rows\n            assert portable(inventory(destination,guard,scope=name,copied=True))==portable(rows)\n",
+      "candidateEnd": 426,
+      "candidateStart": 424,
+      "original": "            assert not os.path.lexists(exchange) and inventory(source,guard)==rows\n            assert portable(inventory(destination,guard))==portable(rows)\n",
+      "originalEnd": 313,
+      "originalStart": 311
+    },
+    {
+      "candidate": "            old=inventory(exchange,guard,scope=name)\n",
+      "candidateEnd": 432,
+      "candidateStart": 431,
+      "original": "            old=inventory(exchange,guard)\n",
+      "originalEnd": 319,
+      "originalStart": 318
+    },
+    {
+      "candidate": "            assert portable(inventory(source.resolve(),guard,scope=name,copied=True))==portable(rows)\n",
+      "candidateEnd": 437,
+      "candidateStart": 436,
+      "original": "            assert portable(inventory(source.resolve(),guard))==portable(rows)\n",
+      "originalEnd": 324,
+      "originalStart": 323
+    },
+    {
+      "candidate": "            old=inventory(exchange,guard,scope=name)\n            assert portable(old)==portable(rows) and portable(inventory(destination,guard,scope=name,copied=True))==portable(rows)\n",
+      "candidateEnd": 445,
+      "candidateStart": 443,
+      "original": "            old=inventory(exchange,guard)\n            assert portable(old)==portable(rows) and portable(inventory(destination,guard))==portable(rows)\n",
+      "originalEnd": 332,
+      "originalStart": 330
+    },
+    {
+      "candidate": "                if row['kind'] in ('file','symlink'):\n                    if row['kind']=='symlink':\n                        assert name=='build' and relative=='debug' and os.readlink(path)==BUILD_LINK\n                        assert metadata(path)=={k:v for k,v in row.items() if k not in ('sha256','target')}\n                    else:\n                        assert metadata(path)=={k:v for k,v in row.items() if k!='sha256'}\n                        assert sha_file(path)==row['sha256']\n                    path.unlink()\n",
+      "candidateEnd": 460,
+      "candidateStart": 452,
+      "original": "                if row['kind']=='file':\n                    assert metadata(path)=={k:v for k,v in row.items() if k!='sha256'}\n                    assert sha_file(path)==row['sha256'];path.unlink()\n",
+      "originalEnd": 342,
+      "originalStart": 339
+    },
+    {
+      "candidate": "            assert portable(inventory(destination,guard,scope=name,copied=True))==portable(rows)\n        result['status']='PASS_EXACT_THREE_OWNED_COMPONENT_CACHE_ROOTS_RELOCATED_STABLE_ALIASES_NO_COMPILER_ACCEPTANCE'\n",
+      "candidateEnd": 467,
+      "candidateStart": 465,
+      "original": "            assert portable(inventory(destination,guard))==portable(rows)\n        result['status']='PASS_EXACT_FOUR_CLOSED_PRIVATE_DIRECTORIES_RELOCATED_STABLE_ALIASES_NO_NATIVE_ACCEPTANCE'\n",
+      "originalEnd": 349,
+      "originalStart": 347
+    },
+    {
+      "candidate": "        result['sourceLocationQualification']='NOT_RUN_REQUIRED_BEFORE_COMPILER'\n        result['componentAndAttempt1RemainPhysicalOnRoot']=True\n",
+      "candidateEnd": 471,
+      "candidateStart": 469,
+      "original": "",
+      "originalEnd": 351,
+      "originalStart": 351
+    },
+    {
+      "candidate": "            result['protectedOriginalComponentReceiptsDependencySourcesAnd99dcUnchanged']=(protected_before is not None and protected_trees is not None)\n",
+      "candidateEnd": 486,
+      "candidateStart": 485,
+      "original": "            result['protectedOriginalAccountsHelperClosureControlsAndNativePinsUnchanged']=(protected_before is not None and protected_trees is not None)\n",
+      "originalEnd": 366,
+      "originalStart": 365
+    },
+    {
+      "candidate": "                assert portable(inventory(OUT/'retained'/name,final_guard,scope=name,copied=True))==portable(sources[name])\n",
+      "candidateEnd": 490,
+      "candidateStart": 489,
+      "original": "                assert portable(inventory(OUT/'retained'/name,final_guard))==portable(sources[name])\n",
+      "originalEnd": 370,
+      "originalStart": 369
+    },
+    {
+      "candidate": "        result['copiedLinkReadAtimeRestorations']=COPIED_LINK_READ_RESTORATIONS\n",
+      "candidateEnd": 496,
+      "candidateStart": 495,
+      "original": "",
+      "originalEnd": 375,
+      "originalStart": 375
+    },
+    {
+      "candidate": "        if result['status'].startswith('PASS'):\n            # Only new custody evidence is made readable to the original compiler\n            # group; no old source, cache or receipt permission is changed.\n            for evidence_name in ('result.json','restoration-map.json','private-copied-manifests.json'):\n                evidence_path=OUT/evidence_name\n                os.chown(evidence_path,0,1002);os.chmod(evidence_path,0o640)\n            qualification=OUT/'source-qualification1'\n            qualification.mkdir(mode=0o750,exist_ok=False)\n            os.chown(qualification,1001,1002);os.chmod(qualification,0o750)\n            durable_directory(OUT)\n            claim=read_json_noatime(CLAIM)\n            assert claim['controllerSHA256']==result['controllerSHA256'] and claim['token']==token\n            assert claim['restorationMapSHA256']==sha_file(OUT/'restoration-map.json')\n            CLAIM.unlink();durable_directory(CLAIM.parent)\n",
+      "candidateEnd": 511,
+      "candidateStart": 497,
+      "original": "",
+      "originalEnd": 376,
+      "originalStart": 376
+    }
+  ],
+  "inverseRestoresOriginalExactly": true,
+  "nativeInvocations": 0,
+  "originalSHA256": "0852b8ff5b87fa1dd5e43c0b2a60402c855f8fe07e2378f21ce23772995dba64",
+  "runtimeExecuted": false,
+  "schema": "pinkha-component-cache-controller-exact-derivative-v1",
+  "unchangedOriginalDeclarations": [
+    "directory_names",
+    "sha_file",
+    "portable",
+    "durable_directory",
+    "immutable_json",
+    "live_users",
+    "protected_files",
+    "exchange_paths"
+  ]
+}

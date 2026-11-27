@@ -1,0 +1,1575 @@
+{
+  "actualLifecycle": {
+    "compilerInvocations": 0,
+    "methods": [
+      {
+        "expectedFailure": null,
+        "groupPositivelyAbsent": true,
+        "name": "normal",
+        "retainedOriginalError": null,
+        "status": "PASS"
+      },
+      {
+        "expectedFailure": "injected started journal failure",
+        "groupPositivelyAbsent": true,
+        "name": "started-journal-failure",
+        "retainedOriginalError": {
+          "message": "injected started journal failure",
+          "type": "OSError"
+        },
+        "status": "PASS"
+      },
+      {
+        "expectedFailure": "owned descendants outlived command leader",
+        "groupPositivelyAbsent": true,
+        "name": "leader-exits-with-descendant",
+        "retainedOriginalError": {
+          "message": "owned descendants outlived command leader",
+          "type": "RuntimeError"
+        },
+        "status": "PASS"
+      },
+      {
+        "expectedFailure": "owned Swift controller interrupted by signal 15",
+        "groupPositivelyAbsent": true,
+        "name": "controller-SIGTERM",
+        "retainedOriginalError": {
+          "message": "owned Swift controller interrupted by signal 15",
+          "type": "RuntimeError"
+        },
+        "status": "PASS"
+      },
+      {
+        "expectedFailure": "owned Swift controller interrupted by signal 2",
+        "groupPositivelyAbsent": true,
+        "name": "controller-SIGINT",
+        "retainedOriginalError": {
+          "message": "owned Swift controller interrupted by signal 2",
+          "type": "RuntimeError"
+        },
+        "status": "PASS"
+      }
+    ],
+    "nativeInvocations": 0,
+    "seconds": 0.7780617764219642,
+    "status": "PASS_FIVE_ACTUAL_OWNED_PROCESS_LIFECYCLE_CONTROLS"
+  },
+  "bytes": 816830,
+  "checkpointBytes": 463169,
+  "checkpointFiles": 45,
+  "commits": [
+    {
+      "files": 18,
+      "parents": [
+        "834a6bced7b922a18f291add1bcc6e82d5bba61f"
+      ],
+      "sha": "26d48284e4476a52e5d8c2135e442485891c6849",
+      "stats": {
+        "additions": 4204,
+        "deletions": 0,
+        "total": 4204
+      },
+      "tree": "5f639a8791edab33f40ac33f862fd7e61e8bb9f6"
+    },
+    {
+      "files": 46,
+      "parents": [
+        "26d48284e4476a52e5d8c2135e442485891c6849"
+      ],
+      "sha": "f3f56a4bc0bb802be6377b353a31eadde9488493",
+      "stats": {
+        "additions": 10560,
+        "deletions": 0,
+        "total": 10560
+      },
+      "tree": "b4750088387f72f17140fb9afdacf092ef528140"
+    },
+    {
+      "files": 3,
+      "parents": [
+        "f3f56a4bc0bb802be6377b353a31eadde9488493"
+      ],
+      "sha": "1aaff678cb75c86f356626817244c57529b36f4f",
+      "stats": {
+        "additions": 238,
+        "deletions": 0,
+        "total": 238
+      },
+      "tree": "c59db6327b223ffb08d4a578112c2f039d14b2f8"
+    },
+    {
+      "files": 4,
+      "parents": [
+        "9ebba26e903f4a3942afc22c1c9f9bb0b4393b6e"
+      ],
+      "sha": "92a2904112738619f2f689b137ba663b08378730",
+      "stats": {
+        "additions": 1167,
+        "deletions": 0,
+        "total": 1167
+      },
+      "tree": "96fa62fda9c2b89fae6302c781754b11c2db50e8"
+    }
+  ],
+  "fileCount": 71,
+  "fullOriginalWhitespaceInverses": [
+    {
+      "astBodyEqual": true,
+      "exactInverse": "Append one LF byte",
+      "newBytes": 14264,
+      "newSHA256": "e12dc150343c13ef2bc5d087442ecd1cf83d2e5fc88d93c919472cb9fd07b4a8",
+      "oldBytes": 14265,
+      "oldSHA256": "55aa6a68df12a5ea636bda9f925ebe99656547b668d98a48d5c3c29a26826a49",
+      "path": "generate_cutover_swift_relocated.py"
+    },
+    {
+      "astBodyEqual": true,
+      "exactInverse": "Append one LF byte",
+      "newBytes": 17851,
+      "newSHA256": "b88576e9acc694135905aeeea8b1c0d2175cd3c3bf9a4f105ec13cae3a3581b1",
+      "oldBytes": 17852,
+      "oldSHA256": "12c7034fecb38e4df2f9166ba66de61135c6d3dbb1207b7b9b82fbd74643783b",
+      "path": "qualify_cutover_swift_relocated.py"
+    }
+  ],
+  "fullSpacePatches": [
+    {
+      "actualOverlayMatched": false,
+      "compilerRuns": 0,
+      "fileCount": 35,
+      "files": [
+        {
+          "candidateBytes": 11273,
+          "candidateSHA256": "f7421eacd6860e674ac99bae30f0da0257c5217da595f116efba4f95da74090c",
+          "forwardAndInverseExact": true,
+          "hunks": 2,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/block/delete.go",
+          "originalBytes": 10227,
+          "originalSHA256": "06c83a80b2c916f4f3701c6d62a2e275b2ecb082488c9ddc7a43a8e759c704bd",
+          "path": "core/block/delete.go"
+        },
+        {
+          "candidateBytes": 3121,
+          "candidateSHA256": "8db53fa1babd35d9fad2d351df724941a8d0b07e7c27d368c63eeb441b5a077f",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/block/editor/smartblock/pinkha_native_index.go"
+        },
+        {
+          "candidateBytes": 58992,
+          "candidateSHA256": "b8cf132d4b1b7f2a96c8f50bc2dd91af221ffb8e2e556a4984780c49c9a548af",
+          "forwardAndInverseExact": true,
+          "hunks": 5,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/block/editor/smartblock/smartblock.go",
+          "originalBytes": 57885,
+          "originalSHA256": "1ec7add0d672d08f734dd725a773121a5201f7e548d0868d0d7c0d8599e73ac7",
+          "path": "core/block/editor/smartblock/smartblock.go"
+        },
+        {
+          "candidateBytes": 16960,
+          "candidateSHA256": "308fefe2141794879f943b15c1e4cb132170072744f5b953e6d73066b112ed4f",
+          "forwardAndInverseExact": true,
+          "hunks": 3,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/block/editor/torahops/cutover_native_host.go",
+          "originalBytes": 16757,
+          "originalSHA256": "2c5c0ea752139a14d75365702c9552d6bb3d683ae8c8ea118a8a0607d76682da",
+          "path": "core/block/editor/torahops/cutover_native_host.go"
+        },
+        {
+          "candidateBytes": 16311,
+          "candidateSHA256": "283da8f617e8f2b58c833b00edeeb5ca0202301fecf62f98ba487ddbcefeecc5",
+          "forwardAndInverseExact": true,
+          "hunks": 3,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/block/editor/torahops/native_host.go",
+          "originalBytes": 16108,
+          "originalSHA256": "bb36bfa5b26d4f600030f48cb5df9c4fdbd8607814d2c5186c9d220006e95c3a",
+          "path": "core/block/editor/torahops/native_host.go"
+        },
+        {
+          "candidateBytes": 1640,
+          "candidateSHA256": "5a228db6b405fd3ee405074c1d89ba0fd6f2a6fc79c596f2e042107a3ef01a56",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/block/editor/torahops/native_index_hook.go"
+        },
+        {
+          "candidateBytes": 7286,
+          "candidateSHA256": "b67b21bd4ae4492b32253f0530070cc8cc0aa301467c43ca5ebe0b0d52afbb7b",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/block/editor/torahops/native_index_hook_test.go"
+        },
+        {
+          "candidateBytes": 894,
+          "candidateSHA256": "926a1962a4c9dfdf80b8c97519937b7a8d6739b61e36e0619da7c6ea4ad67a6e",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/block/editor/torahops/native_read_scope.go"
+        },
+        {
+          "candidateBytes": 7693,
+          "candidateSHA256": "0745fdd9fb297cc3b3f23fd4f913aa78d1ad1b436b294c284a222690dca0de35",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/block/editor/torahopsobject/cutover_object.go",
+          "originalBytes": 7604,
+          "originalSHA256": "0544a4c368e47b58df94bb54e2da56fe583d5ad4599471005047469a652affa4",
+          "path": "core/block/editor/torahopsobject/cutover_object.go"
+        },
+        {
+          "candidateBytes": 834,
+          "candidateSHA256": "18049a9bfb9b1796dc2af1b81bb0df52b86af2d4af9aa66b9e8aa207cb342053",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/block/editor/torahopsobject/native_index_hook.go"
+        },
+        {
+          "candidateBytes": 5998,
+          "candidateSHA256": "43fea2dfdf480a692a37f20b7ea31e84ffe5305b99981ed0a8adbc9e4857aec3",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/block/editor/torahopsobject/object.go",
+          "originalBytes": 5909,
+          "originalSHA256": "c325a56a0c90c79c586fb7ec09a838700fa0d54159a624ab6acf45bf9e8ad118",
+          "path": "core/block/editor/torahopsobject/object.go"
+        },
+        {
+          "candidateBytes": 8249,
+          "candidateSHA256": "9eddf19f70bd9e18fef87f8cebbd03c60128fb599416909b4ff2011bb102f93d",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/indexer/indexer.go",
+          "originalBytes": 8096,
+          "originalSHA256": "5601b8a7b4ead2649cd72c7cf6d1bc734d2213485c3526e755837ac52ac39a11",
+          "path": "core/indexer/indexer.go"
+        },
+        {
+          "candidateBytes": 6843,
+          "candidateSHA256": "dad67d188bd10db10fdfe9c114dbb8c9962ed51e1f175a6074e2ecd748c75f77",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/indexer/pinkha_completion_test.go"
+        },
+        {
+          "candidateBytes": 2059,
+          "candidateSHA256": "f6546bddcaa4734addc2a6b4125d7bd14fc4bb90499b4190cd4013cbd15e427f",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/indexer/pinkha_native_index.go"
+        },
+        {
+          "candidateBytes": 36861,
+          "candidateSHA256": "58c9fc2bf49d589a3b41673eb5527f3e3da06fe644668fafcc15abae0c5da13f",
+          "forwardAndInverseExact": true,
+          "hunks": 4,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/indexer/reindex.go",
+          "originalBytes": 35704,
+          "originalSHA256": "bdb3d6a6cf6d3c9cf2a76a4c41b4f17a18a2b6fc9fc2f22b7b989a1e1e6d0951",
+          "path": "core/indexer/reindex.go"
+        },
+        {
+          "candidateBytes": 8898,
+          "candidateSHA256": "9381998dd9deb47ee0d97b24bbdca32589c42c8c9896f962b90832a9d0e99b4a",
+          "forwardAndInverseExact": true,
+          "hunks": 7,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/indexer/spaceindexer.go",
+          "originalBytes": 7593,
+          "originalSHA256": "a01932be6fb49fbe56ed1b2fc9c9ef3b6c2301fef9dd90913ad0860bf35f1f0f",
+          "path": "core/indexer/spaceindexer.go"
+        },
+        {
+          "candidateBytes": 18535,
+          "candidateSHA256": "434f454bf47a0e51e6dc4f3058f2912b85b91b766efe0404a5a4830c27c4b480",
+          "forwardAndInverseExact": true,
+          "hunks": 3,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/pinkha/torahindex/index.go",
+          "originalBytes": 18430,
+          "originalSHA256": "9873f508c27021157c17b28b04ee6f18c74a0cf1bea7028e355696f31c42f929",
+          "path": "core/pinkha/torahindex/index.go"
+        },
+        {
+          "candidateBytes": 8432,
+          "candidateSHA256": "8b18f6303542386ae099f52f26daa4332a83e90c0579f11a9224522f5fbff243",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/pinkha/torahindex/readiness_snapshot.go"
+        },
+        {
+          "candidateBytes": 5494,
+          "candidateSHA256": "02a82e039462dbdc80dd577ce0d88de62b557933e0ffeec7673d466b983ff491",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/pinkha_torah_space_index.go"
+        },
+        {
+          "candidateBytes": 21673,
+          "candidateSHA256": "8413a88d93e5b690775f90f7ef61d431a46cade3a5d6d4c83fa289d8e1a3ad33",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/pinkha_torah_space_index_acceptance_test.go"
+        },
+        {
+          "candidateBytes": 1976,
+          "candidateSHA256": "a5b456f068dbd3fb10c5f34eba906c202b1d5d55df1cf9e5245a440a7e2394a2",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "pkg/lib/localstore/objectstore/pinkha_loaded_index.go"
+        },
+        {
+          "candidateBytes": 7194,
+          "candidateSHA256": "6b309749aaf32ce9f4c0a61611e0e94227f0f37b642507930ab3c657c9f8c911",
+          "forwardAndInverseExact": true,
+          "hunks": 5,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/pkg/lib/localstore/objectstore/spaceindex/delete.go",
+          "originalBytes": 6601,
+          "originalSHA256": "2e51f49c2b7a1a588f148c805e467cd724e983db04f23f97a1dd2b1a81a746d9",
+          "path": "pkg/lib/localstore/objectstore/spaceindex/delete.go"
+        },
+        {
+          "candidateBytes": 3618,
+          "candidateSHA256": "38fd9aebebea0bbb7240234cf11bcb0df71904443c4007f889c57a8f4c0fca1d",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "pkg/lib/localstore/objectstore/spaceindex/pinkha_native_admission.go"
+        },
+        {
+          "candidateBytes": 6840,
+          "candidateSHA256": "8e291166166fc0c0dbfd2f3c1937984500be63ac9b1486f666d9ed2fbc4b0ebb",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "pkg/lib/localstore/objectstore/spaceindex/pinkha_native_admission_test.go"
+        },
+        {
+          "candidateBytes": 8553,
+          "candidateSHA256": "28f9977dae129760c73a000a2e829e0dc5a3562e2a80ede0d2ed1057dc2756ca",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_snapshot.go"
+        },
+        {
+          "candidateBytes": 1788,
+          "candidateSHA256": "957c5d1871d60bdde564303678fe76a29aff6ba9315eaa25ad4034781b7379f0",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "pkg/lib/pinkha/torahindexcontract/budget.go"
+        },
+        {
+          "candidateBytes": 9391,
+          "candidateSHA256": "d40217191c78c22ba31630d63ba91237893393e251d13f4d044e337b4c27dfe1",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "pkg/lib/pinkha/torahindexcontract/snapshot.go"
+        },
+        {
+          "candidateBytes": 1528,
+          "candidateSHA256": "5967c9fe077dbe2f3bb7df07e764423dad149d69a913c295c86d2d4ed2ab5177",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/internal/components/spaceloader/pinkha_loaded.go"
+        },
+        {
+          "candidateBytes": 4519,
+          "candidateSHA256": "5a5bdb4569114ef85f5610c2d85de8798a330270eef080c60246657028e91ee6",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/internal/components/spaceloader/pinkha_loaded_test.go"
+        },
+        {
+          "candidateBytes": 7504,
+          "candidateSHA256": "c7bb2d65f08019e9052196edf92861503fe19e0bebb120af6f80d24ac5491c2e",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/space/internal/components/spaceloader/spaceloader.go",
+          "originalBytes": 7287,
+          "originalSHA256": "fb712cda5081e509a62a012be6cf5597d43ce8556d1fc9ef543833a41fe63fb2",
+          "path": "space/internal/components/spaceloader/spaceloader.go"
+        },
+        {
+          "candidateBytes": 1069,
+          "candidateSHA256": "7ee8fd65c3b185665158b08b71614d0d875a6fed90e43d2bff3b88c26720c598",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/internal/spaceprocess/loader/pinkha_loaded.go"
+        },
+        {
+          "candidateBytes": 2415,
+          "candidateSHA256": "561712fb1641985d157013f8a0eac9b6fec75277b9dd488c687cd36eed034986",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/pinkha_loaded.go"
+        },
+        {
+          "candidateBytes": 1887,
+          "candidateSHA256": "01fd31923263cfcaf54c54f38b83ac9552522f0e369c64e5ff6de899d3971463",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/spacecore/storage/anystorage/pinkha_deletion_admission.go"
+        },
+        {
+          "candidateBytes": 7326,
+          "candidateSHA256": "7efb72a9e617a963939ec48e4f550158fc1b25b7d7f317835901755b214931f0",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/spacecore/storage/anystorage/pinkha_heads_snapshot.go"
+        },
+        {
+          "candidateBytes": 4935,
+          "candidateSHA256": "942ede12e7f6b46ff55c9a57c47682a97374d953a2e554d2fa373f6123afdbc6",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/spacecore/storage/anystorage/pinkha_native_root_test.go"
+        }
+      ],
+      "manifest": {
+        "bytes": 8621,
+        "gitBlob": "6cfaae222ee2dd02598a1f3f3cea5a970c30f87c",
+        "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/source-draft2.json",
+        "sha256": "48bea998663a09d28c7d59d85fd944dac6997505a02e5ee672baca129aa17823"
+      },
+      "nativeTests": 0,
+      "rawPatch": {
+        "bytes": 139781,
+        "sha256": "ccb626af859ccfaf459cdf668bf2caa54a830cf6d36dc7a8820cf9311ec4bebf"
+      },
+      "version": 2
+    },
+    {
+      "actualOverlayMatched": true,
+      "compilerRuns": 0,
+      "fileCount": 37,
+      "files": [
+        {
+          "candidateBytes": 21135,
+          "candidateSHA256": "260d60a4ef9fda025ffa14d83502191a62a41836ffd89f464e33d7e6257cc27a",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "clientlibrary/service/pinkha_torah_cutover_index_failure_acceptance_test.go"
+        },
+        {
+          "candidateBytes": 11273,
+          "candidateSHA256": "f7421eacd6860e674ac99bae30f0da0257c5217da595f116efba4f95da74090c",
+          "forwardAndInverseExact": true,
+          "hunks": 2,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/block/delete.go",
+          "originalBytes": 10227,
+          "originalSHA256": "06c83a80b2c916f4f3701c6d62a2e275b2ecb082488c9ddc7a43a8e759c704bd",
+          "path": "core/block/delete.go"
+        },
+        {
+          "candidateBytes": 3121,
+          "candidateSHA256": "8db53fa1babd35d9fad2d351df724941a8d0b07e7c27d368c63eeb441b5a077f",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/block/editor/smartblock/pinkha_native_index.go"
+        },
+        {
+          "candidateBytes": 58992,
+          "candidateSHA256": "b8cf132d4b1b7f2a96c8f50bc2dd91af221ffb8e2e556a4984780c49c9a548af",
+          "forwardAndInverseExact": true,
+          "hunks": 5,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/block/editor/smartblock/smartblock.go",
+          "originalBytes": 57885,
+          "originalSHA256": "1ec7add0d672d08f734dd725a773121a5201f7e548d0868d0d7c0d8599e73ac7",
+          "path": "core/block/editor/smartblock/smartblock.go"
+        },
+        {
+          "candidateBytes": 16960,
+          "candidateSHA256": "308fefe2141794879f943b15c1e4cb132170072744f5b953e6d73066b112ed4f",
+          "forwardAndInverseExact": true,
+          "hunks": 3,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/block/editor/torahops/cutover_native_host.go",
+          "originalBytes": 16757,
+          "originalSHA256": "2c5c0ea752139a14d75365702c9552d6bb3d683ae8c8ea118a8a0607d76682da",
+          "path": "core/block/editor/torahops/cutover_native_host.go"
+        },
+        {
+          "candidateBytes": 16311,
+          "candidateSHA256": "283da8f617e8f2b58c833b00edeeb5ca0202301fecf62f98ba487ddbcefeecc5",
+          "forwardAndInverseExact": true,
+          "hunks": 3,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/block/editor/torahops/native_host.go",
+          "originalBytes": 16108,
+          "originalSHA256": "bb36bfa5b26d4f600030f48cb5df9c4fdbd8607814d2c5186c9d220006e95c3a",
+          "path": "core/block/editor/torahops/native_host.go"
+        },
+        {
+          "candidateBytes": 1640,
+          "candidateSHA256": "5a228db6b405fd3ee405074c1d89ba0fd6f2a6fc79c596f2e042107a3ef01a56",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/block/editor/torahops/native_index_hook.go"
+        },
+        {
+          "candidateBytes": 7286,
+          "candidateSHA256": "b67b21bd4ae4492b32253f0530070cc8cc0aa301467c43ca5ebe0b0d52afbb7b",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/block/editor/torahops/native_index_hook_test.go"
+        },
+        {
+          "candidateBytes": 894,
+          "candidateSHA256": "926a1962a4c9dfdf80b8c97519937b7a8d6739b61e36e0619da7c6ea4ad67a6e",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/block/editor/torahops/native_read_scope.go"
+        },
+        {
+          "candidateBytes": 7693,
+          "candidateSHA256": "0745fdd9fb297cc3b3f23fd4f913aa78d1ad1b436b294c284a222690dca0de35",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/block/editor/torahopsobject/cutover_object.go",
+          "originalBytes": 7604,
+          "originalSHA256": "0544a4c368e47b58df94bb54e2da56fe583d5ad4599471005047469a652affa4",
+          "path": "core/block/editor/torahopsobject/cutover_object.go"
+        },
+        {
+          "candidateBytes": 834,
+          "candidateSHA256": "18049a9bfb9b1796dc2af1b81bb0df52b86af2d4af9aa66b9e8aa207cb342053",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/block/editor/torahopsobject/native_index_hook.go"
+        },
+        {
+          "candidateBytes": 5998,
+          "candidateSHA256": "43fea2dfdf480a692a37f20b7ea31e84ffe5305b99981ed0a8adbc9e4857aec3",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/block/editor/torahopsobject/object.go",
+          "originalBytes": 5909,
+          "originalSHA256": "c325a56a0c90c79c586fb7ec09a838700fa0d54159a624ab6acf45bf9e8ad118",
+          "path": "core/block/editor/torahopsobject/object.go"
+        },
+        {
+          "candidateBytes": 8249,
+          "candidateSHA256": "9eddf19f70bd9e18fef87f8cebbd03c60128fb599416909b4ff2011bb102f93d",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/indexer/indexer.go",
+          "originalBytes": 8096,
+          "originalSHA256": "5601b8a7b4ead2649cd72c7cf6d1bc734d2213485c3526e755837ac52ac39a11",
+          "path": "core/indexer/indexer.go"
+        },
+        {
+          "candidateBytes": 9917,
+          "candidateSHA256": "53b82dacd19a37779d3b47277652ae442e84df15cdd5312292fad95ff5271bb3",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/indexer/pinkha_completion_test.go"
+        },
+        {
+          "candidateBytes": 2059,
+          "candidateSHA256": "f6546bddcaa4734addc2a6b4125d7bd14fc4bb90499b4190cd4013cbd15e427f",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/indexer/pinkha_native_index.go"
+        },
+        {
+          "candidateBytes": 36861,
+          "candidateSHA256": "58c9fc2bf49d589a3b41673eb5527f3e3da06fe644668fafcc15abae0c5da13f",
+          "forwardAndInverseExact": true,
+          "hunks": 4,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/indexer/reindex.go",
+          "originalBytes": 35704,
+          "originalSHA256": "bdb3d6a6cf6d3c9cf2a76a4c41b4f17a18a2b6fc9fc2f22b7b989a1e1e6d0951",
+          "path": "core/indexer/reindex.go"
+        },
+        {
+          "candidateBytes": 8912,
+          "candidateSHA256": "48b0dad9529fa0ac5435b95900a101fdf76e3c72b1cff55ae5f04689b59c997d",
+          "forwardAndInverseExact": true,
+          "hunks": 7,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/indexer/spaceindexer.go",
+          "originalBytes": 7593,
+          "originalSHA256": "a01932be6fb49fbe56ed1b2fc9c9ef3b6c2301fef9dd90913ad0860bf35f1f0f",
+          "path": "core/indexer/spaceindexer.go"
+        },
+        {
+          "candidateBytes": 18535,
+          "candidateSHA256": "434f454bf47a0e51e6dc4f3058f2912b85b91b766efe0404a5a4830c27c4b480",
+          "forwardAndInverseExact": true,
+          "hunks": 3,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/core/pinkha/torahindex/index.go",
+          "originalBytes": 18430,
+          "originalSHA256": "9873f508c27021157c17b28b04ee6f18c74a0cf1bea7028e355696f31c42f929",
+          "path": "core/pinkha/torahindex/index.go"
+        },
+        {
+          "candidateBytes": 8432,
+          "candidateSHA256": "8b18f6303542386ae099f52f26daa4332a83e90c0579f11a9224522f5fbff243",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/pinkha/torahindex/readiness_snapshot.go"
+        },
+        {
+          "candidateBytes": 699,
+          "candidateSHA256": "972fb89e37026734d0fe1533b6380a8a2d70828f71071570f13a05cc77eacbb7",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/pinkha_torah_index_acceptance_stop.go"
+        },
+        {
+          "candidateBytes": 5494,
+          "candidateSHA256": "02a82e039462dbdc80dd577ce0d88de62b557933e0ffeec7673d466b983ff491",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/pinkha_torah_space_index.go"
+        },
+        {
+          "candidateBytes": 21673,
+          "candidateSHA256": "8413a88d93e5b690775f90f7ef61d431a46cade3a5d6d4c83fa289d8e1a3ad33",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "core/pinkha_torah_space_index_acceptance_test.go"
+        },
+        {
+          "candidateBytes": 1976,
+          "candidateSHA256": "a5b456f068dbd3fb10c5f34eba906c202b1d5d55df1cf9e5245a440a7e2394a2",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "pkg/lib/localstore/objectstore/pinkha_loaded_index.go"
+        },
+        {
+          "candidateBytes": 7194,
+          "candidateSHA256": "6b309749aaf32ce9f4c0a61611e0e94227f0f37b642507930ab3c657c9f8c911",
+          "forwardAndInverseExact": true,
+          "hunks": 5,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/pkg/lib/localstore/objectstore/spaceindex/delete.go",
+          "originalBytes": 6601,
+          "originalSHA256": "2e51f49c2b7a1a588f148c805e467cd724e983db04f23f97a1dd2b1a81a746d9",
+          "path": "pkg/lib/localstore/objectstore/spaceindex/delete.go"
+        },
+        {
+          "candidateBytes": 3618,
+          "candidateSHA256": "38fd9aebebea0bbb7240234cf11bcb0df71904443c4007f889c57a8f4c0fca1d",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "pkg/lib/localstore/objectstore/spaceindex/pinkha_native_admission.go"
+        },
+        {
+          "candidateBytes": 6840,
+          "candidateSHA256": "8e291166166fc0c0dbfd2f3c1937984500be63ac9b1486f666d9ed2fbc4b0ebb",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "pkg/lib/localstore/objectstore/spaceindex/pinkha_native_admission_test.go"
+        },
+        {
+          "candidateBytes": 8553,
+          "candidateSHA256": "28f9977dae129760c73a000a2e829e0dc5a3562e2a80ede0d2ed1057dc2756ca",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_snapshot.go"
+        },
+        {
+          "candidateBytes": 1788,
+          "candidateSHA256": "957c5d1871d60bdde564303678fe76a29aff6ba9315eaa25ad4034781b7379f0",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "pkg/lib/pinkha/torahindexcontract/budget.go"
+        },
+        {
+          "candidateBytes": 9391,
+          "candidateSHA256": "d40217191c78c22ba31630d63ba91237893393e251d13f4d044e337b4c27dfe1",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "pkg/lib/pinkha/torahindexcontract/snapshot.go"
+        },
+        {
+          "candidateBytes": 1528,
+          "candidateSHA256": "5967c9fe077dbe2f3bb7df07e764423dad149d69a913c295c86d2d4ed2ab5177",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/internal/components/spaceloader/pinkha_loaded.go"
+        },
+        {
+          "candidateBytes": 4519,
+          "candidateSHA256": "5a5bdb4569114ef85f5610c2d85de8798a330270eef080c60246657028e91ee6",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/internal/components/spaceloader/pinkha_loaded_test.go"
+        },
+        {
+          "candidateBytes": 7504,
+          "candidateSHA256": "c7bb2d65f08019e9052196edf92861503fe19e0bebb120af6f80d24ac5491c2e",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": "/workspace/scratch/ae335eba85e3/native4905-producer-readiness/physical-composition2/source/heart/space/internal/components/spaceloader/spaceloader.go",
+          "originalBytes": 7287,
+          "originalSHA256": "fb712cda5081e509a62a012be6cf5597d43ce8556d1fc9ef543833a41fe63fb2",
+          "path": "space/internal/components/spaceloader/spaceloader.go"
+        },
+        {
+          "candidateBytes": 1069,
+          "candidateSHA256": "7ee8fd65c3b185665158b08b71614d0d875a6fed90e43d2bff3b88c26720c598",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/internal/spaceprocess/loader/pinkha_loaded.go"
+        },
+        {
+          "candidateBytes": 2415,
+          "candidateSHA256": "561712fb1641985d157013f8a0eac9b6fec75277b9dd488c687cd36eed034986",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/pinkha_loaded.go"
+        },
+        {
+          "candidateBytes": 1887,
+          "candidateSHA256": "01fd31923263cfcaf54c54f38b83ac9552522f0e369c64e5ff6de899d3971463",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/spacecore/storage/anystorage/pinkha_deletion_admission.go"
+        },
+        {
+          "candidateBytes": 7326,
+          "candidateSHA256": "7efb72a9e617a963939ec48e4f550158fc1b25b7d7f317835901755b214931f0",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/spacecore/storage/anystorage/pinkha_heads_snapshot.go"
+        },
+        {
+          "candidateBytes": 4935,
+          "candidateSHA256": "942ede12e7f6b46ff55c9a57c47682a97374d953a2e554d2fa373f6123afdbc6",
+          "forwardAndInverseExact": true,
+          "hunks": 1,
+          "matchedOriginalQualifiedPhysicalSource": null,
+          "originalBytes": 0,
+          "originalSHA256": null,
+          "path": "space/spacecore/storage/anystorage/pinkha_native_root_test.go"
+        }
+      ],
+      "manifest": {
+        "bytes": 10916,
+        "gitBlob": "c466e6f06290084dd9107d2204702e8bdc40f37a",
+        "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/source-draft3.json",
+        "sha256": "81bc335b52ccbeb1cae97934486f26f2bf7d6a555deec4963a23807cbf7a5917"
+      },
+      "nativeTests": 0,
+      "rawPatch": {
+        "bytes": 164543,
+        "sha256": "8e27cda3547ba50c2e8b11d9bdd6d4807a188e1496273d5fe3bd6abcd12527fe"
+      },
+      "version": 3
+    }
+  ],
+  "newCompilerInvocations": 0,
+  "newOwnerTests": 0,
+  "newPrivateAccountOpens": 0,
+  "originalReceiptReadback": {
+    "bytes": 1960,
+    "gitBlob": "fbbf6e8178948a7ac64c18b6be1b0f522f9de986",
+    "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/original-receipt-readback.json",
+    "sha256": "007bc36a389295fdd0cbcb89debbdc5c8e492bf7f514df1a95456544b00eda72"
+  },
+  "primaryFiles": [
+    {
+      "bytes": 2263,
+      "gitBlob": "554d77b49ef8aa899e4383e51183a07eb0f17762",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/custody_20261127/frozen_sftp_custody_adapter.py",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/custody_20261127/frozen_sftp_custody_adapter.py",
+      "sha256": "650ca7c0577c7a2bef5e3b0639a316b860783527ebf5adea1890034e8d952f58",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 16151,
+      "gitBlob": "d715defdba8e538219f8d7a3e5fc3ba51120fcee",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/custody_20261127/offhost_root_swift_caches.py",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/custody_20261127/offhost_root_swift_caches.py",
+      "sha256": "1d267086f08ff42bba959b4d5d5d46b3c1e95cdc981bb3dc4bff01393da41c16",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 25582,
+      "gitBlob": "016c0a9f2e506cbbd6fb2f844b0cdf3ab73b360a",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/custody_20261127/relocate_e_retained_roots.py",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/custody_20261127/relocate_e_retained_roots.py",
+      "sha256": "4ddaa92aaa5fe2d13d39bab699dbe6c409a2900eb9713da48af2470435c635fd",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 8143,
+      "gitBlob": "5531825f271103128eddc3cd00b5bb99d572be48",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/custody_20261127/restore_offhost_root_swift_caches.py",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/custody_20261127/restore_offhost_root_swift_caches.py",
+      "sha256": "c745c4369c0bbc8eee1468ae9f1b76965ef461b10c9e631b327130fb7a9a0898",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 16571,
+      "gitBlob": "99a5235085e5c6056e257b5a25eaff542cdf7afa",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/custody_20261127/root_swift_archive_format.py",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/custody_20261127/root_swift_archive_format.py",
+      "sha256": "cd397c2a73ef0e381acac0de9da80482e417fcfff935855590a9d13159440c80",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 46063,
+      "gitBlob": "92eeec9b6fc84298bf55d93c838d7a059462b2fb",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/custody_20261127/root_swift_archive_transport.py",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/custody_20261127/root_swift_archive_transport.py",
+      "sha256": "6586c7f33defb342167fa4e31cf04fd361536d05e3b2908a2c20efe0cb357bbb",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 11027,
+      "gitBlob": "88adb10d3d57190f04d665171365570fb18430f0",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/cutover_retained_location.py",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/cutover_retained_location.py",
+      "sha256": "8ee6831c07fe912cbd2d63541862a8ec20b42ca5dc1937ac1070e86509dc6059",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 14264,
+      "gitBlob": "5f04b90c08a71b7809a1c65bd4a6c33122b79e24",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/generate_cutover_swift_relocated.py",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/generate_cutover_swift_relocated.py",
+      "sha256": "e12dc150343c13ef2bc5d087442ecd1cf83d2e5fc88d93c919472cb9fd07b4a8",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 9527,
+      "gitBlob": "e2155f395e5839ba0f8ed41e1057b9a228415f2c",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/owned_swift_commands.py",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/owned_swift_commands.py",
+      "sha256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 17851,
+      "gitBlob": "f5faed76e8972e8de78e3910d283291c2cc183b6",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/qualify_cutover_swift_relocated.py",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/qualify_cutover_swift_relocated.py",
+      "sha256": "b88576e9acc694135905aeeea8b1c0d2175cd3c3bf9a4f105ec13cae3a3581b1",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 14894,
+      "gitBlob": "d8c34d327a3f5b170e6507e4b6cbe0156e733957",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/qualify_cutover_swift_reuse_physical.py",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/qualify_cutover_swift_reuse_physical.py",
+      "sha256": "6d23b1c2de1e3e425dfdecdf1cf646b1d283be4e6b6d0e852a9a29442199ac4b",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 6427,
+      "gitBlob": "3a0c155009c01fb451972832ce2e27f3e00969dd",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/qualify_owned_swift_commands.py",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/qualify_owned_swift_commands.py",
+      "sha256": "f5042c929585423076559d846a493bb1ecfad5d8822a04da8b49d8f5748b548a",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 4859,
+      "gitBlob": "69e3f2cbc6c595bfe309684286c13cfbd1d1f061",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/docs/validation/20261127-heart-engine-custody/README.md",
+      "repositoryPath": "docs/validation/20261127-heart-engine-custody/README.md",
+      "sha256": "d62a18cddab3bae12a67e52ccd33133a090e7fab0e0c249f14604cbe827806b9",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 1422,
+      "gitBlob": "cda59a939baf6e33b7d9957341ef2118f197f4b8",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/docs/validation/20261127-heart-engine-custody/publication-whitespace-correction.json",
+      "repositoryPath": "docs/validation/20261127-heart-engine-custody/publication-whitespace-correction.json",
+      "sha256": "f17469eff98e511651ba3626937f3c1466f2b9c818afe0c423693cb8868363dd",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 7220,
+      "gitBlob": "52fd44ab3563a56dbf59437a5d60bcf64438d996",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/docs/validation/20261127-heart-engine-custody/relocation-result.json",
+      "repositoryPath": "docs/validation/20261127-heart-engine-custody/relocation-result.json",
+      "sha256": "331b93a174d36a639d3748dfa01692fc0add62624d31c7a3cd957f5a5eb5d772",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 30383,
+      "gitBlob": "40c9846240a1b62e3269214dd746cbf9fd7f3496",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/docs/validation/20261127-heart-engine-custody/root-swift-offhost-result.json",
+      "repositoryPath": "docs/validation/20261127-heart-engine-custody/root-swift-offhost-result.json",
+      "sha256": "8ce0290ab631634c4e5d9d21af9c9e5eed34e476366cd7c25beeff61f48125b0",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 4935,
+      "gitBlob": "53d8cc57c9448e956bb89b63d7763c27acdbf5d9",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/docs/validation/20261127-heart-engine-custody/source-only-successors.json",
+      "repositoryPath": "docs/validation/20261127-heart-engine-custody/source-only-successors.json",
+      "sha256": "b855f9a6c100a770bd6deb9eea563b1c034b84b210a2ee91adec70cac7322a5b",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 43208,
+      "gitBlob": "f385c105908099e739d6dff452eef0f5eae11acf",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/docs/validation/20261127-heart-engine-custody/source-predecessors.json",
+      "repositoryPath": "docs/validation/20261127-heart-engine-custody/source-predecessors.json",
+      "sha256": "b8ec78db4a91ec7f3b482329e2bb694fcf330d5d8cb6398f842d44a0845f9d27",
+      "source": "26d48284e4476a52e5d8c2135e442485891c6849"
+    },
+    {
+      "bytes": 7626,
+      "gitBlob": "9609f61f4fe37e41dda5c245830a6479fa6d8619",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/README.md",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/README.md",
+      "sha256": "8680a0ba5626babdd58ae3c345b563ef2f848968f00265544b2f2a5128ba4d12",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 8692,
+      "gitBlob": "8d73a26656dfb0194b0cba167b1ea85e05d78ac5",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/base-source-admission.json",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/base-source-admission.json",
+      "sha256": "858e7c564111187b2954563bec9b7e647f142199cba5b2956d0f72198bde597f",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 8015,
+      "gitBlob": "5e947e373b879b619f21973aadb2ebe9a2571fc9",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/checkpoint-manifest.json",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/checkpoint-manifest.json",
+      "sha256": "3bb27e60e05c05059af332f6e75bbf5fabc9206663ab40502e7499ae6dcc728f",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 21135,
+      "gitBlob": "d0d7fe174da67bcbeedc8cfedbf82c786b7772b6",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/clientlibrary/service/pinkha_torah_cutover_index_failure_acceptance_test.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/clientlibrary/service/pinkha_torah_cutover_index_failure_acceptance_test.go",
+      "sha256": "260d60a4ef9fda025ffa14d83502191a62a41836ffd89f464e33d7e6257cc27a",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 11273,
+      "gitBlob": "2facf2eae60384612f3386866d54940ea502b0b5",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/delete.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/delete.go",
+      "sha256": "f7421eacd6860e674ac99bae30f0da0257c5217da595f116efba4f95da74090c",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 3121,
+      "gitBlob": "f390e624e2b78e6c85dacfa803eb6988a10e785b",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/smartblock/pinkha_native_index.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/smartblock/pinkha_native_index.go",
+      "sha256": "8db53fa1babd35d9fad2d351df724941a8d0b07e7c27d368c63eeb441b5a077f",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 58992,
+      "gitBlob": "88d4ecb4a12928874a41ba8f5e1395b181484b71",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/smartblock/smartblock.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/smartblock/smartblock.go",
+      "sha256": "b8cf132d4b1b7f2a96c8f50bc2dd91af221ffb8e2e556a4984780c49c9a548af",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 16960,
+      "gitBlob": "6782ba3b4d7da340b401023db1cf4457b2a44ddf",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahops/cutover_native_host.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahops/cutover_native_host.go",
+      "sha256": "308fefe2141794879f943b15c1e4cb132170072744f5b953e6d73066b112ed4f",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 16311,
+      "gitBlob": "db9c91cbec7ea8e4f02245c9685d676b7139c2ff",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahops/native_host.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahops/native_host.go",
+      "sha256": "283da8f617e8f2b58c833b00edeeb5ca0202301fecf62f98ba487ddbcefeecc5",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 1640,
+      "gitBlob": "cf8fcf928dec5c81c69689d0b0f08cd8a9428b73",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahops/native_index_hook.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahops/native_index_hook.go",
+      "sha256": "5a228db6b405fd3ee405074c1d89ba0fd6f2a6fc79c596f2e042107a3ef01a56",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 7286,
+      "gitBlob": "0c4bf45d28c044711c9f9e5d5584291ee4ace140",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahops/native_index_hook_test.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahops/native_index_hook_test.go",
+      "sha256": "b67b21bd4ae4492b32253f0530070cc8cc0aa301467c43ca5ebe0b0d52afbb7b",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 894,
+      "gitBlob": "5be8a1fec1350a10eede3211198b7e77f545f4a1",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahops/native_read_scope.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahops/native_read_scope.go",
+      "sha256": "926a1962a4c9dfdf80b8c97519937b7a8d6739b61e36e0619da7c6ea4ad67a6e",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 7693,
+      "gitBlob": "43be137c7c491bdcbbaa79029d0e53561e9b1e03",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahopsobject/cutover_object.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahopsobject/cutover_object.go",
+      "sha256": "0745fdd9fb297cc3b3f23fd4f913aa78d1ad1b436b294c284a222690dca0de35",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 834,
+      "gitBlob": "9c98272a7394bdfb72ebf6b9ed32a0e181006ebe",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahopsobject/native_index_hook.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahopsobject/native_index_hook.go",
+      "sha256": "18049a9bfb9b1796dc2af1b81bb0df52b86af2d4af9aa66b9e8aa207cb342053",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 5998,
+      "gitBlob": "e1af44e32b2d68da3d5c1dfd98874648fd8c9262",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahopsobject/object.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/block/editor/torahopsobject/object.go",
+      "sha256": "43fea2dfdf480a692a37f20b7ea31e84ffe5305b99981ed0a8adbc9e4857aec3",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 8249,
+      "gitBlob": "83700d17368f60821456e30a769e703b8534e42e",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/indexer/indexer.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/indexer/indexer.go",
+      "sha256": "9eddf19f70bd9e18fef87f8cebbd03c60128fb599416909b4ff2011bb102f93d",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 9917,
+      "gitBlob": "02755da5c02078d1b520d64d0c224f5d3e2b7cf8",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/indexer/pinkha_completion_test.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/indexer/pinkha_completion_test.go",
+      "sha256": "53b82dacd19a37779d3b47277652ae442e84df15cdd5312292fad95ff5271bb3",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 2059,
+      "gitBlob": "0df5297aa1705c71139818f0ac44514839230bde",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/indexer/pinkha_native_index.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/indexer/pinkha_native_index.go",
+      "sha256": "f6546bddcaa4734addc2a6b4125d7bd14fc4bb90499b4190cd4013cbd15e427f",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 36861,
+      "gitBlob": "e773b84da8ed611c4afd7b4cc77ac40912c32ba0",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/indexer/reindex.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/indexer/reindex.go",
+      "sha256": "58c9fc2bf49d589a3b41673eb5527f3e3da06fe644668fafcc15abae0c5da13f",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 8912,
+      "gitBlob": "cbacc54023da56d1b75f128d59fad96ec6566ffd",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/indexer/spaceindexer.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/indexer/spaceindexer.go",
+      "sha256": "48b0dad9529fa0ac5435b95900a101fdf76e3c72b1cff55ae5f04689b59c997d",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 18535,
+      "gitBlob": "632e5b2c97cc1707cab97f40a59424581a44950f",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/pinkha/torahindex/index.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/pinkha/torahindex/index.go",
+      "sha256": "434f454bf47a0e51e6dc4f3058f2912b85b91b766efe0404a5a4830c27c4b480",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 8432,
+      "gitBlob": "75bc99fc7c0c27be311d63de7091608e096bd60e",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/pinkha/torahindex/readiness_snapshot.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/pinkha/torahindex/readiness_snapshot.go",
+      "sha256": "8b18f6303542386ae099f52f26daa4332a83e90c0579f11a9224522f5fbff243",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 699,
+      "gitBlob": "76635c4c959c2ff7fc2600df11f7237100c42caf",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/pinkha_torah_index_acceptance_stop.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/pinkha_torah_index_acceptance_stop.go",
+      "sha256": "972fb89e37026734d0fe1533b6380a8a2d70828f71071570f13a05cc77eacbb7",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 5494,
+      "gitBlob": "a24429e46a5d07867df55e09146018b43a0c317b",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/pinkha_torah_space_index.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/pinkha_torah_space_index.go",
+      "sha256": "02a82e039462dbdc80dd577ce0d88de62b557933e0ffeec7673d466b983ff491",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 21673,
+      "gitBlob": "de93025bd15984366df96e78465eafa4b8446407",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/pinkha_torah_space_index_acceptance_test.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/core/pinkha_torah_space_index_acceptance_test.go",
+      "sha256": "8413a88d93e5b690775f90f7ef61d431a46cade3a5d6d4c83fa289d8e1a3ad33",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 1976,
+      "gitBlob": "314df8dcec1b58ddb9977ad72ee24704a7ec8cf4",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/localstore/objectstore/pinkha_loaded_index.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/localstore/objectstore/pinkha_loaded_index.go",
+      "sha256": "a5b456f068dbd3fb10c5f34eba906c202b1d5d55df1cf9e5245a440a7e2394a2",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 7194,
+      "gitBlob": "9949b91636bdfe2df5a71efedb02cd7d553968d5",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/localstore/objectstore/spaceindex/delete.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/localstore/objectstore/spaceindex/delete.go",
+      "sha256": "6b309749aaf32ce9f4c0a61611e0e94227f0f37b642507930ab3c657c9f8c911",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 3618,
+      "gitBlob": "7680e18dcb4b7f13a493993db09836be35773d2a",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/localstore/objectstore/spaceindex/pinkha_native_admission.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/localstore/objectstore/spaceindex/pinkha_native_admission.go",
+      "sha256": "38fd9aebebea0bbb7240234cf11bcb0df71904443c4007f889c57a8f4c0fca1d",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 6840,
+      "gitBlob": "d438b999c9b98da7f61900fa8544b7a75214a20e",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/localstore/objectstore/spaceindex/pinkha_native_admission_test.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/localstore/objectstore/spaceindex/pinkha_native_admission_test.go",
+      "sha256": "8e291166166fc0c0dbfd2f3c1937984500be63ac9b1486f666d9ed2fbc4b0ebb",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 8553,
+      "gitBlob": "f14878f7719cf0b149b57f3b8ecae49d6314152d",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_snapshot.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_snapshot.go",
+      "sha256": "28f9977dae129760c73a000a2e829e0dc5a3562e2a80ede0d2ed1057dc2756ca",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 1788,
+      "gitBlob": "a19cf974e974f5c146c601b2d0c96428d1db0803",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/pinkha/torahindexcontract/budget.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/pinkha/torahindexcontract/budget.go",
+      "sha256": "957c5d1871d60bdde564303678fe76a29aff6ba9315eaa25ad4034781b7379f0",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 9391,
+      "gitBlob": "7ae7aac99c032684d0a36649491f1fbda252ab12",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/pinkha/torahindexcontract/snapshot.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/pkg/lib/pinkha/torahindexcontract/snapshot.go",
+      "sha256": "d40217191c78c22ba31630d63ba91237893393e251d13f4d044e337b4c27dfe1",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 1528,
+      "gitBlob": "4e68475d64b92abb4a3366c671fa01f52e82308b",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/internal/components/spaceloader/pinkha_loaded.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/internal/components/spaceloader/pinkha_loaded.go",
+      "sha256": "5967c9fe077dbe2f3bb7df07e764423dad149d69a913c295c86d2d4ed2ab5177",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 4519,
+      "gitBlob": "0f42197788a3d46f30973232b2f721f899344303",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/internal/components/spaceloader/pinkha_loaded_test.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/internal/components/spaceloader/pinkha_loaded_test.go",
+      "sha256": "5a5bdb4569114ef85f5610c2d85de8798a330270eef080c60246657028e91ee6",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 7504,
+      "gitBlob": "02d72073a1df7aad34843f5653a10fecd3d83a09",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/internal/components/spaceloader/spaceloader.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/internal/components/spaceloader/spaceloader.go",
+      "sha256": "c7bb2d65f08019e9052196edf92861503fe19e0bebb120af6f80d24ac5491c2e",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 1069,
+      "gitBlob": "de934b73f34a20f96b3417463f5a44e84328d6ea",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/internal/spaceprocess/loader/pinkha_loaded.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/internal/spaceprocess/loader/pinkha_loaded.go",
+      "sha256": "7ee8fd65c3b185665158b08b71614d0d875a6fed90e43d2bff3b88c26720c598",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 2415,
+      "gitBlob": "8c8b7830b84e1c2f5fc914111e244cfa3d65fb95",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/pinkha_loaded.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/pinkha_loaded.go",
+      "sha256": "561712fb1641985d157013f8a0eac9b6fec75277b9dd488c687cd36eed034986",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 1887,
+      "gitBlob": "4ea8cfe59c8c20b45ce6b708430e1ac21d4be720",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/spacecore/storage/anystorage/pinkha_deletion_admission.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/spacecore/storage/anystorage/pinkha_deletion_admission.go",
+      "sha256": "01fd31923263cfcaf54c54f38b83ac9552522f0e369c64e5ff6de899d3971463",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 7326,
+      "gitBlob": "b4e74b9420e81f8331a369fbb98b84a1113be8a2",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/spacecore/storage/anystorage/pinkha_heads_snapshot.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/spacecore/storage/anystorage/pinkha_heads_snapshot.go",
+      "sha256": "7efb72a9e617a963939ec48e4f550158fc1b25b7d7f317835901755b214931f0",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 4935,
+      "gitBlob": "76f3bc933aa2bda8fb602b2292bfd100b4e6e245",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/spacecore/storage/anystorage/pinkha_native_root_test.go",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/overlay/space/spacecore/storage/anystorage/pinkha_native_root_test.go",
+      "sha256": "942ede12e7f6b46ff55c9a57c47682a97374d953a2e554d2fa373f6123afdbc6",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 1795,
+      "gitBlob": "40cd819581458f50f8faa38994e0815f802fd620",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/patch-artifact-encoding.json",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/patch-artifact-encoding.json",
+      "sha256": "6d0d125f1829fb39a87e4a85ae2a34c558eb08eb07be8fa0afc9e5ef4d74598f",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 10465,
+      "gitBlob": "35736d832921e7493fca9e42da82f5fc356742d7",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/reviewed-original-source-delta-proposal.md",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/reviewed-original-source-delta-proposal.md",
+      "sha256": "7acff68a859e39e70dc64e9438112d834797afbb749cc8723196ae44e14fb43a",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 8621,
+      "gitBlob": "6cfaae222ee2dd02598a1f3f3cea5a970c30f87c",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/source-draft2.json",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/source-draft2.json",
+      "sha256": "48bea998663a09d28c7d59d85fd944dac6997505a02e5ee672baca129aa17823",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 32639,
+      "gitBlob": "e7e77e438f6afccea3ec6f9f1232e064e8f46fe3",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/source-draft2.patch.gz",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/source-draft2.patch.gz",
+      "sha256": "73d337fae42122c88a1961c3c568f9d5a1329076157a788f8e0638049f148c55",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 10916,
+      "gitBlob": "c466e6f06290084dd9107d2204702e8bdc40f37a",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/source-draft3.json",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/source-draft3.json",
+      "sha256": "81bc335b52ccbeb1cae97934486f26f2bf7d6a555deec4963a23807cbf7a5917",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 38904,
+      "gitBlob": "0b77bd893a772ddf002977937430c9a1543953d1",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/f3f56a4bc0bb802be6377b353a31eadde9488493/Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/source-draft3.patch.gz",
+      "repositoryPath": "Tools/TorahNativeOperations/legacy_cutover/fullspace_source_draft_20261127/source-draft3.patch.gz",
+      "sha256": "c363fefae37c49431d56c8ca1a638ec10ddb224c85aa8284ccb2ee55926731df",
+      "source": "f3f56a4bc0bb802be6377b353a31eadde9488493"
+    },
+    {
+      "bytes": 1941,
+      "gitBlob": "b403e9a27ed1f9c496854983692360a74fdb17de",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/1aaff678cb75c86f356626817244c57529b36f4f/docs/validation/20261127-heart-swift-process-lifecycle/README.md",
+      "repositoryPath": "docs/validation/20261127-heart-swift-process-lifecycle/README.md",
+      "sha256": "0154b311992b018820a6583b3aabfd8858a6c7ebdf686a53ef7751551611b23e",
+      "source": "1aaff678cb75c86f356626817244c57529b36f4f"
+    },
+    {
+      "bytes": 6255,
+      "gitBlob": "a962d3debc36a86f99143e12b6370a13f93a4523",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/1aaff678cb75c86f356626817244c57529b36f4f/docs/validation/20261127-heart-swift-process-lifecycle/result.json",
+      "repositoryPath": "docs/validation/20261127-heart-swift-process-lifecycle/result.json",
+      "sha256": "040ffa3fcf93094369e24928732aeba9eb10fdb673db76ab7540a887748aa27d",
+      "source": "1aaff678cb75c86f356626817244c57529b36f4f"
+    },
+    {
+      "bytes": 953,
+      "gitBlob": "211767d3f864c5e2816c656b2628ae5d0c0b00e8",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/1aaff678cb75c86f356626817244c57529b36f4f/docs/validation/20261127-heart-swift-process-lifecycle/source-pins.json",
+      "repositoryPath": "docs/validation/20261127-heart-swift-process-lifecycle/source-pins.json",
+      "sha256": "28c2b8556e45ce6acbff72fd8ee0b24254b3370ac08829069e28417f919306ce",
+      "source": "1aaff678cb75c86f356626817244c57529b36f4f"
+    },
+    {
+      "bytes": 843,
+      "gitBlob": "8e753d490e19a940e66dc6798fc682fc5670347a",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/92a2904112738619f2f689b137ba663b08378730/Tools/AnyEngineValidation/native_file_peer_comparison/authority_read_failure/FILES.json",
+      "repositoryPath": "Tools/AnyEngineValidation/native_file_peer_comparison/authority_read_failure/FILES.json",
+      "sha256": "ac59685445984e5ab467c184f6733191cd11cb4afe85a48f7e6cd1d863a0a326",
+      "source": "92a2904112738619f2f689b137ba663b08378730"
+    },
+    {
+      "bytes": 6625,
+      "gitBlob": "d5622ed3912fdce6b31ae9fca9fa060fde316c45",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/92a2904112738619f2f689b137ba663b08378730/Tools/AnyEngineValidation/native_file_peer_comparison/authority_read_failure/README.md",
+      "repositoryPath": "Tools/AnyEngineValidation/native_file_peer_comparison/authority_read_failure/README.md",
+      "sha256": "6d8604b8d6b81f812796a83d55404517f22457f57b80d3ef3c2a80020fb63ea2",
+      "source": "92a2904112738619f2f689b137ba663b08378730"
+    },
+    {
+      "bytes": 45447,
+      "gitBlob": "7bcdf617326ecd89bb2959c675bfb677c5888620",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/92a2904112738619f2f689b137ba663b08378730/Tools/AnyEngineValidation/native_file_peer_comparison/authority_read_failure/actual_revocation_failure.json",
+      "repositoryPath": "Tools/AnyEngineValidation/native_file_peer_comparison/authority_read_failure/actual_revocation_failure.json",
+      "sha256": "ecd4e58378cbb82731926536e82fca655da64ee156057ba411a242c95942c2ab",
+      "source": "92a2904112738619f2f689b137ba663b08378730"
+    },
+    {
+      "bytes": 2792,
+      "gitBlob": "afc9b8dff723e6e8b4f847e80f7ee7316ac9446e",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/92a2904112738619f2f689b137ba663b08378730/Tools/AnyEngineValidation/native_file_peer_comparison/authority_read_failure/independent_helper_build.json",
+      "repositoryPath": "Tools/AnyEngineValidation/native_file_peer_comparison/authority_read_failure/independent_helper_build.json",
+      "sha256": "b49b5d7c27e2adedbf7c8a748a04e593a55daa4b58e31ad3f644ce652e80207e",
+      "source": "92a2904112738619f2f689b137ba663b08378730"
+    }
+  ],
+  "productSourceChanges": 0,
+  "pythonSources": [
+    {
+      "astParsedNotExecuted": true,
+      "bytes": 11027,
+      "gitBlob": "88adb10d3d57190f04d665171365570fb18430f0",
+      "group": "sourceOnlySuccessorFiles",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/cutover_retained_location.py",
+      "sha256": "8ee6831c07fe912cbd2d63541862a8ec20b42ca5dc1937ac1070e86509dc6059"
+    },
+    {
+      "astParsedNotExecuted": true,
+      "bytes": 14264,
+      "gitBlob": "5f04b90c08a71b7809a1c65bd4a6c33122b79e24",
+      "group": "sourceOnlySuccessorFiles",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/generate_cutover_swift_relocated.py",
+      "sha256": "e12dc150343c13ef2bc5d087442ecd1cf83d2e5fc88d93c919472cb9fd07b4a8"
+    },
+    {
+      "astParsedNotExecuted": true,
+      "bytes": 9527,
+      "gitBlob": "e2155f395e5839ba0f8ed41e1057b9a228415f2c",
+      "group": "sourceOnlySuccessorFiles",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/owned_swift_commands.py",
+      "sha256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56"
+    },
+    {
+      "astParsedNotExecuted": true,
+      "bytes": 17851,
+      "gitBlob": "f5faed76e8972e8de78e3910d283291c2cc183b6",
+      "group": "sourceOnlySuccessorFiles",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/qualify_cutover_swift_relocated.py",
+      "sha256": "b88576e9acc694135905aeeea8b1c0d2175cd3c3bf9a4f105ec13cae3a3581b1"
+    },
+    {
+      "astParsedNotExecuted": true,
+      "bytes": 14894,
+      "gitBlob": "d8c34d327a3f5b170e6507e4b6cbe0156e733957",
+      "group": "sourceOnlySuccessorFiles",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/qualify_cutover_swift_reuse_physical.py",
+      "sha256": "6d23b1c2de1e3e425dfdecdf1cf646b1d283be4e6b6d0e852a9a29442199ac4b"
+    },
+    {
+      "astParsedNotExecuted": true,
+      "bytes": 6427,
+      "gitBlob": "3a0c155009c01fb451972832ce2e27f3e00969dd",
+      "group": "sourceOnlySuccessorFiles",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/qualify_owned_swift_commands.py",
+      "sha256": "f5042c929585423076559d846a493bb1ecfad5d8822a04da8b49d8f5748b548a"
+    },
+    {
+      "astParsedNotExecuted": true,
+      "bytes": 2263,
+      "gitBlob": "554d77b49ef8aa899e4383e51183a07eb0f17762",
+      "group": "actualCustodyControllerFiles",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/custody_20261127/frozen_sftp_custody_adapter.py",
+      "sha256": "650ca7c0577c7a2bef5e3b0639a316b860783527ebf5adea1890034e8d952f58"
+    },
+    {
+      "astParsedNotExecuted": true,
+      "bytes": 16151,
+      "gitBlob": "d715defdba8e538219f8d7a3e5fc3ba51120fcee",
+      "group": "actualCustodyControllerFiles",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/custody_20261127/offhost_root_swift_caches.py",
+      "sha256": "1d267086f08ff42bba959b4d5d5d46b3c1e95cdc981bb3dc4bff01393da41c16"
+    },
+    {
+      "astParsedNotExecuted": true,
+      "bytes": 25582,
+      "gitBlob": "016c0a9f2e506cbbd6fb2f844b0cdf3ab73b360a",
+      "group": "actualCustodyControllerFiles",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/custody_20261127/relocate_e_retained_roots.py",
+      "sha256": "4ddaa92aaa5fe2d13d39bab699dbe6c409a2900eb9713da48af2470435c635fd"
+    },
+    {
+      "astParsedNotExecuted": true,
+      "bytes": 8143,
+      "gitBlob": "5531825f271103128eddc3cd00b5bb99d572be48",
+      "group": "actualCustodyControllerFiles",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/custody_20261127/restore_offhost_root_swift_caches.py",
+      "sha256": "c745c4369c0bbc8eee1468ae9f1b76965ef461b10c9e631b327130fb7a9a0898"
+    },
+    {
+      "astParsedNotExecuted": true,
+      "bytes": 16571,
+      "gitBlob": "99a5235085e5c6056e257b5a25eaff542cdf7afa",
+      "group": "actualCustodyControllerFiles",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/custody_20261127/root_swift_archive_format.py",
+      "sha256": "cd397c2a73ef0e381acac0de9da80482e417fcfff935855590a9d13159440c80"
+    },
+    {
+      "astParsedNotExecuted": true,
+      "bytes": 46063,
+      "gitBlob": "92eeec9b6fc84298bf55d93c838d7a059462b2fb",
+      "group": "actualCustodyControllerFiles",
+      "path": "/workspace/scratch/ae335eba85e3/wave1-e-queue-independent-review/originals/26d48284e4476a52e5d8c2135e442485891c6849/Tools/TorahNativeOperations/legacy_cutover/custody_20261127/root_swift_archive_transport.py",
+      "sha256": "6586c7f33defb342167fa4e31cf04fd361536d05e3b2908a2c20efe0cb357bbb"
+    }
+  ],
+  "schema": "pinkha.e-queue.primary-byte-proof.v1",
+  "status": "PASS_EXACT_SOURCE_PRESERVATION_AND_ORIGINAL_RECEIPT_CUSTODY_NOT_NATIVE_QUALIFICATION"
+}

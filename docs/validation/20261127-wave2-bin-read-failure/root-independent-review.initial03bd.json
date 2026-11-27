@@ -1,0 +1,58 @@
+{
+  "schema": "pinkha.wave2.bin.root-source-review.v1",
+  "reviewer": "root",
+  "base": "2207b131f45d305ba828c93deb0633e275e59cba",
+  "status": "PASS_SCOPED_SOURCE_REVIEW_NOT_RUNTIME_ACCEPTANCE",
+  "sources": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "originalGitBlob": "94a6bf4dd7dc8ca049daa4c0068deb0feb47c809",
+      "originalSHA256": "f0675b0d2a0842ad87670640d5242da82c354aab96056c1b6d23ca8540b3dc17",
+      "candidateSHA256": "b1190ed093a14a97842e855466d9996e4417a614c56ac6e919dbeabd7599f17a",
+      "candidateBytes": 33776,
+      "primarySourceBytesMatched": true
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyLibrarySearchPublicationTests.swift",
+      "originalGitBlob": "5d3add6d085c85e14dd0bd062db61beb64484c9f",
+      "originalSHA256": "e46dc67553d9e050c7955958cff56aac559c4d51eaa3b75e379029dd83f8d839",
+      "candidateSHA256": "d48b41f2eaf0783450fe165f44a560385d034c7a8896382d07087fe292f485cd",
+      "candidateBytes": 12921,
+      "primarySourceBytesMatched": true
+    }
+  ],
+  "evidence": {
+    "source-inverse.json": {
+      "sha256": "b503e95d9cf23604eecb86a1fb3cd3025066be80e4c2733d8c53dd1546b78aad",
+      "bytes": 10543
+    },
+    "public-epoch-capture-delta.json": {
+      "sha256": "b551cca9c78bce7b327420be1c5e68fe3fa88faec46c57059e8544cd9703deb0",
+      "bytes": 1752
+    }
+  },
+  "findings": [],
+  "checks": [
+    "Both frozen original source files matched direct primary GitHub reads at2207.",
+    "The one behavioral change retires binItems only after a failed read belonging to the same active lifetime, original epoch and newest Bin request; stale completions cannot clear a newer result.",
+    "Public refreshBin captures its original epoch and store/schema before await, then the shared private publication implementation verifies that epoch before dispatch. The precise actor-boundary review concern is resolved in b119; prior drafts are retained separately, not alleged compiler failures.",
+    "The original881-byte native archived-row read, lease validation and row decoding remains exact63fcd33e2dddc2b6ad6743f8a4567fed18551a4f1bcfbf9c309c9daa66e4e9cd.",
+    "Actual Bin view renders model.binItems directly and restores only selected current IDs; retiring the failed current read removes obsolete selectable rows. No Native permission vulnerability is asserted; original restore path independently reauthorizes.",
+    "Original pending restore semantics, global message behavior and all product source outside refreshBin are unchanged.",
+    "The internal typed @MainActor read seam and public path use the same real publication implementation; two new methods/three cases exercise current failed read plus explicit retry and late old success/error after newer read.",
+    "Original search tests/session fixture and original restore paths remain unchanged; no accepted archive or hierarchy scenario replayed."
+  ],
+  "approval": "Publish exact b119/d48 after unchanged source-retention gate on isolated Wave2 branch. Wave3 owns final integration, actual compiler selection and App UI acceptance.",
+  "execution": {
+    "compiler": "NOT_RUN",
+    "tests": "NOT_RUN",
+    "native": "NOT_RUN",
+    "ui": "NOT_RUN",
+    "visual": "NOT_RUN"
+  },
+  "pending": [
+    "Actual new Bin2methods/3cases on matched Apple product.",
+    "Mounted current failure empties rows, shows current error and allows explicit successful refresh.",
+    "Existing accepted restore/drag evidence remains at original input scope; execute only newly affected current failure/recovery UI."
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "AppleCompilation": "NOT_RUN",
+  "UIAcceptance": "NOT_RUN",
+  "argv": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/var/lib/pinkha-wave2-native-block-menu-20261127/component",
+    "--scratch-path",
+    "/var/lib/pinkha-wave2-native-block-menu-20261127/build",
+    "--cache-path",
+    "/var/lib/pinkha-wave2-native-block-menu-20261127/cache",
+    "--jobs",
+    "1",
+    "--no-parallel",
+    "--disable-experimental-prebuilts",
+    "-v",
+    "--filter",
+    "(currentReadFailureDiscardsDisplayedValuesAndUndoUntilReviewed|deactivationDiscardsDisplayedValuesAndUndoBeforeNewOwnerRead)"
+  ],
+  "artifacts": [
+    {
+      "bytes": 4201,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/baseline1/component-envelope.json",
+      "sha256": "ff926bae03fa80301de8be2657146e1548e18b8c78e7933730f7a83712ecc297"
+    },
+    {
+      "bytes": 1529,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/baseline1/dependency-and-custody-after.json",
+      "sha256": "b5a139f29ae779fe1fd01e90d2a8e2e6c3d66489a5461f902db5d998739a5304"
+    },
+    {
+      "bytes": 1529,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/baseline1/dependency-and-custody-before.json",
+      "sha256": "b5a139f29ae779fe1fd01e90d2a8e2e6c3d66489a5461f902db5d998739a5304"
+    },
+    {
+      "bytes": 731,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/baseline1/invocation.json",
+      "sha256": "fa603eb998290a2b9c248a1532c34c64dec1bc2d3c310c10569cf7558ed5dbcb"
+    },
+    {
+      "bytes": 566,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/baseline1/prepare.original.log",
+      "sha256": "15e73d9d10792bd763dfa533c73d4cc18b12a1af3cabb5ff0ee50ab2695ca325"
+    },
+    {
+      "bytes": 98,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/baseline1/process.json",
+      "sha256": "36de9a198fc6259de91fc03355c4809f45055581f3caaac202a165a7e1ed1096"
+    },
+    {
+      "bytes": 39223,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/baseline1/resource-samples.json",
+      "sha256": "89d106b9003a29b298de5f36590332e957144feda809bcb0ad38b2656401a47c"
+    },
+    {
+      "bytes": 1052425,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/baseline1/stderr.original.log",
+      "sha256": "9a595a8fda92a16f39b7aecd6ea8e5f29cccc194a5d7a086fecf17aea798dfab"
+    },
+    {
+      "bytes": 1266821,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/baseline1/stdout.original.log",
+      "sha256": "87f9d4bf621cc393fb95bc777d14ca6f9da36df64bae055bc55a70d712275d11"
+    }
+  ],
+  "elapsedSeconds": 169.863,
+  "finishedAtUTC": "2026-11-27T09:36:14.004367+00:00",
+  "freeBytesAfter": 2402906112,
+  "memberListIsDiagnosticOnly": true,
+  "nativeAcceptance": "NOT_RUN",
+  "nativeServiceCalls": 0,
+  "observedTestOutcomeLines": [
+    "\u2718 Test currentReadFailureDiscardsDisplayedValuesAndUndoUntilReviewed() failed after 0.331 seconds with 18 issues.",
+    "\u2718 Test deactivationDiscardsDisplayedValuesAndUndoBeforeNewOwnerRead() failed after 0.191 seconds with 12 issues.",
+    "\u2718 Test run with 2 tests in 1 suite failed after 0.524 seconds with 30 issues."
+  ],
+  "originalAddBlockMethodsRerun": 0,
+  "originalAddBlockProcessCustody": {
+    "absenceReportedByOriginalOwner": true,
+    "handoffSHA256": "493a7d628bdce5642f54b3b3f99deedfe24b28f6d8e68267c18c7629f227367b",
+    "historicalGroupReprobed": false,
+    "originalReceiptSHA256": "bbf101c3821fafca51f6d6e9a0bef009f1f415ff935ab4e2606ca0feb599e231",
+    "scope": "Retained exact owner handoff; no current historical-PGID observation"
+  },
+  "ownedCleanup": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T09:36:13.420386+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 58812,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "historicalGroupReprobed": false,
+    "processGroup": 58812,
+    "status": "PASS_OWNED_GROUP_ABSENT"
+  },
+  "ownedGroupAtExit": {
+    "atUTC": "2026-11-27T09:36:13.420386+00:00",
+    "errno": 3,
+    "error": "[Errno 3] No such process",
+    "processGroup": 58812,
+    "signal": 0,
+    "status": "ABSENT_ESRCH"
+  },
+  "processExit": 1,
+  "regressionReproduced": false,
+  "remainingOwnedProcessGroup": [],
+  "requiredReview": "Read actual intended expectation issues; setup throws and rendezvous timeouts are not regression proof",
+  "resourceAdmission": {
+    "allowanceIsEstimate": true,
+    "atUTC": "2026-11-27T09:33:24.142134+00:00",
+    "freeBytes": 2416181248,
+    "incrementalAllowanceBytes": 268435456,
+    "jobs": 1,
+    "liveDiskFloorBytes": 2147483648,
+    "load": [
+      0.96142578125,
+      0.65283203125,
+      0.744140625
+    ],
+    "memAvailableBytes": 4715556864,
+    "minimumAvailableMemoryBytes": 1610612736,
+    "swapFreeBytes": 86016
+  },
+  "runnerSHA256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+  "schema": "pinkha.wave2.properties.actual-model-component.v1",
+  "shippingSourceMutationsByRunner": 0,
+  "startedAtUTC": "2026-11-27T09:33:24.141825+00:00",
+  "status": "OBSERVED_TWO_METHOD_FAILURES_PENDING_REGRESSION_ISSUE_REVIEW",
+  "variant": "baseline"
+}

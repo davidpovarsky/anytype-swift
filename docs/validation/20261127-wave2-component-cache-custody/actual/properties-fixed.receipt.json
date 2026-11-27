@@ -1,0 +1,139 @@
+{
+  "AppleCompilation": "NOT_RUN",
+  "UIAcceptance": "NOT_RUN",
+  "argv": [
+    "/usr/local/bin/swift",
+    "test",
+    "--package-path",
+    "/var/lib/pinkha-wave2-native-block-menu-20261127/component",
+    "--scratch-path",
+    "/var/lib/pinkha-wave2-native-block-menu-20261127/build",
+    "--cache-path",
+    "/var/lib/pinkha-wave2-native-block-menu-20261127/cache",
+    "--jobs",
+    "1",
+    "--no-parallel",
+    "--disable-experimental-prebuilts",
+    "-v",
+    "--filter",
+    "AnyNativePropertyPresentationTests"
+  ],
+  "artifacts": [
+    {
+      "bytes": 4198,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/component-envelope.json",
+      "sha256": "7bc16521aebe949c10a1497471152ec36b5f57b93685d8b64b74eeaba5a50263"
+    },
+    {
+      "bytes": 1529,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/dependency-and-custody-after.json",
+      "sha256": "b5a139f29ae779fe1fd01e90d2a8e2e6c3d66489a5461f902db5d998739a5304"
+    },
+    {
+      "bytes": 1529,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/dependency-and-custody-before.json",
+      "sha256": "b5a139f29ae779fe1fd01e90d2a8e2e6c3d66489a5461f902db5d998739a5304"
+    },
+    {
+      "bytes": 641,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/invocation.json",
+      "sha256": "3357d7462937bd41bdb3356f801d3301cca7c6d91f5b64cddb140970162f0050"
+    },
+    {
+      "bytes": 563,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/prepare.original.log",
+      "sha256": "b874efb328f7089bb525fca8f86a6246ff648f77368e66385a5a12275d77c80f"
+    },
+    {
+      "bytes": 98,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/process.json",
+      "sha256": "08046f05c9c163a3bafb9c6dfb839525739dac13b7163bb41dbb80605bfaa60b"
+    },
+    {
+      "bytes": 2797,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/resource-samples.json",
+      "sha256": "7a283f2bb0616c4c61b834a77f2745188dd4f947d12a05618bb8e68861162533"
+    },
+    {
+      "bytes": 51301,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/stderr.original.log",
+      "sha256": "67ab3fe76eac5502a4bd824138a0002cfe210ee62e0a26e6be0066e0f6305c02"
+    },
+    {
+      "bytes": 2200,
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/stdout.original.log",
+      "sha256": "a621061aaa5c4abb53c89c65e3b720a2c60e1d1dc69abe7b71f52eddae6fc0ab"
+    }
+  ],
+  "elapsedSeconds": 11.829,
+  "finishedAtUTC": "2026-11-27T09:45:24.197658+00:00",
+  "freeBytesAfter": 2454888448,
+  "memberListIsDiagnosticOnly": true,
+  "nativeAcceptance": "NOT_RUN",
+  "nativeServiceCalls": 0,
+  "observedTestOutcomeLines": [
+    "\u2714 Test delayedReviewCannotRestoreOldTypeOrEraseAcknowledgedUndo() passed after 0.016 seconds.",
+    "\u2714 Test delayedReadFailureCannotReplaceAcknowledgedWriteFeedbackOrUndo() passed after 0.001 seconds.",
+    "\u2714 Test delayedRefreshCannotRevealAnAcknowledgedHiddenProperty() passed after 0.001 seconds.",
+    "\u2714 Test refreshDuringWriteDoesNotDispatchOrReportMissingWorkspace() passed after 0.001 seconds.",
+    "\u2714 Test supersededReadFailureCannotClearNewerReadSpinnerOrFeedback() passed after 0.001 seconds.",
+    "\u2714 Test oldReadCannotPublishOrClearLoadingAfterOwnerReactivation() passed after 0.002 seconds.",
+    "\u2714 Test oldWriteCompletionCannotClearNewOwnerSavingStateOrPublishFailure() passed after 0.003 seconds.",
+    "\u2714 Test currentReadFailureDiscardsDisplayedValuesAndUndoUntilReviewed() passed after 0.003 seconds.",
+    "\u2714 Test deactivationDiscardsDisplayedValuesAndUndoBeforeNewOwnerRead() passed after 0.001 seconds.",
+    "\u2714 Test run with 9 tests in 1 suite passed after 0.034 seconds."
+  ],
+  "originalAddBlockMethodsRerun": 0,
+  "originalAddBlockProcessCustody": {
+    "absenceReportedByOriginalOwner": true,
+    "handoffSHA256": "493a7d628bdce5642f54b3b3f99deedfe24b28f6d8e68267c18c7629f227367b",
+    "historicalGroupReprobed": false,
+    "originalReceiptSHA256": "bbf101c3821fafca51f6d6e9a0bef009f1f415ff935ab4e2606ca0feb599e231",
+    "scope": "Retained exact owner handoff; no current historical-PGID observation"
+  },
+  "ownedCleanup": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T09:45:23.943165+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 94384,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "historicalGroupReprobed": false,
+    "processGroup": 94384,
+    "status": "PASS_OWNED_GROUP_ABSENT"
+  },
+  "ownedGroupAtExit": {
+    "atUTC": "2026-11-27T09:45:23.943165+00:00",
+    "errno": 3,
+    "error": "[Errno 3] No such process",
+    "processGroup": 94384,
+    "signal": 0,
+    "status": "ABSENT_ESRCH"
+  },
+  "processExit": 0,
+  "remainingOwnedProcessGroup": [],
+  "resourceAdmission": {
+    "allowanceIsEstimate": true,
+    "atUTC": "2026-11-27T09:45:12.370236+00:00",
+    "freeBytes": 2455109632,
+    "incrementalAllowanceBytes": 268435456,
+    "jobs": 1,
+    "liveDiskFloorBytes": 2147483648,
+    "load": [
+      0.3642578125,
+      0.693359375,
+      0.78369140625
+    ],
+    "memAvailableBytes": 5004300288,
+    "minimumAvailableMemoryBytes": 1610612736,
+    "swapFreeBytes": 155648
+  },
+  "runnerSHA256": "99dcacdacace01b4b7c0646c09dafb45c9b8d167781043542bc6c0ed2a7103e2",
+  "schema": "pinkha.wave2.properties.actual-model-component.v1",
+  "shippingSourceMutationsByRunner": 0,
+  "startedAtUTC": "2026-11-27T09:45:12.369129+00:00",
+  "status": "PASS_NINE_PROPERTIES_METHODS_COMPONENT_ONLY",
+  "variant": "fixed"
+}

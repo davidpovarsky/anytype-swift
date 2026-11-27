@@ -1,0 +1,51 @@
+{
+  "priorSHA256": "e7acc46b5ca542b3bd4be5b213698cf3e832e0058e5fbabe22b1b3623acd3d58",
+  "candidateSHA256": "b1190ed093a14a97842e855466d9996e4417a614c56ac6e919dbeabd7599f17a",
+  "changes": [
+    {
+      "tag": "replace",
+      "originalStart": 337,
+      "originalEnd": 339,
+      "candidateStart": 337,
+      "candidateEnd": 339,
+      "original": [
+        "        let schema = store.schema\n",
+        "        await refreshBin {\n"
+      ],
+      "candidate": [
+        "        let expected = epoch, schema = store.schema\n",
+        "        await refreshBin(expected: expected) {\n"
+      ]
+    },
+    {
+      "tag": "delete",
+      "originalStart": 361,
+      "originalEnd": 362,
+      "candidateStart": 361,
+      "candidateEnd": 361,
+      "original": [
+        "        guard lifetime.isActive else { return }\n"
+      ],
+      "candidate": []
+    },
+    {
+      "tag": "insert",
+      "originalStart": 363,
+      "originalEnd": 363,
+      "candidateStart": 362,
+      "candidateEnd": 369,
+      "original": [],
+      "candidate": [
+        "        await refreshBin(expected: expected, read: read)\n",
+        "    }\n",
+        "\n",
+        "    private func refreshBin(expected: UUID, read: @MainActor () async throws -> [AnyLibraryBinItem]) async {\n",
+        "        // The epoch belongs to the caller's original store capture, before any\n",
+        "        // await. A revoked owner cannot stamp an older store with a newer epoch.\n",
+        "        guard lifetime.isActive, expected == epoch else { return }\n"
+      ]
+    }
+  ],
+  "reason": "Keep store and epoch at the original public boundary; reject an obsolete captured epoch before native read. Tests share the same private implementation.",
+  "compilerOrTestsRun": 0
+}

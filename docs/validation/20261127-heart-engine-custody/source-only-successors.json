@@ -1,0 +1,118 @@
+{
+  "actualCustodyControllerFiles": {
+    "frozen_sftp_custody_adapter.py": {
+      "bytes": 2263,
+      "sha256": "650ca7c0577c7a2bef5e3b0639a316b860783527ebf5adea1890034e8d952f58"
+    },
+    "offhost_root_swift_caches.py": {
+      "bytes": 16151,
+      "sha256": "1d267086f08ff42bba959b4d5d5d46b3c1e95cdc981bb3dc4bff01393da41c16"
+    },
+    "relocate_e_retained_roots.py": {
+      "bytes": 25582,
+      "sha256": "4ddaa92aaa5fe2d13d39bab699dbe6c409a2900eb9713da48af2470435c635fd"
+    },
+    "restore_offhost_root_swift_caches.py": {
+      "bytes": 8143,
+      "sha256": "c745c4369c0bbc8eee1468ae9f1b76965ef461b10c9e631b327130fb7a9a0898"
+    },
+    "root_swift_archive_format.py": {
+      "bytes": 16571,
+      "sha256": "cd397c2a73ef0e381acac0de9da80482e417fcfff935855590a9d13159440c80"
+    },
+    "root_swift_archive_transport.py": {
+      "bytes": 46063,
+      "sha256": "6586c7f33defb342167fa4e31cf04fd361536d05e3b2908a2c20efe0cb357bbb"
+    }
+  },
+  "actualCustodyReceipts": {
+    "relocation-result.json": {
+      "original": "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/attempt1/result.json",
+      "sha256": "331b93a174d36a639d3748dfa01692fc0add62624d31c7a3cd957f5a5eb5d772"
+    },
+    "root-swift-offhost-result.json": {
+      "original": "/var/lib/pinkha-w1-root-swift-offhost-custody-20261127/attempt2/result.json",
+      "sha256": "8ce0290ab631634c4e5d9d21af9c9e5eed34e476366cd7c25beeff61f48125b0"
+    }
+  },
+  "appleAcceptanceAdded": false,
+  "compilerExecutionsDuringPublication": 0,
+  "contract": "pinkha-heart-engine-custody-and-source-location-20261127",
+  "lifecycleQueuedCommand": [
+    "python3",
+    "-B",
+    "Tools/TorahNativeOperations/legacy_cutover/qualify_owned_swift_commands.py",
+    "--root",
+    "/mnt/development/projects/evidence/pinkha-e-engine-retained-root-relocation-20261127/swift-lifecycle-controls1",
+    "--helper-sha",
+    "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56"
+  ],
+  "nativeAcceptanceAdded": false,
+  "originalSourceClosure": {
+    "finalUnionRequiresCore40AndRPC11": true,
+    "materialized4893SHA256": "ccd8659be20d4f7e45ec311195be9211be79b1af17aa9f031374de4ca53ada28",
+    "raw4868SHA256": "8ac407e75a4bfb42c359a2f72b3822c44990caedf2351d00d78315de5c96a04b"
+  },
+  "qualifiedEngineCommit": "834a6bced7b922a18f291add1bcc6e82d5bba61f",
+  "qualifiedRPCManifestSHA256": "b98c93ff11e492e173ca2a0b93548ed4cdfb275bb4b345bd82468e55c6e481ac",
+  "runtimeQualification": {
+    "canonicalSwiftGenerator": "NOT_RUN",
+    "fullSpaceReadiness": "SEPARATE_SOURCE_DRAFT_NOT_INCLUDED",
+    "ownedProcessFiveControls": "NOT_RUN",
+    "swiftClient17": "NOT_RUN"
+  },
+  "sourceOnlySuccessorFiles": {
+    "cutover_retained_location.py": {
+      "bytes": 11027,
+      "sha256": "8ee6831c07fe912cbd2d63541862a8ec20b42ca5dc1937ac1070e86509dc6059"
+    },
+    "generate_cutover_swift_relocated.py": {
+      "bytes": 14264,
+      "sha256": "e12dc150343c13ef2bc5d087442ecd1cf83d2e5fc88d93c919472cb9fd07b4a8"
+    },
+    "owned_swift_commands.py": {
+      "bytes": 9527,
+      "sha256": "f9de18c0fdc879ff916ba34e9afa0da9d6b91444eebfa1e5a8d6a50d3523ca56"
+    },
+    "qualify_cutover_swift_relocated.py": {
+      "bytes": 17851,
+      "sha256": "b88576e9acc694135905aeeea8b1c0d2175cd3c3bf9a4f105ec13cae3a3581b1"
+    },
+    "qualify_cutover_swift_reuse_physical.py": {
+      "bytes": 14894,
+      "sha256": "6d23b1c2de1e3e425dfdecdf1cf646b1d283be4e6b6d0e852a9a29442199ac4b"
+    },
+    "qualify_owned_swift_commands.py": {
+      "bytes": 6427,
+      "sha256": "f5042c929585423076559d846a493bb1ecfad5d8822a04da8b49d8f5748b548a"
+    }
+  },
+  "sourceReviewOnly": {
+    "canonicalGeneratorCaller": true,
+    "ownedProcessLifecycle": true,
+    "physicalSourceLocation": true,
+    "retainedCProducerReuse": true,
+    "swiftClientCaller": true
+  },
+  "status": "CUSTODY_ACTUAL_PASS_SWIFT_SUCCESSORS_SOURCE_ONLY_NOT_RUN",
+  "whitespaceOnlySuccessors": {
+    "generate_cutover_swift_relocated.py": {
+      "afterSHA256": "e12dc150343c13ef2bc5d087442ecd1cf83d2e5fc88d93c919472cb9fd07b4a8",
+      "astBodyEqual": true,
+      "beforeSHA256": "55aa6a68df12a5ea636bda9f925ebe99656547b668d98a48d5c3c29a26826a49",
+      "bytesAfter": 14264,
+      "bytesBefore": 14265,
+      "onlyOneTrailingNewlineRemoved": true,
+      "predecessor": "Tools/TorahNativeOperations/legacy_cutover/source_predecessors_completion_review/generate_cutover_swift_relocated.py.txt"
+    },
+    "qualify_cutover_swift_relocated.py": {
+      "afterSHA256": "b88576e9acc694135905aeeea8b1c0d2175cd3c3bf9a4f105ec13cae3a3581b1",
+      "astBodyEqual": true,
+      "beforeSHA256": "12c7034fecb38e4df2f9166ba66de61135c6d3dbb1207b7b9b82fbd74643783b",
+      "bytesAfter": 17851,
+      "bytesBefore": 17852,
+      "onlyOneTrailingNewlineRemoved": true,
+      "predecessor": "Tools/TorahNativeOperations/legacy_cutover/source_predecessors_completion_review/qualify_cutover_swift_relocated.py.txt"
+    }
+  }
+}

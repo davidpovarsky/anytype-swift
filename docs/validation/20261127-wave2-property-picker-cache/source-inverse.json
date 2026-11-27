@@ -1,0 +1,36 @@
+{
+  "schema": "wave2-g05-native-lookup-revision-source-inverse/v1",
+  "base": "1cc7f696cfa01790c90c6d29273147d07da71b65",
+  "status": "PASS_SOURCE_INVERSE_ONLY",
+  "operation": [
+    "git",
+    "apply",
+    "--reverse",
+    "/workspace/scratch/1d35894f12d5/torah-acceptance-prep/g05-cache-review/source-changes.patch"
+  ],
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "",
+  "restored": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+      "restoredSHA256": "e898a23f760a8e0e9ffe715fcd570319766a03679dd2b4d9efd502e05d548f86",
+      "bytes": 35814
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaPropertyPickerSearchLoader.swift",
+      "restoredSHA256": "035acc3a38934abd0273ba9b1392e35aa4f47ddaad9a549b7f9aaf9c7cdb65d9",
+      "bytes": 4933
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift",
+      "restoredSHA256": "6f17a932410b59369eaade81bfbabf08362a22593358c2c90201ecfe8c65166a",
+      "bytes": 19495
+    }
+  ],
+  "originalSearchTestPrefixBytes": 19495,
+  "originalSearchTestPrefixSHA256": "6f17a932410b59369eaade81bfbabf08362a22593358c2c90201ecfe8c65166a",
+  "newTestSuffixSHA256": "a7f60ac3513b58d8aa4e76d5b25519e139c5d5eb2434e7b87f5f293ca330c1c2",
+  "actualCompilerOrTestExecutions": 0,
+  "previousSourceAttempt": "review-v1/source-inverse.json"
+}

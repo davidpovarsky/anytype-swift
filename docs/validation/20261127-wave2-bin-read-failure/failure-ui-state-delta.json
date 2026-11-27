@@ -1,0 +1,275 @@
+{
+  "status": "CORRECTION_OF_INCOMPLETE_B119_UI_STATE",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "priorSHA256": "b1190ed093a14a97842e855466d9996e4417a614c56ac6e919dbeabd7599f17a",
+      "candidateSHA256": "3dd7517d2ecba44fe7568b16ed005a97489929f4a248c1899ad3d1c1864e66d4",
+      "changes": [
+        {
+          "tag": "insert",
+          "originalStart": 39,
+          "originalEnd": 39,
+          "candidateStart": 39,
+          "candidateEnd": 40,
+          "original": [],
+          "candidate": [
+            "    public private(set) var binReadFailed = false\n"
+          ]
+        },
+        {
+          "tag": "insert",
+          "originalStart": 372,
+          "originalEnd": 372,
+          "candidateStart": 373,
+          "candidateEnd": 374,
+          "original": [],
+          "candidate": [
+            "        binReadFailed = false\n"
+          ]
+        },
+        {
+          "tag": "insert",
+          "originalStart": 378,
+          "originalEnd": 378,
+          "candidateStart": 380,
+          "candidateEnd": 381,
+          "original": [],
+          "candidate": [
+            "            binReadFailed = false\n"
+          ]
+        },
+        {
+          "tag": "insert",
+          "originalStart": 381,
+          "originalEnd": 381,
+          "candidateStart": 384,
+          "candidateEnd": 385,
+          "original": [],
+          "candidate": [
+            "            binReadFailed = true\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "originalStart": 626,
+          "originalEnd": 627,
+          "candidateStart": 630,
+          "candidateEnd": 631,
+          "original": [
+            "        binReadEpoch &+= 1; binItems = []; isLoadingBin = false\n"
+          ],
+          "candidate": [
+            "        binReadEpoch &+= 1; binItems = []; isLoadingBin = false; binReadFailed = false\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "priorSHA256": "af2b406c5cf80f126e9684a0cc4bb673658329925188e264aa9746eeba4926c0",
+      "candidateSHA256": "3791fe7ccadbf5caf4d1a82b1f6cc8d497b5562db1c58ba346803a9ebf43fec1",
+      "changes": [
+        {
+          "tag": "insert",
+          "originalStart": 364,
+          "originalEnd": 364,
+          "candidateStart": 364,
+          "candidateEnd": 378,
+          "original": [],
+          "candidate": [
+            "            if model.binReadFailed {\n",
+            "                VStack(alignment: .leading, spacing: 8) {\n",
+            "                    Text(AnyUIErrorText.text(\"\u05dc\u05d0 \u05e0\u05d9\u05ea\u05df \u05dc\u05d8\u05e2\u05d5\u05df \u05d0\u05ea \u05e1\u05dc \u05d4\u05de\u05d7\u05d6\u05d5\u05e8.\", \"Couldn't load the Bin.\"))\n",
+            "                        .foregroundStyle(.secondary)\n",
+            "                    Button(AnyUIErrorText.text(\"\u05e0\u05d9\u05e1\u05d9\u05d5\u05df \u05e0\u05d5\u05e1\u05e3\", \"Retry\")) {\n",
+            "                        Task { await model.refreshBin() }\n",
+            "                    }\n",
+            "                    .buttonStyle(.borderless)\n",
+            "                    .disabled(!lifetime.isActive || model.isLoadingBin)\n",
+            "                    .accessibilityIdentifier(\"any-native-bin-retry\")\n",
+            "                }\n",
+            "                .accessibilityElement(children: .contain)\n",
+            "                .accessibilityIdentifier(\"any-native-bin-read-failure\")\n",
+            "            }\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "originalStart": 383,
+          "originalEnd": 384,
+          "candidateStart": 397,
+          "candidateEnd": 398,
+          "original": [
+            "            if !model.isLoadingBin && model.binItems.isEmpty {\n"
+          ],
+          "candidate": [
+            "            if !model.isLoadingBin && !model.binReadFailed && model.binItems.isEmpty {\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyLibrarySearchPublicationTests.swift",
+      "priorSHA256": "d48b41f2eaf0783450fe165f44a560385d034c7a8896382d07087fe292f485cd",
+      "candidateSHA256": "b242b8bdbe9f2c9c10c742d26ffe88b237b797b28dfd600e07b85f4e3c2a5494",
+      "changes": [
+        {
+          "tag": "insert",
+          "originalStart": 204,
+          "originalEnd": 204,
+          "candidateStart": 204,
+          "candidateEnd": 205,
+          "original": [],
+          "candidate": [
+            "        #expect(!subject.binReadFailed)\n"
+          ]
+        },
+        {
+          "tag": "insert",
+          "originalStart": 211,
+          "originalEnd": 211,
+          "candidateStart": 212,
+          "candidateEnd": 213,
+          "original": [],
+          "candidate": [
+            "        #expect(subject.binReadFailed)\n"
+          ]
+        },
+        {
+          "tag": "insert",
+          "originalStart": 217,
+          "originalEnd": 217,
+          "candidateStart": 219,
+          "candidateEnd": 220,
+          "original": [],
+          "candidate": [
+            "            #expect(!subject.binReadFailed)\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "originalStart": 221,
+          "originalEnd": 222,
+          "candidateStart": 224,
+          "candidateEnd": 231,
+          "original": [
+            "        #expect(reads == 3)\n"
+          ],
+          "candidate": [
+            "        #expect(!subject.binReadFailed)\n",
+            "        await subject.refreshBin {\n",
+            "            reads += 1\n",
+            "            throw AnyHostError.changedDocument\n",
+            "        }\n",
+            "        #expect(subject.binReadFailed)\n",
+            "        #expect(reads == 4)\n"
+          ]
+        },
+        {
+          "tag": "insert",
+          "originalStart": 223,
+          "originalEnd": 223,
+          "candidateStart": 232,
+          "candidateEnd": 234,
+          "original": [],
+          "candidate": [
+            "        #expect(!subject.binReadFailed)\n",
+            "        #expect(subject.binItems.isEmpty)\n"
+          ]
+        },
+        {
+          "tag": "delete",
+          "originalStart": 230,
+          "originalEnd": 231,
+          "candidateStart": 241,
+          "candidateEnd": 241,
+          "original": [
+            "        defer { suspended.cancelOutstanding() }\n"
+          ],
+          "candidate": []
+        },
+        {
+          "tag": "insert",
+          "originalStart": 234,
+          "originalEnd": 234,
+          "candidateStart": 244,
+          "candidateEnd": 245,
+          "original": [],
+          "candidate": [
+            "        defer { older.cancel(); suspended.cancelOutstanding() }\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "originalStart": 238,
+          "originalEnd": 240,
+          "candidateStart": 249,
+          "candidateEnd": 261,
+          "original": [
+            "        await subject.refreshBin { [current] }\n",
+            "        #expect(subject.binItems == [current])\n"
+          ],
+          "candidate": [
+            "        let expectedRows: [AnyLibraryBinItem]\n",
+            "        if olderFails {\n",
+            "            await subject.refreshBin { [current] }\n",
+            "            expectedRows = [current]\n",
+            "        } else {\n",
+            "            await subject.refreshBin { throw AnyHostError.changedDocument }\n",
+            "            expectedRows = []\n",
+            "        }\n",
+            "        let expectedFailure = !olderFails\n",
+            "        let expectedMessage = subject.message\n",
+            "        #expect(subject.binItems == expectedRows)\n",
+            "        #expect(subject.binReadFailed == expectedFailure)\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "originalStart": 241,
+          "originalEnd": 242,
+          "candidateStart": 262,
+          "candidateEnd": 263,
+          "original": [
+            "        #expect(subject.message == nil)\n"
+          ],
+          "candidate": [
+            "        #expect((expectedMessage != nil) == expectedFailure)\n"
+          ]
+        },
+        {
+          "tag": "replace",
+          "originalStart": 251,
+          "originalEnd": 253,
+          "candidateStart": 272,
+          "candidateEnd": 275,
+          "original": [
+            "        #expect(subject.binItems == [current])\n",
+            "        #expect(subject.message == nil)\n"
+          ],
+          "candidate": [
+            "        #expect(subject.binItems == expectedRows)\n",
+            "        #expect(subject.binReadFailed == expectedFailure)\n",
+            "        #expect(subject.message == expectedMessage)\n"
+          ]
+        },
+        {
+          "tag": "insert",
+          "originalStart": 266,
+          "originalEnd": 266,
+          "candidateStart": 288,
+          "candidateEnd": 289,
+          "original": [],
+          "candidate": [
+            "        try Task.checkCancellation()\n"
+          ]
+        }
+      ]
+    }
+  ],
+  "reason": "Current read failure must not be labeled a successful empty Bin. Retain a dedicated failure/Retry row and protect its state from older completions.",
+  "originalGlobalMessageAndRestoreBodiesUnchanged": true,
+  "oldReviewIsNotFinalApproval": "root-independent-review.initial03bd.json",
+  "testsOrCompilerRun": 0
+}

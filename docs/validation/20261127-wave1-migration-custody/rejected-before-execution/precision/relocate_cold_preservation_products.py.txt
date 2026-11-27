@@ -1,0 +1,393 @@
+#!/usr/bin/env python3
+"""Preserve only nine closed C proof products across a physical-volume move.
+
+This capacity recovery dispatches no compiler, native process, compression or
+account API. The active C cache, source account and private-work stay physical.
+Atomic renameat2 exchange follows the already qualified E custody primitive;
+all copied data, controls and independent readbacks are on development.
+"""
+from pathlib import Path
+import argparse
+import base64
+import ctypes
+import fcntl
+import hashlib
+import json
+import os
+import shutil
+import signal
+import stat
+import time
+import traceback
+
+SOURCE = Path('/var/lib/pinkha-c-native-preservation-20261126/retained-preservation-products-d3f')
+OUT = Path('/mnt/development/projects/evidence/pinkha-c-retained-preservation-products-relocated-20261127')
+DEST = OUT / 'retained'
+EXCHANGE = SOURCE.with_name(SOURCE.name + '.verified-exchange-20261127')
+ADMISSION_SHA = '2f04d065bf53c6a61051eb8e8b7e54d61a7ced1c5dda8834502057425ccb8230'
+PRESERVED_NATIVE = SOURCE.parent / 'linux-resume-attempt1'
+PREPARED3 = Path('/var/lib/pinkha-w1-functional-migration-20261127/source-facts-prepared3/manifest.json')
+PREPARED3_SHA = '69193fa50ae65abad284fd6d5d83df76d0de9c04909605a8e20fda765db04a4e'
+PRIOR_EXCHANGE = Path('/mnt/development/projects/evidence/pinkha-e-failed-binary-custody-relocated-20261127/relocation-receipt.json')
+PRIOR_EXCHANGE_SHA = 'f05188217a3b6b4c554dfc4ed88112bd12ac73562bcbb017759f77b3d5e04f2e'
+PROTECTED_PINS = {
+    'result.json': 'f7f4a5b34465907c3285229a266a488229a92eb1c3a7c04c5b4cdd162ed1b32b',
+    'native/controller-result.json': '5925bd5a08c972e3dbe7666b77f9e230fe340b36b46289c870384e66c516a899',
+    'private-work/source-preservation-plan.json': '4a61914d5dbd3ccb4874f81444e4d0770c9e7e2dfe4259b8b93f15796accb930',
+    'private-work/execute-mappings.json': 'eabdf2e362189abd5a2e78f7c13f1f1d77d8339c27109d2a6ec19ccdbb2755a3',
+    'private-work/execute-verification.json': 'fee4dc5cb8e689e01bf2d1fbe8bd262c42388fd706da4114be72af3e6cf97350',
+}
+MIB = 1024**2
+NATIVE_ROOT_FLOOR = 2 * 1024**3
+DEV_FLOOR = 512 * MIB
+CONTROL_CAP = 2 * MIB
+DEADLINE = 240
+
+
+def metadata(path):
+    s = path.lstat()
+    return {'mode': s.st_mode, 'uid': s.st_uid, 'gid': s.st_gid, 'bytes': s.st_size,
+            'atime_ns': s.st_atime_ns, 'mtime_ns': s.st_mtime_ns, 'ctime_ns': s.st_ctime_ns,
+            'device': s.st_dev, 'inode': s.st_ino, 'links': s.st_nlink,
+            'allocatedBytes': s.st_blocks * 512,
+            'xattrs': {key: base64.b64encode(os.getxattr(path, key, follow_symlinks=False)).decode()
+                       for key in sorted(os.listxattr(path, follow_symlinks=False))}}
+
+
+def sha(path):
+    before = metadata(path)
+    assert stat.S_ISREG(before['mode'])
+    h = hashlib.sha256()
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NOATIME)
+    with os.fdopen(fd, 'rb') as stream:
+        s = os.fstat(stream.fileno())
+        assert (s.st_dev, s.st_ino) == (before['device'], before['inode'])
+        while data := stream.read(MIB):
+            h.update(data)
+    assert metadata(path) == before, 'frozen file changed during noatime read'
+    return h.hexdigest()
+
+
+def read_json(path, want):
+    assert sha(path) == want
+    fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NOATIME)
+    with os.fdopen(fd, 'rb') as stream:
+        data = stream.read(4 * MIB + 1)
+    assert len(data) <= 4 * MIB and hashlib.sha256(data).hexdigest() == want
+    return json.loads(data)
+
+
+def names(path):
+    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_NOATIME)
+    try:
+        return sorted(os.listdir(fd))
+    finally:
+        os.close(fd)
+
+
+def fsync_dir(path):
+    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_NOATIME)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def write(path, value, replace=False):
+    raw = json.dumps(value, sort_keys=True, ensure_ascii=False, indent=2).encode() + b'\n'
+    assert len(raw) <= CONTROL_CAP
+    temporary = path.with_name(path.name + '.new') if replace else path
+    fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+    with os.fdopen(fd, 'wb') as stream:
+        stream.write(raw); stream.flush(); os.fsync(stream.fileno())
+    if replace:
+        os.replace(temporary, path)
+    fsync_dir(path.parent)
+
+
+def portable(row, directory=False):
+    fields = ['mode', 'uid', 'gid', 'atime_ns', 'mtime_ns', 'xattrs', 'links']
+    if not directory:
+        fields += ['bytes', 'sha256']
+    return {key: row[key] for key in fields}
+
+
+def source_manifest(path, expected_names):
+    before = metadata(path)
+    assert stat.S_ISDIR(before['mode']) and not path.is_symlink()
+    assert names(path) == sorted(expected_names), 'exact nine-member set changed'
+    rows = {}
+    for name in expected_names:
+        member = path / name
+        row = metadata(member)
+        assert stat.S_ISREG(row['mode']) and row['links'] == 1, 'special file or external hardlink'
+        rows[name] = row | {'sha256': sha(member)}
+    assert metadata(path) == before
+    return {'directory': before, 'files': rows}
+
+
+def protected_inputs():
+    roots = [PRESERVED_NATIVE / 'native/private-account', PRESERVED_NATIVE / 'private-work']
+    values = {'roots': {}, 'pins': {}}
+    for root in roots:
+        assert root.resolve() == root and not root.is_symlink(), 'queued native source path must remain physical'
+        rows, stack = {}, [root]
+        while stack:
+            member = stack.pop(); row = metadata(member)
+            relative = member.relative_to(root).as_posix()
+            assert row['device'] == root.stat().st_dev
+            if stat.S_ISDIR(row['mode']):
+                stack.extend(member / name for name in reversed(names(member)))
+            else:
+                assert stat.S_ISREG(row['mode']) and row['links'] == 1
+                row['sha256'] = sha(member)
+            rows[relative] = row
+            assert len(rows) <= 512
+        values['roots'][str(root)] = rows
+    for relative, want in PROTECTED_PINS.items():
+        path = PRESERVED_NATIVE / relative
+        assert path.resolve() == path and sha(path) == want
+        values['pins'][relative] = want
+    assert sha(PREPARED3) == PREPARED3_SHA
+    values['prepared3ManifestSHA256'] = PREPARED3_SHA
+    return values
+
+
+def live_uses(manifests, roots):
+    inodes = set()
+    for manifest in manifests:
+        for row in [manifest['directory']] + list(manifest['files'].values()):
+            inodes.add((row['device'], row['inode']))
+    root_text = [str(root) for root in roots]
+    found = []
+    for proc in Path('/proc').iterdir():
+        if not proc.name.isdecimal() or int(proc.name) == os.getpid():
+            continue
+        try:
+            command = (proc / 'cmdline').read_bytes()[:1024 * 1024]
+            if any(root.encode() in command for root in root_text):
+                found.append({'pid': int(proc.name), 'reference': 'cmdline'})
+            for ref in [proc / 'cwd', proc / 'exe'] + list((proc / 'fd').iterdir()):
+                try:
+                    info = ref.stat()
+                    target = os.readlink(ref).removesuffix(' (deleted)')
+                    if (info.st_dev, info.st_ino) in inodes or any(
+                            target == root or target.startswith(root + '/') for root in root_text):
+                        found.append({'pid': int(proc.name), 'reference': ref.name})
+                except (FileNotFoundError, ProcessLookupError):
+                    pass
+            for line in (proc / 'maps').read_text().splitlines():
+                fields = line.split(None, 5)
+                if len(fields) >= 5:
+                    major, minor = (int(v, 16) for v in fields[3].split(':'))
+                    node = (os.makedev(major, minor), int(fields[4]))
+                    target = fields[5].removesuffix(' (deleted)') if len(fields) == 6 else ''
+                    if node in inodes or any(target == root or target.startswith(root + '/') for root in root_text):
+                        found.append({'pid': int(proc.name), 'reference': 'maps'})
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+        # Permission errors for a live process are not proof of no users.
+    return found
+
+
+def restore_metadata(path, row):
+    os.chown(path, row['uid'], row['gid'], follow_symlinks=False)
+    os.chmod(path, stat.S_IMODE(row['mode']), follow_symlinks=False)
+    for key in set(os.listxattr(path, follow_symlinks=False)) - set(row['xattrs']):
+        os.removexattr(path, key, follow_symlinks=False)
+    for key, encoded in row['xattrs'].items():
+        os.setxattr(path, key, base64.b64decode(encoded), follow_symlinks=False)
+    os.utime(path, ns=(row['atime_ns'], row['mtime_ns']), follow_symlinks=False)
+
+
+def interrupted(signum, _frame):
+    raise RuntimeError('cold-product custody interrupted by signal ' + str(signum))
+
+
+def main():
+    parser = argparse.ArgumentParser(); parser.add_argument('--admission', type=Path, required=True)
+    args = parser.parse_args(); os.umask(0o077)
+    assert OUT.parent.resolve() == OUT.parent and not OUT.exists() and not OUT.is_symlink()
+    OUT.mkdir(mode=0o700)
+    started = time.monotonic(); source_fd = parent_fd = exchange_fd = None
+    before = protected = None; phase = 'admission'
+    result = {'protocol': 'pinkha-c-cold-nine-products-custody-v1', 'status': 'FAIL', 'source': str(SOURCE),
+              'destination': str(DEST), 'exchangePath': str(EXCHANGE), 'errors': [], 'retiredFiles': [],
+              'sourceDirectoryRetired': False, 'stableOriginalSymlinkInstalled': False,
+              'compilerInvocations': 0, 'nativeInvocations': 0, 'accountAPICalls': 0,
+              'resourcePolicy': {'purpose': 'recovery only below unchanged native/build floor',
+                  'nativeRootFloorUnchanged': NATIVE_ROOT_FLOOR, 'developmentRuntimeFloor': DEV_FLOOR,
+                  'rootBulkBytesWritten': 0, 'developmentControlCap': CONTROL_CAP,
+                  'maximumSeconds': DEADLINE, 'rootControlAllowanceBytes': 4 * MIB}}
+
+    def guard():
+        assert time.monotonic() - started < DEADLINE, 'bounded cold-product custody deadline'
+        root_free, dev_free = shutil.disk_usage('/').free, shutil.disk_usage(OUT).free
+        result['minimumRootFreeBytes'] = min(result.get('minimumRootFreeBytes', root_free), root_free)
+        result['minimumDevelopmentFreeBytes'] = min(result.get('minimumDevelopmentFreeBytes', dev_free), dev_free)
+        assert root_free >= 4 * MIB, 'bounded recovery-control reserve; no build/native authorized'
+        assert dev_free >= DEV_FLOOR, 'unchanged development emergency floor'
+        controls = sum((OUT / name).lstat().st_size for name in names(OUT)
+                       if stat.S_ISREG((OUT / name).lstat().st_mode))
+        assert controls <= CONTROL_CAP, 'bounded development controls'
+        return root_free, dev_free
+
+    def save():
+        result['phase'] = phase; result['seconds'] = round(time.monotonic() - started, 3)
+        write(OUT / 'result.json', result, replace=True)
+
+    try:
+        signal.signal(signal.SIGTERM, interrupted); signal.signal(signal.SIGINT, interrupted)
+        signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGTERM, signal.SIGINT})
+        result['controllerSHA256'] = sha(Path(__file__))
+        admission = read_json(args.admission, ADMISSION_SHA)
+        assert admission['source'] == str(SOURCE) and len(admission['files']) == 9
+        assert admission['retention']['status'] == 'PASS_EXACT_EXECUTED_SHARED_PRODUCTS_RETAINED'
+        assert admission['retention']['nativeExecutionSHA256'] == PROTECTED_PINS['result.json']
+        prior = read_json(PRIOR_EXCHANGE, PRIOR_EXCHANGE_SHA)
+        assert prior['status'] == 'PASS_EXACT_LOCAL_CUSTODY_STABLE_ORIGINAL_SYMLINK' and prior['sourceDirectoryRetired']
+        result['reusedAtomicExchangeQualificationSHA256'] = PRIOR_EXCHANGE_SHA
+        assert SOURCE.resolve() == SOURCE and SOURCE.parent.resolve() == SOURCE.parent
+        assert not os.path.lexists(EXCHANGE) and not os.path.lexists(DEST)
+        source_fd = os.open(SOURCE, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_NOATIME)
+        fcntl.flock(source_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        parent_fd = os.open(SOURCE.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_NOATIME)
+        before = source_manifest(SOURCE, admission['files'])
+        assert before == {'directory': admission['directory'], 'files': admission['files']}, 'source differs from prepared exact admission'
+        source_identity = os.fstat(source_fd)
+        assert (source_identity.st_dev, source_identity.st_ino) == (before['directory']['device'], before['directory']['inode'])
+        assert SOURCE.stat().st_dev != OUT.stat().st_dev
+        result['liveUsesBefore'] = live_uses([before], [SOURCE, DEST, EXCHANGE])
+        assert not result['liveUsesBefore']
+        protected = protected_inputs()
+        write(OUT / 'protected-before.json', protected)
+        write(OUT / 'source-before.json', before)
+        result['sourceManifestSHA256'] = sha(OUT / 'source-before.json')
+        result['protectedInputsSHA256'] = sha(OUT / 'protected-before.json')
+        total = sum(row['bytes'] for row in before['files'].values())
+        allocated = before['directory']['allocatedBytes'] + sum(row['allocatedBytes'] for row in before['files'].values())
+        assert total == 53517364 and allocated == 53551104
+        block = os.statvfs(OUT).f_frsize
+        copy_bound = block + sum(((row['bytes'] + block - 1) // block) * block for row in before['files'].values())
+        root_free, dev_free = guard()
+        assert dev_free >= DEV_FLOOR + copy_bound + 16 * MIB, 'exact copy plus512MiB+16MiB admission'
+        result.update(rootFreeBefore=root_free, developmentFreeBefore=dev_free, copyUpperBytes=copy_bound,
+                      exactFiles=9, copiedBytes=total, rootInitiallyBelowNativeFloor=root_free < NATIVE_ROOT_FLOOR)
+        phase = 'fsynced development copy'; save(); DEST.mkdir(mode=0o700)
+        for name, row in before['files'].items():
+            original, copied = SOURCE / name, DEST / name
+            input_fd = os.open(original, os.O_RDONLY | os.O_NOFOLLOW | os.O_NOATIME)
+            output_fd = os.open(copied, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+            try:
+                info = os.fstat(input_fd)
+                assert (info.st_dev, info.st_ino) == (row['device'], row['inode'])
+                h, count = hashlib.sha256(), 0
+                while data := os.read(input_fd, MIB):
+                    guard(); h.update(data); count += len(data); assert count <= row['bytes']
+                    view = memoryview(data)
+                    while view:
+                        written = os.write(output_fd, view); assert written > 0; view = view[written:]
+                assert count == row['bytes'] and h.hexdigest() == row['sha256']
+                os.fsync(output_fd)
+            finally:
+                os.close(input_fd); os.close(output_fd)
+            restore_metadata(copied, row)
+            fd = os.open(copied, os.O_RDONLY | os.O_NOFOLLOW | os.O_NOATIME)
+            try: os.fsync(fd)
+            finally: os.close(fd)
+        restore_metadata(DEST, before['directory']); fsync_dir(DEST); fsync_dir(OUT)
+        phase = 'independent durable readback'
+        copied = source_manifest(DEST, admission['files'])
+        assert portable(copied['directory'], True) == portable(before['directory'], True)
+        assert {n: portable(r) for n, r in copied['files'].items()} == {n: portable(r) for n, r in before['files'].items()}
+        assert source_manifest(SOURCE, admission['files']) == before
+        write(OUT / 'destination-before-exchange.json', copied)
+        result['destinationManifestSHA256'] = sha(OUT / 'destination-before-exchange.json')
+        assert protected_inputs() == protected
+        result['liveUsesBeforeExchange'] = live_uses([before, copied], [SOURCE, DEST, EXCHANGE])
+        assert not result['liveUsesBeforeExchange']
+        write(OUT / 'restoration-map.json', {
+            'sourcePath': str(SOURCE), 'retainedPhysicalPath': str(DEST),
+            'originalManifest': str(OUT / 'source-before.json'), 'originalManifestSHA256': result['sourceManifestSHA256'],
+            'wholeOriginalBytesAndPortableMetadataRetained': True, 'hardlinkTopology': [],
+            'sourceNativeRootFloorUnchanged': NATIVE_ROOT_FLOOR,
+            'physicalRestoreRequires': ['no live inode/fd/maps/cwd/command users',
+                'root >=2GiB plus exact copied allocation plus16MiB', 'development >=512MiB',
+                'exclusive same-parent physical copy; all9hashes/metadata/fsync verified before exchange',
+                'exact current stable-link inode and target; renameat2 RENAME_EXCHANGE barrier',
+                'retain sole verified development copy; never overwrite a raced entry']})
+        result['restorationMapSHA256'] = sha(OUT / 'restoration-map.json')
+        phase = 'verified before atomic exchange'; save(); guard()
+        assert source_manifest(SOURCE, admission['files']) == before
+        assert source_manifest(DEST, admission['files']) == copied
+        assert not live_uses([before, copied], [SOURCE, DEST, EXCHANGE])
+        os.symlink(str(DEST), EXCHANGE.name, dir_fd=parent_fd); os.fsync(parent_fd)
+        link_identity = os.stat(EXCHANGE.name, dir_fd=parent_fd, follow_symlinks=False)
+        current = os.stat(SOURCE.name, dir_fd=parent_fd, follow_symlinks=False)
+        assert (current.st_dev, current.st_ino, current.st_ctime_ns) == (
+            source_identity.st_dev, source_identity.st_ino, source_identity.st_ctime_ns)
+        assert stat.S_ISLNK(link_identity.st_mode)
+        libc = ctypes.CDLL(None, use_errno=True); exchange = libc.renameat2
+        exchange.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint]
+        exchange.restype = ctypes.c_int
+        assert exchange(parent_fd, os.fsencode(SOURCE.name), parent_fd, os.fsencode(EXCHANGE.name), 2) == 0, os.strerror(ctypes.get_errno())
+        result['stableOriginalSymlinkInstalled'] = True; os.fsync(parent_fd)
+        assert SOURCE.is_symlink() and SOURCE.resolve() == DEST
+        moved = source_manifest(EXCHANGE, admission['files'])
+        assert moved['files'] == before['files']
+        assert {k: v for k, v in moved['directory'].items() if k != 'ctime_ns'} == {
+            k: v for k, v in before['directory'].items() if k != 'ctime_ns'}
+        assert (SOURCE.lstat().st_dev, SOURCE.lstat().st_ino) == (link_identity.st_dev, link_identity.st_ino)
+        assert all(sha(SOURCE / n) == row['sha256'] for n, row in before['files'].items())
+        assert source_manifest(DEST, admission['files']) == copied
+        assert protected_inputs() == protected
+        result['liveUsesBeforeRetirement'] = live_uses([before, copied], [SOURCE, DEST, EXCHANGE])
+        assert not result['liveUsesBeforeRetirement']
+        write(OUT / 'verified-after-exchange.json', moved)
+        phase = 'retiring only verified duplicate'; save(); guard()
+        exchange_fd = os.open(EXCHANGE, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_NOATIME)
+        info = os.fstat(exchange_fd)
+        assert (info.st_dev, info.st_ino) == (source_identity.st_dev, source_identity.st_ino)
+        assert source_manifest(EXCHANGE, admission['files']) == moved
+        for name, row in before['files'].items():
+            assert metadata(EXCHANGE / name) == {k: v for k, v in row.items() if k != 'sha256'}
+            assert sha(EXCHANGE / name) == row['sha256'] and sha(DEST / name) == row['sha256']
+            info = os.stat(name, dir_fd=exchange_fd, follow_symlinks=False)
+            assert (info.st_dev, info.st_ino) == (row['device'], row['inode'])
+            os.unlink(name, dir_fd=exchange_fd); result['retiredFiles'].append(name)
+        assert os.listdir(exchange_fd) == []
+        os.rmdir(EXCHANGE.name, dir_fd=parent_fd); os.fsync(parent_fd)
+        result['sourceDirectoryRetired'] = True
+        assert not os.path.lexists(EXCHANGE) and SOURCE.resolve() == DEST
+        assert source_manifest(DEST, admission['files']) == copied
+        assert protected_inputs() == protected
+        assert sha(args.admission) == ADMISSION_SHA and sha(Path(__file__)) == result['controllerSHA256']
+        result.update(status='PASS_EXACT_COLD_PRESERVATION_PRODUCTS_STABLE_PATH',
+            protectedAccountsPlansAndPrepared3Unchanged=True, recoveredRootAllocatedBytes=allocated,
+            allNineOriginalBytesAndMetadataRetained=True, hardlinkTopologyPreserved=True)
+        phase = 'completed'
+    except BaseException as error:
+        result['status'] = 'FAIL_COLD_PRODUCT_CUSTODY'
+        result['errors'].append({'phase': phase, 'type': type(error).__name__, 'message': str(error)})
+        write(OUT / 'failure.json', {'traceback': traceback.format_exc(), 'phase': phase})
+        # Never recopy, delete a partial target, or undo an uncertain exchange.
+        # Every verified retained copy and any unretired original stays in place.
+    finally:
+        signal.signal(signal.SIGTERM, signal.SIG_IGN); signal.signal(signal.SIGINT, signal.SIG_IGN)
+        for fd in (exchange_fd, parent_fd, source_fd):
+            if fd is not None:
+                try: os.close(fd)
+                except OSError as error:
+                    result['status'] = 'FAIL_COLD_PRODUCT_CUSTODY'; result['errors'].append({'close': str(error)})
+        result['rootFreeAfter'] = shutil.disk_usage('/').free
+        result['developmentFreeAfter'] = shutil.disk_usage(OUT).free
+        save()
+        print(json.dumps({'status': result['status'], 'result': str(OUT / 'result.json'),
+            'sha256': sha(OUT / 'result.json'), 'seconds': result['seconds'], 'errors': result['errors'],
+            'rootFreeAfter': result['rootFreeAfter'], 'developmentFreeAfter': result['developmentFreeAfter'],
+            'sourceDirectoryRetired': result['sourceDirectoryRetired']}))
+    return 0 if result['status'].startswith('PASS_') else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

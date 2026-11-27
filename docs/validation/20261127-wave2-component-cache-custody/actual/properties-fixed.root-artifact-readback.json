@@ -1,0 +1,67 @@
+{
+  "schema": "pinkha.wave2.properties.fixed-nine.actual-artifact-readback.v1",
+  "source": "Root actual Oracle readback; no compiler invocation or historical PGID probe",
+  "verified": [
+    {
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/component-envelope.json",
+      "bytes": 4198,
+      "sha256": "7bc16521aebe949c10a1497471152ec36b5f57b93685d8b64b74eeaba5a50263"
+    },
+    {
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/dependency-and-custody-after.json",
+      "bytes": 1529,
+      "sha256": "b5a139f29ae779fe1fd01e90d2a8e2e6c3d66489a5461f902db5d998739a5304"
+    },
+    {
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/dependency-and-custody-before.json",
+      "bytes": 1529,
+      "sha256": "b5a139f29ae779fe1fd01e90d2a8e2e6c3d66489a5461f902db5d998739a5304"
+    },
+    {
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/invocation.json",
+      "bytes": 641,
+      "sha256": "3357d7462937bd41bdb3356f801d3301cca7c6d91f5b64cddb140970162f0050"
+    },
+    {
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/prepare.original.log",
+      "bytes": 563,
+      "sha256": "b874efb328f7089bb525fca8f86a6246ff648f77368e66385a5a12275d77c80f"
+    },
+    {
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/process.json",
+      "bytes": 98,
+      "sha256": "08046f05c9c163a3bafb9c6dfb839525739dac13b7163bb41dbb80605bfaa60b"
+    },
+    {
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/resource-samples.json",
+      "bytes": 2797,
+      "sha256": "7a283f2bb0616c4c61b834a77f2745188dd4f947d12a05618bb8e68861162533"
+    },
+    {
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/stderr.original.log",
+      "bytes": 51301,
+      "sha256": "67ab3fe76eac5502a4bd824138a0002cfe210ee62e0a26e6be0066e0f6305c02"
+    },
+    {
+      "path": "/var/lib/pinkha-wave2-property-lifecycle-20261127/fixed1/stdout.original.log",
+      "bytes": 2200,
+      "sha256": "a621061aaa5c4abb53c89c65e3b720a2c60e1d1dc69abe7b71f52eddae6fc0ab"
+    }
+  ],
+  "beforeAfterBytesEqual": true,
+  "historicalPGIDReprobed": false,
+  "originalOwnedAbsenceRetained": {
+    "absenceEvidence": {
+      "atUTC": "2026-11-27T09:45:23.943165+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 94384,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "historicalGroupReprobed": false,
+    "processGroup": 94384,
+    "status": "PASS_OWNED_GROUP_ABSENT"
+  },
+  "actualNineMethodsPassed": true
+}
