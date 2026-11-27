@@ -1,0 +1,69 @@
+{
+  "HTTPNativeOrHostCalls": 0,
+  "SwiftTestsExecuted": 0,
+  "actualG04FormatSource": {
+    "path": "/workspace/scratch/1d35894f12d5/wave2-reader-audit/component/actual-run/attempt1/stdout.original.log",
+    "sha256": "1bd5482cfc960df1c319b13786ffcd12eb452238a9a1a69cff79cf4c2731e92f"
+  },
+  "compilerInvocations": 0,
+  "controls": [
+    {
+      "argumentCases": 8,
+      "controlStatus": "PASS",
+      "expectedAccept": true,
+      "methods": 4,
+      "name": "four_methods_eight_paired_argument_cases",
+      "observedAccept": true,
+      "syntheticLogSHA256": "870ab3b6dec10a2e27b8e3978af0dfb1129b8a4ab567f556dc020690dd52c4e2"
+    },
+    {
+      "controlStatus": "PASS",
+      "expectedAccept": false,
+      "name": "missing_one_argument_pass",
+      "observedAccept": false,
+      "refusal": "",
+      "syntheticLogSHA256": "35f0261f1046aefb594f85bb994d8a63acab5f8dbba8b85ed6510d7e16ef646d"
+    },
+    {
+      "controlStatus": "PASS",
+      "expectedAccept": false,
+      "name": "same_argument_repeated_instead_of_second",
+      "observedAccept": false,
+      "refusal": "Duplicate argument event",
+      "syntheticLogSHA256": "1f6062887587923b55f797ee4fafc0b96ceea9886eb3efdee993f11a8e05dbba"
+    },
+    {
+      "controlStatus": "PASS",
+      "expectedAccept": false,
+      "name": "old_method_execution_even_with_fixed_summary",
+      "observedAccept": false,
+      "refusal": "Unselected or duplicate method start",
+      "syntheticLogSHA256": "37ee4d544602af85c32ea0973be5f754a106f94919decef9bdb718847f48153c"
+    },
+    {
+      "controlStatus": "PASS",
+      "expectedAccept": false,
+      "name": "zero_test_footer_is_not_acceptance",
+      "observedAccept": false,
+      "refusal": "",
+      "syntheticLogSHA256": "c2f3138ccc70f10f742e21b2d877b12bca76c8c07221b58834ecfe516d1af482"
+    },
+    {
+      "controlStatus": "PASS",
+      "expectedAccept": false,
+      "name": "duplicate_selected_method_event",
+      "observedAccept": false,
+      "refusal": "Unselected or duplicate method start",
+      "syntheticLogSHA256": "e223dd8002e449cfb05d46ec9b973e6c887a4d381fa1659f36e59aae8d11e08d"
+    }
+  ],
+  "exactFunctionASTExtracted": "swift_testing_result",
+  "newActualResultOrCompiledEnumeration": null,
+  "processManagerInvoked": false,
+  "runnerImportedOrInvoked": false,
+  "runnerSHA256": "f63adbdfde8bfa5d1779371e1c046f196e617f2f286181dc6c8c7768414e3628",
+  "schema": "pinkha-hierarchy-rename-pure-result-controls/v1",
+  "seconds": 0.003853,
+  "status": "SIX_SYNTHETIC_QUALIFIER_CONTROLS_PASS",
+  "syntheticConstruction": "Four copies of one actual G04 two-argument event block, with explicitly synthetic source-specific method/enum/suite labels. Not actual hierarchy output."
+}

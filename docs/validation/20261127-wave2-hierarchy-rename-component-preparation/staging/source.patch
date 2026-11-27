@@ -1,0 +1,89 @@
+--- Property4/materialize_and_exec.py
++++ HierarchyRename/materialize_and_exec.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Stage one exact Property4 input packet, then exec its fixed reviewed command.
++"""Stage one exact hierarchy4/8 input packet, then exec its fixed reviewed command.
+ 
+ This is inert without an explicit recorded coordination story. The story is
+ evidence of external scheduling, never an authority granted by this script.
+@@ -20,12 +20,12 @@
+ import traceback
+ 
+ sys.dont_write_bytecode = True
+-ROOT = Path('/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127')
+-PAYLOAD = Path('/var/lib/sentinelx/uploads/pinkha-wave2-property4-inputs-6ca564dc104259a8.json.gz')
+-PAYLOAD_SHA = '6ca564dc104259a8de2aa593ac28bad1b11e0059b8f52a1cdd4dee701449459a'
+-RAW_SHA = 'b6a0e1b7e267986dc55bf1e2fd941174613890c088115789d29624d3a3a3c4c3'
+-PACKET_SHA = '66d0f3453087ac8df6a9bf54cf3bdcbc65f645934facfaaa91cc8fd703d81083'
+-CONTROLLER_SHA = '66f09e18e07cca8a2056d0c8b51ffa318433f28bf9cb7f255f7a0c9bd9db9ea8'
++ROOT = Path('/mnt/development/projects/evidence/pinkha-wave2-hierarchy-rename-20261127')
++PAYLOAD = Path('/var/lib/sentinelx/uploads/pinkha-wave2-hierarchy-rename-inputs-b4ef0e166fe30611.json.gz')
++PAYLOAD_SHA = 'b4ef0e166fe306118eeb099df5781451fc0716134ba382c9d8803861459c95b3'
++RAW_SHA = 'ec0c1a2e04af03cac8e85cc6c7d726c74897768a31825819744e6914dc8016a6'
++PACKET_SHA = 'ed3ef9bfce4119bc199934d4740a09f5e0e621abd0806a45e831f392cf043df6'
++CONTROLLER_SHA = 'f63adbdfde8bfa5d1779371e1c046f196e617f2f286181dc6c8c7768414e3628'
+ CRYPTO_SHA = '10c98c4192acba640c401586fb84ef9aa227e6d52bdde7198f251a0498146c2c'
+ EXEC_ARGV = ['/usr/bin/python3', '-B', str(ROOT / 'inputs/run_component.py'), '--execute-reviewed-candidate']
+ 
+@@ -96,14 +96,14 @@
+     parser.add_argument('--coordination-story', required=True)
+     args = parser.parse_args()
+     assert re.fullmatch(r'[0-9]{16}', args.coordination_story), 'Exact scheduling story required'
+-    receipt = {'schema': 'pinkha-property4-input-materialization-receipt/v1',
++    receipt = {'schema': 'pinkha-hierarchy-rename-input-materialization-receipt/v1',
+                'status': 'FAIL_NOT_EXECUTED', 'startedAtUTC': now(),
+                'coordinationStory': args.coordination_story, 'slotGrantedByThisScript': False,
+                'root': str(ROOT), 'payload': str(PAYLOAD), 'payloadSHA256': PAYLOAD_SHA,
+                'packetSHA256': PACKET_SHA, 'controllerSHA256': CONTROLLER_SHA,
+-               'productSourceCommit': '937a8167700481b71c3c2eeb8771634d2c6bbc4f',
++               'productSourceCommit': '9e4aa3f1b88d8f6bfec27cdf2cb47d07ffd416ce',
+                'inputAuthority': 'Exact packet/controller hashes; published preparation binding is external, never inferred from the product commit.',
+-               'rootRunnerReviewSHA256': 'f6e2f9f148c5acc34548a61353a4c0864c9952ccafd8f7c0cd007e7b4ea3790f',
++               'rootRunnerReviewSHA256': 'e152db9ef0e57c44206497b73b2bdfb726e5d83fe942ec3f4f8bb369a968aab8',
+                'createdFiles': [], 'runtimeExecuted': False, 'errors': []}
+     try:
+         physical(ROOT.parent)
+@@ -112,25 +112,25 @@
+         receipt['before'] = budget()
+         physical(PAYLOAD)
+         before = PAYLOAD.stat()
+-        assert stat.S_ISREG(before.st_mode) and before.st_nlink == 1 and before.st_size == 330008
++        assert stat.S_ISREG(before.st_mode) and before.st_nlink == 1 and before.st_size == 229322
+         packed = PAYLOAD.read_bytes()
+         after = PAYLOAD.stat()
+         assert (before.st_dev, before.st_ino, before.st_mtime_ns, before.st_size) == (after.st_dev, after.st_ino, after.st_mtime_ns, after.st_size)
+-        assert len(packed) == 330008 and sha(packed) == PAYLOAD_SHA
++        assert len(packed) == 229322 and sha(packed) == PAYLOAD_SHA
+         raw = gzip.decompress(packed)
+-        assert len(raw) == 1499805 and sha(raw) == RAW_SHA
++        assert len(raw) == 1068552 and sha(raw) == RAW_SHA
+         payload = json.loads(raw)
+         assert set(payload) == {'schema', 'packetBase64', 'entries'}
+-        assert payload['schema'] == 'pinkha-property4-fixed-input-materialization/v1'
++        assert payload['schema'] == 'pinkha-hierarchy-rename-fixed-input-materialization/v1'
+         packet_raw = base64.b64decode(payload['packetBase64'], validate=True)
+         assert sha(packet_raw) == PACKET_SHA
+         packet = json.loads(packet_raw)
+-        assert packet['futureFixedRoot'] == str(ROOT) and packet['productCommit'] == '937a8167700481b71c3c2eeb8771634d2c6bbc4f'
++        assert packet['futureFixedRoot'] == str(ROOT) and packet['productCommit'] == '9e4aa3f1b88d8f6bfec27cdf2cb47d07ffd416ce'
+         assert packet['runtimeReady'] is False and packet['runtimeSlotGranted'] is False
+-        assert packet['fileCount'] == len(packet['files']) == len(payload['entries']) == 84
+-        assert packet['bytes'] == 1098479
++        assert packet['fileCount'] == len(packet['files']) == len(payload['entries']) == 61
++        assert packet['bytes'] == 781373
+         expected = {'inputs/' + item['path']: item for item in packet['files']}
+-        assert len(expected) == 84
++        assert len(expected) == 61
+         decoded = {}
+         for entry in payload['entries']:
+             assert set(entry) == {'path', 'contentBase64'}
+@@ -141,7 +141,7 @@
+             row = expected[entry['path']]
+             assert len(data) == row['bytes'] and sha(data) == row['sha256']
+             decoded[entry['path']] = data
+-        assert set(decoded) == set(expected) and sum(map(len, decoded.values())) == 1098479
++        assert set(decoded) == set(expected) and sum(map(len, decoded.values())) == 781373
+         assert sha(decoded['inputs/run_component.py']) == CONTROLLER_SHA
+         receipt['cryptoBefore'] = crypto_sources(decoded['inputs/retained-crypto-closure.json'])
+         mkdir_owned(ROOT)

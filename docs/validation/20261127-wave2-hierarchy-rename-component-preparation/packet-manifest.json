@@ -1,0 +1,834 @@
+{
+  "branch": "codex/chatgpt-wave15-wave2-hierarchy-rename-component-20261127",
+  "bytesExcludingThisManifest": 1926915,
+  "docsPrefix": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation",
+  "files": [
+    {
+      "bytes": 5521,
+      "gitBlob": "0337d045d5e17be6c07fa84f0417e1b21bc7cb84",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/README.md",
+      "sha256": "b59fefc0377f6f62f0317c2f15fd0f4f568bb335f355ae919495d72ef695a749",
+      "type": "blob"
+    },
+    {
+      "bytes": 41128,
+      "gitBlob": "6455e0907dffa99af33e4dd6e9f6b0ba66231eb7",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/custody/copied-originals.json",
+      "sha256": "5b3fc4821d92b3e6932eb9b838cfeb6a90c56f760be25ec7aebd8c99866b8e28",
+      "type": "blob"
+    },
+    {
+      "bytes": 58730,
+      "gitBlob": "9450c4ea2768196cc3137cc23df74a6cd71735f1",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/controller-derivative.json",
+      "sha256": "a3a8d09f05993025f10a7765a99a1b870c557b3ce1cb6c6aaa9d39975fe7a474",
+      "type": "blob"
+    },
+    {
+      "bytes": 32547,
+      "gitBlob": "9e65d934f81f17b4c7e6081c64295591522a618a",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/controller-derivative.patch",
+      "sha256": "aecc0a9067ba1de3625bdbc91c3912fac9786bb2dfd5287e0ae1e3129f73cbc5",
+      "type": "blob"
+    },
+    {
+      "bytes": 18980,
+      "gitBlob": "29dd6610f92114c49d2166cfde1c8298274ff687",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/expected-generated-test-entry-point.swift",
+      "sha256": "ef1ea588c48abfb9df451d79abb95237c2380da8b15cc97422bbfcccd532993b",
+      "type": "blob"
+    },
+    {
+      "bytes": 2267,
+      "gitBlob": "1e913ab287e6096f9d4b9e4c856f0d416017f4b8",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/generated-source-format-proof.json",
+      "sha256": "396b0a1ace81db944af7c53d7d97878e7e26bb7dcc18bc77a9cc39ce48166c5b",
+      "type": "blob"
+    },
+    {
+      "bytes": 14202,
+      "gitBlob": "5c3b4544bef617f404434eab9452adae470e313f",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/input-packet.json",
+      "sha256": "ed3ef9bfce4119bc199934d4740a09f5e0e621abd0806a45e831f392cf043df6",
+      "type": "blob"
+    },
+    {
+      "bytes": 4958,
+      "gitBlob": "9813859a445c9b96da9c284d17bbb0f84e4bc2e9",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Package.swift",
+      "sha256": "bf6b4e867ea96c9fe8a51fb148867c33885b2c5ee335c07070cacb53d3ac305c",
+      "type": "blob"
+    },
+    {
+      "bytes": 9870,
+      "gitBlob": "b480eee09ab02a4ad600b3dbe28d1c6b5ece3c3e",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift",
+      "sha256": "cc9ee5e3eb159ef5ea68e7a87928fd94f047a8668c2f2483890faffdac8d73a1",
+      "type": "blob"
+    },
+    {
+      "bytes": 11996,
+      "gitBlob": "7d140ed76c16204f34e099d6d92541ca25d514ee",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift",
+      "sha256": "048ebd2d82e3a22265c3fea4ead6ba406b4f8d7d8f00367ec0c7779fac1b0d8f",
+      "type": "blob"
+    },
+    {
+      "bytes": 6644,
+      "gitBlob": "ef551bc4179c10352670446ef9caa3609c40b93c",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift",
+      "sha256": "7205b72e687975bfda695bcccbcdbdd486af45c13ef7f0ddd20fcf58c9d5a312",
+      "type": "blob"
+    },
+    {
+      "bytes": 27831,
+      "gitBlob": "c584a72be3fb60b7870ff89630eb26f6fa931986",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "sha256": "8fce86456dfdfd7237a999fb56b6dcdf6d0917c068a797ed5d9a88c5e33d5182",
+      "type": "blob"
+    },
+    {
+      "bytes": 2600,
+      "gitBlob": "398d20dbad32e139ff392370a12b2bcf84cee27c",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyJSON.swift",
+      "sha256": "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d",
+      "type": "blob"
+    },
+    {
+      "bytes": 12640,
+      "gitBlob": "c0494798a93eec50a735dcff36234b1782cebfb0",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyLiveQuery.swift",
+      "sha256": "445930138f7aefe46f6d41995059acafad9363178da4bc17574d2a0e399c8cf4",
+      "type": "blob"
+    },
+    {
+      "bytes": 6439,
+      "gitBlob": "f5f9334ba988665d12c486ab8fa646e874073a5d",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyNativeFileDurability.swift",
+      "sha256": "364a1bea4e4cae6134c9bb5935c0432f257657f3ae0c889a669354de975c2dc6",
+      "type": "blob"
+    },
+    {
+      "bytes": 9648,
+      "gitBlob": "4b9aa812ebcd19f94856fb3ce6a25ac05a73c36f",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyNativeFileUploadResponse.swift",
+      "sha256": "08635cd324835923b713674c359694a380005585cadd1de3075270f41ed0f6d2",
+      "type": "blob"
+    },
+    {
+      "bytes": 15355,
+      "gitBlob": "33820e91ce26e23bc109c8c7df349f38d698e2e3",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyNativeFileUploadStaging.swift",
+      "sha256": "d0a02b1be20973b87c9be01bbf04e40f734f9ccddc39d0c4e61b83d1212bc349",
+      "type": "blob"
+    },
+    {
+      "bytes": 14691,
+      "gitBlob": "35cb7c1827bc9a846534997c1de3d6066b838871",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyNativeFileUploader.swift",
+      "sha256": "83e4618ee93a04ce407a62926a0bffbb1752756a59b38e6e5e5d636bad9138a6",
+      "type": "blob"
+    },
+    {
+      "bytes": 2695,
+      "gitBlob": "2a9c61e96ec753dceca4982fc2b2758c2d665bb7",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift",
+      "sha256": "c4635b23304e60b1d27b546c53e8901a841160bd79bd43a066b50bc02b2b0704",
+      "type": "blob"
+    },
+    {
+      "bytes": 10163,
+      "gitBlob": "3add9b8db3617f585ed8b2f10c1bdf896b84c7af",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnySSEParser.swift",
+      "sha256": "1b5b55f99d357418d0df7ec43bc61e8bac1e1f246c613019f8c8b025c03cbdad",
+      "type": "blob"
+    },
+    {
+      "bytes": 13237,
+      "gitBlob": "b1a1ad4368f919aad900f81542c75ce9facf355e",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift",
+      "sha256": "cd11b4cc0e54b4593d5a9111ca37ef7556bf3bcaa71ddb1532e900dd94ac0145",
+      "type": "blob"
+    },
+    {
+      "bytes": 3828,
+      "gitBlob": "f556cbae88f9866f0103ec07398723099be407ba",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift",
+      "sha256": "d2cdada5bf2a639127e58dbbe7b422188df76cb145d32023d4b1011006fd69af",
+      "type": "blob"
+    },
+    {
+      "bytes": 12417,
+      "gitBlob": "3c343d2214d25b6fbe5c4f3c96cb379113951997",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyEngine/AnyTorahOperation.swift",
+      "sha256": "c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980",
+      "type": "blob"
+    },
+    {
+      "bytes": 2695,
+      "gitBlob": "1ac07afb587ebaec4d62cbdaa4bc0894370e2555",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyConditionalPropertyFence.swift",
+      "sha256": "baec5f9838f1bdbf6d6aedb557998cd334b3a77bbc73ce42f0c1408e14d40129",
+      "type": "blob"
+    },
+    {
+      "bytes": 7638,
+      "gitBlob": "2d920f139bd1a4e1680920e1c5d26063df573927",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyGuardedHTTPHierarchyRecordStore.swift",
+      "sha256": "e07269b03f4ed48bea10db4cc237f4017aef30eab283192d1615c7b0696861bc",
+      "type": "blob"
+    },
+    {
+      "bytes": 11318,
+      "gitBlob": "77ac68bdcf1fea26ab55f17cb74ca3465a859d3d",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyHTTPHierarchyRecordStore.swift",
+      "sha256": "7ede044c02fffbd4c0d9c9f81b78993af2ffce12ee9816e5703264200d82e963",
+      "type": "blob"
+    },
+    {
+      "bytes": 2949,
+      "gitBlob": "11b421a3cc59f2bc8dfdb3fa8168c7b747d11b13",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyHeartInlineProjection.swift",
+      "sha256": "ecd9e751715263ab6c592be9d2cf22129d5e295c5b7510595ff5886d630529fe",
+      "type": "blob"
+    },
+    {
+      "bytes": 3335,
+      "gitBlob": "4599d7d40c306515f9d9d4f610df9424c9ff19ec",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyHeartNativeBundledDefinition.swift",
+      "sha256": "524deb8119421132b0b802c7dfc40d0718a4e01235afc3e7697aa5c09ee79a3c",
+      "type": "blob"
+    },
+    {
+      "bytes": 5012,
+      "gitBlob": "419c58a7e941dc1ba31717d5df703d362c6e943c",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyHeartNativeCompiledRelation.swift",
+      "sha256": "abce8533e20f169fc431bd1d851d0c56fde878974d6eadef8a42fc1035de4096",
+      "type": "blob"
+    },
+    {
+      "bytes": 23399,
+      "gitBlob": "5977b6d5ed7ad32bb66aea734e7598f172d800ce",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyHeartNativeDefinitionCatalog.swift",
+      "sha256": "437131d2f7095af0a450e7c695aa9c9bed13ea290f576d49870c5224b60a3965",
+      "type": "blob"
+    },
+    {
+      "bytes": 13436,
+      "gitBlob": "42ce692fd603595116335bdf6edc8fae63d602e3",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyHeartNativeRecoveredDefinitions.swift",
+      "sha256": "de4b8b0596954a3f476bfff2c3af63b15f789d6ed17d806e54a2cd221c9bd449",
+      "type": "blob"
+    },
+    {
+      "bytes": 12396,
+      "gitBlob": "1f982529a3d058a536d66247a28956fd4829a152",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyHeartNativeSnapshotView.swift",
+      "sha256": "8128c8e00ff10f4904ea1bf1638741a0de1d68565b8a2e30f9a8b5c97ebfc0d0",
+      "type": "blob"
+    },
+    {
+      "bytes": 23124,
+      "gitBlob": "cb510177ce69cc1cc5a50475d5c1eddbb91bf6ec",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyHeartNativeSpaceBundle.swift",
+      "sha256": "9f7aa90550b3ab54cd86928a5c254b6f4af13762e14ce80fb62199f444879977",
+      "type": "blob"
+    },
+    {
+      "bytes": 18654,
+      "gitBlob": "08cf92897e729a93452a1cc9f31cad6d0e47fbab",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyHeartNativeStoreContext.swift",
+      "sha256": "42617085d07295f4eb8a67973380d6a5174ef29bba4b9b29b1e58105d99c6a81",
+      "type": "blob"
+    },
+    {
+      "bytes": 2424,
+      "gitBlob": "26d19d10fee5f394476ff5c097f0b0d4a001ff27",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyHierarchyArchiveRequest.swift",
+      "sha256": "df4bf42404eaeed6be85dfe32779683e991a392dfa39c1726d58cfbefd255f5b",
+      "type": "blob"
+    },
+    {
+      "bytes": 16048,
+      "gitBlob": "c951d43c3d67988b807f05a21ce21b9f77183488",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyHierarchyModels.swift",
+      "sha256": "0a594737c72b9f065cd4e70aff425f521a6d7ff86ce7b1ebd21dd1221d150700",
+      "type": "blob"
+    },
+    {
+      "bytes": 22565,
+      "gitBlob": "89bca79a5e1c5753006af364ddb0d9ef6967fd49",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyHierarchyRepository.swift",
+      "sha256": "7a1af6090a300a17e1427abb97423a49fbd26031d0578d17e6cba5f719016463",
+      "type": "blob"
+    },
+    {
+      "bytes": 8273,
+      "gitBlob": "5644688cc4b9a8b10e26953c92a2c486ff83fc2c",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyLexicographicPosition.swift",
+      "sha256": "079984b4d7aabdb375ca7bb466337db3f6282e5cd3f535ad8f8ae90b4ad86c73",
+      "type": "blob"
+    },
+    {
+      "bytes": 6882,
+      "gitBlob": "ac4bada7852ecc4c3f8a2208cb05a2e188ba0229",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift",
+      "sha256": "a4fa5fc4fc1185b1778ae960b60e39a03e3d4ce487c34bd4d69401946ff7e366",
+      "type": "blob"
+    },
+    {
+      "bytes": 1870,
+      "gitBlob": "d438e8f3549a67ecda3be423529704dbbedddfb3",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyTorahSemanticAnchorMigration.swift",
+      "sha256": "a8968f34c5f3af00537ba9b183ce0065ff7dadd31e55ca413dddc26fbe96728d",
+      "type": "blob"
+    },
+    {
+      "bytes": 1537,
+      "gitBlob": "f262f4cb547dae5e63837b0a6f289b9f5c97f566",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift",
+      "sha256": "a40e49f4d3424e5625498e1a95baad171e22391a786d16c3f3e0c4c1ea926541",
+      "type": "blob"
+    },
+    {
+      "bytes": 10327,
+      "gitBlob": "ea8148c0e3dc857db51415e01ccfe396e02ccc95",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift",
+      "sha256": "7a51c02baafba146fac43ab0b5737ab3db6465ebdc142bce3d1a6ea33bf36c56",
+      "type": "blob"
+    },
+    {
+      "bytes": 3339,
+      "gitBlob": "16e01dc11697203ff99949e59370d8af3539ac8d",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaKit/PinkhaHierarchyBuilder.swift",
+      "sha256": "7ac6eea3d287c43afd9849e82093466987764c518d81880208dd5452c4112b97",
+      "type": "blob"
+    },
+    {
+      "bytes": 5447,
+      "gitBlob": "cb66f68729acd953f5428a4cb336ae93a1a787d7",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaKit/PinkhaHierarchyModels.swift",
+      "sha256": "7f201585eb76b34271e49fe686770302ece2d67d3e2ba4304167637ea0ddcb0b",
+      "type": "blob"
+    },
+    {
+      "bytes": 1804,
+      "gitBlob": "99a98540c359719078c01b8af080f701c68f2b9f",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaKit/PinkhaHierarchyMutationValidator.swift",
+      "sha256": "3f5f9e21035851c171ee5c64e4789048ce2fcf78163d839ef69155499fbf0d21",
+      "type": "blob"
+    },
+    {
+      "bytes": 6164,
+      "gitBlob": "66d7d2048abfd644dbbf11055bb78e76824332ce",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaKit/PinkhaHierarchyOrdering.swift",
+      "sha256": "7e33fc757c7c2888a8715fa7f110503bf9dc577ea06cf5bbbcd71e0793a9adf8",
+      "type": "blob"
+    },
+    {
+      "bytes": 16150,
+      "gitBlob": "494f878ad9901d8ea07874ec6727732521e7c27e",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaKit/PinkhaSemanticTextAnchor.swift",
+      "sha256": "bfefc94965cfe6dbdf910452eaec3a9530854a6d5b6a09a1a9b10339c6c30274",
+      "type": "blob"
+    },
+    {
+      "bytes": 5165,
+      "gitBlob": "0b8eed85ecb18b2c3745c9eb3153042939cf526e",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaKit/TorahAssociationIdentity.swift",
+      "sha256": "85738df63c9ae987c1180c20e661cd21cd4acc20afcd376592f87ca32dcdb626",
+      "type": "blob"
+    },
+    {
+      "bytes": 15128,
+      "gitBlob": "e9bcec8e147ccd196d6d585bc5d1198b7d023078",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaKit/TorahAssociationModels.swift",
+      "sha256": "0007274a78d39fd4c8e0105eb50cec106c807cf53735caa0de1f4a85cd7fbde1",
+      "type": "blob"
+    },
+    {
+      "bytes": 6237,
+      "gitBlob": "dda50e00278ed024f7c30416c8beae36d705d723",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaKit/TorahAssociationPayloadCodec.swift",
+      "sha256": "9956aa25174812c5878927b5c62cff5f5d1d16e8becb536e23dadb25a01422d1",
+      "type": "blob"
+    },
+    {
+      "bytes": 2445,
+      "gitBlob": "47e0b1b6b1274d70f8106f8f2d4589ce05ae65c4",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaKit/TorahAssociationRepository.swift",
+      "sha256": "63c789b1e14b85fb8032f2cf8fecb4fcb7e768453c03b9304e78ac77775fb66e",
+      "type": "blob"
+    },
+    {
+      "bytes": 8403,
+      "gitBlob": "fbbd77cb935c64fff73e096575a0d0393ef6d49d",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaKit/TorahCanonicalAssociations.swift",
+      "sha256": "e5c988ebb64572e5228592f8a833ca8e5c2638fd991d0f7fc7e9bb114e4e3f3d",
+      "type": "blob"
+    },
+    {
+      "bytes": 3789,
+      "gitBlob": "f85e966ca65a4142a0433201cc6bcf54f8c1fb32",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaKit/TorahSemanticAnchorAssociation.swift",
+      "sha256": "17c469ea127bf01211c7e819c00a2e15ea07facbe2c6d86505a5f0fce82cb3f4",
+      "type": "blob"
+    },
+    {
+      "bytes": 7503,
+      "gitBlob": "6ace388840165cf0c522d2465a2b3baad7cc107f",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/PinkhaKit/TorahSourceJSONGuard.swift",
+      "sha256": "ad856a6ed49f645ec2d5cb6a0bc3c7b6e7566c5cd7ad2a3081ccd748849ab9f6",
+      "type": "blob"
+    },
+    {
+      "bytes": 24592,
+      "gitBlob": "aeb7cc4215456c2db9bda284f7e947c643507408",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/TorahInspectorCore/Models.swift",
+      "sha256": "59a0c8639c8c778c67ff9c60db4b979e3ba7a39dff4c3fb669a54ae23dc113a0",
+      "type": "blob"
+    },
+    {
+      "bytes": 510,
+      "gitBlob": "d5c478fbe89c8d269d49c7b9818888dcd7ef39d0",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/TorahInspectorCore/ProviderProtocols.swift",
+      "sha256": "9f5f28f1d71a97831827dce5dfe2324a60460fc7760137b9527e4c3815d20273",
+      "type": "blob"
+    },
+    {
+      "bytes": 461,
+      "gitBlob": "da439bb1cf8019e31bc172986de5b8eecaf30bb0",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/TorahInspectorCore/TorahInspectorCoordinator.swift",
+      "sha256": "fccfc25ee56e165c6559aba52a1ccec39d10db6fd6a94a91c867cd38dc693116",
+      "type": "blob"
+    },
+    {
+      "bytes": 17499,
+      "gitBlob": "e1f57e96079f5d93be37e1c014760763bc8d1bc7",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/TorahInspectorCore/TorahInspectorRepository.swift",
+      "sha256": "519828f3d602811758d2698e00a06567b41d31d465b143175441f08873300040",
+      "type": "blob"
+    },
+    {
+      "bytes": 3444,
+      "gitBlob": "c67c042941bc3cbfda802b705ceebe5dff6c559a",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/TorahInspectorCore/TorahReaderScrollStateMachine.swift",
+      "sha256": "90173f3198133c6a746d00c9a6af9ad8cd854f5643f924d98e9095133da5bbdc",
+      "type": "blob"
+    },
+    {
+      "bytes": 355,
+      "gitBlob": "7e2e810e4af9e2f9d848efc52739199e645b249d",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/TorahInspectorCore/TorahRelatedDocumentsAccessError.swift",
+      "sha256": "0ff22bb5a56ddff0235e7b6c5188c737b110cb2848d7e17dcaefc3ca1d6df2e6",
+      "type": "blob"
+    },
+    {
+      "bytes": 3410,
+      "gitBlob": "17e72f52d4cdbd2355e04b384967f6f1b29c25de",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/TorahInspectorCore/TorahSourceTransfer.swift",
+      "sha256": "994da5da2cb6b163083c7f3dea20cfe74c781211eea0f144b394a6d047affc97",
+      "type": "blob"
+    },
+    {
+      "bytes": 2005,
+      "gitBlob": "64eabfd80cce2a21e403a8adcf887799c16fc738",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Sources/TorahInspectorCore/TorahToolSelectorStateMachine.swift",
+      "sha256": "34dda44a571764ea98e43449422340ad7a00dbe4b0d43c0036d7d48ad8119729",
+      "type": "blob"
+    },
+    {
+      "bytes": 38951,
+      "gitBlob": "64925976aca576d2542ebab82ba8bd4475ae7481",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/component/Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift",
+      "sha256": "3a11428238fabc27fc93f8cfb98535864dfbb7c2b09ae501c14f699d47b292c1",
+      "type": "blob"
+    },
+    {
+      "bytes": 1010,
+      "gitBlob": "d8defbf00ae69acb4c0e4b8a8c0eabdba0e11698",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/owned-process-provenance.json",
+      "sha256": "4c2f95a4129fdb89125458c4a3a5874c97dbbf0ed9aaa3d1b15d638ccef734b1",
+      "type": "blob"
+    },
+    {
+      "bytes": 5529,
+      "gitBlob": "23ef3207a1a62b67ace65938dc40b5c78b9d06f8",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/owned_process.py",
+      "sha256": "58624c3f6eae79e5417576ba88d24fe15919681ca6ac112e14e664b9ab12b924",
+      "type": "blob"
+    },
+    {
+      "bytes": 122971,
+      "gitBlob": "ca15e449034d97eb9fc25c90430ba8be774a3577",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/retained-crypto-closure.json",
+      "sha256": "10c98c4192acba640c401586fb84ef9aa227e6d52bdde7198f251a0498146c2c",
+      "type": "blob"
+    },
+    {
+      "bytes": 36251,
+      "gitBlob": "b9f0658339f5a2a47faf2e3d30d13c7feff76c72",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/run_component.py",
+      "sha256": "f63adbdfde8bfa5d1779371e1c046f196e617f2f286181dc6c8c7768414e3628",
+      "type": "blob"
+    },
+    {
+      "bytes": 83917,
+      "gitBlob": "89efd6b142b2412bd6f5953f39362a6e4e387357",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/inputs/whole-source-closure.json",
+      "sha256": "510a00d5fb0065bcc5292d83443b9e4b6774f9dda4a7fd1d1d0ef4cfddeb8ca0",
+      "type": "blob"
+    },
+    {
+      "bytes": 11087,
+      "gitBlob": "cce6639043df8ba3e4150b1e02bc8ad09dd2ce56",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/package-derivative.patch",
+      "sha256": "df03f49c8a4f79c33fe9ad96a29c13a2fe92a205df823b1d50e4eff1dcce2bf5",
+      "type": "blob"
+    },
+    {
+      "bytes": 2693,
+      "gitBlob": "12fd74d5b61a13f616114d8faba8da0a2bec01d7",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/qualifier-controls-result.json",
+      "sha256": "d1ba341babea2ca3970bf70880d943c99f613aa926745d46f0f2abf65b32d495",
+      "type": "blob"
+    },
+    {
+      "bytes": 4926,
+      "gitBlob": "481d80936112abe10f54a2a233bf3624a3ed86d2",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/execution/qualifier_controls.py",
+      "sha256": "62e4dbab59fcf9f55c46ea35a361d482621124fbf68541997b0859dc9020c370",
+      "type": "blob"
+    },
+    {
+      "bytes": 16400,
+      "gitBlob": "d5732c1d9c90b43781103164e1263f58300d2045",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/generation/prepare_execution.py",
+      "sha256": "163c03e641c2a914d94d589c0f465df8db26b93cef17e8aef421d5b5822e0292",
+      "type": "blob"
+    },
+    {
+      "bytes": 11105,
+      "gitBlob": "8b2168223c2594675a7b523a43790be9791ae5d4",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/generation/prepare_intake.py",
+      "sha256": "4e085fe5ba12ca54000863c51a10805bf8e1b7637d2223b2c2ada40c00d1646a",
+      "type": "blob"
+    },
+    {
+      "bytes": 23761,
+      "gitBlob": "e2d9304d8039d8fc7c821cc4deda77554fc87137",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/generation/prepare_publication_packet.py",
+      "sha256": "2f1236b4c29e2de4bc626b31197829ff1e5e00f284a23774ffbc33acf9699f1c",
+      "type": "blob"
+    },
+    {
+      "bytes": 10746,
+      "gitBlob": "51ad2aaa747c362c02e97b8c7b80dca6378a16ee",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/generation/prepare_staging.py",
+      "sha256": "ed389cdf5a302f8a0ac612d0ce9792a3e41d972a5f18fdd07eb2c99f9c190eed",
+      "type": "blob"
+    },
+    {
+      "bytes": 4870,
+      "gitBlob": "cdcad0b6615f232696805dcf7c52a8f7e81fab96",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/generation/swift_testing_result.fragment.py",
+      "sha256": "74cd084dcc281c5053ab34745f31495b8e5106fa166392171194a60a661cc8ea",
+      "type": "blob"
+    },
+    {
+      "bytes": 10911,
+      "gitBlob": "7f1e8bd4534d724178f46fc478066415ff0d4f41",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/intake/author-README.original.md",
+      "sha256": "9916220b8c2ee4d9bdd9539b653eeeb9fe93cd101fd88f81730f44ceb0a7a7e9",
+      "type": "blob"
+    },
+    {
+      "bytes": 4794,
+      "gitBlob": "a2919703adc7f4741993b8e9b991292c9162f991",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/intake/review-handoff.original.json",
+      "sha256": "31507d0f24b91ad9815b6db4b1b2d62eb3a63b85390e1120396bf22016b7e42f",
+      "type": "blob"
+    },
+    {
+      "bytes": 44161,
+      "gitBlob": "886665aac20df388f11f457bcb23c8c64ecb2d50",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/intake/whole-source-imports.json",
+      "sha256": "547eba1455cdb2528ef80cbe66f563e910ad8dcf7ea767effed773ca7772249c",
+      "type": "blob"
+    },
+    {
+      "bytes": 83050,
+      "gitBlob": "715b3d6801dcb86b43f7fedff8681970d2cd3e5b",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/intake/whole-source-intake.json",
+      "sha256": "280877ebf3b83c3f642c5da94ea4f74b17a7fd4b9f490775d9e6586a026c2d13",
+      "type": "blob"
+    },
+    {
+      "bytes": 2402,
+      "gitBlob": "fc2fd63d0bcbc3b73d17322956940a6ede1ee25f",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/primary/product-lineage-binding.json",
+      "sha256": "acb9305c187f7216584b452fe8b5fb6defbfcbc4437c1bc82047f528e94e9754",
+      "type": "blob"
+    },
+    {
+      "bytes": 12120,
+      "gitBlob": "5901ffdb315e999d362f1aa5c3fe6e25bd79173c",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/primary/product-publication-result.original.json",
+      "sha256": "b6ef036c5bde742082b12813c2ea0fc94f41a12297e6b070fd6b65a5507d789b",
+      "type": "blob"
+    },
+    {
+      "bytes": 109765,
+      "gitBlob": "8ccdbb0791d08dee5b2b0d819393184d44074513",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/primary/source-authorities.json",
+      "sha256": "4fea3905f77302e1f5647886fa3c1c8d15b1c79858ff64012c8c0b1e07beb64c",
+      "type": "blob"
+    },
+    {
+      "bytes": 1680,
+      "gitBlob": "30fb7447ee4b0cdf31875be9c89942bdde132d17",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/publication-scope.json",
+      "sha256": "60e10a41bbd8833a30d2f6a58ecd64510648ce52c9739feb551b05b693bc6e9e",
+      "type": "blob"
+    },
+    {
+      "bytes": 1814,
+      "gitBlob": "6ef6b08374218a066abb3fe4a5da0d11712740fd",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/reference/g04-evidence-publication.original.json",
+      "sha256": "9a6721f120d9ff6e216bb597d62faacbe5898287c6e680a4c9afd0fa5708125e",
+      "type": "blob"
+    },
+    {
+      "bytes": 3491,
+      "gitBlob": "7519767a382b07e4e5e24fdeee3b215c573a6fdc",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/reference/g04-stdout.original.log",
+      "sha256": "1bd5482cfc960df1c319b13786ffcd12eb452238a9a1a69cff79cf4c2731e92f",
+      "type": "blob"
+    },
+    {
+      "bytes": 7582,
+      "gitBlob": "2085e01f9972c50610a9fe133abcf1c7169635e2",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/reference/original-evidence-index.json",
+      "sha256": "4ec7347164c42f5c8c1e495aedb7916915a67a10803bf74269cbd55fc18d0c99",
+      "type": "blob"
+    },
+    {
+      "bytes": 773,
+      "gitBlob": "4b5f21e56f8110acfcada98a740cc08eed2cbcdc",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/reference/original-packages/engine-package.swift",
+      "sha256": "2bfbf014cbfb6ce37764a2900743783fe3af2535ad4809aa4fc9ea67d16d2e5f",
+      "type": "blob"
+    },
+    {
+      "bytes": 779,
+      "gitBlob": "7f59f980b1ad76e9ac957d4aecbe48f5a92adc8d",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/reference/original-packages/integration-package.swift",
+      "sha256": "be8e1cc5638cbd9becc1cc4792bb39d35325439a524f595317089722d19bdab4",
+      "type": "blob"
+    },
+    {
+      "bytes": 1326,
+      "gitBlob": "e558479f8e34e2f98971cbd2970fc3328100804c",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/reference/original-packages/kit-package.swift",
+      "sha256": "5a0fa5bddd05b6b2047e9f02a604ea95834551ff73217e344f5d15e909d3dc0c",
+      "type": "blob"
+    },
+    {
+      "bytes": 7062,
+      "gitBlob": "f9a667f1a4e49cf3c17010975715bb9d27459c6f",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/reference/property4-preparation-publication.original.json",
+      "sha256": "a93f019ca0621fe35a63a2d621a1bc030bcaf6f69c8aec0e9e71e249c9338ab3",
+      "type": "blob"
+    },
+    {
+      "bytes": 4044,
+      "gitBlob": "bd308cd1239773d989172178569d02ff585c2d69",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/reviews/root-independent-execution-review.json",
+      "sha256": "e152db9ef0e57c44206497b73b2bdfb726e5d83fe942ec3f4f8bb369a968aab8",
+      "type": "blob"
+    },
+    {
+      "bytes": 3278,
+      "gitBlob": "fd2f72242537e3a11c5b8b8262075bb01e72409c",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/reviews/root-stager-review.json",
+      "sha256": "7f6673a03092391cb9fe35e01dde1ca55a6f7d3509e67b9f1db7fcbadd9d9e79",
+      "type": "blob"
+    },
+    {
+      "bytes": 5590,
+      "gitBlob": "29f6dc637e5735b399fb66fa41667bef6cc6b2af",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/staging/README.md",
+      "sha256": "a8674ac7761fcce33f5796c6265930784035c06d54a0cbd19fd2762680461450",
+      "type": "blob"
+    },
+    {
+      "bytes": 229322,
+      "gitBlob": "a30d0043fd4b087b80acc801f63b0113c32365da",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/staging/hierarchy-rename-inputs.json.gz",
+      "sha256": "b4ef0e166fe306118eeb099df5781451fc0716134ba382c9d8803861459c95b3",
+      "type": "blob"
+    },
+    {
+      "bytes": 305764,
+      "gitBlob": "787159e63bb27d9823714c4be15360e1cb60a6ea",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/staging/hierarchy-rename-inputs.json.gz.base64",
+      "sha256": "e6a019df2e2cd8de564379a3cbb3d3ece73ae397d167d14ef18b72e32e10bc17",
+      "type": "blob"
+    },
+    {
+      "bytes": 9998,
+      "gitBlob": "3cdf98b7ead25c1874d868e9ec7bbe1bb35b11f8",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/staging/materialize_and_exec.py",
+      "sha256": "b3cfea8a789c4abae7f2f2b8aa3202dc7cf2725a5fae2438eb5c5c9d6342f7eb",
+      "type": "blob"
+    },
+    {
+      "bytes": 1642,
+      "gitBlob": "bb7d3527d91769ef68fd0d91c4231b474e02b5bd",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/staging/one-shot-invocation.json",
+      "sha256": "1681f9fb7908222e22bdfe86927d0c91645cea599296a6846d3e8709acbe2bb3",
+      "type": "blob"
+    },
+    {
+      "bytes": 15539,
+      "gitBlob": "68dc1b25e56160400aa793ef93c2185d50277a30",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/staging/payload-readback.json",
+      "sha256": "235ce44de367dbba431cabe38012cc3646bdc82b5c5670a27a26accdbe26f173",
+      "type": "blob"
+    },
+    {
+      "bytes": 5879,
+      "gitBlob": "e7f9058613e7458f83a00902cac4c9204130a67f",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/staging/source.patch",
+      "sha256": "3896c827f67e09508412b9a468323ed9304a68e70960b923f39759a3b2efccbb",
+      "type": "blob"
+    },
+    {
+      "bytes": 12077,
+      "gitBlob": "950d77904e1ac0126ab729375e68dd9cb45413f4",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/staging/stager-derivation.json",
+      "sha256": "e4c20e6a17e65a3a41be31fe85b579ab1e6e3381f61fdd1b9a4e958d8e139de0",
+      "type": "blob"
+    },
+    {
+      "bytes": 1736,
+      "gitBlob": "d2e337703d6aa0ddf835010c446696afe5eb7e87",
+      "mode": "100644",
+      "path": "docs/validation/20261127-wave2-hierarchy-rename-component-preparation/staging/transport-manifest.json",
+      "sha256": "e6316b9b58cc502b401a88de9d6c26770edc8d6ed7da45f3c427b5eccd56e4df",
+      "type": "blob"
+    }
+  ],
+  "filesExcludingThisManifest": 102,
+  "inputCopies": 61,
+  "parent": "9e4aa3f1b88d8f6bfec27cdf2cb47d07ffd416ce",
+  "parentTree": "c8466a2e97f13d5708213f4275bb4f30ac96cc22",
+  "productSourceFilesChanged": 0,
+  "repository": "davidpovarsky/anytype-swift",
+  "runtimeExecuted": false,
+  "schema": "pinkha-hierarchy-rename-component-docs-packet/v1",
+  "slotGranted": false,
+  "status": "FROZEN_FOR_ROOT_PACKET_REVIEW",
+  "uploaded": false
+}
