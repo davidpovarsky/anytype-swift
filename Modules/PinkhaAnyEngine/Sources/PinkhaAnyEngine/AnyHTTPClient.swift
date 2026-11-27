@@ -120,7 +120,8 @@ public struct AnyHTTPClient: Sendable, CustomStringConvertible, CustomDebugStrin
     public func checkAccount() async throws {
         let auth = try await raw(method: "GET", path: ["v1", "auth"], body: nil)
         guard auth["authorized"]?.bool == true,
-              auth["accountId"]?.string == expectedAccountID else {
+              let actualAccountID = auth["accountId"]?.string,
+              actualAccountID.utf8.elementsEqual(expectedAccountID.utf8) else {
             throw AnyEngineError.accountChanged
         }
     }
@@ -255,9 +256,24 @@ public struct AnyHTTPClient: Sendable, CustomStringConvertible, CustomDebugStrin
         guard let http = response as? HTTPURLResponse else {
             throw AnyEngineError.malformedResponse("HTTP response")
         }
-        if let maximumResponseBytes, data.count > maximumResponseBytes { throw AnyEngineError.readLimit }
-        return AnyHTTPJSONResponse(statusCode: http.statusCode,
-                                   body: try Self.decodeResponse(status: http.statusCode, data: data))
+        if let maximumResponseBytes, data.count > maximumResponseBytes {
+            throw method == "GET" ? AnyEngineError.readLimit : AnyEngineError.writeUncertain
+        }
+        do {
+            return AnyHTTPJSONResponse(statusCode: http.statusCode,
+                                       body: try Self.decodeResponse(status: http.statusCode, data: data))
+        } catch {
+            // Dispatch already happened. A malformed successful mutation receipt
+            // cannot prove that no write occurred. Keep explicit native
+            // rejections typed; callers must reconcile every other uncertain ack.
+            if method != "GET", (200..<300).contains(http.statusCode) {
+                if let native = error as? AnyEngineError, case .writeRejected = native {
+                    throw native
+                }
+                throw AnyEngineError.writeUncertain
+            }
+            throw error
+        }
     }
 
     static func decodeResponse(status: Int, data: Data) throws -> AnyJSON {
