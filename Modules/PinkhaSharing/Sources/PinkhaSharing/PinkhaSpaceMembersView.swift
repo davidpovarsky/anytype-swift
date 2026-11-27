@@ -1,6 +1,8 @@
+import Foundation
+import Observation
 #if canImport(SwiftUI)
 import SwiftUI
-import Observation
+#endif
 
 @MainActor @Observable
 final class PinkhaSharingViewModel {
@@ -34,7 +36,8 @@ final class PinkhaSharingViewModel {
         do {
             let snapshot = try await service.snapshot()
             try Task.checkCancellation()
-            guard active, generation == current, snapshot.scope == service.scope else { return }
+            guard active, generation == current else { return }
+            guard snapshot.scope == service.scope else { throw PinkhaSharingError.invalidResponse }
             state = snapshot
             problem = nil
         } catch {
@@ -66,8 +69,8 @@ final class PinkhaSharingViewModel {
                     result = try await self.service.snapshot()
                 }
                 try Task.checkCancellation()
-                guard self.active, self.generation == current,
-                      result.scope == self.service.scope else { return }
+                guard self.active, self.generation == current else { return }
+                guard result.scope == self.service.scope else { throw PinkhaSharingError.invalidResponse }
                 self.state = result
                 self.problem = nil
             } catch {
@@ -89,6 +92,7 @@ final class PinkhaSharingViewModel {
     }
 }
 
+#if canImport(SwiftUI)
 @MainActor
 public struct PinkhaSpaceMembersView: View {
     @Environment(\.dismiss) private var dismiss
