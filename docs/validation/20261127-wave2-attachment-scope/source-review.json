@@ -1,0 +1,34 @@
+{
+  "schema": "pinkha-attachment-presentation-scope-repair-v1",
+  "status": "SOURCE_REVIEWED_RUNTIME_NOT_RUN",
+  "baseCommit": "c95395aec96214dfabd73d55755baa95689cc6d3",
+  "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeAttachments.swift",
+  "classification": "DOWNSTREAM_OWNED",
+  "introducedBy": "1705d25f415236610e70db210eacd4790115b583",
+  "freshUpstreamDevelop": "d857b23ea540be33d6faab4f7a7a1a260ab578c1",
+  "originalSHA256": "50c6beb6e9a89723e1a4c8d8aa95d1f088680845461f7bd8ab072421c5b072bd",
+  "replacementSHA256": "b9d51cc5d71665f853e8601585013880a7dcfe1a600ddc7b84b5647f96fcda41",
+  "originalBytes": 10909,
+  "replacementBytes": 11302,
+  "protectedBaseline": "586c98bcc17dee425664224e508fc0e8df277678",
+  "presentInProtectedBaseline": false,
+  "retentionMapChanged": false,
+  "sourceReview": {
+    "reviewer": "Wave2 editor",
+    "result": "No concrete source-level blocker",
+    "checked": [
+      "MainActor guards prevent load/open overlap.",
+      "Only visible file rows and preview are invalidated.",
+      "pendingMiniAppsInput and successful import/completed callback remain unchanged.",
+      "Existing native authorization, metadata/content readback and close drain remain unchanged.",
+      "Existing Refresh action remains available after failed readback."
+    ]
+  },
+  "originalFailuresPreserved": true,
+  "appleCompile": "NOT_RUN",
+  "XCTest": "NOT_RUN",
+  "nativeExecution": "NOT_RUN",
+  "visualAcceptance": "NOT_RUN",
+  "physicalDevice": "NOT_RUN",
+  "currentWarmRetryModified": false
+}

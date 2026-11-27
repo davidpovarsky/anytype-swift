@@ -63,7 +63,7 @@ final class AnyNativeAttachmentsPresentation: Identifiable {
         try document.requireMounted(document.mountedOwnerID)
         self.document = document; owner = document.mountedOwnerID
         document.installPresentationLifecycle(revoke: { [weak self] in
-            self?.active = false; self?.task?.cancel(); self?.preview = nil
+            self?.active = false; self?.task?.cancel(); self?.discardVisibleFiles()
         }, drain: { [weak self] in await self?.close() })
     }
 
@@ -90,11 +90,17 @@ final class AnyNativeAttachmentsPresentation: Identifiable {
             try requireActive()
             files = result.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
             error = nil
-        } catch { if active { self.error = AnyUIErrorText.describe(error) } }
+        } catch {
+            if active {
+                discardVisibleFiles()
+                self.error = AnyUIErrorText.describe(error)
+            }
+        }
     }
 
     func open(_ file: AnyNativeAttachment, inMiniApps: Bool = false, completed: @escaping @MainActor () -> Void = {}) {
-        guard active, task == nil else { return }
+        guard active, !busy, task == nil,
+              files.contains(where: { $0.sameContent(as: file) }) else { return }
         busy = true
         task = Task { [weak self] in
             guard let self else { return }
@@ -132,17 +138,28 @@ final class AnyNativeAttachmentsPresentation: Identifiable {
                         typeIdentifier: UTType(mimeType: file.mime)?.identifier)
                     completed()
                 } else { preview = .init(url: output) }
-            } catch { if active { self.error = AnyUIErrorText.describe(error) } }
+            } catch {
+                if active {
+                    discardVisibleFiles()
+                    self.error = AnyUIErrorText.describe(error)
+                }
+            }
         }
     }
 
     func close() async {
         active = false
+        discardVisibleFiles()
         let current = task; current?.cancel()
         await current?.value
         task = nil; preview = nil
         let owned = directories; directories = []
         for directory in owned { try? FileManager.default.removeItem(at: directory) }
+    }
+
+    private func discardVisibleFiles() {
+        files = []
+        preview = nil
     }
 
     private func requireActive() throws {
