@@ -1,0 +1,109 @@
+name: Pinkha Exact Original Native8ac Artifact Export
+
+on:
+  workflow_call:
+    inputs:
+      plan_json:
+        description: Exact root-reviewed original source paths and immutable native8ac input plan
+        required: true
+        type: string
+      plan_sha256:
+        description: SHA256 of the exact UTF-8 plan_json input
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pinkha-original-native8ac-export
+  cancel-in-progress: false
+
+jobs:
+  original-input-export:
+    runs-on: [self-hosted, macOS, ARM64, pinkha-scaleway-mac]
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      GIT_OPTIONAL_LOCKS: '0'
+      PLAN_SHA256: ${{ inputs.plan_sha256 }}
+      EXPORT_ROOT: ${{ runner.temp }}/pinkha-native8ac-export-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout only exact read-only export controls
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          path: control-native8ac-export-${{ github.run_id }}-${{ github.run_attempt }}
+          persist-credentials: false
+          set-safe-directory: false
+          clean: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Tools/PinkhaDualEngineRuntime/hosted_shared_build/
+      - name: Select already installed native ARM64 Python 3.12
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          candidates=("$(command -v python3)" "${RUNNER_TOOL_CACHE:-/nonexistent}"/Python/3.12.*/arm64/bin/python3 /opt/homebrew/opt/python@3.12/libexec/bin/python3)
+          selected=''
+          for candidate in "${candidates[@]}"; do
+            if [ -x "$candidate" ] && "$candidate" -I -B -c 'import platform,sys; assert sys.version_info[:2] == (3,12) and platform.machine() == "arm64"' >/dev/null 2>&1; then
+              selected="$candidate"
+              break
+            fi
+          done
+          test -n "$selected"
+          dirname "$selected" >> "$GITHUB_PATH"
+      - name: Admit the exact original native export plan
+        env:
+          PINKHA_HOSTED_PLAN: ${{ inputs.plan_json }}
+        run: |
+          python3 -B "control-native8ac-export-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py" inspect \
+            --export --control "$GITHUB_WORKSPACE/control-native8ac-export-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --plan "$RUNNER_TEMP/pinkha-native8ac-root-plan-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json" \
+            --plan-sha256 "$PLAN_SHA256"
+      - name: Package and independently verify only original native inputs
+        run: |
+          set -euo pipefail
+          python3 -B "control-native8ac-export-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}/Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py" export \
+            --control "$GITHUB_WORKSPACE/control-native8ac-export-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --plan "$RUNNER_TEMP/pinkha-native8ac-root-plan-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json" \
+            --plan-sha256 "$PLAN_SHA256" --output "$EXPORT_ROOT" \
+            2>&1 | tee "$RUNNER_TEMP/pinkha-native8ac-export-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.original.log"
+      - name: Publish the exact source-bound input archive as an Actions artifact
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Pinkha-Native8ac-Inputs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.EXPORT_ROOT }}/native8ac-inputs.tar.gz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 30
+      - name: Record the actual exported artifact identity
+        env:
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          python3 -B - <<'PY'
+          import json, os
+          from pathlib import Path
+          p = Path(os.environ['EXPORT_ROOT']) / 'actions-artifact.json'
+          with p.open('x') as f:
+              json.dump({'artifactID': os.environ['ARTIFACT_ID'], 'artifactDigest': os.environ['ARTIFACT_DIGEST'],
+                         'runID': os.environ['GITHUB_RUN_ID'], 'runAttempt': os.environ['GITHUB_RUN_ATTEMPT'],
+                         'controlCommit': os.environ['GITHUB_SHA'], 'nativeBuildsNow': 0, 'testsExecuted': 0}, f, indent=2)
+              f.write('\n')
+          PY
+      - name: Preserve original input export receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Pinkha-Native8ac-Export-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/pinkha-native8ac-root-plan-${{ github.run_id }}-${{ github.run_attempt }}.json
+            ${{ runner.temp }}/pinkha-native8ac-export-${{ github.run_id }}-${{ github.run_attempt }}.original.log
+            ${{ env.EXPORT_ROOT }}/*.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

@@ -1,0 +1,160 @@
+{
+  "appleBuilds": 0,
+  "appleTests": 0,
+  "base": "654e7d835994c030f650b967c4ab10bb9ed0b639",
+  "branch": "codex/chatgpt-wave15-hosted-build-20261127",
+  "errorType": "AssertionError",
+  "files": {
+    ".github/workflows/pinkha-hosted-shared-build.yml": {
+      "bytes": 6120,
+      "sha256": "ed6020183ff51b699d6e74e1658debb80a35b9d142c27e3dea8a46ea56c05a8c"
+    },
+    ".github/workflows/pinkha-native8ac-export.yml": {
+      "bytes": 5201,
+      "sha256": "41686a223c90e8263c37c567ed828a8168e90479d82d3cad5668378d1fbcd0f7"
+    },
+    ".github/workflows/torah-inspector-ipados27.yml": {
+      "bytes": 50343,
+      "sha256": "699c6120315d95395bae163bd9512896c87fb4e607e877a08ee91c8039b05bb3"
+    },
+    "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_inputs.py": {
+      "bytes": 13058,
+      "sha256": "e8aaf254140c06410813d5ab6f3b9168b71c1722dfe2ecdac8155a1bdc9d4d3c"
+    },
+    "Tools/PinkhaDualEngineRuntime/hosted_shared_build/retain.py": {
+      "bytes": 7975,
+      "sha256": "04f2c622cc97260d0bbf17fe3b0273e40e2ac3434ba04a189f3628dab631d9d9"
+    },
+    "Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py": {
+      "bytes": 44002,
+      "sha256": "c87c344eb3eb3ed8a02412fdc8ef07d4a1bb63bed2f004e178f9e2a9113a0a41"
+    },
+    "Tools/PinkhaDualEngineRuntime/hosted_shared_build/test_controls.py": {
+      "bytes": 13685,
+      "sha256": "22135b0329f0485dbc8acf55c6507f6c3b9e54f73f287635c41e17068633a75b"
+    },
+    "docs/validation/20261127-wave3-hosted-build/README.md": {
+      "bytes": 13405,
+      "sha256": "ef05dbb2cb2d53b3a0818de02bc06a935ac2574ed03204823c70fb5753b493da"
+    },
+    "docs/validation/20261127-wave3-hosted-build/dispatcher-byte-inverse.json": {
+      "bytes": 1317,
+      "sha256": "cad4e8f33a58776118d0bb4e97fa02fe1dc751e1fd266829ca32ee410f2a5ee4"
+    },
+    "docs/validation/20261127-wave3-hosted-build/originals/hosted-job-original-read.json": {
+      "bytes": 24105,
+      "sha256": "733f703b0fa15fa6d3b12e1b3d13707544e99a2decd1bdb1e9f2eab2b1c8894a"
+    },
+    "docs/validation/20261127-wave3-hosted-build/originals/native-original-retention-read.json": {
+      "bytes": 997,
+      "sha256": "6e1672e393720ddf0bd2e78ccc642a597b6551d9c6dec003ee20642a754203c5"
+    },
+    "docs/validation/20261127-wave3-hosted-build/originals/native-original-source-archive-read.json": {
+      "bytes": 1226,
+      "sha256": "e071f6f2f71e81b82e3b9aa1d386efdc1d5a478323cf94f2e5a36b6791ac4ff5"
+    },
+    "docs/validation/20261127-wave3-hosted-build/originals/original-source-archive-shape.json": {
+      "bytes": 1260,
+      "sha256": "0de739b7091b41b09c157f9a784cc1858db98c9f92887529b8349e86212415de"
+    },
+    "docs/validation/20261127-wave3-hosted-build/originals/runner-image-readme-source.json": {
+      "bytes": 193,
+      "sha256": "825985c4fe2beeabc26b130f8c1b849f21c78cf5e024dae03677cf5c2ce7e0c4"
+    },
+    "docs/validation/20261127-wave3-hosted-build/originals/runner-image-readme.original.md": {
+      "bytes": 15177,
+      "sha256": "e40c26d35f629805809cccdb3307434bea6a1f54ab848fb808aad51edb85e571"
+    },
+    "docs/validation/20261127-wave3-hosted-build/portable-control-receipt.json": {
+      "bytes": 2462,
+      "sha256": "099851d1ab9ad45aa810e7f952edb064c07b1368b3760546573d04389cbd0cab"
+    },
+    "docs/validation/20261127-wave3-hosted-build/portable-controls.original.log": {
+      "bytes": 2196,
+      "sha256": "b9410c3428b693080f11c3312015b87dfb39cbbbff510ddb19463bedc2836f2b"
+    }
+  },
+  "finished": "2026-11-27T06:58:12.768639+00:00",
+  "reason": "(['diff', '--cached', '--check'], '')",
+  "schema": "pinkha-hosted-control-publication-v1",
+  "started": "2026-11-27T06:58:12.463303+00:00",
+  "status": "FAIL_OR_PARTIAL_PUBLICATION",
+  "steps": [
+    {
+      "argv": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": "654e7d835994c030f650b967c4ab10bb9ed0b639\n"
+    },
+    {
+      "argv": [
+        "status",
+        "--porcelain"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "add",
+        "--sparse",
+        "--",
+        ".github/workflows/pinkha-hosted-shared-build.yml",
+        ".github/workflows/pinkha-native8ac-export.yml",
+        ".github/workflows/torah-inspector-ipados27.yml",
+        "Tools/PinkhaDualEngineRuntime/hosted_shared_build/native_inputs.py",
+        "Tools/PinkhaDualEngineRuntime/hosted_shared_build/retain.py",
+        "Tools/PinkhaDualEngineRuntime/hosted_shared_build/run.py",
+        "Tools/PinkhaDualEngineRuntime/hosted_shared_build/test_controls.py",
+        "docs/validation/20261127-wave3-hosted-build/README.md",
+        "docs/validation/20261127-wave3-hosted-build/dispatcher-byte-inverse.json",
+        "docs/validation/20261127-wave3-hosted-build/originals/hosted-job-original-read.json",
+        "docs/validation/20261127-wave3-hosted-build/originals/native-original-retention-read.json",
+        "docs/validation/20261127-wave3-hosted-build/originals/native-original-source-archive-read.json",
+        "docs/validation/20261127-wave3-hosted-build/originals/original-source-archive-shape.json",
+        "docs/validation/20261127-wave3-hosted-build/originals/runner-image-readme-source.json",
+        "docs/validation/20261127-wave3-hosted-build/originals/runner-image-readme.original.md",
+        "docs/validation/20261127-wave3-hosted-build/portable-control-receipt.json",
+        "docs/validation/20261127-wave3-hosted-build/portable-controls.original.log"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "stdout": ".github/workflows/pinkha-hosted-shared-build.yml\n.github/workflows/pinkha-native8ac-export.yml\n.github/workflows/torah-inspector-ipados27.yml\nTools/PinkhaDualEngineRuntime/hosted_shared_build/native_inputs.py\nTools/PinkhaDualEngineRuntime/hosted_shared_build/retain.py\nTools/PinkhaDualEngineRuntime/hosted_shared_build/run.py\nTools/PinkhaDualEngineRuntime/hosted_shared_build/test_controls.py\ndocs/validation/20261127-wave3-hosted-build/README.md\ndocs/validation/20261127-wave3-hosted-build/dispatcher-byte-inverse.json\ndocs/validation/20261127-wave3-hosted-build/originals/hosted-job-original-read.json\ndocs/validation/20261127-wave3-hosted-build/originals/native-original-retention-read.json\ndocs/validation/20261127-wave3-hosted-build/originals/native-original-source-archive-read.json\ndocs/validation/20261127-wave3-hosted-build/originals/original-source-archive-shape.json\ndocs/validation/20261127-wave3-hosted-build/originals/runner-image-readme-source.json\ndocs/validation/20261127-wave3-hosted-build/originals/runner-image-readme.original.md\ndocs/validation/20261127-wave3-hosted-build/portable-control-receipt.json\ndocs/validation/20261127-wave3-hosted-build/portable-controls.original.log\n"
+    },
+    {
+      "argv": [
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exitCode": 2,
+      "stderr": "",
+      "stdout": "docs/validation/20261127-wave3-hosted-build/originals/runner-image-readme.original.md:232: new blank line at EOF.\n"
+    }
+  ],
+  "workflowDispatches": 0
+}

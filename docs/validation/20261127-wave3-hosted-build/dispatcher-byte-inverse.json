@@ -1,0 +1,9 @@
+{
+  "addedInputBlock": "      shared_build_plan_json:\n        description: Exact root-reviewed JSON for the original native8ac export or hosted shared App build\n        type: string\n        default: ''\n      shared_build_plan_sha256:\n        description: SHA256 of the exact UTF-8 shared_build_plan_json bytes\n        type: string\n        default: ''\n",
+  "addedJobsBlock": "  wave3-native8ac-export:\n    if: ${{ inputs.route == 'wave3-native8ac-export' }}\n    uses: ./.github/workflows/pinkha-native8ac-export.yml\n    with:\n      plan_json: ${{ inputs.shared_build_plan_json }}\n      plan_sha256: ${{ inputs.shared_build_plan_sha256 }}\n\n  wave3-hosted-shared-build:\n    if: ${{ inputs.route == 'wave3-hosted-shared-build' }}\n    uses: ./.github/workflows/pinkha-hosted-shared-build.yml\n    with:\n      plan_json: ${{ inputs.shared_build_plan_json }}\n      plan_sha256: ${{ inputs.shared_build_plan_sha256 }}\n\n",
+  "addedRouteBlock": "          - wave3-native8ac-export\n          - wave3-hosted-shared-build\n",
+  "candidateSHA256": "699c6120315d95395bae163bd9512896c87fb4e607e877a08ee91c8039b05bb3",
+  "inverseRestoresEveryOriginalByte": true,
+  "originalSHA256": "b08e6d697a2a799573e6bf88b335b667f5ac8ae229273a27ea4f28eff07973c6",
+  "schema": "pinkha-additive-hosted-dispatcher-inverse-v1"
+}

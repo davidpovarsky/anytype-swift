@@ -85,6 +85,16 @@ on:
           - wave15-core-tests
           - wave15-component-tests
           - wave15-acceptance
+          - wave3-native8ac-export
+          - wave3-hosted-shared-build
+      shared_build_plan_json:
+        description: Exact root-reviewed JSON for the original native8ac export or hosted shared App build
+        type: string
+        default: ''
+      shared_build_plan_sha256:
+        description: SHA256 of the exact UTF-8 shared_build_plan_json bytes
+        type: string
+        default: ''
       t5_component:
         description: Bounded T5 component; index-freshness also selects the fifth Apple phase
         type: choice
@@ -180,6 +190,20 @@ permissions:
   actions: read
 
 jobs:
+  wave3-native8ac-export:
+    if: ${{ inputs.route == 'wave3-native8ac-export' }}
+    uses: ./.github/workflows/pinkha-native8ac-export.yml
+    with:
+      plan_json: ${{ inputs.shared_build_plan_json }}
+      plan_sha256: ${{ inputs.shared_build_plan_sha256 }}
+
+  wave3-hosted-shared-build:
+    if: ${{ inputs.route == 'wave3-hosted-shared-build' }}
+    uses: ./.github/workflows/pinkha-hosted-shared-build.yml
+    with:
+      plan_json: ${{ inputs.shared_build_plan_json }}
+      plan_sha256: ${{ inputs.shared_build_plan_sha256 }}
+
   simulator-ui27:
     if: ${{ inputs.route == 'simulator-ui27' }}
     uses: ./.github/workflows/pinkha-simulator-ui27.yml
