@@ -1,0 +1,31 @@
+{
+  "schema": "pinkha-g02-closed-future-profile-v1",
+  "runtimeReady": false,
+  "plan": "g02-word-only",
+  "startupLane": "properties",
+  "appLanguage": "en",
+  "deviceFamily": "ipad",
+  "fixtureFilename": "pinkha-native-derived-ui-fixture.json",
+  "originalPreparation": "AnytypeTests/TorahNativeDerivedProductIntegrationTests/originalProductPipeline()",
+  "uiSourceCommit": "28bb60e4d4403251b1fde909ccfa1c84aa3966ba",
+  "uiSourceSHA256": "d7e512cb695695ea88e14bf8527d0051aeb9b315e40a7a52289a8f0b0323d6f3",
+  "nativeSourceCommit": "63fb8c03749f7bad44cc183c6d35503e1217a48c",
+  "nativeSourceSHA256": "bd9888153f469583531951b4dcc74d64aed275de1e2142fc1cdda61d3fb1770a",
+  "phaseOrder": ["ui-seed", "native-baseline", "ui-unlink", "native-postflight"],
+  "uiMethods": {
+    "seed": "PinkhaStage1AcceptanceUITests/PinkhaTorahWordUnlinkAcceptanceUITests/testSeedOriginalWordUnlinkFixturesThroughProperties",
+    "unlink": "PinkhaStage1AcceptanceUITests/PinkhaTorahWordUnlinkAcceptanceUITests/testChangedQueryPickerCancelThenWordUnlinkAndColdReopenForAllWritingTypes"
+  },
+  "uiAllowancesSeconds": {"seed": 900, "unlink": 600},
+  "nativeMethod": "AnytypeTests/TorahWritingPropertiesReadbackTests/observeOriginalWritingProperties",
+  "nativeAdapter": "PENDING_EXACT_REVIEWED_PUBLICATION",
+  "actualFutureProducer": "PENDING_SOURCE_FREEZE_AND_SUCCESSFUL_APP_AND_COMPLETE_UI",
+  "current8f2ProductsEligible": false,
+  "commonIntakeRepinAllowed": false,
+  "readinessOverrideByEnvironmentOrCLIAllowed": false,
+  "NativeContractChange": false,
+  "AppleTypecheck": "NOT_RUN",
+  "XCTest": "NOT_RUN",
+  "visualReview": "NOT_RUN",
+  "physicalDevice": "NOT_RUN"
+}
