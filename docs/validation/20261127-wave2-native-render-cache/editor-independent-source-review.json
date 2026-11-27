@@ -1,0 +1,48 @@
+{
+  "schema": "pinkha-native-render-cache-independent-source-review/v1",
+  "reviewer": "Wave2 editor agent",
+  "atUTC": "2026-11-27T16:05:22.248013+00:00",
+  "status": "NO_CONCRETE_SOURCE_BLOCKER_COMPILE_AND_UI_NOT_RUN",
+  "reviewedSourceSHA256": "ec8f72a34e9823c7ba84ab8dbb013d9827c9302fc6143436de3ec8a3bfdf2f37",
+  "sourceChangeProofSHA256": "18eb9b79237059cba1ef803a3cb9c3cd8a4049b3d89170a90cde1151fafa4194",
+  "parentPrimaryRead": {
+    "ref": "d528e5413c72320c423ce9ccdbd4fbe423ca4a4a",
+    "blob": "81eec84bc476ce7d0c4835ebee912e57b35717c6",
+    "sha256": "8b461efe44868904b826da7b601c1537fd1c164705f861b15920143a556caac5",
+    "fullContentsMatch": true
+  },
+  "independentInverse": {
+    "replacementCount": 1,
+    "completeBeforeBytes": 61374,
+    "completeAfterBytes": 61405,
+    "wholeOriginalRestored": true
+  },
+  "finding": "The original configure cache predicate uses canonical Swift String equality and can suppress a live same-cell update when the exact UTF-8 source changes. The correct shared renderer policy is downstream of this predicate, so it is never reached on that path.",
+  "sourcePolicy": {
+    "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaTextInputRenderPolicy.swift",
+    "gitBlob": "0ec54dca421d293675ccef47f33d6d013e90f271",
+    "existingRule": "Exact UTF-8 comparison with marked-input and pending-local-change preservation."
+  },
+  "checks": [
+    "Optional chaining returns nil for an uncached cell; nil != true preserves initial rendering.",
+    "A cached source with equal UTF-8 bytes retains the original skip behavior unless native style, block type or content-size category changes.",
+    "Canonical-equivalent but UTF-8-different source reaches the existing attributed renderer and its exact shared policy.",
+    "The existing marked-input early return, shared renderer preservation, applied-only cache update, focus/history/selection, text observer and native authorization paths remain byte-identical.",
+    "No new test hook, presentation initializer, authority fixture, product dependency, source list or selector is introduced."
+  ],
+  "existingTestBoundary": {
+    "rendererMethods": 3,
+    "nativeTypingAndColdMethods": 2,
+    "noneExerciseOuterSameCellCacheGate": true,
+    "native26FullSourceUntouched": true,
+    "fullControllerRegressionFeasibility": "Separate Interfaces source work; no test accepted or added in this commit."
+  },
+  "actions": {
+    "compilerCalls": 0,
+    "tests": 0,
+    "NativeCalls": 0,
+    "OracleCalls": 0,
+    "MacCalls": 0
+  },
+  "runtimeAdmission": false
+}
