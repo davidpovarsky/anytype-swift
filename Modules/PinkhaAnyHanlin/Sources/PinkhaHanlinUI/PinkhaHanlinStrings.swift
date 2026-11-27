@@ -25,6 +25,7 @@ public enum PinkhaHanlinStrings {
     public static var thinking: String { String(localized: "pinkha.hanlin.thinking", table: "PinkhaHanlin", bundle: .module) }
     public static var sources: String { String(localized: "pinkha.hanlin.sources", table: "PinkhaHanlin", bundle: .module) }
     public static var pageCreated: String { String(localized: "pinkha.hanlin.pageCreated", table: "PinkhaHanlin", bundle: .module) }
+    public static var savedMessageTitle: String { String(localized: "pinkha.hanlin.savedMessageTitle", table: "PinkhaHanlin", bundle: .module) }
     public static var uncertain: String { String(localized: "pinkha.hanlin.uncertain", table: "PinkhaHanlin", bundle: .module) }
     public static var notDispatched: String { String(localized: "pinkha.hanlin.notDispatched", table: "PinkhaHanlin", bundle: .module) }
     public static var contextRead: String { String(localized: "pinkha.hanlin.contextRead", table: "PinkhaHanlin", bundle: .module) }
