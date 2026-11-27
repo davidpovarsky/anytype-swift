@@ -61,7 +61,8 @@ def main():
         run("git", "sparse-checkout", "init", "--cone", cwd=fixture)
         run("git", "sparse-checkout", "set", "OriginalEditorFramework", "Tools/OriginalEditor",
             "Anytype/Sources/Pinkha/Bootstrap", "Anytype/Sources/PresentationLayer/Auth/PrimaryAuthView",
-            "Anytype/Sources/PresentationLayer/Modules/ServerConfiguration", "Modules/PinkhaKit", cwd=fixture)
+            "Anytype/Sources/PresentationLayer/Modules/ServerConfiguration", "Modules/PinkhaKit",
+            "Anytype/Sources/ServiceLayer/ActiveSpaceManager", cwd=fixture)
         run("git", "checkout", cwd=fixture)
         observe(fixture, binding)
         source = fixture / FILES[0]
