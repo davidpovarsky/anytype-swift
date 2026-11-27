@@ -1,0 +1,95 @@
+{
+  "schema": "pinkha-independent-native-properties-ui-source-review-v1",
+  "reviewer": "/root/editor",
+  "reviewedAtUTC": "2026-11-27T15:06:15.019225+00:00",
+  "status": "NO_CONCRETE_SOURCE_BLOCKER_FOUND_RUNTIME_NOT_RUN",
+  "source": {
+    "path": "interfaces_work/native-properties-undo-ui/candidate/NativeApp/UITests/NativeLaunchTests.swift",
+    "bytes": 295880,
+    "sha256": "e2979e777dd61f7eb8be06bd38028b15cc6f7e2d944fe6adce9603a3f7817358"
+  },
+  "append": {
+    "path": "interfaces_work/native-properties-undo-ui/properties_undo_suffix.swift",
+    "bytes": 14111,
+    "sha256": "511ea437a499605d148720d992958fa71df89e14c5bfa7b864a6169b1546a386"
+  },
+  "originalPrefix": {
+    "path": "interfaces_work/native-properties-undo-ui/source/NativeLaunch25.swift",
+    "bytes": 281769,
+    "sha256": "7d7d60d61cabaf7e8c968c4d30cd584100e9d90217f6b1b66441146cbf5d943b"
+  },
+  "donorCommit": "13dc5b060c23527aeaedb1d1e250a86c9a2fc17c",
+  "manifest": {
+    "path": "interfaces_work/native-properties-undo-ui/candidate-manifest.json",
+    "bytes": 2998,
+    "sha256": "a8697e11a333cb14c5a033495a5cf9b4e84fa3a1ea24be3ec59b0e14d835d173"
+  },
+  "inverse": {
+    "path": "interfaces_work/native-properties-undo-ui/source-inverse.json",
+    "bytes": 593,
+    "sha256": "88a11b0cc6356c826d16c696331206e83f1c4a176dd457cdcbf2b8f766659e77"
+  },
+  "setupCorrection": {
+    "path": "interfaces_work/native-properties-undo-ui/setup-correction-inverse.json",
+    "bytes": 1227,
+    "sha256": "c8b5e0ddbaa407231e837b2f1a5ca1089d960f54ec9e0d53e0b90a59e0b3215e"
+  },
+  "originalProductSources": [
+    {
+      "path": "interfaces_work/native-properties-undo-ui/source/AnyNativePropertiesView.swift",
+      "bytes": 25348,
+      "sha256": "47e04a0dedaebe5a0d6dc35e4b8d30b58a5f0c8eda0cb44fea6283ecf801465d"
+    },
+    {
+      "path": "interfaces_work/native-properties-undo-ui/source/AnyNativePropertyPresentation.swift",
+      "bytes": 16259,
+      "sha256": "aa40239c5ba749b20974735337c0af11ba477c9aac870261f4ae5ae76f76c731"
+    },
+    {
+      "path": "interfaces_work/native-properties-undo-ui/source/AnyNativePropertyStore.swift",
+      "bytes": 43999,
+      "sha256": "bd78d4bed9ff005d05317a0f6eff1f40bc6b9bbe3495608ed1e4edd830b11a0c"
+    },
+    {
+      "path": "interfaces_work/native-properties-undo-ui/source/AnySemanticAnchorObservation.swift",
+      "bytes": 12721,
+      "sha256": "b141d6ba3f78bcddc4b35cbe0a7afb107b09ab38c067b2222ccf14787b699b48"
+    }
+  ],
+  "scope": {
+    "appendedMethod": "testNativePropertyValueCancelAndUndoSurviveColdReopen",
+    "declaredNewMethods": 1,
+    "declaredNewCases": 1,
+    "executionAllowanceSeconds": 900,
+    "originalNative25PrefixExact": true,
+    "newProductOrObserverChanges": 0
+  },
+  "checks": [
+    "Independently compared complete candidate to exact Native25 bytes plus the new suffix. Every original method/helper remains byte-identical; inherited MainActor and continueAfterFailure=false remain unchanged.",
+    "Initial setup now reuses the observed creation transition and the original exists/enabled/hittable60-second predicate before one Add paragraph tap. The predecessor and exact one-hunk correction remain retained.",
+    "Name row/value input/Save/menu/Undo/Done identifiers and exact localized Cancel/Undo titles match retained Properties source. Value edits use actual keyboard input; Cancel dismisses without a setValue operation, Save and Undo use existing model/native operations.",
+    "The test requires the value sheet to disappear and the original Name row to become enabled/hittable before the next action. The row only becomes writable after model saving/review gates settle. Cancellation is followed by reopening that same value editor before Save.",
+    "The successful Save is observed before invoking one enabled Undo property change action. Undo must restore the original Name before closing the panel; later successful editing is checked on a newly mounted panel.",
+    "Library row object identity is hashed against the original native document observation and reused across both cold opens. Existing reopenOwnedWorkspace terminates and relaunches the same scoped app/account. Both cold checks require different actual observed process IDs and document generations.",
+    "The body observer remains read-only and requires MATCHED native/rendered state, zero observer calls/mutations/selection changes, exactly one block, unchanged Space/object/block/source/body hashes and current rendered body bytes. The property Name is intentionally read from actual UI, not invented raw-native metadata.",
+    "Six declared Properties JSON/AX/PNG checkpoints and five original native/body observations are consistent with the source flow. Failure defer retains a phase marker plus bounded AX/screenshot only after a saved owned document exists and while recovery/account-secret controls are absent, then terminates the owned app. No new collector or result authority is introduced."
+  ],
+  "limits": [
+    "No compilation, enumeration, simulator or actual Native/property/UI test was performed in this review.",
+    "Observed Type comparison is the existing displayed selected Type value, not a new raw native Type-ID receipt. Name checkpoints retain explicitly labelled prior body-observation context; they are not a new native metadata observer.",
+    "One Name Cancel/Save/Undo/cold-reopen journey gives no sharing, revocation, arbitrary Properties, Tags, imported Bookmark, editor structural, semantic-anchor or accessibility acceptance.",
+    "Native26 requires an actual matching compiled source/producer and separately qualified selector/result admission. Existing Native23/25 profiles are not silently repinned."
+  ],
+  "findings": [],
+  "actions": {
+    "readOnlySourceReview": true,
+    "localHashAndExactByteComparisons": true,
+    "portableControlsRun": 0,
+    "swiftCompilerRuns": 0,
+    "testsExecuted": 0,
+    "hostCalls": 0,
+    "macCalls": 0,
+    "nativeCalls": 0,
+    "productionMutations": 0
+  }
+}
