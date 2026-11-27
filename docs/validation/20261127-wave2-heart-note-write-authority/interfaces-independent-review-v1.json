@@ -1,0 +1,69 @@
+{
+  "schema": "wave2-heart-note-authority-independent-source-review/v1",
+  "reviewer": "/root/interfaces",
+  "status": "SOURCE_REVIEW_REQUIRES_NARROW_FIXTURE_SUCCESSOR",
+  "execution": "No Swift compilation, tests, controls, Native, HTTP, UI, host, or runtime operation was performed for this review.",
+  "parent": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+  "candidateManifestSHA256": "364e0b77c92ac36c62b66d74167c91c311dcfd10a845672754bf437b726ed1bb",
+  "production": [
+    {"path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift", "sha256": "56fff3e1472e7e29ce3efde3f8b63eb6eb2c0e9a1920c36c6a99100bbe71f58e"},
+    {"path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift", "sha256": "ea8acaf2189da1f6d08901dff6acdccafcdd01e8091ba9700a61cbb847a83839"}
+  ],
+  "testSource": {
+    "path": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+    "sha256": "7ffb8d584a31ffb3d5a79fa21e9ce6aab9a8363666f4972a6d23270fc8ab0415",
+    "originalPrefixBytes": 73306,
+    "originalPrefixSHA256": "4a2463e6e1ef7d7ade0686d41893e5ece3557dba0e811670c84c3dc25772305f",
+    "suffixSHA256": "c05d93909ced72f4e7ba9c51dfb10636e54c1d4529200843917cced380359ebc",
+    "methods": 2,
+    "declaredCases": 10,
+    "result": "NOT_RUN"
+  },
+  "sourcePreservation": {
+    "independentlyChecked": true,
+    "method": "Applied each retained literal edit in reverse to both complete production bodies, removed the exact test suffix, and reversed the two map blob literals. All four complete results equal the retained original bytes and SHA256 values.",
+    "sourceInverseSHA256": "0f4dff308df10375e4ecd4f7287cbce50729786155eec2551e164a96064758da",
+    "sourceProofSHA256": "c388df3ff2ccfbdf1a9ca3b0bd3e5cd37c773acf2c709ed2ef35d36fa6d65295",
+    "sourceMapCandidateSHA256": "51cb77bc4137f0a51d1f79cb972200afd8508b8f6463b043304ff4727e9fbd37",
+    "mapBoundary": "Only the exact two literal substitutions and full inverse were checked here; Root owns the wider caller/map admission review."
+  },
+  "productionAssessment": [
+    "No concrete blocker found in the five original authorization forwardings. The already-published Snapshot protocol supplies the guarded overloads; the authorization remains the existing MainActor Sendable throwing closure.",
+    "The actual canonical repository checks that original authorization after its suspended load and before its unchanged apply/write. Source and origin creation, both Note unlink phases, and related-document unlink now enter those guarded overloads.",
+    "No mutation order, partial-success rollback policy, native payload, creation identity, queue, coordinator, shared session, or Native contract was changed."
+  ],
+  "fixtureAssessment": [
+    "Creation cases suspend the actual canonical repository read at the source or origin phase. Unlink cases suspend the original mutation read after the preceding lookup. The intentionally non-cooperative controlled store makes the post-read caller authorization materially relevant.",
+    "The cases exercise the actual shared session, actual Heart services, original T5 creation flow, canonical repository and coordinator. The native store and unrelated object/block creation services remain controlled fixtures; they are not Native acceptance.",
+    "The assertions preserve prior successful phases, raw unrelated metadata and semantic/quote records, then use the deliberate current action to complete the original pending Note without duplicate object/line creation or deletion.",
+    "Pinned Factory 2.3.1 eagerly captures the two injected services. Its existing push/register/construct/defer-pop sequence is synchronous on MainActor, restores the prior registration/shared-cache state before any await, and does not alter the production service bodies. Select this suite alone; its serialized annotation does not serialize unrelated suites."
+  ],
+  "completionReasoning": {
+    "expectedRetiredPath": "The observer and original createNote/addNote entries are MainActor. After the observer increments the completion count, the caller immediately checks its retired authorization; that throws into the synchronous catch and defer which clear isCreatingNote. No intervening await occurs on this specific path. The counter can therefore be observed by the test after this retired tail has completed.",
+    "expectedSuccessfulRetry": "The successful retry also waits for the actual opened callback, which is in addNote's final synchronous tail after refresh and identity checks. This is stronger than a service count alone.",
+    "exceptionalBoundary": "A service-return counter alone does not join a private UI task which may already have entered refreshAssociationSnapshot. No full unstructured-task closure is inferred on exceptional cleanup paths."
+  },
+  "findings": [
+    {
+      "id": "HEART-FIXTURE-INIT-01",
+      "kind": "SOURCE_INITIALIZATION_BOUNDARY_NOT_OBSERVED_COMPILER_FAILURE",
+      "observation": "The first fixture initializer reads its stored selection.id before all stored lets are initialized, then uses its stored observedNotes to initialize session. Official initialization guidance gives a general phase-one rule; this review did not compile or establish an exact compiler rejection for direct initialized stored-let access in this root final class.",
+      "requestedSuccessor": "Construct selection, observer and session as local values; assign every stored let; only then install weak-self callbacks and open the selection. Preserve the same dependencies and retirement behavior."
+    },
+    {
+      "id": "HEART-FIXTURE-CLEANUP-01",
+      "kind": "CONCRETE_SERVICE_DRAIN_AND_CLAIM_BOUNDARY",
+      "observation": "Creation catch always waits for count 1 although retry 2 may already have started. It can return without waiting for the second entered service call and suppresses cleanup timeout with try?. Its comment overstates this counter as bounding the whole unstructured UI action.",
+      "requestedSuccessor": "After session retirement, snapshot the number of service calls that actually entered, release the sole controlled gate, and await that count. Retain a cleanup timeout as a secondary test issue while rethrowing the first error. Explicitly limit this cleanup claim to entered service calls; do not claim a full private UI-task join or add a production hook."
+    }
+  ],
+  "primaryLanguageReferences": [
+    {"url": "https://github.com/swiftlang/swift-evolution/blob/main/proposals/0420-inheritance-of-actor-isolation.md", "sourceRef": "turn201968027view0", "use": "Same-isolation async calls and returns cannot interleave other actor tasks; the conclusion here additionally depends on the actual caller having no further await on its retired path."},
+    {"url": "https://docs.swift.org/latest/documentation/the-swift-programming-language/initialization/", "sourceRef": "turn324177247search0", "use": "General two-phase initialization Safety Check 4; no claim that a compiler was invoked or rejected this exact fixture."}
+  ],
+  "pending": [
+    "Narrow fixture-only correction and exact inverse to this retained predecessor.",
+    "Actual Swift/Apple compilation and the two methods/ten cases remain NOT_RUN.",
+    "Root retains overall caller/source-map approval and execution selection ownership."
+  ]
+}

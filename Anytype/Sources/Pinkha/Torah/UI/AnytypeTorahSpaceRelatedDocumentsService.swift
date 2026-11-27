@@ -11,12 +11,12 @@ final class AnytypeTorahSpaceRelatedDocumentsService {
     @Injected(\.searchMiddleService)
     private var search: any SearchMiddleServiceProtocol
 
-    private let associations: any TorahAssociationRepository
+    private let associations: any AnytypeTorahAssociationSnapshotRepository
     private let query: T5SpaceRelatedDocumentsQuery
     private let expandedQuery: T5ExpandedRelatedDocumentsQuery
 
     init(
-        associations: any TorahAssociationRepository, query: T5SpaceRelatedDocumentsQuery = .init(),
+        associations: any AnytypeTorahAssociationSnapshotRepository, query: T5SpaceRelatedDocumentsQuery = .init(),
         expandedQuery: T5ExpandedRelatedDocumentsQuery = .init()
     ) {
         self.associations = associations
@@ -85,7 +85,7 @@ final class AnytypeTorahSpaceRelatedDocumentsService {
 
     func unlink(
         document: TorahRelatedDocument, selection: TorahInspectorSelection, spaceID: String,
-        authorize: @MainActor () throws -> Void
+        authorize: @escaping TorahAssociationWriteAuthorization
     ) async throws {
         try Task.checkCancellation()
         try authorize()
@@ -103,7 +103,8 @@ final class AnytypeTorahSpaceRelatedDocumentsService {
             try Task.checkCancellation()
             try authorize()
             try await associations.removeAssociation(
-                associationId: item.id, target: .object(objectId: document.objectID), spaceId: spaceID
+                associationId: item.id, target: .object(objectId: document.objectID), spaceId: spaceID,
+                authorize: authorize
             )
         }
     }

@@ -1,0 +1,51 @@
+{
+  "schema": "wave2-heart-note-authority-fixture-predecessor/v1",
+  "status": "SOURCE_REVIEW_FINDINGS_NOT_COMPILER_FAILURE",
+  "files": [
+    {
+      "path": "note_authority_tests_suffix.swift",
+      "bytes": 24629,
+      "sha256": "c05d93909ced72f4e7ba9c51dfb10636e54c1d4529200843917cced380359ebc"
+    },
+    {
+      "path": "candidate/AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+      "bytes": 97935,
+      "sha256": "7ffb8d584a31ffb3d5a79fa21e9ce6aab9a8363666f4972a6d23270fc8ab0415"
+    },
+    {
+      "path": "candidate-manifest.json",
+      "bytes": 3593,
+      "sha256": "364e0b77c92ac36c62b66d74167c91c311dcfd10a845672754bf437b726ed1bb"
+    },
+    {
+      "path": "source-inverse.json",
+      "bytes": 4460,
+      "sha256": "0f4dff308df10375e4ecd4f7287cbce50729786155eec2551e164a96064758da"
+    },
+    {
+      "path": "source-proof.json",
+      "bytes": 8445,
+      "sha256": "c388df3ff2ccfbdf1a9ca3b0bd3e5cd37c773acf2c709ed2ef35d36fa6d65295"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5995,
+      "sha256": "3ac60996ac845232eeaf584f35a9d02064b51e3ac0420d02dd5f40c550ad5955"
+    },
+    {
+      "path": "source.patch",
+      "bytes": 31189,
+      "sha256": "1f24ca884dfe939d07b65e2053514d6b9b6e06e39b7cb0b74f7e2ee1c6329edf"
+    },
+    {
+      "path": "source-edits.json",
+      "bytes": 2307,
+      "sha256": "fc4bec4903ae6087092e3c5fb1e9524e2ce47d75e8b4a78bcf394b4f59374d3f"
+    }
+  ],
+  "findings": [
+    "Fixture initialization reads selection/observedNotes before all stored lets initialized; use local values throughout phase one.",
+    "Creation failure cleanup waits for completion1 even if retry2 entered, and try? suppresses secondary timeout. Track entered calls, wait boundedly, preserve first error and report cleanup failure."
+  ],
+  "scope": "Production56fff/ea8 and map51cb remain unchanged. No actual compiler, tests or runtime executed."
+}

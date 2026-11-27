@@ -1,0 +1,149 @@
+{
+  "schema": "wave2-heart-note-authority-fixture-correction/v1",
+  "status": "PASS_EXACT_SOURCE_INVERSE_ONLY_NOT_COMPILED_NOT_RUN",
+  "parent": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+  "predecessor": {
+    "fullTest": {
+      "sha256": "7ffb8d584a31ffb3d5a79fa21e9ce6aab9a8363666f4972a6d23270fc8ab0415",
+      "bytes": 97935,
+      "gitBlob": "acf0f952739241b06e004ed68f85ea7b2dcb75b3"
+    },
+    "suffix": {
+      "sha256": "c05d93909ced72f4e7ba9c51dfb10636e54c1d4529200843917cced380359ebc",
+      "bytes": 24629,
+      "gitBlob": "275ddd629f22cbad47a9ebd4c484bf3aec0d437a"
+    },
+    "manifest": {
+      "sha256": "364e0b77c92ac36c62b66d74167c91c311dcfd10a845672754bf437b726ed1bb",
+      "bytes": 3593,
+      "gitBlob": "4ded4dad993d39c729cbdaf9a0454ccf019a15ca"
+    },
+    "retainedFiles": "review-v1/retained-manifest.json",
+    "peerReview": {
+      "path": "interfaces-independent-review-v1.json",
+      "sha256": "eb5d0d157f68958f075a32e07b594bc53d80e6d171066568a7d0842d49b17487",
+      "bytes": 7284,
+      "gitBlob": "2fe2b53fd4f61906fa9260f7ba126ff894786898"
+    }
+  },
+  "successor": {
+    "fullTest": {
+      "sha256": "5c992907c09ab5a1fb249cb4d70d8e132735981709a030f1b3c3bba62e851e53",
+      "bytes": 98718,
+      "gitBlob": "e187f8a307a79705010058cc4f21238398d72927"
+    },
+    "suffix": {
+      "sha256": "787389e6ae7a46ff5524108b0cceb7f83b84b07d56e8b446969a40127f0116f6",
+      "bytes": 25412,
+      "gitBlob": "945c926d2e5e166066f04e5826f06c6ff583c01c"
+    }
+  },
+  "lineOffsetBase": 0,
+  "suffixSubstitutions": [
+    {
+      "beforeLineOffset": 61,
+      "afterLineOffset": 61,
+      "before": "        } catch {\n            // Retire first, then release the only controlled suspension. The\n            // observed real service completion bounds the unstructured UI action.\n",
+      "after": "        } catch let firstFailure {\n            // Retire before sampling actual service entries, so a queued old\n            // action cannot enter later. This drains entered service calls only;\n            // a refresh already entered after service return is not a Task join.\n"
+    },
+    {
+      "beforeLineOffset": 65,
+      "afterLineOffset": 66,
+      "before": "",
+      "after": "            let entered = fixture.observedNotes.creationsEntered\n"
+    },
+    {
+      "beforeLineOffset": 66,
+      "afterLineOffset": 68,
+      "before": "            try? await fixture.waitForCreationCompletion(1)\n            throw error\n",
+      "after": "            do {\n                try await fixture.waitForCreationCompletion(entered)\n            } catch let cleanupFailure {\n                Issue.record(\"Secondary creation-service cleanup failure: entered=\\(entered), completed=\\(fixture.observedNotes.creationsCompleted), error=\\(String(describing: cleanupFailure)); the first failure is rethrown.\")\n            }\n            throw firstFailure\n"
+    },
+    {
+      "beforeLineOffset": 119,
+      "afterLineOffset": 125,
+      "before": "    let selection = TorahInspectorSelection(providerID: \"sefaria\", canonicalRef: \"Genesis 3:3\")\n",
+      "after": "    let selection: TorahInspectorSelection\n"
+    },
+    {
+      "beforeLineOffset": 130,
+      "afterLineOffset": 136,
+      "before": "",
+      "after": "        let selection = TorahInspectorSelection(providerID: \"sefaria\", canonicalRef: \"Genesis 3:3\")\n"
+    },
+    {
+      "beforeLineOffset": 131,
+      "afterLineOffset": 138,
+      "before": "        self.services = services\n",
+      "after": ""
+    },
+    {
+      "beforeLineOffset": 135,
+      "afterLineOffset": 141,
+      "before": "        self.store = store\n",
+      "after": ""
+    },
+    {
+      "beforeLineOffset": 140,
+      "afterLineOffset": 145,
+      "before": "        self.repository = repository\n",
+      "after": ""
+    },
+    {
+      "beforeLineOffset": 150,
+      "afterLineOffset": 154,
+      "before": "        observedNotes = HeartNoteObservedService(service)\n        session = TorahEditorSession(spaceId: \"space\", objectId: \"origin\",\n",
+      "after": "        let observedNotes = HeartNoteObservedService(service)\n        let session = TorahEditorSession(spaceId: \"space\", objectId: \"origin\",\n"
+    },
+    {
+      "beforeLineOffset": 154,
+      "afterLineOffset": 158,
+      "before": "",
+      "after": "        self.selection = selection\n        self.services = services\n        self.store = store\n        self.repository = repository\n        self.observedNotes = observedNotes\n        self.session = session\n"
+    },
+    {
+      "beforeLineOffset": 210,
+      "afterLineOffset": 220,
+      "before": "// counter only permits the test to await the original UI action's service call.\n",
+      "after": "// counters permit bounded observation of every service call that entered. They\n// do not prove completion of the original UI action's later refresh continuation.\n"
+    },
+    {
+      "beforeLineOffset": 214,
+      "afterLineOffset": 225,
+      "before": "",
+      "after": "    var creationsEntered = 0\n"
+    },
+    {
+      "beforeLineOffset": 225,
+      "afterLineOffset": 237,
+      "before": "",
+      "after": "        creationsEntered += 1\n"
+    }
+  ],
+  "proof": {
+    "reverseSuffixEqualsCompletePredecessor": true,
+    "reverseFullTestEqualsCompletePredecessor": true,
+    "originalPrefix": {
+      "sha256": "4a2463e6e1ef7d7ade0686d41893e5ece3557dba0e811670c84c3dc25772305f",
+      "bytes": 73306,
+      "gitBlob": "aabdb85147a2a032b6ec89dfe82741032b0b488c"
+    },
+    "originalPrefixBytes": 73306,
+    "allOriginalRegressionAssertionLinesIdentical": true,
+    "originalWaitHelpersByteIdentical": true,
+    "methods": 2,
+    "declaredCases": 10,
+    "productionAndMapByteIdenticalToV1": true
+  },
+  "corrections": [
+    "Construct selection, repository, observer and session in locals; assign all stored lets before weak-self callbacks.",
+    "After deactivation, snapshot actual entered service count, release the held read, and await that count using the unchanged bounded helper. Record a secondary cleanup error and rethrow the first failure."
+  ],
+  "cleanupScope": "Entered service calls only. This does not certify a full unstructured UI Task join or an already-entered refresh continuation. Expected retirement has synchronous MainActor authorization/catch/defer after service return; successful current retry separately awaits opened.",
+  "execution": {
+    "compiler": false,
+    "tests": false,
+    "native": false,
+    "apple": false,
+    "host": false
+  }
+}

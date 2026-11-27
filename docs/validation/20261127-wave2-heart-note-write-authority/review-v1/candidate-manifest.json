@@ -1,0 +1,103 @@
+{
+  "schema": "wave2-heart-note-write-authority-candidate/v1",
+  "parent": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+  "status": "FROZEN_FOR_SOURCE_REVIEW_NOT_COMPILED_NOT_RUN",
+  "files": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "original": {
+        "sha256": "a758b64cc5c3764173d31e61600a3ccd9cca3edd026fa56986085bc95fd0f76a",
+        "bytes": 6722,
+        "gitBlob": "f720544ee832268919a3fa712ac258f7b5651d72"
+      },
+      "candidate": {
+        "sha256": "56fff3e1472e7e29ce3efde3f8b63eb6eb2c0e9a1920c36c6a99100bbe71f58e",
+        "bytes": 6852,
+        "gitBlob": "698dc52075c73cc8f584abd458c3a46cbe075c4a"
+      }
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      "original": {
+        "sha256": "384e954428d5800da9fb74c564be53b922db0f8cb8d241283339329e39a2b5ce",
+        "bytes": 14864,
+        "gitBlob": "6205879561b6e505d8d8b5b402dd6bf575fc57d6"
+      },
+      "candidate": {
+        "sha256": "ea8acaf2189da1f6d08901dff6acdccafcdd01e8091ba9700a61cbb847a83839",
+        "bytes": 14948,
+        "gitBlob": "68d32e623d1703c51ad01918df1572f7d96757c9"
+      }
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+      "original": {
+        "sha256": "4a2463e6e1ef7d7ade0686d41893e5ece3557dba0e811670c84c3dc25772305f",
+        "bytes": 73306,
+        "gitBlob": "aabdb85147a2a032b6ec89dfe82741032b0b488c"
+      },
+      "candidate": {
+        "sha256": "7ffb8d584a31ffb3d5a79fa21e9ce6aab9a8363666f4972a6d23270fc8ab0415",
+        "bytes": 97935,
+        "gitBlob": "acf0f952739241b06e004ed68f85ea7b2dcb75b3"
+      }
+    },
+    {
+      "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+      "original": {
+        "sha256": "7f6b213a8fbb0c33c4f81122c2997f7bb39468d995aa1b5caa6555f3331c3899",
+        "bytes": 245322,
+        "gitBlob": "a8f3fed2f2c851de4a815ff88a81435c3d3203e8"
+      },
+      "candidate": {
+        "sha256": "51cb77bc4137f0a51d1f79cb972200afd8508b8f6463b043304ff4727e9fbd37",
+        "bytes": 245322,
+        "gitBlob": "089c8e5d83a4081986a3cf7bae2302c94ea6902b"
+      }
+    }
+  ],
+  "tests": {
+    "suite": "TorahNoteRepositoryAuthorityTests",
+    "methods": 2,
+    "declaredCases": 10,
+    "creationPhases": [
+      "source",
+      "origin"
+    ],
+    "unlinkPhases": [
+      "noteSource",
+      "noteOrigin",
+      "related"
+    ],
+    "retirements": [
+      "inspectorReopen",
+      "documentReopen"
+    ],
+    "originalPrefix": {
+      "sha256": "4a2463e6e1ef7d7ade0686d41893e5ece3557dba0e811670c84c3dc25772305f",
+      "bytes": 73306,
+      "gitBlob": "aabdb85147a2a032b6ec89dfe82741032b0b488c"
+    },
+    "suffix": {
+      "sha256": "c05d93909ced72f4e7ba9c51dfb10636e54c1d4529200843917cced380359ebc",
+      "bytes": 24629,
+      "gitBlob": "275ddd629f22cbad47a9ebd4c484bf3aec0d437a"
+    },
+    "scope": "Real session/Heart service/flow/coordinator/canonical repository with controlled store and creation services. No native engine or Apple UI acceptance."
+  },
+  "map": {
+    "rows": 145,
+    "literalPinChanges": [
+      {
+        "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+        "oldBlob": "f720544ee832268919a3fa712ac258f7b5651d72",
+        "newBlob": "698dc52075c73cc8f584abd458c3a46cbe075c4a"
+      },
+      {
+        "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+        "oldBlob": "6205879561b6e505d8d8b5b402dd6bf575fc57d6",
+        "newBlob": "68d32e623d1703c51ad01918df1572f7d96757c9"
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+    "before": "any TorahAssociationRepository",
+    "after": "any AnytypeTorahAssociationSnapshotRepository",
+    "occurrences": 2
+  },
+  {
+    "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+    "before": "source.item, target: .object(objectId: noteObjectID), spaceId: spaceId",
+    "after": "source.item, target: .object(objectId: noteObjectID), spaceId: spaceId, authorize: authorize",
+    "occurrences": 1
+  },
+  {
+    "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+    "before": "item, target: .object(objectId: objectId), spaceId: spaceId",
+    "after": "item, target: .object(objectId: objectId), spaceId: spaceId, authorize: authorize",
+    "occurrences": 1
+  },
+  {
+    "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+    "before": "associationId: item.id, target: .object(objectId: noteObjectID), spaceId: spaceId",
+    "after": "associationId: item.id, target: .object(objectId: noteObjectID), spaceId: spaceId, authorize: authorize",
+    "occurrences": 1
+  },
+  {
+    "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+    "before": "target: .object(objectId: objectId),\n            spaceId: spaceId\n",
+    "after": "target: .object(objectId: objectId),\n            spaceId: spaceId,\n            authorize: authorize\n",
+    "occurrences": 1
+  },
+  {
+    "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+    "before": "any TorahAssociationRepository",
+    "after": "any AnytypeTorahAssociationSnapshotRepository",
+    "occurrences": 2
+  },
+  {
+    "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+    "before": "authorize: @MainActor () throws -> Void",
+    "after": "authorize: @escaping TorahAssociationWriteAuthorization",
+    "occurrences": 1
+  },
+  {
+    "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+    "before": "associationId: item.id, target: .object(objectId: document.objectID), spaceId: spaceID",
+    "after": "associationId: item.id, target: .object(objectId: document.objectID), spaceId: spaceID,\n                authorize: authorize",
+    "occurrences": 1
+  }
+]

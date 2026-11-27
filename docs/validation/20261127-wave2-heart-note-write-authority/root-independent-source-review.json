@@ -1,0 +1,110 @@
+{
+  "schema": "wave2-heart-note-write-authority-root-source-review/v1",
+  "reviewer": "/root",
+  "atUTC": "2026-11-27T20:23:40.280145+00:00",
+  "status": "PASS_SOURCE_REVIEW_ONLY_NOT_COMPILED_NOT_RUN",
+  "parent": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+  "manifest": {
+    "path": "/workspace/scratch/1d35894f12d5/torah-acceptance-prep/heart-note-write-authority/candidate-manifest.json",
+    "bytes": 3958,
+    "sha256": "539d67aa54e7504ad029963d14d45800bd3f83a609dd39f9b6474a8e3ce54ee5"
+  },
+  "productionAndTest": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "original": {
+        "sha256": "a758b64cc5c3764173d31e61600a3ccd9cca3edd026fa56986085bc95fd0f76a",
+        "bytes": 6722,
+        "gitBlob": "f720544ee832268919a3fa712ac258f7b5651d72"
+      },
+      "candidate": {
+        "sha256": "56fff3e1472e7e29ce3efde3f8b63eb6eb2c0e9a1920c36c6a99100bbe71f58e",
+        "bytes": 6852,
+        "gitBlob": "698dc52075c73cc8f584abd458c3a46cbe075c4a"
+      }
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      "original": {
+        "sha256": "384e954428d5800da9fb74c564be53b922db0f8cb8d241283339329e39a2b5ce",
+        "bytes": 14864,
+        "gitBlob": "6205879561b6e505d8d8b5b402dd6bf575fc57d6"
+      },
+      "candidate": {
+        "sha256": "ea8acaf2189da1f6d08901dff6acdccafcdd01e8091ba9700a61cbb847a83839",
+        "bytes": 14948,
+        "gitBlob": "68d32e623d1703c51ad01918df1572f7d96757c9"
+      }
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+      "original": {
+        "sha256": "4a2463e6e1ef7d7ade0686d41893e5ece3557dba0e811670c84c3dc25772305f",
+        "bytes": 73306,
+        "gitBlob": "aabdb85147a2a032b6ec89dfe82741032b0b488c"
+      },
+      "candidate": {
+        "sha256": "5c992907c09ab5a1fb249cb4d70d8e132735981709a030f1b3c3bba62e851e53",
+        "bytes": 98718,
+        "gitBlob": "e187f8a307a79705010058cc4f21238398d72927"
+      }
+    },
+    {
+      "path": "docs/any-engine-port/SOURCE_REFACTOR_MAP.json",
+      "original": {
+        "sha256": "7f6b213a8fbb0c33c4f81122c2997f7bb39468d995aa1b5caa6555f3331c3899",
+        "bytes": 245322,
+        "gitBlob": "a8f3fed2f2c851de4a815ff88a81435c3d3203e8"
+      },
+      "candidate": {
+        "sha256": "51cb77bc4137f0a51d1f79cb972200afd8508b8f6463b043304ff4727e9fbd37",
+        "bytes": 245322,
+        "gitBlob": "089c8e5d83a4081986a3cf7bae2302c94ea6902b"
+      }
+    }
+  ],
+  "sourceInverse": {
+    "path": "/workspace/scratch/1d35894f12d5/torah-acceptance-prep/heart-note-write-authority/source-inverse.json",
+    "bytes": 4888,
+    "sha256": "ce536c461eaeaea3125aec6a4bc3bdd39de618c259d0e741cefb3df25d31a49f"
+  },
+  "fixtureCorrection": {
+    "path": "/workspace/scratch/1d35894f12d5/torah-acceptance-prep/heart-note-write-authority/fixture-correction.json",
+    "bytes": 6494,
+    "sha256": "e0060fb48c7ebc2faa5ef4edbac05cb02b0cf1c2bf3b13f4de9218d6e9daea4a"
+  },
+  "peerReview": {
+    "path": "/workspace/scratch/1d35894f12d5/torah-acceptance-prep/heart-note-write-authority/interfaces-independent-review.json",
+    "bytes": 4256,
+    "sha256": "a2890e8cf28934a12b500a05b311557c765222b94d8086052d04a73adfe149a5"
+  },
+  "independentlyVerified": {
+    "allFourOriginalAndCandidateBodiesBytesSHAAndGitBlob": true,
+    "eightProductRulesTenOccurrencesBidirectionalExact": true,
+    "twoMapBlobReplacementsExact": true,
+    "original73306ByteTestPrefixExact": true,
+    "all13FixtureDeltaRulesReverseToCompleteV1": true,
+    "allOriginalFullBodiesPrimaryReadByRootAt9f": true
+  },
+  "sourceFindings": {
+    "authority": "Five writes now forward the unchanged original presentation authorization to the existing snapshot repository guarded overload after the repository awaits its read. Existing serialization, canonical metadata, target authority, dispatch and uncertainty remain original.",
+    "callers": "Root bounded exact-9f App/test Git inventory completed successfully. Concrete constructors use the snapshot/concrete repository. Modules-wide inspection stopped on loose-object access and is not represented as complete.",
+    "factory": "Exact pinned Factory 8ca11a7 eager injection and manager push/pop reviewed. Primary 9f ServicesDI uses shared scopes for both overridden services; synchronous override/construct/pop has no await. Suite alone is required.",
+    "fixture": "All service dependencies are constructed as locals and assigned before self callbacks. MainActor expected-retirement return/authorize/catch/defer has no intervening await; current retry additionally waits actual opened callback. Exceptional cleanup counts entered services and preserves first error; this is not a join of an already-entered UI refresh task.",
+    "preservation": "Original pending note/source-line flow remains. No rollback deletion, new Type, duplicated property store, Native contract, index, ACL or schema changes."
+  },
+  "retainedFindingsAndFailures": [
+    "Full v1 fixture and peer findings remain in review-v1 and predecessor review. Neither source-review correction is an observed compiler/test failure.",
+    "Original bounded read-only ownership and loose-object inspection failures retained; no access-control/configuration mutation used."
+  ],
+  "remaining": {
+    "methodsNotRun": 2,
+    "declaredCasesNotRun": 10,
+    "compile": false,
+    "nativeEngineAcceptance": false,
+    "mountedAppleUIAcceptance": false,
+    "sourceMapGateExecution": false,
+    "physicalDevice": false
+  },
+  "decision": "Source-only owned publication preparation accepted. Freeze product56fff/ea8, test5c992, map51cb. Packet requires root exact-file/tree review before publication; W3 alone integrates and schedules isolated Apple suite after core queue."
+}
