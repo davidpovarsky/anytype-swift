@@ -1,0 +1,406 @@
+"""Additive, exact6aab shared-product intake; never builds or executes tests.
+
+This fragment is inserted before main in a new copy of historical common4ec.
+The materializer binds one immutable evidence profile and exact embedded
+control bytes. The historical controller remains separately byte-identical.
+"""
+import types as _wave3_types
+
+W3_SOURCE = "6aab20344fcf1c645d7c96e0b9ec034ef07003a9"
+W3_TREE = "69ca9d5d7e602b6f11d309faa9882f829ebc27c1"
+W3_PREVIOUS = "a089ff29a5c0a7e415aac800844505f099a5561d"
+W3_SDK_REVISION = "38528941720d9b4f2da8dce7afbc788c2e554a0c"
+W3_SDK_SOURCE_SHA = "9efdf2add1a472c289d9c349fe9733ac888cacf399a248d9bae7f788045a336f"
+W3_SDK_HELPER_SHA = "234f597c629da30045392f74e2b6d204f2bbc6349b70bdccd5562dc0db491fe2"
+W3_COMPILER_INVENTORY_SHA = "0248972d303bdfa97f2f78d75aebaf2d3f69747af520c5b2ce7398f399b17801"
+W3_COMPILER_INVENTORY_PATH = "docs/validation/20261127-wave3-integration-ledger/first-shared-compiler-inputs.json"
+W3_SOURCE_ROOT = "/Users/m1/development/anytype-d-active-20261125/main14/source"
+W3_APP_DERIVED = "/Users/m1/development/anytype-d-active-20261125/main14/app-derived"
+W3_GATE_SHA = "9ce1288feb8f3c534bb7eb784909624fc66168473e93eedff2f2945583d6a18d"
+W3_ADAPTER_SHA = "47c66dde6122d19b12e5206a4a5f0b1841a026fb8088aa4bdb2c69d6a657cfcd"
+W3_STAGE_SHA = "374c863440dd7920d607191f2626ff06621d2bf8ae54a2fad05722874617058d"
+W3_BASE_SHA = "9b1405ea44ba9cce3fca47a88127fc798fedab3d1b05f6e3728da3597d19929c"
+W3_BASE_DELTA_SHA = "5e18f0a7cdb25cc30d010eb0c19819fe778cb338366763f06f76fef649189970"
+W3_ORIGINAL_SHA = "617b163951a9692909bef38a4991ded8c53e8c21ad9278a9564222fce1a57a68"
+W3_LIFECYCLE_SHA = "73bb6a4f6dde58faa723c38fddd322b6a6ff356fbbee44ecdeb949a77d358e1a"
+W3_BUNDLE_SHA = "d811bac3d4d649457ed69bb5a108ab762c1afcd3bee28383802827ca35b9d09a"
+W3_BUILD_ADMISSION_SHA = "503ec2057e1d548aaace6672c05b39d520d30271f733741fba3aad7816309646"
+W3_EXECUTED_PRODUCER_SHA = "f92a68e8829aec99a8f1a5ebe8a25af7ed3b7c14ee8206f9a2ca6aa2a7fe2c0b"
+W3_EXECUTED_DELTA_SHA = "4a5e5e920b8bd1f5d852a8be36bf69125d07960d6871a6c94677b8c09877bd9e"
+W3_STAGE_PLAN_SHA = "0087cfc0ea87458cb6cdfeeac848f2165b0f3c281dfcaa68df2df3dfb0b6e96f"
+W3_FROZEN = __WAVE3_FROZEN_PROFILE__
+W3_EMBEDDED = __WAVE3_EMBEDDED_INPUTS__
+
+# Compatibility exports describe only this separately materialized source.
+# Historical4ec and its a089 constants remain unchanged in its retained file.
+APP16_SOURCE, APP16_TREE = W3_SOURCE, W3_TREE
+SDK_RECEIPT = "b10eb0805789a04f9f48721230961e45ba6a93ceb5d95cb90437a59c87ae9528"
+APP16_STAGE_RECEIPT = "9254acb0ee0fe5da1264c8113cf682df69c1d136e27b531f906f55af5030c84c"
+APP16_CACHE_QUALIFICATION = "16d77bd13a3cd36e85c0ca36be9c8e200ba212e539f1568529624231a49346a6"
+_W3_ORIGINAL_CLONER = admit_app16_and_clone_products
+_W3_ORIGINAL_RUNTIME = qualify_app16_runtime
+_W3_ORIGINAL_COMPILER = qualify_app16_compiler_inputs
+
+W3_EVIDENCE_KEYS = {"sourceRoot", "producerReceipt", "producerLogs", "sourceBefore", "sourceAfter",
+                    "originalUICopy", "completeProducerProducts", "products", "runtimeIdentity", "app16Producer"}
+W3_PRODUCER_KEYS = {"builder", "builderDelta", "stagingScript", "stagingInput", "stagingReceipt",
+    "preservationReceipt", "cacheQualification", "phaseReceipts", "compilerInputs", "compilerFileLists",
+    "receiptContract", "buildAdmission", "preservationRevalidation", "stageOwners", "sdkStagingLogs",
+    "nativeMaterialization", "dependencyReceipts", "ownedLifecycle", "compilerInventory"}
+W3_MODULES = {
+    "receipt_admission": ("Tools/MiniApps/receipt_admission.py", W3_GATE_SHA),
+    "wave3_shared_build": ("Tools/PinkhaDualEngineRuntime/wave3_shared_build.py", W3_ADAPTER_SHA),
+    "stage_wave3_source": ("Tools/PinkhaDualEngineRuntime/stage_wave3_source.py", W3_STAGE_SHA),
+}
+
+
+def w3_freeze(admission=None):
+    require(isinstance(W3_FROZEN, dict)
+            and W3_FROZEN.get("schema") == "pinkha-wave2-exact6aab-runtime-freeze-v1"
+            and W3_FROZEN.get("readyForRuntimeAdmission") is True,
+            "Wave3 runtime intake is closed: actual exact-source producer/evidence pins are not frozen")
+    require(set(W3_FROZEN) == {"schema", "readyForRuntimeAdmission", "sourceCommit", "sourceTree",
+                "canonicalSDKRevision", "sdkReceiptSHA256", "stageReceiptSHA256", "cacheQualificationSHA256", "evidence"}
+            and W3_FROZEN["sourceCommit"] == W3_SOURCE and W3_FROZEN["sourceTree"] == W3_TREE
+            and W3_FROZEN["canonicalSDKRevision"] == W3_SDK_REVISION,
+            "This reviewed intake accepts only the exact first shared6aab/385 source")
+    require(W3_FROZEN["sdkReceiptSHA256"] == SDK_RECEIPT
+            and W3_FROZEN["stageReceiptSHA256"] == APP16_STAGE_RECEIPT
+            and W3_FROZEN["cacheQualificationSHA256"] == APP16_CACHE_QUALIFICATION,
+            "Actual reviewed materialization/stage/cache pins differ")
+    expected = W3_FROZEN["evidence"]
+    require(isinstance(expected, dict) and set(expected) == W3_EVIDENCE_KEYS
+            and expected["sourceRoot"] == W3_SOURCE_ROOT
+            and isinstance(expected["app16Producer"], dict) and set(expected["app16Producer"]) == W3_PRODUCER_KEYS,
+            "Closed actual producer/evidence profile required")
+    if admission is not None:
+        require(admission.get("sourceCommit") == W3_SOURCE
+                and admission.get("nativeManifestSHA256") == MANIFEST
+                and all(admission.get(name) == value for name, value in expected.items())
+                and "uiContinuation" not in admission
+                and not any(name.endswith("UIOverride") for name in admission),
+                "The admission differs from the one frozen source/producer; historical or donor products are not admitted")
+    return expected
+
+
+def w3_ref(reference):
+    require(isinstance(reference, dict) and set(reference) == {"path", "sha256", "bytes"},
+            "Original common path/SHA256/byte-count pin required")
+    return {"path": reference["path"], "sha256": reference["sha256"]}
+
+
+def w3_module(name, source):
+    relative, expected = W3_MODULES[name]
+    text = W3_EMBEDDED[name]
+    require(sha(text.encode()) == expected and raw(source / relative) == text.encode(),
+            "Exact original Wave3 control source changed: " + relative)
+    module = _wave3_types.ModuleType("wave2_original_" + name)
+    module.__file__ = str(source / relative)
+    exec(compile(text, module.__file__, "exec"), module.__dict__)
+    return module
+
+
+def w3_two_stage_inverse(contract, receipt, root_admission, adapter):
+    builder, delta_raw = pinned(contract["builder"]), pinned(contract["builderDelta"])
+    delta = decode(delta_raw)
+    base = W3_EMBEDDED["base_producer"]
+    original = W3_EMBEDDED["original_producer"]
+    base_delta_raw = W3_EMBEDDED["base_delta"].encode()
+    require(sha(base.encode()) == W3_BASE_SHA and sha(original.encode()) == W3_ORIGINAL_SHA
+            and sha(base_delta_raw) == W3_BASE_DELTA_SHA, "Original producer inverse inputs changed")
+    expected, expected_delta = adapter.expand_controller(base, root_admission,
+        Path(contract["buildAdmission"]["path"]), contract["buildAdmission"]["sha256"], W3_ADAPTER_SHA)
+    require(builder == expected.encode() and delta == expected_delta
+            and sha(builder) == receipt["controllerSHA256"] == delta["candidateSHA256"] == W3_EXECUTED_PRODUCER_SHA
+            and sha(delta_raw) == W3_EXECUTED_DELTA_SHA,
+            "Actually executed producer is not the exact reviewed root-bound expansion")
+    restored = builder.decode()
+    for row in reversed(delta["changes"]):
+        require(set(row) == {"old", "new", "count"} and restored.count(row["new"]) == row["count"],
+                "Wave3 producer inverse occurrence differs")
+        restored = restored.replace(row["new"], row["old"])
+    require(restored == base, "Wave3 inverse did not restore original9b producer")
+    previous = decode(base_delta_raw)
+    require(previous["candidateSHA256"] == W3_BASE_SHA and previous["originalSHA256"] == W3_ORIGINAL_SHA
+            and previous["inverseRestoresEveryOriginalByte"] is True, "Original9b inverse metadata differs")
+    spans = []
+    for row in previous["changes"]:
+        require(set(row) == {"old", "new", "count", "newPositions"}
+                and type(row["count"]) is int and row["count"] > 0
+                and len(row["newPositions"]) == row["count"]
+                and all(type(value) is int and value >= 0 for value in row["newPositions"])
+                and row["newPositions"] == sorted(set(row["newPositions"])), "Original positional inverse differs")
+        spans.extend((position, position + len(row["new"]), row["new"], row["old"]) for position in row["newPositions"])
+    spans.sort()
+    require(all(left[1] <= right[0] for left, right in zip(spans, spans[1:])), "Original inverse spans overlap")
+    for start, end, new, old in reversed(spans):
+        require(restored[start:end] == new, "Original producer inverse position differs")
+        restored = restored[:start] + old + restored[end:]
+    require(restored == original, "Two-stage inverse lost original617 bytes")
+    old, middle, current = map(app16_function_sources, (original.encode(), base.encode(), builder))
+    require(all(old[name] == middle[name] == current[name] for name in ("run_phase", "source_state")),
+            "Original owned lifecycle or source inventory function changed")
+    require(all(old[name] == middle[name] for name in ("verify_runtime_identity", "verify_dependencies")),
+            "Original Native/SDK functions were lost before reviewed explicit Wave3 pin substitutions")
+    return {"builderSHA256": sha(builder), "deltaSHA256": sha(delta_raw),
+            "fullOriginalProducerInverse": True, "originalProducerSHA256": W3_ORIGINAL_SHA,
+            "unchangedFunctions": ["run_phase", "source_state"], "originalPositionalSpans": len(spans)}
+
+
+def w3_stage_proof(contract, receipt, root_admission, source, gate, stage_control):
+    stage_raw, plan_raw = pinned(contract["stagingReceipt"]), pinned(contract["stagingInput"])
+    stage, plan = decode(stage_raw), decode(plan_raw)
+    require(sha(pinned(contract["stagingScript"])) == W3_STAGE_SHA == stage["controllerSHA256"]
+            and sha(stage_raw) == APP16_STAGE_RECEIPT == receipt["inputs"]["stagingReceiptSHA256"]
+            and stage["protocol"] == "pinkha-root-forward-staging-v1"
+            and stage["status"] == "PASS_EXACT_APP16_SOURCE_AND_NATIVE_REUSED_ORIGINALS_RETAINED"
+            and stage["sourceCommit"] == W3_SOURCE and stage["tree"] == W3_TREE
+            and stage["priorSource"] == W3_PREVIOUS and stage["planSHA256"] == sha(plan_raw) == W3_STAGE_PLAN_SHA
+            and stage["sourceRoot"] == W3_SOURCE_ROOT and stage["appDerived"] == W3_APP_DERIVED
+            and stage["uiDerived"] == str(Path(root_admission["buildRoot"]) / "ui-derived")
+            and stage["sourceManifestSHA256"] == MANIFEST
+            and stage["canonicalSDKRevision"] == W3_SDK_REVISION and stage["sdkReceiptSHA256"] == SDK_RECEIPT
+            and stage["originalIntermediatesAndPackagePathsReused"] is False
+            and stage["applicationBuilds"] == stage["nativeBuilds"] == stage["tests"] == 0,
+            "Actual forward-stage source, SDK, preservation or no-build evidence differs")
+    require(plan["schema"] == "pinkha-root-forward-staging-plan-v1" and plan["readyForStaging"] is True
+            and plan["appSourceSHA"] == W3_SOURCE and plan["previousSourceSHA"] == W3_PREVIOUS
+            and plan["sourceRoot"] == W3_SOURCE_ROOT and plan["appDerived"] == W3_APP_DERIVED
+            and plan["buildRoot"] == root_admission["buildRoot"]
+            and plan["sdkRevision"] == W3_SDK_REVISION
+            and plan["pins"]["sdkMaterializerSHA256"] == W3_SDK_HELPER_SHA,
+            "Actual root-authorized forward plan differs")
+    require(plan["gitBundle"]["sha256"] == W3_BUNDLE_SHA
+            and len(gate.read_ref(plan["gitBundle"])) == 2416438, "Exact transferred6aab bundle differs")
+    gate.read_ref(plan["buildAdmissionTemplate"])
+    stop = gate.json_ref(plan["queueStopReceipt"])
+    require(plan["queueStopReceipt"]["sha256"] == "3a0629d7733abb8a9ce64ab442336a09549c6bfc2a5669483208395fb96c8718"
+            and stop["status"] == "STOPPED_SUPERSEDED_QUEUE", "Original superseded queue stop evidence differs")
+    require(sha(pinned(contract["ownedLifecycle"])) == W3_LIFECYCLE_SHA
+            and plan["ownedLifecycleHelper"]["sha256"] == W3_LIFECYCLE_SHA,
+            "Original owned process lifecycle helper changed")
+    gate.read_ref(plan["ownedLifecycleHelper"])
+    owners = contract["stageOwners"]
+    require(set(owners) == {"before", "after"}, "Both actual staging ownership observations required")
+    for reference in owners.values():
+        value = decode(pinned(reference))
+        require(value["scopedCompilerOrQueueProcesses"] == [] and type(value["databasePresent"]) is bool,
+                "Staging observed a competing compiler or queue")
+
+    preservation_raw = pinned(contract["preservationReceipt"])
+    require(sha(preservation_raw) == APP16_PRESERVATION == stage["originalPreservationSHA256"]
+            and w3_ref(contract["preservationReceipt"]) == root_admission["originalRetention"]
+            and plan["originalPreservationReceipt"] == contract["preservationReceipt"]["path"],
+            "Historical original-preservation receipt differs")
+    original = decode(preservation_raw)
+    require(original["status"] == "PASS_ORIGINAL_SOURCE_AND_PRODUCTS_BYTES_MODES_LINKS"
+            and original["originalProducerSHA256"] == BUILD15_PROOF["receipt"]
+            and original["source"] == W3_SOURCE_ROOT, "Original App15 preservation identity differs")
+    original_root = Path(contract["preservationReceipt"]["path"]).parent
+    copies = [(Path(original["retainedSource"]), original_root / "original-source-inventory.json", original["sourceInventorySHA256"])]
+    copies.extend((Path(value["retained"]), original_root / (name + "-original-inventory.json"), value["inventorySHA256"])
+                  for name, value in original["products"].items())
+    retained = []
+    for path, inventory_path, expected in copies:
+        rows = gate.json_ref({"path": str(inventory_path), "sha256": expected})
+        require(stage_control.inventory(gate.canonical(path, directory=True)) == rows,
+                "Retained original source/products bytes, modes or links changed")
+        retained.append({"root": str(path), "inventory": str(inventory_path), "inventorySHA256": expected, "entries": len(rows)})
+    reverified_raw = pinned(contract["preservationRevalidation"])
+    reverified = decode(reverified_raw)
+    require(sha(reverified_raw) == stage["originalPreservationReverifiedSHA256"]
+            and reverified == {"status": "PASS_RETAINED_ORIGINAL_SOURCE_AND_PRODUCTS_REVERIFIED",
+                 "receiptSHA256": APP16_PRESERVATION, "inventories": retained, "currentAppProductsEqualOriginal": True},
+            "Actual pre-stage original preservation revalidation differs")
+    cache_raw = pinned(contract["cacheQualification"])
+    require(sha(cache_raw) == APP16_CACHE_QUALIFICATION
+            and w3_ref(contract["stagingReceipt"]) == root_admission["sourceStaging"]
+            and w3_ref(contract["cacheQualification"]) == root_admission["cacheQualification"],
+            "Actual new stage/cache pins differ from the producer admission")
+    qualify_app16_cache(decode(cache_raw), receipt["inputs"])
+    return {"stageReceiptSHA256": sha(stage_raw), "stagePlanSHA256": sha(plan_raw),
+            "priorApp15PreservationSHA256": APP16_PRESERVATION,
+            "preservationRevalidationSHA256": sha(reverified_raw), "cacheRequalificationSHA256": sha(cache_raw),
+            "originalStageCacheReuseClaimAccepted": False, "retainedOriginalInventories": retained}
+
+
+def w3_phase_proofs(contract, receipt):
+    phases = contract["phaseReceipts"]
+    require(set(phases) == {"app", "ui"}, "Both original App/UI process outcomes required")
+    for phase in ("app", "ui"):
+        pins = phases[phase]
+        require(set(pins) == {"result", "processExit"}, "Closed original phase pin set required")
+        result, exited = decode(pinned(pins["result"])), decode(pinned(pins["processExit"]))
+        require(result == receipt[phase] and all(result.get(key) == value for key, value in exited.items())
+                and result["phase"] == exited["phase"] == phase
+                and result["sourceCommit"] == exited["sourceCommit"] == W3_SOURCE
+                and result["status"] == exited["status"] == "PASS_BUILD_EXIT_0"
+                and result["exitCode"] == exited["exitCode"] == 0
+                and result["cleanupErrors"] == result["termination"] == []
+                and result["ownedProcessGroup"] == "ABSENT_ESRCH"
+                and result["processExitReceiptSHA256"] == pins["processExit"]["sha256"]
+                and "build-for-testing" in result["argv"]
+                and all(any("-D " + flag in token for token in result["argv"]) for flag in FLAGS),
+                "Original source/flags/exit/owned-process proof is incomplete")
+
+
+def w3_native_sdk_proofs(admission, receipt, root_admission, source, gate, stage_control):
+    contract = admission["app16Producer"]
+    materialized = contract["nativeMaterialization"]
+    require(set(materialized) == {"assembly", "inventory", "simulator", "device"}, "Closed original two-slice materialization required")
+    assembly = decode(pinned(materialized["assembly"]))
+    framework_raw = pinned(materialized["inventory"])
+    framework = decode(framework_raw)
+    require(materialized["assembly"]["sha256"] == receipt["assemblyReceiptSHA256"]
+            == root_admission["pins"]["nativeAssemblyReceiptSHA256"]
+            == "c9c90e3a12868bcedf5f0a4f116c4dc1c388bdcddd0e9f0170c047684c500231"
+            and sha(framework_raw) == root_admission["pins"]["nativeFrameworkInventorySHA256"]
+            == "fa999a27c00bfb572cf91ddd65b30e1b7618827c75631f0ee0546748c83f7dbf"
+            and stage_control.native_files(source / "Dependencies/Middleware/Lib.xcframework") == framework,
+            "Actual original native assembly or complete framework bytes changed")
+    helper = source / "Tools/PinkhaDualEngineRuntime/runtime_identity.py"
+    require(digest(helper) == "306c0cabcf39c6de55470d642cf5b9e6e9176d73351966330b90cf333b9359b0",
+            "Original strict Native identity validator changed")
+    spec = importlib.util.spec_from_file_location("wave3_original_native_identity", helper)
+    runtime = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(runtime)
+    values = {}
+    for kind in ("simulator", "device"):
+        row = materialized[kind]
+        require(set(row) == {"receipt", "command", "log"}, "Both original native receipt/command/log triples required")
+        data = {name: pinned(reference) for name, reference in row.items()}
+        require([command for command in decode(data["receipt"])["commands"] if command["name"] == "combined-gomobile-bind"]
+                == [decode(data["command"])], "Original native compiler command is not the receipt's actual command")
+        values[kind] = dict(data, expectedReceiptSHA256=root_admission["pins"][kind + "ReceiptSHA256"],
+                           expectedCommandSHA256=root_admission["pins"][kind + "CommandSHA256"])
+    manifest = raw(source / "Tools/PinkhaDualEngineRuntime/source-permission-manifest.json")
+    require(sha(manifest) == MANIFEST and root_admission["nativeBuildDate"] == "2026-11-26", "Original exact8ac identity/date differs")
+    qualified = runtime.qualify_application(manifest, "2026-11-26",
+        raw(source / "Modules/ProtobufMessages/Sources/PinkhaAnyEmbeddedBridge.swift"), values)
+    require(qualified["identity"] == assembly["runtimeIdentity"], "Original consumer and assembled Native identity differ")
+    require(set(admission["runtimeIdentity"]) == {"before", "after-app", "after-ui"}, "Three original Native boundaries required")
+    for reference in admission["runtimeIdentity"].values():
+        require(decode(pinned(reference)) == qualified, "Actual before/after Native producer qualification changed")
+    for kind, identifier in (("simulator", "ios-arm64-simulator"), ("device", "ios-arm64")):
+        binary = source / "Dependencies/Middleware/Lib.xcframework" / identifier / "Lib.framework/Lib"
+        require(digest(binary) == qualified["slices"][kind]["binarySHA256"] == assembly["inputs"][kind]["binarySHA256"]
+                and binary.stat().st_size == qualified["slices"][kind]["binaryBytes"] == assembly["inputs"][kind]["binaryBytes"],
+                "Original Native slice bytes or size differs")
+
+    sdk_source = source / "Tools/Hanlin/source.json"
+    sdk_helper = source / "Tools/Hanlin/prepare_sdk.py"
+    require(digest(sdk_source) == W3_SDK_SOURCE_SHA and digest(sdk_helper) == W3_SDK_HELPER_SHA,
+            "Canonical385 source pin or original SDK verifier changed")
+    spec = importlib.util.spec_from_file_location("wave3_original_sdk_verifier", sdk_helper)
+    sdk = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sdk)
+    sdk_root = source / "Dependencies/Hanlin"
+    marker = sdk_root / ".pinkha-source.json"
+    require(digest(marker) == SDK_RECEIPT == receipt["inputs"]["sdkReceiptSHA256"], "Actual canonical SDK receipt changed")
+    sdk_record = sdk.verify(sdk_root)
+    require(sdk_record["revision"] == W3_SDK_REVISION, "Canonical SDK revision differs from exact frozen source")
+    boundaries = contract["dependencyReceipts"]
+    require(set(boundaries) == {"before", "after-app", "after-ui"}, "Three original Native/SDK boundaries required")
+    expected_log = ("Verified Hanlin " + W3_SDK_REVISION + " at " + str(sdk_root) + "\n").encode()
+    for row in boundaries.values():
+        require(set(row) == {"receipt", "sdkLog"}, "Closed original dependency boundary required")
+        observed, log = decode(pinned(row["receipt"])), pinned(row["sdkLog"])
+        require(observed == {"status": "PASS_EXACT_NATIVE_AND_SDK_CONTENT",
+                    "nativeInventorySHA256": sha(framework_raw), "nativeFiles": len(framework),
+                    "sdkCommand": ["python3", str(sdk_helper), "--check"], "sdkExitCode": 0,
+                    "sdkLogSHA256": sha(log)} and log == expected_log,
+                "Original successful Native/SDK boundary output differs")
+    require(set(contract["sdkStagingLogs"]) == {"materialization", "check"}, "Actual canonical SDK staging/check logs required")
+    for reference in contract["sdkStagingLogs"].values():
+        require(pinned(reference) == expected_log, "Actual canonical SDK staging/check output differs")
+    return {"sourceManifestSHA256": MANIFEST, "nativeFrameworkFiles": len(framework),
+            "canonicalSDKRevision": W3_SDK_REVISION, "sdkReceiptSHA256": SDK_RECEIPT,
+            "sdkFiles": len(sdk_record["files"]), "nativeRuntimeExecutedByThisCheck": False}
+
+
+def qualify_app16_producer(admission, source, receipt):
+    """Original receipt gate plus exact missing Wave2 preservation boundaries."""
+    frozen = w3_freeze(admission)
+    source = Path(source)
+    require(source == Path(W3_SOURCE_ROOT) and receipt == decode(pinned(frozen["producerReceipt"])),
+            "Actual source or successful producer receipt differs from the frozen input")
+    contract = admission["app16Producer"]
+    gate = w3_module("receipt_admission", source)
+    adapter = w3_module("wave3_shared_build", source)
+    stage_control = w3_module("stage_wave3_source", source)
+    require(contract["buildAdmission"]["sha256"] == W3_BUILD_ADMISSION_SHA,
+            "Actual authorized503ec build admission required")
+    root_admission = adapter.load_admission(Path(contract["buildAdmission"]["path"]),
+                                            contract["buildAdmission"]["sha256"], W3_SOURCE)
+    require(receipt["controlAdmission"]["admission"] == w3_ref(contract["buildAdmission"])
+            and receipt["controlAdmission"]["adapterSHA256"] == W3_ADAPTER_SHA,
+            "Actual producer uses a different root admission or adapter")
+    inventory_raw = pinned(contract["compilerInventory"])
+    require(sha(inventory_raw) == W3_COMPILER_INVENTORY_SHA
+            and inventory_raw == raw(source / W3_COMPILER_INVENTORY_PATH), "Frozen43-native/9-UI compiler inventory changed")
+    selected = decode(inventory_raw)
+    require(root_admission["selectedNativeTestSources"] == selected["selectedNativeTestSources"]
+            and root_admission["selectedUITestSources"] == selected["selectedUITestSources"]
+            and len(selected["selectedNativeTestSources"]) == 43 and len(selected["selectedUITestSources"]) == 9,
+            "Root compiler source selection differs from the exact frozen inventory")
+    receipt_contract = decode(pinned(contract["receiptContract"]))
+    require(receipt_contract["source"] == {"root": W3_SOURCE_ROOT, "commit": W3_SOURCE, "tree": W3_TREE,
+                "before": w3_ref(admission["sourceBefore"]), "after": w3_ref(admission["sourceAfter"])},
+            "Original receipt gate source contract differs")
+    build_contract = receipt_contract["build"]
+    require(build_contract["receipt"] == w3_ref(admission["producerReceipt"])
+            and build_contract["producer"] == w3_ref(contract["builder"])
+            and build_contract["assembly"] == w3_ref(contract["nativeMaterialization"]["assembly"])
+            and build_contract["logs"] == {name: w3_ref(pin) for name, pin in admission["producerLogs"].items()}
+            and build_contract["originalUICopy"] == w3_ref(admission["originalUICopy"])
+            and build_contract["products"] == w3_ref(admission["completeProducerProducts"]),
+            "Shared receipt/producer/log/copy/product references differ from the original gate")
+    observed = gate.verify_source(receipt_contract["source"])
+    require(len(observed["files"]) > 1000, "Complete source inventory required")
+    checked = gate.verify_build(receipt_contract, observed)
+    require(checked == receipt, "Original receipt gate qualified a different producer")
+    for row in selected["sources"]:
+        require(observed["files"][row["path"]] == {key: row[key] for key in ("bytes", "sha256")},
+                "Actual selected source differs from its root-frozen reviewed file")
+    inverse = w3_two_stage_inverse(contract, receipt, root_admission, adapter)
+    staging = w3_stage_proof(contract, receipt, root_admission, source, gate, stage_control)
+    w3_phase_proofs(contract, receipt)
+    dependencies = w3_native_sdk_proofs(admission, receipt, root_admission, source, gate, stage_control)
+    native = gate.json_ref(receipt["nativeCompilationProof"])
+    require(native["originalCompilerQualificationSHA256"] == contract["compilerInputs"]["sha256"],
+            "Original focused compiler qualification is not bound by the full native proof")
+    for phase, label, module in (("app", "native", "AnytypeTests"), ("ui", "ui", "PinkhaStage1AcceptanceUITests")):
+        proof = gate.json_ref(receipt[label + "CompilationProof"])
+        log = Path(admission["producerLogs"][phase]["path"])
+        for row in proof["actualCompilerFileLists"]:
+            actual = adapter.w3_compiler_invocations(log, module, Path(row["originalPath"]))
+            require(row["compilerInvocation"] == actual[0] and row["compilerInvocations"] == actual,
+                    "The retained compiler proof does not record the actual original invocation witnesses")
+    return {"sourceCommit": W3_SOURCE, "tree": W3_TREE, **inverse, **staging,
+            "originalReceiptGateSHA256": W3_GATE_SHA, "completeCompilerGate": True,
+            "nativeCompilationProof": receipt["nativeCompilationProof"],
+            "uiCompilationProof": receipt["uiCompilationProof"], "dependencies": dependencies,
+            "actualNativeExecutionByThisIntake": False}
+
+
+def qualify_app16_runtime(admission, source):
+    w3_freeze(admission)
+    return _W3_ORIGINAL_RUNTIME(admission, source)
+
+
+def qualify_app16_compiler_inputs(admission, source, receipt):
+    w3_freeze(admission)
+    return _W3_ORIGINAL_COMPILER(admission, source, receipt)
+
+
+def admit_app16_and_clone_products(admission, root, evidence, commands):
+    w3_freeze(admission)
+    # This exact historical body still verifies both build flags/logs, complete
+    # source/helper closure, Native identity, twelve complete UI inputs, both
+    # full product inventories/modes/links, descriptors and unchanged APFS copies.
+    return _W3_ORIGINAL_CLONER(admission, root, evidence, commands)
+
+
+def admit_and_clone_products(admission, root, evidence, commands):
+    w3_freeze(admission)
+    return admit_app16_and_clone_products(admission, root, evidence, commands)
