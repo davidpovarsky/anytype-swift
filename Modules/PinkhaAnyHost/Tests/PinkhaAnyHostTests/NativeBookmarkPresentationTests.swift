@@ -177,3 +177,139 @@ final class NativeBookmarkPresentationTests: XCTestCase {
             catalog: catalog, definitions: definitions, policy: .init(), canWrite: canWrite)
     }
 }
+
+extension NativeBookmarkPresentationTests {
+    func testBookmarkCreationRetainsEmptyNameAndOneExactMappedURL() throws {
+        let original = try snapshot()
+        let binding = try AnyNativeBookmarkCreationBinding(catalog: original.catalog,
+            typeID: original.currentTypeID, definitions: Array(original.definitions.values), policy: .init())
+        let schema = try AnyHierarchySchema(collectionID: "wiki", parentPropertyID: "parent",
+                                             positionPropertyID: "position", folderPropertyID: "folder")
+        let plan = try AnyHierarchyCreationPlan(workspace: original.workspace,
+            mutationID: String(repeating: "a", count: 32), schema: schema,
+            typeID: original.currentTypeID, title: "", parentID: nil, position: "a", kind: .writingDocument)
+        let frame = try bookmarkCreationFrame(workspace: original.workspace, typeID: original.currentTypeID,
+                                               ownerID: owner, propertyID: property, collections: plan.collections)
+        for source in ["https://example.org/source?text=e%CC%81#native",
+                       "https://example.org/source?ref=%D7%A9%D7%9C%D7%95%D7%9D#%D7%90"] {
+            let intent = try binding.makeIntent(frame: frame, mutationID: plan.mutationID, collections: plan.collections,
+                                                initialProperties: plan.initialProperties, sourceURL: source)
+            XCTAssertEqual(intent.workspace, original.workspace)
+            XCTAssertEqual(intent.typeID, original.currentTypeID)
+            XCTAssertEqual(intent.mutationID, plan.mutationID)
+            XCTAssertEqual(Set(intent.collections), Set([schema.collectionID, owner]))
+            XCTAssertEqual(intent.initialProperties["any"], .object(["name": .string("")]))
+            XCTAssertEqual(intent.initialProperties[schema.collectionID], plan.initialProperties[schema.collectionID])
+            let stored = try XCTUnwrap(intent.initialProperties[owner]?[property]?.string)
+            XCTAssertEqual(Array(stored.utf8), Array(source.utf8))
+            XCTAssertEqual(Set(try XCTUnwrap(intent.initialProperties.object).keys), Set(["any", schema.collectionID, owner]))
+            XCTAssertEqual(Set(try XCTUnwrap(intent.initialProperties[owner]?.object).keys), Set([property]))
+            let retained = try JSONDecoder().decode(AnyNativeObjectCreationIntent.self,
+                                                     from: JSONEncoder().encode(intent))
+            XCTAssertEqual(retained.fingerprint, intent.fingerprint)
+            XCTAssertEqual(retained.bookmarkDefinitionFrame, frame.definitionFrame)
+            let sameFrame = try binding.makeIntent(frame: frame, mutationID: plan.mutationID,
+                collections: plan.collections, initialProperties: plan.initialProperties, sourceURL: source)
+            XCTAssertEqual(sameFrame.fingerprint, retained.fingerprint)
+        }
+    }
+
+    func testBookmarkCreationRefusesHiddenManagedAndChangedBindings() throws {
+        let original = try snapshot()
+        let definitions = Array(original.definitions.values)
+        let binding = try AnyNativeBookmarkCreationBinding(catalog: original.catalog,
+            typeID: original.currentTypeID, definitions: definitions, policy: .init())
+        let hidden = try snapshot(descriptorChange: {
+            $0["definitionHidden"] = .array([Self.address("mapped-property-owner", "mapped-source-url")])
+        })
+        XCTAssertThrowsError(try AnyNativeBookmarkCreationBinding(catalog: hidden.catalog,
+            typeID: hidden.currentTypeID, definitions: Array(hidden.definitions.values), policy: .init()))
+        XCTAssertThrowsError(try AnyNativeBookmarkCreationBinding(catalog: original.catalog,
+            typeID: original.currentTypeID, definitions: definitions,
+            policy: .init(hiddenPropertyKeys: [key()])))
+        XCTAssertThrowsError(try AnyNativeBookmarkCreationBinding(catalog: original.catalog,
+            typeID: original.currentTypeID, definitions: definitions,
+            policy: .init(hiddenCollectionIDs: [owner])))
+        let otherRun = try AnyNativePropertyCatalog(workspace: original.workspace,
+            generation: original.generation, engineStartedAt: "replacement-native-run",
+            types: original.catalog.types, collections: original.catalog.collections)
+        XCTAssertThrowsError(try binding.requireMatching(.init(catalog: otherRun,
+            typeID: original.currentTypeID, definitions: definitions, policy: .init())))
+        var changedDefinitions = definitions
+        let sourceKey = try key()
+        let index = try XCTUnwrap(changedDefinitions.firstIndex(where: { $0.key == sourceKey }))
+        var raw = try XCTUnwrap(changedDefinitions[index].raw.object)
+        raw["name"] = .string("Changed source definition")
+        changedDefinitions[index] = try .init(ownerID: owner, raw: .object(raw))
+        XCTAssertThrowsError(try binding.requireMatching(.init(catalog: original.catalog,
+            typeID: original.currentTypeID, definitions: changedDefinitions, policy: .init())))
+    }
+
+    func testBookmarkCreationReadbackRequiresExactSourceAndOriginalIdentity() throws {
+        let original = try snapshot()
+        let binding = try AnyNativeBookmarkCreationBinding(catalog: original.catalog,
+            typeID: original.currentTypeID, definitions: Array(original.definitions.values), policy: .init())
+        let source = try XCTUnwrap(original.bookmarkSourceRow?.value?.string)
+        let frame = try bookmarkCreationFrame(workspace: original.workspace, typeID: original.currentTypeID,
+                                               ownerID: owner, propertyID: property, collections: [])
+        let intent = try binding.makeIntent(frame: frame, mutationID: String(repeating: "b", count: 32), collections: [],
+            initialProperties: .object(["any": .object(["name": .string("Native bookmark")])]), sourceURL: source)
+        XCTAssertNoThrow(try binding.requireCreated(original, intent: intent,
+            objectID: original.objectID, policy: .init()))
+        let changed = try binding.makeIntent(frame: frame, mutationID: intent.mutationID, collections: [],
+            initialProperties: .object(["any": .object(["name": .string("Native bookmark")])]),
+            sourceURL: "https://example.org/source?chapter=1#other")
+        XCTAssertThrowsError(try binding.requireCreated(original, intent: changed,
+            objectID: original.objectID, policy: .init()))
+        XCTAssertThrowsError(try binding.requireCreated(original, intent: intent,
+            objectID: "different-native-object", policy: .init()))
+        XCTAssertThrowsError(try binding.makeIntent(frame: frame, mutationID: intent.mutationID, collections: [owner],
+            initialProperties: .object(["any": .object(["name": .string("")])]), sourceURL: source))
+    }
+
+    func testBookmarkCreationRefusesFramesOutsideTheSelectedBinding() throws {
+        let original = try snapshot()
+        let binding = try AnyNativeBookmarkCreationBinding(catalog: original.catalog,
+            typeID: original.currentTypeID, definitions: Array(original.definitions.values), policy: .init())
+        let otherWorkspace = try AnyTorahWorkspace(accountID: original.workspace.accountID, spaceID: "other-space")
+        let frames = [
+            try bookmarkCreationFrame(workspace: otherWorkspace, typeID: original.currentTypeID,
+                ownerID: owner, propertyID: property, collections: []),
+            try bookmarkCreationFrame(workspace: original.workspace, typeID: "other-bookmark-type",
+                ownerID: owner, propertyID: property, collections: []),
+            try bookmarkCreationFrame(workspace: original.workspace, typeID: original.currentTypeID,
+                ownerID: "other-property-owner", propertyID: property, collections: []),
+            try bookmarkCreationFrame(workspace: original.workspace, typeID: original.currentTypeID,
+                ownerID: owner, propertyID: "other-source-url", collections: []),
+            try bookmarkCreationFrame(workspace: original.workspace, typeID: original.currentTypeID,
+                ownerID: owner, propertyID: property, collections: ["unexpected-collection"]),
+            try bookmarkCreationFrame(workspace: original.workspace, typeID: original.currentTypeID,
+                ownerID: owner, propertyID: property, collections: [], canWrite: false)
+        ]
+        for frame in frames {
+            XCTAssertThrowsError(try binding.makeIntent(frame: frame,
+                mutationID: String(repeating: "c", count: 32), collections: [],
+                initialProperties: .object(["any": .object(["name": .string("")])]),
+                sourceURL: "https://example.org/source?chapter=1#selected"))
+        }
+    }
+
+    // Controlled decoded API responses exercise only the downstream binding.
+    // These tokens are not native signatures and no Native create is executed.
+    private func bookmarkCreationFrame(workspace: AnyTorahWorkspace, typeID: String,
+        ownerID: String, propertyID: String, collections: [String], canWrite: Bool = true) throws
+        -> AnyNativeBookmarkCreationFrame {
+        let token = Data("controlled-bookmark-definition".utf8).base64EncodedString()
+            .replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
+        let memberships = Set(collections + [ownerID]).sorted { $0.utf8.lexicographicallyPrecedes($1.utf8) }
+        let response: AnyJSON = .object([
+            "contract": .string("pinkha-native-bookmark-create-v1"), "version": .integer(1),
+            "accountId": .string(workspace.accountID), "spaceId": .string(workspace.spaceID),
+            "typeId": .string(typeID), "collections": .array(memberships.map(AnyJSON.string)),
+            "propertyOwnerId": .string(ownerID), "propertyId": .string(propertyID),
+            "canWrite": .bool(canWrite), "frame": .string(token)
+        ])
+        return try .init(value: response, workspace: workspace, typeID: typeID, requestedCollections: collections)
+    }
+}

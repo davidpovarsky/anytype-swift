@@ -1,0 +1,79 @@
+{
+  "schema": "pinkha-bookmark-shared-queue-independent-review/v2",
+  "reviewer": "Wave2 editor agent",
+  "reviewedAtUTC": "2026-11-27T17:50:17.213549+00:00",
+  "status": "SOURCE_ONLY_ACCEPTED_NO_REMAINING_CONCRETE_BLOCKER",
+  "scope": "Selected creator API, same repository mutation queue, and two new Integration test cases. No Native contract, whole model authorization, compiler or runtime acceptance.",
+  "repository": {
+    "path": "candidate/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyRepository.swift",
+    "bytes": 22631,
+    "sha256": "8c96a95c2182c9081dc1bb11f86e66a8d036815f3ac9eebd9a57900334f0a4d7"
+  },
+  "tests": {
+    "path": "candidate/Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift",
+    "bytes": 36428,
+    "sha256": "b0a013646bbcde37fcbf956ca215290f7de08bfd809eafc13904db024d1a6d0d"
+  },
+  "modelCallShapeSHA256": "d442b3605eeaa86d4e9c08067c4c7b17921fd0cefd8e21b48e9e91d9254f1a56",
+  "predecessorTests": {
+    "path": "review-v3/candidate/Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift",
+    "bytes": 35651,
+    "sha256": "040196fe673db5eb4c54ac099f651ec9c9a96a56e793b5ecda49406996b37311"
+  },
+  "originalTestPrefix": {
+    "bytes": 30174,
+    "sha256": "306aaa783a635eba2123c3403f572ccc104f951f4ce11574f6700cea28b5eaec",
+    "byteIdentical": true,
+    "originalMethodsRetained": 23
+  },
+  "evidence": {
+    "queueCorrection": {
+      "path": "queue-ownership-correction.json",
+      "bytes": 1102,
+      "sha256": "bb07ca7ea11be62ac359fed94d97670fd635a4ddb50fc24f855bd03623f97c47"
+    },
+    "cancellationCorrection": {
+      "path": "queue-cancellation-correction.json",
+      "bytes": 15142,
+      "sha256": "4e2726165888b0b54c969c63952392d7c181bf0afb4ca918d380bed4bab00d74"
+    },
+    "previousIndependentFinding": {
+      "path": "editor-queue-review-v1.json",
+      "bytes": 2622,
+      "sha256": "be2ed399d023ae392efe05d7f2d88d4b14b7dd4229a17cd36d96b8e20e3ac48c"
+    },
+    "fullSourceInverse": {
+      "path": "source-inverse.json",
+      "bytes": 127852,
+      "sha256": "086cbfc0d0b4080eb8dfeedd549ffa1ae835c1fe5cdb5dfa323baa28a4b243bc"
+    }
+  },
+  "independentProof": {
+    "repositoryFullInverseEqualsOriginal": true,
+    "originalCreateSerialClosureByteIdentical": true,
+    "originalSerialFunctionAndEndByteIdentical": true,
+    "cancellationSuccessorFullInverseEquals0401": true,
+    "onlyTwoAppendedMethodsAndTwoDeclaredCases": true
+  },
+  "assessment": [
+    "The optional using argument selects the supplied creator or the existing default. The selected workspace is checked with the original plan/schema/allowed-Type checks before serial dispatch. Existing callers that omit using, including trailing authorize closures, retain the same default selection and original queue body.",
+    "The corrected Bookmark model passes its adapter to the existing live repository instead of allocating a per-request repository. Both override and default create therefore enter the same actor mutationTail. The original authorization, membership, parent validation and readback sequence remains byte-identical in create.",
+    "The foreign-workspace test requires incompatibleSchema before fixture creation, verifies count zero, and then proves ordinary default creation remains available. The helper types conform to the existing Sendable creator protocol and retain the existing actor fixture.",
+    "The replacement concurrency test observes first creator entry and second call entry, then cancels both structured children, finishes the held stream and collects both Result values before asserting. A successful dispatch records an issue; both failures must be CancellationError, with zero created objects. A subsequent uncancelled default create on the same repository must be created-1 with the expected title and count one.",
+    "This removes the prior late-scheduling weakness: under the specified serial-bypass counterexample the second default fixture path has no cancellation check and still creates, even if its later work is scheduled after cancellation. This is a source argument for the regression, not an executed mutant or test result.",
+    "hierarchyCreationSignal checks cancellation after group.next and before treating false/nil as a missing boundary. A canceled AsyncStream wait therefore cannot spuriously become boundaryNotReached. Its five-second timeout and cancelAll defer remain; success consumes one iterator to completion before canceling the timer, so the next successful use of defaultRead is not canceled by the earlier completed iterator.",
+    "A handoff failure is retained, both children are canceled and the release stream is finished, and all Result outcomes are drained before the handoff error is rethrown. The finite actor fixture performs no external I/O and the original serial cancellation handler forwards cancellation to its owned task. No detached task or production test hook was added."
+  ],
+  "resolvedFinding": "BOOKMARK-QUEUE-TEST-01",
+  "findings": [],
+  "boundaries": {
+    "newMethods": 2,
+    "newDeclaredCases": 2,
+    "swiftCompilerOrTestsRun": false,
+    "controlsOrMutantRun": false,
+    "hostOrNativeCalls": false,
+    "sourceEditsByReviewer": false,
+    "publicationOrRouteOpeningAuthorizedByReview": false,
+    "rootCW3ContractCoordinationStillRequired": true
+  }
+}

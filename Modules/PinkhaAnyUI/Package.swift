@@ -15,6 +15,8 @@ let package = Package(
         .package(path: "../PinkhaAnyHanlin"),
         .package(path: "../Loc"),
         .package(path: "../DesignKit"),
+        .package(path: "../AnytypeCore"),
+        .package(path: "../Assets"),
         .package(url: "https://github.com/davidpovarsky/TorahInspectorKit.git",
                  revision: "26beca175d64a4d34e3567f2bbb4bf308d714478")
     ],
@@ -27,6 +29,8 @@ let package = Package(
             .product(name: "PinkhaHanlinUI", package: "PinkhaAnyHanlin", condition: .when(platforms: [.iOS])),
             .product(name: "Loc", package: "Loc", condition: .when(platforms: [.iOS, .macOS])),
             .product(name: "DesignKit", package: "DesignKit", condition: .when(platforms: [.iOS])),
+            .product(name: "AnytypeCore", package: "AnytypeCore", condition: .when(platforms: [.iOS])),
+            .product(name: "Assets", package: "Assets", condition: .when(platforms: [.iOS])),
             .product(name: "TorahInspectorCore", package: "TorahInspectorKit"),
             .product(name: "TorahInspectorUI", package: "TorahInspectorKit",
                      condition: .when(platforms: [.iOS, .macOS]))

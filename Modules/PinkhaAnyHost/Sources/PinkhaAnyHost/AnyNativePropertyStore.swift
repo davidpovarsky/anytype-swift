@@ -120,6 +120,131 @@ public struct AnyNativePropertyCatalog: Sendable {
     }
 }
 
+/// A read-only binding for creating a Bookmark with an already installed Type.
+/// It is not write authority: callers still use the original creator, journal,
+/// current member/lease checks, and native readback.
+public struct AnyNativeBookmarkCreationBinding: Sendable {
+    public let workspace: AnyTorahWorkspace
+    public let generation: UUID
+    public let engineStartedAt: String
+    public let typeID: String
+    public let sourceURLKey: AnyNativePropertyKey
+    private let definitionFingerprint: String
+
+    public static func isCandidate(_ type: AnyNativePropertyOwner) -> Bool {
+        type.isSelectableDocumentType && !type.builtIn &&
+            type.raw["layout"]?["type"] == .string("bookmark") &&
+            type.raw["layout"]?["config"]?["pinkhaHeart"]?["contract"] ==
+                .string(AnyNativeImportedTypePresentation.bookmarkContract) &&
+            type.raw["layout"]?["config"]?["pinkhaHeart"]?["sourceRecommendedLayout"] == .integer(11)
+    }
+
+    /// The existing Properties/Link policy, shared with creation. The original
+    /// Anytype URL input validates first; storage retains the supplied text.
+    public static func websiteURL(_ text: String) -> URL? {
+        guard !text.isEmpty, text.utf8.count <= 8192,
+              text == text.trimmingCharacters(in: .whitespacesAndNewlines),
+              let parts = URLComponents(string: text),
+              let scheme = parts.scheme?.lowercased(), ["http", "https"].contains(scheme),
+              let host = parts.host, !host.isEmpty, parts.user == nil, parts.password == nil,
+              let url = parts.url else { return nil }
+        return url
+    }
+
+    init(catalog: AnyNativePropertyCatalog, typeID: String,
+         definitions: [AnyNativePropertyDefinition], policy: AnyNativePropertyPolicy) throws {
+        guard let type = catalog.types.first(where: { $0.id == typeID }), Self.isCandidate(type),
+              let ownerID = type.raw["layout"]?["config"]?["pinkhaHeart"]?["propertyOwnerId"]?.string,
+              let owner = catalog.collections.first(where: { $0.id == ownerID && !$0.builtIn }),
+              !policy.isManagedCollection(ownerID), !policy.hiddenCollectionIDs.contains(ownerID),
+              definitions.count <= 4096, Set(definitions.map(\.key)).count == definitions.count else {
+            throw AnyNativePropertyError.invalidCatalog
+        }
+        let relevant = definitions.filter { ["any", typeID, ownerID].contains($0.key.ownerID) }
+        // These are proposed memberships and empty new-object values, never a
+        // fabricated current record. The original descriptor validator owns all
+        // imported role/definition/layout checks.
+        guard let presentation = try AnyNativeImportedTypePresentation(type: type, catalog: catalog,
+            collectionIDs: [ownerID], definitions: relevant, raw: .object([:])),
+              let key = presentation.sourceURLKey,
+              !presentation.defaultHiddenKeys.contains(key.visibilityKey),
+              !policy.hiddenPropertyKeys.contains(key), !policy.managed(key),
+              key.ownerID != AnyNativePropertyStore.presentationCollectionID,
+              relevant.contains(where: { $0.key.ownerID == "any" && $0.key.propertyID == "name" &&
+                  $0.kind == .string && $0.scope == "synced" }) else {
+            throw AnyNativePropertyError.readOnly
+        }
+        let proof: AnyJSON = .object([
+            "type": type.raw, "owner": owner.raw,
+            "definitions": .array(relevant.sorted {
+                AnyNativePropertyStore.utf8Less($0.key.visibilityKey, $1.key.visibilityKey)
+            }.map { .object(["ownerId": .string($0.key.ownerID), "definition": $0.raw]) })
+        ])
+        self.workspace = catalog.workspace; self.generation = catalog.generation
+        self.engineStartedAt = catalog.engineStartedAt; self.typeID = typeID; self.sourceURLKey = key
+        self.definitionFingerprint = AnyContentDigest.sha256(try AnyHostCanonical.bytes(proof, maximumBytes: 4_194_304))
+    }
+
+    public func requireMatching(_ current: Self) throws {
+        guard workspace == current.workspace, generation == current.generation,
+              engineStartedAt == current.engineStartedAt else { throw AnyHostError.wrongWorkspace }
+        guard typeID == current.typeID, sourceURLKey == current.sourceURLKey,
+              definitionFingerprint == current.definitionFingerprint else { throw AnyHostError.changedDocument }
+    }
+
+    /// Adds the source value exactly once, without a second Name/URL namespace,
+    /// Note marker, preview metadata, schema mutation, or an editor block.
+    public func makeIntent(frame: AnyNativeBookmarkCreationFrame,
+                           mutationID: String, collections: [String],
+                           initialProperties: AnyJSON, sourceURL: String) throws -> AnyNativeObjectCreationIntent {
+        guard frame.workspace.accountID.utf8.elementsEqual(workspace.accountID.utf8),
+              frame.workspace.spaceID.utf8.elementsEqual(workspace.spaceID.utf8),
+              frame.typeID.utf8.elementsEqual(typeID.utf8),
+              frame.propertyOwnerID.utf8.elementsEqual(sourceURLKey.ownerID.utf8),
+              frame.propertyID.utf8.elementsEqual(sourceURLKey.propertyID.utf8),
+              Self.websiteURL(sourceURL) != nil, !sourceURL.utf8.contains(0),
+              var groups = initialProperties.object, groups[sourceURLKey.ownerID] == nil,
+              Set(collections).count == collections.count,
+              !collections.contains(sourceURLKey.ownerID),
+              let name = groups["any"]?["name"]?.string,
+              name.utf8.count <= 4096, !name.utf8.contains(0) else {
+            throw AnyNativeCreationError.invalidIntent
+        }
+        guard frame.canWrite else { throw AnyNativePropertyError.readOnly }
+        let expectedCollections = Set(collections + [sourceURLKey.ownerID]).sorted {
+            $0.utf8.lexicographicallyPrecedes($1.utf8)
+        }
+        guard frame.collections.count == expectedCollections.count,
+              zip(frame.collections, expectedCollections).allSatisfy({ $0.0.utf8.elementsEqual($0.1.utf8) }) else {
+            throw AnyNativeCreationError.invalidIntent
+        }
+        groups[sourceURLKey.ownerID] = .object([sourceURLKey.propertyID: .string(sourceURL)])
+        // Only the genuine native reader supplies this immutable frame. The
+        // original creator rechecks capability/authority at eventual dispatch.
+        return try frame.makeCreationIntent(mutationID: mutationID, initialProperties: .object(groups))
+    }
+
+    public func requireCreated(_ snapshot: AnyNativePropertySnapshot, intent: AnyNativeObjectCreationIntent,
+                               objectID: String, policy: AnyNativePropertyPolicy) throws {
+        guard intent.workspace == workspace, intent.typeID == typeID,
+              intent.bookmarkDefinitionFrame != nil,
+              snapshot.workspace == workspace, snapshot.objectID == objectID,
+              snapshot.currentTypeID == typeID, snapshot.canWrite,
+              Set(intent.collections).isSubset(of: Set(snapshot.collectionIDs)),
+              let expected = intent.initialProperties[sourceURLKey.ownerID]?[sourceURLKey.propertyID]?.string,
+              let actual = snapshot.bookmarkSourceRow?.value?.string,
+              actual.utf8.elementsEqual(expected.utf8), snapshot.bookmarkSourceURL != nil,
+              let expectedName = intent.initialProperties["any"]?["name"]?.string,
+              let actualName = snapshot.raw["any"]?["name"]?.string,
+              actualName.utf8.elementsEqual(expectedName.utf8) else {
+            throw AnyNativeCreationError.createdObjectIncomplete(objectID)
+        }
+        let current = try Self(catalog: snapshot.catalog, typeID: snapshot.currentTypeID,
+                               definitions: Array(snapshot.definitions.values), policy: policy)
+        try requireMatching(current)
+    }
+}
+
 public struct AnyNativePropertyDefinition: Equatable, Sendable {
     public enum Kind: String, Sendable { case string, number, boolean, null, array, object, datetime }
     public let key: AnyNativePropertyKey
@@ -195,13 +320,8 @@ public struct AnyNativePropertySnapshot: Sendable {
     }
     /// Opening is a user action. Unsupported values remain unchanged in raw storage.
     public var bookmarkSourceURL: URL? {
-        guard let text = bookmarkSourceRow?.value?.string, !text.isEmpty,
-              text.utf8.count <= 8192, text == text.trimmingCharacters(in: .whitespacesAndNewlines),
-              let parts = URLComponents(string: text),
-              let scheme = parts.scheme?.lowercased(), ["http", "https"].contains(scheme),
-              let host = parts.host, !host.isEmpty, parts.user == nil, parts.password == nil,
-              let url = parts.url else { return nil }
-        return url
+        guard let text = bookmarkSourceRow?.value?.string else { return nil }
+        return AnyNativeBookmarkCreationBinding.websiteURL(text)
     }
     /// Effective hidden keys: persisted keys (including unknown future keys),
     /// or explicit imported-Type defaults until preferences are first stored.
@@ -307,6 +427,29 @@ public struct AnyNativePropertyStore: Sendable {
         try await validate(lease)
         return try .init(workspace: workspace, generation: lease.generation, engineStartedAt: lease.engineStartedAt,
                          types: types, collections: collections)
+    }
+
+    /// Read-only selection of an existing imported Bookmark schema. No missing
+    /// Type, Collection or field is installed while the user opens or submits UI.
+    public func bookmarkCreationBinding(typeID: String, lease: AnyHostLease) async throws -> AnyNativeBookmarkCreationBinding {
+        try await validate(lease)
+        let catalog = try await self.catalog(lease: lease)
+        guard let type = catalog.types.first(where: { $0.id == typeID }),
+              AnyNativeBookmarkCreationBinding.isCandidate(type),
+              let ownerID = type.raw["layout"]?["config"]?["pinkhaHeart"]?["propertyOwnerId"]?.string,
+              AnyEditorBlock.validID(ownerID),
+              catalog.collections.contains(where: { $0.id == ownerID && !$0.builtIn }),
+              !policy.isManagedCollection(ownerID), !policy.hiddenCollectionIDs.contains(ownerID) else {
+            throw AnyNativePropertyError.unavailableDocumentType
+        }
+        var definitions = try await propertyDefinitions(ownerID: "any", collection: false, lease: lease)
+        definitions += try await propertyDefinitions(ownerID: typeID, collection: false, lease: lease)
+        definitions += try await propertyDefinitions(ownerID: ownerID, collection: true, lease: lease)
+        let binding = try AnyNativeBookmarkCreationBinding(catalog: catalog, typeID: typeID,
+                                                           definitions: definitions, policy: policy)
+        try Task.checkCancellation()
+        try await validate(lease)
+        return binding
     }
 
     /// Raw namespaces and unknown/orphan values are retained. Definitions only

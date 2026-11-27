@@ -1,0 +1,117 @@
+{
+  "schema": "wave2-bookmark-frame-root-source-review/v1",
+  "reviewer": "/root",
+  "atUTC": "2026-11-27T20:49:56.822248+00:00",
+  "status": "PASS_SOURCE_REVIEW_ONLY_REQUIRES_COHERENT_BASE_NOT_COMPILED_NOT_RUN",
+  "manifest": {
+    "path": "/workspace/scratch/1d35894f12d5/interfaces_work/bookmark-native-frame-successor/candidate-manifest.json",
+    "bytes": 8375,
+    "sha256": "1ad4c5583443aa8c674e78f1b9620396d901d26e7730942109afd18369c94d32"
+  },
+  "inverse": {
+    "path": "/workspace/scratch/1d35894f12d5/interfaces_work/bookmark-native-frame-successor/source-inverse.json",
+    "bytes": 65697,
+    "sha256": "c130ce83013b541a127a8b02fbcc84af93e3048c0cba632ba7c6bcd7faa49f3a"
+  },
+  "peer": {
+    "path": "/workspace/scratch/1d35894f12d5/interfaces_work/bookmark-native-frame-successor/torah-independent-frame-review.json",
+    "bytes": 17367,
+    "sha256": "394fedfe1f739e3f714f40c6db59dd2cf786b7b416fd9b098283a961e45101e9"
+  },
+  "readme": {
+    "path": "/workspace/scratch/1d35894f12d5/interfaces_work/bookmark-native-frame-successor/README.md",
+    "bytes": 9068,
+    "sha256": "9588ca2c48bdd1daca314686cf563cb065ca0cef89647e889b5ec5d7f088fb1d"
+  },
+  "sevenCandidateSources": [
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyRepository.swift",
+      "bytes": 22719,
+      "sha256": "59e3404dc4553bb842ed81a9cc39b7739fab47091e480f52e753653712405135",
+      "gitBlob": "ed5b4185d1bde7655bcf9fa109e675786b88a87c",
+      "mode": "100644"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "bytes": 53698,
+      "sha256": "b91ed64c54ec552caa68a3b49c272ff8f008722b3a41fc76d9eadf4eaf9ef93b",
+      "gitBlob": "b8de5482053e5f7e3bf6798608f09a98d291281a",
+      "mode": "100644"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "bytes": 42248,
+      "sha256": "48eb452e97598c6a9453b03b5c99ecba3a0c12026d6b0456bee784d4345b732c",
+      "gitBlob": "24f08c4c7bfece4a2b711762c20783bd7a45f5f3",
+      "mode": "100644"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "bytes": 34388,
+      "sha256": "a5252e690004cb50ea4bb0cad6d101b0427a80b37e3ef641db0ed703e312f90e",
+      "gitBlob": "138fdcfcd61dfe59700e38751887ee61647b0c03",
+      "mode": "100644"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "bytes": 2328,
+      "sha256": "173395dde0549705a14b51a7d36fb2799e80f659cc7211d13798710e1f0b1096",
+      "gitBlob": "d45cd6ba0b21a92266942220e50f0d7c40d8b9f7",
+      "mode": "100644"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeBookmarkPresentationTests.swift",
+      "bytes": 20663,
+      "sha256": "b80f20ccf77b4b0bb42043d18449f2b63d8001757e389a047011e6e3b43ba3b0",
+      "gitBlob": "fa61fffbc684f203d14f47efba6c7bede36e473f",
+      "mode": "100644"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift",
+      "bytes": 45205,
+      "sha256": "4274837b7e8176bc7f768149f842b31e56765716f5219c2a7e6412378c43e75c",
+      "gitBlob": "a0130de894f61c6b1772b2ac10f0dd0b59b98979",
+      "mode": "100644"
+    }
+  ],
+  "baseComposition": {
+    "currentUI": "087748598c502d59e70b966507e64ac80038159a",
+    "requiredPublishedHost": "6866f0e83a48917b07d919f9c77087f3eb441aa8",
+    "requiredPublishedRename": "9e4aa3f1b88d8f6bfec27cdf2cb47d07ffd416ce",
+    "actualFutureCoherentBase": null,
+    "rootObservedFinalRef": "087748598c502d59e70b966507e64ac80038159a",
+    "limit": "The exact per-file composition is not a whole compiling repository. Resolve actual coherent parent/dependency composition before product publication or compiler admission; W3 alone owns final integration."
+  },
+  "independentChecks": {
+    "all7FullBidirectionalInversesSHA256SizesGitBlobs": true,
+    "allProductDeltasAndNewHostFixtureSuffixRead": true,
+    "publishedW1FrameAPIReadInFull": true,
+    "sourceFrameTransportScopeASCIIIdentityAndExactPropertyBindingReviewed": true,
+    "testPrefixesFullBytesIdentical": true
+  },
+  "findings": {
+    "capability": "Availability uses actual Native nativeBookmarkObjectCreate1 and original writer capability/imported Type eligibility. UI read observation is not write authority.",
+    "singleRequest": "One initial session/lease/epoch-guarded reader.frame call precedes pending insertion. The immutable original plan/frame/intent survive retries; no replacement frame or mutation ID is made on that path.",
+    "queue": "A per-operation creator enters the unchanged original hierarchy serial/mutationTail, membership, parent and readback flow. The supplied creator workspace is checked and the adapter compares the reconstructed original intent fingerprint before calling the original ObjectCreator.",
+    "authority": "Current binding, original lease, Library epoch and members/me writer permission are checked at the guarded original dispatch; Type/owner/property/frame mismatches refuse. Final Properties/hierarchy readback and current authorization precede success publication. Native retains opaque frame validation and durable writer authority.",
+    "byteSemantics": "URL and Name readback use UTF8 equality. Frame identity/property/collection matching uses exact bytes. Public W1 object and collection IDs are restricted to printable ASCII; the mapped property ID is explicitly byte-compared. The937a property comparator and9e4 rename4 predicates remain unchanged.",
+    "UI": "Uses existing AnytypeTextField, Loc, AnytypeURL, fonts/colors and sheet submission lifecycle. Starts with URL and empty Name; original Rename/Properties supply later editing. No alternate source/Name store, automatic metadata fetch, schema creation, Note marker or synthesized editor block. Visual behavior is unobserved.",
+    "cancellation": "Before pending insertion no object dispatch. After insertion preserve original pending request; caller retirement prevents stale publication. Existing ObjectCreator worker/journal handles uncertain dispatch. No invented replacement lifecycle.",
+    "bodyless": "Existing real markdown/version and complete editor block response remain required. Empty block collection is supported by existing parser, not assumed to grant body-edit authority. Actual bodyless consumer and mounted UI gates remain open.",
+    "storage": "Pending state remains process-local. No durable pending-frame rehydration or recovery across a new Library owner is claimed; no second journal is introduced."
+  },
+  "testScope": {
+    "HostNewXCTestMethods": 4,
+    "HostLiteralSourceScenarios": 17,
+    "IntegrationNewMethodsAndCases": 2,
+    "oldHostPrefixMethods": 7,
+    "oldHierarchyPrefixMethods": 27,
+    "includesRetainedRename4Methods8Cases": true,
+    "allNewMethodsNotRun": true,
+    "controlledFrameFixturesAreNotNativeSignatures": true,
+    "compiler": false,
+    "HTTPNativeApple": false,
+    "physical": false
+  },
+  "decision": "No concrete source blocker found for frozen1ad4 tuple. Prepare compact coherent dependency composition and exact owned source/evidence packet. Source review does not grant runtime, alter source inventories, qualify Native bodyless/Apple behavior or authorize final-ref mutation."
+}

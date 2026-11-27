@@ -102,11 +102,13 @@ public actor AnyHierarchyRepository {
 
     public func create(_ plan: AnyHierarchyCreationPlan,
 
+                       using providedCreator: (any AnyHierarchyObjectCreating)? = nil,
+
                        authorize: @escaping @Sendable () async throws -> Void = {}) async throws -> AnyHierarchyItem {
 
         guard plan.workspace == workspace, plan.schema == schema, allowedTypeIDs.contains(plan.typeID),
 
-              let creator else { throw AnyHierarchyError.incompatibleSchema }
+              let creator = providedCreator ?? self.creator, creator.workspace == workspace else { throw AnyHierarchyError.incompatibleSchema }
 
         return try await serial { [self] in
 
