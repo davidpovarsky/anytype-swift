@@ -1,0 +1,12 @@
+{
+  "schema": "local-source-audit-extraction-correction-v1",
+  "scope": "Independent local reviewer script only, not Swift compilation, a product test, or native execution.",
+  "firstInvocation": "python3 /workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-stop-review/verify_source.py",
+  "exitCode": 1,
+  "failure": "AssertionError at assert len(old_method) == 4459",
+  "cause": "Reviewer regex initially omitted the trailing blank newline included in the owner's exact 4459-byte baseline-method custody slice.",
+  "initialSliceBytes": 4458,
+  "initialSliceSHA256": "a3f248e6b2f9deaac09a49acab98f3983af968f8f4d1720568ef2d2ec9818b95",
+  "correction": "Include the exact following blank newline in both original and snapshot extraction. No original source or assertion changed.",
+  "productSourceMutation": false
+}

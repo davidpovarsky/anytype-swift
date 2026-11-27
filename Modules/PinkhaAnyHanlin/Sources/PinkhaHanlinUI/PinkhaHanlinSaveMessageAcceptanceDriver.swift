@@ -13,6 +13,7 @@ import PinkhaHanlinCore
 public final class PinkhaHanlinSaveMessageAcceptanceDriver {
     public typealias Snapshot = PinkhaHanlinWriteJournal.SaveMessageAcceptanceSnapshot
     public typealias NativeReadback = @MainActor @Sendable (Snapshot) async throws -> PinkhaHanlinSaveMessageBodyReadback
+    public typealias StoppedRootReadback = @MainActor @Sendable (PinkhaHanlinSaveMessageProgress) async throws -> PinkhaHanlinStoppedRootReadback
 
     private struct Attempt: Codable {
         let origin: HanlinHostInteractionOrigin
@@ -36,11 +37,13 @@ public final class PinkhaHanlinSaveMessageAcceptanceDriver {
         var atomicAcknowledgement: PinkhaHanlinSaveMessageAtomicAcknowledgement?
         var finishedAt: Date?
         var failure: String?
+        var stop: PinkhaHanlinSaveMessageStopAcceptance.Receipt?
     }
 
     private let fixture: PinkhaHanlinSaveMessageAcceptanceFixture
     private weak var presentation: PinkhaHanlinChatPresentation?
     private let verifyNativeReadback: NativeReadback
+    private let verifyStoppedRoot: StoppedRootReadback?
     private let directory: URL
     private let label: UILabel
     private var receipt: Receipt
@@ -50,14 +53,16 @@ public final class PinkhaHanlinSaveMessageAcceptanceDriver {
     private var originalResult: HanlinHostResultEvent?
     private var task: Task<Void, Never>?
     private var ended = false
+    private var stopAcceptance: PinkhaHanlinSaveMessageStopAcceptance?
 
     public static func start(fixture: PinkhaHanlinSaveMessageAcceptanceFixture,
         presentation: PinkhaHanlinChatPresentation, controller: PinkhaHanlinChatController,
+        verifyStoppedRoot: StoppedRootReadback? = nil,
         verifyNativeReadback: @escaping NativeReadback) {
         do {
             if try presentation.hasSaveMessageAcceptanceDriver(for: fixture) { return }
             let driver = try Self(fixture: fixture, presentation: presentation,
-                controller: controller, verifyNativeReadback: verifyNativeReadback)
+                controller: controller, verifyStoppedRoot: verifyStoppedRoot, verifyNativeReadback: verifyNativeReadback)
             try presentation.installSaveMessageAcceptanceDriver(driver)
             driver.task = Task { @MainActor in await driver.prepare() }
         } catch {
@@ -72,6 +77,7 @@ public final class PinkhaHanlinSaveMessageAcceptanceDriver {
 
     private init(fixture: PinkhaHanlinSaveMessageAcceptanceFixture,
         presentation: PinkhaHanlinChatPresentation, controller: PinkhaHanlinChatController,
+        verifyStoppedRoot: StoppedRootReadback?,
         verifyNativeReadback: @escaping NativeReadback) throws {
         try fixture.validate(session: presentation.session)
         try presentation.validateInstallation(for: presentation.session)
@@ -81,6 +87,7 @@ public final class PinkhaHanlinSaveMessageAcceptanceDriver {
         }
         self.fixture = fixture; self.presentation = presentation
         self.verifyNativeReadback = verifyNativeReadback
+        self.verifyStoppedRoot = verifyStoppedRoot
         self.directory = try fixture.claimResultDirectory()
         self.receipt = .init(fixture: fixture, session: presentation.session,
             processID: ProcessInfo.processInfo.processIdentifier, startedAt: .now)
@@ -105,6 +112,20 @@ public final class PinkhaHanlinSaveMessageAcceptanceDriver {
             // Retain this exact actor now. Later observations never reopen a
             // journal through whichever account happens to be current.
             journal = original
+            if fixture.scenario == .stopAfterDurableRoot {
+                guard let verifyStoppedRoot, let window = label.window else { throw HanlinHostError.invalidContext }
+                stopAcceptance = try .init(fixture: fixture, presentation: presentation, journal: original,
+                    window: window, verifyNativeReadback: verifyStoppedRoot, update: { [weak self] phase, value in
+                        guard let self, !self.ended else { throw HanlinHostError.staleContext }
+                        self.receipt.stop = value
+                        if value.finishedAt != nil { self.receipt.finishedAt = value.finishedAt }
+                        try self.emit(phase)
+                        if value.finishedAt != nil, value.failure == nil { self.ended = true }
+                    }, failure: { [weak self] code, value in
+                        self?.receipt.stop = value
+                        self?.fail(code)
+                    })
+            }
             let configuration = try PinkhaHanlinModelConfiguration.make(
                 endpoint: "https://hanlin-save-acceptance.invalid/v1", model: "pinkha-native-save-acceptance",
                 credential: "controlled-transport-no-network")
@@ -121,7 +142,7 @@ public final class PinkhaHanlinSaveMessageAcceptanceDriver {
             })
             try presentation.installSaveMessageAcceptanceEngine(configuration: configuration, engine: engine)
             presentation.draft = fixture.prompt(0)
-            try emit("AWAIT_SEND_CANCEL")
+            try emit(stopAcceptance == nil ? "AWAIT_SEND_CANCEL" : "AWAIT_SEND_STOP")
         } catch { fail("original_sdk_preparation_failed") }
     }
 
@@ -134,7 +155,7 @@ public final class PinkhaHanlinSaveMessageAcceptanceDriver {
                 throw HanlinHostError.resultMismatch
             }
             receipt.attempts.append(.init(origin: origin))
-            try emit(ordinal == 0 ? "AWAIT_SAVE_CANCEL" : "AWAIT_SAVE_ALLOW")
+            try emit(stopAcceptance == nil ? (ordinal == 0 ? "AWAIT_SAVE_CANCEL" : "AWAIT_SAVE_ALLOW") : "AWAIT_SAVE_STOP")
         } catch { fail("completed_original_message_mismatch") }
     }
 
@@ -147,7 +168,8 @@ public final class PinkhaHanlinSaveMessageAcceptanceDriver {
                   let run = intent.executionRunID else { throw HanlinHostError.resultMismatch }
             receipt.attempts[ordinal].requestID = intent.requestID
             receipt.attempts[ordinal].executionRunID = run
-            try emit(ordinal == 0 ? "AWAIT_NATIVE_CANCEL" : "AWAIT_NATIVE_ALLOW")
+            try stopAcceptance?.started(intent)
+            try emit(stopAcceptance == nil ? (ordinal == 0 ? "AWAIT_NATIVE_CANCEL" : "AWAIT_NATIVE_ALLOW") : "AWAIT_NATIVE_ALLOW_STOP")
         } catch { fail("original_presentation_tool_start_mismatch") }
     }
 
@@ -167,8 +189,17 @@ public final class PinkhaHanlinSaveMessageAcceptanceDriver {
     func consumerFinished(_ intent: PinkhaHanlinMessageSaveIntents.Intent) {
         guard !ended, receipt.attempts.indices.contains(ordinal),
               receipt.attempts[ordinal].requestID == intent.requestID else { return }
+        if let stopAcceptance { stopAcceptance.consumerFinished(intent); return }
         task = Task { @MainActor in await finishAttempt(intent) }
     }
+
+    func stopRequested(messageID: UUID?) { stopAcceptance?.stopRequested(messageID: messageID) }
+
+    func stopJoined(messageID: UUID?, cancellation: HanlinAgentRunCancellation?) {
+        stopAcceptance?.joined(messageID: messageID, cancellation: cancellation)
+    }
+
+    func stopFailed() { stopAcceptance?.cancellationFailed() }
 
     private func finishAttempt(_ intent: PinkhaHanlinMessageSaveIntents.Intent) async {
         do {
@@ -216,12 +247,16 @@ public final class PinkhaHanlinSaveMessageAcceptanceDriver {
     }
 
     func invalidate() {
+        stopAcceptance?.invalidate()
         task?.cancel()
         if !ended { fail("original_presentation_invalidated") }
         label.removeFromSuperview()
     }
 
-    func drain() async { await task?.value }
+    func drain() async {
+        await task?.value
+        await stopAcceptance?.drain()
+    }
 
     private func emit(_ phase: String) throws {
         guard sequence < 16 else { throw HanlinHostError.outputLimitExceeded }
@@ -240,6 +275,7 @@ public final class PinkhaHanlinSaveMessageAcceptanceDriver {
         do { try emit("NATIVE_SAVE_ACCEPTANCE_FAIL") }
         catch { label.text = "NATIVE_SAVE_EVIDENCE_WRITE_FAILED" }
         ended = true
+        stopAcceptance?.evidenceFailed()
     }
 
     private func canonical<T: Encodable>(_ value: T) throws -> Data {

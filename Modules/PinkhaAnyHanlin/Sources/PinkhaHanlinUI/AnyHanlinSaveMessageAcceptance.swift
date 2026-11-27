@@ -47,7 +47,11 @@ extension AnyHanlinPresentation {
                 conversationID: conversationID, locale: locale, creation: creation,
                 hooks: .init(didMount: { presentation, controller in
                     PinkhaHanlinSaveMessageAcceptanceDriver.start(fixture: fixture,
-                        presentation: presentation, controller: controller) { snapshot in
+                        presentation: presentation, controller: controller,
+                        verifyStoppedRoot: { progress in
+                            try await admission.verifyStoppedRoot(progress, fixture: fixture,
+                                native: native, documents: documents, client: client, sourceOwner: sourceOwner)
+                        }) { snapshot in
                         try await admission.verifyCreatedDocument(snapshot, fixture: fixture,
                             native: native, documents: documents, client: client, sourceOwner: sourceOwner)
                     }
@@ -164,6 +168,63 @@ private struct AnyHanlinSaveMessageNativeAdmission {
                 nativeMarkdownSHA256: last.contentSHA256, nativeMarkdownUTF8Bytes: last.contentBytes)
             try await authorize()
             return readback
+        }
+        try Self.validate(scope, owner: sourceOwner, native: native)
+        return result
+    }
+
+    func verifyStoppedRoot(_ progress: PinkhaHanlinSaveMessageProgress,
+        fixture: PinkhaHanlinSaveMessageAcceptanceFixture, native: AnyApplicationSession,
+        documents: AnyEditorDocumentStore, client: AnyHTTPClient,
+        sourceOwner: any AnyHanlinSourcePresentationOwner) async throws -> PinkhaHanlinStoppedRootReadback {
+        try fixture.validate(session: progress.manifest.identity.session)
+        try Self.validate(scope, owner: sourceOwner, native: native)
+        try progress.validate()
+        guard fixture.scenario == .stopAfterDurableRoot, progress.dispatchClosed,
+              progress.manifest.bodyMode == .conditionalMarkdown,
+              progress.blocks.isEmpty, progress.atomicBody == nil, progress.bodyReadback == nil,
+              let objectID = progress.root.reference,
+              !objectID.utf8.elementsEqual(fixture.sourceObjectID.utf8),
+              fixture.anyRuntime?.generation == native.generation,
+              fixture.anyRuntime?.engineStartedAt.utf8.elementsEqual(native.engineStartedAt.utf8) == true else {
+            throw HanlinHostError.resultMismatch
+        }
+        let reference = try AnyNativeMarkdownReference(accountID: fixture.accountID,
+            spaceID: fixture.spaceID, objectID: objectID)
+        let scope = scope, body = AnyNativeMarkdownBody(client: client)
+        let result = try await native.perform { lease in
+            let authorize: @Sendable () async throws -> Void = {
+                try await lease.validate()
+                try await MainActor.run { try Self.validate(scope, owner: sourceOwner, native: native) }
+            }
+            let first = try await body.read(reference, authorize: authorize)
+            try await authorize()
+            let actual = try await documents.read(objectID: objectID, lease: lease)
+            try await authorize()
+            let response = try await client.requestJSON(method: "GET",
+                path: ["v1", "spaces", fixture.spaceID, "objects", objectID], authorize: authorize)
+            guard response["objectId"]?.string?.utf8.elementsEqual(objectID.utf8) == true,
+                  let record = response["record"] else { throw HanlinHostError.resultMismatch }
+            let last = try await body.read(reference, authorize: authorize)
+            guard actual.generation == native.generation,
+                  actual.engineStartedAt.utf8.elementsEqual(native.engineStartedAt.utf8),
+                  first.version.utf8.elementsEqual(last.version.utf8),
+                  actual.nativeVersion.utf8.elementsEqual(last.version.utf8),
+                  actual.markdown.utf8.elementsEqual(last.content.utf8), last.content.isEmpty else {
+                throw HanlinHostError.resultMismatch
+            }
+            let semantic = try AnyHanlinSaveMessageReadback(snapshot: actual.snapshot, rootRecord: record, workspace: lease.workspace)
+            guard semantic.blocks.isEmpty, semantic.blockReferences.isEmpty,
+                  semantic.rootReadbackSHA256 == progress.manifest.expectedRootReadbackSHA256 else {
+                throw HanlinHostError.resultMismatch
+            }
+            try await authorize()
+            return PinkhaHanlinStoppedRootReadback(objectReference: actual.snapshot.objectID,
+                rootReadbackSHA256: semantic.rootReadbackSHA256, bodyRowCount: actual.snapshot.blocks.count,
+                nativeVersionSHA256: PinkhaHanlinCreatePagePlan.digest(Data(last.version.utf8)),
+                nativeMarkdownSHA256: last.contentSHA256, nativeMarkdownUTF8Bytes: last.contentBytes,
+                nativeGeneration: actual.generation,
+                engineStartedAtSHA256: PinkhaHanlinCreatePagePlan.digest(Data(actual.engineStartedAt.utf8)))
         }
         try Self.validate(scope, owner: sourceOwner, native: native)
         return result

@@ -1,0 +1,94 @@
+--- snapshot2/Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift
++++ snapshot3/Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift
+@@ -478,9 +478,6 @@
+         guard !closed, isStreaming, !isStopping, let agent, let runID = currentRunID else { return }
+         isStopping = true
+         errorMessage = nil
+-        #if DEBUG && targetEnvironment(simulator)
+-        saveAcceptanceDriver?.stopRequested(messageID: currentSaveMessageID)
+-        #endif
+         let consumer = running
+         let answerID = currentSaveMessageID == nil ? messages.last?.id : nil
+         // executePresentationTool may still be awaiting original context before
+@@ -519,6 +516,11 @@
+             self.currentRunID = nil
+             self.currentSaveMessageID = nil
+         }
++        #if DEBUG && targetEnvironment(simulator)
++        // Observe only after the real Stop task is retained, so an acceptance
++        // failure can synchronously close and still join this same task.
++        saveAcceptanceDriver?.stopRequested(messageID: currentSaveMessageID)
++        #endif
+     }
+ 
+     private func receive(_ event: HanlinHostResultEvent) {
+--- snapshot2/Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinSaveMessageAcceptanceDriver.swift
++++ snapshot3/Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinSaveMessageAcceptanceDriver.swift
+@@ -199,7 +199,7 @@
+         stopAcceptance?.joined(messageID: messageID, cancellation: cancellation)
+     }
+ 
+-    func stopFailed() { if stopAcceptance != nil { stopAcceptance?.invalidate() } }
++    func stopFailed() { stopAcceptance?.cancellationFailed() }
+ 
+     private func finishAttempt(_ intent: PinkhaHanlinMessageSaveIntents.Intent) async {
+         do {
+--- snapshot2/Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinSaveMessageStopAcceptance.swift
++++ snapshot3/Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinSaveMessageStopAcceptance.swift
+@@ -330,7 +330,7 @@
+         // The owner calls this before its synchronous host.revokePresentation.
+         // Releasing on the next MainActor turn lets THAT original fence close
+         // before the suspended worker may attempt another authorization.
+-        scheduleRelease(revoke: false)
++        scheduleRelease()
+     }
+ 
+     func drain() async {
+@@ -339,6 +339,7 @@
+     }
+ 
+     func evidenceFailed() { abort("original_stop_driver_evidence_failed") }
++    func cancellationFailed() { abort("original_sdk_cancellation_failed") }
+ 
+     private func abort(_ code: String) {
+         guard !ended else { return }
+@@ -349,13 +350,13 @@
+         failure(code, receipt)
+         // A watchdog or evidence failure must not release a still-authorized
+         // body write. Revoke through the original host before resuming the hold.
+-        scheduleRelease(revoke: true)
+-    }
+-
+-    private func scheduleRelease(revoke: Bool) {
++        presentation?.invalidate()
++        scheduleRelease()
++    }
++
++    private func scheduleRelease() {
+         guard releasing == nil else { return }
+         releasing = Task { @MainActor [self] in
+-            if revoke { presentation?.invalidate() }
+             releaseHold()
+         }
+     }
+--- snapshot2/PinkhaStage1Acceptance/Tests/HanlinSaveMessageAcceptanceUITests.swift
++++ snapshot3/PinkhaStage1Acceptance/Tests/HanlinSaveMessageAcceptanceUITests.swift
+@@ -39,6 +39,18 @@
+         app = XCUIApplication(bundleIdentifier: bundleID)
+         XCTAssertEqual(app.state, .runningForeground,
+             "The controller must preserve the process whose mounted preparation produced this fixture")
++    }
++
++    override func tearDownWithError() throws {
++        try super.tearDownWithError()
++        guard let fixture, fixture.scenario == "stopAfterDurableRoot", let app,
++              app.state == .runningForeground else { return }
++        // Failure cleanup uses the original controls too. It neither asserts
++        // a completed native drain nor alters the failed original receipt.
++        let cancel = app.buttons["pinkha.hanlin.consent.save-message.cancel"].firstMatch
++        if cancel.exists && cancel.isHittable { cancel.tap() }
++        let close = app.buttons["pinkha.hanlin.close"].firstMatch
++        if close.waitForExistence(timeout: 2) && close.isHittable { close.tap() }
+     }
+ 
+     func testOriginalSDKMessageSaveConsentAndNativeReadback() throws {

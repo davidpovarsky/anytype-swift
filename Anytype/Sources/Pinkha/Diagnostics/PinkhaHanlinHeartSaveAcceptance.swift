@@ -53,7 +53,11 @@ final class PinkhaHanlinHeartSaveAcceptance {
                 } else if let fixture {
                     try fixture.validate(session: host.session)
                     PinkhaHanlinSaveMessageAcceptanceDriver.start(fixture: fixture,
-                        presentation: presentation, controller: controller) { [self, weak presentation] snapshot in
+                        presentation: presentation, controller: controller,
+                        verifyStoppedRoot: { [self, weak presentation] progress in
+                            guard let presentation else { throw HanlinHostError.staleContext }
+                            return try await verifyStoppedRoot(progress, typeID: typeID, host: host, presentation: presentation)
+                        }) { [self, weak presentation] snapshot in
                         guard let presentation else { throw HanlinHostError.staleContext }
                         return try await verify(snapshot, typeID: typeID, host: host, presentation: presentation)
                     }
@@ -116,6 +120,26 @@ final class PinkhaHanlinHeartSaveAcceptance {
         try await validate(host: host, presentation: presentation, typeID: typeID)
         _ = try PinkhaHanlinHeartSaveReadback(view: view, objectID: objectID, spaceID: spaceID, typeID: typeID)
         return view
+    }
+
+    private func verifyStoppedRoot(_ progress: PinkhaHanlinSaveMessageProgress,
+        typeID: String, host: PinkhaHanlinReadWriteHost,
+        presentation: PinkhaHanlinChatPresentation) async throws -> PinkhaHanlinStoppedRootReadback {
+        guard let fixture, fixture.scenario == .stopAfterDurableRoot,
+              progress.manifest.identity.session == host.session,
+              progress.dispatchClosed, progress.manifest.bodyMode == nil,
+              progress.blocks.allSatisfy({ $0 == .pending }), progress.atomicBody == nil, progress.bodyReadback == nil,
+              let objectID = progress.root.reference,
+              !objectID.utf8.elementsEqual(sourceObjectID.utf8) else { throw HanlinHostError.resultMismatch }
+        try fixture.validate(session: host.session)
+        try progress.validate()
+        let view = try await read(objectID: objectID, typeID: typeID, host: host, presentation: presentation)
+        let actual = try PinkhaHanlinHeartSaveReadback(view: view, objectID: objectID, spaceID: spaceID, typeID: typeID)
+        let rootSHA256 = try PinkhaHanlinSaveMessageDocument.rootReadbackSHA256(title: actual.title)
+        guard actual.body.isEmpty, rootSHA256 == progress.manifest.expectedRootReadbackSHA256 else {
+            throw HanlinHostError.resultMismatch
+        }
+        return .init(objectReference: objectID, rootReadbackSHA256: rootSHA256, bodyRowCount: actual.body.count)
     }
 
     private func verify(_ snapshot: PinkhaHanlinWriteJournal.SaveMessageAcceptanceSnapshot,

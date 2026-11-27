@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 import XCTest
 
 /// The owner controller must first admit the built source/native artifacts,
@@ -30,6 +31,7 @@ final class HanlinSaveMessageAcceptanceUITests: XCTestCase {
         XCTAssertEqual(fixture.sourceSHA, try XCTUnwrap(environment["PINKHA_HANLIN_SAVE_SOURCE_SHA"]))
         XCTAssertEqual(fixture.runID, try XCTUnwrap(environment["PINKHA_HANLIN_SAVE_RUN_ID"]))
         XCTAssertEqual(fixture.runAttempt, try XCTUnwrap(environment["PINKHA_HANLIN_SAVE_RUN_ATTEMPT"]))
+        XCTAssertEqual(fixture.scenario, environment["PINKHA_HANLIN_SAVE_SCENARIO"])
         XCTAssertGreaterThan(fixture.processID, 0)
         XCTAssertTrue(["heart", "any"].contains(fixture.engine))
         XCTAssertGreaterThanOrEqual(Date().timeIntervalSince(fixture.createdAt), 0)
@@ -37,6 +39,18 @@ final class HanlinSaveMessageAcceptanceUITests: XCTestCase {
         app = XCUIApplication(bundleIdentifier: bundleID)
         XCTAssertEqual(app.state, .runningForeground,
             "The controller must preserve the process whose mounted preparation produced this fixture")
+    }
+
+    override func tearDownWithError() throws {
+        try super.tearDownWithError()
+        guard let fixture, fixture.scenario == "stopAfterDurableRoot", let app,
+              app.state == .runningForeground else { return }
+        // Failure cleanup uses the original controls too. It neither asserts
+        // a completed native drain nor alters the failed original receipt.
+        let cancel = app.buttons["pinkha.hanlin.consent.save-message.cancel"].firstMatch
+        if cancel.exists && cancel.isHittable { cancel.tap() }
+        let close = app.buttons["pinkha.hanlin.close"].firstMatch
+        if close.waitForExistence(timeout: 2) && close.isHittable { close.tap() }
     }
 
     func testOriginalSDKMessageSaveConsentAndNativeReadback() throws {
@@ -113,6 +127,118 @@ final class HanlinSaveMessageAcceptanceUITests: XCTestCase {
         app.buttons["pinkha.hanlin.close"].tap()
     }
 
+    /// Separate fixture/account attempt. The hold follows the real native root
+    /// callback and protected journal append; this test presses the ORIGINAL
+    /// Composer Stop. The diagnostic release grants no effect permission.
+    func testOriginalSDKStopAfterDurableRootDrainsWithoutBody() throws {
+        XCTAssertEqual(fixture.scenario, "stopAfterDurableRoot")
+        try waitForPhase("AWAIT_SEND_STOP", timeout: 30)
+        try requireFixture(try receipt())
+        try pressSend()
+        try waitForPhase("AWAIT_SAVE_STOP", timeout: 45)
+        try pressOnlyEnabledSave()
+        try nativeConsent(action: "allow").tap()
+        try waitForPhase("NATIVE_ROOT_DURABLE_AWAIT_STOP", timeout: 25)
+        let held = try receipt()
+        try requireFixture(held)
+        let heldStop = try XCTUnwrap(held.stop)
+        XCTAssertNotNil(heldStop.workerID)
+        XCTAssertNotNil(heldStop.rootKnownAt)
+        let root = try XCTUnwrap(heldStop.knownRootReference)
+        XCTAssertNotEqual(Data(root.utf8), Data(fixture.sourceObjectID.utf8))
+        XCTAssertEqual(heldStop.persisted.map(\.event), ["rootDispatched", "rootKnown"])
+        XCTAssertGreaterThan(try XCTUnwrap(heldStop.identity).deadline.timeIntervalSinceNow, 1)
+        let stopButton = app.buttons["hanlin-chat-stop"].firstMatch
+        try ready(stopButton, timeout: 3)
+        stopButton.tap()
+        try waitForPhase("ORIGINAL_DRAIN_WAITING_ROOT_HELD", timeout: 10)
+        let draining = try receipt()
+        let drain = try XCTUnwrap(draining.stop)
+        XCTAssertEqual(drain.workerID, heldStop.workerID)
+        XCTAssertEqual(drain.knownRootReference, root)
+        XCTAssertGreaterThan(drain.drainWaitersObserved, 0)
+        XCTAssertNotNil(drain.drainRegisteredAt)
+        XCTAssertNil(drain.releaseAt)
+        XCTAssertNil(drain.workerFinishedAt)
+        XCTAssertNil(drain.sdkAndConsumerJoinedAt)
+        try assertNoBodyMetadata(in: rawReceipt(), key: "closedProgress", closed: true)
+        XCTAssertTrue(stopButton.exists)
+        XCTAssertFalse(stopButton.isEnabled, "The original Stop control must remain stopping while its real native worker is held")
+        XCTAssertEqual(app.buttons.matching(NSPredicate(format: "label == %@ AND enabled == true", "Send")).count, 0)
+        XCTAssertEqual(enabledSaves.count, 0)
+        attachScreenshot("hanlin-save-stop-original-drain-waiting")
+        let release = app.buttons["pinkha.hanlin.save-acceptance-release-root"].firstMatch
+        try ready(release, timeout: 3)
+        release.tap()
+        try waitForPhase("ORIGINAL_STOP_DRAIN_AND_EMPTY_ROOT_READBACK_PASS", timeout: 90)
+        let result = try receipt()
+        try requireFixture(result)
+        XCTAssertNil(result.failure)
+        XCTAssertNotNil(result.finishedAt)
+        XCTAssertEqual(result.attempts.count, 1)
+        let attempt = try XCTUnwrap(result.attempts.first)
+        let stopped = try XCTUnwrap(result.stop)
+        let identity = try XCTUnwrap(stopped.identity)
+        XCTAssertEqual(stopped.workerID, heldStop.workerID)
+        XCTAssertEqual(identity.session, result.session)
+        XCTAssertEqual(identity.runID, attempt.executionRunID)
+        XCTAssertNotEqual(identity.runID, attempt.origin.runID)
+        let requestID = try XCTUnwrap(attempt.requestID)
+        let digest = SHA256.hash(data: Data(requestID.uuidString.utf8)).map { String(format: "%02x", $0) }.joined()
+        XCTAssertEqual(identity.providerCallDigest, digest)
+        XCTAssertEqual(stopped.knownRootReference, root)
+        XCTAssertEqual(stopped.bodyDispatchEventsObserved, 0)
+        XCTAssertEqual(stopped.finalEntry?.effect, "uncertain")
+        XCTAssertTrue(["uncertain", "unconfirmed"].contains(try XCTUnwrap(stopped.intentStatus)))
+        XCTAssertNil(stopped.failure)
+        let ordered = try [stopped.workerEnteredAt, stopped.rootKnownAt, stopped.stopRequestedAt,
+            stopped.drainRegisteredAt, stopped.releaseAt, stopped.workerFinishedAt,
+            stopped.sdkAndConsumerJoinedAt, stopped.finishedAt].map { try XCTUnwrap($0) }
+        XCTAssertEqual(ordered, ordered.sorted())
+        XCTAssertLessThan(try XCTUnwrap(stopped.stopRequestedAt), identity.deadline)
+        XCTAssertLessThanOrEqual(try XCTUnwrap(stopped.consumerFinishedAt), try XCTUnwrap(stopped.sdkAndConsumerJoinedAt))
+        try assertNoBodyMetadata(in: rawReceipt(), key: "finalProgress", closed: true)
+        let native = try XCTUnwrap(stopped.nativeReadback)
+        XCTAssertEqual(Data(native.objectReference.utf8), Data(root.utf8))
+        XCTAssertEqual(native.bodyRowCount, 0)
+        XCTAssertEqual(native.rootReadbackSHA256.utf8.count, 64)
+        if fixture.engine == "any" {
+            XCTAssertEqual(native.nativeGeneration, fixture.anyRuntime?.generation)
+            XCTAssertEqual(native.nativeMarkdownUTF8Bytes, 0)
+            XCTAssertEqual(native.nativeMarkdownSHA256, SHA256.hash(data: Data()).map { String(format: "%02x", $0) }.joined())
+            XCTAssertEqual(try XCTUnwrap(native.nativeVersionSHA256).utf8.count, 64)
+            XCTAssertEqual(try XCTUnwrap(native.engineStartedAtSHA256).utf8.count, 64)
+        } else {
+            XCTAssertNil(native.nativeVersionSHA256)
+            XCTAssertNil(native.nativeMarkdownSHA256)
+            XCTAssertNil(native.nativeGeneration)
+            XCTAssertNil(native.engineStartedAtSHA256)
+        }
+        if let effect = attempt.effect { XCTAssertEqual(effect, "uncertain") }
+        XCTAssertNil(result.nativeBodyReadback)
+        XCTAssertNil(result.atomicAcknowledgement)
+        XCTAssertEqual(enabledSaves.count, 0)
+        attachScreenshot("hanlin-save-stop-joined-empty-native-root")
+        let attachment = XCTAttachment(data: try rawReceipt(), uniformTypeIdentifier: "public.json")
+        attachment.name = "hanlin-save-original-stop-drain-native-result"; attachment.lifetime = .keepAlways
+        add(attachment)
+        // Retain the known incomplete original page and both journals. The
+        // controller owns later reconciliation; this test never deletes/retries.
+        app.buttons["pinkha.hanlin.close"].tap()
+    }
+
+    private func assertNoBodyMetadata(in data: Data, key: String, closed: Bool) throws {
+        let value = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        let stop = try XCTUnwrap(value["stop"] as? [String: Any])
+        let progress = try XCTUnwrap(stop[key] as? [String: Any])
+        XCTAssertEqual(progress["dispatchClosed"] as? Bool, closed)
+        XCTAssertNil(progress["bodyReadback"])
+        XCTAssertNil(progress["atomicBody"])
+        let blocks = try XCTUnwrap(progress["blocks"] as? [[String: Any]])
+        XCTAssertEqual(blocks.count, fixture.engine == "heart" ? 4 : 0)
+        XCTAssertTrue(blocks.allSatisfy { Set($0.keys) == ["pending"] })
+    }
+
     private var status: XCUIElement { app.staticTexts["pinkha.hanlin.save-acceptance-status"].firstMatch }
     private var enabledSaves: XCUIElementQuery {
         app.buttons.matching(identifier: "hanlin-action-save-personal").matching(NSPredicate(format: "enabled == true"))
@@ -165,6 +291,7 @@ final class HanlinSaveMessageAcceptanceUITests: XCTestCase {
         XCTAssertEqual(receipt.fixture.preparationReceiptSHA256, fixture.preparationReceiptSHA256)
         XCTAssertEqual(receipt.processID, fixture.processID)
         XCTAssertEqual(receipt.fixture.engine, fixture.engine)
+        XCTAssertEqual(receipt.fixture.scenario, fixture.scenario)
         XCTAssertEqual(receipt.session.context.namespace.account, fixture.accountID)
         XCTAssertEqual(receipt.session.context.namespace.space, fixture.spaceID)
         XCTAssertEqual(receipt.session.context.namespace.workspace, fixture.spaceID)
@@ -179,10 +306,12 @@ final class HanlinSaveMessageAcceptanceUITests: XCTestCase {
     private struct Fixture: Codable {
         let version: Int; let fixtureID: UUID; let createdAt: Date; let sourceSHA: String
         let runID: String; let runAttempt: String; let engine: String; let processID: Int32
+        let scenario: String?; let anyRuntime: AnyRuntime?
         let accountID: String; let spaceID: String; let sourceObjectID: String
         let preparationReceiptSHA256: String
         var markdown: String { "# Hanlin " + fixtureID.uuidString + "\n\nשלום **bold** and *italic* with `code`.\n\n- first\n- second" }
     }
+    private struct AnyRuntime: Codable { let generation: UUID; let engineStartedAt: String }
     private struct Namespace: Codable, Equatable { let app: String; let account: String; let workspace: String; let space: String }
     private struct Context: Codable, Equatable {
         let namespace: Namespace; let sceneID: UUID; let generation: UUID; let objectReference: String?
@@ -207,5 +336,25 @@ final class HanlinSaveMessageAcceptanceUITests: XCTestCase {
     private struct Receipt: Codable {
         let fixture: Fixture; let session: Session; let processID: Int32; let attempts: [Attempt]
         let nativeBodyReadback: Body?; let atomicAcknowledgement: Ack?; let finishedAt: Date?; let failure: String?
+        let stop: StopReceipt?
+    }
+
+    private struct StopIdentity: Codable {
+        let session: Session; let runID: UUID; let providerCallDigest: String; let deadline: Date
+    }
+    private struct StopEntry: Codable { let effect: String }
+    private struct PersistedObservation: Codable { let event: String; let sequence: Int; let progressSHA256: String }
+    private struct StoppedNativeReadback: Codable {
+        let objectReference: String; let rootReadbackSHA256: String; let bodyRowCount: Int
+        let nativeVersionSHA256: String?; let nativeMarkdownSHA256: String?; let nativeMarkdownUTF8Bytes: Int?
+        let nativeGeneration: UUID?; let engineStartedAtSHA256: String?
+    }
+    private struct StopReceipt: Codable {
+        let identity: StopIdentity?; let workerID: UUID?; let knownRootReference: String?
+        let workerEnteredAt: Date?; let rootKnownAt: Date?; let stopRequestedAt: Date?; let drainRegisteredAt: Date?
+        let releaseAt: Date?; let workerFinishedAt: Date?; let consumerFinishedAt: Date?; let sdkAndConsumerJoinedAt: Date?
+        let finishedAt: Date?; let drainWaitersObserved: Int; let bodyDispatchEventsObserved: Int
+        let persisted: [PersistedObservation]; let finalEntry: StopEntry?; let intentStatus: String?
+        let nativeReadback: StoppedNativeReadback?; let failure: String?
     }
 }

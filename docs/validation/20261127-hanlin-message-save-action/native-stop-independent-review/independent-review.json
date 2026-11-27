@@ -1,0 +1,129 @@
+{
+  "schema": "pinkha-independent-hanlin-stop-review-v1",
+  "reviewer": "/root/miniapps_otzaria",
+  "repository": "davidpovarsky/anytype-swift",
+  "status": "READY_FOR_SOURCE_INTAKE_AFTER_TWO_CORRECTIONS_COMPILE_AND_RUNTIME_NOT_RUN",
+  "decision": "No remaining blocking source defect found in the exact frozen snapshot3. This admits source review only. It does not qualify a compiled app, either native engine, a fixture, account replacement, an SDK artifact, or TestFlight.",
+  "base": "eee40593bf2088fbf6168106f9d2c49248d3ce1f",
+  "baselineHelperSourceParent": "680364279e08dc69d7d7eee8f6f13169ea8d0be4",
+  "reviewedSource": {
+    "root": "/workspace/scratch/ae335eba85e3/hanlin-stop-after-root-source/review-snapshot3",
+    "identityIndex": "/workspace/scratch/ae335eba85e3/hanlin-stop-after-root-source/review-snapshot3-identities.json",
+    "identityIndexSHA256": "11325537886cb3c5c8be5fd8065683cf62441e62482c209c78c9918b743ef703",
+    "swiftFiles": 11,
+    "existingFiles": 9,
+    "newFiles": 2,
+    "ownerIntake": "/workspace/scratch/ae335eba85e3/hanlin-stop-after-root-source/after/docs/validation/20261127-hanlin-message-save-action/native-stop-after-root-source-intake.json",
+    "ownerIntakeSHA256": "9cb2381418435037878971c35c59fab58e1c62a973aa4d77fe8024b23056bec8",
+    "candidatePublication": "Not yet independently observed at the time of this review; published source must match these exact file identities and original preimages."
+  },
+  "independentMechanicalProof": {
+    "path": "/workspace/scratch/ae335eba85e3/miniapps-independent-hanlin-stop-review/independent-source-byte-proof.json",
+    "sha256": "83a1f5020fcbb6f6a1f4b58f94b1159d55a633f04519b309e83a847e077b06a8",
+    "scope": "Read-only byte identities, 45 literal inverses, original method preservation, exact conditional text projection and original Composer source inspection. No Swift or native test execution.",
+    "allCurrentOwnerSourceBytesMatchFrozenSnapshot": true,
+    "allNineOriginalsRestoredExactly": true,
+    "baselineUIFunctionBytes": 4459,
+    "baselineUIFunctionSHA256": "cf979fd9595ba1f9d284239e90f733c05169d1fdd79b3ddf006312d3da6462f6",
+    "releaseTextProjectionsEqual": 4,
+    "releaseProjectionLimitation": "Explicit UIKit=true and DEBUG+simulator=false text selection and whitespace removal. This is not Swift preprocessing, type checking, a compiler invocation, or a binary equivalence assertion.",
+    "localAuditCorrection": "audit-extraction-correction.json preserves the reviewer's initial one-newline slice mismatch and correction. No owner source or product test was changed."
+  },
+  "resolvedFindings": [
+    {
+      "id": "STOP-PRE-HOLD-REVOCATION",
+      "snapshot2Finding": "Abort scheduled original presentation revocation asynchronously. A callback before the root hold could return while native authority remained live, relying on MainActor scheduling order.",
+      "snapshot3Correction": "StopAcceptance.abort calls original presentation.invalidate synchronously before returning, then schedules only continuation release. Chat.stop observes stopRequested only after retaining its actual stopping Task in the same actor turn, so a synchronous diagnostic close can retain and join that real task.",
+      "sources": [
+        "PinkhaHanlinSaveMessageStopAcceptance.swift:344-367",
+        "PinkhaHanlinChatPresentation.swift:477-523",
+        "PinkhaHanlinChatPresentation.swift:598-642"
+      ],
+      "status": "SOURCE_FIXED_RUNTIME_NOT_RUN"
+    },
+    {
+      "id": "STOP-FAILURE-REQUIRES-REVOCATION",
+      "snapshot2Finding": "Driver.stopFailed called helper.invalidate even though helper.invalidate assumes the real presentation-close caller will synchronously revoke the host. The original stop catch does not itself close the host.",
+      "snapshot3Correction": "Driver.stopFailed calls helper.cancellationFailed, which enters the same synchronous original-presentation abort. Helper.invalidate remains the actual Driver/Chat close callback. A Stop-only XCTest teardown presses actual native Cancel/Close controls after failures and makes no join or evidence-success claim.",
+      "sources": [
+        "PinkhaHanlinSaveMessageAcceptanceDriver.swift:202",
+        "PinkhaHanlinSaveMessageStopAcceptance.swift:322-354",
+        "HanlinSaveMessageAcceptanceUITests.swift:44-55"
+      ],
+      "status": "SOURCE_FIXED_RUNTIME_NOT_RUN"
+    }
+  ],
+  "sourceReview": {
+    "durableObservation": {
+      "assessment": "Both Ledger notifications occur only after the original progress store returns and the exact expected canonical bytes are verified, including the narrowly admitted concurrent closeDispatch CAS race. The new observer awaits outside the protected journal actor/file lock. At rootKnown the helper separately reloads the SAME original journal actor and requires exact canonical progress plus a reserved generic entry; a returned protocol observation alone is insufficient.",
+      "ledgerSHA256": "af39d74013df53eababc581e7bc2321e4dea5d796fc8e3b2b28a2a7246968c80",
+      "noNativeResultOrACKInjection": true
+    },
+    "originalWorkerAndDrain": {
+      "assessment": "The diagnostic worker UUID belongs to the actual original Job. The original waiter callback runs after append to job.drainWaiters. Worker completion calls original finishNativeWork first and then emits the diagnostic in the same MainActor turn. The helper cannot release the worker until actual drain registration and the original uncertain entry plus closed aggregate progress are observed. It cannot report PASS until the original SDK cancellation and consumer have joined, the actual worker has finished, and a separate native readback has completed.",
+      "workerSHA256": "9e85c868d12678f0ff1be73ad6a99e09642eb30ef0c1a83e2665b1135209c105",
+      "originalBusinessCancellationAndDispatchRestoredByInverse": true,
+      "observerDoesNotGrantAuthority": true,
+      "newEngineOrNativeOperationEdits": false
+    },
+    "holdAndCleanup": {
+      "assessment": "The passive root hold is bounded to at most 20 seconds, remains inside the original request deadline, and refuses less than five seconds of remaining UI opportunity. Timeout, evidence failure, identity mismatch, observer cancellation and failed SDK cancellation revoke through original presentation.invalidate before releasing. Normal original close calls helper.invalidate and then synchronously host.revokePresentation; its deferred release runs after that same actor turn. Close retains and joins the original Stop task, consumer, preparation and driver drain. The release control is available only after original closed-journal/drain proof and cannot itself authorize body effects.",
+      "watchdogQualification": "The watchdog is cancelled and cleared on release, not explicitly joined by helper.drain. It holds only a weak observer reference, a bounded sleep and a synchronous ended-guarded abort; it owns no native handle or mutation. This is not a blocker for the original native worker join claim. The new cancellation-handler scheduling task is likewise observational; no claim is made that every diagnostic scheduling task is joined.",
+      "failureTeardown": "Stop-only XCTest teardown uses the actual native Cancel/Close controls. It does not overwrite the failed receipt, synthesize a completed drain, retry saving, delete the created root or recreate an account."
+    },
+    "identityAndLifetime": {
+      "assessment": "The observer binds the exact original host session, real execution run, step zero and SHA256 of the original request UUID. Fixture and preparation retain exact source/run/attempt, same process, account, Space, source object/revision and original Any generation/start identity. The registry requires exact DEBUG/simulator scenario flags and one live weak observer. Original account owner, presentation, source owner, lease and mount checks remain mandatory. This source path fails closed after authority replacement; it is not an executed account/engine replacement test.",
+      "observationSHA256": "254919a4859fef6d1c84bf45a82cc6f9c3629f63b88dc8a849e62a2e68a1ea99",
+      "scopeSubstitutionOrAccountDiscovery": false
+    },
+    "anyNativeReadback": {
+      "assessment": "Uses the original captured AnyApplicationSession, document store, same-account client and source owner. Inside original session.perform, it validates the original scope around actual body GET, editor document read, root GET and a second body GET. Same opaque version, actual empty Markdown, actual zero body rows, original root semantic digest and exact process/generation/start identity are required. It does not construct a new application/session, reopen another account or infer a root by title.",
+      "sourceSHA256": "2bb80522feadb4cc2fe18eb624bff4426c50ab64018a188d0cd5095105156032"
+    },
+    "heartNativeReadback": {
+      "assessment": "Uses the mounted original EditorPageController, original Heart host/session, exact Page type and original objectLifecycleService.openForPreview. Actual returned protobuf is decoded by the existing strict readback path. Original account/Space/workspace/source/type and local-only/logging boundaries are rechecked before and after the native read. Zero body and the manifest's expected root semantic digest are required; no replacement write or root inference is used.",
+      "sourceSHA256": "4a25b9bb705d7b7d10e5f43a56a14c60f9c5039b3b88bbba3068583a7f077735"
+    },
+    "receiptAndUIAssertions": {
+      "assessment": "The UI presses original Send, the actual completed-message Save, native Allow and original Stop. It observes same worker/root, real waiter, closed original progress, zero body dispatch, disabled actions while stopping, original joined cancellation, uncertain/unconfirmed intent and an actual zero-body read. Intermediate immutable evidence files preserve phase ordering. The original baseline consent-cancel/full-save method remains byte-identical.",
+      "composerSource": "davidpovarsky/hanlin-ai@45d5d90512c304d3457774b185741b7ef7d801db:Packages/HanlinPlatform/Sources/HanlinScriptUI/HanlinChatUIComponents.swift",
+      "composerSHA256": "30bfafd2261ebbeced35e00b58cb92f435438e5685444b900d2c9d0c648425a8",
+      "composerActualConditions": "Stop exists when isStreaming || isStopping and onStop exists; .disabled(isStopping); accessibilityIdentifier hanlin-chat-stop."
+    }
+  },
+  "runtimeSelection": {
+    "newSelector": "PinkhaStage1AcceptanceUITests/HanlinSaveMessageAcceptanceUITests/testOriginalSDKStopAfterDurableRootDrainsWithoutBody",
+    "unchangedBaselineSelector": "PinkhaStage1AcceptanceUITests/HanlinSaveMessageAcceptanceUITests/testOriginalSDKMessageSaveConsentAndNativeReadback",
+    "engineInstancesRequired": ["any", "heart"],
+    "scenario": "stopAfterDurableRoot",
+    "sourcePrerequisites": [
+      "Published candidate must match the eleven frozen source identities, original preimages and actual target membership.",
+      "Common build must prove actual compiled source, UI target and exact SDK/native input identity; authored selectors or source projection are insufficient.",
+      "Each engine needs a fresh disposable fixture admitted from the already mounted original native editor in the same live process, with actual current source/native/account custody. Do not assume a retained old account is open.",
+      "Any requires a body endpoint qualified on the exact native product and actual same-version reads; older native8ac cannot be relabeled from source2619 alone.",
+      "Run only under the root-coordinated shared runtime slot, retain original logs, results and phase evidence."
+    ],
+    "expectedSuccessfulOutcome": "A real native root remains known and incomplete, with original generic entry uncertain and dispatch durably closed, no body mutation dispatched, the actual worker and original SDK/consumer drained, and actual native zero-body readback. This Stop acceptance does not mean a message was saved successfully.",
+    "notCoveredByThisSelector": [
+      "Cancellation before any native root effect",
+      "Engine replacement with an operation pending",
+      "Account replacement with an operation pending",
+      "Actual atomic body ACK followed by lost/unavailable readback",
+      "Cold restart/reconciliation of this new known-incomplete root",
+      "Physical device, Release archive, signing or TestFlight"
+    ],
+    "compiler": "NOT_RUN",
+    "anyRuntime": "NOT_RUN",
+    "heartRuntime": "NOT_RUN",
+    "fixtures": "NOT_PROVISIONED_OR_QUALIFIED_BY_THIS_REVIEW"
+  },
+  "actions": {
+    "sourceAndEvidenceReadOnly": true,
+    "localReviewArtifactsWritten": true,
+    "productSourceEdits": false,
+    "rootBranchEdits": false,
+    "remoteBuildsOrTests": false,
+    "nativeOrAccountOperations": false,
+    "runtimeClaimsTransferredFromOldEvidence": false
+  }
+}

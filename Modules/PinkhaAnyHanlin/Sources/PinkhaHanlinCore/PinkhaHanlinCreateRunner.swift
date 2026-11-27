@@ -49,6 +49,10 @@ public final class PinkhaHanlinWriteRunner<Plan: PinkhaHanlinNativeWritePlan, Ap
         var continuation: CheckedContinuation<HanlinHostExecutionResult, any Error>?
         var timer: Task<Void, Never>?
         var drainWaiters: [CheckedContinuation<Void, Never>] = []
+        #if DEBUG && targetEnvironment(simulator)
+        // Diagnostic identity of THIS actual Job, never a native mutation ID.
+        let acceptanceWorkerID = PinkhaHanlinSaveMessageNativeObservation.isRequested ? UUID() : nil
+        #endif
 
         init(plan: Plan, approval: Approval, dispatchDeadline: Date) {
             self.plan = plan; self.approval = approval; self.dispatchDeadline = dispatchDeadline
@@ -137,7 +141,14 @@ public final class PinkhaHanlinWriteRunner<Plan: PinkhaHanlinNativeWritePlan, Ap
     /// services, validates a replacement account, retries or changes native work.
     public func drainCancelledInvocation(_ id: HanlinToolInvocationID) async -> HanlinHostExecutionResult? {
         if let job = active, job.plan.identity.invocationID == id, !job.ended {
-            await withCheckedContinuation { job.drainWaiters.append($0) }
+            await withCheckedContinuation {
+                job.drainWaiters.append($0)
+                #if DEBUG && targetEnvironment(simulator)
+                if let workerID = job.acceptanceWorkerID {
+                    PinkhaHanlinSaveMessageNativeObservation.drainRegistered(job.plan.identity, workerID: workerID)
+                }
+                #endif
+            }
         }
         return receipts[id]?.metadataReceipt()
     }
@@ -148,7 +159,19 @@ public final class PinkhaHanlinWriteRunner<Plan: PinkhaHanlinNativeWritePlan, Ap
     }
 
     private func run(_ job: Job) async {
-        defer { job.finishNativeWork() }
+        #if DEBUG && targetEnvironment(simulator)
+        if let workerID = job.acceptanceWorkerID {
+            PinkhaHanlinSaveMessageNativeObservation.workerEntered(job.plan.identity, workerID: workerID)
+        }
+        #endif
+        defer {
+            job.finishNativeWork()
+            #if DEBUG && targetEnvironment(simulator)
+            if let workerID = job.acceptanceWorkerID {
+                PinkhaHanlinSaveMessageNativeObservation.workerFinished(job.plan.identity, workerID: workerID)
+            }
+            #endif
+        }
         do {
             // Last available host boundary after reservation's await and after MainActor queueing.
             try authorizeNextEffect(job)
