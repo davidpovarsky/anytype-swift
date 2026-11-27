@@ -1,0 +1,15 @@
+{
+  "debugDeviceUIKitSHA256": "45df1114d5f871bd0fccfe74063ba0c15e78c3d67cd179bde2804109897b3e69",
+  "debugSimulatorSpecialRoute": "Original preparation and exact fixture loaders under DEBUG && targetEnvironment(simulator).",
+  "debugSimulatorUIKitSHA256": "bd0538ff3c15ce449ecea583ceec6396add236a4d5fdb3ba056e112e276785c2",
+  "ordinaryDebugSimulatorRoute": "Both original loaders return nil without PINKHA_HANLIN_SAVE_NATIVE_UI=1; original present factory follows.",
+  "pinnedHelperGitBlob": "6098155a07a5dbafd10c9b380d8ccee8b8f0e8fd",
+  "publicHelperIsAsyncInAllUIKitBuilds": true,
+  "releaseAndDebugDeviceSourceEqual": true,
+  "releaseMachineCodeIdentityClaimed": false,
+  "releaseUIKitProjection": "import Foundation\nimport UIKit\nimport HanlinHostContracts\nimport PinkhaHanlinCore\nimport PinkhaAnyHanlin\nimport PinkhaAnyEngine\nimport PinkhaAnyHost\n\nextension AnyHanlinPresentation {\n    /// The real editor supplies its existing native session and services. A\n    /// Release or ordinary Debug call follows the original presentation path.\n    @MainActor\n    @discardableResult\n    public static func presentFromNativeEditor(\n        from presenter: UIViewController, native: AnyApplicationSession,\n        documents: AnyEditorDocumentStore, client: AnyHTTPClient,\n        sourceOwner: any AnyHanlinSourcePresentationOwner,\n        conversationID: UUID, locale: Locale = .autoupdatingCurrent,\n        creation: AnyHanlinCreationServices? = nil\n    ) async throws -> PinkhaHanlinChatController {\n        return try present(from: presenter, native: native, documents: documents,\n            sourceOwner: sourceOwner, conversationID: conversationID, locale: locale, creation: creation)\n    }\n}\n\n",
+  "releaseUIKitSHA256": "45df1114d5f871bd0fccfe74063ba0c15e78c3d67cd179bde2804109897b3e69",
+  "runtimeAcceptance": "NOT_RUN",
+  "schema": "native-hanlin-hook-conditional-source-projections/v1",
+  "status": "SOURCE_ONLY_NOT_COMPILER_OUTPUT"
+}
