@@ -1,0 +1,91 @@
+{
+  "schema": "pinkha-wave2-native-core-selection-results-source-review-v1",
+  "reviewer": "/root/torah_continue",
+  "createdAt": "2026-11-27T05:59:45.511880+00:00",
+  "status": "NO_CONCRETE_SOURCE_BLOCKER_FOUND_IN_REVIEWED_SCOPE",
+  "scope": "Read-only source review of finite selectors, compiler-bound declaration/selection dispatch, original enumeration and actual-result validation. PBX and global admission gate are reviewed separately by root.",
+  "files": [
+    {
+      "path": "wave2-native-core-hosted/native_core_hosted_profile.py",
+      "sha256": "b3dc895536c615c453f2856cd33c29b1394a6e954c218e4e7c67b59dfdb211ee"
+    },
+    {
+      "path": "wave2-native-core-hosted/prepare_native_core_hosted.py",
+      "sha256": "b39a1fd071fcff6d31dc998db0245c86e3864cbfcf98cad3115c86e9b02434a9"
+    },
+    {
+      "path": "wave2-native-core-hosted/materialized2/combined_host_acceptance_app15.py",
+      "sha256": "c286f736483d78c7e066f0483f678b7d9deddd942e4734238d3f9e502d2dc7e3"
+    },
+    {
+      "path": "wave2-editor-rtl/profile-inputs/run_host_tests.py",
+      "sha256": "106d40df8594c067fdcc389d0ac93e3055a01247d431b13563f9d6e0d1c3403d"
+    },
+    {
+      "path": "wave2-editor-rtl/profile-inputs/wave15_core_profile.py",
+      "sha256": "f544619607be0d25e74cff541ac66418b76df11abcd9c15c0ca774d6cbd5d96a"
+    },
+    {
+      "path": "wave2-editor-rtl/profile-inputs/shared_editor_existing_build.py",
+      "sha256": "b4573d61a6fadad7e266dfb88f7f6c25683d05552d99ab70acf86e7ef9715ae6"
+    },
+    {
+      "path": "wave2-property-lifecycle/AnyNativePropertyPresentationTests.swift",
+      "sha256": "7df1a45aa85cd71bc7ec8353b98150609bc2d2fb07a2aa1ebf08f7fb40fdab61"
+    },
+    {
+      "path": "interfaces_work/native-styled-rtl/patch/AnyNativeTextBlockCreationTests.swift",
+      "sha256": "e36af9a049013d2e19453849170ee2deac65d189d1c9603cf75c3f47b71a037e"
+    },
+    {
+      "path": "interfaces_work/native-typography/patch/AnyNativeTextTypographyTests.swift",
+      "sha256": "fde5f3bd8da14f0f3e6502d60cacdf3304ea78aba9c41b35ca73317995cdff07"
+    }
+  ],
+  "selectedProfiles": [
+    {
+      "lane": "native-properties-hosted",
+      "suite": "AnyNativePropertyPresentationTests",
+      "framework": "Swift Testing",
+      "methods": 9,
+      "cases": 9
+    },
+    {
+      "lane": "native-block-creation-hosted",
+      "suite": "AnyNativeTextBlockCreationTests",
+      "framework": "Swift Testing",
+      "methods": 2,
+      "cases": 2
+    },
+    {
+      "lane": "native-typography-hosted",
+      "suite": "AnyNativeTextTypographyTests",
+      "framework": "XCTest",
+      "methods": 2,
+      "cases": 2
+    }
+  ],
+  "observations": [
+    "All three profiles are separate from the unchanged properties-hosted 15-method search/selection scope. In-method scenario/style/size loops receive no additional test-case credit.",
+    "The source-bound Typography check names exactly its two parameterless XCTest methods; the two Swift Testing suites use the original declaration parser and exact published source hashes.",
+    "Suite invocation is admitted only for the complete exact selected inventory with an actual native compiler proof/witness. Exact enumeration still requires the selected AnytypeTests plan and every enabled method with no additional or disabled selected methods.",
+    "Original run_host_tests.validate_results rejects incomplete, duplicate, nonpassing or unexpected Test Case nodes and binds one actual OS27 arm64 iPad destination; unchanged Consumer.stage additionally requires the exact owned Simulator OS/build, command success, retained xcresult, descriptor integrity and product checks.",
+    "Original wave15_core_profile.validate_arguments is applied to the fixed unparameterized inventory; its exact method/case checks preserve the 9/2/2 counts and reject parameter-node inflation.",
+    "Actual producerReceipt.nativeCompilationProof is the source of the witness pin; selected source contracts are compared before and after the original stage.",
+    "The final profile defers original helper imports until the relevant post-admission path. Reading the source found no startup dependency regression from the retained earlier eager-import draft.",
+    "Unknown actual XCTest enumeration or xcresult representation remains a failure requiring retained raw evidence and review; this source review does not establish Apple runtime representation or compatibility."
+  ],
+  "notReviewed": [
+    "PBX project link correctness and global gate delta, owned by root",
+    "Product implementation behavior outside selector/result consumption"
+  ],
+  "execution": {
+    "portableControlsRunByReviewer": 0,
+    "SwiftCompilations": 0,
+    "XCTestInvocations": 0,
+    "NativeCalls": 0,
+    "MacCalls": 0,
+    "UIInvocations": 0
+  },
+  "runtimeState": "CLOSED; no product admission, compilation, XCTest, native persistence, UI, visual or physical-device acceptance is asserted."
+}
