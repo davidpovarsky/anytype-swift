@@ -22,7 +22,7 @@ def single():
 SUITES = {
     "PropertyCreationSearchTests": {
         "source_path": "AnyTypeTests/Pinkha/PropertyCreationSearchTests.swift",
-        "source_sha256": "69d7afd02929d0a0f8a220acff3ada1ac156e7cbed70294861cb8481ae06e236",
+        "source_sha256": "1bdd1c498a685902f7c8e8a0980b4e09b90d2e34ee74f13316e8ec1a2532c3e4",
         "methods": {name: single() for name in (
             "latestQueryOwnsRowsAndErrors", "cancelledRequestDoesNotPublish", "preCancelledRequestDoesNotLoad",
             "nativeFailurePreservesOrdinaryChoices", "existingSearchFailureIsVisible", "retryKeepsQueryAndSpace",
