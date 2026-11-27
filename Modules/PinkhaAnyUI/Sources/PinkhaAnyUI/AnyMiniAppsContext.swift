@@ -32,6 +32,32 @@ struct AnyMiniAppsBlockMetadata: Codable, Equatable, Sendable {
         self.type = type; self.inlineMarkdown = inlineMarkdown; self.style = style
     }
 
+    /// Restrict exact representation checks to this native MiniApps contract.
+    /// The general AnyJSON equality and the serialized journal stay unchanged.
+    func matchesExactly(_ other: Self) -> Bool {
+        type.utf8.elementsEqual(other.type.utf8) &&
+        inlineMarkdown.utf8.elementsEqual(other.inlineMarkdown.utf8) &&
+        Self.exactStyle(style, other.style)
+    }
+
+    private static func exactStyle(_ lhs: AnyJSON, _ rhs: AnyJSON) -> Bool {
+        switch (lhs, rhs) {
+        case (.string(let lhs), .string(let rhs)):
+            return lhs.utf8.elementsEqual(rhs.utf8)
+        case (.array(let lhs), .array(let rhs)):
+            return lhs.count == rhs.count && zip(lhs, rhs).allSatisfy { exactStyle($0.0, $0.1) }
+        case (.object(let lhs), .object(let rhs)):
+            guard lhs.count == rhs.count else { return false }
+            let left = lhs.sorted { $0.key.utf8.lexicographicallyPrecedes($1.key.utf8) }
+            let right = rhs.sorted { $0.key.utf8.lexicographicallyPrecedes($1.key.utf8) }
+            return zip(left, right).allSatisfy {
+                $0.0.key.utf8.elementsEqual($0.1.key.utf8) && exactStyle($0.0.value, $0.1.value)
+            }
+        default:
+            return lhs == rhs
+        }
+    }
+
     func snapshot(id: String) throws -> PinkhaMiniAppsBlockSnapshot {
         .init(id: id, text: projection.display, marks: try AnyMiniAppsCodec.encode(self))
     }

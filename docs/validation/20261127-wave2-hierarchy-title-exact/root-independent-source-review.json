@@ -1,0 +1,68 @@
+{
+  "schema": "wave2-hierarchy-title-root-source-review/v1",
+  "status": "APPROVED_SCOPED_SOURCE_PENDING_ACTUAL_COMPILATION_AND_EXECUTION",
+  "reviewedAt": "2026-11-27T19:59:32.803995+00:00",
+  "baseCommit": "9f0cbdffbda45520124ee1f0b50961641c5c49b1",
+  "completeOriginalPrimaryGitBodiesCompared": true,
+  "sourceFiles": [
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyRepository.swift",
+      "original": {
+        "bytes": 22477,
+        "gitBlob": "41bb8ecb03a5930b24d465448939dfdb4be444a9",
+        "sha256": "42986d1384446edea4b1c685eed305612aa0e8629bc7d6284f086ca87e27939a"
+      },
+      "candidate": {
+        "bytes": 22565,
+        "gitBlob": "89bca79a5e1c5753006af364ddb0d9ef6967fd49",
+        "sha256": "7a1af6090a300a17e1427abb97423a49fbd26031d0578d17e6cba5f719016463"
+      },
+      "completeInverseExact": true
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift",
+      "original": {
+        "bytes": 30174,
+        "gitBlob": "b11d9e0cb64b91bded003c1a4059df3adef2e789",
+        "sha256": "306aaa783a635eba2123c3403f572ccc104f951f4ce11574f6700cea28b5eaec"
+      },
+      "candidate": {
+        "bytes": 38951,
+        "gitBlob": "64925976aca576d2542ebab82ba8bd4475ae7481",
+        "sha256": "3a11428238fabc27fc93f8cfb98535864dfbb7c2b09ae501c14f699d47b292c1"
+      },
+      "completeInverseExact": true
+    }
+  ],
+  "wholeProductionFileAndNewTestSuffixRead": true,
+  "originalConditionalFixtureRead": true,
+  "sourceInverseSHA256": "91bf2ce542d39195c3b12634d61eade3dcd5c1a270b25e99a62c3ed176b5791c",
+  "candidateManifestSHA256": "176079186d071b5095e9de92aa6805598eefdcf98a502be4ac3c33b20d3a9f9b",
+  "peerReviewSHA256": "8ce9945c5c002d16dda16fca181809f25e878e5cdac5fcc12d87fecdef64d404",
+  "callerSourceProofSHA256": "d3a0cefd58857c3e152a010cd380b0dd3963ff56167cc3d195c4ee286b9722fb",
+  "callerSourcesByteVerified": 3,
+  "findings": [],
+  "semanticReview": [
+    "Exact UTF-8 comparison distinguishes requested byte change from the existing completed retry. The stale expected-title fence now rejects raw-different current state.",
+    "Both successful and uncertain patch readbacks require exact requested bytes. A raw-different caught-path readback retains the actual original write error.",
+    "Original queue, membership, captured version/sequence/run, patch dispatch, authorization, exception handling and all other methods are byte-identical.",
+    "Original conditional fixture retains actual modeled membership/fence/patch/read behavior. The two controlled readback cases change the fixture result and optional lost reply, not the repository result.",
+    "New tests check actual modeled dispatch counts and requested/stored/returned bytes, Latin and Hebrew canonical equivalence, stale refusal and the existing error cases.",
+    "Existing name form passes raw title; pending submission/model/optimistic projection do not skip canonical-equivalent edits. Current Properties view/presentation separately primary-checked and need no duplicate fix."
+  ],
+  "preservedOriginalTestBytes": 30174,
+  "preservedOriginalMethods": 23,
+  "newSwiftTestingMethods": 4,
+  "newDeclaredArgumentCases": 8,
+  "actualEnumeratedMethods": null,
+  "actualTestsRun": 0,
+  "noRuntimeClaim": true,
+  "scopeExclusions": [
+    "ordinary creation readback comparison remains outside this rename-only tranche",
+    "unpublished Bookmark precursor and Native frame contract",
+    "Native engine or HTTP acceptance",
+    "mounted Apple UI/visual/device acceptance",
+    "runtime controller or resource admission changes"
+  ],
+  "next": "Freeze the two-source owned publication packet with original source/inverse, both reviews and precise runtime boundary. Root must review packet scope before a normal owned child publication; no final branch edit."
+}

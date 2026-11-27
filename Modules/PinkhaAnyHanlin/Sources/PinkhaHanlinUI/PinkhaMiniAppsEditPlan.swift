@@ -10,10 +10,32 @@ public struct PinkhaMiniAppsBlockSnapshot: Codable, Equatable, Sendable {
     public init(id: String, text: String, marks: Data) {
         self.id = id; self.text = text; self.marks = marks
     }
+
+    /// Native replay/readback binds the stored representation, not Unicode equivalence.
+    public func matchesExactly(_ other: Self) -> Bool {
+        id.utf8.elementsEqual(other.id.utf8) &&
+        text.utf8.elementsEqual(other.text.utf8) && marks == other.marks
+    }
 }
 
 /// Persisted before any native edit, so a cold callback resumes the same operation.
 public struct PinkhaMiniAppsEditPlan: Codable, Sendable {
+    /// Heart has no native request-id deduplication for these editor calls.
+    /// Missing state in an older unfinished journal never proves no dispatch.
+    public struct HeartDispatch: Codable, Sendable {
+        public let version: Int
+        public let requestDigest: String
+        public let resultDigest: String
+        public var mutations: Set<String> = []
+        public var insertions: Set<String> = []
+        public var uploads: Set<String> = []
+
+        public init(requestDigest: String, resultDigest: String) {
+            version = 1
+            self.requestDigest = requestDigest; self.resultDigest = resultDigest
+        }
+    }
+
     public struct Mutation: Codable, Sendable {
         public let before: PinkhaMiniAppsBlockSnapshot
         public let location: Int
@@ -40,6 +62,8 @@ public struct PinkhaMiniAppsEditPlan: Codable, Sendable {
     public var insertedBlocks: [String: String] = [:]
     public var preservedNewerContent = false
     public var completed = false
+    // Nil remains omitted for Any and for decoded legacy journals.
+    public var heartDispatch: HeartDispatch?
 
     public init(requestID: UUID, mutations: [Mutation], additions: [MiniAppContent]) {
         self.requestID = requestID; self.mutations = mutations; self.additions = additions
@@ -91,7 +115,7 @@ public enum PinkhaMiniAppsEditPlanner {
             if selected.count == 1 {
                 let before = selected[0]
                 guard let selectedRange = range(location: selection.location, length: selection.length, in: before.text),
-                      String(before.text[selectedRange]) == selection.text
+                      String(before.text[selectedRange]).utf8.elementsEqual(selection.text.utf8)
                 else { throw Failure.invalidRange }
                 plan.mutations = [.init(before: before, location: selection.location,
                     length: selection.length, replacement: text)]
@@ -149,9 +173,13 @@ public enum PinkhaMiniAppsEditPlanner {
                                current: PinkhaMiniAppsBlockSnapshot?, alreadyRecorded: Bool,
                                expectedMarks: Data) -> ReplayDecision {
         if alreadyRecorded { return .alreadyApplied }
-        guard let current else { return .preserveNewerContent }
-        if current.text == mutation.afterText && current.marks == expectedMarks { return .alreadyApplied }
-        if current == mutation.before { return .apply }
+        guard let current, current.id.utf8.elementsEqual(mutation.before.id.utf8)
+        else { return .preserveNewerContent }
+        if let afterText = mutation.afterText,
+           current.text.utf8.elementsEqual(afterText.utf8), current.marks == expectedMarks {
+            return .alreadyApplied
+        }
+        if current.matchesExactly(mutation.before) { return .apply }
         return .preserveNewerContent
     }
 }

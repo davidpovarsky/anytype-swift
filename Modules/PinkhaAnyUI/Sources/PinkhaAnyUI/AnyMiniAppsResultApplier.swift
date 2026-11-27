@@ -39,7 +39,7 @@ enum AnyMiniAppsResultApplier {
                 guard let block = current.snapshot.blocks.first(where: { $0.id == mutation.before.id }),
                       current.snapshot.depthFirstIDs.contains(block.id) else { changed = true; continue }
                 let actual = AnyMiniAppsBlockMetadata(block)
-                if actual != before && actual != expected { changed = true }
+                if !actual.matchesExactly(before) && !actual.matchesExactly(expected) { changed = true }
             }
             if changed {
                 guard record.plan.appliedBlocks.isEmpty, record.plan.insertedBlocks.isEmpty, record.files.isEmpty,
@@ -61,7 +61,7 @@ enum AnyMiniAppsResultApplier {
                 let before = try JSONDecoder().decode(AnyMiniAppsBlockMetadata.self, from: mutation.before.marks)
                 let expected = try before.replacing(mutation)
                 let actual = AnyMiniAppsBlockMetadata(block)
-                if actual == before {
+                if actual.matchesExactly(before) {
                     if let dispatchedVersion = record.dispatchVersions?[block.id] {
                         // If a previous dispatch lost its reply, an unchanged
                         // block at a different native version may be a user
@@ -78,10 +78,10 @@ enum AnyMiniAppsResultApplier {
                     guard receipt.readback == .verifiedCurrent else { throw AnyHostError.writeUncertain }
                     current = try await documents.read(objectID: objectID, lease: lease)
                     guard let verified = current.snapshot.blocks.first(where: { $0.id == block.id }),
-                          AnyMiniAppsBlockMetadata(verified) == expected else { throw AnyHostError.writeUncertain }
+                          AnyMiniAppsBlockMetadata(verified).matchesExactly(expected) else { throw AnyHostError.writeUncertain }
                     record.nativeVersions[block.id] = receipt.nativeVersionID
                     lastUndo = receipt.undo
-                } else if actual == expected {
+                } else if actual.matchesExactly(expected) {
                     // A lost prior reply may be reconciled only with the exact
                     // stored source, formatting and requested native result.
                     record.nativeVersions[block.id] = current.nativeVersion
@@ -142,7 +142,7 @@ enum AnyMiniAppsResultApplier {
                         record.blockIntents[key] = intent
                         try journal.save(record)
                     }
-                    guard intent.text == text, intent.objectID == objectID, intent.workspace == workspace else {
+                    guard intent.text.utf8.elementsEqual(text.utf8), intent.objectID == objectID, intent.workspace == workspace else {
                         throw MiniAppBridgeError.conflictingResult
                     }
                     let preparedIntent = try AnyPreparedMigrationIntent.block(binding: binding, sourceKey: key,
@@ -155,7 +155,7 @@ enum AnyMiniAppsResultApplier {
                     current = try await documents.read(objectID: objectID, lease: lease)
                     guard let block = current.snapshot.blocks.first(where: { $0.id == id }),
                           current.snapshot.depthFirstIDs.contains(id), block.type == intent.type,
-                          block.text == intent.text, block.parentID == intent.parentID,
+                          block.text.utf8.elementsEqual(intent.text.utf8), block.parentID == intent.parentID,
                           block.position == intent.position else { throw AnyHostError.writeUncertain }
                     record.plan.insertedBlocks[key] = id
                     if let change = receipt.changeID { record.nativeVersions[id] = change }
@@ -227,14 +227,26 @@ enum AnyMiniAppsResultApplier {
         }
         let info = try await client.requestJSON(method: "GET",
             path: ["v1", "spaces", binding.workspace.spaceID, "files", fileID], authorize: authorize)
-        guard info["fileId"]?.string == fileID, info["objectId"]?.string == objectID,
-              info["size"]?.integer == Int64(size), info["name"]?.string == name,
-              info["mime"]?.string == mime else { throw AnyHostError.writeUncertain }
+        try validatePreparedFileMetadata(info, fileID: fileID, objectID: objectID,
+                                        size: Int64(size), name: name, mime: mime)
         let bytes = try await client.readFileContentDigest(spaceID: binding.workspace.spaceID,
             fileID: fileID, size: Int64(size), mime: mime, authorize: authorize)
         guard bytes.byteCount == Int64(size), bytes.sha256 == digest else { throw AnyHostError.writeUncertain }
         try await lease.validate(); try await authorize()
         return .init(fileID: fileID, bytes: Int64(size), sha256: digest, name: name, mime: mime)
+    }
+
+    /// The prepared inline/full intents retain these exact supplied values.
+    /// A mismatched readback remains uncertain before journal persistence and ACK.
+    static func validatePreparedFileMetadata(_ info: AnyJSON, fileID: String, objectID: String,
+                                            size: Int64, name: String, mime: String) throws {
+        guard info["fileId"]?.string?.utf8.elementsEqual(fileID.utf8) == true,
+              info["objectId"]?.string?.utf8.elementsEqual(objectID.utf8) == true,
+              info["size"]?.integer == size,
+              info["name"]?.string?.utf8.elementsEqual(name.utf8) == true,
+              info["mime"]?.string?.utf8.elementsEqual(mime.utf8) == true else {
+            throw AnyHostError.writeUncertain
+        }
     }
 }
 #endif

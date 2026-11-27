@@ -1,0 +1,351 @@
+{
+  "schema": "pinkha-miniapps-exact-utf8-durable-heart-source-review/v1",
+  "state": "FROZEN_SOURCE_PEER_REVIEW_PENDING_NOT_EXECUTED",
+  "sourceBase": "087748598c502d59e70b966507e64ac80038159a",
+  "sourceBaseTree": "e97141628e9c2d9bff69c543f580639c43dcaef8",
+  "sourceInputs": {
+    "path": "miniapps-unicode-consumer-source/review-snapshot3/source-inputs.json",
+    "bytes": 296968,
+    "sha256": "5bf59b05318d98995ab5fc2a410909cabc235ec2c96e09ed9f9b9a4e9e46a95c",
+    "gitBlob": "07b6d8165d479fc64035c166ca06de76551ba6d0"
+  },
+  "sourceIndex": {
+    "path": "miniapps-unicode-consumer-source/review-snapshot3/source-index.json",
+    "bytes": 7677,
+    "sha256": "8b935552c5ffbebf829f9e3ee10af5d908c643c026d6fcb4f05f2b0b09ffff47",
+    "gitBlob": "98d2c7e3e2acae9dfddede2dec86c61fb18832d3"
+  },
+  "originalFinding": {
+    "task": "1220541349302681",
+    "story": "1220961226475447",
+    "sourceRead": {
+      "path": "miniapps-unicode-consumer-source/primary/hq.tool-response.original.json",
+      "bytes": 314631,
+      "sha256": "e7d479594a6dcdeaa1ed7cf224820b5b67233d74007f64d26d3ae527a660511e",
+      "gitBlob": "dd1d04b149b1ac7e78d63aef4a22bb1241a545c2"
+    }
+  },
+  "changes": [
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaMiniAppsEditPlan.swift",
+      "meaning": "Explicit exact snapshot/selection/replay comparison. Original synthesized equality remains unchanged. Optional HeartDispatch records version, exact request/result digests and attempted mutation/insertion/upload keys; nil remains omitted for Any and legacy decoded records."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsContext.swift",
+      "meaning": "MiniApps-only recursive typed style equality compares UTF8 string values and stored dictionary keys, ordered arrays and original scalar kinds. It is not raw JSON duplicate-key detection or a global AnyJSON override."
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsResultApplier.swift",
+      "meaning": "Exact source/expected metadata, prepared text and file ID/object ID/name/MIME readback. Existing strict required fields, size, prepared status/source-key/commit flow, lease, content digest, journal and ACK ordering remain."
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/MiniApps/PinkhaMiniAppsResultApplier.swift",
+      "meaning": "Existing private Heart journal now durably fences each original setText/add/addFirstBlock/upload before dispatch; exact native readback may reconcile. No uncertain repeat or whole-result append after any attempted effect. Request/result digests bind reopened work. All original native API calls and owner/coordinator/lifetime remain."
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift",
+      "meaning": "Exact38151-byte original four-method native fixture prefix plus seven DEBUG/simulator component methods. No new physical account, native transport, companion or fixture action is claimed."
+    },
+    {
+      "path": "AnytypeTests/PinkhaMiniAppsEditPlannerTests.swift",
+      "meaning": "Exact8770-byte thirteen-method original planner prefix plus three exact-byte controls in the same original suite."
+    }
+  ],
+  "heartFailureMatrix": [
+    {
+      "state": "No journal",
+      "decision": "Only explicit CocoaError.fileReadNoSuchFile permits creating the original plan; initial plan and effect fence must be durably saved before the original mutation."
+    },
+    {
+      "state": "Read/permission/IO/decode failure",
+      "decision": "Error propagates; no new dispatch and no ACK."
+    },
+    {
+      "state": "Legacy unfinished record with no HeartDispatch",
+      "decision": "Remain pending/refused; missing field never means undispatched."
+    },
+    {
+      "state": "Legacy completed record",
+      "decision": "Retain original completed-receipt compatibility under original live owner/document guards; no new effect."
+    },
+    {
+      "state": "Request/result/version mismatch",
+      "decision": "Refuse before native work, including changed account, Space, document, engine or canonically equivalent result bytes."
+    },
+    {
+      "state": "Durably attempted setText, unchanged/changed/nonexact native body",
+      "decision": "Remain pending/refused; never resend setText or convert its output into a fallback append."
+    },
+    {
+      "state": "Durably attempted setText, exact expected identity/text/marks",
+      "decision": "Original result may settle through original readback and receipt path without another mutation."
+    },
+    {
+      "state": "Durably attempted insertion, no original marker or mismatched text/marks",
+      "decision": "No second add/addFirstBlock; remain pending."
+    },
+    {
+      "state": "Known marked file, upload attempted but incomplete",
+      "decision": "No second upload; remain pending. Exact completed original content may still reconcile using the original file-byte witnesses."
+    },
+    {
+      "state": "Cancellation/authority loss before effect",
+      "decision": "Original validator executes before and after synchronous durable save; failure after save leaves a conservative fence and zero new effect."
+    },
+    {
+      "state": "Later user edit after durable per-block acceptance",
+      "decision": "Original alreadyRecorded semantics prevent overwriting/reinserting that accepted result."
+    }
+  ],
+  "durabilityAndAuthority": {
+    "journal": "Same private ApplicationSupport/MiniAppsReceipts namespace and request filename; no new store/backend.",
+    "writer": "Existing atomic/protected data write, then file synchronize and owned namespace-directory fsync. Own newly created parent directories are synchronized before effect admission. Filesystem/platform behavior still requires actual Apple qualification.",
+    "serialization": "Original coordinator applying/request and applyingDocuments/document sets serialize admission. Original lifetime revokes admission and joins retained tasks before replacement. No new lifecycle owner, task or lock was introduced.",
+    "exactSourceDependencies": {
+      "Anytype/Sources/Pinkha/MiniApps/PinkhaMiniAppsCoordinator.swift": {
+        "source": "miniapps-independent-handler-current-review/consumer-ba7d/PinkhaMiniAppsCoordinator.swift",
+        "bytes": 25191,
+        "sha256": "39e741e5b6a387a048a018164a0cd084c6d35cebc9ff20f33eec7c6ad99951ac",
+        "gitBlob": "21f34173f16d957f4584f76970fd95af3bef7f9a",
+        "gitMode": "100644",
+        "matchesActualBase": true
+      },
+      "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaMiniAppsLifetime.swift": {
+        "source": "hanlin-future-build-680/original/Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaMiniAppsLifetime.swift",
+        "bytes": 2263,
+        "sha256": "9d52a2aec89aa8cf59c52b9832497ea3c5ce9ca9e11da9b918544d1ff4d6fbf6",
+        "gitBlob": "3999b9edb63eef26264cc643f41686b8c76540c9",
+        "gitMode": "100644",
+        "matchesActualBase": true
+      },
+      "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaMiniAppsReturnQueue.swift": {
+        "source": "hanlin-future-build-680/original/Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaMiniAppsReturnQueue.swift",
+        "bytes": 4382,
+        "sha256": "f1c096724022e65a873f118fcda42fac801010f72b1e1629b93499e959ce5b90",
+        "gitBlob": "db906efbc68157fe453ec38b41c3cadc6a4138c6",
+        "gitMode": "100644",
+        "matchesActualBase": true
+      },
+      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsJournal.swift": {
+        "source": "miniapps-unicode-consumer-source/before/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsJournal.swift",
+        "bytes": 4282,
+        "sha256": "624e0fa4a7bc14b6fd255f57be469f0796bdd87373a6bc7f588f93a54a95f7ce",
+        "gitBlob": "3955c14c183ee43cf12c52478bdca73bb248d561",
+        "gitMode": "100644",
+        "matchesActualBase": true
+      }
+    },
+    "guardPreservation": {
+      "originalOwnerAccountDocumentPermissionGuard": {
+        "bytes": 638,
+        "sha256": "ecd1e3b0bfaba2b278809c6564a2dd5a1939f5b4bc26fe5628d316bf04c32b44",
+        "gitBlob": "03c4991b16f9c5b50d896990dda0ddea52ba8130",
+        "gitMode": "100644"
+      },
+      "originalCoordinatorAndLifetimeUnchanged": true,
+      "originalNativeCallsAndACKCounts": {
+        "model.blockActionService.setText(": {
+          "originalCount": 1,
+          "candidateCount": 1
+        },
+        "model.blockActionService.add(info:": {
+          "originalCount": 1,
+          "candidateCount": 1
+        },
+        "Container.shared.blockService().addFirstBlock(": {
+          "originalCount": 1,
+          "candidateCount": 1
+        },
+        "model.blockActionService.upload(": {
+          "originalCount": 1,
+          "candidateCount": 1
+        },
+        "store.acknowledgeResult(": {
+          "originalCount": 2,
+          "candidateCount": 2
+        }
+      },
+      "AnyJSONUnchanged": {
+        "source": "miniapps-unicode-consumer-source/before/Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyJSON.swift",
+        "bytes": 2600,
+        "sha256": "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d",
+        "gitBlob": "398d20dbad32e139ff392370a12b2bcf84cee27c",
+        "gitMode": "100644",
+        "matchesActualBase": true
+      },
+      "AnyJournalUnchanged": {
+        "source": "miniapps-unicode-consumer-source/before/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyMiniAppsJournal.swift",
+        "bytes": 4282,
+        "sha256": "624e0fa4a7bc14b6fd255f57be469f0796bdd87373a6bc7f588f93a54a95f7ce",
+        "gitBlob": "3955c14c183ee43cf12c52478bdca73bb248d561",
+        "gitMode": "100644",
+        "matchesActualBase": true
+      },
+      "anySDKOrNativeBackendEdits": false
+    }
+  },
+  "moduleBinding": {
+    "oldAppAlias": {
+      "path": "miniapps-unicode-consumer-source/review-snapshot3/dependencies/Anytype/Sources/Pinkha/MiniApps/PinkhaMiniAppsEditPlan.swift",
+      "bytes": 420,
+      "sha256": "db6ee6808f9675ecb80bb4ecf3462fd96dc2efe2856c77e1713700161200d466",
+      "gitBlob": "acc5565cd0e6359cc42809748a26be13458f9fec"
+    },
+    "oldNativeTestPrefix": {
+      "path": "miniapps-unicode-consumer-source/review-snapshot3/before/AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift",
+      "bytes": 38151,
+      "sha256": "5df20d49c98b8be04cfcbf376faab279efa828864fb6d30321f2cf2e75b0b448",
+      "gitBlob": "13037e93b38a097189afe491cc0c8a530c7370a6"
+    },
+    "preservedTestableImport": "Anytype",
+    "newTypeReferences": "Anytype.PinkhaMiniAppsBlockSnapshot / Anytype.PinkhaMiniAppsEditPlan.Mutation resolve through the exact existing aliases to the shared PinkhaHanlinUI public types. No new import affects original file lookup.",
+    "sourceOnlyNotCompilerProof": true
+  },
+  "tests": {
+    "newMethods": {
+      "AnyTypeTests/Pinkha/PinkhaMiniAppsNativePreparationTests.swift": [
+        "testNativeMetadataRequiresExactInlineAndNestedStyleBytes",
+        "testPreparedFileReadbackRequiresExactNameAndIdentityBytes",
+        "testPreparedFileReadbackPreservesRequiredTypesSizeAndMIME",
+        "testLostTextReplyRemainsFencedAfterOriginalJournalReopen",
+        "testLostFallbackInsertionAndUploadRepliesCannotRepeat",
+        "testLegacyUnfinishedAndDifferentOwnerRecordsCannotAuthorizeEffects",
+        "testCancellationAfterDurableFencePreventsTheOriginalEffect"
+      ],
+      "AnytypeTests/PinkhaMiniAppsEditPlannerTests.swift": [
+        "testSourceSelectionRequiresExactUnicodeBytes",
+        "testReplayRequiresExactBeforeAndRequestedAfterBytes",
+        "testReadbackSnapshotRequiresExactIdentityTextAndMarks"
+      ]
+    },
+    "newMethodCount": 10,
+    "state": "NOT_RUN",
+    "originalNativeMethods": 4,
+    "originalPlannerMethods": 13,
+    "originalEightMiniAppsSelectorsUnchanged": [
+      [
+        "prepare",
+        "AnytypeTests",
+        "PinkhaMiniAppsNativePreparationTests/prepareMiniAppsDocument",
+        600
+      ],
+      [
+        "return-ui",
+        "PinkhaStage1AcceptanceUITests",
+        "MiniAppsNativeAcceptanceUITests/testNativeEditorPickerTextStudioReturnAndColdReopen",
+        600
+      ],
+      [
+        "replay-ui",
+        "PinkhaStage1AcceptanceUITests",
+        "MiniAppsNativeAcceptanceUITests/testDuplicateCallbackDoesNotInsertAgain",
+        600
+      ],
+      [
+        "native-readback",
+        "AnytypeTests",
+        "PinkhaMiniAppsNativePreparationTests/verifyReturnedNativeDocument",
+        600
+      ],
+      [
+        "native-adapter",
+        "AnytypeTests",
+        "PinkhaMiniAppsNativePreparationTests/applySelectedTextAndPreserveNewerNativeContent",
+        600
+      ],
+      [
+        "native-file-ui",
+        "PinkhaStage1AcceptanceUITests",
+        "MiniAppsNativeAcceptanceUITests/testNativeFilesRoundTripColdReopenCancelAndReplay",
+        720
+      ],
+      [
+        "isolation-ui",
+        "PinkhaStage1AcceptanceUITests",
+        "MiniAppsNativeAcceptanceUITests/testPendingReturnsRespectEngineAndAccountAcrossColdReopen",
+        1620
+      ],
+      [
+        "isolation-native",
+        "AnytypeTests",
+        "PinkhaMiniAppsNativePreparationTests/verifyEngineAccountIsolationNativeHeartReadback",
+        600
+      ]
+    ],
+    "fixedApp61MembershipChanged": false,
+    "fixedWarm22Methods34CasesChanged": false,
+    "newMethodsWithinSelectedNativePreparation": 7,
+    "newMethodsInSeparateOriginalPlannerFile": 3,
+    "plannerAdmission": "This legacy planner file is not in the fixed warm App61 list. Its original target or a separately reviewed membership must be qualified before executing these three methods. No synthetic target or new runner was authored."
+  },
+  "preparedNativeNameMIME": {
+    "state": "ORIGINAL_NATIVE_SOURCE_JOIN_PENDING_W1_N",
+    "consumerRequiredFields": "Original strict name/MIME hints are preserved with byte-exact comparison; no normalization/omission inference from ordinary streaming upload.",
+    "requestStory": "1220961656047775",
+    "ownerAcknowledgmentStory": "1220961886725174",
+    "latestPrimaryRead": {
+      "path": "miniapps-unicode-consumer-source/primary/hq-followup-read.original.json",
+      "bytes": 321427,
+      "sha256": "4dfdc45e3fc77855ae26e7958b891ade032e6f712c21f9d161f97676d013e6d7",
+      "gitBlob": "a9e85373c74a3654f4c605e62c5a08b46efa65c3"
+    }
+  },
+  "followOnAdmission": {
+    "wholeNativePreparationPinNeedsExplicitUpdate": true,
+    "knownCurrentConsumer": "Tools/PinkhaDualEngineRuntime/warm_focus_editor/source-membership.json",
+    "sourceCountUnchanged": 61,
+    "currentGateMapRows": 145,
+    "noExistingBaselineMapRowForSixPaths": true,
+    "baselineEvidence": {
+      "path": "miniapps-unicode-consumer-source/primary/baseline586-six-paths.original.json",
+      "bytes": 5038,
+      "sha256": "2e05c43a425085dbc988b6d645cb9023d830e088090e526a73932f69903aba9e",
+      "gitBlob": "9fde6c9164050eb0613f0903cd6495564d48a7c2"
+    },
+    "noControlOrMapSourceEdit": true
+  },
+  "preservation": {
+    "snapshot1": {
+      "path": "miniapps-unicode-consumer-source/review-snapshot1/source-index.json",
+      "bytes": 3881,
+      "sha256": "cc954e3afcb15069d2db44f6ade458c2a7d880b5edc10273a4f263072b8c54df",
+      "gitBlob": "9d38732ebc35063acc0e17caa00fc97ea9948b87"
+    },
+    "snapshot2": {
+      "path": "miniapps-unicode-consumer-source/review-snapshot2/source-index.json",
+      "bytes": 7440,
+      "sha256": "83d0d63b3c5f637e350c7ccc68bc5201e9eae0799b606aa3294c49d46d3683fc",
+      "gitBlob": "689ee42f8477868d9742535302774dfdacd1cc90"
+    },
+    "snapshot2To3FullInverse": {
+      "path": "miniapps-unicode-consumer-source/review-snapshot3/snapshot2-to-snapshot3-full-inverse.json",
+      "bytes": 4785,
+      "sha256": "6e892b8de1047f0a23f0779efde725dc08b8d003428dcacf46469f28c15853ce",
+      "gitBlob": "6cdb0cf335b1e29618f8278ae1df63c4e9661919"
+    },
+    "completeBaseInverse": {
+      "path": "miniapps-unicode-consumer-source/review-snapshot3/complete-literal-inverse.json",
+      "bytes": 63138,
+      "sha256": "fcf0c08dc3d0ef848ab09430e33428f296bd9fb3ba012e016d2e616b968b629c",
+      "gitBlob": "f5310e205253da684617fa50cc94ee0d64bab9f5"
+    },
+    "fullForwardAndReverseVerified": true,
+    "literalOperationCount": 37
+  },
+  "actualCompilerRuntimeClaims": {
+    "candidateImports": 0,
+    "swiftCompiler": 0,
+    "testsExecuted": 0,
+    "hostActions": 0,
+    "runtimeAcceptance": false,
+    "readyForRuntime": false
+  },
+  "remainingAcceptance": [
+    "Peer/root source review",
+    "Exact current compiler and source membership qualification",
+    "Ten original component methods; seven current-target and three original planner-target methods",
+    "Real original Any prepared inline/full metadata and body readback under current owner/lease",
+    "Heart real post-write failure, warm/cold original-account recovery and account/engine revocation/drain",
+    "Original eight MiniApps companion/native/UI routes with exact current product/SDK custody; no reuse of historical artifact as current acceptance"
+  ]
+}

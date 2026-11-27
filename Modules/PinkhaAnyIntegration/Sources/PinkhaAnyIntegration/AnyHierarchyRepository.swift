@@ -200,9 +200,9 @@ public actor AnyHierarchyRepository {
 
             }
 
-            if existing.title == newTitle { return existing }
+            if existing.title.utf8.elementsEqual(newTitle.utf8) { return existing }
 
-            guard existing.title == expectedTitle else { throw AnyHierarchyError.stalePlan(objectID) }
+            guard existing.title.utf8.elementsEqual(expectedTitle.utf8) else { throw AnyHierarchyError.stalePlan(objectID) }
 
             guard let row = current.nativeRows[objectID], let expectedVersion = row["_ver"] else {
 
@@ -224,7 +224,7 @@ public actor AnyHierarchyRepository {
 
                 let readback = try item(from: await store.readObject(objectID: objectID))
 
-                guard readback.title == newTitle else { throw error }
+                guard readback.title.utf8.elementsEqual(newTitle.utf8) else { throw error }
 
                 return readback
 
@@ -234,7 +234,7 @@ public actor AnyHierarchyRepository {
 
             let readback = try item(from: await store.readObject(objectID: objectID))
 
-            guard readback.title == newTitle else { throw AnyHierarchyError.incompleteWrite(objectID) }
+            guard readback.title.utf8.elementsEqual(newTitle.utf8) else { throw AnyHierarchyError.incompleteWrite(objectID) }
 
             return readback
 

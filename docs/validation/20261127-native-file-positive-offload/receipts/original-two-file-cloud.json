@@ -1,0 +1,169 @@
+{
+  "accounts": {
+    "alice": "AAgW9UF9iqUH1KrjQcAz5K2FDCc9kQgniwmnK2rei1M5ah2H",
+    "bob": "A7zf8i42qUR8rZJwHrztRqFPifD3upr1fkyN9V3pF72AAaGi"
+  },
+  "allFourFilesAccepted": false,
+  "builds": 0,
+  "cloudCustodyAccepted": false,
+  "configSHA256": "a441343df6def76ba2738f9e4fb722004bd54ad59dc4f7432df0ab3e8c37ad76",
+  "continuationOf": {
+    "path": "/var/lib/pinkha-w1-cloud-filesv2-20261127/attempt5/result.json",
+    "sha256": "84810888ba0be79546278f90286ff4da9e0a6052daf83922e787132ad628b59c"
+  },
+  "controllerSHA256": "4abfea7545f5fbeea014ed0afe058a33a8e0619f29d2e4618bc288e688b94914",
+  "crossAccountContentAccepted": false,
+  "elapsedSeconds": 7.409,
+  "encryptionEvidence": "native encrypted CAR plus verified plaintext; ciphertext difference alone is not cryptographic acceptance",
+  "environment": "production nodes; existing synthetic recipient; P2P disabled and sender stopped",
+  "errors": [],
+  "explicitQuotaRetries": [],
+  "files": [
+    {
+      "bytes": 8192,
+      "cachedCAR": {
+        "allocatedBytes": 12288,
+        "bytes": 8421,
+        "relativePath": "A7zf8i42qUR8rZJwHrztRqFPifD3upr1fkyN9V3pF72AAaGi/sdk/files/bafyreiet62u77nehvmtgn45ltxrk6itepoighks3u4y2f3pjjotaczcsfi.361psf76ieku2/7i/bafybeibfvxnwxvg6mufc4lksm4t544hwm3233ph3asn4lgdhjjifmj567i.car",
+        "sha256": "6381c4b6acf43c0c0946c0a89a7c0e6a1f534910e3d2cfd0cdc6d67baae37734"
+      },
+      "durableBeforeRead": true,
+      "fileId": "BEaHYwGfZiM",
+      "initiallyCached": false,
+      "mime": "application/octet-stream",
+      "name": "cloud-binary.bin",
+      "nativeReadSeconds": 1.51,
+      "plaintextSHA256": "5b3ad191f3c210b61bd5d1ef5ffc838b7fbabe38e8b42207fa04bf2388831313",
+      "rootCid": "bafybeibfvxnwxvg6mufc4lksm4t544hwm3233ph3asn4lgdhjjifmj567i"
+    },
+    {
+      "bytes": 12420,
+      "cachedCAR": {
+        "allocatedBytes": 16384,
+        "bytes": 12649,
+        "relativePath": "A7zf8i42qUR8rZJwHrztRqFPifD3upr1fkyN9V3pF72AAaGi/sdk/files/bafyreiet62u77nehvmtgn45ltxrk6itepoighks3u4y2f3pjjotaczcsfi.361psf76ieku2/7e/bafybeighhcuudwqvbo36hmty4mrfdkp4cuuvzn3ddzspi7vjt7klnugg7e.car",
+        "sha256": "5b64ff278a3cd49158eebcfd2379f1073c10a2f965b0a6b8207d357c3e4fd57c"
+      },
+      "durableBeforeRead": true,
+      "fileId": "ahKeFKn7uta",
+      "initiallyCached": false,
+      "mime": "image/png",
+      "name": "cloud-thumb.png",
+      "nativeReadSeconds": 0.581,
+      "plaintextSHA256": "710df0c12429ecca0af68e5217edf5a1d82176869b0c4a30ee52082c858e21c1",
+      "rootCid": "bafybeighhcuudwqvbo36hmty4mrfdkp4cuuvzn3ddzspi7vjt7klnugg7e"
+    }
+  ],
+  "minimumFreeBytes": 3106869248,
+  "nativeACLAccepted": true,
+  "objectID": "bafyreid5n5gg366h3lsqdolu5wi6hffwtqfyhzb53ylneh626bnapnzj6q",
+  "offlineReopenAccepted": false,
+  "partialCrashResumeAccepted": false,
+  "phase": "fresh OS-offline recipient verifies the same two cached originals",
+  "phases": [
+    {
+      "elapsedSeconds": 6.068,
+      "name": "two exact remote plaintexts plus original-image thumbnail resolver; sender stopped and P2P disabled"
+    },
+    {
+      "elapsedSeconds": 6.838,
+      "name": "new native PID with actual NoNewPrivs1/Seccomp2 reads exact original cached bytes"
+    }
+  ],
+  "processes": [
+    {
+      "command": [
+        "/var/lib/pinkha-root-t2-linux-20261126/build1/current/any",
+        "run",
+        "--config",
+        "/var/lib/pinkha-w1-cloud-filesv2-20261127/attempt6-small-cloud/config.yml",
+        "--data-dir",
+        "/var/lib/pinkha-w1-cloud-filesv2-20261127/attempt2/bob",
+        "--addr",
+        "127.0.0.1:41549"
+      ],
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "intentionalCrash": false,
+      "log": "bob-durable-cloud-read.log",
+      "name": "bob-durable-cloud-read",
+      "offline": false,
+      "pid": 2744949
+    },
+    {
+      "actualInheritedNoNewPrivs": 1,
+      "actualInheritedSeccomp": 2,
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/mnt/development/projects/worktrees/anytype-migration-final-20261125/Tools/AnyEngineValidation/native_source_preservation/linux_outbound_denial.py",
+        "--exec",
+        "/var/lib/pinkha-root-t2-linux-20261126/build1/current/any",
+        "run",
+        "--config",
+        "/var/lib/pinkha-w1-cloud-filesv2-20261127/attempt6-small-cloud/config.yml",
+        "--data-dir",
+        "/var/lib/pinkha-w1-cloud-filesv2-20261127/attempt2/bob",
+        "--addr",
+        "127.0.0.1:59197"
+      ],
+      "exitCode": 0,
+      "forcedKill": false,
+      "groupPositivelyAbsent": true,
+      "intentionalCrash": false,
+      "log": "bob-durable-cold-offline.log",
+      "name": "bob-durable-cold-offline",
+      "offline": true,
+      "pid": 2745188
+    }
+  ],
+  "productionNodeconfSHA256": "6554bc5841fbef2a1ee6ab65ac3b14a9117dbb762d8cc8d419633c8cd413b060",
+  "quotaFailureRecoveryAccepted": false,
+  "quotaLocalPreservationAccepted": false,
+  "quotaRecoveryObservations": [],
+  "readerWriteDenial": {
+    "body": {
+      "error": {
+        "code": "space.read_only",
+        "details": {
+          "objectId": "bafyreid5n5gg366h3lsqdolu5wi6hffwtqfyhzb53ylneh626bnapnzj6q",
+          "spaceId": "bafyreiet62u77nehvmtgn45ltxrk6itepoighks3u4y2f3pjjotaczcsfi.361psf76ieku2"
+        },
+        "message": "space is read-only for this account (guest access or reader role)"
+      }
+    },
+    "status": 403
+  },
+  "readerWriteDenialAccepted": true,
+  "retainedPrivateAccountsModified": false,
+  "schema": "pinkha-cloud-filesv2-two-accounts-v1",
+  "scope": "only the two already-durable originals; large/image quota remains open",
+  "selectedFilesCloudCustodyAccepted": true,
+  "selectedFilesCrossAccountBytesAccepted": true,
+  "selectedFilesOfflineAccepted": true,
+  "sourceAfter": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "sourceBefore": {
+    "binarySHA256": "1dc1803c656da2215760477dadd26bf0e829b6ee592e337db6fa0295a6ed9636",
+    "buildSHA256": "6d0f00da205846575bfd49e3fba8121aa1570a940ea3e13cc571aa4b4734e2f0",
+    "commits": {
+      "any": "8fbd1e819fb132ac0e0a848d2ddf5c5714189b81",
+      "sdk": "c1fd59bd8f0ed62471234ec1a65a402d22eab6a9"
+    },
+    "sourceFiles": 1594,
+    "sourceManifestSHA256": "12ad65cd178aa31b6aa5761d42507d8618f1d3d4865a627548af2036c0a40a6c",
+    "sourceUnchanged": true
+  },
+  "spaceID": "bafyreiet62u77nehvmtgn45ltxrk6itepoighks3u4y2f3pjjotaczcsfi.361psf76ieku2",
+  "status": "PASS_TWO_DURABLE_CLOUD_FILES_AND_RECIPIENT_OFFLINE_ONLY"
+}

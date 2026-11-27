@@ -534,3 +534,311 @@ struct PinkhaMiniAppsNativePreparationTests {
     }
 }
 #endif
+
+#if DEBUG && targetEnvironment(simulator)
+import Foundation
+import XCTest
+import PinkhaAnyEngine
+import PinkhaAnyHost
+@testable import PinkhaAnyUI
+
+final class AnyMiniAppsResultValidationTests: XCTestCase {
+    private func metadata(text: String, style: AnyJSON = .object([:])) throws -> AnyMiniAppsBlockMetadata {
+        let value: AnyJSON = .object([
+            "type": .string("paragraph"), "inlineMarkdown": .string(text), "style": style
+        ])
+        return try JSONDecoder().decode(AnyMiniAppsBlockMetadata.self, from: JSONEncoder().encode(value))
+    }
+
+    func testNativeMetadataRequiresExactInlineAndNestedStyleBytes() throws {
+        let pairs = [("\u{00E9}", "e\u{0301}"),
+                     ("\u{05E9}\u{05B8}\u{05C1}", "\u{05E9}\u{05C1}\u{05B8}")]
+        for (stored, equivalent) in pairs {
+            XCTAssertEqual(stored, equivalent)
+            XCTAssertNotEqual(Data(stored.utf8), Data(equivalent.utf8))
+            let style: AnyJSON = .object(["marks": .array([
+                .object([stored: .string(stored)]), .bool(true), .integer(2), .null
+            ])])
+            let before = try metadata(text: "old", style: style)
+            let snapshot = try before.snapshot(id: "block-original")
+            let mutation = Anytype.PinkhaMiniAppsEditPlan.Mutation(before: snapshot,
+                location: 0, length: 3, replacement: stored)
+            let expected = try before.replacing(mutation)
+            let exact = try metadata(text: stored, style: style)
+            XCTAssertTrue(exact.matchesExactly(expected))
+            XCTAssertFalse(try metadata(text: equivalent, style: style).matchesExactly(expected))
+            let changedValue: AnyJSON = .object(["marks": .array([
+                .object([stored: .string(equivalent)]), .bool(true), .integer(2), .null
+            ])])
+            XCTAssertFalse(try metadata(text: stored, style: changedValue).matchesExactly(expected))
+            let changedKey: AnyJSON = .object(["marks": .array([
+                .object([equivalent: .string(stored)]), .bool(true), .integer(2), .null
+            ])])
+            XCTAssertFalse(try metadata(text: stored, style: changedKey).matchesExactly(expected))
+            let roundTrip = try JSONDecoder().decode(AnyMiniAppsBlockMetadata.self,
+                from: AnyMiniAppsCodec.encode(exact))
+            XCTAssertTrue(roundTrip.matchesExactly(expected))
+        }
+    }
+
+    func testPreparedFileReadbackRequiresExactNameAndIdentityBytes() throws {
+        let pairs = [("\u{00E9}", "e\u{0301}"),
+                     ("\u{05E9}\u{05B8}\u{05C1}", "\u{05E9}\u{05C1}\u{05B8}")]
+        for (stored, equivalent) in pairs {
+            let fileID = "file-" + stored, objectID = "object-" + stored, name = stored + ".txt"
+            let original: [String: AnyJSON] = [
+                "fileId": .string(fileID), "objectId": .string(objectID),
+                "size": .integer(4), "name": .string(name), "mime": .string("text/plain")
+            ]
+            XCTAssertNoThrow(try AnyMiniAppsResultApplier.validatePreparedFileMetadata(.object(original),
+                fileID: fileID, objectID: objectID, size: 4, name: name, mime: "text/plain"))
+            for (key, altered) in [("name", equivalent + ".txt"),
+                                   ("fileId", "file-" + equivalent),
+                                   ("objectId", "object-" + equivalent)] {
+                var readback = original
+                readback[key] = .string(altered)
+                XCTAssertThrowsError(try AnyMiniAppsResultApplier.validatePreparedFileMetadata(.object(readback),
+                    fileID: fileID, objectID: objectID, size: 4, name: name, mime: "text/plain")) { error in
+                    guard let hostError = error as? AnyHostError, case .writeUncertain = hostError else {
+                        return XCTFail("The known prepared write must remain uncertain: \(error)")
+                    }
+                }
+            }
+        }
+    }
+
+    func testPreparedFileReadbackPreservesRequiredTypesSizeAndMIME() throws {
+        let original: [String: AnyJSON] = [
+            "fileId": .string("file-original"), "objectId": .string("object-original"),
+            "size": .integer(4), "name": .string("result.txt"), "mime": .string("text/plain")
+        ]
+        func validate(_ fields: [String: AnyJSON]) throws {
+            try AnyMiniAppsResultApplier.validatePreparedFileMetadata(.object(fields),
+                fileID: "file-original", objectID: "object-original", size: 4,
+                name: "result.txt", mime: "text/plain")
+        }
+        XCTAssertNoThrow(try validate(original))
+        for key in ["fileId", "objectId", "size", "name", "mime"] {
+            var absent = original
+            absent.removeValue(forKey: key)
+            XCTAssertThrowsError(try validate(absent))
+            var wrongType = original
+            wrongType[key] = .null
+            XCTAssertThrowsError(try validate(wrongType))
+        }
+        var changedSize = original
+        changedSize["size"] = .integer(5)
+        XCTAssertThrowsError(try validate(changedSize))
+        var changedMIME = original
+        changedMIME["mime"] = .string("application/octet-stream")
+        XCTAssertThrowsError(try validate(changedMIME))
+    }
+}
+#endif
+
+#if DEBUG && targetEnvironment(simulator)
+@MainActor
+final class PinkhaMiniAppsHeartDispatchTests: XCTestCase {
+    private enum ProbeFailure: Error { case lostReply }
+
+    private func request(id: UUID = UUID(), account: String = "account-original",
+                         space: String = "space-original", document: String = "document-original",
+                         engine: String = "heart") throws -> MiniAppInvocation {
+        let block = Anytype.PinkhaMiniAppsBlockSnapshot(id: "block-original", text: "old", marks: Data())
+        let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+        return .init(id: id, appID: "miniapps-component", source: .init(
+            appID: "io.anytype.app.dev", displayName: "Synthetic component", documentID: document,
+            documentText: block.text, metadata: [
+                "pinkha.engine": engine, "anytype.accountID": account, "anytype.spaceID": space,
+                "anytype.blocks": String(decoding: try encoder.encode([block]), as: UTF8.self)
+            ]), createdAt: Date(timeIntervalSince1970: 1_700_000_000))
+    }
+
+    private func result(_ request: MiniAppInvocation, operation: MiniAppOperation = .replaceDocument,
+                        text: String = "\u{00E9}") -> MiniAppResult {
+        .init(requestID: request.id, operation: operation, items: [.init(kind: .text, text: text)])
+    }
+
+    private func supportDirectory() throws -> URL {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("miniapps-dispatch-component-" + UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false,
+                                               attributes: [.posixPermissions: 0o700])
+        return directory
+    }
+
+    func testLostTextReplyRemainsFencedAfterOriginalJournalReopen() async throws {
+        let support = try supportDirectory()
+        defer { try? FileManager.default.removeItem(at: support) }
+        let invocation = try request(), returned = result(invocation)
+        let journal = try PinkhaMiniAppsJournal(request: invocation, testingSupportDirectory: support)
+        var plan = try PinkhaMiniAppsResultApplier.resumePlan(request: invocation, result: returned, journal: journal)
+        let mutation = try XCTUnwrap(plan.mutations.first)
+        var writes = 0
+        var observedBody = mutation.before
+        do {
+            try await PinkhaMiniAppsResultApplier.dispatch(.mutation, key: mutation.before.id,
+                plan: &plan, journal: journal, validate: {}, operation: { () async throws -> Void in
+                    writes += 1
+                    observedBody = .init(id: mutation.before.id, text: try XCTUnwrap(mutation.afterText), marks: Data())
+                    throw ProbeFailure.lostReply
+                })
+            XCTFail("The original post-dispatch failure must escape")
+        } catch ProbeFailure.lostReply { }
+        XCTAssertEqual(writes, 1)
+
+        let reopenedJournal = try PinkhaMiniAppsJournal(request: invocation, testingSupportDirectory: support)
+        var reopened = try PinkhaMiniAppsResultApplier.resumePlan(
+            request: invocation, result: returned, journal: reopenedJournal)
+        XCTAssertEqual(reopened.requestID, invocation.id)
+        XCTAssertFalse(reopened.completed)
+        XCTAssertTrue(reopened.appliedBlocks.isEmpty)
+        XCTAssertThrowsError(try PinkhaMiniAppsResultApplier.replayDecision(mutation: mutation,
+            current: mutation.before, plan: reopened, expectedMarks: Data()))
+        let equivalent = Anytype.PinkhaMiniAppsBlockSnapshot(id: mutation.before.id,
+            text: "e\u{0301}", marks: Data())
+        XCTAssertThrowsError(try PinkhaMiniAppsResultApplier.replayDecision(mutation: mutation,
+            current: equivalent, plan: reopened, expectedMarks: Data()))
+        XCTAssertThrowsError(try PinkhaMiniAppsResultApplier.preserveResult(returned, in: &reopened))
+        XCTAssertTrue(reopened.additions.isEmpty)
+        do {
+            try await PinkhaMiniAppsResultApplier.dispatch(.mutation, key: mutation.before.id,
+                plan: &reopened, journal: reopenedJournal, validate: {}, operation: { writes += 1 })
+            XCTFail("An uncertain original mutation must not be sent again")
+        } catch PinkhaMiniAppsError.resultNotSaved { }
+        XCTAssertEqual(writes, 1)
+
+        XCTAssertEqual(try PinkhaMiniAppsResultApplier.replayDecision(mutation: mutation,
+            current: observedBody, plan: reopened, expectedMarks: Data()), .alreadyApplied)
+        XCTAssertEqual(writes, 1)
+    }
+
+    func testLostFallbackInsertionAndUploadRepliesCannotRepeat() async throws {
+        for kind in [PinkhaMiniAppsResultApplier.DispatchKind.insertion, .upload] {
+            let support = try supportDirectory()
+            defer { try? FileManager.default.removeItem(at: support) }
+            let invocation = try request()
+            let returned: MiniAppResult
+            switch kind {
+            case .insertion: returned = result(invocation)
+            case .upload:
+                returned = .init(requestID: invocation.id, operation: .insert,
+                    items: [.init(kind: .file, attachmentID: UUID(), typeIdentifier: "public.data", name: "result.bin")])
+            case .mutation: return XCTFail("This control covers append and upload uncertainty")
+            }
+            let journal = try PinkhaMiniAppsJournal(request: invocation, testingSupportDirectory: support)
+            var plan = try PinkhaMiniAppsResultApplier.resumePlan(request: invocation, result: returned, journal: journal)
+            let key = invocation.id.uuidString.lowercased() + ":0"
+            switch kind {
+            case .insertion:
+                let mutation = try XCTUnwrap(plan.mutations.first)
+                let newer = Anytype.PinkhaMiniAppsBlockSnapshot(id: mutation.before.id,
+                    text: "a later user edit", marks: Data())
+                XCTAssertEqual(try PinkhaMiniAppsResultApplier.replayDecision(mutation: mutation,
+                    current: newer, plan: plan, expectedMarks: Data()), .preserveNewerContent)
+                try PinkhaMiniAppsResultApplier.preserveResult(returned, in: &plan)
+                XCTAssertTrue(plan.mutations.isEmpty)
+                XCTAssertEqual(plan.additions.count, 1)
+            case .upload:
+                let inserted = try await PinkhaMiniAppsResultApplier.dispatch(.insertion, key: key,
+                    plan: &plan, journal: journal, validate: {}, operation: { "original-file-block" })
+                XCTAssertEqual(inserted, "original-file-block")
+            case .mutation: return XCTFail("This control covers append and upload uncertainty")
+            }
+            var effects = 0
+            do {
+                try await PinkhaMiniAppsResultApplier.dispatch(kind, key: key, plan: &plan,
+                    journal: journal, validate: {}, operation: { () async throws -> Void in
+                        effects += 1
+                        throw ProbeFailure.lostReply
+                    })
+                XCTFail("The original unknown effect must stay failed")
+            } catch ProbeFailure.lostReply { }
+            let reopenedJournal = try PinkhaMiniAppsJournal(request: invocation, testingSupportDirectory: support)
+            var reopened = try PinkhaMiniAppsResultApplier.resumePlan(
+                request: invocation, result: returned, journal: reopenedJournal)
+            XCTAssertFalse(reopened.completed)
+            XCTAssertTrue(reopened.insertedBlocks.isEmpty)
+            do {
+                try await PinkhaMiniAppsResultApplier.dispatch(kind, key: key, plan: &reopened,
+                    journal: reopenedJournal, validate: {}, operation: { effects += 1 })
+                XCTFail("The second native call must remain forbidden")
+            } catch PinkhaMiniAppsError.resultNotSaved { }
+            XCTAssertEqual(effects, 1)
+            let preserved = reopened.preservedNewerContent
+            let additionCount = reopened.additions.count
+            XCTAssertThrowsError(try PinkhaMiniAppsResultApplier.preserveResult(returned, in: &reopened))
+            XCTAssertEqual(reopened.preservedNewerContent, preserved)
+            XCTAssertEqual(reopened.additions.count, additionCount)
+        }
+    }
+
+    func testLegacyUnfinishedAndDifferentOwnerRecordsCannotAuthorizeEffects() throws {
+        let support = try supportDirectory()
+        defer { try? FileManager.default.removeItem(at: support) }
+        let invocation = try request(), returned = result(invocation)
+        let journal = try PinkhaMiniAppsJournal(request: invocation, testingSupportDirectory: support)
+        XCTAssertNil(try journal.load())
+        try Data([0xFF]).write(to: journal.url, options: .atomic)
+        XCTAssertThrowsError(try PinkhaMiniAppsResultApplier.resumePlan(request: invocation,
+            result: returned, journal: journal)) { error in
+                XCTAssertTrue(error is DecodingError)
+            }
+        var legacy = try PinkhaMiniAppsEditPlanner.make(request: invocation, result: returned)
+        let originalShape = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(legacy)) as? [String: Any])
+        XCTAssertNil(originalShape["heartDispatch"])
+        try journal.save(legacy)
+        XCTAssertThrowsError(try PinkhaMiniAppsResultApplier.resumePlan(request: invocation, result: returned, journal: journal))
+        legacy.completed = true
+        try journal.save(legacy)
+        XCTAssertTrue(try PinkhaMiniAppsResultApplier.resumePlan(
+            request: invocation, result: returned, journal: journal).completed)
+
+        let fresh = try request()
+        let freshResult = result(fresh)
+        let freshJournal = try PinkhaMiniAppsJournal(request: fresh, testingSupportDirectory: support)
+        let bound = try PinkhaMiniAppsResultApplier.resumePlan(request: fresh, result: freshResult, journal: freshJournal)
+        try freshJournal.save(bound)
+        let changedOwners = [
+            try request(id: fresh.id, account: "account-replacement"),
+            try request(id: fresh.id, space: "space-replacement"),
+            try request(id: fresh.id, document: "document-replacement"),
+            try request(id: fresh.id, engine: "any")
+        ]
+        for replacement in changedOwners {
+            let replacementJournal = try PinkhaMiniAppsJournal(request: replacement, testingSupportDirectory: support)
+            try replacementJournal.save(bound)
+            XCTAssertThrowsError(try PinkhaMiniAppsResultApplier.resumePlan(
+                request: replacement, result: freshResult, journal: replacementJournal))
+        }
+        XCTAssertThrowsError(try PinkhaMiniAppsResultApplier.resumePlan(request: fresh,
+            result: result(fresh, text: "e\u{0301}"), journal: freshJournal))
+    }
+
+    func testCancellationAfterDurableFencePreventsTheOriginalEffect() async throws {
+        let support = try supportDirectory()
+        defer { try? FileManager.default.removeItem(at: support) }
+        let invocation = try request(), returned = result(invocation)
+        let journal = try PinkhaMiniAppsJournal(request: invocation, testingSupportDirectory: support)
+        var plan = try PinkhaMiniAppsResultApplier.resumePlan(request: invocation, result: returned, journal: journal)
+        let mutation = try XCTUnwrap(plan.mutations.first)
+        var validations = 0, effects = 0
+        do {
+            try await PinkhaMiniAppsResultApplier.dispatch(.mutation, key: mutation.before.id,
+                plan: &plan, journal: journal, validate: {
+                    validations += 1
+                    if validations == 2 { throw CancellationError() }
+                }, operation: { effects += 1 })
+            XCTFail("The original authority cancellation must escape before native work")
+        } catch is CancellationError { }
+        XCTAssertEqual(validations, 2)
+        XCTAssertEqual(effects, 0)
+        let reopenedJournal = try PinkhaMiniAppsJournal(request: invocation, testingSupportDirectory: support)
+        let reopened = try PinkhaMiniAppsResultApplier.resumePlan(
+            request: invocation, result: returned, journal: reopenedJournal)
+        XCTAssertFalse(reopened.completed)
+        XCTAssertThrowsError(try PinkhaMiniAppsResultApplier.replayDecision(mutation: mutation,
+            current: mutation.before, plan: reopened, expectedMarks: Data()))
+    }
+}
+#endif

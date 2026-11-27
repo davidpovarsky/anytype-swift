@@ -1,0 +1,120 @@
+{
+  "actions": {
+    "candidateImports": 0,
+    "compilerInvocations": 0,
+    "hostCalls": 0,
+    "sourceEdits": 0,
+    "testsExecuted": 0
+  },
+  "independentByteProof": {
+    "bytes": 27979,
+    "path": "/workspace/scratch/ae335eba85e3/miniapps-heart-dispatch-peer-review/snapshot3/independent-byte-proof.json",
+    "sha256": "7e6351ec5cd2087f012d382b60a85e1519c2e639d231d00a7b63ae23e0be6831"
+  },
+  "readyForRuntime": false,
+  "runtimeAcceptance": "NOT_RUN",
+  "schema": "pinkha-independent-miniapps-heart-dispatch-review-v1",
+  "scope": {
+    "actualBase": "087748598c502d59e70b966507e64ac80038159a",
+    "actualBaseTree": "e97141628e9c2d9bff69c543f580639c43dcaef8",
+    "byteReview": "All29 indexed files, all37 literal operations across all6 source files, snapshot2 two-file seven-operation inverse, and all17 current0877 preimage/dependency joins. The other Any-engine production paths remain the original owner/root semantic-review scope.",
+    "semanticRead": [
+      "Complete Heart PinkhaMiniAppsResultApplier and its original journal, 22,533 bytes",
+      "Complete shared PinkhaMiniAppsEditPlan/HeartDispatch and replay planner, 9,061 bytes",
+      "Four appended PinkhaMiniAppsHeartDispatchTests methods and their helpers",
+      "Exact original coordinator per-request/document serialization, account/engine revocation and native drain",
+      "Exact current lifetime and Anytype shared type aliases"
+    ]
+  },
+  "sourceConclusions": [
+    {
+      "finding": "dispatch validates current authority, rejects a completed or missing-state plan, sets the exact per-kind key, saves through the original atomic protected writer plus file/directory synchronization, validates again, and only then awaits the supplied original setText/add/addFirst/upload operation. A thrown save or second validation cannot invoke the effect. The fence is never cleared on reopen.",
+      "topic": "Durable dispatch precedes each original effect"
+    },
+    {
+      "finding": "A marked mutation is accepted only through original alreadyApplied semantics: a prior durable appliedBlocks record or exact current requested text/mark readback. Current-before, canonically equivalent but byte-different output, deleted/other content or later unrecorded edits cannot re-dispatch. preserveResult refuses every nonempty mutation/insertion/upload fence or recorded effect, preventing fallback append after uncertainty.",
+      "topic": "Unknown text effects cannot replay or fall back"
+    },
+    {
+      "finding": "A missing receipt-marked inserted block with an existing insertion fence cannot repeat add/addFirst. An observed marked block still needs the existing insertion readback, now with exact text/marks. An uncertain upload that is not done cannot repeat; a done upload follows the retained native download, complete byte witness and final current-block validation before recording completion. Earlier confirmed insertedBlocks entries retain the original no-reinsert-after-later-edit/deletion behavior.",
+      "topic": "Insertion and upload recovery"
+    },
+    {
+      "finding": "The journal namespace remains original account/space/document plus request UUID. New HeartDispatch version1 binds sorted-key JSON SHA256 of both complete request and result, compared byte-exactly. Same-ID changed request/account/space/document/engine or changed result is refused. An unfinished legacy record without the fence is refused; a completed legacy record retains the original acknowledge-only compatibility route and cannot invoke an effect.",
+      "topic": "Original request/result binding"
+    },
+    {
+      "finding": "heartDispatch is an optional Codable property. Any-created plans and decoded legacy plans retain nil; synthesized optional encoding omits it. Existing required plan fields, mutation semantics and Any journal implementation are unchanged. New Heart state is only created by the Heart resume helper. No general AnyJSON or global string-equality policy is changed.",
+      "topic": "Shared wire compatibility"
+    },
+    {
+      "finding": "Snapshot3 reads Data directly and returns nil only for CocoaError.fileReadNoSuchFile. Every other IO error and decoding failure propagates before a fresh plan or effect. This closes the prior fileExists false/unknown ambiguity. The authored absence/corrupt controls are retained inside the existing added legacy method, without a new method or a claimed execution.",
+      "topic": "Journal load no longer confuses unreadable with absent"
+    },
+    {
+      "finding": "The original account/document/open/lock/permission validator is whole-byte identical. The current coordinator prevents overlapping work for a request and account/space/document, obtains the original lease, validates around apply and revokes admission before draining actual retained tasks on account/engine transition. This patch neither cancels an unknown native write nor creates a replacement authority. All original effect callsites and both ACK callsites remain single and exact in count; fresh completion is saved before ACK, and failures escape without ACK.",
+      "topic": "Owner/cancellation/ACK ordering"
+    },
+    {
+      "finding": "The MainActor async helper keeps a Sendable returned value and inout local plan; its operation closures call the same original native APIs. String/Void results fit the declared generic bound. The journal testing-directory initializer is DEBUG-only. Snapshot3 removes the added shared-module test import and names the exact current Anytype aliases under the preserved @testable import Anytype, avoiding a new name-lookup ambiguity. This is source review, not a Swift compilation claim.",
+      "topic": "Swift source/API composition"
+    },
+    {
+      "finding": "New shared snapshots bind exact block-ID and text bytes plus marks. Existing insertion receipt UUID keys, inserted-ID lookup, native file target metadata equality and account/document validator comparisons are retained. The candidate does not claim a global opaque-ID, filename or JSON-equality fix.",
+      "topic": "Preserved identity scope"
+    }
+  ],
+  "sourceIndex": {
+    "bytes": 7677,
+    "path": "/workspace/scratch/ae335eba85e3/miniapps-unicode-consumer-source/review-snapshot3/source-index.json",
+    "sha256": "8b935552c5ffbebf829f9e3ee10af5d908c643c026d6fcb4f05f2b0b09ffff47"
+  },
+  "sourceInputs": {
+    "bytes": 296968,
+    "path": "/workspace/scratch/ae335eba85e3/miniapps-unicode-consumer-source/review-snapshot3/source-inputs.json",
+    "sha256": "5bf59b05318d98995ab5fc2a410909cabc235ec2c96e09ed9f9b9a4e9e46a95c"
+  },
+  "status": "PASS_SOURCE_ONLY_NO_REMAINING_SCOPED_BLOCKER",
+  "testScope": {
+    "allNewMethods": 10,
+    "heartDispatchMethods": [
+      {
+        "name": "testLostTextReplyRemainsFencedAfterOriginalJournalReopen",
+        "proofIntent": "One injected post-dispatch failure; reopen real private journal; before/equivalent text and fallback/re-dispatch refused; exact injected after snapshot recognized."
+      },
+      {
+        "name": "testLostFallbackInsertionAndUploadRepliesCannotRepeat",
+        "proofIntent": "Two injected effect kinds retain durable fences across reopen and forbid duplicate calls or fallback transformation."
+      },
+      {
+        "name": "testLegacyUnfinishedAndDifferentOwnerRecordsCannotAuthorizeEffects",
+        "proofIntent": "Absent and corrupt load behavior, legacy nil-wire/unfinished refusal/completed compatibility, changed ownership/request/result bindings."
+      },
+      {
+        "name": "testCancellationAfterDurableFencePreventsTheOriginalEffect",
+        "proofIntent": "Injected existing validate closure fails after durable fence; zero injected effects; reopen still refuses uncertain retry."
+      }
+    ],
+    "limits": [
+      "The four Heart methods use the actual local journal writer/reopen path but inject effects and authority failures; they are not real native editor/RPC/account/ACK/crash execution.",
+      "The three planner methods remain a separate source file and compiler/selector admission from the seven added NativePreparation XCTest methods.",
+      "No actual compiler, enumeration, XCTest result, Apple protected-file outage, native loss, readback, ACK, cold app reopen or account transition has been qualified by this source review."
+    ],
+    "originalNativePreparationPrefix": {
+      "bytes": 38151,
+      "sha256": "5df20d49c98b8be04cfcbf376faab279efa828864fb6d30321f2cf2e75b0b448"
+    },
+    "originalPlannerPrefix": {
+      "bytes": 8770,
+      "sha256": "c60e9a367a88c7ebea4b98db8f69f6e6d946f5b1e26feac4e26b576975363b6f"
+    },
+    "otherNativePreparationMethods": 3,
+    "separatePlannerMethods": 3,
+    "state": "NOT_RUN"
+  },
+  "unchangedScope": [
+    "No SDK pin, package manifest, native backend, coordinator/lifetime implementation or current runtime controller is edited in this snapshot.",
+    "Original whole test prefixes and original owner permission guard remain exact.",
+    "Original UTF8-only snapshot1 and snapshot2 remain retained; snapshot3 is a distinct frozen successor."
+  ]
+}

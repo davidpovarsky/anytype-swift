@@ -1,0 +1,73 @@
+{
+  "schema": "wave3-root-title9e4-source-review-v1",
+  "status": "SOURCE_READY_EXECUTION_PENDING",
+  "reviewedAtUTC": "2026-11-27T20:33:53.862961+00:00",
+  "donorCommit": "9e4aa3f1b88d8f6bfec27cdf2cb47d07ffd416ce",
+  "donorTree": "c8466a2e97f13d5708213f4275bb4f30ac96cc22",
+  "baseCommit": "087748598c502d59e70b966507e64ac80038159a",
+  "baseTree": "e97141628e9c2d9bff69c543f580639c43dcaef8",
+  "fullCurrentLeaves": 22788,
+  "completePrimaryFileCount": 24,
+  "completePrimaryBytes": 272168,
+  "addedPathsAbsent": 22,
+  "completeCurrentOriginalsVerified": [
+    {
+      "path": "Modules/PinkhaAnyIntegration/Package.swift",
+      "gitBlob": "7f59f980b1ad76e9ac957d4aecbe48f5a92adc8d",
+      "bytes": 779
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyGuardedHTTPHierarchyRecordStore.swift",
+      "gitBlob": "2d920f139bd1a4e1680920e1c5d26063df573927",
+      "bytes": 7638
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyRepository.swift",
+      "gitBlob": "41bb8ecb03a5930b24d465448939dfdb4be444a9",
+      "bytes": 22477
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHTTPHierarchyRecordStore.swift",
+      "gitBlob": "77ac68bdcf1fea26ab55f17cb74ca3465a859d3d",
+      "bytes": 11318
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift",
+      "gitBlob": "b11d9e0cb64b91bded003c1a4059df3adef2e789",
+      "bytes": 30174
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyHierarchyPresentationState.swift",
+      "gitBlob": "9dcbe70b6a8e9dc7cbc9e34204b5957b24411d12",
+      "bytes": 4654
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "gitBlob": "00999518ec3aa6180ecda8c357635ec14e5ad4bb",
+      "bytes": 29436
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "gitBlob": "70849e7476816de1a2f4673f127a81e71a45067f",
+      "bytes": 33946
+    }
+  ],
+  "exactWholeProductionInverse": true,
+  "exactOriginalTestPrefixBytes": 30174,
+  "unchangedOriginalMethods": 23,
+  "newMethods": 4,
+  "newArgumentCases": 8,
+  "actualTests": 0,
+  "sourceFindings": [],
+  "reasoning": [
+    "Four comparisons now require exact UTF8 at completed retry, expected-state fence and both normal/uncertain readbacks. The original mutation queue, native fence, authorizer, single dispatch, catch/rethrow and all remaining production bytes are unchanged.",
+    "The additive test fixture delegates to the original conditional fixture and counts real modeled dispatches/fences. It exercises Latin/Hebrew canonical-equivalent raw differences without substituting the production repository.",
+    "The original guarded store preserves its existing client/workspace, capability/run checks, current membership authorization and captured fence in the conditional native request. No new endpoint, permissive fallback or owner is introduced.",
+    "All eight complete retained originals match current0877 whole-tree leaves; two product preimages exact and22 new evidencepaths absent. Existing App membership, pins and unrelated hierarchy methods untouched."
+  ],
+  "runtimeOwner": "Wave2 existing focused4/8 execution closure; do not replay23 or native/UI",
+  "limitations": [
+    "Source review only; no new compilation, Native HTTP, mounted UI, physical device or release claim.",
+    "Original reported publication receipt b6ef not independently read here; primary Git commit/tree/24 blobs verified directly."
+  ]
+}

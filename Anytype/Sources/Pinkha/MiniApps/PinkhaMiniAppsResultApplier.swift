@@ -6,6 +6,7 @@ import Services
 import ProtobufMessages
 import SwiftProtobuf
 import UniformTypeIdentifiers
+import Darwin
 
 /// Uses the editor's native services. Pending bridge results are acknowledged only
 /// after native readback and a durable local receipt; no hidden document replica.
@@ -27,7 +28,7 @@ enum PinkhaMiniAppsResultApplier {
         }
         try validateContext()
         let journal = try PinkhaMiniAppsJournal(request: request)
-        var plan = try journal.load() ?? PinkhaMiniAppsEditPlanner.make(request: request, result: result)
+        var plan = try resumePlan(request: request, result: result, journal: journal)
         if plan.completed {
             _ = try store.acknowledgeResult(id: request.id, sourceAppID: request.source.appID)
             return plan.preservedNewerContent
@@ -40,10 +41,9 @@ enum PinkhaMiniAppsResultApplier {
         for mutation in plan.mutations {
             let marks = try resultingMarks(mutation)
             let snapshot = try snapshot(id: mutation.before.id, blocks: blocks)
-            if PinkhaMiniAppsEditPlanner.replayDecision(mutation: mutation, current: snapshot,
-                alreadyRecorded: plan.appliedBlocks.contains(mutation.before.id),
-                expectedMarks: try marks.serializedData()) == .preserveNewerContent {
-                preserveResult(result, in: &plan)
+            if try replayDecision(mutation: mutation, current: snapshot, plan: plan,
+                expectedMarks: marks.serializedData()) == .preserveNewerContent {
+                try preserveResult(result, in: &plan)
                 try journal.save(plan)
                 break
             }
@@ -56,25 +56,28 @@ enum PinkhaMiniAppsResultApplier {
             // Refresh before each independent native write; never replay over a newer edit.
             blocks = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
             try validateContext()
-            switch PinkhaMiniAppsEditPlanner.replayDecision(mutation: mutation,
-                current: try snapshot(id: mutation.before.id, blocks: blocks),
-                alreadyRecorded: plan.appliedBlocks.contains(mutation.before.id), expectedMarks: marksData) {
+            switch try replayDecision(mutation: mutation,
+                current: snapshot(id: mutation.before.id, blocks: blocks),
+                plan: plan, expectedMarks: marksData) {
             case .alreadyApplied:
                 plan.appliedBlocks.insert(mutation.before.id)
                 try journal.save(plan)
                 continue
             case .preserveNewerContent:
-                preserveResult(result, in: &plan)
+                try preserveResult(result, in: &plan)
                 try journal.save(plan)
                 break
             case .apply:
                 guard let text = mutation.afterText else { throw PinkhaMiniAppsError.unsupportedResult }
-                try await model.blockActionService.setText(contextId: document.objectId,
-                    blockId: mutation.before.id, middlewareString: .init(text: text, marks: marks))
+                try await dispatch(.mutation, key: mutation.before.id, plan: &plan,
+                    journal: journal, validate: validateContext) {
+                    try await model.blockActionService.setText(contextId: document.objectId,
+                        blockId: mutation.before.id, middlewareString: .init(text: text, marks: marks))
+                }
                 let persisted = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
                 try validateContext()
                 guard let actual = try snapshot(id: mutation.before.id, blocks: persisted),
-                      actual.text == text, actual.marks == marksData else {
+                      actual.matchesExactly(.init(id: mutation.before.id, text: text, marks: marksData)) else {
                     throw PinkhaMiniAppsError.resultNotSaved
                 }
                 plan.appliedBlocks.insert(mutation.before.id)
@@ -97,20 +100,23 @@ enum PinkhaMiniAppsResultApplier {
             let matches = blocks.filter { $0.fields[receiptField]?.stringValue == key }
             guard matches.count <= 1 else { throw PinkhaMiniAppsError.sourceChanged }
             let existing = matches.first
+            let info = try insertionBlock(item: item, request: request.id, index: index, key: key)
             let inserted: String
             if let existing {
                 inserted = existing.id
             } else {
-                let info = try insertionBlock(item: item, request: request.id, index: index, key: key)
                 let target = item.kind == .file
                     ? PinkhaMiniAppsContext.topLevelAnchor(anchor, documentID: document.objectId, blocks: blocks)
                     : anchor
-                if let target, blocks.contains(where: { $0.id == target }) {
-                    inserted = try await model.blockActionService.add(info: info,
-                        targetBlockId: target, position: .bottom, setFocus: false)
-                } else {
-                    inserted = try await Container.shared.blockService().addFirstBlock(
-                        contextId: document.objectId, info: info)
+                inserted = try await dispatch(.insertion, key: key, plan: &plan,
+                    journal: journal, validate: validateContext) {
+                    if let target, blocks.contains(where: { $0.id == target }) {
+                        return try await model.blockActionService.add(info: info,
+                            targetBlockId: target, position: .bottom, setFocus: false)
+                    } else {
+                        return try await Container.shared.blockService().addFirstBlock(
+                            contextId: document.objectId, info: info)
+                    }
                 }
             }
             blocks = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
@@ -118,6 +124,13 @@ enum PinkhaMiniAppsResultApplier {
             guard let native = blocks.first(where: { $0.id == inserted }),
                   native.fields[receiptField]?.stringValue == key else {
                 throw PinkhaMiniAppsError.resultNotSaved
+            }
+            if case .text(let expected) = info.content {
+                guard case .text(let actual) = native.content,
+                      actual.text.utf8.elementsEqual(expected.text.utf8),
+                      try actual.marks.serializedData() == expected.marks.serializedData() else {
+                    throw PinkhaMiniAppsError.resultNotSaved
+                }
             }
             if item.kind == .file {
                 guard let attachmentID = item.attachmentID else { throw PinkhaMiniAppsError.attachmentUnavailable }
@@ -130,6 +143,9 @@ enum PinkhaMiniAppsResultApplier {
                 let expectedBytes = try await PinkhaMiniAppsContext.fileWitnesses(at: [sharedFile])[0]
                 try validateContext()
                 if beforeFile.state != .done || beforeFile.metadata.targetObjectId.isEmpty {
+                    guard let state = plan.heartDispatch, !state.uploads.contains(key) else {
+                        throw PinkhaMiniAppsError.resultNotSaved
+                    }
                     let directory = FileManager.default.temporaryDirectory
                         .appendingPathComponent("miniapps-upload-" + UUID().uuidString, isDirectory: true)
                     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -152,7 +168,10 @@ enum PinkhaMiniAppsResultApplier {
                           case .file(let currentFile) = currentBlock.content, currentFile == beforeFile else {
                         throw PinkhaMiniAppsError.sourceChanged
                     }
-                    try await model.blockActionService.upload(blockId: inserted, filePath: upload.path)
+                    try await dispatch(.upload, key: key, plan: &plan,
+                        journal: journal, validate: validateContext) {
+                        try await model.blockActionService.upload(blockId: inserted, filePath: upload.path)
+                    }
                     let uploaded = try await PinkhaMiniAppsContext.nativeBlocks(document: document)
                     try validateContext()
                     guard let verified = uploaded.first(where: { $0.id == inserted }),
@@ -208,8 +227,9 @@ enum PinkhaMiniAppsResultApplier {
     }
 
     private static func snapshot(id: String, blocks: [BlockInformation]) throws -> PinkhaMiniAppsBlockSnapshot? {
-        guard let info = blocks.first(where: { $0.id == id }), case .text(let text) = info.content else { return nil }
-        return .init(id: id, text: text.text, marks: try text.marks.serializedData())
+        guard let info = blocks.first(where: { $0.id.utf8.elementsEqual(id.utf8) }),
+              case .text(let text) = info.content else { return nil }
+        return .init(id: info.id, text: text.text, marks: try text.marks.serializedData())
     }
 
     private static func resultingMarks(_ mutation: PinkhaMiniAppsEditPlan.Mutation) throws -> Anytype_Model_Block.Content.Text.Marks {
@@ -227,10 +247,87 @@ enum PinkhaMiniAppsResultApplier {
         return after
     }
 
-    private static func preserveResult(_ result: MiniAppResult, in plan: inout PinkhaMiniAppsEditPlan) {
+    static func preserveResult(_ result: MiniAppResult, in plan: inout PinkhaMiniAppsEditPlan) throws {
+        guard let dispatch = plan.heartDispatch,
+              dispatch.mutations.isEmpty, dispatch.insertions.isEmpty, dispatch.uploads.isEmpty,
+              plan.appliedBlocks.isEmpty, plan.insertedBlocks.isEmpty else {
+            throw PinkhaMiniAppsError.resultNotSaved
+        }
         plan.mutations = []
         plan.additions = result.items
         plan.preservedNewerContent = true
+    }
+
+    static func resumePlan(request: MiniAppInvocation, result: MiniAppResult,
+                           journal: PinkhaMiniAppsJournal) throws -> PinkhaMiniAppsEditPlan {
+        guard request.id == result.requestID else { throw MiniAppBridgeError.conflictingResult }
+        let requestDigest = try digest(request), resultDigest = try digest(result)
+        var plan: PinkhaMiniAppsEditPlan
+        if let existing = try journal.load() {
+            plan = existing
+        } else {
+            plan = try PinkhaMiniAppsEditPlanner.make(request: request, result: result)
+            plan.heartDispatch = .init(requestDigest: requestDigest, resultDigest: resultDigest)
+        }
+        guard plan.requestID == request.id else { throw MiniAppBridgeError.conflictingResult }
+        if let dispatch = plan.heartDispatch {
+            guard dispatch.version == 1,
+                  dispatch.requestDigest.utf8.elementsEqual(requestDigest.utf8),
+                  dispatch.resultDigest.utf8.elementsEqual(resultDigest.utf8) else {
+                throw MiniAppBridgeError.conflictingResult
+            }
+        } else if !plan.completed {
+            // Old unfinished records cannot prove that a native call was never made.
+            throw PinkhaMiniAppsError.resultNotSaved
+        }
+        return plan
+    }
+
+    static func replayDecision(mutation: PinkhaMiniAppsEditPlan.Mutation,
+                               current: PinkhaMiniAppsBlockSnapshot?, plan: PinkhaMiniAppsEditPlan,
+                               expectedMarks: Data) throws -> PinkhaMiniAppsEditPlanner.ReplayDecision {
+        guard let dispatch = plan.heartDispatch else { throw PinkhaMiniAppsError.resultNotSaved }
+        let decision = PinkhaMiniAppsEditPlanner.replayDecision(mutation: mutation, current: current,
+            alreadyRecorded: plan.appliedBlocks.contains(mutation.before.id), expectedMarks: expectedMarks)
+        if dispatch.mutations.contains(mutation.before.id), decision != .alreadyApplied {
+            throw PinkhaMiniAppsError.resultNotSaved
+        }
+        return decision
+    }
+
+    enum DispatchKind { case mutation, insertion, upload }
+
+    /// One durable fence precedes the original native call. Reopening never clears it.
+    /// The caller may settle it using exact native readback; this helper never retries.
+    static func dispatch<Value: Sendable>(_ kind: DispatchKind, key: String,
+        plan: inout PinkhaMiniAppsEditPlan, journal: PinkhaMiniAppsJournal,
+        validate: @MainActor () throws -> Void,
+        operation: @MainActor () async throws -> Value
+    ) async throws -> Value {
+        try validate()
+        guard !plan.completed, var dispatch = plan.heartDispatch else {
+            throw PinkhaMiniAppsError.resultNotSaved
+        }
+        switch kind {
+        case .mutation:
+            guard !dispatch.mutations.contains(key) else { throw PinkhaMiniAppsError.resultNotSaved }
+            dispatch.mutations.insert(key)
+        case .insertion:
+            guard !dispatch.insertions.contains(key) else { throw PinkhaMiniAppsError.resultNotSaved }
+            dispatch.insertions.insert(key)
+        case .upload:
+            guard !dispatch.uploads.contains(key) else { throw PinkhaMiniAppsError.resultNotSaved }
+            dispatch.uploads.insert(key)
+        }
+        plan.heartDispatch = dispatch
+        try journal.save(plan)
+        try validate()
+        return try await operation()
+    }
+
+    private static func digest<Value: Encodable>(_ value: Value) throws -> String {
+        let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+        return SHA256.hash(data: try encoder.encode(value)).map { String(format: "%02x", $0) }.joined()
     }
 
     private static func insertionBlock(item: MiniAppContent, request: UUID, index: Int, key: String) throws -> BlockInformation {
@@ -257,25 +354,54 @@ enum PinkhaMiniAppsResultApplier {
     }
 }
 
-private struct PinkhaMiniAppsJournal {
+struct PinkhaMiniAppsJournal {
     let url: URL
     init(request: MiniAppInvocation) throws {
+        let support = try FileManager.default.url(for: .applicationSupportDirectory,
+            in: .userDomainMask, appropriateFor: nil, create: true)
+        try self.init(request: request, supportDirectory: support)
+    }
+
+    #if DEBUG
+    /// Synthetic component controls use the same namespace, encoding and durable writer.
+    init(request: MiniAppInvocation, testingSupportDirectory: URL) throws {
+        try self.init(request: request, supportDirectory: testingSupportDirectory)
+    }
+    #endif
+
+    private init(request: MiniAppInvocation, supportDirectory: URL) throws {
         let identity = [request.source.metadata["anytype.accountID"] ?? "",
                         request.source.metadata["anytype.spaceID"] ?? "",
                         request.source.documentID ?? ""].joined(separator: "\u{0}")
         let namespace = SHA256.hash(data: Data(identity.utf8)).map { String(format: "%02x", $0) }.joined()
-        let root = try FileManager.default.url(for: .applicationSupportDirectory,
-            in: .userDomainMask, appropriateFor: nil, create: true)
-            .appendingPathComponent("MiniAppsReceipts", isDirectory: true)
-            .appendingPathComponent(namespace, isDirectory: true)
-        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let receipts = supportDirectory.appendingPathComponent("MiniAppsReceipts", isDirectory: true)
+        try FileManager.default.createDirectory(at: receipts, withIntermediateDirectories: true)
+        try Self.synchronizeDirectory(supportDirectory)
+        let root = receipts.appendingPathComponent(namespace, isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: false)
+        try Self.synchronizeDirectory(receipts)
         url = root.appendingPathComponent(request.id.uuidString.lowercased()).appendingPathExtension("json")
     }
     func load() throws -> PinkhaMiniAppsEditPlan? {
-        guard FileManager.default.fileExists(atPath: url.path) else { return nil }
-        return try JSONDecoder().decode(PinkhaMiniAppsEditPlan.self, from: Data(contentsOf: url))
+        let bytes: Data
+        do { bytes = try Data(contentsOf: url) }
+        catch let error as CocoaError where error.code == .fileReadNoSuchFile { return nil }
+        // A protected/unreadable or malformed record is not an absent dispatch fence.
+        return try JSONDecoder().decode(PinkhaMiniAppsEditPlan.self, from: bytes)
     }
     func save(_ plan: PinkhaMiniAppsEditPlan) throws {
-        try JSONEncoder().encode(plan).write(to: url, options: .atomic)
+        try JSONEncoder().encode(plan).write(to: url,
+            options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+        let output = try FileHandle(forWritingTo: url)
+        defer { try? output.close() }
+        try output.synchronize()
+        try Self.synchronizeDirectory(url.deletingLastPathComponent())
+    }
+
+    private static func synchronizeDirectory(_ url: URL) throws {
+        let directory = open(url.path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW)
+        guard directory >= 0 else { throw PinkhaMiniAppsError.resultNotSaved }
+        defer { close(directory) }
+        guard fsync(directory) == 0 else { throw PinkhaMiniAppsError.resultNotSaved }
     }
 }

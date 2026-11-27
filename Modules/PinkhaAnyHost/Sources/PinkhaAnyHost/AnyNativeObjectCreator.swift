@@ -48,13 +48,15 @@ public struct AnyNativeObjectCreationIntent: Codable, Equatable, Sendable {
     public let typeID: String
     public let collections: [String]
     public let initialProperties: AnyJSON
+    public let bookmarkDefinitionFrame: String?
     public let fingerprint: String
     public var identity: AnyNativeCreationIdentity {
         // Every field is checked at construction/decoding.
         try! .init(workspace: workspace, mutationID: mutationID, kind: "object", fingerprint: fingerprint)
     }
     public init(workspace: AnyTorahWorkspace, mutationID: String, typeID: String,
-                collections: [String] = [], initialProperties: AnyJSON) throws {
+                collections: [String] = [], initialProperties: AnyJSON,
+                bookmarkDefinitionFrame: String? = nil) throws {
         guard AnyNativeCreationIdentity.isHex(mutationID, count: 32),
               AnyEditorBlock.validID(typeID), collections.count <= 128,
               collections.allSatisfy(AnyEditorBlock.validID),
@@ -65,18 +67,32 @@ public struct AnyNativeObjectCreationIntent: Codable, Equatable, Sendable {
               initialProperties["any"]?["collections"] == nil else {
             throw AnyNativeCreationError.invalidIntent
         }
+        if let bookmarkDefinitionFrame {
+            try AnyNativeBookmarkCreationFrame.validateToken(bookmarkDefinitionFrame)
+            guard initialProperties["any"]?["template"] == nil else {
+                throw AnyNativeCreationError.invalidIntent
+            }
+        }
         let collections = collections.sorted()
-        let canonical: AnyJSON = .object([
-            "domain": .string("pinkha-any-object-intent/v1"),
+        // Preserve every legacy nil-frame fingerprint byte. A guarded Bookmark
+        // intent has a separate domain and freezes the exact opaque condition;
+        // a fresh definition read can never silently replace this intent.
+        var canonicalFields: [String: AnyJSON] = [
+            "domain": .string(bookmarkDefinitionFrame == nil
+                ? "pinkha-any-object-intent/v1" : "pinkha-any-object-intent/bookmark-v1"),
             "account": .string(workspace.accountID), "space": .string(workspace.spaceID),
             "mutationID": .string(mutationID), "type": .string(typeID),
-            "collections": .array(collections.map(AnyJSON.string)), "properties": initialProperties])
-        self.fingerprint = AnyContentDigest.sha256(try AnyHostCanonical.bytes(canonical))
+            "collections": .array(collections.map(AnyJSON.string)), "properties": initialProperties]
+        if let bookmarkDefinitionFrame {
+            canonicalFields["bookmarkDefinitionFrame"] = .string(bookmarkDefinitionFrame)
+        }
+        self.fingerprint = AnyContentDigest.sha256(try AnyHostCanonical.bytes(.object(canonicalFields)))
         self.workspace = workspace; self.mutationID = mutationID; self.typeID = typeID
         self.collections = collections; self.initialProperties = initialProperties
+        self.bookmarkDefinitionFrame = bookmarkDefinitionFrame
     }
     private enum CodingKeys: String, CodingKey {
-        case workspace, mutationID, typeID, collections, initialProperties, fingerprint
+        case workspace, mutationID, typeID, collections, initialProperties, fingerprint, bookmarkDefinitionFrame
     }
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -84,13 +100,18 @@ public struct AnyNativeObjectCreationIntent: Codable, Equatable, Sendable {
             mutationID: c.decode(String.self, forKey: .mutationID),
             typeID: c.decode(String.self, forKey: .typeID),
             collections: c.decode([String].self, forKey: .collections),
-            initialProperties: c.decode(AnyJSON.self, forKey: .initialProperties))
+            initialProperties: c.decode(AnyJSON.self, forKey: .initialProperties),
+            bookmarkDefinitionFrame: c.decodeIfPresent(String.self, forKey: .bookmarkDefinitionFrame))
         guard try c.decode(String.self, forKey: .fingerprint) == fingerprint else {
             throw AnyNativeCreationError.contentConflict
         }
     }
-    var body: AnyJSON { .object(["type": .string(typeID),
-        "collections": .array(collections.map(AnyJSON.string)), "initialProperties": initialProperties]) }
+    var body: AnyJSON {
+        var fields: [String: AnyJSON] = ["type": .string(typeID),
+            "collections": .array(collections.map(AnyJSON.string)), "initialProperties": initialProperties]
+        if let bookmarkDefinitionFrame { fields["bookmarkDefinitionFrame"] = .string(bookmarkDefinitionFrame) }
+        return .object(fields)
+    }
 }
 
 public enum AnyNativeCreationState: Codable, Equatable, Sendable {
@@ -123,7 +144,8 @@ public actor AnyNativeObjectCreator {
     private let journal: any AnyNativeCreationJournaling
     private let dispatch: @Sendable (AnyNativeObjectCreationIntent, @escaping @Sendable () async throws -> Void) async throws -> String
     private let inspect: @Sendable (String) async throws -> AnyJSON
-    private let validateContract: @Sendable () async throws -> Void
+    private let validateContract: @Sendable (AnyNativeObjectCreationIntent) async throws -> Void
+    private let bookmarkCreationFrameFactory: (@Sendable () throws -> AnyNativeBookmarkCreationFrameReader)?
     private let fileAttachmentFactory: (@Sendable () throws -> AnyNativeFileAttachmentCreator)?
 
     public init(client: AnyHTTPClient, workspace: AnyTorahWorkspace,
@@ -136,11 +158,20 @@ public actor AnyNativeObjectCreator {
         // attachment sheet must not discard a real, not-yet-durable native ACK.
         let attachments = try AnyNativeFileAttachmentCreator(client: client, workspace: workspace, journal: journal)
         self.fileAttachmentFactory = { attachments }
-        self.validateContract = {
+        // Preserve ordinary creation's existing workspace admission. The
+        // Bookmark-specific native identity bounds apply when its reader is
+        // requested, without adding a restriction to the legacy constructor.
+        self.bookmarkCreationFrameFactory = { try .init(client: client, workspace: workspace) }
+        self.validateContract = { intent in
             let value = try await client.requestJSON(method: "GET", path: ["v1", "pinkha", "capabilities"])
             guard value["contract"]?.string == "pinkha-torah-native-v1",
                   value["currentWriterObjectCreate"]?.integer == 1 else {
                 throw AnyEngineError.incompatibleSchema("current-writer native object creation unavailable")
+            }
+            if intent.bookmarkDefinitionFrame != nil {
+                guard value["nativeBookmarkObjectCreate"]?.integer == 1 else {
+                    throw AnyEngineError.incompatibleSchema("native Bookmark definition condition unavailable")
+                }
             }
         }
         self.dispatch = { intent, authorize in
@@ -168,7 +199,8 @@ public actor AnyNativeObjectCreator {
          inspect: @escaping @Sendable (String) async throws -> AnyJSON,
          validateContract: @escaping @Sendable () async throws -> Void = {}) {
         self.workspace = workspace; self.journal = journal; self.dispatch = dispatch; self.inspect = inspect
-        self.validateContract = validateContract
+        self.validateContract = { _ in try await validateContract() }
+        self.bookmarkCreationFrameFactory = nil
         self.fileAttachmentFactory = nil
     }
 
@@ -179,6 +211,15 @@ public actor AnyNativeObjectCreator {
             throw AnyEngineError.incompatibleSchema("native file attachment client unavailable")
         }
         return try fileAttachmentFactory()
+    }
+
+    /// Reads a definition condition with this creator's original native client
+    /// and workspace. It does not reserve or dispatch an object mutation.
+    public func makeBookmarkCreationFrameReader() throws -> AnyNativeBookmarkCreationFrameReader {
+        guard let bookmarkCreationFrameFactory else {
+            throw AnyEngineError.incompatibleSchema("native Bookmark definition reader unavailable")
+        }
+        return try bookmarkCreationFrameFactory()
     }
 
     public func recordedObjectID(for intent: AnyNativeObjectCreationIntent) async throws -> String? {
@@ -193,7 +234,7 @@ public actor AnyNativeObjectCreator {
         guard intent.workspace == workspace else { throw AnyHostError.wrongWorkspace }
         try Task.checkCancellation()
         try await authorize()
-        try await validateContract()
+        try await validateContract(intent)
         try Task.checkCancellation()
         try await authorize()
         let reservation = try await journal.reserve(intent.identity)
@@ -267,18 +308,45 @@ public actor AnyNativeObjectCreator {
         } onCancel: { fence.revoke() }
         try Task.checkCancellation()
         try await authorize()
+        try Task.checkCancellation()
         return id
     }
 
     static func containsExpected(_ actual: AnyJSON, expected: AnyJSON) -> Bool {
         if let object = expected.object {
-            guard actual.object != nil else { return false }
+            guard let candidates = actual.object else { return false }
             return object.allSatisfy { key, value in
-                guard let candidate = actual[key] else { return false }
-                return containsExpected(candidate, expected: value)
+                guard let index = candidates.index(forKey: key),
+                      candidates[index].key.utf8.elementsEqual(key.utf8) else { return false }
+                return containsExpected(candidates[index].value, expected: value)
             }
         }
-        return actual == expected
+        return exactInitialValue(actual, expected: expected)
+    }
+
+    /// String content, including URLs, is a byte-exact creation receipt. Arrays
+    /// retain their original whole-value meaning; objects inside an array must
+    /// not gain the subset semantics used for top-level property groups.
+    static func exactInitialValue(_ actual: AnyJSON, expected: AnyJSON) -> Bool {
+        switch expected {
+        case .string(let text):
+            guard case .string(let candidate) = actual else { return false }
+            return candidate.utf8.elementsEqual(text.utf8)
+        case .array(let values):
+            guard case .array(let candidates) = actual, candidates.count == values.count else { return false }
+            return zip(candidates, values).allSatisfy { pair in
+                exactInitialValue(pair.0, expected: pair.1)
+            }
+        case .object(let values):
+            guard case .object(let candidates) = actual, candidates.count == values.count else { return false }
+            return values.allSatisfy { key, value in
+                guard let index = candidates.index(forKey: key),
+                      candidates[index].key.utf8.elementsEqual(key.utf8) else { return false }
+                return exactInitialValue(candidates[index].value, expected: value)
+            }
+        default:
+            return actual == expected
+        }
     }
 }
 

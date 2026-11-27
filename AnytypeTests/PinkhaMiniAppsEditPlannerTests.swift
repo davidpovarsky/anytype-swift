@@ -146,3 +146,69 @@ final class PinkhaMiniAppsEditPlannerTests: XCTestCase {
         XCTAssertTrue(plan.additions.isEmpty)
     }
 }
+
+extension PinkhaMiniAppsEditPlannerTests {
+    func testSourceSelectionRequiresExactUnicodeBytes() throws {
+        let pairs = [("\u{00E9}", "e\u{0301}"),
+                     ("\u{05E9}\u{05B8}\u{05C1}", "\u{05E9}\u{05C1}\u{05B8}")]
+        for (stored, equivalent) in pairs {
+            XCTAssertEqual(stored, equivalent)
+            XCTAssertNotEqual(Data(stored.utf8), Data(equivalent.utf8))
+            let invocation = try request([block(stored)], selection: .init(
+                location: 0, length: stored.utf16.count, text: equivalent, blockIDs: ["block-original"]))
+            XCTAssertThrowsError(try PinkhaMiniAppsEditPlanner.make(
+                request: invocation, result: result(invocation, .replaceSelection, "returned")))
+            let exact = try request([block(stored)], selection: .init(
+                location: 0, length: stored.utf16.count, text: stored, blockIDs: ["block-original"]))
+            let plan = try PinkhaMiniAppsEditPlanner.make(
+                request: exact, result: result(exact, .replaceSelection, "returned"))
+            XCTAssertEqual(plan.mutations.count, 1)
+            XCTAssertEqual(Data(try XCTUnwrap(plan.mutations.first?.before.text).utf8), Data(stored.utf8))
+        }
+    }
+
+    func testReplayRequiresExactBeforeAndRequestedAfterBytes() throws {
+        let pairs = [("\u{00E9}", "e\u{0301}"),
+                     ("\u{05E9}\u{05B8}\u{05C1}", "\u{05E9}\u{05C1}\u{05B8}")]
+        for (stored, equivalent) in pairs {
+            let initial = try request([block(stored)])
+            let initialPlan = try PinkhaMiniAppsEditPlanner.make(
+                request: initial, result: result(initial, .replaceDocument, "returned"))
+            let beforeMutation = try XCTUnwrap(initialPlan.mutations.first)
+            XCTAssertEqual(PinkhaMiniAppsEditPlanner.replayDecision(mutation: beforeMutation,
+                current: block(equivalent), alreadyRecorded: false, expectedMarks: Data()), .preserveNewerContent)
+            XCTAssertEqual(PinkhaMiniAppsEditPlanner.replayDecision(mutation: beforeMutation,
+                current: block(stored), alreadyRecorded: false, expectedMarks: Data()), .apply)
+
+            let invocation = try request([block("old")])
+            let plan = try PinkhaMiniAppsEditPlanner.make(
+                request: invocation, result: result(invocation, .replaceDocument, stored))
+            let mutation = try XCTUnwrap(plan.mutations.first)
+            XCTAssertEqual(PinkhaMiniAppsEditPlanner.replayDecision(mutation: mutation,
+                current: block(equivalent), alreadyRecorded: false, expectedMarks: Data()), .preserveNewerContent)
+            XCTAssertEqual(PinkhaMiniAppsEditPlanner.replayDecision(mutation: mutation,
+                current: block(stored), alreadyRecorded: false, expectedMarks: Data()), .alreadyApplied)
+            XCTAssertEqual(PinkhaMiniAppsEditPlanner.replayDecision(mutation: mutation,
+                current: block("different-native-id", stored), alreadyRecorded: false,
+                expectedMarks: Data()), .preserveNewerContent)
+            // A durable applied receipt still prevents a second write after a newer edit.
+            XCTAssertEqual(PinkhaMiniAppsEditPlanner.replayDecision(mutation: mutation,
+                current: block(equivalent), alreadyRecorded: true, expectedMarks: Data()), .alreadyApplied)
+        }
+    }
+
+    func testReadbackSnapshotRequiresExactIdentityTextAndMarks() throws {
+        let stored = "\u{00E9}", equivalent = "e\u{0301}"
+        let expected = PinkhaMiniAppsBlockSnapshot(id: "block-" + stored,
+                                                 text: stored, marks: Data([1, 2]))
+        let roundTrip = try JSONDecoder().decode(PinkhaMiniAppsBlockSnapshot.self,
+            from: JSONEncoder().encode(expected))
+        XCTAssertTrue(roundTrip.matchesExactly(expected))
+        XCTAssertFalse(PinkhaMiniAppsBlockSnapshot(id: "block-" + equivalent,
+            text: stored, marks: expected.marks).matchesExactly(expected))
+        XCTAssertFalse(PinkhaMiniAppsBlockSnapshot(id: expected.id,
+            text: equivalent, marks: expected.marks).matchesExactly(expected))
+        XCTAssertFalse(PinkhaMiniAppsBlockSnapshot(id: expected.id,
+            text: stored, marks: Data([1, 3])).matchesExactly(expected))
+    }
+}
