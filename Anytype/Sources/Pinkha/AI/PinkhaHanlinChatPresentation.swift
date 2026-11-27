@@ -13,11 +13,28 @@ typealias PinkhaHanlinModelConfiguration = PinkhaHanlinUI.PinkhaHanlinModelConfi
 extension PinkhaHanlinChatPresentation {
     convenience init(presenter: UIViewController, routeOwner: SpaceHubCoordinatorViewModel,
                      conversationID: UUID, locale: Locale) throws {
+        #if DEBUG && targetEnvironment(simulator)
+        let preparation = try PinkhaHanlinSaveMessageAcceptancePreparation.loadIfRequested(engine: .heart)
+        let saveFixture = preparation == nil
+            ? try PinkhaHanlinSaveMessageAcceptanceFixture.loadIfRequested(engine: .heart) : nil
+        let saveAcceptance = preparation != nil || saveFixture != nil
+            ? try PinkhaHanlinHeartSaveAcceptance(request: preparation, fixture: saveFixture, presenter: presenter) : nil
+        let host: PinkhaHanlinReadWriteHost
+        if saveFixture != nil {
+            host = try PinkhaHanlinReadWriteHost.makeForSaveMessageAcceptance(presenter: presenter, routeOwner: routeOwner,
+                conversationID: conversationID, locale: locale)
+        } else {
+            host = try PinkhaHanlinReadWriteHost.make(presenter: presenter, routeOwner: routeOwner,
+                conversationID: conversationID, locale: locale)
+        }
+        #else
         let host = try PinkhaHanlinReadWriteHost.make(presenter: presenter, routeOwner: routeOwner,
             conversationID: conversationID, locale: locale)
+        #endif
         let hooks = PinkhaHanlinPresentationHooks(
             didMount: { [weak presenter, weak routeOwner] presentation, controller in
                 #if DEBUG && targetEnvironment(simulator)
+                saveAcceptance?.didMount(host: host, presentation: presentation, controller: controller)
                 PinkhaHanlinNativeAcceptanceDriver.startIfRequested(host: host, presentation: presentation,
                     controller: controller, source: presenter, routeOwner: routeOwner)
                 PinkhaHanlinSelectionAcceptanceDriver.startIfRequested(host: host, presentation: presentation,
@@ -26,6 +43,7 @@ extension PinkhaHanlinChatPresentation {
             },
             invalidated: { sessionID, cause in
                 #if DEBUG && targetEnvironment(simulator)
+                saveAcceptance?.invalidate()
                 PinkhaHanlinNativeAcceptanceDriver.observedInvalidation(sessionID: sessionID, cause: cause)
                 #endif
             })

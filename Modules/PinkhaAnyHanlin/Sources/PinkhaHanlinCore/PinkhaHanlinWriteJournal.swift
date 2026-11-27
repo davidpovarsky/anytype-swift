@@ -350,6 +350,35 @@ public actor PinkhaHanlinWriteJournal: PinkhaHanlinSaveMessageProgressStore {
         return entry // Metadata only; not a permission to read the resulting object.
     }
 
+    #if DEBUG && targetEnvironment(simulator)
+    /// Read-only native-acceptance observation from the already retained actor.
+    /// It never reopens a current account, reconstructs an identity, resolves a
+    /// receipt by title, or authorizes a read/write through replacement services.
+    public struct SaveMessageAcceptanceSnapshot: Codable, Sendable {
+        public let entry: Entry
+        public let progress: PinkhaHanlinSaveMessageProgress?
+    }
+
+    public func saveMessageAcceptanceSnapshot(for call: HanlinHostCallIdentity) throws -> SaveMessageAcceptanceSnapshot? {
+        guard !poisoned, !removed, call.session.context.namespace == namespace,
+              call.step == 0,
+              call.logicalToolID == (try PinkhaHanlinSaveMessageTool.make()).route.logicalToolID else {
+            throw PinkhaHanlinWriteError.invalidPlan
+        }
+        let matching = entries.values.filter {
+            $0.identity.session == call.session && $0.identity.invocationID == call.invocationID &&
+            $0.identity.runID == call.runID && $0.identity.step == call.step &&
+            $0.identity.providerCallDigest == PinkhaHanlinCreatePagePlan.digest(Data(call.providerCallID.utf8))
+        }
+        guard matching.count <= 1 else { throw PinkhaHanlinWriteError.corruptJournal }
+        guard let entry = matching.first else { return nil }
+        try Self.validate(entry)
+        let progress = saveMessages[entry.identity.key]
+        if let progress { try Self.validateSaveMessage(progress, against: entry) }
+        return .init(entry: entry, progress: progress)
+    }
+    #endif
+
     /// Only the explicit account remove-data path calls this. Ordinary dismissal/logout retains
     /// reservations so a late native callback can refine the ORIGINAL uncertain outcome.
     public func revokeForDataRemoval() {

@@ -44,6 +44,11 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     private var requiresReconciliation: Bool { receiptState.requiresReconciliation }
     @ObservationIgnored private var closing: Task<Void, Never>?
     @ObservationIgnored private var closed = false
+    #if DEBUG && targetEnvironment(simulator)
+    @ObservationIgnored private var saveAcceptanceDriver: PinkhaHanlinSaveMessageAcceptanceDriver?
+    @ObservationIgnored private var saveAcceptancePreparationPending = false
+    @ObservationIgnored private var saveAcceptancePreparationTask: Task<Void, Never>?
+    #endif
     private let speech = PinkhaHanlinMessageSpeech()
     @ObservationIgnored public private(set) var returnReceipt: PinkhaHanlinNavigationHandoff?
 
@@ -103,6 +108,9 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     /// canonical engine. No Keychain/AppGroup discovery, request logging or cross-app credential read.
     public func configure(endpoint: String, model: String, credential: String) {
         guard !closed, !isConfigured, !isStreaming else { return }
+        #if DEBUG && targetEnvironment(simulator)
+        guard saveAcceptanceDriver == nil, !saveAcceptancePreparationPending else { return }
+        #endif
         do {
             try validateInstallation(for: session)
             let configuration = try PinkhaHanlinModelConfiguration.make(endpoint: endpoint, model: model, credential: credential)
@@ -128,6 +136,40 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         errorMessage = nil
     }
 
+    #if DEBUG && targetEnvironment(simulator)
+    func hasSaveMessageAcceptanceDriver(for fixture: PinkhaHanlinSaveMessageAcceptanceFixture) throws -> Bool {
+        guard let saveAcceptanceDriver else { return false }
+        guard saveAcceptanceDriver.matches(fixture: fixture, session: session) else { throw HanlinHostError.staleContext }
+        return true
+    }
+    /// A mounted Heart preparation may await an original native read before
+    /// installing the controlled model transport. This grants no capability.
+    public func holdSaveMessageAcceptancePreparation() throws {
+        guard saveAcceptanceDriver == nil, !saveAcceptancePreparationPending,
+              !closed, !isConfigured, !isStreaming, messages.isEmpty else { throw HanlinHostError.staleContext }
+        try validateInstallation(for: session)
+        saveAcceptancePreparationPending = true
+    }
+    public func ownSaveMessageAcceptancePreparation(_ task: Task<Void, Never>) throws {
+        guard saveAcceptancePreparationPending, saveAcceptancePreparationTask == nil, !closed else {
+            throw HanlinHostError.staleContext
+        }
+        saveAcceptancePreparationTask = task
+    }
+    func installSaveMessageAcceptanceDriver(_ driver: PinkhaHanlinSaveMessageAcceptanceDriver) throws {
+        guard saveAcceptanceDriver == nil, !closed, !isConfigured, !isStreaming, messages.isEmpty else {
+            throw HanlinHostError.staleContext
+        }
+        try validateInstallation(for: session)
+        saveAcceptanceDriver = driver
+        saveAcceptancePreparationPending = false
+    }
+    func installSaveMessageAcceptanceEngine(configuration: HanlinChatModelConfiguration,
+                                           engine: HanlinAISDKAgentEngine) throws {
+        guard saveAcceptanceDriver != nil else { throw HanlinHostError.denied }
+        try install(configuration: configuration, engine: engine)
+    }
+    #endif
 
     public func requestContextReadConsent() {
         guard !closed, !isStreaming, !isStopping, hasSource else { return }
@@ -268,6 +310,11 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                             self.currentSaveMessageID = nil
                         }
                     }
+                    #if DEBUG && targetEnvironment(simulator)
+                    if let finished = self.messageSaveIntents.intent(for: id), finished.requestID == intent.requestID {
+                        self.saveAcceptanceDriver?.consumerFinished(finished)
+                    }
+                    #endif
                 }
                 do {
                     try Task.checkCancellation()
@@ -287,6 +334,11 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                             try self.validateInstallation(for: self.session)
                             try self.messageSaveIntents.bindExecution(messageID: id,
                                 requestID: intent.requestID, runID: event.runID)
+                            #if DEBUG && targetEnvironment(simulator)
+                            if let started = self.messageSaveIntents.intent(for: id) {
+                                self.saveAcceptanceDriver?.started(started)
+                            }
+                            #endif
                         })
                     guard !self.closed, !self.isStopping, self.currentRunID == runID else { return }
                     try self.validateInstallation(for: self.session)
@@ -346,6 +398,9 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
                 messageID: id, partID: UUID())
             try agent.admitInlinePresentation(origin)
             completedMessageOrigins[id] = origin
+            #if DEBUG && targetEnvironment(simulator)
+            saveAcceptanceDriver?.admitted(origin: origin, markdown: message.content)
+            #endif
         } catch {
             // A missing/unavailable save capability does not convert an already
             // completed model answer into a failed answer or confer authority.
@@ -460,7 +515,11 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         guard !closed else { return }
         let appendDisplayLabel = receiptState.observe(event)
         let savedMessageID = messageSaveIntents.observe(event)
+        #if DEBUG && targetEnvironment(simulator)
+        if let savedMessageID { saveAcceptanceDriver?.observed(event, messageID: savedMessageID) }
+        #else
         _ = savedMessageID
+        #endif
         if requiresReconciliation { errorMessage = PinkhaHanlinStrings.uncertain }
         guard appendDisplayLabel else { return }
         // The presentation owns only safe outcome labels; payloads never enter a receipt log.
@@ -528,6 +587,14 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
         guard !closed else { return }
         hooks.invalidated(session.id, "explicitCloseOrOwner")
         closed = true
+        #if DEBUG && targetEnvironment(simulator)
+        let saveAcceptance = saveAcceptanceDriver
+        let savePreparation = saveAcceptancePreparationTask
+        saveAcceptance?.invalidate()
+        savePreparation?.cancel()
+        saveAcceptanceDriver = nil
+        saveAcceptancePreparationTask = nil
+        #endif
         host.revokePresentation()
         let consumer = running
         let stop = stopping
@@ -556,6 +623,10 @@ public final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
             // boundary before the account owner may release this presentation.
             await stop?.value
             await consumer?.value
+            #if DEBUG && targetEnvironment(simulator)
+            await savePreparation?.value
+            await saveAcceptance?.drain()
+            #endif
         }
     }
 }

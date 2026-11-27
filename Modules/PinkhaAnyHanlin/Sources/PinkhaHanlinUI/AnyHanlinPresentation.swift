@@ -43,19 +43,20 @@ public enum AnyHanlinPresentation {
 
     #if DEBUG
     /// Real original-parser/native acceptance path only. No production call,
-    /// settings switch, model argument or launch-argument can select this path.
+    /// settings switch, model argument or launch argument alone can select this path.
     @discardableResult
     public static func presentForSaveMessageAcceptance(
         from presenter: UIViewController, native: AnyApplicationSession,
         documents: AnyEditorDocumentStore, client: AnyHTTPClient,
         sourceOwner: any AnyHanlinSourcePresentationOwner,
         conversationID: UUID, locale: Locale = .autoupdatingCurrent,
-        creation: AnyHanlinCreationServices
+        creation: AnyHanlinCreationServices,
+        hooks: PinkhaHanlinPresentationHooks = .init()
     ) throws -> PinkhaHanlinChatController {
         let services = AnyHanlinSaveMessageServices(client: client) {
             try await PinkhaHanlinOriginalMarkdownSavePlanner.convert($0)
         }
-        return try present(from: presenter, sourceOwner: sourceOwner) { owner in
+        return try present(from: presenter, sourceOwner: sourceOwner, hooks: hooks) { owner in
             try AnyHanlinHost.makeForSaveMessageAcceptance(native: native, documents: documents,
                 owner: owner, conversationID: conversationID, locale: locale,
                 creation: creation, saveServices: services)
@@ -65,6 +66,7 @@ public enum AnyHanlinPresentation {
 
     private static func present(from presenter: UIViewController,
         sourceOwner: any AnyHanlinSourcePresentationOwner,
+        hooks: PinkhaHanlinPresentationHooks = .init(),
         makeHost: @MainActor (AnyHanlinUIKitOwner) throws -> AnyHanlinHost
     ) throws -> PinkhaHanlinChatController {
         guard presenter.presentedViewController == nil,
@@ -77,7 +79,7 @@ public enum AnyHanlinPresentation {
         let host = try makeHost(owner)
         do {
             let adapter = AnyHanlinUIPresentationHost(host: host, owner: owner)
-            let presentation = try PinkhaHanlinChatPresentation(host: adapter, presenter: presenter)
+            let presentation = try PinkhaHanlinChatPresentation(host: adapter, presenter: presenter, hooks: hooks)
             let controller = PinkhaHanlinChatController(presentation: presentation)
             presenter.present(controller, animated: true) { [weak controller, weak presentation] in
                 if controller?.viewIfLoaded?.window == nil { presentation?.invalidate() }

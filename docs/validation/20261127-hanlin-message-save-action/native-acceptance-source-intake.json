@@ -1,0 +1,241 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_NOT_COMPILED",
+  "repository": "davidpovarsky/anytype-swift",
+  "parent": "8932c43f59f9976efd9930e4f8c5ba0b0fee72dd",
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift",
+      "mode": "100644",
+      "after_blob": "11cfab1994884d40b8a6cc0a21a6e9bb2538e17d",
+      "after_sha256": "854c17fbee910cdec74fcc963edcf884f4c392534b804b4b45bf7bfb60368381",
+      "after_bytes": 33228,
+      "before_blob": "a4de05fbe3afb7b5b4f11a97b08563c79e45c7d7",
+      "before_sha256": "fafd4ef39fe4efa2d7d5347f0f74636431ca46d50979a6ed36a44f6a0963a75f",
+      "before_bytes": 29408,
+      "inverse_operations": [
+        {
+          "after_utf8_offset": 2276,
+          "before": "",
+          "after": "    #if DEBUG && targetEnvironment(simulator)\n    @ObservationIgnored private var saveAcceptanceDriver: PinkhaHanlinSaveMessageAcceptanceDriver?\n    @ObservationIgnored private var saveAcceptancePreparationPending = false\n    @ObservationIgnored private var saveAcceptancePreparationTask: Task<Void, Never>?\n    #endif\n"
+        },
+        {
+          "after_utf8_offset": 5435,
+          "before": "",
+          "after": "        #if DEBUG && targetEnvironment(simulator)\n        guard saveAcceptanceDriver == nil, !saveAcceptancePreparationPending else { return }\n        #endif\n"
+        },
+        {
+          "after_utf8_offset": 6990,
+          "before": "",
+          "after": "    #if DEBUG && targetEnvironment(simulator)\n    func hasSaveMessageAcceptanceDriver(for fixture: PinkhaHanlinSaveMessageAcceptanceFixture) throws -> Bool {\n        guard let saveAcceptanceDriver else { return false }\n        guard saveAcceptanceDriver.matches(fixture: fixture, session: session) else { throw HanlinHostError.staleContext }\n        return true\n    }\n    /// A mounted Heart preparation may await an original native read before\n    /// installing the controlled model transport. This grants no capability.\n    public func holdSaveMessageAcceptancePreparation() throws {\n        guard saveAcceptanceDriver == nil, !saveAcceptancePreparationPending,\n              !closed, !isConfigured, !isStreaming, messages.isEmpty else { throw HanlinHostError.staleContext }\n        try validateInstallation(for: session)\n        saveAcceptancePreparationPending = true\n    }\n    public func ownSaveMessageAcceptancePreparation(_ task: Task<Void, Never>) throws {\n        guard saveAcceptancePreparationPending, saveAcceptancePreparationTask == nil, !closed else {\n            throw HanlinHostError.staleContext\n        }\n        saveAcceptancePreparationTask = task\n    }\n    func installSaveMessageAcceptanceDriver(_ driver: PinkhaHanlinSaveMessageAcceptanceDriver) throws {\n        guard saveAcceptanceDriver == nil, !closed, !isConfigured, !isStreaming, messages.isEmpty else {\n            throw HanlinHostError.staleContext\n        }\n        try validateInstallation(for: session)\n        saveAcceptanceDriver = driver\n        saveAcceptancePreparationPending = false\n    }\n    func installSaveMessageAcceptanceEngine(configuration: HanlinChatModelConfiguration,\n                                           engine: HanlinAISDKAgentEngine) throws {\n        guard saveAcceptanceDriver != nil else { throw HanlinHostError.denied }\n        try install(configuration: configuration, engine: engine)\n    }\n    #endif\n"
+        },
+        {
+          "after_utf8_offset": 15209,
+          "before": "",
+          "after": "                    #if DEBUG && targetEnvironment(simulator)\n                    if let finished = self.messageSaveIntents.intent(for: id), finished.requestID == intent.requestID {\n                        self.saveAcceptanceDriver?.consumerFinished(finished)\n                    }\n                    #endif\n"
+        },
+        {
+          "after_utf8_offset": 16851,
+          "before": "",
+          "after": "                            #if DEBUG && targetEnvironment(simulator)\n                            if let started = self.messageSaveIntents.intent(for: id) {\n                                self.saveAcceptanceDriver?.started(started)\n                            }\n                            #endif\n"
+        },
+        {
+          "after_utf8_offset": 20900,
+          "before": "",
+          "after": "            #if DEBUG && targetEnvironment(simulator)\n            saveAcceptanceDriver?.admitted(origin: origin, markdown: message.content)\n            #endif\n"
+        },
+        {
+          "after_utf8_offset": 27315,
+          "before": "",
+          "after": "        #if DEBUG && targetEnvironment(simulator)\n        if let savedMessageID { saveAcceptanceDriver?.observed(event, messageID: savedMessageID) }\n        #else\n"
+        },
+        {
+          "after_utf8_offset": 27505,
+          "before": "",
+          "after": "        #endif\n"
+        },
+        {
+          "after_utf8_offset": 30808,
+          "before": "",
+          "after": "        #if DEBUG && targetEnvironment(simulator)\n        let saveAcceptance = saveAcceptanceDriver\n        let savePreparation = saveAcceptancePreparationTask\n        saveAcceptance?.invalidate()\n        savePreparation?.cancel()\n        saveAcceptanceDriver = nil\n        saveAcceptancePreparationTask = nil\n        #endif\n"
+        },
+        {
+          "after_utf8_offset": 32200,
+          "before": "",
+          "after": "            #if DEBUG && targetEnvironment(simulator)\n            await savePreparation?.value\n            await saveAcceptance?.drain()\n            #endif\n"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/AnyHanlinPresentation.swift",
+      "mode": "100644",
+      "after_blob": "d6f7f93a59175c7a2302705dd789fd4bfc68b7cf",
+      "after_sha256": "adfce667d905c6f02736246fd8611b6c88cddea7a75c547ec0d11f4a9cd5988c",
+      "after_bytes": 14044,
+      "before_blob": "b8886d80f061e8d781f32b9248e4a5dd6863dcac",
+      "before_sha256": "9a1d24faa5a6754a302066a287f9c01e78261ff7750baafdf996999fb14d5eb9",
+      "before_bytes": 13898,
+      "inverse_operations": [
+        {
+          "after_utf8_offset": 1970,
+          "before": "    /// settings switch, model argument or launch-argument can select this path.\n",
+          "after": "    /// settings switch, model argument or launch argument alone can select this path.\n"
+        },
+        {
+          "after_utf8_offset": 2403,
+          "before": "        creation: AnyHanlinCreationServices\n",
+          "after": "        creation: AnyHanlinCreationServices,\n        hooks: PinkhaHanlinPresentationHooks = .init()\n"
+        },
+        {
+          "after_utf8_offset": 2702,
+          "before": "        return try present(from: presenter, sourceOwner: sourceOwner) { owner in\n",
+          "after": "        return try present(from: presenter, sourceOwner: sourceOwner, hooks: hooks) { owner in\n"
+        },
+        {
+          "after_utf8_offset": 3185,
+          "before": "",
+          "after": "        hooks: PinkhaHanlinPresentationHooks = .init(),\n"
+        },
+        {
+          "after_utf8_offset": 3912,
+          "before": "            let presentation = try PinkhaHanlinChatPresentation(host: adapter, presenter: presenter)\n",
+          "after": "            let presentation = try PinkhaHanlinChatPresentation(host: adapter, presenter: presenter, hooks: hooks)\n"
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
+      "mode": "100644",
+      "after_blob": "49acb7d07bd8d93a8750d481d9c9873caa77067d",
+      "after_sha256": "98916476cff78fbdcf52edb303ae6fafa1ee7dfc99dbca030fb38fedfff868a0",
+      "after_bytes": 4340,
+      "before_blob": "35f5857ca3de7c98c3e33358a3af2f7138364ba3",
+      "before_sha256": "c01ae097fa32756994a3dd8d65038eecc3b147f6bc206257478c7629e68cffbe",
+      "before_bytes": 3215,
+      "inverse_operations": [
+        {
+          "after_utf8_offset": 659,
+          "before": "",
+          "after": "        #if DEBUG && targetEnvironment(simulator)\n        let preparation = try PinkhaHanlinSaveMessageAcceptancePreparation.loadIfRequested(engine: .heart)\n        let saveFixture = preparation == nil\n            ? try PinkhaHanlinSaveMessageAcceptanceFixture.loadIfRequested(engine: .heart) : nil\n        let saveAcceptance = preparation != nil || saveFixture != nil\n            ? try PinkhaHanlinHeartSaveAcceptance(request: preparation, fixture: saveFixture, presenter: presenter) : nil\n        let host: PinkhaHanlinReadWriteHost\n        if saveFixture != nil {\n            host = try PinkhaHanlinReadWriteHost.makeForSaveMessageAcceptance(presenter: presenter, routeOwner: routeOwner,\n                conversationID: conversationID, locale: locale)\n        } else {\n            host = try PinkhaHanlinReadWriteHost.make(presenter: presenter, routeOwner: routeOwner,\n                conversationID: conversationID, locale: locale)\n        }\n        #else\n"
+        },
+        {
+          "after_utf8_offset": 1779,
+          "before": "",
+          "after": "        #endif\n"
+        },
+        {
+          "after_utf8_offset": 1989,
+          "before": "",
+          "after": "                saveAcceptance?.didMount(host: host, presentation: presentation, controller: controller)\n"
+        },
+        {
+          "after_utf8_offset": 2606,
+          "before": "",
+          "after": "                saveAcceptance?.invalidate()\n"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWriteJournal.swift",
+      "mode": "100644",
+      "after_blob": "c4578ca5e67ee1f8338a8b5c6f287989fb2d7d2a",
+      "after_sha256": "2a0ea192c884bbc29e373cc4f647fdd6cdb3a6c1ac54ce16a9640ca9c4fbf971",
+      "after_bytes": 39734,
+      "before_blob": "dc3d1110e42022723433010f190d984427061a0e",
+      "before_sha256": "cae55c09b0bfa9fb94c0d96bcfe4454f858040e122ae37a8f38c599605681c1f",
+      "before_bytes": 38131,
+      "inverse_operations": [
+        {
+          "after_utf8_offset": 20886,
+          "before": "",
+          "after": "    #if DEBUG && targetEnvironment(simulator)\n    /// Read-only native-acceptance observation from the already retained actor.\n    /// It never reopens a current account, reconstructs an identity, resolves a\n    /// receipt by title, or authorizes a read/write through replacement services.\n    public struct SaveMessageAcceptanceSnapshot: Codable, Sendable {\n        public let entry: Entry\n        public let progress: PinkhaHanlinSaveMessageProgress?\n    }\n\n    public func saveMessageAcceptanceSnapshot(for call: HanlinHostCallIdentity) throws -> SaveMessageAcceptanceSnapshot? {\n        guard !poisoned, !removed, call.session.context.namespace == namespace,\n              call.step == 0,\n              call.logicalToolID == (try PinkhaHanlinSaveMessageTool.make()).route.logicalToolID else {\n            throw PinkhaHanlinWriteError.invalidPlan\n        }\n        let matching = entries.values.filter {\n            $0.identity.session == call.session && $0.identity.invocationID == call.invocationID &&\n            $0.identity.runID == call.runID && $0.identity.step == call.step &&\n            $0.identity.providerCallDigest == PinkhaHanlinCreatePagePlan.digest(Data(call.providerCallID.utf8))\n        }\n        guard matching.count <= 1 else { throw PinkhaHanlinWriteError.corruptJournal }\n        guard let entry = matching.first else { return nil }\n        try Self.validate(entry)\n        let progress = saveMessages[entry.identity.key]\n        if let progress { try Self.validateSaveMessage(progress, against: entry) }\n        return .init(entry: entry, progress: progress)\n    }\n    #endif\n\n"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/AnyHanlinSaveMessageAcceptance.swift",
+      "mode": "100644",
+      "after_blob": "6098155a07a5dbafd10c9b380d8ccee8b8f0e8fd",
+      "after_sha256": "3e7ec17fb181dc243b9d4083d8e469be7eee258cee5b4b2a4a1f76e0df35be98",
+      "after_bytes": 11887,
+      "new_file": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinSaveMessageAcceptanceFixture.swift",
+      "mode": "100644",
+      "after_blob": "4f82f22a8adbc085b5a5182a9667925e83ca8603",
+      "after_sha256": "aab2dcff9b7e85cd383e13de306128a2a05436ce04ecfb274f210daf9d15de7b",
+      "after_bytes": 8241,
+      "new_file": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinSaveMessageAcceptancePreparation.swift",
+      "mode": "100644",
+      "after_blob": "02768fbe1235e3acd0e45fc824efd34dbcb4177d",
+      "after_sha256": "d6e0c99f8591479e7a70d3cb78c68df857a722764b625b9008bbb8b1af5d0075",
+      "after_bytes": 8484,
+      "new_file": true
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinSaveMessageAcceptanceDriver.swift",
+      "mode": "100644",
+      "after_blob": "95242538cbf6d293dd9dd2544f7efb592dacc505",
+      "after_sha256": "33af09b83bf1c9d50406616135955cf45733fba00c16e51ee28a7534f3cddecf",
+      "after_bytes": 15853,
+      "new_file": true
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinHeartSaveAcceptance.swift",
+      "mode": "100644",
+      "after_blob": "9d4b9f7dd3187d27ac39adc6e7934f9852dae7f6",
+      "after_sha256": "ef838b407d6bac28424a073495b12e6d65fdbd7d7009c821cd8706b7675f0930",
+      "after_bytes": 8471,
+      "new_file": true
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/HanlinSaveMessageAcceptanceUITests.swift",
+      "mode": "100644",
+      "after_blob": "7edc5d4959b8f065ac82ffe6605b1560d02b47ef",
+      "after_sha256": "7be486a9580d6cbf437fecef1863246e1d67b527d7c1ccaf3be6b315f7a24885",
+      "after_bytes": 12793,
+      "new_file": true
+    }
+  ],
+  "canonical_hanlin": "45d5d90512c304d3457774b185741b7ef7d801db",
+  "original_action_publication_receipt_sha256": "a25aa1b31376a089ffdeb84aa52bd1ca790a550deaba01543674031ea24a437e",
+  "source_dependencies": [
+    "78ddc75fc23e39b96f75b0ed894c0b66152e5173",
+    "53c468e72f261e00e4bebb5e7b7deda9b2e4b5a9",
+    "8932c43f59f9976efd9930e4f8c5ba0b0fee72dd"
+  ],
+  "actual_source_checks": {
+    "literal_inverse_reconstruction": "PASS",
+    "shared_release_projection_byte_identical": true,
+    "heart_release_projection_byte_identical": true
+  },
+  "unchanged": [
+    "canonical SDK, package pins and lockfiles",
+    "native framework/source manifest",
+    "original save workers and aggregate state",
+    "Wave2 editor and its1262-byte presentHanlin function"
+  ],
+  "tests": {
+    "suite": "HanlinSaveMessageAcceptanceUITests",
+    "methods": [
+      "testOriginalSDKMessageSaveConsentAndNativeReadback"
+    ],
+    "status": "NOT_RUN",
+    "scope": "requires a fresh actual same-process mounted native fixture; no account allocated"
+  },
+  "apple_compile": "NOT_RUN",
+  "native_acceptance": "NOT_RUN",
+  "source_retention_gate": "NOT_RUN_AT_CHILD; root owns map integration",
+  "original_api_blobs": {
+    "interaction": "572635d8aaa858c8e72a0cb9c30086c9da957ec8",
+    "host_result_event": "eb0f2ff80be6f7c999cf9a40fcc327e94ba4b5a8",
+    "provider_factory": "394a029b6d470b7cabf59ba7dde4a4df5e788be4",
+    "any_native_access": "494f11ee7ad9092a7a78330879c075e145f97d03",
+    "any_native_session": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0"
+  },
+  "resource_state": "No Oracle compiler or Mac job/source/cache mutation by this checkpoint"
+}
