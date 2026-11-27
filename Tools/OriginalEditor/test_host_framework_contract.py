@@ -100,6 +100,27 @@ class HostFrameworkContractControls(unittest.TestCase):
                     'location': {'uri': path.as_uri()}})
                 with self.assertRaises(ValueError): self.verify(graph)
 
+    def test_discovered_copy_cannot_be_publicly_fabricated(self):
+        graph = self.graph()
+        graph["symbols"].append({"accessLevel": "public",
+            "pathComponents": ["AnytypeOriginalAnnotationDiscoveredCopy", "init()"],
+            "identifier": {"precise": "s:21AnytypeOriginalEditorUnownedDiscoveredCopy"},
+            "location": {"uri": (ROOT / "OriginalEditorFramework/AnytypeOriginalAnnotationRevision.swift").as_uri()}})
+        with self.assertRaises(ValueError):
+            self.verify(graph)
+
+    def test_all_peer_discovery_requirements_are_required(self):
+        original = self.graph()
+        additions = [s["pathComponents"] for s in original["symbols"]
+                     if s["pathComponents"][0] == "AnytypeOriginalAnnotationDiscoveredCopy"
+                     or s["pathComponents"][-1] == "discoverOriginalAnnotationCopies(sourceLifetime:sourceIsCurrent:)"]
+        self.assertEqual(len(additions), 6)
+        for components in additions:
+            graph = copy.deepcopy(original)
+            graph["symbols"] = [s for s in graph["symbols"] if s["pathComponents"] != components]
+            with self.subTest(path=components), self.assertRaises(ValueError):
+                self.verify(graph)
+
     def test_public_raw_runtime_helper_is_not_the_qualified_spi(self):
         graph = self.graph()
         graph['symbols'].append({'accessLevel': 'public',
