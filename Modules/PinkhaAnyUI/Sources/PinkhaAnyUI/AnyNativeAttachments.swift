@@ -22,12 +22,16 @@ struct AnyNativeAttachment: Identifiable, Equatable, Sendable {
     let durable: Bool
 
     init(_ value: AnyJSON, objectID: String) throws {
+        let name = value["name"]?.string ?? ""
+        let mime = value["mime"]?.string ?? ""
         guard let id = value["fileId"]?.string, AnyEditorBlock.validID(id),
               value["objectId"]?.string == objectID,
               let size = value["size"]?.integer, (0...AnyPreparedFileIntent.maximumBytes).contains(size),
               let cached = value["cached"]?.bool, let durable = value["durable"]?.bool,
-              let name = value["name"]?.string, name.utf8.count <= 1024,
-              let mime = value["mime"]?.string, mime.utf8.count <= 255 else {
+              value["name"] == nil || value["name"]?.string != nil,
+              name.utf8.count <= 16_384,
+              value["mime"] == nil || value["mime"]?.string != nil,
+              mime.utf8.count <= 1_024 else {
             throw AnyHostError.invalidDocument("native attachment metadata")
         }
         self.id = id; self.objectID = objectID; self.size = size
