@@ -269,6 +269,376 @@ final class MiniAppsNativeAcceptanceUITests: XCTestCase {
         source.terminate()
     }
 
+
+    /// Real companion callbacks across both engines and two independent Any
+    /// accounts. All accounts, Spaces and documents are made by ordinary UI.
+    /// Only request/ACK records and our own report are read from the shared store.
+    func testPendingReturnsRespectEngineAndAccountAcrossColdReopen() async throws {
+        executionTimeAllowance = 1_500
+        let environment = ProcessInfo.processInfo.environment
+        let shared = URL(fileURLWithPath: try XCTUnwrap(environment["PINKHA_MINIAPPS_SHARED_BRIDGE"]))
+        let suffix = UUID().uuidString
+        let bSpace = "MiniApps B " + suffix, bTitle = "Foreign account " + suffix
+        let aSpace = "MiniApps A " + suffix, aTitle = "Original account " + suffix
+        let bText = "Untouched native B " + suffix, aText = "Original native A " + suffix
+        let heartText = "Heart return after switch " + suffix
+        let anyText = "Any return after account switch " + suffix
+
+        companion.launch()
+        XCTAssertTrue(companion.buttons["hanlin-apps-add"].firstMatch.waitForExistence(timeout: 30))
+        source.launch()
+        try openSource()
+        try await isolationSelectEngine("any")
+        let bBlock = try await isolationCreateAnyDocument(space: bSpace, title: bTitle, text: bText)
+        let bBefore = try await isolationLaunch(shared, engine: "any",
+            appID: "org.itorah.miniapps.fileworkshop")
+        let bScope = try isolationScope(bBefore.request, engine: "any")
+        XCTAssertNotEqual(bScope.account, fixture["accountID"])
+        XCTAssertEqual(bBefore.request.source.documentText, bText)
+        try fwPress("fileworkshop.cancel")
+        XCTAssertTrue(source.wait(for: .runningForeground, timeout: 60))
+        let bCancelled = try await fwAcknowledged(bBefore.request.id, shared)
+        XCTAssertEqual(bCancelled.result?.status, "cancelled")
+        try await isolationAnyRows([bText], originalBlock: bBlock)
+
+        // A Heart result must survive a genuine switch to the other engine and
+        // its independently selected account. No manual Heart navigation helps
+        // the return after the actual companion button is pressed.
+        try await isolationSelectEngine("heart")
+        try openSource()
+        let heart = try await isolationLaunch(shared, engine: "heart", appID: "nativeapp.textstudio")
+        let heartScope = try isolationScope(heart.request, engine: "heart")
+        XCTAssertEqual(heartScope.account, fixture["accountID"])
+        XCTAssertEqual(heartScope.space, fixture["spaceID"])
+        XCTAssertEqual(heart.request.source.documentID, fixture["objectID"])
+        try isolationFillTextStudio(heartText)
+        source.activate()
+        try await isolationSelectEngine("any")
+        try await isolationAnyRows([bText], originalBlock: bBlock)
+        XCTAssertNil(try isolationRecord(heart.request.id, shared).result)
+        companion.activate()
+        try isolationReturnTextStudio()
+        XCTAssertTrue(source.wait(for: .runningForeground, timeout: 90))
+        try await isolationRequireEngine("heart")
+        try expectNativeText()
+        try isolationRequireVisibleText(heartText)
+        let heartSaved = try await fwAcknowledged(heart.request.id, shared)
+        XCTAssertEqual(heartSaved.result?.status, "success")
+        XCTAssertEqual(heartSaved.result?.items.compactMap(\.text), [heartText])
+        screenshot("miniapps-pending-heart-return-after-any-account")
+
+        try await isolationSelectEngine("any")
+        try await isolationAnyRows([bText], originalBlock: bBlock)
+        try await isolationSignOutAny()
+        let aBlock = try await isolationCreateAnyDocument(space: aSpace, title: aTitle, text: aText)
+        let pending = try await isolationLaunch(shared, engine: "any", appID: "nativeapp.textstudio")
+        let aScope = try isolationScope(pending.request, engine: "any")
+        XCTAssertNotEqual(aScope.account, bScope.account)
+        XCTAssertNotEqual(aScope.space, bScope.space)
+        XCTAssertNotEqual(pending.request.source.documentID, bBefore.request.source.documentID)
+        XCTAssertEqual(pending.request.source.documentText, aText)
+        try isolationFillTextStudio(anyText)
+
+        // Retire A through its real UI and reopen B while the genuine MiniApp
+        // still owns A's original unfinished invocation.
+        source.activate()
+        try await isolationSignOutAny()
+        try await isolationOpenAny(account: bScope.account, space: bSpace, title: bTitle)
+        try await isolationAnyRows([bText], originalBlock: bBlock)
+        try await isolationSelectEngine("heart")
+        try isolationRequireVisibleText(heartText)
+        companion.activate()
+        try isolationReturnTextStudio()
+        XCTAssertTrue(source.wait(for: .runningForeground, timeout: 90))
+        try await isolationRequireEngine("any")
+        try await isolationAnyRows([bText], originalBlock: bBlock)
+        try await fwWait(timeout: .seconds(45)) {
+            try self.isolationRecord(pending.request.id, shared).result?.status == "success"
+        }
+        try await isolationRequireUnacknowledged(pending.request.id, shared)
+        let foreignWarm = try isolationPendingSnapshot(pending.request.id, shared, selectedAccount: bScope.account)
+        screenshot("miniapps-foreign-account-result-pending")
+
+        // A fresh process must retain the actual result without writing to B or
+        // acknowledging A just because the correct engine became active.
+        source.terminate()
+        XCTAssertTrue(source.wait(for: .notRunning, timeout: 20))
+        source.launch()
+        try await isolationSelectEngine("any")
+        try await isolationOpenAny(account: bScope.account, space: bSpace, title: bTitle)
+        try await isolationAnyRows([bText], originalBlock: bBlock)
+        try await isolationRequireUnacknowledged(pending.request.id, shared)
+        let foreignCold = try isolationPendingSnapshot(pending.request.id, shared, selectedAccount: bScope.account)
+        screenshot("miniapps-foreign-account-cold-result-still-pending")
+
+        // Only the original account/Space/document may consume the result.
+        try await isolationSignOutAny()
+        try await isolationOpenAny(account: aScope.account, space: aSpace, title: aTitle)
+        let aSavedBlocks = try await isolationAnyRows([aText, anyText], originalBlock: aBlock)
+        let completed = try await fwAcknowledged(pending.request.id, shared)
+        XCTAssertEqual(completed.result?.status, "success")
+        XCTAssertEqual(completed.result?.items.compactMap(\.text), [anyText])
+        screenshot("miniapps-original-account-consumed-once")
+
+        // Replays are actual OS callbacks while the other engine is visible.
+        let replay = try isolationCallback(pending.request)
+        for _ in 0..<2 {
+            try await isolationSelectEngine("heart")
+            XCUIDevice.shared.system.open(replay)
+            XCTAssertTrue(source.wait(for: .runningForeground, timeout: 90))
+            try await isolationRequireEngine("any")
+            let replayedBlocks = try await isolationAnyRows([aText, anyText], originalBlock: aBlock)
+            XCTAssertEqual(replayedBlocks, aSavedBlocks)
+        }
+        source.terminate()
+        XCTAssertTrue(source.wait(for: .notRunning, timeout: 20))
+        source.launch()
+        try await isolationSelectEngine("any")
+        try await isolationOpenAny(account: aScope.account, space: aSpace, title: aTitle)
+        let coldBlocks = try await isolationAnyRows([aText, anyText], originalBlock: aBlock)
+        XCTAssertEqual(coldBlocks, aSavedBlocks)
+        XCTAssertTrue(try isolationRecord(pending.request.id, shared).acknowledged)
+
+        // Capture B again through its normal MiniApp picker after a real cold
+        // reopen. This is an original native read, not an AX-only comparison.
+        try await isolationSignOutAny()
+        try await isolationOpenAny(account: bScope.account, space: bSpace, title: bTitle)
+        try await isolationAnyRows([bText], originalBlock: bBlock)
+        let bAfter = try await isolationLaunch(shared, engine: "any",
+            appID: "org.itorah.miniapps.fileworkshop")
+        XCTAssertEqual(try isolationScope(bAfter.request, engine: "any").account, bScope.account)
+        XCTAssertEqual(bAfter.request.source.documentID, bBefore.request.source.documentID)
+        XCTAssertEqual(bAfter.request.source.documentText, bBefore.request.source.documentText)
+        for key in ["anytype.accountID", "anytype.spaceID", "anytype.blocks", "anytype.nativeVersion"] {
+            XCTAssertEqual(bAfter.request.source.metadata[key], bBefore.request.source.metadata[key],
+                "No native write may be attributed to the foreign account: " + key)
+        }
+        try fwPress("fileworkshop.cancel")
+        XCTAssertTrue(source.wait(for: .runningForeground, timeout: 60))
+        let bAfterCancelled = try await fwAcknowledged(bAfter.request.id, shared)
+        XCTAssertEqual(bAfterCancelled.result?.status, "cancelled")
+        try await isolationAnyRows([bText], originalBlock: bBlock)
+        try await isolationSelectEngine("heart")
+        try openSource()
+        try expectNativeText()
+        try isolationRequireVisibleText(heartText)
+
+        let report: [String: Any] = [
+            "status": "REAL_ENGINE_ACCOUNT_MINIAPPS_UI_PASS",
+            "sourceSHA": try XCTUnwrap(fixture["sourceSHA"]), "runID": try XCTUnwrap(fixture["runID"]),
+            "heartRequestID": heart.request.id.uuidString.lowercased(),
+            "anyRequestID": pending.request.id.uuidString.lowercased(),
+            "foreignReadRequestIDs": [bBefore, bAfter].map { $0.request.id.uuidString.lowercased() },
+            "heartAccountID": heartScope.account, "heartSpaceID": heartScope.space,
+            "heartDocumentID": try XCTUnwrap(heart.request.source.documentID), "heartReturnedText": heartText,
+            "originalAnyAccountID": aScope.account, "foreignAnyAccountID": bScope.account,
+            "anyDocumentID": try XCTUnwrap(pending.request.source.documentID),
+            "foreignDocumentID": try XCTUnwrap(bBefore.request.source.documentID),
+            "originalAnyText": aText, "anyReturnedText": anyText, "foreignAnyText": bText,
+            "originalAnyBlock": aBlock, "foreignAnyBlock": bBlock, "savedAnyBlocks": aSavedBlocks,
+            "foreignAccountRejectedBeforeAndAfterColdReopen": true,
+            "foreignPendingObservations": [foreignWarm, foreignCold],
+            "foreignNativeBlocksAndVersionUnchanged": true,
+            "replayedCallbacks": 2, "sourceColdReopens": 2,
+            "syntheticRequests": 0, "syntheticResults": 0, "directNativeTestMutations": 0
+        ]
+        let name = try XCTUnwrap(environment["PINKHA_MINIAPPS_ISOLATION_REPORT_NAME"])
+        XCTAssertEqual(URL(fileURLWithPath: name).lastPathComponent, name)
+        try JSONSerialization.data(withJSONObject: report, options: [.sortedKeys])
+            .write(to: shared.appendingPathComponent(name), options: .withoutOverwriting)
+        screenshot("miniapps-engine-account-isolation-final-heart")
+        source.terminate()
+    }
+
+    private func isolationTap(_ control: XCUIElement, timeout: TimeInterval = 60) throws {
+        let predicate = NSPredicate(format: "exists == true AND enabled == true AND hittable == true")
+        let result = XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: predicate, object: control)], timeout: timeout)
+        XCTAssertEqual(result, .completed)
+        guard result == .completed else { throw NSError(domain: "MiniAppsIsolation", code: 1) }
+        control.tap()
+    }
+
+    private func isolationSelectEngine(_ engine: String) async throws {
+        let selector = source.buttons["pinkha.engine.selector"]
+        XCTAssertTrue(selector.waitForExistence(timeout: 60))
+        let display = engine == "heart" ? "Heart" : "Any"
+        if selector.value as? String != display {
+            try isolationTap(selector)
+            try isolationTap(source.buttons["pinkha.engine.select." + engine])
+        }
+        try await isolationRequireEngine(engine)
+    }
+
+    private func isolationRequireEngine(_ engine: String) async throws {
+        let selector = source.buttons["pinkha.engine.selector"]
+        let display = engine == "heart" ? "Heart" : "Any"
+        try await fwWait(timeout: .seconds(90)) {
+            selector.exists && selector.isEnabled && selector.value as? String == display
+        }
+    }
+
+    @discardableResult
+    private func isolationAnyRows(_ texts: [String], originalBlock: String) async throws -> [String] {
+        let rows = source.textViews.matching(NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-"))
+        try await fwWait(timeout: .seconds(90)) {
+            let actual = rows.allElementsBoundByIndex
+            return actual.count == texts.count && Set(actual.compactMap { $0.value as? String }) == Set(texts)
+                && actual.allSatisfy { $0.isHittable }
+        }
+        let ids = rows.allElementsBoundByIndex.map(\.identifier)
+        XCTAssertEqual(Set(ids).count, texts.count)
+        XCTAssertTrue(ids.contains(originalBlock))
+        return ids.sorted()
+    }
+
+    private func isolationCreateAnyDocument(space: String, title: String, text: String) async throws -> String {
+        try isolationTap(source.buttons["any-native-account-create"], timeout: 90)
+        let row = source.switches["any-native-backup-acknowledged"]
+        XCTAssertTrue(row.waitForExistence(timeout: 90))
+        let switches = row.descendants(matching: .switch)
+        XCTAssertEqual(switches.count, 1)
+        XCTAssertEqual(switches.firstMatch.value as? String, "0")
+        try isolationTap(switches.firstMatch)
+        try await fwWait { row.value as? String == "1" }
+        // Never read or attach the recovery phrase or a complete AX tree here.
+        try isolationTap(source.buttons["any-native-backup-continue"])
+        let name = source.textFields["any-native-space-name"]
+        try isolationTap(name); name.typeText(space)
+        try isolationTap(source.buttons["any-native-space-create"])
+        try isolationTap(source.buttons["any-native-workspace-setup"], timeout: 120)
+        try isolationTap(source.buttons["any-native-create-menu"], timeout: 90)
+        try isolationTap(source.buttons["any-native-new-document"])
+        let titleField = source.descendants(matching: .any).matching(identifier: "any-native-name-input").firstMatch
+        try isolationTap(titleField); titleField.typeText(title)
+        try isolationTap(source.buttons["any-native-name-confirm"])
+        try isolationTap(source.buttons["any-native-add-paragraph"], timeout: 90)
+        let rows = source.textViews.matching(NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-"))
+        try isolationTap(rows.firstMatch); rows.firstMatch.typeText(text)
+        try isolationTap(source.buttons["any-native-editor-done"])
+        let status = source.descendants(matching: .any).matching(identifier: "any-native-save-status").firstMatch
+        try await fwWait { status.exists && status.value as? String == "saved" }
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.firstMatch.value as? String, text)
+        return rows.firstMatch.identifier
+    }
+
+    private func isolationSignOutAny() async throws {
+        let close = source.buttons["any-native-close-workspace"]
+        if !close.exists || !close.isHittable {
+            let back = source.navigationBars.buttons.matching(NSPredicate(
+                format: "label == %@ OR label == %@", "Library", "ספרייה")).firstMatch
+            try isolationTap(back)
+        }
+        try isolationTap(close)
+        try isolationTap(source.buttons["any-native-account-sign-out"])
+        try await fwWait(timeout: .seconds(90)) {
+            self.source.buttons["any-native-account-create"].exists
+                && self.source.buttons["any-native-account-create"].isEnabled
+        }
+    }
+
+    private func isolationOpenAny(account: String, space: String, title: String) async throws {
+        let accounts = source.buttons.matching(identifier: "any-native-saved-account")
+            .matching(NSPredicate(format: "label CONTAINS %@", String(account.suffix(8))))
+        XCTAssertTrue(accounts.firstMatch.waitForExistence(timeout: 90))
+        XCTAssertEqual(accounts.count, 1, "The original saved-account selector must resolve exactly")
+        try isolationTap(accounts.firstMatch)
+        try isolationTap(source.buttons[space].firstMatch, timeout: 90)
+        try isolationTap(source.buttons[title].firstMatch, timeout: 90)
+    }
+
+    private func isolationLaunch(_ shared: URL, engine: String, appID: String) async throws -> FWRecord {
+        let before = Set(try fwRecords(shared).map { $0.request.id })
+        if engine == "any" {
+            try isolationTap(source.buttons["any-native-document-options"])
+            try isolationTap(source.buttons["any-native-miniapps"])
+        } else {
+            try isolationTap(source.buttons["pinkha.miniapps.open"].firstMatch)
+        }
+        let launch = source.buttons["miniapps-launch-" + appID].firstMatch
+        if !launch.waitForExistence(timeout: 3) {
+            try isolationTap(source.buttons["miniapps-more"].firstMatch)
+        }
+        try isolationTap(launch)
+        XCTAssertTrue(companion.wait(for: .runningForeground, timeout: 60))
+        if appID == "nativeapp.textstudio" {
+            XCTAssertTrue(companion.textViews["miniapps.textstudio.editor"].firstMatch.waitForExistence(timeout: 60))
+        } else {
+            _ = try await fwEditor()
+        }
+        let added = try fwRecords(shared).filter { !before.contains($0.request.id) }
+        XCTAssertEqual(added.count, 1)
+        let record = try XCTUnwrap(added.first)
+        XCTAssertEqual(record.request.appID, appID)
+        _ = try isolationScope(record.request, engine: engine)
+        XCTAssertFalse(record.acknowledged); XCTAssertNil(record.result)
+        return record
+    }
+
+    private func isolationScope(_ request: FWRequest, engine: String) throws -> (account: String, space: String) {
+        XCTAssertEqual(request.source.metadata["pinkha.engine"], engine)
+        let account = try XCTUnwrap(request.source.metadata["anytype.accountID"])
+        let space = try XCTUnwrap(request.source.metadata["anytype.spaceID"])
+        XCTAssertFalse(account.isEmpty); XCTAssertFalse(space.isEmpty)
+        XCTAssertFalse(try XCTUnwrap(request.source.documentID).isEmpty)
+        return (account, space)
+    }
+
+    private func isolationRecord(_ id: UUID, _ shared: URL) throws -> FWRecord {
+        try XCTUnwrap(try fwRecords(shared).first { $0.request.id == id })
+    }
+
+    private func isolationFillTextStudio(_ text: String) throws {
+        let input = companion.textViews["miniapps.textstudio.editor"].firstMatch
+        XCTAssertTrue(input.waitForExistence(timeout: 30))
+        XCTAssertEqual(input.value as? String, "")
+        try isolationTap(input); input.typeText(text)
+        XCTAssertEqual(input.value as? String, text)
+    }
+
+    private func isolationReturnTextStudio() throws {
+        try isolationTap(companion.buttons["miniapps.textstudio.return"])
+    }
+
+    private func isolationRequireVisibleText(_ text: String) throws {
+        let visible = source.descendants(matching: .any).matching(
+            NSPredicate(format: "value == %@ OR label == %@", text, text)).firstMatch
+        XCTAssertTrue(visible.waitForExistence(timeout: 90))
+    }
+
+    private func isolationRequireUnacknowledged(_ id: UUID, _ shared: URL) async throws {
+        let clock = ContinuousClock(), deadline = clock.now.advanced(by: .seconds(5))
+        repeat {
+            let record = try isolationRecord(id, shared)
+            XCTAssertEqual(record.result?.status, "success")
+            XCTAssertFalse(record.acknowledged, "Foreign account must leave the actual return pending")
+            try await Task.sleep(for: .milliseconds(200))
+        } while clock.now < deadline
+    }
+
+    private func isolationPendingSnapshot(_ id: UUID, _ shared: URL,
+                                          selectedAccount: String) throws -> [String: Any] {
+        let path = shared.appendingPathComponent("requests")
+            .appendingPathComponent(id.uuidString.lowercased() + ".json")
+        let raw = try Data(contentsOf: path)
+        let actual = try JSONDecoder().decode(FWRecord.self, from: raw)
+        XCTAssertEqual(actual.request.id, id)
+        XCTAssertEqual(actual.result?.status, "success")
+        XCTAssertFalse(actual.acknowledged)
+        XCTAssertNotEqual(actual.request.source.metadata["anytype.accountID"], selectedAccount)
+        return ["recordJSON": try XCTUnwrap(String(data: raw, encoding: .utf8)),
+                "recordSHA256": fwDigest(raw), "selectedAccountID": selectedAccount,
+                "observedAt": Date().timeIntervalSince1970]
+    }
+
+    private func isolationCallback(_ request: FWRequest) throws -> URL {
+        var callback = try XCTUnwrap(URLComponents(
+            url: XCTUnwrap(request.callbacks.success), resolvingAgainstBaseURL: false))
+        callback.queryItems = (callback.queryItems ?? []).filter { $0.name != "request" } +
+            [URLQueryItem(name: "request", value: request.id.uuidString)]
+        return try XCTUnwrap(callback.url)
+    }
+
     private struct FWContent: Decodable {
         let text: String?; let kind: String; let attachmentID: UUID?; let name: String?
     }

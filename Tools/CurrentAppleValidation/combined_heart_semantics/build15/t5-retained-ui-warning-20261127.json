@@ -1,0 +1,80 @@
+{
+  "schema": "pinkha-t5-retained-ui-warning-diagnosis-v1",
+  "observedRunRoot": "/Users/m1/development/anytype-root-active-20261125/app15-t5-retained-core-r08-fa4b3ff-20261127-02",
+  "compiledAppAndUISource": "379ca3568f247d2fc218ed63df24796d461713c0",
+  "executionControlSource": "fa4b3ff234ce4a23d10a8f8de92d94b83c04513b",
+  "executionReceiptSHA256": "2062159a6a9b2d9c6646bfa68cefc36b1fb44167001e32ebf91dab7f11e748ad",
+  "coreResultSHA256": "f3f9922fad3f593c950582d3d3c57653dfe051fb5e98dbafc3b00f932eb74f93",
+  "xcresultSummarySHA256": "5001562de3c2c1d2cc803a84e2e5afbdac05efc73ae7103ca7074cdcef4ef13b",
+  "originalUITestSourceSHA256": "a2244cf16250ab64e4827ef25feec76c62a581df842a64f93810620b72ae75d0",
+  "observed": {
+    "testInvoked": true,
+    "passed": 0,
+    "failed": 2,
+    "skipped": 0,
+    "assertion": "Native Home did not become ready",
+    "observedEngine": "Heart",
+    "observedScreen": "Exact unstable-middleware Warning with Continue with current vault and Logout from current vault",
+    "nativeUIObservations": 0,
+    "r08": "NOT_RUN_NO_VALID_RETAINED_NOTE_WITNESS",
+    "editorOrFocusReached": false
+  },
+  "originalEvidence": {
+    "xcresultRelativePath": "evidence/lanes/t5-native-ui-continuation/core-ui/original.xcresult",
+    "screenshots": [
+      {
+        "file": "F3D73110-E801-406C-BA83-6E2DFB72A1D9.png",
+        "sha256": "040390540ccaccbda2869d779c367151e8dfd5f693c3dd0797a98d3c4eb001c9",
+        "visuallyReviewed": true
+      },
+      {
+        "file": "75AE5395-E02A-4A4B-86CD-F7EBE7FE1699.png",
+        "sha256": "5a97e0407d8f13e5e0fc4bdbcdb98ae4011c5f637df217497da1c7a48f5113ea",
+        "visuallyReviewed": false
+      }
+    ],
+    "accessibility": [
+      {
+        "file": "D0630EF0-D27B-4D58-9372-97077839392B.txt",
+        "sha256": "2e3aef7ee8ad92466d7a0b2c29e404ca3fe640e0820c0d79cf350c689b432dca"
+      },
+      {
+        "file": "8D2F849D-A07F-4BDC-BB1A-17AACDF5664B.txt",
+        "sha256": "6be81979d19b1b7c1bbf791ad67be596d52af2a0d910ac28bf09fc83cfbc3940"
+      }
+    ],
+    "credentialEncodingsScanned": [
+      "utf8",
+      "utf-16-le",
+      "utf-16-be"
+    ],
+    "credentialBytesPublished": false
+  },
+  "preservation": {
+    "simulatorUDID": "AE150CEF-CF35-4029-87F8-0CEF8E8E6F87",
+    "status": "SHUTDOWN_ACCOUNT_RETAINED",
+    "fixtureCredentialMutationHashesUnchanged": true,
+    "productsUnchanged": true,
+    "ownedProcessGroups": "PASS",
+    "newAccounts": 0,
+    "newBuilds": 0
+  },
+  "sourceCorrection": {
+    "path": "PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift",
+    "sha256": "3acfaf7b766399a460178b7ce514a0dfdb9fff3f361063e5cb419744c81edac2",
+    "behavior": "Within original 120-second Home bound, observe Home or exact Warning; only for controller-bound disposable fixture, validate unique message and both exact actions, attach witness, tap visible enabled hittable Continue once, require dismissal then exact Home readiness.",
+    "productionWarningChanged": false,
+    "methodsOrJourneyAssertionsRemoved": false,
+    "realSharedUIAcceptance": "NOT_RUN",
+    "macSwiftSyntaxParseReceipt": "/Users/m1/development/anytype-root-active-20261125/app15-t5-warning-source-20261127/parse-receipt.json",
+    "macSwiftSyntaxParseSHA256": "8f34ddcf751afeaaf8f4b647d827d9fcaa981a5ed2fe4590091e6e55d8418e11"
+  },
+  "processInventoryCorrection": {
+    "reason": "Original read_ui_receipts reports one PID per screenshot, so valid lifetimes repeat. Retain every actual lifetime, not dictionary role names.",
+    "requirement": "Preparation PID absent from UI; related targets one PID, Note lifecycle two PIDs, disjoint role sets, union exactly four positive integer PIDs.",
+    "originalValidator": "Tools/PinkhaSimulatorGate/t5_native_ui_evidence.py::read_ui_receipts",
+    "regression": "Real repeated-screenshot shape accepted; missing, extra, cross-role, preparation reuse and malformed IDs rejected."
+  },
+  "releaseAccepted": false,
+  "fullT5Accepted": false
+}

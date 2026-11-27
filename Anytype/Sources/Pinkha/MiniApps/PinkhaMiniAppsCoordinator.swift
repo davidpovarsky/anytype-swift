@@ -29,6 +29,9 @@ final class PinkhaMiniAppsCoordinator {
         }
     }
     private let lifetime = PinkhaMiniAppsLifetime()
+    private let returns = PinkhaMiniAppsReturnQueue()
+    private var returnSubscriptions: Set<AnyCancellable> = []
+    private var routedReturn: PinkhaMiniAppsReturnQueue.Target?
     private var presentations: [Presentation] = []
     private var confirmations: [UUID: PinkhaMiniAppsConfirmation] = [:]
     private var registrations: [ObjectIdentifier: Registration] = [:]
@@ -48,6 +51,7 @@ final class PinkhaMiniAppsCoordinator {
     func prepareEngineAccountChange() async throws -> UUID {
         observeCallback("account-change-begin")
         let token = lifetime.revoke()
+        suspendReturnNavigation()
         for confirmation in Array(confirmations.values) { confirmation.cancel() }
         let mounted = presentations.filter { !$0.confirmation }.compactMap(\.controller)
         presentations.removeAll()
@@ -71,25 +75,33 @@ final class PinkhaMiniAppsCoordinator {
         let accountID = Container.shared.accountManager().account.id
         registrations = registrations.filter { $0.value.editor != nil && $0.value.accountID == accountID }
         for editor in registrations.values.compactMap(\.editor) { consume(editor: editor) }
+        routePendingReturns()
     }
 
     func attach(editor: EditorPageController) {
         observeCallback("editor-attach", editor: editor)
         let id = ObjectIdentifier(editor)
         let accountID = Container.shared.accountManager().account.id
-        guard registrations[id]?.accountID != accountID else { consume(editor: editor); return }
+        guard registrations[id]?.accountID != accountID else {
+            consume(editor: editor)
+            routePendingReturns()
+            return
+        }
         let registration = Registration(editor: editor, accountID: accountID)
         registrations[id] = registration
         editor.viewModel.document.syncPublisher.receive(on: DispatchQueue.main).sink { [weak self, weak editor] _ in
             guard let editor else { return }
             self?.consume(editor: editor)
+            self?.routePendingReturns()
         }.store(in: &registration.subscriptions)
         NotificationCenter.default.publisher(for: UIScene.didActivateNotification)
             .receive(on: DispatchQueue.main).sink { [weak self, weak editor] _ in
                 guard let editor else { return }
                 self?.consume(editor: editor)
+                self?.routePendingReturns()
             }.store(in: &registration.subscriptions)
         consume(editor: editor)
+        routePendingReturns()
     }
 
     func detach(editor: EditorPageController) {
@@ -148,8 +160,9 @@ final class PinkhaMiniAppsCoordinator {
         } catch { preparing.remove(id) }
     }
 
-    /// Uses the existing queued object route for cold starts and an exact mounted
-    /// editor for warm returns. The bridge file remains pending until that editor saves.
+    /// A callback may arrive before authentication or while the Heart engine is
+    /// suspended. Retain its authenticated identity, then use the existing object
+    /// route only after the original account and scene are ready.
     func routeCallback(_ url: URL) -> (handled: Bool, link: DeepLink?) {
         guard url.scheme?.lowercased() == PinkhaMiniAppsContext.callbacks.success?.scheme?.lowercased(),
               url.host == "miniapps", url.path == "/return" else { return (false, nil) }
@@ -157,38 +170,111 @@ final class PinkhaMiniAppsCoordinator {
         guard let id = MiniAppBridgeStore.requestID(from: url),
               let store = try? MiniAppBridgeStore(appGroupIdentifier: "group.com.itorah.shared"),
               let request = try? store.request(id: id),
-              request.source.appID == PinkhaMiniAppsContext.sourceAppID,
-              let objectID = request.source.documentID,
-              let spaceID = request.source.metadata["anytype.spaceID"]
-        else {
+              request.source.appID == PinkhaMiniAppsContext.sourceAppID else {
             observeCallback("callback-request-unavailable")
             return (true, nil)
         }
-        observeCallback("callback-request-read", requestID: id, details: [
-            "heartEngine": String(PinkhaMiniAppsEngineScope.heart.matches(request.source)),
-            "accountMatches": String(request.source.metadata["anytype.accountID"] == Container.shared.accountManager().account.id)
-        ])
         guard PinkhaMiniAppsEngineScope.heart.matches(request.source) else { return (false, nil) }
-        guard lifetime.acceptsOperations,
-              request.source.metadata["anytype.accountID"] == Container.shared.accountManager().account.id
-        else {
-            observeCallback("callback-routing-not-ready", requestID: id)
+        guard let target = returnTarget(request), returns.retain(target) else {
+            observeCallback("callback-target-invalid", requestID: id)
             return (true, nil)
         }
-        let editors = registrations.values.compactMap(\.editor).filter {
-            isCurrent($0) && isVisible($0) && $0.viewModel.document.objectId == objectID &&
-                $0.viewModel.document.spaceId == spaceID
-        }
-        let original = editors.first {
-            $0.viewIfLoaded?.window?.windowScene?.session.persistentIdentifier == request.source.sceneID
-        } ?? editors.first
-        if let original {
-            observeCallback("callback-mounted-editor", editor: original, requestID: id)
+        observeCallback("callback-retained", requestID: id, details: [
+            "accountMatches": String(target.accountID.utf8.elementsEqual(
+                Container.shared.accountManager().account.id.utf8))
+        ])
+        observeReturnReadiness()
+        routePendingReturns()
+        return (true, nil)
+    }
+
+    private func returnTarget(_ request: MiniAppInvocation) -> PinkhaMiniAppsReturnQueue.Target? {
+        guard request.source.appID == PinkhaMiniAppsContext.sourceAppID,
+              PinkhaMiniAppsEngineScope.heart.matches(request.source),
+              let account = request.source.metadata["anytype.accountID"],
+              let space = request.source.metadata["anytype.spaceID"],
+              let object = request.source.documentID else { return nil }
+        return .init(requestID: request.id, engineID: PinkhaMiniAppsEngineScope.heart.rawValue,
+                     accountID: account, spaceID: space, documentID: object,
+                     sceneID: request.source.sceneID)
+    }
+
+    private func observeReturnReadiness() {
+        guard returnSubscriptions.isEmpty else { return }
+        NotificationCenter.default.publisher(for: UIScene.didActivateNotification)
+            .receive(on: DispatchQueue.main).sink { [weak self] _ in
+                self?.routePendingReturns()
+            }.store(in: &returnSubscriptions)
+        Container.shared.accountManager().accountPublisher
+            .receive(on: DispatchQueue.main).sink { [weak self] _ in
+                self?.routePendingReturns()
+            }.store(in: &returnSubscriptions)
+        Container.shared.applicationStateService().statePublisher
+            .receive(on: DispatchQueue.main).sink { [weak self] _ in
+                self?.routePendingReturns()
+            }.store(in: &returnSubscriptions)
+        Container.shared.appActionStorage().$action
+            .receive(on: DispatchQueue.main).sink { [weak self] action in
+                guard action == nil, Container.shared.appActionStorage().action == nil else { return }
+                self?.routedReturn = nil
+                self?.routePendingReturns()
+            }.store(in: &returnSubscriptions)
+    }
+
+    private func routePendingReturns() {
+        let account = Container.shared.accountManager().account.id
+        guard lifetime.acceptsOperations, !account.isEmpty,
+              Container.shared.applicationStateService().state == .home,
+              UIApplication.shared.connectedScenes.contains(where: {
+                  $0.activationState == .foregroundActive
+              }),
+              let store = try? MiniAppBridgeStore(appGroupIdentifier: "group.com.itorah.shared")
+        else { return }
+        let engine = PinkhaMiniAppsEngineScope.heart.rawValue
+        for target in returns.pending(engineID: engine, accountID: account) {
+            guard let request = try? store.request(id: target.requestID),
+                  returnTarget(request) == target else { continue }
+            let editors = registrations.values.compactMap(\.editor).filter {
+                isCurrent($0) && isVisible($0)
+                    && target.matches(engineID: engine, accountID: account,
+                        spaceID: $0.viewModel.document.spaceId,
+                        documentID: $0.viewModel.document.objectId)
+            }
+            let original = editors.first {
+                $0.viewIfLoaded?.window?.windowScene?.session.persistentIdentifier == target.sceneID
+            } ?? editors.first
+            guard let original, original.viewModel.document.isOpened,
+                  original.presentedViewController == nil else { continue }
+            returns.didReachEditor(target)
+            if routedReturn == target { routedReturn = nil }
+            observeCallback("callback-mounted-editor", editor: original, requestID: target.requestID)
             consume(editor: original)
-            return (true, nil)
         }
-        observeCallback("callback-object-navigation", requestID: id)
-        return (true, .object(objectId: objectID, spaceId: spaceID))
+        // Do not overwrite another real app action or a callback navigation that
+        // is still opening its editor.
+        let actions = Container.shared.appActionStorage()
+        guard actions.action == nil,
+              let target = returns.nextNavigation(engineID: engine, accountID: account, ready: true),
+              let request = try? store.request(id: target.requestID), returnTarget(request) == target,
+              returns.beginNavigation(target) else { return }
+        routedReturn = target
+        observeCallback("callback-object-navigation", requestID: target.requestID)
+        actions.action = .deepLink(.object(objectId: target.documentID, spaceId: target.spaceID), .external)
+    }
+
+    private func suspendReturnNavigation() {
+        // A route authorized for the old account must not stay queued while the
+        // authentication decorator selects a different native account.
+        let actions = Container.shared.appActionStorage()
+        if let target = routedReturn, let action = actions.action,
+           case let .deepLink(.object(objectID, spaceID, cid, key), _) = action,
+           cid == nil, key == nil,
+           target.matches(engineID: PinkhaMiniAppsEngineScope.heart.rawValue,
+                          accountID: target.accountID, spaceID: spaceID, documentID: objectID) {
+            actions.action = nil
+        }
+        routedReturn = nil
+        returns.suspendNavigation()
     }
 
     func consume(editor: EditorPageController, skipping: Set<UUID> = []) {
