@@ -1,0 +1,61 @@
+{
+  "schema": "wave2-independent-source-review/v1",
+  "status": "PASS_NARROW_SOURCE_REVIEW_NO_CONCRETE_BLOCKER_NOT_COMPILED_NOT_RUN",
+  "reviewer": "/root/torah_continue",
+  "observedUTC": "2026-11-27T13:21:36.704610+00:00",
+  "baseCommit": "2f9ac20a910d9922e13f8e5d410757604437fcc5",
+  "files": [
+    {
+      "path": "Anytype.xcodeproj/project.pbxproj",
+      "sha256": "680b75e2b66e7268084b6e1770161bbd6f7f0a1affddbebc976cf14afbfd40cb",
+      "bytes": 163508,
+      "originalSHA256": "39b5ebb5f24ae107bea0b7c85d3fce51ff12c333a28ff43c01415dc87a04cbb4",
+      "originalGitBlob": "d0749db7a666a14c3ac3d8d94d98d20f0d07a91e",
+      "gitBlob": "7790ac9200e5ba38bf29a170bb4b31ff3389be8d"
+    },
+    {
+      "path": "Tools/MiniApps/receipt_admission.py",
+      "sha256": "0290645de02ecbc9511af9b647e2f70befad79d7805de617476d6ddb84cc4285",
+      "bytes": 29997,
+      "originalSHA256": "d63b8a04bd424a92bf852449c2ecbf8a22bd5ccae95b61ae32feb6be63e6b901",
+      "originalGitBlob": "46653086aa8294ea9056459509190b166ac9d805",
+      "gitBlob": "e2e0a1263c9d24d1d4512e8f93c62616bde589e9"
+    }
+  ],
+  "inverseSHA256": "3c00db371ca6b265aaa96edcbc8ae50dbad519919d96d2c08c04c2c67bfe98b1",
+  "checks": [
+    "Independently reversed all4 PBX insertions and1 allowlist insertion to complete original39b5/d63b bytes.",
+    "Exactly4 unique new24-character PBX object IDs:388 original objects become392; each test has one SOURCE_ROOT file reference, one build-file link, one existing root-group membership and one existing AnytypeTests Sources membership. Existing target/dependencies/frameworks/settings and all prior sources remain unchanged.",
+    "Existing AnytypeTests target already lists PinkhaAnyUI, PinkhaAnyHost, PinkhaAnyEngine, PinkhaAnyIntegration, PinkhaKit and HanlinMiniAppsBridge products. Metadata test conditional is unchanged and still requires real Apple compiler availability/enumeration.",
+    "AST/source comparison confirms all17 receipt-admission function definitions (16 top-level plus nested command) are byte-identical. Only the finite hosted-origin set changes7to9 by the two exact repository paths; every other source byte inverses completely.",
+    "Read unchanged verify_compilation: actual selected repository paths, source bytes/hashes, physical compiled paths, original FileLists and pinned swiftc log witnesses remain required. Allowlist origin is not source selection, test execution or product admission.",
+    "Read unchanged producer w3_compiler_lists and w3_native_proof seam. Current57-source selected inventory was not established here; explicit+2 path delta is valid, no new total59 asserted. Core22 does not automatically select these suites."
+  ],
+  "pendingOriginalSuites": {
+    "AnyNativeAttachmentIntentStoreTests": {
+      "methods": 3,
+      "declaredCases": 4
+    },
+    "AnyNativeAttachmentMetadataTests": {
+      "methods": 3,
+      "declaredCases": 13
+    }
+  },
+  "preparationNotes": [
+    "Initial local review counted16 top-level definitions against17 total and stopped. Final AST comparison includes the unchanged nested command function.",
+    "A broad PBX regular expression included nested target-attribute references and stopped on duplicated existing IDs. The exact top-level object definition check verifies388 original and392 unique candidate objects. Neither source was changed by these review-scope corrections."
+  ],
+  "runtimeLimits": [
+    "Source custody/read only; no admission-gate invocation, compiler, tests, Native, simulator, Mac, Oracle or account operations.",
+    "No new suite, selector profile, producer rewrite or runtime gate opening. These existing original test sources still require matching current source/compiler inventory, actual enumeration and original result validation.",
+    "This review does not redo previously reviewed intent-store or metadata-test behavior; original proofs remain separate."
+  ],
+  "runtimeAdmission": false,
+  "executions": {
+    "compiler": 0,
+    "tests": 0,
+    "Native": 0,
+    "Mac": 0,
+    "Oracle": 0
+  }
+}

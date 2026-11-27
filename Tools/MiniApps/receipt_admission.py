@@ -35,6 +35,8 @@ HOSTED_PACKAGE_TEST_SOURCES = frozenset({
     "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift",
     "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextBlockCreationTests.swift",
     "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextTypographyTests.swift",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentIntentStoreTests.swift",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeAttachmentMetadataTests.swift",
 })
 REQUIRED_CONTROLS = {
     "Tools/MiniApps/receipt_admission.py", "Tools/MiniApps/run_receipt_acceptance.py",
