@@ -1,0 +1,167 @@
+{
+  "addedSelector": "PinkhaAnyNativeUITests/NativeLaunchTests/testLibrarySearchReplacementAndColdReopenUseCurrentQuery",
+  "additionBytes": 12246,
+  "additionSHA256": "7aa590a857aded09116f058ccdd080be43185600b8e407597ea995ef17ddadc1",
+  "additionText": "    // BEGIN_NATIVE_LIBRARY_SEARCH_UI_V1\n    func testLibrarySearchReplacementAndColdReopenUseCurrentQuery() throws {\n        executionTimeAllowance = 900\n        let scope = UUID()\n        let suffix = scope.uuidString.replacingOccurrences(of: \"-\", with: \"\").lowercased()\n        let app = makeApplication(scope: scope)\n        let spaceName = \"Library search UI \" + String(suffix.prefix(8))\n        let alpha = (key: \"alpha\", query: \"libraryalpha\" + suffix,\n                     title: \"Library Alpha \" + suffix,\n                     body: \"\u05de\u05e1\u05de\u05da \u05e8\u05d0\u05e9\u05d5\u05df \u05dc\u05d7\u05d9\u05e4\u05d5\u05e9 libraryalpha\" + suffix)\n        let beta = (key: \"beta\", query: \"librarybeta\" + suffix,\n                    title: \"Library Beta \" + suffix,\n                    body: \"\u05de\u05e1\u05de\u05da \u05e9\u05e0\u05d9 \u05dc\u05d7\u05d9\u05e4\u05d5\u05e9 librarybeta\" + suffix)\n        let absentQuery = \"libraryabsent\" + suffix\n        let library = app.descendants(matching: .any).matching(identifier: \"any-native-library\").firstMatch\n        let blocks = app.textViews.matching(NSPredicate(format: \"identifier BEGINSWITH %@\", \"any-native-block-\"))\n        var identities: [String: [String: String]] = [:]\n        var queryExpected = \"\"\n        var phase = \"setup\"\n        var completedColdReopens = 0\n        var complete = false\n\n        func hash(_ text: String) -> String {\n            SHA256.hash(data: Data(text.utf8)).map { String(format: \"%02x\", $0) }.joined()\n        }\n        func rows(_ title: String) -> XCUIElementQuery {\n            // Search rows include the original title plus a native FTS snippet.\n            // Scope the visible title query to the actual Library list.\n            library.descendants(matching: .button).matching(NSPredicate(format: \"label BEGINSWITH %@\", title))\n        }\n        func capture(_ name: String) throws {\n            try requireArchiveObservationPastOnboarding(app)\n            let field = app.searchFields.firstMatch\n            var record: [String: Any] = [\n                \"schema\": \"any-native-library-search-ui/v1\", \"phase\": name,\n                \"ownedScope\": scope.uuidString, \"spaceName\": spaceName,\n                \"requestedAppLanguage\": \"he\", \"queryExpected\": queryExpected,\n                \"queryFieldExists\": field.exists, \"completedColdReopens\": completedColdReopens,\n                \"nativeIdentityOrigin\": \"actual-mounted-hierarchy-and-editor-accessibility\",\n                \"nativeReadExtraCallsByObserver\": 0, \"testStorageOverrides\": false,\n                \"identities\": identities\n            ]\n            if field.exists { record[\"queryObserved\"] = field.value as? String ?? \"\" }\n            else { record[\"queryObserved\"] = NSNull() }\n            if library.exists {\n                record[\"visibleFixtureRows\"] = [alpha.title, beta.title].flatMap { title in\n                    rows(title).allElementsBoundByIndex.map { row in\n                        [\"label\": row.label, \"identifier\": row.identifier, \"hittable\": row.isHittable] as [String: Any]\n                    }\n                }\n            }\n            record[\"visibleNativeBlocks\"] = blocks.allElementsBoundByIndex.map { block in\n                [\"identifier\": block.identifier, \"bodySHA256\": hash(block.value as? String ?? \"\")] as [String: Any]\n            }\n            let data = try JSONSerialization.data(withJSONObject: record, options: [.sortedKeys])\n            XCTAssertLessThanOrEqual(data.count, 65_536)\n            let metadata = XCTAttachment(data: data, uniformTypeIdentifier: \"public.json\")\n            metadata.name = \"native-library-search-\" + name\n            metadata.lifetime = .keepAlways; add(metadata)\n            let tree = String(decoding: Data(app.debugDescription.utf8).prefix(131_072), as: UTF8.self)\n            try requireArchiveObservationPastOnboarding(app)\n            let ax = XCTAttachment(string: tree)\n            ax.name = \"native-library-search-\" + name + \"-private-ax\"\n            ax.lifetime = .keepAlways; add(ax)\n            let image = XCTAttachment(screenshot: app.screenshot())\n            image.name = \"native-library-search-\" + name\n            image.lifetime = .keepAlways; add(image)\n        }\n        func returnToLibrary() {\n            let back = app.navigationBars.buttons.matching(NSPredicate(\n                format: \"label == %@ OR label == %@\", \"\u05e1\u05e4\u05e8\u05d9\u05d9\u05d4\", \"Library\")).firstMatch\n            tapWhenEnabled(back)\n            waitUntilEnabled(app.buttons[\"any-native-create-menu\"], timeout: 60)\n            waitFor(NSPredicate(format: \"exists == true\"), object: library, timeout: 30)\n        }\n        func createDocument(_ item: (key: String, query: String, title: String, body: String)) throws {\n            try createNamedItemWithObservedTransition(app, action: \"any-native-new-document\", title: item.title)\n            let addParagraph = app.buttons[\"any-native-add-paragraph\"]\n            waitFor(NSPredicate(format: \"exists == true AND enabled == true AND hittable == true\"),\n                    object: addParagraph, timeout: 60)\n            addParagraph.tap()\n            let editor = blocks.firstMatch\n            waitForNativeEditorInput(app, editor)\n            editor.tap(); editor.typeText(item.body)\n            tapWhenEnabled(app.buttons[\"any-native-editor-done\"])\n            let status = app.descendants(matching: .any).matching(identifier: \"any-native-save-status\").firstMatch\n            waitFor(NSPredicate(format: \"exists == true AND value == %@\", \"saved\"), object: status, timeout: 45)\n            XCTAssertEqual(editor.value as? String, item.body)\n            XCTAssertEqual(blocks.count, 1)\n            let blockIdentifier = editor.identifier\n            XCTAssertTrue(blockIdentifier.hasPrefix(\"any-native-block-\"))\n            returnToLibrary()\n            let row = app.buttons.matching(NSPredicate(\n                format: \"identifier BEGINSWITH %@ AND label == %@\", \"any-native-hierarchy-row-\", item.title))\n            waitUntilEnabled(row.firstMatch, timeout: 45)\n            XCTAssertEqual(row.count, 1)\n            let hierarchyIdentifier = row.firstMatch.identifier\n            XCTAssertGreaterThan(hierarchyIdentifier.count, \"any-native-hierarchy-row-\".count)\n            identities[item.key] = [\"title\": item.title, \"query\": item.query,\n                \"hierarchyRowIdentifier\": hierarchyIdentifier,\n                \"objectIDFromHierarchy\": String(hierarchyIdentifier.dropFirst(\"any-native-hierarchy-row-\".count)),\n                \"blockIdentifier\": blockIdentifier, \"bodySHA256\": hash(item.body)]\n        }\n        func replaceQuery(_ value: String) {\n            queryExpected = value\n            waitFor(NSPredicate(format: \"exists == true\"), object: library, timeout: 30)\n            let field = app.searchFields.firstMatch\n            if !field.exists || !field.isHittable { library.swipeDown() }\n            waitFor(NSPredicate(format: \"exists == true AND enabled == true AND hittable == true\"),\n                    object: field, timeout: 30)\n            field.tap()\n            field.typeKey(\"a\", modifierFlags: .command)\n            field.typeText(XCUIKeyboardKey.delete.rawValue)\n            if !value.isEmpty {\n                field.typeText(value)\n                waitFor(NSPredicate(format: \"value == %@\", value), object: field, timeout: 30)\n            }\n        }\n        func expectResult(_ item: (key: String, query: String, title: String, body: String),\n                          excluding other: (key: String, query: String, title: String, body: String)) throws -> XCUIElement {\n            let matching = rows(item.title)\n            waitFor(NSPredicate(format: \"exists == true AND enabled == true AND hittable == true\"),\n                    object: matching.firstMatch, timeout: 60)\n            XCTAssertEqual(matching.count, 1)\n            XCTAssertEqual(app.searchFields.firstMatch.value as? String, item.query)\n            XCTAssertEqual(app.alerts.count, 0, \"The current Library query must not be covered by an error alert.\")\n            XCTAssertFalse(rows(other.title).firstMatch.exists, \"The previous or unrelated query must not supply displayed rows.\")\n            let identity = try XCTUnwrap(identities[item.key])\n            let hierarchyIdentifier = try XCTUnwrap(identity[\"hierarchyRowIdentifier\"])\n            XCTAssertFalse(app.buttons[hierarchyIdentifier].exists,\n                           \"The actual search result must replace the ordinary hierarchy section.\")\n            return matching.firstMatch\n        }\n        func verifyOpened(_ item: (key: String, query: String, title: String, body: String)) throws {\n            let identity = try XCTUnwrap(identities[item.key])\n            let blockIdentifier = try XCTUnwrap(identity[\"blockIdentifier\"])\n            let expectedBodySHA256 = try XCTUnwrap(identity[\"bodySHA256\"])\n            let editor = app.textViews[blockIdentifier]\n            waitFor(NSPredicate(format: \"exists == true AND value == %@\", item.body), object: editor, timeout: 60)\n            XCTAssertEqual(blocks.count, 1)\n            XCTAssertEqual(hash(editor.value as? String ?? \"\"), expectedBodySHA256)\n            let title = app.navigationBars.staticTexts.matching(NSPredicate(format: \"label == %@\", item.title)).firstMatch\n            waitFor(NSPredicate(format: \"exists == true\"), object: title, timeout: 30)\n            let status = app.descendants(matching: .any).matching(identifier: \"any-native-save-status\").firstMatch\n            waitFor(NSPredicate(format: \"exists == true AND value == %@\", \"saved\"), object: status, timeout: 45)\n        }\n        func expectClearedHierarchy() throws {\n            for item in [alpha, beta] {\n                let identity = try XCTUnwrap(identities[item.key])\n                let identifier = try XCTUnwrap(identity[\"hierarchyRowIdentifier\"])\n                waitUntilEnabled(app.buttons[identifier], timeout: 45)\n            }\n            XCTAssertFalse(app.staticTexts[\"\u05ea\u05d5\u05e6\u05d0\u05d5\u05ea \u05d7\u05d9\u05e4\u05d5\u05e9\"].exists)\n            XCTAssertFalse(app.staticTexts[\"\u05dc\u05d0 \u05e0\u05de\u05e6\u05d0\u05d5 \u05ea\u05d5\u05e6\u05d0\u05d5\u05ea\"].exists)\n        }\n\n        app.launch()\n        defer { app.terminate() }\n        defer {\n            if !complete {\n                do { try capture(\"FAILED_\" + phase) }\n                catch {\n                    let refusal = XCTAttachment(string: \"Post-onboarding diagnostic unavailable: \" + String(describing: error))\n                    refusal.name = \"native-library-search-diagnostic-unavailable\"\n                    refusal.lifetime = .keepAlways; add(refusal)\n                }\n            }\n        }\n        createOwnedWorkspace(app, spaceName: spaceName)\n        try createDocument(alpha)\n        try createDocument(beta)\n\n        phase = \"alpha-result\"\n        replaceQuery(alpha.query)\n        _ = try expectResult(alpha, excluding: beta)\n        try capture(phase)\n\n        phase = \"replacement-beta-result\"\n        replaceQuery(beta.query)\n        _ = try expectResult(beta, excluding: alpha)\n        try capture(phase)\n\n        phase = \"no-match\"\n        replaceQuery(absentQuery)\n        waitFor(NSPredicate(format: \"exists == true AND hittable == true\"),\n                object: app.staticTexts[\"\u05dc\u05d0 \u05e0\u05de\u05e6\u05d0\u05d5 \u05ea\u05d5\u05e6\u05d0\u05d5\u05ea\"], timeout: 60)\n        XCTAssertEqual(app.alerts.count, 0, \"A failed search must not be accepted as the empty-result UI.\")\n        XCTAssertFalse(rows(alpha.title).firstMatch.exists)\n        XCTAssertFalse(rows(beta.title).firstMatch.exists)\n        try capture(phase)\n\n        phase = \"cleared-hierarchy\"\n        replaceQuery(\"\")\n        try expectClearedHierarchy()\n        try capture(phase)\n\n        phase = \"opened-alpha\"\n        replaceQuery(alpha.query)\n        try expectResult(alpha, excluding: beta).tap()\n        try verifyOpened(alpha)\n        try capture(phase)\n        returnToLibrary()\n        replaceQuery(\"\")\n        try expectClearedHierarchy()\n\n        phase = \"cold-beta-result\"\n        reopenOwnedWorkspace(app, spaceName: spaceName)\n        completedColdReopens += 1\n        try expectClearedHierarchy()\n        replaceQuery(beta.query)\n        _ = try expectResult(beta, excluding: alpha)\n        try capture(phase)\n\n        phase = \"cold-opened-beta\"\n        try expectResult(beta, excluding: alpha).tap()\n        try verifyOpened(beta)\n        try capture(phase)\n        complete = true\n    }\n    // END_NATIVE_LIBRARY_SEARCH_UI_V1\n\n",
+  "all18OriginalMethodBodiesAndHelpersByteIdentical": true,
+  "anchor": "    private func makeApplication(scope: UUID = UUID()) -> XCUIApplication {",
+  "appSourceCommit": "6aab20344fcf1c645d7c96e0b9ec034ef07003a9",
+  "appSourceTree": "69ca9d5d7e602b6f11d309faa9882f829ebc27c1",
+  "captureTypes": [
+    "public.json",
+    "private-ax",
+    "actual-app-screenshot"
+  ],
+  "compiled": false,
+  "coordination": {
+    "applicationSourceFrozen": true,
+    "dispatchOwner": "Wave3",
+    "proposalStory": "1220941945441925",
+    "soleWriterAcknowledgementStory": "1220957660091866",
+    "task": "1220541349302681"
+  },
+  "dragRerunRequired": false,
+  "executionTimeAllowanceSeconds": 900,
+  "frozenAppSourceClosure": {
+    "AppleCommands": 0,
+    "files": {
+      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift": {
+        "bytes": 32867,
+        "gitBlob": "94a6bf4dd7dc8ca049daa4c0068deb0feb47c809",
+        "sha256": "f0675b0d2a0842ad87670640d5242da82c354aab96056c1b6d23ca8540b3dc17"
+      },
+      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": {
+        "bytes": 35738,
+        "gitBlob": "c17d56043c72a9b761a2ec85ebd8584c4a66df08",
+        "sha256": "1ff7f253667435032d518c5bbf9d3f41d6863ec5e989ab98b8cdc220327f6498"
+      },
+      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift": {
+        "bytes": 28627,
+        "gitBlob": "03e8741df3435a46ba5ad8c50729dc08a2ae0dca",
+        "sha256": "af2b406c5cf80f126e9684a0cc4bb673658329925188e264aa9746eeba4926c0"
+      },
+      "NativeApp/AnyNative.xcodeproj/project.pbxproj": {
+        "bytes": 23165,
+        "gitBlob": "71dd1da326eeadbbd49b217eee94c073d56b7560",
+        "sha256": "7282befe3104df28a3e0f5feef05a018bc515c68cf443307de65dbe977e33532"
+      },
+      "NativeApp/AnyNative.xcodeproj/xcshareddata/xcschemes/PinkhaAnyNativeApp.xcscheme": {
+        "bytes": 2107,
+        "gitBlob": "e63171811ad884546cb1566c55f9ebc79057f863",
+        "sha256": "f208c605b78e849e18defc7c759f3588dc9ab9b3f3bdd7502257c605da9db308"
+      },
+      "NativeApp/UITests/NativeHistoryTests.swift": {
+        "bytes": 19529,
+        "gitBlob": "06d0a13976d20938fef08a7fb36d160e64dfce6b",
+        "sha256": "2772d790979de88a3b622f17453a91ca792114292016f01e31386de7f4f614ca"
+      },
+      "NativeApp/UITests/NativeLaunchTests.swift": {
+        "bytes": 202612,
+        "gitBlob": "a623b6404aa21f109fdf5fac209cc266c2b93061",
+        "sha256": "e32f68676df1330c0255aa7ffa93b71c16f158570250013c607084f440c54375"
+      },
+      "Tools/AnyEnginePort/native_ui_transition_contract.py": {
+        "bytes": 12615,
+        "gitBlob": "242cfe6ecaa6302a106f0f908ca47124f47e393b",
+        "sha256": "42d56e2193643fde5ae6f329b63a123fee89a2ef22d858e3bea8aeb94cd0d3d5"
+      },
+      "Tools/AnyEnginePort/native_ui_transition_project.py": {
+        "bytes": 12463,
+        "gitBlob": "bb036894e4fba8d14cd2d9df191166337187af2a",
+        "sha256": "3c666726a42f9e42b481f82e45d90362079c0c0ff062192e4b5c3461ea1f02ec"
+      },
+      "Tools/AnyEnginePort/verify_native_test_execution.py": {
+        "bytes": 13754,
+        "gitBlob": "c29631531507ca15501e6b9300bc0e28b45ab2a7",
+        "sha256": "af126a59d47fec07b0d465c0077c812fb5f52cfcadf71a2da22cebb969e21b91"
+      },
+      "Tools/PinkhaDualEngineRuntime/native-sharing-dec2-source/NativeLaunchTests.swift": {
+        "bytes": 200531,
+        "gitBlob": "afc2a5d0fd5b138d1afa262be3fbbb6d9feade9b",
+        "sha256": "0b4cbd0663162801ed09f146fd531cc225539c7a6886317f4d9021fbff345b00"
+      },
+      "Tools/PinkhaSimulatorGate/run_ui27.py": {
+        "bytes": 43968,
+        "gitBlob": "ffb31c7599aedde83f8d03c21b9e699424ec4aae",
+        "sha256": "87e0972ee6852d1fdb34d82afa5dde346baf836afaa8419203b647e7d3e21ca7"
+      },
+      "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
+        "bytes": 53943,
+        "gitBlob": "ebd14014bfbffe0698bec2772899726bd018a325",
+        "sha256": "f99b1c04efeee2be45459b49d8c71fd8207039c97be4578cd6f2dfc8d29bb283"
+      },
+      "Tools/PinkhaSimulatorGate/t5_native_ui_r08.py": {
+        "bytes": 8960,
+        "gitBlob": "451488b42d9fede8a2944178d0c559d5f37110cf",
+        "sha256": "f726c600bd04f77b2ca8e8b42610b6c66dfbdaf96d86cc6535eaed0218fae4ea"
+      },
+      "docs/validation/20261126-native-sharing-rendered-title/source-proof.json": {
+        "bytes": 1356,
+        "gitBlob": "2fbdfc53c6b50359ac3a4ebf5d3bc50eef6a7e00",
+        "sha256": "3d7bb101ac6062e486acfc1250c06498c127ef9018b528663bf18b4eb8116b19"
+      },
+      "docs/validation/20261127-wave2-native-rtl/source-proof.json": {
+        "bytes": 14152,
+        "gitBlob": "55617c0e71cbfe7bfdfcef4f1fb254c5f30642b0",
+        "sha256": "699e0ccdb963cfd9a630b65ffce9973a5c63d440b62db7fa3aacdb34907240d5"
+      }
+    },
+    "sourceCommit": "6aab20344fcf1c645d7c96e0b9ec034ef07003a9",
+    "testsExecuted": 0,
+    "tree": "69ca9d5d7e602b6f11d309faa9882f829ebc27c1"
+  },
+  "insertionCount": 1,
+  "inverseRestoresEveryOriginalByte": true,
+  "nativeCallsByPreparation": 0,
+  "nextStep": "FIXED_DUAL_SOURCE_NATIVEUI_PROFILE_THEN_ACTUAL_SHARED_PRODUCER_ADMISSION",
+  "originalMethodCount": 18,
+  "originalTestMethods": [
+    "testFreshNativeExecutableShowsAccountAndRecoveryEntryPoints",
+    "testBackgroundAndForegroundReopenTheOwnedRuntime",
+    "testCreateEditHanlinConsentBackgroundAndColdReopen",
+    "testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+    "testSourceInspectorQuoteAndNoteSurviveColdReopen",
+    "testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+    "testHierarchyDragIntoFolderPersistsAfterColdReopen",
+    "testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+    "testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen",
+    "testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
+    "testObserveCanonicalArchiveSystemPickers",
+    "testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",
+    "testCustomCanonicalTypeTransitionPreservesNativeDocumentAcrossColdReopen",
+    "testNativeBinRestoreKeepsIdentityAndBodyAcrossColdReopen",
+    "testActualSemanticSelectionCancelCreateEditAndColdReopen",
+    "testSemanticSourceLinkSurvivesEditAndColdReopen",
+    "testNativeSharingInvitationConfirmationCancellationAndColdReopen",
+    "testAnyMiniAppsTextStudioWarmAndColdReturnPersistInNativeDocument"
+  ],
+  "physicalDevice": "NOT_RUN",
+  "preparedMethodCount": 19,
+  "priorPassesAndFailuresPreserved": true,
+  "productInstrumentationChanges": 0,
+  "requiredCapturePhases": [
+    "alpha-result",
+    "replacement-beta-result",
+    "no-match",
+    "cleared-hierarchy",
+    "opened-alpha",
+    "cold-beta-result",
+    "cold-opened-beta"
+  ],
+  "schema": "pinkha-native-library-search-source-preparation/v1",
+  "simulatorCommands": 0,
+  "sourceAfterBytes": 214858,
+  "sourceAfterSHA256": "31c64474cebf4890050f9077d3c44fac63264d878a77bd6f55811cc407e02422",
+  "sourceBeforeBytes": 202612,
+  "sourceBeforeSHA256": "e32f68676df1330c0255aa7ffa93b71c16f158570250013c607084f440c54375",
+  "sourcePath": "NativeApp/UITests/NativeLaunchTests.swift",
+  "sourceReview": {
+    "compilerExecuted": false,
+    "reviewer": "Wave2 Torah subagent",
+    "scope": "Exact method, existing helpers, insertion inverse and final observed-transition correction",
+    "status": "NO_REMAINING_CONCRETE_SOURCE_LEVEL_BLOCKER"
+  },
+  "status": "PASS_EXACT_SOURCE_INSERTION_NOT_COMPILATION_OR_UI_ACCEPTANCE",
+  "testsExecuted": 0,
+  "visualReview": "NOT_RUN"
+}
