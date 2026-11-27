@@ -45,12 +45,10 @@ public struct PinkhaHanlinSaveMessagePlan: PinkhaHanlinNativeWritePlan {
               let deadline = request.deadline, deadline > .now, deadline.timeIntervalSinceNow <= 30,
               case .object(let members) = request.arguments, members.count == 2,
               case .string(let title)? = members["title"],
-              case .string(let markdown)? = members["markdown"],
-              !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-              title.utf8.count <= Self.maximumTitleUTF8Bytes,
-              !markdown.isEmpty, markdown.utf8.count <= Self.maximumMarkdownUTF8Bytes else {
+              case .string(let markdown)? = members["markdown"] else {
             throw PinkhaHanlinSaveMessageError.invalidPlan
         }
+        try Self.validateContent(title: title, markdown: markdown)
         // Keep the exact user-visible bytes. No normalization, truncation,
         // splitting, destination argument, existing-object edit, or new retry ID.
         self.title = title
@@ -61,6 +59,16 @@ public struct PinkhaHanlinSaveMessagePlan: PinkhaHanlinNativeWritePlan {
             argumentsDigest: Self.materialDigest(["pinkha-hanlin-save-message-input/v1", title, markdown]),
             envelopeDigest: Self.digest(try Self.canonicalBytes(request)), deadline: deadline)
         try identity.validate()
+    }
+
+    /// Pure content bounds shared with completed-message presentation. Passing
+    /// this check grants no permission and creates no invocation or retry ID.
+    public static func validateContent(title: String, markdown: String) throws {
+        guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              title.utf8.count <= maximumTitleUTF8Bytes,
+              !markdown.isEmpty, markdown.utf8.count <= maximumMarkdownUTF8Bytes else {
+            throw PinkhaHanlinSaveMessageError.invalidPlan
+        }
     }
 
     public var titleSHA256: String { Self.digest(Data(title.utf8)) }

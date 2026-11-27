@@ -1,0 +1,163 @@
+{
+  "allOriginal15MethodsAndHelpersByteIdentical": true,
+  "authoredTests": {
+    "methods": 19,
+    "newMethods": 4,
+    "newNames": [
+      "testPureCompletedMessageSupportMatchesOriginalConversionAndKeepsManifestIdentity",
+      "testPureCompletedMessageSupportRefusesTheSameUnsupportedStructures",
+      "testPureCompletedMessageContentBoundsUseExactUTF8WithoutAnInvocation",
+      "testCancelledPureCompletedMessageSupportNeverOffersAnAction"
+    ],
+    "previousMethods": 15,
+    "status": "NOT_RUN",
+    "suite": "PinkhaHanlinSaveMessageConversionTests"
+  },
+  "base": "78ddc75fc23e39b96f75b0ed894c0b66152e5173",
+  "branch": "codex/chatgpt-wave15-miniapps-return-20261127",
+  "independentReview": {
+    "owner": "/root/sdk_hanlin",
+    "scope": "All four draft source files, shared AST builder and unchanged original tails",
+    "status": "NO_CONCRETE_SOURCE_BLOCKER"
+  },
+  "inverseOperations": 10,
+  "modifiedSwiftFiles": 4,
+  "nativeWrites": 0,
+  "originalInlineAndBuilderTailSHA256": "1588bd0bb69430e53a81fb6f88e2245daf208c325df86a9235dda69c6d2c8e60",
+  "originalPlannerConvertTailSHA256": "ee9a7ca3d5def1049294b883c6ff0938770a8e0ed7d771659a83a5432e454546",
+  "productionSaveBindingInstalled": false,
+  "schema": "pinkha-hanlin-pure-message-support-source-v1",
+  "sourceMethodInventory": {
+    "methods": 101,
+    "previousMethods": 97,
+    "sha256": "90c198cfce6b7cc539e542c2a410b0836d5b64075030230b1f8539c80170b71b",
+    "status": "SOURCE_ONLY_NOT_TEST_ENUMERATION"
+  },
+  "sources": [
+    {
+      "afterBlob": "9f2d0a68af1c2111906dc47ed11acb37586dbaef",
+      "beforeBlob": "31705a940a164b72129b62f0d2bfa00a9320952b",
+      "beforeBytes": 4389,
+      "beforeSHA256": "8703314d9b26374ba0b02b44e8cda2e41f8b890da2c7cd9cf82377fdcb8a5410",
+      "bytes": 4768,
+      "inverseOperations": [
+        {
+          "afterLineEnd": 48,
+          "afterLineStart": 48,
+          "expectedAfterSHA256": "4dc7d7713dbe0c54191472fcc4bb68b770f9ae260e2bf921576a3994ca3b32f0",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgICBjYXNlIC5zdHJpbmcobGV0IG1hcmtkb3duKT8gPSBtZW1iZXJzWyJtYXJrZG93biJdLAogICAgICAgICAgICAgICF0aXRsZS50cmltbWluZ0NoYXJhY3RlcnMoaW46IC53aGl0ZXNwYWNlc0FuZE5ld2xpbmVzKS5pc0VtcHR5LAogICAgICAgICAgICAgIHRpdGxlLnV0ZjguY291bnQgPD0gU2VsZi5tYXhpbXVtVGl0bGVVVEY4Qnl0ZXMsCiAgICAgICAgICAgICAgIW1hcmtkb3duLmlzRW1wdHksIG1hcmtkb3duLnV0ZjguY291bnQgPD0gU2VsZi5tYXhpbXVtTWFya2Rvd25VVEY4Qnl0ZXMgZWxzZSB7Cg=="
+        },
+        {
+          "afterLineEnd": 51,
+          "afterLineStart": 51,
+          "expectedAfterSHA256": "9891949fe1796d2d85b233f87a0d0ac2e37c1bcf444281a3915cfbc3e0cf495e",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 71,
+          "afterLineStart": 62,
+          "expectedAfterSHA256": "73eb5930e08a636d953d3e06ef3d6257751d04c991f7f6931b19665eaf9a434c",
+          "replacementOriginalBase64": ""
+        }
+      ],
+      "inverseReconstructsOriginalBytes": true,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinSaveMessagePlan.swift",
+      "sha256": "74777998b5165de42ad8f3aedfb860d36a807ff30ce1cc65ba557a29cb0a500c"
+    },
+    {
+      "afterBlob": "016f2fb76693986ec2ae59d04713c479a32b75a3",
+      "beforeBlob": "65880f64d134060a5d434c4e9855336a5bc4ab00",
+      "beforeBytes": 14105,
+      "beforeSHA256": "3ded5e25eb4721a11c445ca4c3838d66831699111f9a4d7de46cf2eb02ba5f84",
+      "bytes": 15974,
+      "inverseOperations": [
+        {
+          "afterLineEnd": 67,
+          "afterLineStart": 33,
+          "expectedAfterSHA256": "08f29834e401a04abd7710be91e8ca7e488b435f368dc8d83f6a19bd693999d0",
+          "replacementOriginalBase64": ""
+        },
+        {
+          "afterLineEnd": 69,
+          "afterLineStart": 69,
+          "expectedAfterSHA256": "8d30734a9a742f0aa6e9bb374a06c4e75dc391c81e2fdef52b2ae983000d6900",
+          "replacementOriginalBase64": "ICAgICAgICAgICAgICBsZXQgb3JpZ2luYWxTb3VyY2VUZXh0LCBvcmlnaW5hbFNvdXJjZVRleHQudXRmOC5lbGVtZW50c0VxdWFsKHBsYW4ubWFya2Rvd24udXRmOCksCg=="
+        },
+        {
+          "afterLineEnd": 78,
+          "afterLineStart": 78,
+          "expectedAfterSHA256": "a4220b35d7242ed2063c3f0f0ce18bd518e280481037c708c9847fc18132d4ca",
+          "replacementOriginalBase64": "ICAgICAgICBsZXQgZG9jdW1lbnQgPSB0cnkgUGlua2hhSGFubGluU2F2ZU1lc3NhZ2VEb2N1bWVudCh0aXRsZTogcGxhbi50aXRsZSwgYmxvY2tzOiBidWlsZGVyLnJvd3MubWFwKFwuc2VtYW50aWMpKQo="
+        },
+        {
+          "afterLineEnd": 93,
+          "afterLineStart": 93,
+          "expectedAfterSHA256": "9c55c972c32ce98f60f3d38ed03d65025af95edbb95f620069d8f8a8fb885d07",
+          "replacementOriginalBase64": "ICAgICAgICBzZWxmLm1hbmlmZXN0ID0gdHJ5IGRvY3VtZW50Lm1hbmlmZXN0KGZvcjogcGxhbiwK"
+        },
+        {
+          "afterLineEnd": 94,
+          "afterLineStart": 95,
+          "expectedAfterSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "replacementOriginalBase64": "ICAgICAgICBzZWxmLmRvY3VtZW50ID0gZG9jdW1lbnQ7IHNlbGYuYmxvY2tzID0gYnVpbGRlci5yb3dzCg=="
+        }
+      ],
+      "inverseReconstructsOriginalBytes": true,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/PinkhaHanlinMarkdownSaveConversion.swift",
+      "sha256": "df7f0ff37b37608652cece2bbdea288f59f45d2f375a2115371575a37e9acefd"
+    },
+    {
+      "afterBlob": "9194db88c29949a64e813ac89ac18b7595fa8e2b",
+      "beforeBlob": "277b4a4e3113e1d2e6129c6f8dfa5591746e233f",
+      "beforeBytes": 1144,
+      "beforeSHA256": "f82d40b30c66765da1d532eda8c36e0d332877da64f17c78c617803e1490baa6",
+      "bytes": 2497,
+      "inverseOperations": [
+        {
+          "afterLineEnd": 33,
+          "afterLineStart": 11,
+          "expectedAfterSHA256": "a75bc1afa3ceccc88aa30da912ca9e9eab918767f3565c47344dfc2ded20e0fe",
+          "replacementOriginalBase64": ""
+        }
+      ],
+      "inverseReconstructsOriginalBytes": true,
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinOriginalMarkdownSavePlanner.swift",
+      "sha256": "92e9faf0d6edb63a22c7439804a93a1fdad87926edb5b7d632330444452a65dc"
+    },
+    {
+      "afterBlob": "b3952e6814df7892c9ca8f129f09f096287c0067",
+      "beforeBlob": "7f6badb5a109239a2d99bffdc02f64617cc2cfbc",
+      "beforeBytes": 13643,
+      "beforeSHA256": "baab13206f3b80e9e79516de7f737b9323ac29ea147eca30d518727c56c4d4f0",
+      "bytes": 16920,
+      "inverseOperations": [
+        {
+          "afterLineEnd": 231,
+          "afterLineStart": 170,
+          "expectedAfterSHA256": "6a960ddd444f278c3e01fa1e0f14545fd53635e6eba241a3e4ea4ef263ccaadf",
+          "replacementOriginalBase64": ""
+        }
+      ],
+      "inverseReconstructsOriginalBytes": true,
+      "path": "AnyTypeTests/Pinkha/PinkhaHanlinSaveMessageConversionTests.swift",
+      "sha256": "a307062b13d6ef600b8b906d12dbfd12916f803cd893c521aab0c9ad7f7a6f4b"
+    },
+    {
+      "afterBlob": "21a68c752ea79414b5f3eaff4c4ca7243efc9e39",
+      "beforeBlob": null,
+      "bytes": 3998,
+      "path": "docs/validation/20261127-hanlin-save-message/pure-message-support-handoff.md",
+      "sha256": "af7a6cbccb879d5f23e1f74f05d813da47f60c0f559d1073dbdb8a848160f2ec"
+    },
+    {
+      "afterBlob": "25fef8a3d7544e688a4a312b848b94a56f47c3b0",
+      "beforeBlob": null,
+      "bytes": 11044,
+      "path": "docs/validation/20261127-hanlin-save-message/pure-message-support-selected-source-methods.json",
+      "sha256": "90c198cfce6b7cc539e542c2a410b0836d5b64075030230b1f8539c80170b71b"
+    }
+  ],
+  "status": "SOURCE_ONLY_NOT_COMPILED_OR_EXECUTED",
+  "swiftCompilerInvocations": 0,
+  "testsExecuted": 0
+}
