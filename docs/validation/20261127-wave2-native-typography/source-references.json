@@ -1,0 +1,86 @@
+{
+  "AppleCompilation": "NOT_RUN",
+  "UIKitTests": "NOT_RUN",
+  "appleAPISources": [
+    "https://developer.apple.com/documentation/uikit/uifontmetrics/scaledfont(for:compatiblewith:).md",
+    "https://developer.apple.com/documentation/uikit/uitraitchangeobservable-67e94/registerfortraitchanges(_:handler:).md"
+  ],
+  "baseCommit": "8f2c11713fb8a40ae13444104723666ffef68afe",
+  "bodyEmphasis": "Actual AttributedTextConverter -> UIKitAnytypeText -> MarkStyleModifier.bold -> UIFont.bold maps nominal bodyRegular to semibold; apply original nominal descriptor before restoring scaled point size.",
+  "canonicalMapping": "Actual TextContent+Font.swift and AnytypeFontConfig.swift; prose typography table is stale and is not the implementation authority.",
+  "italicScope": "Native italic font traits preserved; original Heart synthetic-obliqueness policy is not introduced by this repair.",
+  "scaling": "Original DesignKit UIKitFontBuilder returns nominal cached bundled fonts; no UIFontMetrics wrapper found in the original DesignKit or PinkhaKit font scan. New downstream policy scales each nominal font once for the actual trait collection.",
+  "sourceReferences": [
+    {
+      "gitBlob": "731b8fb2d716f4dc59bac2076abbabe9e32bdd96",
+      "path": "Modules/DesignKit/Sources/DesignKit/Fonts/Config/AnytypeFont.swift",
+      "sha256": "3c7ad1110c848283efc22377603da23a7fb2be011afde31543e26c64674ec6fe"
+    },
+    {
+      "gitBlob": "f2ce15f2138fd5683b38f31684448a0f170e6695",
+      "path": "Modules/DesignKit/Sources/DesignKit/Fonts/Config/AnytypeFontConfig.swift",
+      "sha256": "70c67569888bc1cb5b89ecbd499e0b86077ea115bf2877d58c07a2384ddd8f27"
+    },
+    {
+      "gitBlob": "69fba4c0e3c08a5a5648daeda094ddbd53f41de3",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift",
+      "sha256": "1c5794560e4323e2bb9424018bd485432e75530239a9304f714bfcc2fa67a31c"
+    },
+    {
+      "gitBlob": "11bc8ade9ab1beda60d6f198d1f443eefeb2c4fa",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Code/CodeBlockContentConfiguration.swift",
+      "sha256": "e81abdba64ea8e1c02663a91826b1fb190a3af7be7b364fd4b8d77ab928c17b4"
+    },
+    {
+      "gitBlob": "b2985fb47ef83401f20fce8812057d2c88149ce5",
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Code/CodeBlockView.swift",
+      "sha256": "cfe7619392807980e945e4b4502288c7380b9430022ffb036fddb407e330d53f"
+    },
+    {
+      "gitBlob": "f9b9505722e736a174a240667dd07aaffdf709cd",
+      "path": "Anytype/Sources/PresentationLayer/Common/TYPOGRAPHY_MAPPING.md",
+      "sha256": "a97b0b9808372972af684d0ede30e8de640092bc39f90df11fe6dcecbe0581f5"
+    },
+    {
+      "gitBlob": "3eb7f0c8e948d0345c0b641ea12b1a674886078b",
+      "path": "Modules/DesignKit/Sources/DesignKit/Fonts/Config/UIKitFont.swift",
+      "sha256": "0bbb1e74fffa9360df76921f91c68b6aa3c502b8374bcd1a10349b92b37ddb67"
+    },
+    {
+      "gitBlob": "9665bb9200e11fc6b66acdd1724f3ff5acd8e74b",
+      "path": "Modules/DesignKit/Package.swift",
+      "sha256": "bea8e98b1f3020316c8d8e296812ff333f19a4a0aa6ce3063790e94ac0cbbb1c"
+    },
+    {
+      "gitBlob": "808d8ce9b20c14520347717a01ff82eea219ceda",
+      "path": "Modules/DesignKit/Sources/DesignKit/Fonts/Generated/Fonts.swift",
+      "sha256": "14a5b94f5ca6df53aaefc5daba480941045cb86e609d809df90fb9df46027b4b"
+    },
+    {
+      "gitBlob": "3b0e41a9d4be46511c09787218d612db2900d31d",
+      "path": "Anytype/Sources/Design system/TextComponents/TextContent+Font.swift",
+      "sha256": "b001239ea8113c96a0a315af1647c511f51fc4b76cfe67372237199b4fe02d58"
+    },
+    {
+      "gitBlob": "6d363b547782c1efd576595848b83021300fd624",
+      "path": "Anytype/Sources/Design system/TextComponents/Markup/MarkStyleModifier.swift",
+      "sha256": "ed51ecbcb58e04e132de82c3054fa40aab40e1795c652a607ab68a829f60db07"
+    },
+    {
+      "gitBlob": "147dd4ab2ca2d3c2053eaf823190c9313b16e992",
+      "path": "Anytype/Sources/Design system/TextComponents/Markup/MarkupState/NSAttributedString+Markup.swift",
+      "sha256": "bd7248636f9a8fa4270176157de2df8a48dc1bfac0aec86bae0fde5b024e16dc"
+    },
+    {
+      "gitBlob": "6f4500fcbf0acd6a9194bd885d6872b4a9d60c1d",
+      "path": "Anytype/Sources/Design system/TextComponents/UIKitAnytypeText.swift",
+      "sha256": "3a5a13d915c94139974dfe5a0a8373ddc59e5b3572287eadbfb96e4f3f99c987"
+    },
+    {
+      "gitBlob": "950f3525b0310234b23edf9e91141ff4ab4a0edf",
+      "path": "Anytype/Sources/Models/Documents/Parsers/AttributedTextConverter.swift",
+      "sha256": "3e6b2e60cc6cc15c756467f992bf51120771610f27ac1b04be1646c740ba3ff6"
+    }
+  ],
+  "visual": "NOT_RUN"
+}

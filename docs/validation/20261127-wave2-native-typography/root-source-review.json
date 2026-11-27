@@ -1,0 +1,54 @@
+{
+  "AppleCompilation": "NOT_RUN",
+  "MacMutations": 0,
+  "XCTest": "NOT_RUN",
+  "atUTC": "2026-11-27T04:44:38.115383+00:00",
+  "checked": [
+    "Original TextContent+Font and AnytypeFontConfig govern title/heading/subheading/body/code mappings, rather than stale prose mapping.",
+    "Each render starts with a nominal original font then scales once using the current trait collection; no reuse of an already scaled font as the scale input.",
+    "Original paragraph direction/alignment, inline source range/link/strike behavior, native style records, focus and editor mutation flows remain unchanged.",
+    "The existing marked-composition guard prevents controller reconfiguration; cache categories update only when the original renderer applies successfully.",
+    "iOS-conditional DesignKit dependency is explicit; the current package minimum iOS27 permits the trait-change API used.",
+    "Two authored UIKit methods inspect actual bundled faces/scaled sizes, original body emphasis descriptors, RTL attributed content, selection and attribute-only updates plus the existing composition guard.",
+    "No Native/Host conversion or contract change. Add-block source remains a separate published tranche. The existing presentHanlin body remains unchanged for separate Wave3-coordinated work."
+  ],
+  "findingsClosed": [
+    "Distinct original IBM Plex Mono regular/bold/italic/boldItalic resources are now selected and registered explicitly through original UIKitFontBuilder; no dependence on another screen having registered a face.",
+    "Body emphasis follows actual original MarkStyleModifier and DesignKit nominal .bold/.italic policy before restoring scaled point size, retaining body semibold and heading bold.",
+    "Rendered cell cache includes native block type and content-size category, and both are cleared on reuse; same-text/style type changes and live content-size changes invalidate typography."
+  ],
+  "liveTraitChange": "NOT_RUN",
+  "nativeServiceCalls": 0,
+  "originalSources": {
+    "editorInverseSHA256": "1afd3086821d10a73536716bfd6f3807addf39deac63518ed761076cccc090f5",
+    "manifestSHA256": "5d2a240829cf7445c2ddb82a46101e5621bda1cf7bd45d2c9e5305a1ea6a18f9"
+  },
+  "remaining": [
+    "Actual selected Apple compilation and compiled enumeration of both new methods.",
+    "Execute both UIKit methods in the matching future test product.",
+    "Actual live controller size-category refresh, marked composition, dark/light RTL/LTR appearance and iPhone/iPad visual review.",
+    "Physical-device acceptance remains NOT_RUN."
+  ],
+  "reviewedSources": {
+    "AnyNativeEditor.swift": {
+      "bytes": 61122,
+      "sha256": "4b7a6feaa4557a63183789549ae9fe498ef2d988f0b7516f39947891a3c1dd3a"
+    },
+    "AnyNativeTextTypography.swift": {
+      "bytes": 3241,
+      "sha256": "5e14d63f52575461d43de7494b379ffd969194d89dbfb415ce75a51344a5d4d7"
+    },
+    "AnyNativeTextTypographyTests.swift": {
+      "bytes": 8257,
+      "sha256": "fde5f3bd8da14f0f3e6502d60cacdf3304ea78aba9c41b35ca73317995cdff07"
+    },
+    "Package.swift": {
+      "bytes": 2051,
+      "sha256": "298ef94254c6d8f17a389a5ff0efd02a5c03099e9a819b50886a5d9e8b3d9854"
+    }
+  },
+  "reviewer": "/root",
+  "schema": "pinkha-wave2-native-typography-independent-source-review-v1",
+  "status": "NO_CONCRETE_SOURCE_BLOCKER_PENDING_APPLE_AND_VISUAL_ACCEPTANCE",
+  "visual": "NOT_RUN"
+}

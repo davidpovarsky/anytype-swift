@@ -122,6 +122,10 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
             ])
         }
         #endif
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) {
+            (controller: AnyNativeEditorController, _: UITraitCollection) in
+            controller.render()
+        }
         render()
     }
 
@@ -285,13 +289,17 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         cell.marker.text = AnyNativeBlockMarkerPolicy.marker(for: block)
         let selected = presentation.selectedBlockIDs.contains(block.id)
         cell.contentView.backgroundColor = selected ? UIColor.systemBlue.withAlphaComponent(0.045) : .clear
-        if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native["style"] {
+        if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native["style"]
+            || cell.renderedBlockType != block.type
+            || cell.renderedContentSizeCategory != traitCollection.preferredContentSizeCategory {
             rendering = true
             let applied = AnyNativeTextRenderer.apply(attributed(projection, block: block),
                 to: cell.textView, isComposing: cell.textView.isComposingMarkedText)
             rendering = false
             if applied {
                 cell.renderedSource = renderedSource; cell.renderedNativeStyle = block.native["style"]
+                cell.renderedContentSizeCategory = traitCollection.preferredContentSizeCategory
+                cell.renderedBlockType = block.type
             }
         }
         rendering = true
@@ -392,7 +400,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         case .justified: paragraph.alignment = .justified
         }
         paragraph.lineSpacing = 3
-        let base = UIFont.preferredFont(forTextStyle: block.type == "heading" ? .title2 : .body)
+        let base = AnyNativeTextTypography.font(for: block, compatibleWith: traitCollection)
         return (base, [.font: base, .foregroundColor: UIColor.label, .paragraphStyle: paragraph])
     }
 
@@ -403,14 +411,9 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         let result = NSMutableAttributedString(string: display, attributes: style.attributes)
         guard projection.isEditable else { return result }
         for run in projection.runs {
-            var traits: UIFontDescriptor.SymbolicTraits = []
-            if run.traits.contains(.bold) { traits.insert(.traitBold) }
-            if run.traits.contains(.italic) { traits.insert(.traitItalic) }
-            var font = base
-            if run.traits.contains(.code) { font = .monospacedSystemFont(ofSize: base.pointSize, weight: .regular) }
-            if let descriptor = font.fontDescriptor.withSymbolicTraits(traits) {
-                font = UIFont(descriptor: descriptor, size: base.pointSize)
-            }
+            let font = AnyNativeTextTypography.inlineFont(for: block, base: base,
+                bold: run.traits.contains(.bold), italic: run.traits.contains(.italic),
+                code: run.traits.contains(.code))
             result.addAttribute(.font, value: font, range: run.displayRange)
             if run.traits.contains(.strike) { result.addAttribute(.strikethroughStyle, value: NSUnderlineStyle.single.rawValue, range: run.displayRange) }
             if let link = run.link { result.addAttribute(.link, value: link, range: run.displayRange) }
@@ -1089,6 +1092,8 @@ private final class AnyNativeBlockCell: UITableViewCell {
     var renderedSource: String?
     var renderedHistoryEpoch: UInt64?
     var renderedNativeStyle: PinkhaAnyEngine.AnyJSON?
+    var renderedContentSizeCategory: UIContentSizeCategory?
+    var renderedBlockType: String?
     var indent: NSLayoutConstraint!
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -1100,12 +1105,15 @@ private final class AnyNativeBlockCell: UITableViewCell {
         textView.adjustsFontForContentSizeCategory = true
         textView.autocorrectionType = .default
         marker.font = .preferredFont(forTextStyle: .body)
+        marker.adjustsFontForContentSizeCategory = true
         marker.textColor = .secondaryLabel
         marker.setContentHuggingPriority(.required, for: .horizontal)
         sourceButton.titleLabel?.font = .preferredFont(forTextStyle: .caption1)
+        sourceButton.titleLabel?.adjustsFontForContentSizeCategory = true
         sourceButton.contentHorizontalAlignment = .leading
         sourceButton.addAction(UIAction { [weak self] _ in self?.sourceAction?() }, for: .touchUpInside)
         stateLabel.font = .preferredFont(forTextStyle: .caption2)
+        stateLabel.adjustsFontForContentSizeCategory = true
         stateLabel.textColor = .secondaryLabel; stateLabel.numberOfLines = 0
         blockMenuButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         blockMenuButton.accessibilityLabel = AnyUIErrorText.text("פעולות בלוק", "Block actions")
@@ -1135,6 +1143,7 @@ private final class AnyNativeBlockCell: UITableViewCell {
         blockMenuButton.menu = nil
         blockMenuButton.accessibilityIdentifier = nil
         textView.blockID = nil; renderedSource = nil; renderedHistoryEpoch = nil; renderedNativeStyle = nil; sourceAction = nil
+        renderedContentSizeCategory = nil; renderedBlockType = nil
     }
 }
 #endif
