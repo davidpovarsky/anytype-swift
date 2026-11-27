@@ -1,0 +1,80 @@
+{
+  "schema": "native-root-six-error-language-finding-v1",
+  "status": "PROVEN_SOURCE_DEFECT_NOT_RUNTIME_OBSERVATION",
+  "recordedAtUTC": "2026-11-27T23:37:18.109768+00:00",
+  "baseCommit": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+  "source": {
+    "path": "source/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+    "bytes": 22878,
+    "sha256": "f2d21c15f0da8a5d3ca72326078637b79134298b150985a6cfb89d4cc1743ef9",
+    "gitBlob": "4d13391adc0df3d0cb1cfb8abb7028fc708d3082"
+  },
+  "sourceManifest": {
+    "path": "source-manifest.json",
+    "bytes": 8853,
+    "sha256": "ed02f65bc216f28edb95cd68f83817421b5b8c06adbe736e343c91542d321759",
+    "gitBlob": "b0b7023233599c1685e2f5f9ef95c1f5e396734c"
+  },
+  "symbol": "AnyNativeRootModel.report(_:)",
+  "caller": "AnyNativeRootModel.execute(_:) and the existing root alert message Text(model.errorMessage ?? \"\")",
+  "reportBodySHA256": "49b6f13f573b2f49e07aff4c1cf125552a668399f2ac5809e707a4b41945c684",
+  "resolver": {
+    "source": {
+      "path": "source/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "bytes": 73179,
+      "sha256": "82b5b2dd0ac3978ec6a867cb3f9220527e1a111e89a601c4f4e9baf15d2c38fb",
+      "gitBlob": "475624e12bbb9c97dc96295b107e21611a798639"
+    },
+    "symbol": "AnyUIErrorText.text(_:_:)",
+    "enumBodySHA256": "75afe902b9eb729155b5eb2e3d2417ad91d6b58341eddcd0f21e8bcd71a30354",
+    "actualChoice": "Locale.autoupdatingCurrent.language.languageCode?.identifier == \"he\" ? hebrew : english"
+  },
+  "defect": "All six report branches assign a Hebrew String independently of App language. The alert consumes that dynamic String. Even where the existing resolver would select English, this path never calls it and still supplies Hebrew diagnostics. This does not assert that autoupdatingCurrent is OS-only or defective.",
+  "affectedMatrix": "UI English / OS Hebrew receives untranslated root error messages; Hebrew branch already has the requested wording. iPhone/iPad and light/dark do not alter this pure branch choice.",
+  "proposedCorrection": "Wrap only the six existing messages in public AnyUIErrorText.text with the original Hebrew literal plus the English counterpart below. PinkhaAnyUI is already imported. Preserve switch cases, privacy comment, catch/epoch/cancellation guards, actions, bindings and all other bytes. No new locale mechanism or Native contract.",
+  "messages": [
+    {
+      "case": "AnyNativeApplicationError.recoveryBackupRequired",
+      "hebrew": "יש לשמור את ביטוי השחזור לפני פתיחת המרחב.",
+      "english": "Save your recovery phrase before opening the Space."
+    },
+    {
+      "case": "AnyEngineError.writeUncertain, AnyHostError.writeUncertain",
+      "hebrew": "עדיין לא ניתן לאשר את תוצאת הפעולה. רענן את המרחב לפני ניסיון נוסף.",
+      "english": "The result of the operation cannot be confirmed yet. Refresh the Space before trying again."
+    },
+    {
+      "case": "AnyEmbeddedRuntimeError.unexpectedVersion, AnyUIActivationError.unexpectedRuntimeContract",
+      "hebrew": "גרסת האפליקציה אינה תואמת למנוע. יש להתקין בנייה תואמת.",
+      "english": "This app version does not match the engine. Install a matching build."
+    },
+    {
+      "case": "AnyNativeApplicationError.secureStorageUnavailable",
+      "hebrew": "לא ניתן לשמור כעת את החשבון במכשיר. שמור את ביטוי השחזור המוצג במסך הגיבוי ונסה שוב; פתיחת מסמכים תתאפשר לאחר שהשמירה תאושר.",
+      "english": "Your account cannot be saved on this device right now. Keep the recovery phrase shown on the backup screen and try again. Documents will become available after saving is confirmed."
+    },
+    {
+      "case": "AnyNativeApplicationError.busy",
+      "hebrew": "פעולה אחרת עדיין מסתיימת. נסה שוב לאחר סיומה.",
+      "english": "Another operation is still finishing. Try again after it completes."
+    },
+    {
+      "case": "default",
+      "hebrew": "הפעולה לא הושלמה. אפשר לנסות שוב או לפתוח מחדש את האפליקציה.",
+      "english": "The operation did not complete. Try again or reopen the app."
+    }
+  ],
+  "unchangedScope": [
+    "All current Hebrew strings byte-for-byte",
+    "Six original error classifications and sanitized fallback",
+    "No inclusion of error.localizedDescription/raw Native response/recovery phrase/token/ID",
+    "No action, owner, journal, lifetime, navigation, gesture, field or test change"
+  ],
+  "notClaimed": [
+    "English localization of all other Native-root literal keys or actual compiled resource coverage",
+    "Runtime language/visual/accessibility acceptance",
+    "A reproduced simulator/device failure"
+  ],
+  "runtimeActions": 0,
+  "productionEditsAtFindingSeal": 0
+}

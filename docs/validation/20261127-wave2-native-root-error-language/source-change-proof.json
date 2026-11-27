@@ -1,0 +1,63 @@
+{
+  "schema": "native-root-error-language-six-replacement-proof-v1",
+  "baseCommit": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+  "findingSHA256": "14832d2b4a623eff558ccd757ca570fbfdaa8dfc8d61b2c7ee7759bfd9792f24",
+  "original": {
+    "path": "source/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+    "bytes": 22878,
+    "sha256": "f2d21c15f0da8a5d3ca72326078637b79134298b150985a6cfb89d4cc1743ef9",
+    "gitBlob": "4d13391adc0df3d0cb1cfb8abb7028fc708d3082"
+  },
+  "candidate": {
+    "path": "candidate/Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+    "bytes": 23642,
+    "sha256": "de2ab55e962ee7f17b6eb6ff8bc7e932b48eee6d03c6bca43a818b8c2fe68045",
+    "gitBlob": "001f22cccfeb5bb78f0ccfe2caa52449e57101eb"
+  },
+  "replacementCount": 6,
+  "rules": [
+    {
+      "case": "AnyNativeApplicationError.recoveryBackupRequired",
+      "old": "            errorMessage = \"יש לשמור את ביטוי השחזור לפני פתיחת המרחב.\"",
+      "new": "            errorMessage = AnyUIErrorText.text(\"יש לשמור את ביטוי השחזור לפני פתיחת המרחב.\",\n                \"Save your recovery phrase before opening the Space.\")",
+      "count": 1
+    },
+    {
+      "case": "AnyEngineError.writeUncertain, AnyHostError.writeUncertain",
+      "old": "            errorMessage = \"עדיין לא ניתן לאשר את תוצאת הפעולה. רענן את המרחב לפני ניסיון נוסף.\"",
+      "new": "            errorMessage = AnyUIErrorText.text(\"עדיין לא ניתן לאשר את תוצאת הפעולה. רענן את המרחב לפני ניסיון נוסף.\",\n                \"The result of the operation cannot be confirmed yet. Refresh the Space before trying again.\")",
+      "count": 1
+    },
+    {
+      "case": "AnyEmbeddedRuntimeError.unexpectedVersion, AnyUIActivationError.unexpectedRuntimeContract",
+      "old": "            errorMessage = \"גרסת האפליקציה אינה תואמת למנוע. יש להתקין בנייה תואמת.\"",
+      "new": "            errorMessage = AnyUIErrorText.text(\"גרסת האפליקציה אינה תואמת למנוע. יש להתקין בנייה תואמת.\",\n                \"This app version does not match the engine. Install a matching build.\")",
+      "count": 1
+    },
+    {
+      "case": "AnyNativeApplicationError.secureStorageUnavailable",
+      "old": "            errorMessage = \"לא ניתן לשמור כעת את החשבון במכשיר. שמור את ביטוי השחזור המוצג במסך הגיבוי ונסה שוב; פתיחת מסמכים תתאפשר לאחר שהשמירה תאושר.\"",
+      "new": "            errorMessage = AnyUIErrorText.text(\"לא ניתן לשמור כעת את החשבון במכשיר. שמור את ביטוי השחזור המוצג במסך הגיבוי ונסה שוב; פתיחת מסמכים תתאפשר לאחר שהשמירה תאושר.\",\n                \"Your account cannot be saved on this device right now. Keep the recovery phrase shown on the backup screen and try again. Documents will become available after saving is confirmed.\")",
+      "count": 1
+    },
+    {
+      "case": "AnyNativeApplicationError.busy",
+      "old": "            errorMessage = \"פעולה אחרת עדיין מסתיימת. נסה שוב לאחר סיומה.\"",
+      "new": "            errorMessage = AnyUIErrorText.text(\"פעולה אחרת עדיין מסתיימת. נסה שוב לאחר סיומה.\",\n                \"Another operation is still finishing. Try again after it completes.\")",
+      "count": 1
+    },
+    {
+      "case": "default",
+      "old": "            errorMessage = \"הפעולה לא הושלמה. אפשר לנסות שוב או לפתוח מחדש את האפליקציה.\"",
+      "new": "            errorMessage = AnyUIErrorText.text(\"הפעולה לא הושלמה. אפשר לנסות שוב או לפתוח מחדש את האפליקציה.\",\n                \"The operation did not complete. Try again or reopen the app.\")",
+      "count": 1
+    }
+  ],
+  "fullForwardAndInverseVerified": true,
+  "allBytesOutsideSixReplacementsUnchanged": true,
+  "allSixOriginalHebrewLiteralsExact": true,
+  "newProductionMechanisms": 0,
+  "newTests": 0,
+  "compilerOrRuntime": "NOT_RUN",
+  "changeScope": "Existing six branches call the existing AnyUIErrorText.text resolver; no error classification/action/authority/persistence changes."
+}

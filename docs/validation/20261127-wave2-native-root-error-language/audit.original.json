@@ -1,0 +1,89 @@
+{
+  "schema": "current-rtl-source-audit-v1",
+  "status": "ONE_PROVEN_SOURCE_DEFECT_ISOLATED_CORRECTION_REVIEW_PENDING",
+  "baseCommit": "a72f2e1ee3032cc1170c3ab07a9ae6b0eefa2dfd",
+  "sourceManifest": {
+    "path": "source-manifest.json",
+    "bytes": 8853,
+    "sha256": "ed02f65bc216f28edb95cd68f83817421b5b8c06adbe736e343c91542d321759"
+  },
+  "finding": {
+    "path": "native-root-error-finding.json",
+    "bytes": 4967,
+    "sha256": "14832d2b4a623eff558ccd757ca570fbfdaa8dfc8d61b2c7ee7759bfd9792f24"
+  },
+  "candidateManifest": {
+    "path": "candidate-manifest.json",
+    "bytes": 1631,
+    "sha256": "66f8a188812fbd48d1874fd0aae8d7f784329ada757e416eb706e6e07c39c452"
+  },
+  "sourceInverse": {
+    "path": "source-change-proof.json",
+    "bytes": 4531,
+    "sha256": "4a43d5d5c9f8ae1aa4d2af990490ca0ca1c539a866ea77e6db613dfe4687967d"
+  },
+  "readme": {
+    "path": "README.md",
+    "bytes": 6899,
+    "sha256": "de2577ba37de6de3387fa10b3a87539c70ac028f892c04badfe6ced411785c5c"
+  },
+  "existingEvidenceReused": [
+    "torah-acceptance-prep/mixed-app-os-language/audit.json",
+    "torah-acceptance-prep/mixed-app-os-language/source-manifest.json",
+    "wave2-editor-rtl/RTL_COVERAGE.md",
+    "wave2-editor-rtl/acceptance-queue/README.md"
+  ],
+  "matrix": [
+    {
+      "appLanguage": "he",
+      "osLanguage": "en"
+    },
+    {
+      "appLanguage": "en",
+      "osLanguage": "he"
+    }
+  ],
+  "eachMatrixCellRequires": [
+    "iPhone/iPad",
+    "light/dark",
+    "actual current App language and opposite OS readback",
+    "native/Heart mounted inputs and empty property fields",
+    "actual error label and gesture/keyboard observations"
+  ],
+  "concreteFindings": [
+    {
+      "id": "RTL-CURRENT-ROOT-ERROR-01",
+      "source": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeRootView.swift",
+      "symbol": "AnyNativeRootModel.report(_:)",
+      "classification": "SIX_DYNAMIC_MESSAGES_IGNORE_EXISTING_APP_LANGUAGE_RESOLVER",
+      "sourceCorrection": "Only six AnyUIErrorText.text calls; Hebrew literals and classification preserved",
+      "runtimeStatus": "NOT_RUN"
+    }
+  ],
+  "boundedNegativeFindings": [
+    "No new app/OS preference mismatch established in existing shared locale resolver and inspected entry/settings chain.",
+    "Both editor empty-paragraph presentation paths use the effective application direction through the existing shared writing policy.",
+    "Inspected Heart navigation converts logical direction into physical translation sign; Native controller supplies semantics to the original system navigation path.",
+    "Inspected standard SwiftUI property fields have no explicit OS-language or physical-left override; runtime caret behavior remains unproven."
+  ],
+  "notClaimed": [
+    "Repository-wide language coverage",
+    "Compiled resource membership/current visual acceptance",
+    "OS-only interpretation of autoupdatingCurrent",
+    "Any repeated test or synthetic proof",
+    "Acceptance of all static Native root labels after the six-message change"
+  ],
+  "operations": {
+    "githubPrimaryReads": true,
+    "localSourceAndHashReads": true,
+    "isolatedProductionCandidateFiles": 1,
+    "publishedProductionChanges": 0,
+    "SwiftCompiler": 0,
+    "testsOrControls": 0,
+    "NativeOrAccounts": 0,
+    "MacOrOracle": 0,
+    "processQueriesOrSignals": 0,
+    "runtimeAdmission": 0,
+    "finalRefChanges": 0
+  }
+}
