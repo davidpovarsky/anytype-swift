@@ -1,0 +1,348 @@
+{
+  "actualReceipt": {
+    "bytes": 370302,
+    "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/original-attempt/receipt.json",
+    "sha256": "e025fbaf18eb23442d5bceba216874422795fabd34d9eb1eb0a0f28cac830d28"
+  },
+  "actualXCTest": {
+    "HTTPFixturesInvoked": 0,
+    "Host2MethodsExecuted": 0,
+    "cases": 4,
+    "controllerElapsedSeconds": 58.703,
+    "diagnostics": "No compiler error diagnostic. Original warning-labelled line is the verbose Package.swift manifest compiler invocation; preserved without claiming zero warnings.",
+    "eachPassedExactlyOnce": true,
+    "eachStartedExactlyOnce": true,
+    "failures": 0,
+    "fullSourceDeclaredMethods": 17,
+    "methods": 4,
+    "old13MethodsExecuted": 0,
+    "processExit": 0,
+    "selectedMethods": [
+      "testStringReadbackRequiresExactUTF8BeforeCreatingUndo",
+      "testNestedStringAndKeyReadbackRequiresExactUTF8BeforeCreatingUndo",
+      "testPropertyReceiptRetainsDocumentedNativeNormalizationAndUnsetRules",
+      "testPropertyValueComparisonUsesTheExistingCanonicalDepthLimit"
+    ],
+    "skipped": 0,
+    "stderr": {
+      "bytes": 176930,
+      "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/original-attempt/stderr.original.log",
+      "sha256": "ab9f298f21a2cea7f33b24452a6073c17b167ad38ce2722df0f6d69bcf49d784"
+    },
+    "stdout": {
+      "bytes": 1451,
+      "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/original-attempt/stdout.original.log",
+      "sha256": "e20ffbfb8629e1e39432fba99b51c4d61e596d439321802c1ef475d594b2f3f2"
+    },
+    "suite": "NativePropertyStoreTests",
+    "suiteSeconds": 0.158,
+    "swiftBuildLogSeconds": 55.57,
+    "unselectedMethodsExecuted": 0
+  },
+  "anomalies": [],
+  "compilerClosure": {
+    "actualDriverInvocations": 7,
+    "actualDriverJobs": 2,
+    "actualDriverWorkingDirectory": "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127",
+    "actualSourceListInputs": 80,
+    "actualToolchainExecutable": {
+      "bytes": 35095592,
+      "physicalPath": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift-driver",
+      "requestedPath": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+      "sha256": "39d41b0dc9eba623b0e37cea42c3145720168214ba4349d6fa3bd9db9b1e651a",
+      "versionAndTargetAuthority": "Actual verbose compiler output is qualified after execution."
+    },
+    "breakdown": {
+      "generatedSupport": 2,
+      "wholeProduction": 77,
+      "wholeTest": 1
+    },
+    "consumedFileListHashesAndSourceSetsMatched": true,
+    "driverLinesPresentExactlyOnceInOriginalStderr": true,
+    "generatedInputs": [
+      {
+        "bytes": 49,
+        "file": "test_anchor.swift",
+        "sha256": "61d902547f9f94f21d9e34aad31179dbff7ebf6373ec0542930ee18d5b60ae96"
+      },
+      {
+        "bytes": 21949,
+        "file": "test_entry_point.swift",
+        "sha256": "242a9389cb85105951773858aceddf295c1b68f7cbaa3e3d1c487c6317693a4d"
+      }
+    ],
+    "modules": [
+      {
+        "emittedModuleSHA256": "0358adac3ac3b14ef6d619cbebdd30d1e0eaa9be6b1593afc96c93326543d5c5",
+        "generatedSources": 0,
+        "module": "PinkhaAnyEngine",
+        "sourceListSHA256": "5a653c733ece03497de4ae9d7a4876ac81bd189fdb806564d67c0abdcac81220",
+        "sources": 15
+      },
+      {
+        "emittedModuleSHA256": "9dc4776542de9fce806a4405595ab5137b5bdff78bce5dec4c9a6468dabb3b72",
+        "generatedSources": 0,
+        "module": "PinkhaAnyHost",
+        "sourceListSHA256": "8a4a116b2cd49cf489991394502ae9100ec2753028aad4599ef86c9a6df0672a",
+        "sources": 27
+      },
+      {
+        "emittedModuleSHA256": "c89db5e8af9036112c491481b544fa3db682a17670b3daffe27298819e275774",
+        "generatedSources": 1,
+        "module": "PinkhaAnyHostTests",
+        "sourceListSHA256": "e060e931d23428179ef44664f02a7781b238f859e8a859ed0d50c2180459c0de",
+        "sources": 2
+      },
+      {
+        "emittedModuleSHA256": "75b122887771b5447b3afc487facdfb69407c6f109b78f8fe9e824b981c253b2",
+        "generatedSources": 1,
+        "module": "PinkhaAnyHostTests_test_runner",
+        "sourceListSHA256": "570d2968e9041136afbe7008c0cd5e65aecd73959b95e5dee4162a702d728380",
+        "sources": 1
+      },
+      {
+        "emittedModuleSHA256": "f0bb7062523f222c476b1921fe7be44e998ecddef045d74ad0ae0dd5b3461818",
+        "generatedSources": 0,
+        "module": "PinkhaAnyIntegration",
+        "sourceListSHA256": "66a8e6ecc109ff8330e4e8bdd1e7d67cefd0dfa0b47f180e878e5e5cd8c0537b",
+        "sources": 15
+      },
+      {
+        "emittedModuleSHA256": "e1a765a794f6f3f602f8f71720f2a1dd9838dff00a604523f16d0eb7870b0567",
+        "generatedSources": 0,
+        "module": "PinkhaKit",
+        "sourceListSHA256": "6f22eea5d3bb9d710162d99f8ac545e59173af1daca64120d5dc52dee69e6f21",
+        "sources": 12
+      },
+      {
+        "emittedModuleSHA256": "cd5dcf1233b45436cee7d08cfd85aa2b0709ea3dce9a34daa74734ddb3bdbcc3",
+        "generatedSources": 0,
+        "module": "TorahInspectorCore",
+        "sourceListSHA256": "7b823e1851f35556c296e0924f45a99882c33ca648ed8ff9ba3bd568c08c90fa",
+        "sources": 8
+      }
+    ],
+    "nonGeneratedInputBytesAndHashesMatchFrozenWholeSources": true,
+    "outerCommandWorkingDirectory": "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/component",
+    "outerSwiftPMJobs": 2,
+    "outputMapValuesBindExactSourceObjectRows": true,
+    "physicalEvidenceBoundary": "Original reviewed runner read and hashed actual physical FileLists, output maps, modules and objects. Local review cross-checks retained embedded records, source bytes, raw command log and recorded hashes; compiled binaries were not downloaded or rehashed again.",
+    "swiftLanguageModes": "6 for five production modules and test module; 5 for original generated test runner",
+    "target": "aarch64-unknown-linux-gnu",
+    "toolchain": "Swift 6.4.3 (swift-6.4.3-RELEASE)"
+  },
+  "cryptoReuse": {
+    "actualCompilerImportHeaderFlagsMatchFreshNamespace": true,
+    "actualCopies": {
+      "bytes": 82317,
+      "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/original-attempt/actual-dependency-copies.json",
+      "sha256": "98ab79b4dda12979511a40ca00e768ff54ccea0097ecb6917876f35344804d1e"
+    },
+    "actualLinkerLinesWithAllFourFreshObjects": [
+      {
+        "lineSHA256": "83721b430177d71147ea6b634bc843e6fbde1739920e23206c9655a105f8d58c",
+        "output": "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyHostTests.so"
+      },
+      {
+        "lineSHA256": "cdb95ab31c87a91ffaaa64aff8c9f6073d5d3e3843dbafc5a90b7d406db88662",
+        "output": "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/build/out/Products/Debug-linux-aarch64/PinkhaAnyHostTests-test-runner"
+      }
+    ],
+    "aggregatedObjects": 4,
+    "allRowsMatchFrozenOriginalAliasSourceAndFreshDestinationPins": true,
+    "artifacts": 102,
+    "bytes": 19775715,
+    "headersAndModuleMaps": 94,
+    "swiftImports": 4,
+    "verificationBoundary": "Reviewed copy_crypto/verify_crypto checks physical original, retained source, fresh copy and original alias before/after execution. Retained rows matched locally; no current original path/alias probed. Exact dependency reuse, not full original-build equivalence."
+  },
+  "limits": [
+    "Only four new selected Linux component methods have actual acceptance here. Full17-method source compiled; old13 not replayed.",
+    "No Apple/AnytypeTests/App/UI/Native/account/permission/physical-device acceptance inferred.",
+    "Prior four portable Python selector controls are separate and were not rerun or counted as these Swift tests.",
+    "Frozen preparation readiness fields remain historical metadata and were not rewritten.",
+    "No global root-write audit or continuous resource-peak claim."
+  ],
+  "originalArtifactPins": [
+    {
+      "bytes": 82317,
+      "kind": "file",
+      "name": "actual-dependency-copies.json",
+      "sha256": "98ab79b4dda12979511a40ca00e768ff54ccea0097ecb6917876f35344804d1e"
+    },
+    {
+      "bytes": 1962,
+      "kind": "file",
+      "name": "command.json",
+      "sha256": "1266e9aedbd80f72c5a289e6ac4127f3491e8c2e42facbfeb318b28192e82edc"
+    },
+    {
+      "bytes": 102,
+      "kind": "file",
+      "name": "process.json",
+      "sha256": "332113ce1eb10fceefbf445407fe71374c131cdf169c5aa974f3edf3cbbec499"
+    },
+    {
+      "bytes": 370302,
+      "kind": "file",
+      "name": "receipt.json",
+      "sha256": "e025fbaf18eb23442d5bceba216874422795fabd34d9eb1eb0a0f28cac830d28"
+    },
+    {
+      "bytes": 18140,
+      "kind": "file",
+      "name": "resource-samples.json",
+      "sha256": "26e3ab83cfa1b920400ce120400a0dd5d353dc96bbb97154aed4df1f2a51fc9e"
+    },
+    {
+      "bytes": 10099,
+      "kind": "file",
+      "name": "source-inputs-after.json",
+      "sha256": "e9613262651a963db35942ec525d0ff2ec1feaeaf2623421e1a65cf3f175bfa5"
+    },
+    {
+      "bytes": 10099,
+      "kind": "file",
+      "name": "source-inputs-before.json",
+      "sha256": "e9613262651a963db35942ec525d0ff2ec1feaeaf2623421e1a65cf3f175bfa5"
+    },
+    {
+      "bytes": 20553,
+      "kind": "file",
+      "name": "source-inputs-final.json",
+      "sha256": "75645936e8f4e8006e6c0f25be3a096889a51c6fe6ecea22eb5d9e6ce2c7c2f1"
+    },
+    {
+      "bytes": 176930,
+      "kind": "file",
+      "name": "stderr.original.log",
+      "sha256": "ab9f298f21a2cea7f33b24452a6073c17b167ad38ce2722df0f6d69bcf49d784"
+    },
+    {
+      "bytes": 1451,
+      "kind": "file",
+      "name": "stdout.original.log",
+      "sha256": "e20ffbfb8629e1e39432fba99b51c4d61e596d439321802c1ef475d594b2f3f2"
+    }
+  ],
+  "originalCustody": {
+    "allTenLocalHashesAndLosslessTransferEntriesMatched": true,
+    "bytes": 691955,
+    "files": 10,
+    "independentReceiptTransferMatchedBothLocalCopies": true,
+    "inventory": {
+      "bytes": 2053,
+      "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/original-attempt-inventory.json",
+      "sha256": "a4b1c23b547c0267c72f14ff909bf31bf51e4f95a521f82d21ab45bc6718920e"
+    },
+    "originalFilesUnchanged": true
+  },
+  "resources": {
+    "budget": {
+      "admissionMarginBytes": 33554432,
+      "commandSeconds": 300,
+      "developmentFloorBytes": 536870912,
+      "finalEvidenceReserveWithinCapBytes": 1048576,
+      "jobs": 2,
+      "memoryFloorBytes": 536870912,
+      "ownedAllocationCapBytes": 268435456,
+      "rootFloorBytes": 2147483648
+    },
+    "continuousPeakClaim": false,
+    "everySampleWithinOriginalBudget": true,
+    "initialAdmissionMarginsSatisfied": true,
+    "maximumSampledOwnedAllocatedBytes": 174280704,
+    "minimumSampledDevelopmentFreeBytes": 7314071552,
+    "minimumSampledMemoryAvailableBytes": 3933519872,
+    "minimumSampledRootFreeBytes": 2356305920,
+    "samples": 58,
+    "source": {
+      "bytes": 18140,
+      "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/original-attempt/resource-samples.json",
+      "sha256": "26e3ab83cfa1b920400ce120400a0dd5d353dc96bbb97154aed4df1f2a51fc9e"
+    }
+  },
+  "retainedInspectionFailures": [
+    {
+      "classification": "Custody read-size guard rejected the 370302-byte receipt against an 80000-byte read bound. Exact lossless transfer then retained full receipt and all ten originals. Not an XCTest/compiler/runtime failure.",
+      "source": {
+        "bytes": 571,
+        "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/first-read-size-guard-failure.json",
+        "sha256": "91b919f02da3838d772050d0cb87efd24e22c82c954d6ba7ee27ef0436c5ddbc"
+      }
+    },
+    {
+      "classification": "Reviewer-only Package.swift source-key shape error corrected locally. Not an actual artifact or test failure.",
+      "source": {
+        "bytes": 711,
+        "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/interfaces-inspection-attempt1.json",
+        "sha256": "fe21a81bdfdff07804354efc2f3dae0ccd0018ddc918a68d79baf6f142a72c91"
+      }
+    }
+  ],
+  "reviewedAtUTC": "2026-11-27T19:30:28.157749+00:00",
+  "reviewer": "/root/interfaces",
+  "schema": "pinkha-property4-independent-actual-evidence-review/v1",
+  "scope": "Local retained-artifact inspection only. No original runner/parser/control invocation, compiler, host call, process query, signal, replay or publication.",
+  "sourceAuthority": {
+    "PackageAnd78WholeSourceFilesBeforeAfterFinalEqual": true,
+    "all84LocalInputsMatchedFrozenPacket": true,
+    "allWholeSourceSHAAndGitBlobsMatched": true,
+    "beforeAfterSHA256": "e9613262651a963db35942ec525d0ff2ec1feaeaf2623421e1a65cf3f175bfa5",
+    "coreDependencyCommit": "9058b489e9acc271b4f8ef69e2ed24648f93b4ed",
+    "finalSourceRecordSHA256": "75645936e8f4e8006e6c0f25be3a096889a51c6fe6ecea22eb5d9e6ce2c7c2f1",
+    "frozenInputBytes": 1098479,
+    "frozenInputFiles": 84,
+    "fullTestSHA256": "7ff24aed7ce350c368d9d5d5f31439c3c87566353842013948912001082492ca",
+    "inputPacket": {
+      "bytes": 18317,
+      "path": "wave2-property-unicode-audit/component-preparation/execution-preparation/input-packet.json",
+      "sha256": "66d0f3453087ac8df6a9bf54cf3bdcbc65f645934facfaaa91cc8fd703d81083"
+    },
+    "preparationCommit": "7e2c09a81434e287b2f3b434ccb1be141a1f1b99",
+    "productCommit": "937a8167700481b71c3c2eeb8771634d2c6bbc4f",
+    "propertyStoreSHA256": "c653fa8489f7f9dc7d835d57ab4ec27be0bc46e189a29d226524d81e70e6db48",
+    "runner": {
+      "bytes": 34845,
+      "path": "wave2-property-unicode-audit/component-preparation/execution-preparation/inputs/run_component.py",
+      "sha256": "66f09e18e07cca8a2056d0c8b51ffa318433f28bf9cb7f255f7a0c9bd9db9ea8"
+    },
+    "sourceBodiesStrippedOrStubbed": 0,
+    "wholeProductionSwiftFiles": 77,
+    "wholeSwiftBytes": 859806,
+    "wholeTestSwiftFiles": 1
+  },
+  "status": "PASS_INDEPENDENT_REVIEW_FOUR_ACTUAL_LINUX_XCTEST_METHODS_COMPONENT_SCOPE_ONLY",
+  "terminalOwnership": {
+    "actualProcessRecord": {
+      "bytes": 102,
+      "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/original-attempt/process.json",
+      "sha256": "332113ce1eb10fceefbf445407fe71374c131cdf169c5aa974f3edf3cbbec499"
+    },
+    "historicalProcessGroupMustNeverBeReprobed": true,
+    "independentProcessQueries": 0,
+    "independentSignals": 0,
+    "originalAbsenceObservation": {
+      "atUTC": "2026-11-27T19:17:20.842884+00:00",
+      "errno": 3,
+      "error": "[Errno 3] No such process",
+      "processGroup": 2089676,
+      "signal": 0,
+      "status": "ABSENT_ESRCH"
+    },
+    "originalCleanup": {
+      "absenceEvidence": {
+        "atUTC": "2026-11-27T19:17:20.842884+00:00",
+        "errno": 3,
+        "error": "[Errno 3] No such process",
+        "processGroup": 2089676,
+        "signal": 0,
+        "status": "ABSENT_ESRCH"
+      },
+      "historicalGroupReprobed": false,
+      "processGroup": 2089676,
+      "status": "PASS_OWNED_GROUP_ABSENT"
+    },
+    "originalSafeToRelease": true
+  }
+}

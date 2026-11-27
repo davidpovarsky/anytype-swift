@@ -1,0 +1,85 @@
+{
+  "schema": "wave2-property4-result-transfer-provenance/v1",
+  "scope": "Local custody-copy comparison only; root exclusively acquired the remote originals.",
+  "remoteCalls": 0,
+  "processQueries": 0,
+  "runnerInvocations": 0,
+  "transfers": [
+    {
+      "originalEnvelope": {
+        "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/original-artifact-transfer.json",
+        "bytes": 129109,
+        "sha256": "1660600b5d3d20e653ad0bebc68464b7e868cee81b5afdedc350b53bf6645952"
+      },
+      "metadataWithoutData": {
+        "base64Characters": 128664,
+        "gzipBytes": 96496,
+        "gzipSHA256": "267df37c53594c33268d806065be37640c997b866ef08d531f9aa40c9d1e77c6",
+        "mutations": 0,
+        "offset": 0,
+        "originalBytes": 691955,
+        "originalFiles": 10,
+        "processQueries": 0,
+        "rawBytes": 924200,
+        "rawSHA256": "66b4ee40db51bc5160315f48e4896682287743b8f6fa8c843896156f613764f9",
+        "schema": "wave2-property4-original-export-transfer/v1",
+        "completeParts": 3
+      },
+      "decodedOriginalsMatchedLocally": true,
+      "encodedTransportBodyIncludedInPacket": false
+    },
+    {
+      "originalEnvelope": {
+        "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/receipt-transfer.json",
+        "bytes": 42487,
+        "sha256": "9c7a17314ff749c61c5b10640f6c0f87922dc4253088a7d748caa26d85743962"
+      },
+      "metadataWithoutData": {
+        "bytes": 370302,
+        "encoding": "base64-gzip",
+        "gzipBytes": 31104,
+        "gzipSHA256": "3a5d00197a6a8efaf851964ed5c67751d01993c9a340466b9eac2b01e86224ee",
+        "path": "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/attempt1/receipt.json",
+        "sha256": "e025fbaf18eb23442d5bceba216874422795fabd34d9eb1eb0a0f28cac830d28",
+        "topKeys": [
+          "AppleCalls",
+          "actualToolchainExecutable",
+          "budget",
+          "command",
+          "compilerInputs",
+          "controllerSHA256",
+          "declaredControlledOutputBytesOnRoot",
+          "errors",
+          "finishedAtUTC",
+          "maximumOwnedAllocatedBytes",
+          "minimumDevelopmentFreeBytes",
+          "minimumRootFreeBytes",
+          "nativeCalls",
+          "noGlobalRootWriteAuditClaim",
+          "outerGroupAtExit",
+          "ownedCleanup",
+          "processExit",
+          "productCommit",
+          "runtimeSlotGrantedByThisScript",
+          "safeToReleaseRuntimeSlot",
+          "schema",
+          "seconds",
+          "sourceBodiesModifiedForComponent",
+          "startedAtUTC",
+          "status",
+          "testResult"
+        ]
+      },
+      "decodedOriginalsMatchedLocally": true,
+      "encodedTransportBodyIncludedInPacket": false
+    }
+  ],
+  "duplicateReceiptAliasOmitted": {
+    "path": "wave2-property-unicode-audit/runtime-attempt1-root-custody/receipt.original.json",
+    "bytes": 370302,
+    "sha256": "e025fbaf18eb23442d5bceba216874422795fabd34d9eb1eb0a0f28cac830d28"
+  },
+  "canonicalReceipt": "original-attempt/receipt.json",
+  "allTenOriginalFilesIncludedOnce": true,
+  "beforeAndAfterInventoriesRemainSeparateOriginalFilesEvenThoughBytesMatch": true
+}

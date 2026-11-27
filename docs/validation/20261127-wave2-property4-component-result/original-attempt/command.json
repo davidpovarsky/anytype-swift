@@ -1,0 +1,34 @@
+{
+  "argv": [
+    "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin/swift",
+    "test",
+    "--package-path",
+    "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/component",
+    "--scratch-path",
+    "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/build",
+    "--cache-path",
+    "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/swift-cache",
+    "--config-path",
+    "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/swift-config",
+    "--security-path",
+    "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/swift-security",
+    "--disable-automatic-resolution",
+    "--jobs",
+    "2",
+    "--no-parallel",
+    "-v",
+    "--filter",
+    "(testStringReadbackRequiresExactUTF8BeforeCreatingUndo|testNestedStringAndKeyReadbackRequiresExactUTF8BeforeCreatingUndo|testPropertyReceiptRetainsDocumentedNativeNormalizationAndUnsetRules|testPropertyValueComparisonUsesTheExistingCanonicalDepthLimit)"
+  ],
+  "cwd": "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/component",
+  "environmentOverrides": {
+    "CLANG_MODULE_CACHE_PATH": "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/clang-module-cache",
+    "GIT_TERMINAL_PROMPT": "0",
+    "PATH": "/mnt/development/tooling/swiftly/toolchains/6.4.3/usr/bin:/usr/bin:/bin",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "SWIFTPM_MODULECACHE_OVERRIDE": "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/swift-module-cache",
+    "TMPDIR": "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/tmp",
+    "XDG_CACHE_HOME": "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/xdg-cache",
+    "XDG_CONFIG_HOME": "/mnt/development/projects/evidence/pinkha-wave2-property-text-readback-20261127/xdg-config"
+  }
+}
