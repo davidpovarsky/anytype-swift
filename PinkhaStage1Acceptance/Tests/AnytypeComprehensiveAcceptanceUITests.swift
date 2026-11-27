@@ -466,3 +466,246 @@ extension XCUIApplication {
                       userInfo: [NSLocalizedDescriptionKey: "The native Inspector remained after its bounded dismissal gestures"])
     }
 }
+
+/// Additive G03 coverage using the original twelve-source Properties fixture.
+/// The original Inspector cases and native preparation remain unchanged.
+@MainActor
+final class PinkhaTorahSourceOverflowAcceptanceUITests: XCTestCase {
+    private struct Fixture: Decodable {
+        struct Header: Decodable {
+            let count: Int
+            let objectId: String
+            let labels: [String]
+        }
+        let spaceId: String
+        let manySourcesDocument: String
+        let sourceHeaderCases: [Header]
+    }
+
+    private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+
+    override func tearDownWithError() throws {
+        if app.state != .notRunning { app.terminate() }
+        // Match the original Properties lane's exclusive owned-App lifecycle.
+        // Do not leave its store open for the next original native host stage.
+        guard app.wait(for: .notRunning, timeout: 15) else {
+            let hierarchy = XCTAttachment(string: app.debugDescription)
+            hierarchy.name = "source-overflow-owned-app-exit-failure-ax"
+            hierarchy.lifetime = .keepAlways
+            add(hierarchy)
+            XCTFail("The owned App did not exit after the source-overflow case")
+            return
+        }
+    }
+
+    func testHiddenSourceSelectionOpensExactReferenceAndReturnsToDocument() throws {
+        executionTimeAllowance = 480
+        continueAfterFailure = false
+        defer { attachOverflowState("final") }
+        let environment = ProcessInfo.processInfo.environment
+        try requireOverflow(environment["PINKHA_NATIVE_UI_DISPOSABLE"] == "1"
+                            && environment["PINKHA_UI27_APP_LANGUAGE"] == "en",
+                            "This case requires the original disposable English Properties lane")
+        let raw = try XCTUnwrap(environment["PINKHA_NATIVE_UI_FIXTURE_JSON"])
+        let fixture = try JSONDecoder().decode(Fixture.self, from: Data(raw.utf8))
+        try requireOverflow(!fixture.spaceId.isEmpty && !fixture.manySourcesDocument.isEmpty,
+                            "The original fixture has no Space or source-bearing document")
+        let headers = fixture.sourceHeaderCases.filter { $0.count == 12 }
+        try requireOverflow(headers.count == 1, "The original twelve-source fixture is not unique")
+        let many = try XCTUnwrap(headers.first)
+        let expected = Set((1...12).map { "Genesis 2:\($0)" })
+        try requireOverflow(many.objectId == fixture.manySourcesDocument
+                            && many.labels.count == 12 && Set(many.labels) == expected,
+                            "The unchanged native preparation must supply its exact twelve canonical references")
+
+        if app.state != .notRunning { app.terminate() }
+        try requireOverflow(app.wait(for: .notRunning, timeout: 15), "The previous owned App did not exit")
+        app.launchEnvironment["PINKHA_UI27_ROUTE_OBSERVATION"] = "1"
+        app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+        // The existing helper validates raw fixture bytes, original preparation,
+        // admission, owned simulator and actual source/run before any Continue.
+        try PinkhaDisposableStartupWarning.waitForNavigation(
+            app, testCase: self, spaceID: fixture.spaceId, allowedLanes: ["properties"]
+        )
+        var route = URLComponents()
+        route.scheme = "anytype"
+        route.host = "object"
+        route.queryItems = [URLQueryItem(name: "objectId", value: fixture.manySourcesDocument),
+                            URLQueryItem(name: "spaceId", value: fixture.spaceId)]
+        XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
+        try requireOverflowDocument(fixture)
+        let before = try sourceHeader(expected: expected)
+        let hidden = expected.subtracting(before.values)
+        try requireOverflow(hidden.count == 10 && inspectorPanels.count == 0,
+                            "The selected source must come from the hidden ten with no previous Inspector")
+        let readerRows = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "torah-reader-segment-"
+        ))
+        try requireOverflow(readerRows.count == 0,
+                            "A previous reader cannot supply the later selected-segment assertion")
+
+        app.buttons["torah-document-sources-more"].tap()
+        let choices = app.buttons.matching(NSPredicate(format: "label IN %@", hidden.sorted()))
+        let menuReady = NSPredicate { _, _ in
+            let rows = choices.allElementsBoundByIndex
+            return rows.count == 10 && Set(rows.map(\.label)) == hidden
+                && rows.contains { $0.isEnabled && $0.isHittable }
+        }
+        try requireOverflow(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: menuReady, object: app)],
+                                           timeout: 20) == .completed,
+                            "The original overflow Menu did not expose the exact ten hidden sources")
+        let observedMenu = choices.allElementsBoundByIndex.map(\.label).sorted()
+        let choice = try XCTUnwrap(choices.allElementsBoundByIndex
+            .filter { $0.isEnabled && $0.isHittable }.sorted { $0.label < $1.label }.first)
+        let selectedReference = choice.label
+        let selectedRows = choices.matching(NSPredicate(format: "label == %@", selectedReference))
+        try requireOverflow(hidden.contains(selectedReference) && !before.values.contains(selectedReference)
+                            && selectedRows.count == 1 && selectedRows.firstMatch.isHittable,
+                            "The chosen unique source was not one of the hidden ten actual Menu rows")
+        try recordOverflow("menu-choice", fixture: fixture, before: before, hidden: hidden,
+                           selectedReference: selectedReference, observedMenu: observedMenu)
+        selectedRows.firstMatch.tap()
+
+        try requireOverflow(inspectorPanels.firstMatch.waitForExistence(timeout: 30)
+                            && inspectorPanels.count == 1,
+                            "The hidden source did not open exactly one original Inspector")
+        let inspector = inspectorPanels.firstMatch
+        // The current App opens relationships at medium. Kit9058 resolves the
+        // preferred segment before publishing this native navigation title.
+        // Checking a verse anywhere in the later full chapter would be weaker.
+        let navigation = inspector.navigationBars.firstMatch
+        try requireOverflow(navigation.waitForExistence(timeout: 60) && inspector.navigationBars.count == 1,
+                            "The selected segment's native navigation is unavailable")
+        let heading = navigation.staticTexts.matching(NSPredicate(format: "label == %@", selectedReference))
+        try requireOverflow(heading.firstMatch.waitForExistence(timeout: 60)
+                            && heading.count == 1 && heading.firstMatch.isHittable,
+                            "The Inspector resolved a different canonical segment from the selected hidden row")
+        let observedHeading = heading.firstMatch.label
+        try requireOverflow(readerRows.count == 0, "The initial selection bypassed its segment relationships route")
+        let fullSource = inspector.buttons["torah-inspector-open-full-source"]
+        try requireOverflow(fullSource.waitForExistence(timeout: 30)
+                            && fullSource.isEnabled && fullSource.isHittable,
+                            "The resolved segment has no reachable original full-source action")
+        try recordOverflow("selected-reference", fixture: fixture, before: before, hidden: hidden,
+                           selectedReference: selectedReference, observedMenu: observedMenu,
+                           observedHeading: observedHeading)
+        fullSource.tap()
+        let segmentID = "torah-reader-segment-" + selectedReference
+        let segments = app.descendants(matching: .any).matching(NSPredicate(format: "identifier == %@", segmentID))
+        try requireOverflow(segments.firstMatch.waitForExistence(timeout: 60) && segments.count == 1,
+                            "The full reader did not recover the selected canonical segment")
+        let segment = segments.firstMatch
+        let text = segment.label.trimmingCharacters(in: .whitespacesAndNewlines)
+        try requireOverflow(segment.isHittable && !text.isEmpty && text != selectedReference
+                            && inspectorPanels.count == 1 && app.alerts.count == 0,
+                            "The selected reader segment must expose reachable real source text")
+        try recordOverflow("reader-content", fixture: fixture, before: before, hidden: hidden,
+                           selectedReference: selectedReference, observedMenu: observedMenu,
+                           observedHeading: observedHeading, readerIdentifier: segment.identifier,
+                           readerText: text)
+
+        try app.dismissNativeTorahInspector()
+        try requireOverflow(inspectorPanels.count == 0 && readerRows.count == 0,
+                            "The source Inspector did not dismiss completely")
+        try requireOverflowDocument(fixture)
+        let after = try sourceHeader(expected: expected)
+        try requireOverflow(after == before && !app.keyboards.firstMatch.exists,
+                            "Source navigation changed the document chips or unexpectedly focused its keyboard")
+        try recordOverflow("returned-document", fixture: fixture, before: before, hidden: hidden,
+                           selectedReference: selectedReference, observedMenu: observedMenu,
+                           observedHeading: observedHeading, after: after)
+    }
+
+    private var inspectorPanels: XCUIElementQuery {
+        app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "torah-inspector-sheet-"
+        ))
+    }
+
+    private func requireOverflowDocument(_ fixture: Fixture) throws {
+        let identifier = "pinkha-ui27-editor:\(fixture.spaceId):\(fixture.manySourcesDocument)"
+        let editors = app.otherElements.matching(NSPredicate(format: "identifier == %@", identifier))
+        let more = app.buttons.matching(NSPredicate(format: "label == %@ OR label == %@", "More", "x24/More")).firstMatch
+        let title = app.descendants(matching: .any).matching(NSPredicate(
+            format: "label == %@ OR value == %@", "Native twelve-source chips", "Native twelve-source chips"
+        )).firstMatch
+        let ready = NSPredicate { _, _ in
+            editors.count == 1 && editors.firstMatch.isHittable && more.exists && more.isHittable
+                && title.exists && title.isHittable && self.app.alerts.count == 0
+        }
+        try requireOverflow(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)],
+                                           timeout: 45) == .completed,
+                            "The visible document does not match the exact native fixture Space, object and title")
+    }
+
+    private func sourceHeader(expected: Set<String>) throws -> [String: String] {
+        let chips = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "torah-document-source-chip-"))
+        let overflow = app.buttons["torah-document-sources-more"]
+        let add = app.buttons["torah-document-sources-add"]
+        let ready = NSPredicate { _, _ in
+            let rows = chips.allElementsBoundByIndex
+            return rows.count == 2 && Set(rows.map(\.identifier)).count == 2
+                && Set(rows.map(\.label)).count == 2 && Set(rows.map(\.label)).isSubset(of: expected)
+                && rows.allSatisfy { !$0.identifier.isEmpty && $0.isHittable }
+                && overflow.exists && overflow.isHittable && overflow.label == "10 Sources"
+                && add.exists && add.isHittable && add.value as? String == "compact-icon"
+        }
+        try requireOverflow(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: ready, object: app)],
+                                           timeout: 20) == .completed,
+                            "The unchanged native two-chip/ten-overflow source header did not render")
+        var observed: [String: String] = [:]
+        for row in chips.allElementsBoundByIndex {
+            try requireOverflow(observed[row.identifier] == nil, "The source header contains duplicate chip identity")
+            observed[row.identifier] = row.label
+        }
+        return observed
+    }
+
+    private func recordOverflow(_ phase: String, fixture: Fixture, before: [String: String], hidden: Set<String>,
+                                selectedReference: String, observedMenu: [String], observedHeading: String = "",
+                                readerIdentifier: String = "", readerText: String = "",
+                                after: [String: String] = [:]) throws {
+        let environment = ProcessInfo.processInfo.environment
+        let keys = ["SOURCE_SHA", "RUN_ID", "RUN_ATTEMPT", "SIMULATOR_UDID", "LANE", "ADMISSION_SHA256",
+                    "PREPARATION_SHA256", "INVOCATION_SHA256", "OWNED_SIMULATOR_SHA256", "FIXTURE_SHA256"]
+        var controller: [String: String] = [:]
+        for key in keys { controller[key] = try XCTUnwrap(environment["PINKHA_UI27_STARTUP_" + key]) }
+        let value: [String: Any] = [
+            "schema": "pinkha-source-overflow-ui-observation-v1", "phase": phase,
+            "spaceID": fixture.spaceId, "objectID": fixture.manySourcesDocument,
+            "controllerProvenance": "CONTROLLER_OWNED_SIMULATOR_AFTER_ORIGINAL_NATIVE_PREPARATION",
+            "controller": controller, "selectedReference": selectedReference,
+            "visibleBefore": before, "hiddenReferences": hidden.sorted(), "observedMenu": observedMenu,
+            "observedSelectedHeading": observedHeading, "readerIdentifier": readerIdentifier,
+            "readerText": readerText, "visibleAfter": after,
+            "associationMutationRequestedByThisCase": false, "evidenceScope": "OBSERVED_UI_ONLY"
+        ]
+        let data = try JSONSerialization.data(withJSONObject: value, options: [.sortedKeys])
+        let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
+        attachment.name = "source-overflow-" + phase
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        attachOverflowState(phase)
+    }
+
+    private func attachOverflowState(_ phase: String) {
+        let hierarchy = XCTAttachment(string: app.debugDescription)
+        hierarchy.name = "source-overflow-" + phase + "-ax"
+        hierarchy.lifetime = .keepAlways
+        add(hierarchy)
+        if app.state == .runningForeground {
+            let screenshot = XCTAttachment(screenshot: app.screenshot())
+            screenshot.name = "source-overflow-" + phase + "-visual"
+            screenshot.lifetime = .keepAlways
+            add(screenshot)
+        }
+    }
+
+    private func requireOverflow(_ value: @autoclosure () -> Bool, _ reason: String) throws {
+        guard value() else {
+            throw NSError(domain: "PinkhaSourceOverflowAcceptance", code: 1,
+                          userInfo: [NSLocalizedDescriptionKey: reason])
+        }
+    }
+}
